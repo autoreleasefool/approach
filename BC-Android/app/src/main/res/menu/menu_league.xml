@@ -4,8 +4,13 @@
     tools:context="ca.josephroque.bowlingcompanion.LeagueActivity">
     <item
         android:id="@+id/action_new_league"
-        android:title="New League"
-        android:icon="@drawable/ic_action_new"
+        android:title="@string/action_add_league"
+        android:icon="@drawable/ic_action_add"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_bowler_stats"
+        android:title="@string/action_bowler_stats"
+        android:icon="@drawable/ic_action_info"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_settings"

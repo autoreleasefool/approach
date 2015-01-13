@@ -1,35 +1,37 @@
 package ca.josephroque.bowlingcompanion;
 
+import android.app.AlertDialog;
+import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
+import ca.josephroque.bowlingcompanion.database.BowlingContract.*;
+import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
+import ca.josephroque.bowlingcompanion.dialog.AddBowlerDialog;
 
 public class MainActivity extends ActionBarActivity
-    implements NewBowlerDialog.NewBowlerDialogListener
+    implements AddBowlerDialog.AddBowlerDialogListener
 {
 
-    private static final String ADD_NEW_BOWLER = "Add new bowler";
-
-    private static final String[] FILLER_NAMES = {"Joseph Roque", "Jordan Roque", "Audriana Roque",
-            "Pam Roque", "Ruben Roque", "Ryan Groombridge", "Stephanie Hale", "Sarah Szymanski",
-            "Cameron Thompson", "Ryan Cecchini", "Matt Smith"};
-
-    private static String selectedBowlerID = null;
-    public static String getSelectedBowlerID() {return selectedBowlerID;}
-
-    private ArrayList<String> bowlerNamesArrayList = null;
+    private List<String> bowlerNamesList = null;
+    private List<Long> bowlerIDsList = null;
     private ArrayAdapter<String> bowlerAdapter = null;
 
     @Override
@@ -38,44 +40,83 @@ public class MainActivity extends ActionBarActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        /*
-        TODO: Replace filler values
-        The following block adds filler values to the list view on the main menu.
-        This needs to be populated with actual bowler names
-         */
+        SQLiteDatabase database = DatabaseHelper.getInstance(this).getReadableDatabase();
         final ListView listBowlerNames = (ListView) findViewById(R.id.list_bowler_name);
 
-        bowlerNamesArrayList = new ArrayList<String>();
-        for (String name : FILLER_NAMES)
-        {
-            bowlerNamesArrayList.add(name);
-        }
-        bowlerNamesArrayList.add(ADD_NEW_BOWLER);
+        Cursor cursor = database.query(BowlerEntry.TABLE_NAME,
+                new String[]{BowlerEntry.COLUMN_NAME_BOWLER_NAME, BowlerEntry._ID},
+                null,   //All rows
+                null,   //No args
+                null,   //No group
+                null,   //No having
+                BowlerEntry.COLUMN_NAME_DATE_MODIFIED + " DESC");  //No order
 
-        bowlerAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, bowlerNamesArrayList);
+        bowlerNamesList = new ArrayList<String>();
+        if (cursor.moveToFirst())
+        {
+            while(!cursor.isAfterLast())
+            {
+                bowlerNamesList.add(cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_NAME_BOWLER_NAME)));
+                bowlerIDsList.add(cursor.getLong(cursor.getColumnIndex(BowlerEntry._ID)));
+                cursor.moveToNext();
+            }
+        }
+
+        bowlerAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, bowlerNamesList);
         listBowlerNames.setAdapter(bowlerAdapter);
         bowlerAdapter.notifyDataSetChanged();
 
         listBowlerNames.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
-                selectedBowlerID = (String) listBowlerNames.getItemAtPosition(position);
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+                {
+                    String bowlerNameSelected = (String)listBowlerNames.getItemAtPosition(position);
 
-                if (selectedBowlerID.equals(ADD_NEW_BOWLER))
-                {
-                    showNewBowlerDialog();
-                }
-                else
-                {
+                    long selectedBowlerID;
+
+                    try
+                    {
+                        selectedBowlerID = bowlerIDsList.get(bowlerNamesList.indexOf(bowlerNameSelected));
+                    }
+                    catch (IndexOutOfBoundsException ex)
+                    {
+                        Log.w("MainActivity", "onCreate method, onItemClick caught exception.");
+                        showAddBowlerDialog();
+                        return;
+                    }
+
+                    SQLiteDatabase database = DatabaseHelper.getInstance(MainActivity.this).getWritableDatabase();
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    Date date = new Date();
+
+                    ContentValues values = new ContentValues();
+                    values.put(BowlerEntry.COLUMN_NAME_DATE_MODIFIED, dateFormat.format(date));
+
+                    database.beginTransaction();
+
+                    try
+                    {
+                        database.update(BowlerEntry.TABLE_NAME,
+                                values,
+                                BowlerEntry._ID + "=?",
+                                new String[]{String.valueOf(selectedBowlerID)});
+                        database.setTransactionSuccessful();
+                    }
+                    catch (Exception ex)
+                    {
+                        Log.w("MainActivity", "Error updating bowler: " + ex.getMessage());
+                    }
+                    finally
+                    {
+                        database.endTransaction();
+                    }
                     Intent leagueIntent = new Intent(MainActivity.this, LeagueActivity.class);
+                    leagueIntent.putExtra(BowlerEntry.TABLE_NAME + "." + BowlerEntry._ID, selectedBowlerID);
                     startActivity(leagueIntent);
                 }
-            }
-        });
+            });
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
@@ -94,6 +135,14 @@ public class MainActivity extends ActionBarActivity
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
+        switch(id)
+        {
+            case R.id.action_add_bowler:
+                showAddBowlerDialog();
+                return true;
+            case R.id.action_settings:
+                return true;
+        }
         if (id == R.id.action_settings)
         {
             return true;
@@ -102,23 +151,86 @@ public class MainActivity extends ActionBarActivity
         return super.onOptionsItemSelected(item);
     }
 
-    private void showNewBowlerDialog()
+    @Override
+    public void onDestroy()
     {
-        DialogFragment dialog = new NewBowlerDialog();
-        dialog.show(getSupportFragmentManager(), "NewBowlerDialogFragment");
+        super.onDestroy();
+        DatabaseHelper.closeInstance();
+    }
+
+    private void showAddBowlerDialog()
+    {
+        DialogFragment dialog = new AddBowlerDialog();
+        dialog.show(getSupportFragmentManager(), "AddBowlerDialogFragment");
     }
 
     @Override
-    public void onDialogPositiveClick(DialogFragment dialog, String firstName, String lastName)
+    public void onAddNewBowler(String bowlerName)
     {
-        //adds a new name to the list of bowlers
-        //TODO: Create database entry for name
-        bowlerNamesArrayList.add(bowlerNamesArrayList.size() - 1, firstName + " " + lastName);
+        boolean validInput = true;
+        String invalidInputMessage = null;
+
+        if (bowlerName == null || bowlerName.length() == 0)
+        {
+            validInput = false;
+            invalidInputMessage = "You must enter a name.";
+        }
+        else if (bowlerNamesList.contains(bowlerName))
+        {
+            validInput = false;
+            invalidInputMessage = "That name has already been used. You must choose another.";
+
+        }
+
+        if (!validInput)
+        {
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            builder.setMessage(invalidInputMessage)
+                    .setCancelable(false)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which)
+                        {
+                            //do nothing
+                        }
+                    });
+            AlertDialog alert = builder.create();
+            alert.show();
+            return;
+        }
+
+        long newID = -1;
+        SQLiteDatabase database = DatabaseHelper.getInstance(MainActivity.this).getWritableDatabase();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date();
+
+        ContentValues values = new ContentValues();
+        values.put(BowlerEntry.COLUMN_NAME_BOWLER_NAME, bowlerName);
+        values.put(BowlerEntry.COLUMN_NAME_DATE_MODIFIED, dateFormat.format(date));
+
+        database.beginTransaction();
+        try
+        {
+            newID = database.insert(BowlerEntry.TABLE_NAME, null, values);
+            database.setTransactionSuccessful();
+        }
+        catch (Exception ex)
+        {
+            Log.w("MainActivity", "Error adding new bowler: " + ex.getMessage());
+        }
+        finally
+        {
+            database.endTransaction();
+        }
+
+        bowlerNamesList.add(0, bowlerName);
+        bowlerIDsList.add(0, newID);
         bowlerAdapter.notifyDataSetChanged();
     }
 
     @Override
-    public void onDialogNegativeClick(DialogFragment dialog)
+    public void onCancelNewBowler()
     {
         //does nothing
     }

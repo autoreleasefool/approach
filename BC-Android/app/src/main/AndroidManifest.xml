@@ -24,6 +24,22 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ca.josephroque.bowlingcompanion.MainActivity" />
         </activity>
+        <activity
+            android:name=".SeriesActivity"
+            android:label="@string/title_activity_series"
+            android:parentActivityName=".LeagueActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ca.josephroque.bowlingcompanion.LeagueActivity" />
+        </activity>
+        <activity
+            android:name=".GameActivity"
+            android:label="@string/title_activity_game"
+            android:parentActivityName=".SeriesActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ca.josephroque.bowlingcompanion.SeriesActivity" />
+        </activity>
     </application>
 
 </manifest>

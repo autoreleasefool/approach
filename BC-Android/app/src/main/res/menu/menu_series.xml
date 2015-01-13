@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context="ca.josephroque.bowlingcompanion.SeriesActivity">
+    <item
+        android:id="@+id/action_add_series"
+        android:title="@string/action_add_series"
+        android:icon="@drawable/ic_action_add"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/action_league_stats"
+        android:title="@string/action_league_stats"
+        android:icon="@drawable/ic_action_info"
+        app:showAsAction="always" />
+    <item android:id="@+id/action_settings"
+          android:title="@string/action_settings"
+          android:orderInCategory="100"
+          app:showAsAction="never"/>
+</menu>

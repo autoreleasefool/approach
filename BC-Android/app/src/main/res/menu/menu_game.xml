@@ -1,0 +1,14 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:context="ca.josephroque.bowlingcompanion.GameActivity">
+    <item
+        android:id="@+id/action_game_stats"
+        android:title="@string/action_game_stats"
+        android:icon="@drawable/ic_action_info"
+        app:showAsAction="always" />
+    <item android:id="@+id/action_settings"
+          android:title="@string/action_settings"
+          android:orderInCategory="100"
+          app:showAsAction="never"/>
+</menu>
