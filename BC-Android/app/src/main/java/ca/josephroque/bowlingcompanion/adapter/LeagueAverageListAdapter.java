@@ -46,9 +46,12 @@ public class LeagueAverageListAdapter extends ArrayAdapter<Long>
         TextView txtAverage = (TextView) rowView.findViewById(R.id.text_league_average);
         TextView txtNumberOfGames = (TextView) rowView.findViewById(R.id.text_league_number_of_games);
 
-        txtLeague.setText(leagueNames[position]);
-        txtAverage.setText("Avg: " + String.valueOf(leagueAverages[position]));
-        txtNumberOfGames.setText("Games per week: " + String.valueOf(leagueNumberOfGames[position]));
+        if (leagueNames.length > 0)
+        {
+            txtLeague.setText(leagueNames[position]);
+            txtAverage.setText("Avg: " + String.valueOf(leagueAverages[position]));
+            txtNumberOfGames.setText("Games per week: " + String.valueOf(leagueNumberOfGames[position]));
+        }
 
         return rowView;
     }

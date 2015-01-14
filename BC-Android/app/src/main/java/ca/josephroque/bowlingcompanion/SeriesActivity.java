@@ -47,13 +47,13 @@ public class SeriesActivity extends ActionBarActivity
         }
 
         String rawSeriesQuery = "SELECT "
-                + SeriesEntry._ID + ", "
+                + SeriesEntry.TABLE_NAME + "." + SeriesEntry._ID + " AS sid, "
                 + SeriesEntry.COLUMN_NAME_DATE_CREATED + ", "
                 + GameEntry.COLUMN_NAME_GAME_FINAL_SCORE + ", "
                 + GameEntry.COLUMN_NAME_GAME_NUMBER
                 + " FROM " + SeriesEntry.TABLE_NAME
                 + " LEFT JOIN " + GameEntry.TABLE_NAME
-                + " ON " + SeriesEntry._ID + "=" + GameEntry.COLUMN_NAME_SERIES_ID
+                + " ON sid" /*+ SeriesEntry._ID*/ + "=" + GameEntry.COLUMN_NAME_SERIES_ID
                 + " WHERE " + SeriesEntry.COLUMN_NAME_BOWLER_ID + "=?"
                 + " ORDER BY " + SeriesEntry.COLUMN_NAME_DATE_CREATED + " DESC, "
                 + GameEntry.COLUMN_NAME_GAME_NUMBER;

@@ -57,7 +57,7 @@ public class LeagueActivity extends ActionBarActivity
         }
 
         String rawLeagueQuery = "SELECT "
-                + LeagueEntry._ID + ", "
+                + LeagueEntry.TABLE_NAME + "." + LeagueEntry._ID + ", "
                 + LeagueEntry.COLUMN_NAME_LEAGUE_NAME + ", "
                 + LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES + ", "
                 + GameEntry.COLUMN_NAME_GAME_FINAL_SCORE
@@ -200,7 +200,7 @@ public class LeagueActivity extends ActionBarActivity
 
     private void showAddLeagueDialog()
     {
-        DialogFragment dialog = new AddBowlerDialog();
+        DialogFragment dialog = new AddLeagueDialog();
         dialog.show(getSupportFragmentManager(), "AddLeagueDialogFragment");
     }
 

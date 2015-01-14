@@ -52,6 +52,7 @@ public class MainActivity extends ActionBarActivity
                 BowlerEntry.COLUMN_NAME_DATE_MODIFIED + " DESC");  //No order
 
         bowlerNamesList = new ArrayList<String>();
+        bowlerIDsList = new ArrayList<Long>();
         if (cursor.moveToFirst())
         {
             while(!cursor.isAfterLast())
