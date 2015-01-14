@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.app.DialogFragment;
@@ -48,7 +49,8 @@ public class LeagueActivity extends ActionBarActivity
         SQLiteDatabase database = DatabaseHelper.getInstance(LeagueActivity.this).getReadableDatabase();
         final ListView leagueListView = (ListView)findViewById(R.id.list_league_name);
 
-        bowlerID = getIntent().getLongExtra(BowlerEntry.TABLE_NAME + "." + BowlerEntry._ID, -1);
+        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        bowlerID = preferences.getLong(BowlerEntry.TABLE_NAME + "." + BowlerEntry._ID, -1);
 
         //TODO: get rid of this in final, just to check for error for now
         if (bowlerID == -1)
@@ -153,9 +155,11 @@ public class LeagueActivity extends ActionBarActivity
                         database.endTransaction();
                     }
 
+                    SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
+                    editor.putLong(LeagueEntry.TABLE_NAME + "." + LeagueEntry._ID, leagueIDSelected);
+                    editor.commit();
+
                     Intent seriesIntent = new Intent(LeagueActivity.this, SeriesActivity.class);
-                    seriesIntent.putExtra(BowlerEntry.TABLE_NAME + "." + BowlerEntry._ID, bowlerID);
-                    seriesIntent.putExtra(LeagueEntry.TABLE_NAME + "." + LeagueEntry._ID, leagueIDSelected);
                     startActivity(seriesIntent);
                 }
             });

@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.ActionBarActivity;
@@ -37,8 +38,9 @@ public class SeriesActivity extends ActionBarActivity
         SQLiteDatabase database = DatabaseHelper.getInstance(this).getReadableDatabase();
         final ListView seriesListView = (ListView)findViewById(R.id.list_series);
 
-        bowlerID = getIntent().getLongExtra(BowlerEntry.TABLE_NAME + "." + BowlerEntry._ID, -1);
-        leagueID = getIntent().getLongExtra(LeagueEntry.TABLE_NAME + "." + LeagueEntry._ID, -1);
+        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        bowlerID = preferences.getLong(BowlerEntry.TABLE_NAME + "." + BowlerEntry._ID, -1);
+        leagueID = preferences.getLong(LeagueEntry.TABLE_NAME + "." + LeagueEntry._ID, -1);
 
         /*TODO: delete following if statement, just to check if program works to this point*/
         if (bowlerID == -1 || leagueID == -1)
@@ -94,10 +96,32 @@ public class SeriesActivity extends ActionBarActivity
                 {
                     long seriesIDSelected = (Long)seriesListView.getItemAtPosition(position);
 
+                    SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
+                    editor.putLong(SeriesEntry.TABLE_NAME + "." + SeriesEntry._ID, seriesIDSelected);
+                    editor.commit();
+
+
+                    long[] gameID = new long[3];
+                    long[] frameID = new long[30];
+                    SQLiteDatabase database = DatabaseHelper.getInstance(SeriesActivity.this).getReadableDatabase();
+
+                    String rawSeriesQuery = "SELECT "
+                            + GameEntry.TABLE_NAME + "." + GameEntry._ID + " AS gid, "
+                            + FrameEntry.TABLE_NAME + "." + FrameEntry._ID + " AS fid"
+                            + " FROM " + GameEntry.TABLE_NAME
+                            + " LEFT JOIN " + FrameEntry.TABLE_NAME
+                            + " ON gid=" + FrameEntry.COLUMN_NAME_GAME_ID
+                            + " WHERE " + GameEntry.COLUMN_NAME_SERIES_ID + "=?"
+                            + " ORDER BY sid, fid";
+                    String[] rawSeriesArgs = {String.valueOf(seriesIDSelected)};
+
+                    Cursor cursor = database.rawQuery(rawSeriesQuery, rawSeriesArgs);
+                    if (cursor.moveToFirst())
+                    {
+                        
+                    }
+
                     Intent gameIntent = new Intent(SeriesActivity.this, GameActivity.class);
-                    gameIntent.putExtra(BowlerEntry.TABLE_NAME + "." + BowlerEntry._ID, bowlerID);
-                    gameIntent.putExtra(LeagueEntry.TABLE_NAME + "." + LeagueEntry._ID, leagueID);
-                    gameIntent.putExtra(SeriesEntry.TABLE_NAME + "." + SeriesEntry._ID, seriesIDSelected);
                     startActivity(gameIntent);
                 }
             });
@@ -190,9 +214,10 @@ public class SeriesActivity extends ActionBarActivity
             database.endTransaction();
         }
 
-        gameIntent.putExtra(BowlerEntry.TABLE_NAME + "." + BowlerEntry._ID, bowlerID);
-        gameIntent.putExtra(LeagueEntry.TABLE_NAME + "." + LeagueEntry._ID, leagueID);
-        gameIntent.putExtra(SeriesEntry.TABLE_NAME + "." + SeriesEntry._ID, seriesID);
+        SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
+        editor.putLong(SeriesEntry.TABLE_NAME + "." + SeriesEntry._ID, seriesID);
+        editor.commit();
+
         gameIntent.putExtra(GameEntry.TABLE_NAME + "." + GameEntry._ID, gameID);
         gameIntent.putExtra(FrameEntry.TABLE_NAME + "." + FrameEntry._ID, frameID);
         startActivity(gameIntent);

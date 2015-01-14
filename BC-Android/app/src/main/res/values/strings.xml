@@ -15,6 +15,7 @@
     <string name="text_quick_game_button">Start a game with these settings:\nBowler: N/A\nLeague: N/A</string>
     <string name="text_next_frame">Next</string>
     <string name="text_prev_frame">Prev</string>
+    <string name="text_save_game">Save</string>
     <string name="text_select_bowler">Select a Bowler</string>
     <string name="add">Add</string>
     <string name="cancel">Cancel</string>
