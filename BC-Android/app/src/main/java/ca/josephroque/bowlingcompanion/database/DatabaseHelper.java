@@ -14,7 +14,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
     private static final String TAG = "DBHelper";
     private static final String DATABASE_NAME = "bowlingdata";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 5;
 
     private SQLiteDatabase database;
 

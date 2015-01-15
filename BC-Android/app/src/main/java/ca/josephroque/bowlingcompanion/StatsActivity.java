@@ -1,6 +1,8 @@
 package ca.josephroque.bowlingcompanion;
 
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -12,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ca.josephroque.bowlingcompanion.database.BowlingContract.*;
+import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 
 
 public class StatsActivity extends ActionBarActivity
@@ -152,4 +155,16 @@ public class StatsActivity extends ActionBarActivity
         listStats.setAdapter(gameAdapter);
         gameAdapter.notifyDataSetChanged();
     }
+
+    /*private Cursor getCursor()
+    {
+        SQLiteDatabase database = DatabaseHelper.getInstance(this).getReadableDatabase();
+
+        String rawStatsQuery = "SELECT "
+                + LeagueEntry.TABLE_NAME + "." + LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES
+                + ;
+        String[] rawStatsArgs = {};
+
+        return database.rawQuery(rawStatsQuery, rawStatsArgs);
+    }*/
 }

@@ -45,7 +45,7 @@ public class LeagueAverageListAdapter extends ArrayAdapter<Long>
         {
             txtLeague.setText(leagueNames[position]);
             txtAverage.setText(" Avg: " + String.valueOf(leagueAverages[position]));
-            txtNumberOfGames.setText(" Games per week: " + String.valueOf(leagueNumberOfGames[position]));
+            txtNumberOfGames.setText(" Games per series: " + String.valueOf(leagueNumberOfGames[position]));
         }
 
         return rowView;
