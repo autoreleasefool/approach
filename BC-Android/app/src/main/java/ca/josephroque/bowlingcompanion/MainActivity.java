@@ -41,9 +41,7 @@ public class MainActivity extends ActionBarActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
-        editor.clear();
-        editor.commit();
+        Preferences.clearPreferences(this);
 
         SQLiteDatabase database = DatabaseHelper.getInstance(this).getReadableDatabase();
         final ListView listBowlerNames = (ListView) findViewById(R.id.list_bowler_name);
@@ -118,9 +116,7 @@ public class MainActivity extends ActionBarActivity
                         database.endTransaction();
                     }
 
-                    SharedPreferences.Editor editor= getPreferences(MODE_PRIVATE).edit();
-                    editor.putLong(BowlerEntry.TABLE_NAME + "." + BowlerEntry._ID, selectedBowlerID);
-                    editor.commit();
+                    Preferences.setPreferences(MainActivity.this, bowlerNamesList.get(bowlerIDsList.indexOf(selectedBowlerID)), "", selectedBowlerID, -1, -1, -1, -1);
 
                     Intent leagueIntent = new Intent(MainActivity.this, LeagueActivity.class);
                     startActivity(leagueIntent);

@@ -46,7 +46,7 @@ public class SeriesListAdapter extends ArrayAdapter<Long>
 
         txtSeriesDate.setText(seriesDates[position]);
 
-        StringBuilder seriesScoresBuilder = new StringBuilder("Scores:");
+        StringBuilder seriesScoresBuilder = new StringBuilder(" Scores:");
         for (Iterator<Integer> it = seriesGameScores.get(position).iterator(); it.hasNext(); )
         {
             seriesScoresBuilder.append(" " + String.valueOf(it.next()));

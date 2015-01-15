@@ -12,7 +12,7 @@
 
     <HorizontalScrollView
         android:layout_width="wrap_content"
-        android:layout_height="128dp"
+        android:layout_height="140dp"
         android:id="@+id/hsv_frames"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
@@ -74,26 +74,34 @@
         android:layout_height="wrap_content"
         android:text="@string/text_next_frame"
         android:id="@+id/button_next_frame"
-        android:layout_alignParentBottom="true"
+        android:layout_above="@+id/layout_games"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/text_prev_frame"
-        android:id="@+id/button_prev_frame"
+        android:text="@string/text_save_game"
+        android:id="@+id/button_save_game"
+        android:layout_above="@+id/layout_games"
+        android:layout_centerHorizontal="true"/>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="48dp"
         android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"/>
+        android:layout_centerHorizontal="true"
+        android:id="@+id/layout_games">
+
+    </RelativeLayout>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/text_save_game"
-        android:id="@+id/button_save_game"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"/>
-
+        android:text="@string/text_prev_frame"
+        android:id="@+id/button_prev_frame"
+        android:layout_above="@+id/layout_games"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"/>
 
 </RelativeLayout>

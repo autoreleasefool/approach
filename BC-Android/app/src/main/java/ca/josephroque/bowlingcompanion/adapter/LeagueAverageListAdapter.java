@@ -20,21 +20,16 @@ public class LeagueAverageListAdapter extends ArrayAdapter<Long>
 {
 
     private final Activity context;
-    private final String[] leagueNames;
-    private final Integer[] leagueAverages;
-    private final Integer[] leagueNumberOfGames;
+    private String[] leagueNames;
+    private Integer[] leagueAverages;
+    private Integer[] leagueNumberOfGames;
 
     public LeagueAverageListAdapter(Activity context, List<Long> leagueIDs, List<String> leagueNamesList, List<Integer> leagueAveragesList, List<Integer> leagueNumberOfGamesList)
     {
         super(context, R.layout.list_league_average, leagueIDs);
         this.context = context;
 
-        leagueNames = new String[leagueNamesList.size()];
-        leagueNamesList.toArray(leagueNames);
-        leagueAverages = new Integer[leagueAveragesList.size()];
-        leagueAveragesList.toArray(leagueAverages);
-        leagueNumberOfGames = new Integer[leagueNumberOfGamesList.size()];
-        leagueNumberOfGamesList.toArray(leagueNumberOfGames);
+        update(leagueNamesList, leagueAveragesList, leagueNumberOfGamesList);
     }
 
     @Override
@@ -49,10 +44,20 @@ public class LeagueAverageListAdapter extends ArrayAdapter<Long>
         if (leagueNames.length > 0)
         {
             txtLeague.setText(leagueNames[position]);
-            txtAverage.setText("Avg: " + String.valueOf(leagueAverages[position]));
-            txtNumberOfGames.setText("Games per week: " + String.valueOf(leagueNumberOfGames[position]));
+            txtAverage.setText(" Avg: " + String.valueOf(leagueAverages[position]));
+            txtNumberOfGames.setText(" Games per week: " + String.valueOf(leagueNumberOfGames[position]));
         }
 
         return rowView;
+    }
+
+    public void update(List<String> leagueNamesList, List<Integer> leagueAveragesList, List<Integer> leagueNumberOfGamesList)
+    {
+        leagueNames = new String[leagueNamesList.size()];
+        leagueNamesList.toArray(leagueNames);
+        leagueAverages = new Integer[leagueAveragesList.size()];
+        leagueAveragesList.toArray(leagueAverages);
+        leagueNumberOfGames = new Integer[leagueNumberOfGamesList.size()];
+        leagueNumberOfGamesList.toArray(leagueNumberOfGames);
     }
 }

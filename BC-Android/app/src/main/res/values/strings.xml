@@ -6,6 +6,10 @@
     <string name="title_activity_league">Select a League</string>
     <string name="title_activity_series">Series</string>
     <string name="title_activity_game">Game Details</string>
+    <string name="title_activity_stats">Statistics</string>
+    <string name="title_activity_stats_game">Game Stats</string>
+    <string name="title_activity_stats_league">League Stats</string>
+    <string name="title_activity_stats_bowler">Bowler Stats</string>
     <string name="action_add_league">Add League</string>
     <string name="action_add_series">Add Series</string>
     <string name="action_add_bowler">Add Bowler</string>

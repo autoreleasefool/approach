@@ -25,7 +25,6 @@ import java.util.List;
 import ca.josephroque.bowlingcompanion.database.BowlingContract.*;
 import ca.josephroque.bowlingcompanion.adapter.LeagueAverageListAdapter;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
-import ca.josephroque.bowlingcompanion.dialog.AddBowlerDialog;
 import ca.josephroque.bowlingcompanion.dialog.AddLeagueDialog;
 
 
@@ -35,9 +34,11 @@ public class LeagueActivity extends ActionBarActivity
 
     private LeagueAverageListAdapter leagueAdapter = null;
 
+    private String bowlerName = null;
     private long bowlerID = -1;
     private List<String> leagueNamesList = null;
     private List<Integer> leagueAverageList = null;
+    private List<Integer> leagueNumberOfGamesList = null;
     private List<Long> leagueIDList = null;
 
     @Override
@@ -49,17 +50,12 @@ public class LeagueActivity extends ActionBarActivity
         SQLiteDatabase database = DatabaseHelper.getInstance(LeagueActivity.this).getReadableDatabase();
         final ListView leagueListView = (ListView)findViewById(R.id.list_league_name);
 
-        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        SharedPreferences preferences = getSharedPreferences(Preferences.MY_PREFS, MODE_PRIVATE);
         bowlerID = preferences.getLong(BowlerEntry.TABLE_NAME + "." + BowlerEntry._ID, -1);
-
-        //TODO: get rid of this in final, just to check for error for now
-        if (bowlerID == -1)
-        {
-            Log.w("LeagueActivity", "ERROR: Could not find bowler ID in extras");
-        }
+        bowlerName = preferences.getString(Preferences.NAME_BOWLER, "");
 
         String rawLeagueQuery = "SELECT "
-                + LeagueEntry.TABLE_NAME + "." + LeagueEntry._ID + ", "
+                + LeagueEntry.TABLE_NAME + "." + LeagueEntry._ID + " AS lid, "
                 + LeagueEntry.COLUMN_NAME_LEAGUE_NAME + ", "
                 + LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES + ", "
                 + GameEntry.COLUMN_NAME_GAME_FINAL_SCORE
@@ -75,7 +71,8 @@ public class LeagueActivity extends ActionBarActivity
         leagueNamesList = new ArrayList<String>();
         leagueAverageList = new ArrayList<Integer>();
         leagueIDList = new ArrayList<Long>();
-        List<Integer> leagueNumberOfGamesList = new ArrayList<Integer>();
+        leagueNumberOfGamesList = new ArrayList<Integer>();
+        List<Integer> leagueTotalNumberOfGamesList = new ArrayList<Integer>();
 
         if (cursor.moveToFirst())
         {
@@ -84,7 +81,7 @@ public class LeagueActivity extends ActionBarActivity
             while(!cursor.isAfterLast())
             {
                 String leagueName = cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_LEAGUE_NAME));
-                long leagueID = cursor.getLong(cursor.getColumnIndex(LeagueEntry._ID));
+                long leagueID = cursor.getLong(cursor.getColumnIndex("lid"));
                 int numberOfGames = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES));
                 int finalScore = cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_NAME_GAME_FINAL_SCORE));
 
@@ -92,12 +89,13 @@ public class LeagueActivity extends ActionBarActivity
                 {
                     leagueNamesList.add(leagueName);
                     leagueIDList.add(leagueID);
+                    leagueNumberOfGamesList.add(numberOfGames);
                 }
                 else if (!leagueIDList.contains(leagueID))
                 {
                     if (leagueIDList.size() > 0)
                     {
-                        leagueNumberOfGamesList.add(totalNumberOfLeagueGames);
+                        leagueTotalNumberOfGamesList.add(totalNumberOfLeagueGames);
                         leagueAverageList.add((totalNumberOfLeagueGames > 0) ? leagueTotalPinfall / totalNumberOfLeagueGames:0);
                     }
 
@@ -105,9 +103,10 @@ public class LeagueActivity extends ActionBarActivity
                     totalNumberOfLeagueGames = 0;
                     leagueNamesList.add(leagueName);
                     leagueIDList.add(leagueID);
+                    leagueNumberOfGamesList.add(numberOfGames);
                 }
 
-                totalNumberOfLeagueGames += numberOfGames;
+                totalNumberOfLeagueGames++;
                 leagueTotalPinfall += finalScore;
 
                 cursor.moveToNext();
@@ -115,12 +114,11 @@ public class LeagueActivity extends ActionBarActivity
 
             if (leagueIDList.size() > 0)
             {
-                leagueNumberOfGamesList.add(totalNumberOfLeagueGames);
+                leagueTotalNumberOfGamesList.add(totalNumberOfLeagueGames);
                 leagueAverageList.add((totalNumberOfLeagueGames > 0) ? leagueTotalPinfall / totalNumberOfLeagueGames:0);
             }
         }
 
-        //TODO finish this thing http://www.learn2crack.com/2013/10/android-custom-listview-images-text-example.html
         leagueAdapter = new LeagueAverageListAdapter(LeagueActivity.this, leagueIDList, leagueNamesList, leagueAverageList, leagueNumberOfGamesList);
         leagueListView.setAdapter(leagueAdapter);
         leagueListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
@@ -155,9 +153,7 @@ public class LeagueActivity extends ActionBarActivity
                         database.endTransaction();
                     }
 
-                    SharedPreferences.Editor editor = getPreferences(MODE_PRIVATE).edit();
-                    editor.putLong(LeagueEntry.TABLE_NAME + "." + LeagueEntry._ID, leagueIDSelected);
-                    editor.commit();
+                    Preferences.setPreferences(LeagueActivity.this, bowlerName, leagueNamesList.get(leagueIDList.indexOf(leagueIDSelected)), bowlerID, leagueIDSelected, -1, -1, leagueNumberOfGamesList.get(leagueIDList.indexOf(leagueIDSelected)));
 
                     Intent seriesIntent = new Intent(LeagueActivity.this, SeriesActivity.class);
                     startActivity(seriesIntent);
@@ -199,6 +195,10 @@ public class LeagueActivity extends ActionBarActivity
 
     private void showBowlerStats()
     {
+        Preferences.setPreferences(this, bowlerName, "", bowlerID, -1, -1, -1, -1);
+
+        Intent statsIntent = new Intent(LeagueActivity.this, StatsActivity.class);
+        startActivity(statsIntent);
         //TODO: showBowlerStats()
     }
 
@@ -271,7 +271,11 @@ public class LeagueActivity extends ActionBarActivity
         leagueNamesList.add(0, leagueName);
         leagueAverageList.add(0, 0);
         leagueIDList.add(0, newID);
+        leagueNumberOfGamesList.add(0, numberOfGames);
+        leagueAdapter.update(leagueNamesList, leagueAverageList, leagueNumberOfGamesList);
         leagueAdapter.notifyDataSetChanged();
+
+        //TODO: new leagues don't show up
     }
 
     public void onCancelNewLeague()
