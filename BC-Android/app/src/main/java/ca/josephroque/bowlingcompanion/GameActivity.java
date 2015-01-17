@@ -221,8 +221,6 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
             case R.id.action_game_stats:
                 showGameStats();
                 return true;
-            case R.id.action_settings:
-                return true;
         }
 
         return super.onOptionsItemSelected(item);

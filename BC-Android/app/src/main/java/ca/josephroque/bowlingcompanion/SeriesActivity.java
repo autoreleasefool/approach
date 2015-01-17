@@ -167,8 +167,6 @@ public class SeriesActivity extends ActionBarActivity
             case R.id.action_add_series:
                 addNewSeries();
                 return true;
-            case R.id.action_settings:
-                return true;
         }
 
         return super.onOptionsItemSelected(item);

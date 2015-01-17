@@ -92,8 +92,6 @@ public class StatsActivity extends ActionBarActivity
 
         switch(id)
         {
-            case R.id.action_settings:
-                return true;
         }
 
         return super.onOptionsItemSelected(item);

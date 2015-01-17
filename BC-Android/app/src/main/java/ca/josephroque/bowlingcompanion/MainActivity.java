@@ -146,8 +146,6 @@ public class MainActivity extends ActionBarActivity
             case R.id.action_add_bowler:
                 showAddBowlerDialog();
                 return true;
-            case R.id.action_settings:
-                return true;
         }
         if (id == R.id.action_settings)
         {

@@ -186,8 +186,6 @@ public class LeagueActivity extends ActionBarActivity
             case R.id.action_new_league:
                 showAddLeagueDialog();
                 return true;
-            case R.id.action_settings:
-                return true;
         }
 
         return super.onOptionsItemSelected(item);
