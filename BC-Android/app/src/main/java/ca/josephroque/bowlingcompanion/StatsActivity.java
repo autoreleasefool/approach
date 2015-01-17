@@ -26,6 +26,10 @@ public class StatsActivity extends ActionBarActivity
     private static final String[] STATS_BOWLER_LEAGUE_NAMES = {"High Single", "High Series",
             "Total Pinfall", "# of Games", "Average" + "Pins Left Standing", "Average Pins Left"};
 
+    private static final int STATS_BOWLER = 0;
+    private static final int STATS_LEAGUE = 1;
+    private static final int STATS_GAME = 2;
+
     private String bowlerName = null;
     private String leagueName = null;
     private long bowlerID = -1;
@@ -58,21 +62,32 @@ public class StatsActivity extends ActionBarActivity
             if (leagueID == -1)
             {
                 setTitle(R.string.title_activity_stats_bowler);
-                showBowlerStats();
+                loadStats(STATS_BOWLER);
             }
             else
             {
                 setTitle(R.string.title_activity_stats_league);
-                showLeagueStats();
+                loadStats(STATS_LEAGUE);
             }
         }
         else
         {
             setTitle(R.string.title_activity_stats_game);
-            showGameStats();
+            loadStats(STATS_GAME);
         }
     }
 
+    private void loadStats(int bowlerLeagueOrGame)
+    {
+        String[] generalStats = new String[STATS_UNIVERSAL_NAMES.length];
+        for (int i = 0; i < generalStats.length; i++)
+        {
+            generalStats[i] = STATS_UNIVERSAL_NAMES[i] + ": 0";
+        }
+
+        List<String> statsList = new ArrayList<String>();
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
@@ -97,72 +112,28 @@ public class StatsActivity extends ActionBarActivity
         return super.onOptionsItemSelected(item);
     }
 
-    private void showBowlerStats()
-    {
-        List<String> bowlerStats = new ArrayList<String>();
-        bowlerStats.add("Bowler: " + bowlerName);
-
-        for (String name:STATS_UNIVERSAL_NAMES)
-        {
-            bowlerStats.add(name + ": 0");
-        }
-
-        for (String name: STATS_BOWLER_LEAGUE_NAMES)
-        {
-            bowlerStats.add(name + ": 0");
-        }
-
-        ArrayAdapter<String> bowlerAdapter = new ArrayAdapter<String>(StatsActivity.this, android.R.layout.simple_list_item_1, bowlerStats);
-        listStats.setAdapter(bowlerAdapter);
-        bowlerAdapter.notifyDataSetChanged();
-    }
-
-    private void showLeagueStats()
-    {
-        List<String> leagueStats = new ArrayList<String>();
-        leagueStats.add("Bowler: " + bowlerName);
-        leagueStats.add("League: " + leagueName);
-
-        for (String name:STATS_UNIVERSAL_NAMES)
-        {
-            leagueStats.add(name + ": 0");
-        }
-
-        for (String name:STATS_BOWLER_LEAGUE_NAMES)
-        {
-            leagueStats.add(name + ": 0");
-        }
-
-        ArrayAdapter<String> leagueAdapter = new ArrayAdapter<String>(StatsActivity.this, android.R.layout.simple_list_item_1, leagueStats);
-        listStats.setAdapter(leagueAdapter);
-        leagueAdapter.notifyDataSetChanged();
-    }
-
-    private void showGameStats()
-    {
-        List<String> gameStats = new ArrayList<String>();
-        gameStats.add("Bowler: " + bowlerName);
-        gameStats.add("League: " + leagueName);
-
-        for (String name:STATS_UNIVERSAL_NAMES)
-        {
-            gameStats.add(name + ": 0");
-        }
-
-        ArrayAdapter<String> gameAdapter = new ArrayAdapter<String>(StatsActivity.this, android.R.layout.simple_list_item_1, gameStats);
-        listStats.setAdapter(gameAdapter);
-        gameAdapter.notifyDataSetChanged();
-    }
-
-    /*private Cursor getCursor()
+    private Cursor getCursor()
     {
         SQLiteDatabase database = DatabaseHelper.getInstance(this).getReadableDatabase();
 
         String rawStatsQuery = "SELECT "
-                + LeagueEntry.TABLE_NAME + "." + LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES
-                + ;
-        String[] rawStatsArgs = {};
+                + LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES + ", "
+                + GameEntry.COLUMN_NAME_GAME_FINAL_SCORE + ", "
+                + GameEntry.COLUMN_NAME_GAME_NUMBER + ", "
+                + FrameEntry.COLUMN_NAME_FRAME_NUMBER + ", "
+                + FrameEntry.COLUMN_NAME_BALL[0] + ", "
+                + FrameEntry.COLUMN_NAME_BALL[1] + ", "
+                + FrameEntry.COLUMN_NAME_BALL[2] + ", "
+                + FrameEntry.COLUMN_NAME_FRAME_NUMBER
+                + " FROM " + LeagueEntry.TABLE_NAME + " league"
+                + " LEFT JOIN " + GameEntry.TABLE_NAME + " game"
+                + " ON " + LeagueEntry.COLUMN_NAME_BOWLER_ID + "=" + GameEntry.COLUMN_NAME_BOWLER_ID
+                + " LEFT JOIN " + FrameEntry.TABLE_NAME + " frame"
+                + " ON " + GameEntry.COLUMN_NAME_BOWLER_ID + "=" + FrameEntry.COLUMN_NAME_BOWLER_ID
+                + " WHERE " + LeagueEntry.COLUMN_NAME_BOWLER_ID + "=?"
+                + " ORDER BY league." + LeagueEntry._ID + ", game." + GameEntry._ID + ", frame." + FrameEntry.COLUMN_NAME_FRAME_NUMBER;
+        String[] rawStatsArgs = {String.valueOf(bowlerID)};
 
         return database.rawQuery(rawStatsQuery, rawStatsArgs);
-    }*/
+    }
 }
