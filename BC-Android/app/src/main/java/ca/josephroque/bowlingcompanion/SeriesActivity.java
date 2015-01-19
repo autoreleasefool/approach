@@ -26,8 +26,6 @@ import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 public class SeriesActivity extends ActionBarActivity
 {
 
-    private String bowlerName = null;
-    private String leagueName = null;
     private long bowlerID = -1;
     private long leagueID = -1;
     private int numberOfGames = -1;
@@ -41,9 +39,7 @@ public class SeriesActivity extends ActionBarActivity
         SQLiteDatabase database = DatabaseHelper.getInstance(this).getReadableDatabase();
         final ListView seriesListView = (ListView)findViewById(R.id.list_series);
 
-        SharedPreferences preferences = getSharedPreferences(Preferences.MY_PREFS, MODE_PRIVATE);
-        bowlerName = preferences.getString(Preferences.NAME_BOWLER, "");
-        leagueName = preferences.getString(Preferences.NAME_LEAGUE, "");
+        SharedPreferences preferences = getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE);
         bowlerID = preferences.getLong(BowlerEntry.TABLE_NAME + "." + BowlerEntry._ID, -1);
         leagueID = preferences.getLong(LeagueEntry.TABLE_NAME + "." + LeagueEntry._ID, -1);
         numberOfGames = preferences.getInt(LeagueEntry.TABLE_NAME + "." + LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES, -1);
@@ -96,7 +92,10 @@ public class SeriesActivity extends ActionBarActivity
                 {
                     long seriesIDSelected = (Long)seriesListView.getItemAtPosition(position);
 
-                    Preferences.setPreferences(SeriesActivity.this, bowlerName, leagueName, bowlerID, leagueID, seriesIDSelected, -1, numberOfGames);
+                    getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE)
+                            .edit()
+                            .putLong(Constants.PREFERENCES_ID_SERIES, seriesIDSelected)
+                            .apply();
 
                     long[] gameID = new long[numberOfGames];
                     long[] frameID = new long[30];
@@ -174,11 +173,14 @@ public class SeriesActivity extends ActionBarActivity
 
     private void showLeagueStats()
     {
-        Preferences.setPreferences(this, bowlerName, leagueName, bowlerID, leagueID, -1, -1, numberOfGames);
+        getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE)
+                .edit()
+                .putLong(Constants.PREFERENCES_ID_SERIES, -1)
+                .putLong(Constants.PREFERENCES_ID_GAME, -1)
+                .apply();
 
         Intent statsIntent = new Intent(SeriesActivity.this, StatsActivity.class);
         startActivity(statsIntent);
-        //TODO: showLeagueStats()
     }
 
     private void addNewSeries()
@@ -231,7 +233,10 @@ public class SeriesActivity extends ActionBarActivity
             database.endTransaction();
         }
 
-        Preferences.setPreferences(this, bowlerName, leagueName, bowlerID, leagueID, seriesID, -1, numberOfGames);
+        getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE)
+                .edit()
+                .putLong(Constants.PREFERENCES_ID_SERIES, seriesID)
+                .apply();
         gameIntent.putExtra(GameEntry.TABLE_NAME + "." + GameEntry._ID, gameID);
         gameIntent.putExtra(FrameEntry.TABLE_NAME + "." + FrameEntry._ID, frameID);
         startActivity(gameIntent);

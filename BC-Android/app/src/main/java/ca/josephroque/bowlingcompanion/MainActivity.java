@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.app.DialogFragment;
@@ -31,8 +30,11 @@ public class MainActivity extends ActionBarActivity
     implements AddBowlerDialog.AddBowlerDialogListener
 {
 
+    /** List of names of bowlers' stats being tracked */
     private List<String> bowlerNamesList = null;
+    /** List of IDs of bowlers' stats being tracked*/
     private List<Long> bowlerIDsList = null;
+    /** Adapter for ListView of bowlers */
     private ArrayAdapter<String> bowlerAdapter = null;
 
     @Override
@@ -41,7 +43,10 @@ public class MainActivity extends ActionBarActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Preferences.clearPreferences(this);
+        getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE)
+                .edit()
+                .clear()
+                .apply();
 
         SQLiteDatabase database = DatabaseHelper.getInstance(this).getReadableDatabase();
         final ListView listBowlerNames = (ListView) findViewById(R.id.list_bowler_name);
@@ -116,7 +121,11 @@ public class MainActivity extends ActionBarActivity
                         database.endTransaction();
                     }
 
-                    Preferences.setPreferences(MainActivity.this, bowlerNamesList.get(bowlerIDsList.indexOf(selectedBowlerID)), "", selectedBowlerID, -1, -1, -1, -1);
+                    getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE)
+                            .edit()
+                            .putString(Constants.PREFERENCES_NAME_BOWLER, bowlerNamesList.get(bowlerIDsList.indexOf(selectedBowlerID)))
+                            .putLong(Constants.PREFERENCES_ID_BOWLER, selectedBowlerID)
+                            .apply();
 
                     Intent leagueIntent = new Intent(MainActivity.this, LeagueActivity.class);
                     startActivity(leagueIntent);

@@ -34,7 +34,6 @@ public class LeagueActivity extends ActionBarActivity
 
     private LeagueAverageListAdapter leagueAdapter = null;
 
-    private String bowlerName = null;
     private long bowlerID = -1;
     private List<String> leagueNamesList = null;
     private List<Integer> leagueAverageList = null;
@@ -50,9 +49,8 @@ public class LeagueActivity extends ActionBarActivity
         SQLiteDatabase database = DatabaseHelper.getInstance(LeagueActivity.this).getReadableDatabase();
         final ListView leagueListView = (ListView)findViewById(R.id.list_league_name);
 
-        SharedPreferences preferences = getSharedPreferences(Preferences.MY_PREFS, MODE_PRIVATE);
+        SharedPreferences preferences = getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE);
         bowlerID = preferences.getLong(BowlerEntry.TABLE_NAME + "." + BowlerEntry._ID, -1);
-        bowlerName = preferences.getString(Preferences.NAME_BOWLER, "");
 
         String rawLeagueQuery = "SELECT "
                 + LeagueEntry.TABLE_NAME + "." + LeagueEntry._ID + " AS lid, "
@@ -153,7 +151,11 @@ public class LeagueActivity extends ActionBarActivity
                         database.endTransaction();
                     }
 
-                    Preferences.setPreferences(LeagueActivity.this, bowlerName, leagueNamesList.get(leagueIDList.indexOf(leagueIDSelected)), bowlerID, leagueIDSelected, -1, -1, leagueNumberOfGamesList.get(leagueIDList.indexOf(leagueIDSelected)));
+                    getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE)
+                            .edit()
+                            .putString(Constants.PREFERENCES_NAME_LEAGUE, leagueNamesList.get(leagueIDList.indexOf(leagueIDSelected)))
+                            .putLong(Constants.PREFERENCES_ID_LEAGUE, leagueIDSelected)
+                            .putInt(Constants.PREFERENCES_NUMBER_OF_GAMES, leagueNumberOfGamesList.get(leagueIDList.indexOf(leagueIDSelected)));
 
                     Intent seriesIntent = new Intent(LeagueActivity.this, SeriesActivity.class);
                     startActivity(seriesIntent);
@@ -193,11 +195,14 @@ public class LeagueActivity extends ActionBarActivity
 
     private void showBowlerStats()
     {
-        Preferences.setPreferences(this, bowlerName, "", bowlerID, -1, -1, -1, -1);
+        getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE)
+                .edit()
+                .putLong(Constants.PREFERENCES_ID_LEAGUE, -1)
+                .putLong(Constants.PREFERENCES_ID_GAME, -1)
+                .putLong(Constants.PREFERENCES_ID_SERIES, -1);
 
         Intent statsIntent = new Intent(LeagueActivity.this, StatsActivity.class);
         startActivity(statsIntent);
-        //TODO: showBowlerStats()
     }
 
     private void showAddLeagueDialog()

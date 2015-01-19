@@ -7,7 +7,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -46,9 +45,9 @@ public class StatsActivity extends ActionBarActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stats);
 
-        SharedPreferences preferences = getSharedPreferences(Preferences.MY_PREFS, MODE_PRIVATE);
-        bowlerName = preferences.getString(Preferences.NAME_BOWLER, "");
-        leagueName = preferences.getString(Preferences.NAME_LEAGUE, "");
+        SharedPreferences preferences = getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE);
+        bowlerName = preferences.getString(Constants.PREFERENCES_NAME_BOWLER, "");
+        leagueName = preferences.getString(Constants.PREFERENCES_NAME_LEAGUE, "");
         bowlerID = preferences.getLong(BowlerEntry.TABLE_NAME + "." + BowlerEntry._ID, -1);
         leagueID = preferences.getLong(LeagueEntry.TABLE_NAME + "." + LeagueEntry._ID, -1);
         seriesID = preferences.getLong(SeriesEntry.TABLE_NAME + "." + SeriesEntry._ID, -1);
