@@ -147,10 +147,6 @@ public class MainActivity extends ActionBarActivity
                 showAddBowlerDialog();
                 return true;
         }
-        if (id == R.id.action_settings)
-        {
-            return true;
-        }
 
         return super.onOptionsItemSelected(item);
     }
