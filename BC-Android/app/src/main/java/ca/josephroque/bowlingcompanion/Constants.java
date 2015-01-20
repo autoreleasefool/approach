@@ -33,6 +33,8 @@ public class Constants
     public static final String PREFERENCES_ID_GAME = GameEntry.TABLE_NAME + "." + GameEntry._ID;
     /** Preference containing number of games of current league */
     public static final String PREFERENCES_NUMBER_OF_GAMES = LeagueEntry.TABLE_NAME + "." + LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES;
+    /** Preference containing current game number in series */
+    public static final String PREFERENCES_GAME_NUMBER = GameEntry.TABLE_NAME + "." + GameEntry.COLUMN_NAME_GAME_NUMBER;
 
     /** Represents a frame with all pins cleared */
     public static final boolean[] FRAME_CLEAR = {true, true, true, true, true};
