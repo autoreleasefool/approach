@@ -69,7 +69,7 @@ public class AddLeagueDialog extends DialogFragment
                     @Override
                     public void onClick(DialogInterface dialog, int which)
                     {
-                        String leagueName = ((EditText)(dialogView.findViewById(R.id.new_league_name))).getText().toString();
+                        String leagueName = ((EditText)(dialogView.findViewById(R.id.new_league_name))).getText().toString().trim();
                         int numberOfGames = -1;
 
                         try

@@ -64,7 +64,7 @@ public class AddBowlerDialog extends DialogFragment
                     @Override
                     public void onClick(DialogInterface dialog, int which)
                     {
-                        String bowlerName = ((EditText)(dialogView.findViewById(R.id.new_bowler_name))).getText().toString();
+                        String bowlerName = ((EditText)(dialogView.findViewById(R.id.new_bowler_name))).getText().toString().trim();
                         dialogListener.onAddNewBowler(bowlerName);
                     }
                 })
