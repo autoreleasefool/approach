@@ -722,8 +722,6 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                 values.put(FrameEntry.COLUMN_NAME_BALL[0], String.valueOf(balls.get(i).get(0)));
                 values.put(FrameEntry.COLUMN_NAME_BALL[1], String.valueOf(balls.get(i).get(1)));
                 values.put(FrameEntry.COLUMN_NAME_BALL[2], String.valueOf(balls.get(i).get(2)));
-                /*Log.w("SavingGame", String.valueOf(balls.get(i).get(0)));
-                Log.w("SavingGame", "FrameID: " + frameID[currentGame * 10 + i]);*/
                 database.update(FrameEntry.TABLE_NAME,
                         values,
                         FrameEntry._ID + "=?",
