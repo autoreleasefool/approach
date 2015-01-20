@@ -114,6 +114,8 @@ public class BowlingContract
         /** Names of the columns for frames' balls */
         public static final String COLUMN_NAME_BALL[] = {
                 "frame_ball_1", "frame_ball_2", "frame_ball_3"};
+        /** Name of the columns for the frames' fouls */
+        public static final String COLUMN_NAME_FOULS = "frame_fouls";
         /** Name of the column for frames' foreign key to game IDs */
         public static final String COLUMN_NAME_GAME_ID = "frame_game_id_fk";
         /** Name of the column for frames' foreign key to series IDs */

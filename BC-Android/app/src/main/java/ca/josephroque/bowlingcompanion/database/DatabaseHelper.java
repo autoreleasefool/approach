@@ -20,7 +20,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     /** Name of the database */
     private static final String DATABASE_NAME = "bowlingdata";
     /** Version of the database, incremented with changes */
-    private static final int DATABASE_VERSION = 7;
+    private static final int DATABASE_VERSION = 1;
 
     /** Instance of the database */
     private SQLiteDatabase database;
@@ -100,6 +100,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 + FrameEntry.COLUMN_NAME_BALL[0] + " TEXT DEFAULT '00000', "
                 + FrameEntry.COLUMN_NAME_BALL[1] + " TEXT DEFAULT '00000', "
                 + FrameEntry.COLUMN_NAME_BALL[2] + " TEXT DEFAULT '00000', "
+                + FrameEntry.COLUMN_NAME_FOULS + " INTEGER DEFAULT 0, "
                 + FrameEntry.COLUMN_NAME_GAME_ID + " INTEGER NOT NULL, "
                 + FrameEntry.COLUMN_NAME_SERIES_ID + " INTEGER NOT NULL, "
                 + FrameEntry.COLUMN_NAME_LEAGUE_ID + " INTEGER NOT NULL, "
