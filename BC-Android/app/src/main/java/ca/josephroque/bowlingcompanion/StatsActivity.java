@@ -15,29 +15,46 @@ import java.util.List;
 import ca.josephroque.bowlingcompanion.database.BowlingContract.*;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 
-
+/**
+ * Created by josephroque.
+ * <p/>
+ * Location ca.josephroque.bowlingcompanion
+ * in project Bowling Companion
+ */
 public class StatsActivity extends ActionBarActivity
 {
 
+    /** Names of the stats relevant to bowlers, leagues and games */
     private static final String[] STATS_UNIVERSAL_NAMES = {"Middle Hit %", "Strike %", "Spare %",
             "Left %", "Right %", "Ace %", "Chop Off %", "Split %", "Head Pin %"};
 
+    /** Names of the stats relevant to bowlers and leagues */
     private static final String[] STATS_BOWLER_LEAGUE_NAMES = {"High Single", "High Series",
             "Total Pinfall", "# of Games", "Average" + "Pins Left Standing", "Average Pins Left"};
 
+    /** Indicates the bowler's stats should be loaded */
     private static final int STATS_BOWLER = 0;
+    /** Indicates the league's stats should be loaded */
     private static final int STATS_LEAGUE = 1;
+    /** Indicates the game's stats should be loaded */
     private static final int STATS_GAME = 2;
 
+    /** Name of the currently selected bowler */
     private String bowlerName = null;
+    /** Name of the currently selected league */
     private String leagueName = null;
+    /** ID of the currently selected bowler */
     private long bowlerID = -1;
+    /** ID of the currently selected league */
     private long leagueID = -1;
+    /** ID of the currently selected series */
     private long seriesID = -1;
+    /** ID of the currently selected game */
     private long gameID = -1;
 
+    /** List containing all of the stats to be displayed */
     private ListView listStats = null;
-    private String bowlerOrLeagueName = null;
+    //private String bowlerOrLeagueName = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -52,7 +69,6 @@ public class StatsActivity extends ActionBarActivity
         leagueID = preferences.getLong(LeagueEntry.TABLE_NAME + "." + LeagueEntry._ID, -1);
         seriesID = preferences.getLong(SeriesEntry.TABLE_NAME + "." + SeriesEntry._ID, -1);
         gameID = preferences.getLong(GameEntry.TABLE_NAME + "." + GameEntry._ID, -1);
-        bowlerOrLeagueName = getIntent().getStringExtra("BowlerLeagueName");
 
         listStats = (ListView)findViewById(R.id.list_stats);
 
@@ -76,6 +92,11 @@ public class StatsActivity extends ActionBarActivity
         }
     }
 
+    /**
+     * Loads the stats relevant to the value indicated by bowlerLeagueOrGame
+     *
+     * @param bowlerLeagueOrGame indicates whether bowler, league, or game stats are to be loaded
+     */
     private void loadStats(int bowlerLeagueOrGame)
     {
         String[] generalStats = new String[STATS_UNIVERSAL_NAMES.length];
@@ -111,6 +132,12 @@ public class StatsActivity extends ActionBarActivity
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Returns a query from the database with data necessary to determine statistics
+     * of a bowler, league or game
+     *
+     * @return a cursor with the result of the query
+     */
     private Cursor getCursor()
     {
         SQLiteDatabase database = DatabaseHelper.getInstance(this).getReadableDatabase();

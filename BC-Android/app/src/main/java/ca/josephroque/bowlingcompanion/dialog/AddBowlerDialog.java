@@ -15,17 +15,35 @@ import ca.josephroque.bowlingcompanion.R;
 
 /**
  * Created by josephroque on 15-01-10.
+ * <p/>
+ * Location ca.josephroque.bowlingcompanion.dialog
+ * in project Bowling Companion
  */
 public class AddBowlerDialog extends DialogFragment
 {
 
+    /** Maximum length for name input */
     public static final int INPUT_MAX_LENGTH = 30;
 
+    /** Instance of a listener */
     private AddBowlerDialogListener dialogListener;
 
+    /**
+     * Interface which declares methods that respond to
+     * user events
+     */
     public static interface AddBowlerDialogListener
     {
+        /**
+         * Called when the user clicks the "Add" button on the popup dialog
+         *
+         * @param element user input for the bowler's name
+         */
         public void onAddNewBowler(String element);
+
+        /**
+         * Called when the user clicks the "Cancel" button on the popup dialog
+         */
         public void onCancelNewBowler();
     }
 

@@ -26,6 +26,12 @@ import ca.josephroque.bowlingcompanion.database.BowlingContract.*;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.dialog.AddBowlerDialog;
 
+/**
+ * Created by josephroque on 15-01-09.
+ * <p/>
+ * Location ca.josephroque.bowlingcompanion
+ * in project Bowling Companion
+ */
 public class MainActivity extends ActionBarActivity
     implements AddBowlerDialog.AddBowlerDialogListener
 {
@@ -43,6 +49,7 @@ public class MainActivity extends ActionBarActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //Clearing all preferences so app does not store unnecessary data
         getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE)
                 .edit()
                 .clear()
@@ -51,6 +58,7 @@ public class MainActivity extends ActionBarActivity
         SQLiteDatabase database = DatabaseHelper.getInstance(this).getReadableDatabase();
         final ListView listBowlerNames = (ListView) findViewById(R.id.list_bowler_name);
 
+        //Gets name of all bowlers from database and their IDs
         Cursor cursor = database.query(BowlerEntry.TABLE_NAME,
                 new String[]{BowlerEntry.COLUMN_NAME_BOWLER_NAME, BowlerEntry._ID},
                 null,   //All rows
@@ -59,6 +67,7 @@ public class MainActivity extends ActionBarActivity
                 null,   //No having
                 BowlerEntry.COLUMN_NAME_DATE_MODIFIED + " DESC");  //No order
 
+        //Adds bowler names and IDs to list
         bowlerNamesList = new ArrayList<String>();
         bowlerIDsList = new ArrayList<Long>();
         if (cursor.moveToFirst())
@@ -71,6 +80,7 @@ public class MainActivity extends ActionBarActivity
             }
         }
 
+        //Creates adapter to display names in list
         bowlerAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, bowlerNamesList);
         listBowlerNames.setAdapter(bowlerAdapter);
         bowlerAdapter.notifyDataSetChanged();
@@ -95,12 +105,16 @@ public class MainActivity extends ActionBarActivity
                         return;
                     }
 
+                    /*
+                     * Updates database to make the selected bowler the most recently
+                     * edited, and therefore the top of the list next time it is
+                     * loaded
+                     */
+
                     SQLiteDatabase database = DatabaseHelper.getInstance(MainActivity.this).getWritableDatabase();
                     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    Date date = new Date();
-
                     ContentValues values = new ContentValues();
-                    values.put(BowlerEntry.COLUMN_NAME_DATE_MODIFIED, dateFormat.format(date));
+                    values.put(BowlerEntry.COLUMN_NAME_DATE_MODIFIED, dateFormat.format(new Date()));
 
                     database.beginTransaction();
 
@@ -149,7 +163,6 @@ public class MainActivity extends ActionBarActivity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
         switch(id)
         {
             case R.id.action_add_bowler:
@@ -167,6 +180,10 @@ public class MainActivity extends ActionBarActivity
         DatabaseHelper.closeInstance();
     }
 
+    /**
+     * Displays an AddBowlerBialogFragment to get the name of a new
+     * bowler to track
+     */
     private void showAddBowlerDialog()
     {
         DialogFragment dialog = new AddBowlerDialog();
@@ -181,11 +198,13 @@ public class MainActivity extends ActionBarActivity
 
         if (bowlerName == null || bowlerName.length() == 0)
         {
+            //No input for the name
             validInput = false;
             invalidInputMessage = "You must enter a name.";
         }
         else if (bowlerNamesList.contains(bowlerName))
         {
+            //Bowler name already exists in the list
             validInput = false;
             invalidInputMessage = "That name has already been used. You must choose another.";
 
@@ -209,14 +228,16 @@ public class MainActivity extends ActionBarActivity
             return;
         }
 
+        /*
+         * Creates a new database entry for the bowler whose name was
+         * received by input via the dialog
+         */
         long newID = -1;
         SQLiteDatabase database = DatabaseHelper.getInstance(MainActivity.this).getWritableDatabase();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date = new Date();
-
         ContentValues values = new ContentValues();
         values.put(BowlerEntry.COLUMN_NAME_BOWLER_NAME, bowlerName);
-        values.put(BowlerEntry.COLUMN_NAME_DATE_MODIFIED, dateFormat.format(date));
+        values.put(BowlerEntry.COLUMN_NAME_DATE_MODIFIED, dateFormat.format(new Date()));
 
         database.beginTransaction();
         try

@@ -15,17 +15,36 @@ import ca.josephroque.bowlingcompanion.R;
 
 /**
  * Created by josephroque on 15-01-10.
+ * <p/>
+ * Location ca.josephroque.bowlingcompanion.dialog
+ * in project Bowling Companion
  */
 public class AddLeagueDialog extends DialogFragment
 {
 
+    /** Maximum length for name input */
     public static final int NAME_MAX_LENGTH = 30;
 
+    /** Instance of a listener */
     private AddLeagueDialogListener dialogListener = null;
 
+    /**
+     * Interface which declares methods that respond to
+     * user events
+     */
     public static interface AddLeagueDialogListener
     {
+        /**
+         * Called when the user clicks the "Add" button on the popup dialog
+         *
+         * @param leagueName user input for the league's name
+         * @param numberOfGames user input for the league's number of games
+         */
         public void onAddNewLeague(String leagueName, int numberOfGames);
+
+        /**
+         * Called when the user clicks on the "Cancel" button on the popup dialog
+         */
         public void onCancelNewLeague();
     }
 

@@ -23,11 +23,20 @@ import ca.josephroque.bowlingcompanion.database.BowlingContract.*;
 import ca.josephroque.bowlingcompanion.adapter.SeriesListAdapter;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 
+/**
+ * Created by josephroque on 15-01-09.
+ * <p/>
+ * Location ca.josephroque.bowlingcompanion
+ * in project Bowling Companion
+ */
 public class SeriesActivity extends ActionBarActivity
 {
 
+    /** ID of the currently selected bowler */
     private long bowlerID = -1;
+    /** ID of the currently selected league */
     private long leagueID = -1;
+    /** Number of games per series for the league */
     private int numberOfGames = -1;
 
     @Override
@@ -59,6 +68,7 @@ public class SeriesActivity extends ActionBarActivity
 
         Cursor cursor = database.rawQuery(rawSeriesQuery, rawQueryArgs);
 
+        //Loading data from database into lists
         List<Long> seriesIDList = new ArrayList<Long>();
         List<String> seriesDateList = new ArrayList<String>();
         List<List<Integer>> seriesGamesList = new ArrayList<List<Integer>>();
@@ -101,6 +111,8 @@ public class SeriesActivity extends ActionBarActivity
                     long[] frameID = new long[30];
                     SQLiteDatabase database = DatabaseHelper.getInstance(SeriesActivity.this).getReadableDatabase();
 
+                    //Loads relevant game and frame IDs from database and stores them in Intent
+                    //for next activity
                     String rawSeriesQuery = "SELECT "
                             + GameEntry.TABLE_NAME + "." + GameEntry._ID + " AS gid, "
                             + FrameEntry.TABLE_NAME + "." + FrameEntry._ID + " AS fid"
@@ -171,6 +183,10 @@ public class SeriesActivity extends ActionBarActivity
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Creates a StatsActivity to show the complete stats
+     * of the selected bowler in the league
+     */
     private void showLeagueStats()
     {
         getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE)
@@ -183,6 +199,10 @@ public class SeriesActivity extends ActionBarActivity
         startActivity(statsIntent);
     }
 
+    /**
+     * Creates a new series and stores the relevant data in
+     * the database, then starts a GameActivity
+     */
     private void addNewSeries()
     {
         long seriesID = -1;

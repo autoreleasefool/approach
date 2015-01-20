@@ -27,17 +27,28 @@ import ca.josephroque.bowlingcompanion.adapter.LeagueAverageListAdapter;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.dialog.AddLeagueDialog;
 
-
+/**
+ * Created by josephroque on 15-01-09.
+ * <p/>
+ * Location ca.josephroque.bowlingcompanion
+ * in project Bowling Companion
+ */
 public class LeagueActivity extends ActionBarActivity
     implements AddLeagueDialog.AddLeagueDialogListener
 {
 
+    /** Adapter for the ListView of leagues */
     private LeagueAverageListAdapter leagueAdapter = null;
 
+    /** ID of the selected bowler */
     private long bowlerID = -1;
+    /** List of the names of the leagues belonging to the selected bowler */
     private List<String> leagueNamesList = null;
+    /** List of the averages of the leagues, relative to order of leagueNamesList */
     private List<Integer> leagueAverageList = null;
+    /** List of the number of games in the leagues, relative to order of leagueNamesList */
     private List<Integer> leagueNumberOfGamesList = null;
+    /** List of the IDs of the leagues, relative to the order of leagueNamesList */
     private List<Long> leagueIDList = null;
 
     @Override
@@ -66,6 +77,7 @@ public class LeagueActivity extends ActionBarActivity
 
         Cursor cursor = database.rawQuery(rawLeagueQuery, rawLeagueArgs);
 
+        //Loads data from the above query into lists
         leagueNamesList = new ArrayList<String>();
         leagueAverageList = new ArrayList<Integer>();
         leagueIDList = new ArrayList<Long>();
@@ -126,12 +138,11 @@ public class LeagueActivity extends ActionBarActivity
                 {
                     long leagueIDSelected = (Long)leagueListView.getItemAtPosition(position);
 
+                    //Updates the date modified in the database of the selected league
                     SQLiteDatabase database = DatabaseHelper.getInstance(LeagueActivity.this).getWritableDatabase();
                     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    Date date = new Date();
-
                     ContentValues values = new ContentValues();
-                    values.put(LeagueEntry.COLUMN_NAME_DATE_MODIFIED, dateFormat.format(date));
+                    values.put(LeagueEntry.COLUMN_NAME_DATE_MODIFIED, dateFormat.format(new Date()));
 
                     database.beginTransaction();
                     try
@@ -193,6 +204,10 @@ public class LeagueActivity extends ActionBarActivity
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Creates a StatsActivity to show the complete stats
+     * of the selected bowler
+     */
     private void showBowlerStats()
     {
         getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE)
@@ -205,12 +220,17 @@ public class LeagueActivity extends ActionBarActivity
         startActivity(statsIntent);
     }
 
+    /**
+     * Creates an instance of AddLeagueDialogFragment to create a new league
+     * for the selected bowler
+     */
     private void showAddLeagueDialog()
     {
         DialogFragment dialog = new AddLeagueDialog();
         dialog.show(getSupportFragmentManager(), "AddLeagueDialogFragment");
     }
 
+    @Override
     public void onAddNewLeague(String leagueName, int numberOfGames)
     {
         boolean validInput = true;
@@ -227,6 +247,7 @@ public class LeagueActivity extends ActionBarActivity
             invalidInputMessage = "That name has already been used. You must choose another.";
         }
 
+        //Displays an alert if input is invalid and does not create the new league
         if (!validInput)
         {
             AlertDialog.Builder builder = new AlertDialog.Builder(LeagueActivity.this);
@@ -271,16 +292,16 @@ public class LeagueActivity extends ActionBarActivity
            database.endTransaction();
         }
 
+        //Adds the league to the top of the list (it is the most recent)
         leagueNamesList.add(0, leagueName);
         leagueAverageList.add(0, 0);
         leagueIDList.add(0, newID);
         leagueNumberOfGamesList.add(0, numberOfGames);
         leagueAdapter.update(leagueNamesList, leagueAverageList, leagueNumberOfGamesList);
         leagueAdapter.notifyDataSetChanged();
-
-        //TODO: new leagues don't show up
     }
 
+    @Override
     public void onCancelNewLeague()
     {
         //do nothing
