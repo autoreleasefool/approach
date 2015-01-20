@@ -232,6 +232,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
         getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE)
                 .edit()
                 .putLong(Constants.PREFERENCES_ID_GAME, gameID[currentGame])
+                .putInt(Constants.PREFERENCES_GAME_NUMBER, currentGame + 1)
                 .apply();
 
         Intent statsIntent = new Intent(GameActivity.this, StatsActivity.class);
@@ -533,29 +534,26 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
      * Sets the TextView displaying score corresponding to the current frame
      * to the textual value of the ball from getValueOfBall
      */
-    private void updateBalls(int currentFrame)
+    private void updateBalls(int frameToUpdate)
     {
-        /*for (int f = currentFrame; f < Constants.NUMBER_OF_FRAMES; f++)
-        {*/
-            if (areFramesEqual(balls.get(currentFrame).get(0), Constants.FRAME_CLEAR))
-            {
-                ballsTextViews.get(currentFrame).get(0).setText(Constants.BALL_STRIKE);
-                ballsTextViews.get(currentFrame).get(1).setText(Constants.BALL_EMPTY);
-                ballsTextViews.get(currentFrame).get(2).setText(Constants.BALL_EMPTY);
-            }
-            else if (areFramesEqual(balls.get(currentFrame).get(1), Constants.FRAME_CLEAR))
-            {
-                ballsTextViews.get(currentFrame).get(0).setText(getValueOfBall(balls.get(currentFrame), 0));
-                ballsTextViews.get(currentFrame).get(1).setText(Constants.BALL_SPARE);
-                ballsTextViews.get(currentFrame).get(2).setText(Constants.BALL_EMPTY);
-            }
-            else
-            {
-                ballsTextViews.get(currentFrame).get(0).setText(getValueOfBall(balls.get(currentFrame), 0));
-                ballsTextViews.get(currentFrame).get(1).setText(getValueOfBall(balls.get(currentFrame), 1));
-                ballsTextViews.get(currentFrame).get(2).setText(getValueOfBall(balls.get(currentFrame), 2));
-            }
-        //}
+        if (areFramesEqual(balls.get(frameToUpdate).get(0), Constants.FRAME_CLEAR))
+        {
+            ballsTextViews.get(frameToUpdate).get(0).setText(Constants.BALL_STRIKE);
+            ballsTextViews.get(frameToUpdate).get(1).setText(Constants.BALL_EMPTY);
+            ballsTextViews.get(frameToUpdate).get(2).setText(Constants.BALL_EMPTY);
+        }
+        else if (areFramesEqual(balls.get(frameToUpdate).get(1), Constants.FRAME_CLEAR))
+        {
+            ballsTextViews.get(frameToUpdate).get(0).setText(getValueOfBall(balls.get(frameToUpdate), 0));
+            ballsTextViews.get(frameToUpdate).get(1).setText(Constants.BALL_SPARE);
+            ballsTextViews.get(frameToUpdate).get(2).setText(Constants.BALL_EMPTY);
+        }
+        else
+        {
+            ballsTextViews.get(frameToUpdate).get(0).setText(getValueOfBall(balls.get(frameToUpdate), 0));
+            ballsTextViews.get(frameToUpdate).get(1).setText(getValueOfBall(balls.get(frameToUpdate), 1));
+            ballsTextViews.get(frameToUpdate).get(2).setText(getValueOfBall(balls.get(frameToUpdate), 2));
+        }
     }
 
     /**
@@ -775,9 +773,9 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
             {
                 for (int i = 0; i < 3; i++)
                 {
-                    String frameString = cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_BALL[i]));
-                    boolean[] frameChar = {getBoolean(frameString.charAt(0)), getBoolean(frameString.charAt(1)), getBoolean(frameString.charAt(2)), getBoolean(frameString.charAt(3)), getBoolean(frameString.charAt(4))};
-                    balls.get(currentFrameIterator).add(frameChar);
+                    String ballString = cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_BALL[i]));
+                    boolean[] ballChar = {getBoolean(ballString.charAt(0)), getBoolean(ballString.charAt(1)), getBoolean(ballString.charAt(2)), getBoolean(ballString.charAt(3)), getBoolean(ballString.charAt(4))};
+                    balls.get(currentFrameIterator).add(ballChar);
                     if (balls.get(currentFrameIterator).size() > 3)
                     {
                         balls.get(currentFrameIterator).remove(0);
