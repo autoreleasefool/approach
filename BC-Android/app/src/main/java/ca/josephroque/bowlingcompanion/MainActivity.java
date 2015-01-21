@@ -51,6 +51,7 @@ public class MainActivity extends ActionBarActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        final ListView listBowlerNames = (ListView) findViewById(R.id.list_bowler_name);
 
         //Clearing all preferences so app does not store unnecessary data
         getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE)
@@ -58,35 +59,10 @@ public class MainActivity extends ActionBarActivity
                 .clear()
                 .apply();
 
-        SQLiteDatabase database = DatabaseHelper.getInstance(this).getReadableDatabase();
-        final ListView listBowlerNames = (ListView) findViewById(R.id.list_bowler_name);
-
-        //Gets name of all bowlers from database and their IDs
-        Cursor cursor = database.query(BowlerEntry.TABLE_NAME,
-                new String[]{BowlerEntry.COLUMN_NAME_BOWLER_NAME, BowlerEntry._ID},
-                null,   //All rows
-                null,   //No args
-                null,   //No group
-                null,   //No having
-                BowlerEntry.COLUMN_NAME_DATE_MODIFIED + " DESC");  //No order
-
-        //Adds bowler names and IDs to list
         bowlerNamesList = new ArrayList<String>();
         bowlerIDsList = new ArrayList<Long>();
-        if (cursor.moveToFirst())
-        {
-            while(!cursor.isAfterLast())
-            {
-                bowlerNamesList.add(cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_NAME_BOWLER_NAME)));
-                bowlerIDsList.add(cursor.getLong(cursor.getColumnIndex(BowlerEntry._ID)));
-                cursor.moveToNext();
-            }
-        }
-
-        //Creates adapter to display names in list
         bowlerAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, bowlerNamesList);
         listBowlerNames.setAdapter(bowlerAdapter);
-        bowlerAdapter.notifyDataSetChanged();
 
         listBowlerNames.setOnItemClickListener(new AdapterView.OnItemClickListener()
             {
@@ -138,6 +114,37 @@ public class MainActivity extends ActionBarActivity
                     startActivity(leagueIntent);
                 }
             });
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+
+        SQLiteDatabase database = DatabaseHelper.getInstance(this).getReadableDatabase();
+        //Gets name of all bowlers from database and their IDs
+        Cursor cursor = database.query(BowlerEntry.TABLE_NAME,
+                new String[]{BowlerEntry.COLUMN_NAME_BOWLER_NAME, BowlerEntry._ID},
+                null,   //All rows
+                null,   //No args
+                null,   //No group
+                null,   //No having
+                BowlerEntry.COLUMN_NAME_DATE_MODIFIED + " DESC");  //No order
+
+        //Adds bowler names and IDs to list
+        bowlerNamesList.clear();
+        bowlerIDsList.clear();
+        if (cursor.moveToFirst())
+        {
+            while(!cursor.isAfterLast())
+            {
+                bowlerNamesList.add(cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_NAME_BOWLER_NAME)));
+                bowlerIDsList.add(cursor.getLong(cursor.getColumnIndex(BowlerEntry._ID)));
+                cursor.moveToNext();
+            }
+        }
+
+        bowlerAdapter.notifyDataSetChanged();
     }
 
     @Override

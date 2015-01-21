@@ -42,62 +42,24 @@ public class SeriesActivity extends ActionBarActivity
     /** Number of games per series for the league */
     private int numberOfGames = -1;
 
+    /** List of IDs of series belonging to the current bowler and league */
+    private List<Long> seriesIDList = null;
+    /** List of dates which series were created, relative to order of seriesIDList */
+    private List<String> seriesDateList = null;
+    /** List of game scores in series, relative to order of seriesIDList */
+    private List<List<Integer>> seriesGamesList = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_series);
-
-        SQLiteDatabase database = DatabaseHelper.getInstance(this).getReadableDatabase();
         final ListView seriesListView = (ListView)findViewById(R.id.list_series);
 
-        SharedPreferences preferences = getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE);
-        bowlerID = preferences.getLong(Constants.PREFERENCES_ID_BOWLER, -1);
-        leagueID = preferences.getLong(Constants.PREFERENCES_ID_LEAGUE, -1);
-        numberOfGames = preferences.getInt(Constants.PREFERENCES_NUMBER_OF_GAMES, -1);
+        seriesIDList = new ArrayList<Long>();
+        seriesDateList = new ArrayList<String>();
+        seriesGamesList = new ArrayList<List<Integer>>();
 
-        String rawSeriesQuery = "SELECT "
-                + SeriesEntry.TABLE_NAME + "." + SeriesEntry._ID + " AS sid, "
-                + SeriesEntry.COLUMN_NAME_DATE_CREATED + ", "
-                + GameEntry.COLUMN_NAME_GAME_FINAL_SCORE + ", "
-                + GameEntry.COLUMN_NAME_GAME_NUMBER
-                + " FROM " + SeriesEntry.TABLE_NAME
-                + " LEFT JOIN " + GameEntry.TABLE_NAME
-                + " ON sid=" /*+ SeriesEntry._ID*/ + GameEntry.COLUMN_NAME_SERIES_ID
-                + " WHERE " + SeriesEntry.COLUMN_NAME_LEAGUE_ID + "=?"
-                + " ORDER BY " + SeriesEntry.COLUMN_NAME_DATE_CREATED + " DESC, "
-                + GameEntry.COLUMN_NAME_GAME_NUMBER;
-        String[] rawQueryArgs = {String.valueOf(leagueID)};
-
-        Cursor cursor = database.rawQuery(rawSeriesQuery, rawQueryArgs);
-
-        //Loading data from database into lists
-        List<Long> seriesIDList = new ArrayList<Long>();
-        List<String> seriesDateList = new ArrayList<String>();
-        List<List<Integer>> seriesGamesList = new ArrayList<List<Integer>>();
-
-        if (cursor.moveToFirst())
-        {
-            while(!cursor.isAfterLast())
-            {
-                long seriesID = cursor.getLong(cursor.getColumnIndex("sid"));
-                String seriesDate = cursor.getString(cursor.getColumnIndex(SeriesEntry.COLUMN_NAME_DATE_CREATED)).substring(0,10);
-                int finalGameScore = cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_NAME_GAME_FINAL_SCORE));
-
-                if (!seriesIDList.contains(seriesID))
-                {
-                    seriesIDList.add(seriesID);
-                    seriesDateList.add(seriesDate);
-                    seriesGamesList.add(new ArrayList<Integer>());
-                }
-
-                seriesGamesList.get(seriesGamesList.size() - 1).add(finalGameScore);
-                cursor.moveToNext();
-            }
-        }
-
-        SeriesListAdapter seriesAdapter = new SeriesListAdapter(SeriesActivity.this, seriesIDList, seriesDateList, seriesGamesList);
-        seriesListView.setAdapter(seriesAdapter);
         seriesListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
             {
                 @Override
@@ -157,6 +119,59 @@ public class SeriesActivity extends ActionBarActivity
             });
     }
 
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+
+        SQLiteDatabase database = DatabaseHelper.getInstance(this).getReadableDatabase();
+        SharedPreferences preferences = getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE);
+        bowlerID = preferences.getLong(Constants.PREFERENCES_ID_BOWLER, -1);
+        leagueID = preferences.getLong(Constants.PREFERENCES_ID_LEAGUE, -1);
+        numberOfGames = preferences.getInt(Constants.PREFERENCES_NUMBER_OF_GAMES, -1);
+
+        String rawSeriesQuery = "SELECT "
+                + SeriesEntry.TABLE_NAME + "." + SeriesEntry._ID + " AS sid, "
+                + SeriesEntry.COLUMN_NAME_DATE_CREATED + ", "
+                + GameEntry.COLUMN_NAME_GAME_FINAL_SCORE + ", "
+                + GameEntry.COLUMN_NAME_GAME_NUMBER
+                + " FROM " + SeriesEntry.TABLE_NAME
+                + " LEFT JOIN " + GameEntry.TABLE_NAME
+                + " ON sid=" + GameEntry.COLUMN_NAME_SERIES_ID
+                + " WHERE " + SeriesEntry.COLUMN_NAME_LEAGUE_ID + "=?"
+                + " ORDER BY " + SeriesEntry.COLUMN_NAME_DATE_CREATED + " DESC, "
+                + GameEntry.COLUMN_NAME_GAME_NUMBER;
+        String[] rawQueryArgs = {String.valueOf(leagueID)};
+
+        seriesIDList.clear();
+        seriesDateList.clear();
+        seriesGamesList.clear();
+
+        Cursor cursor = database.rawQuery(rawSeriesQuery, rawQueryArgs);
+        if (cursor.moveToFirst())
+        {
+            while(!cursor.isAfterLast())
+            {
+                long seriesID = cursor.getLong(cursor.getColumnIndex("sid"));
+                String seriesDate = cursor.getString(cursor.getColumnIndex(SeriesEntry.COLUMN_NAME_DATE_CREATED)).substring(0,10);
+                int finalGameScore = cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_NAME_GAME_FINAL_SCORE));
+
+                if (!seriesIDList.contains(seriesID))
+                {
+                    seriesIDList.add(seriesID);
+                    seriesDateList.add(seriesDate);
+                    seriesGamesList.add(new ArrayList<Integer>());
+                }
+
+                seriesGamesList.get(seriesGamesList.size() - 1).add(finalGameScore);
+                cursor.moveToNext();
+            }
+        }
+
+        ListView seriesListView = (ListView)findViewById(R.id.list_series);
+        SeriesListAdapter seriesAdapter = new SeriesListAdapter(SeriesActivity.this, seriesIDList, seriesDateList, seriesGamesList);
+        seriesListView.setAdapter(seriesAdapter);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)

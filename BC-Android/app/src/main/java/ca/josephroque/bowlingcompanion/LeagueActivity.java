@@ -59,78 +59,13 @@ public class LeagueActivity extends ActionBarActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_league);
-
-        SQLiteDatabase database = DatabaseHelper.getInstance(LeagueActivity.this).getReadableDatabase();
         final ListView leagueListView = (ListView)findViewById(R.id.list_league_name);
-
-        SharedPreferences preferences = getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE);
-        bowlerID = preferences.getLong(BowlerEntry.TABLE_NAME + "." + BowlerEntry._ID, -1);
-
-        String rawLeagueQuery = "SELECT "
-                + LeagueEntry.TABLE_NAME + "." + LeagueEntry._ID + " AS lid, "
-                + LeagueEntry.COLUMN_NAME_LEAGUE_NAME + ", "
-                + LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES + ", "
-                + GameEntry.COLUMN_NAME_GAME_FINAL_SCORE
-                + " FROM " + LeagueEntry.TABLE_NAME
-                + " LEFT JOIN " + GameEntry.TABLE_NAME
-                + " ON " + LeagueEntry.COLUMN_NAME_BOWLER_ID + "=" + GameEntry.COLUMN_NAME_BOWLER_ID
-                + " WHERE " + LeagueEntry.COLUMN_NAME_BOWLER_ID + "=?"
-                + " ORDER BY " + LeagueEntry.COLUMN_NAME_DATE_MODIFIED + " DESC";
-        String[] rawLeagueArgs ={String.valueOf(bowlerID)};
-
-        Cursor cursor = database.rawQuery(rawLeagueQuery, rawLeagueArgs);
 
         //Loads data from the above query into lists
         leagueNamesList = new ArrayList<String>();
         leagueAverageList = new ArrayList<Integer>();
         leagueIDList = new ArrayList<Long>();
         leagueNumberOfGamesList = new ArrayList<Integer>();
-        List<Integer> leagueTotalNumberOfGamesList = new ArrayList<Integer>();
-
-        if (cursor.moveToFirst())
-        {
-            int leagueTotalPinfall = 0;
-            int totalNumberOfLeagueGames = 0;
-            while(!cursor.isAfterLast())
-            {
-                String leagueName = cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_LEAGUE_NAME));
-                long leagueID = cursor.getLong(cursor.getColumnIndex("lid"));
-                int numberOfGames = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES));
-                int finalScore = cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_NAME_GAME_FINAL_SCORE));
-
-                if (leagueIDList.size() == 0)
-                {
-                    leagueNamesList.add(leagueName);
-                    leagueIDList.add(leagueID);
-                    leagueNumberOfGamesList.add(numberOfGames);
-                }
-                else if (!leagueIDList.contains(leagueID))
-                {
-                    if (leagueIDList.size() > 0)
-                    {
-                        leagueTotalNumberOfGamesList.add(totalNumberOfLeagueGames);
-                        leagueAverageList.add((totalNumberOfLeagueGames > 0) ? leagueTotalPinfall / totalNumberOfLeagueGames:0);
-                    }
-
-                    leagueTotalPinfall = 0;
-                    totalNumberOfLeagueGames = 0;
-                    leagueNamesList.add(leagueName);
-                    leagueIDList.add(leagueID);
-                    leagueNumberOfGamesList.add(numberOfGames);
-                }
-
-                totalNumberOfLeagueGames++;
-                leagueTotalPinfall += finalScore;
-
-                cursor.moveToNext();
-            }
-
-            if (leagueIDList.size() > 0)
-            {
-                leagueTotalNumberOfGamesList.add(totalNumberOfLeagueGames);
-                leagueAverageList.add((totalNumberOfLeagueGames > 0) ? leagueTotalPinfall / totalNumberOfLeagueGames:0);
-            }
-        }
 
         leagueAdapter = new LeagueAverageListAdapter(LeagueActivity.this, leagueIDList, leagueNamesList, leagueAverageList, leagueNumberOfGamesList);
         leagueListView.setAdapter(leagueAdapter);
@@ -178,6 +113,83 @@ public class LeagueActivity extends ActionBarActivity
             });
     }
 
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+
+        SQLiteDatabase database = DatabaseHelper.getInstance(LeagueActivity.this).getReadableDatabase();
+        SharedPreferences preferences = getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE);
+        bowlerID = preferences.getLong(BowlerEntry.TABLE_NAME + "." + BowlerEntry._ID, -1);
+
+        leagueNamesList.clear();
+        leagueAverageList.clear();
+        leagueIDList.clear();
+        leagueNumberOfGamesList.clear();
+        List<Integer> leagueTotalNumberOfGamesList = new ArrayList<Integer>();
+
+        String rawLeagueQuery = "SELECT "
+                + LeagueEntry.TABLE_NAME + "." + LeagueEntry._ID + " AS lid, "
+                + LeagueEntry.COLUMN_NAME_LEAGUE_NAME + ", "
+                + LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES + ", "
+                + GameEntry.COLUMN_NAME_GAME_FINAL_SCORE
+                + " FROM " + LeagueEntry.TABLE_NAME
+                + " LEFT JOIN " + GameEntry.TABLE_NAME
+                + " ON " + LeagueEntry.COLUMN_NAME_BOWLER_ID + "=" + GameEntry.COLUMN_NAME_BOWLER_ID
+                + " WHERE " + LeagueEntry.COLUMN_NAME_BOWLER_ID + "=?"
+                + " ORDER BY " + LeagueEntry.COLUMN_NAME_DATE_MODIFIED + " DESC";
+        String[] rawLeagueArgs ={String.valueOf(bowlerID)};
+
+        Cursor cursor = database.rawQuery(rawLeagueQuery, rawLeagueArgs);
+
+        if (cursor.moveToFirst())
+        {
+            int leagueTotalPinfall = 0;
+            int totalNumberOfLeagueGames = 0;
+            while(!cursor.isAfterLast())
+            {
+                String leagueName = cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_LEAGUE_NAME));
+                long leagueID = cursor.getLong(cursor.getColumnIndex("lid"));
+                int numberOfGames = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES));
+                int finalScore = cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_NAME_GAME_FINAL_SCORE));
+
+                if (leagueIDList.size() == 0)
+                {
+                    leagueNamesList.add(leagueName);
+                    leagueIDList.add(leagueID);
+                    leagueNumberOfGamesList.add(numberOfGames);
+                }
+                else if (!leagueIDList.contains(leagueID))
+                {
+                    if (leagueIDList.size() > 0)
+                    {
+                        leagueTotalNumberOfGamesList.add(totalNumberOfLeagueGames);
+                        leagueAverageList.add((totalNumberOfLeagueGames > 0) ? leagueTotalPinfall / totalNumberOfLeagueGames:0);
+                    }
+
+                    leagueTotalPinfall = 0;
+                    totalNumberOfLeagueGames = 0;
+                    leagueNamesList.add(leagueName);
+                    leagueIDList.add(leagueID);
+                    leagueNumberOfGamesList.add(numberOfGames);
+                }
+
+                totalNumberOfLeagueGames++;
+                leagueTotalPinfall += finalScore;
+
+                cursor.moveToNext();
+            }
+
+            if (leagueIDList.size() > 0)
+            {
+                leagueTotalNumberOfGamesList.add(totalNumberOfLeagueGames);
+                leagueAverageList.add((totalNumberOfLeagueGames > 0) ? leagueTotalPinfall / totalNumberOfLeagueGames:0);
+            }
+        }
+
+        leagueAdapter.update(leagueNamesList, leagueAverageList, leagueNumberOfGamesList);
+        leagueAdapter.notifyDataSetChanged();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)

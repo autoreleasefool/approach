@@ -65,4 +65,17 @@ public class SeriesListAdapter extends ArrayAdapter<Long>
 
         return rowView;
     }
+
+    /**
+     * Updates the class values to the parameters
+     *
+     * @param seriesDatesList a list of series dates, in an order relative to seriesIDList
+     * @param seriesGameScoresList a list of game scores in a series, in an order relative to seriesIDList
+     */
+    public void update(List<String> seriesDatesList, List<List<Integer>> seriesGameScoresList)
+    {
+        seriesGameScores = seriesGameScoresList;
+        seriesDates = new String[seriesDatesList.size()];
+        seriesDatesList.toArray(seriesDates);
+    }
 }

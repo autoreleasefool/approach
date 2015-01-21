@@ -196,11 +196,23 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
             params.leftMargin = getPixelsFromDP((dpWidth / numberOfGames) * i);
             relativeLayout.addView(button, params);
         }
+    }
 
-        //Loads first game from memory
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
         loadGameFromDatabase(0);
     }
 
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+        clearFrameColor();
+        saveGameToDatabase(true);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
@@ -806,14 +818,6 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
             updateBalls(i);
         }
         updateFrameColor();
-    }
-
-    @Override
-    public void onStop()
-    {
-        super.onStop();
-        clearFrameColor();
-        saveGameToDatabase(true);
     }
 
     /**
