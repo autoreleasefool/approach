@@ -37,6 +37,9 @@ public class LeagueActivity extends ActionBarActivity
     implements AddLeagueDialog.AddLeagueDialogListener
 {
 
+    /** TAG identifier for output to log */
+    private static final String TAG = "LeagueActivity";
+
     /** Adapter for the ListView of leagues */
     private LeagueAverageListAdapter leagueAdapter = null;
 
@@ -155,7 +158,7 @@ public class LeagueActivity extends ActionBarActivity
                     }
                     catch (Exception ex)
                     {
-                        Log.w("LeagueActivity", "Error updating league: " + ex.getMessage());
+                        Log.w(TAG, "Error updating league: " + ex.getMessage());
                     }
                     finally
                     {
@@ -284,7 +287,7 @@ public class LeagueActivity extends ActionBarActivity
         }
         catch (Exception ex)
         {
-            Log.w("LeagueActivity", "Error adding new league: " + ex.getMessage());
+            Log.w(TAG, "Error adding new league: " + ex.getMessage());
         }
         finally
         {

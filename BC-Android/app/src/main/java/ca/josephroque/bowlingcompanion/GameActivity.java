@@ -39,6 +39,9 @@ import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 public class GameActivity extends ActionBarActivity implements View.OnClickListener
 {
 
+    /** TAG identifier for output to log */
+    private static final String TAG = "GameActivity";
+
     /** Color of button when the relevant pin is knocked over */
     private static final String COLOR_PIN_KNOCKED = "#000000";
     /** Color of button when the relevant pin is standing */
@@ -231,6 +234,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
      */
     private void showGameStats()
     {
+        clearFrameColor();
         getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE)
                 .edit()
                 .putLong(Constants.PREFERENCES_ID_GAME, gameID[currentGame])
@@ -696,7 +700,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
             }
             catch (IndexOutOfBoundsException ex)
             {
-                Log.w("GameActivity", "areFramesEqual index out of bounds. " + frame.length + " != " + frameToCompare.length);
+                Log.w(TAG, "areFramesEqual index out of bounds. " + frame.length + " != " + frameToCompare.length);
             }
         }
 
@@ -725,7 +729,6 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
 
             for (int i = 0; i < 10; i++)
             {
-                Log.w("GameActivity", String.valueOf(frameID[currentGame * 10 + i]));
                 values = new ContentValues();
                 values.put(FrameEntry.COLUMN_NAME_BALL[0], booleanFrameToString(balls.get(i).get(0)));
                 values.put(FrameEntry.COLUMN_NAME_BALL[1], booleanFrameToString(balls.get(i).get(1)));
@@ -741,7 +744,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
         }
         catch (Exception ex)
         {
-            Log.w("GameActivity", "Error saving game " + currentGame);
+            Log.w(TAG, "Error saving game " + currentGame);
         }
         finally
         {
@@ -809,7 +812,8 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
     public void onStop()
     {
         super.onStop();
-        saveGameToDatabase(false);
+        clearFrameColor();
+        saveGameToDatabase(true);
     }
 
     /**

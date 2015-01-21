@@ -36,6 +36,9 @@ public class MainActivity extends ActionBarActivity
     implements AddBowlerDialog.AddBowlerDialogListener
 {
 
+    /** TAG identifier for output to log */
+    private static final String TAG = "MainActivity";
+
     /** List of names of bowlers' stats being tracked */
     private List<String> bowlerNamesList = null;
     /** List of IDs of bowlers' stats being tracked*/
@@ -93,17 +96,7 @@ public class MainActivity extends ActionBarActivity
                     String bowlerNameSelected = (String)listBowlerNames.getItemAtPosition(position);
 
                     long selectedBowlerID;
-
-                    try
-                    {
-                        selectedBowlerID = bowlerIDsList.get(bowlerNamesList.indexOf(bowlerNameSelected));
-                    }
-                    catch (IndexOutOfBoundsException ex)
-                    {
-                        Log.w("MainActivity", "onCreate method, onItemClick caught exception.");
-                        showAddBowlerDialog();
-                        return;
-                    }
+                    selectedBowlerID = bowlerIDsList.get(bowlerNamesList.indexOf(bowlerNameSelected));
 
                     /*
                      * Updates database to make the selected bowler the most recently
@@ -128,7 +121,7 @@ public class MainActivity extends ActionBarActivity
                     }
                     catch (Exception ex)
                     {
-                        Log.w("MainActivity", "Error updating bowler: " + ex.getMessage());
+                        Log.w(TAG, "Error updating bowler: " + ex.getMessage());
                     }
                     finally
                     {
@@ -247,7 +240,7 @@ public class MainActivity extends ActionBarActivity
         }
         catch (Exception ex)
         {
-            Log.w("MainActivity", "Error adding new bowler: " + ex.getMessage());
+            Log.w(TAG, "Error adding new bowler: " + ex.getMessage());
         }
         finally
         {

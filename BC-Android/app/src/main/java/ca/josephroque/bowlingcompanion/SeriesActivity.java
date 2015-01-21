@@ -32,6 +32,9 @@ import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 public class SeriesActivity extends ActionBarActivity
 {
 
+    /** TAG identifier for output to log */
+    private static final String TAG = "SeriesActivity";
+
     /** ID of the currently selected bowler */
     private long bowlerID = -1;
     /** ID of the currently selected league */
@@ -125,20 +128,21 @@ public class SeriesActivity extends ActionBarActivity
 
                     int currentGame = -1;
                     long currentGameID = -1;
-                    int currentFrame = 0;
+                    int currentFrame = -1;
                     Cursor cursor = database.rawQuery(rawSeriesQuery, rawSeriesArgs);
                     if (cursor.moveToFirst())
                     {
                         while (!cursor.isAfterLast())
                         {
-                            if (cursor.getLong(cursor.getColumnIndex("gid")) == currentGameID)
+                            long newGameID = cursor.getLong(cursor.getColumnIndex("gid"));
+                            if (newGameID == currentGameID)
                             {
                                 frameID[++currentFrame] = cursor.getLong(cursor.getColumnIndex("fid"));
                             }
                             else
                             {
-                                currentGameID = cursor.getLong(cursor.getColumnIndex("gid"));
-                                frameID[currentFrame] = cursor.getLong(cursor.getColumnIndex("fid"));
+                                currentGameID = newGameID;
+                                frameID[++currentFrame] = cursor.getLong(cursor.getColumnIndex("fid"));
                                 gameID[++currentGame] = currentGameID;
                             }
                             cursor.moveToNext();
@@ -239,14 +243,13 @@ public class SeriesActivity extends ActionBarActivity
                     values.put(FrameEntry.COLUMN_NAME_LEAGUE_ID, leagueID);
                     values.put(FrameEntry.COLUMN_NAME_GAME_ID, gameID[i]);
                     frameID[j + 10 * i] = database.insert(FrameEntry.TABLE_NAME, null, values);
-                    Log.w("SeriesActivity", String.valueOf(frameID[j + 10 * i]));
                 }
             }
             database.setTransactionSuccessful();
         }
         catch (Exception ex)
         {
-            Log.w("SeriesActivity", "Error adding new series: " + ex.getMessage());
+            Log.w(TAG, "Error adding new series: " + ex.getMessage());
         }
         finally
         {

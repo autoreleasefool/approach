@@ -5,11 +5,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import java.text.DecimalFormat;
@@ -28,6 +26,9 @@ import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
  */
 public class StatsActivity extends ActionBarActivity
 {
+
+    /** TAG identifier for output to log */
+    private static final String TAG = "StatsActivity";
 
     /** Stats relating to hitting the middle pin */
     private static final String[] STATS_MIDDLE_GENERAL =
@@ -156,7 +157,6 @@ public class StatsActivity extends ActionBarActivity
                 int numberOfFouls = cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_FOULS));
                 statValues[9] += numberOfFouls;
                 boolean frameAccessed = (cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_FRAME_ACCESSED)) == 1);
-                Log.w("StatsActivity", frameAccessed + "");
 
                 if (!frameAccessed)
                 {
@@ -252,7 +252,6 @@ public class StatsActivity extends ActionBarActivity
                                     }
                                 }
                             }
-                            break;
                         }
                     }
                 }
