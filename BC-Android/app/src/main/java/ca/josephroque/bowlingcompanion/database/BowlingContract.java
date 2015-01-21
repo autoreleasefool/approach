@@ -107,10 +107,14 @@ public class BowlingContract
          */
         private FrameEntry(){}
 
+        //TODO add column for checking which frames have been edited
+
         /** Name of the table for frame data */
         public static final String TABLE_NAME = "frames";
         /** Name of the column for frames' number in a game */
         public static final String COLUMN_NAME_FRAME_NUMBER = "frame_number";
+        /** Name of the column for whether the frame has been accessed or not */
+        public static final String COLUMN_NAME_FRAME_ACCESSED = "frame_accessed";
         /** Names of the columns for frames' balls */
         public static final String COLUMN_NAME_BALL[] = {
                 "frame_ball_1", "frame_ball_2", "frame_ball_3"};
