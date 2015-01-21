@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
@@ -139,7 +140,7 @@ public class StatsActivity extends ActionBarActivity
         for (int i = 0; i < STATS_PINS_TOTAL.length; i++, currentStatPosition++)
             stats[currentStatPosition] = STATS_PINS_TOTAL[i] + ": ";
 
-        int totalShotsAtMiddle = 10;
+        int totalShotsAtMiddle = 1;
         int[] statValues = new int[11];
         int[] statSpared = new int[6];
 
@@ -154,13 +155,24 @@ public class StatsActivity extends ActionBarActivity
                         cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_BALL[2]))};
                 int numberOfFouls = cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_FOULS));
                 statValues[9] += numberOfFouls;
+                boolean frameAccessed = (cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_FRAME_ACCESSED)) == 1);
+                Log.w("StatsActivity", frameAccessed + "");
+
+                if (!frameAccessed)
+                {
+                    break;
+                }
+
+                if (frameNumber > 1 && frameNumber < 10)
+                {
+                    totalShotsAtMiddle++;
+                }
 
                 if (frameNumber == 10)
                 {
                     for (int b = 0; b < 3; b++)
                     {
-                        if (b > 0)
-                            totalShotsAtMiddle++;
+                        totalShotsAtMiddle++;
 
                         if (ballString[b].equals("11111"))
                         {
@@ -248,17 +260,17 @@ public class StatsActivity extends ActionBarActivity
             }
         }
 
-        DecimalFormat decimalFormat = new DecimalFormat("##0.0#");
+        DecimalFormat decimalFormat = new DecimalFormat("##0.##");
 
         for (int i = 0; i < STATS_MIDDLE_GENERAL.length; i++)
         {
-            stats[i] = stats[i] + decimalFormat.format(statValues[i] / (double)totalShotsAtMiddle);
+            stats[i] = stats[i] + decimalFormat.format(statValues[i] / (double)totalShotsAtMiddle * 100) + "% [" + statValues[i] + "]";
         }
 
         for (int i = 0, statCounter = STATS_MIDDLE_GENERAL.length; i < STATS_MIDDLE_DETAILED.length; i++, statCounter += 2)
         {
-            stats[statCounter] = stats[statCounter] + decimalFormat.format(statValues[i] / (double)totalShotsAtMiddle) + "% [" + statValues[i] + "]";
-            stats[statCounter + 1] = stats[statCounter + 1] + decimalFormat.format(statSpared[i] / (double)(statValues[i] > 0 ? statValues[i]:1)) + "% [" + statSpared[i] + "]";
+            stats[statCounter] = stats[statCounter] + decimalFormat.format(statValues[i] / (double)totalShotsAtMiddle * 100) + "% [" + statValues[i] + "]";
+            stats[statCounter + 1] = stats[statCounter + 1] + decimalFormat.format(statSpared[i] / (double)(statValues[i] > 0 ? statValues[i]:1) * 100) + "% [" + statSpared[i] + "]";
         }
 
         //TODO: fix magic numbers, 9 is totalFouls index, 10 is totalPinsLeftOnDeck index
@@ -369,20 +381,9 @@ public class StatsActivity extends ActionBarActivity
     private Cursor getGameCursor()
     {
         SQLiteDatabase database = DatabaseHelper.getInstance(this).getReadableDatabase();
-
-        /*String rawStatsQuery = "SELECT "
-                //+ GameEntry.COLUMN_NAME_GAME_FINAL_SCORE + ", "
-                + FrameEntry.COLUMN_NAME_FRAME_NUMBER + ", "
-                + FrameEntry.COLUMN_NAME_BALL[0] + ", "
-                + FrameEntry.COLUMN_NAME_BALL[1] + ", "
-                + FrameEntry.COLUMN_NAME_BALL[2]
-                + " FROM " + GameEntry.TABLE_NAME + " game"
-                + " LEFT JOIN " + FrameEntry.TABLE_NAME + " frame"
-                + " ON " + GameEntry.COLUMN_NAME_BOWLER_ID + "=" + FrameEntry.COLUMN_NAME_BOWLER_ID
-                + " WHERE game." + GameEntry._ID + "=?"
-                + " ORDER BY frame." + FrameEntry.COLUMN_NAME_FRAME_NUMBER;*/
         String rawStatsQuery = "SELECT "
                 + FrameEntry.COLUMN_NAME_FRAME_NUMBER + ", "
+                + FrameEntry.COLUMN_NAME_FRAME_ACCESSED + ", "
                 + FrameEntry.COLUMN_NAME_FOULS + ", "
                 + FrameEntry.COLUMN_NAME_BALL[0] + ", "
                 + FrameEntry.COLUMN_NAME_BALL[1] + ", "

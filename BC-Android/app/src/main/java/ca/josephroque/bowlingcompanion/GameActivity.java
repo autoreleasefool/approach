@@ -57,6 +57,8 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
     private int currentFrame = 0;
     /** Current ball being edited (0 - 2) */
     private int currentBall = 0;
+    /** Indicates whether a frame has been previously accessed */
+    private boolean[] hasFrameBeenAccessed = null;
 
     /** TextViews showing score of ball thrown */
     private List<List<TextView>> ballsTextViews = null;
@@ -91,6 +93,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
         ballsTextViews = new ArrayList<List<TextView>>();
         framesTextViews = new ArrayList<TextView>();
         balls = new ArrayList<List<boolean[]>>();
+        hasFrameBeenAccessed = new boolean[10];
         gameScores = new int[numberOfGames];
 
         for (int i = 0; i < Constants.NUMBER_OF_FRAMES; i++)
@@ -162,7 +165,6 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
 
         findViewById(R.id.button_next_frame).setOnClickListener(this);
         findViewById(R.id.button_prev_frame).setOnClickListener(this);
-        findViewById(R.id.button_save_game).setOnClickListener(this);
 
         GradientDrawable drawable = (GradientDrawable)framesTextViews.get(currentFrame).getBackground();
         drawable.setColor(Color.RED);
@@ -235,6 +237,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                 .putInt(Constants.PREFERENCES_GAME_NUMBER, currentGame + 1)
                 .apply();
 
+        //saveGameToDatabase(false);
         Intent statsIntent = new Intent(GameActivity.this, StatsActivity.class);
         startActivity(statsIntent);
     }
@@ -266,13 +269,8 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
             case R.id.button_game_1: gameToSet++;
             case R.id.button_game_0:
                 //Switching games
-                saveGameToDatabase(false);
-                loadGameFromDatabase(gameToSet);
-                break;
-            case R.id.button_save_game:
-                //Hard coded game save
-                //TODO delete save button in final
                 saveGameToDatabase(true);
+                loadGameFromDatabase(gameToSet);
                 break;
             case R.id.button_next_frame:
                 //Clears the coloring of the current frame, increases the ball and/or
@@ -298,6 +296,12 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                         currentFrame = 9;
                         currentBall = 2;
                     }
+                }
+                for (int i = currentFrame; i >= 0; i--)
+                {
+                    if (hasFrameBeenAccessed[currentFrame])
+                        break;
+                    hasFrameBeenAccessed[currentFrame] = true;
                 }
                 updateFrameColor();
                 break;
@@ -337,6 +341,12 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                 clearFrameColor();
                 currentFrame = frameToSet;
                 currentBall = 0;
+                for (int i = currentFrame; i >= 0; i--)
+                {
+                    if (hasFrameBeenAccessed[currentFrame])
+                        break;
+                    hasFrameBeenAccessed[currentFrame] = true;
+                }
                 updateFrameColor();
                 break;
             case R.id.button_pin_4: ballToSet++;
@@ -370,7 +380,6 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                         }
                         else
                         {
-                            //TODO: ifAutoContinueToNextFrame() ?
                             currentBall = 0;
                             currentFrame++;
                         }
@@ -704,8 +713,6 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
         SQLiteDatabase database = DatabaseHelper.getInstance(this).getWritableDatabase();
         ContentValues values;
 
-        Log.w("GameActivity", "Game score: " + gameScores[currentGame]);
-
         database.beginTransaction();
         try
         {
@@ -718,10 +725,12 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
 
             for (int i = 0; i < 10; i++)
             {
+                Log.w("GameActivity", String.valueOf(frameID[currentGame * 10 + i]));
                 values = new ContentValues();
-                values.put(FrameEntry.COLUMN_NAME_BALL[0], String.valueOf(balls.get(i).get(0)));
-                values.put(FrameEntry.COLUMN_NAME_BALL[1], String.valueOf(balls.get(i).get(1)));
-                values.put(FrameEntry.COLUMN_NAME_BALL[2], String.valueOf(balls.get(i).get(2)));
+                values.put(FrameEntry.COLUMN_NAME_BALL[0], booleanFrameToString(balls.get(i).get(0)));
+                values.put(FrameEntry.COLUMN_NAME_BALL[1], booleanFrameToString(balls.get(i).get(1)));
+                values.put(FrameEntry.COLUMN_NAME_BALL[2], booleanFrameToString(balls.get(i).get(2)));
+                values.put(FrameEntry.COLUMN_NAME_FRAME_ACCESSED, (hasFrameBeenAccessed[i]) ? 1:0);
                 database.update(FrameEntry.TABLE_NAME,
                         values,
                         FrameEntry._ID + "=?",
@@ -757,7 +766,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
         SQLiteDatabase database = DatabaseHelper.getInstance(this).getReadableDatabase();
 
         Cursor cursor = database.query(FrameEntry.TABLE_NAME,
-                new String[]{FrameEntry.COLUMN_NAME_BALL[0], FrameEntry.COLUMN_NAME_BALL[1], FrameEntry.COLUMN_NAME_BALL[2], FrameEntry._ID},
+                new String[]{FrameEntry.COLUMN_NAME_FRAME_ACCESSED, FrameEntry.COLUMN_NAME_BALL[0], FrameEntry.COLUMN_NAME_BALL[1], FrameEntry.COLUMN_NAME_BALL[2], FrameEntry._ID},
                 FrameEntry.COLUMN_NAME_GAME_ID + "=?",
                 new String[]{String.valueOf(gameID[currentGame])},
                 null,
@@ -769,6 +778,8 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
         {
             while(!cursor.isAfterLast())
             {
+                int frameAccessed = cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_FRAME_ACCESSED));
+                hasFrameBeenAccessed[currentFrameIterator] = (frameAccessed == 1);
                 for (int i = 0; i < 3; i++)
                 {
                     String ballString = cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_BALL[i]));
@@ -824,5 +835,15 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
     private boolean getBoolean(char input)
     {
         return input == '1';
+    }
+
+    private String booleanFrameToString(boolean[] frame)
+    {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = 0; i < frame.length; i++)
+        {
+            stringBuilder.append((frame[i]) ? 1:0);
+        }
+        return stringBuilder.toString();
     }
 }

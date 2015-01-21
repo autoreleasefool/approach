@@ -122,8 +122,6 @@ public class BowlingContract
         public static final String COLUMN_NAME_FOULS = "frame_fouls";
         /** Name of the column for frames' foreign key to game IDs */
         public static final String COLUMN_NAME_GAME_ID = "frame_game_id_fk";
-        /** Name of the column for frames' foreign key to series IDs */
-        public static final String COLUMN_NAME_SERIES_ID = "frame_series_id_fk";
         /** Name of the column for frames' foreign key to league IDs */
         public static final String COLUMN_NAME_LEAGUE_ID = "frame_league_id_fk";
         /** Name of the column for frames' foreign key to bowler IDs */

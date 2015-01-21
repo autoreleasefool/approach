@@ -237,9 +237,9 @@ public class SeriesActivity extends ActionBarActivity
                     values.put(FrameEntry.COLUMN_NAME_FRAME_NUMBER, j + 1);
                     values.put(FrameEntry.COLUMN_NAME_BOWLER_ID, bowlerID);
                     values.put(FrameEntry.COLUMN_NAME_LEAGUE_ID, leagueID);
-                    values.put(FrameEntry.COLUMN_NAME_SERIES_ID, seriesID);
                     values.put(FrameEntry.COLUMN_NAME_GAME_ID, gameID[i]);
                     frameID[j + 10 * i] = database.insert(FrameEntry.TABLE_NAME, null, values);
+                    Log.w("SeriesActivity", String.valueOf(frameID[j + 10 * i]));
                 }
             }
             database.setTransactionSuccessful();
