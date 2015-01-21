@@ -166,7 +166,8 @@ public class LeagueActivity extends ActionBarActivity
                             .edit()
                             .putString(Constants.PREFERENCES_NAME_LEAGUE, leagueNamesList.get(leagueIDList.indexOf(leagueIDSelected)))
                             .putLong(Constants.PREFERENCES_ID_LEAGUE, leagueIDSelected)
-                            .putInt(Constants.PREFERENCES_NUMBER_OF_GAMES, leagueNumberOfGamesList.get(leagueIDList.indexOf(leagueIDSelected)));
+                            .putInt(Constants.PREFERENCES_NUMBER_OF_GAMES, leagueNumberOfGamesList.get(leagueIDList.indexOf(leagueIDSelected)))
+                            .apply();
 
                     Intent seriesIntent = new Intent(LeagueActivity.this, SeriesActivity.class);
                     startActivity(seriesIntent);
@@ -269,11 +270,9 @@ public class LeagueActivity extends ActionBarActivity
         long newID = -1;
         SQLiteDatabase database = DatabaseHelper.getInstance(LeagueActivity.this).getWritableDatabase();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date = new Date();
-
         ContentValues values = new ContentValues();
         values.put(LeagueEntry.COLUMN_NAME_LEAGUE_NAME, leagueName);
-        values.put(LeagueEntry.COLUMN_NAME_DATE_MODIFIED, dateFormat.format(date));
+        values.put(LeagueEntry.COLUMN_NAME_DATE_MODIFIED, dateFormat.format(new Date()));
         values.put(LeagueEntry.COLUMN_NAME_BOWLER_ID, bowlerID);
         values.put(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES, numberOfGames);
 

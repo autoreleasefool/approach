@@ -49,9 +49,9 @@ public class SeriesActivity extends ActionBarActivity
         final ListView seriesListView = (ListView)findViewById(R.id.list_series);
 
         SharedPreferences preferences = getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE);
-        bowlerID = preferences.getLong(BowlerEntry.TABLE_NAME + "." + BowlerEntry._ID, -1);
-        leagueID = preferences.getLong(LeagueEntry.TABLE_NAME + "." + LeagueEntry._ID, -1);
-        numberOfGames = preferences.getInt(LeagueEntry.TABLE_NAME + "." + LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES, -1);
+        bowlerID = preferences.getLong(Constants.PREFERENCES_ID_BOWLER, -1);
+        leagueID = preferences.getLong(Constants.PREFERENCES_ID_LEAGUE, -1);
+        numberOfGames = preferences.getInt(Constants.PREFERENCES_NUMBER_OF_GAMES, -1);
 
         String rawSeriesQuery = "SELECT "
                 + SeriesEntry.TABLE_NAME + "." + SeriesEntry._ID + " AS sid, "
