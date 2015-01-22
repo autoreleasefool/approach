@@ -632,7 +632,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                             }
                             else if (areFramesEqual(balls.get(f + 1).get(0), Constants.FRAME_CLEAR))
                             {
-                                frameScores[f] += getValueOfFrame(balls.get(f + 1).get(0));
+                                frameScores[f] += getValueOfFrame(balls.get(f + 2).get(0));
                             }
                         }
                         break;
