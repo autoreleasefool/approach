@@ -371,8 +371,8 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
             case R.id.button_pin_1: ballToSet++;
             case R.id.button_pin_0:
                 //When user selects a pin button
-                boolean currentPinState = balls.get(currentFrame).get(currentBall)[ballToSet];
-                if (!currentPinState)
+                boolean isPinKnockedOver = balls.get(currentFrame).get(currentBall)[ballToSet];
+                if (!isPinKnockedOver)
                 {
                     //pin was standing
                     pinButtons.get(ballToSet).setColor(Color.parseColor(COLOR_PIN_KNOCKED));
@@ -393,13 +393,19 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                                     balls.get(currentFrame).get(currentBall)[i] = true;
                                 }
                             }
+                            updateBalls(currentFrame);
                         }
                         else
                         {
+                            updateBalls(currentFrame);
                             currentBall = 0;
                             currentFrame++;
                         }
                         updateFrameColor();
+                    }
+                    else
+                    {
+                        updateBalls(currentFrame);
                     }
                 }
                 else
@@ -407,9 +413,9 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                     //pin was down
                     pinButtons.get(ballToSet).setColor(Color.parseColor(COLOR_PIN_STANDING));
                     balls.get(currentFrame).get(currentBall)[ballToSet] = false;
+                    updateBalls(currentFrame);
                 }
                 updateScore();
-                updateBalls(currentFrame);
                 break;
             default:
                 throw new RuntimeException("GameActivity#onClick unknown button ID");
@@ -817,6 +823,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
         {
             updateBalls(i);
         }
+        hasFrameBeenAccessed[0] = true;
         updateFrameColor();
     }
 
