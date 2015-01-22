@@ -143,8 +143,9 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
             TextView textView = new TextView(this);
             textView.setText(String.valueOf(i + 1));
             textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
-            params = new RelativeLayout.LayoutParams(getPixelsFromDP(12), getPixelsFromDP(4));
-            params.leftMargin = getPixelsFromDP(120 * i + 60);
+            textView.setGravity(Gravity.CENTER);
+            params = new RelativeLayout.LayoutParams(getPixelsFromDP(14), getPixelsFromDP(36));
+            params.leftMargin = getPixelsFromDP(120 * i + 42);
             params.topMargin = getPixelsFromDP(128);
             relativeLayout.addView(textView, params);
         }
