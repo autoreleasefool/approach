@@ -36,10 +36,7 @@ public class StatsActivity extends ActionBarActivity
             {"Middle Hit", "Strikes", "Spares"};
     /** Detailed stats relating to hitting the middle pin */
     private static final String[] STATS_MIDDLE_DETAILED =
-            {"Head Pins", "Lefts", "Rights", "Aces", "Chop Offs", "Splits"};
-    /** Detailed stats relating to sparing certain pin setups */
-    private static final String[] STATS_SPARED =
-            {"Head Pins Spared", "Lefts Spared", "Rights Spared", "Aces Spared", "Chop Offs Spared", "Splits Spared"};
+            {"Head Pins", "Head Pins Spared", "Lefts", "Lefts Spared", "Rights", "Rights Spared", "Aces", "Aces Spared", "Chop Offs", "Chop Offs Spared", "Splits", "Splits Spared"};
     /** Stats about fouls */
     private static final String[] STATS_FOULS =
             {"Fouls"};
@@ -67,6 +64,8 @@ public class StatsActivity extends ActionBarActivity
     private long gameID = -1;
     /** Game number in the current series */
     private int gameNumber = -1;
+    /** The number of games in a series, if viewing stats for a series */
+    private int numberOfGamesInSeries = -1;
 
     /** List containing all of the stats to be displayed */
     private ListView listStats = null;
@@ -85,6 +84,7 @@ public class StatsActivity extends ActionBarActivity
         seriesID = preferences.getLong(Constants.PREFERENCES_ID_SERIES, -1);
         gameID = preferences.getLong(Constants.PREFERENCES_ID_GAME, -1);
         gameNumber = preferences.getInt(Constants.PREFERENCES_GAME_NUMBER, -1);
+        numberOfGamesInSeries = getIntent().getIntExtra(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES, -1);
 
         listStats = (ListView)findViewById(R.id.list_stats);
 
@@ -120,6 +120,200 @@ public class StatsActivity extends ActionBarActivity
      */
     private void loadLeagueStats()
     {
+        String[] stats = concatenateArrays(STATS_MIDDLE_GENERAL, STATS_MIDDLE_DETAILED,
+                STATS_FOULS, STATS_PINS_TOTAL, STATS_PINS_AVERAGE, STATS_GENERAL);
+
+        int highSingle = 0;
+        int highSeries = 0;
+        int totalPinfall = 0;
+        int numberOfGames = 0;
+        int seriesTotal = 0;
+        int totalShotsAtMiddle = 0;
+        int[] statValues = new int[11];
+        int[] statSpared = new int[6];
+        int numberOfGamesInSeries = 0;
+
+        Cursor cursor = getLeagueCursor();
+        int count = 0;
+        if (cursor.moveToFirst())
+        {
+            while(!cursor.isAfterLast())
+            {
+                int frameNumber = cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_FRAME_NUMBER));
+                int gameNumber = cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_NAME_GAME_NUMBER));
+                int numberOfFouls = cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_FOULS));
+                String[] ballString = {cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_BALL[0])),
+                        cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_BALL[1])),
+                        cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_BALL[2]))};
+                boolean frameAccessed = (cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_FRAME_ACCESSED)) == 1);
+                statValues[9] += numberOfFouls;
+
+                if (frameAccessed)
+                {
+                    if (frameNumber < 10)
+                    {
+                        totalShotsAtMiddle++;
+                    }
+
+                    if (frameNumber == 10)
+                    {
+                        for (int b = 0; b < 3; b++)
+                        {
+                            totalShotsAtMiddle++;
+
+                            if (ballString[b].equals("11111"))
+                            {
+                                statValues[0]++;
+                                statValues[1]++;
+                            }
+                            else
+                            {
+                                int firstBall = getStatIndexForBall(ballString[b]);
+                                if (firstBall >= 0)
+                                    statValues[firstBall]++;
+                                if (firstBall != -1)
+                                    statValues[0]++;
+
+                                if (b < 2 && ballString[b + 1].equals("11111"))
+                                {
+                                    statValues[2]++;
+                                    if (firstBall >= 3)
+                                        statSpared[firstBall - 3]++;
+                                }
+                                else
+                                {
+                                    for (int i = 0; i < 5; i++)
+                                    {
+                                        if (ballString[2].charAt(i) == '0')
+                                        {
+                                            switch(i)
+                                            {
+                                                case 0:case 4:statValues[10] += 2; break;
+                                                case 1:case 3:statValues[10] += 3; break;
+                                                case 2:statValues[10] += 5; break;
+                                            }
+                                        }
+                                    }
+                                    //break;
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (ballString[0].equals("11111"))
+                        {
+                            statValues[1]++;
+                            statValues[0]++;
+                        }
+                        else
+                        {
+                            int firstBall = getStatIndexForBall(ballString[0]);
+
+                            if (firstBall >= 0)
+                            {
+                                statValues[firstBall]++;
+                            }
+                            if (firstBall != -1)
+                            {
+                                statValues[0]++;
+                            }
+
+                            if (ballString[1].equals("11111"))
+                            {
+                                statValues[2]++;
+                                if (firstBall >= 3)
+                                    statSpared[firstBall - 3]++;
+                            }
+                            else
+                            {
+                                for (int i = 0; i < 5; i++)
+                                {
+                                    if (ballString[2].charAt(i) == '0')
+                                    {
+                                        switch(i)
+                                        {
+                                            case 0:case 4:statValues[10] += 2; break;
+                                            case 1:case 3:statValues[10] += 3; break;
+                                            case 2:statValues[10] += 5; break;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                if (frameNumber == 1)
+                {
+                    int gameScore = cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_NAME_GAME_FINAL_SCORE));
+                    if (highSingle < gameScore)
+                        highSingle = gameScore;
+                    totalPinfall += gameScore;
+                    seriesTotal += gameScore;
+                    numberOfGames++;
+
+                    if (gameNumber == numberOfGamesInSeries)
+                    {
+                        if (highSeries < seriesTotal)
+                            highSeries = seriesTotal;
+                        seriesTotal = 0;
+                    }
+                }
+
+                cursor.moveToNext();
+            }
+        }
+        int averageScore = (numberOfGames > 0)
+                ? totalPinfall / numberOfGames
+                : 0;
+        int averagePinsLeftOnDeck = (numberOfGames > 0)
+                ? statValues[10] / numberOfGames
+                : 0;
+
+        DecimalFormat decimalFormat = new DecimalFormat("##0.##");
+
+        for (int i = 0; i < STATS_MIDDLE_GENERAL.length; i++)
+        {
+            stats[i] = stats[i] + ((totalShotsAtMiddle > 0)
+                    ? decimalFormat.format(statValues[i] / (double)totalShotsAtMiddle * 100) + "% [" + statValues[i] + "]"
+                    : "0% [0]");
+        }
+
+        final int startingStatIndex = STATS_MIDDLE_GENERAL.length;
+        for (int i = 0, currentStatIndex = 0; i < STATS_MIDDLE_DETAILED.length; i++, currentStatIndex += 2)
+        {
+            if (totalShotsAtMiddle > 0)
+            {
+                stats[startingStatIndex + currentStatIndex] = stats[startingStatIndex + currentStatIndex] + decimalFormat.format(statValues[startingStatIndex + i] / (double) totalShotsAtMiddle * 100) + "% [" + statValues[startingStatIndex + i] + "]";
+                stats[startingStatIndex + currentStatIndex + 1] = stats[startingStatIndex + currentStatIndex + 1] + decimalFormat.format(statSpared[i] / (double) (statValues[startingStatIndex + i] > 0 ? statValues[startingStatIndex + i] : 1) * 100) + "% [" + statSpared[i] + "]";
+            }
+            else
+            {
+                stats[startingStatIndex + currentStatIndex] = stats[startingStatIndex + currentStatIndex] + "0% [0]";
+                stats[startingStatIndex + currentStatIndex + 1] = stats[startingStatIndex + currentStatIndex + 1] + "0% [0]";
+            }
+        }
+
+        //TODO: fix magic numbers, 9 is totalFouls index, 10 is totalPinsLeftOnDeck index
+        stats[15] = stats[15] + statValues[9];
+        stats[16] = stats[16] + statValues[10];
+        stats[17] = stats[17] + averagePinsLeftOnDeck;
+        stats[18] = stats[18] + averageScore;
+        stats[19] = stats[19] + highSingle;
+        stats[20] = stats[20] + highSeries + " (" + numberOfGamesInSeries + " game" + ((numberOfGamesInSeries > 1)
+                ? "s)"
+                : ")");
+        stats[21] = stats[21] + totalPinfall;
+        stats[22] = stats[22] + numberOfGames;
+
+        List<String> statsList = new ArrayList<String>();
+        statsList.add("Bowler: " + bowlerName);
+        statsList.add("League: " + leagueName);
+        statsList.addAll(Arrays.asList(stats));
+        ArrayAdapter<String> statsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, statsList);
+        ListView listView = (ListView)findViewById(R.id.list_stats);
+        listView.setAdapter(statsAdapter);
     }
 
     /**
@@ -127,20 +321,7 @@ public class StatsActivity extends ActionBarActivity
      */
     private void loadGameStats()
     {
-        String[] stats = new String[STATS_MIDDLE_GENERAL.length + STATS_MIDDLE_DETAILED.length
-                + STATS_SPARED.length + STATS_FOULS.length + STATS_PINS_TOTAL.length];
-        int currentStatPosition = 0;
-        for (int i = 0; i < STATS_MIDDLE_GENERAL.length; i++, currentStatPosition++)
-            stats[currentStatPosition] = STATS_MIDDLE_GENERAL[i] + ": ";
-        for (int i = 0; i < STATS_MIDDLE_DETAILED.length; i++, currentStatPosition += 2)
-        {
-            stats[currentStatPosition] = STATS_MIDDLE_DETAILED[i] + ": ";
-            stats[currentStatPosition + 1] = STATS_SPARED[i] + ": ";
-        }
-        for (int i = 0; i < STATS_FOULS.length; i++, currentStatPosition++)
-            stats[currentStatPosition] = STATS_FOULS[i] + ": ";
-        for (int i = 0; i < STATS_PINS_TOTAL.length; i++, currentStatPosition++)
-            stats[currentStatPosition] = STATS_PINS_TOTAL[i] + ": ";
+        String[] stats = concatenateArrays(STATS_MIDDLE_GENERAL, STATS_MIDDLE_DETAILED, STATS_FOULS, STATS_PINS_TOTAL);
 
         int totalShotsAtMiddle = 1;
         int[] statValues = new int[11];
@@ -267,10 +448,11 @@ public class StatsActivity extends ActionBarActivity
             stats[i] = stats[i] + decimalFormat.format(statValues[i] / (double)totalShotsAtMiddle * 100) + "% [" + statValues[i] + "]";
         }
 
-        for (int i = 0, statCounter = STATS_MIDDLE_GENERAL.length; i < STATS_MIDDLE_DETAILED.length; i++, statCounter += 2)
+        final int startingStatIndex = STATS_MIDDLE_GENERAL.length;
+        for (int i = 0, currentStatIndex = 0; i < STATS_MIDDLE_DETAILED.length; i++, currentStatIndex += 2)
         {
-            stats[statCounter] = stats[statCounter] + decimalFormat.format(statValues[i] / (double)totalShotsAtMiddle * 100) + "% [" + statValues[i] + "]";
-            stats[statCounter + 1] = stats[statCounter + 1] + decimalFormat.format(statSpared[i] / (double)(statValues[i] > 0 ? statValues[i]:1) * 100) + "% [" + statSpared[i] + "]";
+            stats[startingStatIndex + currentStatIndex] = stats[startingStatIndex + currentStatIndex] + decimalFormat.format(statValues[startingStatIndex + i] / (double)totalShotsAtMiddle * 100) + "% [" + statValues[startingStatIndex + i] + "]";
+            stats[startingStatIndex + currentStatIndex + 1] = stats[startingStatIndex + currentStatIndex + 1] + decimalFormat.format(statSpared[i] / (double)(statValues[startingStatIndex + i] > 0 ? statValues[startingStatIndex + i]:1) * 100) + "% [" + statSpared[i] + "]";
         }
 
         //TODO: fix magic numbers, 9 is totalFouls index, 10 is totalPinsLeftOnDeck index
@@ -352,21 +534,19 @@ public class StatsActivity extends ActionBarActivity
         SQLiteDatabase database = DatabaseHelper.getInstance(this).getReadableDatabase();
 
         String rawStatsQuery = "SELECT "
-                + LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES + ", "
                 + GameEntry.COLUMN_NAME_GAME_FINAL_SCORE + ", "
                 + GameEntry.COLUMN_NAME_GAME_NUMBER + ", "
                 + FrameEntry.COLUMN_NAME_FRAME_NUMBER + ", "
+                + FrameEntry.COLUMN_NAME_FRAME_ACCESSED + ", "
                 + FrameEntry.COLUMN_NAME_FOULS + ", "
                 + FrameEntry.COLUMN_NAME_BALL[0] + ", "
                 + FrameEntry.COLUMN_NAME_BALL[1] + ", "
                 + FrameEntry.COLUMN_NAME_BALL[2]
-                + " FROM " + LeagueEntry.TABLE_NAME + " league"
-                + " LEFT JOIN " + GameEntry.TABLE_NAME + " game"
-                + " ON " + LeagueEntry.COLUMN_NAME_BOWLER_ID + "=" + GameEntry.COLUMN_NAME_BOWLER_ID
-                + " LEFT JOIN " + FrameEntry.TABLE_NAME + " frame"
-                + " ON " + GameEntry.COLUMN_NAME_BOWLER_ID + "=" + FrameEntry.COLUMN_NAME_BOWLER_ID
-                + " WHERE league." + LeagueEntry._ID + "=?"
-                + " ORDER BY league." + LeagueEntry._ID + ", game." + GameEntry._ID + ", frame." + FrameEntry.COLUMN_NAME_FRAME_NUMBER;
+                + " FROM " + GameEntry.TABLE_NAME + " AS game"
+                + " LEFT JOIN " + FrameEntry.TABLE_NAME + " AS frame"
+                + " ON game." + GameEntry._ID + "=" + FrameEntry.COLUMN_NAME_GAME_ID
+                + " WHERE game." + GameEntry.COLUMN_NAME_LEAGUE_ID + "=?"
+                + " ORDER BY game." + GameEntry._ID + ", frame." + FrameEntry.COLUMN_NAME_FRAME_NUMBER;
         String[] rawStatsArgs = {String.valueOf(leagueID)};
 
         return database.rawQuery(rawStatsQuery, rawStatsArgs);
@@ -396,7 +576,7 @@ public class StatsActivity extends ActionBarActivity
         return database.rawQuery(rawStatsQuery, rawStatsArgs);
     }
 
-    private int getStatIndexForBall(String ball)
+    private static int getStatIndexForBall(String ball)
     {
         if (ball.charAt(2) == '0')
             return -1;
@@ -415,5 +595,23 @@ public class StatsActivity extends ActionBarActivity
             return 8;
         else
             return -2;
+    }
+
+    private static <T> T[] concatenateArrays(T[] firstArray, T[]... rest)
+    {
+        int totalArrayLength = firstArray.length;
+        for (T[] array : rest)
+        {
+            totalArrayLength += array.length;
+        }
+
+        T[] result = Arrays.copyOf(firstArray, totalArrayLength);
+        int offset = firstArray.length;
+        for (T[] array : rest)
+        {
+            System.arraycopy(array, 0, result, offset, array.length);
+            offset += array.length;
+        }
+        return result;
     }
 }

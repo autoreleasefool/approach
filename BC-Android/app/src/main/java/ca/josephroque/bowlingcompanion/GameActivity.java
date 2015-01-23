@@ -71,6 +71,8 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
     private List<CircleButton> pinButtons = null;
     /** List of arrays representing state of pins */
     private List<List<boolean[]>> balls = null;
+    /** Indicate whether pin can be altered in a certain frame */
+    private boolean[] pinEnabled = null;
     /** Scores of current games */
     private int[] gameScores = null;
 
@@ -98,6 +100,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
         balls = new ArrayList<List<boolean[]>>();
         hasFrameBeenAccessed = new boolean[10];
         gameScores = new int[numberOfGames];
+        pinEnabled = new boolean[5];
 
         for (int i = 0; i < Constants.NUMBER_OF_FRAMES; i++)
         {
@@ -413,7 +416,10 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                 {
                     //pin was down
                     pinButtons.get(ballToSet).setColor(Color.parseColor(COLOR_PIN_STANDING));
-                    balls.get(currentFrame).get(currentBall)[ballToSet] = false;
+                    for (int i = currentBall; i < 3; i++)
+                    {
+                        balls.get(currentFrame).get(i)[ballToSet] = false;
+                    }
                     updateBalls(currentFrame);
                 }
                 updateScore();
@@ -534,11 +540,11 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                 else
                     return "11";
             case 13:
-                if (ball == 0 && ballsOfFrame.get(ball)[0])
+                if (ball == 0 && !ballsOfFrame.get(ball)[0])
                 {
                     return Constants.BALL_LEFT;
                 }
-                else if (ball == 0 && ballsOfFrame.get(ball)[4])
+                else if (ball == 0 && !ballsOfFrame.get(ball)[4])
                 {
                     return Constants.BALL_RIGHT;
                 }
@@ -694,6 +700,15 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
             else
             {
                 button.setColor(Color.parseColor(COLOR_PIN_STANDING));
+            }
+
+            if (currentBall > 0 && balls.get(currentFrame).get(currentBall - 1)[i])
+            {
+                button.setEnabled(false);
+            }
+            else
+            {
+                button.setEnabled(true);
             }
         }
         focusOnFrame();
