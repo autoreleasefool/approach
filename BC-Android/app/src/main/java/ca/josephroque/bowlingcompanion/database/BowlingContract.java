@@ -88,9 +88,12 @@ public class BowlingContract
 
         /** Name of the table for game data */
         public static final String TABLE_NAME = "games";
-        /** Name of the table for games' number in a series */
+        /** Name of the column for games' number in a series */
         public static final String COLUMN_NAME_GAME_NUMBER = "game_number";
+        /** Name of the column for the final score of the game */
         public static final String COLUMN_NAME_GAME_FINAL_SCORE = "game_final_score";
+        /** Name of the column for games' foreign key to league IDs */
+        public static final String COLUMN_NAME_LEAGUE_ID = "game_league_id_fk";
         /** Name of the column for games' foreign key to series IDs */
         public static final String COLUMN_NAME_SERIES_ID = "game_series_id_fk";
         /** Name of the column for games' foreign key to bowler IDs */

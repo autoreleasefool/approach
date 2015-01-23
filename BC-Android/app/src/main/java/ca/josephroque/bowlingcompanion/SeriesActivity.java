@@ -215,6 +215,7 @@ public class SeriesActivity extends ActionBarActivity
                 .apply();
 
         Intent statsIntent = new Intent(SeriesActivity.this, StatsActivity.class);
+        statsIntent.putExtra(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES, numberOfGames);
         startActivity(statsIntent);
     }
 
@@ -246,6 +247,7 @@ public class SeriesActivity extends ActionBarActivity
                 values = new ContentValues();
                 values.put(GameEntry.COLUMN_NAME_GAME_NUMBER, i + 1);
                 values.put(GameEntry.COLUMN_NAME_GAME_FINAL_SCORE, 0);
+                values.put(GameEntry.COLUMN_NAME_LEAGUE_ID, leagueID);
                 values.put(GameEntry.COLUMN_NAME_BOWLER_ID, bowlerID);
                 values.put(GameEntry.COLUMN_NAME_SERIES_ID, seriesID);
                 gameID[i] = database.insert(GameEntry.TABLE_NAME, null, values);
