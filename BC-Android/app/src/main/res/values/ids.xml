@@ -15,4 +15,5 @@
     <item name="button_game_2" type="id" />
     <item name="button_game_3" type="id" />
     <item name="button_game_4" type="id" />
+    <item name="text_final_score" type="id" />
 </resources>
