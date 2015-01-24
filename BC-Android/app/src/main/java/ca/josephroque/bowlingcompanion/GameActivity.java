@@ -387,14 +387,14 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                     if (areFramesEqual(balls.get(currentFrame).get(currentBall), Constants.FRAME_CLEAR))
                     {
                         clearFrameColor();
-                        if (currentFrame == 9)
+                        if (currentFrame == Constants.NUMBER_OF_FRAMES - 1)
                         {
                             if (currentBall < 2)
                             {
                                 currentBall++;
                                 for (int i = 0; i < 5; i++)
                                 {
-                                    balls.get(currentFrame).get(currentBall)[i] = true;
+                                    balls.get(currentFrame).get(currentBall)[i] = false;
                                 }
                             }
                             updateBalls(currentFrame);
@@ -441,6 +441,25 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
         for (int i = 0; i < frame.length; i++)
         {
             if (frame[i])
+            {
+                switch(i)
+                {
+                    case 0:case 4: frameValue += 2; break;
+                    case 1:case 3: frameValue += 3; break;
+                    case 2: frameValue += 5; break;
+                    default: //do nothing
+                }
+            }
+        }
+        return frameValue;
+    }
+
+    private int getValueOfFrameDifference(boolean[] prevFrame, boolean[] frameToGet)
+    {
+        int frameValue = 0;
+        for (int i = 0; i < frameToGet.length; i++)
+        {
+            if (frameToGet[i] && !prevFrame[i])
             {
                 switch(i)
                 {
@@ -633,11 +652,22 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                         frameScores[f] += getValueOfFrame(balls.get(f + 1).get(0));
                         if (b == 0)
                         {
-                            if (f == 8 || !areFramesEqual(balls.get(f + 1).get(0), Constants.FRAME_CLEAR))
+                            if (f == Constants.NUMBER_OF_FRAMES - 2)
                             {
-                                frameScores[f] += getValueOfFrame(balls.get(f + 1).get(1));
+                                if (frameScores[f] == 30)
+                                {
+                                    frameScores[f] += getValueOfFrame(balls.get(f + 1).get(1));
+                                }
+                                else
+                                {
+                                    frameScores[f] += getValueOfFrameDifference(balls.get(f + 1).get(0), balls.get(f + 1).get(1));
+                                }
                             }
-                            else if (areFramesEqual(balls.get(f + 1).get(0), Constants.FRAME_CLEAR))
+                            else if (frameScores[f] < 30)
+                            {
+                                frameScores[f] += getValueOfFrameDifference(balls.get(f + 1).get(0), balls.get(f + 1).get(1));
+                            }
+                            else
                             {
                                 frameScores[f] += getValueOfFrame(balls.get(f + 2).get(0));
                             }
@@ -702,7 +732,9 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                 button.setColor(Color.parseColor(COLOR_PIN_STANDING));
             }
 
-            if (currentBall > 0 && balls.get(currentFrame).get(currentBall - 1)[i])
+            if (currentBall > 0 && (balls.get(currentFrame).get(currentBall - 1)[i])
+                    && !(currentFrame == Constants.NUMBER_OF_FRAMES - 1
+                    && areFramesEqual(balls.get(currentFrame).get(currentBall - 1), Constants.FRAME_CLEAR)))
             {
                 button.setEnabled(false);
             }
