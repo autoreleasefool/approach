@@ -449,7 +449,7 @@ public class StatsActivity extends ActionBarActivity
         }
 
         final int startingStatIndex = STATS_MIDDLE_GENERAL.length;
-        for (int i = 0, currentStatIndex = 0; i < STATS_MIDDLE_DETAILED.length; i++, currentStatIndex += 2)
+        for (int i = 0, currentStatIndex = 0; i < STATS_MIDDLE_DETAILED.length / 2; i++, currentStatIndex += 2)
         {
             stats[startingStatIndex + currentStatIndex] = stats[startingStatIndex + currentStatIndex] + decimalFormat.format(statValues[startingStatIndex + i] / (double)totalShotsAtMiddle * 100) + "% [" + statValues[startingStatIndex + i] + "]";
             stats[startingStatIndex + currentStatIndex + 1] = stats[startingStatIndex + currentStatIndex + 1] + decimalFormat.format(statSpared[i] / (double)(statValues[startingStatIndex + i] > 0 ? statValues[startingStatIndex + i]:1) * 100) + "% [" + statSpared[i] + "]";
