@@ -496,7 +496,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
      * @param ball the ball to get the value of
      * @return textual value of the ball
      */
-    private String getValueOfBall(boolean[] pins, int ball)
+    private String getValueOfBall(boolean[] pins, int ball, boolean shouldReturnSymbol)
     {
         int ballValue = 0;
         for (int i = 0; i < 5; i++)
@@ -519,7 +519,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
             case 0: return Constants.BALL_EMPTY;
             case 2:case 3:case 4:case 6:case 9:case 12: return String.valueOf(ballValue);
             case 5:
-                if (ball == 0 && pins[2])
+                if ((ball == 0 || shouldReturnSymbol) && pins[2])
                 {
                     return Constants.BALL_HEAD_PIN;
                 }
@@ -528,7 +528,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                     return "5";
                 }
             case 7:
-                if (ball == 0 && pins[2])
+                if ((ball == 0 || shouldReturnSymbol) && pins[2])
                 {
                     return Constants.BALL_HEAD_PIN_2;
                 }
@@ -537,14 +537,14 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                     return "7";
                 }
             case 8:
-                if (ball == 0 && pins[2])
+                if ((ball == 0 || shouldReturnSymbol) && pins[2])
                 {
                     return Constants.BALL_SPLIT;
                 }
                 else
                     return "8";
             case 10:
-                if (ball == 0 && pins[2]
+                if ((ball == 0 || shouldReturnSymbol) && pins[2]
                         && ((pins[0] && pins[1])
                         || pins[3] && pins[4]))
                 {
@@ -555,18 +555,18 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                     return "10";
                 }
             case 11:
-                if (ball == 0 && pins[2])
+                if ((ball == 0 || shouldReturnSymbol) && pins[2])
                 {
                     return Constants.BALL_ACE;
                 }
                 else
                     return "11";
             case 13:
-                if (ball == 0 && !pins[0])
+                if ((ball == 0 || shouldReturnSymbol) && !pins[0])
                 {
                     return Constants.BALL_LEFT;
                 }
-                else if (ball == 0 && !pins[4])
+                else if ((ball == 0 || shouldReturnSymbol) && !pins[4])
                 {
                     return Constants.BALL_RIGHT;
                 }
@@ -575,7 +575,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                     return "13";
                 }
             case 15:
-                if (ball == 0)
+                if ((ball == 0 || shouldReturnSymbol))
                 {
                     return Constants.BALL_STRIKE;
                 }
@@ -597,7 +597,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
      * @param ball the ball to get the value of
      * @return textual value of the ball
      */
-    private String getValueOfBallDifference(List<boolean[]> ballsOfFrame, int ball)
+    private String getValueOfBallDifference(List<boolean[]> ballsOfFrame, int ball, boolean shouldReturnSymbol)
     {
         boolean[] pinAlreadyKnockedDown = new boolean[5];
 
@@ -633,7 +633,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
             case 0: return Constants.BALL_EMPTY;
             case 2:case 3:case 4:case 6:case 9:case 12: return String.valueOf(ballValue);
             case 5:
-                if (ball == 0 && ballsOfFrame.get(ball)[2] && !pinAlreadyKnockedDown[2])
+                if ((ball == 0 || shouldReturnSymbol) && ballsOfFrame.get(ball)[2] && !pinAlreadyKnockedDown[2])
                 {
                     return Constants.BALL_HEAD_PIN;
                 }
@@ -642,7 +642,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                     return "5";
                 }
             case 7:
-                if (ball == 0 && ballsOfFrame.get(ball)[2])
+                if ((ball == 0 || shouldReturnSymbol) && ballsOfFrame.get(ball)[2])
                 {
                     return Constants.BALL_HEAD_PIN_2;
                 }
@@ -651,14 +651,14 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                     return "7";
                 }
             case 8:
-                if (ball == 0 && ballsOfFrame.get(ball)[2])
+                if ((ball == 0 || shouldReturnSymbol) && ballsOfFrame.get(ball)[2])
                 {
                     return Constants.BALL_SPLIT;
                 }
                 else
                     return "8";
             case 10:
-                if (ball == 0 && ballsOfFrame.get(ball)[2]
+                if ((ball == 0 || shouldReturnSymbol) && ballsOfFrame.get(ball)[2]
                         && ((ballsOfFrame.get(ball)[0] && ballsOfFrame.get(ball)[1])
                         || (ballsOfFrame.get(ball)[3] && ballsOfFrame.get(ball)[4])))
                 {
@@ -669,18 +669,18 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                     return "10";
                 }
             case 11:
-                if (ball == 0 && ballsOfFrame.get(ball)[2])
+                if ((ball == 0 || shouldReturnSymbol) && ballsOfFrame.get(ball)[2])
                 {
                     return Constants.BALL_ACE;
                 }
                 else
                     return "11";
             case 13:
-                if (ball == 0 && !ballsOfFrame.get(ball)[0])
+                if ((ball == 0 || shouldReturnSymbol) && !ballsOfFrame.get(ball)[0])
                 {
                     return Constants.BALL_LEFT;
                 }
-                else if (ball == 0 && !ballsOfFrame.get(ball)[4])
+                else if ((ball == 0 || shouldReturnSymbol) && !ballsOfFrame.get(ball)[4])
                 {
                     return Constants.BALL_RIGHT;
                 }
@@ -689,7 +689,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                     return "13";
                 }
             case 15:
-                if (ball == 0)
+                if ((ball == 0 || shouldReturnSymbol))
                 {
                     return Constants.BALL_STRIKE;
                 }
@@ -718,58 +718,34 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                 if (areFramesEqual(balls.get(frameToUpdate).get(1), Constants.FRAME_CLEAR))
                 {
                     ballsTextViews.get(frameToUpdate).get(1).setText(Constants.BALL_STRIKE);
-                    ballsTextViews.get(frameToUpdate).get(2).setText(getValueOfBall(balls.get(frameToUpdate).get(2), 2));
+                    ballsTextViews.get(frameToUpdate).get(2).setText(getValueOfBall(balls.get(frameToUpdate).get(2), 2, true));
                 }
                 else
                 {
-                    ballsTextViews.get(frameToUpdate).get(1).setText(getValueOfBall(balls.get(frameToUpdate).get(1), 1));
-                    ballsTextViews.get(frameToUpdate).get(2).setText(getValueOfBallDifference(balls.get(frameToUpdate), 2));
+                    ballsTextViews.get(frameToUpdate).get(1).setText(getValueOfBall(balls.get(frameToUpdate).get(1), 1, false));
+                    ballsTextViews.get(frameToUpdate).get(2).setText(getValueOfBallDifference(balls.get(frameToUpdate), 2, false));
                 }
             }
             else
             {
-                ballsTextViews.get(frameToUpdate).get(0).setText(getValueOfBall(balls.get(frameToUpdate).get(0), 0));
+                ballsTextViews.get(frameToUpdate).get(0).setText(getValueOfBall(balls.get(frameToUpdate).get(0), 0, false));
+                if (areFramesEqual(balls.get(frameToUpdate).get(1), Constants.FRAME_CLEAR))
+                {
+                    ballsTextViews.get(frameToUpdate).get(1).setText(Constants.BALL_SPARE);
+                    ballsTextViews.get(frameToUpdate).get(2).setText(getValueOfBall(balls.get(frameToUpdate).get(2), 2, true));
+                }
+                else
+                {
+                    ballsTextViews.get(frameToUpdate).get(1).setText(getValueOfBallDifference(balls.get(frameToUpdate), 1, false));
+                    ballsTextViews.get(frameToUpdate).get(2).setText(getValueOfBallDifference(balls.get(frameToUpdate), 2, false));
+                }
             }
-
-
         }
         else
         {
             for (int i = 0; i < 3; i++)
-                ballsTextViews.get(frameToUpdate).get(i).setText(getValueOfBallDifference(balls.get(frameToUpdate), i));
-            //ballsTextViews.get(frameToUpdate).get(1).setText(getValueOfBall(balls.get(frameToUpdate), 1));
-            //ballsTextViews.get(frameToUpdate).get(2).setText(getValueOfBall(balls.get(frameToUpdate), 2));
+                ballsTextViews.get(frameToUpdate).get(i).setText(getValueOfBallDifference(balls.get(frameToUpdate), i, false));
         }
-        /*if (frameToUpdate == Constants.NUMBER_OF_FRAMES - 1)
-        {
-            if (areFramesEqual(balls.get(frameToUpdate).get(0), Constants.FRAME_CLEAR))
-            {
-                ballsTextViews.get(frameToUpdate).get(0).setText(Constants.BALL_STRIKE);
-                if (areFramesEqual(balls.get(frameToUpdate).get(0), Constants.FRAME_CLEAR))
-                {
-                    ballsTextViews.get(frameToUpdate).get(1).setText(Constants.BALL_STRIKE);
-                }
-            }
-        }
-
-        if (areFramesEqual(balls.get(frameToUpdate).get(0), Constants.FRAME_CLEAR))
-        {
-            ballsTextViews.get(frameToUpdate).get(0).setText(Constants.BALL_STRIKE);
-            ballsTextViews.get(frameToUpdate).get(1).setText(Constants.BALL_EMPTY);
-            ballsTextViews.get(frameToUpdate).get(2).setText(Constants.BALL_EMPTY);
-        }
-        else if (areFramesEqual(balls.get(frameToUpdate).get(1), Constants.FRAME_CLEAR))
-        {
-            ballsTextViews.get(frameToUpdate).get(0).setText(getValueOfBall(balls.get(frameToUpdate), 0));
-            ballsTextViews.get(frameToUpdate).get(1).setText(Constants.BALL_SPARE);
-            ballsTextViews.get(frameToUpdate).get(2).setText(Constants.BALL_EMPTY);
-        }
-        else
-        {
-            ballsTextViews.get(frameToUpdate).get(0).setText(getValueOfBall(balls.get(frameToUpdate), 0));
-            ballsTextViews.get(frameToUpdate).get(1).setText(getValueOfBall(balls.get(frameToUpdate), 1));
-            ballsTextViews.get(frameToUpdate).get(2).setText(getValueOfBall(balls.get(frameToUpdate), 2));
-        }*/
     }
 
     /**
