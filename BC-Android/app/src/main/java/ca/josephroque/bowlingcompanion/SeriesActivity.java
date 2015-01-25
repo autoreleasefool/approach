@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -195,7 +196,7 @@ public class SeriesActivity extends ActionBarActivity
                 showLeagueStats();
                 return true;
             case R.id.action_add_series:
-                addNewSeries();
+                addNewSeries(this, bowlerID, leagueID, numberOfGames);
                 return true;
         }
 
@@ -223,6 +224,69 @@ public class SeriesActivity extends ActionBarActivity
      * Creates a new series and stores the relevant data in
      * the database, then starts a GameActivity
      */
+    public static void addNewSeries(Activity srcActivity, long bowlerID, long leagueID, int numberOfGames)
+    {
+        long seriesID = -1;
+        long[] gameID = new long[numberOfGames], frameID = new long[30];
+        SQLiteDatabase database = DatabaseHelper.getInstance(srcActivity).getWritableDatabase();
+        Intent gameIntent = new Intent(srcActivity, GameActivity.class);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date();
+
+        database.beginTransaction();
+
+        try
+        {
+            ContentValues values = new ContentValues();
+            values.put(SeriesEntry.COLUMN_NAME_DATE_CREATED, dateFormat.format(date));
+            values.put(SeriesEntry.COLUMN_NAME_LEAGUE_ID, leagueID);
+            values.put(SeriesEntry.COLUMN_NAME_BOWLER_ID, bowlerID);
+            seriesID = database.insert(SeriesEntry.TABLE_NAME, null, values);
+
+            for (int i = 0; i < numberOfGames; i++)
+            {
+                values = new ContentValues();
+                values.put(GameEntry.COLUMN_NAME_GAME_NUMBER, i + 1);
+                values.put(GameEntry.COLUMN_NAME_GAME_FINAL_SCORE, 0);
+                values.put(GameEntry.COLUMN_NAME_LEAGUE_ID, leagueID);
+                values.put(GameEntry.COLUMN_NAME_BOWLER_ID, bowlerID);
+                values.put(GameEntry.COLUMN_NAME_SERIES_ID, seriesID);
+                gameID[i] = database.insert(GameEntry.TABLE_NAME, null, values);
+
+                for (int j = 0; j < 10; j++)
+                {
+                    values = new ContentValues();
+                    values.put(FrameEntry.COLUMN_NAME_FRAME_NUMBER, j + 1);
+                    values.put(FrameEntry.COLUMN_NAME_BOWLER_ID, bowlerID);
+                    values.put(FrameEntry.COLUMN_NAME_LEAGUE_ID, leagueID);
+                    values.put(FrameEntry.COLUMN_NAME_GAME_ID, gameID[i]);
+                    frameID[j + 10 * i] = database.insert(FrameEntry.TABLE_NAME, null, values);
+                }
+            }
+            database.setTransactionSuccessful();
+        }
+        catch (Exception ex)
+        {
+            Log.w(TAG, "Error adding new series: " + ex.getMessage());
+        }
+        finally
+        {
+            database.endTransaction();
+        }
+
+        srcActivity.getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE)
+                .edit()
+                .putLong(Constants.PREFERENCES_ID_SERIES, seriesID)
+                .apply();
+        gameIntent.putExtra(GameEntry.TABLE_NAME + "." + GameEntry._ID, gameID);
+        gameIntent.putExtra(FrameEntry.TABLE_NAME + "." + FrameEntry._ID, frameID);
+        srcActivity.startActivity(gameIntent);
+    }
+
+    /**
+     * Creates a new series and stores the relevant data in
+     * the database, then starts a GameActivity
+     *
     private void addNewSeries()
     {
         long seriesID = -1;
@@ -280,5 +344,5 @@ public class SeriesActivity extends ActionBarActivity
         gameIntent.putExtra(GameEntry.TABLE_NAME + "." + GameEntry._ID, gameID);
         gameIntent.putExtra(FrameEntry.TABLE_NAME + "." + FrameEntry._ID, frameID);
         startActivity(gameIntent);
-    }
+    }*/
 }

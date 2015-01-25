@@ -19,6 +19,9 @@ public class Constants
     /** SharedPreferences identifier for the app*/
     public static final String MY_PREFS = "ca.josephroque.bowlingcompanion";
 
+    /** Indicates which preferences store values used to create quick series */
+    private static final String RECENT = ".RECENT";
+
     /** Preference containing name of current bowler */
     public static final String PREFERENCES_NAME_BOWLER = "BowlerName";
     /** Preference containing name of current league */
@@ -35,6 +38,10 @@ public class Constants
     public static final String PREFERENCES_NUMBER_OF_GAMES = LeagueEntry.TABLE_NAME + "." + LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES;
     /** Preference containing current game number in series */
     public static final String PREFERENCES_GAME_NUMBER = GameEntry.TABLE_NAME + "." + GameEntry.COLUMN_NAME_GAME_NUMBER;
+    /** Preference to save the most recent bowler ID */
+    public static final String PREFERENCES_ID_BOWLER_RECENT = BowlerEntry.TABLE_NAME + "." + BowlerEntry._ID + RECENT;
+    /** Preference to save the most recent league ID */
+    public static final String PREFERENCES_ID_LEAGUE_RECENT= LeagueEntry.TABLE_NAME + "." + LeagueEntry._ID + RECENT;
 
     /** Represents a frame with all pins cleared */
     public static final boolean[] FRAME_CLEAR = {true, true, true, true, true};

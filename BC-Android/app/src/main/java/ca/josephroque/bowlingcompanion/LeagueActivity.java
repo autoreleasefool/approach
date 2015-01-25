@@ -105,6 +105,8 @@ public class LeagueActivity extends ActionBarActivity
                             .putString(Constants.PREFERENCES_NAME_LEAGUE, leagueNamesList.get(leagueIDList.indexOf(leagueIDSelected)))
                             .putLong(Constants.PREFERENCES_ID_LEAGUE, leagueIDSelected)
                             .putInt(Constants.PREFERENCES_NUMBER_OF_GAMES, leagueNumberOfGamesList.get(leagueIDList.indexOf(leagueIDSelected)))
+                            .putLong(Constants.PREFERENCES_ID_BOWLER_RECENT, bowlerID)
+                            .putLong(Constants.PREFERENCES_ID_LEAGUE_RECENT, leagueIDSelected)
                             .apply();
 
                     Intent seriesIntent = new Intent(LeagueActivity.this, SeriesActivity.class);

@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.app.DialogFragment;
@@ -15,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 
 import java.text.SimpleDateFormat;
@@ -46,18 +48,19 @@ public class MainActivity extends ActionBarActivity
     /** Adapter for ListView of bowlers */
     private ArrayAdapter<String> bowlerAdapter = null;
 
+    /** ID of the most recently selected bowler */
+    private long recentBowlerID = -1;
+    /** ID of the most recently selected league */
+    private long recentLeagueID = -1;
+    /** Number of games in most recently selected league */
+    private int recentNumberOfGames = -1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         final ListView listBowlerNames = (ListView) findViewById(R.id.list_bowler_name);
-
-        //Clearing all preferences so app does not store unnecessary data
-        getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE)
-                .edit()
-                .clear()
-                .apply();
 
         bowlerNamesList = new ArrayList<String>();
         bowlerIDsList = new ArrayList<Long>();
@@ -114,12 +117,37 @@ public class MainActivity extends ActionBarActivity
                     startActivity(leagueIntent);
                 }
             });
+
+        findViewById(R.id.button_quick_game).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE)
+                        .edit()
+                        .putInt(Constants.PREFERENCES_NUMBER_OF_GAMES, recentNumberOfGames)
+                        .apply();
+                SeriesActivity.addNewSeries(MainActivity.this, recentBowlerID, recentLeagueID, recentNumberOfGames);
+            }
+        });
     }
 
     @Override
     protected void onResume()
     {
         super.onResume();
+
+        SharedPreferences preferences = getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE);
+        recentBowlerID = preferences.getLong(Constants.PREFERENCES_ID_BOWLER_RECENT, -1);
+        recentLeagueID = preferences.getLong(Constants.PREFERENCES_ID_LEAGUE_RECENT, -1);
+
+        //Clearing all preferences so app does not store unnecessary data
+        getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE)
+                .edit()
+                .clear()
+                .putLong(Constants.PREFERENCES_ID_BOWLER_RECENT, recentBowlerID)
+                .putLong(Constants.PREFERENCES_ID_LEAGUE_RECENT, recentLeagueID)
+                .apply();
 
         SQLiteDatabase database = DatabaseHelper.getInstance(this).getReadableDatabase();
         //Gets name of all bowlers from database and their IDs
@@ -143,8 +171,35 @@ public class MainActivity extends ActionBarActivity
                 cursor.moveToNext();
             }
         }
-
         bowlerAdapter.notifyDataSetChanged();
+
+        Button quickGameButton = (Button)findViewById(R.id.button_quick_game);
+        if (recentBowlerID > -1 && recentLeagueID > -1)
+        {
+            String rawRecentQuery = "SELECT "
+                    + BowlerEntry.COLUMN_NAME_BOWLER_NAME + ", "
+                    + LeagueEntry.COLUMN_NAME_LEAGUE_NAME + ", "
+                    + LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES
+                    + " FROM " + BowlerEntry.TABLE_NAME + " AS bowler"
+                    + " LEFT JOIN " + LeagueEntry.TABLE_NAME + " AS league"
+                    + " ON bowler." + BowlerEntry._ID + "=league." + LeagueEntry.COLUMN_NAME_BOWLER_ID
+                    + " WHERE bowler." + BowlerEntry._ID + "=? AND league." + LeagueEntry._ID + "=?";
+            String[] rawRecentArgs = new String[]{String.valueOf(recentBowlerID), String.valueOf(recentLeagueID)};
+
+            cursor = database.rawQuery(rawRecentQuery, rawRecentArgs);
+            cursor.moveToFirst();
+            String recentBowlerName = cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_NAME_BOWLER_NAME));
+            String recentLeagueName = cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_LEAGUE_NAME));
+            recentNumberOfGames = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES));
+            quickGameButton.setText("Start a " + recentNumberOfGames + " game series with these settings:\n"
+                    + "Bowler: " + recentBowlerName + "\n"
+                    + "League: " + recentLeagueName);
+        }
+        else
+        {
+            quickGameButton.setText(R.string.text_quick_game_button);
+            quickGameButton.setEnabled(false);
+        }
     }
 
     @Override
