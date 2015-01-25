@@ -141,17 +141,16 @@ public class StatsActivity extends ActionBarActivity
             {
                 int frameNumber = cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_FRAME_NUMBER));
                 int gameNumber = cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_NAME_GAME_NUMBER));
-                int numberOfFouls = cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_FOULS));
+                String fouls = cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_FOULS));
                 String[] ballString = {cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_BALL[0])),
                         cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_BALL[1])),
                         cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_BALL[2]))};
                 boolean frameAccessed = (cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_FRAME_ACCESSED)) == 1);
                 for (int i = 0; i < 3; i++)
                 {
-                    if (numberOfFouls / Math.pow(2, i) > 0)
+                    if (fouls.contains(String.valueOf(i + 1)))
                     {
                         statValues[9]++;
-                        numberOfFouls %= (int)(Math.pow(2, i));
                     }
                 }
 
@@ -348,17 +347,16 @@ public class StatsActivity extends ActionBarActivity
             {
                 int frameNumber = cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_FRAME_NUMBER));
                 int gameNumber = cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_NAME_GAME_NUMBER));
-                int numberOfFouls = cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_FOULS));
+                String fouls = cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_FOULS));
                 String[] ballString = {cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_BALL[0])),
                         cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_BALL[1])),
                         cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_BALL[2]))};
                 boolean frameAccessed = (cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_FRAME_ACCESSED)) == 1);
                 for (int i = 0; i < 3; i++)
                 {
-                    if (numberOfFouls / Math.pow(2, i) > 0)
+                    if (fouls.contains(String.valueOf(i + 1)))
                     {
                         statValues[9]++;
-                        numberOfFouls %= (int)(Math.pow(2, i));
                     }
                 }
 
@@ -550,13 +548,12 @@ public class StatsActivity extends ActionBarActivity
                 String[] ballString = {cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_BALL[0])),
                         cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_BALL[1])),
                         cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_BALL[2]))};
-                int numberOfFouls = cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_FOULS));
+                String fouls = cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_FOULS));
                 for (int i = 0; i < 3; i++)
                 {
-                    if (numberOfFouls / Math.pow(2, i) > 0)
+                    if (fouls.contains(String.valueOf(i + 1)))
                     {
                         statValues[9]++;
-                        numberOfFouls %= (int)(Math.pow(2, i));
                     }
                 }
                 boolean frameAccessed = (cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_FRAME_ACCESSED)) == 1);

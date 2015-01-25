@@ -102,7 +102,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 + FrameEntry.COLUMN_NAME_BALL[0] + " TEXT DEFAULT '00000', "
                 + FrameEntry.COLUMN_NAME_BALL[1] + " TEXT DEFAULT '00000', "
                 + FrameEntry.COLUMN_NAME_BALL[2] + " TEXT DEFAULT '00000', "
-                + FrameEntry.COLUMN_NAME_FOULS + " INTEGER DEFAULT 0, "
+                + FrameEntry.COLUMN_NAME_FOULS + " TEXT DEFAULT '0', "
                 + FrameEntry.COLUMN_NAME_GAME_ID + " INTEGER, "
                 + FrameEntry.COLUMN_NAME_LEAGUE_ID + " INTEGER, "
                 + FrameEntry.COLUMN_NAME_BOWLER_ID + " INTEGER"
