@@ -20,6 +20,8 @@
     <string name="text_next_frame">Next</string>
     <string name="text_prev_frame">Prev</string>
     <string name="text_foul_button">Foul</string>
+    <string name="text_reset_button">Reset</string>
+    <string name="text_whatif_button">What if?</string>
     <string name="text_select_bowler">Select a Bowler</string>
     <string name="add">Add</string>
     <string name="cancel">Cancel</string>

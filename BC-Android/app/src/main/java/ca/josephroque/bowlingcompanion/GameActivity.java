@@ -1,6 +1,8 @@
 package ca.josephroque.bowlingcompanion;
 
+import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -202,6 +204,8 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
         findViewById(R.id.button_next_frame).setOnClickListener(this);
         findViewById(R.id.button_prev_frame).setOnClickListener(this);
         findViewById(R.id.button_foul).setOnClickListener(this);
+        findViewById(R.id.button_reset).setOnClickListener(this);
+        findViewById(R.id.button_whatif).setOnClickListener(this);
 
         GradientDrawable drawable = (GradientDrawable)framesTextViews.get(currentFrame).getBackground();
         drawable.setColor(Color.RED);
@@ -313,6 +317,52 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
 
         switch(view.getId())
         {
+            case R.id.button_reset:
+                clearFrameColor();
+                for (int i = 0; i < 3; i++)
+                {
+                    fouls.get(currentFrame)[i] = false;
+                    currentBall = 0;
+                    for (int j = 0; j < 5; j++)
+                        balls.get(currentFrame).get(i)[j] = false;
+                }
+                updateFrameColor();
+                updateScore();
+                updateBalls(currentFrame);
+                break;
+            case R.id.button_whatif:
+                // TODO Should account for balls already thrown in frame
+                int possibleScore = (currentFrame > 0)
+                        ? Integer.parseInt(framesTextViews.get(currentFrame - 1).getText().toString())
+                        : 0;
+                for (int i = 0; i < currentFrame; i++)
+                {
+                    for (int j = 0; j < 3; j++)
+                    {
+                        if (fouls.get(currentFrame)[j])
+                            possibleScore -= 15;
+                    }
+                }
+                if (possibleScore < 0)
+                    possibleScore = 0;
+                for (int i = currentFrame; i < Constants.NUMBER_OF_FRAMES; i++)
+                {
+                    possibleScore += 45;
+                }
+                AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
+                builder.setMessage("If you get a strike from this frame onwards, your final score will be " + possibleScore)
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                //do nothing
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
+                break;
             case R.id.button_foul:
                 fouls.get(currentFrame)[currentBall] = !fouls.get(currentFrame)[currentBall];
                 foulsTextViews.get(currentFrame).get(currentBall)
@@ -788,7 +838,6 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
     private void updateScore()
     {
         int[] frameScores = new int[10];
-
         for (int f = Constants.NUMBER_OF_FRAMES - 1; f >= 0; f--)
         {
             if (f == Constants.NUMBER_OF_FRAMES - 1)

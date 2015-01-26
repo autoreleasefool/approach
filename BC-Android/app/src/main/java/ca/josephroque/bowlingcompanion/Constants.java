@@ -45,6 +45,8 @@ public class Constants
 
     /** Represents a frame with all pins cleared */
     public static final boolean[] FRAME_CLEAR = {true, true, true, true, true};
+    /** Represents a frame with no pins cleared */
+    public static final boolean [] FRAME_INITIAL = {false, false, false, false, false};
     /** Symbol representing a strike */
     public static final String BALL_STRIKE = "X";
     /** Symbol representing a spare */
