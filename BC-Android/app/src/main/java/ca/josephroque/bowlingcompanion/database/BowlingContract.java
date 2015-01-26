@@ -110,8 +110,6 @@ public class BowlingContract
          */
         private FrameEntry(){}
 
-        //TODO add column for checking which frames have been edited
-
         /** Name of the table for frame data */
         public static final String TABLE_NAME = "frames";
         /** Name of the column for frames' number in a game */

@@ -79,8 +79,6 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
     private List<List<boolean[]>> balls = null;
     /** List of arrays indicating whether a foul was made */
     private List<boolean[]> fouls = null;
-    /** Indicate whether pin can be altered in a certain frame */
-    private boolean[] pinEnabled = null;
     /** Scores of current games */
     private int[] gameScores = null;
     /** Scores of current games, considering fouls */
@@ -118,7 +116,6 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
         hasFrameBeenAccessed = new boolean[10];
         gameScores = new int[numberOfGames];
         gameScoresWithFouls = new int[numberOfGames];
-        pinEnabled = new boolean[5];
 
         for (int i = 0; i < Constants.NUMBER_OF_FRAMES; i++)
         {
@@ -279,7 +276,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                         {
                             for (int i = 0; i < 5; i++)
                             {
-                                if (currentFrame == Constants.NUMBER_OF_FRAMES - 1)
+                                if (currentFrame == Constants.LAST_FRAME)
                                 {
                                     balls.get(currentFrame).get(j)[i] = (j == currentBall);
                                 }
@@ -627,7 +624,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                             fouls.get(currentFrame)[i] = false;
                         }
                         clearFrameColor();
-                        if (currentFrame == Constants.NUMBER_OF_FRAMES - 1)
+                        if (currentFrame == Constants.LAST_FRAME)
                         {
                             if (currentBall < 2)
                             {
@@ -651,7 +648,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                     {
                         balls.get(currentFrame).get(i)[ballToSet] = false;
                     }
-                    if (currentFrame == Constants.NUMBER_OF_FRAMES - 1 && currentBall == 1)
+                    if (currentFrame == Constants.LAST_FRAME && currentBall == 1)
                     {
                         for (int i = 0; i < 5; i++)
                         {
@@ -932,7 +929,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
      */
     private void updateBalls(int frameToUpdate)
     {
-        if (frameToUpdate == Constants.NUMBER_OF_FRAMES - 1)
+        if (frameToUpdate == Constants.LAST_FRAME)
         {
             if (areFramesEqual(balls.get(frameToUpdate).get(0), Constants.FRAME_CLEAR))
             {
@@ -1004,9 +1001,9 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
     private void updateScore()
     {
         int[] frameScores = new int[10];
-        for (int f = Constants.NUMBER_OF_FRAMES - 1; f >= 0; f--)
+        for (int f = Constants.LAST_FRAME; f >= 0; f--)
         {
-            if (f == Constants.NUMBER_OF_FRAMES - 1)
+            if (f == Constants.LAST_FRAME)
             {
                 for (int b = 2; b >= 0; b--)
                 {
@@ -1036,7 +1033,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                         frameScores[f] += getValueOfFrame(balls.get(f + 1).get(0));
                         if (b == 0)
                         {
-                            if (f == Constants.NUMBER_OF_FRAMES - 2)
+                            if (f == Constants.LAST_FRAME - 1)
                             {
                                 if (frameScores[f] == 30)
                                 {
@@ -1139,7 +1136,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
             }
 
             if (currentBall > 0 && (balls.get(currentFrame).get(currentBall - 1)[i])
-                    && !(currentFrame == Constants.NUMBER_OF_FRAMES - 1
+                    && !(currentFrame == Constants.LAST_FRAME
                     && areFramesEqual(balls.get(currentFrame).get(currentBall - 1), Constants.FRAME_CLEAR)))
             {
                 button.setEnabled(false);

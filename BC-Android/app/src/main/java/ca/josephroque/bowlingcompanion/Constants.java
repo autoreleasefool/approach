@@ -15,6 +15,8 @@ public class Constants
     public static final int MAX_NUMBER_OF_GAMES = 5;
     /** Number of frames in a single game */
     public static final int NUMBER_OF_FRAMES = 10;
+    /** The last frame of a game */
+    public static final int LAST_FRAME = 9;
 
     /** SharedPreferences identifier for the app*/
     public static final String MY_PREFS = "ca.josephroque.bowlingcompanion";
@@ -45,8 +47,6 @@ public class Constants
 
     /** Represents a frame with all pins cleared */
     public static final boolean[] FRAME_CLEAR = {true, true, true, true, true};
-    /** Represents a frame with no pins cleared */
-    public static final boolean [] FRAME_INITIAL = {false, false, false, false, false};
     /** Symbol representing a strike */
     public static final String BALL_STRIKE = "X";
     /** Symbol representing a spare */

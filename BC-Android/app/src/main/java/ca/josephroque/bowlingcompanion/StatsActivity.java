@@ -287,7 +287,7 @@ public class StatsActivity extends ActionBarActivity
         }
 
         final int startingStatIndex = STATS_MIDDLE_GENERAL.length;
-        for (int i = 0, currentStatIndex = 0; i < STATS_MIDDLE_DETAILED.length; i++, currentStatIndex += 2)
+        for (int i = 0, currentStatIndex = 0; i < STATS_MIDDLE_DETAILED.length / 2; i++, currentStatIndex += 2)
         {
             if (totalShotsAtMiddle > 0)
             {
@@ -493,7 +493,7 @@ public class StatsActivity extends ActionBarActivity
         }
 
         final int startingStatIndex = STATS_MIDDLE_GENERAL.length;
-        for (int i = 0, currentStatIndex = 0; i < STATS_MIDDLE_DETAILED.length; i++, currentStatIndex += 2)
+        for (int i = 0, currentStatIndex = 0; i < STATS_MIDDLE_DETAILED.length / 2; i++, currentStatIndex += 2)
         {
             if (totalShotsAtMiddle > 0)
             {
