@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
+import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.R;
 
 /**
@@ -60,7 +61,7 @@ public class AddLeagueDialog extends DialogFragment
         editText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(NAME_MAX_LENGTH)});
 
         editText = (EditText)dialogView.findViewById(R.id.new_league_number_of_games);
-        editText.setHint("# of games (1-5");
+        editText.setHint("# of games (1-" + Constants.MAX_NUMBER_OF_GAMES + ")");
         editText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(1)});
 
         builder.setView(dialogView)

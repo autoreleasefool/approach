@@ -254,10 +254,10 @@ public class LeagueActivity extends ActionBarActivity
         boolean validInput = true;
         String invalidInputMessage = null;
 
-        if (numberOfGames < 1 || numberOfGames > 5)
+        if (numberOfGames < 1 || numberOfGames > Constants.MAX_NUMBER_OF_GAMES)
         {
             validInput = false;
-            invalidInputMessage = "The number of games must be between 1 and 5 (inclusive).";
+            invalidInputMessage = "The number of games must be between 1 and " + Constants.MAX_NUMBER_OF_GAMES + " (inclusive).";
         }
         else if (leagueNamesList.contains(leagueName))
         {
