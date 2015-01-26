@@ -14,9 +14,11 @@ import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.HorizontalScrollView;
@@ -38,7 +40,7 @@ import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
  * in project Bowling Companion
  */
 
-public class GameActivity extends ActionBarActivity implements View.OnClickListener
+public class GameActivity extends ActionBarActivity implements View.OnClickListener, GestureDetector.OnGestureListener
 {
 
     /** TAG identifier for output to log */
@@ -88,6 +90,9 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
     private HorizontalScrollView hsvFrames = null;
     /** TextView to display final score after considering fouls */
     private TextView textViewFinalScore = null;
+
+    /** GestureDetector object for double taps */
+    private GestureDetector gestureDetector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -157,9 +162,9 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                 ballsTextViews.get(i).add(text);
 
                 text = new TextView(this);
-                text.setGravity(Gravity.CENTER);
+                text.setGravity(Gravity.CENTER_HORIZONTAL);
                 text.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
-                params = new RelativeLayout.LayoutParams(getPixelsFromDP(14), getPixelsFromDP(40));
+                params = new RelativeLayout.LayoutParams(getPixelsFromDP(40), getPixelsFromDP(20));
                 params.leftMargin = getPixelsFromDP(120 * i + j * 40);
                 params.topMargin = getPixelsFromDP(40);
                 relativeLayout.addView(text, params);
@@ -169,9 +174,9 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
             TextView textView = new TextView(this);
             textView.setText(String.valueOf(i + 1));
             textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
-            textView.setGravity(Gravity.CENTER);
-            params = new RelativeLayout.LayoutParams(getPixelsFromDP(14), getPixelsFromDP(36));
-            params.leftMargin = getPixelsFromDP(120 * i + 42);
+            textView.setGravity(Gravity.CENTER_HORIZONTAL);
+            params = new RelativeLayout.LayoutParams(getPixelsFromDP(120), getPixelsFromDP(36));
+            params.leftMargin = getPixelsFromDP(120 * i);
             params.topMargin = getPixelsFromDP(128);
             relativeLayout.addView(textView, params);
         }
@@ -234,6 +239,72 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
             params.leftMargin = getPixelsFromDP((dpWidth / numberOfGames) * i);
             relativeLayout.addView(button, params);
         }
+
+        gestureDetector = new GestureDetector(this, this);
+        gestureDetector.setOnDoubleTapListener(new GestureDetector.OnDoubleTapListener()
+            {
+                @Override
+                public boolean onSingleTapConfirmed(MotionEvent e)
+                {
+                    return false;
+                }
+
+                @Override
+                public boolean onDoubleTap(MotionEvent e)
+                {
+                    if (areFramesEqual(balls.get(currentFrame).get(currentBall), Constants.FRAME_CLEAR))
+                    {
+                        boolean[] pinAlreadyKnockedDown = new boolean[5];
+                        if (currentBall > 0 && !areFramesEqual(balls.get(currentFrame).get(currentBall - 1), Constants.FRAME_CLEAR))
+                        {
+                            for (int j = 0; j < 5; j++)
+                            {
+                                if (balls.get(currentFrame).get(currentBall - 1)[j])
+                                {
+                                    pinAlreadyKnockedDown[j] = true;
+                                }
+                            }
+                        }
+                        for (int j = currentBall; j < 3; j++)
+                        {
+                            for (int i = 0; i < 5; i++)
+                            {
+                                balls.get(currentFrame).get(j)[i] = pinAlreadyKnockedDown[i];
+                            }
+                        }
+                    }
+                    else
+                    {
+                        for (int j = currentBall; j < 3; j++)
+                        {
+                            for (int i = 0; i < 5; i++)
+                            {
+                                if (currentFrame == Constants.NUMBER_OF_FRAMES - 1)
+                                {
+                                    balls.get(currentFrame).get(j)[i] = (j == currentBall);
+                                }
+                                else
+                                {
+                                    balls.get(currentFrame).get(j)[i] = true;
+                                }
+                                if (j > currentBall)
+                                    fouls.get(currentFrame)[j] = false;
+                            }
+                        }
+                    }
+                    updateBalls(currentFrame);
+                    updateScore();
+                    updateFouls();
+                    updateFrameColor();
+                    return false;
+                }
+
+                @Override
+                public boolean onDoubleTapEvent(MotionEvent e)
+                {
+                    return false;
+                }
+            });
     }
 
 
@@ -326,9 +397,10 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                     for (int j = 0; j < 5; j++)
                         balls.get(currentFrame).get(i)[j] = false;
                 }
-                updateFrameColor();
-                updateScore();
                 updateBalls(currentFrame);
+                updateScore();
+                updateFouls();
+                updateFrameColor();
                 break;
             case R.id.button_whatif:
                 int possibleScore = (currentFrame > 0)
@@ -422,7 +494,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                 }
                 if (possibleScore < 0)
                     possibleScore = 0;
-                alertMessageBuilder.append(" this frame, and strikes onwards, your final score will be\n");
+                alertMessageBuilder.append(" this frame, and strikes onwards, your final score will be ");
                 alertMessageBuilder.append(possibleScore);
                 AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
                 builder.setMessage(alertMessageBuilder.toString())
@@ -537,6 +609,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
             case R.id.button_pin_2: ballToSet++;
             case R.id.button_pin_1: ballToSet++;
             case R.id.button_pin_0:
+
                 //When user selects a pin button
                 boolean isPinKnockedOver = balls.get(currentFrame).get(currentBall)[ballToSet];
                 if (!isPinKnockedOver)
@@ -558,25 +631,16 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                         {
                             if (currentBall < 2)
                             {
-                                currentBall++;
-                                for (int i = 0; i < 5; i++)
+                                for (int j = currentBall + 1; j < 3; j++)
                                 {
-                                    balls.get(currentFrame).get(currentBall)[i] = false;
+                                    for (int i = 0; i < 5; i++)
+                                    {
+                                        balls.get(currentFrame).get(j)[i] = false;
+                                    }
                                 }
                             }
-                            updateBalls(currentFrame);
-                        }
-                        else
-                        {
-                            updateBalls(currentFrame);
-                            currentBall = 0;
-                            currentFrame++;
                         }
                         updateFrameColor();
-                    }
-                    else
-                    {
-                        updateBalls(currentFrame);
                     }
                 }
                 else
@@ -587,8 +651,15 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                     {
                         balls.get(currentFrame).get(i)[ballToSet] = false;
                     }
-                    updateBalls(currentFrame);
+                    if (currentFrame == Constants.NUMBER_OF_FRAMES - 1 && currentBall == 1)
+                    {
+                        for (int i = 0; i < 5; i++)
+                        {
+                            balls.get(currentFrame).get(2)[i] = balls.get(currentFrame).get(1)[i];
+                        }
+                    }
                 }
+                updateBalls(currentFrame);
                 updateScore();
                 break;
             default:
@@ -874,7 +945,10 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                 else
                 {
                     ballsTextViews.get(frameToUpdate).get(1).setText(getValueOfBall(balls.get(frameToUpdate).get(1), 1, false));
-                    ballsTextViews.get(frameToUpdate).get(2).setText(getValueOfBallDifference(balls.get(frameToUpdate), 2, false));
+                    if (areFramesEqual(balls.get(frameToUpdate).get(2), Constants.FRAME_CLEAR))
+                        ballsTextViews.get(frameToUpdate).get(2).setText(Constants.BALL_SPARE);
+                    else
+                        ballsTextViews.get(frameToUpdate).get(2).setText(getValueOfBallDifference(balls.get(frameToUpdate), 2, false));
                 }
             }
             else
@@ -894,8 +968,25 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
         }
         else
         {
-            for (int i = 0; i < 3; i++)
-                ballsTextViews.get(frameToUpdate).get(i).setText(getValueOfBallDifference(balls.get(frameToUpdate), i, false));
+            ballsTextViews.get(frameToUpdate).get(0).setText(getValueOfBallDifference(balls.get(frameToUpdate), 0, false));
+            if (!areFramesEqual(balls.get(frameToUpdate).get(0), Constants.FRAME_CLEAR))
+            {
+                if (areFramesEqual(balls.get(frameToUpdate).get(1), Constants.FRAME_CLEAR))
+                {
+                    ballsTextViews.get(frameToUpdate).get(1).setText(Constants.BALL_SPARE);
+                    ballsTextViews.get(frameToUpdate).get(2).setText(Constants.BALL_EMPTY);
+                }
+                else
+                {
+                    ballsTextViews.get(frameToUpdate).get(1).setText(getValueOfBallDifference(balls.get(frameToUpdate), 1, false));
+                    ballsTextViews.get(frameToUpdate).get(2).setText(getValueOfBallDifference(balls.get(frameToUpdate), 2, false));
+                }
+            }
+            else
+            {
+                ballsTextViews.get(frameToUpdate).get(1).setText(Constants.BALL_EMPTY);
+                ballsTextViews.get(frameToUpdate).get(2).setText(Constants.BALL_EMPTY);
+            }
         }
 
         for (int i = 0; i < 3; i++)
@@ -939,7 +1030,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
             {
                 for (int b = 0; b < 3; b++)
                 {
-                    if (areFramesEqual(balls.get(f).get(b), Constants.FRAME_CLEAR))
+                    if (b < 2 && areFramesEqual(balls.get(f).get(b), Constants.FRAME_CLEAR))
                     {
                         frameScores[f] += getValueOfFrame(balls.get(f).get(b));
                         frameScores[f] += getValueOfFrame(balls.get(f + 1).get(0));
@@ -1253,5 +1344,23 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
             stringBuilder.append((frame[i]) ? 1:0);
         }
         return stringBuilder.toString();
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent event){return false;}
+    @Override
+    public void onLongPress(MotionEvent event){}
+    @Override
+    public void onShowPress(MotionEvent event){}
+    @Override
+    public boolean onScroll(MotionEvent event1, MotionEvent event2, float distanceX, float distanceY){return false;}
+    @Override
+    public boolean onFling(MotionEvent event1, MotionEvent event2, float velocityX, float velocityY){return false;}
+    @Override
+    public boolean onDown(MotionEvent event){return false;}
+    @Override
+    public boolean onTouchEvent(MotionEvent event)
+    {
+        return gestureDetector.onTouchEvent(event);
     }
 }
