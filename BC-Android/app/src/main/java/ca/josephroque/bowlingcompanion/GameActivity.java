@@ -331,27 +331,101 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                 updateBalls(currentFrame);
                 break;
             case R.id.button_whatif:
-                // TODO Should account for balls already thrown in frame
-                // TODO account for strike/spare/double in previous frames
                 int possibleScore = (currentFrame > 0)
                         ? Integer.parseInt(framesTextViews.get(currentFrame - 1).getText().toString())
                         : 0;
-                for (int i = 0; i < currentFrame; i++)
+
+                boolean spareLastFrame = false;
+                boolean strikeLastFrame = false;
+                boolean strikeTwoFramesAgo = false;
+                if (currentFrame > 1 && areFramesEqual(balls.get(currentFrame - 1).get(1), Constants.FRAME_CLEAR))
                 {
-                    for (int j = 0; j < 3; j++)
+                    if (areFramesEqual(balls.get(currentFrame - 1).get(0), Constants.FRAME_CLEAR))
                     {
-                        if (fouls.get(currentFrame)[j])
+                        strikeLastFrame = true;
+                        if (currentFrame > 2 && areFramesEqual(balls.get(currentFrame - 2).get(0), Constants.FRAME_CLEAR))
+                            strikeTwoFramesAgo = true;
+                    }
+                    else
+                    {
+                        spareLastFrame = true;
+                    }
+                }
+
+                StringBuilder alertMessageBuilder = new StringBuilder("If you get ");
+                if (currentBall == 0)
+                {
+                    alertMessageBuilder.append("a strike ");
+                    possibleScore += 45;
+                    if (spareLastFrame)
+                    {
+                        possibleScore += 15;
+                    }
+                    else if (strikeLastFrame)
+                    {
+                        possibleScore += 30;
+                        if (strikeTwoFramesAgo)
+                        {
+                            possibleScore += 15;
+                        }
+                    }
+                }
+                else if (currentBall == 1)
+                {
+                    alertMessageBuilder.append("a spare ");
+                    possibleScore += 30;
+                    int firstBall = getValueOfFrame(balls.get(currentFrame).get(0));
+                    if (spareLastFrame)
+                    {
+                        possibleScore += firstBall;
+                    }
+                    else if (strikeLastFrame)
+                    {
+                        possibleScore += 15;
+                        if (strikeTwoFramesAgo)
+                        {
+                            possibleScore += firstBall;
+                        }
+                    }
+                }
+                else
+                {
+                    alertMessageBuilder.append("fifteen ");
+                    possibleScore += 15;
+                    int firstBall = getValueOfFrame(balls.get(currentFrame).get(0));
+                    int secondBall = getValueOfFrameDifference(balls.get(currentFrame).get(0), balls.get(currentFrame).get(1));
+                    if (spareLastFrame)
+                    {
+                        possibleScore += firstBall;
+                    }
+                    else if (strikeLastFrame)
+                    {
+                        possibleScore += firstBall + secondBall;
+                        if (strikeTwoFramesAgo)
+                        {
+                            possibleScore += firstBall;
+                        }
+                    }
+                }
+
+                for (int i = currentFrame + 1; i < Constants.NUMBER_OF_FRAMES; i++)
+                {
+                    possibleScore += 45;
+                }
+                for (int i = 0; i <= currentFrame; i++)
+                {
+                    for (int j = 0; j < 3 && !(i == currentFrame && j >= currentBall); j++)
+                    {
+                        if (fouls.get(i)[j])
                             possibleScore -= 15;
                     }
                 }
                 if (possibleScore < 0)
                     possibleScore = 0;
-                for (int i = currentFrame; i < Constants.NUMBER_OF_FRAMES; i++)
-                {
-                    possibleScore += 45;
-                }
+                alertMessageBuilder.append(" this frame, and strikes onwards, your final score will be\n");
+                alertMessageBuilder.append(possibleScore);
                 AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
-                builder.setMessage("If you get a strike from this frame onwards, your final score will be " + possibleScore)
+                builder.setMessage(alertMessageBuilder.toString())
                         .setCancelable(false)
                         .setPositiveButton("OK", new DialogInterface.OnClickListener()
                         {
