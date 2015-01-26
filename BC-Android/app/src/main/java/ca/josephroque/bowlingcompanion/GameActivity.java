@@ -332,6 +332,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                 break;
             case R.id.button_whatif:
                 // TODO Should account for balls already thrown in frame
+                // TODO account for strike/spare/double in previous frames
                 int possibleScore = (currentFrame > 0)
                         ? Integer.parseInt(framesTextViews.get(currentFrame - 1).getText().toString())
                         : 0;
