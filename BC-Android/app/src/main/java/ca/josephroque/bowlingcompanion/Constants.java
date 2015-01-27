@@ -67,4 +67,67 @@ public class Constants
     public static final String BALL_HEAD_PIN_2 = "H2";
     /** Symbol representing an empty frame */
     public static final String BALL_EMPTY = "-";
+
+    /** Index which should correspond to the number of middle hits */
+    public static final byte STAT_MIDDLE_HIT = 0;
+    /** Index which should correspond to the number of strikes */
+    public static final byte STAT_STRIKES = 1;
+    /** Index which should correspond to the number of spares */
+    public static final byte STAT_SPARE_CONVERSIONS = 2;
+    /** Index which should correspond to the number of head pins */
+    public static final byte STAT_HEAD_PINS = 3;
+    /** Index which should correspond to the number of head pins spared */
+    public static final byte STAT_HEAD_PINS_SPARED = 4;
+    /** Index which should correspond to the number of lefts */
+    public static final byte STAT_LEFTS = 5;
+    /** Index which should correspond to the number of lefts spared */
+    public static final byte STAT_LEFTS_SPARED = 6;
+    /** Index which should correspond to the number of rights */
+    public static final byte STAT_RIGHTS = 7;
+    /** Index which should correspond to the number of rights spared */
+    public static final byte STAT_RIGHTS_SPARED = 8;
+    /** Index which should correspond to the number of aces */
+    public static final byte STAT_ACES = 9;
+    /** Index which should correspond to the number of aces spared */
+    public static final byte STAT_ACES_SPARED = 10;
+    /** Index which should correspond to the number of chop offs */
+    public static final byte STAT_CHOP_OFFS = 11;
+    /** Index which should correspond to the number of chop offs spared */
+    public static final byte STAT_CHOP_OFFS_SPARED = 12;
+    /** Index which should correspond to the number of left chop offs */
+    public static final byte STAT_LEFT_CHOP_OFFS = 13;
+    /** Index which should correspond to the number of left chop offs spared */
+    public static final byte STAT_LEFT_CHOP_OFFS_SPARED = 14;
+    /** Index which should correspond to the number of right chop offs */
+    public static final byte STAT_RIGHT_CHOP_OFFS = 15;
+    /** Index which should correspond to the number of right chop offs spared */
+    public static final byte STAT_RIGHT_CHOP_OFFS_SPARED = 16;
+    /** Index which should correspond to the number of splits */
+    public static final byte STAT_SPLITS = 17;
+    /** Index which should correspond to the number of splits spared */
+    public static final byte STAT_SPLITS_SPARED = 18;
+    /** Index which should correspond to the number of left splits */
+    public static final byte STAT_LEFT_SPLITS = 19;
+    /** Index which should correspond to the number of left splits spared */
+    public static final byte STAT_LEFT_SPLITS_SPARED = 20;
+    /** Index which should correspond to the number of right splits */
+    public static final byte STAT_RIGHT_SPLITS = 21;
+    /** Index which should correspond to the number of right splits spared */
+    public static final byte STAT_RIGHT_SPLITS_SPARED = 22;
+    /** Index which should correspond to the number of fouls */
+    public static final byte STAT_FOULS = 23;
+    /** Index which should correspond to the number of pins left on deck */
+    public static final byte STAT_PINS_LEFT_ON_DECK = 24;
+    /** Index which should correspond to the average number of pins left on deck */
+    public static final byte STAT_AVERAGE_PINS_LEFT_ON_DECK = 25;
+    /** Index which should correspond to the bowler/league average */
+    public static final byte STAT_AVERAGE = 26;
+    /** Index which should correspond to the bowler/league high single */
+    public static final byte STAT_HIGH_SINGLE = 27;
+    /** Index which should correspond to the bowler/league high series */
+    public static final byte STAT_HIGH_SERIES = 28;
+    /** Index which should correspond to the bowler/league total pinfall */
+    public static final byte STAT_TOTAL_PINFALL = 29;
+    /** Index which should correspond to the bowler/league total number of games */
+    public static final byte STAT_NUMBER_OF_GAMES = 30;
 }

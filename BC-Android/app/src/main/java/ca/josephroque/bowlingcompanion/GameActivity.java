@@ -1153,26 +1153,16 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
      * Checks if two frames are equivalent
      *
      * @param frame boolean array representing pins
-     * @param frameToCompare boolean array representing a certain frame
+     * @param frameToCompareTo boolean array representing a certain frame
      * @return
      */
-    private boolean areFramesEqual(boolean[] frame, boolean[] frameToCompare)
+    private boolean areFramesEqual(boolean[] frame, boolean[] frameToCompareTo)
     {
         for (int i = 0; i < frame.length; i++)
         {
-            try
-            {
-                if (frame[i] != frameToCompare[i])
-                {
-                    return false;
-                }
-            }
-            catch (IndexOutOfBoundsException ex)
-            {
-                Log.w(TAG, "areFramesEqual index out of bounds. " + frame.length + " != " + frameToCompare.length);
-            }
+            if (frame[i] != frameToCompareTo[i])
+                return false;
         }
-
         return true;
     }
 
