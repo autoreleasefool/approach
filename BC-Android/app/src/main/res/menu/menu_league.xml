@@ -5,7 +5,7 @@
     <item
         android:id="@+id/action_new_league"
         android:title="@string/action_add_league"
-        android:icon="@drawable/ic_action_add"
+        android:icon="@drawable/ic_action_new"
         app:showAsAction="always" />
     <item
         android:id="@+id/action_bowler_stats"

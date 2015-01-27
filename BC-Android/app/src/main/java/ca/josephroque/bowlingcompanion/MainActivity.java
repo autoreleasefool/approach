@@ -223,6 +223,9 @@ public class MainActivity extends ActionBarActivity
             case R.id.action_add_bowler:
                 showAddBowlerDialog();
                 return true;
+            case R.id.action_settings:
+                showSettings();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -233,6 +236,15 @@ public class MainActivity extends ActionBarActivity
     {
         super.onDestroy();
         DatabaseHelper.closeInstance();
+    }
+
+    /**
+     * Creates and displays an instance of SettingsActivity
+     */
+    private void showSettings()
+    {
+        Intent settingsIntent = new Intent(this, SettingsActivity.class);
+        startActivity(settingsIntent);
     }
 
     /**
