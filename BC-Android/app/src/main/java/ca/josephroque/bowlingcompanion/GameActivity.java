@@ -27,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import at.markushi.ui.CircleButton;
@@ -249,10 +250,10 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                 @Override
                 public boolean onDoubleTap(MotionEvent e)
                 {
-                    if (areFramesEqual(balls.get(currentFrame).get(currentBall), Constants.FRAME_CLEAR))
+                    if (Arrays.equals(balls.get(currentFrame).get(currentBall), Constants.FRAME_CLEAR))
                     {
                         boolean[] pinAlreadyKnockedDown = new boolean[5];
-                        if (currentBall > 0 && !areFramesEqual(balls.get(currentFrame).get(currentBall - 1), Constants.FRAME_CLEAR))
+                        if (currentBall > 0 && !Arrays.equals(balls.get(currentFrame).get(currentBall - 1), Constants.FRAME_CLEAR))
                         {
                             for (int j = 0; j < 5; j++)
                             {
@@ -407,12 +408,12 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                 boolean spareLastFrame = false;
                 boolean strikeLastFrame = false;
                 boolean strikeTwoFramesAgo = false;
-                if (currentFrame > 1 && areFramesEqual(balls.get(currentFrame - 1).get(1), Constants.FRAME_CLEAR))
+                if (currentFrame > 1 && Arrays.equals(balls.get(currentFrame - 1).get(1), Constants.FRAME_CLEAR))
                 {
-                    if (areFramesEqual(balls.get(currentFrame - 1).get(0), Constants.FRAME_CLEAR))
+                    if (Arrays.equals(balls.get(currentFrame - 1).get(0), Constants.FRAME_CLEAR))
                     {
                         strikeLastFrame = true;
-                        if (currentFrame > 2 && areFramesEqual(balls.get(currentFrame - 2).get(0), Constants.FRAME_CLEAR))
+                        if (currentFrame > 2 && Arrays.equals(balls.get(currentFrame - 2).get(0), Constants.FRAME_CLEAR))
                             strikeTwoFramesAgo = true;
                     }
                     else
@@ -528,7 +529,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                 //Clears the coloring of the current frame, increases the ball and/or
                 //frame if possible, then recolors the new frame/ball
                 clearFrameColor();
-                if (areFramesEqual(balls.get(currentFrame).get(currentBall), Constants.FRAME_CLEAR))
+                if (Arrays.equals(balls.get(currentFrame).get(currentBall), Constants.FRAME_CLEAR))
                 {
                     if (currentFrame < 9)
                     {
@@ -571,7 +572,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                     else
                     {
                         currentBall = 0;
-                        while (!areFramesEqual(balls.get(currentFrame).get(currentBall), Constants.FRAME_CLEAR) && currentBall < 2)
+                        while (!Arrays.equals(balls.get(currentFrame).get(currentBall), Constants.FRAME_CLEAR) && currentBall < 2)
                         {
                             currentBall++;
                         }
@@ -617,7 +618,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                     {
                         balls.get(currentFrame).get(i)[ballToSet] = true;
                     }
-                    if (areFramesEqual(balls.get(currentFrame).get(currentBall), Constants.FRAME_CLEAR))
+                    if (Arrays.equals(balls.get(currentFrame).get(currentBall), Constants.FRAME_CLEAR))
                     {
                         for (int i = currentBall + 1; i < 3; i++)
                         {
@@ -931,10 +932,10 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
     {
         if (frameToUpdate == Constants.LAST_FRAME)
         {
-            if (areFramesEqual(balls.get(frameToUpdate).get(0), Constants.FRAME_CLEAR))
+            if (Arrays.equals(balls.get(frameToUpdate).get(0), Constants.FRAME_CLEAR))
             {
                 ballsTextViews.get(frameToUpdate).get(0).setText(Constants.BALL_STRIKE);
-                if (areFramesEqual(balls.get(frameToUpdate).get(1), Constants.FRAME_CLEAR))
+                if (Arrays.equals(balls.get(frameToUpdate).get(1), Constants.FRAME_CLEAR))
                 {
                     ballsTextViews.get(frameToUpdate).get(1).setText(Constants.BALL_STRIKE);
                     ballsTextViews.get(frameToUpdate).get(2).setText(getValueOfBall(balls.get(frameToUpdate).get(2), 2, true));
@@ -942,7 +943,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                 else
                 {
                     ballsTextViews.get(frameToUpdate).get(1).setText(getValueOfBall(balls.get(frameToUpdate).get(1), 1, false));
-                    if (areFramesEqual(balls.get(frameToUpdate).get(2), Constants.FRAME_CLEAR))
+                    if (Arrays.equals(balls.get(frameToUpdate).get(2), Constants.FRAME_CLEAR))
                         ballsTextViews.get(frameToUpdate).get(2).setText(Constants.BALL_SPARE);
                     else
                         ballsTextViews.get(frameToUpdate).get(2).setText(getValueOfBallDifference(balls.get(frameToUpdate), 2, false));
@@ -951,7 +952,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
             else
             {
                 ballsTextViews.get(frameToUpdate).get(0).setText(getValueOfBall(balls.get(frameToUpdate).get(0), 0, false));
-                if (areFramesEqual(balls.get(frameToUpdate).get(1), Constants.FRAME_CLEAR))
+                if (Arrays.equals(balls.get(frameToUpdate).get(1), Constants.FRAME_CLEAR))
                 {
                     ballsTextViews.get(frameToUpdate).get(1).setText(Constants.BALL_SPARE);
                     ballsTextViews.get(frameToUpdate).get(2).setText(getValueOfBall(balls.get(frameToUpdate).get(2), 2, true));
@@ -966,9 +967,9 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
         else
         {
             ballsTextViews.get(frameToUpdate).get(0).setText(getValueOfBallDifference(balls.get(frameToUpdate), 0, false));
-            if (!areFramesEqual(balls.get(frameToUpdate).get(0), Constants.FRAME_CLEAR))
+            if (!Arrays.equals(balls.get(frameToUpdate).get(0), Constants.FRAME_CLEAR))
             {
-                if (areFramesEqual(balls.get(frameToUpdate).get(1), Constants.FRAME_CLEAR))
+                if (Arrays.equals(balls.get(frameToUpdate).get(1), Constants.FRAME_CLEAR))
                 {
                     ballsTextViews.get(frameToUpdate).get(1).setText(Constants.BALL_SPARE);
                     ballsTextViews.get(frameToUpdate).get(2).setText(Constants.BALL_EMPTY);
@@ -1014,7 +1015,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                             break;
                         case 1:
                         case 0:
-                            if (areFramesEqual(balls.get(f).get(b), Constants.FRAME_CLEAR))
+                            if (Arrays.equals(balls.get(f).get(b), Constants.FRAME_CLEAR))
                             {
                                 frameScores[f] += getValueOfFrame(balls.get(f).get(b));
                             }
@@ -1027,7 +1028,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
             {
                 for (int b = 0; b < 3; b++)
                 {
-                    if (b < 2 && areFramesEqual(balls.get(f).get(b), Constants.FRAME_CLEAR))
+                    if (b < 2 && Arrays.equals(balls.get(f).get(b), Constants.FRAME_CLEAR))
                     {
                         frameScores[f] += getValueOfFrame(balls.get(f).get(b));
                         frameScores[f] += getValueOfFrame(balls.get(f + 1).get(0));
@@ -1137,7 +1138,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
 
             if (currentBall > 0 && (balls.get(currentFrame).get(currentBall - 1)[i])
                     && !(currentFrame == Constants.LAST_FRAME
-                    && areFramesEqual(balls.get(currentFrame).get(currentBall - 1), Constants.FRAME_CLEAR)))
+                    && Arrays.equals(balls.get(currentFrame).get(currentBall - 1), Constants.FRAME_CLEAR)))
             {
                 button.setEnabled(false);
             }
@@ -1147,23 +1148,6 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
             }
         }
         focusOnFrame();
-    }
-
-    /**
-     * Checks if two frames are equivalent
-     *
-     * @param frame boolean array representing pins
-     * @param frameToCompareTo boolean array representing a certain frame
-     * @return
-     */
-    private boolean areFramesEqual(boolean[] frame, boolean[] frameToCompareTo)
-    {
-        for (int i = 0; i < frame.length; i++)
-        {
-            if (frame[i] != frameToCompareTo[i])
-                return false;
-        }
-        return true;
     }
 
     /**
