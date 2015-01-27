@@ -47,7 +47,7 @@ public class StatsListAdapter extends ArrayAdapter<String>
     {
         LayoutInflater inflater = context.getLayoutInflater();
         View rowView = inflater.inflate(R.layout.list_stats, null, true);
-        ((TextView)rowView.findViewById(R.id.text_stat_name)).setText(statNamesList.get(position));
+        ((TextView)rowView.findViewById(R.id.text_stat_name)).setText(statNamesList.get(position) + ": ");
         ((TextView)rowView.findViewById(R.id.text_stat_value)).setText(statValuesList.get(position));
         return rowView;
     }
