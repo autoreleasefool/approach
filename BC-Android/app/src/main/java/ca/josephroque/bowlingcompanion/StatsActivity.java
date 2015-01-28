@@ -209,6 +209,9 @@ public class StatsActivity extends ActionBarActivity
                             statValues[Constants.STAT_MIDDLE_HIT]++;
                         increaseFirstBallStat(firstBall, statValues, 0);
 
+                        if (firstBall < 5)
+                            spareChances++;
+
                         if (firstBall != 0)
                         {
                             if (Arrays.equals(balls[1], Constants.FRAME_CLEAR))
@@ -229,7 +232,7 @@ public class StatsActivity extends ActionBarActivity
                                 statValues[Constants.STAT_MIDDLE_HIT]++;
                             increaseFirstBallStat(secondBall, statValues, 0);
 
-                            if (firstBall != 0)
+                            if (secondBall != 0)
                             {
                                 if (Arrays.equals(balls[2], Constants.FRAME_CLEAR))
                                 {
@@ -263,6 +266,9 @@ public class StatsActivity extends ActionBarActivity
                         if (firstBall != -1)
                             statValues[Constants.STAT_MIDDLE_HIT]++;
                         increaseFirstBallStat(firstBall, statValues, 0);
+
+                        if (firstBall < 5)
+                            spareChances++;
 
                         if (firstBall != 0)
                         {
@@ -300,6 +306,10 @@ public class StatsActivity extends ActionBarActivity
                 }
                 cursor.moveToNext();
             }
+        }
+        if (statValues[Constants.STAT_HIGH_SERIES] < seriesTotal)
+        {
+            statValues[Constants.STAT_HIGH_SERIES] = seriesTotal;
         }
 
         if (statValues[Constants.STAT_NUMBER_OF_GAMES] > 0)
@@ -380,6 +390,9 @@ public class StatsActivity extends ActionBarActivity
                         statValues[Constants.STAT_MIDDLE_HIT]++;
                     increaseFirstBallStat(firstBall, statValues, 0);
 
+                    if (firstBall < 5)
+                        spareChances++;
+
                     if (firstBall != 0)
                     {
                         if (Arrays.equals(balls[1], Constants.FRAME_CLEAR))
@@ -400,7 +413,7 @@ public class StatsActivity extends ActionBarActivity
                             statValues[Constants.STAT_MIDDLE_HIT]++;
                         increaseFirstBallStat(secondBall, statValues, 0);
 
-                        if (firstBall != 0)
+                        if (secondBall != 0)
                         {
                             if (Arrays.equals(balls[2], Constants.FRAME_CLEAR))
                             {
@@ -434,6 +447,9 @@ public class StatsActivity extends ActionBarActivity
                     if (firstBall != -1)
                         statValues[Constants.STAT_MIDDLE_HIT]++;
                     increaseFirstBallStat(firstBall, statValues, 0);
+
+                    if (firstBall < 5)
+                        spareChances++;
 
                     if (firstBall != 0)
                     {
@@ -471,7 +487,12 @@ public class StatsActivity extends ActionBarActivity
 
         switch(firstBall)
         {
-            case 0:statValues[Constants.STAT_STRIKES]++; break;
+            case 0:
+                if (offset == 0)
+                {
+                    statValues[Constants.STAT_STRIKES]++;
+                }
+                break;
             case 1:statValues[Constants.STAT_LEFTS + offset]++; break;
             case 2:statValues[Constants.STAT_RIGHTS + offset]++; break;
             case 3:
@@ -491,6 +512,7 @@ public class StatsActivity extends ActionBarActivity
                 statValues[Constants.STAT_RIGHT_SPLITS + offset]++;
                 statValues[Constants.STAT_SPLITS + offset]++;
                 break;
+            case 8:statValues[Constants.STAT_HEAD_PINS + offset]++;
         }
     }
 
@@ -562,6 +584,8 @@ public class StatsActivity extends ActionBarActivity
             else if (firstBall[3])
                 return 7;   //RIGHT SPLIT
         }
+        else
+            return 8;       //HEAD PIN
 
         return -2;
     }
@@ -575,20 +599,20 @@ public class StatsActivity extends ActionBarActivity
      * @param spareChances number of chances the bowler has had to spare
      * @param currentStatPosition next position to set in the list of strings
      */
-    private void setGeneralAndDetailedStatValues(final List<String> statValuesList, final int[] statValues, final double totalShotsAtMiddle, final int spareChances, int currentStatPosition)
+    private void setGeneralAndDetailedStatValues(final List<String> statValuesList, final int[] statValues, final int totalShotsAtMiddle, final int spareChances, int currentStatPosition)
     {
         final DecimalFormat decimalFormat = new DecimalFormat("##0.#");
         if (statValues[Constants.STAT_MIDDLE_HIT] > 0)
         {
             statValuesList.set(currentStatPosition++,
-                    decimalFormat.format(statValues[Constants.STAT_MIDDLE_HIT] / totalShotsAtMiddle * 100)
+                    decimalFormat.format(statValues[Constants.STAT_MIDDLE_HIT] / (double)totalShotsAtMiddle * 100)
                     + "% [" + statValues[Constants.STAT_MIDDLE_HIT] + "/" + totalShotsAtMiddle + "]");
         }
         if (statValues[Constants.STAT_STRIKES] > 0)
         {
             statValuesList.set(currentStatPosition++,
-                    decimalFormat.format(statValues[Constants.STAT_STRIKES] / (double) statValues[Constants.STAT_MIDDLE_HIT] * 100)
-                    + "% [" + statValues[Constants.STAT_STRIKES] + "/" + statValues[Constants.STAT_MIDDLE_HIT] + "]");
+                    decimalFormat.format(statValues[Constants.STAT_STRIKES] / (double) totalShotsAtMiddle * 100)
+                    + "% [" + statValues[Constants.STAT_STRIKES] + "/" + totalShotsAtMiddle + "]");
         }
         if (statValues[Constants.STAT_SPARE_CONVERSIONS] > 0)
         {
@@ -602,10 +626,13 @@ public class StatsActivity extends ActionBarActivity
             if (statValues[i] > 0)
             {
                 statValuesList.set(currentStatPosition,
-                        decimalFormat.format(statValues[i] / totalShotsAtMiddle * 100)
-                        + "% [" + statValues[i] + "/" + totalShotsAtMiddle + "]");
+                        decimalFormat.format(statValues[i] / (double) totalShotsAtMiddle * 100)
+                                + "% [" + statValues[i] + "/" + totalShotsAtMiddle + "]");
+            }
+            if (statValues[i + 1] > 0)
+            {
                 statValuesList.set(currentStatPosition + 1,
-                        decimalFormat.format(statValues[i + 1] / statValues[i] * 100)
+                        decimalFormat.format(statValues[i + 1] / (double)statValues[i] * 100)
                         + "% [" + statValues[i + 1] + "/" + statValues[i] + "]");
             }
         }
