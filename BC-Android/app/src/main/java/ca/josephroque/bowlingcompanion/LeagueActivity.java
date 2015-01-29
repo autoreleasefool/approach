@@ -1,12 +1,13 @@
 package ca.josephroque.bowlingcompanion;
 
-import android.app.ActionBar;
-import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,7 +23,7 @@ import ca.josephroque.bowlingcompanion.fragments.TournamentFragment;
  * Location ca.josephroque.bowlingcompanion
  * in project Bowling Companion
  */
-public class LeagueActivity extends FragmentActivity
+public class LeagueActivity extends ActionBarActivity
     implements AddLeagueDialog.AddLeagueDialogListener, ActionBar.TabListener
 {
 
@@ -42,7 +43,7 @@ public class LeagueActivity extends FragmentActivity
         setContentView(R.layout.activity_league);
 
         viewPager = (ViewPager)findViewById(R.id.pager_league);
-        actionBar = getActionBar();
+        actionBar = getSupportActionBar();
         LeagueTabsPagerAdapter leagueTabAdapter = new LeagueTabsPagerAdapter(getSupportFragmentManager());
 
         viewPager.setAdapter(leagueTabAdapter);
@@ -147,11 +148,11 @@ public class LeagueActivity extends FragmentActivity
         switch(currentTabPosition)
         {
             case 0:
-                LeagueFragment leagueFragment = (LeagueFragment)getSupportFragmentManager().findFragmentByTag(getString(R.string.tag_league_fragment));
+                LeagueFragment leagueFragment = (LeagueFragment)getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.pager_league + ":" + viewPager.getCurrentItem());
                 leagueFragment.addNewLeague(leagueName, numberOfGames);
                 break;
             case 1:
-                TournamentFragment tournamentFragment = (TournamentFragment)getSupportFragmentManager().findFragmentByTag(getString(R.string.tag_tournament_fragment));
+                TournamentFragment tournamentFragment = (TournamentFragment)getSupportFragmentManager().findFragmentByTag("android:switcher:" + R.id.pager_league + ":" + viewPager.getCurrentItem());
                 tournamentFragment.addNewTournament(leagueName, numberOfGames);
                 break;
             default:

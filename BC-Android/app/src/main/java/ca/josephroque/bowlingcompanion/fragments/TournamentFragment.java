@@ -59,7 +59,7 @@ public class TournamentFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance)
     {
-        View rootView = inflater.inflate(R.layout.fragment_leagues, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_tournaments, container, false);
         final ListView tournamentListView = (ListView)rootView.findViewById(R.id.list_tournament_names);
 
         //Loads data from the above query into lists
@@ -201,7 +201,7 @@ public class TournamentFragment extends Fragment
         boolean validInput = true;
         String invalidInputMessage = null;
 
-        if (numberOfGames < 1 || numberOfGames > Constants.MAX_NUMBER_OF_GAMES)
+        if (numberOfGames < 1 || numberOfGames > Constants.MAX_NUMBER_OF_TOURNAMENT_GAMES)
         {
             validInput = false;
             invalidInputMessage = "The number of games must be between 1 and " + Constants.MAX_NUMBER_OF_TOURNAMENT_GAMES + " (inclusive).";
@@ -307,7 +307,7 @@ public class TournamentFragment extends Fragment
                 .putLong(Constants.PREFERENCES_ID_SERIES, seriesID)
                 .apply();
         gameIntent.putExtra(GameEntry.TABLE_NAME + "." + GameEntry._ID, gameID);
-        gameIntent.putExtra(FrameEntry.TABLE_NAME + "." + FrameEntry._ID, frameID);
+        gameIntent.putExtra(FrameEntry.  TABLE_NAME + "." + FrameEntry._ID, frameID);
         getActivity().startActivity(gameIntent);
     }
 }

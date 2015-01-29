@@ -302,14 +302,23 @@ public class MainActivity extends ActionBarActivity
         long newID = -1;
         SQLiteDatabase database = DatabaseHelper.getInstance(MainActivity.this).getWritableDatabase();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        ContentValues values = new ContentValues();
-        values.put(BowlerEntry.COLUMN_NAME_BOWLER_NAME, bowlerName);
-        values.put(BowlerEntry.COLUMN_NAME_DATE_MODIFIED, dateFormat.format(new Date()));
+        Date date = new Date();
+        ContentValues bowlerValues = new ContentValues();
+        bowlerValues.put(BowlerEntry.COLUMN_NAME_BOWLER_NAME, bowlerName);
+        bowlerValues.put(BowlerEntry.COLUMN_NAME_DATE_MODIFIED, dateFormat.format(date));
 
         database.beginTransaction();
         try
         {
-            newID = database.insert(BowlerEntry.TABLE_NAME, null, values);
+            newID = database.insert(BowlerEntry.TABLE_NAME, null, bowlerValues);
+
+            ContentValues leagueValues = new ContentValues();
+            leagueValues.put(LeagueEntry.COLUMN_NAME_LEAGUE_NAME, "Open");
+            leagueValues.put(LeagueEntry.COLUMN_NAME_DATE_MODIFIED, dateFormat.format(date));
+            leagueValues.put(LeagueEntry.COLUMN_NAME_BOWLER_ID, newID);
+            leagueValues.put(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES, 1);
+            database.insert(LeagueEntry.TABLE_NAME, null, leagueValues);
+
             database.setTransactionSuccessful();
         }
         catch (Exception ex)

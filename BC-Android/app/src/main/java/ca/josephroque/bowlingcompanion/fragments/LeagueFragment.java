@@ -76,6 +76,11 @@ public class LeagueFragment extends Fragment
             {
                 long leagueIDSelected = (Long)leagueListView.getItemAtPosition(position);
 
+                if (leagueNamesList.get(leagueIDList.indexOf(leagueIDSelected)).equals(Constants.OPEN_LEAGUE))
+                {
+
+                }
+
                 //Updates the date modified in the database of the selected league
                 SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
                 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

@@ -64,8 +64,8 @@ public class AddLeagueDialog extends DialogFragment
         EditText editText = (EditText)dialogView.findViewById(R.id.new_league_name);
         editText.setHint(
                 (isAddingNewLeague)
-                        ? "League"
-                        : "Tourney"
+                        ? "League "
+                        : "Tournament "
                 + "(max " + NAME_MAX_LENGTH + " characters)");
         editText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(NAME_MAX_LENGTH)});
 
@@ -75,7 +75,7 @@ public class AddLeagueDialog extends DialogFragment
                     ? Constants.MAX_NUMBER_OF_GAMES
                     : Constants.MAX_NUMBER_OF_TOURNAMENT_GAMES)
                 + ")");
-        editText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(1)});
+        editText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(2)});
 
         builder.setView(dialogView)
                 .setPositiveButton(R.string.add, new DialogInterface.OnClickListener()

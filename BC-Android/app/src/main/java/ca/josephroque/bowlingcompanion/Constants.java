@@ -49,6 +49,9 @@ public class Constants
     /** Preference to save whether games are in tournament mode or not */
     public static final String PREFERENCES_TOURNAMENT_MODE = LeagueEntry.TABLE_NAME + "." + LeagueEntry.COLUMN_NAME_IS_TOURNAMENT;
 
+    /** Name of default open league, available to all bowlers */
+    public static final String OPEN_LEAGUE = "Open";
+
     /** Represents a frame with all pins cleared */
     public static final boolean[] FRAME_CLEAR = {true, true, true, true, true};
     /** Symbol representing a strike */
