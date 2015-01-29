@@ -1,31 +1,20 @@
 package ca.josephroque.bowlingcompanion;
 
-import android.app.AlertDialog;
-import android.content.ContentValues;
-import android.content.DialogInterface;
+import android.app.ActionBar;
+import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.app.DialogFragment;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ListView;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import ca.josephroque.bowlingcompanion.database.BowlingContract.*;
-import ca.josephroque.bowlingcompanion.adapter.LeagueAverageListAdapter;
-import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
+import ca.josephroque.bowlingcompanion.adapter.LeagueTabsPagerAdapter;
 import ca.josephroque.bowlingcompanion.dialog.AddLeagueDialog;
+import ca.josephroque.bowlingcompanion.fragments.LeagueFragment;
+import ca.josephroque.bowlingcompanion.fragments.TournamentFragment;
 
 /**
  * Created by josephroque on 15-01-09.
@@ -33,164 +22,52 @@ import ca.josephroque.bowlingcompanion.dialog.AddLeagueDialog;
  * Location ca.josephroque.bowlingcompanion
  * in project Bowling Companion
  */
-public class LeagueActivity extends ActionBarActivity
-    implements AddLeagueDialog.AddLeagueDialogListener
+public class LeagueActivity extends FragmentActivity
+    implements AddLeagueDialog.AddLeagueDialogListener, ActionBar.TabListener
 {
 
     /** TAG identifier for output to log */
     private static final String TAG = "LeagueActivity";
 
-    /** Adapter for the ListView of leagues */
-    private LeagueAverageListAdapter leagueAdapter = null;
+    private ViewPager viewPager = null;
+    private ActionBar actionBar = null;
+    private String[] tabs = {"Leagues", "Tournaments"};
 
-    /** ID of the selected bowler */
-    private long bowlerID = -1;
-    /** List of the names of the leagues belonging to the selected bowler */
-    private List<String> leagueNamesList = null;
-    /** List of the averages of the leagues, relative to order of leagueNamesList */
-    private List<Integer> leagueAverageList = null;
-    /** List of the number of games in the leagues, relative to order of leagueNamesList */
-    private List<Integer> leagueNumberOfGamesList = null;
-    /** List of the IDs of the leagues, relative to the order of leagueNamesList */
-    private List<Long> leagueIDList = null;
+    private int currentTabPosition = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_league);
-        final ListView leagueListView = (ListView)findViewById(R.id.list_league_name);
 
-        //Loads data from the above query into lists
-        leagueNamesList = new ArrayList<String>();
-        leagueAverageList = new ArrayList<Integer>();
-        leagueIDList = new ArrayList<Long>();
-        leagueNumberOfGamesList = new ArrayList<Integer>();
+        viewPager = (ViewPager)findViewById(R.id.pager_league);
+        actionBar = getActionBar();
+        LeagueTabsPagerAdapter leagueTabAdapter = new LeagueTabsPagerAdapter(getSupportFragmentManager());
 
-        leagueAdapter = new LeagueAverageListAdapter(LeagueActivity.this, leagueIDList, leagueNamesList, leagueAverageList, leagueNumberOfGamesList);
-        leagueListView.setAdapter(leagueAdapter);
-        leagueListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-            {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-                {
-                    long leagueIDSelected = (Long)leagueListView.getItemAtPosition(position);
+        viewPager.setAdapter(leagueTabAdapter);
+        actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
-                    //Updates the date modified in the database of the selected league
-                    SQLiteDatabase database = DatabaseHelper.getInstance(LeagueActivity.this).getWritableDatabase();
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    ContentValues values = new ContentValues();
-                    values.put(LeagueEntry.COLUMN_NAME_DATE_MODIFIED, dateFormat.format(new Date()));
-
-                    database.beginTransaction();
-                    try
-                    {
-                        database.update(LeagueEntry.TABLE_NAME,
-                                values,
-                                LeagueEntry._ID + "=?",
-                                new String[]{String.valueOf(leagueIDSelected)});
-                        database.setTransactionSuccessful();
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.w(TAG, "Error updating league: " + ex.getMessage());
-                    }
-                    finally
-                    {
-                        database.endTransaction();
-                    }
-
-                    getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE)
-                            .edit()
-                            .putString(Constants.PREFERENCES_NAME_LEAGUE, leagueNamesList.get(leagueIDList.indexOf(leagueIDSelected)))
-                            .putLong(Constants.PREFERENCES_ID_LEAGUE, leagueIDSelected)
-                            .putInt(Constants.PREFERENCES_NUMBER_OF_GAMES, leagueNumberOfGamesList.get(leagueIDList.indexOf(leagueIDSelected)))
-                            .putLong(Constants.PREFERENCES_ID_BOWLER_RECENT, bowlerID)
-                            .putLong(Constants.PREFERENCES_ID_LEAGUE_RECENT, leagueIDSelected)
-                            .apply();
-
-                    Intent seriesIntent = new Intent(LeagueActivity.this, SeriesActivity.class);
-                    startActivity(seriesIntent);
-                }
-            });
-    }
-
-    @Override
-    protected void onResume()
-    {
-        super.onResume();
-
-        SQLiteDatabase database = DatabaseHelper.getInstance(LeagueActivity.this).getReadableDatabase();
-        SharedPreferences preferences = getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE);
-        bowlerID = preferences.getLong(BowlerEntry.TABLE_NAME + "." + BowlerEntry._ID, -1);
-
-        leagueNamesList.clear();
-        leagueAverageList.clear();
-        leagueIDList.clear();
-        leagueNumberOfGamesList.clear();
-        List<Integer> leagueTotalNumberOfGamesList = new ArrayList<Integer>();
-
-        String rawLeagueQuery = "SELECT "
-                + LeagueEntry.TABLE_NAME + "." + LeagueEntry._ID + " AS lid, "
-                + LeagueEntry.COLUMN_NAME_LEAGUE_NAME + ", "
-                + LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES + ", "
-                + GameEntry.COLUMN_NAME_GAME_FINAL_SCORE
-                + " FROM " + LeagueEntry.TABLE_NAME
-                + " LEFT JOIN " + GameEntry.TABLE_NAME
-                + " ON " + LeagueEntry.COLUMN_NAME_BOWLER_ID + "=" + GameEntry.COLUMN_NAME_BOWLER_ID
-                + " WHERE " + LeagueEntry.COLUMN_NAME_BOWLER_ID + "=?"
-                + " ORDER BY " + LeagueEntry.COLUMN_NAME_DATE_MODIFIED + " DESC";
-        String[] rawLeagueArgs ={String.valueOf(bowlerID)};
-
-        Cursor cursor = database.rawQuery(rawLeagueQuery, rawLeagueArgs);
-
-        if (cursor.moveToFirst())
+        for (String tab : tabs)
         {
-            int leagueTotalPinfall = 0;
-            int totalNumberOfLeagueGames = 0;
-            while(!cursor.isAfterLast())
-            {
-                String leagueName = cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_LEAGUE_NAME));
-                long leagueID = cursor.getLong(cursor.getColumnIndex("lid"));
-                int numberOfGames = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES));
-                int finalScore = cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_NAME_GAME_FINAL_SCORE));
-
-                if (leagueIDList.size() == 0)
-                {
-                    leagueNamesList.add(leagueName);
-                    leagueIDList.add(leagueID);
-                    leagueNumberOfGamesList.add(numberOfGames);
-                }
-                else if (!leagueIDList.contains(leagueID))
-                {
-                    if (leagueIDList.size() > 0)
-                    {
-                        leagueTotalNumberOfGamesList.add(totalNumberOfLeagueGames);
-                        leagueAverageList.add((totalNumberOfLeagueGames > 0) ? leagueTotalPinfall / totalNumberOfLeagueGames:0);
-                    }
-
-                    leagueTotalPinfall = 0;
-                    totalNumberOfLeagueGames = 0;
-                    leagueNamesList.add(leagueName);
-                    leagueIDList.add(leagueID);
-                    leagueNumberOfGamesList.add(numberOfGames);
-                }
-
-                totalNumberOfLeagueGames++;
-                leagueTotalPinfall += finalScore;
-
-                cursor.moveToNext();
-            }
-
-            if (leagueIDList.size() > 0)
-            {
-                leagueTotalNumberOfGamesList.add(totalNumberOfLeagueGames);
-                leagueAverageList.add((totalNumberOfLeagueGames > 0) ? leagueTotalPinfall / totalNumberOfLeagueGames:0);
-            }
+            actionBar.addTab(actionBar.newTab()
+                    .setText(tab)
+                    .setTabListener(this));
         }
 
-        leagueAdapter.update(leagueNamesList, leagueAverageList, leagueNumberOfGamesList);
-        leagueAdapter.notifyDataSetChanged();
+        viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener()
+        {
+            @Override
+            public void onPageSelected(int position)
+            {
+                actionBar.setSelectedNavigationItem(position);
+                currentTabPosition = position;
+            }
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels){}
+            @Override
+            public void onPageScrollStateChanged(int state){}
+        });
     }
 
     @Override
@@ -222,6 +99,17 @@ public class LeagueActivity extends ActionBarActivity
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onTabSelected(ActionBar.Tab tab, FragmentTransaction transaction)
+    {
+        viewPager.setCurrentItem(tab.getPosition());
+        currentTabPosition = tab.getPosition();
+    }
+    @Override
+    public void onTabReselected(ActionBar.Tab tab, FragmentTransaction transaction){}
+    @Override
+    public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction transaction){}
+
     /**
      * Creates a StatsActivity to show the complete stats
      * of the selected bowler
@@ -244,77 +132,29 @@ public class LeagueActivity extends ActionBarActivity
      */
     private void showAddLeagueDialog()
     {
-        DialogFragment dialog = new AddLeagueDialog();
-        dialog.show(getSupportFragmentManager(), "AddLeagueDialogFragment");
+        DialogFragment dialog = new AddLeagueDialog((currentTabPosition == 0));
+        dialog.show(getSupportFragmentManager(), (currentTabPosition == 0)
+                ? "AddLeagueDialogFragment"
+                : "AddTournamentDialogFragment");
     }
 
     @Override
     public void onAddNewLeague(String leagueName, int numberOfGames)
     {
-        boolean validInput = true;
-        String invalidInputMessage = null;
-
-        if (numberOfGames < 1 || numberOfGames > Constants.MAX_NUMBER_OF_GAMES)
+        switch(currentTabPosition)
         {
-            validInput = false;
-            invalidInputMessage = "The number of games must be between 1 and " + Constants.MAX_NUMBER_OF_GAMES + " (inclusive).";
+            case 0:
+                LeagueFragment leagueFragment = (LeagueFragment)getSupportFragmentManager().findFragmentByTag(getString(R.string.tag_league_fragment));
+                leagueFragment.addNewLeague(leagueName, numberOfGames);
+                break;
+            case 1:
+                TournamentFragment tournamentFragment = (TournamentFragment)getSupportFragmentManager().findFragmentByTag(getString(R.string.tag_tournament_fragment));
+                tournamentFragment.addNewTournament(leagueName, numberOfGames);
+                break;
+            default:
+                Log.w(TAG, "Unavailable fragment! Current tab: " + currentTabPosition);
+                break;
         }
-        else if (leagueNamesList.contains(leagueName))
-        {
-            validInput = false;
-            invalidInputMessage = "That name has already been used. You must choose another.";
-        }
-
-        //Displays an alert if input is invalid and does not create the new league
-        if (!validInput)
-        {
-            AlertDialog.Builder builder = new AlertDialog.Builder(LeagueActivity.this);
-            builder.setMessage(invalidInputMessage)
-                    .setCancelable(false)
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener()
-                    {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which)
-                        {
-                            //do nothing
-                        }
-                    });
-            AlertDialog alert = builder.create();
-            alert.show();
-            return;
-        }
-
-        long newID = -1;
-        SQLiteDatabase database = DatabaseHelper.getInstance(LeagueActivity.this).getWritableDatabase();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        ContentValues values = new ContentValues();
-        values.put(LeagueEntry.COLUMN_NAME_LEAGUE_NAME, leagueName);
-        values.put(LeagueEntry.COLUMN_NAME_DATE_MODIFIED, dateFormat.format(new Date()));
-        values.put(LeagueEntry.COLUMN_NAME_BOWLER_ID, bowlerID);
-        values.put(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES, numberOfGames);
-
-        database.beginTransaction();
-        try
-        {
-            newID = database.insert(LeagueEntry.TABLE_NAME, null, values);
-            database.setTransactionSuccessful();
-        }
-        catch (Exception ex)
-        {
-            Log.w(TAG, "Error adding new league: " + ex.getMessage());
-        }
-        finally
-        {
-           database.endTransaction();
-        }
-
-        //Adds the league to the top of the list (it is the most recent)
-        leagueNamesList.add(0, leagueName);
-        leagueAverageList.add(0, 0);
-        leagueIDList.add(0, newID);
-        leagueNumberOfGamesList.add(0, numberOfGames);
-        leagueAdapter.update(leagueNamesList, leagueAverageList, leagueNumberOfGamesList);
-        leagueAdapter.notifyDataSetChanged();
     }
 
     @Override

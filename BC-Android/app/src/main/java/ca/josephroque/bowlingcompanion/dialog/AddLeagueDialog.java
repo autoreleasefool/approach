@@ -29,6 +29,9 @@ public class AddLeagueDialog extends DialogFragment
     /** Instance of a listener */
     private AddLeagueDialogListener dialogListener = null;
 
+    /** Indicates whether a new league or tournament is being added */
+    private boolean isAddingNewLeague;
+
     /**
      * Interface which declares methods that respond to
      * user events
@@ -49,6 +52,12 @@ public class AddLeagueDialog extends DialogFragment
         public void onCancelNewLeague();
     }
 
+    public AddLeagueDialog(boolean isAddingNewLeague)
+    {
+        super();
+        this.isAddingNewLeague = isAddingNewLeague;
+    }
+
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
@@ -61,7 +70,11 @@ public class AddLeagueDialog extends DialogFragment
         editText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(NAME_MAX_LENGTH)});
 
         editText = (EditText)dialogView.findViewById(R.id.new_league_number_of_games);
-        editText.setHint("# of games (1-" + Constants.MAX_NUMBER_OF_GAMES + ")");
+        editText.setHint("# of games (1-"
+                + ((isAddingNewLeague)
+                    ? Constants.MAX_NUMBER_OF_GAMES
+                    : Constants.MAX_NUMBER_OF_TOURNAMENT_GAMES)
+                + ")");
         editText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(1)});
 
         builder.setView(dialogView)

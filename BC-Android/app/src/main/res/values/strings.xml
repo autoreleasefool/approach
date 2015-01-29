@@ -17,6 +17,8 @@
     <string name="action_league_stats">League Stats</string>
     <string name="action_game_stats">Game Stats</string>
     <string name="action_settings">Settings</string>
+    <string name="tag_league_fragment">LeagueFragment</string>
+    <string name="tag_tournament_fragment">TournamentFragment</string>
     <string name="text_quick_game_button">Start a series with these settings:\nBowler: N/A\nLeague: N/A</string>
     <string name="text_next_frame">Next</string>
     <string name="text_prev_frame">Prev</string>

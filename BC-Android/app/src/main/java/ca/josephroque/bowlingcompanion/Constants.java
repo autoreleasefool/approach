@@ -13,6 +13,8 @@ public class Constants
 
     /** Maximum number of games a league can have per week */
     public static final int MAX_NUMBER_OF_GAMES = 5;
+    /** Maximum number of games in a tournament */
+    public static final int MAX_NUMBER_OF_TOURNAMENT_GAMES = 20;
     /** Number of frames in a single game */
     public static final int NUMBER_OF_FRAMES = 10;
     /** The last frame of a game */
@@ -44,6 +46,8 @@ public class Constants
     public static final String PREFERENCES_ID_BOWLER_RECENT = BowlerEntry.TABLE_NAME + "." + BowlerEntry._ID + RECENT;
     /** Preference to save the most recent league ID */
     public static final String PREFERENCES_ID_LEAGUE_RECENT= LeagueEntry.TABLE_NAME + "." + LeagueEntry._ID + RECENT;
+    /** Preference to save whether games are in tournament mode or not */
+    public static final String PREFERENCES_TOURNAMENT_MODE = LeagueEntry.TABLE_NAME + "." + LeagueEntry.COLUMN_NAME_IS_TOURNAMENT;
 
     /** Represents a frame with all pins cleared */
     public static final boolean[] FRAME_CLEAR = {true, true, true, true, true};
