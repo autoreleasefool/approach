@@ -132,7 +132,10 @@ public class LeagueActivity extends FragmentActivity
      */
     private void showAddLeagueDialog()
     {
-        DialogFragment dialog = new AddLeagueDialog((currentTabPosition == 0));
+        DialogFragment dialog = new AddLeagueDialog();
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(Constants.PREFERENCES_TOURNAMENT_MODE, currentTabPosition == 0);
+        dialog.setArguments(bundle);
         dialog.show(getSupportFragmentManager(), (currentTabPosition == 0)
                 ? "AddLeagueDialogFragment"
                 : "AddTournamentDialogFragment");

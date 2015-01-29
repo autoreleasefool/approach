@@ -227,7 +227,7 @@ public class SeriesActivity extends ActionBarActivity
     public static void addNewSeries(Activity srcActivity, long bowlerID, long leagueID, int numberOfGames)
     {
         long seriesID = -1;
-        long[] gameID = new long[numberOfGames], frameID = new long[30];
+        long[] gameID = new long[numberOfGames], frameID = new long[10 * numberOfGames];
         SQLiteDatabase database = DatabaseHelper.getInstance(srcActivity).getWritableDatabase();
         Intent gameIntent = new Intent(srcActivity, GameActivity.class);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");

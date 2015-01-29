@@ -52,12 +52,6 @@ public class AddLeagueDialog extends DialogFragment
         public void onCancelNewLeague();
     }
 
-    public AddLeagueDialog(boolean isAddingNewLeague)
-    {
-        super();
-        this.isAddingNewLeague = isAddingNewLeague;
-    }
-
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
@@ -65,8 +59,14 @@ public class AddLeagueDialog extends DialogFragment
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View dialogView = inflater.inflate(R.layout.dialog_add_league, null);
 
+        isAddingNewLeague = getArguments().getBoolean(Constants.PREFERENCES_TOURNAMENT_MODE);
+
         EditText editText = (EditText)dialogView.findViewById(R.id.new_league_name);
-        editText.setHint("League (max " + NAME_MAX_LENGTH + " characters)");
+        editText.setHint(
+                (isAddingNewLeague)
+                        ? "League"
+                        : "Tourney"
+                + "(max " + NAME_MAX_LENGTH + " characters)");
         editText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(NAME_MAX_LENGTH)});
 
         editText = (EditText)dialogView.findViewById(R.id.new_league_number_of_games);

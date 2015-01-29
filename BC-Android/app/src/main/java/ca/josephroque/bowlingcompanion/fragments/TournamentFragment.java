@@ -231,12 +231,13 @@ public class TournamentFragment extends Fragment
             return;
         }
 
-        long newID = -1;
+        long newTournamentID = -1;
         SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date = new Date();
         ContentValues values = new ContentValues();
         values.put(LeagueEntry.COLUMN_NAME_LEAGUE_NAME, tournamentName);
-        values.put(LeagueEntry.COLUMN_NAME_DATE_MODIFIED, dateFormat.format(new Date()));
+        values.put(LeagueEntry.COLUMN_NAME_DATE_MODIFIED, dateFormat.format(date));
         values.put(LeagueEntry.COLUMN_NAME_BOWLER_ID, bowlerID);
         values.put(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES, numberOfGames);
         values.put(LeagueEntry.COLUMN_NAME_IS_TOURNAMENT, 1);
@@ -244,7 +245,7 @@ public class TournamentFragment extends Fragment
         database.beginTransaction();
         try
         {
-            newID = database.insert(LeagueEntry.TABLE_NAME, null, values);
+            newTournamentID = database.insert(LeagueEntry.TABLE_NAME, null, values);
             database.setTransactionSuccessful();
         }
         catch (Exception ex)
@@ -256,12 +257,57 @@ public class TournamentFragment extends Fragment
             database.endTransaction();
         }
 
-        //Adds the league to the top of the list (it is the most recent)
-        tournamentNamesList.add(0, tournamentName);
-        tournamentAverageList.add(0, 0);
-        tournamentIDList.add(0, newID);
-        tournamentNumberOfGamesList.add(0, numberOfGames);
-        tournamentAdapter.update(tournamentNamesList, tournamentAverageList, tournamentNumberOfGamesList);
-        tournamentAdapter.notifyDataSetChanged();
+        long seriesID = -1;
+        long[] gameID = new long[numberOfGames], frameID = new long[10 * numberOfGames];
+        Intent gameIntent = new Intent(getActivity(), GameActivity.class);
+
+        database.beginTransaction();
+        try
+        {
+            values = new ContentValues();
+            values.put(SeriesEntry.COLUMN_NAME_DATE_CREATED, dateFormat.format(date));
+            values.put(SeriesEntry.COLUMN_NAME_LEAGUE_ID, newTournamentID);
+            values.put(SeriesEntry.COLUMN_NAME_BOWLER_ID, bowlerID);
+            seriesID = database.insert(SeriesEntry.TABLE_NAME, null, values);
+
+            for (int i = 0; i < numberOfGames; i++)
+            {
+                values = new ContentValues();
+                values.put(GameEntry.COLUMN_NAME_GAME_NUMBER, i + 1);
+                values.put(GameEntry.COLUMN_NAME_GAME_FINAL_SCORE, 0);
+                values.put(GameEntry.COLUMN_NAME_LEAGUE_ID, newTournamentID);
+                values.put(GameEntry.COLUMN_NAME_BOWLER_ID, bowlerID);
+                values.put(GameEntry.COLUMN_NAME_SERIES_ID, seriesID);
+                gameID[i] = database.insert(GameEntry.TABLE_NAME, null, values);
+
+                for (int j = 0; j < 10; j++)
+                {
+                    values = new ContentValues();
+                    values.put(FrameEntry.COLUMN_NAME_FRAME_NUMBER, j + 1);
+                    values.put(FrameEntry.COLUMN_NAME_BOWLER_ID, bowlerID);
+                    values.put(FrameEntry.COLUMN_NAME_LEAGUE_ID, newTournamentID);
+                    values.put(FrameEntry.COLUMN_NAME_GAME_ID, gameID[i]);
+                    frameID[j + 10 * i] = database.insert(FrameEntry.TABLE_NAME, null, values);
+                }
+            }
+            database.setTransactionSuccessful();
+        }
+        catch (Exception ex)
+        {
+            Log.w(TAG, "Error adding new series: " + ex.getMessage());
+        }
+        finally
+        {
+            database.endTransaction();
+        }
+
+        getActivity().getSharedPreferences(Constants.MY_PREFS, Activity.MODE_PRIVATE)
+                .edit()
+                .putLong(Constants.PREFERENCES_ID_LEAGUE, newTournamentID)
+                .putLong(Constants.PREFERENCES_ID_SERIES, seriesID)
+                .apply();
+        gameIntent.putExtra(GameEntry.TABLE_NAME + "." + GameEntry._ID, gameID);
+        gameIntent.putExtra(FrameEntry.TABLE_NAME + "." + FrameEntry._ID, frameID);
+        getActivity().startActivity(gameIntent);
     }
 }
