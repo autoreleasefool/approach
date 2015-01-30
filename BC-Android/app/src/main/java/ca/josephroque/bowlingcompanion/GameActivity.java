@@ -71,6 +71,8 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
     private int currentBall = 0;
     /** Indicates whether a frame has been previously accessed */
     private boolean[] hasFrameBeenAccessed = null;
+    //TODO
+    private boolean tournamentMode = false;
 
     /** TextViews showing score of ball thrown */
     private List<List<TextView>> ballsTextViews = null;
@@ -112,7 +114,8 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
         activityTitle = getTitle().toString();
 
         SharedPreferences preferences = getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE);
-        numberOfGames = preferences.getInt(LeagueEntry.TABLE_NAME + "." + LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES, -1);
+        numberOfGames = preferences.getInt(Constants.PREFERENCES_NUMBER_OF_GAMES, -1);
+        tournamentMode = preferences.getBoolean(Constants.PREFERENCES_TOURNAMENT_MODE, false);
 
         Intent intent = getIntent();
         gameID = intent.getLongArrayExtra(GameEntry.TABLE_NAME + "." + GameEntry._ID);
@@ -227,11 +230,15 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
         drawable = (GradientDrawable)ballsTextViews.get(currentFrame).get(currentBall).getBackground();
         drawable.setColor(Color.RED);
 
-        String[] gameTitles = new String[numberOfGames + 3];
+        int extraOptions = (tournamentMode) ? 2:3;
+        String[] gameTitles = new String[numberOfGames + extraOptions];
         gameTitles[0] = "Bowler";
         gameTitles[1] = "Leagues";
-        gameTitles[2] = "Series";
-        for (int i = 3; i < gameTitles.length; i++)
+        if (tournamentMode)
+        {
+            gameTitles[2] = "Series";
+        }
+        for (int i = extraOptions; i < gameTitles.length; i++)
         {
             gameTitles[i] = "Game " + (i + 1);
         }
