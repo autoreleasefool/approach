@@ -271,6 +271,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                         default:
                             saveGameToDatabase(true);
                             loadGameFromDatabase(position - 3);
+                            drawerLayout.closeDrawer(drawerList);
                             break;
                     }
                 }
@@ -387,6 +388,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
     {
         super.onResume();
         loadGameFromDatabase(0);
+        drawerLayout.openDrawer(drawerList);
     }
 
     @Override
