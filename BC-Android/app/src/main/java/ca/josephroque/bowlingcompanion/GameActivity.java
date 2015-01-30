@@ -227,8 +227,11 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
         drawable = (GradientDrawable)ballsTextViews.get(currentFrame).get(currentBall).getBackground();
         drawable.setColor(Color.RED);
 
-        String[] gameTitles = new String[numberOfGames];
-        for (int i = 0; i < gameTitles.length; i++)
+        String[] gameTitles = new String[numberOfGames + 3];
+        gameTitles[0] = "Bowler";
+        gameTitles[1] = "Leagues";
+        gameTitles[2] = "Series";
+        for (int i = 3; i < gameTitles.length; i++)
         {
             gameTitles[i] = "Game " + (i + 1);
         }
@@ -241,9 +244,28 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id)
                 {
-                    //Saves the current game and loads a new one to the screen
-                    saveGameToDatabase(true);
-                    loadGameFromDatabase(position);
+                    switch(position)
+                    {
+                        case 0:
+                            Intent mainIntent = new Intent(GameActivity.this, MainActivity.class);
+                            mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(mainIntent);
+                            break;
+                        case 1:
+                            Intent leagueIntent = new Intent(GameActivity.this, LeagueActivity.class);
+                            leagueIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(leagueIntent);
+                            break;
+                        case 2:
+                            Intent seriesIntent = new Intent(GameActivity.this, SeriesActivity.class);
+                            seriesIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(seriesIntent);
+                            break;
+                        default:
+                            saveGameToDatabase(true);
+                            loadGameFromDatabase(position - 3);
+                            break;
+                    }
                 }
             });
 
