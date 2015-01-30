@@ -74,46 +74,45 @@ public class LeagueFragment extends Fragment
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
-                long leagueIDSelected = (Long)leagueListView.getItemAtPosition(position);
+                long leagueIDSelected = (Long) leagueListView.getItemAtPosition(position);
 
-                if (leagueNamesList.get(leagueIDList.indexOf(leagueIDSelected)).equals(Constants.OPEN_LEAGUE))
+                if (!leagueNamesList.get(leagueIDList.indexOf(leagueIDSelected)).equals(Constants.OPEN_LEAGUE))
                 {
+                    //Updates the date modified in the database of the selected league
+                    SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                    ContentValues values = new ContentValues();
+                    values.put(LeagueEntry.COLUMN_NAME_DATE_MODIFIED, dateFormat.format(new Date()));
 
+                    database.beginTransaction();
+                    try
+                    {
+                        database.update(LeagueEntry.TABLE_NAME,
+                                values,
+                                LeagueEntry._ID + "=?",
+                                new String[]{String.valueOf(leagueIDSelected)});
+                        database.setTransactionSuccessful();
+                    } catch (Exception ex)
+                    {
+                        Log.w(TAG, "Error updating league: " + ex.getMessage());
+                    } finally
+                    {
+                        database.endTransaction();
+                    }
                 }
 
-                //Updates the date modified in the database of the selected league
-                SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                ContentValues values = new ContentValues();
-                values.put(LeagueEntry.COLUMN_NAME_DATE_MODIFIED, dateFormat.format(new Date()));
-
-                database.beginTransaction();
-                try
-                {
-                    database.update(LeagueEntry.TABLE_NAME,
-                            values,
-                            LeagueEntry._ID + "=?",
-                            new String[]{String.valueOf(leagueIDSelected)});
-                    database.setTransactionSuccessful();
-                }
-                catch (Exception ex)
-                {
-                    Log.w(TAG, "Error updating league: " + ex.getMessage());
-                }
-                finally
-                {
-                    database.endTransaction();
-                }
-
-                getActivity().getSharedPreferences(Constants.MY_PREFS, Activity.MODE_PRIVATE)
-                        .edit()
+                SharedPreferences.Editor preferencesEditor = getActivity().getSharedPreferences(Constants.MY_PREFS, Activity.MODE_PRIVATE).edit();
+                preferencesEditor
                         .putString(Constants.PREFERENCES_NAME_LEAGUE, leagueNamesList.get(leagueIDList.indexOf(leagueIDSelected)))
                         .putLong(Constants.PREFERENCES_ID_LEAGUE, leagueIDSelected)
                         .putInt(Constants.PREFERENCES_NUMBER_OF_GAMES, leagueNumberOfGamesList.get(leagueIDList.indexOf(leagueIDSelected)))
-                        .putLong(Constants.PREFERENCES_ID_BOWLER_RECENT, bowlerID)
-                        .putLong(Constants.PREFERENCES_ID_LEAGUE_RECENT, leagueIDSelected)
-                        .putBoolean(Constants.PREFERENCES_TOURNAMENT_MODE, false)
-                        .apply();
+                        .putBoolean(Constants.PREFERENCES_TOURNAMENT_MODE, false);
+                if (!leagueNamesList.get(leagueIDList.indexOf(leagueIDSelected)).equals(Constants.OPEN_LEAGUE))
+                {
+                    preferencesEditor.putLong(Constants.PREFERENCES_ID_LEAGUE_RECENT, leagueIDSelected)
+                            .putLong(Constants.PREFERENCES_ID_BOWLER_RECENT, bowlerID);
+                }
+                preferencesEditor.apply();
 
                 Intent seriesIntent = new Intent(getActivity(), SeriesActivity.class);
                 startActivity(seriesIntent);

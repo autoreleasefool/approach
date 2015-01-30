@@ -92,7 +92,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
     private int[] gameScoresWithFouls = null;
     //TODO
     private String activityTitle = null;
-    private final String drawerTitle = "Select a Game";
+    private final String drawerTitle = "Game Navigation";
 
     /** HorizontalScrollView displaying score tables */
     private HorizontalScrollView hsvFrames = null;
@@ -115,11 +115,6 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
 
         SharedPreferences preferences = getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE);
         numberOfGames = preferences.getInt(Constants.PREFERENCES_NUMBER_OF_GAMES, -1);
-        tournamentMode = preferences.getBoolean(Constants.PREFERENCES_TOURNAMENT_MODE, false);
-
-        Intent intent = getIntent();
-        gameID = intent.getLongArrayExtra(GameEntry.TABLE_NAME + "." + GameEntry._ID);
-        frameID = intent.getLongArrayExtra(FrameEntry.TABLE_NAME + "." + FrameEntry._ID);
 
         RelativeLayout relativeLayout = new RelativeLayout(this);
         RelativeLayout.LayoutParams params;
@@ -230,22 +225,8 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
         drawable = (GradientDrawable)ballsTextViews.get(currentFrame).get(currentBall).getBackground();
         drawable.setColor(Color.RED);
 
-        int extraOptions = (tournamentMode) ? 2:3;
-        String[] gameTitles = new String[numberOfGames + extraOptions];
-        gameTitles[0] = "Bowler";
-        gameTitles[1] = "Leagues";
-        if (tournamentMode)
-        {
-            gameTitles[2] = "Series";
-        }
-        for (int i = extraOptions; i < gameTitles.length; i++)
-        {
-            gameTitles[i] = "Game " + (i + 1);
-        }
         drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
         drawerList = (ListView)findViewById(R.id.left_drawer_games);
-
-        drawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.text_games_list, gameTitles));
         drawerList.setOnItemClickListener(new AdapterView.OnItemClickListener()
             {
                 @Override
@@ -254,16 +235,19 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                     switch(position)
                     {
                         case 0:
+                            drawerLayout.closeDrawer(drawerList);
                             Intent mainIntent = new Intent(GameActivity.this, MainActivity.class);
                             mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(mainIntent);
                             break;
                         case 1:
+                            drawerLayout.closeDrawer(drawerList);
                             Intent leagueIntent = new Intent(GameActivity.this, LeagueActivity.class);
                             leagueIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(leagueIntent);
                             break;
                         case 2:
+                            drawerLayout.closeDrawer(drawerList);
                             Intent seriesIntent = new Intent(GameActivity.this, SeriesActivity.class);
                             seriesIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(seriesIntent);
@@ -387,8 +371,32 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
     protected void onResume()
     {
         super.onResume();
+
+        SharedPreferences preferences = getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE);
+        numberOfGames = preferences.getInt(Constants.PREFERENCES_NUMBER_OF_GAMES, -1);
+        tournamentMode = preferences.getBoolean(Constants.PREFERENCES_TOURNAMENT_MODE, false);
+
+        Intent intent = getIntent();
+        gameID = intent.getLongArrayExtra(GameEntry.TABLE_NAME + "." + GameEntry._ID);
+        frameID = intent.getLongArrayExtra(FrameEntry.TABLE_NAME + "." + FrameEntry._ID);
+
+        int extraOptions = (tournamentMode) ? 2:3;
+        String[] gameTitles = new String[numberOfGames + extraOptions];
+        gameTitles[0] = "Bowler";
+        gameTitles[1] = "Leagues";
+        if (!tournamentMode)
+        {
+            gameTitles[2] = "Series";
+        }
+        for (int i = extraOptions; i < gameTitles.length; i++)
+        {
+            gameTitles[i] = "Game " + (i + 1 - extraOptions);
+        }
+        drawerList = (ListView)findViewById(R.id.left_drawer_games);
+
+        drawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.text_games_list, gameTitles));
+
         loadGameFromDatabase(0);
-        drawerLayout.openDrawer(drawerList);
     }
 
     @Override
@@ -1296,6 +1304,8 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
         clearFrameColor();
         currentGame = newGame;
         SQLiteDatabase database = DatabaseHelper.getInstance(this).getReadableDatabase();
+
+        Log.w(TAG, String.valueOf((gameID == null)));
 
         Cursor cursor = database.query(FrameEntry.TABLE_NAME,
                 new String[]{FrameEntry.COLUMN_NAME_FRAME_ACCESSED, FrameEntry.COLUMN_NAME_BALL[0], FrameEntry.COLUMN_NAME_BALL[1], FrameEntry.COLUMN_NAME_BALL[2], FrameEntry._ID, FrameEntry.COLUMN_NAME_FOULS},

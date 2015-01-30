@@ -74,7 +74,7 @@ public class SeriesActivity extends ActionBarActivity
                             .apply();
 
                     long[] gameID = new long[numberOfGames];
-                    long[] frameID = new long[30];
+                    long[] frameID = new long[numberOfGames * 10];
                     SQLiteDatabase database = DatabaseHelper.getInstance(SeriesActivity.this).getReadableDatabase();
 
                     //Loads relevant game and frame IDs from database and stores them in Intent

@@ -109,8 +109,61 @@ public class TournamentFragment extends Fragment
                         .putBoolean(Constants.PREFERENCES_TOURNAMENT_MODE, true)
                         .apply();
 
-                //TODO directly to GameActivity
+                String rawSeriesQuery = "SELECT "
+                        + LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES + ", "
+                        + SeriesEntry.TABLE_NAME + "." + SeriesEntry._ID + " AS sid"
+                        + " FROM " + LeagueEntry.TABLE_NAME + " AS league"
+                        + " LEFT JOIN " + SeriesEntry.TABLE_NAME
+                        + " ON league." + LeagueEntry._ID + "=" + SeriesEntry.COLUMN_NAME_LEAGUE_ID
+                        + " WHERE league." + LeagueEntry._ID + "=?";
+                String[] rawSeriesArgs = {String.valueOf(tournamentIDSelected)};
+
+                Cursor cursor = database.rawQuery(rawSeriesQuery, rawSeriesArgs);
+                cursor.moveToFirst();
+                int numberOfGames = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES));
+                long seriesID = cursor.getLong(cursor.getColumnIndex("sid"));
+
+                long[] gameID = new long[numberOfGames];
+                long[] frameID = new long[numberOfGames * 10];
+
+                //Loads relevant game and frame IDs from database and stores them in Intent
+                //for next activity
+                rawSeriesQuery = "SELECT "
+                        + GameEntry.TABLE_NAME + "." + GameEntry._ID + " AS gid, "
+                        + FrameEntry.TABLE_NAME + "." + FrameEntry._ID + " AS fid"
+                        + " FROM " + GameEntry.TABLE_NAME
+                        + " LEFT JOIN " + FrameEntry.TABLE_NAME
+                        + " ON gid=" + FrameEntry.COLUMN_NAME_GAME_ID
+                        + " WHERE " + GameEntry.COLUMN_NAME_SERIES_ID + "=?"
+                        + " ORDER BY gid, fid";
+                rawSeriesArgs = new String[]{String.valueOf(seriesID)};
+
+                int currentGame = -1;
+                long currentGameID = -1;
+                int currentFrame = -1;
+                cursor = database.rawQuery(rawSeriesQuery, rawSeriesArgs);
+                if (cursor.moveToFirst())
+                {
+                    while (!cursor.isAfterLast())
+                    {
+                        long newGameID = cursor.getLong(cursor.getColumnIndex("gid"));
+                        if (newGameID == currentGameID)
+                        {
+                            frameID[++currentFrame] = cursor.getLong(cursor.getColumnIndex("fid"));
+                        }
+                        else
+                        {
+                            currentGameID = newGameID;
+                            frameID[++currentFrame] = cursor.getLong(cursor.getColumnIndex("fid"));
+                            gameID[++currentGame] = currentGameID;
+                        }
+                        cursor.moveToNext();
+                    }
+                }
+
                 Intent gameIntent = new Intent(getActivity(), GameActivity.class);
+                gameIntent.putExtra(GameEntry.TABLE_NAME + "." + GameEntry._ID, gameID);
+                gameIntent.putExtra(FrameEntry.TABLE_NAME + "." + FrameEntry._ID, frameID);
                 startActivity(gameIntent);
             }
         });
