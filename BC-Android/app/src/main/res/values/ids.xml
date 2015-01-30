@@ -10,10 +10,5 @@
     <item name="text_frame_7" type="id" />
     <item name="text_frame_8" type="id" />
     <item name="text_frame_9" type="id" />
-    <item name="button_game_0" type="id" />
-    <item name="button_game_1" type="id" />
-    <item name="button_game_2" type="id" />
-    <item name="button_game_3" type="id" />
-    <item name="button_game_4" type="id" />
     <item name="text_final_score" type="id" />
 </resources>

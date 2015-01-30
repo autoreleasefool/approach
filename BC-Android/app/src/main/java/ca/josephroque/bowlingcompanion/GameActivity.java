@@ -5,13 +5,15 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.GestureDetector;
@@ -20,8 +22,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.HorizontalScrollView;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -84,11 +88,18 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
     private int[] gameScores = null;
     /** Scores of current games, considering fouls */
     private int[] gameScoresWithFouls = null;
+    //TODO
+    private String activityTitle = null;
+    private final String drawerTitle = "Select a Game";
 
     /** HorizontalScrollView displaying score tables */
     private HorizontalScrollView hsvFrames = null;
     /** TextView to display final score after considering fouls */
     private TextView textViewFinalScore = null;
+    //TODO
+    private DrawerLayout drawerLayout = null;
+    private ListView drawerList = null;
+    private ActionBarDrawerToggle drawerToggle = null;
 
     /** GestureDetector object for double taps */
     private GestureDetector gestureDetector;
@@ -98,6 +109,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
+        activityTitle = getTitle().toString();
 
         SharedPreferences preferences = getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE);
         numberOfGames = preferences.getInt(LeagueEntry.TABLE_NAME + "." + LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES, -1);
@@ -215,28 +227,43 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
         drawable = (GradientDrawable)ballsTextViews.get(currentFrame).get(currentBall).getBackground();
         drawable.setColor(Color.RED);
 
-        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-        int dpWidth = (int)(displayMetrics.widthPixels / displayMetrics.density);
-        relativeLayout = (RelativeLayout)findViewById(R.id.layout_games);
-        for (int i = 0; i < numberOfGames; i++)
+        String[] gameTitles = new String[numberOfGames];
+        for (int i = 0; i < gameTitles.length; i++)
         {
-            Button button = new Button(this);
-            switch(i)
-            {
-                case 0:button.setId(R.id.button_game_0); break;
-                case 1:button.setId(R.id.button_game_1); break;
-                case 2:button.setId(R.id.button_game_2); break;
-                case 3:button.setId(R.id.button_game_3); break;
-                case 4:button.setId(R.id.button_game_4); break;
-                default: //do nothing
-            }
-            button.setOnClickListener(this);
-            button.setText("Game " + (i + 1));
-            params = new RelativeLayout.LayoutParams(getPixelsFromDP(dpWidth / numberOfGames), getPixelsFromDP(48));
-            params.topMargin = 0;
-            params.leftMargin = getPixelsFromDP((dpWidth / numberOfGames) * i);
-            relativeLayout.addView(button, params);
+            gameTitles[i] = "Game " + (i + 1);
         }
+        drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
+        drawerList = (ListView)findViewById(R.id.left_drawer_games);
+
+        drawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.text_games_list, gameTitles));
+        drawerList.setOnItemClickListener(new AdapterView.OnItemClickListener()
+            {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+                {
+                    //Saves the current game and loads a new one to the screen
+                    saveGameToDatabase(true);
+                    loadGameFromDatabase(position);
+                }
+            });
+
+        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_close)
+            {
+                public void onDrawerClosed(View view)
+                {
+                    super.onDrawerClosed(view);
+                    getSupportActionBar().setTitle(activityTitle);
+                    invalidateOptionsMenu();
+                }
+
+                public void onDrawerOpened(View drawerView)
+                {
+                    super.onDrawerOpened(drawerView);
+                    getSupportActionBar().setTitle(drawerTitle);
+                    invalidateOptionsMenu();
+                }
+            };
+        drawerLayout.setDrawerListener(drawerToggle);
 
         gestureDetector = new GestureDetector(this, this);
         gestureDetector.setOnDoubleTapListener(new GestureDetector.OnDoubleTapListener()
@@ -305,6 +332,26 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
             });
     }
 
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState)
+    {
+        super.onPostCreate(savedInstanceState);
+        drawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        drawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu)
+    {
+        boolean drawerOpen = drawerLayout.isDrawerOpen(drawerList);
+        menu.findItem(R.id.action_game_stats).setVisible(!drawerOpen);
+        return super.onPrepareOptionsMenu(menu);
+    }
 
     @Override
     protected void onResume()
@@ -336,6 +383,11 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+
+        if (drawerToggle.onOptionsItemSelected(item))
+        {
+            return true;
+        }
 
         switch(id)
         {
@@ -515,15 +567,6 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                         ? "F"
                         : "");
                 updateFouls();
-                break;
-            case R.id.button_game_4: gameToSet++;
-            case R.id.button_game_3: gameToSet++;
-            case R.id.button_game_2: gameToSet++;
-            case R.id.button_game_1: gameToSet++;
-            case R.id.button_game_0:
-                //Switching games
-                saveGameToDatabase(true);
-                loadGameFromDatabase(gameToSet);
                 break;
             case R.id.button_next_frame:
                 //Clears the coloring of the current frame, increases the ball and/or
