@@ -363,4 +363,50 @@ public class TournamentFragment extends Fragment
         gameIntent.putExtra(FrameEntry.  TABLE_NAME + "." + FrameEntry._ID, frameID);
         getActivity().startActivity(gameIntent);
     }
+
+    /**
+     * Deletes all data in database corresponding to a single tournament ID
+     *
+     * @param selectedTournamentID tournament ID to delete data of
+     */
+    private boolean deleteTournament(long selectedTournamentID)
+    {
+        int index = tournamentIDList.indexOf(selectedTournamentID);
+        String tournamentName = tournamentNamesList.remove(index);
+        tournamentAverageList.remove(index);
+        tournamentNumberOfGamesList.remove(index);
+        tournamentIDList.remove(index);
+        tournamentAdapter.update(tournamentNamesList, tournamentAverageList, tournamentNumberOfGamesList);
+        tournamentAdapter.notifyDataSetChanged();
+
+        SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
+        String[] whereArgs = {String.valueOf(selectedTournamentID)};
+        database.beginTransaction();
+        try
+        {
+            database.delete(FrameEntry.TABLE_NAME,
+                    FrameEntry.COLUMN_NAME_LEAGUE_ID + "=?",
+                    whereArgs);
+            database.delete(GameEntry.TABLE_NAME,
+                    GameEntry.COLUMN_NAME_LEAGUE_ID + "=?",
+                    whereArgs);
+            database.delete(SeriesEntry.TABLE_NAME,
+                    SeriesEntry.COLUMN_NAME_LEAGUE_ID + "=?",
+                    whereArgs);
+            database.delete(LeagueEntry.TABLE_NAME,
+                    LeagueEntry._ID + "=?",
+                    whereArgs);
+        }
+        catch (Exception e)
+        {
+            Log.w(TAG, "Error deleting tournament: " + tournamentName);
+            return false;
+        }
+        finally
+        {
+            database.endTransaction();
+        }
+
+        return true;
+    }
 }

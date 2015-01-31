@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion;
 
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -13,6 +14,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import ca.josephroque.bowlingcompanion.adapter.LeagueTabsPagerAdapter;
+import ca.josephroque.bowlingcompanion.database.BowlingContract;
+import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.dialog.AddLeagueDialog;
 import ca.josephroque.bowlingcompanion.fragments.LeagueFragment;
 import ca.josephroque.bowlingcompanion.fragments.TournamentFragment;

@@ -342,4 +342,50 @@ public class MainActivity extends ActionBarActivity
     {
         //does nothing
     }
+
+    /**
+     * Deletes all data in database corresponding to a single bowler ID
+     *
+     * @param selectedBowlerID bowler ID to delete data of
+     */
+    private boolean deleteBowler(long selectedBowlerID)
+    {
+        int index = bowlerIDsList.indexOf(selectedBowlerID);
+        String bowlerName = bowlerNamesList.remove(index);
+        bowlerIDsList.remove(index);
+        bowlerAdapter.notifyDataSetChanged();
+
+        SQLiteDatabase database = DatabaseHelper.getInstance(this).getWritableDatabase();
+        String[] whereArgs = {String.valueOf(selectedBowlerID)};
+        database.beginTransaction();
+        try
+        {
+            database.delete(FrameEntry.TABLE_NAME,
+                    FrameEntry.COLUMN_NAME_BOWLER_ID + "=?",
+                    whereArgs);
+            database.delete(GameEntry.TABLE_NAME,
+                    GameEntry.COLUMN_NAME_BOWLER_ID + "=?",
+                    whereArgs);
+            database.delete(SeriesEntry.TABLE_NAME,
+                    SeriesEntry.COLUMN_NAME_BOWLER_ID + "=?",
+                    whereArgs);
+            database.delete(LeagueEntry.TABLE_NAME,
+                    LeagueEntry.COLUMN_NAME_BOWLER_ID + "=?",
+                    whereArgs);
+            database.delete(BowlerEntry.TABLE_NAME,
+                    BowlerEntry._ID + "=?",
+                    whereArgs);
+        }
+        catch (Exception e)
+        {
+            Log.w(TAG, "Error deleting bowler: " + bowlerName);
+            return false;
+        }
+        finally
+        {
+            database.endTransaction();
+        }
+
+        return true;
+    }
 }

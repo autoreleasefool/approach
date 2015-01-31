@@ -267,4 +267,50 @@ public class LeagueFragment extends Fragment
         leagueAdapter.update(leagueNamesList, leagueAverageList, leagueNumberOfGamesList);
         leagueAdapter.notifyDataSetChanged();
     }
+
+    /**
+     * Deletes all data in database corresponding to a single league ID
+     *
+     * @param selectedLeagueID league ID to delete data of
+     */
+    private boolean deleteLeague(long selectedLeagueID)
+    {
+        int index = leagueIDList.indexOf(selectedLeagueID);
+        String leagueName = leagueNamesList.remove(index);
+        leagueAverageList.remove(index);
+        leagueNumberOfGamesList.remove(index);
+        leagueIDList.remove(index);
+        leagueAdapter.update(leagueNamesList, leagueAverageList, leagueNumberOfGamesList);
+        leagueAdapter.notifyDataSetChanged();
+
+        SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
+        String[] whereArgs = {String.valueOf(selectedLeagueID)};
+        database.beginTransaction();
+        try
+        {
+            database.delete(FrameEntry.TABLE_NAME,
+                    FrameEntry.COLUMN_NAME_LEAGUE_ID + "=?",
+                    whereArgs);
+            database.delete(GameEntry.TABLE_NAME,
+                    GameEntry.COLUMN_NAME_LEAGUE_ID + "=?",
+                    whereArgs);
+            database.delete(SeriesEntry.TABLE_NAME,
+                    SeriesEntry.COLUMN_NAME_LEAGUE_ID + "=?",
+                    whereArgs);
+            database.delete(LeagueEntry.TABLE_NAME,
+                    LeagueEntry._ID + "=?",
+                    whereArgs);
+        }
+        catch (Exception e)
+        {
+            Log.w(TAG, "Error deleting league: " + leagueName);
+            return false;
+        }
+        finally
+        {
+            database.endTransaction();
+        }
+
+        return true;
+    }
 }

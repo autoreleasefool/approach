@@ -49,6 +49,8 @@ public class SeriesActivity extends ActionBarActivity
     private List<String> seriesDateList = null;
     /** List of game scores in series, relative to order of seriesIDList */
     private List<List<Integer>> seriesGamesList = null;
+    /** Adapter for the ListView of series */
+    private SeriesListAdapter seriesAdapter = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -170,7 +172,7 @@ public class SeriesActivity extends ActionBarActivity
         }
 
         ListView seriesListView = (ListView)findViewById(R.id.list_series);
-        SeriesListAdapter seriesAdapter = new SeriesListAdapter(SeriesActivity.this, seriesIDList, seriesDateList, seriesGamesList);
+        seriesAdapter = new SeriesListAdapter(SeriesActivity.this, seriesIDList, seriesDateList, seriesGamesList);
         seriesListView.setAdapter(seriesAdapter);
     }
 
@@ -281,5 +283,68 @@ public class SeriesActivity extends ActionBarActivity
         gameIntent.putExtra(GameEntry.TABLE_NAME + "." + GameEntry._ID, gameID);
         gameIntent.putExtra(FrameEntry.TABLE_NAME + "." + FrameEntry._ID, frameID);
         srcActivity.startActivity(gameIntent);
+    }
+
+    /**
+     * Deletes all data in database corresponding to a single series ID
+     *
+     * @param selectedSeriesID series ID to delete data of
+     */
+    private boolean deleteSeries(long selectedSeriesID)
+    {
+        int index = seriesIDList.indexOf(selectedSeriesID);
+        String seriesDate = seriesDateList.remove(index);
+        seriesGamesList.remove(index);
+        seriesIDList.remove(index);
+        seriesAdapter.update(seriesDateList, seriesGamesList);
+        seriesAdapter.notifyDataSetChanged();
+
+        String[] whereArgs = {String.valueOf(selectedSeriesID)};
+        SQLiteDatabase database = DatabaseHelper.getInstance(this).getWritableDatabase();
+
+        List<Long> gameIDList = new ArrayList<Long>();
+        Cursor cursor = database.query(GameEntry.TABLE_NAME,
+                new String[]{GameEntry._ID},
+                GameEntry.COLUMN_NAME_SERIES_ID + "=?",
+                whereArgs,
+                null,
+                null,
+                null);
+        if (cursor.moveToFirst())
+        {
+            while(!cursor.isAfterLast())
+            {
+                gameIDList.add(cursor.getLong(cursor.getColumnIndex(GameEntry._ID)));
+                cursor.moveToNext();
+            }
+        }
+
+        database.beginTransaction();
+        try
+        {
+            for (int i = 0; i < gameIDList.size(); i++)
+            {
+                database.delete(FrameEntry.TABLE_NAME,
+                        FrameEntry.COLUMN_NAME_GAME_ID + "=?",
+                        new String[]{String.valueOf(gameIDList.get(i))});
+            }
+            database.delete(GameEntry.TABLE_NAME,
+                    GameEntry.COLUMN_NAME_SERIES_ID + "=?",
+                    whereArgs);
+            database.delete(SeriesEntry.TABLE_NAME,
+                    SeriesEntry._ID + "=?",
+                    whereArgs);
+        }
+        catch (Exception e)
+        {
+            Log.w(TAG, "Error deleting series: " + seriesDate);
+            return false;
+        }
+        finally
+        {
+            database.endTransaction();
+        }
+
+        return true;
     }
 }
