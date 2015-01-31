@@ -16,11 +16,9 @@ import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -31,7 +29,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Arrays;
-import java.util.List;
 
 import at.markushi.ui.CircleButton;
 import ca.josephroque.bowlingcompanion.database.BowlingContract.*;
@@ -44,7 +41,7 @@ import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
  * in project Bowling Companion
  */
 
-public class GameActivity extends ActionBarActivity implements View.OnClickListener, GestureDetector.OnGestureListener
+public class GameActivity extends ActionBarActivity implements View.OnClickListener
 {
 
     /** TAG identifier for output to log */
@@ -101,9 +98,6 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
     private ListView drawerList = null;
     /** Listener for navigation drawer open and close actions */
     private ActionBarDrawerToggle drawerToggle = null;
-
-    /** GestureDetector object for double taps */
-    private GestureDetector gestureDetector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -273,75 +267,6 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                 }
             };
         drawerLayout.setDrawerListener(drawerToggle);
-
-        gestureDetector = new GestureDetector(this, this);
-        gestureDetector.setOnDoubleTapListener(new GestureDetector.OnDoubleTapListener()
-            {
-                @Override
-                public boolean onSingleTapConfirmed(MotionEvent e)
-                {
-                    return false;
-                }
-
-                @Override
-                public boolean onDoubleTap(MotionEvent e)
-                {
-                    if (Arrays.equals(balls[currentFrame][currentBall], Constants.FRAME_CLEAR))
-                    {
-                        boolean[] pinAlreadyKnockedDown = new boolean[5];
-                        if (currentBall > 0 && !Arrays.equals(balls[currentFrame][currentBall - 1], Constants.FRAME_CLEAR))
-                        {
-                            for (int j = 0; j < 5; j++)
-                            {
-                                if (balls[currentFrame][currentBall - 1][j])
-                                {
-                                    pinAlreadyKnockedDown[j] = true;
-                                }
-                            }
-                        }
-                        for (int j = currentBall; j < 3; j++)
-                        {
-                            System.arraycopy(pinAlreadyKnockedDown, 0, balls[currentFrame][j], 0, pinAlreadyKnockedDown.length);
-                            /*
-                            TODO remove if above copy works correctly
-                            for (int i = 0; i < 5; i++)
-                            {
-                                balls[currentFrame][j][i] = pinAlreadyKnockedDown[i];
-                            }*/
-                        }
-                    }
-                    else
-                    {
-                        for (int j = currentBall; j < 3; j++)
-                        {
-                            for (int i = 0; i < 5; i++)
-                            {
-                                if (currentFrame == Constants.LAST_FRAME)
-                                {
-                                    balls[currentFrame][j][i] = (j == currentBall);
-                                }
-                                else
-                                {
-                                    balls[currentFrame][j][i] = true;
-                                }
-                                if (j > currentBall)
-                                    fouls[currentFrame][j] = false;
-                            }
-                        }
-                    }
-                    updateBalls(currentFrame);
-                    updateScore();
-                    updateFouls();
-                    updateFrameColor();
-                    return false;
-                }
-
-                @Override
-                public boolean onDoubleTapEvent(MotionEvent e)
-                {
-                    return false;
-                }
-            });
     }
 
     @Override
@@ -1298,8 +1223,6 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
         currentGame = newGame;
         SQLiteDatabase database = DatabaseHelper.getInstance(this).getReadableDatabase();
 
-        Log.w(TAG, String.valueOf((gameID == null)));
-
         Cursor cursor = database.query(FrameEntry.TABLE_NAME,
                 new String[]{FrameEntry.COLUMN_NAME_FRAME_ACCESSED, FrameEntry.COLUMN_NAME_BALL[0], FrameEntry.COLUMN_NAME_BALL[1], FrameEntry.COLUMN_NAME_BALL[2], FrameEntry._ID, FrameEntry.COLUMN_NAME_FOULS},
                 FrameEntry.COLUMN_NAME_GAME_ID + "=?",
@@ -1395,23 +1318,5 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
             stringBuilder.append(b ? 1:0);
         }
         return stringBuilder.toString();
-    }
-
-    @Override
-    public boolean onSingleTapUp(MotionEvent event){return false;}
-    @Override
-    public void onLongPress(MotionEvent event){}
-    @Override
-    public void onShowPress(MotionEvent event){}
-    @Override
-    public boolean onScroll(MotionEvent event1, MotionEvent event2, float distanceX, float distanceY){return false;}
-    @Override
-    public boolean onFling(MotionEvent event1, MotionEvent event2, float velocityX, float velocityY){return false;}
-    @Override
-    public boolean onDown(MotionEvent event){return false;}
-    @Override
-    public boolean onTouchEvent(MotionEvent event)
-    {
-        return gestureDetector.onTouchEvent(event);
     }
 }
