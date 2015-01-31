@@ -93,6 +93,9 @@ public class StatsActivity extends ActionBarActivity
 
         listStats = (ListView)findViewById(R.id.list_stats);
 
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         if (gameID == -1)
         {
             if (leagueID == -1)
@@ -131,6 +134,9 @@ public class StatsActivity extends ActionBarActivity
 
         switch(id)
         {
+            case android.R.id.home:
+                this.finish();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);

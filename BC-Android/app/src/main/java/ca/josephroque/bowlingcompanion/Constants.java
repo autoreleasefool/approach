@@ -21,7 +21,7 @@ public class Constants
     public static final int LAST_FRAME = 9;
 
     /** SharedPreferences identifier for the app*/
-    public static final String MY_PREFS = "ca.josephroque.bowlingcompanion";
+    public static final String MY_PREFS = "ca.josephroque.bowlingcompanionlite";
 
     /** Indicates which preferences store values used to create quick series */
     private static final String RECENT = ".RECENT";
@@ -49,7 +49,13 @@ public class Constants
     /** Preference to save whether games are in tournament mode or not */
     public static final String PREFERENCES_TOURNAMENT_MODE = LeagueEntry.TABLE_NAME + "." + LeagueEntry.COLUMN_NAME_IS_TOURNAMENT;
     /** Preference to save whether tutorial has been shown before or not */
-    public static final String PREFERENCES_HAS_SHOWN_TUTORIAL = "HAS_SHOWN_TUTORIAL";
+    public static final String PREFERENCES_HAS_SHOWN_TUTORIAL_MAIN = "TUTORIAL_MAIN";
+    /** Preference to save whether tutorial has been shown before or not */
+    public static final String PREFERENCES_HAS_SHOWN_TUTORIAL_LEAGUE = "TUTORIAL_LEAGUE";
+    /** Preference to save whether tutorial has been shown before or not */
+    public static final String PREFERENCES_HAS_SHOWN_TUTORIAL_SERIES = "TUTORIAL_SERIES";
+    /** Preference to save whether tutorial has been shown before or not */
+    public static final String PREFERENCES_HAS_SHOWN_TUTORIAL_GAME = "TUTORIAL_GAME";
 
     /** Name of default open league, available to all bowlers */
     public static final String OPEN_LEAGUE = "Open";

@@ -30,6 +30,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Arrays;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import at.markushi.ui.CircleButton;
 import ca.josephroque.bowlingcompanion.database.BowlingContract.*;
@@ -88,6 +90,8 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
     private int[] gameScoresWithFouls = null;
     /** Title of the activity when loaded */
     private String activityTitle = null;
+    /** Indicates whether the overlay has been dismissed */
+    private boolean topLevelLayoutDismissed = true;
 
     /** HorizontalScrollView displaying score tables */
     private HorizontalScrollView hsvFrames = null;
@@ -100,7 +104,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
     /** Listener for navigation drawer open and close actions */
     private ActionBarDrawerToggle drawerToggle = null;
     /** Layout which shows the tutorial first time */
-    RelativeLayout topLevelLayout = null;
+    private RelativeLayout topLevelLayout = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -278,30 +282,6 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
         }
     }
 
-    private boolean hasShownTutorial()
-    {
-        SharedPreferences preferences = getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE);
-        boolean hasShownTutorial = preferences.getBoolean(Constants.PREFERENCES_HAS_SHOWN_TUTORIAL, false);
-
-        if (!hasShownTutorial)
-        {
-            preferences.edit()
-                    .putBoolean(Constants.PREFERENCES_HAS_SHOWN_TUTORIAL, true)
-                    .apply();
-            topLevelLayout.setVisibility(View.VISIBLE);
-            topLevelLayout.setOnTouchListener(new View.OnTouchListener()
-                {
-                    @Override
-                    public boolean onTouch(View v, MotionEvent event)
-                    {
-                        topLevelLayout.setVisibility(View.INVISIBLE);
-                        return false;
-                    }
-                });
-        }
-        return hasShownTutorial;
-    }
-
     @Override
     protected void onPostCreate(Bundle savedInstanceState)
     {
@@ -373,6 +353,11 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
+        if (topLevelLayout.getVisibility() == View.VISIBLE)
+        {
+            topLevelLayout.setVisibility(View.INVISIBLE);
+        }
+
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
@@ -426,6 +411,11 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
     @Override
     public void onClick(View view)
     {
+        if (!topLevelLayoutDismissed)
+        {
+            return;
+        }
+
         int frameToSet = 0;
         int ballToSet = 0;
 
@@ -1239,10 +1229,17 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
             database.endTransaction();
         }
 
+        /*
+        TODO: commented out code, "Game saved" toast message
+        Removed, because it got distracting and did not report useful information.
+        May re-enable at a later date, probably will delete
+        If deleted, also remove shouldShowSavedMessage parameter from method
+
         if (shouldShowSavedMessage)
         {
             Toast.makeText(this, "Game saved!", Toast.LENGTH_SHORT).show();
         }
+        */
     }
 
     /**
@@ -1343,5 +1340,47 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
             stringBuilder.append(b ? 1:0);
         }
         return stringBuilder.toString();
+    }
+
+    /**
+     * Displays a tutorial overlay if one hasn't been shown to
+     * the user yet
+     *
+     * @return true if the tutorial has already been shown, false otherwise
+     */
+    private boolean hasShownTutorial()
+    {
+        SharedPreferences preferences = getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE);
+        boolean hasShownTutorial = preferences.getBoolean(Constants.PREFERENCES_HAS_SHOWN_TUTORIAL_GAME, false);
+
+        if (!hasShownTutorial)
+        {
+            topLevelLayoutDismissed = false;
+            preferences.edit()
+                    .putBoolean(Constants.PREFERENCES_HAS_SHOWN_TUTORIAL_GAME, true)
+                    .apply();
+            topLevelLayout.setVisibility(View.VISIBLE);
+            topLevelLayout.setOnTouchListener(new View.OnTouchListener()
+            {
+                @Override
+                public boolean onTouch(View v, MotionEvent event)
+                {
+                    topLevelLayout.setVisibility(View.INVISIBLE);
+
+                    Timer dismissTimer = new Timer();
+                    dismissTimer.schedule(new TimerTask()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            topLevelLayoutDismissed = true;
+                        }
+                    }, 100);
+
+                    return false;
+                }
+            });
+        }
+        return hasShownTutorial;
     }
 }

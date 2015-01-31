@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
@@ -12,6 +13,9 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.RelativeLayout;
 
 import java.util.prefs.Preferences;
 
@@ -35,11 +39,18 @@ public class LeagueActivity extends ActionBarActivity
     /** TAG identifier for output to log */
     private static final String TAG = "LeagueActivity";
 
+    /** Instance of the activity view pager */
     private ViewPager viewPager = null;
+    /** Instance of the activity action bar */
     private ActionBar actionBar = null;
+    /** Names for the tabs */
     private String[] tabs = {"Leagues", "Tournaments"};
 
+    /** Indicates currently selected tab */
     private int currentTabPosition = 0;
+
+    /** Layout which shows the tutorial first time */
+    private RelativeLayout topLevelLayout = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -74,6 +85,12 @@ public class LeagueActivity extends ActionBarActivity
             @Override
             public void onPageScrollStateChanged(int state){}
         });
+
+        topLevelLayout = (RelativeLayout)findViewById(R.id.league_top_layout);
+        if (hasShownTutorial())
+        {
+            topLevelLayout.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override
@@ -100,6 +117,11 @@ public class LeagueActivity extends ActionBarActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
+        if (topLevelLayout.getVisibility() == View.VISIBLE)
+        {
+            topLevelLayout.setVisibility(View.INVISIBLE);
+        }
+
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
@@ -121,6 +143,11 @@ public class LeagueActivity extends ActionBarActivity
     @Override
     public void onTabSelected(ActionBar.Tab tab, FragmentTransaction transaction)
     {
+        if (topLevelLayout != null && topLevelLayout.getVisibility() == View.VISIBLE)
+        {
+            topLevelLayout.setVisibility(View.INVISIBLE);
+        }
+
         viewPager.setCurrentItem(tab.getPosition());
         currentTabPosition = tab.getPosition();
     }
@@ -183,5 +210,35 @@ public class LeagueActivity extends ActionBarActivity
     public void onCancelNewLeague()
     {
         //do nothing
+    }
+
+    /**
+     * Displays a tutorial overlay if one hasn't been shown to
+     * the user yet
+     *
+     * @return true if the tutorial has already been shown, false otherwise
+     */
+    private boolean hasShownTutorial()
+    {
+        SharedPreferences preferences = getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE);
+        boolean hasShownTutorial = preferences.getBoolean(Constants.PREFERENCES_HAS_SHOWN_TUTORIAL_LEAGUE, false);
+
+        if (!hasShownTutorial)
+        {
+            preferences.edit()
+                    .putBoolean(Constants.PREFERENCES_HAS_SHOWN_TUTORIAL_LEAGUE, true)
+                    .apply();
+            topLevelLayout.setVisibility(View.VISIBLE);
+            topLevelLayout.setOnTouchListener(new View.OnTouchListener()
+            {
+                @Override
+                public boolean onTouch(View v, MotionEvent event)
+                {
+                    topLevelLayout.setVisibility(View.INVISIBLE);
+                    return false;
+                }
+            });
+        }
+        return hasShownTutorial;
     }
 }

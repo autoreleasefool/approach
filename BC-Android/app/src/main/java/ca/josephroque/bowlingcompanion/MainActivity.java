@@ -13,11 +13,13 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -54,6 +56,9 @@ public class MainActivity extends ActionBarActivity
     private long recentLeagueID = -1;
     /** Number of games in most recently selected league */
     private int recentNumberOfGames = -1;
+
+    /** Layout which shows the tutorial first time */
+    private RelativeLayout topLevelLayout = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -130,6 +135,12 @@ public class MainActivity extends ActionBarActivity
                 SeriesActivity.addNewSeries(MainActivity.this, recentBowlerID, recentLeagueID, recentNumberOfGames);
             }
         });
+
+        topLevelLayout = (RelativeLayout)findViewById(R.id.main_top_layout);
+        if (hasShownTutorial())
+        {
+            topLevelLayout.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override
@@ -140,15 +151,19 @@ public class MainActivity extends ActionBarActivity
         SharedPreferences preferences = getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE);
         recentBowlerID = preferences.getLong(Constants.PREFERENCES_ID_BOWLER_RECENT, -1);
         recentLeagueID = preferences.getLong(Constants.PREFERENCES_ID_LEAGUE_RECENT, -1);
-        boolean hasShownTutorial = preferences.getBoolean(Constants.PREFERENCES_HAS_SHOWN_TUTORIAL, false);
 
         //Clearing all preferences so app does not store unnecessary data
         getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE)
                 .edit()
-                .clear()
-                .putLong(Constants.PREFERENCES_ID_BOWLER_RECENT, recentBowlerID)
-                .putLong(Constants.PREFERENCES_ID_LEAGUE_RECENT, recentLeagueID)
-                .putBoolean(Constants.PREFERENCES_HAS_SHOWN_TUTORIAL, hasShownTutorial)
+                .remove(Constants.PREFERENCES_NAME_BOWLER)
+                .remove(Constants.PREFERENCES_NAME_LEAGUE)
+                .remove(Constants.PREFERENCES_ID_BOWLER)
+                .remove(Constants.PREFERENCES_ID_LEAGUE)
+                .remove(Constants.PREFERENCES_ID_SERIES)
+                .remove(Constants.PREFERENCES_ID_GAME)
+                .remove(Constants.PREFERENCES_NUMBER_OF_GAMES)
+                .remove(Constants.PREFERENCES_TOURNAMENT_MODE)
+                .remove(Constants.PREFERENCES_GAME_NUMBER)
                 .apply();
 
         SQLiteDatabase database = DatabaseHelper.getInstance(this).getReadableDatabase();
@@ -215,6 +230,11 @@ public class MainActivity extends ActionBarActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
+        if (topLevelLayout.getVisibility() == View.VISIBLE)
+        {
+            topLevelLayout.setVisibility(View.INVISIBLE);
+        }
+
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
@@ -238,6 +258,19 @@ public class MainActivity extends ActionBarActivity
     {
         super.onDestroy();
         DatabaseHelper.closeInstance();
+
+        /*
+        TODO: commented out code, tutorial test
+        Used to test tutorial, so the tutorial is displayed as often
+        as possible. When tutorial testing is complete, remove
+
+        getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE)
+                .edit()
+                .putBoolean(Constants.PREFERENCES_HAS_SHOWN_TUTORIAL_MAIN, false)
+                .putBoolean(Constants.PREFERENCES_HAS_SHOWN_TUTORIAL_LEAGUE, false)
+                .putBoolean(Constants.PREFERENCES_HAS_SHOWN_TUTORIAL_SERIES, false)
+                .putBoolean(Constants.PREFERENCES_HAS_SHOWN_TUTORIAL_GAME, false)
+                .commit();*/
     }
 
     /**
@@ -387,5 +420,35 @@ public class MainActivity extends ActionBarActivity
         }
 
         return true;
+    }
+
+    /**
+     * Displays a tutorial overlay if one hasn't been shown to
+     * the user yet
+     *
+     * @return true if the tutorial has already been shown, false otherwise
+     */
+    private boolean hasShownTutorial()
+    {
+        SharedPreferences preferences = getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE);
+        boolean hasShownTutorial = preferences.getBoolean(Constants.PREFERENCES_HAS_SHOWN_TUTORIAL_MAIN, false);
+
+        if (!hasShownTutorial)
+        {
+            preferences.edit()
+                    .putBoolean(Constants.PREFERENCES_HAS_SHOWN_TUTORIAL_MAIN, true)
+                    .apply();
+            topLevelLayout.setVisibility(View.VISIBLE);
+            topLevelLayout.setOnTouchListener(new View.OnTouchListener()
+            {
+                @Override
+                public boolean onTouch(View v, MotionEvent event)
+                {
+                    topLevelLayout.setVisibility(View.INVISIBLE);
+                    return false;
+                }
+            });
+        }
+        return hasShownTutorial;
     }
 }

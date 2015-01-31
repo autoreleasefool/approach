@@ -11,9 +11,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -51,6 +53,9 @@ public class SeriesActivity extends ActionBarActivity
     private List<List<Integer>> seriesGamesList = null;
     /** Adapter for the ListView of series */
     private SeriesListAdapter seriesAdapter = null;
+
+    /** Layout which shows the tutorial first time */
+    private RelativeLayout topLevelLayout = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -120,6 +125,12 @@ public class SeriesActivity extends ActionBarActivity
                     startActivity(gameIntent);
                 }
             });
+
+        topLevelLayout = (RelativeLayout)findViewById(R.id.series_top_layout);
+        if (hasShownTutorial())
+        {
+            topLevelLayout.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override
@@ -192,6 +203,11 @@ public class SeriesActivity extends ActionBarActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
+        if (topLevelLayout.getVisibility() == View.VISIBLE)
+        {
+            topLevelLayout.setVisibility(View.INVISIBLE);
+        }
+
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
@@ -354,5 +370,35 @@ public class SeriesActivity extends ActionBarActivity
         }
 
         return true;
+    }
+
+    /**
+     * Displays a tutorial overlay if one hasn't been shown to
+     * the user yet
+     *
+     * @return true if the tutorial has already been shown, false otherwise
+     */
+    private boolean hasShownTutorial()
+    {
+        SharedPreferences preferences = getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE);
+        boolean hasShownTutorial = preferences.getBoolean(Constants.PREFERENCES_HAS_SHOWN_TUTORIAL_SERIES, false);
+
+        if (!hasShownTutorial)
+        {
+            preferences.edit()
+                    .putBoolean(Constants.PREFERENCES_HAS_SHOWN_TUTORIAL_SERIES, true)
+                    .apply();
+            topLevelLayout.setVisibility(View.VISIBLE);
+            topLevelLayout.setOnTouchListener(new View.OnTouchListener()
+            {
+                @Override
+                public boolean onTouch(View v, MotionEvent event)
+                {
+                    topLevelLayout.setVisibility(View.INVISIBLE);
+                    return false;
+                }
+            });
+        }
+        return hasShownTutorial;
     }
 }
