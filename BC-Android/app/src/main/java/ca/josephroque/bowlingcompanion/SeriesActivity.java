@@ -302,6 +302,7 @@ public class SeriesActivity extends ActionBarActivity
         String[] whereArgs = {String.valueOf(selectedSeriesID)};
         SQLiteDatabase database = DatabaseHelper.getInstance(this).getWritableDatabase();
 
+        //Finds all IDs of games belonging to the series, adds them to a list
         List<Long> gameIDList = new ArrayList<Long>();
         Cursor cursor = database.query(GameEntry.TABLE_NAME,
                 new String[]{GameEntry._ID},
@@ -319,6 +320,8 @@ public class SeriesActivity extends ActionBarActivity
             }
         }
 
+        //Deletes all rows in frame table associated to game IDs found above,
+        //along with rows in games and series table associated to series ID
         database.beginTransaction();
         try
         {
