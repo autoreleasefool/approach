@@ -13,6 +13,8 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.util.prefs.Preferences;
+
 import ca.josephroque.bowlingcompanion.adapter.LeagueTabsPagerAdapter;
 import ca.josephroque.bowlingcompanion.database.BowlingContract;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
@@ -72,6 +74,19 @@ public class LeagueActivity extends ActionBarActivity
             @Override
             public void onPageScrollStateChanged(int state){}
         });
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+
+        getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE)
+                .edit()
+                .putLong(Constants.PREFERENCES_ID_SERIES, -1)
+                .putLong(Constants.PREFERENCES_ID_GAME, -1)
+                .putLong(Constants.PREFERENCES_ID_LEAGUE, -1)
+                .apply();
     }
 
     @Override

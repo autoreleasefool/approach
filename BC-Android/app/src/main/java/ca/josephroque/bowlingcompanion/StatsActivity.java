@@ -144,9 +144,7 @@ public class StatsActivity extends ActionBarActivity
      */
     private void loadBowlerOrLeagueStats(boolean shouldGetLeagueStats)
     {
-        final int NUMBER_OF_GENERAL_DETAILS = (shouldGetLeagueStats)
-                ? 2
-                : 1;
+        final int NUMBER_OF_GENERAL_DETAILS = (shouldGetLeagueStats) ? 2 : 1;
         List<String> statNamesList = new ArrayList<String>();
         statNamesList.add("Bowler");
         if (shouldGetLeagueStats)
@@ -162,9 +160,11 @@ public class StatsActivity extends ActionBarActivity
         statValuesList.add(bowlerName);
         if (shouldGetLeagueStats)
             statValuesList.add(leagueName);
-        for (int i = statValuesList.size(); i < statNamesList.size(); i++)
+        int i = statValuesList.size();
+        while (i < statNamesList.size())
         {
             statValuesList.add("--");
+            i++;
         }
 
         int[] statValues = new int[STATS_MIDDLE_GENERAL.length + STATS_MIDDLE_DETAILED.length
@@ -186,14 +186,14 @@ public class StatsActivity extends ActionBarActivity
                         cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_BALL[1])),
                         cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_BALL[2]))};
                 boolean[][] balls = new boolean[3][5];
-                for (int i = 0; i < 5; i++)
+                for (i = 0; i < 5; i++)
                 {
                     balls[0][i] = ballStrings[0].charAt(i) == '1';
                     balls[1][i] = ballStrings[1].charAt(i) == '1';
                     balls[2][i] = ballStrings[2].charAt(i) == '1';
                 }
 
-                for (int i = 1; i <= 3; i++)
+                for (i = 1; i <= 3; i++)
                 {
                     if (frameFouls.contains(String.valueOf(i)))
                         statValues[Constants.STAT_FOULS]++;
@@ -317,10 +317,10 @@ public class StatsActivity extends ActionBarActivity
             statValues[Constants.STAT_AVERAGE] =
                     statValues[Constants.STAT_TOTAL_PINFALL] / statValues[Constants.STAT_NUMBER_OF_GAMES];
             statValues[Constants.STAT_AVERAGE_PINS_LEFT_ON_DECK] =
-                    statValues[Constants.STAT_AVERAGE_PINS_LEFT_ON_DECK] / statValues[Constants.STAT_NUMBER_OF_GAMES];
+                    statValues[Constants.STAT_PINS_LEFT_ON_DECK] / statValues[Constants.STAT_NUMBER_OF_GAMES];
         }
 
-        setGeneralAndDetailedStatValues(statValuesList, statValues, totalShotsAtMiddle, spareChances, NUMBER_OF_GENERAL_DETAILS);
+        setGeneralAndDetailedStatValues(statValuesList, statValues, totalShotsAtMiddle, spareChances, NUMBER_OF_GENERAL_DETAILS, statNamesList);
         StatsListAdapter statsListAdapter = new StatsListAdapter(this, statNamesList, statValuesList);
         listStats.setAdapter(statsListAdapter);
     }
@@ -344,9 +344,11 @@ public class StatsActivity extends ActionBarActivity
         statValuesList.add(bowlerName);
         statValuesList.add(leagueName);
         statValuesList.add(String.valueOf(gameNumber));
-        for (int i = statValuesList.size(); i < statNamesList.size(); i++)
+        int i = statValuesList.size();
+        while (i < statNamesList.size())
         {
             statValuesList.add("--");
+            i++;
         }
 
         int[] statValues = new int[STATS_MIDDLE_GENERAL.length + STATS_MIDDLE_DETAILED.length
@@ -369,14 +371,14 @@ public class StatsActivity extends ActionBarActivity
                         cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_BALL[1])),
                         cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_BALL[2]))};
                 boolean[][] balls = new boolean[3][5];
-                for (int i = 0; i < 5; i++)
+                for (i = 0; i < 5; i++)
                 {
                     balls[0][i] = ballStrings[0].charAt(i) == '1';
                     balls[1][i] = ballStrings[1].charAt(i) == '1';
                     balls[2][i] = ballStrings[2].charAt(i) == '1';
                 }
 
-                for (int i = 1; i <= 3; i++)
+                for (i = 1; i <= 3; i++)
                 {
                     if (frameFouls.contains(String.valueOf(i)))
                         statValues[Constants.STAT_FOULS]++;
@@ -468,7 +470,7 @@ public class StatsActivity extends ActionBarActivity
             }
         }
 
-        setGeneralAndDetailedStatValues(statValuesList, statValues, totalShotsAtMiddle, spareChances, NUMBER_OF_GENERAL_DETAILS);
+        setGeneralAndDetailedStatValues(statValuesList, statValues, totalShotsAtMiddle, spareChances, NUMBER_OF_GENERAL_DETAILS, statNamesList);
         StatsListAdapter statsListAdapter = new StatsListAdapter(this, statNamesList, statValuesList);
         listStats.setAdapter(statsListAdapter);
     }
@@ -597,29 +599,33 @@ public class StatsActivity extends ActionBarActivity
      * @param statValues calculated values of status
      * @param totalShotsAtMiddle number of shots the bowler has had at the middle
      * @param spareChances number of chances the bowler has had to spare
-     * @param currentStatPosition next position to set in the list of strings
+     * @param statOffset number of stats at start of list which do not need to be set
      */
-    private void setGeneralAndDetailedStatValues(final List<String> statValuesList, final int[] statValues, final int totalShotsAtMiddle, final int spareChances, int currentStatPosition)
+    private void setGeneralAndDetailedStatValues(final List<String> statValuesList, final int[] statValues, final int totalShotsAtMiddle, final int spareChances, final int statOffset, List<String> statNamesList)
     {
+        int currentStatPosition = statOffset;
         final DecimalFormat decimalFormat = new DecimalFormat("##0.#");
         if (statValues[Constants.STAT_MIDDLE_HIT] > 0)
         {
-            statValuesList.set(currentStatPosition++,
+            statValuesList.set(currentStatPosition,
                     decimalFormat.format(statValues[Constants.STAT_MIDDLE_HIT] / (double)totalShotsAtMiddle * 100)
                     + "% [" + statValues[Constants.STAT_MIDDLE_HIT] + "/" + totalShotsAtMiddle + "]");
         }
+        currentStatPosition++;
         if (statValues[Constants.STAT_STRIKES] > 0)
         {
-            statValuesList.set(currentStatPosition++,
+            statValuesList.set(currentStatPosition,
                     decimalFormat.format(statValues[Constants.STAT_STRIKES] / (double) totalShotsAtMiddle * 100)
                     + "% [" + statValues[Constants.STAT_STRIKES] + "/" + totalShotsAtMiddle + "]");
         }
+        currentStatPosition++;
         if (statValues[Constants.STAT_SPARE_CONVERSIONS] > 0)
         {
-            statValuesList.set(currentStatPosition++,
+            statValuesList.set(currentStatPosition,
                     decimalFormat.format(statValues[Constants.STAT_SPARE_CONVERSIONS] / (double) spareChances * 100)
                             + "% [" + statValues[Constants.STAT_SPARE_CONVERSIONS] + "/" + spareChances + "]");
         }
+        currentStatPosition++;
 
         for (int i = Constants.STAT_HEAD_PINS; i < Constants.STAT_RIGHT_SPLITS_SPARED; i += 2, currentStatPosition += 2)
         {
@@ -640,10 +646,7 @@ public class StatsActivity extends ActionBarActivity
         final int statValuesListSize = statValuesList.size();
         for (int i = Constants.STAT_FOULS; i <= Constants.STAT_NUMBER_OF_GAMES && statValuesListSize > currentStatPosition; i++, currentStatPosition++)
         {
-            if (statValues[i] > 0)
-            {
-                statValuesList.set(currentStatPosition, String.valueOf(statValues[i]));
-            }
+            statValuesList.set(currentStatPosition, String.valueOf(statValues[i]));
         }
     }
 

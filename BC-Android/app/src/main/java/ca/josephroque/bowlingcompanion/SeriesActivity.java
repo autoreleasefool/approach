@@ -133,6 +133,11 @@ public class SeriesActivity extends ActionBarActivity
         leagueID = preferences.getLong(Constants.PREFERENCES_ID_LEAGUE, -1);
         numberOfGames = preferences.getInt(Constants.PREFERENCES_NUMBER_OF_GAMES, -1);
 
+        preferences.edit()
+                .putLong(Constants.PREFERENCES_ID_GAME, -1)
+                .putLong(Constants.PREFERENCES_ID_SERIES, -1)
+                .apply();
+
         String rawSeriesQuery = "SELECT "
                 + SeriesEntry.TABLE_NAME + "." + SeriesEntry._ID + " AS sid, "
                 + SeriesEntry.COLUMN_NAME_DATE_CREATED + ", "
