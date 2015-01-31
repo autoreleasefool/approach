@@ -125,6 +125,17 @@
             android:layout_alignEnd="@+id/button_pin_4"/>
     </RelativeLayout>
 
+    <RelativeLayout android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingLeft="@dimen/activity_horizontal_margin"
+                    android:paddingRight="@dimen/activity_horizontal_margin"
+                    android:paddingTop="@dimen/activity_vertical_margin"
+                    android:paddingBottom="@dimen/activity_vertical_margin"
+                    android:background="#88666666"
+                    android:id="@+id/game_top_layout">
+
+    </RelativeLayout>
+
     <ListView android:id="@+id/left_drawer_games"
               android:layout_width="240dp"
               android:layout_height="match_parent"

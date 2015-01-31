@@ -48,6 +48,8 @@ public class Constants
     public static final String PREFERENCES_ID_LEAGUE_RECENT= LeagueEntry.TABLE_NAME + "." + LeagueEntry._ID + RECENT;
     /** Preference to save whether games are in tournament mode or not */
     public static final String PREFERENCES_TOURNAMENT_MODE = LeagueEntry.TABLE_NAME + "." + LeagueEntry.COLUMN_NAME_IS_TOURNAMENT;
+    /** Preference to save whether tutorial has been shown before or not */
+    public static final String PREFERENCES_HAS_SHOWN_TUTORIAL = "HAS_SHOWN_TUTORIAL";
 
     /** Name of default open league, available to all bowlers */
     public static final String OPEN_LEAGUE = "Open";

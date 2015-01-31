@@ -19,6 +19,7 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -98,6 +99,8 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
     private ListView drawerList = null;
     /** Listener for navigation drawer open and close actions */
     private ActionBarDrawerToggle drawerToggle = null;
+    /** Layout which shows the tutorial first time */
+    RelativeLayout topLevelLayout = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -267,6 +270,36 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                 }
             };
         drawerLayout.setDrawerListener(drawerToggle);
+
+        topLevelLayout = (RelativeLayout)findViewById(R.id.game_top_layout);
+        if (hasShownTutorial())
+        {
+            topLevelLayout.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private boolean hasShownTutorial()
+    {
+        SharedPreferences preferences = getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE);
+        boolean hasShownTutorial = preferences.getBoolean(Constants.PREFERENCES_HAS_SHOWN_TUTORIAL, false);
+
+        if (!hasShownTutorial)
+        {
+            preferences.edit()
+                    .putBoolean(Constants.PREFERENCES_HAS_SHOWN_TUTORIAL, true)
+                    .apply();
+            topLevelLayout.setVisibility(View.VISIBLE);
+            topLevelLayout.setOnTouchListener(new View.OnTouchListener()
+                {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event)
+                    {
+                        topLevelLayout.setVisibility(View.INVISIBLE);
+                        return false;
+                    }
+                });
+        }
+        return hasShownTutorial;
     }
 
     @Override
@@ -1244,14 +1277,6 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                     String ballString = cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_BALL[i]));
                     boolean[] ballBoolean = {getBoolean(ballString.charAt(0)), getBoolean(ballString.charAt(1)), getBoolean(ballString.charAt(2)), getBoolean(ballString.charAt(3)), getBoolean(ballString.charAt(4))};
                     balls[currentFrameIterator][i] = ballBoolean;
-                    /*
-                    TODO replaced list with array, so this may cause errors. Delete later
-                    if no bugs
-                    balls[currentFrameIterator].add(ballChar);
-                    if (balls[currentFrameIterator).size() > 3)
-                    {
-                        balls[currentFrameIterator).remove(0);
-                    }*/
                 }
                 String foulsOfFrame = cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_FOULS));
                 for (int ballCounter = 0; ballCounter < 3; ballCounter++)

@@ -140,6 +140,7 @@ public class MainActivity extends ActionBarActivity
         SharedPreferences preferences = getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE);
         recentBowlerID = preferences.getLong(Constants.PREFERENCES_ID_BOWLER_RECENT, -1);
         recentLeagueID = preferences.getLong(Constants.PREFERENCES_ID_LEAGUE_RECENT, -1);
+        boolean hasShownTutorial = preferences.getBoolean(Constants.PREFERENCES_HAS_SHOWN_TUTORIAL, false);
 
         //Clearing all preferences so app does not store unnecessary data
         getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE)
@@ -147,6 +148,7 @@ public class MainActivity extends ActionBarActivity
                 .clear()
                 .putLong(Constants.PREFERENCES_ID_BOWLER_RECENT, recentBowlerID)
                 .putLong(Constants.PREFERENCES_ID_LEAGUE_RECENT, recentLeagueID)
+                .putBoolean(Constants.PREFERENCES_HAS_SHOWN_TUTORIAL, hasShownTutorial)
                 .apply();
 
         SQLiteDatabase database = DatabaseHelper.getInstance(this).getReadableDatabase();
