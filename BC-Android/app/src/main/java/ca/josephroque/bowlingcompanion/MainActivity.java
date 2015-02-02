@@ -71,6 +71,7 @@ public class MainActivity extends ActionBarActivity
         bowlerIDsList = new ArrayList<Long>();
         bowlerAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, bowlerNamesList);
         listBowlerNames.setAdapter(bowlerAdapter);
+        listBowlerNames.setLongClickable(true);
 
         listBowlerNames.setOnItemClickListener(new AdapterView.OnItemClickListener()
             {
@@ -120,6 +121,15 @@ public class MainActivity extends ActionBarActivity
 
                     Intent leagueIntent = new Intent(MainActivity.this, LeagueActivity.class);
                     startActivity(leagueIntent);
+                }
+            });
+        listBowlerNames.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
+            {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
+                {
+                    showDeleteBowlerDialog(position, false);
+                    return true;
                 }
             });
 
@@ -324,9 +334,9 @@ public class MainActivity extends ActionBarActivity
                         {
                             //do nothing
                         }
-                    });
-            AlertDialog alert = builder.create();
-            alert.show();
+                    })
+                    .create()
+                    .show();
             return;
         }
 
@@ -374,6 +384,56 @@ public class MainActivity extends ActionBarActivity
     public void onCancelNewBowler()
     {
         //does nothing
+    }
+
+    /**
+     * Displays a dialog to the user to delete data of a bowler
+     *
+     * @param position selected bowler from list view
+     * @param secondChance if false, will show a second dialog to confirm option. If
+     *                     true, selecting 'delete' will delete all data of bowler
+     */
+    private void showDeleteBowlerDialog(final int position, boolean secondChance)
+    {
+        final long bowlerID = bowlerIDsList.get(position);
+        final String bowlerName = bowlerNamesList.get(position);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        if (secondChance)
+        {
+            builder.setMessage("WARNING: This action cannot be undone! Still delete all data for " + bowlerName + "?")
+                    .setPositiveButton("Delete", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                deleteBowler(bowlerID);
+                            }
+                        });
+        }
+        else
+        {
+            builder.setMessage("Delete all data for " + bowlerName + "?")
+                    .setPositiveButton("Delete", new DialogInterface.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which)
+                        {
+                            showDeleteBowlerDialog(position, true);
+                        }
+                    });
+        }
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+            {
+                @Override
+                public void onClick(DialogInterface dialog, int which)
+                {
+                    //do nothing
+                }
+            })
+                .create()
+                .show();
     }
 
     /**
