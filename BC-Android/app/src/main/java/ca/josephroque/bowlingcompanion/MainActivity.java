@@ -332,7 +332,7 @@ public class MainActivity extends ActionBarActivity
                         @Override
                         public void onClick(DialogInterface dialog, int which)
                         {
-                            //do nothing
+                            dialog.dismiss();
                         }
                     })
                     .create()

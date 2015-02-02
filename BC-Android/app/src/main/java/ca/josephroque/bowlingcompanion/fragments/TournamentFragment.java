@@ -286,7 +286,7 @@ public class TournamentFragment extends Fragment
                         @Override
                         public void onClick(DialogInterface dialog, int which)
                         {
-                            //do nothing
+                            dialog.dismiss();
                         }
                     });
             AlertDialog alert = builder.create();

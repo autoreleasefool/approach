@@ -238,7 +238,7 @@ public class LeagueFragment extends Fragment
                         @Override
                         public void onClick(DialogInterface dialog, int which)
                         {
-                            //do nothing
+                            dialog.dismiss();
                         }
                     });
             AlertDialog alert = builder.create();
@@ -288,6 +288,24 @@ public class LeagueFragment extends Fragment
     {
         final String leagueName = leagueNamesList.get(position);
         final long leagueID = leagueIDList.get(position);
+
+        if (leagueName.equals(Constants.OPEN_LEAGUE))
+        {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage("The league \"" + leagueName + "\" cannot be deleted.")
+                    .setCancelable(false)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                dialog.dismiss();
+                            }
+                        })
+                    .create()
+                    .show();
+            return;
+        }
 
         DatabaseHelper.deleteData(getActivity(),
                 new DatabaseHelper.DataDeleter()
