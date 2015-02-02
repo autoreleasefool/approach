@@ -1,7 +1,12 @@
 package ca.josephroque.bowlingcompanion.database;
 
+import ca.josephroque.bowlingcompanion.MainActivity;
 import ca.josephroque.bowlingcompanion.database.BowlingContract.*;
+
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -120,5 +125,68 @@ public class DatabaseHelper extends SQLiteOpenHelper
         db.execSQL("DROP TABLE IF EXISTS " + GameEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + FrameEntry.TABLE_NAME);
         onCreate(db);
+    }
+
+    /**
+     * Displays a dialog to the user to delete data in the database
+     *
+     * @param context the Activity context
+*                @param deleter
+     * @param position selected bowler from list view
+     * @param secondChance if false, will show a second dialog to confirm option. If
+     *                     true, selecting 'delete' will delete all data of bowler
+     */
+    /**
+     * Displays a dialog to the user to delete data in the database
+     *
+     * @param context the Activity context
+     * @param deleter interface which should be overridden to call relevant method
+     * @param secondChance if false, will show a second dialog to confirm option. If
+     *                     true, selecting 'delete' will delete all data of bowler
+     * @param name identifier for data to be deleted
+     */
+    public static void deleteData(final Activity context, final DataDeleter deleter, final boolean secondChance, final String name)
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        if (secondChance)
+        {
+            builder.setMessage("WARNING: This action cannot be undone! Still delete all data for " + name + "?")
+                    .setPositiveButton("Delete", new DialogInterface.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which)
+                        {
+                            deleter.execute();
+                        }
+                    });
+        }
+        else
+        {
+            builder.setMessage("Delete all data for " + name + "?")
+                    .setPositiveButton("Delete", new DialogInterface.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which)
+                        {
+                            deleteData(context, deleter, true, name);
+                        }
+                    });
+        }
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                //do nothing
+            }
+        })
+                .create()
+                .show();
+    }
+
+    public static interface DataDeleter
+    {
+        public void execute();
     }
 }

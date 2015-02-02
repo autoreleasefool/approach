@@ -70,6 +70,7 @@ public class TournamentFragment extends Fragment
 
         tournamentAdapter = new LeagueAverageListAdapter(getActivity(), tournamentIDList, tournamentNamesList, tournamentAverageList, tournamentNumberOfGamesList);
         tournamentListView.setAdapter(tournamentAdapter);
+        tournamentListView.setLongClickable(true);
         tournamentListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
             @Override
@@ -165,6 +166,15 @@ public class TournamentFragment extends Fragment
                 gameIntent.putExtra(GameEntry.TABLE_NAME + "." + GameEntry._ID, gameID);
                 gameIntent.putExtra(FrameEntry.TABLE_NAME + "." + FrameEntry._ID, frameID);
                 startActivity(gameIntent);
+            }
+        });
+        tournamentListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
+        {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
+            {
+                showDeleteTournamentDialog(position);
+                return true;
             }
         });
 
@@ -362,6 +372,29 @@ public class TournamentFragment extends Fragment
         gameIntent.putExtra(GameEntry.TABLE_NAME + "." + GameEntry._ID, gameID);
         gameIntent.putExtra(FrameEntry.  TABLE_NAME + "." + FrameEntry._ID, frameID);
         getActivity().startActivity(gameIntent);
+    }
+
+    /**
+     * Shows a dialog to delete data relevant to a tournament
+     *
+     * @param position position of selected item to delete
+     */
+    private void showDeleteTournamentDialog(final int position)
+    {
+        final String tournamentName = tournamentNamesList.get(position);
+        final long tournamentID = tournamentIDList.get(position);
+
+        DatabaseHelper.deleteData(getActivity(),
+                new DatabaseHelper.DataDeleter()
+                {
+                    @Override
+                    public void execute()
+                    {
+                        deleteTournament(tournamentID);
+                    }
+                },
+                false,
+                tournamentName);
     }
 
     /**

@@ -125,7 +125,7 @@ public class LeagueFragment extends Fragment
                 @Override
                 public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
                 {
-                    showDeleteLeagueDialog(position, false);
+                    showDeleteLeagueDialog(position);
                     return true;
                 }
             });
@@ -280,53 +280,26 @@ public class LeagueFragment extends Fragment
     }
 
     /**
-     * Displays a dialog to the user to delete data of a league
+     * Shows a dialog to delete data relevant to a league
      *
-     * @param position selected league from list view
-     * @param secondChance if false, will show a second dialog to confirm option. If
-     *                     true, selecting 'delete' will delete all data of league
+     * @param position position of selected item to delete
      */
-    private void showDeleteLeagueDialog(final int position, boolean secondChance)
+    private void showDeleteLeagueDialog(final int position)
     {
-        final long leagueID = leagueIDList.get(position);
         final String leagueName = leagueNamesList.get(position);
+        final long leagueID = leagueIDList.get(position);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        if (secondChance)
-        {
-            builder.setMessage("WARNING: This action cannot be undone! Still delete all data for " + leagueName + "?")
-                    .setPositiveButton("Delete", new DialogInterface.OnClickListener()
+        DatabaseHelper.deleteData(getActivity(),
+                new DatabaseHelper.DataDeleter()
+                {
+                    @Override
+                    public void execute()
                     {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which)
-                        {
-                            deleteLeague(leagueID);
-                        }
-                    });
-        }
-        else
-        {
-            builder.setMessage("Delete all data for " + leagueName + "?")
-                    .setPositiveButton("Delete", new DialogInterface.OnClickListener()
-                    {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which)
-                        {
-                            showDeleteLeagueDialog(position, true);
-                        }
-                    });
-        }
-
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
-        {
-            @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
-                //do nothing
-            }
-        })
-                .create()
-                .show();
+                        deleteLeague(leagueID);
+                    }
+                },
+                false,
+                leagueName);
     }
 
     /**

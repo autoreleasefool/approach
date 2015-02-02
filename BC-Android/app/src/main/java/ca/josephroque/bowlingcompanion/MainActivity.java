@@ -128,7 +128,7 @@ public class MainActivity extends ActionBarActivity
                 @Override
                 public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
                 {
-                    showDeleteBowlerDialog(position, false);
+                    showDeleteBowlerDialog(position);
                     return true;
                 }
             });
@@ -387,53 +387,26 @@ public class MainActivity extends ActionBarActivity
     }
 
     /**
-     * Displays a dialog to the user to delete data of a bowler
+     * Shows a dialog to delete data relevant to a bowler
      *
-     * @param position selected bowler from list view
-     * @param secondChance if false, will show a second dialog to confirm option. If
-     *                     true, selecting 'delete' will delete all data of bowler
+     * @param position position of selected item to delete
      */
-    private void showDeleteBowlerDialog(final int position, boolean secondChance)
+    private void showDeleteBowlerDialog(final int position)
     {
-        final long bowlerID = bowlerIDsList.get(position);
         final String bowlerName = bowlerNamesList.get(position);
+        final long bowlerID = bowlerIDsList.get(position);
 
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        if (secondChance)
-        {
-            builder.setMessage("WARNING: This action cannot be undone! Still delete all data for " + bowlerName + "?")
-                    .setPositiveButton("Delete", new DialogInterface.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which)
-                            {
-                                deleteBowler(bowlerID);
-                            }
-                        });
-        }
-        else
-        {
-            builder.setMessage("Delete all data for " + bowlerName + "?")
-                    .setPositiveButton("Delete", new DialogInterface.OnClickListener()
+        DatabaseHelper.deleteData(this,
+                new DatabaseHelper.DataDeleter()
                     {
                         @Override
-                        public void onClick(DialogInterface dialog, int which)
+                        public void execute()
                         {
-                            showDeleteBowlerDialog(position, true);
+                            deleteBowler(bowlerID);
                         }
-                    });
-        }
-
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
-            {
-                @Override
-                public void onClick(DialogInterface dialog, int which)
-                {
-                    //do nothing
-                }
-            })
-                .create()
-                .show();
+                    },
+                false,
+                bowlerName);
     }
 
     /**

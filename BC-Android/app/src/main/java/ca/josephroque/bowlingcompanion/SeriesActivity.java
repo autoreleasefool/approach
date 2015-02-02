@@ -68,6 +68,7 @@ public class SeriesActivity extends ActionBarActivity
         seriesDateList = new ArrayList<String>();
         seriesGamesList = new ArrayList<List<Integer>>();
 
+        seriesListView.setLongClickable(true);
         seriesListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
             {
                 @Override
@@ -123,6 +124,15 @@ public class SeriesActivity extends ActionBarActivity
                     gameIntent.putExtra(GameEntry.TABLE_NAME + "." + GameEntry._ID, gameID);
                     gameIntent.putExtra(FrameEntry.TABLE_NAME + "." + FrameEntry._ID, frameID);
                     startActivity(gameIntent);
+                }
+            });
+        seriesListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
+            {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
+                {
+                    showDeleteSeriesDialog(position);
+                    return true;
                 }
             });
 
@@ -304,6 +314,29 @@ public class SeriesActivity extends ActionBarActivity
         gameIntent.putExtra(GameEntry.TABLE_NAME + "." + GameEntry._ID, gameID);
         gameIntent.putExtra(FrameEntry.TABLE_NAME + "." + FrameEntry._ID, frameID);
         srcActivity.startActivity(gameIntent);
+    }
+
+    /**
+     * Shows a dialog to delete data relevant to a series
+     *
+     * @param position position of selected item to delete
+     */
+    private void showDeleteSeriesDialog(final int position)
+    {
+        final String seriesDate = seriesDateList.get(position);
+        final long seriesID = seriesIDList.get(position);
+
+        DatabaseHelper.deleteData(this,
+                new DatabaseHelper.DataDeleter()
+                {
+                    @Override
+                    public void execute()
+                    {
+                        deleteSeries(seriesID);
+                    }
+                },
+                false,
+                seriesDate);
     }
 
     /**
