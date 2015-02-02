@@ -23,6 +23,7 @@ import java.util.Date;
 import java.util.List;
 
 import ca.josephroque.bowlingcompanion.Constants;
+import ca.josephroque.bowlingcompanion.MainActivity;
 import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.SeriesActivity;
 import ca.josephroque.bowlingcompanion.adapter.LeagueAverageListAdapter;
@@ -69,55 +70,65 @@ public class LeagueFragment extends Fragment
 
         leagueAdapter = new LeagueAverageListAdapter(getActivity(), leagueIDList, leagueNamesList, leagueAverageList, leagueNumberOfGamesList);
         leagueListView.setAdapter(leagueAdapter);
+        leagueListView.setLongClickable(true);
         leagueListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
-                long leagueIDSelected = (Long) leagueListView.getItemAtPosition(position);
-
-                if (!leagueNamesList.get(leagueIDList.indexOf(leagueIDSelected)).equals(Constants.OPEN_LEAGUE))
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id)
                 {
-                    //Updates the date modified in the database of the selected league
-                    SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    ContentValues values = new ContentValues();
-                    values.put(LeagueEntry.COLUMN_NAME_DATE_MODIFIED, dateFormat.format(new Date()));
+                    long leagueIDSelected = (Long) leagueListView.getItemAtPosition(position);
 
-                    database.beginTransaction();
-                    try
+                    if (!leagueNamesList.get(leagueIDList.indexOf(leagueIDSelected)).equals(Constants.OPEN_LEAGUE))
                     {
-                        database.update(LeagueEntry.TABLE_NAME,
-                                values,
-                                LeagueEntry._ID + "=?",
-                                new String[]{String.valueOf(leagueIDSelected)});
-                        database.setTransactionSuccessful();
-                    } catch (Exception ex)
-                    {
-                        Log.w(TAG, "Error updating league: " + ex.getMessage());
-                    } finally
-                    {
-                        database.endTransaction();
+                        //Updates the date modified in the database of the selected league
+                        SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                        ContentValues values = new ContentValues();
+                        values.put(LeagueEntry.COLUMN_NAME_DATE_MODIFIED, dateFormat.format(new Date()));
+
+                        database.beginTransaction();
+                        try
+                        {
+                            database.update(LeagueEntry.TABLE_NAME,
+                                    values,
+                                    LeagueEntry._ID + "=?",
+                                    new String[]{String.valueOf(leagueIDSelected)});
+                            database.setTransactionSuccessful();
+                        } catch (Exception ex)
+                        {
+                            Log.w(TAG, "Error updating league: " + ex.getMessage());
+                        } finally
+                        {
+                            database.endTransaction();
+                        }
                     }
-                }
 
-                SharedPreferences.Editor preferencesEditor = getActivity().getSharedPreferences(Constants.MY_PREFS, Activity.MODE_PRIVATE).edit();
-                preferencesEditor
-                        .putString(Constants.PREFERENCES_NAME_LEAGUE, leagueNamesList.get(leagueIDList.indexOf(leagueIDSelected)))
-                        .putLong(Constants.PREFERENCES_ID_LEAGUE, leagueIDSelected)
-                        .putInt(Constants.PREFERENCES_NUMBER_OF_GAMES, leagueNumberOfGamesList.get(leagueIDList.indexOf(leagueIDSelected)))
-                        .putBoolean(Constants.PREFERENCES_TOURNAMENT_MODE, false);
-                if (!leagueNamesList.get(leagueIDList.indexOf(leagueIDSelected)).equals(Constants.OPEN_LEAGUE))
+                    SharedPreferences.Editor preferencesEditor = getActivity().getSharedPreferences(Constants.MY_PREFS, Activity.MODE_PRIVATE).edit();
+                    preferencesEditor
+                            .putString(Constants.PREFERENCES_NAME_LEAGUE, leagueNamesList.get(leagueIDList.indexOf(leagueIDSelected)))
+                            .putLong(Constants.PREFERENCES_ID_LEAGUE, leagueIDSelected)
+                            .putInt(Constants.PREFERENCES_NUMBER_OF_GAMES, leagueNumberOfGamesList.get(leagueIDList.indexOf(leagueIDSelected)))
+                            .putBoolean(Constants.PREFERENCES_TOURNAMENT_MODE, false);
+                    if (!leagueNamesList.get(leagueIDList.indexOf(leagueIDSelected)).equals(Constants.OPEN_LEAGUE))
+                    {
+                        preferencesEditor.putLong(Constants.PREFERENCES_ID_LEAGUE_RECENT, leagueIDSelected)
+                                .putLong(Constants.PREFERENCES_ID_BOWLER_RECENT, bowlerID);
+                    }
+                    preferencesEditor.apply();
+
+                    Intent seriesIntent = new Intent(getActivity(), SeriesActivity.class);
+                    startActivity(seriesIntent);
+                }
+            });
+        leagueListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
+            {
+                @Override
+                public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
                 {
-                    preferencesEditor.putLong(Constants.PREFERENCES_ID_LEAGUE_RECENT, leagueIDSelected)
-                            .putLong(Constants.PREFERENCES_ID_BOWLER_RECENT, bowlerID);
+                    showDeleteLeagueDialog(position, false);
+                    return true;
                 }
-                preferencesEditor.apply();
-
-                Intent seriesIntent = new Intent(getActivity(), SeriesActivity.class);
-                startActivity(seriesIntent);
-            }
-        });
+            });
 
         return rootView;
     }
@@ -266,6 +277,56 @@ public class LeagueFragment extends Fragment
         leagueNumberOfGamesList.add(0, numberOfGames);
         leagueAdapter.update(leagueNamesList, leagueAverageList, leagueNumberOfGamesList);
         leagueAdapter.notifyDataSetChanged();
+    }
+
+    /**
+     * Displays a dialog to the user to delete data of a league
+     *
+     * @param position selected league from list view
+     * @param secondChance if false, will show a second dialog to confirm option. If
+     *                     true, selecting 'delete' will delete all data of league
+     */
+    private void showDeleteLeagueDialog(final int position, boolean secondChance)
+    {
+        final long leagueID = leagueIDList.get(position);
+        final String leagueName = leagueNamesList.get(position);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        if (secondChance)
+        {
+            builder.setMessage("WARNING: This action cannot be undone! Still delete all data for " + leagueName + "?")
+                    .setPositiveButton("Delete", new DialogInterface.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which)
+                        {
+                            deleteLeague(leagueID);
+                        }
+                    });
+        }
+        else
+        {
+            builder.setMessage("Delete all data for " + leagueName + "?")
+                    .setPositiveButton("Delete", new DialogInterface.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which)
+                        {
+                            showDeleteLeagueDialog(position, true);
+                        }
+                    });
+        }
+
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                //do nothing
+            }
+        })
+                .create()
+                .show();
     }
 
     /**
