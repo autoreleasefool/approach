@@ -391,6 +391,7 @@ public class SeriesActivity extends ActionBarActivity
             database.delete(SeriesEntry.TABLE_NAME,
                     SeriesEntry._ID + "=?",
                     whereArgs);
+            database.setTransactionSuccessful();
         }
         catch (Exception e)
         {

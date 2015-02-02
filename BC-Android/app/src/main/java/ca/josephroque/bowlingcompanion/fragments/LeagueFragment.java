@@ -334,6 +334,7 @@ public class LeagueFragment extends Fragment
             database.delete(LeagueEntry.TABLE_NAME,
                     LeagueEntry._ID + "=?",
                     whereArgs);
+            database.setTransactionSuccessful();
         }
         catch (Exception e)
         {

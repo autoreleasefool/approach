@@ -441,6 +441,7 @@ public class MainActivity extends ActionBarActivity
             database.delete(BowlerEntry.TABLE_NAME,
                     BowlerEntry._ID + "=?",
                     whereArgs);
+            database.setTransactionSuccessful();
         }
         catch (Exception e)
         {
