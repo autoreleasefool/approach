@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.support.v4.widget.DrawerLayout;
@@ -34,6 +35,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import at.markushi.ui.CircleButton;
+import ca.josephroque.bowlingcompanion.data.FileCreator;
 import ca.josephroque.bowlingcompanion.database.BowlingContract.*;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 
@@ -71,6 +73,8 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
     private int currentBall = 0;
     /** Indicates whether a frame has been previously accessed */
     private boolean[] hasFrameBeenAccessed = null;
+    /** Indicates whether tournament mode is active or not */
+    private boolean tournamentMode = false;
 
     /** TextViews showing score of ball thrown */
     private TextView[][] ballsTextViews = null;
@@ -243,14 +247,17 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                             startActivity(leagueIntent);
                             break;
                         case 2:
-                            drawerLayout.closeDrawer(drawerList);
-                            Intent seriesIntent = new Intent(GameActivity.this, SeriesActivity.class);
-                            seriesIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(seriesIntent);
-                            break;
+                            if (!tournamentMode)
+                            {
+                                drawerLayout.closeDrawer(drawerList);
+                                Intent seriesIntent = new Intent(GameActivity.this, SeriesActivity.class);
+                                seriesIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(seriesIntent);
+                                break;
+                            }
                         default:
                             saveGameToDatabase(true);
-                            loadGameFromDatabase(position - 3);
+                            loadGameFromDatabase(position - (tournamentMode ? 2:3));
                             drawerLayout.closeDrawer(drawerList);
                             break;
                     }
@@ -300,6 +307,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
     {
         boolean drawerOpen = drawerLayout.isDrawerOpen(drawerList);
         menu.findItem(R.id.action_game_stats).setVisible(!drawerOpen);
+        menu.findItem(R.id.action_game_share).setVisible(!drawerOpen);
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -310,7 +318,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
 
         SharedPreferences preferences = getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE);
         numberOfGames = preferences.getInt(Constants.PREFERENCES_NUMBER_OF_GAMES, -1);
-        boolean tournamentMode = preferences.getBoolean(Constants.PREFERENCES_TOURNAMENT_MODE, false);
+        tournamentMode = preferences.getBoolean(Constants.PREFERENCES_TOURNAMENT_MODE, false);
 
         Intent intent = getIntent();
         gameID = intent.getLongArrayExtra(GameEntry.TABLE_NAME + "." + GameEntry._ID);
@@ -372,6 +380,9 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
         {
             case R.id.action_game_stats:
                 showGameStats();
+                return true;
+            case R.id.action_game_share:
+                showShareOptions();
                 return true;
         }
 
@@ -1254,7 +1265,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
         SQLiteDatabase database = DatabaseHelper.getInstance(this).getReadableDatabase();
 
         Cursor cursor = database.query(FrameEntry.TABLE_NAME,
-                new String[]{FrameEntry.COLUMN_NAME_FRAME_ACCESSED, FrameEntry.COLUMN_NAME_BALL[0], FrameEntry.COLUMN_NAME_BALL[1], FrameEntry.COLUMN_NAME_BALL[2], FrameEntry._ID, FrameEntry.COLUMN_NAME_FOULS},
+                new String[]{FrameEntry.COLUMN_NAME_FRAME_ACCESSED, FrameEntry.COLUMN_NAME_BALL[0], FrameEntry.COLUMN_NAME_BALL[1], FrameEntry.COLUMN_NAME_BALL[2], FrameEntry.COLUMN_NAME_FOULS},
                 FrameEntry.COLUMN_NAME_GAME_ID + "=?",
                 new String[]{String.valueOf(gameID[currentGame])},
                 null,
@@ -1382,5 +1393,13 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
             });
         }
         return hasShownTutorial;
+    }
+
+    /**
+     * Shows options relevant to sharing game data to social media
+     */
+    private void showShareOptions()
+    {
+
     }
 }
