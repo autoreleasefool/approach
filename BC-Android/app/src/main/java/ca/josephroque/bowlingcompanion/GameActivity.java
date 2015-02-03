@@ -28,7 +28,6 @@ import android.widget.HorizontalScrollView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.Arrays;
 import java.util.Timer;
@@ -36,6 +35,7 @@ import java.util.TimerTask;
 
 import at.markushi.ui.CircleButton;
 import ca.josephroque.bowlingcompanion.data.FileCreator;
+import ca.josephroque.bowlingcompanion.data.GameScore;
 import ca.josephroque.bowlingcompanion.database.BowlingContract.*;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 
@@ -490,7 +490,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                 {
                     alertMessageBuilder.append("a spare ");
                     possibleScore += 30;
-                    int firstBall = getValueOfFrame(balls[currentFrame][0]);
+                    int firstBall = GameScore.getValueOfFrame(balls[currentFrame][0]);
                     if (spareLastFrame)
                     {
                         possibleScore += firstBall;
@@ -508,8 +508,8 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                 {
                     alertMessageBuilder.append("fifteen ");
                     possibleScore += 15;
-                    int firstBall = getValueOfFrame(balls[currentFrame][0]);
-                    int secondBall = getValueOfFrameDifference(balls[currentFrame][0], balls[currentFrame][1]);
+                    int firstBall = GameScore.getValueOfFrame(balls[currentFrame][0]);
+                    int secondBall = GameScore.getValueOfFrameDifference(balls[currentFrame][0], balls[currentFrame][1]);
                     if (spareLastFrame)
                     {
                         possibleScore += firstBall;
@@ -700,265 +700,6 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
     }
 
     /**
-     * Gets the score value of the frame from the balls
-     *
-     * @param frame the frame to get score of
-     * @return score of the frame, in a 5 pin game
-     */
-    private int getValueOfFrame(boolean[] frame)
-    {
-        int frameValue = 0;
-        for (int i = 0; i < frame.length; i++)
-        {
-            if (frame[i])
-            {
-                switch(i)
-                {
-                    case 0:case 4: frameValue += 2; break;
-                    case 1:case 3: frameValue += 3; break;
-                    case 2: frameValue += 5; break;
-                    default: //do nothing
-                }
-            }
-        }
-        return frameValue;
-    }
-
-    private int getValueOfFrameDifference(boolean[] prevFrame, boolean[] frameToGet)
-    {
-        int frameValue = 0;
-        for (int i = 0; i < frameToGet.length; i++)
-        {
-            if (frameToGet[i] && !prevFrame[i])
-            {
-                switch(i)
-                {
-                    case 0:case 4: frameValue += 2; break;
-                    case 1:case 3: frameValue += 3; break;
-                    case 2: frameValue += 5; break;
-                    default: //do nothing
-                }
-            }
-        }
-        return frameValue;
-    }
-
-    /**
-     * Gets textual value of ball
-     *
-     * @param pins state of the pins
-     * @param ball the ball to get the value of
-     * @return textual value of the ball
-     */
-    private String getValueOfBall(boolean[] pins, int ball, boolean shouldReturnSymbol)
-    {
-        int ballValue = 0;
-        for (int i = 0; i < 5; i++)
-        {
-            if (pins[i])
-            {
-                switch(i)
-                {
-                    case 0:case 4: ballValue += 2; break;
-                    case 1:case 3: ballValue += 3; break;
-                    case 2: ballValue += 5; break;
-                    default: //do nothing
-                }
-            }
-        }
-
-        switch(ballValue)
-        {
-            default: throw new RuntimeException("Invalid value for ball: " + ballValue);
-            case 0: return Constants.BALL_EMPTY;
-            case 2:case 3:case 4:case 6:case 9:case 12: return String.valueOf(ballValue);
-            case 5:
-                if ((ball == 0 || shouldReturnSymbol) && pins[2])
-                {
-                    return Constants.BALL_HEAD_PIN;
-                }
-                else
-                {
-                    return "5";
-                }
-            case 7:
-                if ((ball == 0 || shouldReturnSymbol) && pins[2])
-                {
-                    return Constants.BALL_HEAD_PIN_2;
-                }
-                else
-                {
-                    return "7";
-                }
-            case 8:
-                if ((ball == 0 || shouldReturnSymbol) && pins[2])
-                {
-                    return Constants.BALL_SPLIT;
-                }
-                else
-                    return "8";
-            case 10:
-                if ((ball == 0 || shouldReturnSymbol) && pins[2]
-                        && ((pins[0] && pins[1])
-                        || pins[3] && pins[4]))
-                {
-                    return Constants.BALL_CHOP_OFF;
-                }
-                else
-                {
-                    return "10";
-                }
-            case 11:
-                if ((ball == 0 || shouldReturnSymbol) && pins[2])
-                {
-                    return Constants.BALL_ACE;
-                }
-                else
-                    return "11";
-            case 13:
-                if ((ball == 0 || shouldReturnSymbol) && !pins[0])
-                {
-                    return Constants.BALL_LEFT;
-                }
-                else if ((ball == 0 || shouldReturnSymbol) && !pins[4])
-                {
-                    return Constants.BALL_RIGHT;
-                }
-                else
-                {
-                    return "13";
-                }
-            case 15:
-                if ((ball == 0 || shouldReturnSymbol))
-                {
-                    return Constants.BALL_STRIKE;
-                }
-                else if (ball == 1)
-                {
-                    return Constants.BALL_SPARE;
-                }
-                else
-                {
-                    return "15";
-                }
-        }
-    }
-
-    /**
-     * Gets textual value of ball based on surrounding balls
-     *
-     * @param ballsOfFrame list of all balls in the frame
-     * @param ball the ball to get the value of
-     * @return textual value of the ball
-     */
-    private String getValueOfBallDifference(boolean[][] ballsOfFrame, int ball, boolean shouldReturnSymbol)
-    {
-        boolean[] pinAlreadyKnockedDown = new boolean[5];
-
-        if (ball > 0)
-        {
-            for (int j = 0; j < 5; j++)
-            {
-                if (ballsOfFrame[ball - 1][j])
-                {
-                    pinAlreadyKnockedDown[j] = true;
-                }
-            }
-        }
-
-        int ballValue = 0;
-        for (int i = 0; i < 5; i++)
-        {
-            if (ballsOfFrame[ball][i] && !pinAlreadyKnockedDown[i])
-            {
-                switch(i)
-                {
-                    case 0:case 4: ballValue += 2; break;
-                    case 1:case 3: ballValue += 3; break;
-                    case 2: ballValue += 5; break;
-                    default: //do nothing
-                }
-            }
-        }
-
-        switch(ballValue)
-        {
-            default: throw new RuntimeException("Invalid value for ball: " + ballValue);
-            case 0: return Constants.BALL_EMPTY;
-            case 2:case 3:case 4:case 6:case 9:case 12: return String.valueOf(ballValue);
-            case 5:
-                if ((ball == 0 || shouldReturnSymbol) && ballsOfFrame[ball][2] && !pinAlreadyKnockedDown[2])
-                {
-                    return Constants.BALL_HEAD_PIN;
-                }
-                else
-                {
-                    return "5";
-                }
-            case 7:
-                if ((ball == 0 || shouldReturnSymbol) && ballsOfFrame[ball][2])
-                {
-                    return Constants.BALL_HEAD_PIN_2;
-                }
-                else
-                {
-                    return "7";
-                }
-            case 8:
-                if ((ball == 0 || shouldReturnSymbol) && ballsOfFrame[ball][2])
-                {
-                    return Constants.BALL_SPLIT;
-                }
-                else
-                    return "8";
-            case 10:
-                if ((ball == 0 || shouldReturnSymbol) && ballsOfFrame[ball][2]
-                        && ((ballsOfFrame[ball][0] && ballsOfFrame[ball][1])
-                        || (ballsOfFrame[ball][3] && ballsOfFrame[ball][4])))
-                {
-                    return Constants.BALL_CHOP_OFF;
-                }
-                else
-                {
-                    return "10";
-                }
-            case 11:
-                if ((ball == 0 || shouldReturnSymbol) && ballsOfFrame[ball][2])
-                {
-                    return Constants.BALL_ACE;
-                }
-                else
-                    return "11";
-            case 13:
-                if ((ball == 0 || shouldReturnSymbol) && !ballsOfFrame[ball][0])
-                {
-                    return Constants.BALL_LEFT;
-                }
-                else if ((ball == 0 || shouldReturnSymbol) && !ballsOfFrame[ball][4])
-                {
-                    return Constants.BALL_RIGHT;
-                }
-                else
-                {
-                    return "13";
-                }
-            case 15:
-                if ((ball == 0 || shouldReturnSymbol))
-                {
-                    return Constants.BALL_STRIKE;
-                }
-                else if (ball == 1)
-                {
-                    return Constants.BALL_SPARE;
-                }
-                else
-                {
-                    return "15";
-                }
-        }
-    }
-
-    /**
      * Sets the TextView displaying score corresponding to the current frame
      * to the textual value of the ball from getValueOfBall
      */
@@ -972,35 +713,35 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                 if (Arrays.equals(balls[frameToUpdate][1], Constants.FRAME_CLEAR))
                 {
                     ballsTextViews[frameToUpdate][1].setText(Constants.BALL_STRIKE);
-                    ballsTextViews[frameToUpdate][2].setText(getValueOfBall(balls[frameToUpdate][2], 2, true));
+                    ballsTextViews[frameToUpdate][2].setText(GameScore.getValueOfBall(balls[frameToUpdate][2], 2, true));
                 }
                 else
                 {
-                    ballsTextViews[frameToUpdate][1].setText(getValueOfBall(balls[frameToUpdate][1], 1, false));
+                    ballsTextViews[frameToUpdate][1].setText(GameScore.getValueOfBall(balls[frameToUpdate][1], 1, false));
                     if (Arrays.equals(balls[frameToUpdate][2], Constants.FRAME_CLEAR))
                         ballsTextViews[frameToUpdate][2].setText(Constants.BALL_SPARE);
                     else
-                        ballsTextViews[frameToUpdate][2].setText(getValueOfBallDifference(balls[frameToUpdate], 2, false));
+                        ballsTextViews[frameToUpdate][2].setText(GameScore.getValueOfBallDifference(balls[frameToUpdate], 2, false));
                 }
             }
             else
             {
-                ballsTextViews[frameToUpdate][0].setText(getValueOfBall(balls[frameToUpdate][0], 0, false));
+                ballsTextViews[frameToUpdate][0].setText(GameScore.getValueOfBall(balls[frameToUpdate][0], 0, false));
                 if (Arrays.equals(balls[frameToUpdate][1], Constants.FRAME_CLEAR))
                 {
                     ballsTextViews[frameToUpdate][1].setText(Constants.BALL_SPARE);
-                    ballsTextViews[frameToUpdate][2].setText(getValueOfBall(balls[frameToUpdate][2], 2, true));
+                    ballsTextViews[frameToUpdate][2].setText(GameScore.getValueOfBall(balls[frameToUpdate][2], 2, true));
                 }
                 else
                 {
-                    ballsTextViews[frameToUpdate][1].setText(getValueOfBallDifference(balls[frameToUpdate], 1, false));
-                    ballsTextViews[frameToUpdate][2].setText(getValueOfBallDifference(balls[frameToUpdate], 2, false));
+                    ballsTextViews[frameToUpdate][1].setText(GameScore.getValueOfBallDifference(balls[frameToUpdate], 1, false));
+                    ballsTextViews[frameToUpdate][2].setText(GameScore.getValueOfBallDifference(balls[frameToUpdate], 2, false));
                 }
             }
         }
         else
         {
-            ballsTextViews[frameToUpdate][0].setText(getValueOfBallDifference(balls[frameToUpdate], 0, false));
+            ballsTextViews[frameToUpdate][0].setText(GameScore.getValueOfBallDifference(balls[frameToUpdate], 0, false));
             if (!Arrays.equals(balls[frameToUpdate][0], Constants.FRAME_CLEAR))
             {
                 if (Arrays.equals(balls[frameToUpdate][1], Constants.FRAME_CLEAR))
@@ -1010,8 +751,8 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                 }
                 else
                 {
-                    ballsTextViews[frameToUpdate][1].setText(getValueOfBallDifference(balls[frameToUpdate], 1, false));
-                    ballsTextViews[frameToUpdate][2].setText(getValueOfBallDifference(balls[frameToUpdate], 2, false));
+                    ballsTextViews[frameToUpdate][1].setText(GameScore.getValueOfBallDifference(balls[frameToUpdate], 1, false));
+                    ballsTextViews[frameToUpdate][2].setText(GameScore.getValueOfBallDifference(balls[frameToUpdate], 2, false));
                 }
             }
             else
@@ -1045,13 +786,13 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                     switch(b)
                     {
                         case 2:
-                            frameScores[f] += getValueOfFrame(balls[f][b]);
+                            frameScores[f] += GameScore.getValueOfFrame(balls[f][b]);
                             break;
                         case 1:
                         case 0:
                             if (Arrays.equals(balls[f][b], Constants.FRAME_CLEAR))
                             {
-                                frameScores[f] += getValueOfFrame(balls[f][b]);
+                                frameScores[f] += GameScore.getValueOfFrame(balls[f][b]);
                             }
                             break;
                         default: //do nothing
@@ -1064,35 +805,35 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                 {
                     if (b < 2 && Arrays.equals(balls[f][b], Constants.FRAME_CLEAR))
                     {
-                        frameScores[f] += getValueOfFrame(balls[f][b]);
-                        frameScores[f] += getValueOfFrame(balls[f + 1][0]);
+                        frameScores[f] += GameScore.getValueOfFrame(balls[f][b]);
+                        frameScores[f] += GameScore.getValueOfFrame(balls[f + 1][0]);
                         if (b == 0)
                         {
                             if (f == Constants.LAST_FRAME - 1)
                             {
                                 if (frameScores[f] == 30)
                                 {
-                                    frameScores[f] += getValueOfFrame(balls[f + 1][1]);
+                                    frameScores[f] += GameScore.getValueOfFrame(balls[f + 1][1]);
                                 }
                                 else
                                 {
-                                    frameScores[f] += getValueOfFrameDifference(balls[f + 1][0], balls[f + 1][1]);
+                                    frameScores[f] += GameScore.getValueOfFrameDifference(balls[f + 1][0], balls[f + 1][1]);
                                 }
                             }
                             else if (frameScores[f] < 30)
                             {
-                                frameScores[f] += getValueOfFrameDifference(balls[f + 1][0], balls[f + 1][1]);
+                                frameScores[f] += GameScore.getValueOfFrameDifference(balls[f + 1][0], balls[f + 1][1]);
                             }
                             else
                             {
-                                frameScores[f] += getValueOfFrame(balls[f + 2][0]);
+                                frameScores[f] += GameScore.getValueOfFrame(balls[f + 2][0]);
                             }
                         }
                         break;
                     }
                     else if (b == 2)
                     {
-                        frameScores[f] += getValueOfFrame(balls[f][b]);
+                        frameScores[f] += GameScore.getValueOfFrame(balls[f][b]);
                     }
                 }
             }
@@ -1400,6 +1141,9 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
      */
     private void showShareOptions()
     {
-
+        Bitmap bitmap = FileCreator.createImageFromGame(this, balls, fouls);
+        Intent imageIntent = new Intent(this, ImageActivity.class);
+        imageIntent.putExtra("BitmapImage", bitmap);
+        startActivity(imageIntent);
     }
 }
