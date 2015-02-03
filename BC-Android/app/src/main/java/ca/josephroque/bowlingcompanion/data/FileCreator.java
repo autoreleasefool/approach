@@ -44,10 +44,10 @@ public class FileCreator
                 for (int pin = 0; pin < ballsOfFrame[frame][ball].length; pin++)
                 {
                 }
-                canvas.drawLine(BITMAP_GAME_BALL_WIDTH * ball, 0, BITMAP_GAME_BALL_WIDTH * ball, BITMAP_GAME_BALL_HEIGHT, paintBlackOutline);
+                canvas.drawLine(BITMAP_GAME_BALL_WIDTH * ball + BITMAP_GAME_FRAME_WIDTH * frame, 0, BITMAP_GAME_BALL_WIDTH * ball + BITMAP_GAME_FRAME_WIDTH * frame, BITMAP_GAME_BALL_HEIGHT, paintBlackOutline);
             }
 
-            canvas.drawLine(BITMAP_GAME_FRAME_WIDTH * frame, 0, BITMAP_GAME_FRAME_WIDTH * frame, BITMAP_GAME_FRAME_HEIGHT, paintBlackOutline);
+            canvas.drawLine(BITMAP_GAME_FRAME_WIDTH * frame, BITMAP_GAME_BALL_HEIGHT, BITMAP_GAME_FRAME_WIDTH * frame, BITMAP_GAME_FRAME_HEIGHT + BITMAP_GAME_BALL_HEIGHT, paintBlackOutline);
         }
 
         canvas.drawLines(new float[]
@@ -55,7 +55,7 @@ public class FileCreator
                         0,0,0,BITMAP_GAME_HEIGHT,
                         0,BITMAP_GAME_HEIGHT - 1,BITMAP_GAME_WIDTH, BITMAP_GAME_HEIGHT - 1,
                         BITMAP_GAME_WIDTH - 1, 0, BITMAP_GAME_WIDTH - 1, BITMAP_GAME_HEIGHT,
-                        0, BITMAP_GAME_BALL_HEIGHT, BITMAP_GAME_WIDTH, BITMAP_GAME_BALL_HEIGHT,
+                        0, BITMAP_GAME_BALL_HEIGHT, BITMAP_GAME_WIDTH - BITMAP_GAME_FRAME_WIDTH, BITMAP_GAME_BALL_HEIGHT,
                         BITMAP_GAME_FRAME_WIDTH * Constants.NUMBER_OF_FRAMES, 0, BITMAP_GAME_FRAME_WIDTH * Constants.NUMBER_OF_FRAMES, BITMAP_GAME_HEIGHT},
                 paintBlackOutline);
 
