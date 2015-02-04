@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -44,6 +45,8 @@ public class LeagueFragment extends Fragment
 
     /** Adapter for the ListView of leagues */
     private LeagueAverageListAdapter leagueAdapter = null;
+    /** List of leagues available to the user */
+    private ListView leagueListView = null;
 
     /** ID of the selected bowler */
     private long bowlerID = -1;
@@ -60,7 +63,7 @@ public class LeagueFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance)
     {
         View rootView = inflater.inflate(R.layout.fragment_leagues, container, false);
-        final ListView leagueListView = (ListView)rootView.findViewById(R.id.list_league_names);
+        leagueListView = (ListView)rootView.findViewById(R.id.list_league_names);
 
         //Loads data from the above query into lists
         leagueNamesList = new ArrayList<String>();
@@ -76,48 +79,7 @@ public class LeagueFragment extends Fragment
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id)
                 {
-                    long leagueIDSelected = (Long) leagueListView.getItemAtPosition(position);
-
-                    if (!leagueNamesList.get(leagueIDList.indexOf(leagueIDSelected)).equals(Constants.OPEN_LEAGUE))
-                    {
-                        //Updates the date modified in the database of the selected league
-                        SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                        ContentValues values = new ContentValues();
-                        values.put(LeagueEntry.COLUMN_NAME_DATE_MODIFIED, dateFormat.format(new Date()));
-
-                        database.beginTransaction();
-                        try
-                        {
-                            database.update(LeagueEntry.TABLE_NAME,
-                                    values,
-                                    LeagueEntry._ID + "=?",
-                                    new String[]{String.valueOf(leagueIDSelected)});
-                            database.setTransactionSuccessful();
-                        } catch (Exception ex)
-                        {
-                            Log.w(TAG, "Error updating league: " + ex.getMessage());
-                        } finally
-                        {
-                            database.endTransaction();
-                        }
-                    }
-
-                    SharedPreferences.Editor preferencesEditor = getActivity().getSharedPreferences(Constants.MY_PREFS, Activity.MODE_PRIVATE).edit();
-                    preferencesEditor
-                            .putString(Constants.PREFERENCES_NAME_LEAGUE, leagueNamesList.get(leagueIDList.indexOf(leagueIDSelected)))
-                            .putLong(Constants.PREFERENCES_ID_LEAGUE, leagueIDSelected)
-                            .putInt(Constants.PREFERENCES_NUMBER_OF_GAMES, leagueNumberOfGamesList.get(leagueIDList.indexOf(leagueIDSelected)))
-                            .putBoolean(Constants.PREFERENCES_TOURNAMENT_MODE, false);
-                    if (!leagueNamesList.get(leagueIDList.indexOf(leagueIDSelected)).equals(Constants.OPEN_LEAGUE))
-                    {
-                        preferencesEditor.putLong(Constants.PREFERENCES_ID_LEAGUE_RECENT, leagueIDSelected)
-                                .putLong(Constants.PREFERENCES_ID_BOWLER_RECENT, bowlerID);
-                    }
-                    preferencesEditor.apply();
-
-                    Intent seriesIntent = new Intent(getActivity(), SeriesActivity.class);
-                    startActivity(seriesIntent);
+                    new OpenLeagueSeriesTask().execute(position);
                 }
             });
         leagueListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
@@ -138,7 +100,6 @@ public class LeagueFragment extends Fragment
     {
         super.onResume();
 
-        SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getReadableDatabase();
         SharedPreferences preferences = getActivity().getSharedPreferences(Constants.MY_PREFS, Activity.MODE_PRIVATE);
         bowlerID = preferences.getLong(BowlerEntry.TABLE_NAME + "." + BowlerEntry._ID, -1);
 
@@ -146,69 +107,8 @@ public class LeagueFragment extends Fragment
         leagueAverageList.clear();
         leagueIDList.clear();
         leagueNumberOfGamesList.clear();
-        List<Integer> leagueTotalNumberOfGamesList = new ArrayList<Integer>();
 
-        String rawLeagueQuery = "SELECT "
-                + LeagueEntry.TABLE_NAME + "." + LeagueEntry._ID + " AS lid, "
-                + LeagueEntry.COLUMN_NAME_LEAGUE_NAME + ", "
-                + LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES + ", "
-                + GameEntry.COLUMN_NAME_GAME_FINAL_SCORE
-                + " FROM " + LeagueEntry.TABLE_NAME
-                + " LEFT JOIN " + GameEntry.TABLE_NAME
-                + " ON " + LeagueEntry.COLUMN_NAME_BOWLER_ID + "=" + GameEntry.COLUMN_NAME_BOWLER_ID
-                + " WHERE " + LeagueEntry.COLUMN_NAME_BOWLER_ID + "=? AND " + LeagueEntry.COLUMN_NAME_IS_TOURNAMENT + "=?"
-                + " ORDER BY " + LeagueEntry.COLUMN_NAME_DATE_MODIFIED + " DESC";
-        String[] rawLeagueArgs ={String.valueOf(bowlerID), String.valueOf(0)};
-
-        Cursor cursor = database.rawQuery(rawLeagueQuery, rawLeagueArgs);
-
-        if (cursor.moveToFirst())
-        {
-            int leagueTotalPinfall = 0;
-            int totalNumberOfLeagueGames = 0;
-            while(!cursor.isAfterLast())
-            {
-                String leagueName = cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_LEAGUE_NAME));
-                long leagueID = cursor.getLong(cursor.getColumnIndex("lid"));
-                int numberOfGames = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES));
-                int finalScore = cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_NAME_GAME_FINAL_SCORE));
-
-                if (leagueIDList.size() == 0)
-                {
-                    leagueNamesList.add(leagueName);
-                    leagueIDList.add(leagueID);
-                    leagueNumberOfGamesList.add(numberOfGames);
-                }
-                else if (!leagueIDList.contains(leagueID))
-                {
-                    if (leagueIDList.size() > 0)
-                    {
-                        leagueTotalNumberOfGamesList.add(totalNumberOfLeagueGames);
-                        leagueAverageList.add((totalNumberOfLeagueGames > 0) ? leagueTotalPinfall / totalNumberOfLeagueGames:0);
-                    }
-
-                    leagueTotalPinfall = 0;
-                    totalNumberOfLeagueGames = 0;
-                    leagueNamesList.add(leagueName);
-                    leagueIDList.add(leagueID);
-                    leagueNumberOfGamesList.add(numberOfGames);
-                }
-
-                totalNumberOfLeagueGames++;
-                leagueTotalPinfall += finalScore;
-
-                cursor.moveToNext();
-            }
-
-            if (leagueIDList.size() > 0)
-            {
-                leagueTotalNumberOfGamesList.add(totalNumberOfLeagueGames);
-                leagueAverageList.add((totalNumberOfLeagueGames > 0) ? leagueTotalPinfall / totalNumberOfLeagueGames:0);
-            }
-        }
-
-        leagueAdapter.update(leagueNamesList, leagueAverageList, leagueNumberOfGamesList);
-        leagueAdapter.notifyDataSetChanged();
+        new LoadLeaguesTask().execute();
     }
 
     public void addNewLeague(String leagueName, int numberOfGames)
@@ -246,37 +146,7 @@ public class LeagueFragment extends Fragment
             return;
         }
 
-        long newID = -1;
-        SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        ContentValues values = new ContentValues();
-        values.put(LeagueEntry.COLUMN_NAME_LEAGUE_NAME, leagueName);
-        values.put(LeagueEntry.COLUMN_NAME_DATE_MODIFIED, dateFormat.format(new Date()));
-        values.put(LeagueEntry.COLUMN_NAME_BOWLER_ID, bowlerID);
-        values.put(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES, numberOfGames);
-
-        database.beginTransaction();
-        try
-        {
-            newID = database.insert(LeagueEntry.TABLE_NAME, null, values);
-            database.setTransactionSuccessful();
-        }
-        catch (Exception ex)
-        {
-            Log.w(TAG, "Error adding new league: " + ex.getMessage());
-        }
-        finally
-        {
-            database.endTransaction();
-        }
-
-        //Adds the league to the top of the list (it is the most recent)
-        leagueNamesList.add(0, leagueName);
-        leagueAverageList.add(0, 0);
-        leagueIDList.add(0, newID);
-        leagueNumberOfGamesList.add(0, numberOfGames);
-        leagueAdapter.update(leagueNamesList, leagueAverageList, leagueNumberOfGamesList);
-        leagueAdapter.notifyDataSetChanged();
+        new AddLeagueTask().execute(leagueName, numberOfGames);
     }
 
     /**
@@ -325,45 +195,227 @@ public class LeagueFragment extends Fragment
      *
      * @param selectedLeagueID league ID to delete data of
      */
-    private boolean deleteLeague(long selectedLeagueID)
+    private void deleteLeague(final long selectedLeagueID)
     {
-        int index = leagueIDList.indexOf(selectedLeagueID);
-        String leagueName = leagueNamesList.remove(index);
+        final int index = leagueIDList.indexOf(selectedLeagueID);
+        final String leagueName = leagueNamesList.remove(index);
         leagueAverageList.remove(index);
         leagueNumberOfGamesList.remove(index);
         leagueIDList.remove(index);
         leagueAdapter.update(leagueNamesList, leagueAverageList, leagueNumberOfGamesList);
         leagueAdapter.notifyDataSetChanged();
 
-        SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
-        String[] whereArgs = {String.valueOf(selectedLeagueID)};
-        database.beginTransaction();
-        try
+        new Thread(new Runnable()
         {
-            database.delete(FrameEntry.TABLE_NAME,
-                    FrameEntry.COLUMN_NAME_LEAGUE_ID + "=?",
-                    whereArgs);
-            database.delete(GameEntry.TABLE_NAME,
-                    GameEntry.COLUMN_NAME_LEAGUE_ID + "=?",
-                    whereArgs);
-            database.delete(SeriesEntry.TABLE_NAME,
-                    SeriesEntry.COLUMN_NAME_LEAGUE_ID + "=?",
-                    whereArgs);
-            database.delete(LeagueEntry.TABLE_NAME,
-                    LeagueEntry._ID + "=?",
-                    whereArgs);
-            database.setTransactionSuccessful();
-        }
-        catch (Exception e)
+            @Override
+            public void run()
+            {
+                SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
+                String[] whereArgs = {String.valueOf(selectedLeagueID)};
+                database.beginTransaction();
+                try
+                {
+                    database.delete(FrameEntry.TABLE_NAME,
+                            FrameEntry.COLUMN_NAME_LEAGUE_ID + "=?",
+                            whereArgs);
+                    database.delete(GameEntry.TABLE_NAME,
+                            GameEntry.COLUMN_NAME_LEAGUE_ID + "=?",
+                            whereArgs);
+                    database.delete(SeriesEntry.TABLE_NAME,
+                            SeriesEntry.COLUMN_NAME_LEAGUE_ID + "=?",
+                            whereArgs);
+                    database.delete(LeagueEntry.TABLE_NAME,
+                            LeagueEntry._ID + "=?",
+                            whereArgs);
+                    database.setTransactionSuccessful();
+                }
+                catch (Exception e)
+                {
+                    Log.w(TAG, "Error deleting league: " + leagueName);
+                }
+                finally
+                {
+                    database.endTransaction();
+                }
+            }
+        }).start();
+    }
+
+    private class OpenLeagueSeriesTask extends AsyncTask<Integer, Void, Void>
+    {
+        @Override
+        protected Void doInBackground(Integer... position)
         {
-            Log.w(TAG, "Error deleting league: " + leagueName);
-            return false;
-        }
-        finally
-        {
-            database.endTransaction();
+            long leagueIDSelected = (Long) leagueListView.getItemAtPosition(position[0]);
+
+            if (!leagueNamesList.get(leagueIDList.indexOf(leagueIDSelected)).equals(Constants.OPEN_LEAGUE))
+            {
+                //Updates the date modified in the database of the selected league
+                SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                ContentValues values = new ContentValues();
+                values.put(LeagueEntry.COLUMN_NAME_DATE_MODIFIED, dateFormat.format(new Date()));
+
+                database.beginTransaction();
+                try
+                {
+                    database.update(LeagueEntry.TABLE_NAME,
+                            values,
+                            LeagueEntry._ID + "=?",
+                            new String[]{String.valueOf(leagueIDSelected)});
+                    database.setTransactionSuccessful();
+                } catch (Exception ex)
+                {
+                    Log.w(TAG, "Error updating league: " + ex.getMessage());
+                } finally
+                {
+                    database.endTransaction();
+                }
+            }
+
+            SharedPreferences.Editor preferencesEditor = getActivity().getSharedPreferences(Constants.MY_PREFS, Activity.MODE_PRIVATE).edit();
+            preferencesEditor
+                    .putString(Constants.PREFERENCES_NAME_LEAGUE, leagueNamesList.get(leagueIDList.indexOf(leagueIDSelected)))
+                    .putLong(Constants.PREFERENCES_ID_LEAGUE, leagueIDSelected)
+                    .putInt(Constants.PREFERENCES_NUMBER_OF_GAMES, leagueNumberOfGamesList.get(leagueIDList.indexOf(leagueIDSelected)))
+                    .putBoolean(Constants.PREFERENCES_TOURNAMENT_MODE, false);
+            if (!leagueNamesList.get(leagueIDList.indexOf(leagueIDSelected)).equals(Constants.OPEN_LEAGUE))
+            {
+                preferencesEditor.putLong(Constants.PREFERENCES_ID_LEAGUE_RECENT, leagueIDSelected)
+                        .putLong(Constants.PREFERENCES_ID_BOWLER_RECENT, bowlerID);
+            }
+            preferencesEditor.apply();
+            return null;
         }
 
-        return true;
+        @Override
+        protected void onPostExecute(Void params)
+        {
+            Intent seriesIntent = new Intent(getActivity(), SeriesActivity.class);
+            startActivity(seriesIntent);
+        }
+    }
+
+    private class LoadLeaguesTask extends AsyncTask<Void, Void, Void>
+    {
+        @Override
+        protected Void doInBackground(Void... params)
+        {
+            SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getReadableDatabase();
+
+            String rawLeagueQuery = "SELECT "
+                    + LeagueEntry.TABLE_NAME + "." + LeagueEntry._ID + " AS lid, "
+                    + LeagueEntry.COLUMN_NAME_LEAGUE_NAME + ", "
+                    + LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES + ", "
+                    + GameEntry.COLUMN_NAME_GAME_FINAL_SCORE
+                    + " FROM " + LeagueEntry.TABLE_NAME
+                    + " LEFT JOIN " + GameEntry.TABLE_NAME
+                    + " ON lid=" + GameEntry.COLUMN_NAME_LEAGUE_ID
+                    + " WHERE " + LeagueEntry.COLUMN_NAME_BOWLER_ID + "=? AND " + LeagueEntry.COLUMN_NAME_IS_TOURNAMENT + "=?"
+                    + " ORDER BY " + LeagueEntry.COLUMN_NAME_DATE_MODIFIED + " DESC";
+            String[] rawLeagueArgs ={String.valueOf(bowlerID), String.valueOf(0)};
+
+            Cursor cursor = database.rawQuery(rawLeagueQuery, rawLeagueArgs);
+            if (cursor.moveToFirst())
+            {
+                int leagueTotalPinfall = 0;
+                int totalNumberOfLeagueGames = 0;
+                while(!cursor.isAfterLast())
+                {
+                    String leagueName = cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_LEAGUE_NAME));
+                    long leagueID = cursor.getLong(cursor.getColumnIndex("lid"));
+                    int numberOfGames = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES));
+                    int finalScore = cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_NAME_GAME_FINAL_SCORE));
+
+                    if (leagueIDList.size() == 0)
+                    {
+                        leagueNamesList.add(leagueName);
+                        leagueIDList.add(leagueID);
+                        leagueNumberOfGamesList.add(numberOfGames);
+                    }
+                    else if (!leagueIDList.contains(leagueID))
+                    {
+                        if (leagueIDList.size() > 0)
+                        {
+                            leagueAverageList.add((totalNumberOfLeagueGames > 0) ? leagueTotalPinfall / totalNumberOfLeagueGames:0);
+                        }
+
+                        leagueTotalPinfall = 0;
+                        totalNumberOfLeagueGames = 0;
+                        leagueNamesList.add(leagueName);
+                        leagueIDList.add(leagueID);
+                        leagueNumberOfGamesList.add(numberOfGames);
+                    }
+
+                    totalNumberOfLeagueGames++;
+                    leagueTotalPinfall += finalScore;
+
+                    cursor.moveToNext();
+                }
+
+                if (leagueIDList.size() > 0)
+                {
+                    leagueAverageList.add((totalNumberOfLeagueGames > 0) ? leagueTotalPinfall / totalNumberOfLeagueGames:0);
+                }
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void param)
+        {
+            leagueAdapter.update(leagueNamesList, leagueAverageList, leagueNumberOfGamesList);
+            leagueAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private class AddLeagueTask extends AsyncTask<Object, Void, Void>
+    {
+        @Override
+        protected Void doInBackground(Object... params)
+        {
+            String leagueName = (String)params[0];
+            int numberOfGames = (Integer)params[1];
+
+
+            long newID = -1;
+            SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            ContentValues values = new ContentValues();
+            values.put(LeagueEntry.COLUMN_NAME_LEAGUE_NAME, leagueName);
+            values.put(LeagueEntry.COLUMN_NAME_DATE_MODIFIED, dateFormat.format(new Date()));
+            values.put(LeagueEntry.COLUMN_NAME_BOWLER_ID, bowlerID);
+            values.put(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES, numberOfGames);
+
+            database.beginTransaction();
+            try
+            {
+                newID = database.insert(LeagueEntry.TABLE_NAME, null, values);
+                database.setTransactionSuccessful();
+            }
+            catch (Exception ex)
+            {
+                Log.w(TAG, "Error adding new league: " + ex.getMessage());
+            }
+            finally
+            {
+                database.endTransaction();
+            }
+
+            //Adds the league to the top of the list (it is the most recent)
+            leagueNamesList.add(0, leagueName);
+            leagueAverageList.add(0, 0);
+            leagueIDList.add(0, newID);
+            leagueNumberOfGamesList.add(0, numberOfGames);
+            leagueAdapter.update(leagueNamesList, leagueAverageList, leagueNumberOfGamesList);
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void param)
+        {
+            leagueAdapter.notifyDataSetChanged();
+        }
     }
 }
