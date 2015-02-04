@@ -276,4 +276,14 @@ public class GameScore
                 }
         }
     }
+
+    /**
+     * Gets a boolean from a char
+     * @param input char to convert to boolean
+     * @return true if input is equal to '1', false otherwise
+     */
+    public static boolean getBoolean(char input)
+    {
+        return input == '1';
+    }
 }

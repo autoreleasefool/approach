@@ -1024,7 +1024,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                 for (int i = 0; i < 3; i++)
                 {
                     String ballString = cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_BALL[i]));
-                    boolean[] ballBoolean = {getBoolean(ballString.charAt(0)), getBoolean(ballString.charAt(1)), getBoolean(ballString.charAt(2)), getBoolean(ballString.charAt(3)), getBoolean(ballString.charAt(4))};
+                    boolean[] ballBoolean = {GameScore.getBoolean(ballString.charAt(0)), GameScore.getBoolean(ballString.charAt(1)), GameScore.getBoolean(ballString.charAt(2)), GameScore.getBoolean(ballString.charAt(3)), GameScore.getBoolean(ballString.charAt(4))};
                     balls[currentFrameIterator][i] = ballBoolean;
                 }
                 String foulsOfFrame = cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_FOULS));
@@ -1075,15 +1075,11 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
     }
 
     /**
-     * Gets a boolean from a char
-     * @param input char to convert to boolean
-     * @return true if input is equal to '1', false otherwise
+     * Creates a string from an array of booleans
+     *
+     * @param frame array to convert to string
+     * @return A String of 1's and 0's, where a 1 represents true in the array
      */
-    private boolean getBoolean(char input)
-    {
-        return input == '1';
-    }
-
     private String booleanFrameToString(boolean[] frame)
     {
         StringBuilder stringBuilder = new StringBuilder();
@@ -1141,9 +1137,8 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
      */
     private void showShareOptions()
     {
-        Bitmap bitmap = FileCreator.createImageFromGame(this, balls, fouls);
         Intent imageIntent = new Intent(this, ImageActivity.class);
-        imageIntent.putExtra("BitmapImage", bitmap);
+        imageIntent.putExtra("Long", gameID);
         startActivity(imageIntent);
     }
 }

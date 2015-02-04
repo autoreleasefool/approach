@@ -368,6 +368,8 @@ public class TournamentFragment extends Fragment
                 .edit()
                 .putLong(Constants.PREFERENCES_ID_LEAGUE, newTournamentID)
                 .putLong(Constants.PREFERENCES_ID_SERIES, seriesID)
+                .putInt(Constants.PREFERENCES_NUMBER_OF_GAMES, numberOfGames)
+                .putBoolean(Constants.PREFERENCES_TOURNAMENT_MODE, true)
                 .apply();
         gameIntent.putExtra(GameEntry.TABLE_NAME + "." + GameEntry._ID, gameID);
         gameIntent.putExtra(FrameEntry.  TABLE_NAME + "." + FrameEntry._ID, frameID);
