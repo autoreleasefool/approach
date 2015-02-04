@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -78,49 +79,7 @@ public class MainActivity extends ActionBarActivity
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id)
                 {
-                    String bowlerNameSelected = (String)listBowlerNames.getItemAtPosition(position);
-
-                    long selectedBowlerID;
-                    selectedBowlerID = bowlerIDsList.get(bowlerNamesList.indexOf(bowlerNameSelected));
-
-                    /*
-                     * Updates database to make the selected bowler the most recently
-                     * edited, and therefore the top of the list next time it is
-                     * loaded
-                     */
-
-                    SQLiteDatabase database = DatabaseHelper.getInstance(MainActivity.this).getWritableDatabase();
-                    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                    ContentValues values = new ContentValues();
-                    values.put(BowlerEntry.COLUMN_NAME_DATE_MODIFIED, dateFormat.format(new Date()));
-
-                    database.beginTransaction();
-
-                    try
-                    {
-                        database.update(BowlerEntry.TABLE_NAME,
-                                values,
-                                BowlerEntry._ID + "=?",
-                                new String[]{String.valueOf(selectedBowlerID)});
-                        database.setTransactionSuccessful();
-                    }
-                    catch (Exception ex)
-                    {
-                        Log.w(TAG, "Error updating bowler: " + ex.getMessage());
-                    }
-                    finally
-                    {
-                        database.endTransaction();
-                    }
-
-                    getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE)
-                            .edit()
-                            .putString(Constants.PREFERENCES_NAME_BOWLER, bowlerNamesList.get(bowlerIDsList.indexOf(selectedBowlerID)))
-                            .putLong(Constants.PREFERENCES_ID_BOWLER, selectedBowlerID)
-                            .apply();
-
-                    Intent leagueIntent = new Intent(MainActivity.this, LeagueActivity.class);
-                    startActivity(leagueIntent);
+                    new OpenBowlerLeaguesTask().execute(position);
                 }
             });
         listBowlerNames.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
@@ -176,57 +135,7 @@ public class MainActivity extends ActionBarActivity
                 .remove(Constants.PREFERENCES_GAME_NUMBER)
                 .apply();
 
-        SQLiteDatabase database = DatabaseHelper.getInstance(this).getReadableDatabase();
-        //Gets name of all bowlers from database and their IDs
-        Cursor cursor = database.query(BowlerEntry.TABLE_NAME,
-                new String[]{BowlerEntry.COLUMN_NAME_BOWLER_NAME, BowlerEntry._ID},
-                null,   //All rows
-                null,   //No args
-                null,   //No group
-                null,   //No having
-                BowlerEntry.COLUMN_NAME_DATE_MODIFIED + " DESC");  //No order
-
-        //Adds bowler names and IDs to list
-        bowlerNamesList.clear();
-        bowlerIDsList.clear();
-        if (cursor.moveToFirst())
-        {
-            while(!cursor.isAfterLast())
-            {
-                bowlerNamesList.add(cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_NAME_BOWLER_NAME)));
-                bowlerIDsList.add(cursor.getLong(cursor.getColumnIndex(BowlerEntry._ID)));
-                cursor.moveToNext();
-            }
-        }
-        bowlerAdapter.notifyDataSetChanged();
-
-        Button quickGameButton = (Button)findViewById(R.id.button_quick_game);
-        if (recentBowlerID > -1 && recentLeagueID > -1)
-        {
-            String rawRecentQuery = "SELECT "
-                    + BowlerEntry.COLUMN_NAME_BOWLER_NAME + ", "
-                    + LeagueEntry.COLUMN_NAME_LEAGUE_NAME + ", "
-                    + LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES
-                    + " FROM " + BowlerEntry.TABLE_NAME + " AS bowler"
-                    + " LEFT JOIN " + LeagueEntry.TABLE_NAME + " AS league"
-                    + " ON bowler." + BowlerEntry._ID + "=league." + LeagueEntry.COLUMN_NAME_BOWLER_ID
-                    + " WHERE bowler." + BowlerEntry._ID + "=? AND league." + LeagueEntry._ID + "=?";
-            String[] rawRecentArgs = new String[]{String.valueOf(recentBowlerID), String.valueOf(recentLeagueID)};
-
-            cursor = database.rawQuery(rawRecentQuery, rawRecentArgs);
-            cursor.moveToFirst();
-            String recentBowlerName = cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_NAME_BOWLER_NAME));
-            String recentLeagueName = cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_LEAGUE_NAME));
-            recentNumberOfGames = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES));
-            quickGameButton.setText("Start a " + recentNumberOfGames + " game series with these settings:\n"
-                    + "Bowler: " + recentBowlerName + "\n"
-                    + "League: " + recentLeagueName);
-        }
-        else
-        {
-            quickGameButton.setText(R.string.text_quick_game_button);
-            quickGameButton.setEnabled(false);
-        }
+        new LoadBowlerAndRecentTask().execute();
     }
 
     @Override
@@ -319,7 +228,6 @@ public class MainActivity extends ActionBarActivity
             //Bowler name already exists in the list
             validInput = false;
             invalidInputMessage = "That name has already been used. You must choose another.";
-
         }
 
         if (!validInput)
@@ -344,40 +252,7 @@ public class MainActivity extends ActionBarActivity
          * Creates a new database entry for the bowler whose name was
          * received by input via the dialog
          */
-        long newID = -1;
-        SQLiteDatabase database = DatabaseHelper.getInstance(MainActivity.this).getWritableDatabase();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date = new Date();
-        ContentValues bowlerValues = new ContentValues();
-        bowlerValues.put(BowlerEntry.COLUMN_NAME_BOWLER_NAME, bowlerName);
-        bowlerValues.put(BowlerEntry.COLUMN_NAME_DATE_MODIFIED, dateFormat.format(date));
-
-        database.beginTransaction();
-        try
-        {
-            newID = database.insert(BowlerEntry.TABLE_NAME, null, bowlerValues);
-
-            ContentValues leagueValues = new ContentValues();
-            leagueValues.put(LeagueEntry.COLUMN_NAME_LEAGUE_NAME, "Open");
-            leagueValues.put(LeagueEntry.COLUMN_NAME_DATE_MODIFIED, dateFormat.format(date));
-            leagueValues.put(LeagueEntry.COLUMN_NAME_BOWLER_ID, newID);
-            leagueValues.put(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES, 1);
-            database.insert(LeagueEntry.TABLE_NAME, null, leagueValues);
-
-            database.setTransactionSuccessful();
-        }
-        catch (Exception ex)
-        {
-            Log.w(TAG, "Error adding new bowler: " + ex.getMessage());
-        }
-        finally
-        {
-            database.endTransaction();
-        }
-
-        bowlerNamesList.add(0, bowlerName);
-        bowlerIDsList.add(0, newID);
-        bowlerAdapter.notifyDataSetChanged();
+        new AddBowlerTask().execute(bowlerName);
     }
 
     @Override
@@ -414,46 +289,50 @@ public class MainActivity extends ActionBarActivity
      *
      * @param selectedBowlerID bowler ID to delete data of
      */
-    private boolean deleteBowler(long selectedBowlerID)
+    private void deleteBowler(final long selectedBowlerID)
     {
-        int index = bowlerIDsList.indexOf(selectedBowlerID);
-        String bowlerName = bowlerNamesList.remove(index);
+        final int index = bowlerIDsList.indexOf(selectedBowlerID);
+        final String bowlerName = bowlerNamesList.remove(index);
         bowlerIDsList.remove(index);
         bowlerAdapter.notifyDataSetChanged();
 
-        SQLiteDatabase database = DatabaseHelper.getInstance(this).getWritableDatabase();
-        String[] whereArgs = {String.valueOf(selectedBowlerID)};
-        database.beginTransaction();
-        try
+        new Thread(new Runnable()
         {
-            database.delete(FrameEntry.TABLE_NAME,
-                    FrameEntry.COLUMN_NAME_BOWLER_ID + "=?",
-                    whereArgs);
-            database.delete(GameEntry.TABLE_NAME,
-                    GameEntry.COLUMN_NAME_BOWLER_ID + "=?",
-                    whereArgs);
-            database.delete(SeriesEntry.TABLE_NAME,
-                    SeriesEntry.COLUMN_NAME_BOWLER_ID + "=?",
-                    whereArgs);
-            database.delete(LeagueEntry.TABLE_NAME,
-                    LeagueEntry.COLUMN_NAME_BOWLER_ID + "=?",
-                    whereArgs);
-            database.delete(BowlerEntry.TABLE_NAME,
-                    BowlerEntry._ID + "=?",
-                    whereArgs);
-            database.setTransactionSuccessful();
-        }
-        catch (Exception e)
-        {
-            Log.w(TAG, "Error deleting bowler: " + bowlerName);
-            return false;
-        }
-        finally
-        {
-            database.endTransaction();
-        }
-
-        return true;
+            @Override
+            public void run()
+            {
+                SQLiteDatabase database = DatabaseHelper.getInstance(MainActivity.this).getWritableDatabase();
+                String[] whereArgs = {String.valueOf(selectedBowlerID)};
+                database.beginTransaction();
+                try
+                {
+                    database.delete(FrameEntry.TABLE_NAME,
+                            FrameEntry.COLUMN_NAME_BOWLER_ID + "=?",
+                            whereArgs);
+                    database.delete(GameEntry.TABLE_NAME,
+                            GameEntry.COLUMN_NAME_BOWLER_ID + "=?",
+                            whereArgs);
+                    database.delete(SeriesEntry.TABLE_NAME,
+                            SeriesEntry.COLUMN_NAME_BOWLER_ID + "=?",
+                            whereArgs);
+                    database.delete(LeagueEntry.TABLE_NAME,
+                            LeagueEntry.COLUMN_NAME_BOWLER_ID + "=?",
+                            whereArgs);
+                    database.delete(BowlerEntry.TABLE_NAME,
+                            BowlerEntry._ID + "=?",
+                            whereArgs);
+                    database.setTransactionSuccessful();
+                }
+                catch (Exception e)
+                {
+                    Log.w(TAG, "Error deleting bowler: " + bowlerName);
+                }
+                finally
+                {
+                    database.endTransaction();
+                }
+            }
+        }).start();
     }
 
     /**
@@ -484,5 +363,185 @@ public class MainActivity extends ActionBarActivity
             });
         }
         return hasShownTutorial;
+    }
+
+    private class OpenBowlerLeaguesTask extends AsyncTask<Integer, Void, Void>
+    {
+        @Override
+        protected Void doInBackground(Integer... position)
+        {
+            final ListView listBowlerNames = (ListView)findViewById(R.id.list_bowler_name);
+            String bowlerNameSelected = (String)listBowlerNames.getItemAtPosition(position[0]);
+
+            long selectedBowlerID;
+            selectedBowlerID = bowlerIDsList.get(bowlerNamesList.indexOf(bowlerNameSelected));
+
+                    /*
+                     * Updates database to make the selected bowler the most recently
+                     * edited, and therefore the top of the list next time it is
+                     * loaded
+                     */
+            SQLiteDatabase database = DatabaseHelper.getInstance(MainActivity.this).getWritableDatabase();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            ContentValues values = new ContentValues();
+            values.put(BowlerEntry.COLUMN_NAME_DATE_MODIFIED, dateFormat.format(new Date()));
+
+            database.beginTransaction();
+
+            try
+            {
+                database.update(BowlerEntry.TABLE_NAME,
+                        values,
+                        BowlerEntry._ID + "=?",
+                        new String[]{String.valueOf(selectedBowlerID)});
+                database.setTransactionSuccessful();
+            }
+            catch (Exception ex)
+            {
+                Log.w(TAG, "Error updating bowler: " + ex.getMessage());
+            }
+            finally
+            {
+                database.endTransaction();
+            }
+
+            getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE)
+                    .edit()
+                    .putString(Constants.PREFERENCES_NAME_BOWLER, bowlerNamesList.get(bowlerIDsList.indexOf(selectedBowlerID)))
+                    .putLong(Constants.PREFERENCES_ID_BOWLER, selectedBowlerID)
+                    .apply();
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid)
+        {
+            Intent leagueIntent = new Intent(MainActivity.this, LeagueActivity.class);
+            startActivity(leagueIntent);
+        }
+    }
+
+    private class LoadBowlerAndRecentTask extends AsyncTask<Void, Void, String[]>
+    {
+        @Override
+        protected String[] doInBackground(Void... parameters)
+        {
+            SQLiteDatabase database = DatabaseHelper.getInstance(MainActivity.this).getReadableDatabase();
+            //Gets name of all bowlers from database and their IDs
+            Cursor cursor = database.query(BowlerEntry.TABLE_NAME,
+                    new String[]{BowlerEntry.COLUMN_NAME_BOWLER_NAME, BowlerEntry._ID},
+                    null,   //All rows
+                    null,   //No args
+                    null,   //No group
+                    null,   //No having
+                    BowlerEntry.COLUMN_NAME_DATE_MODIFIED + " DESC");  //No order
+
+            //Adds bowler names and IDs to list
+            bowlerNamesList.clear();
+            bowlerIDsList.clear();
+            if (cursor.moveToFirst())
+            {
+                while(!cursor.isAfterLast())
+                {
+                    bowlerNamesList.add(cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_NAME_BOWLER_NAME)));
+                    bowlerIDsList.add(cursor.getLong(cursor.getColumnIndex(BowlerEntry._ID)));
+                    cursor.moveToNext();
+                }
+            }
+
+
+            if (recentBowlerID > -1 && recentLeagueID > -1)
+            {
+                String rawRecentQuery = "SELECT "
+                        + BowlerEntry.COLUMN_NAME_BOWLER_NAME + ", "
+                        + LeagueEntry.COLUMN_NAME_LEAGUE_NAME + ", "
+                        + LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES
+                        + " FROM " + BowlerEntry.TABLE_NAME + " AS bowler"
+                        + " LEFT JOIN " + LeagueEntry.TABLE_NAME + " AS league"
+                        + " ON bowler." + BowlerEntry._ID + "=league." + LeagueEntry.COLUMN_NAME_BOWLER_ID
+                        + " WHERE bowler." + BowlerEntry._ID + "=? AND league." + LeagueEntry._ID + "=?";
+                String[] rawRecentArgs = new String[]{String.valueOf(recentBowlerID), String.valueOf(recentLeagueID)};
+
+                cursor = database.rawQuery(rawRecentQuery, rawRecentArgs);
+                cursor.moveToFirst();
+                String recentBowlerName = cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_NAME_BOWLER_NAME));
+                String recentLeagueName = cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_LEAGUE_NAME));
+                recentNumberOfGames = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES));
+                return new String[]{recentBowlerName, recentLeagueName};
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String[] recentBowlerAndLeague)
+        {
+            bowlerAdapter.notifyDataSetChanged();
+            Button quickGameButton = (Button)findViewById(R.id.button_quick_game);
+
+            if (recentBowlerID > -1 && recentLeagueID > -1)
+            {
+                quickGameButton.setText("Start a " + recentNumberOfGames + " game series with these settings:\n"
+                        + "Bowler: " + recentBowlerAndLeague[0] + "\n"
+                        + "League: " + recentBowlerAndLeague[1]);
+            }
+            else
+            {
+                quickGameButton.setText(R.string.text_quick_game_button);
+                quickGameButton.setEnabled(false);
+            }
+        }
+    }
+
+    private class AddBowlerTask extends AsyncTask<String, Void, String>
+    {
+        @Override
+        protected String doInBackground(String... bowlerName)
+        {
+            long newID = -1;
+            SQLiteDatabase database = DatabaseHelper.getInstance(MainActivity.this).getWritableDatabase();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date date = new Date();
+            ContentValues bowlerValues = new ContentValues();
+            bowlerValues.put(BowlerEntry.COLUMN_NAME_BOWLER_NAME, bowlerName[0]);
+            bowlerValues.put(BowlerEntry.COLUMN_NAME_DATE_MODIFIED, dateFormat.format(date));
+
+            database.beginTransaction();
+            try
+            {
+                newID = database.insert(BowlerEntry.TABLE_NAME, null, bowlerValues);
+
+                ContentValues leagueValues = new ContentValues();
+                leagueValues.put(LeagueEntry.COLUMN_NAME_LEAGUE_NAME, "Open");
+                leagueValues.put(LeagueEntry.COLUMN_NAME_DATE_MODIFIED, dateFormat.format(date));
+                leagueValues.put(LeagueEntry.COLUMN_NAME_BOWLER_ID, newID);
+                leagueValues.put(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES, 1);
+                database.insert(LeagueEntry.TABLE_NAME, null, leagueValues);
+
+                database.setTransactionSuccessful();
+            }
+            catch (Exception ex)
+            {
+                Log.w(TAG, "Error adding new bowler: " + ex.getMessage());
+            }
+            finally
+            {
+                database.endTransaction();
+            }
+
+            return String.valueOf(newID) + ":" + bowlerName[0];
+        }
+
+        @Override
+        protected void onPostExecute(String bowlerNameAndID)
+        {
+            String bowlerName = bowlerNameAndID.substring(bowlerNameAndID.indexOf(":") + 1);
+            long newID = Long.parseLong(bowlerNameAndID.substring(0, bowlerNameAndID.indexOf(":")));
+
+            bowlerNamesList.add(0, bowlerName);
+            bowlerIDsList.add(0, newID);
+            bowlerAdapter.notifyDataSetChanged();
+        }
     }
 }
