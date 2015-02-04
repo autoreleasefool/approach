@@ -1137,8 +1137,5 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
      */
     private void showShareOptions()
     {
-        Intent imageIntent = new Intent(this, ImageActivity.class);
-        imageIntent.putExtra("Long", gameID);
-        startActivity(imageIntent);
     }
 }
