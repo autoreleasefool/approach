@@ -24,7 +24,6 @@ import java.util.Date;
 import java.util.List;
 
 import ca.josephroque.bowlingcompanion.Constants;
-import ca.josephroque.bowlingcompanion.MainActivity;
 import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.SeriesActivity;
 import ca.josephroque.bowlingcompanion.adapter.LeagueAverageListAdapter;

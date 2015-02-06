@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -25,9 +26,7 @@ import java.util.List;
 import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.GameActivity;
 import ca.josephroque.bowlingcompanion.R;
-import ca.josephroque.bowlingcompanion.SeriesActivity;
 import ca.josephroque.bowlingcompanion.adapter.LeagueAverageListAdapter;
-import ca.josephroque.bowlingcompanion.database.BowlingContract;
 import ca.josephroque.bowlingcompanion.database.BowlingContract.*;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 
@@ -44,6 +43,8 @@ public class TournamentFragment extends Fragment
 
     /** Adapter for the ListView of leagues */
     private LeagueAverageListAdapter tournamentAdapter = null;
+    /** List of tournaments for bowler */
+    private ListView tournamentListView = null;
 
     /** ID of the selected bowler */
     private long bowlerID = -1;
@@ -60,7 +61,7 @@ public class TournamentFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance)
     {
         View rootView = inflater.inflate(R.layout.fragment_tournaments, container, false);
-        final ListView tournamentListView = (ListView)rootView.findViewById(R.id.list_tournament_names);
+        tournamentListView = (ListView)rootView.findViewById(R.id.list_tournament_names);
 
         //Loads data from the above query into lists
         tournamentNamesList = new ArrayList<String>();
@@ -76,96 +77,7 @@ public class TournamentFragment extends Fragment
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
-                long tournamentIDSelected = (Long)tournamentListView.getItemAtPosition(position);
-
-                //Updates the date modified in the database of the selected league
-                SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-                ContentValues values = new ContentValues();
-                values.put(LeagueEntry.COLUMN_NAME_DATE_MODIFIED, dateFormat.format(new Date()));
-
-                database.beginTransaction();
-                try
-                {
-                    database.update(LeagueEntry.TABLE_NAME,
-                            values,
-                            LeagueEntry._ID + "=?",
-                            new String[]{String.valueOf(tournamentIDSelected)});
-                    database.setTransactionSuccessful();
-                }
-                catch (Exception ex)
-                {
-                    Log.w(TAG, "Error updating league: " + ex.getMessage());
-                }
-                finally
-                {
-                    database.endTransaction();
-                }
-
-                getActivity().getSharedPreferences(Constants.MY_PREFS, Activity.MODE_PRIVATE)
-                        .edit()
-                        .putString(Constants.PREFERENCES_NAME_LEAGUE, tournamentNamesList.get(tournamentIDList.indexOf(tournamentIDSelected)))
-                        .putLong(Constants.PREFERENCES_ID_LEAGUE, tournamentIDSelected)
-                        .putInt(Constants.PREFERENCES_NUMBER_OF_GAMES, tournamentNumberOfGamesList.get(tournamentIDList.indexOf(tournamentIDSelected)))
-                        .putBoolean(Constants.PREFERENCES_TOURNAMENT_MODE, true)
-                        .apply();
-
-                String rawSeriesQuery = "SELECT "
-                        + LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES + ", "
-                        + SeriesEntry.TABLE_NAME + "." + SeriesEntry._ID + " AS sid"
-                        + " FROM " + LeagueEntry.TABLE_NAME + " AS league"
-                        + " LEFT JOIN " + SeriesEntry.TABLE_NAME
-                        + " ON league." + LeagueEntry._ID + "=" + SeriesEntry.COLUMN_NAME_LEAGUE_ID
-                        + " WHERE league." + LeagueEntry._ID + "=?";
-                String[] rawSeriesArgs = {String.valueOf(tournamentIDSelected)};
-
-                Cursor cursor = database.rawQuery(rawSeriesQuery, rawSeriesArgs);
-                cursor.moveToFirst();
-                int numberOfGames = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES));
-                long seriesID = cursor.getLong(cursor.getColumnIndex("sid"));
-
-                long[] gameID = new long[numberOfGames];
-                long[] frameID = new long[numberOfGames * 10];
-
-                //Loads relevant game and frame IDs from database and stores them in Intent
-                //for next activity
-                rawSeriesQuery = "SELECT "
-                        + GameEntry.TABLE_NAME + "." + GameEntry._ID + " AS gid, "
-                        + FrameEntry.TABLE_NAME + "." + FrameEntry._ID + " AS fid"
-                        + " FROM " + GameEntry.TABLE_NAME
-                        + " LEFT JOIN " + FrameEntry.TABLE_NAME
-                        + " ON gid=" + FrameEntry.COLUMN_NAME_GAME_ID
-                        + " WHERE " + GameEntry.COLUMN_NAME_SERIES_ID + "=?"
-                        + " ORDER BY gid, fid";
-                rawSeriesArgs = new String[]{String.valueOf(seriesID)};
-
-                int currentGame = -1;
-                long currentGameID = -1;
-                int currentFrame = -1;
-                cursor = database.rawQuery(rawSeriesQuery, rawSeriesArgs);
-                if (cursor.moveToFirst())
-                {
-                    while (!cursor.isAfterLast())
-                    {
-                        long newGameID = cursor.getLong(cursor.getColumnIndex("gid"));
-                        if (newGameID == currentGameID)
-                        {
-                            frameID[++currentFrame] = cursor.getLong(cursor.getColumnIndex("fid"));
-                        }
-                        else
-                        {
-                            currentGameID = newGameID;
-                            frameID[++currentFrame] = cursor.getLong(cursor.getColumnIndex("fid"));
-                            gameID[++currentGame] = currentGameID;
-                        }
-                        cursor.moveToNext();
-                    }
-                }
-
-                Intent gameIntent = new Intent(getActivity(), GameActivity.class);
-                gameIntent.putExtra(GameEntry.TABLE_NAME + "." + GameEntry._ID, gameID);
-                gameIntent.putExtra(FrameEntry.TABLE_NAME + "." + FrameEntry._ID, frameID);
-                startActivity(gameIntent);
+                new LoadTournamentSeriesTask().execute(position);
             }
         });
         tournamentListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
@@ -186,77 +98,12 @@ public class TournamentFragment extends Fragment
     {
         super.onResume();
 
-        SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getReadableDatabase();
-        SharedPreferences preferences = getActivity().getSharedPreferences(Constants.MY_PREFS, Activity.MODE_PRIVATE);
-        bowlerID = preferences.getLong(BowlerEntry.TABLE_NAME + "." + BowlerEntry._ID, -1);
-
         tournamentNamesList.clear();
         tournamentAverageList.clear();
         tournamentIDList.clear();
         tournamentNumberOfGamesList.clear();
-        List<Integer> tournamentTotalNumberOfGamesList = new ArrayList<Integer>();
 
-        String rawLeagueQuery = "SELECT "
-                + LeagueEntry.TABLE_NAME + "." + LeagueEntry._ID + " AS lid, "
-                + LeagueEntry.COLUMN_NAME_LEAGUE_NAME + ", "
-                + LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES + ", "
-                + GameEntry.COLUMN_NAME_GAME_FINAL_SCORE
-                + " FROM " + LeagueEntry.TABLE_NAME
-                + " LEFT JOIN " + GameEntry.TABLE_NAME
-                + " ON " + LeagueEntry.COLUMN_NAME_BOWLER_ID + "=" + GameEntry.COLUMN_NAME_BOWLER_ID
-                + " WHERE " + LeagueEntry.COLUMN_NAME_BOWLER_ID + "=? AND " + LeagueEntry.COLUMN_NAME_IS_TOURNAMENT + "=?"
-                + " ORDER BY " + LeagueEntry.COLUMN_NAME_DATE_MODIFIED + " DESC";
-        String[] rawLeagueArgs ={String.valueOf(bowlerID), String.valueOf(1)};
-
-        Cursor cursor = database.rawQuery(rawLeagueQuery, rawLeagueArgs);
-
-        if (cursor.moveToFirst())
-        {
-            int tournamentTotalPinfall = 0;
-            int totalNumberOfTournamentGames = 0;
-            while(!cursor.isAfterLast())
-            {
-                String leagueName = cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_LEAGUE_NAME));
-                long leagueID = cursor.getLong(cursor.getColumnIndex("lid"));
-                int numberOfGames = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES));
-                int finalScore = cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_NAME_GAME_FINAL_SCORE));
-
-                if (tournamentIDList.size() == 0)
-                {
-                    tournamentNamesList.add(leagueName);
-                    tournamentIDList.add(leagueID);
-                    tournamentNumberOfGamesList.add(numberOfGames);
-                }
-                else if (!tournamentIDList.contains(leagueID))
-                {
-                    if (tournamentIDList.size() > 0)
-                    {
-                        tournamentTotalNumberOfGamesList.add(totalNumberOfTournamentGames);
-                        tournamentAverageList.add((totalNumberOfTournamentGames > 0) ? tournamentTotalPinfall / totalNumberOfTournamentGames:0);
-                    }
-
-                    tournamentTotalPinfall = 0;
-                    totalNumberOfTournamentGames = 0;
-                    tournamentNamesList.add(leagueName);
-                    tournamentIDList.add(leagueID);
-                    tournamentNumberOfGamesList.add(numberOfGames);
-                }
-
-                totalNumberOfTournamentGames++;
-                tournamentTotalPinfall += finalScore;
-
-                cursor.moveToNext();
-            }
-
-            if (tournamentIDList.size() > 0)
-            {
-                tournamentTotalNumberOfGamesList.add(totalNumberOfTournamentGames);
-                tournamentAverageList.add((totalNumberOfTournamentGames > 0) ? tournamentTotalPinfall / totalNumberOfTournamentGames:0);
-            }
-        }
-
-        tournamentAdapter.update(tournamentNamesList, tournamentAverageList, tournamentNumberOfGamesList);
-        tournamentAdapter.notifyDataSetChanged();
+        new LoadTournamentsTask().execute();
     }
 
     public void addNewTournament(String tournamentName, int numberOfGames)
@@ -294,86 +141,7 @@ public class TournamentFragment extends Fragment
             return;
         }
 
-        long newTournamentID = -1;
-        SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        Date date = new Date();
-        ContentValues values = new ContentValues();
-        values.put(LeagueEntry.COLUMN_NAME_LEAGUE_NAME, tournamentName);
-        values.put(LeagueEntry.COLUMN_NAME_DATE_MODIFIED, dateFormat.format(date));
-        values.put(LeagueEntry.COLUMN_NAME_BOWLER_ID, bowlerID);
-        values.put(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES, numberOfGames);
-        values.put(LeagueEntry.COLUMN_NAME_IS_TOURNAMENT, 1);
-
-        database.beginTransaction();
-        try
-        {
-            newTournamentID = database.insert(LeagueEntry.TABLE_NAME, null, values);
-            database.setTransactionSuccessful();
-        }
-        catch (Exception ex)
-        {
-            Log.w(TAG, "Error adding new league: " + ex.getMessage());
-        }
-        finally
-        {
-            database.endTransaction();
-        }
-
-        long seriesID = -1;
-        long[] gameID = new long[numberOfGames], frameID = new long[10 * numberOfGames];
-        Intent gameIntent = new Intent(getActivity(), GameActivity.class);
-
-        database.beginTransaction();
-        try
-        {
-            values = new ContentValues();
-            values.put(SeriesEntry.COLUMN_NAME_DATE_CREATED, dateFormat.format(date));
-            values.put(SeriesEntry.COLUMN_NAME_LEAGUE_ID, newTournamentID);
-            values.put(SeriesEntry.COLUMN_NAME_BOWLER_ID, bowlerID);
-            seriesID = database.insert(SeriesEntry.TABLE_NAME, null, values);
-
-            for (int i = 0; i < numberOfGames; i++)
-            {
-                values = new ContentValues();
-                values.put(GameEntry.COLUMN_NAME_GAME_NUMBER, i + 1);
-                values.put(GameEntry.COLUMN_NAME_GAME_FINAL_SCORE, 0);
-                values.put(GameEntry.COLUMN_NAME_LEAGUE_ID, newTournamentID);
-                values.put(GameEntry.COLUMN_NAME_BOWLER_ID, bowlerID);
-                values.put(GameEntry.COLUMN_NAME_SERIES_ID, seriesID);
-                gameID[i] = database.insert(GameEntry.TABLE_NAME, null, values);
-
-                for (int j = 0; j < 10; j++)
-                {
-                    values = new ContentValues();
-                    values.put(FrameEntry.COLUMN_NAME_FRAME_NUMBER, j + 1);
-                    values.put(FrameEntry.COLUMN_NAME_BOWLER_ID, bowlerID);
-                    values.put(FrameEntry.COLUMN_NAME_LEAGUE_ID, newTournamentID);
-                    values.put(FrameEntry.COLUMN_NAME_GAME_ID, gameID[i]);
-                    frameID[j + 10 * i] = database.insert(FrameEntry.TABLE_NAME, null, values);
-                }
-            }
-            database.setTransactionSuccessful();
-        }
-        catch (Exception ex)
-        {
-            Log.w(TAG, "Error adding new series: " + ex.getMessage());
-        }
-        finally
-        {
-            database.endTransaction();
-        }
-
-        getActivity().getSharedPreferences(Constants.MY_PREFS, Activity.MODE_PRIVATE)
-                .edit()
-                .putLong(Constants.PREFERENCES_ID_LEAGUE, newTournamentID)
-                .putLong(Constants.PREFERENCES_ID_SERIES, seriesID)
-                .putInt(Constants.PREFERENCES_NUMBER_OF_GAMES, numberOfGames)
-                .putBoolean(Constants.PREFERENCES_TOURNAMENT_MODE, true)
-                .apply();
-        gameIntent.putExtra(GameEntry.TABLE_NAME + "." + GameEntry._ID, gameID);
-        gameIntent.putExtra(FrameEntry.  TABLE_NAME + "." + FrameEntry._ID, frameID);
-        getActivity().startActivity(gameIntent);
+        new AddTournamentTask().execute(tournamentName, numberOfGames);
     }
 
     /**
@@ -404,45 +172,326 @@ public class TournamentFragment extends Fragment
      *
      * @param selectedTournamentID tournament ID to delete data of
      */
-    private boolean deleteTournament(long selectedTournamentID)
+    private void deleteTournament(final long selectedTournamentID)
     {
-        int index = tournamentIDList.indexOf(selectedTournamentID);
-        String tournamentName = tournamentNamesList.remove(index);
+        final int index = tournamentIDList.indexOf(selectedTournamentID);
+        final String tournamentName = tournamentNamesList.remove(index);
         tournamentAverageList.remove(index);
         tournamentNumberOfGamesList.remove(index);
         tournamentIDList.remove(index);
         tournamentAdapter.update(tournamentNamesList, tournamentAverageList, tournamentNumberOfGamesList);
         tournamentAdapter.notifyDataSetChanged();
 
-        SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
-        String[] whereArgs = {String.valueOf(selectedTournamentID)};
-        database.beginTransaction();
-        try
+        new Thread(new Runnable()
         {
-            database.delete(FrameEntry.TABLE_NAME,
-                    FrameEntry.COLUMN_NAME_LEAGUE_ID + "=?",
-                    whereArgs);
-            database.delete(GameEntry.TABLE_NAME,
-                    GameEntry.COLUMN_NAME_LEAGUE_ID + "=?",
-                    whereArgs);
-            database.delete(SeriesEntry.TABLE_NAME,
-                    SeriesEntry.COLUMN_NAME_LEAGUE_ID + "=?",
-                    whereArgs);
-            database.delete(LeagueEntry.TABLE_NAME,
-                    LeagueEntry._ID + "=?",
-                    whereArgs);
-            database.setTransactionSuccessful();
-        }
-        catch (Exception e)
+            @Override
+            public void run()
+            {
+                SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
+                String[] whereArgs = {String.valueOf(selectedTournamentID)};
+                database.beginTransaction();
+                try
+                {
+                    database.delete(FrameEntry.TABLE_NAME,
+                            FrameEntry.COLUMN_NAME_LEAGUE_ID + "=?",
+                            whereArgs);
+                    database.delete(GameEntry.TABLE_NAME,
+                            GameEntry.COLUMN_NAME_LEAGUE_ID + "=?",
+                            whereArgs);
+                    database.delete(SeriesEntry.TABLE_NAME,
+                            SeriesEntry.COLUMN_NAME_LEAGUE_ID + "=?",
+                            whereArgs);
+                    database.delete(LeagueEntry.TABLE_NAME,
+                            LeagueEntry._ID + "=?",
+                            whereArgs);
+                    database.setTransactionSuccessful();
+                }
+                catch (Exception e)
+                {
+                    Log.w(TAG, "Error deleting tournament: " + tournamentName);
+                }
+                finally
+                {
+                    database.endTransaction();
+                }
+            }
+        }).start();
+    }
+
+    private class LoadTournamentsTask extends AsyncTask<Void, Void, Void>
+    {
+        @Override
+        protected Void doInBackground(Void... params)
         {
-            Log.w(TAG, "Error deleting tournament: " + tournamentName);
-            return false;
-        }
-        finally
-        {
-            database.endTransaction();
+            SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getReadableDatabase();
+            SharedPreferences preferences = getActivity().getSharedPreferences(Constants.MY_PREFS, Activity.MODE_PRIVATE);
+            bowlerID = preferences.getLong(BowlerEntry.TABLE_NAME + "." + BowlerEntry._ID, -1);
+
+            String rawLeagueQuery = "SELECT "
+                    + LeagueEntry.TABLE_NAME + "." + LeagueEntry._ID + " AS lid, "
+                    + LeagueEntry.COLUMN_NAME_LEAGUE_NAME + ", "
+                    + LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES + ", "
+                    + GameEntry.COLUMN_NAME_GAME_FINAL_SCORE
+                    + " FROM " + LeagueEntry.TABLE_NAME
+                    + " LEFT JOIN " + GameEntry.TABLE_NAME
+                    + " ON " + LeagueEntry.COLUMN_NAME_BOWLER_ID + "=" + GameEntry.COLUMN_NAME_BOWLER_ID
+                    + " WHERE " + LeagueEntry.COLUMN_NAME_BOWLER_ID + "=? AND " + LeagueEntry.COLUMN_NAME_IS_TOURNAMENT + "=?"
+                    + " ORDER BY " + LeagueEntry.COLUMN_NAME_DATE_MODIFIED + " DESC";
+            String[] rawLeagueArgs ={String.valueOf(bowlerID), String.valueOf(1)};
+
+            Cursor cursor = database.rawQuery(rawLeagueQuery, rawLeagueArgs);
+
+            if (cursor.moveToFirst())
+            {
+                int tournamentTotalPinfall = 0;
+                int totalNumberOfTournamentGames = 0;
+                while(!cursor.isAfterLast())
+                {
+                    String leagueName = cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_LEAGUE_NAME));
+                    long leagueID = cursor.getLong(cursor.getColumnIndex("lid"));
+                    int numberOfGames = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES));
+                    int finalScore = cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_NAME_GAME_FINAL_SCORE));
+
+                    if (tournamentIDList.size() == 0)
+                    {
+                        tournamentNamesList.add(leagueName);
+                        tournamentIDList.add(leagueID);
+                        tournamentNumberOfGamesList.add(numberOfGames);
+                    }
+                    else if (!tournamentIDList.contains(leagueID))
+                    {
+                        if (tournamentIDList.size() > 0)
+                        {
+                            tournamentAverageList.add((totalNumberOfTournamentGames > 0) ? tournamentTotalPinfall / totalNumberOfTournamentGames:0);
+                        }
+
+                        tournamentTotalPinfall = 0;
+                        totalNumberOfTournamentGames = 0;
+                        tournamentNamesList.add(leagueName);
+                        tournamentIDList.add(leagueID);
+                        tournamentNumberOfGamesList.add(numberOfGames);
+                    }
+
+                    totalNumberOfTournamentGames++;
+                    tournamentTotalPinfall += finalScore;
+
+                    cursor.moveToNext();
+                }
+
+                if (tournamentIDList.size() > 0)
+                {
+                    tournamentAverageList.add((totalNumberOfTournamentGames > 0) ? tournamentTotalPinfall / totalNumberOfTournamentGames:0);
+                }
+            }
+            return null;
         }
 
-        return true;
+        @Override
+        protected void onPostExecute(Void param)
+        {
+            tournamentAdapter.update(tournamentNamesList, tournamentAverageList, tournamentNumberOfGamesList);
+            tournamentAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private class AddTournamentTask extends AsyncTask<Object, Void, Object[]>
+    {
+        @Override
+        protected Object[] doInBackground(Object... params)
+        {
+            final String tournamentName = (String)params[0];
+            final int numberOfGames = (Integer)params[1];
+
+            long newTournamentID = -1;
+            SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date date = new Date();
+            ContentValues values = new ContentValues();
+            values.put(LeagueEntry.COLUMN_NAME_LEAGUE_NAME, tournamentName);
+            values.put(LeagueEntry.COLUMN_NAME_DATE_MODIFIED, dateFormat.format(date));
+            values.put(LeagueEntry.COLUMN_NAME_BOWLER_ID, bowlerID);
+            values.put(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES, numberOfGames);
+            values.put(LeagueEntry.COLUMN_NAME_IS_TOURNAMENT, 1);
+
+            database.beginTransaction();
+            try
+            {
+                newTournamentID = database.insert(LeagueEntry.TABLE_NAME, null, values);
+                database.setTransactionSuccessful();
+            }
+            catch (Exception ex)
+            {
+                Log.w(TAG, "Error adding new league: " + ex.getMessage());
+            }
+            finally
+            {
+                database.endTransaction();
+            }
+
+            long seriesID = -1;
+            long[] gameID = new long[numberOfGames], frameID = new long[10 * numberOfGames];
+
+            database.beginTransaction();
+            try
+            {
+                values = new ContentValues();
+                values.put(SeriesEntry.COLUMN_NAME_DATE_CREATED, dateFormat.format(date));
+                values.put(SeriesEntry.COLUMN_NAME_LEAGUE_ID, newTournamentID);
+                values.put(SeriesEntry.COLUMN_NAME_BOWLER_ID, bowlerID);
+                seriesID = database.insert(SeriesEntry.TABLE_NAME, null, values);
+
+                for (int i = 0; i < numberOfGames; i++)
+                {
+                    values = new ContentValues();
+                    values.put(GameEntry.COLUMN_NAME_GAME_NUMBER, i + 1);
+                    values.put(GameEntry.COLUMN_NAME_GAME_FINAL_SCORE, 0);
+                    values.put(GameEntry.COLUMN_NAME_LEAGUE_ID, newTournamentID);
+                    values.put(GameEntry.COLUMN_NAME_BOWLER_ID, bowlerID);
+                    values.put(GameEntry.COLUMN_NAME_SERIES_ID, seriesID);
+                    gameID[i] = database.insert(GameEntry.TABLE_NAME, null, values);
+
+                    for (int j = 0; j < 10; j++)
+                    {
+                        values = new ContentValues();
+                        values.put(FrameEntry.COLUMN_NAME_FRAME_NUMBER, j + 1);
+                        values.put(FrameEntry.COLUMN_NAME_BOWLER_ID, bowlerID);
+                        values.put(FrameEntry.COLUMN_NAME_LEAGUE_ID, newTournamentID);
+                        values.put(FrameEntry.COLUMN_NAME_GAME_ID, gameID[i]);
+                        frameID[j + 10 * i] = database.insert(FrameEntry.TABLE_NAME, null, values);
+                    }
+                }
+                database.setTransactionSuccessful();
+            }
+            catch (Exception ex)
+            {
+                Log.w(TAG, "Error adding new series: " + ex.getMessage());
+            }
+            finally
+            {
+                database.endTransaction();
+            }
+
+            getActivity().getSharedPreferences(Constants.MY_PREFS, Activity.MODE_PRIVATE)
+                    .edit()
+                    .putLong(Constants.PREFERENCES_ID_LEAGUE, newTournamentID)
+                    .putLong(Constants.PREFERENCES_ID_SERIES, seriesID)
+                    .putInt(Constants.PREFERENCES_NUMBER_OF_GAMES, numberOfGames)
+                    .putBoolean(Constants.PREFERENCES_TOURNAMENT_MODE, true)
+                    .apply();
+            return new Object[]{gameID, frameID};
+        }
+
+        @Override
+        protected void onPostExecute(Object[] param)
+        {
+            Intent gameIntent = new Intent(getActivity(), GameActivity.class);
+            gameIntent.putExtra(GameEntry.TABLE_NAME + "." + GameEntry._ID, (long[])param[0]);
+            gameIntent.putExtra(FrameEntry.  TABLE_NAME + "." + FrameEntry._ID, (long[])param[1]);
+            getActivity().startActivity(gameIntent);
+        }
+    }
+
+    private class LoadTournamentSeriesTask extends AsyncTask<Integer, Void, Object[]>
+    {
+        @Override
+        protected Object[] doInBackground(Integer... position)
+        {
+            long tournamentIDSelected = (Long)tournamentListView.getItemAtPosition(position[0]);
+
+            //Updates the date modified in the database of the selected league
+            SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            ContentValues values = new ContentValues();
+            values.put(LeagueEntry.COLUMN_NAME_DATE_MODIFIED, dateFormat.format(new Date()));
+
+            database.beginTransaction();
+            try
+            {
+                database.update(LeagueEntry.TABLE_NAME,
+                        values,
+                        LeagueEntry._ID + "=?",
+                        new String[]{String.valueOf(tournamentIDSelected)});
+                database.setTransactionSuccessful();
+            }
+            catch (Exception ex)
+            {
+                Log.w(TAG, "Error updating league: " + ex.getMessage());
+            }
+            finally
+            {
+                database.endTransaction();
+            }
+
+            getActivity().getSharedPreferences(Constants.MY_PREFS, Activity.MODE_PRIVATE)
+                    .edit()
+                    .putString(Constants.PREFERENCES_NAME_LEAGUE, tournamentNamesList.get(tournamentIDList.indexOf(tournamentIDSelected)))
+                    .putLong(Constants.PREFERENCES_ID_LEAGUE, tournamentIDSelected)
+                    .putInt(Constants.PREFERENCES_NUMBER_OF_GAMES, tournamentNumberOfGamesList.get(tournamentIDList.indexOf(tournamentIDSelected)))
+                    .putBoolean(Constants.PREFERENCES_TOURNAMENT_MODE, true)
+                    .apply();
+
+            String rawSeriesQuery = "SELECT "
+                    + LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES + ", "
+                    + SeriesEntry.TABLE_NAME + "." + SeriesEntry._ID + " AS sid"
+                    + " FROM " + LeagueEntry.TABLE_NAME + " AS league"
+                    + " LEFT JOIN " + SeriesEntry.TABLE_NAME
+                    + " ON league." + LeagueEntry._ID + "=" + SeriesEntry.COLUMN_NAME_LEAGUE_ID
+                    + " WHERE league." + LeagueEntry._ID + "=?";
+            String[] rawSeriesArgs = {String.valueOf(tournamentIDSelected)};
+
+            Cursor cursor = database.rawQuery(rawSeriesQuery, rawSeriesArgs);
+            cursor.moveToFirst();
+            int numberOfGames = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES));
+            long seriesID = cursor.getLong(cursor.getColumnIndex("sid"));
+
+            long[] gameID = new long[numberOfGames];
+            long[] frameID = new long[numberOfGames * 10];
+
+            //Loads relevant game and frame IDs from database and stores them in Intent
+            //for next activity
+            rawSeriesQuery = "SELECT "
+                    + GameEntry.TABLE_NAME + "." + GameEntry._ID + " AS gid, "
+                    + FrameEntry.TABLE_NAME + "." + FrameEntry._ID + " AS fid"
+                    + " FROM " + GameEntry.TABLE_NAME
+                    + " LEFT JOIN " + FrameEntry.TABLE_NAME
+                    + " ON gid=" + FrameEntry.COLUMN_NAME_GAME_ID
+                    + " WHERE " + GameEntry.COLUMN_NAME_SERIES_ID + "=?"
+                    + " ORDER BY gid, fid";
+            rawSeriesArgs = new String[]{String.valueOf(seriesID)};
+
+            int currentGame = -1;
+            long currentGameID = -1;
+            int currentFrame = -1;
+            cursor = database.rawQuery(rawSeriesQuery, rawSeriesArgs);
+            if (cursor.moveToFirst())
+            {
+                while (!cursor.isAfterLast())
+                {
+                    long newGameID = cursor.getLong(cursor.getColumnIndex("gid"));
+                    if (newGameID == currentGameID)
+                    {
+                        frameID[++currentFrame] = cursor.getLong(cursor.getColumnIndex("fid"));
+                    }
+                    else
+                    {
+                        currentGameID = newGameID;
+                        frameID[++currentFrame] = cursor.getLong(cursor.getColumnIndex("fid"));
+                        gameID[++currentGame] = currentGameID;
+                    }
+                    cursor.moveToNext();
+                }
+            }
+
+            return new Object[]{gameID, frameID};
+        }
+
+        @Override
+        protected void onPostExecute(Object[] IDs)
+        {
+            Intent gameIntent = new Intent(getActivity(), GameActivity.class);
+            gameIntent.putExtra(GameEntry.TABLE_NAME + "." + GameEntry._ID, (long[])IDs[0]);
+            gameIntent.putExtra(FrameEntry.TABLE_NAME + "." + FrameEntry._ID, (long[])IDs[1]);
+            startActivity(gameIntent);
+        }
     }
 }
