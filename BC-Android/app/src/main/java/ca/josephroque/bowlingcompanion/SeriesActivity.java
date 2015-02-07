@@ -484,8 +484,8 @@ public class SeriesActivity extends ActionBarActivity
         {
             Activity srcActivity = (Activity)param[0];
             Intent gameIntent = new Intent(srcActivity, GameActivity.class);
-            gameIntent.putExtra(GameEntry.TABLE_NAME + "." + GameEntry._ID, (Long[])param[1]);
-            gameIntent.putExtra(FrameEntry.TABLE_NAME + "." + FrameEntry._ID, (Long[])param[2]);
+            gameIntent.putExtra(GameEntry.TABLE_NAME + "." + GameEntry._ID, (long[])param[1]);
+            gameIntent.putExtra(FrameEntry.TABLE_NAME + "." + FrameEntry._ID, (long[])param[2]);
             srcActivity.startActivity(gameIntent);
         }
     }
