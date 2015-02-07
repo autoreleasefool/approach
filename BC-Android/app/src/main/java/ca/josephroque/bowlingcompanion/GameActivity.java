@@ -927,10 +927,8 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
 
     /**
      * Saves the game to the database
-     *
-     * @param shouldShowSavedMessage if true, displays a toast message if successful
      */
-    private void saveGameToDatabase(boolean shouldShowSavedMessage)
+    private void saveGameToDatabase()
     {
         SQLiteDatabase database = DatabaseHelper.getInstance(this).getWritableDatabase();
         ContentValues values;
@@ -980,18 +978,6 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
         {
             database.endTransaction();
         }
-
-        /*
-        TODO: commented out code, "Game saved" toast message
-        Removed, because it got distracting and did not report useful information.
-        May re-enable at a later date, probably will delete
-        If deleted, also remove shouldShowSavedMessage parameter from method
-
-        if (shouldShowSavedMessage)
-        {
-            Toast.makeText(this, "Game saved!", Toast.LENGTH_SHORT).show();
-        }
-        */
     }
 
     /**
