@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
@@ -8,7 +9,6 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.support.v4.widget.DrawerLayout;
@@ -34,7 +34,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import at.markushi.ui.CircleButton;
-import ca.josephroque.bowlingcompanion.data.FileCreator;
 import ca.josephroque.bowlingcompanion.data.GameScore;
 import ca.josephroque.bowlingcompanion.database.BowlingContract.*;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
@@ -256,7 +255,9 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                                 break;
                             }
                         default:
-                            saveGameToDatabase();
+                            long[] targetFrames = new long[10];
+                            System.arraycopy(frameID, currentGame * Constants.NUMBER_OF_FRAMES, targetFrames, 0, Constants.NUMBER_OF_FRAMES);
+                            saveGameToDatabase(GameActivity.this, gameID[currentGame], targetFrames, hasFrameBeenAccessed, balls, fouls, gameScoresWithFouls[currentGame]);
                             loadGameFromDatabase(position - (tournamentMode ? 2:3));
                             drawerLayout.closeDrawer(drawerList);
                             break;
@@ -347,7 +348,10 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
     {
         super.onPause();
         clearFrameColor();
-        saveGameToDatabase();
+
+        long[] targetFrames = new long[10];
+        System.arraycopy(frameID, currentGame * Constants.NUMBER_OF_FRAMES, targetFrames, 0, Constants.NUMBER_OF_FRAMES);
+        saveGameToDatabase(this, gameID[currentGame], targetFrames, hasFrameBeenAccessed, balls, fouls, gameScoresWithFouls[currentGame]);
     }
 
     @Override
@@ -875,10 +879,17 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
      */
     private void clearFrameColor()
     {
-        GradientDrawable drawable = (GradientDrawable) ballsTextViews[currentFrame][currentBall].getBackground();
-        drawable.setColor(Color.WHITE);
-        drawable = (GradientDrawable) framesTextViews[currentFrame].getBackground();
-        drawable.setColor(Color.WHITE);
+        runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                GradientDrawable drawable = (GradientDrawable) ballsTextViews[currentFrame][currentBall].getBackground();
+                drawable.setColor(Color.WHITE);
+                drawable = (GradientDrawable) framesTextViews[currentFrame].getBackground();
+                drawable.setColor(Color.WHITE);
+            }
+        });
     }
 
     /**
@@ -928,56 +939,63 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
     /**
      * Saves the game to the database
      */
-    private void saveGameToDatabase()
+    private static void saveGameToDatabase(final Activity srcActivity, final long gameID, final long[] frameID, final boolean[] hasFrameBeenAccessed, final boolean[][][] balls, final boolean[][] fouls, final int finalScore)
     {
-        SQLiteDatabase database = DatabaseHelper.getInstance(this).getWritableDatabase();
-        ContentValues values;
-
-        database.beginTransaction();
-        try
+        new Thread(new Runnable()
         {
-            values = new ContentValues();
-            values.put(GameEntry.COLUMN_NAME_GAME_FINAL_SCORE, gameScoresWithFouls[currentGame]);
-            database.update(GameEntry.TABLE_NAME,
-                    values,
-                    GameEntry._ID + "=?",
-                    new String[]{String.valueOf(gameID[currentGame])});
-
-            for (int i = 0; i < 10; i++)
+            @Override
+            public void run()
             {
-                StringBuilder foulsOfFrame = new StringBuilder();
-                for (int ballCounter = 0; ballCounter < 3; ballCounter++)
+                SQLiteDatabase database = DatabaseHelper.getInstance(srcActivity).getWritableDatabase();
+                ContentValues values;
+
+                database.beginTransaction();
+                try
                 {
-                    if (fouls[i][ballCounter])
+                    values = new ContentValues();
+                    values.put(GameEntry.COLUMN_NAME_GAME_FINAL_SCORE, finalScore);
+                    database.update(GameEntry.TABLE_NAME,
+                            values,
+                            GameEntry._ID + "=?",
+                            new String[]{String.valueOf(gameID)});
+
+                    for (int i = 0; i < 10; i++)
                     {
-                        foulsOfFrame.append(ballCounter + 1);
+                        StringBuilder foulsOfFrame = new StringBuilder();
+                        for (int ballCounter = 0; ballCounter < 3; ballCounter++)
+                        {
+                            if (fouls[i][ballCounter])
+                            {
+                                foulsOfFrame.append(ballCounter + 1);
+                            }
+                        }
+                        if (foulsOfFrame.length() == 0)
+                            foulsOfFrame.append(0);
+
+                        values = new ContentValues();
+                        values.put(FrameEntry.COLUMN_NAME_BALL[0], booleanFrameToString(balls[i][0]));
+                        values.put(FrameEntry.COLUMN_NAME_BALL[1], booleanFrameToString(balls[i][1]));
+                        values.put(FrameEntry.COLUMN_NAME_BALL[2], booleanFrameToString(balls[i][2]));
+                        values.put(FrameEntry.COLUMN_NAME_FRAME_ACCESSED, (hasFrameBeenAccessed[i]) ? 1:0);
+                        values.put(FrameEntry.COLUMN_NAME_FOULS, foulsOfFrame.toString());
+                        database.update(FrameEntry.TABLE_NAME,
+                                values,
+                                FrameEntry._ID + "=?",
+                                new String[]{String.valueOf(frameID[i])});
                     }
+
+                    database.setTransactionSuccessful();
                 }
-                if (foulsOfFrame.length() == 0)
-                    foulsOfFrame.append(0);
-
-                values = new ContentValues();
-                values.put(FrameEntry.COLUMN_NAME_BALL[0], booleanFrameToString(balls[i][0]));
-                values.put(FrameEntry.COLUMN_NAME_BALL[1], booleanFrameToString(balls[i][1]));
-                values.put(FrameEntry.COLUMN_NAME_BALL[2], booleanFrameToString(balls[i][2]));
-                values.put(FrameEntry.COLUMN_NAME_FRAME_ACCESSED, (hasFrameBeenAccessed[i]) ? 1:0);
-                values.put(FrameEntry.COLUMN_NAME_FOULS, foulsOfFrame.toString());
-                database.update(FrameEntry.TABLE_NAME,
-                        values,
-                        FrameEntry._ID + "=?",
-                        new String[]{String.valueOf(frameID[currentGame * 10 + i])});
+                catch (Exception ex)
+                {
+                    Log.w(TAG, "Error saving game " + gameID);
+                }
+                finally
+                {
+                    database.endTransaction();
+                }
             }
-
-            database.setTransactionSuccessful();
-        }
-        catch (Exception ex)
-        {
-            Log.w(TAG, "Error saving game " + currentGame);
-        }
-        finally
-        {
-            database.endTransaction();
-        }
+        }).start();
     }
 
     /**
@@ -1066,7 +1084,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
      * @param frame array to convert to string
      * @return A String of 1's and 0's, where a 1 represents true in the array
      */
-    private String booleanFrameToString(boolean[] frame)
+    private static String booleanFrameToString(boolean[] frame)
     {
         StringBuilder stringBuilder = new StringBuilder();
         for (boolean b : frame)
