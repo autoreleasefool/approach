@@ -256,7 +256,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                                 break;
                             }
                         default:
-                            saveGameToDatabase(true);
+                            saveGameToDatabase();
                             loadGameFromDatabase(position - (tournamentMode ? 2:3));
                             drawerLayout.closeDrawer(drawerList);
                             break;
@@ -347,7 +347,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
     {
         super.onPause();
         clearFrameColor();
-        saveGameToDatabase(true);
+        saveGameToDatabase();
     }
 
     @Override
