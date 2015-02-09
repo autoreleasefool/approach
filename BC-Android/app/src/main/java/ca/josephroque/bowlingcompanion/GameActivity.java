@@ -440,7 +440,7 @@ public class GameActivity extends ActionBarActivity
                         updateFrameColor();
                         break;
                     default:
-                        Log.w(TAG, "Invalid frame id");
+                        throw new RuntimeException("Invalid frame id");
                 }
             }
         };
@@ -463,55 +463,10 @@ public class GameActivity extends ActionBarActivity
                     case R.id.button_pin_2: ballToSet++;
                     case R.id.button_pin_1: ballToSet++;
                     case R.id.button_pin_0:
-                        //When user selects a pin button
-                        boolean isPinKnockedOver = balls[currentFrame][currentBall][ballToSet];
-                        if (!isPinKnockedOver)
-                        {
-                            //pin was standing
-                            pinButtons[ballToSet].setColor(Color.parseColor(COLOR_PIN_KNOCKED));
-                            for (int i = currentBall; i < 3; i++)
-                            {
-                                balls[currentFrame][i][ballToSet] = true;
-                            }
-                            if (Arrays.equals(balls[currentFrame][currentBall], Constants.FRAME_CLEAR))
-                            {
-                                for (int i = currentBall + 1; i < 3; i++)
-                                {
-                                    fouls[currentFrame][i] = false;
-                                }
-                                clearFrameColor();
-                                if (currentFrame == Constants.LAST_FRAME)
-                                {
-                                    if (currentBall < 2)
-                                    {
-                                        for (int j = currentBall + 1; j < 3; j++)
-                                        {
-                                            for (int i = 0; i < 5; i++)
-                                            {
-                                                balls[currentFrame][j][i] = false;
-                                            }
-                                        }
-                                    }
-                                }
-                                updateFrameColor();
-                            }
-                        }
-                        else
-                        {
-                            //pin was down
-                            pinButtons[ballToSet].setColor(Color.parseColor(COLOR_PIN_STANDING));
-                            for (int i = currentBall; i < 3; i++)
-                            {
-                                balls[currentFrame][i][ballToSet] = false;
-                            }
-                            if (currentFrame == Constants.LAST_FRAME && currentBall == 1)
-                            {
-                                System.arraycopy(balls[currentFrame][1], 0, balls[currentFrame][2], 0, balls[currentFrame][1].length);
-                            }
-                        }
-                        updateBalls(currentFrame);
-                        updateScore();
+                        alterPinState(ballToSet);
                         break;
+                    default:
+                        throw new RuntimeException("Invalid pin button id");
                 }
             }
         };
@@ -543,87 +498,70 @@ public class GameActivity extends ActionBarActivity
                         updateFrameColor();
                         break;
                     case R.id.button_whatif:
-                        int possibleScore = (currentFrame > 0)
-                                ? Integer.parseInt(framesTextViews[currentFrame - 1].getText().toString())
-                                : 0;
+                        StringBuilder alertMessageBuilder = new StringBuilder("If you get");
+                        int possibleScore = Integer.parseInt(framesTextViews[currentFrame].getText().toString());
 
-                        boolean spareLastFrame = false;
-                        boolean strikeLastFrame = false;
-                        boolean strikeTwoFramesAgo = false;
-                        if (currentFrame > 1 && Arrays.equals(balls[currentFrame - 1][1], Constants.FRAME_CLEAR))
+                        int pinsLeftStanding = 0;
+                        for (int i = 0; i < 5; i++)
                         {
-                            if (Arrays.equals(balls[currentFrame - 1][0], Constants.FRAME_CLEAR))
+                            if (!balls[currentFrame][currentBall][i])
                             {
-                                strikeLastFrame = true;
-                                if (currentFrame > 2 && Arrays.equals(balls[currentFrame - 2][0], Constants.FRAME_CLEAR))
-                                    strikeTwoFramesAgo = true;
-                            }
-                            else
-                            {
-                                spareLastFrame = true;
+                                switch(i)
+                                {
+                                    case 0:case 4: pinsLeftStanding += 2; break;
+                                    case 1:case 3: pinsLeftStanding += 3; break;
+                                    case 2: pinsLeftStanding += 5; break;
+                                }
                             }
                         }
 
-                        StringBuilder alertMessageBuilder = new StringBuilder("If you get ");
+                        boolean strikeLastFrame = false;
+                        boolean strikeTwoFramesAgo = false;
+                        boolean spareLastFrame = false;
+
+                        if (currentFrame > 0 && Arrays.equals(balls[currentFrame - 1][0], Constants.FRAME_CLEAR))
+                        {
+                            strikeLastFrame = true;
+                            if (currentFrame > 1 && Arrays.equals(balls[currentFrame - 2][0], Constants.FRAME_CLEAR))
+                                strikeTwoFramesAgo = true;
+                        }
+                        else if (currentFrame > 0 && Arrays.equals(balls[currentFrame - 1][1], Constants.FRAME_CLEAR))
+                        {
+                            spareLastFrame = true;
+                        }
+
                         if (currentBall == 0)
                         {
-                            alertMessageBuilder.append("a strike ");
-                            possibleScore += 45;
-                            if (spareLastFrame)
+                            alertMessageBuilder.append(" a strike");
+                            possibleScore += pinsLeftStanding + 30;
+                            if (strikeLastFrame)
                             {
-                                possibleScore += 15;
-                            }
-                            else if (strikeLastFrame)
-                            {
-                                possibleScore += 30;
+                                possibleScore += pinsLeftStanding;
                                 if (strikeTwoFramesAgo)
-                                {
-                                    possibleScore += 15;
-                                }
-                            }
+                                    possibleScore += pinsLeftStanding;
+                            } else if (spareLastFrame)
+                                possibleScore += pinsLeftStanding;
                         }
                         else if (currentBall == 1)
                         {
-                            alertMessageBuilder.append("a spare ");
-                            possibleScore += 30;
-                            int firstBall = GameScore.getValueOfFrame(balls[currentFrame][0]);
-                            if (spareLastFrame)
-                            {
-                                possibleScore += firstBall;
-                            }
-                            else if (strikeLastFrame)
-                            {
-                                possibleScore += 15;
-                                if (strikeTwoFramesAgo)
-                                {
-                                    possibleScore += firstBall;
-                                }
-                            }
+                            if (currentFrame == Constants.LAST_FRAME && Arrays.equals(balls[currentFrame][0], Constants.FRAME_CLEAR))
+                                alertMessageBuilder.append(" a strike");
+                            else
+                                alertMessageBuilder.append(" a spare");
+                            possibleScore += pinsLeftStanding + 15;
+                            if (strikeLastFrame)
+                                possibleScore += pinsLeftStanding;
                         }
                         else
                         {
-                            alertMessageBuilder.append("fifteen ");
-                            possibleScore += 15;
-                            int firstBall = GameScore.getValueOfFrame(balls[currentFrame][0]);
-                            int secondBall = GameScore.getValueOfFrameDifference(balls[currentFrame][0], balls[currentFrame][1]);
-                            if (spareLastFrame)
-                            {
-                                possibleScore += firstBall;
-                            }
-                            else if (strikeLastFrame)
-                            {
-                                possibleScore += firstBall + secondBall;
-                                if (strikeTwoFramesAgo)
-                                {
-                                    possibleScore += firstBall;
-                                }
-                            }
+                            if (currentFrame == Constants.LAST_FRAME && Arrays.equals(balls[currentFrame][1], Constants.FRAME_CLEAR))
+                                alertMessageBuilder.append(" a strike");
+                            else
+                                alertMessageBuilder.append(" fifteen");
+                            possibleScore += pinsLeftStanding;
                         }
+                        possibleScore += 45 * (Constants.LAST_FRAME - currentFrame);
 
-                        for (int i = currentFrame + 1; i < Constants.NUMBER_OF_FRAMES; i++)
-                        {
-                            possibleScore += 45;
-                        }
                         for (int i = 0; i <= currentFrame; i++)
                         {
                             for (int j = 0; j < 3 && !(i == currentFrame && j >= currentBall); j++)
@@ -634,7 +572,7 @@ public class GameActivity extends ActionBarActivity
                         }
                         if (possibleScore < 0)
                             possibleScore = 0;
-                        alertMessageBuilder.append(" this frame, and strikes onwards, your final score will be ");
+                        alertMessageBuilder.append(" this ball, and strikes onwards, your final score will be ");
                         alertMessageBuilder.append(possibleScore);
                         AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
                         builder.setMessage(alertMessageBuilder.toString())
@@ -647,15 +585,22 @@ public class GameActivity extends ActionBarActivity
                                         //do nothing
                                     }
                                 });
-                        AlertDialog alert = builder.create();
-                        alert.show();
+                        builder.create()
+                                .show();
                         break;
                     case R.id.button_foul:
                         fouls[currentFrame][currentBall] = !fouls[currentFrame][currentBall];
-                        foulsTextViews[currentFrame][currentBall]
-                                .setText(fouls[currentFrame][currentBall]
+                        foulsTextViews[currentFrame][currentBall].post(new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                foulsTextViews[currentFrame][currentBall]
+                                        .setText(fouls[currentFrame][currentBall]
                                         ? "F"
                                         : "");
+                            }
+                        });
                         updateFouls();
                         break;
                     case R.id.button_next_frame:
@@ -714,7 +659,7 @@ public class GameActivity extends ActionBarActivity
                         updateFrameColor();
                         break;
                     default:
-                        throw new RuntimeException("GameActivity#onClick unknown button ID");
+                        throw new RuntimeException("Unknown general button ID");
                 }
             }
         };
@@ -756,72 +701,112 @@ public class GameActivity extends ActionBarActivity
      * Sets the TextView displaying score corresponding to the current frame
      * to the textual value of the ball from getValueOfBall
      */
-    private void updateBalls(int frameToUpdate)
+    private void updateBalls(final int frameToUpdate)
     {
-        if (frameToUpdate == Constants.LAST_FRAME)
+        new Thread(new Runnable()
         {
-            if (Arrays.equals(balls[frameToUpdate][0], Constants.FRAME_CLEAR))
+            @Override
+            public void run()
             {
-                ballsTextViews[frameToUpdate][0].setText(Constants.BALL_STRIKE);
-                if (Arrays.equals(balls[frameToUpdate][1], Constants.FRAME_CLEAR))
+                /*
+                TODO: commented out code below should be removed
+                originally used to update textview text, the method was moved into a new thread
+                so the textview updating had to be moved to a new runnable under runOnUiThread()
+                After testing, commented out code should be removed
+                 */
+                final String ballString[] = new String[3];
+                if (frameToUpdate == Constants.LAST_FRAME)
                 {
-                    ballsTextViews[frameToUpdate][1].setText(Constants.BALL_STRIKE);
-                    ballsTextViews[frameToUpdate][2].setText(GameScore.getValueOfBall(balls[frameToUpdate][2], 2, true));
-                }
-                else
-                {
-                    ballsTextViews[frameToUpdate][1].setText(GameScore.getValueOfBall(balls[frameToUpdate][1], 1, false));
-                    if (Arrays.equals(balls[frameToUpdate][2], Constants.FRAME_CLEAR))
-                        ballsTextViews[frameToUpdate][2].setText(Constants.BALL_SPARE);
+                    if (Arrays.equals(balls[frameToUpdate][0], Constants.FRAME_CLEAR))
+                    {
+                        ballString[0] = Constants.BALL_STRIKE;
+                        //ballsTextViews[frameToUpdate][0].setText(Constants.BALL_STRIKE);
+                        if (Arrays.equals(balls[frameToUpdate][1], Constants.FRAME_CLEAR))
+                        {
+                            ballString[1] = Constants.BALL_STRIKE;
+                            ballString[2] = GameScore.getValueOfBall(balls[frameToUpdate][2], 2, true);
+                            //ballsTextViews[frameToUpdate][1].setText(Constants.BALL_STRIKE);
+                            //ballsTextViews[frameToUpdate][2].setText(GameScore.getValueOfBall(balls[frameToUpdate][2], 2, true));
+                        }
+                        else
+                        {
+                            ballString[1] = GameScore.getValueOfBall(balls[frameToUpdate][1], 1, false);
+                            //ballsTextViews[frameToUpdate][1].setText(GameScore.getValueOfBall(balls[frameToUpdate][1], 1, false));
+                            if (Arrays.equals(balls[frameToUpdate][2], Constants.FRAME_CLEAR))
+                                ballString[2] = Constants.BALL_SPARE;
+                                //ballsTextViews[frameToUpdate][2].setText(Constants.BALL_SPARE);
+                            else
+                                ballString[2] = GameScore.getValueOfBallDifference(balls[frameToUpdate], 2, false);
+                                //ballsTextViews[frameToUpdate][2].setText(GameScore.getValueOfBallDifference(balls[frameToUpdate], 2, false));
+                        }
+                    }
                     else
-                        ballsTextViews[frameToUpdate][2].setText(GameScore.getValueOfBallDifference(balls[frameToUpdate], 2, false));
-                }
-            }
-            else
-            {
-                ballsTextViews[frameToUpdate][0].setText(GameScore.getValueOfBall(balls[frameToUpdate][0], 0, false));
-                if (Arrays.equals(balls[frameToUpdate][1], Constants.FRAME_CLEAR))
-                {
-                    ballsTextViews[frameToUpdate][1].setText(Constants.BALL_SPARE);
-                    ballsTextViews[frameToUpdate][2].setText(GameScore.getValueOfBall(balls[frameToUpdate][2], 2, true));
-                }
-                else
-                {
-                    ballsTextViews[frameToUpdate][1].setText(GameScore.getValueOfBallDifference(balls[frameToUpdate], 1, false));
-                    ballsTextViews[frameToUpdate][2].setText(GameScore.getValueOfBallDifference(balls[frameToUpdate], 2, false));
-                }
-            }
-        }
-        else
-        {
-            ballsTextViews[frameToUpdate][0].setText(GameScore.getValueOfBallDifference(balls[frameToUpdate], 0, false));
-            if (!Arrays.equals(balls[frameToUpdate][0], Constants.FRAME_CLEAR))
-            {
-                if (Arrays.equals(balls[frameToUpdate][1], Constants.FRAME_CLEAR))
-                {
-                    ballsTextViews[frameToUpdate][1].setText(Constants.BALL_SPARE);
-                    ballsTextViews[frameToUpdate][2].setText(Constants.BALL_EMPTY);
+                    {
+                        ballString[0] = GameScore.getValueOfBall(balls[frameToUpdate][0], 0, false);
+                        //ballsTextViews[frameToUpdate][0].setText(GameScore.getValueOfBall(balls[frameToUpdate][0], 0, false));
+                        if (Arrays.equals(balls[frameToUpdate][1], Constants.FRAME_CLEAR))
+                        {
+                            ballString[1] = Constants.BALL_SPARE;
+                            ballString[2] = GameScore.getValueOfBall(balls[frameToUpdate][2], 2, true);
+                            //ballsTextViews[frameToUpdate][1].setText(Constants.BALL_SPARE);
+                            //ballsTextViews[frameToUpdate][2].setText(GameScore.getValueOfBall(balls[frameToUpdate][2], 2, true));
+                        }
+                        else
+                        {
+                            ballString[1] = GameScore.getValueOfBallDifference(balls[frameToUpdate], 1, false);
+                            ballString[2] = GameScore.getValueOfBallDifference(balls[frameToUpdate], 2, false);
+                            //ballsTextViews[frameToUpdate][1].setText(GameScore.getValueOfBallDifference(balls[frameToUpdate], 1, false));
+                            //ballsTextViews[frameToUpdate][2].setText(GameScore.getValueOfBallDifference(balls[frameToUpdate], 2, false));
+                        }
+                    }
                 }
                 else
                 {
-                    ballsTextViews[frameToUpdate][1].setText(GameScore.getValueOfBallDifference(balls[frameToUpdate], 1, false));
-                    ballsTextViews[frameToUpdate][2].setText(GameScore.getValueOfBallDifference(balls[frameToUpdate], 2, false));
+                    ballString[0] = GameScore.getValueOfBallDifference(balls[frameToUpdate], 0, false);
+                    //ballsTextViews[frameToUpdate][0].setText(GameScore.getValueOfBallDifference(balls[frameToUpdate], 0, false));
+                    if (!Arrays.equals(balls[frameToUpdate][0], Constants.FRAME_CLEAR))
+                    {
+                        if (Arrays.equals(balls[frameToUpdate][1], Constants.FRAME_CLEAR))
+                        {
+                            ballString[1] = Constants.BALL_SPARE;
+                            ballString[2] = Constants.BALL_EMPTY;
+                            //ballsTextViews[frameToUpdate][1].setText(Constants.BALL_SPARE);
+                            //ballsTextViews[frameToUpdate][2].setText(Constants.BALL_EMPTY);
+                        }
+                        else
+                        {
+                            ballString[1] = GameScore.getValueOfBallDifference(balls[frameToUpdate], 1, false);
+                            ballString[2] = GameScore.getValueOfBallDifference(balls[frameToUpdate], 2, false);
+                            //ballsTextViews[frameToUpdate][1].setText(GameScore.getValueOfBallDifference(balls[frameToUpdate], 1, false));
+                            //ballsTextViews[frameToUpdate][2].setText(GameScore.getValueOfBallDifference(balls[frameToUpdate], 2, false));
+                        }
+                    }
+                    else
+                    {
+                        ballString[1] = Constants.BALL_EMPTY;
+                        ballString[2] = Constants.BALL_EMPTY;
+                        //ballsTextViews[frameToUpdate][1].setText(Constants.BALL_EMPTY);
+                        //ballsTextViews[frameToUpdate][2].setText(Constants.BALL_EMPTY);
+                    }
                 }
-            }
-            else
-            {
-                ballsTextViews[frameToUpdate][1].setText(Constants.BALL_EMPTY);
-                ballsTextViews[frameToUpdate][2].setText(Constants.BALL_EMPTY);
-            }
-        }
 
-        for (int i = 0; i < 3; i++)
-        {
-            foulsTextViews[frameToUpdate][i].setText(
-                    (fouls[frameToUpdate][i])
-                    ? "F"
-                    : "");
-        }
+                runOnUiThread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        for (int i = 0; i < 3; i++)
+                        {
+                            ballsTextViews[frameToUpdate][i].setText(ballString[i]);
+                            foulsTextViews[frameToUpdate][i].setText(
+                                    (fouls[frameToUpdate][i])
+                                            ? "F"
+                                            : "");
+                        }
+                    }
+                });
+            }
+        }).start();
     }
 
     /**
@@ -829,81 +814,95 @@ public class GameActivity extends ActionBarActivity
      */
     private void updateScore()
     {
-        int[] frameScores = new int[10];
-        for (int f = Constants.LAST_FRAME; f >= 0; f--)
+        new Thread(new Runnable()
         {
-            if (f == Constants.LAST_FRAME)
+            @Override
+            public void run()
             {
-                for (int b = 2; b >= 0; b--)
+                final int[] frameScores = new int[10];
+                for (int f = Constants.LAST_FRAME; f >= 0; f--)
                 {
-                    switch(b)
+                    if (f == Constants.LAST_FRAME)
                     {
-                        case 2:
-                            frameScores[f] += GameScore.getValueOfFrame(balls[f][b]);
-                            break;
-                        case 1:
-                        case 0:
-                            if (Arrays.equals(balls[f][b], Constants.FRAME_CLEAR))
+                        for (int b = 2; b >= 0; b--)
+                        {
+                            switch(b)
+                            {
+                                case 2:
+                                    frameScores[f] += GameScore.getValueOfFrame(balls[f][b]);
+                                    break;
+                                case 1:
+                                case 0:
+                                    if (Arrays.equals(balls[f][b], Constants.FRAME_CLEAR))
+                                    {
+                                        frameScores[f] += GameScore.getValueOfFrame(balls[f][b]);
+                                    }
+                                    break;
+                                default: //do nothing
+                            }
+                        }
+                    }
+                    else
+                    {
+                        for (int b = 0; b < 3; b++)
+                        {
+                            if (b < 2 && Arrays.equals(balls[f][b], Constants.FRAME_CLEAR))
+                            {
+                                frameScores[f] += GameScore.getValueOfFrame(balls[f][b]);
+                                frameScores[f] += GameScore.getValueOfFrame(balls[f + 1][0]);
+                                if (b == 0)
+                                {
+                                    if (f == Constants.LAST_FRAME - 1)
+                                    {
+                                        if (frameScores[f] == 30)
+                                        {
+                                            frameScores[f] += GameScore.getValueOfFrame(balls[f + 1][1]);
+                                        }
+                                        else
+                                        {
+                                            frameScores[f] += GameScore.getValueOfFrameDifference(balls[f + 1][0], balls[f + 1][1]);
+                                        }
+                                    }
+                                    else if (frameScores[f] < 30)
+                                    {
+                                        frameScores[f] += GameScore.getValueOfFrameDifference(balls[f + 1][0], balls[f + 1][1]);
+                                    }
+                                    else
+                                    {
+                                        frameScores[f] += GameScore.getValueOfFrame(balls[f + 2][0]);
+                                    }
+                                }
+                                break;
+                            }
+                            else if (b == 2)
                             {
                                 frameScores[f] += GameScore.getValueOfFrame(balls[f][b]);
                             }
-                            break;
-                        default: //do nothing
-                    }
-                }
-            }
-            else
-            {
-                for (int b = 0; b < 3; b++)
-                {
-                    if (b < 2 && Arrays.equals(balls[f][b], Constants.FRAME_CLEAR))
-                    {
-                        frameScores[f] += GameScore.getValueOfFrame(balls[f][b]);
-                        frameScores[f] += GameScore.getValueOfFrame(balls[f + 1][0]);
-                        if (b == 0)
-                        {
-                            if (f == Constants.LAST_FRAME - 1)
-                            {
-                                if (frameScores[f] == 30)
-                                {
-                                    frameScores[f] += GameScore.getValueOfFrame(balls[f + 1][1]);
-                                }
-                                else
-                                {
-                                    frameScores[f] += GameScore.getValueOfFrameDifference(balls[f + 1][0], balls[f + 1][1]);
-                                }
-                            }
-                            else if (frameScores[f] < 30)
-                            {
-                                frameScores[f] += GameScore.getValueOfFrameDifference(balls[f + 1][0], balls[f + 1][1]);
-                            }
-                            else
-                            {
-                                frameScores[f] += GameScore.getValueOfFrame(balls[f + 2][0]);
-                            }
                         }
-                        break;
-                    }
-                    else if (b == 2)
-                    {
-                        frameScores[f] += GameScore.getValueOfFrame(balls[f][b]);
                     }
                 }
+
+                runOnUiThread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        int totalScore = 0;
+                        for (int i = 0; i < frameScores.length; i++)
+                        {
+                            totalScore += frameScores[i];
+                            framesTextViews[i].setText(String.valueOf(totalScore));
+                        }
+                        gameScores[currentGame] = totalScore;
+
+                        navigationDrawerOptions.set(currentGame + ((tournamentMode) ? 2:3),
+                                "Game " + (currentGame + 1) + "(" + gameScores[currentGame] + ")");
+                        drawerAdapter.notifyDataSetChanged();
+                    }
+                });
+                updateFouls();
             }
-        }
-
-        int totalScore = 0;
-        for (int i = 0; i < frameScores.length; i++)
-        {
-            totalScore += frameScores[i];
-            framesTextViews[i].setText(String.valueOf(totalScore));
-        }
-        gameScores[currentGame] = totalScore;
-
-        navigationDrawerOptions.set(currentGame + ((tournamentMode) ? 2:3),
-                "Game " + (currentGame + 1) + "(" + gameScores[currentGame] + ")");
-
-        updateFouls();
+        }).start();
     }
 
     /**
@@ -924,7 +923,15 @@ public class GameActivity extends ActionBarActivity
         if (scoreWithFouls < 0)
             scoreWithFouls = 0;
         gameScoresWithFouls[currentGame] = scoreWithFouls;
-        textViewFinalScore.setText(String.valueOf(gameScoresWithFouls[currentGame]));
+
+        textViewFinalScore.post(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                textViewFinalScore.setText(String.valueOf(gameScoresWithFouls[currentGame]));
+            }
+        });
     }
 
     /**
@@ -950,42 +957,49 @@ public class GameActivity extends ActionBarActivity
      */
     private void updateFrameColor()
     {
-        GradientDrawable drawable = (GradientDrawable) ballsTextViews[currentFrame][currentBall].getBackground();
-        drawable.setColor(Color.RED);
-        drawable = (GradientDrawable) framesTextViews[currentFrame].getBackground();
-        drawable.setColor(Color.RED);
-
-        for (int i = 0; i < 5; i++)
+        runOnUiThread(new Runnable()
         {
-            CircleButton button = null;
-            switch(i)
+            @Override
+            public void run()
             {
-                case 0: button = (CircleButton)findViewById(R.id.button_pin_0); break;
-                case 1: button = (CircleButton)findViewById(R.id.button_pin_1); break;
-                case 2: button = (CircleButton)findViewById(R.id.button_pin_2); break;
-                case 3: button = (CircleButton)findViewById(R.id.button_pin_3); break;
-                case 4: button = (CircleButton)findViewById(R.id.button_pin_4); break;
-            }
-            if (balls[currentFrame][currentBall][i])
-            {
-                button.setColor(Color.parseColor(COLOR_PIN_KNOCKED));
-            }
-            else
-            {
-                button.setColor(Color.parseColor(COLOR_PIN_STANDING));
-            }
+                GradientDrawable drawable = (GradientDrawable) ballsTextViews[currentFrame][currentBall].getBackground();
+                drawable.setColor(Color.RED);
+                drawable = (GradientDrawable) framesTextViews[currentFrame].getBackground();
+                drawable.setColor(Color.RED);
 
-            if (currentBall > 0 && (balls[currentFrame][currentBall - 1][i])
-                    && !(currentFrame == Constants.LAST_FRAME
-                    && Arrays.equals(balls[currentFrame][currentBall - 1], Constants.FRAME_CLEAR)))
-            {
-                button.setEnabled(false);
+                for (int i = 0; i < 5; i++)
+                {
+                    CircleButton button = null;
+                    switch(i)
+                    {
+                        case 0: button = (CircleButton)findViewById(R.id.button_pin_0); break;
+                        case 1: button = (CircleButton)findViewById(R.id.button_pin_1); break;
+                        case 2: button = (CircleButton)findViewById(R.id.button_pin_2); break;
+                        case 3: button = (CircleButton)findViewById(R.id.button_pin_3); break;
+                        case 4: button = (CircleButton)findViewById(R.id.button_pin_4); break;
+                    }
+                    if (balls[currentFrame][currentBall][i])
+                    {
+                        button.setColor(Color.parseColor(COLOR_PIN_KNOCKED));
+                    }
+                    else
+                    {
+                        button.setColor(Color.parseColor(COLOR_PIN_STANDING));
+                    }
+
+                    if (currentBall > 0 && (balls[currentFrame][currentBall - 1][i])
+                            && !(currentFrame == Constants.LAST_FRAME
+                            && Arrays.equals(balls[currentFrame][currentBall - 1], Constants.FRAME_CLEAR)))
+                    {
+                        button.setEnabled(false);
+                    }
+                    else
+                    {
+                        button.setEnabled(true);
+                    }
+                }
             }
-            else
-            {
-                button.setEnabled(true);
-            }
-        }
+        });
         focusOnFrame();
     }
 
@@ -1026,9 +1040,9 @@ public class GameActivity extends ActionBarActivity
                             foulsOfFrame.append(0);
 
                         values = new ContentValues();
-                        values.put(FrameEntry.COLUMN_NAME_BALL[0], booleanFrameToString(balls[i][0]));
-                        values.put(FrameEntry.COLUMN_NAME_BALL[1], booleanFrameToString(balls[i][1]));
-                        values.put(FrameEntry.COLUMN_NAME_BALL[2], booleanFrameToString(balls[i][2]));
+                        values.put(FrameEntry.COLUMN_NAME_BALL[0], GameScore.booleanFrameToString(balls[i][0]));
+                        values.put(FrameEntry.COLUMN_NAME_BALL[1], GameScore.booleanFrameToString(balls[i][1]));
+                        values.put(FrameEntry.COLUMN_NAME_BALL[2], GameScore.booleanFrameToString(balls[i][2]));
                         values.put(FrameEntry.COLUMN_NAME_FRAME_ACCESSED, (hasFrameBeenAccessed[i]) ? 1:0);
                         values.put(FrameEntry.COLUMN_NAME_FOULS, foulsOfFrame.toString());
                         database.update(FrameEntry.TABLE_NAME,
@@ -1056,57 +1070,65 @@ public class GameActivity extends ActionBarActivity
      *
      * @param newGame game number to load
      */
-    private void loadGameFromDatabase(int newGame)
+    private void loadGameFromDatabase(final int newGame)
     {
         clearFrameColor();
-        currentGame = newGame;
-        SQLiteDatabase database = DatabaseHelper.getInstance(this).getReadableDatabase();
 
-        Cursor cursor = database.query(FrameEntry.TABLE_NAME,
-                new String[]{FrameEntry.COLUMN_NAME_FRAME_ACCESSED, FrameEntry.COLUMN_NAME_BALL[0], FrameEntry.COLUMN_NAME_BALL[1], FrameEntry.COLUMN_NAME_BALL[2], FrameEntry.COLUMN_NAME_FOULS},
-                FrameEntry.COLUMN_NAME_GAME_ID + "=?",
-                new String[]{String.valueOf(gameID[currentGame])},
-                null,
-                null,
-                FrameEntry.COLUMN_NAME_FRAME_NUMBER);
-
-        fouls = new boolean[Constants.NUMBER_OF_FRAMES][3];
-        int currentFrameIterator = 0;
-        if (cursor.moveToFirst())
+        new Thread(new Runnable()
         {
-            while(!cursor.isAfterLast())
+            @Override
+            public void run()
             {
-                int frameAccessed = cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_FRAME_ACCESSED));
-                hasFrameBeenAccessed[currentFrameIterator] = (frameAccessed == 1);
-                for (int i = 0; i < 3; i++)
+                currentGame = newGame;
+                SQLiteDatabase database = DatabaseHelper.getInstance(GameActivity.this).getReadableDatabase();
+
+                Cursor cursor = database.query(FrameEntry.TABLE_NAME,
+                        new String[]{FrameEntry.COLUMN_NAME_FRAME_ACCESSED, FrameEntry.COLUMN_NAME_BALL[0], FrameEntry.COLUMN_NAME_BALL[1], FrameEntry.COLUMN_NAME_BALL[2], FrameEntry.COLUMN_NAME_FOULS},
+                        FrameEntry.COLUMN_NAME_GAME_ID + "=?",
+                        new String[]{String.valueOf(gameID[currentGame])},
+                        null,
+                        null,
+                        FrameEntry.COLUMN_NAME_FRAME_NUMBER);
+
+                fouls = new boolean[Constants.NUMBER_OF_FRAMES][3];
+                int currentFrameIterator = 0;
+                if (cursor.moveToFirst())
                 {
-                    String ballString = cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_BALL[i]));
-                    boolean[] ballBoolean = {GameScore.getBoolean(ballString.charAt(0)), GameScore.getBoolean(ballString.charAt(1)), GameScore.getBoolean(ballString.charAt(2)), GameScore.getBoolean(ballString.charAt(3)), GameScore.getBoolean(ballString.charAt(4))};
-                    balls[currentFrameIterator][i] = ballBoolean;
-                }
-                String foulsOfFrame = cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_FOULS));
-                for (int ballCounter = 0; ballCounter < 3; ballCounter++)
-                {
-                    if (foulsOfFrame.contains(String.valueOf(ballCounter + 1)))
+                    while(!cursor.isAfterLast())
                     {
-                        fouls[currentFrameIterator][ballCounter] = true;
+                        int frameAccessed = cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_FRAME_ACCESSED));
+                        hasFrameBeenAccessed[currentFrameIterator] = (frameAccessed == 1);
+                        for (int i = 0; i < 3; i++)
+                        {
+                            String ballString = cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_BALL[i]));
+                            boolean[] ballBoolean = {GameScore.getBoolean(ballString.charAt(0)), GameScore.getBoolean(ballString.charAt(1)), GameScore.getBoolean(ballString.charAt(2)), GameScore.getBoolean(ballString.charAt(3)), GameScore.getBoolean(ballString.charAt(4))};
+                            balls[currentFrameIterator][i] = ballBoolean;
+                        }
+                        String foulsOfFrame = cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_FOULS));
+                        for (int ballCounter = 0; ballCounter < 3; ballCounter++)
+                        {
+                            if (foulsOfFrame.contains(String.valueOf(ballCounter + 1)))
+                            {
+                                fouls[currentFrameIterator][ballCounter] = true;
+                            }
+                        }
+
+                        currentFrameIterator++;
+                        cursor.moveToNext();
                     }
                 }
+                currentFrame = 0;
+                currentBall = 0;
+                updateScore();
 
-                currentFrameIterator++;
-                cursor.moveToNext();
+                for (int i = 0; i < Constants.NUMBER_OF_FRAMES; i++)
+                {
+                    updateBalls(i);
+                }
+                hasFrameBeenAccessed[0] = true;
+                updateFrameColor();
             }
-        }
-        currentFrame = 0;
-        currentBall = 0;
-        updateScore();
-
-        for (int i = 0; i < Constants.NUMBER_OF_FRAMES; i++)
-        {
-            updateBalls(i);
-        }
-        hasFrameBeenAccessed[0] = true;
-        updateFrameColor();
+        }).start();
     }
 
     /**
@@ -1129,22 +1151,6 @@ public class GameActivity extends ActionBarActivity
                     }
                 }
             });
-    }
-
-    /**
-     * Creates a string from an array of booleans
-     *
-     * @param frame array to convert to string
-     * @return A String of 1's and 0's, where a 1 represents true in the array
-     */
-    private static String booleanFrameToString(boolean[] frame)
-    {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (boolean b : frame)
-        {
-            stringBuilder.append(b ? 1:0);
-        }
-        return stringBuilder.toString();
     }
 
     /**
@@ -1247,6 +1253,77 @@ public class GameActivity extends ActionBarActivity
                         drawerAdapter.notifyDataSetChanged();
                     }
                 });
+            }
+        }).start();
+    }
+
+    /**
+     * TODO
+     * @param ballToSet
+     */
+    private void alterPinState(final byte ballToSet)
+    {
+        new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                final boolean isPinKnockedOver = balls[currentFrame][currentBall][ballToSet];
+                if (!isPinKnockedOver)
+                {
+                    for (int i = currentBall; i < 3; i++)
+                    {
+                        balls[currentFrame][i][ballToSet] = true;
+                    }
+                    if (Arrays.equals(balls[currentFrame][currentBall], Constants.FRAME_CLEAR))
+                    {
+                        for (int i = currentBall + 1; i < 3; i++)
+                        {
+                            fouls[currentFrame][i] = false;
+                        }
+                        clearFrameColor();
+                        if (currentFrame == Constants.LAST_FRAME)
+                        {
+                            if (currentBall < 2)
+                            {
+                                for (int j = currentBall + 1; j < 3; j++)
+                                {
+                                    for (int i = 0; i < 5; i++)
+                                    {
+                                        balls[currentFrame][j][i] = false;
+                                    }
+                                }
+                            }
+                        }
+                        updateFrameColor();
+                    }
+                }
+                else
+                {
+                    for (int i = currentBall; i < 3; i++)
+                    {
+                        balls[currentFrame][i][ballToSet] = false;
+                    }
+                    if (currentFrame == Constants.LAST_FRAME && currentBall == 1)
+                    {
+                        System.arraycopy(balls[currentFrame][1], 0, balls[currentFrame][2], 0, balls[currentFrame][1].length);
+                    }
+                }
+
+                pinButtons[ballToSet].post(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        if (!isPinKnockedOver)
+                            pinButtons[ballToSet].setColor(Color.parseColor(COLOR_PIN_STANDING));
+                        else
+                            pinButtons[ballToSet].setColor(Color.parseColor(COLOR_PIN_KNOCKED));
+                    }
+                });
+
+                updateBalls(currentFrame);
+                updateScore();
             }
         }).start();
     }
