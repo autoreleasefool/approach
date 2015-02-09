@@ -60,9 +60,11 @@ public class GameActivity extends ActionBarActivity
     /** Color of button when the relevant pin is standing */
     private static final String COLOR_PIN_STANDING = "#99CC00";
 
-    //TODO
+    /** Indicates index of listener for frames text views */
     private static final byte LISTENER_TEXT_FRAMES = 0;
+    /** Indicates index of listener for pin buttons */
     private static final byte LISTENER_PIN_BUTTONS = 1;
+    /** Indicates index of listener for all other views */
     private static final byte LISTENER_GENERAL = 2;
 
     /** IDs of all the games being input */
@@ -94,7 +96,7 @@ public class GameActivity extends ActionBarActivity
     private String activityTitle = null;
     /** Indicates whether the overlay has been dismissed */
     private boolean topLevelLayoutDismissed = true;
-    //TODO
+    /** List of options for navigation drawer */
     private List<String> navigationDrawerOptions = null;
 
     /** TextViews showing score of ball thrown */
@@ -114,7 +116,7 @@ public class GameActivity extends ActionBarActivity
     private DrawerLayout drawerLayout = null;
     /** ListView for navigation drawer */
     private ListView drawerList = null;
-    //TODO
+    /** Adapter for navigation drawer options */
     private ArrayAdapter<String> drawerAdapter = null;
     /** Listener for navigation drawer open and close actions */
     private ActionBarDrawerToggle drawerToggle = null;
@@ -401,6 +403,11 @@ public class GameActivity extends ActionBarActivity
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Creates an array of View.OnClickListeners and returns them
+     *
+     * @return listeners for objects in the class
+     */
     private View.OnClickListener[] getOnClickListeners()
     {
         View.OnClickListener[] listeners = new View.OnClickListener[3];
@@ -1196,7 +1203,7 @@ public class GameActivity extends ActionBarActivity
     }
 
     /**
-     * TODO
+     * Updates the scores which are in the navigation drawer
      */
     private void setScoresInNavigationDrawer()
     {
@@ -1258,22 +1265,23 @@ public class GameActivity extends ActionBarActivity
     }
 
     /**
-     * TODO
-     * @param ballToSet
+     * Either sets a pin to be standing or knocked down, and updates the score accordingly
+     *
+     * @param pinToSet the pin which was altered
      */
-    private void alterPinState(final byte ballToSet)
+    private void alterPinState(final byte pinToSet)
     {
         new Thread(new Runnable()
         {
             @Override
             public void run()
             {
-                final boolean isPinKnockedOver = balls[currentFrame][currentBall][ballToSet];
+                final boolean isPinKnockedOver = balls[currentFrame][currentBall][pinToSet];
                 if (!isPinKnockedOver)
                 {
                     for (int i = currentBall; i < 3; i++)
                     {
-                        balls[currentFrame][i][ballToSet] = true;
+                        balls[currentFrame][i][pinToSet] = true;
                     }
                     if (Arrays.equals(balls[currentFrame][currentBall], Constants.FRAME_CLEAR))
                     {
@@ -1302,7 +1310,7 @@ public class GameActivity extends ActionBarActivity
                 {
                     for (int i = currentBall; i < 3; i++)
                     {
-                        balls[currentFrame][i][ballToSet] = false;
+                        balls[currentFrame][i][pinToSet] = false;
                     }
                     if (currentFrame == Constants.LAST_FRAME && currentBall == 1)
                     {
@@ -1310,15 +1318,15 @@ public class GameActivity extends ActionBarActivity
                     }
                 }
 
-                pinButtons[ballToSet].post(new Runnable()
+                pinButtons[pinToSet].post(new Runnable()
                 {
                     @Override
                     public void run()
                     {
                         if (!isPinKnockedOver)
-                            pinButtons[ballToSet].setColor(Color.parseColor(COLOR_PIN_STANDING));
+                            pinButtons[pinToSet].setColor(Color.parseColor(COLOR_PIN_STANDING));
                         else
-                            pinButtons[ballToSet].setColor(Color.parseColor(COLOR_PIN_KNOCKED));
+                            pinButtons[pinToSet].setColor(Color.parseColor(COLOR_PIN_KNOCKED));
                     }
                 });
 
