@@ -25,11 +25,14 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.HorizontalScrollView;
+import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -45,7 +48,7 @@ import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
  * in project Bowling Companion
  */
 
-public class GameActivity extends ActionBarActivity implements View.OnClickListener
+public class GameActivity extends ActionBarActivity
 {
 
     /** TAG identifier for output to log */
@@ -79,15 +82,6 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
     private boolean[] hasFrameBeenAccessed = null;
     /** Indicates whether tournament mode is active or not */
     private boolean tournamentMode = false;
-
-    /** TextViews showing score of ball thrown */
-    private TextView[][] ballsTextViews = null;
-    /** TextViews showing fouls */
-    private TextView[][] foulsTextViews = null;
-    /** TextViews showing score of frame */
-    private TextView[] framesTextViews = null;
-    /** CircleButtons which manipulate pins */
-    private CircleButton[] pinButtons = null;
     /** List of arrays representing state of pins */
     private boolean[][][] balls = null;
     /** List of arrays indicating whether a foul was made */
@@ -100,6 +94,17 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
     private String activityTitle = null;
     /** Indicates whether the overlay has been dismissed */
     private boolean topLevelLayoutDismissed = true;
+    //TODO
+    private List<String> navigationDrawerOptions = null;
+
+    /** TextViews showing score of ball thrown */
+    private TextView[][] ballsTextViews = null;
+    /** TextViews showing fouls */
+    private TextView[][] foulsTextViews = null;
+    /** TextViews showing score of frame */
+    private TextView[] framesTextViews = null;
+    /** CircleButtons which manipulate pins */
+    private CircleButton[] pinButtons = null;
 
     /** HorizontalScrollView displaying score tables */
     private HorizontalScrollView hsvFrames = null;
@@ -109,6 +114,8 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
     private DrawerLayout drawerLayout = null;
     /** ListView for navigation drawer */
     private ListView drawerList = null;
+    //TODO
+    private ArrayAdapter<String> drawerAdapter = null;
     /** Listener for navigation drawer open and close actions */
     private ActionBarDrawerToggle drawerToggle = null;
     /** Layout which shows the tutorial first time */
@@ -126,6 +133,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
 
         RelativeLayout relativeLayout = new RelativeLayout(this);
         RelativeLayout.LayoutParams params;
+        navigationDrawerOptions = new ArrayList<String>();
         hsvFrames = (HorizontalScrollView)findViewById(R.id.hsv_frames);
         ballsTextViews = new TextView[Constants.NUMBER_OF_FRAMES][3];
         foulsTextViews = new TextView[Constants.NUMBER_OF_FRAMES][3];
@@ -258,6 +266,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                             long[] targetFrames = new long[10];
                             System.arraycopy(frameID, currentGame * Constants.NUMBER_OF_FRAMES, targetFrames, 0, Constants.NUMBER_OF_FRAMES);
                             saveGameToDatabase(GameActivity.this, gameID[currentGame], targetFrames, hasFrameBeenAccessed, balls, fouls, gameScoresWithFouls[currentGame]);
+                            setScoresInNavigationDrawer();
                             loadGameFromDatabase(position - (tournamentMode ? 2:3));
                             drawerLayout.closeDrawer(drawerList);
                             break;
@@ -282,6 +291,8 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                 }
             };
         drawerLayout.setDrawerListener(drawerToggle);
+        drawerAdapter = new ArrayAdapter<String>(this, R.layout.text_games_list, navigationDrawerOptions);
+        drawerList.setAdapter(drawerAdapter);
 
         topLevelLayout = (RelativeLayout)findViewById(R.id.game_top_layout);
         if (hasShownTutorial())
@@ -325,21 +336,17 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
         gameID = intent.getLongArrayExtra(GameEntry.TABLE_NAME + "." + GameEntry._ID);
         frameID = intent.getLongArrayExtra(FrameEntry.TABLE_NAME + "." + FrameEntry._ID);
 
-        int extraOptions = (tournamentMode) ? 2:3;
-        String[] gameTitles = new String[numberOfGames + extraOptions];
-        gameTitles[0] = "Bowler";
-        gameTitles[1] = "Leagues";
+        navigationDrawerOptions.add("Bowler");
+        navigationDrawerOptions.add("League");
         if (!tournamentMode)
-        {
-            gameTitles[2] = "Series";
-        }
-        for (int i = extraOptions; i < gameTitles.length; i++)
-        {
-            gameTitles[i] = "Game " + (i + 1 - extraOptions);
-        }
-        drawerList = (ListView)findViewById(R.id.left_drawer_games);
-        drawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.text_games_list, gameTitles));
+            navigationDrawerOptions.add("Series");
 
+        for (int i = 0; i < numberOfGames; i++)
+        {
+            navigationDrawerOptions.add("Game " + (i + 1));
+        }
+
+        setScoresInNavigationDrawer();
         loadGameFromDatabase(0);
     }
 
@@ -352,6 +359,7 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
         long[] targetFrames = new long[10];
         System.arraycopy(frameID, currentGame * Constants.NUMBER_OF_FRAMES, targetFrames, 0, Constants.NUMBER_OF_FRAMES);
         saveGameToDatabase(this, gameID[currentGame], targetFrames, hasFrameBeenAccessed, balls, fouls, gameScoresWithFouls[currentGame]);
+        setScoresInNavigationDrawer();
     }
 
     @Override
@@ -891,6 +899,10 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
             framesTextViews[i].setText(String.valueOf(totalScore));
         }
         gameScores[currentGame] = totalScore;
+
+        navigationDrawerOptions.set(currentGame + ((tournamentMode) ? 2:3),
+                "Game " + (currentGame + 1) + "(" + gameScores[currentGame] + ")");
+
         updateFouls();
     }
 
@@ -1175,6 +1187,68 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
             });
         }
         return hasShownTutorial;
+    }
+
+    /**
+     * TODO
+     */
+    private void setScoresInNavigationDrawer()
+    {
+        new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                SQLiteDatabase database = DatabaseHelper.getInstance(GameActivity.this).getReadableDatabase();
+
+                StringBuilder whereBuilder = new StringBuilder(GameEntry._ID + "=?");
+                String[] whereArgs = new String[numberOfGames];
+                whereArgs[0] = String.valueOf(gameID[0]);
+                for (int i = 1; i < numberOfGames; i++)
+                {
+                    whereBuilder.append(" OR ");
+                    whereBuilder.append(GameEntry._ID);
+                    whereBuilder.append("=?");
+                    whereArgs[i] = String.valueOf(gameID[i]);
+                }
+
+                Cursor cursor = database.query(GameEntry.TABLE_NAME,
+                        new String[]{GameEntry.COLUMN_NAME_GAME_FINAL_SCORE},
+                        whereBuilder.toString(),
+                        whereArgs,
+                        null,
+                        null,
+                        GameEntry._ID);
+
+                final int startingGamePosition = (tournamentMode) ? 1:2;
+                int currentGamePosition = startingGamePosition + 1;
+                if (cursor.moveToFirst())
+                {
+                    while(!cursor.isAfterLast())
+                    {
+                        int gameScore = cursor.getInt(cursor.getColumnIndex(GameEntry._ID));
+                        navigationDrawerOptions.set(currentGamePosition, "Game "
+                                + (currentGamePosition - 2)
+                                + "(" + gameScore + ")");
+                        currentGamePosition++;
+                        cursor.moveToNext();
+                    }
+                }
+                else
+                {
+                    throw new RuntimeException("No games found - cannot set scores");
+                }
+
+                runOnUiThread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        drawerAdapter.notifyDataSetChanged();
+                    }
+                });
+            }
+        }).start();
     }
 
     /**
