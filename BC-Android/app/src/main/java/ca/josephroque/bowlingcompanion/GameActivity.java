@@ -57,6 +57,11 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
     /** Color of button when the relevant pin is standing */
     private static final String COLOR_PIN_STANDING = "#99CC00";
 
+    //TODO
+    private static final byte LISTENER_TEXT_FRAMES = 0;
+    private static final byte LISTENER_PIN_BUTTONS = 1;
+    private static final byte LISTENER_GENERAL = 2;
+
     /** IDs of all the games being input */
     private long[] gameID = null;
     /** IDs of all the frames being input */
@@ -127,9 +132,11 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
         framesTextViews = new TextView[Constants.NUMBER_OF_FRAMES];
         balls = new boolean[Constants.NUMBER_OF_FRAMES][3][5];
         fouls = new boolean[Constants.NUMBER_OF_FRAMES][3];
-        hasFrameBeenAccessed = new boolean[10];
+        hasFrameBeenAccessed = new boolean[Constants.NUMBER_OF_FRAMES];
         gameScores = new int[numberOfGames];
         gameScoresWithFouls = new int[numberOfGames];
+
+        final View.OnClickListener[] onClickListeners = getOnClickListeners();
 
         for (int i = 0; i < Constants.NUMBER_OF_FRAMES; i++)
         {
@@ -147,10 +154,9 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                 case 8: frameText.setId(R.id.text_frame_8); break;
                 case 9: frameText.setId(R.id.text_frame_9); break;
             }
-            frameText.setText("0");
             frameText.setBackgroundResource(R.drawable.text_frame_background);
             frameText.setGravity(Gravity.CENTER);
-            frameText.setOnClickListener(this);
+            frameText.setOnClickListener(onClickListeners[LISTENER_TEXT_FRAMES]);
             params = new RelativeLayout.LayoutParams(getPixelsFromDP(120), getPixelsFromDP(88));
             params.leftMargin = getPixelsFromDP(120 * i);
             params.topMargin = getPixelsFromDP(40);
@@ -188,7 +194,6 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
             relativeLayout.addView(textView, params);
         }
         textViewFinalScore = new TextView(this);
-        textViewFinalScore.setText("0");
         textViewFinalScore.setGravity(Gravity.CENTER);
         textViewFinalScore.setBackgroundResource(R.drawable.text_frame_background);
         params = new RelativeLayout.LayoutParams(getPixelsFromDP(120), getPixelsFromDP(128));
@@ -210,19 +215,14 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
                 case 4: circleButton = (CircleButton)findViewById(R.id.button_pin_4); break;
             }
             pinButtons[i] = circleButton;
-            circleButton.setOnClickListener(this);
+            circleButton.setOnClickListener(onClickListeners[LISTENER_PIN_BUTTONS]);
         }
 
-        findViewById(R.id.button_next_frame).setOnClickListener(this);
-        findViewById(R.id.button_prev_frame).setOnClickListener(this);
-        findViewById(R.id.button_foul).setOnClickListener(this);
-        findViewById(R.id.button_reset).setOnClickListener(this);
-        findViewById(R.id.button_whatif).setOnClickListener(this);
-
-        GradientDrawable drawable = (GradientDrawable)framesTextViews[currentFrame].getBackground();
-        drawable.setColor(Color.RED);
-        drawable = (GradientDrawable)ballsTextViews[currentFrame][currentBall].getBackground();
-        drawable.setColor(Color.RED);
+        findViewById(R.id.button_next_frame).setOnClickListener(onClickListeners[LISTENER_GENERAL]);
+        findViewById(R.id.button_prev_frame).setOnClickListener(onClickListeners[LISTENER_GENERAL]);
+        findViewById(R.id.button_foul).setOnClickListener(onClickListeners[LISTENER_GENERAL]);
+        findViewById(R.id.button_reset).setOnClickListener(onClickListeners[LISTENER_GENERAL]);
+        findViewById(R.id.button_whatif).setOnClickListener(onClickListeners[LISTENER_GENERAL]);
 
         drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
         drawerList = (ListView)findViewById(R.id.left_drawer_games);
@@ -393,6 +393,327 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
         return super.onOptionsItemSelected(item);
     }
 
+    private View.OnClickListener[] getOnClickListeners()
+    {
+        View.OnClickListener[] listeners = new View.OnClickListener[3];
+        listeners[LISTENER_TEXT_FRAMES] = new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                if (!topLevelLayoutDismissed)
+                {
+                    return;
+                }
+
+                int frameToSet = 0;
+                switch(view.getId())
+                {
+                    case R.id.text_frame_9: frameToSet++;
+                    case R.id.text_frame_8: frameToSet++;
+                    case R.id.text_frame_7: frameToSet++;
+                    case R.id.text_frame_6: frameToSet++;
+                    case R.id.text_frame_5: frameToSet++;
+                    case R.id.text_frame_4: frameToSet++;
+                    case R.id.text_frame_3: frameToSet++;
+                    case R.id.text_frame_2: frameToSet++;
+                    case R.id.text_frame_1: frameToSet++;
+                    case R.id.text_frame_0:
+                        //When user selects a frame textview in the horizontal scroll view
+                        clearFrameColor();
+                        currentFrame = frameToSet;
+                        currentBall = 0;
+                        for (int i = currentFrame; i >= 0; i--)
+                        {
+                            if (hasFrameBeenAccessed[currentFrame])
+                                break;
+                            hasFrameBeenAccessed[currentFrame] = true;
+                        }
+                        updateFrameColor();
+                        break;
+                    default:
+                        Log.w(TAG, "Invalid frame id");
+                }
+            }
+        };
+
+        listeners[LISTENER_PIN_BUTTONS] = new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                if (!topLevelLayoutDismissed)
+                {
+                    return;
+                }
+
+                byte ballToSet = 0;
+                switch(view.getId())
+                {
+                    case R.id.button_pin_4: ballToSet++;
+                    case R.id.button_pin_3: ballToSet++;
+                    case R.id.button_pin_2: ballToSet++;
+                    case R.id.button_pin_1: ballToSet++;
+                    case R.id.button_pin_0:
+                        //When user selects a pin button
+                        boolean isPinKnockedOver = balls[currentFrame][currentBall][ballToSet];
+                        if (!isPinKnockedOver)
+                        {
+                            //pin was standing
+                            pinButtons[ballToSet].setColor(Color.parseColor(COLOR_PIN_KNOCKED));
+                            for (int i = currentBall; i < 3; i++)
+                            {
+                                balls[currentFrame][i][ballToSet] = true;
+                            }
+                            if (Arrays.equals(balls[currentFrame][currentBall], Constants.FRAME_CLEAR))
+                            {
+                                for (int i = currentBall + 1; i < 3; i++)
+                                {
+                                    fouls[currentFrame][i] = false;
+                                }
+                                clearFrameColor();
+                                if (currentFrame == Constants.LAST_FRAME)
+                                {
+                                    if (currentBall < 2)
+                                    {
+                                        for (int j = currentBall + 1; j < 3; j++)
+                                        {
+                                            for (int i = 0; i < 5; i++)
+                                            {
+                                                balls[currentFrame][j][i] = false;
+                                            }
+                                        }
+                                    }
+                                }
+                                updateFrameColor();
+                            }
+                        }
+                        else
+                        {
+                            //pin was down
+                            pinButtons[ballToSet].setColor(Color.parseColor(COLOR_PIN_STANDING));
+                            for (int i = currentBall; i < 3; i++)
+                            {
+                                balls[currentFrame][i][ballToSet] = false;
+                            }
+                            if (currentFrame == Constants.LAST_FRAME && currentBall == 1)
+                            {
+                                System.arraycopy(balls[currentFrame][1], 0, balls[currentFrame][2], 0, balls[currentFrame][1].length);
+                            }
+                        }
+                        updateBalls(currentFrame);
+                        updateScore();
+                        break;
+                }
+            }
+        };
+
+        listeners[LISTENER_GENERAL] = new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                if (!topLevelLayoutDismissed)
+                {
+                    return;
+                }
+
+                switch(view.getId())
+                {
+                    case R.id.button_reset:
+                        clearFrameColor();
+                        for (int i = 0; i < 3; i++)
+                        {
+                            fouls[currentFrame][i] = false;
+                            currentBall = 0;
+                            for (int j = 0; j < 5; j++)
+                                balls[currentFrame][i][j] = false;
+                        }
+                        updateBalls(currentFrame);
+                        updateScore();
+                        updateFouls();
+                        updateFrameColor();
+                        break;
+                    case R.id.button_whatif:
+                        int possibleScore = (currentFrame > 0)
+                                ? Integer.parseInt(framesTextViews[currentFrame - 1].getText().toString())
+                                : 0;
+
+                        boolean spareLastFrame = false;
+                        boolean strikeLastFrame = false;
+                        boolean strikeTwoFramesAgo = false;
+                        if (currentFrame > 1 && Arrays.equals(balls[currentFrame - 1][1], Constants.FRAME_CLEAR))
+                        {
+                            if (Arrays.equals(balls[currentFrame - 1][0], Constants.FRAME_CLEAR))
+                            {
+                                strikeLastFrame = true;
+                                if (currentFrame > 2 && Arrays.equals(balls[currentFrame - 2][0], Constants.FRAME_CLEAR))
+                                    strikeTwoFramesAgo = true;
+                            }
+                            else
+                            {
+                                spareLastFrame = true;
+                            }
+                        }
+
+                        StringBuilder alertMessageBuilder = new StringBuilder("If you get ");
+                        if (currentBall == 0)
+                        {
+                            alertMessageBuilder.append("a strike ");
+                            possibleScore += 45;
+                            if (spareLastFrame)
+                            {
+                                possibleScore += 15;
+                            }
+                            else if (strikeLastFrame)
+                            {
+                                possibleScore += 30;
+                                if (strikeTwoFramesAgo)
+                                {
+                                    possibleScore += 15;
+                                }
+                            }
+                        }
+                        else if (currentBall == 1)
+                        {
+                            alertMessageBuilder.append("a spare ");
+                            possibleScore += 30;
+                            int firstBall = GameScore.getValueOfFrame(balls[currentFrame][0]);
+                            if (spareLastFrame)
+                            {
+                                possibleScore += firstBall;
+                            }
+                            else if (strikeLastFrame)
+                            {
+                                possibleScore += 15;
+                                if (strikeTwoFramesAgo)
+                                {
+                                    possibleScore += firstBall;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            alertMessageBuilder.append("fifteen ");
+                            possibleScore += 15;
+                            int firstBall = GameScore.getValueOfFrame(balls[currentFrame][0]);
+                            int secondBall = GameScore.getValueOfFrameDifference(balls[currentFrame][0], balls[currentFrame][1]);
+                            if (spareLastFrame)
+                            {
+                                possibleScore += firstBall;
+                            }
+                            else if (strikeLastFrame)
+                            {
+                                possibleScore += firstBall + secondBall;
+                                if (strikeTwoFramesAgo)
+                                {
+                                    possibleScore += firstBall;
+                                }
+                            }
+                        }
+
+                        for (int i = currentFrame + 1; i < Constants.NUMBER_OF_FRAMES; i++)
+                        {
+                            possibleScore += 45;
+                        }
+                        for (int i = 0; i <= currentFrame; i++)
+                        {
+                            for (int j = 0; j < 3 && !(i == currentFrame && j >= currentBall); j++)
+                            {
+                                if (fouls[i][j])
+                                    possibleScore -= 15;
+                            }
+                        }
+                        if (possibleScore < 0)
+                            possibleScore = 0;
+                        alertMessageBuilder.append(" this frame, and strikes onwards, your final score will be ");
+                        alertMessageBuilder.append(possibleScore);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
+                        builder.setMessage(alertMessageBuilder.toString())
+                                .setCancelable(false)
+                                .setPositiveButton("OK", new DialogInterface.OnClickListener()
+                                {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which)
+                                    {
+                                        //do nothing
+                                    }
+                                });
+                        AlertDialog alert = builder.create();
+                        alert.show();
+                        break;
+                    case R.id.button_foul:
+                        fouls[currentFrame][currentBall] = !fouls[currentFrame][currentBall];
+                        foulsTextViews[currentFrame][currentBall]
+                                .setText(fouls[currentFrame][currentBall]
+                                        ? "F"
+                                        : "");
+                        updateFouls();
+                        break;
+                    case R.id.button_next_frame:
+                        //Clears the coloring of the current frame, increases the ball and/or
+                        //frame if possible, then recolors the new frame/ball
+                        clearFrameColor();
+                        if (Arrays.equals(balls[currentFrame][currentBall], Constants.FRAME_CLEAR))
+                        {
+                            if (currentFrame < 9)
+                            {
+                                currentBall = 0;
+                                currentFrame++;
+                            }
+                            else if (currentBall < 2)
+                            {
+                                currentBall++;
+                            }
+                        }
+                        else if (++currentBall == 3)
+                        {
+                            currentBall = 0;
+                            if (++currentFrame == 10)
+                            {
+                                currentFrame = 9;
+                                currentBall = 2;
+                            }
+                        }
+                        for (int i = currentFrame; i >= 0; i--)
+                        {
+                            if (hasFrameBeenAccessed[currentFrame])
+                                break;
+                            hasFrameBeenAccessed[currentFrame] = true;
+                        }
+                        updateFrameColor();
+                        break;
+                    case R.id.button_prev_frame:
+                        //Clears the coloring of the current frame, decreases the ball and/or
+                        //frame if possible, then recolors the new frame/ball
+                        clearFrameColor();
+                        if (--currentBall == -1)
+                        {
+                            if (--currentFrame == -1)
+                            {
+                                currentFrame = 0;
+                                currentBall = 0;
+                            }
+                            else
+                            {
+                                currentBall = 0;
+                                while (!Arrays.equals(balls[currentFrame][currentBall], Constants.FRAME_CLEAR) && currentBall < 2)
+                                {
+                                    currentBall++;
+                                }
+                            }
+                        }
+                        updateFrameColor();
+                        break;
+                    default:
+                        throw new RuntimeException("GameActivity#onClick unknown button ID");
+                }
+            }
+        };
+
+        return listeners;
+    }
+
     /**
      * Creates a new StatsActivity to display the statistics
      * relevant to the current displayed game
@@ -421,286 +742,6 @@ public class GameActivity extends ActionBarActivity implements View.OnClickListe
     {
         float scale = getResources().getDisplayMetrics().density;
         return (int)(dps * scale + 0.5f);
-    }
-
-    @Override
-    public void onClick(View view)
-    {
-        if (!topLevelLayoutDismissed)
-        {
-            return;
-        }
-
-        int frameToSet = 0;
-        int ballToSet = 0;
-
-        switch(view.getId())
-        {
-            case R.id.button_reset:
-                clearFrameColor();
-                for (int i = 0; i < 3; i++)
-                {
-                    fouls[currentFrame][i] = false;
-                    currentBall = 0;
-                    for (int j = 0; j < 5; j++)
-                        balls[currentFrame][i][j] = false;
-                }
-                updateBalls(currentFrame);
-                updateScore();
-                updateFouls();
-                updateFrameColor();
-                break;
-            case R.id.button_whatif:
-                int possibleScore = (currentFrame > 0)
-                        ? Integer.parseInt(framesTextViews[currentFrame - 1].getText().toString())
-                        : 0;
-
-                boolean spareLastFrame = false;
-                boolean strikeLastFrame = false;
-                boolean strikeTwoFramesAgo = false;
-                if (currentFrame > 1 && Arrays.equals(balls[currentFrame - 1][1], Constants.FRAME_CLEAR))
-                {
-                    if (Arrays.equals(balls[currentFrame - 1][0], Constants.FRAME_CLEAR))
-                    {
-                        strikeLastFrame = true;
-                        if (currentFrame > 2 && Arrays.equals(balls[currentFrame - 2][0], Constants.FRAME_CLEAR))
-                            strikeTwoFramesAgo = true;
-                    }
-                    else
-                    {
-                        spareLastFrame = true;
-                    }
-                }
-
-                StringBuilder alertMessageBuilder = new StringBuilder("If you get ");
-                if (currentBall == 0)
-                {
-                    alertMessageBuilder.append("a strike ");
-                    possibleScore += 45;
-                    if (spareLastFrame)
-                    {
-                        possibleScore += 15;
-                    }
-                    else if (strikeLastFrame)
-                    {
-                        possibleScore += 30;
-                        if (strikeTwoFramesAgo)
-                        {
-                            possibleScore += 15;
-                        }
-                    }
-                }
-                else if (currentBall == 1)
-                {
-                    alertMessageBuilder.append("a spare ");
-                    possibleScore += 30;
-                    int firstBall = GameScore.getValueOfFrame(balls[currentFrame][0]);
-                    if (spareLastFrame)
-                    {
-                        possibleScore += firstBall;
-                    }
-                    else if (strikeLastFrame)
-                    {
-                        possibleScore += 15;
-                        if (strikeTwoFramesAgo)
-                        {
-                            possibleScore += firstBall;
-                        }
-                    }
-                }
-                else
-                {
-                    alertMessageBuilder.append("fifteen ");
-                    possibleScore += 15;
-                    int firstBall = GameScore.getValueOfFrame(balls[currentFrame][0]);
-                    int secondBall = GameScore.getValueOfFrameDifference(balls[currentFrame][0], balls[currentFrame][1]);
-                    if (spareLastFrame)
-                    {
-                        possibleScore += firstBall;
-                    }
-                    else if (strikeLastFrame)
-                    {
-                        possibleScore += firstBall + secondBall;
-                        if (strikeTwoFramesAgo)
-                        {
-                            possibleScore += firstBall;
-                        }
-                    }
-                }
-
-                for (int i = currentFrame + 1; i < Constants.NUMBER_OF_FRAMES; i++)
-                {
-                    possibleScore += 45;
-                }
-                for (int i = 0; i <= currentFrame; i++)
-                {
-                    for (int j = 0; j < 3 && !(i == currentFrame && j >= currentBall); j++)
-                    {
-                        if (fouls[i][j])
-                            possibleScore -= 15;
-                    }
-                }
-                if (possibleScore < 0)
-                    possibleScore = 0;
-                alertMessageBuilder.append(" this frame, and strikes onwards, your final score will be ");
-                alertMessageBuilder.append(possibleScore);
-                AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
-                builder.setMessage(alertMessageBuilder.toString())
-                        .setCancelable(false)
-                        .setPositiveButton("OK", new DialogInterface.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which)
-                            {
-                                //do nothing
-                            }
-                        });
-                AlertDialog alert = builder.create();
-                alert.show();
-                break;
-            case R.id.button_foul:
-                fouls[currentFrame][currentBall] = !fouls[currentFrame][currentBall];
-                foulsTextViews[currentFrame][currentBall]
-                        .setText(fouls[currentFrame][currentBall]
-                        ? "F"
-                        : "");
-                updateFouls();
-                break;
-            case R.id.button_next_frame:
-                //Clears the coloring of the current frame, increases the ball and/or
-                //frame if possible, then recolors the new frame/ball
-                clearFrameColor();
-                if (Arrays.equals(balls[currentFrame][currentBall], Constants.FRAME_CLEAR))
-                {
-                    if (currentFrame < 9)
-                    {
-                        currentBall = 0;
-                        currentFrame++;
-                    }
-                    else if (currentBall < 2)
-                    {
-                        currentBall++;
-                    }
-                }
-                else if (++currentBall == 3)
-                {
-                    currentBall = 0;
-                    if (++currentFrame == 10)
-                    {
-                        currentFrame = 9;
-                        currentBall = 2;
-                    }
-                }
-                for (int i = currentFrame; i >= 0; i--)
-                {
-                    if (hasFrameBeenAccessed[currentFrame])
-                        break;
-                    hasFrameBeenAccessed[currentFrame] = true;
-                }
-                updateFrameColor();
-                break;
-            case R.id.button_prev_frame:
-                //Clears the coloring of the current frame, decreases the ball and/or
-                //frame if possible, then recolors the new frame/ball
-                clearFrameColor();
-                if (--currentBall == -1)
-                {
-                    if (--currentFrame == -1)
-                    {
-                        currentFrame = 0;
-                        currentBall = 0;
-                    }
-                    else
-                    {
-                        currentBall = 0;
-                        while (!Arrays.equals(balls[currentFrame][currentBall], Constants.FRAME_CLEAR) && currentBall < 2)
-                        {
-                            currentBall++;
-                        }
-                    }
-                }
-                updateFrameColor();
-                break;
-            case R.id.text_frame_9: frameToSet++;
-            case R.id.text_frame_8: frameToSet++;
-            case R.id.text_frame_7: frameToSet++;
-            case R.id.text_frame_6: frameToSet++;
-            case R.id.text_frame_5: frameToSet++;
-            case R.id.text_frame_4: frameToSet++;
-            case R.id.text_frame_3: frameToSet++;
-            case R.id.text_frame_2: frameToSet++;
-            case R.id.text_frame_1: frameToSet++;
-            case R.id.text_frame_0:
-                //When user selects a frame textview in the horizontal scroll view
-                clearFrameColor();
-                currentFrame = frameToSet;
-                currentBall = 0;
-                for (int i = currentFrame; i >= 0; i--)
-                {
-                    if (hasFrameBeenAccessed[currentFrame])
-                        break;
-                    hasFrameBeenAccessed[currentFrame] = true;
-                }
-                updateFrameColor();
-                break;
-            case R.id.button_pin_4: ballToSet++;
-            case R.id.button_pin_3: ballToSet++;
-            case R.id.button_pin_2: ballToSet++;
-            case R.id.button_pin_1: ballToSet++;
-            case R.id.button_pin_0:
-
-                //When user selects a pin button
-                boolean isPinKnockedOver = balls[currentFrame][currentBall][ballToSet];
-                if (!isPinKnockedOver)
-                {
-                    //pin was standing
-                    pinButtons[ballToSet].setColor(Color.parseColor(COLOR_PIN_KNOCKED));
-                    for (int i = currentBall; i < 3; i++)
-                    {
-                        balls[currentFrame][i][ballToSet] = true;
-                    }
-                    if (Arrays.equals(balls[currentFrame][currentBall], Constants.FRAME_CLEAR))
-                    {
-                        for (int i = currentBall + 1; i < 3; i++)
-                        {
-                            fouls[currentFrame][i] = false;
-                        }
-                        clearFrameColor();
-                        if (currentFrame == Constants.LAST_FRAME)
-                        {
-                            if (currentBall < 2)
-                            {
-                                for (int j = currentBall + 1; j < 3; j++)
-                                {
-                                    for (int i = 0; i < 5; i++)
-                                    {
-                                        balls[currentFrame][j][i] = false;
-                                    }
-                                }
-                            }
-                        }
-                        updateFrameColor();
-                    }
-                }
-                else
-                {
-                    //pin was down
-                    pinButtons[ballToSet].setColor(Color.parseColor(COLOR_PIN_STANDING));
-                    for (int i = currentBall; i < 3; i++)
-                    {
-                        balls[currentFrame][i][ballToSet] = false;
-                    }
-                    if (currentFrame == Constants.LAST_FRAME && currentBall == 1)
-                    {
-                        System.arraycopy(balls[currentFrame][1], 0, balls[currentFrame][2], 0, balls[currentFrame][1].length);
-                    }
-                }
-                updateBalls(currentFrame);
-                updateScore();
-                break;
-            default:
-                throw new RuntimeException("GameActivity#onClick unknown button ID");
-        }
     }
 
     /**
