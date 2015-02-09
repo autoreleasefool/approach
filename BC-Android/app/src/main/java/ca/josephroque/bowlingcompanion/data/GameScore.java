@@ -286,4 +286,20 @@ public class GameScore
     {
         return input == '1';
     }
+
+    /**
+     * Creates a string from an array of booleans
+     *
+     * @param frame array to convert to string
+     * @return A String of 1's and 0's, where a 1 represents true in the array
+     */
+    public static String booleanFrameToString(boolean[] frame)
+    {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (boolean b : frame)
+        {
+            stringBuilder.append(b ? 1:0);
+        }
+        return stringBuilder.toString();
+    }
 }
