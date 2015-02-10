@@ -492,16 +492,16 @@ public class GameActivity extends ActionBarActivity
                 {
                     case R.id.button_reset:
                         clearFrameColor();
+                        currentBall = 0;
                         for (int i = 0; i < 3; i++)
                         {
                             fouls[currentFrame][i] = false;
-                            currentBall = 0;
                             for (int j = 0; j < 5; j++)
                                 balls[currentFrame][i][j] = false;
                         }
+                        updateFrameColor();
                         updateBalls(currentFrame);
                         updateScore();
-                        updateFrameColor();
                         break;
                     case R.id.button_whatif:
                         StringBuilder alertMessageBuilder = new StringBuilder("If you get");
@@ -525,15 +525,19 @@ public class GameActivity extends ActionBarActivity
                         boolean strikeTwoFramesAgo = false;
                         boolean spareLastFrame = false;
 
-                        if (currentFrame > 0 && Arrays.equals(balls[currentFrame - 1][0], Constants.FRAME_CLEAR))
+                        if (currentFrame > 0)
                         {
-                            strikeLastFrame = true;
-                            if (currentFrame > 1 && Arrays.equals(balls[currentFrame - 2][0], Constants.FRAME_CLEAR))
-                                strikeTwoFramesAgo = true;
-                        }
-                        else if (currentFrame > 0 && Arrays.equals(balls[currentFrame - 1][1], Constants.FRAME_CLEAR))
-                        {
-                            spareLastFrame = true;
+                            if (Arrays.equals(balls[currentFrame - 1][0], Constants.FRAME_CLEAR))
+                            {
+                                strikeLastFrame = true;
+                                if (currentFrame > 1 && Arrays.equals(balls[currentFrame - 2][0], Constants.FRAME_CLEAR))
+                                    strikeTwoFramesAgo = true;
+                            }
+                            else
+                            {
+                                if (Arrays.equals(balls[currentFrame - 1][1], Constants.FRAME_CLEAR))
+                                    spareLastFrame = true;
+                            }
                         }
 
                         if (currentBall == 0)
@@ -542,7 +546,7 @@ public class GameActivity extends ActionBarActivity
                             possibleScore += pinsLeftStanding + 30;
                             if (strikeLastFrame)
                             {
-                                possibleScore += pinsLeftStanding;
+                                possibleScore += pinsLeftStanding + 15;
                                 if (strikeTwoFramesAgo)
                                     possibleScore += pinsLeftStanding;
                             } else if (spareLastFrame)
