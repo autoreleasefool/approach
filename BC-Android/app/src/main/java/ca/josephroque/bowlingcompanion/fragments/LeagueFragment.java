@@ -132,7 +132,7 @@ public class LeagueFragment extends Fragment
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setMessage(invalidInputMessage)
                     .setCancelable(false)
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener()
+                    .setPositiveButton(Constants.BUTTON_POSITIVE, new DialogInterface.OnClickListener()
                     {
                         @Override
                         public void onClick(DialogInterface dialog, int which)
@@ -163,7 +163,7 @@ public class LeagueFragment extends Fragment
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setMessage("The league \"" + leagueName + "\" cannot be deleted.")
                     .setCancelable(false)
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener()
+                    .setPositiveButton(Constants.BUTTON_POSITIVE, new DialogInterface.OnClickListener()
                         {
                             @Override
                             public void onClick(DialogInterface dialog, int which)

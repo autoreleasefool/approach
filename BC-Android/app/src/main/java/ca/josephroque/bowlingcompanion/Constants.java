@@ -57,6 +57,10 @@ public class Constants
     /** Preference to save whether tutorial has been shown before or not */
     public static final String PREFERENCES_HAS_SHOWN_TUTORIAL_GAME = "TUTORIAL_GAME";
 
+    //TODO add documentation
+    public static final String BUTTON_POSITIVE = "Okay";
+    public static final String BUTTON_NEGATIVE = "Cancel";
+
     /** Name of default open league, available to all bowlers */
     public static final String OPEN_LEAGUE = "Open";
 
