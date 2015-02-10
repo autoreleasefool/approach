@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -49,9 +50,11 @@ public class StatsActivity extends ActionBarActivity
     private static final String[] STATS_GENERAL =
             {"Average", "High Single", "High Series", "Total Pinfall", "# of Games"};
 
-    //TODO add documentation
+    /** Indicates the stats of the selected bowler should be loaded */
     private static final byte LOADING_BOWLER_STATS = 0;
+    /** Indicates the stats of the selected league should be loaded */
     private static final byte LOADING_LEAGUE_STATS = 1;
+    /** Indicates the stats of the selected game should be loaded */
     private static final byte LOADING_GAME_STATS = 2;
 
     /** Name of the currently selected bowler */
@@ -101,24 +104,29 @@ public class StatsActivity extends ActionBarActivity
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        byte statsToLoad;
+        int titleToSet;
         if (gameID == -1)
         {
             if (leagueID == -1)
             {
-                setTitle(R.string.title_activity_stats_bowler);
-                loadStats(LOADING_BOWLER_STATS);
+                titleToSet = R.string.title_activity_stats_bowler;
+                statsToLoad = LOADING_BOWLER_STATS;
             }
             else
             {
-                setTitle(R.string.title_activity_stats_league);
-                loadStats(LOADING_LEAGUE_STATS);
+                titleToSet = R.string.title_activity_stats_league;
+                statsToLoad = LOADING_LEAGUE_STATS;
             }
         }
         else
         {
-            setTitle(R.string.title_activity_stats_game);
-            loadStats(LOADING_GAME_STATS);
+            titleToSet = R.string.title_activity_stats_game;
+            statsToLoad = LOADING_GAME_STATS;
         }
+
+        setTitle(titleToSet);
+        new LoadStatsTask().execute(statsToLoad);
     }
 
     @Override
@@ -145,226 +153,6 @@ public class StatsActivity extends ActionBarActivity
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    private void loadStats(byte bowlerLeagueOrGame)
-    {
-        final byte NUMBER_OF_GENERAL_DETAILS;
-
-        Cursor statCursor = null;
-        int[] statValues = null;
-        List<String> statNamesList = new ArrayList<String>();
-        List<String> statValuesList = new ArrayList<String>();
-        statNamesList.add("Bowler");
-        statValuesList.add(bowlerName);
-
-        statNamesList.addAll(Arrays.asList(STATS_MIDDLE_GENERAL));
-        statNamesList.addAll(Arrays.asList(STATS_MIDDLE_DETAILED));
-        statNamesList.addAll(Arrays.asList(STATS_FOULS));
-        statNamesList.addAll(Arrays.asList(STATS_PINS_TOTAL));
-        switch(bowlerLeagueOrGame)
-        {
-            case 0:
-                NUMBER_OF_GENERAL_DETAILS = 1;
-                statNamesList.addAll(Arrays.asList(STATS_PINS_AVERAGE));
-                statNamesList.addAll(Arrays.asList(STATS_GENERAL));
-
-                statValues = new int[STATS_MIDDLE_GENERAL.length + STATS_MIDDLE_DETAILED.length
-                        + STATS_FOULS.length + STATS_PINS_TOTAL.length + STATS_PINS_AVERAGE.length
-                        + STATS_GENERAL.length];
-                statCursor = getBowlerOrLeagueCursor(false); //TODO can change cursor method?
-                break;
-            case 1:
-                NUMBER_OF_GENERAL_DETAILS = 2;
-                statNamesList.add(1, "League");
-                statValuesList.add(1, leagueName);
-                statNamesList.addAll(Arrays.asList(STATS_PINS_AVERAGE));
-                statNamesList.addAll(Arrays.asList(STATS_GENERAL));
-
-                statValues = new int[STATS_MIDDLE_GENERAL.length + STATS_MIDDLE_DETAILED.length
-                        + STATS_FOULS.length + STATS_PINS_TOTAL.length + STATS_PINS_AVERAGE.length
-                        + STATS_GENERAL.length];
-                statCursor = getBowlerOrLeagueCursor(true);	//TODO can change cursor method?
-                break;
-            case 2:
-                NUMBER_OF_GENERAL_DETAILS = 3;
-                statNamesList.add(1, "League");
-                statValuesList.add(1, leagueName);
-                statNamesList.add(2, "Game #");
-                statValuesList.add(2, String.valueOf(gameNumber));
-
-                statValues = new int[STATS_MIDDLE_GENERAL.length + STATS_MIDDLE_DETAILED.length
-                        + STATS_FOULS.length + STATS_PINS_TOTAL.length];
-                statCursor = getGameCursor();	//TODO can change cursor method?
-                break;
-            default: throw new IllegalArgumentException("bowlerLeagueOrGame must be between 0 and 2 (inclusive): " + bowlerLeagueOrGame);
-        }
-
-        int i = statValuesList.size();
-        while (i < statNamesList.size())
-        {
-            statValuesList.add("--");
-            i++;
-        }
-
-        int totalShotsAtMiddle = 0;
-        int spareChances = 0;
-        int seriesTotal = 0;
-
-        if (statCursor.moveToFirst())
-        {
-            while(!statCursor.isAfterLast())
-            {
-                boolean frameAccessed = (statCursor.getInt(statCursor.getColumnIndex(FrameEntry.COLUMN_NAME_FRAME_ACCESSED)) == 1);
-                if (bowlerLeagueOrGame == 2 && !frameAccessed)
-                    break;
-
-                int frameNumber = statCursor.getInt(statCursor.getColumnIndex(FrameEntry.COLUMN_NAME_FRAME_NUMBER));
-                String frameFouls = statCursor.getString(statCursor.getColumnIndex(FrameEntry.COLUMN_NAME_FOULS));
-                String[] ballStrings = {statCursor.getString(statCursor.getColumnIndex(FrameEntry.COLUMN_NAME_BALL[0])),
-                        statCursor.getString(statCursor.getColumnIndex(FrameEntry.COLUMN_NAME_BALL[1])),
-                        statCursor.getString(statCursor.getColumnIndex(FrameEntry.COLUMN_NAME_BALL[2]))};
-                boolean[][] balls = new boolean[3][5];
-                for (i = 0; i < 5; i++)
-                {
-                    balls[0][i] = ballStrings[0].charAt(i) == '1';
-                    balls[1][i] = ballStrings[1].charAt(i) == '1';
-                    balls[2][i] = ballStrings[2].charAt(i) == '1';
-                }
-                for (i = 1; i <= 3; i++)
-                {
-                    if (frameFouls.contains(String.valueOf(i)))
-                        statValues[Constants.STAT_FOULS]++;
-                }
-
-                if (bowlerLeagueOrGame == 2 || frameAccessed)
-                {
-                    if (frameNumber == Constants.NUMBER_OF_FRAMES)
-                    {
-                        totalShotsAtMiddle++;
-                        int firstBall = getFirstBallValue(balls[0]);
-                        if (firstBall != -1)
-                            statValues[Constants.STAT_MIDDLE_HIT]++;
-                        increaseFirstBallStat(firstBall, statValues, 0);
-                        if (firstBall < 5)
-                            spareChances++;
-
-                        if (firstBall != 0)
-                        {
-                            if (Arrays.equals(balls[1], Constants.FRAME_CLEAR))
-                            {
-                                statValues[Constants.STAT_SPARE_CONVERSIONS]++;
-                                increaseFirstBallStat(firstBall, statValues, 1);
-                            }
-                            else
-                            {
-                                statValues[Constants.STAT_PINS_LEFT_ON_DECK] += countPinsLeftStanding(balls[2]);
-                            }
-                        }
-                        else
-                        {
-                            totalShotsAtMiddle++;
-                            int secondBall = getFirstBallValue(balls[1]);
-                            if (secondBall != -1)
-                                statValues[Constants.STAT_MIDDLE_HIT]++;
-                            increaseFirstBallStat(secondBall, statValues, 0);
-
-                            if (secondBall != 0)
-                            {
-                                if (Arrays.equals(balls[2], Constants.FRAME_CLEAR))
-                                {
-                                    statValues[Constants.STAT_SPARE_CONVERSIONS]++;
-                                    increaseFirstBallStat(secondBall, statValues, 1);
-                                }
-                                else
-                                {
-                                    statValues[Constants.STAT_PINS_LEFT_ON_DECK] += countPinsLeftStanding(balls[2]);
-                                }
-                            }
-                            else
-                            {
-                                totalShotsAtMiddle++;
-                                int thirdBall = getFirstBallValue(balls[2]);
-                                if (thirdBall != -1)
-                                    statValues[Constants.STAT_MIDDLE_HIT]++;
-                                increaseFirstBallStat(thirdBall, statValues, 0);
-
-                                if (thirdBall != 0)
-                                {
-                                    statValues[Constants.STAT_PINS_LEFT_ON_DECK] += countPinsLeftStanding(balls[2]);
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        totalShotsAtMiddle++;
-                        int firstBall = getFirstBallValue(balls[0]);
-                        if (firstBall != -1)
-                            statValues[Constants.STAT_MIDDLE_HIT]++;
-                        increaseFirstBallStat(firstBall, statValues, 0);
-
-                        if (firstBall < 5)
-                            spareChances++;
-
-                        if (firstBall != 0)
-                        {
-                            if (Arrays.equals(balls[1], Constants.FRAME_CLEAR))
-                            {
-                                statValues[Constants.STAT_SPARE_CONVERSIONS]++;
-                                increaseFirstBallStat(firstBall, statValues, 1);
-                            }
-                            else
-                            {
-                                statValues[Constants.STAT_PINS_LEFT_ON_DECK] += countPinsLeftStanding(balls[2]);
-                            }
-                        }
-                    }
-                }
-
-                if (bowlerLeagueOrGame < 2 && frameNumber == 1)
-                {
-                    int gameScore = statCursor.getInt(statCursor.getColumnIndex(GameEntry.COLUMN_NAME_GAME_FINAL_SCORE));
-                    int gameNumber = statCursor.getInt(statCursor.getColumnIndex(GameEntry.COLUMN_NAME_GAME_NUMBER));
-                    if (statValues[Constants.STAT_HIGH_SINGLE] < gameScore)
-                        statValues[Constants.STAT_HIGH_SINGLE] = gameScore;
-                    statValues[Constants.STAT_TOTAL_PINFALL] += gameScore;
-                    statValues[Constants.STAT_NUMBER_OF_GAMES]++;
-
-                    if (gameNumber == 1)
-                    {
-                        if (statValues[Constants.STAT_HIGH_SERIES] < seriesTotal)
-                            statValues[Constants.STAT_HIGH_SERIES] = seriesTotal;
-                        seriesTotal = gameScore;
-                    }
-                    else
-                    {
-                        seriesTotal += gameScore;
-                    }
-                }
-                statCursor.moveToNext();
-            }
-        }
-
-        if (bowlerLeagueOrGame < 2)
-        {
-            if (statValues[Constants.STAT_HIGH_SERIES] < seriesTotal)
-            {
-                statValues[Constants.STAT_HIGH_SERIES] = seriesTotal;
-            }
-
-            if (statValues[Constants.STAT_NUMBER_OF_GAMES] > 0)
-            {
-                statValues[Constants.STAT_AVERAGE] =
-                        statValues[Constants.STAT_TOTAL_PINFALL] / statValues[Constants.STAT_NUMBER_OF_GAMES];
-                statValues[Constants.STAT_AVERAGE_PINS_LEFT_ON_DECK] =
-                        statValues[Constants.STAT_PINS_LEFT_ON_DECK] / statValues[Constants.STAT_NUMBER_OF_GAMES];
-            }
-        }
-
-        setGeneralAndDetailedStatValues(statValuesList, statValues, totalShotsAtMiddle, spareChances, NUMBER_OF_GENERAL_DETAILS, statNamesList);
-        StatsListAdapter statsListAdapter = new StatsListAdapter(this, statNamesList, statValuesList);
-        listStats.setAdapter(statsListAdapter);
     }
 
     /**
@@ -447,9 +235,9 @@ public class StatsActivity extends ActionBarActivity
         }
 
         int numberOfPinsKnockedDown = 0;
-        for (int i = 0; i < firstBall.length; i++)
+        for (boolean knockedDown: firstBall)
         {
-            if (firstBall[i])
+            if (knockedDown)
                 numberOfPinsKnockedDown++;
         }
 
@@ -493,7 +281,7 @@ public class StatsActivity extends ActionBarActivity
      * @param spareChances number of chances the bowler has had to spare
      * @param statOffset number of stats at start of list which do not need to be set
      */
-    private void setGeneralAndDetailedStatValues(final List<String> statValuesList, final int[] statValues, final int totalShotsAtMiddle, final int spareChances, final int statOffset, List<String> statNamesList)
+    private void setGeneralAndDetailedStatValues(final List<String> statValuesList, final int[] statValues, final int totalShotsAtMiddle, final int spareChances, final int statOffset)
     {
         int currentStatPosition = statOffset;
         final DecimalFormat decimalFormat = new DecimalFormat("##0.#");
@@ -600,5 +388,234 @@ public class StatsActivity extends ActionBarActivity
         String[] rawStatsArgs = {String.valueOf(gameID)};
 
         return database.rawQuery(rawStatsQuery, rawStatsArgs);
+    }
+
+    private class LoadStatsTask extends AsyncTask<Byte, Void, List<?>[]>
+    {
+        @Override
+        protected List<?>[] doInBackground(Byte... bowlerLeagueOrGameParam)
+        {
+            final byte bowlerLeagueOrGame = bowlerLeagueOrGameParam[0];
+            final byte NUMBER_OF_GENERAL_DETAILS;
+            Cursor statCursor;
+            int[] statValues;
+            final List<String> statNamesList = new ArrayList<String>();
+            final List<String> statValuesList = new ArrayList<String>();
+            statNamesList.add("Bowler");
+            statValuesList.add(bowlerName);
+
+            statNamesList.addAll(Arrays.asList(STATS_MIDDLE_GENERAL));
+            statNamesList.addAll(Arrays.asList(STATS_MIDDLE_DETAILED));
+            statNamesList.addAll(Arrays.asList(STATS_FOULS));
+            statNamesList.addAll(Arrays.asList(STATS_PINS_TOTAL));
+            switch(bowlerLeagueOrGame)
+            {
+                case 0:
+                    NUMBER_OF_GENERAL_DETAILS = 1;
+                    statNamesList.addAll(Arrays.asList(STATS_PINS_AVERAGE));
+                    statNamesList.addAll(Arrays.asList(STATS_GENERAL));
+
+                    statValues = new int[STATS_MIDDLE_GENERAL.length + STATS_MIDDLE_DETAILED.length
+                            + STATS_FOULS.length + STATS_PINS_TOTAL.length + STATS_PINS_AVERAGE.length
+                            + STATS_GENERAL.length];
+                    statCursor = getBowlerOrLeagueCursor(false);
+                    break;
+                case 1:
+                    NUMBER_OF_GENERAL_DETAILS = 2;
+                    statNamesList.add(1, "League");
+                    statValuesList.add(1, leagueName);
+                    statNamesList.addAll(Arrays.asList(STATS_PINS_AVERAGE));
+                    statNamesList.addAll(Arrays.asList(STATS_GENERAL));
+
+                    statValues = new int[STATS_MIDDLE_GENERAL.length + STATS_MIDDLE_DETAILED.length
+                            + STATS_FOULS.length + STATS_PINS_TOTAL.length + STATS_PINS_AVERAGE.length
+                            + STATS_GENERAL.length];
+                    statCursor = getBowlerOrLeagueCursor(true);
+                    break;
+                case 2:
+                    NUMBER_OF_GENERAL_DETAILS = 3;
+                    statNamesList.add(1, "League");
+                    statValuesList.add(1, leagueName);
+                    statNamesList.add(2, "Game #");
+                    statValuesList.add(2, String.valueOf(gameNumber));
+
+                    statValues = new int[STATS_MIDDLE_GENERAL.length + STATS_MIDDLE_DETAILED.length
+                            + STATS_FOULS.length + STATS_PINS_TOTAL.length];
+                    statCursor = getGameCursor();
+                    break;
+                default: throw new IllegalArgumentException("bowlerLeagueOrGame must be between 0 and 2 (inclusive): " + bowlerLeagueOrGame);
+            }
+
+            int i = statValuesList.size();
+            while (i < statNamesList.size())
+            {
+                statValuesList.add("--");
+                i++;
+            }
+
+            int totalShotsAtMiddle = 0;
+            int spareChances = 0;
+            int seriesTotal = 0;
+
+            if (statCursor.moveToFirst())
+            {
+                while(!statCursor.isAfterLast())
+                {
+                    boolean frameAccessed = (statCursor.getInt(statCursor.getColumnIndex(FrameEntry.COLUMN_NAME_FRAME_ACCESSED)) == 1);
+                    if (bowlerLeagueOrGame == 2 && !frameAccessed)
+                        break;
+
+                    int frameNumber = statCursor.getInt(statCursor.getColumnIndex(FrameEntry.COLUMN_NAME_FRAME_NUMBER));
+                    String frameFouls = statCursor.getString(statCursor.getColumnIndex(FrameEntry.COLUMN_NAME_FOULS));
+                    String[] ballStrings = {statCursor.getString(statCursor.getColumnIndex(FrameEntry.COLUMN_NAME_BALL[0])),
+                            statCursor.getString(statCursor.getColumnIndex(FrameEntry.COLUMN_NAME_BALL[1])),
+                            statCursor.getString(statCursor.getColumnIndex(FrameEntry.COLUMN_NAME_BALL[2]))};
+                    boolean[][] balls = new boolean[3][5];
+                    for (i = 0; i < 5; i++)
+                    {
+                        balls[0][i] = ballStrings[0].charAt(i) == '1';
+                        balls[1][i] = ballStrings[1].charAt(i) == '1';
+                        balls[2][i] = ballStrings[2].charAt(i) == '1';
+                    }
+                    for (i = 1; i <= 3; i++)
+                    {
+                        if (frameFouls.contains(String.valueOf(i)))
+                            statValues[Constants.STAT_FOULS]++;
+                    }
+
+                    if (bowlerLeagueOrGame == 2 || frameAccessed)
+                    {
+                        if (frameNumber == Constants.NUMBER_OF_FRAMES)
+                        {
+                            totalShotsAtMiddle++;
+                            int firstBall = getFirstBallValue(balls[0]);
+                            if (firstBall != -1)
+                                statValues[Constants.STAT_MIDDLE_HIT]++;
+                            increaseFirstBallStat(firstBall, statValues, 0);
+                            if (firstBall < 5)
+                                spareChances++;
+
+                            if (firstBall != 0)
+                            {
+                                if (Arrays.equals(balls[1], Constants.FRAME_CLEAR))
+                                {
+                                    statValues[Constants.STAT_SPARE_CONVERSIONS]++;
+                                    increaseFirstBallStat(firstBall, statValues, 1);
+                                }
+                                else
+                                {
+                                    statValues[Constants.STAT_PINS_LEFT_ON_DECK] += countPinsLeftStanding(balls[2]);
+                                }
+                            }
+                            else
+                            {
+                                totalShotsAtMiddle++;
+                                int secondBall = getFirstBallValue(balls[1]);
+                                if (secondBall != -1)
+                                    statValues[Constants.STAT_MIDDLE_HIT]++;
+                                increaseFirstBallStat(secondBall, statValues, 0);
+
+                                if (secondBall != 0)
+                                {
+                                    if (Arrays.equals(balls[2], Constants.FRAME_CLEAR))
+                                    {
+                                        statValues[Constants.STAT_SPARE_CONVERSIONS]++;
+                                        increaseFirstBallStat(secondBall, statValues, 1);
+                                    }
+                                    else
+                                    {
+                                        statValues[Constants.STAT_PINS_LEFT_ON_DECK] += countPinsLeftStanding(balls[2]);
+                                    }
+                                }
+                                else
+                                {
+                                    totalShotsAtMiddle++;
+                                    int thirdBall = getFirstBallValue(balls[2]);
+                                    if (thirdBall != -1)
+                                        statValues[Constants.STAT_MIDDLE_HIT]++;
+                                    increaseFirstBallStat(thirdBall, statValues, 0);
+
+                                    if (thirdBall != 0)
+                                    {
+                                        statValues[Constants.STAT_PINS_LEFT_ON_DECK] += countPinsLeftStanding(balls[2]);
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            totalShotsAtMiddle++;
+                            int firstBall = getFirstBallValue(balls[0]);
+                            if (firstBall != -1)
+                                statValues[Constants.STAT_MIDDLE_HIT]++;
+                            increaseFirstBallStat(firstBall, statValues, 0);
+
+                            if (firstBall < 5)
+                                spareChances++;
+
+                            if (firstBall != 0)
+                            {
+                                if (Arrays.equals(balls[1], Constants.FRAME_CLEAR))
+                                {
+                                    statValues[Constants.STAT_SPARE_CONVERSIONS]++;
+                                    increaseFirstBallStat(firstBall, statValues, 1);
+                                }
+                                else
+                                {
+                                    statValues[Constants.STAT_PINS_LEFT_ON_DECK] += countPinsLeftStanding(balls[2]);
+                                }
+                            }
+                        }
+                    }
+
+                    if (bowlerLeagueOrGame < 2 && frameNumber == 1)
+                    {
+                        int gameScore = statCursor.getInt(statCursor.getColumnIndex(GameEntry.COLUMN_NAME_GAME_FINAL_SCORE));
+                        int gameNumber = statCursor.getInt(statCursor.getColumnIndex(GameEntry.COLUMN_NAME_GAME_NUMBER));
+                        if (statValues[Constants.STAT_HIGH_SINGLE] < gameScore)
+                            statValues[Constants.STAT_HIGH_SINGLE] = gameScore;
+                        statValues[Constants.STAT_TOTAL_PINFALL] += gameScore;
+                        statValues[Constants.STAT_NUMBER_OF_GAMES]++;
+
+                        if (gameNumber == 1)
+                        {
+                            if (statValues[Constants.STAT_HIGH_SERIES] < seriesTotal)
+                                statValues[Constants.STAT_HIGH_SERIES] = seriesTotal;
+                            seriesTotal = gameScore;
+                        }
+                        else
+                        {
+                            seriesTotal += gameScore;
+                        }
+                    }
+                    statCursor.moveToNext();
+                }
+            }
+
+            if (bowlerLeagueOrGame < 2)
+            {
+                if (statValues[Constants.STAT_HIGH_SERIES] < seriesTotal)
+                {
+                    statValues[Constants.STAT_HIGH_SERIES] = seriesTotal;
+                }
+
+                if (statValues[Constants.STAT_NUMBER_OF_GAMES] > 0)
+                {
+                    statValues[Constants.STAT_AVERAGE] =
+                            statValues[Constants.STAT_TOTAL_PINFALL] / statValues[Constants.STAT_NUMBER_OF_GAMES];
+                    statValues[Constants.STAT_AVERAGE_PINS_LEFT_ON_DECK] =
+                            statValues[Constants.STAT_PINS_LEFT_ON_DECK] / statValues[Constants.STAT_NUMBER_OF_GAMES];
+                }
+            }
+            setGeneralAndDetailedStatValues(statValuesList, statValues, totalShotsAtMiddle, spareChances, NUMBER_OF_GENERAL_DETAILS);
+            return new List<?>[]{statNamesList, statValuesList};
+        }
+
+        @Override
+        protected void onPostExecute(List<?>[] statLists)
+        {
+            StatsListAdapter statsListAdapter = new StatsListAdapter(StatsActivity.this, (List<String>)statLists[0], (List<String>)statLists[1]);
+            listStats.setAdapter(statsListAdapter);
+        }
     }
 }
