@@ -501,7 +501,6 @@ public class GameActivity extends ActionBarActivity
                         }
                         updateBalls(currentFrame);
                         updateScore();
-                        updateFouls();
                         updateFrameColor();
                         break;
                     case R.id.button_whatif:
@@ -889,19 +888,23 @@ public class GameActivity extends ActionBarActivity
                     }
                 }
 
+                int totalScore = 0;
+                for (int i = 0; i < frameScores.length; i++)
+                {
+                    totalScore += frameScores[i];
+                    frameScores[i] = totalScore;
+                }
+                gameScores[currentGame] = totalScore;
+
                 runOnUiThread(new Runnable()
                 {
                     @Override
                     public void run()
                     {
-                        int totalScore = 0;
                         for (int i = 0; i < frameScores.length; i++)
                         {
-                            totalScore += frameScores[i];
-                            framesTextViews[i].setText(String.valueOf(totalScore));
+                            framesTextViews[i].setText(String.valueOf(frameScores[i]));
                         }
-                        gameScores[currentGame] = totalScore;
-
                         navigationDrawerOptions.set(currentGame + ((tournamentMode) ? 2:3),
                                 "Game " + (currentGame + 1) + "(" + gameScores[currentGame] + ")");
                         drawerAdapter.notifyDataSetChanged();
@@ -1239,7 +1242,7 @@ public class GameActivity extends ActionBarActivity
                 {
                     while(!cursor.isAfterLast())
                     {
-                        int gameScore = cursor.getInt(cursor.getColumnIndex(GameEntry._ID));
+                        int gameScore = cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_NAME_GAME_FINAL_SCORE));
                         navigationDrawerOptions.set(currentGamePosition, "Game "
                                 + (currentGamePosition - 2)
                                 + "(" + gameScore + ")");
@@ -1289,7 +1292,6 @@ public class GameActivity extends ActionBarActivity
                         {
                             fouls[currentFrame][i] = false;
                         }
-                        clearFrameColor();
                         if (currentFrame == Constants.LAST_FRAME)
                         {
                             if (currentBall < 2)
@@ -1303,7 +1305,6 @@ public class GameActivity extends ActionBarActivity
                                 }
                             }
                         }
-                        updateFrameColor();
                     }
                 }
                 else
@@ -1323,10 +1324,11 @@ public class GameActivity extends ActionBarActivity
                     @Override
                     public void run()
                     {
-                        if (!isPinKnockedOver)
+                        if (isPinKnockedOver)
                             pinButtons[pinToSet].setColor(Color.parseColor(COLOR_PIN_STANDING));
                         else
                             pinButtons[pinToSet].setColor(Color.parseColor(COLOR_PIN_KNOCKED));
+                        Log.w(TAG, "Counter: " + ++counter + " Pin changed: " + pinToSet);
                     }
                 });
 
@@ -1335,6 +1337,8 @@ public class GameActivity extends ActionBarActivity
             }
         }).start();
     }
+
+    static int counter = 0;
 
     /**
      * Shows options relevant to sharing game data to social media
