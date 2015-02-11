@@ -1332,7 +1332,6 @@ public class GameActivity extends ActionBarActivity
                             pinButtons[pinToSet].setColor(Color.parseColor(COLOR_PIN_STANDING));
                         else
                             pinButtons[pinToSet].setColor(Color.parseColor(COLOR_PIN_KNOCKED));
-                        Log.w(TAG, "Counter: " + ++counter + " Pin changed: " + pinToSet);
                     }
                 });
 
@@ -1341,8 +1340,6 @@ public class GameActivity extends ActionBarActivity
             }
         }).start();
     }
-
-    static int counter = 0;
 
     /**
      * Shows options relevant to sharing game data to social media
