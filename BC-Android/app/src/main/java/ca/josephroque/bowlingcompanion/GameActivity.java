@@ -396,7 +396,7 @@ public class GameActivity extends ActionBarActivity
                 showGameStats();
                 return true;
             case R.id.action_game_share:
-                showShareOptions();
+                queryGamesToShare();
                 return true;
         }
 
@@ -1344,7 +1344,48 @@ public class GameActivity extends ActionBarActivity
     /**
      * Shows options relevant to sharing game data to social media
      */
-    private void showShareOptions()
+    private void queryGamesToShare()
     {
+        String[] gameOptions = new String[numberOfGames];
+        final boolean[] isGameChecked = new boolean[numberOfGames];
+
+        for (int i = 0; i < numberOfGames; i++)
+        {
+            gameOptions[i] = "Game " + (i + 1) + " (" + gameScoresWithFouls[i] + ")";
+        }
+
+        AlertDialog.Builder gameBuilder = new AlertDialog.Builder(this);
+        gameBuilder.setMultiChoiceItems(gameOptions,null,new DialogInterface.OnMultiChoiceClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which, boolean isChecked)
+                    {
+                        isGameChecked[which] = isChecked;
+                    }
+                })
+                .setPositiveButton(Constants.BUTTON_POSITIVE, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        showShareOptions(isGameChecked);
+                    }
+                })
+                .setNegativeButton(Constants.BUTTON_NEGATIVE, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        dialog.dismiss();
+                    }
+                })
+                .setTitle("Which games will you share?")
+                .create()
+                .show();
+    }
+
+    private void showShareOptions(final boolean[] isGameChecked)
+    {
+        
     }
 }
