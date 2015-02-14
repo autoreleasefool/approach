@@ -1386,6 +1386,42 @@ public class GameActivity extends ActionBarActivity
 
     private void showShareOptions(final boolean[] isGameChecked)
     {
-        
+        List<Long> selectedGames = new ArrayList<Long>();
+        List<Integer> selectedGameScores = new ArrayList<Integer>();
+        int seriesTotal = 0;
+        for (int i = 0; i < isGameChecked.length; i++)
+        {
+            if (isGameChecked[i])
+            {
+                seriesTotal += gameScoresWithFouls[i];
+                selectedGames.add(gameID[i]);
+                selectedGameScores.add(gameScoresWithFouls[i]);
+            }
+        }
+
+        if (selectedGames.size() == 0)
+            return;
+
+        StringBuilder messageBuilder = new StringBuilder();
+        if (selectedGames.size() == 1)
+        {
+            messageBuilder.append("I just bowled a " + selectedGameScores.get(0) + "!");
+        }
+        else if (selectedGames.size() > 1)
+        {
+            messageBuilder.append("I just bowled ");
+            messageBuilder.append(selectedGameScores.get(0));
+            for (int i = 1; i < selectedGameScores.size() - 1; i++)
+            {
+                messageBuilder.append(", ");
+                messageBuilder.append(selectedGameScores.get(i));
+            }
+            messageBuilder.append(", and ");
+            messageBuilder.append(selectedGameScores.get(selectedGameScores.size() - 1));
+            messageBuilder.append(" for a ");
+            messageBuilder.append(selectedGameScores.size());
+            messageBuilder.append(" game total of ");
+            messageBuilder.append(seriesTotal);
+        }
     }
 }
