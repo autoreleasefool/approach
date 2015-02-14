@@ -338,6 +338,7 @@ public class GameActivity extends ActionBarActivity
         gameID = intent.getLongArrayExtra(GameEntry.TABLE_NAME + "." + GameEntry._ID);
         frameID = intent.getLongArrayExtra(FrameEntry.TABLE_NAME + "." + FrameEntry._ID);
 
+        navigationDrawerOptions.clear();
         navigationDrawerOptions.add("Bowler");
         navigationDrawerOptions.add("League");
         if (!tournamentMode)
@@ -1422,6 +1423,13 @@ public class GameActivity extends ActionBarActivity
             messageBuilder.append(selectedGameScores.size());
             messageBuilder.append(" game total of ");
             messageBuilder.append(seriesTotal);
+            messageBuilder.append("!");
         }
+
+        Intent share = new Intent();
+        share.setAction(Intent.ACTION_SEND);
+        share.putExtra(Intent.EXTRA_TEXT, messageBuilder.toString());
+        share.setType("text/plain");
+        startActivity(Intent.createChooser(share, "Share to?"));
     }
 }
