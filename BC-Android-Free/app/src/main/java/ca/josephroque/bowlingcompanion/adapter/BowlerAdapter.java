@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.adapter;
 
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.R;
 
 /**
@@ -60,6 +62,9 @@ public class BowlerAdapter extends RecyclerView.Adapter<BowlerAdapter.BowlerView
         holder.imageViewBowlerOrTeam.setImageResource(R.drawable.ic_person);
         holder.textViewBowlerName.setText(mBowlerNames.get(position));
         holder.textViewBowlerAverage.setText(String.valueOf(mBowlerAverages.get(position)));
+
+        holder.itemView.setBackgroundColor(
+                Color.parseColor(Constants.COLOR_BACKGROUND_SECONDARY));
     }
 
     @Override

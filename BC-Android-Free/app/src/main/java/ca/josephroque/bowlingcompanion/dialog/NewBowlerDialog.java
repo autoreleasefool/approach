@@ -38,7 +38,7 @@ public class NewBowlerDialog extends DialogFragment
         final View mDialogView = mInflater.inflate(R.layout.dialog_new_bowler, null);
 
         EditText mEditText = (EditText)mDialogView.findViewById(R.id.editText_bowler_name);
-        mEditText.setHint("Name (max" + Constants.NAME_MAX_LENGTH + " characters)");
+        mEditText.setHint("Name (max " + Constants.NAME_MAX_LENGTH + " characters)");
         mEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(Constants.NAME_MAX_LENGTH)});
 
         mBuilder.setView(mDialogView)

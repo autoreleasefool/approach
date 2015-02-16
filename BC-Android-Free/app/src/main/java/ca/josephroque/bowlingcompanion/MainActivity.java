@@ -48,7 +48,7 @@ public class MainActivity extends ActionBarActivity
 
         //Set background color of activity
         getWindow().getDecorView()
-                .setBackgroundColor(Color.parseColor(Constants.COLOR_BACKGROUND));
+                .setBackgroundColor(Color.parseColor(Constants.COLOR_BACKGROUND_PRIMARY));
 
         mListBowlerIds = new ArrayList<>();
         mListBowlerNames = new ArrayList<>();
