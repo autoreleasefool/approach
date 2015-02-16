@@ -72,46 +72,38 @@
             android:layout_alignRight="@+id/hsv_frames"
             android:layout_alignEnd="@+id/hsv_frames"/>
 
-        <RelativeLayout
-            android:layout_width="fill_parent"
-            android:layout_height="48dp"
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_prev_frame"
+            android:id="@+id/button_prev_frame"
             android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:id="@+id/layout_games">
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"/>
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/text_prev_frame"
-                android:id="@+id/button_prev_frame"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_foul_button"
+            android:id="@+id/button_foul"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"/>
 
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/text_foul_button"
-                android:id="@+id/button_foul"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"/>
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/text_next_frame"
-                android:id="@+id/button_next_frame"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"/>
-        </RelativeLayout>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/text_next_frame"
+            android:id="@+id/button_next_frame"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"/>
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/text_reset_button"
             android:id="@+id/button_reset"
-            android:layout_above="@+id/layout_games"
+            android:layout_above="@+id/button_prev_frame"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"/>
 
@@ -120,9 +112,9 @@
             android:layout_height="wrap_content"
             android:text="@string/text_whatif_button"
             android:id="@+id/button_whatif"
-            android:layout_above="@+id/layout_games"
-            android:layout_alignRight="@+id/button_pin_4"
-            android:layout_alignEnd="@+id/button_pin_4"/>
+            android:layout_above="@+id/button_next_frame"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"/>
     </RelativeLayout>
 
     <RelativeLayout android:layout_width="match_parent"
@@ -133,7 +125,6 @@
                     android:paddingBottom="@dimen/activity_vertical_margin"
                     android:background="#88666666"
                     android:id="@+id/game_top_layout">
-
     </RelativeLayout>
 
     <ListView android:id="@+id/left_drawer_games"
