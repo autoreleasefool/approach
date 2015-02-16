@@ -14,6 +14,7 @@ public class Constants
     public static final String DIALOG_CANCEL = "Cancel";
 
     public static final int NAME_MAX_LENGTH = 30;
+    public static final String NAME_LEAGUE_OPEN = "Open";
 
     //Theme colors
     public static final String COLOR_BACKGROUND = "#2EEC71";

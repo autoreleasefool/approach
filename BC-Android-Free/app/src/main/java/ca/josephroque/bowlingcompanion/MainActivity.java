@@ -21,6 +21,8 @@ import java.util.Date;
 import java.util.List;
 
 import ca.josephroque.bowlingcompanion.adapter.BowlerAdapter;
+import ca.josephroque.bowlingcompanion.database.Contract.*;
+import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.dialog.NewBowlerDialog;
 
 
@@ -145,7 +147,7 @@ public class MainActivity extends ActionBarActivity
         {
             long mNewId = -1;
             SQLiteDatabase mDatabase
-                    = DatabaseHelper.getInstance(MainActivity.this).getWriteableDatabase;
+                    = DatabaseHelper.getInstance(MainActivity.this).getWritableDatabase();
             SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             Date mCurrentDate = new Date();
 
@@ -156,7 +158,7 @@ public class MainActivity extends ActionBarActivity
             mDatabase.beginTransaction();
             try
             {
-                mNewId = mDatabase.insert(BowlerEntry.TABLE_NAME, null, bowlerValues);
+                mNewId = mDatabase.insert(BowlerEntry.TABLE_NAME, null, mBowlerValues);
 
                 ContentValues leagueValues = new ContentValues();
                 leagueValues.put(LeagueEntry.COLUMN_NAME_LEAGUE_NAME, Constants.NAME_LEAGUE_OPEN);
@@ -176,9 +178,12 @@ public class MainActivity extends ActionBarActivity
                 mDatabase.endTransaction();
             }
 
-            mListBowlerIds.add(0, mNewId);
-            mListBowlerNames.add(0, bowlerName[0]);
-            mListBowlerAverages.add(0, 0);
+            if (mNewId != -1)
+            {
+                mListBowlerIds.add(0, mNewId);
+                mListBowlerNames.add(0, bowlerName[0]);
+                mListBowlerAverages.add(0, 0);
+            }
 
             return String.valueOf(mNewId) + ":" + bowlerName[0];
         }
