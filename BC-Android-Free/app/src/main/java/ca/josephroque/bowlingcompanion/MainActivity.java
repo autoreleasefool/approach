@@ -60,7 +60,7 @@ public class MainActivity extends ActionBarActivity
         mBowlerLayoutManager = new LinearLayoutManager(this);
         mBowlerRecycler.setLayoutManager(mBowlerLayoutManager);
 
-        mBowlerAdapter = new BowlerAdapter(mListBowlerIds, mListBowlerNames, mListBowlerAverages);
+        mBowlerAdapter = new BowlerAdapter(this, mListBowlerIds, mListBowlerNames, mListBowlerAverages);
         mBowlerRecycler.setAdapter(mBowlerAdapter);
     }
 
