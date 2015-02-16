@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import ca.josephroque.bowlingcompanion.adapter.BowlerListAdapter;
 import ca.josephroque.bowlingcompanion.database.BowlingContract.*;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.dialog.AddBowlerDialog;
@@ -48,8 +49,10 @@ public class MainActivity extends ActionBarActivity
     private List<String> bowlerNamesList = null;
     /** List of IDs of bowlers' stats being tracked*/
     private List<Long> bowlerIDsList = null;
+    /** List of averages of bowlers' stats being tracked */
+    private List<Integer> bowlerAveragesList = null;
     /** Adapter for ListView of bowlers */
-    private ArrayAdapter<String> bowlerAdapter = null;
+    private ArrayAdapter<Long> bowlerAdapter = null;
 
     /** ID of the most recently selected bowler */
     private long recentBowlerID = -1;
@@ -60,6 +63,8 @@ public class MainActivity extends ActionBarActivity
 
     /** Layout which shows the tutorial first time */
     private RelativeLayout topLevelLayout = null;
+    //TODO
+    private Button quickGameButton = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -70,7 +75,8 @@ public class MainActivity extends ActionBarActivity
 
         bowlerNamesList = new ArrayList<String>();
         bowlerIDsList = new ArrayList<Long>();
-        bowlerAdapter = new ArrayAdapter<String>(MainActivity.this, android.R.layout.simple_list_item_1, bowlerNamesList);
+        bowlerAveragesList = new ArrayList<Integer>();
+        bowlerAdapter = new BowlerListAdapter(this, bowlerNamesList, bowlerAveragesList, bowlerIDsList);
         listBowlerNames.setAdapter(bowlerAdapter);
         listBowlerNames.setLongClickable(true);
 
@@ -92,7 +98,8 @@ public class MainActivity extends ActionBarActivity
                 }
             });
 
-        findViewById(R.id.button_quick_game).setOnClickListener(new View.OnClickListener()
+        quickGameButton = (Button)findViewById(R.id.button_quick_game);
+        quickGameButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
@@ -296,6 +303,25 @@ public class MainActivity extends ActionBarActivity
         bowlerIDsList.remove(index);
         bowlerAdapter.notifyDataSetChanged();
 
+        if (recentBowlerID == selectedBowlerID)
+        {
+            getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE).edit()
+                    .putLong(Constants.PREFERENCES_ID_BOWLER_RECENT, -1)
+                    .putLong(Constants.PREFERENCES_ID_LEAGUE_RECENT, -1)
+                    .apply();
+            recentBowlerID = -1;
+            recentLeagueID = -1;
+
+            quickGameButton.post(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    quickGameButton.setText(R.string.text_quick_game_button);
+                }
+            });
+        }
+
         new Thread(new Runnable()
         {
             @Override
@@ -371,11 +397,7 @@ public class MainActivity extends ActionBarActivity
         protected Void doInBackground(Integer... position)
         {
             final ListView listBowlerNames = (ListView)findViewById(R.id.list_bowler_name);
-            String bowlerNameSelected = (String)listBowlerNames.getItemAtPosition(position[0]);
-
-            long selectedBowlerID;
-            selectedBowlerID = bowlerIDsList.get(bowlerNamesList.indexOf(bowlerNameSelected));
-
+            Long selectedBowlerID = (Long)listBowlerNames.getItemAtPosition(position[0]);
                     /*
                      * Updates database to make the selected bowler the most recently
                      * edited, and therefore the top of the list next time it is
@@ -429,23 +451,35 @@ public class MainActivity extends ActionBarActivity
         {
             SQLiteDatabase database = DatabaseHelper.getInstance(MainActivity.this).getReadableDatabase();
             //Gets name of all bowlers from database and their IDs
-            Cursor cursor = database.query(BowlerEntry.TABLE_NAME,
+            String rawBowlerQuery = "SELECT "
+                    + "bowler." + BowlerEntry.COLUMN_NAME_BOWLER_NAME + ", "
+                    + "bowler." + BowlerEntry._ID + ", "
+                    + "AVG(game." + GameEntry.COLUMN_NAME_GAME_FINAL_SCORE + ") AS avg"
+                    + " FROM " + BowlerEntry.TABLE_NAME + " AS bowler"
+                    + " LEFT JOIN " + GameEntry.TABLE_NAME + " AS game"
+                    + " ON bowler." + BowlerEntry._ID + "=game." + GameEntry.COLUMN_NAME_BOWLER_ID
+                    + " GROUP BY " + BowlerEntry.COLUMN_NAME_BOWLER_NAME;
+
+            Cursor cursor = database.rawQuery(rawBowlerQuery, new String[]{});
+            /*Cursor cursor = database.query(BowlerEntry.TABLE_NAME,
                     new String[]{BowlerEntry.COLUMN_NAME_BOWLER_NAME, BowlerEntry._ID},
                     null,   //All rows
                     null,   //No args
                     null,   //No group
                     null,   //No having
-                    BowlerEntry.COLUMN_NAME_DATE_MODIFIED + " DESC");  //No order
+                    BowlerEntry.COLUMN_NAME_DATE_MODIFIED + " DESC");  //No order*/
 
             //Adds bowler names and IDs to list
             bowlerNamesList.clear();
             bowlerIDsList.clear();
+            bowlerAveragesList.clear();
             if (cursor.moveToFirst())
             {
                 while(!cursor.isAfterLast())
                 {
                     bowlerNamesList.add(cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_NAME_BOWLER_NAME)));
                     bowlerIDsList.add(cursor.getLong(cursor.getColumnIndex(BowlerEntry._ID)));
+                    bowlerAveragesList.add(cursor.getInt(cursor.getColumnIndex("avg")));
                     cursor.moveToNext();
                 }
             }
@@ -540,6 +574,7 @@ public class MainActivity extends ActionBarActivity
             long newID = Long.parseLong(bowlerNameAndID.substring(0, bowlerNameAndID.indexOf(":")));
 
             bowlerNamesList.add(0, bowlerName);
+            bowlerAveragesList.add(0, 0);
             bowlerIDsList.add(0, newID);
             bowlerAdapter.notifyDataSetChanged();
         }
