@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Bowling Companion</string>
+
+    <!-- Action Buttons -->
+    <string name="action_new_bowler">New Bowler</string>
+    <string name="action_quick_series">Quick Series</string>
+    <string name="action_settings">Settings</string>
+</resources>
