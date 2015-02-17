@@ -1,19 +1,27 @@
 package ca.josephroque.bowlingcompanion.adapter;
 
 import android.app.Activity;
+import android.content.ContentValues;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import ca.josephroque.bowlingcompanion.Constants;
+import ca.josephroque.bowlingcompanion.MainActivity;
 import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.database.Contract.*;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
@@ -80,7 +88,7 @@ public class BowlerAdapter extends RecyclerView.Adapter<BowlerAdapter.BowlerView
             @Override
             public void onClick(View v)
             {
-
+                new OpenBowlerLeaguesTask().execute(position);
             }
         });
 
@@ -121,56 +129,51 @@ public class BowlerAdapter extends RecyclerView.Adapter<BowlerAdapter.BowlerView
 
     private void deleteBowler(final long selectedBowlerID)
     {
-        final int index = mBowlerIDs.indexOf(selectedBowlerID);
-        final String bowlerName = mBowlerNames.remove(index);
-        mBowlerIDs.remove(index);
+        final int mIndexOfId = mBowlerIDs.indexOf(selectedBowlerID);
+        final String bowlerName = mBowlerNames.remove(mIndexOfId);
+        mBowlerIDs.remove(mIndexOfId);
         notifyDataSetChanged();
 
-        /*if (recentBowlerID == selectedBowlerID)
-        {
-            getSharedPreferences(Constants.MY_PREFS, MODE_PRIVATE).edit()
-                    .putLong(Constants.PREFERENCES_ID_BOWLER_RECENT, -1)
-                    .putLong(Constants.PREFERENCES_ID_LEAGUE_RECENT, -1)
-                    .apply();
-            recentBowlerID = -1;
-            recentLeagueID = -1;
+        SharedPreferences mPreferences = mActivity.getSharedPreferences(Constants.PREFERENCES, Activity.MODE_PRIVATE);
+        long mRecentBowlerId = mPreferences.getLong(Constants.PREFERENCE_ID_RECENT_BOWLER, -1);
 
-            quickGameButton.post(new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    quickGameButton.setText(R.string.text_quick_game_button);
-                }
-            });
-        }*/
+        if (mRecentBowlerId == selectedBowlerID)
+        {
+            mPreferences.edit()
+                    .putLong(Constants.PREFERENCE_ID_RECENT_BOWLER, -1)
+                    .putLong(Constants.PREFERENCE_ID_RECENT_LEAGUE, -1)
+                    .apply();
+
+            MainActivity.sQuickSeriesButtonEnabled = false;
+            mActivity.invalidateOptionsMenu();
+        }
 
         new Thread(new Runnable()
         {
             @Override
             public void run()
             {
-                SQLiteDatabase database = DatabaseHelper.getInstance(mActivity).getWritableDatabase();
-                String[] whereArgs = {String.valueOf(selectedBowlerID)};
-                database.beginTransaction();
+                SQLiteDatabase mDatabase = DatabaseHelper.getInstance(mActivity).getWritableDatabase();
+                String[] mWhereArgs = {String.valueOf(selectedBowlerID)};
+                mDatabase.beginTransaction();
                 try
                 {
-                    database.delete(FrameEntry.TABLE_NAME,
+                    mDatabase.delete(FrameEntry.TABLE_NAME,
                             FrameEntry.COLUMN_NAME_BOWLER_ID + "=?",
-                            whereArgs);
-                    database.delete(GameEntry.TABLE_NAME,
+                            mWhereArgs);
+                    mDatabase.delete(GameEntry.TABLE_NAME,
                             GameEntry.COLUMN_NAME_BOWLER_ID + "=?",
-                            whereArgs);
-                    database.delete(SeriesEntry.TABLE_NAME,
+                            mWhereArgs);
+                    mDatabase.delete(SeriesEntry.TABLE_NAME,
                             SeriesEntry.COLUMN_NAME_BOWLER_ID + "=?",
-                            whereArgs);
-                    database.delete(LeagueEntry.TABLE_NAME,
+                            mWhereArgs);
+                    mDatabase.delete(LeagueEntry.TABLE_NAME,
                             LeagueEntry.COLUMN_NAME_BOWLER_ID + "=?",
-                            whereArgs);
-                    database.delete(BowlerEntry.TABLE_NAME,
+                            mWhereArgs);
+                    mDatabase.delete(BowlerEntry.TABLE_NAME,
                             BowlerEntry._ID + "=?",
-                            whereArgs);
-                    database.setTransactionSuccessful();
+                            mWhereArgs);
+                    mDatabase.setTransactionSuccessful();
                 }
                 catch (Exception e)
                 {
@@ -178,9 +181,57 @@ public class BowlerAdapter extends RecyclerView.Adapter<BowlerAdapter.BowlerView
                 }
                 finally
                 {
-                    database.endTransaction();
+                    mDatabase.endTransaction();
                 }
             }
         }).start();
+    }
+
+    private class OpenBowlerLeaguesTask extends AsyncTask<Integer, Void, Void>
+    {
+        @Override
+        protected Void doInBackground(Integer... mPosition)
+        {
+            Long mSelectedBowlerID = mBowlerIDs.get(mPosition[0]);
+
+            SQLiteDatabase mDatabase = DatabaseHelper.getInstance(mActivity).getWritableDatabase();
+            SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            ContentValues mValues = new ContentValues();
+            mValues.put(BowlerEntry.COLUMN_NAME_DATE_MODIFIED, mDateFormat.format(new Date()));
+
+            mDatabase.beginTransaction();
+            try
+            {
+                mDatabase.update(BowlerEntry.TABLE_NAME,
+                        mValues,
+                        BowlerEntry._ID + "=?",
+                        new String[]{String.valueOf(mSelectedBowlerID)});
+                mDatabase.setTransactionSuccessful();
+            }
+            catch (Exception ex)
+            {
+                Log.w(TAG, "Error updating bowler: " + ex.getMessage());
+            }
+            finally
+            {
+                mDatabase.endTransaction();
+            }
+
+            mActivity.getSharedPreferences(Constants.PREFERENCES, Activity.MODE_PRIVATE)
+                    .edit()
+                    .putString(Constants.PREFERENCE_NAME_BOWLER, mBowlerNames.get(mPosition[0]))
+                    .putLong(Constants.PREFERENCE_ID_BOWLER, mSelectedBowlerID)
+                    .apply();
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid)
+        {
+            //TODO: uncomment when LeagueActivity is created
+            //Intent leagueIntent = new Intent(mActivity, LeagueActivity.class);
+            //mActivity.startActivity(leagueIntent);
+        }
     }
 }

@@ -48,17 +48,6 @@ public class DatabaseHelper extends SQLiteOpenHelper
     }
 
     /**
-     * Closes the current instance of the database helper
-     */
-    public static void closeInstance()
-    {
-        if (sDatabaseHelperInstance != null)
-        {
-            sDatabaseHelperInstance.close();
-        }
-    }
-
-    /**
      * Private constructor for singleton access
      *
      * @param context The current activity

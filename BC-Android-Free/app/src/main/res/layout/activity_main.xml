@@ -4,6 +4,12 @@
                 android:layout_height="match_parent"
                 tools:context=".MainActivity">
 
+    <RelativeLayout android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="#88666666"
+                    android:id="@+id/main_tutorial_layout">
+    </RelativeLayout>
+
     <android.support.v7.widget.RecyclerView android:id="@+id/recyclerView_bowlers"
                                             android:scrollbars="vertical"
                                             android:layout_width="match_parent"
