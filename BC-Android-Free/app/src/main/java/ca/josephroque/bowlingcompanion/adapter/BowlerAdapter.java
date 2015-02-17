@@ -2,7 +2,6 @@ package ca.josephroque.bowlingcompanion.adapter;
 
 import android.app.Activity;
 import android.content.ContentValues;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -13,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
@@ -132,7 +130,7 @@ public class BowlerAdapter extends RecyclerView.Adapter<BowlerAdapter.BowlerView
         final int mIndexOfId = mBowlerIDs.indexOf(selectedBowlerID);
         final String bowlerName = mBowlerNames.remove(mIndexOfId);
         mBowlerIDs.remove(mIndexOfId);
-        notifyDataSetChanged();
+        notifyItemRemoved(mIndexOfId);
 
         SharedPreferences mPreferences = mActivity.getSharedPreferences(Constants.PREFERENCES, Activity.MODE_PRIVATE);
         long mRecentBowlerId = mPreferences.getLong(Constants.PREFERENCE_ID_RECENT_BOWLER, -1);

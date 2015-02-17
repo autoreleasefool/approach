@@ -129,46 +129,28 @@ public class DatabaseHelper extends SQLiteOpenHelper
      *
      * @param context the Activity context
      * @param deleter interface which should be overridden to call relevant method
-     * @param secondChance if false, will show a second dialog to confirm option. If
-     *                     true, selecting 'delete' will delete all data of bowler
      * @param name identifier for data to be deleted
      */
-    public static void deleteData(final Activity context, final DataDeleter deleter, final boolean secondChance, final String name)
+    public static void deleteData(final Activity context, final DataDeleter deleter, final String name)
     {
-        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        if (secondChance)
-        {
-            builder.setMessage("WARNING: This action cannot be undone! Still delete all data for " + name + "?")
-                    .setPositiveButton("Delete", new DialogInterface.OnClickListener()
+        AlertDialog.Builder mDeleteBuilder = new AlertDialog.Builder(context);
+        mDeleteBuilder.setMessage("WARNING: This action cannot be undone! Delete all data for " + name + "?")
+                .setPositiveButton("Delete", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
                     {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which)
-                        {
-                            deleter.execute();
-                        }
-                    });
-        }
-        else
-        {
-            builder.setMessage("Delete all data for " + name + "?")
-                    .setPositiveButton("Delete", new DialogInterface.OnClickListener()
+                        deleter.execute();
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
                     {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which)
-                        {
-                            deleteData(context, deleter, true, name);
-                        }
-                    });
-        }
-
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener()
-        {
-            @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
-                //do nothing
-            }
-        })
+                        dialog.dismiss();
+                    }
+                })
                 .create()
                 .show();
     }

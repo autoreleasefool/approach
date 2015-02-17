@@ -16,9 +16,6 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.RelativeLayout;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -295,7 +292,7 @@ public class MainActivity extends ActionBarActivity
                 mListBowlerIds.add(0, mBowlerId);
                 mListBowlerNames.add(0, mBowlerName);
                 mListBowlerAverages.add(0, 0);
-                mBowlerAdapter.notifyDataSetChanged();
+                mBowlerAdapter.notifyItemInserted(0);
             }
         }
     }
