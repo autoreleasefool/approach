@@ -62,9 +62,6 @@ public class MainActivity extends ActionBarActivity
     /** Indicates whether the option to create a quick series is enabled or not */
     public static boolean sQuickSeriesButtonEnabled = false;
 
-    /** Layout which shows the tutorial for the first time */
-    private RelativeLayout mTutorialLayout = null;
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -87,12 +84,6 @@ public class MainActivity extends ActionBarActivity
 
         mBowlerAdapter = new BowlerAdapter(this, mListBowlerIds, mListBowlerNames, mListBowlerAverages);
         mBowlerRecycler.setAdapter(mBowlerAdapter);
-
-        mTutorialLayout = (RelativeLayout)findViewById(R.id.main_tutorial_layout);
-        if (hasShownTutorial())
-        {
-            mTutorialLayout.setVisibility(View.GONE);
-        }
     }
 
     @Override
@@ -194,37 +185,6 @@ public class MainActivity extends ActionBarActivity
          * was received by input via the dialog
          */
         new NewBowlerTask().execute(bowlerName);
-    }
-
-    /**
-     * Displays a tutorial overlay if one hasn't been shown to
-     * the user yet
-     *
-     * @return true if the tutorial has already been shown, false otherwise
-     */
-    private boolean hasShownTutorial()
-    {
-        SharedPreferences mPreferences = getSharedPreferences(Constants.PREFERENCES, MODE_PRIVATE);
-        boolean mHasShownTutorial = mPreferences.getBoolean(Constants.PREFERENCE_TUTORIAL_MAIN, false);
-
-        if (!mHasShownTutorial)
-        {
-            mPreferences.edit()
-                    .putBoolean(Constants.PREFERENCE_TUTORIAL_MAIN, true)
-                    .apply();
-            mTutorialLayout.setVisibility(View.VISIBLE);
-            mTutorialLayout.setOnTouchListener(new View.OnTouchListener()
-            {
-                @Override
-                public boolean onTouch(View v, MotionEvent event)
-                {
-                    mTutorialLayout.setVisibility(View.INVISIBLE);
-                    return true;
-                }
-            });
-        }
-
-        return mHasShownTutorial;
     }
 
     /**

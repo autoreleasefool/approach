@@ -19,7 +19,6 @@ public class Constants
     public static final String PREFERENCE_ID_GAME = "IdG";
     public static final String PREFERENCE_NAME_BOWLER = "NB";
     public static final String PREFERENCE_NAME_LEAGUE = "NL";
-    public static final String PREFERENCE_TUTORIAL_MAIN = "TM";
 
     //DIALOG BUTTON TEXT
     public static final String DIALOG_OKAY = "Okay";
