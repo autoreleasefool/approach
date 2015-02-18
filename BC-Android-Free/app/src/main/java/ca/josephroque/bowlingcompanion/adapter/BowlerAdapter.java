@@ -142,7 +142,6 @@ public class BowlerAdapter extends RecyclerView.Adapter<BowlerAdapter.BowlerView
                     .apply();
 
             MainActivity.sQuickSeriesButtonEnabled = false;
-            mActivity.invalidateOptionsMenu();
         }
 
         new Thread(new Runnable()

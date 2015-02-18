@@ -2,16 +2,13 @@
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
       tools:context=".MainActivity">
-    <item android:id="@+id/action_new_bowler"
-          android:title="@string/action_new_bowler"
-          android:orderInCategory="1"
-          android:icon="@drawable/ic_action_add_person"
-          app:showAsAction="always" />
+
     <item android:id="@+id/action_quick_series"
           android:title="@string/action_quick_series"
-          android:orderInCategory="2"
+          android:orderInCategory="1"
           android:icon="@drawable/ic_action_quick"
           app:showAsAction="ifRoom" />
+
     <item android:id="@+id/action_settings"
           android:title="@string/action_settings"
           android:orderInCategory="100"

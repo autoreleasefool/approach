@@ -16,6 +16,9 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+
+import com.melnykov.fab.FloatingActionButton;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -81,6 +84,16 @@ public class MainActivity extends ActionBarActivity
 
         mBowlerAdapter = new BowlerAdapter(this, mListBowlerIds, mListBowlerNames, mListBowlerAverages);
         mBowlerRecycler.setAdapter(mBowlerAdapter);
+
+        FloatingActionButton mFloatingActionButton = (FloatingActionButton)findViewById(R.id.fab_new_bowler);
+        mFloatingActionButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                showNewBowlerDialog();
+            }
+        });
     }
 
     @Override
@@ -108,10 +121,6 @@ public class MainActivity extends ActionBarActivity
     {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-
-        //Disables the quick series button if there is no recent bowler or league
-        menu.findItem(R.id.action_quick_series).setEnabled(sQuickSeriesButtonEnabled);
-
         return true;
     }
 
@@ -122,10 +131,6 @@ public class MainActivity extends ActionBarActivity
         {
             case R.id.action_settings:
                 //Action bar button pressed, open settings
-                return true;
-            case R.id.action_new_bowler:
-                //Action bar button pressed, new bowler
-                showNewBowlerDialog();
                 return true;
             case R.id.action_quick_series:
                 //Action bar button pressed, quick series
@@ -200,30 +205,52 @@ public class MainActivity extends ActionBarActivity
      */
     private void showQuickSeriesDialog()
     {
-        AlertDialog.Builder mQuickSeriesBuilder = new AlertDialog.Builder(this);
-        mQuickSeriesBuilder.setTitle("Quick Series")
-                .setMessage("Create a new series with these settings:"
-                        + "\nBowler: " + mRecentBowlerName
-                        + "\nLeague: " + mRecentLeagueName)
-                .setPositiveButton(Constants.DIALOG_OKAY, new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
+        if (sQuickSeriesButtonEnabled)
+        {
+            AlertDialog.Builder mQuickSeriesBuilder = new AlertDialog.Builder(this);
+            mQuickSeriesBuilder.setTitle("Quick Series")
+                    .setMessage("Create a new series with these settings:"
+                            + "\nBowler: " + mRecentBowlerName
+                            + "\nLeague: " + mRecentLeagueName)
+                    .setPositiveButton(Constants.DIALOG_OKAY, new DialogInterface.OnClickListener()
                     {
-                        //TODO: uncomment line when SeriesActivity is complete
-                        //SeriesActivity.addNewSeries(this, recentBowlerId, recentLeagueId, recentNumberOfGames);
-                    }
-                })
-                .setNegativeButton(Constants.DIALOG_CANCEL, new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
+                        @Override
+                        public void onClick(DialogInterface dialog, int which)
+                        {
+                            //TODO: uncomment line when SeriesActivity is complete
+                            //SeriesActivity.addNewSeries(this, recentBowlerId, recentLeagueId, recentNumberOfGames);
+                        }
+                    })
+                    .setNegativeButton(Constants.DIALOG_CANCEL, new DialogInterface.OnClickListener()
                     {
-                        dialog.dismiss();
-                    }
-                })
-                .create()
-                .show();
+                        @Override
+                        public void onClick(DialogInterface dialog, int which)
+                        {
+                            dialog.dismiss();
+                        }
+                    })
+                    .create()
+                    .show();
+        }
+        else
+        {
+            AlertDialog.Builder mQuickSeriesDisabledBuilder = new AlertDialog.Builder(this);
+            mQuickSeriesDisabledBuilder.setTitle("Quick Series")
+                    .setMessage("With this button, you can quickly create a new series with"
+                            + " your most recently used bowler/league, or set a specific"
+                            + " bowler/league in the settings.")
+                    .setPositiveButton(Constants.DIALOG_OKAY, new DialogInterface.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which)
+                        {
+                            dialog.dismiss();
+                        }
+                    })
+                    .setCancelable(false)
+                    .create()
+                    .show();
+        }
     }
 
     /**
@@ -368,7 +395,6 @@ public class MainActivity extends ActionBarActivity
         {
             mBowlerAdapter.notifyDataSetChanged();
             sQuickSeriesButtonEnabled = !(mRecentBowlerId == -1 || mRecentLeagueId == -1);
-            invalidateOptionsMenu();
         }
     }
 }
