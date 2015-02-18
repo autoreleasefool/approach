@@ -22,7 +22,7 @@
         android:layout_margin="16dp"
         android:src="@drawable/ic_action_add_person"
         fab:fab_colorNormal="@color/fab_primary"
-        fab:fab_colorPressed="@color/fab_pressed"
+        fab:fab_colorPressed="@color/fab_primary"
         fab:fab_colorRipple="@color/fab_ripple" />
 
 </RelativeLayout>

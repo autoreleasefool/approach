@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="fab_primary">#3f51b5</color>
-    <color name="fab_pressed">#303f9f</color>
-    <color name="fab_ripple">#ff80ab</color>
+    <color name="fab_primary">#2ecc71</color>
+    <color name="fab_ripple">#27ae60</color>
 </resources>
