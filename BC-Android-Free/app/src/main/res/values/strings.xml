@@ -1,9 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- ACTIVITY NAMES -->
     <string name="app_name">Bowling Companion</string>
+    <string name="title_activity_league_event">Select a League</string>
 
-    <!-- Action Buttons -->
+    <!-- ACTION BUTTON LABELS -->
     <string name="action_quick_series">Quick Series</string>
     <string name="action_settings">Settings</string>
+
 </resources>

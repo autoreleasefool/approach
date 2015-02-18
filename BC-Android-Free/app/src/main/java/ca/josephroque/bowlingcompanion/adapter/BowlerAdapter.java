@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.List;
 
 import ca.josephroque.bowlingcompanion.Constants;
+import ca.josephroque.bowlingcompanion.LeagueEventActivity;
 import ca.josephroque.bowlingcompanion.MainActivity;
 import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.database.Contract.*;
@@ -42,16 +43,16 @@ public class BowlerAdapter extends RecyclerView.Adapter<BowlerAdapter.BowlerView
 
     public static class BowlerViewHolder extends RecyclerView.ViewHolder
     {
-        public ImageView imageViewBowlerOrTeam;
-        public TextView textViewBowlerName;
-        public TextView textViewBowlerAverage;
+        private ImageView mImageViewBowlerOrTeam;
+        private TextView mTextViewBowlerName;
+        private TextView mTextViewBowlerAverage;
 
-        public BowlerViewHolder(View mItemLayoutView)
+        private BowlerViewHolder(View mItemLayoutView)
         {
             super(mItemLayoutView);
-            imageViewBowlerOrTeam = (ImageView)mItemLayoutView.findViewById(R.id.imageView_bowler_team);
-            textViewBowlerName = (TextView)mItemLayoutView.findViewById(R.id.textView_bowler_name);
-            textViewBowlerAverage = (TextView)mItemLayoutView.findViewById(R.id.textView_bowler_average);
+            mImageViewBowlerOrTeam = (ImageView)mItemLayoutView.findViewById(R.id.imageView_bowler_team);
+            mTextViewBowlerName = (TextView)mItemLayoutView.findViewById(R.id.textView_bowler_name);
+            mTextViewBowlerAverage = (TextView)mItemLayoutView.findViewById(R.id.textView_bowler_average);
         }
     }
 
@@ -75,9 +76,9 @@ public class BowlerAdapter extends RecyclerView.Adapter<BowlerAdapter.BowlerView
     @Override
     public void onBindViewHolder(BowlerViewHolder mHolder, final int mPosition)
     {
-        mHolder.imageViewBowlerOrTeam.setImageResource(R.drawable.ic_person);
-        mHolder.textViewBowlerName.setText(mBowlerNames.get(mPosition));
-        mHolder.textViewBowlerAverage.setText(String.valueOf(mBowlerAverages.get(mPosition)));
+        mHolder.mImageViewBowlerOrTeam.setImageResource(R.drawable.ic_person);
+        mHolder.mTextViewBowlerName.setText(mBowlerNames.get(mPosition));
+        mHolder.mTextViewBowlerAverage.setText(String.valueOf(mBowlerAverages.get(mPosition)));
 
         mHolder.itemView.setBackgroundColor(
                 Color.parseColor(Constants.COLOR_BACKGROUND_SECONDARY));
@@ -236,8 +237,8 @@ public class BowlerAdapter extends RecyclerView.Adapter<BowlerAdapter.BowlerView
         protected void onPostExecute(Void aVoid)
         {
             //TODO: uncomment when LeagueActivity is created
-            //Intent leagueIntent = new Intent(mActivity, LeagueActivity.class);
-            //mActivity.startActivity(leagueIntent);
+            Intent mLeagueEventIntent = new Intent(mActivity, LeagueEventActivity.class);
+            mActivity.startActivity(mLeagueEventIntent);
         }
     }
 }
