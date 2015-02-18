@@ -320,6 +320,7 @@ public class MainActivity extends ActionBarActivity
                 mListBowlerNames.add(0, mBowlerName);
                 mListBowlerAverages.add(0, 0);
                 mBowlerAdapter.notifyItemInserted(0);
+                mBowlerRecycler.scrollToPosition(0);
             }
         }
     }
