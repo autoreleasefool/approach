@@ -106,6 +106,12 @@ public class DatabaseHelper extends SQLiteOpenHelper
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
     {
+        /*
+         * Deletes all tables and data, then recreates database
+         *
+         * In future versions, if database is updated then tables should
+         * be altered, not dropped
+         */
         Log.w(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion);
         db.execSQL("DROP TABLE IF EXISTS " + BowlerEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + LeagueEntry.TABLE_NAME);
@@ -155,8 +161,16 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 .show();
     }
 
+    /**
+     * Provides a method which can be overridden to delete specific data
+     * if the deleteData method is successful (user selects 'Delete')
+     */
     public static interface DataDeleter
     {
+        /**
+         * Method which must be overriden to provide access to a relevant
+         * method which should be used to delete specific data
+         */
         public void execute();
     }
 }

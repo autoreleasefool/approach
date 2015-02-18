@@ -121,7 +121,6 @@ public class BowlerAdapter extends RecyclerView.Adapter<BowlerAdapter.BowlerView
                         deleteBowler(bowlerID);
                     }
                 },
-                false,
                 bowlerName);
     }
 
