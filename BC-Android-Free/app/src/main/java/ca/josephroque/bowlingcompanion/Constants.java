@@ -13,6 +13,8 @@ public class Constants
     public static final String PREFERENCES = "ca.josephroque.bowlingcompanionfree";
     public static final String PREFERENCE_ID_RECENT_BOWLER = "IdRB";
     public static final String PREFERENCE_ID_RECENT_LEAGUE = "IdRL";
+    public static final String PREFERENCE_ID_QUICK_BOWLER = "IdQB";
+    public static final String PREFERENCE_ID_QUICK_LEAGUE = "IdQL";
     public static final String PREFERENCE_ID_BOWLER = "IdB";
     public static final String PREFERENCE_ID_LEAGUE = "IdL";
     public static final String PREFERENCE_ID_SERIES = "IdS";

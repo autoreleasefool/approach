@@ -55,10 +55,23 @@ public class MainActivity extends ActionBarActivity
     private long mRecentLeagueId = -1;
     /** Number of games in the most recently selected league */
     private int mRecentNumberOfGames = -1;
+
+    /** Id from 'bowler' database which represents the preferred bowler for a quick series */
+    private long mQuickBowlerId = -1;
+    /** Id from 'league' database which represents the preferred league for a quick series */
+    private long mQuickLeagueId = -1;
+    /** Number of games in the preferred league */
+    private int mQuickNumberOfGames = -1;
+
     /** Name of most recently edited bowler */
     private String mRecentBowlerName;
     /** Name of most recently edited league */
     private String mRecentLeagueName;
+    /** Name of the preferred bowler for a quick series */
+    private String mQuickBowlerName;
+    /** Name of the preferred league for a quick series */
+    private String mQuickLeagueName;
+
     /** Indicates whether the option to create a quick series is enabled or not */
     public static boolean sQuickSeriesButtonEnabled = false;
 
@@ -104,6 +117,8 @@ public class MainActivity extends ActionBarActivity
         SharedPreferences preferences = getSharedPreferences(Constants.PREFERENCES, MODE_PRIVATE);
         mRecentBowlerId = preferences.getLong(Constants.PREFERENCE_ID_RECENT_BOWLER, -1);
         mRecentLeagueId = preferences.getLong(Constants.PREFERENCE_ID_RECENT_LEAGUE, -1);
+        mQuickBowlerId = preferences.getLong(Constants.PREFERENCE_ID_QUICK_BOWLER, -1);
+        mQuickLeagueId = preferences.getLong(Constants.PREFERENCE_ID_QUICK_LEAGUE, -1);
 
         //Clearing preferences which may indicate incorrect state of app
         preferences.edit()
@@ -207,18 +222,40 @@ public class MainActivity extends ActionBarActivity
     {
         if (sQuickSeriesButtonEnabled)
         {
+            final boolean quickOrRecent;
             AlertDialog.Builder mQuickSeriesBuilder = new AlertDialog.Builder(this);
+            if (mQuickBowlerId == -1 || mQuickLeagueId == -1)
+            {
+                mQuickSeriesBuilder.setMessage("Create a new series with these settings:"
+                    + "\nBowler: " + mRecentBowlerName
+                    + "\nLeague: " + mRecentLeagueName);
+                quickOrRecent = false;
+            }
+            else
+            {
+                mQuickSeriesBuilder.setMessage("Create a new series with these settings:"
+                        + "\nBowler: " + mQuickBowlerName
+                        + "\nLeague: " + mQuickLeagueName);
+                quickOrRecent = true;
+            }
+
             mQuickSeriesBuilder.setTitle("Quick Series")
-                    .setMessage("Create a new series with these settings:"
-                            + "\nBowler: " + mRecentBowlerName
-                            + "\nLeague: " + mRecentLeagueName)
                     .setPositiveButton(Constants.DIALOG_OKAY, new DialogInterface.OnClickListener()
                     {
                         @Override
                         public void onClick(DialogInterface dialog, int which)
                         {
                             //TODO: uncomment line when SeriesActivity is complete
-                            //SeriesActivity.addNewSeries(this, recentBowlerId, recentLeagueId, recentNumberOfGames);
+                            /*
+                            if (quickOrRecent)
+                            {
+                                SeriesActivity.addNewSeries(MainActivity.this, mQuickBowlerId, mQuickLeagueId, mQuickNumberOfGames);
+                            }
+                            else
+                            {
+                                SeriesActivity.addNewSeries(MainActivity.this, mRecentBowlerId, mRecentLeagueId, mRecentNumberOfGames);
+                            }
+                             */
                         }
                     })
                     .setNegativeButton(Constants.DIALOG_CANCEL, new DialogInterface.OnClickListener()
@@ -366,7 +403,9 @@ public class MainActivity extends ActionBarActivity
             }
 
             /*
-             * If there was a recently added
+             * If there is a bowler and league which have been previously accessed
+             * or a set bowler or league, then their corresponding values
+             * are loaded to be used to create a quick series
              */
             if (mRecentBowlerId > -1 && mRecentLeagueId > -1)
             {
@@ -388,6 +427,27 @@ public class MainActivity extends ActionBarActivity
                     mRecentNumberOfGames = mCursor.getInt(mCursor.getColumnIndex(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES));
                 }
             }
+            if (mQuickBowlerId > -1 && mQuickLeagueId > -1)
+            {
+                String mRawRecentQuery = "SELECT "
+                        + BowlerEntry.COLUMN_NAME_BOWLER_NAME + ", "
+                        + LeagueEntry.COLUMN_NAME_LEAGUE_NAME + ", "
+                        + LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES
+                        + " FROM " + BowlerEntry.TABLE_NAME + " AS bowler"
+                        + " LEFT JOIN " + LeagueEntry.TABLE_NAME + " AS league"
+                        + " ON bowler." + BowlerEntry._ID + "=league." + LeagueEntry.COLUMN_NAME_BOWLER_ID
+                        + " WHERE bowler." + BowlerEntry._ID + "=? AND league." + LeagueEntry._ID + "=?";
+                String[] mRawRecentArgs = new String[]{String.valueOf(mQuickBowlerId), String.valueOf(mQuickLeagueId)};
+
+                mCursor = mDatabase.rawQuery(mRawRecentQuery, mRawRecentArgs);
+                if (mCursor.moveToFirst())
+                {
+                    mQuickBowlerName = mCursor.getString(mCursor.getColumnIndex(BowlerEntry.COLUMN_NAME_BOWLER_NAME));
+                    mQuickLeagueName = mCursor.getString(mCursor.getColumnIndex(LeagueEntry.COLUMN_NAME_LEAGUE_NAME));
+                    mQuickNumberOfGames = mCursor.getInt(mCursor.getColumnIndex(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES));
+                }
+            }
+
             return null;
         }
 
@@ -395,7 +455,7 @@ public class MainActivity extends ActionBarActivity
         protected void onPostExecute(Void param)
         {
             mBowlerAdapter.notifyDataSetChanged();
-            sQuickSeriesButtonEnabled = !(mRecentBowlerId == -1 || mRecentLeagueId == -1);
+            sQuickSeriesButtonEnabled = !(mRecentBowlerId == -1 || mRecentLeagueId == -1) || !(mQuickBowlerId == -1 || mQuickLeagueId == -1);
         }
     }
 }
