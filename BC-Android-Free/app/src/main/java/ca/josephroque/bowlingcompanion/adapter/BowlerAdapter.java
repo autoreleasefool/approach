@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion.adapter;
 
 import android.app.Activity;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
@@ -63,39 +64,39 @@ public class BowlerAdapter extends RecyclerView.Adapter<BowlerAdapter.BowlerView
     }
 
     @Override
-    public BowlerViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
+    public BowlerViewHolder onCreateViewHolder(ViewGroup mParent, int mViewType)
     {
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.list_bowlers, parent, false);
+        View mItemView = LayoutInflater.from(mParent.getContext())
+                .inflate(R.layout.list_bowlers, mParent, false);
 
-        return new BowlerViewHolder(itemView);
+        return new BowlerViewHolder(mItemView);
     }
 
     @Override
-    public void onBindViewHolder(BowlerViewHolder holder, final int position)
+    public void onBindViewHolder(BowlerViewHolder mHolder, final int mPosition)
     {
-        holder.imageViewBowlerOrTeam.setImageResource(R.drawable.ic_person);
-        holder.textViewBowlerName.setText(mBowlerNames.get(position));
-        holder.textViewBowlerAverage.setText(String.valueOf(mBowlerAverages.get(position)));
+        mHolder.imageViewBowlerOrTeam.setImageResource(R.drawable.ic_person);
+        mHolder.textViewBowlerName.setText(mBowlerNames.get(mPosition));
+        mHolder.textViewBowlerAverage.setText(String.valueOf(mBowlerAverages.get(mPosition)));
 
-        holder.itemView.setBackgroundColor(
+        mHolder.itemView.setBackgroundColor(
                 Color.parseColor(Constants.COLOR_BACKGROUND_SECONDARY));
 
-        holder.itemView.setOnClickListener(new View.OnClickListener()
+        mHolder.itemView.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                new OpenBowlerLeaguesTask().execute(position);
+                new OpenBowlerLeaguesTask().execute(mPosition);
             }
         });
 
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener()
+        mHolder.itemView.setOnLongClickListener(new View.OnLongClickListener()
         {
             @Override
             public boolean onLongClick(View v)
             {
-                showDeleteBowlerDialog(position);
+                showDeleteBowlerDialog(mPosition);
                 return true;
             }
         });
@@ -107,10 +108,10 @@ public class BowlerAdapter extends RecyclerView.Adapter<BowlerAdapter.BowlerView
         return mBowlerNames.size();
     }
 
-    private void showDeleteBowlerDialog(final int position)
+    private void showDeleteBowlerDialog(final int mPosition)
     {
-        final String bowlerName = mBowlerNames.get(position);
-        final long bowlerID = mBowlerIDs.get(position);
+        final String mBowlerName = mBowlerNames.get(mPosition);
+        final long mBowlerID = mBowlerIDs.get(mPosition);
 
         DatabaseHelper.deleteData(mActivity,
                 new DatabaseHelper.DataDeleter()
@@ -118,31 +119,40 @@ public class BowlerAdapter extends RecyclerView.Adapter<BowlerAdapter.BowlerView
                     @Override
                     public void execute()
                     {
-                        deleteBowler(bowlerID);
+                        deleteBowler(mBowlerID);
                     }
                 },
-                bowlerName);
+                mBowlerName);
     }
 
-    private void deleteBowler(final long selectedBowlerID)
+    private void deleteBowler(final long mSelectedBowlerID)
     {
-        final int mIndexOfId = mBowlerIDs.indexOf(selectedBowlerID);
-        final String bowlerName = mBowlerNames.remove(mIndexOfId);
+        final int mIndexOfId = mBowlerIDs.indexOf(mSelectedBowlerID);
+        final String mBowlerName = mBowlerNames.remove(mIndexOfId);
         mBowlerIDs.remove(mIndexOfId);
         notifyItemRemoved(mIndexOfId);
 
         SharedPreferences mPreferences = mActivity.getSharedPreferences(Constants.PREFERENCES, Activity.MODE_PRIVATE);
         long mRecentBowlerId = mPreferences.getLong(Constants.PREFERENCE_ID_RECENT_BOWLER, -1);
+        long mQuickBowlerId = mPreferences.getLong(Constants.PREFERENCE_ID_QUICK_BOWLER, -1);
 
-        if (mRecentBowlerId == selectedBowlerID)
+        if (mRecentBowlerId == mSelectedBowlerID)
         {
             mPreferences.edit()
                     .putLong(Constants.PREFERENCE_ID_RECENT_BOWLER, -1)
                     .putLong(Constants.PREFERENCE_ID_RECENT_LEAGUE, -1)
                     .apply();
-
-            MainActivity.sQuickSeriesButtonEnabled = false;
+            mRecentBowlerId = -1;
         }
+        if (mQuickBowlerId == mSelectedBowlerID)
+        {
+            mPreferences.edit()
+                    .putLong(Constants.PREFERENCE_ID_QUICK_BOWLER, -1)
+                    .putLong(Constants.PREFERENCE_ID_QUICK_LEAGUE, -1)
+                    .apply();
+            mQuickBowlerId = -1;
+        }
+        MainActivity.sQuickSeriesButtonEnabled = !(mRecentBowlerId == -1) || !(mQuickBowlerId == -1);
 
         new Thread(new Runnable()
         {
@@ -150,7 +160,7 @@ public class BowlerAdapter extends RecyclerView.Adapter<BowlerAdapter.BowlerView
             public void run()
             {
                 SQLiteDatabase mDatabase = DatabaseHelper.getInstance(mActivity).getWritableDatabase();
-                String[] mWhereArgs = {String.valueOf(selectedBowlerID)};
+                String[] mWhereArgs = {String.valueOf(mSelectedBowlerID)};
                 mDatabase.beginTransaction();
                 try
                 {
@@ -173,7 +183,7 @@ public class BowlerAdapter extends RecyclerView.Adapter<BowlerAdapter.BowlerView
                 }
                 catch (Exception e)
                 {
-                    Log.w(TAG, "Error deleting bowler: " + bowlerName);
+                    Log.w(TAG, "Error deleting bowler: " + mBowlerName);
                 }
                 finally
                 {

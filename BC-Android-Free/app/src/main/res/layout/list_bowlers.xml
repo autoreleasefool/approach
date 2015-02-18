@@ -30,6 +30,7 @@
         android:layout_height="48dp"
         android:layout_gravity="center_vertical"
         android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:layout_centerInParent="true"
         android:gravity="center"
         android:textAppearance="?android:attr/textAppearanceSmall" />
