@@ -235,7 +235,6 @@ public class BowlerAdapter extends RecyclerView.Adapter<BowlerAdapter.BowlerView
         @Override
         protected void onPostExecute(Void aVoid)
         {
-            //TODO: uncomment when LeagueActivity is created
             Intent leagueEventIntent = new Intent(mActivity, LeagueEventActivity.class);
             mActivity.startActivity(leagueEventIntent);
         }
