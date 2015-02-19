@@ -24,6 +24,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="ca.josephroque.bowlingcompanion.MainActivity" />
         </activity>
+        <activity
+            android:name=".SeriesActivity"
+            android:label="@string/title_activity_series" >
+        </activity>
     </application>
 
 </manifest>

@@ -3,7 +3,8 @@
 
     <!-- ACTIVITY NAMES -->
     <string name="app_name">Bowling Companion</string>
-    <string name="title_activity_league_event">Select a League</string>
+    <string name="title_activity_league_event">Leagues &amp; Events</string>
+    <string name="title_activity_series">Series</string>
 
     <!-- ACTION BUTTON LABELS -->
     <string name="action_quick_series">Quick Series</string>
