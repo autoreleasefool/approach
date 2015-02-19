@@ -5,7 +5,6 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -38,7 +37,7 @@ public class BowlerAdapter extends RecyclerView.Adapter<BowlerAdapter.BowlerView
 
     private Activity mActivity;
     private List<String> mBowlerNames;
-    private List<Integer> mBowlerAverages;
+    private List<Short> mBowlerAverages;
     private List<Long> mBowlerIDs;
 
     public static class BowlerViewHolder extends RecyclerView.ViewHolder
@@ -56,7 +55,7 @@ public class BowlerAdapter extends RecyclerView.Adapter<BowlerAdapter.BowlerView
         }
     }
 
-    public BowlerAdapter(Activity context, List<Long> mBowlerIDs, List<String> mBowlerNames, List<Integer> mBowlerAverages)
+    public BowlerAdapter(Activity context, List<Long> mBowlerIDs, List<String> mBowlerNames, List<Short> mBowlerAverages)
     {
         mActivity = context;
         this.mBowlerIDs = mBowlerIDs;

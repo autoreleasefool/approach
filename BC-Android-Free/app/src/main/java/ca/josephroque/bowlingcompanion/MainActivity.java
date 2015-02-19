@@ -43,7 +43,7 @@ public class MainActivity extends ActionBarActivity
     /** List to store names of bowlers from bowler table, in an order relative to mListBowlerIds*/
     private List<String> mListBowlerNames;
     /** List to store averages of bowlers, in an order relative to mListBowlerIds */
-    private List<Integer> mListBowlerAverages;
+    private List<Short> mListBowlerAverages;
 
     /** View to display bowler names and averages to user */
     private RecyclerView mBowlerRecycler;
@@ -55,14 +55,14 @@ public class MainActivity extends ActionBarActivity
     /** Id from  'league' database which represents the most recently edited bowler */
     private long mRecentLeagueId = -1;
     /** Number of games in the most recently selected league */
-    private int mRecentNumberOfGames = -1;
+    private byte mRecentNumberOfGames = -1;
 
     /** Id from 'bowler' database which represents the preferred bowler for a quick series */
     private long mQuickBowlerId = -1;
     /** Id from 'league' database which represents the preferred league for a quick series */
     private long mQuickLeagueId = -1;
     /** Number of games in the preferred league */
-    private int mQuickNumberOfGames = -1;
+    private byte mQuickNumberOfGames = -1;
 
     /** Name of most recently edited bowler */
     private String mRecentBowlerName;
@@ -358,7 +358,7 @@ public class MainActivity extends ActionBarActivity
             {
                 mListBowlerIds.add(0, mBowlerId);
                 mListBowlerNames.add(0, mBowlerName);
-                mListBowlerAverages.add(0, 0);
+                mListBowlerAverages.add(0, (short)0);
                 mBowlerAdapter.notifyItemInserted(0);
                 mBowlerRecycler.scrollToPosition(0);
             }
@@ -400,7 +400,7 @@ public class MainActivity extends ActionBarActivity
                 {
                     mListBowlerIds.add(mCursor.getLong(mCursor.getColumnIndex(BowlerEntry._ID)));
                     mListBowlerNames.add(mCursor.getString(mCursor.getColumnIndex(BowlerEntry.COLUMN_NAME_BOWLER_NAME)));
-                    mListBowlerAverages.add(mCursor.getInt(mCursor.getColumnIndex("avg")));
+                    mListBowlerAverages.add((short)mCursor.getInt(mCursor.getColumnIndex("avg")));
                     mCursor.moveToNext();
                 }
             }
@@ -427,7 +427,7 @@ public class MainActivity extends ActionBarActivity
                 {
                     mRecentBowlerName = mCursor.getString(mCursor.getColumnIndex(BowlerEntry.COLUMN_NAME_BOWLER_NAME));
                     mRecentLeagueName = mCursor.getString(mCursor.getColumnIndex(LeagueEntry.COLUMN_NAME_LEAGUE_NAME));
-                    mRecentNumberOfGames = mCursor.getInt(mCursor.getColumnIndex(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES));
+                    mRecentNumberOfGames = (byte)mCursor.getInt(mCursor.getColumnIndex(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES));
                 }
             }
             if (mQuickBowlerId > -1 && mQuickLeagueId > -1)
@@ -447,7 +447,7 @@ public class MainActivity extends ActionBarActivity
                 {
                     mQuickBowlerName = mCursor.getString(mCursor.getColumnIndex(BowlerEntry.COLUMN_NAME_BOWLER_NAME));
                     mQuickLeagueName = mCursor.getString(mCursor.getColumnIndex(LeagueEntry.COLUMN_NAME_LEAGUE_NAME));
-                    mQuickNumberOfGames = mCursor.getInt(mCursor.getColumnIndex(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES));
+                    mQuickNumberOfGames = (byte)mCursor.getInt(mCursor.getColumnIndex(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES));
                 }
             }
 
