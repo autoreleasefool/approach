@@ -73,7 +73,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 + LeagueEntry.COLUMN_NAME_LEAGUE_NAME + " TEXT COLLATE NOCASE, "
                 + LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES + " INTEGER DEFAULT 3, "
                 + LeagueEntry.COLUMN_NAME_DATE_MODIFIED + " TEXT, "
-                + LeagueEntry.COLUMN_NAME_IS_TOURNAMENT + " INTEGER DEFAULT 0, "
+                + LeagueEntry.COLUMN_NAME_IS_EVENT + " INTEGER DEFAULT 0, "
                 + LeagueEntry.COLUMN_NAME_BOWLER_ID + " INTEGER"
                 + ");");
         mDatabase.execSQL("CREATE TABLE " + SeriesEntry.TABLE_NAME + " ("
