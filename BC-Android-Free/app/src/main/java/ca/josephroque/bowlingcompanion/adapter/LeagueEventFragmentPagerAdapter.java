@@ -30,9 +30,9 @@ public class LeagueEventFragmentPagerAdapter extends FragmentPagerAdapter
     }
 
     @Override
-    public Fragment getItem(int mPosition)
+    public Fragment getItem(int position)
     {
-        switch(mPosition)
+        switch(position)
         {
             case 0: return new LeagueFragment();
             case 1: return new EventFragment();
@@ -41,8 +41,8 @@ public class LeagueEventFragmentPagerAdapter extends FragmentPagerAdapter
     }
 
     @Override
-    public CharSequence getPageTitle(int mPosition)
+    public CharSequence getPageTitle(int position)
     {
-        return tabTitles[mPosition];
+        return tabTitles[position];
     }
 }

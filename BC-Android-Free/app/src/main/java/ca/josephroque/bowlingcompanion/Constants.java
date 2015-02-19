@@ -9,6 +9,13 @@ package ca.josephroque.bowlingcompanion;
 public class Constants
 {
 
+    //GAME VALUES
+    public static final byte MAX_NUMBER_LEAGUE_GAMES = 5;
+    public static final byte MAX_NUMBER_EVENT_GAMES = 20;
+
+    //INTENT EXTRAS
+    public static final String EXTRA_EVENT_MODE = "TM";
+
     //PREFERENCES
     public static final String PREFERENCES = "ca.josephroque.bowlingcompanionfree";
     public static final String PREFERENCE_ID_RECENT_BOWLER = "IdRB";
@@ -26,6 +33,7 @@ public class Constants
     public static final String DIALOG_OKAY = "Okay";
     public static final String DIALOG_ADD = "Add";
     public static final String DIALOG_CANCEL = "Cancel";
+    public static final String DIALOG_DELETE = "Delete";
 
     //NAME DEFAULTS
     public static final int NAME_MAX_LENGTH = 30;

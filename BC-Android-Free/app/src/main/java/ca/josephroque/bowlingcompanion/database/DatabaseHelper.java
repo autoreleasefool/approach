@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.database.Contract.*;
 
 /**
@@ -141,7 +142,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     {
         AlertDialog.Builder mDeleteBuilder = new AlertDialog.Builder(context);
         mDeleteBuilder.setMessage("WARNING: This action cannot be undone! Delete all data for " + name + "?")
-                .setPositiveButton("Delete", new DialogInterface.OnClickListener()
+                .setPositiveButton(Constants.DIALOG_DELETE, new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int which)
@@ -149,7 +150,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                         deleter.execute();
                     }
                 })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+                .setNegativeButton(Constants.DIALOG_CANCEL, new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int which)

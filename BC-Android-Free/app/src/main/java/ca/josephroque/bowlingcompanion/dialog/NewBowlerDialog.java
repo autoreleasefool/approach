@@ -33,22 +33,22 @@ public class NewBowlerDialog extends DialogFragment
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
-        AlertDialog.Builder mBuilder = new AlertDialog.Builder(getActivity());
-        LayoutInflater mInflater = getActivity().getLayoutInflater();
-        final View mDialogView = mInflater.inflate(R.layout.dialog_new_bowler, null);
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        final View dialogView = inflater.inflate(R.layout.dialog_new_bowler, null);
 
-        EditText mEditText = (EditText)mDialogView.findViewById(R.id.editText_bowler_name);
-        mEditText.setHint("Name (max " + Constants.NAME_MAX_LENGTH + " characters)");
-        mEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(Constants.NAME_MAX_LENGTH)});
+        EditText editTextName = (EditText)dialogView.findViewById(R.id.editText_bowler_name);
+        editTextName.setHint("Name (max " + Constants.NAME_MAX_LENGTH + " characters)");
+        editTextName.setFilters(new InputFilter[]{new InputFilter.LengthFilter(Constants.NAME_MAX_LENGTH)});
 
-        mBuilder.setView(mDialogView)
+        dialogBuilder.setView(dialogView)
                 .setPositiveButton(Constants.DIALOG_ADD, new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int which)
                     {
-                        String mBowlerName = ((EditText)(mDialogView.findViewById(R.id.editText_bowler_name))).getText().toString().trim();
-                        mDialogListener.onAddNewBowler(mBowlerName);
+                        String bowlerName = ((EditText)(dialogView.findViewById(R.id.editText_bowler_name))).getText().toString().trim();
+                        mDialogListener.onAddNewBowler(bowlerName);
                     }
                 })
                 .setNegativeButton(Constants.DIALOG_CANCEL, new DialogInterface.OnClickListener()
@@ -60,7 +60,7 @@ public class NewBowlerDialog extends DialogFragment
                     }
                 });
 
-        return mBuilder.create();
+        return dialogBuilder.create();
     }
 
     @Override

@@ -95,14 +95,14 @@ public class MainActivity extends ActionBarActivity
         mBowlerRecycler = (RecyclerView) findViewById(R.id.recyclerView_bowlers);
         mBowlerRecycler.setHasFixedSize(true);
 
-        RecyclerView.LayoutManager mBowlerLayoutManager = new LinearLayoutManager(this);
-        mBowlerRecycler.setLayoutManager(mBowlerLayoutManager);
+        RecyclerView.LayoutManager bowlerLayoutManager = new LinearLayoutManager(this);
+        mBowlerRecycler.setLayoutManager(bowlerLayoutManager);
 
         mBowlerAdapter = new BowlerAdapter(this, mListBowlerIds, mListBowlerNames, mListBowlerAverages);
         mBowlerRecycler.setAdapter(mBowlerAdapter);
 
-        FloatingActionButton mFloatingActionButton = (FloatingActionButton)findViewById(R.id.fab_new_bowler);
-        mFloatingActionButton.setOnClickListener(new View.OnClickListener()
+        FloatingActionButton floatingActionButton = (FloatingActionButton)findViewById(R.id.fab_new_bowler);
+        floatingActionButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
@@ -162,30 +162,30 @@ public class MainActivity extends ActionBarActivity
     @Override
     public void onAddNewBowler(String bowlerName)
     {
-        boolean mValidInput = true;
-        String mInvalidInputMessage = null;
+        boolean validInput = true;
+        String invalidInputMessage = null;
 
         if (bowlerName == null || bowlerName.length() == 0)
         {
             //No input for the name
-            mValidInput = false;
-            mInvalidInputMessage = "You must enter a name.";
+            validInput = false;
+            invalidInputMessage = "You must enter a name.";
         }
         else if (mListBowlerNames.contains(bowlerName))
         {
             //Bowler name already exists in the list
-            mValidInput = false;
-            mInvalidInputMessage = "That name has already been used. You must choose another.";
+            validInput = false;
+            invalidInputMessage = "That name has already been used. You must choose another.";
         }
 
         /*
          * If the input was invalid for any reason, a dialog is shown
          * to the user and the method does not continue
          */
-        if (!mValidInput)
+        if (!validInput)
         {
             AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
-            mBuilder.setMessage(mInvalidInputMessage)
+            mBuilder.setMessage(invalidInputMessage)
                     .setCancelable(false)
                     .setPositiveButton(Constants.DIALOG_OKAY, new DialogInterface.OnClickListener()
                     {
@@ -213,8 +213,8 @@ public class MainActivity extends ActionBarActivity
      */
     private void showNewBowlerDialog()
     {
-        DialogFragment mDialogFragment = new NewBowlerDialog();
-        mDialogFragment.show(getFragmentManager(), "NewBowlerDialog");
+        DialogFragment dialogFragment = new NewBowlerDialog();
+        dialogFragment.show(getFragmentManager(), "NewBowlerDialog");
     }
 
     /**
@@ -226,23 +226,23 @@ public class MainActivity extends ActionBarActivity
         if (sQuickSeriesButtonEnabled)
         {
             final boolean quickOrRecent;
-            AlertDialog.Builder mQuickSeriesBuilder = new AlertDialog.Builder(this);
+            AlertDialog.Builder quickSeriesBuilder = new AlertDialog.Builder(this);
             if (mQuickBowlerId == -1 || mQuickLeagueId == -1)
             {
-                mQuickSeriesBuilder.setMessage("Create a new series with these settings:"
+                quickSeriesBuilder.setMessage("Create a new series with these settings:"
                     + "\nBowler: " + mRecentBowlerName
                     + "\nLeague: " + mRecentLeagueName);
                 quickOrRecent = false;
             }
             else
             {
-                mQuickSeriesBuilder.setMessage("Create a new series with these settings:"
+                quickSeriesBuilder.setMessage("Create a new series with these settings:"
                         + "\nBowler: " + mQuickBowlerName
                         + "\nLeague: " + mQuickLeagueName);
                 quickOrRecent = true;
             }
 
-            mQuickSeriesBuilder.setTitle("Quick Series")
+            quickSeriesBuilder.setTitle("Quick Series")
                     .setPositiveButton(Constants.DIALOG_OKAY, new DialogInterface.OnClickListener()
                     {
                         @Override
@@ -274,8 +274,8 @@ public class MainActivity extends ActionBarActivity
         }
         else
         {
-            AlertDialog.Builder mQuickSeriesDisabledBuilder = new AlertDialog.Builder(this);
-            mQuickSeriesDisabledBuilder.setTitle("Quick Series")
+            AlertDialog.Builder quickSeriesDisabledBuilder = new AlertDialog.Builder(this);
+            quickSeriesDisabledBuilder.setTitle("Quick Series")
                     .setMessage("With this button, you can quickly create a new series with"
                             + " your most recently used bowler/league, or set a specific"
                             + " bowler/league in the settings.")
@@ -303,20 +303,20 @@ public class MainActivity extends ActionBarActivity
         @Override
         protected String doInBackground(String... bowlerName)
         {
-            long mNewId = -1;
-            SQLiteDatabase mDatabase
+            long newId = -1;
+            SQLiteDatabase database
                     = DatabaseHelper.getInstance(MainActivity.this).getWritableDatabase();
-            SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            Date mCurrentDate = new Date();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            Date currentDate = new Date();
 
-            ContentValues mBowlerValues = new ContentValues();
-            mBowlerValues.put(BowlerEntry.COLUMN_NAME_BOWLER_NAME, bowlerName[0]);
-            mBowlerValues.put(BowlerEntry.COLUMN_NAME_DATE_MODIFIED, mDateFormat.format(mCurrentDate));
+            ContentValues bowlerValues = new ContentValues();
+            bowlerValues.put(BowlerEntry.COLUMN_NAME_BOWLER_NAME, bowlerName[0]);
+            bowlerValues.put(BowlerEntry.COLUMN_NAME_DATE_MODIFIED, dateFormat.format(currentDate));
 
-            mDatabase.beginTransaction();
+            database.beginTransaction();
             try
             {
-                mNewId = mDatabase.insert(BowlerEntry.TABLE_NAME, null, mBowlerValues);
+                newId = database.insert(BowlerEntry.TABLE_NAME, null, bowlerValues);
 
 
                 /*
@@ -325,12 +325,12 @@ public class MainActivity extends ActionBarActivity
                  */
                 ContentValues leagueValues = new ContentValues();
                 leagueValues.put(LeagueEntry.COLUMN_NAME_LEAGUE_NAME, Constants.NAME_LEAGUE_OPEN);
-                leagueValues.put(LeagueEntry.COLUMN_NAME_DATE_MODIFIED, mDateFormat.format(mCurrentDate));
-                leagueValues.put(LeagueEntry.COLUMN_NAME_BOWLER_ID, mNewId);
+                leagueValues.put(LeagueEntry.COLUMN_NAME_DATE_MODIFIED, dateFormat.format(currentDate));
+                leagueValues.put(LeagueEntry.COLUMN_NAME_BOWLER_ID, newId);
                 leagueValues.put(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES, 1);
-                mDatabase.insert(LeagueEntry.TABLE_NAME, null, leagueValues);
+                database.insert(LeagueEntry.TABLE_NAME, null, leagueValues);
 
-                mDatabase.setTransactionSuccessful();
+                database.setTransactionSuccessful();
             }
             catch (Exception ex)
             {
@@ -338,26 +338,26 @@ public class MainActivity extends ActionBarActivity
             }
             finally
             {
-                mDatabase.endTransaction();
+                database.endTransaction();
             }
 
-            return String.valueOf(mNewId) + ":" + bowlerName[0];
+            return String.valueOf(newId) + ":" + bowlerName[0];
         }
 
         @Override
-        protected void onPostExecute(String mBowlerIdAndName)
+        protected void onPostExecute(String bowlerIdAndName)
         {
-            long mBowlerId = Long.parseLong(mBowlerIdAndName.substring(0, mBowlerIdAndName.indexOf(":")));
-            String mBowlerName = mBowlerIdAndName.substring(mBowlerIdAndName.indexOf(":") + 1);
+            long bowlerId = Long.parseLong(bowlerIdAndName.substring(0, bowlerIdAndName.indexOf(":")));
+            String bowlerName = bowlerIdAndName.substring(bowlerIdAndName.indexOf(":") + 1);
 
             /*
              * Adds the new bowler information to the corresponding lists
              * and displays them in the recycler view
              */
-            if (mBowlerId != -1)
+            if (bowlerId != -1)
             {
-                mListBowlerIds.add(0, mBowlerId);
-                mListBowlerNames.add(0, mBowlerName);
+                mListBowlerIds.add(0, bowlerId);
+                mListBowlerNames.add(0, bowlerName);
                 mListBowlerAverages.add(0, (short)0);
                 mBowlerAdapter.notifyItemInserted(0);
                 mBowlerRecycler.scrollToPosition(0);
@@ -374,9 +374,9 @@ public class MainActivity extends ActionBarActivity
         @Override
         protected Void doInBackground(Void... parameters)
         {
-            SQLiteDatabase mDatabase = DatabaseHelper.getInstance(MainActivity.this).getReadableDatabase();
+            SQLiteDatabase database = DatabaseHelper.getInstance(MainActivity.this).getReadableDatabase();
             //Gets name of all bowlers from database and their IDs
-            String mRawBowlerQuery = "SELECT "
+            String rawBowlerQuery = "SELECT "
                     + "bowler." + BowlerEntry.COLUMN_NAME_BOWLER_NAME + ", "
                     + "bowler." + BowlerEntry._ID + ", "
                     + "AVG(game." + GameEntry.COLUMN_NAME_GAME_FINAL_SCORE + ") AS avg"
@@ -385,7 +385,7 @@ public class MainActivity extends ActionBarActivity
                     + " ON bowler." + BowlerEntry._ID + "=game." + GameEntry.COLUMN_NAME_BOWLER_ID
                     + " GROUP BY bowler." + BowlerEntry._ID;
 
-            Cursor mCursor = mDatabase.rawQuery(mRawBowlerQuery, new String[]{});
+            Cursor cursor = database.rawQuery(rawBowlerQuery, new String[]{});
 
             /*
              * Clears data from lists and adds Ids, names
@@ -394,14 +394,14 @@ public class MainActivity extends ActionBarActivity
             mListBowlerIds.clear();
             mListBowlerNames.clear();
             mListBowlerAverages.clear();
-            if (mCursor.moveToFirst())
+            if (cursor.moveToFirst())
             {
-                while(!mCursor.isAfterLast())
+                while(!cursor.isAfterLast())
                 {
-                    mListBowlerIds.add(mCursor.getLong(mCursor.getColumnIndex(BowlerEntry._ID)));
-                    mListBowlerNames.add(mCursor.getString(mCursor.getColumnIndex(BowlerEntry.COLUMN_NAME_BOWLER_NAME)));
-                    mListBowlerAverages.add((short)mCursor.getInt(mCursor.getColumnIndex("avg")));
-                    mCursor.moveToNext();
+                    mListBowlerIds.add(cursor.getLong(cursor.getColumnIndex(BowlerEntry._ID)));
+                    mListBowlerNames.add(cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_NAME_BOWLER_NAME)));
+                    mListBowlerAverages.add((short)cursor.getInt(cursor.getColumnIndex("avg")));
+                    cursor.moveToNext();
                 }
             }
 
@@ -412,7 +412,7 @@ public class MainActivity extends ActionBarActivity
              */
             if (mRecentBowlerId > -1 && mRecentLeagueId > -1)
             {
-                String mRawRecentQuery = "SELECT "
+                String rawRecentQuery = "SELECT "
                         + BowlerEntry.COLUMN_NAME_BOWLER_NAME + ", "
                         + LeagueEntry.COLUMN_NAME_LEAGUE_NAME + ", "
                         + LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES
@@ -420,19 +420,19 @@ public class MainActivity extends ActionBarActivity
                         + " LEFT JOIN " + LeagueEntry.TABLE_NAME + " AS league"
                         + " ON bowler." + BowlerEntry._ID + "=league." + LeagueEntry.COLUMN_NAME_BOWLER_ID
                         + " WHERE bowler." + BowlerEntry._ID + "=? AND league." + LeagueEntry._ID + "=?";
-                String[] mRawRecentArgs = new String[]{String.valueOf(mRecentBowlerId), String.valueOf(mRecentLeagueId)};
+                String[] rawRecentArgs = new String[]{String.valueOf(mRecentBowlerId), String.valueOf(mRecentLeagueId)};
 
-                mCursor = mDatabase.rawQuery(mRawRecentQuery, mRawRecentArgs);
-                if (mCursor.moveToFirst())
+                cursor = database.rawQuery(rawRecentQuery, rawRecentArgs);
+                if (cursor.moveToFirst())
                 {
-                    mRecentBowlerName = mCursor.getString(mCursor.getColumnIndex(BowlerEntry.COLUMN_NAME_BOWLER_NAME));
-                    mRecentLeagueName = mCursor.getString(mCursor.getColumnIndex(LeagueEntry.COLUMN_NAME_LEAGUE_NAME));
-                    mRecentNumberOfGames = (byte)mCursor.getInt(mCursor.getColumnIndex(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES));
+                    mRecentBowlerName = cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_NAME_BOWLER_NAME));
+                    mRecentLeagueName = cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_LEAGUE_NAME));
+                    mRecentNumberOfGames = (byte)cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES));
                 }
             }
             if (mQuickBowlerId > -1 && mQuickLeagueId > -1)
             {
-                String mRawRecentQuery = "SELECT "
+                String rawQuickQuery = "SELECT "
                         + BowlerEntry.COLUMN_NAME_BOWLER_NAME + ", "
                         + LeagueEntry.COLUMN_NAME_LEAGUE_NAME + ", "
                         + LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES
@@ -440,14 +440,14 @@ public class MainActivity extends ActionBarActivity
                         + " LEFT JOIN " + LeagueEntry.TABLE_NAME + " AS league"
                         + " ON bowler." + BowlerEntry._ID + "=league." + LeagueEntry.COLUMN_NAME_BOWLER_ID
                         + " WHERE bowler." + BowlerEntry._ID + "=? AND league." + LeagueEntry._ID + "=?";
-                String[] mRawRecentArgs = new String[]{String.valueOf(mQuickBowlerId), String.valueOf(mQuickLeagueId)};
+                String[] rawQuickArgs = new String[]{String.valueOf(mQuickBowlerId), String.valueOf(mQuickLeagueId)};
 
-                mCursor = mDatabase.rawQuery(mRawRecentQuery, mRawRecentArgs);
-                if (mCursor.moveToFirst())
+                cursor = database.rawQuery(rawQuickQuery, rawQuickArgs);
+                if (cursor.moveToFirst())
                 {
-                    mQuickBowlerName = mCursor.getString(mCursor.getColumnIndex(BowlerEntry.COLUMN_NAME_BOWLER_NAME));
-                    mQuickLeagueName = mCursor.getString(mCursor.getColumnIndex(LeagueEntry.COLUMN_NAME_LEAGUE_NAME));
-                    mQuickNumberOfGames = (byte)mCursor.getInt(mCursor.getColumnIndex(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES));
+                    mQuickBowlerName = cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_NAME_BOWLER_NAME));
+                    mQuickLeagueName = cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_LEAGUE_NAME));
+                    mQuickNumberOfGames = (byte)cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES));
                 }
             }
 

@@ -27,7 +27,7 @@ public class LeagueEventAdapter extends RecyclerView.Adapter<LeagueEventAdapter.
 
     private List<Long> mListLeagueIds;
     private List<String> mListLeagueNames;
-    private List<Integer> mListLeagueAverages;
+    private List<Short> mListLeagueAverages;
     private List<Byte> mListLeagueNumberOfGames;
 
     public static class LeagueEventViewHolder extends RecyclerView.ViewHolder
@@ -36,64 +36,64 @@ public class LeagueEventAdapter extends RecyclerView.Adapter<LeagueEventAdapter.
         private TextView mTextViewLeagueAverage;
         private TextView mTextViewLeagueNumberOfGames;
 
-        private LeagueEventViewHolder(View mItemLayoutView)
+        private LeagueEventViewHolder(View itemLayoutView)
         {
-            super(mItemLayoutView);
+            super(itemLayoutView);
             mTextViewLeagueName = (TextView)
-                    mItemLayoutView.findViewById(R.id.textView_league_event_name);
+                    itemLayoutView.findViewById(R.id.textView_league_event_name);
             mTextViewLeagueAverage = (TextView)
-                    mItemLayoutView.findViewById(R.id.textView_league_event_average);
+                    itemLayoutView.findViewById(R.id.textView_league_event_average);
             mTextViewLeagueNumberOfGames = (TextView)
-                    mItemLayoutView.findViewById(R.id.textView_league_event_games);
+                    itemLayoutView.findViewById(R.id.textView_league_event_games);
         }
     }
 
     public LeagueEventAdapter(
-            Activity mActivity,
-            List<Long> mListLeagueIds,
-            List<String> mListLeagueNames,
-            List<Integer> mListLeagueAverages,
-            List<Byte> mListLeagueNumberOfGames)
+            Activity activity,
+            List<Long> listLeagueIds,
+            List<String> listLeagueNames,
+            List<Short> listLeagueAverages,
+            List<Byte> listLeagueNumberOfGames)
     {
-        this.mActivity = mActivity;
-        this.mListLeagueIds = mListLeagueIds;
-        this.mListLeagueNames = mListLeagueNames;
-        this.mListLeagueAverages = mListLeagueAverages;
-        this.mListLeagueNumberOfGames = mListLeagueNumberOfGames;
+        this.mActivity = activity;
+        this.mListLeagueIds = listLeagueIds;
+        this.mListLeagueNames = listLeagueNames;
+        this.mListLeagueAverages = listLeagueAverages;
+        this.mListLeagueNumberOfGames = listLeagueNumberOfGames;
     }
 
     @Override
-    public LeagueEventViewHolder onCreateViewHolder(ViewGroup mParent, int mViewType)
+    public LeagueEventViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
-        View mItemLayoutView = LayoutInflater.from(mParent.getContext())
-                .inflate(R.layout.list_leagues_events, mParent, false);
-        return new LeagueEventViewHolder(mItemLayoutView);
+        View itemLayoutView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.list_leagues_events, parent, false);
+        return new LeagueEventViewHolder(itemLayoutView);
     }
 
     @Override
-    public void onBindViewHolder(LeagueEventViewHolder mHolder, final int mPosition)
+    public void onBindViewHolder(LeagueEventViewHolder holder, final int position)
     {
-        mHolder.mTextViewLeagueName.setText(mListLeagueNames.get(mPosition));
-        mHolder.mTextViewLeagueAverage.setText(String.valueOf(mListLeagueAverages.get(mPosition)));
-        mHolder.mTextViewLeagueNumberOfGames.setText(String.valueOf(mListLeagueNumberOfGames.get(mPosition)));
-        mHolder.itemView.setBackgroundColor(
+        holder.mTextViewLeagueName.setText(mListLeagueNames.get(position));
+        holder.mTextViewLeagueAverage.setText(String.valueOf(mListLeagueAverages.get(position)));
+        holder.mTextViewLeagueNumberOfGames.setText(String.valueOf(mListLeagueNumberOfGames.get(position)));
+        holder.itemView.setBackgroundColor(
                 mActivity.getResources().getColor(R.color.secondary_background));
 
-        mHolder.itemView.setOnClickListener(new View.OnClickListener()
+        holder.itemView.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                //TODO: openLeagueSeriesTask().execute(mPosition)
+                //TODO: openLeagueSeriesTask().execute(position)
             }
         });
 
-        mHolder.itemView.setOnLongClickListener(new View.OnLongClickListener()
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener()
         {
             @Override
             public boolean onLongClick(View v)
             {
-                //TODO: showDeleteLeagueDialog(mPosition)
+                //TODO: showDeleteLeagueDialog(position)
                 return true;
             }
         });

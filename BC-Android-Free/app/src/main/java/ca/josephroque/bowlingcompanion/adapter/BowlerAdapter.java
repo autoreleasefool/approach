@@ -46,57 +46,57 @@ public class BowlerAdapter extends RecyclerView.Adapter<BowlerAdapter.BowlerView
         private TextView mTextViewBowlerName;
         private TextView mTextViewBowlerAverage;
 
-        private BowlerViewHolder(View mItemLayoutView)
+        private BowlerViewHolder(View itemLayoutView)
         {
-            super(mItemLayoutView);
-            mImageViewBowlerOrTeam = (ImageView)mItemLayoutView.findViewById(R.id.imageView_bowler_team);
-            mTextViewBowlerName = (TextView)mItemLayoutView.findViewById(R.id.textView_bowler_name);
-            mTextViewBowlerAverage = (TextView)mItemLayoutView.findViewById(R.id.textView_bowler_average);
+            super(itemLayoutView);
+            mImageViewBowlerOrTeam = (ImageView)itemLayoutView.findViewById(R.id.imageView_bowler_team);
+            mTextViewBowlerName = (TextView)itemLayoutView.findViewById(R.id.textView_bowler_name);
+            mTextViewBowlerAverage = (TextView)itemLayoutView.findViewById(R.id.textView_bowler_average);
         }
     }
 
-    public BowlerAdapter(Activity context, List<Long> mBowlerIDs, List<String> mBowlerNames, List<Short> mBowlerAverages)
+    public BowlerAdapter(Activity context, List<Long> bowlerIDs, List<String> bowlerNames, List<Short> bowlerAverages)
     {
         mActivity = context;
-        this.mBowlerIDs = mBowlerIDs;
-        this.mBowlerNames = mBowlerNames;
-        this.mBowlerAverages = mBowlerAverages;
+        this.mBowlerIDs = bowlerIDs;
+        this.mBowlerNames = bowlerNames;
+        this.mBowlerAverages = bowlerAverages;
     }
 
     @Override
-    public BowlerViewHolder onCreateViewHolder(ViewGroup mParent, int mViewType)
+    public BowlerViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
-        View mItemView = LayoutInflater.from(mParent.getContext())
-                .inflate(R.layout.list_bowlers, mParent, false);
+        View itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.list_bowlers, parent, false);
 
-        return new BowlerViewHolder(mItemView);
+        return new BowlerViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(BowlerViewHolder mHolder, final int mPosition)
+    public void onBindViewHolder(BowlerViewHolder holder, final int position)
     {
-        mHolder.mImageViewBowlerOrTeam.setImageResource(R.drawable.ic_person);
-        mHolder.mTextViewBowlerName.setText(mBowlerNames.get(mPosition));
-        mHolder.mTextViewBowlerAverage.setText(String.valueOf(mBowlerAverages.get(mPosition)));
+        holder.mImageViewBowlerOrTeam.setImageResource(R.drawable.ic_person);
+        holder.mTextViewBowlerName.setText(mBowlerNames.get(position));
+        holder.mTextViewBowlerAverage.setText(String.valueOf(mBowlerAverages.get(position)));
 
-        mHolder.itemView.setBackgroundColor(
+        holder.itemView.setBackgroundColor(
                 mActivity.getResources().getColor(R.color.secondary_background));
 
-        mHolder.itemView.setOnClickListener(new View.OnClickListener()
+        holder.itemView.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                new OpenBowlerLeaguesTask().execute(mPosition);
+                new OpenBowlerLeaguesTask().execute(position);
             }
         });
 
-        mHolder.itemView.setOnLongClickListener(new View.OnLongClickListener()
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener()
         {
             @Override
             public boolean onLongClick(View v)
             {
-                showDeleteBowlerDialog(mPosition);
+                showDeleteBowlerDialog(position);
                 return true;
             }
         });
@@ -108,10 +108,10 @@ public class BowlerAdapter extends RecyclerView.Adapter<BowlerAdapter.BowlerView
         return mBowlerNames.size();
     }
 
-    private void showDeleteBowlerDialog(final int mPosition)
+    private void showDeleteBowlerDialog(final int position)
     {
-        final String mBowlerName = mBowlerNames.get(mPosition);
-        final long mBowlerID = mBowlerIDs.get(mPosition);
+        final String bowlerName = mBowlerNames.get(position);
+        final long bowlerID = mBowlerIDs.get(position);
 
         DatabaseHelper.deleteData(mActivity,
                 new DatabaseHelper.DataDeleter()
@@ -119,75 +119,75 @@ public class BowlerAdapter extends RecyclerView.Adapter<BowlerAdapter.BowlerView
                     @Override
                     public void execute()
                     {
-                        deleteBowler(mBowlerID);
+                        deleteBowler(bowlerID);
                     }
                 },
-                mBowlerName);
+                bowlerName);
     }
 
-    private void deleteBowler(final long mSelectedBowlerID)
+    private void deleteBowler(final long selectedBowlerID)
     {
-        final int mIndexOfId = mBowlerIDs.indexOf(mSelectedBowlerID);
-        final String mBowlerName = mBowlerNames.remove(mIndexOfId);
-        mBowlerIDs.remove(mIndexOfId);
-        notifyItemRemoved(mIndexOfId);
+        final int indexOfId = mBowlerIDs.indexOf(selectedBowlerID);
+        final String bowlerName = mBowlerNames.remove(indexOfId);
+        mBowlerIDs.remove(indexOfId);
+        notifyItemRemoved(indexOfId);
 
-        SharedPreferences mPreferences = mActivity.getSharedPreferences(Constants.PREFERENCES, Activity.MODE_PRIVATE);
-        long mRecentBowlerId = mPreferences.getLong(Constants.PREFERENCE_ID_RECENT_BOWLER, -1);
-        long mQuickBowlerId = mPreferences.getLong(Constants.PREFERENCE_ID_QUICK_BOWLER, -1);
+        SharedPreferences preferences = mActivity.getSharedPreferences(Constants.PREFERENCES, Activity.MODE_PRIVATE);
+        long recentBowlerId = preferences.getLong(Constants.PREFERENCE_ID_RECENT_BOWLER, -1);
+        long quickBowlerId = preferences.getLong(Constants.PREFERENCE_ID_QUICK_BOWLER, -1);
 
-        if (mRecentBowlerId == mSelectedBowlerID)
+        if (recentBowlerId == selectedBowlerID)
         {
-            mPreferences.edit()
+            preferences.edit()
                     .putLong(Constants.PREFERENCE_ID_RECENT_BOWLER, -1)
                     .putLong(Constants.PREFERENCE_ID_RECENT_LEAGUE, -1)
                     .apply();
-            mRecentBowlerId = -1;
+            recentBowlerId = -1;
         }
-        if (mQuickBowlerId == mSelectedBowlerID)
+        if (quickBowlerId == selectedBowlerID)
         {
-            mPreferences.edit()
+            preferences.edit()
                     .putLong(Constants.PREFERENCE_ID_QUICK_BOWLER, -1)
                     .putLong(Constants.PREFERENCE_ID_QUICK_LEAGUE, -1)
                     .apply();
-            mQuickBowlerId = -1;
+            quickBowlerId = -1;
         }
-        MainActivity.sQuickSeriesButtonEnabled = !(mRecentBowlerId == -1) || !(mQuickBowlerId == -1);
+        MainActivity.sQuickSeriesButtonEnabled = !(recentBowlerId == -1) || !(quickBowlerId == -1);
 
         new Thread(new Runnable()
         {
             @Override
             public void run()
             {
-                SQLiteDatabase mDatabase = DatabaseHelper.getInstance(mActivity).getWritableDatabase();
-                String[] mWhereArgs = {String.valueOf(mSelectedBowlerID)};
-                mDatabase.beginTransaction();
+                SQLiteDatabase database = DatabaseHelper.getInstance(mActivity).getWritableDatabase();
+                String[] whereArgs = {String.valueOf(selectedBowlerID)};
+                database.beginTransaction();
                 try
                 {
-                    mDatabase.delete(FrameEntry.TABLE_NAME,
+                    database.delete(FrameEntry.TABLE_NAME,
                             FrameEntry.COLUMN_NAME_BOWLER_ID + "=?",
-                            mWhereArgs);
-                    mDatabase.delete(GameEntry.TABLE_NAME,
+                            whereArgs);
+                    database.delete(GameEntry.TABLE_NAME,
                             GameEntry.COLUMN_NAME_BOWLER_ID + "=?",
-                            mWhereArgs);
-                    mDatabase.delete(SeriesEntry.TABLE_NAME,
+                            whereArgs);
+                    database.delete(SeriesEntry.TABLE_NAME,
                             SeriesEntry.COLUMN_NAME_BOWLER_ID + "=?",
-                            mWhereArgs);
-                    mDatabase.delete(LeagueEntry.TABLE_NAME,
+                            whereArgs);
+                    database.delete(LeagueEntry.TABLE_NAME,
                             LeagueEntry.COLUMN_NAME_BOWLER_ID + "=?",
-                            mWhereArgs);
-                    mDatabase.delete(BowlerEntry.TABLE_NAME,
+                            whereArgs);
+                    database.delete(BowlerEntry.TABLE_NAME,
                             BowlerEntry._ID + "=?",
-                            mWhereArgs);
-                    mDatabase.setTransactionSuccessful();
+                            whereArgs);
+                    database.setTransactionSuccessful();
                 }
                 catch (Exception e)
                 {
-                    Log.w(TAG, "Error deleting bowler: " + mBowlerName);
+                    Log.w(TAG, "Error deleting bowler: " + bowlerName);
                 }
                 finally
                 {
-                    mDatabase.endTransaction();
+                    database.endTransaction();
                 }
             }
         }).start();
@@ -196,23 +196,23 @@ public class BowlerAdapter extends RecyclerView.Adapter<BowlerAdapter.BowlerView
     private class OpenBowlerLeaguesTask extends AsyncTask<Integer, Void, Void>
     {
         @Override
-        protected Void doInBackground(Integer... mPosition)
+        protected Void doInBackground(Integer... position)
         {
-            Long mSelectedBowlerID = mBowlerIDs.get(mPosition[0]);
+            Long selectedBowlerID = mBowlerIDs.get(position[0]);
 
-            SQLiteDatabase mDatabase = DatabaseHelper.getInstance(mActivity).getWritableDatabase();
-            SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            ContentValues mValues = new ContentValues();
-            mValues.put(BowlerEntry.COLUMN_NAME_DATE_MODIFIED, mDateFormat.format(new Date()));
+            SQLiteDatabase database = DatabaseHelper.getInstance(mActivity).getWritableDatabase();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            ContentValues values = new ContentValues();
+            values.put(BowlerEntry.COLUMN_NAME_DATE_MODIFIED, dateFormat.format(new Date()));
 
-            mDatabase.beginTransaction();
+            database.beginTransaction();
             try
             {
-                mDatabase.update(BowlerEntry.TABLE_NAME,
-                        mValues,
+                database.update(BowlerEntry.TABLE_NAME,
+                        values,
                         BowlerEntry._ID + "=?",
-                        new String[]{String.valueOf(mSelectedBowlerID)});
-                mDatabase.setTransactionSuccessful();
+                        new String[]{String.valueOf(selectedBowlerID)});
+                database.setTransactionSuccessful();
             }
             catch (Exception ex)
             {
@@ -220,13 +220,13 @@ public class BowlerAdapter extends RecyclerView.Adapter<BowlerAdapter.BowlerView
             }
             finally
             {
-                mDatabase.endTransaction();
+                database.endTransaction();
             }
 
             mActivity.getSharedPreferences(Constants.PREFERENCES, Activity.MODE_PRIVATE)
                     .edit()
-                    .putString(Constants.PREFERENCE_NAME_BOWLER, mBowlerNames.get(mPosition[0]))
-                    .putLong(Constants.PREFERENCE_ID_BOWLER, mSelectedBowlerID)
+                    .putString(Constants.PREFERENCE_NAME_BOWLER, mBowlerNames.get(position[0]))
+                    .putLong(Constants.PREFERENCE_ID_BOWLER, selectedBowlerID)
                     .apply();
 
             return null;
@@ -236,8 +236,8 @@ public class BowlerAdapter extends RecyclerView.Adapter<BowlerAdapter.BowlerView
         protected void onPostExecute(Void aVoid)
         {
             //TODO: uncomment when LeagueActivity is created
-            Intent mLeagueEventIntent = new Intent(mActivity, LeagueEventActivity.class);
-            mActivity.startActivity(mLeagueEventIntent);
+            Intent leagueEventIntent = new Intent(mActivity, LeagueEventActivity.class);
+            mActivity.startActivity(leagueEventIntent);
         }
     }
 }
