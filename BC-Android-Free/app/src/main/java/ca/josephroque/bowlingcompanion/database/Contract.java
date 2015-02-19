@@ -53,7 +53,7 @@ public class Contract
         /** Name of the column for leagues' most recent date modified */
         public static final String COLUMN_NAME_DATE_MODIFIED = "league_date_modified";
         /** Name of the column for indicating if league is a tournament or not */
-        public static final String COLUMN_NAME_IS_TOURNAMENT = "league_is_tournament";
+        public static final String COLUMN_NAME_IS_EVENT = "league_is_event";
         /** Name of the column for leagues' foreign key to bowler IDs */
         public static final String COLUMN_NAME_BOWLER_ID = "league_bowler_id_fk";
     }

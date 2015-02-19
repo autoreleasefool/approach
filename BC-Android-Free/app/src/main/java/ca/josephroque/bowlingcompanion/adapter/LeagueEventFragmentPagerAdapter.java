@@ -4,8 +4,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import ca.josephroque.bowlingcompanion.fragments.EventFragment;
-import ca.josephroque.bowlingcompanion.fragments.LeagueFragment;
+import ca.josephroque.bowlingcompanion.fragments.LeagueEventFragment;
 
 /**
  * Created by josephroque on 15-02-18.
@@ -34,8 +33,8 @@ public class LeagueEventFragmentPagerAdapter extends FragmentPagerAdapter
     {
         switch(position)
         {
-            case 0: return new LeagueFragment();
-            case 1: return new EventFragment();
+            case 0: return LeagueEventFragment.newInstance(false);
+            case 1: return LeagueEventFragment.newInstance(true);
             default: return null;
         }
     }

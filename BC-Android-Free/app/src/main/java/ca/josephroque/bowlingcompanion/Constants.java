@@ -14,7 +14,7 @@ public class Constants
     public static final byte MAX_NUMBER_EVENT_GAMES = 20;
 
     //INTENT EXTRAS
-    public static final String EXTRA_EVENT_MODE = "TM";
+    public static final String EXTRA_EVENT_MODE = "EM";
 
     //PREFERENCES
     public static final String PREFERENCES = "ca.josephroque.bowlingcompanionfree";

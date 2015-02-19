@@ -1,8 +1,6 @@
 package ca.josephroque.bowlingcompanion;
 
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -13,12 +11,17 @@ import android.view.MenuItem;
 import com.astuetz.PagerSlidingTabStrip;
 
 import ca.josephroque.bowlingcompanion.adapter.LeagueEventFragmentPagerAdapter;
+import ca.josephroque.bowlingcompanion.dialog.NewLeagueEventDialog;
+import ca.josephroque.bowlingcompanion.fragments.LeagueEventFragment;
 
 
 public class LeagueEventActivity extends ActionBarActivity
+    implements NewLeagueEventDialog.NewLeagueEventDialogListener
 {
 
     private static final String TAG = "LeagueEventActivity";
+
+    private ViewPager mLeagueEventViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -32,13 +35,13 @@ public class LeagueEventActivity extends ActionBarActivity
         getWindow().getDecorView()
                 .setBackgroundColor(getResources().getColor(R.color.primary_background));
 
-        ViewPager mViewPager = (ViewPager)findViewById(R.id.viewPager_leagues_events);
-        mViewPager.setAdapter(new LeagueEventFragmentPagerAdapter(getSupportFragmentManager()));
+        mLeagueEventViewPager = (ViewPager)findViewById(R.id.viewPager_leagues_events);
+        mLeagueEventViewPager.setAdapter(new LeagueEventFragmentPagerAdapter(getSupportFragmentManager()));
 
-        PagerSlidingTabStrip mTabStrip = (PagerSlidingTabStrip)
+        PagerSlidingTabStrip tabStrip = (PagerSlidingTabStrip)
                 findViewById(R.id.slidingTab_leagues_events);
-        mTabStrip.setViewPager(mViewPager);
-        mTabStrip.setTextColor(getResources().getColor(R.color.secondary_background));
+        tabStrip.setViewPager(mLeagueEventViewPager);
+        tabStrip.setTextColor(getResources().getColor(R.color.secondary_background));
     }
 
 
@@ -65,5 +68,26 @@ public class LeagueEventActivity extends ActionBarActivity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onAddNewLeague(String leagueEventName, byte numberOfGames)
+    {
+        int viewPagerCurrentItem = mLeagueEventViewPager.getCurrentItem();
+        switch(viewPagerCurrentItem)
+        {
+            case 0:case 1:
+            LeagueEventFragment leagueEventFragment = (LeagueEventFragment)
+                    getSupportFragmentManager()
+                    .findFragmentByTag(
+                            "android:switcher:"
+                            + R.id.viewPager_leagues_events
+                            + ":"
+                            + viewPagerCurrentItem);
+            leagueEventFragment.addNewLeagueOrEvent(leagueEventName, numberOfGames);
+            default:
+                Log.w(TAG, "Unavailable fragment. Current tab: " + viewPagerCurrentItem);
+                break;
+        }
     }
 }
