@@ -32,7 +32,7 @@ public class Constants
     public static final String NAME_LEAGUE_OPEN = "Open";
 
     //THEME COLORS
-    public static final String COLOR_BACKGROUND_PRIMARY = "#BDC3C7";
-    public static final String COLOR_BACKGROUND_SECONDARY = "#ECF0F1";
-    public static final String COLOR_ACTIONBAR = "#2ECC71";
+    //public static final String COLOR_BACKGROUND_PRIMARY = "#BDC3C7";
+    //public static final String COLOR_BACKGROUND_SECONDARY = "#ECF0F1";
+    //public static final String COLOR_ACTIONBAR = "#2ECC71";
 }

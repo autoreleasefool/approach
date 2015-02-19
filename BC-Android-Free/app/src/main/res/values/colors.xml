@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="fab_primary">#2ecc71</color>
-    <color name="fab_ripple">#27ae60</color>
+
+    <color name="tertiary_green_light">#86E486</color>
+    <color name="secondary_green_medium_light">#5BD55B</color>
+    <color name="primary_green">#3BC73B</color>
+    <color name="secondary_green_medium_dark">#1ABC1A</color>
+    <color name="tertiary_green_dark">#0A980A</color>
+
+    <color name="primary_background">#bdc3c7</color>
+    <color name="secondary_background">#ecf0f1</color>
 </resources>

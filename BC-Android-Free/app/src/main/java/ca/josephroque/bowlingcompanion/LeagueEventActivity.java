@@ -1,9 +1,12 @@
 package ca.josephroque.bowlingcompanion;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -15,11 +18,19 @@ import ca.josephroque.bowlingcompanion.adapter.LeagueEventFragmentPagerAdapter;
 public class LeagueEventActivity extends ActionBarActivity
 {
 
+    private static final String TAG = "LeagueEventActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_league_event);
+        getSupportActionBar().setBackgroundDrawable(
+                new ColorDrawable(getResources().getColor(R.color.primary_green)));
+
+        //Set background color of activity
+        getWindow().getDecorView()
+                .setBackgroundColor(getResources().getColor(R.color.primary_background));
 
         ViewPager mViewPager = (ViewPager)findViewById(R.id.viewPager_leagues_events);
         mViewPager.setAdapter(new LeagueEventFragmentPagerAdapter(getSupportFragmentManager()));
@@ -27,6 +38,7 @@ public class LeagueEventActivity extends ActionBarActivity
         PagerSlidingTabStrip mTabStrip = (PagerSlidingTabStrip)
                 findViewById(R.id.slidingTab_leagues_events);
         mTabStrip.setViewPager(mViewPager);
+        mTabStrip.setTextColor(getResources().getColor(R.color.secondary_background));
     }
 
 

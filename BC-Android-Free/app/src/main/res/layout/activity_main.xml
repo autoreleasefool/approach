@@ -21,8 +21,8 @@
         android:layout_alignParentRight="true"
         android:layout_margin="16dp"
         android:src="@drawable/ic_action_add_person"
-        fab:fab_colorNormal="@color/fab_primary"
-        fab:fab_colorPressed="@color/fab_primary"
-        fab:fab_colorRipple="@color/fab_ripple" />
+        fab:fab_colorNormal="@color/primary_green"
+        fab:fab_colorPressed="@color/primary_green"
+        fab:fab_colorRipple="@color/tertiary_green_dark" />
 
 </RelativeLayout>

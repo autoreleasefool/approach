@@ -12,7 +12,7 @@
         android:layout_alignParentStart="true"
         android:layout_gravity="center_vertical"
         android:gravity="center"
-        android:textSize="?android:attr/textAppearanceMedium"/>
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
 
     <TextView
         android:id="@+id/textView_league_event_average"
@@ -22,7 +22,7 @@
         android:layout_alignParentRight="true"
         android:layout_gravity="center_vertical"
         android:gravity="center"
-        android:textSize="?android:attr/textAppearanceSmall"/>
+        android:textAppearance="?android:attr/textAppearanceSmall"/>
 
     <TextView
         android:id="@+id/textView_league_event_games"
@@ -32,6 +32,6 @@
         android:layout_toEndOf="@id/textView_league_event_name"
         android:layout_gravity="center_vertical"
         android:gravity="center"
-        android:textSize="?android:attr/textAppearanceSmall"/>
+        android:textAppearance="?android:attr/textAppearanceSmall"/>
 
 </RelativeLayout>

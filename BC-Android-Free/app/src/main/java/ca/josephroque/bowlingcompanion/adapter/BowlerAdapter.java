@@ -81,7 +81,7 @@ public class BowlerAdapter extends RecyclerView.Adapter<BowlerAdapter.BowlerView
         mHolder.mTextViewBowlerAverage.setText(String.valueOf(mBowlerAverages.get(mPosition)));
 
         mHolder.itemView.setBackgroundColor(
-                Color.parseColor(Constants.COLOR_BACKGROUND_SECONDARY));
+                mActivity.getResources().getColor(R.color.secondary_background));
 
         mHolder.itemView.setOnClickListener(new View.OnClickListener()
         {

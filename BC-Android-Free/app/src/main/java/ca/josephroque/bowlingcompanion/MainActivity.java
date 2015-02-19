@@ -81,11 +81,12 @@ public class MainActivity extends ActionBarActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor(Constants.COLOR_ACTIONBAR)));
+        getSupportActionBar().setBackgroundDrawable(
+                new ColorDrawable(getResources().getColor(R.color.primary_green)));
 
         //Set background color of activity
         getWindow().getDecorView()
-                .setBackgroundColor(Color.parseColor(Constants.COLOR_BACKGROUND_PRIMARY));
+                .setBackgroundColor(getResources().getColor(R.color.primary_background));
 
         mListBowlerIds = new ArrayList<>();
         mListBowlerNames = new ArrayList<>();
@@ -382,7 +383,7 @@ public class MainActivity extends ActionBarActivity
                     + " FROM " + BowlerEntry.TABLE_NAME + " AS bowler"
                     + " LEFT JOIN " + GameEntry.TABLE_NAME + " AS game"
                     + " ON bowler." + BowlerEntry._ID + "=game." + GameEntry.COLUMN_NAME_BOWLER_ID
-                    + " GROUP BY " + BowlerEntry.COLUMN_NAME_BOWLER_NAME;
+                    + " GROUP BY bowler." + BowlerEntry._ID;
 
             Cursor mCursor = mDatabase.rawQuery(mRawBowlerQuery, new String[]{});
 

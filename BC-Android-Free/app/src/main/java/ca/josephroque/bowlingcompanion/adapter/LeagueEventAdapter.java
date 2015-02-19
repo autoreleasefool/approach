@@ -77,7 +77,7 @@ public class LeagueEventAdapter extends RecyclerView.Adapter<LeagueEventAdapter.
         mHolder.mTextViewLeagueAverage.setText(String.valueOf(mListLeagueAverages.get(mPosition)));
         mHolder.mTextViewLeagueNumberOfGames.setText(String.valueOf(mListLeagueNumberOfGames.get(mPosition)));
         mHolder.itemView.setBackgroundColor(
-                Color.parseColor(Constants.COLOR_BACKGROUND_SECONDARY));
+                mActivity.getResources().getColor(R.color.secondary_background));
 
         mHolder.itemView.setOnClickListener(new View.OnClickListener()
         {
