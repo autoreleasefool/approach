@@ -2,9 +2,13 @@ package ca.josephroque.bowlingcompanion.adapter;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,10 +16,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.R;
+import ca.josephroque.bowlingcompanion.SeriesActivity;
 import ca.josephroque.bowlingcompanion.database.Contract.*;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 
@@ -35,6 +42,8 @@ public class LeagueEventAdapter extends RecyclerView.Adapter<LeagueEventAdapter.
     private List<String> mListLeagueEventNames;
     private List<Short> mListLeagueEventAverages;
     private List<Byte> mListLeagueEventNumberOfGames;
+
+    private boolean mEventMode;
 
     public static class LeagueEventViewHolder extends RecyclerView.ViewHolder
     {
@@ -59,13 +68,15 @@ public class LeagueEventAdapter extends RecyclerView.Adapter<LeagueEventAdapter.
             List<Long> listLeagueEventIds,
             List<String> listLeagueEventNames,
             List<Short> listLeagueEventAverages,
-            List<Byte> listLeagueEventNumberOfGames)
+            List<Byte> listLeagueEventNumberOfGames,
+            boolean eventMode)
     {
         this.mActivity = activity;
         this.mListLeagueEventIds = listLeagueEventIds;
         this.mListLeagueEventNames = listLeagueEventNames;
         this.mListLeagueEventAverages = listLeagueEventAverages;
         this.mListLeagueEventNumberOfGames = listLeagueEventNumberOfGames;
+        this.mEventMode = eventMode;
     }
 
     @Override
@@ -90,7 +101,7 @@ public class LeagueEventAdapter extends RecyclerView.Adapter<LeagueEventAdapter.
             @Override
             public void onClick(View v)
             {
-                //TODO: openLeagueSeriesTask().execute(position)
+                new OpenLeagueEventSeriesTask().execute(position);
             }
         });
 
@@ -188,5 +199,66 @@ public class LeagueEventAdapter extends RecyclerView.Adapter<LeagueEventAdapter.
                 }
             }
         }).start();
+    }
+
+    private class OpenLeagueEventSeriesTask extends AsyncTask<Integer, Void, Integer>
+    {
+        @Override
+        protected Integer doInBackground(Integer... position)
+        {
+            SharedPreferences preferences =
+                    mActivity.getSharedPreferences(Constants.PREFERENCES, Activity.MODE_PRIVATE);
+            long bowlerId = preferences.getLong(Constants.PREFERENCE_ID_BOWLER, -1);
+            SharedPreferences.Editor preferencesEditor = preferences.edit();
+            long selectedLeagueId = mListLeagueEventIds.get(position[0]);
+            String selectedLeagueName = mListLeagueEventNames.get(position[0]);
+
+            if (!selectedLeagueName.equals(Constants.NAME_LEAGUE_OPEN) && !mEventMode)
+            {
+                //Updates the date modified in the database of the selected league
+                SQLiteDatabase database = DatabaseHelper.getInstance(mActivity).getWritableDatabase();
+                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                ContentValues values = new ContentValues();
+                values.put(LeagueEntry.COLUMN_NAME_DATE_MODIFIED, dateFormat.format(new Date()));
+
+                database.beginTransaction();
+                try
+                {
+                    database.update(LeagueEntry.TABLE_NAME,
+                            values,
+                            LeagueEntry._ID + "=?",
+                            new String[]{String.valueOf(selectedLeagueId)});
+                    database.setTransactionSuccessful();
+                }
+                catch (Exception ex)
+                {
+                    Log.w(TAG, "Error updating league: " + ex.getMessage());
+                }
+                finally
+                {
+                    database.endTransaction();
+                }
+
+                preferencesEditor.putLong(Constants.PREFERENCE_ID_RECENT_LEAGUE, selectedLeagueId)
+                        .putLong(Constants.PREFERENCE_ID_RECENT_BOWLER, bowlerId);
+            }
+
+            preferencesEditor
+                    .putString(Constants.PREFERENCE_NAME_LEAGUE, selectedLeagueName)
+                    .putLong(Constants.PREFERENCE_ID_LEAGUE, selectedLeagueId)
+                    .apply();
+
+            return position[0];
+        }
+
+        @Override
+        protected void onPostExecute(Integer position)
+        {
+            Intent seriesIntent = new Intent(mActivity, SeriesActivity.class);
+            seriesIntent.putExtra(Constants.EXTRA_EVENT_MODE, mEventMode);
+            seriesIntent.putExtra(
+                    Constants.EXTRA_NUMBER_OF_GAMES, mListLeagueEventNumberOfGames.get(position));
+            mActivity.startActivity(seriesIntent);
+        }
     }
 }
