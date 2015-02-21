@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion.fragments;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -12,16 +13,20 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.melnykov.fab.FloatingActionButton;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import ca.josephroque.bowlingcompanion.Constants;
+import ca.josephroque.bowlingcompanion.LeagueEventActivity;
 import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.adapter.LeagueEventAdapter;
 import ca.josephroque.bowlingcompanion.database.Contract.*;
@@ -79,7 +84,8 @@ public class LeagueEventFragment extends Fragment
                 mListLeagueEventIds,
                 mListLeagueEventNames,
                 mListLeagueEventAverages,
-                mListLeagueEventNumberOfGames);
+                mListLeagueEventNumberOfGames,
+                isEventMode());
         mLeagueEventRecycler.setAdapter(mLeagueEventAdapter);
 
         FloatingActionButton floatingActionButton = (FloatingActionButton)rootView.findViewById(R.id.fab_new_league_event);
@@ -161,7 +167,7 @@ public class LeagueEventFragment extends Fragment
             return;
         }
 
-        //new LeagueEventActivity.AddNewLeagueEventTask().execute(mLeagueName, mNumberOfGames);
+        new AddNewLeagueEventTask().execute(leagueName, numberOfGames);
     }
 
     private class LoadLeaguesEventsTask extends AsyncTask<Void, Void, Void>
@@ -209,6 +215,54 @@ public class LeagueEventFragment extends Fragment
         protected void onPostExecute(Void param)
         {
             mLeagueEventAdapter.notifyDataSetChanged();
+        }
+    }
+
+    private class AddNewLeagueEventTask extends AsyncTask<Object, Void, Void>
+    {
+        @Override
+        protected Void doInBackground(Object... params)
+        {
+            String leagueName = params[0].toString();
+            byte numberOfGames = (Byte)params[1];
+
+            long newId = -1;
+            SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            ContentValues values = new ContentValues();
+            values.put(LeagueEntry.COLUMN_NAME_LEAGUE_NAME, leagueName);
+            values.put(LeagueEntry.COLUMN_NAME_DATE_MODIFIED, dateFormat.format(new Date()));
+            values.put(LeagueEntry.COLUMN_NAME_BOWLER_ID, mBowlerId);
+            values.put(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES, numberOfGames);
+
+            database.beginTransaction();
+            try
+            {
+                newId = database.insert(LeagueEntry.TABLE_NAME, null, values);
+                database.setTransactionSuccessful();
+            }
+            catch (Exception ex)
+            {
+                Log.w(TAG, "Error adding new league: " + ex.getMessage());
+            }
+            finally
+            {
+                database.endTransaction();
+            }
+
+            //Adds the league to the top of the list (it is the most recent)
+            mListLeagueEventIds.add(0, newId);
+            mListLeagueEventNames.add(0, leagueName);
+            mListLeagueEventAverages.add(0, (short)0);
+            mListLeagueEventNumberOfGames.add(0, numberOfGames);
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void param)
+        {
+            mLeagueEventAdapter.notifyItemInserted(0);
         }
     }
 }
