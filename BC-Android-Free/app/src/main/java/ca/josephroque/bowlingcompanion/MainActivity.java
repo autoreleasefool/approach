@@ -129,6 +129,10 @@ public class MainActivity extends ActionBarActivity
         mQuickBowlerId = preferences.getLong(Constants.PREFERENCE_ID_QUICK_BOWLER, -1);
         mQuickLeagueId = preferences.getLong(Constants.PREFERENCE_ID_QUICK_LEAGUE, -1);
 
+        mListBowlerIds.clear();
+        mListBowlerNames.clear();
+        mListBowlerAverages.clear();
+
         //Clearing preferences which may indicate incorrect state of app
         preferences.edit()
                 .remove(Constants.PREFERENCE_ID_BOWLER)
@@ -398,9 +402,6 @@ public class MainActivity extends ActionBarActivity
              * Clears data from lists and adds Ids, names
              * and averages loaded in the cursor
              */
-            mListBowlerIds.clear();
-            mListBowlerNames.clear();
-            mListBowlerAverages.clear();
             if (cursor.moveToFirst())
             {
                 while(!cursor.isAfterLast())
