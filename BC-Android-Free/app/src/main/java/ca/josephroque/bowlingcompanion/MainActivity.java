@@ -97,6 +97,7 @@ public class MainActivity extends ActionBarActivity
 
         mBowlerRecycler = (RecyclerView) findViewById(R.id.recyclerView_bowlers);
         mBowlerRecycler.setHasFixedSize(true);
+        mBowlerRecycler.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL_LIST));
 
         RecyclerView.LayoutManager bowlerLayoutManager = new LinearLayoutManager(this);
         mBowlerRecycler.setLayoutManager(bowlerLayoutManager);

@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.List;
 
 import ca.josephroque.bowlingcompanion.Constants;
+import ca.josephroque.bowlingcompanion.DividerItemDecoration;
 import ca.josephroque.bowlingcompanion.LeagueEventActivity;
 import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.adapter.LeagueEventAdapter;
@@ -77,6 +78,7 @@ public class LeagueEventFragment extends Fragment
 
         mLeagueEventRecycler = (RecyclerView) rootView.findViewById(R.id.recyclerView_leagues_events);
         mLeagueEventRecycler.setHasFixedSize(true);
+        mLeagueEventRecycler.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL_LIST));
 
         RecyclerView.LayoutManager leagueLayoutManager = new LinearLayoutManager(getActivity());
         mLeagueEventRecycler.setLayoutManager(leagueLayoutManager);

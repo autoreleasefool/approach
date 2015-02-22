@@ -77,7 +77,8 @@ public class BowlerAdapter extends RecyclerView.Adapter<BowlerAdapter.BowlerView
     {
         holder.mImageViewBowlerOrTeam.setImageResource(R.drawable.ic_person);
         holder.mTextViewBowlerName.setText(mBowlerNames.get(position));
-        holder.mTextViewBowlerAverage.setText(String.valueOf(mBowlerAverages.get(position)));
+        holder.mTextViewBowlerAverage.setText("Avg: "
+                + String.valueOf(mBowlerAverages.get(position)));
 
         holder.itemView.setBackgroundColor(
                 mActivity.getResources().getColor(R.color.secondary_background));

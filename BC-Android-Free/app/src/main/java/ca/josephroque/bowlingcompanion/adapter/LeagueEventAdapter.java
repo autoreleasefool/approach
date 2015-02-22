@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.adapter;
 
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
@@ -14,7 +15,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -44,6 +51,7 @@ public class LeagueEventAdapter extends RecyclerView.Adapter<LeagueEventAdapter.
     private List<Byte> mListLeagueEventNumberOfGames;
 
     private boolean mEventMode;
+    final private int mInitialSizeOfList;
 
     public static class LeagueEventViewHolder extends RecyclerView.ViewHolder
     {
@@ -51,7 +59,10 @@ public class LeagueEventAdapter extends RecyclerView.Adapter<LeagueEventAdapter.
         private TextView mTextViewLeagueEventAverage;
         private TextView mTextViewLeagueEventNumberOfGames;
 
-        private LeagueEventViewHolder(View itemLayoutView)
+        private int mOriginalHeight = -1;
+        private boolean mIsViewExpanded = false;
+
+        private LeagueEventViewHolder(View itemLayoutView, Activity activity)
         {
             super(itemLayoutView);
             mTextViewLeagueEventName = (TextView)
@@ -60,6 +71,12 @@ public class LeagueEventAdapter extends RecyclerView.Adapter<LeagueEventAdapter.
                     itemLayoutView.findViewById(R.id.textView_league_event_average);
             mTextViewLeagueEventNumberOfGames = (TextView)
                     itemLayoutView.findViewById(R.id.textView_league_event_games);
+
+            if (!mIsViewExpanded)
+            {
+                mTextViewLeagueEventNumberOfGames.setVisibility(View.GONE);
+                mTextViewLeagueEventNumberOfGames.setEnabled(false);
+            }
         }
     }
 
@@ -77,6 +94,7 @@ public class LeagueEventAdapter extends RecyclerView.Adapter<LeagueEventAdapter.
         this.mListLeagueEventAverages = listLeagueEventAverages;
         this.mListLeagueEventNumberOfGames = listLeagueEventNumberOfGames;
         this.mEventMode = eventMode;
+        this.mInitialSizeOfList = mListLeagueEventIds.size();
     }
 
     @Override
@@ -84,15 +102,18 @@ public class LeagueEventAdapter extends RecyclerView.Adapter<LeagueEventAdapter.
     {
         View itemLayoutView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.list_leagues_events, parent, false);
-        return new LeagueEventViewHolder(itemLayoutView);
+        return new LeagueEventViewHolder(itemLayoutView, mActivity);
     }
 
     @Override
-    public void onBindViewHolder(LeagueEventViewHolder holder, final int position)
+    public void onBindViewHolder(final LeagueEventViewHolder holder, final int position)
     {
         holder.mTextViewLeagueEventName.setText(mListLeagueEventNames.get(position));
-        holder.mTextViewLeagueEventAverage.setText(String.valueOf(mListLeagueEventAverages.get(position)));
-        holder.mTextViewLeagueEventNumberOfGames.setText(String.valueOf(mListLeagueEventNumberOfGames.get(position)));
+        holder.mTextViewLeagueEventAverage.setText("Avg: "
+                + String.valueOf(mListLeagueEventAverages.get(position)));
+        holder.mTextViewLeagueEventNumberOfGames.setText("Games per series: "
+                + String.valueOf(mListLeagueEventNumberOfGames.get(position)));
+        holder.mTextViewLeagueEventNumberOfGames.setVisibility(View.GONE);
         holder.itemView.setBackgroundColor(
                 mActivity.getResources().getColor(R.color.secondary_background));
 
@@ -101,7 +122,7 @@ public class LeagueEventAdapter extends RecyclerView.Adapter<LeagueEventAdapter.
             @Override
             public void onClick(View v)
             {
-                new OpenLeagueEventSeriesTask().execute(position);
+                animateLeagueEventClicked(holder, v, position);
             }
         });
 
@@ -116,9 +137,77 @@ public class LeagueEventAdapter extends RecyclerView.Adapter<LeagueEventAdapter.
         });
     }
 
+    @Override
     public int getItemCount()
     {
         return mListLeagueEventIds.size();
+    }
+
+    private void animateLeagueEventClicked(
+            final LeagueEventViewHolder holder,
+            final View viewClicked,
+            final int position)
+    {
+        if (holder.mOriginalHeight == -1)
+        {
+            holder.mOriginalHeight = viewClicked.getHeight();
+        }
+
+        ValueAnimator valueAnimator;
+        if (!holder.mIsViewExpanded)
+        {
+            holder.mTextViewLeagueEventNumberOfGames.setVisibility(View.VISIBLE);
+            holder.mTextViewLeagueEventNumberOfGames.setEnabled(true);
+            holder.mIsViewExpanded = true;
+            valueAnimator = ValueAnimator.ofInt(
+                    holder.mOriginalHeight,
+                    holder.mOriginalHeight + holder.mTextViewLeagueEventAverage.getHeight());
+        }
+        else
+        {
+            holder.mIsViewExpanded = false;
+            valueAnimator = ValueAnimator.ofInt(
+                    holder.mOriginalHeight + holder.mTextViewLeagueEventAverage.getHeight(),
+                    holder.mOriginalHeight);
+            Animation animation = new AlphaAnimation(1f, 0f);
+            animation.setDuration(200);
+            animation.setAnimationListener(new Animation.AnimationListener()
+            {
+                @Override
+                public void onAnimationStart(Animation animation)
+                {
+
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation)
+                {
+                    holder.mTextViewLeagueEventNumberOfGames.setVisibility(View.INVISIBLE);
+                    holder.mTextViewLeagueEventNumberOfGames.setEnabled(false);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation)
+                {
+
+                }
+            });
+            holder.mTextViewLeagueEventNumberOfGames.startAnimation(animation);
+        }
+        valueAnimator.setDuration(200);
+        valueAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+        valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
+        {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation)
+            {
+                Integer value = (Integer)animation.getAnimatedValue();
+                viewClicked.getLayoutParams().height = value.intValue();
+                viewClicked.requestLayout();
+            }
+        });
+
+        valueAnimator.start();
     }
 
     private void showDeleteLeagueOrEventDialog(final int position)
