@@ -213,7 +213,7 @@ public class LeagueEventFragment extends Fragment
                     String leagueEventName = leagueEventCursor.getString(leagueEventCursor.getColumnIndex(LeagueEntry.COLUMN_NAME_LEAGUE_NAME));
                     long leagueEventId = leagueEventCursor.getLong(leagueEventCursor.getColumnIndex("lid"));
                     byte numberOfGames = (byte)leagueEventCursor.getInt(leagueEventCursor.getColumnIndex(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES));
-                    short leagueEventAverage = (short)leagueEventCursor.getInt(leagueEventCursor.getColumnIndex("avg"));
+                    short leagueEventAverage = leagueEventCursor.getShort(leagueEventCursor.getColumnIndex("avg"));
                     mListLeagueEventIds.add(leagueEventId);
                     mListLeagueEventNames.add(leagueEventName);
                     mListLeagueEventAverages.add(leagueEventAverage);

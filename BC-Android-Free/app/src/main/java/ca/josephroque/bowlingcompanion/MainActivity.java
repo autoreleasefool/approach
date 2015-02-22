@@ -408,7 +408,7 @@ public class MainActivity extends ActionBarActivity
                 {
                     mListBowlerIds.add(cursor.getLong(cursor.getColumnIndex(BowlerEntry._ID)));
                     mListBowlerNames.add(cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_NAME_BOWLER_NAME)));
-                    mListBowlerAverages.add((short)cursor.getInt(cursor.getColumnIndex("avg")));
+                    mListBowlerAverages.add(cursor.getShort(cursor.getColumnIndex("avg")));
                     cursor.moveToNext();
                 }
             }
