@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.melnykov.fab.FloatingActionButton;
 
@@ -46,6 +47,7 @@ public class LeagueEventFragment extends Fragment
 
     private RecyclerView mLeagueEventRecycler;
     private RecyclerView.Adapter mLeagueEventAdapter;
+    private TextView mNewLeagueEventInstructionsTextView;
 
     private long mBowlerId = -1;
     private List<Long> mListLeagueEventIds;
@@ -97,6 +99,13 @@ public class LeagueEventFragment extends Fragment
                 showNewLeagueOrEventDialog();
             }
         });
+
+        mNewLeagueEventInstructionsTextView = (TextView)
+                rootView.findViewById(R.id.textView_new_league_event_instructions);
+        mNewLeagueEventInstructionsTextView.setText(
+                isEventMode()
+                ? R.string.text_new_event_instructions
+                : R.string.text_new_league_instructions);
 
         return rootView;
     }
@@ -215,6 +224,10 @@ public class LeagueEventFragment extends Fragment
         protected void onPostExecute(Void param)
         {
             mLeagueEventAdapter.notifyDataSetChanged();
+            if (mListLeagueEventIds.size() > 0)
+            {
+                mNewLeagueEventInstructionsTextView.setVisibility(View.GONE);
+            }
         }
     }
 
@@ -255,6 +268,7 @@ public class LeagueEventFragment extends Fragment
             mListLeagueEventNames.add(0, leagueName);
             mListLeagueEventAverages.add(0, (short)0);
             mListLeagueEventNumberOfGames.add(0, numberOfGames);
+            mNewLeagueEventInstructionsTextView.setVisibility(View.GONE);
 
             return null;
         }

@@ -24,4 +24,12 @@
         fab:fab_colorPressed="@color/primary_green"
         fab:fab_colorRipple="@color/tertiary_green_dark" />
 
+    <TextView
+        android:id="@+id/textView_new_league_event_instructions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"/>
+
 </RelativeLayout>

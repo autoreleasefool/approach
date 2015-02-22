@@ -10,4 +10,9 @@
     <string name="action_quick_series">Quick Series</string>
     <string name="action_settings">Settings</string>
 
+    <!-- TEXT -->
+    <string name="text_new_bowler_instructions">Use the \'+\' to add a new bowler.</string>
+    <string name="text_new_league_instructions">Use the \'+\' to add a new league.</string>
+    <string name="text_new_event_instructions">Use the \'+\' to add a new event.</string>
+
 </resources>

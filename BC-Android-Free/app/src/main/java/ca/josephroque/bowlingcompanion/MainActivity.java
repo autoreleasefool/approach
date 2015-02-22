@@ -18,6 +18,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.TextView;
 
 import com.melnykov.fab.FloatingActionButton;
 
@@ -49,6 +50,8 @@ public class MainActivity extends ActionBarActivity
     private RecyclerView mBowlerRecycler;
     /** Adapter to manage data displayed in mBowlerRecycler */
     private RecyclerView.Adapter mBowlerAdapter;
+    /** TextView to display instructions to the user */
+    private TextView mBowlerInstructionsTextView;
 
     /** Id from 'bowler' database which represents the most recently edited bowler */
     private long mRecentBowlerId = -1;
@@ -110,6 +113,8 @@ public class MainActivity extends ActionBarActivity
                 showNewBowlerDialog();
             }
         });
+
+        mBowlerInstructionsTextView = (TextView)findViewById(R.id.textView_new_bowler_instructions);
     }
 
     @Override
@@ -361,6 +366,7 @@ public class MainActivity extends ActionBarActivity
                 mListBowlerAverages.add(0, (short)0);
                 mBowlerAdapter.notifyItemInserted(0);
                 mBowlerRecycler.scrollToPosition(0);
+                mBowlerInstructionsTextView.setVisibility(View.GONE);
             }
         }
     }
@@ -459,6 +465,10 @@ public class MainActivity extends ActionBarActivity
         {
             mBowlerAdapter.notifyDataSetChanged();
             sQuickSeriesButtonEnabled = !(mRecentBowlerId == -1 || mRecentLeagueId == -1) || !(mQuickBowlerId == -1 || mQuickLeagueId == -1);
+            if (mListBowlerIds.size() > 0)
+            {
+                mBowlerInstructionsTextView.setVisibility(View.GONE);
+            }
         }
     }
 }
