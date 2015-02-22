@@ -50,8 +50,8 @@ public class NewLeagueEventDialog extends DialogFragment
         editText = (EditText)dialogView.findViewById(R.id.editText_new_league_event_games);
         editText.setHint("# of games (1-"
                 + ((isAddingEvent)
-                        ? Constants.MAX_NUMBER_LEAGUE_GAMES
-                        : Constants.MAX_NUMBER_EVENT_GAMES)
+                        ? Constants.MAX_NUMBER_EVENT_GAMES
+                        : Constants.MAX_NUMBER_LEAGUE_GAMES)
                 + ")");
 
         newLeagueEventBuilder.setView(dialogView)

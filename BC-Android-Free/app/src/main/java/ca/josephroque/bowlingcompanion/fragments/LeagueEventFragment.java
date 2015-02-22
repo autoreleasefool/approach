@@ -147,11 +147,15 @@ public class LeagueEventFragment extends Fragment
         boolean validInput = true;
         String invalidInputMessage = null;
 
-        if (numberOfGames < 1 || numberOfGames > Constants.MAX_NUMBER_LEAGUE_GAMES)
+        if (numberOfGames < 1 ||
+                (numberOfGames > Constants.MAX_NUMBER_LEAGUE_GAMES && !isEventMode())
+                || (numberOfGames > Constants.MAX_NUMBER_EVENT_GAMES && isEventMode()))
         {
             validInput = false;
             invalidInputMessage = "The number of games must be between 1 and "
-                    + Constants.MAX_NUMBER_LEAGUE_GAMES
+                    + (isEventMode()
+                            ? Constants.MAX_NUMBER_EVENT_GAMES
+                            : Constants.MAX_NUMBER_LEAGUE_GAMES)
                     + " (inclusive).";
         }
         else if (mListLeagueEventNames.contains(leagueName))
