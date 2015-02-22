@@ -27,6 +27,10 @@
         <activity
             android:name=".SeriesActivity"
             android:label="@string/title_activity_series" >
+            android:parentActivityName=".LeagueEventActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="ca.josephroque.bowlingcompanion.LeagueEventActivity" />
         </activity>
     </application>
 
