@@ -3,12 +3,30 @@ package ca.josephroque.bowlingcompanion;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class SeriesActivity extends ActionBarActivity
 {
+
+    private static final String TAG = "SeriesActivity";
+
+    private List<Long> mListSeriesId;
+    private List<String> mListSeriesDate;
+    private List<List<Short>> mListSeriesGames;
+
+    /** View to display series dates and games */
+    private RecyclerView mSeriesRecycler;
+    /** Adapter to manage data displayed in mSeriesRecycler */
+    private RecyclerView.Adapter mSeriesAdapter;
+    /** TextView to display instructions to the user */
+    private TextView mSeriesInstructionsTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -21,6 +39,10 @@ public class SeriesActivity extends ActionBarActivity
         //Set background color of activity
         getWindow().getDecorView()
                 .setBackgroundColor(getResources().getColor(R.color.primary_background));
+
+        mListSeriesId = new ArrayList<Long>();
+        mListSeriesDate = new ArrayList<String>();
+        mListSeriesGames = new ArrayList<>();
     }
 
 
