@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion;
 
+import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -14,6 +15,12 @@ public class SeriesActivity extends ActionBarActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_series);
+        getSupportActionBar().setBackgroundDrawable(
+                new ColorDrawable(getResources().getColor(R.color.primary_green)));
+
+        //Set background color of activity
+        getWindow().getDecorView()
+                .setBackgroundColor(getResources().getColor(R.color.primary_background));
     }
 
 
