@@ -37,19 +37,19 @@ public class NewLeagueEventDialog extends DialogFragment
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View dialogView = inflater.inflate(R.layout.dialog_new_league_event, null);
 
-        final boolean isAddingLeague = getArguments().getBoolean(Constants.EXTRA_EVENT_MODE);
+        final boolean isAddingEvent = getArguments().getBoolean(Constants.EXTRA_EVENT_MODE);
 
         EditText editText = (EditText)dialogView.findViewById(R.id.editText_new_league_event_name);
         editText.setHint(
-                (isAddingLeague)
-                        ? "League"
-                        : "Event"
+                (isAddingEvent)
+                        ? "Event"
+                        : "League"
                 + " (max " + Constants.NAME_MAX_LENGTH + " characters)");
         editText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(Constants.NAME_MAX_LENGTH)});
 
         editText = (EditText)dialogView.findViewById(R.id.editText_new_league_event_games);
         editText.setHint("# of games (1-"
-                + ((isAddingLeague)
+                + ((isAddingEvent)
                         ? Constants.MAX_NUMBER_LEAGUE_GAMES
                         : Constants.MAX_NUMBER_EVENT_GAMES)
                 + ")");
