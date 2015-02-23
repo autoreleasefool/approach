@@ -257,12 +257,16 @@ public class SeriesActivity extends ActionBarActivity
         }
 
         @Override
-        protected void onPostExecute(Object[] IDs)
+        protected void onPostExecute(Object[] params)
         {
-            /*Intent gameIntent = new Intent(SeriesActivity.this, GameActivity.class);
-            gameIntent.putExtra(Constants.EXTRA_ARRAY_GAME_IDS, (long[])IDs[0]);
-            gameIntent.putExtra(Constants.EXTRA_ARRAY_FRAME_IDS, (long[])IDs[1]);
-            startActivity(gameIntent);*/
+            Activity srcActivity = (Activity)params[0];
+            long[] gameIds = (long[])params[1];
+            long[] frameIds = (long[])params[2];
+
+            Intent gameIntent = new Intent(srcActivity, GameActivity.class);
+            gameIntent.putExtra(Constants.EXTRA_ARRAY_GAME_IDS, gameIds);
+            gameIntent.putExtra(Constants.EXTRA_ARRAY_FRAME_IDS, frameIds);
+            srcActivity.startActivity(gameIntent);
         }
     }
 
@@ -334,14 +338,14 @@ public class SeriesActivity extends ActionBarActivity
         @Override
         protected void onPostExecute(Object[] params)
         {
-            /*Activity srcActivity = (Activity)params[0];
+            Activity srcActivity = (Activity)params[0];
             long[] gameIds = (long[])params[1];
             long[] frameIds = (long[])params[2];
 
             Intent gameIntent = new Intent(srcActivity, GameActivity.class);
             gameIntent.putExtra(Constants.EXTRA_ARRAY_GAME_IDS, gameIds);
             gameIntent.putExtra(Constants.EXTRA_ARRAY_FRAME_IDS, frameIds);
-            srcActivity.startActivity(gameIntent);*/
+            srcActivity.startActivity(gameIntent);
         }
     }
 }
