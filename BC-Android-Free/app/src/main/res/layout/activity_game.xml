@@ -1,6 +1,6 @@
 <android.support.v4.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/drawer_layout"
+    android:id="@+id/game_drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
 
@@ -22,15 +22,6 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true" />
-
-        <com.google.android.gms.ads.AdView
-            android:id="@+id/adView_game"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_above="@id/relativeLayout_game_toolbar"
-            ads:adSize="SMART_BANNER"
-            ads:adUnitId="@string/banner_ad_unit_id" />
 
         <RelativeLayout
             android:id="@+id/relativeLayout_game_toolbar"
@@ -64,14 +55,6 @@
                 android:textAppearance="?android:attr/textAppearanceSmall"/>
 
             <ImageView
-                android:id="@+id/imageView_foul"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toLeftOf="@id/imageView_next_frame"
-                android:layout_toStartOf="@id/imageView_next_frame"
-                android:src="@drawable/ic_action_foul"/>
-
-            <ImageView
                 android:id="@+id/imageView_next_frame"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -79,7 +62,24 @@
                 android:layout_alignParentEnd="true"
                 android:src="@drawable/ic_action_next_item"/>
 
+            <ImageView
+                android:id="@+id/imageView_foul"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/imageView_next_frame"
+                android:layout_toStartOf="@id/imageView_next_frame"
+                android:src="@drawable/ic_action_foul"/>
+
         </RelativeLayout>
+
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adView_game"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_above="@id/relativeLayout_game_toolbar"
+            ads:adSize="SMART_BANNER"
+            ads:adUnitId="@string/banner_ad_unit_id" />
     </RelativeLayout>
 
     <ListView

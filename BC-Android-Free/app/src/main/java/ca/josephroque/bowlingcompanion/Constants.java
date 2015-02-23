@@ -12,6 +12,32 @@ public class Constants
     //GAME VALUES
     public static final byte MAX_NUMBER_LEAGUE_GAMES = 5;
     public static final byte MAX_NUMBER_EVENT_GAMES = 20;
+    public static final byte NUMBER_OF_FRAMES = 10;
+    public static final byte LAST_FRAME = 9;
+
+    //SCORING VALUES
+    /** Symbol representing a strike */
+    public static final String BALL_STRIKE = "X";
+    /** Symbol representing a spare */
+    public static final String BALL_SPARE = "/";
+    /** Symbol representing a 'left' */
+    public static final String BALL_LEFT = "L";
+    /** Symbol representing a 'right' */
+    public static final String BALL_RIGHT = "R";
+    /** Symbol representing an 'ace' */
+    public static final String BALL_ACE = "A";
+    /** Symbol representing a 'chop off' */
+    public static final String BALL_CHOP_OFF = "C/O";
+    /** Symbol representing a 'split' */
+    public static final String BALL_SPLIT = "Sp";
+    /** Symbol representing a 'head pin' */
+    public static final String BALL_HEAD_PIN = "Hp";
+    /** Symbol representing a 'head pin + 2 pin' */
+    public static final String BALL_HEAD_PIN_2 = "H2";
+    /** Symbol representing an empty frame */
+    public static final String BALL_EMPTY = "-";
+
+    public static final boolean[] FRAME_PINS_DOWN = {false, false, false, false, false};
 
     //INTENT EXTRAS
     public static final String EXTRA_EVENT_MODE = "EM";
