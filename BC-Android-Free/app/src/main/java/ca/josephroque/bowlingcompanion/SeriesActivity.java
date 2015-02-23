@@ -139,12 +139,12 @@ public class SeriesActivity extends ActionBarActivity
 
     public void addNewLeagueSeries()
     {
-        new AddSeriesTask().execute(this, mBowlerId, mLeagueId, mNumberOfGames, true);
+        new AddSeriesTask().execute(this, mBowlerId, mLeagueId, mNumberOfGames);
     }
 
     public static void addNewEventSeries(Activity srcActivity, long bowlerId, long leagueId, byte numberOfGames)
     {
-        new AddSeriesTask().execute(srcActivity, bowlerId, leagueId, numberOfGames, false);
+        new AddSeriesTask().execute(srcActivity, bowlerId, leagueId, numberOfGames);
     }
 
     private class LoadSeriesTask extends AsyncTask<Void, Void, Void>
@@ -335,9 +335,12 @@ public class SeriesActivity extends ActionBarActivity
         protected void onPostExecute(Object[] params)
         {
             /*Activity srcActivity = (Activity)params[0];
+            long[] gameIds = (long[])params[1];
+            long[] frameIds = (long[])params[2];
+
             Intent gameIntent = new Intent(srcActivity, GameActivity.class);
-            gameIntent.putExtra(Constants.EXTRA_ARRAY_GAME_IDS, (long[])params[1]);
-            gameIntent.putExtra(Constants.EXTRA_ARRAY_FRAME_IDS, (long[])params[2]);
+            gameIntent.putExtra(Constants.EXTRA_ARRAY_GAME_IDS, gameIds);
+            gameIntent.putExtra(Constants.EXTRA_ARRAY_FRAME_IDS, frameIds);
             srcActivity.startActivity(gameIntent);*/
         }
     }

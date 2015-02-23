@@ -258,17 +258,14 @@ public class MainActivity extends ActionBarActivity
                         @Override
                         public void onClick(DialogInterface dialog, int which)
                         {
-                            //TODO: uncomment line when SeriesActivity is complete
-                            /*
                             if (quickOrRecent)
                             {
-                                SeriesActivity.addNewSeries(MainActivity.this, mQuickBowlerId, mQuickLeagueId, mQuickNumberOfGames);
+                                //SeriesActivity.addNewEventSeries(MainActivity.this, mQuickBowlerId, mQuickLeagueId, mQuickNumberOfGames);
                             }
                             else
                             {
-                                SeriesActivity.addNewSeries(MainActivity.this, mRecentBowlerId, mRecentLeagueId, mRecentNumberOfGames);
+                                //SeriesActivity.addNewEventSeries(MainActivity.this, mRecentBowlerId, mRecentLeagueId, mRecentNumberOfGames);
                             }
-                             */
                         }
                     })
                     .setNegativeButton(Constants.DIALOG_CANCEL, new DialogInterface.OnClickListener()
