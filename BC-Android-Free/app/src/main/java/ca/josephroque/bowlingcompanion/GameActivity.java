@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -41,6 +42,9 @@ public class GameActivity extends ActionBarActivity
 
     private static final String TAG = "GameActivity";
     private static final String TITLE_DRAWER = "Game Options";
+
+    private int COLOR_BACKGROUND;
+    private int COLOR_HIGHLIGHT;
 
     private static final byte GAME_DEFAULT = 0;
     private static final byte LISTENER_TEXT_FRAMES = 0;
@@ -81,6 +85,15 @@ public class GameActivity extends ActionBarActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
         mActivityTitle = getTitle().toString();
+        getSupportActionBar().setBackgroundDrawable(
+                new ColorDrawable(getResources().getColor(R.color.primary_green)));
+
+        //Set background color of activity
+        getWindow().getDecorView()
+                .setBackgroundColor(getResources().getColor(R.color.primary_background));
+
+        COLOR_BACKGROUND = getResources().getColor(android.R.color.transparent);
+        COLOR_HIGHLIGHT = getResources().getColor(android.R.color.white);
 
         AdView adView = (AdView) findViewById(R.id.adView_game);
         AdRequest adRequest = new AdRequest.Builder().build();
@@ -165,10 +178,13 @@ public class GameActivity extends ActionBarActivity
         relativeLayout.addView(mTextViewFinalScore, layoutParams);
         hsvFrames.addView(relativeLayout);
 
-        findViewById(R.id.imageView_next_frame).setOnClickListener(onClickListeners[LISTENER_OTHER]);
-        findViewById(R.id.imageView_prev_frame).setOnClickListener(onClickListeners[LISTENER_OTHER]);
-        findViewById(R.id.imageView_foul).setOnClickListener(onClickListeners[LISTENER_OTHER]);
-        findViewById(R.id.imageView_reset_frame).setOnClickListener(onClickListeners[LISTENER_OTHER]);
+        findViewById(R.id.imageView_next_ball).setOnClickListener(onClickListeners[LISTENER_OTHER]);
+        findViewById(R.id.imageView_prev_ball).setOnClickListener(onClickListeners[LISTENER_OTHER]);
+        findViewById(R.id.textView_next_ball).setOnClickListener(onClickListeners[LISTENER_OTHER]);
+        findViewById(R.id.textView_prev_ball).setOnClickListener(onClickListeners[LISTENER_OTHER]);
+        //TODO: uncomment when added
+        //findViewById(R.id.imageView_foul).setOnClickListener(onClickListeners[LISTENER_OTHER]);
+        //findViewById(R.id.imageView_reset_frame).setOnClickListener(onClickListeners[LISTENER_OTHER]);
 
         mDrawerLayout = (DrawerLayout)findViewById(R.id.game_drawer_layout);
         mDrawerList = (ListView)findViewById(R.id.left_drawer_games);
@@ -408,6 +424,8 @@ public class GameActivity extends ActionBarActivity
             {
                 switch(v.getId())
                 {
+                    /*
+                    TODO: uncomment when added
                     case R.id.imageView_reset_frame:
                         clearFrameColor();
                         mCurrentBall = 0;
@@ -435,15 +453,16 @@ public class GameActivity extends ActionBarActivity
                             }
                         });
                         updateFouls();
-                        break;
-                    case R.id.imageView_next_frame:
+                        break;*/
+                    case R.id.imageView_next_ball:
+                    case R.id.textView_next_ball:
                         if (mCurrentFrame == Constants.LAST_FRAME && mCurrentBall == 2)
                             return;
 
                         clearFrameColor();
                         if (Arrays.equals(mPinState[mCurrentFrame][mCurrentBall], Constants.FRAME_PINS_DOWN))
                         {
-                            if (mCurrentFrame < 9)
+                            if (mCurrentFrame < Constants.LAST_FRAME)
                             {
                                 mCurrentBall = 0;
                                 mCurrentFrame++;
@@ -461,7 +480,8 @@ public class GameActivity extends ActionBarActivity
                         mHasFrameBeenAccessed[mCurrentFrame] = true;
                         updateFrameColor();
                         break;
-                    case R.id.imageView_prev_frame:
+                    case R.id.imageView_prev_ball:
+                    case R.id.textView_prev_ball:
                         if (mCurrentFrame == 0 && mCurrentBall == 0)
                             return;
 
@@ -469,6 +489,7 @@ public class GameActivity extends ActionBarActivity
                         if (--mCurrentBall == -1)
                         {
                             mCurrentBall = 0;
+                            --mCurrentFrame;
                             while(!Arrays.equals(mPinState[mCurrentFrame][mCurrentBall], Constants.FRAME_PINS_DOWN) && mCurrentBall < 2)
                             {
                                 mCurrentBall++;
@@ -701,10 +722,10 @@ public class GameActivity extends ActionBarActivity
             {
                 GradientDrawable drawable = (GradientDrawable)
                         mTextViewBallScores[mCurrentFrame][mCurrentBall].getBackground();
-                drawable.setColor(getResources().getColor(R.color.secondary_green_medium_light));
+                drawable.setColor(COLOR_BACKGROUND);
                 drawable = (GradientDrawable)
                         mTextViewFrames[mCurrentFrame].getBackground();
-                drawable.setColor(getResources().getColor(R.color.secondary_green_medium_light));
+                drawable.setColor(COLOR_BACKGROUND);
             }
         });
     }
@@ -718,10 +739,10 @@ public class GameActivity extends ActionBarActivity
             {
                 GradientDrawable drawable = (GradientDrawable)
                         mTextViewBallScores[mCurrentFrame][mCurrentBall].getBackground();
-                drawable.setColor(getResources().getColor(R.color.tertiary_green_light));
+                drawable.setColor(COLOR_HIGHLIGHT);
                 drawable = (GradientDrawable)
                         mTextViewFrames[mCurrentFrame].getBackground();
-                drawable.setColor(getResources().getColor(R.color.tertiary_green_light));
+                drawable.setColor(COLOR_HIGHLIGHT);
 
                 //TODO: set color of pin buttons
 

@@ -37,7 +37,7 @@ public class Constants
     /** Symbol representing an empty frame */
     public static final String BALL_EMPTY = "-";
 
-    public static final boolean[] FRAME_PINS_DOWN = {false, false, false, false, false};
+    public static final boolean[] FRAME_PINS_DOWN = {true, true, true, true, true};
 
     //INTENT EXTRAS
     public static final String EXTRA_EVENT_MODE = "EM";

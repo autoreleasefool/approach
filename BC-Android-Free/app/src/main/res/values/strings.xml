@@ -19,6 +19,8 @@
     <string name="text_strike">Strike</string>
     <string name="text_spare">Spare</string>
     <string name="text_fifteen">Fifteen</string>
+    <string name="text_next_ball">Next Ball</string>
+    <string name="text_prev_ball">Prev Ball</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
 
