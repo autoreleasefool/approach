@@ -16,6 +16,8 @@ public class Constants
     //INTENT EXTRAS
     public static final String EXTRA_EVENT_MODE = "EM";
     public static final String EXTRA_NUMBER_OF_GAMES = "ENOG";
+    public static final String EXTRA_ARRAY_GAME_IDS = "EAGI";
+    public static final String EXTRA_ARRAY_FRAME_IDS = "EAFI";
 
     //PREFERENCES
     public static final String PREFERENCES = "ca.josephroque.bowlingcompanionfree";

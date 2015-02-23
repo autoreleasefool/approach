@@ -9,4 +9,6 @@
 
     <color name="primary_background">#bdc3c7</color>
     <color name="secondary_background">#ecf0f1</color>
+
+    <color name="game_above_300">#5BD55B</color>
 </resources>
