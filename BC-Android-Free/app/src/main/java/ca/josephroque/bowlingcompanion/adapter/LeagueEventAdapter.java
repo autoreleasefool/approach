@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
@@ -198,10 +199,10 @@ public class LeagueEventAdapter extends RecyclerView.Adapter<LeagueEventAdapter.
         }).start();
     }
 
-    private class OpenLeagueEventSeriesTask extends AsyncTask<Integer, Void, Integer>
+    private class OpenLeagueEventSeriesTask extends AsyncTask<Integer, Void, Object[]>
     {
         @Override
-        protected Integer doInBackground(Integer... position)
+        protected Object[] doInBackground(Integer... position)
         {
             SharedPreferences preferences =
                     mActivity.getSharedPreferences(Constants.PREFERENCES, Activity.MODE_PRIVATE);
@@ -210,13 +211,15 @@ public class LeagueEventAdapter extends RecyclerView.Adapter<LeagueEventAdapter.
             long selectedLeagueId = mListLeagueEventIds.get(position[0]);
             String selectedLeagueName = mListLeagueEventNames.get(position[0]);
 
-            if (!selectedLeagueName.equals(Constants.NAME_LEAGUE_OPEN) && !mEventMode)
+            SQLiteDatabase database = DatabaseHelper.getInstance(mActivity).getWritableDatabase();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String currentDate = dateFormat.format(new Date());
+
+            if (!selectedLeagueName.equals(Constants.NAME_LEAGUE_OPEN))
             {
                 //Updates the date modified in the database of the selected league
-                SQLiteDatabase database = DatabaseHelper.getInstance(mActivity).getWritableDatabase();
-                SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
                 ContentValues values = new ContentValues();
-                values.put(LeagueEntry.COLUMN_NAME_DATE_MODIFIED, dateFormat.format(new Date()));
+                values.put(LeagueEntry.COLUMN_NAME_DATE_MODIFIED, currentDate);
 
                 database.beginTransaction();
                 try
@@ -235,27 +238,57 @@ public class LeagueEventAdapter extends RecyclerView.Adapter<LeagueEventAdapter.
                 {
                     database.endTransaction();
                 }
-
-                preferencesEditor.putLong(Constants.PREFERENCE_ID_RECENT_LEAGUE, selectedLeagueId)
-                        .putLong(Constants.PREFERENCE_ID_RECENT_BOWLER, bowlerId);
             }
 
             preferencesEditor
                     .putString(Constants.PREFERENCE_NAME_LEAGUE, selectedLeagueName)
-                    .putLong(Constants.PREFERENCE_ID_LEAGUE, selectedLeagueId)
-                    .apply();
+                    .putLong(Constants.PREFERENCE_ID_LEAGUE, selectedLeagueId);
 
-            return position[0];
+            if (mEventMode)
+            {
+                String rawSeriesQuery = "SELECT "
+                        + LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES + ", "
+                        + SeriesEntry.TABLE_NAME + "." + SeriesEntry._ID + " AS sid"
+                        + " FROM " + LeagueEntry.TABLE_NAME + " AS league"
+                        + " LEFT JOIN " + SeriesEntry.TABLE_NAME
+                        + " ON league." + LeagueEntry._ID + "=" + SeriesEntry.COLUMN_NAME_LEAGUE_ID
+                        + " WHERE league." + LeagueEntry._ID + "=?";
+                String[] rawSeriesArgs = {String.valueOf(selectedLeagueId)};
+
+                Cursor cursor = database.rawQuery(rawSeriesQuery, rawSeriesArgs);
+                cursor.moveToFirst();
+                byte numberOfGames = (byte)cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES));
+                long seriesId = cursor.getLong(cursor.getColumnIndex("sid"));
+
+                preferencesEditor.apply();
+                return new Object[]{seriesId, numberOfGames};
+            }
+            else
+            {
+                preferencesEditor.putLong(Constants.PREFERENCE_ID_RECENT_LEAGUE, selectedLeagueId)
+                        .putLong(Constants.PREFERENCE_ID_RECENT_BOWLER, bowlerId)
+                        .apply();
+                return new Object[]{mListLeagueEventNumberOfGames.get(position[0])};
+            }
         }
 
         @Override
-        protected void onPostExecute(Integer position)
+        protected void onPostExecute(Object[] params)
         {
-            Intent seriesIntent = new Intent(mActivity, SeriesActivity.class);
-            seriesIntent.putExtra(Constants.EXTRA_EVENT_MODE, mEventMode);
-            seriesIntent.putExtra(
-                    Constants.EXTRA_NUMBER_OF_GAMES, mListLeagueEventNumberOfGames.get(position));
-            mActivity.startActivity(seriesIntent);
+            if (mEventMode)
+            {
+                long seriesId = (Long)params[0];
+                byte numberOfGames = (Byte)params[1];
+                SeriesActivity.openEventSeries(mActivity, seriesId, numberOfGames);
+            }
+            else
+            {
+                byte numberOfGames = (Byte)params[0];
+                Intent seriesIntent = new Intent(mActivity, SeriesActivity.class);
+                seriesIntent.putExtra(
+                        Constants.EXTRA_NUMBER_OF_GAMES, numberOfGames);
+                mActivity.startActivity(seriesIntent);
+            }
         }
     }
 }

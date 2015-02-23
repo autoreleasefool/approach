@@ -129,17 +129,22 @@ public class SeriesActivity extends ActionBarActivity
 
     public void openSeries(int position)
     {
-        new OpenSeriesTask().execute(position);
+        new OpenSeriesTask().execute(this, mListSeriesId.get(position), mNumberOfGames);
+    }
+
+    public static void openEventSeries(Activity srcActivity, long seriesId, byte numberOfGames)
+    {
+        new OpenSeriesTask().execute(srcActivity, seriesId, numberOfGames);
     }
 
     public void addNewLeagueSeries()
     {
-        new AddSeriesTask().execute(this, mBowlerId, mLeagueId, mNumberOfGames);
+        new AddSeriesTask().execute(this, mBowlerId, mLeagueId, mNumberOfGames, true);
     }
 
     public static void addNewEventSeries(Activity srcActivity, long bowlerId, long leagueId, byte numberOfGames)
     {
-        new AddSeriesTask().execute(srcActivity, bowlerId, leagueId, numberOfGames);
+        new AddSeriesTask().execute(srcActivity, bowlerId, leagueId, numberOfGames, false);
     }
 
     private class LoadSeriesTask extends AsyncTask<Void, Void, Void>
@@ -195,21 +200,23 @@ public class SeriesActivity extends ActionBarActivity
         }
     }
 
-    public class OpenSeriesTask extends AsyncTask<Integer, Void, Object[]>
+    private static class OpenSeriesTask extends AsyncTask<Object, Void, Object[]>
     {
         @Override
-        protected Object[] doInBackground(Integer... position)
+        protected Object[] doInBackground(Object... params)
         {
-            long seriesIdSelected = mListSeriesId.get(position[0]);
+            Activity srcActivity = (Activity)params[0];
+            long seriesIdSelected = (Long)params[1];
+            byte numberOfGames = (Byte)params[2];
 
-            getSharedPreferences(Constants.PREFERENCES, MODE_PRIVATE)
+            srcActivity.getSharedPreferences(Constants.PREFERENCES, MODE_PRIVATE)
                     .edit()
                     .putLong(Constants.PREFERENCE_ID_SERIES, seriesIdSelected)
                     .apply();
 
-            long[] gameId = new long[mNumberOfGames];
-            long[] frameId = new long[mNumberOfGames * 10];
-            SQLiteDatabase database = DatabaseHelper.getInstance(SeriesActivity.this).getReadableDatabase();
+            long[] gameId = new long[numberOfGames];
+            long[] frameId = new long[numberOfGames * 10];
+            SQLiteDatabase database = DatabaseHelper.getInstance(srcActivity).getReadableDatabase();
 
             //Loads relevant game and frame IDs from database and stores them in Intent
             //for next activity
@@ -246,7 +253,7 @@ public class SeriesActivity extends ActionBarActivity
                 }
             }
 
-            return new Object[]{gameId, frameId};
+            return new Object[]{srcActivity, gameId, frameId};
         }
 
         @Override

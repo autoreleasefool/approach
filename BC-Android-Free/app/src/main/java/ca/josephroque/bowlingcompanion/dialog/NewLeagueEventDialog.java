@@ -41,9 +41,9 @@ public class NewLeagueEventDialog extends DialogFragment
 
         EditText editText = (EditText)dialogView.findViewById(R.id.editText_new_league_event_name);
         editText.setHint(
-                (isAddingEvent)
+                ((isAddingEvent)
                         ? "Event"
-                        : "League"
+                        : "League")
                 + " (max " + Constants.NAME_MAX_LENGTH + " characters)");
         editText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(Constants.NAME_MAX_LENGTH)});
 

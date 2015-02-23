@@ -158,6 +158,11 @@ public class LeagueEventFragment extends Fragment
                             : Constants.MAX_NUMBER_LEAGUE_GAMES)
                     + " (inclusive).";
         }
+        else if (leagueName.equals(Constants.NAME_LEAGUE_OPEN))
+        {
+            validInput = false;
+            invalidInputMessage = "That name is unavailable. It is a default used by the system. You must choose another.";
+        }
         else if (mListLeagueEventNames.contains(leagueName))
         {
             validInput = false;
@@ -248,16 +253,49 @@ public class LeagueEventFragment extends Fragment
             long newId = -1;
             SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String currentDate = dateFormat.format(new Date());
             ContentValues values = new ContentValues();
             values.put(LeagueEntry.COLUMN_NAME_LEAGUE_NAME, leagueName);
-            values.put(LeagueEntry.COLUMN_NAME_DATE_MODIFIED, dateFormat.format(new Date()));
+            values.put(LeagueEntry.COLUMN_NAME_DATE_MODIFIED, currentDate);
             values.put(LeagueEntry.COLUMN_NAME_BOWLER_ID, mBowlerId);
             values.put(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES, numberOfGames);
+            values.put(LeagueEntry.COLUMN_NAME_IS_EVENT, isEventMode() ? 1:0);
 
             database.beginTransaction();
             try
             {
                 newId = database.insert(LeagueEntry.TABLE_NAME, null, values);
+
+                if (isEventMode())
+                {
+                    values = new ContentValues();
+                    values.put(SeriesEntry.COLUMN_NAME_DATE_CREATED, currentDate);
+                    values.put(SeriesEntry.COLUMN_NAME_LEAGUE_ID, newId);
+                    values.put(SeriesEntry.COLUMN_NAME_BOWLER_ID, mBowlerId);
+                    long seriesId = database.insert(SeriesEntry.TABLE_NAME, null, values);
+
+                    for (int i = 0; i < numberOfGames; i++)
+                    {
+                        values = new ContentValues();
+                        values.put(GameEntry.COLUMN_NAME_GAME_NUMBER, i + 1);
+                        values.put(GameEntry.COLUMN_NAME_GAME_FINAL_SCORE, 0);
+                        values.put(GameEntry.COLUMN_NAME_LEAGUE_ID, newId);
+                        values.put(GameEntry.COLUMN_NAME_BOWLER_ID, mBowlerId);
+                        values.put(GameEntry.COLUMN_NAME_SERIES_ID, seriesId);
+                        long gameId = database.insert(GameEntry.TABLE_NAME, null, values);
+
+                        for (int j = 0; j < 10; j++)
+                        {
+                            values = new ContentValues();
+                            values.put(FrameEntry.COLUMN_NAME_FRAME_NUMBER, j + 1);
+                            values.put(FrameEntry.COLUMN_NAME_BOWLER_ID, mBowlerId);
+                            values.put(FrameEntry.COLUMN_NAME_LEAGUE_ID, newId);
+                            values.put(FrameEntry.COLUMN_NAME_GAME_ID, gameId);
+                            database.insert(FrameEntry.TABLE_NAME, null, values);
+                        }
+                    }
+                }
+
                 database.setTransactionSuccessful();
             }
             catch (Exception ex)
@@ -274,7 +312,6 @@ public class LeagueEventFragment extends Fragment
             mListLeagueEventNames.add(0, leagueName);
             mListLeagueEventAverages.add(0, (short)0);
             mListLeagueEventNumberOfGames.add(0, numberOfGames);
-            mNewLeagueEventInstructionsTextView.setVisibility(View.GONE);
 
             return null;
         }
@@ -283,6 +320,7 @@ public class LeagueEventFragment extends Fragment
         protected void onPostExecute(Void param)
         {
             mLeagueEventAdapter.notifyItemInserted(0);
+            mNewLeagueEventInstructionsTextView.setVisibility(View.GONE);
         }
     }
 }
