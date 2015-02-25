@@ -26,6 +26,7 @@ import java.util.Date;
 import java.util.List;
 
 import ca.josephroque.bowlingcompanion.adapter.SeriesAdapter;
+import ca.josephroque.bowlingcompanion.data.ConvertValue;
 import ca.josephroque.bowlingcompanion.database.Contract.*;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 
@@ -188,8 +189,8 @@ public class SeriesActivity extends ActionBarActivity
                     if (!mListSeriesId.contains(seriesId))
                     {
                         mListSeriesId.add(seriesId);
-                        mListSeriesDate.add(seriesDate);
                         mListSeriesGames.add(new ArrayList<Short>());
+                        mListSeriesDate.add(ConvertValue.formattedDateToPrettyCompact(seriesDate));
                     }
 
                     mListSeriesGames.get(mListSeriesGames.size() - 1).add(finalGameScore);
