@@ -5,4 +5,10 @@
     android:layout_height="match_parent"
     tools:context="ca.josephroque.bowlingcompanion.StatsActivity">
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView_stats"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="vertical"/>
+
 </RelativeLayout>
