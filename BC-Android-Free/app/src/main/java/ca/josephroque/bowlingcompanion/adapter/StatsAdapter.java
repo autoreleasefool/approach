@@ -20,6 +20,10 @@ import ca.josephroque.bowlingcompanion.R;
 public class StatsAdapter extends RecyclerView.Adapter<StatsAdapter.StatsViewHolder>
 {
 
+    private static final String TAG = "StatsAdapter";
+    private static final int VIEWTYPE_HEADER = 0;
+    private static final int VIEWTYPE_BODY = 1;
+
     private Activity mActivity;
     private List<String> mListStatNames;
     private List<String> mListStatValues;
@@ -29,11 +33,20 @@ public class StatsAdapter extends RecyclerView.Adapter<StatsAdapter.StatsViewHol
         private TextView mTextViewStatName;
         private TextView mTextViewStatValue;
 
-        public StatsViewHolder(View itemLayoutView)
+        public StatsViewHolder(View itemLayoutView, int viewType)
         {
             super(itemLayoutView);
-            mTextViewStatName = (TextView)itemLayoutView.findViewById(R.id.textView_stat_name);
-            mTextViewStatValue = (TextView)itemLayoutView.findViewById(R.id.textView_stat_value);
+
+            switch(viewType)
+            {
+                case VIEWTYPE_HEADER:
+                    mTextViewStatName = (TextView)itemLayoutView.findViewById(R.id.textView_stat_header);
+                    break;
+                case VIEWTYPE_BODY:
+                    mTextViewStatName = (TextView)itemLayoutView.findViewById(R.id.textView_stat_name);
+                    mTextViewStatValue = (TextView)itemLayoutView.findViewById(R.id.textView_stat_value);
+                    break;
+            }
         }
     }
 
@@ -47,23 +60,51 @@ public class StatsAdapter extends RecyclerView.Adapter<StatsAdapter.StatsViewHol
     @Override
     public StatsViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.list_stats, parent, false);
-        return new StatsViewHolder(itemView);
+        View itemView;
+        switch(viewType)
+        {
+            case VIEWTYPE_HEADER:
+                itemView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.list_stats_header, parent, false);
+                break;
+            case VIEWTYPE_BODY:
+                itemView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.list_stats_body, parent, false);
+                break;
+            default:
+                throw new IllegalArgumentException("viewType must be VIEWTYPE_HEADER or VIEWTYPE_BODY");
+        }
+
+        return new StatsViewHolder(itemView, viewType);
     }
 
     @Override
     public void onBindViewHolder(StatsViewHolder holder, final int position)
     {
-        holder.mTextViewStatName.setText(mListStatNames.get(position) + ":");
-        holder.mTextViewStatValue.setText(mListStatValues.get(position));
-        holder.itemView.setBackgroundColor(
-                mActivity.getResources().getColor(R.color.secondary_background));
+        switch(getItemViewType(position))
+        {
+            case VIEWTYPE_HEADER:
+                holder.mTextViewStatName.setText(mListStatNames.get(position).substring(1));
+                break;
+            case VIEWTYPE_BODY:
+                holder.mTextViewStatName.setText(mListStatNames.get(position) + ":");
+                holder.mTextViewStatValue.setText(mListStatValues.get(position));
+                break;
+        }
     }
 
     @Override
     public int getItemCount()
     {
         return mListStatNames.size();
+    }
+
+    @Override
+    public int getItemViewType(int position)
+    {
+        if (mListStatNames.get(position).startsWith("-"))
+            return VIEWTYPE_HEADER;
+        else
+            return VIEWTYPE_BODY;
     }
 }

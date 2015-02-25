@@ -39,10 +39,10 @@ public class StatsActivity extends ActionBarActivity
             {"Fouls"};
 
     private static final String[] STATS_PINS_TOTAL =
-            {"Pins Left Standing"};
+            {"Pins Left:"};
 
     private static final String[] STATS_PINS_AVERAGE =
-            {"Average Pins Left Standing"};
+            {"Average Pins Left:"};
 
     private static final String[] STATS_GENERAL =
             {"Average", "High Single", "High Series", "Total Pinfall", "# of Games"};
@@ -309,6 +309,29 @@ public class StatsActivity extends ActionBarActivity
         }
     }
 
+    private void setStatHeaders(byte bowlerLeagueOrGame, final byte NUMBER_OF_GENERAL_DETAILS)
+    {
+        int nextHeaderPosition = 0;
+        mListStatNames.add(nextHeaderPosition, "-General");
+        mListStatValues.add(nextHeaderPosition, "-");
+        nextHeaderPosition += NUMBER_OF_GENERAL_DETAILS + STATS_MIDDLE_GENERAL.length;
+        mListStatNames.add(nextHeaderPosition, "-First Ball");
+        mListStatValues.add(nextHeaderPosition, "-");
+        nextHeaderPosition += STATS_MIDDLE_DETAILED.length;
+        mListStatNames.add(nextHeaderPosition, "-Fouls");
+        mListStatValues.add(nextHeaderPosition, "-");
+        nextHeaderPosition += STATS_FOULS.length;
+        mListStatNames.add(nextHeaderPosition, "-Pins Left on Deck");
+        mListStatValues.add(nextHeaderPosition, "-");
+
+        if (bowlerLeagueOrGame < LOADING_GAME_STATS)
+        {
+            nextHeaderPosition += STATS_PINS_TOTAL.length + STATS_PINS_AVERAGE.length;
+            mListStatNames.add(nextHeaderPosition, "-Overall");
+            mListStatValues.add(nextHeaderPosition, "-");
+        }
+    }
+
     private Cursor getBowlerOrLeagueCursor(boolean shouldGetLeagueStats)
     {
         SQLiteDatabase database = DatabaseHelper.getInstance(this).getReadableDatabase();
@@ -569,6 +592,7 @@ public class StatsActivity extends ActionBarActivity
                 }
             }
             setGeneralAndDetailedStatValues(statValues, totalShotsAtMiddle, spareChances, NUMBER_OF_GENERAL_DETAILS);
+            setStatHeaders(bowlerLeagueOrGame, NUMBER_OF_GENERAL_DETAILS);
             return null;
         }
 
