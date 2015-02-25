@@ -6,6 +6,10 @@
     <string name="title_activity_league_event">Leagues &amp; Events</string>
     <string name="title_activity_series">Series</string>
     <string name="title_activity_game">Game Details</string>
+    <string name="title_activity_stats">Stats</string>
+    <string name="title_activity_stats_game">Game Stats</string>
+    <string name="title_activity_stats_league">League Stats</string>
+    <string name="title_activity_stats_bowler">Bowler Stats</string>
 
     <!-- ACTION BUTTON LABELS -->
     <string name="action_quick_series">Quick Series</string>
