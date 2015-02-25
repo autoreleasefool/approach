@@ -88,10 +88,6 @@ public class GameActivity extends ActionBarActivity
         getSupportActionBar().setBackgroundDrawable(
                 new ColorDrawable(getResources().getColor(R.color.primary_green)));
 
-        //Set background color of activity
-        getWindow().getDecorView()
-                .setBackgroundColor(getResources().getColor(R.color.primary_background));
-
         COLOR_BACKGROUND = getResources().getColor(android.R.color.transparent);
         COLOR_HIGHLIGHT = getResources().getColor(android.R.color.white);
 

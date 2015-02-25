@@ -80,9 +80,6 @@ public class BowlerAdapter extends RecyclerView.Adapter<BowlerAdapter.BowlerView
         holder.mTextViewBowlerAverage.setText("Avg: "
                 + String.valueOf(mBowlerAverages.get(position)));
 
-        holder.itemView.setBackgroundColor(
-                mActivity.getResources().getColor(R.color.secondary_background));
-
         holder.itemView.setOnClickListener(new View.OnClickListener()
         {
             @Override

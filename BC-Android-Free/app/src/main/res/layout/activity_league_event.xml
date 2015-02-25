@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="ca.josephroque.bowlingcompanion.LeagueEventActivity">
+    tools:context="ca.josephroque.bowlingcompanion.LeagueEventActivity"
+    android:background="@color/primary_background">
 
     <com.astuetz.PagerSlidingTabStrip
         android:id="@+id/slidingTab_leagues_events"

@@ -87,10 +87,6 @@ public class MainActivity extends ActionBarActivity
         getSupportActionBar().setBackgroundDrawable(
                 new ColorDrawable(getResources().getColor(R.color.primary_green)));
 
-        //Set background color of activity
-        getWindow().getDecorView()
-                .setBackgroundColor(getResources().getColor(R.color.primary_background));
-
         mListBowlerIds = new ArrayList<>();
         mListBowlerNames = new ArrayList<>();
         mListBowlerAverages = new ArrayList<>();

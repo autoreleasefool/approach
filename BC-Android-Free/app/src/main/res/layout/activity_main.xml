@@ -4,13 +4,14 @@
     xmlns:fab="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="@color/primary_background">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView_bowlers"
         android:scrollbars="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"/>
 
     <com.melnykov.fab.FloatingActionButton
         android:id="@+id/fab_new_bowler"

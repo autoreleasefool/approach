@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingRight="5dp"
-    android:paddingLeft="5dp">
+    android:paddingLeft="5dp"
+    android:background="@color/secondary_background">
 
     <TextView
         android:id="@+id/textView_series_date"

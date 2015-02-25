@@ -32,10 +32,6 @@ public class LeagueEventActivity extends ActionBarActivity
         getSupportActionBar().setBackgroundDrawable(
                 new ColorDrawable(getResources().getColor(R.color.primary_green)));
 
-        //Set background color of activity
-        getWindow().getDecorView()
-                .setBackgroundColor(getResources().getColor(R.color.primary_background));
-
         mLeagueEventViewPager = (ViewPager)findViewById(R.id.viewPager_leagues_events);
         mLeagueEventViewPager.setAdapter(new LeagueEventFragmentPagerAdapter(getSupportFragmentManager()));
 

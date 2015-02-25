@@ -58,10 +58,6 @@ public class SeriesActivity extends ActionBarActivity
         getSupportActionBar().setBackgroundDrawable(
                 new ColorDrawable(getResources().getColor(R.color.primary_green)));
 
-        //Set background color of activity
-        getWindow().getDecorView()
-                .setBackgroundColor(getResources().getColor(R.color.primary_background));
-
         mListSeriesId = new ArrayList<Long>();
         mListSeriesDate = new ArrayList<String>();
         mListSeriesGames = new ArrayList<>();

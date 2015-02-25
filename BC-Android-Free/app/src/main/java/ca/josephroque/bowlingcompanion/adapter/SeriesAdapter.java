@@ -108,9 +108,6 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
             }
         }
 
-        holder.itemView.setBackgroundColor(
-                mActivity.getResources().getColor(R.color.secondary_background));
-
         holder.itemView.setOnClickListener(new View.OnClickListener()
         {
             @Override

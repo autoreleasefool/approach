@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ca.josephroque.bowlingcompanion.StatsActivity">
+    tools:context="ca.josephroque.bowlingcompanion.StatsActivity"
+    android:background="@color/primary_background">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView_stats"
