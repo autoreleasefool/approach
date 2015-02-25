@@ -22,23 +22,35 @@ import ca.josephroque.bowlingcompanion.R;
  */
 public class NewLeagueEventDialog extends DialogFragment
 {
-
+    /** Instance of listener which contains methods that are executed upon user interaction */
     private NewLeagueEventDialogListener mDialogListener;
 
+    /**
+     * Provides a method to the activity which created this object to handle
+     * user interaction with the dialog
+     */
     public static interface NewLeagueEventDialogListener
     {
+        /**
+         * Executed when user opts to add a new league
+         *
+         * @param leagueName name of the new league to add
+         * @param numberOfGames number of games of the new league
+         */
         public void onAddNewLeague(String leagueName, byte numberOfGames);
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
+        //Displays a dialog to the user and waits for input
         AlertDialog.Builder newLeagueEventBuilder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View dialogView = inflater.inflate(R.layout.dialog_new_league_event, null);
 
         final boolean isAddingEvent = getArguments().getBoolean(Constants.EXTRA_EVENT_MODE);
 
+        //Different hint is displayed whether a new event or league is being added
         EditText editText = (EditText)dialogView.findViewById(R.id.editText_new_league_event_name);
         editText.setHint(
                 ((isAddingEvent)
@@ -95,6 +107,12 @@ public class NewLeagueEventDialog extends DialogFragment
     {
         super.onAttach(mActivity);
 
+        /*
+         * Attempts to cast the parent activity to a listener object for this dialog.
+         * If the parent activity cannot be cast to a listener, then this dialog
+         * is effectively useless and the program will crash until a correct
+         * implementation is completed
+         */
         try
         {
             mDialogListener = (NewLeagueEventDialogListener)mActivity;
