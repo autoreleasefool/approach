@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion;
 
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
@@ -59,15 +60,30 @@ public class LeagueEventActivity extends ActionBarActivity
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings)
+        switch(item.getItemId())
         {
-            return true;
+            case R.id.action_stats:
+                showBowlerStats();
+                return true;
+            case R.id.action_settings:
+                //TODO: showSettingsMenu();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showBowlerStats()
+    {
+        getSharedPreferences(Constants.PREFERENCES, MODE_PRIVATE)
+                .edit()
+                .putLong(Constants.PREFERENCE_ID_LEAGUE, -1)
+                .putLong(Constants.PREFERENCE_ID_GAME, -1)
+                .putLong(Constants.PREFERENCE_ID_SERIES, -1)
+                .apply();
+
+        Intent statsIntent = new Intent(LeagueEventActivity.this, StatsActivity.class);
+        startActivity(statsIntent);
     }
 
     @Override

@@ -9,7 +9,10 @@
         android:id="@+id/textView_stat_name"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:paddingRight="2dp"
+        android:paddingLeft="2dp"
+        android:gravity="end"/>
 
     <View
         android:layout_width="1dp"
@@ -20,6 +23,9 @@
         android:id="@+id/textView_stat_value"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"/>
+        android:layout_weight="1"
+        android:paddingRight="2dp"
+        android:paddingLeft="2dp"
+        android:gravity="start"/>
 
 </LinearLayout>

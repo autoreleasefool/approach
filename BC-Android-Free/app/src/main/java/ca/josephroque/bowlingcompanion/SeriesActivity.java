@@ -116,15 +116,29 @@ public class SeriesActivity extends ActionBarActivity
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings)
+        switch(item.getItemId())
         {
-            return true;
+            case R.id.action_stats:
+                showLeagueStats();
+                return true;
+            case R.id.action_settings:
+                //TODO: showSettingsMenu();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showLeagueStats()
+    {
+        getSharedPreferences(Constants.PREFERENCES, MODE_PRIVATE)
+                .edit()
+                .putLong(Constants.PREFERENCE_ID_SERIES, -1)
+                .putLong(Constants.PREFERENCE_ID_GAME, -1)
+                .apply();
+
+        Intent statsIntent = new Intent(SeriesActivity.this, StatsActivity.class);
+        startActivity(statsIntent);
     }
 
     public void openSeries(int position)

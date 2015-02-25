@@ -236,7 +236,8 @@ public class GameActivity extends ActionBarActivity
             }
         });
 
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.drawer_open, R.string.drawer_close)
+        //TODO: include ic_drawer if needed
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, /*R.drawable.ic_drawer,*/ R.string.drawer_open, R.string.drawer_close)
         {
             public void onDrawerClosed(View view)
             {
@@ -344,15 +345,30 @@ public class GameActivity extends ActionBarActivity
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings)
+        switch(item.getItemId())
         {
-            return true;
+            case R.id.action_stats:
+                showGameStats();
+                return true;
+            case R.id.action_settings:
+                //TODO: showSettingsMenu();
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showGameStats()
+    {
+        clearFrameColor();
+        getSharedPreferences(Constants.PREFERENCES, MODE_PRIVATE)
+                .edit()
+                .putLong(Constants.PREFERENCE_ID_GAME, mGameIds[mCurrentGame])
+                .apply();
+
+        Intent statsIntent = new Intent(GameActivity.this, StatsActivity.class);
+        statsIntent.putExtra(Constants.EXTRA_GAME_NUMBER, (byte)(mCurrentGame + 1));
+        startActivity(statsIntent);
     }
 
     private View.OnClickListener[] getOnClickListeners()
