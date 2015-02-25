@@ -19,20 +19,38 @@ import ca.josephroque.bowlingcompanion.R;
  */
 public class StatsAdapter extends RecyclerView.Adapter<StatsAdapter.StatsViewHolder>
 {
-
+    /** Tag to identify class when outputting to console */
     private static final String TAG = "StatsAdapter";
+    /** Represents data which should be displayed as a header */
     private static final int VIEWTYPE_HEADER = 0;
+    /** Represents data which should be displayed as a regular list item */
     private static final int VIEWTYPE_BODY = 1;
 
+    /** Activity which created this object */
     private Activity mActivity;
+    /** List of stat descriptions which will be displayed by RecyclerView */
     private List<String> mListStatNames;
+    /** List of stat values which will be displayed by RecyclerView */
     private List<String> mListStatValues;
 
+    /**
+     * Subclass of RecyclerView.ViewHolder to manage views which will display
+     * text to the user.
+     */
     public static class StatsViewHolder extends RecyclerView.ViewHolder
     {
+        /** Displays description of the stat */
         private TextView mTextViewStatName;
+        /** Displays corresponding value of the stat*/
         private TextView mTextViewStatValue;
 
+        /**
+         * Calls super constructor with itemLayoutView as parameter and retrieves references
+         * to TextView objects for member variables depending on viewType
+         *
+         * @param itemLayoutView parent layout of list item
+         * @param viewType type of the list item which is being displayed
+         */
         public StatsViewHolder(View itemLayoutView, int viewType)
         {
             super(itemLayoutView);
@@ -50,6 +68,13 @@ public class StatsAdapter extends RecyclerView.Adapter<StatsAdapter.StatsViewHol
         }
     }
 
+    /**
+     * Constructor which stores references to parameters in member variables
+     *
+     * @param context
+     * @param listStatNames
+     * @param listStatValues
+     */
     public StatsAdapter(Activity context, List<String> listStatNames, List<String> listStatValues)
     {
         this.mActivity = context;
@@ -81,6 +106,7 @@ public class StatsAdapter extends RecyclerView.Adapter<StatsAdapter.StatsViewHol
     @Override
     public void onBindViewHolder(StatsViewHolder holder, final int position)
     {
+        //Sets text of TextView objects to display stats values to user
         switch(getItemViewType(position))
         {
             case VIEWTYPE_HEADER:
@@ -102,6 +128,11 @@ public class StatsAdapter extends RecyclerView.Adapter<StatsAdapter.StatsViewHol
     @Override
     public int getItemViewType(int position)
     {
+        /*
+         * If a value in mListStatNames begins with the character "-"
+         * then that row will be treated as a header to differentiate the
+         * stats below from those above
+         */
         if (mListStatNames.get(position).startsWith("-"))
             return VIEWTYPE_HEADER;
         else
