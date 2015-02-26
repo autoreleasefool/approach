@@ -40,43 +40,75 @@ import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 public class GameActivity extends ActionBarActivity
 {
 
+    /** Tag to identify class when outputting to console */
     private static final String TAG = "GameActivity";
+    /** String which is used as title of activity when navigation drawer is open */
     private static final String TITLE_DRAWER = "Game Options";
 
+    /** Integer which represents the background color of views in the activity */
     private int COLOR_BACKGROUND;
+    /** Integer which represents the highlighted color of views in the activity */
     private int COLOR_HIGHLIGHT;
 
-    private static final byte GAME_DEFAULT = 0;
+    /** Byte which represents the default game to load */
+    private static final byte DEFAULT_GAME = 0;
+
+    /** Byte which represents the OnClickListener for the frame TextView objects */
     private static final byte LISTENER_TEXT_FRAMES = 0;
+    /** Byte which represents the OnClickListener for the pin Button objects */
     private static final byte LISTENER_PIN_BUTTONS = 1;
+    /** Byte which represents the OnClickListener for any other objects */
     private static final byte LISTENER_OTHER = 2;
 
+    /** Array of game ids which represent current games that are available to be edited by the user */
     private long[] mGameIds;
+    /** Array of frame ids which represent frames of current games that are available to the user */
     private long[] mFrameIds;
+    /** The number of games currently available to be edited by the user */
     private byte mNumberOfGames;
 
+    /** The current game which is being edited */
     private byte mCurrentGame = 0;
+    /** The current frame which is being edited */
     private byte mCurrentFrame = 0;
+    /** The current ball which is being edited */
     private byte mCurrentBall = 0;
+    /** Indicates which frames in the game have been accessed */
     private boolean[] mHasFrameBeenAccessed;
+    /** Indicates whether the current games being edited belong to an event or not */
     private boolean mEventMode;
+    /** True if a certain pin was knocked down after a certain ball in a cerain frame, false otherwise */
     private boolean[][][] mPinState;
+    /** True if a foul was invoked on a certain ball in a certain frame */
     private boolean[][] mFouls;
+    /** Scores of the current games being edited */
     private short[] mGameScores;
+    /** Scores of the current games being edited, with fouls considered */
     private short[] mGameScoresMinusFouls;
 
+    /** Initial title of the activity when it is first created */
     private String mActivityTitle;
+    /** List of items which are to be displayed in the navigation drawer */
     private List<String> navigationDrawerOptions;
 
+    /** TextView which displays score gained on a certain ball in a certain frame */
     private TextView[][] mTextViewBallScores;
+    /** TextView which indicates whether a foul was invoked on a certain ball in a certain frame */
     private TextView[][] mTextViewFouls;
+    /** TextView which displays total score (not considering fouls) in a certain frame */
     private TextView[] mTextViewFrames;
+    /** Displays TextView objects in a layout which user can interact with to access specific frames */
     private HorizontalScrollView hsvFrames;
+    /** Displays final score of the game, with fouls considered */
     private TextView mTextViewFinalScore;
 
+    /** Instance of navigation drawer */
     private DrawerLayout mDrawerLayout;
+    /** ListView which displays navigation drawer options */
     private ListView mDrawerList;
+    /** Adapts navigation drawer options to be displayed */
     private ArrayAdapter<String> mDrawerAdapter;
+    /** Listens for navigation drawer events */
     private ActionBarDrawerToggle mDrawerToggle;
 
     @Override
@@ -95,6 +127,7 @@ public class GameActivity extends ActionBarActivity
         COLOR_BACKGROUND = getResources().getColor(android.R.color.transparent);
         COLOR_HIGHLIGHT = getResources().getColor(android.R.color.white);
 
+        //Requests test ads to be displayed in AdView
         AdView adView = (AdView) findViewById(R.id.adView_game);
         AdRequest adRequest = new AdRequest.Builder().build();
         adView.loadAd(adRequest);
@@ -113,6 +146,10 @@ public class GameActivity extends ActionBarActivity
 
         final View.OnClickListener[] onClickListeners = getOnClickListeners();
 
+        /*
+         * Creates TextView objects to display information about state of game and
+         * stores references in member variables
+         */
         for (int i = 0; i < Constants.NUMBER_OF_FRAMES; i++)
         {
             TextView frameText = new TextView(this);
@@ -193,28 +230,36 @@ public class GameActivity extends ActionBarActivity
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id)
             {
+                mDrawerLayout.closeDrawer(mDrawerList);
                 switch(position)
                 {
                     case 0:
-                        mDrawerLayout.closeDrawer(mDrawerList);
+                        //Returns to the main activity
                         Intent mainIntent = new Intent(GameActivity.this, MainActivity.class);
                         mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(mainIntent);
                     case 1:
-                        mDrawerLayout.closeDrawer(mDrawerList);
+                        //Returns to the league/event activity
                         Intent leagueIntent = new Intent(GameActivity.this, LeagueEventActivity.class);
                         leagueIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(leagueIntent);
                     case 2:
                         if (!mEventMode)
                         {
-                            mDrawerLayout.closeDrawer(mDrawerList);
+                            /*
+                             * If the activity is not in event mode, then the app
+                             * returns to the series activity.
+                             */
                             Intent seriesIntent = new Intent(GameActivity.this, SeriesActivity.class);
                             seriesIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(seriesIntent);
                             break;
                         }
                     default:
+                        /*
+                         * Saves the state of the current game and then loads a new game from
+                         * the database to be edited
+                         */
                         long[] targetFrames = new long[10];
                         System.arraycopy(mFrameIds,
                                 mCurrentGame * Constants.NUMBER_OF_FRAMES,
@@ -230,7 +275,6 @@ public class GameActivity extends ActionBarActivity
                                 mGameScoresMinusFouls[mCurrentGame]);
                         setScoresInNavigationDrawer();
                         loadGameFromDatabase((byte)(position - (mEventMode ? 2:3)));
-                        mDrawerLayout.closeDrawer(mDrawerList);
                         break;
                 }
             }
@@ -284,7 +328,7 @@ public class GameActivity extends ActionBarActivity
         }
 
         setScoresInNavigationDrawer();
-        loadGameFromDatabase(GAME_DEFAULT);
+        loadGameFromDatabase(DEFAULT_GAME);
     }
 
     @Override
@@ -358,6 +402,9 @@ public class GameActivity extends ActionBarActivity
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Creates a StatsActivity to displays the stats corresponding to the current game
+     */
     private void showGameStats()
     {
         clearFrameColor();
@@ -371,6 +418,12 @@ public class GameActivity extends ActionBarActivity
         startActivity(statsIntent);
     }
 
+    /**
+     * Creates instances of OnClickListener to listen to events created by
+     * views in this activity
+     *
+     * @return OnClickListener instances which are applied to views in this activity
+     */
     private View.OnClickListener[] getOnClickListeners()
     {
         View.OnClickListener[] listeners = new View.OnClickListener[3];
@@ -392,6 +445,7 @@ public class GameActivity extends ActionBarActivity
                     case R.id.text_frame_2: frameToSet++;
                     case R.id.text_frame_1: frameToSet++;
                     case R.id.text_frame_0:
+                        //Changes the current frame and updates the GUI
                         clearFrameColor();
                         mCurrentFrame = frameToSet;
                         mCurrentBall = 0;
@@ -472,6 +526,7 @@ public class GameActivity extends ActionBarActivity
                         break;*/
                     case R.id.imageView_next_ball:
                     case R.id.textView_next_ball:
+                        //Changes the current frame and updates the GUI
                         if (mCurrentFrame == Constants.LAST_FRAME && mCurrentBall == 2)
                             return;
 
@@ -498,6 +553,7 @@ public class GameActivity extends ActionBarActivity
                         break;
                     case R.id.imageView_prev_ball:
                     case R.id.textView_prev_ball:
+                        //Changes the current frame and updates the GUI
                         if (mCurrentFrame == 0 && mCurrentBall == 0)
                             return;
 
@@ -522,13 +578,19 @@ public class GameActivity extends ActionBarActivity
         return listeners;
     }
 
-    private void updateBalls(final int frameToUpdate)
+    /**
+     * Sets the text of the three TextView instances which correspond to frameToUpdate
+     *
+     * @param frameToUpdate frame of which text should be updated
+     */
+    private void updateBalls(final byte frameToUpdate)
     {
         new Thread(new Runnable()
         {
             @Override
             public void run()
             {
+                //Sets text depending on state of pins in the frame
                 final String ballString[] = new String[3];
                 if (frameToUpdate == Constants.LAST_FRAME)
                 {
@@ -606,6 +668,9 @@ public class GameActivity extends ActionBarActivity
         }).start();
     }
 
+    /**
+     * Sets text of the TextView instances which display the score up to the frame to the user
+     */
     private void updateScore()
     {
         new Thread(new Runnable()
@@ -613,6 +678,7 @@ public class GameActivity extends ActionBarActivity
             @Override
             public void run()
             {
+                //Calculates and keeps running total of scores of each frame
                 final short[] frameScores = new short[Constants.NUMBER_OF_FRAMES];
                 for (int f = Constants.LAST_FRAME; f >= 0; f--)
                 {
@@ -689,6 +755,7 @@ public class GameActivity extends ActionBarActivity
                     @Override
                     public void run()
                     {
+                        //Sets scores calculated from running total as text of TextViews
                         for (int i = 0; i < frameScores.length; i++)
                         {
                             mTextViewFrames[i].setText(String.valueOf(frameScores[i]));
@@ -703,6 +770,10 @@ public class GameActivity extends ActionBarActivity
         }).start();
     }
 
+    /**
+     * Counts fouls of the frames and calculates scores minus 15 points
+     * for each foul, then sets score in last TextView
+     */
     private void updateFouls()
     {
         byte foulCount = 0;
@@ -729,6 +800,9 @@ public class GameActivity extends ActionBarActivity
         });
     }
 
+    /**
+     * Sets background color of current ball and frame TextView instances to COLOR_BACKGROUND
+     */
     private void clearFrameColor()
     {
         runOnUiThread(new Runnable()
@@ -746,6 +820,10 @@ public class GameActivity extends ActionBarActivity
         });
     }
 
+    /**
+     * Sets background color of current ball and frame TextView instances to COLOR_HIGHLIGHT
+     * and sets color of pin and whether its enabled or not depending on its state
+     */
     private void updateFrameColor()
     {
         runOnUiThread(new Runnable()
@@ -767,6 +845,17 @@ public class GameActivity extends ActionBarActivity
         });
     }
 
+    /**
+     * Saves a games score and individual frames to the database on a separate thread.
+     *
+     * @param srcActivity activity which called the method to get instance of database
+     * @param gameId id of the game to be updated
+     * @param frameIds ids of the frames to be updated
+     * @param hasFrameBeenAccessed state of whether frames have been accessed or not
+     * @param pinState state of pins after each ball
+     * @param fouls indicates whether a foul was invoked on each ball
+     * @param finalScore final score of the game, considering fouls
+     */
     private static void saveGameToDatabase(
             final Activity srcActivity,
             final long gameId,
@@ -830,10 +919,14 @@ public class GameActivity extends ActionBarActivity
         }).start();
     }
 
+    /**
+     * Loads a game from the database to member variables
+     *
+     * @param newGame index of id in mGameIds to load
+     */
     private void loadGameFromDatabase(final byte newGame)
     {
         clearFrameColor();
-
         new Thread(new Runnable()
         {
             @Override
@@ -879,7 +972,7 @@ public class GameActivity extends ActionBarActivity
                 mCurrentBall = 0;
                 updateScore();
 
-                for (int i = 0; i < Constants.NUMBER_OF_FRAMES; i++)
+                for (byte i = 0; i < Constants.NUMBER_OF_FRAMES; i++)
                     updateBalls(i);
                 mHasFrameBeenAccessed[0] = true;
                 updateFrameColor();
@@ -887,6 +980,9 @@ public class GameActivity extends ActionBarActivity
         }).start();
     }
 
+    /**
+     * Scrolls the position of hsvFrames so the current frame is centred
+     */
     private void focusOnFrame()
     {
         hsvFrames.post(new Runnable()
@@ -961,6 +1057,11 @@ public class GameActivity extends ActionBarActivity
         }).start();
     }
 
+    /**
+     * Converts a dp value to pixels
+     * @param dps value to be converted
+     * @return result of conversion from dps to pixels
+     */
     private int getPixelsFromDP(int dps)
     {
         float scale = getResources().getDisplayMetrics().density;
