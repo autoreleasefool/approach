@@ -128,8 +128,8 @@ public class GameActivity extends ActionBarActivity
         getSupportActionBar().setBackgroundDrawable(
                 new ColorDrawable(getResources().getColor(R.color.primary_green)));
 
-        COLOR_BACKGROUND = getResources().getColor(android.R.color.transparent);
-        COLOR_HIGHLIGHT = getResources().getColor(android.R.color.white);
+        COLOR_BACKGROUND = getResources().getColor(android.R.color.darker_gray);
+        COLOR_HIGHLIGHT = getResources().getColor(android.R.color.secondary_text_dark);
 
         //Requests test ads to be displayed in AdView
         AdView adView = (AdView) findViewById(R.id.adView_game);
@@ -189,7 +189,7 @@ public class GameActivity extends ActionBarActivity
                 TextView text = new TextView(this);
                 text.setBackgroundResource(R.drawable.background_frame_text);
                 text.setGravity(Gravity.CENTER);
-                layoutParams = new RelativeLayout.LayoutParams(getPixelsFromDP(40), getPixelsFromDP(40));
+                layoutParams = new RelativeLayout.LayoutParams(getPixelsFromDP(40), getPixelsFromDP(41));
                 layoutParams.leftMargin = getPixelsFromDP(120 * i + j * 40);
                 layoutParams.topMargin = 0;
                 relativeLayout.addView(text, layoutParams);
@@ -209,6 +209,7 @@ public class GameActivity extends ActionBarActivity
             textFrameNumber.setText(String.valueOf(i + 1));
             textFrameNumber.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
             textFrameNumber.setGravity(Gravity.CENTER_HORIZONTAL);
+            textFrameNumber.setTextColor(getResources().getColor(android.R.color.white));
             layoutParams = new RelativeLayout.LayoutParams(getPixelsFromDP(120), getPixelsFromDP(36));
             layoutParams.leftMargin = getPixelsFromDP(120 * i);
             layoutParams.topMargin = getPixelsFromDP(128);
@@ -971,12 +972,23 @@ public class GameActivity extends ActionBarActivity
                 {
                     if (mPinState[mCurrentFrame][mCurrentBall][i])
                     {
-                        mImageButtonPins[i].setEnabled(true);
+                        mImageButtonPins[i].setImageResource(R.drawable.pin_gray);
                         numberOfPinsStanding++;
                     }
                     else
                     {
+                        mImageButtonPins[i].setImageResource(R.drawable.pin);
+                    }
+
+                    if (mCurrentBall > 0 && (mPinState[mCurrentFrame][mCurrentBall - 1][i])
+                            && !(mCurrentFrame == Constants.LAST_FRAME
+                            && Arrays.equals(mPinState[mCurrentFrame][mCurrentBall - 1], Constants.FRAME_PINS_DOWN)))
+                    {
                         mImageButtonPins[i].setEnabled(false);
+                    }
+                    else
+                    {
+                        mImageButtonPins[i].setEnabled(true);
                     }
                 }
 
@@ -986,7 +998,7 @@ public class GameActivity extends ActionBarActivity
                     case 1:mImageViewClearPins.setImageResource(R.drawable.ic_action_spare);break;
                     case 2:mImageViewClearPins.setImageResource(R.drawable.ic_action_fifteen);break;
                 }
-                mImageViewClearPins.setEnabled(numberOfPinsStanding == 5);
+                mImageViewClearPins.setEnabled(numberOfPinsStanding < 5);
 
                 focusOnFrame();
             }
@@ -1195,7 +1207,6 @@ public class GameActivity extends ActionBarActivity
             {
                 short gameScore = cursor.getShort(cursor.getColumnIndex(GameEntry.COLUMN_NAME_GAME_FINAL_SCORE));
                 mGameScoresMinusFouls[currentGamePosition++] = gameScore;
-                currentGamePosition++;
                 cursor.moveToNext();
             }
         }
@@ -1269,7 +1280,14 @@ public class GameActivity extends ActionBarActivity
                     @Override
                     public void run()
                     {
-                        mImageButtonPins[pinToSet].setEnabled(isPinKnockedOver);
+                        if (mPinState[mCurrentFrame][mCurrentBall][pinToSet])
+                        {
+                            mImageButtonPins[pinToSet].setImageResource(R.drawable.pin_gray);
+                        }
+                        else
+                        {
+                            mImageButtonPins[pinToSet].setImageResource(R.drawable.pin);
+                        }
                         mImageViewClearPins.setEnabled(allPinsKnockedOver);
                     }
                 });
@@ -1304,10 +1322,12 @@ public class GameActivity extends ActionBarActivity
                         mFouls[mCurrentFrame][j] = false;
                 }
             }
+
+            Log.w(TAG, "Cleared");
+            updateBalls(mCurrentFrame);
+            updateScore();
+            updateFrameColor();
         }
-        updateBalls(mCurrentFrame);
-        updateScore();
-        updateFrameColor();
     }
 
     /**

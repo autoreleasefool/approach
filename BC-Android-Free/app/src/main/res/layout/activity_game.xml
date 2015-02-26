@@ -12,7 +12,7 @@
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
         android:orientation="vertical"
-        android:background="@color/primary_background">
+        android:background="@android:color/black">
 
         <RelativeLayout
             android:id="@+id/relativeLayout_game_toolbar"
@@ -43,18 +43,11 @@
                 android:paddingLeft="2dp"
                 android:paddingRight="2dp"/>
 
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:background="@android:color/white"
-                android:layout_toRightOf="@id/textView_prev_ball"
-                android:layout_toEndOf="@id/textView_prev_ball"/>
-
             <ImageView
                 android:id="@+id/imageView_clear_pins"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
+                android:layout_centerHorizontal="true"
                 android:src="@drawable/ic_action_strike"/>
 
             <ImageView
@@ -95,18 +88,12 @@
                 android:gravity="center"
                 android:paddingLeft="2dp"
                 android:paddingRight="2dp"/>
-
-            <View
-                android:layout_width="1dp"
-                android:layout_height="match_parent"
-                android:background="@android:color/white"
-                android:layout_toLeftOf="@id/textView_next_ball"
-                android:layout_toStartOf="@id/textView_next_ball"/>
         </RelativeLayout>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
             <HorizontalScrollView
                 android:id="@+id/hsv_frames"
                 android:layout_width="match_parent"
@@ -121,6 +108,13 @@
                 android:layout_alignParentBottom="true"
                 ads:adSize="SMART_BANNER"
                 ads:adUnitId="@string/banner_ad_unit_id" />
+
+            <ImageView
+                android:id="@+id/imageView_alley"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/adView_game"
+                android:background="@drawable/alley_background"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
