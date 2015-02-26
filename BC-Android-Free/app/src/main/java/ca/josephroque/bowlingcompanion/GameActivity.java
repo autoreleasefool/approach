@@ -224,7 +224,6 @@ public class GameActivity extends ActionBarActivity
                                 mPinState,
                                 mFouls,
                                 mGameScoresMinusFouls[mCurrentGame]);
-                        setScoresInNavigationDrawer();
                         loadGameFromDatabase((byte)(position - (mEventMode ? 2:3)));
                         mDrawerLayout.closeDrawer(mDrawerList);
                         break;
@@ -279,6 +278,7 @@ public class GameActivity extends ActionBarActivity
             navigationDrawerOptions.add("Game " + (i + 1));
         }
 
+        loadInitialScores();
         setScoresInNavigationDrawer();
         loadGameFromDatabase(GAME_DEFAULT);
     }
@@ -721,6 +721,7 @@ public class GameActivity extends ActionBarActivity
             public void run()
             {
                 mTextViewFinalScore.setText(String.valueOf(mGameScoresMinusFouls[mCurrentGame]));
+                setScoresInNavigationDrawer();
             }
         });
     }
@@ -900,61 +901,61 @@ public class GameActivity extends ActionBarActivity
 
     private void setScoresInNavigationDrawer()
     {
-        new Thread(new Runnable()
+        runOnUiThread(new Runnable()
         {
             @Override
             public void run()
             {
-                SQLiteDatabase database = DatabaseHelper.getInstance(GameActivity.this).getReadableDatabase();
-
-                StringBuilder whereBuilder = new StringBuilder(GameEntry._ID + "=?");
-                String[] whereArgs = new String[mNumberOfGames];
-                whereArgs[0] = String.valueOf(mGameIds[0]);
-                for (int i = 1; i < mNumberOfGames; i++)
+                byte startingPosition = (byte)(mEventMode ? 2:3);
+                byte currentGamePosition = startingPosition;
+                while (currentGamePosition - startingPosition < mNumberOfGames)
                 {
-                    whereBuilder.append(" OR ");
-                    whereBuilder.append(GameEntry._ID);
-                    whereBuilder.append("=?");
-                    whereArgs[i] = String.valueOf(mGameIds[i]);
+                    navigationDrawerOptions.set(currentGamePosition, "Game "
+                            + (currentGamePosition - startingPosition + 1)
+                            + " (" + mGameScoresMinusFouls[currentGamePosition - startingPosition] + ")");
+                    currentGamePosition++;
                 }
-
-                Cursor cursor = database.query(GameEntry.TABLE_NAME,
-                        new String[]{GameEntry.COLUMN_NAME_GAME_FINAL_SCORE},
-                        whereBuilder.toString(),
-                        whereArgs,
-                        null,
-                        null,
-                        GameEntry._ID);
-
-                final int startingGamePosition = mEventMode ? 1:2;
-                int currentGamePosition = startingGamePosition + 1;
-                if (cursor.moveToFirst())
-                {
-                    while(!cursor.isAfterLast())
-                    {
-                        short gameScore = cursor.getShort(cursor.getColumnIndex(GameEntry.COLUMN_NAME_GAME_FINAL_SCORE));
-                        navigationDrawerOptions.set(currentGamePosition, "Game "
-                                + (currentGamePosition - startingGamePosition)
-                                + "(" + gameScore + ")");
-                        currentGamePosition++;
-                        cursor.moveToNext();
-                    }
-                }
-                else
-                {
-                    throw new RuntimeException("No games found - cannot set scores");
-                }
-
-                runOnUiThread(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        mDrawerAdapter.notifyDataSetChanged();
-                    }
-                });
             }
-        }).start();
+        });
+    }
+
+    private void loadInitialScores()
+    {
+        SQLiteDatabase database = DatabaseHelper.getInstance(GameActivity.this).getReadableDatabase();
+        StringBuilder whereBuilder = new StringBuilder(GameEntry._ID + "=?");
+        String[] whereArgs = new String[mNumberOfGames];
+        whereArgs[0] = String.valueOf(mGameIds[0]);
+        for (int i = 1; i < mNumberOfGames; i++)
+        {
+            whereBuilder.append(" OR ");
+            whereBuilder.append(GameEntry._ID);
+            whereBuilder.append("=?");
+            whereArgs[i] = String.valueOf(mGameIds[i]);
+        }
+
+        Cursor cursor = database.query(GameEntry.TABLE_NAME,
+                new String[]{GameEntry.COLUMN_NAME_GAME_FINAL_SCORE},
+                whereBuilder.toString(),
+                whereArgs,
+                null,
+                null,
+                GameEntry._ID);
+
+        int currentGamePosition = 0;
+        if (cursor.moveToFirst())
+        {
+            while(!cursor.isAfterLast())
+            {
+                short gameScore = cursor.getShort(cursor.getColumnIndex(GameEntry.COLUMN_NAME_GAME_FINAL_SCORE));
+                mGameScoresMinusFouls[currentGamePosition++] = gameScore;
+                currentGamePosition++;
+                cursor.moveToNext();
+            }
+        }
+        else
+        {
+            throw new RuntimeException("No games found - cannot set scores");
+        }
     }
 
     private int getPixelsFromDP(int dps)
