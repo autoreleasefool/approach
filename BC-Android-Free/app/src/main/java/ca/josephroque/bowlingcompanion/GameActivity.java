@@ -1,7 +1,9 @@
 package ca.josephroque.bowlingcompanion;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
@@ -406,6 +408,9 @@ public class GameActivity extends ActionBarActivity
         // as you specify a parent activity in AndroidManifest.xml.
         switch(item.getItemId())
         {
+            case R.id.action_what_if:
+                showWhatIfDialog();
+                return true;
             case R.id.action_stats:
                 showGameStats();
                 return true;
@@ -431,6 +436,107 @@ public class GameActivity extends ActionBarActivity
         Intent statsIntent = new Intent(GameActivity.this, StatsActivity.class);
         statsIntent.putExtra(Constants.EXTRA_GAME_NUMBER, (byte)(mCurrentGame + 1));
         startActivity(statsIntent);
+    }
+
+    /**
+     * Produces a dialog which informs the user of the best possible score
+     * they can get in the current game with the remaining frames
+     */
+    private void showWhatIfDialog()
+    {
+        StringBuilder alertMessageBuilder = new StringBuilder("If you get");
+        int possibleScore = Integer.parseInt(mTextViewFrames[mCurrentFrame].getText().toString());
+
+        int pinsLeftStanding = 0;
+        for (int i = 0; i < 5; i++)
+        {
+            if (!mPinState[mCurrentFrame][mCurrentBall][i])
+            {
+                switch(i)
+                {
+                    case 0:case 4: pinsLeftStanding += 2; break;
+                    case 1:case 3: pinsLeftStanding += 3; break;
+                    case 2: pinsLeftStanding += 5; break;
+                }
+            }
+        }
+
+        boolean strikeLastFrame = false;
+        boolean strikeTwoFramesAgo = false;
+        boolean spareLastFrame = false;
+
+        if (mCurrentFrame > 0)
+        {
+            if (Arrays.equals(mPinState[mCurrentFrame - 1][0], Constants.FRAME_PINS_DOWN))
+            {
+                strikeLastFrame = true;
+                if (mCurrentFrame > 1 && Arrays.equals(mPinState[mCurrentFrame - 2][0], Constants.FRAME_PINS_DOWN))
+                    strikeTwoFramesAgo = true;
+            }
+            else
+            {
+                if (Arrays.equals(mPinState[mCurrentFrame - 1][1], Constants.FRAME_PINS_DOWN))
+                    spareLastFrame = true;
+            }
+        }
+
+        if (mCurrentBall == 0)
+        {
+            alertMessageBuilder.append(" a strike");
+            possibleScore += pinsLeftStanding + 30;
+            if (strikeLastFrame)
+            {
+                possibleScore += pinsLeftStanding + 15;
+                if (strikeTwoFramesAgo)
+                    possibleScore += pinsLeftStanding;
+            } else if (spareLastFrame)
+                possibleScore += pinsLeftStanding;
+        }
+        else if (mCurrentBall == 1)
+        {
+            if (mCurrentFrame == Constants.LAST_FRAME && Arrays.equals(mPinState[mCurrentFrame][0], Constants.FRAME_PINS_DOWN))
+                alertMessageBuilder.append(" a strike");
+            else
+                alertMessageBuilder.append(" a spare");
+            possibleScore += pinsLeftStanding + 15;
+            if (strikeLastFrame)
+                possibleScore += pinsLeftStanding;
+        }
+        else
+        {
+            if (mCurrentFrame == Constants.LAST_FRAME && Arrays.equals(mPinState[mCurrentFrame][1], Constants.FRAME_PINS_DOWN))
+                alertMessageBuilder.append(" a strike");
+            else
+                alertMessageBuilder.append(" fifteen");
+            possibleScore += pinsLeftStanding;
+        }
+        possibleScore += 45 * (Constants.LAST_FRAME - mCurrentFrame);
+
+        for (int i = 0; i <= mCurrentFrame; i++)
+        {
+            for (int j = 0; j < 3 && !(i == mCurrentFrame && j >= mCurrentBall); j++)
+            {
+                if (mFouls[i][j])
+                    possibleScore -= 15;
+            }
+        }
+        if (possibleScore < 0)
+            possibleScore = 0;
+        alertMessageBuilder.append(" this ball, and strikes onwards, your final score will be ");
+        alertMessageBuilder.append(possibleScore);
+        AlertDialog.Builder builder = new AlertDialog.Builder(GameActivity.this);
+        builder.setMessage(alertMessageBuilder.toString())
+                .setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        dialog.dismiss();
+                    }
+                });
+        builder.create()
+                .show();
     }
 
     /**
