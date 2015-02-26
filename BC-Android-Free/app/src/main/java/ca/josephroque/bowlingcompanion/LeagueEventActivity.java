@@ -19,9 +19,10 @@ import ca.josephroque.bowlingcompanion.fragments.LeagueEventFragment;
 public class LeagueEventActivity extends ActionBarActivity
     implements NewLeagueEventDialog.NewLeagueEventDialogListener
 {
-
+    /** Tag to identify class when outputting to console */
     private static final String TAG = "LeagueEventActivity";
 
+    /** ViewPager which displays fragments to user */
     private ViewPager mLeagueEventViewPager;
 
     @Override
@@ -73,6 +74,9 @@ public class LeagueEventActivity extends ActionBarActivity
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Creates a StatsActivity to displays the stats corresponding to the current bowler
+     */
     private void showBowlerStats()
     {
         getSharedPreferences(Constants.PREFERENCES, MODE_PRIVATE)
@@ -89,6 +93,7 @@ public class LeagueEventActivity extends ActionBarActivity
     @Override
     public void onAddNewLeague(String leagueEventName, byte numberOfGames)
     {
+        //Calls the method addNewLeagueOrEvent(String, byte) of the current fragment instance
         int viewPagerCurrentItem = mLeagueEventViewPager.getCurrentItem();
         switch(viewPagerCurrentItem)
         {
