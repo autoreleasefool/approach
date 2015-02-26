@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.support.v4.widget.DrawerLayout;
@@ -25,6 +24,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -107,6 +107,8 @@ public class GameActivity extends ActionBarActivity
     private TextView mTextViewFinalScore;
     /** ImageButton objects which user interacts with to indicate state of the pins in a certain frame */
     private ImageButton[] mImageButtonPins;
+    /** ImageView which user interacts with to knock down all pins in a frame */
+    private ImageView mImageViewClearPins;
 
     /** Instance of navigation drawer */
     private DrawerLayout mDrawerLayout;
@@ -151,6 +153,11 @@ public class GameActivity extends ActionBarActivity
         /*
          * Creates TextView objects to display information about state of game and
          * stores references in member variables
+         */
+
+        /*
+         * TODO: should test increasing size of text views by 1dp width and height
+         * to see if it removes the thick borders between them
          */
         for (int i = 0; i < Constants.NUMBER_OF_FRAMES; i++)
         {
@@ -235,9 +242,10 @@ public class GameActivity extends ActionBarActivity
         findViewById(R.id.imageView_prev_ball).setOnClickListener(onClickListeners[LISTENER_OTHER]);
         findViewById(R.id.textView_next_ball).setOnClickListener(onClickListeners[LISTENER_OTHER]);
         findViewById(R.id.textView_prev_ball).setOnClickListener(onClickListeners[LISTENER_OTHER]);
-        //TODO: uncomment when added
-        //findViewById(R.id.imageView_foul).setOnClickListener(onClickListeners[LISTENER_OTHER]);
-        //findViewById(R.id.imageView_reset_frame).setOnClickListener(onClickListeners[LISTENER_OTHER]);
+        findViewById(R.id.imageView_foul).setOnClickListener(onClickListeners[LISTENER_OTHER]);
+        findViewById(R.id.imageView_reset_frame).setOnClickListener(onClickListeners[LISTENER_OTHER]);
+        mImageViewClearPins = (ImageView)findViewById(R.id.imageView_clear_pins);
+        mImageViewClearPins.setOnClickListener(onClickListeners[LISTENER_OTHER]);
 
         mDrawerLayout = (DrawerLayout)findViewById(R.id.game_drawer_layout);
         mDrawerList = (ListView)findViewById(R.id.left_drawer_games);
@@ -612,8 +620,9 @@ public class GameActivity extends ActionBarActivity
             {
                 switch(v.getId())
                 {
-                    /*
-                    TODO: uncomment when added
+                    case R.id.imageView_clear_pins:
+                        clearPins();
+                        break;
                     case R.id.imageView_reset_frame:
                         clearFrameColor();
                         mCurrentBall = 0;
@@ -641,7 +650,7 @@ public class GameActivity extends ActionBarActivity
                             }
                         });
                         updateFouls();
-                        break;*/
+                        break;
                     case R.id.imageView_next_ball:
                     case R.id.textView_next_ball:
                         //Changes the current frame and updates the GUI
@@ -957,7 +966,27 @@ public class GameActivity extends ActionBarActivity
                         mTextViewFrames[mCurrentFrame].getBackground();
                 drawable.setColor(COLOR_HIGHLIGHT);
 
-                //TODO: set color of pin buttons
+                int numberOfPinsStanding = 0;
+                for (int i = 0; i < 5; i++)
+                {
+                    if (mPinState[mCurrentFrame][mCurrentBall][i])
+                    {
+                        mImageButtonPins[i].setEnabled(true);
+                        numberOfPinsStanding++;
+                    }
+                    else
+                    {
+                        mImageButtonPins[i].setEnabled(false);
+                    }
+                }
+
+                switch(mCurrentBall)
+                {
+                    case 0:mImageViewClearPins.setImageResource(R.drawable.ic_action_strike);break;
+                    case 1:mImageViewClearPins.setImageResource(R.drawable.ic_action_spare);break;
+                    case 2:mImageViewClearPins.setImageResource(R.drawable.ic_action_fifteen);break;
+                }
+                mImageViewClearPins.setEnabled(numberOfPinsStanding == 5);
 
                 focusOnFrame();
             }
@@ -1189,6 +1218,7 @@ public class GameActivity extends ActionBarActivity
             public void run()
             {
                 final boolean isPinKnockedOver = mPinState[mCurrentFrame][mCurrentBall][pinToSet];
+                final boolean allPinsKnockedOver;
                 if (!isPinKnockedOver)
                 {
                     for (int i = mCurrentBall; i < 3; i++)
@@ -1214,10 +1244,16 @@ public class GameActivity extends ActionBarActivity
                                 }
                             }
                         }
+                        allPinsKnockedOver = true;
+                    }
+                    else
+                    {
+                        allPinsKnockedOver = false;
                     }
                 }
                 else
                 {
+                    allPinsKnockedOver = false;
                     for (int i = mCurrentBall; i < 3; i++)
                     {
                         mPinState[mCurrentFrame][i][pinToSet] = false;
@@ -1228,12 +1264,13 @@ public class GameActivity extends ActionBarActivity
                     }
                 }
 
-                mImageButtonPins[pinToSet].post(new Runnable()
+                runOnUiThread(new Runnable()
                 {
                     @Override
                     public void run()
                     {
                         mImageButtonPins[pinToSet].setEnabled(isPinKnockedOver);
+                        mImageViewClearPins.setEnabled(allPinsKnockedOver);
                     }
                 });
 
@@ -1241,6 +1278,36 @@ public class GameActivity extends ActionBarActivity
                 updateScore();
             }
         }).start();
+    }
+
+    /**
+     * Clears all the pins which are currently standing in the frame and updates
+     * the TextViews with new score
+     */
+    private void clearPins()
+    {
+        if (!Arrays.equals(mPinState[mCurrentFrame][mCurrentBall], Constants.FRAME_PINS_DOWN))
+        {
+            for (int j = mCurrentBall; j < 3; j++)
+            {
+                for (int i = 0; i < 5; i++)
+                {
+                    if (mCurrentFrame == Constants.LAST_FRAME)
+                    {
+                        mPinState[mCurrentFrame][j][i] = (j == mCurrentBall);
+                    }
+                    else
+                    {
+                        mPinState[mCurrentFrame][j][i] = true;
+                    }
+                    if (j > mCurrentBall)
+                        mFouls[mCurrentFrame][j] = false;
+                }
+            }
+        }
+        updateBalls(mCurrentFrame);
+        updateScore();
+        updateFrameColor();
     }
 
     /**

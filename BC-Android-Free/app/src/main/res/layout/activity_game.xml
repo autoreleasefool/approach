@@ -39,7 +39,39 @@
                 android:text="@string/text_prev_ball"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="@android:color/white"
-                android:gravity="center"/>
+                android:gravity="center"
+                android:paddingLeft="2dp"
+                android:paddingRight="2dp"/>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@android:color/white"
+                android:layout_toRightOf="@id/textView_prev_ball"
+                android:layout_toEndOf="@id/textView_prev_ball"/>
+
+            <ImageView
+                android:id="@+id/imageView_clear_pins"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@drawable/ic_action_strike"/>
+
+            <ImageView
+                android:id="@+id/imageView_reset_frame"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@id/imageView_clear_pins"
+                android:layout_toStartOf="@id/imageView_clear_pins"
+                android:src="@drawable/ic_action_refresh"/>
+
+            <ImageView
+                android:id="@+id/imageView_foul"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/imageView_clear_pins"
+                android:layout_toEndOf="@id/imageView_clear_pins"
+                android:src="@drawable/ic_action_foul"/>
 
             <ImageView
                 android:id="@+id/imageView_next_ball"
@@ -60,7 +92,16 @@
                 android:text="@string/text_next_ball"
                 android:textAppearance="?android:attr/textAppearanceSmall"
                 android:textColor="@android:color/white"
-                android:gravity="center"/>
+                android:gravity="center"
+                android:paddingLeft="2dp"
+                android:paddingRight="2dp"/>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@android:color/white"
+                android:layout_toLeftOf="@id/textView_next_ball"
+                android:layout_toStartOf="@id/textView_next_ball"/>
         </RelativeLayout>
 
         <RelativeLayout
