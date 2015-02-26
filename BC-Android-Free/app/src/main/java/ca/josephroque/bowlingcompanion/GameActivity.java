@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.GradientDrawable;
 import android.support.v4.widget.DrawerLayout;
@@ -21,6 +22,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.HorizontalScrollView;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -101,6 +103,8 @@ public class GameActivity extends ActionBarActivity
     private HorizontalScrollView hsvFrames;
     /** Displays final score of the game, with fouls considered */
     private TextView mTextViewFinalScore;
+    /** ImageButton objects which user interacts with to indicate state of the pins in a certain frame */
+    private ImageButton[] mImageButtonPins;
 
     /** Instance of navigation drawer */
     private DrawerLayout mDrawerLayout;
@@ -210,6 +214,20 @@ public class GameActivity extends ActionBarActivity
         layoutParams.topMargin = 0;
         relativeLayout.addView(mTextViewFinalScore, layoutParams);
         hsvFrames.addView(relativeLayout);
+
+        mImageButtonPins = new ImageButton[5];
+        for (int i = 0; i < mImageButtonPins.length; i++)
+        {
+            switch(i)
+            {
+                case 0: mImageButtonPins[i] = (ImageButton)findViewById(R.id.button_pin_1); break;
+                case 1: mImageButtonPins[i] = (ImageButton)findViewById(R.id.button_pin_2); break;
+                case 2: mImageButtonPins[i] = (ImageButton)findViewById(R.id.button_pin_3); break;
+                case 3: mImageButtonPins[i] = (ImageButton)findViewById(R.id.button_pin_4); break;
+                case 4: mImageButtonPins[i] = (ImageButton)findViewById(R.id.button_pin_5); break;
+            }
+            mImageButtonPins[i].setOnClickListener(onClickListeners[LISTENER_PIN_BUTTONS]);
+        }
 
         findViewById(R.id.imageView_next_ball).setOnClickListener(onClickListeners[LISTENER_OTHER]);
         findViewById(R.id.imageView_prev_ball).setOnClickListener(onClickListeners[LISTENER_OTHER]);
@@ -366,6 +384,7 @@ public class GameActivity extends ActionBarActivity
     public boolean onPrepareOptionsMenu(Menu menu)
     {
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+        //TODO menu button enable/disable when added
         //menu.findItem(R.id.action_game_stats).setVisible(!drawerOpen);
         //menu.findItem(R.id.action_game_share).setVisible(!drawerOpen);
         return super.onPrepareOptionsMenu(menu);
@@ -467,18 +486,15 @@ public class GameActivity extends ActionBarActivity
                 byte ballToSet = 0;
                 switch(v.getId())
                 {
-                    //TODO: uncomment lines below when final pin layout decided
-                    /*
+                    case R.id.button_pin_5: ballToSet++;
                     case R.id.button_pin_4: ballToSet++;
                     case R.id.button_pin_3: ballToSet++;
                     case R.id.button_pin_2: ballToSet++;
-                    case R.id.button_pin_1: ballToSet++;
-                    case R.id.button_pin_0:
+                    case R.id.button_pin_1:
                         alterPinState(ballToSet);
                         break;
                     default:
                         throw new RuntimeException("Invalid pin button id");
-                     */
                 }
             }
         };
@@ -1052,6 +1068,73 @@ public class GameActivity extends ActionBarActivity
         {
             throw new RuntimeException("No games found - cannot set scores");
         }
+    }
+
+    /**
+     * Either sets a pin to be standing or knocked down, and updates the score accordingly
+     *
+     * @param pinToSet the pin which was altered
+     */
+    private void alterPinState(final byte pinToSet)
+    {
+        new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                final boolean isPinKnockedOver = mPinState[mCurrentFrame][mCurrentBall][pinToSet];
+                if (!isPinKnockedOver)
+                {
+                    for (int i = mCurrentBall; i < 3; i++)
+                    {
+                        mPinState[mCurrentFrame][i][pinToSet] = true;
+                    }
+                    if (Arrays.equals(mPinState[mCurrentFrame][mCurrentBall], Constants.FRAME_PINS_DOWN))
+                    {
+                        for (int i = mCurrentBall + 1; i < 3; i++)
+                        {
+                            mFouls[mCurrentFrame][i] = false;
+                        }
+                        if (mCurrentFrame == Constants.LAST_FRAME)
+                        {
+                            if (mCurrentBall < 2)
+                            {
+                                for (int j = mCurrentBall + 1; j < 3; j++)
+                                {
+                                    for (int i = 0; i < 5; i++)
+                                    {
+                                        mPinState[mCurrentFrame][j][i] = false;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    for (int i = mCurrentBall; i < 3; i++)
+                    {
+                        mPinState[mCurrentFrame][i][pinToSet] = false;
+                    }
+                    if (mCurrentFrame == Constants.LAST_FRAME && mCurrentBall == 1)
+                    {
+                        System.arraycopy(mPinState[mCurrentFrame][1], 0, mPinState[mCurrentFrame][2], 0, mPinState[mCurrentFrame][1].length);
+                    }
+                }
+
+                mImageButtonPins[pinToSet].post(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        mImageButtonPins[pinToSet].setEnabled(isPinKnockedOver);
+                    }
+                });
+
+                updateBalls(mCurrentFrame);
+                updateScore();
+            }
+        }).start();
     }
 
     /**
