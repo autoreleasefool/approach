@@ -32,11 +32,14 @@ import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 
 public class SeriesActivity extends ActionBarActivity
 {
-
+    /** Tag to identify class when outputting to console */
     private static final String TAG = "SeriesActivity";
 
+    /** List of series ids from "series" table in database to uniquely identify series */
     private List<Long> mListSeriesId;
+    /** List of series dates which will be displayed by RecyclerView */
     private List<String> mListSeriesDate;
+    /** List of scores in each series which will be displayed by RecyclerView */
     private List<List<Short>> mListSeriesGames;
 
     /** View to display series dates and games */
@@ -46,8 +49,11 @@ public class SeriesActivity extends ActionBarActivity
     /** TextView to display instructions to the user */
     private TextView mSeriesInstructionsTextView;
 
+    /** Unique id of bowler selected by the user */
     private long mBowlerId = -1;
+    /** Unique id of league selected by the user */
     private long mLeagueId = -1;
+    /** Number of games in a series in the league selected by the user */
     private byte mNumberOfGames = -1;
 
     @Override
@@ -129,6 +135,9 @@ public class SeriesActivity extends ActionBarActivity
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Creates a StatsActivity to displays the stats corresponding to the current league
+     */
     private void showLeagueStats()
     {
         getSharedPreferences(Constants.PREFERENCES, MODE_PRIVATE)
@@ -141,26 +150,54 @@ public class SeriesActivity extends ActionBarActivity
         startActivity(statsIntent);
     }
 
+    /**
+     * Loads the game ids from the database corresponding to a series id in mListSeriesIds
+     * at index position
+     *
+     * @param position index of series id to load
+     */
     public void openSeries(int position)
     {
         new OpenSeriesTask().execute(this, mListSeriesId.get(position), mNumberOfGames);
     }
 
+    /**
+     * Loads the game ids from the database corresponding to the provided series id
+     * @param srcActivity activity which called the method
+     * @param seriesId series id of which game ids should be loaded
+     * @param numberOfGames number of games in the series to be loaded
+     */
     public static void openEventSeries(Activity srcActivity, long seriesId, byte numberOfGames)
     {
         new OpenSeriesTask().execute(srcActivity, seriesId, numberOfGames);
     }
 
+    /**
+     * Creates a new entry in the database for a series and its games,
+     * using the currently selected bowler id, league id and number of games
+     */
     public void addNewLeagueSeries()
     {
         new AddSeriesTask().execute(this, mBowlerId, mLeagueId, mNumberOfGames);
     }
 
+    /**
+     * Creates a new entry in the database for a series and its games from parameters
+     *
+     * @param srcActivity activity which called the method
+     * @param bowlerId id of bowler to add series to
+     * @param leagueId id of league to add series to
+     * @param numberOfGames number of games in the series to be created
+     */
     public static void addNewEventSeries(Activity srcActivity, long bowlerId, long leagueId, byte numberOfGames)
     {
         new AddSeriesTask().execute(srcActivity, bowlerId, leagueId, numberOfGames);
     }
 
+    /**
+     * Loads the series ids, dates and scores from the database into the
+     * member variables
+     */
     private class LoadSeriesTask extends AsyncTask<Void, Void, Void>
     {
         @Override
@@ -209,11 +246,16 @@ public class SeriesActivity extends ActionBarActivity
             mSeriesAdapter.notifyDataSetChanged();
             if (mListSeriesId.size() > 0)
             {
+                //If at least one item was loaded the instructions text is removed
                 mSeriesInstructionsTextView.setVisibility(View.GONE);
             }
         }
     }
 
+    /**
+     * Creates a GameActivity to displays the leagues and events corresponding
+     * to a series id selected by the user from the list displayed
+     */
     private static class OpenSeriesTask extends AsyncTask<Object, Void, Object[]>
     {
         @Override
@@ -244,6 +286,7 @@ public class SeriesActivity extends ActionBarActivity
                     + " ORDER BY gid, fid";
             String[] rawSeriesArgs = {String.valueOf(seriesIdSelected)};
 
+            //Stores the frame ids and game ids from the database in frameId and gameId arrays
             int currentGame = -1;
             long currentGameId = -1;
             int currentFrame = -1;
@@ -273,6 +316,7 @@ public class SeriesActivity extends ActionBarActivity
         @Override
         protected void onPostExecute(Object[] params)
         {
+            //Creates the activity and passes frameIds and gameIds as extras
             Activity srcActivity = (Activity)params[0];
             long[] gameIds = (long[])params[1];
             long[] frameIds = (long[])params[2];
@@ -284,6 +328,10 @@ public class SeriesActivity extends ActionBarActivity
         }
     }
 
+    /**
+     * Creates a new series entry in the database and creates a new GameActivity
+     * to display the series to the user
+     */
     private static class AddSeriesTask extends AsyncTask<Object, Void, Object[]>
     {
         @Override
@@ -302,6 +350,10 @@ public class SeriesActivity extends ActionBarActivity
 
             database.beginTransaction();
 
+            /*
+             * Inserts new games and frames into the database, storing the ids from the games
+             * and frames as the rows in the database are created
+             */
             try
             {
                 ContentValues values = new ContentValues();
@@ -352,6 +404,7 @@ public class SeriesActivity extends ActionBarActivity
         @Override
         protected void onPostExecute(Object[] params)
         {
+            //Creates the activity and passes frameIds and gameIds as extras
             Activity srcActivity = (Activity)params[0];
             long[] gameIds = (long[])params[1];
             long[] frameIds = (long[])params[2];
