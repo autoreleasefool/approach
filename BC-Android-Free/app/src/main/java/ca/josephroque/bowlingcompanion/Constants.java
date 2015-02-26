@@ -95,6 +95,26 @@ public class Constants
     /** Reserved name of the default "Open" league */
     public static final String NAME_LEAGUE_OPEN = "Open";
 
+    //BALL VALUES
+    /** Indicates a strike was thrown */
+    public static final byte BALL_VALUE_STRIKE = 0;
+    /** Indicates a left was thrown */
+    public static final byte BALL_VALUE_LEFT = 1;
+    /** Indicates a right was thrown */
+    public static final byte BALL_VALUE_RIGHT = 2;
+    /** Indicates a left chop off was thrown */
+    public static final byte BALL_VALUE_LEFT_CHOP = 3;
+    /** Indicates a right chop off was thrown */
+    public static final byte BALL_VALUE_RIGHT_CHOP = 4;
+    /** Indicates an ace was thrown */
+    public static final byte BALL_VALUE_ACE = 5;
+    /** Indicates a left split was thrown */
+    public static final byte BALL_VALUE_LEFT_SPLIT = 6;
+    /** Indicates a right split was thrown */
+    public static final byte BALL_VALUE_RIGHT_SPLIT = 7;
+    /** Indicates a head pin was thrown */
+    public static final byte BALL_VALUE_HEAD_PIN = 8;
+
     //STAT ARRAY INDICES
     /** Index which should correspond to the number of middle hits */
     public static final byte STAT_MIDDLE_HIT = 0;

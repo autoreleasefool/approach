@@ -23,45 +23,60 @@ import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 
 public class StatsActivity extends ActionBarActivity
 {
+    /** Tag to identify class when outputting to console */
     private static final String TAG = "StatsActivity";
 
+    /** Represent names of general stats related to the middle pin */
     private static final String[] STATS_MIDDLE_GENERAL =
             {"Middle Hit", "Strikes", "Spare Conversions"};
-
+    /** Represent names of specific stats related to middle pin*/
     private static final String[] STATS_MIDDLE_DETAILED =
             {"Head Pins", "Head Pins Spared",
             "Lefts", "Lefts Spared", "Rights", "Rights Spared",
             "Aces", "Aces Spared",
             "Chop Offs", "Chop Offs Spared", "Left Chop Offs", "Left Chop Offs Spared", "Right Chop Offs", "Right Chop Offs Spared",
             "Splits", "Splits Spared", "Left Splits", "Left Splits Spared", "Right Splits", "Right Splits Spared"};
-
+    /** Represent names of stats related to fouls */
     private static final String[] STATS_FOULS =
             {"Fouls"};
-
+    /** Represent names of stats related to pins left standing at the end of each frame */
     private static final String[] STATS_PINS_TOTAL =
             {"Pins Left:"};
-
+    /** Represent names of stats related to average pins left standing per game */
     private static final String[] STATS_PINS_AVERAGE =
             {"Average Pins Left:"};
-
+    /** Represent games of general stats about a bowler, league. or event */
     private static final String[] STATS_GENERAL =
             {"Average", "High Single", "High Series", "Total Pinfall", "# of Games"};
 
+    /** Indicates all the stats related to the specified bowler should be loaded */
     private static final byte LOADING_BOWLER_STATS = 0;
+    /** Indicates all the stats related to the specified league should be loaded */
     private static final byte LOADING_LEAGUE_STATS = 1;
+    /** Indicates only the stats related to the specified game should be loaded */
     private static final byte LOADING_GAME_STATS = 2;
 
+    /** Displays the stat names and values in a list to the user */
     private RecyclerView mStatsRecycler;
+    /** Organizes stat data into a list to be displayed by mStatsRecycler */
     private RecyclerView.Adapter mStatsAdapter;
 
+    /** List of names of stats that will be displayed to the user */
     private List<String> mListStatNames;
+    /** List of values of stats corresponding to those named in mListStatNames */
     private List<String> mListStatValues;
 
+    /** Name of the bowler whose stats are being displayed */
     private String mBowlerName;
+    /** Name of the league whose stats are being displayed */
     private String mLeagueName;
+    /** Id of the bowler whose stats will be loaded and displayed */
     private long mBowlerId;
+    /** Id of the league whose stats will be loaded and displayed */
     private long mLeagueId;
+    /** Id of the game whose stats will be loaded and displayed */
     private long mGameId;
+    /** Number of the game in the series being loaded */
     private byte mGameNumber;
 
     @Override
@@ -72,6 +87,7 @@ public class StatsActivity extends ActionBarActivity
         getSupportActionBar().setBackgroundDrawable(
                 new ColorDrawable(getResources().getColor(R.color.primary_green)));
 
+        //Enables backtracking to activity which created this stats activity, since it's not always the same
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -157,42 +173,55 @@ public class StatsActivity extends ActionBarActivity
         return super.onOptionsItemSelected(item);
     }
 
-    private void increaseFirstBallStat(int firstBall, int[] statValues, int offset)
+    /**
+     * Checks which situation has occurred by the state of the pins in ball
+     *
+     * @param ball result of the pins after a ball was thrown
+     * @param statValues stat values to update
+     * @param offset indicates a spare was thrown and the spare count should be increased for a stat
+     */
+    private void increaseFirstBallStat(int ball, int[] statValues, int offset)
     {
         if (offset > 1 || offset < 0)
             throw new IllegalArgumentException("Offset must be either 0 or 1: " + offset);
 
-        switch(firstBall)
+        switch(ball)
         {
-            case 0:
+            case Constants.BALL_VALUE_STRIKE:
                 if (offset == 0)
                 {
                     statValues[Constants.STAT_STRIKES]++;
                 }
                 break;
-            case 1:statValues[Constants.STAT_LEFTS + offset]++; break;
-            case 2:statValues[Constants.STAT_RIGHTS + offset]++; break;
-            case 3:
+            case Constants.BALL_VALUE_LEFT:statValues[Constants.STAT_LEFTS + offset]++; break;
+            case Constants.BALL_VALUE_RIGHT:statValues[Constants.STAT_RIGHTS + offset]++; break;
+            case Constants.BALL_VALUE_LEFT_CHOP:
                 statValues[Constants.STAT_LEFT_CHOP_OFFS + offset]++;
                 statValues[Constants.STAT_CHOP_OFFS + offset]++;
                 break;
-            case 4:
+            case Constants.BALL_VALUE_RIGHT_CHOP:
                 statValues[Constants.STAT_RIGHT_CHOP_OFFS + offset]++;
                 statValues[Constants.STAT_CHOP_OFFS + offset]++;
                 break;
-            case 5:statValues[Constants.STAT_ACES + offset]++; break;
-            case 6:
+            case Constants.BALL_VALUE_ACE:statValues[Constants.STAT_ACES + offset]++; break;
+            case Constants.BALL_VALUE_LEFT_SPLIT:
                 statValues[Constants.STAT_LEFT_SPLITS + offset]++;
                 statValues[Constants.STAT_SPLITS + offset]++;
                 break;
-            case 7:
+            case Constants.BALL_VALUE_RIGHT_SPLIT:
                 statValues[Constants.STAT_RIGHT_SPLITS + offset]++;
                 statValues[Constants.STAT_SPLITS + offset]++;
                 break;
-            case 8:statValues[Constants.STAT_HEAD_PINS + offset]++;
+            case Constants.BALL_VALUE_HEAD_PIN:statValues[Constants.STAT_HEAD_PINS + offset]++;
         }
     }
 
+    /**
+     * Counts the total value of pins which were left at the end of a frame on the third ball
+     *
+     * @param thirdBall state of the pins after the third ball
+     * @return total value of pins left standing
+     */
     private int countPinsLeftStanding(boolean[] thirdBall)
     {
         int pinsLeftStanding = 0;
@@ -211,6 +240,12 @@ public class StatsActivity extends ActionBarActivity
         return pinsLeftStanding;
     }
 
+    /**
+     * Returns the indicated state of the pins after a ball was thrown
+     *
+     * @param firstBall the ball thrown
+     * @return the state of the pins after a ball was thrown
+     */
     private int getFirstBallValue(boolean[] firstBall)
     {
         if (!firstBall[2])
@@ -226,36 +261,44 @@ public class StatsActivity extends ActionBarActivity
         }
 
         if (numberOfPinsKnockedDown == 5)
-            return 0;       //STRIKE
+            return Constants.BALL_VALUE_STRIKE;
         else if (numberOfPinsKnockedDown == 4)
         {
             if (!firstBall[0])
-                return 1;   //LEFT
+                return Constants.BALL_VALUE_LEFT;
             else if (!firstBall[4])
-                return 2;   //RIGHT
+                return Constants.BALL_VALUE_RIGHT;
         }
         else if (numberOfPinsKnockedDown == 3)
         {
             if (!firstBall[3] && !firstBall[4])
-                return 3;   //LEFT CHOP
+                return Constants.BALL_VALUE_LEFT_CHOP;
             else if (!firstBall[0] && !firstBall[1])
-                return 4;   //RIGHT CHOP
+                return Constants.BALL_VALUE_RIGHT_CHOP;
             else if (!firstBall[0] && !firstBall[4])
-                return 5;   //ACE
+                return Constants.BALL_VALUE_ACE;
         }
         else if (numberOfPinsKnockedDown == 2)
         {
             if (firstBall[1])
-                return 6;   //LEFT SPLIT
+                return Constants.BALL_VALUE_LEFT_SPLIT;
             else if (firstBall[3])
-                return 7;   //RIGHT SPLIT
+                return Constants.BALL_VALUE_RIGHT_SPLIT;
         }
         else
-            return 8;       //HEAD PIN
+            return Constants.BALL_VALUE_HEAD_PIN;
 
         return -2;
     }
 
+    /**
+     * Sets the strings in the list mListStatValues
+     *
+     * @param statValues raw value of stat
+     * @param totalShotsAtMiddle total "first ball" opportunities for a game, league or bowler
+     * @param spareChances total chances a bowler had to spare a ball
+     * @param statOffset position in mListStatValues to start altering
+     */
     private void setGeneralAndDetailedStatValues(final int[] statValues, final int totalShotsAtMiddle, final int spareChances, final int statOffset)
     {
         int currentStatPosition = statOffset;
@@ -305,6 +348,13 @@ public class StatsActivity extends ActionBarActivity
         }
     }
 
+    /**
+     * Adds header stat names and placeholder values to certain positions
+     * in mListStatNames and mListStatValues
+     *
+     * @param bowlerLeagueOrGame indicates whether a bowler, league or game's stats are being loaded
+     * @param NUMBER_OF_GENERAL_DETAILS number of general details at the start of the lists
+     */
     private void setStatHeaders(byte bowlerLeagueOrGame, final byte NUMBER_OF_GENERAL_DETAILS)
     {
         int nextHeaderPosition = 0;
@@ -328,6 +378,12 @@ public class StatsActivity extends ActionBarActivity
         }
     }
 
+    /**
+     * Returns a cursor from database to load either bowler or league stats
+     *
+     * @param shouldGetLeagueStats if true, league stats will be loaded. Bowler stats will be loaded otherwise
+     * @return a cursor with rows relevant to mBowlerId or mLeagueId
+     */
     private Cursor getBowlerOrLeagueCursor(boolean shouldGetLeagueStats)
     {
         SQLiteDatabase database = DatabaseHelper.getInstance(this).getReadableDatabase();
@@ -355,6 +411,11 @@ public class StatsActivity extends ActionBarActivity
         return database.rawQuery(rawStatsQuery, rawStatsArgs);
     }
 
+    /**
+     * Returns a cursor from the database to load game stats
+     *
+     * @return a cursor with rows relevant to mGameId
+     */
     private Cursor getGameCursor()
     {
         SQLiteDatabase database = DatabaseHelper.getInstance(this).getReadableDatabase();
@@ -373,6 +434,9 @@ public class StatsActivity extends ActionBarActivity
         return database.rawQuery(rawStatsQuery, rawStatsArgs);
     }
 
+    /**
+     * Loads the data on a game, league or bowler and adds it to mStatsAdapter
+     */
     private class LoadStatsTask extends AsyncTask<Byte, Void, Void>
     {
         @Override
@@ -385,6 +449,7 @@ public class StatsActivity extends ActionBarActivity
             mListStatNames.add("Bowler");
             mListStatValues.add(mBowlerName);
 
+            //Adds only names to list which are relevant to the data being loaded
             mListStatNames.addAll(Arrays.asList(STATS_MIDDLE_GENERAL));
             mListStatNames.addAll(Arrays.asList(STATS_MIDDLE_DETAILED));
             mListStatNames.addAll(Arrays.asList(STATS_FOULS));
@@ -433,10 +498,13 @@ public class StatsActivity extends ActionBarActivity
                 i++;
             }
 
+            /*
+             * Passes through rows in the database and updates stats which are affected as each
+             * frame is analyzed
+             */
             int totalShotsAtMiddle = 0;
             int spareChances = 0;
             int seriesTotal = 0;
-
             if (cursor.moveToFirst())
             {
                 while(!cursor.isAfterLast())
@@ -468,19 +536,19 @@ public class StatsActivity extends ActionBarActivity
                         if (frameNumber == Constants.NUMBER_OF_FRAMES)
                         {
                             totalShotsAtMiddle++;
-                            int firstBall = getFirstBallValue(pinState[0]);
-                            if (firstBall != -1)
+                            int ballValue = getFirstBallValue(pinState[0]);
+                            if (ballValue != -1)
                                 statValues[Constants.STAT_MIDDLE_HIT]++;
-                            increaseFirstBallStat(firstBall, statValues, 0);
-                            if (firstBall < 5)
+                            increaseFirstBallStat(ballValue, statValues, 0);
+                            if (ballValue < 5)
                                 spareChances++;
 
-                            if (firstBall != 0)
+                            if (ballValue != 0)
                             {
                                 if (Arrays.equals(pinState[1], Constants.FRAME_PINS_DOWN))
                                 {
                                     statValues[Constants.STAT_SPARE_CONVERSIONS]++;
-                                    increaseFirstBallStat(firstBall, statValues, 1);
+                                    increaseFirstBallStat(ballValue, statValues, 1);
                                 }
                                 else
                                 {
@@ -490,17 +558,17 @@ public class StatsActivity extends ActionBarActivity
                             else
                             {
                                 totalShotsAtMiddle++;
-                                int secondBall = getFirstBallValue(pinState[1]);
-                                if (secondBall != -1)
+                                ballValue = getFirstBallValue(pinState[1]);
+                                if (ballValue != -1)
                                     statValues[Constants.STAT_MIDDLE_HIT]++;
-                                increaseFirstBallStat(secondBall, statValues, 0);
+                                increaseFirstBallStat(ballValue, statValues, 0);
 
-                                if (secondBall != 0)
+                                if (ballValue != 0)
                                 {
                                     if (Arrays.equals(pinState[2], Constants.FRAME_PINS_DOWN))
                                     {
                                         statValues[Constants.STAT_SPARE_CONVERSIONS]++;
-                                        increaseFirstBallStat(secondBall, statValues, 1);
+                                        increaseFirstBallStat(ballValue, statValues, 1);
                                     }
                                     else
                                     {
@@ -510,12 +578,12 @@ public class StatsActivity extends ActionBarActivity
                                 else
                                 {
                                     totalShotsAtMiddle++;
-                                    int thirdBall = getFirstBallValue(pinState[2]);
-                                    if (thirdBall != -1)
+                                    ballValue = getFirstBallValue(pinState[2]);
+                                    if (ballValue != -1)
                                         statValues[Constants.STAT_MIDDLE_HIT]++;
-                                    increaseFirstBallStat(thirdBall, statValues, 0);
+                                    increaseFirstBallStat(ballValue, statValues, 0);
 
-                                    if (thirdBall != 0)
+                                    if (ballValue != 0)
                                     {
                                         statValues[Constants.STAT_PINS_LEFT_ON_DECK] += countPinsLeftStanding(pinState[2]);
                                     }
@@ -525,20 +593,20 @@ public class StatsActivity extends ActionBarActivity
                         else
                         {
                             totalShotsAtMiddle++;
-                            int firstBall = getFirstBallValue(pinState[0]);
-                            if (firstBall != -1)
+                            int ballValue = getFirstBallValue(pinState[0]);
+                            if (ballValue != -1)
                                 statValues[Constants.STAT_MIDDLE_HIT]++;
-                            increaseFirstBallStat(firstBall, statValues, 0);
+                            increaseFirstBallStat(ballValue, statValues, 0);
 
-                            if (firstBall < 5)
+                            if (ballValue < 5)
                                 spareChances++;
 
-                            if (firstBall != 0)
+                            if (ballValue != 0)
                             {
                                 if (Arrays.equals(pinState[1], Constants.FRAME_PINS_DOWN))
                                 {
                                     statValues[Constants.STAT_SPARE_CONVERSIONS]++;
-                                    increaseFirstBallStat(firstBall, statValues, 1);
+                                    increaseFirstBallStat(ballValue, statValues, 1);
                                 }
                                 else
                                 {
