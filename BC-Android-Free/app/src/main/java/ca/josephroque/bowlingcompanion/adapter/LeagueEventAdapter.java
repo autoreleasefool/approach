@@ -31,25 +31,47 @@ import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
  * <p/>
  * Location ca.josephroque.bowlingcompanion.adapter
  * in project Bowling Companion
+ *
+ * Be aware, any documentation or code which simply refers to either a "League" or
+ * "Event" should be assumed to imply it references the other kind as well
  */
 public class LeagueEventAdapter extends RecyclerView.Adapter<LeagueEventAdapter.LeagueEventViewHolder>
 {
+    /** Tag to identify class when outputting to console */
     private static final String TAG = "LeagueEventAdapter";
 
+    /** Instance of activity which created instance of this object */
     private Activity mActivity;
 
+    /** List of league ids from "league" table in database to uniquely identify leagues */
     private List<Long> mListLeagueEventIds;
+    /** List of league names which will be displayed by RecyclerView */
     private List<String> mListLeagueEventNames;
+    /** List of league average which will be displayed by RecyclerView */
     private List<Short> mListLeagueEventAverages;
+    /** List of number of games in leagues so series with proper number of games can be created */
     private List<Byte> mListLeagueEventNumberOfGames;
 
+    /** Indicates whether this object is being used to display events or not */
     private boolean mEventMode;
 
+    /**
+     * Subclass of RecyclerView.ViewHolder to manage views which will display
+     * text to the user.
+     */
     public static class LeagueEventViewHolder extends RecyclerView.ViewHolder
     {
+        /** Displays name of league or event */
         private TextView mTextViewLeagueEventName;
+        /** Displays average score of league or event */
         private TextView mTextViewLeagueEventAverage;
 
+        /**
+         * Calls super constructor with itemLayoutView as parameter and retrieves
+         * references to TextView for member variables
+         *
+         * @param itemLayoutView
+         */
         private LeagueEventViewHolder(View itemLayoutView)
         {
             super(itemLayoutView);
@@ -60,6 +82,16 @@ public class LeagueEventAdapter extends RecyclerView.Adapter<LeagueEventAdapter.
         }
     }
 
+    /**
+     * Stores references to parameters in member variables
+     *
+     * @param activity activity which created this object
+     * @param listLeagueEventIds list of unique league ids from "league" table in database
+     * @param listLeagueEventNames list of league names which correspond to order of listLeagueEventIds
+     * @param listLeagueEventAverages list of league averages which correspond to order of listLeagueEventIds
+     * @param listLeagueEventNumberOfGames list of number of games in league which correspond to order of listLeagueEventIds
+     * @param eventMode indicates whether this object represents a list of events or not
+     */
     public LeagueEventAdapter(
             Activity activity,
             List<Long> listLeagueEventIds,
@@ -87,10 +119,17 @@ public class LeagueEventAdapter extends RecyclerView.Adapter<LeagueEventAdapter.
     @Override
     public void onBindViewHolder(final LeagueEventViewHolder holder, final int position)
     {
+        /*
+         * Sets text of TextView objects to display league names and averages to user
+         */
         holder.mTextViewLeagueEventName.setText(mListLeagueEventNames.get(position));
         holder.mTextViewLeagueEventAverage.setText("Avg: "
                 + String.valueOf(mListLeagueEventAverages.get(position)));
 
+        /*
+         * Below methods are executed when an item in the RecyclerView is
+         * clicked or long clicked.
+         */
         holder.itemView.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -117,11 +156,21 @@ public class LeagueEventAdapter extends RecyclerView.Adapter<LeagueEventAdapter.
         return mListLeagueEventIds.size();
     }
 
+    /**
+     * Prompts user with a dialog to delete all data regarding a certain
+     * league or event in the database
+     *
+     * @param position position of league id in mListLeagueEventIds
+     */
     private void showDeleteLeagueOrEventDialog(final int position)
     {
         final String leagueName = mListLeagueEventNames.get(position);
         final long leagueID = mListLeagueEventIds.get(position);
 
+        /*
+         * There is a default league "Open" which is created along with a new bowler
+         * and cannot be deleted - this conditional prevents its removal
+         */
         if (leagueName.equals(Constants.NAME_LEAGUE_OPEN))
         {
             AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
@@ -152,8 +201,14 @@ public class LeagueEventAdapter extends RecyclerView.Adapter<LeagueEventAdapter.
                 leagueName);
     }
 
+    /**
+     * Deletes all data regarding a certain league id in the database
+     *
+     * @param selectedLeagueID id of league whose data will be deleted
+     */
     private void deleteLeague(final long selectedLeagueID)
     {
+        //Removes league from RecyclerView immediately  UI doesn't hang
         final int indexOfId = mListLeagueEventIds.indexOf(selectedLeagueID);
         final String leagueName = mListLeagueEventNames.remove(indexOfId);
         mListLeagueEventAverages.remove(indexOfId);
@@ -161,11 +216,13 @@ public class LeagueEventAdapter extends RecyclerView.Adapter<LeagueEventAdapter.
         mListLeagueEventIds.remove(indexOfId);
         notifyItemRemoved(indexOfId);
 
+        //Deletion occurs on separate thread so UI does not hang
         new Thread(new Runnable()
         {
             @Override
             public void run()
             {
+                //Deletes data from all tables corresponding to selectedLeagueId
                 SQLiteDatabase database = DatabaseHelper.getInstance(mActivity).getWritableDatabase();
                 String[] whereArgs = {String.valueOf(selectedLeagueID)};
                 database.beginTransaction();
@@ -197,6 +254,10 @@ public class LeagueEventAdapter extends RecyclerView.Adapter<LeagueEventAdapter.
         }).start();
     }
 
+    /**
+     * Creates a SeriesActivity to display the series of a league or event corresponding
+     * to a league id selected by the user from the list displayed
+     */
     private class OpenLeagueEventSeriesTask extends AsyncTask<Integer, Void, Object[]>
     {
         @Override
@@ -242,6 +303,11 @@ public class LeagueEventAdapter extends RecyclerView.Adapter<LeagueEventAdapter.
                     .putString(Constants.PREFERENCE_NAME_LEAGUE, selectedLeagueName)
                     .putLong(Constants.PREFERENCE_ID_LEAGUE, selectedLeagueId);
 
+            /*
+             * If an event was selected by the user the corresponding series of the event is
+             * loaded from the database so an instance of GameActivity can be created, since
+             * creating a SeriesActivity would be redundant for a single series.
+             */
             if (mEventMode)
             {
                 String rawSeriesQuery = "SELECT "
@@ -275,12 +341,20 @@ public class LeagueEventAdapter extends RecyclerView.Adapter<LeagueEventAdapter.
         {
             if (mEventMode)
             {
+                /*
+                 * If an event was selected, creates an instance of GameActivity
+                 * displaying the event's corresponding series
+                 */
                 long seriesId = (Long)params[0];
                 byte numberOfGames = (Byte)params[1];
                 SeriesActivity.openEventSeries(mActivity, seriesId, numberOfGames);
             }
             else
             {
+                /*
+                 * If a league was selected, creates an instance of SeriesActivity
+                 * to display all available series in the league
+                 */
                 byte numberOfGames = (Byte)params[0];
                 Intent seriesIntent = new Intent(mActivity, SeriesActivity.class);
                 seriesIntent.putExtra(

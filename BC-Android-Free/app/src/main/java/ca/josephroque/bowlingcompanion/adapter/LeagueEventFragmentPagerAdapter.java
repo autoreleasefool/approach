@@ -14,9 +14,16 @@ import ca.josephroque.bowlingcompanion.fragments.LeagueEventFragment;
  */
 public class LeagueEventFragmentPagerAdapter extends FragmentPagerAdapter
 {
+    /** Total number of fragments displayed by this adapter */
     final int PAGE_COUNT = 2;
+    /** Titles of fragment tabs */
     private String[] tabTitles = {"Leagues", "Events"};
 
+    /**
+     * Default constructor
+     *
+     * @param fm FragmentManager of activity
+     */
     public LeagueEventFragmentPagerAdapter(FragmentManager fm)
     {
         super(fm);

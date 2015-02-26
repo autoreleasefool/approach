@@ -23,16 +23,27 @@ import ca.josephroque.bowlingcompanion.R;
 public class NewBowlerDialog extends DialogFragment
 {
 
+    /** Instance of listener which contains methods that are executed upon user interaction */
     private NewBowlerDialogListener mDialogListener;
 
+    /**
+     * Provides a method to the activity which created this object to handle
+     * user interaction with the dialog
+     */
     public static interface NewBowlerDialogListener
     {
+        /**
+         * Executed when user opts to add a new bowler
+         *
+         * @param element name of the new bowler to add
+         */
         public void onAddNewBowler(String element);
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
+        //Displays a dialog to the user and waits for input
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View dialogView = inflater.inflate(R.layout.dialog_new_bowler, null);
@@ -68,6 +79,12 @@ public class NewBowlerDialog extends DialogFragment
     {
         super.onAttach(activity);
 
+        /*
+         * Attempts to cast the parent activity to a listener object for this dialog.
+         * If the parent activity cannot be cast to a listener, then this dialog
+         * is effectively useless and the program will crash until a correct
+         * implementation is completed
+         */
         try
         {
             mDialogListener = (NewBowlerDialogListener)activity;

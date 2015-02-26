@@ -10,9 +10,13 @@ public class Constants
 {
 
     //GAME VALUES
+    /** The maximum number of games in a league */
     public static final byte MAX_NUMBER_LEAGUE_GAMES = 5;
+    /** The maximum number of games in an event */
     public static final byte MAX_NUMBER_EVENT_GAMES = 20;
+    /** The maximum number of frames in a single game */
     public static final byte NUMBER_OF_FRAMES = 10;
+    /** The last frame in a game (starting from frame 0) */
     public static final byte LAST_FRAME = 9;
 
     //SCORING VALUES
@@ -36,37 +40,59 @@ public class Constants
     public static final String BALL_HEAD_PIN_2 = "H2";
     /** Symbol representing an empty frame */
     public static final String BALL_EMPTY = "-";
-
+    /** Array representing the state of all pins as being knocked down */
     public static final boolean[] FRAME_PINS_DOWN = {true, true, true, true, true};
 
     //INTENT EXTRAS
+    /** Key value which represents the value of "Event Mode" */
     public static final String EXTRA_EVENT_MODE = "EM";
+    /** Key value which represents the value of the "Number of Games" */
     public static final String EXTRA_NUMBER_OF_GAMES = "ENOG";
+    /** Key value which represents the value of "Game Ids" */
     public static final String EXTRA_ARRAY_GAME_IDS = "EAGI";
+    /** Key value which represents the value of "Frame Ids" */
     public static final String EXTRA_ARRAY_FRAME_IDS = "EAFI";
+    /** Key value which represents the "Game Number" */
     public static final String EXTRA_GAME_NUMBER = "EGN";
 
     //PREFERENCES
+    /** Identifier to retrieve shared preferences */
     public static final String PREFERENCES = "ca.josephroque.bowlingcompanionfree";
+    /** Key value for the id of the most recent bowler */
     public static final String PREFERENCE_ID_RECENT_BOWLER = "IdRB";
+    /** Key value for the id of the most recent league */
     public static final String PREFERENCE_ID_RECENT_LEAGUE = "IdRL";
+    /** Key value for the id of the set "quick" bowler */
     public static final String PREFERENCE_ID_QUICK_BOWLER = "IdQB";
+    /** Key value for the id of the set "quick" league */
     public static final String PREFERENCE_ID_QUICK_LEAGUE = "IdQL";
+    /** Key value for the id of the selected bowler */
     public static final String PREFERENCE_ID_BOWLER = "IdB";
+    /** Key value for the id of the selected league */
     public static final String PREFERENCE_ID_LEAGUE = "IdL";
+    /** Key value for the id of the selected series */
     public static final String PREFERENCE_ID_SERIES = "IdS";
+    /** Key value for the id of the selected game */
     public static final String PREFERENCE_ID_GAME = "IdG";
+    /** Key value for the name of the selected bowler */
     public static final String PREFERENCE_NAME_BOWLER = "NB";
+    /** Key value for the name of the selected league */
     public static final String PREFERENCE_NAME_LEAGUE = "NL";
 
     //DIALOG BUTTON TEXT
+    /** Dialog text for an "Okay" button */
     public static final String DIALOG_OKAY = "Okay";
+    /** Dialog text for an "Add" button */
     public static final String DIALOG_ADD = "Add";
+    /** Dialog text for a "Cancel" button */
     public static final String DIALOG_CANCEL = "Cancel";
+    /** Dialog text for a "Delete" button */
     public static final String DIALOG_DELETE = "Delete";
 
     //NAME DEFAULTS
+    /** Maximum length for the name of a bowler, league or event */
     public static final int NAME_MAX_LENGTH = 30;
+    /** Reserved name of the default "Open" league */
     public static final String NAME_LEAGUE_OPEN = "Open";
 
     //STAT ARRAY INDICES
@@ -132,9 +158,4 @@ public class Constants
     public static final byte STAT_TOTAL_PINFALL = 29;
     /** Index which should correspond to the bowler/league total number of games */
     public static final byte STAT_NUMBER_OF_GAMES = 30;
-
-    //THEME COLORS
-    //public static final String COLOR_BACKGROUND_PRIMARY = "#BDC3C7";
-    //public static final String COLOR_BACKGROUND_SECONDARY = "#ECF0F1";
-    //public static final String COLOR_ACTIONBAR = "#2ECC71";
 }
