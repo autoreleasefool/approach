@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,6 +28,8 @@ import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 public class SettingsFragment extends PreferenceFragment
     implements SharedPreferences.OnSharedPreferenceChangeListener
 {
+
+    private static final String TAG = "SettingsFragment";
 
     private String[] mArrayBowlerNames;
     private String[][] mArrayLeagueNames;
@@ -116,6 +119,7 @@ public class SettingsFragment extends PreferenceFragment
 
             String selectedBowlerId = quickBowlerPref.getValue();
             mCurrentBowlerPosition = Arrays.binarySearch(mArrayBowlerIdsAsStrings, selectedBowlerId);
+            Log.w(TAG, "current: " + mCurrentBowlerPosition + " selected: "+ selectedBowlerId);
             quickLeaguePref.setValue(mArrayLeagueIdsAsStrings[mCurrentBowlerPosition][0]);
 
             quickBowlerPref.setSummary(mArrayBowlerNames[mCurrentBowlerPosition]);
@@ -164,10 +168,19 @@ public class SettingsFragment extends PreferenceFragment
         }
         else if (key.equals(Constants.KEY_PREF_THEME_COLORS))
         {
+            String themeColor = sharedPreferences.getString(key, "Greem");
+            Preference themePref = findPreference(key);
+            themePref.setSummary("Current theme is " + themeColor);
+
             //TODO change theme colors
         }
         else if (key.equals(Constants.KEY_PREF_THEME_LIGHT))
         {
+            boolean lightThemeEnabled = sharedPreferences.getBoolean(key, true);
+            Preference lightPref = findPreference(key);
+            lightPref.setSummary((lightThemeEnabled)
+                    ? R.string.pref_theme_light_summary
+                    : R.string.pref_theme_dark_summary);
             //TODO change theme variation
         }
     }
@@ -184,9 +197,9 @@ public class SettingsFragment extends PreferenceFragment
                 + " FROM " + BowlerEntry.TABLE_NAME + " AS bowler"
                 + " JOIN " + LeagueEntry.TABLE_NAME + " AS league"
                 + " ON bowler." + BowlerEntry._ID + "=league." + LeagueEntry._ID
-                + " WHERE " + LeagueEntry.COLUMN_NAME_IS_EVENT + "=?"
+                + " WHERE " + LeagueEntry.COLUMN_NAME_IS_EVENT + "=? AND " + LeagueEntry.COLUMN_NAME_LEAGUE_NAME + "!=?"
                 + " ORDER BY " + BowlerEntry.COLUMN_NAME_BOWLER_NAME + ", " + LeagueEntry.COLUMN_NAME_LEAGUE_NAME;
-        String[] rawNameArgs = {"0"};
+        String[] rawNameArgs = {"0", Constants.NAME_LEAGUE_OPEN};
         Cursor cursor = database.rawQuery(rawNameQuery, rawNameArgs);
 
         List<String> listBowlerNames = new ArrayList<>();

@@ -88,7 +88,7 @@ public class MainActivity extends ActionBarActivity
         getSupportActionBar().setBackgroundDrawable(
                 new ColorDrawable(getResources().getColor(R.color.primary_green)));
 
-        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, true);
 
         mListBowlerIds = new ArrayList<>();
         mListBowlerNames = new ArrayList<>();

@@ -53,6 +53,7 @@
     <string name="pref_theme_colors_title">Theme colors</string>
     <string name="pref_theme_colors_dialog">Select a Theme</string>
     <string name="pref_theme_colors_default">Green</string>
+    <string name="pref_theme_colors_default_summary">Current theme is Green</string>
     <string name="pref_theme_light_title">Light theme variation</string>
     <string name="pref_theme_light_summary">Theme is a lighter variation</string>
     <string name="pref_theme_dark_summary">Theme is a darker variation</string>
