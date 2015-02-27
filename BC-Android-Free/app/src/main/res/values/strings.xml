@@ -10,6 +10,7 @@
     <string name="title_activity_stats_game">Game Stats</string>
     <string name="title_activity_stats_league">League Stats</string>
     <string name="title_activity_stats_bowler">Bowler Stats</string>
+    <string name="title_activity_settings">Settings</string>
 
     <!-- ACTION BUTTON LABELS -->
     <string name="action_quick_series">Quick Series</string>
