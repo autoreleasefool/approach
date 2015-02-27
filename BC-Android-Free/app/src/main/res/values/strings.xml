@@ -32,8 +32,6 @@
     <string name="drawer_close">Close navigation drawer</string>
 
     <!-- PREFERENCES -->
-    <string name="pref_remove_ads_title">Remove Ads</string>
-    <string name="pref_remove_ads_summary">Remove ads for $0.99</string>
     <string name="pref_quick_series_title">Quick Series</string>
     <string name="pref_enable_quick_title">Enable quick series</string>
     <string name="pref_quick_bowler_dialog">Select a Bowler</string>

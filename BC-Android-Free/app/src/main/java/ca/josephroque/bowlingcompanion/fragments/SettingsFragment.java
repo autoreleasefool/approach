@@ -85,14 +85,28 @@ public class SettingsFragment extends PreferenceFragment
                 quickLeaguePref.setValue(mArrayLeagueNames[0][0]);
                 quickLeaguePref.setEnabled(true);
                 quickLeaguePref.setSummary(mArrayLeagueNames[0][0]);
+
+                getActivity().getSharedPreferences(Constants.PREFERENCES, Context.MODE_PRIVATE)
+                        .edit()
+                        .putLong(Constants.PREFERENCE_ID_QUICK_BOWLER, 0)
+                        .putLong(Constants.PREFERENCE_ID_QUICK_LEAGUE, 0)
+                        .apply();
             }
             else
             {
                 quickPref.setSummary(R.string.pref_enable_quick_summary_recent);
                 quickBowlerPref.setEnabled(false);
                 quickBowlerPref.setSummary("");
+                quickBowlerPref.setValue(mArrayBowlerNames[0]);
                 quickLeaguePref.setEnabled(false);
                 quickLeaguePref.setSummary("");
+                quickLeaguePref.setValue(mArrayLeagueNames[0][0]);
+
+                getActivity().getSharedPreferences(Constants.PREFERENCES, Context.MODE_PRIVATE)
+                        .edit()
+                        .putLong(Constants.PREFERENCE_ID_QUICK_BOWLER, -1)
+                        .putLong(Constants.PREFERENCE_ID_QUICK_LEAGUE, -1)
+                        .apply();
             }
         }
         else if (key.equals(Constants.KEY_PREF_QUICK_BOWLER))
@@ -238,8 +252,6 @@ public class SettingsFragment extends PreferenceFragment
 
     private void setPreferenceSummaries()
     {
-        //TODO remove ads preference
-
         SharedPreferences sharedPreferences = getPreferenceManager().getSharedPreferences();
 
         Preference preference = findPreference(Constants.KEY_PREF_ENABLE_QUICK);
