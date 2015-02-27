@@ -31,6 +31,38 @@
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
 
+    <!-- PREFERENCES -->
+    <string name="pref_remove_ads_title">Remove Ads</string>
+    <string name="pref_remove_ads_summary">Remove ads for $0.99</string>
+    <string name="pref_quick_series_title">Quick Series</string>
+    <string name="pref_enable_quick_title">Enable quick series</string>
+    <string name="pref_quick_bowler_dialog">Select a Bowler</string>
+    <string name="pref_quick_league_dialog">Select a League</string>
+    <string name="pref_enable_quick_summary_recent">A recent bowler/league will be used to create a quick series</string>
+    <string name="pref_enable_quick_summary_quick">A custom bowler/league will be used to create a quick series</string>
+    <string name="pref_quick_bowler_title">Bowler</string>
+    <string name="pref_quick_bowler_summary">Quick series will be created for this bowler</string>
+    <string name="pref_quick_league_title">League</string>
+    <string name="pref_quick_league_summary">Quick series will be created for this league</string>
+    <string name="pref_pins_title">Pins</string>
+    <string name="pref_enable_pins_title">Enable pin images</string>
+    <string name="pref_enable_pins_summary_images">Images of pins will be displayed</string>
+    <string name="pref_enable_pins_summary_buttons">Buttons will be displayed</string>
+    <string name="pref_offset_pins_title">Offset pins</string>
+    <string name="pref_offset_pins_summary_offset">Pins will be displayed in an offset line</string>
+    <string name="pref_offset_pins_summar_straight">Pins will be displayed in a straight line</string>
+    <string name="pref_theme_title">Theme</string>
+    <string name="pref_theme_colors_title">Theme colors</string>
+    <string name="pref_theme_colors_dialog">Select a Theme</string>
+    <string name="pref_theme_colors_default">Green</string>
+    <string name="pref_theme_light_title">Light theme variation</string>
+    <string name="pref_theme_light_summary">Theme is a lighter variation</string>
+    <string name="pref_theme_dark_summary">Theme is a darker variation</string>
+    <string name="pref_other_title">Other</string>
+    <string name="pref_developer_website_title">Visit Developer Website</string>
+    <string name="pref_rate_title">Rate App</string>
+    <string name="pref_report_bug_title">Report a Bug</string>
+
     <!-- ADVERTISEMENTS -->
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
 

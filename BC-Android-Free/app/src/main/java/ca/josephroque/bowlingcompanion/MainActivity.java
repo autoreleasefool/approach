@@ -8,9 +8,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -87,6 +87,8 @@ public class MainActivity extends ActionBarActivity
         setContentView(R.layout.activity_main);
         getSupportActionBar().setBackgroundDrawable(
                 new ColorDrawable(getResources().getColor(R.color.primary_green)));
+
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
 
         mListBowlerIds = new ArrayList<>();
         mListBowlerNames = new ArrayList<>();

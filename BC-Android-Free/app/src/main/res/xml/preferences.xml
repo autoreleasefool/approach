@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <CheckBoxPreference
+        android:key="pref_remove_ads"
+        android:title="@string/pref_remove_ads_title"
+        android:summary="@string/pref_remove_ads_summary"
+        android:defaultValue="false" />
+
+    <PreferenceCategory
+        android:title="@string/pref_quick_series_title"
+        android:key="pref_quick_series_settings">
+
+        <SwitchPreference
+            android:key="pref_enable_quick_series"
+            android:title="@string/pref_enable_quick_title"
+            android:summary="@string/pref_enable_quick_summary_recent"
+            android:defaultValue="false" />
+        <ListPreference
+            android:key="pref_quick_bowler"
+            android:title="@string/pref_quick_bowler_title"
+            android:summary="@string/pref_quick_bowler_summary"
+            android:dialogTitle="@string/pref_quick_bowler_dialog"/>
+        <ListPreference
+            android:key="pref_quick_league"
+            android:title="@string/pref_quick_league_title"
+            android:summary="@string/pref_quick_league_summary"
+            android:dialogTitle="@string/pref_quick_league_dialog"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/pref_pins_title"
+        android:key="pref_pins_settings">
+
+        <SwitchPreference
+            android:key="pref_enable_pins"
+            android:title="@string/pref_enable_pins_title"
+            android:summary="@string/pref_enable_pins_summary_images"
+            android:defaultValue="true" />
+        <SwitchPreference
+            android:key="pref_offset_pins"
+            android:title="@string/pref_offset_pins_title"
+            android:summary="@string/pref_offset_pins_summary_offset"
+            android:defaultValue="true" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/pref_theme_title"
+        android:key="pref_theme_settings" >
+
+        <ListPreference
+            android:key="pref_theme_colors"
+            android:title="@string/pref_theme_colors_title"
+            android:dialogTitle="@string/pref_theme_colors_dialog"
+            android:summary="@string/pref_theme_colors_default"
+            android:entries="@array/pref_theme_color_names"
+            android:entryValues="@array/pref_theme_color_names"
+            android:defaultValue="@string/pref_theme_colors_default" />
+        <SwitchPreference
+            android:key="pref_theme_light"
+            android:title="@string/pref_theme_light_title"
+            android:summary="@string/pref_theme_light_summary"
+            android:defaultValue="true" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/pref_other_title"
+        android:key="pref_other_settings" >
+
+        <Preference
+            android:key="pref_developer_website"
+            android:title="@string/pref_developer_website_title">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="http://josephroque.ca" />
+        </Preference>
+
+        <!-- TODO add link to rate app screen -->
+        <Preference
+            android:key="pref_rate"
+            android:title="@string/pref_rate_title">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="http://josephroque.ca" />
+        </Preference>
+
+        <!-- TODO add link to report bug screen -->
+        <Preference
+            android:key="pref_report_bug"
+            android:title="@string/pref_report_bug_title">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="http://josephroque.ca" />
+        </Preference>
+    </PreferenceCategory>
+
+</PreferenceScreen>
