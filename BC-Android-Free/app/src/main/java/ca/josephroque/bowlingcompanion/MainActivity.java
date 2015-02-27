@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -157,7 +158,7 @@ public class MainActivity extends ActionBarActivity
         switch(item.getItemId())
         {
             case R.id.action_settings:
-                //TODO: showSettingsMenu();
+                showSettingsMenu();
                 return true;
             case R.id.action_quick_series:
                 //Action bar button pressed, quick series
@@ -166,6 +167,16 @@ public class MainActivity extends ActionBarActivity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Creates a new settings activity and displays it to the user
+     */
+    private void showSettingsMenu()
+    {
+        Intent settingsIntent = new Intent(this, SettingsActivity.class);
+        settingsIntent.putExtra(Constants.EXTRA_SETTINGS_SOURCE, TAG);
+        startActivity(settingsIntent);
     }
 
     @Override

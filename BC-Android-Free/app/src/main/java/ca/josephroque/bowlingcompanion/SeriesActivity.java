@@ -125,11 +125,21 @@ public class SeriesActivity extends ActionBarActivity
                 showLeagueStats();
                 return true;
             case R.id.action_settings:
-                //TODO: showSettingsMenu();
+                showSettingsMenu();
                 return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /**
+     * Creates a new settings activity and displays it to the user
+     */
+    private void showSettingsMenu()
+    {
+        Intent settingsIntent = new Intent(this, SettingsActivity.class);
+        settingsIntent.putExtra(Constants.EXTRA_SETTINGS_SOURCE, TAG);
+        startActivity(settingsIntent);
     }
 
     /**

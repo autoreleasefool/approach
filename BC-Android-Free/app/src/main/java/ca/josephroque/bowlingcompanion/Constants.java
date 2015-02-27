@@ -54,6 +54,8 @@ public class Constants
     public static final String EXTRA_ARRAY_FRAME_IDS = "EAFI";
     /** Key value which represents the "Game Number" */
     public static final String EXTRA_GAME_NUMBER = "EGN";
+    /** Key value which represents the activity which created a new settings activity */
+    public static final String EXTRA_SETTINGS_SOURCE = "ESS";
 
     //PREFERENCES
     /** Identifier to retrieve shared preferences */
