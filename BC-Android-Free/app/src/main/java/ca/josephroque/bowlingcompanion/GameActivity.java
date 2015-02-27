@@ -454,7 +454,28 @@ public class GameActivity extends ActionBarActivity
     private void showWhatIfDialog()
     {
         StringBuilder alertMessageBuilder = new StringBuilder("If you get");
-        int possibleScore = Integer.parseInt(mTextViewFrames[mCurrentFrame].getText().toString());
+        short possibleScore = Short.parseShort(mTextViewFrames[mCurrentFrame].getText().toString());
+
+        if (mCurrentFrame < Constants.LAST_FRAME)
+        {
+            if (Arrays.equals(mPinState[mCurrentFrame][0], Constants.FRAME_PINS_DOWN))
+            {
+                int firstBallNextFrame = GameScore.getValueOfFrame(mPinState[mCurrentFrame + 1][0]);
+                if (firstBallNextFrame == 15 && mCurrentFrame < Constants.LAST_FRAME - 1)
+                {
+                    possibleScore -= 15;
+                    possibleScore -= GameScore.getValueOfFrame(mPinState[mCurrentFrame + 2][0]);
+                }
+                else
+                {
+                    possibleScore -= GameScore.getValueOfFrame(mPinState[mCurrentFrame + 1][1]);
+                }
+            }
+            else if (Arrays.equals(mPinState[mCurrentFrame][1], Constants.FRAME_PINS_DOWN))
+            {
+                possibleScore -= GameScore.getValueOfFrame(mPinState[mCurrentFrame + 1][0]);
+            }
+        }
 
         int pinsLeftStanding = 0;
         for (int i = 0; i < 5; i++)
