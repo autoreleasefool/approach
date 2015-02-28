@@ -282,6 +282,7 @@ public class GameActivity extends ActionBarActivity
                              */
                             Intent seriesIntent = new Intent(GameActivity.this, SeriesActivity.class);
                             seriesIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            seriesIntent.putExtra(Constants.EXTRA_NUMBER_OF_GAMES, mNumberOfGames);
                             startActivity(seriesIntent);
                             break;
                         }
@@ -425,6 +426,12 @@ public class GameActivity extends ActionBarActivity
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
+
+        if (mDrawerToggle.onOptionsItemSelected(item))
+        {
+            return true;
+        }
+
         switch(item.getItemId())
         {
             case R.id.action_what_if:
