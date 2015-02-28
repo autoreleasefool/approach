@@ -79,16 +79,10 @@ public class SettingsFragment extends PreferenceFragment
             {
                 quickPref.setSummary(R.string.pref_enable_quick_summary_quick);
 
-                quickBowlerPref.setEntries(mArrayBowlerNames);
-                quickBowlerPref.setEntryValues(mArrayBowlerIdsAsStrings);
-                quickBowlerPref.setValue(mArrayBowlerNames[0]);
                 quickBowlerPref.setEnabled(true);
-                quickBowlerPref.setSummary(mArrayBowlerNames[0]);
-
-                quickLeaguePref.setEntries(mArrayLeagueNames[0]);
-                quickLeaguePref.setEntryValues(mArrayLeagueIdsAsStrings[0]);
-                quickLeaguePref.setValue(mArrayLeagueNames[0][0]);
                 quickLeaguePref.setEnabled(true);
+                quickBowlerPref.setValueIndex(0);
+                quickBowlerPref.setSummary(mArrayBowlerNames[0]);
                 quickLeaguePref.setSummary(mArrayLeagueNames[0][0]);
 
                 getActivity().getSharedPreferences(Constants.PREFERENCES, Context.MODE_PRIVATE)
@@ -102,10 +96,9 @@ public class SettingsFragment extends PreferenceFragment
                 quickPref.setSummary(R.string.pref_enable_quick_summary_recent);
                 quickBowlerPref.setEnabled(false);
                 quickBowlerPref.setSummary("");
-                quickBowlerPref.setValue(mArrayBowlerNames[0]);
+                quickBowlerPref.setValueIndex(0);
                 quickLeaguePref.setEnabled(false);
                 quickLeaguePref.setSummary("");
-                quickLeaguePref.setValue(mArrayLeagueNames[0][0]);
 
                 getActivity().getSharedPreferences(Constants.PREFERENCES, Context.MODE_PRIVATE)
                         .edit()
@@ -122,18 +115,14 @@ public class SettingsFragment extends PreferenceFragment
             String selectedBowlerId = quickBowlerPref.getValue();
             mCurrentBowlerPosition = Arrays.binarySearch(mArrayBowlerIdsAsStrings, selectedBowlerId);
             Log.w(TAG, "current: " + mCurrentBowlerPosition + " selected: "+ selectedBowlerId);
-            quickLeaguePref.setValue(mArrayLeagueIdsAsStrings[mCurrentBowlerPosition][0]);
-
+            quickLeaguePref.setValueIndex(0);
             quickBowlerPref.setSummary(mArrayBowlerNames[mCurrentBowlerPosition]);
-            quickLeaguePref.setSummary(mArrayLeagueNames[mCurrentBowlerPosition][0]);
 
             getActivity().getSharedPreferences(Constants.PREFERENCES, Context.MODE_PRIVATE)
                     .edit()
                     .putLong(
                             Constants.PREFERENCE_ID_QUICK_BOWLER,
                             Long.parseLong(mArrayBowlerIdsAsStrings[mCurrentBowlerPosition]))
-                    .putLong(Constants.PREFERENCE_ID_QUICK_LEAGUE,
-                            Long.parseLong(mArrayLeagueIdsAsStrings[mCurrentBowlerPosition][0]))
                     .apply();
         }
         else if (key.equals(Constants.KEY_PREF_QUICK_LEAGUE))
@@ -142,8 +131,6 @@ public class SettingsFragment extends PreferenceFragment
 
             String selectedLeagueId = quickLeaguePref.getValue();
             int selectedPosition = Arrays.binarySearch(mArrayLeagueIdsAsStrings[mCurrentBowlerPosition], selectedLeagueId);
-            quickLeaguePref.setValue(mArrayLeagueIdsAsStrings[mCurrentBowlerPosition][selectedPosition]);
-
             quickLeaguePref.setSummary(mArrayLeagueNames[mCurrentBowlerPosition][selectedPosition]);
 
             getActivity().getSharedPreferences(Constants.PREFERENCES, Context.MODE_PRIVATE)
@@ -197,7 +184,7 @@ public class SettingsFragment extends PreferenceFragment
                 + "league." + LeagueEntry._ID + " AS lid"
                 + " FROM " + BowlerEntry.TABLE_NAME + " AS bowler"
                 + " JOIN " + LeagueEntry.TABLE_NAME + " AS league"
-                + " ON bowler." + BowlerEntry._ID + "=league." + LeagueEntry._ID
+                + " ON bowler." + BowlerEntry._ID + "=league." + LeagueEntry.COLUMN_NAME_BOWLER_ID
                 + " WHERE " + LeagueEntry.COLUMN_NAME_IS_EVENT + "=? AND " + LeagueEntry.COLUMN_NAME_LEAGUE_NAME + "!=?"
                 + " ORDER BY " + BowlerEntry.COLUMN_NAME_BOWLER_NAME + ", " + LeagueEntry.COLUMN_NAME_LEAGUE_NAME;
         String[] rawNameArgs = {"0", Constants.NAME_LEAGUE_OPEN};
@@ -215,6 +202,10 @@ public class SettingsFragment extends PreferenceFragment
             while(!cursor.isAfterLast())
             {
                 long bowlerId = cursor.getLong(cursor.getColumnIndex("bid"));
+
+                Log.w(TAG, "Bowler: " + cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_NAME_BOWLER_NAME))
+                        + "\nLeague: " + cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_LEAGUE_NAME))
+                        + "\n---------------");
 
                 if (lastBowlerId == bowlerId)
                 {
@@ -240,6 +231,12 @@ public class SettingsFragment extends PreferenceFragment
                 }
                 cursor.moveToNext();
             }
+            findPreference(Constants.KEY_PREF_ENABLE_QUICK).setEnabled(true);
+            if (getPreferenceManager().getSharedPreferences().getBoolean(Constants.KEY_PREF_ENABLE_QUICK, false))
+            {
+                findPreference(Constants.KEY_PREF_QUICK_BOWLER).setEnabled(true);
+                findPreference(Constants.KEY_PREF_QUICK_LEAGUE).setEnabled(true);
+            }
         }
         else
         {
@@ -262,6 +259,11 @@ public class SettingsFragment extends PreferenceFragment
             mArrayLeagueNames[i] = new String[listLeagueNames.get(i).size()];
             listLeagueNames.get(i).toArray(mArrayLeagueNames[i]);
         }
+
+        ListPreference quickBowlerPref = (ListPreference)findPreference(Constants.KEY_PREF_QUICK_BOWLER);
+        quickBowlerPref.setEntries(mArrayBowlerNames);
+        quickBowlerPref.setEntryValues(mArrayBowlerIdsAsStrings);
+        quickBowlerPref.setValueIndex(0);
     }
 
     private void setPreferenceSummaries()
