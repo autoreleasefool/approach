@@ -45,6 +45,4 @@
     <color name="theme_dark_gray_primary">#414345</color>
     <color name="theme_dark_gray_secondary">#313335</color>
     <color name="theme_dark_gray_tertiary">#202225</color>
-
-    <color name="game_above_300">#5BD55B</color>
 </resources>

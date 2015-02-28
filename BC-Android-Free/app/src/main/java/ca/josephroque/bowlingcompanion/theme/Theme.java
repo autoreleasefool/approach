@@ -20,8 +20,8 @@ public class Theme
     private static int sThemeColorActionBarTabs = -1;
     private static int sThemeColorActionButton = -1;
     private static int sThemeColorActionButtonRipple = -1;
+    private static int sThemeColorGameScoreHighlight = -1;
 
-    private static boolean sLightThemeVariationEnabled = true;
     private static String sThemeName = "Green";
 
     private static boolean sMainActivityThemeSet = true;
@@ -43,8 +43,6 @@ public class Theme
 
     public static void setTheme(Activity srcActivity, String themeName, boolean lightThemeEnabled)
     {
-        sLightThemeVariationEnabled = lightThemeEnabled;
-
         if (themeName == null)
         {
             themeName = sThemeName;
@@ -69,6 +67,10 @@ public class Theme
                     (lightThemeEnabled)
                             ? R.color.theme_light_green_tertiary
                             : R.color.theme_dark_green_tertiary);
+            sThemeColorGameScoreHighlight = srcActivity.getResources().getColor(
+                    (lightThemeEnabled)
+                            ? R.color.theme_light_green_primary
+                            : R.color.theme_dark_green_primary);
         }
         else if (themeName.equals("Orange"))
         {
@@ -88,6 +90,10 @@ public class Theme
                     (lightThemeEnabled)
                             ? R.color.theme_light_orange_tertiary
                             : R.color.theme_dark_orange_tertiary);
+            sThemeColorGameScoreHighlight = srcActivity.getResources().getColor(
+                    (lightThemeEnabled)
+                            ? R.color.theme_light_orange_primary
+                            : R.color.theme_dark_orange_primary);
         }
         else if (themeName.equals("Blue"))
         {
@@ -107,6 +113,10 @@ public class Theme
                     (lightThemeEnabled)
                             ? R.color.theme_light_blue_tertiary
                             : R.color.theme_dark_blue_tertiary);
+            sThemeColorGameScoreHighlight = srcActivity.getResources().getColor(
+                    (lightThemeEnabled)
+                            ? R.color.theme_light_blue_primary
+                            : R.color.theme_dark_blue_primary);
         }
         else if (themeName.equals("Purple"))
         {
@@ -126,6 +136,10 @@ public class Theme
                     (lightThemeEnabled)
                             ? R.color.theme_light_purple_tertiary
                             : R.color.theme_dark_purple_tertiary);
+            sThemeColorGameScoreHighlight = srcActivity.getResources().getColor(
+                    (lightThemeEnabled)
+                            ? R.color.theme_light_purple_primary
+                            : R.color.theme_dark_purple_primary);
         }
         else if (themeName.equals("Red"))
         {
@@ -145,6 +159,10 @@ public class Theme
                     (lightThemeEnabled)
                             ? R.color.theme_light_red_tertiary
                             : R.color.theme_dark_red_tertiary);
+            sThemeColorGameScoreHighlight = srcActivity.getResources().getColor(
+                    (lightThemeEnabled)
+                            ? R.color.theme_light_red_primary
+                            : R.color.theme_dark_red_primary);
         }
         else if (themeName.equals("Grayscale"))
         {
@@ -164,6 +182,10 @@ public class Theme
                     (lightThemeEnabled)
                             ? R.color.theme_light_gray_tertiary
                             : R.color.theme_dark_gray_tertiary);
+            sThemeColorGameScoreHighlight = srcActivity.getResources().getColor(
+                    (lightThemeEnabled)
+                            ? R.color.theme_light_gray_primary
+                            : R.color.theme_dark_gray_primary);
         }
 
         invalidateActivityThemes();
@@ -203,4 +225,5 @@ public class Theme
     public static int getActionBarTabThemeColor() {return sThemeColorActionBarTabs;}
     public static int getActionButtonThemeColor() {return sThemeColorActionButton;}
     public static int getActionButtonRippleThemeColor() {return sThemeColorActionButtonRipple;}
+    public static int getGameScoreHighlightThemeColor() {return sThemeColorGameScoreHighlight;}
 }

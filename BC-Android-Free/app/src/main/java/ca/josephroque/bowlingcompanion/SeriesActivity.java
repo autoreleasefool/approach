@@ -49,7 +49,7 @@ public class SeriesActivity extends ActionBarActivity
     /** View to display series dates and games */
     private RecyclerView mSeriesRecycler;
     /** Adapter to manage data displayed in mSeriesRecycler */
-    private RecyclerView.Adapter mSeriesAdapter;
+    private SeriesAdapter mSeriesAdapter;
     /** TextView to display instructions to the user */
     private TextView mSeriesInstructionsTextView;
 
@@ -65,7 +65,6 @@ public class SeriesActivity extends ActionBarActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_series);
-        updateTheme();
 
         mListSeriesId = new ArrayList<Long>();
         mListSeriesDate = new ArrayList<String>();
@@ -92,6 +91,7 @@ public class SeriesActivity extends ActionBarActivity
         });
 
         mSeriesInstructionsTextView = (TextView)findViewById(R.id.textView_new_series_instructions);
+        updateTheme();
     }
 
     @Override
@@ -103,6 +103,10 @@ public class SeriesActivity extends ActionBarActivity
         mBowlerId = preferences.getLong(Constants.PREFERENCE_ID_BOWLER, -1);
         mLeagueId = preferences.getLong(Constants.PREFERENCE_ID_LEAGUE, -1);
         mNumberOfGames = getIntent().getByteExtra(Constants.EXTRA_NUMBER_OF_GAMES, (byte)-1);
+
+        mListSeriesId.clear();
+        mListSeriesDate.clear();
+        mListSeriesGames.clear();
 
         if (Theme.getSeriesActivityThemeInvalidated())
         {
@@ -439,6 +443,7 @@ public class SeriesActivity extends ActionBarActivity
         floatingActionButton.setColorNormal(Theme.getActionButtonThemeColor());
         floatingActionButton.setColorPressed(Theme.getActionButtonThemeColor());
         floatingActionButton.setColorRipple(Theme.getActionButtonRippleThemeColor());
+        mSeriesAdapter.updateTheme();
         Theme.validateSeriesActivityTheme();
     }
 }

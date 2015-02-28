@@ -15,6 +15,8 @@ import java.util.List;
 import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.SeriesActivity;
+import ca.josephroque.bowlingcompanion.theme.ChangeableTheme;
+import ca.josephroque.bowlingcompanion.theme.Theme;
 
 /**
  * Created by josephroque on 15-02-22.
@@ -23,6 +25,7 @@ import ca.josephroque.bowlingcompanion.SeriesActivity;
  * in project Bowling Companion
  */
 public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesViewHolder>
+    implements ChangeableTheme
 {
     /** Tag to identify class when outputting to console */
     private static final String TAG = "SeriesAdapter";
@@ -134,8 +137,7 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
                     "  " + String.valueOf(gameScore));
             if (gameScore >= 300)
             {
-                holder.mListTextViewSeriesGames.get(i).setTextColor(
-                        mActivity.getResources().getColor(R.color.game_above_300));
+                holder.mListTextViewSeriesGames.get(i).setTextColor(Theme.getGameScoreHighlightThemeColor());
             }
         }
 
@@ -168,5 +170,11 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
     public int getItemCount()
     {
         return mListSeriesIds.size();
+    }
+
+    @Override
+    public void updateTheme()
+    {
+        notifyDataSetChanged();
     }
 }
