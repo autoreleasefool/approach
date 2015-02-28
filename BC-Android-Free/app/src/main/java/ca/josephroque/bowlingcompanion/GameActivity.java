@@ -1013,12 +1013,12 @@ public class GameActivity extends ActionBarActivity
                 {
                     if (mPinState[mCurrentFrame][mCurrentBall][i])
                     {
-                        mImageButtonPins[i].setImageResource(R.drawable.pin_gray);
+                        mImageButtonPins[i].setImageResource(R.drawable.pin_disabled);
                         numberOfPinsStanding++;
                     }
                     else
                     {
-                        mImageButtonPins[i].setImageResource(R.drawable.pin);
+                        mImageButtonPins[i].setImageResource(R.drawable.pin_enabled);
                     }
 
                     if (mCurrentBall > 0 && (mPinState[mCurrentFrame][mCurrentBall - 1][i])
@@ -1323,11 +1323,11 @@ public class GameActivity extends ActionBarActivity
                     {
                         if (mPinState[mCurrentFrame][mCurrentBall][pinToSet])
                         {
-                            mImageButtonPins[pinToSet].setImageResource(R.drawable.pin_gray);
+                            mImageButtonPins[pinToSet].setImageResource(R.drawable.pin_disabled);
                         }
                         else
                         {
-                            mImageButtonPins[pinToSet].setImageResource(R.drawable.pin);
+                            mImageButtonPins[pinToSet].setImageResource(R.drawable.pin_enabled);
                         }
                         mImageViewClearPins.setEnabled(allPinsKnockedOver);
                     }
