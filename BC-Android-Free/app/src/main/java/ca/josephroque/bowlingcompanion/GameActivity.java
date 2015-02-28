@@ -122,7 +122,6 @@ public class GameActivity extends ActionBarActivity
     /** Listens for navigation drawer events */
     private ActionBarDrawerToggle mDrawerToggle;
 
-    private boolean adViewStarted;
     private AdView mAdView;
 
     @Override
@@ -140,6 +139,7 @@ public class GameActivity extends ActionBarActivity
 
         //Requests test ads to be displayed in AdView
         mAdView = (AdView) findViewById(R.id.adView_game);
+        mAdView.loadAd(new AdRequest.Builder().build());
 
         hsvFrames = (HorizontalScrollView)findViewById(R.id.hsv_frames);
 
@@ -338,10 +338,9 @@ public class GameActivity extends ActionBarActivity
     {
         super.onResume();
 
-        if (!adViewStarted)
+        if (mAdView != null)
         {
-            adViewStarted = true;
-            mAdView.loadAd(new AdRequest.Builder().build());
+            mAdView.resume();
         }
 
         Intent intent = getIntent();
@@ -376,10 +375,10 @@ public class GameActivity extends ActionBarActivity
     @Override
     protected void onPause()
     {
-        if (adViewStarted)
+        //TODO figure out adview lifecycle
+        if (mAdView != null)
         {
-            adViewStarted = false;
-            mAdView.destroy();
+            mAdView.pause();
         }
 
         clearFrameColor();
@@ -398,6 +397,17 @@ public class GameActivity extends ActionBarActivity
                 mGameScoresMinusFouls[mCurrentGame]);
 
         super.onPause();
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        if (mAdView != null)
+        {
+            mAdView.destroy();
+        }
+
+        super.onDestroy();
     }
 
     @Override
