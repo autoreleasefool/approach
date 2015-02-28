@@ -122,14 +122,16 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
         /*
          * Sets TextView text to display series dates and games in list to user
          */
+        final int numberOfGamesInSeries = mListSeriesGames.get(position).size();
         holder.mTextViewSeriesDate.setText(mListSeriesDate.get(position));
-        for (int i = 0; i < mListSeriesGames.get(position).size(); i++)
+        for (int i = 0; i < numberOfGamesInSeries; i++)
         {
             /*
              * Highlights a score if it is over 300 or applies default theme if not
              */
-            short gameScore = mListSeriesGames.get(position).get(i);
-            holder.mListTextViewSeriesGames.get(i).setText("  " + String.valueOf(mListSeriesGames.get(position).get(i)));
+            short gameScore = mListSeriesGames.get(position).get(-i + (numberOfGamesInSeries - 1));
+            holder.mListTextViewSeriesGames.get(i).setText(
+                    "  " + String.valueOf(gameScore));
             if (gameScore >= 300)
             {
                 holder.mListTextViewSeriesGames.get(i).setTextColor(
