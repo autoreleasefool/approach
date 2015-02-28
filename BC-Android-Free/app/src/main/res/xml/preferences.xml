@@ -24,22 +24,6 @@
     </PreferenceCategory>
 
     <PreferenceCategory
-        android:title="@string/pref_pins_title"
-        android:key="pref_pins_settings">
-
-        <SwitchPreference
-            android:key="pref_enable_pins"
-            android:title="@string/pref_enable_pins_title"
-            android:summary="@string/pref_enable_pins_summary_images"
-            android:defaultValue="true" />
-        <SwitchPreference
-            android:key="pref_offset_pins"
-            android:title="@string/pref_offset_pins_title"
-            android:summary="@string/pref_offset_pins_summary_offset"
-            android:defaultValue="true" />
-    </PreferenceCategory>
-
-    <PreferenceCategory
         android:title="@string/pref_theme_title"
         android:key="pref_theme_settings" >
 
@@ -55,6 +39,22 @@
             android:key="pref_theme_light"
             android:title="@string/pref_theme_light_title"
             android:summary="@string/pref_theme_light_summary"
+            android:defaultValue="true" />
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/pref_pins_title"
+        android:key="pref_pins_settings">
+
+        <SwitchPreference
+            android:key="pref_enable_pins"
+            android:title="@string/pref_enable_pins_title"
+            android:summary="@string/pref_enable_pins_summary_images"
+            android:defaultValue="true" />
+        <SwitchPreference
+            android:key="pref_offset_pins"
+            android:title="@string/pref_offset_pins_title"
+            android:summary="@string/pref_offset_pins_summary_offset"
             android:defaultValue="true" />
     </PreferenceCategory>
 

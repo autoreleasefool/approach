@@ -16,6 +16,8 @@ import java.util.List;
 
 import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.R;
+import ca.josephroque.bowlingcompanion.theme.ChangeableThemedActivity;
+import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.database.Contract.*;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 
@@ -168,11 +170,15 @@ public class SettingsFragment extends PreferenceFragment
         }
         else if (key.equals(Constants.KEY_PREF_THEME_COLORS))
         {
-            String themeColor = sharedPreferences.getString(key, "Greem");
+            String themeColor = sharedPreferences.getString(key, "Green");
+            boolean lightThemeEnabled = sharedPreferences.getBoolean(Constants.KEY_PREF_THEME_LIGHT, true);
+
             Preference themePref = findPreference(key);
             themePref.setSummary("Current theme is " + themeColor);
 
-            //TODO change theme colors
+            Theme.setTheme(getActivity(), themeColor, lightThemeEnabled);
+            ChangeableThemedActivity themedActivity = (ChangeableThemedActivity)getActivity();
+            themedActivity.updateTheme();
         }
         else if (key.equals(Constants.KEY_PREF_THEME_LIGHT))
         {
@@ -181,7 +187,10 @@ public class SettingsFragment extends PreferenceFragment
             lightPref.setSummary((lightThemeEnabled)
                     ? R.string.pref_theme_light_summary
                     : R.string.pref_theme_dark_summary);
-            //TODO change theme variation
+
+            Theme.setTheme(getActivity(), null, lightThemeEnabled);
+            ChangeableThemedActivity themedActivity = (ChangeableThemedActivity)getActivity();
+            themedActivity.updateTheme();
         }
     }
 

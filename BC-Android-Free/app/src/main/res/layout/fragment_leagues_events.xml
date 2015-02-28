@@ -20,9 +20,9 @@
         android:layout_alignParentRight="true"
         android:layout_margin="16dp"
         android:src="@drawable/ic_action_new"
-        fab:fab_colorNormal="@color/primary_green"
-        fab:fab_colorPressed="@color/primary_green"
-        fab:fab_colorRipple="@color/tertiary_green_dark" />
+        fab:fab_colorNormal="@color/theme_light_green_primary"
+        fab:fab_colorPressed="@color/theme_light_green_primary"
+        fab:fab_colorRipple="@color/theme_light_green_tertiary" />
 
     <TextView
         android:id="@+id/textView_new_league_event_instructions"

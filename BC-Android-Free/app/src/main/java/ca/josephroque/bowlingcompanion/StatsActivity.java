@@ -21,8 +21,11 @@ import java.util.List;
 import ca.josephroque.bowlingcompanion.adapter.StatsAdapter;
 import ca.josephroque.bowlingcompanion.database.Contract.*;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
+import ca.josephroque.bowlingcompanion.theme.ChangeableThemedActivity;
+import ca.josephroque.bowlingcompanion.theme.Theme;
 
 public class StatsActivity extends ActionBarActivity
+    implements ChangeableThemedActivity
 {
     /** Tag to identify class when outputting to console */
     private static final String TAG = "StatsActivity";
@@ -60,7 +63,7 @@ public class StatsActivity extends ActionBarActivity
     /** Displays the stat names and values in a list to the user */
     private RecyclerView mStatsRecycler;
     /** Organizes stat data into a list to be displayed by mStatsRecycler */
-    private RecyclerView.Adapter mStatsAdapter;
+    private StatsAdapter mStatsAdapter;
 
     /** List of names of stats that will be displayed to the user */
     private List<String> mListStatNames;
@@ -85,8 +88,7 @@ public class StatsActivity extends ActionBarActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stats);
-        getSupportActionBar().setBackgroundDrawable(
-                new ColorDrawable(getResources().getColor(R.color.primary_green)));
+        updateTheme();
 
         //Enables backtracking to activity which created this stats activity, since it's not always the same
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -141,6 +143,11 @@ public class StatsActivity extends ActionBarActivity
             mGameNumber = getIntent().getByteExtra(Constants.EXTRA_GAME_NUMBER, (byte)-1);
             titleToSet = R.string.title_activity_stats_game;
             statsToLoad = LOADING_GAME_STATS;
+        }
+
+        if(Theme.getStatsActivityThemeInvalidated())
+        {
+            updateTheme();
         }
 
         setTitle(titleToSet);
@@ -676,5 +683,14 @@ public class StatsActivity extends ActionBarActivity
         {
             mStatsAdapter.notifyDataSetChanged();
         }
+    }
+
+    @Override
+    public void updateTheme()
+    {
+        getSupportActionBar()
+                .setBackgroundDrawable(new ColorDrawable(Theme.getActionBarThemeColor()));
+        mStatsAdapter.updateTheme();
+        Theme.validateStatsActivityTheme();
     }
 }

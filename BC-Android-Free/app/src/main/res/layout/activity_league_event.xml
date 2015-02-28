@@ -14,7 +14,7 @@
         android:layout_height="48dp"
         android:background="@drawable/background_tabs"
         app:pstsShouldExpand="true"
-        app:pstsIndicatorColor="@color/secondary_green_medium_light"/>
+        app:pstsIndicatorColor="@android:color/white"/>
 
     <android.support.v4.view.ViewPager
         android:id="@+id/viewPager_leagues_events"

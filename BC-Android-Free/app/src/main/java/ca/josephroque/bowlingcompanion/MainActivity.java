@@ -32,9 +32,11 @@ import ca.josephroque.bowlingcompanion.adapter.BowlerAdapter;
 import ca.josephroque.bowlingcompanion.database.Contract.*;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.dialog.NewBowlerDialog;
+import ca.josephroque.bowlingcompanion.theme.ChangeableThemedActivity;
+import ca.josephroque.bowlingcompanion.theme.Theme;
 
 public class MainActivity extends ActionBarActivity
-    implements NewBowlerDialog.NewBowlerDialogListener
+    implements NewBowlerDialog.NewBowlerDialogListener, ChangeableThemedActivity
 {
 
     /** Tag to identify class when outputting to console */
@@ -85,10 +87,9 @@ public class MainActivity extends ActionBarActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        getSupportActionBar().setBackgroundDrawable(
-                new ColorDrawable(getResources().getColor(R.color.primary_green)));
 
-        PreferenceManager.setDefaultValues(this, R.xml.preferences, true);
+        PreferenceManager.setDefaultValues(this, R.xml.preferences, false);
+        Theme.loadTheme(this);
 
         mListBowlerIds = new ArrayList<>();
         mListBowlerNames = new ArrayList<>();
@@ -115,6 +116,7 @@ public class MainActivity extends ActionBarActivity
         });
 
         mBowlerInstructionsTextView = (TextView)findViewById(R.id.textView_new_bowler_instructions);
+        updateTheme();
     }
 
     @Override
@@ -139,6 +141,11 @@ public class MainActivity extends ActionBarActivity
                 .remove(Constants.PREFERENCE_ID_SERIES)
                 .remove(Constants.PREFERENCE_ID_GAME)
                 .apply();
+
+        if (Theme.getMainActivityThemeInvalidated())
+        {
+            updateTheme();
+        }
 
         new LoadBowlerAndRecentTask().execute();
     }
@@ -481,5 +488,17 @@ public class MainActivity extends ActionBarActivity
                 mBowlerInstructionsTextView.setVisibility(View.GONE);
             }
         }
+    }
+
+    @Override
+    public void updateTheme()
+    {
+        getSupportActionBar()
+                .setBackgroundDrawable(new ColorDrawable(Theme.getActionBarThemeColor()));
+        FloatingActionButton floatingActionButton = (FloatingActionButton)findViewById(R.id.fab_new_bowler);
+        floatingActionButton.setColorNormal(Theme.getActionButtonThemeColor());
+        floatingActionButton.setColorPressed(Theme.getActionButtonThemeColor());
+        floatingActionButton.setColorRipple(Theme.getActionButtonRippleThemeColor());
+        Theme.validateMainActivityTheme();
     }
 }

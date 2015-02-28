@@ -14,10 +14,12 @@ import com.astuetz.PagerSlidingTabStrip;
 import ca.josephroque.bowlingcompanion.adapter.LeagueEventFragmentPagerAdapter;
 import ca.josephroque.bowlingcompanion.dialog.NewLeagueEventDialog;
 import ca.josephroque.bowlingcompanion.fragments.LeagueEventFragment;
+import ca.josephroque.bowlingcompanion.theme.ChangeableThemedActivity;
+import ca.josephroque.bowlingcompanion.theme.Theme;
 
 
 public class LeagueEventActivity extends ActionBarActivity
-    implements NewLeagueEventDialog.NewLeagueEventDialogListener
+    implements NewLeagueEventDialog.NewLeagueEventDialogListener, ChangeableThemedActivity
 {
     /** Tag to identify class when outputting to console */
     private static final String TAG = "LeagueEventActivity";
@@ -30,8 +32,6 @@ public class LeagueEventActivity extends ActionBarActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_league_event);
-        getSupportActionBar().setBackgroundDrawable(
-                new ColorDrawable(getResources().getColor(R.color.primary_green)));
 
         mLeagueEventViewPager = (ViewPager)findViewById(R.id.viewPager_leagues_events);
         mLeagueEventViewPager.setAdapter(new LeagueEventFragmentPagerAdapter(getSupportFragmentManager()));
@@ -40,8 +40,20 @@ public class LeagueEventActivity extends ActionBarActivity
                 findViewById(R.id.slidingTab_leagues_events);
         tabStrip.setViewPager(mLeagueEventViewPager);
         tabStrip.setTextColor(getResources().getColor(R.color.secondary_background));
+
+        updateTheme();
     }
 
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+
+        if(Theme.getLeagueEventActivityThemeInvalidated())
+        {
+            updateTheme();
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
@@ -116,5 +128,15 @@ public class LeagueEventActivity extends ActionBarActivity
                 Log.w(TAG, "Unavailable fragment. Current tab: " + viewPagerCurrentItem);
                 break;
         }
+    }
+
+    @Override
+    public void updateTheme()
+    {
+        getSupportActionBar()
+                .setBackgroundDrawable(new ColorDrawable(Theme.getActionBarThemeColor()));
+        PagerSlidingTabStrip tabStrip = (PagerSlidingTabStrip)findViewById(R.id.slidingTab_leagues_events);
+        tabStrip.setBackgroundColor(Theme.getActionBarTabThemeColor());
+        Theme.validateLeagueEventActivityTheme();
     }
 }

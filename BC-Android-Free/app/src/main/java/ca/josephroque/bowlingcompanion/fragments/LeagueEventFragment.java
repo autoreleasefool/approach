@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -33,6 +34,8 @@ import ca.josephroque.bowlingcompanion.adapter.LeagueEventAdapter;
 import ca.josephroque.bowlingcompanion.database.Contract.*;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.dialog.NewLeagueEventDialog;
+import ca.josephroque.bowlingcompanion.theme.ChangeableThemedActivity;
+import ca.josephroque.bowlingcompanion.theme.Theme;
 
 /**
  * Created by josephroque on 15-02-19.
@@ -41,6 +44,7 @@ import ca.josephroque.bowlingcompanion.dialog.NewLeagueEventDialog;
  * in project Bowling Companion
  */
 public class LeagueEventFragment extends Fragment
+    implements ChangeableThemedActivity
 {
 
     /** Tag to identify class when outputting to console */
@@ -52,6 +56,7 @@ public class LeagueEventFragment extends Fragment
     private RecyclerView.Adapter mLeagueEventAdapter;
     /** Displays an instructional message if no leagues or events exist */
     private TextView mNewLeagueEventInstructionsTextView;
+    private FloatingActionButton mFloatingActionButtonNewLeagueEvent;
 
     /** Unique id of bowler selected by the user */
     private long mBowlerId = -1;
@@ -109,8 +114,8 @@ public class LeagueEventFragment extends Fragment
                 isEventMode());
         mLeagueEventRecycler.setAdapter(mLeagueEventAdapter);
 
-        FloatingActionButton floatingActionButton = (FloatingActionButton)rootView.findViewById(R.id.fab_new_league_event);
-        floatingActionButton.setOnClickListener(new View.OnClickListener()
+        mFloatingActionButtonNewLeagueEvent = (FloatingActionButton)rootView.findViewById(R.id.fab_new_league_event);
+        mFloatingActionButtonNewLeagueEvent.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
@@ -126,6 +131,7 @@ public class LeagueEventFragment extends Fragment
                 ? R.string.text_new_event_instructions
                 : R.string.text_new_league_instructions);
 
+        updateTheme();
         return rootView;
     }
 
@@ -141,6 +147,12 @@ public class LeagueEventFragment extends Fragment
         mListLeagueEventNames.clear();
         mListLeagueEventAverages.clear();
         mListLeagueEventNumberOfGames.clear();
+
+        if ((!isEventMode() && Theme.getLeagueFragmentThemeInvalidated())
+                || (isEventMode() && Theme.getEventFragmentThemeInvalidated()))
+        {
+            updateTheme();
+        }
 
         new LoadLeaguesEventsTask().execute();
     }
@@ -380,5 +392,21 @@ public class LeagueEventFragment extends Fragment
             mLeagueEventAdapter.notifyItemInserted(0);
             mNewLeagueEventInstructionsTextView.setVisibility(View.GONE);
         }
+    }
+
+    @Override
+    public void updateTheme()
+    {
+        mFloatingActionButtonNewLeagueEvent
+                .setColorNormal(Theme.getActionButtonThemeColor());
+        mFloatingActionButtonNewLeagueEvent
+                .setColorPressed(Theme.getActionButtonThemeColor());
+        mFloatingActionButtonNewLeagueEvent
+                .setColorRipple(Theme.getActionButtonRippleThemeColor());
+
+        if (isEventMode())
+            Theme.validateEventFragmentTheme();
+        else
+            Theme.validateLeagueFragmentTheme();
     }
 }

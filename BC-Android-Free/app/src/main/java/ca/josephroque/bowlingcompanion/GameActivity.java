@@ -39,9 +39,12 @@ import java.util.List;
 import ca.josephroque.bowlingcompanion.data.GameScore;
 import ca.josephroque.bowlingcompanion.database.Contract.*;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
+import ca.josephroque.bowlingcompanion.theme.ChangeableThemedActivity;
+import ca.josephroque.bowlingcompanion.theme.Theme;
 
 
 public class GameActivity extends ActionBarActivity
+    implements ChangeableThemedActivity
 {
 
     /** Tag to identify class when outputting to console */
@@ -125,8 +128,10 @@ public class GameActivity extends ActionBarActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
         mActivityTitle = getTitle().toString();
-        getSupportActionBar().setBackgroundDrawable(
-                new ColorDrawable(getResources().getColor(R.color.primary_green)));
+        updateTheme();
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //getSupportActionBar().setHomeButtonEnabled(true);
 
         COLOR_BACKGROUND = getResources().getColor(android.R.color.darker_gray);
         COLOR_HIGHLIGHT = getResources().getColor(android.R.color.secondary_text_dark);
@@ -349,6 +354,11 @@ public class GameActivity extends ActionBarActivity
         for (int i = 0; i < mNumberOfGames; i++)
         {
             navigationDrawerOptions.add("Game " + (i + 1));
+        }
+
+        if(Theme.getGameActivityThemeInvalidated())
+        {
+            updateTheme();
         }
 
         loadInitialScores();
@@ -1370,5 +1380,15 @@ public class GameActivity extends ActionBarActivity
     {
         float scale = getResources().getDisplayMetrics().density;
         return (int)(dps * scale + 0.5f);
+    }
+
+    @Override
+    public void updateTheme()
+    {
+        getSupportActionBar()
+                .setBackgroundDrawable(new ColorDrawable(Theme.getActionBarThemeColor()));
+        findViewById(R.id.relativeLayout_game_toolbar)
+                .setBackgroundColor(Theme.getActionBarTabThemeColor());
+        Theme.validateGameActivityTheme();
     }
 }

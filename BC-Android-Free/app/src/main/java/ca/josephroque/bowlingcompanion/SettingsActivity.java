@@ -1,14 +1,18 @@
 package ca.josephroque.bowlingcompanion;
 
+import android.graphics.drawable.ColorDrawable;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import ca.josephroque.bowlingcompanion.fragments.SettingsFragment;
+import ca.josephroque.bowlingcompanion.theme.ChangeableThemedActivity;
+import ca.josephroque.bowlingcompanion.theme.Theme;
 
 
 public class SettingsActivity extends ActionBarActivity
+    implements ChangeableThemedActivity
 {
 
     private static final String TAG = "SettingsActivity";
@@ -18,6 +22,7 @@ public class SettingsActivity extends ActionBarActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+        updateTheme();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -27,6 +32,16 @@ public class SettingsActivity extends ActionBarActivity
                 .commit();
     }
 
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+
+        if (Theme.getSettingsActivityThemeInvalidated())
+        {
+            updateTheme();
+        }
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
@@ -50,5 +65,13 @@ public class SettingsActivity extends ActionBarActivity
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void updateTheme()
+    {
+        getSupportActionBar()
+                .setBackgroundDrawable(new ColorDrawable(Theme.getActionBarThemeColor()));
+        Theme.validateSettingsActivityTheme();
     }
 }

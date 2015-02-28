@@ -29,9 +29,12 @@ import ca.josephroque.bowlingcompanion.adapter.SeriesAdapter;
 import ca.josephroque.bowlingcompanion.data.ConvertValue;
 import ca.josephroque.bowlingcompanion.database.Contract.*;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
+import ca.josephroque.bowlingcompanion.theme.ChangeableThemedActivity;
+import ca.josephroque.bowlingcompanion.theme.Theme;
 
 
 public class SeriesActivity extends ActionBarActivity
+    implements ChangeableThemedActivity
 {
     /** Tag to identify class when outputting to console */
     private static final String TAG = "SeriesActivity";
@@ -62,8 +65,7 @@ public class SeriesActivity extends ActionBarActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_series);
-        getSupportActionBar().setBackgroundDrawable(
-                new ColorDrawable(getResources().getColor(R.color.primary_green)));
+        updateTheme();
 
         mListSeriesId = new ArrayList<Long>();
         mListSeriesDate = new ArrayList<String>();
@@ -101,6 +103,11 @@ public class SeriesActivity extends ActionBarActivity
         mBowlerId = preferences.getLong(Constants.PREFERENCE_ID_BOWLER, -1);
         mLeagueId = preferences.getLong(Constants.PREFERENCE_ID_LEAGUE, -1);
         mNumberOfGames = getIntent().getByteExtra(Constants.EXTRA_NUMBER_OF_GAMES, (byte)-1);
+
+        if (Theme.getSeriesActivityThemeInvalidated())
+        {
+            updateTheme();
+        }
 
         new LoadSeriesTask().execute();
     }
@@ -421,5 +428,17 @@ public class SeriesActivity extends ActionBarActivity
             gameIntent.putExtra(Constants.EXTRA_ARRAY_FRAME_IDS, frameIds);
             srcActivity.startActivity(gameIntent);
         }
+    }
+
+    @Override
+    public void updateTheme()
+    {
+        getSupportActionBar()
+                .setBackgroundDrawable(new ColorDrawable(Theme.getActionBarThemeColor()));
+        FloatingActionButton floatingActionButton = (FloatingActionButton)findViewById(R.id.fab_new_series);
+        floatingActionButton.setColorNormal(Theme.getActionButtonThemeColor());
+        floatingActionButton.setColorPressed(Theme.getActionButtonThemeColor());
+        floatingActionButton.setColorRipple(Theme.getActionButtonRippleThemeColor());
+        Theme.validateSeriesActivityTheme();
     }
 }

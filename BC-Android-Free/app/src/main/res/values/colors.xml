@@ -1,15 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="tertiary_green_light">#86E486</color>
-    <color name="secondary_green_medium_light">#5BD55B</color>
-    <color name="primary_green">#3BC73B</color>
-    <color name="secondary_green_medium_dark">#1ABC1A</color>
-    <color name="tertiary_green_dark">#0A980A</color>
-
     <color name="primary_background">#bdc3c7</color>
     <color name="secondary_background">#ecf0f1</color>
-    <color name="background_green">#CCF9CC</color>
+
+    <color name="theme_light_green_primary">#5BD55B</color>
+    <color name="theme_light_green_secondary">#3BC73B</color>
+    <color name="theme_light_green_tertiary">#1ABC1A</color>
+    <color name="theme_dark_green_primary">#0F760F</color>
+    <color name="theme_dark_green_secondary">#005C00</color>
+    <color name="theme_dark_green_tertiary">#003E00</color>
+
+    <color name="theme_light_orange_primary">#FFAF4F</color>
+    <color name="theme_light_orange_secondary">#FFA131</color>
+    <color name="theme_light_orange_tertiary">#FF8D06</color>
+    <color name="theme_dark_orange_primary">#E27E12</color>
+    <color name="theme_dark_orange_secondary">#BB670C</color>
+    <color name="theme_dark_orange_tertiary">#9D5302</color>
+
+    <color name="theme_light_blue_primary">#67B2EC</color>
+    <color name="theme_light_blue_secondary">#4DA2E4</color>
+    <color name="theme_light_blue_tertiary">#3592DA</color>
+    <color name="theme_dark_blue_primary">#0F419D</color>
+    <color name="theme_dark_blue_secondary">#0C3683</color>
+    <color name="theme_dark_blue_tertiary">#092D6E</color>
+
+    <color name="theme_light_purple_primary">#AF7DE8</color>
+    <color name="theme_light_purple_secondary">#9C63DC</color>
+    <color name="theme_light_purple_tertiary">#884BCD</color>
+    <color name="theme_dark_purple_primary">#612C9D</color>
+    <color name="theme_dark_purple_secondary">#4F1A8C</color>
+    <color name="theme_dark_purple_tertiary">#401374</color>
+
+    <color name="theme_light_red_primary">#FE7074</color>
+    <color name="theme_light_red_secondary">#FE5A5E</color>
+    <color name="theme_light_red_tertiary">#FD474C</color>
+    <color name="theme_dark_red_primary">#D41A1F</color>
+    <color name="theme_dark_red_secondary">#B80C10</color>
+    <color name="theme_dark_red_tertiary">#A30004</color>
+
+    <color name="theme_light_gray_primary">#808287</color>
+    <color name="theme_light_gray_secondary">#6B6F74</color>
+    <color name="theme_light_gray_tertiary">#585C64</color>
+    <color name="theme_dark_gray_primary">#414345</color>
+    <color name="theme_dark_gray_secondary">#313335</color>
+    <color name="theme_dark_gray_tertiary">#202225</color>
 
     <color name="game_above_300">#5BD55B</color>
 </resources>
