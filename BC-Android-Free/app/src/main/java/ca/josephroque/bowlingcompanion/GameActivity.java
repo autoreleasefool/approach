@@ -1420,4 +1420,13 @@ public class GameActivity extends ActionBarActivity
                 .setBackgroundColor(Theme.getActionBarTabThemeColor());
         Theme.validateGameActivityTheme();
     }
+
+    @Override
+    public void onBackPressed()
+    {
+        Intent seriesIntent = new Intent(GameActivity.this, SeriesActivity.class);
+        seriesIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        seriesIntent.putExtra(Constants.EXTRA_NUMBER_OF_GAMES, mNumberOfGames);
+        startActivity(seriesIntent);
+    }
 }
