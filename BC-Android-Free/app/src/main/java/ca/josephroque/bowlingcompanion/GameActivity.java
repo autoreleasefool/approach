@@ -96,7 +96,7 @@ public class GameActivity extends ActionBarActivity
     /** Initial title of the activity when it is first created */
     private String mActivityTitle;
     /** List of items which are to be displayed in the navigation drawer */
-    private List<String> navigationDrawerOptions;
+    private List<String> mNavigationDrawerOptions;
 
     /** TextView which displays score gained on a certain ball in a certain frame */
     private TextView[][] mTextViewBallScores;
@@ -131,7 +131,6 @@ public class GameActivity extends ActionBarActivity
         updateTheme();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //getSupportActionBar().setHomeButtonEnabled(true);
 
         COLOR_BACKGROUND = getResources().getColor(android.R.color.darker_gray);
         COLOR_HIGHLIGHT = getResources().getColor(android.R.color.secondary_text_dark);
@@ -145,7 +144,7 @@ public class GameActivity extends ActionBarActivity
 
         RelativeLayout relativeLayout = new RelativeLayout(this);
         RelativeLayout.LayoutParams layoutParams;
-        navigationDrawerOptions = new ArrayList<>();
+        mNavigationDrawerOptions = new ArrayList<>();
         mTextViewBallScores = new TextView[Constants.NUMBER_OF_FRAMES][3];
         mTextViewFouls = new TextView[Constants.NUMBER_OF_FRAMES][3];
         mTextViewFrames = new TextView[Constants.NUMBER_OF_FRAMES];
@@ -329,7 +328,7 @@ public class GameActivity extends ActionBarActivity
         };
 
         mDrawerLayout.setDrawerListener(mDrawerToggle);
-        mDrawerAdapter = new ArrayAdapter<>(this, R.layout.list_game_navigation, navigationDrawerOptions);
+        mDrawerAdapter = new ArrayAdapter<>(this, R.layout.list_game_navigation, mNavigationDrawerOptions);
         mDrawerList.setAdapter(mDrawerAdapter);
     }
 
@@ -347,14 +346,14 @@ public class GameActivity extends ActionBarActivity
         mGameScores = new short[mNumberOfGames];
         mGameScoresMinusFouls = new short[mNumberOfGames];
 
-        navigationDrawerOptions.clear();
-        navigationDrawerOptions.add("Bowlers");
-        navigationDrawerOptions.add("Leagues");
+        mNavigationDrawerOptions.clear();
+        mNavigationDrawerOptions.add("Bowlers");
+        mNavigationDrawerOptions.add("Leagues");
         if (!mEventMode)
-            navigationDrawerOptions.add("Series");
+            mNavigationDrawerOptions.add("Series");
         for (int i = 0; i < mNumberOfGames; i++)
         {
-            navigationDrawerOptions.add("Game " + (i + 1));
+            mNavigationDrawerOptions.add("Game " + (i + 1));
         }
 
         if(Theme.getGameActivityThemeInvalidated())
@@ -936,7 +935,7 @@ public class GameActivity extends ActionBarActivity
                         {
                             mTextViewFrames[i].setText(String.valueOf(frameScores[i]));
                         }
-                        navigationDrawerOptions.set(mCurrentGame + ((mEventMode) ? 2:3),
+                        mNavigationDrawerOptions.set(mCurrentGame + ((mEventMode) ? 2:3),
                                 "Game " + (mCurrentGame + 1) + "(" + mGameScores[mCurrentGame] + ")");
                         mDrawerAdapter.notifyDataSetChanged();
                     }
@@ -1217,7 +1216,7 @@ public class GameActivity extends ActionBarActivity
                 byte currentGamePosition = startingPosition;
                 while (currentGamePosition - startingPosition < mNumberOfGames)
                 {
-                    navigationDrawerOptions.set(currentGamePosition, "Game "
+                    mNavigationDrawerOptions.set(currentGamePosition, "Game "
                             + (currentGamePosition - startingPosition + 1)
                             + " (" + mGameScoresMinusFouls[currentGamePosition - startingPosition] + ")");
                     currentGamePosition++;
