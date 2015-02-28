@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -34,7 +33,7 @@ import ca.josephroque.bowlingcompanion.adapter.LeagueEventAdapter;
 import ca.josephroque.bowlingcompanion.database.Contract.*;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.dialog.NewLeagueEventDialog;
-import ca.josephroque.bowlingcompanion.theme.ChangeableThemedActivity;
+import ca.josephroque.bowlingcompanion.theme.ChangeableTheme;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 
 /**
@@ -44,7 +43,7 @@ import ca.josephroque.bowlingcompanion.theme.Theme;
  * in project Bowling Companion
  */
 public class LeagueEventFragment extends Fragment
-    implements ChangeableThemedActivity
+    implements ChangeableTheme
 {
 
     /** Tag to identify class when outputting to console */

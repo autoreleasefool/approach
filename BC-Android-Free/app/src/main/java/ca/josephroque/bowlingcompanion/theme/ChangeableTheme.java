@@ -6,7 +6,7 @@ package ca.josephroque.bowlingcompanion.theme;
  * Location ca.josephroque.bowlingcompanion.theme
  * in project Bowling Companion
  */
-public interface ChangeableThemedActivity
+public interface ChangeableTheme
 {
     public void updateTheme();
 }

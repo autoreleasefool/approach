@@ -14,7 +14,6 @@ public class Constants
     public static final String KEY_PREF_QUICK_BOWLER = "pref_quick_bowler";
     public static final String KEY_PREF_QUICK_LEAGUE = "pref_quick_league";
     public static final String KEY_PREF_ENABLE_PINS = "pref_enable_pins";
-    public static final String KEY_PREF_OFFSET_PINS = "pref_offset_pins";
     public static final String KEY_PREF_THEME_COLORS = "pref_theme_colors";
     public static final String KEY_PREF_THEME_LIGHT = "pref_theme_light";
 

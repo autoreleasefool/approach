@@ -29,12 +29,12 @@ import ca.josephroque.bowlingcompanion.adapter.SeriesAdapter;
 import ca.josephroque.bowlingcompanion.data.ConvertValue;
 import ca.josephroque.bowlingcompanion.database.Contract.*;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
-import ca.josephroque.bowlingcompanion.theme.ChangeableThemedActivity;
+import ca.josephroque.bowlingcompanion.theme.ChangeableTheme;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 
 
 public class SeriesActivity extends ActionBarActivity
-    implements ChangeableThemedActivity
+    implements ChangeableTheme
 {
     /** Tag to identify class when outputting to console */
     private static final String TAG = "SeriesActivity";

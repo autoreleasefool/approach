@@ -10,7 +10,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import ca.josephroque.bowlingcompanion.R;
-import ca.josephroque.bowlingcompanion.theme.ChangeableThemedActivity;
+import ca.josephroque.bowlingcompanion.theme.ChangeableTheme;
 
 /**
  * Created by josephroque on 15-02-25.
@@ -19,7 +19,7 @@ import ca.josephroque.bowlingcompanion.theme.ChangeableThemedActivity;
  * in project Bowling Companion
  */
 public class StatsAdapter extends RecyclerView.Adapter<StatsAdapter.StatsViewHolder>
-    implements ChangeableThemedActivity
+    implements ChangeableTheme
 {
     /** Tag to identify class when outputting to console */
     private static final String TAG = "StatsAdapter";

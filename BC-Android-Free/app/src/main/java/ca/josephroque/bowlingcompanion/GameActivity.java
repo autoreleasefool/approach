@@ -39,12 +39,12 @@ import java.util.List;
 import ca.josephroque.bowlingcompanion.data.GameScore;
 import ca.josephroque.bowlingcompanion.database.Contract.*;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
-import ca.josephroque.bowlingcompanion.theme.ChangeableThemedActivity;
+import ca.josephroque.bowlingcompanion.theme.ChangeableTheme;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 
 
 public class GameActivity extends ActionBarActivity
-    implements ChangeableThemedActivity
+    implements ChangeableTheme
 {
 
     /** Tag to identify class when outputting to console */

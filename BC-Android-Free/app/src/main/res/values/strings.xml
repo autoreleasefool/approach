@@ -46,9 +46,6 @@
     <string name="pref_enable_pins_title">Enable pin images</string>
     <string name="pref_enable_pins_summary_images">Images of pins will be displayed</string>
     <string name="pref_enable_pins_summary_buttons">Buttons will be displayed</string>
-    <string name="pref_offset_pins_title">Offset pins</string>
-    <string name="pref_offset_pins_summary_offset">Pins will be displayed in an offset line</string>
-    <string name="pref_offset_pins_summar_straight">Pins will be displayed in a straight line</string>
     <string name="pref_theme_title">Theme</string>
     <string name="pref_theme_colors_title">Theme colors</string>
     <string name="pref_theme_colors_dialog">Select a Theme</string>

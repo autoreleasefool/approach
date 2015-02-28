@@ -14,12 +14,12 @@ import com.astuetz.PagerSlidingTabStrip;
 import ca.josephroque.bowlingcompanion.adapter.LeagueEventFragmentPagerAdapter;
 import ca.josephroque.bowlingcompanion.dialog.NewLeagueEventDialog;
 import ca.josephroque.bowlingcompanion.fragments.LeagueEventFragment;
-import ca.josephroque.bowlingcompanion.theme.ChangeableThemedActivity;
+import ca.josephroque.bowlingcompanion.theme.ChangeableTheme;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 
 
 public class LeagueEventActivity extends ActionBarActivity
-    implements NewLeagueEventDialog.NewLeagueEventDialogListener, ChangeableThemedActivity
+    implements NewLeagueEventDialog.NewLeagueEventDialogListener, ChangeableTheme
 {
     /** Tag to identify class when outputting to console */
     private static final String TAG = "LeagueEventActivity";

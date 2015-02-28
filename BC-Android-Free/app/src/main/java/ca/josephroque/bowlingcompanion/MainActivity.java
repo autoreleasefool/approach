@@ -32,11 +32,11 @@ import ca.josephroque.bowlingcompanion.adapter.BowlerAdapter;
 import ca.josephroque.bowlingcompanion.database.Contract.*;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.dialog.NewBowlerDialog;
-import ca.josephroque.bowlingcompanion.theme.ChangeableThemedActivity;
+import ca.josephroque.bowlingcompanion.theme.ChangeableTheme;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 
 public class MainActivity extends ActionBarActivity
-    implements NewBowlerDialog.NewBowlerDialogListener, ChangeableThemedActivity
+    implements NewBowlerDialog.NewBowlerDialogListener, ChangeableTheme
 {
 
     /** Tag to identify class when outputting to console */

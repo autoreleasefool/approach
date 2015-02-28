@@ -16,7 +16,7 @@ import java.util.List;
 
 import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.R;
-import ca.josephroque.bowlingcompanion.theme.ChangeableThemedActivity;
+import ca.josephroque.bowlingcompanion.theme.ChangeableTheme;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.database.Contract.*;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
@@ -160,14 +160,6 @@ public class SettingsFragment extends PreferenceFragment
                     ? R.string.pref_enable_pins_summary_images
                     : R.string.pref_enable_pins_summary_buttons);
         }
-        else if (key.equals(Constants.KEY_PREF_OFFSET_PINS))
-        {
-            boolean shouldOffsetPins = sharedPreferences.getBoolean(key, true);
-            Preference offsetPref = findPreference(key);
-            offsetPref.setSummary((shouldOffsetPins)
-                    ? R.string.pref_offset_pins_summary_offset
-                    : R.string.pref_offset_pins_summar_straight);
-        }
         else if (key.equals(Constants.KEY_PREF_THEME_COLORS))
         {
             String themeColor = sharedPreferences.getString(key, "Green");
@@ -177,7 +169,7 @@ public class SettingsFragment extends PreferenceFragment
             themePref.setSummary("Current theme is " + themeColor);
 
             Theme.setTheme(getActivity(), themeColor, lightThemeEnabled);
-            ChangeableThemedActivity themedActivity = (ChangeableThemedActivity)getActivity();
+            ChangeableTheme themedActivity = (ChangeableTheme)getActivity();
             themedActivity.updateTheme();
         }
         else if (key.equals(Constants.KEY_PREF_THEME_LIGHT))
@@ -189,7 +181,7 @@ public class SettingsFragment extends PreferenceFragment
                     : R.string.pref_theme_dark_summary);
 
             Theme.setTheme(getActivity(), null, lightThemeEnabled);
-            ChangeableThemedActivity themedActivity = (ChangeableThemedActivity)getActivity();
+            ChangeableTheme themedActivity = (ChangeableTheme)getActivity();
             themedActivity.updateTheme();
         }
     }
@@ -302,12 +294,6 @@ public class SettingsFragment extends PreferenceFragment
         preference.setSummary((arePinsEnabled)
                 ? R.string.pref_enable_pins_summary_images
                 : R.string.pref_enable_pins_summary_buttons);
-
-        boolean shouldOffsetPins = sharedPreferences.getBoolean(Constants.KEY_PREF_ENABLE_PINS, true);
-        preference = findPreference(Constants.KEY_PREF_OFFSET_PINS);
-        preference.setSummary((shouldOffsetPins)
-                ? R.string.pref_offset_pins_summary_offset
-                : R.string.pref_offset_pins_summar_straight);
 
         boolean lightThemeVariationEnabled = sharedPreferences.getBoolean(Constants.KEY_PREF_THEME_LIGHT, true);
         preference = findPreference(Constants.KEY_PREF_THEME_LIGHT);

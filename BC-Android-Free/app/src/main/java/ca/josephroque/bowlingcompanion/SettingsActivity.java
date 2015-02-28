@@ -7,12 +7,12 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import ca.josephroque.bowlingcompanion.fragments.SettingsFragment;
-import ca.josephroque.bowlingcompanion.theme.ChangeableThemedActivity;
+import ca.josephroque.bowlingcompanion.theme.ChangeableTheme;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 
 
 public class SettingsActivity extends ActionBarActivity
-    implements ChangeableThemedActivity
+    implements ChangeableTheme
 {
 
     private static final String TAG = "SettingsActivity";

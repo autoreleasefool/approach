@@ -51,11 +51,6 @@
             android:title="@string/pref_enable_pins_title"
             android:summary="@string/pref_enable_pins_summary_images"
             android:defaultValue="true" />
-        <SwitchPreference
-            android:key="pref_offset_pins"
-            android:title="@string/pref_offset_pins_title"
-            android:summary="@string/pref_offset_pins_summary_offset"
-            android:defaultValue="true" />
     </PreferenceCategory>
 
     <PreferenceCategory

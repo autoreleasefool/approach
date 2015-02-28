@@ -21,11 +21,11 @@ import java.util.List;
 import ca.josephroque.bowlingcompanion.adapter.StatsAdapter;
 import ca.josephroque.bowlingcompanion.database.Contract.*;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
-import ca.josephroque.bowlingcompanion.theme.ChangeableThemedActivity;
+import ca.josephroque.bowlingcompanion.theme.ChangeableTheme;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 
 public class StatsActivity extends ActionBarActivity
-    implements ChangeableThemedActivity
+    implements ChangeableTheme
 {
     /** Tag to identify class when outputting to console */
     private static final String TAG = "StatsActivity";
