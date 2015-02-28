@@ -122,6 +122,9 @@ public class GameActivity extends ActionBarActivity
     /** Listens for navigation drawer events */
     private ActionBarDrawerToggle mDrawerToggle;
 
+    private boolean adViewStarted;
+    private AdView mAdView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -136,9 +139,7 @@ public class GameActivity extends ActionBarActivity
         COLOR_HIGHLIGHT = getResources().getColor(android.R.color.secondary_text_dark);
 
         //Requests test ads to be displayed in AdView
-        AdView adView = (AdView) findViewById(R.id.adView_game);
-        AdRequest adRequest = new AdRequest.Builder().build();
-        adView.loadAd(adRequest);
+        mAdView = (AdView) findViewById(R.id.adView_game);
 
         hsvFrames = (HorizontalScrollView)findViewById(R.id.hsv_frames);
 
@@ -337,6 +338,12 @@ public class GameActivity extends ActionBarActivity
     {
         super.onResume();
 
+        if (!adViewStarted)
+        {
+            adViewStarted = true;
+            mAdView.loadAd(new AdRequest.Builder().build());
+        }
+
         Intent intent = getIntent();
         mEventMode = intent.getBooleanExtra(Constants.EXTRA_EVENT_MODE, false);
         mGameIds = intent.getLongArrayExtra(Constants.EXTRA_ARRAY_GAME_IDS);
@@ -369,6 +376,12 @@ public class GameActivity extends ActionBarActivity
     @Override
     protected void onPause()
     {
+        if (adViewStarted)
+        {
+            adViewStarted = false;
+            mAdView.destroy();
+        }
+
         clearFrameColor();
         long[] targetFrames = new long[Constants.NUMBER_OF_FRAMES];
         System.arraycopy(mFrameIds,
