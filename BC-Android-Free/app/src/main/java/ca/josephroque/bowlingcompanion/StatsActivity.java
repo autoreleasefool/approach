@@ -88,7 +88,6 @@ public class StatsActivity extends ActionBarActivity
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stats);
-        updateTheme();
 
         //Enables backtracking to activity which created this stats activity, since it's not always the same
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -106,6 +105,7 @@ public class StatsActivity extends ActionBarActivity
 
         mStatsAdapter = new StatsAdapter(this, mListStatNames, mListStatValues);
         mStatsRecycler.setAdapter(mStatsAdapter);
+        updateTheme();
     }
 
     @Override

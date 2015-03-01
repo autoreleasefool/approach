@@ -5,12 +5,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.List;
 
 import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.theme.ChangeableTheme;
+import ca.josephroque.bowlingcompanion.theme.Theme;
 
 /**
  * Created by josephroque on 15-02-25.
@@ -45,6 +47,7 @@ public class StatsAdapter extends RecyclerView.Adapter<StatsAdapter.StatsViewHol
         private TextView mTextViewStatName;
         /** Displays corresponding value of the stat*/
         private TextView mTextViewStatValue;
+        private LinearLayout mLinearLayoutHeader;
 
         /**
          * Calls super constructor with itemLayoutView as parameter and retrieves references
@@ -61,6 +64,7 @@ public class StatsAdapter extends RecyclerView.Adapter<StatsAdapter.StatsViewHol
             {
                 case VIEWTYPE_HEADER:
                     mTextViewStatName = (TextView)itemLayoutView.findViewById(R.id.textView_stat_header);
+                    mLinearLayoutHeader = (LinearLayout)itemLayoutView.findViewById(R.id.linearLayout_stats_header)
                     break;
                 case VIEWTYPE_BODY:
                     mTextViewStatName = (TextView)itemLayoutView.findViewById(R.id.textView_stat_name);
@@ -113,6 +117,7 @@ public class StatsAdapter extends RecyclerView.Adapter<StatsAdapter.StatsViewHol
         {
             case VIEWTYPE_HEADER:
                 holder.mTextViewStatName.setText(mListStatNames.get(position).substring(1));
+                holder.mLinearLayoutHeader.setBackgroundColor(Theme.getActionBarTabThemeColor());
                 break;
             case VIEWTYPE_BODY:
                 holder.mTextViewStatName.setText(mListStatNames.get(position) + ":");
@@ -144,6 +149,6 @@ public class StatsAdapter extends RecyclerView.Adapter<StatsAdapter.StatsViewHol
     @Override
     public void updateTheme()
     {
-        //TODO change colors of header to match theme
+        notifyDataSetChanged();
     }
 }
