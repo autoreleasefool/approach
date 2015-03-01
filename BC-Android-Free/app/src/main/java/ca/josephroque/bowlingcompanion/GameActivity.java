@@ -1062,11 +1062,35 @@ public class GameActivity extends ActionBarActivity
                     }
                 }
 
-                switch(mCurrentBall)
+                if (mCurrentFrame == Constants.LAST_FRAME)
                 {
-                    case 0:mImageViewClearPins.setImageResource(R.drawable.ic_action_strike);break;
-                    case 1:mImageViewClearPins.setImageResource(R.drawable.ic_action_spare);break;
-                    case 2:mImageViewClearPins.setImageResource(R.drawable.ic_action_fifteen);break;
+                    switch(mCurrentBall)
+                    {
+                        case 0:mImageViewClearPins.setImageResource(R.drawable.ic_action_strike);break;
+                        case 1:
+                            if (Arrays.equals(mPinState[mCurrentFrame][0], Constants.FRAME_PINS_DOWN))
+                                mImageViewClearPins.setImageResource(R.drawable.ic_action_strike);
+                            else
+                                mImageViewClearPins.setImageResource(R.drawable.ic_action_spare);
+                            break;
+                        case 2:
+                            if (Arrays.equals(mPinState[mCurrentFrame][1], Constants.FRAME_PINS_DOWN))
+                                mImageViewClearPins.setImageResource(R.drawable.ic_action_strike);
+                            else if (Arrays.equals(mPinState[mCurrentFrame][0], Constants.FRAME_PINS_DOWN))
+                                mImageViewClearPins.setImageResource(R.drawable.ic_action_spare);
+                            else
+                                mImageViewClearPins.setImageResource(R.drawable.ic_action_fifteen);
+                            break;
+                    }
+                }
+                else
+                {
+                    switch(mCurrentBall)
+                    {
+                        case 0:mImageViewClearPins.setImageResource(R.drawable.ic_action_strike);break;
+                        case 1:mImageViewClearPins.setImageResource(R.drawable.ic_action_spare);break;
+                        case 2:mImageViewClearPins.setImageResource(R.drawable.ic_action_fifteen);break;
+                    }
                 }
                 mImageViewClearPins.setEnabled(numberOfPinsStanding < 5);
 
