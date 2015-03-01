@@ -42,10 +42,6 @@
     <string name="pref_quick_bowler_summary">Quick series will be created for this bowler</string>
     <string name="pref_quick_league_title">League</string>
     <string name="pref_quick_league_summary">Quick series will be created for this league</string>
-    <string name="pref_pins_title">Pins</string>
-    <string name="pref_enable_pins_title">Enable pin images</string>
-    <string name="pref_enable_pins_summary_images">Images of pins will be displayed</string>
-    <string name="pref_enable_pins_summary_buttons">Buttons will be displayed</string>
     <string name="pref_theme_title">Theme</string>
     <string name="pref_theme_colors_title">Theme colors</string>
     <string name="pref_theme_colors_dialog">Select a Theme</string>
@@ -58,6 +54,13 @@
     <string name="pref_developer_website_title">Visit Developer Website</string>
     <string name="pref_rate_title">Rate App</string>
     <string name="pref_report_bug_title">Report a Bug</string>
+
+    <!--
+    Removed disabling pin images - may add back later
+    <string name="pref_pins_title">Pins</string>
+    <string name="pref_enable_pins_title">Enable pin images</string>
+    <string name="pref_enable_pins_summary_images">Images of pins will be displayed</string>
+    <string name="pref_enable_pins_summary_buttons">Buttons will be displayed</string>-->
 
     <!-- ADVERTISEMENTS -->
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>

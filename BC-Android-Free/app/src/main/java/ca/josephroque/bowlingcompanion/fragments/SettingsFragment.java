@@ -139,6 +139,8 @@ public class SettingsFragment extends PreferenceFragment
                             Long.parseLong(mArrayLeagueIdsAsStrings[mCurrentBowlerPosition][selectedPosition]))
                     .apply();
         }
+        /*
+        Removed disabling pin images - may add back later
         else if (key.equals(Constants.KEY_PREF_ENABLE_PINS))
         {
             boolean arePinsEnabled = sharedPreferences.getBoolean(key, true);
@@ -146,7 +148,7 @@ public class SettingsFragment extends PreferenceFragment
             pinPref.setSummary((arePinsEnabled)
                     ? R.string.pref_enable_pins_summary_images
                     : R.string.pref_enable_pins_summary_buttons);
-        }
+        }*/
         else if (key.equals(Constants.KEY_PREF_THEME_COLORS))
         {
             String themeColor = sharedPreferences.getString(key, "Green");
@@ -291,11 +293,13 @@ public class SettingsFragment extends PreferenceFragment
             findPreference(Constants.KEY_PREF_QUICK_LEAGUE).setSummary("");
         }
 
+        /*
+        Removed disabling pin images - may add back later
         boolean arePinsEnabled = sharedPreferences.getBoolean(Constants.KEY_PREF_ENABLE_PINS, true);
         preference = findPreference(Constants.KEY_PREF_ENABLE_PINS);
         preference.setSummary((arePinsEnabled)
                 ? R.string.pref_enable_pins_summary_images
-                : R.string.pref_enable_pins_summary_buttons);
+                : R.string.pref_enable_pins_summary_buttons);*/
 
         boolean lightThemeVariationEnabled = sharedPreferences.getBoolean(Constants.KEY_PREF_THEME_LIGHT, true);
         preference = findPreference(Constants.KEY_PREF_THEME_LIGHT);

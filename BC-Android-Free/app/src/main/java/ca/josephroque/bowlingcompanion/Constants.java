@@ -13,9 +13,10 @@ public class Constants
     public static final String KEY_PREF_ENABLE_QUICK = "pref_enable_quick_series";
     public static final String KEY_PREF_QUICK_BOWLER = "pref_quick_bowler";
     public static final String KEY_PREF_QUICK_LEAGUE = "pref_quick_league";
-    public static final String KEY_PREF_ENABLE_PINS = "pref_enable_pins";
     public static final String KEY_PREF_THEME_COLORS = "pref_theme_colors";
     public static final String KEY_PREF_THEME_LIGHT = "pref_theme_light";
+    // Removed disabling pin images - may add back later
+    // public static final String KEY_PREF_ENABLE_PINS = "pref_enable_pins";
 
     //GAME VALUES
     /** The maximum number of games in a league */

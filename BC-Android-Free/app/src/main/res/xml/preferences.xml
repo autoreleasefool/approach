@@ -42,6 +42,8 @@
             android:defaultValue="true" />
     </PreferenceCategory>
 
+    <!--
+    Removed disabling pin images - may add back later
     <PreferenceCategory
         android:title="@string/pref_pins_title"
         android:key="pref_pins_settings">
@@ -51,7 +53,7 @@
             android:title="@string/pref_enable_pins_title"
             android:summary="@string/pref_enable_pins_summary_images"
             android:defaultValue="true" />
-    </PreferenceCategory>
+    </PreferenceCategory>-->
 
     <PreferenceCategory
         android:title="@string/pref_other_title"
