@@ -1,7 +1,8 @@
 package ca.josephroque.bowlingcompanion.adapter;
 
 import android.app.Activity;
-import android.graphics.Color;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -15,6 +16,8 @@ import java.util.List;
 import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.SeriesActivity;
+import ca.josephroque.bowlingcompanion.database.Contract.*;
+import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.theme.ChangeableTheme;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 
@@ -160,7 +163,7 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
             @Override
             public boolean onLongClick(View v)
             {
-                //TODO: showDeleteSeriesDialog(position);
+                showDeleteSeriesDialog(position);
                 return true;
             }
         });
@@ -176,5 +179,93 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
     public void updateTheme()
     {
         notifyDataSetChanged();
+    }
+
+    private void showDeleteSeriesDialog(final int position)
+    {
+        final String seriesDate = mListSeriesDate.get(position);
+        final long seriesId = mListSeriesIds.get(position);
+
+        DatabaseHelper.deleteData(mActivity,
+                new DatabaseHelper.DataDeleter()
+                {
+                    @Override
+                    public void execute()
+                    {
+                        deleteSeries(seriesId);
+                    }
+                },
+                seriesDate);
+    }
+
+    private void deleteSeries(final long selectedSeriesID)
+    {
+        final int index = mListSeriesIds.indexOf(selectedSeriesID);
+        final String seriesDate = mListSeriesDate.remove(index);
+        mListSeriesGames.remove(index);
+        mListSeriesIds.remove(index);
+        notifyDataSetChanged();
+
+        if (mListSeriesIds.size() == 0)
+        {
+            SeriesActivity seriesActivity = (SeriesActivity)mActivity;
+            seriesActivity.showNewSeriesInstructions();
+        }
+
+        new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                String[] whereArgs = {String.valueOf(selectedSeriesID)};
+                SQLiteDatabase database = DatabaseHelper.getInstance(mActivity).getWritableDatabase();
+
+                //Finds all ids of games belonging to the series, adds them to a list
+                List<Long> gameIdList = new ArrayList<Long>();
+                Cursor cursor = database.query(GameEntry.TABLE_NAME,
+                        new String[]{GameEntry._ID},
+                        GameEntry.COLUMN_NAME_SERIES_ID + "=?",
+                        whereArgs,
+                        null,
+                        null,
+                        null);
+                if (cursor.moveToFirst())
+                {
+                    while(!cursor.isAfterLast())
+                    {
+                        gameIdList.add(cursor.getLong(cursor.getColumnIndex(GameEntry._ID)));
+                        cursor.moveToNext();
+                    }
+                }
+
+                //Deletes all rows in frame table associated to game IDs found above,
+                //along with rows in games and series table associated to series ID
+                database.beginTransaction();
+                try
+                {
+                    for (int i = 0; i < gameIdList.size(); i++)
+                    {
+                        database.delete(FrameEntry.TABLE_NAME,
+                                FrameEntry.COLUMN_NAME_GAME_ID + "=?",
+                                new String[]{String.valueOf(gameIdList.get(i))});
+                    }
+                    database.delete(GameEntry.TABLE_NAME,
+                            GameEntry.COLUMN_NAME_SERIES_ID + "=?",
+                            whereArgs);
+                    database.delete(SeriesEntry.TABLE_NAME,
+                            SeriesEntry._ID + "=?",
+                            whereArgs);
+                    database.setTransactionSuccessful();
+                }
+                catch (Exception e)
+                {
+                    Log.w(TAG, "Error deleting series: " + seriesDate);
+                }
+                finally
+                {
+                    database.endTransaction();
+                }
+            }
+        }).start();
     }
 }

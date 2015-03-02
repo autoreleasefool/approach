@@ -265,7 +265,7 @@ public class SeriesActivity extends ActionBarActivity
             if (mListSeriesId.size() > 0)
             {
                 //If at least one item was loaded the instructions text is removed
-                mSeriesInstructionsTextView.setVisibility(View.GONE);
+                hideNewSeriesInstructions();
             }
         }
     }
@@ -445,5 +445,29 @@ public class SeriesActivity extends ActionBarActivity
         floatingActionButton.setColorRipple(Theme.getActionButtonRippleThemeColor());
         mSeriesAdapter.updateTheme();
         Theme.validateSeriesActivityTheme();
+    }
+
+    public void showNewSeriesInstructions()
+    {
+        runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                mSeriesInstructionsTextView.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+    public void hideNewSeriesInstructions()
+    {
+        runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                mSeriesInstructionsTextView.setVisibility(View.GONE);
+            }
+        });
     }
 }
