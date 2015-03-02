@@ -124,6 +124,13 @@ public class GameActivity extends ActionBarActivity
 
     private AdView mAdView;
 
+    private long mBowlerId = -1;
+    private long mLeagueId = -1;
+    private long mSeriesId = -1;
+    private String mBowlerName;
+    private String mLeagueName;
+    private String mSeriesDate;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -324,6 +331,20 @@ public class GameActivity extends ActionBarActivity
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         mDrawerAdapter = new ArrayAdapter<>(this, R.layout.list_game_navigation, mNavigationDrawerOptions);
         mDrawerList.setAdapter(mDrawerAdapter);
+
+        if (savedInstanceState != null)
+        {
+            mBowlerId = savedInstanceState.getLong(Constants.EXTRA_ID_BOWLER);
+            mLeagueId = savedInstanceState.getLong(Constants.EXTRA_ID_LEAGUE);
+            mSeriesId = savedInstanceState.getLong(Constants.EXTRA_ID_SERIES);
+            mBowlerName = savedInstanceState.getString(Constants.EXTRA_NAME_BOWLER);
+            mLeagueName = savedInstanceState.getString(Constants.EXTRA_NAME_LEAGUE);
+            mSeriesDate = savedInstanceState.getString(Constants.EXTRA_NAME_SERIES);
+            mEventMode = savedInstanceState.getBoolean(Constants.EXTRA_EVENT_MODE);
+            mGameIds = savedInstanceState.getLongArray(Constants.EXTRA_ARRAY_GAME_IDS);
+            mFrameIds = savedInstanceState.getLongArray(Constants.EXTRA_ARRAY_FRAME_IDS);
+        }
+
         updateTheme();
     }
 
@@ -337,12 +358,20 @@ public class GameActivity extends ActionBarActivity
             mAdView.resume();
         }
 
-        Intent intent = getIntent();
-        mEventMode = intent.getBooleanExtra(Constants.EXTRA_EVENT_MODE, false);
-        mGameIds = intent.getLongArrayExtra(Constants.EXTRA_ARRAY_GAME_IDS);
-        mFrameIds = intent.getLongArrayExtra(Constants.EXTRA_ARRAY_FRAME_IDS);
-        mNumberOfGames = (byte)mGameIds.length;
+        if (mBowlerId == -1)
+        {
+            mBowlerId = getIntent().getLongExtra(Constants.EXTRA_ID_BOWLER, -1);
+            mLeagueId = getIntent().getLongExtra(Constants.EXTRA_ID_LEAGUE, -1);
+            mSeriesId = getIntent().getLongExtra(Constants.EXTRA_ID_SERIES, -1);
+            mBowlerName = getIntent().getStringExtra(Constants.EXTRA_NAME_BOWLER);
+            mLeagueName = getIntent().getStringExtra(Constants.EXTRA_NAME_LEAGUE);
+            mSeriesDate = getIntent().getStringExtra(Constants.EXTRA_NAME_SERIES);
+            mEventMode = getIntent().getBooleanExtra(Constants.EXTRA_EVENT_MODE, false);
+            mGameIds = getIntent().getLongArrayExtra(Constants.EXTRA_ARRAY_GAME_IDS);
+            mFrameIds = getIntent().getLongArrayExtra(Constants.EXTRA_ARRAY_FRAME_IDS);
+        }
 
+        mNumberOfGames = (byte) mGameIds.length;
         mGameScores = new short[mNumberOfGames];
         mGameScoresMinusFouls = new short[mNumberOfGames];
 
@@ -390,6 +419,22 @@ public class GameActivity extends ActionBarActivity
                 mGameScoresMinusFouls[mCurrentGame]);
 
         super.onPause();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+
+        outState.putLong(Constants.EXTRA_ID_BOWLER, mBowlerId);
+        outState.putLong(Constants.EXTRA_ID_LEAGUE, mLeagueId);
+        outState.putLong(Constants.EXTRA_ID_SERIES, mSeriesId);
+        outState.putString(Constants.EXTRA_NAME_BOWLER, mBowlerName);
+        outState.putString(Constants.EXTRA_NAME_LEAGUE, mLeagueName);
+        outState.putString(Constants.EXTRA_NAME_SERIES, mSeriesDate);
+        outState.putLongArray(Constants.EXTRA_ARRAY_GAME_IDS, mGameIds);
+        outState.putLongArray(Constants.EXTRA_ARRAY_FRAME_IDS, mFrameIds);
+        outState.putBoolean(Constants.EXTRA_EVENT_MODE, mEventMode);
     }
 
     @Override
@@ -482,11 +527,12 @@ public class GameActivity extends ActionBarActivity
     {
         clearFrameColor();
         Intent statsIntent = new Intent(this, StatsActivity.class);
-        statsIntent.putExtra(Constants.EXTRA_ID_BOWLER, getIntent().getLongExtra(Constants.EXTRA_ID_BOWLER, -1));
-        statsIntent.putExtra(Constants.EXTRA_ID_LEAGUE, getIntent().getLongExtra(Constants.EXTRA_ID_LEAGUE, -1));
-        statsIntent.putExtra(Constants.EXTRA_ID_SERIES, getIntent().getLongExtra(Constants.EXTRA_ID_SERIES, -1));
-        statsIntent.putExtra(Constants.EXTRA_NAME_BOWLER, getIntent().getStringExtra(Constants.EXTRA_NAME_BOWLER));
-        statsIntent.putExtra(Constants.EXTRA_NAME_LEAGUE, getIntent().getStringExtra(Constants.EXTRA_NAME_LEAGUE));
+        statsIntent.putExtra(Constants.EXTRA_ID_BOWLER, mBowlerId);
+        statsIntent.putExtra(Constants.EXTRA_ID_LEAGUE, mLeagueId);
+        statsIntent.putExtra(Constants.EXTRA_ID_SERIES, mSeriesId);
+        statsIntent.putExtra(Constants.EXTRA_NAME_BOWLER, mBowlerName);
+        statsIntent.putExtra(Constants.EXTRA_NAME_LEAGUE, mLeagueName);
+        statsIntent.putExtra(Constants.EXTRA_NAME_SERIES, mSeriesDate);
         startActivity(statsIntent);
     }
 
@@ -498,12 +544,12 @@ public class GameActivity extends ActionBarActivity
         clearFrameColor();
         Intent statsIntent = new Intent(GameActivity.this, StatsActivity.class);
         statsIntent.putExtra(Constants.EXTRA_GAME_NUMBER, (byte)(mCurrentGame + 1));
-        statsIntent.putExtra(Constants.EXTRA_ID_BOWLER, getIntent().getLongExtra(Constants.EXTRA_ID_BOWLER, -1));
-        statsIntent.putExtra(Constants.EXTRA_ID_LEAGUE, getIntent().getLongExtra(Constants.EXTRA_ID_LEAGUE, -1));
-        statsIntent.putExtra(Constants.EXTRA_ID_SERIES, getIntent().getLongExtra(Constants.EXTRA_ID_SERIES, -1));
-        statsIntent.putExtra(Constants.EXTRA_ID_GAME, getIntent().getLongExtra(Constants.EXTRA_ID_GAME, -1));
-        statsIntent.putExtra(Constants.EXTRA_NAME_BOWLER, getIntent().getStringExtra(Constants.EXTRA_NAME_BOWLER));
-        statsIntent.putExtra(Constants.EXTRA_NAME_LEAGUE, getIntent().getStringExtra(Constants.EXTRA_NAME_LEAGUE));
+        statsIntent.putExtra(Constants.EXTRA_ID_BOWLER, mBowlerId);
+        statsIntent.putExtra(Constants.EXTRA_ID_LEAGUE, mLeagueId);
+        statsIntent.putExtra(Constants.EXTRA_ID_SERIES, mSeriesId);
+        statsIntent.putExtra(Constants.EXTRA_ID_GAME, mGameIds[mCurrentGame]);
+        statsIntent.putExtra(Constants.EXTRA_NAME_BOWLER, mBowlerName);
+        statsIntent.putExtra(Constants.EXTRA_NAME_LEAGUE, mLeagueName);
         startActivity(statsIntent);
     }
 

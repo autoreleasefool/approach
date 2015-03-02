@@ -59,6 +59,9 @@ public class SeriesActivity extends ActionBarActivity
     /** Number of games in a series in the league selected by the user */
     private byte mNumberOfGames = -1;
 
+    private String mBowlerName;
+    private String mLeagueName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -90,6 +93,16 @@ public class SeriesActivity extends ActionBarActivity
         });
 
         mSeriesInstructionsTextView = (TextView)findViewById(R.id.textView_new_series_instructions);
+
+        if (savedInstanceState != null)
+        {
+            mBowlerId = savedInstanceState.getLong(Constants.EXTRA_ID_BOWLER);
+            mLeagueId = savedInstanceState.getLong(Constants.EXTRA_ID_LEAGUE);
+            mNumberOfGames = savedInstanceState.getByte(Constants.EXTRA_NUMBER_OF_GAMES);
+            mBowlerName = savedInstanceState.getString(Constants.EXTRA_NAME_BOWLER);
+            mLeagueName = savedInstanceState.getString(Constants.EXTRA_NAME_LEAGUE);
+        }
+
         updateTheme();
     }
 
@@ -98,9 +111,14 @@ public class SeriesActivity extends ActionBarActivity
     {
         super.onResume();
 
-        mBowlerId = getIntent().getLongExtra(Constants.EXTRA_ID_BOWLER, -1);
-        mLeagueId = getIntent().getLongExtra(Constants.EXTRA_ID_LEAGUE, -1);
-        mNumberOfGames = getIntent().getByteExtra(Constants.EXTRA_NUMBER_OF_GAMES, (byte)-1);
+        if (mBowlerId == -1)
+        {
+            mBowlerId = getIntent().getLongExtra(Constants.EXTRA_ID_BOWLER, -1);
+            mLeagueId = getIntent().getLongExtra(Constants.EXTRA_ID_LEAGUE, -1);
+            mNumberOfGames = getIntent().getByteExtra(Constants.EXTRA_NUMBER_OF_GAMES, (byte) -1);
+            mBowlerName = getIntent().getStringExtra(Constants.EXTRA_NAME_BOWLER);
+            mLeagueName = getIntent().getStringExtra(Constants.EXTRA_NAME_LEAGUE);
+        }
 
         mListSeriesId.clear();
         mListSeriesDate.clear();
@@ -112,6 +130,18 @@ public class SeriesActivity extends ActionBarActivity
         }
 
         new LoadSeriesTask().execute();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+
+        outState.putLong(Constants.EXTRA_ID_BOWLER, mBowlerId);
+        outState.putLong(Constants.EXTRA_ID_LEAGUE, mLeagueId);
+        outState.putLong(Constants.EXTRA_NUMBER_OF_GAMES, mNumberOfGames);
+        outState.putString(Constants.EXTRA_NAME_BOWLER, mBowlerName);
+        outState.putString(Constants.EXTRA_NAME_LEAGUE, mLeagueName);
     }
 
     @Override
@@ -170,7 +200,8 @@ public class SeriesActivity extends ActionBarActivity
      */
     public void openSeries(int position)
     {
-        new OpenSeriesTask().execute(this, mListSeriesId.get(position), mNumberOfGames);
+        new OpenSeriesTask().execute(this, mListSeriesId.get(position), mNumberOfGames,
+                                    mBowlerId, mBowlerName, mLeagueId, mLeagueName, mListSeriesDate.get(position));
     }
 
     /**
@@ -179,9 +210,10 @@ public class SeriesActivity extends ActionBarActivity
      * @param seriesId series id of which game ids should be loaded
      * @param numberOfGames number of games in the series to be loaded
      */
-    public static void openEventSeries(Activity srcActivity, long seriesId, byte numberOfGames)
+    public static void openEventSeries(Activity srcActivity, long seriesId, byte numberOfGames, long bowlerId,
+                                       String bowlerName, long leagueId, String leagueName, String seriesDate)
     {
-        new OpenSeriesTask().execute(srcActivity, seriesId, numberOfGames);
+        new OpenSeriesTask().execute(srcActivity, seriesId, numberOfGames, bowlerId, bowlerName, leagueId, leagueName, seriesDate);
     }
 
     /**
@@ -190,7 +222,7 @@ public class SeriesActivity extends ActionBarActivity
      */
     public void addNewLeagueSeries()
     {
-        new AddSeriesTask().execute(this, mBowlerId, mLeagueId, mNumberOfGames);
+        new AddSeriesTask().execute(this, mBowlerId, mLeagueId, mNumberOfGames, mBowlerName, mLeagueName);
     }
 
     /**
@@ -201,9 +233,9 @@ public class SeriesActivity extends ActionBarActivity
      * @param leagueId id of league to add series to
      * @param numberOfGames number of games in the series to be created
      */
-    public static void addNewEventSeries(Activity srcActivity, long bowlerId, long leagueId, byte numberOfGames)
+    public static void addNewEventSeries(Activity srcActivity, long bowlerId, long leagueId, byte numberOfGames, String bowlerName, String leagueName)
     {
-        new AddSeriesTask().execute(srcActivity, bowlerId, leagueId, numberOfGames);
+        new AddSeriesTask().execute(srcActivity, bowlerId, leagueId, numberOfGames, bowlerName, leagueName);
     }
 
     /**
@@ -317,7 +349,7 @@ public class SeriesActivity extends ActionBarActivity
                 }
             }
 
-            return new Object[]{srcActivity, gameId, frameId, seriesIdSelected};
+            return new Object[]{srcActivity, gameId, frameId, seriesIdSelected, params[3], params[4], params[5], params[6], params[7]};
         }
 
         @Override
@@ -328,15 +360,21 @@ public class SeriesActivity extends ActionBarActivity
             long[] gameIds = (long[])params[1];
             long[] frameIds = (long[])params[2];
             long seriesId = (Long)params[3];
+            long bowlerId = (Long)params[4];
+            String bowlerName = params[5].toString();
+            long leagueId = (Long)params[6];
+            String leagueName = params[7].toString();
+            String seriesDate = params[8].toString();
 
             Intent gameIntent = new Intent(srcActivity, GameActivity.class);
             gameIntent.putExtra(Constants.EXTRA_ARRAY_GAME_IDS, gameIds);
             gameIntent.putExtra(Constants.EXTRA_ARRAY_FRAME_IDS, frameIds);
-            gameIntent.putExtra(Constants.EXTRA_ID_BOWLER, srcActivity.getIntent().getLongExtra(Constants.EXTRA_ID_BOWLER, -1));
-            gameIntent.putExtra(Constants.EXTRA_ID_LEAGUE, srcActivity.getIntent().getLongExtra(Constants.EXTRA_ID_LEAGUE, -1));
+            gameIntent.putExtra(Constants.EXTRA_ID_BOWLER, bowlerId);
+            gameIntent.putExtra(Constants.EXTRA_ID_LEAGUE, leagueId);
             gameIntent.putExtra(Constants.EXTRA_ID_SERIES, seriesId);
-            gameIntent.putExtra(Constants.EXTRA_NAME_BOWLER, srcActivity.getIntent().getStringExtra(Constants.EXTRA_NAME_BOWLER));
-            gameIntent.putExtra(Constants.EXTRA_NAME_LEAGUE, srcActivity.getIntent().getStringExtra(Constants.EXTRA_NAME_LEAGUE));
+            gameIntent.putExtra(Constants.EXTRA_NAME_BOWLER, bowlerName);
+            gameIntent.putExtra(Constants.EXTRA_NAME_LEAGUE, leagueName);
+            gameIntent.putExtra(Constants.EXTRA_NAME_SERIES, seriesDate);
             srcActivity.startActivity(gameIntent);
         }
     }
@@ -359,7 +397,7 @@ public class SeriesActivity extends ActionBarActivity
             long[] gameId = new long[numberOfGames], frameId = new long[10 * numberOfGames];
             SQLiteDatabase database = DatabaseHelper.getInstance(srcActivity).getWritableDatabase();
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            Date date = new Date();
+            String seriesDate = dateFormat.format(new Date());
 
             database.beginTransaction();
 
@@ -370,7 +408,7 @@ public class SeriesActivity extends ActionBarActivity
             try
             {
                 ContentValues values = new ContentValues();
-                values.put(SeriesEntry.COLUMN_NAME_DATE_CREATED, dateFormat.format(date));
+                values.put(SeriesEntry.COLUMN_NAME_DATE_CREATED, seriesDate);
                 values.put(SeriesEntry.COLUMN_NAME_LEAGUE_ID, leagueId);
                 values.put(SeriesEntry.COLUMN_NAME_BOWLER_ID, bowlerId);
                 seriesId = database.insert(SeriesEntry.TABLE_NAME, null, values);
@@ -406,7 +444,7 @@ public class SeriesActivity extends ActionBarActivity
                 database.endTransaction();
             }
 
-            return new Object[]{srcActivity, gameId, frameId, seriesId};
+            return new Object[]{srcActivity, gameId, frameId, seriesId, bowlerId, params[4], leagueId, params[5], seriesDate};
         }
 
         @Override
@@ -417,15 +455,21 @@ public class SeriesActivity extends ActionBarActivity
             long[] gameIds = (long[])params[1];
             long[] frameIds = (long[])params[2];
             long seriesId = (Long)params[3];
+            long bowlerId = (Long)params[4];
+            String bowlerName = params[5].toString();
+            long leagueId = (Long)params[6];
+            String leagueName = params[7].toString();
+            String seriesDate = params[8].toString();
 
             Intent gameIntent = new Intent(srcActivity, GameActivity.class);
             gameIntent.putExtra(Constants.EXTRA_ARRAY_GAME_IDS, gameIds);
             gameIntent.putExtra(Constants.EXTRA_ARRAY_FRAME_IDS, frameIds);
-            gameIntent.putExtra(Constants.EXTRA_ID_BOWLER, srcActivity.getIntent().getLongExtra(Constants.EXTRA_ID_BOWLER, -1));
-            gameIntent.putExtra(Constants.EXTRA_ID_LEAGUE, srcActivity.getIntent().getLongExtra(Constants.EXTRA_ID_LEAGUE, -1));
+            gameIntent.putExtra(Constants.EXTRA_ID_BOWLER, bowlerId);
+            gameIntent.putExtra(Constants.EXTRA_ID_LEAGUE, leagueId);
             gameIntent.putExtra(Constants.EXTRA_ID_SERIES, seriesId);
-            gameIntent.putExtra(Constants.EXTRA_NAME_BOWLER, srcActivity.getIntent().getStringExtra(Constants.EXTRA_NAME_BOWLER));
-            gameIntent.putExtra(Constants.EXTRA_NAME_LEAGUE, srcActivity.getIntent().getStringExtra(Constants.EXTRA_NAME_LEAGUE));
+            gameIntent.putExtra(Constants.EXTRA_NAME_BOWLER, bowlerName);
+            gameIntent.putExtra(Constants.EXTRA_NAME_LEAGUE, leagueName);
+            gameIntent.putExtra(Constants.EXTRA_NAME_SERIES, seriesDate);
             srcActivity.startActivity(gameIntent);
         }
     }

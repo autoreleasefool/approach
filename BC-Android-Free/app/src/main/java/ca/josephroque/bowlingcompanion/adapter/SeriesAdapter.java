@@ -221,7 +221,7 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
                 SQLiteDatabase database = DatabaseHelper.getInstance(mActivity).getWritableDatabase();
 
                 //Finds all ids of games belonging to the series, adds them to a list
-                List<Long> gameIdList = new ArrayList<Long>();
+                List<Long> gameIdList = new ArrayList<>();
                 Cursor cursor = database.query(GameEntry.TABLE_NAME,
                         new String[]{GameEntry._ID},
                         GameEntry.COLUMN_NAME_SERIES_ID + "=?",

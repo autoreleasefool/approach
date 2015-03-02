@@ -1,12 +1,10 @@
 package ca.josephroque.bowlingcompanion.adapter;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
@@ -43,7 +41,7 @@ public class LeagueEventAdapter extends RecyclerView.Adapter<LeagueEventAdapter.
     private static final String TAG = "LeagueEventAdapter";
 
     /** Instance of activity which created instance of this object */
-    private Activity mActivity;
+    private LeagueEventActivity mLeagueEventActivity;
 
     /** List of league ids from "league" table in database to uniquely identify leagues */
     private List<Long> mListLeagueEventIds;
@@ -95,14 +93,14 @@ public class LeagueEventAdapter extends RecyclerView.Adapter<LeagueEventAdapter.
      * @param eventMode indicates whether this object represents a list of events or not
      */
     public LeagueEventAdapter(
-            Activity activity,
+            LeagueEventActivity activity,
             List<Long> listLeagueEventIds,
             List<String> listLeagueEventNames,
             List<Short> listLeagueEventAverages,
             List<Byte> listLeagueEventNumberOfGames,
             boolean eventMode)
     {
-        this.mActivity = activity;
+        this.mLeagueEventActivity = activity;
         this.mListLeagueEventIds = listLeagueEventIds;
         this.mListLeagueEventNames = listLeagueEventNames;
         this.mListLeagueEventAverages = listLeagueEventAverages;
@@ -175,7 +173,7 @@ public class LeagueEventAdapter extends RecyclerView.Adapter<LeagueEventAdapter.
          */
         if (leagueName.equals(Constants.NAME_LEAGUE_OPEN))
         {
-            AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+            AlertDialog.Builder builder = new AlertDialog.Builder(mLeagueEventActivity);
             builder.setMessage("The league \"" + leagueName + "\" cannot be deleted.")
                     .setCancelable(false)
                     .setPositiveButton(Constants.DIALOG_OKAY, new DialogInterface.OnClickListener()
@@ -191,7 +189,7 @@ public class LeagueEventAdapter extends RecyclerView.Adapter<LeagueEventAdapter.
             return;
         }
 
-        DatabaseHelper.deleteData(mActivity,
+        DatabaseHelper.deleteData(mLeagueEventActivity,
                 new DatabaseHelper.DataDeleter()
                 {
                     @Override
@@ -220,8 +218,7 @@ public class LeagueEventAdapter extends RecyclerView.Adapter<LeagueEventAdapter.
 
         if (mListLeagueEventIds.size() == 0)
         {
-            LeagueEventActivity leagueEventActivity = (LeagueEventActivity)mActivity;
-            leagueEventActivity.showNewLeagueEventInstructions(mEventMode);
+            mLeagueEventActivity.showNewLeagueEventInstructions(mEventMode);
         }
 
         //Deletion occurs on separate thread so UI does not hang
@@ -231,7 +228,7 @@ public class LeagueEventAdapter extends RecyclerView.Adapter<LeagueEventAdapter.
             public void run()
             {
                 //Deletes data from all tables corresponding to selectedLeagueId
-                SQLiteDatabase database = DatabaseHelper.getInstance(mActivity).getWritableDatabase();
+                SQLiteDatabase database = DatabaseHelper.getInstance(mLeagueEventActivity).getWritableDatabase();
                 String[] whereArgs = {String.valueOf(selectedLeagueID)};
                 database.beginTransaction();
                 try
@@ -274,7 +271,7 @@ public class LeagueEventAdapter extends RecyclerView.Adapter<LeagueEventAdapter.
             long selectedLeagueId = mListLeagueEventIds.get(position[0]);
             String selectedLeagueName = mListLeagueEventNames.get(position[0]);
 
-            SQLiteDatabase database = DatabaseHelper.getInstance(mActivity).getWritableDatabase();
+            SQLiteDatabase database = DatabaseHelper.getInstance(mLeagueEventActivity).getWritableDatabase();
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String currentDate = dateFormat.format(new Date());
 
@@ -312,7 +309,8 @@ public class LeagueEventAdapter extends RecyclerView.Adapter<LeagueEventAdapter.
             {
                 String rawSeriesQuery = "SELECT "
                         + LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES + ", "
-                        + SeriesEntry.TABLE_NAME + "." + SeriesEntry._ID + " AS sid"
+                        + SeriesEntry.TABLE_NAME + "." + SeriesEntry._ID + " AS sid, "
+                        + SeriesEntry.COLUMN_NAME_DATE_CREATED
                         + " FROM " + LeagueEntry.TABLE_NAME + " AS league"
                         + " LEFT JOIN " + SeriesEntry.TABLE_NAME
                         + " ON league." + LeagueEntry._ID + "=" + SeriesEntry.COLUMN_NAME_LEAGUE_ID
@@ -323,18 +321,13 @@ public class LeagueEventAdapter extends RecyclerView.Adapter<LeagueEventAdapter.
                 cursor.moveToFirst();
                 byte numberOfGames = (byte)cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES));
                 long seriesId = cursor.getLong(cursor.getColumnIndex("sid"));
+                String seriesDate = cursor.getString(cursor.getColumnIndex(SeriesEntry.COLUMN_NAME_DATE_CREATED));
 
-                return new Object[]{seriesId, numberOfGames};
+                return new Object[]{seriesId, numberOfGames, selectedLeagueId, selectedLeagueName, seriesDate};
             }
             else
             {
-                long bowlerId = mActivity.getIntent().getLongExtra(Constants.EXTRA_ID_BOWLER, -1);
-                mActivity.getSharedPreferences(Constants.PREFERENCES, Context.MODE_PRIVATE)
-                        .edit()
-                        .putLong(Constants.PREFERENCE_ID_RECENT_LEAGUE, selectedLeagueId)
-                        .putLong(Constants.PREFERENCE_ID_RECENT_BOWLER, bowlerId)
-                        .apply();
-                return new Object[]{mListLeagueEventNumberOfGames.get(position[0])};
+                return new Object[]{mListLeagueEventNumberOfGames.get(position[0]), selectedLeagueId, selectedLeagueName};
             }
         }
 
@@ -349,7 +342,19 @@ public class LeagueEventAdapter extends RecyclerView.Adapter<LeagueEventAdapter.
                  */
                 long seriesId = (Long)params[0];
                 byte numberOfGames = (Byte)params[1];
-                SeriesActivity.openEventSeries(mActivity, seriesId, numberOfGames);
+                long leagueId = (Long)params[2];
+                String leagueName = params[3].toString();
+                String seriesDate = params[4].toString();
+
+                SeriesActivity.openEventSeries(
+                        mLeagueEventActivity,
+                        seriesId,
+                        numberOfGames,
+                        mLeagueEventActivity.getBowlerId(),
+                        mLeagueEventActivity.getBowlerName(),
+                        leagueId,
+                        leagueName,
+                        seriesDate);
             }
             else
             {
@@ -358,13 +363,25 @@ public class LeagueEventAdapter extends RecyclerView.Adapter<LeagueEventAdapter.
                  * to display all available series in the league
                  */
                 byte numberOfGames = (Byte)params[0];
-                Intent seriesIntent = new Intent(mActivity, SeriesActivity.class);
+                long leagueId = (Long)params[1];
+                String leagueName = params[2].toString();
+
+                if (!leagueName.equals(Constants.NAME_LEAGUE_OPEN))
+                {
+                    mLeagueEventActivity.getSharedPreferences(Constants.PREFERENCES, Context.MODE_PRIVATE)
+                            .edit()
+                            .putLong(Constants.PREFERENCE_ID_RECENT_LEAGUE, leagueId)
+                            .putLong(Constants.PREFERENCE_ID_RECENT_BOWLER, mLeagueEventActivity.getBowlerId())
+                            .apply();
+                }
+
+                Intent seriesIntent = new Intent(mLeagueEventActivity, SeriesActivity.class);
                 seriesIntent.putExtra(Constants.EXTRA_NUMBER_OF_GAMES, numberOfGames);
-                seriesIntent.putExtra(Constants.EXTRA_ID_BOWLER, mActivity.getIntent().getLongExtra(Constants.EXTRA_ID_BOWLER, -1));
-                seriesIntent.putExtra(Constants.EXTRA_ID_LEAGUE, mActivity.getIntent().getLongExtra(Constants.EXTRA_ID_LEAGUE, -1));
-                seriesIntent.putExtra(Constants.EXTRA_NAME_BOWLER, mActivity.getIntent().getStringExtra(Constants.EXTRA_NAME_BOWLER));
-                seriesIntent.putExtra(Constants.EXTRA_NAME_LEAGUE, mActivity.getIntent().getStringExtra(Constants.EXTRA_NAME_LEAGUE));
-                mActivity.startActivity(seriesIntent);
+                seriesIntent.putExtra(Constants.EXTRA_ID_BOWLER, mLeagueEventActivity.getBowlerId());
+                seriesIntent.putExtra(Constants.EXTRA_ID_LEAGUE, leagueId);
+                seriesIntent.putExtra(Constants.EXTRA_NAME_BOWLER, mLeagueEventActivity.getBowlerName());
+                seriesIntent.putExtra(Constants.EXTRA_NAME_LEAGUE, leagueName);
+                mLeagueEventActivity.startActivity(seriesIntent);
             }
         }
     }

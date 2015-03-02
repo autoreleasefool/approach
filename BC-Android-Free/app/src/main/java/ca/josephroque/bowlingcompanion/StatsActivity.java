@@ -1,7 +1,6 @@
 package ca.josephroque.bowlingcompanion;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.ColorDrawable;
@@ -10,7 +9,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -75,10 +73,12 @@ public class StatsActivity extends ActionBarActivity
     private String mBowlerName;
     /** Name of the league whose stats are being displayed */
     private String mLeagueName;
+    private String mSeriesDate;
     /** Id of the bowler whose stats will be loaded and displayed */
     private long mBowlerId;
     /** Id of the league whose stats will be loaded and displayed */
     private long mLeagueId;
+    private long mSeriesId;
     /** Id of the game whose stats will be loaded and displayed */
     private long mGameId;
     /** Number of the game in the series being loaded */
@@ -106,6 +106,19 @@ public class StatsActivity extends ActionBarActivity
 
         mStatsAdapter = new StatsAdapter(this, mListStatNames, mListStatValues);
         mStatsRecycler.setAdapter(mStatsAdapter);
+
+        if (savedInstanceState != null)
+        {
+            mBowlerId = savedInstanceState.getLong(Constants.EXTRA_ID_BOWLER);
+            mLeagueId = savedInstanceState.getLong(Constants.EXTRA_ID_LEAGUE);
+            mSeriesId = savedInstanceState.getLong(Constants.EXTRA_ID_SERIES);
+            mGameId = savedInstanceState.getLong(Constants.EXTRA_ID_GAME);
+            mBowlerName = savedInstanceState.getString(Constants.EXTRA_NAME_BOWLER);
+            mLeagueName = savedInstanceState.getString(Constants.EXTRA_NAME_LEAGUE);
+            mSeriesDate = savedInstanceState.getString(Constants.EXTRA_NAME_SERIES);
+            mGameNumber = savedInstanceState.getByte(Constants.EXTRA_GAME_NUMBER);
+        }
+
         updateTheme();
     }
 
@@ -114,9 +127,16 @@ public class StatsActivity extends ActionBarActivity
     {
         super.onResume();
 
-        mBowlerId = getIntent().getLongExtra(Constants.EXTRA_ID_BOWLER, -1);
-        mLeagueId = getIntent().getLongExtra(Constants.EXTRA_ID_LEAGUE, -1);
-        mGameId = getIntent().getLongExtra(Constants.EXTRA_ID_GAME, -1);
+        if (mBowlerId == -1)
+        {
+            mBowlerId = getIntent().getLongExtra(Constants.EXTRA_ID_BOWLER, -1);
+            mLeagueId = getIntent().getLongExtra(Constants.EXTRA_ID_LEAGUE, -1);
+            mGameId = getIntent().getLongExtra(Constants.EXTRA_ID_GAME, -1);
+            mBowlerName = getIntent().getStringExtra(Constants.EXTRA_NAME_BOWLER);
+            mLeagueName = getIntent().getStringExtra(Constants.EXTRA_NAME_LEAGUE);
+            mSeriesDate = getIntent().getStringExtra(Constants.EXTRA_NAME_SERIES);
+            mGameNumber = getIntent().getByteExtra(Constants.EXTRA_GAME_NUMBER, (byte)-1);
+        }
 
         mListStatNames.clear();
         mListStatValues.clear();
@@ -125,7 +145,6 @@ public class StatsActivity extends ActionBarActivity
         int titleToSet;
         if (mGameId == -1)
         {
-
             if (mLeagueId == -1)
             {
                 titleToSet = R.string.title_activity_stats_bowler;
@@ -133,16 +152,12 @@ public class StatsActivity extends ActionBarActivity
             }
             else
             {
-                mLeagueName = getIntent().getStringExtra(Constants.EXTRA_NAME_LEAGUE);
                 titleToSet = R.string.title_activity_stats_league;
                 statsToLoad = LOADING_LEAGUE_STATS;
             }
         }
         else
         {
-            mBowlerName = getIntent().getStringExtra(Constants.EXTRA_NAME_BOWLER);
-            mLeagueName = getIntent().getStringExtra(Constants.EXTRA_NAME_LEAGUE);
-            mGameNumber = getIntent().getByteExtra(Constants.EXTRA_GAME_NUMBER, (byte)-1);
             titleToSet = R.string.title_activity_stats_game;
             statsToLoad = LOADING_GAME_STATS;
         }
@@ -154,6 +169,21 @@ public class StatsActivity extends ActionBarActivity
 
         setTitle(titleToSet);
         new LoadStatsTask().execute(statsToLoad);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+
+        outState.putString(Constants.EXTRA_NAME_BOWLER, mBowlerName);
+        outState.putString(Constants.EXTRA_NAME_LEAGUE, mLeagueName);
+        outState.putString(Constants.EXTRA_NAME_SERIES, mSeriesDate);
+        outState.putLong(Constants.EXTRA_ID_BOWLER, mBowlerId);
+        outState.putLong(Constants.EXTRA_ID_LEAGUE, mLeagueId);
+        outState.putLong(Constants.EXTRA_ID_SERIES, mSeriesId);
+        outState.putLong(Constants.EXTRA_ID_GAME, mGameId);
+        outState.putByte(Constants.EXTRA_GAME_NUMBER, mGameNumber);
     }
 
     @Override

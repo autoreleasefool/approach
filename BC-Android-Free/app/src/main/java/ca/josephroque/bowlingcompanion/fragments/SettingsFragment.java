@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -243,6 +242,7 @@ public class SettingsFragment extends PreferenceFragment
             findPreference(Constants.KEY_PREF_ENABLE_QUICK).setEnabled(false);
             findPreference(Constants.KEY_PREF_QUICK_BOWLER).setEnabled(false);
             findPreference(Constants.KEY_PREF_QUICK_LEAGUE).setEnabled(false);
+            return;
         }
 
         mArrayBowlerIdsAsStrings = new String[listBowlerIds.size()];

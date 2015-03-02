@@ -26,6 +26,7 @@ import java.util.List;
 
 import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.DividerItemDecoration;
+import ca.josephroque.bowlingcompanion.LeagueEventActivity;
 import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.adapter.LeagueEventAdapter;
 import ca.josephroque.bowlingcompanion.database.Contract.*;
@@ -103,7 +104,7 @@ public class LeagueEventFragment extends Fragment
         mLeagueEventRecycler.setLayoutManager(leagueLayoutManager);
 
         mLeagueEventAdapter = new LeagueEventAdapter(
-                getActivity(),
+                (LeagueEventActivity)getActivity(),
                 mListLeagueEventIds,
                 mListLeagueEventNames,
                 mListLeagueEventAverages,
@@ -128,6 +129,11 @@ public class LeagueEventFragment extends Fragment
                 ? R.string.text_new_event_instructions
                 : R.string.text_new_league_instructions);
 
+        if (savedInstance != null)
+        {
+            mBowlerId = savedInstance.getLong(Constants.EXTRA_ID_BOWLER);
+        }
+
         updateTheme();
         return rootView;
     }
@@ -137,7 +143,10 @@ public class LeagueEventFragment extends Fragment
     {
         super.onResume();
 
-        mBowlerId = getActivity().getIntent().getLongExtra(Constants.EXTRA_ID_BOWLER, -1);
+        if (mBowlerId == -1)
+        {
+            mBowlerId = getActivity().getIntent().getLongExtra(Constants.EXTRA_ID_BOWLER, -1);
+        }
 
         mListLeagueEventIds.clear();
         mListLeagueEventNames.clear();
@@ -151,6 +160,13 @@ public class LeagueEventFragment extends Fragment
         }
 
         new LoadLeaguesEventsTask().execute();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        outState.putLong(Constants.EXTRA_ID_BOWLER, mBowlerId);
     }
 
     /**

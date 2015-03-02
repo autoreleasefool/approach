@@ -27,6 +27,9 @@ public class LeagueEventActivity extends ActionBarActivity
     /** ViewPager which displays fragments to user */
     private ViewPager mLeagueEventViewPager;
 
+    private long mBowlerId = -1;
+    private String mBowlerName = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -41,6 +44,12 @@ public class LeagueEventActivity extends ActionBarActivity
         tabStrip.setViewPager(mLeagueEventViewPager);
         tabStrip.setTextColor(getResources().getColor(R.color.secondary_background));
 
+        if (savedInstanceState != null)
+        {
+            mBowlerId = savedInstanceState.getLong(Constants.EXTRA_ID_BOWLER);
+            mBowlerName = savedInstanceState.getString(Constants.EXTRA_NAME_BOWLER);
+        }
+
         updateTheme();
     }
 
@@ -49,10 +58,24 @@ public class LeagueEventActivity extends ActionBarActivity
     {
         super.onResume();
 
+        if (mBowlerId == -1)
+        {
+            mBowlerId = getIntent().getLongExtra(Constants.EXTRA_ID_BOWLER, -1);
+            mBowlerName = getIntent().getStringExtra(Constants.EXTRA_NAME_BOWLER);
+        }
+
         if(Theme.getLeagueEventActivityThemeInvalidated())
         {
             updateTheme();
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        outState.putLong(Constants.EXTRA_ID_BOWLER, mBowlerId);
+        outState.putString(Constants.EXTRA_NAME_BOWLER, mBowlerName);
     }
 
     @Override
@@ -98,8 +121,8 @@ public class LeagueEventActivity extends ActionBarActivity
     private void showBowlerStats()
     {
         Intent statsIntent = new Intent(LeagueEventActivity.this, StatsActivity.class);
-        statsIntent.putExtra(Constants.EXTRA_ID_BOWLER, getIntent().getLongExtra(Constants.EXTRA_ID_BOWLER, -1));
-        statsIntent.putExtra(Constants.EXTRA_NAME_BOWLER, getIntent().getStringExtra(Constants.EXTRA_NAME_BOWLER));
+        statsIntent.putExtra(Constants.EXTRA_ID_BOWLER, mBowlerId);
+        statsIntent.putExtra(Constants.EXTRA_NAME_BOWLER, mBowlerName);
         startActivity(statsIntent);
     }
 
@@ -149,4 +172,7 @@ public class LeagueEventActivity extends ActionBarActivity
                                 + leagueOrEventFragment);
         leagueEventFragment.showNewLeagueEventInstructions();
     }
+
+    public long getBowlerId() {return mBowlerId;}
+    public String getBowlerName() {return mBowlerName;}
 }
