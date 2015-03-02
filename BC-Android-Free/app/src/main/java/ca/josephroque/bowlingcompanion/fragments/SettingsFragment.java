@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -16,6 +17,7 @@ import java.util.List;
 
 import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.R;
+import ca.josephroque.bowlingcompanion.data.Social;
 import ca.josephroque.bowlingcompanion.theme.ChangeableTheme;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.database.Contract.*;
@@ -28,7 +30,7 @@ import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
  * in project Bowling Companion
  */
 public class SettingsFragment extends PreferenceFragment
-    implements SharedPreferences.OnSharedPreferenceChangeListener
+    implements SharedPreferences.OnSharedPreferenceChangeListener, Preference.OnPreferenceClickListener
 {
 
     private static final String TAG = "SettingsFragment";
@@ -56,6 +58,7 @@ public class SettingsFragment extends PreferenceFragment
         getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
         loadBowlerAndLeagueNames();
         setPreferenceSummaries();
+        registerPreferenceOnClickListener();
     }
 
     @Override
@@ -305,5 +308,35 @@ public class SettingsFragment extends PreferenceFragment
         preference.setSummary((lightThemeVariationEnabled)
                 ? R.string.pref_theme_light_summary
                 : R.string.pref_theme_dark_summary);
+    }
+
+    public boolean onPreferenceClick(Preference preference)
+    {
+        if (preference.getKey().equals(Constants.KEY_PREF_REPORT_BUG))
+        {
+            String emailBody = "Please try to include as much of the following information as possible:"
+                    + "\nWhere in the application the bug occurred,"
+                    + "\nWhat you were doing when the bug occurred,"
+                    + "\nThe nature of the bug - fatal, minor, cosmetic (the way the app looks)"
+                    + "\n\n";
+
+            Intent emailIntent = Social.getEmailIntent("bugs@josephroque.ca", "Bug: Bowling Companion", emailBody);
+            startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+            return true;
+        }
+        else if (preference.getKey().equals(Constants.KEY_PREF_COMMENT_SUGGESTION))
+        {
+            Intent emailIntent = Social.getEmailIntent("contact@josephroque.ca", "Comm/Sug: Bowling Companion");
+            startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+            return true;
+        }
+
+        return false;
+    }
+
+    private void registerPreferenceOnClickListener()
+    {
+        findPreference(Constants.KEY_PREF_REPORT_BUG).setOnPreferenceClickListener(this);
+        findPreference(Constants.KEY_PREF_COMMENT_SUGGESTION).setOnPreferenceClickListener(this);
     }
 }

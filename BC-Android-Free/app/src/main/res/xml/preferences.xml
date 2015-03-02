@@ -76,14 +76,13 @@
                 android:data="http://josephroque.ca" />
         </Preference>
 
-        <!-- TODO add link to report bug screen -->
         <Preference
             android:key="pref_report_bug"
-            android:title="@string/pref_report_bug_title">
-            <intent
-                android:action="android.intent.action.VIEW"
-                android:data="http://josephroque.ca" />
-        </Preference>
+            android:title="@string/pref_report_bug_title" />
+
+        <Preference
+            android:key="pref_comment_suggestion"
+            android:title="@string/pref_comment_suggestion_title" />
     </PreferenceCategory>
 
 </PreferenceScreen>

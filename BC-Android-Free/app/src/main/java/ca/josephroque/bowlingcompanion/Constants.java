@@ -15,6 +15,8 @@ public class Constants
     public static final String KEY_PREF_QUICK_LEAGUE = "pref_quick_league";
     public static final String KEY_PREF_THEME_COLORS = "pref_theme_colors";
     public static final String KEY_PREF_THEME_LIGHT = "pref_theme_light";
+    public static final String KEY_PREF_REPORT_BUG = "pref_report_bug";
+    public static final String KEY_PREF_COMMENT_SUGGESTION = "pref_comment_suggestion";
     // Removed disabling pin images - may add back later
     // public static final String KEY_PREF_ENABLE_PINS = "pref_enable_pins";
 

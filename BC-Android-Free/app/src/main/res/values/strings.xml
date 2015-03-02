@@ -55,6 +55,7 @@
     <string name="pref_developer_website_title">Visit Developer Website</string>
     <string name="pref_rate_title">Rate App</string>
     <string name="pref_report_bug_title">Report a Bug</string>
+    <string name="pref_comment_suggestion_title">Submit a Comment/Suggestion</string>
 
     <!--
     Removed disabling pin images - may add back later
