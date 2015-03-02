@@ -64,7 +64,7 @@ public class StatsAdapter extends RecyclerView.Adapter<StatsAdapter.StatsViewHol
             {
                 case VIEWTYPE_HEADER:
                     mTextViewStatName = (TextView)itemLayoutView.findViewById(R.id.textView_stat_header);
-                    mLinearLayoutHeader = (LinearLayout)itemLayoutView.findViewById(R.id.linearLayout_stats_header)
+                    mLinearLayoutHeader = (LinearLayout)itemLayoutView.findViewById(R.id.linearLayout_stats_header);
                     break;
                 case VIEWTYPE_BODY:
                     mTextViewStatName = (TextView)itemLayoutView.findViewById(R.id.textView_stat_name);
@@ -120,7 +120,7 @@ public class StatsAdapter extends RecyclerView.Adapter<StatsAdapter.StatsViewHol
                 holder.mLinearLayoutHeader.setBackgroundColor(Theme.getActionBarTabThemeColor());
                 break;
             case VIEWTYPE_BODY:
-                holder.mTextViewStatName.setText(mListStatNames.get(position) + ":");
+                holder.mTextViewStatName.setText(mListStatNames.get(position));
                 holder.mTextViewStatValue.setText(mListStatValues.get(position));
                 break;
         }

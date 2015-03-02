@@ -10,6 +10,7 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -45,10 +46,10 @@ public class StatsActivity extends ActionBarActivity
             {"Fouls"};
     /** Represent names of stats related to pins left standing at the end of each frame */
     private static final String[] STATS_PINS_TOTAL =
-            {"Pins Left:"};
+            {"Pins Left"};
     /** Represent names of stats related to average pins left standing per game */
     private static final String[] STATS_PINS_AVERAGE =
-            {"Average Pins Left:"};
+            {"Average Pins Left"};
     /** Represent games of general stats about a bowler, league. or event */
     private static final String[] STATS_GENERAL =
             {"Average", "High Single", "High Series", "Total Pinfall", "# of Games"};
@@ -378,19 +379,19 @@ public class StatsActivity extends ActionBarActivity
         int nextHeaderPosition = 0;
         mListStatNames.add(nextHeaderPosition, "-General");
         mListStatValues.add(nextHeaderPosition, "-");
-        nextHeaderPosition += NUMBER_OF_GENERAL_DETAILS + STATS_MIDDLE_GENERAL.length;
+        nextHeaderPosition += NUMBER_OF_GENERAL_DETAILS + STATS_MIDDLE_GENERAL.length + 1;
         mListStatNames.add(nextHeaderPosition, "-First Ball");
         mListStatValues.add(nextHeaderPosition, "-");
-        nextHeaderPosition += STATS_MIDDLE_DETAILED.length;
+        nextHeaderPosition += STATS_MIDDLE_DETAILED.length + 1;
         mListStatNames.add(nextHeaderPosition, "-Fouls");
         mListStatValues.add(nextHeaderPosition, "-");
-        nextHeaderPosition += STATS_FOULS.length;
+        nextHeaderPosition += STATS_FOULS.length + 1;
         mListStatNames.add(nextHeaderPosition, "-Pins Left on Deck");
         mListStatValues.add(nextHeaderPosition, "-");
 
         if (bowlerLeagueOrGame < LOADING_GAME_STATS)
         {
-            nextHeaderPosition += STATS_PINS_TOTAL.length + STATS_PINS_AVERAGE.length;
+            nextHeaderPosition += STATS_PINS_TOTAL.length + STATS_PINS_AVERAGE.length + 1;
             mListStatNames.add(nextHeaderPosition, "-Overall");
             mListStatValues.add(nextHeaderPosition, "-");
         }
@@ -419,12 +420,12 @@ public class StatsActivity extends ActionBarActivity
                 + " LEFT JOIN " + FrameEntry.TABLE_NAME + " AS frame"
                 + " ON game." + GameEntry._ID + "=" + FrameEntry.COLUMN_NAME_GAME_ID
                 + ((shouldGetLeagueStats)
-                ? " WHERE game." + GameEntry.COLUMN_NAME_LEAGUE_ID + "=?"
-                : " WHERE game." + GameEntry.COLUMN_NAME_BOWLER_ID + "=?")
+                        ? " WHERE game." + GameEntry.COLUMN_NAME_LEAGUE_ID + "=?"
+                        : " WHERE game." + GameEntry.COLUMN_NAME_BOWLER_ID + "=?")
                 + " ORDER BY game." + GameEntry._ID + ", frame." + FrameEntry.COLUMN_NAME_FRAME_NUMBER;
         String[] rawStatsArgs = {(shouldGetLeagueStats)
-                ? String.valueOf(mBowlerId)
-                : String.valueOf(mLeagueId)};
+                ? String.valueOf(mLeagueId)
+                : String.valueOf(mBowlerId)};
 
         return database.rawQuery(rawStatsQuery, rawStatsArgs);
     }
@@ -438,13 +439,16 @@ public class StatsActivity extends ActionBarActivity
     {
         SQLiteDatabase database = DatabaseHelper.getInstance(this).getReadableDatabase();
         String rawStatsQuery = "SELECT "
+                + "game." + GameEntry.COLUMN_NAME_GAME_FINAL_SCORE + ", "
                 + FrameEntry.COLUMN_NAME_FRAME_NUMBER + ", "
                 + FrameEntry.COLUMN_NAME_FRAME_ACCESSED + ", "
                 + FrameEntry.COLUMN_NAME_FOULS + ", "
                 + FrameEntry.COLUMN_NAME_BALL[0] + ", "
                 + FrameEntry.COLUMN_NAME_BALL[1] + ", "
                 + FrameEntry.COLUMN_NAME_BALL[2]
-                + " FROM " + FrameEntry.TABLE_NAME
+                + " FROM " + GameEntry.TABLE_NAME + " AS game"
+                + " JOIN " + FrameEntry.TABLE_NAME
+                + " ON game." + GameEntry._ID + "=" + FrameEntry.COLUMN_NAME_GAME_ID
                 + " WHERE " + FrameEntry.COLUMN_NAME_GAME_ID + "=?"
                 + " ORDER BY " + FrameEntry.COLUMN_NAME_FRAME_NUMBER;
         String[] rawStatsArgs = {String.valueOf(mGameId)};
@@ -500,7 +504,6 @@ public class StatsActivity extends ActionBarActivity
                     mListStatValues.add(1, mLeagueName);
                     mListStatNames.add(2, "Game #");
                     mListStatValues.add(2, String.valueOf(mGameNumber));
-
                     statValues = new int[STATS_MIDDLE_GENERAL.length + STATS_MIDDLE_DETAILED.length
                             + STATS_FOULS.length + STATS_PINS_TOTAL.length];
                     cursor = getGameCursor();
@@ -528,7 +531,7 @@ public class StatsActivity extends ActionBarActivity
                 while(!cursor.isAfterLast())
                 {
                     boolean frameAccessed = (cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_FRAME_ACCESSED)) == 1);
-                    if (bowlerLeagueOrGame == 2 && !frameAccessed)
+                    if (bowlerLeagueOrGame == LOADING_GAME_STATS && !frameAccessed)
                         break;
 
                     byte frameNumber = (byte)cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_FRAME_NUMBER));
@@ -537,6 +540,7 @@ public class StatsActivity extends ActionBarActivity
                             cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_BALL[1])),
                             cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_BALL[2]))};
                     boolean[][] pinState = new boolean[3][5];
+
                     for (i = 0; i < 5; i++)
                     {
                         pinState[0][i] = ballStrings[0].charAt(i) == '1';
@@ -549,7 +553,7 @@ public class StatsActivity extends ActionBarActivity
                             statValues[Constants.STAT_FOULS]++;
                     }
 
-                    if (bowlerLeagueOrGame == LOADING_GAME_STATS || frameAccessed)
+                    if (bowlerLeagueOrGame != LOADING_GAME_STATS || frameAccessed)
                     {
                         if (frameNumber == Constants.NUMBER_OF_FRAMES)
                         {
@@ -558,7 +562,7 @@ public class StatsActivity extends ActionBarActivity
                             if (ballValue != -1)
                                 statValues[Constants.STAT_MIDDLE_HIT]++;
                             increaseFirstBallStat(ballValue, statValues, 0);
-                            if (ballValue < 5)
+                            if (ballValue < 5 && ballValue != Constants.BALL_VALUE_STRIKE)
                                 spareChances++;
 
                             if (ballValue != 0)
@@ -567,6 +571,9 @@ public class StatsActivity extends ActionBarActivity
                                 {
                                     statValues[Constants.STAT_SPARE_CONVERSIONS]++;
                                     increaseFirstBallStat(ballValue, statValues, 1);
+
+                                    if (ballValue >= 5)
+                                        spareChances++;
                                 }
                                 else
                                 {
@@ -587,6 +594,9 @@ public class StatsActivity extends ActionBarActivity
                                     {
                                         statValues[Constants.STAT_SPARE_CONVERSIONS]++;
                                         increaseFirstBallStat(ballValue, statValues, 1);
+
+                                        if (ballValue >= 5)
+                                            spareChances++;
                                     }
                                     else
                                     {
@@ -616,7 +626,7 @@ public class StatsActivity extends ActionBarActivity
                                 statValues[Constants.STAT_MIDDLE_HIT]++;
                             increaseFirstBallStat(ballValue, statValues, 0);
 
-                            if (ballValue < 5)
+                            if (ballValue < 5 && ballValue != Constants.BALL_VALUE_STRIKE)
                                 spareChances++;
 
                             if (ballValue != 0)
@@ -625,6 +635,9 @@ public class StatsActivity extends ActionBarActivity
                                 {
                                     statValues[Constants.STAT_SPARE_CONVERSIONS]++;
                                     increaseFirstBallStat(ballValue, statValues, 1);
+
+                                    if (ballValue >= 5)
+                                        spareChances++;
                                 }
                                 else
                                 {
@@ -634,7 +647,7 @@ public class StatsActivity extends ActionBarActivity
                         }
                     }
 
-                    if (bowlerLeagueOrGame != LOADING_BOWLER_STATS && frameNumber == 1)
+                    if (bowlerLeagueOrGame != LOADING_GAME_STATS && frameNumber == 1)
                     {
                         short gameScore = cursor.getShort(cursor.getColumnIndex(GameEntry.COLUMN_NAME_GAME_FINAL_SCORE));
                         byte gameNumber = (byte)cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_NAME_GAME_NUMBER));
