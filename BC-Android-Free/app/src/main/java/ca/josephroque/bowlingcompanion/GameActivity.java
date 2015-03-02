@@ -130,7 +130,6 @@ public class GameActivity extends ActionBarActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_game);
         mActivityTitle = getTitle().toString();
-        updateTheme();
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -331,6 +330,7 @@ public class GameActivity extends ActionBarActivity
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         mDrawerAdapter = new ArrayAdapter<>(this, R.layout.list_game_navigation, mNavigationDrawerOptions);
         mDrawerList.setAdapter(mDrawerAdapter);
+        updateTheme();
     }
 
     @Override
@@ -1442,6 +1442,7 @@ public class GameActivity extends ActionBarActivity
                 .setBackgroundDrawable(new ColorDrawable(Theme.getActionBarThemeColor()));
         findViewById(R.id.relativeLayout_game_toolbar)
                 .setBackgroundColor(Theme.getActionBarTabThemeColor());
+        mDrawerList.setBackgroundColor(Theme.getActionButtonRippleThemeColor());
         Theme.validateGameActivityTheme();
     }
 
