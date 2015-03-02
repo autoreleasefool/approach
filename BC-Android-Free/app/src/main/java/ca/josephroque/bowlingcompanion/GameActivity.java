@@ -428,8 +428,7 @@ public class GameActivity extends ActionBarActivity
     public boolean onPrepareOptionsMenu(Menu menu)
     {
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
-        //TODO menu button enable/disable when added
-        //menu.findItem(R.id.action_game_stats).setVisible(!drawerOpen);
+        menu.findItem(R.id.action_stats).setVisible(!drawerOpen);
         //menu.findItem(R.id.action_game_share).setVisible(!drawerOpen);
         return super.onPrepareOptionsMenu(menu);
     }
@@ -542,17 +541,6 @@ public class GameActivity extends ActionBarActivity
         mHasFrameBeenAccessed[0] = true;
         mGameScores[mCurrentGame] = 0;
         mGameScoresMinusFouls[mCurrentBall] = 0;
-
-        /*
-        private static void saveGameToDatabase(
-            final Activity srcActivity,
-            final long gameId,
-            final long[] frameIds,
-            final boolean[] hasFrameBeenAccessed,
-            final boolean[][][] pinState,
-            final boolean[][] fouls,
-            final short finalScore)
-         */
         long[] frameIds = new long[Constants.NUMBER_OF_FRAMES];
         System.arraycopy(mFrameIds, mCurrentGame * Constants.NUMBER_OF_FRAMES, frameIds, 0, Constants.NUMBER_OF_FRAMES);
         saveGameToDatabase(this, mGameIds[mCurrentGame], frameIds, mHasFrameBeenAccessed, mPinState, mFouls, mGameScoresMinusFouls[mCurrentGame]);
