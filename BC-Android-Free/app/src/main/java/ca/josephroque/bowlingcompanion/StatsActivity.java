@@ -141,6 +141,8 @@ public class StatsActivity extends ActionBarActivity
         }
         else
         {
+            mBowlerName = preferences.getString(Constants.PREFERENCE_NAME_BOWLER, null);
+            mLeagueName = preferences.getString(Constants.PREFERENCE_NAME_LEAGUE, null);
             mGameNumber = getIntent().getByteExtra(Constants.EXTRA_GAME_NUMBER, (byte)-1);
             titleToSet = R.string.title_activity_stats_game;
             statsToLoad = LOADING_GAME_STATS;

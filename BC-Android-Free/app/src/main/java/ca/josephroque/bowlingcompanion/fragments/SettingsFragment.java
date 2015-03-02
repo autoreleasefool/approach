@@ -205,10 +205,6 @@ public class SettingsFragment extends PreferenceFragment
             {
                 long bowlerId = cursor.getLong(cursor.getColumnIndex("bid"));
 
-                Log.w(TAG, "Bowler: " + cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_NAME_BOWLER_NAME))
-                        + "\nLeague: " + cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_LEAGUE_NAME))
-                        + "\n---------------");
-
                 if (lastBowlerId == bowlerId)
                 {
                     listLeagueIds.get(currentLeaguePosition).add(
@@ -300,6 +296,10 @@ public class SettingsFragment extends PreferenceFragment
         preference.setSummary((arePinsEnabled)
                 ? R.string.pref_enable_pins_summary_images
                 : R.string.pref_enable_pins_summary_buttons);*/
+
+        String themeColor = sharedPreferences.getString(Constants.KEY_PREF_THEME_COLORS, "Green");
+        preference = findPreference(Constants.KEY_PREF_THEME_COLORS);
+        preference.setSummary("Current theme is " + themeColor);
 
         boolean lightThemeVariationEnabled = sharedPreferences.getBoolean(Constants.KEY_PREF_THEME_LIGHT, true);
         preference = findPreference(Constants.KEY_PREF_THEME_LIGHT);
