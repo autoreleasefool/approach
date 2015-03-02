@@ -87,8 +87,8 @@ public class SettingsFragment extends PreferenceFragment
 
                 getActivity().getSharedPreferences(Constants.PREFERENCES, Context.MODE_PRIVATE)
                         .edit()
-                        .putLong(Constants.PREFERENCE_ID_QUICK_BOWLER, 0)
-                        .putLong(Constants.PREFERENCE_ID_QUICK_LEAGUE, 0)
+                        .putLong(Constants.PREFERENCE_ID_QUICK_BOWLER, Long.parseLong(mArrayBowlerIdsAsStrings[0]))
+                        .putLong(Constants.PREFERENCE_ID_QUICK_LEAGUE, Long.parseLong(mArrayLeagueIdsAsStrings[0][0]))
                         .apply();
             }
             else
@@ -114,7 +114,6 @@ public class SettingsFragment extends PreferenceFragment
 
             String selectedBowlerId = quickBowlerPref.getValue();
             mCurrentBowlerPosition = Arrays.binarySearch(mArrayBowlerIdsAsStrings, selectedBowlerId);
-            Log.w(TAG, "current: " + mCurrentBowlerPosition + " selected: "+ selectedBowlerId);
             quickLeaguePref.setValueIndex(0);
             quickBowlerPref.setSummary(mArrayBowlerNames[mCurrentBowlerPosition]);
 

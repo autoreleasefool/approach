@@ -279,11 +279,11 @@ public class MainActivity extends ActionBarActivity
                         {
                             if (quickOrRecent)
                             {
-                                //SeriesActivity.addNewEventSeries(MainActivity.this, mQuickBowlerId, mQuickLeagueId, mQuickNumberOfGames);
+                                SeriesActivity.addNewEventSeries(MainActivity.this, mQuickBowlerId, mQuickLeagueId, mQuickNumberOfGames);
                             }
                             else
                             {
-                                //SeriesActivity.addNewEventSeries(MainActivity.this, mRecentBowlerId, mRecentLeagueId, mRecentNumberOfGames);
+                                SeriesActivity.addNewEventSeries(MainActivity.this, mRecentBowlerId, mRecentLeagueId, mRecentNumberOfGames);
                             }
                         }
                     })
