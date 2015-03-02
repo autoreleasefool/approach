@@ -18,6 +18,7 @@
     <string name="action_stats">Stats</string>
     <string name="action_what_if">What If?</string>
     <string name="action_reset_game">Reset Game</string>
+    <string name="action_series_stats">Series Stats</string>
 
     <!-- TEXT -->
     <string name="text_new_bowler_instructions">Use the \'+\' to add a new bowler.</string>

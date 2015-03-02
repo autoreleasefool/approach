@@ -448,6 +448,9 @@ public class GameActivity extends ActionBarActivity
 
         switch(item.getItemId())
         {
+            case R.id.action_series_stats:
+                showSeriesStats();
+                return true;
             case R.id.action_reset_game:
                 showResetGameDialog();
                 return true;
@@ -473,6 +476,18 @@ public class GameActivity extends ActionBarActivity
         Intent settingsIntent = new Intent(this, SettingsActivity.class);
         settingsIntent.putExtra(Constants.EXTRA_SETTINGS_SOURCE, TAG);
         startActivity(settingsIntent);
+    }
+
+    private void showSeriesStats()
+    {
+        clearFrameColor();
+        Intent statsIntent = new Intent(this, StatsActivity.class);
+        statsIntent.putExtra(Constants.EXTRA_ID_BOWLER, getIntent().getLongExtra(Constants.EXTRA_ID_BOWLER, -1));
+        statsIntent.putExtra(Constants.EXTRA_ID_LEAGUE, getIntent().getLongExtra(Constants.EXTRA_ID_LEAGUE, -1));
+        statsIntent.putExtra(Constants.EXTRA_ID_SERIES, getIntent().getLongExtra(Constants.EXTRA_ID_SERIES, -1));
+        statsIntent.putExtra(Constants.EXTRA_NAME_BOWLER, getIntent().getStringExtra(Constants.EXTRA_NAME_BOWLER));
+        statsIntent.putExtra(Constants.EXTRA_NAME_LEAGUE, getIntent().getStringExtra(Constants.EXTRA_NAME_LEAGUE));
+        startActivity(statsIntent);
     }
 
     /**
