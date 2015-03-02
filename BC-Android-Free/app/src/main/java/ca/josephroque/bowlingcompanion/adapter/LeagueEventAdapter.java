@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.List;
 
 import ca.josephroque.bowlingcompanion.Constants;
+import ca.josephroque.bowlingcompanion.LeagueEventActivity;
 import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.SeriesActivity;
 import ca.josephroque.bowlingcompanion.database.Contract.*;
@@ -215,6 +216,12 @@ public class LeagueEventAdapter extends RecyclerView.Adapter<LeagueEventAdapter.
         mListLeagueEventNumberOfGames.remove(indexOfId);
         mListLeagueEventIds.remove(indexOfId);
         notifyItemRemoved(indexOfId);
+
+        if (mListLeagueEventIds.size() == 0)
+        {
+            LeagueEventActivity leagueEventActivity = (LeagueEventActivity)mActivity;
+            leagueEventActivity.showNewLeagueEventInstructions(mEventMode);
+        }
 
         //Deletion occurs on separate thread so UI does not hang
         new Thread(new Runnable()

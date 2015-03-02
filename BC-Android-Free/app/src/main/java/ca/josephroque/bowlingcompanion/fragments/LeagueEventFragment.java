@@ -295,7 +295,7 @@ public class LeagueEventFragment extends Fragment
                 /*
                  * If there is at least one item loaded, the instructional text can be hidden
                  */
-                mNewLeagueEventInstructionsTextView.setVisibility(View.GONE);
+                hideNewLeagueEventInstructions();
             }
         }
     }
@@ -389,7 +389,7 @@ public class LeagueEventFragment extends Fragment
         {
             //Updates the data adapter and hides the instructional text
             mLeagueEventAdapter.notifyItemInserted(0);
-            mNewLeagueEventInstructionsTextView.setVisibility(View.GONE);
+            hideNewLeagueEventInstructions();
         }
     }
 
@@ -407,5 +407,29 @@ public class LeagueEventFragment extends Fragment
             Theme.validateEventFragmentTheme();
         else
             Theme.validateLeagueFragmentTheme();
+    }
+
+    public void showNewLeagueEventInstructions()
+    {
+        getActivity().runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                mNewLeagueEventInstructionsTextView.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+    public void hideNewLeagueEventInstructions()
+    {
+        getActivity().runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                mNewLeagueEventInstructionsTextView.setVisibility(View.GONE);
+            }
+        });
     }
 }

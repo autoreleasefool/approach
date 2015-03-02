@@ -139,4 +139,19 @@ public class LeagueEventActivity extends ActionBarActivity
         tabStrip.setBackgroundColor(Theme.getActionBarTabThemeColor());
         Theme.validateLeagueEventActivityTheme();
     }
+
+    public void showNewLeagueEventInstructions(boolean shouldShowEventInstructions)
+    {
+        int leagueOrEventFragment = (shouldShowEventInstructions)
+                ? 1
+                : 0;
+        LeagueEventFragment leagueEventFragment = (LeagueEventFragment)
+                getSupportFragmentManager()
+                        .findFragmentByTag(
+                                "android:switcher:"
+                                + R.id.viewPager_leagues_events
+                                + ":"
+                                + leagueOrEventFragment);
+        leagueEventFragment.showNewLeagueEventInstructions();
+    }
 }

@@ -42,6 +42,9 @@ public class MainActivity extends ActionBarActivity
     /** Tag to identify class when outputting to console */
     private static final String TAG = "MainActivity";
 
+    /** Indicates whether the option to create a quick series is enabled or not */
+    public static boolean sQuickSeriesButtonEnabled = false;
+
     /** List to store Ids from bowler table in database */
     private List<Long> mListBowlerIds;
     /** List to store names of bowlers from bowler table, in an order relative to mListBowlerIds*/
@@ -78,9 +81,6 @@ public class MainActivity extends ActionBarActivity
     private String mQuickBowlerName;
     /** Name of the preferred league for a quick series */
     private String mQuickLeagueName;
-
-    /** Indicates whether the option to create a quick series is enabled or not */
-    public static boolean sQuickSeriesButtonEnabled = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -387,7 +387,7 @@ public class MainActivity extends ActionBarActivity
                 mListBowlerAverages.add(0, (short)0);
                 mBowlerAdapter.notifyItemInserted(0);
                 mBowlerRecycler.scrollToPosition(0);
-                mBowlerInstructionsTextView.setVisibility(View.GONE);
+                hideNewBowlerInstruction();
             }
         }
     }
@@ -485,7 +485,7 @@ public class MainActivity extends ActionBarActivity
             sQuickSeriesButtonEnabled = !(mRecentBowlerId == -1 || mRecentLeagueId == -1) || !(mQuickBowlerId == -1 || mQuickLeagueId == -1);
             if (mListBowlerIds.size() > 0)
             {
-                mBowlerInstructionsTextView.setVisibility(View.GONE);
+                hideNewBowlerInstruction();
             }
         }
     }
@@ -500,5 +500,29 @@ public class MainActivity extends ActionBarActivity
         floatingActionButton.setColorPressed(Theme.getActionButtonThemeColor());
         floatingActionButton.setColorRipple(Theme.getActionButtonRippleThemeColor());
         Theme.validateMainActivityTheme();
+    }
+
+    public void showNewBowlerInstructions()
+    {
+        runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                mBowlerInstructionsTextView.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+    public void hideNewBowlerInstruction()
+    {
+        runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                mBowlerInstructionsTextView.setVisibility(View.GONE);
+            }
+        });
     }
 }

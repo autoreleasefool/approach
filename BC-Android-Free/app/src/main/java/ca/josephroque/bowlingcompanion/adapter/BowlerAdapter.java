@@ -176,6 +176,12 @@ public class BowlerAdapter extends RecyclerView.Adapter<BowlerAdapter.BowlerView
         mBowlerIds.remove(indexOfId);
         notifyItemRemoved(indexOfId);
 
+        if (mBowlerIds.size() == 0)
+        {
+            MainActivity mainActivity = (MainActivity)mActivity;
+            mainActivity.showNewBowlerInstructions();
+        }
+
         /*
          * Gets recentBowlerId and quickBowlerId to check if the deleted bowler was either.
          * If so, the value is cleared.
