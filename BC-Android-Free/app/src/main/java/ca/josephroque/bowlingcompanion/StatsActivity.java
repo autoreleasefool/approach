@@ -114,10 +114,9 @@ public class StatsActivity extends ActionBarActivity
     {
         super.onResume();
 
-        SharedPreferences preferences = getSharedPreferences(Constants.PREFERENCES, MODE_PRIVATE);
-        mBowlerId = preferences.getLong(Constants.PREFERENCE_ID_BOWLER, -1);
-        mLeagueId = preferences.getLong(Constants.PREFERENCE_ID_LEAGUE, -1);
-        mGameId = preferences.getLong(Constants.PREFERENCE_ID_GAME, -1);
+        mBowlerId = getIntent().getLongExtra(Constants.EXTRA_ID_BOWLER, -1);
+        mLeagueId = getIntent().getLongExtra(Constants.EXTRA_ID_LEAGUE, -1);
+        mGameId = getIntent().getLongExtra(Constants.EXTRA_ID_GAME, -1);
 
         mListStatNames.clear();
         mListStatValues.clear();
@@ -126,7 +125,7 @@ public class StatsActivity extends ActionBarActivity
         int titleToSet;
         if (mGameId == -1)
         {
-            mBowlerName = preferences.getString(Constants.PREFERENCE_NAME_BOWLER, null);
+
             if (mLeagueId == -1)
             {
                 titleToSet = R.string.title_activity_stats_bowler;
@@ -134,15 +133,15 @@ public class StatsActivity extends ActionBarActivity
             }
             else
             {
-                mLeagueName = preferences.getString(Constants.PREFERENCE_NAME_LEAGUE, null);
+                mLeagueName = getIntent().getStringExtra(Constants.EXTRA_NAME_LEAGUE);
                 titleToSet = R.string.title_activity_stats_league;
                 statsToLoad = LOADING_LEAGUE_STATS;
             }
         }
         else
         {
-            mBowlerName = preferences.getString(Constants.PREFERENCE_NAME_BOWLER, null);
-            mLeagueName = preferences.getString(Constants.PREFERENCE_NAME_LEAGUE, null);
+            mBowlerName = getIntent().getStringExtra(Constants.EXTRA_NAME_BOWLER);
+            mLeagueName = getIntent().getStringExtra(Constants.EXTRA_NAME_LEAGUE);
             mGameNumber = getIntent().getByteExtra(Constants.EXTRA_GAME_NUMBER, (byte)-1);
             titleToSet = R.string.title_activity_stats_game;
             statsToLoad = LOADING_GAME_STATS;

@@ -158,11 +158,6 @@ public class GameActivity extends ActionBarActivity
          * Creates TextView objects to display information about state of game and
          * stores references in member variables
          */
-
-        /*
-         * TODO: should test increasing size of text views by 1dp width and height
-         * to see if it removes the thick borders between them
-         */
         for (int i = 0; i < Constants.NUMBER_OF_FRAMES; i++)
         {
             TextView frameText = new TextView(this);
@@ -309,8 +304,7 @@ public class GameActivity extends ActionBarActivity
             }
         });
 
-        //TODO: include ic_drawer if needed
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, /*R.drawable.ic_drawer,*/ R.string.drawer_open, R.string.drawer_close)
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.string.drawer_open, R.string.drawer_close)
         {
             public void onDrawerClosed(View view)
             {
@@ -375,7 +369,6 @@ public class GameActivity extends ActionBarActivity
     @Override
     protected void onPause()
     {
-        //TODO figure out adview lifecycle
         if (mAdView != null)
         {
             mAdView.pause();
@@ -488,13 +481,14 @@ public class GameActivity extends ActionBarActivity
     private void showGameStats()
     {
         clearFrameColor();
-        getSharedPreferences(Constants.PREFERENCES, MODE_PRIVATE)
-                .edit()
-                .putLong(Constants.PREFERENCE_ID_GAME, mGameIds[mCurrentGame])
-                .apply();
-
         Intent statsIntent = new Intent(GameActivity.this, StatsActivity.class);
         statsIntent.putExtra(Constants.EXTRA_GAME_NUMBER, (byte)(mCurrentGame + 1));
+        statsIntent.putExtra(Constants.EXTRA_ID_BOWLER, getIntent().getLongExtra(Constants.EXTRA_ID_BOWLER, -1));
+        statsIntent.putExtra(Constants.EXTRA_ID_LEAGUE, getIntent().getLongExtra(Constants.EXTRA_ID_LEAGUE, -1));
+        statsIntent.putExtra(Constants.EXTRA_ID_SERIES, getIntent().getLongExtra(Constants.EXTRA_ID_SERIES, -1));
+        statsIntent.putExtra(Constants.EXTRA_ID_GAME, getIntent().getLongExtra(Constants.EXTRA_ID_GAME, -1));
+        statsIntent.putExtra(Constants.EXTRA_NAME_BOWLER, getIntent().getStringExtra(Constants.EXTRA_NAME_BOWLER));
+        statsIntent.putExtra(Constants.EXTRA_NAME_LEAGUE, getIntent().getStringExtra(Constants.EXTRA_NAME_LEAGUE));
         startActivity(statsIntent);
     }
 

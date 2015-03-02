@@ -134,14 +134,6 @@ public class MainActivity extends ActionBarActivity
         mListBowlerNames.clear();
         mListBowlerAverages.clear();
 
-        //Clearing preferences which may indicate incorrect state of app
-        preferences.edit()
-                .remove(Constants.PREFERENCE_ID_BOWLER)
-                .remove(Constants.PREFERENCE_ID_LEAGUE)
-                .remove(Constants.PREFERENCE_ID_SERIES)
-                .remove(Constants.PREFERENCE_ID_GAME)
-                .apply();
-
         if (Theme.getMainActivityThemeInvalidated())
         {
             updateTheme();

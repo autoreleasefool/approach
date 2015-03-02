@@ -3,7 +3,6 @@ package ca.josephroque.bowlingcompanion;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.ColorDrawable;
@@ -66,8 +65,8 @@ public class SeriesActivity extends ActionBarActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_series);
 
-        mListSeriesId = new ArrayList<Long>();
-        mListSeriesDate = new ArrayList<String>();
+        mListSeriesId = new ArrayList<>();
+        mListSeriesDate = new ArrayList<>();
         mListSeriesGames = new ArrayList<>();
 
         mSeriesRecycler = (RecyclerView)findViewById(R.id.recyclerView_series);
@@ -99,9 +98,8 @@ public class SeriesActivity extends ActionBarActivity
     {
         super.onResume();
 
-        SharedPreferences preferences = getSharedPreferences(Constants.PREFERENCES, MODE_PRIVATE);
-        mBowlerId = preferences.getLong(Constants.PREFERENCE_ID_BOWLER, -1);
-        mLeagueId = preferences.getLong(Constants.PREFERENCE_ID_LEAGUE, -1);
+        mBowlerId = getIntent().getLongExtra(Constants.EXTRA_ID_BOWLER, -1);
+        mLeagueId = getIntent().getLongExtra(Constants.EXTRA_ID_LEAGUE, -1);
         mNumberOfGames = getIntent().getByteExtra(Constants.EXTRA_NUMBER_OF_GAMES, (byte)-1);
 
         mListSeriesId.clear();
@@ -158,13 +156,9 @@ public class SeriesActivity extends ActionBarActivity
      */
     private void showLeagueStats()
     {
-        getSharedPreferences(Constants.PREFERENCES, MODE_PRIVATE)
-                .edit()
-                .putLong(Constants.PREFERENCE_ID_SERIES, -1)
-                .putLong(Constants.PREFERENCE_ID_GAME, -1)
-                .apply();
-
         Intent statsIntent = new Intent(SeriesActivity.this, StatsActivity.class);
+        statsIntent.putExtra(Constants.EXTRA_ID_BOWLER, mBowlerId);
+        statsIntent.putExtra(Constants.EXTRA_ID_LEAGUE, mLeagueId);
         startActivity(statsIntent);
     }
 
@@ -283,11 +277,6 @@ public class SeriesActivity extends ActionBarActivity
             long seriesIdSelected = (Long)params[1];
             byte numberOfGames = (Byte)params[2];
 
-            srcActivity.getSharedPreferences(Constants.PREFERENCES, MODE_PRIVATE)
-                    .edit()
-                    .putLong(Constants.PREFERENCE_ID_SERIES, seriesIdSelected)
-                    .apply();
-
             long[] gameId = new long[numberOfGames];
             long[] frameId = new long[numberOfGames * 10];
             SQLiteDatabase database = DatabaseHelper.getInstance(srcActivity).getReadableDatabase();
@@ -328,7 +317,7 @@ public class SeriesActivity extends ActionBarActivity
                 }
             }
 
-            return new Object[]{srcActivity, gameId, frameId};
+            return new Object[]{srcActivity, gameId, frameId, seriesIdSelected};
         }
 
         @Override
@@ -338,10 +327,16 @@ public class SeriesActivity extends ActionBarActivity
             Activity srcActivity = (Activity)params[0];
             long[] gameIds = (long[])params[1];
             long[] frameIds = (long[])params[2];
+            long seriesId = (Long)params[3];
 
             Intent gameIntent = new Intent(srcActivity, GameActivity.class);
             gameIntent.putExtra(Constants.EXTRA_ARRAY_GAME_IDS, gameIds);
             gameIntent.putExtra(Constants.EXTRA_ARRAY_FRAME_IDS, frameIds);
+            gameIntent.putExtra(Constants.EXTRA_ID_BOWLER, srcActivity.getIntent().getLongExtra(Constants.EXTRA_ID_BOWLER, -1));
+            gameIntent.putExtra(Constants.EXTRA_ID_LEAGUE, srcActivity.getIntent().getLongExtra(Constants.EXTRA_ID_LEAGUE, -1));
+            gameIntent.putExtra(Constants.EXTRA_ID_SERIES, seriesId);
+            gameIntent.putExtra(Constants.EXTRA_NAME_BOWLER, srcActivity.getIntent().getStringExtra(Constants.EXTRA_NAME_BOWLER));
+            gameIntent.putExtra(Constants.EXTRA_NAME_LEAGUE, srcActivity.getIntent().getStringExtra(Constants.EXTRA_NAME_LEAGUE));
             srcActivity.startActivity(gameIntent);
         }
     }
@@ -411,12 +406,7 @@ public class SeriesActivity extends ActionBarActivity
                 database.endTransaction();
             }
 
-            srcActivity.getSharedPreferences(Constants.PREFERENCES, MODE_PRIVATE)
-                    .edit()
-                    .putLong(Constants.PREFERENCE_ID_SERIES, seriesId)
-                    .apply();
-
-            return new Object[]{srcActivity, gameId, frameId};
+            return new Object[]{srcActivity, gameId, frameId, seriesId};
         }
 
         @Override
@@ -426,10 +416,16 @@ public class SeriesActivity extends ActionBarActivity
             Activity srcActivity = (Activity)params[0];
             long[] gameIds = (long[])params[1];
             long[] frameIds = (long[])params[2];
+            long seriesId = (Long)params[3];
 
             Intent gameIntent = new Intent(srcActivity, GameActivity.class);
             gameIntent.putExtra(Constants.EXTRA_ARRAY_GAME_IDS, gameIds);
             gameIntent.putExtra(Constants.EXTRA_ARRAY_FRAME_IDS, frameIds);
+            gameIntent.putExtra(Constants.EXTRA_ID_BOWLER, srcActivity.getIntent().getLongExtra(Constants.EXTRA_ID_BOWLER, -1));
+            gameIntent.putExtra(Constants.EXTRA_ID_LEAGUE, srcActivity.getIntent().getLongExtra(Constants.EXTRA_ID_LEAGUE, -1));
+            gameIntent.putExtra(Constants.EXTRA_ID_SERIES, seriesId);
+            gameIntent.putExtra(Constants.EXTRA_NAME_BOWLER, srcActivity.getIntent().getStringExtra(Constants.EXTRA_NAME_BOWLER));
+            gameIntent.putExtra(Constants.EXTRA_NAME_LEAGUE, srcActivity.getIntent().getStringExtra(Constants.EXTRA_NAME_LEAGUE));
             srcActivity.startActivity(gameIntent);
         }
     }

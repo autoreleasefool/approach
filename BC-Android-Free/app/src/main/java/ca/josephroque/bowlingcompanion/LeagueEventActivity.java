@@ -97,14 +97,9 @@ public class LeagueEventActivity extends ActionBarActivity
      */
     private void showBowlerStats()
     {
-        getSharedPreferences(Constants.PREFERENCES, MODE_PRIVATE)
-                .edit()
-                .putLong(Constants.PREFERENCE_ID_LEAGUE, -1)
-                .putLong(Constants.PREFERENCE_ID_GAME, -1)
-                .putLong(Constants.PREFERENCE_ID_SERIES, -1)
-                .apply();
-
         Intent statsIntent = new Intent(LeagueEventActivity.this, StatsActivity.class);
+        statsIntent.putExtra(Constants.EXTRA_ID_BOWLER, getIntent().getLongExtra(Constants.EXTRA_ID_BOWLER, -1));
+        statsIntent.putExtra(Constants.EXTRA_NAME_BOWLER, getIntent().getStringExtra(Constants.EXTRA_NAME_BOWLER));
         startActivity(statsIntent);
     }
 

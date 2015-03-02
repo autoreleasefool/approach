@@ -1,10 +1,8 @@
 package ca.josephroque.bowlingcompanion.fragments;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
@@ -139,8 +137,7 @@ public class LeagueEventFragment extends Fragment
     {
         super.onResume();
 
-        SharedPreferences preferences = getActivity().getSharedPreferences(Constants.PREFERENCES, Activity.MODE_PRIVATE);
-        mBowlerId = preferences.getLong(Constants.PREFERENCE_ID_BOWLER, -1);
+        mBowlerId = getActivity().getIntent().getLongExtra(Constants.EXTRA_ID_BOWLER, -1);
 
         mListLeagueEventIds.clear();
         mListLeagueEventNames.clear();

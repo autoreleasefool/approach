@@ -253,10 +253,10 @@ public class BowlerAdapter extends RecyclerView.Adapter<BowlerAdapter.BowlerView
      * Creates a LeagueEventActivity to displays the leagues and events corresponding
      * to a bowler id selected by the user from the list displayed
      */
-    private class OpenBowlerLeaguesTask extends AsyncTask<Integer, Void, Void>
+    private class OpenBowlerLeaguesTask extends AsyncTask<Integer, Void, Object[]>
     {
         @Override
-        protected Void doInBackground(Integer... position)
+        protected Object[] doInBackground(Integer... position)
         {
             //Gets id of bowler which was selected from position of selected item in list
             Long selectedBowlerID = mBowlerIds.get(position[0]);
@@ -285,19 +285,18 @@ public class BowlerAdapter extends RecyclerView.Adapter<BowlerAdapter.BowlerView
                 database.endTransaction();
             }
 
-            mActivity.getSharedPreferences(Constants.PREFERENCES, Activity.MODE_PRIVATE)
-                    .edit()
-                    .putString(Constants.PREFERENCE_NAME_BOWLER, mBowlerNames.get(position[0]))
-                    .putLong(Constants.PREFERENCE_ID_BOWLER, selectedBowlerID)
-                    .apply();
-
-            return null;
+            return new Object[]{selectedBowlerID, position[0]};
         }
 
         @Override
-        protected void onPostExecute(Void aVoid)
+        protected void onPostExecute(Object[] params)
         {
+            long bowlerId = (Long)params[0];
+            int position = (Integer)params[1];
+
             Intent leagueEventIntent = new Intent(mActivity, LeagueEventActivity.class);
+            leagueEventIntent.putExtra(Constants.EXTRA_NAME_BOWLER, mBowlerNames.get(position));
+            leagueEventIntent.putExtra(Constants.EXTRA_ID_BOWLER, bowlerId);
             mActivity.startActivity(leagueEventIntent);
         }
     }

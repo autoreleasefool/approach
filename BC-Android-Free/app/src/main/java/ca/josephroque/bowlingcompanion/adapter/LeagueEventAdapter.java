@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion.adapter;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -270,10 +271,6 @@ public class LeagueEventAdapter extends RecyclerView.Adapter<LeagueEventAdapter.
         @Override
         protected Object[] doInBackground(Integer... position)
         {
-            SharedPreferences preferences =
-                    mActivity.getSharedPreferences(Constants.PREFERENCES, Activity.MODE_PRIVATE);
-            long bowlerId = preferences.getLong(Constants.PREFERENCE_ID_BOWLER, -1);
-            SharedPreferences.Editor preferencesEditor = preferences.edit();
             long selectedLeagueId = mListLeagueEventIds.get(position[0]);
             String selectedLeagueName = mListLeagueEventNames.get(position[0]);
 
@@ -306,10 +303,6 @@ public class LeagueEventAdapter extends RecyclerView.Adapter<LeagueEventAdapter.
                 }
             }
 
-            preferencesEditor
-                    .putString(Constants.PREFERENCE_NAME_LEAGUE, selectedLeagueName)
-                    .putLong(Constants.PREFERENCE_ID_LEAGUE, selectedLeagueId);
-
             /*
              * If an event was selected by the user the corresponding series of the event is
              * loaded from the database so an instance of GameActivity can be created, since
@@ -331,12 +324,14 @@ public class LeagueEventAdapter extends RecyclerView.Adapter<LeagueEventAdapter.
                 byte numberOfGames = (byte)cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES));
                 long seriesId = cursor.getLong(cursor.getColumnIndex("sid"));
 
-                preferencesEditor.apply();
                 return new Object[]{seriesId, numberOfGames};
             }
             else
             {
-                preferencesEditor.putLong(Constants.PREFERENCE_ID_RECENT_LEAGUE, selectedLeagueId)
+                long bowlerId = mActivity.getIntent().getLongExtra(Constants.EXTRA_ID_BOWLER, -1);
+                mActivity.getSharedPreferences(Constants.PREFERENCES, Context.MODE_PRIVATE)
+                        .edit()
+                        .putLong(Constants.PREFERENCE_ID_RECENT_LEAGUE, selectedLeagueId)
                         .putLong(Constants.PREFERENCE_ID_RECENT_BOWLER, bowlerId)
                         .apply();
                 return new Object[]{mListLeagueEventNumberOfGames.get(position[0])};
@@ -364,8 +359,11 @@ public class LeagueEventAdapter extends RecyclerView.Adapter<LeagueEventAdapter.
                  */
                 byte numberOfGames = (Byte)params[0];
                 Intent seriesIntent = new Intent(mActivity, SeriesActivity.class);
-                seriesIntent.putExtra(
-                        Constants.EXTRA_NUMBER_OF_GAMES, numberOfGames);
+                seriesIntent.putExtra(Constants.EXTRA_NUMBER_OF_GAMES, numberOfGames);
+                seriesIntent.putExtra(Constants.EXTRA_ID_BOWLER, mActivity.getIntent().getLongExtra(Constants.EXTRA_ID_BOWLER, -1));
+                seriesIntent.putExtra(Constants.EXTRA_ID_LEAGUE, mActivity.getIntent().getLongExtra(Constants.EXTRA_ID_LEAGUE, -1));
+                seriesIntent.putExtra(Constants.EXTRA_NAME_BOWLER, mActivity.getIntent().getStringExtra(Constants.EXTRA_NAME_BOWLER));
+                seriesIntent.putExtra(Constants.EXTRA_NAME_LEAGUE, mActivity.getIntent().getStringExtra(Constants.EXTRA_NAME_LEAGUE));
                 mActivity.startActivity(seriesIntent);
             }
         }

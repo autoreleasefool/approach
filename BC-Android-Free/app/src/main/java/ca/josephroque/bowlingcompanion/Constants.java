@@ -68,6 +68,12 @@ public class Constants
     public static final String EXTRA_GAME_NUMBER = "EGN";
     /** Key value which represents the activity which created a new settings activity */
     public static final String EXTRA_SETTINGS_SOURCE = "ESS";
+    public static final String EXTRA_ID_BOWLER = "EIdB";
+    public static final String EXTRA_ID_LEAGUE = "EIdL";
+    public static final String EXTRA_ID_SERIES = "EIdS";
+    public static final String EXTRA_ID_GAME = "EIdG";
+    public static final String EXTRA_NAME_BOWLER = "ENB";
+    public static final String EXTRA_NAME_LEAGUE = "ENL";
 
     //PREFERENCES
     /** Identifier to retrieve shared preferences */
@@ -81,17 +87,17 @@ public class Constants
     /** Key value for the id of the set "quick" league */
     public static final String PREFERENCE_ID_QUICK_LEAGUE = "IdQL";
     /** Key value for the id of the selected bowler */
-    public static final String PREFERENCE_ID_BOWLER = "IdB";
+    //public static final String PREFERENCE_ID_BOWLER = "IdB";
     /** Key value for the id of the selected league */
-    public static final String PREFERENCE_ID_LEAGUE = "IdL";
+    //public static final String PREFERENCE_ID_LEAGUE = "IdL";
     /** Key value for the id of the selected series */
-    public static final String PREFERENCE_ID_SERIES = "IdS";
+    //public static final String PREFERENCE_ID_SERIES = "IdS";
     /** Key value for the id of the selected game */
-    public static final String PREFERENCE_ID_GAME = "IdG";
+    //public static final String PREFERENCE_ID_GAME = "IdG";
     /** Key value for the name of the selected bowler */
-    public static final String PREFERENCE_NAME_BOWLER = "NB";
+    //public static final String PREFERENCE_NAME_BOWLER = "NB";
     /** Key value for the name of the selected league */
-    public static final String PREFERENCE_NAME_LEAGUE = "NL";
+    //public static final String PREFERENCE_NAME_LEAGUE = "NL";
 
     //DIALOG BUTTON TEXT
     /** Dialog text for an "Okay" button */
