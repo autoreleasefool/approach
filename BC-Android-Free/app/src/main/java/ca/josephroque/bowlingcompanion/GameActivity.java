@@ -456,6 +456,9 @@ public class GameActivity extends ActionBarActivity
 
         switch(item.getItemId())
         {
+            case R.id.action_reset_game:
+                showResetGameDialog();
+                return true;
             case R.id.action_what_if:
                 showWhatIfDialog();
                 return true;
@@ -494,6 +497,71 @@ public class GameActivity extends ActionBarActivity
         Intent statsIntent = new Intent(GameActivity.this, StatsActivity.class);
         statsIntent.putExtra(Constants.EXTRA_GAME_NUMBER, (byte)(mCurrentGame + 1));
         startActivity(statsIntent);
+    }
+
+    private void showResetGameDialog()
+    {
+        AlertDialog.Builder resetDialogBuilder = new AlertDialog.Builder(GameActivity.this);
+        resetDialogBuilder.setTitle("Reset Game?")
+                .setMessage("You cannot undo this action. Reset this game?")
+                .setPositiveButton(Constants.DIALOG_OKAY, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        resetGame();
+                    }
+                })
+                .setNegativeButton(Constants.DIALOG_CANCEL, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        dialog.dismiss();
+                    }
+                })
+                .create()
+                .show();
+    }
+
+    private void resetGame()
+    {
+        clearFrameColor();
+        mCurrentFrame = 0;
+        mCurrentGame = 0;
+        for (int i = 0; i < Constants.NUMBER_OF_FRAMES; i++)
+        {
+            mHasFrameBeenAccessed[i] = false;
+
+            for (int j = 0; j < 3; j++)
+            {
+                mFouls[i][j] = false;
+                mPinState[i][j] = Constants.FRAME_PINS_UP;
+            }
+        }
+        mHasFrameBeenAccessed[0] = true;
+        mGameScores[mCurrentGame] = 0;
+        mGameScoresMinusFouls[mCurrentBall] = 0;
+
+        /*
+        private static void saveGameToDatabase(
+            final Activity srcActivity,
+            final long gameId,
+            final long[] frameIds,
+            final boolean[] hasFrameBeenAccessed,
+            final boolean[][][] pinState,
+            final boolean[][] fouls,
+            final short finalScore)
+         */
+        long[] frameIds = new long[Constants.NUMBER_OF_FRAMES];
+        System.arraycopy(mFrameIds, mCurrentGame * Constants.NUMBER_OF_FRAMES, frameIds, 0, Constants.NUMBER_OF_FRAMES);
+        saveGameToDatabase(this, mGameIds[mCurrentGame], frameIds, mHasFrameBeenAccessed, mPinState, mFouls, mGameScoresMinusFouls[mCurrentGame]);
+
+        updateScore();
+        for (byte i = 0; i < Constants.NUMBER_OF_FRAMES; i++)
+            updateBalls(i);
+
+        updateFrameColor();
     }
 
     /**

@@ -51,6 +51,7 @@ public class Constants
     public static final String BALL_EMPTY = "-";
     /** Array representing the state of all pins as being knocked down */
     public static final boolean[] FRAME_PINS_DOWN = {true, true, true, true, true};
+    public static final boolean[] FRAME_PINS_UP = {false, false, false, false, false};
 
     //INTENT EXTRAS
     /** Key value which represents the value of "Event Mode" */

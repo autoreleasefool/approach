@@ -17,6 +17,7 @@
     <string name="action_settings">Settings</string>
     <string name="action_stats">Stats</string>
     <string name="action_what_if">What If?</string>
+    <string name="action_reset_game">Reset Game</string>
 
     <!-- TEXT -->
     <string name="text_new_bowler_instructions">Use the \'+\' to add a new bowler.</string>
