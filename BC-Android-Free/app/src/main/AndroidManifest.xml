@@ -58,11 +58,13 @@
             android:theme="@android:style/Theme.Translucent" />
         <activity
             android:name=".StatsActivity"
-            android:label="@string/title_activity_stats" >
+            android:label="@string/title_activity_stats"
+            android:screenOrientation="portrait">
         </activity>
         <activity
             android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings" >
+            android:label="@string/title_activity_settings"
+            android:screenOrientation="portrait">
         </activity>
     </application>
 
