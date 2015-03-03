@@ -1349,6 +1349,10 @@ public class GameActivity extends ActionBarActivity
                 for (byte i = 0; i < Constants.NUMBER_OF_FRAMES; i++)
                     updateBalls(i);
                 mHasFrameBeenAccessed[0] = true;
+
+                while (mCurrentFrame < Constants.LAST_FRAME && mHasFrameBeenAccessed[mCurrentFrame + 1])
+                    mCurrentFrame++;
+
                 updateFrameColor();
             }
         }).start();
