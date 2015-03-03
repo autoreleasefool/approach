@@ -160,6 +160,9 @@ public class SeriesActivity extends ActionBarActivity
         // as you specify a parent activity in AndroidManifest.xml.
         switch(item.getItemId())
         {
+            case android.R.id.home:
+                this.finish();
+                return true;
             case R.id.action_stats:
                 showLeagueStats();
                 return true;

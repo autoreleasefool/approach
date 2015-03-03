@@ -267,13 +267,15 @@ public class GameActivity extends ActionBarActivity
                     case 0:
                         //Returns to the main activity
                         Intent mainIntent = new Intent(GameActivity.this, MainActivity.class);
-                        mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        mainIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                         startActivity(mainIntent);
+                        break;
                     case 1:
                         //Returns to the league/event activity
                         Intent leagueIntent = new Intent(GameActivity.this, LeagueEventActivity.class);
-                        leagueIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        leagueIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
                         startActivity(leagueIntent);
+                        break;
                     case 2:
                         if (!mEventMode)
                         {
@@ -281,10 +283,7 @@ public class GameActivity extends ActionBarActivity
                              * If the activity is not in event mode, then the app
                              * returns to the series activity.
                              */
-                            Intent seriesIntent = new Intent(GameActivity.this, SeriesActivity.class);
-                            seriesIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            seriesIntent.putExtra(Constants.EXTRA_NUMBER_OF_GAMES, mNumberOfGames);
-                            startActivity(seriesIntent);
+                            GameActivity.this.finish();
                             break;
                         }
                     default:
