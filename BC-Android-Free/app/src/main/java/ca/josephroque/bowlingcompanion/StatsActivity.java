@@ -75,14 +75,14 @@ public class StatsActivity extends ActionBarActivity
     private String mLeagueName;
     private String mSeriesDate;
     /** Id of the bowler whose stats will be loaded and displayed */
-    private long mBowlerId;
+    private long mBowlerId = -1;
     /** Id of the league whose stats will be loaded and displayed */
-    private long mLeagueId;
-    private long mSeriesId;
+    private long mLeagueId = -1;
+    private long mSeriesId = -1;
     /** Id of the game whose stats will be loaded and displayed */
-    private long mGameId;
+    private long mGameId = -1;
     /** Number of the game in the series being loaded */
-    private byte mGameNumber;
+    private byte mGameNumber = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
