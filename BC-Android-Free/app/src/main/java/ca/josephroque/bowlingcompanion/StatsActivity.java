@@ -1,10 +1,12 @@
 package ca.josephroque.bowlingcompanion;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -457,6 +459,9 @@ public class StatsActivity extends ActionBarActivity
      */
     private Cursor getBowlerOrLeagueCursor(boolean shouldGetLeagueStats)
     {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean isEventIncluded = preferences.getBoolean(Constants.KEY_PREF_INCLUDE_EVENTS, true);
+        boolean isOpenIncluded = preferences.getBoolean(Constants.KEY_PREF_INCLUDE_OPEN, true);
         SQLiteDatabase database = DatabaseHelper.getInstance(this).getReadableDatabase();
 
         String rawStatsQuery = "SELECT "
@@ -468,16 +473,27 @@ public class StatsActivity extends ActionBarActivity
                 + FrameEntry.COLUMN_NAME_BALL[0] + ", "
                 + FrameEntry.COLUMN_NAME_BALL[1] + ", "
                 + FrameEntry.COLUMN_NAME_BALL[2]
-                + " FROM " + GameEntry.TABLE_NAME + " AS game"
+                + " FROM " + LeagueEntry.TABLE_NAME + " AS league"
+                + " LEFT JOIN " + GameEntry.TABLE_NAME + " AS game"
+                + " ON league." + LeagueEntry._ID + "=" + GameEntry.COLUMN_NAME_LEAGUE_ID
                 + " LEFT JOIN " + FrameEntry.TABLE_NAME + " AS frame"
                 + " ON game." + GameEntry._ID + "=" + FrameEntry.COLUMN_NAME_GAME_ID
                 + ((shouldGetLeagueStats)
                         ? " WHERE game." + GameEntry.COLUMN_NAME_LEAGUE_ID + "=?"
                         : " WHERE game." + GameEntry.COLUMN_NAME_BOWLER_ID + "=?")
+                + ((!isEventIncluded)
+                        ? " AND league." + LeagueEntry.COLUMN_NAME_IS_EVENT + "=?"
+                        : " AND 0=?"
+                + ((!isOpenIncluded)
+                        ? " AND league." + LeagueEntry.COLUMN_NAME_LEAGUE_NAME + "!=?"
+                        : " AND Open=?"))
                 + " ORDER BY game." + GameEntry._ID + ", frame." + FrameEntry.COLUMN_NAME_FRAME_NUMBER;
-        String[] rawStatsArgs = {(shouldGetLeagueStats)
-                ? String.valueOf(mLeagueId)
-                : String.valueOf(mBowlerId)};
+        String[] rawStatsArgs = {
+                ((shouldGetLeagueStats)
+                    ? String.valueOf(mLeagueId)
+                    : String.valueOf(mBowlerId)),
+                String.valueOf(0),
+                String.valueOf("Open")};
 
         return database.rawQuery(rawStatsQuery, rawStatsArgs);
     }
