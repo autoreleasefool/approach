@@ -1,15 +1,11 @@
 package ca.josephroque.bowlingcompanion.external;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 /**
  * Created by josephroque on 15-03-03.
@@ -27,13 +23,14 @@ public class AppRater
     private static final int DAYS_UNTIL_PROMPT = 14;
     private static final int LAUNCHES_UNTIL_PROMPT = 3;
 
+    private static final String PREF_RATING = "apprater";
     private static final String PREF_LAUNCH_COUNT = "lc";
     private static final String PREF_DONT_SHOW = "ds";
     private static final String PREF_FIRST_LAUNCH = "fl";
 
     public static void appLaunched(Context context)
     {
-        SharedPreferences preferences = context.getSharedPreferences("apprater", Context.MODE_PRIVATE);
+        SharedPreferences preferences = context.getSharedPreferences(PREF_RATING, Context.MODE_PRIVATE);
         if (preferences.getBoolean(PREF_DONT_SHOW, false))
             return;
 
@@ -69,8 +66,7 @@ public class AppRater
                     @Override
                     public void onClick(DialogInterface dialog, int which)
                     {
-                        editor.putBoolean(PREF_DONT_SHOW, true);
-                        editor.apply();
+                        disableAutomaticPrompt(editor);
                         Intent rateIntent = new Intent(Intent.ACTION_VIEW,
                                 Uri.parse("market://details?id=" + APP_PNAME));
                         context.startActivity(rateIntent);
@@ -90,12 +86,17 @@ public class AppRater
                     @Override
                     public void onClick(DialogInterface dialog, int which)
                     {
-                        editor.putBoolean(PREF_DONT_SHOW, true);
-                        editor.apply();
+                        disableAutomaticPrompt(editor);
                         dialog.dismiss();
                     }
                 })
                 .create()
                 .show();
+    }
+
+    public static void disableAutomaticPrompt(final SharedPreferences.Editor editor)
+    {
+        editor.putBoolean(PREF_DONT_SHOW, true)
+                .apply();
     }
 }

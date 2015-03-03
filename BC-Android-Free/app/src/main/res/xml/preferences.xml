@@ -98,13 +98,12 @@
                 android:data="http://josephroque.ca" />
         </Preference>
 
-        <!-- TODO add link to rate app screen -->
         <Preference
             android:key="pref_rate"
             android:title="@string/pref_rate_title">
             <intent
                 android:action="android.intent.action.VIEW"
-                android:data="http://josephroque.ca" />
+                android:data="https://play.google.com/store/apps/details?id=ca.josephroque.bowlingcompanion" />
         </Preference>
 
         <Preference
