@@ -32,6 +32,7 @@ import ca.josephroque.bowlingcompanion.adapter.BowlerAdapter;
 import ca.josephroque.bowlingcompanion.database.Contract.*;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.dialog.NewBowlerDialog;
+import ca.josephroque.bowlingcompanion.external.AppRater;
 import ca.josephroque.bowlingcompanion.theme.ChangeableTheme;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 
@@ -116,6 +117,9 @@ public class MainActivity extends ActionBarActivity
         });
 
         mBowlerInstructionsTextView = (TextView)findViewById(R.id.textView_new_bowler_instructions);
+
+        AppRater.appLaunched(this);
+
         updateTheme();
     }
 
