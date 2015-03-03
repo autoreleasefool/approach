@@ -139,7 +139,7 @@ public class SeriesActivity extends ActionBarActivity
 
         outState.putLong(Constants.EXTRA_ID_BOWLER, mBowlerId);
         outState.putLong(Constants.EXTRA_ID_LEAGUE, mLeagueId);
-        outState.putLong(Constants.EXTRA_NUMBER_OF_GAMES, mNumberOfGames);
+        outState.putByte(Constants.EXTRA_NUMBER_OF_GAMES, mNumberOfGames);
         outState.putString(Constants.EXTRA_NAME_BOWLER, mBowlerName);
         outState.putString(Constants.EXTRA_NAME_LEAGUE, mLeagueName);
     }

@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import ca.josephroque.bowlingcompanion.adapter.StatsAdapter;
+import ca.josephroque.bowlingcompanion.data.ConvertValue;
 import ca.josephroque.bowlingcompanion.database.Contract.*;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.theme.ChangeableTheme;
@@ -56,8 +57,10 @@ public class StatsActivity extends ActionBarActivity
     private static final byte LOADING_BOWLER_STATS = 0;
     /** Indicates all the stats related to the specified league should be loaded */
     private static final byte LOADING_LEAGUE_STATS = 1;
+    /** Indicates all the stats related to the specified series should be loaded */
+    private static final byte LOADING_SERIES_STATS = 2;
     /** Indicates only the stats related to the specified game should be loaded */
-    private static final byte LOADING_GAME_STATS = 2;
+    private static final byte LOADING_GAME_STATS = 3;
 
     /** Displays the stat names and values in a list to the user */
     private RecyclerView mStatsRecycler;
@@ -131,11 +134,21 @@ public class StatsActivity extends ActionBarActivity
         {
             mBowlerId = getIntent().getLongExtra(Constants.EXTRA_ID_BOWLER, -1);
             mLeagueId = getIntent().getLongExtra(Constants.EXTRA_ID_LEAGUE, -1);
+            mSeriesId = getIntent().getLongExtra(Constants.EXTRA_ID_SERIES, -1);
             mGameId = getIntent().getLongExtra(Constants.EXTRA_ID_GAME, -1);
             mBowlerName = getIntent().getStringExtra(Constants.EXTRA_NAME_BOWLER);
             mLeagueName = getIntent().getStringExtra(Constants.EXTRA_NAME_LEAGUE);
             mSeriesDate = getIntent().getStringExtra(Constants.EXTRA_NAME_SERIES);
             mGameNumber = getIntent().getByteExtra(Constants.EXTRA_GAME_NUMBER, (byte)-1);
+        }
+
+        try
+        {
+            mSeriesDate = ConvertValue.formattedDateToPrettyCompact(mSeriesDate.substring(0,10));
+        }
+        catch (IllegalArgumentException ex)
+        {
+            //Does nothing, date is already formatted
         }
 
         mListStatNames.clear();
@@ -145,15 +158,23 @@ public class StatsActivity extends ActionBarActivity
         int titleToSet;
         if (mGameId == -1)
         {
-            if (mLeagueId == -1)
+            if (mSeriesId == -1)
             {
-                titleToSet = R.string.title_activity_stats_bowler;
-                statsToLoad = LOADING_BOWLER_STATS;
+                if (mLeagueId == -1)
+                {
+                    titleToSet = R.string.title_activity_stats_bowler;
+                    statsToLoad = LOADING_BOWLER_STATS;
+                }
+                else
+                {
+                    titleToSet = R.string.title_activity_stats_league;
+                    statsToLoad = LOADING_LEAGUE_STATS;
+                }
             }
             else
             {
-                titleToSet = R.string.title_activity_stats_league;
-                statsToLoad = LOADING_LEAGUE_STATS;
+                titleToSet = R.string.title_activity_stats_series;
+                statsToLoad = LOADING_SERIES_STATS;
             }
         }
         else
@@ -462,6 +483,34 @@ public class StatsActivity extends ActionBarActivity
     }
 
     /**
+     * Returns a cursor from database to load series stats
+     *
+     * @return a cursor with rows relevant to mSeriesId
+     */
+    private Cursor getSeriesCursor()
+    {
+        SQLiteDatabase database = DatabaseHelper.getInstance(this).getReadableDatabase();
+
+        String rawStatsQuery = "SELECT "
+                + GameEntry.COLUMN_NAME_GAME_FINAL_SCORE + ", "
+                + GameEntry.COLUMN_NAME_GAME_NUMBER + ", "
+                + FrameEntry.COLUMN_NAME_FRAME_NUMBER + ", "
+                + FrameEntry.COLUMN_NAME_FRAME_ACCESSED + ", "
+                + FrameEntry.COLUMN_NAME_FOULS + ", "
+                + FrameEntry.COLUMN_NAME_BALL[0] + ", "
+                + FrameEntry.COLUMN_NAME_BALL[1] + ", "
+                + FrameEntry.COLUMN_NAME_BALL[2]
+                + " FROM " + GameEntry.TABLE_NAME + " AS game"
+                + " LEFT JOIN " + FrameEntry.TABLE_NAME + " AS frame"
+                + " ON game." + GameEntry._ID + "=" + FrameEntry.COLUMN_NAME_GAME_ID
+                + " WHERE game." + GameEntry.COLUMN_NAME_SERIES_ID + "=?"
+                + " ORDER BY game." + GameEntry._ID + ", frame." + FrameEntry.COLUMN_NAME_FRAME_NUMBER;
+        String[] rawStatsArgs = {String.valueOf(mSeriesId)};
+
+        return database.rawQuery(rawStatsQuery, rawStatsArgs);
+    }
+
+    /**
      * Returns a cursor from the database to load game stats
      *
      * @return a cursor with rows relevant to mGameId
@@ -520,7 +569,7 @@ public class StatsActivity extends ActionBarActivity
                     break;
                 case LOADING_LEAGUE_STATS:
                     NUMBER_OF_GENERAL_DETAILS = 2;
-                    mListStatNames.add(1, "League");
+                    mListStatNames.add(1, "League/Event");
                     mListStatValues.add(1, mLeagueName);
                     mListStatNames.addAll(Arrays.asList(STATS_PINS_AVERAGE));
                     mListStatNames.addAll(Arrays.asList(STATS_GENERAL));
@@ -529,12 +578,28 @@ public class StatsActivity extends ActionBarActivity
                             + STATS_GENERAL.length];
                     cursor = getBowlerOrLeagueCursor(true);
                     break;
-                case LOADING_GAME_STATS:
+                case LOADING_SERIES_STATS:
                     NUMBER_OF_GENERAL_DETAILS = 3;
-                    mListStatNames.add(1, "League");
+                    mListStatNames.add(1, "League/Event");
                     mListStatValues.add(1, mLeagueName);
-                    mListStatNames.add(2, "Game #");
-                    mListStatValues.add(2, String.valueOf(mGameNumber));
+                    mListStatNames.add(2, "Date");
+                    mListStatValues.add(2, mSeriesDate);
+                    mListStatNames.addAll(Arrays.asList(STATS_PINS_AVERAGE));
+                    mListStatNames.addAll(Arrays.asList(STATS_GENERAL));
+                    mListStatNames.set(NUMBER_OF_GENERAL_DETAILS + Constants.STAT_HIGH_SERIES, "Series Total");
+                    statValues = new int[STATS_MIDDLE_GENERAL.length + STATS_MIDDLE_DETAILED.length
+                            + STATS_FOULS.length + STATS_PINS_TOTAL.length + STATS_PINS_AVERAGE.length
+                            + STATS_GENERAL.length];
+                    cursor = getSeriesCursor();
+                    break;
+                case LOADING_GAME_STATS:
+                    NUMBER_OF_GENERAL_DETAILS = 4;
+                    mListStatNames.add(1, "League/Event");
+                    mListStatValues.add(1, mLeagueName);
+                    mListStatNames.add(2, "Date");
+                    mListStatValues.add(2, mSeriesDate);
+                    mListStatNames.add(3, "Game #");
+                    mListStatValues.add(3, String.valueOf(mGameNumber));
                     statValues = new int[STATS_MIDDLE_GENERAL.length + STATS_MIDDLE_DETAILED.length
                             + STATS_FOULS.length + STATS_PINS_TOTAL.length];
                     cursor = getGameCursor();

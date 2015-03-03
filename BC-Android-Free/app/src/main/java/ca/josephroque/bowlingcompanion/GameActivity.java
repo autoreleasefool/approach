@@ -384,6 +384,10 @@ public class GameActivity extends ActionBarActivity
             mNavigationDrawerOptions.add("Game " + (i + 1));
         }
 
+        if (mEventMode)
+        {
+        }
+
         if(Theme.getGameActivityThemeInvalidated())
         {
             updateTheme();
@@ -467,6 +471,11 @@ public class GameActivity extends ActionBarActivity
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
         menu.findItem(R.id.action_stats).setVisible(!drawerOpen);
         //menu.findItem(R.id.action_game_share).setVisible(!drawerOpen);
+        menu.findItem(R.id.action_series_stats).setTitle(
+                (mEventMode)
+                ? R.string.action_event_stats
+                : R.string.action_series_stats);
+
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -549,6 +558,7 @@ public class GameActivity extends ActionBarActivity
         statsIntent.putExtra(Constants.EXTRA_ID_GAME, mGameIds[mCurrentGame]);
         statsIntent.putExtra(Constants.EXTRA_NAME_BOWLER, mBowlerName);
         statsIntent.putExtra(Constants.EXTRA_NAME_LEAGUE, mLeagueName);
+        statsIntent.putExtra(Constants.EXTRA_NAME_SERIES, mSeriesDate);
         startActivity(statsIntent);
     }
 
