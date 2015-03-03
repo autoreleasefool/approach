@@ -32,6 +32,11 @@
     <string name="text_fifteen">Fifteen</string>
     <string name="text_next_ball">Next Ball</string>
     <string name="text_prev_ball">Prev Ball</string>
+    <string name="text_setting_foul">Add foul</string>
+    <string name="text_setting_foul_remove">Remove foul</string>
+    <string name="text_setting_reset_frame">Reset frame</string>
+    <string name="text_setting_lock">Lock game</string>
+    <string name="text_setting_unlock">Unlock game</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
 

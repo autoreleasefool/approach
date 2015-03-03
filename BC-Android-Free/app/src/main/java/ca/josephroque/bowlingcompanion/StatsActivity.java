@@ -459,6 +459,7 @@ public class StatsActivity extends ActionBarActivity
      */
     private Cursor getBowlerOrLeagueCursor(boolean shouldGetLeagueStats)
     {
+        //TODO: following requires testing - including events / open games
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         boolean isEventIncluded = preferences.getBoolean(Constants.KEY_PREF_INCLUDE_EVENTS, true);
         boolean isOpenIncluded = preferences.getBoolean(Constants.KEY_PREF_INCLUDE_OPEN, true);
