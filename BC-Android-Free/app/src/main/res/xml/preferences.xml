@@ -38,6 +38,23 @@
     </PreferenceCategory>
 
     <PreferenceCategory
+        android:title="@string/pref_stats_title"
+        android:key="pref_stats_settings">
+
+        <SwitchPreference
+            android:title="@string/pref_include_events_title"
+            android:summary="@string/pref_include_events_summary"
+            android:key="pref_include_events"
+            android:defaultValue="true" />
+        <SwitchPreference
+            android:title="@string/pref_include_open_title"
+            android:summary="@string/pref_include_open_summary"
+            android:key="pref_include_open"
+            android:defaultValue="true" />
+    </PreferenceCategory>
+
+
+    <PreferenceCategory
         android:title="@string/pref_theme_title"
         android:key="pref_theme_settings" >
 

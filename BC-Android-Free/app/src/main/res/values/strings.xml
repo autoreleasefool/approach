@@ -49,6 +49,13 @@
     <string name="pref_quick_bowler_summary">Quick series will be created for this bowler</string>
     <string name="pref_quick_league_title">League</string>
     <string name="pref_quick_league_summary">Quick series will be created for this league</string>
+    <string name="pref_stats_title">Stats</string>
+    <string name="pref_include_events_title">Include events in stats</string>
+    <string name="pref_include_events_summary">Events will be included in stats</string>
+    <string name="pref_include_events_summary_not">Events will not be included in stats</string>
+    <string name="pref_include_open_title">Include open games in stats</string>
+    <string name="pref_include_open_summary">Open games will be included in stats</string>
+    <string name="pref_include_open_summary_not">Open games will not be included in stats</string>
     <string name="pref_theme_title">Theme</string>
     <string name="pref_theme_colors_title">Theme colors</string>
     <string name="pref_theme_colors_dialog">Select a Theme</string>

@@ -17,6 +17,8 @@ public class Constants
     public static final String KEY_PREF_THEME_LIGHT = "pref_theme_light";
     public static final String KEY_PREF_REPORT_BUG = "pref_report_bug";
     public static final String KEY_PREF_COMMENT_SUGGESTION = "pref_comment_suggestion";
+    public static final String KEY_PREF_INCLUDE_EVENTS = "pref_include_events";
+    public static final String KEY_PREF_INCLUDE_OPEN = "pref_include_open";
     // Removed disabling pin images - may add back later
     // public static final String KEY_PREF_ENABLE_PINS = "pref_enable_pins";
 

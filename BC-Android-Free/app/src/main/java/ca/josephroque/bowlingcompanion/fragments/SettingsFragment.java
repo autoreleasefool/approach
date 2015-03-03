@@ -174,6 +174,22 @@ public class SettingsFragment extends PreferenceFragment
             ChangeableTheme themedActivity = (ChangeableTheme)getActivity();
             themedActivity.updateTheme();
         }
+        else if (key.equals(Constants.KEY_PREF_INCLUDE_EVENTS))
+        {
+            boolean isEventIncluded = sharedPreferences.getBoolean(key, true);
+            Preference eventPref = findPreference(key);
+            eventPref.setSummary((isEventIncluded)
+                    ? R.string.pref_include_events_summary
+                    : R.string.pref_include_events_summary_not);
+        }
+        else if (key.equals(Constants.KEY_PREF_INCLUDE_OPEN))
+        {
+            boolean isOpenIncluded = sharedPreferences.getBoolean(key, true);
+            Preference eventPref = findPreference(key);
+            eventPref.setSummary((isOpenIncluded)
+                    ? R.string.pref_include_open_summary
+                    : R.string.pref_include_open_summary_not);
+        }
     }
 
     private void loadBowlerAndLeagueNames()
@@ -290,6 +306,16 @@ public class SettingsFragment extends PreferenceFragment
             findPreference(Constants.KEY_PREF_QUICK_BOWLER).setSummary("");
             findPreference(Constants.KEY_PREF_QUICK_LEAGUE).setSummary("");
         }
+
+        boolean isEventIncluded = sharedPreferences.getBoolean(Constants.KEY_PREF_INCLUDE_EVENTS, true);
+        findPreference(Constants.KEY_PREF_INCLUDE_EVENTS).setSummary((isEventIncluded)
+                ? R.string.pref_include_events_summary
+                : R.string.pref_include_events_summary_not);
+
+        boolean isOpenIncluded = sharedPreferences.getBoolean(Constants.KEY_PREF_INCLUDE_OPEN, true);
+        findPreference(Constants.KEY_PREF_INCLUDE_OPEN).setSummary((isOpenIncluded)
+                ? R.string.pref_include_open_summary
+                : R.string.pref_include_open_summary_not);
 
         /*
         Removed disabling pin images - may add back later
