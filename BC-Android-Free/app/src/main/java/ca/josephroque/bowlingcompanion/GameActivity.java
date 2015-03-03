@@ -1,5 +1,7 @@
 package ca.josephroque.bowlingcompanion;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
@@ -122,6 +124,10 @@ public class GameActivity extends ActionBarActivity
     /** Listens for navigation drawer events */
     private ActionBarDrawerToggle mDrawerToggle;
 
+    private TextView mTextViewSettingFoul;
+    private TextView mTextViewSettingResetFrame;
+    private TextView mTextViewSettingLockGame;
+
     private AdView mAdView;
 
     private long mBowlerId = -1;
@@ -130,6 +136,9 @@ public class GameActivity extends ActionBarActivity
     private String mBowlerName;
     private String mLeagueName;
     private String mSeriesDate;
+
+    private boolean mSettingsOpened = false;
+    private int mShortAnimationDuration;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -142,6 +151,7 @@ public class GameActivity extends ActionBarActivity
 
         COLOR_BACKGROUND = getResources().getColor(android.R.color.darker_gray);
         COLOR_HIGHLIGHT = getResources().getColor(android.R.color.secondary_text_dark);
+        mShortAnimationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
         //Requests test ads to be displayed in AdView
         mAdView = (AdView) findViewById(R.id.adView_game);
@@ -343,6 +353,20 @@ public class GameActivity extends ActionBarActivity
             mGameIds = savedInstanceState.getLongArray(Constants.EXTRA_ARRAY_GAME_IDS);
             mFrameIds = savedInstanceState.getLongArray(Constants.EXTRA_ARRAY_FRAME_IDS);
         }
+
+        findViewById(R.id.imageView_game_settings).setOnClickListener(onClickListeners[LISTENER_OTHER]);
+
+        mTextViewSettingFoul = (TextView)findViewById(R.id.textView_setting_foul);
+        mTextViewSettingFoul.setOnClickListener(onClickListeners[LISTENER_OTHER]);
+        mTextViewSettingFoul.setVisibility(View.GONE);
+
+        mTextViewSettingResetFrame = (TextView)findViewById(R.id.textView_setting_reset_frame);
+        mTextViewSettingResetFrame.setOnClickListener(onClickListeners[LISTENER_OTHER]);
+        mTextViewSettingResetFrame.setVisibility(View.GONE);
+
+        mTextViewSettingLockGame = (TextView)findViewById(R.id.textView_setting_lock);
+        mTextViewSettingLockGame.setOnClickListener(onClickListeners[LISTENER_OTHER]);
+        mTextViewSettingLockGame.setVisibility(View.GONE);
 
         updateTheme();
     }
@@ -811,6 +835,14 @@ public class GameActivity extends ActionBarActivity
             {
                 switch(v.getId())
                 {
+                    case R.id.imageView_game_settings:
+                        fadeGameSettings(!mSettingsOpened);
+                        break;
+                    case R.id.textView_setting_foul:
+                    case R.id.textView_setting_reset_frame:
+                    case R.id.textView_setting_lock:
+                        fadeGameSettings(true);
+                        break;
                     case R.id.imageView_clear_pins:
                         clearPins();
                         break;
@@ -894,6 +926,69 @@ public class GameActivity extends ActionBarActivity
         };
 
         return listeners;
+    }
+
+    private void fadeGameSettings(boolean hideSettings)
+    {
+        mSettingsOpened = !hideSettings;
+        if (mSettingsOpened)
+        {
+            mTextViewSettingFoul.setAlpha(0f);
+            mTextViewSettingResetFrame.setAlpha(0f);
+            mTextViewSettingLockGame.setAlpha(0f);
+            mTextViewSettingFoul.setVisibility(View.VISIBLE);
+            mTextViewSettingResetFrame.setVisibility(View.VISIBLE);
+            mTextViewSettingLockGame.setVisibility(View.VISIBLE);
+
+            mTextViewSettingFoul.animate()
+                    .alpha(1f)
+                    .setDuration(mShortAnimationDuration)
+                    .setListener(null);
+            mTextViewSettingResetFrame.animate()
+                    .alpha(1f)
+                    .setDuration(mShortAnimationDuration)
+                    .setListener(null);
+            mTextViewSettingLockGame.animate()
+                    .alpha(1f)
+                    .setDuration(mShortAnimationDuration)
+                    .setListener(null);
+        }
+        else
+        {
+            mTextViewSettingFoul.animate()
+                    .alpha(0f)
+                    .setDuration(mShortAnimationDuration)
+                    .setListener(new AnimatorListenerAdapter()
+                    {
+                        @Override
+                        public void onAnimationEnd(Animator animation)
+                        {
+                            mTextViewSettingFoul.setVisibility(View.GONE);
+                        }
+                    });
+            mTextViewSettingResetFrame.animate()
+                    .alpha(0f)
+                    .setDuration(mShortAnimationDuration)
+                    .setListener(new AnimatorListenerAdapter()
+                    {
+                        @Override
+                        public void onAnimationEnd(Animator animation)
+                        {
+                            mTextViewSettingResetFrame.setVisibility(View.GONE);
+                        }
+                    });
+            mTextViewSettingLockGame.animate()
+                    .alpha(0f)
+                    .setDuration(mShortAnimationDuration)
+                    .setListener(new AnimatorListenerAdapter()
+                    {
+                        @Override
+                        public void onAnimationEnd(Animator animation)
+                        {
+                            mTextViewSettingLockGame.setVisibility(View.GONE);
+                        }
+                    });
+        }
     }
 
     /**
@@ -1164,8 +1259,7 @@ public class GameActivity extends ActionBarActivity
                     {
                         mImageButtonPins[i].setImageResource(R.drawable.pin_disabled);
                         numberOfPinsStanding++;
-                    }
-                    else
+                    } else
                     {
                         mImageButtonPins[i].setImageResource(R.drawable.pin_enabled);
                     }
@@ -1175,8 +1269,7 @@ public class GameActivity extends ActionBarActivity
                             && Arrays.equals(mPinState[mCurrentFrame][mCurrentBall - 1], Constants.FRAME_PINS_DOWN)))
                     {
                         mImageButtonPins[i].setEnabled(false);
-                    }
-                    else
+                    } else
                     {
                         mImageButtonPins[i].setEnabled(true);
                     }
@@ -1184,9 +1277,11 @@ public class GameActivity extends ActionBarActivity
 
                 if (mCurrentFrame == Constants.LAST_FRAME)
                 {
-                    switch(mCurrentBall)
+                    switch (mCurrentBall)
                     {
-                        case 0:mImageViewClearPins.setImageResource(R.drawable.ic_action_strike);break;
+                        case 0:
+                            mImageViewClearPins.setImageResource(R.drawable.ic_action_strike);
+                            break;
                         case 1:
                             if (Arrays.equals(mPinState[mCurrentFrame][0], Constants.FRAME_PINS_DOWN))
                                 mImageViewClearPins.setImageResource(R.drawable.ic_action_strike);
@@ -1202,14 +1297,19 @@ public class GameActivity extends ActionBarActivity
                                 mImageViewClearPins.setImageResource(R.drawable.ic_action_fifteen);
                             break;
                     }
-                }
-                else
+                } else
                 {
-                    switch(mCurrentBall)
+                    switch (mCurrentBall)
                     {
-                        case 0:mImageViewClearPins.setImageResource(R.drawable.ic_action_strike);break;
-                        case 1:mImageViewClearPins.setImageResource(R.drawable.ic_action_spare);break;
-                        case 2:mImageViewClearPins.setImageResource(R.drawable.ic_action_fifteen);break;
+                        case 0:
+                            mImageViewClearPins.setImageResource(R.drawable.ic_action_strike);
+                            break;
+                        case 1:
+                            mImageViewClearPins.setImageResource(R.drawable.ic_action_spare);
+                            break;
+                        case 2:
+                            mImageViewClearPins.setImageResource(R.drawable.ic_action_fifteen);
+                            break;
                     }
                 }
                 mImageViewClearPins.setEnabled(numberOfPinsStanding < 5);
