@@ -36,6 +36,9 @@
     <string name="drawer_close">Close navigation drawer</string>
 
     <!-- PREFERENCES -->
+    <string name="pref_full_version_title">Full Version</string>
+    <string name="pref_view_full_title">View in Play Store</string>
+    <string name="pref_view_full_summary">See additional features of full version</string>
     <string name="pref_quick_series_title">Quick Series</string>
     <string name="pref_enable_quick_title">Enable quick series</string>
     <string name="pref_quick_bowler_dialog">Select a Bowler</string>

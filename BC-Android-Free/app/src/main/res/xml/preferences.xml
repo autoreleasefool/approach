@@ -3,6 +3,20 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory
+        android:title="@string/pref_full_version_title"
+        android:key="pref_full_version_settings">
+
+        <Preference
+            android:title="@string/pref_view_full_title"
+            android:key="pref_purchase_full"
+            android:summary="@string/pref_view_full_summary">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:data="https://play.google.com/store/apps/details?id=ca.josephroque.bowlingcompaniondeluxe" />
+        </Preference>
+    </PreferenceCategory>
+
+    <PreferenceCategory
         android:title="@string/pref_quick_series_title"
         android:key="pref_quick_series_settings">
 
