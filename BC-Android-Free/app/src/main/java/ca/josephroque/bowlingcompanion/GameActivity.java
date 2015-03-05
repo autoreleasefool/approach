@@ -652,6 +652,7 @@ public class GameActivity extends ActionBarActivity
             return;
 
         clearFrameColor();
+        mCurrentBall = 0;
         mCurrentFrame = 0;
         mCurrentGame = 0;
         for (int i = 0; i < Constants.NUMBER_OF_FRAMES; i++)
@@ -661,7 +662,7 @@ public class GameActivity extends ActionBarActivity
             for (int j = 0; j < 3; j++)
             {
                 mFouls[i][j] = false;
-                mPinState[i][j] = Constants.FRAME_PINS_UP;
+                mPinState[i][j] = new boolean[5];//Arrays.copyOf(Constants.FRAME_PINS_UP, Constants.FRAME_PINS_UP.length);
             }
         }
         mHasFrameBeenAccessed[0] = true;
@@ -880,7 +881,7 @@ public class GameActivity extends ActionBarActivity
                         && viewId != R.id.textView_setting_lock && viewId != R.id.imageView_game_settings)
                     hideGameSettings();
 
-                switch(v.getId())
+                switch(viewId)
                 {
                     case R.id.imageView_game_settings:
                         fadeGameSettings(mSettingsOpened);
@@ -1352,10 +1353,10 @@ public class GameActivity extends ActionBarActivity
                     if (mPinState[mCurrentFrame][mCurrentBall][i])
                     {
                         mImageButtonPins[i].setImageResource(R.drawable.pin_disabled);
-                        numberOfPinsStanding++;
                     } else
                     {
                         mImageButtonPins[i].setImageResource(R.drawable.pin_enabled);
+                        numberOfPinsStanding++;
                     }
 
                     if (mCurrentBall > 0 && (mPinState[mCurrentFrame][mCurrentBall - 1][i])
@@ -1406,7 +1407,12 @@ public class GameActivity extends ActionBarActivity
                             break;
                     }
                 }
-                mImageViewClearPins.setEnabled(numberOfPinsStanding < 5);
+                mImageViewClearPins.setEnabled(numberOfPinsStanding > 0);
+
+                mTextViewSettingFoul.setText(
+                        mFouls[mCurrentFrame][mCurrentBall]
+                        ? R.string.text_setting_foul_remove
+                        : R.string.text_setting_foul);
 
                 focusOnFrame();
             }
@@ -1447,7 +1453,7 @@ public class GameActivity extends ActionBarActivity
                 {
                     values = new ContentValues();
                     values.put(GameEntry.COLUMN_NAME_GAME_FINAL_SCORE, finalScore);
-                    values.put(GameEntry.COLUMN_NAME_GAME_LOCKED, (gameLocked ? 0:1));
+                    values.put(GameEntry.COLUMN_NAME_GAME_LOCKED, (gameLocked ? 1:0));
                     database.update(GameEntry.TABLE_NAME,
                             values,
                             GameEntry._ID + "=?",
@@ -1537,6 +1543,18 @@ public class GameActivity extends ActionBarActivity
                         cursor.moveToNext();
                     }
                 }
+
+                runOnUiThread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        mTextViewSettingLockGame.setText(
+                                (mGameLocked[mCurrentGame])
+                                ? R.string.text_setting_unlock
+                                : R.string.text_setting_lock);
+                    }
+                });
 
                 mCurrentFrame = 0;
                 mCurrentBall = 0;
@@ -1702,7 +1720,7 @@ public class GameActivity extends ActionBarActivity
                         {
                             mImageButtonPins[pinToSet].setImageResource(R.drawable.pin_enabled);
                         }
-                        mImageViewClearPins.setEnabled(allPinsKnockedOver);
+                        mImageViewClearPins.setEnabled(!allPinsKnockedOver);
                     }
                 });
 
@@ -1718,6 +1736,15 @@ public class GameActivity extends ActionBarActivity
      */
     private void clearPins()
     {
+        if (mGameLocked[mCurrentGame])
+            return;
+
+        String log = "";
+        for (int i = 0; i < 5; i++)
+        {
+            log += mPinState[mCurrentFrame][mCurrentBall][i] + " ";
+        }
+        Log.w(TAG, log);
         if (!Arrays.equals(mPinState[mCurrentFrame][mCurrentBall], Constants.FRAME_PINS_DOWN))
         {
             for (int j = mCurrentBall; j < 3; j++)
