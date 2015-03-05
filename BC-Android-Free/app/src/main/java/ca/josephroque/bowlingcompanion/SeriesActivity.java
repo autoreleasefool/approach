@@ -314,12 +314,14 @@ public class SeriesActivity extends ActionBarActivity
 
             long[] gameId = new long[numberOfGames];
             long[] frameId = new long[numberOfGames * 10];
+            boolean[] gameLocked = new boolean[numberOfGames];
             SQLiteDatabase database = DatabaseHelper.getInstance(srcActivity).getReadableDatabase();
 
             //Loads relevant game and frame IDs from database and stores them in Intent
             //for next activity
             String rawSeriesQuery = "SELECT "
                     + GameEntry.TABLE_NAME + "." + GameEntry._ID + " AS gid, "
+                    + GameEntry.COLUMN_NAME_GAME_LOCKED + ", "
                     + FrameEntry.TABLE_NAME + "." + FrameEntry._ID + " AS fid"
                     + " FROM " + GameEntry.TABLE_NAME
                     + " LEFT JOIN " + FrameEntry.TABLE_NAME
@@ -347,12 +349,14 @@ public class SeriesActivity extends ActionBarActivity
                         currentGameId = newGameId;
                         frameId[++currentFrame] = cursor.getLong(cursor.getColumnIndex("fid"));
                         gameId[++currentGame] = currentGameId;
+                        gameLocked[currentGame] =
+                                (cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_NAME_GAME_LOCKED)) == 1);
                     }
                     cursor.moveToNext();
                 }
             }
 
-            return new Object[]{srcActivity, gameId, frameId, seriesIdSelected, params[3], params[4], params[5], params[6], params[7]};
+            return new Object[]{srcActivity, gameId, frameId, seriesIdSelected, params[3], params[4], params[5], params[6], params[7], gameLocked};
         }
 
         @Override
@@ -368,6 +372,7 @@ public class SeriesActivity extends ActionBarActivity
             long leagueId = (Long)params[6];
             String leagueName = params[7].toString();
             String seriesDate = params[8].toString();
+            boolean[] gameLocked = (boolean[])params[9];
 
             Intent gameIntent = new Intent(srcActivity, GameActivity.class);
             gameIntent.putExtra(Constants.EXTRA_ARRAY_GAME_IDS, gameIds);
@@ -378,6 +383,7 @@ public class SeriesActivity extends ActionBarActivity
             gameIntent.putExtra(Constants.EXTRA_NAME_BOWLER, bowlerName);
             gameIntent.putExtra(Constants.EXTRA_NAME_LEAGUE, leagueName);
             gameIntent.putExtra(Constants.EXTRA_NAME_SERIES, seriesDate);
+            gameIntent.putExtra(Constants.EXTRA_ARRAY_GAME_LOCKED, gameLocked);
             srcActivity.startActivity(gameIntent);
         }
     }

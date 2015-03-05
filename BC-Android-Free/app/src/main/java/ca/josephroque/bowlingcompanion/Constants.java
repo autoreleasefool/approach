@@ -77,6 +77,7 @@ public class Constants
     public static final String EXTRA_NAME_BOWLER = "ENB";
     public static final String EXTRA_NAME_LEAGUE = "ENL";
     public static final String EXTRA_NAME_SERIES = "ENS";
+    public static final String EXTRA_ARRAY_GAME_LOCKED = "EAGL";
 
     //PREFERENCES
     /** Identifier to retrieve shared preferences */

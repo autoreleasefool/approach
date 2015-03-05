@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -96,6 +97,7 @@ public class GameActivity extends ActionBarActivity
     private short[] mGameScores;
     /** Scores of the current games being edited, with fouls considered */
     private short[] mGameScoresMinusFouls;
+    private boolean[] mGameLocked;
 
     /** Initial title of the activity when it is first created */
     private String mActivityTitle;
@@ -262,8 +264,6 @@ public class GameActivity extends ActionBarActivity
         findViewById(R.id.imageView_prev_ball).setOnClickListener(onClickListeners[LISTENER_OTHER]);
         findViewById(R.id.textView_next_ball).setOnClickListener(onClickListeners[LISTENER_OTHER]);
         findViewById(R.id.textView_prev_ball).setOnClickListener(onClickListeners[LISTENER_OTHER]);
-        //findViewById(R.id.imageView_foul).setOnClickListener(onClickListeners[LISTENER_OTHER]);
-        //findViewById(R.id.imageView_reset_frame).setOnClickListener(onClickListeners[LISTENER_OTHER]);
         mImageViewClearPins = (ImageView)findViewById(R.id.imageView_clear_pins);
         mImageViewClearPins.setOnClickListener(onClickListeners[LISTENER_OTHER]);
 
@@ -316,7 +316,8 @@ public class GameActivity extends ActionBarActivity
                                 mHasFrameBeenAccessed,
                                 mPinState,
                                 mFouls,
-                                mGameScoresMinusFouls[mCurrentGame]);
+                                mGameScoresMinusFouls[mCurrentGame],
+                                mGameLocked[mCurrentGame]);
                         loadGameFromDatabase((byte)(position - (mEventMode ? 2:3)));
                         break;
                 }
@@ -355,6 +356,7 @@ public class GameActivity extends ActionBarActivity
             mEventMode = savedInstanceState.getBoolean(Constants.EXTRA_EVENT_MODE);
             mGameIds = savedInstanceState.getLongArray(Constants.EXTRA_ARRAY_GAME_IDS);
             mFrameIds = savedInstanceState.getLongArray(Constants.EXTRA_ARRAY_FRAME_IDS);
+            mGameLocked = savedInstanceState.getBooleanArray(Constants.EXTRA_ARRAY_GAME_LOCKED);
         }
 
         findViewById(R.id.imageView_game_settings).setOnClickListener(onClickListeners[LISTENER_OTHER]);
@@ -395,6 +397,9 @@ public class GameActivity extends ActionBarActivity
             mEventMode = getIntent().getBooleanExtra(Constants.EXTRA_EVENT_MODE, false);
             mGameIds = getIntent().getLongArrayExtra(Constants.EXTRA_ARRAY_GAME_IDS);
             mFrameIds = getIntent().getLongArrayExtra(Constants.EXTRA_ARRAY_FRAME_IDS);
+            mGameLocked = getIntent().getBooleanArrayExtra(Constants.EXTRA_ARRAY_GAME_LOCKED);
+            if(mGameLocked == null)
+                mGameLocked = new boolean[mGameIds.length];
         }
 
         mNumberOfGames = (byte) mGameIds.length;
@@ -446,7 +451,8 @@ public class GameActivity extends ActionBarActivity
                 mHasFrameBeenAccessed,
                 mPinState,
                 mFouls,
-                mGameScoresMinusFouls[mCurrentGame]);
+                mGameScoresMinusFouls[mCurrentGame],
+                mGameLocked[mCurrentGame]);
 
         super.onPause();
     }
@@ -465,6 +471,7 @@ public class GameActivity extends ActionBarActivity
         outState.putLongArray(Constants.EXTRA_ARRAY_GAME_IDS, mGameIds);
         outState.putLongArray(Constants.EXTRA_ARRAY_FRAME_IDS, mFrameIds);
         outState.putBoolean(Constants.EXTRA_EVENT_MODE, mEventMode);
+        outState.putBooleanArray(Constants.EXTRA_ARRAY_GAME_LOCKED, mGameLocked);
     }
 
     @Override
@@ -532,7 +539,14 @@ public class GameActivity extends ActionBarActivity
                 showSeriesStats();
                 return true;
             case R.id.action_reset_game:
-                showResetGameDialog();
+                if (mGameLocked[mCurrentGame])
+                {
+                    showGameLockedDialog();
+                }
+                else
+                {
+                    showResetGameDialog();
+                }
                 return true;
             case R.id.action_what_if:
                 showWhatIfDialog();
@@ -589,6 +603,24 @@ public class GameActivity extends ActionBarActivity
         startActivity(statsIntent);
     }
 
+    private void showGameLockedDialog()
+    {
+        AlertDialog.Builder gameLockedBuilder = new AlertDialog.Builder(GameActivity.this);
+        gameLockedBuilder.setTitle("Invalid action!")
+                .setMessage("The game is locked. You must unlock the game before attempting to make any changes")
+                .setPositiveButton(Constants.DIALOG_OKAY, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        dialog.dismiss();
+                    }
+                })
+                .setCancelable(false)
+                .create()
+                .show();
+    }
+
     private void showResetGameDialog()
     {
         AlertDialog.Builder resetDialogBuilder = new AlertDialog.Builder(GameActivity.this);
@@ -616,6 +648,9 @@ public class GameActivity extends ActionBarActivity
 
     private void resetGame()
     {
+        if (mGameLocked[mCurrentGame])
+            return;
+
         clearFrameColor();
         mCurrentFrame = 0;
         mCurrentGame = 0;
@@ -634,7 +669,7 @@ public class GameActivity extends ActionBarActivity
         mGameScoresMinusFouls[mCurrentBall] = 0;
         long[] frameIds = new long[Constants.NUMBER_OF_FRAMES];
         System.arraycopy(mFrameIds, mCurrentGame * Constants.NUMBER_OF_FRAMES, frameIds, 0, Constants.NUMBER_OF_FRAMES);
-        saveGameToDatabase(this, mGameIds[mCurrentGame], frameIds, mHasFrameBeenAccessed, mPinState, mFouls, mGameScoresMinusFouls[mCurrentGame]);
+        saveGameToDatabase(this, mGameIds[mCurrentGame], frameIds, mHasFrameBeenAccessed, mPinState, mFouls, mGameScoresMinusFouls[mCurrentGame], false);
 
         updateScore();
         for (byte i = 0; i < Constants.NUMBER_OF_FRAMES; i++)
@@ -816,6 +851,8 @@ public class GameActivity extends ActionBarActivity
             @Override
             public void onClick(View v)
             {
+                if (mGameLocked[mCurrentGame])
+                    return;
                 hideGameSettings();
                 byte ballToSet = 0;
                 switch(v.getId())
@@ -849,25 +886,14 @@ public class GameActivity extends ActionBarActivity
                         fadeGameSettings(mSettingsOpened);
                         break;
                     case R.id.textView_setting_foul:
-                        if (mSettingsButtonsDisabled)
+                        if (mSettingsButtonsDisabled || mGameLocked[mCurrentGame])
                             return;
                         hideGameSettings();
                         mFouls[mCurrentFrame][mCurrentBall] = !mFouls[mCurrentFrame][mCurrentBall];
-                        mTextViewFouls[mCurrentFrame][mCurrentBall].post(new Runnable()
-                        {
-                            @Override
-                            public void run()
-                            {
-                                mTextViewFouls[mCurrentFrame][mCurrentBall]
-                                        .setText(mFouls[mCurrentFrame][mCurrentBall]
-                                                ? "F"
-                                                : "");
-                            }
-                        });
                         updateFouls();
                         break;
                     case R.id.textView_setting_reset_frame:
-                        if (mSettingsButtonsDisabled)
+                        if (mSettingsButtonsDisabled || mGameLocked[mCurrentGame])
                             return;
                         hideGameSettings();
                         clearFrameColor();
@@ -886,7 +912,18 @@ public class GameActivity extends ActionBarActivity
                         if (mSettingsButtonsDisabled)
                             return;
                         hideGameSettings();
-                        //TODO (un)lock game
+                        mGameLocked[mCurrentGame] = !mGameLocked[mCurrentGame];
+                        mTextViewSettingLockGame.post(new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                mTextViewSettingLockGame.setText(
+                                        (mGameLocked[mCurrentGame])
+                                        ? R.string.text_setting_unlock
+                                        : R.string.text_setting_lock);
+                            }
+                        });
                         break;
                     case R.id.imageView_clear_pins:
                         clearPins();
@@ -1252,15 +1289,23 @@ public class GameActivity extends ActionBarActivity
             scoreWithFouls = 0;
         mGameScoresMinusFouls[mCurrentGame] = scoreWithFouls;
 
-        mTextViewFinalScore.post(new Runnable()
+        runOnUiThread(new Runnable()
         {
             @Override
             public void run()
             {
                 mTextViewFinalScore.setText(String.valueOf(mGameScoresMinusFouls[mCurrentGame]));
-                setScoresInNavigationDrawer();
+                mTextViewSettingFoul.setText(
+                        (mFouls[mCurrentFrame][mCurrentBall])
+                        ? R.string.text_setting_foul_remove
+                        : R.string.text_setting_foul);
+                mTextViewFouls[mCurrentFrame][mCurrentBall]
+                        .setText(mFouls[mCurrentFrame][mCurrentBall]
+                        ? "F"
+                        : "");
             }
         });
+        setScoresInNavigationDrawer();
     }
 
     /**
@@ -1386,7 +1431,8 @@ public class GameActivity extends ActionBarActivity
             final boolean[] hasFrameBeenAccessed,
             final boolean[][][] pinState,
             final boolean[][] fouls,
-            final short finalScore)
+            final short finalScore,
+            final boolean gameLocked)
     {
         new Thread(new Runnable()
         {
@@ -1401,6 +1447,7 @@ public class GameActivity extends ActionBarActivity
                 {
                     values = new ContentValues();
                     values.put(GameEntry.COLUMN_NAME_GAME_FINAL_SCORE, finalScore);
+                    values.put(GameEntry.COLUMN_NAME_GAME_LOCKED, (gameLocked ? 0:1));
                     database.update(GameEntry.TABLE_NAME,
                             values,
                             GameEntry._ID + "=?",
