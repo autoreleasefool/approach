@@ -151,8 +151,8 @@ public class GameActivity extends ActionBarActivity
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        COLOR_BACKGROUND = getResources().getColor(android.R.color.darker_gray);
-        COLOR_HIGHLIGHT = getResources().getColor(android.R.color.secondary_text_dark);
+        COLOR_BACKGROUND = getResources().getColor(R.color.primary_background);
+        COLOR_HIGHLIGHT = getResources().getColor(R.color.secondary_background);
         mShortAnimationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
         //Requests test ads to be displayed in AdView
@@ -333,6 +333,7 @@ public class GameActivity extends ActionBarActivity
             public void onDrawerOpened(View view)
             {
                 super.onDrawerOpened(view);
+                hideGameSettings();
                 getSupportActionBar().setTitle(TITLE_DRAWER);
                 invalidateOptionsMenu();
             }
