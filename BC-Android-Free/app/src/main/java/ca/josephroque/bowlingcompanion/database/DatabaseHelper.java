@@ -86,6 +86,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 + GameEntry._ID + " INTEGER PRIMARY KEY, "
                 + GameEntry.COLUMN_NAME_GAME_NUMBER + " INTEGER, "
                 + GameEntry.COLUMN_NAME_GAME_FINAL_SCORE + " INTEGER DEFAULT 0, "
+                + GameEntry.COLUMN_NAME_GAME_LOCKED + " INTEGER DEFAULT 0, "
                 + GameEntry.COLUMN_NAME_LEAGUE_ID + " INTEGER, "
                 + GameEntry.COLUMN_NAME_SERIES_ID + " INTEGER, "
                 + GameEntry.COLUMN_NAME_BOWLER_ID + " INTEGER"
