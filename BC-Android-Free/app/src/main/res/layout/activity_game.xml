@@ -116,42 +116,6 @@
                 android:layout_above="@id/adView_game"
                 android:background="@drawable/alley_background"/>
 
-            <ImageView
-                android:id="@+id/imageView_game_settings"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_above="@id/adView_game"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
-                android:src="@drawable/ic_action_settings"/>
-            <TextView
-                android:id="@+id/textView_setting_foul"
-                android:text="@string/text_setting_foul"
-                android:layout_width="120dp"
-                android:layout_height="wrap_content"
-                android:layout_above="@id/imageView_game_settings"
-                android:layout_alignRight="@id/imageView_game_settings"
-                android:layout_alignEnd="@id/imageView_game_settings"
-                android:textAppearance="?android:attr/textAppearanceMedium"/>
-            <TextView
-                android:id="@+id/textView_setting_reset_frame"
-                android:text="@string/text_setting_reset_frame"
-                android:layout_width="120dp"
-                android:layout_height="wrap_content"
-                android:layout_above="@id/textView_setting_foul"
-                android:layout_alignRight="@id/imageView_game_settings"
-                android:layout_alignEnd="@id/imageView_game_settings"
-                android:textAppearance="?android:attr/textAppearanceMedium"/>
-            <TextView
-                android:id="@+id/textView_setting_lock"
-                android:text="@string/text_setting_lock"
-                android:layout_width="120dp"
-                android:layout_height="wrap_content"
-                android:layout_above="@id/textView_setting_reset_frame"
-                android:layout_alignRight="@id/imageView_game_settings"
-                android:layout_alignEnd="@id/imageView_game_settings"
-                android:textAppearance="?android:attr/textAppearanceMedium"/>
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -209,6 +173,54 @@
                     android:src="@drawable/pin_enabled"
                     android:background="@drawable/background_pin_button"/>
             </LinearLayout>
+
+            <ImageView
+                android:id="@+id/imageView_game_settings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/adView_game"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:src="@drawable/ic_action_settings"/>
+            <TextView
+                android:id="@+id/textView_setting_foul"
+                android:text="@string/text_setting_foul"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/imageView_game_settings"
+                android:layout_alignRight="@id/imageView_game_settings"
+                android:layout_alignEnd="@id/imageView_game_settings"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
+                android:gravity="end"
+                android:background="@drawable/background_tabs"/>
+            <TextView
+                android:id="@+id/textView_setting_reset_frame"
+                android:text="@string/text_setting_reset_frame"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/textView_setting_foul"
+                android:layout_alignRight="@id/imageView_game_settings"
+                android:layout_alignEnd="@id/imageView_game_settings"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
+                android:gravity="end"
+                android:background="@drawable/background_tabs"/>
+            <TextView
+                android:id="@+id/textView_setting_lock"
+                android:text="@string/text_setting_lock"
+                android:layout_width="120dp"
+                android:layout_height="wrap_content"
+                android:layout_above="@id/textView_setting_reset_frame"
+                android:layout_alignRight="@id/imageView_game_settings"
+                android:layout_alignEnd="@id/imageView_game_settings"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
+                android:gravity="end"
+                android:background="@drawable/background_tabs"/>
         </RelativeLayout>
     </LinearLayout>
 

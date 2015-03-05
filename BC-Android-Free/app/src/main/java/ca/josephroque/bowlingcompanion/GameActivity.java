@@ -11,6 +11,7 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
@@ -22,6 +23,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.HorizontalScrollView;
@@ -139,6 +141,7 @@ public class GameActivity extends ActionBarActivity
 
     private boolean mSettingsOpened = false;
     private int mShortAnimationDuration;
+    private boolean mSettingsButtonsDisabled = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -259,8 +262,8 @@ public class GameActivity extends ActionBarActivity
         findViewById(R.id.imageView_prev_ball).setOnClickListener(onClickListeners[LISTENER_OTHER]);
         findViewById(R.id.textView_next_ball).setOnClickListener(onClickListeners[LISTENER_OTHER]);
         findViewById(R.id.textView_prev_ball).setOnClickListener(onClickListeners[LISTENER_OTHER]);
-        findViewById(R.id.imageView_foul).setOnClickListener(onClickListeners[LISTENER_OTHER]);
-        findViewById(R.id.imageView_reset_frame).setOnClickListener(onClickListeners[LISTENER_OTHER]);
+        //findViewById(R.id.imageView_foul).setOnClickListener(onClickListeners[LISTENER_OTHER]);
+        //findViewById(R.id.imageView_reset_frame).setOnClickListener(onClickListeners[LISTENER_OTHER]);
         mImageViewClearPins = (ImageView)findViewById(R.id.imageView_clear_pins);
         mImageViewClearPins.setOnClickListener(onClickListeners[LISTENER_OTHER]);
 
@@ -776,6 +779,7 @@ public class GameActivity extends ActionBarActivity
             @Override
             public void onClick(View v)
             {
+                hideGameSettings();
                 byte frameToSet = 0;
                 switch(v.getId())
                 {
@@ -812,6 +816,7 @@ public class GameActivity extends ActionBarActivity
             @Override
             public void onClick(View v)
             {
+                hideGameSettings();
                 byte ballToSet = 0;
                 switch(v.getId())
                 {
@@ -833,20 +838,38 @@ public class GameActivity extends ActionBarActivity
             @Override
             public void onClick(View v)
             {
+                int viewId = v.getId();
+                if (viewId != R.id.textView_setting_foul && viewId != R.id.textView_setting_reset_frame
+                        && viewId != R.id.textView_setting_lock && viewId != R.id.imageView_game_settings)
+                    hideGameSettings();
+
                 switch(v.getId())
                 {
                     case R.id.imageView_game_settings:
-                        fadeGameSettings(!mSettingsOpened);
+                        fadeGameSettings(mSettingsOpened);
                         break;
                     case R.id.textView_setting_foul:
+                        if (mSettingsButtonsDisabled)
+                            return;
+                        hideGameSettings();
+                        mFouls[mCurrentFrame][mCurrentBall] = !mFouls[mCurrentFrame][mCurrentBall];
+                        mTextViewFouls[mCurrentFrame][mCurrentBall].post(new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                mTextViewFouls[mCurrentFrame][mCurrentBall]
+                                        .setText(mFouls[mCurrentFrame][mCurrentBall]
+                                                ? "F"
+                                                : "");
+                            }
+                        });
+                        updateFouls();
+                        break;
                     case R.id.textView_setting_reset_frame:
-                    case R.id.textView_setting_lock:
-                        fadeGameSettings(true);
-                        break;
-                    case R.id.imageView_clear_pins:
-                        clearPins();
-                        break;
-                    case R.id.imageView_reset_frame:
+                        if (mSettingsButtonsDisabled)
+                            return;
+                        hideGameSettings();
                         clearFrameColor();
                         mCurrentBall = 0;
                         for (int i = 0; i < 3; i++)
@@ -859,20 +882,14 @@ public class GameActivity extends ActionBarActivity
                         updateBalls(mCurrentFrame);
                         updateScore();
                         break;
-                    case R.id.imageView_foul:
-                        mFouls[mCurrentFrame][mCurrentBall] = !mFouls[mCurrentFrame][mCurrentBall];
-                        mTextViewFouls[mCurrentFrame][mCurrentBall].post(new Runnable()
-                        {
-                            @Override
-                            public void run()
-                            {
-                                mTextViewFouls[mCurrentFrame][mCurrentBall]
-                                        .setText(mFouls[mCurrentFrame][mCurrentBall]
-                                        ? "F"
-                                        : "");
-                            }
-                        });
-                        updateFouls();
+                    case R.id.textView_setting_lock:
+                        if (mSettingsButtonsDisabled)
+                            return;
+                        hideGameSettings();
+                        //TODO (un)lock game
+                        break;
+                    case R.id.imageView_clear_pins:
+                        clearPins();
                         break;
                     case R.id.imageView_next_ball:
                     case R.id.textView_next_ball:
@@ -928,6 +945,18 @@ public class GameActivity extends ActionBarActivity
         return listeners;
     }
 
+    private void hideGameSettings()
+    {
+        if (!mSettingsOpened)
+            return;
+
+        mSettingsOpened = false;
+        mSettingsButtonsDisabled = false;
+        mTextViewSettingFoul.setVisibility(View.GONE);
+        mTextViewSettingResetFrame.setVisibility(View.GONE);
+        mTextViewSettingLockGame.setVisibility(View.GONE);
+    }
+
     private void fadeGameSettings(boolean hideSettings)
     {
         mSettingsOpened = !hideSettings;
@@ -943,7 +972,20 @@ public class GameActivity extends ActionBarActivity
             mTextViewSettingFoul.animate()
                     .alpha(1f)
                     .setDuration(mShortAnimationDuration)
-                    .setListener(null);
+                    .setListener(new AnimatorListenerAdapter()
+                    {
+                        @Override
+                        public void onAnimationStart(Animator animation)
+                        {
+                            mSettingsButtonsDisabled = true;
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animation)
+                        {
+                            mSettingsButtonsDisabled = false;
+                        }
+                    });
             mTextViewSettingResetFrame.animate()
                     .alpha(1f)
                     .setDuration(mShortAnimationDuration)
@@ -964,6 +1006,13 @@ public class GameActivity extends ActionBarActivity
                         public void onAnimationEnd(Animator animation)
                         {
                             mTextViewSettingFoul.setVisibility(View.GONE);
+                            mSettingsButtonsDisabled = false;
+                        }
+
+                        @Override
+                        public void onAnimationStart(Animator animation)
+                        {
+                            mSettingsButtonsDisabled = true;
                         }
                     });
             mTextViewSettingResetFrame.animate()
@@ -1667,6 +1716,23 @@ public class GameActivity extends ActionBarActivity
         findViewById(R.id.relativeLayout_game_toolbar)
                 .setBackgroundColor(Theme.getActionBarTabThemeColor());
         mDrawerList.setBackgroundColor(Theme.getActionButtonRippleThemeColor());
+
+        GradientDrawable gradientDrawable = (GradientDrawable)mTextViewSettingFoul.getBackground();
+        gradientDrawable.setColor(Theme.getActionBarThemeColor());
+        gradientDrawable.setCornerRadii(new float[]{0, 0, 0, 0, 0, 0, 4, 4});
+        gradientDrawable.setGradientCenter(0.5f, 0.5f);
+        gradientDrawable.setStroke(1, android.R.color.black);
+        gradientDrawable = (GradientDrawable)mTextViewSettingResetFrame.getBackground();
+        gradientDrawable.setColor(Theme.getActionBarThemeColor());
+        gradientDrawable.setCornerRadius(0f);
+        gradientDrawable.setGradientCenter(0.5f, 0.5f);
+        gradientDrawable.setStroke(1, android.R.color.black);
+        gradientDrawable = (GradientDrawable)mTextViewSettingLockGame.getBackground();
+        gradientDrawable.setColor(Theme.getActionBarThemeColor());
+        gradientDrawable.setCornerRadii(new float[]{4, 4, 0, 0, 0, 0, 0, 0});
+        gradientDrawable.setGradientCenter(0.5f, 0.5f);
+        gradientDrawable.setStroke(1, android.R.color.black);
+
         Theme.validateGameActivityTheme();
     }
 }
