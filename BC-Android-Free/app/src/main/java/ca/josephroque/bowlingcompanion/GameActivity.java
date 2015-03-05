@@ -1717,21 +1717,18 @@ public class GameActivity extends ActionBarActivity
                 .setBackgroundColor(Theme.getActionBarTabThemeColor());
         mDrawerList.setBackgroundColor(Theme.getActionButtonRippleThemeColor());
 
-        GradientDrawable gradientDrawable = (GradientDrawable)mTextViewSettingFoul.getBackground();
+        GradientDrawable gradientDrawable = new GradientDrawable();
         gradientDrawable.setColor(Theme.getActionBarThemeColor());
-        gradientDrawable.setCornerRadii(new float[]{0, 0, 0, 0, 0, 0, 4, 4});
-        gradientDrawable.setGradientCenter(0.5f, 0.5f);
-        gradientDrawable.setStroke(1, android.R.color.black);
-        gradientDrawable = (GradientDrawable)mTextViewSettingResetFrame.getBackground();
+        gradientDrawable.setCornerRadii(new float[]{0, 0, 0, 0, 0, 0, 12, 12});
+        Theme.setBackgroundByAPI(mTextViewSettingFoul, gradientDrawable);
+        gradientDrawable = new GradientDrawable();
         gradientDrawable.setColor(Theme.getActionBarThemeColor());
-        gradientDrawable.setCornerRadius(0f);
-        gradientDrawable.setGradientCenter(0.5f, 0.5f);
-        gradientDrawable.setStroke(1, android.R.color.black);
-        gradientDrawable = (GradientDrawable)mTextViewSettingLockGame.getBackground();
+        gradientDrawable.setCornerRadii(new float[]{0, 0, 0, 0, 0, 0, 0, 0});
+        Theme.setBackgroundByAPI(mTextViewSettingResetFrame, gradientDrawable);
+        gradientDrawable = new GradientDrawable();
         gradientDrawable.setColor(Theme.getActionBarThemeColor());
-        gradientDrawable.setCornerRadii(new float[]{4, 4, 0, 0, 0, 0, 0, 0});
-        gradientDrawable.setGradientCenter(0.5f, 0.5f);
-        gradientDrawable.setStroke(1, android.R.color.black);
+        gradientDrawable.setCornerRadii(new float[]{12, 12, 0, 0, 0, 0, 0, 0});
+        Theme.setBackgroundByAPI(mTextViewSettingLockGame, gradientDrawable);
 
         Theme.validateGameActivityTheme();
     }

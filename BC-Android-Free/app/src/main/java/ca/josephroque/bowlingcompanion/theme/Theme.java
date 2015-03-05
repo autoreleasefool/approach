@@ -2,7 +2,10 @@ package ca.josephroque.bowlingcompanion.theme;
 
 import android.app.Activity;
 import android.content.SharedPreferences;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.preference.PreferenceManager;
+import android.view.View;
 
 import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.R;
@@ -201,6 +204,18 @@ public class Theme
         sGameActivityThemeSet = true;
         sStatsActivityThemeSet = true;
         sSettingsActivityThemeSet = true;
+    }
+
+    public static void setBackgroundByAPI(View view, Drawable background)
+    {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN)
+        {
+            view.setBackgroundDrawable(background);
+        }
+        else
+        {
+            view.setBackground(background);
+        }
     }
 
     public static boolean getMainActivityThemeInvalidated(){return sMainActivityThemeSet;}
