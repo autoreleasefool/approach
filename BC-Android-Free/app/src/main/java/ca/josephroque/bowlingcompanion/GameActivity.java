@@ -691,6 +691,36 @@ public class GameActivity extends ActionBarActivity
             if (Arrays.equals(mPinState[mCurrentFrame][0], Constants.FRAME_PINS_DOWN))
             {
                 int firstBallNextFrame = GameScore.getValueOfFrame(mPinState[mCurrentFrame + 1][0]);
+                possibleScore -= firstBallNextFrame;
+                if (firstBallNextFrame == 15)
+                {
+                    if (mCurrentFrame < Constants.LAST_FRAME - 1)
+                    {
+                        possibleScore -= GameScore.getValueOfFrame(mPinState[mCurrentFrame + 2][0]);
+                    }
+                    else
+                    {
+                        possibleScore -= GameScore.getValueOfFrame(mPinState[mCurrentFrame + 1][1]);
+                    }
+                }
+                else
+                {
+                    possibleScore -= GameScore.getValueOfFrameDifference(mPinState[mCurrentFrame][0], mPinState[mCurrentFrame][1]);
+                }
+            }
+            else if (Arrays.equals(mPinState[mCurrentFrame][1], Constants.FRAME_PINS_DOWN))
+            {
+                int firstBallNextFrame = GameScore.getValueOfFrame(mPinState[mCurrentFrame + 1][0]);
+                possibleScore -= firstBallNextFrame;
+            }
+        }
+
+        /*if (mCurrentFrame < Constants.LAST_FRAME)
+        {
+            if (Arrays.equals(mPinState[mCurrentFrame][0], Constants.FRAME_PINS_DOWN))
+            {
+                int firstBallNextFrame = GameScore.getValueOfFrame(mPinState[mCurrentFrame + 1][0]);
+                possibleScore -= firstBallNextFrame;
                 if (firstBallNextFrame == 15 && mCurrentFrame < Constants.LAST_FRAME - 1)
                 {
                     possibleScore -= 15;
@@ -705,7 +735,7 @@ public class GameActivity extends ActionBarActivity
             {
                 possibleScore -= GameScore.getValueOfFrame(mPinState[mCurrentFrame + 1][0]);
             }
-        }
+        }*/
 
         int pinsLeftStanding = 0;
         for (int i = 0; i < 5; i++)
