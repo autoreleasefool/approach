@@ -517,7 +517,7 @@ public class MainActivity extends ActionBarActivity
             @Override
             public void run()
             {
-                mBowlerInstructionsTextView.setVisibility(View.GONE);
+                mBowlerInstructionsTextView.setVisibility(View.INVISIBLE);
             }
         });
     }

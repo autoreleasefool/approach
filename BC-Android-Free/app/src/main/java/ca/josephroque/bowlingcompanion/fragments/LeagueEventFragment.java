@@ -446,7 +446,7 @@ public class LeagueEventFragment extends Fragment
             @Override
             public void run()
             {
-                mNewLeagueEventInstructionsTextView.setVisibility(View.GONE);
+                mNewLeagueEventInstructionsTextView.setVisibility(View.INVISIBLE);
             }
         });
     }

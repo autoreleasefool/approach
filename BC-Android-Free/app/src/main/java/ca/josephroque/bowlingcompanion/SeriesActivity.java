@@ -515,7 +515,7 @@ public class SeriesActivity extends ActionBarActivity
             @Override
             public void run()
             {
-                mSeriesInstructionsTextView.setVisibility(View.GONE);
+                mSeriesInstructionsTextView.setVisibility(View.INVISIBLE);
             }
         });
     }
