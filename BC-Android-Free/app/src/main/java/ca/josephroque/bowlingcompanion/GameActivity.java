@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.ContentValues;
 import android.content.DialogInterface;
@@ -133,6 +132,8 @@ public class GameActivity extends ActionBarActivity
     private TextView mTextViewSettingResetFrame;
     private TextView mTextViewSettingLockGame;
     private TextView mTextViewManualScore;
+    private ImageView mImageViewGameSettings;
+    private RelativeLayout mRelativeLayoutGameToolbar;
 
     private AdView mAdView;
 
@@ -306,6 +307,9 @@ public class GameActivity extends ActionBarActivity
                          * Saves the state of the current game and then loads a new game from
                          * the database to be edited
                          */
+                        if ((position - ((mEventMode) ? 2:3)) == mCurrentGame)
+                            break;
+
                         long[] framesToSave = new long[Constants.NUMBER_OF_FRAMES];
                         boolean[] accessToSave = new boolean[Constants.NUMBER_OF_FRAMES];
                         boolean[][][] pinStateToSave = new boolean[Constants.NUMBER_OF_FRAMES][3][5];
@@ -367,7 +371,8 @@ public class GameActivity extends ActionBarActivity
             mManualScoreSet = savedInstanceState.getBooleanArray(Constants.EXTRA_ARRAY_MANUAL_SCORE);
         }
 
-        findViewById(R.id.imageView_game_settings).setOnClickListener(onClickListeners[LISTENER_OTHER]);
+        mImageViewGameSettings = (ImageView)findViewById(R.id.imageView_game_settings);
+        mImageViewGameSettings.setOnClickListener(onClickListeners[LISTENER_OTHER]);
 
         mTextViewSettingFoul = (TextView)findViewById(R.id.textView_setting_foul);
         mTextViewSettingFoul.setOnClickListener(onClickListeners[LISTENER_OTHER]);
@@ -382,6 +387,7 @@ public class GameActivity extends ActionBarActivity
         mTextViewSettingLockGame.setVisibility(View.GONE);
 
         mTextViewManualScore = (TextView)findViewById(R.id.textView_manual_score);
+        mRelativeLayoutGameToolbar = (RelativeLayout)findViewById(R.id.relativeLayout_game_toolbar);
 
         updateTheme();
     }
@@ -427,10 +433,6 @@ public class GameActivity extends ActionBarActivity
         for (int i = 0; i < mNumberOfGames; i++)
         {
             mNavigationDrawerOptions.add("Game " + (i + 1));
-        }
-
-        if (mEventMode)
-        {
         }
 
         if(Theme.getGameActivityThemeInvalidated())
@@ -690,6 +692,7 @@ public class GameActivity extends ActionBarActivity
         });
         invalidateOptionsMenu();
 
+        setScoresInNavigationDrawer();
         long[] framesToSave = new long[Constants.NUMBER_OF_FRAMES];
         boolean[] accessToSave = new boolean[Constants.NUMBER_OF_FRAMES];
         boolean[][][] pinStateToSave = new boolean[Constants.NUMBER_OF_FRAMES][3][5];
@@ -713,6 +716,12 @@ public class GameActivity extends ActionBarActivity
 
     private void clearAllText(boolean enabled)
     {
+        mRelativeLayoutGameToolbar.setVisibility((enabled)
+                ? View.VISIBLE
+                : View.INVISIBLE);
+        mImageViewGameSettings.setVisibility((enabled)
+                ? View.VISIBLE
+                : View.INVISIBLE);
         hsvFrames.setVisibility((enabled)
                 ? View.VISIBLE
                 : View.INVISIBLE);
@@ -1740,14 +1749,18 @@ public class GameActivity extends ActionBarActivity
                                 (mGameLocked[mCurrentGame])
                                 ? R.string.text_setting_unlock
                                 : R.string.text_setting_lock);
+                        clearAllText(!mManualScoreSet[mCurrentGame]);
+                        Log.w(TAG, "Game loaded");
                         invalidateOptionsMenu();
                     }
                 });
 
                 mCurrentFrame = 0;
                 mCurrentBall = 0;
-                updateScore();
+                if (mManualScoreSet[mCurrentGame])
+                    return;
 
+                updateScore();
                 for (byte i = 0; i < Constants.NUMBER_OF_FRAMES; i++)
                     updateBalls(i);
                 mHasFrameBeenAccessed[0] = true;
@@ -1828,6 +1841,7 @@ public class GameActivity extends ActionBarActivity
             {
                 short gameScore = cursor.getShort(cursor.getColumnIndex(GameEntry.COLUMN_NAME_GAME_FINAL_SCORE));
                 mGameScoresMinusFouls[currentGamePosition++] = gameScore;
+                Log.w(TAG, "Score loaded: " + mGameScoresMinusFouls[currentGamePosition - 1]);
                 cursor.moveToNext();
             }
         }
@@ -1968,8 +1982,7 @@ public class GameActivity extends ActionBarActivity
     {
         getSupportActionBar()
                 .setBackgroundDrawable(new ColorDrawable(Theme.getActionBarThemeColor()));
-        findViewById(R.id.relativeLayout_game_toolbar)
-                .setBackgroundColor(Theme.getActionBarTabThemeColor());
+        mRelativeLayoutGameToolbar.setBackgroundColor(Theme.getActionBarTabThemeColor());
         mDrawerList.setBackgroundColor(Theme.getActionButtonRippleThemeColor());
 
         GradientDrawable gradientDrawable = new GradientDrawable();
