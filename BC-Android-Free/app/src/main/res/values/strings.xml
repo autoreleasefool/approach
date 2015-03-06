@@ -24,9 +24,13 @@
 
     <!-- TEXT -->
     <string name="text_new_bowler_instructions">Use the \'+\' to add a new bowler.</string>
+    <string name="text_delete_bowler_instructions">Hold down a bowler\'s name to delete them.</string>
     <string name="text_new_league_instructions">Use the \'+\' to add a new league.</string>
+    <string name="text_delete_league_instructions">Hold down a league\'s name to delete it.</string>
     <string name="text_new_event_instructions">Use the \'+\' to add a new event.</string>
+    <string name="text_delete_event_instructions">Hold down an event\'s name to delete it.</string>
     <string name="text_new_series_instructions">Use the \'+\' to add a new series.</string>
+    <string name="text_delete_series_instructions">Hold down a series\' name to delete itw.</string>
     <string name="text_strike">Strike</string>
     <string name="text_spare">Spare</string>
     <string name="text_fifteen">Fifteen</string>

@@ -32,4 +32,11 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"/>
 
+    <TextView
+        android:id="@+id/textView_delete_league_event_instructions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textView_new_league_event_instructions"
+        android:layout_centerHorizontal="true" />
+
 </RelativeLayout>

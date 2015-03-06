@@ -129,6 +129,11 @@ public class LeagueEventFragment extends Fragment
                 ? R.string.text_new_event_instructions
                 : R.string.text_new_league_instructions);
 
+        ((TextView)rootView.findViewById(R.id.textView_delete_league_event_instructions))
+                .setText(isEventMode()
+                ? R.string.text_delete_event_instructions
+                : R.string.text_delete_league_instructions);
+
         if (savedInstance != null)
         {
             mBowlerId = savedInstance.getLong(Constants.EXTRA_ID_BOWLER);

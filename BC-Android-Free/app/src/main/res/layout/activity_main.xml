@@ -35,4 +35,10 @@
         android:layout_centerVertical="true"
         android:text="@string/text_new_bowler_instructions"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textView_new_bowler_instructions"
+        android:layout_centerHorizontal="true"
+        android:text="@string/text_delete_bowler_instructions"/>
 </RelativeLayout>
