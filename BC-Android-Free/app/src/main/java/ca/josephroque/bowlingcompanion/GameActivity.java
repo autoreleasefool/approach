@@ -301,18 +301,21 @@ public class GameActivity extends ActionBarActivity
                          * Saves the state of the current game and then loads a new game from
                          * the database to be edited
                          */
-                        long[] targetFrames = new long[10];
-                        System.arraycopy(mFrameIds,
-                                mCurrentGame * Constants.NUMBER_OF_FRAMES,
-                                targetFrames,
-                                0,
-                                Constants.NUMBER_OF_FRAMES);
+                        long[] framesToSave = new long[Constants.NUMBER_OF_FRAMES];
+                        boolean[] accessToSave = new boolean[Constants.NUMBER_OF_FRAMES];
+                        boolean[][][] pinStateToSave = new boolean[Constants.NUMBER_OF_FRAMES][3][5];
+                        boolean[][] foulsToSave = new boolean[Constants.NUMBER_OF_FRAMES][3];
+                        copyDataToSave(
+                                mFrameIds, framesToSave,
+                                mHasFrameBeenAccessed, accessToSave,
+                                mPinState, pinStateToSave,
+                                mFouls, foulsToSave);
                         saveGameToDatabase(GameActivity.this,
                                 mGameIds[mCurrentGame],
-                                targetFrames,
-                                mHasFrameBeenAccessed,
-                                mPinState,
-                                mFouls,
+                                framesToSave,
+                                accessToSave,
+                                pinStateToSave,
+                                foulsToSave,
                                 mGameScoresMinusFouls[mCurrentGame],
                                 mGameLocked[mCurrentGame]);
                         loadGameFromDatabase((byte)(position - (mEventMode ? 2:3)));
@@ -437,18 +440,21 @@ public class GameActivity extends ActionBarActivity
         }
 
         clearFrameColor();
-        long[] targetFrames = new long[Constants.NUMBER_OF_FRAMES];
-        System.arraycopy(mFrameIds,
-                mCurrentGame * Constants.NUMBER_OF_FRAMES,
-                targetFrames,
-                0,
-                Constants.NUMBER_OF_FRAMES);
+        long[] framesToSave = new long[Constants.NUMBER_OF_FRAMES];
+        boolean[] accessToSave = new boolean[Constants.NUMBER_OF_FRAMES];
+        boolean[][][] pinStateToSave = new boolean[Constants.NUMBER_OF_FRAMES][3][5];
+        boolean[][] foulsToSave = new boolean[Constants.NUMBER_OF_FRAMES][3];
+        copyDataToSave(
+                mFrameIds, framesToSave,
+                mHasFrameBeenAccessed, accessToSave,
+                mPinState, pinStateToSave,
+                mFouls, foulsToSave);
         saveGameToDatabase(this,
                 mGameIds[mCurrentGame],
-                targetFrames,
-                mHasFrameBeenAccessed,
-                mPinState,
-                mFouls,
+                framesToSave,
+                accessToSave,
+                pinStateToSave,
+                foulsToSave,
                 mGameScoresMinusFouls[mCurrentGame],
                 mGameLocked[mCurrentGame]);
 
@@ -560,6 +566,24 @@ public class GameActivity extends ActionBarActivity
         return super.onOptionsItemSelected(item);
     }
 
+    private void copyDataToSave(
+            long[] origFrames, long[] copyFrames,
+            boolean[] origAccess, boolean[] copyAccess,
+            boolean[][][] origState, boolean[][][] copyState,
+            boolean[][] origFouls, boolean[][] copyFouls)
+    {
+        System.arraycopy(origFrames, mCurrentGame * Constants.NUMBER_OF_FRAMES, copyFrames, 0, Constants.NUMBER_OF_FRAMES);
+        System.arraycopy(origAccess, 0, copyAccess, 0, Constants.NUMBER_OF_FRAMES);
+        for (int i = 0; i < Constants.NUMBER_OF_FRAMES; i++)
+        {
+            for (int j = 0; j < origState[i].length; j++)
+            {
+                System.arraycopy(origState[i][j], 0, copyState[i][j], 0, origState[i][j].length);
+            }
+            System.arraycopy(origFouls[i], 0, copyFouls[i], 0, origFouls[i].length);
+        }
+    }
+
     /**
      * Creates a new settings activity and displays it to the user
      */
@@ -660,15 +684,30 @@ public class GameActivity extends ActionBarActivity
             for (int j = 0; j < 3; j++)
             {
                 mFouls[i][j] = false;
-                mPinState[i][j] = new boolean[5];//Arrays.copyOf(Constants.FRAME_PINS_UP, Constants.FRAME_PINS_UP.length);
+                mPinState[i][j] = new boolean[5];
             }
         }
         mHasFrameBeenAccessed[0] = true;
         mGameScores[mCurrentGame] = 0;
         mGameScoresMinusFouls[mCurrentBall] = 0;
-        long[] frameIds = new long[Constants.NUMBER_OF_FRAMES];
-        System.arraycopy(mFrameIds, mCurrentGame * Constants.NUMBER_OF_FRAMES, frameIds, 0, Constants.NUMBER_OF_FRAMES);
-        saveGameToDatabase(this, mGameIds[mCurrentGame], frameIds, mHasFrameBeenAccessed, mPinState, mFouls, mGameScoresMinusFouls[mCurrentGame], false);
+        long[] framesToSave = new long[Constants.NUMBER_OF_FRAMES];
+        boolean[] accessToSave = new boolean[Constants.NUMBER_OF_FRAMES];
+        boolean[][][] pinStateToSave = new boolean[Constants.NUMBER_OF_FRAMES][3][5];
+        boolean[][] foulsToSave = new boolean[Constants.NUMBER_OF_FRAMES][3];
+        copyDataToSave(
+                mFrameIds, framesToSave,
+                mHasFrameBeenAccessed, accessToSave,
+                mPinState, pinStateToSave,
+                mFouls, foulsToSave);
+        saveGameToDatabase(
+                this,
+                mGameIds[mCurrentGame],
+                framesToSave,
+                accessToSave,
+                pinStateToSave,
+                foulsToSave,
+                mGameScoresMinusFouls[mCurrentGame],
+                false);
 
         updateScore();
         for (byte i = 0; i < Constants.NUMBER_OF_FRAMES; i++)
@@ -1266,9 +1305,6 @@ public class GameActivity extends ActionBarActivity
                         {
                             mTextViewFrames[i].setText(String.valueOf(frameScores[i]));
                         }
-                        mNavigationDrawerOptions.set(mCurrentGame + ((mEventMode) ? 2:3),
-                                "Game " + (mCurrentGame + 1) + "(" + mGameScores[mCurrentGame] + ")");
-                        mDrawerAdapter.notifyDataSetChanged();
                     }
                 });
                 updateFouls();
@@ -1612,6 +1648,7 @@ public class GameActivity extends ActionBarActivity
                             + " (" + mGameScoresMinusFouls[currentGamePosition - startingPosition] + ")");
                     currentGamePosition++;
                 }
+                mDrawerAdapter.notifyDataSetChanged();
             }
         });
     }
@@ -1744,13 +1781,6 @@ public class GameActivity extends ActionBarActivity
     {
         if (mGameLocked[mCurrentGame])
             return;
-
-        String log = "";
-        for (int i = 0; i < 5; i++)
-        {
-            log += mPinState[mCurrentFrame][mCurrentBall][i] + " ";
-        }
-        Log.w(TAG, log);
         if (!Arrays.equals(mPinState[mCurrentFrame][mCurrentBall], Constants.FRAME_PINS_DOWN))
         {
             for (int j = mCurrentBall; j < 3; j++)
@@ -1770,7 +1800,6 @@ public class GameActivity extends ActionBarActivity
                 }
             }
 
-            Log.w(TAG, "Cleared");
             updateBalls(mCurrentFrame);
             updateScore();
             updateFrameColor();
