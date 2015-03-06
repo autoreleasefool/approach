@@ -96,6 +96,8 @@ public class Contract
         public static final String COLUMN_NAME_GAME_FINAL_SCORE = "game_final_score";
         /** Name of the column to indicate if the game is editable or not */
         public static final String COLUMN_NAME_GAME_LOCKED = "game_locked";
+        /** Name of the column to indicate if the score was manually set or not */
+        public static final String COLUMN_NAME_MANUAL_SCORE = "game_manual_score";
         /** Name of the column for games' foreign key to league IDs */
         public static final String COLUMN_NAME_LEAGUE_ID = "game_league_id_fk";
         /** Name of the column for games' foreign key to series IDs */

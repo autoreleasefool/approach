@@ -19,6 +19,10 @@
           android:title="@string/action_reset_game"
           android:orderInCategory="40"
           app:showAsAction="never" />
+    <item android:id="@+id/action_set_score"
+          android:title="@string/action_set_score"
+          android:orderInCategory="50"
+          app:showAsAction="never" />
     <item android:id="@+id/action_settings"
           android:title="@string/action_settings"
           android:orderInCategory="100"

@@ -21,6 +21,8 @@
     <string name="action_reset_game">Reset Game</string>
     <string name="action_series_stats">Series Stats</string>
     <string name="action_event_stats">Event Stats</string>
+    <string name="action_set_score">Set Manual Score</string>
+    <string name="action_clear_score">Clear Manual Score</string>
 
     <!-- TEXT -->
     <string name="text_new_bowler_instructions">Use the \'+\' to add a new bowler.</string>

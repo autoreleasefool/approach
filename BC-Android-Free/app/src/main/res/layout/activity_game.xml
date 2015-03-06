@@ -221,6 +221,15 @@
                 android:paddingRight="4dp"
                 android:gravity="end"
                 android:background="@drawable/background_tabs"/>
+
+            <TextView
+                android:id="@+id/textView_manual_score"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/hsv_frames"
+                android:layout_centerHorizontal="true"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@android:color/white"/>
         </RelativeLayout>
     </LinearLayout>
 

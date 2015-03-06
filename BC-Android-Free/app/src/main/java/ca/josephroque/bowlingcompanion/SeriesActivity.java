@@ -315,6 +315,7 @@ public class SeriesActivity extends ActionBarActivity
             long[] gameId = new long[numberOfGames];
             long[] frameId = new long[numberOfGames * 10];
             boolean[] gameLocked = new boolean[numberOfGames];
+            boolean[] manualScore = new boolean[numberOfGames];
             SQLiteDatabase database = DatabaseHelper.getInstance(srcActivity).getReadableDatabase();
 
             //Loads relevant game and frame IDs from database and stores them in Intent
@@ -322,6 +323,7 @@ public class SeriesActivity extends ActionBarActivity
             String rawSeriesQuery = "SELECT "
                     + GameEntry.TABLE_NAME + "." + GameEntry._ID + " AS gid, "
                     + GameEntry.COLUMN_NAME_GAME_LOCKED + ", "
+                    + GameEntry.COLUMN_NAME_MANUAL_SCORE + ", "
                     + FrameEntry.TABLE_NAME + "." + FrameEntry._ID + " AS fid"
                     + " FROM " + GameEntry.TABLE_NAME
                     + " LEFT JOIN " + FrameEntry.TABLE_NAME
@@ -351,12 +353,14 @@ public class SeriesActivity extends ActionBarActivity
                         gameId[++currentGame] = currentGameId;
                         gameLocked[currentGame] =
                                 (cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_NAME_GAME_LOCKED)) == 1);
+                        manualScore[currentGame] =
+                                (cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_NAME_MANUAL_SCORE)) == 1);
                     }
                     cursor.moveToNext();
                 }
             }
 
-            return new Object[]{srcActivity, gameId, frameId, seriesIdSelected, params[3], params[4], params[5], params[6], params[7], gameLocked};
+            return new Object[]{srcActivity, gameId, frameId, seriesIdSelected, params[3], params[4], params[5], params[6], params[7], gameLocked, manualScore};
         }
 
         @Override
@@ -373,6 +377,7 @@ public class SeriesActivity extends ActionBarActivity
             String leagueName = params[7].toString();
             String seriesDate = params[8].toString();
             boolean[] gameLocked = (boolean[])params[9];
+            boolean[] manualScore = (boolean[])params[10];
 
             Intent gameIntent = new Intent(srcActivity, GameActivity.class);
             gameIntent.putExtra(Constants.EXTRA_ARRAY_GAME_IDS, gameIds);
@@ -384,6 +389,7 @@ public class SeriesActivity extends ActionBarActivity
             gameIntent.putExtra(Constants.EXTRA_NAME_LEAGUE, leagueName);
             gameIntent.putExtra(Constants.EXTRA_NAME_SERIES, seriesDate);
             gameIntent.putExtra(Constants.EXTRA_ARRAY_GAME_LOCKED, gameLocked);
+            gameIntent.putExtra(Constants.EXTRA_ARRAY_MANUAL_SCORE, manualScore);
             srcActivity.startActivity(gameIntent);
         }
     }
