@@ -47,9 +47,19 @@ public class ManualScoreDialog extends DialogFragment
                     @Override
                     public void onClick(DialogInterface dialog, int which)
                     {
-                        short gameScore =
-                                Short.parseShort(editTextScore.getText().toString());
-                        mDialogListener.onSetScore(gameScore);
+                        if (editTextScore.length() > 0)
+                        {
+                            short gameScore;
+                            try
+                            {
+                                gameScore = Short.parseShort(editTextScore.getText().toString());
+                            }
+                            catch (NumberFormatException ex)
+                            {
+                                gameScore = -1;
+                            }
+                            mDialogListener.onSetScore(gameScore);
+                        }
                         dialog.dismiss();
                     }
                 })

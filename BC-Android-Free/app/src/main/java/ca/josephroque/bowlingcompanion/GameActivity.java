@@ -675,6 +675,25 @@ public class GameActivity extends ActionBarActivity
     @Override
     public void onSetScore(short newGameScore)
     {
+        if (newGameScore < 0 || newGameScore > 450)
+        {
+            AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
+            mBuilder.setTitle("Invalid score!")
+                    .setMessage("Value must be between 0 and 450 (inclusive).")
+                    .setCancelable(false)
+                    .setPositiveButton(Constants.DIALOG_OKAY, new DialogInterface.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which)
+                        {
+                            dialog.dismiss();
+                        }
+                    })
+                    .create()
+                    .show();
+            return;
+        }
+
         resetGame();
         mGameLocked[mCurrentGame] = true;
         mManualScoreSet[mCurrentGame] = true;
