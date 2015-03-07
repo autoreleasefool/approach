@@ -8,7 +8,6 @@ package ca.josephroque.bowlingcompanion;
  */
 public class Constants
 {
-
     //SETTINGS VALUES
     public static final String KEY_PREF_ENABLE_QUICK = "pref_enable_quick_series";
     public static final String KEY_PREF_QUICK_BOWLER = "pref_quick_bowler";

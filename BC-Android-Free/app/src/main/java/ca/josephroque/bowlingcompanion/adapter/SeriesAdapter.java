@@ -1,11 +1,14 @@
 package ca.josephroque.bowlingcompanion.adapter;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -52,6 +55,7 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
         private TextView mTextViewSeriesDate;
         /** Each TextView displays a different score in the series*/
         private List<TextView> mListTextViewSeriesGames;
+        private ValueAnimator mValueAnimator = null;
 
         /**
          * Calls super constructor with itemLayoutView as parameter and retrieves references
@@ -123,7 +127,7 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
     }
 
     @Override
-    public void onBindViewHolder(SeriesViewHolder holder, final int position)
+    public void onBindViewHolder(final SeriesViewHolder holder, final int position)
     {
         /*
          * Sets TextView text to display series dates and games in list to user
@@ -165,6 +169,38 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
             {
                 showDeleteSeriesDialog(position);
                 return true;
+            }
+        });
+        holder.itemView.setOnTouchListener(new View.OnTouchListener()
+        {
+            @Override
+            public boolean onTouch(final View v, MotionEvent event)
+            {
+                if (event.getActionMasked() == MotionEvent.ACTION_DOWN)
+                {
+                    holder.mValueAnimator =
+                            ValueAnimator.ofObject(new ArgbEvaluator(),
+                                    Theme.getListItemBackground(),
+                                    Theme.getLongPressThemeColor());
+                    holder.mValueAnimator.setDuration(Theme.getMediumAnimationDuration());
+                    holder.mValueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
+                    {
+                        @Override
+                        public void onAnimationUpdate(ValueAnimator animation)
+                        {
+                            v.setBackgroundColor((Integer)animation.getAnimatedValue());
+                        }
+                    });
+                    holder.mValueAnimator.start();
+                }
+                else if (event.getActionMasked() == MotionEvent.ACTION_UP && holder.mValueAnimator != null)
+                {
+                    holder.mValueAnimator.cancel();
+                    holder.mValueAnimator = null;
+                    v.setBackgroundColor(Theme.getListItemBackground());
+                }
+
+                return false;
             }
         });
     }

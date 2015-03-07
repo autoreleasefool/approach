@@ -56,7 +56,7 @@ public class MainActivity extends ActionBarActivity
     /** View to display bowler names and averages to user */
     private RecyclerView mBowlerRecycler;
     /** Adapter to manage data displayed in mBowlerRecycler */
-    private RecyclerView.Adapter mBowlerAdapter;
+    private BowlerAdapter mBowlerAdapter;
     /** TextView to display instructions to the user */
     private TextView mBowlerInstructionsTextView;
 

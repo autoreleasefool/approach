@@ -24,6 +24,10 @@ public class Theme
     private static int sThemeColorActionButton = -1;
     private static int sThemeColorActionButtonRipple = -1;
     private static int sThemeColorGameScoreHighlight = -1;
+    private static int sThemeColorLongPress = -1;
+    private static int sShortAnimationDuration = -1;
+    private static int sMediumAnimationDuration = -1;
+    private static int sThemeListItemBackground = -1;
 
     private static String sThemeName = "Green";
 
@@ -52,6 +56,13 @@ public class Theme
         }
         sThemeName = themeName;
 
+        if (sShortAnimationDuration == -1)
+            sShortAnimationDuration = srcActivity.getResources().getInteger(android.R.integer.config_shortAnimTime);
+        if (sMediumAnimationDuration == -1)
+            sMediumAnimationDuration = srcActivity.getResources().getInteger(android.R.integer.config_mediumAnimTime);
+        if (sThemeListItemBackground == -1)
+            sThemeListItemBackground = srcActivity.getResources().getColor(R.color.secondary_background);
+
         if(themeName.equals("Green"))
         {
             sThemeColorActionBar = srcActivity.getResources().getColor(
@@ -74,6 +85,8 @@ public class Theme
                     (lightThemeEnabled)
                             ? R.color.theme_light_green_primary
                             : R.color.theme_dark_green_primary);
+            sThemeColorLongPress =
+                    srcActivity.getResources().getColor(R.color.theme_green_recyclerview_longpress);
         }
         else if (themeName.equals("Orange"))
         {
@@ -97,6 +110,8 @@ public class Theme
                     (lightThemeEnabled)
                             ? R.color.theme_light_orange_primary
                             : R.color.theme_dark_orange_primary);
+            sThemeColorLongPress =
+                    srcActivity.getResources().getColor(R.color.theme_orange_recyclerview_longpress);
         }
         else if (themeName.equals("Blue"))
         {
@@ -120,6 +135,8 @@ public class Theme
                     (lightThemeEnabled)
                             ? R.color.theme_light_blue_primary
                             : R.color.theme_dark_blue_primary);
+            sThemeColorLongPress =
+                    srcActivity.getResources().getColor(R.color.theme_blue_recyclerview_longpress);
         }
         else if (themeName.equals("Purple"))
         {
@@ -143,6 +160,8 @@ public class Theme
                     (lightThemeEnabled)
                             ? R.color.theme_light_purple_primary
                             : R.color.theme_dark_purple_primary);
+            sThemeColorLongPress =
+                    srcActivity.getResources().getColor(R.color.theme_purple_recyclerview_longpress);
         }
         else if (themeName.equals("Red"))
         {
@@ -166,6 +185,8 @@ public class Theme
                     (lightThemeEnabled)
                             ? R.color.theme_light_red_primary
                             : R.color.theme_dark_red_primary);
+            sThemeColorLongPress =
+                    srcActivity.getResources().getColor(R.color.theme_red_recyclerview_longpress);
         }
         else if (themeName.equals("Grayscale"))
         {
@@ -189,6 +210,8 @@ public class Theme
                     (lightThemeEnabled)
                             ? R.color.theme_light_gray_primary
                             : R.color.theme_dark_gray_primary);
+            sThemeColorLongPress =
+                    srcActivity.getResources().getColor(R.color.theme_gray_recyclerview_longpress);
         }
 
         invalidateActivityThemes();
@@ -241,4 +264,8 @@ public class Theme
     public static int getActionButtonThemeColor() {return sThemeColorActionButton;}
     public static int getActionButtonRippleThemeColor() {return sThemeColorActionButtonRipple;}
     public static int getGameScoreHighlightThemeColor() {return sThemeColorGameScoreHighlight;}
+    public static int getListItemBackground() {return sThemeListItemBackground;}
+    public static int getLongPressThemeColor() {return sThemeColorLongPress;}
+    public static int getShortAnimationDuration() {return sShortAnimationDuration;}
+    public static int getMediumAnimationDuration() {return sMediumAnimationDuration;}
 }

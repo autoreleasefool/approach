@@ -1,5 +1,7 @@
 package ca.josephroque.bowlingcompanion.adapter;
 
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -9,6 +11,7 @@ import android.os.AsyncTask;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -24,6 +27,7 @@ import ca.josephroque.bowlingcompanion.MainActivity;
 import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.database.Contract.*;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
+import ca.josephroque.bowlingcompanion.theme.Theme;
 
 /**
  * Created by josephroque on 15-02-16.
@@ -57,6 +61,7 @@ public class BowlerAdapter extends RecyclerView.Adapter<BowlerAdapter.BowlerView
         private TextView mTextViewBowlerName;
         /** Displays average of bowler */
         private TextView mTextViewBowlerAverage;
+        private ValueAnimator mValueAnimator = null;
 
         /**
          * Calls super constructor with itemLayoutView as parameter and retrieves
@@ -99,7 +104,7 @@ public class BowlerAdapter extends RecyclerView.Adapter<BowlerAdapter.BowlerView
     }
 
     @Override
-    public void onBindViewHolder(BowlerViewHolder holder, final int position)
+    public void onBindViewHolder(final BowlerViewHolder holder, final int position)
     {
         /*
          * Sets image and text to represent individual bowler in list
@@ -130,6 +135,38 @@ public class BowlerAdapter extends RecyclerView.Adapter<BowlerAdapter.BowlerView
             {
                 showDeleteBowlerDialog(position);
                 return true;
+            }
+        });
+        holder.itemView.setOnTouchListener(new View.OnTouchListener()
+        {
+            @Override
+            public boolean onTouch(final View v, MotionEvent event)
+            {
+                if (event.getActionMasked() == MotionEvent.ACTION_DOWN)
+                {
+                    holder.mValueAnimator =
+                            ValueAnimator.ofObject(new ArgbEvaluator(),
+                                    Theme.getListItemBackground(),
+                                    Theme.getLongPressThemeColor());
+                    holder.mValueAnimator.setDuration(Theme.getMediumAnimationDuration());
+                    holder.mValueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
+                    {
+                        @Override
+                        public void onAnimationUpdate(ValueAnimator animation)
+                        {
+                            v.setBackgroundColor((Integer)animation.getAnimatedValue());
+                        }
+                    });
+                    holder.mValueAnimator.start();
+                }
+                else if (event.getActionMasked() == MotionEvent.ACTION_UP && holder.mValueAnimator != null)
+                {
+                    holder.mValueAnimator.cancel();
+                    holder.mValueAnimator = null;
+                    v.setBackgroundColor(Theme.getListItemBackground());
+                }
+
+                return false;
             }
         });
     }
