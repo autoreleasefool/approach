@@ -833,6 +833,7 @@ public class GameActivity extends ActionBarActivity
                             updateBalls(i);
                         invalidateOptionsMenu();
                         updateFrameColor();
+                        dialog.dismiss();
                     }
                 })
                 .setNegativeButton(Constants.DIALOG_CANCEL, new DialogInterface.OnClickListener()

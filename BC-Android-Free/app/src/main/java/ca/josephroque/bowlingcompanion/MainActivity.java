@@ -281,6 +281,7 @@ public class MainActivity extends ActionBarActivity
                             {
                                 SeriesActivity.addNewEventSeries(MainActivity.this, mRecentBowlerId, mRecentLeagueId, mRecentNumberOfGames, mQuickBowlerName, mQuickLeagueName);
                             }
+                            dialog.dismiss();
                         }
                     })
                     .setNegativeButton(Constants.DIALOG_CANCEL, new DialogInterface.OnClickListener()

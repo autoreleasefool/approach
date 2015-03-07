@@ -51,16 +51,16 @@ public class NewLeagueEventDialog extends DialogFragment
         final boolean isAddingEvent = getArguments().getBoolean(Constants.EXTRA_EVENT_MODE);
 
         //Different hint is displayed whether a new event or league is being added
-        EditText editText = (EditText)dialogView.findViewById(R.id.editText_new_league_event_name);
-        editText.setHint(
+        final EditText editTextName = (EditText)dialogView.findViewById(R.id.editText_new_league_event_name);
+        editTextName.setHint(
                 ((isAddingEvent)
                         ? "Event"
                         : "League")
                 + " (max " + Constants.NAME_MAX_LENGTH + " characters)");
-        editText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(Constants.NAME_MAX_LENGTH)});
+        editTextName.setFilters(new InputFilter[]{new InputFilter.LengthFilter(Constants.NAME_MAX_LENGTH)});
 
-        editText = (EditText)dialogView.findViewById(R.id.editText_new_league_event_games);
-        editText.setHint("# of games (1-"
+        final EditText editTextNumberOfGames = (EditText)dialogView.findViewById(R.id.editText_new_league_event_games);
+        editTextNumberOfGames.setHint("# of games (1-"
                 + ((isAddingEvent)
                         ? Constants.MAX_NUMBER_EVENT_GAMES
                         : Constants.MAX_NUMBER_LEAGUE_GAMES)
@@ -72,23 +72,23 @@ public class NewLeagueEventDialog extends DialogFragment
                     @Override
                     public void onClick(DialogInterface dialog, int which)
                     {
-                        String leagueEventName = ((EditText)
-                                (dialogView.findViewById(R.id.editText_new_league_event_name)))
-                                .getText().toString().trim();
-                        byte numberOfGames;
-
-                        try
+                        String leagueEventName = editTextName.getText().toString().trim();
+                        String numberOfGamesText = editTextNumberOfGames.getText().toString().trim();
+                        if (leagueEventName.length() > 0 && numberOfGamesText.length() > 0)
                         {
-                            numberOfGames = Byte.parseByte(
-                                    ((EditText)dialogView.findViewById(R.id.editText_new_league_event_games))
-                                    .getText().toString());
-                        }
-                        catch (NumberFormatException ex)
-                        {
-                            numberOfGames = -1;
-                        }
+                            byte numberOfGames;
+                            try
+                            {
+                                numberOfGames = Byte.parseByte(numberOfGamesText);
+                            }
+                            catch (NumberFormatException ex)
+                            {
+                                numberOfGames = -1;
+                            }
 
-                        mDialogListener.onAddNewLeague(leagueEventName, numberOfGames);
+                            mDialogListener.onAddNewLeague(leagueEventName, numberOfGames);
+                        }
+                        dialog.dismiss();
                     }
                 })
                 .setNegativeButton(Constants.DIALOG_CANCEL, new DialogInterface.OnClickListener()

@@ -59,7 +59,9 @@ public class NewBowlerDialog extends DialogFragment
                     public void onClick(DialogInterface dialog, int which)
                     {
                         String bowlerName = ((EditText)(dialogView.findViewById(R.id.editText_bowler_name))).getText().toString().trim();
-                        mDialogListener.onAddNewBowler(bowlerName);
+                        if (bowlerName.length() > 0)
+                            mDialogListener.onAddNewBowler(bowlerName);
+                        dialog.dismiss();
                     }
                 })
                 .setNegativeButton(Constants.DIALOG_CANCEL, new DialogInterface.OnClickListener()
