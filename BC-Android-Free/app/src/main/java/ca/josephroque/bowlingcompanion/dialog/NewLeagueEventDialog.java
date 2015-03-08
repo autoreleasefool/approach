@@ -3,9 +3,10 @@ package ca.josephroque.bowlingcompanion.dialog;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
+import android.support.annotation.NonNull;
 import android.text.InputFilter;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -66,6 +67,12 @@ public class NewLeagueEventDialog extends DialogFragment
                         : Constants.MAX_NUMBER_LEAGUE_GAMES)
                 + ")");
 
+        if (savedInstanceState != null)
+        {
+            editTextName.setText(savedInstanceState.getString(Constants.EXTRA_NAME_LEAGUE));
+            editTextNumberOfGames.setText(savedInstanceState.getString(Constants.EXTRA_NUMBER_OF_GAMES));
+        }
+
         newLeagueEventBuilder.setView(dialogView)
                 .setPositiveButton(Constants.DIALOG_ADD, new DialogInterface.OnClickListener()
                 {
@@ -121,5 +128,15 @@ public class NewLeagueEventDialog extends DialogFragment
         {
             throw new RuntimeException("Parent activity must implement NewLeagueEventDialogListener");
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        outState.putString(Constants.EXTRA_NAME_LEAGUE,
+                ((EditText)getDialog().findViewById(R.id.editText_new_league_event_name)).getText().toString());
+        outState.putString(Constants.EXTRA_NUMBER_OF_GAMES,
+                ((EditText)getDialog().findViewById(R.id.editText_new_league_event_games)).getText().toString());
     }
 }

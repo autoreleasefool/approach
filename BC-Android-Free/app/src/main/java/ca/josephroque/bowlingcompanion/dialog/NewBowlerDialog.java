@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.InputFilter;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,6 +53,11 @@ public class NewBowlerDialog extends DialogFragment
         editTextName.setHint("Name (max " + Constants.NAME_MAX_LENGTH + " characters)");
         editTextName.setFilters(new InputFilter[]{new InputFilter.LengthFilter(Constants.NAME_MAX_LENGTH)});
 
+        if (savedInstanceState != null)
+        {
+            editTextName.setText(savedInstanceState.getString(Constants.EXTRA_NAME_BOWLER));
+        }
+
         dialogBuilder.setView(dialogView)
                 .setPositiveButton(Constants.DIALOG_ADD, new DialogInterface.OnClickListener()
                 {
@@ -95,5 +101,13 @@ public class NewBowlerDialog extends DialogFragment
         {
             throw new RuntimeException("Parent activity must implement NewBowlerDialogListener");
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        outState.putString(Constants.EXTRA_NAME_BOWLER,
+                ((EditText)getDialog().findViewById(R.id.editText_bowler_name)).getText().toString());
     }
 }

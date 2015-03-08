@@ -41,6 +41,11 @@ public class ManualScoreDialog extends DialogFragment
         editTextScore.setHint("Score (max 450)");
         editTextScore.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
 
+        if (savedInstanceState != null)
+        {
+            editTextScore.setText(savedInstanceState.getString("GameScore"));
+        }
+
         dialogBuilder.setView(dialogView)
                 .setPositiveButton(Constants.DIALOG_OKAY, new DialogInterface.OnClickListener()
                 {
@@ -88,5 +93,13 @@ public class ManualScoreDialog extends DialogFragment
         {
             throw new RuntimeException("Parent activity must implement ManualScoreDialogListener");
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+        outState.putString("GameScore",
+                ((EditText)getDialog().findViewById(R.id.editText_score)).getText().toString());
     }
 }
