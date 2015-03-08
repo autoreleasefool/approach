@@ -2,7 +2,6 @@ package ca.josephroque.bowlingcompanion.adapter;
 
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
-import android.app.Activity;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.widget.RecyclerView;
@@ -37,7 +36,7 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
     private static final String TAG = "SeriesAdapter";
 
     /** Instance of activity which created instance of this object */
-    private Activity mActivity;
+    private SeriesActivity mActivity;
     /** List of series Ids from "series" table in database to uniquely identify series */
     private List<Long> mListSeriesIds;
     /** List of series dates which will be displayed by RecyclerView */
@@ -107,7 +106,7 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
      * @param listSeriesGames list of games of series which corresponds to order of ids in listSeriesId
      */
     public SeriesAdapter(
-            Activity context,
+            SeriesActivity context,
             List<Long> listSeriesId,
             List<String> listSeriesDate,
             List<List<Short>> listSeriesGames)
@@ -157,8 +156,16 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
             @Override
             public void onClick(View v)
             {
-                SeriesActivity seriesActivity = (SeriesActivity) mActivity;
-                seriesActivity.openSeries(position);
+                if (mActivity.getChangeDateOptionsVisible())
+                {
+                    mActivity.setChangeDateOptionsVisible(false);
+                    mActivity.changeDateOfSeries(position);
+                }
+                else
+                {
+                    mActivity.setChangeDateOptionsVisible(false);
+                    mActivity.openSeries(position);
+                }
             }
         });
 
@@ -167,6 +174,9 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
             @Override
             public boolean onLongClick(View v)
             {
+                if (mActivity.getChangeDateOptionsVisible())
+                    return true;
+                mActivity.setChangeDateOptionsVisible(false);
                 showDeleteSeriesDialog(position);
                 return true;
             }

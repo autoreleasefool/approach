@@ -7,6 +7,22 @@
     tools:context="ca.josephroque.bowlingcompanion.SeriesActivity"
     android:background="@color/primary_background">
 
+    <TextView
+        android:id="@+id/textView_new_series_instructions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:text="@string/text_new_series_instructions"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textView_new_series_instructions"
+        android:layout_centerHorizontal="true"
+        android:text="@string/text_delete_series_instructions"/>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView_series"
         android:layout_width="match_parent"
@@ -26,19 +42,39 @@
         fab:fab_colorPressed="@color/theme_light_green_primary"
         fab:fab_colorRipple="@color/theme_light_green_tertiary" />
 
-    <TextView
-        android:id="@+id/textView_new_series_instructions"
-        android:layout_width="wrap_content"
+    <RelativeLayout
+        android:id="@+id/relativeLayout_series_cancel_edit"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="@string/text_new_series_instructions"/>
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:background="@color/theme_light_green_secondary">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/textView_new_series_instructions"
-        android:layout_centerHorizontal="true"
-        android:text="@string/text_delete_series_instructions"/>
+        <TextView
+            android:text="@string/text_changing_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentBottom="true"
+            android:gravity="start"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            android:textColor="@android:color/white"/>
+
+        <TextView
+            android:text="@string/text_cancel_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:gravity="end"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            android:textColor="@android:color/white"/>
+    </RelativeLayout>
 </RelativeLayout>

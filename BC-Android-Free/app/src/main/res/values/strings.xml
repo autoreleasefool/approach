@@ -23,6 +23,7 @@
     <string name="action_event_stats">Event Stats</string>
     <string name="action_set_score">Set Manual Score</string>
     <string name="action_clear_score">Clear Manual Score</string>
+    <string name="action_edit_date">Change Date</string>
 
     <!-- TEXT -->
     <string name="text_new_bowler_instructions">Use the \'+\' to add a new bowler.</string>
@@ -43,6 +44,8 @@
     <string name="text_setting_reset_frame">Reset frame</string>
     <string name="text_setting_lock">Lock game</string>
     <string name="text_setting_unlock">Unlock game</string>
+    <string name="text_cancel_edit">Cancel...</string>
+    <string name="text_changing_date">Select series to edit</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
 

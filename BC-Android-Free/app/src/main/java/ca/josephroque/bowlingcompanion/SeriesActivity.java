@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
@@ -15,12 +16,14 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.melnykov.fab.FloatingActionButton;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -28,6 +31,7 @@ import ca.josephroque.bowlingcompanion.adapter.SeriesAdapter;
 import ca.josephroque.bowlingcompanion.data.ConvertValue;
 import ca.josephroque.bowlingcompanion.database.Contract.*;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
+import ca.josephroque.bowlingcompanion.dialog.ChangeDateDialog;
 import ca.josephroque.bowlingcompanion.theme.ChangeableTheme;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 
@@ -51,6 +55,7 @@ public class SeriesActivity extends ActionBarActivity
     private SeriesAdapter mSeriesAdapter;
     /** TextView to display instructions to the user */
     private TextView mSeriesInstructionsTextView;
+    private RelativeLayout mRelativeLayoutEditToolbar;
 
     /** Unique id of bowler selected by the user */
     private long mBowlerId = -1;
@@ -61,6 +66,7 @@ public class SeriesActivity extends ActionBarActivity
 
     private String mBowlerName;
     private String mLeagueName;
+    private boolean mChangeDateOptionsVisible;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -93,6 +99,16 @@ public class SeriesActivity extends ActionBarActivity
         });
 
         mSeriesInstructionsTextView = (TextView)findViewById(R.id.textView_new_series_instructions);
+        mRelativeLayoutEditToolbar = (RelativeLayout)findViewById(R.id.relativeLayout_series_cancel_edit);
+        mRelativeLayoutEditToolbar.setVisibility(View.GONE);
+        mRelativeLayoutEditToolbar.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                setChangeDateOptionsVisible(false);
+            }
+        });
 
         if (savedInstanceState != null)
         {
@@ -160,18 +176,97 @@ public class SeriesActivity extends ActionBarActivity
         // as you specify a parent activity in AndroidManifest.xml.
         switch(item.getItemId())
         {
+            case R.id.action_edit_date:
+                setChangeDateOptionsVisible(true);
+                return true;
             case android.R.id.home:
                 this.finish();
                 return true;
             case R.id.action_stats:
+                setChangeDateOptionsVisible(false);
                 showLeagueStats();
                 return true;
             case R.id.action_settings:
+                setChangeDateOptionsVisible(false);
                 showSettingsMenu();
                 return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void seriesDateChanged(final long seriesId, int year, int month, int day)
+    {
+        final int index = mListSeriesId.indexOf(seriesId);
+        Calendar c = Calendar.getInstance();
+        c.set(year, month, day);
+        final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        final String formattedDate = dateFormat.format(c.getTime());
+        mListSeriesDate.set(index, ConvertValue.formattedDateToPrettyCompact(formattedDate.substring(0,10)));
+
+        runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                mSeriesAdapter.notifyItemChanged(index);
+            }
+        });
+
+        new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                SQLiteDatabase database = DatabaseHelper.getInstance(SeriesActivity.this).getWritableDatabase();
+                ContentValues values = new ContentValues();
+                values.put(SeriesEntry.COLUMN_NAME_DATE_CREATED, formattedDate);
+
+                database.beginTransaction();
+                try
+                {
+                    database.update(SeriesEntry.TABLE_NAME,
+                            values,
+                            SeriesEntry._ID + "=?",
+                            new String[]{String.valueOf(seriesId)});
+                    database.setTransactionSuccessful();
+                }
+                catch (Exception ex)
+                {
+
+                }
+                finally
+                {
+                    database.endTransaction();
+                }
+            }
+        }).start();
+    }
+
+    public void changeDateOfSeries(int positionInList)
+    {
+        DialogFragment dateFragment = new ChangeDateDialog();
+        Bundle args = new Bundle();
+        args.putString(Constants.EXTRA_NAME_SERIES, mListSeriesDate.get(positionInList));
+        args.putLong(Constants.EXTRA_ID_SERIES, mListSeriesId.get(positionInList));
+        dateFragment.setArguments(args);
+        dateFragment.show(getFragmentManager(), "ChangeDateDialog");
+    }
+
+    public void setChangeDateOptionsVisible(boolean showOptions)
+    {
+        if (mChangeDateOptionsVisible == showOptions)
+            return;
+
+        mChangeDateOptionsVisible = showOptions;
+        if (showOptions)
+        {
+            mRelativeLayoutEditToolbar.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            mRelativeLayoutEditToolbar.setVisibility(View.GONE);
+        }
     }
 
     /**
@@ -498,6 +593,7 @@ public class SeriesActivity extends ActionBarActivity
         floatingActionButton.setColorNormal(Theme.getActionButtonThemeColor());
         floatingActionButton.setColorPressed(Theme.getActionButtonThemeColor());
         floatingActionButton.setColorRipple(Theme.getActionButtonRippleThemeColor());
+        mRelativeLayoutEditToolbar.setBackgroundColor(Theme.getActionBarTabThemeColor());
         mSeriesAdapter.updateTheme();
         Theme.validateSeriesActivityTheme();
     }
@@ -525,4 +621,6 @@ public class SeriesActivity extends ActionBarActivity
             }
         });
     }
+
+    public boolean getChangeDateOptionsVisible() {return mChangeDateOptionsVisible;}
 }

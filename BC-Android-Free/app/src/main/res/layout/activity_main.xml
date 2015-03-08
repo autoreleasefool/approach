@@ -7,6 +7,22 @@
     tools:context=".MainActivity"
     android:background="@color/primary_background">
 
+    <TextView
+        android:id="@+id/textView_new_bowler_instructions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:text="@string/text_new_bowler_instructions"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textView_new_bowler_instructions"
+        android:layout_centerHorizontal="true"
+        android:text="@string/text_delete_bowler_instructions"/>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recyclerView_bowlers"
         android:scrollbars="vertical"
@@ -25,20 +41,4 @@
         fab:fab_colorNormal="@color/theme_light_green_primary"
         fab:fab_colorPressed="@color/theme_light_green_primary"
         fab:fab_colorRipple="@color/theme_light_green_tertiary" />
-
-    <TextView
-        android:id="@+id/textView_new_bowler_instructions"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="@string/text_new_bowler_instructions"/>
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/textView_new_bowler_instructions"
-        android:layout_centerHorizontal="true"
-        android:text="@string/text_delete_bowler_instructions"/>
 </RelativeLayout>
