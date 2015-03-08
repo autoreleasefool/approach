@@ -522,7 +522,12 @@ public class GameActivity extends ActionBarActivity
     {
         boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
         menu.findItem(R.id.action_stats).setVisible(!drawerOpen);
-        //menu.findItem(R.id.action_game_share).setVisible(!drawerOpen);
+        menu.findItem(R.id.action_set_score).setVisible(!drawerOpen);
+        menu.findItem(R.id.action_series_stats).setVisible(!drawerOpen);
+        menu.findItem(R.id.action_reset_game).setVisible(!drawerOpen);
+        menu.findItem(R.id.action_what_if).setVisible(!drawerOpen);
+        menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
+
         menu.findItem(R.id.action_series_stats).setTitle(
                 (mEventMode)
                 ? R.string.action_event_stats
