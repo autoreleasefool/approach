@@ -56,6 +56,7 @@ public class SeriesActivity extends ActionBarActivity
     /** TextView to display instructions to the user */
     private TextView mSeriesInstructionsTextView;
     private RelativeLayout mRelativeLayoutEditToolbar;
+    private FloatingActionButton mFloatingActionButtonNewSeries;
 
     /** Unique id of bowler selected by the user */
     private long mBowlerId = -1;
@@ -88,8 +89,8 @@ public class SeriesActivity extends ActionBarActivity
         mSeriesAdapter = new SeriesAdapter(this, mListSeriesId, mListSeriesDate, mListSeriesGames);
         mSeriesRecycler.setAdapter(mSeriesAdapter);
 
-        FloatingActionButton floatingActionButton = (FloatingActionButton)findViewById(R.id.fab_new_series);
-        floatingActionButton.setOnClickListener(new View.OnClickListener()
+        mFloatingActionButtonNewSeries = (FloatingActionButton)findViewById(R.id.fab_new_series);
+        mFloatingActionButtonNewSeries.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
@@ -100,7 +101,7 @@ public class SeriesActivity extends ActionBarActivity
 
         mSeriesInstructionsTextView = (TextView)findViewById(R.id.textView_new_series_instructions);
         mRelativeLayoutEditToolbar = (RelativeLayout)findViewById(R.id.relativeLayout_series_cancel_edit);
-        mRelativeLayoutEditToolbar.setVisibility(View.GONE);
+        mRelativeLayoutEditToolbar.setVisibility(View.INVISIBLE);
         mRelativeLayoutEditToolbar.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -261,11 +262,13 @@ public class SeriesActivity extends ActionBarActivity
         mChangeDateOptionsVisible = showOptions;
         if (showOptions)
         {
+            mFloatingActionButtonNewSeries.setVisibility(View.INVISIBLE);
             mRelativeLayoutEditToolbar.setVisibility(View.VISIBLE);
         }
         else
         {
-            mRelativeLayoutEditToolbar.setVisibility(View.GONE);
+            mFloatingActionButtonNewSeries.setVisibility(View.VISIBLE);
+            mRelativeLayoutEditToolbar.setVisibility(View.INVISIBLE);
         }
     }
 

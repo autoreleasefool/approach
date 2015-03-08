@@ -23,7 +23,7 @@
     <string name="action_event_stats">Event Stats</string>
     <string name="action_set_score">Set Manual Score</string>
     <string name="action_clear_score">Clear Manual Score</string>
-    <string name="action_edit_date">Change Date</string>
+    <string name="action_edit_date">Change Series Date</string>
 
     <!-- TEXT -->
     <string name="text_new_bowler_instructions">Use the \'+\' to add a new bowler.</string>
