@@ -1,13 +1,13 @@
 package ca.josephroque.bowlingcompanion.fragments;
 
 import android.app.AlertDialog;
+import android.app.DialogFragment;
 import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -183,7 +183,7 @@ public class LeagueEventFragment extends Fragment
         Bundle bundle = new Bundle();
         bundle.putBoolean(Constants.EXTRA_EVENT_MODE, isEventMode());
         dialog.setArguments(bundle);
-        dialog.show(getActivity().getSupportFragmentManager(), "NewLeagueEventDialogFragment");
+        dialog.show(getActivity().getFragmentManager(), "NewLeagueEventDialogFragment");
     }
 
     /**
