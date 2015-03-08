@@ -2,10 +2,12 @@
 <TextView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/textView_drawer_item"
-    android:textColor="#ffffff"
+    android:textColor="#ddffffff"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:singleLine="true"
     android:textAppearance="?android:attr/textAppearanceLarge"
     android:paddingLeft="8dp"
-    android:paddingRight="8dp"/>
+    android:paddingRight="8dp"
+    android:paddingTop="4dp"
+    android:paddingBottom="4dp"/>
