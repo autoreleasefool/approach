@@ -145,7 +145,6 @@ public class GameActivity extends ActionBarActivity
     private String mSeriesDate;
 
     private boolean mSettingsOpened = false;
-    private int mShortAnimationDuration;
     private boolean mSettingsButtonsDisabled = false;
 
     @Override
@@ -159,7 +158,6 @@ public class GameActivity extends ActionBarActivity
 
         COLOR_BACKGROUND = getResources().getColor(R.color.primary_background);
         COLOR_HIGHLIGHT = getResources().getColor(R.color.secondary_background);
-        mShortAnimationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
         //Requests test ads to be displayed in AdView
         mAdView = (AdView) findViewById(R.id.adView_game);
@@ -1226,7 +1224,7 @@ public class GameActivity extends ActionBarActivity
 
             mTextViewSettingFoul.animate()
                     .alpha(1f)
-                    .setDuration(mShortAnimationDuration)
+                    .setDuration(Theme.getShortAnimationDuration())
                     .setListener(new AnimatorListenerAdapter()
                     {
                         @Override
@@ -1243,18 +1241,18 @@ public class GameActivity extends ActionBarActivity
                     });
             mTextViewSettingResetFrame.animate()
                     .alpha(1f)
-                    .setDuration(mShortAnimationDuration)
+                    .setDuration(Theme.getShortAnimationDuration())
                     .setListener(null);
             mTextViewSettingLockGame.animate()
                     .alpha(1f)
-                    .setDuration(mShortAnimationDuration)
+                    .setDuration(Theme.getShortAnimationDuration())
                     .setListener(null);
         }
         else
         {
             mTextViewSettingFoul.animate()
                     .alpha(0f)
-                    .setDuration(mShortAnimationDuration)
+                    .setDuration(Theme.getShortAnimationDuration())
                     .setListener(new AnimatorListenerAdapter()
                     {
                         @Override
@@ -1272,7 +1270,7 @@ public class GameActivity extends ActionBarActivity
                     });
             mTextViewSettingResetFrame.animate()
                     .alpha(0f)
-                    .setDuration(mShortAnimationDuration)
+                    .setDuration(Theme.getShortAnimationDuration())
                     .setListener(new AnimatorListenerAdapter()
                     {
                         @Override
@@ -1283,7 +1281,7 @@ public class GameActivity extends ActionBarActivity
                     });
             mTextViewSettingLockGame.animate()
                     .alpha(0f)
-                    .setDuration(mShortAnimationDuration)
+                    .setDuration(Theme.getShortAnimationDuration())
                     .setListener(new AnimatorListenerAdapter()
                     {
                         @Override
