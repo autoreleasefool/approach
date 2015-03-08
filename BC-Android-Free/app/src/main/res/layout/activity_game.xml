@@ -50,22 +50,6 @@
                 android:layout_centerHorizontal="true"
                 android:src="@drawable/ic_action_strike"/>
 
-            <!--<ImageView
-                android:id="@+id/imageView_reset_frame"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toLeftOf="@id/imageView_clear_pins"
-                android:layout_toStartOf="@id/imageView_clear_pins"
-                android:src="@drawable/ic_action_refresh"/>
-
-            <ImageView
-                android:id="@+id/imageView_foul"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/imageView_clear_pins"
-                android:layout_toEndOf="@id/imageView_clear_pins"
-                android:src="@drawable/ic_action_foul"/>-->
-
             <ImageView
                 android:id="@+id/imageView_next_ball"
                 android:layout_width="wrap_content"
@@ -239,7 +223,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:choiceMode="singleChoice"
-        android:divider="@android:color/transparent"
+        android:divider="@android:color/white"
         android:dividerHeight="1dp"
         android:background="#111"/>
 </android.support.v4.widget.DrawerLayout>
