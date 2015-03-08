@@ -16,7 +16,7 @@
         app:pstsShouldExpand="true"
         app:pstsIndicatorColor="@android:color/white"/>
 
-    <ViewPager
+    <android.support.v4.view.ViewPager
         android:id="@+id/viewPager_leagues_events"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
