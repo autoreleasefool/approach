@@ -155,7 +155,7 @@ public class ConvertValue
             {
                 case 1:case 2:case 3:case 4:case 5:case 8:case 10:case 11:case 12:
                     date[1] = Integer.parseInt(pretty.substring(4, pretty.indexOf(",")));
-                    date[2] = Integer.parseInt(pretty.substring(pretty.indexOf(",")));
+                    date[2] = Integer.parseInt(pretty.substring(pretty.indexOf(",") + 2));
                     break;
                 case 6:case 7:case 9:
                     date[1] = Integer.parseInt(pretty.substring(5, pretty.indexOf(",")));
