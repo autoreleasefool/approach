@@ -16,7 +16,7 @@ import java.util.List;
 
 import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.R;
-import ca.josephroque.bowlingcompanion.data.Social;
+import ca.josephroque.bowlingcompanion.data.External;
 import ca.josephroque.bowlingcompanion.theme.ChangeableTheme;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.database.Contract.*;
@@ -346,13 +346,13 @@ public class SettingsFragment extends PreferenceFragment
                     + "\nThe nature of the bug - fatal, minor, cosmetic (the way the app looks)"
                     + "\n\n";
 
-            Intent emailIntent = Social.getEmailIntent("bugs@josephroque.ca", "Bug: Bowling Companion", emailBody);
+            Intent emailIntent = External.getEmailIntent("bugs@josephroque.ca", "Bug: Bowling Companion", emailBody);
             startActivity(Intent.createChooser(emailIntent, "Send mail..."));
             return true;
         }
         else if (preference.getKey().equals(Constants.KEY_PREF_COMMENT_SUGGESTION))
         {
-            Intent emailIntent = Social.getEmailIntent("contact@josephroque.ca", "Comm/Sug: Bowling Companion");
+            Intent emailIntent = External.getEmailIntent("contact@josephroque.ca", "Comm/Sug: Bowling Companion");
             startActivity(Intent.createChooser(emailIntent, "Send mail..."));
             return true;
         }

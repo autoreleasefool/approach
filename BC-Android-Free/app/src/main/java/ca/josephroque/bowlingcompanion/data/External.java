@@ -9,7 +9,7 @@ import android.net.Uri;
  * Location ca.josephroque.bowlingcompanion.data
  * in project Bowling Companion
  */
-public class Social
+public class External
 {
 
     public static Intent getEmailIntent(
