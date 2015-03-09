@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.data;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -325,5 +326,10 @@ public class External
                         0, BITMAP_GAME_HEIGHT * gameIDs.length - gameIDs.length, BITMAP_SERIES_GAME_NAME_WIDTH, BITMAP_GAME_HEIGHT * gameIDs.length - gameIDs.length}, paintBlackOutline);
 
         return bitmap;
+    }
+
+    public static void showShareDialog(Activity activity)
+    {
+        
     }
 }

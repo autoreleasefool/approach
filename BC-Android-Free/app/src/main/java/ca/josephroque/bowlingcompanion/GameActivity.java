@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import ca.josephroque.bowlingcompanion.data.External;
 import ca.josephroque.bowlingcompanion.data.GameScore;
 import ca.josephroque.bowlingcompanion.database.Contract.*;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
@@ -562,6 +563,9 @@ public class GameActivity extends ActionBarActivity
 
         switch(item.getItemId())
         {
+            case R.id.action_share:
+                External.showShareDialog(this);
+                return true;
             case R.id.action_set_score:
                 if (mManualScoreSet[mCurrentGame])
                     showClearManualScoreDialog();

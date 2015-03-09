@@ -7,6 +7,11 @@
           android:orderInCategory="10"
           android:icon="@drawable/ic_action_stats"
           app:showAsAction="ifRoom" />
+    <item android:id="@+id/action_share"
+          android:title="@string/action_share"
+          android:orderInCategory="15"
+          android:icon="@drawable/ic_action_share"
+          app:showAsAction="ifRoom"/>
     <item android:id="@+id/action_series_stats"
           android:title="@string/action_series_stats"
           android:orderInCategory="20"
