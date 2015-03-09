@@ -438,7 +438,7 @@ public class External
             }
 
             shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
-            return new Object[]{activity, shareIntent, imageUri};
+            return new Object[]{activity, shareIntent};
         }
 
         @Override
@@ -446,10 +446,8 @@ public class External
         {
             GameActivity activity = (GameActivity)params[0];
             Intent shareIntent = (Intent)params[1];
-            Uri imageUri = (Uri)params[2];
 
             activity.startActivity(Intent.createChooser(shareIntent, "Share Image"));
-            activity.addImageUriToDelete(imageUri);
         }
     }
 }

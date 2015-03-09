@@ -105,7 +105,6 @@ public class GameActivity extends ActionBarActivity
     private String mActivityTitle;
     /** List of items which are to be displayed in the navigation drawer */
     private List<String> mNavigationDrawerOptions;
-    private List<Uri> mListUriToDelete;
 
     /** TextView which displays score gained on a certain ball in a certain frame */
     private TextView[][] mTextViewBallScores;
@@ -389,8 +388,6 @@ public class GameActivity extends ActionBarActivity
 
         mTextViewManualScore = (TextView)findViewById(R.id.textView_manual_score);
         mRelativeLayoutGameToolbar = (RelativeLayout)findViewById(R.id.relativeLayout_game_toolbar);
-
-        mListUriToDelete = new ArrayList<>();
 
         updateTheme();
     }
@@ -2045,26 +2042,5 @@ public class GameActivity extends ActionBarActivity
         Theme.setBackgroundByAPI(mTextViewSettingLockGame, gradientDrawable);
 
         Theme.validateGameActivityTheme();
-    }
-
-    public void addImageUriToDelete(Uri uri)
-    {
-        mListUriToDelete.add(uri);
-    }
-
-    private void clearImageUris()
-    {
-        for (Uri uri : mListUriToDelete)
-        {
-            getContentResolver().delete(uri, null, null);
-            getContentResolver().notifyChange(uri, null);
-        }
-    }
-
-    @Override
-    public void onStop()
-    {
-        clearImageUris();
-        super.onStop();
     }
 }

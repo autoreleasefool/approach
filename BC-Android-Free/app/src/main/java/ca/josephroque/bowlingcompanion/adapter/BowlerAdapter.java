@@ -159,7 +159,8 @@ public class BowlerAdapter extends RecyclerView.Adapter<BowlerAdapter.BowlerView
                     });
                     holder.mValueAnimator.start();
                 }
-                else if (event.getActionMasked() == MotionEvent.ACTION_UP && holder.mValueAnimator != null)
+                else if ((event.getActionMasked() == MotionEvent.ACTION_UP || event.getActionMasked() == MotionEvent.ACTION_MOVE)
+                        && holder.mValueAnimator != null)
                 {
                     holder.mValueAnimator.cancel();
                     holder.mValueAnimator = null;
