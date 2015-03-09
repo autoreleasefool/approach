@@ -407,8 +407,8 @@ public class MainActivity extends ActionBarActivity
                     + " FROM " + BowlerEntry.TABLE_NAME + " AS bowler"
                     + " LEFT JOIN " + GameEntry.TABLE_NAME + " AS game"
                     + " ON bowler." + BowlerEntry._ID + "=game." + GameEntry.COLUMN_NAME_BOWLER_ID
-                    + " GROUP BY bowler." + BowlerEntry._ID;
-
+                    + " GROUP BY bowler." + BowlerEntry._ID
+                    + " ORDER BY bowler." + BowlerEntry.COLUMN_NAME_DATE_MODIFIED + " DESC";
             Cursor cursor = database.rawQuery(rawBowlerQuery, new String[]{});
 
             /*
