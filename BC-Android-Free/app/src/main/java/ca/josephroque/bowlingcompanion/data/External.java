@@ -1,21 +1,31 @@
 package ca.josephroque.bowlingcompanion.data;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.util.Log;
+import android.widget.Toast;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import ca.josephroque.bowlingcompanion.Constants;
+import ca.josephroque.bowlingcompanion.GameActivity;
 import ca.josephroque.bowlingcompanion.database.Contract.*;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 
@@ -295,7 +305,7 @@ public class External
             }
         }
 
-        final int numberOfGames = cursor.getCount();
+        final int numberOfGames = ballsOfGames.size();
 
         Paint paintText = new Paint();
         paintText.setColor(Color.BLACK);
@@ -322,8 +332,124 @@ public class External
         return bitmap;
     }
 
-    public static void showShareDialog(Activity activity, long seriesId)
+    public static void showShareDialog(final Activity activity, final long seriesId)
     {
+        final CharSequence[] options = {"Save", "Share"};
+        AlertDialog.Builder shareBuilder = new AlertDialog.Builder(activity);
+        shareBuilder.setTitle("Save to device or share?")
+                .setItems(options, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        if (which == 0)
+                            saveSeriesToDevice(activity, seriesId);
+                        else if (which == 1)
+                            shareSeries(activity, seriesId);
+                        dialog.dismiss();
+                    }
+                })
+                .create()
+                .show();
+    }
 
+    private static void shareSeries(Activity activity, long seriesId)
+    {
+        new ShareSeriesTask().execute(activity, seriesId);
+    }
+
+    private static void saveSeriesToDevice(final Activity activity, final long seriesId)
+    {
+        new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                final Uri imageUri = CapturePhotoUtils.insertImage(activity.getContentResolver(),
+                        createImageFromSeries(activity, seriesId),
+                        String.valueOf(System.currentTimeMillis()),
+                        "Series: " + seriesId);
+
+                activity.runOnUiThread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        MediaScannerConnection.scanFile(activity,
+                                new String[]{imageUri.getPath()}, null,
+                                new MediaScannerConnection.OnScanCompletedListener()
+                                {
+                                    public void onScanCompleted(String path, Uri uri)
+                                    {
+                                        Log.i("ExternalStorage", "Scanned " + path + ":");
+                                        Log.i("ExternalStorage", "-> uri=" + uri);
+                                    }
+                                });
+
+                        Toast toast;
+                        if (imageUri != null)
+                            toast = Toast.makeText(activity, "Image successfully saved!", Toast.LENGTH_SHORT);
+                        else
+                            toast = Toast.makeText(activity, "Unable to save image", Toast.LENGTH_SHORT);
+                        toast.show();
+                    }
+                });
+            }
+        }).start();
+    }
+
+    private static class ShareSeriesTask extends AsyncTask<Object, Void, Object[]>
+    {
+        @Override
+        public Object[] doInBackground(Object... params)
+        {
+            Activity activity = (Activity)params[0];
+            long seriesId = (Long)params[1];
+            Bitmap image = createImageFromSeries(activity, seriesId);
+            Bitmap icon = image;
+            Uri imageUri = CapturePhotoUtils.insertImage(activity.getContentResolver(),
+                    image,
+                    String.valueOf(System.currentTimeMillis()),
+                    "Series: " + seriesId);
+
+            Intent shareIntent = new Intent(Intent.ACTION_SEND);
+            shareIntent.setType("image/jpeg");
+            OutputStream outstream = null;
+            try
+            {
+                outstream = activity.getContentResolver()
+                        .openOutputStream(imageUri);
+                icon.compress(Bitmap.CompressFormat.JPEG, 100, outstream);
+            }
+            catch (Exception e)
+            {
+                Log.w(TAG, "Unable to create stream from image");
+            }
+            finally
+            {
+                if (outstream != null)
+                {
+                    try
+                    {
+                        outstream.close();
+                    }
+                    catch (IOException ex){}
+                }
+            }
+
+            shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
+            return new Object[]{activity, shareIntent, imageUri};
+        }
+
+        @Override
+        public void onPostExecute(Object[] params)
+        {
+            GameActivity activity = (GameActivity)params[0];
+            Intent shareIntent = (Intent)params[1];
+            Uri imageUri = (Uri)params[2];
+
+            activity.startActivity(Intent.createChooser(shareIntent, "Share Image"));
+            activity.addImageUriToDelete(imageUri);
+        }
     }
 }

@@ -31,7 +31,7 @@ public class CapturePhotoUtils {
      * that is inserted manually gets saved at the end of the gallery (because date is not populated).
      * @see android.provider.MediaStore.Images.Media#insertImage(ContentResolver, Bitmap, String, String)
      */
-    public static final String insertImage(ContentResolver cr,
+    public static final Uri insertImage(ContentResolver cr,
                                            Bitmap source,
                                            String title,
                                            String description) {
@@ -46,7 +46,6 @@ public class CapturePhotoUtils {
         values.put(Images.Media.DATE_TAKEN, System.currentTimeMillis());
 
         Uri url = null;
-        String stringUrl = null;    /* value to be returned */
 
         try {
             url = cr.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
@@ -74,11 +73,7 @@ public class CapturePhotoUtils {
             }
         }
 
-        if (url != null) {
-            stringUrl = url.toString();
-        }
-
-        return stringUrl;
+        return url;
     }
 
     /**
