@@ -564,7 +564,7 @@ public class GameActivity extends ActionBarActivity
         switch(item.getItemId())
         {
             case R.id.action_share:
-                External.showShareDialog(this);
+                External.showShareDialog(this, mSeriesId);
                 return true;
             case R.id.action_set_score:
                 if (mManualScoreSet[mCurrentGame])
