@@ -1734,37 +1734,46 @@ public class GameActivity extends ActionBarActivity
                 mCurrentGame = newGame;
                 SQLiteDatabase database = DatabaseHelper.getInstance(GameActivity.this).getReadableDatabase();
 
-                Cursor cursor = database.query(FrameEntry.TABLE_NAME,
-                        new String[]{FrameEntry.COLUMN_NAME_FRAME_ACCESSED, FrameEntry.COLUMN_NAME_BALL[0], FrameEntry.COLUMN_NAME_BALL[1], FrameEntry.COLUMN_NAME_BALL[2], FrameEntry.COLUMN_NAME_FOULS},
-                        FrameEntry.COLUMN_NAME_GAME_ID + "=?",
-                        new String[]{String.valueOf(mGameIds[mCurrentGame])},
-                        null,
-                        null,
-                        FrameEntry.COLUMN_NAME_FRAME_NUMBER);
-
-                mFouls = new boolean[Constants.NUMBER_OF_FRAMES][3];
-                byte currentFrameIterator = 0;
-                if (cursor.moveToFirst())
+                Cursor cursor = null;
+                try
                 {
-                    while(!cursor.isAfterLast())
-                    {
-                        byte frameAccessed = (byte)cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_FRAME_ACCESSED));
-                        mHasFrameBeenAccessed[currentFrameIterator] = (frameAccessed == 1);
-                        for (int i = 0; i < 3; i++)
-                        {
-                            String ballString = cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_BALL[i]));
-                            boolean[] ballBoolean = {GameScore.getBoolean(ballString.charAt(0)), GameScore.getBoolean(ballString.charAt(1)), GameScore.getBoolean(ballString.charAt(2)), GameScore.getBoolean(ballString.charAt(3)), GameScore.getBoolean(ballString.charAt(4))};
-                            mPinState[currentFrameIterator][i] = ballBoolean;
-                        }
-                        String foulsOfFrame = cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_FOULS));
-                        for (int ballCount = 0; ballCount < 3; ballCount++)
-                        {
-                            mFouls[currentFrameIterator][ballCount] = foulsOfFrame.contains(String.valueOf(ballCount + 1));
-                        }
+                    cursor = database.query(FrameEntry.TABLE_NAME,
+                            new String[]{FrameEntry.COLUMN_NAME_FRAME_ACCESSED, FrameEntry.COLUMN_NAME_BALL[0], FrameEntry.COLUMN_NAME_BALL[1], FrameEntry.COLUMN_NAME_BALL[2], FrameEntry.COLUMN_NAME_FOULS},
+                            FrameEntry.COLUMN_NAME_GAME_ID + "=?",
+                            new String[]{String.valueOf(mGameIds[mCurrentGame])},
+                            null,
+                            null,
+                            FrameEntry.COLUMN_NAME_FRAME_NUMBER);
 
-                        currentFrameIterator++;
-                        cursor.moveToNext();
+                    mFouls = new boolean[Constants.NUMBER_OF_FRAMES][3];
+                    byte currentFrameIterator = 0;
+                    if (cursor.moveToFirst())
+                    {
+                        while (!cursor.isAfterLast())
+                        {
+                            byte frameAccessed = (byte) cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_FRAME_ACCESSED));
+                            mHasFrameBeenAccessed[currentFrameIterator] = (frameAccessed == 1);
+                            for (int i = 0; i < 3; i++)
+                            {
+                                String ballString = cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_BALL[i]));
+                                boolean[] ballBoolean = {GameScore.getBoolean(ballString.charAt(0)), GameScore.getBoolean(ballString.charAt(1)), GameScore.getBoolean(ballString.charAt(2)), GameScore.getBoolean(ballString.charAt(3)), GameScore.getBoolean(ballString.charAt(4))};
+                                mPinState[currentFrameIterator][i] = ballBoolean;
+                            }
+                            String foulsOfFrame = cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_NAME_FOULS));
+                            for (int ballCount = 0; ballCount < 3; ballCount++)
+                            {
+                                mFouls[currentFrameIterator][ballCount] = foulsOfFrame.contains(String.valueOf(ballCount + 1));
+                            }
+
+                            currentFrameIterator++;
+                            cursor.moveToNext();
+                        }
                     }
+                }
+                finally
+                {
+                    if (cursor != null && !cursor.isClosed())
+                        cursor.close();
                 }
 
                 runOnUiThread(new Runnable()
@@ -1852,27 +1861,35 @@ public class GameActivity extends ActionBarActivity
             whereArgs[i] = String.valueOf(mGameIds[i]);
         }
 
-        Cursor cursor = database.query(GameEntry.TABLE_NAME,
-                new String[]{GameEntry.COLUMN_NAME_GAME_FINAL_SCORE},
-                whereBuilder.toString(),
-                whereArgs,
-                null,
-                null,
-                GameEntry._ID);
-
-        int currentGamePosition = 0;
-        if (cursor.moveToFirst())
+        Cursor cursor = null;
+        try
         {
-            while(!cursor.isAfterLast())
+            cursor = database.query(GameEntry.TABLE_NAME,
+                    new String[]{GameEntry.COLUMN_NAME_GAME_FINAL_SCORE},
+                    whereBuilder.toString(),
+                    whereArgs,
+                    null,
+                    null,
+                    GameEntry._ID);
+
+            int currentGamePosition = 0;
+            if (cursor.moveToFirst())
             {
-                short gameScore = cursor.getShort(cursor.getColumnIndex(GameEntry.COLUMN_NAME_GAME_FINAL_SCORE));
-                mGameScoresMinusFouls[currentGamePosition++] = gameScore;
-                cursor.moveToNext();
+                while (!cursor.isAfterLast())
+                {
+                    short gameScore = cursor.getShort(cursor.getColumnIndex(GameEntry.COLUMN_NAME_GAME_FINAL_SCORE));
+                    mGameScoresMinusFouls[currentGamePosition++] = gameScore;
+                    cursor.moveToNext();
+                }
+            } else
+            {
+                throw new RuntimeException("No games found - cannot set scores");
             }
         }
-        else
+        finally
         {
-            throw new RuntimeException("No games found - cannot set scores");
+            if (cursor != null && !cursor.isClosed())
+                cursor.close();
         }
     }
 

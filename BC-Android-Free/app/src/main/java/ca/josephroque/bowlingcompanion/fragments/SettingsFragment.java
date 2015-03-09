@@ -207,7 +207,6 @@ public class SettingsFragment extends PreferenceFragment
                 + " WHERE " + LeagueEntry.COLUMN_NAME_IS_EVENT + "=? AND " + LeagueEntry.COLUMN_NAME_LEAGUE_NAME + "!=?"
                 + " ORDER BY " + BowlerEntry.COLUMN_NAME_BOWLER_NAME + ", " + LeagueEntry.COLUMN_NAME_LEAGUE_NAME;
         String[] rawNameArgs = {"0", Constants.NAME_LEAGUE_OPEN};
-        Cursor cursor = database.rawQuery(rawNameQuery, rawNameArgs);
 
         List<String> listBowlerNames = new ArrayList<>();
         List<String> listBowlerIds = new ArrayList<>();
@@ -216,49 +215,58 @@ public class SettingsFragment extends PreferenceFragment
 
         long lastBowlerId = -1;
         int currentLeaguePosition = -1;
-        if (cursor.moveToFirst())
+        Cursor cursor = null;
+        try
         {
-            while(!cursor.isAfterLast())
-            {
-                long bowlerId = cursor.getLong(cursor.getColumnIndex("bid"));
+            cursor = database.rawQuery(rawNameQuery, rawNameArgs);
 
-                if (lastBowlerId == bowlerId)
-                {
-                    listLeagueIds.get(currentLeaguePosition).add(
-                            String.valueOf(cursor.getLong(cursor.getColumnIndex("lid"))));
-                    listLeagueNames.get(currentLeaguePosition).add(
-                            cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_LEAGUE_NAME)));
-                }
-                else
-                {
-                    lastBowlerId = bowlerId;
-                    listBowlerNames.add(
-                            cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_NAME_BOWLER_NAME)));
-                    listBowlerIds.add(String.valueOf(bowlerId));
-                    listLeagueIds.add(new ArrayList<String>());
-                    listLeagueNames.add(new ArrayList<String>());
-                    currentLeaguePosition++;
-
-                    listLeagueIds.get(currentLeaguePosition).add(
-                            String.valueOf(cursor.getLong(cursor.getColumnIndex("lid"))));
-                    listLeagueNames.get(currentLeaguePosition).add(
-                            cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_LEAGUE_NAME)));
-                }
-                cursor.moveToNext();
-            }
-            findPreference(Constants.KEY_PREF_ENABLE_QUICK).setEnabled(true);
-            if (getPreferenceManager().getSharedPreferences().getBoolean(Constants.KEY_PREF_ENABLE_QUICK, false))
+            if (cursor.moveToFirst())
             {
-                findPreference(Constants.KEY_PREF_QUICK_BOWLER).setEnabled(true);
-                findPreference(Constants.KEY_PREF_QUICK_LEAGUE).setEnabled(true);
+                while (!cursor.isAfterLast())
+                {
+                    long bowlerId = cursor.getLong(cursor.getColumnIndex("bid"));
+
+                    if (lastBowlerId == bowlerId)
+                    {
+                        listLeagueIds.get(currentLeaguePosition).add(
+                                String.valueOf(cursor.getLong(cursor.getColumnIndex("lid"))));
+                        listLeagueNames.get(currentLeaguePosition).add(
+                                cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_LEAGUE_NAME)));
+                    } else
+                    {
+                        lastBowlerId = bowlerId;
+                        listBowlerNames.add(
+                                cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_NAME_BOWLER_NAME)));
+                        listBowlerIds.add(String.valueOf(bowlerId));
+                        listLeagueIds.add(new ArrayList<String>());
+                        listLeagueNames.add(new ArrayList<String>());
+                        currentLeaguePosition++;
+
+                        listLeagueIds.get(currentLeaguePosition).add(
+                                String.valueOf(cursor.getLong(cursor.getColumnIndex("lid"))));
+                        listLeagueNames.get(currentLeaguePosition).add(
+                                cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_LEAGUE_NAME)));
+                    }
+                    cursor.moveToNext();
+                }
+                findPreference(Constants.KEY_PREF_ENABLE_QUICK).setEnabled(true);
+                if (getPreferenceManager().getSharedPreferences().getBoolean(Constants.KEY_PREF_ENABLE_QUICK, false))
+                {
+                    findPreference(Constants.KEY_PREF_QUICK_BOWLER).setEnabled(true);
+                    findPreference(Constants.KEY_PREF_QUICK_LEAGUE).setEnabled(true);
+                }
+            } else
+            {
+                findPreference(Constants.KEY_PREF_ENABLE_QUICK).setEnabled(false);
+                findPreference(Constants.KEY_PREF_QUICK_BOWLER).setEnabled(false);
+                findPreference(Constants.KEY_PREF_QUICK_LEAGUE).setEnabled(false);
+                return;
             }
         }
-        else
+        finally
         {
-            findPreference(Constants.KEY_PREF_ENABLE_QUICK).setEnabled(false);
-            findPreference(Constants.KEY_PREF_QUICK_BOWLER).setEnabled(false);
-            findPreference(Constants.KEY_PREF_QUICK_LEAGUE).setEnabled(false);
-            return;
+            if (cursor != null && !cursor.isClosed())
+                cursor.close();
         }
 
         mArrayBowlerIdsAsStrings = new String[listBowlerIds.size()];

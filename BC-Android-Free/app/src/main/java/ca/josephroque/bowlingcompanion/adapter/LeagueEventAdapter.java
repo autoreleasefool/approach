@@ -354,11 +354,23 @@ public class LeagueEventAdapter extends RecyclerView.Adapter<LeagueEventAdapter.
                         + " WHERE league." + LeagueEntry._ID + "=?";
                 String[] rawSeriesArgs = {String.valueOf(selectedLeagueId)};
 
-                Cursor cursor = database.rawQuery(rawSeriesQuery, rawSeriesArgs);
-                cursor.moveToFirst();
-                byte numberOfGames = (byte)cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES));
-                long seriesId = cursor.getLong(cursor.getColumnIndex("sid"));
-                String seriesDate = cursor.getString(cursor.getColumnIndex(SeriesEntry.COLUMN_NAME_DATE_CREATED));
+                Cursor cursor = null;
+                byte numberOfGames = -1;
+                long seriesId = -1;
+                String seriesDate = null;
+                try
+                {
+                    cursor = database.rawQuery(rawSeriesQuery, rawSeriesArgs);
+                    cursor.moveToFirst();
+                    numberOfGames = (byte) cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES));
+                    seriesId = cursor.getLong(cursor.getColumnIndex("sid"));
+                    seriesDate = cursor.getString(cursor.getColumnIndex(SeriesEntry.COLUMN_NAME_DATE_CREATED));
+                }
+                finally
+                {
+                    if (cursor != null && !cursor.isClosed())
+                        cursor.close();
+                }
 
                 return new Object[]{seriesId, numberOfGames, selectedLeagueId, selectedLeagueName, seriesDate};
             }

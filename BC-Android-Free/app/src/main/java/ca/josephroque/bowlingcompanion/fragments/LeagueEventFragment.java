@@ -283,22 +283,31 @@ public class LeagueEventFragment extends Fragment
                     + " ORDER BY " + LeagueEntry.COLUMN_NAME_DATE_MODIFIED + " DESC";
             String[] rawLeagueEventArgs ={String.valueOf(mBowlerId), String.valueOf(isEventMode() ? 1:0)};
 
-            Cursor leagueEventCursor = database.rawQuery(rawLeagueEventQuery, rawLeagueEventArgs);
-            if (leagueEventCursor.moveToFirst())
+            Cursor leagueEventCursor = null;
+            try
             {
-                while(!leagueEventCursor.isAfterLast())
+                leagueEventCursor = database.rawQuery(rawLeagueEventQuery, rawLeagueEventArgs);
+                if (leagueEventCursor.moveToFirst())
                 {
-                    String leagueEventName = leagueEventCursor.getString(leagueEventCursor.getColumnIndex(LeagueEntry.COLUMN_NAME_LEAGUE_NAME));
-                    long leagueEventId = leagueEventCursor.getLong(leagueEventCursor.getColumnIndex("lid"));
-                    byte numberOfGames = (byte)leagueEventCursor.getInt(leagueEventCursor.getColumnIndex(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES));
-                    short leagueEventAverage = leagueEventCursor.getShort(leagueEventCursor.getColumnIndex("avg"));
-                    mListLeagueEventIds.add(leagueEventId);
-                    mListLeagueEventNames.add(leagueEventName);
-                    mListLeagueEventAverages.add(leagueEventAverage);
-                    mListLeagueEventNumberOfGames.add(numberOfGames);
+                    while (!leagueEventCursor.isAfterLast())
+                    {
+                        String leagueEventName = leagueEventCursor.getString(leagueEventCursor.getColumnIndex(LeagueEntry.COLUMN_NAME_LEAGUE_NAME));
+                        long leagueEventId = leagueEventCursor.getLong(leagueEventCursor.getColumnIndex("lid"));
+                        byte numberOfGames = (byte) leagueEventCursor.getInt(leagueEventCursor.getColumnIndex(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES));
+                        short leagueEventAverage = leagueEventCursor.getShort(leagueEventCursor.getColumnIndex("avg"));
+                        mListLeagueEventIds.add(leagueEventId);
+                        mListLeagueEventNames.add(leagueEventName);
+                        mListLeagueEventAverages.add(leagueEventAverage);
+                        mListLeagueEventNumberOfGames.add(numberOfGames);
 
-                    leagueEventCursor.moveToNext();
+                        leagueEventCursor.moveToNext();
+                    }
                 }
+            }
+            finally
+            {
+                if (leagueEventCursor != null && !leagueEventCursor.isClosed())
+                    leagueEventCursor.close();
             }
 
             return null;

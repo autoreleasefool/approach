@@ -268,20 +268,29 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
 
                 //Finds all ids of games belonging to the series, adds them to a list
                 List<Long> gameIdList = new ArrayList<>();
-                Cursor cursor = database.query(GameEntry.TABLE_NAME,
-                        new String[]{GameEntry._ID},
-                        GameEntry.COLUMN_NAME_SERIES_ID + "=?",
-                        whereArgs,
-                        null,
-                        null,
-                        null);
-                if (cursor.moveToFirst())
+                Cursor cursor = null;
+                try
                 {
-                    while(!cursor.isAfterLast())
+                    cursor = database.query(GameEntry.TABLE_NAME,
+                            new String[]{GameEntry._ID},
+                            GameEntry.COLUMN_NAME_SERIES_ID + "=?",
+                            whereArgs,
+                            null,
+                            null,
+                            null);
+                    if (cursor.moveToFirst())
                     {
-                        gameIdList.add(cursor.getLong(cursor.getColumnIndex(GameEntry._ID)));
-                        cursor.moveToNext();
+                        while (!cursor.isAfterLast())
+                        {
+                            gameIdList.add(cursor.getLong(cursor.getColumnIndex(GameEntry._ID)));
+                            cursor.moveToNext();
+                        }
                     }
+                }
+                finally
+                {
+                    if (cursor != null && !cursor.isClosed())
+                        cursor.close();
                 }
 
                 //Deletes all rows in frame table associated to game IDs found above,

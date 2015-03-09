@@ -362,25 +362,34 @@ public class SeriesActivity extends ActionBarActivity
                     + GameEntry.COLUMN_NAME_GAME_NUMBER;
             String[] rawQueryArgs = {String.valueOf(mLeagueId)};
 
-            Cursor cursor = database.rawQuery(rawSeriesQuery, rawQueryArgs);
-            if (cursor.moveToFirst())
+            Cursor cursor = null;
+            try
             {
-                while(!cursor.isAfterLast())
+                cursor = database.rawQuery(rawSeriesQuery, rawQueryArgs);
+                if (cursor.moveToFirst())
                 {
-                    long seriesId = cursor.getLong(cursor.getColumnIndex("sid"));
-                    String seriesDate = cursor.getString(cursor.getColumnIndex(SeriesEntry.COLUMN_NAME_DATE_CREATED)).substring(0,10);
-                    short finalGameScore = cursor.getShort(cursor.getColumnIndex(GameEntry.COLUMN_NAME_GAME_FINAL_SCORE));
-
-                    if (!mListSeriesId.contains(seriesId))
+                    while (!cursor.isAfterLast())
                     {
-                        mListSeriesId.add(seriesId);
-                        mListSeriesGames.add(new ArrayList<Short>());
-                        mListSeriesDate.add(ConvertValue.formattedDateToPrettyCompact(seriesDate));
-                    }
+                        long seriesId = cursor.getLong(cursor.getColumnIndex("sid"));
+                        String seriesDate = cursor.getString(cursor.getColumnIndex(SeriesEntry.COLUMN_NAME_DATE_CREATED)).substring(0, 10);
+                        short finalGameScore = cursor.getShort(cursor.getColumnIndex(GameEntry.COLUMN_NAME_GAME_FINAL_SCORE));
 
-                    mListSeriesGames.get(mListSeriesGames.size() - 1).add(finalGameScore);
-                    cursor.moveToNext();
+                        if (!mListSeriesId.contains(seriesId))
+                        {
+                            mListSeriesId.add(seriesId);
+                            mListSeriesGames.add(new ArrayList<Short>());
+                            mListSeriesDate.add(ConvertValue.formattedDateToPrettyCompact(seriesDate));
+                        }
+
+                        mListSeriesGames.get(mListSeriesGames.size() - 1).add(finalGameScore);
+                        cursor.moveToNext();
+                    }
                 }
+            }
+            finally
+            {
+                if (cursor != null && !cursor.isClosed())
+                    cursor.close();
             }
             return null;
         }
@@ -434,28 +443,36 @@ public class SeriesActivity extends ActionBarActivity
             int currentGame = -1;
             long currentGameId = -1;
             int currentFrame = -1;
-            Cursor cursor = database.rawQuery(rawSeriesQuery, rawSeriesArgs);
-            if (cursor.moveToFirst())
+            Cursor cursor = null;
+            try
             {
-                while (!cursor.isAfterLast())
+                cursor = database.rawQuery(rawSeriesQuery, rawSeriesArgs);
+                if (cursor.moveToFirst())
                 {
-                    long newGameId = cursor.getLong(cursor.getColumnIndex("gid"));
-                    if (newGameId == currentGameId)
+                    while (!cursor.isAfterLast())
                     {
-                        frameId[++currentFrame] = cursor.getLong(cursor.getColumnIndex("fid"));
+                        long newGameId = cursor.getLong(cursor.getColumnIndex("gid"));
+                        if (newGameId == currentGameId)
+                        {
+                            frameId[++currentFrame] = cursor.getLong(cursor.getColumnIndex("fid"));
+                        } else
+                        {
+                            currentGameId = newGameId;
+                            frameId[++currentFrame] = cursor.getLong(cursor.getColumnIndex("fid"));
+                            gameId[++currentGame] = currentGameId;
+                            gameLocked[currentGame] =
+                                    (cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_NAME_GAME_LOCKED)) == 1);
+                            manualScore[currentGame] =
+                                    (cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_NAME_MANUAL_SCORE)) == 1);
+                        }
+                        cursor.moveToNext();
                     }
-                    else
-                    {
-                        currentGameId = newGameId;
-                        frameId[++currentFrame] = cursor.getLong(cursor.getColumnIndex("fid"));
-                        gameId[++currentGame] = currentGameId;
-                        gameLocked[currentGame] =
-                                (cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_NAME_GAME_LOCKED)) == 1);
-                        manualScore[currentGame] =
-                                (cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_NAME_MANUAL_SCORE)) == 1);
-                    }
-                    cursor.moveToNext();
                 }
+            }
+            finally
+            {
+                if (cursor != null && !cursor.isClosed())
+                    cursor.close();
             }
 
             return new Object[]{srcActivity, gameId, frameId, seriesIdSelected, params[3], params[4], params[5], params[6], params[7], gameLocked, manualScore};

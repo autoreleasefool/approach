@@ -409,21 +409,29 @@ public class MainActivity extends ActionBarActivity
                     + " ON bowler." + BowlerEntry._ID + "=game." + GameEntry.COLUMN_NAME_BOWLER_ID
                     + " GROUP BY bowler." + BowlerEntry._ID
                     + " ORDER BY bowler." + BowlerEntry.COLUMN_NAME_DATE_MODIFIED + " DESC";
-            Cursor cursor = database.rawQuery(rawBowlerQuery, new String[]{});
-
+            Cursor cursor = null;
+            try
+            {
+                cursor = database.rawQuery(rawBowlerQuery, new String[]{});
             /*
              * Clears data from lists and adds Ids, names
              * and averages loaded in the cursor
              */
-            if (cursor.moveToFirst())
-            {
-                while(!cursor.isAfterLast())
+                if (cursor.moveToFirst())
                 {
-                    mListBowlerIds.add(cursor.getLong(cursor.getColumnIndex(BowlerEntry._ID)));
-                    mListBowlerNames.add(cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_NAME_BOWLER_NAME)));
-                    mListBowlerAverages.add(cursor.getShort(cursor.getColumnIndex("avg")));
-                    cursor.moveToNext();
+                    while (!cursor.isAfterLast())
+                    {
+                        mListBowlerIds.add(cursor.getLong(cursor.getColumnIndex(BowlerEntry._ID)));
+                        mListBowlerNames.add(cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_NAME_BOWLER_NAME)));
+                        mListBowlerAverages.add(cursor.getShort(cursor.getColumnIndex("avg")));
+                        cursor.moveToNext();
+                    }
                 }
+            }
+            finally
+            {
+                if (cursor != null && !cursor.isClosed())
+                    cursor.close();
             }
 
             /*
@@ -443,12 +451,20 @@ public class MainActivity extends ActionBarActivity
                         + " WHERE bowler." + BowlerEntry._ID + "=? AND league." + LeagueEntry._ID + "=?";
                 String[] rawRecentArgs = new String[]{String.valueOf(mRecentBowlerId), String.valueOf(mRecentLeagueId)};
 
-                cursor = database.rawQuery(rawRecentQuery, rawRecentArgs);
-                if (cursor.moveToFirst())
+                try
                 {
-                    mRecentBowlerName = cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_NAME_BOWLER_NAME));
-                    mRecentLeagueName = cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_LEAGUE_NAME));
-                    mRecentNumberOfGames = (byte)cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES));
+                    cursor = database.rawQuery(rawRecentQuery, rawRecentArgs);
+                    if (cursor.moveToFirst())
+                    {
+                        mRecentBowlerName = cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_NAME_BOWLER_NAME));
+                        mRecentLeagueName = cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_LEAGUE_NAME));
+                        mRecentNumberOfGames = (byte) cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES));
+                    }
+                }
+                finally
+                {
+                    if (cursor != null && !cursor.isClosed())
+                        cursor.close();
                 }
             }
             if (mQuickBowlerId > -1 && mQuickLeagueId > -1)
@@ -463,12 +479,20 @@ public class MainActivity extends ActionBarActivity
                         + " WHERE bowler." + BowlerEntry._ID + "=? AND league." + LeagueEntry._ID + "=?";
                 String[] rawQuickArgs = new String[]{String.valueOf(mQuickBowlerId), String.valueOf(mQuickLeagueId)};
 
-                cursor = database.rawQuery(rawQuickQuery, rawQuickArgs);
-                if (cursor.moveToFirst())
+                try
                 {
-                    mQuickBowlerName = cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_NAME_BOWLER_NAME));
-                    mQuickLeagueName = cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_LEAGUE_NAME));
-                    mQuickNumberOfGames = (byte)cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES));
+                    cursor = database.rawQuery(rawQuickQuery, rawQuickArgs);
+                    if (cursor.moveToFirst())
+                    {
+                        mQuickBowlerName = cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_NAME_BOWLER_NAME));
+                        mQuickLeagueName = cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_LEAGUE_NAME));
+                        mQuickNumberOfGames = (byte) cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NAME_NUMBER_OF_GAMES));
+                    }
+                }
+                finally
+                {
+                    if (cursor != null && !cursor.isClosed())
+                        cursor.close();
                 }
             }
 
