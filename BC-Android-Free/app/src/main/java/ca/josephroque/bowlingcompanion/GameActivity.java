@@ -1777,7 +1777,6 @@ public class GameActivity extends ActionBarActivity
                                 ? R.string.text_setting_unlock
                                 : R.string.text_setting_lock);
                         clearAllText(!mManualScoreSet[mCurrentGame]);
-                        Log.w(TAG, "Game loaded");
                         invalidateOptionsMenu();
                     }
                 });
@@ -1868,7 +1867,6 @@ public class GameActivity extends ActionBarActivity
             {
                 short gameScore = cursor.getShort(cursor.getColumnIndex(GameEntry.COLUMN_NAME_GAME_FINAL_SCORE));
                 mGameScoresMinusFouls[currentGamePosition++] = gameScore;
-                Log.w(TAG, "Score loaded: " + mGameScoresMinusFouls[currentGamePosition - 1]);
                 cursor.moveToNext();
             }
         }
