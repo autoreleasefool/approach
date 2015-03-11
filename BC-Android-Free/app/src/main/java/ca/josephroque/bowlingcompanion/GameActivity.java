@@ -529,6 +529,7 @@ public class GameActivity extends ActionBarActivity
         menu.findItem(R.id.action_reset_game).setVisible(!drawerOpen);
         menu.findItem(R.id.action_what_if).setVisible(!drawerOpen);
         menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
+        menu.findItem(R.id.action_share).setVisible(!drawerOpen);
 
         menu.findItem(R.id.action_series_stats).setTitle(
                 (mEventMode)
