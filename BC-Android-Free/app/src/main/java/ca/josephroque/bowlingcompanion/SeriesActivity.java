@@ -55,6 +55,7 @@ public class SeriesActivity extends ActionBarActivity
     private SeriesAdapter mSeriesAdapter;
     /** TextView to display instructions to the user */
     private TextView mSeriesInstructionsTextView;
+    private TextView mSeriesDeleteInstructionsTextView;
     private RelativeLayout mRelativeLayoutEditToolbar;
     private FloatingActionButton mFloatingActionButtonNewSeries;
 
@@ -100,6 +101,7 @@ public class SeriesActivity extends ActionBarActivity
         });
 
         mSeriesInstructionsTextView = (TextView)findViewById(R.id.textView_new_series_instructions);
+        mSeriesDeleteInstructionsTextView = (TextView)findViewById(R.id.textView_delete_series_instructions);
         mRelativeLayoutEditToolbar = (RelativeLayout)findViewById(R.id.relativeLayout_series_cancel_edit);
         mRelativeLayoutEditToolbar.setVisibility(View.INVISIBLE);
         mRelativeLayoutEditToolbar.setOnClickListener(new View.OnClickListener()
@@ -234,7 +236,7 @@ public class SeriesActivity extends ActionBarActivity
                 }
                 catch (Exception ex)
                 {
-
+                    Log.w(TAG, "Unable to change series date: " + seriesId);
                 }
                 finally
                 {
@@ -263,11 +265,18 @@ public class SeriesActivity extends ActionBarActivity
         if (showOptions)
         {
             mFloatingActionButtonNewSeries.setVisibility(View.INVISIBLE);
+            mSeriesDeleteInstructionsTextView.setVisibility(View.INVISIBLE);
+            mSeriesInstructionsTextView.setVisibility(View.INVISIBLE);
             mRelativeLayoutEditToolbar.setVisibility(View.VISIBLE);
         }
         else
         {
             mFloatingActionButtonNewSeries.setVisibility(View.VISIBLE);
+            mSeriesDeleteInstructionsTextView.setVisibility(View.VISIBLE);
+            mSeriesInstructionsTextView.setVisibility(
+                    mListSeriesId.size() > 0
+                    ? View.INVISIBLE
+                    : View.VISIBLE);
             mRelativeLayoutEditToolbar.setVisibility(View.INVISIBLE);
         }
     }

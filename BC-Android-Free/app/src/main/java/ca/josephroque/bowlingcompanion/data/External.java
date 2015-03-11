@@ -349,6 +349,14 @@ public class External
                         dialog.dismiss();
                     }
                 })
+                .setNegativeButton(Constants.DIALOG_CANCEL, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        dialog.dismiss();
+                    }
+                })
                 .create()
                 .show();
     }
