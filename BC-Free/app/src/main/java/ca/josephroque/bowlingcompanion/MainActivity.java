@@ -16,7 +16,6 @@ public class MainActivity extends ActionBarActivity
         setContentView(R.layout.activity_main);
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
@@ -28,15 +27,11 @@ public class MainActivity extends ActionBarActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings)
+        switch(item.getItemId())
         {
-            return true;
+            case R.id.action_settings:
+                //TODO: show settings
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
