@@ -77,7 +77,9 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 + LeagueEntry.COLUMN_NUMBER_OF_GAMES + " INTEGER NOT NULL, "
                 + LeagueEntry.COLUMN_DATE_MODIFIED + " TEXT NOT NULL, "
                 + LeagueEntry.COLUMN_IS_EVENT + " INTEGER NOT NULL DEFAULT 0, "
-                + LeagueEntry.COLUMN_BOWLER_ID + " INTEGER NOT NULL, "
+                + LeagueEntry.COLUMN_BOWLER_ID + " INTEGER NOT NULL"
+                        + " REFERENCES " + BowlerEntry.TABLE_NAME
+                        + " ON UPDATE CASCADE ON DELETE CASCADE, "
                 + "CHECK (" + LeagueEntry.COLUMN_NUMBER_OF_GAMES + " > 0 AND " + LeagueEntry.COLUMN_NUMBER_OF_GAMES + " <= 20), "
                 + "CHECK (" + LeagueEntry.COLUMN_IS_EVENT + " = 0 OR " + LeagueEntry.COLUMN_IS_EVENT + " = 1)"
                 + ");");
@@ -86,6 +88,8 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 + SeriesEntry._ID + " INTEGER PRIMARY KEY, "
                 + SeriesEntry.COLUMN_SERIES_DATE + " TEXT NOT NULL, "
                 + SeriesEntry.COLUMN_LEAGUE_ID + " INTEGER NOT NULL"
+                        + " REFERENCES " + LeagueEntry.TABLE_NAME
+                        + " ON UPDATE CASCADE ON DELETE CASCADE"
                 + ");");
         mDatabase.execSQL("CREATE TABLE "
                 + GameEntry.TABLE_NAME + " ("
@@ -94,7 +98,9 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 + GameEntry.COLUMN_SCORE + " INTEGER NOT NULL DEFAULT 0, "
                 + GameEntry.COLUMN_IS_MANUAL + " INTEGER NOT NULL DEFAULT 0, "
                 + GameEntry.COLUMN_IS_LOCKED + " INTEGER NOT NULL DEFAULT 0, "
-                + GameEntry.COLUMN_SERIES_ID + " INTEGER NOT NULL, "
+                + GameEntry.COLUMN_SERIES_ID + " INTEGER NOT NULL"
+                        + " REFERENCES " + SeriesEntry.TABLE_NAME
+                        + " ON UPDATE CASCADE ON DELETE CASCADE, "
                 + "CHECK (" + GameEntry.COLUMN_GAME_NUMBER + " >= 1 AND " + GameEntry.COLUMN_GAME_NUMBER + " <= 20), "
                 + "CHECK (" + GameEntry.COLUMN_IS_LOCKED + " = 0 OR " + GameEntry.COLUMN_IS_LOCKED + " = 1), "
                 + "CHECK (" + GameEntry.COLUMN_IS_MANUAL + " = 0 OR " + GameEntry.COLUMN_IS_MANUAL + " = 1), "
@@ -109,10 +115,22 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 + FrameEntry.COLUMN_PIN_STATE[1] + " TEXT NOT NULL DEFAULT '00000', "
                 + FrameEntry.COLUMN_PIN_STATE[2] + " TEXT NOT NULL DEFAULT '00000', "
                 + FrameEntry.COLUMN_FOULS + " TEXT NOT NULL DEFAULT '0', "
-                + FrameEntry.COLUMN_GAME_ID + " INTEGER NOT NULL, "
+                + FrameEntry.COLUMN_GAME_ID + " INTEGER NOT NULL"
+                        + " REFERENCES " + GameEntry.TABLE_NAME
+                        + " ON UPDATE CASCADE ON DELETE CASCADE, "
                 + "CHECK (" + FrameEntry.COLUMN_FRAME_NUMBER + " >= 1 AND " + FrameEntry.COLUMN_FRAME_NUMBER + " <= 10), "
                 + "CHECK (" + FrameEntry.COLUMN_IS_ACCESSED + " = 0 OR " + FrameEntry.COLUMN_IS_ACCESSED + " = 1)"
                 + ");");
+    }
+
+    @Override
+    public void onOpen(SQLiteDatabase db)
+    {
+        super.onOpen(db);
+        if (!db.isReadOnly())
+        {
+            db.execSQL("PRAGMA foreign_keys=ON;");
+        }
     }
 
     @Override

@@ -38,6 +38,8 @@ public class Theme
 
     /** Indicates whether the main activity has an invalid theme */
     private static boolean sMainActivityThemeInvalid = true;
+    /** Indicates whether the bowler fragment has an invalid theme */
+    private static boolean sBowlerFragmentThemeInvalid = true;
 
     /**
      * Loads the default theme from the preferences, or the theme
@@ -186,6 +188,7 @@ public class Theme
     private static void invalidateThemes()
     {
         sMainActivityThemeInvalid = true;
+        sBowlerFragmentThemeInvalid = true;
     }
 
     /**
@@ -213,9 +216,15 @@ public class Theme
     public static boolean getMainActivityThemeInvalidated() {return sMainActivityThemeInvalid;}
 
     /**
-     * Should be called when main activity theme has been updated
+     * Checks if the bowler fragment's theme is invalid
+     * @return the value of sBowlerFragmentThemeInvalidated
      */
+    public static boolean getBowlerFragmentThemeInvalidated() {return sBowlerFragmentThemeInvalid;}
+
+    /** Should be called when main activity theme has been updated */
     public static void validateMainActivityTheme() {sMainActivityThemeInvalid = false;}
+    /** Should be called when bowler fragment theme has been updated */
+    public static void validateBowlerFragmentTheme() {sBowlerFragmentThemeInvalid = false;}
 
     /**
      * Gets the primary color for the theme
