@@ -1,10 +1,10 @@
 package ca.josephroque.bowlingcompanion.fragment;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -21,6 +21,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.melnykov.fab.FloatingActionButton;
 
@@ -84,6 +85,8 @@ public class BowlerFragment extends Fragment
     /** Name of preferred league */
     private String mQuickLeagueName;
 
+    private OnBowlerSelectedListener mBowlerSelectedListener;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -92,15 +95,35 @@ public class BowlerFragment extends Fragment
     }
 
     @Override
+    public void onAttach(Activity activity)
+    {
+        super.onAttach(activity);
+
+        /*
+         * This makes sure the container Activity has implemented
+         * the callback interface. If not, an exception is thrown
+         */
+        try
+        {
+            mBowlerSelectedListener = (OnBowlerSelectedListener)activity;
+        }
+        catch (ClassCastException ex)
+        {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnBowlerSelectedListener");
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        View rootView = inflater.inflate(R.layout.fragment_bowlers, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_fab_list, container, false);
 
         mListBowlerIds = new ArrayList<>();
         mListBowlerNames = new ArrayList<>();
         mListBowlerAverages = new ArrayList<>();
 
-        mRecyclerViewBowlers = (RecyclerView)rootView.findViewById(R.id.rv_bowlers);
+        mRecyclerViewBowlers = (RecyclerView)rootView.findViewById(R.id.rv_names);
         mRecyclerViewBowlers.setHasFixedSize(true);
         mRecyclerViewBowlers.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
 
@@ -113,7 +136,8 @@ public class BowlerFragment extends Fragment
         mRecyclerViewBowlers.setAdapter(mAdapterBowlers);
 
         FloatingActionButton floatingActionButton =
-                (FloatingActionButton)rootView.findViewById(R.id.fab_new_bowler);
+                (FloatingActionButton)rootView.findViewById(R.id.fab_new_list_item);
+        floatingActionButton.setImageResource(R.drawable.ic_action_add_person);
         floatingActionButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -123,7 +147,8 @@ public class BowlerFragment extends Fragment
             }
         });
 
-        //TODO: AppRater.appLaunched(getActivity());
+        ((TextView)rootView.findViewById(R.id.tv_new_list_item)).setText(R.string.text_new_bowler);
+        ((TextView)rootView.findViewById(R.id.tv_delete_list_item)).setText(R.string.text_delete_bowler);
 
         return rootView;
     }
@@ -174,7 +199,7 @@ public class BowlerFragment extends Fragment
     @Override
     public void updateTheme()
     {
-        FloatingActionButton fab = (FloatingActionButton)getView().findViewById(R.id.fab_new_bowler);
+        FloatingActionButton fab = (FloatingActionButton)getView().findViewById(R.id.fab_new_list_item);
         fab.setColorNormal(Theme.getPrimaryThemeColor());
         fab.setColorPressed(Theme.getPrimaryThemeColor());
         fab.setColorRipple(Theme.getTertiaryThemeColor());
@@ -199,13 +224,7 @@ public class BowlerFragment extends Fragment
         boolean validInput = true;
         String invalidInputMessage = null;
 
-        if (bowlerName == null || bowlerName.length() == 0)
-        {
-            //No input for the name
-            validInput = false;
-            invalidInputMessage = "You must enter a name.";
-        }
-        else if (mListBowlerNames.contains(bowlerName))
+        if (mListBowlerNames.contains(bowlerName))
         {
             //Bowler name already exists in the list
             validInput = false;
@@ -213,6 +232,7 @@ public class BowlerFragment extends Fragment
         }
         else if (!bowlerName.matches(Constants.REGEX_NAME))
         {
+            //Name is not made up of letters and spaces
             validInput = false;
             invalidInputMessage = "You can only use letters and spaces in a name.";
         }
@@ -557,8 +577,7 @@ public class BowlerFragment extends Fragment
             long bowlerId = (Long)params[0];
             int position = (Integer)params[1];
 
-            //TODO: create fragment transaction to leagues
-            Log.w(TAG, "Fragment transaction incompleted: Bowler-League");
+            mBowlerSelectedListener.onBowlerSelected(bowlerId, mListBowlerNames.get(position));
         }
     }
 
@@ -626,5 +645,20 @@ public class BowlerFragment extends Fragment
                 mRecyclerViewBowlers.scrollToPosition(0);
             }
         }
+    }
+
+    /**
+     * Container Activity must implement this interface to allow
+     * LeagueEventFragment to be loaded when a bowler is selected
+     */
+    public static interface OnBowlerSelectedListener
+    {
+        /**
+         * Should be overridden to create a LeagueEventFragment with the leagues
+         * belonging to the bowler represented by bowlerId
+         * @param bowlerId id of the bowler whose leagues/events will be displayed
+         * @param bowlerName name of the bowler corresponding to bowlerId
+         */
+        public void onBowlerSelected(long bowlerId, String bowlerName);
     }
 }

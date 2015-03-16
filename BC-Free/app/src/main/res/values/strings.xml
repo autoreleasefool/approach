@@ -7,8 +7,11 @@
     <!-- Action button text -->
     <string name="action_settings">Settings</string>
     <string name="action_quick_series">Quick Series</string>
+    <string name="action_stats">Stats</string>
 
     <!-- TextView text -->
     <string name="text_new_bowler">Use the \'+\' to add a new bowler.</string>
     <string name="text_delete_bowler">Hold down a bowler\'s name to delete them.</string>
+    <string name="text_new_league_event">Use the \'+\' to add a new league/event.</string>
+    <string name="text_delete_league_event">Hold down an item\'s name to delete it.</string>
 </resources>
