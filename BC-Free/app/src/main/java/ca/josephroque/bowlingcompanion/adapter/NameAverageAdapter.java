@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion.adapter;
 
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -23,6 +24,7 @@ import ca.josephroque.bowlingcompanion.theme.Theme;
  * in project Bowling Companion
  */
 public class NameAverageAdapter extends RecyclerView.Adapter<NameAverageAdapter.NameAverageViewHolder>
+    implements View.OnClickListener, View.OnLongClickListener
 {
     /** Tag to identify class when outputting to console */
     private static final String TAG = "NameAverageAdapter";
@@ -95,23 +97,8 @@ public class NameAverageAdapter extends RecyclerView.Adapter<NameAverageAdapter.
         holder.mTextViewAverage.setText("Avg: " +
                 String.valueOf(mListAverages.get(position)));
 
-        holder.itemView.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                mEventHandler.onNAItemClick(position);
-            }
-        });
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener()
-        {
-            @Override
-            public boolean onLongClick(View v)
-            {
-                mEventHandler.onNALongClick(position);
-                return true;
-            }
-        });
+        holder.itemView.setOnClickListener(this);
+        holder.itemView.setOnLongClickListener(this);
         holder.itemView.setOnTouchListener(new View.OnTouchListener()
         {
             @Override
@@ -148,6 +135,19 @@ public class NameAverageAdapter extends RecyclerView.Adapter<NameAverageAdapter.
     }
 
     @Override
+    public void onClick(View v)
+    {
+        mEventHandler.onNAItemClick(mEventHandler.getNAViewPositionInRecyclerView(v));
+    }
+
+    @Override
+    public boolean onLongClick(View v)
+    {
+        mEventHandler.onNALongClick(mEventHandler.getNAViewPositionInRecyclerView(v));
+        return true;
+    }
+
+    @Override
     public int getItemCount() {return mListNames.size();}
 
     /**
@@ -168,5 +168,13 @@ public class NameAverageAdapter extends RecyclerView.Adapter<NameAverageAdapter.
          * @param position position of the item in the list
          */
         public void onNALongClick(final int position);
+
+        /**
+         * Should be used to return RecyclerView#getChildPosition(v) on the
+         * recycler view which uses this adapter
+         * @param v the view to get the position of
+         * @return position of v in the parent RecyclerView
+         */
+        public int getNAViewPositionInRecyclerView(View v);
     }
 }

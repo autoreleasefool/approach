@@ -161,6 +161,12 @@ public class SeriesFragment extends Fragment
         showDeleteSeriesDialog(position);
     }
 
+    @Override
+    public int getSeriesViewPositionInRecyclerView(View v)
+    {
+        return mRecyclerViewSeries.getChildPosition(v);
+    }
+
     private void showDeleteSeriesDialog(int position)
     {
         final String seriesDate = mListSeriesDates.get(position);

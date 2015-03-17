@@ -192,6 +192,12 @@ public class LeagueEventFragment extends Fragment
     }
 
     @Override
+    public int getNAViewPositionInRecyclerView(View v)
+    {
+        return mRecyclerViewLeagueEvents.getChildPosition(v);
+    }
+
+    @Override
     public void onAddNewLeagueEvent(boolean isEvent, String leagueEventName, byte numberOfGames)
     {
         boolean validInput = true;
@@ -567,10 +573,10 @@ public class LeagueEventFragment extends Fragment
      * Creates a new entry in the database for a league or event which is then added to the list
      * of data to be displayed to the user.
      */
-    private class AddNewLeagueEventTask extends AsyncTask<Object, Void, Long>
+    private class AddNewLeagueEventTask extends AsyncTask<Object, Void, Object[]>
     {
         @Override
-        protected Long doInBackground(Object... params)
+        protected Object[] doInBackground(Object... params)
         {
             boolean isEvent = (Boolean)params[0];
             String leagueEventName = params[1].toString();
@@ -634,25 +640,26 @@ public class LeagueEventFragment extends Fragment
                 database.endTransaction();
             }
 
-            if (newId > -1)
-            {
-                //Adds the league to the top of the list (it is the most recent)
-                mListLeagueEventIds.add(0, newId);
-                mListLeagueEventNames.add(((isEvent) ? "E":"L")
-                        + leagueEventName);
-                mListLeagueEventAverages.add(0, (short)0);
-                mListLeagueEventNumberOfGames.add(0, numberOfGames);
-            }
-
-            return newId;
+            return new Object[]{newId, isEvent, leagueEventName, numberOfGames};
         }
 
         @Override
-        protected void onPostExecute(Long newLeagueId)
+        protected void onPostExecute(Object[] params)
         {
-            if (newLeagueId > 0)
+            long newId = (Long)params[0];
+            boolean isEvent = (Boolean)params[1];
+            String leagueEventName = params[2].toString();
+            byte numberOfGames = (Byte)params[3];
+
+            if (newId != -1)
             {
+                mListLeagueEventIds.add(0, newId);
+                mListLeagueEventNames.add(0, ((isEvent) ? "E":"L")
+                        + leagueEventName);
+                mListLeagueEventAverages.add(0, (short)0);
+                mListLeagueEventNumberOfGames.add(0, numberOfGames);
                 mAdapterLeagueEvents.notifyItemInserted(0);
+                mRecyclerViewLeagueEvents.scrollToPosition(0);
             }
         }
     }

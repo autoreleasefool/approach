@@ -24,7 +24,7 @@ import ca.josephroque.bowlingcompanion.theme.Theme;
  * in project Bowling Companion
  */
 public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesViewHolder>
-    implements Theme.ChangeableTheme
+    implements Theme.ChangeableTheme, View.OnClickListener, View.OnLongClickListener
 {
     /** Tag to identify class when outputting to console */
     private static final String TAG = "SeriesAdapter";
@@ -114,23 +114,8 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
          * Below methods are executed when an item in the RecyclerView is
          * clicked or long clicked.
          */
-        holder.itemView.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                mEventHandler.onSItemClick(position);
-            }
-        });
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener()
-        {
-            @Override
-            public boolean onLongClick(View v)
-            {
-                mEventHandler.onSLongClick(position);
-                return false;
-            }
-        });
+        holder.itemView.setOnClickListener(this);
+        holder.itemView.setOnLongClickListener(this);
         holder.itemView.setOnTouchListener(new View.OnTouchListener()
         {
             @Override
@@ -167,6 +152,19 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
     }
 
     @Override
+    public void onClick(View v)
+    {
+        mEventHandler.onSItemClick(mEventHandler.getSeriesViewPositionInRecyclerView(v));
+    }
+
+    @Override
+    public boolean onLongClick(View v)
+    {
+        mEventHandler.onSLongClick(mEventHandler.getSeriesViewPositionInRecyclerView(v));
+        return true;
+    }
+
+    @Override
     public int getItemCount() {return mListDates.size();}
 
     @Override
@@ -189,5 +187,13 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
          * @param position position of the item in the list
          */
         public void onSLongClick(final int position);
+
+        /**
+         * Should be used to return RecyclerView#getChildPosition(v) on the
+         * recycler view which uses this adapter
+         * @param v the view to get the position of
+         * @return position of v in the parent RecyclerView
+         */
+        public int getSeriesViewPositionInRecyclerView(View v);
     }
 }

@@ -222,6 +222,12 @@ public class BowlerFragment extends Fragment
     }
 
     @Override
+    public int getNAViewPositionInRecyclerView(View v)
+    {
+        return mRecyclerViewBowlers.getChildPosition(v);
+    }
+
+    @Override
     public void onAddNewBowler(String bowlerName)
     {
         boolean validInput = true;
@@ -382,10 +388,10 @@ public class BowlerFragment extends Fragment
      */
     private void deleteBowler(final long bowlerId)
     {
-        final int indexOfId = mListBowlerIds.indexOf(bowlerId);
-        final String bowlerName = mListBowlerNames.remove(indexOfId);
-        mListBowlerIds.remove(indexOfId);
-        mAdapterBowlers.notifyItemRemoved(indexOfId);
+        final int index = mListBowlerIds.indexOf(bowlerId);
+        final String bowlerName = mListBowlerNames.remove(index);
+        mListBowlerIds.remove(index);
+        mAdapterBowlers.notifyItemRemoved(index);
 
         SharedPreferences prefs = getActivity().getSharedPreferences(Constants.PREFS, Context.MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = prefs.edit();
