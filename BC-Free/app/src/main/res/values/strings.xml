@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Global app text -->
+    <!-- App & Fragment Titles -->
     <string name="app_name">Bowling Companion</string>
+    <string name="title_league_event">Select a League/Event</string>
 
     <!-- Action button text -->
     <string name="action_settings">Settings</string>

@@ -32,6 +32,7 @@ import java.util.List;
 
 import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.DividerItemDecoration;
+import ca.josephroque.bowlingcompanion.MainActivity;
 import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.adapter.NameAverageAdapter;
 import ca.josephroque.bowlingcompanion.database.Contract.*;
@@ -157,6 +158,7 @@ public class BowlerFragment extends Fragment
     public void onResume()
     {
         super.onResume();
+        ((MainActivity)getActivity()).setActionBarTitle(R.string.app_name);
 
         SharedPreferences prefs = getActivity().getSharedPreferences(Constants.PREFS, Context.MODE_PRIVATE);
         mRecentBowlerId = prefs.getLong(Constants.PREF_RECENT_BOWLER_ID, -1);
