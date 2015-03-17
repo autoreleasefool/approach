@@ -42,6 +42,8 @@ public class Theme
     private static boolean sBowlerFragmentThemeInvalid = true;
     /** Indicates whether the league/event fragment has an invalid theme */
     private static boolean sLeagueEventFragmentThemeInvalid = true;
+    /** Indicates whether the series fragment has an invalid theme */
+    private static boolean sSeriesFragmentThemeInvalid = true;
 
     /**
      * Loads the default theme from the preferences, or the theme
@@ -192,6 +194,7 @@ public class Theme
         sMainActivityThemeInvalid = true;
         sBowlerFragmentThemeInvalid = true;
         sLeagueEventFragmentThemeInvalid = true;
+        sSeriesFragmentThemeInvalid = true;
     }
 
     /**
@@ -230,12 +233,20 @@ public class Theme
      */
     public static boolean getLeagueEventFragmentThemeInvalidated() {return sLeagueEventFragmentThemeInvalid;}
 
+    /**
+     * Checks if the series fragment's theme is invalid
+     * @return the value of sSeriesFragmentThemeInvalid
+     */
+    public static boolean getSeriesFragmentThemeInvalidated() {return sSeriesFragmentThemeInvalid;}
+
     /** Should be called when main activity theme has been updated */
     public static void validateMainActivityTheme() {sMainActivityThemeInvalid = false;}
     /** Should be called when bowler fragment theme has been updated */
     public static void validateBowlerFragmentTheme() {sBowlerFragmentThemeInvalid = false;}
     /** Should be called when league/event fragment theme has been updated */
     public static void validateLeagueEventFragmentTheme() {sLeagueEventFragmentThemeInvalid = false;}
+    /** Should be called when series fragment theme has been updated */
+    public static void validateSeriesFragmentTheme() {sSeriesFragmentThemeInvalid = false;}
 
     /**
      * Gets the primary color for the theme

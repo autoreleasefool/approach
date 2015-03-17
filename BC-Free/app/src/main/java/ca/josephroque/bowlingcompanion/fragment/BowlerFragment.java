@@ -169,6 +169,7 @@ public class BowlerFragment extends Fragment
         mListBowlerIds.clear();
         mListBowlerNames.clear();
         mListBowlerAverages.clear();
+        mAdapterBowlers.notifyDataSetChanged();
 
         if (Theme.getBowlerFragmentThemeInvalidated())
         {
@@ -426,10 +427,6 @@ public class BowlerFragment extends Fragment
                 {
                     database.endTransaction();
                 }
-
-                Cursor c = database.rawQuery("SELECT * FROM " + LeagueEntry.TABLE_NAME
-                        + " WHERE " + LeagueEntry.COLUMN_BOWLER_ID + "=?", whereArgs);
-                Log.w(TAG, "Deleted? Should be 0: " + c.getCount());
             }
         }).start();
     }

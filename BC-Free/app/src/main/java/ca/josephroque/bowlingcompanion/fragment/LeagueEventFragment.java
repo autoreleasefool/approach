@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.fragment;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
@@ -53,17 +54,38 @@ public class LeagueEventFragment extends Fragment
     private RecyclerView mRecyclerViewLeagueEvents;
     private NameAverageAdapter mAdapterLeagueEvents;
 
-    private long mBowlerId = -1;
     private List<Long> mListLeagueEventIds;
     private List<String> mListLeagueEventNames;
     private List<Short> mListLeagueEventAverages;
     private List<Byte> mListLeagueEventNumberOfGames;
+
+    private OnLeagueSelectedListener mLeagueSelectedListener;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onAttach(Activity activity)
+    {
+        super.onAttach(activity);
+
+        /*
+         * This makes sure the container Activity has implemented
+         * the callback interface. If not, an exception is thrown
+         */
+        try
+        {
+            mLeagueSelectedListener = (OnLeagueSelectedListener)activity;
+        }
+        catch (ClassCastException ex)
+        {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnLeagueSelectedListener");
+        }
     }
 
     @Override
@@ -104,11 +126,6 @@ public class LeagueEventFragment extends Fragment
         ((TextView)rootView.findViewById(R.id.tv_new_list_item)).setText(R.string.text_new_league_event);
         ((TextView)rootView.findViewById(R.id.tv_delete_list_item)).setText(R.string.text_delete_league_event);
 
-        if (savedInstanceState != null)
-        {
-            mBowlerId = savedInstanceState.getLong(Constants.EXTRA_ID_BOWLER);
-        }
-
         return rootView;
     }
 
@@ -118,15 +135,11 @@ public class LeagueEventFragment extends Fragment
         super.onResume();
         ((MainActivity)getActivity()).setActionBarTitle(R.string.title_league_event);
 
-        if (mBowlerId == -1)
-        {
-            mBowlerId = getArguments().getLong(Constants.EXTRA_ID_BOWLER);
-        }
-
         mListLeagueEventIds.clear();
         mListLeagueEventNames.clear();
         mListLeagueEventAverages.clear();
         mListLeagueEventNumberOfGames.clear();
+        mAdapterLeagueEvents.notifyDataSetChanged();
 
         if (Theme.getLeagueEventFragmentThemeInvalidated())
         {
@@ -154,13 +167,6 @@ public class LeagueEventFragment extends Fragment
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState)
-    {
-        super.onSaveInstanceState(outState);
-        outState.putLong(Constants.EXTRA_ID_BOWLER, mBowlerId);
     }
 
     @Override
@@ -487,18 +493,18 @@ public class LeagueEventFragment extends Fragment
                 byte numberOfGames = (Byte)params[1];
                 long leagueId = (Long)params[2];
                 String leagueName = params[3].toString();
+                long bowlerId = ((MainActivity)getActivity()).getBowlerId();
 
                 if (!leagueName.equals(Constants.NAME_OPEN_LEAGUE))
                 {
                     getActivity().getSharedPreferences(Constants.PREFS, Context.MODE_PRIVATE)
                             .edit()
                             .putLong(Constants.PREF_RECENT_LEAGUE_ID, leagueId)
-                            .putLong(Constants.PREF_RECENT_BOWLER_ID, mBowlerId)
+                            .putLong(Constants.PREF_RECENT_BOWLER_ID, bowlerId)
                             .apply();
                 }
 
-                //TODO: create fragment transaction to series
-                Log.w(TAG, "Fragment transaction incomplete: League-Series");
+                mLeagueSelectedListener.onLeagueSelected(leagueId, leagueName, numberOfGames);
             }
         }
     }
@@ -529,7 +535,8 @@ public class LeagueEventFragment extends Fragment
                     + " GROUP BY lid"
                     + " ORDER BY " + LeagueEntry.COLUMN_DATE_MODIFIED + " DESC";
 
-            Cursor cursor = database.rawQuery(rawLeagueEventQuery, new String[]{String.valueOf(mBowlerId)});
+            long bowlerId = ((MainActivity)getActivity()).getBowlerId();
+            Cursor cursor = database.rawQuery(rawLeagueEventQuery, new String[]{String.valueOf(bowlerId)});
             if (cursor.moveToFirst())
             {
                 while (!cursor.isAfterLast())
@@ -568,6 +575,7 @@ public class LeagueEventFragment extends Fragment
             boolean isEvent = (Boolean)params[0];
             String leagueEventName = params[1].toString();
             byte numberOfGames = (Byte)params[2];
+            long bowlerId = ((MainActivity)getActivity()).getBowlerId();
 
             long newId = -1;
             SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
@@ -577,7 +585,7 @@ public class LeagueEventFragment extends Fragment
             ContentValues values = new ContentValues();
             values.put(LeagueEntry.COLUMN_LEAGUE_NAME, leagueEventName);
             values.put(LeagueEntry.COLUMN_DATE_MODIFIED, currentDate);
-            values.put(LeagueEntry.COLUMN_BOWLER_ID, mBowlerId);
+            values.put(LeagueEntry.COLUMN_BOWLER_ID, bowlerId);
             values.put(LeagueEntry.COLUMN_NUMBER_OF_GAMES, numberOfGames);
             values.put(LeagueEntry.COLUMN_IS_EVENT, isEvent);
 
@@ -647,5 +655,21 @@ public class LeagueEventFragment extends Fragment
                 mAdapterLeagueEvents.notifyItemInserted(0);
             }
         }
+    }
+
+    /**
+     * Container Activity must implement this interface to allow
+     * SeriesFragment/GameFragment to be loaded when a league/event is selected
+     */
+    public static interface OnLeagueSelectedListener
+    {
+        /**
+         * Should be overridden to create a SeriesFragment with the series
+         * belonging to the league represented by leagueId
+         * @param leagueId id of the league whose series will be displayed
+         * @param leagueName name of the league corresponding to leagueId
+         * @param numberOfGames number of games of the league corresponding to leagueId
+         */
+        public void onLeagueSelected(long leagueId, String leagueName, byte numberOfGames);
     }
 }

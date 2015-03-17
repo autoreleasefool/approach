@@ -20,7 +20,10 @@ public class Constants
     // EXTRAS
     public static final String EXTRA_NAME_BOWLER = "EBN";
     public static final String EXTRA_NAME_LEAGUE = "ENL";
+    public static final String EXTRA_NAME_SERIES = "ENS";
     public static final String EXTRA_ID_BOWLER = "EIB";
+    public static final String EXTRA_ID_LEAGUE = "EIL";
+    public static final String EXTRA_ID_SERIES = "EIS";
     public static final String EXTRA_EVENT_MODE = "EEM";
     public static final String EXTRA_NUMBER_OF_GAMES = "ENOG";
 
@@ -36,4 +39,9 @@ public class Constants
     // NAMES
     public static final byte NAME_MAX_LENGTH = 30;
     public static final String NAME_OPEN_LEAGUE = "Open";
+
+    // FRAGMENTS
+    public static final String FRAGMENT_BOWLERS = "BowlerFragment";
+    public static final String FRAGMENT_LEAGUES = "LeagueEventFragment";
+    public static final String FRAGMENT_SERIES = "SeriesFragment";
 }

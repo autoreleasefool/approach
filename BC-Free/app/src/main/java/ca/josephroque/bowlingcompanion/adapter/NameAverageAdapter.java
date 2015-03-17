@@ -24,7 +24,6 @@ import ca.josephroque.bowlingcompanion.theme.Theme;
  */
 public class NameAverageAdapter extends RecyclerView.Adapter<NameAverageAdapter.NameAverageViewHolder>
 {
-
     /** Tag to identify class when outputting to console */
     private static final String TAG = "NameAverageAdapter";
 
@@ -33,7 +32,7 @@ public class NameAverageAdapter extends RecyclerView.Adapter<NameAverageAdapter.
     /** Indicates data represents leagues and events */
     public static final byte DATA_LEAGUES_EVENTS = 1;
 
-    /** Instance of activity which created this adapter */
+    /** Instance of handler for callback on user action */
     private NameAverageEventHandler mEventHandler;
     /** List of names which will be displayed */
     private List<String> mListNames;

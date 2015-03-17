@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingRight="4dp"
+    android:paddingLeft="4dp"
+    android:background="@color/secondary_background">
+
+    <TextView
+        android:id="@+id/tv_series_date"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical"
+        android:gravity="center"
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
+
+    <TextView
+        android:id="@+id/tv_series_game_1"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:gravity="center"
+        android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+    <TextView
+        android:id="@+id/tv_series_game_2"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_toLeftOf="@id/tv_series_game_1"
+        android:layout_toStartOf="@id/tv_series_game_1"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:gravity="center"
+        android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+    <TextView
+        android:id="@+id/tv_series_game_3"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_toLeftOf="@id/tv_series_game_2"
+        android:layout_toStartOf="@id/tv_series_game_2"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:gravity="center"
+        android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+    <TextView
+        android:id="@+id/tv_series_game_4"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_toLeftOf="@id/tv_series_game_3"
+        android:layout_toStartOf="@id/tv_series_game_3"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:gravity="center"
+        android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+    <TextView
+        android:id="@+id/tv_series_game_5"
+        android:layout_width="wrap_content"
+        android:layout_height="48dp"
+        android:layout_toLeftOf="@id/tv_series_game_4"
+        android:layout_toStartOf="@id/tv_series_game_4"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:gravity="center"
+        android:textAppearance="?android:attr/textAppearanceSmall"/>
+
+</RelativeLayout>
