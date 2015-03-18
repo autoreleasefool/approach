@@ -25,12 +25,19 @@ public class MainActivity extends ActionBarActivity
     /** Tag to identify class when outputting to console */
     private static final String TAG = "MainActivity";
 
+    /** Id of current bowler being used in fragments */
     private long mBowlerId = -1;
+    /** Id of current league being used in fragments */
     private long mLeagueId = -1;
+    /** Id of current series being used in fragments */
     private long mSeriesId = -1;
+    /** Number of games in current league/event in fragments */
     private byte mNumberOfGames = -1;
+    /** Name of current bowler being used in fragments */
     private String mBowlerName;
+    /** Name of current league being used in fragments */
     private String mLeagueName;
+    /** Date of current series being used in fragments */
     private String mSeriesDate;
 
     @Override
@@ -45,6 +52,7 @@ public class MainActivity extends ActionBarActivity
 
         if (savedInstanceState == null)
         {
+            //Creates new BowlerFragment to display data, if no other fragment exists
             BowlerFragment bowlerFragment = BowlerFragment.newInstance();
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.fl_main_fragment_container, bowlerFragment)
@@ -52,6 +60,7 @@ public class MainActivity extends ActionBarActivity
         }
         else
         {
+            //Loads member variables from bundle
             mBowlerId = savedInstanceState.getLong(Constants.EXTRA_ID_BOWLER, -1);
             mLeagueId = savedInstanceState.getLong(Constants.EXTRA_ID_LEAGUE, -1);
             mSeriesId = savedInstanceState.getLong(Constants.EXTRA_ID_SERIES, -1);
@@ -68,6 +77,8 @@ public class MainActivity extends ActionBarActivity
     protected void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
+
+        //Saves member variables to bundle
         outState.putLong(Constants.EXTRA_ID_BOWLER, mBowlerId);
         outState.putLong(Constants.EXTRA_ID_LEAGUE, mLeagueId);
         outState.putLong(Constants.EXTRA_ID_SERIES, mSeriesId);
@@ -82,6 +93,7 @@ public class MainActivity extends ActionBarActivity
     {
         super.onResume();
 
+        //Updates theme if invalid
         if (Theme.getMainActivityThemeInvalidated())
         {
             updateTheme();
@@ -144,6 +156,7 @@ public class MainActivity extends ActionBarActivity
     @Override
     public void updateTheme()
     {
+        //Updates colors and sets theme for MainActivity valid
         getSupportActionBar()
                 .setBackgroundDrawable(new ColorDrawable(Theme.getPrimaryThemeColor()));
         Theme.validateMainActivityTheme();
@@ -187,22 +200,63 @@ public class MainActivity extends ActionBarActivity
                 .commit();
     }
 
+    /**
+     * Sets DisplayHomeAsUpEnabled if any fragments are on back stack
+     */
     public void shouldDisplayHomeUp()
     {
         boolean canBack = (getSupportFragmentManager().getBackStackEntryCount() > 0);
         getSupportActionBar().setDisplayHomeAsUpEnabled(canBack);
     }
 
+    /**
+     * Sets title of action bar to string pointed to by resId
+     * @param resId id of string to be set at title
+     */
     public void setActionBarTitle(int resId)
     {
         getSupportActionBar().setTitle(getResources().getString(resId));
     }
 
+    /**
+     * Returns id of current bowler being used in fragments
+     * @return value of mBowlerId
+     */
     public long getBowlerId(){return mBowlerId;}
+
+    /**
+     * Returns id of current league being used in fragments
+     * @return value of mLeagueId
+     */
     public long getLeagueId(){return mLeagueId;}
+
+    /**
+     * Returns id of current series being used in fragments
+     * @return value of mSeriesId
+     */
     public long getSeriesId(){return mSeriesId;}
+
+    /**
+     * Returns current number of games being used in fragments
+     * @return value of mNumberOfGames
+     */
     public byte getNumberOfGames(){return mNumberOfGames;}
+
+    /**
+     * Returns name of current bowler being used in fragments
+     * @return value of mBowlerName
+     */
     public String getBowlerName(){return mBowlerName;}
+
+    /**
+     * Returns name of current league being used in fragments
+     * @return value of mLeagueName
+     */
     public String getLeagueName(){return mLeagueName;}
+
+    /**
+     * Returns name of current series being used in fragments
+     * @return value of mSeriesId
+     */
     public String getSeriesDate(){return mSeriesDate;}
 }

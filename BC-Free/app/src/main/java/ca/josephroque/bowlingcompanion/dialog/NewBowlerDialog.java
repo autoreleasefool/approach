@@ -38,6 +38,7 @@ public class NewBowlerDialog extends DialogFragment
 
         if (savedInstanceState != null)
         {
+            //Loads member variables from bundle
             editTextName.setText(savedInstanceState.getCharSequence(Constants.EXTRA_NAME_BOWLER));
         }
 
@@ -47,6 +48,7 @@ public class NewBowlerDialog extends DialogFragment
                     @Override
                     public void onClick(DialogInterface dialog, int which)
                     {
+                        //Gets name input and calls listener method if input is valid
                         String bowlerName = editTextName.getText().toString().trim();
                         if (bowlerName.length() > 0)
                             mDialogListener.onAddNewBowler(bowlerName);
@@ -68,6 +70,8 @@ public class NewBowlerDialog extends DialogFragment
     public void onSaveInstanceState(@NonNull Bundle outState)
     {
         super.onSaveInstanceState(outState);
+
+        //Saves member variables to bundle
         outState.putCharSequence(Constants.EXTRA_NAME_BOWLER,
                 ((EditText) getDialog().findViewById(R.id.et_bowler_name)).getText());
     }

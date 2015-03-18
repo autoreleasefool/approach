@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
@@ -319,6 +320,24 @@ public class LeagueEventFragment extends Fragment
         mListLeagueEventIds.remove(index);
         mAdapterLeagueEvents.notifyItemRemoved(index);
 
+        SharedPreferences prefs = getActivity().getSharedPreferences(Constants.PREFS, Context.MODE_PRIVATE);
+        SharedPreferences.Editor prefsEditor = prefs.edit();
+        long recentId = prefs.getLong(Constants.PREF_RECENT_LEAGUE_ID, -1);
+        long quickId = prefs.getLong(Constants.PREF_QUICK_LEAGUE_ID, -1);
+
+        //Clears recent/quick ids if they match the deleted league
+        if (recentId == leagueEventId)
+        {
+            prefsEditor.putLong(Constants.PREF_RECENT_BOWLER_ID, -1)
+                    .putLong(Constants.PREF_RECENT_LEAGUE_ID, -1);
+        }
+        if (quickId == leagueEventId)
+        {
+            prefsEditor.putLong(Constants.PREF_QUICK_BOWLER_ID, -1)
+                    .putLong(Constants.PREF_QUICK_LEAGUE_ID, -1);
+        }
+        prefsEditor.apply();
+
         //Deletion occurs on separate thread so UI does not hang
         new Thread(new Runnable()
         {
@@ -399,6 +418,9 @@ public class LeagueEventFragment extends Fragment
         return new LeagueEventFragment();
     }
 
+    /**
+     * TODO: documentation
+     */
     private class OpenLeagueEventSeriesTask extends AsyncTask<Integer, Void, Object[]>
     {
         @Override
@@ -656,7 +678,7 @@ public class LeagueEventFragment extends Fragment
                 mListLeagueEventIds.add(0, newId);
                 mListLeagueEventNames.add(0, ((isEvent) ? "E":"L")
                         + leagueEventName);
-                mListLeagueEventAverages.add(0, (short)0);
+                mListLeagueEventAverages.add(0, (short) 0);
                 mListLeagueEventNumberOfGames.add(0, numberOfGames);
                 mAdapterLeagueEvents.notifyItemInserted(0);
                 mRecyclerViewLeagueEvents.scrollToPosition(0);

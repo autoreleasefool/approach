@@ -24,7 +24,7 @@ public class NewLeagueEventDialog extends DialogFragment
 {
     /** Instance of listener which contains methods that are executed upon user interaction */
     private NewLeagueEventDialogListener mDialogListener;
-
+    /** If true, a new event is being added, a league otherwise */
     private boolean isEventMode;
 
     @Override
@@ -39,6 +39,7 @@ public class NewLeagueEventDialog extends DialogFragment
 
         if (savedInstanceState != null)
         {
+            //Loads member variables from bundle
             isEventMode = savedInstanceState.getBoolean(Constants.EXTRA_EVENT_MODE);
             leagueEventName = savedInstanceState.getCharSequence(Constants.EXTRA_NAME_LEAGUE);
             leagueEventNumberOfGames = savedInstanceState.getCharSequence(Constants.EXTRA_NUMBER_OF_GAMES);
@@ -72,6 +73,7 @@ public class NewLeagueEventDialog extends DialogFragment
                     @Override
                     public void onClick(DialogInterface dialog, int which)
                     {
+                        //Gets input from EditText objects and calls listener method if input is valid
                         String leagueEventName = editTextName.getText().toString().trim();
                         String strNumberOfGames = editTextNumberOfGames.getText().toString().trim();
                         if (leagueEventName.length() > 0 && strNumberOfGames.length() > 0)
@@ -106,6 +108,8 @@ public class NewLeagueEventDialog extends DialogFragment
     public void onSaveInstanceState(@NonNull Bundle outState)
     {
         super.onSaveInstanceState(outState);
+
+        //Saves member variables to bundle
         outState.putBoolean(Constants.EXTRA_EVENT_MODE, isEventMode);
         outState.putCharSequence(Constants.EXTRA_NAME_LEAGUE,
                 ((EditText)getDialog().findViewById(R.id.et_league_event_name)).getText());
@@ -128,6 +132,13 @@ public class NewLeagueEventDialog extends DialogFragment
         public void onAddNewLeagueEvent(boolean isEvent, String leagueEventName, byte numberOfGames);
     }
 
+    /**
+     * Creates a new instance of this DialogFragment and sets the listener
+     * to the parameter passed through this method
+     *
+     * @param listener a listener for on click events
+     * @return a new instance of NewLeagueEventDialog
+     */
     public static NewLeagueEventDialog newInstance(NewLeagueEventDialogListener listener)
     {
         NewLeagueEventDialog dialog = new NewLeagueEventDialog();

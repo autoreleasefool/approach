@@ -10,7 +10,6 @@ import android.widget.TextView;
 import com.nineoldandroids.animation.ArgbEvaluator;
 import com.nineoldandroids.animation.ValueAnimator;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import ca.josephroque.bowlingcompanion.Constants;
@@ -36,43 +35,62 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
     /** List of games which will be displayed, in an order relative to mListDates */
     private List<List<Short>> mListGames;
 
+    /**
+     * Subclass of RecyclerView.ViewHolder to manage view which will display
+     * text to the user
+     */
     public static class SeriesViewHolder extends RecyclerView.ViewHolder
     {
         /** Displays date of the series */
         private TextView mTextViewDate;
         /** Each TextView displays a different score in the series */
-        private List<TextView> mListTextViewGames;
+        private TextView[] mArrayTextViewGames;
+        /** Animates changes in color to the ViewHolder background */
         private ValueAnimator mValueAnimator = null;
 
+        /**
+         * Calls super constructor and gets instances of ImageView and TextView objects
+         * for member variables from itemLayoutView
+         * @param itemLayoutView layout view containing views to display data
+         */
         public SeriesViewHolder(View itemLayoutView)
         {
             super(itemLayoutView);
             mTextViewDate = (TextView)itemLayoutView.findViewById(R.id.tv_series_date);
-            mListTextViewGames = new ArrayList<>();
+
+            //Adds text views by id to array
+            mArrayTextViewGames = new TextView[Constants.MAX_NUMBER_LEAGUE_GAMES];
             for (byte i = 0; i < Constants.MAX_NUMBER_LEAGUE_GAMES; i++)
             {
                 switch(i)
                 {
                     case 0:
-                        mListTextViewGames.add((TextView)itemLayoutView.findViewById(R.id.tv_series_game_1));
+                        mArrayTextViewGames[0] = (TextView)itemLayoutView.findViewById(R.id.tv_series_game_1);
                         break;
                     case 1:
-                        mListTextViewGames.add((TextView)itemLayoutView.findViewById(R.id.tv_series_game_2));
+                        mArrayTextViewGames[1] = (TextView)itemLayoutView.findViewById(R.id.tv_series_game_2);
                         break;
                     case 2:
-                        mListTextViewGames.add((TextView)itemLayoutView.findViewById(R.id.tv_series_game_3));
+                        mArrayTextViewGames[2] = (TextView)itemLayoutView.findViewById(R.id.tv_series_game_3);
                         break;
                     case 3:
-                        mListTextViewGames.add((TextView)itemLayoutView.findViewById(R.id.tv_series_game_4));
+                        mArrayTextViewGames[3] = (TextView)itemLayoutView.findViewById(R.id.tv_series_game_4);
                         break;
                     case 4:
-                        mListTextViewGames.add((TextView)itemLayoutView.findViewById(R.id.tv_series_game_5));
+                        mArrayTextViewGames[4] = (TextView)itemLayoutView.findViewById(R.id.tv_series_game_5);
                         break;
                 }
             }
         }
     }
 
+    /**
+     * Sets member variables to parameters
+     *
+     * @param eventHandler handles on click/long click events on views
+     * @param listDates list of dates to be displayed in RecyclerView
+     * @param listGames list of game scores, relative to listDates to be displayed
+     */
     public SeriesAdapter(
             SeriesEventHandler eventHandler,
             List<String> listDates,
@@ -103,10 +121,10 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
              * Highlights a score if it is over 300 or applies default theme if not
              */
             short gameScore = mListGames.get(position).get(-i + (numberOfGamesInSeries - 1));
-            holder.mListTextViewGames.get(i).setText(String.valueOf(gameScore));
+            holder.mArrayTextViewGames[i].setText(String.valueOf(gameScore));
             if (gameScore >= 300)
             {
-                holder.mListTextViewGames.get(i).setTextColor(Theme.getPrimaryThemeColor());
+                holder.mArrayTextViewGames[i].setTextColor(Theme.getPrimaryThemeColor());
             }
         }
 
@@ -123,6 +141,7 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
             {
                 if (event.getActionMasked() == MotionEvent.ACTION_DOWN)
                 {
+                    //Begins color change animation when user holds down this item
                     holder.mValueAnimator =
                             ValueAnimator.ofObject(new ArgbEvaluator(),
                                     Theme.getListItemBackground(),
@@ -141,6 +160,7 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
                 else if ((event.getActionMasked() == MotionEvent.ACTION_UP || event.getActionMasked() == MotionEvent.ACTION_MOVE)
                         && holder.mValueAnimator != null)
                 {
+                    //Cancels the animation when the user moves or releases
                     holder.mValueAnimator.cancel();
                     holder.mValueAnimator = null;
                     v.setBackgroundColor(Theme.getListItemBackground());
@@ -154,12 +174,14 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
     @Override
     public void onClick(View v)
     {
+        //Calls relevant event handler method
         mEventHandler.onSItemClick(mEventHandler.getSeriesViewPositionInRecyclerView(v));
     }
 
     @Override
     public boolean onLongClick(View v)
     {
+        //Calls relevant event handler method
         mEventHandler.onSLongClick(mEventHandler.getSeriesViewPositionInRecyclerView(v));
         return true;
     }

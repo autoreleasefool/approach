@@ -43,7 +43,9 @@ public class SeriesFragment extends Fragment
     /** Tag to identify class when outputting to console */
     private static final String TAG = "SeriesFragment";
 
+    /** View to display series dates and games to user */
     private RecyclerView mRecyclerViewSeries;
+    /** Adapter to manage data displayed in mRecyclerViewSeries */
     private SeriesAdapter mAdapterSeries;
 
     /** List of series ids from "series" table in database to uniquely identify series */
@@ -108,11 +110,13 @@ public class SeriesFragment extends Fragment
         mListSeriesGames.clear();
         mAdapterSeries.notifyDataSetChanged();
 
+        //Updates theme if invalid
         if (Theme.getSeriesFragmentThemeInvalidated())
         {
             updateTheme();
         }
 
+        //Creates AsyncTask to load data from database
         new LoadSeriesTask().execute();
     }
 
@@ -139,10 +143,15 @@ public class SeriesFragment extends Fragment
     @Override
     public void updateTheme()
     {
-        FloatingActionButton fab = (FloatingActionButton)getView().findViewById(R.id.fab_new_list_item);
-        fab.setColorNormal(Theme.getPrimaryThemeColor());
-        fab.setColorPressed(Theme.getPrimaryThemeColor());
-        fab.setColorRipple(Theme.getTertiaryThemeColor());
+        //Updates colors of views and sets theme for this object to a 'valid' state
+        View rootView = getView();
+        if (rootView != null)
+        {
+            FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab_new_list_item);
+            fab.setColorNormal(Theme.getPrimaryThemeColor());
+            fab.setColorPressed(Theme.getPrimaryThemeColor());
+            fab.setColorRipple(Theme.getTertiaryThemeColor());
+        }
         mAdapterSeries.updateTheme();
         Theme.validateSeriesFragmentTheme();
     }
@@ -164,9 +173,16 @@ public class SeriesFragment extends Fragment
     @Override
     public int getSeriesViewPositionInRecyclerView(View v)
     {
+        //Gets position of view in mRecyclerViewSeries
         return mRecyclerViewSeries.getChildPosition(v);
     }
 
+    /**
+     * Prompts user with a dialog to delete all data regarding a certain
+     * series in the database
+     *
+     * @param position position of series id in mListSeriesIds
+     */
     private void showDeleteSeriesDialog(int position)
     {
         final String seriesDate = mListSeriesDates.get(position);
@@ -184,6 +200,10 @@ public class SeriesFragment extends Fragment
                 seriesDate);
     }
 
+    /**
+     * Deletes all data regarding a certain series id in the database
+     * @param seriesId id of series whose data will be deleted
+     */
     private void deleteSeries(final long seriesId)
     {
         final int index = mListSeriesIds.indexOf(seriesId);
@@ -230,6 +250,10 @@ public class SeriesFragment extends Fragment
         return seriesFragment;
     }
 
+    /**
+     * Loads series relevant to the current bowler and league,
+     * and displays them in the recycler view
+     */
     private class LoadSeriesTask extends AsyncTask<Void, Void, Void>
     {
         @Override

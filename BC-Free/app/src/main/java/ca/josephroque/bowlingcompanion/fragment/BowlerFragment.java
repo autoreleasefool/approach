@@ -86,6 +86,7 @@ public class BowlerFragment extends Fragment
     /** Name of preferred league */
     private String mQuickLeagueName;
 
+    /** Listener for user events */
     private OnBowlerSelectedListener mBowlerSelectedListener;
 
     @Override
@@ -160,6 +161,7 @@ public class BowlerFragment extends Fragment
         super.onResume();
         ((MainActivity)getActivity()).setActionBarTitle(R.string.app_name);
 
+        //Loads values for member variables from preferences, if they exist
         SharedPreferences prefs = getActivity().getSharedPreferences(Constants.PREFS, Context.MODE_PRIVATE);
         mRecentBowlerId = prefs.getLong(Constants.PREF_RECENT_BOWLER_ID, -1);
         mRecentLeagueId = prefs.getLong(Constants.PREF_RECENT_LEAGUE_ID, -1);
@@ -171,11 +173,13 @@ public class BowlerFragment extends Fragment
         mListBowlerAverages.clear();
         mAdapterBowlers.notifyDataSetChanged();
 
+        //Updates theme if invalid
         if (Theme.getBowlerFragmentThemeInvalidated())
         {
             updateTheme();
         }
 
+        //Creates AsyncTask to load data from database
         new LoadBowlerAndRecentTask().execute();
     }
 
@@ -202,10 +206,15 @@ public class BowlerFragment extends Fragment
     @Override
     public void updateTheme()
     {
-        FloatingActionButton fab = (FloatingActionButton)getView().findViewById(R.id.fab_new_list_item);
-        fab.setColorNormal(Theme.getPrimaryThemeColor());
-        fab.setColorPressed(Theme.getPrimaryThemeColor());
-        fab.setColorRipple(Theme.getTertiaryThemeColor());
+        //Updates colors of views and sets theme for this object to a 'valid' state
+        View rootView = getView();
+        if (rootView != null)
+        {
+            FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab_new_list_item);
+            fab.setColorNormal(Theme.getPrimaryThemeColor());
+            fab.setColorPressed(Theme.getPrimaryThemeColor());
+            fab.setColorRipple(Theme.getTertiaryThemeColor());
+        }
         Theme.validateBowlerFragmentTheme();
     }
 
@@ -224,6 +233,7 @@ public class BowlerFragment extends Fragment
     @Override
     public int getNAViewPositionInRecyclerView(View v)
     {
+        //Gets position of view in mRecyclerViewBowlers
         return mRecyclerViewBowlers.getChildPosition(v);
     }
 
@@ -281,9 +291,12 @@ public class BowlerFragment extends Fragment
      */
     private void showQuickSeriesDialog()
     {
-
         if ((mQuickBowlerId > -1 && mQuickLeagueId > -1) || (mRecentBowlerId > -1 && mRecentLeagueId > -1))
         {
+            /*
+             * If a quick bowler was set, or a bowler has been previously selected,
+             * a dialog is displayed to prompt user to create a new series
+             */
             final boolean quickOrRecent;
             AlertDialog.Builder quickSeriesBuilder = new AlertDialog.Builder(getActivity());
             if (mQuickBowlerId == -1 || mQuickLeagueId == -1)
@@ -309,10 +322,12 @@ public class BowlerFragment extends Fragment
                         {
                             if (quickOrRecent)
                             {
+                                Log.w(TAG, "Quick series created");
                                 //TODO: SeriesActivity.addNewEventSeries(MainActivity.this, mQuickBowlerId, mQuickLeagueId, mQuickNumberOfGames, mQuickBowlerName, mQuickLeagueName);
                             }
                             else
                             {
+                                Log.w(TAG, "Recent series created");
                                 //TODO: SeriesActivity.addNewEventSeries(MainActivity.this, mRecentBowlerId, mRecentLeagueId, mRecentNumberOfGames, mQuickBowlerName, mQuickLeagueName);
                             }
                             dialog.dismiss();
@@ -331,6 +346,7 @@ public class BowlerFragment extends Fragment
         }
         else
         {
+            //If no recent/quick bowler, dialog is displayed to inform user of options
             AlertDialog.Builder quickSeriesDisabledBuilder = new AlertDialog.Builder(getActivity());
             quickSeriesDisabledBuilder.setTitle("Quick Series")
                     .setMessage("With this button, you can quickly create a new series with"
@@ -398,12 +414,13 @@ public class BowlerFragment extends Fragment
         long recentId = prefs.getLong(Constants.PREF_RECENT_BOWLER_ID, -1);
         long quickId = prefs.getLong(Constants.PREF_QUICK_BOWLER_ID, -1);
 
-        if (recentId == mRecentBowlerId)
+        //Clears recent/quick ids if they match the deleted bowler
+        if (recentId == bowlerId)
         {
             prefsEditor.putLong(Constants.PREF_RECENT_BOWLER_ID, -1)
                     .putLong(Constants.PREF_RECENT_LEAGUE_ID, -1);
         }
-        if (quickId == mQuickBowlerId)
+        if (quickId == bowlerId)
         {
             prefsEditor.putLong(Constants.PREF_QUICK_BOWLER_ID, -1)
                     .putLong(Constants.PREF_QUICK_LEAGUE_ID, -1);
@@ -447,6 +464,9 @@ public class BowlerFragment extends Fragment
         return bowlerFragment;
     }
 
+    /**
+     * Loads names of bowlers, along with other relevant data, and adds them to recycler view
+     */
     private class LoadBowlerAndRecentTask extends AsyncTask<Void, Void, Void>
     {
         @Override
@@ -543,6 +563,9 @@ public class BowlerFragment extends Fragment
         }
     }
 
+    /**
+     * Sets data to be displayed in new instance of LeagueEventFragment
+     */
     private class OpenBowlerLeaguesTask extends AsyncTask<Integer, Void, Object[]>
     {
         @Override
@@ -586,6 +609,9 @@ public class BowlerFragment extends Fragment
         }
     }
 
+    /**
+     * Creates new bowler in the database and adds them to the recycler view
+     */
     private class NewBowlerTask extends AsyncTask<String, Void, String>
     {
         @Override

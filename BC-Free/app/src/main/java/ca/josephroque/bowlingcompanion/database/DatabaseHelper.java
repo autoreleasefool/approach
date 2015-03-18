@@ -24,8 +24,6 @@ public class DatabaseHelper extends SQLiteOpenHelper
     /** Version of the database, incremented with changes */
     private static final int DATABASE_VERSION = 1;
 
-    /** Instance of the database */
-    private SQLiteDatabase mDatabase;
 
     /** Singleton instance of the DatabaseHelper */
     private static DatabaseHelper sDatabaseHelperInstance = null;
@@ -58,19 +56,17 @@ public class DatabaseHelper extends SQLiteOpenHelper
     @Override
     public void onCreate(SQLiteDatabase db)
     {
-        mDatabase = db;
-
         /*
          * Defines tables for the database, creating columns and constraints
          */
 
-        mDatabase.execSQL("CREATE TABLE "
+        db.execSQL("CREATE TABLE "
                 + BowlerEntry.TABLE_NAME + "("
                 + BowlerEntry._ID + " INTEGER PRIMARY KEY, "
                 + BowlerEntry.COLUMN_BOWLER_NAME + " TEXT NOT NULL COLLATE NOCASE, "
                 + BowlerEntry.COLUMN_DATE_MODIFIED + " TEXT NOT NULL"
                 + ");");
-        mDatabase.execSQL("CREATE TABLE "
+        db.execSQL("CREATE TABLE "
                 + LeagueEntry.TABLE_NAME + "("
                 + LeagueEntry._ID + " INTEGER PRIMARY KEY, "
                 + LeagueEntry.COLUMN_LEAGUE_NAME + " TEXT NOT NULL COLLATE NOCASE, "
@@ -83,7 +79,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 + "CHECK (" + LeagueEntry.COLUMN_NUMBER_OF_GAMES + " > 0 AND " + LeagueEntry.COLUMN_NUMBER_OF_GAMES + " <= 20), "
                 + "CHECK (" + LeagueEntry.COLUMN_IS_EVENT + " = 0 OR " + LeagueEntry.COLUMN_IS_EVENT + " = 1)"
                 + ");");
-        mDatabase.execSQL("CREATE TABLE "
+        db.execSQL("CREATE TABLE "
                 + SeriesEntry.TABLE_NAME + " ("
                 + SeriesEntry._ID + " INTEGER PRIMARY KEY, "
                 + SeriesEntry.COLUMN_SERIES_DATE + " TEXT NOT NULL, "
@@ -91,7 +87,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                         + " REFERENCES " + LeagueEntry.TABLE_NAME
                         + " ON UPDATE CASCADE ON DELETE CASCADE"
                 + ");");
-        mDatabase.execSQL("CREATE TABLE "
+        db.execSQL("CREATE TABLE "
                 + GameEntry.TABLE_NAME + " ("
                 + GameEntry._ID + " INTEGER PRIMARY KEY, "
                 + GameEntry.COLUMN_GAME_NUMBER + " INTEGER NOT NULL, "
@@ -106,7 +102,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 + "CHECK (" + GameEntry.COLUMN_IS_MANUAL + " = 0 OR " + GameEntry.COLUMN_IS_MANUAL + " = 1), "
                 + "CHECK (" + GameEntry.COLUMN_SCORE + " >= 0 OR " + GameEntry.COLUMN_SCORE + " <= 450)"
                 + ");");
-        mDatabase.execSQL("CREATE TABLE "
+        db.execSQL("CREATE TABLE "
                 + FrameEntry.TABLE_NAME + " ("
                 + FrameEntry._ID + " INTEGER PRIMARY KEY, "
                 + FrameEntry.COLUMN_FRAME_NUMBER + " INTEGER NOT NULL, "

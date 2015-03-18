@@ -1,7 +1,6 @@
 package ca.josephroque.bowlingcompanion.adapter;
 
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -44,13 +43,26 @@ public class NameAverageAdapter extends RecyclerView.Adapter<NameAverageAdapter.
     /** Type of data being represented by this object */
     private byte mDataType;
 
+    /**
+     * Subclass of RecyclerView.ViewHolder to manage view which will display an image,
+     * and text to the user
+     */
     public static class NameAverageViewHolder extends RecyclerView.ViewHolder
     {
+        /** Displays an image representing the type of data in the row */
         private ImageView mImageViewType;
+        /** Displays the name of the data in the row */
         private TextView mTextViewName;
+        /** Displays the average of the data in the row */
         private TextView mTextViewAverage;
+        /** Animates changes in color to the ViewHolder background */
         private ValueAnimator mValueAnimator = null;
 
+        /**
+         * Calls super constructor and gets instances of ImageView and TextView objects
+         * for member variables from itemLayoutView
+         * @param itemLayoutView layout view containing views to display data
+         */
         private NameAverageViewHolder(View itemLayoutView)
         {
             super(itemLayoutView);
@@ -60,6 +72,14 @@ public class NameAverageAdapter extends RecyclerView.Adapter<NameAverageAdapter.
         }
     }
 
+    /**
+     * Sets member variables to parameters
+     *
+     * @param handler handles on click/long click events on views
+     * @param listNames list of names to be displayed in RecyclerView
+     * @param listAverages list of averages, relative to listNames to be displayed
+     * @param dataType type of data being managed by this object
+     */
     public NameAverageAdapter(NameAverageEventHandler handler, List<String> listNames, List<Short> listAverages, byte dataType)
     {
         mEventHandler = handler;
@@ -79,6 +99,7 @@ public class NameAverageAdapter extends RecyclerView.Adapter<NameAverageAdapter.
     @Override
     public void onBindViewHolder(final NameAverageViewHolder holder, final int position)
     {
+        //Sets text/images depending on data type
         switch(mDataType)
         {
             case DATA_BOWLERS:
@@ -93,10 +114,10 @@ public class NameAverageAdapter extends RecyclerView.Adapter<NameAverageAdapter.
                         : R.drawable.ic_event);
                 break;
         }
-
         holder.mTextViewAverage.setText("Avg: " +
                 String.valueOf(mListAverages.get(position)));
 
+        //Sets actions on click/touch events
         holder.itemView.setOnClickListener(this);
         holder.itemView.setOnLongClickListener(this);
         holder.itemView.setOnTouchListener(new View.OnTouchListener()
@@ -106,6 +127,7 @@ public class NameAverageAdapter extends RecyclerView.Adapter<NameAverageAdapter.
             {
                 if (event.getActionMasked() == MotionEvent.ACTION_DOWN)
                 {
+                    //Begins color change animation when user holds down this item
                     holder.mValueAnimator =
                             ValueAnimator.ofObject(new ArgbEvaluator(),
                                     Theme.getListItemBackground(),
@@ -124,6 +146,7 @@ public class NameAverageAdapter extends RecyclerView.Adapter<NameAverageAdapter.
                 else if ((event.getActionMasked() == MotionEvent.ACTION_UP || event.getActionMasked() == MotionEvent.ACTION_MOVE)
                         && holder.mValueAnimator != null)
                 {
+                    //Cancels the animation when the user moves or releases
                     holder.mValueAnimator.cancel();
                     holder.mValueAnimator = null;
                     v.setBackgroundColor(Theme.getListItemBackground());
@@ -137,12 +160,14 @@ public class NameAverageAdapter extends RecyclerView.Adapter<NameAverageAdapter.
     @Override
     public void onClick(View v)
     {
+        //Calls relevant event handler method
         mEventHandler.onNAItemClick(mEventHandler.getNAViewPositionInRecyclerView(v));
     }
 
     @Override
     public boolean onLongClick(View v)
     {
+        //Calls relevant event handler method
         mEventHandler.onNALongClick(mEventHandler.getNAViewPositionInRecyclerView(v));
         return true;
     }
