@@ -27,6 +27,7 @@ import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.adapter.SeriesAdapter;
 import ca.josephroque.bowlingcompanion.database.Contract.*;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
+import ca.josephroque.bowlingcompanion.external.DataFormatter;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 
 /**
@@ -285,8 +286,7 @@ public class SeriesFragment extends Fragment
                     if (mListSeriesIds.size() == 0 || !mListSeriesIds.get(mListSeriesIds.size() - 1).equals(seriesId))
                     {
                         mListSeriesIds.add(seriesId);
-                        //TODO format date
-                        mListSeriesDates.add(seriesDate);
+                        mListSeriesDates.add(DataFormatter.formattedDateToPrettyCompact(seriesDate));
                         mListSeriesGames.add(new ArrayList<Short>());
                     }
 
