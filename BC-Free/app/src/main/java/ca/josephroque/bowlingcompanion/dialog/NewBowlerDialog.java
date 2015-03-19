@@ -43,7 +43,7 @@ public class NewBowlerDialog extends DialogFragment
         }
 
         dialogBuilder.setView(dialogView)
-                .setPositiveButton("Add", new DialogInterface.OnClickListener()
+                .setPositiveButton(R.string.dialog_add, new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int which)
@@ -55,7 +55,7 @@ public class NewBowlerDialog extends DialogFragment
                         dialog.dismiss();
                     }
                 })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int which)

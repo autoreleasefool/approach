@@ -247,8 +247,7 @@ public class SeriesFragment extends Fragment
      */
     public static SeriesFragment newInstance()
     {
-        SeriesFragment seriesFragment = new SeriesFragment();
-        return seriesFragment;
+        return new SeriesFragment();
     }
 
     /**

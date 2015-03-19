@@ -241,19 +241,19 @@ public class BowlerFragment extends Fragment
     public void onAddNewBowler(String bowlerName)
     {
         boolean validInput = true;
-        String invalidInputMessage = null;
+        int invalidInputMessage = -1;
 
         if (mListBowlerNames.contains(bowlerName))
         {
             //Bowler name already exists in the list
             validInput = false;
-            invalidInputMessage = "That name has already been used. You must choose another.";
+            invalidInputMessage = R.string.dialog_name_exists;
         }
         else if (!bowlerName.matches(Constants.REGEX_NAME))
         {
             //Name is not made up of letters and spaces
             validInput = false;
-            invalidInputMessage = "You can only use letters and spaces in a name.";
+            invalidInputMessage = R.string.dialog_name_letters_spaces;
         }
 
         /*
@@ -265,7 +265,7 @@ public class BowlerFragment extends Fragment
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setMessage(invalidInputMessage)
                     .setCancelable(false)
-                    .setPositiveButton("Okay", new DialogInterface.OnClickListener()
+                    .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener()
                     {
                         @Override
                         public void onClick(DialogInterface dialog, int which)
@@ -315,7 +315,7 @@ public class BowlerFragment extends Fragment
             }
 
             quickSeriesBuilder.setTitle("Quick Series")
-                    .setPositiveButton("Okay", new DialogInterface.OnClickListener()
+                    .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener()
                     {
                         @Override
                         public void onClick(DialogInterface dialog, int which)
@@ -333,7 +333,7 @@ public class BowlerFragment extends Fragment
                             dialog.dismiss();
                         }
                     })
-                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+                    .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener()
                     {
                         @Override
                         public void onClick(DialogInterface dialog, int which)
@@ -349,10 +349,8 @@ public class BowlerFragment extends Fragment
             //If no recent/quick bowler, dialog is displayed to inform user of options
             AlertDialog.Builder quickSeriesDisabledBuilder = new AlertDialog.Builder(getActivity());
             quickSeriesDisabledBuilder.setTitle("Quick Series")
-                    .setMessage("With this button, you can quickly create a new series with"
-                            + " your most recently used bowler/league, or set a specific"
-                            + " bowler/league in the settings.")
-                    .setPositiveButton("Okay", new DialogInterface.OnClickListener()
+                    .setMessage(R.string.dialog_quick_series_instructions)
+                    .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener()
                     {
                         @Override
                         public void onClick(DialogInterface dialog, int which)

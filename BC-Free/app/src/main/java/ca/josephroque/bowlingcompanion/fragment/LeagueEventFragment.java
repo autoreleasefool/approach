@@ -202,6 +202,7 @@ public class LeagueEventFragment extends Fragment
     public void onAddNewLeagueEvent(boolean isEvent, String leagueEventName, byte numberOfGames)
     {
         boolean validInput = true;
+        int invalidInputMessageVal = -1;
         String invalidInputMessage = null;
 
         if (numberOfGames < 1 ||
@@ -223,28 +224,31 @@ public class LeagueEventFragment extends Fragment
              * which is a reserved name
              */
             validInput = false;
-            invalidInputMessage = "That name is unavailable. It is a default used by the system. You must choose another.";
+            invalidInputMessageVal = R.string.dialog_default_name;
         }
         else if (mListLeagueEventNames.contains(leagueEventName))
         {
             //User has provided a name which is already in use for a league or event
             validInput = false;
-            invalidInputMessage = "That name has already been used. You must choose another.";
+            invalidInputMessageVal = R.string.dialog_name_exists;
         }
         else if (!leagueEventName.matches(Constants.REGEX_LEAGUE_EVENT_NAME))
         {
             //Name is not made up of letters, numbers and spaces
             validInput = false;
-            invalidInputMessage = "You can only use letters, numbers and spaces in a name.";
+            invalidInputMessageVal = R.string.dialog_name_letters_spaces_numbers;
         }
 
         if (!validInput)
         {
             //Displays an error dialog if the input was not valid and exits the method
             AlertDialog.Builder invalidInputBuilder = new AlertDialog.Builder(getActivity());
-            invalidInputBuilder.setMessage(invalidInputMessage)
-                    .setCancelable(false)
-                    .setPositiveButton("Okay", new DialogInterface.OnClickListener()
+            if (invalidInputMessageVal == -1)
+                invalidInputBuilder.setMessage(invalidInputMessage);
+            else
+                invalidInputBuilder.setMessage(invalidInputMessageVal);
+            invalidInputBuilder.setCancelable(false)
+                    .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener()
                     {
                         @Override
                         public void onClick(DialogInterface dialog, int which)
@@ -280,7 +284,7 @@ public class LeagueEventFragment extends Fragment
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setMessage("The league \"" + leagueEventName + "\" cannot be deleted.")
                     .setCancelable(false)
-                    .setPositiveButton("Okay", new DialogInterface.OnClickListener()
+                    .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener()
                     {
                         @Override
                         public void onClick(DialogInterface dialog, int which)
@@ -383,7 +387,7 @@ public class LeagueEventFragment extends Fragment
                         showNewLeagueEventDialog(which == 1);
                     }
                 })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener()
+                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int which)

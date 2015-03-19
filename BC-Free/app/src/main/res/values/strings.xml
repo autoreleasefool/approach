@@ -6,11 +6,31 @@
     <string name="title_league_event">Leagues &amp; Events</string>
     <string name="title_series">Series</string>
 
+    <!-- Dialog text -->
+    <string name="dialog_okay">Okay</string>
+    <string name="dialog_cancel">Cancel</string>
+    <string name="dialog_add">Add</string>
+    <string name="dialog_delete">Delete</string>
+    <string name="dialog_name_exists">That name has already been used. You must choose another.</string>
+    <string name="dialog_name_letters_spaces">You can only use letters and spaces in a name.</string>
+    <string name="dialog_name_letters_spaces_numbers">You can only use letters, numbers and spaces in a name.</string>
+    <string name="dialog_quick_series_instructions">With this button, you can quickly create a new series with your most recently used bowler/league, or set a specific bowler/league in the settings.</string>
+    <string name="dialog_set_score">Setting the score for a game manually will clear any previous data about the game. Are you sure you want to do this?</string>
+    <string name="dialog_clear_score">The score manually set for this game will be cleared.</string>
+    <string name="dialog_default_name">That name is unavailable. It is a default used by the system. You must choose another.</string>
+
     <!-- Action button text -->
     <string name="action_settings">Settings</string>
     <string name="action_quick_series">Quick Series</string>
     <string name="action_stats">Stats</string>
     <string name="action_edit_date">Change Series Date</string>
+    <string name="action_share">Share</string>
+    <string name="action_series_stats">Series Stats</string>
+    <string name="action_event_stats">Event Stats</string>
+    <string name="action_what_if">What If?</string>
+    <string name="action_reset_game">Reset Game</string>
+    <string name="action_set_score">Set Manual Scores</string>
+    <string name="action_clear_score">Clear Manual Score</string>
 
     <!-- TextView text -->
     <string name="text_new_bowler">Use the \'+\' to add a new bowler.</string>
@@ -19,4 +39,13 @@
     <string name="text_delete_league_event">Hold down an item\'s name to delete it.</string>
     <string name="text_new_series">Use the \'+\' to add a new series.</string>
     <string name="text_delete_series">Hold down a series\' name to delete it.</string>
+    <string name="text_next_ball">Next Ball</string>
+    <string name="text_prev_ball">Prev Ball</string>
+    <string name="text_add_foul">Add Foul</string>
+    <string name="text_remove_foul">Remove Foul</string>
+    <string name="text_reset_frame">Reset Frame</string>
+    <string name="text_lock_game">Lock Game</string>
+    <string name="text_unloock_game">Unlock Game</string>
+    <string name="text_set_manual_score">Set Score</string>
+    <string name="text_clear_manual_score">Clear Score</string>
 </resources>
