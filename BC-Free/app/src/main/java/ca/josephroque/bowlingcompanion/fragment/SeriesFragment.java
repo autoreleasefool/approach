@@ -27,7 +27,7 @@ import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.adapter.SeriesAdapter;
 import ca.josephroque.bowlingcompanion.database.Contract.*;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
-import ca.josephroque.bowlingcompanion.external.DataFormatter;
+import ca.josephroque.bowlingcompanion.utilities.DataFormatter;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 
 /**

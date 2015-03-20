@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.external;
+package ca.josephroque.bowlingcompanion.utilities;
 
 /**
  * Created by josephroque on 15-03-17.
@@ -59,5 +59,16 @@ public class DataFormatter
         }
         else
             throw new IllegalArgumentException("String must be formatted as YYYY-mm-DD");
+    }
+
+    /**
+     * Converts a dp value to pixels
+     * @param scale density of screen
+     * @param dps value to be converted
+     * @return result of conversion from dps to pixels
+     */
+    public static int getPixelsFromDP(float scale, int dps)
+    {
+        return (int)(dps * scale + 0.5f);
     }
 }

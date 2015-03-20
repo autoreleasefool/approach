@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/black">
+
+    <RelativeLayout
+        android:id="@+id/rl_game_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/theme_light_green_secondary">
+
+        <ImageView
+            android:id="@+id/iv_prev_ball"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:src="@drawable/ic_action_previous_item"/>
+
+        <TextView
+            android:id="@+id/tv_prev_ball"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/iv_prev_ball"
+            android:layout_toEndOf="@id/iv_prev_ball"
+            android:layout_alignBottom="@id/iv_prev_ball"
+            android:layout_alignTop="@id/iv_prev_ball"
+            android:text="@string/text_prev_ball"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@android:color/white"
+            android:gravity="center"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"/>
+
+        <ImageView
+            android:id="@+id/iv_clear_pins"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/ic_action_strike"/>
+
+        <ImageView
+            android:id="@+id/iv_next_ball"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_action_next_item"/>
+
+        <TextView
+            android:id="@+id/tv_next_ball"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/iv_next_ball"
+            android:layout_toStartOf="@id/iv_next_ball"
+            android:layout_alignBottom="@id/iv_next_ball"
+            android:layout_alignTop="@id/iv_next_ball"
+            android:text="@string/text_next_ball"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@android:color/white"
+            android:gravity="center"
+            android:paddingLeft="2dp"
+            android:paddingRight="2dp"/>
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <HorizontalScrollView
+            android:id="@+id/hsv_frames"
+            android:layout_width="match_parent"
+            android:layout_height="152dp"
+            android:layout_alignParentTop="true"/>
+
+        <ImageView
+            android:id="@+id/iv_alley"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/hsv_frames"
+            android:layout_alignParentTop="true">
+
+            <ImageButton
+                android:id="@+id/button_pin_1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/pin_enabled"
+                android:background="@drawable/background_pin_button"/>
+
+            <ImageButton
+                android:id="@+id/button_pin_2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/pin_enabled"
+                android:background="@drawable/background_pin_button"/>
+
+            <ImageButton
+                android:id="@+id/button_pin_3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/pin_enabled"
+                android:background="@drawable/background_pin_button"/>
+
+            <ImageButton
+                android:id="@+id/button_pin_4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/pin_enabled"
+                android:background="@drawable/background_pin_button"/>
+
+            <ImageButton
+                android:id="@+id/button_pin_5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingLeft="4dp"
+                android:paddingRight="4dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/pin_enabled"
+                android:background="@drawable/background_pin_button"/>
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/iv_game_settings"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_action_settings"/>
+
+        <TextView
+            android:id="@+id/tv_setting_foul"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="@string/text_add_foul"
+            android:layout_above="@id/iv_game_settings"
+            android:layout_alignRight="@id/iv_game_settings"
+            android:layout_alignEnd="@id/iv_game_settings"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            android:gravity="end"
+            android:background="@drawable/background_tabs"/>
+
+        <TextView
+            android:id="@+id/tv_setting_reset_frame"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="@string/text_reset_frame"
+            android:layout_above="@id/tv_setting_foul"
+            android:layout_alignRight="@id/iv_game_settings"
+            android:layout_alignEnd="@id/iv_game_settings"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            android:gravity="end"
+            android:background="@drawable/background_tabs"/>
+
+        <TextView
+            android:id="@+id/tv_setting_lock"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="@string/text_lock_game"
+            android:layout_above="@id/tv_setting_reset_frame"
+            android:layout_alignRight="@id/iv_game_settings"
+            android:layout_alignEnd="@id/iv_game_settings"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            android:gravity="end"
+            android:background="@drawable/background_tabs"/>
+
+        <TextView
+            android:id="@+id/tv_manual_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/hsv_frames"
+            android:layout_centerHorizontal="true"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="@android:color/white"/>
+    </RelativeLayout>
+</LinearLayout>

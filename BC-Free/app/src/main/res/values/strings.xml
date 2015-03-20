@@ -18,6 +18,8 @@
     <string name="dialog_set_score">Setting the score for a game manually will clear any previous data about the game. Are you sure you want to do this?</string>
     <string name="dialog_clear_score">The score manually set for this game will be cleared.</string>
     <string name="dialog_default_name">That name is unavailable. It is a default used by the system. You must choose another.</string>
+    <string name="dialog_game_locked">The game is locked. You must unlock the game before attempting to make any changes.</string>
+    <string name="dialog_reset_game">You cannot undo this action. Reset this game?</string>
 
     <!-- Action button text -->
     <string name="action_settings">Settings</string>
