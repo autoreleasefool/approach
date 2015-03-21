@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.game;
+package ca.josephroque.bowlingcompanion.utilities;
 
 import ca.josephroque.bowlingcompanion.Constants;
 

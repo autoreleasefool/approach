@@ -38,11 +38,8 @@ import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.dialog.ManualScoreDialog;
 import ca.josephroque.bowlingcompanion.utilities.Animate;
 import ca.josephroque.bowlingcompanion.utilities.DataFormatter;
-import ca.josephroque.bowlingcompanion.game.Score;
+import ca.josephroque.bowlingcompanion.utilities.Score;
 import ca.josephroque.bowlingcompanion.theme.Theme;
-
-import static com.nineoldandroids.view.ViewPropertyAnimator.animate;
-import static com.nineoldandroids.view.ViewHelper.setAlpha;
 
 /**
  * Created by josephroque on 15-03-18.
@@ -143,6 +140,9 @@ public class GameFragment extends Fragment
             mManualScoreSet = savedInstanceState.getBooleanArray(Constants.EXTRA_ARRAY_MANUAL_SCORE_SET);
             mSettingsOpened = savedInstanceState.getBoolean(Constants.EXTRA_SETTINGS_OPEN);
             mSettingsButtonsDisabled = savedInstanceState.getBoolean(Constants.EXTRA_SETTINGS_DISABLED);
+        }
+        else
+        {
         }
     }
 
@@ -1667,5 +1667,18 @@ public class GameFragment extends Fragment
                 updateFrameColor();
             }
         }).start();
+    }
+
+    public static GameFragment newInstance(boolean isEvent, long[] gameIds, long[] frameIds, boolean[] gameLocked, boolean[] manualScore)
+    {
+        GameFragment gameFragment = new GameFragment();
+        Bundle args = new Bundle();
+        args.putBoolean(Constants.EXTRA_EVENT_MODE, isEvent);
+        args.putLongArray(Constants.EXTRA_ARRAY_GAME_IDS, gameIds);
+        args.putLongArray(Constants.EXTRA_ARRAY_FRAME_IDS, frameIds);
+        args.putBooleanArray(Constants.EXTRA_ARRAY_GAME_LOCKED, gameLocked);
+        args.putBooleanArray(Constants.EXTRA_ARRAY_MANUAL_SCORE_SET, manualScore);
+        gameFragment.setArguments(args);
+        return gameFragment;
     }
 }

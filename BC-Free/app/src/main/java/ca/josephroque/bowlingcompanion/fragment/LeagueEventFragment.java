@@ -61,6 +61,7 @@ public class LeagueEventFragment extends Fragment
     private List<Byte> mListLeagueEventNumberOfGames;
 
     private OnLeagueSelectedListener mLeagueSelectedListener;
+    private SeriesFragment.SeriesListener mSeriesListener;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -81,11 +82,12 @@ public class LeagueEventFragment extends Fragment
         try
         {
             mLeagueSelectedListener = (OnLeagueSelectedListener)activity;
+            mSeriesListener = (SeriesFragment.SeriesListener)activity;
         }
         catch (ClassCastException ex)
         {
             throw new ClassCastException(activity.toString()
-                    + " must implement OnLeagueSelectedListener");
+                    + " must implement OnLeagueSelectedListener and SeriesListener");
         }
     }
 
@@ -513,8 +515,8 @@ public class LeagueEventFragment extends Fragment
                 String leagueName = params[4].toString();
                 String seriesDate = params[5].toString();
 
-                //TODO: create fragment transaction to game
-                Log.w(TAG, "Fragment transaction incomplete: Event-Game");
+                mLeagueSelectedListener.onLeagueSelected(leagueId, leagueName, numberOfGames, false);
+                mSeriesListener.onSeriesSelected(seriesId, seriesDate, true);
             }
             else
             {
@@ -536,7 +538,7 @@ public class LeagueEventFragment extends Fragment
                             .apply();
                 }
 
-                mLeagueSelectedListener.onLeagueSelected(leagueId, leagueName, numberOfGames);
+                mLeagueSelectedListener.onLeagueSelected(leagueId, leagueName, numberOfGames, true);
             }
         }
     }
@@ -703,6 +705,6 @@ public class LeagueEventFragment extends Fragment
          * @param leagueName name of the league corresponding to leagueId
          * @param numberOfGames number of games of the league corresponding to leagueId
          */
-        public void onLeagueSelected(long leagueId, String leagueName, byte numberOfGames);
+        public void onLeagueSelected(long leagueId, String leagueName, byte numberOfGames, boolean openSeriesFragment);
     }
 }

@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.fragment;
 
+import android.app.Activity;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
@@ -56,11 +57,33 @@ public class SeriesFragment extends Fragment
     /** List of scores in each series which will be displayed by RecyclerView */
     private List<List<Short>> mListSeriesGames;
 
+    private SeriesListener mSeriesListener;
+
     @Override
     public void onCreate(Bundle savedInstaceState)
     {
         super.onCreate(savedInstaceState);
         setHasOptionsMenu(true);
+    }
+
+    @Override
+    public void onAttach(Activity activity)
+    {
+        super.onAttach(activity);
+
+        /*
+         * This makes sure the container Activity has implemented
+         * the callback interface. If not, an exception is thrown
+         */
+        try
+        {
+            mSeriesListener = (SeriesFragment.SeriesListener)activity;
+        }
+        catch (ClassCastException ex)
+        {
+            throw new ClassCastException(activity.toString()
+                    + " must implement SeriesListener");
+        }
     }
 
     @Override
@@ -90,7 +113,7 @@ public class SeriesFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                //TODO: addNewLeagueSeries();
+                mSeriesListener.onCreateNewSeries(false);
             }
         });
 
@@ -160,9 +183,7 @@ public class SeriesFragment extends Fragment
     @Override
     public void onSItemClick(final int position)
     {
-        /*new OpenSeriesTask().execute(getActivity(),
-                mListSeriesIds.get(position),
-                mListSeriesGames.get(position).size());*/
+        mSeriesListener.onSeriesSelected(mListSeriesIds.get(position), mListSeriesDates.get(position), false);
     }
 
     @Override
@@ -303,5 +324,11 @@ public class SeriesFragment extends Fragment
         {
             mAdapterSeries.notifyDataSetChanged();
         }
+    }
+
+    public static interface SeriesListener
+    {
+        public void onSeriesSelected(long seriesId, String seriesDate, boolean isEvent);
+        public void onCreateNewSeries(boolean isEvent);
     }
 }
