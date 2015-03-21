@@ -86,7 +86,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/hsv_frames"
-            android:layout_alignParentTop="true">
+            android:layout_alignParentBottom="true">
 
             <ImageButton
                 android:id="@+id/button_pin_1"

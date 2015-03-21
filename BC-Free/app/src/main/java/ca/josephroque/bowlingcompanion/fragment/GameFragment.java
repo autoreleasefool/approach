@@ -141,9 +141,6 @@ public class GameFragment extends Fragment
             mSettingsOpened = savedInstanceState.getBoolean(Constants.EXTRA_SETTINGS_OPEN);
             mSettingsButtonsDisabled = savedInstanceState.getBoolean(Constants.EXTRA_SETTINGS_DISABLED);
         }
-        else
-        {
-        }
     }
 
     @Override
@@ -285,6 +282,9 @@ public class GameFragment extends Fragment
     {
         super.onResume();
 
+        COLOR_BACKGROUND = getResources().getColor(R.color.primary_background);
+        COLOR_HIGHLIGHT = getResources().getColor(R.color.secondary_background);
+
         if (mGameIds == null)
         {
             Bundle args = getArguments();
@@ -306,6 +306,15 @@ public class GameFragment extends Fragment
         }
 
         loadGameFromDatabase((byte)0);
+    }
+
+    @Override
+    public void onPause()
+    {
+        clearFrameColor();
+        saveGame();
+
+        super.onPause();
     }
 
     @Override
