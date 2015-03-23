@@ -88,6 +88,8 @@ public class BowlerFragment extends Fragment
 
     /** Listener for user events */
     private OnBowlerSelectedListener mBowlerSelectedListener;
+    private LeagueEventFragment.OnLeagueSelectedListener mLeagueSelectedListener;
+    private SeriesFragment.SeriesListener mSeriesListener;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -108,11 +110,13 @@ public class BowlerFragment extends Fragment
         try
         {
             mBowlerSelectedListener = (OnBowlerSelectedListener)activity;
+            mLeagueSelectedListener = (LeagueEventFragment.OnLeagueSelectedListener)activity;
+            mSeriesListener = (SeriesFragment.SeriesListener)activity;
         }
         catch (ClassCastException ex)
         {
             throw new ClassCastException(activity.toString()
-                    + " must implement OnBowlerSelectedListener");
+                    + " must implement OnBowlerSelectedListener, OnLeagueSelectedListener, SeriesListener");
         }
     }
 
@@ -323,12 +327,16 @@ public class BowlerFragment extends Fragment
                             if (quickOrRecent)
                             {
                                 Log.w(TAG, "Quick series created");
-                                //TODO: SeriesActivity.addNewEventSeries(MainActivity.this, mQuickBowlerId, mQuickLeagueId, mQuickNumberOfGames, mQuickBowlerName, mQuickLeagueName);
+                                mBowlerSelectedListener.onBowlerSelected(mQuickBowlerId, mQuickBowlerName, false);
+                                mLeagueSelectedListener.onLeagueSelected(mQuickLeagueId, mQuickLeagueName, mQuickNumberOfGames, false);
+                                mSeriesListener.onCreateNewSeries(false);
                             }
                             else
                             {
                                 Log.w(TAG, "Recent series created");
-                                //TODO: SeriesActivity.addNewEventSeries(MainActivity.this, mRecentBowlerId, mRecentLeagueId, mRecentNumberOfGames, mQuickBowlerName, mQuickLeagueName);
+                                mBowlerSelectedListener.onBowlerSelected(mRecentBowlerId, mRecentBowlerName, false);
+                                mLeagueSelectedListener.onLeagueSelected(mRecentLeagueId, mRecentLeagueName, mRecentNumberOfGames, false);
+                                mSeriesListener.onCreateNewSeries(false);
                             }
                             dialog.dismiss();
                         }
@@ -458,8 +466,7 @@ public class BowlerFragment extends Fragment
      */
     public static BowlerFragment newInstance()
     {
-        BowlerFragment bowlerFragment = new BowlerFragment();
-        return bowlerFragment;
+        return new BowlerFragment();
     }
 
     /**
@@ -603,7 +610,7 @@ public class BowlerFragment extends Fragment
             long bowlerId = (Long)params[0];
             int position = (Integer)params[1];
 
-            mBowlerSelectedListener.onBowlerSelected(bowlerId, mListBowlerNames.get(position));
+            mBowlerSelectedListener.onBowlerSelected(bowlerId, mListBowlerNames.get(position), true);
         }
     }
 
@@ -687,7 +694,8 @@ public class BowlerFragment extends Fragment
          * belonging to the bowler represented by bowlerId
          * @param bowlerId id of the bowler whose leagues/events will be displayed
          * @param bowlerName name of the bowler corresponding to bowlerId
+         * @param openLeagueFragment if new fragment should be opened
          */
-        public void onBowlerSelected(long bowlerId, String bowlerName);
+        public void onBowlerSelected(long bowlerId, String bowlerName, boolean openLeagueFragment);
     }
 }

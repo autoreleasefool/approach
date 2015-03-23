@@ -676,7 +676,6 @@ public class GameFragment extends Fragment
         if (enabled)
         {
             mRelativeLayoutGameToolbar.setVisibility(View.VISIBLE);
-            mImageViewGameSettings.setVisibility(View.VISIBLE);
             mHorizontalScrollViewFrames.setVisibility(View.VISIBLE);
             for (ImageButton imageButton : mImageButtonPins)
                 imageButton.setVisibility(View.VISIBLE);
@@ -686,13 +685,16 @@ public class GameFragment extends Fragment
         else
         {
             mRelativeLayoutGameToolbar.setVisibility(View.INVISIBLE);
-            mImageViewGameSettings.setVisibility(View.INVISIBLE);
             mHorizontalScrollViewFrames.setVisibility(View.INVISIBLE);
             for (ImageButton imageButton : mImageButtonPins)
                 imageButton.setVisibility(View.INVISIBLE);
             mTextViewManualScore.setText(String.valueOf(mGameScoresMinusFouls[mCurrentGame]));
             mTextViewManualScore.setVisibility(View.VISIBLE);
         }
+
+        mImageViewGameSettings.setImageResource((mGameLocked[mCurrentGame])
+                ? R.drawable.ic_action_secure
+                : R.drawable.ic_action_settings);
     }
 
     private void showGameLockedDialog()

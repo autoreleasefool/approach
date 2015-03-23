@@ -209,9 +209,8 @@ public class MainActivity extends ActionBarActivity
     }
 
     @Override
-    public void onBowlerSelected(long bowlerId, String bowlerName)
+    public void onBowlerSelected(long bowlerId, String bowlerName, boolean openLeagueFragment)
     {
-        LeagueEventFragment leagueEventFragment = LeagueEventFragment.newInstance();
         mBowlerId = bowlerId;
         mBowlerName = bowlerName;
 
@@ -221,7 +220,11 @@ public class MainActivity extends ActionBarActivity
         mLeagueName = null;
         mSeriesDate = null;
 
-        startFragmentTransaction(leagueEventFragment, Constants.FRAGMENT_BOWLERS);
+        if (openLeagueFragment)
+        {
+            LeagueEventFragment leagueEventFragment = LeagueEventFragment.newInstance();
+            startFragmentTransaction(leagueEventFragment, Constants.FRAGMENT_BOWLERS);
+        }
     }
 
     @Override
