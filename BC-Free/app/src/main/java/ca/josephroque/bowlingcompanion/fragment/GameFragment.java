@@ -307,6 +307,7 @@ public class GameFragment extends Fragment
             updateTheme();
         }
 
+        loadInitialScores();
         loadGameFromDatabase((byte)0);
     }
 
@@ -348,6 +349,7 @@ public class GameFragment extends Fragment
         menu.findItem(R.id.action_set_score)
                 .setTitle((mManualScoreSet[mCurrentGame])
                 ? R.string.action_clear_score : R.string.action_set_score);
+        menu.findItem(R.id.action_what_if).setVisible(!mManualScoreSet[mCurrentGame]);
         super.onPrepareOptionsMenu(menu);
     }
 
@@ -369,7 +371,7 @@ public class GameFragment extends Fragment
                 //TODO series stats
                 return true;
             case R.id.action_reset_game:
-                if (mGameLocked[mCurrentGame])
+                if (mGameLocked[mCurrentGame] && !mManualScoreSet[mCurrentGame])
                     showGameLockedDialog();
                 else
                     showResetGameDialog();
@@ -429,20 +431,11 @@ public class GameFragment extends Fragment
         }
 
         resetGame();
-        mGameLocked[mCurrentGame] = true;
+        setGameLocked(true);
         mManualScoreSet[mCurrentGame] = true;
         mGameScores[mCurrentGame] = scoreToSet;
         mGameScoresMinusFouls[mCurrentGame] = scoreToSet;
         clearAllText(false);
-
-        mTextViewSettingLockGame.post(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                mTextViewSettingLockGame.setText(R.string.text_unloock_game);
-            }
-        });
         getActivity().supportInvalidateOptionsMenu();
         saveGame();
     }
@@ -559,18 +552,7 @@ public class GameFragment extends Fragment
                         if (mSettingsButtonsDisabled || mManualScoreSet[mCurrentGame])
                             return;
                         hideGameSettings();
-                        mGameLocked[mCurrentGame] = !mGameLocked[mCurrentGame];
-                        mTextViewSettingLockGame.post(new Runnable()
-                        {
-                            @Override
-                            public void run()
-                            {
-                                mTextViewSettingLockGame.setText(
-                                        (mGameLocked[mCurrentGame])
-                                                ? R.string.text_unloock_game
-                                                : R.string.text_lock_game);
-                            }
-                        });
+                        setGameLocked(!mGameLocked[mCurrentGame]);
                         break;
                     case R.id.iv_clear_pins:
                         clearPins();
@@ -666,7 +648,7 @@ public class GameFragment extends Fragment
                     @Override
                     public void onClick(DialogInterface dialog, int which)
                     {
-                        mGameLocked[mCurrentGame] = false;
+                        setGameLocked(false);
                         mManualScoreSet[mCurrentGame] = false;
                         resetGame();
                         clearAllText(true);
@@ -743,6 +725,8 @@ public class GameFragment extends Fragment
                     {
                         resetGame();
                         saveGame();
+                        setGameLocked(false);
+                        mManualScoreSet[mCurrentGame] = false;
                         clearAllText(true);
                         updateScore();
                         for (byte i = 0; i < Constants.NUMBER_OF_FRAMES; i++)
@@ -762,6 +746,22 @@ public class GameFragment extends Fragment
                 })
                 .create()
                 .show();
+    }
+
+    private void setGameLocked(boolean lock)
+    {
+        mGameLocked[mCurrentGame] = lock;
+        mTextViewSettingLockGame.post(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                mTextViewSettingLockGame.setText(
+                        mGameLocked[mCurrentGame]
+                        ? R.string.text_unloock_game
+                        : R.string.text_lock_game);
+            }
+        });
     }
 
     private void saveGame()
@@ -1689,15 +1689,12 @@ public class GameFragment extends Fragment
                         cursor.close();
                 }
 
+                setGameLocked(mGameLocked[mCurrentGame]);
                 getActivity().runOnUiThread(new Runnable()
                 {
                     @Override
                     public void run()
                     {
-                        mTextViewSettingLockGame.setText(
-                                (mGameLocked[mCurrentGame])
-                                        ? R.string.text_unloock_game
-                                        : R.string.text_lock_game);
                         clearAllText(!mManualScoreSet[mCurrentGame]);
                         getActivity().supportInvalidateOptionsMenu();
                     }
@@ -1719,6 +1716,46 @@ public class GameFragment extends Fragment
                 updateFrameColor();
             }
         }).start();
+    }
+
+    private void loadInitialScores()
+    {
+        byte numberOfGames = ((MainActivity)getActivity()).getNumberOfGames();
+        SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getReadableDatabase();
+        StringBuilder whereBuilder = new StringBuilder(GameEntry._ID + "=?");
+        String[] whereArgs = new String[numberOfGames];
+        whereArgs[0] = String.valueOf(mGameIds[0]);
+        for (byte i = 1; i < numberOfGames; i++)
+        {
+            whereBuilder.append(" OR ");
+            whereBuilder.append(GameEntry._ID);
+            whereBuilder.append("=?");
+            whereArgs[i] = String.valueOf(mGameIds[i]);
+        }
+
+        Cursor cursor = database.query(GameEntry.TABLE_NAME,
+                new String[]{GameEntry.COLUMN_SCORE},
+                whereBuilder.toString(),
+                whereArgs,
+                null,
+                null,
+                GameEntry._ID);
+
+        byte currentGamePosition = 0;
+        if (cursor.moveToFirst())
+        {
+            while (!cursor.isAfterLast())
+            {
+                short gameScore = cursor.getShort(cursor.getColumnIndex(GameEntry.COLUMN_SCORE));
+                mGameScoresMinusFouls[currentGamePosition++] = gameScore;
+                cursor.moveToNext();
+            }
+        }
+        else
+        {
+            Log.w(TAG, "Could not load initial game scores");
+        }
+        cursor.close();
     }
 
     public static GameFragment newInstance(boolean isEvent, long[] gameIds, long[] frameIds, boolean[] gameLocked, boolean[] manualScore)
