@@ -83,4 +83,11 @@ public class ManualScoreDialog extends DialogFragment
     {
         public void onSetScore(short gameScore);
     }
+
+    public static ManualScoreDialog newInstance(ManualScoreDialogListener listener)
+    {
+        ManualScoreDialog dialogFragment = new ManualScoreDialog();
+        dialogFragment.mDialogListener = listener;
+        return dialogFragment;
+    }
 }

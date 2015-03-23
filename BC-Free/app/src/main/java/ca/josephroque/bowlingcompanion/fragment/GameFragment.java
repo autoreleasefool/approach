@@ -48,7 +48,9 @@ import ca.josephroque.bowlingcompanion.theme.Theme;
  * in project Bowling Companion
  */
 public class GameFragment extends Fragment
-    implements Theme.ChangeableTheme
+    implements
+        Theme.ChangeableTheme,
+        ManualScoreDialog.ManualScoreDialogListener
 {
     /** Tag to identify class when outputting to console */
     private static final String TAG = "GameFragment";
@@ -404,6 +406,47 @@ public class GameFragment extends Fragment
         Theme.validateGameFragmentTheme();
     }
 
+    @Override
+    public void onSetScore(short scoreToSet)
+    {
+        if (scoreToSet < 0 || scoreToSet > 450)
+        {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("Invalid score!")
+                    .setMessage(R.string.dialog_bad_score)
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which)
+                        {
+                            dialog.dismiss();
+                        }
+                    })
+                    .create()
+                    .show();
+            return;
+        }
+
+        resetGame();
+        mGameLocked[mCurrentGame] = true;
+        mManualScoreSet[mCurrentGame] = true;
+        mGameScores[mCurrentGame] = scoreToSet;
+        mGameScoresMinusFouls[mCurrentGame] = scoreToSet;
+        clearAllText(false);
+
+        mTextViewSettingLockGame.post(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                mTextViewSettingLockGame.setText(R.string.text_unloock_game);
+            }
+        });
+        getActivity().supportInvalidateOptionsMenu();
+        saveGame();
+    }
+
     /**
      * Creates instances of OnClickListener to listen to events created by
      * views in this activity
@@ -597,7 +640,7 @@ public class GameFragment extends Fragment
                     public void onClick(DialogInterface dialog, int which)
                     {
                         dialog.dismiss();
-                        DialogFragment dialogFragment = new ManualScoreDialog();
+                        DialogFragment dialogFragment = ManualScoreDialog.newInstance(GameFragment.this);
                         dialogFragment.show(getFragmentManager(), "ManualScoreDialog");
                     }
                 })

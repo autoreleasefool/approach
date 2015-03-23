@@ -20,6 +20,7 @@
     <string name="dialog_default_name">That name is unavailable. It is a default used by the system. You must choose another.</string>
     <string name="dialog_game_locked">The game is locked. You must unlock the game before attempting to make any changes.</string>
     <string name="dialog_reset_game">You cannot undo this action. Reset this game?</string>
+    <string name="dialog_bad_score">Game scores must be between 0 and 450 (inclusive).</string>
 
     <!-- Action button text -->
     <string name="action_settings">Settings</string>
@@ -31,7 +32,7 @@
     <string name="action_event_stats">Event Stats</string>
     <string name="action_what_if">What If?</string>
     <string name="action_reset_game">Reset Game</string>
-    <string name="action_set_score">Set Manual Scores</string>
+    <string name="action_set_score">Set Manual Score</string>
     <string name="action_clear_score">Clear Manual Score</string>
 
     <!-- TextView text -->
@@ -50,4 +51,7 @@
     <string name="text_unloock_game">Unlock Game</string>
     <string name="text_set_manual_score">Set Score</string>
     <string name="text_clear_manual_score">Clear Score</string>
+
+    <!-- ADVERTISEMENTS -->
+    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
 </resources>
