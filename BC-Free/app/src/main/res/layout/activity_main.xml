@@ -1,9 +1,24 @@
-<FrameLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fl_main_fragment_container"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
+    tools:context=".MainActivity"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    android:layout_height="match_parent">
 
-</FrameLayout>
+    <!--<com.google.android.gms.ads.AdView
+        android:id="@+id/av_main"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        ads:adSize="SMART_BANNER"
+        ads:adUnitId="@string/banner_ad_unit_id"/>-->
+
+    <FrameLayout
+        android:id="@+id/fl_main_fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+    <!--android:layout_alignParentTop="true"
+    android:layout_above="@id/av_main"/>-->
+</RelativeLayout>

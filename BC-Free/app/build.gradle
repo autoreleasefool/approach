@@ -25,4 +25,5 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:21.0.+'
     compile 'com.melnykov:floatingactionbutton:1.2.0'
     compile 'com.nineoldandroids:library:2.4.0'
+    //compile 'com.google.android.gms:play-services-ads:6.+'
 }

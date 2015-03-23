@@ -13,6 +13,9 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
+//import com.google.android.gms.ads.AdRequest;
+//import com.google.android.gms.ads.AdView;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -52,6 +55,8 @@ public class MainActivity extends ActionBarActivity
     /** Date of current series being used in fragments */
     private String mSeriesDate;
 
+    //private AdView mAdView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -82,6 +87,16 @@ public class MainActivity extends ActionBarActivity
             mNumberOfGames = savedInstanceState.getByte(Constants.EXTRA_NUMBER_OF_GAMES, (byte)-1);
         }
 
+        /*mAdView = (AdView)findViewById(R.id.av_main);
+        try
+        {
+            mAdView.loadAd(new AdRequest.Builder().build());
+        }
+        catch (Exception e)
+        {
+            mAdView = null;
+        }*/
+
         //TODO: AppRater.appLaunched(getActivity());
     }
 
@@ -105,11 +120,30 @@ public class MainActivity extends ActionBarActivity
     {
         super.onResume();
 
+        //if (mAdView != null)
+        //    mAdView.resume();
+
         //Updates theme if invalid
         if (Theme.getMainActivityThemeInvalidated())
         {
             updateTheme();
         }
+    }
+
+    @Override
+    protected void onPause()
+    {
+        //if (mAdView != null)
+        //    mAdView.pause();
+        super.onPause();
+    }
+
+    @Override
+    protected void onDestroy()
+    {
+        //if (mAdView != null)
+        //    mAdView.destroy();
+        super.onDestroy();
     }
 
     @Override
@@ -219,7 +253,7 @@ public class MainActivity extends ActionBarActivity
     @Override
     public void onCreateNewSeries(boolean isEvent)
     {
-        new AddSeriesTask().execute(isEvent);
+        new AddSeriesTask().execute();
     }
 
     private void startFragmentTransaction(Fragment fragment, String tag)
@@ -357,10 +391,10 @@ public class MainActivity extends ActionBarActivity
         }
     }
 
-    private class AddSeriesTask extends AsyncTask<Boolean, Void, Object[]>
+    private class AddSeriesTask extends AsyncTask<Void, Void, Object[]>
     {
         @Override
-        protected Object[] doInBackground(Boolean... isEvent)
+        protected Object[] doInBackground(Void... params)
         {
             long seriesId = -1;
             long[] gameId = new long[mNumberOfGames];
@@ -408,17 +442,17 @@ public class MainActivity extends ActionBarActivity
 
             mSeriesId = seriesId;
             mSeriesDate = DataFormatter.formattedDateToPrettyCompact(seriesDate);
-            return new Object[]{isEvent[0], gameId, frameId};
+            return new Object[]{gameId, frameId};
         }
 
         @Override
         protected void onPostExecute(Object[] params)
         {
-            boolean isEvent = (Boolean)params[0];
-            long[] gameIds = (long[])params[1];
-            long[] frameIds = (long[])params[2];
+            long[] gameIds = (long[])params[0];
+            long[] frameIds = (long[])params[1];
 
-            GameFragment gameFragment = GameFragment.newInstance(isEvent, gameIds, frameIds, new boolean[mNumberOfGames], new boolean[mNumberOfGames]);
+            GameFragment gameFragment = GameFragment.newInstance(false, gameIds, frameIds, new boolean[mNumberOfGames], new boolean[mNumberOfGames]);
+            startFragmentTransaction(gameFragment, Constants.FRAGMENT_SERIES);
         }
     }
 }
