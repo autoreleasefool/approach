@@ -136,7 +136,7 @@ public class LeagueEventFragment extends Fragment
     public void onResume()
     {
         super.onResume();
-        ((MainActivity)getActivity()).setActionBarTitle(R.string.title_league_event);
+        ((MainActivity)getActivity()).setActionBarTitle(R.string.title_fragment_league_event);
 
         mListLeagueEventIds.clear();
         mListLeagueEventNames.clear();

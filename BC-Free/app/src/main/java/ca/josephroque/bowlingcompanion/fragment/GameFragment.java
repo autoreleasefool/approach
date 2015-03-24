@@ -283,6 +283,7 @@ public class GameFragment extends Fragment
     public void onResume()
     {
         super.onResume();
+        ((MainActivity)getActivity()).setActionBarTitle(R.string.title_fragment_game);
 
         COLOR_BACKGROUND = getResources().getColor(R.color.primary_background);
         COLOR_HIGHLIGHT = getResources().getColor(R.color.secondary_background);

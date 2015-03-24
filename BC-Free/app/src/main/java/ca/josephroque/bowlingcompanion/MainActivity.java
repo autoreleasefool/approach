@@ -1,10 +1,12 @@
 package ca.josephroque.bowlingcompanion;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
@@ -187,7 +189,8 @@ public class MainActivity extends ActionBarActivity
                 }
                 return true;
             case R.id.action_settings:
-                //TODO: show settings
+                Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
+                startActivity(settingsIntent);
                 return true;
         }
 

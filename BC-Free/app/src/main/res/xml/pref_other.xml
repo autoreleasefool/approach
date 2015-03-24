@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <!--
+    TODO: full version is not yet available, add back in when it is
+    <Preference
+        android:key="pref_view_ful"
+        android:title="@string/pref_view_full_title"
+        android:summary="@string/pref_view_full_summary">
+    </Preference>-->
+    <Preference
+        android:key="pref_developer_website"
+        android:title="@string/pref_developer_website_title"
+        android:summary="@string/pref_developer_website_summary">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="http://josephroque.ca"/>
+    </Preference>
+    <Preference
+        android:key="pref_rate"
+        android:title="@string/pref_rate_title"
+        android:summary="@string/pref_rate_summary">
+    </Preference>
+    <Preference
+        android:key="pref_report_bug"
+        android:title="@string/pref_report_bug_title"
+        android:summary="@string/pref_report_bug_summary"/>
+    <Preference
+        android:key="pref_comment_suggestion"
+        android:title="@string/pref_comment_suggestion_title"
+        android:summary="@string/pref_comment_suggestion_summary"/>
+</PreferenceScreen>

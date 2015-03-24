@@ -2,23 +2,30 @@ package ca.josephroque.bowlingcompanion;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
-import android.preference.RingtonePreference;
-import android.text.TextUtils;
+import android.util.Log;
 
-
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+
+import ca.josephroque.bowlingcompanion.database.Contract.*;
+import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
+import ca.josephroque.bowlingcompanion.theme.Theme;
+import ca.josephroque.bowlingcompanion.utilities.EmailUtils;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -31,16 +38,34 @@ import java.util.List;
  * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
  * API Guide</a> for more information on developing a Settings UI.
  */
+@SuppressWarnings("deprecation")
 public class SettingsActivity extends PreferenceActivity
+    implements SharedPreferences.OnSharedPreferenceChangeListener, Preference.OnPreferenceClickListener
 {
-    /**
-     * Determines whether to always show the simplified settings UI, where
-     * settings are presented in a single list. When false, settings are shown
-     * as a master/detail two-pane view on tablets. When true, a single pane is
-     * shown on tablets.
-     */
-    private static final boolean ALWAYS_SIMPLE_PREFS = false;
 
+    private static final String TAG = "SettingsActivity";
+
+    private String[] mArrayBowlerIds;
+    private String[] mArrayBowlerNames;
+    private String[][] mArrayLeagueIds;
+    private String[][] mArrayLeagueNames;
+    private int mCurrentBowlerPosition;
+
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+        loadBowlerAndLeagueNames();
+        setPreferenceSummaries();
+    }
+
+    @Override
+    public void onPause()
+    {
+        getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+        super.onPause();
+    }
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState)
@@ -64,29 +89,334 @@ public class SettingsActivity extends PreferenceActivity
 
         // In the simplified UI, fragments are not used at all and we instead
         // use the older PreferenceActivity APIs.
+        addPreferencesFromResource(R.xml.pref_other);
 
-        // Add 'general' preferences.
-        addPreferencesFromResource(R.xml.pref_general);
-
-        // Add 'notifications' preferences, and a corresponding header.
+        // Add 'quick' preferences, and a corresponding header.
         PreferenceCategory fakeHeader = new PreferenceCategory(this);
-        fakeHeader.setTitle(R.string.pref_header_notifications);
+        fakeHeader.setTitle(R.string.pref_header_quick);
         getPreferenceScreen().addPreference(fakeHeader);
-        addPreferencesFromResource(R.xml.pref_notification);
+        addPreferencesFromResource(R.xml.pref_quick);
 
-        // Add 'data and sync' preferences, and a corresponding header.
+        // Add 'stats' preferences, and a corresponding header.
         fakeHeader = new PreferenceCategory(this);
-        fakeHeader.setTitle(R.string.pref_header_data_sync);
+        fakeHeader.setTitle(R.string.pref_header_stats);
         getPreferenceScreen().addPreference(fakeHeader);
-        addPreferencesFromResource(R.xml.pref_data_sync);
+        addPreferencesFromResource(R.xml.pref_stats);
 
-        // Bind the summaries of EditText/List/Dialog/Ringtone preferences to
-        // their values. When their values change, their summaries are updated
-        // to reflect the new value, per the Android Design guidelines.
-        bindPreferenceSummaryToValue(findPreference("example_text"));
-        bindPreferenceSummaryToValue(findPreference("example_list"));
-        bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
-        bindPreferenceSummaryToValue(findPreference("sync_frequency"));
+        // Add 'theme' preferences, and a corresponding header.
+        fakeHeader = new PreferenceCategory(this);
+        fakeHeader.setTitle(R.string.pref_header_theme);
+        getPreferenceScreen().addPreference(fakeHeader);
+        addPreferencesFromResource(R.xml.pref_theme);
+
+        /*
+        TODO: full version is not yet available, add back in when it is
+        findPreference(Constants.KEY_VIEW_FULL).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
+                {
+                    @Override
+                    public boolean onPreferenceClick(Preference preference)
+                    {
+                        final String appPackageName = ca.josephroque.bowlingcompaniondeluxe;
+                        try
+                        {
+                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+                        } catch (android.content.ActivityNotFoundException ex)
+                        {
+                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + appPackageName)));
+                        }
+                        return true;
+                    }
+                });*/
+        findPreference(Constants.KEY_RATE).setOnPreferenceClickListener(this);
+        findPreference(Constants.KEY_REPORT_BUG).setOnPreferenceClickListener(this);
+        findPreference(Constants.KEY_COMMENT_SUGGESTION).setOnPreferenceClickListener(this);
+    }
+
+    private void loadBowlerAndLeagueNames()
+    {
+        SQLiteDatabase database = DatabaseHelper.getInstance(this).getReadableDatabase();
+        String rawNameQuery = "SELECT "
+                + "bowler." + BowlerEntry._ID + " AS bid, "
+                + BowlerEntry.COLUMN_BOWLER_NAME + ", "
+                + "league." + LeagueEntry._ID + " AS lid, "
+                + LeagueEntry.COLUMN_LEAGUE_NAME
+                + " FROM " + BowlerEntry.TABLE_NAME + " AS bowler"
+                + " INNER JOIN " + LeagueEntry.TABLE_NAME + " AS league"
+                + " ON bowler." + BowlerEntry._ID + "=league." + LeagueEntry.COLUMN_BOWLER_ID
+                + " WHERE " + LeagueEntry.COLUMN_IS_EVENT + "=? AND " + LeagueEntry.COLUMN_LEAGUE_NAME + " !=?"
+                + " ORDER BY " + BowlerEntry.COLUMN_BOWLER_NAME + ", " + LeagueEntry.COLUMN_LEAGUE_NAME;
+        String[] rawNameArgs = {"0", Constants.NAME_OPEN_LEAGUE};
+
+        List<String> listBowlerNames = new ArrayList<>();
+        List<String> listBowlerIds = new ArrayList<>();
+        List<List<String>> listLeagueNames = new ArrayList<>();
+        List<List<String>> listLeagueIds = new ArrayList<>();
+
+        long lastBowlerId = -1;
+        int currentLeaguePosition = -1;
+        Cursor cursor = database.rawQuery(rawNameQuery, rawNameArgs);
+        if (cursor.moveToFirst())
+        {
+            while(!cursor.isAfterLast())
+            {
+                long bowlerId = cursor.getLong(cursor.getColumnIndex("bid"));
+                if (lastBowlerId != bowlerId)
+                {
+                    lastBowlerId = bowlerId;
+                    listBowlerNames.add(cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_BOWLER_NAME)));
+                    listBowlerIds.add(String.valueOf(bowlerId));
+                    listLeagueIds.add(new ArrayList<String>());
+                    listLeagueNames.add(new ArrayList<String>());
+                    currentLeaguePosition++;
+                }
+                listLeagueIds.get(currentLeaguePosition)
+                        .add(String.valueOf(cursor.getLong(cursor.getColumnIndex("lid"))));
+                listLeagueNames.get(currentLeaguePosition)
+                        .add(cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_LEAGUE_NAME)));
+
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+
+        mArrayBowlerIds = new String[listBowlerIds.size()];
+        listBowlerIds.toArray(mArrayBowlerIds);
+        mArrayBowlerNames = new String[listBowlerNames.size()];
+        listBowlerNames.toArray(mArrayBowlerNames);
+
+        mArrayLeagueIds = new String[listLeagueIds.size()][];
+        mArrayLeagueNames = new String[listLeagueNames.size()][];
+        for (int i = 0; i < mArrayLeagueIds.length; i++)
+        {
+            mArrayLeagueIds[i] = new String[listLeagueIds.get(i).size()];
+            listLeagueIds.get(i).toArray(mArrayLeagueIds[i]);
+            mArrayLeagueNames[i] = new String[listLeagueNames.get(i).size()];
+            listLeagueNames.get(i).toArray(mArrayLeagueNames[i]);
+        }
+
+        if (listBowlerNames.size() > 0)
+        {
+            findPreference(Constants.KEY_ENABLE_QUICK).setEnabled(true);
+            ListPreference listPreference = (ListPreference)findPreference(Constants.KEY_QUICK_BOWLER);
+            listPreference.setEntryValues(mArrayBowlerIds);
+            listPreference.setEntries(mArrayBowlerNames);
+        }
+        else
+        {
+            CheckBoxPreference checkBoxPreference = (CheckBoxPreference)findPreference(Constants.KEY_ENABLE_QUICK);
+            checkBoxPreference.setChecked(false);
+            checkBoxPreference.setEnabled(false);
+            findPreference(Constants.KEY_QUICK_BOWLER).setSummary(R.string.pref_quick_bowler_summary);
+            findPreference(Constants.KEY_QUICK_LEAGUE).setSummary(R.string.pref_quick_league_summary);
+        }
+    }
+
+    private void setPreferenceSummaries()
+    {
+        SharedPreferences sharedPreferences = getPreferenceManager().getSharedPreferences();
+
+        Preference preference = findPreference(Constants.KEY_ENABLE_QUICK);
+        boolean checkBoolean = sharedPreferences.getBoolean(Constants.KEY_ENABLE_QUICK, false);
+        if (checkBoolean)
+        {
+            preference.setSummary(R.string.pref_enable_quick_summaryOn);
+            ListPreference quickBowlerPref = (ListPreference)findPreference(Constants.KEY_QUICK_BOWLER);
+            ListPreference quickLeaguePref = (ListPreference)findPreference(Constants.KEY_QUICK_LEAGUE);
+
+            quickBowlerPref.setEntries(mArrayBowlerNames);
+            quickBowlerPref.setEntryValues(mArrayBowlerIds);
+
+            SharedPreferences preferences = getSharedPreferences(Constants.PREFS, MODE_PRIVATE);
+            long quickBowlerId = preferences.getLong(Constants.PREF_QUICK_BOWLER_ID, -1);
+            long quickLeagueId = preferences.getLong(Constants.PREF_QUICK_LEAGUE_ID, -1);
+
+            mCurrentBowlerPosition = Arrays.binarySearch(mArrayBowlerIds, String.valueOf(quickBowlerId));
+            if (mCurrentBowlerPosition < 0)
+                mCurrentBowlerPosition = 0;
+            quickBowlerPref.setValueIndex(mCurrentBowlerPosition);
+            quickBowlerPref.setSummary(mArrayBowlerNames[mCurrentBowlerPosition]);
+
+            quickLeaguePref.setEntryValues(mArrayLeagueIds[mCurrentBowlerPosition]);
+            quickLeaguePref.setEntries(mArrayLeagueNames[mCurrentBowlerPosition]);
+
+            int position = Arrays.binarySearch(mArrayLeagueIds[mCurrentBowlerPosition], String.valueOf(quickLeagueId));
+            if (position < 0)
+                position = 0;
+            quickLeaguePref.setValueIndex(position);
+            quickLeaguePref.setSummary(mArrayLeagueNames[mCurrentBowlerPosition][position]);
+        }
+        else
+        {
+            preference.setSummary(R.string.pref_enable_quick_summaryOff);
+            findPreference(Constants.KEY_QUICK_BOWLER).setSummary(R.string.pref_quick_bowler_summary);
+            findPreference(Constants.KEY_QUICK_LEAGUE).setSummary(R.string.pref_quick_league_summary);
+        }
+
+        checkBoolean = sharedPreferences.getBoolean(Constants.KEY_INCLUDE_EVENTS, true);
+        findPreference(Constants.KEY_INCLUDE_EVENTS).setSummary((checkBoolean)
+                ? R.string.pref_include_events_summaryOn
+                : R.string.pref_include_events_summaryOff);
+        checkBoolean = sharedPreferences.getBoolean(Constants.KEY_INCLUDE_OPEN, true);
+        findPreference(Constants.KEY_INCLUDE_OPEN).setSummary((checkBoolean)
+                ? R.string.pref_include_open_summaryOn
+                : R.string.pref_include_open_summaryOff);
+
+        String themeColor = sharedPreferences.getString(Constants.KEY_THEME_COLORS, "Green");
+        findPreference(Constants.KEY_THEME_COLORS).setSummary("Current theme is " + themeColor);
+
+        checkBoolean = sharedPreferences.getBoolean(Constants.KEY_THEME_LIGHT, true);
+        findPreference(Constants.KEY_THEME_LIGHT).setSummary((checkBoolean)
+                ? R.string.pref_theme_light_summaryOn
+                : R.string.pref_theme_light_summaryOff);
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key)
+    {
+        if (key.equals(Constants.KEY_ENABLE_QUICK))
+        {
+            boolean isQuickEnabled = sharedPreferences.getBoolean(key, false);
+            Preference quickPref = findPreference(key);
+            ListPreference quickBowlerPref = (ListPreference)findPreference(Constants.KEY_QUICK_BOWLER);
+            ListPreference quickLeaguePref = (ListPreference)findPreference(Constants.KEY_QUICK_LEAGUE);
+
+            if (isQuickEnabled)
+            {
+                Log.w(TAG, "Quick enabled");
+                quickPref.setSummary(R.string.pref_enable_quick_summaryOn);
+                quickBowlerPref.setValueIndex(0);
+
+                quickBowlerPref.setSummary(mArrayBowlerNames[0]);
+                quickLeaguePref.setSummary(mArrayLeagueNames[0][0]);
+                quickLeaguePref.setEntries(mArrayLeagueNames[0]);
+                quickLeaguePref.setEntryValues(mArrayLeagueIds[0]);
+
+                getSharedPreferences(Constants.PREFS, MODE_PRIVATE)
+                        .edit()
+                        .putLong(Constants.PREF_QUICK_BOWLER_ID, Long.parseLong(mArrayBowlerIds[0]))
+                        .putLong(Constants.PREF_QUICK_LEAGUE_ID, Long.parseLong(mArrayLeagueIds[0][0]))
+                        .apply();
+            }
+            else
+            {
+                Log.w(TAG, "Quick disabled");
+                quickPref.setSummary(R.string.pref_enable_quick_summaryOff);
+                quickBowlerPref.setSummary(R.string.pref_quick_bowler_summary);
+                quickLeaguePref.setSummary(R.string.pref_quick_league_summary);
+                getSharedPreferences(Constants.PREFS, MODE_PRIVATE)
+                        .edit()
+                        .putLong(Constants.PREF_QUICK_BOWLER_ID, -1)
+                        .putLong(Constants.PREF_QUICK_LEAGUE_ID, -1)
+                        .apply();
+            }
+        }
+        else if (key.equals(Constants.KEY_QUICK_BOWLER))
+        {
+            Log.w(TAG, "Quick bowler altered");
+            ListPreference quickBowlerPref = (ListPreference)findPreference(key);
+            ListPreference quickLeaguePref = (ListPreference)findPreference(Constants.KEY_QUICK_LEAGUE);
+
+            String bowlerId = quickBowlerPref.getValue();
+            mCurrentBowlerPosition = Arrays.binarySearch(mArrayBowlerIds, bowlerId);
+            quickLeaguePref.setEntryValues(mArrayLeagueIds[mCurrentBowlerPosition]);
+            quickLeaguePref.setEntries(mArrayLeagueNames[mCurrentBowlerPosition]);
+            quickLeaguePref.setValueIndex(0);
+            quickBowlerPref.setSummary(mArrayLeagueNames[mCurrentBowlerPosition][0]);
+
+            getSharedPreferences(Constants.PREFS, MODE_PRIVATE)
+                    .edit()
+                    .putLong(Constants.PREF_QUICK_BOWLER_ID,
+                            Long.parseLong(mArrayBowlerIds[mCurrentBowlerPosition]))
+                    .putLong(Constants.PREF_QUICK_LEAGUE_ID,
+                            Long.parseLong(mArrayLeagueIds[mCurrentBowlerPosition][0]))
+                    .apply();
+            Log.w(TAG, "League entries set");
+        }
+        else if (key.equals(Constants.KEY_QUICK_LEAGUE))
+        {
+            ListPreference quickLeaguePref = (ListPreference)findPreference(key);
+            String leagueId = quickLeaguePref.getValue();
+            int position = Arrays.binarySearch(mArrayLeagueIds[mCurrentBowlerPosition], leagueId);
+            quickLeaguePref.setSummary(mArrayLeagueNames[mCurrentBowlerPosition][position]);
+
+            getSharedPreferences(Constants.PREFS, MODE_PRIVATE)
+                    .edit()
+                    .putLong(Constants.PREF_QUICK_LEAGUE_ID,
+                            Long.parseLong(mArrayLeagueIds[mCurrentBowlerPosition][position]))
+                    .apply();
+        }
+        else if (key.equals(Constants.KEY_THEME_COLORS))
+        {
+            String themeColor = sharedPreferences.getString(key, "Green");
+            boolean lightThemeEnabled = sharedPreferences.getBoolean(Constants.KEY_THEME_LIGHT, true);
+
+            Preference themePref = findPreference(key);
+            themePref.setSummary("Current theme is " + themeColor);
+
+            Theme.setTheme(this, themeColor, lightThemeEnabled);
+        }
+        else if (key.equals(Constants.KEY_THEME_LIGHT))
+        {
+            boolean lightThemeEnabled = sharedPreferences.getBoolean(key, true);
+            Preference lightPref = findPreference(key);
+            lightPref.setSummary((lightThemeEnabled)
+                    ? R.string.pref_theme_light_summaryOn
+                    : R.string.pref_theme_light_summaryOff);
+
+            Theme.setTheme(this, Theme.getThemeName(), lightThemeEnabled);
+        }
+        else if (key.equals(Constants.KEY_INCLUDE_EVENTS))
+        {
+            boolean isEventIncluded = sharedPreferences.getBoolean(key, true);
+            Preference eventPref = findPreference(key);
+            eventPref.setSummary((isEventIncluded)
+                    ? R.string.pref_include_events_summaryOn
+                    : R.string.pref_include_events_summaryOff);
+        }
+        else if (key.equals(Constants.KEY_INCLUDE_OPEN))
+        {
+            boolean isOpenIncluded = sharedPreferences.getBoolean(key, true);
+            Preference openPref = findPreference(key);
+            openPref.setSummary((isOpenIncluded)
+                    ? R.string.pref_include_open_summaryOn
+                    : R.string.pref_include_open_summaryOff);
+        }
+    }
+
+    @Override
+    public boolean onPreferenceClick(Preference preference)
+    {
+        if (preference.getKey().equals(Constants.KEY_RATE))
+        {
+            final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
+            try
+            {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+            } catch (android.content.ActivityNotFoundException ex)
+            {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + appPackageName)));
+            }
+            return true;
+        }
+        else if (preference.getKey().equals(Constants.KEY_REPORT_BUG))
+        {
+            String emailBody = "Please try to include as much of the following information as possible:"
+                    + "\nWhere in the application the bug occurred,"
+                    + "\nWhat you were doing when the bug occurred,"
+                    + "\nThe nature of the bug - fatal, minor, cosmetic (the way the app looks)"
+                    + "\n\n";
+
+            Intent emailIntent = EmailUtils.getEmailIntent("bugs@josephroque.ca", "Bug: Bowling Companion", emailBody);
+            startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+            return true;
+        }
+        else if (preference.getKey().equals(Constants.KEY_COMMENT_SUGGESTION))
+        {
+            Intent emailIntent = EmailUtils.getEmailIntent("contact@josephroque.ca", "Comm/Sug: Bowling Companion");
+            startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -110,15 +440,13 @@ public class SettingsActivity extends PreferenceActivity
 
     /**
      * Determines whether the simplified settings UI should be shown. This is
-     * true if this is forced via {@link #ALWAYS_SIMPLE_PREFS}, or the device
-     * doesn't have newer APIs like {@link PreferenceFragment}, or the device
-     * doesn't have an extra-large screen. In these cases, a single-pane
-     * "simplified" settings UI should be shown.
+     * true if the device doesn't have newer APIs like {@link PreferenceFragment},
+     * or the device doesn't have an extra-large screen. In these cases,
+     * a single-pane "simplified" settings UI should be shown.
      */
     private static boolean isSimplePreferences(Context context)
     {
-        return ALWAYS_SIMPLE_PREFS
-                || Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB
+        return Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB
                 || !isXLargeTablet(context);
     }
 
@@ -136,149 +464,66 @@ public class SettingsActivity extends PreferenceActivity
     }
 
     /**
-     * A preference value change listener that updates the preference's summary
-     * to reflect its new value.
-     */
-    private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListener = new Preference.OnPreferenceChangeListener()
-    {
-        @Override
-        public boolean onPreferenceChange(Preference preference, Object value)
-        {
-            String stringValue = value.toString();
-
-            if (preference instanceof ListPreference)
-            {
-                // For list preferences, look up the correct display value in
-                // the preference's 'entries' list.
-                ListPreference listPreference = (ListPreference) preference;
-                int index = listPreference.findIndexOfValue(stringValue);
-
-                // Set the summary to reflect the new value.
-                preference.setSummary(
-                        index >= 0
-                                ? listPreference.getEntries()[index]
-                                : null);
-
-            } else if (preference instanceof RingtonePreference)
-            {
-                // For ringtone preferences, look up the correct display value
-                // using RingtoneManager.
-                if (TextUtils.isEmpty(stringValue))
-                {
-                    // Empty values correspond to 'silent' (no ringtone).
-                    preference.setSummary(R.string.pref_ringtone_silent);
-
-                } else
-                {
-                    Ringtone ringtone = RingtoneManager.getRingtone(
-                            preference.getContext(), Uri.parse(stringValue));
-
-                    if (ringtone == null)
-                    {
-                        // Clear the summary if there was a lookup error.
-                        preference.setSummary(null);
-                    } else
-                    {
-                        // Set the summary to reflect the new ringtone display
-                        // name.
-                        String name = ringtone.getTitle(preference.getContext());
-                        preference.setSummary(name);
-                    }
-                }
-
-            } else
-            {
-                // For all other preferences, set the summary to the value's
-                // simple string representation.
-                preference.setSummary(stringValue);
-            }
-            return true;
-        }
-    };
-
-    /**
-     * Binds a preference's summary to its value. More specifically, when the
-     * preference's value is changed, its summary (line of text below the
-     * preference title) is updated to reflect the value. The summary is also
-     * immediately updated upon calling this method. The exact display format is
-     * dependent on the type of preference.
-     *
-     * @see #sBindPreferenceSummaryToValueListener
-     */
-    private static void bindPreferenceSummaryToValue(Preference preference)
-    {
-        // Set the listener to watch for value changes.
-        preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
-
-        // Trigger the listener immediately with the preference's
-        // current value.
-        sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,
-                PreferenceManager
-                        .getDefaultSharedPreferences(preference.getContext())
-                        .getString(preference.getKey(), ""));
-    }
-
-    /**
-     * This fragment shows general preferences only. It is used when the
+     * This fragment shows other preferences only. It is used when the
      * activity is showing a two-pane settings UI.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class GeneralPreferenceFragment extends PreferenceFragment
+    public static class OtherPreferenceFragment extends PreferenceFragment
     {
         @Override
         public void onCreate(Bundle savedInstanceState)
         {
             super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_general);
+            addPreferencesFromResource(R.xml.pref_other);
 
-            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
-            // to their values. When their values change, their summaries are
-            // updated to reflect the new value, per the Android Design
-            // guidelines.
-            bindPreferenceSummaryToValue(findPreference("example_text"));
-            bindPreferenceSummaryToValue(findPreference("example_list"));
+            findPreference(Constants.KEY_RATE).setOnPreferenceClickListener((SettingsActivity)getActivity());
+            findPreference(Constants.KEY_REPORT_BUG).setOnPreferenceClickListener((SettingsActivity)getActivity());
+            findPreference(Constants.KEY_COMMENT_SUGGESTION).setOnPreferenceClickListener((SettingsActivity)getActivity());
         }
     }
 
     /**
-     * This fragment shows notification preferences only. It is used when the
+     * This fragment shows quick preferences only. It is used when the
      * activity is showing a two-pane settings UI.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class NotificationPreferenceFragment extends PreferenceFragment
+    public static class QuickPreferenceFragment extends PreferenceFragment
     {
         @Override
         public void onCreate(Bundle savedInstanceState)
         {
             super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_notification);
-
-            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
-            // to their values. When their values change, their summaries are
-            // updated to reflect the new value, per the Android Design
-            // guidelines.
-            bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
+            addPreferencesFromResource(R.xml.pref_quick);
         }
     }
 
     /**
-     * This fragment shows data and sync preferences only. It is used when the
+     * This fragment shows stats preferences only. It is used when the
      * activity is showing a two-pane settings UI.
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class DataSyncPreferenceFragment extends PreferenceFragment
+    public static class StatsPreferenceFragment extends PreferenceFragment
     {
         @Override
         public void onCreate(Bundle savedInstanceState)
         {
             super.onCreate(savedInstanceState);
-            addPreferencesFromResource(R.xml.pref_data_sync);
+            addPreferencesFromResource(R.xml.pref_stats);
+        }
+    }
 
-            // Bind the summaries of EditText/List/Dialog/Ringtone preferences
-            // to their values. When their values change, their summaries are
-            // updated to reflect the new value, per the Android Design
-            // guidelines.
-            bindPreferenceSummaryToValue(findPreference("sync_frequency"));
+    /**
+     * This fragment shows theme preferences only. It is used when the
+     * activity is showing a two-pane settings UI.
+     */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    public static class ThemePreferenceFragment extends PreferenceFragment
+    {
+        @Override
+        public void onCreate(Bundle savedInstanceState)
+        {
+            super.onCreate(savedInstanceState);
+            addPreferencesFromResource(R.xml.pref_theme);
         }
     }
 }

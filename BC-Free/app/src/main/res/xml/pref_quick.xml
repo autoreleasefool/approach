@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <CheckBoxPreference
+        android:key="pref_enable_quick"
+        android:title="@string/pref_enable_quick_title"
+        android:summary="@string/pref_enable_quick_summaryOff"
+        android:defaultValue="false"/>
+    <ListPreference
+        android:dependency="pref_enable_quick"
+        android:key="pref_quick_bowler"
+        android:title="@string/pref_quick_bowler_title"
+        android:summary="@string/pref_quick_bowler_summary"
+        android:dialogTitle="@string/pref_quick_bowler_dialog"/>
+    <ListPreference
+        android:dependency="pref_enable_quick"
+        android:key="pref_quick_league"
+        android:title="@string/pref_quick_league_title"
+        android:summary="@string/pref_quick_league_summary"
+        android:dialogTitle="@string/pref_quick_league_dialog"/>
+</PreferenceScreen>

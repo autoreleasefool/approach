@@ -219,6 +219,12 @@ public class Theme
     }
 
     /**
+     * Returns the current theme color name
+     * @return value of sThemeName
+     */
+    public static String getThemeName() {return sThemeName;}
+
+    /**
      * Checks if the main activity's theme is valid
      * @return the value of sMainActivityThemeInvalidated
      */

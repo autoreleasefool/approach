@@ -3,59 +3,53 @@
 
     <!-- Strings related to Settings -->
 
-    <!-- Example General settings -->
-    <string name="pref_header_general">General</string>
+    <!-- Other Settings -->
+    <string name="pref_header_other">Other</string>
+    <string name="pref_view_full_title">View full version</string>
+    <string name="pref_view_full_summary">See additional features of full version</string>
+    <string name="pref_developer_website_title">Visit developer website</string>
+    <string name="pref_developer_website_summary">Learn more about the developer</string>
+    <string name="pref_rate_title">Rate app</string>
+    <string name="pref_rate_summary">Your feedback is always appreciated</string>
+    <string name="pref_report_bug_title">Report a bug</string>
+    <string name="pref_report_bug_summary">Help make the app work better for you</string>
+    <string name="pref_comment_suggestion_title">Submit a comment/suggestion</string>
+    <string name="pref_comment_suggestion_summary">Have a request or an idea for a feature?</string>
 
-    <string name="pref_title_social_recommendations">Enable social recommendations</string>
-    <string name="pref_description_social_recommendations">Recommendations for people to contact
-        based on your message history
-    </string>
+    <!-- Quick Settings -->
+    <string name="pref_header_quick">Quick Series</string>
+    <string name="pref_enable_quick_title">Enable custom quick series</string>
+    <string name="pref_enable_quick_summaryOn">Quick series will use the bowler/league set below</string>
+    <string name="pref_enable_quick_summaryOff">Quick series will use most recent bowler/league</string>
+    <string name="pref_quick_bowler_title">Bowler</string>
+    <string name="pref_quick_bowler_summary">Set a bowler for quick series</string>
+    <string name="pref_quick_bowler_dialog">Select a bowler</string>
+    <string name="pref_quick_league_title">League</string>
+    <string name="pref_quick_league_summary">Set a league for quick series</string>
+    <string name="pref_quick_league_dialog">Select a league</string>
 
-    <string name="pref_title_display_name">Display name</string>
-    <string name="pref_default_display_name">John Smith</string>
-
-    <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
-    <string-array name="pref_example_list_titles">
-        <item>Always</item>
-        <item>When possible</item>
-        <item>Never</item>
+    <!-- Stats Settings -->
+    <string name="pref_header_stats">Statistics</string>
+    <string name="pref_include_events_title">Include events in stats?</string>
+    <string name="pref_include_events_summaryOn">Events will be included</string>
+    <string name="pref_include_events_summaryOff">Events will NOT be included</string>
+    <string name="pref_include_open_title">Include open games in stats?</string>
+    <string name="pref_include_open_summaryOn">Open games will be included</string>
+    <string name="pref_include_open_summaryOff">Open games will NOT be included</string>
+    
+    <!-- Theme Settings -->
+    <string name="pref_header_theme">Theme</string>
+    <string name="pref_theme_colors_title">Theme colors</string>
+    <string name="pref_theme_colors_dialog">Select a theme color</string>
+    <string name="pref_theme_light_title">Use light variation of theme</string>
+    <string name="pref_theme_light_summaryOn">Theme is a lighter variation</string>
+    <string name="pref_theme_light_summaryOff">Theme is a darker variation</string>
+    <string-array name="pref_theme_colors_names">
+        <item>Green</item>
+        <item>Blue</item>
+        <item>Orange</item>
+        <item>Red</item>
+        <item>Purple</item>
+        <item>Grey</item>
     </string-array>
-    <string-array name="pref_example_list_values">
-        <item>1</item>
-        <item>0</item>
-        <item>-1</item>
-    </string-array>
-
-    <!-- Example settings for Data & Sync -->
-    <string name="pref_header_data_sync">Data &amp; sync</string>
-
-    <string name="pref_title_sync_frequency">Sync frequency</string>
-    <string-array name="pref_sync_frequency_titles">
-        <item>15 minutes</item>
-        <item>30 minutes</item>
-        <item>1 hour</item>
-        <item>3 hours</item>
-        <item>6 hours</item>
-        <item>Never</item>
-    </string-array>
-    <string-array name="pref_sync_frequency_values">
-        <item>15</item>
-        <item>30</item>
-        <item>60</item>
-        <item>180</item>
-        <item>360</item>
-        <item>-1</item>
-    </string-array>
-
-    <string name="pref_title_system_sync_settings">System sync settings</string>
-
-    <!-- Example settings for Notifications -->
-    <string name="pref_header_notifications">Notifications</string>
-
-    <string name="pref_title_new_message_notifications">New message notifications</string>
-
-    <string name="pref_title_ringtone">Ringtone</string>
-    <string name="pref_ringtone_silent">Silent</string>
-
-    <string name="pref_title_vibrate">Vibrate</string>
 </resources>

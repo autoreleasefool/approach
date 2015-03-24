@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <ListPreference
+        android:key="pref_theme_colors"
+        android:title="@string/pref_theme_colors_title"
+        android:dialogTitle="@string/pref_theme_colors_dialog"
+        android:entries="@array/pref_theme_colors_names"
+        android:entryValues="@array/pref_theme_colors_names"
+        android:defaultValue="Green"/>
+    <CheckBoxPreference
+        android:key="pref_theme_light"
+        android:title="@string/pref_theme_light_title"
+        android:summary="@string/pref_theme_light_summaryOn"
+        android:defaultValue="true"/>
+</PreferenceScreen>

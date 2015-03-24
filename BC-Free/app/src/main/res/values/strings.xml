@@ -3,8 +3,10 @@
 
     <!-- App & Fragment Titles -->
     <string name="app_name">Bowling Companion</string>
-    <string name="title_league_event">Leagues &amp; Events</string>
-    <string name="title_series">Series</string>
+    <string name="title_fragment_league_event">Leagues &amp; Events</string>
+    <string name="title_fragment_series">Series</string>
+    <string name="title_fragment_game">Game Details</string>
+    <string name="title_fragment_stats">Statistics</string>
 
     <!-- Dialog text -->
     <string name="dialog_okay">Okay</string>
