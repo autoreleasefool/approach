@@ -8,6 +8,7 @@ package ca.josephroque.bowlingcompanion;
  */
 public class Constants
 {
+
     // PREFERENCES
     /** Identifier for SharedPreferences of app */
     public static final String PREFS = "ca.josephroque.bowlingcompanion";
@@ -19,10 +20,6 @@ public class Constants
     public static final String PREF_QUICK_BOWLER_ID = "QBI";
     /** Identifier for custom set league id, stored in preferences */
     public static final String PREF_QUICK_LEAGUE_ID = "QLI";
-    /** Identifier for set theme color, stored in preferences */
-    public static final String PREF_THEME_COLORS = "TC";
-    /** Identifier for set theme variation, stored in preferences */
-    public static final String PREF_THEME_LIGHT = "TL";
 
     // EXTRAS
     /** Identifies the name of a bowler as an extra */

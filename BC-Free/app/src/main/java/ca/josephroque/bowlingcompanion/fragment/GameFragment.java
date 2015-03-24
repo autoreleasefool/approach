@@ -523,7 +523,10 @@ public class GameFragment extends Fragment
                 switch(viewId)
                 {
                     case R.id.iv_game_settings:
-                        fadeGameSettings(mSettingsOpened);
+                        if (!mGameLocked[mCurrentGame])
+                            fadeGameSettings(mSettingsOpened);
+                        else if (!mManualScoreSet[mCurrentGame])
+                            setGameLocked(false);
                         break;
                     case R.id.tv_setting_foul:
                         if (mSettingsButtonsDisabled || mGameLocked[mCurrentGame] || mManualScoreSet[mCurrentGame])
