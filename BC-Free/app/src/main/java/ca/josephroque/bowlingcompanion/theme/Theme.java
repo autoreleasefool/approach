@@ -56,8 +56,8 @@ public class Theme
     public static void loadTheme(Context context)
     {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        String themeName = prefs.getString(Constants.PREF_THEME_COLORS, "Green");
-        boolean lightTheme = prefs.getBoolean(Constants.PREF_THEME_LIGHT, true);
+        String themeName = prefs.getString(Constants.KEY_THEME_COLORS, "Green");
+        boolean lightTheme = prefs.getBoolean(Constants.KEY_THEME_LIGHT, true);
         setTheme(context, themeName, lightTheme);
     }
 

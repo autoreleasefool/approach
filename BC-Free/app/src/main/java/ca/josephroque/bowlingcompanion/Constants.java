@@ -9,6 +9,32 @@ package ca.josephroque.bowlingcompanion;
 public class Constants
 {
 
+    // SETTINGS KEYS
+    /** Identifier for preference which should open full version in play store */
+    public static final String KEY_VIEW_FULL = "pref_view_full";
+    /** Identifier for preference which should open developer website */
+    public static final String KEY_DEVELOPER_WEBSITE = "pref_developer_website";
+    /** Identifier for preference which should open app in play store */
+    public static final String KEY_RATE = "pref_rate";
+    /** Identifier for preference which should open email intent */
+    public static final String KEY_REPORT_BUG = "pref_report_bug";
+    /** Identifier for preference which should open email intent*/
+    public static final String KEY_COMMENT_SUGGESTION = "pref_comment_suggestion";
+    /** Identifier for preference which indicates if quick bowlers are set */
+    public static final String KEY_ENABLE_QUICK = "pref_enable_quick";
+    /** Identifier for preference which allows user to select a bowler */
+    public static final String KEY_QUICK_BOWLER = "pref_quick_bowler";
+    /** Identifier for preference which allows user to select a league belong to bowler */
+    public static final String KEY_QUICK_LEAGUE = "pref_quick_league";
+    /** Identifier for preference which indicates if events should be included in stats */
+    public static final String KEY_INCLUDE_EVENTS = "pref_include_events";
+    /** Identifier for preference which indicates if open games should be included in stats */
+    public static final String KEY_INCLUDE_OPEN = "pref_include_open";
+    /** Identifier for preference which allows user to select a theme color */
+    public static final String KEY_THEME_COLORS = "pref_theme_colors";
+    /** Identifier for preference which allows user to select a light or dark theme variation */
+    public static final String KEY_THEME_LIGHT = "pref_theme_light";
+
     // PREFERENCES
     /** Identifier for SharedPreferences of app */
     public static final String PREFS = "ca.josephroque.bowlingcompanion";
