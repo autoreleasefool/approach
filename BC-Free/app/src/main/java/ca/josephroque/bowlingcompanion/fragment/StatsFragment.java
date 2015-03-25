@@ -37,7 +37,7 @@ public class StatsFragment extends Fragment
     implements Theme.ChangeableTheme
 {
     /** Tag to identify class when outputting to console */
-    private static final String TAG = "StatsFragment";
+    //private static final String TAG = "StatsFragment";
 
     /** Represent names of general stats related to the middle pin */
     private static final String[] STATS_MIDDLE_GENERAL =
@@ -71,10 +71,12 @@ public class StatsFragment extends Fragment
     /** Indicates only the stats related to the specified game should be loaded */
     private static final byte LOADING_GAME_STATS = 3;
 
-    private RecyclerView mRecyclerViewStats;
+    /** Adapter to manage data displayed in fragment */
     private StatsAdapter mAdapterStats;
 
+    /** List of names of stats to be displayed */
     private List<String> mListStatNames;
+    /** List of values corresponding to mListStatNames */
     private List<String> mListStatValues;
 
     @Override
@@ -85,7 +87,7 @@ public class StatsFragment extends Fragment
         mListStatNames = new ArrayList<>();
         mListStatValues = new ArrayList<>();
 
-        mRecyclerViewStats = (RecyclerView)rootView.findViewById(R.id.rv_stats);
+        RecyclerView mRecyclerViewStats = (RecyclerView)rootView.findViewById(R.id.rv_stats);
         mRecyclerViewStats.setHasFixedSize(true);
         mRecyclerViewStats.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
 
@@ -107,6 +109,8 @@ public class StatsFragment extends Fragment
         mListStatValues.clear();
         mAdapterStats.notifyDataSetChanged();
 
+        //Checks what type of stats should be displayed, depending
+        //on what data is available in the parent activity at the time
         byte statsToLoad;
         int titleToSet;
         if (mainActivity.getGameId() == -1)
@@ -723,6 +727,10 @@ public class StatsFragment extends Fragment
         return database.rawQuery(rawStatsQuery, rawStatsArgs);
     }
 
+    /**
+     * Creates a new instance of StatsFragment and returns it
+     * @return new instance of StatsFragment
+     */
     public static StatsFragment newInstance()
     {
         return new StatsFragment();

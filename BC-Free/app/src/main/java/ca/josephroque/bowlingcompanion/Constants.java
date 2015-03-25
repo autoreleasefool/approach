@@ -11,9 +11,9 @@ public class Constants
 
     // SETTINGS KEYS
     /** Identifier for preference which should open full version in play store */
-    public static final String KEY_VIEW_FULL = "pref_view_full";
+    //public static final String KEY_VIEW_FULL = "pref_view_full";
     /** Identifier for preference which should open developer website */
-    public static final String KEY_DEVELOPER_WEBSITE = "pref_developer_website";
+    //public static final String KEY_DEVELOPER_WEBSITE = "pref_developer_website";
     /** Identifier for preference which should open app in play store */
     public static final String KEY_RATE = "pref_rate";
     /** Identifier for preference which should open email intent */
@@ -78,10 +78,6 @@ public class Constants
     public static final String EXTRA_ARRAY_GAME_LOCKED = "EAGL";
     /** Identifies an array of booleans to indicate if games have manual scores */
     public static final String EXTRA_ARRAY_MANUAL_SCORE_SET = "EAMSS";
-    /** Identifies a boolean which indicates  if the game settings are open */
-    public static final String EXTRA_SETTINGS_OPEN = "ESO";
-    /** Identifies a boolean which indicates if the game settings are disabled */
-    public static final String EXTRA_SETTINGS_DISABLED = "ESD";
 
     // REGULAR EXPRESSIONS
     /** Regular Expression to match regular names */
@@ -153,39 +149,39 @@ public class Constants
     /** Index which should correspond to the number of head pins */
     public static final byte STAT_HEAD_PINS = 3;
     /** Index which should correspond to the number of head pins spared */
-    public static final byte STAT_HEAD_PINS_SPARED = 4;
+    //public static final byte STAT_HEAD_PINS_SPARED = 4;
     /** Index which should correspond to the number of lefts */
     public static final byte STAT_LEFTS = 5;
     /** Index which should correspond to the number of lefts spared */
-    public static final byte STAT_LEFTS_SPARED = 6;
+    //public static final byte STAT_LEFTS_SPARED = 6;
     /** Index which should correspond to the number of rights */
     public static final byte STAT_RIGHTS = 7;
     /** Index which should correspond to the number of rights spared */
-    public static final byte STAT_RIGHTS_SPARED = 8;
+    //public static final byte STAT_RIGHTS_SPARED = 8;
     /** Index which should correspond to the number of aces */
     public static final byte STAT_ACES = 9;
     /** Index which should correspond to the number of aces spared */
-    public static final byte STAT_ACES_SPARED = 10;
+    //public static final byte STAT_ACES_SPARED = 10;
     /** Index which should correspond to the number of chop offs */
     public static final byte STAT_CHOP_OFFS = 11;
     /** Index which should correspond to the number of chop offs spared */
-    public static final byte STAT_CHOP_OFFS_SPARED = 12;
+    //public static final byte STAT_CHOP_OFFS_SPARED = 12;
     /** Index which should correspond to the number of left chop offs */
     public static final byte STAT_LEFT_CHOP_OFFS = 13;
     /** Index which should correspond to the number of left chop offs spared */
-    public static final byte STAT_LEFT_CHOP_OFFS_SPARED = 14;
+    //public static final byte STAT_LEFT_CHOP_OFFS_SPARED = 14;
     /** Index which should correspond to the number of right chop offs */
     public static final byte STAT_RIGHT_CHOP_OFFS = 15;
     /** Index which should correspond to the number of right chop offs spared */
-    public static final byte STAT_RIGHT_CHOP_OFFS_SPARED = 16;
+    //public static final byte STAT_RIGHT_CHOP_OFFS_SPARED = 16;
     /** Index which should correspond to the number of splits */
     public static final byte STAT_SPLITS = 17;
     /** Index which should correspond to the number of splits spared */
-    public static final byte STAT_SPLITS_SPARED = 18;
+   // public static final byte STAT_SPLITS_SPARED = 18;
     /** Index which should correspond to the number of left splits */
     public static final byte STAT_LEFT_SPLITS = 19;
     /** Index which should correspond to the number of left splits spared */
-    public static final byte STAT_LEFT_SPLITS_SPARED = 20;
+    //public static final byte STAT_LEFT_SPLITS_SPARED = 20;
     /** Index which should correspond to the number of right splits */
     public static final byte STAT_RIGHT_SPLITS = 21;
     /** Index which should correspond to the number of right splits spared */

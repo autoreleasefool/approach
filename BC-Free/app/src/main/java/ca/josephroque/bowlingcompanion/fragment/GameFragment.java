@@ -145,6 +145,7 @@ public class GameFragment extends Fragment
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
+        //Loads member variables from saved instance state, if one exists
         if (savedInstanceState != null)
         {
             mEventMode = savedInstanceState.getBoolean(Constants.EXTRA_EVENT_MODE);
@@ -160,6 +161,7 @@ public class GameFragment extends Fragment
     {
         View rootView = inflater.inflate(R.layout.fragment_games, container, false);
 
+        //Density of screen to set proper width/height of views
         final float screenDensity = getResources().getDisplayMetrics().density;
 
         mHorizontalScrollViewFrames = (HorizontalScrollView)rootView.findViewById(R.id.hsv_frames);
@@ -176,10 +178,11 @@ public class GameFragment extends Fragment
         final View.OnClickListener[] onClickListeners = getOnClickListeners();
 
         /*
-         * Creates TextView objects to display information about state of game and
+         * Following creates TextView objects to display information about state of game and
          * stores references in member variables
          */
 
+        //Calculates most static view sizes beforehand so they don't have to be recalculated
         final int dp_128 = DataFormatter.getPixelsFromDP(screenDensity, 128);
         final int dp_120 = DataFormatter.getPixelsFromDP(screenDensity, 120);
         final int dp_88 = DataFormatter.getPixelsFromDP(screenDensity, 88);
@@ -189,9 +192,11 @@ public class GameFragment extends Fragment
         final int dp_36 = DataFormatter.getPixelsFromDP(screenDensity, 36);
         for (int i = 0; i < Constants.NUMBER_OF_FRAMES; i++)
         {
+            //TextView to display score of a frame
             TextView frameText = new TextView(getActivity());
             switch(i)
             {
+                //Id is set so when view is clicked, it can be identified
                 case 0: frameText.setId(R.id.text_frame_0); break;
                 case 1: frameText.setId(R.id.text_frame_1); break;
                 case 2: frameText.setId(R.id.text_frame_2); break;
@@ -215,6 +220,7 @@ public class GameFragment extends Fragment
 
             for (int j = 0; j < 3; j++)
             {
+                //TextView to display value scored on a certain ball
                 TextView text = new TextView(getActivity());
                 text.setBackgroundResource(R.drawable.background_frame_text);
                 text.setGravity(Gravity.CENTER);
@@ -223,6 +229,7 @@ public class GameFragment extends Fragment
                 relativeLayout.addView(text, layoutParams);
                 mTextViewBallScores[i][j] = text;
 
+                //TextView to display fouls invoked on a certain ball
                 text = new TextView(getActivity());
                 text.setGravity(Gravity.CENTER);
                 text.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
@@ -233,6 +240,7 @@ public class GameFragment extends Fragment
                 mTextViewFouls[i][j] = text;
             }
 
+            //TextView to display frame number under related frame information
             frameText = new TextView(getActivity());
             frameText.setText(String.valueOf(i + 1));
             frameText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
@@ -241,8 +249,10 @@ public class GameFragment extends Fragment
             layoutParams = new RelativeLayout.LayoutParams(dp_120, dp_36);
             layoutParams.leftMargin = DataFormatter.getPixelsFromDP(screenDensity, 120 * i);
             layoutParams.topMargin = dp_128;
+            relativeLayout.addView(frameText, layoutParams);
         }
 
+        //TextView to display final score of game
         mTextViewFinalScore = new TextView(getActivity());
         mTextViewFinalScore.setGravity(Gravity.CENTER);
         mTextViewFinalScore.setBackgroundResource(R.drawable.background_frame_text);
@@ -251,6 +261,7 @@ public class GameFragment extends Fragment
         relativeLayout.addView(mTextViewFinalScore, layoutParams);
         mHorizontalScrollViewFrames.addView(relativeLayout);
 
+        //Buttons which indicate state of pins in a frame, provide user interaction methods
         mImageButtonPins = new ImageButton[5];
         mImageButtonPins[0] = (ImageButton)rootView.findViewById(R.id.button_pin_1);
         mImageButtonPins[1] = (ImageButton)rootView.findViewById(R.id.button_pin_2);
@@ -261,6 +272,7 @@ public class GameFragment extends Fragment
         for (ImageButton pinButton : mImageButtonPins)
             pinButton.setOnClickListener(onClickListeners[LISTENER_PIN_BUTTONS]);
 
+        //Loading other views into member variables, setting OnClickListeners
         rootView.findViewById(R.id.iv_next_ball).setOnClickListener(onClickListeners[LISTENER_OTHER]);
         rootView.findViewById(R.id.iv_prev_ball).setOnClickListener(onClickListeners[LISTENER_OTHER]);
         rootView.findViewById(R.id.tv_next_ball).setOnClickListener(onClickListeners[LISTENER_OTHER]);
@@ -289,9 +301,11 @@ public class GameFragment extends Fragment
         super.onResume();
         ((MainActivity)getActivity()).setActionBarTitle(R.string.title_fragment_game);
 
+        //Loads colors for frame view backgrounds
         COLOR_BACKGROUND = getResources().getColor(R.color.primary_background);
         COLOR_HIGHLIGHT = getResources().getColor(R.color.secondary_background);
 
+        //If values were not loaded from saved instance state, they are loaded here
         if (mGameIds == null)
         {
             Bundle args = getArguments();
@@ -307,13 +321,16 @@ public class GameFragment extends Fragment
 
         updateTheme();
 
+        //Loads scores of games being edited from database
         loadInitialScores();
+        //Loads first game to edit
         loadGameFromDatabase((byte)0);
     }
 
     @Override
     public void onPause()
     {
+        //Clears color changes to frames and saves the game being edited
         clearFrameColor();
         saveGame();
 
@@ -325,6 +342,7 @@ public class GameFragment extends Fragment
     {
         super.onSaveInstanceState(outState);
 
+        //Puts member variables into outState so they can be loaded back
         outState.putBoolean(Constants.EXTRA_EVENT_MODE, mEventMode);
         outState.putLongArray(Constants.EXTRA_ARRAY_GAME_IDS, mGameIds);
         outState.putLongArray(Constants.EXTRA_ARRAY_FRAME_IDS, mFrameIds);
@@ -342,6 +360,7 @@ public class GameFragment extends Fragment
     @Override
     public void onPrepareOptionsMenu(Menu menu)
     {
+        //Sets names/visibility of menu items
         menu.findItem(R.id.action_series_stats)
                 .setTitle((mEventMode) ? R.string.action_event_stats : R.string.action_series_stats);
         menu.findItem(R.id.action_set_score)
@@ -359,27 +378,40 @@ public class GameFragment extends Fragment
             case R.id.action_share:
                 //TODO Social.showShareDialog();
                 return true;
+
             case R.id.action_set_score:
+                //If a manual score is set, clear it
+                //Otherwise, prompt for a new score from the user
                 if (mManualScoreSet[mCurrentGame])
                     showClearManualScoreDialog();
                 else
                     showManualScoreDialog();
                 return true;
+
             case R.id.action_series_stats:
+                //Displays all stats related to series of games
                 mGameSeriesListener.onSeriesStatsOpened();
                 return true;
+
             case R.id.action_reset_game:
+                //If the game is locked, it cannot be reset
+                //Otherwise, prompts user to reset
                 if (mGameLocked[mCurrentGame] && !mManualScoreSet[mCurrentGame])
                     showGameLockedDialog();
                 else
                     showResetGameDialog();
                 return true;
+
             case R.id.action_what_if:
+                //Calculates possible score and displays
                 showWhatIfDialog();
                 return true;
+
             case R.id.action_stats:
+                //Displays all stats related to current game
                 mGameSeriesListener.onGameStatsOpened(mGameIds[mCurrentGame], (byte)(mCurrentGame + 1));
                 return true;
+
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -396,6 +428,7 @@ public class GameFragment extends Fragment
     {
         if (scoreToSet < 0 || scoreToSet > 450)
         {
+            //If an invalid score is given, user is informed and method exists
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle("Invalid score!")
                     .setMessage(R.string.dialog_bad_score)
@@ -413,6 +446,7 @@ public class GameFragment extends Fragment
             return;
         }
 
+        //Clears state of game and sets the manual score of the game
         resetGame();
         setGameLocked(true);
         mManualScoreSet[mCurrentGame] = true;
@@ -501,17 +535,23 @@ public class GameFragment extends Fragment
                 switch(viewId)
                 {
                     case R.id.iv_lock:
+                        //Locks the game if it is unlocked,
+                        //unlocks if locked
                         if (mManualScoreSet[mCurrentGame])
                             return;
                         setGameLocked(!mGameLocked[mCurrentGame]);
                         break;
+
                     case R.id.iv_foul:
+                        //Sets or removes a foul and updates scores
                         if (mGameLocked[mCurrentGame] || mManualScoreSet[mCurrentGame])
                             return;
                         mFouls[mCurrentFrame][mCurrentBall] = !mFouls[mCurrentFrame][mCurrentBall];
                         updateFouls();
                         break;
+
                     case R.id.iv_reset_frame:
+                        //Resets the current frame to ball 0, no fouls, no pins knocked
                         if (mGameLocked[mCurrentGame] || mManualScoreSet[mCurrentGame])
                             return;
                         clearFrameColor();
@@ -526,9 +566,11 @@ public class GameFragment extends Fragment
                         updateBalls(mCurrentFrame);
                         updateScore();
                         break;
+
                     case R.id.iv_clear:
                         clearPins();
                         break;
+
                     case R.id.iv_next_ball:
                     case R.id.tv_next_ball:
                         //Changes the current frame and updates the GUI
@@ -556,6 +598,7 @@ public class GameFragment extends Fragment
                         mHasFrameBeenAccessed[mCurrentFrame] = true;
                         updateFrameColor();
                         break;
+
                     case R.id.iv_prev_ball:
                     case R.id.tv_prev_ball:
                         //Changes the current frame and updates the GUI
@@ -574,6 +617,7 @@ public class GameFragment extends Fragment
                         }
                         updateFrameColor();
                         break;
+
                     default:
                         throw new RuntimeException("Unknown other button id");
                 }
@@ -583,6 +627,9 @@ public class GameFragment extends Fragment
         return listeners;
     }
 
+    /**
+     * Prompts user to reset the current game and set a manual score
+     */
     private void showManualScoreDialog()
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -610,6 +657,9 @@ public class GameFragment extends Fragment
                 .show();
     }
 
+    /**
+     * Prompts user to reset the current game and remove a manual score
+     */
     private void showClearManualScoreDialog()
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -620,6 +670,7 @@ public class GameFragment extends Fragment
                     @Override
                     public void onClick(DialogInterface dialog, int which)
                     {
+                        //Unlocks and resets game
                         setGameLocked(false);
                         mManualScoreSet[mCurrentGame] = false;
                         resetGame();
@@ -643,6 +694,10 @@ public class GameFragment extends Fragment
                 .show();
     }
 
+    /**
+     * Hides or shows TextView objects in the app that display individual score elements
+     * @param enabled if true, TextView objects related to scores will be shown
+     */
     private void clearAllText(boolean enabled)
     {
         if (enabled)
@@ -673,6 +728,9 @@ public class GameFragment extends Fragment
                 : R.drawable.ic_lock_open);
     }
 
+    /**
+     * Informs user with prompt that the game is current locked
+     */
     private void showGameLockedDialog()
     {
         new AlertDialog.Builder(getActivity())
@@ -691,6 +749,9 @@ public class GameFragment extends Fragment
                 .show();
     }
 
+    /**
+     * Prompts user to reset the current game
+     */
     private void showResetGameDialog()
     {
         new AlertDialog.Builder(getActivity())
@@ -701,6 +762,7 @@ public class GameFragment extends Fragment
                     @Override
                     public void onClick(DialogInterface dialog, int which)
                     {
+                        //Resets and saves the current game
                         resetGame();
                         saveGame();
                         setGameLocked(false);
@@ -726,6 +788,11 @@ public class GameFragment extends Fragment
                 .show();
     }
 
+    /**
+     * Locks or unlocks a game and hides/shows settings which are only necessary
+     * if a game is unlocked
+     * @param lock if true, settings will be hidden and game locked
+     */
     private void setGameLocked(boolean lock)
     {
         mGameLocked[mCurrentGame] = lock;
@@ -752,6 +819,10 @@ public class GameFragment extends Fragment
         });
     }
 
+    /**
+     * Copies data of current game to variables and saves game to the database
+     * on a new thread
+     */
     private void saveGame()
     {
         long[] framesToSave = new long[Constants.NUMBER_OF_FRAMES];
@@ -780,6 +851,9 @@ public class GameFragment extends Fragment
                 mManualScoreSet[mCurrentGame]);
     }
 
+    /**
+     * Resets a game to its original state with 0 score, 0 fouls
+     */
     private void resetGame()
     {
         clearFrameColor();
@@ -800,8 +874,13 @@ public class GameFragment extends Fragment
         mGameScoresMinusFouls[mCurrentGame] = 0;
     }
 
+    /**
+     * Calculates the highest score possible from the current state
+     * of the game and displays it in a dialog to the user
+     */
     private void showWhatIfDialog()
     {
+        //TODO: method doesn't calculate proper score
         StringBuilder alertMessageBuilder = new StringBuilder("If you get");
         short possibleScore = Short.parseShort(mTextViewFrames[mCurrentFrame].getText().toString());
 
@@ -940,10 +1019,11 @@ public class GameFragment extends Fragment
             {
                 //Sets text depending on state of pins in the frame
                 final String[] ballString = new String[3];
-                if (frameToUpdate == Constants.LAST_FRAME)
+                if (frameToUpdate == Constants.LAST_FRAME) //Treat last frame differently than rest
                 {
                     if (Arrays.equals(mPinState[frameToUpdate][0], Constants.FRAME_PINS_DOWN))
                     {
+                        //If first ball is a strike, next two can be strikes/spares
                         ballString[0] = Constants.BALL_STRIKE;
                         if (Arrays.equals(mPinState[frameToUpdate][1], Constants.FRAME_PINS_DOWN))
                         {
@@ -961,6 +1041,7 @@ public class GameFragment extends Fragment
                     }
                     else
                     {
+                        //If first ball is not a strike, score is calculated normally
                         ballString[0] = Score.getValueOfBall(mPinState[frameToUpdate][0], 0, false);
                         if (Arrays.equals(mPinState[frameToUpdate][1], Constants.FRAME_PINS_DOWN))
                         {
@@ -994,6 +1075,8 @@ public class GameFragment extends Fragment
                     }
                     else
                     {
+                        //Either displays pins knocked down in next frames
+                        //or shows empty frames
                         if (mHasFrameBeenAccessed[frameToUpdate + 1])
                         {
                             ballString[1] = (mHasFrameBeenAccessed[frameToUpdate + 1])
@@ -1210,6 +1293,8 @@ public class GameFragment extends Fragment
                         mTextViewFrames[mCurrentFrame].getBackground();
                 drawable.setColor(COLOR_HIGHLIGHT);
 
+                //Sets images of pins to enabled/disabled depending on
+                //if they were knocked down in current frame or a previous one
                 int numberOfPinsStanding = 0;
                 for (byte i = 0; i < 5; i++)
                 {
@@ -1561,6 +1646,10 @@ public class GameFragment extends Fragment
         }).start();
     }
 
+    /**
+     * Loads the initial scores for the games being displayed from the database
+     * so they can be shown and updated
+     */
     private void loadInitialScores()
     {
         byte numberOfGames = ((MainActivity)getActivity()).getNumberOfGames();
@@ -1601,12 +1690,33 @@ public class GameFragment extends Fragment
         cursor.close();
     }
 
+    /**
+     * Callback interface offers methods upon user interaction
+     */
     public static interface OnGameOrSeriesStatsOpenedListener
     {
+        /**
+         * Tells activity to open new StatsFragment with current game id and game number
+         * @param gameId id of the game to display
+         * @param gameNumber number in a series of the game to display
+         */
         public void onGameStatsOpened(long gameId, byte gameNumber);
+
+        /**
+         * Tells activity to open new StatsFragment with current series
+         */
         public void onSeriesStatsOpened();
     }
 
+    /**
+     * Creates a new instance and sets parameters as arguments for the instance
+     * @param isEvent whether an event is being displayed in this fragment or not
+     * @param gameIds ids of the games being displayed
+     * @param frameIds ids of frames belonging to gameIds
+     * @param gameLocked whether the games being displayed are locked or not
+     * @param manualScore whether the games being displayed have manual scores set
+     * @return the newly created instance
+     */
     public static GameFragment newInstance(boolean isEvent, long[] gameIds, long[] frameIds, boolean[] gameLocked, boolean[] manualScore)
     {
         GameFragment gameFragment = new GameFragment();

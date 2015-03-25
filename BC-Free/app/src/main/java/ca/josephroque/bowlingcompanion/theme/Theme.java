@@ -225,6 +225,7 @@ public class Theme
          * When overridden, should update colors of relevant objects
          * and views to match the theme
          */
+        @SuppressWarnings("unused") // Is used by classes implementing interface
         public void updateTheme();
     }
 }

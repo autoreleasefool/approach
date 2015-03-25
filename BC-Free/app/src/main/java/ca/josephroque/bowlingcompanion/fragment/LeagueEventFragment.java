@@ -52,15 +52,23 @@ public class LeagueEventFragment extends Fragment
     /** Tag to identify class when outputting to console */
     private static final String TAG = "LeagueEventFragment";
 
+    /** View to display league and event names and averages to user */
     private RecyclerView mRecyclerViewLeagueEvents;
+    /** Adapter to manage data displayed in mRecyclerViewLeagueEvents */
     private NameAverageAdapter mAdapterLeagueEvents;
 
+    /** List to store ids from league table in database */
     private List<Long> mListLeagueEventIds;
+    /** List to store names of leagues, relevant to order of mListLeagueEventIds */
     private List<String> mListLeagueEventNames;
+    /** List to store averages of leagues, relevant to order of mListLeagueEventIds */
     private List<Short> mListLeagueEventAverages;
+    /** List to store number of games of leagues, relevant to order of mListLeagueEventIds */
     private List<Byte> mListLeagueEventNumberOfGames;
 
+    /** Callback listener for user events related to leagues */
     private OnLeagueSelectedListener mLeagueSelectedListener;
+    /** Callback listener for user events related to series */
     private SeriesFragment.SeriesListener mSeriesListener;
 
     @Override
@@ -126,6 +134,7 @@ public class LeagueEventFragment extends Fragment
             }
         });
 
+        //Sets textviews to display text relevant to leagues
         ((TextView)rootView.findViewById(R.id.tv_new_list_item)).setText(R.string.text_new_league_event);
         ((TextView)rootView.findViewById(R.id.tv_delete_list_item)).setText(R.string.text_delete_league_event);
 
@@ -162,6 +171,7 @@ public class LeagueEventFragment extends Fragment
         switch(item.getItemId())
         {
             case R.id.action_stats:
+                //Displays stats of current bowler in a new StatsFragment
                 mLeagueSelectedListener.onBowlerStatsOpened();
                 return true;
             default:
@@ -185,12 +195,14 @@ public class LeagueEventFragment extends Fragment
     @Override
     public void onNAItemClick(final int position)
     {
+        //When league name is clicked, its data is opened in a new SeriesFragment
         new OpenLeagueEventSeriesTask().execute(position);
     }
 
     @Override
     public void onNALongClick(final int position)
     {
+        //When league name is long clicked, user is prompted to delete it
         showDeleteLeagueOrEventDialog(position);
     }
 
@@ -425,7 +437,9 @@ public class LeagueEventFragment extends Fragment
     }
 
     /**
-     * TODO: documentation
+     * Loads/updates data for the league/event from the database
+     * and creates a new SeriesFragment or GameFragment to display
+     * selected league or event, respectively.
      */
     private class OpenLeagueEventSeriesTask extends AsyncTask<Integer, Void, Object[]>
     {
@@ -715,6 +729,10 @@ public class LeagueEventFragment extends Fragment
          * @param numberOfGames number of games of the league corresponding to leagueId
          */
         public void onLeagueSelected(long leagueId, String leagueName, byte numberOfGames, boolean openSeriesFragment);
+
+        /**
+         * Used to open StatsFragment to display bowler stats
+         */
         public void onBowlerStatsOpened();
     }
 }

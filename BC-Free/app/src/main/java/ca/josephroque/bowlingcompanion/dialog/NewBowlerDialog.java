@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.text.InputFilter;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 
@@ -25,12 +24,12 @@ public class NewBowlerDialog extends DialogFragment
     /** Instance of listener which contains methods that are executed upon user interaction */
     private NewBowlerDialogListener mDialogListener;
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState)
     {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
-        LayoutInflater inflater = getActivity().getLayoutInflater();
-        final View dialogView = inflater.inflate(R.layout.dialog_new_bowler, null);
+        final View dialogView = View.inflate(getActivity(), R.layout.dialog_new_bowler, null);
 
         final EditText editTextName = (EditText)dialogView.findViewById(R.id.et_bowler_name);
         editTextName.setHint("Name (max " + Constants.NAME_MAX_LENGTH + " characters)");

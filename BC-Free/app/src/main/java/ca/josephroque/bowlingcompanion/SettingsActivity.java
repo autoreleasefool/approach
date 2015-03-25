@@ -42,20 +42,27 @@ import ca.josephroque.bowlingcompanion.utilities.EmailUtils;
 public class SettingsActivity extends PreferenceActivity
     implements SharedPreferences.OnSharedPreferenceChangeListener, Preference.OnPreferenceClickListener
 {
-
+    /** Tag to identify class when outputting to log */
     private static final String TAG = "SettingsActivity";
 
+    /** Array of ids which represent bowlers in the database */
     private String[] mArrayBowlerIds;
+    /** Array of names from database of bowlers */
     private String[] mArrayBowlerNames;
+    /** Array of ids which represents leagues in the database */
     private String[][] mArrayLeagueIds;
+    /** Array of names from database of leagues */
     private String[][] mArrayLeagueNames;
+    /** Currently selected bowler in mArrayBowlerNames */
     private int mCurrentBowlerPosition;
 
     @Override
     public void onResume()
     {
         super.onResume();
+        //Register this object as a listener for preference changes
         getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+
         loadBowlerAndLeagueNames();
         setPreferenceSummaries();
     }
@@ -63,6 +70,7 @@ public class SettingsActivity extends PreferenceActivity
     @Override
     public void onPause()
     {
+        //Unregisters this object as a listener for preference changes
         getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
         super.onPause();
     }
@@ -132,6 +140,10 @@ public class SettingsActivity extends PreferenceActivity
         findPreference(Constants.KEY_COMMENT_SUGGESTION).setOnPreferenceClickListener(this);
     }
 
+    /**
+     * Loads bowler and league names from the database for user to select
+     * from when choosing 'quick' bowlers/leagues
+     */
     private void loadBowlerAndLeagueNames()
     {
         SQLiteDatabase database = DatabaseHelper.getInstance(this).getReadableDatabase();
@@ -179,6 +191,7 @@ public class SettingsActivity extends PreferenceActivity
         }
         cursor.close();
 
+        //Gets arrays from lists of names & ids created above
         mArrayBowlerIds = new String[listBowlerIds.size()];
         listBowlerIds.toArray(mArrayBowlerIds);
         mArrayBowlerNames = new String[listBowlerNames.size()];
@@ -194,6 +207,7 @@ public class SettingsActivity extends PreferenceActivity
             listLeagueNames.get(i).toArray(mArrayLeagueNames[i]);
         }
 
+        //Enables/disables options depending on if there are valid bowlers & leagues to select
         if (listBowlerNames.size() > 0)
         {
             findPreference(Constants.KEY_ENABLE_QUICK).setEnabled(true);
@@ -211,6 +225,9 @@ public class SettingsActivity extends PreferenceActivity
         }
     }
 
+    /**
+     * Sets the summaries of preferences to their starting values
+     */
     private void setPreferenceSummaries()
     {
         SharedPreferences sharedPreferences = getPreferenceManager().getSharedPreferences();
@@ -271,8 +288,11 @@ public class SettingsActivity extends PreferenceActivity
     }
 
     @Override
+    @SuppressWarnings("IfCanBeSwitch") //in case java 1.6 compatibility is needed
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key)
     {
+        //Updates summaries of preferences when their values are changed
+
         if (key.equals(Constants.KEY_ENABLE_QUICK))
         {
             boolean isQuickEnabled = sharedPreferences.getBoolean(key, false);
@@ -393,6 +413,7 @@ public class SettingsActivity extends PreferenceActivity
     {
         if (preference.getKey().equals(Constants.KEY_RATE))
         {
+            //Opens Google Play or chrome to display app
             final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
             try
             {

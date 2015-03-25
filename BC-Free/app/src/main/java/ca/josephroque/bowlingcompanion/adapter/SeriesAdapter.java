@@ -28,7 +28,7 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
     implements Theme.ChangeableTheme, View.OnClickListener, View.OnLongClickListener
 {
     /** Tag to identify class when outputting to console */
-    private static final String TAG = "SeriesAdapter";
+    //private static final String TAG = "SeriesAdapter";
 
     /** Instance of handler for callback on user action */
     private SeriesEventHandler mEventHandler;
@@ -95,6 +95,7 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
     /**
      * Sets member variables to parameters
      *
+     * @param activity activity which created this instance
      * @param eventHandler handles on click/long click events on views
      * @param listDates list of dates to be displayed in RecyclerView
      * @param listGames list of game scores, relative to listDates to be displayed

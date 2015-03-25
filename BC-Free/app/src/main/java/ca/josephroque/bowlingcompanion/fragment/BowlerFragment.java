@@ -86,9 +86,11 @@ public class BowlerFragment extends Fragment
     /** Name of preferred league */
     private String mQuickLeagueName;
 
-    /** Listener for user events */
+    /** Callback listener for user events related to bowlers */
     private OnBowlerSelectedListener mBowlerSelectedListener;
+    /** Callback listener for user events related to leagues */
     private LeagueEventFragment.OnLeagueSelectedListener mLeagueSelectedListener;
+    /** Callback listener for user events related to series */
     private SeriesFragment.SeriesListener mSeriesListener;
 
     @Override
@@ -153,6 +155,7 @@ public class BowlerFragment extends Fragment
             }
         });
 
+        //Sets textviews to display text relevant to bowlers
         ((TextView)rootView.findViewById(R.id.tv_new_list_item)).setText(R.string.text_new_bowler);
         ((TextView)rootView.findViewById(R.id.tv_delete_list_item)).setText(R.string.text_delete_bowler);
 
@@ -220,12 +223,14 @@ public class BowlerFragment extends Fragment
     @Override
     public void onNAItemClick(final int position)
     {
+        //When bowler name is clicked, their leagues are displayed in new fragment
         new OpenBowlerLeaguesTask().execute(position);
     }
 
     @Override
     public void onNALongClick(final int position)
     {
+        //When bowler name is long clicked, user is prompted to delete
         showDeleteBowlerDialog(position);
     }
 
@@ -477,6 +482,7 @@ public class BowlerFragment extends Fragment
             List<String> listBowlerNames = new ArrayList<>();
             List<Short> listBowlerAverages = new ArrayList<>();
 
+            //Query to retrieve bowler names and averages from database
             String rawBowlerQuery = "SELECT "
                     + "bowler." + BowlerEntry.COLUMN_BOWLER_NAME + ", "
                     + "bowler." + BowlerEntry._ID + ", "
@@ -491,6 +497,7 @@ public class BowlerFragment extends Fragment
                     + " GROUP BY bowler." + BowlerEntry._ID
                     + " ORDER BY bowler." + BowlerEntry.COLUMN_DATE_MODIFIED + " DESC";
 
+            //Adds loaded bowler names and averages to lists to display
             Cursor cursor = database.rawQuery(rawBowlerQuery, null);
             if (cursor.moveToFirst())
             {
@@ -504,6 +511,7 @@ public class BowlerFragment extends Fragment
             }
             cursor.close();
 
+            //If a recent bowler exists, their name and league is loaded to be used for quick series
             if (mRecentBowlerId > -1 && mRecentLeagueId > -1)
             {
                 String rawRecentQuery = "SELECT "
@@ -530,6 +538,7 @@ public class BowlerFragment extends Fragment
                 cursor.close();
             }
 
+            //If a custom bowler is set, their name and league is loaded to be used for quick series
             if (mQuickBowlerId > -1 && mQuickLeagueId > -1)
             {
                 String rawRecentQuery = "SELECT "
@@ -580,6 +589,7 @@ public class BowlerFragment extends Fragment
         {
             long bowlerId = mListBowlerIds.get(position[0]);
 
+            //Updates date which bowler was last accessed in database
             SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             ContentValues values = new ContentValues();
@@ -612,6 +622,7 @@ public class BowlerFragment extends Fragment
             long bowlerId = (Long)params[0];
             int position = (Integer)params[1];
 
+            //Creates new instance of LeagueEventFragment for bowlerId
             mBowlerSelectedListener.onBowlerSelected(bowlerId, mListBowlerNames.get(position), true);
         }
     }

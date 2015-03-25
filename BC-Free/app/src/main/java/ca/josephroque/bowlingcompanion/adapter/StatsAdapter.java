@@ -1,6 +1,5 @@
 package ca.josephroque.bowlingcompanion.adapter;
 
-import android.app.Activity;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +21,7 @@ public class StatsAdapter extends RecyclerView.Adapter<StatsAdapter.StatsViewHol
     implements Theme.ChangeableTheme
 {
     /** Tag to identify class when outputting to console */
-    private static final String TAG = "StatsAdapter";
+    //private static final String TAG = "StatsAdapter";
     /** Represents data which should be displayed as a header */
     private static final int VIEWTYPE_HEADER = 0;
     /** Represents data which should be displayed as a regular list item */

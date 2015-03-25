@@ -57,6 +57,7 @@ public class SeriesFragment extends Fragment
     /** List of scores in each series which will be displayed by RecyclerView */
     private List<List<Short>> mListSeriesGames;
 
+    /** Callback listener for user events related to series */
     private SeriesListener mSeriesListener;
 
     @Override
@@ -117,6 +118,7 @@ public class SeriesFragment extends Fragment
             }
         });
 
+        //Sets textviews to display text relevant to series
         ((TextView)rootView.findViewById(R.id.tv_new_list_item)).setText(R.string.text_new_series);
         ((TextView)rootView.findViewById(R.id.tv_delete_list_item)).setText(R.string.text_delete_series);
 
@@ -181,12 +183,14 @@ public class SeriesFragment extends Fragment
     @Override
     public void onSItemClick(final int position)
     {
+        //When series is clicked, its games are displayed in a new GameFragment
         mSeriesListener.onSeriesSelected(mListSeriesIds.get(position), mListSeriesDates.get(position), false);
     }
 
     @Override
     public void onSLongClick(final int position)
     {
+        //When series is long clicked, user is prompted to delete it
         showDeleteSeriesDialog(position);
     }
 
@@ -332,10 +336,30 @@ public class SeriesFragment extends Fragment
         }
     }
 
+    /**
+     * Container Activity must implement this interface to allow
+     * GameFragment/StatsFragment to be loaded when a series is selected
+     */
     public static interface SeriesListener
     {
+        /**
+         * Should be overridden to created a GameFragment with the games
+         * belonging to the series represented by seriesId
+         * @param seriesId id of the series whose games will be displayed
+         * @param seriesDate date of the series corresponding to seriesId
+         * @param isEvent indicates if an event series is being displayed or not
+         */
         public void onSeriesSelected(long seriesId, String seriesDate, boolean isEvent);
+
+        /**
+         * Called when user opts to create a new series
+         * @param isEvent indicates if the new series will belong to an event
+         */
         public void onCreateNewSeries(boolean isEvent);
+
+        /**
+         * Displays the stats of the current league in a new StatsFragment
+         */
         public void onLeagueStatsOpened();
     }
 }

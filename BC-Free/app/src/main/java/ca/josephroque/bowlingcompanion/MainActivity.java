@@ -315,6 +315,10 @@ public class MainActivity extends ActionBarActivity
         openStatsFragment(Constants.FRAGMENT_GAME);
     }
 
+    /**
+     * Gets a new instance of StatsFragment and displays it
+     * @param tag represents fragment which should be returned to when backstack is popped
+     */
     private void openStatsFragment(String tag)
     {
         StatsFragment statsFragment = StatsFragment.newInstance();
@@ -393,6 +397,10 @@ public class MainActivity extends ActionBarActivity
      */
     public String getSeriesDate(){return mSeriesDate;}
 
+    /**
+     * Loads game data related to seriesId and displays it in a
+     * new GameFragment instance
+     */
     private class OpenSeriesTask extends AsyncTask<Boolean, Void, Object[]>
     {
         @Override
@@ -459,6 +467,10 @@ public class MainActivity extends ActionBarActivity
         }
     }
 
+    /**
+     * Creates a new series in the database and displays it in
+     * a new instance of GameFragment
+     */
     private class AddSeriesTask extends AsyncTask<Void, Void, Object[]>
     {
         @Override
