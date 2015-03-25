@@ -101,16 +101,16 @@ public class GameFragment extends Fragment
     private TextView mTextViewFinalScore;
     /** Offer interaction methods, indicate state of pins in a frame */
     private ImageButton[] mImageButtonPins;
-    /** Used to offer user method to knock down all pins in a frame */
-    private ImageView mImageViewClearPins;
     /** Displays TextView objects in a layout which user can interact with to access specific frame */
     private HorizontalScrollView mHorizontalScrollViewFrames;
+    /** Displays text to user of option to lock a game */
+    private ImageView mImageViewLock;
+    /** Used to offer user method to knock down all pins in a frame */
+    private ImageView mImageViewClear;
     /** Displays image to user of option to enabled or disable a foul */
     private ImageView mImageViewFoul;
     /** Displays image to user of option to reset a frame */
     private ImageView mImageViewResetFrame;
-    /** Displays text to user of option to lock a game */
-    private ImageView mImageViewLock;
     /** Displays manually set score */
     private TextView mTextViewManualScore;
     /** Layout which contains views related to general game options */
@@ -265,8 +265,8 @@ public class GameFragment extends Fragment
         rootView.findViewById(R.id.iv_prev_ball).setOnClickListener(onClickListeners[LISTENER_OTHER]);
         rootView.findViewById(R.id.tv_next_ball).setOnClickListener(onClickListeners[LISTENER_OTHER]);
         rootView.findViewById(R.id.tv_prev_ball).setOnClickListener(onClickListeners[LISTENER_OTHER]);
-        mImageViewClearPins = (ImageView)rootView.findViewById(R.id.iv_clear_pins);
-        mImageViewClearPins.setOnClickListener(onClickListeners[LISTENER_OTHER]);
+        mImageViewClear = (ImageView)rootView.findViewById(R.id.iv_clear);
+        mImageViewClear.setOnClickListener(onClickListeners[LISTENER_OTHER]);
 
         mImageViewFoul = (ImageView)rootView.findViewById(R.id.iv_foul);
         mImageViewFoul.setOnClickListener(onClickListeners[LISTENER_OTHER]);
@@ -526,7 +526,7 @@ public class GameFragment extends Fragment
                         updateBalls(mCurrentFrame);
                         updateScore();
                         break;
-                    case R.id.iv_clear_pins:
+                    case R.id.iv_clear:
                         clearPins();
                         break;
                     case R.id.iv_next_ball:
@@ -738,14 +738,14 @@ public class GameFragment extends Fragment
                 {
                     mImageViewFoul.setVisibility(View.INVISIBLE);
                     mImageViewResetFrame.setVisibility(View.INVISIBLE);
-                    mImageViewClearPins.setVisibility(View.INVISIBLE);
+                    mImageViewClear.setVisibility(View.INVISIBLE);
                     mImageViewLock.setImageResource(R.drawable.ic_lock);
                 }
                 else
                 {
                     mImageViewFoul.setVisibility(View.VISIBLE);
                     mImageViewResetFrame.setVisibility(View.VISIBLE);
-                    mImageViewClearPins.setVisibility(View.VISIBLE);
+                    mImageViewClear.setVisibility(View.VISIBLE);
                     mImageViewLock.setImageResource(R.drawable.ic_lock_open);
                 }
             }
@@ -1162,12 +1162,10 @@ public class GameFragment extends Fragment
             public void run()
             {
                 mTextViewFinalScore.setText(String.valueOf(mGameScoresMinusFouls[mCurrentGame]));
-                /*TODO: change foul picture
-                mTextViewSettingFoul.setText(
-
-                        (mFouls[mCurrentFrame][mCurrentBall])
-                                ? R.string.text_remove_foul
-                                : R.string.text_add_foul);*/
+                mImageViewFoul.setImageResource(
+                        !mFouls[mCurrentFrame][mCurrentBall]
+                        ? R.drawable.ic_foul_remove
+                        : R.drawable.ic_foul);
                 mTextViewFouls[mCurrentFrame][mCurrentBall]
                         .setText(mFouls[mCurrentFrame][mCurrentBall] ? "F" : "");
             }
@@ -1240,21 +1238,21 @@ public class GameFragment extends Fragment
                     switch (mCurrentBall)
                     {
                         case 0:
-                            mImageViewClearPins.setImageResource(R.drawable.ic_action_strike);
+                            mImageViewClear.setImageResource(R.drawable.ic_strike);
                             break;
                         case 1:
                             if (Arrays.equals(mPinState[mCurrentFrame][0], Constants.FRAME_PINS_DOWN))
-                                mImageViewClearPins.setImageResource(R.drawable.ic_action_strike);
+                                mImageViewClear.setImageResource(R.drawable.ic_strike);
                             else
-                                mImageViewClearPins.setImageResource(R.drawable.ic_action_spare);
+                                mImageViewClear.setImageResource(R.drawable.ic_spare);
                             break;
                         case 2:
                             if (Arrays.equals(mPinState[mCurrentFrame][1], Constants.FRAME_PINS_DOWN))
-                                mImageViewClearPins.setImageResource(R.drawable.ic_action_strike);
+                                mImageViewClear.setImageResource(R.drawable.ic_strike);
                             else if (Arrays.equals(mPinState[mCurrentFrame][0], Constants.FRAME_PINS_DOWN))
-                                mImageViewClearPins.setImageResource(R.drawable.ic_action_spare);
+                                mImageViewClear.setImageResource(R.drawable.ic_spare);
                             else
-                                mImageViewClearPins.setImageResource(R.drawable.ic_action_fifteen);
+                                mImageViewClear.setImageResource(R.drawable.ic_fifteen);
                             break;
                     }
                 } else
@@ -1262,24 +1260,22 @@ public class GameFragment extends Fragment
                     switch (mCurrentBall)
                     {
                         case 0:
-                            mImageViewClearPins.setImageResource(R.drawable.ic_action_strike);
+                            mImageViewClear.setImageResource(R.drawable.ic_strike);
                             break;
                         case 1:
-                            mImageViewClearPins.setImageResource(R.drawable.ic_action_spare);
+                            mImageViewClear.setImageResource(R.drawable.ic_spare);
                             break;
                         case 2:
-                            mImageViewClearPins.setImageResource(R.drawable.ic_action_fifteen);
+                            mImageViewClear.setImageResource(R.drawable.ic_fifteen);
                             break;
                     }
                 }
-                mImageViewClearPins.setEnabled(numberOfPinsStanding > 0);
+                mImageViewClear.setEnabled(numberOfPinsStanding > 0);
 
-                /*TODO: change foul picture
-                mTextViewSettingFoul.setText(
-
-                        mFouls[mCurrentFrame][mCurrentBall]
-                                ? R.string.text_remove_foul
-                                : R.string.text_add_foul);*/
+                mImageViewFoul.setImageResource(
+                        !mFouls[mCurrentFrame][mCurrentBall]
+                        ? R.drawable.ic_foul_remove
+                        : R.drawable.ic_foul);
 
                 focusOnFrame();
             }
@@ -1345,7 +1341,7 @@ public class GameFragment extends Fragment
                             mImageButtonPins[pinToSet].setImageResource(R.drawable.pin_disabled);
                         else
                             mImageButtonPins[pinToSet].setImageResource(R.drawable.pin_enabled);
-                        mImageViewClearPins.setEnabled(!allPinsKnockedOver);
+                        mImageViewClear.setEnabled(!allPinsKnockedOver);
                     }
                 });
 

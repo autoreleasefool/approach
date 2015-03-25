@@ -36,13 +36,6 @@
             android:paddingRight="2dp"/>
 
         <ImageView
-            android:id="@+id/iv_clear_pins"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:src="@drawable/ic_action_strike"/>
-
-        <ImageView
             android:id="@+id/iv_next_ball"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -147,28 +140,40 @@
 
         <ImageView
             android:id="@+id/iv_lock"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_margin="8dp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:src="@drawable/ic_lock"/>
         <ImageView
-            android:id="@+id/iv_reset_frame"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:id="@+id/iv_clear"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_margin="8dp"
             android:layout_alignParentBottom="true"
-            android:layout_toLeftOf="@id/iv_lock"
-            android:layout_toStartOf="@id/iv_lock"
-            android:src="@drawable/ic_action_refresh"/>
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:src="@drawable/ic_strike"/>
         <ImageView
             android:id="@+id/iv_foul"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_margin="8dp"
             android:layout_alignParentBottom="true"
-            android:layout_toLeftOf="@id/iv_reset_frame"
-            android:layout_toStartOf="@id/iv_reset_frame"
-            android:src="@drawable/ic_action_foul"/>
+            android:layout_toRightOf="@id/iv_clear"
+            android:layout_toEndOf="@id/iv_clear"
+            android:src="@drawable/ic_foul"/>
+        <ImageView
+            android:id="@+id/iv_reset_frame"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_margin="8dp"
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@id/iv_foul"
+            android:layout_toEndOf="@id/iv_foul"
+            android:src="@drawable/ic_action_refresh"/>
 
         <TextView
             android:id="@+id/tv_manual_score"
