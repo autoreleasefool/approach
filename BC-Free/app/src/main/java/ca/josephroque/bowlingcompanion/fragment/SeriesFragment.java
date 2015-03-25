@@ -273,12 +273,16 @@ public class SeriesFragment extends Fragment
      * Loads series relevant to the current bowler and league,
      * and displays them in the recycler view
      */
-    private class LoadSeriesTask extends AsyncTask<Void, Void, Void>
+    private class LoadSeriesTask extends AsyncTask<Void, Void, List<?>[]>
     {
         @Override
-        protected Void doInBackground(Void... params)
+        protected List<?>[] doInBackground(Void... params)
         {
             SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getReadableDatabase();
+            List<Long> listSeriesIds = new ArrayList<>();
+            List<String> listSeriesDates = new ArrayList<>();
+            List<List<Short>> listSeriesGames = new ArrayList<>();
+
             String rawSeriesQuery = "SELECT "
                     + "series." + SeriesEntry._ID + " AS sid, "
                     + SeriesEntry.COLUMN_SERIES_DATE + ", "
@@ -301,25 +305,29 @@ public class SeriesFragment extends Fragment
                     String seriesDate = cursor.getString(cursor.getColumnIndex(SeriesEntry.COLUMN_SERIES_DATE));
                     short gameScore = cursor.getShort(cursor.getColumnIndex(GameEntry.COLUMN_SCORE));
 
-                    if (mListSeriesIds.size() == 0 || !mListSeriesIds.get(mListSeriesIds.size() - 1).equals(seriesId))
+                    if (listSeriesIds.size() == 0 || !listSeriesIds.get(listSeriesIds.size() - 1).equals(seriesId))
                     {
-                        mListSeriesIds.add(seriesId);
-                        mListSeriesDates.add(DataFormatter.formattedDateToPrettyCompact(seriesDate));
-                        mListSeriesGames.add(new ArrayList<Short>());
+                        listSeriesIds.add(seriesId);
+                        listSeriesDates.add(DataFormatter.formattedDateToPrettyCompact(seriesDate));
+                        listSeriesGames.add(new ArrayList<Short>());
                     }
 
-                    mListSeriesGames.get(mListSeriesGames.size() - 1).add(gameScore);
+                    listSeriesGames.get(listSeriesGames.size() - 1).add(gameScore);
                     cursor.moveToNext();
                 }
             }
             cursor.close();
 
-            return null;
+            return new List<?>[]{listSeriesIds, listSeriesDates, listSeriesGames};
         }
 
         @Override
-        protected void onPostExecute(Void param)
+        @SuppressWarnings("unchecked")
+        protected void onPostExecute(List<?>[] lists)
         {
+            mListSeriesIds.addAll((List<Long>)lists[0]);
+            mListSeriesDates.addAll((List<String>)lists[1]);
+            mListSeriesGames.addAll((List<List<Short>>)lists[2]);
             mAdapterSeries.notifyDataSetChanged();
         }
     }

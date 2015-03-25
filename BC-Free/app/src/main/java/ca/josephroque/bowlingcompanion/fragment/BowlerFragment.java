@@ -467,12 +467,15 @@ public class BowlerFragment extends Fragment
     /**
      * Loads names of bowlers, along with other relevant data, and adds them to recycler view
      */
-    private class LoadBowlerAndRecentTask extends AsyncTask<Void, Void, Void>
+    private class LoadBowlerAndRecentTask extends AsyncTask<Void, Void, List<?>[]>
     {
         @Override
-        protected Void doInBackground(Void... params)
+        protected List<?>[] doInBackground(Void... params)
         {
             SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getReadableDatabase();
+            List<Long> listBowlerIds = new ArrayList<>();
+            List<String> listBowlerNames = new ArrayList<>();
+            List<Short> listBowlerAverages = new ArrayList<>();
 
             String rawBowlerQuery = "SELECT "
                     + "bowler." + BowlerEntry.COLUMN_BOWLER_NAME + ", "
@@ -493,9 +496,9 @@ public class BowlerFragment extends Fragment
             {
                 while (!cursor.isAfterLast())
                 {
-                    mListBowlerIds.add(cursor.getLong(cursor.getColumnIndex(BowlerEntry._ID)));
-                    mListBowlerNames.add(cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_BOWLER_NAME)));
-                    mListBowlerAverages.add(cursor.getShort(cursor.getColumnIndex("avg")));
+                    listBowlerIds.add(cursor.getLong(cursor.getColumnIndex(BowlerEntry._ID)));
+                    listBowlerNames.add(cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_BOWLER_NAME)));
+                    listBowlerAverages.add(cursor.getShort(cursor.getColumnIndex("avg")));
                     cursor.moveToNext();
                 }
             }
@@ -553,12 +556,16 @@ public class BowlerFragment extends Fragment
                 cursor.close();
             }
 
-            return null;
+            return new List<?>[]{listBowlerIds, listBowlerNames, listBowlerAverages};
         }
 
         @Override
-        protected void onPostExecute(Void param)
+        @SuppressWarnings("unchecked")
+        protected void onPostExecute(List<?>[] lists)
         {
+            mListBowlerIds.addAll((List<Long>)lists[0]);
+            mListBowlerNames.addAll((List<String>)lists[1]);
+            mListBowlerAverages.addAll((List<Short>)lists[2]);
             mAdapterBowlers.notifyDataSetChanged();
         }
     }

@@ -547,12 +547,16 @@ public class LeagueEventFragment extends Fragment
      * Loads the names of relevant leagues or events and adds them to the lists
      * to be displayed to the user
      */
-    private class LoadLeaguesEventsTask extends AsyncTask<Void, Void, Void>
+    private class LoadLeaguesEventsTask extends AsyncTask<Void, Void, List<?>[]>
     {
         @Override
-        protected Void doInBackground(Void... params)
+        protected List<?>[] doInBackground(Void... params)
         {
             SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getReadableDatabase();
+            List<Long> listLeagueEventIds = new ArrayList<>();
+            List<String> listLeagueEventNames = new ArrayList<>();
+            List<Short> listLeagueEventAverages = new ArrayList<>();
+            List<Byte> listLeagueEventGames = new ArrayList<>();
 
             String rawLeagueEventQuery = "SELECT "
                     + "league." + LeagueEntry._ID + " AS lid, "
@@ -577,22 +581,27 @@ public class LeagueEventFragment extends Fragment
                 {
                     boolean isEvent = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_IS_EVENT)) == 1;
 
-                    mListLeagueEventIds.add(cursor.getLong(cursor.getColumnIndex("lid")));
-                    mListLeagueEventNames.add(((isEvent) ? "E" : "L")
+                    listLeagueEventIds.add(cursor.getLong(cursor.getColumnIndex("lid")));
+                    listLeagueEventNames.add(((isEvent) ? "E" : "L")
                             + cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_LEAGUE_NAME)));
-                    mListLeagueEventAverages.add(cursor.getShort(cursor.getColumnIndex("avg")));
-                    mListLeagueEventNumberOfGames.add((byte)cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NUMBER_OF_GAMES)));
+                    listLeagueEventAverages.add(cursor.getShort(cursor.getColumnIndex("avg")));
+                    listLeagueEventGames.add((byte)cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NUMBER_OF_GAMES)));
                     cursor.moveToNext();
                 }
             }
             cursor.close();
 
-            return null;
+            return new List<?>[]{listLeagueEventIds, listLeagueEventNames, listLeagueEventAverages, listLeagueEventGames};
         }
 
         @Override
-        protected void onPostExecute(Void param)
+        @SuppressWarnings("unchecked")
+        protected void onPostExecute(List<?>[] lists)
         {
+            mListLeagueEventIds.addAll((List<Long>)lists[0]);
+            mListLeagueEventNames.addAll((List<String>)lists[1]);
+            mListLeagueEventAverages.addAll((List<Short>)lists[2]);
+            mListLeagueEventNumberOfGames.addAll((List<Byte>)lists[3]);
             mAdapterLeagueEvents.notifyDataSetChanged();
         }
     }

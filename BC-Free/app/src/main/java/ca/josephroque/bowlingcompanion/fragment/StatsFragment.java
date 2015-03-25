@@ -148,30 +148,33 @@ public class StatsFragment extends Fragment
         mAdapterStats.updateTheme();
     }
 
-    private class LoadStatsTask extends AsyncTask<Byte, Void, Void>
+    private class LoadStatsTask extends AsyncTask<Byte, Void, List<?>[]>
     {
         @Override
-        protected Void doInBackground(Byte... bowlerLeagueOrGameParam)
+        protected List<?>[] doInBackground(Byte... bowlerLeagueOrGameParam)
         {
             MainActivity mainActivity = (MainActivity)getActivity();
             final byte bowlerLeagueOrGame = bowlerLeagueOrGameParam[0];
             final byte NUMBER_OF_GENERAL_DETAILS;
             Cursor cursor;
             int[] statValues;
-            mListStatNames.add("Bowler");
-            mListStatValues.add(mainActivity.getBowlerName());
+            List<String> listStatNames = new ArrayList<>();
+            List<String> listStatValues = new ArrayList<>();
+
+            listStatNames.add("Bowler");
+            listStatValues.add(mainActivity.getBowlerName());
 
             //Adds only names to list which are relevant to the data being loaded
-            mListStatNames.addAll(Arrays.asList(STATS_MIDDLE_GENERAL));
-            mListStatNames.addAll(Arrays.asList(STATS_MIDDLE_DETAILED));
-            mListStatNames.addAll(Arrays.asList(STATS_FOULS));
-            mListStatNames.addAll(Arrays.asList(STATS_PINS_TOTAL));
+            listStatNames.addAll(Arrays.asList(STATS_MIDDLE_GENERAL));
+            listStatNames.addAll(Arrays.asList(STATS_MIDDLE_DETAILED));
+            listStatNames.addAll(Arrays.asList(STATS_FOULS));
+            listStatNames.addAll(Arrays.asList(STATS_PINS_TOTAL));
             switch(bowlerLeagueOrGame)
             {
                 case LOADING_BOWLER_STATS:
                     NUMBER_OF_GENERAL_DETAILS = 1;
-                    mListStatNames.addAll(Arrays.asList(STATS_PINS_AVERAGE));
-                    mListStatNames.addAll(Arrays.asList(STATS_GENERAL));
+                    listStatNames.addAll(Arrays.asList(STATS_PINS_AVERAGE));
+                    listStatNames.addAll(Arrays.asList(STATS_GENERAL));
                     statValues = new int[STATS_MIDDLE_GENERAL.length + STATS_MIDDLE_DETAILED.length
                             + STATS_FOULS.length + STATS_PINS_TOTAL.length + STATS_PINS_AVERAGE.length
                             + STATS_GENERAL.length];
@@ -179,10 +182,10 @@ public class StatsFragment extends Fragment
                     break;
                 case LOADING_LEAGUE_STATS:
                     NUMBER_OF_GENERAL_DETAILS = 2;
-                    mListStatNames.add(1, "League/Event");
-                    mListStatValues.add(1, mainActivity.getLeagueName());
-                    mListStatNames.addAll(Arrays.asList(STATS_PINS_AVERAGE));
-                    mListStatNames.addAll(Arrays.asList(STATS_GENERAL));
+                    listStatNames.add(1, "League/Event");
+                    listStatValues.add(1, mainActivity.getLeagueName());
+                    listStatNames.addAll(Arrays.asList(STATS_PINS_AVERAGE));
+                    listStatNames.addAll(Arrays.asList(STATS_GENERAL));
                     statValues = new int[STATS_MIDDLE_GENERAL.length + STATS_MIDDLE_DETAILED.length
                             + STATS_FOULS.length + STATS_PINS_TOTAL.length + STATS_PINS_AVERAGE.length
                             + STATS_GENERAL.length];
@@ -190,13 +193,13 @@ public class StatsFragment extends Fragment
                     break;
                 case LOADING_SERIES_STATS:
                     NUMBER_OF_GENERAL_DETAILS = 3;
-                    mListStatNames.add(1, "League/Event");
-                    mListStatValues.add(1, mainActivity.getLeagueName());
-                    mListStatNames.add(2, "Date");
-                    mListStatValues.add(2, mainActivity.getSeriesDate());
-                    mListStatNames.addAll(Arrays.asList(STATS_PINS_AVERAGE));
-                    mListStatNames.addAll(Arrays.asList(STATS_GENERAL));
-                    mListStatNames.set(NUMBER_OF_GENERAL_DETAILS + Constants.STAT_HIGH_SERIES, "Series Total");
+                    listStatNames.add(1, "League/Event");
+                    listStatValues.add(1, mainActivity.getLeagueName());
+                    listStatNames.add(2, "Date");
+                    listStatValues.add(2, mainActivity.getSeriesDate());
+                    listStatNames.addAll(Arrays.asList(STATS_PINS_AVERAGE));
+                    listStatNames.addAll(Arrays.asList(STATS_GENERAL));
+                    listStatNames.set(NUMBER_OF_GENERAL_DETAILS + Constants.STAT_HIGH_SERIES, "Series Total");
                     statValues = new int[STATS_MIDDLE_GENERAL.length + STATS_MIDDLE_DETAILED.length
                             + STATS_FOULS.length + STATS_PINS_TOTAL.length + STATS_PINS_AVERAGE.length
                             + STATS_GENERAL.length];
@@ -204,12 +207,12 @@ public class StatsFragment extends Fragment
                     break;
                 case LOADING_GAME_STATS:
                     NUMBER_OF_GENERAL_DETAILS = 4;
-                    mListStatNames.add(1, "League/Event");
-                    mListStatValues.add(1, mainActivity.getLeagueName());
-                    mListStatNames.add(2, "Date");
-                    mListStatValues.add(2, mainActivity.getSeriesDate());
-                    mListStatNames.add(3, "Game #");
-                    mListStatValues.add(3, String.valueOf(mainActivity.getGameNumber()));
+                    listStatNames.add(1, "League/Event");
+                    listStatValues.add(1, mainActivity.getLeagueName());
+                    listStatNames.add(2, "Date");
+                    listStatValues.add(2, mainActivity.getSeriesDate());
+                    listStatNames.add(3, "Game #");
+                    listStatValues.add(3, String.valueOf(mainActivity.getGameNumber()));
                     statValues = new int[STATS_MIDDLE_GENERAL.length + STATS_MIDDLE_DETAILED.length
                             + STATS_FOULS.length + STATS_PINS_TOTAL.length];
                     cursor = getGameCursor();
@@ -218,10 +221,10 @@ public class StatsFragment extends Fragment
                     throw new IllegalArgumentException("bowlerLeagueOrGame must be between 0 and 3 (inclusive");
             }
 
-            int i = mListStatValues.size();
-            while (i < mListStatNames.size())
+            int i = listStatValues.size();
+            while (i < listStatNames.size())
             {
-                mListStatValues.add("--");
+                listStatValues.add("--");
                 i++;
             }
 
@@ -392,16 +395,19 @@ public class StatsFragment extends Fragment
                             statValues[Constants.STAT_PINS_LEFT_ON_DECK] / statValues[Constants.STAT_NUMBER_OF_GAMES];
                 }
             }
-            setGeneralAndDetailedStatValues(statValues, totalShotsAtMiddle, spareChances, NUMBER_OF_GENERAL_DETAILS);
-            setStatHeaders(bowlerLeagueOrGame, NUMBER_OF_GENERAL_DETAILS);
+            setGeneralAndDetailedStatValues(listStatValues, statValues, totalShotsAtMiddle, spareChances, NUMBER_OF_GENERAL_DETAILS);
+            setStatHeaders(listStatNames, listStatValues, bowlerLeagueOrGame, NUMBER_OF_GENERAL_DETAILS);
             cursor.close();
 
-            return null;
+            return new List<?>[]{listStatNames, listStatValues};
         }
 
         @Override
-        protected void onPostExecute(Void param)
+        @SuppressWarnings("unchecked")
+        protected void onPostExecute(List<?>[] lists)
         {
+            mListStatNames.addAll((List<String>)lists[0]);
+            mListStatValues.addAll((List<String>)lists[1]);
             mAdapterStats.notifyDataSetChanged();
         }
     }
@@ -532,27 +538,27 @@ public class StatsFragment extends Fragment
      * @param spareChances total chances a bowler had to spare a ball
      * @param statOffset position in mListStatValues to start altering
      */
-    private void setGeneralAndDetailedStatValues(final int[] statValues, final int totalShotsAtMiddle, final int spareChances, final int statOffset)
+    private void setGeneralAndDetailedStatValues(List<String> listStatValues, final int[] statValues, final int totalShotsAtMiddle, final int spareChances, final int statOffset)
     {
         int currentStatPosition = statOffset;
         final DecimalFormat decimalFormat = new DecimalFormat("##0.#");
         if (statValues[Constants.STAT_MIDDLE_HIT] > 0)
         {
-            mListStatValues.set(currentStatPosition,
+            listStatValues.set(currentStatPosition,
                     decimalFormat.format(statValues[Constants.STAT_MIDDLE_HIT] / (double)totalShotsAtMiddle * 100)
                             + "% [" + statValues[Constants.STAT_MIDDLE_HIT] + "/" + totalShotsAtMiddle + "]");
         }
         currentStatPosition++;
         if (statValues[Constants.STAT_STRIKES] > 0)
         {
-            mListStatValues.set(currentStatPosition,
+            listStatValues.set(currentStatPosition,
                     decimalFormat.format(statValues[Constants.STAT_STRIKES] / (double) totalShotsAtMiddle * 100)
                             + "% [" + statValues[Constants.STAT_STRIKES] + "/" + totalShotsAtMiddle + "]");
         }
         currentStatPosition++;
         if (statValues[Constants.STAT_SPARE_CONVERSIONS] > 0)
         {
-            mListStatValues.set(currentStatPosition,
+            listStatValues.set(currentStatPosition,
                     decimalFormat.format(statValues[Constants.STAT_SPARE_CONVERSIONS] / (double) spareChances * 100)
                             + "% [" + statValues[Constants.STAT_SPARE_CONVERSIONS] + "/" + spareChances + "]");
         }
@@ -562,22 +568,22 @@ public class StatsFragment extends Fragment
         {
             if (statValues[i] > 0)
             {
-                mListStatValues.set(currentStatPosition,
+                listStatValues.set(currentStatPosition,
                         decimalFormat.format(statValues[i] / (double) totalShotsAtMiddle * 100)
                                 + "% [" + statValues[i] + "/" + totalShotsAtMiddle + "]");
             }
             if (statValues[i + 1] > 0)
             {
-                mListStatValues.set(currentStatPosition + 1,
+                listStatValues.set(currentStatPosition + 1,
                         decimalFormat.format(statValues[i + 1] / (double)statValues[i] * 100)
                                 + "% [" + statValues[i + 1] + "/" + statValues[i] + "]");
             }
         }
 
-        final int statValuesListSize = mListStatValues.size();
+        final int statValuesListSize = listStatValues.size();
         for (int i = Constants.STAT_FOULS; i <= Constants.STAT_NUMBER_OF_GAMES && statValuesListSize > currentStatPosition; i++, currentStatPosition++)
         {
-            mListStatValues.set(currentStatPosition, String.valueOf(statValues[i]));
+            listStatValues.set(currentStatPosition, String.valueOf(statValues[i]));
         }
     }
 
@@ -588,26 +594,26 @@ public class StatsFragment extends Fragment
      * @param bowlerLeagueOrGame indicates whether a bowler, league or game's stats are being loaded
      * @param NUMBER_OF_GENERAL_DETAILS number of general details at the start of the lists
      */
-    private void setStatHeaders(byte bowlerLeagueOrGame, final byte NUMBER_OF_GENERAL_DETAILS)
+    private void setStatHeaders(List<String> listStatNames, List<String> listStatValues, byte bowlerLeagueOrGame, final byte NUMBER_OF_GENERAL_DETAILS)
     {
         int nextHeaderPosition = 0;
-        mListStatNames.add(nextHeaderPosition, "-General");
-        mListStatValues.add(nextHeaderPosition, "-");
+        listStatNames.add(nextHeaderPosition, "-General");
+        listStatValues.add(nextHeaderPosition, "-");
         nextHeaderPosition += NUMBER_OF_GENERAL_DETAILS + STATS_MIDDLE_GENERAL.length + 1;
-        mListStatNames.add(nextHeaderPosition, "-First Ball");
-        mListStatValues.add(nextHeaderPosition, "-");
+        listStatNames.add(nextHeaderPosition, "-First Ball");
+        listStatValues.add(nextHeaderPosition, "-");
         nextHeaderPosition += STATS_MIDDLE_DETAILED.length + 1;
-        mListStatNames.add(nextHeaderPosition, "-Fouls");
-        mListStatValues.add(nextHeaderPosition, "-");
+        listStatNames.add(nextHeaderPosition, "-Fouls");
+        listStatValues.add(nextHeaderPosition, "-");
         nextHeaderPosition += STATS_FOULS.length + 1;
-        mListStatNames.add(nextHeaderPosition, "-Pins Left on Deck");
-        mListStatValues.add(nextHeaderPosition, "-");
+        listStatNames.add(nextHeaderPosition, "-Pins Left on Deck");
+        listStatValues.add(nextHeaderPosition, "-");
 
         if (bowlerLeagueOrGame < LOADING_GAME_STATS)
         {
             nextHeaderPosition += STATS_PINS_TOTAL.length + STATS_PINS_AVERAGE.length + 1;
-            mListStatNames.add(nextHeaderPosition, "-Overall");
-            mListStatValues.add(nextHeaderPosition, "-");
+            listStatNames.add(nextHeaderPosition, "-Overall");
+            listStatValues.add(nextHeaderPosition, "-");
         }
     }
 
