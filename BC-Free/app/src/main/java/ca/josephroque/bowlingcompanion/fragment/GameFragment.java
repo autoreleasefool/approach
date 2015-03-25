@@ -127,6 +127,29 @@ public class GameFragment extends Fragment
     /** Indicates if the game settings are disabled */
     private boolean mSettingsButtonsDisabled;
 
+    /** Instance of callback interface for handling user events */
+    private OnGameOrSeriesStatsOpenedListener mGameSeriesListener;
+
+    @Override
+    public void onAttach(Activity activity)
+    {
+        super.onAttach(activity);
+
+        /*
+         * This makes sure the container Activity has implemented
+         * the callback interface. If not, an exception is thrown
+         */
+        try
+        {
+            mGameSeriesListener = (OnGameOrSeriesStatsOpenedListener)activity;
+        }
+        catch (ClassCastException ex)
+        {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnGameOrSeriesStatsOpenedListener");
+        }
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -369,7 +392,7 @@ public class GameFragment extends Fragment
                     showManualScoreDialog();
                 return true;
             case R.id.action_series_stats:
-                //TODO series stats
+                mGameSeriesListener.onSeriesStatsOpened();
                 return true;
             case R.id.action_reset_game:
                 if (mGameLocked[mCurrentGame] && !mManualScoreSet[mCurrentGame])
@@ -381,7 +404,7 @@ public class GameFragment extends Fragment
                 showWhatIfDialog();
                 return true;
             case R.id.action_stats:
-                //TODO show stats
+                mGameSeriesListener.onGameStatsOpened(mGameIds[mCurrentGame], (byte)(mCurrentGame + 1));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -1762,6 +1785,12 @@ public class GameFragment extends Fragment
             Log.w(TAG, "Could not load initial game scores");
         }
         cursor.close();
+    }
+
+    public static interface OnGameOrSeriesStatsOpenedListener
+    {
+        public void onGameStatsOpened(long gameId, byte gameNumber);
+        public void onSeriesStatsOpened();
     }
 
     public static GameFragment newInstance(boolean isEvent, long[] gameIds, long[] frameIds, boolean[] gameLocked, boolean[] manualScore)

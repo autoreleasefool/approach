@@ -159,6 +159,9 @@ public class SeriesFragment extends Fragment
             case R.id.action_edit_date:
                 //TODO: edit date
                 return true;
+            case R.id.action_stats:
+                mSeriesListener.onLeagueStatsOpened();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -330,5 +333,6 @@ public class SeriesFragment extends Fragment
     {
         public void onSeriesSelected(long seriesId, String seriesDate, boolean isEvent);
         public void onCreateNewSeries(boolean isEvent);
+        public void onLeagueStatsOpened();
     }
 }

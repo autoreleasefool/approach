@@ -7,6 +7,10 @@
     <string name="title_fragment_series">Series</string>
     <string name="title_fragment_game">Game Details</string>
     <string name="title_fragment_stats">Statistics</string>
+    <string name="title_stats_bowler">Bowler Stats</string>
+    <string name="title_stats_league">League Stats</string>
+    <string name="title_stats_series">Series Stats</string>
+    <string name="title_stats_game">Game Stats</string>
 
     <!-- Dialog text -->
     <string name="dialog_okay">Okay</string>

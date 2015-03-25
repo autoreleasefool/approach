@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
@@ -27,6 +26,7 @@ import ca.josephroque.bowlingcompanion.fragment.BowlerFragment;
 import ca.josephroque.bowlingcompanion.fragment.GameFragment;
 import ca.josephroque.bowlingcompanion.fragment.LeagueEventFragment;
 import ca.josephroque.bowlingcompanion.fragment.SeriesFragment;
+import ca.josephroque.bowlingcompanion.fragment.StatsFragment;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.utilities.DataFormatter;
 
@@ -37,7 +37,8 @@ public class MainActivity extends ActionBarActivity
         Theme.ChangeableTheme,
         BowlerFragment.OnBowlerSelectedListener,
         LeagueEventFragment.OnLeagueSelectedListener,
-        SeriesFragment.SeriesListener
+        SeriesFragment.SeriesListener,
+        GameFragment.OnGameOrSeriesStatsOpenedListener
 {
     /** Tag to identify class when outputting to console */
     private static final String TAG = "MainActivity";
@@ -48,6 +49,8 @@ public class MainActivity extends ActionBarActivity
     private long mLeagueId = -1;
     /** Id of current series being used in fragments */
     private long mSeriesId = -1;
+    /** Id of current game being used in fragments */
+    private long mGameId = -1;
     /** Number of games in current league/event in fragments */
     private byte mNumberOfGames = -1;
     /** Name of current bowler being used in fragments */
@@ -56,6 +59,8 @@ public class MainActivity extends ActionBarActivity
     private String mLeagueName;
     /** Date of current series being used in fragments */
     private String mSeriesDate;
+    /** Game number in series */
+    private byte mGameNumber;
 
     //private AdView mAdView;
 
@@ -83,6 +88,8 @@ public class MainActivity extends ActionBarActivity
             mBowlerId = savedInstanceState.getLong(Constants.EXTRA_ID_BOWLER, -1);
             mLeagueId = savedInstanceState.getLong(Constants.EXTRA_ID_LEAGUE, -1);
             mSeriesId = savedInstanceState.getLong(Constants.EXTRA_ID_SERIES, -1);
+            mGameId = savedInstanceState.getLong(Constants.EXTRA_ID_GAME, -1);
+            mGameNumber = savedInstanceState.getByte(Constants.EXTRA_GAME_NUMBER, (byte)-1);
             mBowlerName = savedInstanceState.getString(Constants.EXTRA_NAME_BOWLER);
             mLeagueName = savedInstanceState.getString(Constants.EXTRA_NAME_LEAGUE);
             mSeriesDate = savedInstanceState.getString(Constants.EXTRA_NAME_SERIES);
@@ -111,10 +118,12 @@ public class MainActivity extends ActionBarActivity
         outState.putLong(Constants.EXTRA_ID_BOWLER, mBowlerId);
         outState.putLong(Constants.EXTRA_ID_LEAGUE, mLeagueId);
         outState.putLong(Constants.EXTRA_ID_SERIES, mSeriesId);
+        outState.putLong(Constants.EXTRA_ID_GAME, mGameId);
         outState.putString(Constants.EXTRA_NAME_BOWLER, mBowlerName);
         outState.putString(Constants.EXTRA_NAME_LEAGUE, mLeagueName);
         outState.putString(Constants.EXTRA_NAME_SERIES, mSeriesDate);
         outState.putByte(Constants.EXTRA_NUMBER_OF_GAMES, mNumberOfGames);
+        outState.putByte(Constants.EXTRA_GAME_NUMBER, mGameNumber);
     }
 
     @Override
@@ -182,6 +191,9 @@ public class MainActivity extends ActionBarActivity
                         case Constants.FRAGMENT_SERIES:
                             mSeriesDate = null;
                             mSeriesId = -1;
+                        case Constants.FRAGMENT_GAME:
+                            mGameId = -1;
+                            mGameNumber = -1;
                             break;
                         default:
                             Log.w(TAG, "Invalid back stack name: " + backStackEntryName);
@@ -219,9 +231,11 @@ public class MainActivity extends ActionBarActivity
 
         mLeagueId = -1;
         mSeriesId = -1;
+        mGameId = -1;
         mNumberOfGames = -1;
         mLeagueName = null;
         mSeriesDate = null;
+        mGameNumber = -1;
 
         if (openLeagueFragment)
         {
@@ -238,7 +252,9 @@ public class MainActivity extends ActionBarActivity
         mNumberOfGames = numberOfGames;
 
         mSeriesId = -1;
+        mGameId = -1;
         mSeriesDate = null;
+        mGameNumber = -1;
 
         if (openSeriesFragment)
         {
@@ -252,6 +268,9 @@ public class MainActivity extends ActionBarActivity
     {
         mSeriesId = seriesId;
         mSeriesDate = seriesDate;
+
+        mGameId = -1;
+        mGameNumber = -1;
 
         new OpenSeriesTask().execute(isEvent);
     }
@@ -269,6 +288,42 @@ public class MainActivity extends ActionBarActivity
                 .replace(R.id.fl_main_fragment_container, fragment)
                 .addToBackStack(tag)
                 .commit();
+    }
+
+    @Override
+    public void onBowlerStatsOpened()
+    {
+        openStatsFragment(Constants.FRAGMENT_LEAGUES);
+    }
+
+    @Override
+    public void onLeagueStatsOpened()
+    {
+        openStatsFragment(Constants.FRAGMENT_SERIES);
+    }
+
+    @Override
+    public void onSeriesStatsOpened()
+    {
+        mGameId = -1;
+        mGameNumber = -1;
+
+        openStatsFragment(Constants.FRAGMENT_GAME);
+    }
+
+    @Override
+    public void onGameStatsOpened(long gameId, byte gameNumber)
+    {
+        mGameId = gameId;
+        mGameNumber = gameNumber;
+
+        openStatsFragment(Constants.FRAGMENT_GAME);
+    }
+
+    private void openStatsFragment(String tag)
+    {
+        StatsFragment statsFragment = StatsFragment.newInstance();
+        startFragmentTransaction(statsFragment, tag);
     }
 
     /**
@@ -324,6 +379,18 @@ public class MainActivity extends ActionBarActivity
      * @return value of mLeagueName
      */
     public String getLeagueName(){return mLeagueName;}
+
+    /**
+     * Returns id of current game being used in fragments
+     * @return value of mGameId
+     */
+    public long getGameId(){return mGameId;}
+
+    /**
+     * Returns game number in current series
+     * @return value of mGameNumber
+     */
+    public byte getGameNumber(){return mGameNumber;}
 
     /**
      * Returns name of current series being used in fragments

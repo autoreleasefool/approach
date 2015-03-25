@@ -165,7 +165,7 @@ public class LeagueEventFragment extends Fragment
         switch(item.getItemId())
         {
             case R.id.action_stats:
-                //TODO show stats
+                mLeagueSelectedListener.onBowlerStatsOpened();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -706,5 +706,6 @@ public class LeagueEventFragment extends Fragment
          * @param numberOfGames number of games of the league corresponding to leagueId
          */
         public void onLeagueSelected(long leagueId, String leagueName, byte numberOfGames, boolean openSeriesFragment);
+        public void onBowlerStatsOpened();
     }
 }
