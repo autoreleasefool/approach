@@ -175,25 +175,6 @@ public class Theme
     }
 
     /**
-     * Sets the background color of a view depending on the build version
-     *
-     * @param view view to set background of
-     * @param background drawable to set background to
-     */
-    @SuppressWarnings("deprecation")
-    public static void setBackgroundByAPI(View view, Drawable background)
-    {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN)
-        {
-            view.setBackgroundDrawable(background);
-        }
-        else
-        {
-            view.setBackground(background);
-        }
-    }
-
-    /**
      * Returns the current theme color name
      * @return value of sThemeName
      */

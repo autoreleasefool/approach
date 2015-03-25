@@ -1,7 +1,5 @@
 package ca.josephroque.bowlingcompanion.fragment;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
@@ -9,7 +7,6 @@ import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.GradientDrawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -36,7 +33,6 @@ import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.database.Contract.*;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.dialog.ManualScoreDialog;
-import ca.josephroque.bowlingcompanion.utilities.Animate;
 import ca.josephroque.bowlingcompanion.utilities.DataFormatter;
 import ca.josephroque.bowlingcompanion.utilities.Score;
 import ca.josephroque.bowlingcompanion.theme.Theme;
@@ -109,23 +105,16 @@ public class GameFragment extends Fragment
     private ImageView mImageViewClearPins;
     /** Displays TextView objects in a layout which user can interact with to access specific frame */
     private HorizontalScrollView mHorizontalScrollViewFrames;
-    /** Displays text to user of option to enabled or disable a foul */
-    private TextView mTextViewSettingFoul;
-    /** Displays text to user of option to reset a frame */
-    private TextView mTextViewSettingResetFrame;
+    /** Displays image to user of option to enabled or disable a foul */
+    private ImageView mImageViewFoul;
+    /** Displays image to user of option to reset a frame */
+    private ImageView mImageViewResetFrame;
     /** Displays text to user of option to lock a game */
-    private TextView mTextViewSettingLockGame;
-    /** Displays image to user of option to open settings menu */
-    private ImageView mImageViewGameSettings;
+    private ImageView mImageViewLock;
     /** Displays manually set score */
     private TextView mTextViewManualScore;
     /** Layout which contains views related to general game options */
     private RelativeLayout mRelativeLayoutGameToolbar;
-
-    /** Indicates if the game settings are visible */
-    private boolean mSettingsOpened;
-    /** Indicates if the game settings are disabled */
-    private boolean mSettingsButtonsDisabled;
 
     /** Instance of callback interface for handling user events */
     private OnGameOrSeriesStatsOpenedListener mGameSeriesListener;
@@ -163,8 +152,6 @@ public class GameFragment extends Fragment
             mFrameIds = savedInstanceState.getLongArray(Constants.EXTRA_ARRAY_FRAME_IDS);
             mGameLocked = savedInstanceState.getBooleanArray(Constants.EXTRA_ARRAY_GAME_LOCKED);
             mManualScoreSet = savedInstanceState.getBooleanArray(Constants.EXTRA_ARRAY_MANUAL_SCORE_SET);
-            mSettingsOpened = savedInstanceState.getBoolean(Constants.EXTRA_SETTINGS_OPEN);
-            mSettingsButtonsDisabled = savedInstanceState.getBoolean(Constants.EXTRA_SETTINGS_DISABLED);
         }
     }
 
@@ -281,20 +268,14 @@ public class GameFragment extends Fragment
         mImageViewClearPins = (ImageView)rootView.findViewById(R.id.iv_clear_pins);
         mImageViewClearPins.setOnClickListener(onClickListeners[LISTENER_OTHER]);
 
-        mImageViewGameSettings = (ImageView)rootView.findViewById(R.id.iv_game_settings);
-        mImageViewGameSettings.setOnClickListener(onClickListeners[LISTENER_OTHER]);
+        mImageViewFoul = (ImageView)rootView.findViewById(R.id.iv_foul);
+        mImageViewFoul.setOnClickListener(onClickListeners[LISTENER_OTHER]);
 
-        mTextViewSettingFoul = (TextView)rootView.findViewById(R.id.tv_setting_foul);
-        mTextViewSettingFoul.setOnClickListener(onClickListeners[LISTENER_OTHER]);
-        mTextViewSettingFoul.setVisibility(View.GONE);
+        mImageViewResetFrame = (ImageView)rootView.findViewById(R.id.iv_reset_frame);
+        mImageViewResetFrame.setOnClickListener(onClickListeners[LISTENER_OTHER]);
 
-        mTextViewSettingResetFrame = (TextView)rootView.findViewById(R.id.tv_setting_reset_frame);
-        mTextViewSettingResetFrame.setOnClickListener(onClickListeners[LISTENER_OTHER]);
-        mTextViewSettingResetFrame.setVisibility(View.GONE);
-
-        mTextViewSettingLockGame = (TextView)rootView.findViewById(R.id.tv_setting_lock);
-        mTextViewSettingLockGame.setOnClickListener(onClickListeners[LISTENER_OTHER]);
-        mTextViewSettingLockGame.setVisibility(View.GONE);
+        mImageViewLock = (ImageView)rootView.findViewById(R.id.iv_lock);
+        mImageViewLock.setOnClickListener(onClickListeners[LISTENER_OTHER]);
 
         mTextViewManualScore = (TextView)rootView.findViewById(R.id.tv_manual_score);
         mRelativeLayoutGameToolbar = (RelativeLayout)rootView.findViewById(R.id.rl_game_toolbar);
@@ -319,8 +300,6 @@ public class GameFragment extends Fragment
             mFrameIds = args.getLongArray(Constants.EXTRA_ARRAY_FRAME_IDS);
             mGameLocked = args.getBooleanArray(Constants.EXTRA_ARRAY_GAME_LOCKED);
             mManualScoreSet = args.getBooleanArray(Constants.EXTRA_ARRAY_MANUAL_SCORE_SET);
-            mSettingsOpened = false;
-            mSettingsButtonsDisabled = false;
         }
 
         mGameScores = new short[((MainActivity)getActivity()).getNumberOfGames()];
@@ -351,8 +330,6 @@ public class GameFragment extends Fragment
         outState.putLongArray(Constants.EXTRA_ARRAY_FRAME_IDS, mFrameIds);
         outState.putBooleanArray(Constants.EXTRA_ARRAY_GAME_LOCKED, mGameLocked);
         outState.putBooleanArray(Constants.EXTRA_ARRAY_MANUAL_SCORE_SET, mManualScoreSet);
-        outState.putBoolean(Constants.EXTRA_SETTINGS_OPEN, mSettingsOpened);
-        outState.putBoolean(Constants.EXTRA_SETTINGS_DISABLED, mSettingsButtonsDisabled);
     }
 
     @Override
@@ -412,19 +389,6 @@ public class GameFragment extends Fragment
     public void updateTheme()
     {
         mRelativeLayoutGameToolbar.setBackgroundColor(Theme.getSecondaryThemeColor());
-
-        GradientDrawable gradientDrawable = new GradientDrawable();
-        gradientDrawable.setColor(Theme.getPrimaryThemeColor());
-        gradientDrawable.setCornerRadii(new float[]{0, 0, 0, 0, 0, 0, 12, 12});
-        Theme.setBackgroundByAPI(mTextViewSettingFoul, gradientDrawable);
-        gradientDrawable = new GradientDrawable();
-        gradientDrawable.setColor(Theme.getPrimaryThemeColor());
-        gradientDrawable.setCornerRadii(new float[]{0, 0, 0, 0, 0, 0, 0, 0});
-        Theme.setBackgroundByAPI(mTextViewSettingResetFrame, gradientDrawable);
-        gradientDrawable = new GradientDrawable();
-        gradientDrawable.setColor(Theme.getPrimaryThemeColor());
-        gradientDrawable.setCornerRadii(new float[]{12, 12, 0, 0, 0, 0, 0, 0});
-        Theme.setBackgroundByAPI(mTextViewSettingLockGame, gradientDrawable);
     }
 
     @Override
@@ -473,7 +437,6 @@ public class GameFragment extends Fragment
             @Override
             public void onClick(View v)
             {
-                hideGameSettings();
                 byte frameToSet = 0;
                 switch(v.getId())
                 {
@@ -512,7 +475,6 @@ public class GameFragment extends Fragment
             {
                 if (mGameLocked[mCurrentGame] || mManualScoreSet[mCurrentGame])
                     return;
-                hideGameSettings();
                 byte ballToSet = 0;
                 switch(v.getId())
                 {
@@ -535,29 +497,23 @@ public class GameFragment extends Fragment
             public void onClick(View v)
             {
                 int viewId = v.getId();
-                if (viewId != R.id.tv_setting_foul && viewId != R.id.tv_setting_reset_frame
-                        && viewId != R.id.tv_setting_lock && viewId != R.id.iv_game_settings)
-                    hideGameSettings();
 
                 switch(viewId)
                 {
-                    case R.id.iv_game_settings:
-                        if (!mGameLocked[mCurrentGame])
-                            fadeGameSettings(mSettingsOpened);
-                        else if (!mManualScoreSet[mCurrentGame])
-                            setGameLocked(false);
-                        break;
-                    case R.id.tv_setting_foul:
-                        if (mSettingsButtonsDisabled || mGameLocked[mCurrentGame] || mManualScoreSet[mCurrentGame])
+                    case R.id.iv_lock:
+                        if (mManualScoreSet[mCurrentGame])
                             return;
-                        hideGameSettings();
+                        setGameLocked(!mGameLocked[mCurrentGame]);
+                        break;
+                    case R.id.iv_foul:
+                        if (mGameLocked[mCurrentGame] || mManualScoreSet[mCurrentGame])
+                            return;
                         mFouls[mCurrentFrame][mCurrentBall] = !mFouls[mCurrentFrame][mCurrentBall];
                         updateFouls();
                         break;
-                    case R.id.tv_setting_reset_frame:
-                        if (mSettingsButtonsDisabled || mGameLocked[mCurrentGame] || mManualScoreSet[mCurrentGame])
+                    case R.id.iv_reset_frame:
+                        if (mGameLocked[mCurrentGame] || mManualScoreSet[mCurrentGame])
                             return;
-                        hideGameSettings();
                         clearFrameColor();
                         mCurrentBall = 0;
                         for (int i = 0; i < 3; i++)
@@ -569,12 +525,6 @@ public class GameFragment extends Fragment
                         updateFrameColor();
                         updateBalls(mCurrentFrame);
                         updateScore();
-                        break;
-                    case R.id.tv_setting_lock:
-                        if (mSettingsButtonsDisabled || mManualScoreSet[mCurrentGame])
-                            return;
-                        hideGameSettings();
-                        setGameLocked(!mGameLocked[mCurrentGame]);
                         break;
                     case R.id.iv_clear_pins:
                         clearPins();
@@ -703,6 +653,8 @@ public class GameFragment extends Fragment
                 imageButton.setVisibility(View.VISIBLE);
             mTextViewManualScore.setText(null);
             mTextViewManualScore.setVisibility(View.INVISIBLE);
+            mImageViewFoul.setVisibility(View.VISIBLE);
+            mImageViewResetFrame.setVisibility(View.VISIBLE);
         }
         else
         {
@@ -712,11 +664,13 @@ public class GameFragment extends Fragment
                 imageButton.setVisibility(View.INVISIBLE);
             mTextViewManualScore.setText(String.valueOf(mGameScoresMinusFouls[mCurrentGame]));
             mTextViewManualScore.setVisibility(View.VISIBLE);
+            mImageViewFoul.setVisibility(View.INVISIBLE);
+            mImageViewResetFrame.setVisibility(View.INVISIBLE);
         }
 
-        mImageViewGameSettings.setImageResource((mGameLocked[mCurrentGame])
-                ? R.drawable.ic_action_secure
-                : R.drawable.ic_action_settings);
+        mImageViewLock.setImageResource((mGameLocked[mCurrentGame])
+                ? R.drawable.ic_lock
+                : R.drawable.ic_lock_open);
     }
 
     private void showGameLockedDialog()
@@ -775,15 +729,25 @@ public class GameFragment extends Fragment
     private void setGameLocked(boolean lock)
     {
         mGameLocked[mCurrentGame] = lock;
-        mTextViewSettingLockGame.post(new Runnable()
+        mImageViewLock.post(new Runnable()
         {
             @Override
             public void run()
             {
-                mTextViewSettingLockGame.setText(
-                        mGameLocked[mCurrentGame]
-                        ? R.string.text_unloock_game
-                        : R.string.text_lock_game);
+                if (mGameLocked[mCurrentGame])
+                {
+                    mImageViewFoul.setVisibility(View.INVISIBLE);
+                    mImageViewResetFrame.setVisibility(View.INVISIBLE);
+                    mImageViewClearPins.setVisibility(View.INVISIBLE);
+                    mImageViewLock.setImageResource(R.drawable.ic_lock);
+                }
+                else
+                {
+                    mImageViewFoul.setVisibility(View.VISIBLE);
+                    mImageViewResetFrame.setVisibility(View.VISIBLE);
+                    mImageViewClearPins.setVisibility(View.VISIBLE);
+                    mImageViewLock.setImageResource(R.drawable.ic_lock_open);
+                }
             }
         });
     }
@@ -960,151 +924,6 @@ public class GameFragment extends Fragment
                 });
         builder.create()
                 .show();
-    }
-
-    private void hideGameSettings()
-    {
-        if(!mSettingsOpened)
-            return;
-
-        mSettingsOpened = false;
-        mSettingsButtonsDisabled = false;
-
-        getActivity().runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                mTextViewSettingFoul.setVisibility(View.GONE);
-                mTextViewSettingResetFrame.setVisibility(View.GONE);
-                mTextViewSettingLockGame.setVisibility(View.GONE);
-            }
-        });
-    }
-
-    private void fadeGameSettings(final boolean hideSettings)
-    {
-        getActivity().runOnUiThread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                mSettingsOpened = !hideSettings;
-                if (mSettingsOpened)
-                {
-                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR1)
-                    {
-                        Animate.startSupportFadeInAnimation(mTextViewSettingFoul, new com.nineoldandroids.animation.AnimatorListenerAdapter()
-                                {
-                                    @Override
-                                    public void onAnimationStart(com.nineoldandroids.animation.Animator animation)
-                                    {
-                                        mSettingsButtonsDisabled = true;
-                                    }
-
-                                    @Override
-                                    public void onAnimationEnd(com.nineoldandroids.animation.Animator animation)
-                                    {
-                                        mSettingsButtonsDisabled = false;
-                                    }
-                                });
-                        Animate.startSupportFadeInAnimation(mTextViewSettingResetFrame, null);
-                        Animate.startSupportFadeInAnimation(mTextViewSettingLockGame, null);
-                    }
-                    else
-                    {
-                        Animate.startFadeInAnimation(mTextViewSettingFoul, new AnimatorListenerAdapter()
-                                {
-                                    @Override
-                                    public void onAnimationEnd(Animator animation)
-                                    {
-                                        mSettingsButtonsDisabled = false;
-                                    }
-
-                                    @Override
-                                    public void onAnimationStart(Animator animation)
-                                    {
-                                        mSettingsButtonsDisabled = true;
-                                    }
-                                });
-                        Animate.startFadeInAnimation(mTextViewSettingResetFrame, null);
-                        Animate.startFadeInAnimation(mTextViewSettingLockGame, null);
-
-                    }
-                }
-                else
-                {
-                    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR1)
-                    {
-                        Animate.startSupportFadeOutAnimation(mTextViewSettingFoul, new com.nineoldandroids.animation.AnimatorListenerAdapter()
-                                {
-                                    @Override
-                                    public void onAnimationEnd(com.nineoldandroids.animation.Animator animation)
-                                    {
-                                        mTextViewSettingFoul.setVisibility(View.GONE);
-                                        mSettingsButtonsDisabled = false;
-                                    }
-
-                                    @Override
-                                    public void onAnimationStart(com.nineoldandroids.animation.Animator animation)
-                                    {
-                                        mSettingsButtonsDisabled = true;
-                                    }
-                                });
-                        Animate.startSupportFadeOutAnimation(mTextViewSettingResetFrame, new com.nineoldandroids.animation.AnimatorListenerAdapter()
-                                {
-                                    @Override
-                                    public void onAnimationEnd(com.nineoldandroids.animation.Animator animation)
-                                    {
-                                        mTextViewSettingResetFrame.setVisibility(View.GONE);
-                                    }
-                                });
-                        Animate.startSupportFadeOutAnimation(mTextViewSettingLockGame, new com.nineoldandroids.animation.AnimatorListenerAdapter()
-                                {
-                                    @Override
-                                    public void onAnimationEnd(com.nineoldandroids.animation.Animator animation)
-                                    {
-                                        mTextViewSettingLockGame.setVisibility(View.GONE);
-                                    }
-                                });
-                    }
-                    else
-                    {
-                        Animate.startFadeOutAnimation(mTextViewSettingFoul, new AnimatorListenerAdapter()
-                                {
-                                    @Override
-                                    public void onAnimationStart(Animator animation)
-                                    {
-                                        mSettingsButtonsDisabled = true;
-                                    }
-
-                                    @Override
-                                    public void onAnimationEnd(Animator animation)
-                                    {
-                                        mSettingsButtonsDisabled = false;
-                                        mTextViewSettingFoul.setVisibility(View.GONE);
-                                    }
-                                });
-                        Animate.startFadeOutAnimation(mTextViewSettingResetFrame, new AnimatorListenerAdapter()
-                                {
-                                    @Override
-                                    public void onAnimationEnd(Animator animation)
-                                    {
-                                        mTextViewSettingResetFrame.setVisibility(View.GONE);
-                                    }
-                                });
-                        Animate.startFadeOutAnimation(mTextViewSettingLockGame, new AnimatorListenerAdapter()
-                                {
-                                    @Override
-                                    public void onAnimationEnd(Animator animation)
-                                    {
-                                        mTextViewSettingLockGame.setVisibility(View.GONE);
-                                    }
-                                });
-                    }
-                }
-            }
-        });
     }
 
     /**
@@ -1343,10 +1162,12 @@ public class GameFragment extends Fragment
             public void run()
             {
                 mTextViewFinalScore.setText(String.valueOf(mGameScoresMinusFouls[mCurrentGame]));
+                /*TODO: change foul picture
                 mTextViewSettingFoul.setText(
+
                         (mFouls[mCurrentFrame][mCurrentBall])
                                 ? R.string.text_remove_foul
-                                : R.string.text_add_foul);
+                                : R.string.text_add_foul);*/
                 mTextViewFouls[mCurrentFrame][mCurrentBall]
                         .setText(mFouls[mCurrentFrame][mCurrentBall] ? "F" : "");
             }
@@ -1453,10 +1274,12 @@ public class GameFragment extends Fragment
                 }
                 mImageViewClearPins.setEnabled(numberOfPinsStanding > 0);
 
+                /*TODO: change foul picture
                 mTextViewSettingFoul.setText(
+
                         mFouls[mCurrentFrame][mCurrentBall]
                                 ? R.string.text_remove_foul
-                                : R.string.text_add_foul);
+                                : R.string.text_add_foul);*/
 
                 focusOnFrame();
             }
@@ -1713,7 +1536,6 @@ public class GameFragment extends Fragment
                         cursor.close();
                 }
 
-                setGameLocked(mGameLocked[mCurrentGame]);
                 getActivity().runOnUiThread(new Runnable()
                 {
                     @Override
@@ -1723,6 +1545,7 @@ public class GameFragment extends Fragment
                         getActivity().supportInvalidateOptionsMenu();
                     }
                 });
+                setGameLocked(mGameLocked[mCurrentGame]);
 
                 mCurrentFrame = 0;
                 mCurrentBall = 0;
