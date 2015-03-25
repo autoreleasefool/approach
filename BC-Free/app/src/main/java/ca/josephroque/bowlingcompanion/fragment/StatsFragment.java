@@ -105,6 +105,7 @@ public class StatsFragment extends Fragment
 
         mListStatNames.clear();
         mListStatValues.clear();
+        mAdapterStats.notifyDataSetChanged();
 
         byte statsToLoad;
         int titleToSet;
@@ -709,7 +710,7 @@ public class StatsFragment extends Fragment
                 + FrameEntry.COLUMN_FOULS + ", "
                 + FrameEntry.COLUMN_PIN_STATE[0] + ", "
                 + FrameEntry.COLUMN_PIN_STATE[1] + ", "
-                + FrameEntry.COLUMN_PIN_STATE[2] + ", "
+                + FrameEntry.COLUMN_PIN_STATE[2]
                 + " FROM " + GameEntry.TABLE_NAME + " AS game"
                 + " INNER JOIN " + FrameEntry.TABLE_NAME + " AS frame"
                 + " ON game." + GameEntry._ID + "=frame." + FrameEntry.COLUMN_GAME_ID
