@@ -401,6 +401,12 @@ public class StatsFragment extends Fragment
 
             return null;
         }
+
+        @Override
+        protected void onPostExecute(Void param)
+        {
+            mAdapterStats.notifyDataSetChanged();
+        }
     }
 
     /**
@@ -634,7 +640,7 @@ public class StatsFragment extends Fragment
                 + " LEFT JOIN " + SeriesEntry.TABLE_NAME + " AS series"
                 + " ON league." + LeagueEntry._ID + "=series." + SeriesEntry._ID
                 + " LEFT JOIN " + GameEntry.TABLE_NAME + " AS game"
-                + " ON series" + SeriesEntry._ID + "=game." + GameEntry.COLUMN_SERIES_ID
+                + " ON series." + SeriesEntry._ID + "=game." + GameEntry.COLUMN_SERIES_ID
                 + " LEFT JOIN " + FrameEntry.TABLE_NAME + " AS frame"
                 + " ON game." + GameEntry._ID + "=frame." + FrameEntry.COLUMN_GAME_ID
                 + ((shouldGetLeagueStats)
@@ -644,7 +650,7 @@ public class StatsFragment extends Fragment
                         ? " AND 0=?"
                         : " AND league." + LeagueEntry.COLUMN_IS_EVENT + "=?")
                 + ((isOpenIncluded)
-                        ? " AND Open=?"
+                        ? " AND 'Open'=?"
                         : " AND league." + LeagueEntry.COLUMN_LEAGUE_NAME + "!=?")
                 + " ORDER BY league." + LeagueEntry._ID
                         + ", series." + SeriesEntry._ID

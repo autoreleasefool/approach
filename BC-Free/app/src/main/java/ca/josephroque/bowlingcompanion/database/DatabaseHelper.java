@@ -117,6 +117,18 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 + "CHECK (" + FrameEntry.COLUMN_FRAME_NUMBER + " >= 1 AND " + FrameEntry.COLUMN_FRAME_NUMBER + " <= 10), "
                 + "CHECK (" + FrameEntry.COLUMN_IS_ACCESSED + " = 0 OR " + FrameEntry.COLUMN_IS_ACCESSED + " = 1)"
                 + ");");
+
+        //Creating indices for faster queries
+        db.execSQL("CREATE INDEX bowler_id_index ON " + BowlerEntry.TABLE_NAME + "(" + BowlerEntry._ID + ")");
+        db.execSQL("CREATE INDEX league_id_index ON " + LeagueEntry.TABLE_NAME + "(" + LeagueEntry._ID + ")");
+        db.execSQL("CREATE INDEX series_id_index ON " + SeriesEntry.TABLE_NAME + "(" + SeriesEntry._ID + ")");
+        db.execSQL("CREATE INDEX game_id_index ON " + GameEntry.TABLE_NAME + "(" + GameEntry._ID + ")");
+        db.execSQL("CREATE INDEX frame_id_index ON " + FrameEntry.TABLE_NAME + "(" + FrameEntry._ID + ")");
+
+        db.execSQL("CREATE INDEX league_bowler_fk_index ON " + LeagueEntry.TABLE_NAME + "(" + LeagueEntry.COLUMN_BOWLER_ID + ")");
+        db.execSQL("CREATE INDEX series_league_fk_index ON " + SeriesEntry.TABLE_NAME + "(" + SeriesEntry.COLUMN_LEAGUE_ID + ")");
+        db.execSQL("CREATE INDEX game_series_fk_index ON " + GameEntry.TABLE_NAME + "(" + GameEntry.COLUMN_SERIES_ID + ")");
+        db.execSQL("CREATE INDEX frame_game_fk_index ON " + FrameEntry.TABLE_NAME + "(" + FrameEntry.COLUMN_GAME_ID + ")");
     }
 
     @Override
