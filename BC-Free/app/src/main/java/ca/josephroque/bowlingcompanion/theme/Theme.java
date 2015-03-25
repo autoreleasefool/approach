@@ -36,19 +36,6 @@ public class Theme
     /** List item background color for the current theme */
     private static int sThemeListItemBackground = -1;
 
-    /** Indicates whether the main activity has an invalid theme */
-    private static boolean sMainActivityThemeInvalid = true;
-    /** Indicates whether the bowler fragment has an invalid theme */
-    private static boolean sBowlerFragmentThemeInvalid = true;
-    /** Indicates whether the league/event fragment has an invalid theme */
-    private static boolean sLeagueEventFragmentThemeInvalid = true;
-    /** Indicates whether the series fragment has an invalid theme */
-    private static boolean sSeriesFragmentThemeInvalid = true;
-    /** Indicates whether the game fragment has an invalid theme */
-    private static boolean sGameFragmentThemeInvalid = true;
-    /** Indicates whether the stats fragment has an invalid theme */
-    private static boolean sStatsFragmentThemeInvalid = true;
-
     /**
      * Loads the default theme from the preferences, or the theme
      * which was set by the user in previous runs of the app
@@ -184,23 +171,7 @@ public class Theme
             default:
                 //If an invalid theme was selected, the default is applied
                 setTheme(context, "Green", true);
-                return;
         }
-
-        invalidateThemes();
-    }
-
-    /**
-     * Indicates that all activities will need to update their themes
-     */
-    private static void invalidateThemes()
-    {
-        sMainActivityThemeInvalid = true;
-        sBowlerFragmentThemeInvalid = true;
-        sLeagueEventFragmentThemeInvalid = true;
-        sSeriesFragmentThemeInvalid = true;
-        sGameFragmentThemeInvalid = true;
-        sStatsFragmentThemeInvalid = true;
     }
 
     /**
@@ -209,6 +180,7 @@ public class Theme
      * @param view view to set background of
      * @param background drawable to set background to
      */
+    @SuppressWarnings("deprecation")
     public static void setBackgroundByAPI(View view, Drawable background)
     {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN)
@@ -226,55 +198,6 @@ public class Theme
      * @return value of sThemeName
      */
     public static String getThemeName() {return sThemeName;}
-
-    /**
-     * Checks if the main activity's theme is valid
-     * @return the value of sMainActivityThemeInvalidated
-     */
-    public static boolean getMainActivityThemeInvalidated() {return sMainActivityThemeInvalid;}
-
-    /**
-     * Checks if the bowler fragment's theme is invalid
-     * @return the value of sBowlerFragmentThemeInvalidated
-     */
-    public static boolean getBowlerFragmentThemeInvalidated() {return sBowlerFragmentThemeInvalid;}
-
-    /**
-     * Checks if the league/event fragment's theme is invalid
-     * @return the value of sLeagueEventFragmentInvalid
-     */
-    public static boolean getLeagueEventFragmentThemeInvalidated() {return sLeagueEventFragmentThemeInvalid;}
-
-    /**
-     * Checks if the series fragment's theme is invalid
-     * @return the value of sSeriesFragmentThemeInvalid
-     */
-    public static boolean getSeriesFragmentThemeInvalidated() {return sSeriesFragmentThemeInvalid;}
-
-    /**
-     * Checks if the game fragment's theme is invalid
-     * @return the value of sGameFragmentThemeInvalid
-     */
-    public static boolean getGameFragmentThemeInvalidated() {return sGameFragmentThemeInvalid;}
-
-    /**
-     * Checks if the stats fragment's theme is invalid
-     * @return the value of sStatsFragmentThemeInvalid
-     */
-    public static boolean getStatsFragmentThemeInvalidated() {return sStatsFragmentThemeInvalid;}
-
-    /** Should be called when main activity theme has been updated */
-    public static void validateMainActivityTheme() {sMainActivityThemeInvalid = false;}
-    /** Should be called when bowler fragment theme has been updated */
-    public static void validateBowlerFragmentTheme() {sBowlerFragmentThemeInvalid = false;}
-    /** Should be called when league/event fragment theme has been updated */
-    public static void validateLeagueEventFragmentTheme() {sLeagueEventFragmentThemeInvalid = false;}
-    /** Should be called when series fragment theme has been updated */
-    public static void validateSeriesFragmentTheme() {sSeriesFragmentThemeInvalid = false;}
-    /** Should be called when game fragment theme has been updated */
-    public static void validateGameFragmentTheme() {sGameFragmentThemeInvalid = false;}
-    /** Should be called when stats fragment theme has been updated */
-    public static void validateStatsFragmentTheme() {sStatsFragmentThemeInvalid = false;}
 
     /**
      * Gets the primary color for the theme

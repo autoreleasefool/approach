@@ -326,10 +326,7 @@ public class GameFragment extends Fragment
         mGameScores = new short[((MainActivity)getActivity()).getNumberOfGames()];
         mGameScoresMinusFouls = new short[((MainActivity)getActivity()).getNumberOfGames()];
 
-        if (Theme.getGameFragmentThemeInvalidated())
-        {
-            updateTheme();
-        }
+        updateTheme();
 
         loadInitialScores();
         loadGameFromDatabase((byte)0);
@@ -428,8 +425,6 @@ public class GameFragment extends Fragment
         gradientDrawable.setColor(Theme.getPrimaryThemeColor());
         gradientDrawable.setCornerRadii(new float[]{12, 12, 0, 0, 0, 0, 0, 0});
         Theme.setBackgroundByAPI(mTextViewSettingLockGame, gradientDrawable);
-
-        Theme.validateGameFragmentTheme();
     }
 
     @Override

@@ -77,7 +77,7 @@ public class SeriesFragment extends Fragment
          */
         try
         {
-            mSeriesListener = (SeriesFragment.SeriesListener)activity;
+            mSeriesListener = (SeriesListener)activity;
         }
         catch (ClassCastException ex)
         {
@@ -134,11 +134,7 @@ public class SeriesFragment extends Fragment
         mListSeriesGames.clear();
         mAdapterSeries.notifyDataSetChanged();
 
-        //Updates theme if invalid
-        if (Theme.getSeriesFragmentThemeInvalidated())
-        {
-            updateTheme();
-        }
+        updateTheme();
 
         //Creates AsyncTask to load data from database
         new LoadSeriesTask().execute();
@@ -180,7 +176,6 @@ public class SeriesFragment extends Fragment
             fab.setColorRipple(Theme.getTertiaryThemeColor());
         }
         mAdapterSeries.updateTheme();
-        Theme.validateSeriesFragmentTheme();
     }
 
     @Override

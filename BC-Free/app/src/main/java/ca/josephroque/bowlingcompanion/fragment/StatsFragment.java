@@ -136,10 +136,7 @@ public class StatsFragment extends Fragment
             statsToLoad = LOADING_GAME_STATS;
         }
 
-        if (Theme.getStatsFragmentThemeInvalidated())
-        {
-            updateTheme();
-        }
+        updateTheme();
 
         mainActivity.setActionBarTitle(titleToSet);
         new LoadStatsTask().execute(statsToLoad);
@@ -149,7 +146,6 @@ public class StatsFragment extends Fragment
     public void updateTheme()
     {
         mAdapterStats.updateTheme();
-        Theme.validateStatsFragmentTheme();
     }
 
     private class LoadStatsTask extends AsyncTask<Byte, Void, Void>

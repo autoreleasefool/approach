@@ -144,10 +144,7 @@ public class LeagueEventFragment extends Fragment
         mListLeagueEventNumberOfGames.clear();
         mAdapterLeagueEvents.notifyDataSetChanged();
 
-        if (Theme.getLeagueEventFragmentThemeInvalidated())
-        {
-            updateTheme();
-        }
+        updateTheme();
 
         new LoadLeaguesEventsTask().execute();
     }
@@ -175,11 +172,14 @@ public class LeagueEventFragment extends Fragment
     @Override
     public void updateTheme()
     {
-        FloatingActionButton fab = (FloatingActionButton)getView().findViewById(R.id.fab_new_list_item);
-        fab.setColorNormal(Theme.getPrimaryThemeColor());
-        fab.setColorPressed(Theme.getPrimaryThemeColor());
-        fab.setColorRipple(Theme.getTertiaryThemeColor());
-        Theme.validateLeagueEventFragmentTheme();
+        View rootView = getView();
+        if (rootView != null)
+        {
+            FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab_new_list_item);
+            fab.setColorNormal(Theme.getPrimaryThemeColor());
+            fab.setColorPressed(Theme.getPrimaryThemeColor());
+            fab.setColorRipple(Theme.getTertiaryThemeColor());
+        }
     }
 
     @Override

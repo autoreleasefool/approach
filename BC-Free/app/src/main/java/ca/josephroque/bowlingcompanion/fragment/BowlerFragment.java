@@ -177,11 +177,7 @@ public class BowlerFragment extends Fragment
         mListBowlerAverages.clear();
         mAdapterBowlers.notifyDataSetChanged();
 
-        //Updates theme if invalid
-        if (Theme.getBowlerFragmentThemeInvalidated())
-        {
-            updateTheme();
-        }
+        updateTheme();
 
         //Creates AsyncTask to load data from database
         new LoadBowlerAndRecentTask().execute();
@@ -210,7 +206,7 @@ public class BowlerFragment extends Fragment
     @Override
     public void updateTheme()
     {
-        //Updates colors of views and sets theme for this object to a 'valid' state
+        //Updates colors of views
         View rootView = getView();
         if (rootView != null)
         {
@@ -219,7 +215,6 @@ public class BowlerFragment extends Fragment
             fab.setColorPressed(Theme.getPrimaryThemeColor());
             fab.setColorRipple(Theme.getTertiaryThemeColor());
         }
-        Theme.validateBowlerFragmentTheme();
     }
 
     @Override
