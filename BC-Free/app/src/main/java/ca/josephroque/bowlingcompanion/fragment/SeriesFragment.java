@@ -102,7 +102,7 @@ public class SeriesFragment extends Fragment
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mRecyclerViewSeries.setLayoutManager(layoutManager);
 
-        mAdapterSeries = new SeriesAdapter(this, mListSeriesDates, mListSeriesGames);
+        mAdapterSeries = new SeriesAdapter(getActivity(), this, mListSeriesDates, mListSeriesGames);
         mRecyclerViewSeries.setAdapter(mAdapterSeries);
 
         FloatingActionButton floatingActionButton =

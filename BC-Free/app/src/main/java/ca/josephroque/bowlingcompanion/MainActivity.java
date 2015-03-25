@@ -134,11 +134,7 @@ public class MainActivity extends ActionBarActivity
         //if (mAdView != null)
         //    mAdView.resume();
 
-        //Updates theme if invalid
-        if (Theme.getMainActivityThemeInvalidated())
-        {
-            updateTheme();
-        }
+        updateTheme();
     }
 
     @Override
@@ -220,7 +216,6 @@ public class MainActivity extends ActionBarActivity
         //Updates colors and sets theme for MainActivity valid
         getSupportActionBar()
                 .setBackgroundDrawable(new ColorDrawable(Theme.getPrimaryThemeColor()));
-        Theme.validateMainActivityTheme();
     }
 
     @Override
