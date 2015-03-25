@@ -11,11 +11,22 @@ import android.net.Uri;
  */
 public class EmailUtils
 {
+
+    /**
+     * Creates an email intent and sets values to parameters
+     * @param recipientEmail email recipient
+     * @param emailSubject subject of the email
+     * @param emailBody body of the email
+     * @return new email intent
+     */
     public static Intent getEmailIntent(
             String recipientEmail,
             String emailSubject,
             String emailBody)
     {
+        if (emailBody == null)
+            emailBody = "";
+
         Intent emailIntent = new Intent(Intent.ACTION_SEND);
         emailIntent.setData(Uri.parse("mailto:"));
         emailIntent.setType("message/rfc822");
@@ -26,10 +37,16 @@ public class EmailUtils
         return emailIntent;
     }
 
+    /**
+     * Creates an intent and sets values to parameters
+     * @param recipientEmail email recipient
+     * @param emailSubject subject of the email
+     * @return getEmailIntent(recipientEmail, emailSubject, null)
+     */
     public static Intent getEmailIntent(
             String recipientEmail,
             String emailSubject)
     {
-        return getEmailIntent(recipientEmail, emailSubject, "");
+        return getEmailIntent(recipientEmail, emailSubject, null);
     }
 }
