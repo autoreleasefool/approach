@@ -1,5 +1,7 @@
 package ca.josephroque.bowlingcompanion.adapter;
 
+import android.app.Activity;
+import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -34,6 +36,12 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
     private List<String> mListDates;
     /** List of games which will be displayed, in an order relative to mListDates */
     private List<List<Short>> mListGames;
+
+    /** Indicates minimum score values which will be highlighted when displayed */
+    private int minimumScoreToHighlight = 300;
+
+    /** Activity which created the instance of this object */
+    private Activity mActivity;
 
     /**
      * Subclass of RecyclerView.ViewHolder to manage view which will display
@@ -92,10 +100,12 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
      * @param listGames list of game scores, relative to listDates to be displayed
      */
     public SeriesAdapter(
+            Activity activity,
             SeriesEventHandler eventHandler,
             List<String> listDates,
             List<List<Short>> listGames)
     {
+        this.mActivity = activity;
         this.mEventHandler = eventHandler;
         this.mListDates = listDates;
         this.mListGames = listGames;
@@ -122,7 +132,7 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
              */
             short gameScore = mListGames.get(position).get(-i + (numberOfGamesInSeries - 1));
             holder.mArrayTextViewGames[i].setText(String.valueOf(gameScore));
-            if (gameScore >= 300)
+            if (gameScore >= minimumScoreToHighlight)
             {
                 holder.mArrayTextViewGames[i].setTextColor(Theme.getPrimaryThemeColor());
             }
@@ -190,7 +200,12 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
     public int getItemCount() {return mListDates.size();}
 
     @Override
-    public void updateTheme() {notifyDataSetChanged();}
+    public void updateTheme()
+    {
+        minimumScoreToHighlight = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(mActivity)
+                .getString(Constants.KEY_HIGHLIGHT_SCORE, "300"));
+        notifyDataSetChanged();
+    }
 
     /**
      * Provides methods to implement functionality when items

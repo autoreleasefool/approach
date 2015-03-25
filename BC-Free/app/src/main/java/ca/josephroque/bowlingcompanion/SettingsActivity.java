@@ -381,6 +381,11 @@ public class SettingsActivity extends PreferenceActivity
                     ? R.string.pref_include_open_summaryOn
                     : R.string.pref_include_open_summaryOff);
         }
+        else if (key.equals(Constants.KEY_HIGHLIGHT_SCORE))
+        {
+            ListPreference highlightPref = (ListPreference)findPreference(key);
+            highlightPref.setSummary(highlightPref.getValue());
+        }
     }
 
     @Override
