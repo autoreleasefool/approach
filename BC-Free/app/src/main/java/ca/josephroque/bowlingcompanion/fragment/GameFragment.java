@@ -333,7 +333,7 @@ public class GameFragment extends Fragment
     {
         //Clears color changes to frames and saves the game being edited
         clearFrameColor();
-        saveGame();
+        saveGame(false);
 
         super.onPause();
     }
@@ -377,6 +377,7 @@ public class GameFragment extends Fragment
         switch(item.getItemId())
         {
             case R.id.action_share:
+                saveGame(false);
                 MainActivity mainActivity = (MainActivity)getActivity();
                 ShareUtils.showShareDialog(mainActivity, mainActivity.getSeriesId());
                 return true;
@@ -456,7 +457,7 @@ public class GameFragment extends Fragment
         mGameScoresMinusFouls[mCurrentGame] = scoreToSet;
         clearAllText(false);
         getActivity().supportInvalidateOptionsMenu();
-        saveGame();
+        saveGame(true);
     }
 
     /**
@@ -765,7 +766,7 @@ public class GameFragment extends Fragment
                     {
                         //Resets and saves the current game
                         resetGame();
-                        saveGame();
+                        saveGame(true);
                         setGameLocked(false);
                         mManualScoreSet[mCurrentGame] = false;
                         clearAllText(true);
@@ -822,9 +823,14 @@ public class GameFragment extends Fragment
     /**
      * Copies data of current game to variables and saves game to the database
      * on a new thread
+     * @param ignoreManualScore if false, game will only be saved if a manual score is
+     *                          not set. Otherwise, will save regardless.
      */
-    private void saveGame()
+    private void saveGame(boolean ignoreManualScore)
     {
+        if (!ignoreManualScore && mManualScoreSet[mCurrentGame])
+            return;
+
         long[] framesToSave = new long[Constants.NUMBER_OF_FRAMES];
         boolean[] accessToSave = new boolean[Constants.NUMBER_OF_FRAMES];
         boolean[][][] pinStateToSave = new boolean[Constants.NUMBER_OF_FRAMES][3][5];
