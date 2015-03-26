@@ -69,62 +69,76 @@ public class ImageUtils
 
         for (int frame = Constants.LAST_FRAME; frame >= 0; frame--)
         {
-            if (frame == Constants.LAST_FRAME)
+            final String[] ballString = new String[3];
+            if (frame == Constants.LAST_FRAME) //Treat last frame differently than rest
             {
                 if (Arrays.equals(pinState[frame][0], Constants.FRAME_PINS_DOWN))
                 {
-                    canvas.drawText(Constants.BALL_STRIKE, BITMAP_GAME_BALL_WIDTH / 2 + BITMAP_GAME_FRAME_WIDTH * frame, BALL_TEXT_Y, paintText);
+                    //If first ball is a strike, next two can be strikes/spares
+                    ballString[0] = Constants.BALL_STRIKE;
                     if (Arrays.equals(pinState[frame][1], Constants.FRAME_PINS_DOWN))
                     {
-                        canvas.drawText(Constants.BALL_STRIKE, BITMAP_GAME_BALL_WIDTH + BITMAP_GAME_BALL_WIDTH / 2 + BITMAP_GAME_FRAME_WIDTH * frame, BALL_TEXT_Y, paintText);
-                        canvas.drawText(Score.getValueOfBall(pinState[frame][2], 2, true), BITMAP_GAME_BALL_WIDTH * 2 + BITMAP_GAME_BALL_WIDTH / 2 + BITMAP_GAME_FRAME_WIDTH * frame, BALL_TEXT_Y, paintText);
+                        ballString[1] = Constants.BALL_STRIKE;
+                        ballString[2] = Score.getValueOfBall(pinState[frame][2], 2, true);
                     }
                     else
                     {
-                        canvas.drawText(Score.getValueOfBall(pinState[frame][1], 1, false), BITMAP_GAME_BALL_WIDTH + BITMAP_GAME_BALL_WIDTH / 2 + BITMAP_GAME_FRAME_WIDTH * frame, BALL_TEXT_Y, paintText);
+                        ballString[1] = Score.getValueOfBall(pinState[frame][1], 1, false);
                         if (Arrays.equals(pinState[frame][2], Constants.FRAME_PINS_DOWN))
-                            canvas.drawText(Constants.BALL_SPARE, BITMAP_GAME_BALL_WIDTH * 2 + BITMAP_GAME_BALL_WIDTH / 2 + BITMAP_GAME_FRAME_WIDTH * frame, BALL_TEXT_Y, paintText);
+                            ballString[2] = Constants.BALL_SPARE;
                         else
-                            canvas.drawText(Score.getValueOfBallDifference(pinState[frame], 2, false), BITMAP_GAME_BALL_WIDTH * 2 + BITMAP_GAME_BALL_WIDTH / 2 + BITMAP_GAME_FRAME_WIDTH * frame, BALL_TEXT_Y, paintText);
+                            ballString[2] = Score.getValueOfBallDifference(pinState[frame], 2, false, false);
                     }
                 }
                 else
                 {
-                    canvas.drawText(Score.getValueOfBall(pinState[frame][0], 0, false), BITMAP_GAME_BALL_WIDTH / 2 + BITMAP_GAME_FRAME_WIDTH * frame, BALL_TEXT_Y, paintText);
+                    //If first ball is not a strike, score is calculated normally
+                    ballString[0] = Score.getValueOfBall(pinState[frame][0], 0, false);
                     if (Arrays.equals(pinState[frame][1], Constants.FRAME_PINS_DOWN))
                     {
-                        canvas.drawText(Constants.BALL_SPARE, BITMAP_GAME_BALL_WIDTH + BITMAP_GAME_BALL_WIDTH / 2 + BITMAP_GAME_FRAME_WIDTH * frame, BALL_TEXT_Y, paintText);
-                        canvas.drawText(Score.getValueOfBall(pinState[frame][2], 2, true), BITMAP_GAME_BALL_WIDTH * 2 + BITMAP_GAME_BALL_WIDTH / 2 + BITMAP_GAME_FRAME_WIDTH * frame, BALL_TEXT_Y, paintText);
+                        ballString[1] = Constants.BALL_SPARE;
+                        ballString[2] = Score.getValueOfBall(pinState[frame][2], 2, true);
                     }
                     else
                     {
-                        canvas.drawText(Score.getValueOfBallDifference(pinState[frame], 1, false), BITMAP_GAME_BALL_WIDTH + BITMAP_GAME_BALL_WIDTH / 2 + BITMAP_GAME_FRAME_WIDTH * frame, BALL_TEXT_Y, paintText);
-                        canvas.drawText(Score.getValueOfBallDifference(pinState[frame], 2, false), BITMAP_GAME_BALL_WIDTH * 2 + BITMAP_GAME_BALL_WIDTH / 2 + BITMAP_GAME_FRAME_WIDTH * frame, BALL_TEXT_Y, paintText);
+                        ballString[1] = Score.getValueOfBallDifference(pinState[frame], 1, false, false);
+                        ballString[2] = Score.getValueOfBallDifference(pinState[frame], 2, false, false);
                     }
                 }
             }
             else
             {
-                canvas.drawText(Score.getValueOfBallDifference(pinState[frame], 0, false), BITMAP_GAME_BALL_WIDTH / 2 + BITMAP_GAME_FRAME_WIDTH * frame, BALL_TEXT_Y, paintText);
+                ballString[0] = Score.getValueOfBallDifference(pinState[frame], 0, false, false);
                 if (!Arrays.equals(pinState[frame][0], Constants.FRAME_PINS_DOWN))
                 {
                     if (Arrays.equals(pinState[frame][1], Constants.FRAME_PINS_DOWN))
                     {
-                        canvas.drawText(Constants.BALL_SPARE, BITMAP_GAME_BALL_WIDTH + BITMAP_GAME_BALL_WIDTH / 2 + BITMAP_GAME_FRAME_WIDTH * frame, BALL_TEXT_Y, paintText);
-                        canvas.drawText(Constants.BALL_EMPTY, BITMAP_GAME_BALL_WIDTH * 2 + BITMAP_GAME_BALL_WIDTH / 2 + BITMAP_GAME_FRAME_WIDTH * frame, BALL_TEXT_Y, paintText);
+                        ballString[1] = Constants.BALL_SPARE;
+                        ballString[2] = Score.getValueOfBallDifference(pinState[frame + 1], 0, false, true);
                     }
                     else
                     {
-                        canvas.drawText(Score.getValueOfBallDifference(pinState[frame], 1, false), BITMAP_GAME_BALL_WIDTH + BITMAP_GAME_BALL_WIDTH / 2 + BITMAP_GAME_FRAME_WIDTH * frame, BALL_TEXT_Y, paintText);
-                        canvas.drawText(Score.getValueOfBallDifference(pinState[frame], 2, false), BITMAP_GAME_BALL_WIDTH * 2 + BITMAP_GAME_BALL_WIDTH / 2 + BITMAP_GAME_FRAME_WIDTH * frame, BALL_TEXT_Y, paintText);
+                        ballString[1] = Score.getValueOfBallDifference(pinState[frame], 1, false, false);
+                        ballString[2] = Score.getValueOfBallDifference(pinState[frame], 2, false, false);
                     }
                 }
                 else
                 {
-                    canvas.drawText(Constants.BALL_EMPTY, BITMAP_GAME_BALL_WIDTH + BITMAP_GAME_BALL_WIDTH / 2 + BITMAP_GAME_FRAME_WIDTH * frame, BALL_TEXT_Y, paintText);
-                    canvas.drawText(Constants.BALL_EMPTY, BITMAP_GAME_BALL_WIDTH * 2 + BITMAP_GAME_BALL_WIDTH / 2 + BITMAP_GAME_FRAME_WIDTH * frame, BALL_TEXT_Y, paintText);
+                    ballString[1] = Score.getValueOfBallDifference(pinState[frame + 1], 0, false, true);
+                    if (Arrays.equals(pinState[frame + 1][0], Constants.FRAME_PINS_DOWN) && frame < Constants.LAST_FRAME - 1)
+                    {
+                        ballString[2] = Score.getValueOfBallDifference(pinState[frame + 2], 0, false, true);
+                    }
+                    else
+                    {
+                        ballString[2] = Score.getValueOfBallDifference(pinState[frame + 1], 1, false, true);
+                    }
                 }
             }
+
+            canvas.drawText(ballString[0], BITMAP_GAME_BALL_WIDTH / 2 + BITMAP_GAME_FRAME_WIDTH * frame, BALL_TEXT_Y, paintText);
+            canvas.drawText(ballString[1], BITMAP_GAME_BALL_WIDTH + BITMAP_GAME_BALL_WIDTH / 2 + BITMAP_GAME_FRAME_WIDTH * frame, BALL_TEXT_Y, paintText);
+            canvas.drawText(ballString[2], BITMAP_GAME_BALL_WIDTH * 2 + BITMAP_GAME_BALL_WIDTH / 2 + BITMAP_GAME_FRAME_WIDTH * frame, BALL_TEXT_Y, paintText);
 
             paintText.setTextSize(GAME_SMALL_FONT_SIZE);
             for (int ball = 0; ball < pinState[frame].length; ball++)

@@ -170,7 +170,7 @@ public class Score
      * @param ball the ball to get the value of
      * @return textual value of the ball
      */
-    public static String getValueOfBallDifference(boolean[][] ballsOfFrame, int ball, boolean shouldReturnSymbol)
+    public static String getValueOfBallDifference(boolean[][] ballsOfFrame, int ball, boolean shouldReturnSymbol, boolean isAfterStrike)
     {
         boolean[] pinAlreadyKnockedDown = new boolean[5];
 
@@ -206,74 +206,46 @@ public class Score
             case 0: return Constants.BALL_EMPTY;
             case 2:case 3:case 4:case 6:case 9:case 12: return String.valueOf(ballValue);
             case 5:
-                if ((ball == 0 || shouldReturnSymbol) && ballsOfFrame[ball][2] && !pinAlreadyKnockedDown[2])
-                {
+                if (((ball == 0 && !isAfterStrike) || shouldReturnSymbol) && ballsOfFrame[ball][2] && !pinAlreadyKnockedDown[2])
                     return Constants.BALL_HEAD_PIN;
-                }
                 else
-                {
                     return "5";
-                }
             case 7:
-                if ((ball == 0 || shouldReturnSymbol) && ballsOfFrame[ball][2])
-                {
+                if (((ball == 0 && !isAfterStrike) || shouldReturnSymbol) && ballsOfFrame[ball][2])
                     return Constants.BALL_HEAD_PIN_2;
-                }
                 else
-                {
                     return "7";
-                }
             case 8:
-                if ((ball == 0 || shouldReturnSymbol) && ballsOfFrame[ball][2])
-                {
+                if (((ball == 0 && !isAfterStrike) || shouldReturnSymbol) && ballsOfFrame[ball][2])
                     return Constants.BALL_SPLIT;
-                }
                 else
                     return "8";
             case 10:
-                if ((ball == 0 || shouldReturnSymbol) && ballsOfFrame[ball][2]
+                if (((ball == 0 && !isAfterStrike) || shouldReturnSymbol) && ballsOfFrame[ball][2]
                         && ((ballsOfFrame[ball][0] && ballsOfFrame[ball][1])
                         || (ballsOfFrame[ball][3] && ballsOfFrame[ball][4])))
-                {
                     return Constants.BALL_CHOP_OFF;
-                }
                 else
-                {
                     return "10";
-                }
             case 11:
-                if ((ball == 0 || shouldReturnSymbol) && ballsOfFrame[ball][2])
-                {
+                if (((ball == 0 && !isAfterStrike) || shouldReturnSymbol) && ballsOfFrame[ball][2])
                     return Constants.BALL_ACE;
-                }
                 else
                     return "11";
             case 13:
-                if ((ball == 0 || shouldReturnSymbol) && !ballsOfFrame[ball][0])
-                {
+                if (((ball == 0 && !isAfterStrike) || shouldReturnSymbol) && !ballsOfFrame[ball][0])
                     return Constants.BALL_LEFT;
-                }
-                else if ((ball == 0 || shouldReturnSymbol) && !ballsOfFrame[ball][4])
-                {
+                else if (((ball == 0 && !isAfterStrike) || shouldReturnSymbol) && !ballsOfFrame[ball][4])
                     return Constants.BALL_RIGHT;
-                }
                 else
-                {
                     return "13";
-                }
             case 15:
-                if ((ball == 0 || shouldReturnSymbol))
-                {
+                if (((ball == 0 && !isAfterStrike) || shouldReturnSymbol))
                     return Constants.BALL_STRIKE;
-                }
-                else if (ball == 1)
-                {
+                else if (ball == 1 && !isAfterStrike)
                     return Constants.BALL_SPARE;
-                }
                 else
-                {
                     return "15";
-                }
         }
     }
 

@@ -678,8 +678,7 @@ public class GameFragment extends Fragment
                         resetGame();
                         clearAllText(true);
                         updateScore();
-                        for (byte i = 0; i < Constants.NUMBER_OF_FRAMES; i++)
-                            updateBalls(i);
+                        updateAllBalls();
                         updateFrameColor();
                         dialog.dismiss();
                     }
@@ -771,8 +770,8 @@ public class GameFragment extends Fragment
                         mManualScoreSet[mCurrentGame] = false;
                         clearAllText(true);
                         updateScore();
-                        for (byte i = 0; i < Constants.NUMBER_OF_FRAMES; i++)
-                            updateBalls(i);
+                        updateAllBalls();
+
                         getActivity().supportInvalidateOptionsMenu();
                         updateFrameColor();
                         dialog.dismiss();
@@ -1008,19 +1007,29 @@ public class GameFragment extends Fragment
     }
 
     /**
+     * Sets text of all TextView instances which display individual ball values
+     */
+    private void updateAllBalls()
+    {
+        for (byte i = Constants.LAST_FRAME; i >= 0; i -= 3)
+            updateBalls(i);
+    }
+
+    /**
      * Sets the text of the three TextView instances which correspond to frameToUpdate
      *
      * @param frameToUpdate frame of which text should be updated
      */
     private void updateBalls(final byte frameToUpdate)
     {
+        if (frameToUpdate < 0 || frameToUpdate > Constants.LAST_FRAME)
+            return;
+
         new Thread(new Runnable()
         {
             @Override
             public void run()
             {
-                //TODO: Update previous balls for strikes, make 15 display instead of strike, etc.
-
                 //Sets text depending on state of pins in the frame
                 final String[] ballString = new String[3];
                 if (frameToUpdate == Constants.LAST_FRAME) //Treat last frame differently than rest
@@ -1040,7 +1049,7 @@ public class GameFragment extends Fragment
                             if (Arrays.equals(mPinState[frameToUpdate][2], Constants.FRAME_PINS_DOWN))
                                 ballString[2] = Constants.BALL_SPARE;
                             else
-                                ballString[2] = Score.getValueOfBallDifference(mPinState[frameToUpdate], 2, false);
+                                ballString[2] = Score.getValueOfBallDifference(mPinState[frameToUpdate], 2, false, false);
                         }
                     }
                     else
@@ -1054,27 +1063,27 @@ public class GameFragment extends Fragment
                         }
                         else
                         {
-                            ballString[1] = Score.getValueOfBallDifference(mPinState[frameToUpdate], 1, false);
-                            ballString[2] = Score.getValueOfBallDifference(mPinState[frameToUpdate], 2, false);
+                            ballString[1] = Score.getValueOfBallDifference(mPinState[frameToUpdate], 1, false, false);
+                            ballString[2] = Score.getValueOfBallDifference(mPinState[frameToUpdate], 2, false, false);
                         }
                     }
                 }
                 else
                 {
-                    ballString[0] = Score.getValueOfBallDifference(mPinState[frameToUpdate], 0, false);
+                    ballString[0] = Score.getValueOfBallDifference(mPinState[frameToUpdate], 0, false, false);
                     if (!Arrays.equals(mPinState[frameToUpdate][0], Constants.FRAME_PINS_DOWN))
                     {
                         if (Arrays.equals(mPinState[frameToUpdate][1], Constants.FRAME_PINS_DOWN))
                         {
                             ballString[1] = Constants.BALL_SPARE;
                             ballString[2] = (mHasFrameBeenAccessed[frameToUpdate + 1])
-                                    ? Score.getValueOfBallDifference(mPinState[frameToUpdate + 1], 0, false)
+                                    ? Score.getValueOfBallDifference(mPinState[frameToUpdate + 1], 0, false, true)
                                     : Constants.BALL_EMPTY;
                         }
                         else
                         {
-                            ballString[1] = Score.getValueOfBallDifference(mPinState[frameToUpdate], 1, false);
-                            ballString[2] = Score.getValueOfBallDifference(mPinState[frameToUpdate], 2, false);
+                            ballString[1] = Score.getValueOfBallDifference(mPinState[frameToUpdate], 1, false, false);
+                            ballString[2] = Score.getValueOfBallDifference(mPinState[frameToUpdate], 2, false, false);
                         }
                     }
                     else
@@ -1083,20 +1092,16 @@ public class GameFragment extends Fragment
                         //or shows empty frames
                         if (mHasFrameBeenAccessed[frameToUpdate + 1])
                         {
-                            ballString[1] = (mHasFrameBeenAccessed[frameToUpdate + 1])
-                                    ? Score.getValueOfBallDifference(mPinState[frameToUpdate + 1], 0, false)
-                                    : Constants.BALL_EMPTY;
+                            ballString[1] = Score.getValueOfBallDifference(mPinState[frameToUpdate + 1], 0, false, true);
                             if (Arrays.equals(mPinState[frameToUpdate + 1][0], Constants.FRAME_PINS_DOWN) && frameToUpdate < Constants.LAST_FRAME - 1)
                             {
                                 ballString[2] = (mHasFrameBeenAccessed[frameToUpdate + 2])
-                                        ? Score.getValueOfBallDifference(mPinState[frameToUpdate + 2], 0, false)
+                                        ? Score.getValueOfBallDifference(mPinState[frameToUpdate + 2], 0, false, true)
                                         : Constants.BALL_EMPTY;
                             }
                             else
                             {
-                                ballString[2] = (mHasFrameBeenAccessed[frameToUpdate + 1])
-                                        ? Score.getValueOfBallDifference(mPinState[frameToUpdate + 1], 1, false)
-                                        : Constants.BALL_EMPTY;
+                                ballString[2] = Score.getValueOfBallDifference(mPinState[frameToUpdate + 1], 1, false, true);
                             }
                         }
                         else
@@ -1120,6 +1125,10 @@ public class GameFragment extends Fragment
                         }
                     }
                 });
+
+                //Updates previous frames as well, to display balls after strikes
+                updateBalls((byte)(frameToUpdate - 1));
+                updateBalls((byte)(frameToUpdate - 2));
             }
         }).start();
     }
@@ -1640,8 +1649,7 @@ public class GameFragment extends Fragment
                     return;
 
                 updateScore();
-                for (byte i = 0; i < Constants.NUMBER_OF_FRAMES; i++)
-                    updateBalls(i);
+                updateAllBalls();
                 mHasFrameBeenAccessed[0] = true;
 
                 while (mCurrentFrame < Constants.LAST_FRAME && mHasFrameBeenAccessed[mCurrentFrame + 1])
