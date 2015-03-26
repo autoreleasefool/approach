@@ -9,6 +9,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +38,7 @@ public class StatsFragment extends Fragment
     implements Theme.ChangeableTheme
 {
     /** Tag to identify class when outputting to console */
-    //private static final String TAG = "StatsFragment";
+    private static final String TAG = "StatsFragment";
 
     /** Represent names of general stats related to the middle pin */
     private static final String[] STATS_MIDDLE_GENERAL =
@@ -164,6 +165,21 @@ public class StatsFragment extends Fragment
             int[] statValues;
             List<String> listStatNames = new ArrayList<>();
             List<String> listStatValues = new ArrayList<>();
+
+            long savingStartTime = System.currentTimeMillis();
+            while (mainActivity.getSavingThreads().peek() != null)
+            {
+                try
+                {
+                    Thread.sleep(50);
+                }
+                catch(InterruptedException ex)
+                {
+                    Log.w(TAG, "Error while waiting for saves to finish");
+                }
+                //wait for saving threads to finish
+            }
+            Log.w(TAG, "Waited " + (System.currentTimeMillis() - savingStartTime) + "ms for saving to finish");
 
             listStatNames.add("Bowler");
             listStatValues.add(mainActivity.getBowlerName());

@@ -841,7 +841,8 @@ public class GameFragment extends Fragment
             System.arraycopy(mFouls[i], 0, foulsToSave[i], 0, mFouls[i].length);
         }
 
-        saveGameToDatabase(getActivity(),
+        ((MainActivity)getActivity()).getSavingThreads().add(
+        saveGameToDatabase((MainActivity)getActivity(),
                 mGameIds[mCurrentGame],
                 framesToSave,
                 accessToSave,
@@ -849,7 +850,7 @@ public class GameFragment extends Fragment
                 foulsToSave,
                 mGameScoresMinusFouls[mCurrentGame],
                 mGameLocked[mCurrentGame],
-                mManualScoreSet[mCurrentGame]);
+                mManualScoreSet[mCurrentGame]));
     }
 
     /**
@@ -1492,9 +1493,10 @@ public class GameFragment extends Fragment
      * @param pinState state of pins after each ball
      * @param fouls indicates whether a foul was invoked on each ball
      * @param finalScore final score of the game, considering fouls
+     * @return a new thread which is saving a game. Thread is not started
      */
-    private static void saveGameToDatabase(
-            final Activity srcActivity,
+    private static Thread saveGameToDatabase(
+            final MainActivity srcActivity,
             final long gameId,
             final long[] frameIds,
             final boolean[] hasFrameBeenAccessed,
@@ -1504,7 +1506,7 @@ public class GameFragment extends Fragment
             final boolean gameLocked,
             final boolean manualScoreSet)
     {
-        new Thread(new Runnable()
+        Thread thread = new Thread(new Runnable()
         {
             @Override
             public void run()
@@ -1557,7 +1559,8 @@ public class GameFragment extends Fragment
                     database.endTransaction();
                 }
             }
-        }).start();
+        });
+        return thread;
     }
 
     /**

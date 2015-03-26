@@ -19,6 +19,8 @@ import android.view.MenuItem;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import ca.josephroque.bowlingcompanion.database.Contract.*;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
@@ -63,6 +65,10 @@ public class MainActivity extends ActionBarActivity
     /** Game number in series */
     private byte mGameNumber;
 
+    private ConcurrentLinkedQueue<Thread> mQueueSavingThreads;
+    private Thread runningSaveThread;
+    private AtomicBoolean appIsRunning = new AtomicBoolean(false);
+
     //private AdView mAdView;
 
     @Override
@@ -71,6 +77,9 @@ public class MainActivity extends ActionBarActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Theme.loadTheme(this);
+
+        mQueueSavingThreads = new ConcurrentLinkedQueue<>();
+        runningSaveThread = null;
 
         getSupportFragmentManager().addOnBackStackChangedListener(this);
         shouldDisplayHomeUp();
@@ -131,9 +140,34 @@ public class MainActivity extends ActionBarActivity
     protected void onResume()
     {
         super.onResume();
+        appIsRunning.set(true);
 
         //if (mAdView != null)
         //    mAdView.resume();
+
+        new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                while (appIsRunning.get() && mQueueSavingThreads.peek() != null)
+                {
+                    runningSaveThread = mQueueSavingThreads.poll();
+                    if (runningSaveThread != null)
+                    {
+                        runningSaveThread.start();
+                        try
+                        {
+                            runningSaveThread.join();
+                        }
+                        catch (InterruptedException ex)
+                        {
+                            Log.w(TAG, "Saving thread crash");
+                        }
+                    }
+                }
+            }
+        }).start();
 
         updateTheme();
     }
@@ -144,6 +178,7 @@ public class MainActivity extends ActionBarActivity
         //if (mAdView != null)
         //    mAdView.pause();
         super.onPause();
+        appIsRunning.set(false);
     }
 
     @Override
@@ -397,6 +432,12 @@ public class MainActivity extends ActionBarActivity
      * @return value of mSeriesId
      */
     public String getSeriesDate(){return mSeriesDate;}
+
+    /**
+     * Returns a list of threads which are saving games to database
+     * @return value of mListSavingThreads
+     */
+    public ConcurrentLinkedQueue<Thread> getSavingThreads(){return mQueueSavingThreads;}
 
     /**
      * Loads game data related to seriesId and displays it in a
