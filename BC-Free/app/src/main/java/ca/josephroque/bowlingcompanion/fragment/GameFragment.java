@@ -1019,6 +1019,8 @@ public class GameFragment extends Fragment
             @Override
             public void run()
             {
+                //TODO: Update previous balls for strikes, make 15 display instead of strike, etc.
+
                 //Sets text depending on state of pins in the frame
                 final String[] ballString = new String[3];
                 if (frameToUpdate == Constants.LAST_FRAME) //Treat last frame differently than rest

@@ -150,15 +150,17 @@ public class MainActivity extends ActionBarActivity
             @Override
             public void run()
             {
-                while (appIsRunning.get() && mQueueSavingThreads.peek() != null)
+                while (appIsRunning.get() || mQueueSavingThreads.peek() != null)
                 {
                     runningSaveThread = mQueueSavingThreads.poll();
                     if (runningSaveThread != null)
                     {
+                        Log.w(TAG, "Polled thread from saving queue");
                         runningSaveThread.start();
                         try
                         {
                             runningSaveThread.join();
+                            Log.w(TAG, "Finished saving game");
                         }
                         catch (InterruptedException ex)
                         {
@@ -166,6 +168,7 @@ public class MainActivity extends ActionBarActivity
                         }
                     }
                 }
+                Log.w(TAG, "Exited saving loop");
             }
         }).start();
 
