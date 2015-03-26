@@ -393,12 +393,14 @@ public class LeagueEventFragment extends Fragment
     {
         AlertDialog.Builder leagueOrEventBuilder = new AlertDialog.Builder(getActivity());
         leagueOrEventBuilder.setTitle("New league or event?")
-                .setItems(new CharSequence[]{"League", "Event"}, new DialogInterface.OnClickListener()
+                .setSingleChoiceItems(new CharSequence[]{"League", "Event"}, 0, null)
+                .setPositiveButton(R.string.dialog_add, new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int which)
                     {
                         showNewLeagueEventDialog(which == 1);
+                        dialog.dismiss();
                     }
                 })
                 .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener()

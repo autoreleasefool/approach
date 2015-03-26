@@ -167,10 +167,9 @@ public class StatsFragment extends Fragment
             List<String> listStatValues = new ArrayList<>();
 
             long savingStartTime = System.currentTimeMillis();
-            int count = 0;
             while (mainActivity.getSavingThreads().peek() != null)
             {
-                Log.w(TAG, "Saving: " + count++);
+                Log.w(TAG, "Waiting for saving to complete");
                 try
                 {
                     Thread.sleep(50);

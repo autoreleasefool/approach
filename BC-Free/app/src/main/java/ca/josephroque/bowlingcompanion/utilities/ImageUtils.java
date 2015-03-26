@@ -13,6 +13,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.util.Log;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -22,6 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import ca.josephroque.bowlingcompanion.Constants;
+import ca.josephroque.bowlingcompanion.MainActivity;
 import ca.josephroque.bowlingcompanion.database.Contract.*;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 
@@ -34,7 +36,7 @@ import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 public class ImageUtils
 {
     
-    //private static final String TAG = "ImageUtils";
+    private static final String TAG = "ImageUtils";
 
     private static final int BITMAP_GAME_WIDTH = 660;
     private static final int BITMAP_GAME_HEIGHT = 60;
@@ -247,6 +249,23 @@ public class ImageUtils
         List<boolean[][]> foulsOfGames = new ArrayList<>();
         List<Short> scoresOfGames = new ArrayList<>();
         List<Boolean> manualScores = new ArrayList<>();
+
+        MainActivity mainActivity = (MainActivity)context;
+        long savingStartTime = System.currentTimeMillis();
+        while (mainActivity.getSavingThreads().peek() != null)
+        {
+            Log.w(TAG, "Waiting for saving to complete");
+            try
+            {
+                Thread.sleep(50);
+            }
+            catch(InterruptedException ex)
+            {
+                Log.w(TAG, "Error while waiting for saves to finish");
+            }
+            //wait for saving threads to finish
+        }
+        Log.w(TAG, "Waited " + (System.currentTimeMillis() - savingStartTime) + "ms for saving to finish");
 
         SQLiteDatabase database = DatabaseHelper.getInstance(context).getReadableDatabase();
         String rawImageQuery = "SELECT "
