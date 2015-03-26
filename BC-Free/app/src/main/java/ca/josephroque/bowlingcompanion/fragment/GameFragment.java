@@ -846,7 +846,7 @@ public class GameFragment extends Fragment
             System.arraycopy(mFouls[i], 0, foulsToSave[i], 0, mFouls[i].length);
         }
 
-        ((MainActivity)getActivity()).getSavingThreads().add(
+        ((MainActivity)getActivity()).addSavingThread(
         saveGameToDatabase((MainActivity)getActivity(),
                 mGameIds[mCurrentGame],
                 framesToSave,
@@ -1523,7 +1523,7 @@ public class GameFragment extends Fragment
             final boolean gameLocked,
             final boolean manualScoreSet)
     {
-        Thread thread = new Thread(new Runnable()
+        return new Thread(new Runnable()
         {
             @Override
             public void run()
@@ -1577,7 +1577,6 @@ public class GameFragment extends Fragment
                 }
             }
         });
-        return thread;
     }
 
     /**
@@ -1672,6 +1671,8 @@ public class GameFragment extends Fragment
      */
     private void loadInitialScores()
     {
+        MainActivity.waitForSaveThreads((MainActivity)getActivity(), TAG);
+
         byte numberOfGames = ((MainActivity)getActivity()).getNumberOfGames();
         SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getReadableDatabase();
         StringBuilder whereBuilder = new StringBuilder(GameEntry._ID + "=?");

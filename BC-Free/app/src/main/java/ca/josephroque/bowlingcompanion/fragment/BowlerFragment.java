@@ -477,6 +477,8 @@ public class BowlerFragment extends Fragment
         @Override
         protected List<?>[] doInBackground(Void... params)
         {
+            MainActivity.waitForSaveThreads((MainActivity)getActivity(), TAG);
+
             SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getReadableDatabase();
             List<Long> listBowlerIds = new ArrayList<>();
             List<String> listBowlerNames = new ArrayList<>();

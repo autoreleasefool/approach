@@ -282,6 +282,8 @@ public class SeriesFragment extends Fragment
         @Override
         protected List<?>[] doInBackground(Void... params)
         {
+            MainActivity.waitForSaveThreads((MainActivity)getActivity(), TAG);
+
             SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getReadableDatabase();
             List<Long> listSeriesIds = new ArrayList<>();
             List<String> listSeriesDates = new ArrayList<>();

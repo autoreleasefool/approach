@@ -250,22 +250,7 @@ public class ImageUtils
         List<Short> scoresOfGames = new ArrayList<>();
         List<Boolean> manualScores = new ArrayList<>();
 
-        MainActivity mainActivity = (MainActivity)context;
-        long savingStartTime = System.currentTimeMillis();
-        while (mainActivity.getSavingThreads().peek() != null)
-        {
-            Log.w(TAG, "Waiting for saving to complete");
-            try
-            {
-                Thread.sleep(50);
-            }
-            catch(InterruptedException ex)
-            {
-                Log.w(TAG, "Error while waiting for saves to finish");
-            }
-            //wait for saving threads to finish
-        }
-        Log.w(TAG, "Waited " + (System.currentTimeMillis() - savingStartTime) + "ms for saving to finish");
+        MainActivity.waitForSaveThreads((MainActivity)context, TAG);
 
         SQLiteDatabase database = DatabaseHelper.getInstance(context).getReadableDatabase();
         String rawImageQuery = "SELECT "

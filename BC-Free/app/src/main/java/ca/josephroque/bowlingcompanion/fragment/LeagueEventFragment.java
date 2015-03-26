@@ -568,6 +568,8 @@ public class LeagueEventFragment extends Fragment
         @Override
         protected List<?>[] doInBackground(Void... params)
         {
+            MainActivity.waitForSaveThreads((MainActivity)getActivity(), TAG);
+
             SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getReadableDatabase();
             List<Long> listLeagueEventIds = new ArrayList<>();
             List<String> listLeagueEventNames = new ArrayList<>();

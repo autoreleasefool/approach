@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
@@ -150,6 +151,7 @@ public class MainActivity extends ActionBarActivity
             @Override
             public void run()
             {
+                Log.w(TAG, "Started saving loop");
                 while (appIsRunning.get() || mQueueSavingThreads.peek() != null)
                 {
                     runningSaveThread = mQueueSavingThreads.poll();
@@ -161,6 +163,17 @@ public class MainActivity extends ActionBarActivity
                         {
                             runningSaveThread.join();
                             Log.w(TAG, "Finished saving game");
+                        }
+                        catch (InterruptedException ex)
+                        {
+                            Log.w(TAG, "Saving thread crash");
+                        }
+                    }
+                    else
+                    {
+                        try
+                        {
+                            Thread.sleep(100);
                         }
                         catch (InterruptedException ex)
                         {
@@ -437,12 +450,6 @@ public class MainActivity extends ActionBarActivity
     public String getSeriesDate(){return mSeriesDate;}
 
     /**
-     * Returns a list of threads which are saving games to database
-     * @return value of mListSavingThreads
-     */
-    public ConcurrentLinkedQueue<Thread> getSavingThreads(){return mQueueSavingThreads;}
-
-    /**
      * Loads game data related to seriesId and displays it in a
      * new GameFragment instance
      */
@@ -579,5 +586,30 @@ public class MainActivity extends ActionBarActivity
             GameFragment gameFragment = GameFragment.newInstance(false, gameIds, frameIds, new boolean[mNumberOfGames], new boolean[mNumberOfGames]);
             startFragmentTransaction(gameFragment, Constants.FRAGMENT_SERIES);
         }
+    }
+
+    public void addSavingThread(Thread thread)
+    {
+        mQueueSavingThreads.add(thread);
+    }
+
+    public static void waitForSaveThreads(MainActivity activity, String tag)
+    {
+        //Waits for saving to database to finish, before loading from database
+        long savingStartTime = System.currentTimeMillis();
+        while (activity.mQueueSavingThreads.peek() != null)
+        {
+            Log.w(tag, "Waiting for saving to complete");
+            try
+            {
+                Thread.sleep(100);
+            }
+            catch(InterruptedException ex)
+            {
+                Log.w(tag, "Error while waiting for saves to finish");
+            }
+            //wait for saving threads to finish
+        }
+        Log.w(tag, "Waited " + (System.currentTimeMillis() - savingStartTime) + "ms for saving to finish");
     }
 }

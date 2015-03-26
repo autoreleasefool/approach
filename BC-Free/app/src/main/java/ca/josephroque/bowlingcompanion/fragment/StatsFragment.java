@@ -158,6 +158,8 @@ public class StatsFragment extends Fragment
         @Override
         protected List<?>[] doInBackground(Byte... bowlerLeagueOrGameParam)
         {
+            MainActivity.waitForSaveThreads((MainActivity)getActivity(), TAG);
+
             MainActivity mainActivity = (MainActivity)getActivity();
             final byte bowlerLeagueOrGame = bowlerLeagueOrGameParam[0];
             final byte NUMBER_OF_GENERAL_DETAILS;
@@ -165,22 +167,6 @@ public class StatsFragment extends Fragment
             int[] statValues;
             List<String> listStatNames = new ArrayList<>();
             List<String> listStatValues = new ArrayList<>();
-
-            long savingStartTime = System.currentTimeMillis();
-            while (mainActivity.getSavingThreads().peek() != null)
-            {
-                Log.w(TAG, "Waiting for saving to complete");
-                try
-                {
-                    Thread.sleep(50);
-                }
-                catch(InterruptedException ex)
-                {
-                    Log.w(TAG, "Error while waiting for saves to finish");
-                }
-                //wait for saving threads to finish
-            }
-            Log.w(TAG, "Waited " + (System.currentTimeMillis() - savingStartTime) + "ms for saving to finish");
 
             listStatNames.add("Bowler");
             listStatValues.add(mainActivity.getBowlerName());
