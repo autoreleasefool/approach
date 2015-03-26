@@ -50,7 +50,7 @@ public class ImageUtils
 
     private static final float BALL_TEXT_Y = BITMAP_GAME_BALL_HEIGHT / 2 + GAME_DEFAULT_FONT_SIZE / 2;
     
-    public static Bitmap createImageFromGame(boolean[][][] pinState, boolean[][] fouls)
+    public static Bitmap createImageFromGame(boolean[][][] pinState, boolean[][] fouls, short gameScore, boolean isManual)
     {
         Bitmap bitmap = Bitmap.createBitmap(BITMAP_GAME_WIDTH, BITMAP_GAME_HEIGHT, Bitmap.Config.RGB_565);
         Canvas canvas = new Canvas(bitmap);
@@ -153,61 +153,59 @@ public class ImageUtils
             canvas.drawLine(BITMAP_GAME_FRAME_WIDTH * frame, BITMAP_GAME_BALL_HEIGHT, BITMAP_GAME_FRAME_WIDTH * frame, BITMAP_GAME_FRAME_HEIGHT + BITMAP_GAME_BALL_HEIGHT, paintBlackOutline);
             paintText.setTextSize(GAME_DEFAULT_FONT_SIZE);
 
-            if (frame == Constants.LAST_FRAME)
+            if (!isManual)
             {
-                for (int b = 2; b >= 0; b--)
+                if (frame == Constants.LAST_FRAME)
                 {
-                    switch(b)
+                    for (int b = 2; b >= 0; b--)
                     {
-                        case 2:
-                            frameScores[frame] += Score.getValueOfFrame(pinState[frame][b]);
-                            break;
-                        case 1:
-                        case 0:
-                            if (Arrays.equals(pinState[frame][b], Constants.FRAME_PINS_DOWN))
-                            {
-                                frameScores[frame] += Score.getValueOfFrame(pinState[frame][b]);
-                            }
-                            break;
-                        default: //do nothing
-                    }
-                }
-            }
-            else
-            {
-                for (int b = 0; b < 3; b++)
-                {
-                    if (b < 2 && Arrays.equals(pinState[frame][b], Constants.FRAME_PINS_DOWN))
-                    {
-                        frameScores[frame] += Score.getValueOfFrame(pinState[frame][b]);
-                        frameScores[frame] += Score.getValueOfFrame(pinState[frame + 1][0]);
-                        if (b == 0)
+                        switch (b)
                         {
-                            if (frame == Constants.LAST_FRAME - 1)
-                            {
-                                if (frameScores[frame] == 30)
+                            case 2:
+                                frameScores[frame] += Score.getValueOfFrame(pinState[frame][b]);
+                                break;
+                            case 1:
+                            case 0:
+                                if (Arrays.equals(pinState[frame][b], Constants.FRAME_PINS_DOWN))
                                 {
-                                    frameScores[frame] += Score.getValueOfFrame(pinState[frame + 1][1]);
+                                    frameScores[frame] += Score.getValueOfFrame(pinState[frame][b]);
                                 }
-                                else
+                                break;
+                            default: //do nothing
+                        }
+                    }
+                } else
+                {
+                    for (int b = 0; b < 3; b++)
+                    {
+                        if (b < 2 && Arrays.equals(pinState[frame][b], Constants.FRAME_PINS_DOWN))
+                        {
+                            frameScores[frame] += Score.getValueOfFrame(pinState[frame][b]);
+                            frameScores[frame] += Score.getValueOfFrame(pinState[frame + 1][0]);
+                            if (b == 0)
+                            {
+                                if (frame == Constants.LAST_FRAME - 1)
+                                {
+                                    if (frameScores[frame] == 30)
+                                    {
+                                        frameScores[frame] += Score.getValueOfFrame(pinState[frame + 1][1]);
+                                    } else
+                                    {
+                                        frameScores[frame] += Score.getValueOfFrameDifference(pinState[frame + 1][0], pinState[frame + 1][1]);
+                                    }
+                                } else if (frameScores[frame] < 30)
                                 {
                                     frameScores[frame] += Score.getValueOfFrameDifference(pinState[frame + 1][0], pinState[frame + 1][1]);
+                                } else
+                                {
+                                    frameScores[frame] += Score.getValueOfFrame(pinState[frame + 2][0]);
                                 }
                             }
-                            else if (frameScores[frame] < 30)
-                            {
-                                frameScores[frame] += Score.getValueOfFrameDifference(pinState[frame + 1][0], pinState[frame + 1][1]);
-                            }
-                            else
-                            {
-                                frameScores[frame] += Score.getValueOfFrame(pinState[frame + 2][0]);
-                            }
+                            break;
+                        } else if (b == 2)
+                        {
+                            frameScores[frame] += Score.getValueOfFrame(pinState[frame][b]);
                         }
-                        break;
-                    }
-                    else if (b == 2)
-                    {
-                        frameScores[frame] += Score.getValueOfFrame(pinState[frame][b]);
                     }
                 }
             }
@@ -218,13 +216,19 @@ public class ImageUtils
         for (int i = 0; i < frameScores.length; i++)
         {
             totalScore += frameScores[i];
-            canvas.drawText(String.valueOf(totalScore), i * BITMAP_GAME_FRAME_WIDTH + BITMAP_GAME_FRAME_WIDTH / 2, BITMAP_GAME_HEIGHT - 8, paintText);
+            canvas.drawText((!isManual) ? String.valueOf(totalScore) : "--",
+                    i * BITMAP_GAME_FRAME_WIDTH + BITMAP_GAME_FRAME_WIDTH / 2,
+                    BITMAP_GAME_HEIGHT - 8,
+                    paintText);
         }
 
         int scoreWithFouls = totalScore - 15 * foulCount;
         if (scoreWithFouls < 0)
             scoreWithFouls = 0;
-        canvas.drawText(String.valueOf(scoreWithFouls), BITMAP_GAME_WIDTH - BITMAP_GAME_FRAME_WIDTH / 2, BITMAP_GAME_HEIGHT / 2 + GAME_LARGE_FONT_SIZE / 2, paintText);
+        canvas.drawText((!isManual) ? String.valueOf(scoreWithFouls) : String.valueOf(gameScore),
+                BITMAP_GAME_WIDTH - BITMAP_GAME_FRAME_WIDTH / 2,
+                BITMAP_GAME_HEIGHT / 2 + GAME_LARGE_FONT_SIZE / 2,
+                paintText);
 
         canvas.drawLines(new float[]{0,0,BITMAP_GAME_WIDTH, 0,
                         0,0,0,BITMAP_GAME_HEIGHT,
@@ -241,10 +245,14 @@ public class ImageUtils
     {
         List<boolean[][][]> ballsOfGames = new ArrayList<>();
         List<boolean[][]> foulsOfGames = new ArrayList<>();
+        List<Short> scoresOfGames = new ArrayList<>();
+        List<Boolean> manualScores = new ArrayList<>();
 
         SQLiteDatabase database = DatabaseHelper.getInstance(context).getReadableDatabase();
         String rawImageQuery = "SELECT "
                 + GameEntry.COLUMN_GAME_NUMBER + ", "
+                + GameEntry.COLUMN_SCORE + ", "
+                + GameEntry.COLUMN_IS_MANUAL + ", "
                 + FrameEntry.COLUMN_FRAME_NUMBER + ", "
                 + FrameEntry.COLUMN_PIN_STATE[0] + ", "
                 + FrameEntry.COLUMN_PIN_STATE[1] + ", "
@@ -269,6 +277,8 @@ public class ImageUtils
                 {
                     currentFrame = 0;
                     currentGame++;
+                    scoresOfGames.add(cursor.getShort(cursor.getColumnIndex(GameEntry.COLUMN_SCORE)));
+                    manualScores.add(cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_IS_MANUAL)) == 1);
                     ballsOfGames.add(new boolean[Constants.NUMBER_OF_FRAMES][3][5]);
                     foulsOfGames.add(new boolean[Constants.NUMBER_OF_FRAMES][3]);
                 }
@@ -309,7 +319,7 @@ public class ImageUtils
         {
             canvas.drawLine(0, BITMAP_GAME_HEIGHT * i - i, BITMAP_SERIES_GAME_NAME_WIDTH, BITMAP_GAME_HEIGHT * i - i, paintBlackOutline);
             canvas.drawText("Game " + (i + 1), 5, BITMAP_GAME_HEIGHT * i + GAME_LARGE_FONT_SIZE / 2 + BITMAP_GAME_HEIGHT / 2 - i, paintText);
-            canvas.drawBitmap(createImageFromGame(ballsOfGames.get(i), foulsOfGames.get(i)), BITMAP_SERIES_GAME_NAME_WIDTH, BITMAP_GAME_HEIGHT * i - i, null);
+            canvas.drawBitmap(createImageFromGame(ballsOfGames.get(i), foulsOfGames.get(i), scoresOfGames.get(i), manualScores.get(i)), BITMAP_SERIES_GAME_NAME_WIDTH, BITMAP_GAME_HEIGHT * i - i, null);
         }
 
         canvas.drawLines(new float[]
