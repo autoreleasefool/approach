@@ -28,6 +28,7 @@ import ca.josephroque.bowlingcompanion.fragment.LeagueEventFragment;
 import ca.josephroque.bowlingcompanion.fragment.SeriesFragment;
 import ca.josephroque.bowlingcompanion.fragment.StatsFragment;
 import ca.josephroque.bowlingcompanion.theme.Theme;
+import ca.josephroque.bowlingcompanion.utilities.AppRater;
 import ca.josephroque.bowlingcompanion.utilities.DataFormatter;
 
 
@@ -106,7 +107,7 @@ public class MainActivity extends ActionBarActivity
             mAdView = null;
         }*/
 
-        //TODO: AppRater.appLaunched(getActivity());
+        AppRater.appLaunched(this);
     }
 
     @Override
