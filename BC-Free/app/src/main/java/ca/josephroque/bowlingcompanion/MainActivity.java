@@ -1,6 +1,5 @@
 package ca.josephroque.bowlingcompanion;
 
-import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
@@ -154,14 +153,15 @@ public class MainActivity extends ActionBarActivity
                 Log.w(TAG, "Started saving loop");
                 while (appIsRunning.get() || mQueueSavingThreads.peek() != null)
                 {
-                    runningSaveThread = mQueueSavingThreads.poll();
+                    runningSaveThread = mQueueSavingThreads.peek();
                     if (runningSaveThread != null)
                     {
-                        Log.w(TAG, "Polled thread from saving queue");
+                        Log.w(TAG, "Peeked thread from saving queue");
                         runningSaveThread.start();
                         try
                         {
                             runningSaveThread.join();
+                            mQueueSavingThreads.poll();
                             Log.w(TAG, "Finished saving game");
                         }
                         catch (InterruptedException ex)
