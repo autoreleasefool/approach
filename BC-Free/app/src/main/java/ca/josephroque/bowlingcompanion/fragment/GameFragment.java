@@ -36,6 +36,7 @@ import ca.josephroque.bowlingcompanion.dialog.ManualScoreDialog;
 import ca.josephroque.bowlingcompanion.utilities.DataFormatter;
 import ca.josephroque.bowlingcompanion.utilities.Score;
 import ca.josephroque.bowlingcompanion.theme.Theme;
+import ca.josephroque.bowlingcompanion.utilities.ShareUtils;
 
 /**
  * Created by josephroque on 15-03-18.
@@ -376,7 +377,8 @@ public class GameFragment extends Fragment
         switch(item.getItemId())
         {
             case R.id.action_share:
-                //TODO Social.showShareDialog();
+                MainActivity mainActivity = (MainActivity)getActivity();
+                ShareUtils.showShareDialog(mainActivity, mainActivity.getSeriesId());
                 return true;
 
             case R.id.action_set_score:
@@ -807,8 +809,7 @@ public class GameFragment extends Fragment
                     mImageViewResetFrame.setVisibility(View.INVISIBLE);
                     mImageViewClear.setVisibility(View.INVISIBLE);
                     mImageViewLock.setImageResource(R.drawable.ic_lock);
-                }
-                else
+                } else
                 {
                     mImageViewFoul.setVisibility(View.VISIBLE);
                     mImageViewResetFrame.setVisibility(View.VISIBLE);
