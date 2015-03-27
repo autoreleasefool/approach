@@ -491,7 +491,7 @@ public class BowlerFragment extends Fragment
                     + "AVG(game." + GameEntry.COLUMN_SCORE + ") AS avg"
                     + " FROM " + BowlerEntry.TABLE_NAME + " AS bowler"
                     + " LEFT JOIN " + LeagueEntry.TABLE_NAME + " AS league"
-                    + " ON bowler." + BowlerEntry._ID + "=league." + LeagueEntry._ID
+                    + " ON bowler." + BowlerEntry._ID + "=league." + LeagueEntry.COLUMN_BOWLER_ID
                     + " LEFT JOIN " + SeriesEntry.TABLE_NAME + " AS series"
                     + " ON league." + LeagueEntry._ID + "=series." + SeriesEntry.COLUMN_LEAGUE_ID
                     + " LEFT JOIN " + GameEntry.TABLE_NAME + " AS game"
