@@ -73,6 +73,8 @@ public class MainActivity extends ActionBarActivity
     private String mSeriesDate;
     /** Game number in series */
     private byte mGameNumber;
+    private boolean mIsEventMode;
+    private boolean mIsQuickSeries;
 
     private ConcurrentLinkedQueue<Thread> mQueueSavingThreads;
     private Thread runningSaveThread;
@@ -141,7 +143,7 @@ public class MainActivity extends ActionBarActivity
             //Creates new BowlerFragment to display data, if no other fragment exists
             BowlerFragment bowlerFragment = BowlerFragment.newInstance();
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.fl_main_fragment_container, bowlerFragment)
+                    .add(R.id.fl_main_fragment_container, bowlerFragment, Constants.FRAGMENT_BOWLERS)
                     .commit();
         }
         else
@@ -156,6 +158,8 @@ public class MainActivity extends ActionBarActivity
             mLeagueName = savedInstanceState.getString(Constants.EXTRA_NAME_LEAGUE);
             mSeriesDate = savedInstanceState.getString(Constants.EXTRA_NAME_SERIES);
             mNumberOfGames = savedInstanceState.getByte(Constants.EXTRA_NUMBER_OF_GAMES, (byte)-1);
+            mIsEventMode = savedInstanceState.getBoolean(Constants.EXTRA_EVENT_MODE);
+            mIsQuickSeries = savedInstanceState.getBoolean(Constants.EXTRA_QUICK_SERIES);
         }
 
         /*mAdView = (AdView)findViewById(R.id.av_main);
@@ -200,6 +204,8 @@ public class MainActivity extends ActionBarActivity
         outState.putString(Constants.EXTRA_NAME_SERIES, mSeriesDate);
         outState.putByte(Constants.EXTRA_NUMBER_OF_GAMES, mNumberOfGames);
         outState.putByte(Constants.EXTRA_GAME_NUMBER, mGameNumber);
+        outState.putBoolean(Constants.EXTRA_QUICK_SERIES, mIsQuickSeries);
+        outState.putBoolean(Constants.EXTRA_EVENT_MODE, mIsEventMode);
     }
 
     @Override
@@ -296,36 +302,6 @@ public class MainActivity extends ActionBarActivity
 
         switch(item.getItemId())
         {
-            /*case android.R.id.home:
-                //Returns to fragment on back stack, if there is one
-                FragmentManager fm = getSupportFragmentManager();
-                if (fm.getBackStackEntryCount() > 0)
-                {
-                    String backStackEntryName =
-                            fm.getBackStackEntryAt(fm.getBackStackEntryCount() - 1).getName();
-                    fm.popBackStack();
-
-                    switch(backStackEntryName)
-                    {
-                        case Constants.FRAGMENT_BOWLERS:
-                            mBowlerId = -1;
-                            mBowlerName = null;
-                        case Constants.FRAGMENT_LEAGUES:
-                            mLeagueId = -1;
-                            mLeagueName = null;
-                            mNumberOfGames = -1;
-                        case Constants.FRAGMENT_SERIES:
-                            mSeriesDate = null;
-                            mSeriesId = -1;
-                        case Constants.FRAGMENT_GAME:
-                            mGameId = -1;
-                            mGameNumber = -1;
-                            break;
-                        default:
-                            Log.w(TAG, "Invalid back stack name: " + backStackEntryName);
-                    }
-                }
-                return true;*/
             case R.id.action_settings:
                 Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
                 startActivity(settingsIntent);
@@ -346,36 +322,82 @@ public class MainActivity extends ActionBarActivity
             if (fragment == null || !fragment.isVisible() || fragment.getTag() == null)
                 continue;
 
+            if (fragment.getTag().equals(Constants.FRAGMENT_BOWLERS))
+            {
+                mBowlerId = -1;
+                mLeagueId = -1;
+                mSeriesId = -1;
+                mGameId = -1;
+                mGameNumber = -1;
+                mBowlerName = null;
+                mLeagueName = null;
+                mSeriesDate = null;
+                mNumberOfGames = -1;
+                mIsQuickSeries = false;
+                Log.w(TAG, "MAJOR setting to -1");
+            }
             if (fragment.getTag().equals(Constants.FRAGMENT_LEAGUES))
             {
                 mListDrawerOptions.add("Bowlers");
+/*
+mBowlerId = savedInstanceState.getLong(Constants.EXTRA_ID_BOWLER, -1);
+            mLeagueId = savedInstanceState.getLong(Constants.EXTRA_ID_LEAGUE, -1);
+            mSeriesId = savedInstanceState.getLong(Constants.EXTRA_ID_SERIES, -1);
+            mGameId = savedInstanceState.getLong(Constants.EXTRA_ID_GAME, -1);
+            mGameNumber = savedInstanceState.getByte(Constants.EXTRA_GAME_NUMBER, (byte)-1);
+            mBowlerName = savedInstanceState.getString(Constants.EXTRA_NAME_BOWLER);
+            mLeagueName = savedInstanceState.getString(Constants.EXTRA_NAME_LEAGUE);
+            mSeriesDate = savedInstanceState.getString(Constants.EXTRA_NAME_SERIES);
+            mNumberOfGames = savedInstanceState.getByte(Constants.EXTRA_NUMBER_OF_GAMES, (byte)-1);
+            mIsEventMode = savedInstanceState.getBoolean(Constants.EXTRA_EVENT_MODE);
+            mIsQuickSeries = savedInstanceState.getBoolean(Constants.EXTRA_QUICK_SERIES);
+ */
+                mLeagueId = -1;
+                mSeriesId = -1;
+                mGameId = -1;
+                mGameNumber = -1;
+                mLeagueName = null;
+                mSeriesDate = null;
+                mNumberOfGames = -1;
+                Log.w(TAG, "MAJOR setting to -1");
             }
             else if (fragment.getTag().equals(Constants.FRAGMENT_SERIES))
             {
                 mListDrawerOptions.add("Bowlers");
                 mListDrawerOptions.add("Leagues & Events");
+
+                mSeriesId = -1;
+                mGameId = -1;
+                mGameNumber = -1;
+                mSeriesDate = null;
+                Log.w(TAG, "MAJOR setting to -1");
             }
             else if (fragment.getTag().equals(Constants.FRAGMENT_GAME))
             {
                 mListDrawerOptions.add("Bowlers");
-                mListDrawerOptions.add("Leagues & Events");
-                if (!((GameFragment)fragment).isEventMode())
+                if (!isQuickSeries())
+                    mListDrawerOptions.add("Leagues & Events");
+                if (!isEventMode() && !isQuickSeries())
                     mListDrawerOptions.add("Series");
                 for (byte i = 0; i < mNumberOfGames; i++)
                     mListDrawerOptions.add("Game " + (i + 1));
+
+                mGameId = -1;
+                mGameNumber = -1;
+                Log.w(TAG, "MAJOR setting to -1");
             }
             else if (fragment.getTag().equals(Constants.FRAGMENT_STATS))
             {
-                switch(fragments.size())
-                {
-                    case 5: //Game/Series stats
-                        mListDrawerOptions.add("Game Details");
-                        mListDrawerOptions.add(1, "Series");
-                    case 4: //League stats
-                        mListDrawerOptions.add(1, "Leagues & Events");
-                    case 3: //Bowler stats
-                        mListDrawerOptions.add(1, "Bowlers");
-                }
+                if (mBowlerId >= 0)
+                    mListDrawerOptions.add("Bowler");
+                if (mLeagueId >= 0 && !isQuickSeries())
+                    mListDrawerOptions.add("Leagues & Events");
+                if (mSeriesId >= 0 && !isEventMode() && !isQuickSeries())
+                    mListDrawerOptions.add("Series");
+                if (mGameId >= 0)
+                    mListDrawerOptions.add("Game Details");
+
+                //Log.w(TAG, "MAJOR setting to -1");
             }
             break;
         }
@@ -395,10 +417,11 @@ public class MainActivity extends ActionBarActivity
     }
 
     @Override
-    public void onBowlerSelected(long bowlerId, String bowlerName, boolean openLeagueFragment)
+    public void onBowlerSelected(long bowlerId, String bowlerName, boolean openLeagueFragment, boolean isQuickSeries)
     {
         mBowlerId = bowlerId;
         mBowlerName = bowlerName;
+        mIsQuickSeries = isQuickSeries;
 
         mLeagueId = -1;
         mSeriesId = -1;
@@ -407,6 +430,7 @@ public class MainActivity extends ActionBarActivity
         mLeagueName = null;
         mSeriesDate = null;
         mGameNumber = -1;
+        Log.w(TAG, "Minor setting to -1");
 
         if (openLeagueFragment)
         {
@@ -426,6 +450,7 @@ public class MainActivity extends ActionBarActivity
         mGameId = -1;
         mSeriesDate = null;
         mGameNumber = -1;
+        Log.w(TAG, "Minor setting to -1");
 
         if (openSeriesFragment)
         {
@@ -442,6 +467,7 @@ public class MainActivity extends ActionBarActivity
 
         mGameId = -1;
         mGameNumber = -1;
+        Log.w(TAG, "Minor setting to -1");
 
         new OpenSeriesTask().execute(isEvent);
     }
@@ -478,6 +504,7 @@ public class MainActivity extends ActionBarActivity
     {
         mGameId = -1;
         mGameNumber = -1;
+        Log.w(TAG, "Minor setting to -1");
 
         openStatsFragment(Constants.FRAGMENT_GAME);
     }
@@ -610,10 +637,9 @@ public class MainActivity extends ActionBarActivity
      */
     public String getSeriesDate(){return mSeriesDate;}
 
-    public boolean isDrawerOpen()
-    {
-        return mDrawerLayout.isDrawerOpen(mDrawerList);
-    }
+    public boolean isDrawerOpen() {return mDrawerLayout.isDrawerOpen(mDrawerList);}
+    public boolean isEventMode() {return mIsEventMode;}
+    public boolean isQuickSeries() {return mIsQuickSeries;}
 
     /**
      * Loads game data related to seriesId and displays it in a
@@ -678,10 +704,10 @@ public class MainActivity extends ActionBarActivity
             long[] frameIds = (long[])params[1];
             boolean[] gameLocked = (boolean[])params[2];
             boolean[] manualScore = (boolean[])params[3];
-            boolean isEvent = (Boolean)params[4];
+            mIsEventMode = (Boolean)params[4];
 
-            GameFragment gameFragment = GameFragment.newInstance(isEvent, gameIds, frameIds, gameLocked, manualScore);
-            startFragmentTransaction(gameFragment, (isEvent ? Constants.FRAGMENT_LEAGUES : Constants.FRAGMENT_SERIES), Constants.FRAGMENT_GAME);
+            GameFragment gameFragment = GameFragment.newInstance(gameIds, frameIds, gameLocked, manualScore);
+            startFragmentTransaction(gameFragment, (isEventMode() ? Constants.FRAGMENT_LEAGUES : Constants.FRAGMENT_SERIES), Constants.FRAGMENT_GAME);
         }
     }
 
@@ -748,8 +774,9 @@ public class MainActivity extends ActionBarActivity
         {
             long[] gameIds = (long[])params[0];
             long[] frameIds = (long[])params[1];
+            mIsEventMode = false;
 
-            GameFragment gameFragment = GameFragment.newInstance(false, gameIds, frameIds, new boolean[mNumberOfGames], new boolean[mNumberOfGames]);
+            GameFragment gameFragment = GameFragment.newInstance(gameIds, frameIds, new boolean[mNumberOfGames], new boolean[mNumberOfGames]);
             startFragmentTransaction(gameFragment, Constants.FRAGMENT_SERIES, Constants.FRAGMENT_GAME);
         }
     }

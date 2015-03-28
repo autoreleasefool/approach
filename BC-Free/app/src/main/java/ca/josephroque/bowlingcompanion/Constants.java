@@ -68,6 +68,8 @@ public class Constants
     public static final String EXTRA_GAME_NUMBER = "EGN";
     /** Identifies state of event mode as an extra */
     public static final String EXTRA_EVENT_MODE = "EEM";
+    /** Identifies state of quick series as an extra */
+    public static final String EXTRA_QUICK_SERIES = "EQS";
     /** Identifies the number of games as an extra */
     public static final String EXTRA_NUMBER_OF_GAMES = "ENOG";
     /** Identifies an array of ids of games */

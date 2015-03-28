@@ -78,7 +78,7 @@ public class GameFragment extends Fragment
     /** Indicates which frames in the game have been accessed */
     private boolean[] mHasFrameBeenAccessed;
     /** Indicates whether the current games being edited belong to an event or not */
-    private boolean mEventMode;
+    //TODO: private boolean mEventMode;
     /** Indicate whether a certain pin was knocked down after a certain ball in a certain frame */
     private boolean[][][] mPinState;
     /** Indicate whether a foul was invoked on a certain ball in a certain frame */
@@ -153,7 +153,7 @@ public class GameFragment extends Fragment
         //Loads member variables from saved instance state, if one exists
         if (savedInstanceState != null)
         {
-            mEventMode = savedInstanceState.getBoolean(Constants.EXTRA_EVENT_MODE);
+            //mEventMode = savedInstanceState.getBoolean(Constants.EXTRA_EVENT_MODE);
             mGameIds = savedInstanceState.getLongArray(Constants.EXTRA_ARRAY_GAME_IDS);
             mFrameIds = savedInstanceState.getLongArray(Constants.EXTRA_ARRAY_FRAME_IDS);
             mGameLocked = savedInstanceState.getBooleanArray(Constants.EXTRA_ARRAY_GAME_LOCKED);
@@ -318,7 +318,6 @@ public class GameFragment extends Fragment
         if (mGameIds == null)
         {
             Bundle args = getArguments();
-            mEventMode = args.getBoolean(Constants.EXTRA_EVENT_MODE);
             mGameIds = args.getLongArray(Constants.EXTRA_ARRAY_GAME_IDS);
             mFrameIds = args.getLongArray(Constants.EXTRA_ARRAY_FRAME_IDS);
             mGameLocked = args.getBooleanArray(Constants.EXTRA_ARRAY_GAME_LOCKED);
@@ -352,7 +351,6 @@ public class GameFragment extends Fragment
         super.onSaveInstanceState(outState);
 
         //Puts member variables into outState so they can be loaded back
-        outState.putBoolean(Constants.EXTRA_EVENT_MODE, mEventMode);
         outState.putLongArray(Constants.EXTRA_ARRAY_GAME_IDS, mGameIds);
         outState.putLongArray(Constants.EXTRA_ARRAY_FRAME_IDS, mFrameIds);
         outState.putBooleanArray(Constants.EXTRA_ARRAY_GAME_LOCKED, mGameLocked);
@@ -371,7 +369,7 @@ public class GameFragment extends Fragment
     {
         //Sets names/visibility of menu items
         menu.findItem(R.id.action_series_stats)
-                .setTitle((mEventMode) ? R.string.action_event_stats : R.string.action_series_stats);
+                .setTitle(((MainActivity)getActivity()).isEventMode() ? R.string.action_event_stats : R.string.action_series_stats);
         menu.findItem(R.id.action_set_score)
                 .setTitle((mManualScoreSet[mCurrentGame])
                 ? R.string.action_clear_score : R.string.action_set_score);
@@ -1765,8 +1763,6 @@ public class GameFragment extends Fragment
         cursor.close();
     }
 
-    public boolean isEventMode() {return mEventMode;}
-
     /**
      * Callback interface offers methods upon user interaction
      */
@@ -1787,18 +1783,16 @@ public class GameFragment extends Fragment
 
     /**
      * Creates a new instance and sets parameters as arguments for the instance
-     * @param isEvent whether an event is being displayed in this fragment or not
      * @param gameIds ids of the games being displayed
      * @param frameIds ids of frames belonging to gameIds
      * @param gameLocked whether the games being displayed are locked or not
      * @param manualScore whether the games being displayed have manual scores set
      * @return the newly created instance
      */
-    public static GameFragment newInstance(boolean isEvent, long[] gameIds, long[] frameIds, boolean[] gameLocked, boolean[] manualScore)
+    public static GameFragment newInstance(long[] gameIds, long[] frameIds, boolean[] gameLocked, boolean[] manualScore)
     {
         GameFragment gameFragment = new GameFragment();
         Bundle args = new Bundle();
-        args.putBoolean(Constants.EXTRA_EVENT_MODE, isEvent);
         args.putLongArray(Constants.EXTRA_ARRAY_GAME_IDS, gameIds);
         args.putLongArray(Constants.EXTRA_ARRAY_FRAME_IDS, frameIds);
         args.putBooleanArray(Constants.EXTRA_ARRAY_GAME_LOCKED, gameLocked);

@@ -336,14 +336,14 @@ public class BowlerFragment extends Fragment
                             if (quickOrRecent)
                             {
                                 Log.w(TAG, "Quick series created");
-                                mBowlerSelectedListener.onBowlerSelected(mQuickBowlerId, mQuickBowlerName, false);
+                                mBowlerSelectedListener.onBowlerSelected(mQuickBowlerId, mQuickBowlerName, false, true);
                                 mLeagueSelectedListener.onLeagueSelected(mQuickLeagueId, mQuickLeagueName, mQuickNumberOfGames, false);
                                 mSeriesListener.onCreateNewSeries(false);
                             }
                             else
                             {
                                 Log.w(TAG, "Recent series created");
-                                mBowlerSelectedListener.onBowlerSelected(mRecentBowlerId, mRecentBowlerName, false);
+                                mBowlerSelectedListener.onBowlerSelected(mRecentBowlerId, mRecentBowlerName, false, true);
                                 mLeagueSelectedListener.onLeagueSelected(mRecentLeagueId, mRecentLeagueName, mRecentNumberOfGames, false);
                                 mSeriesListener.onCreateNewSeries(false);
                             }
@@ -639,7 +639,7 @@ public class BowlerFragment extends Fragment
             int position = (Integer)params[1];
 
             //Creates new instance of LeagueEventFragment for bowlerId
-            mBowlerSelectedListener.onBowlerSelected(bowlerId, mListBowlerNames.get(position), true);
+            mBowlerSelectedListener.onBowlerSelected(bowlerId, mListBowlerNames.get(position), true, false);
         }
     }
 
@@ -724,7 +724,8 @@ public class BowlerFragment extends Fragment
          * @param bowlerId id of the bowler whose leagues/events will be displayed
          * @param bowlerName name of the bowler corresponding to bowlerId
          * @param openLeagueFragment if new fragment should be opened
+         * @param isQuickSeries if a quick series is being created
          */
-        public void onBowlerSelected(long bowlerId, String bowlerName, boolean openLeagueFragment);
+        public void onBowlerSelected(long bowlerId, String bowlerName, boolean openLeagueFragment, boolean isQuickSeries);
     }
 }
