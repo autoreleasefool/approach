@@ -116,6 +116,10 @@ public class GameFragment extends Fragment
     private TextView mTextViewManualScore;
     /** Layout which contains views related to general game options */
     private RelativeLayout mRelativeLayoutGameToolbar;
+    private TextView mTextViewNextBall;
+    private TextView mTextViewPrevBall;
+    private ImageView mImageViewNextBall;
+    private ImageView mImageViewPrevBall;
 
     /** Instance of callback interface for handling user events */
     private OnGameOrSeriesStatsOpenedListener mGameSeriesListener;
@@ -274,10 +278,14 @@ public class GameFragment extends Fragment
             pinButton.setOnClickListener(onClickListeners[LISTENER_PIN_BUTTONS]);
 
         //Loading other views into member variables, setting OnClickListeners
-        rootView.findViewById(R.id.iv_next_ball).setOnClickListener(onClickListeners[LISTENER_OTHER]);
-        rootView.findViewById(R.id.iv_prev_ball).setOnClickListener(onClickListeners[LISTENER_OTHER]);
-        rootView.findViewById(R.id.tv_next_ball).setOnClickListener(onClickListeners[LISTENER_OTHER]);
-        rootView.findViewById(R.id.tv_prev_ball).setOnClickListener(onClickListeners[LISTENER_OTHER]);
+        mImageViewNextBall = (ImageView)rootView.findViewById(R.id.iv_next_ball);
+        mImageViewNextBall.setOnClickListener(onClickListeners[LISTENER_OTHER]);
+        mImageViewPrevBall = (ImageView)rootView.findViewById(R.id.iv_prev_ball);
+        mImageViewPrevBall.setOnClickListener(onClickListeners[LISTENER_OTHER]);
+        mTextViewNextBall = (TextView)rootView.findViewById(R.id.tv_next_ball);
+        mTextViewNextBall.setOnClickListener(onClickListeners[LISTENER_OTHER]);
+        mTextViewPrevBall = (TextView)rootView.findViewById(R.id.tv_prev_ball);
+        mTextViewPrevBall.setOnClickListener(onClickListeners[LISTENER_OTHER]);
         mImageViewClear = (ImageView)rootView.findViewById(R.id.iv_clear);
         mImageViewClear.setOnClickListener(onClickListeners[LISTENER_OTHER]);
 
@@ -505,6 +513,7 @@ public class GameFragment extends Fragment
                                 break;
                             mHasFrameBeenAccessed[i] = true;
                         }
+                        setVisibilityOfNextAndPrevItems();
                         updateFrameColor();
                         break;
                     default:
@@ -607,6 +616,7 @@ public class GameFragment extends Fragment
                             ++mCurrentFrame;
                         }
                         mHasFrameBeenAccessed[mCurrentFrame] = true;
+                        setVisibilityOfNextAndPrevItems();
                         updateFrameColor();
                         break;
 
@@ -626,6 +636,7 @@ public class GameFragment extends Fragment
                                 mCurrentBall++;
                             }
                         }
+                        setVisibilityOfNextAndPrevItems();
                         updateFrameColor();
                         break;
 
@@ -1018,6 +1029,31 @@ public class GameFragment extends Fragment
                 });
         builder.create()
                 .show();
+    }
+
+    private void setVisibilityOfNextAndPrevItems()
+    {
+        if (mCurrentFrame == 0 && mCurrentBall == 0)
+        {
+            mTextViewPrevBall.setVisibility(View.GONE);
+            mImageViewPrevBall.setVisibility(View.GONE);
+        }
+        else
+        {
+            mTextViewPrevBall.setVisibility(View.VISIBLE);
+            mImageViewPrevBall.setVisibility(View.VISIBLE);
+        }
+
+        if (mCurrentFrame == Constants.LAST_FRAME && mCurrentBall == 2)
+        {
+            mTextViewNextBall.setVisibility(View.GONE);
+            mImageViewNextBall.setVisibility(View.GONE);
+        }
+        else
+        {
+            mTextViewNextBall.setVisibility(View.VISIBLE);
+            mImageViewNextBall.setVisibility(View.VISIBLE);
+        }
     }
 
     /**
@@ -1668,6 +1704,7 @@ public class GameFragment extends Fragment
                 while (mCurrentFrame < Constants.LAST_FRAME && mHasFrameBeenAccessed[mCurrentFrame + 1])
                     mCurrentFrame++;
 
+                setVisibilityOfNextAndPrevItems();
                 updateFrameColor();
             }
         }).start();
