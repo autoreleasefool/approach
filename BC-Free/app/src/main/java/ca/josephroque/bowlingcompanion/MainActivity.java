@@ -2,26 +2,34 @@ package ca.josephroque.bowlingcompanion;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ListView;
 
 //import com.google.android.gms.ads.AdRequest;
 //import com.google.android.gms.ads.AdView;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import ca.josephroque.bowlingcompanion.adapter.DrawerAdapter;
 import ca.josephroque.bowlingcompanion.database.Contract.*;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.fragment.BowlerFragment;
@@ -41,7 +49,8 @@ public class MainActivity extends ActionBarActivity
         BowlerFragment.OnBowlerSelectedListener,
         LeagueEventFragment.OnLeagueSelectedListener,
         SeriesFragment.SeriesListener,
-        GameFragment.OnGameOrSeriesStatsOpenedListener
+        GameFragment.OnGameOrSeriesStatsOpenedListener,
+        DrawerAdapter.OnDrawerClickListener
 {
     /** Tag to identify class when outputting to console */
     private static final String TAG = "MainActivity";
@@ -69,6 +78,15 @@ public class MainActivity extends ActionBarActivity
     private Thread runningSaveThread;
     private AtomicBoolean appIsRunning = new AtomicBoolean(false);
 
+    private DrawerLayout mDrawerLayout;
+    private ListView mDrawerList;
+    private DrawerAdapter mDrawerAdapter;
+    private ActionBarDrawerToggle mDrawerToggle;
+
+    private int mDrawerTitle;
+    private int mTitle;
+    private List<String> mListDrawerOptions;
+
     //private AdView mAdView;
 
     @Override
@@ -78,11 +96,45 @@ public class MainActivity extends ActionBarActivity
         setContentView(R.layout.activity_main);
         Theme.loadTheme(this);
 
+        mTitle = R.string.app_name;
+        mDrawerTitle = R.string.title_drawer;
+        mListDrawerOptions = new ArrayList<>();
+        mListDrawerOptions.add("Home");
+
+        mDrawerLayout = (DrawerLayout)findViewById(R.id.main_drawer_layout);
+        mDrawerList = (ListView)findViewById(R.id.main_drawer_list);
+
+        mDrawerAdapter = new DrawerAdapter(this, mListDrawerOptions);
+        mDrawerList.setAdapter(mDrawerAdapter);
+        mDrawerList.setOnItemClickListener(mDrawerAdapter);
+
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
+                R.string.text_open_drawer, R.string.text_close_drawer) {
+
+            /** Called when a drawer has settled in a completely closed state. */
+            public void onDrawerClosed(View view) {
+                super.onDrawerClosed(view);
+                setActionBarTitle(mTitle, false);
+                //TODO: change depending on version
+                supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+
+            /** Called when a drawer has settled in a completely open state. */
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                setActionBarTitle(mDrawerTitle, false);
+                //TODO: change depending on version
+                supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+        };
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+
         mQueueSavingThreads = new ConcurrentLinkedQueue<>();
         runningSaveThread = null;
 
         getSupportFragmentManager().addOnBackStackChangedListener(this);
-        shouldDisplayHomeUp();
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        //shouldDisplayHomeUp();
 
         if (savedInstanceState == null)
         {
@@ -117,6 +169,20 @@ public class MainActivity extends ActionBarActivity
         }*/
 
         AppRater.appLaunched(this);
+    }
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState)
+    {
+        super.onPostCreate(savedInstanceState);
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig)
+    {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
     @Override
@@ -214,11 +280,23 @@ public class MainActivity extends ActionBarActivity
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu)
+    {
+        //Sets menu items visibility depending on if navigation drawer is open
+        boolean drawerOpen = isDrawerOpen();
+        menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
+        if (mDrawerToggle.onOptionsItemSelected(item))
+            return true;
+
         switch(item.getItemId())
         {
-            case android.R.id.home:
+            /*case android.R.id.home:
                 //Returns to fragment on back stack, if there is one
                 FragmentManager fm = getSupportFragmentManager();
                 if (fm.getBackStackEntryCount() > 0)
@@ -247,7 +325,7 @@ public class MainActivity extends ActionBarActivity
                             Log.w(TAG, "Invalid back stack name: " + backStackEntryName);
                     }
                 }
-                return true;
+                return true;*/
             case R.id.action_settings:
                 Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
                 startActivity(settingsIntent);
@@ -259,7 +337,50 @@ public class MainActivity extends ActionBarActivity
 
     @Override
     public void onBackStackChanged() {
-        shouldDisplayHomeUp();
+        if (mListDrawerOptions.size() > 1)
+            mListDrawerOptions.subList(1, mListDrawerOptions.size()).clear();
+
+        List<Fragment> fragments = getSupportFragmentManager().getFragments();
+        for (Fragment fragment: fragments)
+        {
+            if (fragment == null || !fragment.isVisible() || fragment.getTag() == null)
+                continue;
+
+            if (fragment.getTag().equals(Constants.FRAGMENT_LEAGUES))
+            {
+                mListDrawerOptions.add("Bowlers");
+            }
+            else if (fragment.getTag().equals(Constants.FRAGMENT_SERIES))
+            {
+                mListDrawerOptions.add("Bowlers");
+                mListDrawerOptions.add("Leagues & Events");
+            }
+            else if (fragment.getTag().equals(Constants.FRAGMENT_GAME))
+            {
+                mListDrawerOptions.add("Bowlers");
+                mListDrawerOptions.add("Leagues & Events");
+                if (!((GameFragment)fragment).isEventMode())
+                    mListDrawerOptions.add("Series");
+                for (byte i = 0; i < mNumberOfGames; i++)
+                    mListDrawerOptions.add("Game " + (i + 1));
+            }
+            else if (fragment.getTag().equals(Constants.FRAGMENT_STATS))
+            {
+                switch(fragments.size())
+                {
+                    case 5: //Game/Series stats
+                        mListDrawerOptions.add("Game Details");
+                        mListDrawerOptions.add(1, "Series");
+                    case 4: //League stats
+                        mListDrawerOptions.add(1, "Leagues & Events");
+                    case 3: //Bowler stats
+                        mListDrawerOptions.add(1, "Bowlers");
+                }
+            }
+            break;
+        }
+        mDrawerAdapter.notifyDataSetChanged();
+        //shouldDisplayHomeUp();
     }
 
     @Override
@@ -268,6 +389,9 @@ public class MainActivity extends ActionBarActivity
         //Updates colors and sets theme for MainActivity valid
         getSupportActionBar()
                 .setBackgroundDrawable(new ColorDrawable(Theme.getPrimaryThemeColor()));
+        mDrawerList.setBackgroundColor(Theme.getSecondaryThemeColor());
+        mDrawerList.setDivider(new ColorDrawable(Theme.getTertiaryThemeColor()));
+        mDrawerList.setDividerHeight(2);
     }
 
     @Override
@@ -287,7 +411,7 @@ public class MainActivity extends ActionBarActivity
         if (openLeagueFragment)
         {
             LeagueEventFragment leagueEventFragment = LeagueEventFragment.newInstance();
-            startFragmentTransaction(leagueEventFragment, Constants.FRAGMENT_BOWLERS);
+            startFragmentTransaction(leagueEventFragment, Constants.FRAGMENT_BOWLERS, Constants.FRAGMENT_LEAGUES);
         }
     }
 
@@ -306,7 +430,7 @@ public class MainActivity extends ActionBarActivity
         if (openSeriesFragment)
         {
             SeriesFragment seriesFragment = SeriesFragment.newInstance();
-            startFragmentTransaction(seriesFragment, Constants.FRAGMENT_LEAGUES);
+            startFragmentTransaction(seriesFragment, Constants.FRAGMENT_LEAGUES, Constants.FRAGMENT_SERIES);
         }
     }
 
@@ -328,12 +452,12 @@ public class MainActivity extends ActionBarActivity
         new AddSeriesTask().execute();
     }
 
-    private void startFragmentTransaction(Fragment fragment, String tag)
+    private void startFragmentTransaction(Fragment fragment, String backStackTag, String fragmentTag)
     {
         getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left, R.anim.slide_in_left, R.anim.slide_out_right)
-                .replace(R.id.fl_main_fragment_container, fragment)
-                .addToBackStack(tag)
+                .replace(R.id.fl_main_fragment_container, fragment, fragmentTag)
+                .addToBackStack(backStackTag)
                 .commit();
     }
 
@@ -367,6 +491,40 @@ public class MainActivity extends ActionBarActivity
         openStatsFragment(Constants.FRAGMENT_GAME);
     }
 
+    @Override
+    public void onGameItemClicked(byte gameNumber)
+    {
+        mDrawerLayout.closeDrawer(mDrawerList);
+        GameFragment gameFragment = (GameFragment)getSupportFragmentManager().findFragmentByTag(Constants.FRAGMENT_GAME);
+        if (gameFragment == null || !gameFragment.isVisible())
+            return;
+
+        gameFragment.switchGame(gameNumber);
+    }
+
+    @SuppressWarnings("IfCanBeSwitch")
+    @Override
+    public void onFragmentItemClicked(String fragmentItem)
+    {
+        mDrawerLayout.closeDrawer(mDrawerList);
+        if (fragmentItem.equals("Home") || fragmentItem.equals("Bowlers"))
+        {
+            getSupportFragmentManager().popBackStack(Constants.FRAGMENT_BOWLERS, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+        else if (fragmentItem.equals("Leagues & Events"))
+        {
+            getSupportFragmentManager().popBackStack(Constants.FRAGMENT_LEAGUES, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+        else if (fragmentItem.equals("Series"))
+        {
+            getSupportFragmentManager().popBackStack(Constants.FRAGMENT_SERIES, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+        else if (fragmentItem.equals("Game Details"))
+        {
+            getSupportFragmentManager().popBackStack(Constants.FRAGMENT_GAME, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+    }
+
     /**
      * Gets a new instance of StatsFragment and displays it
      * @param tag represents fragment which should be returned to when backstack is popped
@@ -374,25 +532,28 @@ public class MainActivity extends ActionBarActivity
     private void openStatsFragment(String tag)
     {
         StatsFragment statsFragment = StatsFragment.newInstance();
-        startFragmentTransaction(statsFragment, tag);
+        startFragmentTransaction(statsFragment, tag, Constants.FRAGMENT_STATS);
     }
 
     /**
      * Sets DisplayHomeAsUpEnabled if any fragments are on back stack
      */
-    public void shouldDisplayHomeUp()
+    /*public void shouldDisplayHomeUp()
     {
         boolean canBack = (getSupportFragmentManager().getBackStackEntryCount() > 0);
         getSupportActionBar().setDisplayHomeAsUpEnabled(canBack);
-    }
+    }*/
 
     /**
      * Sets title of action bar to string pointed to by resId
      * @param resId id of string to be set at title
+     * @param override indicates if reference to resId title should be saved in mTitle
      */
-    public void setActionBarTitle(int resId)
+    public void setActionBarTitle(int resId, boolean override)
     {
         getSupportActionBar().setTitle(getResources().getString(resId));
+        if (override)
+            mTitle = resId;
     }
 
     /**
@@ -448,6 +609,11 @@ public class MainActivity extends ActionBarActivity
      * @return value of mSeriesId
      */
     public String getSeriesDate(){return mSeriesDate;}
+
+    public boolean isDrawerOpen()
+    {
+        return mDrawerLayout.isDrawerOpen(mDrawerList);
+    }
 
     /**
      * Loads game data related to seriesId and displays it in a
@@ -515,7 +681,7 @@ public class MainActivity extends ActionBarActivity
             boolean isEvent = (Boolean)params[4];
 
             GameFragment gameFragment = GameFragment.newInstance(isEvent, gameIds, frameIds, gameLocked, manualScore);
-            startFragmentTransaction(gameFragment, (isEvent ? Constants.FRAGMENT_LEAGUES : Constants.FRAGMENT_SERIES));
+            startFragmentTransaction(gameFragment, (isEvent ? Constants.FRAGMENT_LEAGUES : Constants.FRAGMENT_SERIES), Constants.FRAGMENT_GAME);
         }
     }
 
@@ -584,7 +750,7 @@ public class MainActivity extends ActionBarActivity
             long[] frameIds = (long[])params[1];
 
             GameFragment gameFragment = GameFragment.newInstance(false, gameIds, frameIds, new boolean[mNumberOfGames], new boolean[mNumberOfGames]);
-            startFragmentTransaction(gameFragment, Constants.FRAGMENT_SERIES);
+            startFragmentTransaction(gameFragment, Constants.FRAGMENT_SERIES, Constants.FRAGMENT_GAME);
         }
     }
 

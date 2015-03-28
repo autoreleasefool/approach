@@ -143,7 +143,7 @@ public class StatsFragment extends Fragment
 
         updateTheme();
 
-        mainActivity.setActionBarTitle(titleToSet);
+        mainActivity.setActionBarTitle(titleToSet, true);
         new LoadStatsTask().execute(statsToLoad);
     }
 
@@ -637,6 +637,7 @@ public class StatsFragment extends Fragment
         boolean isOpenIncluded = preferences.getBoolean(Constants.KEY_INCLUDE_OPEN, true);
         SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getReadableDatabase();
 
+        //TODO: make sure excluding stats works
         String rawStatsQuery = "SELECT "
                 + GameEntry.COLUMN_SCORE + ", "
                 + GameEntry.COLUMN_GAME_NUMBER + ", "

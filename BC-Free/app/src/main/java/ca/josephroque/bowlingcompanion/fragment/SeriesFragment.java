@@ -129,7 +129,7 @@ public class SeriesFragment extends Fragment
     public void onResume()
     {
         super.onResume();
-        ((MainActivity)getActivity()).setActionBarTitle(R.string.title_fragment_series);
+        ((MainActivity)getActivity()).setActionBarTitle(R.string.title_fragment_series, true);
 
         mListSeriesIds.clear();
         mListSeriesDates.clear();
@@ -147,6 +147,15 @@ public class SeriesFragment extends Fragment
     {
         inflater.inflate(R.menu.menu_series, menu);
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu)
+    {
+        boolean drawerOpen = ((MainActivity)getActivity()).isDrawerOpen();
+        menu.findItem(R.id.action_stats).setVisible(!drawerOpen);
+        menu.findItem(R.id.action_edit_date).setVisible(!drawerOpen);
+        super.onPrepareOptionsMenu(menu);
     }
 
     @Override

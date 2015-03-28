@@ -11,6 +11,7 @@
     <string name="title_stats_league">League Stats</string>
     <string name="title_stats_series">Series Stats</string>
     <string name="title_stats_game">Game Stats</string>
+    <string name="title_drawer">Navigation</string>
 
     <!-- Dialog text -->
     <string name="dialog_okay">Okay</string>
@@ -57,6 +58,9 @@
     <string name="text_unloock_game">Unlock Game</string>
     <string name="text_set_manual_score">Set Score</string>
     <string name="text_clear_manual_score">Clear Score</string>
+    <string name="text_switch_game">Switch Game</string>
+    <string name="text_open_drawer">Open Navigation Drawer</string>
+    <string name="text_close_drawer">Close Navigation Drawer</string>
 
     <!-- ADVERTISEMENTS -->
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>

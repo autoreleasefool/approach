@@ -218,4 +218,6 @@ public class Constants
     public static final String FRAGMENT_SERIES = "SeriesFragment";
     /** Tag to identify instance of GameFragment */
     public static final String FRAGMENT_GAME = "GameFragment";
+    /** Tag to identify instance of StatFragment */
+    public static final String FRAGMENT_STATS = "StatsFragment";
 }

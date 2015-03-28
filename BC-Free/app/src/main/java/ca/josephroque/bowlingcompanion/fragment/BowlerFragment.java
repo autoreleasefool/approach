@@ -10,6 +10,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -166,7 +167,7 @@ public class BowlerFragment extends Fragment
     public void onResume()
     {
         super.onResume();
-        ((MainActivity)getActivity()).setActionBarTitle(R.string.app_name);
+        ((MainActivity)getActivity()).setActionBarTitle(R.string.app_name, true);
 
         //Loads values for member variables from preferences, if they exist
         SharedPreferences prefs = getActivity().getSharedPreferences(Constants.PREFS, Context.MODE_PRIVATE);
@@ -191,6 +192,14 @@ public class BowlerFragment extends Fragment
     {
         inflater.inflate(R.menu.menu_bowlers, menu);
         super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu)
+    {
+        boolean drawerOpen = ((MainActivity)getActivity()).isDrawerOpen();
+        menu.findItem(R.id.action_quick_series).setVisible(!drawerOpen);
+        super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -484,28 +493,33 @@ public class BowlerFragment extends Fragment
             List<String> listBowlerNames = new ArrayList<>();
             List<Short> listBowlerAverages = new ArrayList<>();
 
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            boolean includeEvents = preferences.getBoolean(Constants.KEY_INCLUDE_EVENTS, true);
+            boolean includeOpen = preferences.getBoolean(Constants.KEY_INCLUDE_OPEN, true);
+
             //Query to retrieve bowler names and averages from database
             String rawBowlerQuery = "SELECT "
                     + "bowler." + BowlerEntry.COLUMN_BOWLER_NAME + ", "
-                    + "bowler." + BowlerEntry._ID + ", "
+                    + "bowler." + BowlerEntry._ID + " AS bid, "
                     + "AVG(game." + GameEntry.COLUMN_SCORE + ") AS avg"
                     + " FROM " + BowlerEntry.TABLE_NAME + " AS bowler"
                     + " LEFT JOIN " + LeagueEntry.TABLE_NAME + " AS league"
-                    + " ON bowler." + BowlerEntry._ID + "=league." + LeagueEntry.COLUMN_BOWLER_ID
+                    + " ON bowler." + BowlerEntry._ID + "=" + LeagueEntry.COLUMN_BOWLER_ID
                     + " LEFT JOIN " + SeriesEntry.TABLE_NAME + " AS series"
-                    + " ON league." + LeagueEntry._ID + "=series." + SeriesEntry.COLUMN_LEAGUE_ID
+                    + " ON league." + LeagueEntry._ID + "=" + SeriesEntry.COLUMN_LEAGUE_ID
                     + " LEFT JOIN " + GameEntry.TABLE_NAME + " AS game"
-                    + " ON series." + SeriesEntry._ID + "=game." + GameEntry.COLUMN_SERIES_ID
+                    + " ON series." + SeriesEntry._ID + "=" + GameEntry.COLUMN_SERIES_ID
                     + " GROUP BY bowler." + BowlerEntry._ID
                     + " ORDER BY bowler." + BowlerEntry.COLUMN_DATE_MODIFIED + " DESC";
+            String[] rawBowlerArgs = null;
 
             //Adds loaded bowler names and averages to lists to display
-            Cursor cursor = database.rawQuery(rawBowlerQuery, null);
+            Cursor cursor = database.rawQuery(rawBowlerQuery, rawBowlerArgs);
             if (cursor.moveToFirst())
             {
                 while (!cursor.isAfterLast())
                 {
-                    listBowlerIds.add(cursor.getLong(cursor.getColumnIndex(BowlerEntry._ID)));
+                    listBowlerIds.add(cursor.getLong(cursor.getColumnIndex("bid")));
                     listBowlerNames.add(cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_BOWLER_NAME)));
                     listBowlerAverages.add(cursor.getShort(cursor.getColumnIndex("avg")));
                     cursor.moveToNext();

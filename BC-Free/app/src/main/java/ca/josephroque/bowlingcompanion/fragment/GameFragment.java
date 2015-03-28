@@ -300,7 +300,7 @@ public class GameFragment extends Fragment
     public void onResume()
     {
         super.onResume();
-        ((MainActivity)getActivity()).setActionBarTitle(R.string.title_fragment_game);
+        ((MainActivity)getActivity()).setActionBarTitle(R.string.title_fragment_game, true);
 
         //Loads colors for frame view backgrounds
         COLOR_BACKGROUND = getResources().getColor(R.color.primary_background);
@@ -367,7 +367,15 @@ public class GameFragment extends Fragment
         menu.findItem(R.id.action_set_score)
                 .setTitle((mManualScoreSet[mCurrentGame])
                 ? R.string.action_clear_score : R.string.action_set_score);
-        menu.findItem(R.id.action_what_if).setVisible(!mManualScoreSet[mCurrentGame]);
+
+        boolean drawerOpen = ((MainActivity)getActivity()).isDrawerOpen();
+        menu.findItem(R.id.action_stats).setVisible(!drawerOpen);
+        menu.findItem(R.id.action_share).setVisible(!drawerOpen);
+        menu.findItem(R.id.action_series_stats).setVisible(!drawerOpen);
+        menu.findItem(R.id.action_reset_game).setVisible(!drawerOpen);
+        menu.findItem(R.id.action_set_score).setVisible(!drawerOpen);
+
+        menu.findItem(R.id.action_what_if).setVisible(!mManualScoreSet[mCurrentGame] && !drawerOpen);
         super.onPrepareOptionsMenu(menu);
     }
 
@@ -1665,6 +1673,15 @@ public class GameFragment extends Fragment
         }).start();
     }
 
+    public void switchGame(byte gameNumber)
+    {
+        if (gameNumber == mCurrentGame)
+            return;
+
+        saveGame(false);
+        loadGameFromDatabase(gameNumber);
+    }
+
     /**
      * Loads the initial scores for the games being displayed from the database
      * so they can be shown and updated
@@ -1710,6 +1727,8 @@ public class GameFragment extends Fragment
         }
         cursor.close();
     }
+
+    public boolean isEventMode() {return mEventMode;}
 
     /**
      * Callback interface offers methods upon user interaction
