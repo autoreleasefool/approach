@@ -36,8 +36,12 @@
     <string name="pref_include_open_title">Include open games in stats?</string>
     <string name="pref_include_open_summaryOn">Open games will be included</string>
     <string name="pref_include_open_summaryOff">Open games will NOT be included</string>
-    <string name="pref_highlight_score_title">Highlight scores over</string>
+    <string name="pref_highlight_score_title">Game highlights</string>
     <string-array name="pref_highlight_score_values">
+        <item>50</item>
+        <item>75</item>
+        <item>100</item>
+        <item>125</item>
         <item>150</item>
         <item>175</item>
         <item>200</item>

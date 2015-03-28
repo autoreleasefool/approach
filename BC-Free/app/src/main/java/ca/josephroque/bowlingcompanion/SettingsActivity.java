@@ -285,6 +285,9 @@ public class SettingsActivity extends PreferenceActivity
         findPreference(Constants.KEY_THEME_LIGHT).setSummary((checkBoolean)
                 ? R.string.pref_theme_light_summaryOn
                 : R.string.pref_theme_light_summaryOff);
+
+        String scoreHighlight = sharedPreferences.getString(Constants.KEY_HIGHLIGHT_SCORE, "300");
+        findPreference(Constants.KEY_HIGHLIGHT_SCORE).setSummary("Scores over " + scoreHighlight + " will be highlighted");
     }
 
     @Override
@@ -404,7 +407,7 @@ public class SettingsActivity extends PreferenceActivity
         else if (key.equals(Constants.KEY_HIGHLIGHT_SCORE))
         {
             ListPreference highlightPref = (ListPreference)findPreference(key);
-            highlightPref.setSummary(highlightPref.getValue());
+            highlightPref.setSummary("Scores over " + highlightPref.getValue() + " will be highlighted");
         }
     }
 
