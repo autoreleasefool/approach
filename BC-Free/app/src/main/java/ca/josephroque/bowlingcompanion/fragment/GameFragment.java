@@ -120,6 +120,7 @@ public class GameFragment extends Fragment
     private TextView mTextViewPrevBall;
     private ImageView mImageViewNextBall;
     private ImageView mImageViewPrevBall;
+    private TextView mTextViewGameNumber;
 
     /** Instance of callback interface for handling user events */
     private OnGameOrSeriesStatsOpenedListener mGameSeriesListener;
@@ -288,6 +289,11 @@ public class GameFragment extends Fragment
         mTextViewPrevBall.setOnClickListener(onClickListeners[LISTENER_OTHER]);
         mImageViewClear = (ImageView)rootView.findViewById(R.id.iv_clear);
         mImageViewClear.setOnClickListener(onClickListeners[LISTENER_OTHER]);
+
+        mTextViewGameNumber = (TextView)rootView.findViewById(R.id.tv_game_number);
+        layoutParams = (RelativeLayout.LayoutParams)mTextViewGameNumber.getLayoutParams();
+        layoutParams.addRule(RelativeLayout.ALIGN_TOP, mTextViewNextBall.getId());
+        layoutParams.addRule(RelativeLayout.ALIGN_BOTTOM, mTextViewNextBall.getId());
 
         mImageViewFoul = (ImageView)rootView.findViewById(R.id.iv_foul);
         mImageViewFoul.setOnClickListener(onClickListeners[LISTENER_OTHER]);
@@ -1031,27 +1037,40 @@ public class GameFragment extends Fragment
 
     private void setVisibilityOfNextAndPrevItems()
     {
-        if (mCurrentFrame == 0 && mCurrentBall == 0)
+        getActivity().runOnUiThread(new Runnable()
         {
-            mTextViewPrevBall.setVisibility(View.GONE);
-            mImageViewPrevBall.setVisibility(View.GONE);
-        }
-        else
-        {
-            mTextViewPrevBall.setVisibility(View.VISIBLE);
-            mImageViewPrevBall.setVisibility(View.VISIBLE);
-        }
+            @Override
+            public void  run()
+            {
+                if (mCurrentFrame == 0 && mCurrentBall == 0)
+                {
+                    mTextViewPrevBall.setVisibility(View.GONE);
+                    mImageViewPrevBall.setVisibility(View.GONE);
+                    RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)mTextViewGameNumber.getLayoutParams();
+                    layoutParams.addRule(RelativeLayout.ALIGN_TOP, mTextViewNextBall.getId());
+                    layoutParams.addRule(RelativeLayout.ALIGN_BOTTOM, mTextViewNextBall.getId());
+                }
+                else
+                {
+                    mTextViewPrevBall.setVisibility(View.VISIBLE);
+                    mImageViewPrevBall.setVisibility(View.VISIBLE);
+                }
 
-        if (mCurrentFrame == Constants.LAST_FRAME && mCurrentBall == 2)
-        {
-            mTextViewNextBall.setVisibility(View.GONE);
-            mImageViewNextBall.setVisibility(View.GONE);
-        }
-        else
-        {
-            mTextViewNextBall.setVisibility(View.VISIBLE);
-            mImageViewNextBall.setVisibility(View.VISIBLE);
-        }
+                if (mCurrentFrame == Constants.LAST_FRAME && mCurrentBall == 2)
+                {
+                    mTextViewNextBall.setVisibility(View.GONE);
+                    mImageViewNextBall.setVisibility(View.GONE);
+                    RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)mTextViewGameNumber.getLayoutParams();
+                    layoutParams.addRule(RelativeLayout.ALIGN_TOP, mTextViewPrevBall.getId());
+                    layoutParams.addRule(RelativeLayout.ALIGN_BOTTOM, mTextViewPrevBall.getId());
+                }
+                else
+                {
+                    mTextViewNextBall.setVisibility(View.VISIBLE);
+                    mImageViewNextBall.setVisibility(View.VISIBLE);
+                }
+            }
+        });
     }
 
     /**
@@ -1686,6 +1705,7 @@ public class GameFragment extends Fragment
                     {
                         clearAllText(!mManualScoreSet[mCurrentGame]);
                         getActivity().supportInvalidateOptionsMenu();
+                        mTextViewGameNumber.setText("Game " + (mCurrentGame + 1));
                     }
                 });
                 setGameLocked(mGameLocked[mCurrentGame]);

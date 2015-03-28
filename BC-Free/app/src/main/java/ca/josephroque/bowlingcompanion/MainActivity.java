@@ -423,15 +423,6 @@ mBowlerId = savedInstanceState.getLong(Constants.EXTRA_ID_BOWLER, -1);
         mBowlerName = bowlerName;
         mIsQuickSeries = isQuickSeries;
 
-        mLeagueId = -1;
-        mSeriesId = -1;
-        mGameId = -1;
-        mNumberOfGames = -1;
-        mLeagueName = null;
-        mSeriesDate = null;
-        mGameNumber = -1;
-        Log.w(TAG, "Minor setting to -1");
-
         if (openLeagueFragment)
         {
             LeagueEventFragment leagueEventFragment = LeagueEventFragment.newInstance();
@@ -446,12 +437,6 @@ mBowlerId = savedInstanceState.getLong(Constants.EXTRA_ID_BOWLER, -1);
         mLeagueName = leagueName;
         mNumberOfGames = numberOfGames;
 
-        mSeriesId = -1;
-        mGameId = -1;
-        mSeriesDate = null;
-        mGameNumber = -1;
-        Log.w(TAG, "Minor setting to -1");
-
         if (openSeriesFragment)
         {
             SeriesFragment seriesFragment = SeriesFragment.newInstance();
@@ -464,10 +449,6 @@ mBowlerId = savedInstanceState.getLong(Constants.EXTRA_ID_BOWLER, -1);
     {
         mSeriesId = seriesId;
         mSeriesDate = seriesDate;
-
-        mGameId = -1;
-        mGameNumber = -1;
-        Log.w(TAG, "Minor setting to -1");
 
         new OpenSeriesTask().execute(isEvent);
     }
@@ -502,10 +483,6 @@ mBowlerId = savedInstanceState.getLong(Constants.EXTRA_ID_BOWLER, -1);
     @Override
     public void onSeriesStatsOpened()
     {
-        mGameId = -1;
-        mGameNumber = -1;
-        Log.w(TAG, "Minor setting to -1");
-
         openStatsFragment(Constants.FRAGMENT_GAME);
     }
 
@@ -777,7 +754,7 @@ mBowlerId = savedInstanceState.getLong(Constants.EXTRA_ID_BOWLER, -1);
             mIsEventMode = false;
 
             GameFragment gameFragment = GameFragment.newInstance(gameIds, frameIds, new boolean[mNumberOfGames], new boolean[mNumberOfGames]);
-            startFragmentTransaction(gameFragment, Constants.FRAGMENT_SERIES, Constants.FRAGMENT_GAME);
+            startFragmentTransaction(gameFragment, (isQuickSeries() ? Constants.FRAGMENT_BOWLERS : Constants.FRAGMENT_SERIES), Constants.FRAGMENT_GAME);
         }
     }
 

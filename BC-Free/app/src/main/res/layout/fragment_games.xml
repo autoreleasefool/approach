@@ -35,6 +35,16 @@
             android:paddingLeft="2dp"
             android:paddingRight="2dp"/>
 
+        <!-- TODO: figure out a way to center this view vertically -->
+        <TextView
+            android:id="@+id/tv_game_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@android:color/white"
+            android:layout_centerHorizontal="true"
+            android:gravity="center"/>
+
         <ImageView
             android:id="@+id/iv_next_ball"
             android:layout_width="wrap_content"
