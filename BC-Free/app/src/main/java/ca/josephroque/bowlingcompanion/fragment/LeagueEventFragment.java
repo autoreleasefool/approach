@@ -407,7 +407,7 @@ public class LeagueEventFragment extends Fragment
                     @Override
                     public void onClick(DialogInterface dialog, int which)
                     {
-                        showNewLeagueEventDialog(which == 1);
+                        showNewLeagueEventDialog(((AlertDialog)dialog).getListView().getCheckedItemPosition() == 1);
                         dialog.dismiss();
                     }
                 })
