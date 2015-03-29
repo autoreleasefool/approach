@@ -497,21 +497,36 @@ public class BowlerFragment extends Fragment
             boolean includeEvents = preferences.getBoolean(Constants.KEY_INCLUDE_EVENTS, true);
             boolean includeOpen = preferences.getBoolean(Constants.KEY_INCLUDE_OPEN, true);
 
+            String rawInnerQuery = "SELECT "
+                    + "league2." + LeagueEntry._ID + " AS lid2, "
+                    + "SUM(game2." + GameEntry.COLUMN_SCORE + ") AS gameSum, "
+                    + "COUNT(game2." + GameEntry._ID + ") AS gameCount"
+                    + " FROM " + LeagueEntry.TABLE_NAME + " AS league2"
+                    + " LEFT JOIN " + SeriesEntry.TABLE_NAME + " AS series2"
+                    + " ON lid2=" + SeriesEntry.COLUMN_LEAGUE_ID
+                    + " LEFT JOIN " + GameEntry.TABLE_NAME + " AS game2"
+                    + " ON series2." + SeriesEntry._ID + "=" + GameEntry.COLUMN_SERIES_ID
+                    + " WHERE "
+                            + (!includeEvents ? LeagueEntry.COLUMN_IS_EVENT : "'0'") + "=?"
+                            + " AND "
+                            + (!includeOpen ? LeagueEntry.COLUMN_LEAGUE_NAME + "!" : "'0'") + "=?"
+                    + " GROUP BY league2." + LeagueEntry._ID;
+            Log.w(TAG, rawInnerQuery);
+
             //Query to retrieve bowler names and averages from database
             String rawBowlerQuery = "SELECT "
                     + "bowler." + BowlerEntry.COLUMN_BOWLER_NAME + ", "
                     + "bowler." + BowlerEntry._ID + " AS bid, "
-                    + "AVG(game." + GameEntry.COLUMN_SCORE + ") AS avg"
+                    + "SUM(t.gameSum) AS totalSum, "
+                    + "COUNT(t.gameCount) AS totalCount"
                     + " FROM " + BowlerEntry.TABLE_NAME + " AS bowler"
                     + " LEFT JOIN " + LeagueEntry.TABLE_NAME + " AS league"
                     + " ON bowler." + BowlerEntry._ID + "=" + LeagueEntry.COLUMN_BOWLER_ID
-                    + " LEFT JOIN " + SeriesEntry.TABLE_NAME + " AS series"
-                    + " ON league." + LeagueEntry._ID + "=" + SeriesEntry.COLUMN_LEAGUE_ID
-                    + " LEFT JOIN " + GameEntry.TABLE_NAME + " AS game"
-                    + " ON series." + SeriesEntry._ID + "=" + GameEntry.COLUMN_SERIES_ID
+                    + " LEFT JOIN (" + rawInnerQuery + ") AS t"
+                    + " ON t.lid2=league." + LeagueEntry._ID
                     + " GROUP BY bowler." + BowlerEntry._ID
                     + " ORDER BY bowler." + BowlerEntry.COLUMN_DATE_MODIFIED + " DESC";
-            String[] rawBowlerArgs = null;
+            String[] rawBowlerArgs = {String.valueOf(0), (!includeOpen ? Constants.NAME_OPEN_LEAGUE : String.valueOf(0))};
 
             //Adds loaded bowler names and averages to lists to display
             Cursor cursor = database.rawQuery(rawBowlerQuery, rawBowlerArgs);
@@ -521,7 +536,10 @@ public class BowlerFragment extends Fragment
                 {
                     listBowlerIds.add(cursor.getLong(cursor.getColumnIndex("bid")));
                     listBowlerNames.add(cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_BOWLER_NAME)));
-                    listBowlerAverages.add(cursor.getShort(cursor.getColumnIndex("avg")));
+                    int totalSum = cursor.getInt(cursor.getColumnIndex("totalSum"));
+                    int totalCount = cursor.getInt(cursor.getColumnIndex("totalCount"));
+                    Log.w(TAG, "Sum: " + totalSum + " Count: " + totalCount);
+                    listBowlerAverages.add((short)((totalCount > 0) ? totalSum/totalCount : 0));
                     cursor.moveToNext();
                 }
             }

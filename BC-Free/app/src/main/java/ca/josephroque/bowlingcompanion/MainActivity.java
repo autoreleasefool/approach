@@ -334,7 +334,6 @@ public class MainActivity extends ActionBarActivity
                 mSeriesDate = null;
                 mNumberOfGames = -1;
                 mIsQuickSeries = false;
-                Log.w(TAG, "MAJOR setting to -1");
             }
             if (fragment.getTag().equals(Constants.FRAGMENT_LEAGUES))
             {
