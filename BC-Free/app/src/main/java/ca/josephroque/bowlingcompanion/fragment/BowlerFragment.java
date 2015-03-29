@@ -502,9 +502,9 @@ public class BowlerFragment extends Fragment
                     + "SUM(game2." + GameEntry.COLUMN_SCORE + ") AS gameSum, "
                     + "COUNT(game2." + GameEntry._ID + ") AS gameCount"
                     + " FROM " + LeagueEntry.TABLE_NAME + " AS league2"
-                    + " LEFT JOIN " + SeriesEntry.TABLE_NAME + " AS series2"
+                    + " INNER JOIN " + SeriesEntry.TABLE_NAME + " AS series2"
                     + " ON lid2=" + SeriesEntry.COLUMN_LEAGUE_ID
-                    + " LEFT JOIN " + GameEntry.TABLE_NAME + " AS game2"
+                    + " INNER JOIN " + GameEntry.TABLE_NAME + " AS game2"
                     + " ON series2." + SeriesEntry._ID + "=" + GameEntry.COLUMN_SERIES_ID
                     + " WHERE "
                             + (!includeEvents ? LeagueEntry.COLUMN_IS_EVENT : "'0'") + "=?"
@@ -518,11 +518,11 @@ public class BowlerFragment extends Fragment
                     + "bowler." + BowlerEntry.COLUMN_BOWLER_NAME + ", "
                     + "bowler." + BowlerEntry._ID + " AS bid, "
                     + "SUM(t.gameSum) AS totalSum, "
-                    + "COUNT(t.gameCount) AS totalCount"
+                    + "SUM(t.gameCount) AS totalCount"
                     + " FROM " + BowlerEntry.TABLE_NAME + " AS bowler"
-                    + " LEFT JOIN " + LeagueEntry.TABLE_NAME + " AS league"
+                    + " INNER JOIN " + LeagueEntry.TABLE_NAME + " AS league"
                     + " ON bowler." + BowlerEntry._ID + "=" + LeagueEntry.COLUMN_BOWLER_ID
-                    + " LEFT JOIN (" + rawInnerQuery + ") AS t"
+                    + " INNER JOIN (" + rawInnerQuery + ") AS t"
                     + " ON t.lid2=league." + LeagueEntry._ID
                     + " GROUP BY bowler." + BowlerEntry._ID
                     + " ORDER BY bowler." + BowlerEntry.COLUMN_DATE_MODIFIED + " DESC";
