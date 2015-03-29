@@ -1,10 +1,12 @@
 package ca.josephroque.bowlingcompanion.fragment;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -19,7 +21,9 @@ import android.widget.TextView;
 
 import com.melnykov.fab.FloatingActionButton;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import ca.josephroque.bowlingcompanion.DividerItemDecoration;
@@ -28,6 +32,7 @@ import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.adapter.SeriesAdapter;
 import ca.josephroque.bowlingcompanion.database.Contract.*;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
+import ca.josephroque.bowlingcompanion.dialog.ChangeDateDialog;
 import ca.josephroque.bowlingcompanion.utilities.DataFormatter;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 
@@ -40,7 +45,8 @@ import ca.josephroque.bowlingcompanion.theme.Theme;
 public class SeriesFragment extends Fragment
     implements
         Theme.ChangeableTheme,
-        SeriesAdapter.SeriesEventHandler
+        SeriesAdapter.SeriesEventHandler,
+        ChangeDateDialog.ChangeDateDialogListener
 {
     /** Tag to identify class when outputting to console */
     private static final String TAG = "SeriesFragment";
@@ -154,7 +160,6 @@ public class SeriesFragment extends Fragment
     {
         boolean drawerOpen = ((MainActivity)getActivity()).isDrawerOpen();
         menu.findItem(R.id.action_stats).setVisible(!drawerOpen);
-        menu.findItem(R.id.action_edit_date).setVisible(!drawerOpen);
         super.onPrepareOptionsMenu(menu);
     }
 
@@ -163,9 +168,6 @@ public class SeriesFragment extends Fragment
     {
         switch(item.getItemId())
         {
-            case R.id.action_edit_date:
-                //TODO: edit date
-                return true;
             case R.id.action_stats:
                 mSeriesListener.onLeagueStatsOpened();
                 return true;
@@ -208,6 +210,62 @@ public class SeriesFragment extends Fragment
     {
         //Gets position of view in mRecyclerViewSeries
         return mRecyclerViewSeries.getChildPosition(v);
+    }
+
+    @Override
+    public void onEditClick(final int position)
+    {
+        DialogFragment dateDialog = ChangeDateDialog.newInstance(this, mListSeriesDates.get(position), mListSeriesIds.get(position));
+        dateDialog.show(getFragmentManager(), "ChangeDateDialog");
+    }
+
+    @Override
+    public void onChangeDate(final long seriesId, int year, int month, int day)
+    {
+        final int index = mListSeriesIds.indexOf(seriesId);
+        Calendar c = Calendar.getInstance();
+        c.set(year, month, day);
+        final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        final String formattedDate = dateFormat.format(c.getTime());
+        mListSeriesDates.set(index, DataFormatter.formattedDateToPrettyCompact(formattedDate.substring(0,10)));
+
+        getActivity().runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                mAdapterSeries.notifyItemChanged(index);
+            }
+        });
+
+        new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
+                ContentValues values = new ContentValues();
+                values.put(SeriesEntry.COLUMN_SERIES_DATE, formattedDate);
+
+                database.beginTransaction();
+                try
+                {
+                    database.update(SeriesEntry.TABLE_NAME,
+                            values,
+                            SeriesEntry._ID + "=?",
+                            new String[]{String.valueOf(seriesId)});
+                    database.setTransactionSuccessful();
+                }
+                catch (Exception ex)
+                {
+                    Log.w(TAG, "Unable to change series date: " + seriesId);
+                }
+                finally
+                {
+                    database.endTransaction();
+                }
+            }
+        }).start();
     }
 
     /**

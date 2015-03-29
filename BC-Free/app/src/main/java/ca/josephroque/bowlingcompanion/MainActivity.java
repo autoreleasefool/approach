@@ -359,7 +359,6 @@ mBowlerId = savedInstanceState.getLong(Constants.EXTRA_ID_BOWLER, -1);
                 mLeagueName = null;
                 mSeriesDate = null;
                 mNumberOfGames = -1;
-                Log.w(TAG, "MAJOR setting to -1");
             }
             else if (fragment.getTag().equals(Constants.FRAGMENT_SERIES))
             {
@@ -370,7 +369,6 @@ mBowlerId = savedInstanceState.getLong(Constants.EXTRA_ID_BOWLER, -1);
                 mGameId = -1;
                 mGameNumber = -1;
                 mSeriesDate = null;
-                Log.w(TAG, "MAJOR setting to -1");
             }
             else if (fragment.getTag().equals(Constants.FRAGMENT_GAME))
             {
@@ -384,20 +382,17 @@ mBowlerId = savedInstanceState.getLong(Constants.EXTRA_ID_BOWLER, -1);
 
                 mGameId = -1;
                 mGameNumber = -1;
-                Log.w(TAG, "MAJOR setting to -1");
             }
             else if (fragment.getTag().equals(Constants.FRAGMENT_STATS))
             {
                 if (mBowlerId >= 0)
-                    mListDrawerOptions.add("Bowler");
+                    mListDrawerOptions.add("Bowlers");
                 if (mLeagueId >= 0 && !isQuickSeries())
                     mListDrawerOptions.add("Leagues & Events");
                 if (mSeriesId >= 0 && !isEventMode() && !isQuickSeries())
                     mListDrawerOptions.add("Series");
                 if (mGameId >= 0)
                     mListDrawerOptions.add("Game Details");
-
-                //Log.w(TAG, "MAJOR setting to -1");
             }
             break;
         }

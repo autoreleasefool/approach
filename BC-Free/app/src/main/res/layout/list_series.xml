@@ -18,12 +18,22 @@
         android:gravity="center"
         android:textAppearance="?android:attr/textAppearanceMedium"/>
 
+    <ImageView
+        android:id="@+id/iv_edit_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="4dp"
+        android:src="@drawable/ic_action_edit"/>
+
     <TextView
         android:id="@+id/tv_series_game_1"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
+        android:layout_toLeftOf="@id/iv_edit_date"
+        android:layout_toStartOf="@id/iv_edit_date"
         android:layout_centerVertical="true"
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="4dp"

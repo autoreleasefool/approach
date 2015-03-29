@@ -36,6 +36,36 @@ public class DataFormatter
         return null;
     }
 
+    public static int monthToInt(String month)
+    {
+        if (month.startsWith("Jan"))
+            return 1;
+        else if (month.startsWith("Feb"))
+            return 2;
+        else if (month.startsWith("Mar"))
+            return 3;
+        else if (month.startsWith("Apr"))
+            return 4;
+        else if (month.startsWith("May"))
+            return 5;
+        else if (month.startsWith("Jun"))
+            return 6;
+        else if (month.startsWith("Jul"))
+            return 7;
+        else if (month.startsWith("Aug"))
+            return 8;
+        else if (month.startsWith("Sep"))
+            return 9;
+        else if (month.startsWith("Oct"))
+            return 10;
+        else if (month.startsWith("Nov"))
+            return 11;
+        else if (month.startsWith("Dec"))
+            return 12;
+        else
+            return -1;
+    }
+
     /**
      * Converts string of the form "YYYY-mm-DD" to a cleaner format,
      * where YYYY stands for the year, mm stands for the month and
@@ -59,6 +89,29 @@ public class DataFormatter
         }
         else
             throw new IllegalArgumentException("String must be formatted as YYYY-mm-DD");
+    }
+
+    public static int[] prettyCompactToFormattedDate(String pretty)
+    {
+        int[] date = new int[3];
+        if (pretty.matches("[A-Z]\\w{2,3} \\d{1,2}, \\d{4}"))
+        {
+            date[0] = monthToInt(pretty.substring(0,3));
+            switch(date[0])
+            {
+                case 1:case 2:case 3:case 4:case 5:case 8:case 10:case 11:case 12:
+                date[1] = Integer.parseInt(pretty.substring(4, pretty.indexOf(",")));
+                date[2] = Integer.parseInt(pretty.substring(pretty.indexOf(",") + 2));
+                break;
+                case 6:case 7:case 9:
+                date[1] = Integer.parseInt(pretty.substring(5, pretty.indexOf(",")));
+                date[2] = Integer.parseInt(pretty.substring(pretty.indexOf(",") + 2));
+                break;
+            }
+        }
+        else
+            throw new IllegalArgumentException("String must match the pattern: [A-Z]\\w{2,3} \\d{1,2}, \\d{4}");
+        return date;
     }
 
     /**

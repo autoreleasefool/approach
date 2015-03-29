@@ -1,12 +1,14 @@
 package ca.josephroque.bowlingcompanion.adapter;
 
 import android.app.Activity;
+import android.graphics.PorterDuff;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nineoldandroids.animation.ArgbEvaluator;
@@ -55,6 +57,7 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
         private TextView[] mArrayTextViewGames;
         /** Animates changes in color to the ViewHolder background */
         private ValueAnimator mValueAnimator = null;
+        private ImageView mImageViewEdit;
 
         /**
          * Calls super constructor and gets instances of ImageView and TextView objects
@@ -65,6 +68,7 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
         {
             super(itemLayoutView);
             mTextViewDate = (TextView)itemLayoutView.findViewById(R.id.tv_series_date);
+            mImageViewEdit = (ImageView)itemLayoutView.findViewById(R.id.iv_edit_date);
 
             //Adds text views by id to array
             mArrayTextViewGames = new TextView[Constants.MAX_NUMBER_LEAGUE_GAMES];
@@ -138,6 +142,17 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
                 holder.mArrayTextViewGames[i].setTextColor(Theme.getPrimaryThemeColor());
             }
         }
+
+        //Sets color of edit button
+        holder.mImageViewEdit.getDrawable().setColorFilter(Theme.getSecondaryThemeColor(), PorterDuff.Mode.MULTIPLY);
+        holder.mImageViewEdit.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                mEventHandler.onEditClick(position);
+            }
+        });
 
         /*
          * Below methods are executed when an item in the RecyclerView is
@@ -233,5 +248,11 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
          * @return position of v in the parent RecyclerView
          */
         public int getSeriesViewPositionInRecyclerView(View v);
+
+        /**
+         * Called when the edit image view for an item in the RecyclerView is clicked
+         * @param position position of the item in the list
+         */
+        public void onEditClick(final int position);
     }
 }
