@@ -238,6 +238,7 @@ public class SeriesFragment extends Fragment
             }
         });
 
+        ((MainActivity)getActivity()).addSavingThread(
         new Thread(new Runnable()
         {
             @Override
@@ -265,7 +266,7 @@ public class SeriesFragment extends Fragment
                     database.endTransaction();
                 }
             }
-        }).start();
+        }));
     }
 
     /**
