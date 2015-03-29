@@ -242,10 +242,20 @@ public class StatsFragment extends Fragment
             int totalShotsAtMiddle = 0;
             int spareChances = 0;
             int seriesTotal = 0;
+            int count = 0; //TODO remove
             if (cursor.moveToFirst())
             {
                 while(!cursor.isAfterLast())
                 {
+                    Log.w(TAG, "Row " + ++count + ": "
+                            + "Game " + cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_GAME_NUMBER))
+                            + ", Frame " + cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_FRAME_NUMBER))
+                            + ", Accessed " + cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_IS_ACCESSED))
+                            + ", Fouls " + cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_FOULS))
+                            + ", " + cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_PIN_STATE[0]))
+                            + " " + cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_PIN_STATE[1]))
+                            + " " + cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_PIN_STATE[2])));
+
                     boolean frameAccessed = (cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_IS_ACCESSED)) == 1);
                     if (bowlerLeagueOrGame == LOADING_GAME_STATS && !frameAccessed)
                         break;
@@ -637,6 +647,9 @@ public class StatsFragment extends Fragment
         boolean isOpenIncluded = preferences.getBoolean(Constants.KEY_INCLUDE_OPEN, true);
         SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getReadableDatabase();
 
+        Log.w(TAG, "Bowler ID: " + ((MainActivity) getActivity()).getBowlerId()
+                + " League ID: " + ((MainActivity) getActivity()).getLeagueId());
+
         //TODO: make sure excluding stats works
         String rawStatsQuery = "SELECT "
                 + GameEntry.COLUMN_SCORE + ", "
@@ -648,18 +661,18 @@ public class StatsFragment extends Fragment
                 + FrameEntry.COLUMN_PIN_STATE[1] + ", "
                 + FrameEntry.COLUMN_PIN_STATE[2]
                 + " FROM " + LeagueEntry.TABLE_NAME + " AS league"
-                + " LEFT JOIN " + SeriesEntry.TABLE_NAME + " AS series"
-                + " ON league." + LeagueEntry._ID + "=series." + SeriesEntry._ID
-                + " LEFT JOIN " + GameEntry.TABLE_NAME + " AS game"
+                + " INNER JOIN " + SeriesEntry.TABLE_NAME + " AS series"
+                + " ON league." + LeagueEntry._ID + "=series." + SeriesEntry.COLUMN_LEAGUE_ID
+                + " INNER JOIN " + GameEntry.TABLE_NAME + " AS game"
                 + " ON series." + SeriesEntry._ID + "=game." + GameEntry.COLUMN_SERIES_ID
-                + " LEFT JOIN " + FrameEntry.TABLE_NAME + " AS frame"
+                + " INNER JOIN " + FrameEntry.TABLE_NAME + " AS frame"
                 + " ON game." + GameEntry._ID + "=frame." + FrameEntry.COLUMN_GAME_ID
                 + ((shouldGetLeagueStats)
                         ? " WHERE league." + LeagueEntry._ID + "=?"
                         : " WHERE league." + LeagueEntry.COLUMN_BOWLER_ID + "=?")
                 + ((isEventIncluded)
                         ? " AND 0=?"
-                        : " AND league." + LeagueEntry.COLUMN_IS_EVENT + "=?")
+                        : " AND " + LeagueEntry.COLUMN_IS_EVENT + "=?")
                 + ((isOpenIncluded)
                         ? " AND 'Open'=?"
                         : " AND league." + LeagueEntry.COLUMN_LEAGUE_NAME + "!=?")
@@ -667,10 +680,11 @@ public class StatsFragment extends Fragment
                         + ", series." + SeriesEntry._ID
                         + ", game." + GameEntry.COLUMN_GAME_NUMBER
                         + ", frame." + FrameEntry.COLUMN_FRAME_NUMBER;
+        Log.w(TAG, rawStatsQuery);
         String[] rawStatsArgs = {
                 ((shouldGetLeagueStats)
-                    ? String.valueOf(((MainActivity)getActivity()).getLeagueId())
-                    : String.valueOf(((MainActivity)getActivity()).getBowlerId())),
+                        ? String.valueOf(((MainActivity) getActivity()).getLeagueId())
+                        : String.valueOf(((MainActivity) getActivity()).getBowlerId())),
                 String.valueOf(0),
                 Constants.NAME_OPEN_LEAGUE};
 
