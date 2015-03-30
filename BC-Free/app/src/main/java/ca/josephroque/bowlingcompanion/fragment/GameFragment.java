@@ -63,6 +63,7 @@ public class GameFragment extends Fragment
     private static final byte LISTENER_PIN_BUTTONS = 1;
     /** Represents the OnClickListener for any other objects */
     private static final byte LISTENER_OTHER = 2;
+    private static final byte LISTENER_TEXT_BALLS = 3;
 
     /** Ids which represent current games that are available to be edited */
     private long[] mGameIds;
@@ -234,6 +235,7 @@ public class GameFragment extends Fragment
                 layoutParams.leftMargin = DataFormatter.getPixelsFromDP(screenDensity, 120 * i + j * 40);
                 relativeLayout.addView(text, layoutParams);
                 mTextViewBallScores[i][j] = text;
+                text.setOnClickListener(onClickListeners[LISTENER_TEXT_BALLS]);
 
                 //TextView to display fouls invoked on a certain ball
                 text = new TextView(getActivity());
@@ -488,7 +490,7 @@ public class GameFragment extends Fragment
      */
     private View.OnClickListener[] getOnClickListeners()
     {
-        View.OnClickListener[] listeners = new View.OnClickListener[3];
+        View.OnClickListener[] listeners = new View.OnClickListener[4];
         listeners[LISTENER_TEXT_FRAMES] = new View.OnClickListener()
         {
             @Override
@@ -647,6 +649,45 @@ public class GameFragment extends Fragment
 
                     default:
                         throw new RuntimeException("Unknown other button id");
+                }
+            }
+        };
+
+        listeners[LISTENER_TEXT_BALLS] = new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                boolean viewFound = false;
+                for (byte i = 0; i < mTextViewBallScores.length && !viewFound; i++)
+                {
+                    for (byte j = 0; j < mTextViewBallScores[i].length; j++)
+                    {
+                        if (v == mTextViewBallScores[i][j])
+                        {
+                            viewFound = true;
+                            byte newCurrentFrame = i;
+                            byte newCurrentBall = j;
+
+                            //Changes the current frame and updates the GUI
+                            clearFrameColor();
+                            mCurrentFrame = newCurrentFrame;
+                            mCurrentBall = 0;
+                            for (int k = mCurrentFrame; k >= 0; i--)
+                            {
+                                if (mHasFrameBeenAccessed[k])
+                                    break;
+                                mHasFrameBeenAccessed[i] = true;
+                            }
+                            while(!Arrays.equals(mPinState[mCurrentFrame][mCurrentBall], Constants.FRAME_PINS_DOWN) && mCurrentBall < newCurrentBall)
+                            {
+                                mCurrentBall++;
+                            }
+                            setVisibilityOfNextAndPrevItems();
+                            updateFrameColor();
+                            break;
+                        }
+                    }
                 }
             }
         };
