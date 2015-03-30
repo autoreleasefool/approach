@@ -519,9 +519,9 @@ public class BowlerFragment extends Fragment
                     + "SUM(t.gameSum) AS totalSum, "
                     + "SUM(t.gameCount) AS totalCount"
                     + " FROM " + BowlerEntry.TABLE_NAME + " AS bowler"
-                    + " INNER JOIN " + LeagueEntry.TABLE_NAME + " AS league"
+                    + " LEFT JOIN " + LeagueEntry.TABLE_NAME + " AS league"
                     + " ON bowler." + BowlerEntry._ID + "=" + LeagueEntry.COLUMN_BOWLER_ID
-                    + " INNER JOIN (" + rawInnerQuery + ") AS t"
+                    + " LEFT JOIN (" + rawInnerQuery + ") AS t"
                     + " ON t.lid2=league." + LeagueEntry._ID
                     + " GROUP BY bowler." + BowlerEntry._ID
                     + " ORDER BY bowler." + BowlerEntry.COLUMN_DATE_MODIFIED + " DESC";
