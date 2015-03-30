@@ -666,12 +666,10 @@ public class GameFragment extends Fragment
                         if (v == mTextViewBallScores[i][j])
                         {
                             viewFound = true;
-                            byte newCurrentFrame = i;
-                            byte newCurrentBall = j;
 
                             //Changes the current frame and updates the GUI
                             clearFrameColor();
-                            mCurrentFrame = newCurrentFrame;
+                            mCurrentFrame = i;
                             mCurrentBall = 0;
                             for (int k = mCurrentFrame; k >= 0; i--)
                             {
@@ -679,7 +677,7 @@ public class GameFragment extends Fragment
                                     break;
                                 mHasFrameBeenAccessed[i] = true;
                             }
-                            while(!Arrays.equals(mPinState[mCurrentFrame][mCurrentBall], Constants.FRAME_PINS_DOWN) && mCurrentBall < newCurrentBall)
+                            while(!Arrays.equals(mPinState[mCurrentFrame][mCurrentBall], Constants.FRAME_PINS_DOWN) && mCurrentBall < j)
                             {
                                 mCurrentBall++;
                             }
@@ -1577,9 +1575,13 @@ public class GameFragment extends Fragment
                     public void run()
                     {
                         if (mPinState[mCurrentFrame][mCurrentBall][pinToSet])
+                        {
                             mImageButtonPins[pinToSet].setImageResource(R.drawable.pin_disabled);
+                        }
                         else
+                        {
                             mImageButtonPins[pinToSet].setImageResource(R.drawable.pin_enabled);
+                        }
                         mImageViewClear.setEnabled(!allPinsKnockedOver);
                     }
                 });
