@@ -1,7 +1,6 @@
 package ca.josephroque.bowlingcompanion.adapter;
 
-import android.app.Activity;
-import android.view.LayoutInflater;
+import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -12,6 +11,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.R;
 
 /**
@@ -23,14 +23,12 @@ import ca.josephroque.bowlingcompanion.R;
 public class DrawerAdapter extends ArrayAdapter<String>
     implements ListView.OnItemClickListener
 {
-    private Activity mActivity;
     private OnDrawerClickListener mDrawerClickListener;
     private List<String> mListOptions;
 
-    public DrawerAdapter(Activity context, List<String> listOptions)
+    public DrawerAdapter(Context context, List<String> listOptions)
     {
         super(context, R.layout.list_drawer, listOptions);
-        this.mActivity = context;
         this.mListOptions = listOptions;
 
         try
@@ -48,16 +46,17 @@ public class DrawerAdapter extends ArrayAdapter<String>
         }
     }
 
+    @SuppressWarnings("StringEquality") //String constants are added to list, so
+                                        //direct comparison can be used
     @Override
     public View getView(int position, View view, ViewGroup viewGroup)
     {
-        LayoutInflater inflater = mActivity.getLayoutInflater();
         ViewHolder viewHolder;
 
         if (view == null)
         {
             viewHolder = new ViewHolder();
-            view = inflater.inflate(R.layout.list_drawer, null, true);
+            view = View.inflate(getContext(), R.layout.list_drawer, null);
             viewHolder.mImageViewIcon = (ImageView)view.findViewById(R.id.iv_list_drawer);
             viewHolder.mTextViewOption = (TextView)view.findViewById(R.id.tv_list_drawer);
             view.setTag(viewHolder);
@@ -68,27 +67,27 @@ public class DrawerAdapter extends ArrayAdapter<String>
         }
 
         viewHolder.mTextViewOption.setText(mListOptions.get(position));
-        if (mListOptions.get(position).equals("Home"))
+        if (mListOptions.get(position) == Constants.NAV_OPTION_HOME)
         {
             viewHolder.mImageViewIcon.setVisibility(View.VISIBLE);
             viewHolder.mImageViewIcon.setImageResource(R.drawable.ic_home);
         }
-        else if (mListOptions.get(position).equals("Bowlers"))
+        else if (mListOptions.get(position) == Constants.NAV_OPTION_BOWLERS)
         {
             viewHolder.mImageViewIcon.setVisibility(View.VISIBLE);
             viewHolder.mImageViewIcon.setImageResource(R.drawable.ic_action_group);
         }
-        else if (mListOptions.get(position).equals("Leagues & Events"))
+        else if (mListOptions.get(position) == Constants.NAV_OPTION_LEAGUES_EVENTS)
         {
             viewHolder.mImageViewIcon.setVisibility(View.VISIBLE);
             viewHolder.mImageViewIcon.setImageResource(R.drawable.ic_action_storage);
         }
-        else if (mListOptions.get(position).equals("Series"))
+        else if (mListOptions.get(position) == Constants.NAV_OPTION_SERIES)
         {
             viewHolder.mImageViewIcon.setVisibility(View.VISIBLE);
             viewHolder.mImageViewIcon.setImageResource(R.drawable.ic_action_series);
         }
-        else if (mListOptions.get(position).equals("Game Details"))
+        else if (mListOptions.get(position) == Constants.NAV_OPTION_GAME_DETAILS)
         {
             viewHolder.mImageViewIcon.setVisibility(View.VISIBLE);
             viewHolder.mImageViewIcon.setImageResource(R.drawable.ic_action_pin);

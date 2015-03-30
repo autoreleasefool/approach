@@ -917,8 +917,10 @@ public class GameFragment extends Fragment
      */
     private void showWhatIfDialog()
     {
+
+
         //TODO: method doesn't calculate proper score
-        StringBuilder alertMessageBuilder = new StringBuilder("If you get");
+        /*StringBuilder alertMessageBuilder = new StringBuilder("If you get");
         short possibleScore = Short.parseShort(mTextViewFrames[mCurrentFrame].getText().toString());
 
         if (mCurrentFrame < Constants.LAST_FRAME)
@@ -1039,7 +1041,7 @@ public class GameFragment extends Fragment
                     }
                 });
         builder.create()
-                .show();
+                .show();*/
     }
 
     private void setVisibilityOfNextAndPrevItems()

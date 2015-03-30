@@ -222,4 +222,12 @@ public class Constants
     public static final String FRAGMENT_GAME = "GameFragment";
     /** Tag to identify instance of StatFragment */
     public static final String FRAGMENT_STATS = "StatsFragment";
+
+    // NAVIGATION OPTIONS
+    public static final String NAV_OPTION_HOME = "Home";
+    public static final String NAV_OPTION_BOWLERS = "Bowlers";
+    public static final String NAV_OPTION_LEAGUES_EVENTS = "Leagues & Events";
+    public static final String NAV_OPTION_SERIES = "Series";
+    public static final String NAV_OPTION_GAME_DETAILS = "Game Details";
+    public static final String NAV_OPTION_STATS = "Statistics";
 }

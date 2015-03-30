@@ -101,7 +101,8 @@ public class MainActivity extends ActionBarActivity
         mTitle = R.string.app_name;
         mDrawerTitle = R.string.title_drawer;
         mListDrawerOptions = new ArrayList<>();
-        mListDrawerOptions.add("Home");
+        mListDrawerOptions.add(Constants.NAV_OPTION_HOME);
+        mListDrawerOptions.add(Constants.NAV_OPTION_BOWLERS);
 
         mDrawerLayout = (DrawerLayout)findViewById(R.id.main_drawer_layout);
         mDrawerList = (ListView)findViewById(R.id.main_drawer_list);
@@ -313,8 +314,8 @@ public class MainActivity extends ActionBarActivity
 
     @Override
     public void onBackStackChanged() {
-        if (mListDrawerOptions.size() > 1)
-            mListDrawerOptions.subList(1, mListDrawerOptions.size()).clear();
+        if (mListDrawerOptions.size() > 2)
+            mListDrawerOptions.subList(2, mListDrawerOptions.size()).clear();
 
         List<Fragment> fragments = getSupportFragmentManager().getFragments();
         for (Fragment fragment: fragments)
@@ -337,7 +338,7 @@ public class MainActivity extends ActionBarActivity
             }
             if (fragment.getTag().equals(Constants.FRAGMENT_LEAGUES))
             {
-                mListDrawerOptions.add("Bowlers");
+                mListDrawerOptions.add(Constants.NAV_OPTION_LEAGUES_EVENTS);
 
                 mLeagueId = -1;
                 mSeriesId = -1;
@@ -349,8 +350,8 @@ public class MainActivity extends ActionBarActivity
             }
             else if (fragment.getTag().equals(Constants.FRAGMENT_SERIES))
             {
-                mListDrawerOptions.add("Bowlers");
-                mListDrawerOptions.add("Leagues & Events");
+                mListDrawerOptions.add(Constants.NAV_OPTION_LEAGUES_EVENTS);
+                mListDrawerOptions.add(Constants.NAV_OPTION_SERIES);
 
                 mSeriesId = -1;
                 mGameId = -1;
@@ -359,11 +360,11 @@ public class MainActivity extends ActionBarActivity
             }
             else if (fragment.getTag().equals(Constants.FRAGMENT_GAME))
             {
-                mListDrawerOptions.add("Bowlers");
                 if (!isQuickSeries())
-                    mListDrawerOptions.add("Leagues & Events");
+                    mListDrawerOptions.add(Constants.NAV_OPTION_LEAGUES_EVENTS);
                 if (!isEventMode() && !isQuickSeries())
-                    mListDrawerOptions.add("Series");
+                    mListDrawerOptions.add(Constants.NAV_OPTION_SERIES);
+                mListDrawerOptions.add(Constants.NAV_OPTION_GAME_DETAILS);
                 for (byte i = 0; i < mNumberOfGames; i++)
                     mListDrawerOptions.add("Game " + (i + 1));
 
@@ -372,14 +373,13 @@ public class MainActivity extends ActionBarActivity
             }
             else if (fragment.getTag().equals(Constants.FRAGMENT_STATS))
             {
-                if (mBowlerId >= 0)
-                    mListDrawerOptions.add("Bowlers");
                 if (mLeagueId >= 0 && !isQuickSeries())
-                    mListDrawerOptions.add("Leagues & Events");
+                    mListDrawerOptions.add(Constants.NAV_OPTION_LEAGUES_EVENTS);
                 if (mSeriesId >= 0 && !isEventMode() && !isQuickSeries())
-                    mListDrawerOptions.add("Series");
+                    mListDrawerOptions.add(Constants.NAV_OPTION_SERIES);
                 if (mGameId >= 0)
-                    mListDrawerOptions.add("Game Details");
+                    mListDrawerOptions.add(Constants.NAV_OPTION_GAME_DETAILS);
+                mListDrawerOptions.add(Constants.NAV_OPTION_STATS);
             }
             break;
         }
@@ -488,24 +488,26 @@ public class MainActivity extends ActionBarActivity
         gameFragment.switchGame(gameNumber);
     }
 
-    @SuppressWarnings("IfCanBeSwitch")
+    @SuppressWarnings({"IfCanBeSwitch", "StringEquality"})  //May need to compile for 1.6. Also,
+                                                            //constant strings are added to list so
+                                                            //they can be compared directly
     @Override
     public void onFragmentItemClicked(String fragmentItem)
     {
         mDrawerLayout.closeDrawer(mDrawerList);
-        if (fragmentItem.equals("Home") || fragmentItem.equals("Bowlers"))
+        if (fragmentItem == Constants.NAV_OPTION_HOME || fragmentItem == Constants.NAV_OPTION_BOWLERS)
         {
             getSupportFragmentManager().popBackStack(Constants.FRAGMENT_BOWLERS, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
-        else if (fragmentItem.equals("Leagues & Events"))
+        else if (fragmentItem == Constants.NAV_OPTION_LEAGUES_EVENTS)
         {
             getSupportFragmentManager().popBackStack(Constants.FRAGMENT_LEAGUES, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
-        else if (fragmentItem.equals("Series"))
+        else if (fragmentItem == Constants.NAV_OPTION_SERIES)
         {
             getSupportFragmentManager().popBackStack(Constants.FRAGMENT_SERIES, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
-        else if (fragmentItem.equals("Game Details"))
+        else if (fragmentItem == Constants.NAV_OPTION_GAME_DETAILS)
         {
             getSupportFragmentManager().popBackStack(Constants.FRAGMENT_GAME, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
