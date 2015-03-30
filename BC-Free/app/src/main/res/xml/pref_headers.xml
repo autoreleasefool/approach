@@ -3,16 +3,16 @@
     <!-- These settings headers are only used on tablets. -->
 
     <header
+        android:fragment="ca.josephroque.bowlingcompanion.SettingsActivity$ThemePreferenceFragment"
+        android:title="@string/pref_header_theme"/>
+
+    <header
         android:fragment="ca.josephroque.bowlingcompanion.SettingsActivity$QuickPreferenceFragment"
         android:title="@string/pref_header_quick"/>
 
     <header
         android:fragment="ca.josephroque.bowlingcompanion.SettingsActivity$StatsPreferenceFragment"
         android:title="@string/pref_header_stats"/>
-
-    <header
-        android:fragment="ca.josephroque.bowlingcompanion.SettingsActivity$ThemePreferenceFragment"
-        android:title="@string/pref_header_theme"/>
 
     <header
         android:fragment="ca.josephroque.bowlingcompanion.SettingsActivity$OtherPreferenceFragment"

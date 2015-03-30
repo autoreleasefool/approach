@@ -97,7 +97,7 @@ public class SettingsActivity extends PreferenceActivity
 
         // In the simplified UI, fragments are not used at all and we instead
         // use the older PreferenceActivity APIs.
-        addPreferencesFromResource(R.xml.pref_other);
+        addPreferencesFromResource(R.xml.pref_theme);
 
         // Add 'quick' preferences, and a corresponding header.
         PreferenceCategory fakeHeader = new PreferenceCategory(this);
@@ -111,11 +111,11 @@ public class SettingsActivity extends PreferenceActivity
         getPreferenceScreen().addPreference(fakeHeader);
         addPreferencesFromResource(R.xml.pref_stats);
 
-        // Add 'theme' preferences, and a corresponding header.
+        // Add 'other' preferences, and a corresponding header.
         fakeHeader = new PreferenceCategory(this);
-        fakeHeader.setTitle(R.string.pref_header_theme);
+        fakeHeader.setTitle(R.string.pref_header_other);
         getPreferenceScreen().addPreference(fakeHeader);
-        addPreferencesFromResource(R.xml.pref_theme);
+        addPreferencesFromResource(R.xml.pref_other);
 
         /*
         TODO: full version is not yet available, add back in when it is
