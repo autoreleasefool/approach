@@ -246,11 +246,42 @@ public class StatsFragment extends Fragment
             {
                 while(!cursor.isAfterLast())
                 {
+                    byte frameNumber = (byte)cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_FRAME_NUMBER));
+                    if (bowlerLeagueOrGame != LOADING_GAME_STATS && frameNumber == 1)
+                    {
+                        short gameScore = cursor.getShort(cursor.getColumnIndex(GameEntry.COLUMN_SCORE));
+                        byte gameNumber = (byte)cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_GAME_NUMBER));
+                        if (statValues[Constants.STAT_HIGH_SINGLE] < gameScore)
+                        {
+                            statValues[Constants.STAT_HIGH_SINGLE] = gameScore;
+                        }
+                        statValues[Constants.STAT_TOTAL_PINFALL] += gameScore;
+                        statValues[Constants.STAT_NUMBER_OF_GAMES]++;
+
+                        if (gameNumber == 1)
+                        {
+                            if (statValues[Constants.STAT_HIGH_SERIES] < seriesTotal)
+                            {
+                                statValues[Constants.STAT_HIGH_SERIES] = seriesTotal;
+                            }
+                            seriesTotal = gameScore;
+                        }
+                        else
+                        {
+                            seriesTotal += gameScore;
+                        }
+                    }
+
+                    boolean gameIsManual = (cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_IS_MANUAL)) == 1);
+                    if (gameIsManual)
+                    {
+                        cursor.moveToNext();
+                        continue;
+                    }
                     boolean frameAccessed = (cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_IS_ACCESSED)) == 1);
                     if (bowlerLeagueOrGame == LOADING_GAME_STATS && !frameAccessed)
                         break;
 
-                    byte frameNumber = (byte)cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_FRAME_NUMBER));
                     String frameFouls = cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_FOULS));
                     String[] ballStrings = {cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_PIN_STATE[0])),
                             cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_PIN_STATE[1])),
@@ -363,26 +394,6 @@ public class StatsFragment extends Fragment
                         }
                     }
 
-                    if (bowlerLeagueOrGame != LOADING_GAME_STATS && frameNumber == 1)
-                    {
-                        short gameScore = cursor.getShort(cursor.getColumnIndex(GameEntry.COLUMN_SCORE));
-                        byte gameNumber = (byte)cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_GAME_NUMBER));
-                        if (statValues[Constants.STAT_HIGH_SINGLE] < gameScore)
-                            statValues[Constants.STAT_HIGH_SINGLE] = gameScore;
-                        statValues[Constants.STAT_TOTAL_PINFALL] += gameScore;
-                        statValues[Constants.STAT_NUMBER_OF_GAMES]++;
-
-                        if (gameNumber == 1)
-                        {
-                            if (statValues[Constants.STAT_HIGH_SERIES] < seriesTotal)
-                                statValues[Constants.STAT_HIGH_SERIES] = seriesTotal;
-                            seriesTotal = gameScore;
-                        }
-                        else
-                        {
-                            seriesTotal += gameScore;
-                        }
-                    }
                     cursor.moveToNext();
                 }
             }
@@ -640,6 +651,7 @@ public class StatsFragment extends Fragment
         String rawStatsQuery = "SELECT "
                 + GameEntry.COLUMN_SCORE + ", "
                 + GameEntry.COLUMN_GAME_NUMBER + ", "
+                + GameEntry.COLUMN_IS_MANUAL + ", "
                 + FrameEntry.COLUMN_FRAME_NUMBER + ", "
                 + FrameEntry.COLUMN_IS_ACCESSED + ", "
                 + FrameEntry.COLUMN_FOULS + ", "
@@ -687,6 +699,7 @@ public class StatsFragment extends Fragment
         String rawStatsQuery = "SELECT "
                 + GameEntry.COLUMN_SCORE + ", "
                 + GameEntry.COLUMN_GAME_NUMBER + ", "
+                + GameEntry.COLUMN_IS_MANUAL + ", "
                 + FrameEntry.COLUMN_FRAME_NUMBER + ", "
                 + FrameEntry.COLUMN_IS_ACCESSED + ", "
                 + FrameEntry.COLUMN_FOULS + ", "
@@ -713,6 +726,7 @@ public class StatsFragment extends Fragment
         SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getReadableDatabase();
         String rawStatsQuery = "SELECT "
                 + GameEntry.COLUMN_SCORE + ", "
+                + GameEntry.COLUMN_IS_MANUAL + ", "
                 + FrameEntry.COLUMN_FRAME_NUMBER + ", "
                 + FrameEntry.COLUMN_IS_ACCESSED + ", "
                 + FrameEntry.COLUMN_FOULS + ", "
