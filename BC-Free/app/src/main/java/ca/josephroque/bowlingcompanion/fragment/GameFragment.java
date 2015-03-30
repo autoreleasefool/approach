@@ -703,6 +703,7 @@ public class GameFragment extends Fragment
                         clearAllText(true);
                         updateScore();
                         updateAllBalls();
+                        setVisibilityOfNextAndPrevItems();
                         updateFrameColor();
                         dialog.dismiss();
                     }
@@ -727,7 +728,10 @@ public class GameFragment extends Fragment
     {
         if (enabled)
         {
-            mRelativeLayoutGameToolbar.setVisibility(View.VISIBLE);
+            mImageViewNextBall.setVisibility(View.VISIBLE);
+            mImageViewPrevBall.setVisibility(View.VISIBLE);
+            mTextViewNextBall.setVisibility(View.VISIBLE);
+            mTextViewPrevBall.setVisibility(View.VISIBLE);
             mHorizontalScrollViewFrames.setVisibility(View.VISIBLE);
             for (ImageButton imageButton : mImageButtonPins)
                 imageButton.setVisibility(View.VISIBLE);
@@ -738,7 +742,10 @@ public class GameFragment extends Fragment
         }
         else
         {
-            mRelativeLayoutGameToolbar.setVisibility(View.INVISIBLE);
+            mImageViewNextBall.setVisibility(View.INVISIBLE);
+            mImageViewPrevBall.setVisibility(View.INVISIBLE);
+            mTextViewNextBall.setVisibility(View.INVISIBLE);
+            mTextViewPrevBall.setVisibility(View.INVISIBLE);
             mHorizontalScrollViewFrames.setVisibility(View.INVISIBLE);
             for (ImageButton imageButton : mImageButtonPins)
                 imageButton.setVisibility(View.INVISIBLE);
@@ -795,8 +802,8 @@ public class GameFragment extends Fragment
                         clearAllText(true);
                         updateScore();
                         updateAllBalls();
-
                         getActivity().supportInvalidateOptionsMenu();
+                        setVisibilityOfNextAndPrevItems();
                         updateFrameColor();
                         dialog.dismiss();
                     }
