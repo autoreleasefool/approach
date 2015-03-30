@@ -586,6 +586,7 @@ public class GameFragment extends Fragment
                             for (int j = 0; j < 5; j++)
                                 mPinState[mCurrentFrame][i][j] = false;
                         }
+                        setVisibilityOfNextAndPrevItems();
                         updateFrameColor();
                         updateBalls(mCurrentFrame);
                         updateScore();
@@ -917,12 +918,10 @@ public class GameFragment extends Fragment
      */
     private void showWhatIfDialog()
     {
-
-
-        //TODO: method doesn't calculate proper score
-        /*StringBuilder alertMessageBuilder = new StringBuilder("If you get");
+        StringBuilder alertMessageBuilder = new StringBuilder("If you get");
         short possibleScore = Short.parseShort(mTextViewFrames[mCurrentFrame].getText().toString());
 
+        Log.w(TAG, "1: " + possibleScore);
         if (mCurrentFrame < Constants.LAST_FRAME)
         {
             if (Arrays.equals(mPinState[mCurrentFrame][0], Constants.FRAME_PINS_DOWN))
@@ -939,18 +938,27 @@ public class GameFragment extends Fragment
                     {
                         possibleScore -= Score.getValueOfFrame(mPinState[mCurrentFrame + 1][1]);
                     }
+                    Log.w(TAG, "2: " + possibleScore);
                 }
                 else
                 {
                     possibleScore -= Score.getValueOfFrameDifference(mPinState[mCurrentFrame][0], mPinState[mCurrentFrame][1]);
+                    Log.w(TAG, "3: " + possibleScore);
                 }
             }
             else if (Arrays.equals(mPinState[mCurrentFrame][1], Constants.FRAME_PINS_DOWN))
             {
                 int firstBallNextFrame = Score.getValueOfFrame(mPinState[mCurrentFrame + 1][0]);
                 possibleScore -= firstBallNextFrame;
+                Log.w(TAG, "3: " + possibleScore);
             }
         }
+        else
+        {
+            for (int i = mCurrentBall + 1; i < 3; i++)
+                possibleScore -= Score.getValueOfFrameDifference(mPinState[mCurrentFrame][i - 1], mPinState[mCurrentFrame][i]);
+        }
+        Log.w(TAG, "4: " + possibleScore);
 
         int pinsLeftStanding = 0;
         for (int i = 0; i < 5; i++)
@@ -989,16 +997,28 @@ public class GameFragment extends Fragment
         {
             alertMessageBuilder.append(" a strike");
             possibleScore += pinsLeftStanding + 30;
+            int secondBall = Score.getValueOfFrameDifference(mPinState[mCurrentFrame][0], mPinState[mCurrentFrame][1]);
+            int thirdBall = Score.getValueOfFrameDifference(mPinState[mCurrentFrame][1], mPinState[mCurrentFrame][2]);
+
+            if (mCurrentFrame < Constants.LAST_FRAME)
+                possibleScore -= secondBall + thirdBall;
             if (strikeLastFrame)
             {
+                possibleScore -= secondBall;
                 possibleScore += pinsLeftStanding + 15;
                 if (strikeTwoFramesAgo)
                     possibleScore += pinsLeftStanding;
-            } else if (spareLastFrame)
+            }
+            else if (spareLastFrame)
                 possibleScore += pinsLeftStanding;
+            Log.w(TAG, "5: " + possibleScore);
         }
         else if (mCurrentBall == 1)
         {
+            int thirdBall = Score.getValueOfFrameDifference(mPinState[mCurrentFrame][1], mPinState[mCurrentFrame][2]);
+            if (mCurrentFrame < Constants.LAST_FRAME)
+                possibleScore -= thirdBall;
+
             if (mCurrentFrame == Constants.LAST_FRAME && Arrays.equals(mPinState[mCurrentFrame][0], Constants.FRAME_PINS_DOWN))
                 alertMessageBuilder.append(" a strike");
             else
@@ -1006,6 +1026,7 @@ public class GameFragment extends Fragment
             possibleScore += pinsLeftStanding + 15;
             if (strikeLastFrame)
                 possibleScore += pinsLeftStanding;
+            Log.w(TAG, "6: " + possibleScore);
         }
         else
         {
@@ -1014,6 +1035,7 @@ public class GameFragment extends Fragment
             else
                 alertMessageBuilder.append(" fifteen");
             possibleScore += pinsLeftStanding;
+            Log.w(TAG, "7: " + possibleScore);
         }
         possibleScore += 45 * (Constants.LAST_FRAME - mCurrentFrame);
 
@@ -1025,8 +1047,10 @@ public class GameFragment extends Fragment
                     possibleScore -= 15;
             }
         }
+        Log.w(TAG, "8: " + possibleScore);
         if (possibleScore < 0)
             possibleScore = 0;
+        Log.w(TAG, "9: " + possibleScore);
         alertMessageBuilder.append(" this ball, and strikes onwards, your final score will be ");
         alertMessageBuilder.append(possibleScore);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -1041,7 +1065,7 @@ public class GameFragment extends Fragment
                     }
                 });
         builder.create()
-                .show();*/
+                .show();
     }
 
     private void setVisibilityOfNextAndPrevItems()
