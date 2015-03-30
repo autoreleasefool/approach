@@ -511,7 +511,6 @@ public class BowlerFragment extends Fragment
                             + " AND "
                             + (!includeOpen ? LeagueEntry.COLUMN_LEAGUE_NAME + "!" : "'0'") + "=?"
                     + " GROUP BY league2." + LeagueEntry._ID;
-            Log.w(TAG, rawInnerQuery);
 
             //Query to retrieve bowler names and averages from database
             String rawBowlerQuery = "SELECT "

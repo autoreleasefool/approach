@@ -338,19 +338,7 @@ public class MainActivity extends ActionBarActivity
             if (fragment.getTag().equals(Constants.FRAGMENT_LEAGUES))
             {
                 mListDrawerOptions.add("Bowlers");
-/*
-mBowlerId = savedInstanceState.getLong(Constants.EXTRA_ID_BOWLER, -1);
-            mLeagueId = savedInstanceState.getLong(Constants.EXTRA_ID_LEAGUE, -1);
-            mSeriesId = savedInstanceState.getLong(Constants.EXTRA_ID_SERIES, -1);
-            mGameId = savedInstanceState.getLong(Constants.EXTRA_ID_GAME, -1);
-            mGameNumber = savedInstanceState.getByte(Constants.EXTRA_GAME_NUMBER, (byte)-1);
-            mBowlerName = savedInstanceState.getString(Constants.EXTRA_NAME_BOWLER);
-            mLeagueName = savedInstanceState.getString(Constants.EXTRA_NAME_LEAGUE);
-            mSeriesDate = savedInstanceState.getString(Constants.EXTRA_NAME_SERIES);
-            mNumberOfGames = savedInstanceState.getByte(Constants.EXTRA_NUMBER_OF_GAMES, (byte)-1);
-            mIsEventMode = savedInstanceState.getBoolean(Constants.EXTRA_EVENT_MODE);
-            mIsQuickSeries = savedInstanceState.getBoolean(Constants.EXTRA_QUICK_SERIES);
- */
+
                 mLeagueId = -1;
                 mSeriesId = -1;
                 mGameId = -1;

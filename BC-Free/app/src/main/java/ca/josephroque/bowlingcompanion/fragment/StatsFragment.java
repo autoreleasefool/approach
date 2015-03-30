@@ -242,20 +242,10 @@ public class StatsFragment extends Fragment
             int totalShotsAtMiddle = 0;
             int spareChances = 0;
             int seriesTotal = 0;
-            int count = 0; //TODO remove
             if (cursor.moveToFirst())
             {
                 while(!cursor.isAfterLast())
                 {
-                    Log.w(TAG, "Row " + ++count + ": "
-                            + "Game " + cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_GAME_NUMBER))
-                            + ", Frame " + cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_FRAME_NUMBER))
-                            + ", Accessed " + cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_IS_ACCESSED))
-                            + ", Fouls " + cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_FOULS))
-                            + ", " + cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_PIN_STATE[0]))
-                            + " " + cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_PIN_STATE[1]))
-                            + " " + cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_PIN_STATE[2])));
-
                     boolean frameAccessed = (cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_IS_ACCESSED)) == 1);
                     if (bowlerLeagueOrGame == LOADING_GAME_STATS && !frameAccessed)
                         break;
@@ -647,10 +637,6 @@ public class StatsFragment extends Fragment
         boolean isOpenIncluded = preferences.getBoolean(Constants.KEY_INCLUDE_OPEN, true);
         SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getReadableDatabase();
 
-        Log.w(TAG, "Bowler ID: " + ((MainActivity) getActivity()).getBowlerId()
-                + " League ID: " + ((MainActivity) getActivity()).getLeagueId());
-
-        //TODO: make sure excluding stats works
         String rawStatsQuery = "SELECT "
                 + GameEntry.COLUMN_SCORE + ", "
                 + GameEntry.COLUMN_GAME_NUMBER + ", "
