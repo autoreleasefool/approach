@@ -9,6 +9,8 @@
     <string name="pref_view_full_summary">See additional features of full version</string>
     <string name="pref_developer_website_title">Visit developer website</string>
     <string name="pref_developer_website_summary">Learn more about the developer</string>
+    <string name="pref_view_source_title">View source on GitHub</string>
+    <string name="pref_view_source_summary">Check out the open source repository</string>
     <string name="pref_rate_title">Rate app</string>
     <string name="pref_rate_summary">Your feedback is always appreciated</string>
     <string name="pref_report_bug_title">Report a bug</string>

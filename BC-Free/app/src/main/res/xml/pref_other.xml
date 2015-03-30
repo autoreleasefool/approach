@@ -16,6 +16,14 @@
             android:data="http://josephroque.ca"/>
     </Preference>
     <Preference
+        android:key="pref_view_source"
+        android:title="@string/pref_view_source_title"
+        android:summary="@string/pref_view_source_summary">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:data="https://github.com/joseph-roque/BowlingCompanion"/>
+    </Preference>
+    <Preference
         android:key="pref_rate"
         android:title="@string/pref_rate_title"
         android:summary="@string/pref_rate_summary">
