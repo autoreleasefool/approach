@@ -11,21 +11,21 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <!--<com.google.android.gms.ads.AdView
+        <com.google.android.gms.ads.AdView
             android:id="@+id/av_main"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_alignParentBottom="true"
             ads:adSize="SMART_BANNER"
-            ads:adUnitId="@string/banner_ad_unit_id"/>-->
+            ads:adUnitId="@string/banner_ad_unit_id"/>
 
         <FrameLayout
             android:id="@+id/fl_main_fragment_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-        <!--android:layout_alignParentTop="true"
-        android:layout_above="@id/av_main"/>-->
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_above="@id/av_main"/>
     </RelativeLayout>
 
     <ListView

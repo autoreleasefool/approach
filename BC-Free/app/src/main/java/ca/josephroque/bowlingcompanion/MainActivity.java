@@ -22,6 +22,9 @@ import android.widget.ListView;
 //import com.google.android.gms.ads.AdRequest;
 //import com.google.android.gms.ads.AdView;
 
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -89,7 +92,7 @@ public class MainActivity extends ActionBarActivity
     private int mTitle;
     private List<String> mListDrawerOptions;
 
-    //private AdView mAdView;
+    private AdView mAdView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -163,7 +166,7 @@ public class MainActivity extends ActionBarActivity
             mIsQuickSeries = savedInstanceState.getBoolean(Constants.EXTRA_QUICK_SERIES);
         }
 
-        /*mAdView = (AdView)findViewById(R.id.av_main);
+        mAdView = (AdView)findViewById(R.id.av_main);
         try
         {
             mAdView.loadAd(new AdRequest.Builder().build());
@@ -171,7 +174,7 @@ public class MainActivity extends ActionBarActivity
         catch (Exception e)
         {
             mAdView = null;
-        }*/
+        }
 
         AppRater.appLaunched(this);
     }
@@ -215,8 +218,8 @@ public class MainActivity extends ActionBarActivity
         super.onResume();
         appIsRunning.set(true);
 
-        //if (mAdView != null)
-        //    mAdView.resume();
+        if (mAdView != null)
+            mAdView.resume();
 
         new Thread(new Runnable()
         {
@@ -264,8 +267,8 @@ public class MainActivity extends ActionBarActivity
     @Override
     protected void onPause()
     {
-        //if (mAdView != null)
-        //    mAdView.pause();
+        if (mAdView != null)
+            mAdView.pause();
         super.onPause();
         appIsRunning.set(false);
     }
@@ -273,8 +276,8 @@ public class MainActivity extends ActionBarActivity
     @Override
     protected void onDestroy()
     {
-        //if (mAdView != null)
-        //    mAdView.destroy();
+        if (mAdView != null)
+            mAdView.destroy();
         super.onDestroy();
     }
 
