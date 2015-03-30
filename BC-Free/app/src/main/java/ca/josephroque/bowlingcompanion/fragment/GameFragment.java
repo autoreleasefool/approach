@@ -1757,6 +1757,7 @@ public class GameFragment extends Fragment
 
                 setVisibilityOfNextAndPrevItems();
                 updateFrameColor();
+                mGameSeriesListener.onGameChanged(mCurrentGame);
             }
         }).start();
     }
@@ -1816,6 +1817,8 @@ public class GameFragment extends Fragment
         cursor.close();
     }
 
+    public byte getCurrentGame(){return mCurrentGame;}
+
     /**
      * Callback interface offers methods upon user interaction
      */
@@ -1832,6 +1835,12 @@ public class GameFragment extends Fragment
          * Tells activity to open new StatsFragment with current series
          */
         public void onSeriesStatsOpened();
+
+        /**
+         * Tells activity that the game has been changed
+         * @param newGameNumber number of the new game, starting at index 0
+         */
+        public void onGameChanged(byte newGameNumber);
     }
 
     /**

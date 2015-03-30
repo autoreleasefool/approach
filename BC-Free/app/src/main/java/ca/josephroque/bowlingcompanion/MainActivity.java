@@ -363,6 +363,8 @@ public class MainActivity extends ActionBarActivity
             }
             else if (fragment.getTag().equals(Constants.FRAGMENT_GAME))
             {
+                GameFragment gameFragment = (GameFragment)fragment;
+
                 if (!isQuickSeries())
                     mListDrawerOptions.add(Constants.NAV_OPTION_LEAGUES_EVENTS);
                 if (!isEventMode() && !isQuickSeries())
@@ -371,6 +373,7 @@ public class MainActivity extends ActionBarActivity
                 for (byte i = 0; i < mNumberOfGames; i++)
                     mListDrawerOptions.add("Game " + (i + 1));
 
+                mDrawerAdapter.setCurrentGame(gameFragment.getCurrentGame());
                 mGameId = -1;
                 mGameNumber = -1;
             }
@@ -478,6 +481,24 @@ public class MainActivity extends ActionBarActivity
         mGameNumber = gameNumber;
 
         openStatsFragment(Constants.FRAGMENT_GAME);
+    }
+
+    @Override
+    public void onGameChanged(final byte newGameNumber)
+    {
+        byte currentAdapterGame = mDrawerAdapter.getCurrentGame();
+        if (currentAdapterGame == newGameNumber)
+            return;
+
+        runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                mDrawerAdapter.setCurrentGame(newGameNumber);
+                mDrawerAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     @Override

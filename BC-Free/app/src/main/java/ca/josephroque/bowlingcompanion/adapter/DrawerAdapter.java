@@ -25,6 +25,7 @@ public class DrawerAdapter extends ArrayAdapter<String>
 {
     private OnDrawerClickListener mDrawerClickListener;
     private List<String> mListOptions;
+    private String mCurrentGame = null;
 
     public DrawerAdapter(Context context, List<String> listOptions)
     {
@@ -97,6 +98,13 @@ public class DrawerAdapter extends ArrayAdapter<String>
             viewHolder.mImageViewIcon.setVisibility(View.VISIBLE);
             viewHolder.mImageViewIcon.setImageResource(R.drawable.ic_action_stats);
         }
+        else if (mListOptions.get(position).matches("\\w+ \\d+"))
+        {
+            viewHolder.mImageViewIcon.setVisibility(View.VISIBLE);
+            viewHolder.mImageViewIcon.setImageResource(
+                    (mListOptions.get(position).substring(mListOptions.get(position).indexOf(" ") + 1).equals(mCurrentGame)
+                    ? R.drawable.ic_radio_button_on : R.drawable.ic_radio_button_off));
+        }
         else
         {
             viewHolder.mImageViewIcon.setVisibility(View.GONE);
@@ -104,6 +112,9 @@ public class DrawerAdapter extends ArrayAdapter<String>
 
         return view;
     }
+
+    public void setCurrentGame(byte currentGame) {mCurrentGame = String.valueOf(currentGame + 1);}
+    public byte getCurrentGame() {return (byte)(Byte.parseByte(mCurrentGame) - 1);}
 
     @Override
     public void onItemClick(AdapterView parent, View view, int position, long id)
