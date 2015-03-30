@@ -670,12 +670,10 @@ public class StatsFragment extends Fragment
                 + ((shouldGetLeagueStats)
                         ? " WHERE league." + LeagueEntry._ID + "=?"
                         : " WHERE league." + LeagueEntry.COLUMN_BOWLER_ID + "=?")
-                + ((isEventIncluded)
-                        ? " AND 0=?"
-                        : " AND " + LeagueEntry.COLUMN_IS_EVENT + "=?")
-                + ((isOpenIncluded)
-                        ? " AND 'Open'=?"
-                        : " AND league." + LeagueEntry.COLUMN_LEAGUE_NAME + "!=?")
+                + " AND " + ((!shouldGetLeagueStats && !isEventIncluded)
+                        ? LeagueEntry.COLUMN_IS_EVENT : "'0'") + "=?"
+                + " AND " + ((!shouldGetLeagueStats && !isOpenIncluded)
+                        ? LeagueEntry.COLUMN_LEAGUE_NAME + "!" : "'0'") + "=?"
                 + " ORDER BY league." + LeagueEntry._ID
                         + ", series." + SeriesEntry._ID
                         + ", game." + GameEntry.COLUMN_GAME_NUMBER
@@ -686,7 +684,7 @@ public class StatsFragment extends Fragment
                         ? String.valueOf(((MainActivity) getActivity()).getLeagueId())
                         : String.valueOf(((MainActivity) getActivity()).getBowlerId())),
                 String.valueOf(0),
-                Constants.NAME_OPEN_LEAGUE};
+                ((!shouldGetLeagueStats && !isOpenIncluded) ? Constants.NAME_OPEN_LEAGUE : String.valueOf(0))};
 
         return database.rawQuery(rawStatsQuery, rawStatsArgs);
     }
