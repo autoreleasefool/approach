@@ -377,7 +377,7 @@ public class MainActivity extends ActionBarActivity
                     mListDrawerOptions.add(Constants.NAV_OPTION_LEAGUES_EVENTS);
                 if (mSeriesId >= 0 && !isEventMode() && !isQuickSeries())
                     mListDrawerOptions.add(Constants.NAV_OPTION_SERIES);
-                if (mGameId >= 0)
+                if (mSeriesId >= 0)
                     mListDrawerOptions.add(Constants.NAV_OPTION_GAME_DETAILS);
                 mListDrawerOptions.add(Constants.NAV_OPTION_STATS);
             }

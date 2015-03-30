@@ -92,6 +92,11 @@ public class DrawerAdapter extends ArrayAdapter<String>
             viewHolder.mImageViewIcon.setVisibility(View.VISIBLE);
             viewHolder.mImageViewIcon.setImageResource(R.drawable.ic_action_pin);
         }
+        else if (mListOptions.get(position) == Constants.NAV_OPTION_STATS)
+        {
+            viewHolder.mImageViewIcon.setVisibility(View.VISIBLE);
+            viewHolder.mImageViewIcon.setImageResource(R.drawable.ic_action_stats);
+        }
         else
         {
             viewHolder.mImageViewIcon.setVisibility(View.GONE);
