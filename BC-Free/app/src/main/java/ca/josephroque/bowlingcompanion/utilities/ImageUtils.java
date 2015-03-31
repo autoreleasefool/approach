@@ -272,7 +272,7 @@ public class ImageUtils
         List<Short> scoresOfGames = new ArrayList<>();
         List<Boolean> manualScores = new ArrayList<>();
 
-        MainActivity.waitForSaveThreads((MainActivity)context, null);
+        MainActivity.waitForSaveThreads((MainActivity)context);
 
         SQLiteDatabase database = DatabaseHelper.getInstance(context).getReadableDatabase();
         String rawImageQuery = "SELECT "
