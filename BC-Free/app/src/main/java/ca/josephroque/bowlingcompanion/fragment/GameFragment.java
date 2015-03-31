@@ -1726,6 +1726,7 @@ public class GameFragment extends Fragment
             public void run()
             {
                 mCurrentGame = newGame;
+                mGameSeriesListener.onGameChanged(mCurrentGame);
                 SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getReadableDatabase();
 
                 Cursor cursor = null;
@@ -1796,7 +1797,6 @@ public class GameFragment extends Fragment
 
                 setVisibilityOfNextAndPrevItems();
                 updateFrameColor();
-                mGameSeriesListener.onGameChanged(mCurrentGame);
             }
         }).start();
     }
