@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
 
+import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
@@ -180,14 +181,37 @@ public class MainActivity extends ActionBarActivity
 
         //Sets the adview to display an ad to the user
         mAdView = (AdView)findViewById(R.id.av_main);
-        try
+        mAdView.setAdListener(new AdListener()
         {
-            mAdView.loadAd(new AdRequest.Builder().build());
-        }
-        catch (Exception e)
-        {
-            mAdView = null;
-        }
+            @Override
+            public void onAdFailedToLoad(int errorCode)
+            {
+                //If ad fails to load, hides this adview
+                runOnUiThread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        mAdView.destroy();
+                        mAdView.setVisibility(View.GONE);
+                    }
+                });
+            }
+
+            @Override
+            public void onAdLoaded()
+            {
+                runOnUiThread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        mAdView.setVisibility(View.VISIBLE);
+                    }
+                });
+            }
+        });
+        mAdView.loadAd(new AdRequest.Builder().build());
 
         //Checks if the user should be prompted to rate the app
         AppRater.appLaunched(this);
@@ -232,7 +256,7 @@ public class MainActivity extends ActionBarActivity
         super.onResume();
         appIsRunning.set(true);
 
-        if (mAdView != null)
+        if (mAdView != null && mAdView.getVisibility() == View.VISIBLE)
             mAdView.resume();
 
         new Thread(new Runnable()
@@ -277,7 +301,7 @@ public class MainActivity extends ActionBarActivity
     @Override
     protected void onPause()
     {
-        if (mAdView != null)
+        if (mAdView != null && mAdView.getVisibility() == View.VISIBLE)
             mAdView.pause();
         super.onPause();
         appIsRunning.set(false);
@@ -286,7 +310,7 @@ public class MainActivity extends ActionBarActivity
     @Override
     protected void onDestroy()
     {
-        if (mAdView != null)
+        if (mAdView != null && mAdView.getVisibility() == View.VISIBLE)
             mAdView.destroy();
         super.onDestroy();
     }
