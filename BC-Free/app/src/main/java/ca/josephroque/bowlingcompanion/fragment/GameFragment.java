@@ -257,11 +257,11 @@ public class GameFragment extends Fragment
             frameText = new TextView(getActivity());
             frameText.setText(String.valueOf(i + 1));
             frameText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
-            frameText.setGravity(Gravity.CENTER);
+            frameText.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
             frameText.setTextColor(getResources().getColor(android.R.color.white));
             layoutParams = new RelativeLayout.LayoutParams(dp_120, dp_36);
             layoutParams.leftMargin = DataFormatter.getPixelsFromDP(screenDensity, 120 * i);
-            layoutParams.topMargin = dp_128;
+            layoutParams.addRule(RelativeLayout.BELOW, mTextViewFrames[i].getId());
             relativeLayout.addView(frameText, layoutParams);
         }
 

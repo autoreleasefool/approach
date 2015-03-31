@@ -81,12 +81,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <HorizontalScrollView
-            android:id="@+id/hsv_frames"
-            android:layout_width="match_parent"
-            android:layout_height="152dp"
-            android:layout_alignParentTop="true"/>
-
         <ImageView
             android:id="@+id/iv_alley"
             android:layout_width="match_parent"
@@ -135,6 +129,12 @@
             android:layout_toEndOf="@id/iv_foul"
             android:src="@drawable/ic_action_refresh"
             android:contentDescription="@string/description_reset_frame"/>
+
+        <HorizontalScrollView
+            android:id="@+id/hsv_frames"
+            android:layout_width="match_parent"
+            android:layout_height="164dp"
+            android:layout_alignParentTop="true"/>
 
         <LinearLayout
             android:layout_width="match_parent"
