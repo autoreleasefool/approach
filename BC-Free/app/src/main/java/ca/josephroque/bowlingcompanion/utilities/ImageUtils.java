@@ -13,7 +13,6 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.util.Log;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -35,23 +34,40 @@ import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
  */
 public class ImageUtils
 {
-    
-    private static final String TAG = "ImageUtils";
-
+    /** Width of a single game's frames */
     private static final int BITMAP_GAME_WIDTH = 660;
+    /** Height of a single game's row */
     private static final int BITMAP_GAME_HEIGHT = 60;
+    /** Height of a single ball cell */
     private static final int BITMAP_GAME_BALL_HEIGHT = 20;
+    /** Width of a single ball cell */
     private static final int BITMAP_GAME_BALL_WIDTH = 20;
+    /** Height of a single frame cell */
     private static final int BITMAP_GAME_FRAME_HEIGHT = 40;
+    /** Width of a single frame cell */
     private static final int BITMAP_GAME_FRAME_WIDTH = 60;
+    /** Width of the cell for the game's name */
     private static final int BITMAP_SERIES_GAME_NAME_WIDTH = 80;
 
+    /** Default font size for writing game data */
     private static final float GAME_DEFAULT_FONT_SIZE = 12;
+    /** Small font size for writing game data */
     private static final float GAME_SMALL_FONT_SIZE = 8;
+    /** Large font size for writing game data */
     private static final float GAME_LARGE_FONT_SIZE = 16;
 
+    /** Y position of text for ball data */
     private static final float BALL_TEXT_Y = BITMAP_GAME_BALL_HEIGHT / 2 + GAME_DEFAULT_FONT_SIZE / 2;
-    
+
+    /**
+     * Creates an image, writing the game scores and individual ball values in a standard format
+     *
+     * @param pinState state of the pins of each ball in each frame
+     * @param fouls indicates whether a foul was invoked for each ball
+     * @param gameScore final score of the game
+     * @param isManual indicates if the score of the game was manually set
+     * @return a formatted bitmap containing the game data
+     */
     public static Bitmap createImageFromGame(boolean[][][] pinState, boolean[][] fouls, short gameScore, boolean isManual)
     {
         Bitmap bitmap = Bitmap.createBitmap(BITMAP_GAME_WIDTH, BITMAP_GAME_HEIGHT, Bitmap.Config.RGB_565);
@@ -243,6 +259,12 @@ public class ImageUtils
         return bitmap;
     }
 
+    /**
+     * Loads the data of each game in a series and creates a single image to
+     * @param context context used to get an instance of the database
+     * @param seriesId id of the series to load game from
+     * @return an image of each games' data and score
+     */
     public static Bitmap createImageFromSeries(Context context, long seriesId)
     {
         List<boolean[][][]> ballsOfGames = new ArrayList<>();
@@ -250,7 +272,7 @@ public class ImageUtils
         List<Short> scoresOfGames = new ArrayList<>();
         List<Boolean> manualScores = new ArrayList<>();
 
-        MainActivity.waitForSaveThreads((MainActivity)context, TAG);
+        MainActivity.waitForSaveThreads((MainActivity)context, null);
 
         SQLiteDatabase database = DatabaseHelper.getInstance(context).getReadableDatabase();
         String rawImageQuery = "SELECT "

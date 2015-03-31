@@ -25,9 +25,6 @@ import ca.josephroque.bowlingcompanion.theme.Theme;
 public class NameAverageAdapter extends RecyclerView.Adapter<NameAverageAdapter.NameAverageViewHolder>
     implements View.OnClickListener, View.OnLongClickListener
 {
-    /** Tag to identify class when outputting to console */
-    //private static final String TAG = "NameAverageAdapter";
-
     /** Indicates data represents bowlers */
     public static final byte DATA_BOWLERS = 0;
     /** Indicates data represents leagues and events */

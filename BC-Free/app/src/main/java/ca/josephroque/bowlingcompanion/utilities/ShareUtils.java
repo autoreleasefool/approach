@@ -24,9 +24,12 @@ import ca.josephroque.bowlingcompanion.R;
  */
 public class ShareUtils
 {
-
-    private static final String TAG = "ShareUtils";
-
+    /**
+     * Shows a dialog to prompt user to share the series or save it to the device
+     *
+     * @param activity parent activity for the dialog
+     * @param seriesId id of the series to share
+     */
     public static void showShareDialog(final Activity activity, final long seriesId)
     {
         final CharSequence[] options = {"Save", "Share"};
@@ -58,11 +61,24 @@ public class ShareUtils
                 .show();
     }
 
+    /**
+     * Creates a task to save an image of the series to the device and prompt the user
+     * to share it with another service
+     *
+     * @param activity parent activity for the dialog
+     * @param seriesId id of the series to share
+     */
     private static void shareSeries(Activity activity, long seriesId)
     {
         new ShareSeriesTask().execute(activity, seriesId);
     }
 
+    /**
+     * Creates an image of the series and saves it to the device
+     *
+     * @param activity parent activity for the dialog
+     * @param seriesId id of the series to share
+     */
     private static void saveSeriesToDevice(final Activity activity, final long seriesId)
     {
         new Thread(new Runnable()
@@ -104,6 +120,9 @@ public class ShareUtils
         }).start();
     }
 
+    /**
+     * Creates an image for the series and prompts user to share it
+     */
     private static class ShareSeriesTask extends AsyncTask<Object, Void, Object[]>
     {
         @Override
@@ -128,7 +147,7 @@ public class ShareUtils
             }
             catch (Exception e)
             {
-                Log.w(TAG, "Unable to create stream from image");
+                //TODO: does nothing - could not create output stream for image
             }
             finally
             {
@@ -140,7 +159,7 @@ public class ShareUtils
                     }
                     catch (IOException ex)
                     {
-                        Log.w(TAG, "Error closing outStream");
+                        //does nothing - could not close output stream
                     }
                 }
             }

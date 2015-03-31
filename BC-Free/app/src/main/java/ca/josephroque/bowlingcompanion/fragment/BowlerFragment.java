@@ -15,7 +15,6 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -50,9 +49,6 @@ import ca.josephroque.bowlingcompanion.theme.Theme;
 public class BowlerFragment extends Fragment
     implements Theme.ChangeableTheme, NameAverageAdapter.NameAverageEventHandler, NewBowlerDialog.NewBowlerDialogListener
 {
-    /** Tag to identify class when outputting to console */
-    private static final String TAG = "BowlerFragment";
-
     /** List to store ids from bowler table in database */
     private List<Long> mListBowlerIds;
     /** List to store names of bowlers, relevant to order of mListBowlerIds */
@@ -335,14 +331,12 @@ public class BowlerFragment extends Fragment
                         {
                             if (quickOrRecent)
                             {
-                                Log.w(TAG, "Quick series created");
                                 mBowlerSelectedListener.onBowlerSelected(mQuickBowlerId, mQuickBowlerName, false, true);
                                 mLeagueSelectedListener.onLeagueSelected(mQuickLeagueId, mQuickLeagueName, mQuickNumberOfGames, false);
                                 mSeriesListener.onCreateNewSeries(false);
                             }
                             else
                             {
-                                Log.w(TAG, "Recent series created");
                                 mBowlerSelectedListener.onBowlerSelected(mRecentBowlerId, mRecentBowlerName, false, true);
                                 mLeagueSelectedListener.onLeagueSelected(mRecentLeagueId, mRecentLeagueName, mRecentNumberOfGames, false);
                                 mSeriesListener.onCreateNewSeries(false);
@@ -420,7 +414,7 @@ public class BowlerFragment extends Fragment
     private void deleteBowler(final long bowlerId)
     {
         final int index = mListBowlerIds.indexOf(bowlerId);
-        final String bowlerName = mListBowlerNames.remove(index);
+        mListBowlerNames.remove(index);
         mListBowlerIds.remove(index);
         mAdapterBowlers.notifyItemRemoved(index);
 
@@ -459,7 +453,7 @@ public class BowlerFragment extends Fragment
                 }
                 catch (Exception e)
                 {
-                    Log.w(TAG, "Error deleting bowler: " + bowlerName);
+                    //does nothing
                 }
                 finally
                 {
@@ -486,7 +480,7 @@ public class BowlerFragment extends Fragment
         @Override
         protected List<?>[] doInBackground(Void... params)
         {
-            MainActivity.waitForSaveThreads((MainActivity)getActivity(), TAG);
+            MainActivity.waitForSaveThreads((MainActivity)getActivity());
 
             SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getReadableDatabase();
             List<Long> listBowlerIds = new ArrayList<>();
@@ -537,7 +531,6 @@ public class BowlerFragment extends Fragment
                     listBowlerNames.add(cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_BOWLER_NAME)));
                     int totalSum = cursor.getInt(cursor.getColumnIndex("totalSum"));
                     int totalCount = cursor.getInt(cursor.getColumnIndex("totalCount"));
-                    Log.w(TAG, "Sum: " + totalSum + " Count: " + totalCount);
                     listBowlerAverages.add((short)((totalCount > 0) ? totalSum/totalCount : 0));
                     cursor.moveToNext();
                 }
@@ -639,7 +632,7 @@ public class BowlerFragment extends Fragment
             }
             catch (Exception ex)
             {
-                Log.w(TAG, "Error updating bowler: " + ex.getMessage());
+                //does nothing
             }
             finally
             {
@@ -697,7 +690,7 @@ public class BowlerFragment extends Fragment
             }
             catch (Exception ex)
             {
-                Log.w(TAG, "Error adding new bowler: " + ex.getMessage());
+                //does nothing
             }
             finally
             {

@@ -14,7 +14,6 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -49,9 +48,6 @@ import ca.josephroque.bowlingcompanion.theme.Theme;
 public class LeagueEventFragment extends Fragment
     implements Theme.ChangeableTheme, NameAverageAdapter.NameAverageEventHandler, NewLeagueEventDialog.NewLeagueEventDialogListener
 {
-    /** Tag to identify class when outputting to console */
-    private static final String TAG = "LeagueEventFragment";
-
     /** View to display league and event names and averages to user */
     private RecyclerView mRecyclerViewLeagueEvents;
     /** Adapter to manage data displayed in mRecyclerViewLeagueEvents */
@@ -340,7 +336,7 @@ public class LeagueEventFragment extends Fragment
     {
         //Removes league from RecyclerView immediately  UI doesn't hang
         final int index = mListLeagueEventIds.indexOf(leagueEventId);
-        final String leagueEventName = mListLeagueEventNames.remove(index);
+        mListLeagueEventNames.remove(index);
         mListLeagueEventAverages.remove(index);
         mListLeagueEventNumberOfGames.remove(index);
         mListLeagueEventIds.remove(index);
@@ -384,7 +380,7 @@ public class LeagueEventFragment extends Fragment
                 }
                 catch (Exception ex)
                 {
-                    Log.w(TAG, "Error deleting league: " + leagueEventName + " - " + ex.getMessage());
+                    //TODO: does nothing - error deleting from database
                 }
                 finally
                 {
@@ -481,7 +477,7 @@ public class LeagueEventFragment extends Fragment
             }
             catch (Exception ex)
             {
-                Log.w(TAG, "Error updating league: " + ex.getMessage());
+                //does nothing - error updating league date - non-fatal
             }
             finally
             {
@@ -512,8 +508,7 @@ public class LeagueEventFragment extends Fragment
                 }
                 else
                 {
-                    Log.w(TAG, "Could not load event series: " + selectedLeagueId);
-                    return null;
+                    throw new RuntimeException("Event series id could not be loaded from database.");
                 }
             }
             else
@@ -576,7 +571,7 @@ public class LeagueEventFragment extends Fragment
         @Override
         protected List<?>[] doInBackground(Void... params)
         {
-            MainActivity.waitForSaveThreads((MainActivity)getActivity(), TAG);
+            MainActivity.waitForSaveThreads((MainActivity)getActivity());
 
             SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getReadableDatabase();
             List<Long> listLeagueEventIds = new ArrayList<>();
@@ -696,7 +691,7 @@ public class LeagueEventFragment extends Fragment
             }
             catch (Exception ex)
             {
-                Log.w(TAG, "Error adding new league/event: " + ex.getMessage());
+                //TODO: does nothing - error adding new league
             }
             finally
             {

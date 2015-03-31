@@ -2,10 +2,7 @@ package ca.josephroque.bowlingcompanion.theme;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.preference.PreferenceManager;
-import android.view.View;
 
 import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.R;
@@ -29,8 +26,6 @@ public class Theme
     private static int sThemeColorTertiary = -1;
     /** Long press effect color for the current theme */
     private static int sThemeColorLongPress = -1;
-    /** Number of milliseconds which short animations will last for */
-    private static int sShortAnimationDuration = -1;
     /** Number of milliseconds which medium animations will last for */
     private static int sMediumAnimationDuration = -1;
     /** List item background color for the current theme */
@@ -63,8 +58,6 @@ public class Theme
         if (sThemeName == null)
             sThemeName = "Green";
 
-        if (sShortAnimationDuration == -1)
-            sShortAnimationDuration = context.getResources().getInteger(android.R.integer.config_shortAnimTime);
         if (sMediumAnimationDuration == -1)
             sMediumAnimationDuration = context.getResources().getInteger(android.R.integer.config_mediumAnimTime);
         if (sThemeListItemBackground == -1)
@@ -205,11 +198,6 @@ public class Theme
      * @return the value of sThemeListItemBackground
      */
     public static int getListItemBackground() {return sThemeListItemBackground;}
-    /**
-     * Gets the duration to be used for short animations
-     * @return the value of sShortAnimationDuration
-     */
-    public static int getShortAnimationDuration() {return sShortAnimationDuration;}
     /**
      * Gets the duration to be used for medium animations
      * @return the value of sMediumAnimationDuration

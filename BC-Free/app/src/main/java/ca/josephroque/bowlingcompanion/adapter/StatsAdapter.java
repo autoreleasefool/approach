@@ -20,8 +20,6 @@ import ca.josephroque.bowlingcompanion.theme.Theme;
 public class StatsAdapter extends RecyclerView.Adapter<StatsAdapter.StatsViewHolder>
     implements Theme.ChangeableTheme
 {
-    /** Tag to identify class when outputting to console */
-    //private static final String TAG = "StatsAdapter";
     /** Represents data which should be displayed as a header */
     private static final int VIEWTYPE_HEADER = 0;
     /** Represents data which should be displayed as a regular list item */

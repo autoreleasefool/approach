@@ -7,4 +7,8 @@
           android:orderInCategory="10"
           android:icon="@drawable/ic_action_stats"
           app:showAsAction="ifRoom" />
+    <item android:id="@+id/action_edit_date"
+          android:title="@string/action_edit_date"
+          android:orderInCategory="20"
+          app:showAsAction="never" />
 </menu>

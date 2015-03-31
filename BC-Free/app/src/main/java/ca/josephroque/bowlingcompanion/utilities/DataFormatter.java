@@ -36,34 +36,26 @@ public class DataFormatter
         return null;
     }
 
-    public static int monthToInt(String month)
+    /**
+     * Returns an index from 1-12 representing the month which was passed
+     * @param strMonth string containing at least first 3 letters of a month
+     * @return index from 1-12 if strMonth represents a month, -1 otherwise
+     */
+    public static int monthToInt(String strMonth)
     {
-        if (month.startsWith("Jan"))
-            return 1;
-        else if (month.startsWith("Feb"))
-            return 2;
-        else if (month.startsWith("Mar"))
-            return 3;
-        else if (month.startsWith("Apr"))
-            return 4;
-        else if (month.startsWith("May"))
-            return 5;
-        else if (month.startsWith("Jun"))
-            return 6;
-        else if (month.startsWith("Jul"))
-            return 7;
-        else if (month.startsWith("Aug"))
-            return 8;
-        else if (month.startsWith("Sep"))
-            return 9;
-        else if (month.startsWith("Oct"))
-            return 10;
-        else if (month.startsWith("Nov"))
-            return 11;
-        else if (month.startsWith("Dec"))
-            return 12;
-        else
-            return -1;
+        if (strMonth.startsWith("Jan"))         return 1;
+        else if (strMonth.startsWith("Feb"))    return 2;
+        else if (strMonth.startsWith("Mar"))    return 3;
+        else if (strMonth.startsWith("Apr"))    return 4;
+        else if (strMonth.startsWith("May"))    return 5;
+        else if (strMonth.startsWith("Jun"))    return 6;
+        else if (strMonth.startsWith("Jul"))    return 7;
+        else if (strMonth.startsWith("Aug"))    return 8;
+        else if (strMonth.startsWith("Sep"))    return 9;
+        else if (strMonth.startsWith("Oct"))    return 10;
+        else if (strMonth.startsWith("Nov"))    return 11;
+        else if (strMonth.startsWith("Dec"))    return 12;
+        else return -1;
     }
 
     /**
@@ -91,6 +83,12 @@ public class DataFormatter
             throw new IllegalArgumentException("String must be formatted as YYYY-mm-DD");
     }
 
+    /**
+     * Converts a string containing a pretty formatted date into numerical values
+     * representing month, day, year (in that order)
+     * @param pretty string formatted by formattedDateToPrettyCompact
+     * @return month, day, year of pretty (in that order)
+     */
     public static int[] prettyCompactToFormattedDate(String pretty)
     {
         int[] date = new int[3];

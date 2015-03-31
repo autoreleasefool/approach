@@ -23,10 +23,18 @@ import ca.josephroque.bowlingcompanion.R;
 public class DrawerAdapter extends ArrayAdapter<String>
     implements ListView.OnItemClickListener
 {
+    /** Callback listener for user events */
     private OnDrawerClickListener mDrawerClickListener;
+    /** List of options to be displayed by the ListView */
     private List<String> mListOptions;
+    /** Current game, which corresponds to a game tag with a filled radio button in the view */
     private String mCurrentGame = null;
 
+    /**
+     * Calls super constructor and attempts to cast context to a listener for events
+     * @param context context which created this object - must implement OnDrawerClickListener
+     * @param listOptions options which will be displayed by the list
+     */
     public DrawerAdapter(Context context, List<String> listOptions)
     {
         super(context, R.layout.list_drawer, listOptions);
@@ -67,6 +75,7 @@ public class DrawerAdapter extends ArrayAdapter<String>
             viewHolder = (ViewHolder)view.getTag();
         }
 
+        //Displays a different icon next to different navigational options
         viewHolder.mTextViewOption.setText(mListOptions.get(position));
         if (mListOptions.get(position) == Constants.NAV_OPTION_HOME)
         {
@@ -113,7 +122,16 @@ public class DrawerAdapter extends ArrayAdapter<String>
         return view;
     }
 
+    /**
+     * Assigns a new value to mCurrentGame
+     * @param currentGame new value for mCurrentGame (1 will be added to it)
+     */
     public void setCurrentGame(byte currentGame) {mCurrentGame = String.valueOf(currentGame + 1);}
+
+    /**
+     * Returns a cast of mCurrentGame to byte minus one
+     * @return byte representation of mCurrentGame - 1
+     */
     public byte getCurrentGame() {return (byte)(Byte.parseByte(mCurrentGame) - 1);}
 
     @Override
@@ -121,21 +139,40 @@ public class DrawerAdapter extends ArrayAdapter<String>
     {
         String option = mListOptions.get(position);
 
+        //If the option selected was a game number
         if (option.matches("\\w+ \\d+"))
             mDrawerClickListener.onGameItemClicked((byte)(Byte.parseByte(option.substring(5)) - 1));
+        //else, a certain fragment should be navigated to
         else
             mDrawerClickListener.onFragmentItemClicked(option);
     }
 
+    /**
+     * Callback listener for user events on the list
+     */
     public static interface OnDrawerClickListener
     {
+        /**
+         * Indicates a fragment should be navigated to
+         * @param fragmentItem name of the fragment to navigate to
+         */
         public void onFragmentItemClicked(String fragmentItem);
+
+        /**
+         * Indicates a game should be switched to
+         * @param gameNumber number of the game to switch to
+         */
         public void onGameItemClicked(byte gameNumber);
     }
 
+    /**
+     * Holds the views for a certain list item
+     */
     private static class ViewHolder
     {
+        /** Displays icon which represents the navigational option*/
         private ImageView mImageViewIcon;
+        /** Text which describes the navigational option */
         private TextView mTextViewOption;
     }
 }

@@ -16,7 +16,6 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
-import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,9 +41,6 @@ import ca.josephroque.bowlingcompanion.utilities.EmailUtils;
 public class SettingsActivity extends PreferenceActivity
     implements SharedPreferences.OnSharedPreferenceChangeListener, Preference.OnPreferenceClickListener
 {
-    /** Tag to identify class when outputting to log */
-    private static final String TAG = "SettingsActivity";
-
     /** Array of ids which represent bowlers in the database */
     private String[] mArrayBowlerIds;
     /** Array of names from database of bowlers */
@@ -117,24 +113,6 @@ public class SettingsActivity extends PreferenceActivity
         getPreferenceScreen().addPreference(fakeHeader);
         addPreferencesFromResource(R.xml.pref_other);
 
-        /*
-        TODO: full version is not yet available, add back in when it is
-        findPreference(Constants.KEY_VIEW_FULL).setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-                {
-                    @Override
-                    public boolean onPreferenceClick(Preference preference)
-                    {
-                        final String appPackageName = ca.josephroque.bowlingcompaniondeluxe;
-                        try
-                        {
-                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
-                        } catch (android.content.ActivityNotFoundException ex)
-                        {
-                            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + appPackageName)));
-                        }
-                        return true;
-                    }
-                });*/
         findPreference(Constants.KEY_RATE).setOnPreferenceClickListener(this);
         findPreference(Constants.KEY_REPORT_BUG).setOnPreferenceClickListener(this);
         findPreference(Constants.KEY_COMMENT_SUGGESTION).setOnPreferenceClickListener(this);
@@ -305,7 +283,6 @@ public class SettingsActivity extends PreferenceActivity
 
             if (isQuickEnabled)
             {
-                Log.w(TAG, "Quick enabled");
                 quickPref.setSummary(R.string.pref_enable_quick_summaryOn);
                 quickBowlerPref.setValueIndex(0);
 
@@ -322,7 +299,6 @@ public class SettingsActivity extends PreferenceActivity
             }
             else
             {
-                Log.w(TAG, "Quick disabled");
                 quickPref.setSummary(R.string.pref_enable_quick_summaryOff);
                 quickBowlerPref.setSummary(R.string.pref_quick_bowler_summary);
                 quickLeaguePref.setSummary(R.string.pref_quick_league_summary);
@@ -335,7 +311,6 @@ public class SettingsActivity extends PreferenceActivity
         }
         else if (key.equals(Constants.KEY_QUICK_BOWLER))
         {
-            Log.w(TAG, "Quick bowler altered");
             ListPreference quickBowlerPref = (ListPreference)findPreference(key);
             ListPreference quickLeaguePref = (ListPreference)findPreference(Constants.KEY_QUICK_LEAGUE);
 
@@ -353,7 +328,6 @@ public class SettingsActivity extends PreferenceActivity
                     .putLong(Constants.PREF_QUICK_LEAGUE_ID,
                             Long.parseLong(mArrayLeagueIds[mCurrentBowlerPosition][0]))
                     .apply();
-            Log.w(TAG, "League entries set");
         }
         else if (key.equals(Constants.KEY_QUICK_LEAGUE))
         {

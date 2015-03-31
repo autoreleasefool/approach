@@ -10,10 +10,6 @@ public class Constants
 {
 
     // SETTINGS KEYS
-    /** Identifier for preference which should open full version in play store */
-    //public static final String KEY_VIEW_FULL = "pref_view_full";
-    /** Identifier for preference which should open developer website */
-    //public static final String KEY_DEVELOPER_WEBSITE = "pref_developer_website";
     /** Identifier for preference which should open app in play store */
     public static final String KEY_RATE = "pref_rate";
     /** Identifier for preference which should open email intent */
@@ -150,40 +146,22 @@ public class Constants
     public static final byte STAT_SPARE_CONVERSIONS = 2;
     /** Index which should correspond to the number of head pins */
     public static final byte STAT_HEAD_PINS = 3;
-    /** Index which should correspond to the number of head pins spared */
-    //public static final byte STAT_HEAD_PINS_SPARED = 4;
     /** Index which should correspond to the number of lefts */
     public static final byte STAT_LEFTS = 5;
-    /** Index which should correspond to the number of lefts spared */
-    //public static final byte STAT_LEFTS_SPARED = 6;
     /** Index which should correspond to the number of rights */
     public static final byte STAT_RIGHTS = 7;
-    /** Index which should correspond to the number of rights spared */
-    //public static final byte STAT_RIGHTS_SPARED = 8;
     /** Index which should correspond to the number of aces */
     public static final byte STAT_ACES = 9;
-    /** Index which should correspond to the number of aces spared */
-    //public static final byte STAT_ACES_SPARED = 10;
     /** Index which should correspond to the number of chop offs */
     public static final byte STAT_CHOP_OFFS = 11;
-    /** Index which should correspond to the number of chop offs spared */
-    //public static final byte STAT_CHOP_OFFS_SPARED = 12;
     /** Index which should correspond to the number of left chop offs */
     public static final byte STAT_LEFT_CHOP_OFFS = 13;
-    /** Index which should correspond to the number of left chop offs spared */
-    //public static final byte STAT_LEFT_CHOP_OFFS_SPARED = 14;
     /** Index which should correspond to the number of right chop offs */
     public static final byte STAT_RIGHT_CHOP_OFFS = 15;
-    /** Index which should correspond to the number of right chop offs spared */
-    //public static final byte STAT_RIGHT_CHOP_OFFS_SPARED = 16;
     /** Index which should correspond to the number of splits */
     public static final byte STAT_SPLITS = 17;
-    /** Index which should correspond to the number of splits spared */
-   // public static final byte STAT_SPLITS_SPARED = 18;
     /** Index which should correspond to the number of left splits */
     public static final byte STAT_LEFT_SPLITS = 19;
-    /** Index which should correspond to the number of left splits spared */
-    //public static final byte STAT_LEFT_SPLITS_SPARED = 20;
     /** Index which should correspond to the number of right splits */
     public static final byte STAT_RIGHT_SPLITS = 21;
     /** Index which should correspond to the number of right splits spared */
@@ -224,10 +202,16 @@ public class Constants
     public static final String FRAGMENT_STATS = "StatsFragment";
 
     // NAVIGATION OPTIONS
+    /** Name of the option to navigate to the home fragment */
     public static final String NAV_OPTION_HOME = "Home";
+    /** Name of the option to navigate to the bowler fragment */
     public static final String NAV_OPTION_BOWLERS = "Bowlers";
+    /** Name of the option to navigate to the leagues & events fragment */
     public static final String NAV_OPTION_LEAGUES_EVENTS = "Leagues & Events";
+    /** Name of the option to navigate to the series fragment */
     public static final String NAV_OPTION_SERIES = "Series";
+    /** Name of the option to navigate to the game fragment */
     public static final String NAV_OPTION_GAME_DETAILS = "Game Details";
+    /** Name of the option to navigate to the stats fragment */
     public static final String NAV_OPTION_STATS = "Statistics";
 }

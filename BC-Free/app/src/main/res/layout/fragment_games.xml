@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -20,7 +21,8 @@
             android:layout_alignParentStart="true"
             android:paddingTop="6dp"
             android:paddingBottom="6dp"
-            android:src="@drawable/ic_action_previous_item"/>
+            android:src="@drawable/ic_action_previous_item"
+            tools:ignore="ContentDescription"/>
 
         <TextView
             android:id="@+id/tv_prev_ball"
@@ -35,7 +37,8 @@
             android:textColor="@android:color/white"
             android:gravity="center"
             android:paddingLeft="2dp"
-            android:paddingRight="2dp"/>
+            android:paddingRight="2dp"
+            tools:ignore="RelativeOverlap"/>
 
         <TextView
             android:id="@+id/tv_game_number"
@@ -54,7 +57,8 @@
             android:layout_alignParentEnd="true"
             android:paddingTop="6dp"
             android:paddingBottom="6dp"
-            android:src="@drawable/ic_action_next_item"/>
+            android:src="@drawable/ic_action_next_item"
+            tools:ignore="ContentDescription"/>
 
         <TextView
             android:id="@+id/tv_next_ball"
@@ -69,7 +73,8 @@
             android:textColor="@android:color/white"
             android:gravity="center"
             android:paddingLeft="2dp"
-            android:paddingRight="2dp"/>
+            android:paddingRight="2dp"
+            tools:ignore="RelativeOverlap"/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -87,7 +92,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:background="@drawable/alley_background"/>
+            android:background="@drawable/alley_background"
+            tools:ignore="ContentDescription"/>
 
         <ImageView
             android:id="@+id/iv_lock"
@@ -97,7 +103,8 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:src="@drawable/ic_lock"/>
+            android:src="@drawable/ic_lock"
+            android:contentDescription="@string/description_lock_unlock"/>
         <ImageView
             android:id="@+id/iv_clear"
             android:layout_width="36dp"
@@ -106,7 +113,8 @@
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
-            android:src="@drawable/ic_strike"/>
+            android:src="@drawable/ic_strike"
+            android:contentDescription="@string/description_clear"/>
         <ImageView
             android:id="@+id/iv_foul"
             android:layout_width="36dp"
@@ -115,7 +123,8 @@
             android:layout_alignParentBottom="true"
             android:layout_toRightOf="@id/iv_clear"
             android:layout_toEndOf="@id/iv_clear"
-            android:src="@drawable/ic_foul"/>
+            android:src="@drawable/ic_foul"
+            android:contentDescription="@string/description_foul"/>
         <ImageView
             android:id="@+id/iv_reset_frame"
             android:layout_width="36dp"
@@ -124,7 +133,8 @@
             android:layout_alignParentBottom="true"
             android:layout_toRightOf="@id/iv_foul"
             android:layout_toEndOf="@id/iv_foul"
-            android:src="@drawable/ic_action_refresh"/>
+            android:src="@drawable/ic_action_refresh"
+            android:contentDescription="@string/description_reset_frame"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -141,7 +151,8 @@
                 android:paddingRight="4dp"
                 android:scaleType="centerInside"
                 android:src="@drawable/pin_enabled"
-                android:background="@drawable/background_pin_button"/>
+                android:background="@drawable/background_pin_button"
+                tools:ignore="ContentDescription"/>
 
             <ImageButton
                 android:id="@+id/button_pin_2"
@@ -152,7 +163,8 @@
                 android:paddingRight="4dp"
                 android:scaleType="centerInside"
                 android:src="@drawable/pin_enabled"
-                android:background="@drawable/background_pin_button"/>
+                android:background="@drawable/background_pin_button"
+                tools:ignore="ContentDescription"/>
 
             <ImageButton
                 android:id="@+id/button_pin_3"
@@ -163,7 +175,8 @@
                 android:paddingRight="4dp"
                 android:scaleType="centerInside"
                 android:src="@drawable/pin_enabled"
-                android:background="@drawable/background_pin_button"/>
+                android:background="@drawable/background_pin_button"
+                tools:ignore="ContentDescription"/>
 
             <ImageButton
                 android:id="@+id/button_pin_4"
@@ -174,7 +187,8 @@
                 android:paddingRight="4dp"
                 android:scaleType="centerInside"
                 android:src="@drawable/pin_enabled"
-                android:background="@drawable/background_pin_button"/>
+                android:background="@drawable/background_pin_button"
+                tools:ignore="ContentDescription"/>
 
             <ImageButton
                 android:id="@+id/button_pin_5"
@@ -185,7 +199,8 @@
                 android:paddingRight="4dp"
                 android:scaleType="centerInside"
                 android:src="@drawable/pin_enabled"
-                android:background="@drawable/background_pin_button"/>
+                android:background="@drawable/background_pin_button"
+                tools:ignore="ContentDescription"/>
         </LinearLayout>
 
         <TextView

@@ -9,7 +9,6 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,9 +36,6 @@ import ca.josephroque.bowlingcompanion.theme.Theme;
 public class StatsFragment extends Fragment
     implements Theme.ChangeableTheme
 {
-    /** Tag to identify class when outputting to console */
-    private static final String TAG = "StatsFragment";
-
     /** Represent names of general stats related to the middle pin */
     private static final String[] STATS_MIDDLE_GENERAL =
             {"Middle Hit", "Strikes", "Spare Conversions"};
@@ -158,7 +154,7 @@ public class StatsFragment extends Fragment
         @Override
         protected List<?>[] doInBackground(Byte... bowlerLeagueOrGameParam)
         {
-            MainActivity.waitForSaveThreads((MainActivity)getActivity(), TAG);
+            MainActivity.waitForSaveThreads((MainActivity)getActivity());
 
             MainActivity mainActivity = (MainActivity)getActivity();
             final byte bowlerLeagueOrGame = bowlerLeagueOrGameParam[0];
@@ -676,7 +672,7 @@ public class StatsFragment extends Fragment
                         + ", series." + SeriesEntry._ID
                         + ", game." + GameEntry.COLUMN_GAME_NUMBER
                         + ", frame." + FrameEntry.COLUMN_FRAME_NUMBER;
-        Log.w(TAG, rawStatsQuery);
+
         String[] rawStatsArgs = {
                 ((shouldGetLeagueStats)
                         ? String.valueOf(((MainActivity) getActivity()).getLeagueId())

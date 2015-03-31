@@ -22,8 +22,11 @@ public class ChangeDateDialog extends DialogFragment
     implements DatePickerDialog.OnDateSetListener
 {
 
+    /** Dialog which allows user to select a date from a calendar */
     private DatePickerDialog mDatePicker;
+    /** Callback listener for when user selects a date */
     private ChangeDateDialogListener mChangeDateListener;
+    /** Id which identifies the current series which user is changing the date for */
     private long mSeriesId;
 
     @Override
@@ -35,7 +38,7 @@ public class ChangeDateDialog extends DialogFragment
         {
             String dateOfSeries = getArguments().getString(Constants.EXTRA_NAME_SERIES);
             date = DataFormatter.prettyCompactToFormattedDate(dateOfSeries);
-            date[0] -= 1;
+            date[0] -= 1; //Must subtract one because method returns 1-12 for month, need 0-11
             mSeriesId = getArguments().getLong(Constants.EXTRA_ID_SERIES, -1);
         }
         else
@@ -79,6 +82,14 @@ public class ChangeDateDialog extends DialogFragment
         outState.putLong(Constants.EXTRA_ID_SERIES, mSeriesId);
     }
 
+    /**
+     * Returns a new instance of this dialog fragment with the listener assigned and
+     * arguments set.
+     * @param listener callback listener for user events
+     * @param seriesDate initial date of the series to be changed
+     * @param seriesId identifies the series to be changed
+     * @return a new instance ChangeDateDialog
+     */
     public static ChangeDateDialog newInstance(ChangeDateDialogListener listener, String seriesDate, long seriesId)
     {
         ChangeDateDialog dialog = new ChangeDateDialog();
@@ -90,8 +101,18 @@ public class ChangeDateDialog extends DialogFragment
         return dialog;
     }
 
+    /**
+     * Callback listener for user events
+     */
     public static interface ChangeDateDialogListener
     {
+        /**
+         * Called when the user selects a date to set
+         * @param seriesId id of the series to change
+         * @param year year to change date to
+         * @param month month to change date to
+         * @param day day of the month to change date to
+         */
         public void onChangeDate(long seriesId, int year, int month, int day);
     }
 }

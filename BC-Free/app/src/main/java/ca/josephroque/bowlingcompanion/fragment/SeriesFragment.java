@@ -1,7 +1,9 @@
 package ca.josephroque.bowlingcompanion.fragment;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
@@ -10,7 +12,6 @@ import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -48,9 +49,6 @@ public class SeriesFragment extends Fragment
         SeriesAdapter.SeriesEventHandler,
         ChangeDateDialog.ChangeDateDialogListener
 {
-    /** Tag to identify class when outputting to console */
-    private static final String TAG = "SeriesFragment";
-
     /** View to display series dates and games to user */
     private RecyclerView mRecyclerViewSeries;
     /** Adapter to manage data displayed in mRecyclerViewSeries */
@@ -168,6 +166,9 @@ public class SeriesFragment extends Fragment
     {
         switch(item.getItemId())
         {
+            case R.id.action_edit_date:
+                showEditDateDialog();
+                return true;
             case R.id.action_stats:
                 mSeriesListener.onLeagueStatsOpened();
                 return true;
@@ -259,7 +260,7 @@ public class SeriesFragment extends Fragment
                 }
                 catch (Exception ex)
                 {
-                    Log.w(TAG, "Unable to change series date: " + seriesId);
+                    //TODO: does nothing - date in database for series was not changed
                 }
                 finally
                 {
@@ -267,6 +268,26 @@ public class SeriesFragment extends Fragment
                 }
             }
         }));
+    }
+
+    /**
+     * Informs user of how to change series dates
+     */
+    private void showEditDateDialog()
+    {
+        new AlertDialog.Builder(getActivity())
+                .setMessage(R.string.dialog_edit_date)
+                .setCancelable(false)
+                .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        dialog.dismiss();
+                    }
+                })
+                .create()
+                .show();
     }
 
     /**
@@ -299,7 +320,7 @@ public class SeriesFragment extends Fragment
     private void deleteSeries(final long seriesId)
     {
         final int index = mListSeriesIds.indexOf(seriesId);
-        final String seriesDate = mListSeriesDates.remove(index);
+        mListSeriesDates.remove(index);
         mListSeriesGames.remove(index);
         mListSeriesIds.remove(index);
         mAdapterSeries.notifyDataSetChanged();
@@ -322,7 +343,7 @@ public class SeriesFragment extends Fragment
                 }
                 catch (Exception ex)
                 {
-                    Log.w(TAG, "Error deleting series: " + seriesDate);
+                    //TODO: does nothing - series was not deleted
                 }
                 finally
                 {
@@ -350,7 +371,7 @@ public class SeriesFragment extends Fragment
         @Override
         protected List<?>[] doInBackground(Void... params)
         {
-            MainActivity.waitForSaveThreads((MainActivity)getActivity(), TAG);
+            MainActivity.waitForSaveThreads((MainActivity)getActivity());
 
             SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getReadableDatabase();
             List<Long> listSeriesIds = new ArrayList<>();

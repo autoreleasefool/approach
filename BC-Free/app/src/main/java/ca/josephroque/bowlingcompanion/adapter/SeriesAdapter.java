@@ -29,9 +29,6 @@ import ca.josephroque.bowlingcompanion.theme.Theme;
 public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesViewHolder>
     implements Theme.ChangeableTheme, View.OnClickListener, View.OnLongClickListener
 {
-    /** Tag to identify class when outputting to console */
-    //private static final String TAG = "SeriesAdapter";
-
     /** Instance of handler for callback on user action */
     private SeriesEventHandler mEventHandler;
     /** List of dates which will be displayed */
@@ -57,6 +54,7 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
         private TextView[] mArrayTextViewGames;
         /** Animates changes in color to the ViewHolder background */
         private ValueAnimator mValueAnimator = null;
+        /** Displays an icon to allow editing of the date of a series */
         private ImageView mImageViewEdit;
 
         /**

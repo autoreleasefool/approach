@@ -7,20 +7,17 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
-
-//import com.google.android.gms.ads.AdRequest;
-//import com.google.android.gms.ads.AdView;
 
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -55,9 +52,6 @@ public class MainActivity extends ActionBarActivity
         GameFragment.OnGameOrSeriesStatsOpenedListener,
         DrawerAdapter.OnDrawerClickListener
 {
-    /** Tag to identify class when outputting to console */
-    private static final String TAG = "MainActivity";
-
     /** Id of current bowler being used in fragments */
     private long mBowlerId = -1;
     /** Id of current league being used in fragments */
@@ -76,22 +70,35 @@ public class MainActivity extends ActionBarActivity
     private String mSeriesDate;
     /** Game number in series */
     private byte mGameNumber;
+    /** Indicates if the fragments are in event mode or not */
     private boolean mIsEventMode;
+    /** Indicates if a quick series is being created */
     private boolean mIsQuickSeries;
 
+    /** Queue of threads which are waiting to save data to the database */
     private ConcurrentLinkedQueue<Thread> mQueueSavingThreads;
+    /** Current thread saving to the database */
     private Thread runningSaveThread;
+    /** Indicates if the app is running and should continue to check for threads trying to save */
     private AtomicBoolean appIsRunning = new AtomicBoolean(false);
 
+    /** Navigation drawer layout */
     private DrawerLayout mDrawerLayout;
+    /** ListView to display items in navigation drawer */
     private ListView mDrawerList;
+    /** Adapter to manage items in navigation drawer */
     private DrawerAdapter mDrawerAdapter;
+    /** Toggle for the navigation drawer */
     private ActionBarDrawerToggle mDrawerToggle;
 
+    /** Title of the navigation drawer */
     private int mDrawerTitle;
+    /** Title of the activity for when navigation drawer is closed */
     private int mTitle;
+    /** Items in the navigation drawer */
     private List<String> mListDrawerOptions;
 
+    /** AdView to display ads to user */
     private AdView mAdView;
 
     @Override
@@ -118,19 +125,25 @@ public class MainActivity extends ActionBarActivity
                 R.string.text_open_drawer, R.string.text_close_drawer) {
 
             /** Called when a drawer has settled in a completely closed state. */
+            @Override
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
                 setActionBarTitle(mTitle, false);
-                //TODO: change depending on version
-                supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB)
+                    supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+                else
+                    invalidateOptionsMenu();
             }
 
             /** Called when a drawer has settled in a completely open state. */
+            @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
                 setActionBarTitle(mDrawerTitle, false);
-                //TODO: change depending on version
-                supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB)
+                    supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+                else
+                    invalidateOptionsMenu();
             }
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
@@ -140,7 +153,6 @@ public class MainActivity extends ActionBarActivity
 
         getSupportFragmentManager().addOnBackStackChangedListener(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        //shouldDisplayHomeUp();
 
         if (savedInstanceState == null)
         {
@@ -166,6 +178,7 @@ public class MainActivity extends ActionBarActivity
             mIsQuickSeries = savedInstanceState.getBoolean(Constants.EXTRA_QUICK_SERIES);
         }
 
+        //Sets the adview to display an ad to the user
         mAdView = (AdView)findViewById(R.id.av_main);
         try
         {
@@ -176,6 +189,7 @@ public class MainActivity extends ActionBarActivity
             mAdView = null;
         }
 
+        //Checks if the user should be prompted to rate the app
         AppRater.appLaunched(this);
     }
 
@@ -226,23 +240,20 @@ public class MainActivity extends ActionBarActivity
             @Override
             public void run()
             {
-                Log.w(TAG, "Started saving loop");
                 while (appIsRunning.get() || mQueueSavingThreads.peek() != null)
                 {
                     runningSaveThread = mQueueSavingThreads.peek();
                     if (runningSaveThread != null)
                     {
-                        Log.w(TAG, "Peeked thread from saving queue");
                         runningSaveThread.start();
                         try
                         {
                             runningSaveThread.join();
                             mQueueSavingThreads.poll();
-                            Log.w(TAG, "Finished saving game");
                         }
                         catch (InterruptedException ex)
                         {
-                            Log.w(TAG, "Saving thread crash");
+                            throw new RuntimeException("Error saving game: " + ex.getMessage());
                         }
                     }
                     else
@@ -253,11 +264,10 @@ public class MainActivity extends ActionBarActivity
                         }
                         catch (InterruptedException ex)
                         {
-                            Log.w(TAG, "Saving thread crash");
+                            throw new RuntimeException("Error while saving thread sleeping: " + ex.getMessage());
                         }
                     }
                 }
-                Log.w(TAG, "Exited saving loop");
             }
         }).start();
 
@@ -320,6 +330,8 @@ public class MainActivity extends ActionBarActivity
         if (mListDrawerOptions.size() > 2)
             mListDrawerOptions.subList(2, mListDrawerOptions.size()).clear();
 
+        //Checks which fragment is now visible and performs some actions
+        //and updates items in the navigation drawer
         List<Fragment> fragments = getSupportFragmentManager().getFragments();
         for (Fragment fragment: fragments)
         {
@@ -548,15 +560,6 @@ public class MainActivity extends ActionBarActivity
     }
 
     /**
-     * Sets DisplayHomeAsUpEnabled if any fragments are on back stack
-     */
-    /*public void shouldDisplayHomeUp()
-    {
-        boolean canBack = (getSupportFragmentManager().getBackStackEntryCount() > 0);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(canBack);
-    }*/
-
-    /**
      * Sets title of action bar to string pointed to by resId
      * @param resId id of string to be set at title
      * @param override indicates if reference to resId title should be saved in mTitle
@@ -622,8 +625,22 @@ public class MainActivity extends ActionBarActivity
      */
     public String getSeriesDate(){return mSeriesDate;}
 
+    /**
+     * Returns true if the navigation drawer is currently open, false otherwise
+     * @return true if the drawer is open, false otherwise
+     */
     public boolean isDrawerOpen() {return mDrawerLayout.isDrawerOpen(mDrawerList);}
+
+    /**
+     * Returns true if the fragments are in event mode, false otherwise
+     * @return the value of mIsEventMode
+     */
     public boolean isEventMode() {return mIsEventMode;}
+
+    /**
+     * Returns true if a quick series is being created, false otherwise
+     * @return the value of mIsQuickSeries
+     */
     public boolean isQuickSeries() {return mIsQuickSeries;}
 
     /**
@@ -742,7 +759,7 @@ public class MainActivity extends ActionBarActivity
             }
             catch (Exception ex)
             {
-                Log.w(TAG, "Error adding new series: " + ex.getMessage());
+                throw new RuntimeException("Could not create new series entry in database: " + ex.getMessage());
             }
             finally
             {
@@ -771,23 +788,20 @@ public class MainActivity extends ActionBarActivity
         mQueueSavingThreads.add(thread);
     }
 
-    public static void waitForSaveThreads(MainActivity activity, String tag)
+    public static void waitForSaveThreads(MainActivity activity)
     {
         //Waits for saving to database to finish, before loading from database
-        long savingStartTime = System.currentTimeMillis();
         while (activity.mQueueSavingThreads.peek() != null)
         {
-            Log.w(tag, "Waiting for saving to complete");
             try
             {
                 Thread.sleep(100);
             }
             catch(InterruptedException ex)
             {
-                Log.w(tag, "Error while waiting for saves to finish");
+                throw new RuntimeException("Could not wait for threads to finish saving: " + ex.getMessage());
             }
             //wait for saving threads to finish
         }
-        Log.w(tag, "Waited " + (System.currentTimeMillis() - savingStartTime) + "ms for saving to finish");
     }
 }

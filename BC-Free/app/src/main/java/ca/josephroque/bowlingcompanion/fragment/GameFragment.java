@@ -10,7 +10,6 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -26,6 +25,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.MainActivity;
@@ -49,9 +49,6 @@ public class GameFragment extends Fragment
         Theme.ChangeableTheme,
         ManualScoreDialog.ManualScoreDialogListener
 {
-    /** Tag to identify class when outputting to console */
-    private static final String TAG = "GameFragment";
-
     /** Integer which represents the background color of views in the activity */
     private int COLOR_BACKGROUND;
     /** Integer which represents the highlighted color of views in the activity */
@@ -63,6 +60,7 @@ public class GameFragment extends Fragment
     private static final byte LISTENER_PIN_BUTTONS = 1;
     /** Represents the OnClickListener for any other objects */
     private static final byte LISTENER_OTHER = 2;
+    /** Represents the OnClickListener for the ball TextView objects */
     private static final byte LISTENER_TEXT_BALLS = 3;
 
     /** Ids which represent current games that are available to be edited */
@@ -78,8 +76,6 @@ public class GameFragment extends Fragment
     private byte mCurrentBall = 0;
     /** Indicates which frames in the game have been accessed */
     private boolean[] mHasFrameBeenAccessed;
-    /** Indicates whether the current games being edited belong to an event or not */
-    //TODO: private boolean mEventMode;
     /** Indicate whether a certain pin was knocked down after a certain ball in a certain frame */
     private boolean[][][] mPinState;
     /** Indicate whether a foul was invoked on a certain ball in a certain frame */
@@ -117,11 +113,20 @@ public class GameFragment extends Fragment
     private TextView mTextViewManualScore;
     /** Layout which contains views related to general game options */
     private RelativeLayout mRelativeLayoutGameToolbar;
+
+    /** Displays text to indicate navigation to next ball */
     private TextView mTextViewNextBall;
+    /** Displays text to indicate navigation to previous ball */
     private TextView mTextViewPrevBall;
+    /** Displays image to indicate navigation to next ball */
     private ImageView mImageViewNextBall;
+    /** Displays image to indicate navigation to previous ball */
     private ImageView mImageViewPrevBall;
+    /** Displays the current game number being viewed */
     private TextView mTextViewGameNumber;
+
+    /** Indicates if the app should not save games - set to true in case of errors */
+    private AtomicBoolean doNotSave = new AtomicBoolean(false);
 
     /** Instance of callback interface for handling user events */
     private OnGameOrSeriesStatsOpenedListener mGameSeriesListener;
@@ -399,6 +404,7 @@ public class GameFragment extends Fragment
         switch(item.getItemId())
         {
             case R.id.action_share:
+                //Prompts user to share or save an image of current series
                 saveGame(false);
                 MainActivity mainActivity = (MainActivity)getActivity();
                 ShareUtils.showShareDialog(mainActivity, mainActivity.getSeriesId());
@@ -898,7 +904,7 @@ public class GameFragment extends Fragment
      */
     private void saveGame(boolean ignoreManualScore)
     {
-        if (!ignoreManualScore && mManualScoreSet[mCurrentGame])
+        if ((!ignoreManualScore && mManualScoreSet[mCurrentGame]) || doNotSave.get())
             return;
 
         long[] framesToSave = new long[Constants.NUMBER_OF_FRAMES];
@@ -917,15 +923,15 @@ public class GameFragment extends Fragment
         }
 
         ((MainActivity)getActivity()).addSavingThread(
-        saveGameToDatabase((MainActivity)getActivity(),
-                mGameIds[mCurrentGame],
-                framesToSave,
-                accessToSave,
-                pinStateToSave,
-                foulsToSave,
-                mGameScoresMinusFouls[mCurrentGame],
-                mGameLocked[mCurrentGame],
-                mManualScoreSet[mCurrentGame]));
+                saveGameToDatabase((MainActivity) getActivity(),
+                        mGameIds[mCurrentGame],
+                        framesToSave,
+                        accessToSave,
+                        pinStateToSave,
+                        foulsToSave,
+                        mGameScoresMinusFouls[mCurrentGame],
+                        mGameLocked[mCurrentGame],
+                        mManualScoreSet[mCurrentGame]));
     }
 
     /**
@@ -960,7 +966,6 @@ public class GameFragment extends Fragment
         StringBuilder alertMessageBuilder = new StringBuilder("If you get");
         short possibleScore = Short.parseShort(mTextViewFrames[mCurrentFrame].getText().toString());
 
-        Log.w(TAG, "1: " + possibleScore);
         if (mCurrentFrame < Constants.LAST_FRAME)
         {
             if (Arrays.equals(mPinState[mCurrentFrame][0], Constants.FRAME_PINS_DOWN))
@@ -970,26 +975,17 @@ public class GameFragment extends Fragment
                 if (firstBallNextFrame == 15)
                 {
                     if (mCurrentFrame < Constants.LAST_FRAME - 1)
-                    {
                         possibleScore -= Score.getValueOfFrame(mPinState[mCurrentFrame + 2][0]);
-                    }
                     else
-                    {
                         possibleScore -= Score.getValueOfFrame(mPinState[mCurrentFrame + 1][1]);
-                    }
-                    Log.w(TAG, "2: " + possibleScore);
                 }
                 else
-                {
                     possibleScore -= Score.getValueOfFrameDifference(mPinState[mCurrentFrame][0], mPinState[mCurrentFrame][1]);
-                    Log.w(TAG, "3: " + possibleScore);
-                }
             }
             else if (Arrays.equals(mPinState[mCurrentFrame][1], Constants.FRAME_PINS_DOWN))
             {
                 int firstBallNextFrame = Score.getValueOfFrame(mPinState[mCurrentFrame + 1][0]);
                 possibleScore -= firstBallNextFrame;
-                Log.w(TAG, "3: " + possibleScore);
             }
         }
         else
@@ -997,7 +993,6 @@ public class GameFragment extends Fragment
             for (int i = mCurrentBall + 1; i < 3; i++)
                 possibleScore -= Score.getValueOfFrameDifference(mPinState[mCurrentFrame][i - 1], mPinState[mCurrentFrame][i]);
         }
-        Log.w(TAG, "4: " + possibleScore);
 
         int pinsLeftStanding = 0;
         for (int i = 0; i < 5; i++)
@@ -1050,7 +1045,6 @@ public class GameFragment extends Fragment
             }
             else if (spareLastFrame)
                 possibleScore += pinsLeftStanding;
-            Log.w(TAG, "5: " + possibleScore);
         }
         else if (mCurrentBall == 1)
         {
@@ -1065,7 +1059,6 @@ public class GameFragment extends Fragment
             possibleScore += pinsLeftStanding + 15;
             if (strikeLastFrame)
                 possibleScore += pinsLeftStanding;
-            Log.w(TAG, "6: " + possibleScore);
         }
         else
         {
@@ -1074,7 +1067,6 @@ public class GameFragment extends Fragment
             else
                 alertMessageBuilder.append(" fifteen");
             possibleScore += pinsLeftStanding;
-            Log.w(TAG, "7: " + possibleScore);
         }
         possibleScore += 45 * (Constants.LAST_FRAME - mCurrentFrame);
 
@@ -1086,10 +1078,9 @@ public class GameFragment extends Fragment
                     possibleScore -= 15;
             }
         }
-        Log.w(TAG, "8: " + possibleScore);
         if (possibleScore < 0)
             possibleScore = 0;
-        Log.w(TAG, "9: " + possibleScore);
+
         alertMessageBuilder.append(" this ball, and strikes onwards, your final score will be ");
         alertMessageBuilder.append(possibleScore);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
@@ -1107,6 +1098,10 @@ public class GameFragment extends Fragment
                 .show();
     }
 
+    /**
+     * Sets the visibility of text and image views which indicate available navigation options
+     * in the fragment, depending on whether they are available at the time
+     */
     private void setVisibilityOfNextAndPrevItems()
     {
         getActivity().runOnUiThread(new Runnable()
@@ -1399,8 +1394,8 @@ public class GameFragment extends Fragment
                 mTextViewFinalScore.setText(String.valueOf(mGameScoresMinusFouls[mCurrentGame]));
                 mImageViewFoul.setImageResource(
                         !mFouls[mCurrentFrame][mCurrentBall]
-                        ? R.drawable.ic_foul_remove
-                        : R.drawable.ic_foul);
+                                ? R.drawable.ic_foul_remove
+                                : R.drawable.ic_foul);
                 mTextViewFouls[mCurrentFrame][mCurrentBall]
                         .setText(mFouls[mCurrentFrame][mCurrentBall] ? "F" : "");
             }
@@ -1706,7 +1701,7 @@ public class GameFragment extends Fragment
                 }
                 catch (Exception ex)
                 {
-                    Log.w(TAG, "Error saving game " + gameId);
+                    throw new RuntimeException("Fatal error: Game could not save. " + ex.getMessage());
                 }
                 finally
                 {
@@ -1805,6 +1800,10 @@ public class GameFragment extends Fragment
         }).start();
     }
 
+    /**
+     * Saves current game and loads new game from database
+     * @param gameNumber index in mGameIds to load from database
+     */
     public void switchGame(byte gameNumber)
     {
         if (gameNumber == mCurrentGame)
@@ -1820,7 +1819,7 @@ public class GameFragment extends Fragment
      */
     private void loadInitialScores()
     {
-        MainActivity.waitForSaveThreads((MainActivity)getActivity(), TAG);
+        MainActivity.waitForSaveThreads((MainActivity)getActivity());
 
         byte numberOfGames = ((MainActivity)getActivity()).getNumberOfGames();
         SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getReadableDatabase();
@@ -1855,11 +1854,16 @@ public class GameFragment extends Fragment
         }
         else
         {
-            Log.w(TAG, "Could not load initial game scores");
+            doNotSave.set(true);
+            throw new RuntimeException("Fatal error: could not load initial scores.");
         }
         cursor.close();
     }
 
+    /**
+     * Gets the current game being edited
+     * @return value of mCurrentGame
+     */
     public byte getCurrentGame(){return mCurrentGame;}
 
     /**
