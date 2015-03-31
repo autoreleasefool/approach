@@ -268,6 +268,7 @@ public class GameFragment extends Fragment
         //TextView to display final score of game
         mTextViewFinalScore = new TextView(getActivity());
         mTextViewFinalScore.setGravity(Gravity.CENTER);
+        mTextViewFinalScore.setTextAppearance(getActivity(), android.R.style.TextAppearance_Large);
         mTextViewFinalScore.setBackgroundResource(R.drawable.background_frame_text);
         layoutParams = new RelativeLayout.LayoutParams(dp_120, dp_128);
         layoutParams.leftMargin = DataFormatter.getPixelsFromDP(screenDensity, Constants.NUMBER_OF_FRAMES * 120);
