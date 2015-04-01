@@ -28,7 +28,7 @@ public class DrawerAdapter extends ArrayAdapter<String>
     /** List of options to be displayed by the ListView */
     private List<String> mListOptions;
     /** Current game, which corresponds to a game tag with a filled radio button in the view */
-    private String mCurrentGame = null;
+    private String mCurrentGame = "0";
 
     /**
      * Calls super constructor and attempts to cast context to a listener for events

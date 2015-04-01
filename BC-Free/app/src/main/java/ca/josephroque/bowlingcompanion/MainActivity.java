@@ -97,7 +97,7 @@ public class MainActivity extends ActionBarActivity
     /** Title of the activity for when navigation drawer is closed */
     private int mTitle;
     /** Items in the navigation drawer */
-    private List<String> mListDrawerOptions;
+    private ArrayList<String> mListDrawerOptions;
 
     /** AdView to display ads to user */
     private AdView mAdView;
@@ -177,6 +177,17 @@ public class MainActivity extends ActionBarActivity
             mNumberOfGames = savedInstanceState.getByte(Constants.EXTRA_NUMBER_OF_GAMES, (byte)-1);
             mIsEventMode = savedInstanceState.getBoolean(Constants.EXTRA_EVENT_MODE);
             mIsQuickSeries = savedInstanceState.getBoolean(Constants.EXTRA_QUICK_SERIES);
+            List<String> listNavOptions = savedInstanceState.getStringArrayList(Constants.EXTRA_NAV_OPTIONS);
+            byte navCurrentGameNumber = savedInstanceState.getByte(Constants.EXTRA_NAV_CURRENT_GAME);
+            mDrawerAdapter.setCurrentGame(navCurrentGameNumber);
+            if (listNavOptions != null)
+            {
+                for (int i = 2; i < listNavOptions.size(); i++)
+                {
+                    mListDrawerOptions.add(listNavOptions.get(i));
+                }
+            }
+            mDrawerAdapter.notifyDataSetChanged();
         }
 
         //Sets the adview to display an ad to the user
@@ -248,6 +259,8 @@ public class MainActivity extends ActionBarActivity
         outState.putByte(Constants.EXTRA_GAME_NUMBER, mGameNumber);
         outState.putBoolean(Constants.EXTRA_QUICK_SERIES, mIsQuickSeries);
         outState.putBoolean(Constants.EXTRA_EVENT_MODE, mIsEventMode);
+        outState.putStringArrayList(Constants.EXTRA_NAV_OPTIONS, mListDrawerOptions);
+        outState.putByte(Constants.EXTRA_NAV_CURRENT_GAME, mDrawerAdapter.getCurrentGame());
     }
 
     @Override
@@ -427,6 +440,15 @@ public class MainActivity extends ActionBarActivity
         }
         mDrawerAdapter.notifyDataSetChanged();
         //shouldDisplayHomeUp();
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        if (mDrawerLayout.isDrawerOpen(mDrawerList))
+            mDrawerLayout.closeDrawer(mDrawerList);
+        else
+            super.onBackPressed();
     }
 
     @Override

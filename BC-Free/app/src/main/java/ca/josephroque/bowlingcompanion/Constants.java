@@ -76,6 +76,10 @@ public class Constants
     public static final String EXTRA_ARRAY_GAME_LOCKED = "EAGL";
     /** Identifies an array of booleans to indicate if games have manual scores */
     public static final String EXTRA_ARRAY_MANUAL_SCORE_SET = "EAMSS";
+    /** Identifies an array list of strings for names of the navigation menu options */
+    public static final String EXTRA_NAV_OPTIONS = "ENO";
+    /** Identifies the current game number for the navigation drawer */
+    public static final String EXTRA_NAV_CURRENT_GAME = "ENCG";
 
     // REGULAR EXPRESSIONS
     /** Regular Expression to match regular names */
