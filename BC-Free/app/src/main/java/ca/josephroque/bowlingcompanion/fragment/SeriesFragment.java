@@ -158,6 +158,7 @@ public class SeriesFragment extends Fragment
     {
         boolean drawerOpen = ((MainActivity)getActivity()).isDrawerOpen();
         menu.findItem(R.id.action_stats).setVisible(!drawerOpen);
+        menu.findItem(R.id.action_edit_date).setVisible(!drawerOpen);
         super.onPrepareOptionsMenu(menu);
     }
 
