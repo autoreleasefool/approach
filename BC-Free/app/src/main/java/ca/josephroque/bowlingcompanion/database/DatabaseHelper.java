@@ -22,7 +22,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     /** Name of the database */
     private static final String DATABASE_NAME = "bowlingdata";
     /** Version of the database, incremented with changes */
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
 
     /** Singleton instance of the DatabaseHelper */
@@ -94,13 +94,15 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 + GameEntry.COLUMN_SCORE + " INTEGER NOT NULL DEFAULT 0, "
                 + GameEntry.COLUMN_IS_MANUAL + " INTEGER NOT NULL DEFAULT 0, "
                 + GameEntry.COLUMN_IS_LOCKED + " INTEGER NOT NULL DEFAULT 0, "
+                + GameEntry.COLUMN_MATCH_PLAY + " INTEGER NOT NULL DEFAULT 0, "
                 + GameEntry.COLUMN_SERIES_ID + " INTEGER NOT NULL"
                         + " REFERENCES " + SeriesEntry.TABLE_NAME
                         + " ON UPDATE CASCADE ON DELETE CASCADE, "
                 + "CHECK (" + GameEntry.COLUMN_GAME_NUMBER + " >= 1 AND " + GameEntry.COLUMN_GAME_NUMBER + " <= 20), "
                 + "CHECK (" + GameEntry.COLUMN_IS_LOCKED + " = 0 OR " + GameEntry.COLUMN_IS_LOCKED + " = 1), "
                 + "CHECK (" + GameEntry.COLUMN_IS_MANUAL + " = 0 OR " + GameEntry.COLUMN_IS_MANUAL + " = 1), "
-                + "CHECK (" + GameEntry.COLUMN_SCORE + " >= 0 OR " + GameEntry.COLUMN_SCORE + " <= 450)"
+                + "CHECK (" + GameEntry.COLUMN_SCORE + " >= 0 AND " + GameEntry.COLUMN_SCORE + " <= 450), "
+                + "CHECK (" + GameEntry.COLUMN_MATCH_PLAY + " >= 0 AND " + GameEntry.COLUMN_MATCH_PLAY + " <= 3)"
                 + ");");
         db.execSQL("CREATE TABLE "
                 + FrameEntry.TABLE_NAME + " ("
@@ -152,12 +154,114 @@ public class DatabaseHelper extends SQLiteOpenHelper
          * not dropped
          */
         Log.w(TAG, "Upgrading database from version" + oldVersion + " to " + newVersion);
-        db.execSQL("DROP TABLE IF EXISTS " + FrameEntry.TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + GameEntry.TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + SeriesEntry.TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + LeagueEntry.TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + BowlerEntry.TABLE_NAME);
-        onCreate(db);
+
+        switch(oldVersion)
+        {
+            case 1:
+                //Removes foreign key and check constraints from frame table
+                db.execSQL("CREATE TABLE frame2 ("
+                        + FrameEntry._ID + " INTEGER PRIMARY KEY, "
+                        + FrameEntry.COLUMN_FRAME_NUMBER + " INTEGER NOT NULL, "
+                        + FrameEntry.COLUMN_IS_ACCESSED + " INTEGER NOT NULL DEFAULT 0, "
+                        + FrameEntry.COLUMN_PIN_STATE[0] + " TEXT NOT NULL DEFAULT '00000', "
+                        + FrameEntry.COLUMN_PIN_STATE[1] + " TEXT NOT NULL DEFAULT '00000', "
+                        + FrameEntry.COLUMN_PIN_STATE[2] + " TEXT NOT NULL DEFAULT '00000', "
+                        + FrameEntry.COLUMN_FOULS + " TEXT NOT NULL DEFAULT '0', "
+                        + FrameEntry.COLUMN_GAME_ID + " INTEGER NOT NULL"
+                        + ");");
+                db.execSQL("INSERT INTO frame2 ("
+                        + FrameEntry._ID + ", "
+                        + FrameEntry.COLUMN_FRAME_NUMBER + ", "
+                        + FrameEntry.COLUMN_IS_ACCESSED + ", "
+                        + FrameEntry.COLUMN_PIN_STATE[0] + ", "
+                        + FrameEntry.COLUMN_PIN_STATE[1] + ", "
+                        + FrameEntry.COLUMN_PIN_STATE[2] + ", "
+                        + FrameEntry.COLUMN_FOULS + ", "
+                        + FrameEntry.COLUMN_GAME_ID + ")"
+                        + " SELECT "
+                        + FrameEntry._ID + ", "
+                        + FrameEntry.COLUMN_FRAME_NUMBER + ", "
+                        + FrameEntry.COLUMN_IS_ACCESSED + ", "
+                        + FrameEntry.COLUMN_PIN_STATE[0] + ", "
+                        + FrameEntry.COLUMN_PIN_STATE[1] + ", "
+                        + FrameEntry.COLUMN_PIN_STATE[2] + ", "
+                        + FrameEntry.COLUMN_FOULS + ", "
+                        + FrameEntry.COLUMN_GAME_ID + " FROM " + FrameEntry.TABLE_NAME);
+                db.execSQL("DROP TABLE " + FrameEntry.TABLE_NAME);
+                db.execSQL("ALTER TABLE frame2 RENAME TO " + FrameEntry.TABLE_NAME);
+
+                //Adds new column and check constraints to game table
+                db.execSQL("CREATE TABLE game2 ("
+                        + GameEntry._ID + " INTEGER PRIMARY KEY, "
+                        + GameEntry.COLUMN_GAME_NUMBER + " INTEGER NOT NULL, "
+                        + GameEntry.COLUMN_SCORE + " INTEGER NOT NULL DEFAULT 0, "
+                        + GameEntry.COLUMN_IS_MANUAL + " INTEGER NOT NULL DEFAULT 0, "
+                        + GameEntry.COLUMN_IS_LOCKED + " INTEGER NOT NULL DEFAULT 0, "
+                        + GameEntry.COLUMN_MATCH_PLAY + " INTEGER NOT NULL DEFAULT 0, "
+                        + GameEntry.COLUMN_SERIES_ID + " INTEGER NOT NULL"
+                        + " REFERENCES " + SeriesEntry.TABLE_NAME
+                        + " ON UPDATE CASCADE ON DELETE CASCADE, "
+                        + "CHECK (" + GameEntry.COLUMN_GAME_NUMBER + " >= 1 AND " + GameEntry.COLUMN_GAME_NUMBER + " <= 20), "
+                        + "CHECK (" + GameEntry.COLUMN_IS_LOCKED + " = 0 OR " + GameEntry.COLUMN_IS_LOCKED + " = 1), "
+                        + "CHECK (" + GameEntry.COLUMN_IS_MANUAL + " = 0 OR " + GameEntry.COLUMN_IS_MANUAL + " = 1), "
+                        + "CHECK (" + GameEntry.COLUMN_SCORE + " >= 0 AND " + GameEntry.COLUMN_SCORE + " <= 450), "
+                        + "CHECK (" + GameEntry.COLUMN_MATCH_PLAY + " >= 0 AND " + GameEntry.COLUMN_MATCH_PLAY + " <= 3)"
+                        + ");");
+                db.execSQL("INSERT INTO game2 ("
+                        + GameEntry._ID + ", "
+                        + GameEntry.COLUMN_GAME_NUMBER + ", "
+                        + GameEntry.COLUMN_SCORE + ", "
+                        + GameEntry.COLUMN_IS_MANUAL + ", "
+                        + GameEntry.COLUMN_IS_LOCKED + ", "
+                        + GameEntry.COLUMN_SERIES_ID + ")"
+                        + " SELECT * FROM " + GameEntry.TABLE_NAME);
+                db.execSQL("DROP TABLE " + GameEntry.TABLE_NAME);
+                db.execSQL("ALTER TABLE game2 RENAME TO " + GameEntry.TABLE_NAME);
+
+                //Adds foreign key and check constraints to frame table
+                db.execSQL("CREATE TABLE frame2 ("
+                        + FrameEntry._ID + " INTEGER PRIMARY KEY, "
+                        + FrameEntry.COLUMN_FRAME_NUMBER + " INTEGER NOT NULL, "
+                        + FrameEntry.COLUMN_IS_ACCESSED + " INTEGER NOT NULL DEFAULT 0, "
+                        + FrameEntry.COLUMN_PIN_STATE[0] + " TEXT NOT NULL DEFAULT '00000', "
+                        + FrameEntry.COLUMN_PIN_STATE[1] + " TEXT NOT NULL DEFAULT '00000', "
+                        + FrameEntry.COLUMN_PIN_STATE[2] + " TEXT NOT NULL DEFAULT '00000', "
+                        + FrameEntry.COLUMN_FOULS + " TEXT NOT NULL DEFAULT '0', "
+                        + FrameEntry.COLUMN_GAME_ID + " INTEGER NOT NULL"
+                        + " REFERENCES " + GameEntry.TABLE_NAME
+                        + " ON UPDATE CASCADE ON DELETE CASCADE, "
+                        + "CHECK (" + FrameEntry.COLUMN_FRAME_NUMBER + " >= 1 AND " + FrameEntry.COLUMN_FRAME_NUMBER + " <= 10), "
+                        + "CHECK (" + FrameEntry.COLUMN_IS_ACCESSED + " = 0 OR " + FrameEntry.COLUMN_IS_ACCESSED + " = 1)"
+                        + ");");
+                db.execSQL("INSERT INTO frame2 ("
+                        + FrameEntry._ID + ", "
+                        + FrameEntry.COLUMN_FRAME_NUMBER + ", "
+                        + FrameEntry.COLUMN_IS_ACCESSED + ", "
+                        + FrameEntry.COLUMN_PIN_STATE[0] + ", "
+                        + FrameEntry.COLUMN_PIN_STATE[1] + ", "
+                        + FrameEntry.COLUMN_PIN_STATE[2] + ", "
+                        + FrameEntry.COLUMN_FOULS + ", "
+                        + FrameEntry.COLUMN_GAME_ID + ")"
+                        + " SELECT "
+                        + FrameEntry._ID + ", "
+                        + FrameEntry.COLUMN_FRAME_NUMBER + ", "
+                        + FrameEntry.COLUMN_IS_ACCESSED + ", "
+                        + FrameEntry.COLUMN_PIN_STATE[0] + ", "
+                        + FrameEntry.COLUMN_PIN_STATE[1] + ", "
+                        + FrameEntry.COLUMN_PIN_STATE[2] + ", "
+                        + FrameEntry.COLUMN_FOULS + ", "
+                        + FrameEntry.COLUMN_GAME_ID + " FROM " + FrameEntry.TABLE_NAME);
+                db.execSQL("DROP TABLE " + FrameEntry.TABLE_NAME);
+                db.execSQL("ALTER TABLE frame2 RENAME TO " + FrameEntry.TABLE_NAME);
+                break;
+            default:
+                db.execSQL("DROP TABLE IF EXISTS " + FrameEntry.TABLE_NAME);
+                db.execSQL("DROP TABLE IF EXISTS " + GameEntry.TABLE_NAME);
+                db.execSQL("DROP TABLE IF EXISTS " + SeriesEntry.TABLE_NAME);
+                db.execSQL("DROP TABLE IF EXISTS " + LeagueEntry.TABLE_NAME);
+                db.execSQL("DROP TABLE IF EXISTS " + BowlerEntry.TABLE_NAME);
+                onCreate(db);
+        }
     }
 
     /**

@@ -96,6 +96,8 @@ public class Contract
         public static final String COLUMN_IS_LOCKED = "game_is_locked";
         /** Name of the column to indicate if a game's score was manually set */
         public static final String COLUMN_IS_MANUAL = "game_is_manual";
+        /** Name of the column to indicate the match play result */
+        public static final String COLUMN_MATCH_PLAY = "game_match_play";
         /** Name of the column for foreign key to a series id */
         public static final String COLUMN_SERIES_ID = "game_series_id_fk";
     }

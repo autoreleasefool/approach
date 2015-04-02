@@ -80,6 +80,8 @@ public class Constants
     public static final String EXTRA_NAV_OPTIONS = "ENO";
     /** Identifies the current game number for the navigation drawer */
     public static final String EXTRA_NAV_CURRENT_GAME = "ENCG";
+    //TODO: documentation
+    public static final String EXTRA_ARRAY_MATCH_PLAY = "EAMP";
 
     // REGULAR EXPRESSIONS
     /** Regular Expression to match regular names */

@@ -62,6 +62,10 @@
     <string name="text_switch_game">Switch Game</string>
     <string name="text_open_drawer">Open Navigation Drawer</string>
     <string name="text_close_drawer">Close Navigation Drawer</string>
+    <string name="text_match_play">Match play</string>
+    <string name="text_match_play_win">Won</string>
+    <string name="text_match_play_lose">Lost</string>
+    <string name="text_match_play_tie">Tied</string>
 
     <!-- Content Descriptions -->
     <string name="description_lock_unlock">Lock or unlock game</string>

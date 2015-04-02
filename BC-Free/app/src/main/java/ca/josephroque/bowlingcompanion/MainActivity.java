@@ -702,12 +702,14 @@ public class MainActivity extends ActionBarActivity
             long[] frameId = new long[mNumberOfGames * 10];
             boolean[] gameLocked = new boolean[mNumberOfGames];
             boolean[] manualScore = new boolean[mNumberOfGames];
+            byte[] matchPlay = new byte[mNumberOfGames];
 
             SQLiteDatabase database = DatabaseHelper.getInstance(MainActivity.this).getReadableDatabase();
             String rawSeriesQuery = "SELECT "
                     + "game." + GameEntry._ID + " AS gid, "
                     + GameEntry.COLUMN_IS_LOCKED + ", "
                     + GameEntry.COLUMN_IS_MANUAL + ", "
+                    + GameEntry.COLUMN_MATCH_PLAY + ", "
                     + "frame." + FrameEntry._ID + " AS fid"
                     + " FROM " + GameEntry.TABLE_NAME + " AS game"
                     + " INNER JOIN " + FrameEntry.TABLE_NAME + " AS frame"
@@ -736,13 +738,14 @@ public class MainActivity extends ActionBarActivity
                                 (cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_IS_LOCKED)) == 1);
                         manualScore[currentGame] =
                                 (cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_IS_MANUAL)) == 1);
+                        matchPlay[currentGame] = (byte)cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_MATCH_PLAY));
                     }
                     cursor.moveToNext();
                 }
             }
             cursor.close();
 
-            return new Object[]{gameId, frameId, gameLocked, manualScore, isEvent[0]};
+            return new Object[]{gameId, frameId, gameLocked, manualScore, matchPlay};
         }
 
         @Override
@@ -752,9 +755,9 @@ public class MainActivity extends ActionBarActivity
             long[] frameIds = (long[])params[1];
             boolean[] gameLocked = (boolean[])params[2];
             boolean[] manualScore = (boolean[])params[3];
-            mIsEventMode = (Boolean)params[4];
+            byte[] matchPlay = (byte[])params[4];
 
-            GameFragment gameFragment = GameFragment.newInstance(gameIds, frameIds, gameLocked, manualScore);
+            GameFragment gameFragment = GameFragment.newInstance(gameIds, frameIds, gameLocked, manualScore, matchPlay);
             startFragmentTransaction(gameFragment, (isEventMode() ? Constants.FRAGMENT_LEAGUES : Constants.FRAGMENT_SERIES), Constants.FRAGMENT_GAME);
         }
     }
@@ -824,7 +827,7 @@ public class MainActivity extends ActionBarActivity
             long[] frameIds = (long[])params[1];
             mIsEventMode = false;
 
-            GameFragment gameFragment = GameFragment.newInstance(gameIds, frameIds, new boolean[mNumberOfGames], new boolean[mNumberOfGames]);
+            GameFragment gameFragment = GameFragment.newInstance(gameIds, frameIds, new boolean[mNumberOfGames], new boolean[mNumberOfGames], new byte[mNumberOfGames]);
             startFragmentTransaction(gameFragment, (isQuickSeries() ? Constants.FRAGMENT_BOWLERS : Constants.FRAGMENT_SERIES), Constants.FRAGMENT_GAME);
         }
     }

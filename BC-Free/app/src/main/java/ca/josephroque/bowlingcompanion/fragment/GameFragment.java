@@ -18,9 +18,13 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -88,6 +92,8 @@ public class GameFragment extends Fragment
     private boolean[] mGameLocked;
     /** Indicates if a game has a manual score set or not */
     private boolean[] mManualScoreSet;
+    //TODO:documentation
+    private byte[] mMatchPlay;
 
     /** TextView which displays score on a certain ball in a certain frame */
     private TextView[][] mTextViewBallScores;
@@ -125,8 +131,17 @@ public class GameFragment extends Fragment
     /** Displays the current game number being viewed */
     private TextView mTextViewGameNumber;
 
+    //TODO: documentation
+    private CheckBox mCheckBoxMatchPlay;
+    private RadioButton mRadioButtonWin;
+    private RadioButton mRadioButtonLose;
+    private RadioButton mRadioButtonTie;
+    private RadioGroup mRadioGroupMatchPlay;
+
     /** Indicates if the app should not save games - set to true in case of errors */
     private AtomicBoolean doNotSave = new AtomicBoolean(false);
+
+    private AtomicBoolean doNotSaveMatchPlay = new AtomicBoolean(false);
 
     /** Instance of callback interface for handling user events */
     private OnGameOrSeriesStatsOpenedListener mGameSeriesListener;
@@ -160,11 +175,11 @@ public class GameFragment extends Fragment
         //Loads member variables from saved instance state, if one exists
         if (savedInstanceState != null)
         {
-            //mEventMode = savedInstanceState.getBoolean(Constants.EXTRA_EVENT_MODE);
             mGameIds = savedInstanceState.getLongArray(Constants.EXTRA_ARRAY_GAME_IDS);
             mFrameIds = savedInstanceState.getLongArray(Constants.EXTRA_ARRAY_FRAME_IDS);
             mGameLocked = savedInstanceState.getBooleanArray(Constants.EXTRA_ARRAY_GAME_LOCKED);
             mManualScoreSet = savedInstanceState.getBooleanArray(Constants.EXTRA_ARRAY_MANUAL_SCORE_SET);
+            mMatchPlay = savedInstanceState.getByteArray(Constants.EXTRA_ARRAY_MATCH_PLAY);
         }
     }
 
@@ -273,6 +288,64 @@ public class GameFragment extends Fragment
         layoutParams = new RelativeLayout.LayoutParams(dp_120, dp_128);
         layoutParams.leftMargin = DataFormatter.getPixelsFromDP(screenDensity, Constants.NUMBER_OF_FRAMES * 120);
         relativeLayout.addView(mTextViewFinalScore, layoutParams);
+
+        final RadioButton mRadioButtonWin = new RadioButton(getActivity());
+        mRadioButtonWin.setText(R.string.text_match_play_win);
+        mRadioButtonWin.setTextAppearance(getActivity(), android.R.style.TextAppearance_Small);
+        mRadioButtonWin.setGravity(Gravity.START);
+
+        final RadioButton mRadioButtonLose = new RadioButton(getActivity());
+        mRadioButtonLose.setText(R.string.text_match_play_lose);
+        mRadioButtonLose.setTextAppearance(getActivity(), android.R.style.TextAppearance_Small);
+        mRadioButtonLose.setGravity(Gravity.START);
+
+        final RadioButton mRadioButtonTie = new RadioButton(getActivity());
+        mRadioButtonTie.setText(R.string.text_match_play_tie);
+        mRadioButtonTie.setTextAppearance(getActivity(), android.R.style.TextAppearance_Small);
+        mRadioButtonTie.setGravity(Gravity.START);
+
+        mRadioGroupMatchPlay = new RadioGroup(getActivity());
+        mRadioGroupMatchPlay.addView(mRadioButtonWin, 0);
+        mRadioGroupMatchPlay.addView(mRadioButtonLose, 1);
+        mRadioGroupMatchPlay.addView(mRadioButtonTie, 2);
+        mRadioGroupMatchPlay.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId)
+            {
+                if (doNotSaveMatchPlay.get())
+                    return;
+
+                mMatchPlay[mCurrentGame] = (byte)(checkedId + 1);
+                if (mRadioGroupMatchPlay.getVisibility() != View.VISIBLE)
+                    mMatchPlay[mCurrentGame] = 0;
+                saveGame(true);
+            }
+        });
+        layoutParams = new RelativeLayout.LayoutParams(dp_120, dp_40);
+        layoutParams.leftMargin = DataFormatter.getPixelsFromDP(screenDensity, (Constants.NUMBER_OF_FRAMES + 1) * 120);
+        layoutParams.topMargin = dp_20;
+        relativeLayout.addView(mRadioGroupMatchPlay, layoutParams);
+
+        mCheckBoxMatchPlay = new CheckBox(getActivity());
+        mCheckBoxMatchPlay.setText(R.string.text_match_play);
+        mCheckBoxMatchPlay.setTextAppearance(getActivity(), android.R.style.TextAppearance_Small);
+        mCheckBoxMatchPlay.setGravity(Gravity.CENTER);
+        mCheckBoxMatchPlay.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
+                if (isChecked)
+                    mRadioGroupMatchPlay.setVisibility(View.VISIBLE);
+                else
+                    mRadioGroupMatchPlay.setVisibility(View.GONE);
+                mRadioGroupMatchPlay.check(0);
+            }
+        });
+        layoutParams = new RelativeLayout.LayoutParams(dp_120, dp_20);
+        layoutParams.leftMargin = DataFormatter.getPixelsFromDP(screenDensity, (Constants.NUMBER_OF_FRAMES + 1) * 120);
+        relativeLayout.addView(mCheckBoxMatchPlay, layoutParams);
         mHorizontalScrollViewFrames.addView(relativeLayout);
 
         //Buttons which indicate state of pins in a frame, provide user interaction methods
@@ -336,6 +409,7 @@ public class GameFragment extends Fragment
             mFrameIds = args.getLongArray(Constants.EXTRA_ARRAY_FRAME_IDS);
             mGameLocked = args.getBooleanArray(Constants.EXTRA_ARRAY_GAME_LOCKED);
             mManualScoreSet = args.getBooleanArray(Constants.EXTRA_ARRAY_MANUAL_SCORE_SET);
+            mMatchPlay = args.getByteArray(Constants.EXTRA_ARRAY_MATCH_PLAY);
         }
 
         mGameScores = new short[((MainActivity)getActivity()).getNumberOfGames()];
@@ -369,6 +443,7 @@ public class GameFragment extends Fragment
         outState.putLongArray(Constants.EXTRA_ARRAY_FRAME_IDS, mFrameIds);
         outState.putBooleanArray(Constants.EXTRA_ARRAY_GAME_LOCKED, mGameLocked);
         outState.putBooleanArray(Constants.EXTRA_ARRAY_MANUAL_SCORE_SET, mManualScoreSet);
+        outState.putByteArray(Constants.EXTRA_ARRAY_MATCH_PLAY, mMatchPlay);
     }
 
     @Override
@@ -867,6 +942,15 @@ public class GameFragment extends Fragment
                 .show();
     }
 
+    //TODO:Documentation
+    private void setMatchPlay()
+    {
+        doNotSaveMatchPlay.set(true);
+        mCheckBoxMatchPlay.setChecked(mMatchPlay[mCurrentGame] != 0);
+        mRadioGroupMatchPlay.check(mMatchPlay[mCurrentGame] - 1);
+        doNotSaveMatchPlay.set(false);
+    }
+
     /**
      * Locks or unlocks a game and hides/shows settings which are only necessary
      * if a game is unlocked
@@ -932,7 +1016,8 @@ public class GameFragment extends Fragment
                         foulsToSave,
                         mGameScoresMinusFouls[mCurrentGame],
                         mGameLocked[mCurrentGame],
-                        mManualScoreSet[mCurrentGame]));
+                        mManualScoreSet[mCurrentGame],
+                        mMatchPlay[mCurrentGame]));
     }
 
     /**
@@ -1643,6 +1728,9 @@ public class GameFragment extends Fragment
      * @param pinState state of pins after each ball
      * @param fouls indicates whether a foul was invoked on each ball
      * @param finalScore final score of the game, considering fouls
+     * @param gameLocked indicates if the game is locked
+     * @param manualScoreSet indicates if a manual score for the game is set
+     * @param matchPlay indicates the result of match play for the game
      * @return a new thread which is saving a game. Thread is not started
      */
     private static Thread saveGameToDatabase(
@@ -1654,7 +1742,8 @@ public class GameFragment extends Fragment
             final boolean[][] fouls,
             final short finalScore,
             final boolean gameLocked,
-            final boolean manualScoreSet)
+            final boolean manualScoreSet,
+            final byte matchPlay)
     {
         return new Thread(new Runnable()
         {
@@ -1671,6 +1760,7 @@ public class GameFragment extends Fragment
                     values.put(GameEntry.COLUMN_SCORE, finalScore);
                     values.put(GameEntry.COLUMN_IS_LOCKED, (gameLocked ? 1:0));
                     values.put(GameEntry.COLUMN_IS_MANUAL, (manualScoreSet) ? 1:0);
+                    values.put(GameEntry.COLUMN_MATCH_PLAY, matchPlay);
                     database.update(GameEntry.TABLE_NAME,
                             values,
                             GameEntry._ID + "=?",
@@ -1781,6 +1871,7 @@ public class GameFragment extends Fragment
                         mTextViewGameNumber.setText("Game " + (mCurrentGame + 1));
                     }
                 });
+                setMatchPlay();
                 setGameLocked(mGameLocked[mCurrentGame]);
 
                 mCurrentFrame = 0;
@@ -1899,7 +1990,7 @@ public class GameFragment extends Fragment
      * @param manualScore whether the games being displayed have manual scores set
      * @return the newly created instance
      */
-    public static GameFragment newInstance(long[] gameIds, long[] frameIds, boolean[] gameLocked, boolean[] manualScore)
+    public static GameFragment newInstance(long[] gameIds, long[] frameIds, boolean[] gameLocked, boolean[] manualScore, byte[] matchPlay)
     {
         GameFragment gameFragment = new GameFragment();
         Bundle args = new Bundle();
@@ -1907,6 +1998,7 @@ public class GameFragment extends Fragment
         args.putLongArray(Constants.EXTRA_ARRAY_FRAME_IDS, frameIds);
         args.putBooleanArray(Constants.EXTRA_ARRAY_GAME_LOCKED, gameLocked);
         args.putBooleanArray(Constants.EXTRA_ARRAY_MANUAL_SCORE_SET, manualScore);
+        args.putByteArray(Constants.EXTRA_ARRAY_MATCH_PLAY, matchPlay);
         gameFragment.setArguments(args);
         return gameFragment;
     }
