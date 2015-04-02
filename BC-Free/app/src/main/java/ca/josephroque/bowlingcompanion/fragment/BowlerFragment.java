@@ -480,6 +480,10 @@ public class BowlerFragment extends Fragment
         @Override
         protected List<?>[] doInBackground(Void... params)
         {
+            //Method exits if fragment gets detached before reaching this call
+            if (getActivity() == null)
+                return null;
+
             MainActivity.waitForSaveThreads((MainActivity)getActivity());
 
             SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getReadableDatabase();
@@ -598,6 +602,9 @@ public class BowlerFragment extends Fragment
         @SuppressWarnings("unchecked")
         protected void onPostExecute(List<?>[] lists)
         {
+            if (lists == null)
+                return;
+
             mListBowlerIds.addAll((List<Long>)lists[0]);
             mListBowlerNames.addAll((List<String>)lists[1]);
             mListBowlerAverages.addAll((List<Short>)lists[2]);
