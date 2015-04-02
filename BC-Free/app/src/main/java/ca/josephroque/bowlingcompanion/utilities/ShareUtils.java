@@ -83,13 +83,18 @@ public class ShareUtils
     {
         new Thread(new Runnable()
         {
+            @SuppressWarnings("UnusedAssignment") //seriesBitmap set to null to free memory
             @Override
             public void run()
             {
+                Bitmap seriesBitmap = ImageUtils.createImageFromSeries(activity, seriesId);
                 final Uri imageUri = ImageUtils.insertImage(activity.getContentResolver(),
-                        ImageUtils.createImageFromSeries(activity, seriesId),
+                        seriesBitmap,
                         String.valueOf(System.currentTimeMillis()),
                         "Series: " + seriesId);
+                seriesBitmap.recycle();
+                seriesBitmap = null;
+                System.gc();
 
                 activity.runOnUiThread(new Runnable()
                 {
@@ -125,6 +130,7 @@ public class ShareUtils
      */
     private static class ShareSeriesTask extends AsyncTask<Object, Void, Object[]>
     {
+        @SuppressWarnings("UnusedAssignment") //image set to null to free memory
         @Override
         public Object[] doInBackground(Object... params)
         {
@@ -144,6 +150,9 @@ public class ShareUtils
                 outStream = activity.getContentResolver()
                         .openOutputStream(imageUri);
                 image.compress(Bitmap.CompressFormat.JPEG, 100, outStream);
+                image.recycle();
+                image = null;
+                System.gc();
             }
             catch (Exception e)
             {

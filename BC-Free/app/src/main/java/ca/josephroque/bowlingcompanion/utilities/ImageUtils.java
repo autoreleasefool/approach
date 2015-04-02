@@ -68,6 +68,7 @@ public class ImageUtils
      * @param isManual indicates if the score of the game was manually set
      * @return a formatted bitmap containing the game data
      */
+    @SuppressWarnings("UnusedAssignment") //canvas set to null to free memory
     public static Bitmap createImageFromGame(boolean[][][] pinState, boolean[][] fouls, short gameScore, boolean isManual)
     {
         Bitmap bitmap = Bitmap.createBitmap(BITMAP_GAME_WIDTH, BITMAP_GAME_HEIGHT, Bitmap.Config.RGB_565);
@@ -256,6 +257,7 @@ public class ImageUtils
                         BITMAP_GAME_FRAME_WIDTH * Constants.NUMBER_OF_FRAMES, 0, BITMAP_GAME_FRAME_WIDTH * Constants.NUMBER_OF_FRAMES, BITMAP_GAME_HEIGHT},
                 paintBlackOutline);
 
+        canvas = null;
         return bitmap;
     }
 
@@ -265,6 +267,7 @@ public class ImageUtils
      * @param seriesId id of the series to load game from
      * @return an image of each games' data and score
      */
+    @SuppressWarnings("UnusedAssignment") //canvas set to null to free memory
     public static Bitmap createImageFromSeries(Context context, long seriesId)
     {
         List<boolean[][][]> ballsOfGames = new ArrayList<>();
@@ -338,6 +341,7 @@ public class ImageUtils
         paintBlackOutline.setColor(Color.BLACK);
 
         Bitmap bitmap = Bitmap.createBitmap(BITMAP_SERIES_GAME_NAME_WIDTH + BITMAP_GAME_WIDTH, (BITMAP_GAME_HEIGHT - 1) * numberOfGames + 1, Bitmap.Config.RGB_565);
+        Bitmap gameBitmap;
         Canvas canvas = new Canvas(bitmap);
         canvas.drawColor(Color.WHITE);
 
@@ -345,13 +349,18 @@ public class ImageUtils
         {
             canvas.drawLine(0, BITMAP_GAME_HEIGHT * i - i, BITMAP_SERIES_GAME_NAME_WIDTH, BITMAP_GAME_HEIGHT * i - i, paintBlackOutline);
             canvas.drawText("Game " + (i + 1), 5, BITMAP_GAME_HEIGHT * i + GAME_LARGE_FONT_SIZE / 2 + BITMAP_GAME_HEIGHT / 2 - i, paintText);
-            canvas.drawBitmap(createImageFromGame(ballsOfGames.get(i), foulsOfGames.get(i), scoresOfGames.get(i), manualScores.get(i)), BITMAP_SERIES_GAME_NAME_WIDTH, BITMAP_GAME_HEIGHT * i - i, null);
+
+            gameBitmap = createImageFromGame(ballsOfGames.get(i), foulsOfGames.get(i), scoresOfGames.get(i), manualScores.get(i));
+            canvas.drawBitmap(gameBitmap, BITMAP_SERIES_GAME_NAME_WIDTH, BITMAP_GAME_HEIGHT * i - i, null);
+            gameBitmap.recycle();
+            System.gc();
         }
 
         canvas.drawLines(new float[]
                 {0, 0, BITMAP_SERIES_GAME_NAME_WIDTH, 0,
                         0, 0, 0, (BITMAP_GAME_HEIGHT - 1) * numberOfGames,
                         0, (BITMAP_GAME_HEIGHT - 1) * numberOfGames, BITMAP_SERIES_GAME_NAME_WIDTH, (BITMAP_GAME_HEIGHT - 1) * numberOfGames}, paintBlackOutline);
+        canvas = null;
 
         return bitmap;
     }
