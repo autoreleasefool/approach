@@ -11,4 +11,7 @@
     <item name="text_frame_8" type="id" />
     <item name="text_frame_9" type="id" />
     <item name="text_final_score" type="id" />
+    <item name="radio_button_win" type="id" />
+    <item name="radio_button_lose" type="id" />
+    <item name="radio_button_tie" type="id" />
 </resources>

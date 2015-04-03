@@ -18,13 +18,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -115,6 +111,8 @@ public class GameFragment extends Fragment
     private ImageView mImageViewFoul;
     /** Displays image to user of option to reset a frame */
     private ImageView mImageViewResetFrame;
+    //TODO documentation
+    private ImageView mImageViewMatchPlay;
     /** Displays manually set score */
     private TextView mTextViewManualScore;
     /** Layout which contains views related to general game options */
@@ -131,17 +129,8 @@ public class GameFragment extends Fragment
     /** Displays the current game number being viewed */
     private TextView mTextViewGameNumber;
 
-    //TODO: documentation
-    private CheckBox mCheckBoxMatchPlay;
-    private RadioButton mRadioButtonWin;
-    private RadioButton mRadioButtonLose;
-    private RadioButton mRadioButtonTie;
-    private RadioGroup mRadioGroupMatchPlay;
-
     /** Indicates if the app should not save games - set to true in case of errors */
     private AtomicBoolean doNotSave = new AtomicBoolean(false);
-
-    private AtomicBoolean doNotSaveMatchPlay = new AtomicBoolean(false);
 
     /** Instance of callback interface for handling user events */
     private OnGameOrSeriesStatsOpenedListener mGameSeriesListener;
@@ -288,64 +277,6 @@ public class GameFragment extends Fragment
         layoutParams = new RelativeLayout.LayoutParams(dp_120, dp_128);
         layoutParams.leftMargin = DataFormatter.getPixelsFromDP(screenDensity, Constants.NUMBER_OF_FRAMES * 120);
         relativeLayout.addView(mTextViewFinalScore, layoutParams);
-
-        final RadioButton mRadioButtonWin = new RadioButton(getActivity());
-        mRadioButtonWin.setText(R.string.text_match_play_win);
-        mRadioButtonWin.setTextAppearance(getActivity(), android.R.style.TextAppearance_Small);
-        mRadioButtonWin.setGravity(Gravity.START);
-
-        final RadioButton mRadioButtonLose = new RadioButton(getActivity());
-        mRadioButtonLose.setText(R.string.text_match_play_lose);
-        mRadioButtonLose.setTextAppearance(getActivity(), android.R.style.TextAppearance_Small);
-        mRadioButtonLose.setGravity(Gravity.START);
-
-        final RadioButton mRadioButtonTie = new RadioButton(getActivity());
-        mRadioButtonTie.setText(R.string.text_match_play_tie);
-        mRadioButtonTie.setTextAppearance(getActivity(), android.R.style.TextAppearance_Small);
-        mRadioButtonTie.setGravity(Gravity.START);
-
-        mRadioGroupMatchPlay = new RadioGroup(getActivity());
-        mRadioGroupMatchPlay.addView(mRadioButtonWin, 0);
-        mRadioGroupMatchPlay.addView(mRadioButtonLose, 1);
-        mRadioGroupMatchPlay.addView(mRadioButtonTie, 2);
-        mRadioGroupMatchPlay.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener()
-        {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId)
-            {
-                if (doNotSaveMatchPlay.get())
-                    return;
-
-                mMatchPlay[mCurrentGame] = (byte)(checkedId + 1);
-                if (mRadioGroupMatchPlay.getVisibility() != View.VISIBLE)
-                    mMatchPlay[mCurrentGame] = 0;
-                saveGame(true);
-            }
-        });
-        layoutParams = new RelativeLayout.LayoutParams(dp_120, dp_40);
-        layoutParams.leftMargin = DataFormatter.getPixelsFromDP(screenDensity, (Constants.NUMBER_OF_FRAMES + 1) * 120);
-        layoutParams.topMargin = dp_20;
-        relativeLayout.addView(mRadioGroupMatchPlay, layoutParams);
-
-        mCheckBoxMatchPlay = new CheckBox(getActivity());
-        mCheckBoxMatchPlay.setText(R.string.text_match_play);
-        mCheckBoxMatchPlay.setTextAppearance(getActivity(), android.R.style.TextAppearance_Small);
-        mCheckBoxMatchPlay.setGravity(Gravity.CENTER);
-        mCheckBoxMatchPlay.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
-        {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
-                if (isChecked)
-                    mRadioGroupMatchPlay.setVisibility(View.VISIBLE);
-                else
-                    mRadioGroupMatchPlay.setVisibility(View.GONE);
-                mRadioGroupMatchPlay.check(0);
-            }
-        });
-        layoutParams = new RelativeLayout.LayoutParams(dp_120, dp_20);
-        layoutParams.leftMargin = DataFormatter.getPixelsFromDP(screenDensity, (Constants.NUMBER_OF_FRAMES + 1) * 120);
-        relativeLayout.addView(mCheckBoxMatchPlay, layoutParams);
         mHorizontalScrollViewFrames.addView(relativeLayout);
 
         //Buttons which indicate state of pins in a frame, provide user interaction methods
@@ -384,6 +315,9 @@ public class GameFragment extends Fragment
 
         mImageViewLock = (ImageView)rootView.findViewById(R.id.iv_lock);
         mImageViewLock.setOnClickListener(onClickListeners[LISTENER_OTHER]);
+
+        mImageViewMatchPlay = (ImageView)rootView.findViewById(R.id.iv_match);
+        mImageViewMatchPlay.setOnClickListener(onClickListeners[LISTENER_OTHER]);
 
         mTextViewManualScore = (TextView)rootView.findViewById(R.id.tv_manual_score);
         mRelativeLayoutGameToolbar = (RelativeLayout)rootView.findViewById(R.id.rl_game_toolbar);
@@ -602,7 +536,7 @@ public class GameFragment extends Fragment
                             mHasFrameBeenAccessed[i] = true;
                         }
                         setVisibilityOfNextAndPrevItems();
-                        updateFrameColor();
+                        updateFrameColor(false);
                         break;
                     default:
                         throw new RuntimeException("Invalid frame id");
@@ -642,6 +576,10 @@ public class GameFragment extends Fragment
 
                 switch(viewId)
                 {
+                    case R.id.iv_match:
+                        showSetMatchPlayDialog();
+                        break;
+
                     case R.id.iv_lock:
                         //Locks the game if it is unlocked,
                         //unlocks if locked
@@ -671,7 +609,7 @@ public class GameFragment extends Fragment
                                 mPinState[mCurrentFrame][i][j] = false;
                         }
                         setVisibilityOfNextAndPrevItems();
-                        updateFrameColor();
+                        updateFrameColor(false);
                         updateBalls(mCurrentFrame);
                         updateScore();
                         break;
@@ -706,7 +644,7 @@ public class GameFragment extends Fragment
                         }
                         mHasFrameBeenAccessed[mCurrentFrame] = true;
                         setVisibilityOfNextAndPrevItems();
-                        updateFrameColor();
+                        updateFrameColor(false);
                         break;
 
                     case R.id.iv_prev_ball:
@@ -726,7 +664,7 @@ public class GameFragment extends Fragment
                             }
                         }
                         setVisibilityOfNextAndPrevItems();
-                        updateFrameColor();
+                        updateFrameColor(false);
                         break;
 
                     default:
@@ -764,7 +702,7 @@ public class GameFragment extends Fragment
                                 mCurrentBall++;
                             }
                             setVisibilityOfNextAndPrevItems();
-                            updateFrameColor();
+                            updateFrameColor(false);
                             break;
                         }
                     }
@@ -773,6 +711,35 @@ public class GameFragment extends Fragment
         };
 
         return listeners;
+    }
+
+    //TODO documentation
+    private void showSetMatchPlayDialog()
+    {
+        new AlertDialog.Builder(getActivity())
+                .setTitle("Set match play")
+                .setSingleChoiceItems(new CharSequence[]{"None", "Won", "Lost", "Tied"}, mMatchPlay[mCurrentGame], null)
+                .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        mMatchPlay[mCurrentGame] = (byte)((AlertDialog)dialog).getListView().getCheckedItemPosition();
+                        setMatchPlay();
+                        saveGame(true);
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        dialog.dismiss();
+                    }
+                })
+                .create()
+                .show();
     }
 
     /**
@@ -826,7 +793,7 @@ public class GameFragment extends Fragment
                         updateScore();
                         updateAllBalls();
                         setVisibilityOfNextAndPrevItems();
-                        updateFrameColor();
+                        updateFrameColor(false);
                         dialog.dismiss();
                     }
                 })
@@ -920,13 +887,15 @@ public class GameFragment extends Fragment
                         resetGame();
                         saveGame(true);
                         setGameLocked(false);
+                        mMatchPlay[mCurrentGame] = 0;
                         mManualScoreSet[mCurrentGame] = false;
                         clearAllText(true);
                         updateScore();
                         updateAllBalls();
+                        setMatchPlay();
                         getActivity().supportInvalidateOptionsMenu();
                         setVisibilityOfNextAndPrevItems();
-                        updateFrameColor();
+                        updateFrameColor(false);
                         dialog.dismiss();
                     }
                 })
@@ -945,10 +914,20 @@ public class GameFragment extends Fragment
     //TODO:Documentation
     private void setMatchPlay()
     {
-        doNotSaveMatchPlay.set(true);
-        mCheckBoxMatchPlay.setChecked(mMatchPlay[mCurrentGame] != 0);
-        mRadioGroupMatchPlay.check(mMatchPlay[mCurrentGame] - 1);
-        doNotSaveMatchPlay.set(false);
+        getActivity().runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                switch(mMatchPlay[mCurrentGame])
+                {
+                    case 0: mImageViewMatchPlay.setImageResource(R.drawable.ic_match_none); break;
+                    case 1: mImageViewMatchPlay.setImageResource(R.drawable.ic_match_win); break;
+                    case 2: mImageViewMatchPlay.setImageResource(R.drawable.ic_match_lose); break;
+                    case 3: mImageViewMatchPlay.setImageResource(R.drawable.ic_match_tie); break;
+                }
+            }
+        });
     }
 
     /**
@@ -970,12 +949,15 @@ public class GameFragment extends Fragment
                     mImageViewResetFrame.setVisibility(View.INVISIBLE);
                     mImageViewClear.setVisibility(View.INVISIBLE);
                     mImageViewLock.setImageResource(R.drawable.ic_lock);
-                } else
+                    mImageViewMatchPlay.setEnabled(false);
+                }
+                else
                 {
                     mImageViewFoul.setVisibility(View.VISIBLE);
                     mImageViewResetFrame.setVisibility(View.VISIBLE);
                     mImageViewClear.setVisibility(View.VISIBLE);
                     mImageViewLock.setImageResource(R.drawable.ic_lock_open);
+                    mImageViewMatchPlay.setEnabled(true);
                 }
             }
         });
@@ -1511,8 +1493,9 @@ public class GameFragment extends Fragment
     /**
      * Sets background color of current ball and frame TextView instances to COLOR_HIGHLIGHT
      * and sets color of pin and whether its enabled or not depending on its state
+     * @param initialLoad indicates if this method was called when a game was first loaded
      */
-    private void updateFrameColor()
+    private void updateFrameColor(final boolean initialLoad)
     {
         getActivity().runOnUiThread(new Runnable()
         {
@@ -1595,7 +1578,7 @@ public class GameFragment extends Fragment
                         ? R.drawable.ic_foul_remove
                         : R.drawable.ic_foul);
 
-                focusOnFrame();
+                focusOnFrame(initialLoad);
             }
         });
     }
@@ -1696,21 +1679,24 @@ public class GameFragment extends Fragment
 
             updateBalls(mCurrentFrame);
             updateScore();
-            updateFrameColor();
+            updateFrameColor(false);
         }
     }
 
     /**
      * Scrolls the position of hsvFrames so the current frame is centred
+     * @param initialLoad indicates if this method was called when a game was first loaded
      */
-    private void focusOnFrame()
+    private void focusOnFrame(final boolean initialLoad)
     {
         mHorizontalScrollViewFrames.post(new Runnable()
         {
             @Override
             public void run()
             {
-                if (mCurrentFrame >= 1)
+                if (initialLoad && mCurrentFrame == Constants.LAST_FRAME)
+                    mHorizontalScrollViewFrames.smoothScrollTo(mTextViewFrames[mCurrentFrame].getLeft(), 0);
+                else if (mCurrentFrame >= 1)
                     mHorizontalScrollViewFrames.smoothScrollTo(mTextViewFrames[mCurrentFrame - 1].getLeft(), 0);
                 else
                     mHorizontalScrollViewFrames.smoothScrollTo(mTextViewFrames[mCurrentFrame].getLeft(), 0);
@@ -1887,7 +1873,7 @@ public class GameFragment extends Fragment
                     mCurrentFrame++;
 
                 setVisibilityOfNextAndPrevItems();
-                updateFrameColor();
+                updateFrameColor(true);
             }
         }).start();
     }
