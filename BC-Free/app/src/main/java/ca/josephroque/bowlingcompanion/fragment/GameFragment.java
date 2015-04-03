@@ -577,7 +577,10 @@ public class GameFragment extends Fragment
                 switch(viewId)
                 {
                     case R.id.iv_match:
-                        showSetMatchPlayDialog();
+                        if (mGameLocked[mCurrentGame])
+                            showSetMatchPlayLockedDialog();
+                        else
+                            showSetMatchPlayDialog();
                         break;
 
                     case R.id.iv_lock:
@@ -714,6 +717,33 @@ public class GameFragment extends Fragment
     }
 
     //TODO documentation
+    private void showSetMatchPlayLockedDialog()
+    {
+        new AlertDialog.Builder(getActivity())
+                .setTitle("Note: Game is locked")
+                .setMessage(R.string.dialog_match_locked)
+                .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        showSetMatchPlayDialog();
+                        dialog.dismiss();
+                    }
+                })
+                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        dialog.dismiss();
+                    }
+                })
+                .create()
+                .show();
+    }
+
+    //TODO documentation
     private void showSetMatchPlayDialog()
     {
         new AlertDialog.Builder(getActivity())
@@ -724,7 +754,7 @@ public class GameFragment extends Fragment
                     @Override
                     public void onClick(DialogInterface dialog, int which)
                     {
-                        mMatchPlay[mCurrentGame] = (byte)((AlertDialog)dialog).getListView().getCheckedItemPosition();
+                        mMatchPlay[mCurrentGame] = (byte) ((AlertDialog) dialog).getListView().getCheckedItemPosition();
                         setMatchPlay();
                         saveGame(true);
                         dialog.dismiss();
@@ -949,7 +979,6 @@ public class GameFragment extends Fragment
                     mImageViewResetFrame.setVisibility(View.INVISIBLE);
                     mImageViewClear.setVisibility(View.INVISIBLE);
                     mImageViewLock.setImageResource(R.drawable.ic_lock);
-                    mImageViewMatchPlay.setEnabled(false);
                 }
                 else
                 {
@@ -957,7 +986,6 @@ public class GameFragment extends Fragment
                     mImageViewResetFrame.setVisibility(View.VISIBLE);
                     mImageViewClear.setVisibility(View.VISIBLE);
                     mImageViewLock.setImageResource(R.drawable.ic_lock_open);
-                    mImageViewMatchPlay.setEnabled(true);
                 }
             }
         });
