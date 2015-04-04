@@ -89,7 +89,7 @@ public class StatsAdapter extends RecyclerView.Adapter<StatsAdapter.StatsViewHol
                 break;
             case VIEWTYPE_BODY:
                 itemView = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.list_stats_body, parent, false);
+                        .inflate(R.layout.list_stats_item, parent, false);
                 break;
             default:
                 throw new IllegalArgumentException("viewType must be VIEWTYPE_HEADER or VIEWTYPE_BODY");

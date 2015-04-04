@@ -144,50 +144,43 @@ public class Constants
     public static final byte BALL_VALUE_HEAD_PIN = 8;
 
     //STAT ARRAY INDICES
-    /** Index which should correspond to the number of middle hits */
     public static final byte STAT_MIDDLE_HIT = 0;
-    /** Index which should correspond to the number of strikes */
     public static final byte STAT_STRIKES = 1;
-    /** Index which should correspond to the number of spares */
     public static final byte STAT_SPARE_CONVERSIONS = 2;
-    /** Index which should correspond to the number of head pins */
-    public static final byte STAT_HEAD_PINS = 3;
-    /** Index which should correspond to the number of lefts */
-    public static final byte STAT_LEFTS = 5;
-    /** Index which should correspond to the number of rights */
-    public static final byte STAT_RIGHTS = 7;
-    /** Index which should correspond to the number of aces */
-    public static final byte STAT_ACES = 9;
-    /** Index which should correspond to the number of chop offs */
-    public static final byte STAT_CHOP_OFFS = 11;
-    /** Index which should correspond to the number of left chop offs */
-    public static final byte STAT_LEFT_CHOP_OFFS = 13;
-    /** Index which should correspond to the number of right chop offs */
-    public static final byte STAT_RIGHT_CHOP_OFFS = 15;
-    /** Index which should correspond to the number of splits */
-    public static final byte STAT_SPLITS = 17;
-    /** Index which should correspond to the number of left splits */
-    public static final byte STAT_LEFT_SPLITS = 19;
-    /** Index which should correspond to the number of right splits */
-    public static final byte STAT_RIGHT_SPLITS = 21;
-    /** Index which should correspond to the number of right splits spared */
-    public static final byte STAT_RIGHT_SPLITS_SPARED = 22;
-    /** Index which should correspond to the number of fouls */
-    public static final byte STAT_FOULS = 23;
-    /** Index which should correspond to the number of pins left on deck */
-    public static final byte STAT_PINS_LEFT_ON_DECK = 24;
-    /** Index which should correspond to the average number of pins left on deck */
-    public static final byte STAT_AVERAGE_PINS_LEFT_ON_DECK = 25;
-    /** Index which should correspond to the bowler/league average */
-    public static final byte STAT_AVERAGE = 26;
-    /** Index which should correspond to the bowler/league high single */
-    public static final byte STAT_HIGH_SINGLE = 27;
-    /** Index which should correspond to the bowler/league high series */
-    public static final byte STAT_HIGH_SERIES = 28;
-    /** Index which should correspond to the bowler/league total pinfall */
-    public static final byte STAT_TOTAL_PINFALL = 29;
-    /** Index which should correspond to the bowler/league total number of games */
-    public static final byte STAT_NUMBER_OF_GAMES = 30;
+
+    public static final byte STAT_HEAD_PINS = 0;
+    public static final byte STAT_HEAD_PINS_SPARED = 1;
+    public static final byte STAT_LEFT = 2;
+    public static final byte STAT_LEFT_SPARED = 3;
+    public static final byte STAT_RIGHT = 4;
+    public static final byte STAT_RIGHT_SPARED = 5;
+    public static final byte STAT_ACES = 6;
+    public static final byte STAT_ACES_SPARED = 7;
+    public static final byte STAT_CHOP = 8;
+    public static final byte STAT_CHOP_SPARED = 9;
+    public static final byte STAT_LEFT_CHOP = 10;
+    public static final byte STAT_LEFT_CHOP_SPARED = 11;
+    public static final byte STAT_RIGHT_CHOP = 12;
+    public static final byte STAT_RIGHT_CHOP_SPARED = 13;
+    public static final byte STAT_SPLIT = 14;
+    public static final byte STAT_SPLIT_SPARED = 15;
+    public static final byte STAT_LEFT_SPLIT = 16;
+    public static final byte STAT_LEFT_SPLIT_SPARED = 17;
+    public static final byte STAT_RIGHT_SPLIT = 18;
+    public static final byte STAT_RIGHT_SPLIT_SPARED = 19;
+
+    public static final byte STAT_PINS_LEFT = 0;
+    public static final byte STAT_PINS_AVERAGE = 1;
+
+    public static final byte STAT_WON = 0;
+    public static final byte STAT_LOST = 1;
+    public static final byte STAT_TIED = 2;
+
+    public static final byte STAT_AVERAGE = 0;
+    public static final byte STAT_HIGH_SINGLE = 1;
+    public static final byte STAT_HIGH_SERIES = 2;
+    public static final byte STAT_TOTAL_PINS = 3;
+    public static final byte STAT_NUMBER_OF_GAMES = 4;
 
     // NAMES
     /** Maximum length of a regular name */
