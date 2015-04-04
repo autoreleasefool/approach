@@ -253,6 +253,12 @@ public class DatabaseHelper extends SQLiteOpenHelper
                         + FrameEntry.COLUMN_GAME_ID + " FROM " + FrameEntry.TABLE_NAME);
                 db.execSQL("DROP TABLE " + FrameEntry.TABLE_NAME);
                 db.execSQL("ALTER TABLE frame2 RENAME TO " + FrameEntry.TABLE_NAME);
+
+                db.execSQL("CREATE INDEX game_id_index ON " + GameEntry.TABLE_NAME + "(" + GameEntry._ID + ")");
+                db.execSQL("CREATE INDEX frame_id_index ON " + FrameEntry.TABLE_NAME + "(" + FrameEntry._ID + ")");
+
+                db.execSQL("CREATE INDEX game_series_fk_index ON " + GameEntry.TABLE_NAME + "(" + GameEntry.COLUMN_SERIES_ID + ")");
+                db.execSQL("CREATE INDEX frame_game_fk_index ON " + FrameEntry.TABLE_NAME + "(" + FrameEntry.COLUMN_GAME_ID + ")");
                 break;
             default:
                 db.execSQL("DROP TABLE IF EXISTS " + FrameEntry.TABLE_NAME);
