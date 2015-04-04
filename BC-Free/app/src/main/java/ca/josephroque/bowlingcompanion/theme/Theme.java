@@ -145,7 +145,7 @@ public class Theme
                 sThemeColorLongPress =
                         context.getResources().getColor(R.color.theme_red_recyclerview_longpress);
                 break;
-            case "Gray":
+            case "Grey":
                 sThemeColorPrimary = context.getResources().getColor(
                         (lightThemeEnabled)
                         ? R.color.theme_light_gray_primary

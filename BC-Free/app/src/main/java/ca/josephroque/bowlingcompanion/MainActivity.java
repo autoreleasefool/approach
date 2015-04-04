@@ -439,7 +439,6 @@ public class MainActivity extends ActionBarActivity
             break;
         }
         mDrawerAdapter.notifyDataSetChanged();
-        //shouldDisplayHomeUp();
     }
 
     @Override
@@ -745,7 +744,7 @@ public class MainActivity extends ActionBarActivity
             }
             cursor.close();
 
-            return new Object[]{gameId, frameId, gameLocked, manualScore, matchPlay};
+            return new Object[]{gameId, frameId, gameLocked, manualScore, matchPlay, isEvent[0]};
         }
 
         @Override
@@ -756,6 +755,7 @@ public class MainActivity extends ActionBarActivity
             boolean[] gameLocked = (boolean[])params[2];
             boolean[] manualScore = (boolean[])params[3];
             byte[] matchPlay = (byte[])params[4];
+            mIsEventMode = (boolean)params[5];
 
             GameFragment gameFragment = GameFragment.newInstance(gameIds, frameIds, gameLocked, manualScore, matchPlay);
             startFragmentTransaction(gameFragment, (isEventMode() ? Constants.FRAGMENT_LEAGUES : Constants.FRAGMENT_SERIES), Constants.FRAGMENT_GAME);
