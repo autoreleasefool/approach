@@ -23,10 +23,19 @@ public class StatsExpandableAdapter extends BaseExpandableListAdapter
     implements Theme.ChangeableTheme
 {
 
+    /** Context which created this object */
     private Context mContext;
+    /** List of group headers */
     private List<String> mListStatHeaders;
+    /** List of list of map entries which hold a name and a value, for each group */
     private List<List<AbstractMap.SimpleEntry<String, String>>> mListStatNamesAndValues;
 
+    /**
+     * Assigns member variables to parameters
+     * @param context context which created this object
+     * @param listHeaders list of group headers
+     * @param listNamesAndValues list of entries to display beneath each group
+     */
     public StatsExpandableAdapter(Context context, List<String> listHeaders, List<List<AbstractMap.SimpleEntry<String, String>>> listNamesAndValues)
     {
         this.mContext = context;
@@ -113,15 +122,25 @@ public class StatsExpandableAdapter extends BaseExpandableListAdapter
     @Override
     public boolean isChildSelectable(int groupPosition, int childPosition){return false;}
 
+    /**
+     * Holds views so if an item view is recycled by the list, references are retained to its children
+     */
     private static class StatViewHolder
     {
+        /** TextView to display name of a stat */
         private TextView mTextViewStatName;
+        /**TextView to display value of a stat */
         private TextView mTextViewStatValue;
     }
 
+    /**
+     * Holds views so if a header view is recycled by the list, references are retained to its children
+     */
     private static class HeaderViewHolder
     {
+        /** TextView to display header of a group */
         private TextView mTextViewHeader;
+        /** Background of the view, to set color for theme */
         private View mBackgroundView;
     }
 

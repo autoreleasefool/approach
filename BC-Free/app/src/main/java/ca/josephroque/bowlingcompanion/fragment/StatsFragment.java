@@ -44,18 +44,27 @@ public class StatsFragment extends Fragment
     /** Indicates only the stats related to the specified game should be loaded */
     private static final byte LOADING_GAME_STATS = 3;
 
+    /** Indicates index of stat group in array, if the group exists at all */
     private byte STATS_GENERAL = -1;
+    /** Indicates index of stat group in array, if the group exists at all */
     private byte STATS_FIRST_BALL = -1;
+    /** Indicates index of stat group in array, if the group exists at all */
     private byte STATS_FOULS = -1;
+    /** Indicates index of stat group in array, if the group exists at all */
     private byte STATS_PINS = -1;
+    /** Indicates index of stat group in array, if the group exists at all */
     private byte STATS_GAME_AVERAGE = -1;
+    /** Indicates index of stat group in array, if the group exists at all */
     private byte STATS_MATCH = -1;
+    /** Indicates index of stat group in array, if the group exists at all */
     private byte STATS_OVERALL = -1;
 
     /** Adapter to manage data displayed in fragment */
     private StatsExpandableAdapter mAdapterStats;
 
+    /** List of group headers */
     private List<String> mListStatHeaders;
+    /** List of list of map entries which hold a name and a value, for each group */
     private List<List<AbstractMap.SimpleEntry<String, String>>> mListStatNamesAndValues;
 
     @Override
@@ -84,6 +93,8 @@ public class StatsFragment extends Fragment
         mListStatNamesAndValues.clear();
         mAdapterStats.notifyDataSetChanged();
 
+        //Checks what type of stats should be displayed, depending
+        //on what data is available in the parent activity at the time
         byte statsToLoad;
         int titleToSet;
         if (mainActivity.getGameId() == -1)
@@ -119,8 +130,17 @@ public class StatsFragment extends Fragment
         new LoadStatsTask().execute(statsToLoad);
     }
 
+    /**
+     * Adds headers and filler data to lists
+     *
+     * @param mainActivity activity which created this object
+     * @param statsToLoad type of stats which are being loaded
+     * @param headers headers of groups
+     * @param namesAndValues entries in each group
+     */
     private void prepareListData(MainActivity mainActivity, byte statsToLoad, List<String> headers, List<List<AbstractMap.SimpleEntry<String, String>>> namesAndValues)
     {
+        //Stat names which could possibly be displayed, depending on stats being loaded
         final String[] GENERAL = {"Middle Hit", "Strikes", "Spare Conversions"};
         final String[] FIRST_BALL =
                 {"Head Pins", "Head Pins Spared",
@@ -192,6 +212,10 @@ public class StatsFragment extends Fragment
     @Override
     public void updateTheme() {mAdapterStats.updateTheme();}
 
+    /**
+     * Loads data from the database and calculates relevant stats depending on which type
+     * of stats are being loaded
+     */
     private class LoadStatsTask extends AsyncTask<Byte, Void, List<?>[]>
     {
         @Override
@@ -518,12 +542,6 @@ public class StatsFragment extends Fragment
                 listStatNamesAndValues.get(STATS_OVERALL).get(i).setValue(
                         String.valueOf(statValues[STATS_OVERALL][i]));
         }
-
-        /**final int statValuesListSize = listStatValues.size();
-        for (int i = Constants.STAT_FOULS; i <= Constants.STAT_NUMBER_OF_GAMES && statValuesListSize > currentStatPosition; i++, currentStatPosition++)
-        {
-            listStatValues.set(currentStatPosition, String.valueOf(statValues[i]));
-        }*/
     }
 
     /**
@@ -646,7 +664,6 @@ public class StatsFragment extends Fragment
 
     /**
      * Returns a cursor from database to load either bowler or league stats
-     *
      * @param shouldGetLeagueStats if true, league stats will be loaded. Bowler stats will be loaded otherwise
      * @return a cursor with rows relevant to mBowlerId or mLeagueId
      */
@@ -699,7 +716,6 @@ public class StatsFragment extends Fragment
 
     /**
      * Returns a cursor from database to load series stats
-     *
      * @return a cursor with rows relevant to mSeriesId
      */
     private Cursor getSeriesCursor()
@@ -729,7 +745,6 @@ public class StatsFragment extends Fragment
 
     /**
      * Returns a cursor from the database to load game stats
-     *
      * @return a cursor with rows relevant to mGameId
      */
     private Cursor getGameCursor()

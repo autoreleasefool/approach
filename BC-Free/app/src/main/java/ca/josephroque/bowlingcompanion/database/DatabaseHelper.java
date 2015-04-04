@@ -153,7 +153,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
          * In future version, if database is updated then tables should be altered,
          * not dropped
          */
-        Log.w(TAG, "Upgrading database from version" + oldVersion + " to " + newVersion);
+        Log.w(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion);
 
         switch(oldVersion)
         {
