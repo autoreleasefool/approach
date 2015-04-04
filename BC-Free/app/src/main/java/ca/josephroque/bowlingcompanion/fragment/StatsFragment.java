@@ -129,7 +129,7 @@ public class StatsFragment extends Fragment
                         "Chop Offs", "Chop Offs Spared", "Left Chop Offs", "Left Chop Offs Spared", "Right Chop Offs", "Right Chop Offs Spared",
                         "Splits", "Splits Spared", "Left Splits", "Left Splits Spared", "Right Splits", "Right Splits Spared"};
         final String[] FOULS = {"Fouls"};
-        final String[] PINS_TOTAL = {"Pins Left"};
+        final String[] PINS_TOTAL = {"Total Pins Left"};
         final String[] PINS_AVERAGE = {"Average Pins Left"};
         final String[] MATCH = {"Games Won", "Games Lost", "Games Tied"};
         final String[] OVERALL = {"Average", "High Single", "High Series", "Total Pinfall", "# of Games"};
@@ -156,7 +156,7 @@ public class StatsFragment extends Fragment
         headers.add("Pins Left on Deck");
         namesAndValues.add(new ArrayList<AbstractMap.SimpleEntry<String, String>>());
         STATS_PINS = 3;
-        for (String stat : PINS_AVERAGE)
+        for (String stat : PINS_TOTAL)
             namesAndValues.get(STATS_PINS).add(new AbstractMap.SimpleEntry<>(stat, "--"));
 
         if (statsToLoad < LOADING_SERIES_STATS)
@@ -166,13 +166,13 @@ public class StatsFragment extends Fragment
             STATS_GAME_AVERAGE = 4;
             final byte numberOfGames = (statsToLoad >= LOADING_LEAGUE_STATS ? ((MainActivity)getActivity()).getNumberOfGames() : 20);
             for (byte i = 0; i < numberOfGames; i++)
-                namesAndValues.get(STATS_GAME_AVERAGE).add(new AbstractMap.SimpleEntry<>("Average Score in Game" + (i + 1), "--"));
+                namesAndValues.get(STATS_GAME_AVERAGE).add(new AbstractMap.SimpleEntry<>("Average in Game " + (i + 1), "--"));
         }
 
 
         if (statsToLoad < LOADING_GAME_STATS)
         {
-            for (String stat : PINS_TOTAL)
+            for (String stat : PINS_AVERAGE)
                 namesAndValues.get(STATS_PINS).add(new AbstractMap.SimpleEntry<>(stat, "--"));
 
             headers.add("Match Play");
@@ -264,6 +264,10 @@ public class StatsFragment extends Fragment
                         totalByGame[gameNumber - 1] += gameScore;
                         countByGame[gameNumber - 1]++;
 
+                        byte matchResults = (byte) (cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_MATCH_PLAY)));
+                        if (matchResults > 0)
+                            statValues[STATS_MATCH][matchResults - 1]++;
+
                         if (statValues[STATS_OVERALL][Constants.STAT_HIGH_SINGLE] < gameScore)
                         {
                             statValues[STATS_OVERALL][Constants.STAT_HIGH_SINGLE] = gameScore;
@@ -279,13 +283,6 @@ public class StatsFragment extends Fragment
                         }
                         else
                             seriesTotal += gameScore;
-                    }
-
-                    if (toLoad != LOADING_GAME_STATS)
-                    {
-                        byte matchResults = (byte) (cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_MATCH_PLAY)));
-                        if (matchResults > 0)
-                            statValues[STATS_MATCH][matchResults - 1]++;
                     }
 
                     boolean gameIsManual = (cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_IS_MANUAL)) == 1);
@@ -322,7 +319,7 @@ public class StatsFragment extends Fragment
                         int ballValue = getFirstBallValue(pinState[0]);
                         if (ballValue != -1)
                             statValues[STATS_GENERAL][Constants.STAT_MIDDLE_HIT]++;
-                        increaseFirstBallStat(ballValue, statValues[STATS_FIRST_BALL], 0);
+                        increaseFirstBallStat(ballValue, statValues, 0);
                         if (ballValue < 5 && ballValue != Constants.BALL_VALUE_STRIKE)
                             spareChances++;
 
@@ -331,7 +328,7 @@ public class StatsFragment extends Fragment
                             if (Arrays.equals(pinState[1], Constants.FRAME_PINS_DOWN))
                             {
                                 statValues[STATS_GENERAL][Constants.STAT_SPARE_CONVERSIONS]++;
-                                increaseFirstBallStat(ballValue, statValues[STATS_FIRST_BALL], 1);
+                                increaseFirstBallStat(ballValue, statValues, 1);
 
                                 if (ballValue >= 5)
                                     spareChances++;
@@ -347,14 +344,14 @@ public class StatsFragment extends Fragment
                             ballValue = getFirstBallValue(pinState[1]);
                             if (ballValue != -1)
                                 statValues[STATS_GENERAL][Constants.STAT_MIDDLE_HIT]++;
-                            increaseFirstBallStat(ballValue, statValues[STATS_FIRST_BALL], 0);
+                            increaseFirstBallStat(ballValue, statValues, 0);
 
                             if (ballValue != 0)
                             {
                                 if (Arrays.equals(pinState[2], Constants.FRAME_PINS_DOWN))
                                 {
                                     statValues[STATS_GENERAL][Constants.STAT_SPARE_CONVERSIONS]++;
-                                    increaseFirstBallStat(ballValue, statValues[STATS_FIRST_BALL], 1);
+                                    increaseFirstBallStat(ballValue, statValues, 1);
 
                                     if (ballValue >= 5)
                                         spareChances++;
@@ -370,7 +367,7 @@ public class StatsFragment extends Fragment
                                 ballValue = getFirstBallValue(pinState[2]);
                                 if (ballValue != -1)
                                     statValues[STATS_GENERAL][Constants.STAT_MIDDLE_HIT]++;
-                                increaseFirstBallStat(ballValue, statValues[STATS_FIRST_BALL], 0);
+                                increaseFirstBallStat(ballValue, statValues, 0);
 
                                 if (ballValue != 0)
                                 {
@@ -385,7 +382,7 @@ public class StatsFragment extends Fragment
                         int ballValue = getFirstBallValue(pinState[0]);
                         if (ballValue != -1)
                             statValues[STATS_GENERAL][Constants.STAT_MIDDLE_HIT]++;
-                        increaseFirstBallStat(ballValue, statValues[STATS_FIRST_BALL], 0);
+                        increaseFirstBallStat(ballValue, statValues, 0);
 
                         if (ballValue < 5 && ballValue != Constants.BALL_VALUE_STRIKE)
                             spareChances++;
@@ -395,7 +392,7 @@ public class StatsFragment extends Fragment
                             if (Arrays.equals(pinState[1], Constants.FRAME_PINS_DOWN))
                             {
                                 statValues[STATS_GENERAL][Constants.STAT_SPARE_CONVERSIONS]++;
-                                increaseFirstBallStat(ballValue, statValues[STATS_FIRST_BALL], 1);
+                                increaseFirstBallStat(ballValue, statValues, 1);
 
                                 if (ballValue >= 5)
                                     spareChances++;
@@ -416,8 +413,11 @@ public class StatsFragment extends Fragment
                 if (statValues[STATS_OVERALL][Constants.STAT_HIGH_SERIES] < seriesTotal)
                     statValues[STATS_OVERALL][Constants.STAT_HIGH_SERIES] = seriesTotal;
 
-                for (byte i = 0; i < numberOfGames; i++)
-                    statValues[STATS_GAME_AVERAGE][i] = totalByGame[i] / countByGame[i];
+                if (toLoad != LOADING_SERIES_STATS)
+                {
+                    for (byte i = 0; i < numberOfGames; i++)
+                        statValues[STATS_GAME_AVERAGE][i] = (countByGame[i] > 0) ? totalByGame[i] / countByGame[i] : 0;
+                }
 
                 if (statValues[STATS_OVERALL][Constants.STAT_NUMBER_OF_GAMES] > 0)
                 {
@@ -608,7 +608,7 @@ public class StatsFragment extends Fragment
      * @param statValues stat values to update
      * @param offset indicates a spare was thrown and the spare count should be increased for a stat
      */
-    private void increaseFirstBallStat(int ball, int[] statValues, int offset)
+    private void increaseFirstBallStat(int ball, int[][] statValues, int offset)
     {
         if (offset > 1 || offset < 0)
             throw new IllegalArgumentException("Offset must be either 0 or 1: " + offset);
@@ -618,29 +618,29 @@ public class StatsFragment extends Fragment
             case Constants.BALL_VALUE_STRIKE:
                 if (offset == 0)
                 {
-                    statValues[Constants.STAT_STRIKES]++;
+                    statValues[STATS_GENERAL][Constants.STAT_STRIKES]++;
                 }
                 break;
-            case Constants.BALL_VALUE_LEFT:statValues[Constants.STAT_LEFT + offset]++; break;
-            case Constants.BALL_VALUE_RIGHT:statValues[Constants.STAT_RIGHT + offset]++; break;
+            case Constants.BALL_VALUE_LEFT:statValues[STATS_FIRST_BALL][Constants.STAT_LEFT + offset]++; break;
+            case Constants.BALL_VALUE_RIGHT:statValues[STATS_FIRST_BALL][Constants.STAT_RIGHT + offset]++; break;
             case Constants.BALL_VALUE_LEFT_CHOP:
-                statValues[Constants.STAT_LEFT_CHOP + offset]++;
-                statValues[Constants.STAT_CHOP + offset]++;
+                statValues[STATS_FIRST_BALL][Constants.STAT_LEFT_CHOP + offset]++;
+                statValues[STATS_FIRST_BALL][Constants.STAT_CHOP + offset]++;
                 break;
             case Constants.BALL_VALUE_RIGHT_CHOP:
-                statValues[Constants.STAT_RIGHT_CHOP + offset]++;
-                statValues[Constants.STAT_CHOP + offset]++;
+                statValues[STATS_FIRST_BALL][Constants.STAT_RIGHT_CHOP + offset]++;
+                statValues[STATS_FIRST_BALL][Constants.STAT_CHOP + offset]++;
                 break;
-            case Constants.BALL_VALUE_ACE:statValues[Constants.STAT_ACES + offset]++; break;
+            case Constants.BALL_VALUE_ACE:statValues[STATS_FIRST_BALL][Constants.STAT_ACES + offset]++; break;
             case Constants.BALL_VALUE_LEFT_SPLIT:
-                statValues[Constants.STAT_LEFT_SPLIT + offset]++;
-                statValues[Constants.STAT_SPLIT + offset]++;
+                statValues[STATS_FIRST_BALL][Constants.STAT_LEFT_SPLIT + offset]++;
+                statValues[STATS_FIRST_BALL][Constants.STAT_SPLIT + offset]++;
                 break;
             case Constants.BALL_VALUE_RIGHT_SPLIT:
-                statValues[Constants.STAT_RIGHT_SPLIT + offset]++;
-                statValues[Constants.STAT_SPLIT + offset]++;
+                statValues[STATS_FIRST_BALL][Constants.STAT_RIGHT_SPLIT + offset]++;
+                statValues[STATS_FIRST_BALL][Constants.STAT_SPLIT + offset]++;
                 break;
-            case Constants.BALL_VALUE_HEAD_PIN:statValues[Constants.STAT_HEAD_PINS + offset]++;
+            case Constants.BALL_VALUE_HEAD_PIN:statValues[STATS_FIRST_BALL][Constants.STAT_HEAD_PINS + offset]++;
         }
     }
 

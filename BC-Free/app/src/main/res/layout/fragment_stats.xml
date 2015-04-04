@@ -9,5 +9,7 @@
     <ExpandableListView
         android:id="@+id/elv_stats"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:divider="@android:color/white"
+        android:dividerHeight="1dp"/>
 </LinearLayout>
