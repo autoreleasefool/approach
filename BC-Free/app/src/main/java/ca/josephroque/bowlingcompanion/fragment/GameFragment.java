@@ -88,7 +88,7 @@ public class GameFragment extends Fragment
     private boolean[] mGameLocked;
     /** Indicates if a game has a manual score set or not */
     private boolean[] mManualScoreSet;
-    //TODO:documentation
+    /** Indicates the results of match play for each game */
     private byte[] mMatchPlay;
 
     /** TextView which displays score on a certain ball in a certain frame */
@@ -111,7 +111,7 @@ public class GameFragment extends Fragment
     private ImageView mImageViewFoul;
     /** Displays image to user of option to reset a frame */
     private ImageView mImageViewResetFrame;
-    //TODO documentation
+    /** Displays image to user of option to set match play results */
     private ImageView mImageViewMatchPlay;
     /** Displays manually set score */
     private TextView mTextViewManualScore;
@@ -716,11 +716,15 @@ public class GameFragment extends Fragment
         return listeners;
     }
 
-    //TODO documentation
+    /**
+     * Displays prompt to user to inform them the game is locked. Included to prevent
+     * accidental changes of match play results, but still allow changes if game is
+     * locked (such as by a manual score being set)
+     */
     private void showSetMatchPlayLockedDialog()
     {
         new AlertDialog.Builder(getActivity())
-                .setTitle("Note: Game is locked")
+                .setTitle("Game is locked")
                 .setMessage(R.string.dialog_match_locked)
                 .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener()
                 {
@@ -743,7 +747,9 @@ public class GameFragment extends Fragment
                 .show();
     }
 
-    //TODO documentation
+    /**
+     * Prompts user to set results of match play for a game
+     */
     private void showSetMatchPlayDialog()
     {
         new AlertDialog.Builder(getActivity())
@@ -941,7 +947,9 @@ public class GameFragment extends Fragment
                 .show();
     }
 
-    //TODO:Documentation
+    /**
+     * Sets mImageViewMatchPlay image resource depending on match play results set by user
+     */
     private void setMatchPlay()
     {
         getActivity().runOnUiThread(new Runnable()
