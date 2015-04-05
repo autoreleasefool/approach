@@ -114,6 +114,7 @@ public class MainActivity extends ActionBarActivity
         mListDrawerOptions = new ArrayList<>();
         mListDrawerOptions.add(Constants.NAV_OPTION_HOME);
         mListDrawerOptions.add(Constants.NAV_OPTION_BOWLERS);
+        mListDrawerOptions.add(Constants.NAV_OPTION_SETTINGS);
 
         mDrawerLayout = (DrawerLayout)findViewById(R.id.main_drawer_layout);
         mDrawerList = (ListView)findViewById(R.id.main_drawer_list);
@@ -438,6 +439,7 @@ public class MainActivity extends ActionBarActivity
             }
             break;
         }
+        mListDrawerOptions.add(Constants.NAV_OPTION_SETTINGS);
         mDrawerAdapter.notifyDataSetChanged();
     }
 
@@ -591,6 +593,11 @@ public class MainActivity extends ActionBarActivity
         else if (fragmentItem == Constants.NAV_OPTION_GAME_DETAILS)
         {
             getSupportFragmentManager().popBackStack(Constants.FRAGMENT_GAME, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+        else if (fragmentItem == Constants.NAV_OPTION_SETTINGS)
+        {
+            Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
+            startActivity(settingsIntent);
         }
     }
 

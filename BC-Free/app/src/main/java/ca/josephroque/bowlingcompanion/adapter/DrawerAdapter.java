@@ -75,39 +75,45 @@ public class DrawerAdapter extends ArrayAdapter<String>
             viewHolder = (ViewHolder)view.getTag();
         }
 
+        String option = mListOptions.get(position);
         //Displays a different icon next to different navigational options
-        viewHolder.mTextViewOption.setText(mListOptions.get(position));
-        if (mListOptions.get(position) == Constants.NAV_OPTION_HOME)
+        viewHolder.mTextViewOption.setText(option);
+        if (option == Constants.NAV_OPTION_HOME)
         {
             viewHolder.mImageViewIcon.setVisibility(View.VISIBLE);
             viewHolder.mImageViewIcon.setImageResource(R.drawable.ic_home);
         }
-        else if (mListOptions.get(position) == Constants.NAV_OPTION_BOWLERS)
+        else if (option == Constants.NAV_OPTION_BOWLERS)
         {
             viewHolder.mImageViewIcon.setVisibility(View.VISIBLE);
             viewHolder.mImageViewIcon.setImageResource(R.drawable.ic_action_group);
         }
-        else if (mListOptions.get(position) == Constants.NAV_OPTION_LEAGUES_EVENTS)
+        else if (option == Constants.NAV_OPTION_LEAGUES_EVENTS)
         {
             viewHolder.mImageViewIcon.setVisibility(View.VISIBLE);
             viewHolder.mImageViewIcon.setImageResource(R.drawable.ic_action_storage);
         }
-        else if (mListOptions.get(position) == Constants.NAV_OPTION_SERIES)
+        else if (option == Constants.NAV_OPTION_SERIES)
         {
             viewHolder.mImageViewIcon.setVisibility(View.VISIBLE);
             viewHolder.mImageViewIcon.setImageResource(R.drawable.ic_action_series);
         }
-        else if (mListOptions.get(position) == Constants.NAV_OPTION_GAME_DETAILS)
+        else if (option == Constants.NAV_OPTION_GAME_DETAILS)
         {
             viewHolder.mImageViewIcon.setVisibility(View.VISIBLE);
             viewHolder.mImageViewIcon.setImageResource(R.drawable.ic_action_pin);
         }
-        else if (mListOptions.get(position) == Constants.NAV_OPTION_STATS)
+        else if (option == Constants.NAV_OPTION_STATS)
         {
             viewHolder.mImageViewIcon.setVisibility(View.VISIBLE);
             viewHolder.mImageViewIcon.setImageResource(R.drawable.ic_action_stats);
         }
-        else if (mListOptions.get(position).matches("\\w+ \\d+"))
+        else if (option == Constants.NAV_OPTION_SETTINGS)
+        {
+            viewHolder.mImageViewIcon.setVisibility(View.VISIBLE);
+            viewHolder.mImageViewIcon.setImageResource(R.drawable.ic_action_settings);
+        }
+        else if (option.matches("\\w+ \\d+"))
         {
             viewHolder.mImageViewIcon.setVisibility(View.VISIBLE);
             viewHolder.mImageViewIcon.setImageResource(

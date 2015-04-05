@@ -234,4 +234,6 @@ public class Constants
     public static final String NAV_OPTION_GAME_DETAILS = "Game Details";
     /** Name of the option to navigate to the stats fragment */
     public static final String NAV_OPTION_STATS = "Statistics";
+    /** Name of the option to navigate to the settings */
+    public static final String NAV_OPTION_SETTINGS = "Settings";
 }
