@@ -1,0 +1,4 @@
+CHANGELOG
+
+V1.2
+	Added settings option to navigation menu
