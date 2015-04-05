@@ -59,7 +59,6 @@ public class DatabaseHelper extends SQLiteOpenHelper
         /*
          * Defines tables for the database, creating columns and constraints
          */
-
         db.execSQL("CREATE TABLE "
                 + BowlerEntry.TABLE_NAME + "("
                 + BowlerEntry._ID + " INTEGER PRIMARY KEY, "
@@ -156,6 +155,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
          */
         Log.w(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion);
 
+        //TODO add progress bar for future updates?
         int upgradeTo = oldVersion + 1;
         while (upgradeTo <= newVersion)
         {
