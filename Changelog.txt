@@ -2,3 +2,4 @@ CHANGELOG
 
 V1.2
 	Added settings option to navigation menu
+	Removed multipane settings from large devices - was causing crashes
