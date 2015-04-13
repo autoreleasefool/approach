@@ -164,6 +164,7 @@ public class GameFragment extends Fragment
         //Loads member variables from saved instance state, if one exists
         if (savedInstanceState != null)
         {
+            mCurrentGame = savedInstanceState.getByte(Constants.EXTRA_CURRENT_GAME);
             mGameIds = savedInstanceState.getLongArray(Constants.EXTRA_ARRAY_GAME_IDS);
             mFrameIds = savedInstanceState.getLongArray(Constants.EXTRA_ARRAY_FRAME_IDS);
             mGameLocked = savedInstanceState.getBooleanArray(Constants.EXTRA_ARRAY_GAME_LOCKED);
@@ -354,7 +355,7 @@ public class GameFragment extends Fragment
         //Loads scores of games being edited from database
         loadInitialScores();
         //Loads first game to edit
-        loadGameFromDatabase((byte)0);
+        loadGameFromDatabase(mCurrentGame);
     }
 
     @Override
@@ -378,6 +379,7 @@ public class GameFragment extends Fragment
         outState.putBooleanArray(Constants.EXTRA_ARRAY_GAME_LOCKED, mGameLocked);
         outState.putBooleanArray(Constants.EXTRA_ARRAY_MANUAL_SCORE_SET, mManualScoreSet);
         outState.putByteArray(Constants.EXTRA_ARRAY_MATCH_PLAY, mMatchPlay);
+        outState.putByte(Constants.EXTRA_CURRENT_GAME, mCurrentGame);
     }
 
     @Override

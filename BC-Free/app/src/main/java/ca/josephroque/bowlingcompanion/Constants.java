@@ -82,6 +82,8 @@ public class Constants
     public static final String EXTRA_NAV_CURRENT_GAME = "ENCG";
     /** Identifies an array of bytes to indicate results of match play */
     public static final String EXTRA_ARRAY_MATCH_PLAY = "EAMP";
+    /** Identifies byte indicating current game in GameFragment */
+    public static final String EXTRA_CURRENT_GAME = "ECG";
 
     // REGULAR EXPRESSIONS
     /** Regular Expression to match regular names */
