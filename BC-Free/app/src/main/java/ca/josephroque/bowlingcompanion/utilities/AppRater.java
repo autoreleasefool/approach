@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.net.Uri;
 
 import ca.josephroque.bowlingcompanion.Constants;
+import ca.josephroque.bowlingcompanion.R;
 
 /**
  * Created by josephroque on 15-03-03.
@@ -81,43 +82,38 @@ public class AppRater
     public static void showRateDialog(final Context context, final SharedPreferences.Editor editor)
     {
         AlertDialog.Builder rateBuilder = new AlertDialog.Builder(context);
-        rateBuilder.setTitle("Rate " + APP_NAME)
-                .setMessage("If you like " + APP_NAME + ", please consider rating it. Thank you for your support!")
-                .setPositiveButton("Rate " + APP_NAME, new DialogInterface.OnClickListener()
+        rateBuilder.setTitle("If you like " + APP_NAME + ", please consider rating it. Thank you for your support!")
+                .setSingleChoiceItems(new CharSequence[]{"Rate " + APP_NAME, "Remind me later", "No, thanks"}, 0, null)
+                .setPositiveButton(R.string.dialog_add, new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int which)
                     {
-                        disableAutomaticPrompt(editor);
+                        int pos = ((AlertDialog)dialog).getListView().getCheckedItemPosition();
+                        switch(pos)
+                        {
+                            case 0: //Rate
+                                disableAutomaticPrompt(editor);
 
-                        //Opens Google Play or browser to display app
-                        try
-                        {
-                            context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + APP_PNAME)));
-                        } catch (android.content.ActivityNotFoundException ex)
-                        {
-                            context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + APP_PNAME)));
+                                //Opens Google Play or browser to display app
+                                try
+                                {
+                                    context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + APP_PNAME)));
+                                } catch (android.content.ActivityNotFoundException ex)
+                                {
+                                    context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + APP_PNAME)));
+                                }
+                                break;
+                            case 2: //Disable
+                                disableAutomaticPrompt(editor);
+                                break;
+                            case 1:default: // Remind me/other
+                                //do nothing
                         }
                         dialog.dismiss();
                     }
                 })
-                .setNeutralButton("Remind me later", new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        dialog.dismiss();
-                    }
-                })
-                .setNegativeButton("No, thanks", new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        disableAutomaticPrompt(editor);
-                        dialog.dismiss();
-                    }
-                })
+                .setCancelable(false)
                 .create()
                 .show();
     }
