@@ -98,11 +98,11 @@ public class ImageUtils
                     if (Arrays.equals(pinState[frame][1], Constants.FRAME_PINS_DOWN))
                     {
                         ballString[1] = Constants.BALL_STRIKE;
-                        ballString[2] = Score.getValueOfBall(pinState[frame][2], 2, true);
+                        ballString[2] = Score.getValueOfBall(pinState[frame][2], 2, true, false);
                     }
                     else
                     {
-                        ballString[1] = Score.getValueOfBall(pinState[frame][1], 1, false);
+                        ballString[1] = Score.getValueOfBall(pinState[frame][1], 1, false, false);
                         if (Arrays.equals(pinState[frame][2], Constants.FRAME_PINS_DOWN))
                             ballString[2] = Constants.BALL_SPARE;
                         else
@@ -112,11 +112,11 @@ public class ImageUtils
                 else
                 {
                     //If first ball is not a strike, score is calculated normally
-                    ballString[0] = Score.getValueOfBall(pinState[frame][0], 0, false);
+                    ballString[0] = Score.getValueOfBall(pinState[frame][0], 0, false, false);
                     if (Arrays.equals(pinState[frame][1], Constants.FRAME_PINS_DOWN))
                     {
                         ballString[1] = Constants.BALL_SPARE;
-                        ballString[2] = Score.getValueOfBall(pinState[frame][2], 2, true);
+                        ballString[2] = Score.getValueOfBall(pinState[frame][2], 2, true, false);
                     }
                     else
                     {
@@ -144,9 +144,16 @@ public class ImageUtils
                 else
                 {
                     ballString[1] = Score.getValueOfBallDifference(pinState[frame + 1], 0, false, true);
-                    if (Arrays.equals(pinState[frame + 1][0], Constants.FRAME_PINS_DOWN) && frame < Constants.LAST_FRAME - 1)
+                    if (Arrays.equals(pinState[frame + 1][0], Constants.FRAME_PINS_DOWN))
                     {
-                        ballString[2] = Score.getValueOfBallDifference(pinState[frame + 2], 0, false, true);
+                        if (frame < Constants.LAST_FRAME - 1)
+                        {
+                            ballString[2] = Score.getValueOfBallDifference(pinState[frame + 2], 0, false, true);
+                        }
+                        else
+                        {
+                            ballString[2] = Score.getValueOfBall(pinState[frame + 1][1], 1, false, true);
+                        }
                     }
                     else
                     {
@@ -331,6 +338,8 @@ public class ImageUtils
                 cursor.moveToNext();
             }
         }
+        cursor.close();
+        cursor = null;
 
         final int numberOfGames = ballsOfGames.size();
 

@@ -69,7 +69,7 @@ public class Score
      * @param ball the ball to get the value of
      * @return textual value of the ball
      */
-    public static String getValueOfBall(boolean[] pins, int ball, boolean shouldReturnSymbol)
+    public static String getValueOfBall(boolean[] pins, int ball, boolean shouldReturnSymbol, boolean isAfterStrike)
     {
         int ballValue = 0;
         for (byte i = 0; i < 5; i++)
@@ -152,7 +152,7 @@ public class Score
                 {
                     return Constants.BALL_STRIKE;
                 }
-                else if (ball == 1)
+                else if (ball == 1 && !isAfterStrike)
                 {
                     return Constants.BALL_SPARE;
                 }

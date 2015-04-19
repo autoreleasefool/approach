@@ -1283,11 +1283,11 @@ public class GameFragment extends Fragment
                             if (Arrays.equals(mPinState[frameToUpdate][1], Constants.FRAME_PINS_DOWN))
                             {
                                 ballString[1] = Constants.BALL_STRIKE;
-                                ballString[2] = Score.getValueOfBall(mPinState[frameToUpdate][2], 2, true);
+                                ballString[2] = Score.getValueOfBall(mPinState[frameToUpdate][2], 2, true, false);
                             }
                             else
                             {
-                                ballString[1] = Score.getValueOfBall(mPinState[frameToUpdate][1], 1, false);
+                                ballString[1] = Score.getValueOfBall(mPinState[frameToUpdate][1], 1, false, false);
                                 if (Arrays.equals(mPinState[frameToUpdate][2], Constants.FRAME_PINS_DOWN))
                                     ballString[2] = Constants.BALL_SPARE;
                                 else
@@ -1297,11 +1297,11 @@ public class GameFragment extends Fragment
                         else
                         {
                             //If first ball is not a strike, score is calculated normally
-                            ballString[0] = Score.getValueOfBall(mPinState[frameToUpdate][0], 0, false);
+                            ballString[0] = Score.getValueOfBall(mPinState[frameToUpdate][0], 0, false, false);
                             if (Arrays.equals(mPinState[frameToUpdate][1], Constants.FRAME_PINS_DOWN))
                             {
                                 ballString[1] = Constants.BALL_SPARE;
-                                ballString[2] = Score.getValueOfBall(mPinState[frameToUpdate][2], 2, true);
+                                ballString[2] = Score.getValueOfBall(mPinState[frameToUpdate][2], 2, true, true);
                             }
                             else
                             {
@@ -1335,11 +1335,18 @@ public class GameFragment extends Fragment
                             if (mHasFrameBeenAccessed[frameToUpdate + 1])
                             {
                                 ballString[1] = Score.getValueOfBallDifference(mPinState[frameToUpdate + 1], 0, false, true);
-                                if (Arrays.equals(mPinState[frameToUpdate + 1][0], Constants.FRAME_PINS_DOWN) && frameToUpdate < Constants.LAST_FRAME - 1)
+                                if (Arrays.equals(mPinState[frameToUpdate + 1][0], Constants.FRAME_PINS_DOWN))
                                 {
-                                    ballString[2] = (mHasFrameBeenAccessed[frameToUpdate + 2])
-                                            ? Score.getValueOfBallDifference(mPinState[frameToUpdate + 2], 0, false, true)
-                                            : Constants.BALL_EMPTY;
+                                    if (frameToUpdate < Constants.LAST_FRAME - 1)
+                                    {
+                                        ballString[2] = (mHasFrameBeenAccessed[frameToUpdate + 2])
+                                                ? Score.getValueOfBallDifference(mPinState[frameToUpdate + 2], 0, false, true)
+                                                : Constants.BALL_EMPTY;
+                                    }
+                                    else
+                                    {
+                                        ballString[2] = Score.getValueOfBall(mPinState[frameToUpdate + 1][1], 1, false, true);
+                                    }
                                 }
                                 else
                                 {
