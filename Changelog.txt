@@ -3,6 +3,8 @@ CHANGELOG
 
 NEXT VERSION
 	- Now returns to same game when phone comes off standby mode
+	- Changed display method of future frames in a game
+	- Bug fixes
 
 V1.1.1
 	- Added link in menu to settings
