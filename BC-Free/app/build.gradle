@@ -8,9 +8,9 @@ android {
         applicationId "ca.josephroque.bowlingcompanion"
         minSdkVersion 10
         targetSdkVersion 21
-        //Current release - vc: 7, vn: 1.1.1
-        versionCode 7
-        versionName "1.1.1"
+        //Current release - vc: 8, vn: 1.1.2
+        versionCode 8
+        versionName "1.1.2"
     }
     buildTypes {
         release {
