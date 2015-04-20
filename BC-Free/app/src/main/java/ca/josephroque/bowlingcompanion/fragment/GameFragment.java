@@ -531,13 +531,20 @@ public class GameFragment extends Fragment
                         clearFrameColor();
                         mCurrentFrame = frameToSet;
                         mCurrentBall = 0;
+                        byte frameUpdateCount = 0;
                         for (int i = mCurrentFrame; i >= 0; i--)
                         {
                             if (mHasFrameBeenAccessed[i])
                                 break;
                             mHasFrameBeenAccessed[i] = true;
+                            frameUpdateCount++;
                         }
                         setVisibilityOfNextAndPrevItems();
+                        if (frameUpdateCount > 3)
+                            updateAllBalls();
+                        else
+                            updateBalls(mCurrentFrame, (byte)0);
+                        updateScore();
                         updateFrameColor(false);
                         break;
                     default:
@@ -615,7 +622,7 @@ public class GameFragment extends Fragment
                         }
                         setVisibilityOfNextAndPrevItems();
                         updateFrameColor(false);
-                        updateBalls(mCurrentFrame);
+                        updateBalls(mCurrentFrame, (byte)0);
                         updateScore();
                         break;
 
@@ -696,17 +703,24 @@ public class GameFragment extends Fragment
                             clearFrameColor();
                             mCurrentFrame = i;
                             mCurrentBall = 0;
-                            for (int k = mCurrentFrame; k >= 0; i--)
+                            byte frameUpdateCount = 0;
+                            for (int k = mCurrentFrame; k >= 0; k--)
                             {
                                 if (mHasFrameBeenAccessed[k])
                                     break;
-                                mHasFrameBeenAccessed[i] = true;
+                                mHasFrameBeenAccessed[k] = true;
+                                frameUpdateCount++;
                             }
                             while(!Arrays.equals(mPinState[mCurrentFrame][mCurrentBall], Constants.FRAME_PINS_DOWN) && mCurrentBall < j)
                             {
                                 mCurrentBall++;
                             }
                             setVisibilityOfNextAndPrevItems();
+                            if (frameUpdateCount > 3)
+                                updateAllBalls();
+                            else
+                                updateBalls(mCurrentFrame, (byte)0);
+                            updateScore();
                             updateFrameColor(false);
                             break;
                         }
@@ -1252,7 +1266,7 @@ public class GameFragment extends Fragment
     private void updateAllBalls()
     {
         for (byte i = Constants.LAST_FRAME; i >= 0; i -= 3)
-            updateBalls(i);
+            updateBalls(i, (byte)0);
     }
 
     /**
@@ -1260,7 +1274,7 @@ public class GameFragment extends Fragment
      *
      * @param frameToUpdate frame of which text should be updated
      */
-    private void updateBalls(final byte frameToUpdate)
+    private void updateBalls(final byte frameToUpdate, final byte leftToUpdate)
     {
         if (frameToUpdate < 0 || frameToUpdate > Constants.LAST_FRAME)
             return;
@@ -1382,8 +1396,17 @@ public class GameFragment extends Fragment
                 });
 
                 //Updates previous frames as well, to display balls after strikes
-                updateBalls((byte)(frameToUpdate - 1));
-                updateBalls((byte)(frameToUpdate - 2));
+                switch(leftToUpdate)
+                {
+                    case 0:
+                        updateBalls((byte)(frameToUpdate - 1), (byte)(leftToUpdate + 1));
+                        break;
+                    case 1:
+                        updateBalls((byte)(frameToUpdate - 1), (byte)(leftToUpdate + 1));
+                        break;
+                    default:
+                        //do nothing
+                }
             }
         }).start();
     }
@@ -1705,7 +1728,7 @@ public class GameFragment extends Fragment
                     }
                 });
 
-                updateBalls(mCurrentFrame);
+                updateBalls(mCurrentFrame, (byte)0);
                 updateScore();
             }
         }).start();
@@ -1732,7 +1755,7 @@ public class GameFragment extends Fragment
                 }
             }
 
-            updateBalls(mCurrentFrame);
+            updateBalls(mCurrentFrame, (byte)0);
             updateScore();
             updateFrameColor(false);
         }

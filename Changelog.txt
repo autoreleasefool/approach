@@ -1,7 +1,7 @@
 CHANGELOG
 
 NEXT VERSION
-	- 
+	- Changed ball updating, so less work is done (bug fix)
 
 V1.1.2
 	- Now returns to same game when phone comes off standby mode
