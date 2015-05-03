@@ -2,6 +2,7 @@ CHANGELOG
 
 NEXT VERSION
 	- Changed ball updating, so less work is done (bug fix)
+	- Added option to change header/stat font to black
 
 V1.1.2
 	- Now returns to same game when phone comes off standby mode
