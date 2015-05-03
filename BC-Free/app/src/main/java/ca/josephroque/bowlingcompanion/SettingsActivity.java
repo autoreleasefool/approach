@@ -1,21 +1,16 @@
 package ca.josephroque.bowlingcompanion;
 
-import android.annotation.TargetApi;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
-import android.preference.PreferenceFragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -260,6 +255,11 @@ public class SettingsActivity extends PreferenceActivity
                 ? R.string.pref_theme_light_summaryOn
                 : R.string.pref_theme_light_summaryOff);
 
+        checkBoolean = sharedPreferences.getBoolean(Constants.KEY_THEME_FONT, true);
+        findPreference(Constants.KEY_THEME_FONT).setSummary((checkBoolean)
+                ? R.string.pref_theme_font_summaryOn
+                : R.string.pref_theme_font_summaryOff);
+
         String scoreHighlight = sharedPreferences.getString(Constants.KEY_HIGHLIGHT_SCORE, "300");
         findPreference(Constants.KEY_HIGHLIGHT_SCORE).setSummary("Scores over " + scoreHighlight + " will be highlighted");
     }
@@ -342,21 +342,34 @@ public class SettingsActivity extends PreferenceActivity
         {
             String themeColor = sharedPreferences.getString(key, "Green");
             boolean lightThemeEnabled = sharedPreferences.getBoolean(Constants.KEY_THEME_LIGHT, true);
+            boolean whiteHeaderFont = sharedPreferences.getBoolean(Constants.KEY_THEME_FONT, true);
 
             Preference themePref = findPreference(key);
             themePref.setSummary("Current theme is " + themeColor);
 
-            Theme.setTheme(this, themeColor, lightThemeEnabled);
+            Theme.setTheme(this, themeColor, lightThemeEnabled, whiteHeaderFont);
         }
         else if (key.equals(Constants.KEY_THEME_LIGHT))
         {
             boolean lightThemeEnabled = sharedPreferences.getBoolean(key, true);
+            boolean whiteHeaderFont = sharedPreferences.getBoolean(Constants.KEY_THEME_FONT, true);
             Preference lightPref = findPreference(key);
             lightPref.setSummary((lightThemeEnabled)
                     ? R.string.pref_theme_light_summaryOn
                     : R.string.pref_theme_light_summaryOff);
 
-            Theme.setTheme(this, Theme.getThemeName(), lightThemeEnabled);
+            Theme.setTheme(this, Theme.getThemeName(), lightThemeEnabled, whiteHeaderFont);
+        }
+        else if (key.equals(Constants.KEY_THEME_FONT))
+        {
+            boolean whiteHeaderFont = sharedPreferences.getBoolean(key, true);
+            boolean lightThemeEnabled = sharedPreferences.getBoolean(Constants.KEY_THEME_LIGHT, true);
+            Preference fontPref = findPreference(key);
+            fontPref.setSummary((whiteHeaderFont)
+                    ? R.string.pref_theme_font_summaryOn
+                    : R.string.pref_theme_font_summaryOff);
+
+            Theme.setTheme(this, Theme.getThemeName(), lightThemeEnabled, whiteHeaderFont);
         }
         else if (key.equals(Constants.KEY_INCLUDE_EVENTS))
         {

@@ -30,6 +30,8 @@ public class Constants
     public static final String KEY_THEME_COLORS = "pref_theme_colors";
     /** Identifier for preference which allows user to select a light or dark theme variation */
     public static final String KEY_THEME_LIGHT = "pref_theme_light";
+    /** Identifier for preference which allows user to select a white or black font for headers */
+    public static final String KEY_THEME_FONT = "pref_theme_font";
     /** Identified for preference which allows user to select a minimum score to be highlighted */
     public static final String KEY_HIGHLIGHT_SCORE = "pref_highlight_score";
 

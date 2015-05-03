@@ -72,8 +72,12 @@ public class StatsExpandableAdapter extends BaseExpandableListAdapter
             viewHolder = (StatViewHolder)convertView.getTag();
         }
 
+        final int blackFontColor = mContext.getResources().getColor(android.R.color.black);
+
         viewHolder.mTextViewStatName.setText(childNameAndValue.getKey());
+        viewHolder.mTextViewStatName.setTextColor(blackFontColor);
         viewHolder.mTextViewStatValue.setText(childNameAndValue.getValue());
+        viewHolder.mTextViewStatValue.setTextColor(blackFontColor);
 
         return convertView;
     }
@@ -110,6 +114,7 @@ public class StatsExpandableAdapter extends BaseExpandableListAdapter
         }
 
         viewHolder.mTextViewHeader.setText(headerTitle);
+        viewHolder.mTextViewHeader.setTextColor(Theme.getHeaderFontThemeColor());
         viewHolder.mTextViewHeader.setTypeface(null, Typeface.BOLD);
         viewHolder.mBackgroundView.setBackgroundColor(Theme.getSecondaryThemeColor());
 

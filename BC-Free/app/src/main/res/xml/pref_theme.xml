@@ -12,4 +12,9 @@
         android:title="@string/pref_theme_light_title"
         android:summary="@string/pref_theme_light_summaryOn"
         android:defaultValue="true"/>
+    <CheckBoxPreference
+        android:key="pref_theme_font"
+        android:title="@string/pref_theme_font_title"
+        android:summary="@string/pref_theme_font_summaryOn"
+        android:defaultValue="true"/>
 </PreferenceScreen>

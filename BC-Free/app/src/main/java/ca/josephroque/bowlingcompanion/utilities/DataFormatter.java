@@ -122,4 +122,15 @@ public class DataFormatter
     {
         return (int)(dps * scale + 0.5f);
     }
+
+    /**
+     * Converts an integer color into hexadecimal
+     * @param color integer value of color
+     * @return hexadecimal value of color
+     */
+    public static String getHexColorFromInt(int color)
+    {
+        return String.format("#%06X", (0xFFFFFF & color));
+    }
+
 }

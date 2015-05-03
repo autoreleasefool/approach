@@ -24,6 +24,8 @@ public class Theme
     private static int sThemeColorSecondary = -1;
     /** Tertiary color for the current theme */
     private static int sThemeColorTertiary = -1;
+    /** Color of the header font for the current theme */
+    private static int sThemeColorHeaderFont = -1;
     /** Long press effect color for the current theme */
     private static int sThemeColorLongPress = -1;
     /** Number of milliseconds which medium animations will last for */
@@ -42,7 +44,8 @@ public class Theme
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         String themeName = prefs.getString(Constants.KEY_THEME_COLORS, "Green");
         boolean lightTheme = prefs.getBoolean(Constants.KEY_THEME_LIGHT, true);
-        setTheme(context, themeName, lightTheme);
+        boolean whiteHeaderFont = prefs.getBoolean(Constants.KEY_THEME_FONT, true);
+        setTheme(context, themeName, lightTheme, whiteHeaderFont);
     }
 
     /**
@@ -51,8 +54,9 @@ public class Theme
      * @param context current context to obtain values from
      * @param themeName color of the theme to load
      * @param lightThemeEnabled indicates whether the light variation of a theme is enabled
+     * @param whiteHeaderFont indicates whether header fonts will be white or black
      */
-    public static void setTheme(Context context, String themeName, boolean lightThemeEnabled)
+    public static void setTheme(Context context, String themeName, boolean lightThemeEnabled, boolean whiteHeaderFont)
     {
         sThemeName = themeName;
         if (sThemeName == null)
@@ -62,6 +66,11 @@ public class Theme
             sMediumAnimationDuration = context.getResources().getInteger(android.R.integer.config_mediumAnimTime);
         if (sThemeListItemBackground == -1)
             sThemeListItemBackground = context.getResources().getColor(R.color.secondary_background);
+
+        sThemeColorHeaderFont = context.getResources().getColor(
+                (whiteHeaderFont)
+                ? android.R.color.white
+                : android.R.color.black);
 
         switch(sThemeName)
         {
@@ -163,7 +172,7 @@ public class Theme
                 break;
             default:
                 //If an invalid theme was selected, the default is applied
-                setTheme(context, "Green", true);
+                setTheme(context, "Green", true, true);
         }
     }
 
@@ -188,6 +197,11 @@ public class Theme
      * @return the value of sThemeColorTertiary
      */
     public static int getTertiaryThemeColor() {return sThemeColorTertiary;}
+    /**
+     * Gets the color of header fonts for the theme
+     * @return the value of sThemeColorHeaderFont
+     */
+    public static int getHeaderFontThemeColor() {return sThemeColorHeaderFont;}
     /**
      * Gets the long press animation color for the theme
      * @return the value of sThemeColorLongPress

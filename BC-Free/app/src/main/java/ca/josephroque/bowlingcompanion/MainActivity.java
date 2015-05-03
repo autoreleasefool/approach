@@ -14,10 +14,12 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -461,6 +463,11 @@ public class MainActivity extends ActionBarActivity
         mDrawerList.setBackgroundColor(Theme.getSecondaryThemeColor());
         mDrawerList.setDivider(new ColorDrawable(Theme.getTertiaryThemeColor()));
         mDrawerList.setDividerHeight(2);
+
+        if (mDrawerLayout.isDrawerOpen(mDrawerList))
+            setActionBarTitle(mDrawerTitle, false);
+        else
+            setActionBarTitle(mTitle, false);
     }
 
     @Override
@@ -618,7 +625,10 @@ public class MainActivity extends ActionBarActivity
      */
     public void setActionBarTitle(int resId, boolean override)
     {
-        getSupportActionBar().setTitle(getResources().getString(resId));
+        //Changing title theme color
+        final String hexColor = DataFormatter.getHexColorFromInt(Theme.getHeaderFontThemeColor());
+
+        getSupportActionBar().setTitle(Html.fromHtml("<font color=\"" + hexColor + "\">" + getResources().getString(resId) + "</font>"));
         if (override)
             mTitle = resId;
     }
