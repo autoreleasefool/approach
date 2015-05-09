@@ -17,10 +17,9 @@ import java.io.OutputStream;
 import ca.josephroque.bowlingcompanion.R;
 
 /**
- * Created by josephroque on 15-03-26.
+ * Created by Joseph Roque on 15-03-26.
  * <p/>
- * Location ca.josephroque.bowlingcompanion.utilities
- * in project Bowling Companion
+ * Provides methods for sharing the statistics and games tracked by the application
  */
 public class ShareUtils
 {

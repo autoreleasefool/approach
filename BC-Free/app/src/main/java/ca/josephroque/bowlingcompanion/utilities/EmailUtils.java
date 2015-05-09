@@ -4,10 +4,11 @@ import android.content.Intent;
 import android.net.Uri;
 
 /**
- * Created by josephroque on 15-03-24.
+ * Created by Joseph Roque on 15-03-24.
  * <p/>
- * Location ca.josephroque.bowlingcompanion.utilities
- * in project Bowling Companion
+ * Provides methods related to creating and formatting emails which the user can select to create
+ * from the application. A local mail application on the device will be used to handle writing
+ * and sending the email.
  */
 public class EmailUtils
 {

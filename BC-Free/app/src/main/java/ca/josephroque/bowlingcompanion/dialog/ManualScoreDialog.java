@@ -13,10 +13,12 @@ import android.widget.EditText;
 import ca.josephroque.bowlingcompanion.R;
 
 /**
- * Created by josephroque on 15-03-19.
+ * Created by Joseph Roque on 15-03-19.
  * <p/>
- * Location ca.josephroque.bowlingcompanion.dialog
- * in project Bowling Companion
+ * Provides a dialog and a callback interface {@link ManualScoreDialog.ManualScoreDialogListener}
+ * for the user to enter a score for a game manually.
+ * The purpose is to allow them to include a game in their statistics, without requiring that they
+ * insert every game frame-by-frame.
  */
 public class ManualScoreDialog extends DialogFragment
 {

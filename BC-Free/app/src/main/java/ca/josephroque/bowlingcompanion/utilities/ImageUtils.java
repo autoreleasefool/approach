@@ -27,10 +27,9 @@ import ca.josephroque.bowlingcompanion.database.Contract.*;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 
 /**
- * Created by josephroque on 15-03-26.
+ * Created by Joseph Roque on 15-03-26.
  * <p/>
- * Location ca.josephroque.bowlingcompanion.utilities
- * in project Bowling Companion
+ * Provides methods relating to creating images of the statistics managed by the application
  */
 public class ImageUtils
 {

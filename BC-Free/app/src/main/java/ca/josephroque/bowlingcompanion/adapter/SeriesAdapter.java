@@ -21,10 +21,10 @@ import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 
 /**
- * Created by josephroque on 15-03-17.
+ * Created by Joseph Roque on 15-03-17.
  * <p/>
- * Location ca.josephroque.bowlingcompanion.adapter
- * in project Bowling Companion
+ * Manages series and their associated games for a ListView. Offers a callback interface
+ * {@link SeriesAdapter.SeriesEventHandler} to handle interaction events.
  */
 public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesViewHolder>
     implements Theme.ChangeableTheme, View.OnClickListener, View.OnLongClickListener

@@ -11,10 +11,10 @@ import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.R;
 
 /**
- * Created by josephroque on 15-03-03.
+ * Created by Joseph Roque on 15-03-03.
  * <p/>
- * Location ca.josephroque.bowlingcompanion.external
- * in project Bowling Companion
+ * Provides methods for determining the level of user interaction with the application, and
+ * offering a prompt to rate the app if they desire, or disable the prompt if not.
  *
  * Retrieved from http://www.androidsnippets.com/prompt-engaged-users-to-rate-your-app-in-the-android-market-appirater
  */

@@ -17,10 +17,11 @@ import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 
 /**
- * Created by josephroque on 15-03-13.
+ * Created by Joseph Roque on 15-03-13.
  * <p/>
- * Location ca.josephroque.bowlingcompanion.adapter
- * in project Bowling Companion
+ * Manages names of bowlers or leagues/events and their associated averages for a ListView. Offers
+ * a callback interface {@link NameAverageAdapter.NameAverageEventHandler} to handle interaction
+ * events.
  */
 public class NameAverageAdapter extends RecyclerView.Adapter<NameAverageAdapter.NameAverageViewHolder>
     implements View.OnClickListener, View.OnLongClickListener

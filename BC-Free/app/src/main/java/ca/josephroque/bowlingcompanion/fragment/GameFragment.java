@@ -39,10 +39,11 @@ import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.utilities.ShareUtils;
 
 /**
- * Created by josephroque on 15-03-18.
+ * Created by Joseph Roque on 15-03-18.
  * <p/>
- * Location ca.josephroque.bowlingcompanion.fragment
- * in project Bowling Companion
+ * Manages the UI to display information about the games being tracked by the application,
+ * and offers a callback interface {@link GameFragment.OnGameOrSeriesStatsOpenedListener} for
+ * handling interactions.
  */
 public class GameFragment extends Fragment
     implements

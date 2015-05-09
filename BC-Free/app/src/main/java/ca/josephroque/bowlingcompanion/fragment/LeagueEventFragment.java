@@ -40,10 +40,11 @@ import ca.josephroque.bowlingcompanion.dialog.NewLeagueEventDialog;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 
 /**
- * Created by josephroque on 15-03-15.
+ * Created by Joseph Roque on 15-03-15.
  * <p/>
- * Location ca.josephroque.bowlingcompanion.fragment
- * in project Bowling Companion
+ * Manages the UI to display information about the leagues being tracked by the application,
+ * and offers a callback interface {@link LeagueEventFragment.OnLeagueSelectedListener} for
+ * handling interactions.
  */
 public class LeagueEventFragment extends Fragment
     implements Theme.ChangeableTheme, NameAverageAdapter.NameAverageEventHandler, NewLeagueEventDialog.NewLeagueEventDialogListener

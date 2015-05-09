@@ -41,10 +41,11 @@ import ca.josephroque.bowlingcompanion.dialog.NewBowlerDialog;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 
 /**
- * Created by josephroque on 15-03-13.
+ * Created by Joseph Roque on 15-03-13.
  * <p/>
- * Location ca.josephroque.bowlingcompanion.fragment
- * in project Bowling Companion
+ * Manages the UI to display information about the bowlers being tracked by the application,
+ * and offers a callback interface {@link BowlerFragment.OnBowlerSelectedListener} for
+ * handling interactions.
  */
 public class BowlerFragment extends Fragment
     implements Theme.ChangeableTheme, NameAverageAdapter.NameAverageEventHandler, NewBowlerDialog.NewBowlerDialogListener

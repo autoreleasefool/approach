@@ -14,10 +14,10 @@ import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.R;
 
 /**
- * Created by josephroque on 15-03-15.
+ * Created by Joseph Roque on 15-03-15.
  * <p/>
- * Location ca.josephroque.bowlingcompanion.dialog
- * in project Bowling Companion
+ * Provides a dialog and callback interface {@link NewBowlerDialog.NewBowlerDialogListener}
+ * for the user to enter the name of a new bowler to track the statistics of.
  */
 public class NewBowlerDialog extends DialogFragment
 {

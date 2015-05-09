@@ -3,10 +3,10 @@ package ca.josephroque.bowlingcompanion.database;
 import android.provider.BaseColumns;
 
 /**
- * Created by josephroque on 15-03-12.
+ * Created by Joseph Roque on 15-03-12.
  * <p/>
- * Location ca.josephroque.bowlingcompanion.database
- * in project Bowling Companion
+ * Defines various objects which represent tables in the schema for the application's database.
+ * Member variables represent identifiers for attributes of the tables.
  */
 public class Contract
 {

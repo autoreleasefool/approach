@@ -10,10 +10,10 @@ import android.util.Log;
 import ca.josephroque.bowlingcompanion.database.Contract.*;
 
 /**
- * Created by josephroque on 15-03-12.
+ * Created by Joseph Roque on 15-03-12.
  * <p/>
- * Location ca.josephroque.bowlingcompanion.database
- * in project Bowling Companion
+ * Manages interactions with the application's database, including the creation, updates
+ * and deletion.
  */
 public class DatabaseHelper extends SQLiteOpenHelper
 {

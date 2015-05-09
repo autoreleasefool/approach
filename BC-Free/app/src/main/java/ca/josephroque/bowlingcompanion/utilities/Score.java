@@ -3,10 +3,9 @@ package ca.josephroque.bowlingcompanion.utilities;
 import ca.josephroque.bowlingcompanion.Constants;
 
 /**
- * Created by josephroque on 15-03-19.
+ * Created by Joseph Roque on 15-03-19.
  * <p/>
- * Location ca.josephroque.bowlingcompanion.game
- * in project Bowling Companion
+ * Provides methods for determining bowling scores based on user input
  */
 public class Score
 {

@@ -1,10 +1,9 @@
 package ca.josephroque.bowlingcompanion;
 
 /**
- * Created by josephroque on 15-03-13.
+ * Created by Joseph Roque on 15-03-13.
  * <p/>
- * Location ca.josephroque.bowlingcompanion
- * in project Bowling Companion
+ * Provides constant values which are accessible across the entire application
  */
 public class Constants
 {

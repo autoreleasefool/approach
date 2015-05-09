@@ -15,10 +15,11 @@ import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.R;
 
 /**
- * Created by josephroque on 15-03-28.
+ * Created by Joseph Roque on 15-03-28.
  * <p/>
- * Location ca.josephroque.bowlingcompanion.adapter
- * in project Bowling Companion
+ * Manages the data which will be displayed by the ListView in the Navigation Drawer.
+ * Offers a callback interface {@link DrawerAdapter.OnDrawerClickListener} to handle
+ * interaction events.
  */
 public class DrawerAdapter extends ArrayAdapter<String>
     implements ListView.OnItemClickListener

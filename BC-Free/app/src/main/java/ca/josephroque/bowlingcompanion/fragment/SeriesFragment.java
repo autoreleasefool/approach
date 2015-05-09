@@ -38,10 +38,11 @@ import ca.josephroque.bowlingcompanion.utilities.DataFormatter;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 
 /**
- * Created by josephroque on 15-03-17.
+ * Created by Joseph Roque on 15-03-17.
  * <p/>
- * Location ca.josephroque.bowlingcompanion.fragment
- * in project Bowling Companion
+ * Manages the UI to display information about the series being tracked by the application,
+ * and offers a callback interface {@link SeriesFragment.SeriesListener} for
+ * handling interactions.
  */
 public class SeriesFragment extends Fragment
     implements

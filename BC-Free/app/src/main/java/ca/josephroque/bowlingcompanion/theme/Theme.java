@@ -8,10 +8,10 @@ import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.R;
 
 /**
- * Created by josephroque on 15-03-13.
+ * Created by Joseph Roque on 15-03-13.
  * <p/>
- * Location ca.josephroque.bowlingcompanion.theme
- * in project Bowling Companion
+ * Provides methods which load and return colors and other values to provide a consistent
+ * theme across the application, which can be altered by the user
  */
 public class Theme
 {

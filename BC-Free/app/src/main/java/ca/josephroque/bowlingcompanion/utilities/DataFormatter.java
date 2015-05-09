@@ -1,10 +1,9 @@
 package ca.josephroque.bowlingcompanion.utilities;
 
 /**
- * Created by josephroque on 15-03-17.
+ * Created by Joseph Roque on 15-03-17.
  * <p/>
- * Location ca.josephroque.bowlingcompanion.external
- * in project Bowling Companion
+ * Provides methods to convert various formatted data into different formats.
  */
 public class DataFormatter
 {

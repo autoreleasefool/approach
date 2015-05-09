@@ -14,10 +14,11 @@ import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 
 /**
- * Created by josephroque on 15-04-03.
+ * Created by Joseph Roque on 15-04-03.
  * <p/>
- * Location ca.josephroque.bowlingcompanion.adapter
- * in project Bowling Companion
+ * Manages statistic group headers, names and their associated values for a ListView. Offers
+ * a callback interface {@link NameAverageAdapter.NameAverageEventHandler} to handle interaction
+ * events.
  */
 public class StatsExpandableAdapter extends BaseExpandableListAdapter
     implements Theme.ChangeableTheme

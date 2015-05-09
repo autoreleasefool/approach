@@ -13,10 +13,10 @@ import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.utilities.DataFormatter;
 
 /**
- * Created by josephroque on 15-03-29.
+ * Created by Joseph Roque on 15-03-29.
  * <p/>
- * Location ca.josephroque.bowlingcompanion.dialog
- * in project Bowling Companion
+ * Provides a dialog and callback interface {@link ChangeDateDialog.ChangeDateDialogListener}
+ * for the user to change the date associated with a series
  */
 public class ChangeDateDialog extends DialogFragment
     implements DatePickerDialog.OnDateSetListener

@@ -27,10 +27,9 @@ import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 
 /**
- * Created by josephroque on 15-04-03.
+ * Created by Joseph Roque on 15-04-03.
  * <p/>
- * Location ca.josephroque.bowlingcompanion.fragment
- * in project Bowling Companion
+ * Manages the UI to display information about the stats for a particular bowler
  */
 public class StatsFragment extends Fragment
     implements Theme.ChangeableTheme

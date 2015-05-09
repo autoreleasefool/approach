@@ -44,7 +44,11 @@ import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.utilities.AppRater;
 import ca.josephroque.bowlingcompanion.utilities.DataFormatter;
 
-
+/**
+ * Created by Joseph Roque
+ * <p/>
+ * The main activity which handles most interaction with the application.
+ */
 public class MainActivity extends ActionBarActivity
     implements
         FragmentManager.OnBackStackChangedListener,
