@@ -177,20 +177,20 @@ public class NameAverageAdapter extends RecyclerView.Adapter<NameAverageAdapter.
      * Provides methods to implement functionality when items
      * in the RecyclerView are interacted with
      */
-    public static interface NameAverageEventHandler
+    public interface NameAverageEventHandler
     {
 
         /**
          * Called when an item in the RecyclerView is clicked
          * @param position position of the item in the list
          */
-        public void onNAItemClick(final int position);
+        void onNAItemClick(final int position);
 
         /**
          * Called when an item in the RecyclerView is long clicked
          * @param position position of the item in the list
          */
-        public void onNALongClick(final int position);
+        void onNALongClick(final int position);
 
         /**
          * Should be used to return RecyclerView#getChildPosition(v) on the
@@ -198,6 +198,6 @@ public class NameAverageAdapter extends RecyclerView.Adapter<NameAverageAdapter.
          * @param v the view to get the position of
          * @return position of v in the parent RecyclerView
          */
-        public int getNAViewPositionInRecyclerView(View v);
+        int getNAViewPositionInRecyclerView(View v);
     }
 }

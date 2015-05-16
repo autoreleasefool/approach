@@ -26,6 +26,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import ca.josephroque.bowlingcompanion.DividerItemDecoration;
 import ca.josephroque.bowlingcompanion.MainActivity;
@@ -228,7 +229,7 @@ public class SeriesFragment extends Fragment
         final int index = mListSeriesIds.indexOf(seriesId);
         Calendar c = Calendar.getInstance();
         c.set(year, month, day);
-        final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
         final String formattedDate = dateFormat.format(c.getTime());
         mListSeriesDates.set(index, DataFormatter.formattedDateToPrettyCompact(formattedDate.substring(0,10)));
 
@@ -433,7 +434,7 @@ public class SeriesFragment extends Fragment
      * Container Activity must implement this interface to allow
      * GameFragment/StatsFragment to be loaded when a series is selected
      */
-    public static interface SeriesListener
+    public interface SeriesListener
     {
         /**
          * Should be overridden to created a GameFragment with the games
@@ -442,17 +443,17 @@ public class SeriesFragment extends Fragment
          * @param seriesDate date of the series corresponding to seriesId
          * @param isEvent indicates if an event series is being displayed or not
          */
-        public void onSeriesSelected(long seriesId, String seriesDate, boolean isEvent);
+        void onSeriesSelected(long seriesId, String seriesDate, boolean isEvent);
 
         /**
          * Called when user opts to create a new series
          * @param isEvent indicates if the new series will belong to an event
          */
-        public void onCreateNewSeries(boolean isEvent);
+        void onCreateNewSeries(boolean isEvent);
 
         /**
          * Displays the stats of the current league in a new StatsFragment
          */
-        public void onLeagueStatsOpened();
+        void onLeagueStatsOpened();
     }
 }

@@ -221,13 +221,13 @@ public class Theme
     /**
      * Provides methods to update the theme colors of an object
      */
-    public static interface ChangeableTheme
+    public interface ChangeableTheme
     {
         /**
          * When overridden, should update colors of relevant objects
          * and views to match the theme
          */
         @SuppressWarnings("unused") // Is used by classes implementing interface
-        public void updateTheme();
+        void updateTheme();
     }
 }

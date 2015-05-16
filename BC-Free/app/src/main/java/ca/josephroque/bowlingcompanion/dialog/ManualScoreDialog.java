@@ -85,13 +85,13 @@ public class ManualScoreDialog extends DialogFragment
     /**
      * Callback interface which executes methods in activity upon user interaction
      */
-    public static interface ManualScoreDialogListener
+    public interface ManualScoreDialogListener
     {
         /**
          * Invoked when user opts to submit a manual score
          * @param gameScore score input from user
          */
-        public void onSetScore(short gameScore);
+        void onSetScore(short gameScore);
     }
 
     /**

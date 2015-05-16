@@ -2033,12 +2033,12 @@ public class GameFragment extends Fragment
          * @param gameId id of the game to display
          * @param gameNumber number in a series of the game to display
          */
-        public void onGameStatsOpened(long gameId, byte gameNumber);
+        void onGameStatsOpened(long gameId, byte gameNumber);
 
         /**
          * Tells activity to open new StatsFragment with current series
          */
-        public void onSeriesStatsOpened();
+        void onSeriesStatsOpened();
 
         /**
          * Tells activity that the game has been changed

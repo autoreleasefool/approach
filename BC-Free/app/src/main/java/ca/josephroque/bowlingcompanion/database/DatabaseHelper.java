@@ -315,12 +315,12 @@ public class DatabaseHelper extends SQLiteOpenHelper
      * Provides a method which can be overridden to delete specific data
      * if the deleteData method is successful (user selects 'Delete')
      */
-    public static interface DataDeleter
+    public interface DataDeleter
     {
         /**
          * Must be overriden to provide access to a relevant method which
          * should be used to delete data from the database
          */
-        public void execute();
+        void execute();
     }
 }

@@ -225,19 +225,19 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
      * Provides methods to implement functionality when items
      * in the RecyclerView are interacted with
      */
-    public static interface SeriesEventHandler
+    public interface SeriesEventHandler
     {
         /**
          * Called when an item in the RecyclerView is clicked
          * @param position position of the item in the list
          */
-        public void onSItemClick(final int position);
+        void onSItemClick(final int position);
 
         /**
          * Called when an item in the RecyclerView is long clicked
          * @param position position of the item in the list
          */
-        public void onSLongClick(final int position);
+        void onSLongClick(final int position);
 
         /**
          * Should be used to return RecyclerView#getChildPosition(v) on the
@@ -245,12 +245,12 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
          * @param v the view to get the position of
          * @return position of v in the parent RecyclerView
          */
-        public int getSeriesViewPositionInRecyclerView(View v);
+        int getSeriesViewPositionInRecyclerView(View v);
 
         /**
          * Called when the edit image view for an item in the RecyclerView is clicked
          * @param position position of the item in the list
          */
-        public void onEditClick(final int position);
+        void onEditClick(final int position);
     }
 }

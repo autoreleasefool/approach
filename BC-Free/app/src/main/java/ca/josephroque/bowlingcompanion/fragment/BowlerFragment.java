@@ -29,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.DividerItemDecoration;
@@ -625,7 +626,7 @@ public class BowlerFragment extends Fragment
 
             //Updates date which bowler was last accessed in database
             SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
             ContentValues values = new ContentValues();
             values.put(BowlerEntry.COLUMN_DATE_MODIFIED, dateFormat.format(new Date()));
 
@@ -671,7 +672,7 @@ public class BowlerFragment extends Fragment
         {
             long newId = -1;
             SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
             String currentDate = dateFormat.format(new Date());
 
             ContentValues values = new ContentValues();
@@ -734,7 +735,7 @@ public class BowlerFragment extends Fragment
      * Container Activity must implement this interface to allow
      * LeagueEventFragment to be loaded when a bowler is selected
      */
-    public static interface OnBowlerSelectedListener
+    public interface OnBowlerSelectedListener
     {
         /**
          * Should be overridden to create a LeagueEventFragment with the leagues
@@ -744,6 +745,6 @@ public class BowlerFragment extends Fragment
          * @param openLeagueFragment if new fragment should be opened
          * @param isQuickSeries if a quick series is being created
          */
-        public void onBowlerSelected(long bowlerId, String bowlerName, boolean openLeagueFragment, boolean isQuickSeries);
+        void onBowlerSelected(long bowlerId, String bowlerName, boolean openLeagueFragment, boolean isQuickSeries);
     }
 }

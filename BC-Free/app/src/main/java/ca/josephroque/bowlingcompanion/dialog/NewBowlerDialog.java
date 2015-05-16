@@ -79,14 +79,14 @@ public class NewBowlerDialog extends DialogFragment
      * Provides a method to the activity which created this object to handle
      * user interaction with the dialog
      */
-    public static interface NewBowlerDialogListener
+    public interface NewBowlerDialogListener
     {
         /**
          * Executed when user opts to add a new bowler
          *
          * @param bowlerName name of the new bowler to add
          */
-        public void onAddNewBowler(String bowlerName);
+        void onAddNewBowler(String bowlerName);
     }
 
     /**

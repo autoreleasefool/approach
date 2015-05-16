@@ -157,19 +157,19 @@ public class DrawerAdapter extends ArrayAdapter<String>
     /**
      * Callback listener for user events on the list
      */
-    public static interface OnDrawerClickListener
+    public interface OnDrawerClickListener
     {
         /**
          * Indicates a fragment should be navigated to
          * @param fragmentItem name of the fragment to navigate to
          */
-        public void onFragmentItemClicked(String fragmentItem);
+        void onFragmentItemClicked(String fragmentItem);
 
         /**
          * Indicates a game should be switched to
          * @param gameNumber number of the game to switch to
          */
-        public void onGameItemClicked(byte gameNumber);
+        void onGameItemClicked(byte gameNumber);
     }
 
     /**

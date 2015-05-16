@@ -104,7 +104,7 @@ public class ChangeDateDialog extends DialogFragment
     /**
      * Callback listener for user events
      */
-    public static interface ChangeDateDialogListener
+    public interface ChangeDateDialogListener
     {
         /**
          * Called when the user selects a date to set
@@ -113,6 +113,6 @@ public class ChangeDateDialog extends DialogFragment
          * @param month month to change date to
          * @param day day of the month to change date to
          */
-        public void onChangeDate(long seriesId, int year, int month, int day);
+        void onChangeDate(long seriesId, int year, int month, int day);
     }
 }

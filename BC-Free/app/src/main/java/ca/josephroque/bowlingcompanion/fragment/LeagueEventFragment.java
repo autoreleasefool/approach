@@ -28,6 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.DividerItemDecoration;
@@ -460,7 +461,7 @@ public class LeagueEventFragment extends Fragment
             selectedLeagueName = selectedLeagueName.substring(1);
 
             SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
             String currentDate = dateFormat.format(new Date());
 
             ContentValues values = new ContentValues();
@@ -644,7 +645,7 @@ public class LeagueEventFragment extends Fragment
 
             long newId = -1;
             SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
             String currentDate = dateFormat.format(new Date());
 
             ContentValues values = new ContentValues();
@@ -727,7 +728,7 @@ public class LeagueEventFragment extends Fragment
      * Container Activity must implement this interface to allow
      * SeriesFragment/GameFragment to be loaded when a league/event is selected
      */
-    public static interface OnLeagueSelectedListener
+    public interface OnLeagueSelectedListener
     {
         /**
          * Should be overridden to create a SeriesFragment with the series
@@ -736,11 +737,11 @@ public class LeagueEventFragment extends Fragment
          * @param leagueName name of the league corresponding to leagueId
          * @param numberOfGames number of games of the league corresponding to leagueId
          */
-        public void onLeagueSelected(long leagueId, String leagueName, byte numberOfGames, boolean openSeriesFragment);
+        void onLeagueSelected(long leagueId, String leagueName, byte numberOfGames, boolean openSeriesFragment);
 
         /**
          * Used to open StatsFragment to display bowler stats
          */
-        public void onBowlerStatsOpened();
+        void onBowlerStatsOpened();
     }
 }

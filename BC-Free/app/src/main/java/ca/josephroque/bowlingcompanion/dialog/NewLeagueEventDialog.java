@@ -120,7 +120,7 @@ public class NewLeagueEventDialog extends DialogFragment
      * Provides a method to the activity which created this object to handle
      * user interaction with the dialog
      */
-    public static interface NewLeagueEventDialogListener
+    public interface NewLeagueEventDialogListener
     {
         /**
          * Executed when user opts to add a new league or event
@@ -128,7 +128,7 @@ public class NewLeagueEventDialog extends DialogFragment
          * @param leagueEventName name of the new league or event
          * @param numberOfGames number of games in the new league or event
          */
-        public void onAddNewLeagueEvent(boolean isEvent, String leagueEventName, byte numberOfGames);
+        void onAddNewLeagueEvent(boolean isEvent, String leagueEventName, byte numberOfGames);
     }
 
     /**
