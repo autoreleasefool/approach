@@ -242,7 +242,9 @@ public class MainActivity extends ActionBarActivity
                 });
             }
         });
-        mAdView.loadAd(new AdRequest.Builder().build());
+        AdRequest.Builder builder = new AdRequest.Builder();
+        builder.addTestDevice("B3EEABB8EE11C2BE770B684D95219ECB");
+        mAdView.loadAd(builder.build());
 
         //Checks if the user should be prompted to rate the app
         AppRater.appLaunched(this);
