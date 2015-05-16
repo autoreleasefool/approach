@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -107,8 +108,8 @@
             android:layout_alignParentBottom="true"
             android:layout_toLeftOf="@id/iv_lock"
             android:layout_toStartOf="@id/iv_lock"
-            android:src="@drawable/ic_match_none"/>
-        <!-- TODO: content description -->
+            android:src="@drawable/ic_match_none"
+            android:contentDescription="@string/description_match"/>
         <ImageView
             android:id="@+id/iv_clear"
             android:layout_width="36dp"
@@ -139,6 +140,33 @@
             android:layout_toEndOf="@id/iv_foul"
             android:src="@drawable/ic_action_refresh"
             android:contentDescription="@string/description_reset_frame"/>
+
+        <com.melnykov.fab.FloatingActionButton
+            android:id="@+id/fab_next_ball"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_above="@id/iv_lock"
+            android:layout_margin="4dp"
+            android:src="@drawable/ic_action_next_item"
+            fab:fab_type="mini"
+            fab:fab_colorNormal="@color/theme_light_green_primary"
+            fab:fab_colorPressed="@color/theme_light_green_primary"
+            fab:fab_colorRipple="@color/theme_light_green_tertiary" />
+        <com.melnykov.fab.FloatingActionButton
+            android:id="@+id/fab_prev_ball"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_above="@id/iv_clear"
+            android:layout_margin="4dp"
+            android:src="@drawable/ic_action_previous_item"
+            fab:fab_type="mini"
+            fab:fab_colorNormal="@color/theme_light_green_primary"
+            fab:fab_colorPressed="@color/theme_light_green_primary"
+            fab:fab_colorRipple="@color/theme_light_green_tertiary" />
 
         <HorizontalScrollView
             android:id="@+id/hsv_frames"

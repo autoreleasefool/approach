@@ -74,4 +74,5 @@
     <string name="description_foul">Add or remove foul</string>
     <string name="description_reset_frame">Reset the frame</string>
     <string name="description_edit_date">Click to edit date</string>
+    <string name="description_match">Set match play results</string>
 </resources>

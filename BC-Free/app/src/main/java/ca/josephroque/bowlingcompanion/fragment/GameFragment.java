@@ -26,6 +26,8 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.melnykov.fab.FloatingActionButton;
+
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -329,6 +331,9 @@ public class GameFragment extends Fragment
         mTextViewManualScore = (TextView)rootView.findViewById(R.id.tv_manual_score);
         mRelativeLayoutGameToolbar = (RelativeLayout)rootView.findViewById(R.id.rl_game_toolbar);
 
+        rootView.findViewById(R.id.fab_next_ball).setOnClickListener(onClickListeners[LISTENER_OTHER]);
+        rootView.findViewById(R.id.fab_prev_ball).setOnClickListener(onClickListeners[LISTENER_OTHER]);
+
         return rootView;
     }
 
@@ -485,7 +490,21 @@ public class GameFragment extends Fragment
     @Override
     public void updateTheme()
     {
-        mRelativeLayoutGameToolbar.setBackgroundColor(Theme.getSecondaryThemeColor());
+        View rootView = getView();
+        if (rootView != null)
+        {
+            rootView.findViewById(R.id.rl_game_toolbar).setBackgroundColor(Theme.getSecondaryThemeColor());
+
+            FloatingActionButton fab = (FloatingActionButton)rootView.findViewById(R.id.fab_next_ball);
+            fab.setColorPressed(Theme.getPrimaryThemeColor());
+            fab.setColorNormal(Theme.getPrimaryThemeColor());
+            fab.setColorRipple(Theme.getTertiaryThemeColor());
+
+            fab = (FloatingActionButton)rootView.findViewById(R.id.fab_prev_ball);
+            fab.setColorPressed(Theme.getPrimaryThemeColor());
+            fab.setColorNormal(Theme.getPrimaryThemeColor());
+            fab.setColorRipple(Theme.getTertiaryThemeColor());
+        }
     }
 
     @Override
@@ -664,6 +683,7 @@ public class GameFragment extends Fragment
 
                     case R.id.iv_next_ball:
                     case R.id.tv_next_ball:
+                    case R.id.fab_next_ball:
                         //Changes the current frame and updates the GUI
                         if (mCurrentFrame == Constants.LAST_FRAME && mCurrentBall == 2)
                             return;
@@ -695,6 +715,7 @@ public class GameFragment extends Fragment
 
                     case R.id.iv_prev_ball:
                     case R.id.tv_prev_ball:
+                    case R.id.fab_prev_ball:
                         //Changes the current frame and updates the GUI
                         if (mCurrentFrame == 0 && mCurrentBall == 0)
                             return;
