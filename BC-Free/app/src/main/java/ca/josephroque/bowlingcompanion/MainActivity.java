@@ -86,15 +86,6 @@ public class MainActivity extends ActionBarActivity
     /** Indicates the current fragment on screen */
     private String mCurrentFragment = Constants.FRAGMENT_BOWLERS;
 
-    /** Indicates whether the auto advance has been enabled by the user */
-    private boolean mAutoAdvanceEnabled = false;
-    /** Delay in seconds before auto advance takes place */
-    private int mAutoAdvanceDelay;
-    /** Handler to delay auto advance */
-    private Handler mAutoAdvanceHandler;
-    /** Callback runnable for when delay expires */
-    private Runnable mAutoAdvanceCallback;
-
     /** Queue of threads which are waiting to save data to the database */
     private ConcurrentLinkedQueue<Thread> mQueueSavingThreads;
     /** Current thread saving to the database */
@@ -478,9 +469,7 @@ public class MainActivity extends ActionBarActivity
         super.onUserInteraction();
 
         if (mCurrentFragment.equals(Constants.FRAGMENT_GAME))
-        {
             resetAutoAdvanceTimer();
-        }
     }
 
     @Override
@@ -605,53 +594,6 @@ public class MainActivity extends ActionBarActivity
             return;
 
         gameFragment.switchGame(gameNumber);
-    }
-
-    @Override
-    public void setAutoAdvanceEnabled(boolean enable, int delaySeconds)
-    {
-        mAutoAdvanceEnabled = enable;
-        if (mAutoAdvanceEnabled)
-            resetAutoAdvanceTimer();
-        else
-            stopAutoAdvanceTimer();
-    }
-
-    @Override
-    public void resetAutoAdvanceTimer()
-    {
-        if (!mAutoAdvanceEnabled)
-            return;
-
-        if (mAutoAdvanceHandler == null)
-        {
-            mAutoAdvanceHandler = new Handler()
-            {
-                public void handleMessage(Message message){}
-            };
-        }
-
-        if (mAutoAdvanceCallback == null)
-        {
-            mAutoAdvanceCallback = new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    //TODO: get game fragment
-                }
-            };
-        }
-
-        mAutoAdvanceHandler.removeCallbacks(mAutoAdvanceCallback);
-        mAutoAdvanceHandler.postDelayed(mAutoAdvanceCallback, mAutoAdvanceDelay * 1000);
-    }
-
-    @Override
-    public void stopAutoAdvanceTimer()
-    {
-        if (mAutoAdvanceHandler != null)
-            mAutoAdvanceHandler.removeCallbacks(mAutoAdvanceCallback);
     }
 
     @SuppressWarnings({"IfCanBeSwitch", "StringEquality"})  //May need to compile for 1.6. Also,

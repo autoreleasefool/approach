@@ -388,13 +388,6 @@ public class GameFragment extends Fragment
     }
 
     @Override
-    public void onStop()
-    {
-        super.onStop();
-        mCallback.stopAutoAdvanceTimer();
-    }
-
-    @Override
     public void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
@@ -2101,23 +2094,6 @@ public class GameFragment extends Fragment
          * @param newGameNumber number of the new game, starting at index 0
          */
         void onGameChanged(byte newGameNumber);
-
-        /**
-         * Tells activity to begin a timer that will auto advance frame when it runs out
-         * @param enable either enables or disables the timer
-         * @param delaySeconds time to wait before auto advancing
-         */
-        void setAutoAdvanceEnabled(boolean enable, int delaySeconds);
-
-        /**
-         * Resets the auto advance timer before the delay expires
-         */
-        void resetAutoAdvanceTimer();
-
-        /**
-         * Stops the auto advance timer
-         */
-        void stopAutoAdvanceTimer();
     }
 
     /**
