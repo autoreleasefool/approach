@@ -4,10 +4,12 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.util.TypedValue;
@@ -42,7 +44,7 @@ import ca.josephroque.bowlingcompanion.utilities.ShareUtils;
  * Created by Joseph Roque on 15-03-18.
  * <p/>
  * Manages the UI to display information about the games being tracked by the application,
- * and offers a callback interface {@link GameFragment.OnGameOrSeriesStatsOpenedListener} for
+ * and offers a callback interface {@link GameFragment.GameFragmentCallbacks} for
  * handling interactions.
  */
 public class GameFragment extends Fragment
@@ -133,8 +135,11 @@ public class GameFragment extends Fragment
     /** Indicates if the app should not save games - set to true in case of errors */
     private AtomicBoolean doNotSave = new AtomicBoolean(false);
 
+    private boolean mAutoAdvanceEnabled;
+    private int mAutoAdvanceDelay;
+
     /** Instance of callback interface for handling user events */
-    private OnGameOrSeriesStatsOpenedListener mGameSeriesListener;
+    private GameFragmentCallbacks mCallback;
 
     @Override
     public void onAttach(Activity activity)
@@ -147,12 +152,12 @@ public class GameFragment extends Fragment
          */
         try
         {
-            mGameSeriesListener = (OnGameOrSeriesStatsOpenedListener)activity;
+            mCallback = (GameFragmentCallbacks)activity;
         }
         catch (ClassCastException ex)
         {
             throw new ClassCastException(activity.toString()
-                    + " must implement OnGameOrSeriesStatsOpenedListener");
+                    + " must implement GameFragmentCallbacks");
         }
     }
 
@@ -353,6 +358,14 @@ public class GameFragment extends Fragment
 
         updateTheme();
 
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        mAutoAdvanceEnabled = preferences.getBoolean(Constants.KEY_ENABLE_AUTO_ADVANCE, false);
+
+        String strDelay = preferences.getString(Constants.KEY_AUTO_ADVANCE_TIME, "15 seconds");
+        mAutoAdvanceDelay = (strDelay != null)
+                ? Integer.valueOf(strDelay.substring(0, strDelay.indexOf(" ")))
+                : 0;
+
         //Loads scores of games being edited from database
         loadInitialScores();
         //Loads first game to edit
@@ -362,11 +375,18 @@ public class GameFragment extends Fragment
     @Override
     public void onPause()
     {
+        super.onPause();
+
         //Clears color changes to frames and saves the game being edited
         clearFrameColor();
         saveGame(false);
+    }
 
-        super.onPause();
+    @Override
+    public void onStop()
+    {
+        super.onStop();
+        mCallback.stopAutoAdvanceTimer();
     }
 
     @Override
@@ -386,19 +406,21 @@ public class GameFragment extends Fragment
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
     {
-        inflater.inflate(R.menu.menu_game, menu);
         super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_game, menu);
     }
 
     @Override
     public void onPrepareOptionsMenu(Menu menu)
     {
+        super.onPrepareOptionsMenu(menu);
+
         //Sets names/visibility of menu items
         menu.findItem(R.id.action_series_stats)
                 .setTitle(((MainActivity)getActivity()).isEventMode() ? R.string.action_event_stats : R.string.action_series_stats);
         menu.findItem(R.id.action_set_score)
                 .setTitle((mManualScoreSet[mCurrentGame])
-                ? R.string.action_clear_score : R.string.action_set_score);
+                        ? R.string.action_clear_score : R.string.action_set_score);
 
         boolean drawerOpen = ((MainActivity)getActivity()).isDrawerOpen();
         menu.findItem(R.id.action_stats).setVisible(!drawerOpen);
@@ -408,7 +430,6 @@ public class GameFragment extends Fragment
         menu.findItem(R.id.action_set_score).setVisible(!drawerOpen);
 
         menu.findItem(R.id.action_what_if).setVisible(!mManualScoreSet[mCurrentGame] && !drawerOpen);
-        super.onPrepareOptionsMenu(menu);
     }
 
     @Override
@@ -434,7 +455,7 @@ public class GameFragment extends Fragment
 
             case R.id.action_series_stats:
                 //Displays all stats related to series of games
-                mGameSeriesListener.onSeriesStatsOpened();
+                mCallback.onSeriesStatsOpened();
                 return true;
 
             case R.id.action_reset_game:
@@ -453,7 +474,7 @@ public class GameFragment extends Fragment
 
             case R.id.action_stats:
                 //Displays all stats related to current game
-                mGameSeriesListener.onGameStatsOpened(mGameIds[mCurrentGame], (byte)(mCurrentGame + 1));
+                mCallback.onGameStatsOpened(mGameIds[mCurrentGame], (byte)(mCurrentGame + 1));
                 return true;
 
             default:
@@ -547,6 +568,8 @@ public class GameFragment extends Fragment
                             updateBalls(mCurrentFrame, (byte)0);
                         updateScore();
                         updateFrameColor(false);
+
+                        //todo: stop timer
                         break;
                     default:
                         throw new RuntimeException("Invalid frame id");
@@ -570,6 +593,8 @@ public class GameFragment extends Fragment
                     case R.id.button_pin_2: ballToSet++;
                     case R.id.button_pin_1:
                         alterPinState(ballToSet);
+
+                        //TODO: start timer
                         break;
                     default:
                         throw new RuntimeException("Invalid pin button id");
@@ -591,6 +616,8 @@ public class GameFragment extends Fragment
                             showSetMatchPlayLockedDialog();
                         else
                             showSetMatchPlayDialog();
+
+                        //todo: stop timer
                         break;
 
                     case R.id.iv_lock:
@@ -599,6 +626,7 @@ public class GameFragment extends Fragment
                         if (mManualScoreSet[mCurrentGame])
                             return;
                         setGameLocked(!mGameLocked[mCurrentGame]);
+                        //todo: stop timer
                         break;
 
                     case R.id.iv_foul:
@@ -607,6 +635,7 @@ public class GameFragment extends Fragment
                             return;
                         mFouls[mCurrentFrame][mCurrentBall] = !mFouls[mCurrentFrame][mCurrentBall];
                         updateFouls();
+                        //todo: stop timer
                         break;
 
                     case R.id.iv_reset_frame:
@@ -625,10 +654,12 @@ public class GameFragment extends Fragment
                         updateFrameColor(false);
                         updateBalls(mCurrentFrame, (byte)0);
                         updateScore();
+                        //todo: stop timer
                         break;
 
                     case R.id.iv_clear:
                         clearPins();
+                        //todo: stop timer
                         break;
 
                     case R.id.iv_next_ball:
@@ -658,6 +689,8 @@ public class GameFragment extends Fragment
                         mHasFrameBeenAccessed[mCurrentFrame] = true;
                         setVisibilityOfNextAndPrevItems();
                         updateFrameColor(false);
+
+                        //todo: stop timer
                         break;
 
                     case R.id.iv_prev_ball:
@@ -678,6 +711,8 @@ public class GameFragment extends Fragment
                         }
                         setVisibilityOfNextAndPrevItems();
                         updateFrameColor(false);
+
+                        //todo: stop timer
                         break;
 
                     default:
@@ -1881,7 +1916,7 @@ public class GameFragment extends Fragment
             public void run()
             {
                 mCurrentGame = newGame;
-                mGameSeriesListener.onGameChanged(mCurrentGame);
+                mCallback.onGameChanged(mCurrentGame);
                 SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getReadableDatabase();
 
                 Cursor cursor = null;
@@ -2026,7 +2061,7 @@ public class GameFragment extends Fragment
     /**
      * Callback interface offers methods upon user interaction
      */
-    public static interface OnGameOrSeriesStatsOpenedListener
+    public interface GameFragmentCallbacks
     {
         /**
          * Tells activity to open new StatsFragment with current game id and game number
@@ -2044,7 +2079,24 @@ public class GameFragment extends Fragment
          * Tells activity that the game has been changed
          * @param newGameNumber number of the new game, starting at index 0
          */
-        public void onGameChanged(byte newGameNumber);
+        void onGameChanged(byte newGameNumber);
+
+        /**
+         * Tells activity to begin a timer that will auto advance frame when it runs out
+         * @param enable either enables or disables the timer
+         * @param delaySeconds time to wait before auto advancing
+         */
+        void setAutoAdvanceEnabled(boolean enable, int delaySeconds);
+
+        /**
+         * Resets the auto advance timer before the delay expires
+         */
+        void resetAutoAdvanceTimer();
+
+        /**
+         * Stops the auto advance timer
+         */
+        void stopAutoAdvanceTimer();
     }
 
     /**

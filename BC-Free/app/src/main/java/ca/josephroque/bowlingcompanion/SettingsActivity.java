@@ -92,6 +92,12 @@ public class SettingsActivity extends PreferenceActivity
         getPreferenceScreen().addPreference(fakeHeader);
         addPreferencesFromResource(R.xml.pref_quick);
 
+        //Add 'game' preferences, and a corresponding header.
+        fakeHeader = new PreferenceCategory(this);
+        fakeHeader.setTitle(R.string.pref_header_game);
+        getPreferenceScreen().addPreference(fakeHeader);
+        addPreferencesFromResource(R.xml.pref_game);
+
         // Add 'stats' preferences, and a corresponding header.
         fakeHeader = new PreferenceCategory(this);
         fakeHeader.setTitle(R.string.pref_header_stats);
@@ -260,6 +266,17 @@ public class SettingsActivity extends PreferenceActivity
                 ? R.string.pref_theme_font_summaryOn
                 : R.string.pref_theme_font_summaryOff);
 
+        checkBoolean = sharedPreferences.getBoolean(Constants.KEY_ENABLE_AUTO_ADVANCE, false);
+        findPreference(Constants.KEY_ENABLE_AUTO_ADVANCE).setSummary((checkBoolean)
+                ? R.string.pref_enable_auto_advance_summaryOn
+                : R.string.pref_enable_auto_advance_summaryOff);
+
+        String autoAdvanceInterval = sharedPreferences.getString(Constants.KEY_AUTO_ADVANCE_TIME, "15 seconds");
+        if (checkBoolean)
+            findPreference(Constants.KEY_AUTO_ADVANCE_TIME).setSummary("Frame will auto advance after " + autoAdvanceInterval);
+        else
+            findPreference(Constants.KEY_AUTO_ADVANCE_TIME).setSummary(R.string.pref_auto_advance_time_summary);
+
         String scoreHighlight = sharedPreferences.getString(Constants.KEY_HIGHLIGHT_SCORE, "300");
         findPreference(Constants.KEY_HIGHLIGHT_SCORE).setSummary("Scores over " + scoreHighlight + " will be highlighted");
     }
@@ -391,6 +408,20 @@ public class SettingsActivity extends PreferenceActivity
         {
             ListPreference highlightPref = (ListPreference)findPreference(key);
             highlightPref.setSummary("Scores over " + highlightPref.getValue() + " will be highlighted");
+        }
+        else if (key.equals(Constants.KEY_ENABLE_AUTO_ADVANCE))
+        {
+            boolean isAutoAdvancing = sharedPreferences.getBoolean(key, false);
+            Preference autoAdvancePref = findPreference(key);
+            autoAdvancePref.setSummary((isAutoAdvancing)
+                    ? R.string.pref_enable_auto_advance_summaryOn
+                    : R.string.pref_enable_auto_advance_summaryOff);
+        }
+        else if (key.equals(Constants.KEY_AUTO_ADVANCE_TIME))
+        {
+            Preference autoAdvancePref = findPreference(key);
+            autoAdvancePref.setSummary("Frame will auto advance after "
+                    + sharedPreferences.getString(key, "15 seconds"));
         }
     }
 

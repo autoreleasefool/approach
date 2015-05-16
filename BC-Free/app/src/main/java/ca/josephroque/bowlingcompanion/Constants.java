@@ -31,8 +31,12 @@ public class Constants
     public static final String KEY_THEME_LIGHT = "pref_theme_light";
     /** Identifier for preference which allows user to select a white or black font for headers */
     public static final String KEY_THEME_FONT = "pref_theme_font";
-    /** Identified for preference which allows user to select a minimum score to be highlighted */
+    /** Identifier for preference which allows user to select a minimum score to be highlighted */
     public static final String KEY_HIGHLIGHT_SCORE = "pref_highlight_score";
+    /** Identifier for preference which allows user to enable auto advancing frames */
+    public static final String KEY_ENABLE_AUTO_ADVANCE = "pref_enable_auto_advance";
+    /** Identifier for preference which allows user to select time interval before auto advance */
+    public static final String KEY_AUTO_ADVANCE_TIME = "pref_auto_advance_time";
 
     // PREFERENCES
     /** Identifier for SharedPreferences of app */

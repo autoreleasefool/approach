@@ -8,6 +8,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
@@ -19,7 +21,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -29,6 +30,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -56,7 +58,7 @@ public class MainActivity extends ActionBarActivity
         BowlerFragment.OnBowlerSelectedListener,
         LeagueEventFragment.OnLeagueSelectedListener,
         SeriesFragment.SeriesListener,
-        GameFragment.OnGameOrSeriesStatsOpenedListener,
+        GameFragment.GameFragmentCallbacks,
         DrawerAdapter.OnDrawerClickListener
 {
     /** Id of current bowler being used in fragments */
@@ -81,6 +83,17 @@ public class MainActivity extends ActionBarActivity
     private boolean mIsEventMode;
     /** Indicates if a quick series is being created */
     private boolean mIsQuickSeries;
+    /** Indicates the current fragment on screen */
+    private String mCurrentFragment = Constants.FRAGMENT_BOWLERS;
+
+    /** Indicates whether the auto advance has been enabled by the user */
+    private boolean mAutoAdvanceEnabled = false;
+    /** Delay in seconds before auto advance takes place */
+    private int mAutoAdvanceDelay;
+    /** Handler to delay auto advance */
+    private Handler mAutoAdvanceHandler;
+    /** Callback runnable for when delay expires */
+    private Runnable mAutoAdvanceCallback;
 
     /** Queue of threads which are waiting to save data to the database */
     private ConcurrentLinkedQueue<Thread> mQueueSavingThreads;
@@ -382,66 +395,65 @@ public class MainActivity extends ActionBarActivity
             if (fragment == null || !fragment.isVisible() || fragment.getTag() == null)
                 continue;
 
-            if (fragment.getTag().equals(Constants.FRAGMENT_BOWLERS))
+            mCurrentFragment = fragment.getTag();
+            switch(fragment.getTag())
             {
-                mBowlerId = -1;
-                mLeagueId = -1;
-                mSeriesId = -1;
-                mGameId = -1;
-                mGameNumber = -1;
-                mBowlerName = null;
-                mLeagueName = null;
-                mSeriesDate = null;
-                mNumberOfGames = -1;
-                mIsQuickSeries = false;
-            }
-            if (fragment.getTag().equals(Constants.FRAGMENT_LEAGUES))
-            {
-                mListDrawerOptions.add(Constants.NAV_OPTION_LEAGUES_EVENTS);
-
-                mLeagueId = -1;
-                mSeriesId = -1;
-                mGameId = -1;
-                mGameNumber = -1;
-                mLeagueName = null;
-                mSeriesDate = null;
-                mNumberOfGames = -1;
-            }
-            else if (fragment.getTag().equals(Constants.FRAGMENT_SERIES))
-            {
-                mListDrawerOptions.add(Constants.NAV_OPTION_LEAGUES_EVENTS);
-                mListDrawerOptions.add(Constants.NAV_OPTION_SERIES);
-
-                mSeriesId = -1;
-                mGameId = -1;
-                mGameNumber = -1;
-                mSeriesDate = null;
-            }
-            else if (fragment.getTag().equals(Constants.FRAGMENT_GAME))
-            {
-                GameFragment gameFragment = (GameFragment)fragment;
-
-                if (!isQuickSeries())
+                case Constants.FRAGMENT_BOWLERS:
+                    mBowlerId = -1;
+                    mLeagueId = -1;
+                    mSeriesId = -1;
+                    mGameId = -1;
+                    mGameNumber = -1;
+                    mBowlerName = null;
+                    mLeagueName = null;
+                    mSeriesDate = null;
+                    mNumberOfGames = -1;
+                    mIsQuickSeries = false;
+                    break;
+                case Constants.FRAGMENT_LEAGUES:
                     mListDrawerOptions.add(Constants.NAV_OPTION_LEAGUES_EVENTS);
-                if (!isEventMode() && !isQuickSeries())
-                    mListDrawerOptions.add(Constants.NAV_OPTION_SERIES);
-                mListDrawerOptions.add(Constants.NAV_OPTION_GAME_DETAILS);
-                for (byte i = 0; i < mNumberOfGames; i++)
-                    mListDrawerOptions.add("Game " + (i + 1));
 
-                mDrawerAdapter.setCurrentGame(gameFragment.getCurrentGame());
-                mGameId = -1;
-                mGameNumber = -1;
-            }
-            else if (fragment.getTag().equals(Constants.FRAGMENT_STATS))
-            {
-                if (mLeagueId >= 0 && !isQuickSeries())
+                    mLeagueId = -1;
+                    mSeriesId = -1;
+                    mGameId = -1;
+                    mGameNumber = -1;
+                    mLeagueName = null;
+                    mSeriesDate = null;
+                    mNumberOfGames = -1;
+                    break;
+                case Constants.FRAGMENT_SERIES:
                     mListDrawerOptions.add(Constants.NAV_OPTION_LEAGUES_EVENTS);
-                if (mSeriesId >= 0 && !isEventMode() && !isQuickSeries())
                     mListDrawerOptions.add(Constants.NAV_OPTION_SERIES);
-                if (mSeriesId >= 0)
+
+                    mSeriesId = -1;
+                    mGameId = -1;
+                    mGameNumber = -1;
+                    mSeriesDate = null;
+                    break;
+                case Constants.FRAGMENT_GAME:
+                    GameFragment gameFragment = (GameFragment)fragment;
+
+                    if (!isQuickSeries())
+                        mListDrawerOptions.add(Constants.NAV_OPTION_LEAGUES_EVENTS);
+                    if (!isEventMode() && !isQuickSeries())
+                        mListDrawerOptions.add(Constants.NAV_OPTION_SERIES);
                     mListDrawerOptions.add(Constants.NAV_OPTION_GAME_DETAILS);
-                mListDrawerOptions.add(Constants.NAV_OPTION_STATS);
+                    for (byte i = 0; i < mNumberOfGames; i++)
+                        mListDrawerOptions.add("Game " + (i + 1));
+
+                    mDrawerAdapter.setCurrentGame(gameFragment.getCurrentGame());
+                    mGameId = -1;
+                    mGameNumber = -1;
+                    break;
+                case Constants.FRAGMENT_STATS:
+                    if (mLeagueId >= 0 && !isQuickSeries())
+                        mListDrawerOptions.add(Constants.NAV_OPTION_LEAGUES_EVENTS);
+                    if (mSeriesId >= 0 && !isEventMode() && !isQuickSeries())
+                        mListDrawerOptions.add(Constants.NAV_OPTION_SERIES);
+                    if (mSeriesId >= 0)
+                        mListDrawerOptions.add(Constants.NAV_OPTION_GAME_DETAILS);
+                    mListDrawerOptions.add(Constants.NAV_OPTION_STATS);
+                    break;
             }
             break;
         }
@@ -456,6 +468,17 @@ public class MainActivity extends ActionBarActivity
             mDrawerLayout.closeDrawer(mDrawerList);
         else
             super.onBackPressed();
+    }
+
+    @Override
+    public void onUserInteraction()
+    {
+        super.onUserInteraction();
+
+        if (mCurrentFragment.equals(Constants.FRAGMENT_GAME))
+        {
+            resetAutoAdvanceTimer();
+        }
     }
 
     @Override
@@ -580,6 +603,53 @@ public class MainActivity extends ActionBarActivity
             return;
 
         gameFragment.switchGame(gameNumber);
+    }
+
+    @Override
+    public void setAutoAdvanceEnabled(boolean enable, int delaySeconds)
+    {
+        mAutoAdvanceEnabled = enable;
+        if (mAutoAdvanceEnabled)
+            resetAutoAdvanceTimer();
+        else
+            stopAutoAdvanceTimer();
+    }
+
+    @Override
+    public void resetAutoAdvanceTimer()
+    {
+        if (!mAutoAdvanceEnabled)
+            return;
+
+        if (mAutoAdvanceHandler == null)
+        {
+            mAutoAdvanceHandler = new Handler()
+            {
+                public void handleMessage(Message message){}
+            };
+        }
+
+        if (mAutoAdvanceCallback == null)
+        {
+            mAutoAdvanceCallback = new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    //TODO: get game fragment
+                }
+            };
+        }
+
+        mAutoAdvanceHandler.removeCallbacks(mAutoAdvanceCallback);
+        mAutoAdvanceHandler.postDelayed(mAutoAdvanceCallback, mAutoAdvanceDelay * 1000);
+    }
+
+    @Override
+    public void stopAutoAdvanceTimer()
+    {
+        if (mAutoAdvanceHandler != null)
+            mAutoAdvanceHandler.removeCallbacks(mAutoAdvanceCallback);
     }
 
     @SuppressWarnings({"IfCanBeSwitch", "StringEquality"})  //May need to compile for 1.6. Also,
@@ -797,7 +867,7 @@ public class MainActivity extends ActionBarActivity
             long[] frameId = new long[mNumberOfGames * 10];
 
             SQLiteDatabase database = DatabaseHelper.getInstance(MainActivity.this).getReadableDatabase();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
             String seriesDate = dateFormat.format(new Date());
 
             database.beginTransaction();

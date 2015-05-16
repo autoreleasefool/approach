@@ -77,4 +77,25 @@
         <item>Purple</item>
         <item>Grey</item>
     </string-array>
+
+    <!-- Game Settings -->
+    <string name="pref_header_game">Game</string>
+    <string name="pref_enable_auto_advance_title">Auto advance frame</string>
+    <string name="pref_enable_auto_advance_summaryOn">Frame will auto advance after an interval of inactivity</string>
+    <string name="pref_enable_auto_advance_summaryOff">Frame will not auto advance</string>
+    <string name="pref_auto_advance_time_title">Auto advance interval</string>
+    <string name="pref_auto_advance_time_summary">Time of inactivity before frame auto advances</string>
+    <string name="pref_auto_advance_time_dialog">Set auto advance interval</string>
+    <string-array name="pref_auto_advance_times">
+        <item>5 seconds</item>
+        <item>10 seconds</item>
+        <item>15 seconds</item>
+        <item>20 seconds</item>
+        <item>25 seconds</item>
+        <item>30 seconds</item>
+        <item>45 seconds</item>
+        <item>60 seconds</item>
+        <item>90 seconds</item>
+        <item>120 seconds</item>
+    </string-array>
 </resources>

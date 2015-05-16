@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <CheckBoxPreference
+        android:key="pref_enable_auto_advance"
+        android:title="@string/pref_enable_auto_advance_title"
+        android:summary="@string/pref_enable_auto_advance_summaryOff"
+        android:defaultValue="false" />
+    <ListPreference
+        android:dependency="key_enable_auto_advance"
+        android:key="pref_auto_advance_time"
+        android:title="@string/pref_auto_advance_time_title"
+        android:summary="@string/pref_auto_advance_time_summary"
+        android:entries="@array/pref_auto_advance_times"
+        android:entryValues="@array/pref_auto_advance_times"
+        android:dialogTitle="@string/pref_auto_advance_time_dialog" />
+</PreferenceScreen>
