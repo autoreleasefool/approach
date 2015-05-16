@@ -6,7 +6,7 @@
         android:summary="@string/pref_enable_auto_advance_summaryOff"
         android:defaultValue="false" />
     <ListPreference
-        android:dependency="key_enable_auto_advance"
+        android:dependency="pref_enable_auto_advance"
         android:key="pref_auto_advance_time"
         android:title="@string/pref_auto_advance_time_title"
         android:summary="@string/pref_auto_advance_time_summary"

@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -137,6 +138,8 @@ public class GameFragment extends Fragment
     /** Indicates if the app should not save games - set to true in case of errors */
     private AtomicBoolean doNotSave = new AtomicBoolean(false);
 
+    //TODO: documentation
+    private TextView mTextViewAutoAdvance;
     private boolean mAutoAdvanceEnabled;
     private int mAutoAdvanceDelay;
 
@@ -331,6 +334,8 @@ public class GameFragment extends Fragment
         mTextViewManualScore = (TextView)rootView.findViewById(R.id.tv_manual_score);
         mRelativeLayoutGameToolbar = (RelativeLayout)rootView.findViewById(R.id.rl_game_toolbar);
 
+        mTextViewAutoAdvance = (TextView)rootView.findViewById(R.id.tv_auto_advance_status);
+
         rootView.findViewById(R.id.fab_next_ball).setOnClickListener(onClickListeners[LISTENER_OTHER]);
         rootView.findViewById(R.id.fab_prev_ball).setOnClickListener(onClickListeners[LISTENER_OTHER]);
 
@@ -367,9 +372,16 @@ public class GameFragment extends Fragment
         mAutoAdvanceEnabled = preferences.getBoolean(Constants.KEY_ENABLE_AUTO_ADVANCE, false);
 
         String strDelay = preferences.getString(Constants.KEY_AUTO_ADVANCE_TIME, "15 seconds");
+        Log.i("GameFragment", strDelay);
         mAutoAdvanceDelay = (strDelay != null)
                 ? Integer.valueOf(strDelay.substring(0, strDelay.indexOf(" ")))
                 : 0;
+
+        mCallback.setAutoAdvanceConditions(mImageViewNextBall,
+                mTextViewAutoAdvance,
+                mAutoAdvanceEnabled,
+                mAutoAdvanceDelay);
+        mCallback.stopAutoAdvanceTimer();
 
         //Loads scores of games being edited from database
         loadInitialScores();
@@ -577,11 +589,10 @@ public class GameFragment extends Fragment
                         if (frameUpdateCount > 3)
                             updateAllBalls();
                         else
-                            updateBalls(mCurrentFrame, (byte)0);
+                            updateBalls(mCurrentFrame, (byte) 0);
                         updateScore();
                         updateFrameColor(false);
-
-                        //todo: stop timer
+                        mCallback.stopAutoAdvanceTimer();
                         break;
                     default:
                         throw new RuntimeException("Invalid frame id");
@@ -605,8 +616,7 @@ public class GameFragment extends Fragment
                     case R.id.button_pin_2: ballToSet++;
                     case R.id.button_pin_1:
                         alterPinState(ballToSet);
-
-                        //TODO: start timer
+                        mCallback.resetAutoAdvanceTimer();
                         break;
                     default:
                         throw new RuntimeException("Invalid pin button id");
@@ -628,8 +638,7 @@ public class GameFragment extends Fragment
                             showSetMatchPlayLockedDialog();
                         else
                             showSetMatchPlayDialog();
-
-                        //todo: stop timer
+                        mCallback.stopAutoAdvanceTimer();
                         break;
 
                     case R.id.iv_lock:
@@ -638,7 +647,7 @@ public class GameFragment extends Fragment
                         if (mManualScoreSet[mCurrentGame])
                             return;
                         setGameLocked(!mGameLocked[mCurrentGame]);
-                        //todo: stop timer
+                        mCallback.stopAutoAdvanceTimer();
                         break;
 
                     case R.id.iv_foul:
@@ -647,7 +656,7 @@ public class GameFragment extends Fragment
                             return;
                         mFouls[mCurrentFrame][mCurrentBall] = !mFouls[mCurrentFrame][mCurrentBall];
                         updateFouls();
-                        //todo: stop timer
+                        mCallback.resetAutoAdvanceTimer();
                         break;
 
                     case R.id.iv_reset_frame:
@@ -664,14 +673,14 @@ public class GameFragment extends Fragment
                         }
                         setVisibilityOfNextAndPrevItems();
                         updateFrameColor(false);
-                        updateBalls(mCurrentFrame, (byte)0);
+                        updateBalls(mCurrentFrame, (byte) 0);
                         updateScore();
-                        //todo: stop timer
+                        mCallback.stopAutoAdvanceTimer();
                         break;
 
                     case R.id.iv_clear:
                         clearPins();
-                        //todo: stop timer
+                        mCallback.resetAutoAdvanceTimer();
                         break;
 
                     case R.id.iv_next_ball:
@@ -702,8 +711,7 @@ public class GameFragment extends Fragment
                         mHasFrameBeenAccessed[mCurrentFrame] = true;
                         setVisibilityOfNextAndPrevItems();
                         updateFrameColor(false);
-
-                        //todo: stop timer
+                        mCallback.stopAutoAdvanceTimer();
                         break;
 
                     case R.id.iv_prev_ball:
@@ -725,8 +733,7 @@ public class GameFragment extends Fragment
                         }
                         setVisibilityOfNextAndPrevItems();
                         updateFrameColor(false);
-
-                        //todo: stop timer
+                        mCallback.stopAutoAdvanceTimer();
                         break;
 
                     default:
@@ -772,6 +779,7 @@ public class GameFragment extends Fragment
                                 updateBalls(mCurrentFrame, (byte)0);
                             updateScore();
                             updateFrameColor(false);
+                            mCallback.stopAutoAdvanceTimer();
                             break;
                         }
                     }
@@ -2094,6 +2102,25 @@ public class GameFragment extends Fragment
          * @param newGameNumber number of the new game, starting at index 0
          */
         void onGameChanged(byte newGameNumber);
+
+        /**
+         * Sets auto advance values in activity
+         * @param clickToAdvance view to click to advance ball
+         * @param textViewStatus text view to display updates
+         * @param enabled indicates if the timer should be enabled
+         * @param delay seconds of inactivity before auto advancing
+         */
+        void setAutoAdvanceConditions(View clickToAdvance, TextView textViewStatus, boolean enabled, int delay);
+
+        /**
+         * Starts the auto advance timer
+         */
+        void resetAutoAdvanceTimer();
+
+        /**
+         * Stops the auto advance timer
+         */
+        void stopAutoAdvanceTimer();
     }
 
     /**

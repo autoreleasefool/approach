@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -21,6 +22,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -85,6 +87,48 @@ public class MainActivity extends ActionBarActivity
     private boolean mIsQuickSeries;
     /** Indicates the current fragment on screen */
     private String mCurrentFragment = Constants.FRAGMENT_BOWLERS;
+
+    //TODO: documentation
+    private View mViewAutoAdvance;
+    private TextView mTextViewAutoAdvanceStatus;
+    private boolean mAutoAdvanceEnabled;
+    private int mAutoAdvanceDelay;
+    private int mAutoAdvanceDelayRemaining;
+
+    private static Handler mAutoAdvanceHandler = new Handler()
+    {
+        @Override
+        public void handleMessage(Message message) {}
+    };
+
+    private Runnable mAutoAdvanceCallback = new Runnable()
+    {
+        @Override
+        public void run()
+        {
+            if (--mAutoAdvanceDelayRemaining <= 0)
+            {
+                mViewAutoAdvance.performClick();
+                setAutoAdvanceConditions(mViewAutoAdvance, mTextViewAutoAdvanceStatus, false, mAutoAdvanceDelay);
+            }
+            else
+            {
+                if (mTextViewAutoAdvanceStatus != null)
+                {
+                    runOnUiThread(new Runnable()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            mTextViewAutoAdvanceStatus.setVisibility(View.VISIBLE);
+                            mTextViewAutoAdvanceStatus.setText(mAutoAdvanceDelayRemaining + " seconds until auto advance");
+                            mAutoAdvanceHandler.postDelayed(mAutoAdvanceCallback, 1000);
+                        }
+                    });
+                }
+            }
+        }
+    };
 
     /** Queue of threads which are waiting to save data to the database */
     private ConcurrentLinkedQueue<Thread> mQueueSavingThreads;
@@ -464,15 +508,6 @@ public class MainActivity extends ActionBarActivity
     }
 
     @Override
-    public void onUserInteraction()
-    {
-        super.onUserInteraction();
-
-        if (mCurrentFragment.equals(Constants.FRAGMENT_GAME))
-            resetAutoAdvanceTimer();
-    }
-
-    @Override
     public void updateTheme()
     {
         //Updates colors and sets theme for MainActivity valid
@@ -624,6 +659,52 @@ public class MainActivity extends ActionBarActivity
             Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
             startActivity(settingsIntent);
         }
+    }
+
+    @Override
+    public void onUserInteraction()
+    {
+        super.onUserInteraction();
+
+        if (mAutoAdvanceEnabled && mCurrentFragment.equals(Constants.FRAGMENT_GAME))
+        {
+            resetAutoAdvanceTimer();
+        }
+    }
+
+    @Override
+    public void setAutoAdvanceConditions(View clickToAdvance, TextView textViewStatus, boolean enabled, int delay)
+    {
+        mViewAutoAdvance = clickToAdvance;
+        mTextViewAutoAdvanceStatus = textViewStatus;
+        mAutoAdvanceEnabled = enabled;
+        mAutoAdvanceDelay = delay;
+
+        if (!mAutoAdvanceEnabled)
+            stopAutoAdvanceTimer();
+        else
+            resetAutoAdvanceTimer();
+    }
+
+    @Override
+    public void resetAutoAdvanceTimer()
+    {
+        if (!mAutoAdvanceEnabled)
+            return;
+
+        if (mTextViewAutoAdvanceStatus != null)
+            mTextViewAutoAdvanceStatus.setVisibility(View.GONE);
+        mAutoAdvanceDelayRemaining = mAutoAdvanceDelay;
+        mAutoAdvanceHandler.removeCallbacks(mAutoAdvanceCallback);
+        mAutoAdvanceHandler.postDelayed(mAutoAdvanceCallback, 1000);
+    }
+
+    @Override
+    public void stopAutoAdvanceTimer()
+    {
+        if (mTextViewAutoAdvanceStatus != null)
+            mTextViewAutoAdvanceStatus.setVisibility(View.GONE);
+        mAutoAdvanceHandler.removeCallbacks(mAutoAdvanceCallback);
     }
 
     /**
