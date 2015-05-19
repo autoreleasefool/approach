@@ -8,9 +8,9 @@ android {
         applicationId "ca.josephroque.bowlingcompanion"
         minSdkVersion 10
         targetSdkVersion 21
-        //Current release - vc: 10, vn: 1.1.4
-        versionCode 10
-        versionName "1.1.4"
+        //Current release - vc: 11, vn: 1.2
+        versionCode 11
+        versionName "1.2"
     }
     buildTypes {
         release {
@@ -22,9 +22,9 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.google.android.gms:play-services-ads:6.+'
-    compile 'com.android.support:appcompat-v7:21.0.3'
+    compile 'com.google.android.gms:play-services-ads:7.3.0'
+    compile 'com.android.support:appcompat-v7:22.1.1'
     compile 'com.android.support:recyclerview-v7:21.0.3'
     compile 'com.melnykov:floatingactionbutton:1.2.0'
-    compile 'com.android.support:support-v4:21.0.3'
+    compile 'com.android.support:support-v4:22.1.1'
 }
