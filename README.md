@@ -30,7 +30,7 @@ Additional Information
 **Current Version:** 1.2<br />
 **Requires Android:** 2.3.3 and up<br />
 **Content Rating:** Everyone<br />
-**Permissions:** Internet, Writing to external storage
+**Permissions:** Internet, Writing to external storage<br />
 **Developer Email:** contact@josephroque.ca
 
 
