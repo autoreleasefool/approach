@@ -21,23 +21,40 @@ import ca.josephroque.bowlingcompanion.theme.Theme;
  * events.
  */
 public class StatsExpandableAdapter extends BaseExpandableListAdapter
-    implements Theme.ChangeableTheme
+        implements Theme.ChangeableTheme
 {
 
-    /** Context which created this object */
+    /** Identifies output from this class in Logcat. */
+    @SuppressWarnings("unused")
+    private static final String TAG = "StatsExpandable";
+
+    // Constant values
+
+    // Objects
+
+    /** Context which created this object. */
     private Context mContext;
-    /** List of group headers */
+
+    // Arrays, data structures
+
+    /** List of group headers. */
     private List<String> mListStatHeaders;
-    /** List of list of map entries which hold a name and a value, for each group */
+    /** List of list of map entries which hold a name and a value, for each group. */
     private List<List<AbstractMap.SimpleEntry<String, String>>> mListStatNamesAndValues;
 
+    // Primitive variables
+
     /**
-     * Assigns member variables to parameters
+     * Assigns member variables to parameters.
+     *
      * @param context context which created this object
      * @param listHeaders list of group headers
      * @param listNamesAndValues list of entries to display beneath each group
      */
-    public StatsExpandableAdapter(Context context, List<String> listHeaders, List<List<AbstractMap.SimpleEntry<String, String>>> listNamesAndValues)
+    public StatsExpandableAdapter(Context context,
+                                  List<String> listHeaders,
+                                  List<List<AbstractMap.SimpleEntry<String, String>>>
+                                          listNamesAndValues)
     {
         this.mContext = context;
         this.mListStatHeaders = listHeaders;
@@ -51,26 +68,35 @@ public class StatsExpandableAdapter extends BaseExpandableListAdapter
     }
 
     @Override
-    public long getChildId(int groupPosition, int childPosition){return childPosition;}
-
-    @SuppressWarnings("unchecked") //getChild guaranteed to return AbstractMap.SimpleEntry<String, String>
-    @Override
-    public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent)
+    public long getChildId(int groupPosition, int childPosition)
     {
-        final AbstractMap.SimpleEntry<String, String> childNameAndValue = (AbstractMap.SimpleEntry<String, String>)getChild(groupPosition, childPosition);
+        return childPosition;
+    }
+
+    @SuppressWarnings("unchecked")
+    //getChild guaranteed to return AbstractMap.SimpleEntry<String, String>
+    @Override
+    public View getChildView(int groupPosition,
+                             int childPosition,
+                             boolean isLastChild,
+                             View convertView,
+                             ViewGroup parent)
+    {
+        final AbstractMap.SimpleEntry<String, String> childNameAndValue =
+                (AbstractMap.SimpleEntry<String, String>) getChild(groupPosition, childPosition);
 
         StatViewHolder viewHolder;
         if (convertView == null)
         {
             viewHolder = new StatViewHolder();
             convertView = View.inflate(mContext, R.layout.list_stats_item, null);
-            viewHolder.mTextViewStatName = (TextView)convertView.findViewById(R.id.tv_stat_name);
-            viewHolder.mTextViewStatValue = (TextView)convertView.findViewById(R.id.tv_stat_value);
+            viewHolder.mTextViewStatName = (TextView) convertView.findViewById(R.id.tv_stat_name);
+            viewHolder.mTextViewStatValue = (TextView) convertView.findViewById(R.id.tv_stat_value);
             convertView.setTag(viewHolder);
         }
         else
         {
-            viewHolder = (StatViewHolder)convertView.getTag();
+            viewHolder = (StatViewHolder) convertView.getTag();
         }
 
         final int blackFontColor = mContext.getResources().getColor(android.R.color.black);
@@ -84,19 +110,34 @@ public class StatsExpandableAdapter extends BaseExpandableListAdapter
     }
 
     @Override
-    public int getChildrenCount(int groupPosition){return mListStatNamesAndValues.get(groupPosition).size();}
+    public int getChildrenCount(int groupPosition)
+    {
+        return mListStatNamesAndValues.get(groupPosition).size();
+    }
 
     @Override
-    public Object getGroup(int groupPosition){return mListStatHeaders.get(groupPosition);}
+    public Object getGroup(int groupPosition)
+    {
+        return mListStatHeaders.get(groupPosition);
+    }
 
     @Override
-    public int getGroupCount(){return mListStatHeaders.size();}
+    public int getGroupCount()
+    {
+        return mListStatHeaders.size();
+    }
 
     @Override
-    public long getGroupId(int groupPosition){return groupPosition;}
+    public long getGroupId(int groupPosition)
+    {
+        return groupPosition;
+    }
 
     @Override
-    public View getGroupView(int groupPosition, boolean isExpanded, View convertView, ViewGroup parent)
+    public View getGroupView(int groupPosition,
+                             boolean isExpanded,
+                             View convertView,
+                             ViewGroup parent)
     {
         String headerTitle = getGroup(groupPosition).toString();
 
@@ -105,13 +146,13 @@ public class StatsExpandableAdapter extends BaseExpandableListAdapter
         {
             viewHolder = new HeaderViewHolder();
             convertView = View.inflate(mContext, R.layout.list_stats_header, null);
-            viewHolder.mTextViewHeader = (TextView)convertView.findViewById(R.id.tv_stat_header);
+            viewHolder.mTextViewHeader = (TextView) convertView.findViewById(R.id.tv_stat_header);
             viewHolder.mBackgroundView = convertView.findViewById(R.id.ll_stats_header);
             convertView.setTag(viewHolder);
         }
         else
         {
-            viewHolder = (HeaderViewHolder)convertView.getTag();
+            viewHolder = (HeaderViewHolder) convertView.getTag();
         }
 
         viewHolder.mTextViewHeader.setText(headerTitle);
@@ -123,33 +164,44 @@ public class StatsExpandableAdapter extends BaseExpandableListAdapter
     }
 
     @Override
-    public boolean hasStableIds() {return false;}
+    public boolean hasStableIds()
+    {
+        return false;
+    }
 
     @Override
-    public boolean isChildSelectable(int groupPosition, int childPosition){return false;}
+    public boolean isChildSelectable(int groupPosition, int childPosition)
+    {
+        return false;
+    }
 
     /**
-     * Holds views so if an item view is recycled by the list, references are retained to its children
+     * Holds views so if an item view is recycled by the list, references are retained to
+     * its children.
      */
     private static class StatViewHolder
     {
-        /** TextView to display name of a stat */
+        /** TextView to display name of a stat. */
         private TextView mTextViewStatName;
-        /**TextView to display value of a stat */
+        /** TextView to display value of a stat. */
         private TextView mTextViewStatValue;
     }
 
     /**
-     * Holds views so if a header view is recycled by the list, references are retained to its children
+     * Holds views so if a header view is recycled by the list, references are retained to
+     * its children.
      */
     private static class HeaderViewHolder
     {
-        /** TextView to display header of a group */
+        /** TextView to display header of a group. */
         private TextView mTextViewHeader;
-        /** Background of the view, to set color for theme */
+        /** Background of the view, to set color for theme. */
         private View mBackgroundView;
     }
 
     @Override
-    public void updateTheme(){notifyDataSetChanged();}
+    public void updateTheme()
+    {
+        notifyDataSetChanged();
+    }
 }

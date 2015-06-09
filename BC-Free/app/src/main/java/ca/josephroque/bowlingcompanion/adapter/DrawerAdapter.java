@@ -22,17 +22,33 @@ import ca.josephroque.bowlingcompanion.R;
  * interaction events.
  */
 public class DrawerAdapter extends ArrayAdapter<String>
-    implements ListView.OnItemClickListener
+        implements ListView.OnItemClickListener
 {
-    /** Callback listener for user events */
+
+    /** Identifies output from this class in Logcat. */
+    @SuppressWarnings("unused")
+    private static final String TAG = "DrawerAdapter";
+
+    // Constant values
+
+    // Objects
+
+    /** Callback listener for user events. */
     private OnDrawerClickListener mDrawerClickListener;
-    /** List of options to be displayed by the ListView */
+
+    // Arrays, data structures
+
+    /** List of options to be displayed by the ListView. */
     private List<String> mListOptions;
-    /** Current game, which corresponds to a game tag with a filled radio button in the view */
+
+    // Primitive variables
+
+    /** Current game, which corresponds to a game tag with a filled radio button in the view. */
     private String mCurrentGame = "0";
 
     /**
-     * Calls super constructor and attempts to cast context to a listener for events
+     * Calls super constructor and attempts to cast context to a listener for events.
+     *
      * @param context context which created this object - must implement OnDrawerClickListener
      * @param listOptions options which will be displayed by the list
      */
@@ -47,36 +63,48 @@ public class DrawerAdapter extends ArrayAdapter<String>
              * Attempts to cast parent context to OnDrawerClickListener and store a reference
              * to it for callbacks on events. If the cast fails, an error is thrown
              */
-            mDrawerClickListener = (OnDrawerClickListener)context;
+            mDrawerClickListener = (OnDrawerClickListener) context;
         }
         catch (ClassCastException ex)
         {
-            throw new ClassCastException(context.toString() +
-                    " must implement OnDrawerClickListener");
+            throw new ClassCastException(context.toString()
+                    + " must implement OnDrawerClickListener");
         }
     }
 
-    @SuppressWarnings("StringEquality") //String constants are added to list, so
-                                        //direct comparison can be used
     @Override
     public View getView(int position, View view, ViewGroup viewGroup)
     {
-        ViewHolder viewHolder;
+        DrawerViewHolder viewHolder;
 
         if (view == null)
         {
-            viewHolder = new ViewHolder();
+            viewHolder = new DrawerViewHolder();
             view = View.inflate(getContext(), R.layout.list_drawer, null);
-            viewHolder.mImageViewIcon = (ImageView)view.findViewById(R.id.iv_list_drawer);
-            viewHolder.mTextViewOption = (TextView)view.findViewById(R.id.tv_list_drawer);
+            viewHolder.mImageViewIcon = (ImageView) view.findViewById(R.id.iv_list_drawer);
+            viewHolder.mTextViewOption = (TextView) view.findViewById(R.id.tv_list_drawer);
             view.setTag(viewHolder);
         }
         else
         {
-            viewHolder = (ViewHolder)view.getTag();
+            viewHolder = (DrawerViewHolder) view.getTag();
         }
 
         String option = mListOptions.get(position);
+        setNavIconByOption(option, viewHolder);
+
+        return view;
+    }
+
+    /**
+     * Sets icon of items in navigation drawer depending on their name.
+     * @param option name of item
+     * @param viewHolder views
+     */
+    @SuppressWarnings("StringEquality") //String constants are added to list, so
+                                        //direct comparison can be used
+    private void setNavIconByOption(String option, DrawerViewHolder viewHolder)
+    {
         //Displays a different icon next to different navigational options
         viewHolder.mTextViewOption.setText(option);
         if (option == Constants.NAV_OPTION_HOME)
@@ -118,28 +146,34 @@ public class DrawerAdapter extends ArrayAdapter<String>
         {
             viewHolder.mImageViewIcon.setVisibility(View.VISIBLE);
             viewHolder.mImageViewIcon.setImageResource(
-                    (mListOptions.get(position).substring(mListOptions.get(position).indexOf(" ") + 1).equals(mCurrentGame)
-                    ? R.drawable.ic_radio_button_on : R.drawable.ic_radio_button_off));
+                    (option.substring(option.indexOf(" ") + 1).equals(mCurrentGame)
+                            ? R.drawable.ic_radio_button_on : R.drawable.ic_radio_button_off));
         }
         else
         {
             viewHolder.mImageViewIcon.setVisibility(View.GONE);
         }
-
-        return view;
     }
 
     /**
-     * Assigns a new value to mCurrentGame
+     * Assigns a new value to {@code mCurrentGame}.
+     *
      * @param currentGame new value for mCurrentGame (1 will be added to it)
      */
-    public void setCurrentGame(byte currentGame) {mCurrentGame = String.valueOf(currentGame + 1);}
+    public void setCurrentGame(byte currentGame)
+    {
+        mCurrentGame = String.valueOf(currentGame + 1);
+    }
 
     /**
-     * Returns a cast of mCurrentGame to byte minus one
+     * Returns a cast of mCurrentGame to byte minus one.
+     *
      * @return byte representation of mCurrentGame - 1
      */
-    public byte getCurrentGame() {return (byte)(Byte.parseByte(mCurrentGame) - 1);}
+    public byte getCurrentGame()
+    {
+        return (byte) (Byte.parseByte(mCurrentGame) - 1);
+    }
 
     @Override
     public void onItemClick(AdapterView parent, View view, int position, long id)
@@ -148,38 +182,41 @@ public class DrawerAdapter extends ArrayAdapter<String>
 
         //If the option selected was a game number
         if (option.matches("\\w+ \\d+"))
-            mDrawerClickListener.onGameItemClicked((byte)(Byte.parseByte(option.substring(5)) - 1));
-        //else, a certain fragment should be navigated to
+            mDrawerClickListener.onGameItemClicked(
+                    (byte) (Byte.parseByte(option.substring(5)) - 1));
+            //else, a certain fragment should be navigated to
         else
             mDrawerClickListener.onFragmentItemClicked(option);
     }
 
     /**
-     * Callback listener for user events on the list
+     * Callback listener for user events on the list.
      */
     public interface OnDrawerClickListener
     {
         /**
-         * Indicates a fragment should be navigated to
+         * Indicates a fragment should be navigated to.
+         *
          * @param fragmentItem name of the fragment to navigate to
          */
         void onFragmentItemClicked(String fragmentItem);
 
         /**
-         * Indicates a game should be switched to
+         * Indicates a game should be switched to.
+         *
          * @param gameNumber number of the game to switch to
          */
         void onGameItemClicked(byte gameNumber);
     }
 
     /**
-     * Holds the views for a certain list item
+     * Holds the views for a certain list item.
      */
-    private static class ViewHolder
+    private static class DrawerViewHolder
     {
-        /** Displays icon which represents the navigational option*/
+        /** Displays icon which represents the navigational option. */
         private ImageView mImageViewIcon;
-        /** Text which describes the navigational option */
+        /** Text which describes the navigational option. */
         private TextView mTextViewOption;
     }
 }

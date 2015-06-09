@@ -23,62 +23,81 @@ import ca.josephroque.bowlingcompanion.theme.Theme;
  * a callback interface {@link NameAverageAdapter.NameAverageEventHandler} to handle interaction
  * events.
  */
-public class NameAverageAdapter extends RecyclerView.Adapter<NameAverageAdapter.NameAverageViewHolder>
-    implements View.OnClickListener, View.OnLongClickListener
+public class NameAverageAdapter
+        extends RecyclerView.Adapter<NameAverageAdapter.NameAverageViewHolder>
+        implements View.OnClickListener, View.OnLongClickListener
 {
-    /** Indicates data represents bowlers */
+
+    /** Identifies output from this class in Logcat. */
+    @SuppressWarnings("unused")
+    private static final String TAG = "NameAverageAdapter";
+
+    // Constant values
+
+    /** Indicates data represents bowlers. */
     public static final byte DATA_BOWLERS = 0;
-    /** Indicates data represents leagues and events */
+    /** Indicates data represents leagues and events. */
     public static final byte DATA_LEAGUES_EVENTS = 1;
 
-    /** Instance of handler for callback on user action */
+    // Objects
+
+    /** Instance of handler for callback on user action. */
     private NameAverageEventHandler mEventHandler;
-    /** List of names which will be displayed */
+
+    // Arrays, data structures
+
+    /** List of names which will be displayed. */
     private List<String> mListNames;
-    /** List of averages which will be displayed, in an order relative to mListNames */
+    /** List of averages which will be displayed, in an order relative to mListNames. */
     private List<Short> mListAverages;
 
-    /** Type of data being represented by this object */
+    // Primitive variables
+
+    /** Type of data being represented by this object. */
     private byte mDataType;
 
     /**
      * Subclass of RecyclerView.ViewHolder to manage view which will display an image,
-     * and text to the user
+     * and text to the user.
      */
-    public static class NameAverageViewHolder extends RecyclerView.ViewHolder
+    public static final class NameAverageViewHolder extends RecyclerView.ViewHolder
     {
-        /** Displays an image representing the type of data in the row */
+        /** Displays an image representing the type of data in the row. */
         private ImageView mImageViewType;
-        /** Displays the name of the data in the row */
+        /** Displays the name of the data in the row. */
         private TextView mTextViewName;
-        /** Displays the average of the data in the row */
+        /** Displays the average of the data in the row. */
         private TextView mTextViewAverage;
-        /** Animates changes in color to the ViewHolder background */
+        /** Animates changes in color to the ViewHolder background. */
         private ValueAnimator mValueAnimator = null;
 
         /**
          * Calls super constructor and gets instances of ImageView and TextView objects
-         * for member variables from itemLayoutView
+         * for member variables from itemLayoutView.
+         *
          * @param itemLayoutView layout view containing views to display data
          */
         private NameAverageViewHolder(View itemLayoutView)
         {
             super(itemLayoutView);
-            mImageViewType = (ImageView)itemLayoutView.findViewById(R.id.iv_nameavg_type);
-            mTextViewName = (TextView)itemLayoutView.findViewById(R.id.tv_nameavg_name);
-            mTextViewAverage = (TextView)itemLayoutView.findViewById(R.id.tv_nameavg_average);
+            mImageViewType = (ImageView) itemLayoutView.findViewById(R.id.iv_nameavg_type);
+            mTextViewName = (TextView) itemLayoutView.findViewById(R.id.tv_nameavg_name);
+            mTextViewAverage = (TextView) itemLayoutView.findViewById(R.id.tv_nameavg_average);
         }
     }
 
     /**
-     * Sets member variables to parameters
+     * Sets member variables to parameters.
      *
      * @param handler handles on click/long click events on views
      * @param listNames list of names to be displayed in RecyclerView
      * @param listAverages list of averages, relative to listNames to be displayed
      * @param dataType type of data being managed by this object
      */
-    public NameAverageAdapter(NameAverageEventHandler handler, List<String> listNames, List<Short> listAverages, byte dataType)
+    public NameAverageAdapter(NameAverageEventHandler handler,
+                              List<String> listNames,
+                              List<Short> listAverages,
+                              byte dataType)
     {
         mEventHandler = handler;
         mListNames = listNames;
@@ -98,7 +117,7 @@ public class NameAverageAdapter extends RecyclerView.Adapter<NameAverageAdapter.
     public void onBindViewHolder(final NameAverageViewHolder holder, final int position)
     {
         //Sets text/images depending on data type
-        switch(mDataType)
+        switch (mDataType)
         {
             case DATA_BOWLERS:
                 holder.mTextViewName.setText(mListNames.get(position));
@@ -108,12 +127,13 @@ public class NameAverageAdapter extends RecyclerView.Adapter<NameAverageAdapter.
                 holder.mTextViewName.setText(mListNames.get(position).substring(1));
                 holder.mImageViewType.setImageResource(
                         mListNames.get(position).startsWith("L")
-                        ? R.drawable.ic_league
-                        : R.drawable.ic_event);
+                                ? R.drawable.ic_league
+                                : R.drawable.ic_event);
                 break;
+            default: throw new IllegalStateException("invalid mDataType: " + mDataType);
         }
-        holder.mTextViewAverage.setText("Avg: " +
-                String.valueOf(mListAverages.get(position)));
+        holder.mTextViewAverage.setText("Avg: "
+                + String.valueOf(mListAverages.get(position)));
 
         //Sets actions on click/touch events
         holder.itemView.setOnClickListener(this);
@@ -126,22 +146,23 @@ public class NameAverageAdapter extends RecyclerView.Adapter<NameAverageAdapter.
                 if (event.getActionMasked() == MotionEvent.ACTION_DOWN)
                 {
                     //Begins color change animation when user holds down this item
-                    holder.mValueAnimator =
-                            ValueAnimator.ofObject(new ArgbEvaluator(),
+                    holder.mValueAnimator = ValueAnimator.ofObject(new ArgbEvaluator(),
                                     Theme.getListItemBackground(),
                                     Theme.getLongPressThemeColor());
                     holder.mValueAnimator.setDuration(Theme.getMediumAnimationDuration());
-                    holder.mValueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
+                    holder.mValueAnimator.addUpdateListener(
+                            new ValueAnimator.AnimatorUpdateListener()
                     {
                         @Override
                         public void onAnimationUpdate(ValueAnimator animation)
                         {
-                            v.setBackgroundColor((Integer)animation.getAnimatedValue());
+                            v.setBackgroundColor((Integer) animation.getAnimatedValue());
                         }
                     });
                     holder.mValueAnimator.start();
                 }
-                else if ((event.getActionMasked() == MotionEvent.ACTION_UP || event.getActionMasked() == MotionEvent.ACTION_MOVE)
+                else if ((event.getActionMasked() == MotionEvent.ACTION_UP
+                        || event.getActionMasked() == MotionEvent.ACTION_MOVE)
                         && holder.mValueAnimator != null)
                 {
                     //Cancels the animation when the user moves or releases
@@ -171,30 +192,36 @@ public class NameAverageAdapter extends RecyclerView.Adapter<NameAverageAdapter.
     }
 
     @Override
-    public int getItemCount() {return mListNames.size();}
+    public int getItemCount()
+    {
+        return mListNames.size();
+    }
 
     /**
      * Provides methods to implement functionality when items
-     * in the RecyclerView are interacted with
+     * in the RecyclerView are interacted with.
      */
     public interface NameAverageEventHandler
     {
 
         /**
-         * Called when an item in the RecyclerView is clicked
+         * Called when an item in the RecyclerView is clicked.
+         *
          * @param position position of the item in the list
          */
         void onNAItemClick(final int position);
 
         /**
-         * Called when an item in the RecyclerView is long clicked
+         * Called when an item in the RecyclerView is long clicked.
+         *
          * @param position position of the item in the list
          */
         void onNALongClick(final int position);
 
         /**
          * Should be used to return RecyclerView#getChildPosition(v) on the
-         * recycler view which uses this adapter
+         * recycler view which uses this adapter.
+         *
          * @param v the view to get the position of
          * @return position of v in the parent RecyclerView
          */

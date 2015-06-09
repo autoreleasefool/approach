@@ -19,14 +19,27 @@ import ca.josephroque.bowlingcompanion.utilities.DataFormatter;
  * for the user to change the date associated with a series
  */
 public class ChangeDateDialog extends DialogFragment
-    implements DatePickerDialog.OnDateSetListener
+        implements DatePickerDialog.OnDateSetListener
 {
 
-    /** Dialog which allows user to select a date from a calendar */
+    /** Identifies output from this class in Logcat. */
+    @SuppressWarnings("unused")
+    private static final String TAG = "ChangeDateDialog";
+
+    // Constant values
+
+    // Objects
+
+    /** Dialog which allows user to select a date from a calendar. */
     private DatePickerDialog mDatePicker;
-    /** Callback listener for when user selects a date */
+    /** Callback listener for when user selects a date. */
     private ChangeDateDialogListener mChangeDateListener;
-    /** Id which identifies the current series which user is changing the date for */
+
+    // Arrays, data structures
+
+    // Primitive variables
+
+    /** Id which identifies the current series which user is changing the date for. */
     private long mSeriesId;
 
     @Override
@@ -67,7 +80,7 @@ public class ChangeDateDialog extends DialogFragment
         {
             Field datePickerField = mDatePicker.getClass().getField("mDatePicker");
             datePickerField.setAccessible(true);
-            datePicker = (DatePicker)datePickerField.get(mDatePicker);
+            datePicker = (DatePicker) datePickerField.get(mDatePicker);
         }
         catch (Exception ex)
         {
@@ -85,12 +98,15 @@ public class ChangeDateDialog extends DialogFragment
     /**
      * Returns a new instance of this dialog fragment with the listener assigned and
      * arguments set.
+     *
      * @param listener callback listener for user events
      * @param seriesDate initial date of the series to be changed
      * @param seriesId identifies the series to be changed
      * @return a new instance ChangeDateDialog
      */
-    public static ChangeDateDialog newInstance(ChangeDateDialogListener listener, String seriesDate, long seriesId)
+    public static ChangeDateDialog newInstance(ChangeDateDialogListener listener,
+                                               String seriesDate,
+                                               long seriesId)
     {
         ChangeDateDialog dialog = new ChangeDateDialog();
         dialog.mChangeDateListener = listener;
@@ -102,12 +118,13 @@ public class ChangeDateDialog extends DialogFragment
     }
 
     /**
-     * Callback listener for user events
+     * Callback listener for user events.
      */
     public interface ChangeDateDialogListener
     {
         /**
-         * Called when the user selects a date to set
+         * Called when the user selects a date to set.
+         *
          * @param seriesId id of the series to change
          * @param year year to change date to
          * @param month month to change date to

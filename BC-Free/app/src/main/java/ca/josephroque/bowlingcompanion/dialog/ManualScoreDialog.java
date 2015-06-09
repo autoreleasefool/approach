@@ -23,8 +23,21 @@ import ca.josephroque.bowlingcompanion.R;
 public class ManualScoreDialog extends DialogFragment
 {
 
-    /** Instance of callback listener */
+    /** Identifies output from this class in Logcat. */
+    @SuppressWarnings("unused")
+    private static final String TAG = "ManualScoreDialog";
+
+    // Constant values
+
+    // Objects
+
+    /** Instance of callback listener. */
     private ManualScoreDialogListener mDialogListener;
+
+    // Arrays, data structures
+
+    // Primitive variables
+
 
     @NonNull
     @Override
@@ -33,7 +46,7 @@ public class ManualScoreDialog extends DialogFragment
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
         final View dialogView = View.inflate(getActivity(), R.layout.dialog_set_score, null);
 
-        final EditText editTextScore = (EditText)dialogView.findViewById(R.id.et_score);
+        final EditText editTextScore = (EditText) dialogView.findViewById(R.id.et_score);
         editTextScore.setHint("Score (max 450)");
         editTextScore.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3)});
 
@@ -79,16 +92,17 @@ public class ManualScoreDialog extends DialogFragment
         super.onSaveInstanceState(outState);
 
         outState.putCharSequence("GameScore",
-                ((EditText)getDialog().findViewById(R.id.et_score)).getText());
+                ((EditText) getDialog().findViewById(R.id.et_score)).getText());
     }
 
     /**
-     * Callback interface which executes methods in activity upon user interaction
+     * Callback interface which executes methods in activity upon user interaction.
      */
     public interface ManualScoreDialogListener
     {
         /**
-         * Invoked when user opts to submit a manual score
+         * Invoked when user opts to submit a manual score.
+         *
          * @param gameScore score input from user
          */
         void onSetScore(short gameScore);
@@ -96,7 +110,7 @@ public class ManualScoreDialog extends DialogFragment
 
     /**
      * Creates a new instance of ManualScoreDialog, sets listener member variable
-     * and returns the new instance
+     * and returns the new instance.
      *
      * @param listener instance of callback interface
      * @return new instance of ManualScoreDialog

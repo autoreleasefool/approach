@@ -51,7 +51,7 @@ import ca.josephroque.bowlingcompanion.utilities.ShareUtils;
  * handling interactions.
  */
 public class GameFragment extends Fragment
-    implements
+        implements
         Theme.ChangeableTheme,
         ManualScoreDialog.ManualScoreDialogListener
 {
@@ -157,7 +157,7 @@ public class GameFragment extends Fragment
          */
         try
         {
-            mCallback = (GameFragmentCallbacks)activity;
+            mCallback = (GameFragmentCallbacks) activity;
         }
         catch (ClassCastException ex)
         {
@@ -192,7 +192,7 @@ public class GameFragment extends Fragment
         //Density of screen to set proper width/height of views
         final float screenDensity = getResources().getDisplayMetrics().density;
 
-        mHorizontalScrollViewFrames = (HorizontalScrollView)rootView.findViewById(R.id.hsv_frames);
+        mHorizontalScrollViewFrames = (HorizontalScrollView) rootView.findViewById(R.id.hsv_frames);
 
         RelativeLayout relativeLayout = new RelativeLayout(getActivity());
         RelativeLayout.LayoutParams layoutParams;
@@ -222,7 +222,7 @@ public class GameFragment extends Fragment
         {
             //TextView to display score of a frame
             TextView frameText = new TextView(getActivity());
-            switch(i)
+            switch (i)
             {
                 //Id is set so when view is clicked, it can be identified
                 case 0: frameText.setId(R.id.text_frame_0); break;
@@ -293,48 +293,48 @@ public class GameFragment extends Fragment
 
         //Buttons which indicate state of pins in a frame, provide user interaction methods
         mImageButtonPins = new ImageButton[5];
-        mImageButtonPins[0] = (ImageButton)rootView.findViewById(R.id.button_pin_1);
-        mImageButtonPins[1] = (ImageButton)rootView.findViewById(R.id.button_pin_2);
-        mImageButtonPins[2] = (ImageButton)rootView.findViewById(R.id.button_pin_3);
-        mImageButtonPins[3] = (ImageButton)rootView.findViewById(R.id.button_pin_4);
-        mImageButtonPins[4] = (ImageButton)rootView.findViewById(R.id.button_pin_5);
+        mImageButtonPins[0] = (ImageButton) rootView.findViewById(R.id.button_pin_1);
+        mImageButtonPins[1] = (ImageButton) rootView.findViewById(R.id.button_pin_2);
+        mImageButtonPins[2] = (ImageButton) rootView.findViewById(R.id.button_pin_3);
+        mImageButtonPins[3] = (ImageButton) rootView.findViewById(R.id.button_pin_4);
+        mImageButtonPins[4] = (ImageButton) rootView.findViewById(R.id.button_pin_5);
 
         for (ImageButton pinButton : mImageButtonPins)
             pinButton.setOnClickListener(onClickListeners[LISTENER_PIN_BUTTONS]);
 
         //Loading other views into member variables, setting OnClickListeners
-        mImageViewNextBall = (ImageView)rootView.findViewById(R.id.iv_next_ball);
+        mImageViewNextBall = (ImageView) rootView.findViewById(R.id.iv_next_ball);
         mImageViewNextBall.setOnClickListener(onClickListeners[LISTENER_OTHER]);
-        mImageViewPrevBall = (ImageView)rootView.findViewById(R.id.iv_prev_ball);
+        mImageViewPrevBall = (ImageView) rootView.findViewById(R.id.iv_prev_ball);
         mImageViewPrevBall.setOnClickListener(onClickListeners[LISTENER_OTHER]);
-        mTextViewNextBall = (TextView)rootView.findViewById(R.id.tv_next_ball);
+        mTextViewNextBall = (TextView) rootView.findViewById(R.id.tv_next_ball);
         mTextViewNextBall.setOnClickListener(onClickListeners[LISTENER_OTHER]);
-        mTextViewPrevBall = (TextView)rootView.findViewById(R.id.tv_prev_ball);
+        mTextViewPrevBall = (TextView) rootView.findViewById(R.id.tv_prev_ball);
         mTextViewPrevBall.setOnClickListener(onClickListeners[LISTENER_OTHER]);
-        mImageViewClear = (ImageView)rootView.findViewById(R.id.iv_clear);
+        mImageViewClear = (ImageView) rootView.findViewById(R.id.iv_clear);
         mImageViewClear.setOnClickListener(onClickListeners[LISTENER_OTHER]);
 
-        mTextViewGameNumber = (TextView)rootView.findViewById(R.id.tv_game_number);
-        layoutParams = (RelativeLayout.LayoutParams)mTextViewGameNumber.getLayoutParams();
+        mTextViewGameNumber = (TextView) rootView.findViewById(R.id.tv_game_number);
+        layoutParams = (RelativeLayout.LayoutParams) mTextViewGameNumber.getLayoutParams();
         layoutParams.addRule(RelativeLayout.ALIGN_TOP, mTextViewNextBall.getId());
         layoutParams.addRule(RelativeLayout.ALIGN_BOTTOM, mTextViewNextBall.getId());
 
-        mImageViewFoul = (ImageView)rootView.findViewById(R.id.iv_foul);
+        mImageViewFoul = (ImageView) rootView.findViewById(R.id.iv_foul);
         mImageViewFoul.setOnClickListener(onClickListeners[LISTENER_OTHER]);
 
-        mImageViewResetFrame = (ImageView)rootView.findViewById(R.id.iv_reset_frame);
+        mImageViewResetFrame = (ImageView) rootView.findViewById(R.id.iv_reset_frame);
         mImageViewResetFrame.setOnClickListener(onClickListeners[LISTENER_OTHER]);
 
-        mImageViewLock = (ImageView)rootView.findViewById(R.id.iv_lock);
+        mImageViewLock = (ImageView) rootView.findViewById(R.id.iv_lock);
         mImageViewLock.setOnClickListener(onClickListeners[LISTENER_OTHER]);
 
-        mImageViewMatchPlay = (ImageView)rootView.findViewById(R.id.iv_match);
+        mImageViewMatchPlay = (ImageView) rootView.findViewById(R.id.iv_match);
         mImageViewMatchPlay.setOnClickListener(onClickListeners[LISTENER_OTHER]);
 
-        mTextViewManualScore = (TextView)rootView.findViewById(R.id.tv_manual_score);
-        mRelativeLayoutGameToolbar = (RelativeLayout)rootView.findViewById(R.id.rl_game_toolbar);
+        mTextViewManualScore = (TextView) rootView.findViewById(R.id.tv_manual_score);
+        mRelativeLayoutGameToolbar = (RelativeLayout) rootView.findViewById(R.id.rl_game_toolbar);
 
-        mTextViewAutoAdvance = (TextView)rootView.findViewById(R.id.tv_auto_advance_status);
+        mTextViewAutoAdvance = (TextView) rootView.findViewById(R.id.tv_auto_advance_status);
 
         rootView.findViewById(R.id.fab_next_ball).setOnClickListener(onClickListeners[LISTENER_OTHER]);
         rootView.findViewById(R.id.fab_prev_ball).setOnClickListener(onClickListeners[LISTENER_OTHER]);
@@ -346,7 +346,7 @@ public class GameFragment extends Fragment
     public void onResume()
     {
         super.onResume();
-        ((MainActivity)getActivity()).setActionBarTitle(R.string.title_fragment_game, true);
+        ((MainActivity) getActivity()).setActionBarTitle(R.string.title_fragment_game, true);
 
         //Loads colors for frame view backgrounds
         COLOR_BACKGROUND = getResources().getColor(R.color.primary_background);
@@ -363,8 +363,8 @@ public class GameFragment extends Fragment
             mMatchPlay = args.getByteArray(Constants.EXTRA_ARRAY_MATCH_PLAY);
         }
 
-        mGameScores = new short[((MainActivity)getActivity()).getNumberOfGames()];
-        mGameScoresMinusFouls = new short[((MainActivity)getActivity()).getNumberOfGames()];
+        mGameScores = new short[((MainActivity) getActivity()).getNumberOfGames()];
+        mGameScoresMinusFouls = new short[((MainActivity) getActivity()).getNumberOfGames()];
 
         updateTheme();
 
@@ -427,12 +427,12 @@ public class GameFragment extends Fragment
 
         //Sets names/visibility of menu items
         menu.findItem(R.id.action_series_stats)
-                .setTitle(((MainActivity)getActivity()).isEventMode() ? R.string.action_event_stats : R.string.action_series_stats);
+                .setTitle(((MainActivity) getActivity()).isEventMode() ? R.string.action_event_stats : R.string.action_series_stats);
         menu.findItem(R.id.action_set_score)
                 .setTitle((mManualScoreSet[mCurrentGame])
                         ? R.string.action_clear_score : R.string.action_set_score);
 
-        boolean drawerOpen = ((MainActivity)getActivity()).isDrawerOpen();
+        boolean drawerOpen = ((MainActivity) getActivity()).isDrawerOpen();
         menu.findItem(R.id.action_stats).setVisible(!drawerOpen);
         menu.findItem(R.id.action_share).setVisible(!drawerOpen);
         menu.findItem(R.id.action_series_stats).setVisible(!drawerOpen);
@@ -445,12 +445,12 @@ public class GameFragment extends Fragment
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        switch(item.getItemId())
+        switch (item.getItemId())
         {
             case R.id.action_share:
                 //Prompts user to share or save an image of current series
                 saveGame(false);
-                MainActivity mainActivity = (MainActivity)getActivity();
+                MainActivity mainActivity = (MainActivity) getActivity();
                 ShareUtils.showShareDialog(mainActivity, mainActivity.getSeriesId());
                 return true;
 
@@ -484,7 +484,7 @@ public class GameFragment extends Fragment
 
             case R.id.action_stats:
                 //Displays all stats related to current game
-                mCallback.onGameStatsOpened(mGameIds[mCurrentGame], (byte)(mCurrentGame + 1));
+                mCallback.onGameStatsOpened(mGameIds[mCurrentGame], (byte) (mCurrentGame + 1));
                 return true;
 
             default:
@@ -500,12 +500,12 @@ public class GameFragment extends Fragment
         {
             rootView.findViewById(R.id.rl_game_toolbar).setBackgroundColor(Theme.getSecondaryThemeColor());
 
-            FloatingActionButton fab = (FloatingActionButton)rootView.findViewById(R.id.fab_next_ball);
+            FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab_next_ball);
             fab.setColorPressed(Theme.getPrimaryThemeColor());
             fab.setColorNormal(Theme.getPrimaryThemeColor());
             fab.setColorRipple(Theme.getTertiaryThemeColor());
 
-            fab = (FloatingActionButton)rootView.findViewById(R.id.fab_prev_ball);
+            fab = (FloatingActionButton) rootView.findViewById(R.id.fab_prev_ball);
             fab.setColorPressed(Theme.getPrimaryThemeColor());
             fab.setColorNormal(Theme.getPrimaryThemeColor());
             fab.setColorRipple(Theme.getTertiaryThemeColor());
@@ -561,7 +561,7 @@ public class GameFragment extends Fragment
             public void onClick(View v)
             {
                 byte frameToSet = 0;
-                switch(v.getId())
+                switch (v.getId())
                 {
                     case R.id.text_frame_9: frameToSet++;
                     case R.id.text_frame_8: frameToSet++;
@@ -608,7 +608,7 @@ public class GameFragment extends Fragment
                 if (mGameLocked[mCurrentGame] || mManualScoreSet[mCurrentGame])
                     return;
                 byte ballToSet = 0;
-                switch(v.getId())
+                switch (v.getId())
                 {
                     case R.id.button_pin_5: ballToSet++;
                     case R.id.button_pin_4: ballToSet++;
@@ -631,7 +631,7 @@ public class GameFragment extends Fragment
             {
                 int viewId = v.getId();
 
-                switch(viewId)
+                switch (viewId)
                 {
                     case R.id.iv_match:
                         if (mGameLocked[mCurrentGame])
@@ -726,7 +726,7 @@ public class GameFragment extends Fragment
                         {
                             mCurrentBall = 0;
                             --mCurrentFrame;
-                            while(!Arrays.equals(mPinState[mCurrentFrame][mCurrentBall], Constants.FRAME_PINS_DOWN) && mCurrentBall < 2)
+                            while (!Arrays.equals(mPinState[mCurrentFrame][mCurrentBall], Constants.FRAME_PINS_DOWN) && mCurrentBall < 2)
                             {
                                 mCurrentBall++;
                             }
@@ -768,7 +768,7 @@ public class GameFragment extends Fragment
                                 mHasFrameBeenAccessed[k] = true;
                                 frameUpdateCount++;
                             }
-                            while(!Arrays.equals(mPinState[mCurrentFrame][mCurrentBall], Constants.FRAME_PINS_DOWN) && mCurrentBall < j)
+                            while (!Arrays.equals(mPinState[mCurrentFrame][mCurrentBall], Constants.FRAME_PINS_DOWN) && mCurrentBall < j)
                             {
                                 mCurrentBall++;
                             }
@@ -776,7 +776,7 @@ public class GameFragment extends Fragment
                             if (frameUpdateCount > 3)
                                 updateAllBalls();
                             else
-                                updateBalls(mCurrentFrame, (byte)0);
+                                updateBalls(mCurrentFrame, (byte) 0);
                             updateScore();
                             updateFrameColor(false);
                             mCallback.stopAutoAdvanceTimer();
@@ -921,6 +921,7 @@ public class GameFragment extends Fragment
 
     /**
      * Hides or shows TextView objects in the app that display individual score elements
+     *
      * @param enabled if true, TextView objects related to scores will be shown
      */
     private void clearAllText(boolean enabled)
@@ -1031,7 +1032,7 @@ public class GameFragment extends Fragment
             @Override
             public void run()
             {
-                switch(mMatchPlay[mCurrentGame])
+                switch (mMatchPlay[mCurrentGame])
                 {
                     case 0: mImageViewMatchPlay.setImageResource(R.drawable.ic_match_none); break;
                     case 1: mImageViewMatchPlay.setImageResource(R.drawable.ic_match_win); break;
@@ -1045,6 +1046,7 @@ public class GameFragment extends Fragment
     /**
      * Locks or unlocks a game and hides/shows settings which are only necessary
      * if a game is unlocked
+     *
      * @param lock if true, settings will be hidden and game locked
      */
     private void setGameLocked(boolean lock)
@@ -1076,8 +1078,9 @@ public class GameFragment extends Fragment
     /**
      * Copies data of current game to variables and saves game to the database
      * on a new thread
+     *
      * @param ignoreManualScore if false, game will only be saved if a manual score is
-     *                          not set. Otherwise, will save regardless.
+     * not set. Otherwise, will save regardless.
      */
     private void saveGame(boolean ignoreManualScore)
     {
@@ -1099,7 +1102,7 @@ public class GameFragment extends Fragment
             System.arraycopy(mFouls[i], 0, foulsToSave[i], 0, mFouls[i].length);
         }
 
-        ((MainActivity)getActivity()).addSavingThread(
+        ((MainActivity) getActivity()).addSavingThread(
                 saveGameToDatabase((MainActivity) getActivity(),
                         mGameIds[mCurrentGame],
                         framesToSave,
@@ -1177,10 +1180,10 @@ public class GameFragment extends Fragment
         {
             if (!mPinState[mCurrentFrame][mCurrentBall][i])
             {
-                switch(i)
+                switch (i)
                 {
-                    case 0:case 4: pinsLeftStanding += 2; break;
-                    case 1:case 3: pinsLeftStanding += 3; break;
+                    case 0: case 4: pinsLeftStanding += 2; break;
+                    case 1: case 3: pinsLeftStanding += 3; break;
                     case 2: pinsLeftStanding += 5; break;
                 }
             }
@@ -1285,13 +1288,13 @@ public class GameFragment extends Fragment
         getActivity().runOnUiThread(new Runnable()
         {
             @Override
-            public void  run()
+            public void run()
             {
                 if (mCurrentFrame == 0 && mCurrentBall == 0)
                 {
                     mTextViewPrevBall.setVisibility(View.GONE);
                     mImageViewPrevBall.setVisibility(View.GONE);
-                    RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)mTextViewGameNumber.getLayoutParams();
+                    RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mTextViewGameNumber.getLayoutParams();
                     layoutParams.addRule(RelativeLayout.ALIGN_TOP, mTextViewNextBall.getId());
                     layoutParams.addRule(RelativeLayout.ALIGN_BOTTOM, mTextViewNextBall.getId());
                 }
@@ -1305,7 +1308,7 @@ public class GameFragment extends Fragment
                 {
                     mTextViewNextBall.setVisibility(View.GONE);
                     mImageViewNextBall.setVisibility(View.GONE);
-                    RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams)mTextViewGameNumber.getLayoutParams();
+                    RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mTextViewGameNumber.getLayoutParams();
                     layoutParams.addRule(RelativeLayout.ALIGN_TOP, mTextViewPrevBall.getId());
                     layoutParams.addRule(RelativeLayout.ALIGN_BOTTOM, mTextViewPrevBall.getId());
                 }
@@ -1324,7 +1327,7 @@ public class GameFragment extends Fragment
     private void updateAllBalls()
     {
         for (byte i = Constants.LAST_FRAME; i >= 0; i -= 3)
-            updateBalls(i, (byte)0);
+            updateBalls(i, (byte) 0);
     }
 
     /**
@@ -1454,13 +1457,13 @@ public class GameFragment extends Fragment
                 });
 
                 //Updates previous frames as well, to display balls after strikes
-                switch(leftToUpdate)
+                switch (leftToUpdate)
                 {
                     case 0:
-                        updateBalls((byte)(frameToUpdate - 1), (byte)(leftToUpdate + 1));
+                        updateBalls((byte) (frameToUpdate - 1), (byte) (leftToUpdate + 1));
                         break;
                     case 1:
-                        updateBalls((byte)(frameToUpdate - 1), (byte)(leftToUpdate + 1));
+                        updateBalls((byte) (frameToUpdate - 1), (byte) (leftToUpdate + 1));
                         break;
                     default:
                         //do nothing
@@ -1487,7 +1490,7 @@ public class GameFragment extends Fragment
                     {
                         for (byte b = 2; b >= 0; b--)
                         {
-                            switch(b)
+                            switch (b)
                             {
                                 case 2:
                                     frameScores[f] += Score.getValueOfFrame(mPinState[f][b]);
@@ -1585,7 +1588,7 @@ public class GameFragment extends Fragment
                     foulCount++;
             }
         }
-        short scoreWithFouls = (short)(mGameScores[mCurrentGame] - 15 * foulCount);
+        short scoreWithFouls = (short) (mGameScores[mCurrentGame] - 15 * foulCount);
         if (scoreWithFouls < 0)
             scoreWithFouls = 0;
         mGameScoresMinusFouls[mCurrentGame] = scoreWithFouls;
@@ -1629,6 +1632,7 @@ public class GameFragment extends Fragment
     /**
      * Sets background color of current ball and frame TextView instances to COLOR_HIGHLIGHT
      * and sets color of pin and whether its enabled or not depending on its state
+     *
      * @param initialLoad indicates if this method was called when a game was first loaded
      */
     private void updateFrameColor(final boolean initialLoad)
@@ -1653,7 +1657,8 @@ public class GameFragment extends Fragment
                     if (mPinState[mCurrentFrame][mCurrentBall][i])
                     {
                         mImageButtonPins[i].setImageResource(R.drawable.pin_disabled);
-                    } else
+                    }
+                    else
                     {
                         mImageButtonPins[i].setImageResource(R.drawable.pin_enabled);
                         numberOfPinsStanding++;
@@ -1664,7 +1669,8 @@ public class GameFragment extends Fragment
                             && Arrays.equals(mPinState[mCurrentFrame][mCurrentBall - 1], Constants.FRAME_PINS_DOWN)))
                     {
                         mImageButtonPins[i].setEnabled(false);
-                    } else
+                    }
+                    else
                     {
                         mImageButtonPins[i].setEnabled(true);
                     }
@@ -1692,7 +1698,8 @@ public class GameFragment extends Fragment
                                 mImageViewClear.setImageResource(R.drawable.ic_fifteen);
                             break;
                     }
-                } else
+                }
+                else
                 {
                     switch (mCurrentBall)
                     {
@@ -1711,8 +1718,8 @@ public class GameFragment extends Fragment
 
                 mImageViewFoul.setImageResource(
                         !mFouls[mCurrentFrame][mCurrentBall]
-                        ? R.drawable.ic_foul_remove
-                        : R.drawable.ic_foul);
+                                ? R.drawable.ic_foul_remove
+                                : R.drawable.ic_foul);
 
                 focusOnFrame(initialLoad);
             }
@@ -1786,7 +1793,7 @@ public class GameFragment extends Fragment
                     }
                 });
 
-                updateBalls(mCurrentFrame, (byte)0);
+                updateBalls(mCurrentFrame, (byte) 0);
                 updateScore();
             }
         }).start();
@@ -1813,7 +1820,7 @@ public class GameFragment extends Fragment
                 }
             }
 
-            updateBalls(mCurrentFrame, (byte)0);
+            updateBalls(mCurrentFrame, (byte) 0);
             updateScore();
             updateFrameColor(false);
         }
@@ -1821,6 +1828,7 @@ public class GameFragment extends Fragment
 
     /**
      * Scrolls the position of hsvFrames so the current frame is centred
+     *
      * @param initialLoad indicates if this method was called when a game was first loaded
      */
     private void focusOnFrame(final boolean initialLoad)
@@ -1880,8 +1888,8 @@ public class GameFragment extends Fragment
                 {
                     values = new ContentValues();
                     values.put(GameEntry.COLUMN_SCORE, finalScore);
-                    values.put(GameEntry.COLUMN_IS_LOCKED, (gameLocked ? 1:0));
-                    values.put(GameEntry.COLUMN_IS_MANUAL, (manualScoreSet) ? 1:0);
+                    values.put(GameEntry.COLUMN_IS_LOCKED, (gameLocked ? 1 : 0));
+                    values.put(GameEntry.COLUMN_IS_MANUAL, (manualScoreSet) ? 1 : 0);
                     values.put(GameEntry.COLUMN_MATCH_PLAY, matchPlay);
                     database.update(GameEntry.TABLE_NAME,
                             values,
@@ -1903,7 +1911,7 @@ public class GameFragment extends Fragment
                         values.put(FrameEntry.COLUMN_PIN_STATE[0], Score.booleanFrameToString(pinState[i][0]));
                         values.put(FrameEntry.COLUMN_PIN_STATE[1], Score.booleanFrameToString(pinState[i][1]));
                         values.put(FrameEntry.COLUMN_PIN_STATE[2], Score.booleanFrameToString(pinState[i][2]));
-                        values.put(FrameEntry.COLUMN_IS_ACCESSED, (hasFrameBeenAccessed[i]) ? 1:0);
+                        values.put(FrameEntry.COLUMN_IS_ACCESSED, (hasFrameBeenAccessed[i]) ? 1 : 0);
                         values.put(FrameEntry.COLUMN_FOULS, foulsOfFrame.toString());
                         database.update(FrameEntry.TABLE_NAME,
                                 values,
@@ -2016,6 +2024,7 @@ public class GameFragment extends Fragment
 
     /**
      * Saves current game and loads new game from database
+     *
      * @param gameNumber index in mGameIds to load from database
      */
     public void switchGame(byte gameNumber)
@@ -2033,9 +2042,9 @@ public class GameFragment extends Fragment
      */
     private void loadInitialScores()
     {
-        MainActivity.waitForSaveThreads((MainActivity)getActivity());
+        MainActivity.waitForSaveThreads((MainActivity) getActivity());
 
-        byte numberOfGames = ((MainActivity)getActivity()).getNumberOfGames();
+        byte numberOfGames = ((MainActivity) getActivity()).getNumberOfGames();
         SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getReadableDatabase();
         StringBuilder whereBuilder = new StringBuilder(GameEntry._ID + "=?");
         String[] whereArgs = new String[numberOfGames];
@@ -2076,9 +2085,13 @@ public class GameFragment extends Fragment
 
     /**
      * Gets the current game being edited
+     *
      * @return value of mCurrentGame
      */
-    public byte getCurrentGame(){return mCurrentGame;}
+    public byte getCurrentGame()
+    {
+        return mCurrentGame;
+    }
 
     /**
      * Callback interface offers methods upon user interaction
@@ -2087,6 +2100,7 @@ public class GameFragment extends Fragment
     {
         /**
          * Tells activity to open new StatsFragment with current game id and game number
+         *
          * @param gameId id of the game to display
          * @param gameNumber number in a series of the game to display
          */
@@ -2099,12 +2113,14 @@ public class GameFragment extends Fragment
 
         /**
          * Tells activity that the game has been changed
+         *
          * @param newGameNumber number of the new game, starting at index 0
          */
         void onGameChanged(byte newGameNumber);
 
         /**
          * Sets auto advance values in activity
+         *
          * @param clickToAdvance view to click to advance ball
          * @param textViewStatus text view to display updates
          * @param enabled indicates if the timer should be enabled
@@ -2125,6 +2141,7 @@ public class GameFragment extends Fragment
 
     /**
      * Creates a new instance and sets parameters as arguments for the instance
+     *
      * @param gameIds ids of the games being displayed
      * @param frameIds ids of frames belonging to gameIds
      * @param gameLocked whether the games being displayed are locked or not

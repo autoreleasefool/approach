@@ -46,7 +46,7 @@ import ca.josephroque.bowlingcompanion.theme.Theme;
  * handling interactions.
  */
 public class SeriesFragment extends Fragment
-    implements
+        implements
         Theme.ChangeableTheme,
         SeriesAdapter.SeriesEventHandler,
         ChangeDateDialog.ChangeDateDialogListener
@@ -84,7 +84,7 @@ public class SeriesFragment extends Fragment
          */
         try
         {
-            mSeriesListener = (SeriesListener)activity;
+            mSeriesListener = (SeriesListener) activity;
         }
         catch (ClassCastException ex)
         {
@@ -102,7 +102,7 @@ public class SeriesFragment extends Fragment
         mListSeriesDates = new ArrayList<>();
         mListSeriesGames = new ArrayList<>();
 
-        mRecyclerViewSeries = (RecyclerView)rootView.findViewById(R.id.rv_names);
+        mRecyclerViewSeries = (RecyclerView) rootView.findViewById(R.id.rv_names);
         mRecyclerViewSeries.setHasFixedSize(true);
         mRecyclerViewSeries.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
 
@@ -113,7 +113,7 @@ public class SeriesFragment extends Fragment
         mRecyclerViewSeries.setAdapter(mAdapterSeries);
 
         FloatingActionButton floatingActionButton =
-                (FloatingActionButton)rootView.findViewById(R.id.fab_new_list_item);
+                (FloatingActionButton) rootView.findViewById(R.id.fab_new_list_item);
         floatingActionButton.setImageResource(R.drawable.ic_action_new);
         floatingActionButton.setOnClickListener(new View.OnClickListener()
         {
@@ -125,8 +125,8 @@ public class SeriesFragment extends Fragment
         });
 
         //Sets textviews to display text relevant to series
-        ((TextView)rootView.findViewById(R.id.tv_new_list_item)).setText(R.string.text_new_series);
-        ((TextView)rootView.findViewById(R.id.tv_delete_list_item)).setText(R.string.text_delete_series);
+        ((TextView) rootView.findViewById(R.id.tv_new_list_item)).setText(R.string.text_new_series);
+        ((TextView) rootView.findViewById(R.id.tv_delete_list_item)).setText(R.string.text_delete_series);
 
         return rootView;
     }
@@ -135,7 +135,7 @@ public class SeriesFragment extends Fragment
     public void onResume()
     {
         super.onResume();
-        ((MainActivity)getActivity()).setActionBarTitle(R.string.title_fragment_series, true);
+        ((MainActivity) getActivity()).setActionBarTitle(R.string.title_fragment_series, true);
 
         mListSeriesIds.clear();
         mListSeriesDates.clear();
@@ -158,7 +158,7 @@ public class SeriesFragment extends Fragment
     @Override
     public void onPrepareOptionsMenu(Menu menu)
     {
-        boolean drawerOpen = ((MainActivity)getActivity()).isDrawerOpen();
+        boolean drawerOpen = ((MainActivity) getActivity()).isDrawerOpen();
         menu.findItem(R.id.action_stats).setVisible(!drawerOpen);
         menu.findItem(R.id.action_edit_date).setVisible(!drawerOpen);
         super.onPrepareOptionsMenu(menu);
@@ -167,7 +167,7 @@ public class SeriesFragment extends Fragment
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        switch(item.getItemId())
+        switch (item.getItemId())
         {
             case R.id.action_edit_date:
                 showEditDateDialog();
@@ -231,7 +231,7 @@ public class SeriesFragment extends Fragment
         c.set(year, month, day);
         final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
         final String formattedDate = dateFormat.format(c.getTime());
-        mListSeriesDates.set(index, DataFormatter.formattedDateToPrettyCompact(formattedDate.substring(0,10)));
+        mListSeriesDates.set(index, DataFormatter.formattedDateToPrettyCompact(formattedDate.substring(0, 10)));
 
         getActivity().runOnUiThread(new Runnable()
         {
@@ -242,35 +242,35 @@ public class SeriesFragment extends Fragment
             }
         });
 
-        ((MainActivity)getActivity()).addSavingThread(
-        new Thread(new Runnable()
-        {
-            @Override
-            public void run()
-            {
-                SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
-                ContentValues values = new ContentValues();
-                values.put(SeriesEntry.COLUMN_SERIES_DATE, formattedDate);
+        ((MainActivity) getActivity()).addSavingThread(
+                new Thread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
+                        ContentValues values = new ContentValues();
+                        values.put(SeriesEntry.COLUMN_SERIES_DATE, formattedDate);
 
-                database.beginTransaction();
-                try
-                {
-                    database.update(SeriesEntry.TABLE_NAME,
-                            values,
-                            SeriesEntry._ID + "=?",
-                            new String[]{String.valueOf(seriesId)});
-                    database.setTransactionSuccessful();
-                }
-                catch (Exception ex)
-                {
-                    //TODO: does nothing - date in database for series was not changed
-                }
-                finally
-                {
-                    database.endTransaction();
-                }
-            }
-        }));
+                        database.beginTransaction();
+                        try
+                        {
+                            database.update(SeriesEntry.TABLE_NAME,
+                                    values,
+                                    SeriesEntry._ID + "=?",
+                                    new String[]{String.valueOf(seriesId)});
+                            database.setTransactionSuccessful();
+                        }
+                        catch (Exception ex)
+                        {
+                            //TODO: does nothing - date in database for series was not changed
+                        }
+                        finally
+                        {
+                            database.endTransaction();
+                        }
+                    }
+                }));
     }
 
     /**
@@ -318,6 +318,7 @@ public class SeriesFragment extends Fragment
 
     /**
      * Deletes all data regarding a certain series id in the database
+     *
      * @param seriesId id of series whose data will be deleted
      */
     private void deleteSeries(final long seriesId)
@@ -358,6 +359,7 @@ public class SeriesFragment extends Fragment
 
     /**
      * Creates a new instance of this fragment to display
+     *
      * @return a new instance of SeriesFragment
      */
     public static SeriesFragment newInstance()
@@ -374,7 +376,7 @@ public class SeriesFragment extends Fragment
         @Override
         protected List<?>[] doInBackground(Void... params)
         {
-            MainActivity.waitForSaveThreads((MainActivity)getActivity());
+            MainActivity.waitForSaveThreads((MainActivity) getActivity());
 
             SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getReadableDatabase();
             List<Long> listSeriesIds = new ArrayList<>();
@@ -391,13 +393,13 @@ public class SeriesFragment extends Fragment
                     + " ON sid=" + GameEntry.COLUMN_SERIES_ID
                     + " WHERE " + SeriesEntry.COLUMN_LEAGUE_ID + "=?"
                     + " ORDER BY " + SeriesEntry.COLUMN_SERIES_DATE + " DESC, "
-                            + GameEntry.COLUMN_GAME_NUMBER;
-            String[] rawSeriesArgs = {String.valueOf(((MainActivity)getActivity()).getLeagueId())};
+                    + GameEntry.COLUMN_GAME_NUMBER;
+            String[] rawSeriesArgs = {String.valueOf(((MainActivity) getActivity()).getLeagueId())};
 
             Cursor cursor = database.rawQuery(rawSeriesQuery, rawSeriesArgs);
             if (cursor.moveToFirst())
             {
-                while(!cursor.isAfterLast())
+                while (!cursor.isAfterLast())
                 {
                     long seriesId = cursor.getLong(cursor.getColumnIndex("sid"));
                     String seriesDate = cursor.getString(cursor.getColumnIndex(SeriesEntry.COLUMN_SERIES_DATE));
@@ -423,9 +425,9 @@ public class SeriesFragment extends Fragment
         @SuppressWarnings("unchecked")
         protected void onPostExecute(List<?>[] lists)
         {
-            mListSeriesIds.addAll((List<Long>)lists[0]);
-            mListSeriesDates.addAll((List<String>)lists[1]);
-            mListSeriesGames.addAll((List<List<Short>>)lists[2]);
+            mListSeriesIds.addAll((List<Long>) lists[0]);
+            mListSeriesDates.addAll((List<String>) lists[1]);
+            mListSeriesGames.addAll((List<List<Short>>) lists[2]);
             mAdapterSeries.notifyDataSetChanged();
         }
     }
@@ -439,6 +441,7 @@ public class SeriesFragment extends Fragment
         /**
          * Should be overridden to created a GameFragment with the games
          * belonging to the series represented by seriesId
+         *
          * @param seriesId id of the series whose games will be displayed
          * @param seriesDate date of the series corresponding to seriesId
          * @param isEvent indicates if an event series is being displayed or not
@@ -447,6 +450,7 @@ public class SeriesFragment extends Fragment
 
         /**
          * Called when user opts to create a new series
+         *
          * @param isEvent indicates if the new series will belong to an event
          */
         void onCreateNewSeries(boolean isEvent);

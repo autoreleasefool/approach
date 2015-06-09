@@ -7,7 +7,11 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import ca.josephroque.bowlingcompanion.database.Contract.*;
+import ca.josephroque.bowlingcompanion.database.Contract.BowlerEntry;
+import ca.josephroque.bowlingcompanion.database.Contract.FrameEntry;
+import ca.josephroque.bowlingcompanion.database.Contract.GameEntry;
+import ca.josephroque.bowlingcompanion.database.Contract.LeagueEntry;
+import ca.josephroque.bowlingcompanion.database.Contract.SeriesEntry;
 
 /**
  * Created by Joseph Roque on 15-03-12.
@@ -15,21 +19,31 @@ import ca.josephroque.bowlingcompanion.database.Contract.*;
  * Manages interactions with the application's database, including the creation, updates
  * and deletion.
  */
-public class DatabaseHelper extends SQLiteOpenHelper
+public final class DatabaseHelper extends SQLiteOpenHelper
 {
-    /** Tag for the database to be used in log output */
+
+    /** Identifies output from this class in Logcat. */
+    @SuppressWarnings("unused")
     private static final String TAG = "DBHelper";
-    /** Name of the database */
+
+    // Constant values
+
+    /** Name of the database. */
     private static final String DATABASE_NAME = "bowlingdata";
-    /** Version of the database, incremented with changes */
+    /** Version of the database, incremented with changes. */
     private static final int DATABASE_VERSION = 2;
 
+    // Objects
 
-    /** Singleton instance of the DatabaseHelper */
+    /** Singleton instance of the DatabaseHelper. */
     private static DatabaseHelper sDatabaseHelperInstance = null;
 
+    // Arrays, data structures
+
+    // Primitive variables
+
     /**
-     * Returns a singleton instance of DatabaseHelper
+     * Returns a singleton instance of DatabaseHelper.
      *
      * @param context the current activity
      * @return static instance of DatabaseHelper
@@ -44,7 +58,7 @@ public class DatabaseHelper extends SQLiteOpenHelper
     }
 
     /**
-     * Private constructor for singleton access
+     * Private constructor for singleton access.
      *
      * @param context the current activity
      */
@@ -73,18 +87,20 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 + LeagueEntry.COLUMN_DATE_MODIFIED + " TEXT NOT NULL, "
                 + LeagueEntry.COLUMN_IS_EVENT + " INTEGER NOT NULL DEFAULT 0, "
                 + LeagueEntry.COLUMN_BOWLER_ID + " INTEGER NOT NULL"
-                        + " REFERENCES " + BowlerEntry.TABLE_NAME
-                        + " ON UPDATE CASCADE ON DELETE CASCADE, "
-                + "CHECK (" + LeagueEntry.COLUMN_NUMBER_OF_GAMES + " > 0 AND " + LeagueEntry.COLUMN_NUMBER_OF_GAMES + " <= 20), "
-                + "CHECK (" + LeagueEntry.COLUMN_IS_EVENT + " = 0 OR " + LeagueEntry.COLUMN_IS_EVENT + " = 1)"
+                + " REFERENCES " + BowlerEntry.TABLE_NAME
+                + " ON UPDATE CASCADE ON DELETE CASCADE, "
+                + "CHECK (" + LeagueEntry.COLUMN_NUMBER_OF_GAMES + " > 0 AND "
+                        + LeagueEntry.COLUMN_NUMBER_OF_GAMES + " <= 20), "
+                + "CHECK (" + LeagueEntry.COLUMN_IS_EVENT + " = 0 OR "
+                        + LeagueEntry.COLUMN_IS_EVENT + " = 1)"
                 + ");");
         db.execSQL("CREATE TABLE "
                 + SeriesEntry.TABLE_NAME + " ("
                 + SeriesEntry._ID + " INTEGER PRIMARY KEY, "
                 + SeriesEntry.COLUMN_SERIES_DATE + " TEXT NOT NULL, "
                 + SeriesEntry.COLUMN_LEAGUE_ID + " INTEGER NOT NULL"
-                        + " REFERENCES " + LeagueEntry.TABLE_NAME
-                        + " ON UPDATE CASCADE ON DELETE CASCADE"
+                + " REFERENCES " + LeagueEntry.TABLE_NAME
+                + " ON UPDATE CASCADE ON DELETE CASCADE"
                 + ");");
         db.execSQL("CREATE TABLE "
                 + GameEntry.TABLE_NAME + " ("
@@ -95,13 +111,18 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 + GameEntry.COLUMN_IS_LOCKED + " INTEGER NOT NULL DEFAULT 0, "
                 + GameEntry.COLUMN_MATCH_PLAY + " INTEGER NOT NULL DEFAULT 0, "
                 + GameEntry.COLUMN_SERIES_ID + " INTEGER NOT NULL"
-                        + " REFERENCES " + SeriesEntry.TABLE_NAME
-                        + " ON UPDATE CASCADE ON DELETE CASCADE, "
-                + "CHECK (" + GameEntry.COLUMN_GAME_NUMBER + " >= 1 AND " + GameEntry.COLUMN_GAME_NUMBER + " <= 20), "
-                + "CHECK (" + GameEntry.COLUMN_IS_LOCKED + " = 0 OR " + GameEntry.COLUMN_IS_LOCKED + " = 1), "
-                + "CHECK (" + GameEntry.COLUMN_IS_MANUAL + " = 0 OR " + GameEntry.COLUMN_IS_MANUAL + " = 1), "
-                + "CHECK (" + GameEntry.COLUMN_SCORE + " >= 0 AND " + GameEntry.COLUMN_SCORE + " <= 450), "
-                + "CHECK (" + GameEntry.COLUMN_MATCH_PLAY + " >= 0 AND " + GameEntry.COLUMN_MATCH_PLAY + " <= 3)"
+                + " REFERENCES " + SeriesEntry.TABLE_NAME
+                + " ON UPDATE CASCADE ON DELETE CASCADE, "
+                + "CHECK (" + GameEntry.COLUMN_GAME_NUMBER + " >= 1 AND "
+                        + GameEntry.COLUMN_GAME_NUMBER + " <= 20), "
+                + "CHECK (" + GameEntry.COLUMN_IS_LOCKED + " = 0 OR "
+                        + GameEntry.COLUMN_IS_LOCKED + " = 1), "
+                + "CHECK (" + GameEntry.COLUMN_IS_MANUAL + " = 0 OR "
+                        + GameEntry.COLUMN_IS_MANUAL + " = 1), "
+                + "CHECK (" + GameEntry.COLUMN_SCORE + " >= 0 AND "
+                        + GameEntry.COLUMN_SCORE + " <= 450), "
+                + "CHECK (" + GameEntry.COLUMN_MATCH_PLAY + " >= 0 AND "
+                        + GameEntry.COLUMN_MATCH_PLAY + " <= 3)"
                 + ");");
         db.execSQL("CREATE TABLE "
                 + FrameEntry.TABLE_NAME + " ("
@@ -113,23 +134,34 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 + FrameEntry.COLUMN_PIN_STATE[2] + " TEXT NOT NULL DEFAULT '00000', "
                 + FrameEntry.COLUMN_FOULS + " TEXT NOT NULL DEFAULT '0', "
                 + FrameEntry.COLUMN_GAME_ID + " INTEGER NOT NULL"
-                        + " REFERENCES " + GameEntry.TABLE_NAME
-                        + " ON UPDATE CASCADE ON DELETE CASCADE, "
-                + "CHECK (" + FrameEntry.COLUMN_FRAME_NUMBER + " >= 1 AND " + FrameEntry.COLUMN_FRAME_NUMBER + " <= 10), "
-                + "CHECK (" + FrameEntry.COLUMN_IS_ACCESSED + " = 0 OR " + FrameEntry.COLUMN_IS_ACCESSED + " = 1)"
+                + " REFERENCES " + GameEntry.TABLE_NAME
+                + " ON UPDATE CASCADE ON DELETE CASCADE, "
+                + "CHECK (" + FrameEntry.COLUMN_FRAME_NUMBER + " >= 1 AND "
+                        + FrameEntry.COLUMN_FRAME_NUMBER + " <= 10), "
+                + "CHECK (" + FrameEntry.COLUMN_IS_ACCESSED + " = 0 OR "
+                        + FrameEntry.COLUMN_IS_ACCESSED + " = 1)"
                 + ");");
 
         //Creating indices for faster queries
-        db.execSQL("CREATE INDEX bowler_id_index ON " + BowlerEntry.TABLE_NAME + "(" + BowlerEntry._ID + ")");
-        db.execSQL("CREATE INDEX league_id_index ON " + LeagueEntry.TABLE_NAME + "(" + LeagueEntry._ID + ")");
-        db.execSQL("CREATE INDEX series_id_index ON " + SeriesEntry.TABLE_NAME + "(" + SeriesEntry._ID + ")");
-        db.execSQL("CREATE INDEX game_id_index ON " + GameEntry.TABLE_NAME + "(" + GameEntry._ID + ")");
-        db.execSQL("CREATE INDEX frame_id_index ON " + FrameEntry.TABLE_NAME + "(" + FrameEntry._ID + ")");
+        db.execSQL("CREATE INDEX bowler_id_index ON "
+                + BowlerEntry.TABLE_NAME + "(" + BowlerEntry._ID + ")");
+        db.execSQL("CREATE INDEX league_id_index ON "
+                + LeagueEntry.TABLE_NAME + "(" + LeagueEntry._ID + ")");
+        db.execSQL("CREATE INDEX series_id_index ON "
+                + SeriesEntry.TABLE_NAME + "(" + SeriesEntry._ID + ")");
+        db.execSQL("CREATE INDEX game_id_index ON "
+                + GameEntry.TABLE_NAME + "(" + GameEntry._ID + ")");
+        db.execSQL("CREATE INDEX frame_id_index ON "
+                + FrameEntry.TABLE_NAME + "(" + FrameEntry._ID + ")");
 
-        db.execSQL("CREATE INDEX league_bowler_fk_index ON " + LeagueEntry.TABLE_NAME + "(" + LeagueEntry.COLUMN_BOWLER_ID + ")");
-        db.execSQL("CREATE INDEX series_league_fk_index ON " + SeriesEntry.TABLE_NAME + "(" + SeriesEntry.COLUMN_LEAGUE_ID + ")");
-        db.execSQL("CREATE INDEX game_series_fk_index ON " + GameEntry.TABLE_NAME + "(" + GameEntry.COLUMN_SERIES_ID + ")");
-        db.execSQL("CREATE INDEX frame_game_fk_index ON " + FrameEntry.TABLE_NAME + "(" + FrameEntry.COLUMN_GAME_ID + ")");
+        db.execSQL("CREATE INDEX league_bowler_fk_index ON "
+                + LeagueEntry.TABLE_NAME + "(" + LeagueEntry.COLUMN_BOWLER_ID + ")");
+        db.execSQL("CREATE INDEX series_league_fk_index ON "
+                + SeriesEntry.TABLE_NAME + "(" + SeriesEntry.COLUMN_LEAGUE_ID + ")");
+        db.execSQL("CREATE INDEX game_series_fk_index ON "
+                + GameEntry.TABLE_NAME + "(" + GameEntry.COLUMN_SERIES_ID + ")");
+        db.execSQL("CREATE INDEX frame_game_fk_index ON "
+                + FrameEntry.TABLE_NAME + "(" + FrameEntry.COLUMN_GAME_ID + ")");
     }
 
 
@@ -176,6 +208,10 @@ public class DatabaseHelper extends SQLiteOpenHelper
         }
     }
 
+    /**
+     * Upgrades database from oldVersion 1 to newVersion 2.
+     * @param db to upgrade
+     */
     private void upgradeDatabaseFrom1To2(SQLiteDatabase db)
     {
         //Removes foreign key and check constraints from frame table
@@ -220,11 +256,16 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 + GameEntry.COLUMN_SERIES_ID + " INTEGER NOT NULL"
                 + " REFERENCES " + SeriesEntry.TABLE_NAME
                 + " ON UPDATE CASCADE ON DELETE CASCADE, "
-                + "CHECK (" + GameEntry.COLUMN_GAME_NUMBER + " >= 1 AND " + GameEntry.COLUMN_GAME_NUMBER + " <= 20), "
-                + "CHECK (" + GameEntry.COLUMN_IS_LOCKED + " = 0 OR " + GameEntry.COLUMN_IS_LOCKED + " = 1), "
-                + "CHECK (" + GameEntry.COLUMN_IS_MANUAL + " = 0 OR " + GameEntry.COLUMN_IS_MANUAL + " = 1), "
-                + "CHECK (" + GameEntry.COLUMN_SCORE + " >= 0 AND " + GameEntry.COLUMN_SCORE + " <= 450), "
-                + "CHECK (" + GameEntry.COLUMN_MATCH_PLAY + " >= 0 AND " + GameEntry.COLUMN_MATCH_PLAY + " <= 3)"
+                + "CHECK (" + GameEntry.COLUMN_GAME_NUMBER + " >= 1 AND "
+                        + GameEntry.COLUMN_GAME_NUMBER + " <= 20), "
+                + "CHECK (" + GameEntry.COLUMN_IS_LOCKED + " = 0 OR "
+                        + GameEntry.COLUMN_IS_LOCKED + " = 1), "
+                + "CHECK (" + GameEntry.COLUMN_IS_MANUAL + " = 0 OR "
+                        + GameEntry.COLUMN_IS_MANUAL + " = 1), "
+                + "CHECK (" + GameEntry.COLUMN_SCORE + " >= 0 AND "
+                        + GameEntry.COLUMN_SCORE + " <= 450), "
+                + "CHECK (" + GameEntry.COLUMN_MATCH_PLAY + " >= 0 AND "
+                        + GameEntry.COLUMN_MATCH_PLAY + " <= 3)"
                 + ");");
         db.execSQL("INSERT INTO game2 ("
                 + GameEntry._ID + ", "
@@ -249,8 +290,10 @@ public class DatabaseHelper extends SQLiteOpenHelper
                 + FrameEntry.COLUMN_GAME_ID + " INTEGER NOT NULL"
                 + " REFERENCES " + GameEntry.TABLE_NAME
                 + " ON UPDATE CASCADE ON DELETE CASCADE, "
-                + "CHECK (" + FrameEntry.COLUMN_FRAME_NUMBER + " >= 1 AND " + FrameEntry.COLUMN_FRAME_NUMBER + " <= 10), "
-                + "CHECK (" + FrameEntry.COLUMN_IS_ACCESSED + " = 0 OR " + FrameEntry.COLUMN_IS_ACCESSED + " = 1)"
+                + "CHECK (" + FrameEntry.COLUMN_FRAME_NUMBER + " >= 1 AND "
+                        + FrameEntry.COLUMN_FRAME_NUMBER + " <= 10), "
+                + "CHECK (" + FrameEntry.COLUMN_IS_ACCESSED + " = 0 OR "
+                        + FrameEntry.COLUMN_IS_ACCESSED + " = 1)"
                 + ");");
         db.execSQL("INSERT INTO frame2 ("
                 + FrameEntry._ID + ", "
@@ -273,23 +316,30 @@ public class DatabaseHelper extends SQLiteOpenHelper
         db.execSQL("DROP TABLE " + FrameEntry.TABLE_NAME);
         db.execSQL("ALTER TABLE frame2 RENAME TO " + FrameEntry.TABLE_NAME);
 
-        db.execSQL("CREATE INDEX game_id_index ON " + GameEntry.TABLE_NAME + "(" + GameEntry._ID + ")");
-        db.execSQL("CREATE INDEX frame_id_index ON " + FrameEntry.TABLE_NAME + "(" + FrameEntry._ID + ")");
-        db.execSQL("CREATE INDEX game_series_fk_index ON " + GameEntry.TABLE_NAME + "(" + GameEntry.COLUMN_SERIES_ID + ")");
-        db.execSQL("CREATE INDEX frame_game_fk_index ON " + FrameEntry.TABLE_NAME + "(" + FrameEntry.COLUMN_GAME_ID + ")");
+        db.execSQL("CREATE INDEX game_id_index ON "
+                + GameEntry.TABLE_NAME + "(" + GameEntry._ID + ")");
+        db.execSQL("CREATE INDEX frame_id_index ON "
+                + FrameEntry.TABLE_NAME + "(" + FrameEntry._ID + ")");
+        db.execSQL("CREATE INDEX game_series_fk_index ON "
+                + GameEntry.TABLE_NAME + "(" + GameEntry.COLUMN_SERIES_ID + ")");
+        db.execSQL("CREATE INDEX frame_game_fk_index ON "
+                + FrameEntry.TABLE_NAME + "(" + FrameEntry.COLUMN_GAME_ID + ")");
     }
 
     /**
-     * Displays a dialog to the user to delete data in the database
+     * Displays a dialog to the user to delete data in the database.
      *
      * @param context context instance to create dialog
      * @param deleter interface which should be overridden to call relevant data deletion method
      * @param name identifier for data to be deleted
      */
-    public static void deleteData(final Context context, final DataDeleter deleter, final String name)
+    public static void deleteData(final Context context,
+                                  final DataDeleter deleter,
+                                  final String name)
     {
         AlertDialog.Builder deleteBuilder = new AlertDialog.Builder(context);
-        deleteBuilder.setMessage("WARNING: This action cannot be undone! Delete all data for " + name + "?")
+        deleteBuilder.setMessage(
+                "WARNING: This action cannot be undone! Delete all data for " + name + "?")
                 .setPositiveButton("Delete", new DialogInterface.OnClickListener()
                 {
                     @Override
@@ -313,13 +363,13 @@ public class DatabaseHelper extends SQLiteOpenHelper
 
     /**
      * Provides a method which can be overridden to delete specific data
-     * if the deleteData method is successful (user selects 'Delete')
+     * if the deleteData method is successful (user selects 'Delete').
      */
     public interface DataDeleter
     {
         /**
          * Must be overriden to provide access to a relevant method which
-         * should be used to delete data from the database
+         * should be used to delete data from the database.
          */
         void execute();
     }

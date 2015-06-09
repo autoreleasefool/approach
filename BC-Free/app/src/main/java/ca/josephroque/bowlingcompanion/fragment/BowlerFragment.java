@@ -49,7 +49,7 @@ import ca.josephroque.bowlingcompanion.theme.Theme;
  * handling interactions.
  */
 public class BowlerFragment extends Fragment
-    implements Theme.ChangeableTheme, NameAverageAdapter.NameAverageEventHandler, NewBowlerDialog.NewBowlerDialogListener
+        implements Theme.ChangeableTheme, NameAverageAdapter.NameAverageEventHandler, NewBowlerDialog.NewBowlerDialogListener
 {
     /** List to store ids from bowler table in database */
     private List<Long> mListBowlerIds;
@@ -110,9 +110,9 @@ public class BowlerFragment extends Fragment
          */
         try
         {
-            mBowlerSelectedListener = (OnBowlerSelectedListener)activity;
-            mLeagueSelectedListener = (LeagueEventFragment.OnLeagueSelectedListener)activity;
-            mSeriesListener = (SeriesFragment.SeriesListener)activity;
+            mBowlerSelectedListener = (OnBowlerSelectedListener) activity;
+            mLeagueSelectedListener = (LeagueEventFragment.OnLeagueSelectedListener) activity;
+            mSeriesListener = (SeriesFragment.SeriesListener) activity;
         }
         catch (ClassCastException ex)
         {
@@ -130,7 +130,7 @@ public class BowlerFragment extends Fragment
         mListBowlerNames = new ArrayList<>();
         mListBowlerAverages = new ArrayList<>();
 
-        mRecyclerViewBowlers = (RecyclerView)rootView.findViewById(R.id.rv_names);
+        mRecyclerViewBowlers = (RecyclerView) rootView.findViewById(R.id.rv_names);
         mRecyclerViewBowlers.setHasFixedSize(true);
         mRecyclerViewBowlers.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
 
@@ -143,7 +143,7 @@ public class BowlerFragment extends Fragment
         mRecyclerViewBowlers.setAdapter(mAdapterBowlers);
 
         FloatingActionButton floatingActionButton =
-                (FloatingActionButton)rootView.findViewById(R.id.fab_new_list_item);
+                (FloatingActionButton) rootView.findViewById(R.id.fab_new_list_item);
         floatingActionButton.setImageResource(R.drawable.ic_action_add_person);
         floatingActionButton.setOnClickListener(new View.OnClickListener()
         {
@@ -155,8 +155,8 @@ public class BowlerFragment extends Fragment
         });
 
         //Sets textviews to display text relevant to bowlers
-        ((TextView)rootView.findViewById(R.id.tv_new_list_item)).setText(R.string.text_new_bowler);
-        ((TextView)rootView.findViewById(R.id.tv_delete_list_item)).setText(R.string.text_delete_bowler);
+        ((TextView) rootView.findViewById(R.id.tv_new_list_item)).setText(R.string.text_new_bowler);
+        ((TextView) rootView.findViewById(R.id.tv_delete_list_item)).setText(R.string.text_delete_bowler);
 
         return rootView;
     }
@@ -165,7 +165,7 @@ public class BowlerFragment extends Fragment
     public void onResume()
     {
         super.onResume();
-        ((MainActivity)getActivity()).setActionBarTitle(R.string.app_name, true);
+        ((MainActivity) getActivity()).setActionBarTitle(R.string.app_name, true);
 
         //Loads values for member variables from preferences, if they exist
         SharedPreferences prefs = getActivity().getSharedPreferences(Constants.PREFS, Context.MODE_PRIVATE);
@@ -195,7 +195,7 @@ public class BowlerFragment extends Fragment
     @Override
     public void onPrepareOptionsMenu(Menu menu)
     {
-        boolean drawerOpen = ((MainActivity)getActivity()).isDrawerOpen();
+        boolean drawerOpen = ((MainActivity) getActivity()).isDrawerOpen();
         menu.findItem(R.id.action_quick_series).setVisible(!drawerOpen);
         super.onPrepareOptionsMenu(menu);
     }
@@ -203,7 +203,7 @@ public class BowlerFragment extends Fragment
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        switch(item.getItemId())
+        switch (item.getItemId())
         {
             case R.id.action_quick_series:
                 showQuickSeriesDialog();
@@ -411,6 +411,7 @@ public class BowlerFragment extends Fragment
 
     /**
      * Deletes all data regarding a certain bowler id in the database
+     *
      * @param bowlerId id of bowler whose data will be deleted
      */
     private void deleteBowler(final long bowlerId)
@@ -467,6 +468,7 @@ public class BowlerFragment extends Fragment
 
     /**
      * Creates a new instance of this fragment to display
+     *
      * @return a new instance of BowlerFragment
      */
     public static BowlerFragment newInstance()
@@ -486,7 +488,7 @@ public class BowlerFragment extends Fragment
             if (getActivity() == null)
                 return null;
 
-            MainActivity.waitForSaveThreads((MainActivity)getActivity());
+            MainActivity.waitForSaveThreads((MainActivity) getActivity());
 
             SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getReadableDatabase();
             List<Long> listBowlerIds = new ArrayList<>();
@@ -507,9 +509,9 @@ public class BowlerFragment extends Fragment
                     + " INNER JOIN " + GameEntry.TABLE_NAME + " AS game2"
                     + " ON series2." + SeriesEntry._ID + "=" + GameEntry.COLUMN_SERIES_ID
                     + " WHERE "
-                            + (!includeEvents ? LeagueEntry.COLUMN_IS_EVENT : "'0'") + "=?"
-                            + " AND "
-                            + (!includeOpen ? LeagueEntry.COLUMN_LEAGUE_NAME + "!" : "'0'") + "=?"
+                    + (!includeEvents ? LeagueEntry.COLUMN_IS_EVENT : "'0'") + "=?"
+                    + " AND "
+                    + (!includeOpen ? LeagueEntry.COLUMN_LEAGUE_NAME + "!" : "'0'") + "=?"
                     + " GROUP BY league2." + LeagueEntry._ID;
 
             //Query to retrieve bowler names and averages from database
@@ -537,7 +539,7 @@ public class BowlerFragment extends Fragment
                     listBowlerNames.add(cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_BOWLER_NAME)));
                     int totalSum = cursor.getInt(cursor.getColumnIndex("totalSum"));
                     int totalCount = cursor.getInt(cursor.getColumnIndex("totalCount"));
-                    listBowlerAverages.add((short)((totalCount > 0) ? totalSum/totalCount : 0));
+                    listBowlerAverages.add((short) ((totalCount > 0) ? totalSum / totalCount : 0));
                     cursor.moveToNext();
                 }
             }
@@ -561,7 +563,7 @@ public class BowlerFragment extends Fragment
                 {
                     mRecentBowlerName = cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_BOWLER_NAME));
                     mRecentLeagueName = cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_LEAGUE_NAME));
-                    mRecentNumberOfGames = (byte)cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NUMBER_OF_GAMES));
+                    mRecentNumberOfGames = (byte) cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NUMBER_OF_GAMES));
                 }
                 else
                 {
@@ -588,7 +590,7 @@ public class BowlerFragment extends Fragment
                 {
                     mQuickBowlerName = cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_BOWLER_NAME));
                     mQuickLeagueName = cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_LEAGUE_NAME));
-                    mQuickNumberOfGames = (byte)cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NUMBER_OF_GAMES));
+                    mQuickNumberOfGames = (byte) cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NUMBER_OF_GAMES));
                 }
                 else
                 {
@@ -607,9 +609,9 @@ public class BowlerFragment extends Fragment
             if (lists == null)
                 return;
 
-            mListBowlerIds.addAll((List<Long>)lists[0]);
-            mListBowlerNames.addAll((List<String>)lists[1]);
-            mListBowlerAverages.addAll((List<Short>)lists[2]);
+            mListBowlerIds.addAll((List<Long>) lists[0]);
+            mListBowlerNames.addAll((List<String>) lists[1]);
+            mListBowlerAverages.addAll((List<Short>) lists[2]);
             mAdapterBowlers.notifyDataSetChanged();
         }
     }
@@ -654,8 +656,8 @@ public class BowlerFragment extends Fragment
         @Override
         protected void onPostExecute(Object[] params)
         {
-            long bowlerId = (Long)params[0];
-            int position = (Integer)params[1];
+            long bowlerId = (Long) params[0];
+            int position = (Integer) params[1];
 
             //Creates new instance of LeagueEventFragment for bowlerId
             mBowlerSelectedListener.onBowlerSelected(bowlerId, mListBowlerNames.get(position), true, false);
@@ -724,7 +726,7 @@ public class BowlerFragment extends Fragment
             {
                 mListBowlerIds.add(0, bowlerId);
                 mListBowlerNames.add(0, bowlerName);
-                mListBowlerAverages.add(0, (short)0);
+                mListBowlerAverages.add(0, (short) 0);
                 mAdapterBowlers.notifyItemInserted(0);
                 mRecyclerViewBowlers.scrollToPosition(0);
             }
@@ -740,6 +742,7 @@ public class BowlerFragment extends Fragment
         /**
          * Should be overridden to create a LeagueEventFragment with the leagues
          * belonging to the bowler represented by bowlerId
+         *
          * @param bowlerId id of the bowler whose leagues/events will be displayed
          * @param bowlerName name of the bowler corresponding to bowlerId
          * @param openLeagueFragment if new fragment should be opened

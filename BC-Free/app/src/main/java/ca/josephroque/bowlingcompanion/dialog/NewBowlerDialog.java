@@ -21,8 +21,22 @@ import ca.josephroque.bowlingcompanion.R;
  */
 public class NewBowlerDialog extends DialogFragment
 {
-    /** Instance of listener which contains methods that are executed upon user interaction */
+
+    /** Identifies output from this class in Logcat. */
+    @SuppressWarnings("unused")
+    private static final String TAG = "";
+
+    // Constant values
+
+    // Objects
+
+    /** Instance of listener which contains methods that are executed upon user interaction. */
     private NewBowlerDialogListener mDialogListener;
+
+    // Arrays, data structures
+
+    // Primitive variables
+
 
     @NonNull
     @Override
@@ -31,9 +45,10 @@ public class NewBowlerDialog extends DialogFragment
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
         final View dialogView = View.inflate(getActivity(), R.layout.dialog_new_bowler, null);
 
-        final EditText editTextName = (EditText)dialogView.findViewById(R.id.et_bowler_name);
+        final EditText editTextName = (EditText) dialogView.findViewById(R.id.et_bowler_name);
         editTextName.setHint("Name (max " + Constants.NAME_MAX_LENGTH + " characters)");
-        editTextName.setFilters(new InputFilter[]{new InputFilter.LengthFilter(Constants.NAME_MAX_LENGTH)});
+        editTextName.setFilters(new InputFilter[]{
+                new InputFilter.LengthFilter(Constants.NAME_MAX_LENGTH)});
 
         if (savedInstanceState != null)
         {
@@ -77,12 +92,12 @@ public class NewBowlerDialog extends DialogFragment
 
     /**
      * Provides a method to the activity which created this object to handle
-     * user interaction with the dialog
+     * user interaction with the dialog.
      */
     public interface NewBowlerDialogListener
     {
         /**
-         * Executed when user opts to add a new bowler
+         * Executed when user opts to add a new bowler.
          *
          * @param bowlerName name of the new bowler to add
          */
@@ -91,7 +106,7 @@ public class NewBowlerDialog extends DialogFragment
 
     /**
      * Creates a new instance of this DialogFragment and sets the listener
-     * to the parameter passed through this method
+     * to the parameter passed through this method.
      *
      * @param listener a listener for on click events
      * @return a new instance of NewBowlerDialog

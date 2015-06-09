@@ -32,7 +32,7 @@ import ca.josephroque.bowlingcompanion.theme.Theme;
  * Manages the UI to display information about the stats for a particular bowler
  */
 public class StatsFragment extends Fragment
-    implements Theme.ChangeableTheme
+        implements Theme.ChangeableTheme
 {
     /** Indicates all the stats related to the specified bowler should be loaded */
     private static final byte LOADING_BOWLER_STATS = 0;
@@ -76,7 +76,7 @@ public class StatsFragment extends Fragment
 
         mAdapterStats = new StatsExpandableAdapter(getActivity(), mListStatHeaders, mListStatNamesAndValues);
 
-        ExpandableListView listView = (ExpandableListView)rootView.findViewById(R.id.elv_stats);
+        ExpandableListView listView = (ExpandableListView) rootView.findViewById(R.id.elv_stats);
         listView.setAdapter(mAdapterStats);
 
         return rootView;
@@ -86,7 +86,7 @@ public class StatsFragment extends Fragment
     public void onResume()
     {
         super.onResume();
-        MainActivity mainActivity = (MainActivity)getActivity();
+        MainActivity mainActivity = (MainActivity) getActivity();
 
         mListStatHeaders.clear();
         mListStatNamesAndValues.clear();
@@ -183,7 +183,7 @@ public class StatsFragment extends Fragment
             headers.add("Average by Game");
             namesAndValues.add(new ArrayList<AbstractMap.SimpleEntry<String, String>>());
             STATS_GAME_AVERAGE = 4;
-            final byte numberOfGames = (statsToLoad >= LOADING_LEAGUE_STATS ? ((MainActivity)getActivity()).getNumberOfGames() : 20);
+            final byte numberOfGames = (statsToLoad >= LOADING_LEAGUE_STATS ? ((MainActivity) getActivity()).getNumberOfGames() : 20);
             for (byte i = 0; i < numberOfGames; i++)
                 namesAndValues.get(STATS_GAME_AVERAGE).add(new AbstractMap.SimpleEntry<>("Average in Game " + (i + 1), "--"));
         }
@@ -196,20 +196,23 @@ public class StatsFragment extends Fragment
 
             headers.add("Match Play");
             namesAndValues.add(new ArrayList<AbstractMap.SimpleEntry<String, String>>());
-            STATS_MATCH = (byte)(STATS_GAME_AVERAGE == -1 ? 4 : 5);
+            STATS_MATCH = (byte) (STATS_GAME_AVERAGE == -1 ? 4 : 5);
             for (String stat : MATCH)
                 namesAndValues.get(STATS_MATCH).add(new AbstractMap.SimpleEntry<>(stat, "--"));
 
             headers.add("Overall");
             namesAndValues.add(new ArrayList<AbstractMap.SimpleEntry<String, String>>());
-            STATS_OVERALL = (byte)(STATS_MATCH + 1);
+            STATS_OVERALL = (byte) (STATS_MATCH + 1);
             for (String stat : OVERALL)
                 namesAndValues.get(STATS_OVERALL).add(new AbstractMap.SimpleEntry<>(stat, "--"));
         }
     }
 
     @Override
-    public void updateTheme() {mAdapterStats.updateTheme();}
+    public void updateTheme()
+    {
+        mAdapterStats.updateTheme();
+    }
 
     /**
      * Loads data from the database and calculates relevant stats depending on which type
@@ -220,7 +223,7 @@ public class StatsFragment extends Fragment
         @Override
         protected List<?>[] doInBackground(Byte... statsToLoad)
         {
-            MainActivity mainActivity = (MainActivity)getActivity();
+            MainActivity mainActivity = (MainActivity) getActivity();
             MainActivity.waitForSaveThreads(mainActivity);
 
             final byte toLoad = statsToLoad[0];
@@ -235,7 +238,7 @@ public class StatsFragment extends Fragment
             for (int i = 0; i < statValues.length; i++)
                 statValues[i] = new int[listStatNamesAndValues.get(i).size()];
 
-            switch(toLoad)
+            switch (toLoad)
             {
                 case LOADING_BOWLER_STATS:
                     NUMBER_OF_GENERAL_DETAILS = 1;
@@ -276,13 +279,13 @@ public class StatsFragment extends Fragment
             int[] countByGame = new int[numberOfGames];
             if (cursor.moveToFirst())
             {
-                while(!cursor.isAfterLast())
+                while (!cursor.isAfterLast())
                 {
-                    byte frameNumber = (byte)cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_FRAME_NUMBER));
+                    byte frameNumber = (byte) cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_FRAME_NUMBER));
                     if (toLoad != LOADING_GAME_STATS && frameNumber == 1)
                     {
                         short gameScore = cursor.getShort(cursor.getColumnIndex(GameEntry.COLUMN_SCORE));
-                        byte gameNumber = (byte)cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_GAME_NUMBER));
+                        byte gameNumber = (byte) cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_GAME_NUMBER));
 
                         totalByGame[gameNumber - 1] += gameScore;
                         countByGame[gameNumber - 1]++;
@@ -460,8 +463,8 @@ public class StatsFragment extends Fragment
         @Override
         protected void onPostExecute(List<?>[] lists)
         {
-            mListStatHeaders.addAll((List<String>)lists[0]);
-            mListStatNamesAndValues.addAll((List<List<AbstractMap.SimpleEntry<String, String>>>)lists[1]);
+            mListStatHeaders.addAll((List<String>) lists[0]);
+            mListStatNamesAndValues.addAll((List<List<AbstractMap.SimpleEntry<String, String>>>) lists[1]);
             mAdapterStats.notifyDataSetChanged();
         }
     }
@@ -481,7 +484,7 @@ public class StatsFragment extends Fragment
         if (statValues[STATS_GENERAL][Constants.STAT_MIDDLE_HIT] > 0)
         {
             listStatNamesAndValues.get(STATS_GENERAL).get(currentStatPosition).setValue(
-                    decimalFormat.format(statValues[STATS_GENERAL][Constants.STAT_MIDDLE_HIT] / (double)totalShotsAtMiddle * 100)
+                    decimalFormat.format(statValues[STATS_GENERAL][Constants.STAT_MIDDLE_HIT] / (double) totalShotsAtMiddle * 100)
                             + "% [" + statValues[STATS_GENERAL][Constants.STAT_MIDDLE_HIT] + "/" + totalShotsAtMiddle + "]");
         }
         currentStatPosition++;
@@ -511,7 +514,7 @@ public class StatsFragment extends Fragment
             if (statValues[STATS_FIRST_BALL][i + 1] > 0)
             {
                 listStatNamesAndValues.get(STATS_FIRST_BALL).get(currentStatPosition + 1).setValue(
-                        decimalFormat.format(statValues[STATS_FIRST_BALL][i + 1] / (double)statValues[STATS_FIRST_BALL][i] * 100)
+                        decimalFormat.format(statValues[STATS_FIRST_BALL][i + 1] / (double) statValues[STATS_FIRST_BALL][i] * 100)
                                 + "% [" + statValues[STATS_FIRST_BALL][i + 1] + "/" + statValues[STATS_FIRST_BALL][i] + "]");
             }
         }
@@ -534,7 +537,7 @@ public class StatsFragment extends Fragment
                 totalMatchPlayGames += stat;
             for (byte i = 0; i < statValues[STATS_MATCH].length; i++)
                 listStatNamesAndValues.get(STATS_MATCH).get(i).setValue(
-                        decimalFormat.format(statValues[STATS_MATCH][i] / (double)totalMatchPlayGames * 100)
+                        decimalFormat.format(statValues[STATS_MATCH][i] / (double) totalMatchPlayGames * 100)
                                 + "% [" + statValues[STATS_MATCH][i] + "/" + totalMatchPlayGames + "]");
 
             for (byte i = 0; i < statValues[STATS_OVERALL].length; i++)
@@ -557,7 +560,7 @@ public class StatsFragment extends Fragment
         }
 
         int numberOfPinsKnockedDown = 0;
-        for (boolean knockedDown: firstBall)
+        for (boolean knockedDown : firstBall)
         {
             if (knockedDown)
                 numberOfPinsKnockedDown++;
@@ -607,11 +610,11 @@ public class StatsFragment extends Fragment
         {
             if (!thirdBall[i])
             {
-                switch(i)
+                switch (i)
                 {
-                    case 0:case 4:pinsLeftStanding += 2; break;
-                    case 1:case 3:pinsLeftStanding += 3; break;
-                    case 2:pinsLeftStanding += 5; break;
+                    case 0: case 4: pinsLeftStanding += 2; break;
+                    case 1: case 3: pinsLeftStanding += 3; break;
+                    case 2: pinsLeftStanding += 5; break;
                 }
             }
         }
@@ -630,7 +633,7 @@ public class StatsFragment extends Fragment
         if (offset > 1 || offset < 0)
             throw new IllegalArgumentException("Offset must be either 0 or 1: " + offset);
 
-        switch(ball)
+        switch (ball)
         {
             case Constants.BALL_VALUE_STRIKE:
                 if (offset == 0)
@@ -638,8 +641,8 @@ public class StatsFragment extends Fragment
                     statValues[STATS_GENERAL][Constants.STAT_STRIKES]++;
                 }
                 break;
-            case Constants.BALL_VALUE_LEFT:statValues[STATS_FIRST_BALL][Constants.STAT_LEFT + offset]++; break;
-            case Constants.BALL_VALUE_RIGHT:statValues[STATS_FIRST_BALL][Constants.STAT_RIGHT + offset]++; break;
+            case Constants.BALL_VALUE_LEFT: statValues[STATS_FIRST_BALL][Constants.STAT_LEFT + offset]++; break;
+            case Constants.BALL_VALUE_RIGHT: statValues[STATS_FIRST_BALL][Constants.STAT_RIGHT + offset]++; break;
             case Constants.BALL_VALUE_LEFT_CHOP:
                 statValues[STATS_FIRST_BALL][Constants.STAT_LEFT_CHOP + offset]++;
                 statValues[STATS_FIRST_BALL][Constants.STAT_CHOP + offset]++;
@@ -648,7 +651,7 @@ public class StatsFragment extends Fragment
                 statValues[STATS_FIRST_BALL][Constants.STAT_RIGHT_CHOP + offset]++;
                 statValues[STATS_FIRST_BALL][Constants.STAT_CHOP + offset]++;
                 break;
-            case Constants.BALL_VALUE_ACE:statValues[STATS_FIRST_BALL][Constants.STAT_ACES + offset]++; break;
+            case Constants.BALL_VALUE_ACE: statValues[STATS_FIRST_BALL][Constants.STAT_ACES + offset]++; break;
             case Constants.BALL_VALUE_LEFT_SPLIT:
                 statValues[STATS_FIRST_BALL][Constants.STAT_LEFT_SPLIT + offset]++;
                 statValues[STATS_FIRST_BALL][Constants.STAT_SPLIT + offset]++;
@@ -657,12 +660,13 @@ public class StatsFragment extends Fragment
                 statValues[STATS_FIRST_BALL][Constants.STAT_RIGHT_SPLIT + offset]++;
                 statValues[STATS_FIRST_BALL][Constants.STAT_SPLIT + offset]++;
                 break;
-            case Constants.BALL_VALUE_HEAD_PIN:statValues[STATS_FIRST_BALL][Constants.STAT_HEAD_PINS + offset]++;
+            case Constants.BALL_VALUE_HEAD_PIN: statValues[STATS_FIRST_BALL][Constants.STAT_HEAD_PINS + offset]++;
         }
     }
 
     /**
      * Returns a cursor from database to load either bowler or league stats
+     *
      * @param shouldGetLeagueStats if true, league stats will be loaded. Bowler stats will be loaded otherwise
      * @return a cursor with rows relevant to mBowlerId or mLeagueId
      */
@@ -692,12 +696,12 @@ public class StatsFragment extends Fragment
                 + " INNER JOIN " + FrameEntry.TABLE_NAME + " AS frame"
                 + " ON game." + GameEntry._ID + "=frame." + FrameEntry.COLUMN_GAME_ID
                 + ((shouldGetLeagueStats)
-                        ? " WHERE league." + LeagueEntry._ID + "=?"
-                        : " WHERE league." + LeagueEntry.COLUMN_BOWLER_ID + "=?")
+                ? " WHERE league." + LeagueEntry._ID + "=?"
+                : " WHERE league." + LeagueEntry.COLUMN_BOWLER_ID + "=?")
                 + " AND " + ((!shouldGetLeagueStats && !isEventIncluded)
-                        ? LeagueEntry.COLUMN_IS_EVENT : "'0'") + "=?"
+                ? LeagueEntry.COLUMN_IS_EVENT : "'0'") + "=?"
                 + " AND " + ((!shouldGetLeagueStats && !isOpenIncluded)
-                        ? LeagueEntry.COLUMN_LEAGUE_NAME + "!" : "'0'") + "=?"
+                ? LeagueEntry.COLUMN_LEAGUE_NAME + "!" : "'0'") + "=?"
                 + " ORDER BY league." + LeagueEntry._ID
                 + ", series." + SeriesEntry._ID
                 + ", game." + GameEntry.COLUMN_GAME_NUMBER
@@ -715,6 +719,7 @@ public class StatsFragment extends Fragment
 
     /**
      * Returns a cursor from database to load series stats
+     *
      * @return a cursor with rows relevant to mSeriesId
      */
     private Cursor getSeriesCursor()
@@ -737,13 +742,14 @@ public class StatsFragment extends Fragment
                 + " ON game." + GameEntry._ID + "=frame." + FrameEntry.COLUMN_GAME_ID
                 + " WHERE game." + GameEntry.COLUMN_SERIES_ID + "=?"
                 + " ORDER BY game." + GameEntry.COLUMN_GAME_NUMBER + ", frame." + FrameEntry.COLUMN_FRAME_NUMBER;
-        String[] rawStatsArgs = {String.valueOf(((MainActivity)getActivity()).getSeriesId())};
+        String[] rawStatsArgs = {String.valueOf(((MainActivity) getActivity()).getSeriesId())};
 
         return database.rawQuery(rawStatsQuery, rawStatsArgs);
     }
 
     /**
      * Returns a cursor from the database to load game stats
+     *
      * @return a cursor with rows relevant to mGameId
      */
     private Cursor getGameCursor()
@@ -763,13 +769,14 @@ public class StatsFragment extends Fragment
                 + " ON game." + GameEntry._ID + "=frame." + FrameEntry.COLUMN_GAME_ID
                 + " WHERE game." + GameEntry._ID + "=?"
                 + " ORDER BY " + FrameEntry.COLUMN_FRAME_NUMBER;
-        String[] rawStatsArgs = {String.valueOf(((MainActivity)getActivity()).getGameId())};
+        String[] rawStatsArgs = {String.valueOf(((MainActivity) getActivity()).getGameId())};
 
         return database.rawQuery(rawStatsQuery, rawStatsArgs);
     }
 
     /**
      * Creates a new instance of StatsFragment and returns it
+     *
      * @return new instance of StatsFragment
      */
     public static StatsFragment newInstance()

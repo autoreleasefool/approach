@@ -27,75 +27,96 @@ import ca.josephroque.bowlingcompanion.theme.Theme;
  * {@link SeriesAdapter.SeriesEventHandler} to handle interaction events.
  */
 public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesViewHolder>
-    implements Theme.ChangeableTheme, View.OnClickListener, View.OnLongClickListener
+        implements Theme.ChangeableTheme, View.OnClickListener, View.OnLongClickListener
 {
-    /** Instance of handler for callback on user action */
+
+    /** Identifies output from this class in Logcat. */
+    @SuppressWarnings("unused")
+    private static final String TAG = "SeriesAdapter";
+
+    // Constant values
+
+    // Objects
+
+    /** Activity which created the instance of this object. */
+    private Activity mActivity;
+    /** Instance of handler for callback on user action. */
     private SeriesEventHandler mEventHandler;
-    /** List of dates which will be displayed */
+
+    // Arrays, data structures
+
+    /** List of dates which will be displayed. */
     private List<String> mListDates;
-    /** List of games which will be displayed, in an order relative to mListDates */
+    /** List of games which will be displayed, in an order relative to mListDates. */
     private List<List<Short>> mListGames;
 
-    /** Indicates minimum score values which will be highlighted when displayed */
-    private int minimumScoreToHighlight = 300;
+    // Primitive variables
 
-    /** Activity which created the instance of this object */
-    private Activity mActivity;
+    /** Indicates minimum score values which will be highlighted when displayed. */
+    private int minimumScoreToHighlight = 300;
 
     /**
      * Subclass of RecyclerView.ViewHolder to manage view which will display
-     * text to the user
+     * text to the user.
      */
     public static class SeriesViewHolder extends RecyclerView.ViewHolder
     {
-        /** Displays date of the series */
+        /** Displays date of the series. */
         private TextView mTextViewDate;
-        /** Each TextView displays a different score in the series */
+        /** Each TextView displays a different score in the series. */
         private TextView[] mArrayTextViewGames;
-        /** Animates changes in color to the ViewHolder background */
+        /** Animates changes in color to the ViewHolder background. */
         private ValueAnimator mValueAnimator = null;
-        /** Displays an icon to allow editing of the date of a series */
+        /** Displays an icon to allow editing of the date of a series. */
         private ImageView mImageViewEdit;
 
         /**
          * Calls super constructor and gets instances of ImageView and TextView objects
-         * for member variables from itemLayoutView
+         * for member variables from itemLayoutView.
+         *
          * @param itemLayoutView layout view containing views to display data
          */
         public SeriesViewHolder(View itemLayoutView)
         {
             super(itemLayoutView);
-            mTextViewDate = (TextView)itemLayoutView.findViewById(R.id.tv_series_date);
-            mImageViewEdit = (ImageView)itemLayoutView.findViewById(R.id.iv_edit_date);
+            mTextViewDate = (TextView) itemLayoutView.findViewById(R.id.tv_series_date);
+            mImageViewEdit = (ImageView) itemLayoutView.findViewById(R.id.iv_edit_date);
 
             //Adds text views by id to array
             mArrayTextViewGames = new TextView[Constants.MAX_NUMBER_LEAGUE_GAMES];
             for (byte i = 0; i < Constants.MAX_NUMBER_LEAGUE_GAMES; i++)
             {
-                switch(i)
+                switch (i)
                 {
                     case 0:
-                        mArrayTextViewGames[0] = (TextView)itemLayoutView.findViewById(R.id.tv_series_game_1);
+                        mArrayTextViewGames[0] =
+                                (TextView) itemLayoutView.findViewById(R.id.tv_series_game_1);
                         break;
                     case 1:
-                        mArrayTextViewGames[1] = (TextView)itemLayoutView.findViewById(R.id.tv_series_game_2);
+                        mArrayTextViewGames[1] =
+                                (TextView) itemLayoutView.findViewById(R.id.tv_series_game_2);
                         break;
                     case 2:
-                        mArrayTextViewGames[2] = (TextView)itemLayoutView.findViewById(R.id.tv_series_game_3);
+                        mArrayTextViewGames[2] =
+                                (TextView) itemLayoutView.findViewById(R.id.tv_series_game_3);
                         break;
                     case 3:
-                        mArrayTextViewGames[3] = (TextView)itemLayoutView.findViewById(R.id.tv_series_game_4);
+                        mArrayTextViewGames[3] =
+                                (TextView) itemLayoutView.findViewById(R.id.tv_series_game_4);
                         break;
                     case 4:
-                        mArrayTextViewGames[4] = (TextView)itemLayoutView.findViewById(R.id.tv_series_game_5);
+                        mArrayTextViewGames[4] =
+                                (TextView) itemLayoutView.findViewById(R.id.tv_series_game_5);
                         break;
+                    default:
+                        // does nothing
                 }
             }
         }
     }
 
     /**
-     * Sets member variables to parameters
+     * Sets member variables to parameters.
      *
      * @param activity activity which created this instance
      * @param eventHandler handles on click/long click events on views
@@ -142,7 +163,8 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
         }
 
         //Sets color of edit button
-        holder.mImageViewEdit.getDrawable().setColorFilter(Theme.getSecondaryThemeColor(), PorterDuff.Mode.MULTIPLY);
+        holder.mImageViewEdit.getDrawable().setColorFilter(Theme.getSecondaryThemeColor(),
+                PorterDuff.Mode.MULTIPLY);
         holder.mImageViewEdit.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -171,17 +193,19 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
                                     Theme.getListItemBackground(),
                                     Theme.getLongPressThemeColor());
                     holder.mValueAnimator.setDuration(Theme.getMediumAnimationDuration());
-                    holder.mValueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
+                    holder.mValueAnimator.addUpdateListener(
+                            new ValueAnimator.AnimatorUpdateListener()
                     {
                         @Override
                         public void onAnimationUpdate(ValueAnimator animation)
                         {
-                            v.setBackgroundColor((Integer)animation.getAnimatedValue());
+                            v.setBackgroundColor((Integer) animation.getAnimatedValue());
                         }
                     });
                     holder.mValueAnimator.start();
                 }
-                else if ((event.getActionMasked() == MotionEvent.ACTION_UP || event.getActionMasked() == MotionEvent.ACTION_MOVE)
+                else if ((event.getActionMasked() == MotionEvent.ACTION_UP
+                        || event.getActionMasked() == MotionEvent.ACTION_MOVE)
                         && holder.mValueAnimator != null)
                 {
                     //Cancels the animation when the user moves or releases
@@ -211,44 +235,52 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
     }
 
     @Override
-    public int getItemCount() {return mListDates.size();}
+    public int getItemCount()
+    {
+        return mListDates.size();
+    }
 
     @Override
     public void updateTheme()
     {
-        minimumScoreToHighlight = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(mActivity)
+        minimumScoreToHighlight =
+                Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(mActivity)
                 .getString(Constants.KEY_HIGHLIGHT_SCORE, "300"));
         notifyDataSetChanged();
     }
 
     /**
      * Provides methods to implement functionality when items
-     * in the RecyclerView are interacted with
+     * in the RecyclerView are interacted with.
      */
     public interface SeriesEventHandler
     {
         /**
-         * Called when an item in the RecyclerView is clicked
+         * Called when an item in the RecyclerView is clicked.
+         *
          * @param position position of the item in the list
          */
         void onSItemClick(final int position);
 
         /**
-         * Called when an item in the RecyclerView is long clicked
+         * Called when an item in the RecyclerView is long clicked.
+         *
          * @param position position of the item in the list
          */
         void onSLongClick(final int position);
 
         /**
          * Should be used to return RecyclerView#getChildPosition(v) on the
-         * recycler view which uses this adapter
+         * recycler view which uses this adapter.
+         *
          * @param v the view to get the position of
          * @return position of v in the parent RecyclerView
          */
         int getSeriesViewPositionInRecyclerView(View v);
 
         /**
-         * Called when the edit image view for an item in the RecyclerView is clicked
+         * Called when the edit image view for an item in the RecyclerView is clicked.
+         *
          * @param position position of the item in the list
          */
         void onEditClick(final int position);
