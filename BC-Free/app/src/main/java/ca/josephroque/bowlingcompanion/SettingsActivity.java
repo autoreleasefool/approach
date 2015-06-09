@@ -16,7 +16,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import ca.josephroque.bowlingcompanion.database.Contract.*;
+import ca.josephroque.bowlingcompanion.database.Contract.BowlerEntry;
+import ca.josephroque.bowlingcompanion.database.Contract.LeagueEntry;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.utilities.EmailUtils;
@@ -34,17 +35,23 @@ import ca.josephroque.bowlingcompanion.utilities.EmailUtils;
  */
 @SuppressWarnings("deprecation")
 public class SettingsActivity extends PreferenceActivity
-    implements SharedPreferences.OnSharedPreferenceChangeListener, Preference.OnPreferenceClickListener
+        implements SharedPreferences.OnSharedPreferenceChangeListener,
+        Preference.OnPreferenceClickListener
 {
-    /** Array of ids which represent bowlers in the database */
+
+    /** Identifies output from this class in Logcat. */
+    @SuppressWarnings("unused")
+    private static final String TAG = "SettingsActivity";
+
+    /** Array of ids which represent bowlers in the database. */
     private String[] mArrayBowlerIds;
-    /** Array of names from database of bowlers */
+    /** Array of names from database of bowlers. */
     private String[] mArrayBowlerNames;
-    /** Array of ids which represents leagues in the database */
+    /** Array of ids which represents leagues in the database. */
     private String[][] mArrayLeagueIds;
-    /** Array of names from database of leagues */
+    /** Array of names from database of leagues. */
     private String[][] mArrayLeagueNames;
-    /** Currently selected bowler in mArrayBowlerNames */
+    /** Currently selected bowler in mArrayBowlerNames. */
     private int mCurrentBowlerPosition;
 
     @Override
@@ -52,7 +59,9 @@ public class SettingsActivity extends PreferenceActivity
     {
         super.onResume();
         //Register this object as a listener for preference changes
-        getPreferenceManager().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+        getPreferenceManager()
+                .getSharedPreferences()
+                .registerOnSharedPreferenceChangeListener(this);
 
         loadBowlerAndLeagueNames();
         setPreferenceSummaries();
@@ -62,7 +71,9 @@ public class SettingsActivity extends PreferenceActivity
     public void onPause()
     {
         //Unregisters this object as a listener for preference changes
-        getPreferenceManager().getSharedPreferences().unregisterOnSharedPreferenceChangeListener(this);
+        getPreferenceManager()
+                .getSharedPreferences()
+                .unregisterOnSharedPreferenceChangeListener(this);
         super.onPause();
     }
 
@@ -117,7 +128,7 @@ public class SettingsActivity extends PreferenceActivity
 
     /**
      * Loads bowler and league names from the database for user to select
-     * from when choosing 'quick' bowlers/leagues
+     * from when choosing 'quick' bowlers/leagues.
      */
     private void loadBowlerAndLeagueNames()
     {
@@ -130,8 +141,10 @@ public class SettingsActivity extends PreferenceActivity
                 + " FROM " + BowlerEntry.TABLE_NAME + " AS bowler"
                 + " INNER JOIN " + LeagueEntry.TABLE_NAME + " AS league"
                 + " ON bowler." + BowlerEntry._ID + "=league." + LeagueEntry.COLUMN_BOWLER_ID
-                + " WHERE " + LeagueEntry.COLUMN_IS_EVENT + "=? AND " + LeagueEntry.COLUMN_LEAGUE_NAME + " !=?"
-                + " ORDER BY " + BowlerEntry.COLUMN_BOWLER_NAME + ", " + LeagueEntry.COLUMN_LEAGUE_NAME;
+                + " WHERE " + LeagueEntry.COLUMN_IS_EVENT + "=? AND "
+                + LeagueEntry.COLUMN_LEAGUE_NAME + " !=?"
+                + " ORDER BY " + BowlerEntry.COLUMN_BOWLER_NAME + ", "
+                + LeagueEntry.COLUMN_LEAGUE_NAME;
         String[] rawNameArgs = {"0", Constants.NAME_OPEN_LEAGUE};
 
         List<String> listBowlerNames = new ArrayList<>();
@@ -144,22 +157,24 @@ public class SettingsActivity extends PreferenceActivity
         Cursor cursor = database.rawQuery(rawNameQuery, rawNameArgs);
         if (cursor.moveToFirst())
         {
-            while(!cursor.isAfterLast())
+            while (!cursor.isAfterLast())
             {
                 long bowlerId = cursor.getLong(cursor.getColumnIndex("bid"));
                 if (lastBowlerId != bowlerId)
                 {
                     lastBowlerId = bowlerId;
-                    listBowlerNames.add(cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_BOWLER_NAME)));
+                    listBowlerNames.add(cursor.getString(cursor.getColumnIndex(
+                            BowlerEntry.COLUMN_BOWLER_NAME)));
                     listBowlerIds.add(String.valueOf(bowlerId));
-                    listLeagueIds.add(new ArrayList<String>());
-                    listLeagueNames.add(new ArrayList<String>());
+                    listLeagueIds.add(new ArrayList<>());
+                    listLeagueNames.add(new ArrayList<>());
                     currentLeaguePosition++;
                 }
                 listLeagueIds.get(currentLeaguePosition)
                         .add(String.valueOf(cursor.getLong(cursor.getColumnIndex("lid"))));
                 listLeagueNames.get(currentLeaguePosition)
-                        .add(cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_LEAGUE_NAME)));
+                        .add(cursor.getString(cursor.getColumnIndex(
+                                LeagueEntry.COLUMN_LEAGUE_NAME)));
 
                 cursor.moveToNext();
             }
@@ -186,22 +201,26 @@ public class SettingsActivity extends PreferenceActivity
         if (listBowlerNames.size() > 0)
         {
             findPreference(Constants.KEY_ENABLE_QUICK).setEnabled(true);
-            ListPreference listPreference = (ListPreference)findPreference(Constants.KEY_QUICK_BOWLER);
+            ListPreference listPreference =
+                    (ListPreference) findPreference(Constants.KEY_QUICK_BOWLER);
             listPreference.setEntryValues(mArrayBowlerIds);
             listPreference.setEntries(mArrayBowlerNames);
         }
         else
         {
-            CheckBoxPreference checkBoxPreference = (CheckBoxPreference)findPreference(Constants.KEY_ENABLE_QUICK);
+            CheckBoxPreference checkBoxPreference =
+                    (CheckBoxPreference) findPreference(Constants.KEY_ENABLE_QUICK);
             checkBoxPreference.setChecked(false);
             checkBoxPreference.setEnabled(false);
-            findPreference(Constants.KEY_QUICK_BOWLER).setSummary(R.string.pref_quick_bowler_summary);
-            findPreference(Constants.KEY_QUICK_LEAGUE).setSummary(R.string.pref_quick_league_summary);
+            findPreference(Constants.KEY_QUICK_BOWLER)
+                    .setSummary(R.string.pref_quick_bowler_summary);
+            findPreference(Constants.KEY_QUICK_LEAGUE)
+                    .setSummary(R.string.pref_quick_league_summary);
         }
     }
 
     /**
-     * Sets the summaries of preferences to their starting values
+     * Sets the summaries of preferences to their starting values.
      */
     private void setPreferenceSummaries()
     {
@@ -212,8 +231,10 @@ public class SettingsActivity extends PreferenceActivity
         if (checkBoolean)
         {
             preference.setSummary(R.string.pref_enable_quick_summaryOn);
-            ListPreference quickBowlerPref = (ListPreference)findPreference(Constants.KEY_QUICK_BOWLER);
-            ListPreference quickLeaguePref = (ListPreference)findPreference(Constants.KEY_QUICK_LEAGUE);
+            ListPreference quickBowlerPref =
+                    (ListPreference) findPreference(Constants.KEY_QUICK_BOWLER);
+            ListPreference quickLeaguePref =
+                    (ListPreference) findPreference(Constants.KEY_QUICK_LEAGUE);
 
             quickBowlerPref.setEntries(mArrayBowlerNames);
             quickBowlerPref.setEntryValues(mArrayBowlerIds);
@@ -222,7 +243,8 @@ public class SettingsActivity extends PreferenceActivity
             long quickBowlerId = preferences.getLong(Constants.PREF_QUICK_BOWLER_ID, -1);
             long quickLeagueId = preferences.getLong(Constants.PREF_QUICK_LEAGUE_ID, -1);
 
-            mCurrentBowlerPosition = Arrays.binarySearch(mArrayBowlerIds, String.valueOf(quickBowlerId));
+            mCurrentBowlerPosition =
+                    Arrays.binarySearch(mArrayBowlerIds, String.valueOf(quickBowlerId));
             if (mCurrentBowlerPosition < 0)
                 mCurrentBowlerPosition = 0;
             quickBowlerPref.setValueIndex(mCurrentBowlerPosition);
@@ -231,7 +253,9 @@ public class SettingsActivity extends PreferenceActivity
             quickLeaguePref.setEntryValues(mArrayLeagueIds[mCurrentBowlerPosition]);
             quickLeaguePref.setEntries(mArrayLeagueNames[mCurrentBowlerPosition]);
 
-            int position = Arrays.binarySearch(mArrayLeagueIds[mCurrentBowlerPosition], String.valueOf(quickLeagueId));
+            int position =
+                    Arrays.binarySearch(mArrayLeagueIds[mCurrentBowlerPosition],
+                    String.valueOf(quickLeagueId));
             if (position < 0)
                 position = 0;
             quickLeaguePref.setValueIndex(position);
@@ -240,8 +264,10 @@ public class SettingsActivity extends PreferenceActivity
         else
         {
             preference.setSummary(R.string.pref_enable_quick_summaryOff);
-            findPreference(Constants.KEY_QUICK_BOWLER).setSummary(R.string.pref_quick_bowler_summary);
-            findPreference(Constants.KEY_QUICK_LEAGUE).setSummary(R.string.pref_quick_league_summary);
+            findPreference(Constants.KEY_QUICK_BOWLER)
+                    .setSummary(R.string.pref_quick_bowler_summary);
+            findPreference(Constants.KEY_QUICK_LEAGUE)
+                    .setSummary(R.string.pref_quick_league_summary);
         }
 
         checkBoolean = sharedPreferences.getBoolean(Constants.KEY_INCLUDE_EVENTS, true);
@@ -271,14 +297,18 @@ public class SettingsActivity extends PreferenceActivity
                 ? R.string.pref_enable_auto_advance_summaryOn
                 : R.string.pref_enable_auto_advance_summaryOff);
 
-        String autoAdvanceInterval = sharedPreferences.getString(Constants.KEY_AUTO_ADVANCE_TIME, "15 seconds");
+        String autoAdvanceInterval =
+                sharedPreferences.getString(Constants.KEY_AUTO_ADVANCE_TIME, "15 seconds");
         if (checkBoolean)
-            findPreference(Constants.KEY_AUTO_ADVANCE_TIME).setSummary("Frame will auto advance after " + autoAdvanceInterval);
+            findPreference(Constants.KEY_AUTO_ADVANCE_TIME)
+                    .setSummary("Frame will auto advance after " + autoAdvanceInterval);
         else
-            findPreference(Constants.KEY_AUTO_ADVANCE_TIME).setSummary(R.string.pref_auto_advance_time_summary);
+            findPreference(Constants.KEY_AUTO_ADVANCE_TIME)
+                    .setSummary(R.string.pref_auto_advance_time_summary);
 
         String scoreHighlight = sharedPreferences.getString(Constants.KEY_HIGHLIGHT_SCORE, "300");
-        findPreference(Constants.KEY_HIGHLIGHT_SCORE).setSummary("Scores over " + scoreHighlight + " will be highlighted");
+        findPreference(Constants.KEY_HIGHLIGHT_SCORE)
+                .setSummary("Scores over " + scoreHighlight + " will be highlighted");
     }
 
     @Override
@@ -291,8 +321,10 @@ public class SettingsActivity extends PreferenceActivity
         {
             boolean isQuickEnabled = sharedPreferences.getBoolean(key, false);
             Preference quickPref = findPreference(key);
-            ListPreference quickBowlerPref = (ListPreference)findPreference(Constants.KEY_QUICK_BOWLER);
-            ListPreference quickLeaguePref = (ListPreference)findPreference(Constants.KEY_QUICK_LEAGUE);
+            ListPreference quickBowlerPref =
+                    (ListPreference) findPreference(Constants.KEY_QUICK_BOWLER);
+            ListPreference quickLeaguePref =
+                    (ListPreference) findPreference(Constants.KEY_QUICK_LEAGUE);
 
             if (isQuickEnabled)
             {
@@ -306,8 +338,10 @@ public class SettingsActivity extends PreferenceActivity
 
                 getSharedPreferences(Constants.PREFS, MODE_PRIVATE)
                         .edit()
-                        .putLong(Constants.PREF_QUICK_BOWLER_ID, Long.parseLong(mArrayBowlerIds[0]))
-                        .putLong(Constants.PREF_QUICK_LEAGUE_ID, Long.parseLong(mArrayLeagueIds[0][0]))
+                        .putLong(Constants.PREF_QUICK_BOWLER_ID,
+                                Long.parseLong(mArrayBowlerIds[0]))
+                        .putLong(Constants.PREF_QUICK_LEAGUE_ID,
+                                Long.parseLong(mArrayLeagueIds[0][0]))
                         .apply();
             }
             else
@@ -324,8 +358,10 @@ public class SettingsActivity extends PreferenceActivity
         }
         else if (key.equals(Constants.KEY_QUICK_BOWLER))
         {
-            ListPreference quickBowlerPref = (ListPreference)findPreference(key);
-            ListPreference quickLeaguePref = (ListPreference)findPreference(Constants.KEY_QUICK_LEAGUE);
+            ListPreference quickBowlerPref =
+                    (ListPreference) findPreference(key);
+            ListPreference quickLeaguePref =
+                    (ListPreference) findPreference(Constants.KEY_QUICK_LEAGUE);
 
             String bowlerId = quickBowlerPref.getValue();
             mCurrentBowlerPosition = Arrays.binarySearch(mArrayBowlerIds, bowlerId);
@@ -344,7 +380,7 @@ public class SettingsActivity extends PreferenceActivity
         }
         else if (key.equals(Constants.KEY_QUICK_LEAGUE))
         {
-            ListPreference quickLeaguePref = (ListPreference)findPreference(key);
+            ListPreference quickLeaguePref = (ListPreference) findPreference(key);
             String leagueId = quickLeaguePref.getValue();
             int position = Arrays.binarySearch(mArrayLeagueIds[mCurrentBowlerPosition], leagueId);
             quickLeaguePref.setSummary(mArrayLeagueNames[mCurrentBowlerPosition][position]);
@@ -357,9 +393,12 @@ public class SettingsActivity extends PreferenceActivity
         }
         else if (key.equals(Constants.KEY_THEME_COLORS))
         {
-            String themeColor = sharedPreferences.getString(key, "Green");
-            boolean lightThemeEnabled = sharedPreferences.getBoolean(Constants.KEY_THEME_LIGHT, true);
-            boolean whiteHeaderFont = sharedPreferences.getBoolean(Constants.KEY_THEME_FONT, true);
+            String themeColor =
+                    sharedPreferences.getString(key, "Green");
+            boolean lightThemeEnabled =
+                    sharedPreferences.getBoolean(Constants.KEY_THEME_LIGHT, true);
+            boolean whiteHeaderFont =
+                    sharedPreferences.getBoolean(Constants.KEY_THEME_FONT, true);
 
             Preference themePref = findPreference(key);
             themePref.setSummary("Current theme is " + themeColor);
@@ -368,8 +407,10 @@ public class SettingsActivity extends PreferenceActivity
         }
         else if (key.equals(Constants.KEY_THEME_LIGHT))
         {
-            boolean lightThemeEnabled = sharedPreferences.getBoolean(key, true);
-            boolean whiteHeaderFont = sharedPreferences.getBoolean(Constants.KEY_THEME_FONT, true);
+            boolean lightThemeEnabled =
+                    sharedPreferences.getBoolean(key, true);
+            boolean whiteHeaderFont =
+                    sharedPreferences.getBoolean(Constants.KEY_THEME_FONT, true);
             Preference lightPref = findPreference(key);
             lightPref.setSummary((lightThemeEnabled)
                     ? R.string.pref_theme_light_summaryOn
@@ -379,8 +420,10 @@ public class SettingsActivity extends PreferenceActivity
         }
         else if (key.equals(Constants.KEY_THEME_FONT))
         {
-            boolean whiteHeaderFont = sharedPreferences.getBoolean(key, true);
-            boolean lightThemeEnabled = sharedPreferences.getBoolean(Constants.KEY_THEME_LIGHT, true);
+            boolean whiteHeaderFont =
+                    sharedPreferences.getBoolean(key, true);
+            boolean lightThemeEnabled =
+                    sharedPreferences.getBoolean(Constants.KEY_THEME_LIGHT, true);
             Preference fontPref = findPreference(key);
             fontPref.setSummary((whiteHeaderFont)
                     ? R.string.pref_theme_font_summaryOn
@@ -390,7 +433,8 @@ public class SettingsActivity extends PreferenceActivity
         }
         else if (key.equals(Constants.KEY_INCLUDE_EVENTS))
         {
-            boolean isEventIncluded = sharedPreferences.getBoolean(key, true);
+            boolean isEventIncluded =
+                    sharedPreferences.getBoolean(key, true);
             Preference eventPref = findPreference(key);
             eventPref.setSummary((isEventIncluded)
                     ? R.string.pref_include_events_summaryOn
@@ -398,7 +442,8 @@ public class SettingsActivity extends PreferenceActivity
         }
         else if (key.equals(Constants.KEY_INCLUDE_OPEN))
         {
-            boolean isOpenIncluded = sharedPreferences.getBoolean(key, true);
+            boolean isOpenIncluded =
+                    sharedPreferences.getBoolean(key, true);
             Preference openPref = findPreference(key);
             openPref.setSummary((isOpenIncluded)
                     ? R.string.pref_include_open_summaryOn
@@ -406,12 +451,14 @@ public class SettingsActivity extends PreferenceActivity
         }
         else if (key.equals(Constants.KEY_HIGHLIGHT_SCORE))
         {
-            ListPreference highlightPref = (ListPreference)findPreference(key);
-            highlightPref.setSummary("Scores over " + highlightPref.getValue() + " will be highlighted");
+            ListPreference highlightPref = (ListPreference) findPreference(key);
+            highlightPref.setSummary("Scores over " + highlightPref.getValue()
+                    + " will be highlighted");
         }
         else if (key.equals(Constants.KEY_ENABLE_AUTO_ADVANCE))
         {
-            boolean isAutoAdvancing = sharedPreferences.getBoolean(key, false);
+            boolean isAutoAdvancing =
+                    sharedPreferences.getBoolean(key, false);
             Preference autoAdvancePref = findPreference(key);
             autoAdvancePref.setSummary((isAutoAdvancing)
                     ? R.string.pref_enable_auto_advance_summaryOn
@@ -431,31 +478,41 @@ public class SettingsActivity extends PreferenceActivity
         if (preference.getKey().equals(Constants.KEY_RATE))
         {
             //Opens Google Play or chrome to display app
-            final String appPackageName = getPackageName(); // getPackageName() from Context or Activity object
+            final String appPackageName = getPackageName();
             try
             {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
-            } catch (android.content.ActivityNotFoundException ex)
+                startActivity(new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("market://details?id=" + appPackageName)));
+            }
+            catch (android.content.ActivityNotFoundException ex)
             {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + appPackageName)));
+                startActivity(new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("http://play.google.com/store/apps/details?id="
+                                + appPackageName)));
             }
             return true;
         }
         else if (preference.getKey().equals(Constants.KEY_REPORT_BUG))
         {
-            String emailBody = "Please try to include as much of the following information as possible:"
+            String emailBody =
+                    "Please try to include as much of the following information as possible:"
                     + "\nWhere in the application the bug occurred,"
                     + "\nWhat you were doing when the bug occurred,"
                     + "\nThe nature of the bug - fatal, minor, cosmetic (the way the app looks)"
                     + "\n\n";
 
-            Intent emailIntent = EmailUtils.getEmailIntent("bugs@josephroque.ca", "Bug: Bowling Companion", emailBody);
+            Intent emailIntent = EmailUtils.getEmailIntent(
+                    "bugs@josephroque.ca",
+                    "Bug: Bowling Companion",
+                    emailBody);
             startActivity(Intent.createChooser(emailIntent, "Send mail..."));
             return true;
         }
         else if (preference.getKey().equals(Constants.KEY_COMMENT_SUGGESTION))
         {
-            Intent emailIntent = EmailUtils.getEmailIntent("contact@josephroque.ca", "Comm/Sug: Bowling Companion");
+            Intent emailIntent = EmailUtils.getEmailIntent(
+                    "contact@josephroque.ca",
+                    "Comm/Sug: Bowling Companion");
             startActivity(Intent.createChooser(emailIntent, "Send mail..."));
             return true;
         }

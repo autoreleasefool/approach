@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
     <CheckBoxPreference
+        android:defaultValue="true"
         android:key="pref_include_events"
-        android:title="@string/pref_include_events_title"
         android:summary="@string/pref_include_events_summaryOn"
-        android:defaultValue="true"/>
+        android:title="@string/pref_include_events_title" />
+
     <CheckBoxPreference
+        android:defaultValue="true"
         android:key="pref_include_open"
-        android:title="@string/pref_include_open_title"
         android:summary="@string/pref_include_open_summaryOn"
-        android:defaultValue="true"/>
+        android:title="@string/pref_include_open_title" />
+
     <ListPreference
-        android:key="pref_highlight_score"
-        android:title="@string/pref_highlight_score_title"
+        android:defaultValue="300"
         android:dialogTitle="@string/pref_highlight_score_title"
         android:entries="@array/pref_highlight_score_values"
         android:entryValues="@array/pref_highlight_score_values"
-        android:defaultValue="300"/>
+        android:key="pref_highlight_score"
+        android:title="@string/pref_highlight_score_title" />
+
 </PreferenceScreen>

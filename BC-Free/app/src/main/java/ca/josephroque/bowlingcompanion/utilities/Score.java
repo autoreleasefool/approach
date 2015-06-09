@@ -7,10 +7,22 @@ import ca.josephroque.bowlingcompanion.Constants;
  * <p/>
  * Provides methods for determining bowling scores based on user input
  */
-public class Score
+public final class Score
 {
+
+    /** Identifies output from this class in Logcat. */
+    @SuppressWarnings("unused")
+    private static final String TAG = "Score";
+
     /**
-     * Gets the score value of the frame from the balls
+     * Default private constructor.
+     */
+    private Score()
+    {
+    }
+
+    /**
+     * Gets the score value of the frame from the balls.
      *
      * @param frame the frame to get score of
      * @return score of the frame, in a 5 pin game
@@ -22,11 +34,19 @@ public class Score
         {
             if (frame[i])
             {
-                switch(i)
+                switch (i)
                 {
-                    case 0:case 4: frameValue += 2; break;
-                    case 1:case 3: frameValue += 3; break;
-                    case 2: frameValue += 5; break;
+                    case 0:
+                    case 4:
+                        frameValue += 2;
+                        break;
+                    case 1:
+                    case 3:
+                        frameValue += 3;
+                        break;
+                    case 2:
+                        frameValue += 5;
+                        break;
                     default: //do nothing
                 }
             }
@@ -36,7 +56,7 @@ public class Score
 
     /**
      * Gets the score value of the frame from the balls,
-     * depending on which balls were already knocked down in the previous frame
+     * depending on which balls were already knocked down in the previous frame.
      *
      * @param prevFrame state of the pins in the previous frame
      * @param frameToGet state of the pins the current frame
@@ -49,11 +69,19 @@ public class Score
         {
             if (frameToGet[i] && !prevFrame[i])
             {
-                switch(i)
+                switch (i)
                 {
-                    case 0:case 4: frameValue += 2; break;
-                    case 1:case 3: frameValue += 3; break;
-                    case 2: frameValue += 5; break;
+                    case 0:
+                    case 4:
+                        frameValue += 2;
+                        break;
+                    case 1:
+                    case 3:
+                        frameValue += 3;
+                        break;
+                    case 2:
+                        frameValue += 5;
+                        break;
                     default: //do nothing
                 }
             }
@@ -62,34 +90,55 @@ public class Score
     }
 
     /**
-     * Gets textual value of ball
+     * Gets textual value of ball.
      *
      * @param pins state of the pins
      * @param ball the ball to get the value of
+     * @param shouldReturnSymbol indicates if a symbol should be returned no matter what
+     * @param isAfterStrike indicates if the ball being counted was after a strike
      * @return textual value of the ball
      */
-    public static String getValueOfBall(boolean[] pins, int ball, boolean shouldReturnSymbol, boolean isAfterStrike)
+    public static String getValueOfBall(boolean[] pins,
+                                        int ball,
+                                        boolean shouldReturnSymbol,
+                                        boolean isAfterStrike)
     {
         int ballValue = 0;
         for (byte i = 0; i < 5; i++)
         {
             if (pins[i])
             {
-                switch(i)
+                switch (i)
                 {
-                    case 0:case 4: ballValue += 2; break;
-                    case 1:case 3: ballValue += 3; break;
-                    case 2: ballValue += 5; break;
+                    case 0:
+                    case 4:
+                        ballValue += 2;
+                        break;
+                    case 1:
+                    case 3:
+                        ballValue += 3;
+                        break;
+                    case 2:
+                        ballValue += 5;
+                        break;
                     default: //do nothing
                 }
             }
         }
 
-        switch(ballValue)
+        switch (ballValue)
         {
-            default: throw new RuntimeException("Invalid value for ball: " + ballValue);
-            case 0: return Constants.BALL_EMPTY;
-            case 2:case 3:case 4:case 6:case 9:case 12: return String.valueOf(ballValue);
+            default:
+                throw new RuntimeException("Invalid value for ball: " + ballValue);
+            case 0:
+                return Constants.BALL_EMPTY;
+            case 2:
+            case 3:
+            case 4:
+            case 6:
+            case 9:
+            case 12:
+                return String.valueOf(ballValue);
             case 5:
                 if ((ball == 0 || shouldReturnSymbol) && pins[2])
                 {
@@ -163,13 +212,18 @@ public class Score
     }
 
     /**
-     * Gets textual value of ball based on surrounding balls
+     * Gets textual value of ball based on surrounding balls.
      *
      * @param ballsOfFrame list of all balls in the frame
      * @param ball the ball to get the value of
+     * @param shouldReturnSymbol indicates if a symbol should be returned no matter what
+     * @param isAfterStrike indicates if the ball being counted was after a strike
      * @return textual value of the ball
      */
-    public static String getValueOfBallDifference(boolean[][] ballsOfFrame, int ball, boolean shouldReturnSymbol, boolean isAfterStrike)
+    public static String getValueOfBallDifference(boolean[][] ballsOfFrame,
+                                                  int ball,
+                                                  boolean shouldReturnSymbol,
+                                                  boolean isAfterStrike)
     {
         boolean[] pinAlreadyKnockedDown = new boolean[5];
 
@@ -189,23 +243,40 @@ public class Score
         {
             if (ballsOfFrame[ball][i] && !pinAlreadyKnockedDown[i])
             {
-                switch(i)
+                switch (i)
                 {
-                    case 0:case 4: ballValue += 2; break;
-                    case 1:case 3: ballValue += 3; break;
-                    case 2: ballValue += 5; break;
+                    case 0:
+                    case 4:
+                        ballValue += 2;
+                        break;
+                    case 1:
+                    case 3:
+                        ballValue += 3;
+                        break;
+                    case 2:
+                        ballValue += 5;
+                        break;
                     default: //do nothing
                 }
             }
         }
 
-        switch(ballValue)
+        switch (ballValue)
         {
-            default: throw new RuntimeException("Invalid value for ball: " + ballValue);
-            case 0: return Constants.BALL_EMPTY;
-            case 2:case 3:case 4:case 6:case 9:case 12: return String.valueOf(ballValue);
+            default:
+                throw new RuntimeException("Invalid value for ball: " + ballValue);
+            case 0:
+                return Constants.BALL_EMPTY;
+            case 2:
+            case 3:
+            case 4:
+            case 6:
+            case 9:
+            case 12:
+                return String.valueOf(ballValue);
             case 5:
-                if (((ball == 0 && !isAfterStrike) || shouldReturnSymbol) && ballsOfFrame[ball][2] && !pinAlreadyKnockedDown[2])
+                if (((ball == 0 && !isAfterStrike) || shouldReturnSymbol)
+                        && ballsOfFrame[ball][2] && !pinAlreadyKnockedDown[2])
                     return Constants.BALL_HEAD_PIN;
                 else
                     return "5";
@@ -234,7 +305,8 @@ public class Score
             case 13:
                 if (((ball == 0 && !isAfterStrike) || shouldReturnSymbol) && !ballsOfFrame[ball][0])
                     return Constants.BALL_LEFT;
-                else if (((ball == 0 && !isAfterStrike) || shouldReturnSymbol) && !ballsOfFrame[ball][4])
+                else if (((ball == 0 && !isAfterStrike) || shouldReturnSymbol)
+                        && !ballsOfFrame[ball][4])
                     return Constants.BALL_RIGHT;
                 else
                     return "13";
@@ -249,7 +321,8 @@ public class Score
     }
 
     /**
-     * Gets a boolean from a char
+     * Gets a boolean from a char.
+     *
      * @param input char to convert to boolean
      * @return true if input is equal to '1', false otherwise
      */
@@ -259,7 +332,7 @@ public class Score
     }
 
     /**
-     * Creates a string from an array of booleans
+     * Creates a string from an array of booleans.
      *
      * @param frame array to convert to string
      * @return A String of 1's and 0's, where a 1 represents true in the array
@@ -269,7 +342,7 @@ public class Score
         StringBuilder stringBuilder = new StringBuilder();
         for (boolean b : frame)
         {
-            stringBuilder.append(b ? 1:0);
+            stringBuilder.append(b ? 1 : 0);
         }
         return stringBuilder.toString();
     }

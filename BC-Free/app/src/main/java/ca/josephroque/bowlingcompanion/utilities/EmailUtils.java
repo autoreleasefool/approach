@@ -10,11 +10,22 @@ import android.net.Uri;
  * from the application. A local mail application on the device will be used to handle writing
  * and sending the email.
  */
-public class EmailUtils
+public final class EmailUtils
 {
 
+    /** Identifies output from this class in Logcat. */
+    @SuppressWarnings("unused")
+    private static final String TAG = "EmailUtils";
+
     /**
-     * Creates an email intent and sets values to parameters
+     * Default private constructor.
+     */
+    private EmailUtils()
+    {
+    }
+
+    /**
+     * Creates an email intent and sets values to parameters.
      * @param recipientEmail email recipient
      * @param emailSubject subject of the email
      * @param emailBody body of the email
@@ -39,7 +50,7 @@ public class EmailUtils
     }
 
     /**
-     * Creates an intent and sets values to parameters
+     * Creates an intent and sets values to parameters.
      * @param recipientEmail email recipient
      * @param emailSubject subject of the email
      * @return getEmailIntent(recipientEmail, emailSubject, null)

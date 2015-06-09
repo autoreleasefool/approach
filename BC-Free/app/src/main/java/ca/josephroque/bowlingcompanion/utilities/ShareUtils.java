@@ -19,12 +19,25 @@ import ca.josephroque.bowlingcompanion.R;
 /**
  * Created by Joseph Roque on 15-03-26.
  * <p/>
- * Provides methods for sharing the statistics and games tracked by the application
+ * Provides methods for sharing the statistics and games tracked by the application.
  */
-public class ShareUtils
+@SuppressWarnings("Convert2Lambda")
+public final class ShareUtils
 {
+
+    /** Identifies output from this class in Logcat. */
+    @SuppressWarnings("unused")
+    private static final String TAG = "ShareUtils";
+
     /**
-     * Shows a dialog to prompt user to share the series or save it to the device
+     * Default private constructor.
+     */
+    private ShareUtils()
+    {
+    }
+
+    /**
+     * Shows a dialog to prompt user to share the series or save it to the device.
      *
      * @param activity parent activity for the dialog
      * @param seriesId id of the series to share
@@ -40,7 +53,8 @@ public class ShareUtils
                     @Override
                     public void onClick(DialogInterface dialog, int which)
                     {
-                        int selectedItem = ((AlertDialog)dialog).getListView().getCheckedItemPosition();
+                        int selectedItem =
+                                ((AlertDialog) dialog).getListView().getCheckedItemPosition();
                         if (selectedItem == 0)
                             saveSeriesToDevice(activity, seriesId);
                         else
@@ -62,7 +76,7 @@ public class ShareUtils
 
     /**
      * Creates a task to save an image of the series to the device and prompt the user
-     * to share it with another service
+     * to share it with another service.
      *
      * @param activity parent activity for the dialog
      * @param seriesId id of the series to share
@@ -73,7 +87,7 @@ public class ShareUtils
     }
 
     /**
-     * Creates an image of the series and saves it to the device
+     * Creates an image of the series and saves it to the device.
      *
      * @param activity parent activity for the dialog
      * @param seriesId id of the series to share
@@ -114,9 +128,11 @@ public class ShareUtils
 
                         Toast toast;
                         if (imageUri != null)
-                            toast = Toast.makeText(activity, "Image successfully saved!", Toast.LENGTH_SHORT);
+                            toast = Toast.makeText(
+                                    activity, "Image successfully saved!", Toast.LENGTH_SHORT);
                         else
-                            toast = Toast.makeText(activity, "Unable to save image", Toast.LENGTH_SHORT);
+                            toast = Toast.makeText(
+                                    activity, "Unable to save image", Toast.LENGTH_SHORT);
                         toast.show();
                     }
                 });
@@ -125,7 +141,7 @@ public class ShareUtils
     }
 
     /**
-     * Creates an image for the series and prompts user to share it
+     * Creates an image for the series and prompts user to share it.
      */
     private static class ShareSeriesTask extends AsyncTask<Object, Void, Object[]>
     {
@@ -133,8 +149,8 @@ public class ShareUtils
         @Override
         public Object[] doInBackground(Object... params)
         {
-            Activity activity = (Activity)params[0];
-            long seriesId = (Long)params[1];
+            Activity activity = (Activity) params[0];
+            long seriesId = (Long) params[1];
             Bitmap image = ImageUtils.createImageFromSeries(activity, seriesId);
             Uri imageUri = ImageUtils.insertImage(activity.getContentResolver(),
                     image,
@@ -179,8 +195,8 @@ public class ShareUtils
         @Override
         public void onPostExecute(Object[] params)
         {
-            Activity activity = (Activity)params[0];
-            Intent shareIntent = (Intent)params[1];
+            Activity activity = (Activity) params[0];
+            Intent shareIntent = (Intent) params[1];
 
             activity.startActivity(Intent.createChooser(shareIntent, "Share Image"));
         }
