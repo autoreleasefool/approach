@@ -1,5 +1,7 @@
 package ca.josephroque.bowlingcompanion.fragment;
 
+import com.melnykov.fab.FloatingActionButton;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
@@ -22,8 +24,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.melnykov.fab.FloatingActionButton;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -35,7 +35,10 @@ import ca.josephroque.bowlingcompanion.DividerItemDecoration;
 import ca.josephroque.bowlingcompanion.MainActivity;
 import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.adapter.NameAverageAdapter;
-import ca.josephroque.bowlingcompanion.database.Contract.*;
+import ca.josephroque.bowlingcompanion.database.Contract.FrameEntry;
+import ca.josephroque.bowlingcompanion.database.Contract.GameEntry;
+import ca.josephroque.bowlingcompanion.database.Contract.LeagueEntry;
+import ca.josephroque.bowlingcompanion.database.Contract.SeriesEntry;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.dialog.NewLeagueEventDialog;
 import ca.josephroque.bowlingcompanion.theme.Theme;
@@ -47,27 +50,43 @@ import ca.josephroque.bowlingcompanion.theme.Theme;
  * and offers a callback interface {@link LeagueEventFragment.OnLeagueSelectedListener} for
  * handling interactions.
  */
+@SuppressWarnings("Convert2Lambda")
 public class LeagueEventFragment extends Fragment
-        implements Theme.ChangeableTheme, NameAverageAdapter.NameAverageEventHandler, NewLeagueEventDialog.NewLeagueEventDialogListener
+        implements Theme.ChangeableTheme,
+        NameAverageAdapter.NameAverageEventHandler,
+        NewLeagueEventDialog.NewLeagueEventDialogListener
 {
-    /** View to display league and event names and averages to user */
+
+    /** Identifies output from this class in Logcat. */
+    @SuppressWarnings("unused")
+    private static final String TAG = "LeagueEventFragment";
+
+    // Constant values
+
+    // Objects
+
+    /** View to display league and event names and averages to user. */
     private RecyclerView mRecyclerViewLeagueEvents;
-    /** Adapter to manage data displayed in mRecyclerViewLeagueEvents */
+    /** Adapter to manage data displayed in mRecyclerViewLeagueEvents. */
     private NameAverageAdapter mAdapterLeagueEvents;
 
-    /** List to store ids from league table in database */
+    /** Callback listener for user events related to leagues. */
+    private OnLeagueSelectedListener mLeagueSelectedListener;
+    /** Callback listener for user events related to series. */
+    private SeriesFragment.SeriesListener mSeriesListener;
+
+    // Arrays, data structures
+
+    /** List to store ids from league table in database. */
     private List<Long> mListLeagueEventIds;
-    /** List to store names of leagues, relevant to order of mListLeagueEventIds */
+    /** List to store names of leagues, relevant to order of mListLeagueEventIds. */
     private List<String> mListLeagueEventNames;
-    /** List to store averages of leagues, relevant to order of mListLeagueEventIds */
+    /** List to store averages of leagues, relevant to order of mListLeagueEventIds. */
     private List<Short> mListLeagueEventAverages;
-    /** List to store number of games of leagues, relevant to order of mListLeagueEventIds */
+    /** List to store number of games of leagues, relevant to order of mListLeagueEventIds. */
     private List<Byte> mListLeagueEventNumberOfGames;
 
-    /** Callback listener for user events related to leagues */
-    private OnLeagueSelectedListener mLeagueSelectedListener;
-    /** Callback listener for user events related to series */
-    private SeriesFragment.SeriesListener mSeriesListener;
+    // Primitive variables
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -98,7 +117,9 @@ public class LeagueEventFragment extends Fragment
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    public View onCreateView(LayoutInflater inflater,
+                             ViewGroup container,
+                             Bundle savedInstanceState)
     {
         View rootView = inflater.inflate(R.layout.fragment_fab_list, container, false);
 
@@ -109,7 +130,8 @@ public class LeagueEventFragment extends Fragment
 
         mRecyclerViewLeagueEvents = (RecyclerView) rootView.findViewById(R.id.rv_names);
         mRecyclerViewLeagueEvents.setHasFixedSize(true);
-        mRecyclerViewLeagueEvents.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
+        mRecyclerViewLeagueEvents.addItemDecoration(new DividerItemDecoration(getActivity(),
+                LinearLayoutManager.VERTICAL));
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mRecyclerViewLeagueEvents.setLayoutManager(layoutManager);
@@ -133,8 +155,10 @@ public class LeagueEventFragment extends Fragment
         });
 
         //Sets textviews to display text relevant to leagues
-        ((TextView) rootView.findViewById(R.id.tv_new_list_item)).setText(R.string.text_new_league_event);
-        ((TextView) rootView.findViewById(R.id.tv_delete_list_item)).setText(R.string.text_delete_league_event);
+        ((TextView) rootView.findViewById(R.id.tv_new_list_item))
+                .setText(R.string.text_new_league_event);
+        ((TextView) rootView.findViewById(R.id.tv_delete_list_item))
+                .setText(R.string.text_delete_league_event);
 
         return rootView;
     }
@@ -143,7 +167,8 @@ public class LeagueEventFragment extends Fragment
     public void onResume()
     {
         super.onResume();
-        ((MainActivity) getActivity()).setActionBarTitle(R.string.title_fragment_league_event, true);
+        ((MainActivity) getActivity())
+                .setActionBarTitle(R.string.title_fragment_league_event, true);
 
         mListLeagueEventIds.clear();
         mListLeagueEventNames.clear();
@@ -191,7 +216,8 @@ public class LeagueEventFragment extends Fragment
         View rootView = getView();
         if (rootView != null)
         {
-            FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab_new_list_item);
+            FloatingActionButton fab =
+                    (FloatingActionButton) rootView.findViewById(R.id.fab_new_list_item);
             fab.setColorNormal(Theme.getPrimaryThemeColor());
             fab.setColorPressed(Theme.getPrimaryThemeColor());
             fab.setColorRipple(Theme.getTertiaryThemeColor());
@@ -215,7 +241,8 @@ public class LeagueEventFragment extends Fragment
     @Override
     public int getNAViewPositionInRecyclerView(View v)
     {
-        return mRecyclerViewLeagueEvents.getChildPosition(v);
+        return mRecyclerViewLeagueEvents.getChildAdapterPosition(v);
+        //TODO replace with  mRecyclerViewLeagueEvents.getChildPosition(v); if broken
     }
 
     @Override
@@ -225,8 +252,8 @@ public class LeagueEventFragment extends Fragment
         int invalidInputMessageVal = -1;
         String invalidInputMessage = null;
 
-        if (numberOfGames < 1 ||
-                (isEvent && numberOfGames > Constants.MAX_NUMBER_EVENT_GAMES)
+        if (numberOfGames < 1
+                || (isEvent && numberOfGames > Constants.MAX_NUMBER_EVENT_GAMES)
                 || (!isEvent && numberOfGames > Constants.MAX_NUMBER_LEAGUE_GAMES))
         {
             //User has provided an invalid number of games
@@ -286,7 +313,7 @@ public class LeagueEventFragment extends Fragment
 
     /**
      * Prompts user with a dialog to delete all data regarding a certain
-     * league or event in the database
+     * league or event in the database.
      *
      * @param position position of league id in mListLeagueEventIds
      */
@@ -330,7 +357,7 @@ public class LeagueEventFragment extends Fragment
     }
 
     /**
-     * Deletes all data regarding a certain league id in the database
+     * Deletes all data regarding a certain league id in the database.
      *
      * @param leagueEventId id of league/event whose data will be deleted
      */
@@ -344,7 +371,8 @@ public class LeagueEventFragment extends Fragment
         mListLeagueEventIds.remove(index);
         mAdapterLeagueEvents.notifyItemRemoved(index);
 
-        SharedPreferences prefs = getActivity().getSharedPreferences(Constants.PREFS, Context.MODE_PRIVATE);
+        SharedPreferences prefs =
+                getActivity().getSharedPreferences(Constants.PREFS, Context.MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = prefs.edit();
         long recentId = prefs.getLong(Constants.PREF_RECENT_LEAGUE_ID, -1);
         long quickId = prefs.getLong(Constants.PREF_QUICK_LEAGUE_ID, -1);
@@ -369,7 +397,8 @@ public class LeagueEventFragment extends Fragment
             public void run()
             {
                 //Deletes data from all tables corresponding to leagueEventId
-                SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
+                SQLiteDatabase database =
+                        DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
                 String[] whereArgs = {String.valueOf(leagueEventId)};
 
                 database.beginTransaction();
@@ -393,7 +422,7 @@ public class LeagueEventFragment extends Fragment
     }
 
     /**
-     * Prompts user to select either league or event to add
+     * Prompts user to select either league or event to add.
      */
     private void showLeagueOrEventDialog()
     {
@@ -405,7 +434,8 @@ public class LeagueEventFragment extends Fragment
                     @Override
                     public void onClick(DialogInterface dialog, int which)
                     {
-                        showNewLeagueEventDialog(((AlertDialog) dialog).getListView().getCheckedItemPosition() == 1);
+                        showNewLeagueEventDialog(((AlertDialog) dialog)
+                                .getListView().getCheckedItemPosition() == 1);
                         dialog.dismiss();
                     }
                 })
@@ -422,7 +452,7 @@ public class LeagueEventFragment extends Fragment
     }
 
     /**
-     * Prompts the user to add a new league or event
+     * Prompts the user to add a new league or event.
      *
      * @param newEvent if true, a new event will be made. If false,
      * a new league will be made.
@@ -437,7 +467,7 @@ public class LeagueEventFragment extends Fragment
     }
 
     /**
-     * Creates a new instance of this fragment to display
+     * Creates a new instance of this fragment to display.
      *
      * @return a new instance of LeagueEventFragment
      */
@@ -462,8 +492,10 @@ public class LeagueEventFragment extends Fragment
             boolean isEvent = selectedLeagueName.substring(0, 1).equals("E");
             selectedLeagueName = selectedLeagueName.substring(1);
 
-            SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
+            SQLiteDatabase database =
+                    DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
+            SimpleDateFormat dateFormat =
+                    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
             String currentDate = dateFormat.format(new Date());
 
             ContentValues values = new ContentValues();
@@ -501,18 +533,28 @@ public class LeagueEventFragment extends Fragment
                         + " FROM " + SeriesEntry.TABLE_NAME
                         + " WHERE " + SeriesEntry.COLUMN_LEAGUE_ID + "=?";
 
-                Cursor cursor = database.rawQuery(rawSeriesQuery, new String[]{String.valueOf(selectedLeagueId)});
+                Cursor cursor = database.rawQuery(rawSeriesQuery,
+                        new String[]{String.valueOf(selectedLeagueId)});
                 if (cursor.moveToFirst())
                 {
-                    long seriesId = cursor.getLong(cursor.getColumnIndex(SeriesEntry._ID));
-                    String seriesDate = cursor.getString(cursor.getColumnIndex(SeriesEntry.COLUMN_SERIES_DATE));
+                    long seriesId = cursor.getLong(
+                            cursor.getColumnIndex(SeriesEntry._ID));
+                    String seriesDate = cursor.getString(
+                            cursor.getColumnIndex(SeriesEntry.COLUMN_SERIES_DATE));
                     cursor.close();
 
-                    return new Object[]{true, seriesId, numberOfGames, selectedLeagueId, selectedLeagueName, seriesDate};
+                    return new Object[]{
+                            true,
+                            seriesId,
+                            numberOfGames,
+                            selectedLeagueId,
+                            selectedLeagueName,
+                            seriesDate};
                 }
                 else
                 {
-                    throw new RuntimeException("Event series id could not be loaded from database.");
+                    throw new RuntimeException(
+                            "Event series id could not be loaded from database.");
                 }
             }
             else
@@ -538,7 +580,11 @@ public class LeagueEventFragment extends Fragment
                 String leagueName = params[4].toString();
                 String seriesDate = params[5].toString();
 
-                mLeagueSelectedListener.onLeagueSelected(leagueId, leagueName, numberOfGames, false);
+                mLeagueSelectedListener.onLeagueSelected(
+                        leagueId,
+                        leagueName,
+                        numberOfGames,
+                        false);
                 mSeriesListener.onSeriesSelected(seriesId, seriesDate, true);
             }
             else
@@ -577,7 +623,8 @@ public class LeagueEventFragment extends Fragment
         {
             MainActivity.waitForSaveThreads((MainActivity) getActivity());
 
-            SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getReadableDatabase();
+            SQLiteDatabase database =
+                    DatabaseHelper.getInstance(getActivity()).getReadableDatabase();
             List<Long> listLeagueEventIds = new ArrayList<>();
             List<String> listLeagueEventNames = new ArrayList<>();
             List<Short> listLeagueEventAverages = new ArrayList<>();
@@ -599,24 +646,32 @@ public class LeagueEventFragment extends Fragment
                     + " ORDER BY " + LeagueEntry.COLUMN_DATE_MODIFIED + " DESC";
 
             long bowlerId = ((MainActivity) getActivity()).getBowlerId();
-            Cursor cursor = database.rawQuery(rawLeagueEventQuery, new String[]{String.valueOf(bowlerId)});
+            Cursor cursor = database.rawQuery(rawLeagueEventQuery,
+                    new String[]{String.valueOf(bowlerId)});
             if (cursor.moveToFirst())
             {
                 while (!cursor.isAfterLast())
                 {
-                    boolean isEvent = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_IS_EVENT)) == 1;
+                    boolean isEvent =
+                            cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_IS_EVENT)) == 1;
 
                     listLeagueEventIds.add(cursor.getLong(cursor.getColumnIndex("lid")));
                     listLeagueEventNames.add(((isEvent) ? "E" : "L")
-                            + cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_LEAGUE_NAME)));
+                            + cursor.getString(
+                                    cursor.getColumnIndex(LeagueEntry.COLUMN_LEAGUE_NAME)));
                     listLeagueEventAverages.add(cursor.getShort(cursor.getColumnIndex("avg")));
-                    listLeagueEventGames.add((byte) cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NUMBER_OF_GAMES)));
+                    listLeagueEventGames.add((byte) cursor.getInt(
+                            cursor.getColumnIndex(LeagueEntry.COLUMN_NUMBER_OF_GAMES)));
                     cursor.moveToNext();
                 }
             }
             cursor.close();
 
-            return new List<?>[]{listLeagueEventIds, listLeagueEventNames, listLeagueEventAverages, listLeagueEventGames};
+            return new List<?>[]{
+                    listLeagueEventIds,
+                    listLeagueEventNames,
+                    listLeagueEventAverages,
+                    listLeagueEventGames};
         }
 
         @Override
@@ -646,8 +701,10 @@ public class LeagueEventFragment extends Fragment
             long bowlerId = ((MainActivity) getActivity()).getBowlerId();
 
             long newId = -1;
-            SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
+            SQLiteDatabase database =
+                    DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
+            SimpleDateFormat dateFormat =
+                    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
             String currentDate = dateFormat.format(new Date());
 
             ContentValues values = new ContentValues();
@@ -728,22 +785,26 @@ public class LeagueEventFragment extends Fragment
 
     /**
      * Container Activity must implement this interface to allow
-     * SeriesFragment/GameFragment to be loaded when a league/event is selected
+     * SeriesFragment/GameFragment to be loaded when a league/event is selected.
      */
     public interface OnLeagueSelectedListener
     {
         /**
          * Should be overridden to create a SeriesFragment with the series
-         * belonging to the league represented by leagueId
+         * belonging to the league represented by leagueId.
          *
          * @param leagueId id of the league whose series will be displayed
          * @param leagueName name of the league corresponding to leagueId
          * @param numberOfGames number of games of the league corresponding to leagueId
+         * @param openSeriesFragment indicates if series fragment should be opened
          */
-        void onLeagueSelected(long leagueId, String leagueName, byte numberOfGames, boolean openSeriesFragment);
+        void onLeagueSelected(long leagueId,
+                              String leagueName,
+                              byte numberOfGames,
+                              boolean openSeriesFragment);
 
         /**
-         * Used to open StatsFragment to display bowler stats
+         * Used to open StatsFragment to display bowler stats.
          */
         void onBowlerStatsOpened();
     }

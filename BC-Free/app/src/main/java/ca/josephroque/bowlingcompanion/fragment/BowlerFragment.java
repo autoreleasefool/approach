@@ -1,5 +1,7 @@
 package ca.josephroque.bowlingcompanion.fragment;
 
+import com.melnykov.fab.FloatingActionButton;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
@@ -23,8 +25,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.melnykov.fab.FloatingActionButton;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -36,7 +36,10 @@ import ca.josephroque.bowlingcompanion.DividerItemDecoration;
 import ca.josephroque.bowlingcompanion.MainActivity;
 import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.adapter.NameAverageAdapter;
-import ca.josephroque.bowlingcompanion.database.Contract.*;
+import ca.josephroque.bowlingcompanion.database.Contract.BowlerEntry;
+import ca.josephroque.bowlingcompanion.database.Contract.GameEntry;
+import ca.josephroque.bowlingcompanion.database.Contract.LeagueEntry;
+import ca.josephroque.bowlingcompanion.database.Contract.SeriesEntry;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.dialog.NewBowlerDialog;
 import ca.josephroque.bowlingcompanion.theme.Theme;
@@ -48,49 +51,66 @@ import ca.josephroque.bowlingcompanion.theme.Theme;
  * and offers a callback interface {@link BowlerFragment.OnBowlerSelectedListener} for
  * handling interactions.
  */
+@SuppressWarnings("Convert2Lambda")
 public class BowlerFragment extends Fragment
-        implements Theme.ChangeableTheme, NameAverageAdapter.NameAverageEventHandler, NewBowlerDialog.NewBowlerDialogListener
+        implements Theme.ChangeableTheme,
+        NameAverageAdapter.NameAverageEventHandler,
+        NewBowlerDialog.NewBowlerDialogListener
 {
-    /** List to store ids from bowler table in database */
-    private List<Long> mListBowlerIds;
-    /** List to store names of bowlers, relevant to order of mListBowlerIds */
-    private List<String> mListBowlerNames;
-    /** List to store averages of bowlers, relevant to order of mListBowlerIds */
-    private List<Short> mListBowlerAverages;
 
-    /** View to display bowler names and averages to user */
+    /** Identifies output from this class in Logcat. */
+    @SuppressWarnings("unused")
+    private static final String TAG = "BowlerFragment";
+
+    // Constant values
+
+    // Objects
+
+    /** View to display bowler names and averages to user. */
     private RecyclerView mRecyclerViewBowlers;
-    /** Adapter to manage data displayed in mRecyclerViewBowlers */
+    /** Adapter to manage data displayed in mRecyclerViewBowlers. */
     private NameAverageAdapter mAdapterBowlers;
 
-    /** Id from 'bowler' database which represents the most recently used bowler */
+    /** Callback listener for user events related to bowlers. */
+    private OnBowlerSelectedListener mBowlerSelectedListener;
+    /** Callback listener for user events related to leagues. */
+    private LeagueEventFragment.OnLeagueSelectedListener mLeagueSelectedListener;
+    /** Callback listener for user events related to series. */
+    private SeriesFragment.SeriesListener mSeriesListener;
+
+    // Arrays, data structures
+
+    /** List to store ids from bowler table in database. */
+    private List<Long> mListBowlerIds;
+    /** List to store names of bowlers, relevant to order of mListBowlerIds. */
+    private List<String> mListBowlerNames;
+    /** List to store averages of bowlers, relevant to order of mListBowlerIds. */
+    private List<Short> mListBowlerAverages;
+
+    // Primitive variables
+
+    /** Id from 'bowler' database which represents the most recently used bowler. */
     private long mRecentBowlerId = -1;
-    /** Id from 'league' database whuch represents the most recently edited league */
+    /** Id from 'league' database which represents the most recently edited league. */
     private long mRecentLeagueId = -1;
-    /** Number of games in the most recently edited league */
+    /** Number of games in the most recently edited league. */
     private byte mRecentNumberOfGames = -1;
-    /** Name of most recently edited bowler */
+    /** Name of most recently edited bowler. */
     private String mRecentBowlerName;
-    /** Name of most recently edited league */
+    /** Name of most recently edited league. */
     private String mRecentLeagueName;
 
-    /** Id from 'bowler' database which represents the preferred bowler for a quick series */
+    /** Id from 'bowler' database which represents the preferred bowler for a quick series. */
     private long mQuickBowlerId = -1;
-    /** Id from 'league' database which represents the preferred league for quick series */
+    /** Id from 'league' database which represents the preferred league for quick series. */
     private long mQuickLeagueId = -1;
-    /** Number of games in the preferred league */
+    /** Number of games in the preferred league. */
     private byte mQuickNumberOfGames = -1;
-    /** Name of preferred bowler */
+    /** Name of preferred bowler. */
     private String mQuickBowlerName;
-    /** Name of preferred league */
+    /** Name of preferred league. */
     private String mQuickLeagueName;
 
-    /** Callback listener for user events related to bowlers */
-    private OnBowlerSelectedListener mBowlerSelectedListener;
-    /** Callback listener for user events related to leagues */
-    private LeagueEventFragment.OnLeagueSelectedListener mLeagueSelectedListener;
-    /** Callback listener for user events related to series */
-    private SeriesFragment.SeriesListener mSeriesListener;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -117,12 +137,15 @@ public class BowlerFragment extends Fragment
         catch (ClassCastException ex)
         {
             throw new ClassCastException(activity.toString()
-                    + " must implement OnBowlerSelectedListener, OnLeagueSelectedListener, SeriesListener");
+                    + " must implement OnBowlerSelectedListener, OnLeagueSelectedListener,"
+                    + " SeriesListener");
         }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
+    public View onCreateView(LayoutInflater inflater,
+                             ViewGroup container,
+                             Bundle savedInstanceState)
     {
         View rootView = inflater.inflate(R.layout.fragment_fab_list, container, false);
 
@@ -132,7 +155,8 @@ public class BowlerFragment extends Fragment
 
         mRecyclerViewBowlers = (RecyclerView) rootView.findViewById(R.id.rv_names);
         mRecyclerViewBowlers.setHasFixedSize(true);
-        mRecyclerViewBowlers.addItemDecoration(new DividerItemDecoration(getActivity(), LinearLayoutManager.VERTICAL));
+        mRecyclerViewBowlers.addItemDecoration(new DividerItemDecoration(getActivity(),
+                LinearLayoutManager.VERTICAL));
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mRecyclerViewBowlers.setLayoutManager(layoutManager);
@@ -155,8 +179,10 @@ public class BowlerFragment extends Fragment
         });
 
         //Sets textviews to display text relevant to bowlers
-        ((TextView) rootView.findViewById(R.id.tv_new_list_item)).setText(R.string.text_new_bowler);
-        ((TextView) rootView.findViewById(R.id.tv_delete_list_item)).setText(R.string.text_delete_bowler);
+        ((TextView) rootView.findViewById(R.id.tv_new_list_item))
+                .setText(R.string.text_new_bowler);
+        ((TextView) rootView.findViewById(R.id.tv_delete_list_item))
+                .setText(R.string.text_delete_bowler);
 
         return rootView;
     }
@@ -168,7 +194,8 @@ public class BowlerFragment extends Fragment
         ((MainActivity) getActivity()).setActionBarTitle(R.string.app_name, true);
 
         //Loads values for member variables from preferences, if they exist
-        SharedPreferences prefs = getActivity().getSharedPreferences(Constants.PREFS, Context.MODE_PRIVATE);
+        SharedPreferences prefs =
+                getActivity().getSharedPreferences(Constants.PREFS, Context.MODE_PRIVATE);
         mRecentBowlerId = prefs.getLong(Constants.PREF_RECENT_BOWLER_ID, -1);
         mRecentLeagueId = prefs.getLong(Constants.PREF_RECENT_LEAGUE_ID, -1);
         mQuickBowlerId = prefs.getLong(Constants.PREF_QUICK_BOWLER_ID, -1);
@@ -220,7 +247,8 @@ public class BowlerFragment extends Fragment
         View rootView = getView();
         if (rootView != null)
         {
-            FloatingActionButton fab = (FloatingActionButton) rootView.findViewById(R.id.fab_new_list_item);
+            FloatingActionButton fab =
+                    (FloatingActionButton) rootView.findViewById(R.id.fab_new_list_item);
             fab.setColorNormal(Theme.getPrimaryThemeColor());
             fab.setColorPressed(Theme.getPrimaryThemeColor());
             fab.setColorRipple(Theme.getTertiaryThemeColor());
@@ -245,7 +273,8 @@ public class BowlerFragment extends Fragment
     public int getNAViewPositionInRecyclerView(View v)
     {
         //Gets position of view in mRecyclerViewBowlers
-        return mRecyclerViewBowlers.getChildPosition(v);
+        return mRecyclerViewBowlers.getChildAdapterPosition(v);
+        //TODO: replace if above crashes return mRecyclerViewBowlers.getChildPosition(v);
     }
 
     @Override
@@ -298,11 +327,12 @@ public class BowlerFragment extends Fragment
 
     /**
      * Prompts user to create a new series with mRecentBowlerId
-     * and mRecentLeagueId or mQuickBowlerId and mQuickLeagueId
+     * and mRecentLeagueId or mQuickBowlerId and mQuickLeagueId.
      */
     private void showQuickSeriesDialog()
     {
-        if ((mQuickBowlerId > -1 && mQuickLeagueId > -1) || (mRecentBowlerId > -1 && mRecentLeagueId > -1))
+        if ((mQuickBowlerId > -1 && mQuickLeagueId > -1)
+                || (mRecentBowlerId > -1 && mRecentLeagueId > -1))
         {
             /*
              * If a quick bowler was set, or a bowler has been previously selected,
@@ -333,14 +363,30 @@ public class BowlerFragment extends Fragment
                         {
                             if (quickOrRecent)
                             {
-                                mBowlerSelectedListener.onBowlerSelected(mQuickBowlerId, mQuickBowlerName, false, true);
-                                mLeagueSelectedListener.onLeagueSelected(mQuickLeagueId, mQuickLeagueName, mQuickNumberOfGames, false);
+                                mBowlerSelectedListener.onBowlerSelected(
+                                        mQuickBowlerId,
+                                        mQuickBowlerName,
+                                        false,
+                                        true);
+                                mLeagueSelectedListener.onLeagueSelected(
+                                        mQuickLeagueId,
+                                        mQuickLeagueName,
+                                        mQuickNumberOfGames,
+                                        false);
                                 mSeriesListener.onCreateNewSeries(false);
                             }
                             else
                             {
-                                mBowlerSelectedListener.onBowlerSelected(mRecentBowlerId, mRecentBowlerName, false, true);
-                                mLeagueSelectedListener.onLeagueSelected(mRecentLeagueId, mRecentLeagueName, mRecentNumberOfGames, false);
+                                mBowlerSelectedListener.onBowlerSelected(
+                                        mRecentBowlerId,
+                                        mRecentBowlerName,
+                                        false,
+                                        true);
+                                mLeagueSelectedListener.onLeagueSelected(
+                                        mRecentLeagueId,
+                                        mRecentLeagueName,
+                                        mRecentNumberOfGames,
+                                        false);
                                 mSeriesListener.onCreateNewSeries(false);
                             }
                             dialog.dismiss();
@@ -379,7 +425,7 @@ public class BowlerFragment extends Fragment
 
     /**
      * Opens an instance of NewBowlerDialog and displays
-     * it to the user
+     * it to the user.
      */
     private void showNewBowlerDialog()
     {
@@ -389,7 +435,7 @@ public class BowlerFragment extends Fragment
 
     /**
      * Prompts user with a dialog to delete all data regarding a certain
-     * bowler in the database
+     * bowler in the database.
      *
      * @param position position of bowler id in mListBowlerIds
      */
@@ -410,7 +456,7 @@ public class BowlerFragment extends Fragment
     }
 
     /**
-     * Deletes all data regarding a certain bowler id in the database
+     * Deletes all data regarding a certain bowler id in the database.
      *
      * @param bowlerId id of bowler whose data will be deleted
      */
@@ -421,7 +467,8 @@ public class BowlerFragment extends Fragment
         mListBowlerIds.remove(index);
         mAdapterBowlers.notifyItemRemoved(index);
 
-        SharedPreferences prefs = getActivity().getSharedPreferences(Constants.PREFS, Context.MODE_PRIVATE);
+        SharedPreferences prefs =
+                getActivity().getSharedPreferences(Constants.PREFS, Context.MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = prefs.edit();
         long recentId = prefs.getLong(Constants.PREF_RECENT_BOWLER_ID, -1);
         long quickId = prefs.getLong(Constants.PREF_QUICK_BOWLER_ID, -1);
@@ -444,7 +491,8 @@ public class BowlerFragment extends Fragment
             @Override
             public void run()
             {
-                SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
+                SQLiteDatabase database =
+                        DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
                 String[] whereArgs = {String.valueOf(bowlerId)};
                 database.beginTransaction();
                 try
@@ -467,7 +515,7 @@ public class BowlerFragment extends Fragment
     }
 
     /**
-     * Creates a new instance of this fragment to display
+     * Creates a new instance of this fragment to display.
      *
      * @return a new instance of BowlerFragment
      */
@@ -477,7 +525,7 @@ public class BowlerFragment extends Fragment
     }
 
     /**
-     * Loads names of bowlers, along with other relevant data, and adds them to recycler view
+     * Loads names of bowlers, along with other relevant data, and adds them to recycler view.
      */
     private class LoadBowlerAndRecentTask extends AsyncTask<Void, Void, List<?>[]>
     {
@@ -490,12 +538,14 @@ public class BowlerFragment extends Fragment
 
             MainActivity.waitForSaveThreads((MainActivity) getActivity());
 
-            SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getReadableDatabase();
+            SQLiteDatabase database =
+                    DatabaseHelper.getInstance(getActivity()).getReadableDatabase();
             List<Long> listBowlerIds = new ArrayList<>();
             List<String> listBowlerNames = new ArrayList<>();
             List<Short> listBowlerAverages = new ArrayList<>();
 
-            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            SharedPreferences preferences =
+                    PreferenceManager.getDefaultSharedPreferences(getActivity());
             boolean includeEvents = preferences.getBoolean(Constants.KEY_INCLUDE_EVENTS, true);
             boolean includeOpen = preferences.getBoolean(Constants.KEY_INCLUDE_OPEN, true);
 
@@ -527,7 +577,8 @@ public class BowlerFragment extends Fragment
                     + " ON t.lid2=league." + LeagueEntry._ID
                     + " GROUP BY bowler." + BowlerEntry._ID
                     + " ORDER BY bowler." + BowlerEntry.COLUMN_DATE_MODIFIED + " DESC";
-            String[] rawBowlerArgs = {String.valueOf(0), (!includeOpen ? Constants.NAME_OPEN_LEAGUE : String.valueOf(0))};
+            String[] rawBowlerArgs = {String.valueOf(0), (!includeOpen
+                    ? Constants.NAME_OPEN_LEAGUE : String.valueOf(0))};
 
             //Adds loaded bowler names and averages to lists to display
             Cursor cursor = database.rawQuery(rawBowlerQuery, rawBowlerArgs);
@@ -536,7 +587,8 @@ public class BowlerFragment extends Fragment
                 while (!cursor.isAfterLast())
                 {
                     listBowlerIds.add(cursor.getLong(cursor.getColumnIndex("bid")));
-                    listBowlerNames.add(cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_BOWLER_NAME)));
+                    listBowlerNames.add(cursor.getString(
+                            cursor.getColumnIndex(BowlerEntry.COLUMN_BOWLER_NAME)));
                     int totalSum = cursor.getInt(cursor.getColumnIndex("totalSum"));
                     int totalCount = cursor.getInt(cursor.getColumnIndex("totalCount"));
                     listBowlerAverages.add((short) ((totalCount > 0) ? totalSum / totalCount : 0));
@@ -554,20 +606,28 @@ public class BowlerFragment extends Fragment
                         + LeagueEntry.COLUMN_NUMBER_OF_GAMES
                         + " FROM " + BowlerEntry.TABLE_NAME + " AS bowler"
                         + " INNER JOIN " + LeagueEntry.TABLE_NAME + " AS league"
-                        + " ON bowler." + BowlerEntry._ID + "=league." + LeagueEntry.COLUMN_BOWLER_ID
-                        + " WHERE bowler." + BowlerEntry._ID + "=? AND league." + LeagueEntry._ID + "=?";
-                String[] rawRecentArgs = new String[]{String.valueOf(mRecentBowlerId), String.valueOf(mRecentLeagueId)};
+                        + " ON bowler." + BowlerEntry._ID
+                                + "=league." + LeagueEntry.COLUMN_BOWLER_ID
+                        + " WHERE bowler." + BowlerEntry._ID + "=? "
+                                + "AND league." + LeagueEntry._ID + "=?";
+                String[] rawRecentArgs = new String[]{
+                        String.valueOf(mRecentBowlerId),
+                        String.valueOf(mRecentLeagueId)};
 
                 cursor = database.rawQuery(rawRecentQuery, rawRecentArgs);
                 if (cursor.moveToFirst())
                 {
-                    mRecentBowlerName = cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_BOWLER_NAME));
-                    mRecentLeagueName = cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_LEAGUE_NAME));
-                    mRecentNumberOfGames = (byte) cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NUMBER_OF_GAMES));
+                    mRecentBowlerName = cursor.getString(
+                            cursor.getColumnIndex(BowlerEntry.COLUMN_BOWLER_NAME));
+                    mRecentLeagueName = cursor.getString(
+                            cursor.getColumnIndex(LeagueEntry.COLUMN_LEAGUE_NAME));
+                    mRecentNumberOfGames = (byte) cursor.getInt(
+                            cursor.getColumnIndex(LeagueEntry.COLUMN_NUMBER_OF_GAMES));
                 }
                 else
                 {
-                    mRecentBowlerId = mRecentLeagueId = -1;
+                    mRecentBowlerId = -1;
+                    mRecentLeagueId = -1;
                 }
                 cursor.close();
             }
@@ -581,20 +641,28 @@ public class BowlerFragment extends Fragment
                         + LeagueEntry.COLUMN_NUMBER_OF_GAMES
                         + " FROM " + BowlerEntry.TABLE_NAME + " AS bowler"
                         + " INNER JOIN " + LeagueEntry.TABLE_NAME + " AS league"
-                        + " ON bowler." + BowlerEntry._ID + "=league." + LeagueEntry.COLUMN_BOWLER_ID
-                        + " WHERE bowler." + BowlerEntry._ID + "=? AND league." + LeagueEntry._ID + "=?";
-                String[] rawRecentArgs = new String[]{String.valueOf(mQuickBowlerId), String.valueOf(mQuickLeagueId)};
+                        + " ON bowler." + BowlerEntry._ID
+                                + "=league." + LeagueEntry.COLUMN_BOWLER_ID
+                        + " WHERE bowler." + BowlerEntry._ID + "=?"
+                                + "AND league." + LeagueEntry._ID + "=?";
+                String[] rawRecentArgs = new String[]{
+                        String.valueOf(mQuickBowlerId),
+                        String.valueOf(mQuickLeagueId)};
 
                 cursor = database.rawQuery(rawRecentQuery, rawRecentArgs);
                 if (cursor.moveToFirst())
                 {
-                    mQuickBowlerName = cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_BOWLER_NAME));
-                    mQuickLeagueName = cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_LEAGUE_NAME));
-                    mQuickNumberOfGames = (byte) cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NUMBER_OF_GAMES));
+                    mQuickBowlerName = cursor.getString(
+                            cursor.getColumnIndex(BowlerEntry.COLUMN_BOWLER_NAME));
+                    mQuickLeagueName = cursor.getString(
+                            cursor.getColumnIndex(LeagueEntry.COLUMN_LEAGUE_NAME));
+                    mQuickNumberOfGames = (byte) cursor.getInt(
+                            cursor.getColumnIndex(LeagueEntry.COLUMN_NUMBER_OF_GAMES));
                 }
                 else
                 {
-                    mQuickBowlerId = mQuickLeagueId = -1;
+                    mQuickBowlerId = -1;
+                    mQuickLeagueId = -1;
                 }
                 cursor.close();
             }
@@ -617,7 +685,7 @@ public class BowlerFragment extends Fragment
     }
 
     /**
-     * Sets data to be displayed in new instance of LeagueEventFragment
+     * Sets data to be displayed in new instance of LeagueEventFragment.
      */
     private class OpenBowlerLeaguesTask extends AsyncTask<Integer, Void, Object[]>
     {
@@ -627,8 +695,10 @@ public class BowlerFragment extends Fragment
             long bowlerId = mListBowlerIds.get(position[0]);
 
             //Updates date which bowler was last accessed in database
-            SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
+            SQLiteDatabase database =
+                    DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
+            SimpleDateFormat dateFormat =
+                    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
             ContentValues values = new ContentValues();
             values.put(BowlerEntry.COLUMN_DATE_MODIFIED, dateFormat.format(new Date()));
 
@@ -660,12 +730,16 @@ public class BowlerFragment extends Fragment
             int position = (Integer) params[1];
 
             //Creates new instance of LeagueEventFragment for bowlerId
-            mBowlerSelectedListener.onBowlerSelected(bowlerId, mListBowlerNames.get(position), true, false);
+            mBowlerSelectedListener.onBowlerSelected(
+                    bowlerId,
+                    mListBowlerNames.get(position),
+                    true,
+                    false);
         }
     }
 
     /**
-     * Creates new bowler in the database and adds them to the recycler view
+     * Creates new bowler in the database and adds them to the recycler view.
      */
     private class NewBowlerTask extends AsyncTask<String, Void, String>
     {
@@ -673,8 +747,10 @@ public class BowlerFragment extends Fragment
         protected String doInBackground(String... bowlerName)
         {
             long newId = -1;
-            SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
+            SQLiteDatabase database =
+                    DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
+            SimpleDateFormat dateFormat =
+                    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
             String currentDate = dateFormat.format(new Date());
 
             ContentValues values = new ContentValues();
@@ -735,19 +811,22 @@ public class BowlerFragment extends Fragment
 
     /**
      * Container Activity must implement this interface to allow
-     * LeagueEventFragment to be loaded when a bowler is selected
+     * LeagueEventFragment to be loaded when a bowler is selected.
      */
     public interface OnBowlerSelectedListener
     {
         /**
          * Should be overridden to create a LeagueEventFragment with the leagues
-         * belonging to the bowler represented by bowlerId
+         * belonging to the bowler represented by bowlerId.
          *
          * @param bowlerId id of the bowler whose leagues/events will be displayed
          * @param bowlerName name of the bowler corresponding to bowlerId
          * @param openLeagueFragment if new fragment should be opened
          * @param isQuickSeries if a quick series is being created
          */
-        void onBowlerSelected(long bowlerId, String bowlerName, boolean openLeagueFragment, boolean isQuickSeries);
+        void onBowlerSelected(long bowlerId,
+                              String bowlerName,
+                              boolean openLeagueFragment,
+                              boolean isQuickSeries);
     }
 }

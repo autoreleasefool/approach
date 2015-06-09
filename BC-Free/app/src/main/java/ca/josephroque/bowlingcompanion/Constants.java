@@ -255,4 +255,7 @@ public final class Constants
     public static final String NAV_OPTION_STATS = "Statistics";
     /** Name of the option to navigate to the settings. */
     public static final String NAV_OPTION_SETTINGS = "Settings";
+
+    /** Maximum score of a 5 pin game. */
+    public static final int GAME_MAX_SCORE = 450;
 }

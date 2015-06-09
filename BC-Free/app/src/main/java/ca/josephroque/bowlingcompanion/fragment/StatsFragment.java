@@ -34,6 +34,19 @@ import ca.josephroque.bowlingcompanion.theme.Theme;
 public class StatsFragment extends Fragment
         implements Theme.ChangeableTheme
 {
+
+    /** Identifies output from this class in Logcat. */
+    @SuppressWarnings("unused")
+    private static final String TAG = "StatsFragment";
+
+    // Constant values
+
+    // Objects
+
+    // Arrays, data structures
+
+    // Primitive variables
+
     /** Indicates all the stats related to the specified bowler should be loaded */
     private static final byte LOADING_BOWLER_STATS = 0;
     /** Indicates all the stats related to the specified league should be loaded */
