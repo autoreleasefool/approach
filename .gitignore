@@ -31,5 +31,8 @@ proguard/
 # Application design files
 Design/*
 
+# Android Studio files
+*.idea
+*.idea/
 *checkstyle-idea.xml
 *codeStyleSettings.xml
