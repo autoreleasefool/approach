@@ -4,7 +4,7 @@ branches:
   only:
     - master
 before_install:
-  - chmod +x gradlew
+  - chmod +x BC-Free/gradlew
   # Install base Android SDK
   - sudo apt-get update -qq
   - if [ `uname -m` = x86_64 ]; then sudo apt-get install -qq --force-yes libgd2-xpm ia32-libs ia32-libs-multiarch > /dev/null; fi
@@ -25,4 +25,4 @@ before_install:
 install:
   - true
 script:
-  - TERM=dumb ./gradlew test assembleDebug
+  - TERM=dumb ./BC-Free/gradlew test assembleDebug
