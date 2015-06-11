@@ -30,3 +30,6 @@ proguard/
 
 # Application design files
 Design/*
+
+*checkstyle-idea.xml
+*codeStyleSettings.xml
