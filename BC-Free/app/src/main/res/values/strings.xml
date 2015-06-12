@@ -66,6 +66,10 @@
     <string name="text_match_play_win">Won</string>
     <string name="text_match_play_lose">Lost</string>
     <string name="text_match_play_tie">Tied</string>
+    <string name="text_rate_prompt">If you like this app, please consider rating it.</string>
+    <string name="text_rate_app">Rate</string>
+    <string name="text_rate_remind_me">Remind me</string>
+    <string name="text_rate_no">No, thanks</string>
 
     <!-- Content Descriptions -->
     <string name="description_lock_unlock">Lock or unlock game</string>

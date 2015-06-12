@@ -2,10 +2,10 @@ package ca.josephroque.bowlingcompanion.utilities;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.view.View;
 
 import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.R;
@@ -13,11 +13,10 @@ import ca.josephroque.bowlingcompanion.R;
 /**
  * Created by Joseph Roque on 15-03-03.
  * <p/>
- * Provides methods for determining the level of user interaction with the application, and
- * offering a prompt to rate the app if they desire, or disable the prompt if not.
+ * Provides methods for determining the level of user interaction with the application, and offering
+ * a prompt to rate the app if they desire, or disable the prompt if not.
  * <p/>
- * Retrieved from http://www.androidsnippets.com/
- * prompt-engaged-users-to-rate-your-app-in-the-android-market-appirater
+ * Retrieved from http://www.androidsnippets.com/ prompt-engaged-users-to-rate-your-app-in-the-android-market-appirater
  */
 public final class AppRater
 {
@@ -26,8 +25,6 @@ public final class AppRater
     @SuppressWarnings("unused")
     private static final String TAG = "AppRater";
 
-    /** Name of the app. */
-    private static final String APP_NAME = "Bowling Companion";
     /** Package the app has been created in. */
     private static final String APP_PNAME = "ca.josephroque.bowlingcompanion";
 
@@ -101,48 +98,51 @@ public final class AppRater
      */
     public static void showRateDialog(final Context context, final SharedPreferences.Editor editor)
     {
-        AlertDialog.Builder rateBuilder = new AlertDialog.Builder(context);
-        rateBuilder.setTitle("If you like " + APP_NAME
-                + ", please consider rating it. Thank you for your support!")
-                .setSingleChoiceItems(new CharSequence[]{
-                        "Rate " + APP_NAME, "Remind me later", "No, thanks"}, 0, null)
-                .setPositiveButton(R.string.dialog_add, new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        int pos = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
-                        switch (pos)
-                        {
-                            case 0: //Rate
-                                disableAutomaticPrompt(editor);
+        final AlertDialog.Builder dialog = new AlertDialog.Builder(context);
+        View rootView = View.inflate(context, R.layout.dialog_rate, null);
 
-                                //Opens Google Play or browser to display app
-                                try
-                                {
-                                    context.startActivity(new Intent(Intent.ACTION_VIEW,
-                                            Uri.parse("market://details?id=" + APP_PNAME)));
-                                }
-                                catch (android.content.ActivityNotFoundException ex)
-                                {
-                                    context.startActivity(new Intent(Intent.ACTION_VIEW,
-                                            Uri.parse(
-                                                    "http://play.google.com/store/apps/details?id="
-                                                            + APP_PNAME)));
-                                }
-                                break;
-                            case 2: //Disable
-                                disableAutomaticPrompt(editor);
-                                break;
-                            case 1: default: // Remind me/other
-                            //do nothing
+        dialog.setView(rootView);
+        final AlertDialog alertDialog = dialog.create();
+
+        View.OnClickListener listener = new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                alertDialog.dismiss();
+                switch (v.getId())
+                {
+                    case R.id.btn_rate:
+                        try
+                        {
+                            context.startActivity(new Intent(Intent.ACTION_VIEW,
+                                    Uri.parse("market://details?id=" + APP_PNAME)));
                         }
-                        dialog.dismiss();
-                    }
-                })
-                .setCancelable(false)
-                .create()
-                .show();
+                        catch (android.content.ActivityNotFoundException ex)
+                        {
+                            context.startActivity(new Intent(Intent.ACTION_VIEW,
+                                    Uri.parse(
+                                            "http://play.google.com/store/apps/details?id="
+                                                    + APP_PNAME)));
+                        }
+                        disableAutomaticPrompt(editor);
+                        break;
+                    case R.id.btn_rate_no:
+                        disableAutomaticPrompt(editor);
+                        break;
+                    case R.id.btn_rate_remind_me:
+                        break;
+                    default:
+                        // do nothing
+                }
+            }
+        };
+
+        rootView.findViewById(R.id.btn_rate).setOnClickListener(listener);
+        rootView.findViewById(R.id.btn_rate_no).setOnClickListener(listener);
+        rootView.findViewById(R.id.btn_rate_remind_me).setOnClickListener(listener);
+
+        alertDialog.show();
     }
 
     /**
