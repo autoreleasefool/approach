@@ -44,6 +44,7 @@ public final class ImageUtils
      */
     private ImageUtils()
     {
+        // does nothing
     }
 
     /** Width of a single game's frames. */

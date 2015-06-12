@@ -26,17 +26,8 @@ public class NewBowlerDialog extends DialogFragment
     @SuppressWarnings("unused")
     private static final String TAG = "";
 
-    // Constant values
-
-    // Objects
-
     /** Instance of listener which contains methods that are executed upon user interaction. */
     private NewBowlerDialogListener mDialogListener;
-
-    // Arrays, data structures
-
-    // Primitive variables
-
 
     @NonNull
     @Override

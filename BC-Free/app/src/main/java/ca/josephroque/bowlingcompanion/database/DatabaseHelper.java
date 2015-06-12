@@ -26,21 +26,13 @@ public final class DatabaseHelper extends SQLiteOpenHelper
     @SuppressWarnings("unused")
     private static final String TAG = "DBHelper";
 
-    // Constant values
-
     /** Name of the database. */
     private static final String DATABASE_NAME = "bowlingdata";
     /** Version of the database, incremented with changes. */
     private static final int DATABASE_VERSION = 2;
 
-    // Objects
-
     /** Singleton instance of the DatabaseHelper. */
     private static DatabaseHelper sDatabaseHelperInstance = null;
-
-    // Arrays, data structures
-
-    // Primitive variables
 
     /**
      * Returns a singleton instance of DatabaseHelper.

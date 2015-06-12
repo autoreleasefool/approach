@@ -17,6 +17,7 @@ public final class Constants
      */
     private Constants()
     {
+        // does nothing
     }
 
     // SETTINGS KEYS
@@ -258,4 +259,6 @@ public final class Constants
 
     /** Maximum score of a 5 pin game. */
     public static final int GAME_MAX_SCORE = 450;
+    /** Default minimum score to highlight. */
+    public static final int DEFAULT_GAME_HIGHLIGHT = 300;
 }

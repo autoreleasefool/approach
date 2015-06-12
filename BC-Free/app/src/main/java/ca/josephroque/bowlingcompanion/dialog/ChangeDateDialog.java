@@ -26,18 +26,10 @@ public class ChangeDateDialog extends DialogFragment
     @SuppressWarnings("unused")
     private static final String TAG = "ChangeDateDialog";
 
-    // Constant values
-
-    // Objects
-
     /** Dialog which allows user to select a date from a calendar. */
     private DatePickerDialog mDatePicker;
     /** Callback listener for when user selects a date. */
     private ChangeDateDialogListener mChangeDateListener;
-
-    // Arrays, data structures
-
-    // Primitive variables
 
     /** Id which identifies the current series which user is changing the date for. */
     private long mSeriesId;

@@ -21,6 +21,7 @@ public final class Theme
      */
     private Theme()
     {
+        // does nothing
     }
 
     /** Identifier for the current theme. */

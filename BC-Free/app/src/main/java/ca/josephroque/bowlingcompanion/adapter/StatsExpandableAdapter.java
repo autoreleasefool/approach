@@ -28,21 +28,13 @@ public class StatsExpandableAdapter extends BaseExpandableListAdapter
     @SuppressWarnings("unused")
     private static final String TAG = "StatsExpandable";
 
-    // Constant values
-
-    // Objects
-
     /** Context which created this object. */
     private Context mContext;
-
-    // Arrays, data structures
 
     /** List of group headers. */
     private List<String> mListStatHeaders;
     /** List of list of map entries which hold a name and a value, for each group. */
     private List<List<AbstractMap.SimpleEntry<String, String>>> mListStatNamesAndValues;
-
-    // Primitive variables
 
     /**
      * Assigns member variables to parameters.

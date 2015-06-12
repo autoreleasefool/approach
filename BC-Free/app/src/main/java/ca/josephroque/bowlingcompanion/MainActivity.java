@@ -70,14 +70,6 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("unused")
     private static final String TAG = "MainActivity";
 
-    // Constant values
-
-    // Objects
-
-    // Arrays, data structures
-
-    // Primitive variables
-
     /** Id of current bowler being used in fragments. */
     private long mBowlerId = -1;
     /** Id of current league being used in fragments. */

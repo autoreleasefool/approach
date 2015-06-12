@@ -22,6 +22,7 @@ public final class EmailUtils
      */
     private EmailUtils()
     {
+        // does nothing
     }
 
     /**

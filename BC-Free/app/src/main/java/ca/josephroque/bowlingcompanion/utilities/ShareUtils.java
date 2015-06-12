@@ -34,6 +34,7 @@ public final class ShareUtils
      */
     private ShareUtils()
     {
+        // does nothing
     }
 
     /**

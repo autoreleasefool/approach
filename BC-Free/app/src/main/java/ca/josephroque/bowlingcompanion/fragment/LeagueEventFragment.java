@@ -61,10 +61,6 @@ public class LeagueEventFragment extends Fragment
     @SuppressWarnings("unused")
     private static final String TAG = "LeagueEventFragment";
 
-    // Constant values
-
-    // Objects
-
     /** View to display league and event names and averages to user. */
     private RecyclerView mRecyclerViewLeagueEvents;
     /** Adapter to manage data displayed in mRecyclerViewLeagueEvents. */
@@ -75,8 +71,6 @@ public class LeagueEventFragment extends Fragment
     /** Callback listener for user events related to series. */
     private SeriesFragment.SeriesListener mSeriesListener;
 
-    // Arrays, data structures
-
     /** List to store ids from league table in database. */
     private List<Long> mListLeagueEventIds;
     /** List to store names of leagues, relevant to order of mListLeagueEventIds. */
@@ -85,8 +79,6 @@ public class LeagueEventFragment extends Fragment
     private List<Short> mListLeagueEventAverages;
     /** List to store number of games of leagues, relevant to order of mListLeagueEventIds. */
     private List<Byte> mListLeagueEventNumberOfGames;
-
-    // Primitive variables
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -614,7 +606,7 @@ public class LeagueEventFragment extends Fragment
 
     /**
      * Loads the names of relevant leagues or events and adds them to the lists
-     * to be displayed to the user
+     * to be displayed to the user.
      */
     private class LoadLeaguesEventsTask extends AsyncTask<Void, Void, List<?>[]>
     {

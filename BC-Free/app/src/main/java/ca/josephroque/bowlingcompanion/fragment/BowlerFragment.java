@@ -62,10 +62,6 @@ public class BowlerFragment extends Fragment
     @SuppressWarnings("unused")
     private static final String TAG = "BowlerFragment";
 
-    // Constant values
-
-    // Objects
-
     /** View to display bowler names and averages to user. */
     private RecyclerView mRecyclerViewBowlers;
     /** Adapter to manage data displayed in mRecyclerViewBowlers. */
@@ -78,16 +74,12 @@ public class BowlerFragment extends Fragment
     /** Callback listener for user events related to series. */
     private SeriesFragment.SeriesListener mSeriesListener;
 
-    // Arrays, data structures
-
     /** List to store ids from bowler table in database. */
     private List<Long> mListBowlerIds;
     /** List to store names of bowlers, relevant to order of mListBowlerIds. */
     private List<String> mListBowlerNames;
     /** List to store averages of bowlers, relevant to order of mListBowlerIds. */
     private List<Short> mListBowlerAverages;
-
-    // Primitive variables
 
     /** Id from 'bowler' database which represents the most recently used bowler. */
     private long mRecentBowlerId = -1;

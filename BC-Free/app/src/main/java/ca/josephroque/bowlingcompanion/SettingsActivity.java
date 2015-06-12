@@ -51,6 +51,7 @@ public class SettingsActivity extends PreferenceActivity
     private String[][] mArrayLeagueIds;
     /** Array of names from database of leagues. */
     private String[][] mArrayLeagueNames;
+
     /** Currently selected bowler in mArrayBowlerNames. */
     private int mCurrentBowlerPosition;
 
@@ -166,8 +167,8 @@ public class SettingsActivity extends PreferenceActivity
                     listBowlerNames.add(cursor.getString(cursor.getColumnIndex(
                             BowlerEntry.COLUMN_BOWLER_NAME)));
                     listBowlerIds.add(String.valueOf(bowlerId));
-                    listLeagueIds.add(new ArrayList<>());
-                    listLeagueNames.add(new ArrayList<>());
+                    listLeagueIds.add(new ArrayList<String>());
+                    listLeagueNames.add(new ArrayList<String>());
                     currentLeaguePosition++;
                 }
                 listLeagueIds.get(currentLeaguePosition)

@@ -26,8 +26,6 @@ public final class AppRater
     @SuppressWarnings("unused")
     private static final String TAG = "AppRater";
 
-    // Constant values
-
     /** Name of the app. */
     private static final String APP_NAME = "Bowling Companion";
     /** Package the app has been created in. */
@@ -53,6 +51,7 @@ public final class AppRater
      */
     private AppRater()
     {
+        // does nothing
     }
 
     /**

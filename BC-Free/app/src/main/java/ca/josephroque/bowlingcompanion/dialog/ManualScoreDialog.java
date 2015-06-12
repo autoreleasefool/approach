@@ -27,17 +27,8 @@ public class ManualScoreDialog extends DialogFragment
     @SuppressWarnings("unused")
     private static final String TAG = "ManualScoreDialog";
 
-    // Constant values
-
-    // Objects
-
     /** Instance of callback listener. */
     private ManualScoreDialogListener mDialogListener;
-
-    // Arrays, data structures
-
-    // Primitive variables
-
 
     @NonNull
     @Override

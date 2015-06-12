@@ -58,10 +58,6 @@ public class SeriesFragment extends Fragment
     @SuppressWarnings("unused")
     private static final String TAG = "SeriesFragment";
 
-    // Constant values
-
-    // Objects
-
     /** View to display series dates and games to user. */
     private RecyclerView mRecyclerViewSeries;
     /** Adapter to manage data displayed in mRecyclerViewSeries. */
@@ -70,16 +66,12 @@ public class SeriesFragment extends Fragment
     /** Callback listener for user events related to series. */
     private SeriesListener mSeriesListener;
 
-    // Arrays, data structures
-
     /** List of series ids from "series" table in database to uniquely identify series. */
     private List<Long> mListSeriesIds;
     /** List of series dates which will be displayed by RecyclerView. */
     private List<String> mListSeriesDates;
     /** List of scores in each series which will be displayed by RecyclerView. */
     private List<List<Short>> mListSeriesGames;
-
-    // Primitive variables
 
     @Override
     public void onCreate(Bundle savedInstaceState)
@@ -441,7 +433,7 @@ public class SeriesFragment extends Fragment
                     {
                         listSeriesIds.add(seriesId);
                         listSeriesDates.add(DataFormatter.formattedDateToPrettyCompact(seriesDate));
-                        listSeriesGames.add(new ArrayList<>());
+                        listSeriesGames.add(new ArrayList<Short>());
                     }
 
                     listSeriesGames.get(listSeriesGames.size() - 1).add(gameScore);

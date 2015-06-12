@@ -35,7 +35,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.MainActivity;
 import ca.josephroque.bowlingcompanion.R;
-import ca.josephroque.bowlingcompanion.database.Contract.*;
+import ca.josephroque.bowlingcompanion.database.Contract.FrameEntry;
+import ca.josephroque.bowlingcompanion.database.Contract.GameEntry;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.dialog.ManualScoreDialog;
 import ca.josephroque.bowlingcompanion.utilities.DataFormatter;
@@ -61,8 +62,6 @@ public class GameFragment extends Fragment
     @SuppressWarnings("unused")
     private static final String TAG = "GameFragment";
 
-    // Constant values
-
     /** Represents the OnClickListener for the frame TextView objects. */
     private static final byte LISTENER_TEXT_FRAMES = 0;
     /** Represents the OnClickListener for the pin button objects. */
@@ -71,8 +70,6 @@ public class GameFragment extends Fragment
     private static final byte LISTENER_OTHER = 2;
     /** Represents the OnClickListener for the ball TextView objects. */
     private static final byte LISTENER_TEXT_BALLS = 3;
-
-    // Objects
 
     /** TextView which displays score on a certain ball in a certain frame. */
     private TextView[][] mTextViewBallScores;
@@ -119,8 +116,6 @@ public class GameFragment extends Fragment
     /** Instance of callback interface for handling user events. */
     private GameFragmentCallbacks mCallback;
 
-    // Arrays, data structures
-
     /** Ids which represent current games that are available to be edited. */
     private long[] mGameIds;
     /** Ids which represent frames of current games. */
@@ -142,8 +137,6 @@ public class GameFragment extends Fragment
     private boolean[] mManualScoreSet;
     /** Indicates the results of match play for each game. */
     private byte[] mMatchPlay;
-
-    // Primitive variables
 
     /** Integer which represents the background color of views in the activity. */
     private int mColorBackground;
@@ -1385,7 +1378,7 @@ public class GameFragment extends Fragment
     }
 
     /**
-     * Sets text of all TextView instances which display individual ball values
+     * Sets text of all TextView instances which display individual ball values.
      */
     private void updateAllBalls()
     {
@@ -1394,7 +1387,7 @@ public class GameFragment extends Fragment
     }
 
     /**
-     * Sets the text of the three TextView instances which correspond to frameToUpdate
+     * Sets the text of the three TextView instances which correspond to frameToUpdate.
      *
      * @param frameToUpdate frame of which text should be updated
      * @param leftToUpdate number of frames to the left to update

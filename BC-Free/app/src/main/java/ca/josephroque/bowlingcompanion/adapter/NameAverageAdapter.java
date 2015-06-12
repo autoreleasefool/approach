@@ -32,26 +32,18 @@ public class NameAverageAdapter
     @SuppressWarnings("unused")
     private static final String TAG = "NameAverageAdapter";
 
-    // Constant values
-
     /** Indicates data represents bowlers. */
     public static final byte DATA_BOWLERS = 0;
     /** Indicates data represents leagues and events. */
     public static final byte DATA_LEAGUES_EVENTS = 1;
 
-    // Objects
-
     /** Instance of handler for callback on user action. */
     private NameAverageEventHandler mEventHandler;
-
-    // Arrays, data structures
 
     /** List of names which will be displayed. */
     private List<String> mListNames;
     /** List of averages which will be displayed, in an order relative to mListNames. */
     private List<Short> mListAverages;
-
-    // Primitive variables
 
     /** Type of data being represented by this object. */
     private byte mDataType;

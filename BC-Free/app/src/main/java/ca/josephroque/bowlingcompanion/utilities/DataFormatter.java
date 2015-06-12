@@ -17,6 +17,7 @@ public final class DataFormatter
      */
     private DataFormatter()
     {
+        // does nothing
     }
 
     /**

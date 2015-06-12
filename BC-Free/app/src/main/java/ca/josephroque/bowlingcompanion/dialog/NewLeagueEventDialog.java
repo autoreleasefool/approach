@@ -26,16 +26,8 @@ public class NewLeagueEventDialog extends DialogFragment
     @SuppressWarnings("unused")
     private static final String TAG = "";
 
-    // Constant values
-
-    // Objects
-
     /** Instance of listener which contains methods that are executed upon user interaction. */
     private NewLeagueEventDialogListener mDialogListener;
-
-    // Arrays, data structures
-
-    // Primitive variables
 
     /** If true, a new event is being added, a league otherwise. */
     private boolean mIsEventMode;

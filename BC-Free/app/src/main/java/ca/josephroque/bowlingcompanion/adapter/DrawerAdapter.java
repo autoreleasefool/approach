@@ -29,19 +29,11 @@ public class DrawerAdapter extends ArrayAdapter<String>
     @SuppressWarnings("unused")
     private static final String TAG = "DrawerAdapter";
 
-    // Constant values
-
-    // Objects
-
     /** Callback listener for user events. */
     private OnDrawerClickListener mDrawerClickListener;
 
-    // Arrays, data structures
-
     /** List of options to be displayed by the ListView. */
     private List<String> mListOptions;
-
-    // Primitive variables
 
     /** Current game, which corresponds to a game tag with a filled radio button in the view. */
     private String mCurrentGame = "0";

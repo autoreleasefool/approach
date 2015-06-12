@@ -16,6 +16,7 @@ public final class Contract
      */
     private Contract()
     {
+        // does nothing
     }
 
     /**
@@ -28,6 +29,7 @@ public final class Contract
          */
         private BowlerEntry()
         {
+            // does nothing
         }
 
         /** Name of the table for bowler data. */
@@ -48,6 +50,7 @@ public final class Contract
          */
         private LeagueEntry()
         {
+            // does nothing
         }
 
         /** Name of the table for league data. */
@@ -74,6 +77,7 @@ public final class Contract
          */
         private SeriesEntry()
         {
+            // does nothing
         }
 
         /** Name of the table for series data. */
@@ -94,6 +98,7 @@ public final class Contract
          */
         private GameEntry()
         {
+            // does nothing
         }
 
         /** Name of the table for game data. */
@@ -122,6 +127,7 @@ public final class Contract
          */
         private FrameEntry()
         {
+            // does nothing
         }
 
         /** Name of the table for frame data. */

@@ -34,26 +34,18 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
     @SuppressWarnings("unused")
     private static final String TAG = "SeriesAdapter";
 
-    // Constant values
-
-    // Objects
-
     /** Activity which created the instance of this object. */
     private Activity mActivity;
     /** Instance of handler for callback on user action. */
     private SeriesEventHandler mEventHandler;
-
-    // Arrays, data structures
 
     /** List of dates which will be displayed. */
     private List<String> mListDates;
     /** List of games which will be displayed, in an order relative to mListDates. */
     private List<List<Short>> mListGames;
 
-    // Primitive variables
-
     /** Indicates minimum score values which will be highlighted when displayed. */
-    private int minimumScoreToHighlight = 300;
+    private int minimumScoreToHighlight = Constants.DEFAULT_GAME_HIGHLIGHT;
 
     /**
      * Subclass of RecyclerView.ViewHolder to manage view which will display

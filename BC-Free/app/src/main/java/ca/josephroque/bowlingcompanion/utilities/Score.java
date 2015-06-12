@@ -19,6 +19,7 @@ public final class Score
      */
     private Score()
     {
+        // does nothing
     }
 
     /**
