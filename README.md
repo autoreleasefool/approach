@@ -2,7 +2,7 @@ Bowling Companion (5-Pin Bowling Stats)
 =======================================
 An Android app to track 5-pin bowling statistics. Allows users to track multiple bowlers and leagues, and provides in-depth statistics on their game. Useful for determining areas in which the user's performance can be improved.
 
-[View the JavaDocs](https://joseph-roque.github.io/BowlingCompanion)
+[View the JavaDocs](http://joseph-roque.github.io/bowling-companion/)
 
 [View it on the Play Store](https://play.google.com/store/apps/details?id=ca.josephroque.bowlingcompanion)
 
@@ -16,7 +16,7 @@ With a variety of themes and options to customize the statistics you see, you'll
 
 And the best part? Never pay a cent. This app will never offer you in-app purchases or become a paid service.
 
-This app is also 100% open source. Feel free to check out the repository at https://github.com/joseph-roque/BowlingCompanion to see the source and even contribute. In addition, as you request and I plan new features, you'll be able to view their progress any time, so long as you understand what you're doing over at GitHub.
+This app is also 100% open source. Feel free to check out the repository at https://github.com/joseph-roque/bowling-companion to see the source and even contribute. In addition, as you request and I plan new features, you'll be able to view their progress any time, so long as you understand what you're doing over at GitHub.
 
 **Permissions**
 
