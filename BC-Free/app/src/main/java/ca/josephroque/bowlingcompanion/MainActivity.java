@@ -15,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.widget.DrawerLayout;
@@ -24,9 +25,13 @@ import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.OvershootInterpolator;
+import android.view.animation.ScaleAnimation;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -48,6 +53,7 @@ import ca.josephroque.bowlingcompanion.fragment.StatsFragment;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.utilities.AppRater;
 import ca.josephroque.bowlingcompanion.utilities.DataFormatter;
+import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
 
 /**
  * Created by Joseph Roque
@@ -69,6 +75,9 @@ public class MainActivity extends AppCompatActivity
     /** Identifies output from this class in Logcat. */
     @SuppressWarnings("unused")
     private static final String TAG = "MainActivity";
+
+    /** Relative to center of views. */
+    private static final float CENTER_PIVOT = 0.5f;
 
     /** Id of current bowler being used in fragments. */
     private long mBowlerId = -1;
@@ -93,7 +102,7 @@ public class MainActivity extends AppCompatActivity
     /** Indicates if a quick series is being created. */
     private boolean mIsQuickSeries;
     /** Indicates the current fragment on screen. */
-    private String mCurrentFragment = Constants.FRAGMENT_BOWLERS;
+    private String mCurrentFragmentTitle = Constants.FRAGMENT_BOWLERS;
 
     /** View which, on click, advances the frame. */
     private View mViewAutoAdvance;
@@ -174,6 +183,13 @@ public class MainActivity extends AppCompatActivity
     /** AdView to display ads to user. */
     private AdView mAdView;
 
+    /** The primary floating action button. */
+    private FloatingActionButton mFloatingActionButton;
+    /** Current icon of the floating action button. */
+    private int mCurrentFabIcon = 0;
+    /** A reference to the current fragment. */
+    private WeakReference<Fragment> mCurrentFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -185,6 +201,18 @@ public class MainActivity extends AppCompatActivity
         mDrawerTitle = R.string.title_drawer;
         setupNavigationDrawer();
 
+        mFloatingActionButton = (FloatingActionButton) findViewById(R.id.fab_main);
+        mFloatingActionButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                if (mCurrentFragment.get() != null
+                        && mCurrentFragment.get() instanceof FloatingActionButtonHandler)
+                    ((FloatingActionButtonHandler) mCurrentFragment.get()).onFabClick();
+            }
+        });
+
         mQueueSavingThreads = new ConcurrentLinkedQueue<>();
         mRunningSaveThread = null;
 
@@ -195,11 +223,12 @@ public class MainActivity extends AppCompatActivity
         if (savedInstanceState == null)
         {
             //Creates new BowlerFragment to display data, if no other fragment exists
-            BowlerFragment bowlerFragment = BowlerFragment.newInstance();
+            Fragment bowlerFragment = BowlerFragment.newInstance();
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.fl_main_fragment_container, bowlerFragment,
                             Constants.FRAGMENT_BOWLERS)
                     .commit();
+            mCurrentFragment = new WeakReference<>(bowlerFragment);
         }
         else
         {
@@ -385,7 +414,8 @@ public class MainActivity extends AppCompatActivity
             if (fragment == null || !fragment.isVisible() || fragment.getTag() == null)
                 continue;
 
-            mCurrentFragment = fragment.getTag();
+            mCurrentFragment = new WeakReference<>(fragment);
+            mCurrentFragmentTitle = fragment.getTag();
             switch (fragment.getTag())
             {
                 case Constants.FRAGMENT_BOWLERS:
@@ -399,6 +429,7 @@ public class MainActivity extends AppCompatActivity
                     mSeriesDate = null;
                     mNumberOfGames = -1;
                     mIsQuickSeries = false;
+                    setFloatingActionButtonIcon(R.drawable.ic_action_add_person);
                     break;
                 case Constants.FRAGMENT_LEAGUES:
                     mListDrawerOptions.add(Constants.NAV_OPTION_LEAGUES_EVENTS);
@@ -410,6 +441,7 @@ public class MainActivity extends AppCompatActivity
                     mLeagueName = null;
                     mSeriesDate = null;
                     mNumberOfGames = -1;
+                    setFloatingActionButtonIcon(R.drawable.ic_action_new);
                     break;
                 case Constants.FRAGMENT_SERIES:
                     mListDrawerOptions.add(Constants.NAV_OPTION_LEAGUES_EVENTS);
@@ -419,6 +451,7 @@ public class MainActivity extends AppCompatActivity
                     mGameId = -1;
                     mGameNumber = -1;
                     mSeriesDate = null;
+                    setFloatingActionButtonIcon(R.drawable.ic_action_new);
                     break;
                 case Constants.FRAGMENT_GAME:
                     GameFragment gameFragment = (GameFragment) fragment;
@@ -434,6 +467,7 @@ public class MainActivity extends AppCompatActivity
                     mDrawerAdapter.setCurrentGame(gameFragment.getCurrentGame());
                     mGameId = -1;
                     mGameNumber = -1;
+                    setFloatingActionButtonIcon(0);
                     break;
                 case Constants.FRAGMENT_STATS:
                     if (mLeagueId >= 0 && !isQuickSeries())
@@ -443,6 +477,7 @@ public class MainActivity extends AppCompatActivity
                     if (mSeriesId >= 0)
                         mListDrawerOptions.add(Constants.NAV_OPTION_GAME_DETAILS);
                     mListDrawerOptions.add(Constants.NAV_OPTION_STATS);
+                    setFloatingActionButtonIcon(0);
                     break;
                 default:
                     return;
@@ -528,6 +563,51 @@ public class MainActivity extends AppCompatActivity
     public void onCreateNewSeries(boolean isEvent)
     {
         new AddSeriesTask().execute();
+    }
+
+    public void setFloatingActionButtonIcon(final int drawableId)
+    {
+        if (drawableId != mCurrentFabIcon)
+        {
+            final int animTime = (mCurrentFabIcon == 0)
+                    ? 1
+                    : getResources().getInteger(android.R.integer.config_mediumAnimTime);
+            ScaleAnimation shrink = new ScaleAnimation(1.0f, 0f, 1.0f, 0f,
+                    Animation.RELATIVE_TO_SELF, CENTER_PIVOT, Animation.RELATIVE_TO_SELF, CENTER_PIVOT);
+            shrink.setDuration(animTime);
+            shrink.setAnimationListener(new Animation.AnimationListener()
+            {
+                @Override
+                public void onAnimationStart(Animation animation)
+                {
+                    // does nothing
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation)
+                {
+                    if (mCurrentFabIcon != 0)
+                        mFloatingActionButton.setVisibility(View.VISIBLE);
+                    else
+                        mFloatingActionButton.setVisibility(View.GONE);
+                    mFloatingActionButton.setImageResource(drawableId);
+                    mCurrentFabIcon = drawableId;
+                    ScaleAnimation grow = new ScaleAnimation(0f, 1.0f, 0f, 1.0f,
+                            Animation.RELATIVE_TO_SELF, CENTER_PIVOT, Animation.RELATIVE_TO_SELF, CENTER_PIVOT);
+                    grow.setDuration(animTime);
+                    grow.setInterpolator(new OvershootInterpolator());
+                    mFloatingActionButton.startAnimation(grow);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation)
+                {
+                    // does nothing
+                }
+            });
+
+            mFloatingActionButton.startAnimation(shrink);
+        }
     }
 
     /**
@@ -646,7 +726,7 @@ public class MainActivity extends AppCompatActivity
     {
         super.onUserInteraction();
 
-        if (mAutoAdvanceEnabled && mCurrentFragment.equals(Constants.FRAGMENT_GAME))
+        if (mAutoAdvanceEnabled && mCurrentFragmentTitle.equals(Constants.FRAGMENT_GAME))
         {
             resetAutoAdvanceTimer();
         }

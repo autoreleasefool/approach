@@ -1,7 +1,5 @@
 package ca.josephroque.bowlingcompanion.fragment;
 
-import com.melnykov.fab.FloatingActionButton;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
@@ -43,6 +41,7 @@ import ca.josephroque.bowlingcompanion.database.Contract.SeriesEntry;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.dialog.NewBowlerDialog;
 import ca.josephroque.bowlingcompanion.theme.Theme;
+import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
 
 /**
  * Created by Joseph Roque on 15-03-13.
@@ -55,7 +54,8 @@ import ca.josephroque.bowlingcompanion.theme.Theme;
 public class BowlerFragment extends Fragment
         implements Theme.ChangeableTheme,
         NameAverageAdapter.NameAverageEventHandler,
-        NewBowlerDialog.NewBowlerDialogListener
+        NewBowlerDialog.NewBowlerDialogListener,
+        FloatingActionButtonHandler
 {
 
     /** Identifies output from this class in Logcat. */
@@ -139,7 +139,7 @@ public class BowlerFragment extends Fragment
                              ViewGroup container,
                              Bundle savedInstanceState)
     {
-        View rootView = inflater.inflate(R.layout.fragment_fab_list, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_list, container, false);
 
         mListBowlerIds = new ArrayList<>();
         mListBowlerNames = new ArrayList<>();
@@ -157,18 +157,6 @@ public class BowlerFragment extends Fragment
                 mListBowlerAverages,
                 NameAverageAdapter.DATA_BOWLERS);
         mRecyclerViewBowlers.setAdapter(mAdapterBowlers);
-
-        FloatingActionButton floatingActionButton =
-                (FloatingActionButton) rootView.findViewById(R.id.fab_new_list_item);
-        floatingActionButton.setImageResource(R.drawable.ic_action_add_person);
-        floatingActionButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                showNewBowlerDialog();
-            }
-        });
 
         //Sets textviews to display text relevant to bowlers
         ((TextView) rootView.findViewById(R.id.tv_new_list_item))
@@ -236,7 +224,7 @@ public class BowlerFragment extends Fragment
     public void updateTheme()
     {
         //Updates colors of views
-        View rootView = getView();
+        /*View rootView = getView();
         if (rootView != null)
         {
             FloatingActionButton fab =
@@ -244,7 +232,7 @@ public class BowlerFragment extends Fragment
             fab.setColorNormal(Theme.getPrimaryThemeColor());
             fab.setColorPressed(Theme.getPrimaryThemeColor());
             fab.setColorRipple(Theme.getTertiaryThemeColor());
-        }
+        }*/
     }
 
     @Override
@@ -315,6 +303,12 @@ public class BowlerFragment extends Fragment
          * was received by input via the dialog
          */
         new NewBowlerTask().execute(bowlerName);
+    }
+
+    @Override
+    public void onFabClick()
+    {
+        showNewBowlerDialog();
     }
 
     /**

@@ -1,7 +1,5 @@
 package ca.josephroque.bowlingcompanion.fragment;
 
-import com.melnykov.fab.FloatingActionButton;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
@@ -42,6 +40,7 @@ import ca.josephroque.bowlingcompanion.database.Contract.SeriesEntry;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.dialog.NewLeagueEventDialog;
 import ca.josephroque.bowlingcompanion.theme.Theme;
+import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
 
 /**
  * Created by Joseph Roque on 15-03-15.
@@ -54,7 +53,8 @@ import ca.josephroque.bowlingcompanion.theme.Theme;
 public class LeagueEventFragment extends Fragment
         implements Theme.ChangeableTheme,
         NameAverageAdapter.NameAverageEventHandler,
-        NewLeagueEventDialog.NewLeagueEventDialogListener
+        NewLeagueEventDialog.NewLeagueEventDialogListener,
+        FloatingActionButtonHandler
 {
 
     /** Identifies output from this class in Logcat. */
@@ -113,7 +113,7 @@ public class LeagueEventFragment extends Fragment
                              ViewGroup container,
                              Bundle savedInstanceState)
     {
-        View rootView = inflater.inflate(R.layout.fragment_fab_list, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_list, container, false);
 
         mListLeagueEventIds = new ArrayList<>();
         mListLeagueEventNames = new ArrayList<>();
@@ -133,18 +133,6 @@ public class LeagueEventFragment extends Fragment
                 mListLeagueEventAverages,
                 NameAverageAdapter.DATA_LEAGUES_EVENTS);
         mRecyclerViewLeagueEvents.setAdapter(mAdapterLeagueEvents);
-
-        FloatingActionButton floatingActionButton =
-                (FloatingActionButton) rootView.findViewById(R.id.fab_new_list_item);
-        floatingActionButton.setImageResource(R.drawable.ic_action_new);
-        floatingActionButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                showLeagueOrEventDialog();
-            }
-        });
 
         //Sets textviews to display text relevant to leagues
         ((TextView) rootView.findViewById(R.id.tv_new_list_item))
@@ -205,7 +193,7 @@ public class LeagueEventFragment extends Fragment
     @Override
     public void updateTheme()
     {
-        View rootView = getView();
+        /*View rootView = getView();
         if (rootView != null)
         {
             FloatingActionButton fab =
@@ -213,7 +201,7 @@ public class LeagueEventFragment extends Fragment
             fab.setColorNormal(Theme.getPrimaryThemeColor());
             fab.setColorPressed(Theme.getPrimaryThemeColor());
             fab.setColorRipple(Theme.getTertiaryThemeColor());
-        }
+        }*/
     }
 
     @Override
@@ -301,6 +289,12 @@ public class LeagueEventFragment extends Fragment
         }
 
         new AddNewLeagueEventTask().execute(isEvent, leagueEventName, numberOfGames);
+    }
+
+    @Override
+    public void onFabClick()
+    {
+        showLeagueOrEventDialog();
     }
 
     /**

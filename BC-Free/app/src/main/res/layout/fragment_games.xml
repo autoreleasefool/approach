@@ -145,7 +145,7 @@
             android:contentDescription="@string/description_reset_frame"
             android:src="@drawable/ic_action_refresh" />
 
-        <com.melnykov.fab.FloatingActionButton
+        <!--<com.melnykov.fab.FloatingActionButton
             android:id="@+id/fab_next_ball"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -171,17 +171,15 @@
             fab:fab_colorNormal="@color/theme_light_green_primary"
             fab:fab_colorPressed="@color/theme_light_green_primary"
             fab:fab_colorRipple="@color/theme_light_green_tertiary"
-            fab:fab_type="mini" />
+            fab:fab_type="mini" />-->
 
         <TextView
             android:id="@+id/tv_auto_advance_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/fab_next_ball"
-            android:layout_toEndOf="@id/fab_prev_ball"
-            android:layout_toLeftOf="@id/fab_next_ball"
-            android:layout_toRightOf="@id/fab_prev_ball"
-            android:layout_toStartOf="@id/fab_next_ball"
+            android:layout_above="@id/iv_lock"
+            android:layout_margin="4dp"
+            android:layout_centerHorizontal="true"
             android:gravity="center"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@android:color/white" />

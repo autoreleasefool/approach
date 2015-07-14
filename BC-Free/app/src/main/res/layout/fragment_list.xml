@@ -26,16 +26,4 @@
         android:layout_height="match_parent"
         android:scrollbars="vertical" />
 
-    <com.melnykov.fab.FloatingActionButton
-        android:id="@+id/fab_new_list_item"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_margin="16dp"
-        fab:fab_colorNormal="@color/theme_light_green_primary"
-        fab:fab_colorPressed="@color/theme_light_green_primary"
-        fab:fab_colorRipple="@color/theme_light_green_tertiary" />
-
 </RelativeLayout>

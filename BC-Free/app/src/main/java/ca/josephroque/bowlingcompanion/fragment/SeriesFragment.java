@@ -20,8 +20,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.melnykov.fab.FloatingActionButton;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -38,6 +36,7 @@ import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.dialog.ChangeDateDialog;
 import ca.josephroque.bowlingcompanion.utilities.DataFormatter;
 import ca.josephroque.bowlingcompanion.theme.Theme;
+import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
 
 /**
  * Created by Joseph Roque on 15-03-17.
@@ -51,7 +50,8 @@ public class SeriesFragment extends Fragment
         implements
         Theme.ChangeableTheme,
         SeriesAdapter.SeriesEventHandler,
-        ChangeDateDialog.ChangeDateDialogListener
+        ChangeDateDialog.ChangeDateDialogListener,
+        FloatingActionButtonHandler
 {
 
     /** Identifies output from this class in Logcat. */
@@ -105,7 +105,7 @@ public class SeriesFragment extends Fragment
                              ViewGroup container,
                              Bundle savedInstanceState)
     {
-        View rootView = inflater.inflate(R.layout.fragment_fab_list, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_list, container, false);
 
         mListSeriesIds = new ArrayList<>();
         mListSeriesDates = new ArrayList<>();
@@ -121,18 +121,6 @@ public class SeriesFragment extends Fragment
 
         mAdapterSeries = new SeriesAdapter(getActivity(), this, mListSeriesDates, mListSeriesGames);
         mRecyclerViewSeries.setAdapter(mAdapterSeries);
-
-        FloatingActionButton floatingActionButton =
-                (FloatingActionButton) rootView.findViewById(R.id.fab_new_list_item);
-        floatingActionButton.setImageResource(R.drawable.ic_action_new);
-        floatingActionButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                mSeriesListener.onCreateNewSeries(false);
-            }
-        });
 
         //Sets textviews to display text relevant to series
         ((TextView) rootView.findViewById(R.id.tv_new_list_item))
@@ -196,7 +184,7 @@ public class SeriesFragment extends Fragment
     public void updateTheme()
     {
         //Updates colors of views and sets theme for this object to a 'valid' state
-        View rootView = getView();
+        /*View rootView = getView();
         if (rootView != null)
         {
             FloatingActionButton fab =
@@ -204,7 +192,7 @@ public class SeriesFragment extends Fragment
             fab.setColorNormal(Theme.getPrimaryThemeColor());
             fab.setColorPressed(Theme.getPrimaryThemeColor());
             fab.setColorRipple(Theme.getTertiaryThemeColor());
-        }
+        }*/
         mAdapterSeries.updateTheme();
     }
 
@@ -261,35 +249,34 @@ public class SeriesFragment extends Fragment
         });
 
         ((MainActivity) getActivity()).addSavingThread(
-                new Thread(new Runnable()
-                {
+                new Thread(new Runnable() {
                     @Override
-                    public void run()
-                    {
+                    public void run() {
                         SQLiteDatabase database =
                                 DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
                         ContentValues values = new ContentValues();
                         values.put(SeriesEntry.COLUMN_SERIES_DATE, formattedDate);
 
                         database.beginTransaction();
-                        try
-                        {
+                        try {
                             database.update(SeriesEntry.TABLE_NAME,
                                     values,
                                     SeriesEntry._ID + "=?",
                                     new String[]{String.valueOf(seriesId)});
                             database.setTransactionSuccessful();
-                        }
-                        catch (Exception ex)
-                        {
+                        } catch (Exception ex) {
                             //TODO: does nothing - date in database for series was not changed
-                        }
-                        finally
-                        {
+                        } finally {
                             database.endTransaction();
                         }
                     }
                 }));
+    }
+
+    @Override
+    public void onFabClick()
+    {
+        mSeriesListener.onCreateNewSeries(false);
     }
 
     /**
@@ -433,7 +420,7 @@ public class SeriesFragment extends Fragment
                     {
                         listSeriesIds.add(seriesId);
                         listSeriesDates.add(DataFormatter.formattedDateToPrettyCompact(seriesDate));
-                        listSeriesGames.add(new ArrayList<Short>());
+                        listSeriesGames.add(new ArrayList<>());
                     }
 
                     listSeriesGames.get(listSeriesGames.size() - 1).add(gameScore);
