@@ -202,6 +202,15 @@ public class MainActivity extends AppCompatActivity
         setupNavigationDrawer();
 
         mFloatingActionButton = (FloatingActionButton) findViewById(R.id.fab_main);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
+        {
+          final int underLollipopMargin = 8;
+          final float scale = getResources().getDisplayMetrics().density;
+            ViewGroup.MarginLayoutParams p =
+                    (ViewGroup.MarginLayoutParams) mFloatingActionButton.getLayoutParams();
+            p.setMargins(0, 0, DataFormatter.getPixelsFromDP(scale, underLollipopMargin), 0);
+            mFloatingActionButton.setLayoutParams(p);
+        }
         mFloatingActionButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
