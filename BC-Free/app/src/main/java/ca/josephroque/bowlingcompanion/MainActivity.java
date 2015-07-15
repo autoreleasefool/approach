@@ -14,6 +14,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -117,13 +118,7 @@ public class MainActivity extends AppCompatActivity
     private int mAutoAdvanceDelayRemaining;
 
     /** Handler for posting auto advance. */
-    private static Handler sAutoAdvanceHandler = new Handler()
-    {
-        @Override
-        public void handleMessage(Message message)
-        {
-        }
-    };
+    private Handler mAutoAdvanceHandler;
 
     /** Runnable to auto advance. */
     private Runnable mAutoAdvanceCallback = new Runnable()
@@ -150,7 +145,7 @@ public class MainActivity extends AppCompatActivity
                             mTextViewAutoAdvanceStatus.setVisibility(View.VISIBLE);
                             mTextViewAutoAdvanceStatus.setText(mAutoAdvanceDelayRemaining
                                     + " seconds until auto advance");
-                            sAutoAdvanceHandler.postDelayed(mAutoAdvanceCallback, timeToDelay);
+                            mAutoAdvanceHandler.postDelayed(mAutoAdvanceCallback, timeToDelay);
                         }
                     });
                 }
@@ -197,6 +192,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Theme.loadTheme(this);
+        mAutoAdvanceHandler = new AutoAdvanceHandler(Looper.getMainLooper());
 
         mTitle = R.string.app_name;
         mDrawerTitle = R.string.title_drawer;
@@ -596,12 +592,9 @@ public class MainActivity extends AppCompatActivity
                 @Override
                 public void onAnimationEnd(Animation animation) {
                     mCurrentFabIcon = drawableId;
-                    if (mCurrentFabIcon != 0)
-                    {
+                    if (mCurrentFabIcon != 0) {
                         mFloatingActionButton.setVisibility(View.VISIBLE);
-                    }
-                    else
-                    {
+                    } else {
                         mFloatingActionButton.setVisibility(View.GONE);
                         return;
                     }
@@ -773,8 +766,8 @@ public class MainActivity extends AppCompatActivity
 
         final int timeToDelay = 1000;
         mAutoAdvanceDelayRemaining = mAutoAdvanceDelay;
-        sAutoAdvanceHandler.removeCallbacks(mAutoAdvanceCallback);
-        sAutoAdvanceHandler.postDelayed(mAutoAdvanceCallback, timeToDelay);
+        mAutoAdvanceHandler.removeCallbacks(mAutoAdvanceCallback);
+        mAutoAdvanceHandler.postDelayed(mAutoAdvanceCallback, timeToDelay);
     }
 
     @Override
@@ -782,7 +775,7 @@ public class MainActivity extends AppCompatActivity
     {
         if (mTextViewAutoAdvanceStatus != null)
             mTextViewAutoAdvanceStatus.setVisibility(View.GONE);
-        sAutoAdvanceHandler.removeCallbacks(mAutoAdvanceCallback);
+        mAutoAdvanceHandler.removeCallbacks(mAutoAdvanceCallback);
     }
 
     /**
@@ -1213,6 +1206,30 @@ public class MainActivity extends AppCompatActivity
                         + ex.getMessage());
             }
             //wait for saving threads to finish
+        }
+    }
+
+    /**
+     * To delay auto advancing.
+     */
+    private static final class AutoAdvanceHandler
+            extends Handler
+    {
+
+        /**
+         * Sends {@code Looper} to super class.
+         *
+         * @param looper looper
+         */
+        private AutoAdvanceHandler(Looper looper)
+        {
+            super(looper);
+        }
+
+        @Override
+        public void handleMessage(Message message)
+        {
+            // does nothing;
         }
     }
 }
