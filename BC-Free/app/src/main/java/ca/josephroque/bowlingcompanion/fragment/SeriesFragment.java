@@ -420,7 +420,7 @@ public class SeriesFragment extends Fragment
                     {
                         listSeriesIds.add(seriesId);
                         listSeriesDates.add(DataFormatter.formattedDateToPrettyCompact(seriesDate));
-                        listSeriesGames.add(new ArrayList<>());
+                        listSeriesGames.add(new ArrayList<Short>());
                     }
 
                     listSeriesGames.get(listSeriesGames.size() - 1).add(gameScore);

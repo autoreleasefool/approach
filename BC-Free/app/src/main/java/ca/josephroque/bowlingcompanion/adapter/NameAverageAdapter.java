@@ -2,19 +2,14 @@ package ca.josephroque.bowlingcompanion.adapter;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nineoldandroids.animation.ArgbEvaluator;
-import com.nineoldandroids.animation.ValueAnimator;
-
 import java.util.List;
 
 import ca.josephroque.bowlingcompanion.R;
-import ca.josephroque.bowlingcompanion.theme.Theme;
 
 /**
  * Created by Joseph Roque on 15-03-13.
@@ -60,8 +55,6 @@ public class NameAverageAdapter
         private TextView mTextViewName;
         /** Displays the average of the data in the row. */
         private TextView mTextViewAverage;
-        /** Animates changes in color to the ViewHolder background. */
-        private ValueAnimator mValueAnimator = null;
 
         /**
          * Calls super constructor and gets instances of ImageView and TextView objects
@@ -130,42 +123,6 @@ public class NameAverageAdapter
         //Sets actions on click/touch events
         holder.itemView.setOnClickListener(this);
         holder.itemView.setOnLongClickListener(this);
-        holder.itemView.setOnTouchListener(new View.OnTouchListener()
-        {
-            @Override
-            public boolean onTouch(final View v, MotionEvent event)
-            {
-                if (event.getActionMasked() == MotionEvent.ACTION_DOWN)
-                {
-                    //Begins color change animation when user holds down this item
-                    holder.mValueAnimator = ValueAnimator.ofObject(new ArgbEvaluator(),
-                                    Theme.getListItemBackground(),
-                                    Theme.getLongPressThemeColor());
-                    holder.mValueAnimator.setDuration(Theme.getMediumAnimationDuration());
-                    holder.mValueAnimator.addUpdateListener(
-                            new ValueAnimator.AnimatorUpdateListener()
-                    {
-                        @Override
-                        public void onAnimationUpdate(ValueAnimator animation)
-                        {
-                            v.setBackgroundColor((Integer) animation.getAnimatedValue());
-                        }
-                    });
-                    holder.mValueAnimator.start();
-                }
-                else if ((event.getActionMasked() == MotionEvent.ACTION_UP
-                        || event.getActionMasked() == MotionEvent.ACTION_MOVE)
-                        && holder.mValueAnimator != null)
-                {
-                    //Cancels the animation when the user moves or releases
-                    holder.mValueAnimator.cancel();
-                    holder.mValueAnimator = null;
-                    v.setBackgroundColor(Theme.getListItemBackground());
-                }
-
-                return false;
-            }
-        });
     }
 
     @Override

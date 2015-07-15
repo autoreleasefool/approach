@@ -25,6 +25,7 @@ import android.text.Html;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.OvershootInterpolator;
 import android.view.animation.ScaleAnimation;
@@ -238,6 +239,7 @@ public class MainActivity extends AppCompatActivity
                             Constants.FRAGMENT_BOWLERS)
                     .commit();
             mCurrentFragment = new WeakReference<>(bowlerFragment);
+            setFloatingActionButtonIcon(R.drawable.ic_action_add_person);
         }
         else
         {
@@ -578,39 +580,41 @@ public class MainActivity extends AppCompatActivity
     {
         if (drawableId != mCurrentFabIcon)
         {
-            final int animTime = (mCurrentFabIcon == 0)
-                    ? 1
-                    : getResources().getInteger(android.R.integer.config_mediumAnimTime);
+            final int shortAnimTime = getResources().getInteger(
+                    android.R.integer.config_shortAnimTime);
             ScaleAnimation shrink = new ScaleAnimation(1.0f, 0f, 1.0f, 0f,
                     Animation.RELATIVE_TO_SELF, CENTER_PIVOT, Animation.RELATIVE_TO_SELF, CENTER_PIVOT);
-            shrink.setDuration(animTime);
-            shrink.setAnimationListener(new Animation.AnimationListener()
-            {
+            shrink.setDuration((mCurrentFabIcon == 0)
+                    ? 1
+                    : shortAnimTime);
+            shrink.setAnimationListener(new Animation.AnimationListener() {
                 @Override
-                public void onAnimationStart(Animation animation)
-                {
+                public void onAnimationStart(Animation animation) {
                     // does nothing
                 }
 
                 @Override
-                public void onAnimationEnd(Animation animation)
-                {
-                    if (mCurrentFabIcon != 0)
-                        mFloatingActionButton.setVisibility(View.VISIBLE);
-                    else
-                        mFloatingActionButton.setVisibility(View.GONE);
-                    mFloatingActionButton.setImageResource(drawableId);
+                public void onAnimationEnd(Animation animation) {
                     mCurrentFabIcon = drawableId;
+                    if (mCurrentFabIcon != 0)
+                    {
+                        mFloatingActionButton.setVisibility(View.VISIBLE);
+                    }
+                    else
+                    {
+                        mFloatingActionButton.setVisibility(View.GONE);
+                        return;
+                    }
+                    mFloatingActionButton.setImageResource(mCurrentFabIcon);
                     ScaleAnimation grow = new ScaleAnimation(0f, 1.0f, 0f, 1.0f,
                             Animation.RELATIVE_TO_SELF, CENTER_PIVOT, Animation.RELATIVE_TO_SELF, CENTER_PIVOT);
-                    grow.setDuration(animTime);
+                    grow.setDuration(shortAnimTime);
                     grow.setInterpolator(new OvershootInterpolator());
                     mFloatingActionButton.startAnimation(grow);
                 }
 
                 @Override
-                public void onAnimationRepeat(Animation animation)
-                {
+                public void onAnimationRepeat(Animation animation) {
                     // does nothing
                 }
             });
@@ -868,6 +872,7 @@ public class MainActivity extends AppCompatActivity
         });
         AdRequest.Builder builder = new AdRequest.Builder();
         builder.addTestDevice("B3EEABB8EE11C2BE770B684D95219ECB");
+        builder.addTestDevice("F2B8E706AC77AA09B97D016DB70BF723");
         mAdView.loadAd(builder.build());
     }
 

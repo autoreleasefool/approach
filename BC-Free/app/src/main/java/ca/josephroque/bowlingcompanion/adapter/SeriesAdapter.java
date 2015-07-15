@@ -5,14 +5,10 @@ import android.graphics.PorterDuff;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.nineoldandroids.animation.ArgbEvaluator;
-import com.nineoldandroids.animation.ValueAnimator;
 
 import java.util.List;
 
@@ -57,8 +53,6 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
         private TextView mTextViewDate;
         /** Each TextView displays a different score in the series. */
         private TextView[] mArrayTextViewGames;
-        /** Animates changes in color to the ViewHolder background. */
-        private ValueAnimator mValueAnimator = null;
         /** Displays an icon to allow editing of the date of a series. */
         private ImageView mImageViewEdit;
 
@@ -172,43 +166,6 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
          */
         holder.itemView.setOnClickListener(this);
         holder.itemView.setOnLongClickListener(this);
-        holder.itemView.setOnTouchListener(new View.OnTouchListener()
-        {
-            @Override
-            public boolean onTouch(final View v, MotionEvent event)
-            {
-                if (event.getActionMasked() == MotionEvent.ACTION_DOWN)
-                {
-                    //Begins color change animation when user holds down this item
-                    holder.mValueAnimator =
-                            ValueAnimator.ofObject(new ArgbEvaluator(),
-                                    Theme.getListItemBackground(),
-                                    Theme.getLongPressThemeColor());
-                    holder.mValueAnimator.setDuration(Theme.getMediumAnimationDuration());
-                    holder.mValueAnimator.addUpdateListener(
-                            new ValueAnimator.AnimatorUpdateListener()
-                    {
-                        @Override
-                        public void onAnimationUpdate(ValueAnimator animation)
-                        {
-                            v.setBackgroundColor((Integer) animation.getAnimatedValue());
-                        }
-                    });
-                    holder.mValueAnimator.start();
-                }
-                else if ((event.getActionMasked() == MotionEvent.ACTION_UP
-                        || event.getActionMasked() == MotionEvent.ACTION_MOVE)
-                        && holder.mValueAnimator != null)
-                {
-                    //Cancels the animation when the user moves or releases
-                    holder.mValueAnimator.cancel();
-                    holder.mValueAnimator = null;
-                    v.setBackgroundColor(Theme.getListItemBackground());
-                }
-
-                return false;
-            }
-        });
     }
 
     @Override
