@@ -19,10 +19,12 @@ import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.Html;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -276,7 +278,7 @@ public class MainActivity extends AppCompatActivity
     protected void onPostCreate(Bundle savedInstanceState)
     {
         super.onPostCreate(savedInstanceState);
-        mDrawerToggle.syncState();
+        setDrawerState(false);
     }
 
     @Override
@@ -393,11 +395,15 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        if (mDrawerToggle.onOptionsItemSelected(item))
+        if (mDrawerLayout.getDrawerLockMode(GravityCompat.START)
+                != DrawerLayout.LOCK_MODE_LOCKED_CLOSED && mDrawerToggle.onOptionsItemSelected(item))
             return true;
 
         switch (item.getItemId())
         {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
             case R.id.action_settings:
                 Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
                 startActivity(settingsIntent);
@@ -436,6 +442,7 @@ public class MainActivity extends AppCompatActivity
                     mSeriesDate = null;
                     mNumberOfGames = -1;
                     mIsQuickSeries = false;
+                    setDrawerState(false);
                     setFloatingActionButtonIcon(R.drawable.ic_action_add_person);
                     break;
                 case Constants.FRAGMENT_LEAGUES:
@@ -448,6 +455,7 @@ public class MainActivity extends AppCompatActivity
                     mLeagueName = null;
                     mSeriesDate = null;
                     mNumberOfGames = -1;
+                    setDrawerState(false);
                     setFloatingActionButtonIcon(R.drawable.ic_action_new);
                     break;
                 case Constants.FRAGMENT_SERIES:
@@ -458,6 +466,7 @@ public class MainActivity extends AppCompatActivity
                     mGameId = -1;
                     mGameNumber = -1;
                     mSeriesDate = null;
+                    setDrawerState(false);
                     setFloatingActionButtonIcon(R.drawable.ic_action_new);
                     break;
                 case Constants.FRAGMENT_GAME:
@@ -474,6 +483,7 @@ public class MainActivity extends AppCompatActivity
                     mDrawerAdapter.setCurrentGame(gameFragment.getCurrentGame());
                     mGameId = -1;
                     mGameNumber = -1;
+                    setDrawerState(true);
                     setFloatingActionButtonIcon(0);
                     break;
                 case Constants.FRAGMENT_STATS:
@@ -485,6 +495,7 @@ public class MainActivity extends AppCompatActivity
                         mListDrawerOptions.add(Constants.NAV_OPTION_GAME_DETAILS);
                     mListDrawerOptions.add(Constants.NAV_OPTION_STATS);
                     setFloatingActionButtonIcon(0);
+                    setDrawerState(false);
                     break;
                 default:
                     return;
@@ -498,10 +509,17 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onBackPressed()
     {
+        Log.i(TAG, "Back pressed!");
         if (mDrawerLayout.isDrawerOpen(mDrawerList))
+        {
+            Log.i(TAG, "Closing drawer");
             mDrawerLayout.closeDrawer(mDrawerList);
+        }
         else
+        {
+            Log.i(TAG, "Passing to super");
             super.onBackPressed();
+        }
     }
 
     @Override
@@ -669,11 +687,9 @@ public class MainActivity extends AppCompatActivity
         if (currentAdapterGame == newGameNumber)
             return;
 
-        runOnUiThread(new Runnable()
-        {
+        runOnUiThread(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 mDrawerAdapter.setCurrentGame(newGameNumber);
                 mDrawerAdapter.notifyDataSetChanged();
             }
@@ -1207,6 +1223,23 @@ public class MainActivity extends AppCompatActivity
             }
             //wait for saving threads to finish
         }
+    }
+
+    private void setDrawerState(boolean isEnabled)
+    {
+        if ( isEnabled )
+        {
+            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
+            mDrawerToggle.setDrawerIndicatorEnabled(true);
+            mDrawerToggle.syncState();
+        }
+        else
+        {
+            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            mDrawerToggle.setDrawerIndicatorEnabled(false);
+            mDrawerToggle.syncState();
+        }
+        Log.i(TAG, "isEnabled: " + isEnabled);
     }
 
     /**
