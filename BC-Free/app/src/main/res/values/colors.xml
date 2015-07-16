@@ -58,4 +58,6 @@
     <color name="theme_dark_gray_secondary">#313335</color>
     <color name="theme_dark_gray_tertiary">#202225</color>
 
+    <color name="navigation_separator">#1effffff</color>
+
 </resources>

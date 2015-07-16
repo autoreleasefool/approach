@@ -25,8 +25,12 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,7 +38,6 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.OvershootInterpolator;
 import android.view.animation.ScaleAnimation;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import java.lang.ref.WeakReference;
@@ -46,7 +49,7 @@ import java.util.Locale;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import ca.josephroque.bowlingcompanion.adapter.DrawerAdapter;
+import ca.josephroque.bowlingcompanion.adapter.NavigationDrawerAdapter;
 import ca.josephroque.bowlingcompanion.database.Contract.FrameEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.GameEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.SeriesEntry;
@@ -76,7 +79,7 @@ public class MainActivity extends AppCompatActivity
         LeagueEventFragment.OnLeagueSelectedListener,
         SeriesFragment.SeriesListener,
         GameFragment.GameFragmentCallbacks,
-        DrawerAdapter.OnDrawerClickListener
+        NavigationDrawerAdapter.OnDrawerClickListener
 {
 
     /** Identifies output from this class in Logcat. */
@@ -168,9 +171,9 @@ public class MainActivity extends AppCompatActivity
     /** Navigation drawer layout. */
     private DrawerLayout mDrawerLayout;
     /** ListView to display items in navigation drawer. */
-    private ListView mDrawerList;
+    private RecyclerView mDrawerRecyclerView;
     /** Adapter to manage items in navigation drawer. */
-    private DrawerAdapter mDrawerAdapter;
+    private NavigationDrawerAdapter mDrawerAdapter;
     /** Toggle for the navigation drawer. */
     private ActionBarDrawerToggle mDrawerToggle;
 
@@ -201,6 +204,9 @@ public class MainActivity extends AppCompatActivity
 
         mTitle = R.string.app_name;
         mDrawerTitle = R.string.title_drawer;
+        Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
+        setSupportActionBar(toolbar);
+
         setupNavigationDrawer();
 
         mFloatingActionButton = (FloatingActionButton) findViewById(R.id.fab_main);
@@ -514,17 +520,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onBackPressed()
     {
-        Log.i(TAG, "Back pressed!");
-        if (mDrawerLayout.isDrawerOpen(mDrawerList))
-        {
-            Log.i(TAG, "Closing drawer");
-            mDrawerLayout.closeDrawer(mDrawerList);
-        }
+        if (isDrawerOpen())
+            mDrawerLayout.closeDrawer(GravityCompat.START);
         else
-        {
-            Log.i(TAG, "Passing to super");
             super.onBackPressed();
-        }
     }
 
     @Override
@@ -534,11 +533,9 @@ public class MainActivity extends AppCompatActivity
         if (getSupportActionBar() != null)
             getSupportActionBar()
                     .setBackgroundDrawable(new ColorDrawable(Theme.getPrimaryThemeColor()));
-        mDrawerList.setBackgroundColor(Theme.getSecondaryThemeColor());
-        mDrawerList.setDivider(new ColorDrawable(Theme.getTertiaryThemeColor()));
-        mDrawerList.setDividerHeight(2);
+        mDrawerRecyclerView.setBackgroundColor(Theme.getSecondaryThemeColor());
 
-        if (mDrawerLayout.isDrawerOpen(mDrawerList))
+        if (isDrawerOpen())
             setActionBarTitle(mDrawerTitle, false);
         else
             setActionBarTitle(mTitle, false);
@@ -704,7 +701,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onGameItemClicked(byte gameNumber)
     {
-        mDrawerLayout.closeDrawer(mDrawerList);
+        mDrawerLayout.closeDrawer(GravityCompat.START);
         GameFragment gameFragment = (GameFragment) getSupportFragmentManager()
                 .findFragmentByTag(Constants.FRAGMENT_GAME);
         if (gameFragment == null || !gameFragment.isVisible())
@@ -719,7 +716,7 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onFragmentItemClicked(String fragmentItem)
     {
-        mDrawerLayout.closeDrawer(mDrawerList);
+        mDrawerLayout.closeDrawer(GravityCompat.START);
         if (fragmentItem == Constants.NAV_OPTION_HOME
                 || fragmentItem == Constants.NAV_OPTION_BOWLERS)
         {
@@ -783,7 +780,7 @@ public class MainActivity extends AppCompatActivity
             return;
 
         if (mTextViewAutoAdvanceStatus != null)
-            mTextViewAutoAdvanceStatus.setVisibility(View.GONE);
+            mTextViewAutoAdvanceStatus.setVisibility(View.INVISIBLE);
 
         final int timeToDelay = 1000;
         mAutoAdvanceDelayRemaining = mAutoAdvanceDelay;
@@ -795,7 +792,7 @@ public class MainActivity extends AppCompatActivity
     public void stopAutoAdvanceTimer()
     {
         if (mTextViewAutoAdvanceStatus != null)
-            mTextViewAutoAdvanceStatus.setVisibility(View.GONE);
+            mTextViewAutoAdvanceStatus.setVisibility(View.INVISIBLE);
         mAutoAdvanceHandler.removeCallbacks(mAutoAdvanceCallback);
     }
 
@@ -804,17 +801,28 @@ public class MainActivity extends AppCompatActivity
      */
     private void setupNavigationDrawer()
     {
-        mListDrawerOptions = new ArrayList<>();
-        mListDrawerOptions.add(Constants.NAV_OPTION_HOME);
-        mListDrawerOptions.add(Constants.NAV_OPTION_BOWLERS);
-        mListDrawerOptions.add(Constants.NAV_OPTION_SETTINGS);
+        final int displayWidth = getResources().getDisplayMetrics().widthPixels;
+        final int maxNavigationDrawerWidth = (int) Math.ceil(
+                getResources().getDisplayMetrics().density
+                        * NavigationUtils.MAX_NAVIGATION_DRAWER_WIDTH_DP);
+
+        int toolbarHeight = 0;
+        TypedValue typedValue = new TypedValue();
+        if (getTheme().resolveAttribute(android.R.attr.actionBarSize, typedValue, true))
+            toolbarHeight = TypedValue.complexToDimensionPixelSize(typedValue.data,
+                    getResources().getDisplayMetrics());
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.main_drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.main_drawer_list);
+        mDrawerRecyclerView = (RecyclerView) findViewById(R.id.main_drawer_list);
+        ViewGroup.LayoutParams layoutParams = mDrawerRecyclerView.getLayoutParams();
+        layoutParams.width = Math.min(displayWidth - toolbarHeight, maxNavigationDrawerWidth);
+        mDrawerRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        mDrawerAdapter = new DrawerAdapter(this, mListDrawerOptions);
-        mDrawerList.setAdapter(mDrawerAdapter);
-        mDrawerList.setOnItemClickListener(mDrawerAdapter);
+        mListDrawerOptions = new ArrayList<>();
+        NavigationUtils.populateNavigationDrawer(mListDrawerOptions, Constants.FRAGMENT_BOWLERS);
+
+        mDrawerAdapter = new NavigationDrawerAdapter(this, mListDrawerOptions);
+        mDrawerRecyclerView.setAdapter(mDrawerAdapter);
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
                 R.string.text_open_drawer, R.string.text_close_drawer)
@@ -1016,7 +1024,7 @@ public class MainActivity extends AppCompatActivity
      */
     public boolean isDrawerOpen()
     {
-        return mDrawerLayout.isDrawerOpen(mDrawerList);
+        return mDrawerLayout.isDrawerOpen(GravityCompat.START);
     }
 
     /**

@@ -6,4 +6,12 @@
 
     <dimen name="fab_margin">16dp</dimen>
 
+    <!-- Navigation Drawer -->
+    <dimen name="navigation_separator_padding">8dp</dimen>
+    <dimen name="navigation_item_height">48dp</dimen>
+
+    <!-- List Items -->
+    <dimen name="list_keyline">16dp</dimen>
+    <dimen name="list_text_keyline">72dp</dimen>
+
 </resources>

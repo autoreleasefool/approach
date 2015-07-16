@@ -12,6 +12,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/main_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/colorPrimary"
+            android:minHeight="?attr/actionBarSize" />
+
         <com.google.android.gms.ads.AdView
             android:id="@+id/av_main"
             android:layout_width="match_parent"
@@ -27,7 +34,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@id/av_main"
-            android:layout_alignParentTop="true" />
+            android:layout_alignParentTop="true"
+            android:layout_below="@id/main_toolbar" />
 
         <android.support.design.widget.CoordinatorLayout
             android:id="@+id/cl_main"
@@ -50,14 +58,10 @@
 
     </RelativeLayout>
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/main_drawer_list"
         android:layout_width="240dp"
         android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:background="@color/theme_light_green_secondary"
-        android:choiceMode="singleChoice"
-        android:divider="@color/theme_light_green_tertiary"
-        android:dividerHeight="1dp" />
+        android:layout_gravity="start" />
 
 </android.support.v4.widget.DrawerLayout>
