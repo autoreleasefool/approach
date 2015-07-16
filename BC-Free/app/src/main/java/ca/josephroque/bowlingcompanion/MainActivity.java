@@ -6,6 +6,7 @@ import com.google.android.gms.ads.AdView;
 
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -16,6 +17,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -58,6 +60,7 @@ import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.utilities.AppRater;
 import ca.josephroque.bowlingcompanion.utilities.DataFormatter;
 import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
+import ca.josephroque.bowlingcompanion.utilities.NavigationUtils;
 
 /**
  * Created by Joseph Roque
@@ -485,6 +488,8 @@ public class MainActivity extends AppCompatActivity
                     mGameNumber = -1;
                     setDrawerState(true);
                     setFloatingActionButtonIcon(0);
+
+                    learnNavigationDrawer();
                     break;
                 case Constants.FRAGMENT_STATS:
                     if (mLeagueId >= 0 && !isQuickSeries())
@@ -1225,6 +1230,11 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * Enables or disables the navigation drawer and its menu icon.
+     *
+     * @param isEnabled true to enable the drawer, false to disable
+     */
     private void setDrawerState(boolean isEnabled)
     {
         if ( isEnabled )
@@ -1240,6 +1250,24 @@ public class MainActivity extends AppCompatActivity
             mDrawerToggle.syncState();
         }
         Log.i(TAG, "isEnabled: " + isEnabled);
+    }
+
+    /**
+     * Checks if the user has opened the navigation drawer and, if not, opens it.
+     */
+    private void learnNavigationDrawer()
+    {
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        if (!preferences.getBoolean(NavigationUtils.NAVIGATION_DRAWER_LEARNED, false))
+        {
+            Log.i(TAG, "Opening drawer");
+            mDrawerLayout.openDrawer(GravityCompat.START);
+            preferences.edit().putBoolean(NavigationUtils.NAVIGATION_DRAWER_LEARNED, true).apply();
+        }
+        else
+        {
+            Log.i(TAG, "Not opening drawer");
+        }
     }
 
     /**
