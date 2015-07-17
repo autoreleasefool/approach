@@ -149,8 +149,15 @@ public class LeagueEventFragment extends Fragment
     public void onResume()
     {
         super.onResume();
-        ((MainActivity) getActivity())
-                .setActionBarTitle(R.string.title_fragment_league_event, true);
+
+        if (getActivity() != null)
+        {
+            MainActivity mainActivity = (MainActivity) getActivity();
+            mainActivity.setActionBarTitle(R.string.title_fragment_league_event, true);
+            mainActivity.setFloatingActionButtonIcon(R.drawable.ic_add_black_24dp);
+            mainActivity.setCurrentFragment(this);
+            mainActivity.setDrawerState(false);
+        }
 
         mListLeagueEventIds.clear();
         mListLeagueEventNames.clear();

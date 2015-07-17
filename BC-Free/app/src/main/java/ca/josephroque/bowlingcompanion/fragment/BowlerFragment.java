@@ -173,15 +173,24 @@ public class BowlerFragment extends Fragment
     public void onResume()
     {
         super.onResume();
-        ((MainActivity) getActivity()).setActionBarTitle(R.string.app_name, true);
+        if (getActivity() != null)
+        {
+            MainActivity mainActivity = (MainActivity) getActivity();
+                    mainActivity.setActionBarTitle(R.string.app_name, true);
+            mainActivity.setFloatingActionButtonIcon(R.drawable.ic_person_add_black_24dp);
+            mainActivity.setCurrentFragment(this);
+            mainActivity.setDrawerState(false);
 
-        //Loads values for member variables from preferences, if they exist
-        SharedPreferences prefs =
-                getActivity().getSharedPreferences(Constants.PREFS, Context.MODE_PRIVATE);
-        mRecentBowlerId = prefs.getLong(Constants.PREF_RECENT_BOWLER_ID, -1);
-        mRecentLeagueId = prefs.getLong(Constants.PREF_RECENT_LEAGUE_ID, -1);
-        mQuickBowlerId = prefs.getLong(Constants.PREF_QUICK_BOWLER_ID, -1);
-        mQuickLeagueId = prefs.getLong(Constants.PREF_QUICK_LEAGUE_ID, -1);
+            //Loads values for member variables from preferences, if they exist
+            SharedPreferences prefs =
+                    getActivity().getSharedPreferences(Constants.PREFS, Context.MODE_PRIVATE);
+            mRecentBowlerId = prefs.getLong(Constants.PREF_RECENT_BOWLER_ID, -1);
+            mRecentLeagueId = prefs.getLong(Constants.PREF_RECENT_LEAGUE_ID, -1);
+            mQuickBowlerId = prefs.getLong(Constants.PREF_QUICK_BOWLER_ID, -1);
+            mQuickLeagueId = prefs.getLong(Constants.PREF_QUICK_LEAGUE_ID, -1);
+        }
+
+
 
         mListBowlerIds.clear();
         mListBowlerNames.clear();

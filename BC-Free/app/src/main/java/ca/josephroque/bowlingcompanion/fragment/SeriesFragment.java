@@ -137,7 +137,14 @@ public class SeriesFragment extends Fragment
     public void onResume()
     {
         super.onResume();
-        ((MainActivity) getActivity()).setActionBarTitle(R.string.title_fragment_series, true);
+        if (getActivity() != null)
+        {
+            MainActivity mainActivity = (MainActivity) getActivity();
+            mainActivity.setActionBarTitle(R.string.title_fragment_series, true);
+            mainActivity.setFloatingActionButtonIcon(R.drawable.ic_add_black_24dp);
+            mainActivity.setCurrentFragment(this);
+            mainActivity.setDrawerState(false);
+        }
 
         mListSeriesIds.clear();
         mListSeriesDates.clear();

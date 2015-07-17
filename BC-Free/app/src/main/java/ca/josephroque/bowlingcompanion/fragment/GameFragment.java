@@ -358,7 +358,15 @@ public class GameFragment extends Fragment
     public void onResume()
     {
         super.onResume();
-        ((MainActivity) getActivity()).setActionBarTitle(R.string.title_fragment_game, true);
+        if (getActivity() != null)
+        {
+            MainActivity mainActivity = (MainActivity) getActivity();
+            mainActivity.setActionBarTitle(R.string.title_fragment_game, true);
+            mainActivity.setFloatingActionButtonIcon(0);
+            mainActivity.setCurrentFragment(this);
+            mainActivity.createGameNavigationDrawer();
+            mainActivity.setDrawerState(true);
+        }
 
         //Loads colors for frame view backgrounds
         mColorBackground = getResources().getColor(R.color.primary_background);

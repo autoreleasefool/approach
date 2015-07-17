@@ -7,6 +7,7 @@ import com.google.android.gms.ads.AdView;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ActivityInfo;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.database.Cursor;
@@ -34,8 +35,10 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Surface;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.OvershootInterpolator;
 import android.view.animation.ScaleAnimation;
@@ -202,6 +205,10 @@ public class MainActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        if (getResources().getBoolean(R.bool.portrait_only))
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+
         setContentView(R.layout.activity_main);
         Theme.loadTheme(this);
         mAutoAdvanceHandler = new AutoAdvanceHandler(Looper.getMainLooper());
@@ -229,8 +236,6 @@ public class MainActivity
                     .add(R.id.fl_main_fragment_container, bowlerFragment,
                             Constants.FRAGMENT_BOWLERS)
                     .commit();
-            mCurrentFragment = new WeakReference<>(bowlerFragment);
-            setFloatingActionButtonIcon(R.drawable.ic_person_add_black_24dp);
         }
         else
         {
@@ -246,16 +251,9 @@ public class MainActivity
             mNumberOfGames = savedInstanceState.getByte(Constants.EXTRA_NUMBER_OF_GAMES, (byte) -1);
             mIsEventMode = savedInstanceState.getBoolean(Constants.EXTRA_EVENT_MODE);
             mIsQuickSeries = savedInstanceState.getBoolean(Constants.EXTRA_QUICK_SERIES);
-            List<String> listNavOptions =
-                    savedInstanceState.getStringArrayList(Constants.EXTRA_NAV_OPTIONS);
             int navCurrentGameNumber =
                     savedInstanceState.getInt(Constants.EXTRA_NAV_CURRENT_GAME);
             mDrawerAdapter.setCurrentItem(navCurrentGameNumber);
-            if (listNavOptions != null)
-            {
-                for (int i = 2; i < listNavOptions.size(); i++)
-                    mListDrawerOptions.add(listNavOptions.get(i));
-            }
             mDrawerAdapter.notifyDataSetChanged();
         }
 
@@ -269,7 +267,7 @@ public class MainActivity
     protected void onPostCreate(Bundle savedInstanceState)
     {
         super.onPostCreate(savedInstanceState);
-        setDrawerState(false);
+        mDrawerToggle.syncState();
     }
 
     @Override
@@ -296,7 +294,6 @@ public class MainActivity
         outState.putByte(Constants.EXTRA_GAME_NUMBER, mGameNumber);
         outState.putBoolean(Constants.EXTRA_QUICK_SERIES, mIsQuickSeries);
         outState.putBoolean(Constants.EXTRA_EVENT_MODE, mIsEventMode);
-        outState.putStringArrayList(Constants.EXTRA_NAV_OPTIONS, mListDrawerOptions);
         outState.putInt(Constants.EXTRA_NAV_CURRENT_GAME, mDrawerAdapter.getCurrentItem());
     }
 
@@ -409,16 +406,12 @@ public class MainActivity
     @Override
     public void onBackStackChanged()
     {
-        //Checks which fragment is now visible and performs some actions
-        //and updates items in the navigation drawer
         List<Fragment> fragments = getSupportFragmentManager().getFragments();
         for (Fragment fragment : fragments)
         {
             if (fragment == null || !fragment.isVisible() || fragment.getTag() == null)
                 continue;
 
-            mCurrentFragment = new WeakReference<>(fragment);
-            mCurrentFragmentTitle = fragment.getTag();
             switch (fragment.getTag())
             {
                 case Constants.FRAGMENT_BOWLERS:
@@ -432,8 +425,7 @@ public class MainActivity
                     mSeriesDate = null;
                     mNumberOfGames = -1;
                     mIsQuickSeries = false;
-                    setDrawerState(false);
-                    setFloatingActionButtonIcon(R.drawable.ic_person_add_black_24dp);
+                    mCurrentFragmentTitle = Constants.FRAGMENT_BOWLERS;
                     break;
                 case Constants.FRAGMENT_LEAGUES:
                     mLeagueId = -1;
@@ -443,59 +435,29 @@ public class MainActivity
                     mLeagueName = null;
                     mSeriesDate = null;
                     mNumberOfGames = -1;
-                    setDrawerState(false);
-                    setFloatingActionButtonIcon(R.drawable.ic_add_black_24dp);
+                    mCurrentFragmentTitle = Constants.FRAGMENT_LEAGUES;
                     break;
                 case Constants.FRAGMENT_SERIES:
                     mSeriesId = -1;
                     mGameId = -1;
                     mGameNumber = -1;
                     mSeriesDate = null;
-                    setDrawerState(false);
-                    setFloatingActionButtonIcon(R.drawable.ic_add_black_24dp);
+                    mCurrentFragmentTitle = Constants.FRAGMENT_SERIES;
                     break;
                 case Constants.FRAGMENT_GAME:
-                    mListDrawerOptions.remove(NavigationUtils.NAVIGATION_ITEM_LEAGUES);
-                    mListDrawerOptions.remove(NavigationUtils.NAVIGATION_ITEM_SERIES);
-                    for (Iterator<String> it = mListDrawerOptions.iterator(); it.hasNext();)
-                        if (it.next().matches("\\w+ \\d+"))
-                            it.remove();
-                    GameFragment gameFragment = (GameFragment) fragment;
-                    int additionalOffset = 0;
-                    if (!isQuickSeries())
-                        mListDrawerOptions.add(
-                                NavigationUtils.NAVIGATION_STATIC_ITEMS + additionalOffset++,
-                                NavigationUtils.NAVIGATION_ITEM_LEAGUES);
-                    if (!isEventMode() && !isQuickSeries())
-                        mListDrawerOptions.add(
-                                NavigationUtils.NAVIGATION_STATIC_ITEMS + additionalOffset++,
-                                NavigationUtils.NAVIGATION_ITEM_SERIES);
-                    final int totalOffset = additionalOffset;
-                    for (byte i = 0; i < mNumberOfGames; i++)
-                        mListDrawerOptions.add(
-                                NavigationUtils.NAVIGATION_STATIC_ITEMS + 1 + additionalOffset++,
-                                "Game " + (i + 1));
-
-                    mDrawerAdapter.setCurrentItem(gameFragment.getCurrentGame()
-                            + NavigationUtils.NAVIGATION_STATIC_ITEMS + 1 + totalOffset);
-                    mDrawerAdapter.setHeaderTitle(mBowlerName);
-                    mDrawerAdapter.setHeaderSubtitle(mLeagueName);
                     mGameId = -1;
                     mGameNumber = -1;
-                    setDrawerState(true);
-                    setFloatingActionButtonIcon(0);
+                    mCurrentFragmentTitle = Constants.FRAGMENT_GAME;
                     learnNavigationDrawer();
                     break;
                 case Constants.FRAGMENT_STATS:
-                    setFloatingActionButtonIcon(0);
-                    setDrawerState(false);
+                    mCurrentFragmentTitle = Constants.FRAGMENT_STATS;
                     break;
                 default:
                     return;
             }
-            break;
+            mDrawerAdapter.notifyDataSetChanged();
         }
-        mDrawerAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -588,13 +550,55 @@ public class MainActivity
     }
 
     /**
+     * Sets a reference to the current fragment in the activity.
+     *
+     * @param fragment current fragment
+     */
+    public void setCurrentFragment(Fragment fragment)
+    {
+        mCurrentFragment = new WeakReference<>(fragment);
+    }
+
+    /**
+     * Sets up the navigation drawer for the game fragment.
+     */
+    public void createGameNavigationDrawer()
+    {
+        mListDrawerOptions.remove(NavigationUtils.NAVIGATION_ITEM_LEAGUES);
+        mListDrawerOptions.remove(NavigationUtils.NAVIGATION_ITEM_SERIES);
+        for (Iterator<String> it = mListDrawerOptions.iterator(); it.hasNext(); )
+            if (it.next().matches("\\w+ \\d+"))
+                it.remove();
+        GameFragment gameFragment = (GameFragment) mCurrentFragment.get();
+        int additionalOffset = 0;
+        if (!isQuickSeries())
+            mListDrawerOptions.add(
+                    NavigationUtils.NAVIGATION_STATIC_ITEMS + additionalOffset++,
+                    NavigationUtils.NAVIGATION_ITEM_LEAGUES);
+        if (!isEventMode() && !isQuickSeries())
+            mListDrawerOptions.add(
+                    NavigationUtils.NAVIGATION_STATIC_ITEMS + additionalOffset++,
+                    NavigationUtils.NAVIGATION_ITEM_SERIES);
+        final int totalOffset = additionalOffset;
+        for (byte i = 0; i < mNumberOfGames; i++)
+            mListDrawerOptions.add(
+                    NavigationUtils.NAVIGATION_STATIC_ITEMS + 1 + additionalOffset++,
+                    "Game " + (i + 1));
+
+        mDrawerAdapter.setCurrentItem(gameFragment.getCurrentGame()
+                + NavigationUtils.NAVIGATION_STATIC_ITEMS + 1 + totalOffset);
+        mDrawerAdapter.setHeaderTitle(mBowlerName);
+        mDrawerAdapter.setHeaderSubtitle(mLeagueName);
+    }
+
+    /**
      * Sets the icon of the floating action button with animation.
      *
      * @param drawableId id of the drawable for the floating action button
      */
     public void setFloatingActionButtonIcon(final int drawableId)
     {
-        if (drawableId != mCurrentFabIcon)
+        if (drawableId != mCurrentFabIcon || drawableId == 0)
         {
             final int shortAnimTime = getResources().getInteger(
                     android.R.integer.config_shortAnimTime);
@@ -854,7 +858,7 @@ public class MainActivity
             @Override
             public void onClick(View v)
             {
-                if (mCurrentFragment.get() != null
+                if (mCurrentFragment != null && mCurrentFragment.get() != null
                         && mCurrentFragment.get() instanceof FloatingActionButtonHandler)
                     ((FloatingActionButtonHandler) mCurrentFragment.get()).onFabClick();
             }
@@ -1322,7 +1326,7 @@ public class MainActivity
      *
      * @param isEnabled true to enable the drawer, false to disable
      */
-    private void setDrawerState(boolean isEnabled)
+    public void setDrawerState(boolean isEnabled)
     {
         if (isEnabled)
         {

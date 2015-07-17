@@ -98,47 +98,54 @@ public class StatsFragment
     public void onResume()
     {
         super.onResume();
-        MainActivity mainActivity = (MainActivity) getActivity();
 
-        mListStatHeaders.clear();
-        mListStatNamesAndValues.clear();
-        mAdapterStats.notifyDataSetChanged();
-
-        //Checks what type of stats should be displayed, depending
-        //on what data is available in the parent activity at the time
-        byte statsToLoad;
-        int titleToSet;
-        if (mainActivity.getGameId() == -1)
+        if (getActivity() != null)
         {
-            if (mainActivity.getSeriesId() == -1)
+            MainActivity mainActivity = (MainActivity) getActivity();
+            mainActivity.setFloatingActionButtonIcon(0);
+            mainActivity.setCurrentFragment(this);
+            mainActivity.setDrawerState(false);
+
+            //Checks what type of stats should be displayed, depending
+            //on what data is available in the parent activity at the time
+            byte statsToLoad;
+            int titleToSet;
+            if (mainActivity.getGameId() == -1)
             {
-                if (mainActivity.getLeagueId() == -1)
+                if (mainActivity.getSeriesId() == -1)
                 {
-                    titleToSet = R.string.title_stats_bowler;
-                    statsToLoad = LOADING_BOWLER_STATS;
+                    if (mainActivity.getLeagueId() == -1)
+                    {
+                        titleToSet = R.string.title_stats_bowler;
+                        statsToLoad = LOADING_BOWLER_STATS;
+                    }
+                    else
+                    {
+                        titleToSet = R.string.title_stats_league;
+                        statsToLoad = LOADING_LEAGUE_STATS;
+                    }
                 }
                 else
                 {
-                    titleToSet = R.string.title_stats_league;
-                    statsToLoad = LOADING_LEAGUE_STATS;
+                    titleToSet = R.string.title_stats_series;
+                    statsToLoad = LOADING_SERIES_STATS;
                 }
             }
             else
             {
-                titleToSet = R.string.title_stats_series;
-                statsToLoad = LOADING_SERIES_STATS;
+                titleToSet = R.string.title_stats_game;
+                statsToLoad = LOADING_GAME_STATS;
             }
-        }
-        else
-        {
-            titleToSet = R.string.title_stats_game;
-            statsToLoad = LOADING_GAME_STATS;
+
+            mListStatHeaders.clear();
+            mListStatNamesAndValues.clear();
+            mAdapterStats.notifyDataSetChanged();
+
+            mainActivity.setActionBarTitle(titleToSet, true);
+            new LoadStatsTask().execute(statsToLoad);
         }
 
         updateTheme();
-
-        mainActivity.setActionBarTitle(titleToSet, true);
-        new LoadStatsTask().execute(statsToLoad);
     }
 
     /**
@@ -149,6 +156,7 @@ public class StatsFragment
      * @param headers headers of groups
      * @param namesAndValues entries in each group
      */
+    @SuppressWarnings("Convert2Diamond")
     private void prepareListData(MainActivity mainActivity,
                                  byte statsToLoad,
                                  List<String> headers,
