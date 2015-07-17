@@ -14,10 +14,4 @@
         android:summary="@string/pref_theme_light_summaryOn"
         android:title="@string/pref_theme_light_title" />
 
-    <CheckBoxPreference
-        android:defaultValue="true"
-        android:key="pref_theme_font"
-        android:summary="@string/pref_theme_font_summaryOn"
-        android:title="@string/pref_theme_font_title" />
-
 </PreferenceScreen>

@@ -10,6 +10,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:alpha="0.87"
         android:gravity="end"
         android:paddingLeft="4dp"
         android:paddingRight="4dp" />
@@ -24,6 +25,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
+        android:alpha="0.87"
         android:gravity="start"
         android:paddingLeft="4dp"
         android:paddingRight="4dp" />

@@ -106,14 +106,14 @@ public class NameAverageAdapter
         {
             case DATA_BOWLERS:
                 holder.mTextViewName.setText(mListNames.get(position));
-                holder.mImageViewType.setImageResource(R.drawable.ic_person);
+                holder.mImageViewType.setImageResource(R.drawable.ic_person_black_24dp);
                 break;
             case DATA_LEAGUES_EVENTS:
                 holder.mTextViewName.setText(mListNames.get(position).substring(1));
                 holder.mImageViewType.setImageResource(
                         mListNames.get(position).startsWith("L")
-                                ? R.drawable.ic_league
-                                : R.drawable.ic_event);
+                                ? R.drawable.ic_l_black_24dp
+                                : R.drawable.ic_e_black_24dp);
                 break;
             default: throw new IllegalStateException("invalid mDataType: " + mDataType);
         }

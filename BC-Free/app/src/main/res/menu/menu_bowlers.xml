@@ -4,7 +4,7 @@
 
     <item
         android:id="@+id/action_quick_series"
-        android:icon="@drawable/ic_action_quick"
+        android:icon="@drawable/ic_flash_on_black_24dp"
         android:orderInCategory="10"
         android:title="@string/action_quick_series"
         app:showAsAction="ifRoom" />

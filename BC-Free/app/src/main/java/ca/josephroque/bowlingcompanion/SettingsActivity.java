@@ -288,11 +288,6 @@ public class SettingsActivity extends PreferenceActivity
                 ? R.string.pref_theme_light_summaryOn
                 : R.string.pref_theme_light_summaryOff);
 
-        checkBoolean = sharedPreferences.getBoolean(Constants.KEY_THEME_FONT, true);
-        findPreference(Constants.KEY_THEME_FONT).setSummary((checkBoolean)
-                ? R.string.pref_theme_font_summaryOn
-                : R.string.pref_theme_font_summaryOff);
-
         checkBoolean = sharedPreferences.getBoolean(Constants.KEY_ENABLE_AUTO_ADVANCE, false);
         findPreference(Constants.KEY_ENABLE_AUTO_ADVANCE).setSummary((checkBoolean)
                 ? R.string.pref_enable_auto_advance_summaryOn
@@ -398,39 +393,22 @@ public class SettingsActivity extends PreferenceActivity
                     sharedPreferences.getString(key, "Green");
             boolean lightThemeEnabled =
                     sharedPreferences.getBoolean(Constants.KEY_THEME_LIGHT, true);
-            boolean whiteHeaderFont =
-                    sharedPreferences.getBoolean(Constants.KEY_THEME_FONT, true);
 
             Preference themePref = findPreference(key);
             themePref.setSummary("Current theme is " + themeColor);
 
-            Theme.setTheme(this, themeColor, lightThemeEnabled, whiteHeaderFont);
+            Theme.setTheme(this, themeColor, lightThemeEnabled);
         }
         else if (key.equals(Constants.KEY_THEME_LIGHT))
         {
             boolean lightThemeEnabled =
                     sharedPreferences.getBoolean(key, true);
-            boolean whiteHeaderFont =
-                    sharedPreferences.getBoolean(Constants.KEY_THEME_FONT, true);
             Preference lightPref = findPreference(key);
             lightPref.setSummary((lightThemeEnabled)
                     ? R.string.pref_theme_light_summaryOn
                     : R.string.pref_theme_light_summaryOff);
 
-            Theme.setTheme(this, Theme.getThemeName(), lightThemeEnabled, whiteHeaderFont);
-        }
-        else if (key.equals(Constants.KEY_THEME_FONT))
-        {
-            boolean whiteHeaderFont =
-                    sharedPreferences.getBoolean(key, true);
-            boolean lightThemeEnabled =
-                    sharedPreferences.getBoolean(Constants.KEY_THEME_LIGHT, true);
-            Preference fontPref = findPreference(key);
-            fontPref.setSummary((whiteHeaderFont)
-                    ? R.string.pref_theme_font_summaryOn
-                    : R.string.pref_theme_font_summaryOff);
-
-            Theme.setTheme(this, Theme.getThemeName(), lightThemeEnabled, whiteHeaderFont);
+            Theme.setTheme(this, Theme.getThemeName(), lightThemeEnabled);
         }
         else if (key.equals(Constants.KEY_INCLUDE_EVENTS))
         {

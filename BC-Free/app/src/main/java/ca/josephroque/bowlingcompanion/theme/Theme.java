@@ -53,8 +53,7 @@ public final class Theme
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         String themeName = prefs.getString(Constants.KEY_THEME_COLORS, "Green");
         boolean lightTheme = prefs.getBoolean(Constants.KEY_THEME_LIGHT, true);
-        boolean whiteHeaderFont = prefs.getBoolean(Constants.KEY_THEME_FONT, true);
-        setTheme(context, themeName, lightTheme, whiteHeaderFont);
+        setTheme(context, themeName, lightTheme);
     }
 
     /**
@@ -63,12 +62,10 @@ public final class Theme
      * @param context current context to obtain values from
      * @param themeName color of the theme to load
      * @param lightThemeEnabled indicates whether the light variation of a theme is enabled
-     * @param whiteHeaderFont indicates whether header fonts will be white or black
      */
     public static void setTheme(Context context,
                                 String themeName,
-                                boolean lightThemeEnabled,
-                                boolean whiteHeaderFont)
+                                boolean lightThemeEnabled)
     {
         sThemeName = themeName;
         if (sThemeName == null)
@@ -80,10 +77,6 @@ public final class Theme
         if (sThemeListItemBackground == -1)
             sThemeListItemBackground = context.getResources().getColor(
                     R.color.secondary_background);
-
-        sThemeColorHeaderFont = context.getResources().getColor(
-                (whiteHeaderFont)
-                        ? android.R.color.white : android.R.color.black);
 
         switch (sThemeName)
         {
@@ -187,7 +180,7 @@ public final class Theme
                 break;
             default:
                 //If an invalid theme was selected, the default is applied
-                setTheme(context, "Green", true, true);
+                setTheme(context, "Green", true);
         }
     }
 
@@ -229,16 +222,6 @@ public final class Theme
     public static int getTertiaryThemeColor()
     {
         return sThemeColorTertiary;
-    }
-
-    /**
-     * Gets the color of header fonts for the theme.
-     *
-     * @return the value of sThemeColorHeaderFont
-     */
-    public static int getHeaderFontThemeColor()
-    {
-        return sThemeColorHeaderFont;
     }
 
     /**

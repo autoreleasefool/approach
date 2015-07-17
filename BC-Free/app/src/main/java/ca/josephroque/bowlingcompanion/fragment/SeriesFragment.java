@@ -6,6 +6,8 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
@@ -159,7 +161,14 @@ public class SeriesFragment extends Fragment
     public void onPrepareOptionsMenu(Menu menu)
     {
         boolean drawerOpen = ((MainActivity) getActivity()).isDrawerOpen();
-        menu.findItem(R.id.action_stats).setVisible(!drawerOpen);
+        MenuItem menuItem = menu.findItem(R.id.action_stats).setVisible(!drawerOpen);
+        Drawable drawable = menuItem.getIcon();
+        if (drawable != null)
+        {
+            drawable.mutate();
+            //noinspection CheckStyle
+            drawable.setAlpha(0x8A);
+        }
         menu.findItem(R.id.action_edit_date).setVisible(!drawerOpen);
         super.onPrepareOptionsMenu(menu);
     }

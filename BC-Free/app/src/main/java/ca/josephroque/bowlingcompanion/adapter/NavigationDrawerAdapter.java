@@ -5,13 +5,14 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
-import android.util.SparseArray;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -20,11 +21,9 @@ import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.utilities.NavigationUtils;
 
 /**
- * Created by Joseph Roque on 15-03-28.
- * <p/>
- * Manages the data which will be displayed by the RecyclerView in the Navigation Drawer.
- * Offers a callback interface {@link NavigationDrawerAdapter.NavigationCallback} to handle
- * interaction events.
+ * Created by Joseph Roque on 15-03-28. <p/> Manages the data which will be displayed by the
+ * RecyclerView in the Navigation Drawer. Offers a callback interface {@link
+ * NavigationDrawerAdapter.NavigationCallback} to handle interaction events.
  */
 public class NavigationDrawerAdapter
         extends RecyclerView.Adapter<NavigationDrawerAdapter.NavigationViewHolder>
@@ -39,6 +38,8 @@ public class NavigationDrawerAdapter
     private static final int VIEW_TYPE_NAVIGATION = 0;
     /** Represents an item in the navigation drawer which features a subheader. */
     private static final int VIEW_TYPE_SUBHEADER = 1;
+    /** Represents an item in the navigation drawer which is a header. */
+    private static final int VIEW_TYPE_HEADER = 2;
 
     /** Background color of views for selected items. */
     private static final int COLOR_SELECTED_BACKGROUND = 0x28000000;
@@ -52,9 +53,12 @@ public class NavigationDrawerAdapter
      * If an item is of the type {@code VIEW_TYPE_NAVIGATION}, it can feature a subtitle, which can
      * be found in this array by the item's position.
      */
-    private SparseArray<String> mArraySubtitle;
+    private HashMap<String, String> mArraySubtitle;
     /** Set of positions which are subheader items. */
     private Set<String> mSetSubheaderItems;
+
+    private String mHeaderTitle;
+    private String mHeaderSubtitle;
 
     /** The most recently selected navigation item. */
     private int mCurrentNavigationItem;
@@ -69,16 +73,21 @@ public class NavigationDrawerAdapter
                                    List<String> listItems)
     {
         this.mListNavigationItems = listItems;
-        mArraySubtitle = new SparseArray<>();
+        mArraySubtitle = new HashMap<>();
         mSetSubheaderItems = new TreeSet<>();
         this.mCallback = callback;
     }
 
     @Override
-    public NavigationViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public NavigationViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
+    {
         View rootView;
         switch (viewType)
         {
+            case VIEW_TYPE_HEADER:
+                rootView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.item_navigation_header, parent, false);
+                break;
             case VIEW_TYPE_SUBHEADER:
                 rootView = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.item_navigation_subheader, parent, false);
@@ -94,10 +103,16 @@ public class NavigationDrawerAdapter
     }
 
     @Override
-    public void onBindViewHolder(NavigationViewHolder viewHolder, int position) {
+    public void onBindViewHolder(NavigationViewHolder viewHolder, int position)
+    {
         final int viewType = getItemViewType(position);
 
-        switch (viewType) {
+        switch (viewType)
+        {
+            case VIEW_TYPE_HEADER:
+                viewHolder.mTextViewTitle.setText(mHeaderTitle);
+                viewHolder.mTextViewSubtitle.setText(mHeaderSubtitle);
+                break;
             case VIEW_TYPE_NAVIGATION:
                 viewHolder.itemView.setTag(position);
                 viewHolder.itemView.setOnClickListener(this);
@@ -105,9 +120,8 @@ public class NavigationDrawerAdapter
                 if (icon != 0)
                     viewHolder.mImageViewIcon.setImageResource(icon);
                 viewHolder.mTextViewTitle.setText(mListNavigationItems.get(position));
-                String extra = mArraySubtitle.get(position);
-                if (extra != null)
-                    viewHolder.mTextViewSubtitle.setText(extra);
+                String extra = mArraySubtitle.get(mListNavigationItems.get(position));
+                viewHolder.mTextViewSubtitle.setText(extra);
 
                 if (mCurrentNavigationItem == position)
                     viewHolder.itemView.setBackgroundColor(COLOR_SELECTED_BACKGROUND);
@@ -128,7 +142,9 @@ public class NavigationDrawerAdapter
     @Override
     public int getItemViewType(int position)
     {
-        if (mSetSubheaderItems.contains(mListNavigationItems.get(position)))
+        if (position == 0)
+            return VIEW_TYPE_HEADER;
+        else if (mSetSubheaderItems.contains(mListNavigationItems.get(position)))
             return VIEW_TYPE_SUBHEADER;
         else
             return VIEW_TYPE_NAVIGATION;
@@ -154,28 +170,36 @@ public class NavigationDrawerAdapter
             throw new IllegalStateException("itemView tag must be position");
         }
 
-        final int tempPosition = mCurrentNavigationItem;
-        mCurrentNavigationItem = position;
-        notifyItemChanged(tempPosition);
-        notifyItemChanged(mCurrentNavigationItem);
-
+        if (mListNavigationItems.get(position).matches("\\w+ \\d+"))
+        {
+            final int tempPosition = mCurrentNavigationItem;
+            mCurrentNavigationItem = position;
+            notifyItemChanged(tempPosition);
+            notifyItemChanged(mCurrentNavigationItem);
+        }
         mCallback.onNavigationItemClicked(position);
     }
 
+    /**
+     * Gets the icon for an item.
+     *
+     * @param position position to get icon of
+     * @return id of icon drawable
+     */
     private int getItemIcon(int position)
     {
         if (mListNavigationItems.get(position).matches("\\w+ \\d+"))
         {
             if (mCurrentNavigationItem == position)
-                return R.drawable.ic_radio_button_on;
+                return R.drawable.ic_radio_button_checked_black_24dp;
             else
-                return R.drawable.ic_radio_button_off;
+                return R.drawable.ic_radio_button_unchecked_black_24dp;
         }
 
         switch (mListNavigationItems.get(position))
         {
             case NavigationUtils.NAVIGATION_ITEM_BOWLERS:
-                return R.drawable.ic_action_group;
+                return R.drawable.ic_people_black_24dp;
             case NavigationUtils.NAVIGATION_ITEM_LEAGUES:
                 return R.drawable.ic_list_black_24dp;
             case NavigationUtils.NAVIGATION_ITEM_SERIES:
@@ -193,47 +217,35 @@ public class NavigationDrawerAdapter
      * Sets a position to be a subheader. If it is already a navigation item or a switch, it is
      * reassigned.
      *
-     * @param position position of subheader
+     * @param title item to set to subheader
      */
     @SuppressWarnings("unused")
-    public void setPositionToSubheader(int position) {
-        final int headerOffset = (mIsHeaderEnabled)
-                ? 1
-                : 0;
+    public void setPositionToSubheader(String title)
+    {
+        if (!mListNavigationItems.contains(title))
+            throw new IllegalArgumentException("Must be valid navigation item");
 
-        if (position >= getItemCount() - headerOffset || position < 0) {
-            throw new IllegalArgumentException(
-                    "Must be between 0 and " + (getItemCount() - 1 - headerOffset));
-        }
+        if (mArraySubtitle.containsKey(title))
+            mArraySubtitle.remove(title);
 
-        // When a 'position' value comes from outside of the navigation drawer, whether or not there
-        // is a header doesn't matter, so the positions are constant and do not need to be offset by
-        // 1 before they are used
-
-        if (mSetSwitchItems.contains(position)) {
-            mSetSwitchItems.remove(position);
-            mArraySwitchActive.remove(position);
-        } else if (mArraySubtitle.indexOfKey(position) >= 0) {
-            mArraySubtitle.remove(position);
-        }
-
-        mSetSubheaderItems.add(position);
-        notifyItemChanged(position);
+        mSetSubheaderItems.add(title);
+        notifyItemChanged(mListNavigationItems.indexOf(title));
     }
 
     /**
      * Sets the subtitle of a navigation item.
      *
-     * @param position position of subtitle
+     * @param title item to get subtitle
      * @param text subtitle text
      */
     public void setSubtitle(String title, String text)
     {
-        if (mSetSubheaderItems.contains(mListNavigationItems.get(position)))
-            throw new IllegalArgumentException("Can't set subtitle of subheader item: " + position);
+        if (mSetSubheaderItems.contains(title))
+            throw new IllegalArgumentException("Can't set subtitle of subheader item: " + title);
 
-        mArraySubtitle.put(position, text);
-        notifyItemChanged(position);
+        Log.i(TAG, "Setting subtitle " + text + " for " + title);
+        mArraySubtitle.put(title, text);
+        notifyItemChanged(mListNavigationItems.indexOf(title));
     }
 
     /**
@@ -266,127 +278,44 @@ public class NavigationDrawerAdapter
         return unselectedBackground;
     }
 
-    //@Override
-    /*public View getView(int position, View view, ViewGroup viewGroup)
-    {
-        DrawerViewHolder viewHolder;
-
-        if (view == null)
-        {
-            viewHolder = new DrawerViewHolder();
-            view = View.inflate(getContext(), R.layout.list_drawer, null);
-            viewHolder.mImageViewIcon = (ImageView) view.findViewById(R.id.iv_list_drawer);
-            viewHolder.mTextViewOption = (TextView) view.findViewById(R.id.tv_list_drawer);
-            view.setTag(viewHolder);
-        }
-        else
-        {
-            viewHolder = (DrawerViewHolder) view.getTag();
-        }
-
-        String option = mListOptions.get(position);
-        setNavIconByOption(option, viewHolder);
-
-        return view;
-    }*/
-
     /**
-     * Sets icon of items in navigation drawer depending on their name.
-     * @param option name of item
-     * @param viewHolder views
-     */
-    /*@SuppressWarnings("StringEquality") //String constants are added to list, so
-                                        //direct comparison can be used
-    private void setNavIconByOption(String option, DrawerViewHolder viewHolder)
-    {
-        //Displays a different icon next to different navigational options
-        viewHolder.mTextViewOption.setText(option);
-        if (option == Constants.NAV_OPTION_HOME)
-        {
-            viewHolder.mImageViewIcon.setVisibility(View.VISIBLE);
-            viewHolder.mImageViewIcon.setImageResource(R.drawable.ic_home);
-        }
-        else if (option == Constants.NAV_OPTION_BOWLERS)
-        {
-            viewHolder.mImageViewIcon.setVisibility(View.VISIBLE);
-            viewHolder.mImageViewIcon.setImageResource(R.drawable.ic_action_group);
-        }
-        else if (option == Constants.NAV_OPTION_LEAGUES_EVENTS)
-        {
-            viewHolder.mImageViewIcon.setVisibility(View.VISIBLE);
-            viewHolder.mImageViewIcon.setImageResource(R.drawable.ic_action_storage);
-        }
-        else if (option == Constants.NAV_OPTION_SERIES)
-        {
-            viewHolder.mImageViewIcon.setVisibility(View.VISIBLE);
-            viewHolder.mImageViewIcon.setImageResource(R.drawable.ic_action_series);
-        }
-        else if (option == Constants.NAV_OPTION_GAME_DETAILS)
-        {
-            viewHolder.mImageViewIcon.setVisibility(View.VISIBLE);
-            viewHolder.mImageViewIcon.setImageResource(R.drawable.ic_action_pin);
-        }
-        else if (option == Constants.NAV_OPTION_STATS)
-        {
-            viewHolder.mImageViewIcon.setVisibility(View.VISIBLE);
-            viewHolder.mImageViewIcon.setImageResource(R.drawable.ic_action_stats);
-        }
-        else if (option == Constants.NAV_OPTION_SETTINGS)
-        {
-            viewHolder.mImageViewIcon.setVisibility(View.VISIBLE);
-            viewHolder.mImageViewIcon.setImageResource(R.drawable.ic_action_settings);
-        }
-        else if (option.matches("\\w+ \\d+"))
-        {
-            viewHolder.mImageViewIcon.setVisibility(View.VISIBLE);
-            viewHolder.mImageViewIcon.setImageResource(
-                    (option.substring(option.indexOf(" ") + 1).equals(mCurrentGame)
-                            ? R.drawable.ic_radio_button_on : R.drawable.ic_radio_button_off));
-        }
-        else
-        {
-            viewHolder.mImageViewIcon.setVisibility(View.GONE);
-        }
-    }*/
-
-    /**
-     * Assigns a new value to {@code mCurrentGame}.
+     * Gets the currently selected navigation item.
      *
-     * @param currentGame new value for mCurrentGame (1 will be added to it)
+     * @return mCurrentNavigationItem
      */
-    /*public void setCurrentGame(byte currentGame)
+    public int getCurrentItem()
     {
-        mCurrentGame = String.valueOf(currentGame + 1);
-    }*/
+        return mCurrentNavigationItem;
+    }
 
     /**
-     * Returns a cast of mCurrentGame to byte minus one.
+     * Sets the current navigation item.
      *
-     * @return byte representation of mCurrentGame - 1
+     * @param position new item
      */
-    /*public byte getCurrentGame()
+    public void setCurrentItem(int position)
     {
-        return (byte) (Byte.parseByte(mCurrentGame) - 1);
-    }*/
+        final int tempPosition = mCurrentNavigationItem;
+        mCurrentNavigationItem = position;
+        notifyItemChanged(mCurrentNavigationItem);
+        notifyItemChanged(tempPosition);
+    }
 
-    /*@Override
-    public void onItemClick(AdapterView parent, View view, int position, long id)
+    public void setHeaderTitle(String title)
     {
-        String option = mListOptions.get(position);
+        this.mHeaderTitle = title;
+    }
 
-        //If the option selected was a game number
-        if (option.matches("\\w+ \\d+"))
-            mDrawerClickListener.onGameItemClicked(
-                    (byte) (Byte.parseByte(option.substring(5)) - 1));
-            //else, a certain fragment should be navigated to
-        else
-            mDrawerClickListener.onFragmentItemClicked(option);
-    }*/
+    public void setHeaderSubtitle(String subtitle)
+    {
+        this.mHeaderSubtitle = subtitle;
+    }
 
     /**
      * Callback interface to report user interaction.
      */
-    public interface NavigationCallback {
+    public interface NavigationCallback
+    {
 
         /**
          * Invoked when a user clicks an item in the navigation drawer.
@@ -400,7 +329,8 @@ public class NavigationDrawerAdapter
      * Recycles views for RecyclerView so they do not need to be reinflated.
      */
     public static final class NavigationViewHolder
-            extends RecyclerView.ViewHolder {
+            extends RecyclerView.ViewHolder
+    {
 
         /** Displays an icon for an item in the navigation drawer. */
         private ImageView mImageViewIcon;
@@ -413,13 +343,21 @@ public class NavigationDrawerAdapter
          * Gets references to member variables depending on {@code viewType}.
          *
          * @param rootView root item layout
+         * @param viewType view type
          */
-        public NavigationViewHolder(View rootView) {
+        public NavigationViewHolder(View rootView, int viewType)
+        {
             super(rootView);
 
-            mTextViewTitle = (TextView) rootView.findViewById(R.id.tv_nav_title);
-            mImageViewIcon = (ImageView) rootView.findViewById(R.id.iv_nav_icon);
-            mTextViewSubtitle = (TextView) rootView.findViewById(R.id.tv_nav_subtitle);
+            switch (viewType)
+            {
+                case VIEW_TYPE_NAVIGATION:
+                    mImageViewIcon = (ImageView) rootView.findViewById(R.id.iv_nav_icon);
+                case VIEW_TYPE_HEADER:
+                    mTextViewSubtitle = (TextView) rootView.findViewById(R.id.tv_nav_subtitle);
+                default:
+                    mTextViewTitle = (TextView) rootView.findViewById(R.id.tv_nav_title);
+            }
         }
     }
 }

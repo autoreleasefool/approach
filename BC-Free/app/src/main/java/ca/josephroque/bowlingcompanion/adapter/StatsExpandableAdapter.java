@@ -148,7 +148,8 @@ public class StatsExpandableAdapter extends BaseExpandableListAdapter
         }
 
         viewHolder.mTextViewHeader.setText(headerTitle);
-        viewHolder.mTextViewHeader.setTextColor(Theme.getHeaderFontThemeColor());
+        //noinspection CheckStyle
+        viewHolder.mTextViewHeader.setTextColor(0xff000000);
         viewHolder.mTextViewHeader.setTypeface(null, Typeface.BOLD);
         viewHolder.mBackgroundView.setBackgroundColor(Theme.getSecondaryThemeColor());
 

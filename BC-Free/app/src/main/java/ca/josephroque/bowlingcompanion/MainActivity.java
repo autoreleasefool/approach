@@ -11,6 +11,7 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -28,7 +29,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.Html;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
@@ -43,7 +43,9 @@ import android.widget.TextView;
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -62,16 +64,17 @@ import ca.josephroque.bowlingcompanion.fragment.StatsFragment;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.utilities.AppRater;
 import ca.josephroque.bowlingcompanion.utilities.DataFormatter;
+import ca.josephroque.bowlingcompanion.utilities.EmailUtils;
 import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
 import ca.josephroque.bowlingcompanion.utilities.NavigationUtils;
 
 /**
- * Created by Joseph Roque
- * <p/>
- * The main activity which handles most interaction with the application.
+ * Created by Joseph Roque <p/> The main activity which handles most interaction with the
+ * application.
  */
 @SuppressWarnings("Convert2Lambda")
-public class MainActivity extends AppCompatActivity
+public class MainActivity
+        extends AppCompatActivity
         implements
         FragmentManager.OnBackStackChangedListener,
         Theme.ChangeableTheme,
@@ -79,7 +82,7 @@ public class MainActivity extends AppCompatActivity
         LeagueEventFragment.OnLeagueSelectedListener,
         SeriesFragment.SeriesListener,
         GameFragment.GameFragmentCallbacks,
-        NavigationDrawerAdapter.OnDrawerClickListener
+        NavigationDrawerAdapter.NavigationCallback
 {
 
     /** Identifies output from this class in Logcat. */
@@ -208,27 +211,7 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         setupNavigationDrawer();
-
-        mFloatingActionButton = (FloatingActionButton) findViewById(R.id.fab_main);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
-        {
-          final int underLollipopMargin = 8;
-          final float scale = getResources().getDisplayMetrics().density;
-            ViewGroup.MarginLayoutParams p =
-                    (ViewGroup.MarginLayoutParams) mFloatingActionButton.getLayoutParams();
-            p.setMargins(0, 0, DataFormatter.getPixelsFromDP(scale, underLollipopMargin), 0);
-            mFloatingActionButton.setLayoutParams(p);
-        }
-        mFloatingActionButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                if (mCurrentFragment.get() != null
-                        && mCurrentFragment.get() instanceof FloatingActionButtonHandler)
-                    ((FloatingActionButtonHandler) mCurrentFragment.get()).onFabClick();
-            }
-        });
+        setupFloatingActionButton();
 
         mQueueSavingThreads = new ConcurrentLinkedQueue<>();
         mRunningSaveThread = null;
@@ -246,7 +229,7 @@ public class MainActivity extends AppCompatActivity
                             Constants.FRAGMENT_BOWLERS)
                     .commit();
             mCurrentFragment = new WeakReference<>(bowlerFragment);
-            setFloatingActionButtonIcon(R.drawable.ic_action_add_person);
+            setFloatingActionButtonIcon(R.drawable.ic_person_add_black_24dp);
         }
         else
         {
@@ -264,15 +247,13 @@ public class MainActivity extends AppCompatActivity
             mIsQuickSeries = savedInstanceState.getBoolean(Constants.EXTRA_QUICK_SERIES);
             List<String> listNavOptions =
                     savedInstanceState.getStringArrayList(Constants.EXTRA_NAV_OPTIONS);
-            byte navCurrentGameNumber =
-                    savedInstanceState.getByte(Constants.EXTRA_NAV_CURRENT_GAME);
-            mDrawerAdapter.setCurrentGame(navCurrentGameNumber);
+            int navCurrentGameNumber =
+                    savedInstanceState.getInt(Constants.EXTRA_NAV_CURRENT_GAME);
+            mDrawerAdapter.setCurrentItem(navCurrentGameNumber);
             if (listNavOptions != null)
             {
                 for (int i = 2; i < listNavOptions.size(); i++)
-                {
                     mListDrawerOptions.add(listNavOptions.get(i));
-                }
             }
             mDrawerAdapter.notifyDataSetChanged();
         }
@@ -315,7 +296,7 @@ public class MainActivity extends AppCompatActivity
         outState.putBoolean(Constants.EXTRA_QUICK_SERIES, mIsQuickSeries);
         outState.putBoolean(Constants.EXTRA_EVENT_MODE, mIsEventMode);
         outState.putStringArrayList(Constants.EXTRA_NAV_OPTIONS, mListDrawerOptions);
-        outState.putByte(Constants.EXTRA_NAV_CURRENT_GAME, mDrawerAdapter.getCurrentGame());
+        outState.putInt(Constants.EXTRA_NAV_CURRENT_GAME, mDrawerAdapter.getCurrentItem());
     }
 
     @Override
@@ -352,6 +333,7 @@ public class MainActivity extends AppCompatActivity
                     {
                         try
                         {
+                            //noinspection CheckStyle
                             Thread.sleep(100);
                         }
                         catch (InterruptedException ex)
@@ -405,7 +387,8 @@ public class MainActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item)
     {
         if (mDrawerLayout.getDrawerLockMode(GravityCompat.START)
-                != DrawerLayout.LOCK_MODE_LOCKED_CLOSED && mDrawerToggle.onOptionsItemSelected(item))
+                != DrawerLayout.LOCK_MODE_LOCKED_CLOSED
+                && mDrawerToggle.onOptionsItemSelected(item))
             return true;
 
         switch (item.getItemId())
@@ -425,9 +408,6 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onBackStackChanged()
     {
-        if (mListDrawerOptions.size() > 2)
-            mListDrawerOptions.subList(2, mListDrawerOptions.size()).clear();
-
         //Checks which fragment is now visible and performs some actions
         //and updates items in the navigation drawer
         List<Fragment> fragments = getSupportFragmentManager().getFragments();
@@ -452,11 +432,9 @@ public class MainActivity extends AppCompatActivity
                     mNumberOfGames = -1;
                     mIsQuickSeries = false;
                     setDrawerState(false);
-                    setFloatingActionButtonIcon(R.drawable.ic_action_add_person);
+                    setFloatingActionButtonIcon(R.drawable.ic_person_add_black_24dp);
                     break;
                 case Constants.FRAGMENT_LEAGUES:
-                    mListDrawerOptions.add(Constants.NAV_OPTION_LEAGUES_EVENTS);
-
                     mLeagueId = -1;
                     mSeriesId = -1;
                     mGameId = -1;
@@ -465,46 +443,49 @@ public class MainActivity extends AppCompatActivity
                     mSeriesDate = null;
                     mNumberOfGames = -1;
                     setDrawerState(false);
-                    setFloatingActionButtonIcon(R.drawable.ic_action_new);
+                    setFloatingActionButtonIcon(R.drawable.ic_add_black_24dp);
                     break;
                 case Constants.FRAGMENT_SERIES:
-                    mListDrawerOptions.add(Constants.NAV_OPTION_LEAGUES_EVENTS);
-                    mListDrawerOptions.add(Constants.NAV_OPTION_SERIES);
-
                     mSeriesId = -1;
                     mGameId = -1;
                     mGameNumber = -1;
                     mSeriesDate = null;
                     setDrawerState(false);
-                    setFloatingActionButtonIcon(R.drawable.ic_action_new);
+                    setFloatingActionButtonIcon(R.drawable.ic_add_black_24dp);
                     break;
                 case Constants.FRAGMENT_GAME:
+                    mListDrawerOptions.remove(NavigationUtils.NAVIGATION_ITEM_LEAGUES);
+                    mListDrawerOptions.remove(NavigationUtils.NAVIGATION_ITEM_SERIES);
+                    for (Iterator<String> it = mListDrawerOptions.iterator(); it.hasNext();)
+                        if (it.next().matches("\\w+ \\d+"))
+                            it.remove();
                     GameFragment gameFragment = (GameFragment) fragment;
-
+                    int additionalOffset = 0;
                     if (!isQuickSeries())
-                        mListDrawerOptions.add(Constants.NAV_OPTION_LEAGUES_EVENTS);
+                        mListDrawerOptions.add(
+                                NavigationUtils.NAVIGATION_STATIC_ITEMS + additionalOffset++,
+                                NavigationUtils.NAVIGATION_ITEM_LEAGUES);
                     if (!isEventMode() && !isQuickSeries())
-                        mListDrawerOptions.add(Constants.NAV_OPTION_SERIES);
-                    mListDrawerOptions.add(Constants.NAV_OPTION_GAME_DETAILS);
+                        mListDrawerOptions.add(
+                                NavigationUtils.NAVIGATION_STATIC_ITEMS + additionalOffset++,
+                                NavigationUtils.NAVIGATION_ITEM_SERIES);
+                    final int totalOffset = additionalOffset;
                     for (byte i = 0; i < mNumberOfGames; i++)
-                        mListDrawerOptions.add("Game " + (i + 1));
+                        mListDrawerOptions.add(
+                                NavigationUtils.NAVIGATION_STATIC_ITEMS + 1 + additionalOffset++,
+                                "Game " + (i + 1));
 
-                    mDrawerAdapter.setCurrentGame(gameFragment.getCurrentGame());
+                    mDrawerAdapter.setCurrentItem(gameFragment.getCurrentGame()
+                            + NavigationUtils.NAVIGATION_STATIC_ITEMS + 1 + totalOffset);
+                    mDrawerAdapter.setHeaderTitle(mBowlerName);
+                    mDrawerAdapter.setHeaderSubtitle(mLeagueName);
                     mGameId = -1;
                     mGameNumber = -1;
                     setDrawerState(true);
                     setFloatingActionButtonIcon(0);
-
                     learnNavigationDrawer();
                     break;
                 case Constants.FRAGMENT_STATS:
-                    if (mLeagueId >= 0 && !isQuickSeries())
-                        mListDrawerOptions.add(Constants.NAV_OPTION_LEAGUES_EVENTS);
-                    if (mSeriesId >= 0 && !isEventMode() && !isQuickSeries())
-                        mListDrawerOptions.add(Constants.NAV_OPTION_SERIES);
-                    if (mSeriesId >= 0)
-                        mListDrawerOptions.add(Constants.NAV_OPTION_GAME_DETAILS);
-                    mListDrawerOptions.add(Constants.NAV_OPTION_STATS);
                     setFloatingActionButtonIcon(0);
                     setDrawerState(false);
                     break;
@@ -513,7 +494,6 @@ public class MainActivity extends AppCompatActivity
             }
             break;
         }
-        mListDrawerOptions.add(Constants.NAV_OPTION_SETTINGS);
         mDrawerAdapter.notifyDataSetChanged();
     }
 
@@ -592,42 +572,71 @@ public class MainActivity extends AppCompatActivity
         new AddSeriesTask().execute();
     }
 
+    /**
+     * Sets the icon of the floating action button with animation.
+     *
+     * @param drawableId id of the drawable for the floating action button
+     */
     public void setFloatingActionButtonIcon(final int drawableId)
     {
         if (drawableId != mCurrentFabIcon)
         {
             final int shortAnimTime = getResources().getInteger(
                     android.R.integer.config_shortAnimTime);
-            ScaleAnimation shrink = new ScaleAnimation(1.0f, 0f, 1.0f, 0f,
-                    Animation.RELATIVE_TO_SELF, CENTER_PIVOT, Animation.RELATIVE_TO_SELF, CENTER_PIVOT);
+            ScaleAnimation shrink = new ScaleAnimation(1.0f,
+                    0f,
+                    1.0f,
+                    0f,
+                    Animation.RELATIVE_TO_SELF,
+                    CENTER_PIVOT,
+                    Animation.RELATIVE_TO_SELF,
+                    CENTER_PIVOT);
             shrink.setDuration((mCurrentFabIcon == 0)
                     ? 1
                     : shortAnimTime);
-            shrink.setAnimationListener(new Animation.AnimationListener() {
+            shrink.setAnimationListener(new Animation.AnimationListener()
+            {
                 @Override
-                public void onAnimationStart(Animation animation) {
+                public void onAnimationStart(Animation animation)
+                {
                     // does nothing
                 }
 
                 @Override
-                public void onAnimationEnd(Animation animation) {
+                public void onAnimationEnd(Animation animation)
+                {
                     mCurrentFabIcon = drawableId;
-                    if (mCurrentFabIcon != 0) {
+                    if (mCurrentFabIcon != 0)
                         mFloatingActionButton.setVisibility(View.VISIBLE);
-                    } else {
+                    else
+                    {
                         mFloatingActionButton.setVisibility(View.GONE);
                         return;
                     }
                     mFloatingActionButton.setImageResource(mCurrentFabIcon);
-                    ScaleAnimation grow = new ScaleAnimation(0f, 1.0f, 0f, 1.0f,
-                            Animation.RELATIVE_TO_SELF, CENTER_PIVOT, Animation.RELATIVE_TO_SELF, CENTER_PIVOT);
+                    Drawable drawable = mFloatingActionButton.getDrawable();
+                    if (drawable != null)
+                    {
+                        drawable.mutate();
+                        //noinspection CheckStyle
+                        drawable.setAlpha(0x8A);
+                    }
+                    ScaleAnimation grow = new ScaleAnimation(0f,
+                            1.0f,
+                            0f,
+                            1.0f,
+                            Animation.RELATIVE_TO_SELF,
+                            CENTER_PIVOT,
+                            Animation.RELATIVE_TO_SELF,
+                            CENTER_PIVOT);
                     grow.setDuration(shortAnimTime);
                     grow.setInterpolator(new OvershootInterpolator());
                     mFloatingActionButton.startAnimation(grow);
                 }
 
                 @Override
-                public void onAnimationRepeat(Animation animation) {
+                public void onAnimationRepeat(Animation animation)
+                {
                     // does nothing
                 }
             });
@@ -685,63 +694,71 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onGameChanged(final byte newGameNumber)
     {
-        byte currentAdapterGame = mDrawerAdapter.getCurrentGame();
+        int offset = 0;
+        while (mListDrawerOptions.size() > offset
+                && !mListDrawerOptions.get(offset).matches("\\w+ \\d+"))
+            offset++;
+        int currentAdapterGame = mDrawerAdapter.getCurrentItem() - offset;
         if (currentAdapterGame == newGameNumber)
             return;
 
-        runOnUiThread(new Runnable() {
+        runOnUiThread(new Runnable()
+        {
             @Override
-            public void run() {
-                mDrawerAdapter.setCurrentGame(newGameNumber);
+            public void run()
+            {
+                mDrawerAdapter.setCurrentItem(newGameNumber);
                 mDrawerAdapter.notifyDataSetChanged();
             }
         });
     }
 
     @Override
-    public void onGameItemClicked(byte gameNumber)
+    public void onNavigationItemClicked(int position)
     {
         mDrawerLayout.closeDrawer(GravityCompat.START);
-        GameFragment gameFragment = (GameFragment) getSupportFragmentManager()
-                .findFragmentByTag(Constants.FRAGMENT_GAME);
-        if (gameFragment == null || !gameFragment.isVisible())
+        if (mListDrawerOptions.get(position).matches("\\w+ \\d+"))
+        {
+            mDrawerLayout.closeDrawer(GravityCompat.START);
+            GameFragment gameFragment = (GameFragment) getSupportFragmentManager()
+                    .findFragmentByTag(Constants.FRAGMENT_GAME);
+            if (gameFragment == null || !gameFragment.isVisible())
+                return;
+
+            int offset = 0;
+            while (mListDrawerOptions.size() > offset
+                    && !mListDrawerOptions.get(offset).matches("\\w+ \\d+"))
+                offset++;
+            gameFragment.switchGame((byte) (position - offset));
             return;
+        }
 
-        gameFragment.switchGame(gameNumber);
-    }
-
-    @SuppressWarnings({"IfCanBeSwitch", "StringEquality"})  //May need to compile for 1.6. Also,
-    //constant strings are added to list so
-    //they can be compared directly
-    @Override
-    public void onFragmentItemClicked(String fragmentItem)
-    {
-        mDrawerLayout.closeDrawer(GravityCompat.START);
-        if (fragmentItem == Constants.NAV_OPTION_HOME
-                || fragmentItem == Constants.NAV_OPTION_BOWLERS)
+        switch (mListDrawerOptions.get(position))
         {
-            getSupportFragmentManager().popBackStack(
-                    Constants.FRAGMENT_BOWLERS, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        }
-        else if (fragmentItem == Constants.NAV_OPTION_LEAGUES_EVENTS)
-        {
-            getSupportFragmentManager().popBackStack(
-                    Constants.FRAGMENT_LEAGUES, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        }
-        else if (fragmentItem == Constants.NAV_OPTION_SERIES)
-        {
-            getSupportFragmentManager().popBackStack(
-                    Constants.FRAGMENT_SERIES, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        }
-        else if (fragmentItem == Constants.NAV_OPTION_GAME_DETAILS)
-        {
-            getSupportFragmentManager().popBackStack(
-                    Constants.FRAGMENT_GAME, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-        }
-        else if (fragmentItem == Constants.NAV_OPTION_SETTINGS)
-        {
-            Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
-            startActivity(settingsIntent);
+            case NavigationUtils.NAVIGATION_ITEM_BOWLERS:
+                getSupportFragmentManager().popBackStack(
+                        Constants.FRAGMENT_BOWLERS, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                break;
+            case NavigationUtils.NAVIGATION_ITEM_LEAGUES:
+                getSupportFragmentManager().popBackStack(
+                        Constants.FRAGMENT_LEAGUES, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                break;
+            case NavigationUtils.NAVIGATION_ITEM_SERIES:
+                getSupportFragmentManager().popBackStack(
+                        Constants.FRAGMENT_SERIES, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                break;
+            case NavigationUtils.NAVIGATION_ITEM_FEEDBACK:
+                Intent emailIntent = EmailUtils.getEmailIntent(
+                        "contact@josephroque.ca",
+                        "Comm/Sug: Bowling Companion");
+                startActivity(Intent.createChooser(emailIntent, "Send mail..."));
+                break;
+            case NavigationUtils.NAVIGATION_ITEM_SETTINGS:
+                Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
+                startActivity(settingsIntent);
+                break;
+            default:
+                // do nothing
         }
     }
 
@@ -796,6 +813,39 @@ public class MainActivity extends AppCompatActivity
         mAutoAdvanceHandler.removeCallbacks(mAutoAdvanceCallback);
     }
 
+    @Override
+    public void updateGameScore(byte gameNumber, short gameScore)
+    {
+        mDrawerAdapter.setSubtitle("Game " + gameNumber, Short.toString(gameScore));
+    }
+
+    /**
+     * Sets up the floating action button.
+     */
+    private void setupFloatingActionButton()
+    {
+        mFloatingActionButton = (FloatingActionButton) findViewById(R.id.fab_main);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
+        {
+            final int underLollipopMargin = 8;
+            final float scale = getResources().getDisplayMetrics().density;
+            ViewGroup.MarginLayoutParams p =
+                    (ViewGroup.MarginLayoutParams) mFloatingActionButton.getLayoutParams();
+            p.setMargins(0, 0, DataFormatter.getPixelsFromDP(scale, underLollipopMargin), 0);
+            mFloatingActionButton.setLayoutParams(p);
+        }
+        mFloatingActionButton.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                if (mCurrentFragment.get() != null
+                        && mCurrentFragment.get() instanceof FloatingActionButtonHandler)
+                    ((FloatingActionButtonHandler) mCurrentFragment.get()).onFabClick();
+            }
+        });
+    }
+
     /**
      * Sets up the navigation drawer.
      */
@@ -819,9 +869,16 @@ public class MainActivity extends AppCompatActivity
         mDrawerRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         mListDrawerOptions = new ArrayList<>();
-        NavigationUtils.populateNavigationDrawer(mListDrawerOptions, Constants.FRAGMENT_BOWLERS);
+        mListDrawerOptions.add(NavigationUtils.NAVIGATION_ITEM_HEADER);
+        mListDrawerOptions.add(NavigationUtils.NAVIGATION_ITEM_BOWLERS);
+        mListDrawerOptions.add(NavigationUtils.NAVIGATION_SUBHEADER_GAMES);
+        mListDrawerOptions.add(NavigationUtils.NAVIGATION_SUBHEADER_OTHER);
+        mListDrawerOptions.add(NavigationUtils.NAVIGATION_ITEM_FEEDBACK);
+        mListDrawerOptions.add(NavigationUtils.NAVIGATION_ITEM_SETTINGS);
 
         mDrawerAdapter = new NavigationDrawerAdapter(this, mListDrawerOptions);
+        mDrawerAdapter.setPositionToSubheader(NavigationUtils.NAVIGATION_SUBHEADER_GAMES);
+        mDrawerAdapter.setPositionToSubheader(NavigationUtils.NAVIGATION_SUBHEADER_OTHER);
         mDrawerRecyclerView.setAdapter(mDrawerAdapter);
 
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
@@ -918,11 +975,13 @@ public class MainActivity extends AppCompatActivity
     public void setActionBarTitle(int resId, boolean override)
     {
         //Changing title theme color
-        final String hexColor = DataFormatter.getHexColorFromInt(Theme.getHeaderFontThemeColor());
+        //final String hexColor = DataFormatter.getHexColorFromInt(Theme.getHeaderFontThemeColor());
 
+        //if (getSupportActionBar() != null)
+            //getSupportActionBar().setTitle(Html.fromHtml("<font color=\"" + hexColor + "\">"
+                    //+ getResources().getString(resId) + "</font>"));
         if (getSupportActionBar() != null)
-            getSupportActionBar().setTitle(Html.fromHtml("<font color=\"" + hexColor + "\">"
-                    + getResources().getString(resId) + "</font>"));
+            getSupportActionBar().setTitle(resId);
         if (override)
             mTitle = resId;
     }
@@ -1048,15 +1107,17 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
-     * Loads game data related to seriesId and displays it in a
-     * new GameFragment instance.
+     * Loads game data related to seriesId and displays it in a new GameFragment instance.
      */
-    private class OpenSeriesTask extends AsyncTask<Boolean, Void, Object[]>
+    private class OpenSeriesTask
+            extends AsyncTask<Boolean, Void, Object[]>
     {
+
         @Override
         protected Object[] doInBackground(Boolean... isEvent)
         {
             long[] gameId = new long[mNumberOfGames];
+            //noinspection CheckStyle
             long[] frameId = new long[mNumberOfGames * 10];
             boolean[] gameLocked = new boolean[mNumberOfGames];
             boolean[] manualScore = new boolean[mNumberOfGames];
@@ -1108,6 +1169,7 @@ public class MainActivity extends AppCompatActivity
             return new Object[]{gameId, frameId, gameLocked, manualScore, matchPlay, isEvent[0]};
         }
 
+        @SuppressWarnings("CheckStyle")
         @Override
         protected void onPostExecute(Object[] params)
         {
@@ -1127,16 +1189,18 @@ public class MainActivity extends AppCompatActivity
     }
 
     /**
-     * Creates a new series in the database and displays it in
-     * a new instance of GameFragment.
+     * Creates a new series in the database and displays it in a new instance of GameFragment.
      */
-    private class AddSeriesTask extends AsyncTask<Void, Void, Object[]>
+    private class AddSeriesTask
+            extends AsyncTask<Void, Void, Object[]>
     {
+
         @Override
         protected Object[] doInBackground(Void... params)
         {
             long seriesId = -1;
             long[] gameId = new long[mNumberOfGames];
+            //noinspection CheckStyle
             long[] frameId = new long[mNumberOfGames * 10];
 
             SQLiteDatabase database =
@@ -1166,6 +1230,7 @@ public class MainActivity extends AppCompatActivity
                         values = new ContentValues();
                         values.put(FrameEntry.COLUMN_FRAME_NUMBER, j + 1);
                         values.put(FrameEntry.COLUMN_GAME_ID, gameId[i]);
+                        //noinspection CheckStyle
                         frameId[j + 10 * i] = database.insert(FrameEntry.TABLE_NAME, null, values);
                     }
                 }
@@ -1202,13 +1267,16 @@ public class MainActivity extends AppCompatActivity
                     new byte[mNumberOfGames]);
             startFragmentTransaction(
                     gameFragment,
-                    (isQuickSeries() ? Constants.FRAGMENT_BOWLERS : Constants.FRAGMENT_SERIES),
+                    (isQuickSeries()
+                            ? Constants.FRAGMENT_BOWLERS
+                            : Constants.FRAGMENT_SERIES),
                     Constants.FRAGMENT_GAME);
         }
     }
 
     /**
      * Queues a new thread to save data to database.
+     *
      * @param thread saving thread
      */
     public void addSavingThread(Thread thread)
@@ -1218,6 +1286,7 @@ public class MainActivity extends AppCompatActivity
 
     /**
      * Waits thread until all saving threads in the queue have finished.
+     *
      * @param activity source activity
      */
     public static void waitForSaveThreads(MainActivity activity)
@@ -1227,6 +1296,7 @@ public class MainActivity extends AppCompatActivity
         {
             try
             {
+                //noinspection CheckStyle
                 Thread.sleep(100);
             }
             catch (InterruptedException ex)
@@ -1245,7 +1315,7 @@ public class MainActivity extends AppCompatActivity
      */
     private void setDrawerState(boolean isEnabled)
     {
-        if ( isEnabled )
+        if (isEnabled)
         {
             mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
             mDrawerToggle.setDrawerIndicatorEnabled(true);
@@ -1276,6 +1346,53 @@ public class MainActivity extends AppCompatActivity
         {
             Log.i(TAG, "Not opening drawer");
         }
+    }
+
+    @Override
+    public void loadGameScoresForDrawer(final long[] gameIds)
+    {
+        new Thread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                final short[] gameScores = new short[gameIds.length];
+                SQLiteDatabase database = DatabaseHelper.getInstance(MainActivity.this)
+                        .getReadableDatabase();
+
+                String rawScoreQuery = "SELECT "
+                        + GameEntry.COLUMN_SCORE
+                        + " FROM " + GameEntry.TABLE_NAME
+                        + " WHERE " + GameEntry._ID + " in "
+                        + Arrays.toString(gameIds).replace("[", "(").replace("]", ")")
+                        + " ORDER BY " + GameEntry._ID;
+                Cursor cursor = database.rawQuery(rawScoreQuery, null);
+                int curGame = 0;
+                if (cursor.moveToFirst())
+                {
+                    while (!cursor.isAfterLast())
+                    {
+                        gameScores[curGame++] = (short) cursor.getInt(cursor.getColumnIndex(
+                                GameEntry.COLUMN_SCORE));
+                        cursor.moveToNext();
+                    }
+                }
+                cursor.close();
+
+                runOnUiThread(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        for (int i = 0; i < gameIds.length; i++)
+                        {
+                            mDrawerAdapter.setSubtitle("Game " + (i + 1),
+                                    Short.toString(gameScores[i]));
+                        }
+                    }
+                });
+            }
+        }).start();
     }
 
     /**

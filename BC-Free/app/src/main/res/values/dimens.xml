@@ -9,6 +9,7 @@
     <!-- Navigation Drawer -->
     <dimen name="navigation_separator_padding">8dp</dimen>
     <dimen name="navigation_item_height">48dp</dimen>
+    <dimen name="navigation_header_height">120dp</dimen>
 
     <!-- List Items -->
     <dimen name="list_keyline">16dp</dimen>

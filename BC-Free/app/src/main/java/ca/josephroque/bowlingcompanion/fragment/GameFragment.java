@@ -7,6 +7,8 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -49,7 +51,7 @@ import ca.josephroque.bowlingcompanion.utilities.ShareUtils;
  * and offers a callback interface {@link GameFragment.GameFragmentCallbacks} for
  * handling interactions.
  */
-@SuppressWarnings("Convert2Lambda")
+@SuppressWarnings({"Convert2Lambda", "CheckStyle"})
 public class GameFragment extends Fragment
         implements
         Theme.ChangeableTheme,
@@ -245,6 +247,7 @@ public class GameFragment extends Fragment
                 case 9: frameText.setId(R.id.text_frame_9); break;
                 default: //do nothing
             }
+            frameText.setTextColor(0xff000000);
             frameText.setBackgroundResource(R.drawable.background_frame_text);
             frameText.setGravity(Gravity.CENTER);
             frameText.setOnClickListener(onClickListeners[LISTENER_TEXT_FRAMES]);
@@ -259,6 +262,7 @@ public class GameFragment extends Fragment
             {
                 //TextView to display value scored on a certain ball
                 TextView text = new TextView(getActivity());
+                text.setTextColor(0xff000000);
                 text.setBackgroundResource(R.drawable.background_frame_text);
                 text.setGravity(Gravity.CENTER);
                 layoutParams = new RelativeLayout.LayoutParams(dp40, dp41);
@@ -398,6 +402,7 @@ public class GameFragment extends Fragment
         loadInitialScores();
         //Loads first game to edit
         loadGameFromDatabase(mCurrentGame);
+        mCallback.loadGameScoresForDrawer(mGameIds);
     }
 
     @Override
@@ -445,8 +450,22 @@ public class GameFragment extends Fragment
                         ? R.string.action_clear_score : R.string.action_set_score);
 
         boolean drawerOpen = ((MainActivity) getActivity()).isDrawerOpen();
-        menu.findItem(R.id.action_stats).setVisible(!drawerOpen);
-        menu.findItem(R.id.action_share).setVisible(!drawerOpen);
+        MenuItem menuItem = menu.findItem(R.id.action_stats).setVisible(!drawerOpen);
+        Drawable drawable = menuItem.getIcon();
+        if (drawable != null)
+        {
+            drawable.mutate();
+            //noinspection CheckStyle
+            drawable.setAlpha(0x8A);
+        }
+        menuItem = menu.findItem(R.id.action_share).setVisible(!drawerOpen);
+        drawable = menuItem.getIcon();
+        if (drawable != null)
+        {
+            drawable.mutate();
+            //noinspection CheckStyle
+            drawable.setAlpha(0x8A);
+        }
         menu.findItem(R.id.action_series_stats).setVisible(!drawerOpen);
         menu.findItem(R.id.action_reset_game).setVisible(!drawerOpen);
         menu.findItem(R.id.action_set_score).setVisible(!drawerOpen);
@@ -1054,10 +1073,18 @@ public class GameFragment extends Fragment
             {
                 switch (mMatchPlay[mCurrentGame])
                 {
-                    case 0: mImageViewMatchPlay.setImageResource(R.drawable.ic_match_none); break;
-                    case 1: mImageViewMatchPlay.setImageResource(R.drawable.ic_match_win); break;
-                    case 2: mImageViewMatchPlay.setImageResource(R.drawable.ic_match_lose); break;
-                    case 3: mImageViewMatchPlay.setImageResource(R.drawable.ic_match_tie); break;
+                    case 0:
+                        mImageViewMatchPlay.setImageResource(R.drawable.ic_match_none);
+                        break;
+                    case 1:
+                        mImageViewMatchPlay.setImageResource(R.drawable.ic_match_win);
+                        break;
+                    case 2:
+                        mImageViewMatchPlay.setImageResource(R.drawable.ic_match_lose);
+                        break;
+                    case 3:
+                        mImageViewMatchPlay.setImageResource(R.drawable.ic_match_tie);
+                        break;
                     default: //do nothing
                 }
             }
@@ -1680,7 +1707,11 @@ public class GameFragment extends Fragment
                                 ? R.drawable.ic_foul_remove
                                 : R.drawable.ic_foul);
                 mTextViewFouls[mCurrentFrame][mCurrentBall]
-                        .setText(mFouls[mCurrentFrame][mCurrentBall] ? "F" : "");
+                        .setText(mFouls[mCurrentFrame][mCurrentBall]
+                                ? "F"
+                                : "");
+                mCallback.updateGameScore((byte) (mCurrentGame + 1),
+                        mGameScoresMinusFouls[mCurrentGame]);
             }
         });
     }
@@ -2208,6 +2239,16 @@ public class GameFragment extends Fragment
     }
 
     /**
+     * Gets the ids of the games currently being edited.
+     *
+     * @return mGameIds
+     */
+    public long[] getGameIds()
+    {
+        return mGameIds;
+    }
+
+    /**
      * Callback interface offers methods upon user interaction.
      */
     public interface GameFragmentCallbacks
@@ -2254,6 +2295,21 @@ public class GameFragment extends Fragment
          * Stops the auto advance timer.
          */
         void stopAutoAdvanceTimer();
+
+        /**
+         * Invoked when a score is updated.
+         *
+         * @param gameNumber number of the game
+         * @param gameScore score of the game
+         */
+        void updateGameScore(byte gameNumber, short gameScore);
+
+        /**
+         * Loads the game scores from the database and sets them in the navigation drawer.
+         *
+         * @param gameIds ids of games to load
+         */
+        void loadGameScoresForDrawer(long[] gameIds);
     }
 
     /**

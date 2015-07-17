@@ -8,6 +8,8 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -203,7 +205,15 @@ public class BowlerFragment extends Fragment
     public void onPrepareOptionsMenu(Menu menu)
     {
         boolean drawerOpen = ((MainActivity) getActivity()).isDrawerOpen();
-        menu.findItem(R.id.action_quick_series).setVisible(!drawerOpen);
+        MenuItem menuItem = menu.findItem(R.id.action_quick_series).setVisible(!drawerOpen);
+        Drawable drawable = menuItem.getIcon();
+        if (drawable != null)
+        {
+            drawable.mutate();
+            drawable.setColorFilter(0x000000, PorterDuff.Mode.SRC_ATOP);
+            //noinspection CheckStyle
+            drawable.setAlpha(0x8A);
+        }
         super.onPrepareOptionsMenu(menu);
     }
 

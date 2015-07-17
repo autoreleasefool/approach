@@ -41,8 +41,6 @@ public final class Constants
     public static final String KEY_THEME_COLORS = "pref_theme_colors";
     /** Identifier for preference which allows user to select a light or dark theme variation. */
     public static final String KEY_THEME_LIGHT = "pref_theme_light";
-    /** Identifier for preference which allows user to select a white or black font for headers. */
-    public static final String KEY_THEME_FONT = "pref_theme_font";
     /** Identifier for preference which allows user to select a minimum score to be highlighted. */
     public static final String KEY_HIGHLIGHT_SCORE = "pref_highlight_score";
     /** Identifier for preference which allows user to enable auto advancing frames. */
@@ -240,22 +238,6 @@ public final class Constants
     public static final String FRAGMENT_GAME = "GameFragment";
     /** Tag to identify instance of StatFragment. */
     public static final String FRAGMENT_STATS = "StatsFragment";
-
-    // NAVIGATION OPTIONS
-    /** Name of the option to navigate to the home fragment. */
-    public static final String NAV_OPTION_HOME = "Home";
-    /** Name of the option to navigate to the bowler fragment. */
-    public static final String NAV_OPTION_BOWLERS = "Bowlers";
-    /** Name of the option to navigate to the leagues & events fragment. */
-    public static final String NAV_OPTION_LEAGUES_EVENTS = "Leagues & Events";
-    /** Name of the option to navigate to the series fragment. */
-    public static final String NAV_OPTION_SERIES = "Series";
-    /** Name of the option to navigate to the game fragment. */
-    public static final String NAV_OPTION_GAME_DETAILS = "Game Details";
-    /** Name of the option to navigate to the stats fragment. */
-    public static final String NAV_OPTION_STATS = "Statistics";
-    /** Name of the option to navigate to the settings. */
-    public static final String NAV_OPTION_SETTINGS = "Settings";
 
     /** Maximum score of a 5 pin game. */
     public static final int GAME_MAX_SCORE = 450;
