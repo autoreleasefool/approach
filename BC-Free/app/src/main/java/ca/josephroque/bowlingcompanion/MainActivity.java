@@ -7,6 +7,7 @@ import com.google.android.gms.ads.AdView;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -513,7 +514,21 @@ public class MainActivity
         if (getSupportActionBar() != null)
             getSupportActionBar()
                     .setBackgroundDrawable(new ColorDrawable(Theme.getPrimaryThemeColor()));
-        mDrawerRecyclerView.setBackgroundColor(Theme.getSecondaryThemeColor());
+        mDrawerRecyclerView.setBackgroundColor(Theme.getPrimaryThemeColor());
+
+        if (mFloatingActionButton != null)
+        {
+            int[][] states = {
+                    {android.R.attr.state_enabled},
+                    {android.R.attr.state_pressed},
+            };
+            int[] colors = {
+                    Theme.getPrimaryThemeColor(),
+                    Theme.getTertiaryThemeColor(),
+            };
+            ColorStateList colorStateList = new ColorStateList(states, colors);
+            mFloatingActionButton.setBackgroundTintList(colorStateList);
+        }
 
         if (isDrawerOpen())
             setActionBarTitle(mDrawerTitle, false);
