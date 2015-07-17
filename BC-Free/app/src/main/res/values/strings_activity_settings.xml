@@ -64,15 +64,9 @@
     <string name="pref_header_theme">Theme</string>
     <string name="pref_theme_colors_title">Theme colors</string>
     <string name="pref_theme_colors_dialog">Select a theme color</string>
-    <string name="pref_theme_light_title">Use light variation of theme</string>
-    <string name="pref_theme_light_summaryOn">Theme is a lighter variation</string>
-    <string name="pref_theme_light_summaryOff">Theme is a darker variation</string>
-    <string name="pref_theme_font_title">Use a white title font</string>
-    <string name="pref_theme_font_summaryOn">Header font is white</string>
-    <string name="pref_theme_font_summaryOff">Header font is black</string>
     <string-array name="pref_theme_colors_names">
-        <item>Green</item>
         <item>Blue</item>
+        <item>Green</item>
         <item>Orange</item>
         <item>Red</item>
         <item>Purple</item>

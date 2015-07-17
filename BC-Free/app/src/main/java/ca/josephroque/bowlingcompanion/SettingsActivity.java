@@ -271,27 +271,8 @@ public class SettingsActivity extends PreferenceActivity
                     .setSummary(R.string.pref_quick_league_summary);
         }
 
-        checkBoolean = sharedPreferences.getBoolean(Constants.KEY_INCLUDE_EVENTS, true);
-        findPreference(Constants.KEY_INCLUDE_EVENTS).setSummary((checkBoolean)
-                ? R.string.pref_include_events_summaryOn
-                : R.string.pref_include_events_summaryOff);
-        checkBoolean = sharedPreferences.getBoolean(Constants.KEY_INCLUDE_OPEN, true);
-        findPreference(Constants.KEY_INCLUDE_OPEN).setSummary((checkBoolean)
-                ? R.string.pref_include_open_summaryOn
-                : R.string.pref_include_open_summaryOff);
-
         String themeColor = sharedPreferences.getString(Constants.KEY_THEME_COLORS, "Green");
         findPreference(Constants.KEY_THEME_COLORS).setSummary("Current theme is " + themeColor);
-
-        checkBoolean = sharedPreferences.getBoolean(Constants.KEY_THEME_LIGHT, true);
-        findPreference(Constants.KEY_THEME_LIGHT).setSummary((checkBoolean)
-                ? R.string.pref_theme_light_summaryOn
-                : R.string.pref_theme_light_summaryOff);
-
-        checkBoolean = sharedPreferences.getBoolean(Constants.KEY_ENABLE_AUTO_ADVANCE, false);
-        findPreference(Constants.KEY_ENABLE_AUTO_ADVANCE).setSummary((checkBoolean)
-                ? R.string.pref_enable_auto_advance_summaryOn
-                : R.string.pref_enable_auto_advance_summaryOff);
 
         String autoAdvanceInterval =
                 sharedPreferences.getString(Constants.KEY_AUTO_ADVANCE_TIME, "15 seconds");
@@ -308,146 +289,105 @@ public class SettingsActivity extends PreferenceActivity
     }
 
     @Override
-    @SuppressWarnings("IfCanBeSwitch") //in case java 1.6 compatibility is needed
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key)
     {
         //Updates summaries of preferences when their values are changed
 
-        if (key.equals(Constants.KEY_ENABLE_QUICK))
+        switch (key)
         {
-            boolean isQuickEnabled = sharedPreferences.getBoolean(key, false);
-            Preference quickPref = findPreference(key);
-            ListPreference quickBowlerPref =
-                    (ListPreference) findPreference(Constants.KEY_QUICK_BOWLER);
-            ListPreference quickLeaguePref =
-                    (ListPreference) findPreference(Constants.KEY_QUICK_LEAGUE);
+            case Constants.KEY_ENABLE_QUICK:
+                boolean isQuickEnabled = sharedPreferences.getBoolean(key, false);
+                Preference quickPref = findPreference(key);
+                ListPreference bowlerListPref =
+                        (ListPreference) findPreference(Constants.KEY_QUICK_BOWLER);
+                ListPreference leagueListPref =
+                        (ListPreference) findPreference(Constants.KEY_QUICK_LEAGUE);
 
-            if (isQuickEnabled)
-            {
-                quickPref.setSummary(R.string.pref_enable_quick_summaryOn);
-                quickBowlerPref.setValueIndex(0);
+                if (isQuickEnabled)
+                {
+                    quickPref.setSummary(R.string.pref_enable_quick_summaryOn);
+                    bowlerListPref.setValueIndex(0);
 
-                quickBowlerPref.setSummary(mArrayBowlerNames[0]);
-                quickLeaguePref.setSummary(mArrayLeagueNames[0][0]);
-                quickLeaguePref.setEntries(mArrayLeagueNames[0]);
-                quickLeaguePref.setEntryValues(mArrayLeagueIds[0]);
+                    bowlerListPref.setSummary(mArrayBowlerNames[0]);
+                    leagueListPref.setSummary(mArrayLeagueNames[0][0]);
+                    leagueListPref.setEntries(mArrayLeagueNames[0]);
+                    leagueListPref.setEntryValues(mArrayLeagueIds[0]);
+
+                    getSharedPreferences(Constants.PREFS, MODE_PRIVATE)
+                            .edit()
+                            .putLong(Constants.PREF_QUICK_BOWLER_ID,
+                                    Long.parseLong(mArrayBowlerIds[0]))
+                            .putLong(Constants.PREF_QUICK_LEAGUE_ID,
+                                    Long.parseLong(mArrayLeagueIds[0][0]))
+                            .apply();
+                }
+                else
+                {
+                    quickPref.setSummary(R.string.pref_enable_quick_summaryOff);
+                    bowlerListPref.setSummary(R.string.pref_quick_bowler_summary);
+                    leagueListPref.setSummary(R.string.pref_quick_league_summary);
+                    getSharedPreferences(Constants.PREFS, MODE_PRIVATE)
+                            .edit()
+                            .putLong(Constants.PREF_QUICK_BOWLER_ID, -1)
+                            .putLong(Constants.PREF_QUICK_LEAGUE_ID, -1)
+                            .apply();
+                }
+                break;
+            case Constants.KEY_QUICK_BOWLER:
+                ListPreference bowlerPref =
+                        (ListPreference) findPreference(key);
+                ListPreference leaguePref =
+                        (ListPreference) findPreference(Constants.KEY_QUICK_LEAGUE);
+
+                String bowlerId = bowlerPref.getValue();
+                mCurrentBowlerPosition = Arrays.binarySearch(mArrayBowlerIds, bowlerId);
+                leaguePref.setEntryValues(mArrayLeagueIds[mCurrentBowlerPosition]);
+                leaguePref.setEntries(mArrayLeagueNames[mCurrentBowlerPosition]);
+                leaguePref.setValueIndex(0);
+                bowlerPref.setSummary(mArrayLeagueNames[mCurrentBowlerPosition][0]);
 
                 getSharedPreferences(Constants.PREFS, MODE_PRIVATE)
                         .edit()
                         .putLong(Constants.PREF_QUICK_BOWLER_ID,
-                                Long.parseLong(mArrayBowlerIds[0]))
+                                Long.parseLong(mArrayBowlerIds[mCurrentBowlerPosition]))
                         .putLong(Constants.PREF_QUICK_LEAGUE_ID,
-                                Long.parseLong(mArrayLeagueIds[0][0]))
+                                Long.parseLong(mArrayLeagueIds[mCurrentBowlerPosition][0]))
                         .apply();
-            }
-            else
-            {
-                quickPref.setSummary(R.string.pref_enable_quick_summaryOff);
-                quickBowlerPref.setSummary(R.string.pref_quick_bowler_summary);
-                quickLeaguePref.setSummary(R.string.pref_quick_league_summary);
+                break;
+            case Constants.KEY_QUICK_LEAGUE:
+                ListPreference quickLeaguePref = (ListPreference) findPreference(key);
+                String leagueId = quickLeaguePref.getValue();
+                int position = Arrays.binarySearch(mArrayLeagueIds[mCurrentBowlerPosition],
+                        leagueId);
+                quickLeaguePref.setSummary(mArrayLeagueNames[mCurrentBowlerPosition][position]);
+
                 getSharedPreferences(Constants.PREFS, MODE_PRIVATE)
                         .edit()
-                        .putLong(Constants.PREF_QUICK_BOWLER_ID, -1)
-                        .putLong(Constants.PREF_QUICK_LEAGUE_ID, -1)
+                        .putLong(Constants.PREF_QUICK_LEAGUE_ID,
+                                Long.parseLong(mArrayLeagueIds[mCurrentBowlerPosition][position]))
                         .apply();
-            }
-        }
-        else if (key.equals(Constants.KEY_QUICK_BOWLER))
-        {
-            ListPreference quickBowlerPref =
-                    (ListPreference) findPreference(key);
-            ListPreference quickLeaguePref =
-                    (ListPreference) findPreference(Constants.KEY_QUICK_LEAGUE);
+                break;
+            case Constants.KEY_THEME_COLORS:
+                String themeColor =
+                        sharedPreferences.getString(key, "Blue");
 
-            String bowlerId = quickBowlerPref.getValue();
-            mCurrentBowlerPosition = Arrays.binarySearch(mArrayBowlerIds, bowlerId);
-            quickLeaguePref.setEntryValues(mArrayLeagueIds[mCurrentBowlerPosition]);
-            quickLeaguePref.setEntries(mArrayLeagueNames[mCurrentBowlerPosition]);
-            quickLeaguePref.setValueIndex(0);
-            quickBowlerPref.setSummary(mArrayLeagueNames[mCurrentBowlerPosition][0]);
+                Preference themePref = findPreference(key);
+                themePref.setSummary("Current theme is " + themeColor);
 
-            getSharedPreferences(Constants.PREFS, MODE_PRIVATE)
-                    .edit()
-                    .putLong(Constants.PREF_QUICK_BOWLER_ID,
-                            Long.parseLong(mArrayBowlerIds[mCurrentBowlerPosition]))
-                    .putLong(Constants.PREF_QUICK_LEAGUE_ID,
-                            Long.parseLong(mArrayLeagueIds[mCurrentBowlerPosition][0]))
-                    .apply();
-        }
-        else if (key.equals(Constants.KEY_QUICK_LEAGUE))
-        {
-            ListPreference quickLeaguePref = (ListPreference) findPreference(key);
-            String leagueId = quickLeaguePref.getValue();
-            int position = Arrays.binarySearch(mArrayLeagueIds[mCurrentBowlerPosition], leagueId);
-            quickLeaguePref.setSummary(mArrayLeagueNames[mCurrentBowlerPosition][position]);
-
-            getSharedPreferences(Constants.PREFS, MODE_PRIVATE)
-                    .edit()
-                    .putLong(Constants.PREF_QUICK_LEAGUE_ID,
-                            Long.parseLong(mArrayLeagueIds[mCurrentBowlerPosition][position]))
-                    .apply();
-        }
-        else if (key.equals(Constants.KEY_THEME_COLORS))
-        {
-            String themeColor =
-                    sharedPreferences.getString(key, "Green");
-            boolean lightThemeEnabled =
-                    sharedPreferences.getBoolean(Constants.KEY_THEME_LIGHT, true);
-
-            Preference themePref = findPreference(key);
-            themePref.setSummary("Current theme is " + themeColor);
-
-            Theme.setTheme(this, themeColor, lightThemeEnabled);
-        }
-        else if (key.equals(Constants.KEY_THEME_LIGHT))
-        {
-            boolean lightThemeEnabled =
-                    sharedPreferences.getBoolean(key, true);
-            Preference lightPref = findPreference(key);
-            lightPref.setSummary((lightThemeEnabled)
-                    ? R.string.pref_theme_light_summaryOn
-                    : R.string.pref_theme_light_summaryOff);
-
-            Theme.setTheme(this, Theme.getThemeName(), lightThemeEnabled);
-        }
-        else if (key.equals(Constants.KEY_INCLUDE_EVENTS))
-        {
-            boolean isEventIncluded =
-                    sharedPreferences.getBoolean(key, true);
-            Preference eventPref = findPreference(key);
-            eventPref.setSummary((isEventIncluded)
-                    ? R.string.pref_include_events_summaryOn
-                    : R.string.pref_include_events_summaryOff);
-        }
-        else if (key.equals(Constants.KEY_INCLUDE_OPEN))
-        {
-            boolean isOpenIncluded =
-                    sharedPreferences.getBoolean(key, true);
-            Preference openPref = findPreference(key);
-            openPref.setSummary((isOpenIncluded)
-                    ? R.string.pref_include_open_summaryOn
-                    : R.string.pref_include_open_summaryOff);
-        }
-        else if (key.equals(Constants.KEY_HIGHLIGHT_SCORE))
-        {
-            ListPreference highlightPref = (ListPreference) findPreference(key);
-            highlightPref.setSummary("Scores over " + highlightPref.getValue()
-                    + " will be highlighted");
-        }
-        else if (key.equals(Constants.KEY_ENABLE_AUTO_ADVANCE))
-        {
-            boolean isAutoAdvancing =
-                    sharedPreferences.getBoolean(key, false);
-            Preference autoAdvancePref = findPreference(key);
-            autoAdvancePref.setSummary((isAutoAdvancing)
-                    ? R.string.pref_enable_auto_advance_summaryOn
-                    : R.string.pref_enable_auto_advance_summaryOff);
-        }
-        else if (key.equals(Constants.KEY_AUTO_ADVANCE_TIME))
-        {
-            Preference autoAdvancePref = findPreference(key);
-            autoAdvancePref.setSummary("Frame will auto advance after "
-                    + sharedPreferences.getString(key, "15 seconds"));
+                Theme.setTheme(this, themeColor);
+                break;
+            case Constants.KEY_HIGHLIGHT_SCORE:
+                ListPreference highlightPref = (ListPreference) findPreference(key);
+                highlightPref.setSummary("Scores over " + highlightPref.getValue()
+                        + " will be highlighted");
+                break;
+            case Constants.KEY_AUTO_ADVANCE_TIME:
+                Preference autoAdvancePref = findPreference(key);
+                autoAdvancePref.setSummary("Frame will auto advance after "
+                        + sharedPreferences.getString(key, "15 seconds"));
+                break;
+            default:
+                // does nothing
         }
     }
 

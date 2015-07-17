@@ -33,8 +33,6 @@ public final class Theme
     private static int sThemeColorSecondary = -1;
     /** Tertiary color for the current theme. */
     private static int sThemeColorTertiary = -1;
-    /** Color of the header font for the current theme. */
-    private static int sThemeColorHeaderFont = -1;
     /** Long press effect color for the current theme. */
     private static int sThemeColorLongPress = -1;
     /** Number of milliseconds which medium animations will last for. */
@@ -51,9 +49,8 @@ public final class Theme
     public static void loadTheme(Context context)
     {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        String themeName = prefs.getString(Constants.KEY_THEME_COLORS, "Green");
-        boolean lightTheme = prefs.getBoolean(Constants.KEY_THEME_LIGHT, true);
-        setTheme(context, themeName, lightTheme);
+        String themeName = prefs.getString(Constants.KEY_THEME_COLORS, "Blue");
+        setTheme(context, themeName);
     }
 
     /**
@@ -61,15 +58,13 @@ public final class Theme
      *
      * @param context current context to obtain values from
      * @param themeName color of the theme to load
-     * @param lightThemeEnabled indicates whether the light variation of a theme is enabled
      */
     public static void setTheme(Context context,
-                                String themeName,
-                                boolean lightThemeEnabled)
+                                String themeName)
     {
         sThemeName = themeName;
         if (sThemeName == null)
-            sThemeName = "Green";
+            sThemeName = "Blue";
 
         if (sMediumAnimationDuration == -1)
             sMediumAnimationDuration = context.getResources().getInteger(
@@ -82,105 +77,69 @@ public final class Theme
         {
             case "Green":
                 sThemeColorPrimary = context.getResources().getColor(
-                        (lightThemeEnabled)
-                                ? R.color.theme_light_green_primary
-                                : R.color.theme_dark_green_primary);
+                        R.color.theme_green_primary);
                 sThemeColorSecondary = context.getResources().getColor(
-                        (lightThemeEnabled)
-                                ? R.color.theme_light_green_secondary
-                                : R.color.theme_dark_green_secondary);
+                        R.color.theme_green_secondary);
                 sThemeColorTertiary = context.getResources().getColor(
-                        (lightThemeEnabled)
-                                ? R.color.theme_light_green_tertiary
-                                : R.color.theme_dark_green_tertiary);
+                        R.color.theme_green_tertiary);
                 sThemeColorLongPress =
                         context.getResources().getColor(R.color.theme_green_recyclerview_longpress);
                 break;
             case "Orange":
                 sThemeColorPrimary = context.getResources().getColor(
-                        (lightThemeEnabled)
-                                ? R.color.theme_light_orange_primary
-                                : R.color.theme_dark_orange_primary);
+                        R.color.theme_orange_primary);
                 sThemeColorSecondary = context.getResources().getColor(
-                        (lightThemeEnabled)
-                                ? R.color.theme_light_orange_secondary
-                                : R.color.theme_dark_orange_secondary);
+                        R.color.theme_orange_secondary);
                 sThemeColorTertiary = context.getResources().getColor(
-                        (lightThemeEnabled)
-                                ? R.color.theme_light_orange_tertiary
-                                : R.color.theme_dark_orange_tertiary);
+                        R.color.theme_orange_tertiary);
                 sThemeColorLongPress =
                         context.getResources().getColor(
                                 R.color.theme_orange_recyclerview_longpress);
                 break;
             case "Blue":
                 sThemeColorPrimary = context.getResources().getColor(
-                        (lightThemeEnabled)
-                                ? R.color.theme_light_blue_primary
-                                : R.color.theme_dark_blue_primary);
+                        R.color.theme_blue_primary);
                 sThemeColorSecondary = context.getResources().getColor(
-                        (lightThemeEnabled)
-                                ? R.color.theme_light_blue_secondary
-                                : R.color.theme_dark_blue_secondary);
+                        R.color.theme_blue_secondary);
                 sThemeColorTertiary = context.getResources().getColor(
-                        (lightThemeEnabled)
-                                ? R.color.theme_light_blue_tertiary
-                                : R.color.theme_dark_blue_tertiary);
+                        R.color.theme_blue_tertiary);
                 sThemeColorLongPress =
                         context.getResources().getColor(R.color.theme_blue_recyclerview_longpress);
                 break;
             case "Purple":
                 sThemeColorPrimary = context.getResources().getColor(
-                        (lightThemeEnabled)
-                                ? R.color.theme_light_purple_primary
-                                : R.color.theme_dark_purple_primary);
+                        R.color.theme_purple_primary);
                 sThemeColorSecondary = context.getResources().getColor(
-                        (lightThemeEnabled)
-                                ? R.color.theme_light_purple_secondary
-                                : R.color.theme_dark_purple_secondary);
+                        R.color.theme_purple_secondary);
                 sThemeColorTertiary = context.getResources().getColor(
-                        (lightThemeEnabled)
-                                ? R.color.theme_light_purple_tertiary
-                                : R.color.theme_dark_purple_tertiary);
+                        R.color.theme_purple_tertiary);
                 sThemeColorLongPress =
                         context.getResources().getColor(
                                 R.color.theme_purple_recyclerview_longpress);
                 break;
             case "Red":
                 sThemeColorPrimary = context.getResources().getColor(
-                        (lightThemeEnabled)
-                                ? R.color.theme_light_red_primary
-                                : R.color.theme_dark_red_primary);
+                        R.color.theme_red_primary);
                 sThemeColorSecondary = context.getResources().getColor(
-                        (lightThemeEnabled)
-                                ? R.color.theme_light_red_secondary
-                                : R.color.theme_dark_red_secondary);
+                        R.color.theme_red_secondary);
                 sThemeColorTertiary = context.getResources().getColor(
-                        (lightThemeEnabled)
-                                ? R.color.theme_light_red_tertiary
-                                : R.color.theme_dark_red_tertiary);
+                        R.color.theme_red_tertiary);
                 sThemeColorLongPress =
                         context.getResources().getColor(R.color.theme_red_recyclerview_longpress);
                 break;
             case "Grey":
                 sThemeColorPrimary = context.getResources().getColor(
-                        (lightThemeEnabled)
-                                ? R.color.theme_light_gray_primary
-                                : R.color.theme_dark_gray_primary);
+                        R.color.theme_gray_primary);
                 sThemeColorSecondary = context.getResources().getColor(
-                        (lightThemeEnabled)
-                                ? R.color.theme_light_gray_secondary
-                                : R.color.theme_dark_gray_secondary);
+                        R.color.theme_gray_secondary);
                 sThemeColorTertiary = context.getResources().getColor(
-                        (lightThemeEnabled)
-                                ? R.color.theme_light_gray_tertiary
-                                : R.color.theme_dark_gray_tertiary);
+                        R.color.theme_gray_tertiary);
                 sThemeColorLongPress =
                         context.getResources().getColor(R.color.theme_gray_recyclerview_longpress);
                 break;
             default:
                 //If an invalid theme was selected, the default is applied
-                setTheme(context, "Green", true);
+                setTheme(context, "Blue");
         }
     }
 

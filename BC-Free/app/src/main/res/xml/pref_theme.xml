@@ -8,10 +8,4 @@
         android:key="pref_theme_colors"
         android:title="@string/pref_theme_colors_title" />
 
-    <CheckBoxPreference
-        android:defaultValue="true"
-        android:key="pref_theme_light"
-        android:summary="@string/pref_theme_light_summaryOn"
-        android:title="@string/pref_theme_light_title" />
-
 </PreferenceScreen>

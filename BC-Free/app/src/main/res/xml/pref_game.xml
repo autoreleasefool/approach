@@ -3,7 +3,8 @@
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="pref_enable_auto_advance"
-        android:summary="@string/pref_enable_auto_advance_summaryOff"
+        android:summaryOff="@string/pref_enable_auto_advance_summaryOff"
+        android:summaryOn="@string/pref_enable_auto_advance_summaryOn"
         android:title="@string/pref_enable_auto_advance_title" />
 
     <ListPreference

@@ -15,7 +15,7 @@
         android:title="@string/pref_view_source_title">
         <intent
             android:action="android.intent.action.VIEW"
-            android:data="https://github.com/joseph-roque/BowlingCompanion" />
+            android:data="https://github.com/joseph-roque/bowling-companion" />
     </Preference>
 
     <Preference

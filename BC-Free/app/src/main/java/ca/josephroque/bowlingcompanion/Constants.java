@@ -39,8 +39,6 @@ public final class Constants
     public static final String KEY_INCLUDE_OPEN = "pref_include_open";
     /** Identifier for preference which allows user to select a theme color. */
     public static final String KEY_THEME_COLORS = "pref_theme_colors";
-    /** Identifier for preference which allows user to select a light or dark theme variation. */
-    public static final String KEY_THEME_LIGHT = "pref_theme_light";
     /** Identifier for preference which allows user to select a minimum score to be highlighted. */
     public static final String KEY_HIGHLIGHT_SCORE = "pref_highlight_score";
     /** Identifier for preference which allows user to enable auto advancing frames. */
