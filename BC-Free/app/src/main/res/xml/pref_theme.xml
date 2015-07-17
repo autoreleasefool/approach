@@ -1,7 +1,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <ListPreference
-        android:defaultValue="Green"
+        android:defaultValue="Blue"
         android:dialogTitle="@string/pref_theme_colors_dialog"
         android:entries="@array/pref_theme_colors_names"
         android:entryValues="@array/pref_theme_colors_names"

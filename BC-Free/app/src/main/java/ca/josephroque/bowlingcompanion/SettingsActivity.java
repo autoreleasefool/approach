@@ -271,7 +271,7 @@ public class SettingsActivity extends PreferenceActivity
                     .setSummary(R.string.pref_quick_league_summary);
         }
 
-        String themeColor = sharedPreferences.getString(Constants.KEY_THEME_COLORS, "Green");
+        String themeColor = sharedPreferences.getString(Constants.KEY_THEME_COLORS, "Blue");
         findPreference(Constants.KEY_THEME_COLORS).setSummary("Current theme is " + themeColor);
 
         String autoAdvanceInterval =

@@ -934,17 +934,13 @@ public class MainActivity
     {
         //Sets the adview to display an ad to the user
         mAdView = (AdView) findViewById(R.id.av_main);
-        mAdView.setAdListener(new AdListener()
-        {
+        mAdView.setAdListener(new AdListener() {
             @Override
-            public void onAdFailedToLoad(int errorCode)
-            {
+            public void onAdFailedToLoad(int errorCode) {
                 //If ad fails to load, hides this adview
-                runOnUiThread(new Runnable()
-                {
+                runOnUiThread(new Runnable() {
                     @Override
-                    public void run()
-                    {
+                    public void run() {
                         mAdView.destroy();
                         mAdView.setVisibility(View.GONE);
                     }
@@ -952,21 +948,19 @@ public class MainActivity
             }
 
             @Override
-            public void onAdLoaded()
-            {
-                runOnUiThread(new Runnable()
-                {
+            public void onAdLoaded() {
+                runOnUiThread(new Runnable() {
                     @Override
-                    public void run()
-                    {
+                    public void run() {
                         mAdView.setVisibility(View.VISIBLE);
                     }
                 });
             }
         });
-        AdRequest.Builder builder = new AdRequest.Builder();
-        builder.addTestDevice("B3EEABB8EE11C2BE770B684D95219ECB");
-        builder.addTestDevice("F2B8E706AC77AA09B97D016DB70BF723");
+        AdRequest.Builder builder = new AdRequest.Builder()
+                .addTestDevice("B3EEABB8EE11C2BE770B684D95219ECB")
+                .addTestDevice("F2B8E706AC77AA09B97D016DB70BF723")
+                .addTestDevice("7387C5A63BE83E951937A7F2842F6C28");
         mAdView.loadAd(builder.build());
     }
 

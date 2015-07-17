@@ -16,6 +16,10 @@ import ca.josephroque.bowlingcompanion.R;
 public final class Theme
 {
 
+    /** Identifies output from this class in Logcat. */
+    @SuppressWarnings("unused")
+    private static final String TAG = "Theme";
+
     /**
      * Default private constructor.
      */
