@@ -13,6 +13,7 @@
     <string name="title_drawer">Navigation</string>
 
     <!-- Dialog text -->
+    <string name="text_undo">Undo</string>
     <string name="dialog_okay">Okay</string>
     <string name="dialog_cancel">Cancel</string>
     <string name="dialog_add">Add</string>
@@ -44,12 +45,6 @@
     <string name="action_clear_score">Clear Manual Score</string>
 
     <!-- TextView text -->
-    <string name="text_new_bowler">Use the \'+\' to add a new bowler.</string>
-    <string name="text_delete_bowler">Hold down a bowler\'s name to delete them.</string>
-    <string name="text_new_league_event">Use the \'+\' to add a new league/event.</string>
-    <string name="text_delete_league_event">Hold down an item\'s name to delete it.</string>
-    <string name="text_new_series">Use the \'+\' to add a new series.</string>
-    <string name="text_delete_series">Hold down a series\' name to delete it.</string>
     <string name="text_next_ball">Next Ball</string>
     <string name="text_prev_ball">Prev Ball</string>
     <string name="text_add_foul">Add Foul</string>

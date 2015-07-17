@@ -8,21 +8,23 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -41,7 +43,6 @@ import ca.josephroque.bowlingcompanion.database.Contract.LeagueEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.SeriesEntry;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.dialog.NewLeagueEventDialog;
-import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
 
 /**
@@ -53,8 +54,7 @@ import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
  */
 @SuppressWarnings("Convert2Lambda")
 public class LeagueEventFragment extends Fragment
-        implements Theme.ChangeableTheme,
-        NameAverageAdapter.NameAverageEventHandler,
+        implements NameAverageAdapter.NameAverageEventHandler,
         NewLeagueEventDialog.NewLeagueEventDialogListener,
         FloatingActionButtonHandler
 {
@@ -115,7 +115,7 @@ public class LeagueEventFragment extends Fragment
                              ViewGroup container,
                              Bundle savedInstanceState)
     {
-        View rootView = inflater.inflate(R.layout.fragment_list, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_list, container, false);
 
         mListLeagueEventIds = new ArrayList<>();
         mListLeagueEventNames = new ArrayList<>();
@@ -127,6 +127,60 @@ public class LeagueEventFragment extends Fragment
         mRecyclerViewLeagueEvents.addItemDecoration(new DividerItemDecoration(getActivity(),
                 LinearLayoutManager.VERTICAL));
 
+        ItemTouchHelper.SimpleCallback touchCallback = new ItemTouchHelper.SimpleCallback(0,
+                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT)
+        {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target)
+            {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(final RecyclerView.ViewHolder viewHolder, int direction)
+            {
+                final int position = viewHolder.getAdapterPosition();
+                if (mListLeagueEventNames.get(position).substring(1).equals(
+                        Constants.NAME_OPEN_LEAGUE))
+                    mAdapterLeagueEvents.notifyItemChanged(position);
+
+                final long deletedId = mListLeagueEventIds.remove(position);
+                final String deletedName = mListLeagueEventNames.remove(position);
+                final short deletedAverage = mListLeagueEventAverages.remove(position);
+                final byte deletedNumberOfGames = mListLeagueEventNumberOfGames.remove(position);
+                mAdapterLeagueEvents.notifyItemRemoved(position);
+
+                final Handler handler = new Handler(Looper.getMainLooper());
+                final Runnable deleteLeagueEvent = new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        deleteLeagueEvent(deletedId);
+                    }
+                };
+                handler.postDelayed(deleteLeagueEvent, 4000);
+
+                Snackbar.make(rootView, deletedName + " deleted", Snackbar.LENGTH_LONG)
+                        .setAction(R.string.text_undo, new View.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(View v)
+                            {
+                                handler.removeCallbacks(deleteLeagueEvent);
+                                mListLeagueEventIds.add(position, deletedId);
+                                mListLeagueEventNames.add(position, deletedName);
+                                mListLeagueEventAverages.add(position, deletedAverage);
+                                mListLeagueEventNumberOfGames.add(position, deletedNumberOfGames);
+                                mAdapterLeagueEvents.notifyItemInserted(position);
+                            }
+                        })
+                        .show();
+            }
+        };
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(touchCallback);
+        itemTouchHelper.attachToRecyclerView(mRecyclerViewLeagueEvents);
+
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mRecyclerViewLeagueEvents.setLayoutManager(layoutManager);
 
@@ -135,12 +189,6 @@ public class LeagueEventFragment extends Fragment
                 mListLeagueEventAverages,
                 NameAverageAdapter.DATA_LEAGUES_EVENTS);
         mRecyclerViewLeagueEvents.setAdapter(mAdapterLeagueEvents);
-
-        //Sets textviews to display text relevant to leagues
-        ((TextView) rootView.findViewById(R.id.tv_new_list_item))
-                .setText(R.string.text_new_league_event);
-        ((TextView) rootView.findViewById(R.id.tv_delete_list_item))
-                .setText(R.string.text_delete_league_event);
 
         return rootView;
     }
@@ -164,8 +212,6 @@ public class LeagueEventFragment extends Fragment
         mListLeagueEventAverages.clear();
         mListLeagueEventNumberOfGames.clear();
         mAdapterLeagueEvents.notifyDataSetChanged();
-
-        updateTheme();
 
         new LoadLeaguesEventsTask().execute();
     }
@@ -207,20 +253,6 @@ public class LeagueEventFragment extends Fragment
     }
 
     @Override
-    public void updateTheme()
-    {
-        /*View rootView = getView();
-        if (rootView != null)
-        {
-            FloatingActionButton fab =
-                    (FloatingActionButton) rootView.findViewById(R.id.fab_new_list_item);
-            fab.setColorNormal(Theme.getPrimaryThemeColor());
-            fab.setColorPressed(Theme.getPrimaryThemeColor());
-            fab.setColorRipple(Theme.getTertiaryThemeColor());
-        }*/
-    }
-
-    @Override
     public void onNAItemClick(final int position)
     {
         //When league name is clicked, its data is opened in a new SeriesFragment
@@ -228,17 +260,9 @@ public class LeagueEventFragment extends Fragment
     }
 
     @Override
-    public void onNALongClick(final int position)
-    {
-        //When league name is long clicked, user is prompted to delete it
-        showDeleteLeagueOrEventDialog(position);
-    }
-
-    @Override
     public int getNAViewPositionInRecyclerView(View v)
     {
         return mRecyclerViewLeagueEvents.getChildAdapterPosition(v);
-        //TODO replace with  mRecyclerViewLeagueEvents.getChildPosition(v); if broken
     }
 
     @Override
@@ -314,65 +338,12 @@ public class LeagueEventFragment extends Fragment
     }
 
     /**
-     * Prompts user with a dialog to delete all data regarding a certain
-     * league or event in the database.
-     *
-     * @param position position of league id in mListLeagueEventIds
-     */
-    private void showDeleteLeagueOrEventDialog(final int position)
-    {
-        final String leagueEventName = mListLeagueEventNames.get(position).substring(1);
-        final long leagueId = mListLeagueEventIds.get(position);
-
-        /*
-         * There is a default league "Open" which is created along with a new bowler
-         * and cannot be deleted - this conditional prevents its removal
-         */
-        if (leagueEventName.equals(Constants.NAME_OPEN_LEAGUE))
-        {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setMessage("The league \"" + leagueEventName + "\" cannot be deleted.")
-                    .setCancelable(false)
-                    .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener()
-                    {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which)
-                        {
-                            dialog.dismiss();
-                        }
-                    })
-                    .create()
-                    .show();
-            return;
-        }
-
-        DatabaseHelper.deleteData(getActivity(),
-                new DatabaseHelper.DataDeleter()
-                {
-                    @Override
-                    public void execute()
-                    {
-                        deleteLeagueEvent(leagueId);
-                    }
-                },
-                leagueEventName);
-    }
-
-    /**
      * Deletes all data regarding a certain league id in the database.
      *
      * @param leagueEventId id of league/event whose data will be deleted
      */
     private void deleteLeagueEvent(final long leagueEventId)
     {
-        //Removes league from RecyclerView immediately  UI doesn't hang
-        final int index = mListLeagueEventIds.indexOf(leagueEventId);
-        mListLeagueEventNames.remove(index);
-        mListLeagueEventAverages.remove(index);
-        mListLeagueEventNumberOfGames.remove(index);
-        mListLeagueEventIds.remove(index);
-        mAdapterLeagueEvents.notifyItemRemoved(index);
-
         SharedPreferences prefs =
                 getActivity().getSharedPreferences(Constants.PREFS, Context.MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = prefs.edit();

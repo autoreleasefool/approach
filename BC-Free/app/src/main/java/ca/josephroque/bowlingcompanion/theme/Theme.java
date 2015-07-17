@@ -28,17 +28,12 @@ public final class Theme
         // does nothing
     }
 
-    /** Identifier for the current theme. */
-    private static String sThemeName = null;
-
     /** Primary color for the current theme. */
     private static int sThemeColorPrimary = -1;
     /** Secondary color for the current theme. */
     private static int sThemeColorSecondary = -1;
     /** Tertiary color for the current theme. */
     private static int sThemeColorTertiary = -1;
-    /** Long press effect color for the current theme. */
-    private static int sThemeColorLongPress = -1;
     /** Number of milliseconds which medium animations will last for. */
     private static int sMediumAnimationDuration = -1;
     /** List item background color for the current theme. */
@@ -66,9 +61,8 @@ public final class Theme
     public static void setTheme(Context context,
                                 String themeName)
     {
-        sThemeName = themeName;
-        if (sThemeName == null)
-            sThemeName = "Blue";
+        if (themeName == null)
+            themeName = "Blue";
 
         if (sMediumAnimationDuration == -1)
             sMediumAnimationDuration = context.getResources().getInteger(
@@ -77,7 +71,7 @@ public final class Theme
             sThemeListItemBackground = context.getResources().getColor(
                     R.color.secondary_background);
 
-        switch (sThemeName)
+        switch (themeName)
         {
             case "Green":
                 sThemeColorPrimary = context.getResources().getColor(
@@ -86,8 +80,6 @@ public final class Theme
                         R.color.theme_green_secondary);
                 sThemeColorTertiary = context.getResources().getColor(
                         R.color.theme_green_tertiary);
-                sThemeColorLongPress =
-                        context.getResources().getColor(R.color.theme_green_recyclerview_longpress);
                 break;
             case "Orange":
                 sThemeColorPrimary = context.getResources().getColor(
@@ -96,9 +88,6 @@ public final class Theme
                         R.color.theme_orange_secondary);
                 sThemeColorTertiary = context.getResources().getColor(
                         R.color.theme_orange_tertiary);
-                sThemeColorLongPress =
-                        context.getResources().getColor(
-                                R.color.theme_orange_recyclerview_longpress);
                 break;
             case "Blue":
                 sThemeColorPrimary = context.getResources().getColor(
@@ -107,8 +96,6 @@ public final class Theme
                         R.color.theme_blue_secondary);
                 sThemeColorTertiary = context.getResources().getColor(
                         R.color.theme_blue_tertiary);
-                sThemeColorLongPress =
-                        context.getResources().getColor(R.color.theme_blue_recyclerview_longpress);
                 break;
             case "Purple":
                 sThemeColorPrimary = context.getResources().getColor(
@@ -117,9 +104,6 @@ public final class Theme
                         R.color.theme_purple_secondary);
                 sThemeColorTertiary = context.getResources().getColor(
                         R.color.theme_purple_tertiary);
-                sThemeColorLongPress =
-                        context.getResources().getColor(
-                                R.color.theme_purple_recyclerview_longpress);
                 break;
             case "Red":
                 sThemeColorPrimary = context.getResources().getColor(
@@ -128,8 +112,6 @@ public final class Theme
                         R.color.theme_red_secondary);
                 sThemeColorTertiary = context.getResources().getColor(
                         R.color.theme_red_tertiary);
-                sThemeColorLongPress =
-                        context.getResources().getColor(R.color.theme_red_recyclerview_longpress);
                 break;
             case "Grey":
                 sThemeColorPrimary = context.getResources().getColor(
@@ -138,23 +120,11 @@ public final class Theme
                         R.color.theme_gray_secondary);
                 sThemeColorTertiary = context.getResources().getColor(
                         R.color.theme_gray_tertiary);
-                sThemeColorLongPress =
-                        context.getResources().getColor(R.color.theme_gray_recyclerview_longpress);
                 break;
             default:
                 //If an invalid theme was selected, the default is applied
                 setTheme(context, "Blue");
         }
-    }
-
-    /**
-     * Returns the current theme color name.
-     *
-     * @return value of sThemeName
-     */
-    public static String getThemeName()
-    {
-        return sThemeName;
     }
 
     /**
@@ -185,36 +155,6 @@ public final class Theme
     public static int getTertiaryThemeColor()
     {
         return sThemeColorTertiary;
-    }
-
-    /**
-     * Gets the long press animation color for the theme.
-     *
-     * @return the value of sThemeColorLongPress
-     */
-    public static int getLongPressThemeColor()
-    {
-        return sThemeColorLongPress;
-    }
-
-    /**
-     * Gets the list item color for the theme.
-     *
-     * @return the value of sThemeListItemBackground
-     */
-    public static int getListItemBackground()
-    {
-        return sThemeListItemBackground;
-    }
-
-    /**
-     * Gets the duration to be used for medium animations.
-     *
-     * @return the value of sMediumAnimationDuration
-     */
-    public static int getMediumAnimationDuration()
-    {
-        return sMediumAnimationDuration;
     }
 
     /**

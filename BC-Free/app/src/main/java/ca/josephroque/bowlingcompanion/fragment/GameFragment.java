@@ -2246,16 +2246,6 @@ public class GameFragment extends Fragment
     }
 
     /**
-     * Gets the ids of the games currently being edited.
-     *
-     * @return mGameIds
-     */
-    public long[] getGameIds()
-    {
-        return mGameIds;
-    }
-
-    /**
      * Callback interface offers methods upon user interaction.
      */
     public interface GameFragmentCallbacks

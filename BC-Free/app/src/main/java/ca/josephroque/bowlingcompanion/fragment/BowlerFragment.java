@@ -12,18 +12,21 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.preference.PreferenceManager;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -42,7 +45,6 @@ import ca.josephroque.bowlingcompanion.database.Contract.LeagueEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.SeriesEntry;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.dialog.NewBowlerDialog;
-import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
 
 /**
@@ -54,8 +56,7 @@ import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
  */
 @SuppressWarnings("Convert2Lambda")
 public class BowlerFragment extends Fragment
-        implements Theme.ChangeableTheme,
-        NameAverageAdapter.NameAverageEventHandler,
+        implements NameAverageAdapter.NameAverageEventHandler,
         NewBowlerDialog.NewBowlerDialogListener,
         FloatingActionButtonHandler
 {
@@ -141,7 +142,7 @@ public class BowlerFragment extends Fragment
                              ViewGroup container,
                              Bundle savedInstanceState)
     {
-        View rootView = inflater.inflate(R.layout.fragment_list, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_list, container, false);
 
         mListBowlerIds = new ArrayList<>();
         mListBowlerNames = new ArrayList<>();
@@ -152,6 +153,54 @@ public class BowlerFragment extends Fragment
         mRecyclerViewBowlers.addItemDecoration(new DividerItemDecoration(getActivity(),
                 LinearLayoutManager.VERTICAL));
 
+        ItemTouchHelper.SimpleCallback touchCallback = new ItemTouchHelper.SimpleCallback(0,
+                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT)
+        {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target)
+            {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(final RecyclerView.ViewHolder viewHolder, int direction)
+            {
+                final int position = viewHolder.getAdapterPosition();
+                final long deletedId = mListBowlerIds.remove(position);
+                final String deletedName = mListBowlerNames.remove(position);
+                final short deletedAverage = mListBowlerAverages.remove(position);
+                mAdapterBowlers.notifyItemRemoved(position);
+
+                final Handler handler = new Handler(Looper.getMainLooper());
+                final Runnable deleteBowler = new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        deleteBowler(deletedId);
+                    }
+                };
+                handler.postDelayed(deleteBowler, 4000);
+
+                Snackbar.make(rootView, deletedName + " deleted", Snackbar.LENGTH_LONG)
+                        .setAction(R.string.text_undo, new View.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(View v)
+                            {
+                                handler.removeCallbacks(deleteBowler);
+                                mListBowlerIds.add(position, deletedId);
+                                mListBowlerNames.add(position, deletedName);
+                                mListBowlerAverages.add(position, deletedAverage);
+                                mAdapterBowlers.notifyItemInserted(position);
+                            }
+                        })
+                .show();
+            }
+        };
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(touchCallback);
+        itemTouchHelper.attachToRecyclerView(mRecyclerViewBowlers);
+
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mRecyclerViewBowlers.setLayoutManager(layoutManager);
         mAdapterBowlers = new NameAverageAdapter(this,
@@ -159,12 +208,6 @@ public class BowlerFragment extends Fragment
                 mListBowlerAverages,
                 NameAverageAdapter.DATA_BOWLERS);
         mRecyclerViewBowlers.setAdapter(mAdapterBowlers);
-
-        //Sets textviews to display text relevant to bowlers
-        ((TextView) rootView.findViewById(R.id.tv_new_list_item))
-                .setText(R.string.text_new_bowler);
-        ((TextView) rootView.findViewById(R.id.tv_delete_list_item))
-                .setText(R.string.text_delete_bowler);
 
         return rootView;
     }
@@ -190,14 +233,10 @@ public class BowlerFragment extends Fragment
             mQuickLeagueId = prefs.getLong(Constants.PREF_QUICK_LEAGUE_ID, -1);
         }
 
-
-
         mListBowlerIds.clear();
         mListBowlerNames.clear();
         mListBowlerAverages.clear();
         mAdapterBowlers.notifyDataSetChanged();
-
-        updateTheme();
 
         //Creates AsyncTask to load data from database
         new LoadBowlerAndRecentTask().execute();
@@ -240,21 +279,6 @@ public class BowlerFragment extends Fragment
     }
 
     @Override
-    public void updateTheme()
-    {
-        //Updates colors of views
-        /*View rootView = getView();
-        if (rootView != null)
-        {
-            FloatingActionButton fab =
-                    (FloatingActionButton) rootView.findViewById(R.id.fab_new_list_item);
-            fab.setColorNormal(Theme.getPrimaryThemeColor());
-            fab.setColorPressed(Theme.getPrimaryThemeColor());
-            fab.setColorRipple(Theme.getTertiaryThemeColor());
-        }*/
-    }
-
-    @Override
     public void onNAItemClick(final int position)
     {
         //When bowler name is clicked, their leagues are displayed in new fragment
@@ -262,18 +286,10 @@ public class BowlerFragment extends Fragment
     }
 
     @Override
-    public void onNALongClick(final int position)
-    {
-        //When bowler name is long clicked, user is prompted to delete
-        showDeleteBowlerDialog(position);
-    }
-
-    @Override
     public int getNAViewPositionInRecyclerView(View v)
     {
         //Gets position of view in mRecyclerViewBowlers
         return mRecyclerViewBowlers.getChildAdapterPosition(v);
-        //TODO: replace if above crashes return mRecyclerViewBowlers.getChildPosition(v);
     }
 
     @Override
@@ -439,39 +455,12 @@ public class BowlerFragment extends Fragment
     }
 
     /**
-     * Prompts user with a dialog to delete all data regarding a certain
-     * bowler in the database.
-     *
-     * @param position position of bowler id in mListBowlerIds
-     */
-    private void showDeleteBowlerDialog(final int position)
-    {
-        final String bowlerName = mListBowlerNames.get(position);
-        final long bowlerId = mListBowlerIds.get(position);
-        DatabaseHelper.deleteData(getActivity(),
-                new DatabaseHelper.DataDeleter()
-                {
-                    @Override
-                    public void execute()
-                    {
-                        deleteBowler(bowlerId);
-                    }
-                },
-                bowlerName);
-    }
-
-    /**
      * Deletes all data regarding a certain bowler id in the database.
      *
      * @param bowlerId id of bowler whose data will be deleted
      */
     private void deleteBowler(final long bowlerId)
     {
-        final int index = mListBowlerIds.indexOf(bowlerId);
-        mListBowlerNames.remove(index);
-        mListBowlerIds.remove(index);
-        mAdapterBowlers.notifyItemRemoved(index);
-
         SharedPreferences prefs =
                 getActivity().getSharedPreferences(Constants.PREFS, Context.MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = prefs.edit();

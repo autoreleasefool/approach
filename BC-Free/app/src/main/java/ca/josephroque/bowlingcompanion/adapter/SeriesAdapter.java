@@ -23,7 +23,7 @@ import ca.josephroque.bowlingcompanion.theme.Theme;
  * {@link SeriesAdapter.SeriesEventHandler} to handle interaction events.
  */
 public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesViewHolder>
-        implements Theme.ChangeableTheme, View.OnClickListener, View.OnLongClickListener
+        implements Theme.ChangeableTheme, View.OnClickListener
 {
 
     /** Identifies output from this class in Logcat. */
@@ -125,7 +125,7 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
     public SeriesViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.list_series, parent, false);
+                .inflate(R.layout.list_item_series, parent, false);
         return new SeriesViewHolder(itemView);
     }
 
@@ -165,7 +165,6 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
          * clicked or long clicked.
          */
         holder.itemView.setOnClickListener(this);
-        holder.itemView.setOnLongClickListener(this);
     }
 
     @Override
@@ -173,14 +172,6 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
     {
         //Calls relevant event handler method
         mEventHandler.onSItemClick(mEventHandler.getSeriesViewPositionInRecyclerView(v));
-    }
-
-    @Override
-    public boolean onLongClick(View v)
-    {
-        //Calls relevant event handler method
-        mEventHandler.onSLongClick(mEventHandler.getSeriesViewPositionInRecyclerView(v));
-        return true;
     }
 
     @Override
@@ -210,13 +201,6 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
          * @param position position of the item in the list
          */
         void onSItemClick(final int position);
-
-        /**
-         * Called when an item in the RecyclerView is long clicked.
-         *
-         * @param position position of the item in the list
-         */
-        void onSLongClick(final int position);
 
         /**
          * Should be used to return RecyclerView#getChildPosition(v) on the

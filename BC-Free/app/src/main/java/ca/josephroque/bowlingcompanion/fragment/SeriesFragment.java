@@ -6,21 +6,23 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -107,7 +109,7 @@ public class SeriesFragment extends Fragment
                              ViewGroup container,
                              Bundle savedInstanceState)
     {
-        View rootView = inflater.inflate(R.layout.fragment_list, container, false);
+        final View rootView = inflater.inflate(R.layout.fragment_list, container, false);
 
         mListSeriesIds = new ArrayList<>();
         mListSeriesDates = new ArrayList<>();
@@ -118,17 +120,58 @@ public class SeriesFragment extends Fragment
         mRecyclerViewSeries.addItemDecoration(new DividerItemDecoration(getActivity(),
                 LinearLayoutManager.VERTICAL));
 
+        ItemTouchHelper.SimpleCallback touchCallback = new ItemTouchHelper.SimpleCallback(0,
+                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT)
+        {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target)
+            {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(final RecyclerView.ViewHolder viewHolder, int direction)
+            {
+                final int position = viewHolder.getAdapterPosition();
+                final long deletedId = mListSeriesIds.remove(position);
+                final String deletedName = mListSeriesDates.remove(position);
+                final List<Short> deletedScores = mListSeriesGames.remove(position);
+                mAdapterSeries.notifyItemRemoved(position);
+
+                final Handler handler = new Handler(Looper.getMainLooper());
+                final Runnable deleteSeries = new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        deleteSeries(deletedId);
+                    }
+                };
+                handler.postDelayed(deleteSeries, 4000);
+                Snackbar.make(rootView, deletedName + " deleted", Snackbar.LENGTH_LONG)
+                        .setAction(R.string.text_undo, new View.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(View v)
+                            {
+                                handler.removeCallbacks(deleteSeries);
+                                mListSeriesIds.add(position, deletedId);
+                                mListSeriesDates.add(position, deletedName);
+                                mListSeriesGames.add(position, deletedScores);
+                                mAdapterSeries.notifyItemInserted(position);
+                            }
+                        })
+                        .show();
+            }
+        };
+        ItemTouchHelper itemTouchHelper = new ItemTouchHelper(touchCallback);
+        itemTouchHelper.attachToRecyclerView(mRecyclerViewSeries);
+
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         mRecyclerViewSeries.setLayoutManager(layoutManager);
 
         mAdapterSeries = new SeriesAdapter(getActivity(), this, mListSeriesDates, mListSeriesGames);
         mRecyclerViewSeries.setAdapter(mAdapterSeries);
-
-        //Sets textviews to display text relevant to series
-        ((TextView) rootView.findViewById(R.id.tv_new_list_item))
-                .setText(R.string.text_new_series);
-        ((TextView) rootView.findViewById(R.id.tv_delete_list_item))
-                .setText(R.string.text_delete_series);
 
         return rootView;
     }
@@ -199,16 +242,6 @@ public class SeriesFragment extends Fragment
     @Override
     public void updateTheme()
     {
-        //Updates colors of views and sets theme for this object to a 'valid' state
-        /*View rootView = getView();
-        if (rootView != null)
-        {
-            FloatingActionButton fab =
-                    (FloatingActionButton) rootView.findViewById(R.id.fab_new_list_item);
-            fab.setColorNormal(Theme.getPrimaryThemeColor());
-            fab.setColorPressed(Theme.getPrimaryThemeColor());
-            fab.setColorRipple(Theme.getTertiaryThemeColor());
-        }*/
         mAdapterSeries.updateTheme();
     }
 
@@ -221,18 +254,10 @@ public class SeriesFragment extends Fragment
     }
 
     @Override
-    public void onSLongClick(final int position)
-    {
-        //When series is long clicked, user is prompted to delete it
-        showDeleteSeriesDialog(position);
-    }
-
-    @Override
     public int getSeriesViewPositionInRecyclerView(View v)
     {
         //Gets position of view in mRecyclerViewSeries
         return mRecyclerViewSeries.getChildAdapterPosition(v);
-        // TODO: replace with return mRecyclerViewSeries.getChildPosition(v); if broken
     }
 
     @Override
@@ -316,41 +341,12 @@ public class SeriesFragment extends Fragment
     }
 
     /**
-     * Prompts user with a dialog to delete all data regarding a certain
-     * series in the database.
-     *
-     * @param position position of series id in mListSeriesIds
-     */
-    private void showDeleteSeriesDialog(int position)
-    {
-        final String seriesDate = mListSeriesDates.get(position);
-        final long seriesId = mListSeriesIds.get(position);
-
-        DatabaseHelper.deleteData(getActivity(),
-                new DatabaseHelper.DataDeleter()
-                {
-                    @Override
-                    public void execute()
-                    {
-                        deleteSeries(seriesId);
-                    }
-                },
-                seriesDate);
-    }
-
-    /**
      * Deletes all data regarding a certain series id in the database.
      *
      * @param seriesId id of series whose data will be deleted
      */
     private void deleteSeries(final long seriesId)
     {
-        final int index = mListSeriesIds.indexOf(seriesId);
-        mListSeriesDates.remove(index);
-        mListSeriesGames.remove(index);
-        mListSeriesIds.remove(index);
-        mAdapterSeries.notifyDataSetChanged();
-
         new Thread(new Runnable()
         {
             @Override
