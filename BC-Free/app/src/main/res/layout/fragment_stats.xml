@@ -1,15 +1,5 @@
-<LinearLayout
+<FrameLayout
+    android:id="@+id/stats_container"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/primary_background"
-    android:orientation="vertical">
-
-    <ExpandableListView
-        android:id="@+id/elv_stats"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:divider="@android:color/white"
-        android:dividerHeight="1dp" />
-
-</LinearLayout>
+    android:layout_height="match_parent" />

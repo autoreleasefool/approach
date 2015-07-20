@@ -33,4 +33,7 @@ dependencies {
     compile 'com.android.support:support-v4:22.2.0'
 
     compile 'com.google.android.gms:play-services-ads:7.5.0'
+
+    //noinspection GradleDynamicVersion
+    compile 'com.github.PhilJay:MPAndroidChart:v2.1.+'
 }
