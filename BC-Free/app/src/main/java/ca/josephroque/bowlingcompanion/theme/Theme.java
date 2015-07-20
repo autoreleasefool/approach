@@ -34,6 +34,8 @@ public final class Theme
     private static int sThemeColorSecondary = -1;
     /** Tertiary color for the current theme. */
     private static int sThemeColorTertiary = -1;
+    /** Status bar color for the current theme. */
+    private static int sThemeColorStatus = -1;
     /** Number of milliseconds which medium animations will last for. */
     private static int sMediumAnimationDuration = -1;
     /** List item background color for the current theme. */
@@ -80,6 +82,8 @@ public final class Theme
                         R.color.theme_green_secondary);
                 sThemeColorTertiary = context.getResources().getColor(
                         R.color.theme_green_tertiary);
+                sThemeColorStatus = context.getResources().getColor(
+                        R.color.theme_green_status);
                 break;
             case "Orange":
                 sThemeColorPrimary = context.getResources().getColor(
@@ -88,6 +92,8 @@ public final class Theme
                         R.color.theme_orange_secondary);
                 sThemeColorTertiary = context.getResources().getColor(
                         R.color.theme_orange_tertiary);
+                sThemeColorStatus = context.getResources().getColor(
+                        R.color.theme_orange_status);
                 break;
             case "Blue":
                 sThemeColorPrimary = context.getResources().getColor(
@@ -96,6 +102,8 @@ public final class Theme
                         R.color.theme_blue_secondary);
                 sThemeColorTertiary = context.getResources().getColor(
                         R.color.theme_blue_tertiary);
+                sThemeColorStatus = context.getResources().getColor(
+                        R.color.theme_blue_status);
                 break;
             case "Purple":
                 sThemeColorPrimary = context.getResources().getColor(
@@ -104,6 +112,8 @@ public final class Theme
                         R.color.theme_purple_secondary);
                 sThemeColorTertiary = context.getResources().getColor(
                         R.color.theme_purple_tertiary);
+                sThemeColorStatus = context.getResources().getColor(
+                        R.color.theme_purple_status);
                 break;
             case "Red":
                 sThemeColorPrimary = context.getResources().getColor(
@@ -112,6 +122,8 @@ public final class Theme
                         R.color.theme_red_secondary);
                 sThemeColorTertiary = context.getResources().getColor(
                         R.color.theme_red_tertiary);
+                sThemeColorStatus = context.getResources().getColor(
+                        R.color.theme_red_status);
                 break;
             case "Grey":
                 sThemeColorPrimary = context.getResources().getColor(
@@ -120,6 +132,8 @@ public final class Theme
                         R.color.theme_gray_secondary);
                 sThemeColorTertiary = context.getResources().getColor(
                         R.color.theme_gray_tertiary);
+                sThemeColorStatus = context.getResources().getColor(
+                        R.color.theme_gray_status);
                 break;
             default:
                 //If an invalid theme was selected, the default is applied
@@ -155,6 +169,16 @@ public final class Theme
     public static int getTertiaryThemeColor()
     {
         return sThemeColorTertiary;
+    }
+
+    /**
+     * Gets the status bar color for the theme.
+     *
+     * @return the value of sThemeColorStatus
+     */
+    public static int getStatusThemeColor()
+    {
+        return sThemeColorStatus;
     }
 
     /**

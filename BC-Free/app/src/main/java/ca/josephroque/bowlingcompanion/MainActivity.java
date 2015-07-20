@@ -496,7 +496,7 @@ public class MainActivity
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
 
             // finally change the color
-            window.setStatusBarColor(Theme.getTertiaryThemeColor());
+            window.setStatusBarColor(Theme.getStatusThemeColor());
         }
 
         if (mFloatingActionButton != null)
