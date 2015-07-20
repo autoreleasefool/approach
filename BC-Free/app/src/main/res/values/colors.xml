@@ -3,6 +3,7 @@
     <!-- Fragment and list item backgrounds -->
     <color name="primary_background">#bdc3c7</color>
     <color name="secondary_background">#ecf0f1</color>
+    <color name="task_color">#bdc3c7</color>
 
     <!-- Green theme values -->
     <color name="theme_green_recyclerview_longpress">#86E486</color>
