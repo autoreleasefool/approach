@@ -20,6 +20,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
@@ -42,6 +43,7 @@ import ca.josephroque.bowlingcompanion.utilities.DataFormatter;
 import ca.josephroque.bowlingcompanion.utilities.Score;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.utilities.ShareUtils;
+import ca.josephroque.bowlingcompanion.view.PinLayout;
 
 /**
  * Created by Joseph Roque on 15-03-18.
@@ -63,12 +65,10 @@ public class GameFragment extends Fragment
 
     /** Represents the OnClickListener for the frame TextView objects. */
     private static final byte LISTENER_TEXT_FRAMES = 0;
-    /** Represents the OnClickListener for the pin button objects. */
-    private static final byte LISTENER_PIN_BUTTONS = 1;
     /** Represents the OnClickListener for any other objects. */
-    private static final byte LISTENER_OTHER = 2;
+    private static final byte LISTENER_OTHER = 1;
     /** Represents the OnClickListener for the ball TextView objects. */
-    private static final byte LISTENER_TEXT_BALLS = 3;
+    private static final byte LISTENER_TEXT_BALLS = 2;
 
     /** TextView which displays score on a certain ball in a certain frame. */
     private TextView[][] mTextViewBallScores;
@@ -151,6 +151,122 @@ public class GameFragment extends Fragment
 
     /** Indicates if the app should not save games - set to true in case of errors. */
     private AtomicBoolean mDoNotSave = new AtomicBoolean(false);
+
+    /** Linear layout which contains button pins. */
+    private PinLayout mLinearLayoutPins;
+    /** Handles events when pin buttons are touched. */
+    private PinLayout.PinInterceptListener mPinTouchListener = new PinLayout.PinInterceptListener()
+    {
+
+        /** Indicates if a pin has been altered in a touch event. */
+        private boolean[] mPinAltered = new boolean[5];
+        /** State of first pin touched. */
+        private boolean mInitialState;
+        /** Indicates if an initial valid pin has been selected. */
+        private boolean mInitialStateSet;
+        /** Total width of pin container. */
+        private int mLayoutWidth;
+        /** Number of pins which were altered. */
+        private int mPinAlteredCount;
+
+        private void setFirstPinTouched(MotionEvent event)
+        {
+            final int pinTouched = (int) ((event.getX() / mLayoutWidth) * 5);
+            if (!mImageButtonPins[pinTouched].isEnabled())
+            {
+                mInitialStateSet = false;
+                return;
+            }
+            mInitialStateSet = true;
+            mInitialState = mPinState[mCurrentFrame][mCurrentBall][pinTouched];
+            mPinAltered[pinTouched] = true;
+            mPinAlteredCount = 1;
+
+            // Flip pin image while user is dragging
+            mImageButtonPins[pinTouched].post(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    if (!mPinState[mCurrentFrame][mCurrentBall][pinTouched])
+                        mImageButtonPins[pinTouched].setImageResource(
+                                R.drawable.pin_disabled);
+                    else
+                        mImageButtonPins[pinTouched].setImageResource(
+                                R.drawable.pin_enabled);
+                }
+            });
+        }
+
+        @Override
+        public void onPinTouch(MotionEvent event)
+        {
+            if (mGameLocked[mCurrentGame] || mManualScoreSet[mCurrentGame])
+                return;
+
+            final int pinTouched;
+            switch (event.getActionMasked())
+            {
+                case MotionEvent.ACTION_DOWN:
+                    for (int i = 0; i < mPinAltered.length; i++)
+                        mPinAltered[i] = false;
+                    mLayoutWidth = mLinearLayoutPins.getWidth();
+                    if (event.getX() > mLayoutWidth || event.getX() < 0)
+                        return;
+                    setFirstPinTouched(event);
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    if (mLayoutWidth == 0 || event.getX() > mLayoutWidth || event.getX() < 0)
+                        return;
+                    if (!mInitialStateSet)
+                        setFirstPinTouched(event);
+
+                    // Flip pin image while user is dragging
+                    pinTouched = (int) ((event.getX() / mLayoutWidth) * 5);
+                    Log.i(TAG, "X: " + event.getX() + " Width: " + mLayoutWidth + " Pin: " + pinTouched);
+                    if (mImageButtonPins[pinTouched].isEnabled()
+                            && mPinState[mCurrentFrame][mCurrentBall][pinTouched] == mInitialState
+                            && !mPinAltered[pinTouched])
+                    {
+                        mPinAlteredCount++;
+                        mPinAltered[pinTouched] = true;
+                        mImageButtonPins[pinTouched].post(new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                if (!mPinState[mCurrentFrame][mCurrentBall][pinTouched])
+                                    mImageButtonPins[pinTouched].setImageResource(
+                                            R.drawable.pin_disabled);
+                                else
+                                    mImageButtonPins[pinTouched].setImageResource(
+                                            R.drawable.pin_enabled);
+                            }
+                        });
+                    }
+                    break;
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    int pinsUpdated = 0;
+                    // Finalize flipped pins, calculate score
+                    for (int i = 0; i < mPinAltered.length; i++)
+                    {
+                        if (mPinAltered[i])
+                        {
+                            pinsUpdated++;
+                            if (pinsUpdated == mPinAlteredCount)
+                                alterPinState((byte) i, true);
+                            else
+                                alterPinState((byte) i, false);
+                        }
+                    }
+                    mCallback.resetAutoAdvanceTimer();
+                    break;
+                default:
+                    // does nothing
+            }
+        }
+    };
 
     @Override
     public void onAttach(Activity activity)
@@ -314,8 +430,8 @@ public class GameFragment extends Fragment
         mImageButtonPins[3] = (ImageButton) rootView.findViewById(R.id.button_pin_4);
         mImageButtonPins[4] = (ImageButton) rootView.findViewById(R.id.button_pin_5);
 
-        for (ImageButton pinButton : mImageButtonPins)
-            pinButton.setOnClickListener(onClickListeners[LISTENER_PIN_BUTTONS]);
+        mLinearLayoutPins = (PinLayout) rootView.findViewById(R.id.ll_pins);
+        mLinearLayoutPins.setInterceptListener(mPinTouchListener);
 
         //Loading other views into member variables, setting OnClickListeners
         mImageViewNextBall = (ImageView) rootView.findViewById(R.id.iv_next_ball);
@@ -595,7 +711,7 @@ public class GameFragment extends Fragment
      */
     private View.OnClickListener[] getOnClickListeners()
     {
-        View.OnClickListener[] listeners = new View.OnClickListener[4];
+        View.OnClickListener[] listeners = new View.OnClickListener[3];
         listeners[LISTENER_TEXT_FRAMES] = new View.OnClickListener()
         {
             @Override
@@ -637,30 +753,6 @@ public class GameFragment extends Fragment
                         break;
                     default:
                         throw new RuntimeException("Invalid frame id");
-                }
-            }
-        };
-
-        listeners[LISTENER_PIN_BUTTONS] = new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                if (mGameLocked[mCurrentGame] || mManualScoreSet[mCurrentGame])
-                    return;
-                byte ballToSet = 0;
-                switch (v.getId())
-                {
-                    case R.id.button_pin_5: ballToSet++;
-                    case R.id.button_pin_4: ballToSet++;
-                    case R.id.button_pin_3: ballToSet++;
-                    case R.id.button_pin_2: ballToSet++;
-                    case R.id.button_pin_1:
-                        alterPinState(ballToSet);
-                        mCallback.resetAutoAdvanceTimer();
-                        break;
-                    default:
-                        throw new RuntimeException("Invalid pin button id");
                 }
             }
         };
@@ -1850,79 +1942,74 @@ public class GameFragment extends Fragment
      * Either sets a pin to be standing or knocked down, and updates the score accordingly.
      *
      * @param pinToSet the pin which was altered
+     * @param updateScore indicates if score and text views should be updated. If altering more than
+     * one pin at a time, this should only be true for the last call.
      */
-    private void alterPinState(final byte pinToSet)
+    private void alterPinState(final byte pinToSet, final boolean updateScore)
     {
-        new Thread(new Runnable()
+        // TODO: pins not disabled in later frames
+        final boolean isPinKnockedOver = mPinState[mCurrentFrame][mCurrentBall][pinToSet];
+        final boolean allPinsKnockedOver;
+        if (!isPinKnockedOver)
+        {
+            for (int i = mCurrentBall; i < 3; i++)
+                mPinState[mCurrentFrame][i][pinToSet] = true;
+
+            if (Arrays.equals(mPinState[mCurrentFrame][mCurrentBall],
+                    Constants.FRAME_PINS_DOWN))
+            {
+                for (int i = mCurrentBall + 1; i < 3; i++)
+                    mFouls[mCurrentFrame][i] = false;
+
+                if (mCurrentFrame == Constants.LAST_FRAME)
+                {
+                    if (mCurrentBall < 2)
+                    {
+                        for (int j = mCurrentBall + 1; j < 3; j++)
+                        {
+                            for (int i = 0; i < 5; i++)
+                                mPinState[mCurrentFrame][j][i] = false;
+                        }
+                    }
+                }
+                allPinsKnockedOver = true;
+            }
+            else
+                allPinsKnockedOver = false;
+        }
+        else
+        {
+            allPinsKnockedOver = false;
+            for (int i = mCurrentBall; i < 3; i++)
+                mPinState[mCurrentFrame][i][pinToSet] = false;
+
+            if (mCurrentFrame == Constants.LAST_FRAME && mCurrentBall == 1)
+                System.arraycopy(
+                        mPinState[mCurrentFrame][1],
+                        0,
+                        mPinState[mCurrentFrame][2],
+                        0,
+                        mPinState[mCurrentFrame][1].length);
+        }
+
+        mImageButtonPins[pinToSet].post(new Runnable()
         {
             @Override
             public void run()
             {
-                final boolean isPinKnockedOver = mPinState[mCurrentFrame][mCurrentBall][pinToSet];
-                final boolean allPinsKnockedOver;
-                if (!isPinKnockedOver)
-                {
-                    for (int i = mCurrentBall; i < 3; i++)
-                        mPinState[mCurrentFrame][i][pinToSet] = true;
-
-                    if (Arrays.equals(mPinState[mCurrentFrame][mCurrentBall],
-                            Constants.FRAME_PINS_DOWN))
-                    {
-                        for (int i = mCurrentBall + 1; i < 3; i++)
-                            mFouls[mCurrentFrame][i] = false;
-
-                        if (mCurrentFrame == Constants.LAST_FRAME)
-                        {
-                            if (mCurrentBall < 2)
-                            {
-                                for (int j = mCurrentBall + 1; j < 3; j++)
-                                {
-                                    for (int i = 0; i < 5; i++)
-                                        mPinState[mCurrentFrame][j][i] = false;
-                                }
-                            }
-                        }
-                        allPinsKnockedOver = true;
-                    }
-                    else
-                        allPinsKnockedOver = false;
-                }
+                if (mPinState[mCurrentFrame][mCurrentBall][pinToSet])
+                    mImageButtonPins[pinToSet].setImageResource(R.drawable.pin_disabled);
                 else
-                {
-                    allPinsKnockedOver = false;
-                    for (int i = mCurrentBall; i < 3; i++)
-                        mPinState[mCurrentFrame][i][pinToSet] = false;
-
-                    if (mCurrentFrame == Constants.LAST_FRAME && mCurrentBall == 1)
-                        System.arraycopy(
-                                mPinState[mCurrentFrame][1],
-                                0,
-                                mPinState[mCurrentFrame][2],
-                                0,
-                                mPinState[mCurrentFrame][1].length);
-                }
-
-                getActivity().runOnUiThread(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        if (mPinState[mCurrentFrame][mCurrentBall][pinToSet])
-                        {
-                            mImageButtonPins[pinToSet].setImageResource(R.drawable.pin_disabled);
-                        }
-                        else
-                        {
-                            mImageButtonPins[pinToSet].setImageResource(R.drawable.pin_enabled);
-                        }
-                        mImageViewClear.setEnabled(!allPinsKnockedOver);
-                    }
-                });
-
-                updateBalls(mCurrentFrame, (byte) 0);
-                updateScore();
+                    mImageButtonPins[pinToSet].setImageResource(R.drawable.pin_enabled);
+                mImageViewClear.setEnabled(!allPinsKnockedOver);
             }
-        }).start();
+        });
+
+        if (updateScore)
+        {
+            updateBalls(mCurrentFrame, (byte) 0);
+            updateScore();
+        }
     }
 
     /**

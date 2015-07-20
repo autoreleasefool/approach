@@ -162,7 +162,8 @@
             android:layout_height="164dp"
             android:layout_alignParentTop="true" />
 
-        <LinearLayout
+        <ca.josephroque.bowlingcompanion.view.PinLayout
+            android:id="@+id/ll_pins"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@id/iv_lock"
@@ -228,7 +229,7 @@
                 android:src="@drawable/pin_enabled"
                 tools:ignore="ContentDescription" />
 
-        </LinearLayout>
+        </ca.josephroque.bowlingcompanion.view.PinLayout>
 
         <TextView
             android:id="@+id/tv_manual_score"
