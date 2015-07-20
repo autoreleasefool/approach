@@ -3,11 +3,15 @@ package ca.josephroque.bowlingcompanion.fragment;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
@@ -70,10 +74,20 @@ public class StatsFragment
     /** Adapter to manage data displayed in fragment. */
     private StatsExpandableAdapter mAdapterStats;
 
+    /** Indicates if the user is currently viewing the data in a graph or not. */
+    private boolean mViewingGraph = false;
+
     /** List of group headers. */
     private List<String> mListStatHeaders;
     /** List of list of map entries which hold a name and a value, for each group. */
     private List<List<AbstractMap.SimpleEntry<String, String>>> mListStatNamesAndValues;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -146,6 +160,60 @@ public class StatsFragment
         }
 
         updateTheme();
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        inflater.inflate(R.menu.menu_stats, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu)
+    {
+        boolean drawerOpen = ((MainActivity) getActivity()).isDrawerOpen();
+
+        MenuItem menuItem = menu.findItem(R.id.action_stats_graph).setVisible(!drawerOpen
+                && !mViewingGraph);
+        Drawable drawable = menuItem.getIcon();
+        if (drawable != null)
+        {
+            drawable.mutate();
+            //noinspection CheckStyle
+            drawable.setAlpha(0x8A);
+        }
+
+        menuItem = menu.findItem(R.id.action_stats_list).setVisible(!drawerOpen
+                && mViewingGraph);
+        drawable = menuItem.getIcon();
+        if (drawable != null)
+        {
+            drawable.mutate();
+            //noinspection CheckStyle
+            drawable.setAlpha(0x8A);
+        }
+        super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            case R.id.action_stats_graph:
+                mViewingGraph = true;
+                getActivity().invalidateOptionsMenu();
+                // TODO: display stats graph
+                return true;
+            case R.id.action_stats_list:
+                mViewingGraph = false;
+                getActivity().invalidateOptionsMenu();
+                // TODO: display stats list
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     /**

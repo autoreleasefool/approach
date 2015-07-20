@@ -33,16 +33,18 @@
 
     <!-- Action button text -->
     <string name="action_settings">Settings</string>
-    <string name="action_quick_series">Quick Series</string>
+    <string name="action_quick_series">Quick series</string>
     <string name="action_stats">Stats</string>
-    <string name="action_edit_date">Change Series Date</string>
+    <string name="action_edit_date">Change series date</string>
     <string name="action_share">Share</string>
-    <string name="action_series_stats">Series Stats</string>
-    <string name="action_event_stats">Event Stats</string>
-    <string name="action_what_if">What If?</string>
-    <string name="action_reset_game">Reset Game</string>
-    <string name="action_set_score">Set Manual Score</string>
-    <string name="action_clear_score">Clear Manual Score</string>
+    <string name="action_series_stats">Series stats</string>
+    <string name="action_event_stats">Event stats</string>
+    <string name="action_what_if">What if?</string>
+    <string name="action_reset_game">Reset game</string>
+    <string name="action_set_score">Set manual score</string>
+    <string name="action_clear_score">Clear manual score</string>
+    <string name="action_stats_graph">View as graph</string>
+    <string name="action_stats_list">View as list</string>
 
     <!-- TextView text -->
     <string name="text_next_ball">Next Ball</string>
