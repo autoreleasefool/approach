@@ -95,9 +95,6 @@ public class StatsListFragment
         if (getActivity() != null)
         {
             MainActivity mainActivity = (MainActivity) getActivity();
-            mainActivity.setFloatingActionButtonIcon(0);
-            mainActivity.setCurrentFragment(this);
-            mainActivity.setDrawerState(false);
 
             //Checks what type of stats should be displayed, depending
             //on what data is available in the parent activity at the time
@@ -135,7 +132,7 @@ public class StatsListFragment
             mAdapterStats.notifyDataSetChanged();
 
             mainActivity.setActionBarTitle(titleToSet, true);
-            new LoadStatsTask().execute(statsToLoad);
+            new LoadStatsListTask().execute(statsToLoad);
         }
 
         updateTheme();
@@ -243,7 +240,7 @@ public class StatsListFragment
      * Loads data from the database and calculates relevant stats depending on which type of stats
      * are being loaded.
      */
-    private class LoadStatsTask
+    private class LoadStatsListTask
             extends AsyncTask<Byte, Void, List<?>[]>
     {
 

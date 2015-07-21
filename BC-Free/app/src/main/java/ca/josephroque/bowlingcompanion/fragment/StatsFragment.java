@@ -1,12 +1,7 @@
 package ca.josephroque.bowlingcompanion.fragment;
 
-import android.content.SharedPreferences;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -14,24 +9,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ExpandableListView;
 
-import java.text.DecimalFormat;
-import java.util.AbstractMap;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.MainActivity;
 import ca.josephroque.bowlingcompanion.R;
-import ca.josephroque.bowlingcompanion.adapter.StatsExpandableAdapter;
-import ca.josephroque.bowlingcompanion.database.Contract.FrameEntry;
-import ca.josephroque.bowlingcompanion.database.Contract.GameEntry;
-import ca.josephroque.bowlingcompanion.database.Contract.LeagueEntry;
-import ca.josephroque.bowlingcompanion.database.Contract.SeriesEntry;
-import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
-import ca.josephroque.bowlingcompanion.theme.Theme;
 
 /**
  * Created by Joseph Roque on 15-04-03.
@@ -47,6 +27,7 @@ public class StatsFragment
     @SuppressWarnings("unused")
     private static final String TAG = "StatsFragment";
 
+    /** Represents a boolean indicating if the user is viewing the data in a graph. */
     private static final String ARG_VIEWING_GRAPH = "arg_viewing_graph";
 
     /** Indicates all the stats related to the specified bowler should be loaded. */
@@ -94,6 +75,13 @@ public class StatsFragment
     {
         super.onResume();
 
+        if (getActivity() != null)
+        {
+            MainActivity mainActivity = (MainActivity) getActivity();
+            mainActivity.setFloatingActionButtonIcon(0);
+            mainActivity.setCurrentFragment(this);
+            mainActivity.setDrawerState(false);
+        }
     }
 
     @Override

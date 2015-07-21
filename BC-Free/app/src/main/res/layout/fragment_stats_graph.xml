@@ -4,4 +4,9 @@
              android:layout_height="match_parent"
              tools:context="ca.josephroque.bowlingcompanion.fragment.StatsGraphFragment">
 
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/chart_stats"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
 </FrameLayout>
