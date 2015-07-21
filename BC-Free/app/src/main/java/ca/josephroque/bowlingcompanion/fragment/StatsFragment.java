@@ -1,12 +1,8 @@
 package ca.josephroque.bowlingcompanion.fragment;
 
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -20,7 +16,7 @@ import ca.josephroque.bowlingcompanion.R;
  */
 public class StatsFragment
         extends Fragment
-
+        implements StatsListFragment.StatClickListener
 {
 
     /** Identifies output from this class in Logcat. */
@@ -43,13 +39,6 @@ public class StatsFragment
     private boolean mViewingGraph = false;
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState)
@@ -59,7 +48,7 @@ public class StatsFragment
         if (savedInstanceState == null)
         {
             getChildFragmentManager().beginTransaction()
-                    .add(R.id.stats_container, StatsListFragment.newInstance())
+                    .add(R.id.stats_container, StatsListFragment.newInstance(this))
                     .commit();
         }
         else
@@ -85,70 +74,22 @@ public class StatsFragment
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
-        inflater.inflate(R.menu.menu_stats, menu);
-        super.onCreateOptionsMenu(menu, inflater);
-    }
-
-    @Override
-    public void onPrepareOptionsMenu(Menu menu)
-    {
-        boolean drawerOpen = ((MainActivity) getActivity()).isDrawerOpen();
-
-        MenuItem menuItem = menu.findItem(R.id.action_stats_graph).setVisible(!drawerOpen
-                && !mViewingGraph);
-        Drawable drawable = menuItem.getIcon();
-        if (drawable != null)
-        {
-            drawable.mutate();
-            //noinspection CheckStyle
-            drawable.setAlpha(0x8A);
-        }
-
-        menuItem = menu.findItem(R.id.action_stats_list).setVisible(!drawerOpen
-                && mViewingGraph);
-        drawable = menuItem.getIcon();
-        if (drawable != null)
-        {
-            drawable.mutate();
-            //noinspection CheckStyle
-            drawable.setAlpha(0x8A);
-        }
-        super.onPrepareOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
-            case R.id.action_stats_graph:
-                mViewingGraph = true;
-                getActivity().invalidateOptionsMenu();
-
-                getChildFragmentManager().beginTransaction()
-                        .replace(R.id.stats_container, StatsGraphFragment.newInstance())
-                        .commit();
-                return true;
-            case R.id.action_stats_list:
-                mViewingGraph = false;
-                getActivity().invalidateOptionsMenu();
-
-                getChildFragmentManager().beginTransaction()
-                        .replace(R.id.stats_container, StatsListFragment.newInstance())
-                        .commit();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-    @Override
     public void onSaveInstanceState(Bundle outState)
     {
         super.onSaveInstanceState(outState);
         outState.putBoolean(ARG_VIEWING_GRAPH, mViewingGraph);
+    }
+
+    @Override
+    public void onStatClicked(int statCategory, int statIndex)
+    {
+        getChildFragmentManager().beginTransaction()
+                .replace(R.id.stats_container,
+                        StatsGraphFragment.newInstance(statCategory, statIndex))
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left,
+                        R.anim.slide_in_left, R.anim.slide_out_right)
+                .addToBackStack(null)
+                .commit();
     }
 
     /**

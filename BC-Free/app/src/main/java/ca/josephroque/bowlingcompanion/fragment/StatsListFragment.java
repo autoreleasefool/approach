@@ -32,7 +32,8 @@ import ca.josephroque.bowlingcompanion.theme.Theme;
  */
 public class StatsListFragment
         extends Fragment
-        implements Theme.ChangeableTheme
+        implements Theme.ChangeableTheme,
+        ExpandableListView.OnChildClickListener
 {
 
     /** Adapter to manage data displayed in fragment. */
@@ -52,20 +53,28 @@ public class StatsListFragment
     private byte mStatsMatch = -1;
     /** Indicates index of stat group in array, if the group exists at all. */
     private byte mStatsOverall = -1;
+    /** Number of static stats at the beginning of the first group of stats. */
+    private byte mNumberOfGeneralDetails = -1;
 
     /** List of group headers. */
     private List<String> mListStatHeaders;
     /** List of list of map entries which hold a name and a value, for each group. */
     private List<List<AbstractMap.SimpleEntry<String, String>>> mListStatNamesAndValues;
 
+    /** Instance of callback interface. */
+    private StatClickListener mCallback;
+
     /**
      * Creates a new instance of {@code StatsListFragment} with the parameters provided.
      *
+     * @param callback instance of callback interface
      * @return a new instance of StatsListFragment
      */
-    public static StatsListFragment newInstance()
+    public static StatsListFragment newInstance(StatClickListener callback)
     {
-        return new StatsListFragment();
+        StatsListFragment fragment = new StatsListFragment();
+        fragment.mCallback = callback;
+        return fragment;
     }
 
     @Override
@@ -82,6 +91,7 @@ public class StatsListFragment
                 mListStatNamesAndValues);
 
         ExpandableListView listView = (ExpandableListView) rootView.findViewById(R.id.elv_stats);
+        listView.setOnChildClickListener(this);
         listView.setAdapter(mAdapterStats);
 
         return rootView;
@@ -142,6 +152,24 @@ public class StatsListFragment
     public void updateTheme()
     {
         mAdapterStats.updateTheme();
+    }
+
+    @Override
+    public boolean onChildClick(ExpandableListView parent,
+                                View v,
+                                int groupPosition,
+                                int childPosition,
+                                long id)
+    {
+        if (groupPosition == 0)
+        {
+            if (childPosition - mNumberOfGeneralDetails >= 0)
+                mCallback.onStatClicked(groupPosition, childPosition - mNumberOfGeneralDetails);
+        } else {
+            mCallback.onStatClicked(groupPosition, childPosition);
+        }
+
+        return true;
     }
 
     /**
@@ -251,7 +279,6 @@ public class StatsListFragment
             MainActivity.waitForSaveThreads(mainActivity);
 
             final byte toLoad = statsToLoad[0];
-            final byte numberOfGeneralDetails;
             Cursor cursor;
             int[][] statValues;
             List<String> listStatHeaders = new ArrayList<>();
@@ -266,18 +293,18 @@ public class StatsListFragment
             switch (toLoad)
             {
                 case StatsFragment.LOADING_BOWLER_STATS:
-                    numberOfGeneralDetails = 1;
+                    mNumberOfGeneralDetails = 1;
                     cursor = getBowlerOrLeagueCursor(false);
                     break;
                 case StatsFragment.LOADING_LEAGUE_STATS:
-                    numberOfGeneralDetails = 2;
+                    mNumberOfGeneralDetails = 2;
                     listStatNamesAndValues.get(mStatsGeneral).add(1,
                             new AbstractMap.SimpleEntry<>("League/Event",
                                     mainActivity.getLeagueName()));
                     cursor = getBowlerOrLeagueCursor(true);
                     break;
                 case StatsFragment.LOADING_SERIES_STATS:
-                    numberOfGeneralDetails = 3;
+                    mNumberOfGeneralDetails = 3;
                     listStatNamesAndValues.get(mStatsGeneral).add(1,
                             new AbstractMap.SimpleEntry<>("League/Event",
                                     mainActivity.getLeagueName()));
@@ -286,7 +313,7 @@ public class StatsListFragment
                     cursor = getSeriesCursor();
                     break;
                 case StatsFragment.LOADING_GAME_STATS:
-                    numberOfGeneralDetails = 4;
+                    mNumberOfGeneralDetails = 4;
                     listStatNamesAndValues.get(mStatsGeneral).add(1,
                             new AbstractMap.SimpleEntry<>("League/Event",
                                     mainActivity.getLeagueName()));
@@ -511,7 +538,7 @@ public class StatsListFragment
             }
             cursor.close();
             setGeneralAndDetailedStatValues(listStatNamesAndValues, statValues, totalShotsAtMiddle,
-                    spareChances, numberOfGeneralDetails, toLoad);
+                    spareChances, mNumberOfGeneralDetails, toLoad);
 
             return new List<?>[]{listStatHeaders, listStatNamesAndValues};
         }
@@ -874,5 +901,19 @@ public class StatsListFragment
         String[] rawStatsArgs = {String.valueOf(((MainActivity) getActivity()).getGameId())};
 
         return database.rawQuery(rawStatsQuery, rawStatsArgs);
+    }
+
+    /**
+     * Provides callback methods for user interaction with the stats list.
+     */
+    public interface StatClickListener
+    {
+        /**
+         * Invoked when a user clicks on a stat item.
+         *
+         * @param statCategory category the stat is under
+         * @param statIndex index of the stat in {@code statCategory}
+         */
+        void onStatClicked(int statCategory, int statIndex);
     }
 }

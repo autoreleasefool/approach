@@ -469,7 +469,19 @@ public class MainActivity
         if (isDrawerOpen())
             mDrawerLayout.closeDrawer(GravityCompat.START);
         else
+        {
+            FragmentManager fm = getSupportFragmentManager();
+            for (Fragment frag : fm.getFragments()) {
+                if (frag.isVisible()) {
+                    FragmentManager childFm = frag.getChildFragmentManager();
+                    if (childFm.getBackStackEntryCount() > 0) {
+                        childFm.popBackStack();
+                        return;
+                    }
+                }
+            }
             super.onBackPressed();
+        }
     }
 
     @Override
