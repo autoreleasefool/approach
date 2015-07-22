@@ -158,6 +158,8 @@ public final class Constants
     public static final byte BALL_VALUE_HEAD_PIN = 8;
 
     //STAT ARRAY INDICES
+    /** Indicates index for stat category. */
+    public static final byte STAT_CATEGORY_GENERAL = 0;
     /** Indicates index for stat in array. */
     public static final byte STAT_MIDDLE_HIT = 0;
     /** Indicates index for stat in array. */
@@ -165,47 +167,75 @@ public final class Constants
     /** Indicates index for stat in array. */
     public static final byte STAT_SPARE_CONVERSIONS = 2;
 
+    /** Indicates index for stat category. */
+    public static final byte STAT_CATEGORY_FIRST_BALL = 1;
     /** Indicates index for stat in array. */
     public static final byte STAT_HEAD_PINS = 0;
-    //public static final byte STAT_HEAD_PINS_SPARED = 1;
+    /** Indicates index for stat in array. */
+    public static final byte STAT_HEAD_PINS_SPARED = 1;
     /** Indicates index for stat in array. */
     public static final byte STAT_LEFT = 2;
-    //public static final byte STAT_LEFT_SPARED = 3;
+    /** Indicates index for stat in array. */
+    public static final byte STAT_LEFT_SPARED = 3;
     /** Indicates index for stat in array. */
     public static final byte STAT_RIGHT = 4;
-    //public static final byte STAT_RIGHT_SPARED = 5;
+    /** Indicates index for stat in array. */
+    public static final byte STAT_RIGHT_SPARED = 5;
     /** Indicates index for stat in array. */
     public static final byte STAT_ACES = 6;
-    //public static final byte STAT_ACES_SPARED = 7;
+    /** Indicates index for stat in array. */
+    public static final byte STAT_ACES_SPARED = 7;
     /** Indicates index for stat in array. */
     public static final byte STAT_CHOP = 8;
-    //public static final byte STAT_CHOP_SPARED = 9;
+    /** Indicates index for stat in array. */
+    public static final byte STAT_CHOP_SPARED = 9;
     /** Indicates index for stat in array. */
     public static final byte STAT_LEFT_CHOP = 10;
-    //public static final byte STAT_LEFT_CHOP_SPARED = 11;
+    /** Indicates index for stat in array. */
+    public static final byte STAT_LEFT_CHOP_SPARED = 11;
     /** Indicates index for stat in array. */
     public static final byte STAT_RIGHT_CHOP = 12;
-    //public static final byte STAT_RIGHT_CHOP_SPARED = 13;
+    /** Indicates index for stat in array. */
+    public static final byte STAT_RIGHT_CHOP_SPARED = 13;
     /** Indicates index for stat in array. */
     public static final byte STAT_SPLIT = 14;
-    //public static final byte STAT_SPLIT_SPARED = 15;
+    /** Indicates index for stat in array. */
+    public static final byte STAT_SPLIT_SPARED = 15;
     /** Indicates index for stat in array. */
     public static final byte STAT_LEFT_SPLIT = 16;
-    //public static final byte STAT_LEFT_SPLIT_SPARED = 17;
+    /** Indicates index for stat in array. */
+    public static final byte STAT_LEFT_SPLIT_SPARED = 17;
     /** Indicates index for stat in array. */
     public static final byte STAT_RIGHT_SPLIT = 18;
     /** Indicates index for stat in array. */
     public static final byte STAT_RIGHT_SPLIT_SPARED = 19;
 
+    /** Indicates index for stat category. */
+    public static final byte STAT_CATEGORY_FOULS = 2;
+    /** Indicates index for stat in array. */
+    public static final byte STAT_FOULS = 0;
+
+    /** Indicates index for stat category. */
+    public static final byte STAT_CATEGORY_PINS = 3;
     /** Indicates index for stat in array. */
     public static final byte STAT_PINS_LEFT = 0;
     /** Indicates index for stat in array. */
     public static final byte STAT_PINS_AVERAGE = 1;
 
-    //public static final byte STAT_WON = 0;
-    //public static final byte STAT_LOST = 1;
-    //public static final byte STAT_TIED = 2;
+    /** Indicates index for stat category. */
+    public static final byte STAT_CATEGORY_AVERAGE_BY_GAME = 4;
 
+    /** Indicates index for stat category. */
+    public static final byte STAT_CATEGORY_MATCH_PLAY = 5;
+    /** Indicates index for stat in array. */
+    public static final byte STAT_WON = 0;
+    /** Indicates index for stat in array. */
+    public static final byte STAT_LOST = 1;
+    /** Indicates index for stat in array. */
+    public static final byte STAT_TIED = 2;
+
+    /** Indicates index for stat category. */
+    public static final byte STAT_CATEGORY_OVERALL = 6;
     /** Indicates index for stat in array. */
     public static final byte STAT_AVERAGE = 0;
     /** Indicates index for stat in array. */
