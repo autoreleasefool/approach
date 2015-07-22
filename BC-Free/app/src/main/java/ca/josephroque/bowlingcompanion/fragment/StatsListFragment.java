@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -28,7 +29,8 @@ import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 
 /**
- * A simple {@link Fragment} subclass.
+ * Created by Joseph Roque on 15-07-20. Manages the UI to display information about the stats in a
+ * list for a particular bowler
  */
 public class StatsListFragment
         extends Fragment
@@ -77,6 +79,7 @@ public class StatsListFragment
         return fragment;
     }
 
+    @SuppressWarnings("deprecation")
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState)
@@ -194,14 +197,16 @@ public class StatsListFragment
                 "Lefts Spared", "Rights", "Rights Spared", "Aces", "Aces Spared", "Chop Offs",
                 "Chop Offs Spared", "Left Chop Offs", "Left Chop Offs Spared", "Right Chop Offs",
                 "Right Chop Offs Spared", "Splits", "Splits Spared", "Left Splits",
-                "Left Splits Spared", "Right Splits", "Right Splits Spared"};
+                "Left Splits Spared", "Right Splits", "Right Splits Spared"
+        };
         final String[] statNamesFoul = {"Fouls"};
         final String[] statNamesTotalPins = {"Total Pins Left"};
         final String[] statNamesAveragePins = {"Average Pins Left"};
         final String[] statNamesMatch = {"Games Won", "Games Lost", "Games Tied"};
         final String[] statNamesOverall = {
                 "Average", "High Single", "High Series", "Total Pinfall",
-                "# of Games"};
+                "# of Games"
+        };
 
         headers.add("General");
         namesAndValues.add(new ArrayList<AbstractMap.SimpleEntry<String, String>>());
@@ -239,7 +244,7 @@ public class StatsListFragment
                     : 20);
             for (byte i = 0; i < numberOfGames; i++)
                 namesAndValues.get(mStatsGameAverage).add(
-                        new AbstractMap.SimpleEntry<>("Average in Game " + (i + 1), "--"));
+                        new AbstractMap.SimpleEntry<>("Game " + (i + 1), "--"));
         }
 
 
@@ -381,7 +386,8 @@ public class StatsListFragment
                     }
 
                     boolean gameIsManual =
-                            (cursor.getInt(cursor.getColumnIndex(Contract.GameEntry.COLUMN_IS_MANUAL)) == 1);
+                            (cursor.getInt(cursor.getColumnIndex(Contract.GameEntry.COLUMN_IS_MANUAL))
+                                    == 1);
                     if (gameIsManual)
                     {
                         cursor.moveToNext();
@@ -399,7 +405,8 @@ public class StatsListFragment
                             cursor.getString(cursor.getColumnIndex(Contract.FrameEntry.COLUMN_PIN_STATE[0])),
                             cursor.getString(cursor.getColumnIndex(Contract.FrameEntry.COLUMN_PIN_STATE[1])),
                             cursor.getString(
-                                    cursor.getColumnIndex(Contract.FrameEntry.COLUMN_PIN_STATE[2]))};
+                                    cursor.getColumnIndex(Contract.FrameEntry.COLUMN_PIN_STATE[2]))
+                    };
                     boolean[][] pinState = new boolean[3][5];
 
                     for (byte i = 0; i < 5; i++)
@@ -550,6 +557,7 @@ public class StatsListFragment
             mListStatHeaders.addAll((List<String>) lists[0]);
             mListStatNamesAndValues.addAll(
                     (List<List<AbstractMap.SimpleEntry<String, String>>>) lists[1]);
+            mAdapterStats.notifyDataSetChanged();
             mAdapterStats.notifyDataSetChanged();
         }
     }
@@ -814,11 +822,14 @@ public class StatsListFragment
                 + Contract.FrameEntry.COLUMN_PIN_STATE[2]
                 + " FROM " + Contract.LeagueEntry.TABLE_NAME + " AS league"
                 + " INNER JOIN " + Contract.SeriesEntry.TABLE_NAME + " AS series"
-                + " ON league." + Contract.LeagueEntry._ID + "=series." + Contract.SeriesEntry.COLUMN_LEAGUE_ID
+                + " ON league." + Contract.LeagueEntry._ID + "=series."
+                + Contract.SeriesEntry.COLUMN_LEAGUE_ID
                 + " INNER JOIN " + Contract.GameEntry.TABLE_NAME + " AS game"
-                + " ON series." + Contract.SeriesEntry._ID + "=game." + Contract.GameEntry.COLUMN_SERIES_ID
+                + " ON series." + Contract.SeriesEntry._ID + "=game."
+                + Contract.GameEntry.COLUMN_SERIES_ID
                 + " INNER JOIN " + Contract.FrameEntry.TABLE_NAME + " AS frame"
-                + " ON game." + Contract.GameEntry._ID + "=frame." + Contract.FrameEntry.COLUMN_GAME_ID
+                + " ON game." + Contract.GameEntry._ID + "=frame."
+                + Contract.FrameEntry.COLUMN_GAME_ID
                 + ((shouldGetLeagueStats)
                 ? " WHERE league." + Contract.LeagueEntry._ID + "=?"
                 : " WHERE league." + Contract.LeagueEntry.COLUMN_BOWLER_ID + "=?")
@@ -840,7 +851,8 @@ public class StatsListFragment
                 String.valueOf(0),
                 ((!shouldGetLeagueStats && !isOpenIncluded)
                         ? Constants.NAME_OPEN_LEAGUE
-                        : String.valueOf(0))};
+                        : String.valueOf(0))
+        };
 
         return database.rawQuery(rawStatsQuery, rawStatsArgs);
     }
@@ -867,7 +879,8 @@ public class StatsListFragment
                 + Contract.FrameEntry.COLUMN_PIN_STATE[2]
                 + " FROM " + Contract.GameEntry.TABLE_NAME + " AS game"
                 + " INNER JOIN " + Contract.FrameEntry.TABLE_NAME + " AS frame"
-                + " ON game." + Contract.GameEntry._ID + "=frame." + Contract.FrameEntry.COLUMN_GAME_ID
+                + " ON game." + Contract.GameEntry._ID + "=frame."
+                + Contract.FrameEntry.COLUMN_GAME_ID
                 + " WHERE game." + Contract.GameEntry.COLUMN_SERIES_ID + "=?"
                 + " ORDER BY game." + Contract.GameEntry.COLUMN_GAME_NUMBER + ", frame."
                 + Contract.FrameEntry.COLUMN_FRAME_NUMBER;
@@ -895,7 +908,8 @@ public class StatsListFragment
                 + Contract.FrameEntry.COLUMN_PIN_STATE[2]
                 + " FROM " + Contract.GameEntry.TABLE_NAME + " AS game"
                 + " INNER JOIN " + Contract.FrameEntry.TABLE_NAME + " AS frame"
-                + " ON game." + Contract.GameEntry._ID + "=frame." + Contract.FrameEntry.COLUMN_GAME_ID
+                + " ON game." + Contract.GameEntry._ID + "=frame."
+                + Contract.FrameEntry.COLUMN_GAME_ID
                 + " WHERE game." + Contract.GameEntry._ID + "=?"
                 + " ORDER BY " + Contract.FrameEntry.COLUMN_FRAME_NUMBER;
         String[] rawStatsArgs = {String.valueOf(((MainActivity) getActivity()).getGameId())};
