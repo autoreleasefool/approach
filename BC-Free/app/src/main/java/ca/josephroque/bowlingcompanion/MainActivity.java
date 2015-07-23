@@ -59,6 +59,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import ca.josephroque.bowlingcompanion.adapter.NavigationDrawerAdapter;
+import ca.josephroque.bowlingcompanion.data.Bowler;
+import ca.josephroque.bowlingcompanion.data.LeagueEvent;
+import ca.josephroque.bowlingcompanion.data.Series;
 import ca.josephroque.bowlingcompanion.database.Contract.FrameEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.GameEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.SeriesEntry;
@@ -532,13 +535,12 @@ public class MainActivity
     }
 
     @Override
-    public void onBowlerSelected(long bowlerId,
-                                 String bowlerName,
+    public void onBowlerSelected(Bowler bowler,
                                  boolean openLeagueFragment,
                                  boolean isQuickSeries)
     {
-        mBowlerId = bowlerId;
-        mBowlerName = bowlerName;
+        mBowlerId = bowler.getBowlerId();
+        mBowlerName = bowler.getBowlerName();
         mIsQuickSeries = isQuickSeries;
 
         if (openLeagueFragment)
@@ -550,14 +552,11 @@ public class MainActivity
     }
 
     @Override
-    public void onLeagueSelected(long leagueId,
-                                 String leagueName,
-                                 byte numberOfGames,
-                                 boolean openSeriesFragment)
+    public void onLeagueSelected(LeagueEvent leagueEvent, boolean openSeriesFragment)
     {
-        mLeagueId = leagueId;
-        mLeagueName = leagueName;
-        mNumberOfGames = numberOfGames;
+        mLeagueId = leagueEvent.getLeagueEventId();
+        mLeagueName = leagueEvent.getLeagueEventName();
+        mNumberOfGames = leagueEvent.getLeagueEventNumberOfGames();
 
         if (openSeriesFragment)
         {
@@ -568,10 +567,10 @@ public class MainActivity
     }
 
     @Override
-    public void onSeriesSelected(long seriesId, String seriesDate, boolean isEvent)
+    public void onSeriesSelected(Series series, boolean isEvent)
     {
-        mSeriesId = seriesId;
-        mSeriesDate = seriesDate;
+        mSeriesId = series.getSeriesId();
+        mSeriesDate = series.getSeriesDate();
 
         new OpenSeriesTask().execute(isEvent);
     }
@@ -1335,10 +1334,10 @@ public class MainActivity
      *
      * @param activity source activity
      */
-    public static void waitForSaveThreads(MainActivity activity)
+    public static void waitForSaveThreads(WeakReference<MainActivity> activity)
     {
         //Waits for saving to database to finish, before loading from database
-        while (activity.mQueueSavingThreads.peek() != null)
+        while (activity.get() != null && activity.get().mQueueSavingThreads.peek() != null)
         {
             try
             {

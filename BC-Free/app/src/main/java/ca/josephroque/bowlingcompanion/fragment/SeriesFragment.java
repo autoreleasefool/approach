@@ -24,6 +24,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -34,6 +35,7 @@ import ca.josephroque.bowlingcompanion.DividerItemDecoration;
 import ca.josephroque.bowlingcompanion.MainActivity;
 import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.adapter.SeriesAdapter;
+import ca.josephroque.bowlingcompanion.data.Series;
 import ca.josephroque.bowlingcompanion.database.Contract.GameEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.SeriesEntry;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
@@ -43,14 +45,13 @@ import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
 
 /**
- * Created by Joseph Roque on 15-03-17.
- * <p/>
- * Manages the UI to display information about the series being tracked by the application,
- * and offers a callback interface {@link SeriesFragment.SeriesListener} for
- * handling interactions.
+ * Created by Joseph Roque on 15-03-17. <p/> Manages the UI to display information about the series
+ * being tracked by the application, and offers a callback interface {@link
+ * SeriesFragment.SeriesListener} for handling interactions.
  */
 @SuppressWarnings("Convert2Lambda")
-public class SeriesFragment extends Fragment
+public class SeriesFragment
+        extends Fragment
         implements
         Theme.ChangeableTheme,
         SeriesAdapter.SeriesEventHandler,
@@ -62,18 +63,16 @@ public class SeriesFragment extends Fragment
     @SuppressWarnings("unused")
     private static final String TAG = "SeriesFragment";
 
+    /** View to display series dates and games to user. */
+    private RecyclerView mRecyclerViewSeries;
     /** Adapter to manage data displayed in mRecyclerViewSeries. */
     private SeriesAdapter mAdapterSeries;
 
     /** Callback listener for user events related to series. */
     private SeriesListener mSeriesListener;
 
-    /** List of series ids from "series" table in database to uniquely identify series. */
-    private List<Long> mListSeriesIds;
-    /** List of series dates which will be displayed by RecyclerView. */
-    private List<String> mListSeriesDates;
-    /** List of scores in each series which will be displayed by RecyclerView. */
-    private List<List<Short>> mListSeriesGames;
+    /** List to store series data from series table in database. */
+    private List<Series> mListSeries;
 
     @Override
     public void onCreate(Bundle savedInstaceState)
@@ -109,21 +108,21 @@ public class SeriesFragment extends Fragment
     {
         final View rootView = inflater.inflate(R.layout.fragment_list, container, false);
 
-        mListSeriesIds = new ArrayList<>();
-        mListSeriesDates = new ArrayList<>();
-        mListSeriesGames = new ArrayList<>();
+        mListSeries = new ArrayList<>();
 
         /* View to display series dates and games to user. */
-        RecyclerView recyclerViewSeries = (RecyclerView) rootView.findViewById(R.id.rv_names);
-        recyclerViewSeries.setHasFixedSize(true);
-        recyclerViewSeries.addItemDecoration(new DividerItemDecoration(getActivity(),
+        mRecyclerViewSeries = (RecyclerView) rootView.findViewById(R.id.rv_names);
+        mRecyclerViewSeries.setHasFixedSize(true);
+        mRecyclerViewSeries.addItemDecoration(new DividerItemDecoration(getActivity(),
                 LinearLayoutManager.VERTICAL));
 
         ItemTouchHelper.SimpleCallback touchCallback = new ItemTouchHelper.SimpleCallback(0,
                 ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT)
         {
             @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target)
+            public boolean onMove(RecyclerView recyclerView,
+                                  RecyclerView.ViewHolder viewHolder,
+                                  RecyclerView.ViewHolder target)
             {
                 return false;
             }
@@ -132,9 +131,7 @@ public class SeriesFragment extends Fragment
             public void onSwiped(final RecyclerView.ViewHolder viewHolder, int direction)
             {
                 final int position = viewHolder.getAdapterPosition();
-                final long deletedId = mListSeriesIds.remove(position);
-                final String deletedName = mListSeriesDates.remove(position);
-                final List<Short> deletedScores = mListSeriesGames.remove(position);
+                final Series deletedSeries = mListSeries.remove(position);
                 mAdapterSeries.notifyItemRemoved(position);
 
                 final Handler handler = new Handler(Looper.getMainLooper());
@@ -143,20 +140,20 @@ public class SeriesFragment extends Fragment
                     @Override
                     public void run()
                     {
-                        deleteSeries(deletedId);
+                        deleteSeries(deletedSeries.getSeriesId());
                     }
                 };
                 handler.postDelayed(deleteSeries, 4000);
-                Snackbar.make(rootView, deletedName + " deleted", Snackbar.LENGTH_LONG)
+                Snackbar.make(rootView,
+                        deletedSeries.getSeriesDate() + " deleted",
+                        Snackbar.LENGTH_LONG)
                         .setAction(R.string.text_undo, new View.OnClickListener()
                         {
                             @Override
                             public void onClick(View v)
                             {
                                 handler.removeCallbacks(deleteSeries);
-                                mListSeriesIds.add(position, deletedId);
-                                mListSeriesDates.add(position, deletedName);
-                                mListSeriesGames.add(position, deletedScores);
+                                mListSeries.add(0, deletedSeries);
                                 mAdapterSeries.notifyItemInserted(position);
                             }
                         })
@@ -164,13 +161,13 @@ public class SeriesFragment extends Fragment
             }
         };
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(touchCallback);
-        itemTouchHelper.attachToRecyclerView(recyclerViewSeries);
+        itemTouchHelper.attachToRecyclerView(mRecyclerViewSeries);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        recyclerViewSeries.setLayoutManager(layoutManager);
+        mRecyclerViewSeries.setLayoutManager(layoutManager);
 
-        mAdapterSeries = new SeriesAdapter(getActivity(), this, mListSeriesDates, mListSeriesGames);
-        recyclerViewSeries.setAdapter(mAdapterSeries);
+        mAdapterSeries = new SeriesAdapter(getActivity(), this, mListSeries);
+        mRecyclerViewSeries.setAdapter(mAdapterSeries);
 
         return rootView;
     }
@@ -188,15 +185,13 @@ public class SeriesFragment extends Fragment
             mainActivity.setDrawerState(false);
         }
 
-        mListSeriesIds.clear();
-        mListSeriesDates.clear();
-        mListSeriesGames.clear();
+        mListSeries.clear();
         mAdapterSeries.notifyDataSetChanged();
 
         updateTheme();
 
         //Creates AsyncTask to load data from database
-        new LoadSeriesTask().execute();
+        new LoadSeriesTask(this).execute();
     }
 
     @Override
@@ -248,29 +243,36 @@ public class SeriesFragment extends Fragment
     public void onSItemClick(final int position)
     {
         //When series is clicked, its games are displayed in a new GameFragment
-        mSeriesListener.onSeriesSelected(
-                mListSeriesIds.get(position), mListSeriesDates.get(position), false);
+        mSeriesListener.onSeriesSelected(mListSeries.get(position), false);
+    }
+
+    @Override
+    public int getSeriesViewPositionInRecyclerView(View v)
+    {
+        //Gets position of view in mRecyclerViewSeries
+        return mRecyclerViewSeries.getChildAdapterPosition(v);
     }
 
     @Override
     public void onEditClick(final int position)
     {
-        DialogFragment dateDialog = ChangeDateDialog.newInstance(
-                this, mListSeriesDates.get(position), mListSeriesIds.get(position));
+        DialogFragment dateDialog = ChangeDateDialog.newInstance(this, mListSeries.get(position));
         dateDialog.show(getFragmentManager(), "ChangeDateDialog");
     }
 
     @Override
-    public void onChangeDate(final long seriesId, int year, int month, int day)
+    public void onChangeDate(final Series series, int year, int month, int day)
     {
-        final int index = mListSeriesIds.indexOf(seriesId);
+        final int index = mListSeries.indexOf(series);
+        final Series seriesInList = mListSeries.get(index);
         Calendar c = Calendar.getInstance();
         c.set(year, month, day);
         final SimpleDateFormat dateFormat =
                 new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
         final String formattedDate = dateFormat.format(c.getTime());
-        mListSeriesDates.set(index,
-                DataFormatter.formattedDateToPrettyCompact(formattedDate.substring(0, 10)));
+        seriesInList.setSeriesDate(DataFormatter.formattedDateToPrettyCompact(formattedDate.substring(
+                0,
+                10)));
 
         getActivity().runOnUiThread(new Runnable()
         {
@@ -282,24 +284,31 @@ public class SeriesFragment extends Fragment
         });
 
         ((MainActivity) getActivity()).addSavingThread(
-                new Thread(new Runnable() {
+                new Thread(new Runnable()
+                {
                     @Override
-                    public void run() {
+                    public void run()
+                    {
                         SQLiteDatabase database =
                                 DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
                         ContentValues values = new ContentValues();
                         values.put(SeriesEntry.COLUMN_SERIES_DATE, formattedDate);
 
                         database.beginTransaction();
-                        try {
+                        try
+                        {
                             database.update(SeriesEntry.TABLE_NAME,
                                     values,
                                     SeriesEntry._ID + "=?",
-                                    new String[]{String.valueOf(seriesId)});
+                                    new String[]{String.valueOf(seriesInList.getSeriesId())});
                             database.setTransactionSuccessful();
-                        } catch (Exception ex) {
+                        }
+                        catch (Exception ex)
+                        {
                             //TODO: does nothing - date in database for series was not changed
-                        } finally {
+                        }
+                        finally
+                        {
                             database.endTransaction();
                         }
                     }
@@ -379,21 +388,38 @@ public class SeriesFragment extends Fragment
     }
 
     /**
-     * Loads series relevant to the current bowler and league,
-     * and displays them in the recycler view.
+     * Loads series relevant to the current bowler and league, and displays them in the recycler
+     * view.
      */
-    private class LoadSeriesTask extends AsyncTask<Void, Void, List<?>[]>
+    private static class LoadSeriesTask
+            extends AsyncTask<Void, Void, List<Series>>
     {
-        @Override
-        protected List<?>[] doInBackground(Void... params)
+
+        /** Weak reference to the parent fragment. */
+        private WeakReference<SeriesFragment> mFragment;
+
+        /**
+         * Assigns a weak reference to the parent fragment.
+         *
+         * @param fragment parent fragment
+         */
+        private LoadSeriesTask(SeriesFragment fragment)
         {
-            MainActivity.waitForSaveThreads((MainActivity) getActivity());
+            mFragment = new WeakReference<>(fragment);
+        }
+
+        @Override
+        protected List<Series> doInBackground(Void... params)
+        {
+            if (mFragment.get() == null || mFragment.get().getActivity() == null)
+                return null;
+
+            MainActivity.waitForSaveThreads(new WeakReference<>((MainActivity) mFragment.get()
+                    .getActivity()));
 
             SQLiteDatabase database =
-                    DatabaseHelper.getInstance(getActivity()).getReadableDatabase();
-            List<Long> listSeriesIds = new ArrayList<>();
-            List<String> listSeriesDates = new ArrayList<>();
-            List<List<Short>> listSeriesGames = new ArrayList<>();
+                    DatabaseHelper.getInstance(mFragment.get().getActivity()).getReadableDatabase();
+            List<Series> listSeries = new ArrayList<>();
 
             String rawSeriesQuery = "SELECT "
                     + "series." + SeriesEntry._ID + " AS sid, "
@@ -406,7 +432,10 @@ public class SeriesFragment extends Fragment
                     + " WHERE " + SeriesEntry.COLUMN_LEAGUE_ID + "=?"
                     + " ORDER BY " + SeriesEntry.COLUMN_SERIES_DATE + " DESC, "
                     + GameEntry.COLUMN_GAME_NUMBER;
-            String[] rawSeriesArgs = {String.valueOf(((MainActivity) getActivity()).getLeagueId())};
+            String[] rawSeriesArgs = {
+                    String.valueOf(((MainActivity) mFragment.get()
+                            .getActivity()).getLeagueId())
+            };
 
             Cursor cursor = database.rawQuery(rawSeriesQuery, rawSeriesArgs);
             if (cursor.moveToFirst())
@@ -419,49 +448,48 @@ public class SeriesFragment extends Fragment
                     short gameScore = cursor.getShort(
                             cursor.getColumnIndex(GameEntry.COLUMN_SCORE));
 
-                    if (listSeriesIds.size() == 0
-                            || !listSeriesIds.get(listSeriesIds.size() - 1).equals(seriesId))
-                    {
-                        listSeriesIds.add(seriesId);
-                        listSeriesDates.add(DataFormatter.formattedDateToPrettyCompact(seriesDate));
-                        listSeriesGames.add(new ArrayList<Short>());
-                    }
+                    if (listSeries.size() == 0
+                            || listSeries.get(listSeries.size() - 1).getSeriesId() != seriesId)
+                        listSeries.add(new Series(seriesId,
+                                DataFormatter.formattedDateToPrettyCompact(seriesDate),
+                                new ArrayList<Short>()));
 
-                    listSeriesGames.get(listSeriesGames.size() - 1).add(gameScore);
+                    listSeries.get(listSeries.size() - 1).getSeriesGames().add(gameScore);
                     cursor.moveToNext();
                 }
             }
             cursor.close();
 
-            return new List<?>[]{listSeriesIds, listSeriesDates, listSeriesGames};
+            return listSeries;
         }
 
         @Override
         @SuppressWarnings("unchecked")
-        protected void onPostExecute(List<?>[] lists)
+        protected void onPostExecute(List<Series> listSeries)
         {
-            mListSeriesIds.addAll((List<Long>) lists[0]);
-            mListSeriesDates.addAll((List<String>) lists[1]);
-            mListSeriesGames.addAll((List<List<Short>>) lists[2]);
-            mAdapterSeries.notifyDataSetChanged();
+            if (mFragment.get() == null || mFragment.get().getActivity() == null)
+                return;
+
+            mFragment.get().mListSeries.addAll(listSeries);
+            mFragment.get().mAdapterSeries.notifyDataSetChanged();
         }
     }
 
     /**
-     * Container Activity must implement this interface to allow
-     * GameFragment/StatsFragment to be loaded when a series is selected.
+     * Container Activity must implement this interface to allow GameFragment/StatsFragment to be
+     * loaded when a series is selected.
      */
     public interface SeriesListener
     {
+
         /**
-         * Should be overridden to created a GameFragment with the games
-         * belonging to the series represented by seriesId.
+         * Should be overridden to created a GameFragment with the games belonging to the series
+         * represented by seriesId.
          *
-         * @param seriesId id of the series whose games will be displayed
-         * @param seriesDate date of the series corresponding to seriesId
+         * @param series series whose games will be displayed
          * @param isEvent indicates if an event series is being displayed or not
          */
-        void onSeriesSelected(long seriesId, String seriesDate, boolean isEvent);
+        void onSeriesSelected(Series series, boolean isEvent);
 
         /**
          * Called when user opts to create a new series.

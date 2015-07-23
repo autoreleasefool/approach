@@ -10,6 +10,7 @@ import android.widget.DatePicker;
 import java.lang.reflect.Field;
 
 import ca.josephroque.bowlingcompanion.Constants;
+import ca.josephroque.bowlingcompanion.data.Series;
 import ca.josephroque.bowlingcompanion.utilities.DataFormatter;
 
 /**
@@ -31,8 +32,8 @@ public class ChangeDateDialog extends DialogFragment
     /** Callback listener for when user selects a date. */
     private ChangeDateDialogListener mChangeDateListener;
 
-    /** Id which identifies the current series which user is changing the date for. */
-    private long mSeriesId;
+    /** Series being edited. */
+    private Series mSeries;
 
     @Override
     @NonNull
@@ -41,15 +42,14 @@ public class ChangeDateDialog extends DialogFragment
         int[] date;
         if (savedInstanceState == null)
         {
-            String dateOfSeries = getArguments().getString(Constants.EXTRA_NAME_SERIES);
-            date = DataFormatter.prettyCompactToFormattedDate(dateOfSeries);
+            mSeries = getArguments().getParcelable(Constants.EXTRA_SERIES);
+            date = DataFormatter.prettyCompactToFormattedDate(mSeries.getSeriesDate());
             date[0] -= 1; //Must subtract one because method returns 1-12 for month, need 0-11
-            mSeriesId = getArguments().getLong(Constants.EXTRA_ID_SERIES, -1);
         }
         else
         {
+            mSeries = savedInstanceState.getParcelable(Constants.EXTRA_SERIES);
             date = savedInstanceState.getIntArray(Constants.EXTRA_NAME_SERIES);
-            mSeriesId = savedInstanceState.getLong(Constants.EXTRA_ID_SERIES, -1);
         }
 
         mDatePicker = new DatePickerDialog(getActivity(), this, date[2], date[0], date[1]);
@@ -59,7 +59,7 @@ public class ChangeDateDialog extends DialogFragment
     @Override
     public void onDateSet(DatePicker view, int year, int month, int day)
     {
-        mChangeDateListener.onChangeDate(mSeriesId, year, month, day);
+        mChangeDateListener.onChangeDate(mSeries, year, month, day);
     }
 
     @Override
@@ -84,7 +84,7 @@ public class ChangeDateDialog extends DialogFragment
         currentDate[1] = datePicker.getDayOfMonth();
         currentDate[2] = datePicker.getYear();
         outState.putIntArray(Constants.EXTRA_NAME_SERIES, currentDate);
-        outState.putLong(Constants.EXTRA_ID_SERIES, mSeriesId);
+        outState.putParcelable(Constants.EXTRA_SERIES, mSeries);
     }
 
     /**
@@ -92,19 +92,16 @@ public class ChangeDateDialog extends DialogFragment
      * arguments set.
      *
      * @param listener callback listener for user events
-     * @param seriesDate initial date of the series to be changed
-     * @param seriesId identifies the series to be changed
+     * @param series identifies the series to be changed
      * @return a new instance ChangeDateDialog
      */
     public static ChangeDateDialog newInstance(ChangeDateDialogListener listener,
-                                               String seriesDate,
-                                               long seriesId)
+                                               Series series)
     {
         ChangeDateDialog dialog = new ChangeDateDialog();
         dialog.mChangeDateListener = listener;
         Bundle args = new Bundle();
-        args.putString(Constants.EXTRA_NAME_SERIES, seriesDate);
-        args.putLong(Constants.EXTRA_ID_SERIES, seriesId);
+        args.putParcelable(Constants.EXTRA_SERIES, series);
         dialog.setArguments(args);
         return dialog;
     }
@@ -117,11 +114,11 @@ public class ChangeDateDialog extends DialogFragment
         /**
          * Called when the user selects a date to set.
          *
-         * @param seriesId id of the series to change
+         * @param series series to change
          * @param year year to change date to
          * @param month month to change date to
          * @param day day of the month to change date to
          */
-        void onChangeDate(long seriesId, int year, int month, int day);
+        void onChangeDate(Series series, int year, int month, int day);
     }
 }

@@ -95,6 +95,8 @@ public final class Constants
     public static final String EXTRA_ARRAY_MATCH_PLAY = "EAMP";
     /** Identifies byte indicating current game in GameFragment. */
     public static final String EXTRA_CURRENT_GAME = "ECG";
+    /** Identifies a series object. */
+    public static final String EXTRA_SERIES = "ES";
 
     // REGULAR EXPRESSIONS
     /** Regular Expression to match regular names. */

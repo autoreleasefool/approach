@@ -10,15 +10,14 @@ import android.widget.TextView;
 import java.util.List;
 
 import ca.josephroque.bowlingcompanion.R;
+import ca.josephroque.bowlingcompanion.data.NameAveragePair;
 
 /**
- * Created by Joseph Roque on 15-03-13.
- * <p/>
- * Manages names of bowlers or leagues/events and their associated averages for a ListView. Offers
- * a callback interface {@link NameAverageAdapter.NameAverageEventHandler} to handle interaction
- * events.
+ * Created by Joseph Roque on 15-03-13. Manages names of bowlers or leagues/events and their
+ * associated averages for a ListView. Offers a callback interface {@link
+ * NameAverageAdapter.NameAverageEventHandler} to handle interaction events.
  */
-public class NameAverageAdapter
+public class NameAverageAdapter<T extends NameAveragePair>
         extends RecyclerView.Adapter<NameAverageAdapter.NameAverageViewHolder>
         implements View.OnClickListener
 {
@@ -35,20 +34,20 @@ public class NameAverageAdapter
     /** Instance of handler for callback on user action. */
     private NameAverageEventHandler mEventHandler;
 
-    /** List of names which will be displayed. */
-    private List<String> mListNames;
-    /** List of averages which will be displayed, in an order relative to mListNames. */
-    private List<Short> mListAverages;
+    /** List of names and averages to be displayed by the adapter. */
+    private List<T> mListNamesAndAverages;
 
     /** Type of data being represented by this object. */
     private byte mDataType;
 
     /**
-     * Subclass of RecyclerView.ViewHolder to manage view which will display an image,
-     * and text to the user.
+     * Subclass of RecyclerView.ViewHolder to manage view which will display an image, and text to
+     * the user.
      */
-    public static final class NameAverageViewHolder extends RecyclerView.ViewHolder
+    public static final class NameAverageViewHolder
+            extends RecyclerView.ViewHolder
     {
+
         /** Displays an image representing the type of data in the row. */
         private ImageView mImageViewType;
         /** Displays the name of the data in the row. */
@@ -57,8 +56,8 @@ public class NameAverageAdapter
         private TextView mTextViewAverage;
 
         /**
-         * Calls super constructor and gets instances of ImageView and TextView objects
-         * for member variables from itemLayoutView.
+         * Calls super constructor and gets instances of ImageView and TextView objects for member
+         * variables from itemLayoutView.
          *
          * @param itemLayoutView layout view containing views to display data
          */
@@ -75,18 +74,15 @@ public class NameAverageAdapter
      * Sets member variables to parameters.
      *
      * @param handler handles on click/long click events on views
-     * @param listNames list of names to be displayed in RecyclerView
-     * @param listAverages list of averages, relative to listNames to be displayed
+     * @param listNameAverages list of names and averages to be displayed
      * @param dataType type of data being managed by this object
      */
     public NameAverageAdapter(NameAverageEventHandler handler,
-                              List<String> listNames,
-                              List<Short> listAverages,
+                              List<T> listNameAverages,
                               byte dataType)
     {
         mEventHandler = handler;
-        mListNames = listNames;
-        mListAverages = listAverages;
+        mListNamesAndAverages = listNameAverages;
         mDataType = dataType;
     }
 
@@ -105,20 +101,23 @@ public class NameAverageAdapter
         switch (mDataType)
         {
             case DATA_BOWLERS:
-                holder.mTextViewName.setText(mListNames.get(position));
+                holder.mTextViewName.setText(mListNamesAndAverages.get(position).getName());
                 holder.mImageViewType.setImageResource(R.drawable.ic_person_black_24dp);
                 break;
             case DATA_LEAGUES_EVENTS:
-                holder.mTextViewName.setText(mListNames.get(position).substring(1));
+                holder.mTextViewName.setText(mListNamesAndAverages.get(position)
+                        .getName()
+                        .substring(1));
                 holder.mImageViewType.setImageResource(
-                        mListNames.get(position).startsWith("L")
+                        mListNamesAndAverages.get(position).getName().startsWith("L")
                                 ? R.drawable.ic_l_black_24dp
                                 : R.drawable.ic_e_black_24dp);
                 break;
-            default: throw new IllegalStateException("invalid mDataType: " + mDataType);
+            default:
+                throw new IllegalStateException("invalid mDataType: " + mDataType);
         }
         holder.mTextViewAverage.setText("Avg: "
-                + String.valueOf(mListAverages.get(position)));
+                + String.valueOf(mListNamesAndAverages.get(position).getAverage()));
 
         //Sets actions on click/touch events
         holder.itemView.setOnClickListener(this);
@@ -128,18 +127,26 @@ public class NameAverageAdapter
     public void onClick(View v)
     {
         //Calls relevant event handler method
-        mEventHandler.onNAItemClick(mEventHandler.getNAViewPositionInRecyclerView(v));
+        if (mEventHandler != null)
+            mEventHandler.onNAItemClick(mEventHandler.getNAViewPositionInRecyclerView(v));
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(RecyclerView recyclerView)
+    {
+        super.onDetachedFromRecyclerView(recyclerView);
+        mEventHandler = null;
     }
 
     @Override
     public int getItemCount()
     {
-        return mListNames.size();
+        return mListNamesAndAverages.size();
     }
 
     /**
-     * Provides methods to implement functionality when items
-     * in the RecyclerView are interacted with.
+     * Provides methods to implement functionality when items in the RecyclerView are interacted
+     * with.
      */
     public interface NameAverageEventHandler
     {

@@ -29,6 +29,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -2281,7 +2282,7 @@ public class GameFragment extends Fragment
      */
     private void loadInitialScores()
     {
-        MainActivity.waitForSaveThreads((MainActivity) getActivity());
+        MainActivity.waitForSaveThreads(new WeakReference<>((MainActivity) getActivity()));
 
         byte numberOfGames = ((MainActivity) getActivity()).getNumberOfGames();
         SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getReadableDatabase();

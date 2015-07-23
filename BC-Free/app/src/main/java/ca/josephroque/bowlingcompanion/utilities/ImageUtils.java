@@ -17,6 +17,7 @@ import android.provider.MediaStore;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -329,7 +330,7 @@ public final class ImageUtils
         List<Short> scoresOfGames = new ArrayList<>();
         List<Boolean> manualScores = new ArrayList<>();
 
-        MainActivity.waitForSaveThreads((MainActivity) context);
+        MainActivity.waitForSaveThreads(new WeakReference<>((MainActivity) context));
 
         SQLiteDatabase database = DatabaseHelper.getInstance(context).getReadableDatabase();
         String rawImageQuery = "SELECT "

@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -14,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ExpandableListView;
 
+import java.lang.ref.WeakReference;
 import java.text.DecimalFormat;
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -280,8 +280,9 @@ public class StatsListFragment
         @Override
         protected List<?>[] doInBackground(Byte... statsToLoad)
         {
+            // TODO: convert task to static and use weak references
             MainActivity mainActivity = (MainActivity) getActivity();
-            MainActivity.waitForSaveThreads(mainActivity);
+            MainActivity.waitForSaveThreads(new WeakReference<>(mainActivity));
 
             final byte toLoad = statsToLoad[0];
             Cursor cursor;
