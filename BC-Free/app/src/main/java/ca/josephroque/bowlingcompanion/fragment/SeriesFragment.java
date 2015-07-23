@@ -62,8 +62,6 @@ public class SeriesFragment extends Fragment
     @SuppressWarnings("unused")
     private static final String TAG = "SeriesFragment";
 
-    /** View to display series dates and games to user. */
-    private RecyclerView mRecyclerViewSeries;
     /** Adapter to manage data displayed in mRecyclerViewSeries. */
     private SeriesAdapter mAdapterSeries;
 
@@ -115,9 +113,10 @@ public class SeriesFragment extends Fragment
         mListSeriesDates = new ArrayList<>();
         mListSeriesGames = new ArrayList<>();
 
-        mRecyclerViewSeries = (RecyclerView) rootView.findViewById(R.id.rv_names);
-        mRecyclerViewSeries.setHasFixedSize(true);
-        mRecyclerViewSeries.addItemDecoration(new DividerItemDecoration(getActivity(),
+        /* View to display series dates and games to user. */
+        RecyclerView recyclerViewSeries = (RecyclerView) rootView.findViewById(R.id.rv_names);
+        recyclerViewSeries.setHasFixedSize(true);
+        recyclerViewSeries.addItemDecoration(new DividerItemDecoration(getActivity(),
                 LinearLayoutManager.VERTICAL));
 
         ItemTouchHelper.SimpleCallback touchCallback = new ItemTouchHelper.SimpleCallback(0,
@@ -165,13 +164,13 @@ public class SeriesFragment extends Fragment
             }
         };
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(touchCallback);
-        itemTouchHelper.attachToRecyclerView(mRecyclerViewSeries);
+        itemTouchHelper.attachToRecyclerView(recyclerViewSeries);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        mRecyclerViewSeries.setLayoutManager(layoutManager);
+        recyclerViewSeries.setLayoutManager(layoutManager);
 
         mAdapterSeries = new SeriesAdapter(getActivity(), this, mListSeriesDates, mListSeriesGames);
-        mRecyclerViewSeries.setAdapter(mAdapterSeries);
+        recyclerViewSeries.setAdapter(mAdapterSeries);
 
         return rootView;
     }
@@ -251,13 +250,6 @@ public class SeriesFragment extends Fragment
         //When series is clicked, its games are displayed in a new GameFragment
         mSeriesListener.onSeriesSelected(
                 mListSeriesIds.get(position), mListSeriesDates.get(position), false);
-    }
-
-    @Override
-    public int getSeriesViewPositionInRecyclerView(View v)
-    {
-        //Gets position of view in mRecyclerViewSeries
-        return mRecyclerViewSeries.getChildAdapterPosition(v);
     }
 
     @Override

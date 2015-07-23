@@ -472,7 +472,7 @@ public class MainActivity
         {
             FragmentManager fm = getSupportFragmentManager();
             for (Fragment frag : fm.getFragments()) {
-                if (frag.isVisible()) {
+                if (frag != null && frag.isVisible()) {
                     FragmentManager childFm = frag.getChildFragmentManager();
                     if (childFm.getBackStackEntryCount() > 0) {
                         childFm.popBackStack();

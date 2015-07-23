@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion.adapter;
 
 import android.app.Activity;
 import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -144,13 +145,21 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
             holder.mArrayTextViewGames[i].setText(String.valueOf(gameScore));
             if (gameScore >= minimumScoreToHighlight)
             {
-                holder.mArrayTextViewGames[i].setTextColor(Theme.getPrimaryThemeColor());
+                holder.mArrayTextViewGames[i].setTextColor(Theme.getTertiaryThemeColor());
+                holder.mArrayTextViewGames[i].setAlpha(1f);
+            }
+            else
+            {
+                holder.mArrayTextViewGames[i].setTextColor(0xff000000);
+                holder.mArrayTextViewGames[i].setAlpha(0.54f);
             }
         }
 
         //Sets color of edit button
-        holder.mImageViewEdit.getDrawable().setColorFilter(Theme.getSecondaryThemeColor(),
-                PorterDuff.Mode.MULTIPLY);
+        Drawable drawable = holder.mImageViewEdit.getDrawable().mutate();
+        drawable.setColorFilter(Theme.getSecondaryThemeColor(), PorterDuff.Mode.SRC_IN);
+        holder.mImageViewEdit.setImageDrawable(drawable);
+
         holder.mImageViewEdit.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -164,14 +173,21 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
          * Below methods are executed when an item in the RecyclerView is
          * clicked or long clicked.
          */
+        holder.itemView.setTag(position);
         holder.itemView.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v)
     {
+        int position;
+        try {
+            position = (Integer) v.getTag();
+        } catch (ClassCastException ex) {
+            throw new ClassCastException("tag must be position");
+        }
         //Calls relevant event handler method
-        mEventHandler.onSItemClick(mEventHandler.getSeriesViewPositionInRecyclerView(v));
+        mEventHandler.onSItemClick(position);
     }
 
     @Override
@@ -201,15 +217,6 @@ public class SeriesAdapter extends RecyclerView.Adapter<SeriesAdapter.SeriesView
          * @param position position of the item in the list
          */
         void onSItemClick(final int position);
-
-        /**
-         * Should be used to return RecyclerView#getChildPosition(v) on the
-         * recycler view which uses this adapter.
-         *
-         * @param v the view to get the position of
-         * @return position of v in the parent RecyclerView
-         */
-        int getSeriesViewPositionInRecyclerView(View v);
 
         /**
          * Called when the edit image view for an item in the RecyclerView is clicked.

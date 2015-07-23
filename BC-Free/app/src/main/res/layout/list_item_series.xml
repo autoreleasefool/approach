@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/selectableItemBackground"
-    android:paddingLeft="4dp"
-    android:paddingRight="4dp">
+    tools:ignore="RtlHardcoded,RtlSymmetry">
 
     <TextView
         android:id="@+id/tv_series_date"
@@ -15,19 +14,21 @@
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
         android:layout_gravity="center_vertical"
+        android:alpha="0.87"
         android:gravity="center"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:paddingLeft="@dimen/list_keyline"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:textColor="@android:color/black" />
 
     <ImageView
         android:id="@+id/iv_edit_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_margin="4dp"
-        android:alpha="0.7"
+        android:layout_marginLeft="4dp"
         android:contentDescription="@string/description_edit_date"
+        android:paddingRight="@dimen/list_keyline"
         android:src="@drawable/ic_edit_black_24dp" />
 
     <TextView
@@ -39,9 +40,10 @@
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp"
         android:layout_toLeftOf="@id/iv_edit_date"
-        android:layout_toStartOf="@id/iv_edit_date"
+        android:alpha="0.54"
         android:gravity="center"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@android:color/black" />
 
     <TextView
         android:id="@+id/tv_series_game_2"
@@ -52,9 +54,10 @@
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp"
         android:layout_toLeftOf="@id/tv_series_game_1"
-        android:layout_toStartOf="@id/tv_series_game_1"
+        android:alpha="0.54"
         android:gravity="center"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@android:color/black" />
 
     <TextView
         android:id="@+id/tv_series_game_3"
@@ -65,9 +68,10 @@
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp"
         android:layout_toLeftOf="@id/tv_series_game_2"
-        android:layout_toStartOf="@id/tv_series_game_2"
+        android:alpha="0.54"
         android:gravity="center"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@android:color/black" />
 
     <TextView
         android:id="@+id/tv_series_game_4"
@@ -78,9 +82,10 @@
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp"
         android:layout_toLeftOf="@id/tv_series_game_3"
-        android:layout_toStartOf="@id/tv_series_game_3"
+        android:alpha="0.54"
         android:gravity="center"
-        android:textAppearance="?android:attr/textAppearanceSmall" />
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@android:color/black" />
 
     <TextView
         android:id="@+id/tv_series_game_5"
@@ -91,9 +96,10 @@
         android:layout_marginLeft="4dp"
         android:layout_marginRight="4dp"
         android:layout_toLeftOf="@id/tv_series_game_4"
-        android:layout_toStartOf="@id/tv_series_game_4"
+        android:alpha="0.54"
         android:gravity="center"
         android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@android:color/black"
         tools:ignore="RelativeOverlap" />
 
 </RelativeLayout>

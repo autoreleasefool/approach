@@ -4,17 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="?attr/selectableItemBackground"
-    android:paddingLeft="4dp"
-    android:paddingRight="4dp">
+    tools:ignore="RelativeOverlap,RtlHardcoded,RtlSymmetry">
 
     <ImageView
         android:id="@+id/iv_nameavg_type"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
         android:alpha="0.54"
+        android:paddingLeft="@dimen/list_keyline"
         tools:ignore="ContentDescription" />
 
     <TextView
@@ -22,23 +21,22 @@
         android:layout_width="wrap_content"
         android:layout_height="48dp"
         android:layout_gravity="center_vertical"
-        android:layout_toEndOf="@id/iv_nameavg_type"
-        android:layout_toRightOf="@id/iv_nameavg_type"
         android:alpha="0.87"
         android:gravity="center"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        tools:ignore="RelativeOverlap" />
+        android:paddingLeft="@dimen/list_text_keyline"
+        android:textColor="@android:color/black"
+        android:textSize="18sp" />
 
     <TextView
         android:id="@+id/tv_nameavg_average"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
-        android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_gravity="center_vertical"
         android:alpha="0.54"
         android:gravity="center"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        tools:ignore="RelativeOverlap" />
+        android:paddingRight="@dimen/list_keyline"
+        android:textColor="@android:color/black"
+        android:textSize="14sp" />
 
 </RelativeLayout>
