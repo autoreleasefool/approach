@@ -32,6 +32,11 @@ public class SeriesAdapter
     @SuppressWarnings("unused")
     private static final String TAG = "SeriesAdapter";
 
+    /** Represents an item in the list which is active. */
+    private static final int VIEWTYPE_ACTIVE = 0;
+    /** Represents an item in the list which has been deleted. */
+    private static final int VIEWTYPE_DELETED = 1;
+
     /** Activity which created the instance of this object. */
     private Activity mActivity;
     /** Instance of handler for callback on user action. */
@@ -57,48 +62,68 @@ public class SeriesAdapter
         /** Displays an icon to allow editing of the date of a series. */
         private ImageView mImageViewEdit;
 
+        /** Displays text to confirm deletion of item. */
+        private TextView mTextViewDelete;
+        /** Displays icon to confirm deletion of item. */
+        private ImageView mImageViewDelete;
+        /** Displays text to undo deletion of item. */
+        private TextView mTextViewUndo;
+
         /**
          * Calls super constructor and gets instances of ImageView and TextView objects for member
          * variables from itemLayoutView.
          *
          * @param itemLayoutView layout view containing views to display data
          */
-        public SeriesViewHolder(View itemLayoutView)
+        public SeriesViewHolder(View itemLayoutView, int viewType)
         {
             super(itemLayoutView);
-            mTextViewDate = (TextView) itemLayoutView.findViewById(R.id.tv_series_date);
-            mImageViewEdit = (ImageView) itemLayoutView.findViewById(R.id.iv_edit_date);
-
-            //Adds text views by id to array
-            mArrayTextViewGames = new TextView[Constants.MAX_NUMBER_LEAGUE_GAMES];
-            for (byte i = 0; i < Constants.MAX_NUMBER_LEAGUE_GAMES; i++)
+            switch (viewType)
             {
-                switch (i)
-                {
-                    case 0:
-                        mArrayTextViewGames[0] =
-                                (TextView) itemLayoutView.findViewById(R.id.tv_series_game_1);
-                        break;
-                    case 1:
-                        mArrayTextViewGames[1] =
-                                (TextView) itemLayoutView.findViewById(R.id.tv_series_game_2);
-                        break;
-                    case 2:
-                        mArrayTextViewGames[2] =
-                                (TextView) itemLayoutView.findViewById(R.id.tv_series_game_3);
-                        break;
-                    case 3:
-                        mArrayTextViewGames[3] =
-                                (TextView) itemLayoutView.findViewById(R.id.tv_series_game_4);
-                        break;
-                    case 4:
-                        mArrayTextViewGames[4] =
-                                (TextView) itemLayoutView.findViewById(R.id.tv_series_game_5);
-                        break;
-                    default:
-                        // does nothing
-                }
+                case VIEWTYPE_ACTIVE:
+                    mTextViewDate = (TextView) itemLayoutView.findViewById(R.id.tv_series_date);
+                    mImageViewEdit = (ImageView) itemLayoutView.findViewById(R.id.iv_edit_date);
+
+                    //Adds text views by id to array
+                    mArrayTextViewGames = new TextView[Constants.MAX_NUMBER_LEAGUE_GAMES];
+                    for (byte i = 0; i < Constants.MAX_NUMBER_LEAGUE_GAMES; i++)
+                    {
+                        switch (i)
+                        {
+                            case 0:
+                                mArrayTextViewGames[0] = (TextView) itemLayoutView.findViewById(
+                                        R.id.tv_series_game_1);
+                                break;
+                            case 1:
+                                mArrayTextViewGames[1] = (TextView) itemLayoutView.findViewById(
+                                        R.id.tv_series_game_2);
+                                break;
+                            case 2:
+                                mArrayTextViewGames[2] = (TextView) itemLayoutView.findViewById(
+                                        R.id.tv_series_game_3);
+                                break;
+                            case 3:
+                                mArrayTextViewGames[3] = (TextView) itemLayoutView.findViewById(
+                                        R.id.tv_series_game_4);
+                                break;
+                            case 4:
+                                mArrayTextViewGames[4] = (TextView) itemLayoutView.findViewById(
+                                        R.id.tv_series_game_5);
+                                break;
+                            default:
+                                // does nothing
+                        }
+                    }
+                    break;
+                case VIEWTYPE_DELETED:
+                    mImageViewDelete = (ImageView) itemLayoutView.findViewById(R.id.iv_delete);
+                    mTextViewDelete = (TextView) itemLayoutView.findViewById(R.id.tv_delete);
+                    mTextViewUndo = (TextView) itemLayoutView.findViewById(R.id.tv_undo_delete);
+                    break;
+                default:
+                    throw new IllegalArgumentException("invalid view type: " + viewType);
             }
+
         }
     }
 
@@ -122,56 +147,94 @@ public class SeriesAdapter
     @Override
     public SeriesViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
-        View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.list_item_series, parent, false);
-        return new SeriesViewHolder(itemView);
+        View itemView;
+        switch (viewType)
+        {
+            case VIEWTYPE_ACTIVE:
+                itemView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.list_item_series, parent, false);
+                break;
+            case VIEWTYPE_DELETED:
+                itemView = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.list_item_deleted, parent, false);
+                break;
+            default:
+                throw new IllegalArgumentException("invalid view type: " + viewType);
+        }
+        return new SeriesViewHolder(itemView, viewType);
     }
 
     @Override
     public void onBindViewHolder(final SeriesViewHolder holder, final int position)
     {
-        holder.mTextViewDate.setText(mListSeries.get(position).getSeriesDate());
+        final int viewType = getItemViewType(position);
 
-        List<Short> games = mListSeries.get(position).getSeriesGames();
-        final int numberOfGamesInSeries = games.size();
-        for (int i = 0; i < numberOfGamesInSeries; i++)
-        {
-            /**
-             * Highlights a score if it is over 300 or applies default theme if not
-             */
-            short gameScore = games.get(-i + (numberOfGamesInSeries - 1));
-            holder.mArrayTextViewGames[i].setText(String.valueOf(gameScore));
-            if (gameScore >= minimumScoreToHighlight)
-            {
-                holder.mArrayTextViewGames[i].setTextColor(Theme.getTertiaryThemeColor());
-                holder.mArrayTextViewGames[i].setAlpha(1f);
-            }
-            else
-            {
-                holder.mArrayTextViewGames[i].setTextColor(0xff000000);
-                holder.mArrayTextViewGames[i].setAlpha(0.54f);
-            }
+        switch (viewType) {
+            case VIEWTYPE_ACTIVE:
+                holder.mTextViewDate.setText(mListSeries.get(position).getSeriesDate());
+
+                List<Short> games = mListSeries.get(position).getSeriesGames();
+                final int numberOfGamesInSeries = games.size();
+                for (int i = 0; i < numberOfGamesInSeries; i++) {
+                    /**
+                     * Highlights a score if it is over 300 or applies default theme if not
+                     */
+                    short gameScore = games.get(-i + (numberOfGamesInSeries - 1));
+                    holder.mArrayTextViewGames[i].setText(String.valueOf(gameScore));
+                    if (gameScore >= minimumScoreToHighlight) {
+                        holder.mArrayTextViewGames[i].setTextColor(Theme.getTertiaryThemeColor());
+                        holder.mArrayTextViewGames[i].setAlpha(1f);
+                    } else {
+                        holder.mArrayTextViewGames[i].setTextColor(0xff000000);
+                        holder.mArrayTextViewGames[i].setAlpha(0.54f);
+                    }
+                }
+
+                //Sets color of edit button
+                Drawable drawable = holder.mImageViewEdit.getDrawable().mutate();
+                drawable.setColorFilter(Theme.getSecondaryThemeColor(), PorterDuff.Mode.SRC_IN);
+                holder.mImageViewEdit.setImageDrawable(drawable);
+
+                holder.mImageViewEdit.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mEventHandler.onEditClick(position);
+                    }
+                });
+
+                /*
+                 * Below methods are executed when an item in the RecyclerView is
+                 * clicked or long clicked.
+                 */
+                holder.itemView.setOnClickListener(this);
+                break;
+            case VIEWTYPE_DELETED:
+                final String nameToDelete = mListSeries.get(position).getSeriesDate();
+                final long idToDelete = mListSeries.get(position).getSeriesId();
+                final View.OnClickListener onClickListener = new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        if (mEventHandler != null)
+                        {
+                            if (v.getId() == R.id.tv_undo_delete)
+                                mEventHandler.onSItemUndoDelete(idToDelete);
+                            else
+                                mEventHandler.onSItemDelete(idToDelete);
+                        }
+                    }
+                };
+                holder.itemView.setOnClickListener(null);
+                holder.itemView.setBackgroundColor(Theme.getTertiaryThemeColor());
+                holder.mTextViewDelete.setText("Click to delete " + nameToDelete);
+                holder.mTextViewDelete.setOnClickListener(onClickListener);
+                holder.mTextViewUndo.setOnClickListener(onClickListener);
+                holder.mImageViewDelete.setOnClickListener(onClickListener);
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid view type: " + viewType);
         }
-
-        //Sets color of edit button
-        Drawable drawable = holder.mImageViewEdit.getDrawable().mutate();
-        drawable.setColorFilter(Theme.getSecondaryThemeColor(), PorterDuff.Mode.SRC_IN);
-        holder.mImageViewEdit.setImageDrawable(drawable);
-
-        holder.mImageViewEdit.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                mEventHandler.onEditClick(position);
-            }
-        });
-
-        /*
-         * Below methods are executed when an item in the RecyclerView is
-         * clicked or long clicked.
-         */
-        holder.itemView.setOnClickListener(this);
     }
 
     @Override
@@ -186,6 +249,14 @@ public class SeriesAdapter
     public int getItemCount()
     {
         return mListSeries.size();
+    }
+
+    @Override
+    public int getItemViewType(int position)
+    {
+        return (mListSeries.get(position).wasDeleted())
+                ? VIEWTYPE_DELETED
+                : VIEWTYPE_ACTIVE;
     }
 
     @Override
@@ -218,6 +289,20 @@ public class SeriesAdapter
          * @param position position of the item in the list
          */
         void onSItemClick(final int position);
+
+        /**
+         * Called when an item in the RecyclerView is confirmed by user for deletion.
+         *
+         * @param id id of the deleted item
+         */
+        void onSItemDelete(long id);
+
+        /**
+         * Called when the user undoes a delete on an item in the RecyclerView.
+         *
+         * @param id id of the undeleted item
+         */
+        void onSItemUndoDelete(long id);
 
         /**
          * Called when the edit image view for an item in the RecyclerView is clicked.

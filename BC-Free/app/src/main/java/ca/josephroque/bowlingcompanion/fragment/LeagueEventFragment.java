@@ -11,9 +11,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -137,37 +134,14 @@ public class LeagueEventFragment
             {
                 final int position = viewHolder.getAdapterPosition();
                 if (mListLeaguesEvents.get(position).getLeagueEventName().substring(1).equals(
-                        Constants.NAME_OPEN_LEAGUE))
+                        Constants.NAME_OPEN_LEAGUE)) {
                     mAdapterLeagueEvents.notifyItemChanged(position);
+                    return;
+                }
 
-                final LeagueEvent deletedLeagueEvent = mListLeaguesEvents.remove(position);
-                mAdapterLeagueEvents.notifyItemRemoved(position);
-
-                final Handler handler = new Handler(Looper.getMainLooper());
-                final Runnable deleteLeagueEvent = new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        deleteLeagueEvent(deletedLeagueEvent.getLeagueEventId());
-                    }
-                };
-                handler.postDelayed(deleteLeagueEvent, 4000);
-
-                Snackbar.make(rootView,
-                        deletedLeagueEvent.getLeagueEventName() + " deleted",
-                        Snackbar.LENGTH_LONG)
-                        .setAction(R.string.text_undo, new View.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(View v)
-                            {
-                                handler.removeCallbacks(deleteLeagueEvent);
-                                mListLeaguesEvents.add(position, deletedLeagueEvent);
-                                mAdapterLeagueEvents.notifyItemInserted(position);
-                            }
-                        })
-                        .show();
+                mListLeaguesEvents.get(position).setIsDeleted(
+                        !mListLeaguesEvents.get(position).wasDeleted());
+                mAdapterLeagueEvents.notifyItemChanged(position);
             }
         };
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(touchCallback);
@@ -245,6 +219,31 @@ public class LeagueEventFragment
     {
         //When league name is clicked, its data is opened in a new SeriesFragment
         new OpenLeagueEventSeriesTask(this).execute(position);
+    }
+
+    @Override
+    public void onNAItemDelete(long id)
+    {
+        for (int i = 0; i < mListLeaguesEvents.size(); i++) {
+            if (mListLeaguesEvents.get(i).getLeagueEventId() == id)
+            {
+                LeagueEvent leagueEvent = mListLeaguesEvents.remove(i);
+                mAdapterLeagueEvents.notifyItemRemoved(i);
+                deleteLeagueEvent(leagueEvent.getLeagueEventId());
+            }
+        }
+    }
+
+    @Override
+    public void onNAItemUndoDelete(long id)
+    {
+        for (int i = 0; i < mListLeaguesEvents.size(); i++) {
+            if (mListLeaguesEvents.get(i).getLeagueEventId() == id)
+            {
+                mListLeaguesEvents.get(i).setIsDeleted(false);
+                mAdapterLeagueEvents.notifyItemChanged(i);
+            }
+        }
     }
 
     @Override

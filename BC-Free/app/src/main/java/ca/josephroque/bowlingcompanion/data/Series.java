@@ -10,13 +10,25 @@ import java.util.List;
  * Created by Joseph Roque on 2015-07-22. Organizes the data for a series.
  */
 public class Series
-        implements Parcelable
+        implements Parcelable, DeleteableData
 {
 
+    /** Unique id of the series. */
     private long mSeriesId;
+    /** Date that the series occurred. */
     private String mSeriesDate;
+    /** Scores of the games in the series. */
     private List<Short> mSeriesGames;
+    /** Indicates if this series has been deleted. */
+    private boolean mIsDeleted;
 
+    /**
+     * Assigns references for member variables to parameters.
+     *
+     * @param id unique id of the series
+     * @param date date the series occurred
+     * @param games scores of the games in the series
+     */
     public Series(long id, String date, List<Short> games)
     {
         this.mSeriesId = id;
@@ -127,5 +139,17 @@ public class Series
         }
 
         return false;
+    }
+
+    @Override
+    public void setIsDeleted(boolean deleted)
+    {
+        this.mIsDeleted = deleted;
+    }
+
+    @Override
+    public boolean wasDeleted()
+    {
+        return mIsDeleted;
     }
 }

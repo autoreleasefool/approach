@@ -9,9 +9,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -131,33 +128,8 @@ public class SeriesFragment
             public void onSwiped(final RecyclerView.ViewHolder viewHolder, int direction)
             {
                 final int position = viewHolder.getAdapterPosition();
-                final Series deletedSeries = mListSeries.remove(position);
-                mAdapterSeries.notifyItemRemoved(position);
-
-                final Handler handler = new Handler(Looper.getMainLooper());
-                final Runnable deleteSeries = new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        deleteSeries(deletedSeries.getSeriesId());
-                    }
-                };
-                handler.postDelayed(deleteSeries, 4000);
-                Snackbar.make(rootView,
-                        deletedSeries.getSeriesDate() + " deleted",
-                        Snackbar.LENGTH_LONG)
-                        .setAction(R.string.text_undo, new View.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(View v)
-                            {
-                                handler.removeCallbacks(deleteSeries);
-                                mListSeries.add(0, deletedSeries);
-                                mAdapterSeries.notifyItemInserted(position);
-                            }
-                        })
-                        .show();
+                mListSeries.get(position).setIsDeleted(!mListSeries.get(position).wasDeleted());
+                mAdapterSeries.notifyItemChanged(position);
             }
         };
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(touchCallback);
@@ -244,6 +216,31 @@ public class SeriesFragment
     {
         //When series is clicked, its games are displayed in a new GameFragment
         mSeriesListener.onSeriesSelected(mListSeries.get(position), false);
+    }
+
+    @Override
+    public void onSItemDelete(long id)
+    {
+        for (int i = 0; i < mListSeries.size(); i++) {
+            if (mListSeries.get(i).getSeriesId() == id)
+            {
+                Series series = mListSeries.remove(i);
+                mAdapterSeries.notifyItemRemoved(i);
+                deleteSeries(series.getSeriesId());
+            }
+        }
+    }
+
+    @Override
+    public void onSItemUndoDelete(long id)
+    {
+        for (int i = 0; i < mListSeries.size(); i++) {
+            if (mListSeries.get(i).getSeriesId() == id)
+            {
+                mListSeries.get(i).setIsDeleted(false);
+                mAdapterSeries.notifyItemChanged(i);
+            }
+        }
     }
 
     @Override

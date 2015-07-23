@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * Created by Joseph Roque on 2015-07-22. Organizes the data for a league or event.
  */
 public class LeagueEvent
-        implements Parcelable, NameAveragePair
+        implements Parcelable, NameAverageId
 {
 
     /** Unique id of the league / event. */
@@ -18,6 +18,8 @@ public class LeagueEvent
     private short mLeagueEventAverage;
     /** Number of games in the league / event. */
     private byte mLeagueEventNumberOfGames;
+    /** Indicates if this league / event has been deleted. */
+    private boolean mIsDeleted;
 
     /**
      * Assigns the member variables to the parameters provided.
@@ -111,6 +113,12 @@ public class LeagueEvent
     }
 
     @Override
+    public long getId()
+    {
+        return getLeagueEventId();
+    }
+
+    @Override
     public void writeToParcel(Parcel pc, int flags)
     {
         pc.writeLong(mLeagueEventId);
@@ -150,6 +158,17 @@ public class LeagueEvent
     {
         return this == other || (other instanceof LeagueEvent)
                 && getLeagueEventName().equals(((LeagueEvent) other).getLeagueEventName());
+    }
 
+    @Override
+    public void setIsDeleted(boolean deleted)
+    {
+        this.mIsDeleted = deleted;
+    }
+
+    @Override
+    public boolean wasDeleted()
+    {
+        return mIsDeleted;
     }
 }

@@ -1,10 +1,11 @@
 package ca.josephroque.bowlingcompanion.data;
 
 /**
- * Created by Joseph Roque on 2015-07-22. Offers methods for retrieving a name and average from an
- * object.
+ * Created by Joseph Roque on 2015-07-22. Offers methods for retrieving a name, average and id from
+ * an object.
  */
-public interface NameAveragePair
+public interface NameAverageId
+        extends DeleteableData
 {
 
     /**
@@ -20,4 +21,11 @@ public interface NameAveragePair
      * @return an average for this object
      */
     short getAverage();
+
+    /**
+     * Gets the id for this object
+     *
+     * @return an id for this object
+     */
+    long getId();
 }

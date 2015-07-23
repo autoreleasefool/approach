@@ -12,10 +12,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.preference.PreferenceManager;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -164,34 +161,8 @@ public class BowlerFragment
             public void onSwiped(final RecyclerView.ViewHolder viewHolder, int direction)
             {
                 final int position = viewHolder.getAdapterPosition();
-                final Bowler deletedBowler = mListBowlers.remove(position);
-                mAdapterBowlers.notifyItemRemoved(position);
-
-                final Handler handler = new Handler(Looper.getMainLooper());
-                final Runnable deleteBowler = new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-                        deleteBowler(deletedBowler.getBowlerId());
-                    }
-                };
-                handler.postDelayed(deleteBowler, 4000);
-
-                Snackbar.make(rootView,
-                        deletedBowler.getBowlerName() + " deleted",
-                        Snackbar.LENGTH_LONG)
-                        .setAction(R.string.text_undo, new View.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(View v)
-                            {
-                                handler.removeCallbacks(deleteBowler);
-                                mListBowlers.add(position, deletedBowler);
-                                mAdapterBowlers.notifyItemInserted(position);
-                            }
-                        })
-                        .show();
+                mListBowlers.get(position).setIsDeleted(!mListBowlers.get(position).wasDeleted());
+                mAdapterBowlers.notifyItemChanged(position);
             }
         };
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(touchCallback);
@@ -276,6 +247,31 @@ public class BowlerFragment
     {
         //When bowler name is clicked, their leagues are displayed in new fragment
         new OpenBowlerLeaguesTask(this).execute(position);
+    }
+
+    @Override
+    public void onNAItemDelete(long id)
+    {
+        for (int i = 0; i < mListBowlers.size(); i++) {
+            if (mListBowlers.get(i).getBowlerId() == id)
+            {
+                Bowler bowler = mListBowlers.remove(i);
+                mAdapterBowlers.notifyItemRemoved(i);
+                deleteBowler(bowler.getBowlerId());
+            }
+        }
+    }
+
+    @Override
+    public void onNAItemUndoDelete(long id)
+    {
+        for (int i = 0; i < mListBowlers.size(); i++) {
+            if (mListBowlers.get(i).getBowlerId() == id)
+            {
+                mListBowlers.get(i).setIsDeleted(false);
+                mAdapterBowlers.notifyItemChanged(i);
+            }
+        }
     }
 
     @Override

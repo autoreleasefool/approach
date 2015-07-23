@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * Created by Joseph Roque on 2015-07-22. Organizes the data for a bowler.
  */
 public class Bowler
-        implements Parcelable, NameAveragePair
+        implements Parcelable, NameAverageId
 {
 
     /** Name of the bowler. */
@@ -16,6 +16,8 @@ public class Bowler
     private long mBowlerId;
     /** Average of the bowler. */
     private short mBowlerAverage;
+    /** Indicates if this bowler has been deleted. */
+    private boolean mIsDeleted;
 
     /**
      * Assigns the member variables to the parameters provided.
@@ -94,6 +96,12 @@ public class Bowler
     }
 
     @Override
+    public long getId()
+    {
+        return getBowlerId();
+    }
+
+    @Override
     public void writeToParcel(Parcel pc, int flags)
     {
         pc.writeLong(mBowlerId);
@@ -132,5 +140,17 @@ public class Bowler
         return this == other || (other instanceof Bowler) && getBowlerName().equals(((Bowler) other)
                 .getBowlerName());
 
+    }
+
+    @Override
+    public void setIsDeleted(boolean deleted)
+    {
+        this.mIsDeleted = deleted;
+    }
+
+    @Override
+    public boolean wasDeleted()
+    {
+        return mIsDeleted;
     }
 }

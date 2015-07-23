@@ -527,7 +527,6 @@ public class MainActivity
             ColorStateList colorStateList = new ColorStateList(states, colors);
             mFloatingActionButton.setBackgroundTintList(colorStateList);
         }
-
         if (isDrawerOpen())
             setActionBarTitle(mDrawerTitle, false);
         else
@@ -632,68 +631,89 @@ public class MainActivity
     {
         if (drawableId != mCurrentFabIcon || drawableId == 0)
         {
-            final int shortAnimTime = getResources().getInteger(
-                    android.R.integer.config_shortAnimTime);
-            ScaleAnimation shrink = new ScaleAnimation(1.0f,
-                    0f,
-                    1.0f,
-                    0f,
-                    Animation.RELATIVE_TO_SELF,
-                    CENTER_PIVOT,
-                    Animation.RELATIVE_TO_SELF,
-                    CENTER_PIVOT);
-            shrink.setDuration((mCurrentFabIcon == 0)
-                    ? 1
-                    : shortAnimTime);
-            shrink.setAnimationListener(new Animation.AnimationListener()
-            {
-                @Override
-                public void onAnimationStart(Animation animation)
-                {
-                    // does nothing
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation)
-                {
-                    mCurrentFabIcon = drawableId;
-                    if (mCurrentFabIcon != 0)
-                        mFloatingActionButton.setVisibility(View.VISIBLE);
-                    else
-                    {
-                        mFloatingActionButton.setVisibility(View.GONE);
-                        return;
-                    }
-                    mFloatingActionButton.setImageResource(mCurrentFabIcon);
-                    Drawable drawable = mFloatingActionButton.getDrawable();
-                    if (drawable != null)
-                    {
-                        drawable.mutate();
-                        //noinspection CheckStyle
-                        drawable.setAlpha(0x8A);
-                    }
-                    ScaleAnimation grow = new ScaleAnimation(0f,
-                            1.0f,
-                            0f,
-                            1.0f,
-                            Animation.RELATIVE_TO_SELF,
-                            CENTER_PIVOT,
-                            Animation.RELATIVE_TO_SELF,
-                            CENTER_PIVOT);
-                    grow.setDuration(shortAnimTime);
-                    grow.setInterpolator(new OvershootInterpolator());
-                    mFloatingActionButton.startAnimation(grow);
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation)
-                {
-                    // does nothing
-                }
-            });
-
-            mFloatingActionButton.startAnimation(shrink);
+            if (mCurrentFabIcon == 0 && drawableId != 0)
+                growFloatingActionButton(drawableId);
+            else
+                shrinkFloatingActionButton(drawableId);
         }
+    }
+
+    /**
+     * Shrinks the floating action button.
+     *
+     * @param drawableId new drawable to set if fab grows again
+     */
+    private void shrinkFloatingActionButton(final int drawableId)
+    {
+        final int shortAnimTime = getResources().getInteger(
+                android.R.integer.config_shortAnimTime);
+        ScaleAnimation shrink = new ScaleAnimation(1.0f,
+                0f,
+                1.0f,
+                0f,
+                Animation.RELATIVE_TO_SELF,
+                CENTER_PIVOT,
+                Animation.RELATIVE_TO_SELF,
+                CENTER_PIVOT);
+        shrink.setDuration((mCurrentFabIcon == 0)
+                ? 1
+                : shortAnimTime);
+        shrink.setAnimationListener(new Animation.AnimationListener() {
+            @Override
+            public void onAnimationStart(Animation animation) {
+                // does nothing
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                growFloatingActionButton(drawableId);
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+                // does nothing
+            }
+        });
+
+        mFloatingActionButton.startAnimation(shrink);
+    }
+
+    /**
+     * Grows the floating action button.
+     *
+     * @param drawableId new drawable to set
+     */
+    private void growFloatingActionButton(final int drawableId)
+    {
+        final int shortAnimTime = getResources().getInteger(
+                android.R.integer.config_shortAnimTime);
+        mCurrentFabIcon = drawableId;
+        if (mCurrentFabIcon != 0)
+            mFloatingActionButton.setVisibility(View.VISIBLE);
+        else
+        {
+            mFloatingActionButton.setVisibility(View.GONE);
+            return;
+        }
+        mFloatingActionButton.setImageResource(mCurrentFabIcon);
+        Drawable drawable = mFloatingActionButton.getDrawable();
+        if (drawable != null)
+        {
+            drawable.mutate();
+            //noinspection CheckStyle
+            drawable.setAlpha(0x8A);
+        }
+        ScaleAnimation grow = new ScaleAnimation(0f,
+                1.0f,
+                0f,
+                1.0f,
+                Animation.RELATIVE_TO_SELF,
+                CENTER_PIVOT,
+                Animation.RELATIVE_TO_SELF,
+                CENTER_PIVOT);
+        grow.setDuration(shortAnimTime);
+        grow.setInterpolator(new OvershootInterpolator());
+        mFloatingActionButton.startAnimation(grow);
     }
 
     /**
