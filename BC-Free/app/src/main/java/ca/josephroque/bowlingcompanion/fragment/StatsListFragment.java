@@ -168,7 +168,9 @@ public class StatsListFragment
         {
             if (childPosition - mNumberOfGeneralDetails >= 0)
                 mCallback.onStatClicked(groupPosition, childPosition - mNumberOfGeneralDetails);
-        } else {
+        }
+        else
+        {
             mCallback.onStatClicked(groupPosition, childPosition);
         }
 
@@ -183,7 +185,7 @@ public class StatsListFragment
      * @param headers headers of groups
      * @param namesAndValues entries in each group
      */
-    @SuppressWarnings("Convert2Diamond")
+    @SuppressWarnings({"Convert2Diamond", "CheckStyle"})
     private void prepareListData(MainActivity mainActivity,
                                  byte statsToLoad,
                                  List<String> headers,
@@ -277,6 +279,7 @@ public class StatsListFragment
             extends AsyncTask<Byte, Void, List<?>[]>
     {
 
+        @SuppressWarnings("CheckStyle")
         @Override
         protected List<?>[] doInBackground(Byte... statsToLoad)
         {
@@ -357,7 +360,8 @@ public class StatsListFragment
                     if (toLoad != StatsFragment.LOADING_GAME_STATS && frameNumber == 1)
                     {
                         short gameScore =
-                                cursor.getShort(cursor.getColumnIndex(Contract.GameEntry.COLUMN_SCORE));
+                                cursor.getShort(cursor.getColumnIndex(
+                                        Contract.GameEntry.COLUMN_SCORE));
                         byte gameNumber = (byte) cursor.getInt(
                                 cursor.getColumnIndex(Contract.GameEntry.COLUMN_GAME_NUMBER));
 
@@ -573,6 +577,7 @@ public class StatsListFragment
      * @param statOffset position in mListStatValues to start altering
      * @param toLoad stats being loaded
      */
+    @SuppressWarnings("CheckStyle")
     private void setGeneralAndDetailedStatValues(
             List<List<AbstractMap.SimpleEntry<String, String>>> listStatNamesAndValues,
             int[][] statValues, int totalShotsAtMiddle, int spareChances, int statOffset,
@@ -667,6 +672,7 @@ public class StatsListFragment
      * @param firstBall the ball thrown
      * @return the state of the pins after a ball was thrown
      */
+    @SuppressWarnings("CheckStyle")
     private int getFirstBallValue(boolean[] firstBall)
     {
         if (!firstBall[2])
@@ -718,6 +724,7 @@ public class StatsListFragment
      * @param thirdBall state of the pins after the third ball
      * @return total value of pins left standing
      */
+    @SuppressWarnings("CheckStyle")
     private int countPinsLeftStanding(boolean[] thirdBall)
     {
         int pinsLeftStanding = 0;
@@ -738,6 +745,8 @@ public class StatsListFragment
                     case 2:
                         pinsLeftStanding += 5;
                         break;
+                    default:
+                        // does nothing
                 }
             }
         }
@@ -792,6 +801,8 @@ public class StatsListFragment
                 break;
             case Constants.BALL_VALUE_HEAD_PIN:
                 statValues[mStatsFirstBall][Constants.STAT_HEAD_PINS + offset]++;
+            default:
+                // does nothing
         }
     }
 
@@ -923,6 +934,7 @@ public class StatsListFragment
      */
     public interface StatClickListener
     {
+
         /**
          * Invoked when a user clicks on a stat item.
          *

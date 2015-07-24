@@ -6,6 +6,7 @@ package ca.josephroque.bowlingcompanion.utilities;
  */
 public interface FloatingActionButtonHandler
 {
+
     /**
      * Invoked when the floating action button is clicked.
      */

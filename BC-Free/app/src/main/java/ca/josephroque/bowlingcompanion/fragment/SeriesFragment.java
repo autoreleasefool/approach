@@ -14,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -42,9 +43,9 @@ import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
 
 /**
- * Created by Joseph Roque on 15-03-17. <p/> Manages the UI to display information about the series
- * being tracked by the application, and offers a callback interface {@link
- * SeriesFragment.SeriesListener} for handling interactions.
+ * Created by Joseph Roque on 15-03-17. Manages the UI to display information about the series being
+ * tracked by the application, and offers a callback interface {@link SeriesFragment.SeriesListener}
+ * for handling interactions.
  */
 @SuppressWarnings("Convert2Lambda")
 public class SeriesFragment
@@ -60,8 +61,6 @@ public class SeriesFragment
     @SuppressWarnings("unused")
     private static final String TAG = "SeriesFragment";
 
-    /** View to display series dates and games to user. */
-    private RecyclerView mRecyclerViewSeries;
     /** Adapter to manage data displayed in mRecyclerViewSeries. */
     private SeriesAdapter mAdapterSeries;
 
@@ -108,9 +107,9 @@ public class SeriesFragment
         mListSeries = new ArrayList<>();
 
         /* View to display series dates and games to user. */
-        mRecyclerViewSeries = (RecyclerView) rootView.findViewById(R.id.rv_names);
-        mRecyclerViewSeries.setHasFixedSize(true);
-        mRecyclerViewSeries.addItemDecoration(new DividerItemDecoration(getActivity(),
+        RecyclerView recyclerViewSeries = (RecyclerView) rootView.findViewById(R.id.rv_names);
+        recyclerViewSeries.setHasFixedSize(true);
+        recyclerViewSeries.addItemDecoration(new DividerItemDecoration(getActivity(),
                 LinearLayoutManager.VERTICAL));
 
         ItemTouchHelper.SimpleCallback touchCallback = new ItemTouchHelper.SimpleCallback(0,
@@ -133,13 +132,13 @@ public class SeriesFragment
             }
         };
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(touchCallback);
-        itemTouchHelper.attachToRecyclerView(mRecyclerViewSeries);
+        itemTouchHelper.attachToRecyclerView(recyclerViewSeries);
 
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
-        mRecyclerViewSeries.setLayoutManager(layoutManager);
+        recyclerViewSeries.setLayoutManager(layoutManager);
 
         mAdapterSeries = new SeriesAdapter(getActivity(), this, mListSeries);
-        mRecyclerViewSeries.setAdapter(mAdapterSeries);
+        recyclerViewSeries.setAdapter(mAdapterSeries);
 
         return rootView;
     }
@@ -221,7 +220,8 @@ public class SeriesFragment
     @Override
     public void onSItemDelete(long id)
     {
-        for (int i = 0; i < mListSeries.size(); i++) {
+        for (int i = 0; i < mListSeries.size(); i++)
+        {
             if (mListSeries.get(i).getSeriesId() == id)
             {
                 Series series = mListSeries.remove(i);
@@ -234,7 +234,8 @@ public class SeriesFragment
     @Override
     public void onSItemUndoDelete(long id)
     {
-        for (int i = 0; i < mListSeries.size(); i++) {
+        for (int i = 0; i < mListSeries.size(); i++)
+        {
             if (mListSeries.get(i).getSeriesId() == id)
             {
                 mListSeries.get(i).setIsDeleted(false);
@@ -250,6 +251,7 @@ public class SeriesFragment
         dateDialog.show(getFragmentManager(), "ChangeDateDialog");
     }
 
+    @SuppressWarnings("CheckStyle")
     @Override
     public void onChangeDate(final Series series, int year, int month, int day)
     {
@@ -295,7 +297,7 @@ public class SeriesFragment
                         }
                         catch (Exception ex)
                         {
-                            //TODO: does nothing - date in database for series was not changed
+                            Log.e(TAG, "Series date was not updated", ex);
                         }
                         finally
                         {
@@ -357,7 +359,7 @@ public class SeriesFragment
                 }
                 catch (Exception ex)
                 {
-                    //TODO: does nothing - series was not deleted
+                    Log.i(TAG, "Unable to delete series", ex);
                 }
                 finally
                 {
@@ -381,7 +383,7 @@ public class SeriesFragment
      * Loads series relevant to the current bowler and league, and displays them in the recycler
      * view.
      */
-    private static class LoadSeriesTask
+    private static final class LoadSeriesTask
             extends AsyncTask<Void, Void, List<Series>>
     {
 

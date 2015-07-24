@@ -21,7 +21,7 @@ import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.utilities.NavigationUtils;
 
 /**
- * Created by Joseph Roque on 15-03-28. <p/> Manages the data which will be displayed by the
+ * Created by Joseph Roque on 15-03-28. Manages the data which will be displayed by the
  * RecyclerView in the Navigation Drawer. Offers a callback interface {@link
  * NavigationDrawerAdapter.NavigationCallback} to handle interaction events.
  */
@@ -59,7 +59,9 @@ public class NavigationDrawerAdapter
     /** Set of positions which are subheader items. */
     private Set<String> mSetSubheaderItems;
 
+    /** String to display as header text in the navigation drawer. */
     private String mHeaderTitle;
+    /** String to display as header subtitle in the navigation drawer. */
     private String mHeaderSubtitle;
 
     /** The most recently selected navigation item. */
@@ -309,11 +311,21 @@ public class NavigationDrawerAdapter
         notifyItemChanged(tempPosition);
     }
 
+    /**
+     * Sets the text for the navigation drawer header title.
+     *
+     * @param title new title text
+     */
     public void setHeaderTitle(String title)
     {
         this.mHeaderTitle = title;
     }
 
+    /**
+     * Sets the text for the navigation drawer header subtitle.
+     *
+     * @param subtitle new subtitle text
+     */
     public void setHeaderSubtitle(String subtitle)
     {
         this.mHeaderSubtitle = subtitle;

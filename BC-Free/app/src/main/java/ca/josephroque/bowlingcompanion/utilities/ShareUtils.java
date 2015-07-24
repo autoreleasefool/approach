@@ -20,9 +20,8 @@ import java.lang.ref.WeakReference;
 import ca.josephroque.bowlingcompanion.R;
 
 /**
- * Created by Joseph Roque on 15-03-26.
- * <p/>
- * Provides methods for sharing the statistics and games tracked by the application.
+ * Created by Joseph Roque on 15-03-26. Provides methods for sharing the statistics and games
+ * tracked by the application.
  */
 @SuppressWarnings("Convert2Lambda")
 public final class ShareUtils
@@ -79,8 +78,8 @@ public final class ShareUtils
     }
 
     /**
-     * Creates a task to save an image of the series to the device and prompt the user
-     * to share it with another service.
+     * Creates a task to save an image of the series to the device and prompt the user to share it
+     * with another service.
      *
      * @param context the current context
      * @param seriesId id of the series to share
@@ -149,8 +148,10 @@ public final class ShareUtils
      * Creates an image for the series and prompts user to share it.
      */
     private static class ShareSeriesTask
-            extends AsyncTask<Pair<WeakReference<Context>, Long>, Void, Pair<WeakReference<Context>, WeakReference<Intent>>>
+            extends AsyncTask<Pair<WeakReference<Context>, Long>, Void, Pair<WeakReference<Context>,
+            WeakReference<Intent>>>
     {
+
         @SafeVarargs
         @SuppressWarnings("UnusedAssignment") //image set to null to free memory
         @Override
@@ -174,14 +175,15 @@ public final class ShareUtils
             {
                 outStream = context.getContentResolver()
                         .openOutputStream(imageUri);
+                //noinspection CheckStyle
                 image.compress(Bitmap.CompressFormat.JPEG, 100, outStream);
                 image.recycle();
                 image = null;
                 System.gc();
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                //TODO: does nothing - could not create output stream for image
+                Log.e(TAG, "Could not create output stream", ex);
             }
             finally
             {

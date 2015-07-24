@@ -1,8 +1,6 @@
 package ca.josephroque.bowlingcompanion.database;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
@@ -14,12 +12,11 @@ import ca.josephroque.bowlingcompanion.database.Contract.LeagueEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.SeriesEntry;
 
 /**
- * Created by Joseph Roque on 15-03-12.
- * <p/>
- * Manages interactions with the application's database, including the creation, updates
- * and deletion.
+ * Created by Joseph Roque on 15-03-12. Manages interactions with the application's database,
+ * including the creation, updates and deletion.
  */
-public final class DatabaseHelper extends SQLiteOpenHelper
+public final class DatabaseHelper
+        extends SQLiteOpenHelper
 {
 
     /** Identifies output from this class in Logcat. */
@@ -82,9 +79,9 @@ public final class DatabaseHelper extends SQLiteOpenHelper
                 + " REFERENCES " + BowlerEntry.TABLE_NAME
                 + " ON UPDATE CASCADE ON DELETE CASCADE, "
                 + "CHECK (" + LeagueEntry.COLUMN_NUMBER_OF_GAMES + " > 0 AND "
-                        + LeagueEntry.COLUMN_NUMBER_OF_GAMES + " <= 20), "
+                + LeagueEntry.COLUMN_NUMBER_OF_GAMES + " <= 20), "
                 + "CHECK (" + LeagueEntry.COLUMN_IS_EVENT + " = 0 OR "
-                        + LeagueEntry.COLUMN_IS_EVENT + " = 1)"
+                + LeagueEntry.COLUMN_IS_EVENT + " = 1)"
                 + ");");
         db.execSQL("CREATE TABLE "
                 + SeriesEntry.TABLE_NAME + " ("
@@ -106,15 +103,15 @@ public final class DatabaseHelper extends SQLiteOpenHelper
                 + " REFERENCES " + SeriesEntry.TABLE_NAME
                 + " ON UPDATE CASCADE ON DELETE CASCADE, "
                 + "CHECK (" + GameEntry.COLUMN_GAME_NUMBER + " >= 1 AND "
-                        + GameEntry.COLUMN_GAME_NUMBER + " <= 20), "
+                + GameEntry.COLUMN_GAME_NUMBER + " <= 20), "
                 + "CHECK (" + GameEntry.COLUMN_IS_LOCKED + " = 0 OR "
-                        + GameEntry.COLUMN_IS_LOCKED + " = 1), "
+                + GameEntry.COLUMN_IS_LOCKED + " = 1), "
                 + "CHECK (" + GameEntry.COLUMN_IS_MANUAL + " = 0 OR "
-                        + GameEntry.COLUMN_IS_MANUAL + " = 1), "
+                + GameEntry.COLUMN_IS_MANUAL + " = 1), "
                 + "CHECK (" + GameEntry.COLUMN_SCORE + " >= 0 AND "
-                        + GameEntry.COLUMN_SCORE + " <= 450), "
+                + GameEntry.COLUMN_SCORE + " <= 450), "
                 + "CHECK (" + GameEntry.COLUMN_MATCH_PLAY + " >= 0 AND "
-                        + GameEntry.COLUMN_MATCH_PLAY + " <= 3)"
+                + GameEntry.COLUMN_MATCH_PLAY + " <= 3)"
                 + ");");
         db.execSQL("CREATE TABLE "
                 + FrameEntry.TABLE_NAME + " ("
@@ -129,9 +126,9 @@ public final class DatabaseHelper extends SQLiteOpenHelper
                 + " REFERENCES " + GameEntry.TABLE_NAME
                 + " ON UPDATE CASCADE ON DELETE CASCADE, "
                 + "CHECK (" + FrameEntry.COLUMN_FRAME_NUMBER + " >= 1 AND "
-                        + FrameEntry.COLUMN_FRAME_NUMBER + " <= 10), "
+                + FrameEntry.COLUMN_FRAME_NUMBER + " <= 10), "
                 + "CHECK (" + FrameEntry.COLUMN_IS_ACCESSED + " = 0 OR "
-                        + FrameEntry.COLUMN_IS_ACCESSED + " = 1)"
+                + FrameEntry.COLUMN_IS_ACCESSED + " = 1)"
                 + ");");
 
         //Creating indices for faster queries
@@ -202,6 +199,7 @@ public final class DatabaseHelper extends SQLiteOpenHelper
 
     /**
      * Upgrades database from oldVersion 1 to newVersion 2.
+     *
      * @param db to upgrade
      */
     private void upgradeDatabaseFrom1To2(SQLiteDatabase db)
@@ -249,15 +247,15 @@ public final class DatabaseHelper extends SQLiteOpenHelper
                 + " REFERENCES " + SeriesEntry.TABLE_NAME
                 + " ON UPDATE CASCADE ON DELETE CASCADE, "
                 + "CHECK (" + GameEntry.COLUMN_GAME_NUMBER + " >= 1 AND "
-                        + GameEntry.COLUMN_GAME_NUMBER + " <= 20), "
+                + GameEntry.COLUMN_GAME_NUMBER + " <= 20), "
                 + "CHECK (" + GameEntry.COLUMN_IS_LOCKED + " = 0 OR "
-                        + GameEntry.COLUMN_IS_LOCKED + " = 1), "
+                + GameEntry.COLUMN_IS_LOCKED + " = 1), "
                 + "CHECK (" + GameEntry.COLUMN_IS_MANUAL + " = 0 OR "
-                        + GameEntry.COLUMN_IS_MANUAL + " = 1), "
+                + GameEntry.COLUMN_IS_MANUAL + " = 1), "
                 + "CHECK (" + GameEntry.COLUMN_SCORE + " >= 0 AND "
-                        + GameEntry.COLUMN_SCORE + " <= 450), "
+                + GameEntry.COLUMN_SCORE + " <= 450), "
                 + "CHECK (" + GameEntry.COLUMN_MATCH_PLAY + " >= 0 AND "
-                        + GameEntry.COLUMN_MATCH_PLAY + " <= 3)"
+                + GameEntry.COLUMN_MATCH_PLAY + " <= 3)"
                 + ");");
         db.execSQL("INSERT INTO game2 ("
                 + GameEntry._ID + ", "
@@ -283,9 +281,9 @@ public final class DatabaseHelper extends SQLiteOpenHelper
                 + " REFERENCES " + GameEntry.TABLE_NAME
                 + " ON UPDATE CASCADE ON DELETE CASCADE, "
                 + "CHECK (" + FrameEntry.COLUMN_FRAME_NUMBER + " >= 1 AND "
-                        + FrameEntry.COLUMN_FRAME_NUMBER + " <= 10), "
+                + FrameEntry.COLUMN_FRAME_NUMBER + " <= 10), "
                 + "CHECK (" + FrameEntry.COLUMN_IS_ACCESSED + " = 0 OR "
-                        + FrameEntry.COLUMN_IS_ACCESSED + " = 1)"
+                + FrameEntry.COLUMN_IS_ACCESSED + " = 1)"
                 + ");");
         db.execSQL("INSERT INTO frame2 ("
                 + FrameEntry._ID + ", "
@@ -316,53 +314,5 @@ public final class DatabaseHelper extends SQLiteOpenHelper
                 + GameEntry.TABLE_NAME + "(" + GameEntry.COLUMN_SERIES_ID + ")");
         db.execSQL("CREATE INDEX frame_game_fk_index ON "
                 + FrameEntry.TABLE_NAME + "(" + FrameEntry.COLUMN_GAME_ID + ")");
-    }
-
-    /**
-     * Displays a dialog to the user to delete data in the database.
-     *
-     * @param context context instance to create dialog
-     * @param deleter interface which should be overridden to call relevant data deletion method
-     * @param name identifier for data to be deleted
-     */
-    public static void deleteData(final Context context,
-                                  final DataDeleter deleter,
-                                  final String name)
-    {
-        AlertDialog.Builder deleteBuilder = new AlertDialog.Builder(context);
-        deleteBuilder.setMessage(
-                "WARNING: This action cannot be undone! Delete all data for " + name + "?")
-                .setPositiveButton("Delete", new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        deleter.execute();
-                        dialog.dismiss();
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        dialog.dismiss();
-                    }
-                })
-                .create()
-                .show();
-    }
-
-    /**
-     * Provides a method which can be overridden to delete specific data
-     * if the deleteData method is successful (user selects 'Delete').
-     */
-    public interface DataDeleter
-    {
-        /**
-         * Must be overriden to provide access to a relevant method which
-         * should be used to delete data from the database.
-         */
-        void execute();
     }
 }

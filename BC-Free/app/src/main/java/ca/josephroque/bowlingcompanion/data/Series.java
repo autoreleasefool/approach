@@ -36,6 +36,11 @@ public class Series
         this.mSeriesGames = games;
     }
 
+    /**
+     * Recreates a series object from a {@link android.os.Parcel}.
+     *
+     * @param pc series data
+     */
     @SuppressWarnings("unchecked")
     public Series(Parcel pc)
     {
@@ -72,16 +77,6 @@ public class Series
     public long getSeriesId()
     {
         return mSeriesId;
-    }
-
-    /**
-     * Sets a new value for {@code mSeriesId}
-     *
-     * @param seriesId the new id
-     */
-    public void setSeriesId(long seriesId)
-    {
-        this.mSeriesId = seriesId;
     }
 
     /**
@@ -128,17 +123,24 @@ public class Series
     };
 
     @Override
-    public boolean equals(Object other) {
-        if (this == other)
+    public boolean equals(Object other)
+    {
+        if (other == null || !(other instanceof Series))
+            return false;
+        if (other == this)
             return true;
 
-        if (other != null && other instanceof Series)
-        {
-            Series series = (Series) other;
-            return series.getSeriesId() == this.getSeriesId();
-        }
+        Series series = (Series) other;
+        return getSeriesId() == series.getSeriesId();
+    }
 
-        return false;
+    @SuppressWarnings("CheckStyle")
+    @Override
+    public int hashCode()
+    {
+        int result = 17;
+        int c = (int) (mSeriesId ^ (mSeriesId >> 32));
+        return 37 * result + c;
     }
 
     @Override

@@ -14,12 +14,12 @@ import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.R;
 
 /**
- * Created by Joseph Roque on 15-03-15.
- * <p/>
- * Provides a dialog and callback interface {@link NewBowlerDialog.NewBowlerDialogListener}
- * for the user to enter the name of a new bowler to track the statistics of.
+ * Created by Joseph Roque on 15-03-15. Provides a dialog and callback interface {@link
+ * NewBowlerDialog.NewBowlerDialogListener} for the user to enter the name of a new bowler to track
+ * the statistics of.
  */
-public class NewBowlerDialog extends DialogFragment
+public class NewBowlerDialog
+        extends DialogFragment
 {
 
     /** Identifies output from this class in Logcat. */
@@ -39,7 +39,8 @@ public class NewBowlerDialog extends DialogFragment
         final EditText editTextName = (EditText) dialogView.findViewById(R.id.et_bowler_name);
         editTextName.setHint("Name (max " + Constants.NAME_MAX_LENGTH + " characters)");
         editTextName.setFilters(new InputFilter[]{
-                new InputFilter.LengthFilter(Constants.NAME_MAX_LENGTH)});
+                new InputFilter.LengthFilter(Constants.NAME_MAX_LENGTH)
+        });
 
         if (savedInstanceState != null)
         {
@@ -82,11 +83,12 @@ public class NewBowlerDialog extends DialogFragment
     }
 
     /**
-     * Provides a method to the activity which created this object to handle
-     * user interaction with the dialog.
+     * Provides a method to the activity which created this object to handle user interaction with
+     * the dialog.
      */
     public interface NewBowlerDialogListener
     {
+
         /**
          * Executed when user opts to add a new bowler.
          *
@@ -96,8 +98,8 @@ public class NewBowlerDialog extends DialogFragment
     }
 
     /**
-     * Creates a new instance of this DialogFragment and sets the listener
-     * to the parameter passed through this method.
+     * Creates a new instance of this DialogFragment and sets the listener to the parameter passed
+     * through this method.
      *
      * @param listener a listener for on click events
      * @return a new instance of NewBowlerDialog

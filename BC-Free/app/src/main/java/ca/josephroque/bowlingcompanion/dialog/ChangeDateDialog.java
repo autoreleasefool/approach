@@ -14,12 +14,12 @@ import ca.josephroque.bowlingcompanion.data.Series;
 import ca.josephroque.bowlingcompanion.utilities.DataFormatter;
 
 /**
- * Created by Joseph Roque on 15-03-29.
- * <p/>
- * Provides a dialog and callback interface {@link ChangeDateDialog.ChangeDateDialogListener}
- * for the user to change the date associated with a series
+ * Created by Joseph Roque on 15-03-29. Provides a dialog and callback interface {@link
+ * ChangeDateDialog.ChangeDateDialogListener} for the user to change the date associated with a
+ * series
  */
-public class ChangeDateDialog extends DialogFragment
+public class ChangeDateDialog
+        extends DialogFragment
         implements DatePickerDialog.OnDateSetListener
 {
 
@@ -88,8 +88,7 @@ public class ChangeDateDialog extends DialogFragment
     }
 
     /**
-     * Returns a new instance of this dialog fragment with the listener assigned and
-     * arguments set.
+     * Returns a new instance of this dialog fragment with the listener assigned and arguments set.
      *
      * @param listener callback listener for user events
      * @param series identifies the series to be changed
@@ -111,6 +110,7 @@ public class ChangeDateDialog extends DialogFragment
      */
     public interface ChangeDateDialogListener
     {
+
         /**
          * Called when the user selects a date to set.
          *

@@ -3,10 +3,9 @@ package ca.josephroque.bowlingcompanion.database;
 import android.provider.BaseColumns;
 
 /**
- * Created by Joseph Roque on 15-03-12.
- * <p/>
- * Defines various objects which represent tables in the schema for the application's database.
- * Member variables represent identifiers for attributes of the tables.
+ * Created by Joseph Roque on 15-03-12. Defines various objects which represent tables in the
+ * schema for the application's database. Member variables represent identifiers for attributes of
+ * the tables.
  */
 public final class Contract
 {
@@ -22,8 +21,10 @@ public final class Contract
     /**
      * Table and column names for SQLite table relevant to bowlers.
      */
-    public static final class BowlerEntry implements BaseColumns
+    public static final class BowlerEntry
+            implements BaseColumns
     {
+
         /**
          * Private constructor, class cannot be instantiated.
          */
@@ -43,8 +44,10 @@ public final class Contract
     /**
      * Table and column names for SQLite table relevant to leagues.
      */
-    public static final class LeagueEntry implements BaseColumns
+    public static final class LeagueEntry
+            implements BaseColumns
     {
+
         /**
          * Private constructor, class cannot be instantiated.
          */
@@ -70,8 +73,10 @@ public final class Contract
     /**
      * Table and column names for SQLite table relevant to series.
      */
-    public static final class SeriesEntry implements BaseColumns
+    public static final class SeriesEntry
+            implements BaseColumns
     {
+
         /**
          * Private constructor, class cannot be instantiated.
          */
@@ -91,8 +96,10 @@ public final class Contract
     /**
      * Table and column names for SQLite table relevant to games.
      */
-    public static final class GameEntry implements BaseColumns
+    public static final class GameEntry
+            implements BaseColumns
     {
+
         /**
          * Private constructor, class cannot be instantiated.
          */
@@ -120,8 +127,10 @@ public final class Contract
     /**
      * Table and column names for SQLite table relevant to frames.
      */
-    public static final class FrameEntry implements BaseColumns
+    public static final class FrameEntry
+            implements BaseColumns
     {
+
         /**
          * Private constructor, class cannot be instantiated.
          */

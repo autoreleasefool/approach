@@ -20,7 +20,9 @@ import ca.josephroque.bowlingcompanion.adapter.SplashPagerAdapter;
 import ca.josephroque.bowlingcompanion.fragment.TutorialFragment;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 
-
+/**
+ * Displays a tutorial to the user.
+ */
 public class SplashActivity
         extends FragmentActivity
         implements Theme.ChangeableTheme
@@ -124,9 +126,11 @@ public class SplashActivity
      */
     private void setupSkipButton()
     {
-        findViewById(R.id.tv_skip).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.tv_skip).setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 if (mViewPagerContent.getCurrentItem() < TutorialFragment.TUTORIAL_TOTAL_PAGES - 1)
                     mViewPagerContent.setCurrentItem(mViewPagerContent.getCurrentItem() + 1);
                 else
@@ -136,7 +140,7 @@ public class SplashActivity
     }
 
     /**
-     * Starts an instance of {@link MainActivity}
+     * Starts an instance of {@link MainActivity}.
      */
     private void openMainActivity()
     {
@@ -166,9 +170,11 @@ public class SplashActivity
         }
         positionIndicator[mCurrentTutorialPage].setAlpha(INDICATOR_ACTIVE);
 
-        mViewPagerContent.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+        mViewPagerContent.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener()
+        {
             @Override
-            public void onPageSelected(int position) {
+            public void onPageSelected(int position)
+            {
                 //Changes which page indicator is 'highlighted'
                 positionIndicator[mCurrentTutorialPage].setAlpha(INDICATOR_INACTIVE);
                 positionIndicator[position].setAlpha(INDICATOR_ACTIVE);

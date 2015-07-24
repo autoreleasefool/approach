@@ -48,7 +48,7 @@ import ca.josephroque.bowlingcompanion.dialog.NewBowlerDialog;
 import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
 
 /**
- * Created by Joseph Roque on 15-03-13. <p/> Manages the UI to display information about the bowlers
+ * Created by Joseph Roque on 15-03-13. Manages the UI to display information about the bowlers
  * being tracked by the application, and offers a callback interface {@link
  * BowlerFragment.OnBowlerSelectedListener} for handling interactions.
  */
@@ -252,7 +252,8 @@ public class BowlerFragment
     @Override
     public void onNAItemDelete(long id)
     {
-        for (int i = 0; i < mListBowlers.size(); i++) {
+        for (int i = 0; i < mListBowlers.size(); i++)
+        {
             if (mListBowlers.get(i).getBowlerId() == id)
             {
                 Bowler bowler = mListBowlers.remove(i);
@@ -265,7 +266,8 @@ public class BowlerFragment
     @Override
     public void onNAItemUndoDelete(long id)
     {
-        for (int i = 0; i < mListBowlers.size(); i++) {
+        for (int i = 0; i < mListBowlers.size(); i++)
+        {
             if (mListBowlers.get(i).getBowlerId() == id)
             {
                 mListBowlers.get(i).setIsDeleted(false);
@@ -503,7 +505,7 @@ public class BowlerFragment
     /**
      * Loads names of bowlers, along with other relevant data, and adds them to recycler view.
      */
-    private static class LoadBowlerAndRecentTask
+    private static final class LoadBowlerAndRecentTask
             extends AsyncTask<Void, Void, List<Bowler>>
     {
 
@@ -689,7 +691,7 @@ public class BowlerFragment
     /**
      * Sets data to be displayed in new instance of LeagueEventFragment.
      */
-    private static class OpenBowlerLeaguesTask
+    private static final class OpenBowlerLeaguesTask
             extends AsyncTask<Integer, Void, Bowler>
     {
 
@@ -762,7 +764,7 @@ public class BowlerFragment
     /**
      * Creates new bowler in the database and adds them to the recycler view.
      */
-    private static class NewBowlerTask
+    private static final class NewBowlerTask
             extends AsyncTask<Bowler, Void, Bowler>
     {
 

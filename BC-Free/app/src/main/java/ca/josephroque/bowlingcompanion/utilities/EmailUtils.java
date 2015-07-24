@@ -4,11 +4,9 @@ import android.content.Intent;
 import android.net.Uri;
 
 /**
- * Created by Joseph Roque on 15-03-24.
- * <p/>
- * Provides methods related to creating and formatting emails which the user can select to create
- * from the application. A local mail application on the device will be used to handle writing
- * and sending the email.
+ * Created by Joseph Roque on 15-03-24. Provides methods related to creating and formatting emails
+ * which the user can select to create from the application. A local mail application on the device
+ * will be used to handle writing and sending the email.
  */
 public final class EmailUtils
 {
@@ -27,6 +25,7 @@ public final class EmailUtils
 
     /**
      * Creates an email intent and sets values to parameters.
+     *
      * @param recipientEmail email recipient
      * @param emailSubject subject of the email
      * @param emailBody body of the email
@@ -52,6 +51,7 @@ public final class EmailUtils
 
     /**
      * Creates an intent and sets values to parameters.
+     *
      * @param recipientEmail email recipient
      * @param emailSubject subject of the email
      * @return getEmailIntent(recipientEmail, emailSubject, null)

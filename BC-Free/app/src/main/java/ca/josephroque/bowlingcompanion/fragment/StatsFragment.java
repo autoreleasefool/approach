@@ -10,9 +10,8 @@ import ca.josephroque.bowlingcompanion.MainActivity;
 import ca.josephroque.bowlingcompanion.R;
 
 /**
- * Created by Joseph Roque on 15-04-03.
- * <p/>
- * Manages the UI to display information about the stats for a particular bowler
+ * Created by Joseph Roque on 15-04-03. Manages the UI to display information about the stats for a
+ * particular bowler
  */
 public class StatsFragment
         extends Fragment

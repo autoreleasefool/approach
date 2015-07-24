@@ -15,8 +15,8 @@ import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.utilities.DataFormatter;
 
 /**
- * Created by Joseph Roque on 2015-07-24. Displays some content which describes the functionality
- * of the application to the user.
+ * Created by Joseph Roque on 2015-07-24. Displays some content which describes the functionality of
+ * the application to the user.
  */
 public class TutorialFragment
         extends Fragment
@@ -53,6 +53,12 @@ public class TutorialFragment
     /** Indicates if the current device is a tablet. */
     private boolean mIsTablet = false;
 
+    /**
+     * Creates a new instance of TutorialFragment showing the page defined.
+     *
+     * @param page tutorial page to show
+     * @return a new instance of TutorialFragment
+     */
     public static TutorialFragment newInstance(int page)
     {
         if (page < 0 || page >= TUTORIAL_TOTAL_PAGES)

@@ -14,12 +14,12 @@ import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.R;
 
 /**
- * Created by Joseph Roque on 15-03-16.
- * <p/>
- * Provides dialog and callback interface {@link NewLeagueEventDialog.NewLeagueEventDialogListener}
- * for the user to enter the name of a new league or event to track the statistics of.
+ * Created by Joseph Roque on 15-03-16. Provides dialog and callback interface {@link
+ * NewLeagueEventDialog.NewLeagueEventDialogListener} for the user to enter the name of a new league
+ * or event to track the statistics of.
  */
-public class NewLeagueEventDialog extends DialogFragment
+public class NewLeagueEventDialog
+        extends DialogFragment
 {
 
     /** Identifies output from this class in Logcat. */
@@ -58,17 +58,20 @@ public class NewLeagueEventDialog extends DialogFragment
         final EditText editTextName = (EditText) dialogView.findViewById(R.id.et_league_event_name);
         editTextName.setHint(
                 ((mIsEventMode)
-                        ? "Event" : "League")
+                        ? "Event"
+                        : "League")
                         + " (max " + Constants.NAME_MAX_LENGTH + " characters)");
         editTextName.setFilters(new InputFilter[]{
-                new InputFilter.LengthFilter(Constants.NAME_MAX_LENGTH)});
+                new InputFilter.LengthFilter(Constants.NAME_MAX_LENGTH)
+        });
         editTextName.setText(leagueEventName);
 
         final EditText editTextNumberOfGames =
                 (EditText) dialogView.findViewById(R.id.et_league_event_games);
         editTextNumberOfGames.setHint("# of games (1-"
                 + ((mIsEventMode)
-                ? Constants.MAX_NUMBER_EVENT_GAMES : Constants.MAX_NUMBER_LEAGUE_GAMES) + ")");
+                ? Constants.MAX_NUMBER_EVENT_GAMES
+                : Constants.MAX_NUMBER_LEAGUE_GAMES) + ")");
         editTextNumberOfGames.setText(leagueEventNumberOfGames);
 
         final boolean event = mIsEventMode;
@@ -125,11 +128,12 @@ public class NewLeagueEventDialog extends DialogFragment
     }
 
     /**
-     * Provides a method to the activity which created this object to handle
-     * user interaction with the dialog.
+     * Provides a method to the activity which created this object to handle user interaction with
+     * the dialog.
      */
     public interface NewLeagueEventDialogListener
     {
+
         /**
          * Executed when user opts to add a new league or event.
          *
@@ -141,8 +145,8 @@ public class NewLeagueEventDialog extends DialogFragment
     }
 
     /**
-     * Creates a new instance of this DialogFragment and sets the listener
-     * to the parameter passed through this method.
+     * Creates a new instance of this DialogFragment and sets the listener to the parameter passed
+     * through this method.
      *
      * @param listener a listener for on click events
      * @return a new instance of NewLeagueEventDialog

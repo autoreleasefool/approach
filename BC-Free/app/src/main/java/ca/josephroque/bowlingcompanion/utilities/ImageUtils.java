@@ -29,9 +29,8 @@ import ca.josephroque.bowlingcompanion.database.Contract.GameEntry;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 
 /**
- * Created by Joseph Roque on 15-03-26.
- * <p/>
- * Provides methods relating to creating images of the statistics managed by the application.
+ * Created by Joseph Roque on 15-03-26. Provides methods relating to creating images of the
+ * statistics managed by the application.
  */
 public final class ImageUtils
 {
@@ -289,7 +288,9 @@ public final class ImageUtils
         for (int i = 0; i < frameScores.length; i++)
         {
             totalScore += frameScores[i];
-            canvas.drawText((!isManual) ? String.valueOf(totalScore) : "--",
+            canvas.drawText((!isManual)
+                    ? String.valueOf(totalScore)
+                    : "--",
                     i * BITMAP_GAME_FRAME_WIDTH + BITMAP_GAME_FRAME_WIDTH / 2,
                     BITMAP_GAME_HEIGHT - 8,
                     paintText);
@@ -298,17 +299,39 @@ public final class ImageUtils
         int scoreWithFouls = totalScore - 15 * foulCount;
         if (scoreWithFouls < 0)
             scoreWithFouls = 0;
-        canvas.drawText((!isManual) ? String.valueOf(scoreWithFouls) : String.valueOf(gameScore),
+        canvas.drawText((!isManual)
+                ? String.valueOf(scoreWithFouls)
+                : String.valueOf(gameScore),
                 BITMAP_GAME_WIDTH - BITMAP_GAME_FRAME_WIDTH / 2,
                 BITMAP_GAME_HEIGHT / 2 + GAME_LARGE_FONT_SIZE / 2,
                 paintText);
 
-        canvas.drawLines(new float[]{0, 0, BITMAP_GAME_WIDTH, 0,
-                        0, 0, 0, BITMAP_GAME_HEIGHT,
-                        0, BITMAP_GAME_HEIGHT - 1, BITMAP_GAME_WIDTH, BITMAP_GAME_HEIGHT - 1,
-                        BITMAP_GAME_WIDTH - 1, 0, BITMAP_GAME_WIDTH - 1, BITMAP_GAME_HEIGHT,
-                        0, BITMAP_GAME_BALL_HEIGHT, BITMAP_GAME_WIDTH - BITMAP_GAME_FRAME_WIDTH, BITMAP_GAME_BALL_HEIGHT,
-                        BITMAP_GAME_FRAME_WIDTH * Constants.NUMBER_OF_FRAMES, 0, BITMAP_GAME_FRAME_WIDTH * Constants.NUMBER_OF_FRAMES, BITMAP_GAME_HEIGHT},
+        canvas.drawLines(new float[]{
+                        0,
+                        0,
+                        BITMAP_GAME_WIDTH,
+                        0,
+                        0,
+                        0,
+                        0,
+                        BITMAP_GAME_HEIGHT,
+                        0,
+                        BITMAP_GAME_HEIGHT - 1,
+                        BITMAP_GAME_WIDTH,
+                        BITMAP_GAME_HEIGHT - 1,
+                        BITMAP_GAME_WIDTH - 1,
+                        0,
+                        BITMAP_GAME_WIDTH - 1,
+                        BITMAP_GAME_HEIGHT,
+                        0,
+                        BITMAP_GAME_BALL_HEIGHT,
+                        BITMAP_GAME_WIDTH - BITMAP_GAME_FRAME_WIDTH,
+                        BITMAP_GAME_BALL_HEIGHT,
+                        BITMAP_GAME_FRAME_WIDTH * Constants.NUMBER_OF_FRAMES,
+                        0,
+                        BITMAP_GAME_FRAME_WIDTH * Constants.NUMBER_OF_FRAMES,
+                        BITMAP_GAME_HEIGHT
+                },
                 paintBlackOutline);
 
         canvas = null;
@@ -380,7 +403,8 @@ public final class ImageUtils
                             Score.getBoolean(ballString.charAt(1)),
                             Score.getBoolean(ballString.charAt(2)),
                             Score.getBoolean(ballString.charAt(3)),
-                            Score.getBoolean(ballString.charAt(4))};
+                            Score.getBoolean(ballString.charAt(4))
+                    };
                     ballsOfGames.get(currentGame)[currentFrame][i] = ballBoolean;
                 }
                 String foulsOfFrame = cursor.getString(
@@ -431,26 +455,35 @@ public final class ImageUtils
         }
 
         canvas.drawLines(new float[]
-                {0, 0, BITMAP_SERIES_GAME_NAME_WIDTH, 0,
-                        0, 0, 0, (BITMAP_GAME_HEIGHT - 1) * numberOfGames,
-                        0, (BITMAP_GAME_HEIGHT - 1) * numberOfGames, BITMAP_SERIES_GAME_NAME_WIDTH, (BITMAP_GAME_HEIGHT - 1) * numberOfGames}, paintBlackOutline);
+                {
+                        0,
+                        0,
+                        BITMAP_SERIES_GAME_NAME_WIDTH,
+                        0,
+                        0,
+                        0,
+                        0,
+                        (BITMAP_GAME_HEIGHT - 1) * numberOfGames,
+                        0,
+                        (BITMAP_GAME_HEIGHT - 1) * numberOfGames,
+                        BITMAP_SERIES_GAME_NAME_WIDTH,
+                        (BITMAP_GAME_HEIGHT - 1) * numberOfGames
+                }, paintBlackOutline);
         canvas = null;
 
         return bitmap;
     }
 
     /**
-     * A copy of the Android internals  insertImage method, this method populates the
-     * meta data with DATE_ADDED and DATE_TAKEN. This fixes a common problem where media
-     * that is inserted manually gets saved at the end of the gallery (because date is not
-     * populated).
+     * A copy of the Android internals  insertImage method, this method populates the meta data with
+     * DATE_ADDED and DATE_TAKEN. This fixes a common problem where media that is inserted manually
+     * gets saved at the end of the gallery (because date is not populated).
      *
      * @param cr n/a
      * @param source n/a
      * @param title n/a
      * @param description n/a
      * @return n/a
-     *
      * @see android.provider.MediaStore.Images.Media#insertImage(android.content.ContentResolver,
      * Bitmap, String, String)
      */
@@ -491,9 +524,17 @@ public final class ImageUtils
 
                 long id = ContentUris.parseId(url);
                 // Wait until MINI_KIND thumbnail is generated.
-                Bitmap miniThumb = MediaStore.Images.Thumbnails.getThumbnail(cr, id, MediaStore.Images.Thumbnails.MINI_KIND, null);
+                Bitmap miniThumb = MediaStore.Images.Thumbnails.getThumbnail(cr,
+                        id,
+                        MediaStore.Images.Thumbnails.MINI_KIND,
+                        null);
                 // This is for backward compatibility.
-                storeThumbnail(cr, miniThumb, id, 50F, 50F, MediaStore.Images.Thumbnails.MICRO_KIND);
+                storeThumbnail(cr,
+                        miniThumb,
+                        id,
+                        50F,
+                        50F,
+                        MediaStore.Images.Thumbnails.MICRO_KIND);
             }
             else
             {
@@ -515,8 +556,8 @@ public final class ImageUtils
 
     /**
      * A copy of the Android internals StoreThumbnail method, it used with the insertImage to
-     * populate the android.provider.MediaStore.Images.Media#insertImage with all the correct
-     * meta data. The StoreThumbnail method is private so it must be duplicated here.
+     * populate the android.provider.MediaStore.Images.Media#insertImage with all the correct meta
+     * data. The StoreThumbnail method is private so it must be duplicated here.
      *
      * @param cr n/a
      * @param source n/a
@@ -525,7 +566,6 @@ public final class ImageUtils
      * @param height n/a
      * @param kind n/a
      * @return n/a
-     *
      * @see android.provider.MediaStore.Images.Media (StoreThumbnail private method)
      */
     private static Bitmap storeThumbnail(

@@ -17,6 +17,8 @@ import ca.josephroque.bowlingcompanion.theme.Theme;
  * Created by Joseph Roque on 15-03-13. Manages names of bowlers or leagues/events and their
  * associated averages for a ListView. Offers a callback interface {@link
  * NameAverageAdapter.NameAverageEventHandler} to handle interaction events.
+ *
+ * @param <T> Object of type NameAverageId which is displayed by this adapter
  */
 public class NameAverageAdapter<T extends NameAverageId>
         extends RecyclerView.Adapter<NameAverageAdapter.NameAverageViewHolder>
@@ -134,7 +136,8 @@ public class NameAverageAdapter<T extends NameAverageId>
     {
         final int viewType = getItemViewType(position);
 
-        switch (viewType) {
+        switch (viewType)
+        {
             case VIEWTYPE_ACTIVE:
                 //Sets text/images depending on data type
                 switch (mDataType)
@@ -199,7 +202,8 @@ public class NameAverageAdapter<T extends NameAverageId>
     }
 
     @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+    public void onAttachedToRecyclerView(RecyclerView recyclerView)
+    {
         super.onAttachedToRecyclerView(recyclerView);
         mRecyclerView = recyclerView;
     }

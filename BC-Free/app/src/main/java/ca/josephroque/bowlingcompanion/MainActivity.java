@@ -479,10 +479,13 @@ public class MainActivity
         else
         {
             FragmentManager fm = getSupportFragmentManager();
-            for (Fragment frag : fm.getFragments()) {
-                if (frag != null && frag.isVisible()) {
+            for (Fragment frag : fm.getFragments())
+            {
+                if (frag != null && frag.isVisible())
+                {
                     FragmentManager childFm = frag.getChildFragmentManager();
-                    if (childFm.getBackStackEntryCount() > 0) {
+                    if (childFm.getBackStackEntryCount() > 0)
+                    {
                         childFm.popBackStack();
                         return;
                     }
@@ -602,7 +605,7 @@ public class MainActivity
     {
         mListDrawerOptions.remove(NavigationUtils.NAVIGATION_ITEM_LEAGUES);
         mListDrawerOptions.remove(NavigationUtils.NAVIGATION_ITEM_SERIES);
-        for (Iterator<String> it = mListDrawerOptions.iterator(); it.hasNext(); )
+        for (Iterator<String> it = mListDrawerOptions.iterator(); it.hasNext();)
             if (it.next().matches("\\w+ \\d+"))
                 it.remove();
         GameFragment gameFragment = (GameFragment) mCurrentFragment.get();
@@ -663,19 +666,23 @@ public class MainActivity
         shrink.setDuration((mCurrentFabIcon == 0)
                 ? 1
                 : shortAnimTime);
-        shrink.setAnimationListener(new Animation.AnimationListener() {
+        shrink.setAnimationListener(new Animation.AnimationListener()
+        {
             @Override
-            public void onAnimationStart(Animation animation) {
+            public void onAnimationStart(Animation animation)
+            {
                 // does nothing
             }
 
             @Override
-            public void onAnimationEnd(Animation animation) {
+            public void onAnimationEnd(Animation animation)
+            {
                 growFloatingActionButton(drawableId);
             }
 
             @Override
-            public void onAnimationRepeat(Animation animation) {
+            public void onAnimationRepeat(Animation animation)
+            {
                 // does nothing
             }
         });
@@ -989,13 +996,17 @@ public class MainActivity
     {
         //Sets the adview to display an ad to the user
         mAdView = (AdView) findViewById(R.id.av_main);
-        mAdView.setAdListener(new AdListener() {
+        mAdView.setAdListener(new AdListener()
+        {
             @Override
-            public void onAdFailedToLoad(int errorCode) {
+            public void onAdFailedToLoad(int errorCode)
+            {
                 //If ad fails to load, hides this adview
-                runOnUiThread(new Runnable() {
+                runOnUiThread(new Runnable()
+                {
                     @Override
-                    public void run() {
+                    public void run()
+                    {
                         mAdView.destroy();
                         mAdView.setVisibility(View.GONE);
                     }
@@ -1003,10 +1014,13 @@ public class MainActivity
             }
 
             @Override
-            public void onAdLoaded() {
-                runOnUiThread(new Runnable() {
+            public void onAdLoaded()
+            {
+                runOnUiThread(new Runnable()
+                {
                     @Override
-                    public void run() {
+                    public void run()
+                    {
                         mAdView.setVisibility(View.VISIBLE);
                     }
                 });
@@ -1173,7 +1187,7 @@ public class MainActivity
     /**
      * Loads game data related to seriesId and displays it in a new GameFragment instance.
      */
-    private static class OpenSeriesTask
+    private static final class OpenSeriesTask
             extends AsyncTask<Boolean, Void, Object[]>
     {
 
@@ -1276,7 +1290,7 @@ public class MainActivity
     /**
      * Creates a new series in the database and displays it in a new instance of GameFragment.
      */
-    private static class AddSeriesTask
+    private static final class AddSeriesTask
             extends AsyncTask<Void, Void, Object[]>
     {
 

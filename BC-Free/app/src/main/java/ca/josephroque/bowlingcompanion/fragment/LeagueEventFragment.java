@@ -16,6 +16,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -47,7 +48,7 @@ import ca.josephroque.bowlingcompanion.dialog.NewLeagueEventDialog;
 import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
 
 /**
- * Created by Joseph Roque on 15-03-15. <p/> Manages the UI to display information about the leagues
+ * Created by Joseph Roque on 15-03-15. Manages the UI to display information about the leagues
  * being tracked by the application, and offers a callback interface {@link
  * LeagueEventFragment.OnLeagueSelectedListener} for handling interactions.
  */
@@ -134,7 +135,8 @@ public class LeagueEventFragment
             {
                 final int position = viewHolder.getAdapterPosition();
                 if (mListLeaguesEvents.get(position).getLeagueEventName().substring(1).equals(
-                        Constants.NAME_OPEN_LEAGUE)) {
+                        Constants.NAME_OPEN_LEAGUE))
+                {
                     mAdapterLeagueEvents.notifyItemChanged(position);
                     return;
                 }
@@ -224,7 +226,8 @@ public class LeagueEventFragment
     @Override
     public void onNAItemDelete(long id)
     {
-        for (int i = 0; i < mListLeaguesEvents.size(); i++) {
+        for (int i = 0; i < mListLeaguesEvents.size(); i++)
+        {
             if (mListLeaguesEvents.get(i).getLeagueEventId() == id)
             {
                 LeagueEvent leagueEvent = mListLeaguesEvents.remove(i);
@@ -237,7 +240,8 @@ public class LeagueEventFragment
     @Override
     public void onNAItemUndoDelete(long id)
     {
-        for (int i = 0; i < mListLeaguesEvents.size(); i++) {
+        for (int i = 0; i < mListLeaguesEvents.size(); i++)
+        {
             if (mListLeaguesEvents.get(i).getLeagueEventId() == id)
             {
                 mListLeaguesEvents.get(i).setIsDeleted(false);
@@ -259,8 +263,7 @@ public class LeagueEventFragment
                 (short) 0,
                 numberOfGames);
 
-        if (numberOfGames < 1
-                || (isEvent && numberOfGames > Constants.MAX_NUMBER_EVENT_GAMES)
+        if (numberOfGames < 1 || (isEvent && numberOfGames > Constants.MAX_NUMBER_EVENT_GAMES)
                 || (!isEvent && numberOfGames > Constants.MAX_NUMBER_LEAGUE_GAMES))
         {
             //User has provided an invalid number of games
@@ -268,8 +271,7 @@ public class LeagueEventFragment
             invalidInputMessage = "The number of games must be between 1 and "
                     + (isEvent
                     ? Constants.MAX_NUMBER_EVENT_GAMES
-                    : Constants.MAX_NUMBER_LEAGUE_GAMES)
-                    + " (inclusive).";
+                    : Constants.MAX_NUMBER_LEAGUE_GAMES) + " (inclusive).";
         }
         else if (leagueEventName.equalsIgnoreCase(Constants.NAME_OPEN_LEAGUE))
         {
@@ -371,7 +373,7 @@ public class LeagueEventFragment
                 }
                 catch (Exception ex)
                 {
-                    //TODO: does nothing - error deleting from database
+                    Log.e(TAG, "Error deleting from database", ex);
                 }
                 finally
                 {
@@ -439,7 +441,7 @@ public class LeagueEventFragment
      * Loads/updates data for the league/event from the database and creates a new SeriesFragment or
      * GameFragment to display selected league or event, respectively.
      */
-    private static class OpenLeagueEventSeriesTask
+    private static final class OpenLeagueEventSeriesTask
             extends AsyncTask<Integer, Void, Pair<LeagueEvent, Series>>
     {
 
@@ -469,24 +471,22 @@ public class LeagueEventFragment
             LeagueEvent selectedLeagueEvent = fragment.mListLeaguesEvents.get(position[0]);
             boolean isEvent = selectedLeagueEvent.getLeagueEventName().substring(0, 1).equals("E");
 
-            SQLiteDatabase database =
-                    DatabaseHelper.getInstance(mainActivity).getWritableDatabase();
-            SimpleDateFormat dateFormat =
-                    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
-            String currentDate = dateFormat.format(new Date());
+            SQLiteDatabase db = DatabaseHelper.getInstance(mainActivity).getWritableDatabase();
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
+            String currentDate = df.format(new Date());
 
             ContentValues values = new ContentValues();
             values.put(LeagueEntry.COLUMN_DATE_MODIFIED, currentDate);
 
             //Updates the date modified in the database of the selected league
-            database.beginTransaction();
+            db.beginTransaction();
             try
             {
-                database.update(LeagueEntry.TABLE_NAME,
+                db.update(LeagueEntry.TABLE_NAME,
                         values,
                         LeagueEntry._ID + "=?",
                         new String[]{String.valueOf(selectedLeagueEvent.getLeagueEventId())});
-                database.setTransactionSuccessful();
+                db.setTransactionSuccessful();
             }
             catch (Exception ex)
             {
@@ -494,7 +494,7 @@ public class LeagueEventFragment
             }
             finally
             {
-                database.endTransaction();
+                db.endTransaction();
             }
 
             /*
@@ -510,7 +510,7 @@ public class LeagueEventFragment
                         + " FROM " + SeriesEntry.TABLE_NAME
                         + " WHERE " + SeriesEntry.COLUMN_LEAGUE_ID + "=?";
 
-                Cursor cursor = database.rawQuery(rawSeriesQuery,
+                Cursor cursor = db.rawQuery(rawSeriesQuery,
                         new String[]{String.valueOf(selectedLeagueEvent.getLeagueEventId())});
                 if (cursor.moveToFirst())
                 {
@@ -523,15 +523,11 @@ public class LeagueEventFragment
                     return Pair.create(selectedLeagueEvent, new Series(seriesId, seriesDate, null));
                 }
                 else
-                {
-                    throw new RuntimeException(
-                            "Event series id could not be loaded from database.");
-                }
+                    cursor.close();
+                    throw new RuntimeException("Event series id could not be loaded from database");
             }
             else
-            {
                 return Pair.create(selectedLeagueEvent, new Series(-1, null, null));
-            }
         }
 
         @Override
@@ -584,7 +580,7 @@ public class LeagueEventFragment
      * Loads the names of relevant leagues or events and adds them to the lists to be displayed to
      * the user.
      */
-    private static class LoadLeaguesEventsTask
+    private static final class LoadLeaguesEventsTask
             extends AsyncTask<Void, Void, List<LeagueEvent>>
     {
 
@@ -646,9 +642,11 @@ public class LeagueEventFragment
                             ((isEvent)
                                     ? "E"
                                     : "L")
-                                    + cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_LEAGUE_NAME)),
+                                    + cursor.getString(cursor.getColumnIndex(
+                                    LeagueEntry.COLUMN_LEAGUE_NAME)),
                             cursor.getShort(cursor.getColumnIndex("avg")),
-                            (byte) cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NUMBER_OF_GAMES)));
+                            (byte) cursor.getInt(cursor.getColumnIndex(
+                                    LeagueEntry.COLUMN_NUMBER_OF_GAMES)));
                     listLeagueEvents.add(leagueEvent);
                     cursor.moveToNext();
                 }
@@ -675,7 +673,7 @@ public class LeagueEventFragment
      * Creates a new entry in the database for a league or event which is then added to the list of
      * data to be displayed to the user.
      */
-    private static class AddNewLeagueEventTask
+    private static final class AddNewLeagueEventTask
             extends AsyncTask<LeagueEvent, Void, LeagueEvent>
     {
 
@@ -693,7 +691,7 @@ public class LeagueEventFragment
         }
 
         @Override
-        protected LeagueEvent doInBackground(LeagueEvent... leagueEvent)
+        protected LeagueEvent doInBackground(LeagueEvent... league)
         {
             LeagueEventFragment fragment = mFragment.get();
             if (fragment == null)
@@ -702,34 +700,26 @@ public class LeagueEventFragment
             if (mainActivity == null)
                 return null;
 
-            leagueEvent[0].setLeagueEventId(-1);
+            league[0].setLeagueEventId(-1);
             long bowlerId = mainActivity.getBowlerId();
 
-            SQLiteDatabase database =
-                    DatabaseHelper.getInstance(mainActivity).getWritableDatabase();
-            SimpleDateFormat dateFormat =
-                    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
-            String currentDate = dateFormat.format(new Date());
+            SQLiteDatabase db = DatabaseHelper.getInstance(mainActivity).getWritableDatabase();
+            SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
+            String currentDate = df.format(new Date());
 
             ContentValues values = new ContentValues();
-            values.put(LeagueEntry.COLUMN_LEAGUE_NAME,
-                    leagueEvent[0].getLeagueEventName().substring(1));
+            values.put(LeagueEntry.COLUMN_LEAGUE_NAME, league[0].getLeagueEventName().substring(1));
             values.put(LeagueEntry.COLUMN_DATE_MODIFIED, currentDate);
             values.put(LeagueEntry.COLUMN_BOWLER_ID, bowlerId);
-            values.put(LeagueEntry.COLUMN_NUMBER_OF_GAMES,
-                    leagueEvent[0].getLeagueEventNumberOfGames());
-            values.put(LeagueEntry.COLUMN_IS_EVENT,
-                    leagueEvent[0].getLeagueEventName().startsWith("E"));
+            values.put(LeagueEntry.COLUMN_NUMBER_OF_GAMES, league[0].getLeagueEventNumberOfGames());
+            values.put(LeagueEntry.COLUMN_IS_EVENT, league[0].getLeagueEventName().startsWith("E"));
 
-            database.beginTransaction();
+            db.beginTransaction();
             try
             {
                 //Creates the entry for the league or event in the "league" database
-                leagueEvent[0].setLeagueEventId(database.insert(LeagueEntry.TABLE_NAME,
-                        null,
-                        values));
-
-                if (leagueEvent[0].getLeagueEventName().startsWith("E"))
+                league[0].setLeagueEventId(db.insert(LeagueEntry.TABLE_NAME, null, values));
+                if (league[0].getLeagueEventName().startsWith("E"))
                 {
                     /*
                      * If the new entry is an event, its series is also created at this time
@@ -737,38 +727,38 @@ public class LeagueEventFragment
                      */
                     values = new ContentValues();
                     values.put(SeriesEntry.COLUMN_SERIES_DATE, currentDate);
-                    values.put(SeriesEntry.COLUMN_LEAGUE_ID, leagueEvent[0].getLeagueEventId());
-                    long seriesId = database.insert(SeriesEntry.TABLE_NAME, null, values);
+                    values.put(SeriesEntry.COLUMN_LEAGUE_ID, league[0].getLeagueEventId());
+                    long seriesId = db.insert(SeriesEntry.TABLE_NAME, null, values);
 
-                    for (int i = 0; i < leagueEvent[0].getLeagueEventNumberOfGames(); i++)
+                    for (int i = 0; i < league[0].getLeagueEventNumberOfGames(); i++)
                     {
                         values = new ContentValues();
                         values.put(GameEntry.COLUMN_GAME_NUMBER, i + 1);
                         values.put(GameEntry.COLUMN_SCORE, 0);
                         values.put(GameEntry.COLUMN_SERIES_ID, seriesId);
-                        long gameId = database.insert(GameEntry.TABLE_NAME, null, values);
+                        long gameId = db.insert(GameEntry.TABLE_NAME, null, values);
 
                         for (int j = 0; j < Constants.NUMBER_OF_FRAMES; j++)
                         {
                             values = new ContentValues();
                             values.put(FrameEntry.COLUMN_FRAME_NUMBER, j + 1);
                             values.put(FrameEntry.COLUMN_GAME_ID, gameId);
-                            database.insert(FrameEntry.TABLE_NAME, null, values);
+                            db.insert(FrameEntry.TABLE_NAME, null, values);
                         }
                     }
                 }
-                database.setTransactionSuccessful();
+                db.setTransactionSuccessful();
             }
             catch (Exception ex)
             {
-                //TODO: does nothing - error adding new league
+                Log.e(TAG, "Error adding new league", ex);
             }
             finally
             {
-                database.endTransaction();
+                db.endTransaction();
             }
 
-            return leagueEvent[0];
+            return league[0];
         }
 
         @Override

@@ -1,9 +1,8 @@
 package ca.josephroque.bowlingcompanion.utilities;
 
 /**
- * Created by Joseph Roque on 15-03-17.
- * <p/>
- * Provides methods to convert various formatted data into different formats.
+ * Created by Joseph Roque on 15-03-17. Provides methods to convert various formatted data into
+ * different formats.
  */
 public final class DataFormatter
 {
@@ -21,30 +20,42 @@ public final class DataFormatter
     }
 
     /**
-     * Given an integer from 1-12, returns a 3-4 character
-     * string representing that month.
+     * Given an integer from 1-12, returns a 3-4 character string representing that month.
      *
      * @param month value representing one of 12 months
-     * @return 3-4 character string representing month, or null if month is not
-     * between 1 and 12 (inclusive).
+     * @return 3-4 character string representing month, or null if month is not between 1 and 12
+     * (inclusive).
      */
     public static String intToMonthCompact(int month)
     {
         switch (month)
         {
-            case 1: return "Jan";
-            case 2: return "Feb";
-            case 3: return "Mar";
-            case 4: return "Apr";
-            case 5: return "May";
-            case 6: return "June";
-            case 7: return "July";
-            case 8: return "Aug";
-            case 9: return "Sept";
-            case 10: return "Oct";
-            case 11: return "Nov";
-            case 12: return "Dec";
-            default: return null;
+            case 1:
+                return "Jan";
+            case 2:
+                return "Feb";
+            case 3:
+                return "Mar";
+            case 4:
+                return "Apr";
+            case 5:
+                return "May";
+            case 6:
+                return "June";
+            case 7:
+                return "July";
+            case 8:
+                return "Aug";
+            case 9:
+                return "Sept";
+            case 10:
+                return "Oct";
+            case 11:
+                return "Nov";
+            case 12:
+                return "Dec";
+            default:
+                return null;
         }
     }
 
@@ -72,9 +83,8 @@ public final class DataFormatter
     }
 
     /**
-     * Converts string of the form "YYYY-mm-DD" to a cleaner format,
-     * where YYYY stands for the year, mm stands for the month and
-     * DD stands for the day.
+     * Converts string of the form "YYYY-mm-DD" to a cleaner format, where YYYY stands for the year,
+     * mm stands for the month and DD stands for the day.
      *
      * @param formattedDate formatted string to be converted
      * @return prettier format of string with full month name
@@ -97,8 +107,8 @@ public final class DataFormatter
     }
 
     /**
-     * Converts a string containing a pretty formatted date into numerical values
-     * representing month, day, year (in that order).
+     * Converts a string containing a pretty formatted date into numerical values representing
+     * month, day, year (in that order).
      *
      * @param pretty string formatted by formattedDateToPrettyCompact
      * @return month, day, year of pretty (in that order)
@@ -149,18 +159,6 @@ public final class DataFormatter
      */
     public static int getPixelsFromDP(float scale, int dps)
     {
-        return (int) (dps * scale + 0.5f);
+        return (int) Math.ceil(dps * scale);
     }
-
-    /**
-     * Converts an integer color into hexadecimal.
-     *
-     * @param color integer value of color
-     * @return hexadecimal value of color
-     */
-    public static String getHexColorFromInt(int color)
-    {
-        return String.format("#%06X", (0xFFFFFF & color));
-    }
-
 }

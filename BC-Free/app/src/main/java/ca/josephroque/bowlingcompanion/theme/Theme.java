@@ -8,10 +8,8 @@ import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.R;
 
 /**
- * Created by Joseph Roque on 15-03-13.
- * <p/>
- * Provides methods which load and return colors and other values to provide a consistent
- * theme across the application, which can be altered by the user
+ * Created by Joseph Roque on 15-03-13. Provides methods which load and return colors and other
+ * values to provide a consistent theme across the application, which can be altered by the user
  */
 public final class Theme
 {
@@ -42,8 +40,8 @@ public final class Theme
     private static int sThemeListItemBackground = -1;
 
     /**
-     * Loads the default theme from the preferences, or the theme
-     * which was set by the user in previous runs of the app.
+     * Loads the default theme from the preferences, or the theme which was set by the user in
+     * previous runs of the app.
      *
      * @param context current context to obtain values from
      */
@@ -186,9 +184,9 @@ public final class Theme
      */
     public interface ChangeableTheme
     {
+
         /**
-         * When overridden, should update colors of relevant objects
-         * and views to match the theme.
+         * When overridden, should update colors of relevant objects and views to match the theme.
          */
         @SuppressWarnings("unused")
         // Is used by classes implementing interface

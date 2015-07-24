@@ -3,9 +3,8 @@ package ca.josephroque.bowlingcompanion.utilities;
 import ca.josephroque.bowlingcompanion.Constants;
 
 /**
- * Created by Joseph Roque on 15-03-19.
- * <p/>
- * Provides methods for determining bowling scores based on user input
+ * Created by Joseph Roque on 15-03-19. Provides methods for determining bowling scores based on
+ * user input
  */
 public final class Score
 {
@@ -56,8 +55,8 @@ public final class Score
     }
 
     /**
-     * Gets the score value of the frame from the balls,
-     * depending on which balls were already knocked down in the previous frame.
+     * Gets the score value of the frame from the balls, depending on which balls were already
+     * knocked down in the previous frame.
      *
      * @param prevFrame state of the pins in the previous frame
      * @param frameToGet state of the pins the current frame
@@ -343,7 +342,9 @@ public final class Score
         StringBuilder stringBuilder = new StringBuilder();
         for (boolean b : frame)
         {
-            stringBuilder.append(b ? 1 : 0);
+            stringBuilder.append(b
+                    ? 1
+                    : 0);
         }
         return stringBuilder.toString();
     }

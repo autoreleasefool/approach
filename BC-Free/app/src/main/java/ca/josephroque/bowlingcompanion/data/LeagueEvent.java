@@ -38,7 +38,7 @@ public class LeagueEvent
     }
 
     /**
-     * Recreates a league / event object from a {@link android.os.Parcel}
+     * Recreates a league / event object from a {@link android.os.Parcel}.
      *
      * @param pc league / event data
      */
@@ -91,7 +91,7 @@ public class LeagueEvent
     }
 
     /**
-     * Sets a new value for {@code mLeagueEventId}
+     * Sets a new value for {@code mLeagueEventId}.
      *
      * @param leagueEventId the new id
      */
@@ -156,8 +156,22 @@ public class LeagueEvent
     @Override
     public boolean equals(Object other)
     {
-        return this == other || (other instanceof LeagueEvent)
-                && getLeagueEventName().equals(((LeagueEvent) other).getLeagueEventName());
+        if (other == null || !(other instanceof LeagueEvent))
+            return false;
+        if (other == this)
+            return true;
+
+        LeagueEvent leagueEvent = (LeagueEvent) other;
+        return getLeagueEventName().equals(leagueEvent.getLeagueEventName());
+    }
+
+    @SuppressWarnings("CheckStyle")
+    @Override
+    public int hashCode()
+    {
+        int result = 19;
+        int c = getLeagueEventName().hashCode();
+        return 37 * result + c;
     }
 
     @Override

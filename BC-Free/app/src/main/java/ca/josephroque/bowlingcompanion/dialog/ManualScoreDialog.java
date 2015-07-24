@@ -13,14 +13,13 @@ import android.widget.EditText;
 import ca.josephroque.bowlingcompanion.R;
 
 /**
- * Created by Joseph Roque on 15-03-19.
- * <p/>
- * Provides a dialog and a callback interface {@link ManualScoreDialog.ManualScoreDialogListener}
- * for the user to enter a score for a game manually.
+ * Created by Joseph Roque on 15-03-19. Provides a dialog and a callback interface {@link
+ * ManualScoreDialog.ManualScoreDialogListener} for the user to enter a score for a game manually.
  * The purpose is to allow them to include a game in their statistics, without requiring that they
  * insert every game frame-by-frame.
  */
-public class ManualScoreDialog extends DialogFragment
+public class ManualScoreDialog
+        extends DialogFragment
 {
 
     /** Identifies output from this class in Logcat. */
@@ -91,6 +90,7 @@ public class ManualScoreDialog extends DialogFragment
      */
     public interface ManualScoreDialogListener
     {
+
         /**
          * Invoked when user opts to submit a manual score.
          *
@@ -100,8 +100,8 @@ public class ManualScoreDialog extends DialogFragment
     }
 
     /**
-     * Creates a new instance of ManualScoreDialog, sets listener member variable
-     * and returns the new instance.
+     * Creates a new instance of ManualScoreDialog, sets listener member variable and returns the
+     * new instance.
      *
      * @param listener instance of callback interface
      * @return new instance of ManualScoreDialog

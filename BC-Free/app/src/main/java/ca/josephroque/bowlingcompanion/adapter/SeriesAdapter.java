@@ -19,7 +19,7 @@ import ca.josephroque.bowlingcompanion.data.Series;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 
 /**
- * Created by Joseph Roque on 15-03-17. <p/> Manages series and their associated games for a
+ * Created by Joseph Roque on 15-03-17. Manages series and their associated games for a
  * ListView. Offers a callback interface {@link SeriesAdapter.SeriesEventHandler} to handle
  * interaction events.
  */
@@ -76,7 +76,9 @@ public class SeriesAdapter
          * variables from itemLayoutView.
          *
          * @param itemLayoutView layout view containing views to display data
+         * @param viewType type of view
          */
+        @SuppressWarnings("CheckStyle")
         public SeriesViewHolder(View itemLayoutView, int viewType)
         {
             super(itemLayoutView);
@@ -158,7 +160,7 @@ public class SeriesAdapter
                 break;
             case VIEWTYPE_DELETED:
                 itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.list_item_deleted, parent, false);
+                        .inflate(R.layout.list_item_deleted, parent, false);
                 break;
             default:
                 throw new IllegalArgumentException("invalid view type: " + viewType);
@@ -171,22 +173,27 @@ public class SeriesAdapter
     {
         final int viewType = getItemViewType(position);
 
-        switch (viewType) {
+        switch (viewType)
+        {
             case VIEWTYPE_ACTIVE:
                 holder.mTextViewDate.setText(mListSeries.get(position).getSeriesDate());
 
                 List<Short> games = mListSeries.get(position).getSeriesGames();
                 final int numberOfGamesInSeries = games.size();
-                for (int i = 0; i < numberOfGamesInSeries; i++) {
+                for (int i = 0; i < numberOfGamesInSeries; i++)
+                {
                     /**
                      * Highlights a score if it is over 300 or applies default theme if not
                      */
                     short gameScore = games.get(-i + (numberOfGamesInSeries - 1));
                     holder.mArrayTextViewGames[i].setText(String.valueOf(gameScore));
-                    if (gameScore >= minimumScoreToHighlight) {
+                    if (gameScore >= minimumScoreToHighlight)
+                    {
                         holder.mArrayTextViewGames[i].setTextColor(Theme.getTertiaryThemeColor());
                         holder.mArrayTextViewGames[i].setAlpha(1f);
-                    } else {
+                    }
+                    else
+                    {
                         holder.mArrayTextViewGames[i].setTextColor(0xff000000);
                         holder.mArrayTextViewGames[i].setAlpha(0.54f);
                     }
@@ -197,10 +204,13 @@ public class SeriesAdapter
                 drawable.setColorFilter(Theme.getSecondaryThemeColor(), PorterDuff.Mode.SRC_IN);
                 holder.mImageViewEdit.setImageDrawable(drawable);
 
-                holder.mImageViewEdit.setOnClickListener(new View.OnClickListener() {
+                holder.mImageViewEdit.setOnClickListener(new View.OnClickListener()
+                {
                     @Override
-                    public void onClick(View v) {
-                        mEventHandler.onEditClick(position);
+                    public void onClick(View v)
+                    {
+                        mEventHandler.onEditClick(mRecyclerView.getChildAdapterPosition(
+                                holder.itemView));
                     }
                 });
 

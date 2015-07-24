@@ -1,9 +1,8 @@
 package ca.josephroque.bowlingcompanion;
 
 /**
- * Created by Joseph Roque on 15-03-13.
- * <p/>
- * Provides constant values which are accessible across the entire application
+ * Created by Joseph Roque on 15-03-13. <p/> Provides constant values which are accessible across
+ * the entire application
  */
 public final class Constants
 {

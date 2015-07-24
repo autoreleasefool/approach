@@ -11,12 +11,10 @@ import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.R;
 
 /**
- * Created by Joseph Roque on 15-03-03.
- * <p/>
- * Provides methods for determining the level of user interaction with the application, and offering
- * a prompt to rate the app if they desire, or disable the prompt if not.
- * <p/>
- * Retrieved from http://www.androidsnippets.com/ prompt-engaged-users-to-rate-your-app-in-the-android-market-appirater
+ * Created by Joseph Roque on 15-03-03. Provides methods for determining the level of user
+ * interaction with the application, and offering a prompt to rate the app if they desire, or
+ * disable the prompt if not. Retrieved from http://www.androidsnippets.com/
+ * prompt-engaged-users-to-rate-your-app-in-the-android-market-appirater
  */
 public final class AppRater
 {

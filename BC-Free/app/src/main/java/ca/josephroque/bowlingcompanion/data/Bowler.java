@@ -34,7 +34,7 @@ public class Bowler
     }
 
     /**
-     * Recreates a bowler object from a {@link android.os.Parcel}
+     * Recreates a bowler object from a {@link android.os.Parcel}.
      *
      * @param pc bowler data
      */
@@ -57,11 +57,12 @@ public class Bowler
     }
 
     /**
-     * Sets a new value for {@code mBowlerId}
+     * Sets a new value for {@code mBowlerId}.
      *
      * @param bowlerId the new id
      */
-    public void setBowlerId(long bowlerId) {
+    public void setBowlerId(long bowlerId)
+    {
         this.mBowlerId = bowlerId;
     }
 
@@ -86,12 +87,14 @@ public class Bowler
     }
 
     @Override
-    public String getName() {
+    public String getName()
+    {
         return getBowlerName();
     }
 
     @Override
-    public short getAverage() {
+    public short getAverage()
+    {
         return getBowlerAverage();
     }
 
@@ -137,9 +140,22 @@ public class Bowler
     @Override
     public boolean equals(Object other)
     {
-        return this == other || (other instanceof Bowler) && getBowlerName().equals(((Bowler) other)
-                .getBowlerName());
+        if (other == null || !(other instanceof Bowler))
+            return false;
+        if (other == this)
+            return true;
 
+        Bowler bowler = (Bowler) other;
+        return getBowlerName().equals(bowler.getBowlerName());
+    }
+
+    @SuppressWarnings("CheckStyle")
+    @Override
+    public int hashCode()
+    {
+        int result = 89;
+        int c = getBowlerName().hashCode();
+        return 37 * result + c;
     }
 
     @Override
