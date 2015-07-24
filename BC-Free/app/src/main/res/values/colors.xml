@@ -3,6 +3,8 @@
     <!-- Fragment and list item backgrounds -->
     <color name="primary_background">#bdc3c7</color>
     <color name="secondary_background">#ecf0f1</color>
+    <color name="navigation_separator">#1e000000</color>
+    <color name="indicator">#ffffff</color>
 
     <!-- Green theme values -->
     <color name="theme_green_recyclerview_longpress">#86E486</color>
@@ -45,7 +47,5 @@
     <color name="theme_gray_secondary">#6B6F74</color>
     <color name="theme_gray_tertiary">#585C64</color>
     <color name="theme_gray_status">#212121</color>
-
-    <color name="navigation_separator">#1e000000</color>
 
 </resources>

@@ -15,4 +15,9 @@
     <dimen name="list_keyline">16dp</dimen>
     <dimen name="list_text_keyline">72dp</dimen>
 
+    <!-- Indicator dimensions -->
+    <dimen name="indicator_width">8dp</dimen>
+    <dimen name="indicator_height">8dp</dimen>
+    <dimen name="indicator_margin">8dp</dimen>
+
 </resources>

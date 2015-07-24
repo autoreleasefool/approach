@@ -1,0 +1,69 @@
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LoginActivity">
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/splash_view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <LinearLayout
+        android:id="@+id/ll_splash_toolbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin">
+
+        <View
+            android:id="@+id/view_indicator_0"
+            android:layout_width="@dimen/indicator_width"
+            android:layout_height="@dimen/indicator_height"
+            android:layout_margin="@dimen/indicator_width"
+            android:background="@drawable/position_indicator" />
+
+        <View
+            android:id="@+id/view_indicator_1"
+            android:layout_width="@dimen/indicator_width"
+            android:layout_height="@dimen/indicator_height"
+            android:layout_margin="@dimen/indicator_width"
+            android:background="@drawable/position_indicator" />
+
+        <View
+            android:id="@+id/view_indicator_2"
+            android:layout_width="@dimen/indicator_width"
+            android:layout_height="@dimen/indicator_height"
+            android:layout_margin="@dimen/indicator_width"
+            android:background="@drawable/position_indicator" />
+
+        <View
+            android:id="@+id/view_indicator_3"
+            android:layout_width="@dimen/indicator_width"
+            android:layout_height="@dimen/indicator_height"
+            android:layout_margin="@dimen/indicator_width"
+            android:background="@drawable/position_indicator" />
+
+        <View
+            android:id="@+id/view_indicator_4"
+            android:layout_width="@dimen/indicator_width"
+            android:layout_height="@dimen/indicator_height"
+            android:layout_margin="@dimen/indicator_width"
+            android:background="@drawable/position_indicator" />
+
+        <View
+            android:id="@+id/view_indicator_5"
+            android:layout_width="@dimen/indicator_width"
+            android:layout_height="@dimen/indicator_height"
+            android:layout_margin="@dimen/indicator_width"
+            android:background="@drawable/position_indicator" />
+
+    </LinearLayout>
+
+</RelativeLayout>

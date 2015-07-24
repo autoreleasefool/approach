@@ -97,6 +97,8 @@ public final class Constants
     public static final String EXTRA_CURRENT_GAME = "ECG";
     /** Identifies a series object. */
     public static final String EXTRA_SERIES = "ES";
+    /** Identifies a boolean indicating if the user has seen a the tutorial. */
+    public static final String EXTRA_IGNORE_WATCHED = "EIW";
 
     // REGULAR EXPRESSIONS
     /** Regular Expression to match regular names. */
