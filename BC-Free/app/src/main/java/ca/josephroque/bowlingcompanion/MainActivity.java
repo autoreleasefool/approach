@@ -967,10 +967,7 @@ public class MainActivity
             {
                 super.onDrawerClosed(view);
                 setActionBarTitle(mTitle, false);
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB)
-                    supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-                else
-                    invalidateOptionsMenu();
+                invalidateOptionsMenu();
             }
 
             /** Called when a drawer has settled in a completely open state. */
@@ -979,10 +976,7 @@ public class MainActivity
             {
                 super.onDrawerOpened(drawerView);
                 setActionBarTitle(mDrawerTitle, false);
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB)
-                    supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-                else
-                    invalidateOptionsMenu();
+                invalidateOptionsMenu();
             }
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);
