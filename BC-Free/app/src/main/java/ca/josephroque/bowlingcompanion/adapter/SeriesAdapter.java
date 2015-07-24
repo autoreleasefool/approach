@@ -41,6 +41,8 @@ public class SeriesAdapter
     private Activity mActivity;
     /** Instance of handler for callback on user action. */
     private SeriesEventHandler mEventHandler;
+    /** The {@link RecyclerView} this adapter is attached to. */
+    private RecyclerView mRecyclerView;
 
     /** List of series which will be displayed. */
     private List<Series> mListSeries;
@@ -241,8 +243,8 @@ public class SeriesAdapter
     public void onClick(View v)
     {
         //Calls relevant event handler method
-        if (mEventHandler != null)
-            mEventHandler.onSItemClick(mEventHandler.getSeriesViewPositionInRecyclerView(v));
+        if (mEventHandler != null && mRecyclerView != null)
+            mEventHandler.onSItemClick(mRecyclerView.getChildAdapterPosition(v));
     }
 
     @Override
@@ -260,19 +262,30 @@ public class SeriesAdapter
     }
 
     @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView)
+    {
+        super.onAttachedToRecyclerView(recyclerView);
+        mRecyclerView = recyclerView;
+    }
+
+    @Override
     public void onDetachedFromRecyclerView(RecyclerView recyclerView)
     {
         super.onDetachedFromRecyclerView(recyclerView);
+
+        // Releasing references
         mActivity = null;
         mEventHandler = null;
+        mRecyclerView = null;
     }
 
     @Override
     public void updateTheme()
     {
-        minimumScoreToHighlight =
-                Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(mActivity)
-                        .getString(Constants.KEY_HIGHLIGHT_SCORE, "300"));
+        if (mActivity != null)
+            minimumScoreToHighlight =
+                    Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(mActivity)
+                            .getString(Constants.KEY_HIGHLIGHT_SCORE, "300"));
         notifyDataSetChanged();
     }
 
@@ -310,14 +323,5 @@ public class SeriesAdapter
          * @param position position of the item in the list
          */
         void onEditClick(final int position);
-
-        /**
-         * Should be used to return RecyclerView#getChildPosition(v) on the
-         * recycler view which uses this adapter.
-         *
-         * @param v the view to get the position of
-         * @return position of v in the parent RecyclerView
-         */
-        int getSeriesViewPositionInRecyclerView(View v);
     }
 }

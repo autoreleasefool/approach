@@ -39,6 +39,8 @@ public class NameAverageAdapter<T extends NameAverageId>
 
     /** Instance of handler for callback on user action. */
     private NameAverageEventHandler mEventHandler;
+    /** The {@link RecyclerView} that this adapter is attached to. */
+    private RecyclerView mRecyclerView;
 
     /** List of names and averages to be displayed by the adapter. */
     private List<T> mListNamesAndAverages;
@@ -192,14 +194,23 @@ public class NameAverageAdapter<T extends NameAverageId>
     public void onClick(View v)
     {
         //Calls relevant event handler method
-        if (mEventHandler != null)
-            mEventHandler.onNAItemClick(mEventHandler.getNAViewPositionInRecyclerView(v));
+        if (mEventHandler != null && mRecyclerView != null)
+            mEventHandler.onNAItemClick(mRecyclerView.getChildAdapterPosition(v));
+    }
+
+    @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+        super.onAttachedToRecyclerView(recyclerView);
+        mRecyclerView = recyclerView;
     }
 
     @Override
     public void onDetachedFromRecyclerView(RecyclerView recyclerView)
     {
         super.onDetachedFromRecyclerView(recyclerView);
+
+        // Releasing references
+        mRecyclerView = null;
         mEventHandler = null;
     }
 
@@ -244,14 +255,5 @@ public class NameAverageAdapter<T extends NameAverageId>
          * @param id id of the undeleted item
          */
         void onNAItemUndoDelete(long id);
-
-        /**
-         * Should be used to return RecyclerView#getChildPosition(v) on the
-         * recycler view which uses this adapter.
-         *
-         * @param v the view to get the position of
-         * @return position of v in the parent RecyclerView
-         */
-        int getNAViewPositionInRecyclerView(View v);
     }
 }

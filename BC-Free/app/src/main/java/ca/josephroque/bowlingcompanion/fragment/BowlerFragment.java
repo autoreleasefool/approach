@@ -275,13 +275,6 @@ public class BowlerFragment
     }
 
     @Override
-    public int getNAViewPositionInRecyclerView(View v)
-    {
-        //Gets position of view in mRecyclerViewBowlers
-        return mRecyclerViewBowlers.getChildAdapterPosition(v);
-    }
-
-    @Override
     public void onAddNewBowler(String bowlerName)
     {
         boolean validInput = true;

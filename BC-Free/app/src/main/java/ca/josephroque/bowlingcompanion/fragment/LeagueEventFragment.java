@@ -247,13 +247,6 @@ public class LeagueEventFragment
     }
 
     @Override
-    public int getNAViewPositionInRecyclerView(View v)
-    {
-        //Gets position of view in mRecyclerViewLeagueEvents
-        return mRecyclerViewLeagueEvents.getChildAdapterPosition(v);
-    }
-
-    @Override
     public void onAddNewLeagueEvent(boolean isEvent, String leagueEventName, byte numberOfGames)
     {
         boolean validInput = true;

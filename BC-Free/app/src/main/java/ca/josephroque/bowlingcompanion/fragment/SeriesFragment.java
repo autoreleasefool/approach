@@ -244,13 +244,6 @@ public class SeriesFragment
     }
 
     @Override
-    public int getSeriesViewPositionInRecyclerView(View v)
-    {
-        //Gets position of view in mRecyclerViewSeries
-        return mRecyclerViewSeries.getChildAdapterPosition(v);
-    }
-
-    @Override
     public void onEditClick(final int position)
     {
         DialogFragment dateDialog = ChangeDateDialog.newInstance(this, mListSeries.get(position));

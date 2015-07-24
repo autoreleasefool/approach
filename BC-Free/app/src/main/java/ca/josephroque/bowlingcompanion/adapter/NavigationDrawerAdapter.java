@@ -46,6 +46,8 @@ public class NavigationDrawerAdapter
 
     /** Callback listener for user events. */
     private NavigationCallback mCallback;
+    /** The {@link RecyclerView} this adapter is attached to. */
+    private RecyclerView mRecyclerView;
 
     /** List of options to be displayed in the navigation drawer. */
     private List<String> mListNavigationItems;
@@ -114,7 +116,6 @@ public class NavigationDrawerAdapter
                 viewHolder.mTextViewSubtitle.setText(mHeaderSubtitle);
                 break;
             case VIEW_TYPE_NAVIGATION:
-                viewHolder.itemView.setTag(position);
                 viewHolder.itemView.setOnClickListener(this);
                 int icon = getItemIcon(position);
                 if (icon != 0)
@@ -157,19 +158,26 @@ public class NavigationDrawerAdapter
     }
 
     @Override
+    public void onAttachedToRecyclerView(RecyclerView recyclerView)
+    {
+        super.onAttachedToRecyclerView(recyclerView);
+        mRecyclerView = recyclerView;
+    }
+
+    @Override
+    public void onDetachedFromRecyclerView(RecyclerView recyclerView)
+    {
+        super.onDetachedFromRecyclerView(recyclerView);
+
+        // Releasing references
+        mCallback = null;
+        mRecyclerView = null;
+    }
+
+    @Override
     public void onClick(View src)
     {
-        // Header offset is accounted for when tag is set
-        int position;
-        try
-        {
-            position = (Integer) src.getTag();
-        }
-        catch (Exception ex)
-        {
-            throw new IllegalStateException("itemView tag must be position");
-        }
-
+        final int position = mRecyclerView.getChildAdapterPosition(src);
         if (mListNavigationItems.get(position).matches("\\w+ \\d+"))
         {
             final int tempPosition = mCurrentNavigationItem;
