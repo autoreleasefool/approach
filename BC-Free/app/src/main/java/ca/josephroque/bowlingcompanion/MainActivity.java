@@ -216,7 +216,6 @@ public class MainActivity
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
         setContentView(R.layout.activity_main);
-        Theme.loadTheme(this);
         mAutoAdvanceHandler = new AutoAdvanceHandler(Looper.getMainLooper());
 
         mTitle = R.string.app_name;
@@ -384,6 +383,7 @@ public class MainActivity
         //Sets menu items visibility depending on if navigation drawer is open
         boolean drawerOpen = isDrawerOpen();
         menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
+        menu.findItem(R.id.action_tutorial).setVisible(!drawerOpen);
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -403,6 +403,11 @@ public class MainActivity
             case R.id.action_settings:
                 Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
                 startActivity(settingsIntent);
+                return true;
+            case R.id.action_tutorial:
+                Intent tutorialIntent = new Intent(MainActivity.this, SplashActivity.class);
+                tutorialIntent.putExtra(Constants.EXTRA_IGNORE_WATCHED, true);
+                startActivity(tutorialIntent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -619,7 +624,7 @@ public class MainActivity
         mDrawerAdapter.setCurrentItem(gameFragment.getCurrentGame()
                 + NavigationUtils.NAVIGATION_STATIC_ITEMS + 1 + totalOffset);
         mDrawerAdapter.setHeaderTitle(mBowlerName);
-        mDrawerAdapter.setHeaderSubtitle(mLeagueName);
+        mDrawerAdapter.setHeaderSubtitle(mLeagueName.substring(1));
     }
 
     /**

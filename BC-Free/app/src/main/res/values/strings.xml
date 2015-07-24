@@ -33,6 +33,7 @@
 
     <!-- Action button text -->
     <string name="action_settings">Settings</string>
+    <string name="action_tutorial">Help</string>
     <string name="action_quick_series">Quick series</string>
     <string name="action_stats">Stats</string>
     <string name="action_edit_date">Change series date</string>
@@ -67,6 +68,15 @@
     <string name="text_rate_app">Rate</string>
     <string name="text_rate_remind_me">Remind me</string>
     <string name="text_rate_no">No, thanks</string>
+    <string name="text_skip">Next</string>
+
+    <!-- Tutorial -->
+    <string name="text_tutorial_add_bowler_league_series">Begin by creating a new bowler and some leagues. Use the \'+\' button to create a bowler, league or series. If you make a mistake, you can swipe to delete them.</string>
+    <string name="text_tutorial_leagues_events">You can create leagues or events. Leagues are a weekly recurring event of 1–5 games. Events are one time only, but can be up to 20 games.</string>
+    <string name="text_tutorial_pin_game">Record a game by tapping or swiping to knock over the pins you hit each ball. You can also tap to add pins back, add fouls, lock games and set match play results.</string>
+    <string name="text_tutorial_manual_game">If you need to add a game after you\'ve bowled it, you can using the menu button while editing a game to set a score manually.</string>
+    <string name="text_tutorial_statistics">You can view statistics by bowler, league, series or game by tapping the "Statistics" button anywhere you see it You can also tap a statistic to see a graph of it over time.</string>
+    <string name="text_tutorial_settings">Finally, the settings menu is available throughout the app and allows you to personalize the app to fit your needs.</string>
 
     <!-- Content Descriptions -->
     <string name="description_lock_unlock">Lock or unlock game</string>
