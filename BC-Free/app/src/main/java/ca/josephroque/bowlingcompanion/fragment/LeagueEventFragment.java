@@ -459,13 +459,18 @@ public class LeagueEventFragment
         @Override
         protected Pair<LeagueEvent, Series> doInBackground(Integer... position)
         {
-            if (mFragment.get() == null || mFragment.get().getActivity() == null)
+            LeagueEventFragment fragment = mFragment.get();
+            if (fragment == null)
                 return null;
-            LeagueEvent selectedLeagueEvent = mFragment.get().mListLeaguesEvents.get(position[0]);
+            MainActivity mainActivity = (MainActivity) fragment.getActivity();
+            if (mainActivity == null)
+                return null;
+
+            LeagueEvent selectedLeagueEvent = fragment.mListLeaguesEvents.get(position[0]);
             boolean isEvent = selectedLeagueEvent.getLeagueEventName().substring(0, 1).equals("E");
 
             SQLiteDatabase database =
-                    DatabaseHelper.getInstance(mFragment.get().getActivity()).getWritableDatabase();
+                    DatabaseHelper.getInstance(mainActivity).getWritableDatabase();
             SimpleDateFormat dateFormat =
                     new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
             String currentDate = dateFormat.format(new Date());
@@ -532,7 +537,11 @@ public class LeagueEventFragment
         @Override
         protected void onPostExecute(Pair<LeagueEvent, Series> result)
         {
-            if (mFragment.get() == null || mFragment.get().getActivity() == null)
+            LeagueEventFragment fragment = mFragment.get();
+            if (fragment == null || result == null)
+                return;
+            MainActivity mainActivity = (MainActivity) fragment.getActivity();
+            if (mainActivity == null)
                 return;
 
             boolean isEvent = result.second.getSeriesId() >= 0;
@@ -544,8 +553,8 @@ public class LeagueEventFragment
                  * displaying the event's corresponding series
                  */
 
-                mFragment.get().mLeagueSelectedListener.onLeagueSelected(result.first, false);
-                mFragment.get().mSeriesListener.onSeriesSelected(result.second, true);
+                fragment.mLeagueSelectedListener.onLeagueSelected(result.first, false);
+                fragment.mSeriesListener.onSeriesSelected(result.second, true);
             }
             else
             {
@@ -553,12 +562,11 @@ public class LeagueEventFragment
                  * If a league was selected, creates an instance of SeriesActivity
                  * to display all available series in the league
                  */
-                long bowlerId = ((MainActivity) mFragment.get().getActivity()).getBowlerId();
+                long bowlerId = mainActivity.getBowlerId();
 
                 if (!result.first.getLeagueEventName().equals(Constants.NAME_OPEN_LEAGUE))
                 {
-                    mFragment.get()
-                            .getActivity()
+                    mainActivity
                             .getSharedPreferences(Constants.PREFS, Context.MODE_PRIVATE)
                             .edit()
                             .putLong(Constants.PREF_RECENT_LEAGUE_ID,
@@ -567,7 +575,7 @@ public class LeagueEventFragment
                             .apply();
                 }
 
-                mFragment.get().mLeagueSelectedListener.onLeagueSelected(result.first, true);
+                fragment.mLeagueSelectedListener.onLeagueSelected(result.first, true);
             }
         }
     }
@@ -596,14 +604,17 @@ public class LeagueEventFragment
         @Override
         protected List<LeagueEvent> doInBackground(Void... params)
         {
-            if (mFragment.get() == null || mFragment.get().getActivity() == null)
+            LeagueEventFragment fragment = mFragment.get();
+            if (fragment == null)
+                return null;
+            MainActivity mainActivity = (MainActivity) fragment.getActivity();
+            if (mainActivity == null)
                 return null;
 
-            MainActivity.waitForSaveThreads(new WeakReference<>((MainActivity) mFragment.get()
-                    .getActivity()));
+            MainActivity.waitForSaveThreads(new WeakReference<>(mainActivity));
 
             SQLiteDatabase database =
-                    DatabaseHelper.getInstance(mFragment.get().getActivity()).getReadableDatabase();
+                    DatabaseHelper.getInstance(mainActivity).getReadableDatabase();
             List<LeagueEvent> listLeagueEvents = new ArrayList<>();
 
             String rawLeagueEventQuery = "SELECT "
@@ -621,7 +632,7 @@ public class LeagueEventFragment
                     + " GROUP BY lid"
                     + " ORDER BY " + LeagueEntry.COLUMN_DATE_MODIFIED + " DESC";
 
-            long bowlerId = ((MainActivity) mFragment.get().getActivity()).getBowlerId();
+            long bowlerId = mainActivity.getBowlerId();
             Cursor cursor = database.rawQuery(rawLeagueEventQuery,
                     new String[]{String.valueOf(bowlerId)});
             if (cursor.moveToFirst())
@@ -651,11 +662,12 @@ public class LeagueEventFragment
         @SuppressWarnings("unchecked")
         protected void onPostExecute(List<LeagueEvent> listLeagueEvents)
         {
-            if (mFragment.get() == null)
+            LeagueEventFragment fragment = mFragment.get();
+            if (fragment == null || listLeagueEvents == null)
                 return;
 
-            mFragment.get().mListLeaguesEvents.addAll(listLeagueEvents);
-            mFragment.get().mAdapterLeagueEvents.notifyDataSetChanged();
+            fragment.mListLeaguesEvents.addAll(listLeagueEvents);
+            fragment.mAdapterLeagueEvents.notifyDataSetChanged();
         }
     }
 
@@ -683,14 +695,18 @@ public class LeagueEventFragment
         @Override
         protected LeagueEvent doInBackground(LeagueEvent... leagueEvent)
         {
-            if (mFragment.get() == null || mFragment.get().getActivity() == null)
+            LeagueEventFragment fragment = mFragment.get();
+            if (fragment == null)
+                return null;
+            MainActivity mainActivity = (MainActivity) fragment.getActivity();
+            if (mainActivity == null)
                 return null;
 
             leagueEvent[0].setLeagueEventId(-1);
-            long bowlerId = ((MainActivity) mFragment.get().getActivity()).getBowlerId();
+            long bowlerId = mainActivity.getBowlerId();
 
             SQLiteDatabase database =
-                    DatabaseHelper.getInstance(mFragment.get().getActivity()).getWritableDatabase();
+                    DatabaseHelper.getInstance(mainActivity).getWritableDatabase();
             SimpleDateFormat dateFormat =
                     new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
             String currentDate = dateFormat.format(new Date());
@@ -758,11 +774,12 @@ public class LeagueEventFragment
         @Override
         protected void onPostExecute(LeagueEvent result)
         {
-            if (result != null && result.getLeagueEventId() != -1 && mFragment.get() != null)
+            LeagueEventFragment fragment = mFragment.get();
+            if (result != null && fragment != null && result.getLeagueEventId() != -1)
             {
-                mFragment.get().mListLeaguesEvents.add(0, result);
-                mFragment.get().mAdapterLeagueEvents.notifyItemInserted(0);
-                mFragment.get().mRecyclerViewLeagueEvents.scrollToPosition(0);
+                fragment.mListLeaguesEvents.add(0, result);
+                fragment.mAdapterLeagueEvents.notifyItemInserted(0);
+                fragment.mRecyclerViewLeagueEvents.scrollToPosition(0);
             }
         }
     }

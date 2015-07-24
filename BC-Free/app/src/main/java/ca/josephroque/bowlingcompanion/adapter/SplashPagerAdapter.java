@@ -51,16 +51,18 @@ public class SplashPagerAdapter
     @Override
     public Fragment getItem(int position)
     {
-        if (position < TutorialFragment.TUTORIAL_TOTAL_PAGES)
-            return TutorialFragment.newInstance(position);
-        else
-            return RegisterFragment.newInstance(true);
+        //if (position < TutorialFragment.TUTORIAL_TOTAL_PAGES)
+        //    return TutorialFragment.newInstance(position);
+        //else
+        //    return RegisterFragment.newInstance(true);
+        return null;
     }
 
     @Override
     public int getCount()
     {
-        return TutorialFragment.TUTORIAL_TOTAL_PAGES;
+        //return TutorialFragment.TUTORIAL_TOTAL_PAGES;
+        return 0;
     }
 
     /**

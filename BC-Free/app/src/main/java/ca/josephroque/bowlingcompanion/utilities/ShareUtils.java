@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion.utilities;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -9,10 +10,12 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.util.Pair;
 import android.widget.Toast;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.ref.WeakReference;
 
 import ca.josephroque.bowlingcompanion.R;
 
@@ -59,7 +62,7 @@ public final class ShareUtils
                         if (selectedItem == 0)
                             saveSeriesToDevice(activity, seriesId);
                         else
-                            shareSeries(activity, seriesId);
+                            shareSeries(new WeakReference<Context>(activity), seriesId);
                         dialog.dismiss();
                     }
                 })
@@ -79,12 +82,13 @@ public final class ShareUtils
      * Creates a task to save an image of the series to the device and prompt the user
      * to share it with another service.
      *
-     * @param activity parent activity for the dialog
+     * @param context the current context
      * @param seriesId id of the series to share
      */
-    private static void shareSeries(Activity activity, long seriesId)
+    @SuppressWarnings("unchecked")
+    private static void shareSeries(WeakReference<Context> context, long seriesId)
     {
-        new ShareSeriesTask().execute(activity, seriesId);
+        new ShareSeriesTask().execute(Pair.create(context, seriesId));
     }
 
     /**
@@ -144,16 +148,21 @@ public final class ShareUtils
     /**
      * Creates an image for the series and prompts user to share it.
      */
-    private static class ShareSeriesTask extends AsyncTask<Object, Void, Object[]>
+    private static class ShareSeriesTask
+            extends AsyncTask<Pair<WeakReference<Context>, Long>, Void, Pair<WeakReference<Context>, WeakReference<Intent>>>
     {
+        @SafeVarargs
         @SuppressWarnings("UnusedAssignment") //image set to null to free memory
         @Override
-        public Object[] doInBackground(Object... params)
+        public final Pair<WeakReference<Context>, WeakReference<Intent>> doInBackground(
+                Pair<WeakReference<Context>, Long>... params)
         {
-            Activity activity = (Activity) params[0];
-            long seriesId = (Long) params[1];
-            Bitmap image = ImageUtils.createImageFromSeries(activity, seriesId);
-            Uri imageUri = ImageUtils.insertImage(activity.getContentResolver(),
+            Context context = params[0].first.get();
+            if (context == null)
+                return null;
+            long seriesId = params[0].second;
+            Bitmap image = ImageUtils.createImageFromSeries(context, seriesId);
+            Uri imageUri = ImageUtils.insertImage(context.getContentResolver(),
                     image,
                     String.valueOf(System.currentTimeMillis()),
                     "Series: " + seriesId);
@@ -163,7 +172,7 @@ public final class ShareUtils
             OutputStream outStream = null;
             try
             {
-                outStream = activity.getContentResolver()
+                outStream = context.getContentResolver()
                         .openOutputStream(imageUri);
                 image.compress(Bitmap.CompressFormat.JPEG, 100, outStream);
                 image.recycle();
@@ -190,16 +199,21 @@ public final class ShareUtils
             }
 
             shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
-            return new Object[]{activity, shareIntent};
+            return Pair.create(params[0].first, new WeakReference<>(shareIntent));
         }
 
         @Override
-        public void onPostExecute(Object[] params)
+        public void onPostExecute(Pair<WeakReference<Context>, WeakReference<Intent>> params)
         {
-            Activity activity = (Activity) params[0];
-            Intent shareIntent = (Intent) params[1];
+            if (params != null)
+            {
+                Context context = params.first.get();
+                Intent intent = params.second.get();
+                if (context == null || intent == null)
+                    return;
 
-            activity.startActivity(Intent.createChooser(shareIntent, "Share Image"));
+                context.startActivity(Intent.createChooser(intent, "Share Image"));
+            }
         }
     }
 }

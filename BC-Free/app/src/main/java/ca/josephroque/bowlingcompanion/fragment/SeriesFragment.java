@@ -401,14 +401,17 @@ public class SeriesFragment
         @Override
         protected List<Series> doInBackground(Void... params)
         {
-            if (mFragment.get() == null || mFragment.get().getActivity() == null)
+            SeriesFragment fragment = mFragment.get();
+            if (fragment == null || mFragment.get().getActivity() == null)
+                return null;
+            MainActivity mainActivity = (MainActivity) fragment.getActivity();
+            if (mainActivity == null)
                 return null;
 
-            MainActivity.waitForSaveThreads(new WeakReference<>((MainActivity) mFragment.get()
-                    .getActivity()));
+            MainActivity.waitForSaveThreads(new WeakReference<>(mainActivity));
 
             SQLiteDatabase database =
-                    DatabaseHelper.getInstance(mFragment.get().getActivity()).getReadableDatabase();
+                    DatabaseHelper.getInstance(mainActivity).getReadableDatabase();
             List<Series> listSeries = new ArrayList<>();
 
             String rawSeriesQuery = "SELECT "
@@ -423,8 +426,7 @@ public class SeriesFragment
                     + " ORDER BY " + SeriesEntry.COLUMN_SERIES_DATE + " DESC, "
                     + GameEntry.COLUMN_GAME_NUMBER;
             String[] rawSeriesArgs = {
-                    String.valueOf(((MainActivity) mFragment.get()
-                            .getActivity()).getLeagueId())
+                    String.valueOf(mainActivity.getLeagueId())
             };
 
             Cursor cursor = database.rawQuery(rawSeriesQuery, rawSeriesArgs);
@@ -457,11 +459,12 @@ public class SeriesFragment
         @SuppressWarnings("unchecked")
         protected void onPostExecute(List<Series> listSeries)
         {
-            if (mFragment.get() == null || mFragment.get().getActivity() == null)
+            SeriesFragment fragment = mFragment.get();
+            if (listSeries == null || fragment == null)
                 return;
 
-            mFragment.get().mListSeries.addAll(listSeries);
-            mFragment.get().mAdapterSeries.notifyDataSetChanged();
+            fragment.mListSeries.addAll(listSeries);
+            fragment.mAdapterSeries.notifyDataSetChanged();
         }
     }
 

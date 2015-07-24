@@ -571,13 +571,13 @@ public class MainActivity
         mSeriesId = series.getSeriesId();
         mSeriesDate = series.getSeriesDate();
 
-        new OpenSeriesTask().execute(isEvent);
+        new OpenSeriesTask(MainActivity.this).execute(isEvent);
     }
 
     @Override
     public void onCreateNewSeries(boolean isEvent)
     {
-        new AddSeriesTask().execute();
+        new AddSeriesTask(MainActivity.this).execute();
     }
 
     /**
@@ -1174,22 +1174,39 @@ public class MainActivity
     /**
      * Loads game data related to seriesId and displays it in a new GameFragment instance.
      */
-    private class OpenSeriesTask
+    private static class OpenSeriesTask
             extends AsyncTask<Boolean, Void, Object[]>
     {
+
+        /** Weak reference to the parent activity. */
+        private WeakReference<MainActivity> mMainActivity;
+
+        /**
+         * Assigns a weak reference to the parent activity.
+         *
+         * @param activity parent activity
+         */
+        private OpenSeriesTask(MainActivity activity)
+        {
+            mMainActivity = new WeakReference<>(activity);
+        }
 
         @Override
         protected Object[] doInBackground(Boolean... isEvent)
         {
-            long[] gameId = new long[mNumberOfGames];
+            MainActivity mainActivity = mMainActivity.get();
+            if (mainActivity == null)
+                return null;
+
+            long[] gameId = new long[mainActivity.mNumberOfGames];
             //noinspection CheckStyle
-            long[] frameId = new long[mNumberOfGames * 10];
-            boolean[] gameLocked = new boolean[mNumberOfGames];
-            boolean[] manualScore = new boolean[mNumberOfGames];
-            byte[] matchPlay = new byte[mNumberOfGames];
+            long[] frameId = new long[mainActivity.mNumberOfGames * 10];
+            boolean[] gameLocked = new boolean[mainActivity.mNumberOfGames];
+            boolean[] manualScore = new boolean[mainActivity.mNumberOfGames];
+            byte[] matchPlay = new byte[mainActivity.mNumberOfGames];
 
             SQLiteDatabase database =
-                    DatabaseHelper.getInstance(MainActivity.this).getReadableDatabase();
+                    DatabaseHelper.getInstance(mainActivity).getReadableDatabase();
             String rawSeriesQuery = "SELECT "
                     + "game." + GameEntry._ID + " AS gid, "
                     + GameEntry.COLUMN_IS_LOCKED + ", "
@@ -1201,7 +1218,7 @@ public class MainActivity
                     + " ON gid=" + FrameEntry.COLUMN_GAME_ID
                     + " WHERE " + GameEntry.COLUMN_SERIES_ID + "=?"
                     + " ORDER BY gid, fid";
-            String[] rawSeriesArgs = {String.valueOf(mSeriesId)};
+            String[] rawSeriesArgs = {String.valueOf(mainActivity.mSeriesId)};
 
             int currentGame = -1;
             long currentGameId = -1;
@@ -1238,16 +1255,20 @@ public class MainActivity
         @Override
         protected void onPostExecute(Object[] params)
         {
+            MainActivity mainActivity = mMainActivity.get();
+            if (mainActivity == null || params == null)
+                return;
+
             long[] gameIds = (long[]) params[0];
             long[] frameIds = (long[]) params[1];
             boolean[] gameLocked = (boolean[]) params[2];
             boolean[] manualScore = (boolean[]) params[3];
             byte[] matchPlay = (byte[]) params[4];
-            mIsEventMode = (boolean) params[5];
+            mainActivity.mIsEventMode = (boolean) params[5];
 
             GameFragment gameFragment = GameFragment.newInstance(gameIds, frameIds, gameLocked,
                     manualScore, matchPlay);
-            startFragmentTransaction(gameFragment, (isEventMode()
+            mainActivity.startFragmentTransaction(gameFragment, (mainActivity.isEventMode()
                     ? Constants.FRAGMENT_LEAGUES
                     : Constants.FRAGMENT_SERIES), Constants.FRAGMENT_GAME);
         }
@@ -1256,20 +1277,38 @@ public class MainActivity
     /**
      * Creates a new series in the database and displays it in a new instance of GameFragment.
      */
-    private class AddSeriesTask
+    private static class AddSeriesTask
             extends AsyncTask<Void, Void, Object[]>
     {
+
+        /** Weak reference to the parent activity. */
+        private WeakReference<MainActivity> mMainActivity;
+
+        /**
+         * Assigns a weak reference to the parent activity.
+         *
+         * @param activity parent activity
+         */
+        private AddSeriesTask(MainActivity activity)
+        {
+            mMainActivity = new WeakReference<>(activity);
+        }
 
         @Override
         protected Object[] doInBackground(Void... params)
         {
+            MainActivity mainActivity = mMainActivity.get();
+
+            if (mainActivity == null)
+                return null;
+
             long seriesId = -1;
-            long[] gameId = new long[mNumberOfGames];
+            long[] gameId = new long[mainActivity.mNumberOfGames];
             //noinspection CheckStyle
-            long[] frameId = new long[mNumberOfGames * 10];
+            long[] frameId = new long[mainActivity.mNumberOfGames * 10];
 
             SQLiteDatabase database =
-                    DatabaseHelper.getInstance(MainActivity.this).getReadableDatabase();
+                    DatabaseHelper.getInstance(mainActivity).getReadableDatabase();
             SimpleDateFormat dateFormat =
                     new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
             String seriesDate = dateFormat.format(new Date());
@@ -1279,10 +1318,10 @@ public class MainActivity
             {
                 ContentValues values = new ContentValues();
                 values.put(SeriesEntry.COLUMN_SERIES_DATE, seriesDate);
-                values.put(SeriesEntry.COLUMN_LEAGUE_ID, mLeagueId);
+                values.put(SeriesEntry.COLUMN_LEAGUE_ID, mainActivity.mLeagueId);
                 seriesId = database.insert(SeriesEntry.TABLE_NAME, null, values);
 
-                for (byte i = 0; i < mNumberOfGames; i++)
+                for (byte i = 0; i < mainActivity.mNumberOfGames; i++)
                 {
                     values = new ContentValues();
                     values.put(GameEntry.COLUMN_GAME_NUMBER, i + 1);
@@ -1312,27 +1351,31 @@ public class MainActivity
                 database.endTransaction();
             }
 
-            mSeriesId = seriesId;
-            mSeriesDate = DataFormatter.formattedDateToPrettyCompact(seriesDate);
+            mainActivity.mSeriesId = seriesId;
+            mainActivity.mSeriesDate = DataFormatter.formattedDateToPrettyCompact(seriesDate);
             return new Object[]{gameId, frameId};
         }
 
         @Override
         protected void onPostExecute(Object[] params)
         {
+            MainActivity mainActivity = mMainActivity.get();
+            if (mainActivity == null || params == null)
+                return;
+
             long[] gameIds = (long[]) params[0];
             long[] frameIds = (long[]) params[1];
-            mIsEventMode = false;
+            mainActivity.mIsEventMode = false;
 
             GameFragment gameFragment = GameFragment.newInstance(
                     gameIds,
                     frameIds,
-                    new boolean[mNumberOfGames],
-                    new boolean[mNumberOfGames],
-                    new byte[mNumberOfGames]);
-            startFragmentTransaction(
+                    new boolean[mainActivity.mNumberOfGames],
+                    new boolean[mainActivity.mNumberOfGames],
+                    new byte[mainActivity.mNumberOfGames]);
+            mainActivity.startFragmentTransaction(
                     gameFragment,
-                    (isQuickSeries()
+                    (mainActivity.isQuickSeries()
                             ? Constants.FRAGMENT_BOWLERS
                             : Constants.FRAGMENT_SERIES),
                     Constants.FRAGMENT_GAME);

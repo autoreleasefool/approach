@@ -70,6 +70,7 @@ public class SplashActivity
             return;
         }
 
+        preferences.edit().putBoolean(PREF_TUTORIAL_WATCHED, true).apply();
         setupViewPager();
     }
 
