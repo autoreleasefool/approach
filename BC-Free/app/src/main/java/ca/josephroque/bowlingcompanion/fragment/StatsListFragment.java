@@ -145,7 +145,7 @@ public class StatsListFragment
             mAdapterStats.notifyDataSetChanged();
 
             mainActivity.setActionBarTitle(titleToSet, true);
-            new LoadStatsListTask().execute(statsToLoad);
+            new LoadStatsListTask(this).execute(statsToLoad);
         }
 
         updateTheme();
@@ -275,16 +275,33 @@ public class StatsListFragment
      * Loads data from the database and calculates relevant stats depending on which type of stats
      * are being loaded.
      */
-    private class LoadStatsListTask
+    private static final class LoadStatsListTask
             extends AsyncTask<Byte, Void, List<?>[]>
     {
+
+        /** Weak reference to the parent fragment. */
+        private WeakReference<StatsListFragment> mFragment;
+
+        /**
+         * Assigns a weak reference to the parent fragment.
+         *
+         * @param fragment parent fragment
+         */
+        private LoadStatsListTask(StatsListFragment fragment)
+        {
+            mFragment = new WeakReference<>(fragment);
+        }
 
         @SuppressWarnings("CheckStyle")
         @Override
         protected List<?>[] doInBackground(Byte... statsToLoad)
         {
-            // TODO: convert task to static and use weak references
-            MainActivity mainActivity = (MainActivity) getActivity();
+            StatsListFragment fragment = mFragment.get();
+            if (fragment == null)
+                return null;
+            MainActivity mainActivity = (MainActivity) fragment.getActivity();
+            if (mainActivity == null)
+                return null;
             MainActivity.waitForSaveThreads(new WeakReference<>(mainActivity));
 
             final byte toLoad = statsToLoad[0];
@@ -294,7 +311,7 @@ public class StatsListFragment
             List<List<AbstractMap.SimpleEntry<String, String>>> listStatNamesAndValues =
                     new ArrayList<>();
 
-            prepareListData(mainActivity, toLoad, listStatHeaders, listStatNamesAndValues);
+            fragment.prepareListData(mainActivity, toLoad, listStatHeaders, listStatNamesAndValues);
             statValues = new int[listStatHeaders.size()][];
             for (int i = 0; i < statValues.length; i++)
                 statValues[i] = new int[listStatNamesAndValues.get(i).size()];
@@ -302,36 +319,36 @@ public class StatsListFragment
             switch (toLoad)
             {
                 case StatsFragment.LOADING_BOWLER_STATS:
-                    mNumberOfGeneralDetails = 1;
-                    cursor = getBowlerOrLeagueCursor(false);
+                    fragment.mNumberOfGeneralDetails = 1;
+                    cursor = fragment.getBowlerOrLeagueCursor(false);
                     break;
                 case StatsFragment.LOADING_LEAGUE_STATS:
-                    mNumberOfGeneralDetails = 2;
-                    listStatNamesAndValues.get(mStatsGeneral).add(1,
+                    fragment.mNumberOfGeneralDetails = 2;
+                    listStatNamesAndValues.get(fragment.mStatsGeneral).add(1,
                             new AbstractMap.SimpleEntry<>("League/Event",
                                     mainActivity.getLeagueName()));
-                    cursor = getBowlerOrLeagueCursor(true);
+                    cursor = fragment.getBowlerOrLeagueCursor(true);
                     break;
                 case StatsFragment.LOADING_SERIES_STATS:
-                    mNumberOfGeneralDetails = 3;
-                    listStatNamesAndValues.get(mStatsGeneral).add(1,
+                    fragment.mNumberOfGeneralDetails = 3;
+                    listStatNamesAndValues.get(fragment.mStatsGeneral).add(1,
                             new AbstractMap.SimpleEntry<>("League/Event",
                                     mainActivity.getLeagueName()));
-                    listStatNamesAndValues.get(mStatsGeneral).add(2,
+                    listStatNamesAndValues.get(fragment.mStatsGeneral).add(2,
                             new AbstractMap.SimpleEntry<>("Date", mainActivity.getSeriesDate()));
-                    cursor = getSeriesCursor();
+                    cursor = fragment.getSeriesCursor();
                     break;
                 case StatsFragment.LOADING_GAME_STATS:
-                    mNumberOfGeneralDetails = 4;
-                    listStatNamesAndValues.get(mStatsGeneral).add(1,
+                    fragment.mNumberOfGeneralDetails = 4;
+                    listStatNamesAndValues.get(fragment.mStatsGeneral).add(1,
                             new AbstractMap.SimpleEntry<>("League/Event",
                                     mainActivity.getLeagueName()));
-                    listStatNamesAndValues.get(mStatsGeneral).add(2,
+                    listStatNamesAndValues.get(fragment.mStatsGeneral).add(2,
                             new AbstractMap.SimpleEntry<>("Date", mainActivity.getSeriesDate()));
-                    listStatNamesAndValues.get(mStatsGeneral).add(3,
+                    listStatNamesAndValues.get(fragment.mStatsGeneral).add(3,
                             new AbstractMap.SimpleEntry<>("Game #",
                                     String.valueOf(mainActivity.getGameNumber())));
-                    cursor = getGameCursor();
+                    cursor = fragment.getGameCursor();
                     break;
                 default:
                     throw new IllegalArgumentException("invalid value for toLoad: " + toLoad
@@ -371,44 +388,46 @@ public class StatsListFragment
                         byte matchResults = (byte) (cursor.getInt(
                                 cursor.getColumnIndex(Contract.GameEntry.COLUMN_MATCH_PLAY)));
                         if (matchResults > 0)
-                            statValues[mStatsMatch][matchResults - 1]++;
+                            statValues[fragment.mStatsMatch][matchResults - 1]++;
 
-                        if (statValues[mStatsOverall][Constants.STAT_HIGH_SINGLE] < gameScore)
-                        {
-                            statValues[mStatsOverall][Constants.STAT_HIGH_SINGLE] = gameScore;
-                        }
-                        statValues[mStatsOverall][Constants.STAT_TOTAL_PINS] += gameScore;
-                        statValues[mStatsOverall][Constants.STAT_NUMBER_OF_GAMES]++;
+                        if (statValues[fragment.mStatsOverall][Constants.STAT_HIGH_SINGLE]
+                                < gameScore)
+                            statValues[fragment.mStatsOverall][Constants.STAT_HIGH_SINGLE]
+                                    = gameScore;
+                        statValues[fragment.mStatsOverall][Constants.STAT_TOTAL_PINS] += gameScore;
+                        statValues[fragment.mStatsOverall][Constants.STAT_NUMBER_OF_GAMES]++;
 
                         if (gameNumber == 1)
                         {
-                            if (statValues[mStatsOverall][Constants.STAT_HIGH_SERIES] < seriesTotal)
-                                statValues[mStatsOverall][Constants.STAT_HIGH_SERIES] = seriesTotal;
+                            if (statValues[fragment.mStatsOverall][Constants.STAT_HIGH_SERIES]
+                                    < seriesTotal)
+                                statValues[fragment.mStatsOverall][Constants.STAT_HIGH_SERIES]
+                                        = seriesTotal;
                             seriesTotal = gameScore;
                         }
                         else
                             seriesTotal += gameScore;
                     }
 
-                    boolean gameIsManual =
-                            (cursor.getInt(cursor.getColumnIndex(Contract.GameEntry.COLUMN_IS_MANUAL))
-                                    == 1);
+                    boolean gameIsManual = (cursor.getInt(cursor.getColumnIndex(
+                            Contract.GameEntry.COLUMN_IS_MANUAL)) == 1);
                     if (gameIsManual)
                     {
                         cursor.moveToNext();
                         continue;
                     }
-                    boolean frameAccessed =
-                            (cursor.getInt(cursor.getColumnIndex(Contract.FrameEntry.COLUMN_IS_ACCESSED))
-                                    == 1);
+                    boolean frameAccessed = (cursor.getInt(cursor.getColumnIndex(
+                            Contract.FrameEntry.COLUMN_IS_ACCESSED)) == 1);
                     if (toLoad == StatsFragment.LOADING_GAME_STATS && !frameAccessed)
                         break;
 
-                    String frameFouls =
-                            cursor.getString(cursor.getColumnIndex(Contract.FrameEntry.COLUMN_FOULS));
+                    String frameFouls = cursor.getString(cursor.getColumnIndex(
+                            Contract.FrameEntry.COLUMN_FOULS));
                     String[] ballStrings = {
-                            cursor.getString(cursor.getColumnIndex(Contract.FrameEntry.COLUMN_PIN_STATE[0])),
-                            cursor.getString(cursor.getColumnIndex(Contract.FrameEntry.COLUMN_PIN_STATE[1])),
+                            cursor.getString(cursor.getColumnIndex(
+                                    Contract.FrameEntry.COLUMN_PIN_STATE[0])),
+                            cursor.getString(cursor.getColumnIndex(
+                                    Contract.FrameEntry.COLUMN_PIN_STATE[1])),
                             cursor.getString(
                                     cursor.getColumnIndex(Contract.FrameEntry.COLUMN_PIN_STATE[2]))
                     };
@@ -423,16 +442,16 @@ public class StatsListFragment
                     for (byte i = 1; i <= 3; i++)
                     {
                         if (frameFouls.contains(String.valueOf(i)))
-                            statValues[mStatsFouls][0]++;
+                            statValues[fragment.mStatsFouls][0]++;
                     }
 
                     if (frameNumber == Constants.NUMBER_OF_FRAMES)
                     {
                         totalShotsAtMiddle++;
-                        int ballValue = getFirstBallValue(pinState[0]);
+                        int ballValue = fragment.getFirstBallValue(pinState[0]);
                         if (ballValue != -1)
-                            statValues[mStatsGeneral][Constants.STAT_MIDDLE_HIT]++;
-                        increaseFirstBallStat(ballValue, statValues, 0);
+                            statValues[fragment.mStatsGeneral][Constants.STAT_MIDDLE_HIT]++;
+                        fragment.increaseFirstBallStat(ballValue, statValues, 0);
                         if (ballValue < 5 && ballValue != Constants.BALL_VALUE_STRIKE)
                             spareChances++;
 
@@ -440,54 +459,54 @@ public class StatsListFragment
                         {
                             if (Arrays.equals(pinState[1], Constants.FRAME_PINS_DOWN))
                             {
-                                statValues[mStatsGeneral][Constants.STAT_SPARE_CONVERSIONS]++;
-                                increaseFirstBallStat(ballValue, statValues, 1);
+                                statValues[fragment.mStatsGeneral][Constants.STAT_SPARE_CONVERSIONS]++;
+                                fragment.increaseFirstBallStat(ballValue, statValues, 1);
 
                                 if (ballValue >= 5)
                                     spareChances++;
                             }
                             else
                             {
-                                statValues[mStatsPins][Constants.STAT_PINS_LEFT] +=
-                                        countPinsLeftStanding(pinState[2]);
+                                statValues[fragment.mStatsPins][Constants.STAT_PINS_LEFT] +=
+                                        fragment.countPinsLeftStanding(pinState[2]);
                             }
                         }
                         else
                         {
                             totalShotsAtMiddle++;
-                            ballValue = getFirstBallValue(pinState[1]);
+                            ballValue = fragment.getFirstBallValue(pinState[1]);
                             if (ballValue != -1)
-                                statValues[mStatsGeneral][Constants.STAT_MIDDLE_HIT]++;
-                            increaseFirstBallStat(ballValue, statValues, 0);
+                                statValues[fragment.mStatsGeneral][Constants.STAT_MIDDLE_HIT]++;
+                            fragment.increaseFirstBallStat(ballValue, statValues, 0);
 
                             if (ballValue != 0)
                             {
                                 if (Arrays.equals(pinState[2], Constants.FRAME_PINS_DOWN))
                                 {
-                                    statValues[mStatsGeneral][Constants.STAT_SPARE_CONVERSIONS]++;
-                                    increaseFirstBallStat(ballValue, statValues, 1);
+                                    statValues[fragment.mStatsGeneral][Constants.STAT_SPARE_CONVERSIONS]++;
+                                    fragment.increaseFirstBallStat(ballValue, statValues, 1);
 
                                     if (ballValue >= 5)
                                         spareChances++;
                                 }
                                 else
                                 {
-                                    statValues[mStatsPins][Constants.STAT_PINS_LEFT] +=
-                                            countPinsLeftStanding(pinState[2]);
+                                    statValues[fragment.mStatsPins][Constants.STAT_PINS_LEFT] +=
+                                            fragment.countPinsLeftStanding(pinState[2]);
                                 }
                             }
                             else
                             {
                                 totalShotsAtMiddle++;
-                                ballValue = getFirstBallValue(pinState[2]);
+                                ballValue = fragment.getFirstBallValue(pinState[2]);
                                 if (ballValue != -1)
-                                    statValues[mStatsGeneral][Constants.STAT_MIDDLE_HIT]++;
-                                increaseFirstBallStat(ballValue, statValues, 0);
+                                    statValues[fragment.mStatsGeneral][Constants.STAT_MIDDLE_HIT]++;
+                                fragment.increaseFirstBallStat(ballValue, statValues, 0);
 
                                 if (ballValue != 0)
                                 {
-                                    statValues[mStatsPins][Constants.STAT_PINS_LEFT] +=
-                                            countPinsLeftStanding(pinState[2]);
+                                    statValues[fragment.mStatsPins][Constants.STAT_PINS_LEFT] +=
+                                            fragment.countPinsLeftStanding(pinState[2]);
                                 }
                             }
                         }
@@ -495,10 +514,10 @@ public class StatsListFragment
                     else
                     {
                         totalShotsAtMiddle++;
-                        int ballValue = getFirstBallValue(pinState[0]);
+                        int ballValue = fragment.getFirstBallValue(pinState[0]);
                         if (ballValue != -1)
-                            statValues[mStatsGeneral][Constants.STAT_MIDDLE_HIT]++;
-                        increaseFirstBallStat(ballValue, statValues, 0);
+                            statValues[fragment.mStatsGeneral][Constants.STAT_MIDDLE_HIT]++;
+                        fragment.increaseFirstBallStat(ballValue, statValues, 0);
 
                         if (ballValue < 5 && ballValue != Constants.BALL_VALUE_STRIKE)
                             spareChances++;
@@ -507,16 +526,16 @@ public class StatsListFragment
                         {
                             if (Arrays.equals(pinState[1], Constants.FRAME_PINS_DOWN))
                             {
-                                statValues[mStatsGeneral][Constants.STAT_SPARE_CONVERSIONS]++;
-                                increaseFirstBallStat(ballValue, statValues, 1);
+                                statValues[fragment.mStatsGeneral][Constants.STAT_SPARE_CONVERSIONS]++;
+                                fragment.increaseFirstBallStat(ballValue, statValues, 1);
 
                                 if (ballValue >= 5)
                                     spareChances++;
                             }
                             else
                             {
-                                statValues[mStatsPins][Constants.STAT_PINS_LEFT] +=
-                                        countPinsLeftStanding(pinState[2]);
+                                statValues[fragment.mStatsPins][Constants.STAT_PINS_LEFT] +=
+                                        fragment.countPinsLeftStanding(pinState[2]);
                             }
                         }
                     }
@@ -527,30 +546,33 @@ public class StatsListFragment
 
             if (toLoad != StatsFragment.LOADING_GAME_STATS)
             {
-                if (statValues[mStatsOverall][Constants.STAT_HIGH_SERIES] < seriesTotal)
-                    statValues[mStatsOverall][Constants.STAT_HIGH_SERIES] = seriesTotal;
+                if (statValues[fragment.mStatsOverall][Constants.STAT_HIGH_SERIES] < seriesTotal)
+                    statValues[fragment.mStatsOverall][Constants.STAT_HIGH_SERIES] = seriesTotal;
 
                 if (toLoad != StatsFragment.LOADING_SERIES_STATS)
                 {
                     for (byte i = 0; i < numberOfGames; i++)
-                        statValues[mStatsGameAverage][i] = (countByGame[i] > 0)
+                        statValues[fragment.mStatsGameAverage][i] = (countByGame[i] > 0)
                                 ? totalByGame[i] / countByGame[i]
                                 : 0;
                 }
 
-                if (statValues[mStatsOverall][Constants.STAT_NUMBER_OF_GAMES] > 0)
+                if (statValues[fragment.mStatsOverall][Constants.STAT_NUMBER_OF_GAMES] > 0)
                 {
-                    statValues[mStatsOverall][Constants.STAT_AVERAGE] =
-                            statValues[mStatsOverall][Constants.STAT_TOTAL_PINS]
-                                    / statValues[mStatsOverall][Constants.STAT_NUMBER_OF_GAMES];
-                    statValues[mStatsPins][Constants.STAT_PINS_AVERAGE] =
-                            statValues[mStatsPins][Constants.STAT_PINS_LEFT]
-                                    / statValues[mStatsOverall][Constants.STAT_NUMBER_OF_GAMES];
+                    statValues[fragment.mStatsOverall][Constants.STAT_AVERAGE] =
+                            statValues[fragment.mStatsOverall][Constants.STAT_TOTAL_PINS]
+                                    / statValues[fragment.mStatsOverall][Constants.STAT_NUMBER_OF_GAMES];
+                    statValues[fragment.mStatsPins][Constants.STAT_PINS_AVERAGE] =
+                            statValues[fragment.mStatsPins][Constants.STAT_PINS_LEFT]
+                                    / statValues[fragment.mStatsOverall][Constants.STAT_NUMBER_OF_GAMES];
                 }
             }
             cursor.close();
-            setGeneralAndDetailedStatValues(listStatNamesAndValues, statValues, totalShotsAtMiddle,
-                    spareChances, mNumberOfGeneralDetails, toLoad);
+            fragment.setGeneralAndDetailedStatValues(listStatNamesAndValues,
+                    statValues,
+                    totalShotsAtMiddle,
+                    spareChances,
+                    fragment.mNumberOfGeneralDetails, toLoad);
 
             return new List<?>[]{listStatHeaders, listStatNamesAndValues};
         }
@@ -559,11 +581,15 @@ public class StatsListFragment
         @Override
         protected void onPostExecute(List<?>[] lists)
         {
-            mListStatHeaders.addAll((List<String>) lists[0]);
-            mListStatNamesAndValues.addAll(
+            StatsListFragment fragment = mFragment.get();
+            if (lists == null || fragment == null)
+                return;
+
+            fragment.mListStatHeaders.addAll((List<String>) lists[0]);
+            fragment.mListStatNamesAndValues.addAll(
                     (List<List<AbstractMap.SimpleEntry<String, String>>>) lists[1]);
-            mAdapterStats.notifyDataSetChanged();
-            mAdapterStats.notifyDataSetChanged();
+            fragment.mAdapterStats.notifyDataSetChanged();
+            fragment.mAdapterStats.notifyDataSetChanged();
         }
     }
 
