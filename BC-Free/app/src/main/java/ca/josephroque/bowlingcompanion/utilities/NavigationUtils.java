@@ -34,6 +34,8 @@ public final class NavigationUtils
     public static final String NAVIGATION_SUBHEADER_OTHER = "Other";
     /** Represents the item for settings in the navigation drawer. */
     public static final String NAVIGATION_ITEM_SETTINGS = "Settings";
+    /** Represents the item for help in the navigation drawer. */
+    public static final String NAVIGATION_ITEM_HELP = "Help";
     /** Represents the item for feedback in the navigation drawer. */
     public static final String NAVIGATION_ITEM_FEEDBACK = "Feedback";
 

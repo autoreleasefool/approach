@@ -9,7 +9,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"
-        android:background="@color/navigation_separator"
+        android:background="@color/divider"
         android:paddingTop="@dimen/navigation_separator_padding" />
 
     <TextView

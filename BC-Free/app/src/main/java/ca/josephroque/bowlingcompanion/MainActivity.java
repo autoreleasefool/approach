@@ -74,6 +74,7 @@ import ca.josephroque.bowlingcompanion.fragment.StatsFragment;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.utilities.AppRater;
 import ca.josephroque.bowlingcompanion.utilities.DataFormatter;
+import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
 import ca.josephroque.bowlingcompanion.utilities.EmailUtils;
 import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
 import ca.josephroque.bowlingcompanion.utilities.NavigationUtils;
@@ -211,6 +212,7 @@ public class MainActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        Theme.loadTheme(this);
 
         if (getResources().getBoolean(R.bool.portrait_only))
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
@@ -401,13 +403,10 @@ public class MainActivity
                 onBackPressed();
                 return true;
             case R.id.action_settings:
-                Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
-                startActivity(settingsIntent);
+                openSettings();
                 return true;
             case R.id.action_tutorial:
-                Intent tutorialIntent = new Intent(MainActivity.this, SplashActivity.class);
-                tutorialIntent.putExtra(Constants.EXTRA_IGNORE_WATCHED, true);
-                startActivity(tutorialIntent);
+                openSplashActivity();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -837,8 +836,10 @@ public class MainActivity
                 startActivity(Intent.createChooser(emailIntent, "Send mail..."));
                 break;
             case NavigationUtils.NAVIGATION_ITEM_SETTINGS:
-                Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
-                startActivity(settingsIntent);
+                openSettings();
+                break;
+            case NavigationUtils.NAVIGATION_ITEM_HELP:
+                openSplashActivity();
                 break;
             default:
                 // do nothing
@@ -908,15 +909,7 @@ public class MainActivity
     private void setupFloatingActionButton()
     {
         mFloatingActionButton = (FloatingActionButton) findViewById(R.id.fab_main);
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
-        {
-            final int underLollipopMargin = 8;
-            final float scale = getResources().getDisplayMetrics().density;
-            ViewGroup.MarginLayoutParams p =
-                    (ViewGroup.MarginLayoutParams) mFloatingActionButton.getLayoutParams();
-            p.setMargins(0, 0, DataFormatter.getPixelsFromDP(scale, underLollipopMargin), 0);
-            mFloatingActionButton.setLayoutParams(p);
-        }
+        DisplayUtils.fixFloatingActionButtonMargins(getResources(), mFloatingActionButton);
         mFloatingActionButton.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -957,6 +950,7 @@ public class MainActivity
         mListDrawerOptions.add(NavigationUtils.NAVIGATION_SUBHEADER_GAMES);
         mListDrawerOptions.add(NavigationUtils.NAVIGATION_SUBHEADER_OTHER);
         mListDrawerOptions.add(NavigationUtils.NAVIGATION_ITEM_FEEDBACK);
+        mListDrawerOptions.add(NavigationUtils.NAVIGATION_ITEM_HELP);
         mListDrawerOptions.add(NavigationUtils.NAVIGATION_ITEM_SETTINGS);
 
         mDrawerAdapter = new NavigationDrawerAdapter(this, mListDrawerOptions);
@@ -1062,6 +1056,25 @@ public class MainActivity
             getSupportActionBar().setTitle(resId);
         if (override)
             mTitle = resId;
+    }
+
+    /**
+     * Opens the settings activity.
+     */
+    private void openSettings()
+    {
+        Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
+        startActivity(settingsIntent);
+    }
+
+    /**
+     * Opens the tutorial.
+     */
+    private void openSplashActivity()
+    {
+        Intent tutorialIntent = new Intent(MainActivity.this, SplashActivity.class);
+        tutorialIntent.putExtra(Constants.EXTRA_IGNORE_WATCHED, true);
+        startActivity(tutorialIntent);
     }
 
     /**

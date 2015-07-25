@@ -71,12 +71,20 @@
     <string name="text_skip">Next</string>
 
     <!-- Tutorial -->
-    <string name="text_tutorial_add_bowler_league_series">Begin by creating a new bowler and some leagues. Use the \'+\' button to create a bowler, league or series. If you make a mistake, you can swipe to delete them.</string>
-    <string name="text_tutorial_leagues_events">You can create leagues or events. Leagues are a weekly recurring event of 1–5 games. Events are one time only, but can be up to 20 games.</string>
-    <string name="text_tutorial_pin_game">Record a game by tapping or swiping to knock over the pins you hit each ball. You can also tap to add pins back, add fouls, lock games and set match play results.</string>
+    <string name="text_tutorial_welcome">Welcome to your 5 Pin Bowling Companion!</string>
+    <string name="text_tutorial_add_bowler_league_series">Begin by creating a new bowler and leagues. Use the \'+\' button to create a new item, or swipe to delete anything you\'ve added.</string>
+    <string name="text_tutorial_leagues_events">You can create leagues or events. Leagues are a weekly event of 1–5 games. Events are one time only, but can be up to 20 games.</string>
+    <string name="text_tutorial_pin_game">Record a game by tapping or swiping to knock over the pins you hit each ball. You can also add fouls, lock games and set match play results.</string>
     <string name="text_tutorial_manual_game">If you need to add a game after you\'ve bowled it, you can using the menu button while editing a game to set a score manually.</string>
-    <string name="text_tutorial_statistics">You can view statistics by bowler, league, series or game by tapping the "Statistics" button anywhere you see it You can also tap a statistic to see a graph of it over time.</string>
-    <string name="text_tutorial_settings">Finally, the settings menu is available throughout the app and allows you to personalize the app to fit your needs.</string>
+    <string name="text_tutorial_statistics">You can view statistics by tapping the "Statistics" button anywhere you see it. You can also tap a statistic to see a graph of it over time.</string>
+    <string name="text_tutorial_settings">Finally, the settings menu is available throughout the app and allows you to personalize it to fit your needs.</string>
+    <string name="text_league_example">This is a league</string>
+    <string name="text_event_example">This is an event</string>
+    <string name="text_average_example">Average</string>
+    <string name="text_stat_name_example">Example stat</string>
+    <string name="text_stat_value_example">100% [10/10]</string>
+    <string name="text_example_bowler">Your name here</string>
+    <string name="text_example_league">Bowling Club</string>
 
     <!-- Content Descriptions -->
     <string name="description_lock_unlock">Lock or unlock game</string>

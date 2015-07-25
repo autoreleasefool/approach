@@ -3,7 +3,7 @@
     <!-- Fragment and list item backgrounds -->
     <color name="primary_background">#bdc3c7</color>
     <color name="secondary_background">#ecf0f1</color>
-    <color name="navigation_separator">#1e000000</color>
+    <color name="divider">#1e000000</color>
     <color name="indicator">#ffffff</color>
 
     <!-- Green theme values -->

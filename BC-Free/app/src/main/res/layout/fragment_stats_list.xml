@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/secondary_background"
-    android:childDivider="@color/navigation_separator"
+    android:childDivider="@color/divider"
     android:divider="@android:color/white"
     android:dividerHeight="1dp"
     tools:context="ca.josephroque.bowlingcompanion.fragment.StatsListFragment" />

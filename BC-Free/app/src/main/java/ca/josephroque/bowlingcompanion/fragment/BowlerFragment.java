@@ -33,7 +33,6 @@ import java.util.List;
 import java.util.Locale;
 
 import ca.josephroque.bowlingcompanion.Constants;
-import ca.josephroque.bowlingcompanion.DividerItemDecoration;
 import ca.josephroque.bowlingcompanion.MainActivity;
 import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.adapter.NameAverageAdapter;
@@ -143,8 +142,6 @@ public class BowlerFragment
 
         mRecyclerViewBowlers = (RecyclerView) rootView.findViewById(R.id.rv_names);
         mRecyclerViewBowlers.setHasFixedSize(true);
-        mRecyclerViewBowlers.addItemDecoration(new DividerItemDecoration(getActivity(),
-                LinearLayoutManager.VERTICAL));
 
         ItemTouchHelper.SimpleCallback touchCallback = new ItemTouchHelper.SimpleCallback(0,
                 ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT)

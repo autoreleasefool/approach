@@ -29,7 +29,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-import ca.josephroque.bowlingcompanion.DividerItemDecoration;
 import ca.josephroque.bowlingcompanion.MainActivity;
 import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.adapter.SeriesAdapter;
@@ -109,8 +108,6 @@ public class SeriesFragment
         /* View to display series dates and games to user. */
         RecyclerView recyclerViewSeries = (RecyclerView) rootView.findViewById(R.id.rv_names);
         recyclerViewSeries.setHasFixedSize(true);
-        recyclerViewSeries.addItemDecoration(new DividerItemDecoration(getActivity(),
-                LinearLayoutManager.VERTICAL));
 
         ItemTouchHelper.SimpleCallback touchCallback = new ItemTouchHelper.SimpleCallback(0,
                 ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT)
