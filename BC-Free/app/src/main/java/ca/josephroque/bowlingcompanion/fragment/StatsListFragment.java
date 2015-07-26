@@ -27,6 +27,7 @@ import ca.josephroque.bowlingcompanion.adapter.StatsExpandableAdapter;
 import ca.josephroque.bowlingcompanion.database.Contract;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.theme.Theme;
+import ca.josephroque.bowlingcompanion.utilities.StatUtils;
 
 /**
  * Created by Joseph Roque on 15-07-20. Manages the UI to display information about the stats in a
@@ -193,48 +194,68 @@ public class StatsListFragment
                                          String>>> namesAndValues)
     {
         //Stat names which could possibly be displayed, depending on stats being loaded
-        final String[] statNamesGeneral = {"Middle Hit", "Strikes", "Spare Conversions"};
-        final String[] statNamesFirstBall = {
-                "Head Pins", "Head Pins Spared", "Lefts",
-                "Lefts Spared", "Rights", "Rights Spared", "Aces", "Aces Spared", "Chop Offs",
-                "Chop Offs Spared", "Left Chop Offs", "Left Chop Offs Spared", "Right Chop Offs",
-                "Right Chop Offs Spared", "Splits", "Splits Spared", "Left Splits",
-                "Left Splits Spared", "Right Splits", "Right Splits Spared"
-        };
-        final String[] statNamesFoul = {"Fouls"};
-        final String[] statNamesTotalPins = {"Total Pins Left"};
-        final String[] statNamesAveragePins = {"Average Pins Left"};
-        final String[] statNamesMatch = {"Games Won", "Games Lost", "Games Tied"};
-        final String[] statNamesOverall = {
-                "Average", "High Single", "High Series", "Total Pinfall",
-                "# of Games"
-        };
 
         headers.add("General");
         namesAndValues.add(new ArrayList<AbstractMap.SimpleEntry<String, String>>());
         mStatsGeneral = 0;
         namesAndValues.get(mStatsGeneral).add(
                 new AbstractMap.SimpleEntry<>("Bowler", mainActivity.getBowlerName()));
-        for (String stat : statNamesGeneral)
-            namesAndValues.get(mStatsGeneral).add(new AbstractMap.SimpleEntry<>(stat, "--"));
+        int i = 0;
+        while (true)
+        {
+            try
+            {
+                namesAndValues.get(mStatsGeneral).add(new AbstractMap.SimpleEntry<>(
+                        StatUtils.getStatName(StatUtils.STAT_CATEGORY_GENERAL, i), "--"));
+            }
+            catch (IllegalArgumentException ex)
+            {
+                break;
+            }
+            i++;
+        }
 
         headers.add("First Ball");
         namesAndValues.add(new ArrayList<AbstractMap.SimpleEntry<String, String>>());
         mStatsFirstBall = 1;
-        for (String stat : statNamesFirstBall)
-            namesAndValues.get(mStatsFirstBall).add(new AbstractMap.SimpleEntry<>(stat, "--"));
+        i = 0;
+        while (true)
+        {
+            try
+            {
+                namesAndValues.get(mStatsFirstBall).add(new AbstractMap.SimpleEntry<>(
+                        StatUtils.getStatName(StatUtils.STAT_CATEGORY_FIRST_BALL, i), "--"));
+            }
+            catch (IllegalArgumentException ex)
+            {
+                break;
+            }
+            i++;
+        }
 
         headers.add("Fouls");
         namesAndValues.add(new ArrayList<AbstractMap.SimpleEntry<String, String>>());
         mStatsFouls = 2;
-        for (String stat : statNamesFoul)
-            namesAndValues.get(mStatsFouls).add(new AbstractMap.SimpleEntry<>(stat, "--"));
+        i = 0;
+        while (true)
+        {
+            try
+            {
+                namesAndValues.get(mStatsFouls).add(new AbstractMap.SimpleEntry<>(
+                        StatUtils.getStatName(StatUtils.STAT_CATEGORY_FOULS, i), "--"));
+            }
+            catch (IllegalArgumentException ex)
+            {
+                break;
+            }
+            i++;
+        }
 
         headers.add("Pins Left on Deck");
         namesAndValues.add(new ArrayList<AbstractMap.SimpleEntry<String, String>>());
         mStatsPins = 3;
-        for (String stat : statNamesTotalPins)
-            namesAndValues.get(mStatsPins).add(new AbstractMap.SimpleEntry<>(stat, "--"));
+        namesAndValues.get(mStatsPins).add(new AbstractMap.SimpleEntry<>(StatUtils.getStatName(
+                StatUtils.STAT_CATEGORY_PINS, StatUtils.STAT_PINS_LEFT), "--"));
 
         if (statsToLoad < StatsFragment.LOADING_SERIES_STATS)
         {
@@ -244,30 +265,52 @@ public class StatsListFragment
             final byte numberOfGames = (statsToLoad >= StatsFragment.LOADING_LEAGUE_STATS
                     ? ((MainActivity) getActivity()).getNumberOfGames()
                     : 20);
-            for (byte i = 0; i < numberOfGames; i++)
+            for (i = 0; i < numberOfGames; i++)
                 namesAndValues.get(mStatsGameAverage).add(
-                        new AbstractMap.SimpleEntry<>("Game " + (i + 1), "--"));
+                        new AbstractMap.SimpleEntry<>(StatUtils.getStatName(
+                                StatUtils.STAT_CATEGORY_AVERAGE_BY_GAME, i), "--"));
         }
-
 
         if (statsToLoad < StatsFragment.LOADING_GAME_STATS)
         {
-            for (String stat : statNamesAveragePins)
-                namesAndValues.get(mStatsPins).add(new AbstractMap.SimpleEntry<>(stat, "--"));
+            namesAndValues.get(mStatsPins).add(new AbstractMap.SimpleEntry<>(StatUtils.getStatName(
+                    StatUtils.STAT_CATEGORY_PINS, StatUtils.STAT_PINS_AVERAGE), "--"));
 
             headers.add("Match Play");
             namesAndValues.add(new ArrayList<AbstractMap.SimpleEntry<String, String>>());
             mStatsMatch = (byte) (mStatsGameAverage == -1
                     ? 4
                     : 5);
-            for (String stat : statNamesMatch)
-                namesAndValues.get(mStatsMatch).add(new AbstractMap.SimpleEntry<>(stat, "--"));
+            while (true)
+            {
+                try
+                {
+                    namesAndValues.get(mStatsMatch).add(new AbstractMap.SimpleEntry<>(
+                            StatUtils.getStatName(StatUtils.STAT_CATEGORY_MATCH_PLAY, i), "--"));
+                }
+                catch (IllegalArgumentException ex)
+                {
+                    break;
+                }
+                i++;
+            }
 
             headers.add("Overall");
             namesAndValues.add(new ArrayList<AbstractMap.SimpleEntry<String, String>>());
             mStatsOverall = (byte) (mStatsMatch + 1);
-            for (String stat : statNamesOverall)
-                namesAndValues.get(mStatsOverall).add(new AbstractMap.SimpleEntry<>(stat, "--"));
+            while (true)
+            {
+                try
+                {
+                    namesAndValues.get(mStatsOverall).add(new AbstractMap.SimpleEntry<>(
+                            StatUtils.getStatName(StatUtils.STAT_CATEGORY_OVERALL, i), "--"));
+                }
+                catch (IllegalArgumentException ex)
+                {
+                    break;
+                }
+                i++;
+            }
         }
     }
 
@@ -390,18 +433,18 @@ public class StatsListFragment
                         if (matchResults > 0)
                             statValues[fragment.mStatsMatch][matchResults - 1]++;
 
-                        if (statValues[fragment.mStatsOverall][Constants.STAT_HIGH_SINGLE]
+                        if (statValues[fragment.mStatsOverall][StatUtils.STAT_HIGH_SINGLE]
                                 < gameScore)
-                            statValues[fragment.mStatsOverall][Constants.STAT_HIGH_SINGLE]
+                            statValues[fragment.mStatsOverall][StatUtils.STAT_HIGH_SINGLE]
                                     = gameScore;
-                        statValues[fragment.mStatsOverall][Constants.STAT_TOTAL_PINS] += gameScore;
-                        statValues[fragment.mStatsOverall][Constants.STAT_NUMBER_OF_GAMES]++;
+                        statValues[fragment.mStatsOverall][StatUtils.STAT_TOTAL_PINS] += gameScore;
+                        statValues[fragment.mStatsOverall][StatUtils.STAT_NUMBER_OF_GAMES]++;
 
                         if (gameNumber == 1)
                         {
-                            if (statValues[fragment.mStatsOverall][Constants.STAT_HIGH_SERIES]
+                            if (statValues[fragment.mStatsOverall][StatUtils.STAT_HIGH_SERIES]
                                     < seriesTotal)
-                                statValues[fragment.mStatsOverall][Constants.STAT_HIGH_SERIES]
+                                statValues[fragment.mStatsOverall][StatUtils.STAT_HIGH_SERIES]
                                         = seriesTotal;
                             seriesTotal = gameScore;
                         }
@@ -450,7 +493,7 @@ public class StatsListFragment
                         totalShotsAtMiddle++;
                         int ballValue = fragment.getFirstBallValue(pinState[0]);
                         if (ballValue != -1)
-                            statValues[fragment.mStatsGeneral][Constants.STAT_MIDDLE_HIT]++;
+                            statValues[fragment.mStatsGeneral][StatUtils.STAT_MIDDLE_HIT]++;
                         fragment.increaseFirstBallStat(ballValue, statValues, 0);
                         if (ballValue < 5 && ballValue != Constants.BALL_VALUE_STRIKE)
                             spareChances++;
@@ -459,7 +502,7 @@ public class StatsListFragment
                         {
                             if (Arrays.equals(pinState[1], Constants.FRAME_PINS_DOWN))
                             {
-                                statValues[fragment.mStatsGeneral][Constants.STAT_SPARE_CONVERSIONS]++;
+                                statValues[fragment.mStatsGeneral][StatUtils.STAT_SPARE_CONVERSIONS]++;
                                 fragment.increaseFirstBallStat(ballValue, statValues, 1);
 
                                 if (ballValue >= 5)
@@ -467,7 +510,7 @@ public class StatsListFragment
                             }
                             else
                             {
-                                statValues[fragment.mStatsPins][Constants.STAT_PINS_LEFT] +=
+                                statValues[fragment.mStatsPins][StatUtils.STAT_PINS_LEFT] +=
                                         fragment.countPinsLeftStanding(pinState[2]);
                             }
                         }
@@ -476,14 +519,14 @@ public class StatsListFragment
                             totalShotsAtMiddle++;
                             ballValue = fragment.getFirstBallValue(pinState[1]);
                             if (ballValue != -1)
-                                statValues[fragment.mStatsGeneral][Constants.STAT_MIDDLE_HIT]++;
+                                statValues[fragment.mStatsGeneral][StatUtils.STAT_MIDDLE_HIT]++;
                             fragment.increaseFirstBallStat(ballValue, statValues, 0);
 
                             if (ballValue != 0)
                             {
                                 if (Arrays.equals(pinState[2], Constants.FRAME_PINS_DOWN))
                                 {
-                                    statValues[fragment.mStatsGeneral][Constants.STAT_SPARE_CONVERSIONS]++;
+                                    statValues[fragment.mStatsGeneral][StatUtils.STAT_SPARE_CONVERSIONS]++;
                                     fragment.increaseFirstBallStat(ballValue, statValues, 1);
 
                                     if (ballValue >= 5)
@@ -491,7 +534,7 @@ public class StatsListFragment
                                 }
                                 else
                                 {
-                                    statValues[fragment.mStatsPins][Constants.STAT_PINS_LEFT] +=
+                                    statValues[fragment.mStatsPins][StatUtils.STAT_PINS_LEFT] +=
                                             fragment.countPinsLeftStanding(pinState[2]);
                                 }
                             }
@@ -500,12 +543,12 @@ public class StatsListFragment
                                 totalShotsAtMiddle++;
                                 ballValue = fragment.getFirstBallValue(pinState[2]);
                                 if (ballValue != -1)
-                                    statValues[fragment.mStatsGeneral][Constants.STAT_MIDDLE_HIT]++;
+                                    statValues[fragment.mStatsGeneral][StatUtils.STAT_MIDDLE_HIT]++;
                                 fragment.increaseFirstBallStat(ballValue, statValues, 0);
 
                                 if (ballValue != 0)
                                 {
-                                    statValues[fragment.mStatsPins][Constants.STAT_PINS_LEFT] +=
+                                    statValues[fragment.mStatsPins][StatUtils.STAT_PINS_LEFT] +=
                                             fragment.countPinsLeftStanding(pinState[2]);
                                 }
                             }
@@ -516,7 +559,7 @@ public class StatsListFragment
                         totalShotsAtMiddle++;
                         int ballValue = fragment.getFirstBallValue(pinState[0]);
                         if (ballValue != -1)
-                            statValues[fragment.mStatsGeneral][Constants.STAT_MIDDLE_HIT]++;
+                            statValues[fragment.mStatsGeneral][StatUtils.STAT_MIDDLE_HIT]++;
                         fragment.increaseFirstBallStat(ballValue, statValues, 0);
 
                         if (ballValue < 5 && ballValue != Constants.BALL_VALUE_STRIKE)
@@ -526,7 +569,7 @@ public class StatsListFragment
                         {
                             if (Arrays.equals(pinState[1], Constants.FRAME_PINS_DOWN))
                             {
-                                statValues[fragment.mStatsGeneral][Constants.STAT_SPARE_CONVERSIONS]++;
+                                statValues[fragment.mStatsGeneral][StatUtils.STAT_SPARE_CONVERSIONS]++;
                                 fragment.increaseFirstBallStat(ballValue, statValues, 1);
 
                                 if (ballValue >= 5)
@@ -534,7 +577,7 @@ public class StatsListFragment
                             }
                             else
                             {
-                                statValues[fragment.mStatsPins][Constants.STAT_PINS_LEFT] +=
+                                statValues[fragment.mStatsPins][StatUtils.STAT_PINS_LEFT] +=
                                         fragment.countPinsLeftStanding(pinState[2]);
                             }
                         }
@@ -546,8 +589,8 @@ public class StatsListFragment
 
             if (toLoad != StatsFragment.LOADING_GAME_STATS)
             {
-                if (statValues[fragment.mStatsOverall][Constants.STAT_HIGH_SERIES] < seriesTotal)
-                    statValues[fragment.mStatsOverall][Constants.STAT_HIGH_SERIES] = seriesTotal;
+                if (statValues[fragment.mStatsOverall][StatUtils.STAT_HIGH_SERIES] < seriesTotal)
+                    statValues[fragment.mStatsOverall][StatUtils.STAT_HIGH_SERIES] = seriesTotal;
 
                 if (toLoad != StatsFragment.LOADING_SERIES_STATS)
                 {
@@ -557,14 +600,14 @@ public class StatsListFragment
                                 : 0;
                 }
 
-                if (statValues[fragment.mStatsOverall][Constants.STAT_NUMBER_OF_GAMES] > 0)
+                if (statValues[fragment.mStatsOverall][StatUtils.STAT_NUMBER_OF_GAMES] > 0)
                 {
-                    statValues[fragment.mStatsOverall][Constants.STAT_AVERAGE] =
-                            statValues[fragment.mStatsOverall][Constants.STAT_TOTAL_PINS]
-                                    / statValues[fragment.mStatsOverall][Constants.STAT_NUMBER_OF_GAMES];
-                    statValues[fragment.mStatsPins][Constants.STAT_PINS_AVERAGE] =
-                            statValues[fragment.mStatsPins][Constants.STAT_PINS_LEFT]
-                                    / statValues[fragment.mStatsOverall][Constants.STAT_NUMBER_OF_GAMES];
+                    statValues[fragment.mStatsOverall][StatUtils.STAT_AVERAGE] =
+                            statValues[fragment.mStatsOverall][StatUtils.STAT_TOTAL_PINS]
+                                    / statValues[fragment.mStatsOverall][StatUtils.STAT_NUMBER_OF_GAMES];
+                    statValues[fragment.mStatsPins][StatUtils.STAT_PINS_AVERAGE] =
+                            statValues[fragment.mStatsPins][StatUtils.STAT_PINS_LEFT]
+                                    / statValues[fragment.mStatsOverall][StatUtils.STAT_NUMBER_OF_GAMES];
                 }
             }
             cursor.close();
@@ -611,35 +654,35 @@ public class StatsListFragment
     {
         int currentStatPosition = statOffset;
         final DecimalFormat decimalFormat = new DecimalFormat("##0.#");
-        if (statValues[mStatsGeneral][Constants.STAT_MIDDLE_HIT] > 0)
+        if (statValues[mStatsGeneral][StatUtils.STAT_MIDDLE_HIT] > 0)
         {
             listStatNamesAndValues.get(mStatsGeneral).get(currentStatPosition).setValue(
-                    decimalFormat.format(statValues[mStatsGeneral][Constants.STAT_MIDDLE_HIT]
+                    decimalFormat.format(statValues[mStatsGeneral][StatUtils.STAT_MIDDLE_HIT]
                             / (double) totalShotsAtMiddle * 100)
-                            + "% [" + statValues[mStatsGeneral][Constants.STAT_MIDDLE_HIT] + "/"
+                            + "% [" + statValues[mStatsGeneral][StatUtils.STAT_MIDDLE_HIT] + "/"
                             + totalShotsAtMiddle + "]");
         }
         currentStatPosition++;
-        if (statValues[mStatsGeneral][Constants.STAT_STRIKES] > 0)
+        if (statValues[mStatsGeneral][StatUtils.STAT_STRIKES] > 0)
         {
             listStatNamesAndValues.get(mStatsGeneral).get(currentStatPosition).setValue(
-                    decimalFormat.format(statValues[mStatsGeneral][Constants.STAT_STRIKES]
+                    decimalFormat.format(statValues[mStatsGeneral][StatUtils.STAT_STRIKES]
                             / (double) totalShotsAtMiddle * 100)
-                            + "% [" + statValues[mStatsGeneral][Constants.STAT_STRIKES] + "/"
+                            + "% [" + statValues[mStatsGeneral][StatUtils.STAT_STRIKES] + "/"
                             + totalShotsAtMiddle + "]");
         }
         currentStatPosition++;
-        if (statValues[mStatsGeneral][Constants.STAT_SPARE_CONVERSIONS] > 0)
+        if (statValues[mStatsGeneral][StatUtils.STAT_SPARE_CONVERSIONS] > 0)
         {
             listStatNamesAndValues.get(mStatsGeneral).get(currentStatPosition).setValue(
-                    decimalFormat.format(statValues[mStatsGeneral][Constants.STAT_SPARE_CONVERSIONS]
+                    decimalFormat.format(statValues[mStatsGeneral][StatUtils.STAT_SPARE_CONVERSIONS]
                             / (double) spareChances * 100)
-                            + "% [" + statValues[mStatsGeneral][Constants.STAT_SPARE_CONVERSIONS]
+                            + "% [" + statValues[mStatsGeneral][StatUtils.STAT_SPARE_CONVERSIONS]
                             + "/" + spareChances + "]");
         }
 
         currentStatPosition = 0;
-        for (int i = 0; i < Constants.STAT_RIGHT_SPLIT_SPARED; i += 2, currentStatPosition += 2)
+        for (int i = 0; i < StatUtils.STAT_RIGHT_SPLIT_SPARED; i += 2, currentStatPosition += 2)
         {
             if (statValues[mStatsFirstBall][i] > 0)
             {
@@ -797,36 +840,36 @@ public class StatsListFragment
             case Constants.BALL_VALUE_STRIKE:
                 if (offset == 0)
                 {
-                    statValues[mStatsGeneral][Constants.STAT_STRIKES]++;
+                    statValues[mStatsGeneral][StatUtils.STAT_STRIKES]++;
                 }
                 break;
             case Constants.BALL_VALUE_LEFT:
-                statValues[mStatsFirstBall][Constants.STAT_LEFT + offset]++;
+                statValues[mStatsFirstBall][StatUtils.STAT_LEFT + offset]++;
                 break;
             case Constants.BALL_VALUE_RIGHT:
-                statValues[mStatsFirstBall][Constants.STAT_RIGHT + offset]++;
+                statValues[mStatsFirstBall][StatUtils.STAT_RIGHT + offset]++;
                 break;
             case Constants.BALL_VALUE_LEFT_CHOP:
-                statValues[mStatsFirstBall][Constants.STAT_LEFT_CHOP + offset]++;
-                statValues[mStatsFirstBall][Constants.STAT_CHOP + offset]++;
+                statValues[mStatsFirstBall][StatUtils.STAT_LEFT_CHOP + offset]++;
+                statValues[mStatsFirstBall][StatUtils.STAT_CHOP + offset]++;
                 break;
             case Constants.BALL_VALUE_RIGHT_CHOP:
-                statValues[mStatsFirstBall][Constants.STAT_RIGHT_CHOP + offset]++;
-                statValues[mStatsFirstBall][Constants.STAT_CHOP + offset]++;
+                statValues[mStatsFirstBall][StatUtils.STAT_RIGHT_CHOP + offset]++;
+                statValues[mStatsFirstBall][StatUtils.STAT_CHOP + offset]++;
                 break;
             case Constants.BALL_VALUE_ACE:
-                statValues[mStatsFirstBall][Constants.STAT_ACES + offset]++;
+                statValues[mStatsFirstBall][StatUtils.STAT_ACES + offset]++;
                 break;
             case Constants.BALL_VALUE_LEFT_SPLIT:
-                statValues[mStatsFirstBall][Constants.STAT_LEFT_SPLIT + offset]++;
-                statValues[mStatsFirstBall][Constants.STAT_SPLIT + offset]++;
+                statValues[mStatsFirstBall][StatUtils.STAT_LEFT_SPLIT + offset]++;
+                statValues[mStatsFirstBall][StatUtils.STAT_SPLIT + offset]++;
                 break;
             case Constants.BALL_VALUE_RIGHT_SPLIT:
-                statValues[mStatsFirstBall][Constants.STAT_RIGHT_SPLIT + offset]++;
-                statValues[mStatsFirstBall][Constants.STAT_SPLIT + offset]++;
+                statValues[mStatsFirstBall][StatUtils.STAT_RIGHT_SPLIT + offset]++;
+                statValues[mStatsFirstBall][StatUtils.STAT_SPLIT + offset]++;
                 break;
             case Constants.BALL_VALUE_HEAD_PIN:
-                statValues[mStatsFirstBall][Constants.STAT_HEAD_PINS + offset]++;
+                statValues[mStatsFirstBall][StatUtils.STAT_HEAD_PINS + offset]++;
             default:
                 // does nothing
         }
