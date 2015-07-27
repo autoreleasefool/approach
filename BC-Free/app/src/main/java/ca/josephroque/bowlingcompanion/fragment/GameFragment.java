@@ -222,9 +222,6 @@ public class GameFragment
 
                     // Flip pin image while user is dragging
                     pinTouched = (int) ((event.getX() / mLayoutWidth) * 5);
-                    Log.i(TAG,
-                            "X: " + event.getX() + " Width: " + mLayoutWidth + " Pin: "
-                                    + pinTouched);
                     if (mImageButtonPins[pinTouched].isEnabled()
                             && mPinState[mCurrentFrame][mCurrentBall][pinTouched] == mInitialState
                             && !mPinAltered[pinTouched])
@@ -484,7 +481,6 @@ public class GameFragment
         mImageViewMatchPlay.setOnClickListener(onClickListeners[LISTENER_OTHER]);
 
         mTextViewManualScore = (TextView) rootView.findViewById(R.id.tv_manual_score);
-        //mRelativeLayoutGameToolbar = (RelativeLayout) rootView.findViewById(R.id.rl_game_toolbar);
 
         mTextViewAutoAdvance = (TextView) rootView.findViewById(R.id.tv_auto_advance_status);
 
@@ -678,17 +674,6 @@ public class GameFragment
         {
             rootView.findViewById(R.id.rl_game_toolbar).setBackgroundColor(
                     Theme.getSecondaryThemeColor());
-
-            /*FloatingActionButton fab =
-                    (FloatingActionButton) rootView.findViewById(R.id.fab_next_ball);
-            fab.setColorPressed(Theme.getPrimaryThemeColor());
-            fab.setColorNormal(Theme.getPrimaryThemeColor());
-            fab.setColorRipple(Theme.getTertiaryThemeColor());
-
-            fab = (FloatingActionButton) rootView.findViewById(R.id.fab_prev_ball);
-            fab.setColorPressed(Theme.getPrimaryThemeColor());
-            fab.setColorNormal(Theme.getPrimaryThemeColor());
-            fab.setColorRipple(Theme.getTertiaryThemeColor());*/
         }
     }
 
@@ -723,6 +708,8 @@ public class GameFragment
         mGameScoresMinusFouls[mCurrentGame] = scoreToSet;
         clearAllText(false);
         getActivity().supportInvalidateOptionsMenu();
+        mCallback.updateGameScore((byte) (mCurrentGame + 1),
+                mGameScoresMinusFouls[mCurrentGame]);
         saveGame(true);
     }
 
