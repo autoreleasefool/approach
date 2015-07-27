@@ -39,6 +39,10 @@ public class StatsListFragment
         ExpandableListView.OnChildClickListener
 {
 
+    /** Identifies output from this class in Logcat. */
+    @SuppressWarnings("unused")
+    private static final String TAG = "StatsListFragment";
+
     /** Adapter to manage data displayed in fragment. */
     private StatsExpandableAdapter mAdapterStats;
 

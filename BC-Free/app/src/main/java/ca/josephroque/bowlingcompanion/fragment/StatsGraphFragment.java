@@ -4,6 +4,7 @@ package ca.josephroque.bowlingcompanion.fragment;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
@@ -12,13 +13,24 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 
 import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.MainActivity;
 import ca.josephroque.bowlingcompanion.R;
-import ca.josephroque.bowlingcompanion.database.Contract;
+import ca.josephroque.bowlingcompanion.database.Contract.FrameEntry;
+import ca.josephroque.bowlingcompanion.database.Contract.GameEntry;
+import ca.josephroque.bowlingcompanion.database.Contract.SeriesEntry;
+import ca.josephroque.bowlingcompanion.database.Contract.LeagueEntry;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.theme.Theme;
+import ca.josephroque.bowlingcompanion.utilities.StatUtils;
 
 /**
  * Created by Joseph Roque on 15-07-20. Manages the UI to display information about the stats in a
@@ -29,12 +41,21 @@ public class StatsGraphFragment
         implements Theme.ChangeableTheme
 {
 
+    /** Identifies output from this class in Logcat. */
+    @SuppressWarnings("unused")
+    private static final String TAG = "StatsGraphFragment";
+
+    /** Represents the stat category being displayed. */
     private static final String ARG_STAT_CATEGORY = "arg_stat_cat";
+    /** Represents the stat index being displayed. */
     private static final String ARG_STAT_INDEX = "arg_stat_index";
 
+    /** LineChart to display statistics over time. */
     private LineChart mLineChartStats;
 
+    /** The category of the stat being displayed. */
     private int mStatCategory;
+    /** The index of the stat being displayed. */
     private int mStatIndex;
 
     /**
@@ -91,35 +112,19 @@ public class StatsGraphFragment
             //on what data is available in the parent activity at the time
             byte statsToLoad;
             int titleToSet;
-            if (mainActivity.getGameId() == -1)
+            if (mainActivity.getLeagueId() == -1)
             {
-                if (mainActivity.getSeriesId() == -1)
-                {
-                    if (mainActivity.getLeagueId() == -1)
-                    {
-                        titleToSet = R.string.title_stats_bowler;
-                        statsToLoad = StatsFragment.LOADING_BOWLER_STATS;
-                    }
-                    else
-                    {
-                        titleToSet = R.string.title_stats_league;
-                        statsToLoad = StatsFragment.LOADING_LEAGUE_STATS;
-                    }
-                }
-                else
-                {
-                    titleToSet = R.string.title_stats_series;
-                    statsToLoad = StatsFragment.LOADING_SERIES_STATS;
-                }
+                titleToSet = R.string.title_stats_bowler;
+                statsToLoad = StatsFragment.LOADING_BOWLER_STATS;
             }
             else
             {
-                titleToSet = R.string.title_stats_game;
-                statsToLoad = StatsFragment.LOADING_GAME_STATS;
+                titleToSet = R.string.title_stats_league;
+                statsToLoad = StatsFragment.LOADING_LEAGUE_STATS;
             }
 
             mainActivity.setActionBarTitle(titleToSet, true);
-            //new LoadStatsGraphTask().execute(statsToLoad);
+            new LoadStatsGraphTask(this).execute(statsToLoad);
         }
 
         updateTheme();
@@ -129,6 +134,278 @@ public class StatsGraphFragment
     public void updateTheme()
     {
         // does nothing right now
+    }
+
+    /**
+     * Loads data from the database and calculates relevant stats depending on which type of stats
+     * are being loaded.
+     */
+    private static final class LoadStatsGraphTask
+            extends AsyncTask<Byte, Void, LineData>
+    {
+
+        /** Weak reference to the parent fragment. */
+        private WeakReference<StatsGraphFragment> mFragment;
+
+        /**
+         * Assigns a weak reference to the parent fragment.
+         *
+         * @param fragment parent fragment
+         */
+        private LoadStatsGraphTask(StatsGraphFragment fragment)
+        {
+            mFragment = new WeakReference<>(fragment);
+        }
+
+        @Override
+        protected LineData doInBackground(Byte... statsToLoad)
+        {
+            StatsGraphFragment fragment = mFragment.get();
+            if (fragment == null)
+                return null;
+            MainActivity mainActivity = (MainActivity) fragment.getActivity();
+            if (mainActivity == null)
+                return null;
+            MainActivity.waitForSaveThreads(new WeakReference<>(mainActivity));
+
+            final byte toLoad = statsToLoad[0];
+            Cursor cursor;
+
+            switch (toLoad)
+            {
+                case StatsFragment.LOADING_LEAGUE_STATS:
+                    cursor = fragment.getBowlerOrLeagueCursor(true);
+                    break;
+                case StatsFragment.LOADING_BOWLER_STATS:
+                    cursor = fragment.getBowlerOrLeagueCursor(false);
+                    break;
+                default:
+                    throw new IllegalArgumentException("invalid value for toLoad: " + toLoad
+                            + ". must be between 0 and 1 (inclusive)");
+            }
+
+            List<Entry> listEntries = new ArrayList<>();
+            List<String> listLabels = new ArrayList<>();
+            compileGraphData(fragment, cursor, listEntries, listLabels);
+            if (!cursor.isClosed())
+                cursor.close();
+            LineDataSet dataset = new LineDataSet(listEntries,
+                    StatUtils.getStatName(fragment.mStatCategory, fragment.mStatIndex));
+
+            List<LineDataSet> datasets = new ArrayList<>();
+            datasets.add(dataset);
+
+            return new LineData(listLabels, datasets);
+        }
+
+        @Override
+        protected void onPostExecute(LineData result)
+        {
+            StatsGraphFragment fragment = mFragment.get();
+            if (fragment == null || result == null)
+                return;
+
+            fragment.mLineChartStats.setDescription(StatUtils.getStatName(fragment.mStatCategory,
+                    fragment.mStatIndex));
+            fragment.mLineChartStats.setData(result);
+            fragment.mLineChartStats.invalidate();
+        }
+
+        /**
+         * Invokes relevant methods for getting the graph data for a stat.
+         *
+         * @param fragment parent fragment
+         * @param cursor bowler / league data
+         * @param listEntries list of data entries
+         * @param listLabels list of labels for x axis
+         */
+        private void compileGraphData(StatsGraphFragment fragment,
+                                      Cursor cursor,
+                                      List<Entry> listEntries,
+                                      List<String> listLabels)
+        {
+            switch (fragment.mStatCategory)
+            {
+                case StatUtils.STAT_CATEGORY_GENERAL:
+                    compileGeneralStats(fragment, cursor, listEntries, listLabels);
+                    break;
+                case StatUtils.STAT_CATEGORY_FIRST_BALL:
+                    compileFirstBallStats(fragment, cursor, listEntries, listLabels);
+                    break;
+                case StatUtils.STAT_CATEGORY_FOULS:
+                    compileFoulStats(fragment, cursor, listEntries, listLabels);
+                    break;
+                case StatUtils.STAT_CATEGORY_PINS:
+                    compilePinStats(fragment, cursor, listEntries, listLabels);
+                    break;
+                case StatUtils.STAT_CATEGORY_AVERAGE_BY_GAME:
+                    compileAverageStats(fragment, cursor, listEntries, listLabels);
+                    break;
+                case StatUtils.STAT_CATEGORY_MATCH_PLAY:
+                    compileMatchPlayStats(fragment, cursor, listEntries, listLabels);
+                    break;
+                case StatUtils.STAT_CATEGORY_OVERALL:
+                    compileOverallStats(fragment, cursor, listEntries, listLabels);
+                    break;
+                default:
+                    throw new IllegalStateException(
+                            "invalid stat category: " + fragment.mStatCategory);
+            }
+        }
+
+        /**
+         * Generates line chart data for general stats.
+         *
+         * @param fragment parent fragment
+         * @param cursor bowler / league data
+         * @param listEntries list of data entries
+         * @param listLabels list of labels for x axis
+         */
+        private void compileGeneralStats(StatsGraphFragment fragment,
+                                         Cursor cursor,
+                                         List<Entry> listEntries,
+                                         List<String> listLabels)
+        {
+            if (cursor.moveToFirst())
+            {
+                while (!cursor.isAfterLast())
+                {
+                    cursor.moveToNext();
+                }
+            }
+        }
+
+        /**
+         * Generates line chart data for first ball stats.
+         *
+         * @param fragment parent fragment
+         * @param cursor bowler / league data
+         * @param listEntries list of data entries
+         * @param listLabels list of labels for x axis
+         */
+        private void compileFirstBallStats(StatsGraphFragment fragment,
+                                           Cursor cursor,
+                                           List<Entry> listEntries,
+                                           List<String> listLabels)
+        {
+            if (cursor.moveToFirst())
+            {
+                while (!cursor.isAfterLast())
+                {
+                    cursor.moveToNext();
+                }
+            }
+        }
+
+        /**
+         * Generates line chart data for foul stats.
+         *
+         * @param fragment parent fragment
+         * @param cursor bowler / league data
+         * @param listEntries list of data entries
+         * @param listLabels list of labels for x axis
+         */
+        private void compileFoulStats(StatsGraphFragment fragment,
+                                      Cursor cursor,
+                                      List<Entry> listEntries,
+                                      List<String> listLabels)
+        {
+            if (cursor.moveToFirst())
+            {
+                while (!cursor.isAfterLast())
+                {
+                    cursor.moveToNext();
+                }
+            }
+        }
+
+        /**
+         * Generates line chart data for pin stats.
+         *
+         * @param fragment parent fragment
+         * @param cursor bowler / league data
+         * @param listEntries list of data entries
+         * @param listLabels list of labels for x axis
+         */
+        private void compilePinStats(StatsGraphFragment fragment,
+                                     Cursor cursor,
+                                     List<Entry> listEntries,
+                                     List<String> listLabels)
+        {
+            if (cursor.moveToFirst())
+            {
+                while (!cursor.isAfterLast())
+                {
+                    cursor.moveToNext();
+                }
+            }
+        }
+
+        /**
+         * Generates line chart data for game average stats.
+         *
+         * @param fragment parent fragment
+         * @param cursor bowler / league data
+         * @param listEntries list of data entries
+         * @param listLabels list of labels for x axis
+         */
+        private void compileAverageStats(StatsGraphFragment fragment,
+                                         Cursor cursor,
+                                         List<Entry> listEntries,
+                                         List<String> listLabels)
+        {
+            if (cursor.moveToFirst())
+            {
+                while (!cursor.isAfterLast())
+                {
+                    cursor.moveToNext();
+                }
+            }
+        }
+
+        /**
+         * Generates line chart data for match play stats.
+         *
+         * @param fragment parent fragment
+         * @param cursor bowler / league data
+         * @param listEntries list of data entries
+         * @param listLabels list of labels for x axis
+         */
+        private void compileMatchPlayStats(StatsGraphFragment fragment,
+                                           Cursor cursor,
+                                           List<Entry> listEntries,
+                                           List<String> listLabels)
+        {
+            if (cursor.moveToFirst())
+            {
+                while (!cursor.isAfterLast())
+                {
+                    cursor.moveToNext();
+                }
+            }
+        }
+
+        /**
+         * Generates line chart data for overall stats.
+         *
+         * @param fragment parent fragment
+         * @param cursor bowler / league data
+         * @param listEntries list of data entries
+         * @param listLabels list of labels for x axis
+         */
+        private void compileOverallStats(StatsGraphFragment fragment,
+                                         Cursor cursor,
+                                         List<Entry> listEntries,
+                                         List<String> listLabels)
+        {
+            if (cursor.moveToFirst())
+            {
+                while (!cursor.isAfterLast())
+                {
+                    cursor.moveToNext();
+                }
+            }
+        }
     }
 
     /**
@@ -147,39 +424,40 @@ public class StatsGraphFragment
         SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getReadableDatabase();
 
         String rawStatsQuery = "SELECT "
-                + Contract.GameEntry.COLUMN_SCORE + ", "
-                + Contract.GameEntry.COLUMN_GAME_NUMBER + ", "
-                + Contract.GameEntry.COLUMN_IS_MANUAL + ", "
-                + Contract.GameEntry.COLUMN_MATCH_PLAY + ", "
-                + Contract.FrameEntry.COLUMN_FRAME_NUMBER + ", "
-                + Contract.FrameEntry.COLUMN_IS_ACCESSED + ", "
-                + Contract.FrameEntry.COLUMN_FOULS + ", "
-                + Contract.FrameEntry.COLUMN_PIN_STATE[0] + ", "
-                + Contract.FrameEntry.COLUMN_PIN_STATE[1] + ", "
-                + Contract.FrameEntry.COLUMN_PIN_STATE[2]
-                + " FROM " + Contract.LeagueEntry.TABLE_NAME + " AS league"
-                + " INNER JOIN " + Contract.SeriesEntry.TABLE_NAME + " AS series"
-                + " ON league." + Contract.LeagueEntry._ID + "=series."
-                + Contract.SeriesEntry.COLUMN_LEAGUE_ID
-                + " INNER JOIN " + Contract.GameEntry.TABLE_NAME + " AS game"
-                + " ON series." + Contract.SeriesEntry._ID + "=game."
-                + Contract.GameEntry.COLUMN_SERIES_ID
-                + " INNER JOIN " + Contract.FrameEntry.TABLE_NAME + " AS frame"
-                + " ON game." + Contract.GameEntry._ID + "=frame."
-                + Contract.FrameEntry.COLUMN_GAME_ID
+                + SeriesEntry.COLUMN_SERIES_DATE + ", "
+                + GameEntry.COLUMN_SCORE + ", "
+                + GameEntry.COLUMN_GAME_NUMBER + ", "
+                + GameEntry.COLUMN_IS_MANUAL + ", "
+                + GameEntry.COLUMN_MATCH_PLAY + ", "
+                + FrameEntry.COLUMN_FRAME_NUMBER + ", "
+                + FrameEntry.COLUMN_IS_ACCESSED + ", "
+                + FrameEntry.COLUMN_FOULS + ", "
+                + FrameEntry.COLUMN_PIN_STATE[0] + ", "
+                + FrameEntry.COLUMN_PIN_STATE[1] + ", "
+                + FrameEntry.COLUMN_PIN_STATE[2]
+                + " FROM " + LeagueEntry.TABLE_NAME + " AS league"
+                + " INNER JOIN " + SeriesEntry.TABLE_NAME + " AS series"
+                + " ON league." + LeagueEntry._ID + "=series."
+                + SeriesEntry.COLUMN_LEAGUE_ID
+                + " INNER JOIN " + GameEntry.TABLE_NAME + " AS game"
+                + " ON series." + SeriesEntry._ID + "=game."
+                + GameEntry.COLUMN_SERIES_ID
+                + " INNER JOIN " + FrameEntry.TABLE_NAME + " AS frame"
+                + " ON game." + GameEntry._ID + "=frame."
+                + FrameEntry.COLUMN_GAME_ID
                 + ((shouldGetLeagueStats)
-                ? " WHERE league." + Contract.LeagueEntry._ID + "=?"
-                : " WHERE league." + Contract.LeagueEntry.COLUMN_BOWLER_ID + "=?")
+                ? " WHERE league." + LeagueEntry._ID + "=?"
+                : " WHERE league." + LeagueEntry.COLUMN_BOWLER_ID + "=?")
                 + " AND " + ((!shouldGetLeagueStats && !isEventIncluded)
-                ? Contract.LeagueEntry.COLUMN_IS_EVENT
+                ? LeagueEntry.COLUMN_IS_EVENT
                 : "'0'") + "=?"
                 + " AND " + ((!shouldGetLeagueStats && !isOpenIncluded)
-                ? Contract.LeagueEntry.COLUMN_LEAGUE_NAME + "!"
+                ? LeagueEntry.COLUMN_LEAGUE_NAME + "!"
                 : "'0'") + "=?"
-                + " ORDER BY league." + Contract.LeagueEntry._ID
-                + ", series." + Contract.SeriesEntry._ID
-                + ", game." + Contract.GameEntry.COLUMN_GAME_NUMBER
-                + ", frame." + Contract.FrameEntry.COLUMN_FRAME_NUMBER;
+                + " ORDER BY series." + SeriesEntry.COLUMN_SERIES_DATE
+                + ", series." + SeriesEntry._ID
+                + ", game." + GameEntry.COLUMN_GAME_NUMBER
+                + ", frame." + FrameEntry.COLUMN_FRAME_NUMBER;
 
         String[] rawStatsArgs = {
                 ((shouldGetLeagueStats)
@@ -190,66 +468,6 @@ public class StatsGraphFragment
                         ? Constants.NAME_OPEN_LEAGUE
                         : String.valueOf(0))
         };
-
-        return database.rawQuery(rawStatsQuery, rawStatsArgs);
-    }
-
-    /**
-     * Returns a cursor from database to load series stats.
-     *
-     * @return a cursor with rows relevant to mSeriesId
-     */
-    private Cursor getSeriesCursor()
-    {
-        SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getReadableDatabase();
-
-        String rawStatsQuery = "SELECT "
-                + Contract.GameEntry.COLUMN_SCORE + ", "
-                + Contract.GameEntry.COLUMN_GAME_NUMBER + ", "
-                + Contract.GameEntry.COLUMN_IS_MANUAL + ", "
-                + Contract.GameEntry.COLUMN_MATCH_PLAY + ", "
-                + Contract.FrameEntry.COLUMN_FRAME_NUMBER + ", "
-                + Contract.FrameEntry.COLUMN_IS_ACCESSED + ", "
-                + Contract.FrameEntry.COLUMN_FOULS + ", "
-                + Contract.FrameEntry.COLUMN_PIN_STATE[0] + ", "
-                + Contract.FrameEntry.COLUMN_PIN_STATE[1] + ", "
-                + Contract.FrameEntry.COLUMN_PIN_STATE[2]
-                + " FROM " + Contract.GameEntry.TABLE_NAME + " AS game"
-                + " INNER JOIN " + Contract.FrameEntry.TABLE_NAME + " AS frame"
-                + " ON game." + Contract.GameEntry._ID + "=frame."
-                + Contract.FrameEntry.COLUMN_GAME_ID
-                + " WHERE game." + Contract.GameEntry.COLUMN_SERIES_ID + "=?"
-                + " ORDER BY game." + Contract.GameEntry.COLUMN_GAME_NUMBER + ", frame."
-                + Contract.FrameEntry.COLUMN_FRAME_NUMBER;
-        String[] rawStatsArgs = {String.valueOf(((MainActivity) getActivity()).getSeriesId())};
-
-        return database.rawQuery(rawStatsQuery, rawStatsArgs);
-    }
-
-    /**
-     * Returns a cursor from the database to load game stats.
-     *
-     * @return a cursor with rows relevant to mGameId
-     */
-    private Cursor getGameCursor()
-    {
-        SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getReadableDatabase();
-        String rawStatsQuery = "SELECT "
-                + Contract.GameEntry.COLUMN_SCORE + ", "
-                + Contract.GameEntry.COLUMN_IS_MANUAL + ", "
-                + Contract.FrameEntry.COLUMN_FRAME_NUMBER + ", "
-                + Contract.FrameEntry.COLUMN_IS_ACCESSED + ", "
-                + Contract.FrameEntry.COLUMN_FOULS + ", "
-                + Contract.FrameEntry.COLUMN_PIN_STATE[0] + ", "
-                + Contract.FrameEntry.COLUMN_PIN_STATE[1] + ", "
-                + Contract.FrameEntry.COLUMN_PIN_STATE[2]
-                + " FROM " + Contract.GameEntry.TABLE_NAME + " AS game"
-                + " INNER JOIN " + Contract.FrameEntry.TABLE_NAME + " AS frame"
-                + " ON game." + Contract.GameEntry._ID + "=frame."
-                + Contract.FrameEntry.COLUMN_GAME_ID
-                + " WHERE game." + Contract.GameEntry._ID + "=?"
-                + " ORDER BY " + Contract.FrameEntry.COLUMN_FRAME_NUMBER;
-        String[] rawStatsArgs = {String.valueOf(((MainActivity) getActivity()).getGameId())};
 
         return database.rawQuery(rawStatsQuery, rawStatsArgs);
     }
