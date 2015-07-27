@@ -285,6 +285,7 @@ public class StatsListFragment
             mStatsMatch = (byte) (mStatsGameAverage == -1
                     ? 4
                     : 5);
+            i = 0;
             while (true)
             {
                 try
@@ -302,6 +303,7 @@ public class StatsListFragment
             headers.add("Overall");
             namesAndValues.add(new ArrayList<AbstractMap.SimpleEntry<String, String>>());
             mStatsOverall = (byte) (mStatsMatch + 1);
+            i = 0;
             while (true)
             {
                 try
