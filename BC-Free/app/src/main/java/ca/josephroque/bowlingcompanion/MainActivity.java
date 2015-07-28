@@ -205,6 +205,8 @@ public class MainActivity
     private FloatingActionButton mFloatingActionButton;
     /** Current icon of the floating action button. */
     private int mCurrentFabIcon = 0;
+    /** Indicates if the floating action button is currently animating. */
+    private boolean mIsFabAnimating = false;
     /** A reference to the current fragment. */
     private WeakReference<Fragment> mCurrentFragment;
 
@@ -670,12 +672,13 @@ public class MainActivity
             @Override
             public void onAnimationStart(Animation animation)
             {
-                // does nothing
+                mIsFabAnimating = true;
             }
 
             @Override
             public void onAnimationEnd(Animation animation)
             {
+                mIsFabAnimating = false;
                 growFloatingActionButton(drawableId);
             }
 
@@ -724,6 +727,26 @@ public class MainActivity
                 CENTER_PIVOT);
         grow.setDuration(shortAnimTime);
         grow.setInterpolator(new OvershootInterpolator());
+        grow.setAnimationListener(new Animation.AnimationListener()
+        {
+            @Override
+            public void onAnimationStart(Animation animation)
+            {
+                mIsFabAnimating = true;
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation)
+            {
+                mIsFabAnimating = false;
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation)
+            {
+                // does nothing
+            }
+        });
         mFloatingActionButton.startAnimation(grow);
     }
 
@@ -915,6 +938,10 @@ public class MainActivity
             @Override
             public void onClick(View v)
             {
+                // do not register clicks if floating action button is animating
+                if (mIsFabAnimating)
+                    return;
+
                 if (mCurrentFragment != null && mCurrentFragment.get() != null
                         && mCurrentFragment.get() instanceof FloatingActionButtonHandler)
                     ((FloatingActionButtonHandler) mCurrentFragment.get()).onFabClick();
