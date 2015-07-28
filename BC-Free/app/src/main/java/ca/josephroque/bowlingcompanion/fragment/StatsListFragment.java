@@ -375,7 +375,7 @@ public class StatsListFragment
                     fragment.mNumberOfGeneralDetails = 2;
                     listStatNamesAndValues.get(fragment.mStatsGeneral).add(1,
                             new AbstractMap.SimpleEntry<>("League/Event",
-                                    mainActivity.getLeagueName()));
+                                    mainActivity.getLeagueName().substring(1)));
                     cursor = fragment.getBowlerOrLeagueCursor(true);
                     break;
                 case StatsFragment.LOADING_SERIES_STATS:

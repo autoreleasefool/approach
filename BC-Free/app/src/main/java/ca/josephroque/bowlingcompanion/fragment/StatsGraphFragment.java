@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
@@ -52,6 +53,8 @@ public class StatsGraphFragment
 
     /** LineChart to display statistics over time. */
     private LineChart mLineChartStats;
+    /** TextView to display name of statistic. */
+    private TextView mTextViewStat;
 
     /** The category of the stat being displayed. */
     private int mStatCategory;
@@ -95,6 +98,7 @@ public class StatsGraphFragment
         }
 
         mLineChartStats = (LineChart) rootView.findViewById(R.id.chart_stats);
+        mTextViewStat = (TextView) rootView.findViewById(R.id.tv_stat_name);
 
         return rootView;
     }
@@ -205,6 +209,8 @@ public class StatsGraphFragment
             if (fragment == null || result == null)
                 return;
 
+            fragment.mTextViewStat.setText(StatUtils.getStatName(fragment.mStatCategory,
+                    fragment.mStatIndex));
             fragment.mLineChartStats.setDescription(StatUtils.getStatName(fragment.mStatCategory,
                     fragment.mStatIndex));
             fragment.mLineChartStats.setData(result);

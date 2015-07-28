@@ -5,7 +5,6 @@ import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -253,7 +252,6 @@ public class NavigationDrawerAdapter
         if (mSetSubheaderItems.contains(title))
             throw new IllegalArgumentException("Can't set subtitle of subheader item: " + title);
 
-        Log.i(TAG, "Setting subtitle " + text + " for " + title);
         mArraySubtitle.put(title, text);
         notifyItemChanged(mListNavigationItems.indexOf(title));
     }

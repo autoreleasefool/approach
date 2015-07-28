@@ -3,6 +3,8 @@ CHANGELOG
 NEXT VERSION
 V2.0
     Features
+    - Added a new tutorial on first startup
+    - Adding graphs for stats
     - Support for tablets
     - Swipe to knock over pins
 
@@ -10,6 +12,9 @@ V2.0
     - Material design
     - New icon
     - Improved navigation
+
+    Other
+    - General bug fixes
 
 V1.2.1
     - Bug fixes
