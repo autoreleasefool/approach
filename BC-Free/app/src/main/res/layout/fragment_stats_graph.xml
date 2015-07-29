@@ -18,6 +18,28 @@
         android:textColor="@android:color/black"
         android:textSize="20sp" />
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Switch
+            android:id="@+id/switch_stat_accumulate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checked="false" />
+
+        <TextView
+            android:id="@+id/tv_stat_accumulate"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:alpha="0.87"
+            android:textColor="@android:color/black"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/chart_stats"
         android:layout_width="match_parent"

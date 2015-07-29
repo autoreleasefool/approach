@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Switch;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
@@ -55,11 +56,17 @@ public class StatsGraphFragment
     private LineChart mLineChartStats;
     /** TextView to display name of statistic. */
     private TextView mTextViewStat;
+    /** Switch to allow user to set stats show as accumulated over time, or be week by week. */
+    private Switch mSwitchAccumulate;
+    /** Provides context to the user of the purpose of {@code mSwitchAccumulate}. */
+    private TextView mTextViewAccumulate;
 
     /** The category of the stat being displayed. */
     private int mStatCategory;
     /** The index of the stat being displayed. */
     private int mStatIndex;
+    /** Indicates if stats should be accumulated over time, or be calculated week by week. */
+    private boolean mStatAccumulate = false;
 
     /**
      * Creates a new instance of {@code StatsGraphFragment} with the parameters provided.
@@ -99,6 +106,44 @@ public class StatsGraphFragment
 
         mLineChartStats = (LineChart) rootView.findViewById(R.id.chart_stats);
         mTextViewStat = (TextView) rootView.findViewById(R.id.tv_stat_name);
+        mSwitchAccumulate = (Switch) rootView.findViewById(R.id.switch_stat_accumulate);
+        mTextViewAccumulate = (TextView) rootView.findViewById(R.id.tv_stat_accumulate);
+
+        mSwitchAccumulate.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                byte statsToLoad;
+                MainActivity mainActivity = (MainActivity) getActivity();
+                if (mainActivity == null)
+                    return;
+
+                if (mainActivity.getLeagueId() == -1)
+                    statsToLoad = StatsFragment.LOADING_BOWLER_STATS;
+                else
+                    statsToLoad = StatsFragment.LOADING_LEAGUE_STATS;
+
+                mStatAccumulate = !mStatAccumulate;
+
+                mTextViewAccumulate.setText((mStatAccumulate)
+                        ? R.string.text_stats_accumulate
+                        : R.string.text_stats_by_week);
+
+                new LoadStatsGraphTask(StatsGraphFragment.this).execute(statsToLoad);
+            }
+        });
+
+        if (mSwitchAccumulate.isChecked())
+        {
+            mTextViewAccumulate.setText(R.string.text_stats_accumulate);
+            mStatAccumulate = true;
+        }
+        else
+        {
+            mTextViewAccumulate.setText(R.string.text_stats_by_week);
+            mStatAccumulate = false;
+        }
 
         return rootView;
     }
@@ -162,6 +207,15 @@ public class StatsGraphFragment
         }
 
         @Override
+        protected void onPreExecute()
+        {
+            StatsGraphFragment fragment = mFragment.get();
+            if (fragment == null)
+                return;
+            fragment.mSwitchAccumulate.setEnabled(false);
+        }
+
+        @Override
         protected LineData doInBackground(Byte... statsToLoad)
         {
             StatsGraphFragment fragment = mFragment.get();
@@ -209,10 +263,12 @@ public class StatsGraphFragment
             if (fragment == null || result == null)
                 return;
 
+            fragment.mSwitchAccumulate.setEnabled(true);
             fragment.mTextViewStat.setText(StatUtils.getStatName(fragment.mStatCategory,
                     fragment.mStatIndex));
             fragment.mLineChartStats.setDescription(StatUtils.getStatName(fragment.mStatCategory,
                     fragment.mStatIndex));
+            fragment.mLineChartStats.getLegend().setEnabled(false);
             fragment.mLineChartStats.setData(result);
             fragment.mLineChartStats.invalidate();
         }
