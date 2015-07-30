@@ -17,11 +17,12 @@ import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.data.Series;
 import ca.josephroque.bowlingcompanion.theme.Theme;
+import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
 
 /**
- * Created by Joseph Roque on 15-03-17. Manages series and their associated games for a
- * ListView. Offers a callback interface {@link SeriesAdapter.SeriesEventHandler} to handle
- * interaction events.
+ * Created by Joseph Roque on 15-03-17. Manages series and their associated games for a ListView.
+ * Offers a callback interface {@link SeriesAdapter.SeriesEventHandler} to handle interaction
+ * events.
  */
 public class SeriesAdapter
         extends RecyclerView.Adapter<SeriesAdapter.SeriesViewHolder>
@@ -46,6 +47,11 @@ public class SeriesAdapter
 
     /** List of series which will be displayed. */
     private List<Series> mListSeries;
+
+    /** Cached drawable for edit icon. */
+    private Drawable mEditDrawable;
+    /** The last color set as the edit drawable filter. */
+    private int mEditDrawableFilter = -1;
 
     /** Indicates minimum score values which will be highlighted when displayed. */
     private int minimumScoreToHighlight = Constants.DEFAULT_GAME_HIGHLIGHT;
@@ -195,14 +201,20 @@ public class SeriesAdapter
                     else
                     {
                         holder.mArrayTextViewGames[i].setTextColor(0xff000000);
-                        holder.mArrayTextViewGames[i].setAlpha(0.54f);
+                        holder.mArrayTextViewGames[i].setAlpha(0.87f);
                     }
                 }
 
                 //Sets color of edit button
-                Drawable drawable = holder.mImageViewEdit.getDrawable().mutate();
-                drawable.setColorFilter(Theme.getSecondaryThemeColor(), PorterDuff.Mode.SRC_IN);
-                holder.mImageViewEdit.setImageDrawable(drawable);
+                if (mEditDrawable == null)
+                    mEditDrawable = DisplayUtils.getDrawable(holder.itemView.getResources(),
+                            R.drawable.ic_edit_black_24dp);
+                if (mEditDrawableFilter != Theme.getSecondaryThemeColor())
+                {
+                    mEditDrawableFilter = Theme.getSecondaryThemeColor();
+                    mEditDrawable.setColorFilter(mEditDrawableFilter, PorterDuff.Mode.SRC_IN);
+                }
+                holder.mImageViewEdit.setImageDrawable(mEditDrawable);
 
                 holder.mImageViewEdit.setOnClickListener(new View.OnClickListener()
                 {
@@ -287,6 +299,7 @@ public class SeriesAdapter
         mActivity = null;
         mEventHandler = null;
         mRecyclerView = null;
+        mEditDrawable = null;
     }
 
     @Override

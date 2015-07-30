@@ -2,9 +2,12 @@ package ca.josephroque.bowlingcompanion.utilities;
 
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.design.widget.FloatingActionButton;
 import android.view.ViewGroup;
+
+import ca.josephroque.bowlingcompanion.R;
 
 /**
  * Created by Joseph Roque on 2015-07-24. Constants and methods for changes made to the UI.
@@ -69,5 +72,21 @@ public final class DisplayUtils
             p.setMargins(0, 0, DataFormatter.getPixelsFromDP(scale, underLollipopMargin), 0);
             fab.setLayoutParams(p);
         }
+    }
+
+    /**
+     * Uses a method appropriate to the SDK version to create a drawable from a drawable id.
+     *
+     * @param res to create drawable
+     * @param drawableId id of drawable
+     * @return drawable which represents {@code drawableId}
+     */
+    @SuppressWarnings("deprecation")    //Uses newer APIs when available
+    public static Drawable getDrawable(Resources res, int drawableId)
+    {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+            return res.getDrawable(drawableId, null);
+        else
+            return res.getDrawable(drawableId);
     }
 }

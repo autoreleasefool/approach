@@ -1,5 +1,7 @@
 package ca.josephroque.bowlingcompanion.adapter;
 
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +14,7 @@ import java.util.List;
 import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.data.NameAverageId;
 import ca.josephroque.bowlingcompanion.theme.Theme;
+import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
 
 /**
  * Created by Joseph Roque on 15-03-13. Manages names of bowlers or leagues/events and their
@@ -49,6 +52,9 @@ public class NameAverageAdapter<T extends NameAverageId>
 
     /** Type of data being represented by this object. */
     private byte mDataType;
+
+    /** Cached drawables to display as icons for items. */
+    private Drawable[] mItemDrawables;
 
     /**
      * Subclass of RecyclerView.ViewHolder to manage view which will display an image, and text to
@@ -108,6 +114,18 @@ public class NameAverageAdapter<T extends NameAverageId>
         mEventHandler = handler;
         mListNamesAndAverages = listNameAverages;
         mDataType = dataType;
+
+        switch (mDataType)
+        {
+            case DATA_BOWLERS:
+                mItemDrawables = new Drawable[1];
+                break;
+            case DATA_LEAGUES_EVENTS:
+                mItemDrawables = new Drawable[2];
+                break;
+            default:
+                throw new IllegalArgumentException("invalid data type: " + mDataType);
+        }
     }
 
     @Override
@@ -144,16 +162,29 @@ public class NameAverageAdapter<T extends NameAverageId>
                 {
                     case DATA_BOWLERS:
                         holder.mTextViewName.setText(mListNamesAndAverages.get(position).getName());
-                        holder.mImageViewType.setImageResource(R.drawable.ic_person_black_24dp);
+                        if (mItemDrawables[0] == null)
+                            mItemDrawables[0]
+                                    = DisplayUtils.getDrawable(holder.itemView.getResources(),
+                                    R.drawable.ic_person_black_24dp);
+                        holder.mImageViewType.setImageDrawable(mItemDrawables[0]);
                         break;
                     case DATA_LEAGUES_EVENTS:
                         holder.mTextViewName.setText(mListNamesAndAverages.get(position)
                                 .getName()
                                 .substring(1));
-                        holder.mImageViewType.setImageResource(
+                        if (mItemDrawables[0] == null || mItemDrawables[1] == null)
+                        {
+                            mItemDrawables[0]
+                                    = DisplayUtils.getDrawable(holder.itemView.getResources(),
+                                    R.drawable.ic_l_black_24dp);
+                            mItemDrawables[1]
+                                    = DisplayUtils.getDrawable(holder.itemView.getResources(),
+                                    R.drawable.ic_e_black_24dp);
+                        }
+                        holder.mImageViewType.setImageDrawable(
                                 mListNamesAndAverages.get(position).getName().startsWith("L")
-                                        ? R.drawable.ic_l_black_24dp
-                                        : R.drawable.ic_e_black_24dp);
+                                        ? mItemDrawables[0]
+                                        : mItemDrawables[1]);
                         break;
                     default:
                         throw new IllegalStateException("invalid mDataType: " + mDataType);
@@ -216,6 +247,7 @@ public class NameAverageAdapter<T extends NameAverageId>
         // Releasing references
         mRecyclerView = null;
         mEventHandler = null;
+        mItemDrawables = null;
     }
 
     @Override
