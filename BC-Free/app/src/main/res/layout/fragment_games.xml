@@ -3,21 +3,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/black"
-    android:orientation="vertical">
+    android:background="@null"
+    android:orientation="vertical"
+    tools:ignore="RtlHardCoded">
 
     <RelativeLayout
         android:id="@+id/rl_game_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
         android:background="@color/theme_blue_secondary">
 
         <ImageView
             android:id="@+id/iv_prev_ball"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
             android:paddingBottom="6dp"
             android:paddingTop="6dp"
             android:src="@drawable/ic_chevron_left_black_24dp"
@@ -26,9 +27,10 @@
         <TextView
             android:id="@+id/tv_prev_ball"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_alignBottom="@id/iv_prev_ball"
             android:layout_alignTop="@id/iv_prev_ball"
+            android:layout_centerVertical="true"
             android:layout_toEndOf="@id/iv_prev_ball"
             android:layout_toRightOf="@id/iv_prev_ball"
             android:gravity="center"
@@ -43,8 +45,8 @@
         <TextView
             android:id="@+id/tv_game_number"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
             android:gravity="center"
             android:textColor="@android:color/black"
             android:textSize="16sp" />
@@ -52,9 +54,9 @@
         <ImageView
             android:id="@+id/iv_next_ball"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
+            android:layout_height="match_parent"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:paddingBottom="6dp"
             android:paddingTop="6dp"
             android:src="@drawable/ic_chevron_right_black_24dp"
@@ -63,9 +65,10 @@
         <TextView
             android:id="@+id/tv_next_ball"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_alignBottom="@id/iv_next_ball"
             android:layout_alignTop="@id/iv_next_ball"
+            android:layout_centerVertical="true"
             android:layout_toLeftOf="@id/iv_next_ball"
             android:layout_toStartOf="@id/iv_next_ball"
             android:gravity="center"
@@ -81,14 +84,6 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <ImageView
-            android:id="@+id/iv_alley"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:background="@drawable/alley_background"
-            tools:ignore="ContentDescription" />
 
         <ImageView
             android:id="@+id/iv_lock"

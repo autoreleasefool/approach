@@ -1,111 +1,105 @@
-<RelativeLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/selectableItemBackground"
+    android:background="@color/secondary_background"
+    android:foreground="?attr/selectableItemBackground"
     tools:ignore="RtlHardcoded,RtlSymmetry">
 
     <TextView
         android:id="@+id/tv_series_date"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_centerVertical="true"
-        android:layout_gravity="center_vertical"
+        android:layout_gravity="center_vertical|left"
         android:alpha="0.87"
         android:gravity="center"
         android:paddingLeft="@dimen/list_keyline"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@android:color/black" />
 
-    <ImageView
-        android:id="@+id/iv_edit_date"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_marginLeft="4dp"
-        android:contentDescription="@string/description_edit_date"
-        android:paddingRight="@dimen/list_keyline"
-        android:src="@drawable/ic_edit_black_24dp" />
+        android:layout_gravity="center_vertical|right">
 
-    <TextView
-        android:id="@+id/tv_series_game_1"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:layout_centerVertical="true"
-        android:layout_gravity="center_vertical"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:layout_toLeftOf="@id/iv_edit_date"
-        android:alpha="0.54"
-        android:gravity="center"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="@android:color/black" />
+        <TextView
+            android:id="@+id/tv_series_game_5"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:alpha="0.54"
+            android:gravity="center"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@android:color/black"
+            tools:ignore="RelativeOverlap" />
 
-    <TextView
-        android:id="@+id/tv_series_game_2"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:layout_centerVertical="true"
-        android:layout_gravity="center_vertical"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:layout_toLeftOf="@id/tv_series_game_1"
-        android:alpha="0.54"
-        android:gravity="center"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="@android:color/black" />
+        <TextView
+            android:id="@+id/tv_series_game_4"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:alpha="0.54"
+            android:gravity="center"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@android:color/black" />
 
-    <TextView
-        android:id="@+id/tv_series_game_3"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:layout_centerVertical="true"
-        android:layout_gravity="center_vertical"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:layout_toLeftOf="@id/tv_series_game_2"
-        android:alpha="0.54"
-        android:gravity="center"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="@android:color/black" />
+        <TextView
+            android:id="@+id/tv_series_game_3"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:alpha="0.54"
+            android:gravity="center"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@android:color/black" />
 
-    <TextView
-        android:id="@+id/tv_series_game_4"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:layout_centerVertical="true"
-        android:layout_gravity="center_vertical"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:layout_toLeftOf="@id/tv_series_game_3"
-        android:alpha="0.54"
-        android:gravity="center"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="@android:color/black" />
+        <TextView
+            android:id="@+id/tv_series_game_2"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:alpha="0.54"
+            android:gravity="center"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@android:color/black" />
 
-    <TextView
-        android:id="@+id/tv_series_game_5"
-        android:layout_width="wrap_content"
-        android:layout_height="48dp"
-        android:layout_centerVertical="true"
-        android:layout_gravity="center_vertical"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:layout_toLeftOf="@id/tv_series_game_4"
-        android:alpha="0.54"
-        android:gravity="center"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:textColor="@android:color/black"
-        tools:ignore="RelativeOverlap" />
+        <TextView
+            android:id="@+id/tv_series_game_1"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="4dp"
+            android:layout_marginRight="4dp"
+            android:alpha="0.54"
+            android:gravity="center"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@android:color/black" />
+
+        <ImageView
+            android:id="@+id/iv_edit_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical|right"
+            android:layout_marginLeft="4dp"
+            android:contentDescription="@string/description_edit_date"
+            android:paddingRight="@dimen/list_keyline"
+            android:src="@drawable/ic_edit_black_24dp" />
+
+    </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
         android:background="@color/divider" />
 
-</RelativeLayout>
+</FrameLayout>

@@ -1,17 +1,17 @@
-<RelativeLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/selectableItemBackground"
+    android:background="@color/secondary_background"
+    android:foreground="?attr/selectableItemBackground"
     tools:ignore="RelativeOverlap,RtlHardcoded,RtlSymmetry">
 
     <ImageView
         android:id="@+id/iv_nameavg_type"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical|left"
         android:alpha="0.54"
         android:paddingLeft="@dimen/list_keyline"
         tools:ignore="ContentDescription" />
@@ -31,8 +31,7 @@
         android:id="@+id/tv_nameavg_average"
         android:layout_width="wrap_content"
         android:layout_height="48dp"
-        android:layout_alignParentRight="true"
-        android:layout_gravity="center_vertical"
+        android:layout_gravity="center_vertical|right"
         android:alpha="0.54"
         android:gravity="center"
         android:paddingRight="@dimen/list_keyline"
@@ -42,7 +41,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
         android:background="@color/divider" />
 
-</RelativeLayout>
+</FrameLayout>

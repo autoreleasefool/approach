@@ -10,7 +10,16 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@android:color/black">
+
+        <ImageView
+            android:id="@+id/iv_alley"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@drawable/alley_background"
+            tools:ignore="ContentDescription" />
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/main_toolbar"
