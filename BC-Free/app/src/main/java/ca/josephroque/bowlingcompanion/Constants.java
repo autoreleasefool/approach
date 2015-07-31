@@ -175,8 +175,10 @@ public final class Constants
     public static final String FRAGMENT_SERIES = "SeriesFragment";
     /** Tag to identify instance of GameFragment. */
     public static final String FRAGMENT_GAME = "GameFragment";
-    /** Tag to identify instance of StatFragment. */
-    public static final String FRAGMENT_STATS = "StatsFragment";
+    /** Tag to identify instance of StatsListFragment. */
+    public static final String FRAGMENT_STAT_LIST = "StatsListFragment";
+    /** Tag to identify instance of StatsGraphFragment. */
+    public static final String FRAGMENT_STAT_GRAPH = "StatsGraphFragment";
 
     /** Maximum score of a 5 pin game. */
     public static final int GAME_MAX_SCORE = 450;

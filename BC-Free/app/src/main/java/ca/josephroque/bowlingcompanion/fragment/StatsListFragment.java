@@ -68,20 +68,14 @@ public class StatsListFragment
     /** List of list of map entries which hold a name and a value, for each group. */
     private List<List<AbstractMap.SimpleEntry<String, String>>> mListStatNamesAndValues;
 
-    /** Instance of callback interface. */
-    private StatClickListener mCallback;
-
     /**
      * Creates a new instance of {@code StatsListFragment} with the parameters provided.
      *
-     * @param callback instance of callback interface
      * @return a new instance of StatsListFragment
      */
-    public static StatsListFragment newInstance(StatClickListener callback)
+    public static StatsListFragment newInstance()
     {
-        StatsListFragment fragment = new StatsListFragment();
-        fragment.mCallback = callback;
-        return fragment;
+        return new StatsListFragment();
     }
 
     @SuppressWarnings("deprecation")
@@ -125,24 +119,24 @@ public class StatsListFragment
                     if (mainActivity.getLeagueId() == -1)
                     {
                         titleToSet = R.string.title_stats_bowler;
-                        statsToLoad = StatsFragment.LOADING_BOWLER_STATS;
+                        statsToLoad = StatUtils.LOADING_BOWLER_STATS;
                     }
                     else
                     {
                         titleToSet = R.string.title_stats_league;
-                        statsToLoad = StatsFragment.LOADING_LEAGUE_STATS;
+                        statsToLoad = StatUtils.LOADING_LEAGUE_STATS;
                     }
                 }
                 else
                 {
                     titleToSet = R.string.title_stats_series;
-                    statsToLoad = StatsFragment.LOADING_SERIES_STATS;
+                    statsToLoad = StatUtils.LOADING_SERIES_STATS;
                 }
             }
             else
             {
                 titleToSet = R.string.title_stats_game;
-                statsToLoad = StatsFragment.LOADING_GAME_STATS;
+                statsToLoad = StatUtils.LOADING_GAME_STATS;
             }
 
             mListStatHeaders.clear();
@@ -172,11 +166,11 @@ public class StatsListFragment
         if (groupPosition == 0)
         {
             if (childPosition - mNumberOfGeneralDetails >= 0)
-                mCallback.onStatClicked(groupPosition, childPosition - mNumberOfGeneralDetails);
+                openStatGraph(groupPosition, childPosition - mNumberOfGeneralDetails);
         }
         else
         {
-            mCallback.onStatClicked(groupPosition, childPosition);
+            openStatGraph(groupPosition, childPosition);
         }
 
         return true;
@@ -261,12 +255,12 @@ public class StatsListFragment
         namesAndValues.get(mStatsPins).add(new AbstractMap.SimpleEntry<>(StatUtils.getStatName(
                 StatUtils.STAT_CATEGORY_PINS, StatUtils.STAT_PINS_LEFT, false), "--"));
 
-        if (statsToLoad < StatsFragment.LOADING_SERIES_STATS)
+        if (statsToLoad < StatUtils.LOADING_SERIES_STATS)
         {
             headers.add("Average by Game");
             namesAndValues.add(new ArrayList<AbstractMap.SimpleEntry<String, String>>());
             mStatsGameAverage = 4;
-            final byte numberOfGames = (statsToLoad >= StatsFragment.LOADING_LEAGUE_STATS
+            final byte numberOfGames = (statsToLoad >= StatUtils.LOADING_LEAGUE_STATS
                     ? ((MainActivity) getActivity()).getNumberOfGames()
                     : 20);
             for (i = 0; i < numberOfGames; i++)
@@ -275,7 +269,7 @@ public class StatsListFragment
                                 StatUtils.STAT_CATEGORY_AVERAGE_BY_GAME, i, false), "--"));
         }
 
-        if (statsToLoad < StatsFragment.LOADING_GAME_STATS)
+        if (statsToLoad < StatUtils.LOADING_GAME_STATS)
         {
             namesAndValues.get(mStatsPins).add(new AbstractMap.SimpleEntry<>(StatUtils.getStatName(
                     StatUtils.STAT_CATEGORY_PINS, StatUtils.STAT_PINS_AVERAGE, false), "--"));
@@ -367,18 +361,18 @@ public class StatsListFragment
 
             switch (toLoad)
             {
-                case StatsFragment.LOADING_BOWLER_STATS:
+                case StatUtils.LOADING_BOWLER_STATS:
                     fragment.mNumberOfGeneralDetails = 1;
                     cursor = fragment.getBowlerOrLeagueCursor(false);
                     break;
-                case StatsFragment.LOADING_LEAGUE_STATS:
+                case StatUtils.LOADING_LEAGUE_STATS:
                     fragment.mNumberOfGeneralDetails = 2;
                     listStatNamesAndValues.get(fragment.mStatsGeneral).add(1,
                             new AbstractMap.SimpleEntry<>("League/Event",
                                     mainActivity.getLeagueName().substring(1)));
                     cursor = fragment.getBowlerOrLeagueCursor(true);
                     break;
-                case StatsFragment.LOADING_SERIES_STATS:
+                case StatUtils.LOADING_SERIES_STATS:
                     fragment.mNumberOfGeneralDetails = 3;
                     listStatNamesAndValues.get(fragment.mStatsGeneral).add(1,
                             new AbstractMap.SimpleEntry<>("League/Event",
@@ -387,7 +381,7 @@ public class StatsListFragment
                             new AbstractMap.SimpleEntry<>("Date", mainActivity.getSeriesDate()));
                     cursor = fragment.getSeriesCursor();
                     break;
-                case StatsFragment.LOADING_GAME_STATS:
+                case StatUtils.LOADING_GAME_STATS:
                     fragment.mNumberOfGeneralDetails = 4;
                     listStatNamesAndValues.get(fragment.mStatsGeneral).add(1,
                             new AbstractMap.SimpleEntry<>("League/Event",
@@ -409,7 +403,7 @@ public class StatsListFragment
              * are affected as each frame is analyzed
              */
 
-            final byte numberOfGames = (toLoad >= StatsFragment.LOADING_LEAGUE_STATS
+            final byte numberOfGames = (toLoad >= StatUtils.LOADING_LEAGUE_STATS
                     ? mainActivity.getNumberOfGames()
                     : 20);
             int totalShotsAtMiddle = 0;
@@ -423,7 +417,7 @@ public class StatsListFragment
                 {
                     byte frameNumber = (byte) cursor.getInt(
                             cursor.getColumnIndex(Contract.FrameEntry.COLUMN_FRAME_NUMBER));
-                    if (toLoad != StatsFragment.LOADING_GAME_STATS && frameNumber == 1)
+                    if (toLoad != StatUtils.LOADING_GAME_STATS && frameNumber == 1)
                     {
                         short gameScore =
                                 cursor.getShort(cursor.getColumnIndex(
@@ -467,7 +461,7 @@ public class StatsListFragment
                     }
                     boolean frameAccessed = (cursor.getInt(cursor.getColumnIndex(
                             Contract.FrameEntry.COLUMN_IS_ACCESSED)) == 1);
-                    if (toLoad == StatsFragment.LOADING_GAME_STATS && !frameAccessed)
+                    if (toLoad == StatUtils.LOADING_GAME_STATS && !frameAccessed)
                         break;
 
                     String frameFouls = cursor.getString(cursor.getColumnIndex(
@@ -593,12 +587,12 @@ public class StatsListFragment
                 }
             }
 
-            if (toLoad != StatsFragment.LOADING_GAME_STATS)
+            if (toLoad != StatUtils.LOADING_GAME_STATS)
             {
                 if (statValues[fragment.mStatsOverall][StatUtils.STAT_HIGH_SERIES] < seriesTotal)
                     statValues[fragment.mStatsOverall][StatUtils.STAT_HIGH_SERIES] = seriesTotal;
 
-                if (toLoad != StatsFragment.LOADING_SERIES_STATS)
+                if (toLoad != StatUtils.LOADING_SERIES_STATS)
                 {
                     for (byte i = 0; i < numberOfGames; i++)
                         statValues[fragment.mStatsGameAverage][i] = (countByGame[i] > 0)
@@ -713,9 +707,9 @@ public class StatsListFragment
         listStatNamesAndValues.get(mStatsPins).get(0).setValue(
                 String.valueOf(statValues[mStatsPins][0]));
 
-        if (toLoad < StatsFragment.LOADING_GAME_STATS)
+        if (toLoad < StatUtils.LOADING_GAME_STATS)
         {
-            if (toLoad != StatsFragment.LOADING_SERIES_STATS)
+            if (toLoad != StatUtils.LOADING_SERIES_STATS)
             {
                 for (byte i = 0; i < statValues[mStatsGameAverage].length; i++)
                     listStatNamesAndValues.get(mStatsGameAverage).get(i).setValue(
@@ -1005,17 +999,15 @@ public class StatsListFragment
     }
 
     /**
-     * Provides callback methods for user interaction with the stats list.
+     * Displays the selected statistic as a graph.
+     *
+     * @param statCategory category of stat to display
+     * @param statIndex index in category of stat to displau
      */
-    public interface StatClickListener
+    private void openStatGraph(int statCategory, int statIndex)
     {
-
-        /**
-         * Invoked when a user clicks on a stat item.
-         *
-         * @param statCategory category the stat is under
-         * @param statIndex index of the stat in {@code statCategory}
-         */
-        void onStatClicked(int statCategory, int statIndex);
+        MainActivity mainActivity = (MainActivity) getActivity();
+        if (mainActivity != null)
+            mainActivity.openStatGraph(statCategory, statIndex);
     }
 }

@@ -7,6 +7,15 @@ package ca.josephroque.bowlingcompanion.utilities;
 public final class StatUtils
 {
 
+    /** Indicates all the stats related to the specified bowler should be loaded. */
+    public static final byte LOADING_BOWLER_STATS = 0;
+    /** Indicates all the stats related to the specified league should be loaded. */
+    public static final byte LOADING_LEAGUE_STATS = 1;
+    /** Indicates all the stats related to the specified series should be loaded. */
+    public static final byte LOADING_SERIES_STATS = 2;
+    /** Indicates only the stats related to the specified game should be loaded. */
+    public static final byte LOADING_GAME_STATS = 3;
+
     /** Indicates index for stat category. */
     public static final byte STAT_CATEGORY_GENERAL = 0;
     /** Indicates index for stat in array. */

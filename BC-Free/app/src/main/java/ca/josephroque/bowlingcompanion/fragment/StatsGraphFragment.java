@@ -129,9 +129,9 @@ public class StatsGraphFragment
                     return;
 
                 if (mainActivity.getLeagueId() == -1)
-                    statsToLoad = StatsFragment.LOADING_BOWLER_STATS;
+                    statsToLoad = StatUtils.LOADING_BOWLER_STATS;
                 else
-                    statsToLoad = StatsFragment.LOADING_LEAGUE_STATS;
+                    statsToLoad = StatUtils.LOADING_LEAGUE_STATS;
 
                 mStatAccumulate = !mStatAccumulate;
 
@@ -173,12 +173,12 @@ public class StatsGraphFragment
             if (mainActivity.getLeagueId() == -1)
             {
                 titleToSet = R.string.title_stats_bowler;
-                statsToLoad = StatsFragment.LOADING_BOWLER_STATS;
+                statsToLoad = StatUtils.LOADING_BOWLER_STATS;
             }
             else
             {
                 titleToSet = R.string.title_stats_league;
-                statsToLoad = StatsFragment.LOADING_LEAGUE_STATS;
+                statsToLoad = StatUtils.LOADING_LEAGUE_STATS;
             }
 
             mainActivity.setActionBarTitle(titleToSet, true);
@@ -240,10 +240,10 @@ public class StatsGraphFragment
 
             switch (toLoad)
             {
-                case StatsFragment.LOADING_LEAGUE_STATS:
+                case StatUtils.LOADING_LEAGUE_STATS:
                     cursor = fragment.getBowlerOrLeagueCursor(true);
                     break;
-                case StatsFragment.LOADING_BOWLER_STATS:
+                case StatUtils.LOADING_BOWLER_STATS:
                     cursor = fragment.getBowlerOrLeagueCursor(false);
                     break;
                 default:

@@ -70,7 +70,8 @@ import ca.josephroque.bowlingcompanion.fragment.BowlerFragment;
 import ca.josephroque.bowlingcompanion.fragment.GameFragment;
 import ca.josephroque.bowlingcompanion.fragment.LeagueEventFragment;
 import ca.josephroque.bowlingcompanion.fragment.SeriesFragment;
-import ca.josephroque.bowlingcompanion.fragment.StatsFragment;
+import ca.josephroque.bowlingcompanion.fragment.StatsGraphFragment;
+import ca.josephroque.bowlingcompanion.fragment.StatsListFragment;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.utilities.AppRater;
 import ca.josephroque.bowlingcompanion.utilities.DataFormatter;
@@ -462,8 +463,11 @@ public class MainActivity
                     mCurrentFragmentTitle = Constants.FRAGMENT_GAME;
                     learnNavigationDrawer();
                     break;
-                case Constants.FRAGMENT_STATS:
-                    mCurrentFragmentTitle = Constants.FRAGMENT_STATS;
+                case Constants.FRAGMENT_STAT_LIST:
+                    mCurrentFragmentTitle = Constants.FRAGMENT_STAT_LIST;
+                    break;
+                case Constants.FRAGMENT_STAT_GRAPH:
+                    mCurrentFragmentTitle = Constants.FRAGMENT_STAT_GRAPH;
                     break;
                 default:
                     return;
@@ -1055,14 +1059,30 @@ public class MainActivity
     }
 
     /**
-     * Gets a new instance of StatsFragment and displays it.
+     * Gets a new instance of {@link ca.josephroque.bowlingcompanion.fragment.StatsListFragment} and
+     * displays it.
      *
      * @param tag represents fragment which should be returned to when backstack is popped
      */
-    private void openStatsFragment(String tag)
+    public void openStatsFragment(String tag)
     {
-        StatsFragment statsFragment = StatsFragment.newInstance();
-        startFragmentTransaction(statsFragment, tag, Constants.FRAGMENT_STATS);
+        StatsListFragment statsListFragment = StatsListFragment.newInstance();
+        startFragmentTransaction(statsListFragment, tag, Constants.FRAGMENT_STAT_LIST);
+    }
+
+    /**
+     * Gets a new instance of {@link ca.josephroque.bowlingcompanion.fragment.StatsGraphFragment}
+     * and displays it.
+     *
+     * @param statCategory category of stat to display
+     * @param statIndex index in category of stat to display
+     */
+    public void openStatGraph(int statCategory, int statIndex)
+    {
+        StatsGraphFragment fragment = StatsGraphFragment.newInstance(statCategory, statIndex);
+        startFragmentTransaction(fragment,
+                Constants.FRAGMENT_STAT_LIST,
+                Constants.FRAGMENT_STAT_GRAPH);
     }
 
     /**
@@ -1077,8 +1097,8 @@ public class MainActivity
         //final String hexColor = DataFormatter.getHexColorFromInt(Theme.getHeaderFontThemeColor());
 
         //if (getSupportActionBar() != null)
-            //getSupportActionBar().setTitle(Html.fromHtml("<font color=\"" + hexColor + "\">"
-                    //+ getResources().getString(resId) + "</font>"));
+        //getSupportActionBar().setTitle(Html.fromHtml("<font color=\"" + hexColor + "\">"
+        //+ getResources().getString(resId) + "</font>"));
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(resId);
         if (override)
