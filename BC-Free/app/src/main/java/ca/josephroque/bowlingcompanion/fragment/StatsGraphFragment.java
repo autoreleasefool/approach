@@ -294,7 +294,7 @@ public class StatsGraphFragment
                     fragment.mStatIndex, false));
             fragment.mLineChartStats.setDescription(StatUtils.getStatName(fragment.mStatCategory,
                     fragment.mStatIndex, false));
-            fragment.mLineChartStats.getLegend().setEnabled(false);
+            //fragment.mLineChartStats.getLegend().setEnabled(false);
             fragment.mLineChartStats.getAxisLeft().setValueFormatter(new DefaultValueFormatter(0));
             fragment.mLineChartStats.setData(result);
             fragment.mLineChartStats.invalidate();
@@ -358,6 +358,7 @@ public class StatsGraphFragment
          * @param listSuccessEntries list of data entries for achieved stat values
          * @param listLabels list of labels for x axis
          */
+        @SuppressWarnings("CheckStyle") // I ain't even gonna bother
         private void compileGeneralStats(StatsGraphFragment fragment,
                                          Cursor cursor,
                                          List<Entry> listChanceEntries,
@@ -416,9 +417,9 @@ public class StatsGraphFragment
                             listChanceEntries.add(chanceEntry);
                             listSuccessEntries.add(successEntry);
                             listLabels.add(dateFormat.format(lastEntryDate.getTime()));
+                            currentEntry++;
                         }
 
-                        // TODO: check if this is where these should reset (probably)
                         if (!fragment.mStatAccumulate)
                         {
                             totalShotsAtMiddle = 0;
