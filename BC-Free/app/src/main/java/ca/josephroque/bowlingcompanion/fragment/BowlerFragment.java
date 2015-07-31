@@ -213,7 +213,13 @@ public class BowlerFragment
     @Override
     public void onPrepareOptionsMenu(Menu menu)
     {
-        boolean drawerOpen = ((MainActivity) getActivity()).isDrawerOpen();
+        MainActivity mainActivity = (MainActivity) getActivity();
+        if (mainActivity == null)
+        {
+            super.onPrepareOptionsMenu(menu);
+            return;
+        }
+        boolean drawerOpen = mainActivity.isDrawerOpen();
         MenuItem menuItem = menu.findItem(R.id.action_quick_series).setVisible(!drawerOpen);
         Drawable drawable = menuItem.getIcon();
         if (drawable != null)
