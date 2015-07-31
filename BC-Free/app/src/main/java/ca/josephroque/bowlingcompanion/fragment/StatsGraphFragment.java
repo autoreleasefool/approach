@@ -18,20 +18,29 @@ import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.utils.DefaultValueFormatter;
+import com.github.mikephil.charting.utils.ValueFormatter;
 
 import java.lang.ref.WeakReference;
+import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.MainActivity;
 import ca.josephroque.bowlingcompanion.R;
+import ca.josephroque.bowlingcompanion.database.Contract;
 import ca.josephroque.bowlingcompanion.database.Contract.FrameEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.GameEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.SeriesEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.LeagueEntry;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.theme.Theme;
+import ca.josephroque.bowlingcompanion.utilities.DateUtils;
 import ca.josephroque.bowlingcompanion.utilities.StatUtils;
 
 /**
@@ -242,16 +251,34 @@ public class StatsGraphFragment
                             + ". must be between 0 and 1 (inclusive)");
             }
 
-            List<Entry> listEntries = new ArrayList<>();
+            List<Entry> listChanceEntries = new ArrayList<>();
+            List<Entry> listSuccessEntries = new ArrayList<>();
             List<String> listLabels = new ArrayList<>();
-            compileGraphData(fragment, cursor, listEntries, listLabels);
+            compileGraphData(fragment, cursor, listChanceEntries, listSuccessEntries, listLabels);
             if (!cursor.isClosed())
                 cursor.close();
-            LineDataSet dataset = new LineDataSet(listEntries,
-                    StatUtils.getStatName(fragment.mStatCategory, fragment.mStatIndex));
 
             List<LineDataSet> datasets = new ArrayList<>();
-            datasets.add(dataset);
+            ValueFormatter valueFormatter = new DefaultValueFormatter(0);
+
+            LineDataSet datasetSuccess = new LineDataSet(listSuccessEntries,
+                    StatUtils.getStatName(fragment.mStatCategory, fragment.mStatIndex, false));
+            LineDataSet datasetChances = null;
+            String statChanceName = StatUtils.getStatName(fragment.mStatCategory,
+                    fragment.mStatIndex,
+                    true);
+            if (statChanceName != null)
+                datasetChances = new LineDataSet(listChanceEntries, statChanceName);
+
+
+            if (datasetChances != null)
+            {
+                datasetChances.setValueFormatter(valueFormatter);
+                datasets.add(datasetChances);
+            }
+
+            datasetSuccess.setValueFormatter(valueFormatter);
+            datasets.add(datasetSuccess);
 
             return new LineData(listLabels, datasets);
         }
@@ -263,14 +290,15 @@ public class StatsGraphFragment
             if (fragment == null || result == null)
                 return;
 
-            fragment.mSwitchAccumulate.setEnabled(true);
             fragment.mTextViewStat.setText(StatUtils.getStatName(fragment.mStatCategory,
-                    fragment.mStatIndex));
+                    fragment.mStatIndex, false));
             fragment.mLineChartStats.setDescription(StatUtils.getStatName(fragment.mStatCategory,
-                    fragment.mStatIndex));
+                    fragment.mStatIndex, false));
             fragment.mLineChartStats.getLegend().setEnabled(false);
+            fragment.mLineChartStats.getAxisLeft().setValueFormatter(new DefaultValueFormatter(0));
             fragment.mLineChartStats.setData(result);
             fragment.mLineChartStats.invalidate();
+            fragment.mSwitchAccumulate.setEnabled(true);
         }
 
         /**
@@ -278,36 +306,42 @@ public class StatsGraphFragment
          *
          * @param fragment parent fragment
          * @param cursor bowler / league data
-         * @param listEntries list of data entries
+         * @param listChanceEntries list of data entries for chances at increasing a stat
+         * @param listSuccessEntries list of data entries for achieved stat values
          * @param listLabels list of labels for x axis
          */
         private void compileGraphData(StatsGraphFragment fragment,
                                       Cursor cursor,
-                                      List<Entry> listEntries,
+                                      List<Entry> listChanceEntries,
+                                      List<Entry> listSuccessEntries,
                                       List<String> listLabels)
         {
             switch (fragment.mStatCategory)
             {
                 case StatUtils.STAT_CATEGORY_GENERAL:
-                    compileGeneralStats(fragment, cursor, listEntries, listLabels);
+                    compileGeneralStats(fragment,
+                            cursor,
+                            listChanceEntries,
+                            listSuccessEntries,
+                            listLabels);
                     break;
                 case StatUtils.STAT_CATEGORY_FIRST_BALL:
-                    compileFirstBallStats(fragment, cursor, listEntries, listLabels);
+                    compileFirstBallStats(fragment, cursor, listSuccessEntries, listLabels);
                     break;
                 case StatUtils.STAT_CATEGORY_FOULS:
-                    compileFoulStats(fragment, cursor, listEntries, listLabels);
+                    compileFoulStats(fragment, cursor, listSuccessEntries, listLabels);
                     break;
                 case StatUtils.STAT_CATEGORY_PINS:
-                    compilePinStats(fragment, cursor, listEntries, listLabels);
+                    compilePinStats(fragment, cursor, listSuccessEntries, listLabels);
                     break;
                 case StatUtils.STAT_CATEGORY_AVERAGE_BY_GAME:
-                    compileAverageStats(fragment, cursor, listEntries, listLabels);
+                    compileAverageStats(fragment, cursor, listSuccessEntries, listLabels);
                     break;
                 case StatUtils.STAT_CATEGORY_MATCH_PLAY:
-                    compileMatchPlayStats(fragment, cursor, listEntries, listLabels);
+                    compileMatchPlayStats(fragment, cursor, listSuccessEntries, listLabels);
                     break;
                 case StatUtils.STAT_CATEGORY_OVERALL:
-                    compileOverallStats(fragment, cursor, listEntries, listLabels);
+                    compileOverallStats(fragment, cursor, listSuccessEntries, listLabels);
                     break;
                 default:
                     throw new IllegalStateException(
@@ -320,19 +354,200 @@ public class StatsGraphFragment
          *
          * @param fragment parent fragment
          * @param cursor bowler / league data
-         * @param listEntries list of data entries
+         * @param listChanceEntries list of data entries for chances at increasing a stat
+         * @param listSuccessEntries list of data entries for achieved stat values
          * @param listLabels list of labels for x axis
          */
         private void compileGeneralStats(StatsGraphFragment fragment,
                                          Cursor cursor,
-                                         List<Entry> listEntries,
+                                         List<Entry> listChanceEntries,
+                                         List<Entry> listSuccessEntries,
                                          List<String> listLabels)
         {
+            Calendar lastEntryDate = null;
+            Calendar lastLabelDate = null;
+            Calendar currentDate = null;
+            DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locale.CANADA);
+            boolean addLabelOnDateChange = false;
+            int totalShotsAtMiddle = 0, middleHits = 0;
+            int spareChances = 0, spares = 0;
+            int strikes = 0;
+
+            int currentEntry = 0;
             if (cursor.moveToFirst())
             {
                 while (!cursor.isAfterLast())
                 {
+                    Date entryDate = DateUtils.parseEntryDate(cursor.getString(
+                            cursor.getColumnIndex(SeriesEntry.COLUMN_SERIES_DATE)));
+                    if (entryDate == null)
+                        return;
+
+                    currentDate = DateUtils.getCalendarAtMidnight(entryDate);
+
+                    if (addLabelOnDateChange
+                            && currentDate.getTimeInMillis() != lastEntryDate.getTimeInMillis())
+                    {
+                        addLabelOnDateChange = false;
+                        lastLabelDate = lastEntryDate;
+                        Entry chanceEntry;
+                        Entry successEntry;
+                        switch (fragment.mStatIndex)
+                        {
+                            case StatUtils.STAT_MIDDLE_HIT:
+                                chanceEntry = new Entry(totalShotsAtMiddle, currentEntry);
+                                successEntry = new Entry(middleHits, currentEntry);
+                                break;
+                            case StatUtils.STAT_SPARE_CONVERSIONS:
+                                chanceEntry = new Entry(spareChances, currentEntry);
+                                successEntry = new Entry(spares, currentEntry);
+                                break;
+                            case StatUtils.STAT_STRIKES:
+                                chanceEntry = new Entry(totalShotsAtMiddle, currentEntry);
+                                successEntry = new Entry(strikes, currentEntry);
+                                break;
+                            default:
+                                chanceEntry = null;
+                                successEntry = null;
+                                // does nothing
+                        }
+                        if (chanceEntry != null)
+                        {
+                            listChanceEntries.add(chanceEntry);
+                            listSuccessEntries.add(successEntry);
+                            listLabels.add(dateFormat.format(lastEntryDate.getTime()));
+                        }
+
+                        // TODO: check if this is where these should reset (probably)
+                        if (!fragment.mStatAccumulate)
+                        {
+                            totalShotsAtMiddle = 0;
+                            middleHits = 0;
+                            spareChances = 0;
+                            spares = 0;
+                            strikes = 0;
+                        }
+                    }
+
+                    if (lastLabelDate == null)
+                    {
+                        addLabelOnDateChange = true;
+                    }
+                    else if (lastLabelDate.getTimeInMillis()
+                            <= currentDate.getTimeInMillis() + DateUtils.MILLIS_ONE_WEEK)
+                    {
+                        lastLabelDate = currentDate;
+                        addLabelOnDateChange = true;
+                    }
+
+                    lastEntryDate = currentDate;
+
+                    boolean gameIsManual = (cursor.getInt(cursor.getColumnIndex(
+                            Contract.GameEntry.COLUMN_IS_MANUAL)) == 1);
+                    if (gameIsManual)
+                    {
+
+                        cursor.moveToNext();
+                        continue;
+                    }
+
+                    String[] ballStrings = {
+                            cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_PIN_STATE[0])),
+                            cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_PIN_STATE[1])),
+                            cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_PIN_STATE[2])),
+                    };
+
+                    boolean[][] pinState = new boolean[3][5];
+                    for (byte i = 0; i < 5; i++)
+                    {
+                        pinState[0][i] = ballStrings[0].charAt(i) == '1';
+                        pinState[1][i] = ballStrings[1].charAt(i) == '1';
+                        pinState[2][i] = ballStrings[2].charAt(i) == '1';
+                    }
+
+                    int frameNumber = cursor.getInt(cursor.getColumnIndex(
+                            FrameEntry.COLUMN_FRAME_NUMBER));
+                    if (pinState[0][2])
+                        middleHits++;
+                    if (frameNumber == Constants.LAST_FRAME)
+                    {
+                        totalShotsAtMiddle++;
+                        if (Arrays.equals(pinState[0], Constants.FRAME_PINS_DOWN))
+                        {
+                            totalShotsAtMiddle++;
+                            strikes++;
+                            if (Arrays.equals(pinState[1], Constants.FRAME_PINS_DOWN))
+                            {
+                                totalShotsAtMiddle++;
+                                strikes++;
+                                if (Arrays.equals(pinState[2], Constants.FRAME_PINS_DOWN))
+                                    strikes++;
+                            }
+                            else
+                            {
+                                spareChances++;
+                                if (Arrays.equals(pinState[2], Constants.FRAME_PINS_DOWN))
+                                    spares++;
+                            }
+                        }
+                        else
+                        {
+                            spareChances++;
+                            if (Arrays.equals(pinState[1], Constants.FRAME_PINS_DOWN))
+                            {
+                                totalShotsAtMiddle++;
+                                spares++;
+                                if (Arrays.equals(pinState[2], Constants.FRAME_PINS_DOWN))
+                                    strikes++;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        totalShotsAtMiddle++;
+                        if (Arrays.equals(pinState[0], Constants.FRAME_PINS_DOWN))
+                            strikes++;
+                        else
+                        {
+                            spareChances++;
+                            if (Arrays.equals(pinState[1], Constants.FRAME_PINS_DOWN))
+                                spares++;
+                        }
+                    }
+
                     cursor.moveToNext();
+                }
+            }
+
+            if (lastEntryDate != null && (lastLabelDate == null
+                    || currentDate.getTimeInMillis() != lastLabelDate.getTimeInMillis()))
+            {
+                Entry chanceEntry;
+                Entry successEntry;
+                switch (fragment.mStatIndex)
+                {
+                    case StatUtils.STAT_MIDDLE_HIT:
+                        chanceEntry = new Entry(totalShotsAtMiddle, currentEntry);
+                        successEntry = new Entry(middleHits, currentEntry);
+                        break;
+                    case StatUtils.STAT_SPARE_CONVERSIONS:
+                        chanceEntry = new Entry(spareChances, currentEntry);
+                        successEntry = new Entry(spares, currentEntry);
+                        break;
+                    case StatUtils.STAT_STRIKES:
+                        chanceEntry = new Entry(totalShotsAtMiddle, currentEntry);
+                        successEntry = new Entry(strikes, currentEntry);
+                        break;
+                    default:
+                        chanceEntry = null;
+                        successEntry = null;
+                        // does nothing
+                }
+                if (chanceEntry != null)
+                {
+                    listChanceEntries.add(chanceEntry);
+                    listSuccessEntries.add(successEntry);
+                    listLabels.add(dateFormat.format(lastEntryDate.getTime()));
                 }
             }
         }

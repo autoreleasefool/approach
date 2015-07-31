@@ -22,9 +22,6 @@ public class StatsFragment
     @SuppressWarnings("unused")
     private static final String TAG = "StatsFragment";
 
-    /** Represents a boolean indicating if the user is viewing the data in a graph. */
-    private static final String ARG_VIEWING_GRAPH = "arg_viewing_graph";
-
     /** Indicates all the stats related to the specified bowler should be loaded. */
     public static final byte LOADING_BOWLER_STATS = 0;
     /** Indicates all the stats related to the specified league should be loaded. */
@@ -33,9 +30,6 @@ public class StatsFragment
     public static final byte LOADING_SERIES_STATS = 2;
     /** Indicates only the stats related to the specified game should be loaded. */
     public static final byte LOADING_GAME_STATS = 3;
-
-    /** Indicates if the user is currently viewing the data in a graph or not. */
-    private boolean mViewingGraph = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater,
@@ -49,10 +43,6 @@ public class StatsFragment
             getChildFragmentManager().beginTransaction()
                     .add(R.id.stats_container, StatsListFragment.newInstance(this))
                     .commit();
-        }
-        else
-        {
-            mViewingGraph = savedInstanceState.getBoolean(ARG_VIEWING_GRAPH, false);
         }
 
         return rootView;
@@ -70,13 +60,6 @@ public class StatsFragment
             mainActivity.setCurrentFragment(this);
             mainActivity.setDrawerState(false);
         }
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState)
-    {
-        super.onSaveInstanceState(outState);
-        outState.putBoolean(ARG_VIEWING_GRAPH, mViewingGraph);
     }
 
     @Override

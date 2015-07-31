@@ -210,7 +210,7 @@ public class StatsListFragment
             try
             {
                 namesAndValues.get(mStatsGeneral).add(new AbstractMap.SimpleEntry<>(
-                        StatUtils.getStatName(StatUtils.STAT_CATEGORY_GENERAL, i), "--"));
+                        StatUtils.getStatName(StatUtils.STAT_CATEGORY_GENERAL, i, false), "--"));
             }
             catch (IllegalArgumentException ex)
             {
@@ -228,7 +228,7 @@ public class StatsListFragment
             try
             {
                 namesAndValues.get(mStatsFirstBall).add(new AbstractMap.SimpleEntry<>(
-                        StatUtils.getStatName(StatUtils.STAT_CATEGORY_FIRST_BALL, i), "--"));
+                        StatUtils.getStatName(StatUtils.STAT_CATEGORY_FIRST_BALL, i, false), "--"));
             }
             catch (IllegalArgumentException ex)
             {
@@ -246,7 +246,7 @@ public class StatsListFragment
             try
             {
                 namesAndValues.get(mStatsFouls).add(new AbstractMap.SimpleEntry<>(
-                        StatUtils.getStatName(StatUtils.STAT_CATEGORY_FOULS, i), "--"));
+                        StatUtils.getStatName(StatUtils.STAT_CATEGORY_FOULS, i, false), "--"));
             }
             catch (IllegalArgumentException ex)
             {
@@ -259,7 +259,7 @@ public class StatsListFragment
         namesAndValues.add(new ArrayList<AbstractMap.SimpleEntry<String, String>>());
         mStatsPins = 3;
         namesAndValues.get(mStatsPins).add(new AbstractMap.SimpleEntry<>(StatUtils.getStatName(
-                StatUtils.STAT_CATEGORY_PINS, StatUtils.STAT_PINS_LEFT), "--"));
+                StatUtils.STAT_CATEGORY_PINS, StatUtils.STAT_PINS_LEFT, false), "--"));
 
         if (statsToLoad < StatsFragment.LOADING_SERIES_STATS)
         {
@@ -272,13 +272,13 @@ public class StatsListFragment
             for (i = 0; i < numberOfGames; i++)
                 namesAndValues.get(mStatsGameAverage).add(
                         new AbstractMap.SimpleEntry<>(StatUtils.getStatName(
-                                StatUtils.STAT_CATEGORY_AVERAGE_BY_GAME, i), "--"));
+                                StatUtils.STAT_CATEGORY_AVERAGE_BY_GAME, i, false), "--"));
         }
 
         if (statsToLoad < StatsFragment.LOADING_GAME_STATS)
         {
             namesAndValues.get(mStatsPins).add(new AbstractMap.SimpleEntry<>(StatUtils.getStatName(
-                    StatUtils.STAT_CATEGORY_PINS, StatUtils.STAT_PINS_AVERAGE), "--"));
+                    StatUtils.STAT_CATEGORY_PINS, StatUtils.STAT_PINS_AVERAGE, false), "--"));
 
             headers.add("Match Play");
             namesAndValues.add(new ArrayList<AbstractMap.SimpleEntry<String, String>>());
@@ -291,7 +291,7 @@ public class StatsListFragment
                 try
                 {
                     namesAndValues.get(mStatsMatch).add(new AbstractMap.SimpleEntry<>(
-                            StatUtils.getStatName(StatUtils.STAT_CATEGORY_MATCH_PLAY, i), "--"));
+                            StatUtils.getStatName(StatUtils.STAT_CATEGORY_MATCH_PLAY, i, false), "--"));
                 }
                 catch (IllegalArgumentException ex)
                 {
@@ -309,7 +309,7 @@ public class StatsListFragment
                 try
                 {
                     namesAndValues.get(mStatsOverall).add(new AbstractMap.SimpleEntry<>(
-                            StatUtils.getStatName(StatUtils.STAT_CATEGORY_OVERALL, i), "--"));
+                            StatUtils.getStatName(StatUtils.STAT_CATEGORY_OVERALL, i, false), "--"));
                 }
                 catch (IllegalArgumentException ex)
                 {
@@ -477,8 +477,8 @@ public class StatsListFragment
                                     Contract.FrameEntry.COLUMN_PIN_STATE[0])),
                             cursor.getString(cursor.getColumnIndex(
                                     Contract.FrameEntry.COLUMN_PIN_STATE[1])),
-                            cursor.getString(
-                                    cursor.getColumnIndex(Contract.FrameEntry.COLUMN_PIN_STATE[2]))
+                            cursor.getString(cursor.getColumnIndex(
+                                    Contract.FrameEntry.COLUMN_PIN_STATE[2]))
                     };
                     boolean[][] pinState = new boolean[3][5];
 

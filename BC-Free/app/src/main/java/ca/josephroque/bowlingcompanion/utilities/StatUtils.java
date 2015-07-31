@@ -101,26 +101,29 @@ public final class StatUtils
      *
      * @param statCategory category of the stat
      * @param statIndex index of the stat
-     * @return name of the stat
+     * @param chanceName if true, returns a name which describes the chances the user had to
+     * increase the stat, or null if such a name does not exist. If false, returns the name of the
+     * stat
+     * @return name of the stat or the "chances" name of the stat
      */
-    public static String getStatName(int statCategory, int statIndex)
+    public static String getStatName(int statCategory, int statIndex, boolean chanceName)
     {
         switch (statCategory)
         {
             case StatUtils.STAT_CATEGORY_GENERAL:
-                return getGeneralStatName(statIndex);
+                return getGeneralStatName(statIndex, chanceName);
             case StatUtils.STAT_CATEGORY_FIRST_BALL:
-                return getFirstBallStatName(statIndex);
+                return getFirstBallStatName(statIndex, chanceName);
             case StatUtils.STAT_CATEGORY_FOULS:
-                return getFoulStatName(statIndex);
+                return getFoulStatName(statIndex, chanceName);
             case StatUtils.STAT_CATEGORY_PINS:
-                return getPinStatName(statIndex);
+                return getPinStatName(statIndex, chanceName);
             case StatUtils.STAT_CATEGORY_AVERAGE_BY_GAME:
-                return getAverageByGameStatName(statIndex);
+                return getAverageByGameStatName(statIndex, chanceName);
             case StatUtils.STAT_CATEGORY_MATCH_PLAY:
-                return getMatchPlayStatName(statIndex);
+                return getMatchPlayStatName(statIndex, chanceName);
             case StatUtils.STAT_CATEGORY_OVERALL:
-                return getOverallStatName(statIndex);
+                return getOverallStatName(statIndex, chanceName);
             default:
                 throw new IllegalArgumentException("invalid stat category: " + statCategory);
         }
@@ -130,10 +133,14 @@ public final class StatUtils
      * Gets the name of a stat in the "overall" category.
      *
      * @param statIndex index of the stat
+     * @param chanceName if true, method returns null
      * @return name of the "overall" stat
      */
-    private static String getOverallStatName(int statIndex)
+    private static String getOverallStatName(int statIndex, boolean chanceName)
     {
+        if (chanceName)
+            return null;
+
         switch (statIndex)
         {
             case STAT_AVERAGE:
@@ -156,10 +163,15 @@ public final class StatUtils
      * Gets the name of a stat in the "match" category.
      *
      * @param statIndex index of the stat
+     * @param chanceName if true, returns a stat name representing the chances a user could have
+     * achieved a stat. If false, returns the name of the achievable stat
      * @return name of the "match" stat
      */
-    private static String getMatchPlayStatName(int statIndex)
+    private static String getMatchPlayStatName(int statIndex, boolean chanceName)
     {
+        if (chanceName)
+            return "Total Match Play Games";
+
         switch (statIndex)
         {
             case STAT_WON:
@@ -178,21 +190,29 @@ public final class StatUtils
      * Gets the name of a stat in the "average by game" category.
      *
      * @param statIndex index of the stat
+     * @param chanceName if true, returns null
      * @return name of the "average by game" stat
      */
-    private static String getAverageByGameStatName(int statIndex)
+    private static String getAverageByGameStatName(int statIndex, boolean chanceName)
     {
-        return "Game " + (statIndex + 1);
+        if (chanceName)
+            return null;
+        else
+            return "Game " + (statIndex + 1);
     }
 
     /**
      * Gets the name of a stat in the "pins" category.
      *
      * @param statIndex index of the stat
+     * @param chanceName if true, returns null
      * @return name of the "pins" stat
      */
-    private static String getPinStatName(int statIndex)
+    private static String getPinStatName(int statIndex, boolean chanceName)
     {
+        if (chanceName)
+            return null;
+
         switch (statIndex)
         {
             case STAT_PINS_LEFT:
@@ -209,10 +229,14 @@ public final class StatUtils
      * Gets the name of a stat in the "foul" category.
      *
      * @param statIndex index of the stat
+     * @param chanceName if true, returns null
      * @return name of the "foul" stat
      */
-    private static String getFoulStatName(int statIndex)
+    private static String getFoulStatName(int statIndex, boolean chanceName)
     {
+        if (chanceName)
+            return null;
+
         switch (statIndex)
         {
             case STAT_FOULS:
@@ -227,9 +251,11 @@ public final class StatUtils
      * Gets the name of a stat in the "first ball" category.
      *
      * @param statIndex index of the stat
+     * @param chanceName if true, returns a stat name representing the chances a user could have
+     * achieved a stat. If false, returns the name of the achievable stat
      * @return name of the "first ball" stat
      */
-    private static String getFirstBallStatName(int statIndex)
+    private static String getFirstBallStatName(int statIndex, boolean chanceName)
     {
         boolean spared = (statIndex % 2 == 1);
         if (spared)
@@ -273,7 +299,11 @@ public final class StatUtils
                         "invalid index " + statIndex + " for first ball category");
         }
 
-        if (spared)
+        if (chanceName)
+            return (spared)
+                    ? "Total " + statName
+                    : "Total Shots at Middle";
+        else if (spared)
             return statName + " Spared";
         else
             return statName;
@@ -283,18 +313,26 @@ public final class StatUtils
      * Gets the name of a stat in the "general" category.
      *
      * @param statIndex index of the stat
+     * @param chanceName if true, returns a stat name representing the chances a user could have
+     * achieved a stat. If false, returns the name of the achievable stat
      * @return name of the "general" stat
      */
-    private static String getGeneralStatName(int statIndex)
+    private static String getGeneralStatName(int statIndex, boolean chanceName)
     {
         switch (statIndex)
         {
             case STAT_MIDDLE_HIT:
-                return "Middle Hit";
+                return (chanceName)
+                        ? "Total Shots at Middle"
+                        : "Middle Hit";
             case STAT_STRIKES:
-                return "Strikes";
+                return (chanceName)
+                        ? "Total Shots at Middle"
+                        : "Strikes";
             case STAT_SPARE_CONVERSIONS:
-                return "Spare Conversions";
+                return (chanceName)
+                        ? "Total Spare Chances"
+                        : "Spare Conversions";
             default:
                 throw new IllegalArgumentException(
                         "invalid index " + statIndex + " for general category");
