@@ -49,7 +49,8 @@ import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
 /**
  * Created by Joseph Roque on 15-03-13. Manages the UI to display information about the bowlers
  * being tracked by the application, and offers a callback interface {@link
- * BowlerFragment.OnBowlerSelectedListener} for handling interactions.
+ * ca.josephroque.bowlingcompanion.fragment.BowlerFragment.BowlerCallback} for handling
+ * interactions.
  */
 @SuppressWarnings("Convert2Lambda")
 public class BowlerFragment
@@ -69,11 +70,11 @@ public class BowlerFragment
     private NameAverageAdapter<Bowler> mAdapterBowlers;
 
     /** Callback listener for user events related to bowlers. */
-    private OnBowlerSelectedListener mBowlerSelectedListener;
+    private BowlerCallback mBowlerCallback;
     /** Callback listener for user events related to leagues. */
-    private LeagueEventFragment.OnLeagueSelectedListener mLeagueSelectedListener;
+    private LeagueEventFragment.LeagueEventCallback mLeagueSelectedCallback;
     /** Callback listener for user events related to series. */
-    private SeriesFragment.SeriesListener mSeriesListener;
+    private SeriesFragment.SeriesCallback mSeriesCallback;
 
     /** List to store bowler data from bowler table in database. */
     private List<Bowler> mListBowlers;
@@ -119,9 +120,9 @@ public class BowlerFragment
          */
         try
         {
-            mBowlerSelectedListener = (OnBowlerSelectedListener) activity;
-            mLeagueSelectedListener = (LeagueEventFragment.OnLeagueSelectedListener) activity;
-            mSeriesListener = (SeriesFragment.SeriesListener) activity;
+            mBowlerCallback = (BowlerCallback) activity;
+            mLeagueSelectedCallback = (LeagueEventFragment.LeagueEventCallback) activity;
+            mSeriesCallback = (SeriesFragment.SeriesCallback) activity;
         }
         catch (ClassCastException ex)
         {
@@ -129,6 +130,15 @@ public class BowlerFragment
                     + " must implement OnBowlerSelectedListener, OnLeagueSelectedListener,"
                     + " SeriesListener");
         }
+    }
+
+    @Override
+    public void onDetach()
+    {
+        super.onDetach();
+        mBowlerCallback = null;
+        mLeagueSelectedCallback = null;
+        mSeriesCallback = null;
     }
 
     @Override
@@ -375,28 +385,42 @@ public class BowlerFragment
                                 Bowler quickBowler = new Bowler(mQuickBowlerId,
                                         mQuickBowlerName,
                                         (short) 0);
-                                mBowlerSelectedListener.onBowlerSelected(quickBowler, false, true);
-                                mLeagueSelectedListener.onLeagueSelected(new LeagueEvent(
-                                                mQuickLeagueId,
-                                                mQuickLeagueName,
-                                                (short) 0,
-                                                mQuickNumberOfGames),
-                                        false);
-                                mSeriesListener.onCreateNewSeries(false);
+                                if (mBowlerCallback != null
+                                        && mLeagueSelectedCallback != null
+                                        && mSeriesCallback != null)
+                                {
+                                    mBowlerCallback.onBowlerSelected(quickBowler,
+                                            false,
+                                            true);
+                                    mLeagueSelectedCallback.onLeagueSelected(new LeagueEvent(
+                                                    mQuickLeagueId,
+                                                    mQuickLeagueName,
+                                                    (short) 0,
+                                                    mQuickNumberOfGames),
+                                            false);
+                                    mSeriesCallback.onCreateNewSeries(false);
+                                }
                             }
                             else
                             {
                                 Bowler recentBowler = new Bowler(mRecentBowlerId,
                                         mRecentBowlerName,
                                         (short) 0);
-                                mBowlerSelectedListener.onBowlerSelected(recentBowler, false, true);
-                                mLeagueSelectedListener.onLeagueSelected(new LeagueEvent(
-                                                mRecentLeagueId,
-                                                mRecentLeagueName,
-                                                (short) 0,
-                                                mRecentNumberOfGames),
-                                        false);
-                                mSeriesListener.onCreateNewSeries(false);
+                                if (mBowlerCallback != null
+                                        && mLeagueSelectedCallback != null
+                                        && mSeriesCallback != null)
+                                {
+                                    mBowlerCallback.onBowlerSelected(recentBowler,
+                                            false,
+                                            true);
+                                    mLeagueSelectedCallback.onLeagueSelected(new LeagueEvent(
+                                                    mRecentLeagueId,
+                                                    mRecentLeagueName,
+                                                    (short) 0,
+                                                    mRecentNumberOfGames),
+                                            false);
+                                    mSeriesCallback.onCreateNewSeries(false);
+                                }
                             }
                             dialog.dismiss();
                         }
@@ -760,7 +784,8 @@ public class BowlerFragment
                 return;
 
             //Creates new instance of LeagueEventFragment for bowler
-            fragment.mBowlerSelectedListener.onBowlerSelected(result, true, false);
+            if (fragment.mBowlerCallback != null)
+                fragment.mBowlerCallback.onBowlerSelected(result, true, false);
         }
     }
 
@@ -860,7 +885,7 @@ public class BowlerFragment
      * Container Activity must implement this interface to allow LeagueEventFragment to be loaded
      * when a bowler is selected.
      */
-    public interface OnBowlerSelectedListener
+    public interface BowlerCallback
     {
 
         /**

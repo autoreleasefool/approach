@@ -90,10 +90,10 @@ public class MainActivity
         implements
         FragmentManager.OnBackStackChangedListener,
         Theme.ChangeableTheme,
-        BowlerFragment.OnBowlerSelectedListener,
-        LeagueEventFragment.OnLeagueSelectedListener,
-        SeriesFragment.SeriesListener,
-        GameFragment.GameFragmentCallbacks,
+        BowlerFragment.BowlerCallback,
+        LeagueEventFragment.LeagueEventCallback,
+        SeriesFragment.SeriesCallback,
+        GameFragment.GameFragmentCallback,
         NavigationDrawerAdapter.NavigationCallback
 {
 

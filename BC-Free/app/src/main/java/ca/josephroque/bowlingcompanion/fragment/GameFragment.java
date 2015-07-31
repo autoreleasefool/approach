@@ -49,7 +49,8 @@ import ca.josephroque.bowlingcompanion.view.PinLayout;
 /**
  * Created by Joseph Roque on 15-03-18. Manages the UI to display information about the games being
  * tracked by the application, and offers a callback interface {@link
- * GameFragment.GameFragmentCallbacks} for handling interactions.
+ * ca.josephroque.bowlingcompanion.fragment.GameFragment.GameFragmentCallback} for handling
+ * interactions.
  */
 @SuppressWarnings({"Convert2Lambda", "CheckStyle"})
 public class GameFragment
@@ -112,7 +113,7 @@ public class GameFragment
     private TextView mTextViewAutoAdvance;
 
     /** Instance of callback interface for handling user events. */
-    private GameFragmentCallbacks mCallback;
+    private GameFragmentCallback mGameCallback;
 
     /** Ids which represent current games that are available to be edited. */
     private long[] mGameIds;
@@ -258,7 +259,8 @@ public class GameFragment
                                 alterPinState((byte) i, false);
                         }
                     }
-                    mCallback.resetAutoAdvanceTimer();
+                    if (mGameCallback != null)
+                        mGameCallback.resetAutoAdvanceTimer();
                     break;
                 default:
                     // does nothing
@@ -277,13 +279,20 @@ public class GameFragment
          */
         try
         {
-            mCallback = (GameFragmentCallbacks) activity;
+            mGameCallback = (GameFragmentCallback) activity;
         }
         catch (ClassCastException ex)
         {
             throw new ClassCastException(activity.toString()
                     + " must implement GameFragmentCallbacks");
         }
+    }
+
+    @Override
+    public void onDetach()
+    {
+        super.onDetach();
+        mGameCallback = null;
     }
 
     @Override
@@ -532,17 +541,20 @@ public class GameFragment
                 ? Integer.valueOf(strDelay.substring(0, strDelay.indexOf(" ")))
                 : 0;
 
-        mCallback.setAutoAdvanceConditions(mImageViewNextBall,
-                mTextViewAutoAdvance,
-                autoAdvanceEnabled,
-                autoAdvanceDelay);
-        mCallback.stopAutoAdvanceTimer();
+        if (mGameCallback != null)
+        {
+            mGameCallback.setAutoAdvanceConditions(mImageViewNextBall,
+                    mTextViewAutoAdvance,
+                    autoAdvanceEnabled,
+                    autoAdvanceDelay);
+            mGameCallback.stopAutoAdvanceTimer();
 
-        //Loads scores of games being edited from database
-        loadInitialScores();
-        //Loads first game to edit
-        loadGameFromDatabase(mCurrentGame);
-        mCallback.loadGameScoresForDrawer(mGameIds);
+            //Loads scores of games being edited from database
+            loadInitialScores();
+            //Loads first game to edit
+            loadGameFromDatabase(mCurrentGame);
+            mGameCallback.loadGameScoresForDrawer(mGameIds);
+        }
     }
 
     @Override
@@ -639,7 +651,8 @@ public class GameFragment
 
             case R.id.action_series_stats:
                 //Displays all stats related to series of games
-                mCallback.onSeriesStatsOpened();
+                if (mGameCallback != null)
+                    mGameCallback.onSeriesStatsOpened();
                 return true;
 
             case R.id.action_reset_game:
@@ -658,7 +671,9 @@ public class GameFragment
 
             case R.id.action_stats:
                 //Displays all stats related to current game
-                mCallback.onGameStatsOpened(mGameIds[mCurrentGame], (byte) (mCurrentGame + 1));
+                if (mGameCallback != null)
+                    mGameCallback.onGameStatsOpened(mGameIds[mCurrentGame],
+                            (byte) (mCurrentGame + 1));
                 return true;
 
             default:
@@ -708,8 +723,9 @@ public class GameFragment
         mGameScoresMinusFouls[mCurrentGame] = scoreToSet;
         clearAllText(false);
         getActivity().supportInvalidateOptionsMenu();
-        mCallback.updateGameScore((byte) (mCurrentGame + 1),
-                mGameScoresMinusFouls[mCurrentGame]);
+        if (mGameCallback != null)
+            mGameCallback.updateGameScore((byte) (mCurrentGame + 1),
+                    mGameScoresMinusFouls[mCurrentGame]);
         saveGame(true);
     }
 
@@ -767,7 +783,8 @@ public class GameFragment
                             updateBalls(mCurrentFrame, (byte) 0);
                         updateScore();
                         updateFrameColor(false);
-                        mCallback.stopAutoAdvanceTimer();
+                        if (mGameCallback != null)
+                            mGameCallback.stopAutoAdvanceTimer();
                         break;
                     default:
                         throw new RuntimeException("Invalid frame id");
@@ -789,7 +806,8 @@ public class GameFragment
                             showSetMatchPlayLockedDialog();
                         else
                             showSetMatchPlayDialog();
-                        mCallback.stopAutoAdvanceTimer();
+                        if (mGameCallback != null)
+                            mGameCallback.stopAutoAdvanceTimer();
                         break;
 
                     case R.id.iv_lock:
@@ -798,7 +816,8 @@ public class GameFragment
                         if (mManualScoreSet[mCurrentGame])
                             return;
                         setGameLocked(!mGameLocked[mCurrentGame]);
-                        mCallback.stopAutoAdvanceTimer();
+                        if (mGameCallback != null)
+                            mGameCallback.stopAutoAdvanceTimer();
                         break;
 
                     case R.id.iv_foul:
@@ -807,7 +826,8 @@ public class GameFragment
                             return;
                         mFouls[mCurrentFrame][mCurrentBall] = !mFouls[mCurrentFrame][mCurrentBall];
                         updateFouls();
-                        mCallback.resetAutoAdvanceTimer();
+                        if (mGameCallback != null)
+                            mGameCallback.resetAutoAdvanceTimer();
                         break;
 
                     case R.id.iv_reset_frame:
@@ -826,12 +846,14 @@ public class GameFragment
                         updateFrameColor(false);
                         updateBalls(mCurrentFrame, (byte) 0);
                         updateScore();
-                        mCallback.stopAutoAdvanceTimer();
+                        if (mGameCallback != null)
+                            mGameCallback.stopAutoAdvanceTimer();
                         break;
 
                     case R.id.iv_clear:
                         clearPins();
-                        mCallback.resetAutoAdvanceTimer();
+                        if (mGameCallback != null)
+                            mGameCallback.resetAutoAdvanceTimer();
                         break;
 
                     case R.id.iv_next_ball:
@@ -862,7 +884,8 @@ public class GameFragment
                         mHasFrameBeenAccessed[mCurrentFrame] = true;
                         setVisibilityOfNextAndPrevItems();
                         updateFrameColor(false);
-                        mCallback.stopAutoAdvanceTimer();
+                        if (mGameCallback != null)
+                            mGameCallback.stopAutoAdvanceTimer();
                         break;
 
                     case R.id.iv_prev_ball:
@@ -884,7 +907,8 @@ public class GameFragment
                         }
                         setVisibilityOfNextAndPrevItems();
                         updateFrameColor(false);
-                        mCallback.stopAutoAdvanceTimer();
+                        if (mGameCallback != null)
+                            mGameCallback.stopAutoAdvanceTimer();
                         break;
 
                     default:
@@ -931,7 +955,8 @@ public class GameFragment
                                 updateBalls(mCurrentFrame, (byte) 0);
                             updateScore();
                             updateFrameColor(false);
-                            mCallback.stopAutoAdvanceTimer();
+                            if (mGameCallback != null)
+                                mGameCallback.stopAutoAdvanceTimer();
                             break;
                         }
                     }
@@ -1837,8 +1862,9 @@ public class GameFragment
                         .setText(mFouls[mCurrentFrame][mCurrentBall]
                                 ? "F"
                                 : "");
-                mCallback.updateGameScore((byte) (mCurrentGame + 1),
-                        mGameScoresMinusFouls[mCurrentGame]);
+                if (mGameCallback != null)
+                    mGameCallback.updateGameScore((byte) (mCurrentGame + 1),
+                            mGameScoresMinusFouls[mCurrentGame]);
             }
         });
     }
@@ -2205,7 +2231,8 @@ public class GameFragment
             public void run()
             {
                 mCurrentGame = newGame;
-                mCallback.onGameChanged(mCurrentGame);
+                if (mGameCallback != null)
+                    mGameCallback.onGameChanged(mCurrentGame);
                 SQLiteDatabase database =
                         DatabaseHelper.getInstance(getActivity()).getReadableDatabase();
 
@@ -2373,7 +2400,7 @@ public class GameFragment
     /**
      * Callback interface offers methods upon user interaction.
      */
-    public interface GameFragmentCallbacks
+    public interface GameFragmentCallback
     {
 
         /**

@@ -43,8 +43,9 @@ import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
 
 /**
  * Created by Joseph Roque on 15-03-17. Manages the UI to display information about the series being
- * tracked by the application, and offers a callback interface {@link SeriesFragment.SeriesListener}
- * for handling interactions.
+ * tracked by the application, and offers a callback interface {@link
+ * ca.josephroque.bowlingcompanion.fragment.SeriesFragment.SeriesCallback} for handling
+ * interactions.
  */
 @SuppressWarnings("Convert2Lambda")
 public class SeriesFragment
@@ -64,7 +65,7 @@ public class SeriesFragment
     private SeriesAdapter mAdapterSeries;
 
     /** Callback listener for user events related to series. */
-    private SeriesListener mSeriesListener;
+    private SeriesCallback mSeriesCallback;
 
     /** List to store series data from series table in database. */
     private List<Series> mListSeries;
@@ -80,20 +81,26 @@ public class SeriesFragment
     public void onAttach(Activity activity)
     {
         super.onAttach(activity);
-
         /*
          * This makes sure the container Activity has implemented
          * the callback interface. If not, an exception is thrown
          */
         try
         {
-            mSeriesListener = (SeriesListener) activity;
+            mSeriesCallback = (SeriesCallback) activity;
         }
         catch (ClassCastException ex)
         {
             throw new ClassCastException(activity.toString()
                     + " must implement SeriesListener");
         }
+    }
+
+    @Override
+    public void onDetach()
+    {
+        super.onDetach();
+        mSeriesCallback = null;
     }
 
     @Override
@@ -194,7 +201,8 @@ public class SeriesFragment
                 showEditDateDialog();
                 return true;
             case R.id.action_stats:
-                mSeriesListener.onLeagueStatsOpened();
+                if (mSeriesCallback != null)
+                    mSeriesCallback.onLeagueStatsOpened();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -211,7 +219,8 @@ public class SeriesFragment
     public void onSItemClick(final int position)
     {
         //When series is clicked, its games are displayed in a new GameFragment
-        mSeriesListener.onSeriesSelected(mListSeries.get(position), false);
+        if (mSeriesCallback != null)
+            mSeriesCallback.onSeriesSelected(mListSeries.get(position), false);
     }
 
     @Override
@@ -307,7 +316,8 @@ public class SeriesFragment
     @Override
     public void onFabClick()
     {
-        mSeriesListener.onCreateNewSeries(false);
+        if (mSeriesCallback != null)
+            mSeriesCallback.onCreateNewSeries(false);
     }
 
     /**
@@ -471,7 +481,7 @@ public class SeriesFragment
      * Container Activity must implement this interface to allow GameFragment/StatsFragment to be
      * loaded when a series is selected.
      */
-    public interface SeriesListener
+    public interface SeriesCallback
     {
 
         /**

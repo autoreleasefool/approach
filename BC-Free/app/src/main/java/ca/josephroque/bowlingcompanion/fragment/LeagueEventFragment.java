@@ -49,7 +49,8 @@ import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
 /**
  * Created by Joseph Roque on 15-03-15. Manages the UI to display information about the leagues
  * being tracked by the application, and offers a callback interface {@link
- * LeagueEventFragment.OnLeagueSelectedListener} for handling interactions.
+ * ca.josephroque.bowlingcompanion.fragment.LeagueEventFragment.LeagueEventCallback} for handling
+ * interactions.
  */
 @SuppressWarnings("Convert2Lambda")
 public class LeagueEventFragment
@@ -69,9 +70,9 @@ public class LeagueEventFragment
     private NameAverageAdapter<LeagueEvent> mAdapterLeagueEvents;
 
     /** Callback listener for user events related to leagues. */
-    private OnLeagueSelectedListener mLeagueSelectedListener;
+    private LeagueEventCallback mLeagueCallback;
     /** Callback listener for user events related to series. */
-    private SeriesFragment.SeriesListener mSeriesListener;
+    private SeriesFragment.SeriesCallback mSeriesCallback;
 
     /** List to store league / event data from league / event table in database. */
     private List<LeagueEvent> mListLeaguesEvents;
@@ -94,14 +95,22 @@ public class LeagueEventFragment
          */
         try
         {
-            mLeagueSelectedListener = (OnLeagueSelectedListener) activity;
-            mSeriesListener = (SeriesFragment.SeriesListener) activity;
+            mLeagueCallback = (LeagueEventCallback) activity;
+            mSeriesCallback = (SeriesFragment.SeriesCallback) activity;
         }
         catch (ClassCastException ex)
         {
             throw new ClassCastException(activity.toString()
                     + " must implement OnLeagueSelectedListener and SeriesListener");
         }
+    }
+
+    @Override
+    public void onDetach()
+    {
+        super.onDetach();
+        mLeagueCallback = null;
+        mSeriesCallback = null;
     }
 
     @Override
@@ -206,7 +215,8 @@ public class LeagueEventFragment
         {
             case R.id.action_stats:
                 //Displays stats of current bowler in a new StatsFragment
-                mLeagueSelectedListener.onBowlerStatsOpened();
+                if (mLeagueCallback != null)
+                    mLeagueCallback.onBowlerStatsOpened();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -521,7 +531,7 @@ public class LeagueEventFragment
                 }
                 else
                     cursor.close();
-                    throw new RuntimeException("Event series id could not be loaded from database");
+                throw new RuntimeException("Event series id could not be loaded from database");
             }
             else
                 return Pair.create(selectedLeagueEvent, new Series(-1, null, null));
@@ -546,8 +556,12 @@ public class LeagueEventFragment
                  * displaying the event's corresponding series
                  */
 
-                fragment.mLeagueSelectedListener.onLeagueSelected(result.first, false);
-                fragment.mSeriesListener.onSeriesSelected(result.second, true);
+                if (fragment.mLeagueCallback != null
+                        && fragment.mSeriesCallback != null)
+                {
+                    fragment.mLeagueCallback.onLeagueSelected(result.first, false);
+                    fragment.mSeriesCallback.onSeriesSelected(result.second, true);
+                }
             }
             else
             {
@@ -568,7 +582,8 @@ public class LeagueEventFragment
                             .apply();
                 }
 
-                fragment.mLeagueSelectedListener.onLeagueSelected(result.first, true);
+                if (fragment.mLeagueCallback != null)
+                    fragment.mLeagueCallback.onLeagueSelected(result.first, true);
             }
         }
     }
@@ -775,7 +790,7 @@ public class LeagueEventFragment
      * Container Activity must implement this interface to allow SeriesFragment/GameFragment to be
      * loaded when a league/event is selected.
      */
-    public interface OnLeagueSelectedListener
+    public interface LeagueEventCallback
     {
 
         /**
