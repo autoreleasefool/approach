@@ -75,7 +75,7 @@ public final class AppRater
             editor.putLong(PREF_FIRST_LAUNCH, dateOfFirstLaunch);
         }
 
-        //Gets the dait to wait for, in milliseconds
+        //Gets the date to wait for, in milliseconds
         long dateToWaitFor = dateOfFirstLaunch + TWO_WEEKS_MILLISECONDS;
 
         //If the conditions have been met, display the prompt
