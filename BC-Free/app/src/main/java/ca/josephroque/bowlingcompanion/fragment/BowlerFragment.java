@@ -317,7 +317,6 @@ public class BowlerFragment
         {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setMessage(invalidInputMessage)
-                    .setCancelable(false)
                     .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener()
                     {
                         @Override
@@ -450,7 +449,6 @@ public class BowlerFragment
                             dialog.dismiss();
                         }
                     })
-                    .setCancelable(false)
                     .create()
                     .show();
         }

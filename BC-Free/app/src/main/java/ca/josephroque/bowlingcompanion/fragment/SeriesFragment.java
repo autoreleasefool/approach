@@ -327,7 +327,6 @@ public class SeriesFragment
     {
         new AlertDialog.Builder(getActivity())
                 .setMessage(R.string.dialog_edit_date)
-                .setCancelable(false)
                 .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener()
                 {
                     @Override

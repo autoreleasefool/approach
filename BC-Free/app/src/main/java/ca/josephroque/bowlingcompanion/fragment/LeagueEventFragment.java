@@ -310,7 +310,7 @@ public class LeagueEventFragment
                 invalidInputBuilder.setMessage(invalidInputMessage);
             else
                 invalidInputBuilder.setMessage(invalidInputMessageVal);
-            invalidInputBuilder.setCancelable(false)
+            invalidInputBuilder
                     .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener()
                     {
                         @Override

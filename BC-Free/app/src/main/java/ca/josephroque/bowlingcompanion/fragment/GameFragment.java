@@ -701,7 +701,6 @@ public class GameFragment
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle("Invalid score!")
                     .setMessage(R.string.dialog_bad_score)
-                    .setCancelable(false)
                     .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener()
                     {
                         @Override
@@ -1157,7 +1156,6 @@ public class GameFragment
                         dialog.dismiss();
                     }
                 })
-                .setCancelable(false)
                 .create()
                 .show();
     }
@@ -1487,7 +1485,6 @@ public class GameFragment
         alertMessageBuilder.append(possibleScore);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(alertMessageBuilder.toString())
-                .setCancelable(false)
                 .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener()
                 {
                     @Override
