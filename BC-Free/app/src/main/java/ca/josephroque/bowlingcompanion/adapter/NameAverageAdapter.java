@@ -196,7 +196,9 @@ public class NameAverageAdapter<T extends NameAverageId>
                 holder.itemView.setOnClickListener(this);
                 break;
             case VIEWTYPE_DELETED:
-                final String nameToDelete = mListNamesAndAverages.get(position).getName();
+                String nameToDelete = mListNamesAndAverages.get(position).getName();
+                if (mDataType == DATA_LEAGUES_EVENTS)
+                    nameToDelete = nameToDelete.substring(1);
                 final long idToDelete = mListNamesAndAverages.get(position).getId();
                 final View.OnClickListener onClickListener = new View.OnClickListener()
                 {
