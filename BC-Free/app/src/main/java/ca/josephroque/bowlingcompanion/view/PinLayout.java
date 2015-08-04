@@ -25,6 +25,9 @@ public class PinLayout
     @Override
     public boolean onTouchEvent(@NonNull MotionEvent event)
     {
+        if (event.getX() < 20 * getResources().getDisplayMetrics().density + 0.5f)
+            event.setAction(MotionEvent.ACTION_CANCEL);
+
         if (mListener != null)
             mListener.onPinTouch(event);
 

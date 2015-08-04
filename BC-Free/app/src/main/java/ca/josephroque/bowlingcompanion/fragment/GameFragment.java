@@ -59,8 +59,7 @@ import ca.josephroque.bowlingcompanion.view.PinLayout;
 @SuppressWarnings({"Convert2Lambda", "CheckStyle"})
 public class GameFragment
         extends Fragment
-        implements
-        Theme.ChangeableTheme,
+        implements Theme.ChangeableTheme,
         ManualScoreDialog.ManualScoreDialogListener
 {
 
@@ -177,6 +176,8 @@ public class GameFragment
         private int mLayoutWidth;
         /** Number of pins which were altered. */
         private int mPinAlteredCount;
+        /** Indicates if the layout is being interacted with. */
+        private boolean mIsDragging;
 
         private void setFirstPinTouched(MotionEvent event)
         {
@@ -217,6 +218,7 @@ public class GameFragment
             switch (event.getActionMasked())
             {
                 case MotionEvent.ACTION_DOWN:
+                    mIsDragging = true;
                     for (int i = 0; i < mPinAltered.length; i++)
                         mPinAltered[i] = false;
                     mLayoutWidth = mLinearLayoutPins.getWidth();
@@ -225,6 +227,7 @@ public class GameFragment
                     setFirstPinTouched(event);
                     break;
                 case MotionEvent.ACTION_MOVE:
+                    mIsDragging = true;
                     if (mLayoutWidth == 0 || event.getX() > mLayoutWidth || event.getX() < 0)
                         return;
                     if (!mInitialStateSet)
@@ -255,6 +258,10 @@ public class GameFragment
                     break;
                 case MotionEvent.ACTION_UP:
                 case MotionEvent.ACTION_CANCEL:
+                    if (!mIsDragging)
+                        return;
+
+                    mIsDragging = false;
                     int pinsUpdated = 0;
                     // Finalize flipped pins, calculate score
                     for (int i = 0; i < mPinAltered.length; i++)
@@ -2035,7 +2042,6 @@ public class GameFragment
      */
     private void alterPinState(final byte pinToSet, final boolean updateScore)
     {
-        // TODO: pins not disabled in later frames
         final boolean isPinKnockedOver = mPinState[mCurrentFrame][mCurrentBall][pinToSet];
         final boolean allPinsKnockedOver;
         if (!isPinKnockedOver)
