@@ -180,9 +180,6 @@ public class LeagueEventFragment
             mainActivity.setDrawerState(false);
         }
 
-        mListLeaguesEvents.clear();
-        mAdapterLeagueEvents.notifyDataSetChanged();
-
         new LoadLeaguesEventsTask(this).execute();
     }
 
@@ -607,6 +604,17 @@ public class LeagueEventFragment
         private LoadLeaguesEventsTask(LeagueEventFragment fragment)
         {
             mFragment = new WeakReference<>(fragment);
+        }
+
+        @Override
+        protected void onPreExecute()
+        {
+            LeagueEventFragment fragment = mFragment.get();
+            if (fragment == null)
+                return;
+
+            fragment.mListLeaguesEvents.clear();
+            fragment.mAdapterLeagueEvents.notifyDataSetChanged();
         }
 
         @Override

@@ -206,9 +206,6 @@ public class BowlerFragment
             mQuickLeagueId = prefs.getLong(Constants.PREF_QUICK_LEAGUE_ID, -1);
         }
 
-        mListBowlers.clear();
-        mAdapterBowlers.notifyDataSetChanged();
-
         //Creates AsyncTask to load data from database
         new LoadBowlerAndRecentTask(this).execute();
     }
@@ -545,6 +542,17 @@ public class BowlerFragment
         private LoadBowlerAndRecentTask(BowlerFragment fragment)
         {
             mFragment = new WeakReference<>(fragment);
+        }
+
+        @Override
+        protected void onPreExecute()
+        {
+            BowlerFragment fragment = mFragment.get();
+            if (fragment == null)
+                return;
+
+            fragment.mListBowlers.clear();
+            fragment.mAdapterBowlers.notifyDataSetChanged();
         }
 
         @Override

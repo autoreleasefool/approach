@@ -160,9 +160,6 @@ public class SeriesFragment
             mainActivity.setDrawerState(false);
         }
 
-        mListSeries.clear();
-        mAdapterSeries.notifyDataSetChanged();
-
         updateTheme();
 
         //Creates AsyncTask to load data from database
@@ -404,6 +401,17 @@ public class SeriesFragment
         private LoadSeriesTask(SeriesFragment fragment)
         {
             mFragment = new WeakReference<>(fragment);
+        }
+
+        @Override
+        protected void onPreExecute()
+        {
+            SeriesFragment fragment = mFragment.get();
+            if (fragment == null)
+                return;
+
+            fragment.mListSeries.clear();
+            fragment.mAdapterSeries.notifyDataSetChanged();
         }
 
         @Override

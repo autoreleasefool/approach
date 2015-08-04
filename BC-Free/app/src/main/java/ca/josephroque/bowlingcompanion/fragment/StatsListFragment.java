@@ -139,10 +139,6 @@ public class StatsListFragment
                 statsToLoad = StatUtils.LOADING_GAME_STATS;
             }
 
-            mListStatHeaders.clear();
-            mListStatNamesAndValues.clear();
-            mAdapterStats.notifyDataSetChanged();
-
             mainActivity.setActionBarTitle(titleToSet, true);
             new LoadStatsListTask(this).execute(statsToLoad);
         }
@@ -333,6 +329,18 @@ public class StatsListFragment
         private LoadStatsListTask(StatsListFragment fragment)
         {
             mFragment = new WeakReference<>(fragment);
+        }
+
+        @Override
+        protected void onPreExecute()
+        {
+            StatsListFragment fragment = mFragment.get();
+            if (fragment == null)
+                return;
+
+            fragment.mListStatHeaders.clear();
+            fragment.mListStatNamesAndValues.clear();
+            fragment.mAdapterStats.notifyDataSetChanged();
         }
 
         @SuppressWarnings("CheckStyle")
