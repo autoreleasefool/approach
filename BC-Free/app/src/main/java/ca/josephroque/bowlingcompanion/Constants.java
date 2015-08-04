@@ -80,6 +80,8 @@ public final class Constants
     public static final String EXTRA_QUICK_SERIES = "EQS";
     /** Identifies the number of games as an extra. */
     public static final String EXTRA_NUMBER_OF_GAMES = "ENOG";
+    /** Identifies the number of games for a newly created series. */
+    public static final String EXTRA_GAMES_IN_SERIES = "EGIS";
     /** Identifies an array of ids of games. */
     public static final String EXTRA_ARRAY_GAME_IDS = "EAGI";
     /** Identifies an array of ids of frames. */

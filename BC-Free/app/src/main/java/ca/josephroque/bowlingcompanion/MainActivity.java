@@ -5,7 +5,9 @@ import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
 
 import android.app.ActivityManager;
+import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
@@ -39,6 +41,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 
 import java.lang.ref.WeakReference;
@@ -105,7 +108,9 @@ public class MainActivity
     /** Id of current game being used in fragments. */
     private long mGameId = -1;
     /** Number of games in current league/event in fragments. */
-    private byte mNumberOfGames = -1;
+    private byte mDefaultNumberOfGames = -1;
+    /** Number of games in a newly created series. */
+    private byte mNumberOfGamesForSeries = -1;
     /** Name of current bowler being used in fragments. */
     private String mBowlerName;
     /** Name of current league being used in fragments. */
@@ -244,7 +249,10 @@ public class MainActivity
             mBowlerName = savedInstanceState.getString(Constants.EXTRA_NAME_BOWLER);
             mLeagueName = savedInstanceState.getString(Constants.EXTRA_NAME_LEAGUE);
             mSeriesDate = savedInstanceState.getString(Constants.EXTRA_NAME_SERIES);
-            mNumberOfGames = savedInstanceState.getByte(Constants.EXTRA_NUMBER_OF_GAMES, (byte) -1);
+            mDefaultNumberOfGames = savedInstanceState.getByte(Constants.EXTRA_NUMBER_OF_GAMES,
+                    (byte) -1);
+            mNumberOfGamesForSeries = savedInstanceState.getByte(Constants.EXTRA_GAMES_IN_SERIES,
+                    (byte) -1);
             mIsEventMode = savedInstanceState.getBoolean(Constants.EXTRA_EVENT_MODE);
             mIsQuickSeries = savedInstanceState.getBoolean(Constants.EXTRA_QUICK_SERIES);
             int navCurrentGameNumber =
@@ -260,8 +268,7 @@ public class MainActivity
     }
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState)
-    {
+    protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         mDrawerToggle.syncState();
     }
@@ -286,7 +293,8 @@ public class MainActivity
         outState.putString(Constants.EXTRA_NAME_BOWLER, mBowlerName);
         outState.putString(Constants.EXTRA_NAME_LEAGUE, mLeagueName);
         outState.putString(Constants.EXTRA_NAME_SERIES, mSeriesDate);
-        outState.putByte(Constants.EXTRA_NUMBER_OF_GAMES, mNumberOfGames);
+        outState.putByte(Constants.EXTRA_NUMBER_OF_GAMES, mDefaultNumberOfGames);
+        outState.putByte(Constants.EXTRA_GAMES_IN_SERIES, mNumberOfGamesForSeries);
         outState.putByte(Constants.EXTRA_GAME_NUMBER, mGameNumber);
         outState.putBoolean(Constants.EXTRA_QUICK_SERIES, mIsQuickSeries);
         outState.putBoolean(Constants.EXTRA_EVENT_MODE, mIsEventMode);
@@ -422,7 +430,8 @@ public class MainActivity
                     mBowlerName = null;
                     mLeagueName = null;
                     mSeriesDate = null;
-                    mNumberOfGames = -1;
+                    mDefaultNumberOfGames = -1;
+                    mNumberOfGamesForSeries = -1;
                     mIsQuickSeries = false;
                     mCurrentFragmentTitle = Constants.FRAGMENT_BOWLERS;
                     break;
@@ -433,7 +442,8 @@ public class MainActivity
                     mGameNumber = -1;
                     mLeagueName = null;
                     mSeriesDate = null;
-                    mNumberOfGames = -1;
+                    mDefaultNumberOfGames = -1;
+                    mNumberOfGamesForSeries = -1;
                     mCurrentFragmentTitle = Constants.FRAGMENT_LEAGUES;
                     break;
                 case Constants.FRAGMENT_SERIES:
@@ -528,8 +538,7 @@ public class MainActivity
     @Override
     public void onBowlerSelected(Bowler bowler,
                                  boolean openLeagueFragment,
-                                 boolean isQuickSeries)
-    {
+                                 boolean isQuickSeries) {
         mBowlerId = bowler.getBowlerId();
         mBowlerName = bowler.getBowlerName();
         mIsQuickSeries = isQuickSeries;
@@ -547,7 +556,7 @@ public class MainActivity
     {
         mLeagueId = leagueEvent.getLeagueEventId();
         mLeagueName = leagueEvent.getLeagueEventName();
-        mNumberOfGames = leagueEvent.getLeagueEventNumberOfGames();
+        mDefaultNumberOfGames = leagueEvent.getLeagueEventNumberOfGames();
 
         if (openSeriesFragment)
         {
@@ -562,6 +571,7 @@ public class MainActivity
     {
         mSeriesId = series.getSeriesId();
         mSeriesDate = series.getSeriesDate();
+        mNumberOfGamesForSeries = series.getNumberOfGames();
 
         new OpenSeriesTask(MainActivity.this).execute(isEvent);
     }
@@ -569,7 +579,43 @@ public class MainActivity
     @Override
     public void onCreateNewSeries(boolean isEvent)
     {
-        new AddSeriesTask(MainActivity.this).execute();
+        boolean promptNumberOfGames = !isEvent && mLeagueName != null
+                && mLeagueName.substring(1).equals(Constants.NAME_OPEN_LEAGUE);
+
+        if (promptNumberOfGames)
+        {
+            final NumberPicker numberPicker = new NumberPicker(this);
+            numberPicker.setMaxValue(Constants.MAX_NUMBER_LEAGUE_GAMES);
+            numberPicker.setMinValue(1);
+            numberPicker.setWrapSelectorWheel(false);
+
+            DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener()
+            {
+                @Override
+                public void onClick(DialogInterface dialog, int which)
+                {
+                    if (which == DialogInterface.BUTTON_POSITIVE)
+                    {
+                        mNumberOfGamesForSeries = (byte) numberPicker.getValue();
+                        new AddSeriesTask(MainActivity.this).execute();
+                    }
+                    dialog.dismiss();
+                }
+            };
+
+            new AlertDialog.Builder(this)
+                   .setTitle("How many games?")
+                   .setView(numberPicker)
+                   .setPositiveButton(R.string.dialog_create, listener)
+                   .setNegativeButton(R.string.dialog_cancel, listener)
+                   .create()
+                   .show();
+        }
+        else
+        {
+            mNumberOfGamesForSeries = mDefaultNumberOfGames;
+            new AddSeriesTask(MainActivity.this).execute();
+        }
     }
 
     /**
@@ -605,7 +651,7 @@ public class MainActivity
                     NavigationUtils.NAVIGATION_STATIC_ITEMS + additionalOffset++,
                     NavigationUtils.NAVIGATION_ITEM_SERIES);
         final int totalOffset = additionalOffset;
-        for (byte i = 0; i < mNumberOfGames; i++)
+        for (byte i = 0; i < mNumberOfGamesForSeries; i++)
             mListDrawerOptions.add(
                     NavigationUtils.NAVIGATION_STATIC_ITEMS + 1 + additionalOffset++,
                     "Game " + (i + 1));
@@ -683,11 +729,9 @@ public class MainActivity
         if (currentAdapterGame == newGameNumber)
             return;
 
-        runOnUiThread(new Runnable()
-        {
+        runOnUiThread(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 mDrawerAdapter.setCurrentItem(newGameNumber);
                 mDrawerAdapter.notifyDataSetChanged();
             }
@@ -809,14 +853,11 @@ public class MainActivity
     {
         mPrimaryFab = (AnimatedFloatingActionButton) findViewById(R.id.fab_main);
         DisplayUtils.fixFloatingActionButtonMargins(getResources(), mPrimaryFab);
-        mPrimaryFab.setOnClickListener(new View.OnClickListener()
-        {
+        mPrimaryFab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 FragmentManager fragmentManager = getSupportFragmentManager();
-                for (Fragment fragment : fragmentManager.getFragments())
-                {
+                for (Fragment fragment : fragmentManager.getFragments()) {
                     if (fragment != null && fragment.isVisible()
                             && fragment instanceof FloatingActionButtonHandler)
                         ((FloatingActionButtonHandler) fragment).onFabClick();
@@ -1029,11 +1070,21 @@ public class MainActivity
     /**
      * Returns current number of games being used in fragments.
      *
-     * @return value of mNumberOfGames
+     * @return value of mDefaultNumberOfGames
      */
-    public byte getNumberOfGames()
+    public byte getDefaultNumberOfGames()
     {
-        return mNumberOfGames;
+        return mDefaultNumberOfGames;
+    }
+
+    /**
+     * Returns current number of games being used for series.
+     *
+     * @return value of mNumberOfGamesForSeries
+     */
+    public byte getNumberOfGamesForSeries()
+    {
+        return mNumberOfGamesForSeries;
     }
 
     /**
@@ -1143,12 +1194,13 @@ public class MainActivity
             if (mainActivity == null)
                 return null;
 
-            long[] gameId = new long[mainActivity.mNumberOfGames];
+            long[] gameId = new long[mainActivity.mNumberOfGamesForSeries];
             //noinspection CheckStyle
-            long[] frameId = new long[mainActivity.mNumberOfGames * 10];
-            boolean[] gameLocked = new boolean[mainActivity.mNumberOfGames];
-            boolean[] manualScore = new boolean[mainActivity.mNumberOfGames];
-            byte[] matchPlay = new byte[mainActivity.mNumberOfGames];
+            long[] frameId = new long[mainActivity.mNumberOfGamesForSeries
+                    * Constants.NUMBER_OF_FRAMES];
+            boolean[] gameLocked = new boolean[mainActivity.mNumberOfGamesForSeries];
+            boolean[] manualScore = new boolean[mainActivity.mNumberOfGamesForSeries];
+            byte[] matchPlay = new byte[mainActivity.mNumberOfGamesForSeries];
 
             SQLiteDatabase database =
                     DatabaseHelper.getInstance(mainActivity).getReadableDatabase();
@@ -1248,9 +1300,9 @@ public class MainActivity
                 return null;
 
             long seriesId = -1;
-            long[] gameId = new long[mainActivity.mNumberOfGames];
-            //noinspection CheckStyle
-            long[] frameId = new long[mainActivity.mNumberOfGames * 10];
+            long[] gameId = new long[mainActivity.mNumberOfGamesForSeries];
+            long[] frameId = new long[mainActivity.mNumberOfGamesForSeries
+                    * Constants.NUMBER_OF_FRAMES];
 
             SQLiteDatabase database =
                     DatabaseHelper.getInstance(mainActivity).getReadableDatabase();
@@ -1266,7 +1318,7 @@ public class MainActivity
                 values.put(SeriesEntry.COLUMN_LEAGUE_ID, mainActivity.mLeagueId);
                 seriesId = database.insert(SeriesEntry.TABLE_NAME, null, values);
 
-                for (byte i = 0; i < mainActivity.mNumberOfGames; i++)
+                for (byte i = 0; i < mainActivity.mNumberOfGamesForSeries; i++)
                 {
                     values = new ContentValues();
                     values.put(GameEntry.COLUMN_GAME_NUMBER, i + 1);
@@ -1315,9 +1367,9 @@ public class MainActivity
             GameFragment gameFragment = GameFragment.newInstance(
                     gameIds,
                     frameIds,
-                    new boolean[mainActivity.mNumberOfGames],
-                    new boolean[mainActivity.mNumberOfGames],
-                    new byte[mainActivity.mNumberOfGames]);
+                    new boolean[mainActivity.mNumberOfGamesForSeries],
+                    new boolean[mainActivity.mNumberOfGamesForSeries],
+                    new byte[mainActivity.mNumberOfGamesForSeries]);
             mainActivity.startFragmentTransaction(
                     gameFragment,
                     (mainActivity.isQuickSeries()

@@ -541,8 +541,8 @@ public class GameFragment
             mMatchPlay = args.getByteArray(Constants.EXTRA_ARRAY_MATCH_PLAY);
         }
 
-        mGameScores = new short[((MainActivity) getActivity()).getNumberOfGames()];
-        mGameScoresMinusFouls = new short[((MainActivity) getActivity()).getNumberOfGames()];
+        mGameScores = new short[((MainActivity) getActivity()).getNumberOfGamesForSeries()];
+        mGameScoresMinusFouls = new short[((MainActivity) getActivity()).getNumberOfGamesForSeries()];
 
         updateTheme();
 
@@ -2395,7 +2395,7 @@ public class GameFragment
     {
         MainActivity.waitForSaveThreads(new WeakReference<>((MainActivity) getActivity()));
 
-        byte numberOfGames = ((MainActivity) getActivity()).getNumberOfGames();
+        byte numberOfGames = ((MainActivity) getActivity()).getNumberOfGamesForSeries();
         SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getReadableDatabase();
         StringBuilder whereBuilder = new StringBuilder(GameEntry._ID + "=?");
         String[] whereArgs = new String[numberOfGames];

@@ -259,7 +259,10 @@ public class StatsListFragment
             namesAndValues.add(new ArrayList<AbstractMap.SimpleEntry<String, String>>());
             mStatsGameAverage = 4;
             final byte numberOfGames = (statsToLoad >= StatUtils.LOADING_LEAGUE_STATS
-                    ? ((MainActivity) getActivity()).getNumberOfGames()
+                    ? ((mainActivity.getLeagueName().substring(1)
+                            .equals(Constants.NAME_OPEN_LEAGUE))
+                            ? 5
+                            : mainActivity.getDefaultNumberOfGames())
                     : 20);
             for (i = 0; i < numberOfGames; i++)
                 namesAndValues.get(mStatsGameAverage).add(
@@ -414,7 +417,10 @@ public class StatsListFragment
              */
 
             final byte numberOfGames = (toLoad >= StatUtils.LOADING_LEAGUE_STATS
-                    ? mainActivity.getNumberOfGames()
+                    ? ((mainActivity.getLeagueName().substring(1)
+                            .equals(Constants.NAME_OPEN_LEAGUE))
+                            ? 5
+                            : mainActivity.getDefaultNumberOfGames())
                     : 20);
             int totalShotsAtMiddle = 0;
             int spareChances = 0;

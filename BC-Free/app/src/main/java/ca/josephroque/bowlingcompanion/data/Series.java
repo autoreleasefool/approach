@@ -89,6 +89,16 @@ public class Series
         return mSeriesGames;
     }
 
+    /**
+     * Gets the number of games in the series.
+     *
+     * @return the size of {@code mSeriesGames}
+     */
+    public byte getNumberOfGames()
+    {
+        return (byte) mSeriesGames.size();
+    }
+
     @Override
     public void writeToParcel(Parcel pc, int flags)
     {

@@ -14,6 +14,7 @@
 
     <!-- Dialog text -->
     <string name="text_undo">Undo</string>
+    <string name="dialog_create">Create</string>
     <string name="dialog_okay">Okay</string>
     <string name="dialog_cancel">Cancel</string>
     <string name="dialog_add">Add</string>
