@@ -217,6 +217,8 @@ public class NavigationDrawerAdapter
                 return R.drawable.ic_settings_black_24dp;
             case NavigationUtils.NAVIGATION_ITEM_FEEDBACK:
                 return R.drawable.ic_mail_black_24dp;
+            case NavigationUtils.NAVIGATION_ITEM_HELP:
+                return R.drawable.ic_help_outline_black_24dp;
             default:
                 return 0;
         }
