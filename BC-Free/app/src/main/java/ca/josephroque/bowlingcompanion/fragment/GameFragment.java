@@ -10,6 +10,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
@@ -41,9 +43,11 @@ import ca.josephroque.bowlingcompanion.database.Contract.GameEntry;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.dialog.ManualScoreDialog;
 import ca.josephroque.bowlingcompanion.utilities.DataFormatter;
+import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
 import ca.josephroque.bowlingcompanion.utilities.Score;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.utilities.ShareUtils;
+import ca.josephroque.bowlingcompanion.view.AnimatedFloatingActionButton;
 import ca.josephroque.bowlingcompanion.view.PinLayout;
 
 /**
@@ -111,6 +115,11 @@ public class GameFragment
 
     /** View which displays auto advance information. */
     private TextView mTextViewAutoAdvance;
+
+    /** Floating action button to advance to next ball. */
+    private AnimatedFloatingActionButton mNextFab;
+    /** Floating action button to return to previous ball. */
+    private AnimatedFloatingActionButton mPrevFab;
 
     /** Instance of callback interface for handling user events. */
     private GameFragmentCallback mGameCallback;
@@ -490,8 +499,16 @@ public class GameFragment
         mImageViewMatchPlay.setOnClickListener(onClickListeners[LISTENER_OTHER]);
 
         mTextViewManualScore = (TextView) rootView.findViewById(R.id.tv_manual_score);
-
         mTextViewAutoAdvance = (TextView) rootView.findViewById(R.id.tv_auto_advance_status);
+
+        mNextFab = (AnimatedFloatingActionButton) rootView.findViewById(R.id.fab_next_ball);
+        mNextFab.setVisibility(View.GONE);
+        DisplayUtils.fixFloatingActionButtonMargins(getResources(), mNextFab);
+        mNextFab.setOnClickListener(onClickListeners[LISTENER_OTHER]);
+        mPrevFab = (AnimatedFloatingActionButton) rootView.findViewById(R.id.fab_prev_ball);
+        mPrevFab.setVisibility(View.GONE);
+        DisplayUtils.fixFloatingActionButtonMargins(getResources(), mPrevFab);
+        mPrevFab.setOnClickListener(onClickListeners[LISTENER_OTHER]);
 
         return rootView;
     }
@@ -504,8 +521,7 @@ public class GameFragment
         {
             MainActivity mainActivity = (MainActivity) getActivity();
             mainActivity.setActionBarTitle(R.string.title_fragment_game, true);
-            mainActivity.setFloatingActionButtonIcon(0);
-            mainActivity.setCurrentFragment(this);
+            mainActivity.setFloatingActionButtonState(0);
             mainActivity.createGameNavigationDrawer();
             mainActivity.setDrawerState(true);
         }
@@ -555,6 +571,15 @@ public class GameFragment
             loadGameFromDatabase(mCurrentGame);
             mGameCallback.loadGameScoresForDrawer(mGameIds);
         }
+
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                setFloatingActionButtonState(false, R.drawable.ic_chevron_left_black_24dp);
+                setFloatingActionButtonState(true, R.drawable.ic_chevron_right_black_24dp);
+            }
+        }, 500);
+
     }
 
     @Override
@@ -562,9 +587,16 @@ public class GameFragment
     {
         super.onPause();
 
+        if (mNextFab != null)
+            setFloatingActionButtonState(true, 0);
+        if (mPrevFab != null)
+            setFloatingActionButtonState(false, 0);
+
         //Clears color changes to frames and saves the game being edited
         clearFrameColor();
         saveGame(false);
+
+
     }
 
     @Override
@@ -689,6 +721,23 @@ public class GameFragment
         {
             rootView.findViewById(R.id.rl_game_toolbar).setBackgroundColor(
                     Theme.getSecondaryThemeColor());
+        }
+
+        if (mNextFab != null) {
+            DisplayUtils.setFloatingActionButtonColors(mNextFab,
+                    Theme.getPrimaryThemeColor(),
+                    Theme.getTertiaryThemeColor());
+            mNextFab.setEnabled(false);
+            mNextFab.performClick();
+            mNextFab.setEnabled(true);
+        }
+        if (mPrevFab != null) {
+            DisplayUtils.setFloatingActionButtonColors(mPrevFab,
+                    Theme.getPrimaryThemeColor(),
+                    Theme.getTertiaryThemeColor());
+            mPrevFab.setEnabled(false);
+            mPrevFab.performClick();
+            mPrevFab.setEnabled(true);
         }
     }
 
@@ -857,6 +906,7 @@ public class GameFragment
 
                     case R.id.iv_next_ball:
                     case R.id.tv_next_ball:
+                    case R.id.fab_next_ball:
                         //Changes the current frame and updates the GUI
                         if (mCurrentFrame == Constants.LAST_FRAME && mCurrentBall == 2)
                             return;
@@ -889,6 +939,7 @@ public class GameFragment
 
                     case R.id.iv_prev_ball:
                     case R.id.tv_prev_ball:
+                    case R.id.fab_prev_ball:
                         //Changes the current frame and updates the GUI
                         if (mCurrentFrame == 0 && mCurrentBall == 0)
                             return;
@@ -1168,11 +1219,9 @@ public class GameFragment
         new AlertDialog.Builder(getActivity())
                 .setTitle("Reset Game?")
                 .setMessage(R.string.dialog_reset_game)
-                .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener()
-                {
+                .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
+                    public void onClick(DialogInterface dialog, int which) {
                         //Resets and saves the current game
                         resetGame();
                         saveGame(true);
@@ -1189,11 +1238,9 @@ public class GameFragment
                         dialog.dismiss();
                     }
                 })
-                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener()
-                {
+                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
+                    public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                     }
                 })
@@ -1206,13 +1253,10 @@ public class GameFragment
      */
     private void setMatchPlay()
     {
-        getActivity().runOnUiThread(new Runnable()
-        {
+        getActivity().runOnUiThread(new Runnable() {
             @Override
-            public void run()
-            {
-                switch (mMatchPlay[mCurrentGame])
-                {
+            public void run() {
+                switch (mMatchPlay[mCurrentGame]) {
                     case 0:
                         mImageViewMatchPlay.setImageResource(R.drawable.ic_match_none);
                         break;
@@ -1240,20 +1284,15 @@ public class GameFragment
     private void setGameLocked(boolean lock)
     {
         mGameLocked[mCurrentGame] = lock;
-        mImageViewLock.post(new Runnable()
-        {
+        mImageViewLock.post(new Runnable() {
             @Override
-            public void run()
-            {
-                if (mGameLocked[mCurrentGame])
-                {
+            public void run() {
+                if (mGameLocked[mCurrentGame]) {
                     mImageViewFoul.setVisibility(View.INVISIBLE);
                     mImageViewResetFrame.setVisibility(View.INVISIBLE);
                     mImageViewClear.setVisibility(View.INVISIBLE);
                     mImageViewLock.setImageResource(R.drawable.ic_lock);
-                }
-                else
-                {
+                } else {
                     mImageViewFoul.setVisibility(View.VISIBLE);
                     mImageViewResetFrame.setVisibility(View.VISIBLE);
                     mImageViewClear.setVisibility(View.VISIBLE);
@@ -1845,11 +1884,9 @@ public class GameFragment
             scoreWithFouls = 0;
         mGameScoresMinusFouls[mCurrentGame] = scoreWithFouls;
 
-        getActivity().runOnUiThread(new Runnable()
-        {
+        getActivity().runOnUiThread(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 mTextViewFinalScore.setText(String.valueOf(mGameScoresMinusFouls[mCurrentGame]));
                 mImageViewFoul.setImageResource(
                         !mFouls[mCurrentFrame][mCurrentBall]
@@ -2043,11 +2080,9 @@ public class GameFragment
                         mPinState[mCurrentFrame][1].length);
         }
 
-        mImageButtonPins[pinToSet].post(new Runnable()
-        {
+        mImageButtonPins[pinToSet].post(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 if (mPinState[mCurrentFrame][mCurrentBall][pinToSet])
                     mImageButtonPins[pinToSet].setImageResource(R.drawable.pin_disabled);
                 else
@@ -2321,6 +2356,21 @@ public class GameFragment
                 updateFrameColor(true);
             }
         }).start();
+    }
+
+    /**
+     * Sets the icon of one of the floating action buttons.
+     *
+     * @param nextFab if true, the icon of the "next ball" fab is set. If false, the "previous ball"
+     * fab icon is set.
+     * @param drawableId icon for fab
+     */
+    private void setFloatingActionButtonState(boolean nextFab, int drawableId)
+    {
+        if (nextFab && mNextFab != null)
+            mNextFab.animateIconChanges(drawableId);
+        else if (!nextFab && mPrevFab != null)
+            mPrevFab.animateIconChanges(drawableId);
     }
 
     /**

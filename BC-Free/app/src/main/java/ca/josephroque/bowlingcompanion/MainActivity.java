@@ -9,14 +9,12 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
-import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -24,7 +22,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.preference.PreferenceManager;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
@@ -42,9 +39,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.animation.Animation;
-import android.view.animation.OvershootInterpolator;
-import android.view.animation.ScaleAnimation;
 import android.widget.TextView;
 
 import java.lang.ref.WeakReference;
@@ -79,6 +73,7 @@ import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
 import ca.josephroque.bowlingcompanion.utilities.EmailUtils;
 import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
 import ca.josephroque.bowlingcompanion.utilities.NavigationUtils;
+import ca.josephroque.bowlingcompanion.view.AnimatedFloatingActionButton;
 
 /**
  * Created by Joseph Roque <p/> The main activity which handles most interaction with the
@@ -100,9 +95,6 @@ public class MainActivity
     /** Identifies output from this class in Logcat. */
     @SuppressWarnings("unused")
     private static final String TAG = "MainActivity";
-
-    /** Relative to center of views. */
-    private static final float CENTER_PIVOT = 0.5f;
 
     /** Id of current bowler being used in fragments. */
     private long mBowlerId = -1;
@@ -203,13 +195,7 @@ public class MainActivity
     private AdView mAdView;
 
     /** The primary floating action button. */
-    private FloatingActionButton mFloatingActionButton;
-    /** Current icon of the floating action button. */
-    private int mCurrentFabIcon = 0;
-    /** Indicates if the floating action button is currently animating. */
-    private boolean mIsFabAnimating = false;
-    /** A reference to the current fragment. */
-    private WeakReference<Fragment> mCurrentFragment;
+    private AnimatedFloatingActionButton mPrimaryFab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -527,18 +513,11 @@ public class MainActivity
             window.setStatusBarColor(Theme.getStatusThemeColor());
         }
 
-        if (mFloatingActionButton != null)
+        if (mPrimaryFab != null)
         {
-            int[][] states = {
-                    {android.R.attr.state_enabled},
-                    {android.R.attr.state_pressed},
-            };
-            int[] colors = {
+            DisplayUtils.setFloatingActionButtonColors(mPrimaryFab,
                     Theme.getPrimaryThemeColor(),
-                    Theme.getTertiaryThemeColor(),
-            };
-            ColorStateList colorStateList = new ColorStateList(states, colors);
-            mFloatingActionButton.setBackgroundTintList(colorStateList);
+                    Theme.getTertiaryThemeColor());
         }
         if (isDrawerOpen())
             setActionBarTitle(mDrawerTitle, false);
@@ -594,16 +573,6 @@ public class MainActivity
     }
 
     /**
-     * Sets a reference to the current fragment in the activity.
-     *
-     * @param fragment current fragment
-     */
-    public void setCurrentFragment(Fragment fragment)
-    {
-        mCurrentFragment = new WeakReference<>(fragment);
-    }
-
-    /**
      * Sets up the navigation drawer for the game fragment.
      */
     public void createGameNavigationDrawer()
@@ -613,7 +582,19 @@ public class MainActivity
         for (Iterator<String> it = mListDrawerOptions.iterator(); it.hasNext();)
             if (it.next().matches("\\w+ \\d+"))
                 it.remove();
-        GameFragment gameFragment = (GameFragment) mCurrentFragment.get();
+        GameFragment gameFragment = null;
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        for (Fragment frag : fragmentManager.getFragments()) {
+            if (frag != null && frag.isVisible() && frag instanceof GameFragment)
+            {
+                gameFragment = (GameFragment) frag;
+                break;
+            }
+        }
+
+        if (gameFragment == null)
+            return;
+
         int additionalOffset = 0;
         if (!isQuickSeries())
             mListDrawerOptions.add(
@@ -640,118 +621,9 @@ public class MainActivity
      *
      * @param drawableId id of the drawable for the floating action button
      */
-    public void setFloatingActionButtonIcon(final int drawableId)
+    public void setFloatingActionButtonState(int drawableId)
     {
-        if (drawableId != mCurrentFabIcon || drawableId == 0)
-        {
-            if (mCurrentFabIcon == 0 && drawableId != 0)
-                growFloatingActionButton(drawableId);
-            else
-                shrinkFloatingActionButton(drawableId);
-        }
-    }
-
-    /**
-     * Shrinks the floating action button.
-     *
-     * @param drawableId new drawable to set if fab grows again
-     */
-    private void shrinkFloatingActionButton(final int drawableId)
-    {
-        final int shortAnimTime = getResources().getInteger(
-                android.R.integer.config_shortAnimTime);
-        ScaleAnimation shrink = new ScaleAnimation(1.0f,
-                0f,
-                1.0f,
-                0f,
-                Animation.RELATIVE_TO_SELF,
-                CENTER_PIVOT,
-                Animation.RELATIVE_TO_SELF,
-                CENTER_PIVOT);
-        shrink.setDuration((mCurrentFabIcon == 0)
-                ? 1
-                : shortAnimTime);
-        shrink.setAnimationListener(new Animation.AnimationListener()
-        {
-            @Override
-            public void onAnimationStart(Animation animation)
-            {
-                mIsFabAnimating = true;
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation)
-            {
-                mIsFabAnimating = false;
-                growFloatingActionButton(drawableId);
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation)
-            {
-                // does nothing
-            }
-        });
-
-        mFloatingActionButton.startAnimation(shrink);
-    }
-
-    /**
-     * Grows the floating action button.
-     *
-     * @param drawableId new drawable to set
-     */
-    private void growFloatingActionButton(final int drawableId)
-    {
-        final int shortAnimTime = getResources().getInteger(
-                android.R.integer.config_shortAnimTime);
-        mCurrentFabIcon = drawableId;
-        if (mCurrentFabIcon != 0)
-            mFloatingActionButton.setVisibility(View.VISIBLE);
-        else
-        {
-            mFloatingActionButton.setVisibility(View.GONE);
-            return;
-        }
-        mFloatingActionButton.setImageResource(mCurrentFabIcon);
-        Drawable drawable = mFloatingActionButton.getDrawable();
-        if (drawable != null)
-        {
-            drawable.mutate();
-            //noinspection CheckStyle
-            drawable.setAlpha(0x8A);
-        }
-        ScaleAnimation grow = new ScaleAnimation(0f,
-                1.0f,
-                0f,
-                1.0f,
-                Animation.RELATIVE_TO_SELF,
-                CENTER_PIVOT,
-                Animation.RELATIVE_TO_SELF,
-                CENTER_PIVOT);
-        grow.setDuration(shortAnimTime);
-        grow.setInterpolator(new OvershootInterpolator());
-        grow.setAnimationListener(new Animation.AnimationListener()
-        {
-            @Override
-            public void onAnimationStart(Animation animation)
-            {
-                mIsFabAnimating = true;
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation)
-            {
-                mIsFabAnimating = false;
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation)
-            {
-                // does nothing
-            }
-        });
-        mFloatingActionButton.startAnimation(grow);
+        mPrimaryFab.animateIconChanges(drawableId);
     }
 
     /**
@@ -935,20 +807,20 @@ public class MainActivity
      */
     private void setupFloatingActionButton()
     {
-        mFloatingActionButton = (FloatingActionButton) findViewById(R.id.fab_main);
-        DisplayUtils.fixFloatingActionButtonMargins(getResources(), mFloatingActionButton);
-        mFloatingActionButton.setOnClickListener(new View.OnClickListener()
+        mPrimaryFab = (AnimatedFloatingActionButton) findViewById(R.id.fab_main);
+        DisplayUtils.fixFloatingActionButtonMargins(getResources(), mPrimaryFab);
+        mPrimaryFab.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                // do not register clicks if floating action button is animating
-                if (mIsFabAnimating)
-                    return;
-
-                if (mCurrentFragment != null && mCurrentFragment.get() != null
-                        && mCurrentFragment.get() instanceof FloatingActionButtonHandler)
-                    ((FloatingActionButtonHandler) mCurrentFragment.get()).onFabClick();
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                for (Fragment fragment : fragmentManager.getFragments())
+                {
+                    if (fragment != null && fragment.isVisible()
+                            && fragment instanceof FloatingActionButtonHandler)
+                        ((FloatingActionButtonHandler) fragment).onFabClick();
+                }
             }
         });
     }

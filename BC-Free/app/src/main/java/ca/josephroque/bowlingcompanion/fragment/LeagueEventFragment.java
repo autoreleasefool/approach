@@ -175,8 +175,7 @@ public class LeagueEventFragment
         {
             MainActivity mainActivity = (MainActivity) getActivity();
             mainActivity.setActionBarTitle(R.string.title_fragment_league_event, true);
-            mainActivity.setFloatingActionButtonIcon(R.drawable.ic_add_black_24dp);
-            mainActivity.setCurrentFragment(this);
+            mainActivity.setFloatingActionButtonState(R.drawable.ic_add_black_24dp);
             mainActivity.setDrawerState(false);
         }
 

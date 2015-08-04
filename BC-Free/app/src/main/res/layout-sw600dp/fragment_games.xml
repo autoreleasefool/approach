@@ -157,10 +157,10 @@
             android:layout_height="wrap_content"
             android:layout_above="@id/iv_lock"
             android:layout_alignParentRight="true"
-            android:layout_margin="@dimen/fab_margin_mini"
+            android:layout_margin="@dimen/fab_margin"
             app:borderWidth="0dp"
             app:elevation="2dp"
-            app:fabSize="mini" />
+            app:fabSize="normal" />
 
         <ca.josephroque.bowlingcompanion.view.AnimatedFloatingActionButton
             android:id="@+id/fab_prev_ball"
@@ -169,10 +169,10 @@
             android:layout_height="wrap_content"
             android:layout_above="@id/iv_clear"
             android:layout_alignParentLeft="true"
-            android:layout_margin="@dimen/fab_margin_mini"
+            android:layout_margin="@dimen/fab_margin"
             app:borderWidth="0dp"
             app:elevation="2dp"
-            app:fabSize="mini" />
+            app:fabSize="normal" />
 
         <HorizontalScrollView
             android:id="@+id/hsv_frames"

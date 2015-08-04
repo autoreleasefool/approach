@@ -19,6 +19,11 @@ public final class DisplayUtils
     @SuppressWarnings("unused")
     private static final String TAG = "DisplayUtils";
 
+    /** Point relative to center of objects for animations. */
+    public static final float ANIMATION_CENTER_PIVOT = 0.5f;
+    /** Alpha value for black icons. */
+    public static final int BLACK_ICON_ALPHA = 0x8A;
+
     /**
      * Default private constructor.
      */

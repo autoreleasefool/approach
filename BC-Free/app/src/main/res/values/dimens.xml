@@ -5,6 +5,7 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="fab_margin_mini">8dp</dimen>
 
     <!-- Navigation Drawer -->
     <dimen name="navigation_separator_padding">8dp</dimen>

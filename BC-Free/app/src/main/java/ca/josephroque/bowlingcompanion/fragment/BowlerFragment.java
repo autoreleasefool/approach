@@ -193,8 +193,7 @@ public class BowlerFragment
         {
             MainActivity mainActivity = (MainActivity) getActivity();
             mainActivity.setActionBarTitle(R.string.app_name, true);
-            mainActivity.setFloatingActionButtonIcon(R.drawable.ic_person_add_black_24dp);
-            mainActivity.setCurrentFragment(this);
+            mainActivity.setFloatingActionButtonState(R.drawable.ic_person_add_black_24dp);
             mainActivity.setDrawerState(false);
 
             //Loads values for member variables from preferences, if they exist
