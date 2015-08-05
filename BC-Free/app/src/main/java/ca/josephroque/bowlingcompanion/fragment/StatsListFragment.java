@@ -63,6 +63,8 @@ public class StatsListFragment
     private byte mStatsOverall = -1;
     /** Number of static stats at the beginning of the first group of stats. */
     private byte mNumberOfGeneralDetails = -1;
+    /** Indicates the type of stats which will be loaded. */
+    private byte mStatsToLoad = -1;
 
     /** List of group headers. */
     private List<String> mListStatHeaders;
@@ -113,7 +115,6 @@ public class StatsListFragment
 
             //Checks what type of stats should be displayed, depending
             //on what data is available in the parent activity at the time
-            byte statsToLoad;
             int titleToSet;
             if (mainActivity.getGameId() == -1)
             {
@@ -122,28 +123,28 @@ public class StatsListFragment
                     if (mainActivity.getLeagueId() == -1)
                     {
                         titleToSet = R.string.title_stats_bowler;
-                        statsToLoad = StatUtils.LOADING_BOWLER_STATS;
+                        mStatsToLoad = StatUtils.LOADING_BOWLER_STATS;
                     }
                     else
                     {
                         titleToSet = R.string.title_stats_league;
-                        statsToLoad = StatUtils.LOADING_LEAGUE_STATS;
+                        mStatsToLoad = StatUtils.LOADING_LEAGUE_STATS;
                     }
                 }
                 else
                 {
                     titleToSet = R.string.title_stats_series;
-                    statsToLoad = StatUtils.LOADING_SERIES_STATS;
+                    mStatsToLoad = StatUtils.LOADING_SERIES_STATS;
                 }
             }
             else
             {
                 titleToSet = R.string.title_stats_game;
-                statsToLoad = StatUtils.LOADING_GAME_STATS;
+                mStatsToLoad = StatUtils.LOADING_GAME_STATS;
             }
 
             mainActivity.setActionBarTitle(titleToSet, true);
-            new LoadStatsListTask(this).execute(statsToLoad);
+            new LoadStatsListTask(this).execute(mStatsToLoad);
         }
 
         updateTheme();
@@ -162,6 +163,10 @@ public class StatsListFragment
                                 int childPosition,
                                 long id)
     {
+        if (mStatsToLoad != StatUtils.LOADING_BOWLER_STATS
+                && mStatsToLoad != StatUtils.LOADING_LEAGUE_STATS)
+            return true;
+
         if (groupPosition == 0)
         {
             if (childPosition - mNumberOfGeneralDetails >= 0)

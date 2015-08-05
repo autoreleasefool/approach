@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -433,17 +434,10 @@ public class StatsGraphFragment
                         }
                     }
 
-                    if (lastLabelDate == null)
-                    {
-                        addLabelOnDateChange = true;
-                    }
-                    else if (lastLabelDate.getTimeInMillis()
+                    if (lastLabelDate == null
+                            || lastLabelDate.getTimeInMillis()
                             <= currentDate.getTimeInMillis() + DateUtils.MILLIS_ONE_WEEK)
-                    {
-                        lastLabelDate = currentDate;
                         addLabelOnDateChange = true;
-                    }
-
                     lastEntryDate = currentDate;
 
                     boolean gameIsManual = (cursor.getInt(cursor.getColumnIndex(
