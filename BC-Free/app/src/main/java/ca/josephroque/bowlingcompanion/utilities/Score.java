@@ -332,20 +332,94 @@ public final class Score
     }
 
     /**
-     * Creates a string from an array of booleans.
+     * Creates an int from an array of booleans.
      *
-     * @param frame array to convert to string
-     * @return A String of 1's and 0's, where a 1 represents true in the array
+     * @param frame array to convert to int
+     * @return a integer representing the booleans if they were binary
      */
-    public static String booleanFrameToString(boolean[] frame)
+    public static int booleanFrameToInt(boolean[] frame)
     {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (boolean b : frame)
+        int ball = 0;
+        for (int i = 0; i < frame.length; i++)
         {
-            stringBuilder.append(b
-                    ? 1
-                    : 0);
+            if (frame[i])
+                ball += Math.pow(2, -i + 4);
         }
-        return stringBuilder.toString();
+        return ball;
+    }
+
+    /**
+     * Converts an int to a boolean array.
+     *
+     * @param ball int from 0-31
+     * @return boolean array binary representation of {@code ball}
+     */
+    public static boolean[] ballIntToBoolean(int ball)
+    {
+        if (ball < 0 || ball > 31)
+            throw new IllegalArgumentException("cannot convert value: " + ball);
+        boolean[] pinState = new boolean[5];
+        String ballBinary = String.format("%5s", Integer.toBinaryString(ball)).replace(' ', '0');
+        for (int i = 0; i < pinState.length; i++)
+            pinState[i] = ballBinary.charAt(i) == '1';
+        return pinState;
+    }
+
+    /**
+     * Gets the String representation of a number of fouls.
+     *
+     * @param i integer representation of the number of fouls
+     * @return string representation of the number of fouls
+     */
+    public static String foulIntToString(int i)
+    {
+        switch (i)
+        {
+            default:
+                return "0";
+            case 24:
+                return "3";
+            case 25:
+                return "2";
+            case 26:
+                return "23";
+            case 27:
+                return "1";
+            case 28:
+                return "13";
+            case 29:
+                return "12";
+            case 30:
+                return "123";
+        }
+    }
+
+    /**
+     * Gets the int representation of a String of fouls in a frame.
+     *
+     * @param s string representation of the number of fouls
+     * @return integer representation of the number of fouls
+     */
+    public static int foulStringToInt(String s)
+    {
+        switch (s)
+        {
+            default:
+                return 0;
+            case "3":
+                return 24;
+            case "2":
+                return 25;
+            case "23":
+                return 26;
+            case "1":
+                return 27;
+            case "13":
+                return 28;
+            case "12":
+                return 29;
+            case "123":
+                return 30;
+        }
     }
 }
