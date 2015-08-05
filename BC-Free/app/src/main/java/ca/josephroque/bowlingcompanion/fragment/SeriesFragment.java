@@ -74,6 +74,9 @@ public class SeriesFragment
     /** List to store series data from series table in database. */
     private List<Series> mListSeries;
 
+    /** Indicates if the dialog to display the combine dialog has already been shown. */
+    private boolean mCombineDialogShown;
+
     @Override
     public void onCreate(Bundle savedInstaceState)
     {
@@ -167,6 +170,13 @@ public class SeriesFragment
 
         //Creates AsyncTask to load data from database
         new LoadSeriesTask(this).execute();
+    }
+
+    @Override
+    public void onPause()
+    {
+        super.onPause();
+        mCombineDialogShown = false;
     }
 
     @Override
@@ -326,7 +336,7 @@ public class SeriesFragment
      */
     private void showCombineSeriesDialog()
     {
-        if (getActivity() == null)
+        if (getActivity() == null || mCombineDialogShown)
             return;
 
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(
@@ -334,6 +344,7 @@ public class SeriesFragment
         if (!preferences.getBoolean(Constants.KEY_ASK_COMBINE, true))
             return;
 
+        mCombineDialogShown = true;
         boolean showDialog = false;
         Series prevSeries = null;
         for (Series series : mListSeries)
@@ -598,73 +609,95 @@ public class SeriesFragment
             pd.setTitle("Combining series...");
             pd.setIndeterminate(true);
             pd.setCancelable(false);
+            pd.show();
             mProgressDialog = new WeakReference<>(pd);
         }
 
         @Override
         protected Void doInBackground(Void... params)
         {
-            SeriesFragment fragment = mFragment.get();
+            final SeriesFragment fragment = mFragment.get();
             if (fragment == null)
             {
                 dismissDialog();
                 return null;
             }
-            MainActivity mainActivity = (MainActivity) fragment.getActivity();
+            final MainActivity mainActivity = (MainActivity) fragment.getActivity();
             if (mainActivity == null)
             {
                 dismissDialog();
                 return null;
             }
 
-            SQLiteDatabase db = DatabaseHelper.getInstance(mainActivity)
-                    .getReadableDatabase();
-            String seriesQuery = "SELECT "
-                    + "s." + SeriesEntry._ID + " AS sid, "
-                    + SeriesEntry.COLUMN_SERIES_DATE + ", "
-                    + "g." + GameEntry._ID + " AS gid, "
-                    + GameEntry.COLUMN_SERIES_ID + ", "
-                    + GameEntry.COLUMN_GAME_NUMBER
-                    + " FROM " + SeriesEntry.TABLE_NAME + " AS s"
-                    + " INNER JOIN " + GameEntry.TABLE_NAME + " AS g"
-                    + " ON g." + GameEntry.COLUMN_SERIES_ID + "=sid"
-                    + " WHERE " + SeriesEntry.COLUMN_LEAGUE_ID + "=?"
-                    + " ORDER BY " + SeriesEntry.COLUMN_SERIES_DATE + " DESC, "
-                    + GameEntry.COLUMN_GAME_NUMBER;
-            Cursor cursor = db.rawQuery(seriesQuery,
-                    new String[]{String.valueOf(mainActivity.getLeagueId())});
-
-            String lastSeriesDate = null;
-            int startOfLastSeries = -1;
-            if (cursor.moveToFirst())
-            {
-                while (!cursor.isAfterLast())
-                {
-                    int gameNumber = cursor.getInt(cursor.getColumnIndex(
-                            GameEntry.COLUMN_GAME_NUMBER));
-                    if (gameNumber == 1)
+            mainActivity.addSavingThread(new Thread(
+                    new Runnable()
                     {
-                        String seriesDate = cursor.getString(cursor.getColumnIndex(
-                                SeriesEntry.COLUMN_SERIES_DATE));
-                        String dateFormatted = DataFormatter.formattedDateToPrettyCompact(
-                                seriesDate);
-
-                        if (dateFormatted.equals(lastSeriesDate))
+                        @Override
+                        public void run()
                         {
-                            int startOfCurrentSeries = cursor.getPosition();
-                            combineSeries(db, cursor, startOfLastSeries, startOfCurrentSeries);
-                            cursor.moveToPosition(startOfCurrentSeries);
+                            SQLiteDatabase db = DatabaseHelper.getInstance(mainActivity)
+                                    .getReadableDatabase();
+                            String seriesQuery = "SELECT "
+                                    + "s." + SeriesEntry._ID + " AS sid, "
+                                    + SeriesEntry.COLUMN_SERIES_DATE + ", "
+                                    + "g." + GameEntry._ID + " AS gid, "
+                                    + GameEntry.COLUMN_SERIES_ID + ", "
+                                    + GameEntry.COLUMN_GAME_NUMBER
+                                    + " FROM " + SeriesEntry.TABLE_NAME + " AS s"
+                                    + " INNER JOIN " + GameEntry.TABLE_NAME + " AS g"
+                                    + " ON g." + GameEntry.COLUMN_SERIES_ID + "=sid"
+                                    + " WHERE " + SeriesEntry.COLUMN_LEAGUE_ID + "=?"
+                                    + " ORDER BY " + SeriesEntry.COLUMN_SERIES_DATE + ", "
+                                    + GameEntry.COLUMN_GAME_NUMBER;
+                            Cursor cursor = db.rawQuery(seriesQuery,
+                                    new String[]{String.valueOf(mainActivity.getLeagueId())});
+
+                            String lastSeriesDate = null;
+                            int startOfLastSeries = -1;
+                            if (cursor.moveToFirst())
+                            {
+                                while (!cursor.isAfterLast())
+                                {
+                                    int gameNumber = cursor.getInt(cursor.getColumnIndex(
+                                            GameEntry.COLUMN_GAME_NUMBER));
+                                    if (gameNumber == 1)
+                                    {
+                                        String seriesDate = cursor.getString(cursor.getColumnIndex(
+                                                SeriesEntry.COLUMN_SERIES_DATE));
+                                        String dateFormatted = DataFormatter
+                                                .formattedDateToPrettyCompact(seriesDate);
+
+                                        if (dateFormatted.equals(lastSeriesDate))
+                                        {
+                                            int startOfCurrentSeries = cursor.getPosition();
+                                            combineSeries(db,
+                                                    cursor,
+                                                    startOfLastSeries,
+                                                    startOfCurrentSeries);
+                                            cursor.moveToPosition(startOfCurrentSeries);
+                                        }
+
+                                        startOfLastSeries = cursor.getPosition();
+                                        lastSeriesDate = dateFormatted;
+                                    }
+
+                                    cursor.moveToNext();
+                                }
+                            }
+                            if (!cursor.isClosed())
+                                cursor.close();
+
+                            mainActivity.runOnUiThread(new Runnable()
+                            {
+                                @Override
+                                public void run()
+                                {
+                                    dismissDialog();
+                                    new LoadSeriesTask(fragment).execute();
+                                }
+                            });
                         }
-
-                        startOfLastSeries = cursor.getPosition();
-                        lastSeriesDate = dateFormatted;
-                    }
-
-                    cursor.moveToNext();
-                }
-            }
-            if (!cursor.isClosed())
-                cursor.close();
+                    }));
 
             return null;
         }
@@ -701,7 +734,7 @@ public class SeriesFragment
                 db.beginTransaction();
 
                 while (secondSeriesNumGames > 0
-                        && firstSeriesNumGames <= Constants.MAX_NUMBER_LEAGUE_GAMES)
+                        && firstSeriesNumGames < Constants.MAX_NUMBER_LEAGUE_GAMES)
                 {
                     cursor.moveToPosition(startOfSecondSeries);
                     long gameId = cursor.getLong(cursor.getColumnIndex("gid"));
@@ -730,6 +763,7 @@ public class SeriesFragment
                             GameEntry._ID + "=?",
                             new String[]{Long.toString(gameId)});
 
+                    startOfSecondSeries++;
                     secondSeriesNewNumGames++;
                     secondSeriesNumGames--;
                 }
@@ -754,17 +788,6 @@ public class SeriesFragment
             ProgressDialog pd = mProgressDialog.get();
             if (pd != null)
                 pd.dismiss();
-        }
-
-        @Override
-        protected void onPostExecute(Void result)
-        {
-            dismissDialog();
-            SeriesFragment fragment = mFragment.get();
-            if (fragment == null)
-                return;
-
-            new LoadSeriesTask(fragment).execute();
         }
     }
 

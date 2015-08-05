@@ -205,6 +205,11 @@ public class SeriesAdapter
                     }
                 }
 
+                for (int i = numberOfGamesInSeries; i < Constants.MAX_NUMBER_LEAGUE_GAMES; i++)
+                {
+                    holder.mArrayTextViewGames[i].setText(null);
+                }
+
                 //Sets color of edit button
                 if (mEditDrawable == null)
                     mEditDrawable = DisplayUtils.getDrawable(holder.itemView.getResources(),
