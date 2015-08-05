@@ -1,20 +1,35 @@
 <resources>
 
-    <item name="text_frame_0" type="id" />
-    <item name="text_frame_1" type="id" />
-    <item name="text_frame_2" type="id" />
-    <item name="text_frame_3" type="id" />
-    <item name="text_frame_4" type="id" />
-    <item name="text_frame_5" type="id" />
-    <item name="text_frame_6" type="id" />
-    <item name="text_frame_7" type="id" />
-    <item name="text_frame_8" type="id" />
-    <item name="text_frame_9" type="id" />
-    <item name="text_final_score" type="id" />
-    <item name="radio_button_win" type="id" />
-    <item name="radio_button_lose" type="id" />
-    <item name="radio_button_tie" type="id" />
+    <item name="text_frame_0"
+          type="id" />
+    <item name="text_frame_1"
+          type="id" />
+    <item name="text_frame_2"
+          type="id" />
+    <item name="text_frame_3"
+          type="id" />
+    <item name="text_frame_4"
+          type="id" />
+    <item name="text_frame_5"
+          type="id" />
+    <item name="text_frame_6"
+          type="id" />
+    <item name="text_frame_7"
+          type="id" />
+    <item name="text_frame_8"
+          type="id" />
+    <item name="text_frame_9"
+          type="id" />
+    <item name="text_final_score"
+          type="id" />
+    <item name="radio_button_win"
+          type="id" />
+    <item name="radio_button_lose"
+          type="id" />
+    <item name="radio_button_tie"
+          type="id" />
 
-    <item name="tv_tutorial" type="id" />
+    <item name="tv_tutorial"
+          type="id" />
 
 </resources>

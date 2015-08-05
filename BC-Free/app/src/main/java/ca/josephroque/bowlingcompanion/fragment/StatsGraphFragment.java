@@ -8,7 +8,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -278,7 +277,8 @@ public class StatsGraphFragment
             if (datasetChances != null)
             {
                 datasetChances.setValueFormatter(valueFormatter);
-                datasetChances.setCircleColor(fragment.getResources().getColor(R.color.chance_data));
+                datasetChances.setCircleColor(fragment.getResources()
+                        .getColor(R.color.chance_data));
                 datasetChances.setColor(fragment.getResources().getColor(R.color.chance_data));
                 datasets.add(datasetChances);
             }

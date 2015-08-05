@@ -32,6 +32,7 @@ import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
  * Created by Joseph Roque on 15-03-26. Provides methods relating to creating images of the
  * statistics managed by the application.
  */
+@SuppressWarnings("CheckStyle")
 public final class ImageUtils
 {
 
@@ -289,8 +290,8 @@ public final class ImageUtils
         {
             totalScore += frameScores[i];
             canvas.drawText((!isManual)
-                    ? String.valueOf(totalScore)
-                    : "--",
+                            ? String.valueOf(totalScore)
+                            : "--",
                     i * BITMAP_GAME_FRAME_WIDTH + BITMAP_GAME_FRAME_WIDTH / 2,
                     BITMAP_GAME_HEIGHT - 8,
                     paintText);
@@ -300,8 +301,8 @@ public final class ImageUtils
         if (scoreWithFouls < 0)
             scoreWithFouls = 0;
         canvas.drawText((!isManual)
-                ? String.valueOf(scoreWithFouls)
-                : String.valueOf(gameScore),
+                        ? String.valueOf(scoreWithFouls)
+                        : String.valueOf(gameScore),
                 BITMAP_GAME_WIDTH - BITMAP_GAME_FRAME_WIDTH / 2,
                 BITMAP_GAME_HEIGHT / 2 + GAME_LARGE_FONT_SIZE / 2,
                 paintText);

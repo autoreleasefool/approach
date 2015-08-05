@@ -3,9 +3,9 @@ package ca.josephroque.bowlingcompanion.database;
 import android.provider.BaseColumns;
 
 /**
- * Created by Joseph Roque on 15-03-12. Defines various objects which represent tables in the
- * schema for the application's database. Member variables represent identifiers for attributes of
- * the tables.
+ * Created by Joseph Roque on 15-03-12. Defines various objects which represent tables in the schema
+ * for the application's database. Member variables represent identifiers for attributes of the
+ * tables.
  */
 public final class Contract
 {

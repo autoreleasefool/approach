@@ -7,8 +7,6 @@ import android.os.Build;
 import android.support.design.widget.FloatingActionButton;
 import android.view.ViewGroup;
 
-import ca.josephroque.bowlingcompanion.R;
-
 /**
  * Created by Joseph Roque on 2015-07-24. Constants and methods for changes made to the UI.
  */

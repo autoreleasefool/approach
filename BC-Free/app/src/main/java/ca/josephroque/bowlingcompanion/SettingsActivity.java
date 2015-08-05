@@ -23,18 +23,13 @@ import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.utilities.EmailUtils;
 
 /**
- * A {@link PreferenceActivity} that presents a set of application settings. On
- * handset devices, settings are presented as a single list. On tablets,
- * settings are split by category, with category headers shown to the left of
- * the list of settings.
- * <p/>
- * See <a href="http://developer.android.com/design/patterns/settings.html">
- * Android Design: Settings</a> for design guidelines and the <a
- * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
- * API Guide</a> for more information on developing a Settings UI.
+ * A {@link PreferenceActivity} that presents a set of application settings. On handset devices,
+ * settings are presented as a single list. On tablets, settings are split by category, with
+ * category headers shown to the left of the list of settings.
  */
 @SuppressWarnings("deprecation")
-public class SettingsActivity extends PreferenceActivity
+public class SettingsActivity
+        extends PreferenceActivity
         implements SharedPreferences.OnSharedPreferenceChangeListener,
         Preference.OnPreferenceClickListener
 {
@@ -87,9 +82,8 @@ public class SettingsActivity extends PreferenceActivity
     }
 
     /**
-     * Shows the simplified settings UI if the device configuration if the
-     * device configuration dictates that a simplified, single-pane UI should be
-     * shown.
+     * Shows the simplified settings UI if the device configuration if the device configuration
+     * dictates that a simplified, single-pane UI should be shown.
      */
     private void setupSimplePreferencesScreen()
     {
@@ -134,8 +128,8 @@ public class SettingsActivity extends PreferenceActivity
     }
 
     /**
-     * Loads bowler and league names from the database for user to select
-     * from when choosing 'quick' bowlers/leagues.
+     * Loads bowler and league names from the database for user to select from when choosing 'quick'
+     * bowlers/leagues.
      */
     private void loadBowlerAndLeagueNames()
     {
@@ -262,7 +256,7 @@ public class SettingsActivity extends PreferenceActivity
 
             int position =
                     Arrays.binarySearch(mArrayLeagueIds[mCurrentBowlerPosition],
-                    String.valueOf(quickLeagueId));
+                            String.valueOf(quickLeagueId));
             if (position < 0)
                 position = 0;
             quickLeaguePref.setValueIndex(position);
@@ -421,10 +415,11 @@ public class SettingsActivity extends PreferenceActivity
         {
             String emailBody =
                     "Please try to include as much of the following information as possible:"
-                    + "\nWhere in the application the bug occurred,"
-                    + "\nWhat you were doing when the bug occurred,"
-                    + "\nThe nature of the bug - fatal, minor, cosmetic (the way the app looks)"
-                    + "\n\n";
+                            + "\nWhere in the application the bug occurred,"
+                            + "\nWhat you were doing when the bug occurred,"
+                            + "\nThe nature of the bug - fatal, minor, cosmetic (the way the app"
+                            + " looks)"
+                            + "\n\n";
 
             Intent emailIntent = EmailUtils.getEmailIntent(
                     "bugs@josephroque.ca",

@@ -1,9 +1,11 @@
 <shape
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="oval" >
+
     <size
         android:width="@dimen/indicator_width"
         android:height="@dimen/indicator_height" />
     <solid
         android:color="@color/indicator" />
+
 </shape>

@@ -166,6 +166,7 @@ public final class DatabaseHelper
         }
     }
 
+    @SuppressWarnings("CheckStyle")
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
     {
@@ -178,7 +179,6 @@ public final class DatabaseHelper
          */
         Log.w(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion);
 
-        //TODO add progress bar for future updates?
         int upgradeTo = oldVersion + 1;
         while (upgradeTo <= newVersion)
         {
@@ -198,7 +198,7 @@ public final class DatabaseHelper
     }
 
     /**
-     * Drops all tables in the database and calls onCreate()
+     * Drops all tables in the database and calls onCreate().
      *
      * @param db database to wipe
      */
@@ -400,17 +400,21 @@ public final class DatabaseHelper
             db.beginTransaction();
             for (int i = 0; i < 32; i++)
             {
-                for (int j = 0; j < 3; j++) {
+                for (int j = 0; j < 3; j++)
+                {
                     ContentValues values = new ContentValues();
                     values.put(FrameEntry.COLUMN_PIN_STATE[j], i);
                     db.update(FrameEntry.TABLE_NAME,
                             values,
                             FrameEntry.COLUMN_PIN_STATE[j] + "=?",
-                            new String[]{String.format("%5s",
-                                    Integer.toBinaryString(i)).replace(' ', '0')});
+                            new String[]{
+                                    String.format("%5s",
+                                            Integer.toBinaryString(i)).replace(' ', '0')
+                            });
                 }
             }
-            for (int i = 24; i < 31; i++) {
+            for (int i = 24; i < 31; i++)
+            {
                 ContentValues values = new ContentValues();
                 values.put(FrameEntry.COLUMN_FOULS, i);
                 db.update(FrameEntry.TABLE_NAME,

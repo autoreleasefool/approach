@@ -4,6 +4,7 @@ package ca.josephroque.bowlingcompanion.utilities;
  * Created by Joseph Roque on 15-03-17. Provides methods to convert various formatted data into
  * different formats.
  */
+@SuppressWarnings("CheckStyle")
 public final class DataFormatter
 {
 

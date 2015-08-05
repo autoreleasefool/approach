@@ -3,15 +3,15 @@
     <CheckBoxPreference
         android:defaultValue="true"
         android:key="pref_include_events"
-        android:summaryOn="@string/pref_include_events_summaryOn"
         android:summaryOff="@string/pref_include_events_summaryOff"
+        android:summaryOn="@string/pref_include_events_summaryOn"
         android:title="@string/pref_include_events_title" />
 
     <CheckBoxPreference
         android:defaultValue="true"
         android:key="pref_include_open"
-        android:summaryOn="@string/pref_include_open_summaryOn"
         android:summaryOff="@string/pref_include_open_summaryOff"
+        android:summaryOn="@string/pref_include_open_summaryOn"
         android:title="@string/pref_include_open_title" />
 
     <ListPreference

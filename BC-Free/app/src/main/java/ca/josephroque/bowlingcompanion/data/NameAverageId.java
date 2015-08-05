@@ -16,14 +16,14 @@ public interface NameAverageId
     String getName();
 
     /**
-     * Gets the average for this object
+     * Gets the average for this object.
      *
      * @return an average for this object
      */
     short getAverage();
 
     /**
-     * Gets the id for this object
+     * Gets the id for this object.
      *
      * @return an id for this object
      */

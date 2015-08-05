@@ -12,7 +12,6 @@ import android.view.animation.Animation;
 import android.view.animation.OvershootInterpolator;
 import android.view.animation.ScaleAnimation;
 
-import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
 
 /**
@@ -111,20 +110,24 @@ public class AnimatedFloatingActionButton
         shrink.setDuration((mCurrentFabIcon == 0)
                 ? 1
                 : shortAnimTime);
-        shrink.setAnimationListener(new Animation.AnimationListener() {
+        shrink.setAnimationListener(new Animation.AnimationListener()
+        {
             @Override
-            public void onAnimationStart(Animation animation) {
+            public void onAnimationStart(Animation animation)
+            {
                 mFabIsAnimating = true;
             }
 
             @Override
-            public void onAnimationEnd(Animation animation) {
+            public void onAnimationEnd(Animation animation)
+            {
                 mFabIsAnimating = false;
                 growFloatingActionButton(drawableId);
             }
 
             @Override
-            public void onAnimationRepeat(Animation animation) {
+            public void onAnimationRepeat(Animation animation)
+            {
                 // does nothing
             }
         });
@@ -163,19 +166,23 @@ public class AnimatedFloatingActionButton
                 DisplayUtils.ANIMATION_CENTER_PIVOT);
         grow.setDuration(shortAnimTime);
         grow.setInterpolator(new OvershootInterpolator());
-        grow.setAnimationListener(new Animation.AnimationListener() {
+        grow.setAnimationListener(new Animation.AnimationListener()
+        {
             @Override
-            public void onAnimationStart(Animation animation) {
+            public void onAnimationStart(Animation animation)
+            {
                 mFabIsAnimating = true;
             }
 
             @Override
-            public void onAnimationEnd(Animation animation) {
+            public void onAnimationEnd(Animation animation)
+            {
                 mFabIsAnimating = false;
             }
 
             @Override
-            public void onAnimationRepeat(Animation animation) {
+            public void onAnimationRepeat(Animation animation)
+            {
                 // does nothing
             }
         });

@@ -16,6 +16,9 @@ public class PinLayout
     /** Instance of the touch listener interface. */
     private PinInterceptListener mListener;
 
+    /** Width of edge to ignore touch for navigation drawer. */
+    private static final int NAVIGATION_DRAWER_EDGE_WIDTH = 20;
+
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event)
     {
@@ -25,7 +28,8 @@ public class PinLayout
     @Override
     public boolean onTouchEvent(@NonNull MotionEvent event)
     {
-        if (event.getX() < 20 * getResources().getDisplayMetrics().density + 0.5f)
+        if (event.getX() < Math.ceil(NAVIGATION_DRAWER_EDGE_WIDTH
+                * getResources().getDisplayMetrics().density))
             event.setAction(MotionEvent.ACTION_CANCEL);
 
         if (mListener != null)

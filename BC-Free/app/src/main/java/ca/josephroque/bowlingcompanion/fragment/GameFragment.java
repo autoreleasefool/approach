@@ -549,7 +549,8 @@ public class GameFragment
         }
 
         mGameScores = new short[((MainActivity) getActivity()).getNumberOfGamesForSeries()];
-        mGameScoresMinusFouls = new short[((MainActivity) getActivity()).getNumberOfGamesForSeries()];
+        mGameScoresMinusFouls
+                = new short[((MainActivity) getActivity()).getNumberOfGamesForSeries()];
 
         updateTheme();
 
@@ -579,9 +580,11 @@ public class GameFragment
             mGameCallback.loadGameScoresForDrawer(mGameIds);
         }
 
-        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 setFloatingActionButtonState(false, R.drawable.ic_chevron_left_black_24dp);
                 setFloatingActionButtonState(true, R.drawable.ic_chevron_right_black_24dp);
             }
@@ -730,7 +733,8 @@ public class GameFragment
                     Theme.getSecondaryThemeColor());
         }
 
-        if (mNextFab != null) {
+        if (mNextFab != null)
+        {
             DisplayUtils.setFloatingActionButtonColors(mNextFab,
                     Theme.getPrimaryThemeColor(),
                     Theme.getTertiaryThemeColor());
@@ -738,7 +742,8 @@ public class GameFragment
             mNextFab.performClick();
             mNextFab.setEnabled(true);
         }
-        if (mPrevFab != null) {
+        if (mPrevFab != null)
+        {
             DisplayUtils.setFloatingActionButtonColors(mPrevFab,
                     Theme.getPrimaryThemeColor(),
                     Theme.getTertiaryThemeColor());
@@ -1226,9 +1231,11 @@ public class GameFragment
         new AlertDialog.Builder(getActivity())
                 .setTitle("Reset Game?")
                 .setMessage(R.string.dialog_reset_game)
-                .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener() {
+                .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener()
+                {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                    public void onClick(DialogInterface dialog, int which)
+                    {
                         //Resets and saves the current game
                         resetGame();
                         saveGame(true);
@@ -1245,9 +1252,11 @@ public class GameFragment
                         dialog.dismiss();
                     }
                 })
-                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
+                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener()
+                {
                     @Override
-                    public void onClick(DialogInterface dialog, int which) {
+                    public void onClick(DialogInterface dialog, int which)
+                    {
                         dialog.dismiss();
                     }
                 })
@@ -1260,10 +1269,13 @@ public class GameFragment
      */
     private void setMatchPlay()
     {
-        getActivity().runOnUiThread(new Runnable() {
+        getActivity().runOnUiThread(new Runnable()
+        {
             @Override
-            public void run() {
-                switch (mMatchPlay[mCurrentGame]) {
+            public void run()
+            {
+                switch (mMatchPlay[mCurrentGame])
+                {
                     case 0:
                         mImageViewMatchPlay.setImageResource(R.drawable.ic_match_none);
                         break;
@@ -1291,15 +1303,20 @@ public class GameFragment
     private void setGameLocked(boolean lock)
     {
         mGameLocked[mCurrentGame] = lock;
-        mImageViewLock.post(new Runnable() {
+        mImageViewLock.post(new Runnable()
+        {
             @Override
-            public void run() {
-                if (mGameLocked[mCurrentGame]) {
+            public void run()
+            {
+                if (mGameLocked[mCurrentGame])
+                {
                     mImageViewFoul.setVisibility(View.INVISIBLE);
                     mImageViewResetFrame.setVisibility(View.INVISIBLE);
                     mImageViewClear.setVisibility(View.INVISIBLE);
                     mImageViewLock.setImageResource(R.drawable.ic_lock);
-                } else {
+                }
+                else
+                {
                     mImageViewFoul.setVisibility(View.VISIBLE);
                     mImageViewResetFrame.setVisibility(View.VISIBLE);
                     mImageViewClear.setVisibility(View.VISIBLE);
@@ -1891,9 +1908,11 @@ public class GameFragment
             scoreWithFouls = 0;
         mGameScoresMinusFouls[mCurrentGame] = scoreWithFouls;
 
-        getActivity().runOnUiThread(new Runnable() {
+        getActivity().runOnUiThread(new Runnable()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 mTextViewFinalScore.setText(String.valueOf(mGameScoresMinusFouls[mCurrentGame]));
                 mImageViewFoul.setImageResource(
                         !mFouls[mCurrentFrame][mCurrentBall]
@@ -2086,9 +2105,11 @@ public class GameFragment
                         mPinState[mCurrentFrame][1].length);
         }
 
-        mImageButtonPins[pinToSet].post(new Runnable() {
+        mImageButtonPins[pinToSet].post(new Runnable()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 if (mPinState[mCurrentFrame][mCurrentBall][pinToSet])
                     mImageButtonPins[pinToSet].setImageResource(R.drawable.pin_disabled);
                 else

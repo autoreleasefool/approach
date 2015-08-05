@@ -268,7 +268,8 @@ public class MainActivity
     }
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
+    protected void onPostCreate(Bundle savedInstanceState)
+    {
         super.onPostCreate(savedInstanceState);
         mDrawerToggle.syncState();
     }
@@ -538,7 +539,8 @@ public class MainActivity
     @Override
     public void onBowlerSelected(Bowler bowler,
                                  boolean openLeagueFragment,
-                                 boolean isQuickSeries) {
+                                 boolean isQuickSeries)
+    {
         mBowlerId = bowler.getBowlerId();
         mBowlerName = bowler.getBowlerName();
         mIsQuickSeries = isQuickSeries;
@@ -604,12 +606,12 @@ public class MainActivity
             };
 
             new AlertDialog.Builder(this)
-                   .setTitle("How many games?")
-                   .setView(numberPicker)
-                   .setPositiveButton(R.string.dialog_create, listener)
-                   .setNegativeButton(R.string.dialog_cancel, listener)
-                   .create()
-                   .show();
+                    .setTitle("How many games?")
+                    .setView(numberPicker)
+                    .setPositiveButton(R.string.dialog_create, listener)
+                    .setNegativeButton(R.string.dialog_cancel, listener)
+                    .create()
+                    .show();
         }
         else
         {
@@ -625,12 +627,13 @@ public class MainActivity
     {
         mListDrawerOptions.remove(NavigationUtils.NAVIGATION_ITEM_LEAGUES);
         mListDrawerOptions.remove(NavigationUtils.NAVIGATION_ITEM_SERIES);
-        for (Iterator<String> it = mListDrawerOptions.iterator(); it.hasNext();)
+        for (Iterator<String> it = mListDrawerOptions.iterator(); it.hasNext(); )
             if (it.next().matches("\\w+ \\d+"))
                 it.remove();
         GameFragment gameFragment = null;
         FragmentManager fragmentManager = getSupportFragmentManager();
-        for (Fragment frag : fragmentManager.getFragments()) {
+        for (Fragment frag : fragmentManager.getFragments())
+        {
             if (frag != null && frag.isVisible() && frag instanceof GameFragment)
             {
                 gameFragment = (GameFragment) frag;
@@ -729,9 +732,11 @@ public class MainActivity
         if (currentAdapterGame == newGameNumber)
             return;
 
-        runOnUiThread(new Runnable() {
+        runOnUiThread(new Runnable()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 mDrawerAdapter.setCurrentItem(newGameNumber);
                 mDrawerAdapter.notifyDataSetChanged();
             }
@@ -853,11 +858,14 @@ public class MainActivity
     {
         mPrimaryFab = (AnimatedFloatingActionButton) findViewById(R.id.fab_main);
         DisplayUtils.fixFloatingActionButtonMargins(getResources(), mPrimaryFab);
-        mPrimaryFab.setOnClickListener(new View.OnClickListener() {
+        mPrimaryFab.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 FragmentManager fragmentManager = getSupportFragmentManager();
-                for (Fragment fragment : fragmentManager.getFragments()) {
+                for (Fragment fragment : fragmentManager.getFragments())
+                {
                     if (fragment != null && fragment.isVisible()
                             && fragment instanceof FloatingActionButtonHandler)
                         ((FloatingActionButtonHandler) fragment).onFabClick();
