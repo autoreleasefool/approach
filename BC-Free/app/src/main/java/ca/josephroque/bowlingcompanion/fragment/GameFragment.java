@@ -2234,7 +2234,8 @@ public class GameFragment
                                 (hasFrameBeenAccessed[i])
                                         ? 1
                                         : 0);
-                        values.put(FrameEntry.COLUMN_FOULS, foulsOfFrame.toString());
+                        values.put(FrameEntry.COLUMN_FOULS,
+                                Score.foulStringToInt(foulsOfFrame.toString()));
                         database.update(FrameEntry.TABLE_NAME,
                                 values,
                                 FrameEntry._ID + "=?",
@@ -2307,12 +2308,12 @@ public class GameFragment
                                 boolean[] ballBoolean = Score.ballIntToBoolean(ball);
                                 mPinState[currentFrameIterator][i] = ballBoolean;
                             }
-                            String foulsOfFrame = cursor.getString(
-                                    cursor.getColumnIndex(FrameEntry.COLUMN_FOULS));
+                            String fouls = Score.foulIntToString(cursor.getInt(
+                                    cursor.getColumnIndex(FrameEntry.COLUMN_FOULS)));
                             for (int ballCount = 0; ballCount < 3; ballCount++)
                             {
                                 mFouls[currentFrameIterator][ballCount]
-                                        = foulsOfFrame.contains(String.valueOf(ballCount + 1));
+                                        = fouls.contains(String.valueOf(ballCount + 1));
                             }
 
                             currentFrameIterator++;

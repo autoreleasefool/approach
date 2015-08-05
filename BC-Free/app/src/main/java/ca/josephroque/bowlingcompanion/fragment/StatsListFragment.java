@@ -481,8 +481,8 @@ public class StatsListFragment
                     if (toLoad == StatUtils.LOADING_GAME_STATS && !frameAccessed)
                         break;
 
-                    String frameFouls = cursor.getString(cursor.getColumnIndex(
-                            Contract.FrameEntry.COLUMN_FOULS));
+                    String frameFouls = Score.foulIntToString(cursor.getInt(cursor.getColumnIndex(
+                            Contract.FrameEntry.COLUMN_FOULS)));
 
                     boolean[][] pinState = new boolean[3][5];
                     for (byte i = 0; i < pinState.length; i++)

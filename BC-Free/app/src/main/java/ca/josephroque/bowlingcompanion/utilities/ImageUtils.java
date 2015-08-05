@@ -400,14 +400,13 @@ public final class ImageUtils
                     boolean[] ballBoolean = Score.ballIntToBoolean(ball);
                     ballsOfGames.get(currentGame)[currentFrame][i] = ballBoolean;
                 }
-                String foulsOfFrame = cursor.getString(
-                        cursor.getColumnIndex(FrameEntry.COLUMN_FOULS));
+
+                String fouls = Score.foulIntToString(
+                        cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_FOULS)));
                 for (int ballCounter = 0; ballCounter < 3; ballCounter++)
                 {
-                    if (foulsOfFrame.contains(String.valueOf(ballCounter + 1)))
-                    {
+                    if (fouls.contains(String.valueOf(ballCounter + 1)))
                         foulsOfGames.get(currentGame)[currentFrame][ballCounter] = true;
-                    }
                 }
 
                 currentFrame++;

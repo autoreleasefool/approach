@@ -11,6 +11,7 @@ import ca.josephroque.bowlingcompanion.database.Contract.FrameEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.GameEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.LeagueEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.SeriesEntry;
+import ca.josephroque.bowlingcompanion.utilities.Score;
 
 /**
  * Created by Joseph Roque on 15-03-12. Manages interactions with the application's database,
@@ -122,7 +123,7 @@ public final class DatabaseHelper
                 + FrameEntry.COLUMN_PIN_STATE[0] + " INTEGER NOT NULL DEFAULT 0, "
                 + FrameEntry.COLUMN_PIN_STATE[1] + " INTEGER NOT NULL DEFAULT 0, "
                 + FrameEntry.COLUMN_PIN_STATE[2] + " INTEGER NOT NULL DEFAULT 0, "
-                + FrameEntry.COLUMN_FOULS + " TEXT NOT NULL DEFAULT '0', "
+                + FrameEntry.COLUMN_FOULS + " INTEGER NOT NULL DEFAULT 0, "
                 + FrameEntry.COLUMN_GAME_ID + " INTEGER NOT NULL"
                 + " REFERENCES " + GameEntry.TABLE_NAME
                 + " ON UPDATE CASCADE ON DELETE CASCADE, "
@@ -359,7 +360,7 @@ public final class DatabaseHelper
                 + FrameEntry.COLUMN_PIN_STATE[0] + " INTEGER NOT NULL DEFAULT 0, "
                 + FrameEntry.COLUMN_PIN_STATE[1] + " INTEGER NOT NULL DEFAULT 0, "
                 + FrameEntry.COLUMN_PIN_STATE[2] + " INTEGER NOT NULL DEFAULT 0, "
-                + FrameEntry.COLUMN_FOULS + " TEXT NOT NULL DEFAULT '0', "
+                + FrameEntry.COLUMN_FOULS + " INTEGER NOT NULL DEFAULT 0, "
                 + FrameEntry.COLUMN_GAME_ID + " INTEGER NOT NULL"
                 + " REFERENCES " + GameEntry.TABLE_NAME
                 + " ON UPDATE CASCADE ON DELETE CASCADE, "
@@ -408,6 +409,14 @@ public final class DatabaseHelper
                             new String[]{String.format("%5s",
                                     Integer.toBinaryString(i)).replace(' ', '0')});
                 }
+            }
+            for (int i = 0; i < 8; i++) {
+                ContentValues values = new ContentValues();
+                values.put(FrameEntry.COLUMN_FOULS, i);
+                db.update(FrameEntry.TABLE_NAME,
+                        values,
+                        FrameEntry.COLUMN_FOULS + "=?",
+                        new String[]{Score.foulIntToString(i)});
             }
             db.setTransactionSuccessful();
         }
