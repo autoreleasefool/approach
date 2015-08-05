@@ -377,19 +377,19 @@ public final class Score
         {
             default:
                 return "0";
-            case 1:
+            case 24:
                 return "3";
-            case 2:
+            case 25:
                 return "2";
-            case 3:
+            case 26:
                 return "23";
-            case 4:
+            case 27:
                 return "1";
-            case 5:
+            case 28:
                 return "13";
-            case 6:
+            case 29:
                 return "12";
-            case 7:
+            case 30:
                 return "123";
         }
     }
@@ -407,19 +407,19 @@ public final class Score
             default:
                 return 0;
             case "3":
-                return 1;
+                return 24;
             case "2":
-                return 2;
+                return 25;
             case "23":
-                return 3;
+                return 26;
             case "1":
-                return 4;
+                return 27;
             case "13":
-                return 5;
+                return 28;
             case "12":
-                return 6;
+                return 29;
             case "123":
-                return 7;
+                return 30;
         }
     }
 }

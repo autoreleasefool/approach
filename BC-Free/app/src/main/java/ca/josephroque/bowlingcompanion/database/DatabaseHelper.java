@@ -410,7 +410,7 @@ public final class DatabaseHelper
                                     Integer.toBinaryString(i)).replace(' ', '0')});
                 }
             }
-            for (int i = 0; i < 8; i++) {
+            for (int i = 24; i < 31; i++) {
                 ContentValues values = new ContentValues();
                 values.put(FrameEntry.COLUMN_FOULS, i);
                 db.update(FrameEntry.TABLE_NAME,
