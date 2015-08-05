@@ -27,6 +27,7 @@ import ca.josephroque.bowlingcompanion.adapter.StatsExpandableAdapter;
 import ca.josephroque.bowlingcompanion.database.Contract;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.theme.Theme;
+import ca.josephroque.bowlingcompanion.utilities.Score;
 import ca.josephroque.bowlingcompanion.utilities.StatUtils;
 
 /**
@@ -482,22 +483,14 @@ public class StatsListFragment
 
                     String frameFouls = cursor.getString(cursor.getColumnIndex(
                             Contract.FrameEntry.COLUMN_FOULS));
-                    String[] ballStrings = {
-                            cursor.getString(cursor.getColumnIndex(
-                                    Contract.FrameEntry.COLUMN_PIN_STATE[0])),
-                            cursor.getString(cursor.getColumnIndex(
-                                    Contract.FrameEntry.COLUMN_PIN_STATE[1])),
-                            cursor.getString(cursor.getColumnIndex(
-                                    Contract.FrameEntry.COLUMN_PIN_STATE[2]))
-                    };
-                    boolean[][] pinState = new boolean[3][5];
 
-                    for (byte i = 0; i < 5; i++)
+                    boolean[][] pinState = new boolean[3][5];
+                    for (byte i = 0; i < pinState.length; i++)
                     {
-                        pinState[0][i] = ballStrings[0].charAt(i) == '1';
-                        pinState[1][i] = ballStrings[1].charAt(i) == '1';
-                        pinState[2][i] = ballStrings[2].charAt(i) == '1';
+                        pinState[i] = Score.ballIntToBoolean(cursor.getInt(cursor.getColumnIndex(
+                                Contract.FrameEntry.COLUMN_PIN_STATE[i])));
                     }
+
                     for (byte i = 1; i <= 3; i++)
                     {
                         if (frameFouls.contains(String.valueOf(i)))

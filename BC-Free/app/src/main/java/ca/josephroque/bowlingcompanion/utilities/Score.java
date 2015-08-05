@@ -337,15 +337,23 @@ public final class Score
      * @param frame array to convert to string
      * @return A String of 1's and 0's, where a 1 represents true in the array
      */
-    public static String booleanFrameToString(boolean[] frame)
+    public static int booleanFrameToInt(boolean[] frame)
     {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (boolean b : frame)
+        int ball = 0;
+        for (int i = 0; i < frame.length; i++)
         {
-            stringBuilder.append(b
-                    ? 1
-                    : 0);
+            if (frame[i])
+                ball += Math.pow(2, -i + 4);
         }
-        return stringBuilder.toString();
+        return ball;
+    }
+
+    public static boolean[] ballIntToBoolean(int ball)
+    {
+        boolean[] pinState = new boolean[5];
+        String ballBinary = String.format("%5s", Integer.toBinaryString(ball)).replace(' ', '0');
+        for (int i = 0; i < pinState.length; i++)
+            pinState[i] = ballBinary.charAt(i) == '1';
+        return pinState;
     }
 }

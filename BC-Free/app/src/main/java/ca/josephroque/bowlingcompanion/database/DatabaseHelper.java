@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.database;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -26,7 +27,7 @@ public final class DatabaseHelper
     /** Name of the database. */
     private static final String DATABASE_NAME = "bowlingdata";
     /** Version of the database, incremented with changes. */
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     /** Singleton instance of the DatabaseHelper. */
     private static DatabaseHelper sDatabaseHelperInstance = null;
@@ -118,9 +119,9 @@ public final class DatabaseHelper
                 + FrameEntry._ID + " INTEGER PRIMARY KEY, "
                 + FrameEntry.COLUMN_FRAME_NUMBER + " INTEGER NOT NULL, "
                 + FrameEntry.COLUMN_IS_ACCESSED + " INTEGER NOT NULL DEFAULT 0, "
-                + FrameEntry.COLUMN_PIN_STATE[0] + " TEXT NOT NULL DEFAULT '00000', "
-                + FrameEntry.COLUMN_PIN_STATE[1] + " TEXT NOT NULL DEFAULT '00000', "
-                + FrameEntry.COLUMN_PIN_STATE[2] + " TEXT NOT NULL DEFAULT '00000', "
+                + FrameEntry.COLUMN_PIN_STATE[0] + " INTEGER NOT NULL DEFAULT 0, "
+                + FrameEntry.COLUMN_PIN_STATE[1] + " INTEGER NOT NULL DEFAULT 0, "
+                + FrameEntry.COLUMN_PIN_STATE[2] + " INTEGER NOT NULL DEFAULT 0, "
                 + FrameEntry.COLUMN_FOULS + " TEXT NOT NULL DEFAULT '0', "
                 + FrameEntry.COLUMN_GAME_ID + " INTEGER NOT NULL"
                 + " REFERENCES " + GameEntry.TABLE_NAME
@@ -185,16 +186,41 @@ public final class DatabaseHelper
                 case 2:
                     upgradeDatabaseFrom1To2(db);
                     break;
+                case 3:
+                    upgradeDatabaseFrom2To3(db);
+                    break;
                 default:
-                    db.execSQL("DROP TABLE IF EXISTS " + FrameEntry.TABLE_NAME);
-                    db.execSQL("DROP TABLE IF EXISTS " + GameEntry.TABLE_NAME);
-                    db.execSQL("DROP TABLE IF EXISTS " + SeriesEntry.TABLE_NAME);
-                    db.execSQL("DROP TABLE IF EXISTS " + LeagueEntry.TABLE_NAME);
-                    db.execSQL("DROP TABLE IF EXISTS " + BowlerEntry.TABLE_NAME);
-                    onCreate(db);
+                    dropTablesAndRecreate(db);
             }
             upgradeTo++;
         }
+    }
+
+    /**
+     * Drops all tables in the database and calls onCreate()
+     *
+     * @param db database to wipe
+     */
+    private void dropTablesAndRecreate(SQLiteDatabase db)
+    {
+        Log.i(TAG, "Dropping tables");
+        db.execSQL("DROP INDEX IF EXISTS bowler_id_index");
+        db.execSQL("DROP INDEX IF EXISTS league_id_index");
+        db.execSQL("DROP INDEX IF EXISTS series_id_index");
+        db.execSQL("DROP INDEX IF EXISTS game_id_index");
+        db.execSQL("DROP INDEX IF EXISTS frame_id_index");
+
+        db.execSQL("DROP INDEX IF EXISTS league_bowler_fk_index");
+        db.execSQL("DROP INDEX IF EXISTS series_league_fk_index");
+        db.execSQL("DROP INDEX IF EXISTS game_series_fk_index");
+        db.execSQL("DROP INDEX IF EXISTS frame_game_fk_index");
+
+        db.execSQL("DROP TABLE IF EXISTS " + FrameEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + GameEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + SeriesEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + LeagueEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + BowlerEntry.TABLE_NAME);
+        onCreate(db);
     }
 
     /**
@@ -314,5 +340,85 @@ public final class DatabaseHelper
                 + GameEntry.TABLE_NAME + "(" + GameEntry.COLUMN_SERIES_ID + ")");
         db.execSQL("CREATE INDEX frame_game_fk_index ON "
                 + FrameEntry.TABLE_NAME + "(" + FrameEntry.COLUMN_GAME_ID + ")");
+    }
+
+    /**
+     * Upgrades database from oldVersion 2 to newVersion 3.
+     *
+     * @param db to upgrade
+     */
+    private void upgradeDatabaseFrom2To3(SQLiteDatabase db)
+    {
+        db.execSQL("DROP INDEX IF EXISTS frame_id_index");
+        db.execSQL("DROP INDEX IF EXISTS frame_game_fk_index");
+
+        db.execSQL("CREATE TABLE frame2 ("
+                + FrameEntry._ID + " INTEGER PRIMARY KEY, "
+                + FrameEntry.COLUMN_FRAME_NUMBER + " INTEGER NOT NULL, "
+                + FrameEntry.COLUMN_IS_ACCESSED + " INTEGER NOT NULL DEFAULT 0, "
+                + FrameEntry.COLUMN_PIN_STATE[0] + " INTEGER NOT NULL DEFAULT 0, "
+                + FrameEntry.COLUMN_PIN_STATE[1] + " INTEGER NOT NULL DEFAULT 0, "
+                + FrameEntry.COLUMN_PIN_STATE[2] + " INTEGER NOT NULL DEFAULT 0, "
+                + FrameEntry.COLUMN_FOULS + " TEXT NOT NULL DEFAULT '0', "
+                + FrameEntry.COLUMN_GAME_ID + " INTEGER NOT NULL"
+                + " REFERENCES " + GameEntry.TABLE_NAME
+                + " ON UPDATE CASCADE ON DELETE CASCADE, "
+                + "CHECK (" + FrameEntry.COLUMN_FRAME_NUMBER + " >= 1 AND "
+                + FrameEntry.COLUMN_FRAME_NUMBER + " <= 10), "
+                + "CHECK (" + FrameEntry.COLUMN_IS_ACCESSED + " = 0 OR "
+                + FrameEntry.COLUMN_IS_ACCESSED + " = 1)"
+                + ");");
+        db.execSQL("INSERT INTO frame2 ("
+                + FrameEntry._ID + ", "
+                + FrameEntry.COLUMN_FRAME_NUMBER + ", "
+                + FrameEntry.COLUMN_IS_ACCESSED + ", "
+                + FrameEntry.COLUMN_PIN_STATE[0] + ", "
+                + FrameEntry.COLUMN_PIN_STATE[1] + ", "
+                + FrameEntry.COLUMN_PIN_STATE[2] + ", "
+                + FrameEntry.COLUMN_FOULS + ", "
+                + FrameEntry.COLUMN_GAME_ID + ")"
+                + " SELECT "
+                + FrameEntry._ID + ", "
+                + FrameEntry.COLUMN_FRAME_NUMBER + ", "
+                + FrameEntry.COLUMN_IS_ACCESSED + ", "
+                + FrameEntry.COLUMN_PIN_STATE[0] + ", "
+                + FrameEntry.COLUMN_PIN_STATE[1] + ", "
+                + FrameEntry.COLUMN_PIN_STATE[2] + ", "
+                + FrameEntry.COLUMN_FOULS + ", "
+                + FrameEntry.COLUMN_GAME_ID + " FROM " + FrameEntry.TABLE_NAME);
+        db.execSQL("DROP TABLE " + FrameEntry.TABLE_NAME);
+        db.execSQL("ALTER TABLE frame2 RENAME TO " + FrameEntry.TABLE_NAME);
+
+        db.execSQL("CREATE INDEX frame_id_index ON "
+                + FrameEntry.TABLE_NAME + "(" + FrameEntry._ID + ")");
+        db.execSQL("CREATE INDEX frame_game_fk_index ON "
+                + FrameEntry.TABLE_NAME + "(" + FrameEntry.COLUMN_GAME_ID + ")");
+
+        try
+        {
+            db.beginTransaction();
+            for (int i = 0; i < 32; i++)
+            {
+                for (int j = 0; j < 3; j++) {
+                    ContentValues values = new ContentValues();
+                    values.put(FrameEntry.COLUMN_PIN_STATE[j], i);
+                    db.update(FrameEntry.TABLE_NAME,
+                            values,
+                            FrameEntry.COLUMN_PIN_STATE[j] + "=?",
+                            new String[]{String.format("%5s",
+                                    Integer.toBinaryString(i)).replace(' ', '0')});
+                }
+            }
+            db.setTransactionSuccessful();
+        }
+        catch (Exception ex)
+        {
+            Log.e(TAG, "Error upgrading db from 2 to 3", ex);
+            dropTablesAndRecreate(db);
+        }
+        finally
+        {
+            db.endTransaction();
+        }
     }
 }

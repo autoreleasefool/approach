@@ -396,15 +396,8 @@ public final class ImageUtils
 
                 for (int i = 0; i < 3; i++)
                 {
-                    String ballString = cursor.getString(
-                            cursor.getColumnIndex(FrameEntry.COLUMN_PIN_STATE[i]));
-                    boolean[] ballBoolean = {
-                            Score.getBoolean(ballString.charAt(0)),
-                            Score.getBoolean(ballString.charAt(1)),
-                            Score.getBoolean(ballString.charAt(2)),
-                            Score.getBoolean(ballString.charAt(3)),
-                            Score.getBoolean(ballString.charAt(4))
-                    };
+                    int ball = cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_PIN_STATE[i]));
+                    boolean[] ballBoolean = Score.ballIntToBoolean(ball);
                     ballsOfGames.get(currentGame)[currentFrame][i] = ballBoolean;
                 }
                 String foulsOfFrame = cursor.getString(

@@ -41,6 +41,7 @@ import ca.josephroque.bowlingcompanion.database.Contract.LeagueEntry;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.utilities.DateUtils;
+import ca.josephroque.bowlingcompanion.utilities.Score;
 import ca.josephroque.bowlingcompanion.utilities.StatUtils;
 
 /**
@@ -449,23 +450,15 @@ public class StatsGraphFragment
                             Contract.GameEntry.COLUMN_IS_MANUAL)) == 1);
                     if (gameIsManual)
                     {
-
                         cursor.moveToNext();
                         continue;
                     }
 
-                    String[] ballStrings = {
-                            cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_PIN_STATE[0])),
-                            cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_PIN_STATE[1])),
-                            cursor.getString(cursor.getColumnIndex(FrameEntry.COLUMN_PIN_STATE[2])),
-                    };
-
                     boolean[][] pinState = new boolean[3][5];
-                    for (byte i = 0; i < 5; i++)
+                    for (byte i = 0; i < pinState.length; i++)
                     {
-                        pinState[0][i] = ballStrings[0].charAt(i) == '1';
-                        pinState[1][i] = ballStrings[1].charAt(i) == '1';
-                        pinState[2][i] = ballStrings[2].charAt(i) == '1';
+                        pinState[i] = Score.ballIntToBoolean(cursor.getInt(cursor.getColumnIndex(
+                                FrameEntry.COLUMN_PIN_STATE[i])));
                     }
 
                     int frameNumber = cursor.getInt(cursor.getColumnIndex(
