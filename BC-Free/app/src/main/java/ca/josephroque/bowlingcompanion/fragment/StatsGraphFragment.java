@@ -278,10 +278,14 @@ public class StatsGraphFragment
             if (datasetChances != null)
             {
                 datasetChances.setValueFormatter(valueFormatter);
+                datasetChances.setCircleColor(fragment.getResources().getColor(R.color.chance_data));
+                datasetChances.setColor(fragment.getResources().getColor(R.color.chance_data));
                 datasets.add(datasetChances);
             }
 
             datasetSuccess.setValueFormatter(valueFormatter);
+            datasetSuccess.setCircleColor(fragment.getResources().getColor(R.color.success_data));
+            datasetSuccess.setColor(fragment.getResources().getColor(R.color.success_data));
             datasets.add(datasetSuccess);
 
             return new LineData(listLabels, datasets);
@@ -298,7 +302,6 @@ public class StatsGraphFragment
                     fragment.mStatIndex, false));
             fragment.mLineChartStats.setDescription(StatUtils.getStatName(fragment.mStatCategory,
                     fragment.mStatIndex, false));
-            //fragment.mLineChartStats.getLegend().setEnabled(false);
             fragment.mLineChartStats.getAxisLeft().setValueFormatter(new DefaultValueFormatter(0));
             fragment.mLineChartStats.setData(result);
             fragment.mLineChartStats.invalidate();

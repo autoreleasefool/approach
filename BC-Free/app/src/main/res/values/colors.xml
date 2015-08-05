@@ -1,5 +1,9 @@
 <resources>
 
+    <!-- Graph colors -->
+    <color name="chance_data">#8e44ad</color>
+    <color name="success_data">#2980b9</color>
+
     <!-- Fragment and list item backgrounds -->
     <color name="primary_background">#bdc3c7</color>
     <color name="secondary_background">#ecf0f1</color>
