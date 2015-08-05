@@ -47,6 +47,7 @@
     <string name="action_clear_score">Clear manual score</string>
     <string name="action_stats_graph">View as graph</string>
     <string name="action_stats_list">View as list</string>
+    <string name="action_combine_series">Combine series</string>
 
     <!-- TextView text -->
     <string name="text_next_ball">Next Ball</string>

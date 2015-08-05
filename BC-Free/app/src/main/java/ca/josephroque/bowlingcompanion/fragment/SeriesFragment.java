@@ -198,6 +198,7 @@ public class SeriesFragment
             //noinspection CheckStyle
             drawable.setAlpha(0x8A);
         }
+        menu.findItem(R.id.action_combine_series).setVisible(!drawerOpen);
         menu.findItem(R.id.action_edit_date).setVisible(!drawerOpen);
         super.onPrepareOptionsMenu(menu);
     }
@@ -213,6 +214,9 @@ public class SeriesFragment
             case R.id.action_stats:
                 if (mSeriesCallback != null)
                     mSeriesCallback.onLeagueStatsOpened();
+                return true;
+            case R.id.action_combine_series:
+                showCombineSeriesDialog(true);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -333,15 +337,18 @@ public class SeriesFragment
     /**
      * Prompts user to combine series in the league into one. Only shown if the user has not
      * disabled the option in the preferences.
+     *
+     * @param manuallyOpened if true, the dialog will be shown regardless of their settings, or if
+     * they have seen it before.
      */
-    private void showCombineSeriesDialog()
+    private void showCombineSeriesDialog(boolean manuallyOpened)
     {
-        if (getActivity() == null || mCombineDialogShown)
+        if (getActivity() == null || (mCombineDialogShown && !manuallyOpened))
             return;
 
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(
                 getActivity());
-        if (!preferences.getBoolean(Constants.KEY_ASK_COMBINE, true))
+        if (!preferences.getBoolean(Constants.KEY_ASK_COMBINE, true) && !manuallyOpened)
             return;
 
         mCombineDialogShown = true;
@@ -569,7 +576,7 @@ public class SeriesFragment
 
             fragment.mListSeries.addAll(listSeries);
             fragment.mAdapterSeries.notifyDataSetChanged();
-            fragment.showCombineSeriesDialog();
+            fragment.showCombineSeriesDialog(false);
         }
     }
 

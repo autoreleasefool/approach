@@ -12,6 +12,12 @@
         app:showAsAction="ifRoom" />
 
     <item
+        android:id="@+id/action_combine_series"
+        android:orderInCategory="15"
+        android:title="@string/action_combine_series"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/action_edit_date"
         android:orderInCategory="20"
         android:title="@string/action_edit_date"
