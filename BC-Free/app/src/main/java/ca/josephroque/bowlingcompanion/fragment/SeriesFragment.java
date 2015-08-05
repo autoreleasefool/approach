@@ -2,13 +2,16 @@ package ca.josephroque.bowlingcompanion.fragment;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,6 +32,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.MainActivity;
 import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.adapter.SeriesAdapter;
@@ -317,6 +321,80 @@ public class SeriesFragment
     }
 
     /**
+     * Prompts user to combine series in the league into one. Only shown if the user has not
+     * disabled the option in the preferences.
+     */
+    private void showCombineSeriesDialog()
+    {
+        if (getActivity() == null)
+            return;
+
+        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(
+                getActivity());
+        if (!preferences.getBoolean(Constants.KEY_ASK_COMBINE, true))
+            return;
+
+        boolean showDialog = false;
+        Series prevSeries = null;
+        for (Series series : mListSeries)
+        {
+            if (prevSeries != null && series.getSeriesDate().equals(prevSeries.getSeriesDate()))
+            {
+                showDialog = true;
+                break;
+            }
+            prevSeries = series;
+        }
+
+        if (showDialog)
+        {
+            final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+            View rootView = View.inflate(getActivity(), R.layout.dialog_combine_series, null);
+
+            dialog.setView(rootView);
+            final AlertDialog alertDialog = dialog.create();
+
+            View.OnClickListener listener = new View.OnClickListener()
+            {
+                @Override
+                public void onClick(View v)
+                {
+                    alertDialog.dismiss();
+                    switch (v.getId())
+                    {
+                        case R.id.btn_combine:
+                            startCombineSimilarSeries();
+                            break;
+                        case R.id.btn_do_not_ask:
+                            preferences.edit().putBoolean(Constants.KEY_ASK_COMBINE, false)
+                                    .apply();
+                            break;
+                        default:
+                            // do nothing
+                    }
+                }
+            };
+
+            rootView.findViewById(R.id.btn_combine).setOnClickListener(listener);
+            rootView.findViewById(R.id.btn_do_not_combine).setOnClickListener(listener);
+            rootView.findViewById(R.id.btn_do_not_ask).setOnClickListener(listener);
+
+            alertDialog.show();
+        }
+    }
+
+    /**
+     * Displays a modal dialog to the user while similar series in the league are combined.
+     */
+    private void startCombineSimilarSeries()
+    {
+        if (getActivity() == null)
+            return;
+
+        new CombineSimilarSeriesTask(this).execute();
+    }
+
+    /**
      * Informs user of how to change series dates.
      */
     private void showEditDateDialog()
@@ -480,6 +558,213 @@ public class SeriesFragment
 
             fragment.mListSeries.addAll(listSeries);
             fragment.mAdapterSeries.notifyDataSetChanged();
+            fragment.showCombineSeriesDialog();
+        }
+    }
+
+    /**
+     * Combines series with similar dates in the database into singular series, with maximum 5
+     * games. If a combined series would have more than 5 series, extra games are moved into a new
+     * series.
+     */
+    private static final class CombineSimilarSeriesTask
+            extends AsyncTask<Void, Void, Void>
+    {
+
+        /** Progress dialog. */
+        private WeakReference<ProgressDialog> mProgressDialog;
+
+        /** Weak reference to the parent fragment. */
+        private WeakReference<SeriesFragment> mFragment;
+
+        /**
+         * Assigns a weak reference to the parent fragment.
+         *
+         * @param fragment parent fragment
+         */
+        private CombineSimilarSeriesTask(SeriesFragment fragment)
+        {
+            mFragment = new WeakReference<>(fragment);
+        }
+
+        @Override
+        protected void onPreExecute()
+        {
+            SeriesFragment fragment = mFragment.get();
+            if (fragment == null || fragment.getActivity() == null)
+                return;
+
+            ProgressDialog pd = new ProgressDialog(fragment.getActivity());
+            pd.setTitle("Combining series...");
+            pd.setIndeterminate(true);
+            pd.setCancelable(false);
+            mProgressDialog = new WeakReference<>(pd);
+        }
+
+        @Override
+        protected Void doInBackground(Void... params)
+        {
+            SeriesFragment fragment = mFragment.get();
+            if (fragment == null)
+            {
+                dismissDialog();
+                return null;
+            }
+            MainActivity mainActivity = (MainActivity) fragment.getActivity();
+            if (mainActivity == null)
+            {
+                dismissDialog();
+                return null;
+            }
+
+            SQLiteDatabase db = DatabaseHelper.getInstance(mainActivity)
+                    .getReadableDatabase();
+            String seriesQuery = "SELECT "
+                    + "s." + SeriesEntry._ID + " AS sid, "
+                    + SeriesEntry.COLUMN_SERIES_DATE + ", "
+                    + "g." + GameEntry._ID + " AS gid, "
+                    + GameEntry.COLUMN_SERIES_ID + ", "
+                    + GameEntry.COLUMN_GAME_NUMBER
+                    + " FROM " + SeriesEntry.TABLE_NAME + " AS s"
+                    + " INNER JOIN " + GameEntry.TABLE_NAME + " AS g"
+                    + " ON g." + GameEntry.COLUMN_SERIES_ID + "=sid"
+                    + " WHERE " + SeriesEntry.COLUMN_LEAGUE_ID + "=?"
+                    + " ORDER BY " + SeriesEntry.COLUMN_SERIES_DATE + " DESC, "
+                    + GameEntry.COLUMN_GAME_NUMBER;
+            Cursor cursor = db.rawQuery(seriesQuery,
+                    new String[]{String.valueOf(mainActivity.getLeagueId())});
+
+            String lastSeriesDate = null;
+            int startOfLastSeries = -1;
+            if (cursor.moveToFirst())
+            {
+                while (!cursor.isAfterLast())
+                {
+                    int gameNumber = cursor.getInt(cursor.getColumnIndex(
+                            GameEntry.COLUMN_GAME_NUMBER));
+                    if (gameNumber == 1)
+                    {
+                        String seriesDate = cursor.getString(cursor.getColumnIndex(
+                                SeriesEntry.COLUMN_SERIES_DATE));
+                        String dateFormatted = DataFormatter.formattedDateToPrettyCompact(
+                                seriesDate);
+
+                        if (dateFormatted.equals(lastSeriesDate))
+                        {
+                            int startOfCurrentSeries = cursor.getPosition();
+                            combineSeries(db, cursor, startOfLastSeries, startOfCurrentSeries);
+                            cursor.moveToPosition(startOfCurrentSeries);
+                        }
+
+                        startOfLastSeries = cursor.getPosition();
+                        lastSeriesDate = dateFormatted;
+                    }
+
+                    cursor.moveToNext();
+                }
+            }
+            if (!cursor.isClosed())
+                cursor.close();
+
+            return null;
+        }
+
+        /**
+         * Combines two series into one.
+         *
+         * @param db database
+         * @param cursor cursor with series date
+         * @param startOfFirstSeries position in cursor of game 1 of the first series
+         * @param startOfSecondSeries position in cursor of game 1 of the second series
+         */
+        private void combineSeries(SQLiteDatabase db,
+                                   Cursor cursor,
+                                   int startOfFirstSeries,
+                                   int startOfSecondSeries)
+        {
+            int firstSeriesNumGames = startOfSecondSeries - startOfFirstSeries;
+            int secondSeriesNumGames = 0;
+            cursor.moveToPosition(startOfFirstSeries);
+            long firstSeriesId = cursor.getLong(cursor.getColumnIndex("sid"));
+            cursor.moveToPosition(startOfSecondSeries);
+            long secondSeriesId = cursor.getLong(cursor.getColumnIndex("sid"));
+
+            while (!cursor.isAfterLast()
+                    && cursor.getLong(cursor.getColumnIndex("sid")) == secondSeriesId)
+            {
+                secondSeriesNumGames++;
+                cursor.moveToNext();
+            }
+
+            try
+            {
+                db.beginTransaction();
+
+                while (secondSeriesNumGames > 0
+                        && firstSeriesNumGames <= Constants.MAX_NUMBER_LEAGUE_GAMES)
+                {
+                    cursor.moveToPosition(startOfSecondSeries);
+                    long gameId = cursor.getLong(cursor.getColumnIndex("gid"));
+                    ContentValues values = new ContentValues();
+                    values.put(GameEntry.COLUMN_GAME_NUMBER, firstSeriesNumGames + 1);
+                    values.put(GameEntry.COLUMN_SERIES_ID, firstSeriesId);
+                    db.update(GameEntry.TABLE_NAME,
+                            values,
+                            GameEntry._ID + "=?",
+                            new String[]{Long.toString(gameId)});
+
+                    firstSeriesNumGames++;
+                    secondSeriesNumGames--;
+                    startOfSecondSeries++;
+                }
+
+                int secondSeriesNewNumGames = 0;
+                while (secondSeriesNumGames > 0)
+                {
+                    cursor.moveToPosition(startOfSecondSeries);
+                    long gameId = cursor.getLong(cursor.getColumnIndex("gid"));
+                    ContentValues values = new ContentValues();
+                    values.put(GameEntry.COLUMN_GAME_NUMBER, secondSeriesNewNumGames + 1);
+                    db.update(GameEntry.TABLE_NAME,
+                            values,
+                            GameEntry._ID + "=?",
+                            new String[]{Long.toString(gameId)});
+
+                    secondSeriesNewNumGames++;
+                    secondSeriesNumGames--;
+                }
+
+                db.setTransactionSuccessful();
+            }
+            catch (Exception ex)
+            {
+                Log.e(TAG, "Error combining series", ex);
+            }
+            finally
+            {
+                db.endTransaction();
+            }
+        }
+
+        /**
+         * Dismisses the progress dialog if it is still showing.
+         */
+        private void dismissDialog()
+        {
+            ProgressDialog pd = mProgressDialog.get();
+            if (pd != null)
+                pd.dismiss();
+        }
+
+        @Override
+        protected void onPostExecute(Void result)
+        {
+            dismissDialog();
+            SeriesFragment fragment = mFragment.get();
+            if (fragment == null)
+                return;
+
+            new LoadSeriesTask(fragment).execute();
         }
     }
 

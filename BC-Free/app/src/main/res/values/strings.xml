@@ -69,6 +69,10 @@
     <string name="text_rate_app">Rate</string>
     <string name="text_rate_remind_me">Remind me</string>
     <string name="text_rate_no">No, thanks</string>
+    <string name="text_combine_series">It appears you have some series created on the same date. Would you like to combine these series into one? This cannot be undone.</string>
+    <string name="text_combine">Combine</string>
+    <string name="text_do_not_combine">Do not combine</string>
+    <string name="text_do_not_ask_again">No, don\'t ask again</string>
     <string name="text_skip">Next</string>
     <string name="text_stats_accumulate">Stat values accumulate over time</string>
     <string name="text_stats_by_week">Stat values are week by week</string>

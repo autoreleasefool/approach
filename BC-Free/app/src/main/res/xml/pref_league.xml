@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="pref_ask_combine"
+        android:summaryOff="@string/pref_ask_combine_summaryOff"
+        android:summaryOn="@string/pref_ask_combine_summaryOn"
+        android:title="@string/pref_ask_combine_title" />
+
+</PreferenceScreen>

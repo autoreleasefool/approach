@@ -44,6 +44,8 @@ public final class Constants
     public static final String KEY_ENABLE_AUTO_ADVANCE = "pref_enable_auto_advance";
     /** Identifier for preference which allows user to select time interval before auto advance. */
     public static final String KEY_AUTO_ADVANCE_TIME = "pref_auto_advance_time";
+    /** Identifier for preference for if app should ask user to combine similar series. */
+    public static final String KEY_ASK_COMBINE = "pref_ask_combine";
 
     // PREFERENCES
     /** Identifier for SharedPreferences of app. */
