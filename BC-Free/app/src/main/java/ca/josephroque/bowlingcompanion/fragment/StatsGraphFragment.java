@@ -568,6 +568,254 @@ public class StatsGraphFragment
                                            List<Entry> listSuccessEntries,
                                            List<String> listLabels)
         {
+            Calendar lastEntryDate = null;
+            Calendar lastLabelDate = null;
+            Calendar currentDate = null;
+            DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locale.CANADA);
+            boolean addLabelOnDateChange = false;
+            int totalShotsAtMiddle = 0;
+            //noinspection CheckStyle
+            int[] firstBallStats = new int[20];
+
+            int currentEntry = 0;
+            if (cursor.moveToFirst())
+            {
+                while (!cursor.isAfterLast())
+                {
+                    Date entryDate = DateUtils.parseEntryDate(cursor.getString(
+                            cursor.getColumnIndex(SeriesEntry.COLUMN_SERIES_DATE)));
+                    if (entryDate == null)
+                        return;
+
+                    currentDate = DateUtils.getCalendarAtMidnight(entryDate);
+
+                    if (addLabelOnDateChange
+                            && currentDate.getTimeInMillis() != lastEntryDate.getTimeInMillis())
+                    {
+                        addLabelOnDateChange = false;
+                        lastLabelDate = lastEntryDate;
+                        Entry chanceEntry;
+                        Entry successEntry;
+                        if (fragment.mStatIndex % 2 == 0)
+                        {
+                            chanceEntry = new Entry(totalShotsAtMiddle, currentEntry);
+                            successEntry = new Entry(firstBallStats[fragment.mStatIndex],
+                                    currentEntry);
+                        }
+                        else
+                        {
+                            chanceEntry = new Entry(firstBallStats[fragment.mStatIndex - 1],
+                                    currentEntry);
+                            successEntry = new Entry(firstBallStats[fragment.mStatIndex],
+                                    currentEntry);
+                        }
+
+                        listChanceEntries.add(chanceEntry);
+                        listSuccessEntries.add(successEntry);
+                        listLabels.add(dateFormat.format(lastEntryDate.getTime()));
+                        currentEntry++;
+
+                        if (!fragment.mStatAccumulate)
+                        {
+                            totalShotsAtMiddle = 0;
+                            for (int i = 0; i < firstBallStats.length; i++)
+                                firstBallStats[i] = 0;
+                        }
+                    }
+
+                    if (lastLabelDate == null
+                            || lastLabelDate.getTimeInMillis()
+                            <= currentDate.getTimeInMillis() + DateUtils.MILLIS_ONE_WEEK)
+                        addLabelOnDateChange = true;
+                    lastEntryDate = currentDate;
+
+                    boolean gameIsManual = (cursor.getInt(cursor.getColumnIndex(
+                            Contract.GameEntry.COLUMN_IS_MANUAL)) == 1);
+                    if (gameIsManual)
+                    {
+                        cursor.moveToNext();
+                        continue;
+                    }
+
+                    //noinspection CheckStyle
+                    boolean[][] pinState = new boolean[3][5];
+                    for (byte i = 0; i < pinState.length; i++)
+                    {
+                        pinState[i] = Score.ballIntToBoolean(cursor.getInt(cursor.getColumnIndex(
+                                FrameEntry.COLUMN_PIN_STATE[i])));
+                    }
+
+                    int frameNumber = cursor.getInt(cursor.getColumnIndex(
+                            FrameEntry.COLUMN_FRAME_NUMBER));
+                    if (frameNumber == Constants.NUMBER_OF_FRAMES)
+                    {
+                        totalShotsAtMiddle++;
+                        int ballValue = getFirstBallValue(pinState[0]);
+                        increaseFirstBallStat(ballValue, firstBallStats, 0);
+
+                        if (ballValue != 0)
+                        {
+                            if (Arrays.equals(pinState[1], Constants.FRAME_PINS_DOWN))
+                                increaseFirstBallStat(ballValue, firstBallStats, 1);
+                        }
+                        else
+                        {
+                            totalShotsAtMiddle++;
+                            ballValue = getFirstBallValue(pinState[1]);
+                            increaseFirstBallStat(ballValue, firstBallStats, 0);
+
+                            if (ballValue != 0)
+                            {
+                                if (Arrays.equals(pinState[2], Constants.FRAME_PINS_DOWN))
+                                    increaseFirstBallStat(ballValue, firstBallStats, 1);
+                            }
+                            else
+                            {
+                                totalShotsAtMiddle++;
+                                ballValue = getFirstBallValue(pinState[2]);
+                                increaseFirstBallStat(ballValue, firstBallStats, 0);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        totalShotsAtMiddle++;
+                        int ballValue = getFirstBallValue(pinState[0]);
+                        increaseFirstBallStat(ballValue, firstBallStats, 0);
+
+                        if (ballValue != 0)
+                        {
+                            if (Arrays.equals(pinState[1], Constants.FRAME_PINS_DOWN))
+                                increaseFirstBallStat(ballValue, firstBallStats, 1);
+                        }
+                    }
+
+                    cursor.moveToNext();
+                }
+            }
+
+            if (lastEntryDate != null && (lastLabelDate == null
+                    || currentDate.getTimeInMillis() != lastLabelDate.getTimeInMillis()))
+            {
+                Entry chanceEntry;
+                Entry successEntry;
+                if (fragment.mStatIndex % 2 == 0)
+                {
+                    chanceEntry = new Entry(totalShotsAtMiddle, currentEntry);
+                    successEntry = new Entry(firstBallStats[fragment.mStatIndex],
+                            currentEntry);
+                }
+                else
+                {
+                    chanceEntry = new Entry(firstBallStats[fragment.mStatIndex - 1],
+                            currentEntry);
+                    successEntry = new Entry(firstBallStats[fragment.mStatIndex],
+                            currentEntry);
+                }
+
+                listChanceEntries.add(chanceEntry);
+                listSuccessEntries.add(successEntry);
+                listLabels.add(dateFormat.format(lastEntryDate.getTime()));
+            }
+        }
+
+        /**
+         * Returns the indicated state of the pins after a ball was thrown.
+         *
+         * @param firstBall the ball thrown
+         * @return the state of the pins after a ball was thrown
+         */
+        @SuppressWarnings("CheckStyle")
+        private int getFirstBallValue(boolean[] firstBall)
+        {
+            if (!firstBall[2])
+            {
+                return -1;
+            }
+
+            int numberOfPinsKnockedDown = 0;
+            for (boolean knockedDown : firstBall)
+            {
+                if (knockedDown)
+                    numberOfPinsKnockedDown++;
+            }
+
+            if (numberOfPinsKnockedDown == 5)
+                return Constants.BALL_VALUE_STRIKE;
+            else if (numberOfPinsKnockedDown == 4)
+            {
+                if (!firstBall[0])
+                    return Constants.BALL_VALUE_LEFT;
+                else if (!firstBall[4])
+                    return Constants.BALL_VALUE_RIGHT;
+            }
+            else if (numberOfPinsKnockedDown == 3)
+            {
+                if (!firstBall[3] && !firstBall[4])
+                    return Constants.BALL_VALUE_LEFT_CHOP;
+                else if (!firstBall[0] && !firstBall[1])
+                    return Constants.BALL_VALUE_RIGHT_CHOP;
+                else if (!firstBall[0] && !firstBall[4])
+                    return Constants.BALL_VALUE_ACE;
+            }
+            else if (numberOfPinsKnockedDown == 2)
+            {
+                if (firstBall[1])
+                    return Constants.BALL_VALUE_LEFT_SPLIT;
+                else if (firstBall[3])
+                    return Constants.BALL_VALUE_RIGHT_SPLIT;
+            }
+            else
+                return Constants.BALL_VALUE_HEAD_PIN;
+
+            return -2;
+        }
+
+        /**
+         * Checks which situation has occurred by the state of the pins in ball.
+         *
+         * @param ball result of the pins after a ball was thrown
+         * @param statValues stat values to update
+         * @param offset indicates a spare was thrown and the spare count should be increased for a
+         * stat
+         */
+        private void increaseFirstBallStat(int ball, int[] statValues, int offset)
+        {
+            if (offset > 1 || offset < 0)
+                throw new IllegalArgumentException("Offset must be either 0 or 1: " + offset);
+
+            switch (ball)
+            {
+                case Constants.BALL_VALUE_LEFT:
+                    statValues[StatUtils.STAT_LEFT + offset]++;
+                    break;
+                case Constants.BALL_VALUE_RIGHT:
+                    statValues[StatUtils.STAT_RIGHT + offset]++;
+                    break;
+                case Constants.BALL_VALUE_LEFT_CHOP:
+                    statValues[StatUtils.STAT_LEFT_CHOP + offset]++;
+                    statValues[StatUtils.STAT_CHOP + offset]++;
+                    break;
+                case Constants.BALL_VALUE_RIGHT_CHOP:
+                    statValues[StatUtils.STAT_RIGHT_CHOP + offset]++;
+                    statValues[StatUtils.STAT_CHOP + offset]++;
+                    break;
+                case Constants.BALL_VALUE_ACE:
+                    statValues[StatUtils.STAT_ACES + offset]++;
+                    break;
+                case Constants.BALL_VALUE_LEFT_SPLIT:
+                    statValues[StatUtils.STAT_LEFT_SPLIT + offset]++;
+                    statValues[StatUtils.STAT_SPLIT + offset]++;
+                    break;
+                case Constants.BALL_VALUE_RIGHT_SPLIT:
+                    statValues[StatUtils.STAT_RIGHT_SPLIT + offset]++;
+                    statValues[StatUtils.STAT_SPLIT + offset]++;
+                    break;
+                case Constants.BALL_VALUE_HEAD_PIN:
+                    statValues[StatUtils.STAT_HEAD_PINS + offset]++;
+                default:
+                    // does nothing
+            }
         }
 
         /**
@@ -680,6 +928,7 @@ public class StatsGraphFragment
          * @param listEntries list of data entries
          * @param listLabels list of labels for x axis
          */
+        @SuppressWarnings("CheckStyle")
         private void compileAverageStats(StatsGraphFragment fragment,
                                          Cursor cursor,
                                          List<Entry> listEntries,
@@ -765,6 +1014,7 @@ public class StatsGraphFragment
          * @param listSuccessEntries list of data entries for achieved stat values
          * @param listLabels list of labels for x axis
          */
+        @SuppressWarnings("CheckStyle")
         private void compileMatchPlayStats(StatsGraphFragment fragment,
                                            Cursor cursor,
                                            List<Entry> listChanceEntries,
