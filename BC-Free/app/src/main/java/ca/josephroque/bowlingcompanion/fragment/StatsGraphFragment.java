@@ -562,6 +562,7 @@ public class StatsGraphFragment
          * @param listSuccessEntries list of data entries for achieved stat values
          * @param listLabels list of labels for x axis
          */
+        @SuppressWarnings("CheckStyle")
         private void compileFirstBallStats(StatsGraphFragment fragment,
                                            Cursor cursor,
                                            List<Entry> listChanceEntries,
@@ -819,6 +820,41 @@ public class StatsGraphFragment
         }
 
         /**
+         * Counts the total value of pins which were left at the end of a frame on the third ball.
+         *
+         * @param thirdBall state of the pins after the third ball
+         * @return total value of pins left standing
+         */
+        @SuppressWarnings("CheckStyle")
+        private int countPinsLeftStanding(boolean[] thirdBall)
+        {
+            int pinsLeftStanding = 0;
+            for (int i = 0; i < thirdBall.length; i++)
+            {
+                if (!thirdBall[i])
+                {
+                    switch (i)
+                    {
+                        case 0:
+                        case 4:
+                            pinsLeftStanding += 2;
+                            break;
+                        case 1:
+                        case 3:
+                            pinsLeftStanding += 3;
+                            break;
+                        case 2:
+                            pinsLeftStanding += 5;
+                            break;
+                        default:
+                            // does nothing
+                    }
+                }
+            }
+            return pinsLeftStanding;
+        }
+
+        /**
          * Generates line chart data for foul stats.
          *
          * @param fragment parent fragment
@@ -906,17 +942,129 @@ public class StatsGraphFragment
          * @param listEntries list of data entries
          * @param listLabels list of labels for x axis
          */
+        @SuppressWarnings("CheckStyle")
         private void compilePinStats(StatsGraphFragment fragment,
                                      Cursor cursor,
                                      List<Entry> listEntries,
                                      List<String> listLabels)
         {
+            Calendar lastEntryDate = null;
+            Calendar lastLabelDate = null;
+            Calendar currentDate = null;
+            DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locale.CANADA);
+            boolean addLabelOnDateChange = false;
+            int totalPinsLeft = 0, numberOfGames = 0;
+
+            int currentEntry = 0;
             if (cursor.moveToFirst())
             {
                 while (!cursor.isAfterLast())
                 {
+                    Date entryDate = DateUtils.parseEntryDate(cursor.getString(
+                            cursor.getColumnIndex(SeriesEntry.COLUMN_SERIES_DATE)));
+                    if (entryDate == null)
+                        return;
+
+                    currentDate = DateUtils.getCalendarAtMidnight(entryDate);
+
+                    if (addLabelOnDateChange
+                            && currentDate.getTimeInMillis() != lastEntryDate.getTimeInMillis())
+                    {
+                        addLabelOnDateChange = false;
+                        lastLabelDate = lastEntryDate;
+
+                        Entry entry;
+                        if (fragment.mStatIndex == StatUtils.STAT_PINS_LEFT)
+                            entry = new Entry(totalPinsLeft, currentEntry);
+                        else if (numberOfGames > 0)
+                            entry = new Entry(totalPinsLeft / numberOfGames, currentEntry);
+                        else
+                            entry = new Entry(0, currentEntry);
+
+                        listEntries.add(entry);
+                        listLabels.add(dateFormat.format(lastEntryDate.getTime()));
+                        currentEntry++;
+
+                        if (!fragment.mStatAccumulate)
+                        {
+                            totalPinsLeft = 0;
+                            numberOfGames = 0;
+                        }
+                    }
+
+                    if (lastLabelDate == null
+                            || lastLabelDate.getTimeInMillis()
+                            <= currentDate.getTimeInMillis() + DateUtils.MILLIS_ONE_WEEK)
+                        addLabelOnDateChange = true;
+                    lastEntryDate = currentDate;
+
+                    boolean gameIsManual = (cursor.getInt(cursor.getColumnIndex(
+                            Contract.GameEntry.COLUMN_IS_MANUAL)) == 1);
+                    if (gameIsManual)
+                    {
+                        cursor.moveToNext();
+                        continue;
+                    }
+
+                    numberOfGames++;
+                    //noinspection CheckStyle
+                    boolean[][] pinState = new boolean[3][5];
+                    for (byte i = 0; i < pinState.length; i++)
+                    {
+                        pinState[i] = Score.ballIntToBoolean(cursor.getInt(cursor.getColumnIndex(
+                                FrameEntry.COLUMN_PIN_STATE[i])));
+                    }
+
+                    int frameNumber = cursor.getInt(cursor.getColumnIndex(
+                            FrameEntry.COLUMN_FRAME_NUMBER));
+
+                    if (frameNumber == Constants.NUMBER_OF_FRAMES)
+                    {
+                        int ballValue = getFirstBallValue(pinState[0]);
+                        if (ballValue != 0)
+                        {
+                            if (!Arrays.equals(pinState[1], Constants.FRAME_PINS_DOWN))
+                                totalPinsLeft += countPinsLeftStanding(pinState[2]);
+                        }
+                        else
+                        {
+                            ballValue = getFirstBallValue(pinState[1]);
+                            if (ballValue != 0)
+                            {
+                                if (!Arrays.equals(pinState[2], Constants.FRAME_PINS_DOWN))
+                                    totalPinsLeft += countPinsLeftStanding(pinState[2]);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        int ballValue = getFirstBallValue(pinState[0]);
+                        if (ballValue != 0)
+                        {
+                            if (!Arrays.equals(pinState[1], Constants.FRAME_PINS_DOWN))
+                            {
+                                totalPinsLeft += countPinsLeftStanding(pinState[2]);
+                            }
+                        }
+                    }
+
                     cursor.moveToNext();
                 }
+            }
+
+            if (lastEntryDate != null && (lastLabelDate == null
+                    || currentDate.getTimeInMillis() != lastLabelDate.getTimeInMillis()))
+            {
+                Entry entry;
+                if (fragment.mStatIndex == StatUtils.STAT_PINS_LEFT)
+                    entry = new Entry(totalPinsLeft, currentEntry);
+                else if (numberOfGames > 0)
+                    entry = new Entry(totalPinsLeft / numberOfGames, currentEntry);
+                else
+                    entry = new Entry(0, currentEntry);
+
+                listEntries.add(entry);
+                listLabels.add(dateFormat.format(lastEntryDate.getTime()));
             }
         }
 
