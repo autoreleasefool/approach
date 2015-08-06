@@ -731,8 +731,10 @@ public class StatsGraphFragment
 
                     int gameNumber = cursor.getInt(cursor.getColumnIndex(
                             GameEntry.COLUMN_GAME_NUMBER));
+                    int frameNumber = cursor.getInt(cursor.getColumnIndex(
+                            FrameEntry.COLUMN_FRAME_NUMBER));
 
-                    if (gameNumber - 1 == fragment.mStatIndex)
+                    if (frameNumber == 1 && gameNumber - 1 == fragment.mStatIndex)
                     {
                         short gameScore = cursor.getShort(cursor.getColumnIndex(
                                 GameEntry.COLUMN_SCORE));
@@ -817,13 +819,19 @@ public class StatsGraphFragment
                         addLabelOnDateChange = true;
                     lastEntryDate = currentDate;
 
-                    int matchPlay
-                            = cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_MATCH_PLAY));
-                    if (matchPlay > 0)
+                    int frameNumber = cursor.getInt(cursor.getColumnIndex(
+                            FrameEntry.COLUMN_FRAME_NUMBER));
+
+                    if (frameNumber == 1)
                     {
-                        totalMatchPlayGames++;
-                        if (matchPlay - 1 == fragment.mStatIndex)
-                            matchResults++;
+                        int matchPlay
+                                = cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_MATCH_PLAY));
+                        if (matchPlay > 0)
+                        {
+                            totalMatchPlayGames++;
+                            if (matchPlay - 1 == fragment.mStatIndex)
+                                matchResults++;
+                        }
                     }
 
                     cursor.moveToNext();
@@ -856,12 +864,117 @@ public class StatsGraphFragment
                                          List<Entry> listEntries,
                                          List<String> listLabels)
         {
+            Calendar lastEntryDate = null;
+            Calendar lastLabelDate = null;
+            Calendar currentDate = null;
+            DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locale.CANADA);
+            boolean addLabelOnDateChange = false;
+            int numberOfGames = 0, totalPinfall = 0;
+            int highSingle = 0, highSeries = 0, currentSeries = 0;
+
+            int currentEntry = 0;
             if (cursor.moveToFirst())
             {
                 while (!cursor.isAfterLast())
                 {
+                    Date entryDate = DateUtils.parseEntryDate(cursor.getString(
+                            cursor.getColumnIndex(SeriesEntry.COLUMN_SERIES_DATE)));
+                    if (entryDate == null)
+                        return;
+
+                    currentDate = DateUtils.getCalendarAtMidnight(entryDate);
+
+                    if (addLabelOnDateChange
+                            && currentDate.getTimeInMillis() != lastEntryDate.getTimeInMillis())
+                    {
+                        if (currentSeries > highSeries)
+                            highSeries = currentSeries;
+
+                        addLabelOnDateChange = false;
+                        lastLabelDate = lastEntryDate;
+                        Entry entry;
+                        switch (fragment.mStatIndex)
+                        {
+                            case StatUtils.STAT_AVERAGE:
+                                if (numberOfGames > 0)
+                                    entry = new Entry(totalPinfall / numberOfGames, currentEntry);
+                                else
+                                    entry = new Entry(0, currentEntry);
+                                break;
+                            case StatUtils.STAT_HIGH_SINGLE:
+                                entry = new Entry(highSingle, currentEntry);
+                                break;
+                            case StatUtils.STAT_HIGH_SERIES:
+                                entry = new Entry(highSeries, currentEntry);
+                                break;
+                            case StatUtils.STAT_TOTAL_PINS:
+                                entry = new Entry(totalPinfall, currentEntry);
+                                break;
+                            case StatUtils.STAT_NUMBER_OF_GAMES:
+                                entry = new Entry(numberOfGames, currentEntry);
+                                break;
+                            default:
+                                entry = null;
+                        }
+
+                        if (entry != null)
+                        {
+                            listEntries.add(entry);
+                            listLabels.add(dateFormat.format(lastEntryDate.getTime()));
+                            currentEntry++;
+                        }
+
+                        if (!fragment.mStatAccumulate)
+                        {
+                            numberOfGames = 0;
+                            totalPinfall = 0;
+                            highSeries = 0;
+                            highSingle = 0;
+                            currentSeries = 0;
+                        }
+                    }
+
+                    if (lastLabelDate == null
+                            || lastLabelDate.getTimeInMillis()
+                            <= currentDate.getTimeInMillis() + DateUtils.MILLIS_ONE_WEEK)
+                        addLabelOnDateChange = true;
+                    lastEntryDate = currentDate;
+
+                    int gameNumber = cursor.getInt(cursor.getColumnIndex(
+                            GameEntry.COLUMN_GAME_NUMBER));
+                    int frameNumber = cursor.getInt(cursor.getColumnIndex(
+                            FrameEntry.COLUMN_FRAME_NUMBER));
+
+                    if (frameNumber == 1)
+                    {
+                        if (gameNumber == 1)
+                        {
+                            if (currentSeries > highSeries)
+                                highSeries = currentSeries;
+                            currentSeries = 0;
+                        }
+
+                        short gameScore = cursor.getShort(cursor.getColumnIndex(
+                                GameEntry.COLUMN_SCORE));
+                        numberOfGames++;
+                        totalPinfall += gameScore;
+                        currentSeries += gameScore;
+                        if (gameScore > highSingle)
+                            highSingle = gameScore;
+                    }
+
                     cursor.moveToNext();
                 }
+            }
+
+            if (lastEntryDate != null && (lastLabelDate == null
+                    || currentDate.getTimeInMillis() != lastLabelDate.getTimeInMillis()))
+            {
+                if (numberOfGames > 0)
+                    listEntries.add(new Entry(totalPinfall / numberOfGames, currentEntry));
+                else
+                    listEntries.add(new Entry(0, currentEntry));
+                listLabels.add(dateFormat.format(lastEntryDate.getTime()));
             }
         }
     }
