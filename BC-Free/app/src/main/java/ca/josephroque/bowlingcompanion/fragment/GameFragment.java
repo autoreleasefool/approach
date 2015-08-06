@@ -650,7 +650,7 @@ public class GameFragment
         Drawable drawable = menuItem.getIcon();
         if (drawable != null)
         {
-            drawable.mutate();
+            drawable = drawable.mutate();
             //noinspection CheckStyle
             drawable.setAlpha(0x8A);
         }
@@ -1169,12 +1169,17 @@ public class GameFragment
      */
     private void clearAllText(boolean enabled)
     {
+        View rootView = getView();
+        if (rootView == null)
+            return;
+
         if (enabled)
         {
             mImageViewNextBall.setVisibility(View.VISIBLE);
             mImageViewPrevBall.setVisibility(View.VISIBLE);
             mTextViewNextBall.setVisibility(View.VISIBLE);
             mTextViewPrevBall.setVisibility(View.VISIBLE);
+            rootView.findViewById(R.id.fab_container).setVisibility(View.VISIBLE);
             mHorizontalScrollViewFrames.setVisibility(View.VISIBLE);
             for (ImageButton imageButton : mImageButtonPins)
                 imageButton.setVisibility(View.VISIBLE);
@@ -1189,6 +1194,7 @@ public class GameFragment
             mImageViewPrevBall.setVisibility(View.INVISIBLE);
             mTextViewNextBall.setVisibility(View.INVISIBLE);
             mTextViewPrevBall.setVisibility(View.INVISIBLE);
+            rootView.findViewById(R.id.fab_container).setVisibility(View.INVISIBLE);
             mHorizontalScrollViewFrames.setVisibility(View.INVISIBLE);
             for (ImageButton imageButton : mImageButtonPins)
                 imageButton.setVisibility(View.INVISIBLE);
