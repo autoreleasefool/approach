@@ -649,19 +649,11 @@ public class GameFragment
         MenuItem menuItem = menu.findItem(R.id.action_stats).setVisible(!drawerOpen);
         Drawable drawable = menuItem.getIcon();
         if (drawable != null)
-        {
-            drawable = drawable.mutate();
-            //noinspection CheckStyle
-            drawable.setAlpha(0x8A);
-        }
+            drawable.setAlpha(DisplayUtils.BLACK_ICON_ALPHA);
         menuItem = menu.findItem(R.id.action_share).setVisible(!drawerOpen);
         drawable = menuItem.getIcon();
         if (drawable != null)
-        {
-            drawable.mutate();
-            //noinspection CheckStyle
-            drawable.setAlpha(0x8A);
-        }
+            drawable.setAlpha(DisplayUtils.BLACK_ICON_ALPHA);
         menu.findItem(R.id.action_series_stats).setVisible(!drawerOpen);
         menu.findItem(R.id.action_reset_game).setVisible(!drawerOpen);
         menu.findItem(R.id.action_set_score).setVisible(!drawerOpen);

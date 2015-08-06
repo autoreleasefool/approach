@@ -43,6 +43,7 @@ import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.dialog.ChangeDateDialog;
 import ca.josephroque.bowlingcompanion.utilities.DataFormatter;
 import ca.josephroque.bowlingcompanion.theme.Theme;
+import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
 import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
 
 /**
@@ -193,11 +194,7 @@ public class SeriesFragment
         MenuItem menuItem = menu.findItem(R.id.action_stats).setVisible(!drawerOpen);
         Drawable drawable = menuItem.getIcon();
         if (drawable != null)
-        {
-            drawable.mutate();
-            //noinspection CheckStyle
-            drawable.setAlpha(0x8A);
-        }
+            drawable.setAlpha(DisplayUtils.BLACK_ICON_ALPHA);
         menu.findItem(R.id.action_combine_series).setVisible(!drawerOpen);
         menu.findItem(R.id.action_edit_date).setVisible(!drawerOpen);
         super.onPrepareOptionsMenu(menu);

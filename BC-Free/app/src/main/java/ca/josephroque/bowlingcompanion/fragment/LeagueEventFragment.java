@@ -44,6 +44,7 @@ import ca.josephroque.bowlingcompanion.database.Contract.LeagueEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.SeriesEntry;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.dialog.NewLeagueEventDialog;
+import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
 import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
 
 /**
@@ -196,11 +197,7 @@ public class LeagueEventFragment
         MenuItem menuItem = menu.findItem(R.id.action_stats).setVisible(!drawerOpen);
         Drawable drawable = menuItem.getIcon();
         if (drawable != null)
-        {
-            drawable.mutate();
-            //noinspection CheckStyle
-            drawable.setAlpha(0x8A);
-        }
+            drawable.setAlpha(DisplayUtils.BLACK_ICON_ALPHA);
         super.onPrepareOptionsMenu(menu);
     }
 

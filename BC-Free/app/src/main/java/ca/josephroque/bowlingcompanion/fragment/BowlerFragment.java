@@ -44,6 +44,7 @@ import ca.josephroque.bowlingcompanion.database.Contract.LeagueEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.SeriesEntry;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.dialog.NewBowlerDialog;
+import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
 import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
 
 /**
@@ -229,12 +230,7 @@ public class BowlerFragment
         MenuItem menuItem = menu.findItem(R.id.action_quick_series).setVisible(!drawerOpen);
         Drawable drawable = menuItem.getIcon();
         if (drawable != null)
-        {
-            drawable.mutate();
-            drawable.setColorFilter(0x000000, PorterDuff.Mode.SRC_ATOP);
-            //noinspection CheckStyle
-            drawable.setAlpha(0x8A);
-        }
+            drawable.setAlpha(DisplayUtils.BLACK_ICON_ALPHA);
         super.onPrepareOptionsMenu(menu);
     }
 
