@@ -75,6 +75,9 @@
 
     <!-- Game Settings -->
     <string name="pref_header_game">Games</string>
+    <string name="pref_enable_fabs_title">Enable floating buttons</string>
+    <string name="pref_enable_fabs_summaryOn">Floating buttons are enabled</string>
+    <string name="pref_enable_fabs_summaryOff">Floating buttons are disabled</string>
     <string name="pref_enable_auto_advance_title">Auto advance frame</string>
     <string name="pref_enable_auto_advance_summaryOn">Frame will auto advance after an interval of inactivity</string>
     <string name="pref_enable_auto_advance_summaryOff">Frame will not auto advance</string>

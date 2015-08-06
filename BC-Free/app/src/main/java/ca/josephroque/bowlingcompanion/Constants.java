@@ -46,6 +46,8 @@ public final class Constants
     public static final String KEY_AUTO_ADVANCE_TIME = "pref_auto_advance_time";
     /** Identifier for preference for if app should ask user to combine similar series. */
     public static final String KEY_ASK_COMBINE = "pref_ask_combine";
+    /** Identifier for preference for if floating buttons should be shown when editing a game. */
+    public static final String KEY_ENABLE_FABS = "pref_enable_fabs";
 
     // PREFERENCES
     /** Identifier for SharedPreferences of app. */

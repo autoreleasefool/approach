@@ -1171,7 +1171,6 @@ public class GameFragment
             mImageViewPrevBall.setVisibility(View.VISIBLE);
             mTextViewNextBall.setVisibility(View.VISIBLE);
             mTextViewPrevBall.setVisibility(View.VISIBLE);
-            rootView.findViewById(R.id.fab_container).setVisibility(View.VISIBLE);
             mHorizontalScrollViewFrames.setVisibility(View.VISIBLE);
             for (ImageButton imageButton : mImageButtonPins)
                 imageButton.setVisibility(View.VISIBLE);
@@ -1186,7 +1185,6 @@ public class GameFragment
             mImageViewPrevBall.setVisibility(View.INVISIBLE);
             mTextViewNextBall.setVisibility(View.INVISIBLE);
             mTextViewPrevBall.setVisibility(View.INVISIBLE);
-            rootView.findViewById(R.id.fab_container).setVisibility(View.INVISIBLE);
             mHorizontalScrollViewFrames.setVisibility(View.INVISIBLE);
             for (ImageButton imageButton : mImageButtonPins)
                 imageButton.setVisibility(View.INVISIBLE);
@@ -1195,6 +1193,12 @@ public class GameFragment
             mImageViewFoul.setVisibility(View.INVISIBLE);
             mImageViewResetFrame.setVisibility(View.INVISIBLE);
         }
+
+        rootView.findViewById(R.id.fab_container).setVisibility(
+                (!PreferenceManager.getDefaultSharedPreferences(getActivity())
+                        .getBoolean(Constants.KEY_ENABLE_FABS, true) && enabled)
+                        ? View.VISIBLE
+                        : View.INVISIBLE);
 
         mImageViewLock.setImageResource((mGameLocked[mCurrentGame])
                 ? R.drawable.ic_lock
