@@ -333,7 +333,11 @@ public class StatsGraphFragment
                             listLabels);
                     break;
                 case StatUtils.STAT_CATEGORY_FIRST_BALL:
-                    compileFirstBallStats(fragment, cursor, listSuccessEntries, listLabels);
+                    compileFirstBallStats(fragment,
+                            cursor,
+                            listChanceEntries,
+                            listSuccessEntries,
+                            listLabels);
                     break;
                 case StatUtils.STAT_CATEGORY_FOULS:
                     compileFoulStats(fragment, cursor, listSuccessEntries, listLabels);
@@ -550,21 +554,16 @@ public class StatsGraphFragment
          *
          * @param fragment parent fragment
          * @param cursor bowler / league data
-         * @param listEntries list of data entries
+         * @param listChanceEntries list of data entries for chances at increasing a stat
+         * @param listSuccessEntries list of data entries for achieved stat values
          * @param listLabels list of labels for x axis
          */
         private void compileFirstBallStats(StatsGraphFragment fragment,
                                            Cursor cursor,
-                                           List<Entry> listEntries,
+                                           List<Entry> listChanceEntries,
+                                           List<Entry> listSuccessEntries,
                                            List<String> listLabels)
         {
-            if (cursor.moveToFirst())
-            {
-                while (!cursor.isAfterLast())
-                {
-                    cursor.moveToNext();
-                }
-            }
         }
 
         /**
@@ -580,12 +579,70 @@ public class StatsGraphFragment
                                       List<Entry> listEntries,
                                       List<String> listLabels)
         {
+            Calendar lastEntryDate = null;
+            Calendar lastLabelDate = null;
+            Calendar currentDate = null;
+            DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locale.CANADA);
+            boolean addLabelOnDateChange = false;
+            int totalFouls = 0;
+
+            int currentEntry = 0;
             if (cursor.moveToFirst())
             {
                 while (!cursor.isAfterLast())
                 {
+                    Date entryDate = DateUtils.parseEntryDate(cursor.getString(
+                            cursor.getColumnIndex(SeriesEntry.COLUMN_SERIES_DATE)));
+                    if (entryDate == null)
+                        return;
+
+                    currentDate = DateUtils.getCalendarAtMidnight(entryDate);
+
+                    if (addLabelOnDateChange
+                            && currentDate.getTimeInMillis() != lastEntryDate.getTimeInMillis())
+                    {
+                        addLabelOnDateChange = false;
+                        lastLabelDate = lastEntryDate;
+                        listEntries.add(new Entry(totalFouls, currentEntry));
+                        listLabels.add(dateFormat.format(lastEntryDate.getTime()));
+                        currentEntry++;
+
+                        if (!fragment.mStatAccumulate)
+                            totalFouls = 0;
+                    }
+
+                    if (lastLabelDate == null
+                            || lastLabelDate.getTimeInMillis()
+                            <= currentDate.getTimeInMillis() + DateUtils.MILLIS_ONE_WEEK)
+                        addLabelOnDateChange = true;
+                    lastEntryDate = currentDate;
+
+                    boolean gameIsManual = (cursor.getInt(cursor.getColumnIndex(
+                            Contract.GameEntry.COLUMN_IS_MANUAL)) == 1);
+                    if (gameIsManual)
+                    {
+                        cursor.moveToNext();
+                        continue;
+                    }
+
+                    String frameFouls = Score.foulIntToString(cursor.getInt(cursor.getColumnIndex(
+                            Contract.FrameEntry.COLUMN_FOULS)));
+                    //noinspection CheckStyle
+                    for (byte i = 1; i <= 3; i++)
+                    {
+                        if (frameFouls.contains(String.valueOf(i)))
+                            totalFouls++;
+                    }
+
                     cursor.moveToNext();
                 }
+            }
+
+            if (lastEntryDate != null && (lastLabelDate == null
+                    || currentDate.getTimeInMillis() != lastLabelDate.getTimeInMillis()))
+            {
+                listEntries.add(new Entry(totalFouls, currentEntry));
+                listLabels.add(dateFormat.format(lastEntryDate.getTime()));
             }
         }
 
