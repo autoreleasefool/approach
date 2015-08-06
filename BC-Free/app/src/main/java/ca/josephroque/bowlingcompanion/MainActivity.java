@@ -573,7 +573,10 @@ public class MainActivity
     {
         mSeriesId = series.getSeriesId();
         mSeriesDate = series.getSeriesDate();
-        mNumberOfGamesForSeries = series.getNumberOfGames();
+        if (!isEvent)
+            mNumberOfGamesForSeries = series.getNumberOfGames();
+        else
+            mNumberOfGamesForSeries = mDefaultNumberOfGames;
 
         new OpenSeriesTask(MainActivity.this).execute(isEvent);
     }
