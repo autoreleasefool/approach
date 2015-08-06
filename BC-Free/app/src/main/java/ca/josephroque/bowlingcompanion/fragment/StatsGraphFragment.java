@@ -681,12 +681,74 @@ public class StatsGraphFragment
                                          List<Entry> listEntries,
                                          List<String> listLabels)
         {
+            Calendar lastEntryDate = null;
+            Calendar lastLabelDate = null;
+            Calendar currentDate = null;
+            DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locale.CANADA);
+            boolean addLabelOnDateChange = false;
+            int numberOfGames = 0, totalPinfall = 0;
+
+            int currentEntry = 0;
             if (cursor.moveToFirst())
             {
                 while (!cursor.isAfterLast())
                 {
+                    Date entryDate = DateUtils.parseEntryDate(cursor.getString(
+                            cursor.getColumnIndex(SeriesEntry.COLUMN_SERIES_DATE)));
+                    if (entryDate == null)
+                        return;
+
+                    currentDate = DateUtils.getCalendarAtMidnight(entryDate);
+
+                    if (addLabelOnDateChange
+                            && currentDate.getTimeInMillis() != lastEntryDate.getTimeInMillis())
+                    {
+                        addLabelOnDateChange = false;
+                        lastLabelDate = lastEntryDate;
+                        if (numberOfGames > 0)
+                            listEntries.add(new Entry(totalPinfall / numberOfGames, currentEntry));
+                        else
+                            listEntries.add(new Entry(0, currentEntry));
+                        listLabels.add(dateFormat.format(lastEntryDate.getTime()));
+                        currentEntry++;
+
+                        if (!fragment.mStatAccumulate)
+                        {
+                            numberOfGames = 0;
+                            totalPinfall = 0;
+                        }
+                    }
+
+                    if (lastLabelDate == null
+                            || lastLabelDate.getTimeInMillis()
+                            <= currentDate.getTimeInMillis() + DateUtils.MILLIS_ONE_WEEK)
+                        addLabelOnDateChange = true;
+                    lastEntryDate = currentDate;
+
+                    int gameNumber = cursor.getInt(cursor.getColumnIndex(
+                            GameEntry.COLUMN_GAME_NUMBER));
+
+                    if (gameNumber - 1 == fragment.mStatIndex)
+                    {
+                        short gameScore = cursor.getShort(cursor.getColumnIndex(
+                                GameEntry.COLUMN_SCORE));
+
+                        numberOfGames++;
+                        totalPinfall += gameScore;
+                    }
+
                     cursor.moveToNext();
                 }
+            }
+
+            if (lastEntryDate != null && (lastLabelDate == null
+                    || currentDate.getTimeInMillis() != lastLabelDate.getTimeInMillis()))
+            {
+                if (numberOfGames > 0)
+                    listEntries.add(new Entry(totalPinfall / numberOfGames, currentEntry));
+                else
+                    listEntries.add(new Entry(0, currentEntry));
+                listLabels.add(dateFormat.format(lastEntryDate.getTime()));
             }
         }
 
