@@ -349,7 +349,11 @@ public class StatsGraphFragment
                     compileAverageStats(fragment, cursor, listSuccessEntries, listLabels);
                     break;
                 case StatUtils.STAT_CATEGORY_MATCH_PLAY:
-                    compileMatchPlayStats(fragment, cursor, listSuccessEntries, listLabels);
+                    compileMatchPlayStats(fragment,
+                            cursor,
+                            listChanceEntries,
+                            listSuccessEntries,
+                            listLabels);
                     break;
                 case StatUtils.STAT_CATEGORY_OVERALL:
                     compileOverallStats(fragment, cursor, listSuccessEntries, listLabels);
@@ -757,20 +761,85 @@ public class StatsGraphFragment
          *
          * @param fragment parent fragment
          * @param cursor bowler / league data
-         * @param listEntries list of data entries
+         * @param listChanceEntries list of data entries for chances at increasing a stat
+         * @param listSuccessEntries list of data entries for achieved stat values
          * @param listLabels list of labels for x axis
          */
         private void compileMatchPlayStats(StatsGraphFragment fragment,
                                            Cursor cursor,
-                                           List<Entry> listEntries,
+                                           List<Entry> listChanceEntries,
+                                           List<Entry> listSuccessEntries,
                                            List<String> listLabels)
         {
+            Calendar lastEntryDate = null;
+            Calendar lastLabelDate = null;
+            Calendar currentDate = null;
+            DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locale.CANADA);
+            boolean addLabelOnDateChange = false;
+            int matchResults = 0, totalMatchPlayGames = 0;
+
+            int currentEntry = 0;
             if (cursor.moveToFirst())
             {
                 while (!cursor.isAfterLast())
                 {
+                    Date entryDate = DateUtils.parseEntryDate(cursor.getString(
+                            cursor.getColumnIndex(SeriesEntry.COLUMN_SERIES_DATE)));
+                    if (entryDate == null)
+                        return;
+
+                    currentDate = DateUtils.getCalendarAtMidnight(entryDate);
+
+                    if (addLabelOnDateChange
+                            && currentDate.getTimeInMillis() != lastEntryDate.getTimeInMillis())
+                    {
+                        addLabelOnDateChange = false;
+                        lastLabelDate = lastEntryDate;
+                        if (totalMatchPlayGames > 0)
+                            listSuccessEntries.add(new Entry(matchResults / totalMatchPlayGames,
+                                    currentEntry));
+                        else
+                            listSuccessEntries.add(new Entry(0, currentEntry));
+                        listChanceEntries.add(new Entry(totalMatchPlayGames, currentEntry));
+                        listLabels.add(dateFormat.format(lastEntryDate.getTime()));
+                        currentEntry++;
+
+                        if (!fragment.mStatAccumulate)
+                        {
+                            matchResults = 0;
+                            totalMatchPlayGames = 0;
+                        }
+                    }
+
+                    if (lastLabelDate == null
+                            || lastLabelDate.getTimeInMillis()
+                            <= currentDate.getTimeInMillis() + DateUtils.MILLIS_ONE_WEEK)
+                        addLabelOnDateChange = true;
+                    lastEntryDate = currentDate;
+
+                    int matchPlay
+                            = cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_MATCH_PLAY));
+                    if (matchPlay > 0)
+                    {
+                        totalMatchPlayGames++;
+                        if (matchPlay - 1 == fragment.mStatIndex)
+                            matchResults++;
+                    }
+
                     cursor.moveToNext();
                 }
+            }
+
+            if (lastEntryDate != null && (lastLabelDate == null
+                    || currentDate.getTimeInMillis() != lastLabelDate.getTimeInMillis()))
+            {
+                if (totalMatchPlayGames > 0)
+                    listSuccessEntries.add(new Entry(matchResults / totalMatchPlayGames,
+                            currentEntry));
+                else
+                    listSuccessEntries.add(new Entry(0, currentEntry));
+                listChanceEntries.add(new Entry(totalMatchPlayGames, currentEntry));
+                listLabels.add(dateFormat.format(lastEntryDate.getTime()));
             }
         }
 
