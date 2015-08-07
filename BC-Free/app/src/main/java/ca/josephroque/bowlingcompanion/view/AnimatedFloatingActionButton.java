@@ -22,6 +22,9 @@ public class AnimatedFloatingActionButton
         extends FloatingActionButton
 {
 
+    /** Identifies output from this class in Logcat. */
+    @SuppressWarnings("unused")
+    private static final String TAG = "AnimatedFab";
 
     /** Current icon of the floating action button. */
     private int mCurrentFabIcon = 0;

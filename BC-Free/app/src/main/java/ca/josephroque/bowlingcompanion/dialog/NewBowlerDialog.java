@@ -24,7 +24,7 @@ public class NewBowlerDialog
 
     /** Identifies output from this class in Logcat. */
     @SuppressWarnings("unused")
-    private static final String TAG = "";
+    private static final String TAG = "NewBowlerDialog";
 
     /** Instance of listener which contains methods that are executed upon user interaction. */
     private NewBowlerDialogListener mDialogListener;

@@ -33,7 +33,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -1443,7 +1442,6 @@ public class MainActivity
             mDrawerToggle.setDrawerIndicatorEnabled(false);
             mDrawerToggle.syncState();
         }
-        Log.i(TAG, "isEnabled: " + isEnabled);
     }
 
     /**
@@ -1454,13 +1452,8 @@ public class MainActivity
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         if (!preferences.getBoolean(NavigationUtils.NAVIGATION_DRAWER_LEARNED, false))
         {
-            Log.i(TAG, "Opening drawer");
             mDrawerLayout.openDrawer(GravityCompat.START);
             preferences.edit().putBoolean(NavigationUtils.NAVIGATION_DRAWER_LEARNED, true).apply();
-        }
-        else
-        {
-            Log.i(TAG, "Not opening drawer");
         }
     }
 

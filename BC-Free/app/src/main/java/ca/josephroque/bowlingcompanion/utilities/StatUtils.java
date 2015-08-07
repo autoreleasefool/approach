@@ -7,6 +7,10 @@ package ca.josephroque.bowlingcompanion.utilities;
 public final class StatUtils
 {
 
+    /** Identifies output from this class in Logcat. */
+    @SuppressWarnings("unused")
+    private static final String TAG = "StatUtils";
+
     /** Indicates all the stats related to the specified bowler should be loaded. */
     public static final byte LOADING_BOWLER_STATS = 0;
     /** Indicates all the stats related to the specified league should be loaded. */
@@ -29,40 +33,40 @@ public final class StatUtils
     public static final byte STAT_CATEGORY_FIRST_BALL = 1;
     /** Indicates index for stat in array. */
     public static final byte STAT_HEAD_PINS = 0;
-    /** Indicates index for stat in array. */
-    public static final byte STAT_HEAD_PINS_SPARED = 1;
+    /* Indicates index for stat in array. */
+    //public static final byte STAT_HEAD_PINS_SPARED = 1;
     /** Indicates index for stat in array. */
     public static final byte STAT_LEFT = 2;
-    /** Indicates index for stat in array. */
-    public static final byte STAT_LEFT_SPARED = 3;
+    /* Indicates index for stat in array. */
+    //public static final byte STAT_LEFT_SPARED = 3;
     /** Indicates index for stat in array. */
     public static final byte STAT_RIGHT = 4;
-    /** Indicates index for stat in array. */
-    public static final byte STAT_RIGHT_SPARED = 5;
+    /* Indicates index for stat in array. */
+    //public static final byte STAT_RIGHT_SPARED = 5;
     /** Indicates index for stat in array. */
     public static final byte STAT_ACES = 6;
-    /** Indicates index for stat in array. */
-    public static final byte STAT_ACES_SPARED = 7;
+    /* Indicates index for stat in array. */
+    //public static final byte STAT_ACES_SPARED = 7;
     /** Indicates index for stat in array. */
     public static final byte STAT_CHOP = 8;
-    /** Indicates index for stat in array. */
-    public static final byte STAT_CHOP_SPARED = 9;
+    /* Indicates index for stat in array. */
+    //public static final byte STAT_CHOP_SPARED = 9;
     /** Indicates index for stat in array. */
     public static final byte STAT_LEFT_CHOP = 10;
-    /** Indicates index for stat in array. */
-    public static final byte STAT_LEFT_CHOP_SPARED = 11;
+    /* Indicates index for stat in array. */
+    //public static final byte STAT_LEFT_CHOP_SPARED = 11;
     /** Indicates index for stat in array. */
     public static final byte STAT_RIGHT_CHOP = 12;
-    /** Indicates index for stat in array. */
-    public static final byte STAT_RIGHT_CHOP_SPARED = 13;
+    /* Indicates index for stat in array. */
+    //public static final byte STAT_RIGHT_CHOP_SPARED = 13;
     /** Indicates index for stat in array. */
     public static final byte STAT_SPLIT = 14;
-    /** Indicates index for stat in array. */
-    public static final byte STAT_SPLIT_SPARED = 15;
+    /* Indicates index for stat in array. */
+    //public static final byte STAT_SPLIT_SPARED = 15;
     /** Indicates index for stat in array. */
     public static final byte STAT_LEFT_SPLIT = 16;
-    /** Indicates index for stat in array. */
-    public static final byte STAT_LEFT_SPLIT_SPARED = 17;
+    /* Indicates index for stat in array. */
+    //public static final byte STAT_LEFT_SPLIT_SPARED = 17;
     /** Indicates index for stat in array. */
     public static final byte STAT_RIGHT_SPLIT = 18;
     /** Indicates index for stat in array. */

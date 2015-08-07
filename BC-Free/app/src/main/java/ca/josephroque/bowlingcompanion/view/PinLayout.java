@@ -13,6 +13,10 @@ public class PinLayout
         extends LinearLayout
 {
 
+    /** Identifies output from this class in Logcat. */
+    @SuppressWarnings("unused")
+    private static final String TAG = "PinLayout";
+
     /** Instance of the touch listener interface. */
     private PinInterceptListener mListener;
 
