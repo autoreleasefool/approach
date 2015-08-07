@@ -2,16 +2,16 @@ package ca.josephroque.bowlingcompanion.adapter;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseExpandableListAdapter;
 import android.widget.TextView;
 
-import java.util.AbstractMap;
 import java.util.List;
 
 import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.theme.Theme;
+import ca.josephroque.bowlingcompanion.view.AnimatedExpandableListView;
 
 /**
  * Created by Joseph Roque on 15-04-03. Manages statistic group headers, names and their
@@ -19,7 +19,7 @@ import ca.josephroque.bowlingcompanion.theme.Theme;
  * NameAverageAdapter.NameAverageEventHandler} to handle interaction events.
  */
 public class StatsExpandableAdapter
-        extends BaseExpandableListAdapter
+        extends AnimatedExpandableListView.AnimatedExpandableListAdapter
         implements Theme.ChangeableTheme
 {
 
@@ -32,8 +32,8 @@ public class StatsExpandableAdapter
 
     /** List of group headers. */
     private List<String> mListStatHeaders;
-    /** List of list of map entries which hold a name and a value, for each group. */
-    private List<List<AbstractMap.SimpleEntry<String, String>>> mListStatNamesAndValues;
+    /** List of list of pairs which hold a name and a value, for each group. */
+    private List<List<Pair<String, String>>> mListStatNamesAndValues;
 
     /**
      * Assigns member variables to parameters.
@@ -44,8 +44,7 @@ public class StatsExpandableAdapter
      */
     public StatsExpandableAdapter(Context context,
                                   List<String> listHeaders,
-                                  List<List<AbstractMap.SimpleEntry<String, String>>>
-                                          listNamesAndValues)
+                                  List<List<Pair<String, String>>> listNamesAndValues)
     {
         this.mContext = context;
         this.mListStatHeaders = listHeaders;
@@ -53,7 +52,7 @@ public class StatsExpandableAdapter
     }
 
     @Override
-    public Object getChild(int groupPosition, int childPosition)
+    public Pair<String, String> getChild(int groupPosition, int childPosition)
     {
         return mListStatNamesAndValues.get(groupPosition).get(childPosition);
     }
@@ -67,14 +66,13 @@ public class StatsExpandableAdapter
     @SuppressWarnings("unchecked")
     //getChild guaranteed to return AbstractMap.SimpleEntry<String, String>
     @Override
-    public View getChildView(int groupPosition,
+    public View getRealChildView(int groupPosition,
                              int childPosition,
                              boolean isLastChild,
                              View convertView,
                              ViewGroup parent)
     {
-        final AbstractMap.SimpleEntry<String, String> childNameAndValue =
-                (AbstractMap.SimpleEntry<String, String>) getChild(groupPosition, childPosition);
+        final Pair<String, String> childNameAndValue = getChild(groupPosition, childPosition);
 
         StatViewHolder viewHolder;
         if (convertView == null)
@@ -90,24 +88,20 @@ public class StatsExpandableAdapter
             viewHolder = (StatViewHolder) convertView.getTag();
         }
 
-        final int blackFontColor = mContext.getResources().getColor(android.R.color.black);
-
-        viewHolder.mTextViewStatName.setText(childNameAndValue.getKey());
-        viewHolder.mTextViewStatName.setTextColor(blackFontColor);
-        viewHolder.mTextViewStatValue.setText(childNameAndValue.getValue());
-        viewHolder.mTextViewStatValue.setTextColor(blackFontColor);
+        viewHolder.mTextViewStatName.setText(childNameAndValue.first);
+        viewHolder.mTextViewStatValue.setText(childNameAndValue.second);
 
         return convertView;
     }
 
     @Override
-    public int getChildrenCount(int groupPosition)
+    public int getRealChildrenCount(int groupPosition)
     {
         return mListStatNamesAndValues.get(groupPosition).size();
     }
 
     @Override
-    public Object getGroup(int groupPosition)
+    public String getGroup(int groupPosition)
     {
         return mListStatHeaders.get(groupPosition);
     }
@@ -130,7 +124,7 @@ public class StatsExpandableAdapter
                              View convertView,
                              ViewGroup parent)
     {
-        String headerTitle = getGroup(groupPosition).toString();
+        String headerTitle = getGroup(groupPosition);
 
         HeaderViewHolder viewHolder;
         if (convertView == null)
@@ -147,8 +141,6 @@ public class StatsExpandableAdapter
         }
 
         viewHolder.mTextViewHeader.setText(headerTitle);
-        //noinspection CheckStyle
-        viewHolder.mTextViewHeader.setTextColor(0xff000000);
         viewHolder.mTextViewHeader.setTypeface(null, Typeface.BOLD);
         viewHolder.mBackgroundView.setBackgroundColor(Theme.getSecondaryThemeColor());
 
@@ -158,7 +150,7 @@ public class StatsExpandableAdapter
     @Override
     public boolean hasStableIds()
     {
-        return false;
+        return true;
     }
 
     @Override

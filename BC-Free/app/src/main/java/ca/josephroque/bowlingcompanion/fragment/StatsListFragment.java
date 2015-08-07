@@ -1,6 +1,5 @@
 package ca.josephroque.bowlingcompanion.fragment;
 
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
@@ -10,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +17,6 @@ import android.widget.ExpandableListView;
 
 import java.lang.ref.WeakReference;
 import java.text.DecimalFormat;
-import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -32,6 +31,7 @@ import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
 import ca.josephroque.bowlingcompanion.utilities.Score;
 import ca.josephroque.bowlingcompanion.utilities.StatUtils;
+import ca.josephroque.bowlingcompanion.view.AnimatedExpandableListView;
 
 /**
  * Created by Joseph Roque on 15-07-20. Manages the UI to display information about the stats in a
@@ -40,7 +40,6 @@ import ca.josephroque.bowlingcompanion.utilities.StatUtils;
 public class StatsListFragment
         extends Fragment
         implements Theme.ChangeableTheme,
-        ExpandableListView.OnChildClickListener,
         FloatingActionButtonHandler
 {
 
@@ -73,7 +72,7 @@ public class StatsListFragment
     /** List of group headers. */
     private List<String> mListStatHeaders;
     /** List of list of map entries which hold a name and a value, for each group. */
-    private List<List<AbstractMap.SimpleEntry<String, String>>> mListStatNamesAndValues;
+    private List<List<Pair<String, String>>> mListStatNamesAndValues;
 
     /**
      * Creates a new instance of {@code StatsListFragment} with the parameters provided.
@@ -99,9 +98,53 @@ public class StatsListFragment
         mAdapterStats = new StatsExpandableAdapter(getActivity(), mListStatHeaders,
                 mListStatNamesAndValues);
 
-        ExpandableListView listView = (ExpandableListView) rootView.findViewById(R.id.elv_stats);
-        listView.setOnChildClickListener(this);
+        final AnimatedExpandableListView listView
+                = (AnimatedExpandableListView) rootView.findViewById(R.id.elv_stats);
         listView.setAdapter(mAdapterStats);
+
+        listView.setOnChildClickListener(new ExpandableListView.OnChildClickListener()
+        {
+            @Override
+            public boolean onChildClick(
+                    ExpandableListView parent,
+                    View v,
+                    int groupPosition,
+                    int childPosition,
+                    long id)
+            {
+                if (mStatsToLoad != StatUtils.LOADING_BOWLER_STATS
+                        && mStatsToLoad != StatUtils.LOADING_LEAGUE_STATS)
+                    return true;
+
+                if (groupPosition == 0 && childPosition - mNumberOfGeneralDetails >= 0)
+                    openStatGraph(groupPosition, childPosition - mNumberOfGeneralDetails);
+                else if (groupPosition > 0)
+                    openStatGraph(groupPosition, childPosition);
+
+                return true;
+            }
+        });
+
+        listView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener()
+        {
+            @Override
+            public boolean onGroupClick(
+                    ExpandableListView parent,
+                    View v,
+                    int groupPosition,
+                    long id)
+            {
+                // We call collapseGroupWithAnimation(int) and
+                // expandGroupWithAnimation(int) to animate group
+                // expansion/collapse.
+                if (listView.isGroupExpanded(groupPosition))
+                    listView.collapseGroupWithAnimation(groupPosition);
+                else
+                    listView.expandGroupWithAnimation(groupPosition);
+
+                return true;
+            }
+        });
 
         return rootView;
     }
@@ -161,30 +204,6 @@ public class StatsListFragment
     }
 
     @Override
-    public boolean onChildClick(ExpandableListView parent,
-                                View v,
-                                int groupPosition,
-                                int childPosition,
-                                long id)
-    {
-        if (mStatsToLoad != StatUtils.LOADING_BOWLER_STATS
-                && mStatsToLoad != StatUtils.LOADING_LEAGUE_STATS)
-            return true;
-
-        if (groupPosition == 0)
-        {
-            if (childPosition - mNumberOfGeneralDetails >= 0)
-                openStatGraph(groupPosition, childPosition - mNumberOfGeneralDetails);
-        }
-        else
-        {
-            openStatGraph(groupPosition, childPosition);
-        }
-
-        return true;
-    }
-
-    @Override
     public void onFabClick()
     {
         if (mStatsToLoad == StatUtils.LOADING_BOWLER_STATS
@@ -225,22 +244,20 @@ public class StatsListFragment
     private void prepareListData(MainActivity mainActivity,
                                  byte statsToLoad,
                                  List<String> headers,
-                                 List<List<AbstractMap.SimpleEntry<String,
-                                         String>>> namesAndValues)
+                                 List<List<Pair<String, String>>> namesAndValues)
     {
         //Stat names which could possibly be displayed, depending on stats being loaded
 
         headers.add("General");
-        namesAndValues.add(new ArrayList<AbstractMap.SimpleEntry<String, String>>());
+        namesAndValues.add(new ArrayList<Pair<String, String>>());
         mStatsGeneral = 0;
-        namesAndValues.get(mStatsGeneral).add(
-                new AbstractMap.SimpleEntry<>("Bowler", mainActivity.getBowlerName()));
+        namesAndValues.get(mStatsGeneral).add(Pair.create("Bowler", mainActivity.getBowlerName()));
         int i = 0;
         while (true)
         {
             try
             {
-                namesAndValues.get(mStatsGeneral).add(new AbstractMap.SimpleEntry<>(
+                namesAndValues.get(mStatsGeneral).add(Pair.create(
                         StatUtils.getStatName(StatUtils.STAT_CATEGORY_GENERAL, i, false), "--"));
             }
             catch (IllegalArgumentException ex)
@@ -251,14 +268,14 @@ public class StatsListFragment
         }
 
         headers.add("First Ball");
-        namesAndValues.add(new ArrayList<AbstractMap.SimpleEntry<String, String>>());
+        namesAndValues.add(new ArrayList<Pair<String, String>>());
         mStatsFirstBall = 1;
         i = 0;
         while (true)
         {
             try
             {
-                namesAndValues.get(mStatsFirstBall).add(new AbstractMap.SimpleEntry<>(
+                namesAndValues.get(mStatsFirstBall).add(Pair.create(
                         StatUtils.getStatName(StatUtils.STAT_CATEGORY_FIRST_BALL, i, false), "--"));
             }
             catch (IllegalArgumentException ex)
@@ -269,14 +286,14 @@ public class StatsListFragment
         }
 
         headers.add("Fouls");
-        namesAndValues.add(new ArrayList<AbstractMap.SimpleEntry<String, String>>());
+        namesAndValues.add(new ArrayList<Pair<String, String>>());
         mStatsFouls = 2;
         i = 0;
         while (true)
         {
             try
             {
-                namesAndValues.get(mStatsFouls).add(new AbstractMap.SimpleEntry<>(
+                namesAndValues.get(mStatsFouls).add(Pair.create(
                         StatUtils.getStatName(StatUtils.STAT_CATEGORY_FOULS, i, false), "--"));
             }
             catch (IllegalArgumentException ex)
@@ -287,15 +304,15 @@ public class StatsListFragment
         }
 
         headers.add("Pins Left on Deck");
-        namesAndValues.add(new ArrayList<AbstractMap.SimpleEntry<String, String>>());
+        namesAndValues.add(new ArrayList<Pair<String, String>>());
         mStatsPins = 3;
-        namesAndValues.get(mStatsPins).add(new AbstractMap.SimpleEntry<>(StatUtils.getStatName(
+        namesAndValues.get(mStatsPins).add(Pair.create(StatUtils.getStatName(
                 StatUtils.STAT_CATEGORY_PINS, StatUtils.STAT_PINS_LEFT, false), "--"));
 
         if (statsToLoad < StatUtils.LOADING_SERIES_STATS)
         {
             headers.add("Average by Game");
-            namesAndValues.add(new ArrayList<AbstractMap.SimpleEntry<String, String>>());
+            namesAndValues.add(new ArrayList<Pair<String, String>>());
             mStatsGameAverage = 4;
             final byte numberOfGames = (statsToLoad >= StatUtils.LOADING_LEAGUE_STATS
                     ? ((mainActivity.getLeagueName().substring(1)
@@ -304,18 +321,17 @@ public class StatsListFragment
                     : mainActivity.getDefaultNumberOfGames())
                     : 20);
             for (i = 0; i < numberOfGames; i++)
-                namesAndValues.get(mStatsGameAverage).add(
-                        new AbstractMap.SimpleEntry<>(StatUtils.getStatName(
-                                StatUtils.STAT_CATEGORY_AVERAGE_BY_GAME, i, false), "--"));
+                namesAndValues.get(mStatsGameAverage).add(Pair.create(StatUtils.getStatName(
+                        StatUtils.STAT_CATEGORY_AVERAGE_BY_GAME, i, false), "--"));
         }
 
         if (statsToLoad < StatUtils.LOADING_GAME_STATS)
         {
-            namesAndValues.get(mStatsPins).add(new AbstractMap.SimpleEntry<>(StatUtils.getStatName(
+            namesAndValues.get(mStatsPins).add(Pair.create(StatUtils.getStatName(
                     StatUtils.STAT_CATEGORY_PINS, StatUtils.STAT_PINS_AVERAGE, false), "--"));
 
             headers.add("Match Play");
-            namesAndValues.add(new ArrayList<AbstractMap.SimpleEntry<String, String>>());
+            namesAndValues.add(new ArrayList<Pair<String, String>>());
             mStatsMatch = (byte) (mStatsGameAverage == -1
                     ? 4
                     : 5);
@@ -324,7 +340,7 @@ public class StatsListFragment
             {
                 try
                 {
-                    namesAndValues.get(mStatsMatch).add(new AbstractMap.SimpleEntry<>(
+                    namesAndValues.get(mStatsMatch).add(Pair.create(
                             StatUtils.getStatName(StatUtils.STAT_CATEGORY_MATCH_PLAY, i, false),
                             "--"));
                 }
@@ -336,14 +352,14 @@ public class StatsListFragment
             }
 
             headers.add("Overall");
-            namesAndValues.add(new ArrayList<AbstractMap.SimpleEntry<String, String>>());
+            namesAndValues.add(new ArrayList<Pair<String, String>>());
             mStatsOverall = (byte) (mStatsMatch + 1);
             i = 0;
             while (true)
             {
                 try
                 {
-                    namesAndValues.get(mStatsOverall).add(new AbstractMap.SimpleEntry<>(
+                    namesAndValues.get(mStatsOverall).add(Pair.create(
                             StatUtils.getStatName(StatUtils.STAT_CATEGORY_OVERALL, i, false),
                             "--"));
                 }
@@ -405,8 +421,7 @@ public class StatsListFragment
             Cursor cursor;
             int[][] statValues;
             List<String> listStatHeaders = new ArrayList<>();
-            List<List<AbstractMap.SimpleEntry<String, String>>> listStatNamesAndValues =
-                    new ArrayList<>();
+            List<List<Pair<String, String>>> listStatNamesAndValues = new ArrayList<>();
 
             fragment.prepareListData(mainActivity, toLoad, listStatHeaders, listStatNamesAndValues);
             statValues = new int[listStatHeaders.size()][];
@@ -422,29 +437,25 @@ public class StatsListFragment
                 case StatUtils.LOADING_LEAGUE_STATS:
                     fragment.mNumberOfGeneralDetails = 2;
                     listStatNamesAndValues.get(fragment.mStatsGeneral).add(1,
-                            new AbstractMap.SimpleEntry<>("League/Event",
-                                    mainActivity.getLeagueName().substring(1)));
+                            Pair.create("League/Event", mainActivity.getLeagueName().substring(1)));
                     cursor = fragment.getBowlerOrLeagueCursor(true);
                     break;
                 case StatUtils.LOADING_SERIES_STATS:
                     fragment.mNumberOfGeneralDetails = 3;
                     listStatNamesAndValues.get(fragment.mStatsGeneral).add(1,
-                            new AbstractMap.SimpleEntry<>("League/Event",
-                                    mainActivity.getLeagueName()));
+                            Pair.create("League/Event", mainActivity.getLeagueName()));
                     listStatNamesAndValues.get(fragment.mStatsGeneral).add(2,
-                            new AbstractMap.SimpleEntry<>("Date", mainActivity.getSeriesDate()));
+                            Pair.create("Date", mainActivity.getSeriesDate()));
                     cursor = fragment.getSeriesCursor();
                     break;
                 case StatUtils.LOADING_GAME_STATS:
                     fragment.mNumberOfGeneralDetails = 4;
                     listStatNamesAndValues.get(fragment.mStatsGeneral).add(1,
-                            new AbstractMap.SimpleEntry<>("League/Event",
-                                    mainActivity.getLeagueName()));
+                            Pair.create("League/Event", mainActivity.getLeagueName()));
                     listStatNamesAndValues.get(fragment.mStatsGeneral).add(2,
-                            new AbstractMap.SimpleEntry<>("Date", mainActivity.getSeriesDate()));
+                            Pair.create("Date", mainActivity.getSeriesDate()));
                     listStatNamesAndValues.get(fragment.mStatsGeneral).add(3,
-                            new AbstractMap.SimpleEntry<>("Game #",
-                                    String.valueOf(mainActivity.getGameNumber())));
+                            Pair.create("Game #", String.valueOf(mainActivity.getGameNumber())));
                     cursor = fragment.getGameCursor();
                     break;
                 default:
@@ -679,7 +690,7 @@ public class StatsListFragment
 
             fragment.mListStatHeaders.addAll((List<String>) lists[0]);
             fragment.mListStatNamesAndValues.addAll(
-                    (List<List<AbstractMap.SimpleEntry<String, String>>>) lists[1]);
+                    (List<List<Pair<String, String>>>) lists[1]);
             fragment.mAdapterStats.notifyDataSetChanged();
 
             MainActivity mainActivity = (MainActivity) fragment.getActivity();
@@ -701,7 +712,7 @@ public class StatsListFragment
      */
     @SuppressWarnings("CheckStyle")
     private void setGeneralAndDetailedStatValues(
-            List<List<AbstractMap.SimpleEntry<String, String>>> listStatNamesAndValues,
+            List<List<Pair<String, String>>> listStatNamesAndValues,
             int[][] statValues, int totalShotsAtMiddle, int spareChances, int statOffset,
             byte toLoad)
     {
@@ -709,29 +720,32 @@ public class StatsListFragment
         final DecimalFormat decimalFormat = new DecimalFormat("##0.#");
         if (statValues[mStatsGeneral][StatUtils.STAT_MIDDLE_HIT] > 0)
         {
-            listStatNamesAndValues.get(mStatsGeneral).get(currentStatPosition).setValue(
+            listStatNamesAndValues.get(mStatsGeneral).set(currentStatPosition, Pair.create(
+                    listStatNamesAndValues.get(mStatsGeneral).get(currentStatPosition).first,
                     decimalFormat.format(statValues[mStatsGeneral][StatUtils.STAT_MIDDLE_HIT]
                             / (double) totalShotsAtMiddle * 100)
                             + "% [" + statValues[mStatsGeneral][StatUtils.STAT_MIDDLE_HIT] + "/"
-                            + totalShotsAtMiddle + "]");
+                            + totalShotsAtMiddle + "]"));
         }
         currentStatPosition++;
         if (statValues[mStatsGeneral][StatUtils.STAT_STRIKES] > 0)
         {
-            listStatNamesAndValues.get(mStatsGeneral).get(currentStatPosition).setValue(
+            listStatNamesAndValues.get(mStatsGeneral).set(currentStatPosition, Pair.create(
+                    listStatNamesAndValues.get(mStatsGeneral).get(currentStatPosition).first,
                     decimalFormat.format(statValues[mStatsGeneral][StatUtils.STAT_STRIKES]
                             / (double) totalShotsAtMiddle * 100)
                             + "% [" + statValues[mStatsGeneral][StatUtils.STAT_STRIKES] + "/"
-                            + totalShotsAtMiddle + "]");
+                            + totalShotsAtMiddle + "]"));
         }
         currentStatPosition++;
         if (statValues[mStatsGeneral][StatUtils.STAT_SPARE_CONVERSIONS] > 0)
         {
-            listStatNamesAndValues.get(mStatsGeneral).get(currentStatPosition).setValue(
+            listStatNamesAndValues.get(mStatsGeneral).set(currentStatPosition, Pair.create(
+                    listStatNamesAndValues.get(mStatsGeneral).get(currentStatPosition).first,
                     decimalFormat.format(statValues[mStatsGeneral][StatUtils.STAT_SPARE_CONVERSIONS]
                             / (double) spareChances * 100)
                             + "% [" + statValues[mStatsGeneral][StatUtils.STAT_SPARE_CONVERSIONS]
-                            + "/" + spareChances + "]");
+                            + "/" + spareChances + "]"));
         }
 
         currentStatPosition = 0;
@@ -739,52 +753,61 @@ public class StatsListFragment
         {
             if (statValues[mStatsFirstBall][i] > 0)
             {
-                listStatNamesAndValues.get(mStatsFirstBall).get(currentStatPosition).setValue(
+                listStatNamesAndValues.get(mStatsFirstBall).set(currentStatPosition, Pair.create(
+                        listStatNamesAndValues.get(mStatsFirstBall).get(currentStatPosition).first,
                         decimalFormat.format(
                                 statValues[mStatsFirstBall][i] / (double) totalShotsAtMiddle * 100)
                                 + "% [" + statValues[mStatsFirstBall][i] + "/" + totalShotsAtMiddle
-                                + "]");
+                                + "]"));
             }
             if (statValues[mStatsFirstBall][i + 1] > 0)
             {
-                listStatNamesAndValues.get(mStatsFirstBall).get(currentStatPosition + 1).setValue(
-                        decimalFormat.format(statValues[mStatsFirstBall][i + 1]
-                                / (double) statValues[mStatsFirstBall][i] * 100)
-                                + "% [" + statValues[mStatsFirstBall][i + 1] + "/"
-                                + statValues[mStatsFirstBall][i] + "]");
+                listStatNamesAndValues.get(mStatsFirstBall).set(currentStatPosition + 1,
+                        Pair.create(listStatNamesAndValues.get(mStatsFirstBall)
+                                        .get(currentStatPosition + 1).first,
+                                decimalFormat.format(statValues[mStatsFirstBall][i + 1]
+                                        / (double) statValues[mStatsFirstBall][i] * 100)
+                                        + "% [" + statValues[mStatsFirstBall][i + 1] + "/"
+                                        + statValues[mStatsFirstBall][i] + "]"));
             }
         }
 
-        listStatNamesAndValues.get(mStatsFouls).get(0).setValue(
-                String.valueOf(statValues[mStatsFouls][0]));
-        listStatNamesAndValues.get(mStatsPins).get(0).setValue(
-                String.valueOf(statValues[mStatsPins][0]));
+        listStatNamesAndValues.get(mStatsFouls).set(0, Pair.create(
+                listStatNamesAndValues.get(mStatsFouls).get(0).first,
+                String.valueOf(statValues[mStatsFouls][0])));
+        listStatNamesAndValues.get(mStatsPins).set(0, Pair.create(
+                listStatNamesAndValues.get(mStatsPins).get(0).first,
+                String.valueOf(statValues[mStatsPins][0])));
 
         if (toLoad < StatUtils.LOADING_GAME_STATS)
         {
             if (toLoad != StatUtils.LOADING_SERIES_STATS)
             {
                 for (byte i = 0; i < statValues[mStatsGameAverage].length; i++)
-                    listStatNamesAndValues.get(mStatsGameAverage).get(i).setValue(
-                            String.valueOf(statValues[mStatsGameAverage][i]));
+                    listStatNamesAndValues.get(mStatsGameAverage).set(i, Pair.create(
+                            listStatNamesAndValues.get(mStatsGameAverage).get(i).first,
+                            String.valueOf(statValues[mStatsGameAverage][i])));
             }
 
-            listStatNamesAndValues.get(mStatsPins).get(1).setValue(
-                    String.valueOf(statValues[mStatsPins][1]));
+            listStatNamesAndValues.get(mStatsPins).set(1, Pair.create(
+                    listStatNamesAndValues.get(mStatsPins).get(1).first,
+                    String.valueOf(statValues[mStatsPins][1])));
 
             int totalMatchPlayGames = 0;
             for (int stat : statValues[mStatsMatch])
                 totalMatchPlayGames += stat;
             for (byte i = 0; i < statValues[mStatsMatch].length; i++)
-                listStatNamesAndValues.get(mStatsMatch).get(i).setValue(
+                listStatNamesAndValues.get(mStatsMatch).set(i, Pair.create(
+                        listStatNamesAndValues.get(mStatsMatch).get(i).first,
                         decimalFormat.format(
                                 statValues[mStatsMatch][i] / (double) totalMatchPlayGames * 100)
                                 + "% [" + statValues[mStatsMatch][i] + "/" + totalMatchPlayGames
-                                + "]");
+                                + "]"));
 
             for (byte i = 0; i < statValues[mStatsOverall].length; i++)
-                listStatNamesAndValues.get(mStatsOverall).get(i).setValue(
-                        String.valueOf(statValues[mStatsOverall][i]));
+                listStatNamesAndValues.get(mStatsOverall).set(i, Pair.create(
+                        listStatNamesAndValues.get(mStatsOverall).get(i).first,
+                        String.valueOf(statValues[mStatsOverall][i])));
         }
     }
 

@@ -24,6 +24,7 @@
             android:background="@color/primary_background"
             android:gravity="right|center_vertical"
             android:padding="8dp"
+            android:textColor="@android:color/black"
             android:textSize="14sp"
             android:textStyle="bold" />
 
@@ -37,6 +38,7 @@
             android:background="@color/secondary_background"
             android:gravity="left|center_vertical"
             android:padding="8dp"
+            android:textColor="@android:color/black"
             android:textSize="14sp" />
 
     </LinearLayout>
