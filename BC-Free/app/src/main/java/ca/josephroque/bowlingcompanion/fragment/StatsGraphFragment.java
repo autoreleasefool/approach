@@ -1,6 +1,5 @@
 package ca.josephroque.bowlingcompanion.fragment;
 
-
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -124,11 +123,9 @@ public class StatsGraphFragment
         mTextViewAccumulate = (TextView) rootView.findViewById(R.id.tv_stat_accumulate);
         setupNavigationButtons(rootView);
 
-        mSwitchAccumulate.setOnClickListener(new View.OnClickListener()
-        {
+        mSwitchAccumulate.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 loadNewStat(!mStatAccumulate);
             }
         });
@@ -216,7 +213,7 @@ public class StatsGraphFragment
             }
         });
 
-        mButtonNextStat.setOnClickListener(new View.OnClickListener()
+        mButtonPrevStat.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
@@ -225,24 +222,26 @@ public class StatsGraphFragment
                 int nextStatIndex = mStatIndex - 1;
 
                 if (nextStatIndex < 0)
-                    mStatCategory--;
-                if (mStatCategory < 0)
-                    return;
-
-                nextStatIndex = 0;
-                while (true)
                 {
-                    try
+                    nextStatCategory--;
+                    if (nextStatCategory < 0)
+                        return;
+
+                    nextStatIndex = 0;
+                    while (true)
                     {
-                        StatUtils.getStatName(nextStatCategory, nextStatIndex, false);
+                        try
+                        {
+                            StatUtils.getStatName(nextStatCategory, nextStatIndex, false);
+                        }
+                        catch (IllegalArgumentException ex)
+                        {
+                            break;
+                        }
+                        nextStatIndex++;
                     }
-                    catch (IllegalArgumentException ex)
-                    {
-                        break;
-                    }
-                    nextStatIndex++;
+                    nextStatIndex -= 1;
                 }
-                nextStatIndex -= 1;
 
                 mStatCategory = nextStatCategory;
                 mStatIndex = nextStatIndex;

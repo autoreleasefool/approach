@@ -1,5 +1,7 @@
 package ca.josephroque.bowlingcompanion.utilities;
 
+import ca.josephroque.bowlingcompanion.Constants;
+
 /**
  * Created by Joseph Roque on 2015-07-25. Methods and constants for identifying and recording
  * statistics.
@@ -210,8 +212,10 @@ public final class StatUtils
     {
         if (chanceName)
             return null;
+        else if (statIndex >= 0 && statIndex < Constants.MAX_NUMBER_EVENT_GAMES)
+            return "Average in Game " + (statIndex + 1);
         else
-            return "Game " + (statIndex + 1);
+            throw new IllegalArgumentException("invalid index " + statIndex + "for game average");
     }
 
     /**
