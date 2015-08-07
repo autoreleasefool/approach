@@ -164,7 +164,7 @@
             android:layout_above="@id/iv_lock"
             android:layout_below="@id/hsv_frames">
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/button_pin_1"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -176,7 +176,7 @@
                 android:src="@drawable/pin_enabled"
                 tools:ignore="ContentDescription" />
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/button_pin_2"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -188,7 +188,7 @@
                 android:src="@drawable/pin_enabled"
                 tools:ignore="ContentDescription" />
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/button_pin_3"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -200,7 +200,7 @@
                 android:src="@drawable/pin_enabled"
                 tools:ignore="ContentDescription" />
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/button_pin_4"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -212,7 +212,7 @@
                 android:src="@drawable/pin_enabled"
                 tools:ignore="ContentDescription" />
 
-            <ImageButton
+            <ImageView
                 android:id="@+id/button_pin_5"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"

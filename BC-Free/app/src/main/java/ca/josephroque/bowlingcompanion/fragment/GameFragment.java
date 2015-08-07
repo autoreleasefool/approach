@@ -26,7 +26,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.HorizontalScrollView;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -83,7 +82,7 @@ public class GameFragment
     /** TextView which displays final score of the game, with fouls considered. */
     private TextView mTextViewFinalScore;
     /** Offer interaction methods, indicate state of pins in a frame. */
-    private ImageButton[] mImageButtonPins;
+    private ImageView[] mImageViewPins;
     /**
      * Displays TextView objects in a layout which user can interact with to access specific frame.
      */
@@ -182,7 +181,7 @@ public class GameFragment
         private void setFirstPinTouched(MotionEvent event)
         {
             final int pinTouched = (int) ((event.getX() / mLayoutWidth) * 5);
-            if (!mImageButtonPins[pinTouched].isEnabled())
+            if (!mImageViewPins[pinTouched].isEnabled())
             {
                 mInitialStateSet = false;
                 return;
@@ -193,16 +192,14 @@ public class GameFragment
             mPinAlteredCount = 1;
 
             // Flip pin image while user is dragging
-            mImageButtonPins[pinTouched].post(new Runnable()
-            {
+            mImageViewPins[pinTouched].post(new Runnable() {
                 @Override
-                public void run()
-                {
+                public void run() {
                     if (!mPinState[mCurrentFrame][mCurrentBall][pinTouched])
-                        mImageButtonPins[pinTouched].setImageResource(
+                        mImageViewPins[pinTouched].setImageResource(
                                 R.drawable.pin_disabled);
                     else
-                        mImageButtonPins[pinTouched].setImageResource(
+                        mImageViewPins[pinTouched].setImageResource(
                                 R.drawable.pin_enabled);
                 }
             });
@@ -235,22 +232,22 @@ public class GameFragment
 
                     // Flip pin image while user is dragging
                     pinTouched = (int) ((event.getX() / mLayoutWidth) * 5);
-                    if (mImageButtonPins[pinTouched].isEnabled()
+                    if (mImageViewPins[pinTouched].isEnabled()
                             && mPinState[mCurrentFrame][mCurrentBall][pinTouched] == mInitialState
                             && !mPinAltered[pinTouched])
                     {
                         mPinAlteredCount++;
                         mPinAltered[pinTouched] = true;
-                        mImageButtonPins[pinTouched].post(new Runnable()
+                        mImageViewPins[pinTouched].post(new Runnable()
                         {
                             @Override
                             public void run()
                             {
                                 if (!mPinState[mCurrentFrame][mCurrentBall][pinTouched])
-                                    mImageButtonPins[pinTouched].setImageResource(
+                                    mImageViewPins[pinTouched].setImageResource(
                                             R.drawable.pin_disabled);
                                 else
-                                    mImageButtonPins[pinTouched].setImageResource(
+                                    mImageViewPins[pinTouched].setImageResource(
                                             R.drawable.pin_enabled);
                             }
                         });
@@ -466,12 +463,12 @@ public class GameFragment
         mHorizontalScrollViewFrames.addView(relativeLayout);
 
         //Buttons which indicate state of pins in a frame, provide user interaction methods
-        mImageButtonPins = new ImageButton[5];
-        mImageButtonPins[0] = (ImageButton) rootView.findViewById(R.id.button_pin_1);
-        mImageButtonPins[1] = (ImageButton) rootView.findViewById(R.id.button_pin_2);
-        mImageButtonPins[2] = (ImageButton) rootView.findViewById(R.id.button_pin_3);
-        mImageButtonPins[3] = (ImageButton) rootView.findViewById(R.id.button_pin_4);
-        mImageButtonPins[4] = (ImageButton) rootView.findViewById(R.id.button_pin_5);
+        mImageViewPins = new ImageView[5];
+        mImageViewPins[0] = (ImageView) rootView.findViewById(R.id.button_pin_1);
+        mImageViewPins[1] = (ImageView) rootView.findViewById(R.id.button_pin_2);
+        mImageViewPins[2] = (ImageView) rootView.findViewById(R.id.button_pin_3);
+        mImageViewPins[3] = (ImageView) rootView.findViewById(R.id.button_pin_4);
+        mImageViewPins[4] = (ImageView) rootView.findViewById(R.id.button_pin_5);
 
         mLinearLayoutPins = (PinLayout) rootView.findViewById(R.id.ll_pins);
         mLinearLayoutPins.setInterceptListener(mPinTouchListener);
@@ -1172,12 +1169,13 @@ public class GameFragment
             mTextViewNextBall.setVisibility(View.VISIBLE);
             mTextViewPrevBall.setVisibility(View.VISIBLE);
             mHorizontalScrollViewFrames.setVisibility(View.VISIBLE);
-            for (ImageButton imageButton : mImageButtonPins)
-                imageButton.setVisibility(View.VISIBLE);
+            for (ImageView imageView : mImageViewPins)
+                imageView.setVisibility(View.VISIBLE);
             mTextViewManualScore.setText(null);
             mTextViewManualScore.setVisibility(View.INVISIBLE);
             mImageViewFoul.setVisibility(View.VISIBLE);
             mImageViewResetFrame.setVisibility(View.VISIBLE);
+            mLinearLayoutPins.setEnabled(true);
         }
         else
         {
@@ -1186,12 +1184,13 @@ public class GameFragment
             mTextViewNextBall.setVisibility(View.INVISIBLE);
             mTextViewPrevBall.setVisibility(View.INVISIBLE);
             mHorizontalScrollViewFrames.setVisibility(View.INVISIBLE);
-            for (ImageButton imageButton : mImageButtonPins)
-                imageButton.setVisibility(View.INVISIBLE);
+            for (ImageView imageView : mImageViewPins)
+                imageView.setVisibility(View.INVISIBLE);
             mTextViewManualScore.setText(String.valueOf(mGameScoresMinusFouls[mCurrentGame]));
             mTextViewManualScore.setVisibility(View.VISIBLE);
             mImageViewFoul.setVisibility(View.INVISIBLE);
             mImageViewResetFrame.setVisibility(View.INVISIBLE);
+            mLinearLayoutPins.setEnabled(false);
         }
 
         rootView.findViewById(R.id.fab_container).setVisibility(
@@ -1977,12 +1976,10 @@ public class GameFragment
                 for (byte i = 0; i < 5; i++)
                 {
                     if (mPinState[mCurrentFrame][mCurrentBall][i])
-                    {
-                        mImageButtonPins[i].setImageResource(R.drawable.pin_disabled);
-                    }
+                        mImageViewPins[i].setImageResource(R.drawable.pin_disabled);
                     else
                     {
-                        mImageButtonPins[i].setImageResource(R.drawable.pin_enabled);
+                        mImageViewPins[i].setImageResource(R.drawable.pin_enabled);
                         numberOfPinsStanding++;
                     }
 
@@ -1990,13 +1987,9 @@ public class GameFragment
                             && !(mCurrentFrame == Constants.LAST_FRAME
                             && Arrays.equals(mPinState[mCurrentFrame][mCurrentBall - 1],
                             Constants.FRAME_PINS_DOWN)))
-                    {
-                        mImageButtonPins[i].setEnabled(false);
-                    }
+                        mImageViewPins[i].setEnabled(false);
                     else
-                    {
-                        mImageButtonPins[i].setEnabled(true);
-                    }
+                        mImageViewPins[i].setEnabled(true);
                 }
 
                 if (mCurrentFrame == Constants.LAST_FRAME)
@@ -2107,15 +2100,13 @@ public class GameFragment
                         mPinState[mCurrentFrame][1].length);
         }
 
-        mImageButtonPins[pinToSet].post(new Runnable()
-        {
+        mImageViewPins[pinToSet].post(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 if (mPinState[mCurrentFrame][mCurrentBall][pinToSet])
-                    mImageButtonPins[pinToSet].setImageResource(R.drawable.pin_disabled);
+                    mImageViewPins[pinToSet].setImageResource(R.drawable.pin_disabled);
                 else
-                    mImageButtonPins[pinToSet].setImageResource(R.drawable.pin_enabled);
+                    mImageViewPins[pinToSet].setImageResource(R.drawable.pin_enabled);
                 mImageViewClear.setEnabled(!allPinsKnockedOver);
             }
         });
