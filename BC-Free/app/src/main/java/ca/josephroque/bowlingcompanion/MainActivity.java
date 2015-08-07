@@ -977,7 +977,8 @@ public class MainActivity
         AdRequest.Builder builder = new AdRequest.Builder()
                 .addTestDevice("B3EEABB8EE11C2BE770B684D95219ECB")
                 .addTestDevice("F2B8E706AC77AA09B97D016DB70BF723")
-                .addTestDevice("7387C5A63BE83E951937A7F2842F6C28");
+                .addTestDevice("7387C5A63BE83E951937A7F2842F6C28")
+                .addTestDevice("699FFDF176FEE8F8B6AD7E3D322A43AB");
         mAdView.loadAd(builder.build());
     }
 
