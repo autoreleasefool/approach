@@ -1576,6 +1576,7 @@ public class GameFragment
                 {
                     mTextViewPrevBall.setVisibility(View.GONE);
                     mImageViewPrevBall.setVisibility(View.GONE);
+                    setFloatingActionButtonState(false, 0);
                     RelativeLayout.LayoutParams layoutParams =
                             (RelativeLayout.LayoutParams) mTextViewGameNumber.getLayoutParams();
                     layoutParams.addRule(RelativeLayout.ALIGN_TOP, mTextViewNextBall.getId());
@@ -1585,12 +1586,14 @@ public class GameFragment
                 {
                     mTextViewPrevBall.setVisibility(View.VISIBLE);
                     mImageViewPrevBall.setVisibility(View.VISIBLE);
+                    setFloatingActionButtonState(false, R.drawable.ic_chevron_left_black_24dp);
                 }
 
                 if (mCurrentFrame == Constants.LAST_FRAME && mCurrentBall == 2)
                 {
                     mTextViewNextBall.setVisibility(View.GONE);
                     mImageViewNextBall.setVisibility(View.GONE);
+                    setFloatingActionButtonState(true, 0);
                     RelativeLayout.LayoutParams layoutParams =
                             (RelativeLayout.LayoutParams) mTextViewGameNumber.getLayoutParams();
                     layoutParams.addRule(RelativeLayout.ALIGN_TOP, mTextViewPrevBall.getId());
@@ -1600,6 +1603,7 @@ public class GameFragment
                 {
                     mTextViewNextBall.setVisibility(View.VISIBLE);
                     mImageViewNextBall.setVisibility(View.VISIBLE);
+                    setFloatingActionButtonState(true, R.drawable.ic_chevron_right_black_24dp);
                 }
             }
         });
