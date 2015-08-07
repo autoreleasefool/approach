@@ -1,6 +1,8 @@
 package ca.josephroque.bowlingcompanion.fragment;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -27,6 +29,7 @@ import ca.josephroque.bowlingcompanion.adapter.StatsExpandableAdapter;
 import ca.josephroque.bowlingcompanion.database.Contract;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.theme.Theme;
+import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
 import ca.josephroque.bowlingcompanion.utilities.Score;
 import ca.josephroque.bowlingcompanion.utilities.StatUtils;
 
@@ -37,7 +40,8 @@ import ca.josephroque.bowlingcompanion.utilities.StatUtils;
 public class StatsListFragment
         extends Fragment
         implements Theme.ChangeableTheme,
-        ExpandableListView.OnChildClickListener
+        ExpandableListView.OnChildClickListener,
+        FloatingActionButtonHandler
 {
 
     /** Identifies output from this class in Logcat. */
@@ -178,6 +182,35 @@ public class StatsListFragment
         }
 
         return true;
+    }
+
+    @Override
+    public void onFabClick()
+    {
+        if (mStatsToLoad == StatUtils.LOADING_BOWLER_STATS
+                || mStatsToLoad == StatUtils.LOADING_LEAGUE_STATS)
+            openStatsPrompt();
+    }
+
+    /**
+     * Opens a prompt to remind user they can click on stats to see graphs.
+     */
+    private void openStatsPrompt()
+    {
+        new AlertDialog.Builder(getActivity())
+                .setTitle(R.string.text_opening_graph)
+                .setMessage(R.string.text_opening_graph_click)
+                .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        dialog.dismiss();
+                        openStatGraph(0, 0);
+                    }
+                })
+                .create()
+                .show();
     }
 
     /**
@@ -648,7 +681,11 @@ public class StatsListFragment
             fragment.mListStatNamesAndValues.addAll(
                     (List<List<AbstractMap.SimpleEntry<String, String>>>) lists[1]);
             fragment.mAdapterStats.notifyDataSetChanged();
-            fragment.mAdapterStats.notifyDataSetChanged();
+
+            MainActivity mainActivity = (MainActivity) fragment.getActivity();
+            if (mainActivity != null && (fragment.mStatsToLoad == StatUtils.LOADING_BOWLER_STATS
+                    || fragment.mStatsToLoad == StatUtils.LOADING_LEAGUE_STATS))
+                mainActivity.setFloatingActionButtonState(R.drawable.ic_trending_up_black_24dp);
         }
     }
 

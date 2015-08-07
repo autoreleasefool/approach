@@ -77,6 +77,10 @@
     <string name="text_skip">Next</string>
     <string name="text_stats_accumulate">Stat values accumulate over time</string>
     <string name="text_stats_by_week">Stat values are week by week</string>
+    <string name="text_opening_graph">Opening graph for stats</string>
+    <string name="text_opening_graph_click">Remember that you can tap on any stat to more easily view a graph of that stat over time.</string>
+    <string name="text_next_stat">Next stat</string>
+    <string name="text_prev_stat">Previous stat</string>
 
     <!-- Tutorial -->
     <string name="text_tutorial_welcome">Welcome to your 5 Pin Bowling Companion!</string>

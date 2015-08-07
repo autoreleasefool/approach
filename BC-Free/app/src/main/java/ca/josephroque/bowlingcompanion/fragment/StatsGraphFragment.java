@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -39,7 +40,6 @@ import ca.josephroque.bowlingcompanion.database.Contract.GameEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.SeriesEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.LeagueEntry;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
-import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.utilities.DateUtils;
 import ca.josephroque.bowlingcompanion.utilities.Score;
 import ca.josephroque.bowlingcompanion.utilities.StatUtils;
@@ -50,7 +50,6 @@ import ca.josephroque.bowlingcompanion.utilities.StatUtils;
  */
 public class StatsGraphFragment
         extends Fragment
-        implements Theme.ChangeableTheme
 {
 
     /** Identifies output from this class in Logcat. */
@@ -70,6 +69,11 @@ public class StatsGraphFragment
     private Switch mSwitchAccumulate;
     /** Provides context to the user of the purpose of {@code mSwitchAccumulate}. */
     private TextView mTextViewAccumulate;
+
+    /** Button for user to advance to next stat graph. */
+    private Button mButtonNextStat;
+    /** BUtton for user to backtrack to previous stat graph. */
+    private Button mButtonPrevStat;
 
     /** The category of the stat being displayed. */
     private int mStatCategory;
@@ -118,29 +122,14 @@ public class StatsGraphFragment
         mTextViewStat = (TextView) rootView.findViewById(R.id.tv_stat_name);
         mSwitchAccumulate = (Switch) rootView.findViewById(R.id.switch_stat_accumulate);
         mTextViewAccumulate = (TextView) rootView.findViewById(R.id.tv_stat_accumulate);
+        setupNavigationButtons(rootView);
 
         mSwitchAccumulate.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
-                byte statsToLoad;
-                MainActivity mainActivity = (MainActivity) getActivity();
-                if (mainActivity == null)
-                    return;
-
-                if (mainActivity.getLeagueId() == -1)
-                    statsToLoad = StatUtils.LOADING_BOWLER_STATS;
-                else
-                    statsToLoad = StatUtils.LOADING_LEAGUE_STATS;
-
-                mStatAccumulate = !mStatAccumulate;
-
-                mTextViewAccumulate.setText((mStatAccumulate)
-                        ? R.string.text_stats_accumulate
-                        : R.string.text_stats_by_week);
-
-                new LoadStatsGraphTask(StatsGraphFragment.this).execute(statsToLoad);
+                loadNewStat(!mStatAccumulate);
             }
         });
 
@@ -187,14 +176,119 @@ public class StatsGraphFragment
             mainActivity.setActionBarTitle(titleToSet, true);
             new LoadStatsGraphTask(this).execute(statsToLoad);
         }
-
-        updateTheme();
     }
 
-    @Override
-    public void updateTheme()
+    /**
+     * Sets on click listeners for next / prev stat buttons.
+     *
+     * @param rootView root view of fragment
+     */
+    private void setupNavigationButtons(View rootView)
     {
-        // does nothing right now
+        mButtonNextStat = (Button) rootView.findViewById(R.id.btn_next_stat);
+        mButtonPrevStat = (Button) rootView.findViewById(R.id.btn_prev_stat);
+
+        mButtonNextStat.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                int nextStatCategory = mStatCategory;
+                int nextStatIndex = mStatIndex + 1;
+
+                try
+                {
+                    StatUtils.getStatName(nextStatCategory, nextStatIndex, false);
+                }
+                catch (IllegalArgumentException ex)
+                {
+                    nextStatCategory++;
+                    nextStatIndex = 0;
+                }
+
+                if (nextStatCategory > StatUtils.STAT_CATEGORY_OVERALL)
+                    return;
+
+                mStatCategory = nextStatCategory;
+                mStatIndex = nextStatIndex;
+
+                loadNewStat(false);
+            }
+        });
+
+        mButtonNextStat.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                int nextStatCategory = mStatCategory;
+                int nextStatIndex = mStatIndex - 1;
+
+                if (nextStatIndex < 0)
+                    mStatCategory--;
+                if (mStatCategory < 0)
+                    return;
+
+                nextStatIndex = 0;
+                while (true)
+                {
+                    try
+                    {
+                        StatUtils.getStatName(nextStatCategory, nextStatIndex, false);
+                    }
+                    catch (IllegalArgumentException ex)
+                    {
+                        break;
+                    }
+                    nextStatIndex++;
+                }
+                nextStatIndex -= 1;
+
+                mStatCategory = nextStatCategory;
+                mStatIndex = nextStatIndex;
+
+                loadNewStat(false);
+            }
+        });
+    }
+
+    /**
+     * Loads a new stat to the graph.
+     *
+     * @param accumulate true if the stat should be accumulated over time.
+     */
+    private void loadNewStat(boolean accumulate)
+    {
+        byte statsToLoad;
+        MainActivity mainActivity = (MainActivity) getActivity();
+        if (mainActivity == null)
+            return;
+
+        if (mainActivity.getLeagueId() == -1)
+            statsToLoad = StatUtils.LOADING_BOWLER_STATS;
+        else
+            statsToLoad = StatUtils.LOADING_LEAGUE_STATS;
+
+        mStatAccumulate = accumulate;
+        mSwitchAccumulate.setChecked(mStatAccumulate);
+
+        mTextViewAccumulate.setText((mStatAccumulate)
+                ? R.string.text_stats_accumulate
+                : R.string.text_stats_by_week);
+
+        new LoadStatsGraphTask(StatsGraphFragment.this).execute(statsToLoad);
+    }
+
+    /**
+     * Enables or disables UI elements.
+     *
+     * @param enable true to enable, false to disable
+     */
+    private void setUIEnabled(boolean enable)
+    {
+        mSwitchAccumulate.setEnabled(enable);
+        mButtonNextStat.setEnabled(enable);
+        mButtonPrevStat.setEnabled(enable);
     }
 
     /**
@@ -224,7 +318,19 @@ public class StatsGraphFragment
             StatsGraphFragment fragment = mFragment.get();
             if (fragment == null)
                 return;
-            fragment.mSwitchAccumulate.setEnabled(false);
+
+            fragment.setUIEnabled(false);
+
+            fragment.mButtonNextStat.setVisibility(
+                    (fragment.mStatIndex == StatUtils.STAT_NUMBER_OF_GAMES
+                            && fragment.mStatCategory == StatUtils.STAT_CATEGORY_OVERALL)
+                            ? View.GONE
+                            : View.VISIBLE);
+
+            fragment.mButtonPrevStat.setVisibility(
+                    (fragment.mStatIndex == 0 && fragment.mStatCategory == 0)
+                            ? View.GONE
+                            : View.VISIBLE);
         }
 
         @Override
@@ -305,7 +411,7 @@ public class StatsGraphFragment
             fragment.mLineChartStats.getAxisLeft().setValueFormatter(new DefaultValueFormatter(0));
             fragment.mLineChartStats.setData(result);
             fragment.mLineChartStats.invalidate();
-            fragment.mSwitchAccumulate.setEnabled(true);
+            fragment.setUIEnabled(true);
         }
 
         /**
