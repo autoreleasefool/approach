@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -28,6 +29,8 @@ import ca.josephroque.bowlingcompanion.adapter.StatsExpandableAdapter;
 import ca.josephroque.bowlingcompanion.database.Contract;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.theme.Theme;
+import ca.josephroque.bowlingcompanion.utilities.DataFormatter;
+import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
 import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
 import ca.josephroque.bowlingcompanion.utilities.Score;
 import ca.josephroque.bowlingcompanion.utilities.StatUtils;
@@ -101,6 +104,7 @@ public class StatsListFragment
         final AnimatedExpandableListView listView
                 = (AnimatedExpandableListView) rootView.findViewById(R.id.elv_stats);
         listView.setAdapter(mAdapterStats);
+        setExpandableListViewIndicator(listView);
 
         listView.setOnChildClickListener(new ExpandableListView.OnChildClickListener()
         {
@@ -209,6 +213,37 @@ public class StatsListFragment
         if (mStatsToLoad == StatUtils.LOADING_BOWLER_STATS
                 || mStatsToLoad == StatUtils.LOADING_LEAGUE_STATS)
             openStatsPrompt();
+    }
+
+    /**
+     * Creates and sets the group indicator for the expandle list view.
+     *
+     * @param listView list view to set indicator for
+     */
+    private void setExpandableListViewIndicator(ExpandableListView listView)
+    {
+        final Drawable indicator = DisplayUtils.getDrawable(getResources(),
+                R.drawable.stat_indicator);
+        if (indicator != null)
+        {
+            listView.setGroupIndicator(indicator);
+            if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN_MR2)
+            {
+                listView.setIndicatorBounds(
+                        DataFormatter.getPixelsFromDP(getResources().getDisplayMetrics().density,
+                                16),
+                        DataFormatter.getPixelsFromDP(getResources().getDisplayMetrics().density,
+                                16) + indicator.getMinimumWidth());
+            }
+            else
+            {
+                listView.setIndicatorBoundsRelative(
+                        DataFormatter.getPixelsFromDP(getResources().getDisplayMetrics().density,
+                                16),
+                        DataFormatter.getPixelsFromDP(getResources().getDisplayMetrics().density,
+                                16) + indicator.getMinimumWidth());
+            }
+        }
     }
 
     /**
