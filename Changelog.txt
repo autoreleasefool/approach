@@ -5,12 +5,15 @@ V2.0
     Features
     - Added a new tutorial on first startup
     - Adding graphs for stats
-    - Support for tablets
+    - Support for tablets and landscpae
     - Swipe to knock over pins
+    - Series in the "Open" league can have 1-5 games
+    - You can now combine series in the "Open" league
+    - Swipe to delete bowlers/leagues/series
 
     Design
     - Material design
-    - New icon
+    - New app icon
     - Improved navigation
 
     Other
