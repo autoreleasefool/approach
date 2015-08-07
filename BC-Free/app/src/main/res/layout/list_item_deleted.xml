@@ -12,7 +12,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="@dimen/list_keyline"
-        android:alpha="0.54"
         android:src="@drawable/ic_delete_white_24dp"
         tools:ignore="ContentDescription" />
 
@@ -22,7 +21,6 @@
         android:layout_height="48dp"
         android:layout_gravity="center_vertical"
         android:layout_marginLeft="@dimen/list_text_keyline"
-        android:alpha="1"
         android:gravity="center_vertical"
         android:textColor="@android:color/white" />
 
