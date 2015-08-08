@@ -1185,8 +1185,6 @@ public class GameFragment
                 imageView.setVisibility(View.VISIBLE);
             mTextViewManualScore.setText(null);
             mTextViewManualScore.setVisibility(View.INVISIBLE);
-            mImageViewFoul.setVisibility(View.VISIBLE);
-            mImageViewResetFrame.setVisibility(View.VISIBLE);
             mLinearLayoutPins.setEnabled(true);
         }
         else
@@ -1200,8 +1198,6 @@ public class GameFragment
                 imageView.setVisibility(View.INVISIBLE);
             mTextViewManualScore.setText(String.valueOf(mGameScoresMinusFouls[mCurrentGame]));
             mTextViewManualScore.setVisibility(View.VISIBLE);
-            mImageViewFoul.setVisibility(View.INVISIBLE);
-            mImageViewResetFrame.setVisibility(View.INVISIBLE);
             mLinearLayoutPins.setEnabled(false);
         }
 
@@ -1214,6 +1210,22 @@ public class GameFragment
         mImageViewLock.setImageResource((mGameLocked[mCurrentGame])
                 ? R.drawable.ic_lock
                 : R.drawable.ic_lock_open);
+    }
+
+    private void setToolbarEnabled(boolean enabled)
+    {
+        if (enabled)
+        {
+            mImageViewClear.setVisibility(View.VISIBLE);
+            mImageViewFoul.setVisibility(View.VISIBLE);
+            mImageViewResetFrame.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            mImageViewClear.setVisibility(View.INVISIBLE);
+            mImageViewFoul.setVisibility(View.INVISIBLE);
+            mImageViewResetFrame.setVisibility(View.INVISIBLE);
+        }
     }
 
     /**
@@ -1316,25 +1328,15 @@ public class GameFragment
     private void setGameLocked(boolean lock)
     {
         mGameLocked[mCurrentGame] = lock;
-        mImageViewLock.post(new Runnable()
+        getActivity().runOnUiThread(new Runnable()
         {
             @Override
             public void run()
             {
-                if (mGameLocked[mCurrentGame])
-                {
-                    mImageViewFoul.setVisibility(View.INVISIBLE);
-                    mImageViewResetFrame.setVisibility(View.INVISIBLE);
-                    mImageViewClear.setVisibility(View.INVISIBLE);
-                    mImageViewLock.setImageResource(R.drawable.ic_lock);
-                }
-                else
-                {
-                    mImageViewFoul.setVisibility(View.VISIBLE);
-                    mImageViewResetFrame.setVisibility(View.VISIBLE);
-                    mImageViewClear.setVisibility(View.VISIBLE);
-                    mImageViewLock.setImageResource(R.drawable.ic_lock_open);
-                }
+                setToolbarEnabled(!mGameLocked[mCurrentGame]);
+                mImageViewLock.setImageResource((mGameLocked[mCurrentGame])
+                        ? R.drawable.ic_lock
+                        : R.drawable.ic_lock_open);
             }
         });
     }
