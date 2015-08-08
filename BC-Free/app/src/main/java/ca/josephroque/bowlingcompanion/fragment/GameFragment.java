@@ -43,6 +43,7 @@ import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.dialog.ManualScoreDialog;
 import ca.josephroque.bowlingcompanion.utilities.DataFormatter;
 import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
+import ca.josephroque.bowlingcompanion.utilities.NavigationUtils;
 import ca.josephroque.bowlingcompanion.utilities.Score;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.utilities.ShareUtils;
@@ -177,6 +178,8 @@ public class GameFragment
         private int mPinAlteredCount;
         /** Indicates if the layout is being interacted with. */
         private boolean mIsDragging;
+        /** Indicates if events to start dragging can begin. */
+        private boolean mCanStartDragging = true;
 
         private void setFirstPinTouched(MotionEvent event)
         {
@@ -192,9 +195,11 @@ public class GameFragment
             mPinAlteredCount = 1;
 
             // Flip pin image while user is dragging
-            mImageViewPins[pinTouched].post(new Runnable() {
+            mImageViewPins[pinTouched].post(new Runnable()
+            {
                 @Override
-                public void run() {
+                public void run()
+                {
                     if (!mPinState[mCurrentFrame][mCurrentBall][pinTouched])
                         mImageViewPins[pinTouched].setImageResource(
                                 R.drawable.pin_disabled);
@@ -206,15 +211,24 @@ public class GameFragment
         }
 
         @Override
+        public void disablePinTouches()
+        {
+            mCanStartDragging = false;
+        }
+
+        @Override
         public void onPinTouch(MotionEvent event)
         {
-            if (mGameLocked[mCurrentGame] || mManualScoreSet[mCurrentGame])
+            if (NavigationUtils.getDrawerOffset() > 0
+                    || mGameLocked[mCurrentGame] || mManualScoreSet[mCurrentGame])
                 return;
 
             final int pinTouched;
             switch (event.getActionMasked())
             {
                 case MotionEvent.ACTION_DOWN:
+                    if (!mCanStartDragging)
+                        return;
                     mIsDragging = true;
                     for (int i = 0; i < mPinAltered.length; i++)
                         mPinAltered[i] = false;
@@ -224,11 +238,9 @@ public class GameFragment
                     setFirstPinTouched(event);
                     break;
                 case MotionEvent.ACTION_MOVE:
-                    mIsDragging = true;
-                    if (mLayoutWidth == 0 || event.getX() > mLayoutWidth || event.getX() < 0)
+                    if (!mCanStartDragging || !mInitialStateSet
+                            || mLayoutWidth == 0 || event.getX() > mLayoutWidth || event.getX() < 0)
                         return;
-                    if (!mInitialStateSet)
-                        setFirstPinTouched(event);
 
                     // Flip pin image while user is dragging
                     pinTouched = (int) ((event.getX() / mLayoutWidth) * 5);
@@ -253,13 +265,15 @@ public class GameFragment
                         });
                     }
                     break;
-                case MotionEvent.ACTION_UP:
                 case MotionEvent.ACTION_CANCEL:
+                    mCanStartDragging = true;
+                case MotionEvent.ACTION_UP:
                     if (!mIsDragging)
                         return;
-
                     mIsDragging = false;
                     int pinsUpdated = 0;
+                    mInitialStateSet = false;
+
                     // Finalize flipped pins, calculate score
                     for (int i = 0; i < mPinAltered.length; i++)
                     {
@@ -557,7 +571,6 @@ public class GameFragment
                 preferences.getBoolean(Constants.KEY_ENABLE_AUTO_ADVANCE, false);
 
         String strDelay = preferences.getString(Constants.KEY_AUTO_ADVANCE_TIME, "15 seconds");
-        Log.i("GameFragment", strDelay);
         int autoAdvanceDelay = (strDelay != null)
                 ? Integer.valueOf(strDelay.substring(0, strDelay.indexOf(" ")))
                 : 0;
@@ -2104,9 +2117,11 @@ public class GameFragment
                         mPinState[mCurrentFrame][1].length);
         }
 
-        mImageViewPins[pinToSet].post(new Runnable() {
+        mImageViewPins[pinToSet].post(new Runnable()
+        {
             @Override
-            public void run() {
+            public void run()
+            {
                 if (mPinState[mCurrentFrame][mCurrentBall][pinToSet])
                     mImageViewPins[pinToSet].setImageResource(R.drawable.pin_disabled);
                 else

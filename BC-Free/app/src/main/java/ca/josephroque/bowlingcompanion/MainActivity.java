@@ -629,7 +629,7 @@ public class MainActivity
     {
         mListDrawerOptions.remove(NavigationUtils.NAVIGATION_ITEM_LEAGUES);
         mListDrawerOptions.remove(NavigationUtils.NAVIGATION_ITEM_SERIES);
-        for (Iterator<String> it = mListDrawerOptions.iterator(); it.hasNext(); )
+        for (Iterator<String> it = mListDrawerOptions.iterator(); it.hasNext();)
             if (it.next().matches("\\w+ \\d+"))
                 it.remove();
         GameFragment gameFragment = null;
@@ -879,6 +879,7 @@ public class MainActivity
     /**
      * Sets up the navigation drawer.
      */
+    @SuppressWarnings("CheckStyle")
     private void setupNavigationDrawer()
     {
         final int displayWidth = getResources().getDisplayMetrics().widthPixels;
@@ -912,8 +913,10 @@ public class MainActivity
         mDrawerAdapter.setPositionToSubheader(NavigationUtils.NAVIGATION_SUBHEADER_OTHER);
         mDrawerRecyclerView.setAdapter(mDrawerAdapter);
 
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
-                R.string.text_open_drawer, R.string.text_close_drawer)
+        mDrawerToggle = new ActionBarDrawerToggle(this,
+                mDrawerLayout,
+                R.string.text_open_drawer,
+                R.string.text_close_drawer)
         {
 
             /** Called when a drawer has settled in a completely closed state. */
@@ -932,6 +935,13 @@ public class MainActivity
                 super.onDrawerOpened(drawerView);
                 setActionBarTitle(mDrawerTitle, false);
                 invalidateOptionsMenu();
+            }
+
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset)
+            {
+                super.onDrawerSlide(drawerView, slideOffset);
+                NavigationUtils.setDrawerOffset(slideOffset);
             }
         };
         mDrawerLayout.setDrawerListener(mDrawerToggle);

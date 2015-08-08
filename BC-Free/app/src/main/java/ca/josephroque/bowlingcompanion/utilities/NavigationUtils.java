@@ -39,6 +39,29 @@ public final class NavigationUtils
     /** Represents the item for feedback in the navigation drawer. */
     public static final String NAVIGATION_ITEM_FEEDBACK = "Feedback";
 
+    /** Offset of the drawer. 0 is fully closed, 1 is fully open. */
+    private static float sDrawerOffset;
+
+    /**
+     * Updates the offset of the drawer.
+     *
+     * @param drawerOffset new value for drawer offset
+     */
+    public static void setDrawerOffset(float drawerOffset)
+    {
+        sDrawerOffset = drawerOffset;
+    }
+
+    /**
+     * Gets the current offset of the drawer.
+     *
+     * @return the value of {@code sDrawerOffset}
+     */
+    public static float getDrawerOffset()
+    {
+        return sDrawerOffset;
+    }
+
     /**
      * Default private constructor.
      */

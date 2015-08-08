@@ -3,7 +3,6 @@ package ca.josephroque.bowlingcompanion.view;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.widget.LinearLayout;
 
@@ -35,7 +34,11 @@ public class PinLayout
     {
         if (event.getX() < Math.ceil(NAVIGATION_DRAWER_EDGE_WIDTH
                 * getResources().getDisplayMetrics().density))
+        {
             event.setAction(MotionEvent.ACTION_CANCEL);
+            if (mListener != null)
+                mListener.disablePinTouches();
+        }
 
         if (mListener != null)
             mListener.onPinTouch(event);
@@ -98,6 +101,11 @@ public class PinLayout
      */
     public interface PinInterceptListener
     {
+
+        /**
+         * Indicates events when the pins are touched should be disabled.
+         */
+        void disablePinTouches();
 
         /**
          * Invoked when the pin container is touched.
