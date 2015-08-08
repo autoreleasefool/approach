@@ -636,7 +636,7 @@ public class MainActivity
         FragmentManager fragmentManager = getSupportFragmentManager();
         for (Fragment frag : fragmentManager.getFragments())
         {
-            if (frag != null && frag.isVisible() && frag instanceof GameFragment)
+            if (frag != null && frag instanceof GameFragment)
             {
                 gameFragment = (GameFragment) frag;
                 break;
