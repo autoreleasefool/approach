@@ -195,7 +195,9 @@ public class SeriesFragment
         Drawable drawable = menuItem.getIcon();
         if (drawable != null)
             drawable.setAlpha(DisplayUtils.BLACK_ICON_ALPHA);
-        menu.findItem(R.id.action_combine_series).setVisible(!drawerOpen);
+        menu.findItem(R.id.action_combine_series).setVisible(!drawerOpen
+                && ((MainActivity) getActivity()).getLeagueName().substring(1).equals(
+                Constants.NAME_OPEN_LEAGUE));
         menu.findItem(R.id.action_edit_date).setVisible(!drawerOpen);
         super.onPrepareOptionsMenu(menu);
     }
@@ -340,7 +342,9 @@ public class SeriesFragment
      */
     private void showCombineSeriesDialog(boolean manuallyOpened)
     {
-        if (getActivity() == null || (mCombineDialogShown && !manuallyOpened))
+        MainActivity mainActivity = (MainActivity) getActivity();
+        if (mainActivity == null || (mCombineDialogShown && !manuallyOpened)
+                || !mainActivity.getLeagueName().substring(1).equals(Constants.NAME_OPEN_LEAGUE))
             return;
 
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(
