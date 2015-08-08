@@ -59,6 +59,8 @@ public class StatsGraphFragment
     private static final String ARG_STAT_CATEGORY = "arg_stat_cat";
     /** Represents the stat index being displayed. */
     private static final String ARG_STAT_INDEX = "arg_stat_index";
+    /** Represents whether the stat calculation is accumulated over time. */
+    private static final String ARG_STAT_ACCUMULATE = "arg_stat_accumulate";
 
     /** LineChart to display statistics over time. */
     private LineChart mLineChartStats;
@@ -109,6 +111,7 @@ public class StatsGraphFragment
         {
             mStatCategory = savedInstanceState.getInt(ARG_STAT_CATEGORY, 0);
             mStatIndex = savedInstanceState.getInt(ARG_STAT_INDEX, 0);
+            mStatAccumulate = savedInstanceState.getBoolean(ARG_STAT_ACCUMULATE, false);
         }
         else
         {
@@ -123,22 +126,24 @@ public class StatsGraphFragment
         mTextViewAccumulate = (TextView) rootView.findViewById(R.id.tv_stat_accumulate);
         setupNavigationButtons(rootView);
 
-        mSwitchAccumulate.setOnClickListener(new View.OnClickListener() {
+        mSwitchAccumulate.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 loadNewStat(!mStatAccumulate);
             }
         });
 
-        if (mSwitchAccumulate.isChecked())
+        if (mStatAccumulate)
         {
+            mSwitchAccumulate.setChecked(true);
             mTextViewAccumulate.setText(R.string.text_stats_accumulate);
-            mStatAccumulate = true;
         }
         else
         {
+            mSwitchAccumulate.setChecked(false);
             mTextViewAccumulate.setText(R.string.text_stats_by_week);
-            mStatAccumulate = false;
         }
 
         return rootView;
@@ -173,6 +178,16 @@ public class StatsGraphFragment
             mainActivity.setActionBarTitle(titleToSet, true);
             new LoadStatsGraphTask(this).execute(statsToLoad);
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+
+        outState.putInt(ARG_STAT_CATEGORY, mStatCategory);
+        outState.putInt(ARG_STAT_INDEX, mStatIndex);
+        outState.putBoolean(ARG_STAT_ACCUMULATE, mStatAccumulate);
     }
 
     /**
@@ -1362,6 +1377,7 @@ public class StatsGraphFragment
          * @param listEntries list of data entries
          * @param listLabels list of labels for x axis
          */
+        @SuppressWarnings("CheckStyle")
         private void compileOverallStats(StatsGraphFragment fragment,
                                          Cursor cursor,
                                          List<Entry> listEntries,
