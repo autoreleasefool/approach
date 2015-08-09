@@ -5,7 +5,6 @@
     <string name="title_fragment_league_event">Leagues &amp; Events</string>
     <string name="title_fragment_series">Series</string>
     <string name="title_fragment_game">Game Details</string>
-    <string name="title_fragment_stats">Statistics</string>
     <string name="title_stats_bowler">Bowler Stats</string>
     <string name="title_stats_league">League Stats</string>
     <string name="title_stats_series">Series Stats</string>
@@ -18,7 +17,6 @@
     <string name="dialog_okay">Okay</string>
     <string name="dialog_cancel">Cancel</string>
     <string name="dialog_add">Add</string>
-    <string name="dialog_delete">Delete</string>
     <string name="dialog_name_exists">That name has already been used. You must choose another.</string>
     <string name="dialog_name_letters_spaces">You can only use letters and spaces in a name.</string>
     <string name="dialog_name_letters_spaces_numbers">You can only use letters, numbers and spaces in a name.</string>
@@ -45,27 +43,13 @@
     <string name="action_reset_game">Reset game</string>
     <string name="action_set_score">Set manual score</string>
     <string name="action_clear_score">Clear manual score</string>
-    <string name="action_stats_graph">View as graph</string>
-    <string name="action_stats_list">View as list</string>
     <string name="action_combine_series">Combine series</string>
 
     <!-- TextView text -->
     <string name="text_next_ball">Next Ball</string>
     <string name="text_prev_ball">Prev Ball</string>
-    <string name="text_add_foul">Add Foul</string>
-    <string name="text_remove_foul">Remove Foul</string>
-    <string name="text_reset_frame">Reset Frame</string>
-    <string name="text_lock_game">Lock Game</string>
-    <string name="text_unloock_game">Unlock Game</string>
-    <string name="text_set_manual_score">Set Score</string>
-    <string name="text_clear_manual_score">Clear Score</string>
-    <string name="text_switch_game">Switch Game</string>
     <string name="text_open_drawer">Open Navigation Drawer</string>
     <string name="text_close_drawer">Close Navigation Drawer</string>
-    <string name="text_match_play">Match play</string>
-    <string name="text_match_play_win">Won</string>
-    <string name="text_match_play_lose">Lost</string>
-    <string name="text_match_play_tie">Tied</string>
     <string name="text_rate_prompt">If you like this app, please consider rating it.</string>
     <string name="text_rate_app">Rate</string>
     <string name="text_rate_remind_me">Remind me</string>

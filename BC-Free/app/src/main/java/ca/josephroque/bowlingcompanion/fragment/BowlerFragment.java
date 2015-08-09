@@ -8,7 +8,6 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -527,7 +526,7 @@ public class BowlerFragment
     {
 
         /** Weak reference to the parent fragment. */
-        private WeakReference<BowlerFragment> mFragment;
+        private final WeakReference<BowlerFragment> mFragment;
 
         /**
          * Assigns a weak reference to the parent fragment.
@@ -724,7 +723,7 @@ public class BowlerFragment
     {
 
         /** Weak reference to the parent fragment. */
-        private WeakReference<BowlerFragment> mFragment;
+        private final WeakReference<BowlerFragment> mFragment;
 
         /**
          * Assigns a weak reference to the parent fragment.
@@ -798,7 +797,7 @@ public class BowlerFragment
     {
 
         /** Weak reference to the parent fragment. */
-        private WeakReference<BowlerFragment> mFragment;
+        private final WeakReference<BowlerFragment> mFragment;
 
         /**
          * Assigns a weak reference to the parent fragment.

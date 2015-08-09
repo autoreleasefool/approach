@@ -6,8 +6,6 @@
 
     <!-- Other Settings -->
     <string name="pref_header_other">Other</string>
-    <string name="pref_view_full_title">View full version</string>
-    <string name="pref_view_full_summary">See additional features of full version</string>
     <string name="pref_developer_website_title">Visit developer website</string>
     <string name="pref_developer_website_summary">Learn more about the developer</string>
     <string name="pref_view_source_title">View source on GitHub</string>
@@ -61,7 +59,6 @@
     </string-array>
     
     <!-- Theme Settings -->
-    <string name="pref_header_theme">Theme</string>
     <string name="pref_theme_colors_title">Theme colors</string>
     <string name="pref_theme_colors_dialog">Select a theme color</string>
     <string-array name="pref_theme_colors_names">

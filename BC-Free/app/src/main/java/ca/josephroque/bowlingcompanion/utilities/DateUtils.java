@@ -27,7 +27,7 @@ public final class DateUtils
     /**
      * Formats a String of the format 'yyyy-MM-dd HH:mm:ss' to a {@link java.util.Date} object.
      */
-    private static DateFormat sFormatStringToDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
+    private static final DateFormat STRING_TO_DATE = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
             Locale.CANADA);
 
     /**
@@ -41,7 +41,7 @@ public final class DateUtils
         Date date;
         try
         {
-            date = sFormatStringToDate.parse(strDate);
+            date = STRING_TO_DATE.parse(strDate);
         }
         catch (ParseException ex)
         {

@@ -157,16 +157,17 @@ public class GameFragment
     private byte mCurrentBall = 0;
 
     /** Indicates if the app should not save games - set to true in case of errors. */
-    private AtomicBoolean mDoNotSave = new AtomicBoolean(false);
+    private final AtomicBoolean mDoNotSave = new AtomicBoolean(false);
 
     /** Linear layout which contains button pins. */
     private PinLayout mLinearLayoutPins;
     /** Handles events when pin buttons are touched. */
-    private PinLayout.PinInterceptListener mPinTouchListener = new PinLayout.PinInterceptListener()
+    private final PinLayout.PinInterceptListener mPinTouchListener
+            = new PinLayout.PinInterceptListener()
     {
 
         /** Indicates if a pin has been altered in a touch event. */
-        private boolean[] mPinAltered = new boolean[5];
+        private final boolean[] mPinAltered = new boolean[5];
         /** State of first pin touched. */
         private boolean mInitialState;
         /** Indicates if an initial valid pin has been selected. */

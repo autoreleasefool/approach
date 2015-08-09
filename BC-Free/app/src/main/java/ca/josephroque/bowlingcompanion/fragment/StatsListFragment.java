@@ -220,6 +220,7 @@ public class StatsListFragment
      *
      * @param listView list view to set indicator for
      */
+    @SuppressWarnings("CheckStyle")
     private void setExpandableListViewIndicator(ExpandableListView listView)
     {
         final Drawable indicator = DisplayUtils.getDrawable(getResources(),
@@ -416,7 +417,7 @@ public class StatsListFragment
     {
 
         /** Weak reference to the parent fragment. */
-        private WeakReference<StatsListFragment> mFragment;
+        private final WeakReference<StatsListFragment> mFragment;
 
         /**
          * Assigns a weak reference to the parent fragment.

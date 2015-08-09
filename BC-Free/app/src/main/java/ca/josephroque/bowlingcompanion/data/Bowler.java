@@ -11,11 +11,11 @@ public class Bowler
 {
 
     /** Name of the bowler. */
-    private String mBowlerName;
+    private final String mBowlerName;
     /** Unique id of the bowler. */
     private long mBowlerId;
     /** Average of the bowler. */
-    private short mBowlerAverage;
+    private final short mBowlerAverage;
     /** Indicates if this bowler has been deleted. */
     private boolean mIsDeleted;
 

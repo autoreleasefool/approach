@@ -49,14 +49,14 @@ public class NavigationDrawerAdapter
     private RecyclerView mRecyclerView;
 
     /** List of options to be displayed in the navigation drawer. */
-    private List<String> mListNavigationItems;
+    private final List<String> mListNavigationItems;
     /**
      * If an item is of the type {@code VIEW_TYPE_NAVIGATION}, it can feature a subtitle, which can
      * be found in this array by the item's position.
      */
-    private HashMap<String, String> mArraySubtitle;
+    private final HashMap<String, String> mArraySubtitle;
     /** Set of positions which are subheader items. */
-    private Set<String> mSetSubheaderItems;
+    private final Set<String> mSetSubheaderItems;
 
     /** String to display as header text in the navigation drawer. */
     private String mHeaderTitle;

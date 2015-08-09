@@ -314,7 +314,7 @@ public class StatsGraphFragment
     {
 
         /** Weak reference to the parent fragment. */
-        private WeakReference<StatsGraphFragment> mFragment;
+        private final WeakReference<StatsGraphFragment> mFragment;
 
         /**
          * Assigns a weak reference to the parent fragment.

@@ -446,7 +446,7 @@ public class LeagueEventFragment
     {
 
         /** Weak reference to the parent fragment. */
-        private WeakReference<LeagueEventFragment> mFragment;
+        private final WeakReference<LeagueEventFragment> mFragment;
 
         /**
          * Assigns a weak reference to the parent fragment.
@@ -590,7 +590,7 @@ public class LeagueEventFragment
     {
 
         /** Weak reference to the parent fragment. */
-        private WeakReference<LeagueEventFragment> mFragment;
+        private final WeakReference<LeagueEventFragment> mFragment;
 
         /**
          * Assigns a weak reference to the parent fragment.
@@ -694,7 +694,7 @@ public class LeagueEventFragment
     {
 
         /** Weak reference to the parent fragment. */
-        private WeakReference<LeagueEventFragment> mFragment;
+        private final WeakReference<LeagueEventFragment> mFragment;
 
         /**
          * Assigns a weak reference to the parent fragment.

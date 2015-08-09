@@ -1,7 +1,6 @@
 package ca.josephroque.bowlingcompanion.adapter;
 
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,10 +47,10 @@ public class NameAverageAdapter<T extends NameAverageId>
     private RecyclerView mRecyclerView;
 
     /** List of names and averages to be displayed by the adapter. */
-    private List<T> mListNamesAndAverages;
+    private final List<T> mListNamesAndAverages;
 
     /** Type of data being represented by this object. */
-    private byte mDataType;
+    private final byte mDataType;
 
     /** Cached drawables to display as icons for items. */
     private Drawable[] mItemDrawables;
@@ -149,6 +148,7 @@ public class NameAverageAdapter<T extends NameAverageId>
         return new NameAverageViewHolder(itemView, viewType);
     }
 
+    @SuppressWarnings("CheckStyle")
     @Override
     public void onBindViewHolder(final NameAverageViewHolder holder, final int position)
     {

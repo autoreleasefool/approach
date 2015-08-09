@@ -13,11 +13,11 @@ public class LeagueEvent
     /** Unique id of the league / event. */
     private long mLeagueEventId;
     /** Name of the league / event. */
-    private String mLeagueEventName;
+    private final String mLeagueEventName;
     /** Average of the league / event. */
-    private short mLeagueEventAverage;
+    private final short mLeagueEventAverage;
     /** Number of games in the league / event. */
-    private byte mLeagueEventNumberOfGames;
+    private final byte mLeagueEventNumberOfGames;
     /** Indicates if this league / event has been deleted. */
     private boolean mIsDeleted;
 

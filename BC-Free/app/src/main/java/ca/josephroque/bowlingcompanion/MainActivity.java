@@ -140,7 +140,7 @@ public class MainActivity
     private Handler mAutoAdvanceHandler;
 
     /** Runnable to auto advance. */
-    private Runnable mAutoAdvanceCallback = new Runnable()
+    private final Runnable mAutoAdvanceCallback = new Runnable()
     {
         @Override
         public void run()
@@ -177,7 +177,7 @@ public class MainActivity
     /** Current thread saving to the database. */
     private Thread mRunningSaveThread;
     /** Indicates if the app is running and should continue to check for threads trying to save. */
-    private AtomicBoolean mAppIsRunning = new AtomicBoolean(false);
+    private final AtomicBoolean mAppIsRunning = new AtomicBoolean(false);
 
     /** Navigation drawer layout. */
     private DrawerLayout mDrawerLayout;
@@ -1196,7 +1196,7 @@ public class MainActivity
     {
 
         /** Weak reference to the parent activity. */
-        private WeakReference<MainActivity> mMainActivity;
+        private final WeakReference<MainActivity> mMainActivity;
 
         /**
          * Assigns a weak reference to the parent activity.
@@ -1300,7 +1300,7 @@ public class MainActivity
     {
 
         /** Weak reference to the parent activity. */
-        private WeakReference<MainActivity> mMainActivity;
+        private final WeakReference<MainActivity> mMainActivity;
 
         /**
          * Assigns a weak reference to the parent activity.

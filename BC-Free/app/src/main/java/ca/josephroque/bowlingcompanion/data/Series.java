@@ -14,11 +14,11 @@ public class Series
 {
 
     /** Unique id of the series. */
-    private long mSeriesId;
+    private final long mSeriesId;
     /** Date that the series occurred. */
     private String mSeriesDate;
     /** Scores of the games in the series. */
-    private List<Short> mSeriesGames;
+    private final List<Short> mSeriesGames;
     /** Indicates if this series has been deleted. */
     private boolean mIsDeleted;
 

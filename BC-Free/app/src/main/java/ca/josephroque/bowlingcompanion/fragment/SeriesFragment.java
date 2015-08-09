@@ -487,7 +487,7 @@ public class SeriesFragment
     {
 
         /** Weak reference to the parent fragment. */
-        private WeakReference<SeriesFragment> mFragment;
+        private final WeakReference<SeriesFragment> mFragment;
 
         /**
          * Assigns a weak reference to the parent fragment.
@@ -594,7 +594,7 @@ public class SeriesFragment
         private WeakReference<ProgressDialog> mProgressDialog;
 
         /** Weak reference to the parent fragment. */
-        private WeakReference<SeriesFragment> mFragment;
+        private final WeakReference<SeriesFragment> mFragment;
 
         /**
          * Assigns a weak reference to the parent fragment.

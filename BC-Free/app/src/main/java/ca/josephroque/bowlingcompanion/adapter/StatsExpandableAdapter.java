@@ -28,12 +28,12 @@ public class StatsExpandableAdapter
     private static final String TAG = "StatsExpandable";
 
     /** Context which created this object. */
-    private Context mContext;
+    private final Context mContext;
 
     /** List of group headers. */
-    private List<String> mListStatHeaders;
+    private final List<String> mListStatHeaders;
     /** List of list of pairs which hold a name and a value, for each group. */
-    private List<List<Pair<String, String>>> mListStatNamesAndValues;
+    private final List<List<Pair<String, String>>> mListStatNamesAndValues;
 
     /**
      * Assigns member variables to parameters.

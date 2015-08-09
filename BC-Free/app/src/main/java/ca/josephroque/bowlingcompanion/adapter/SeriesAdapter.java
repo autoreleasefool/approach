@@ -46,7 +46,7 @@ public class SeriesAdapter
     private RecyclerView mRecyclerView;
 
     /** List of series which will be displayed. */
-    private List<Series> mListSeries;
+    private final List<Series> mListSeries;
 
     /** Cached drawable for edit icon. */
     private Drawable mEditDrawable;
@@ -200,8 +200,8 @@ public class SeriesAdapter
                     }
                     else
                     {
-                        holder.mArrayTextViewGames[i].setTextColor(0xff000000);
-                        holder.mArrayTextViewGames[i].setAlpha(0.87f);
+                        holder.mArrayTextViewGames[i].setTextColor(0x000000);
+                        holder.mArrayTextViewGames[i].setAlpha(DisplayUtils.BLACK_ICON_ALPHA);
                     }
                 }
 
