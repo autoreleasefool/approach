@@ -200,7 +200,7 @@ public class SeriesAdapter
                     }
                     else
                     {
-                        holder.mArrayTextViewGames[i].setTextColor(0x000000);
+                        holder.mArrayTextViewGames[i].setTextColor(0xff000000);
                         holder.mArrayTextViewGames[i].setAlpha(DisplayUtils.BLACK_ICON_ALPHA);
                     }
                 }

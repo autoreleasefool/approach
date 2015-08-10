@@ -32,8 +32,8 @@
             android:layout_marginRight="4dp"
             android:alpha="0.54"
             android:gravity="center"
-            android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@android:color/black"
+            android:textSize="14sp"
             tools:ignore="RelativeOverlap" />
 
         <TextView
@@ -45,8 +45,8 @@
             android:layout_marginRight="4dp"
             android:alpha="0.54"
             android:gravity="center"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="@android:color/black" />
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/tv_series_game_3"
@@ -57,8 +57,8 @@
             android:layout_marginRight="4dp"
             android:alpha="0.54"
             android:gravity="center"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="@android:color/black" />
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/tv_series_game_2"
@@ -69,8 +69,8 @@
             android:layout_marginRight="4dp"
             android:alpha="0.54"
             android:gravity="center"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="@android:color/black" />
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
 
         <TextView
             android:id="@+id/tv_series_game_1"
@@ -81,8 +81,8 @@
             android:layout_marginRight="4dp"
             android:alpha="0.54"
             android:gravity="center"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:textColor="@android:color/black" />
+            android:textColor="@android:color/black"
+            android:textSize="14sp" />
 
         <ImageView
             android:id="@+id/iv_edit_date"
