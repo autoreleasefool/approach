@@ -123,7 +123,37 @@ public class TutorialFragment
     public void updateTheme()
     {
         if (getView() != null)
-            getView().setBackgroundColor(Theme.getTertiaryThemeColor());
+        {
+            switch (mTutorialPage)
+            {
+                case WELCOME:
+                    getView().setBackgroundColor(getResources().getColor(
+                            R.color.theme_blue_tertiary));
+                    break;
+                case ADD_BOWLER_LEAGUE_SERIES:
+                    getView().setBackgroundColor(getResources().getColor(
+                            R.color.theme_purple_tertiary));
+                    break;
+                case LEAGUES_VS_EVENTS:
+                    getView().setBackgroundColor(getResources().getColor(
+                            R.color.theme_red_tertiary));
+                    break;
+                case PIN_GAME_AND_SWIPE:
+                    getView().setBackgroundColor(getResources().getColor(
+                            R.color.theme_orange_tertiary));
+                    break;
+                case STATISTICS_AND_GRAPH:
+                    getView().setBackgroundColor(getResources().getColor(
+                            R.color.theme_green_tertiary));
+                    break;
+                case SETTINGS:
+                    getView().setBackgroundColor(getResources().getColor(
+                            R.color.theme_gray_tertiary));
+                    break;
+                default:
+                    // does nothing
+            }
+        }
     }
 
     /**
@@ -158,15 +188,15 @@ public class TutorialFragment
                 fab = (FloatingActionButton) mViewTutorial.findViewById(
                         R.id.fab_tutorial_add_person);
                 DisplayUtils.setFloatingActionButtonColors(fab,
-                        Theme.getPrimaryThemeColor(),
-                        Theme.getTertiaryThemeColor());
+                        getResources().getColor(R.color.theme_orange_primary),
+                        getResources().getColor(R.color.theme_orange_tertiary));
                 DisplayUtils.fixFloatingActionButtonMargins(getResources(), fab);
 
                 // Setting colors of second fab
                 fab = (FloatingActionButton) mViewTutorial.findViewById(R.id.fab_tutorial_add);
                 DisplayUtils.setFloatingActionButtonColors(fab,
-                        Theme.getPrimaryThemeColor(),
-                        Theme.getTertiaryThemeColor());
+                        getResources().getColor(R.color.theme_orange_primary),
+                        getResources().getColor(R.color.theme_orange_tertiary));
                 DisplayUtils.fixFloatingActionButtonMargins(getResources(), fab);
 
                 break;
