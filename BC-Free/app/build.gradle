@@ -1,18 +1,17 @@
 apply plugin: 'com.android.application'
 def versionMajor = 2
 def versionMinor = 0
-def versionPatch = 1
-def versionBuild = 0
+def versionPatch = 2
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion "22.0.1"
+    compileSdkVersion 23
+    buildToolsVersion "23.0.0"
 
     defaultConfig {
         applicationId "ca.josephroque.bowlingcompanion"
         minSdkVersion 15
-        targetSdkVersion 22
-        versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
+        targetSdkVersion 23
+        versionCode versionMajor * 100 + versionMinor * 10 + versionPatch
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
     }
     buildTypes {
@@ -26,10 +25,15 @@ android {
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
 
-    compile 'com.android.support:appcompat-v7:22.2.1'
-    compile 'com.android.support:design:22.2.1'
-    compile 'com.android.support:recyclerview-v7:22.2.1'
-    compile 'com.android.support:support-v4:22.2.1'
-    compile 'com.google.android.gms:play-services-ads:7.5.0'
+    // Android support libraries
+    compile 'com.android.support:appcompat-v7:23.0.0'
+    compile 'com.android.support:design:23.0.0'
+    compile 'com.android.support:recyclerview-v7:23.0.0'
+    compile 'com.android.support:support-v4:23.0.0'
+
+    // Play services
+    compile 'com.google.android.gms:play-services-ads:7.8.0'
+
+    // Other libraries
     compile 'com.github.PhilJay:MPAndroidChart:v2.1.3'
 }
