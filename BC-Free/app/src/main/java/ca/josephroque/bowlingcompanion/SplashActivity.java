@@ -136,8 +136,8 @@ public class SplashActivity
      * Starts an instance of {@link MainActivity}.
      */
     private void openMainActivity() {
-        Intent mainActivityIntet = new Intent(SplashActivity.this, MainActivity.class);
-        startActivity(mainActivityIntet);
+        Intent mainActivityIntent = new Intent(SplashActivity.this, MainActivity.class);
+        startActivity(mainActivityIntent);
         finish();
     }
 
