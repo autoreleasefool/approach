@@ -19,13 +19,8 @@ public final class Theme {
     @SuppressWarnings("unused")
     private static final String TAG = "Theme";
 
-    /**
-     * Default private constructor.
-     */
-    private Theme() {
-        // does nothing
-    }
-
+    /** Primary color for the current theme. */
+    private static int sThemeColorHighlight = -1;
     /** Primary color for the current theme. */
     private static int sThemeColorPrimary = -1;
     /** Secondary color for the current theme. */
@@ -34,10 +29,6 @@ public final class Theme {
     private static int sThemeColorTertiary = -1;
     /** Status bar color for the current theme. */
     private static int sThemeColorStatus = -1;
-    /** Number of milliseconds which medium animations will last for. */
-    private static int sMediumAnimationDuration = -1;
-    /** List item background color for the current theme. */
-    private static int sThemeListItemBackground = -1;
 
     /**
      * Loads the default theme from the preferences, or the theme which was set by the user in previous runs of the
@@ -63,15 +54,10 @@ public final class Theme {
             themeName = "Blue";
 
         final Resources resources = context.getResources();
-        if (sMediumAnimationDuration == -1)
-            sMediumAnimationDuration = context.getResources().getInteger(
-                    android.R.integer.config_mediumAnimTime);
-        if (sThemeListItemBackground == -1)
-            sThemeListItemBackground = DisplayUtils.getColorResource(resources, R.color.secondary_background);
-
         switch (themeName) {
             case "Green":
                 loadThemeColors(resources,
+                        R.color.theme_green_highlight,
                         R.color.theme_green_primary,
                         R.color.theme_green_secondary,
                         R.color.theme_green_tertiary,
@@ -79,6 +65,7 @@ public final class Theme {
                 break;
             case "Orange":
                 loadThemeColors(resources,
+                        R.color.theme_orange_highlight,
                         R.color.theme_orange_primary,
                         R.color.theme_orange_secondary,
                         R.color.theme_orange_tertiary,
@@ -86,6 +73,7 @@ public final class Theme {
                 break;
             case "Blue":
                 loadThemeColors(resources,
+                        R.color.theme_blue_highlight,
                         R.color.theme_blue_primary,
                         R.color.theme_blue_secondary,
                         R.color.theme_blue_tertiary,
@@ -93,6 +81,7 @@ public final class Theme {
                 break;
             case "Purple":
                 loadThemeColors(resources,
+                        R.color.theme_purple_highlight,
                         R.color.theme_purple_primary,
                         R.color.theme_purple_secondary,
                         R.color.theme_purple_tertiary,
@@ -100,6 +89,7 @@ public final class Theme {
                 break;
             case "Red":
                 loadThemeColors(resources,
+                        R.color.theme_red_highlight,
                         R.color.theme_red_primary,
                         R.color.theme_red_secondary,
                         R.color.theme_red_tertiary,
@@ -107,6 +97,7 @@ public final class Theme {
                 break;
             case "Grey":
                 loadThemeColors(resources,
+                        R.color.theme_gray_highlight,
                         R.color.theme_gray_primary,
                         R.color.theme_gray_secondary,
                         R.color.theme_gray_tertiary,
@@ -122,16 +113,19 @@ public final class Theme {
      * Loads theme colors from resources.
      *
      * @param resources to get resources
+     * @param highlightColorId id of highlight theme color
      * @param primaryColorId id of primary theme color
      * @param secondaryColorId id of secondary theme color
      * @param tertiaryColorId id of tertiary theme color
      * @param statusColorId id of status bar theme color
      */
     private static void loadThemeColors(Resources resources,
+                                        int highlightColorId,
                                         int primaryColorId,
                                         int secondaryColorId,
                                         int tertiaryColorId,
                                         int statusColorId) {
+        sThemeColorHighlight = DisplayUtils.getColorResource(resources, highlightColorId);
         sThemeColorPrimary = DisplayUtils.getColorResource(resources, primaryColorId);
         sThemeColorSecondary = DisplayUtils.getColorResource(resources, secondaryColorId);
         sThemeColorTertiary = DisplayUtils.getColorResource(resources, tertiaryColorId);
@@ -139,9 +133,18 @@ public final class Theme {
     }
 
     /**
+     * Gets the highlight color for the theme.
+     *
+     * @return the value of {@code sThemeColorHighlight}
+     */
+    public static int getHighlightThemeColor() {
+        return sThemeColorHighlight;
+    }
+
+    /**
      * Gets the primary color for the theme.
      *
-     * @return the value of sThemeColorPrimary
+     * @return the value of {@code sThemeColorPrimary}
      */
     public static int getPrimaryThemeColor() {
         return sThemeColorPrimary;
@@ -150,7 +153,7 @@ public final class Theme {
     /**
      * Gets the secondary color for the theme.
      *
-     * @return the value of sThemeColorSecondary
+     * @return the value of {@code sThemeColorSecondary}
      */
     public static int getSecondaryThemeColor() {
         return sThemeColorSecondary;
@@ -159,7 +162,7 @@ public final class Theme {
     /**
      * Gets the tertiary color for the theme.
      *
-     * @return the value of sThemeColorTertiary
+     * @return the value of {@code sThemeColorTertiary}
      */
     public static int getTertiaryThemeColor() {
         return sThemeColorTertiary;
@@ -168,7 +171,7 @@ public final class Theme {
     /**
      * Gets the status bar color for the theme.
      *
-     * @return the value of sThemeColorStatus
+     * @return the value of {@code sThemeColorStatus}
      */
     public static int getStatusThemeColor() {
         return sThemeColorStatus;
@@ -185,5 +188,12 @@ public final class Theme {
         @SuppressWarnings("unused")
         // Is used by classes implementing interface
         void updateTheme();
+    }
+
+    /**
+     * Default private constructor.
+     */
+    private Theme() {
+        // does nothing
     }
 }

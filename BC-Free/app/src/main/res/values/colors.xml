@@ -11,36 +11,42 @@
     <color name="indicator">#ffffff</color>
 
     <!-- Green theme values -->
+    <color name="theme_green_highlight">#B4F3B4</color>
     <color name="theme_green_primary">#5BD55B</color>
     <color name="theme_green_secondary">#3BC73B</color>
     <color name="theme_green_tertiary">#1ABC1A</color>
     <color name="theme_green_status">#1B5E20</color>
 
     <!-- Orange theme values -->
+    <color name="theme_orange_highlight">#FFE3C1</color>
     <color name="theme_orange_primary">#FFAF4F</color>
     <color name="theme_orange_secondary">#FFA131</color>
     <color name="theme_orange_tertiary">#FF8D06</color>
     <color name="theme_orange_status">#E65100</color>
 
     <!-- Blue theme values -->
+    <color name="theme_blue_highlight">#C5E4FC</color>
     <color name="theme_blue_primary">#67B2EC</color>
     <color name="theme_blue_secondary">#4DA2E4</color>
     <color name="theme_blue_tertiary">#3592DA</color>
     <color name="theme_blue_status">#0D47A1</color>
 
     <!-- Purple theme values -->
+    <color name="theme_purple_highlight">#E8D7FC</color>
     <color name="theme_purple_primary">#AF7DE8</color>
     <color name="theme_purple_secondary">#9C63DC</color>
     <color name="theme_purple_tertiary">#884BCD</color>
     <color name="theme_purple_status">#4A148C</color>
 
     <!-- Red theme values -->
+    <color name="theme_red_highlight">#FFC7C8</color>
     <color name="theme_red_primary">#FE7074</color>
     <color name="theme_red_secondary">#FE5A5E</color>
     <color name="theme_red_tertiary">#FD474C</color>
     <color name="theme_red_status">#B71C1C</color>
 
     <!-- Gray theme values -->
+    <color name="theme_gray_highlight">#AAAAAE</color>
     <color name="theme_gray_primary">#808287</color>
     <color name="theme_gray_secondary">#6B6F74</color>
     <color name="theme_gray_tertiary">#585C64</color>

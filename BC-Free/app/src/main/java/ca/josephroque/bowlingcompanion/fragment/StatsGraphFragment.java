@@ -10,7 +10,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -39,6 +40,7 @@ import ca.josephroque.bowlingcompanion.database.Contract.GameEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.SeriesEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.LeagueEntry;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
+import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.utilities.DateUtils;
 import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
 import ca.josephroque.bowlingcompanion.utilities.Score;
@@ -49,7 +51,8 @@ import ca.josephroque.bowlingcompanion.utilities.StatUtils;
  * particular bowler
  */
 public class StatsGraphFragment
-        extends Fragment {
+        extends Fragment
+        implements Theme.ChangeableTheme {
 
     /** Identifies output from this class in Logcat. */
     @SuppressWarnings("unused")
@@ -71,10 +74,16 @@ public class StatsGraphFragment
     /** Provides context to the user of the purpose of {@code mSwitchAccumulate}. */
     private TextView mTextViewAccumulate;
 
-    /** Button for user to advance to next stat graph. */
-    private Button mButtonNextStat;
-    /** BUtton for user to backtrack to previous stat graph. */
-    private Button mButtonPrevStat;
+    /** Contains views for navigating through stats. */
+    private RelativeLayout mStatNavigation;
+    /** Image view for user to advance to next stat graph. */
+    private ImageView mImageViewNextStat;
+    /** Image view for user to backtrack to previous stat graph. */
+    private ImageView mImageViewPrevStat;
+    /** Text view for user to advance to next stat graph. */
+    private TextView mTextViewNextStat;
+    /** Text view for user to backtrack to previous stat graph. */
+    private TextView mTextViewPrevStat;
 
     /** The category of the stat being displayed. */
     private int mStatCategory;
@@ -119,14 +128,8 @@ public class StatsGraphFragment
         mTextViewStat = (TextView) rootView.findViewById(R.id.tv_stat_name);
         mSwitchAccumulate = (Switch) rootView.findViewById(R.id.switch_stat_accumulate);
         mTextViewAccumulate = (TextView) rootView.findViewById(R.id.tv_stat_accumulate);
-        setupNavigationButtons(rootView);
-
-        mSwitchAccumulate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                loadNewStat(!mStatAccumulate);
-            }
-        });
+        setupNavigation(rootView);
+        setupAccumulateSwitch();
 
         if (mStatAccumulate) {
             mSwitchAccumulate.setChecked(true);
@@ -163,6 +166,8 @@ public class StatsGraphFragment
             mainActivity.setActionBarTitle(titleToSet, true);
             new LoadStatsGraphTask(this).execute(statsToLoad);
         }
+
+        updateTheme();
     }
 
     @Override
@@ -174,16 +179,42 @@ public class StatsGraphFragment
         outState.putBoolean(ARG_STAT_ACCUMULATE, mStatAccumulate);
     }
 
+    @Override
+    public void updateTheme() {
+        if (mTextViewStat != null)
+            mTextViewStat.setBackgroundColor(Theme.getHighlightThemeColor());
+        if (mStatNavigation != null)
+            mStatNavigation.setBackgroundColor(Theme.getPrimaryThemeColor());
+    }
+
     /**
-     * Sets on click listeners for next / prev stat buttons.
+     * Sets up on click listeners for switch between accumulated or weekly stats.
+     */
+    private void setupAccumulateSwitch() {
+        View.OnClickListener switchListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loadNewStat(!mStatAccumulate);
+            }
+        };
+
+        mSwitchAccumulate.setOnClickListener(switchListener);
+        mTextViewAccumulate.setOnClickListener(switchListener);
+    }
+
+    /**
+     * Sets on click listeners for next / prev stat buttons and gets reference for {@code mStatNavigation}.
      *
      * @param rootView root view of fragment
      */
-    private void setupNavigationButtons(View rootView) {
-        mButtonNextStat = (Button) rootView.findViewById(R.id.btn_next_stat);
-        mButtonPrevStat = (Button) rootView.findViewById(R.id.btn_prev_stat);
+    private void setupNavigation(View rootView) {
+        mStatNavigation = (RelativeLayout) rootView.findViewById(R.id.fl_stat_navigation);
+        mImageViewNextStat = (ImageView) rootView.findViewById(R.id.iv_next_stat);
+        mTextViewNextStat = (TextView) rootView.findViewById(R.id.tv_next_stat);
+        mImageViewPrevStat = (ImageView) rootView.findViewById(R.id.iv_prev_stat);
+        mTextViewPrevStat = (TextView) rootView.findViewById(R.id.tv_prev_stat);
 
-        mButtonNextStat.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener nextClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int nextStatCategory = mStatCategory;
@@ -204,9 +235,9 @@ public class StatsGraphFragment
 
                 loadNewStat(false);
             }
-        });
+        };
 
-        mButtonPrevStat.setOnClickListener(new View.OnClickListener() {
+        View.OnClickListener prevClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int nextStatCategory = mStatCategory;
@@ -234,7 +265,12 @@ public class StatsGraphFragment
 
                 loadNewStat(false);
             }
-        });
+        };
+
+        mImageViewNextStat.setOnClickListener(nextClickListener);
+        mTextViewNextStat.setOnClickListener(nextClickListener);
+        mImageViewPrevStat.setOnClickListener(prevClickListener);
+        mTextViewPrevStat.setOnClickListener(prevClickListener);
     }
 
     /**
@@ -270,8 +306,11 @@ public class StatsGraphFragment
      */
     private void setUIEnabled(boolean enable) {
         mSwitchAccumulate.setEnabled(enable);
-        mButtonNextStat.setEnabled(enable);
-        mButtonPrevStat.setEnabled(enable);
+        mTextViewAccumulate.setEnabled(enable);
+        mImageViewNextStat.setEnabled(enable);
+        mTextViewNextStat.setEnabled(enable);
+        mImageViewPrevStat.setEnabled(enable);
+        mTextViewPrevStat.setEnabled(enable);
     }
 
     /**
@@ -299,17 +338,18 @@ public class StatsGraphFragment
                 return;
 
             fragment.setUIEnabled(false);
+            int visibilityNext = (fragment.mStatIndex == StatUtils.STAT_NUMBER_OF_GAMES
+                    && fragment.mStatCategory == StatUtils.STAT_CATEGORY_OVERALL)
+                    ? View.GONE
+                    : View.VISIBLE;
+            int visibilityPrev = (fragment.mStatIndex == 0 && fragment.mStatCategory == 0)
+                    ? View.GONE
+                    : View.VISIBLE;
 
-            fragment.mButtonNextStat.setVisibility(
-                    (fragment.mStatIndex == StatUtils.STAT_NUMBER_OF_GAMES
-                            && fragment.mStatCategory == StatUtils.STAT_CATEGORY_OVERALL)
-                            ? View.GONE
-                            : View.VISIBLE);
-
-            fragment.mButtonPrevStat.setVisibility(
-                    (fragment.mStatIndex == 0 && fragment.mStatCategory == 0)
-                            ? View.GONE
-                            : View.VISIBLE);
+            fragment.mImageViewNextStat.setVisibility(visibilityNext);
+            fragment.mTextViewNextStat.setVisibility(visibilityNext);
+            fragment.mImageViewPrevStat.setVisibility(visibilityPrev);
+            fragment.mTextViewPrevStat.setVisibility(visibilityPrev);
         }
 
         @Override
