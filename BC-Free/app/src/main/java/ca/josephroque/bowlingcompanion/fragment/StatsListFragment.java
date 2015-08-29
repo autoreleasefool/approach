@@ -152,7 +152,6 @@ public class StatsListFragment
 
         if (getActivity() != null) {
             MainActivity mainActivity = (MainActivity) getActivity();
-            mainActivity.setFloatingActionButtonState(0);
             mainActivity.setDrawerState(false);
 
             //Checks what type of stats should be displayed, depending
@@ -175,6 +174,12 @@ public class StatsListFragment
                 titleToSet = R.string.title_stats_game;
                 mStatsToLoad = StatUtils.LOADING_GAME_STATS;
             }
+
+            if (mStatsToLoad == StatUtils.LOADING_BOWLER_STATS
+                    || mStatsToLoad == StatUtils.LOADING_LEAGUE_STATS)
+                mainActivity.setFloatingActionButtonState(R.drawable.ic_trending_up_black_24dp);
+            else
+                mainActivity.setFloatingActionButtonState(0);
 
             mainActivity.setActionBarTitle(titleToSet, true);
             new LoadStatsListTask(this).execute(mStatsToLoad);
@@ -639,11 +644,6 @@ public class StatsListFragment
             fragment.mListStatNamesAndValues.addAll(
                     (List<List<Pair<String, String>>>) lists[1]);
             fragment.mAdapterStats.notifyDataSetChanged();
-
-            MainActivity mainActivity = (MainActivity) fragment.getActivity();
-            if (mainActivity != null && (fragment.mStatsToLoad == StatUtils.LOADING_BOWLER_STATS
-                    || fragment.mStatsToLoad == StatUtils.LOADING_LEAGUE_STATS))
-                mainActivity.setFloatingActionButtonState(R.drawable.ic_trending_up_black_24dp);
         }
     }
 
