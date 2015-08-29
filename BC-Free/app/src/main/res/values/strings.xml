@@ -84,6 +84,9 @@
     <string name="text_example_bowler">Your name here</string>
     <string name="text_example_league">Bowling Club</string>
 
+    <!-- Permissions -->
+    <string name="permission_request_storage">5 Pin Bowling Companion requires the external storage to save an image of your game to the device.</string>
+
     <!-- Content Descriptions -->
     <string name="description_lock_unlock">Lock or unlock game</string>
     <string name="description_clear">Clear pins</string>

@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -24,6 +25,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
@@ -75,6 +78,7 @@ import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
 import ca.josephroque.bowlingcompanion.utilities.EmailUtils;
 import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
 import ca.josephroque.bowlingcompanion.utilities.NavigationUtils;
+import ca.josephroque.bowlingcompanion.utilities.PermissionUtils;
 import ca.josephroque.bowlingcompanion.view.AnimatedFloatingActionButton;
 
 /**
@@ -90,7 +94,8 @@ public class MainActivity
         LeagueEventFragment.LeagueEventCallback,
         SeriesFragment.SeriesCallback,
         GameFragment.GameFragmentCallback,
-        NavigationDrawerAdapter.NavigationCallback {
+        NavigationDrawerAdapter.NavigationCallback,
+        ActivityCompat.OnRequestPermissionsResultCallback {
 
     /** Identifies output from this class in Logcat. */
     @SuppressWarnings("unused")
@@ -486,6 +491,27 @@ public class MainActivity
             setActionBarTitle(mDrawerTitle, false);
         else
             setActionBarTitle(mTitle, false);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (requestCode == PermissionUtils.REQUEST_EXTERNAL_STORAGE) {
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                GameFragment gameFragment = null;
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                for (Fragment frag : fragmentManager.getFragments()) {
+                    if (frag != null && frag instanceof GameFragment) {
+                        gameFragment = (GameFragment) frag;
+                        break;
+                    }
+                }
+
+                if (gameFragment != null)
+                    gameFragment.externalStoragePermissionGranted();
+            }
+        }
     }
 
     @Override

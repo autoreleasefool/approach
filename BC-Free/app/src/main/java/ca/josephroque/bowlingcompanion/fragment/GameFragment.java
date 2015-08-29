@@ -564,7 +564,6 @@ public class GameFragment
                 setFloatingActionButtonState(true, R.drawable.ic_chevron_right_black_24dp);
             }
         }, 500);
-
     }
 
     @Override
@@ -2174,6 +2173,12 @@ public class GameFragment
             throw new RuntimeException("Fatal error: could not load initial scores.");
         }
         cursor.close();
+    }
+
+    public void externalStoragePermissionGranted() {
+        MainActivity mainActivity = (MainActivity) getActivity();
+        if (mainActivity != null)
+            ShareUtils.showShareDialog(mainActivity, mainActivity.getSeriesId());
     }
 
     /**
