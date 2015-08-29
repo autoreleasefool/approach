@@ -9,6 +9,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -318,6 +319,7 @@ public class GameFragment
         }
     }
 
+    @SuppressWarnings("deprecation") // uses newer APIs where available
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
@@ -441,7 +443,10 @@ public class GameFragment
         //TextView to display final score of game
         mTextViewFinalScore = new TextView(getActivity());
         mTextViewFinalScore.setGravity(Gravity.CENTER);
-        mTextViewFinalScore.setTextAppearance(android.R.style.TextAppearance_Large);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            mTextViewFinalScore.setTextAppearance(android.R.style.TextAppearance_Large);
+        else
+            mTextViewFinalScore.setTextAppearance(getActivity(), android.R.style.TextAppearance_Large);
         mTextViewFinalScore.setBackgroundResource(R.drawable.background_frame_text);
         layoutParams = new RelativeLayout.LayoutParams(dp120, dp128);
         layoutParams.leftMargin = DataFormatter.getPixelsFromDP(screenDensity,
