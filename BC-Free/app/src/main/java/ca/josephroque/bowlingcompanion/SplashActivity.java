@@ -12,9 +12,11 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import ca.josephroque.bowlingcompanion.adapter.SplashPagerAdapter;
 import ca.josephroque.bowlingcompanion.fragment.TutorialFragment;
@@ -42,6 +44,8 @@ public class SplashActivity
 
     /** View pager for content fragments. */
     private ViewPager mViewPagerContent;
+    /** View to indicate the user's current page in the tutorial. */
+    private View mCurrentPageIndicator;
 
     /** Current page of view pager. */
     private int mCurrentTutorialPage = 0;
@@ -141,30 +145,86 @@ public class SplashActivity
      * Gets adapter for view pager and initializes views.
      */
     private void setupViewPager() {
+        final int indicatorSize = getResources().getDimensionPixelSize(R.dimen.indicator_size);
+        final RelativeLayout rootLayout = (RelativeLayout) findViewById(R.id.rl_splash);
+        LinearLayout linearLayoutToolbar = (LinearLayout) findViewById(R.id.ll_splash_toolbar);
+        final View[] positionIndicators = createPageIndicators(indicatorSize, linearLayoutToolbar);
         mViewPagerContent = (ViewPager) findViewById(R.id.splash_view_pager);
+
         /* Manages pages in the view pager. */
         SplashPagerAdapter splashPagerAdapter = new SplashPagerAdapter(getSupportFragmentManager());
         mViewPagerContent.setAdapter(splashPagerAdapter);
-        LinearLayout linearLayoutToolbar = (LinearLayout) findViewById(R.id.ll_splash_toolbar);
 
-        final View[] positionIndicator = new View[TutorialFragment.TUTORIAL_TOTAL_PAGES];
-        for (int i = 0; i < positionIndicator.length; i++) {
-            final int viewId = getResources().getIdentifier("view_indicator_" + i, "id",
-                    getPackageName());
-            positionIndicator[i] = linearLayoutToolbar.findViewById(viewId);
-            positionIndicator[i].setAlpha(INDICATOR_INACTIVE);
-        }
-        positionIndicator[mCurrentTutorialPage].setAlpha(INDICATOR_ACTIVE);
+        mCurrentPageIndicator = new View(SplashActivity.this);
+        mCurrentPageIndicator.setBackgroundResource(R.drawable.position_indicator);
+        mCurrentPageIndicator.setAlpha(INDICATOR_ACTIVE);
+        rootLayout.addView(mCurrentPageIndicator, new RelativeLayout.LayoutParams(indicatorSize, indicatorSize));
 
-        mViewPagerContent.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+        mViewPagerContent.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+                int[] currentLocation = new int[2];
+                int[] nextLocation = new int[2];
+
+                positionIndicators[position].getLocationInWindow(currentLocation);
+                if (position < TutorialFragment.TUTORIAL_TOTAL_PAGES - 1) {
+                    positionIndicators[position + 1].getLocationInWindow(nextLocation);
+                }
+                mCurrentPageIndicator.setX(
+                        currentLocation[0] + (nextLocation[0] - currentLocation[0]) * positionOffset);
+            }
+
             @Override
             public void onPageSelected(int position) {
-                //Changes which page indicator is 'highlighted'
-                positionIndicator[mCurrentTutorialPage].setAlpha(INDICATOR_INACTIVE);
-                positionIndicator[position].setAlpha(INDICATOR_ACTIVE);
-
                 mCurrentTutorialPage = position;
             }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                // does nothing
+            }
         });
+    }
+
+    /**
+     * Sets up views to indicate the current page and aligns them at the bottom of the activity.
+     *
+     * @param indicatorSize size of position indicators
+     * @param linearLayoutToolbar container for page indicators
+     * @return an array of indicators, one for each tutorial page
+     */
+    private View[] createPageIndicators(final int indicatorSize, LinearLayout linearLayoutToolbar) {
+        final View[] positionIndicators = new View[TutorialFragment.TUTORIAL_TOTAL_PAGES];
+
+        for (int i = 0; i < positionIndicators.length; i++) {
+            positionIndicators[i] = new View(SplashActivity.this);
+            positionIndicators[i].setAlpha(INDICATOR_INACTIVE);
+            positionIndicators[i].setBackgroundResource(R.drawable.position_indicator);
+
+            LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(indicatorSize, indicatorSize);
+            layoutParams.setMargins(indicatorSize, indicatorSize, indicatorSize, indicatorSize);
+            linearLayoutToolbar.addView(positionIndicators[i], layoutParams);
+        }
+
+        positionIndicators[0].getViewTreeObserver()
+                .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    @SuppressWarnings("deprecation") // uses newer APIs where available
+                    public void onGlobalLayout() {
+                        View rootView = findViewById(R.id.rl_splash);
+                        final int statusBarOffset = getResources().getDisplayMetrics().heightPixels
+                                - rootView.getMeasuredHeight();
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+                            positionIndicators[0].getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                        else
+                            positionIndicators[0].getViewTreeObserver().removeGlobalOnLayoutListener(this);
+
+                        int[] locations = new int[2];
+                        positionIndicators[0].getLocationOnScreen(locations);
+                        mCurrentPageIndicator.setX(locations[0]);
+                        mCurrentPageIndicator.setY(locations[1] - statusBarOffset);
+                    }
+                });
+
+        return positionIndicators;
     }
 }
