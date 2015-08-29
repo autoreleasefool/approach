@@ -23,16 +23,15 @@ import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.utilities.EmailUtils;
 
 /**
- * A {@link PreferenceActivity} that presents a set of application settings. On handset devices,
- * settings are presented as a single list. On tablets, settings are split by category, with
- * category headers shown to the left of the list of settings.
+ * A {@link PreferenceActivity} that presents a set of application settings. On handset devices, settings are presented
+ * as a single list. On tablets, settings are split by category, with category headers shown to the left of the list of
+ * settings.
  */
 @SuppressWarnings("deprecation")
 public class SettingsActivity
         extends PreferenceActivity
         implements SharedPreferences.OnSharedPreferenceChangeListener,
-        Preference.OnPreferenceClickListener
-{
+        Preference.OnPreferenceClickListener {
 
     /** Identifies output from this class in Logcat. */
     @SuppressWarnings("unused")
@@ -51,8 +50,7 @@ public class SettingsActivity
     private int mCurrentBowlerPosition;
 
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
         //Register this object as a listener for preference changes
         getPreferenceManager()
@@ -64,8 +62,7 @@ public class SettingsActivity
     }
 
     @Override
-    public void onPause()
-    {
+    public void onPause() {
         //Unregisters this object as a listener for preference changes
         getPreferenceManager()
                 .getSharedPreferences()
@@ -74,19 +71,17 @@ public class SettingsActivity
     }
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState)
-    {
+    protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
         setupSimplePreferencesScreen();
     }
 
     /**
-     * Shows the simplified settings UI if the device configuration if the device configuration
-     * dictates that a simplified, single-pane UI should be shown.
+     * Shows the simplified settings UI if the device configuration if the device configuration dictates that a
+     * simplified, single-pane UI should be shown.
      */
-    private void setupSimplePreferencesScreen()
-    {
+    private void setupSimplePreferencesScreen() {
 
         // In the simplified UI, fragments are not used at all and we instead
         // use the older PreferenceActivity APIs.
@@ -128,11 +123,9 @@ public class SettingsActivity
     }
 
     /**
-     * Loads bowler and league names from the database for user to select from when choosing 'quick'
-     * bowlers/leagues.
+     * Loads bowler and league names from the database for user to select from when choosing 'quick' bowlers/leagues.
      */
-    private void loadBowlerAndLeagueNames()
-    {
+    private void loadBowlerAndLeagueNames() {
         SQLiteDatabase database = DatabaseHelper.getInstance(this).getReadableDatabase();
         String rawNameQuery = "SELECT "
                 + "bowler." + BowlerEntry._ID + " AS bid, "
@@ -156,13 +149,10 @@ public class SettingsActivity
         long lastBowlerId = -1;
         int currentLeaguePosition = -1;
         Cursor cursor = database.rawQuery(rawNameQuery, rawNameArgs);
-        if (cursor.moveToFirst())
-        {
-            while (!cursor.isAfterLast())
-            {
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
                 long bowlerId = cursor.getLong(cursor.getColumnIndex("bid"));
-                if (lastBowlerId != bowlerId)
-                {
+                if (lastBowlerId != bowlerId) {
                     lastBowlerId = bowlerId;
                     listBowlerNames.add(cursor.getString(cursor.getColumnIndex(
                             BowlerEntry.COLUMN_BOWLER_NAME)));
@@ -190,8 +180,7 @@ public class SettingsActivity
 
         mArrayLeagueIds = new String[listLeagueIds.size()][];
         mArrayLeagueNames = new String[listLeagueNames.size()][];
-        for (int i = 0; i < mArrayLeagueIds.length; i++)
-        {
+        for (int i = 0; i < mArrayLeagueIds.length; i++) {
             mArrayLeagueIds[i] = new String[listLeagueIds.get(i).size()];
             listLeagueIds.get(i).toArray(mArrayLeagueIds[i]);
             mArrayLeagueNames[i] = new String[listLeagueNames.get(i).size()];
@@ -199,16 +188,13 @@ public class SettingsActivity
         }
 
         //Enables/disables options depending on if there are valid bowlers & leagues to select
-        if (listBowlerNames.size() > 0)
-        {
+        if (listBowlerNames.size() > 0) {
             findPreference(Constants.KEY_ENABLE_QUICK).setEnabled(true);
             ListPreference listPreference =
                     (ListPreference) findPreference(Constants.KEY_QUICK_BOWLER);
             listPreference.setEntryValues(mArrayBowlerIds);
             listPreference.setEntries(mArrayBowlerNames);
-        }
-        else
-        {
+        } else {
             CheckBoxPreference checkBoxPreference =
                     (CheckBoxPreference) findPreference(Constants.KEY_ENABLE_QUICK);
             checkBoxPreference.setChecked(false);
@@ -223,14 +209,12 @@ public class SettingsActivity
     /**
      * Sets the summaries of preferences to their starting values.
      */
-    private void setPreferenceSummaries()
-    {
+    private void setPreferenceSummaries() {
         SharedPreferences sharedPreferences = getPreferenceManager().getSharedPreferences();
 
         Preference preference = findPreference(Constants.KEY_ENABLE_QUICK);
         boolean checkBoolean = sharedPreferences.getBoolean(Constants.KEY_ENABLE_QUICK, false);
-        if (checkBoolean)
-        {
+        if (checkBoolean) {
             preference.setSummary(R.string.pref_enable_quick_summaryOn);
             ListPreference quickBowlerPref =
                     (ListPreference) findPreference(Constants.KEY_QUICK_BOWLER);
@@ -261,9 +245,7 @@ public class SettingsActivity
                 position = 0;
             quickLeaguePref.setValueIndex(position);
             quickLeaguePref.setSummary(mArrayLeagueNames[mCurrentBowlerPosition][position]);
-        }
-        else
-        {
+        } else {
             preference.setSummary(R.string.pref_enable_quick_summaryOff);
             findPreference(Constants.KEY_QUICK_BOWLER)
                     .setSummary(R.string.pref_quick_bowler_summary);
@@ -289,12 +271,10 @@ public class SettingsActivity
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key)
-    {
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
         //Updates summaries of preferences when their values are changed
 
-        switch (key)
-        {
+        switch (key) {
             case Constants.KEY_ENABLE_QUICK:
                 boolean isQuickEnabled = sharedPreferences.getBoolean(key, false);
                 Preference quickPref = findPreference(key);
@@ -303,8 +283,7 @@ public class SettingsActivity
                 ListPreference leagueListPref =
                         (ListPreference) findPreference(Constants.KEY_QUICK_LEAGUE);
 
-                if (isQuickEnabled)
-                {
+                if (isQuickEnabled) {
                     quickPref.setSummary(R.string.pref_enable_quick_summaryOn);
                     bowlerListPref.setValueIndex(0);
 
@@ -320,9 +299,7 @@ public class SettingsActivity
                             .putLong(Constants.PREF_QUICK_LEAGUE_ID,
                                     Long.parseLong(mArrayLeagueIds[0][0]))
                             .apply();
-                }
-                else
-                {
+                } else {
                     quickPref.setSummary(R.string.pref_enable_quick_summaryOff);
                     bowlerListPref.setSummary(R.string.pref_quick_bowler_summary);
                     leagueListPref.setSummary(R.string.pref_quick_league_summary);
@@ -392,27 +369,20 @@ public class SettingsActivity
     }
 
     @Override
-    public boolean onPreferenceClick(Preference preference)
-    {
-        if (preference.getKey().equals(Constants.KEY_RATE))
-        {
+    public boolean onPreferenceClick(Preference preference) {
+        if (preference.getKey().equals(Constants.KEY_RATE)) {
             //Opens Google Play or chrome to display app
             final String appPackageName = getPackageName();
-            try
-            {
+            try {
                 startActivity(new Intent(Intent.ACTION_VIEW,
                         Uri.parse("market://details?id=" + appPackageName)));
-            }
-            catch (android.content.ActivityNotFoundException ex)
-            {
+            } catch (android.content.ActivityNotFoundException ex) {
                 startActivity(new Intent(Intent.ACTION_VIEW,
                         Uri.parse("http://play.google.com/store/apps/details?id="
                                 + appPackageName)));
             }
             return true;
-        }
-        else if (preference.getKey().equals(Constants.KEY_REPORT_BUG))
-        {
+        } else if (preference.getKey().equals(Constants.KEY_REPORT_BUG)) {
             String emailBody =
                     "Please try to include as much of the following information as possible:"
                             + "\nWhere in the application the bug occurred,"
@@ -427,9 +397,7 @@ public class SettingsActivity
                     emailBody);
             startActivity(Intent.createChooser(emailIntent, "Send mail..."));
             return true;
-        }
-        else if (preference.getKey().equals(Constants.KEY_COMMENT_SUGGESTION))
-        {
+        } else if (preference.getKey().equals(Constants.KEY_COMMENT_SUGGESTION)) {
             Intent emailIntent = EmailUtils.getEmailIntent(
                     "contact@josephroque.ca",
                     "Comm/Sug: Bowling Companion");
@@ -440,8 +408,7 @@ public class SettingsActivity
     }
 
     @Override
-    public boolean onIsMultiPane()
-    {
+    public boolean onIsMultiPane() {
         return false;
     }
 }

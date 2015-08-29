@@ -7,8 +7,7 @@ import android.os.Parcelable;
  * Created by Joseph Roque on 2015-07-22. Organizes the data for a bowler.
  */
 public class Bowler
-        implements Parcelable, NameAverageId
-{
+        implements Parcelable, NameAverageId {
 
     /** Name of the bowler. */
     private final String mBowlerName;
@@ -26,8 +25,7 @@ public class Bowler
      * @param name name of the bowler
      * @param average average of the bowler
      */
-    public Bowler(long id, String name, short average)
-    {
+    public Bowler(long id, String name, short average) {
         this.mBowlerId = id;
         this.mBowlerName = name;
         this.mBowlerAverage = average;
@@ -38,8 +36,7 @@ public class Bowler
      *
      * @param pc bowler data
      */
-    public Bowler(Parcel pc)
-    {
+    public Bowler(Parcel pc) {
         mBowlerId = pc.readLong();
         mBowlerName = pc.readString();
         mBowlerAverage = (short) pc.readInt();
@@ -51,8 +48,7 @@ public class Bowler
      *
      * @return the value of {@code mBowlerName}
      */
-    public String getBowlerName()
-    {
+    public String getBowlerName() {
         return mBowlerName;
     }
 
@@ -61,8 +57,7 @@ public class Bowler
      *
      * @param bowlerId the new id
      */
-    public void setBowlerId(long bowlerId)
-    {
+    public void setBowlerId(long bowlerId) {
         this.mBowlerId = bowlerId;
     }
 
@@ -71,8 +66,7 @@ public class Bowler
      *
      * @return the value of {@code mBowlerId}
      */
-    public long getBowlerId()
-    {
+    public long getBowlerId() {
         return mBowlerId;
     }
 
@@ -81,65 +75,55 @@ public class Bowler
      *
      * @return the value of {@code mBowlerAverage}
      */
-    public short getBowlerAverage()
-    {
+    public short getBowlerAverage() {
         return mBowlerAverage;
     }
 
     @Override
-    public String getName()
-    {
+    public String getName() {
         return getBowlerName();
     }
 
     @Override
-    public short getAverage()
-    {
+    public short getAverage() {
         return getBowlerAverage();
     }
 
     @Override
-    public long getId()
-    {
+    public long getId() {
         return getBowlerId();
     }
 
     @Override
-    public void writeToParcel(Parcel pc, int flags)
-    {
+    public void writeToParcel(Parcel pc, int flags) {
         pc.writeLong(mBowlerId);
         pc.writeString(mBowlerName);
         pc.writeInt(mBowlerAverage);
     }
 
     @Override
-    public int describeContents()
-    {
+    public int describeContents() {
         return 0;
     }
 
     /**
      * Used to create objects and arrays from this class.
      */
-    public static final Parcelable.Creator<Bowler> CREATOR = new Parcelable.Creator<Bowler>()
-    {
+    public static final Parcelable.Creator<Bowler> CREATOR = new Parcelable.Creator<Bowler>() {
 
         @Override
-        public Bowler createFromParcel(Parcel pc)
-        {
+        public Bowler createFromParcel(Parcel pc) {
             return new Bowler(pc);
         }
 
         @Override
-        public Bowler[] newArray(int size)
-        {
+        public Bowler[] newArray(int size) {
             return new Bowler[size];
         }
     };
 
     @Override
-    public boolean equals(Object other)
-    {
+    public boolean equals(Object other) {
         if (other == null || !(other instanceof Bowler))
             return false;
         if (other == this)
@@ -151,22 +135,19 @@ public class Bowler
 
     @SuppressWarnings("CheckStyle")
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         int result = 89;
         int c = getBowlerName().hashCode();
         return 37 * result + c;
     }
 
     @Override
-    public void setIsDeleted(boolean deleted)
-    {
+    public void setIsDeleted(boolean deleted) {
         this.mIsDeleted = deleted;
     }
 
     @Override
-    public boolean wasDeleted()
-    {
+    public boolean wasDeleted() {
         return mIsDeleted;
     }
 }

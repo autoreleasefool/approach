@@ -10,8 +10,7 @@ import android.view.ViewGroup;
 /**
  * Created by Joseph Roque on 2015-07-24. Constants and methods for changes made to the UI.
  */
-public final class DisplayUtils
-{
+public final class DisplayUtils {
 
     /** To identify output from this class in the Logcat. */
     @SuppressWarnings("unused")
@@ -21,19 +20,21 @@ public final class DisplayUtils
     public static final float ANIMATION_CENTER_PIVOT = 0.5f;
     /** Alpha value for black icons. */
     public static final int BLACK_ICON_ALPHA = 0x8A;
+    /** Alpha value for secondary black text. */
+    public static final float BLACK_SECONDARY_TEXT_ALPHA = 0.54f;
+    /** Constant for black color. */
+    public static final int COLOR_BLACK = 0xff000000;
 
     /**
      * Default private constructor.
      */
-    private DisplayUtils()
-    {
+    private DisplayUtils() {
         // does nothing
     }
 
 
     /**
-     * Sets the primary and ripple colors of a {@link
-     * android.support.design.widget.FloatingActionButton}.
+     * Sets the primary and ripple colors of a {@link android.support.design.widget.FloatingActionButton}.
      *
      * @param fab floating action button to adjust
      * @param primaryColor primary color of action button
@@ -41,8 +42,7 @@ public final class DisplayUtils
      */
     public static void setFloatingActionButtonColors(FloatingActionButton fab,
                                                      int primaryColor,
-                                                     int rippleColor)
-    {
+                                                     int rippleColor) {
         int[][] states = {
                 {android.R.attr.state_enabled},
                 {android.R.attr.state_pressed},
@@ -58,16 +58,13 @@ public final class DisplayUtils
     }
 
     /**
-     * Applies a workaround to fix {@link android.support.design.widget.FloatingActionButton}
-     * margins pre-lollipop.
+     * Applies a workaround to fix {@link android.support.design.widget.FloatingActionButton} margins pre-lollipop.
      *
      * @param resources to get screen density
      * @param fab floating action button to fix
      */
-    public static void fixFloatingActionButtonMargins(Resources resources, FloatingActionButton fab)
-    {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)
-        {
+    public static void fixFloatingActionButtonMargins(Resources resources, FloatingActionButton fab) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             final int underLollipopMargin = 8;
             final float scale = resources.getDisplayMetrics().density;
             ViewGroup.MarginLayoutParams p =
@@ -85,11 +82,25 @@ public final class DisplayUtils
      * @return drawable which represents {@code drawableId}
      */
     @SuppressWarnings("deprecation")    //Uses newer APIs when available
-    public static Drawable getDrawable(Resources res, int drawableId)
-    {
+    public static Drawable getDrawable(Resources res, int drawableId) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
             return res.getDrawable(drawableId, null);
         else
             return res.getDrawable(drawableId);
+    }
+
+    /**
+     * Gets a color from the resources using the color's id.
+     *
+     * @param resources to get color
+     * @param id id of color
+     * @return integer representation of color
+     */
+    @SuppressWarnings("deprecation") // uses newer APIs where available
+    public static int getColorResource(Resources resources, int id) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            return resources.getColor(id, null);
+        else
+            return resources.getColor(id);
     }
 }

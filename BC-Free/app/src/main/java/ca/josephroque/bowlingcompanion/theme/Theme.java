@@ -2,17 +2,18 @@ package ca.josephroque.bowlingcompanion.theme;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.preference.PreferenceManager;
 
 import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.R;
+import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
 
 /**
- * Created by Joseph Roque on 15-03-13. Provides methods which load and return colors and other
- * values to provide a consistent theme across the application, which can be altered by the user
+ * Created by Joseph Roque on 15-03-13. Provides methods which load and return colors and other values to provide a
+ * consistent theme across the application, which can be altered by the user
  */
-public final class Theme
-{
+public final class Theme {
 
     /** Identifies output from this class in Logcat. */
     @SuppressWarnings("unused")
@@ -21,8 +22,7 @@ public final class Theme
     /**
      * Default private constructor.
      */
-    private Theme()
-    {
+    private Theme() {
         // does nothing
     }
 
@@ -40,13 +40,12 @@ public final class Theme
     private static int sThemeListItemBackground = -1;
 
     /**
-     * Loads the default theme from the preferences, or the theme which was set by the user in
-     * previous runs of the app.
+     * Loads the default theme from the preferences, or the theme which was set by the user in previous runs of the
+     * app.
      *
      * @param context current context to obtain values from
      */
-    public static void loadTheme(Context context)
-    {
+    public static void loadTheme(Context context) {
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
         String themeName = prefs.getString(Constants.KEY_THEME_COLORS, "Blue");
         setTheme(context, themeName);
@@ -59,78 +58,58 @@ public final class Theme
      * @param themeName color of the theme to load
      */
     public static void setTheme(Context context,
-                                String themeName)
-    {
+                                String themeName) {
         if (themeName == null)
             themeName = "Blue";
 
+        final Resources resources = context.getResources();
         if (sMediumAnimationDuration == -1)
             sMediumAnimationDuration = context.getResources().getInteger(
                     android.R.integer.config_mediumAnimTime);
         if (sThemeListItemBackground == -1)
-            sThemeListItemBackground = context.getResources().getColor(
-                    R.color.secondary_background);
+            sThemeListItemBackground = DisplayUtils.getColorResource(resources, R.color.secondary_background);
 
-        switch (themeName)
-        {
+        switch (themeName) {
             case "Green":
-                sThemeColorPrimary = context.getResources().getColor(
-                        R.color.theme_green_primary);
-                sThemeColorSecondary = context.getResources().getColor(
-                        R.color.theme_green_secondary);
-                sThemeColorTertiary = context.getResources().getColor(
-                        R.color.theme_green_tertiary);
-                sThemeColorStatus = context.getResources().getColor(
+                loadThemeColors(resources,
+                        R.color.theme_green_primary,
+                        R.color.theme_green_secondary,
+                        R.color.theme_green_tertiary,
                         R.color.theme_green_status);
                 break;
             case "Orange":
-                sThemeColorPrimary = context.getResources().getColor(
-                        R.color.theme_orange_primary);
-                sThemeColorSecondary = context.getResources().getColor(
-                        R.color.theme_orange_secondary);
-                sThemeColorTertiary = context.getResources().getColor(
-                        R.color.theme_orange_tertiary);
-                sThemeColorStatus = context.getResources().getColor(
+                loadThemeColors(resources,
+                        R.color.theme_orange_primary,
+                        R.color.theme_orange_secondary,
+                        R.color.theme_orange_tertiary,
                         R.color.theme_orange_status);
                 break;
             case "Blue":
-                sThemeColorPrimary = context.getResources().getColor(
-                        R.color.theme_blue_primary);
-                sThemeColorSecondary = context.getResources().getColor(
-                        R.color.theme_blue_secondary);
-                sThemeColorTertiary = context.getResources().getColor(
-                        R.color.theme_blue_tertiary);
-                sThemeColorStatus = context.getResources().getColor(
+                loadThemeColors(resources,
+                        R.color.theme_blue_primary,
+                        R.color.theme_blue_secondary,
+                        R.color.theme_blue_tertiary,
                         R.color.theme_blue_status);
                 break;
             case "Purple":
-                sThemeColorPrimary = context.getResources().getColor(
-                        R.color.theme_purple_primary);
-                sThemeColorSecondary = context.getResources().getColor(
-                        R.color.theme_purple_secondary);
-                sThemeColorTertiary = context.getResources().getColor(
-                        R.color.theme_purple_tertiary);
-                sThemeColorStatus = context.getResources().getColor(
+                loadThemeColors(resources,
+                        R.color.theme_purple_primary,
+                        R.color.theme_purple_secondary,
+                        R.color.theme_purple_tertiary,
                         R.color.theme_purple_status);
                 break;
             case "Red":
-                sThemeColorPrimary = context.getResources().getColor(
-                        R.color.theme_red_primary);
-                sThemeColorSecondary = context.getResources().getColor(
-                        R.color.theme_red_secondary);
-                sThemeColorTertiary = context.getResources().getColor(
-                        R.color.theme_red_tertiary);
-                sThemeColorStatus = context.getResources().getColor(
+                loadThemeColors(resources,
+                        R.color.theme_red_primary,
+                        R.color.theme_red_secondary,
+                        R.color.theme_red_tertiary,
                         R.color.theme_red_status);
                 break;
             case "Grey":
-                sThemeColorPrimary = context.getResources().getColor(
-                        R.color.theme_gray_primary);
-                sThemeColorSecondary = context.getResources().getColor(
-                        R.color.theme_gray_secondary);
-                sThemeColorTertiary = context.getResources().getColor(
-                        R.color.theme_gray_tertiary);
-                sThemeColorStatus = context.getResources().getColor(
+                loadThemeColors(resources,
+                        R.color.theme_gray_primary,
+                        R.color.theme_gray_secondary,
+                        R.color.theme_gray_tertiary,
                         R.color.theme_gray_status);
                 break;
             default:
@@ -140,12 +119,31 @@ public final class Theme
     }
 
     /**
+     * Loads theme colors from resources.
+     *
+     * @param resources to get resources
+     * @param primaryColorId id of primary theme color
+     * @param secondaryColorId id of secondary theme color
+     * @param tertiaryColorId id of tertiary theme color
+     * @param statusColorId id of status bar theme color
+     */
+    private static void loadThemeColors(Resources resources,
+                                        int primaryColorId,
+                                        int secondaryColorId,
+                                        int tertiaryColorId,
+                                        int statusColorId) {
+        sThemeColorPrimary = DisplayUtils.getColorResource(resources, primaryColorId);
+        sThemeColorSecondary = DisplayUtils.getColorResource(resources, secondaryColorId);
+        sThemeColorTertiary = DisplayUtils.getColorResource(resources, tertiaryColorId);
+        sThemeColorStatus = DisplayUtils.getColorResource(resources, statusColorId);
+    }
+
+    /**
      * Gets the primary color for the theme.
      *
      * @return the value of sThemeColorPrimary
      */
-    public static int getPrimaryThemeColor()
-    {
+    public static int getPrimaryThemeColor() {
         return sThemeColorPrimary;
     }
 
@@ -154,8 +152,7 @@ public final class Theme
      *
      * @return the value of sThemeColorSecondary
      */
-    public static int getSecondaryThemeColor()
-    {
+    public static int getSecondaryThemeColor() {
         return sThemeColorSecondary;
     }
 
@@ -164,8 +161,7 @@ public final class Theme
      *
      * @return the value of sThemeColorTertiary
      */
-    public static int getTertiaryThemeColor()
-    {
+    public static int getTertiaryThemeColor() {
         return sThemeColorTertiary;
     }
 
@@ -174,16 +170,14 @@ public final class Theme
      *
      * @return the value of sThemeColorStatus
      */
-    public static int getStatusThemeColor()
-    {
+    public static int getStatusThemeColor() {
         return sThemeColorStatus;
     }
 
     /**
      * Provides methods to update the theme colors of an object.
      */
-    public interface ChangeableTheme
-    {
+    public interface ChangeableTheme {
 
         /**
          * When overridden, should update colors of relevant objects and views to match the theme.

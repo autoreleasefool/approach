@@ -20,7 +20,7 @@
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:alpha="0.54"
-            android:paddingLeft="@dimen/list_keyline"
+            android:paddingLeft="@dimen/list_key_line"
             android:src="@drawable/ic_l_black_24dp"
             tools:ignore="ContentDescription" />
 
@@ -30,7 +30,7 @@
             android:layout_gravity="center_vertical"
             android:alpha="0.87"
             android:gravity="center"
-            android:paddingLeft="@dimen/list_text_keyline"
+            android:paddingLeft="@dimen/list_text_key_line"
             android:text="@string/text_league_example"
             android:textColor="@android:color/black"
             android:textSize="18sp" />
@@ -42,7 +42,7 @@
             android:layout_gravity="center_vertical"
             android:alpha="0.54"
             android:gravity="center"
-            android:paddingRight="@dimen/list_keyline"
+            android:paddingRight="@dimen/list_key_line"
             android:text="@string/text_average_example"
             android:textColor="@android:color/black"
             android:textSize="14sp" />
@@ -67,7 +67,7 @@
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
             android:alpha="0.54"
-            android:paddingLeft="@dimen/list_keyline"
+            android:paddingLeft="@dimen/list_key_line"
             android:src="@drawable/ic_e_black_24dp"
             tools:ignore="ContentDescription" />
 
@@ -77,7 +77,7 @@
             android:layout_gravity="center_vertical"
             android:alpha="0.87"
             android:gravity="center"
-            android:paddingLeft="@dimen/list_text_keyline"
+            android:paddingLeft="@dimen/list_text_key_line"
             android:text="@string/text_event_example"
             android:textColor="@android:color/black"
             android:textSize="18sp" />
@@ -89,7 +89,7 @@
             android:layout_gravity="center_vertical"
             android:alpha="0.54"
             android:gravity="center"
-            android:paddingRight="@dimen/list_keyline"
+            android:paddingRight="@dimen/list_key_line"
             android:text="@string/text_average_example"
             android:textColor="@android:color/black"
             android:textSize="14sp" />

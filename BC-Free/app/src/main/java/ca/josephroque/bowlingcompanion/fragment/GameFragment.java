@@ -1,8 +1,8 @@
 package ca.josephroque.bowlingcompanion.fragment;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -50,17 +50,14 @@ import ca.josephroque.bowlingcompanion.view.AnimatedFloatingActionButton;
 import ca.josephroque.bowlingcompanion.view.PinLayout;
 
 /**
- * Created by Joseph Roque on 15-03-18. Manages the UI to display information about the games being
- * tracked by the application, and offers a callback interface {@link
- * ca.josephroque.bowlingcompanion.fragment.GameFragment.GameFragmentCallback} for handling
- * interactions.
+ * Created by Joseph Roque on 15-03-18. Manages the UI to display information about the games being tracked by the
+ * application, and offers a callback interface {@code GameFragment.GameFragmentCallback} for handling interactions.
  */
 @SuppressWarnings({"Convert2Lambda", "CheckStyle"})
 public class GameFragment
         extends Fragment
         implements Theme.ChangeableTheme,
-        ManualScoreDialog.ManualScoreDialogListener
-{
+        ManualScoreDialog.ManualScoreDialogListener {
 
     /** Identifies output from this class in Logcat. */
     @SuppressWarnings("unused")
@@ -163,8 +160,7 @@ public class GameFragment
     private PinLayout mLinearLayoutPins;
     /** Handles events when pin buttons are touched. */
     private final PinLayout.PinInterceptListener mPinTouchListener
-            = new PinLayout.PinInterceptListener()
-    {
+            = new PinLayout.PinInterceptListener() {
 
         /** Indicates if a pin has been altered in a touch event. */
         private final boolean[] mPinAltered = new boolean[5];
@@ -181,11 +177,9 @@ public class GameFragment
         /** Indicates if events to start dragging can begin. */
         private boolean mCanStartDragging = true;
 
-        private void setFirstPinTouched(MotionEvent event)
-        {
+        private void setFirstPinTouched(MotionEvent event) {
             final int pinTouched = (int) ((event.getX() / mLayoutWidth) * 5);
-            if (!mImageViewPins[pinTouched].isEnabled())
-            {
+            if (!mImageViewPins[pinTouched].isEnabled()) {
                 mInitialStateSet = false;
                 return;
             }
@@ -195,11 +189,9 @@ public class GameFragment
             mPinAlteredCount = 1;
 
             // Flip pin image while user is dragging
-            mImageViewPins[pinTouched].post(new Runnable()
-            {
+            mImageViewPins[pinTouched].post(new Runnable() {
                 @Override
-                public void run()
-                {
+                public void run() {
                     if (!mPinState[mCurrentFrame][mCurrentBall][pinTouched])
                         mImageViewPins[pinTouched].setImageResource(
                                 R.drawable.pin_disabled);
@@ -211,21 +203,18 @@ public class GameFragment
         }
 
         @Override
-        public void disablePinTouches()
-        {
+        public void disablePinTouches() {
             mCanStartDragging = false;
         }
 
         @Override
-        public void onPinTouch(MotionEvent event)
-        {
+        public void onPinTouch(MotionEvent event) {
             if (NavigationUtils.getDrawerOffset() > 0
                     || mGameLocked[mCurrentGame] || mManualScoreSet[mCurrentGame])
                 return;
 
             final int pinTouched;
-            switch (event.getActionMasked())
-            {
+            switch (event.getActionMasked()) {
                 case MotionEvent.ACTION_DOWN:
                     if (!mCanStartDragging)
                         return;
@@ -246,15 +235,12 @@ public class GameFragment
                     pinTouched = (int) ((event.getX() / mLayoutWidth) * 5);
                     if (mImageViewPins[pinTouched].isEnabled()
                             && mPinState[mCurrentFrame][mCurrentBall][pinTouched] == mInitialState
-                            && !mPinAltered[pinTouched])
-                    {
+                            && !mPinAltered[pinTouched]) {
                         mPinAlteredCount++;
                         mPinAltered[pinTouched] = true;
-                        mImageViewPins[pinTouched].post(new Runnable()
-                        {
+                        mImageViewPins[pinTouched].post(new Runnable() {
                             @Override
-                            public void run()
-                            {
+                            public void run() {
                                 if (!mPinState[mCurrentFrame][mCurrentBall][pinTouched])
                                     mImageViewPins[pinTouched].setImageResource(
                                             R.drawable.pin_disabled);
@@ -275,10 +261,8 @@ public class GameFragment
                     mInitialStateSet = false;
 
                     // Finalize flipped pins, calculate score
-                    for (int i = 0; i < mPinAltered.length; i++)
-                    {
-                        if (mPinAltered[i])
-                        {
+                    for (int i = 0; i < mPinAltered.length; i++) {
+                        if (mPinAltered[i]) {
                             pinsUpdated++;
                             if (pinsUpdated == mPinAlteredCount)
                                 alterPinState((byte) i, true);
@@ -296,41 +280,34 @@ public class GameFragment
     };
 
     @Override
-    public void onAttach(Activity activity)
-    {
-        super.onAttach(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
 
         /*
          * This makes sure the container Activity has implemented
          * the callback interface. If not, an exception is thrown
          */
-        try
-        {
-            mGameCallback = (GameFragmentCallback) activity;
-        }
-        catch (ClassCastException ex)
-        {
-            throw new ClassCastException(activity.toString()
+        try {
+            mGameCallback = (GameFragmentCallback) context;
+        } catch (ClassCastException ex) {
+            throw new ClassCastException(context.toString()
                     + " must implement GameFragmentCallbacks");
         }
     }
 
     @Override
-    public void onDetach()
-    {
+    public void onDetach() {
         super.onDetach();
         mGameCallback = null;
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
         //Loads member variables from saved instance state, if one exists
-        if (savedInstanceState != null)
-        {
+        if (savedInstanceState != null) {
             mCurrentGame = savedInstanceState.getByte(Constants.EXTRA_CURRENT_GAME);
             mGameIds = savedInstanceState.getLongArray(Constants.EXTRA_ARRAY_GAME_IDS);
             mFrameIds = savedInstanceState.getLongArray(Constants.EXTRA_ARRAY_FRAME_IDS);
@@ -344,8 +321,7 @@ public class GameFragment
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
-                             Bundle savedInstanceState)
-    {
+                             Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_games, container, false);
 
         //Density of screen to set proper width/height of views
@@ -377,12 +353,10 @@ public class GameFragment
         final int dp41 = DataFormatter.getPixelsFromDP(screenDensity, 41);
         final int dp20 = DataFormatter.getPixelsFromDP(screenDensity, 20);
         final int dp36 = DataFormatter.getPixelsFromDP(screenDensity, 36);
-        for (int i = 0; i < Constants.NUMBER_OF_FRAMES; i++)
-        {
+        for (int i = 0; i < Constants.NUMBER_OF_FRAMES; i++) {
             //TextView to display score of a frame
             TextView frameText = new TextView(getActivity());
-            switch (i)
-            {
+            switch (i) {
                 //Id is set so when view is clicked, it can be identified
                 case 0:
                     frameText.setId(R.id.text_frame_0);
@@ -427,8 +401,7 @@ public class GameFragment
             relativeLayout.addView(frameText, layoutParams);
             mTextViewFrames[i] = frameText;
 
-            for (int j = 0; j < 3; j++)
-            {
+            for (int j = 0; j < 3; j++) {
                 //TextView to display value scored on a certain ball
                 TextView text = new TextView(getActivity());
                 text.setTextColor(0xff000000);
@@ -458,7 +431,7 @@ public class GameFragment
             frameText.setText(String.valueOf(i + 1));
             frameText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
             frameText.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
-            frameText.setTextColor(getResources().getColor(android.R.color.white));
+            frameText.setTextColor(DisplayUtils.getColorResource(getResources(), android.R.color.white));
             layoutParams = new RelativeLayout.LayoutParams(dp120, dp36);
             layoutParams.leftMargin = DataFormatter.getPixelsFromDP(screenDensity, 120 * i);
             layoutParams.addRule(RelativeLayout.BELOW, mTextViewFrames[i].getId());
@@ -468,7 +441,7 @@ public class GameFragment
         //TextView to display final score of game
         mTextViewFinalScore = new TextView(getActivity());
         mTextViewFinalScore.setGravity(Gravity.CENTER);
-        mTextViewFinalScore.setTextAppearance(getActivity(), android.R.style.TextAppearance_Large);
+        mTextViewFinalScore.setTextAppearance(android.R.style.TextAppearance_Large);
         mTextViewFinalScore.setBackgroundResource(R.drawable.background_frame_text);
         layoutParams = new RelativeLayout.LayoutParams(dp120, dp128);
         layoutParams.leftMargin = DataFormatter.getPixelsFromDP(screenDensity,
@@ -532,11 +505,9 @@ public class GameFragment
     }
 
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
-        if (getActivity() != null)
-        {
+        if (getActivity() != null) {
             MainActivity mainActivity = (MainActivity) getActivity();
             mainActivity.setActionBarTitle(R.string.title_fragment_game, true);
             mainActivity.setFloatingActionButtonState(0);
@@ -545,12 +516,11 @@ public class GameFragment
         }
 
         //Loads colors for frame view backgrounds
-        mColorBackground = getResources().getColor(R.color.primary_background);
-        mColorHighlight = getResources().getColor(R.color.secondary_background);
+        mColorBackground = DisplayUtils.getColorResource(getResources(), R.color.primary_background);
+        mColorHighlight = DisplayUtils.getColorResource(getResources(), R.color.secondary_background);
 
         //If values were not loaded from saved instance state, they are loaded here
-        if (mGameIds == null)
-        {
+        if (mGameIds == null) {
             Bundle args = getArguments();
             mGameIds = args.getLongArray(Constants.EXTRA_ARRAY_GAME_IDS);
             mFrameIds = args.getLongArray(Constants.EXTRA_ARRAY_FRAME_IDS);
@@ -571,12 +541,9 @@ public class GameFragment
                 preferences.getBoolean(Constants.KEY_ENABLE_AUTO_ADVANCE, false);
 
         String strDelay = preferences.getString(Constants.KEY_AUTO_ADVANCE_TIME, "15 seconds");
-        int autoAdvanceDelay = (strDelay != null)
-                ? Integer.valueOf(strDelay.substring(0, strDelay.indexOf(" ")))
-                : 0;
+        int autoAdvanceDelay = Integer.valueOf(strDelay.substring(0, strDelay.indexOf(" ")));
 
-        if (mGameCallback != null)
-        {
+        if (mGameCallback != null) {
             mGameCallback.setAutoAdvanceConditions(mImageViewNextBall,
                     mTextViewAutoAdvance,
                     autoAdvanceEnabled,
@@ -590,11 +557,9 @@ public class GameFragment
             mGameCallback.loadGameScoresForDrawer(mGameIds);
         }
 
-        new Handler(Looper.getMainLooper()).postDelayed(new Runnable()
-        {
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 setFloatingActionButtonState(false, R.drawable.ic_chevron_left_black_24dp);
                 setFloatingActionButtonState(true, R.drawable.ic_chevron_right_black_24dp);
             }
@@ -603,8 +568,7 @@ public class GameFragment
     }
 
     @Override
-    public void onPause()
-    {
+    public void onPause() {
         super.onPause();
 
         if (mNextFab != null)
@@ -620,8 +584,7 @@ public class GameFragment
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState)
-    {
+    public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
         //Puts member variables into outState so they can be loaded back
@@ -634,15 +597,13 @@ public class GameFragment
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_game, menu);
     }
 
     @Override
-    public void onPrepareOptionsMenu(Menu menu)
-    {
+    public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
 
         //Sets names/visibility of menu items
@@ -673,10 +634,8 @@ public class GameFragment
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             case R.id.action_share:
                 //Prompts user to share or save an image of current series
                 saveGame(false);
@@ -726,17 +685,14 @@ public class GameFragment
     }
 
     @Override
-    public void updateTheme()
-    {
+    public void updateTheme() {
         View rootView = getView();
-        if (rootView != null)
-        {
+        if (rootView != null) {
             rootView.findViewById(R.id.rl_game_toolbar).setBackgroundColor(
                     Theme.getSecondaryThemeColor());
         }
 
-        if (mNextFab != null)
-        {
+        if (mNextFab != null) {
             DisplayUtils.setFloatingActionButtonColors(mNextFab,
                     Theme.getPrimaryThemeColor(),
                     Theme.getTertiaryThemeColor());
@@ -744,8 +700,7 @@ public class GameFragment
             mNextFab.performClick();
             mNextFab.setEnabled(true);
         }
-        if (mPrevFab != null)
-        {
+        if (mPrevFab != null) {
             DisplayUtils.setFloatingActionButtonColors(mPrevFab,
                     Theme.getPrimaryThemeColor(),
                     Theme.getTertiaryThemeColor());
@@ -756,19 +711,15 @@ public class GameFragment
     }
 
     @Override
-    public void onSetScore(short scoreToSet)
-    {
-        if (scoreToSet < 0 || scoreToSet > Constants.GAME_MAX_SCORE)
-        {
+    public void onSetScore(short scoreToSet) {
+        if (scoreToSet < 0 || scoreToSet > Constants.GAME_MAX_SCORE) {
             //If an invalid score is given, user is informed and method exists
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setTitle("Invalid score!")
                     .setMessage(R.string.dialog_bad_score)
-                    .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener()
-                    {
+                    .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener() {
                         @Override
-                        public void onClick(DialogInterface dialog, int which)
-                        {
+                        public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                         }
                     })
@@ -796,17 +747,13 @@ public class GameFragment
      *
      * @return OnClickListener instances which are applied to views in this activity
      */
-    private View.OnClickListener[] getOnClickListeners()
-    {
+    private View.OnClickListener[] getOnClickListeners() {
         View.OnClickListener[] listeners = new View.OnClickListener[3];
-        listeners[LISTENER_TEXT_FRAMES] = new View.OnClickListener()
-        {
+        listeners[LISTENER_TEXT_FRAMES] = new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 byte frameToSet = 0;
-                switch (v.getId())
-                {
+                switch (v.getId()) {
                     case R.id.text_frame_9:
                         frameToSet++;
                     case R.id.text_frame_8:
@@ -831,8 +778,7 @@ public class GameFragment
                         mCurrentFrame = frameToSet;
                         mCurrentBall = 0;
                         byte frameUpdateCount = 0;
-                        for (int i = mCurrentFrame; i >= 0; i--)
-                        {
+                        for (int i = mCurrentFrame; i >= 0; i--) {
                             if (mHasFrameBeenAccessed[i])
                                 break;
                             mHasFrameBeenAccessed[i] = true;
@@ -854,15 +800,12 @@ public class GameFragment
             }
         };
 
-        listeners[LISTENER_OTHER] = new View.OnClickListener()
-        {
+        listeners[LISTENER_OTHER] = new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 int viewId = v.getId();
 
-                switch (viewId)
-                {
+                switch (viewId) {
                     case R.id.iv_match:
                         if (mGameLocked[mCurrentGame])
                             showSetMatchPlayLockedDialog();
@@ -898,8 +841,7 @@ public class GameFragment
                             return;
                         clearFrameColor();
                         mCurrentBall = 0;
-                        for (int i = 0; i < 3; i++)
-                        {
+                        for (int i = 0; i < 3; i++) {
                             mFouls[mCurrentFrame][i] = false;
                             for (int j = 0; j < 5; j++)
                                 mPinState[mCurrentFrame][i][j] = false;
@@ -927,20 +869,14 @@ public class GameFragment
 
                         clearFrameColor();
                         if (Arrays.equals(mPinState[mCurrentFrame][mCurrentBall],
-                                Constants.FRAME_PINS_DOWN))
-                        {
-                            if (mCurrentFrame < Constants.LAST_FRAME)
-                            {
+                                Constants.FRAME_PINS_DOWN)) {
+                            if (mCurrentFrame < Constants.LAST_FRAME) {
                                 mCurrentBall = 0;
                                 mCurrentFrame++;
-                            }
-                            else if (mCurrentBall < 2)
-                            {
+                            } else if (mCurrentBall < 2) {
                                 mCurrentBall++;
                             }
-                        }
-                        else if (++mCurrentBall == 3)
-                        {
+                        } else if (++mCurrentBall == 3) {
                             mCurrentBall = 0;
                             ++mCurrentFrame;
                         }
@@ -959,13 +895,11 @@ public class GameFragment
                             return;
 
                         clearFrameColor();
-                        if (--mCurrentBall == -1)
-                        {
+                        if (--mCurrentBall == -1) {
                             mCurrentBall = 0;
                             --mCurrentFrame;
                             while (!Arrays.equals(mPinState[mCurrentFrame][mCurrentBall],
-                                    Constants.FRAME_PINS_DOWN) && mCurrentBall < 2)
-                            {
+                                    Constants.FRAME_PINS_DOWN) && mCurrentBall < 2) {
                                 mCurrentBall++;
                             }
                         }
@@ -981,18 +915,13 @@ public class GameFragment
             }
         };
 
-        listeners[LISTENER_TEXT_BALLS] = new View.OnClickListener()
-        {
+        listeners[LISTENER_TEXT_BALLS] = new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 boolean viewFound = false;
-                for (byte i = 0; i < mTextViewBallScores.length && !viewFound; i++)
-                {
-                    for (byte j = 0; j < mTextViewBallScores[i].length; j++)
-                    {
-                        if (v == mTextViewBallScores[i][j])
-                        {
+                for (byte i = 0; i < mTextViewBallScores.length && !viewFound; i++) {
+                    for (byte j = 0; j < mTextViewBallScores[i].length; j++) {
+                        if (v == mTextViewBallScores[i][j]) {
                             viewFound = true;
 
                             //Changes the current frame and updates the GUI
@@ -1000,16 +929,14 @@ public class GameFragment
                             mCurrentFrame = i;
                             mCurrentBall = 0;
                             byte frameUpdateCount = 0;
-                            for (int k = mCurrentFrame; k >= 0; k--)
-                            {
+                            for (int k = mCurrentFrame; k >= 0; k--) {
                                 if (mHasFrameBeenAccessed[k])
                                     break;
                                 mHasFrameBeenAccessed[k] = true;
                                 frameUpdateCount++;
                             }
                             while (!Arrays.equals(mPinState[mCurrentFrame][mCurrentBall],
-                                    Constants.FRAME_PINS_DOWN) && mCurrentBall < j)
-                            {
+                                    Constants.FRAME_PINS_DOWN) && mCurrentBall < j) {
                                 mCurrentBall++;
                             }
                             setVisibilityOfNextAndPrevItems();
@@ -1032,29 +959,23 @@ public class GameFragment
     }
 
     /**
-     * Displays prompt to user to inform them the game is locked. Included to prevent accidental
-     * changes of match play results, but still allow changes if game is locked (such as by a manual
-     * score being set)
+     * Displays prompt to user to inform them the game is locked. Included to prevent accidental changes of match play
+     * results, but still allow changes if game is locked (such as by a manual score being set)
      */
-    private void showSetMatchPlayLockedDialog()
-    {
+    private void showSetMatchPlayLockedDialog() {
         new AlertDialog.Builder(getActivity())
                 .setTitle("Game is locked")
                 .setMessage(R.string.dialog_match_locked)
-                .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener()
-                {
+                .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
+                    public void onClick(DialogInterface dialog, int which) {
                         showSetMatchPlayDialog();
                         dialog.dismiss();
                     }
                 })
-                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener()
-                {
+                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
+                    public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                     }
                 })
@@ -1065,17 +986,14 @@ public class GameFragment
     /**
      * Prompts user to set results of match play for a game.
      */
-    private void showSetMatchPlayDialog()
-    {
+    private void showSetMatchPlayDialog() {
         new AlertDialog.Builder(getActivity())
                 .setTitle("Set match play")
                 .setSingleChoiceItems(new CharSequence[]{"None", "Won", "Lost", "Tied"},
                         mMatchPlay[mCurrentGame], null)
-                .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener()
-                {
+                .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
+                    public void onClick(DialogInterface dialog, int which) {
                         mMatchPlay[mCurrentGame] =
                                 (byte) ((AlertDialog) dialog).getListView()
                                         .getCheckedItemPosition();
@@ -1084,11 +1002,9 @@ public class GameFragment
                         dialog.dismiss();
                     }
                 })
-                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener()
-                {
+                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
+                    public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                     }
                 })
@@ -1099,27 +1015,22 @@ public class GameFragment
     /**
      * Prompts user to reset the current game and set a manual score
      */
-    private void showManualScoreDialog()
-    {
+    private void showManualScoreDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Set manual score?")
                 .setMessage(R.string.dialog_set_score)
-                .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener()
-                {
+                .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
+                    public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                         DialogFragment dialogFragment =
                                 ManualScoreDialog.newInstance(GameFragment.this);
                         dialogFragment.show(getFragmentManager(), "ManualScoreDialog");
                     }
                 })
-                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener()
-                {
+                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
+                    public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                     }
                 })
@@ -1130,16 +1041,13 @@ public class GameFragment
     /**
      * Prompts user to reset the current game and remove a manual score.
      */
-    private void showClearManualScoreDialog()
-    {
+    private void showClearManualScoreDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Clear the set score?")
                 .setMessage(R.string.dialog_clear_score)
-                .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener()
-                {
+                .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
+                    public void onClick(DialogInterface dialog, int which) {
                         //Unlocks and resets game
                         setGameLocked(false);
                         mManualScoreSet[mCurrentGame] = false;
@@ -1152,11 +1060,9 @@ public class GameFragment
                         dialog.dismiss();
                     }
                 })
-                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener()
-                {
+                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
+                    public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                     }
                 })
@@ -1169,14 +1075,12 @@ public class GameFragment
      *
      * @param enabled if true, TextView objects related to scores will be shown
      */
-    private void clearAllText(boolean enabled)
-    {
+    private void clearAllText(boolean enabled) {
         View rootView = getView();
         if (rootView == null)
             return;
 
-        if (enabled)
-        {
+        if (enabled) {
             mImageViewNextBall.setVisibility(View.VISIBLE);
             mImageViewPrevBall.setVisibility(View.VISIBLE);
             mTextViewNextBall.setVisibility(View.VISIBLE);
@@ -1187,9 +1091,7 @@ public class GameFragment
             mTextViewManualScore.setText(null);
             mTextViewManualScore.setVisibility(View.INVISIBLE);
             mLinearLayoutPins.setEnabled(true);
-        }
-        else
-        {
+        } else {
             mImageViewNextBall.setVisibility(View.INVISIBLE);
             mImageViewPrevBall.setVisibility(View.INVISIBLE);
             mTextViewNextBall.setVisibility(View.INVISIBLE);
@@ -1213,16 +1115,12 @@ public class GameFragment
                 : R.drawable.ic_lock_open);
     }
 
-    private void setToolbarEnabled(boolean enabled)
-    {
-        if (enabled)
-        {
+    private void setToolbarEnabled(boolean enabled) {
+        if (enabled) {
             mImageViewClear.setVisibility(View.VISIBLE);
             mImageViewFoul.setVisibility(View.VISIBLE);
             mImageViewResetFrame.setVisibility(View.VISIBLE);
-        }
-        else
-        {
+        } else {
             mImageViewClear.setVisibility(View.INVISIBLE);
             mImageViewFoul.setVisibility(View.INVISIBLE);
             mImageViewResetFrame.setVisibility(View.INVISIBLE);
@@ -1232,16 +1130,13 @@ public class GameFragment
     /**
      * Informs user with prompt that the game is current locked.
      */
-    private void showGameLockedDialog()
-    {
+    private void showGameLockedDialog() {
         new AlertDialog.Builder(getActivity())
                 .setTitle("Invalid action!")
                 .setMessage(R.string.dialog_game_locked)
-                .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener()
-                {
+                .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
+                    public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                     }
                 })
@@ -1252,16 +1147,13 @@ public class GameFragment
     /**
      * Prompts user to reset the current game.
      */
-    private void showResetGameDialog()
-    {
+    private void showResetGameDialog() {
         new AlertDialog.Builder(getActivity())
                 .setTitle("Reset Game?")
                 .setMessage(R.string.dialog_reset_game)
-                .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener()
-                {
+                .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
+                    public void onClick(DialogInterface dialog, int which) {
                         //Resets and saves the current game
                         resetGame();
                         saveGame(true);
@@ -1278,11 +1170,9 @@ public class GameFragment
                         dialog.dismiss();
                     }
                 })
-                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener()
-                {
+                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
+                    public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                     }
                 })
@@ -1293,15 +1183,11 @@ public class GameFragment
     /**
      * Sets mImageViewMatchPlay image resource depending on match play results set by user.
      */
-    private void setMatchPlay()
-    {
-        getActivity().runOnUiThread(new Runnable()
-        {
+    private void setMatchPlay() {
+        getActivity().runOnUiThread(new Runnable() {
             @Override
-            public void run()
-            {
-                switch (mMatchPlay[mCurrentGame])
-                {
+            public void run() {
+                switch (mMatchPlay[mCurrentGame]) {
                     case 0:
                         mImageViewMatchPlay.setImageResource(R.drawable.ic_match_none);
                         break;
@@ -1321,19 +1207,15 @@ public class GameFragment
     }
 
     /**
-     * Locks or unlocks a game and hides/shows settings which are only necessary if a game is
-     * unlocked.
+     * Locks or unlocks a game and hides/shows settings which are only necessary if a game is unlocked.
      *
      * @param lock if true, settings will be hidden and game locked
      */
-    private void setGameLocked(boolean lock)
-    {
+    private void setGameLocked(boolean lock) {
         mGameLocked[mCurrentGame] = lock;
-        getActivity().runOnUiThread(new Runnable()
-        {
+        getActivity().runOnUiThread(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 setToolbarEnabled(!mGameLocked[mCurrentGame]);
                 mImageViewLock.setImageResource((mGameLocked[mCurrentGame])
                         ? R.drawable.ic_lock
@@ -1345,11 +1227,10 @@ public class GameFragment
     /**
      * Copies data of current game to variables and saves game to the database on a new thread.
      *
-     * @param ignoreManualScore if false, game will only be saved if a manual score is not set.
-     * Otherwise, will save regardless.
+     * @param ignoreManualScore if false, game will only be saved if a manual score is not set. Otherwise, will save
+     * regardless.
      */
-    private void saveGame(boolean ignoreManualScore)
-    {
+    private void saveGame(boolean ignoreManualScore) {
         if ((!ignoreManualScore && mManualScoreSet[mCurrentGame]) || mDoNotSave.get())
             return;
 
@@ -1369,10 +1250,8 @@ public class GameFragment
                 accessToSave,
                 0,
                 Constants.NUMBER_OF_FRAMES);
-        for (byte i = 0; i < Constants.NUMBER_OF_FRAMES; i++)
-        {
-            for (byte j = 0; j < mPinState[i].length; j++)
-            {
+        for (byte i = 0; i < Constants.NUMBER_OF_FRAMES; i++) {
+            for (byte j = 0; j < mPinState[i].length; j++) {
                 System.arraycopy(
                         mPinState[i][j],
                         0,
@@ -1399,16 +1278,13 @@ public class GameFragment
     /**
      * Resets a game to its original state with 0 score, 0 fouls.
      */
-    private void resetGame()
-    {
+    private void resetGame() {
         clearFrameColor();
         mCurrentBall = 0;
         mCurrentFrame = 0;
-        for (int i = 0; i < Constants.NUMBER_OF_FRAMES; i++)
-        {
+        for (int i = 0; i < Constants.NUMBER_OF_FRAMES; i++) {
             mHasFrameBeenAccessed[i] = false;
-            for (int j = 0; j < 3; j++)
-            {
+            for (int j = 0; j < 3; j++) {
                 mFouls[i][j] = false;
                 for (int k = 0; k < 5; k++)
                     mPinState[i][j][k] = false;
@@ -1420,51 +1296,39 @@ public class GameFragment
     }
 
     /**
-     * Calculates the highest score possible from the current state of the game and displays it in a
-     * dialog to the user.
+     * Calculates the highest score possible from the current state of the game and displays it in a dialog to the
+     * user.
      */
-    private void showWhatIfDialog()
-    {
+    private void showWhatIfDialog() {
         StringBuilder alertMessageBuilder = new StringBuilder("If you get");
         short possibleScore = Short.parseShort(mTextViewFrames[mCurrentFrame].getText().toString());
 
-        if (mCurrentFrame < Constants.LAST_FRAME)
-        {
-            if (Arrays.equals(mPinState[mCurrentFrame][0], Constants.FRAME_PINS_DOWN))
-            {
+        if (mCurrentFrame < Constants.LAST_FRAME) {
+            if (Arrays.equals(mPinState[mCurrentFrame][0], Constants.FRAME_PINS_DOWN)) {
                 int firstBallNextFrame = Score.getValueOfFrame(mPinState[mCurrentFrame + 1][0]);
                 possibleScore -= firstBallNextFrame;
-                if (firstBallNextFrame == 15)
-                {
+                if (firstBallNextFrame == 15) {
                     if (mCurrentFrame < Constants.LAST_FRAME - 1)
                         possibleScore -= Score.getValueOfFrame(mPinState[mCurrentFrame + 2][0]);
                     else
                         possibleScore -= Score.getValueOfFrame(mPinState[mCurrentFrame + 1][1]);
-                }
-                else
+                } else
                     possibleScore -= Score.getValueOfFrameDifference(mPinState[mCurrentFrame][0],
                             mPinState[mCurrentFrame][1]);
-            }
-            else if (Arrays.equals(mPinState[mCurrentFrame][1], Constants.FRAME_PINS_DOWN))
-            {
+            } else if (Arrays.equals(mPinState[mCurrentFrame][1], Constants.FRAME_PINS_DOWN)) {
                 int firstBallNextFrame = Score.getValueOfFrame(mPinState[mCurrentFrame + 1][0]);
                 possibleScore -= firstBallNextFrame;
             }
-        }
-        else
-        {
+        } else {
             for (int i = mCurrentBall + 1; i < 3; i++)
                 possibleScore -= Score.getValueOfFrameDifference(mPinState[mCurrentFrame][i - 1],
                         mPinState[mCurrentFrame][i]);
         }
 
         int pinsLeftStanding = 0;
-        for (int i = 0; i < 5; i++)
-        {
-            if (!mPinState[mCurrentFrame][mCurrentBall][i])
-            {
-                switch (i)
-                {
+        for (int i = 0; i < 5; i++) {
+            if (!mPinState[mCurrentFrame][mCurrentBall][i]) {
+                switch (i) {
                     case 0:
                     case 4:
                         pinsLeftStanding += 2;
@@ -1485,24 +1349,19 @@ public class GameFragment
         boolean strikeTwoFramesAgo = false;
         boolean spareLastFrame = false;
 
-        if (mCurrentFrame > 0)
-        {
-            if (Arrays.equals(mPinState[mCurrentFrame - 1][0], Constants.FRAME_PINS_DOWN))
-            {
+        if (mCurrentFrame > 0) {
+            if (Arrays.equals(mPinState[mCurrentFrame - 1][0], Constants.FRAME_PINS_DOWN)) {
                 strikeLastFrame = true;
                 if (mCurrentFrame > 1 && Arrays.equals(
                         mPinState[mCurrentFrame - 2][0], Constants.FRAME_PINS_DOWN))
                     strikeTwoFramesAgo = true;
-            }
-            else
-            {
+            } else {
                 if (Arrays.equals(mPinState[mCurrentFrame - 1][1], Constants.FRAME_PINS_DOWN))
                     spareLastFrame = true;
             }
         }
 
-        if (mCurrentBall == 0)
-        {
+        if (mCurrentBall == 0) {
             alertMessageBuilder.append(" a strike");
             possibleScore += pinsLeftStanding + 30;
             int secondBall = Score.getValueOfFrameDifference(mPinState[mCurrentFrame][0],
@@ -1512,18 +1371,14 @@ public class GameFragment
 
             if (mCurrentFrame < Constants.LAST_FRAME)
                 possibleScore -= secondBall + thirdBall;
-            if (strikeLastFrame)
-            {
+            if (strikeLastFrame) {
                 possibleScore -= secondBall;
                 possibleScore += pinsLeftStanding + 15;
                 if (strikeTwoFramesAgo)
                     possibleScore += pinsLeftStanding;
-            }
-            else if (spareLastFrame)
+            } else if (spareLastFrame)
                 possibleScore += pinsLeftStanding;
-        }
-        else if (mCurrentBall == 1)
-        {
+        } else if (mCurrentBall == 1) {
             int thirdBall = Score.getValueOfFrameDifference(mPinState[mCurrentFrame][1],
                     mPinState[mCurrentFrame][2]);
             if (mCurrentFrame < Constants.LAST_FRAME)
@@ -1537,9 +1392,7 @@ public class GameFragment
             possibleScore += pinsLeftStanding + 15;
             if (strikeLastFrame)
                 possibleScore += pinsLeftStanding;
-        }
-        else
-        {
+        } else {
             if (mCurrentFrame == Constants.LAST_FRAME && Arrays.equals(mPinState[mCurrentFrame][1],
                     Constants.FRAME_PINS_DOWN))
                 alertMessageBuilder.append(" a strike");
@@ -1549,10 +1402,8 @@ public class GameFragment
         }
         possibleScore += 45 * (Constants.LAST_FRAME - mCurrentFrame);
 
-        for (int i = 0; i <= mCurrentFrame; i++)
-        {
-            for (int j = 0; j < 3 && !(i == mCurrentFrame && j >= mCurrentBall); j++)
-            {
+        for (int i = 0; i <= mCurrentFrame; i++) {
+            for (int j = 0; j < 3 && !(i == mCurrentFrame && j >= mCurrentBall); j++) {
                 if (mFouls[i][j])
                     possibleScore -= 15;
             }
@@ -1564,11 +1415,9 @@ public class GameFragment
         alertMessageBuilder.append(possibleScore);
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(alertMessageBuilder.toString())
-                .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener()
-                {
+                .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
+                    public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                     }
                 });
@@ -1577,18 +1426,14 @@ public class GameFragment
     }
 
     /**
-     * Sets the visibility of text and image views which indicate available navigation options in
-     * the fragment, depending on whether they are available at the time.
+     * Sets the visibility of text and image views which indicate available navigation options in the fragment,
+     * depending on whether they are available at the time.
      */
-    private void setVisibilityOfNextAndPrevItems()
-    {
-        getActivity().runOnUiThread(new Runnable()
-        {
+    private void setVisibilityOfNextAndPrevItems() {
+        getActivity().runOnUiThread(new Runnable() {
             @Override
-            public void run()
-            {
-                if (mCurrentFrame == 0 && mCurrentBall == 0)
-                {
+            public void run() {
+                if (mCurrentFrame == 0 && mCurrentBall == 0) {
                     mTextViewPrevBall.setVisibility(View.GONE);
                     mImageViewPrevBall.setVisibility(View.GONE);
                     setFloatingActionButtonState(false, 0);
@@ -1596,16 +1441,13 @@ public class GameFragment
                             (RelativeLayout.LayoutParams) mTextViewGameNumber.getLayoutParams();
                     layoutParams.addRule(RelativeLayout.ALIGN_TOP, mTextViewNextBall.getId());
                     layoutParams.addRule(RelativeLayout.ALIGN_BOTTOM, mTextViewNextBall.getId());
-                }
-                else
-                {
+                } else {
                     mTextViewPrevBall.setVisibility(View.VISIBLE);
                     mImageViewPrevBall.setVisibility(View.VISIBLE);
                     setFloatingActionButtonState(false, R.drawable.ic_chevron_left_black_24dp);
                 }
 
-                if (mCurrentFrame == Constants.LAST_FRAME && mCurrentBall == 2)
-                {
+                if (mCurrentFrame == Constants.LAST_FRAME && mCurrentBall == 2) {
                     mTextViewNextBall.setVisibility(View.GONE);
                     mImageViewNextBall.setVisibility(View.GONE);
                     setFloatingActionButtonState(true, 0);
@@ -1613,9 +1455,7 @@ public class GameFragment
                             (RelativeLayout.LayoutParams) mTextViewGameNumber.getLayoutParams();
                     layoutParams.addRule(RelativeLayout.ALIGN_TOP, mTextViewPrevBall.getId());
                     layoutParams.addRule(RelativeLayout.ALIGN_BOTTOM, mTextViewPrevBall.getId());
-                }
-                else
-                {
+                } else {
                     mTextViewNextBall.setVisibility(View.VISIBLE);
                     mImageViewNextBall.setVisibility(View.VISIBLE);
                     setFloatingActionButtonState(true, R.drawable.ic_chevron_right_black_24dp);
@@ -1627,8 +1467,7 @@ public class GameFragment
     /**
      * Sets text of all TextView instances which display individual ball values.
      */
-    private void updateAllBalls()
-    {
+    private void updateAllBalls() {
         for (byte i = Constants.LAST_FRAME; i >= 0; i -= 3)
             updateBalls(i, (byte) 0);
     }
@@ -1639,35 +1478,27 @@ public class GameFragment
      * @param frameToUpdate frame of which text should be updated
      * @param leftToUpdate number of frames to the left to update
      */
-    private void updateBalls(final byte frameToUpdate, final byte leftToUpdate)
-    {
+    private void updateBalls(final byte frameToUpdate, final byte leftToUpdate) {
         if (frameToUpdate < 0 || frameToUpdate > Constants.LAST_FRAME)
             return;
 
-        new Thread(new Runnable()
-        {
+        new Thread(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 //Sets text depending on state of pins in the frame
                 final String[] ballString = new String[3];
-                if (mHasFrameBeenAccessed[frameToUpdate])
-                {
+                if (mHasFrameBeenAccessed[frameToUpdate]) {
                     if (frameToUpdate == Constants.LAST_FRAME) //Treat last frame differently
                     {
-                        if (Arrays.equals(mPinState[frameToUpdate][0], Constants.FRAME_PINS_DOWN))
-                        {
+                        if (Arrays.equals(mPinState[frameToUpdate][0], Constants.FRAME_PINS_DOWN)) {
                             //If first ball is a strike, next two can be strikes/spares
                             ballString[0] = Constants.BALL_STRIKE;
                             if (Arrays.equals(mPinState[frameToUpdate][1],
-                                    Constants.FRAME_PINS_DOWN))
-                            {
+                                    Constants.FRAME_PINS_DOWN)) {
                                 ballString[1] = Constants.BALL_STRIKE;
                                 ballString[2] = Score.getValueOfBall(
                                         mPinState[frameToUpdate][2], 2, true, false);
-                            }
-                            else
-                            {
+                            } else {
                                 ballString[1] = Score.getValueOfBall(
                                         mPinState[frameToUpdate][1], 1, false, false);
                                 if (Arrays.equals(mPinState[frameToUpdate][2],
@@ -1677,104 +1508,77 @@ public class GameFragment
                                     ballString[2] = Score.getValueOfBallDifference(
                                             mPinState[frameToUpdate], 2, false, false);
                             }
-                        }
-                        else
-                        {
+                        } else {
                             //If first ball is not a strike, score is calculated normally
                             ballString[0] = Score.getValueOfBall(
                                     mPinState[frameToUpdate][0], 0, false, false);
                             if (Arrays.equals(mPinState[frameToUpdate][1],
-                                    Constants.FRAME_PINS_DOWN))
-                            {
+                                    Constants.FRAME_PINS_DOWN)) {
                                 ballString[1] = Constants.BALL_SPARE;
                                 ballString[2] = Score.getValueOfBall(
                                         mPinState[frameToUpdate][2], 2, true, true);
-                            }
-                            else
-                            {
+                            } else {
                                 ballString[1] = Score.getValueOfBallDifference(
                                         mPinState[frameToUpdate], 1, false, false);
                                 ballString[2] = Score.getValueOfBallDifference(
                                         mPinState[frameToUpdate], 2, false, false);
                             }
                         }
-                    }
-                    else
-                    {
+                    } else {
                         ballString[0] = Score.getValueOfBallDifference(
                                 mPinState[frameToUpdate], 0, false, false);
-                        if (!Arrays.equals(mPinState[frameToUpdate][0], Constants.FRAME_PINS_DOWN))
-                        {
+                        if (!Arrays.equals(mPinState[frameToUpdate][0], Constants.FRAME_PINS_DOWN)) {
                             if (Arrays.equals(mPinState[frameToUpdate][1],
-                                    Constants.FRAME_PINS_DOWN))
-                            {
+                                    Constants.FRAME_PINS_DOWN)) {
                                 ballString[1] = Constants.BALL_SPARE;
                                 ballString[2] = (mHasFrameBeenAccessed[frameToUpdate + 1])
                                         ? Score.getValueOfBallDifference(
                                         mPinState[frameToUpdate + 1], 0, false, true)
                                         : Constants.BALL_EMPTY;
-                            }
-                            else
-                            {
+                            } else {
                                 ballString[1] = Score.getValueOfBallDifference(
                                         mPinState[frameToUpdate], 1, false, false);
                                 ballString[2] = Score.getValueOfBallDifference(
                                         mPinState[frameToUpdate], 2, false, false);
                             }
-                        }
-                        else
-                        {
+                        } else {
                             //Either displays pins knocked down in next frames
                             //or shows empty frames
-                            if (mHasFrameBeenAccessed[frameToUpdate + 1])
-                            {
+                            if (mHasFrameBeenAccessed[frameToUpdate + 1]) {
                                 ballString[1] = Score.getValueOfBallDifference(
                                         mPinState[frameToUpdate + 1], 0, false, true);
                                 if (Arrays.equals(mPinState[frameToUpdate + 1][0],
-                                        Constants.FRAME_PINS_DOWN))
-                                {
-                                    if (frameToUpdate < Constants.LAST_FRAME - 1)
-                                    {
+                                        Constants.FRAME_PINS_DOWN)) {
+                                    if (frameToUpdate < Constants.LAST_FRAME - 1) {
                                         ballString[2] = (mHasFrameBeenAccessed[frameToUpdate + 2])
                                                 ? Score.getValueOfBallDifference(
                                                 mPinState[frameToUpdate + 2], 0, false, true)
                                                 : Constants.BALL_EMPTY;
-                                    }
-                                    else
-                                    {
+                                    } else {
                                         ballString[2] = Score.getValueOfBall(
                                                 mPinState[frameToUpdate + 1][1], 1, false, true);
                                     }
-                                }
-                                else
-                                {
+                                } else {
                                     ballString[2] = Score.getValueOfBallDifference(
                                             mPinState[frameToUpdate + 1], 1, false, true);
                                 }
-                            }
-                            else
-                            {
+                            } else {
                                 ballString[1] = Constants.BALL_EMPTY;
                                 ballString[2] = Constants.BALL_EMPTY;
                             }
                         }
                     }
-                }
-                else
-                {
+                } else {
                     ballString[0] = "";
                     ballString[1] = "";
                     ballString[2] = "";
                 }
 
 
-                getActivity().runOnUiThread(new Runnable()
-                {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
-                    public void run()
-                    {
-                        for (byte i = 0; i < 3; i++)
-                        {
+                    public void run() {
+                        for (byte i = 0; i < 3; i++) {
                             mTextViewBallScores[frameToUpdate][i].setText(ballString[i]);
                             mTextViewFouls[frameToUpdate][i].setText(
                                     (mFouls[frameToUpdate][i])
@@ -1785,8 +1589,7 @@ public class GameFragment
                 });
 
                 //Updates previous frames as well, to display balls after strikes
-                switch (leftToUpdate)
-                {
+                switch (leftToUpdate) {
                     case 0:
                         updateBalls((byte) (frameToUpdate - 1), (byte) (leftToUpdate + 1));
                         break;
@@ -1803,78 +1606,55 @@ public class GameFragment
     /**
      * Sets text of the TextView instances which display the score up to the frame to the user.
      */
-    private void updateScore()
-    {
-        new Thread(new Runnable()
-        {
+    private void updateScore() {
+        new Thread(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 //Calculates and keeps running total of scores of each frame
                 final short[] frameScores = new short[Constants.NUMBER_OF_FRAMES];
-                for (byte f = Constants.LAST_FRAME; f >= 0; f--)
-                {
-                    if (f == Constants.LAST_FRAME)
-                    {
-                        for (byte b = 2; b >= 0; b--)
-                        {
-                            switch (b)
-                            {
+                for (byte f = Constants.LAST_FRAME; f >= 0; f--) {
+                    if (f == Constants.LAST_FRAME) {
+                        for (byte b = 2; b >= 0; b--) {
+                            switch (b) {
                                 case 2:
                                     frameScores[f] += Score.getValueOfFrame(mPinState[f][b]);
                                     break;
                                 case 1:
                                 case 0:
-                                    if (Arrays.equals(mPinState[f][b], Constants.FRAME_PINS_DOWN))
-                                    {
+                                    if (Arrays.equals(mPinState[f][b], Constants.FRAME_PINS_DOWN)) {
                                         frameScores[f] += Score.getValueOfFrame(mPinState[f][b]);
                                     }
                                     break;
                                 default: //do nothing
                             }
                         }
-                    }
-                    else
-                    {
-                        for (byte b = 0; b < 3; b++)
-                        {
-                            if (b < 2 && Arrays.equals(mPinState[f][b], Constants.FRAME_PINS_DOWN))
-                            {
+                    } else {
+                        for (byte b = 0; b < 3; b++) {
+                            if (b < 2 && Arrays.equals(mPinState[f][b], Constants.FRAME_PINS_DOWN)) {
                                 frameScores[f] += Score.getValueOfFrame(mPinState[f][b]);
                                 frameScores[f] += Score.getValueOfFrame(mPinState[f + 1][0]);
-                                if (b == 0)
-                                {
-                                    if (f == Constants.LAST_FRAME - 1)
-                                    {
-                                        if (frameScores[f] == 30)
-                                        {
+                                if (b == 0) {
+                                    if (f == Constants.LAST_FRAME - 1) {
+                                        if (frameScores[f] == 30) {
                                             frameScores[f] +=
                                                     Score.getValueOfFrame(mPinState[f + 1][1]);
-                                        }
-                                        else
-                                        {
+                                        } else {
                                             frameScores[f] +=
                                                     Score.getValueOfFrameDifference(
                                                             mPinState[f + 1][0],
                                                             mPinState[f + 1][1]);
                                         }
-                                    }
-                                    else if (frameScores[f] < 30)
-                                    {
+                                    } else if (frameScores[f] < 30) {
                                         frameScores[f] +=
                                                 Score.getValueOfFrameDifference(
                                                         mPinState[f + 1][0], mPinState[f + 1][1]);
-                                    }
-                                    else
-                                    {
+                                    } else {
                                         frameScores[f] +=
                                                 Score.getValueOfFrame(mPinState[f + 2][0]);
                                     }
                                 }
                                 break;
-                            }
-                            else if (b == 2)
-                            {
+                            } else if (b == 2) {
                                 frameScores[f] += Score.getValueOfFrame(mPinState[f][b]);
                             }
                         }
@@ -1882,21 +1662,17 @@ public class GameFragment
                 }
 
                 short totalScore = 0;
-                for (byte i = 0; i < frameScores.length; i++)
-                {
+                for (byte i = 0; i < frameScores.length; i++) {
                     totalScore += frameScores[i];
                     frameScores[i] = totalScore;
                 }
                 mGameScores[mCurrentGame] = totalScore;
 
-                getActivity().runOnUiThread(new Runnable()
-                {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
-                    public void run()
-                    {
+                    public void run() {
                         //Sets scores calculated from running total as text of TextViews
-                        for (byte i = 0; i < frameScores.length; i++)
-                        {
+                        for (byte i = 0; i < frameScores.length; i++) {
                             mTextViewFrames[i].setText((mHasFrameBeenAccessed[i]
                                     ? String.valueOf(frameScores[i])
                                     : ""));
@@ -1909,16 +1685,13 @@ public class GameFragment
     }
 
     /**
-     * Counts fouls of the frames and calculates scores minus 15 points for each foul, then sets
-     * score in last TextView.
+     * Counts fouls of the frames and calculates scores minus 15 points for each foul, then sets score in last
+     * TextView.
      */
-    private void updateFouls()
-    {
+    private void updateFouls() {
         byte foulCount = 0;
-        for (byte i = 0; i < Constants.NUMBER_OF_FRAMES; i++)
-        {
-            for (int j = 0; j < 3; j++)
-            {
+        for (byte i = 0; i < Constants.NUMBER_OF_FRAMES; i++) {
+            for (int j = 0; j < 3; j++) {
                 if (mFouls[i][j])
                     foulCount++;
             }
@@ -1928,11 +1701,9 @@ public class GameFragment
             scoreWithFouls = 0;
         mGameScoresMinusFouls[mCurrentGame] = scoreWithFouls;
 
-        getActivity().runOnUiThread(new Runnable()
-        {
+        getActivity().runOnUiThread(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 mTextViewFinalScore.setText(String.valueOf(mGameScoresMinusFouls[mCurrentGame]));
                 mImageViewFoul.setImageResource(
                         !mFouls[mCurrentFrame][mCurrentBall]
@@ -1952,13 +1723,10 @@ public class GameFragment
     /**
      * Sets background color of current ball and frame TextView instances to mColorBackground.
      */
-    private void clearFrameColor()
-    {
-        getActivity().runOnUiThread(new Runnable()
-        {
+    private void clearFrameColor() {
+        getActivity().runOnUiThread(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 GradientDrawable drawable = (GradientDrawable)
                         mTextViewBallScores[mCurrentFrame][mCurrentBall].getBackground();
                 drawable.setColor(mColorBackground);
@@ -1970,18 +1738,15 @@ public class GameFragment
     }
 
     /**
-     * Sets background color of current ball and frame TextView instances to mColorHighlight and
-     * sets color of pin and whether its enabled or not depending on its state.
+     * Sets background color of current ball and frame TextView instances to mColorHighlight and sets color of pin and
+     * whether its enabled or not depending on its state.
      *
      * @param initialLoad indicates if this method was called when a game was first loaded
      */
-    private void updateFrameColor(final boolean initialLoad)
-    {
-        getActivity().runOnUiThread(new Runnable()
-        {
+    private void updateFrameColor(final boolean initialLoad) {
+        getActivity().runOnUiThread(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 GradientDrawable drawable = (GradientDrawable)
                         mTextViewBallScores[mCurrentFrame][mCurrentBall].getBackground();
                 drawable.setColor(mColorHighlight);
@@ -1992,12 +1757,10 @@ public class GameFragment
                 //Sets images of pins to enabled/disabled depending on
                 //if they were knocked down in current frame or a previous one
                 int numberOfPinsStanding = 0;
-                for (byte i = 0; i < 5; i++)
-                {
+                for (byte i = 0; i < 5; i++) {
                     if (mPinState[mCurrentFrame][mCurrentBall][i])
                         mImageViewPins[i].setImageResource(R.drawable.pin_disabled);
-                    else
-                    {
+                    else {
                         mImageViewPins[i].setImageResource(R.drawable.pin_enabled);
                         numberOfPinsStanding++;
                     }
@@ -2011,10 +1774,8 @@ public class GameFragment
                         mImageViewPins[i].setEnabled(true);
                 }
 
-                if (mCurrentFrame == Constants.LAST_FRAME)
-                {
-                    switch (mCurrentBall)
-                    {
+                if (mCurrentFrame == Constants.LAST_FRAME) {
+                    switch (mCurrentBall) {
                         case 0:
                             mImageViewClear.setImageResource(R.drawable.ic_strike);
                             break;
@@ -2037,11 +1798,8 @@ public class GameFragment
                             break;
                         default: // do nothing
                     }
-                }
-                else
-                {
-                    switch (mCurrentBall)
-                    {
+                } else {
+                    switch (mCurrentBall) {
                         case 0:
                             mImageViewClear.setImageResource(R.drawable.ic_strike);
                             break;
@@ -2070,42 +1828,33 @@ public class GameFragment
      * Either sets a pin to be standing or knocked down, and updates the score accordingly.
      *
      * @param pinToSet the pin which was altered
-     * @param updateScore indicates if score and text views should be updated. If altering more than
-     * one pin at a time, this should only be true for the last call.
+     * @param updateScore indicates if score and text views should be updated. If altering more than one pin at a time,
+     * this should only be true for the last call.
      */
-    private void alterPinState(final byte pinToSet, final boolean updateScore)
-    {
+    private void alterPinState(final byte pinToSet, final boolean updateScore) {
         final boolean isPinKnockedOver = mPinState[mCurrentFrame][mCurrentBall][pinToSet];
         final boolean allPinsKnockedOver;
-        if (!isPinKnockedOver)
-        {
+        if (!isPinKnockedOver) {
             for (int i = mCurrentBall; i < 3; i++)
                 mPinState[mCurrentFrame][i][pinToSet] = true;
 
             if (Arrays.equals(mPinState[mCurrentFrame][mCurrentBall],
-                    Constants.FRAME_PINS_DOWN))
-            {
+                    Constants.FRAME_PINS_DOWN)) {
                 for (int i = mCurrentBall + 1; i < 3; i++)
                     mFouls[mCurrentFrame][i] = false;
 
-                if (mCurrentFrame == Constants.LAST_FRAME)
-                {
-                    if (mCurrentBall < 2)
-                    {
-                        for (int j = mCurrentBall + 1; j < 3; j++)
-                        {
+                if (mCurrentFrame == Constants.LAST_FRAME) {
+                    if (mCurrentBall < 2) {
+                        for (int j = mCurrentBall + 1; j < 3; j++) {
                             for (int i = 0; i < 5; i++)
                                 mPinState[mCurrentFrame][j][i] = false;
                         }
                     }
                 }
                 allPinsKnockedOver = true;
-            }
-            else
+            } else
                 allPinsKnockedOver = false;
-        }
-        else
-        {
+        } else {
             allPinsKnockedOver = false;
             for (int i = mCurrentBall; i < 3; i++)
                 mPinState[mCurrentFrame][i][pinToSet] = false;
@@ -2119,11 +1868,9 @@ public class GameFragment
                         mPinState[mCurrentFrame][1].length);
         }
 
-        mImageViewPins[pinToSet].post(new Runnable()
-        {
+        mImageViewPins[pinToSet].post(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 if (mPinState[mCurrentFrame][mCurrentBall][pinToSet])
                     mImageViewPins[pinToSet].setImageResource(R.drawable.pin_disabled);
                 else
@@ -2132,28 +1879,22 @@ public class GameFragment
             }
         });
 
-        if (updateScore)
-        {
+        if (updateScore) {
             updateBalls(mCurrentFrame, (byte) 0);
             updateScore();
         }
     }
 
     /**
-     * Clears all the pins which are currently standing in the frame and updates the TextViews with
-     * new score.
+     * Clears all the pins which are currently standing in the frame and updates the TextViews with new score.
      */
-    private void clearPins()
-    {
+    private void clearPins() {
         if (mGameLocked[mCurrentGame] || mManualScoreSet[mCurrentGame])
             return;
 
-        if (!Arrays.equals(mPinState[mCurrentFrame][mCurrentBall], Constants.FRAME_PINS_DOWN))
-        {
-            for (int j = mCurrentBall; j < 3; j++)
-            {
-                for (int i = 0; i < 5; i++)
-                {
+        if (!Arrays.equals(mPinState[mCurrentFrame][mCurrentBall], Constants.FRAME_PINS_DOWN)) {
+            for (int j = mCurrentBall; j < 3; j++) {
+                for (int i = 0; i < 5; i++) {
                     mPinState[mCurrentFrame][j][i] =
                             (mCurrentFrame != Constants.LAST_FRAME || (j == mCurrentBall));
                     if (j > mCurrentBall)
@@ -2172,13 +1913,10 @@ public class GameFragment
      *
      * @param initialLoad indicates if this method was called when a game was first loaded
      */
-    private void focusOnFrame(final boolean initialLoad)
-    {
-        mHorizontalScrollViewFrames.post(new Runnable()
-        {
+    private void focusOnFrame(final boolean initialLoad) {
+        mHorizontalScrollViewFrames.post(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 if (initialLoad && mCurrentFrame == Constants.LAST_FRAME)
                     mHorizontalScrollViewFrames
                             .smoothScrollTo(mTextViewFrames[mCurrentFrame].getLeft(), 0);
@@ -2217,20 +1955,16 @@ public class GameFragment
             final short finalScore,
             final boolean gameLocked,
             final boolean manualScoreSet,
-            final byte matchPlay)
-    {
-        return new Thread(new Runnable()
-        {
+            final byte matchPlay) {
+        return new Thread(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 SQLiteDatabase database =
                         DatabaseHelper.getInstance(srcActivity).getWritableDatabase();
                 ContentValues values;
 
                 database.beginTransaction();
-                try
-                {
+                try {
                     values = new ContentValues();
                     values.put(GameEntry.COLUMN_SCORE, finalScore);
                     values.put(GameEntry.COLUMN_IS_LOCKED,
@@ -2247,11 +1981,9 @@ public class GameFragment
                             GameEntry._ID + "=?",
                             new String[]{String.valueOf(gameId)});
 
-                    for (byte i = 0; i < Constants.NUMBER_OF_FRAMES; i++)
-                    {
+                    for (byte i = 0; i < Constants.NUMBER_OF_FRAMES; i++) {
                         StringBuilder foulsOfFrame = new StringBuilder();
-                        for (int ballCount = 0; ballCount < 3; ballCount++)
-                        {
+                        for (int ballCount = 0; ballCount < 3; ballCount++) {
                             if (fouls[i][ballCount])
                                 foulsOfFrame.append(ballCount + 1);
                         }
@@ -2277,14 +2009,10 @@ public class GameFragment
                                 new String[]{String.valueOf(frameIds[i])});
                     }
                     database.setTransactionSuccessful();
-                }
-                catch (Exception ex)
-                {
+                } catch (Exception ex) {
                     throw new RuntimeException("Fatal error: Game could not save. "
                             + ex.getMessage());
-                }
-                finally
-                {
+                } finally {
                     database.endTransaction();
                 }
             }
@@ -2296,14 +2024,11 @@ public class GameFragment
      *
      * @param newGame index of id in mGameIds to load
      */
-    private void loadGameFromDatabase(final byte newGame)
-    {
+    private void loadGameFromDatabase(final byte newGame) {
         clearFrameColor();
-        new Thread(new Runnable()
-        {
+        new Thread(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 mCurrentGame = newGame;
                 if (mGameCallback != null)
                     mGameCallback.onGameChanged(mCurrentGame);
@@ -2311,8 +2036,7 @@ public class GameFragment
                         DatabaseHelper.getInstance(getActivity()).getReadableDatabase();
 
                 Cursor cursor = null;
-                try
-                {
+                try {
                     cursor = database.query(FrameEntry.TABLE_NAME,
                             new String[]{
                                     FrameEntry.COLUMN_IS_ACCESSED,
@@ -2329,15 +2053,12 @@ public class GameFragment
 
                     mFouls = new boolean[Constants.NUMBER_OF_FRAMES][3];
                     byte currentFrameIterator = 0;
-                    if (cursor.moveToFirst())
-                    {
-                        while (!cursor.isAfterLast())
-                        {
+                    if (cursor.moveToFirst()) {
+                        while (!cursor.isAfterLast()) {
                             byte frameAccessed = (byte) cursor.getInt(
                                     cursor.getColumnIndex(FrameEntry.COLUMN_IS_ACCESSED));
                             mHasFrameBeenAccessed[currentFrameIterator] = (frameAccessed == 1);
-                            for (int i = 0; i < 3; i++)
-                            {
+                            for (int i = 0; i < 3; i++) {
                                 int ball = cursor.getInt(cursor.getColumnIndex(
                                         FrameEntry.COLUMN_PIN_STATE[i]));
                                 boolean[] ballBoolean = Score.ballIntToBoolean(ball);
@@ -2345,8 +2066,7 @@ public class GameFragment
                             }
                             String fouls = Score.foulIntToString(cursor.getInt(
                                     cursor.getColumnIndex(FrameEntry.COLUMN_FOULS)));
-                            for (int ballCount = 0; ballCount < 3; ballCount++)
-                            {
+                            for (int ballCount = 0; ballCount < 3; ballCount++) {
                                 mFouls[currentFrameIterator][ballCount]
                                         = fouls.contains(String.valueOf(ballCount + 1));
                             }
@@ -2355,18 +2075,14 @@ public class GameFragment
                             cursor.moveToNext();
                         }
                     }
-                }
-                finally
-                {
+                } finally {
                     if (cursor != null && !cursor.isClosed())
                         cursor.close();
                 }
 
-                getActivity().runOnUiThread(new Runnable()
-                {
+                getActivity().runOnUiThread(new Runnable() {
                     @Override
-                    public void run()
-                    {
+                    public void run() {
                         clearAllText(!mManualScoreSet[mCurrentGame]);
                         getActivity().supportInvalidateOptionsMenu();
                         mTextViewGameNumber.setText("Game " + (mCurrentGame + 1));
@@ -2397,12 +2113,10 @@ public class GameFragment
     /**
      * Sets the icon of one of the floating action buttons.
      *
-     * @param nextFab if true, the icon of the "next ball" fab is set. If false, the "previous ball"
-     * fab icon is set.
+     * @param nextFab if true, the icon of the "next ball" fab is set. If false, the "previous ball" fab icon is set.
      * @param drawableId icon for fab
      */
-    private void setFloatingActionButtonState(boolean nextFab, int drawableId)
-    {
+    private void setFloatingActionButtonState(boolean nextFab, int drawableId) {
         if (nextFab && mNextFab != null)
             mNextFab.animateIconChanges(drawableId);
         else if (!nextFab && mPrevFab != null)
@@ -2414,8 +2128,7 @@ public class GameFragment
      *
      * @param gameNumber index in mGameIds to load from database
      */
-    public void switchGame(byte gameNumber)
-    {
+    public void switchGame(byte gameNumber) {
         if (gameNumber == mCurrentGame)
             return;
 
@@ -2424,11 +2137,9 @@ public class GameFragment
     }
 
     /**
-     * Loads the initial scores for the games being displayed from the database so they can be shown
-     * and updated.
+     * Loads the initial scores for the games being displayed from the database so they can be shown and updated.
      */
-    private void loadInitialScores()
-    {
+    private void loadInitialScores() {
         MainActivity.waitForSaveThreads(new WeakReference<>((MainActivity) getActivity()));
 
         byte numberOfGames = ((MainActivity) getActivity()).getNumberOfGamesForSeries();
@@ -2436,8 +2147,7 @@ public class GameFragment
         StringBuilder whereBuilder = new StringBuilder(GameEntry._ID + "=?");
         String[] whereArgs = new String[numberOfGames];
         whereArgs[0] = String.valueOf(mGameIds[0]);
-        for (byte i = 1; i < numberOfGames; i++)
-        {
+        for (byte i = 1; i < numberOfGames; i++) {
             whereBuilder.append(" OR ");
             whereBuilder.append(GameEntry._ID);
             whereBuilder.append("=?");
@@ -2453,17 +2163,13 @@ public class GameFragment
                 GameEntry._ID);
 
         byte currentGamePosition = 0;
-        if (cursor.moveToFirst())
-        {
-            while (!cursor.isAfterLast())
-            {
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
                 short gameScore = cursor.getShort(cursor.getColumnIndex(GameEntry.COLUMN_SCORE));
                 mGameScoresMinusFouls[currentGamePosition++] = gameScore;
                 cursor.moveToNext();
             }
-        }
-        else
-        {
+        } else {
             mDoNotSave.set(true);
             throw new RuntimeException("Fatal error: could not load initial scores.");
         }
@@ -2475,16 +2181,14 @@ public class GameFragment
      *
      * @return value of mCurrentGame
      */
-    public byte getCurrentGame()
-    {
+    public byte getCurrentGame() {
         return mCurrentGame;
     }
 
     /**
      * Callback interface offers methods upon user interaction.
      */
-    public interface GameFragmentCallback
-    {
+    public interface GameFragmentCallback {
 
         /**
          * Tells activity to open new StatsFragment with current game id and game number.
@@ -2558,8 +2262,7 @@ public class GameFragment
                                            long[] frameIds,
                                            boolean[] gameLocked,
                                            boolean[] manualScore,
-                                           byte[] matchPlay)
-    {
+                                           byte[] matchPlay) {
         GameFragment gameFragment = new GameFragment();
         Bundle args = new Bundle();
         args.putLongArray(Constants.EXTRA_ARRAY_GAME_IDS, gameIds);

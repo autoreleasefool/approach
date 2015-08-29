@@ -14,7 +14,7 @@
         android:layout_gravity="center_vertical|left"
         android:alpha="0.87"
         android:gravity="center"
-        android:paddingLeft="@dimen/list_keyline"
+        android:paddingLeft="@dimen/list_key_line"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@android:color/black" />
 
@@ -91,7 +91,7 @@
             android:layout_gravity="center_vertical|right"
             android:layout_marginLeft="4dp"
             android:contentDescription="@string/description_edit_date"
-            android:paddingRight="@dimen/list_keyline"
+            android:paddingRight="@dimen/list_key_line"
             android:src="@drawable/ic_edit_black_24dp" />
 
     </LinearLayout>

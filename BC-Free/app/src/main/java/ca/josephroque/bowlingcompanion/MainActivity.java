@@ -78,8 +78,7 @@ import ca.josephroque.bowlingcompanion.utilities.NavigationUtils;
 import ca.josephroque.bowlingcompanion.view.AnimatedFloatingActionButton;
 
 /**
- * Created by Joseph Roque <p/> The main activity which handles most interaction with the
- * application.
+ * Created by Joseph Roque. The main activity which handles most interaction with the application.
  */
 @SuppressWarnings("Convert2Lambda")
 public class MainActivity
@@ -91,8 +90,7 @@ public class MainActivity
         LeagueEventFragment.LeagueEventCallback,
         SeriesFragment.SeriesCallback,
         GameFragment.GameFragmentCallback,
-        NavigationDrawerAdapter.NavigationCallback
-{
+        NavigationDrawerAdapter.NavigationCallback {
 
     /** Identifies output from this class in Logcat. */
     @SuppressWarnings("unused")
@@ -140,26 +138,18 @@ public class MainActivity
     private Handler mAutoAdvanceHandler;
 
     /** Runnable to auto advance. */
-    private final Runnable mAutoAdvanceCallback = new Runnable()
-    {
+    private final Runnable mAutoAdvanceCallback = new Runnable() {
         @Override
-        public void run()
-        {
-            if (--mAutoAdvanceDelayRemaining <= 0)
-            {
+        public void run() {
+            if (--mAutoAdvanceDelayRemaining <= 0) {
                 mViewAutoAdvance.performClick();
                 setAutoAdvanceConditions(
                         mViewAutoAdvance, mTextViewAutoAdvanceStatus, false, mAutoAdvanceDelay);
-            }
-            else
-            {
-                if (mTextViewAutoAdvanceStatus != null)
-                {
-                    runOnUiThread(new Runnable()
-                    {
+            } else {
+                if (mTextViewAutoAdvanceStatus != null) {
+                    runOnUiThread(new Runnable() {
                         @Override
-                        public void run()
-                        {
+                        public void run() {
                             final int timeToDelay = 1000;
                             mTextViewAutoAdvanceStatus.setVisibility(View.VISIBLE);
                             mTextViewAutoAdvanceStatus.setText(mAutoAdvanceDelayRemaining
@@ -202,8 +192,7 @@ public class MainActivity
     private AnimatedFloatingActionButton mPrimaryFab;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Theme.loadTheme(this);
 
@@ -228,17 +217,14 @@ public class MainActivity
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        if (savedInstanceState == null)
-        {
+        if (savedInstanceState == null) {
             //Creates new BowlerFragment to display data, if no other fragment exists
             Fragment bowlerFragment = BowlerFragment.newInstance();
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.fl_main_fragment_container, bowlerFragment,
                             Constants.FRAGMENT_BOWLERS)
                     .commit();
-        }
-        else
-        {
+        } else {
             //Loads member variables from bundle
             mBowlerId = savedInstanceState.getLong(Constants.EXTRA_ID_BOWLER, -1);
             mLeagueId = savedInstanceState.getLong(Constants.EXTRA_ID_LEAGUE, -1);
@@ -267,22 +253,19 @@ public class MainActivity
     }
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState)
-    {
+    protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         mDrawerToggle.syncState();
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig)
-    {
+    public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState)
-    {
+    protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
         //Saves member variables to bundle
@@ -302,44 +285,31 @@ public class MainActivity
     }
 
     @Override
-    protected void onResume()
-    {
+    protected void onResume() {
         super.onResume();
         mAppIsRunning.set(true);
 
         if (mAdView != null && mAdView.getVisibility() == View.VISIBLE)
             mAdView.resume();
 
-        new Thread(new Runnable()
-        {
+        new Thread(new Runnable() {
             @Override
-            public void run()
-            {
-                while (mAppIsRunning.get() || mQueueSavingThreads.peek() != null)
-                {
+            public void run() {
+                while (mAppIsRunning.get() || mQueueSavingThreads.peek() != null) {
                     mRunningSaveThread = mQueueSavingThreads.peek();
-                    if (mRunningSaveThread != null)
-                    {
+                    if (mRunningSaveThread != null) {
                         mRunningSaveThread.start();
-                        try
-                        {
+                        try {
                             mRunningSaveThread.join();
                             mQueueSavingThreads.poll();
-                        }
-                        catch (InterruptedException ex)
-                        {
+                        } catch (InterruptedException ex) {
                             throw new RuntimeException("Error saving game: " + ex.getMessage());
                         }
-                    }
-                    else
-                    {
-                        try
-                        {
+                    } else {
+                        try {
                             //noinspection CheckStyle
                             Thread.sleep(100);
-                        }
-                        catch (InterruptedException ex)
-                        {
+                        } catch (InterruptedException ex) {
                             throw new RuntimeException("Error while saving thread sleeping: "
                                     + ex.getMessage());
                         }
@@ -352,8 +322,7 @@ public class MainActivity
     }
 
     @Override
-    protected void onPause()
-    {
+    protected void onPause() {
         if (mAdView != null && mAdView.getVisibility() == View.VISIBLE)
             mAdView.pause();
         super.onPause();
@@ -361,24 +330,21 @@ public class MainActivity
     }
 
     @Override
-    protected void onDestroy()
-    {
+    protected void onDestroy() {
         if (mAdView != null && mAdView.getVisibility() == View.VISIBLE)
             mAdView.destroy();
         super.onDestroy();
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
+    public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu)
-    {
+    public boolean onPrepareOptionsMenu(Menu menu) {
         //Sets menu items visibility depending on if navigation drawer is open
         boolean drawerOpen = isDrawerOpen();
         menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
@@ -387,15 +353,13 @@ public class MainActivity
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
+    public boolean onOptionsItemSelected(MenuItem item) {
         if (mDrawerLayout.getDrawerLockMode(GravityCompat.START)
                 != DrawerLayout.LOCK_MODE_LOCKED_CLOSED
                 && mDrawerToggle.onOptionsItemSelected(item))
             return true;
 
-        switch (item.getItemId())
-        {
+        switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
                 return true;
@@ -411,16 +375,13 @@ public class MainActivity
     }
 
     @Override
-    public void onBackStackChanged()
-    {
+    public void onBackStackChanged() {
         List<Fragment> fragments = getSupportFragmentManager().getFragments();
-        for (Fragment fragment : fragments)
-        {
+        for (Fragment fragment : fragments) {
             if (fragment == null || !fragment.isVisible() || fragment.getTag() == null)
                 continue;
 
-            switch (fragment.getTag())
-            {
+            switch (fragment.getTag()) {
                 case Constants.FRAGMENT_BOWLERS:
                     mBowlerId = -1;
                     mLeagueId = -1;
@@ -473,20 +434,15 @@ public class MainActivity
     }
 
     @Override
-    public void onBackPressed()
-    {
+    public void onBackPressed() {
         if (isDrawerOpen())
             mDrawerLayout.closeDrawer(GravityCompat.START);
-        else
-        {
+        else {
             FragmentManager fm = getSupportFragmentManager();
-            for (Fragment frag : fm.getFragments())
-            {
-                if (frag != null && frag.isVisible())
-                {
+            for (Fragment frag : fm.getFragments()) {
+                if (frag != null && frag.isVisible()) {
                     FragmentManager childFm = frag.getChildFragmentManager();
-                    if (childFm.getBackStackEntryCount() > 0)
-                    {
+                    if (childFm.getBackStackEntryCount() > 0) {
                         childFm.popBackStack();
                         return;
                     }
@@ -497,16 +453,14 @@ public class MainActivity
     }
 
     @Override
-    public void updateTheme()
-    {
+    public void updateTheme() {
         //Updates colors and sets theme for MainActivity valid
         if (getSupportActionBar() != null)
             getSupportActionBar()
                     .setBackgroundDrawable(new ColorDrawable(Theme.getPrimaryThemeColor()));
         mDrawerRecyclerView.setBackgroundColor(Theme.getPrimaryThemeColor());
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-        {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Bitmap icon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
             setTaskDescription(new ActivityManager.TaskDescription("Bowling Companion", icon,
                     Theme.getPrimaryThemeColor()));
@@ -523,8 +477,7 @@ public class MainActivity
             window.setStatusBarColor(Theme.getStatusThemeColor());
         }
 
-        if (mPrimaryFab != null)
-        {
+        if (mPrimaryFab != null) {
             DisplayUtils.setFloatingActionButtonColors(mPrimaryFab,
                     Theme.getPrimaryThemeColor(),
                     Theme.getTertiaryThemeColor());
@@ -538,14 +491,12 @@ public class MainActivity
     @Override
     public void onBowlerSelected(Bowler bowler,
                                  boolean openLeagueFragment,
-                                 boolean isQuickSeries)
-    {
+                                 boolean isQuickSeries) {
         mBowlerId = bowler.getBowlerId();
         mBowlerName = bowler.getBowlerName();
         mIsQuickSeries = isQuickSeries;
 
-        if (openLeagueFragment)
-        {
+        if (openLeagueFragment) {
             LeagueEventFragment leagueEventFragment = LeagueEventFragment.newInstance();
             startFragmentTransaction(leagueEventFragment, Constants.FRAGMENT_BOWLERS,
                     Constants.FRAGMENT_LEAGUES);
@@ -553,14 +504,12 @@ public class MainActivity
     }
 
     @Override
-    public void onLeagueSelected(LeagueEvent leagueEvent, boolean openSeriesFragment)
-    {
+    public void onLeagueSelected(LeagueEvent leagueEvent, boolean openSeriesFragment) {
         mLeagueId = leagueEvent.getLeagueEventId();
         mLeagueName = leagueEvent.getLeagueEventName();
         mDefaultNumberOfGames = leagueEvent.getLeagueEventNumberOfGames();
 
-        if (openSeriesFragment)
-        {
+        if (openSeriesFragment) {
             SeriesFragment seriesFragment = SeriesFragment.newInstance();
             startFragmentTransaction(seriesFragment, Constants.FRAGMENT_LEAGUES,
                     Constants.FRAGMENT_SERIES);
@@ -568,8 +517,7 @@ public class MainActivity
     }
 
     @Override
-    public void onSeriesSelected(Series series, boolean isEvent)
-    {
+    public void onSeriesSelected(Series series, boolean isEvent) {
         mSeriesId = series.getSeriesId();
         mSeriesDate = series.getSeriesDate();
         if (!isEvent)
@@ -581,25 +529,20 @@ public class MainActivity
     }
 
     @Override
-    public void onCreateNewSeries(boolean isEvent)
-    {
+    public void onCreateNewSeries(boolean isEvent) {
         boolean promptNumberOfGames = !isEvent && mLeagueName != null
                 && mLeagueName.substring(1).equals(Constants.NAME_OPEN_LEAGUE);
 
-        if (promptNumberOfGames)
-        {
+        if (promptNumberOfGames) {
             final NumberPicker numberPicker = new NumberPicker(this);
             numberPicker.setMaxValue(Constants.MAX_NUMBER_LEAGUE_GAMES);
             numberPicker.setMinValue(1);
             numberPicker.setWrapSelectorWheel(false);
 
-            DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener()
-            {
+            DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
                 @Override
-                public void onClick(DialogInterface dialog, int which)
-                {
-                    if (which == DialogInterface.BUTTON_POSITIVE)
-                    {
+                public void onClick(DialogInterface dialog, int which) {
+                    if (which == DialogInterface.BUTTON_POSITIVE) {
                         mNumberOfGamesForSeries = (byte) numberPicker.getValue();
                         new AddSeriesTask(MainActivity.this).execute();
                     }
@@ -614,9 +557,7 @@ public class MainActivity
                     .setNegativeButton(R.string.dialog_cancel, listener)
                     .create()
                     .show();
-        }
-        else
-        {
+        } else {
             mNumberOfGamesForSeries = mDefaultNumberOfGames;
             new AddSeriesTask(MainActivity.this).execute();
         }
@@ -625,8 +566,7 @@ public class MainActivity
     /**
      * Sets up the navigation drawer for the game fragment.
      */
-    public void createGameNavigationDrawer()
-    {
+    public void createGameNavigationDrawer() {
         mListDrawerOptions.remove(NavigationUtils.NAVIGATION_ITEM_LEAGUES);
         mListDrawerOptions.remove(NavigationUtils.NAVIGATION_ITEM_SERIES);
         for (Iterator<String> it = mListDrawerOptions.iterator(); it.hasNext();)
@@ -634,10 +574,8 @@ public class MainActivity
                 it.remove();
         GameFragment gameFragment = null;
         FragmentManager fragmentManager = getSupportFragmentManager();
-        for (Fragment frag : fragmentManager.getFragments())
-        {
-            if (frag != null && frag instanceof GameFragment)
-            {
+        for (Fragment frag : fragmentManager.getFragments()) {
+            if (frag != null && frag instanceof GameFragment) {
                 gameFragment = (GameFragment) frag;
                 break;
             }
@@ -672,8 +610,7 @@ public class MainActivity
      *
      * @param drawableId id of the drawable for the floating action button
      */
-    public void setFloatingActionButtonState(int drawableId)
-    {
+    public void setFloatingActionButtonState(int drawableId) {
         mPrimaryFab.animateIconChanges(drawableId);
     }
 
@@ -686,8 +623,7 @@ public class MainActivity
      */
     private void startFragmentTransaction(Fragment fragment,
                                           String backStackTag,
-                                          String fragmentTag)
-    {
+                                          String fragmentTag) {
         getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left,
                         R.anim.slide_in_left, R.anim.slide_out_right)
@@ -697,26 +633,22 @@ public class MainActivity
     }
 
     @Override
-    public void onBowlerStatsOpened()
-    {
+    public void onBowlerStatsOpened() {
         openStatsFragment(Constants.FRAGMENT_LEAGUES);
     }
 
     @Override
-    public void onLeagueStatsOpened()
-    {
+    public void onLeagueStatsOpened() {
         openStatsFragment(Constants.FRAGMENT_SERIES);
     }
 
     @Override
-    public void onSeriesStatsOpened()
-    {
+    public void onSeriesStatsOpened() {
         openStatsFragment(Constants.FRAGMENT_GAME);
     }
 
     @Override
-    public void onGameStatsOpened(long gameId, byte gameNumber)
-    {
+    public void onGameStatsOpened(long gameId, byte gameNumber) {
         mGameId = gameId;
         mGameNumber = gameNumber;
 
@@ -724,8 +656,7 @@ public class MainActivity
     }
 
     @Override
-    public void onGameChanged(final byte newGameNumber)
-    {
+    public void onGameChanged(final byte newGameNumber) {
         int offset = 0;
         while (mListDrawerOptions.size() > offset
                 && !mListDrawerOptions.get(offset).matches("\\w+ \\d+"))
@@ -734,11 +665,9 @@ public class MainActivity
         if (currentAdapterGame == newGameNumber)
             return;
 
-        runOnUiThread(new Runnable()
-        {
+        runOnUiThread(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 mDrawerAdapter.setCurrentItem(newGameNumber);
                 mDrawerAdapter.notifyDataSetChanged();
             }
@@ -746,11 +675,9 @@ public class MainActivity
     }
 
     @Override
-    public void onNavigationItemClicked(int position)
-    {
+    public void onNavigationItemClicked(int position) {
         mDrawerLayout.closeDrawer(GravityCompat.START);
-        if (mListDrawerOptions.get(position).matches("\\w+ \\d+"))
-        {
+        if (mListDrawerOptions.get(position).matches("\\w+ \\d+")) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
             GameFragment gameFragment = (GameFragment) getSupportFragmentManager()
                     .findFragmentByTag(Constants.FRAGMENT_GAME);
@@ -765,8 +692,7 @@ public class MainActivity
             return;
         }
 
-        switch (mListDrawerOptions.get(position))
-        {
+        switch (mListDrawerOptions.get(position)) {
             case NavigationUtils.NAVIGATION_ITEM_BOWLERS:
                 getSupportFragmentManager().popBackStack(
                         Constants.FRAGMENT_BOWLERS, FragmentManager.POP_BACK_STACK_INCLUSIVE);
@@ -797,12 +723,10 @@ public class MainActivity
     }
 
     @Override
-    public void onUserInteraction()
-    {
+    public void onUserInteraction() {
         super.onUserInteraction();
 
-        if (mAutoAdvanceEnabled && mCurrentFragmentTitle.equals(Constants.FRAGMENT_GAME))
-        {
+        if (mAutoAdvanceEnabled && mCurrentFragmentTitle.equals(Constants.FRAGMENT_GAME)) {
             resetAutoAdvanceTimer();
         }
     }
@@ -811,8 +735,7 @@ public class MainActivity
     public void setAutoAdvanceConditions(View clickToAdvance,
                                          TextView textViewStatus,
                                          boolean enabled,
-                                         int delay)
-    {
+                                         int delay) {
         mViewAutoAdvance = clickToAdvance;
         mTextViewAutoAdvanceStatus = textViewStatus;
         mAutoAdvanceEnabled = enabled;
@@ -825,8 +748,7 @@ public class MainActivity
     }
 
     @Override
-    public void resetAutoAdvanceTimer()
-    {
+    public void resetAutoAdvanceTimer() {
         if (!mAutoAdvanceEnabled)
             return;
 
@@ -840,34 +762,28 @@ public class MainActivity
     }
 
     @Override
-    public void stopAutoAdvanceTimer()
-    {
+    public void stopAutoAdvanceTimer() {
         if (mTextViewAutoAdvanceStatus != null)
             mTextViewAutoAdvanceStatus.setVisibility(View.INVISIBLE);
         mAutoAdvanceHandler.removeCallbacks(mAutoAdvanceCallback);
     }
 
     @Override
-    public void updateGameScore(byte gameNumber, short gameScore)
-    {
+    public void updateGameScore(byte gameNumber, short gameScore) {
         mDrawerAdapter.setSubtitle("Game " + gameNumber, Short.toString(gameScore));
     }
 
     /**
      * Sets up the floating action button.
      */
-    private void setupFloatingActionButton()
-    {
+    private void setupFloatingActionButton() {
         mPrimaryFab = (AnimatedFloatingActionButton) findViewById(R.id.fab_main);
         DisplayUtils.fixFloatingActionButtonMargins(getResources(), mPrimaryFab);
-        mPrimaryFab.setOnClickListener(new View.OnClickListener()
-        {
+        mPrimaryFab.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 FragmentManager fragmentManager = getSupportFragmentManager();
-                for (Fragment fragment : fragmentManager.getFragments())
-                {
+                for (Fragment fragment : fragmentManager.getFragments()) {
                     if (fragment != null && fragment.isVisible()
                             && fragment instanceof FloatingActionButtonHandler)
                         ((FloatingActionButtonHandler) fragment).onFabClick();
@@ -880,8 +796,7 @@ public class MainActivity
      * Sets up the navigation drawer.
      */
     @SuppressWarnings("CheckStyle")
-    private void setupNavigationDrawer()
-    {
+    private void setupNavigationDrawer() {
         final int displayWidth = getResources().getDisplayMetrics().widthPixels;
         final int maxNavigationDrawerWidth = (int) Math.ceil(
                 getResources().getDisplayMetrics().density
@@ -916,13 +831,11 @@ public class MainActivity
         mDrawerToggle = new ActionBarDrawerToggle(this,
                 mDrawerLayout,
                 R.string.text_open_drawer,
-                R.string.text_close_drawer)
-        {
+                R.string.text_close_drawer) {
 
             /** Called when a drawer has settled in a completely closed state. */
             @Override
-            public void onDrawerClosed(View view)
-            {
+            public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
                 setActionBarTitle(mTitle, false);
                 invalidateOptionsMenu();
@@ -930,16 +843,14 @@ public class MainActivity
 
             /** Called when a drawer has settled in a completely open state. */
             @Override
-            public void onDrawerOpened(View drawerView)
-            {
+            public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
                 setActionBarTitle(mDrawerTitle, false);
                 invalidateOptionsMenu();
             }
 
             @Override
-            public void onDrawerSlide(View drawerView, float slideOffset)
-            {
+            public void onDrawerSlide(View drawerView, float slideOffset) {
                 super.onDrawerSlide(drawerView, slideOffset);
                 NavigationUtils.setDrawerOffset(slideOffset);
             }
@@ -950,21 +861,16 @@ public class MainActivity
     /**
      * Sets up the AdView and requests an ad.
      */
-    private void setupAdView()
-    {
+    private void setupAdView() {
         //Sets the adview to display an ad to the user
         mAdView = (AdView) findViewById(R.id.av_main);
-        mAdView.setAdListener(new AdListener()
-        {
+        mAdView.setAdListener(new AdListener() {
             @Override
-            public void onAdFailedToLoad(int errorCode)
-            {
+            public void onAdFailedToLoad(int errorCode) {
                 //If ad fails to load, hides this adview
-                runOnUiThread(new Runnable()
-                {
+                runOnUiThread(new Runnable() {
                     @Override
-                    public void run()
-                    {
+                    public void run() {
                         mAdView.destroy();
                         mAdView.setVisibility(View.GONE);
                     }
@@ -972,13 +878,10 @@ public class MainActivity
             }
 
             @Override
-            public void onAdLoaded()
-            {
-                runOnUiThread(new Runnable()
-                {
+            public void onAdLoaded() {
+                runOnUiThread(new Runnable() {
                     @Override
-                    public void run()
-                    {
+                    public void run() {
                         mAdView.setVisibility(View.VISIBLE);
                     }
                 });
@@ -993,26 +896,22 @@ public class MainActivity
     }
 
     /**
-     * Gets a new instance of {@link ca.josephroque.bowlingcompanion.fragment.StatsListFragment} and
-     * displays it.
+     * Gets a new instance of {@link ca.josephroque.bowlingcompanion.fragment.StatsListFragment} and displays it.
      *
      * @param tag represents fragment which should be returned to when backstack is popped
      */
-    public void openStatsFragment(String tag)
-    {
+    private void openStatsFragment(String tag) {
         StatsListFragment statsListFragment = StatsListFragment.newInstance();
         startFragmentTransaction(statsListFragment, tag, Constants.FRAGMENT_STAT_LIST);
     }
 
     /**
-     * Gets a new instance of {@link ca.josephroque.bowlingcompanion.fragment.StatsGraphFragment}
-     * and displays it.
+     * Gets a new instance of {@link ca.josephroque.bowlingcompanion.fragment.StatsGraphFragment} and displays it.
      *
      * @param statCategory category of stat to display
      * @param statIndex index in category of stat to display
      */
-    public void openStatGraph(int statCategory, int statIndex)
-    {
+    public void openStatGraph(int statCategory, int statIndex) {
         StatsGraphFragment fragment = StatsGraphFragment.newInstance(statCategory, statIndex);
         startFragmentTransaction(fragment,
                 Constants.FRAGMENT_STAT_LIST,
@@ -1025,8 +924,7 @@ public class MainActivity
      * @param resId id of string to be set at title
      * @param override indicates if reference to resId title should be saved in mTitle
      */
-    public void setActionBarTitle(int resId, boolean override)
-    {
+    public void setActionBarTitle(int resId, boolean override) {
         //Changing title theme color
         //final String hexColor = DataFormatter.getHexColorFromInt(Theme.getHeaderFontThemeColor());
 
@@ -1042,8 +940,7 @@ public class MainActivity
     /**
      * Opens the settings activity.
      */
-    private void openSettings()
-    {
+    private void openSettings() {
         Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
         startActivity(settingsIntent);
     }
@@ -1051,8 +948,7 @@ public class MainActivity
     /**
      * Opens the tutorial.
      */
-    private void openSplashActivity()
-    {
+    private void openSplashActivity() {
         Intent tutorialIntent = new Intent(MainActivity.this, SplashActivity.class);
         tutorialIntent.putExtra(Constants.EXTRA_IGNORE_WATCHED, true);
         startActivity(tutorialIntent);
@@ -1063,8 +959,7 @@ public class MainActivity
      *
      * @return value of mBowlerId
      */
-    public long getBowlerId()
-    {
+    public long getBowlerId() {
         return mBowlerId;
     }
 
@@ -1073,8 +968,7 @@ public class MainActivity
      *
      * @return value of mLeagueId
      */
-    public long getLeagueId()
-    {
+    public long getLeagueId() {
         return mLeagueId;
     }
 
@@ -1083,8 +977,7 @@ public class MainActivity
      *
      * @return value of mSeriesId
      */
-    public long getSeriesId()
-    {
+    public long getSeriesId() {
         return mSeriesId;
     }
 
@@ -1093,8 +986,7 @@ public class MainActivity
      *
      * @return value of mDefaultNumberOfGames
      */
-    public byte getDefaultNumberOfGames()
-    {
+    public byte getDefaultNumberOfGames() {
         return mDefaultNumberOfGames;
     }
 
@@ -1103,8 +995,7 @@ public class MainActivity
      *
      * @return value of mNumberOfGamesForSeries
      */
-    public byte getNumberOfGamesForSeries()
-    {
+    public byte getNumberOfGamesForSeries() {
         return mNumberOfGamesForSeries;
     }
 
@@ -1113,8 +1004,7 @@ public class MainActivity
      *
      * @return value of mBowlerName
      */
-    public String getBowlerName()
-    {
+    public String getBowlerName() {
         return mBowlerName;
     }
 
@@ -1123,8 +1013,7 @@ public class MainActivity
      *
      * @return value of mLeagueName
      */
-    public String getLeagueName()
-    {
+    public String getLeagueName() {
         return mLeagueName;
     }
 
@@ -1133,8 +1022,7 @@ public class MainActivity
      *
      * @return value of mGameId
      */
-    public long getGameId()
-    {
+    public long getGameId() {
         return mGameId;
     }
 
@@ -1143,8 +1031,7 @@ public class MainActivity
      *
      * @return value of mGameNumber
      */
-    public byte getGameNumber()
-    {
+    public byte getGameNumber() {
         return mGameNumber;
     }
 
@@ -1153,8 +1040,7 @@ public class MainActivity
      *
      * @return value of mSeriesId
      */
-    public String getSeriesDate()
-    {
+    public String getSeriesDate() {
         return mSeriesDate;
     }
 
@@ -1163,8 +1049,7 @@ public class MainActivity
      *
      * @return true if the drawer is open, false otherwise
      */
-    public boolean isDrawerOpen()
-    {
+    public boolean isDrawerOpen() {
         return mDrawerLayout.isDrawerOpen(GravityCompat.START);
     }
 
@@ -1173,8 +1058,7 @@ public class MainActivity
      *
      * @return the value of mIsEventMode
      */
-    public boolean isEventMode()
-    {
+    public boolean isEventMode() {
         return mIsEventMode;
     }
 
@@ -1183,8 +1067,7 @@ public class MainActivity
      *
      * @return the value of mIsQuickSeries
      */
-    public boolean isQuickSeries()
-    {
+    public boolean isQuickSeries() {
         return mIsQuickSeries;
     }
 
@@ -1192,8 +1075,7 @@ public class MainActivity
      * Loads game data related to seriesId and displays it in a new GameFragment instance.
      */
     private static final class OpenSeriesTask
-            extends AsyncTask<Boolean, Void, Object[]>
-    {
+            extends AsyncTask<Boolean, Void, Object[]> {
 
         /** Weak reference to the parent activity. */
         private final WeakReference<MainActivity> mMainActivity;
@@ -1203,14 +1085,12 @@ public class MainActivity
          *
          * @param activity parent activity
          */
-        private OpenSeriesTask(MainActivity activity)
-        {
+        private OpenSeriesTask(MainActivity activity) {
             mMainActivity = new WeakReference<>(activity);
         }
 
         @Override
-        protected Object[] doInBackground(Boolean... isEvent)
-        {
+        protected Object[] doInBackground(Boolean... isEvent) {
             MainActivity mainActivity = mMainActivity.get();
             if (mainActivity == null)
                 return null;
@@ -1242,15 +1122,12 @@ public class MainActivity
             long currentGameId = -1;
             int currentFrame = -1;
             Cursor cursor = database.rawQuery(rawSeriesQuery, rawSeriesArgs);
-            if (cursor.moveToFirst())
-            {
-                while (!cursor.isAfterLast())
-                {
+            if (cursor.moveToFirst()) {
+                while (!cursor.isAfterLast()) {
                     long newGameId = cursor.getLong(cursor.getColumnIndex("gid"));
                     if (newGameId == currentGameId)
                         frameId[++currentFrame] = cursor.getLong(cursor.getColumnIndex("fid"));
-                    else
-                    {
+                    else {
                         currentGameId = newGameId;
                         frameId[++currentFrame] = cursor.getLong(cursor.getColumnIndex("fid"));
                         gameId[++currentGame] = currentGameId;
@@ -1271,8 +1148,7 @@ public class MainActivity
 
         @SuppressWarnings("CheckStyle")
         @Override
-        protected void onPostExecute(Object[] params)
-        {
+        protected void onPostExecute(Object[] params) {
             MainActivity mainActivity = mMainActivity.get();
             if (mainActivity == null || params == null)
                 return;
@@ -1296,8 +1172,7 @@ public class MainActivity
      * Creates a new series in the database and displays it in a new instance of GameFragment.
      */
     private static final class AddSeriesTask
-            extends AsyncTask<Void, Void, Object[]>
-    {
+            extends AsyncTask<Void, Void, Object[]> {
 
         /** Weak reference to the parent activity. */
         private final WeakReference<MainActivity> mMainActivity;
@@ -1307,14 +1182,12 @@ public class MainActivity
          *
          * @param activity parent activity
          */
-        private AddSeriesTask(MainActivity activity)
-        {
+        private AddSeriesTask(MainActivity activity) {
             mMainActivity = new WeakReference<>(activity);
         }
 
         @Override
-        protected Object[] doInBackground(Void... params)
-        {
+        protected Object[] doInBackground(Void... params) {
             MainActivity mainActivity = mMainActivity.get();
 
             if (mainActivity == null)
@@ -1332,23 +1205,20 @@ public class MainActivity
             String seriesDate = dateFormat.format(new Date());
 
             database.beginTransaction();
-            try
-            {
+            try {
                 ContentValues values = new ContentValues();
                 values.put(SeriesEntry.COLUMN_SERIES_DATE, seriesDate);
                 values.put(SeriesEntry.COLUMN_LEAGUE_ID, mainActivity.mLeagueId);
                 seriesId = database.insert(SeriesEntry.TABLE_NAME, null, values);
 
-                for (byte i = 0; i < mainActivity.mNumberOfGamesForSeries; i++)
-                {
+                for (byte i = 0; i < mainActivity.mNumberOfGamesForSeries; i++) {
                     values = new ContentValues();
                     values.put(GameEntry.COLUMN_GAME_NUMBER, i + 1);
                     values.put(GameEntry.COLUMN_SCORE, (short) 0);
                     values.put(GameEntry.COLUMN_SERIES_ID, seriesId);
                     gameId[i] = database.insert(GameEntry.TABLE_NAME, null, values);
 
-                    for (byte j = 0; j < Constants.NUMBER_OF_FRAMES; j++)
-                    {
+                    for (byte j = 0; j < Constants.NUMBER_OF_FRAMES; j++) {
                         values = new ContentValues();
                         values.put(FrameEntry.COLUMN_FRAME_NUMBER, j + 1);
                         values.put(FrameEntry.COLUMN_GAME_ID, gameId[i]);
@@ -1358,14 +1228,10 @@ public class MainActivity
                 }
 
                 database.setTransactionSuccessful();
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 throw new RuntimeException("Could not create new series entry in database: "
                         + ex.getMessage());
-            }
-            finally
-            {
+            } finally {
                 database.endTransaction();
             }
 
@@ -1375,8 +1241,7 @@ public class MainActivity
         }
 
         @Override
-        protected void onPostExecute(Object[] params)
-        {
+        protected void onPostExecute(Object[] params) {
             MainActivity mainActivity = mMainActivity.get();
             if (mainActivity == null || params == null)
                 return;
@@ -1405,8 +1270,7 @@ public class MainActivity
      *
      * @param thread saving thread
      */
-    public void addSavingThread(Thread thread)
-    {
+    public void addSavingThread(Thread thread) {
         mQueueSavingThreads.add(thread);
     }
 
@@ -1415,18 +1279,13 @@ public class MainActivity
      *
      * @param activity source activity
      */
-    public static void waitForSaveThreads(WeakReference<MainActivity> activity)
-    {
+    public static void waitForSaveThreads(WeakReference<MainActivity> activity) {
         //Waits for saving to database to finish, before loading from database
-        while (activity.get() != null && activity.get().mQueueSavingThreads.peek() != null)
-        {
-            try
-            {
+        while (activity.get() != null && activity.get().mQueueSavingThreads.peek() != null) {
+            try {
                 //noinspection CheckStyle
                 Thread.sleep(100);
-            }
-            catch (InterruptedException ex)
-            {
+            } catch (InterruptedException ex) {
                 throw new RuntimeException("Could not wait for threads to finish saving: "
                         + ex.getMessage());
             }
@@ -1439,16 +1298,12 @@ public class MainActivity
      *
      * @param isEnabled true to enable the drawer, false to disable
      */
-    public void setDrawerState(boolean isEnabled)
-    {
-        if (isEnabled)
-        {
+    public void setDrawerState(boolean isEnabled) {
+        if (isEnabled) {
             mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
             mDrawerToggle.setDrawerIndicatorEnabled(true);
             mDrawerToggle.syncState();
-        }
-        else
-        {
+        } else {
             mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
             mDrawerToggle.setDrawerIndicatorEnabled(false);
             mDrawerToggle.syncState();
@@ -1458,24 +1313,19 @@ public class MainActivity
     /**
      * Checks if the user has opened the navigation drawer and, if not, opens it.
      */
-    private void learnNavigationDrawer()
-    {
+    private void learnNavigationDrawer() {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        if (!preferences.getBoolean(NavigationUtils.NAVIGATION_DRAWER_LEARNED, false))
-        {
+        if (!preferences.getBoolean(NavigationUtils.NAVIGATION_DRAWER_LEARNED, false)) {
             mDrawerLayout.openDrawer(GravityCompat.START);
             preferences.edit().putBoolean(NavigationUtils.NAVIGATION_DRAWER_LEARNED, true).apply();
         }
     }
 
     @Override
-    public void loadGameScoresForDrawer(final long[] gameIds)
-    {
-        new Thread(new Runnable()
-        {
+    public void loadGameScoresForDrawer(final long[] gameIds) {
+        new Thread(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 final short[] gameScores = new short[gameIds.length];
                 SQLiteDatabase database = DatabaseHelper.getInstance(MainActivity.this)
                         .getReadableDatabase();
@@ -1488,10 +1338,8 @@ public class MainActivity
                         + " ORDER BY " + GameEntry._ID;
                 Cursor cursor = database.rawQuery(rawScoreQuery, null);
                 int curGame = 0;
-                if (cursor.moveToFirst())
-                {
-                    while (!cursor.isAfterLast())
-                    {
+                if (cursor.moveToFirst()) {
+                    while (!cursor.isAfterLast()) {
                         gameScores[curGame++] = (short) cursor.getInt(cursor.getColumnIndex(
                                 GameEntry.COLUMN_SCORE));
                         cursor.moveToNext();
@@ -1499,13 +1347,10 @@ public class MainActivity
                 }
                 cursor.close();
 
-                runOnUiThread(new Runnable()
-                {
+                runOnUiThread(new Runnable() {
                     @Override
-                    public void run()
-                    {
-                        for (int i = 0; i < gameIds.length; i++)
-                        {
+                    public void run() {
+                        for (int i = 0; i < gameIds.length; i++) {
                             mDrawerAdapter.setSubtitle("Game " + (i + 1),
                                     Short.toString(gameScores[i]));
                         }
@@ -1519,22 +1364,19 @@ public class MainActivity
      * To delay auto advancing.
      */
     private static final class AutoAdvanceHandler
-            extends Handler
-    {
+            extends Handler {
 
         /**
          * Sends {@code Looper} to super class.
          *
          * @param looper looper
          */
-        private AutoAdvanceHandler(Looper looper)
-        {
+        private AutoAdvanceHandler(Looper looper) {
             super(looper);
         }
 
         @Override
-        public void handleMessage(Message message)
-        {
+        public void handleMessage(Message message) {
             // does nothing;
         }
     }

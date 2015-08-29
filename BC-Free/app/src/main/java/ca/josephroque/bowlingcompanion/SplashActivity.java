@@ -25,8 +25,7 @@ import ca.josephroque.bowlingcompanion.theme.Theme;
  */
 public class SplashActivity
         extends FragmentActivity
-        implements Theme.ChangeableTheme
-{
+        implements Theme.ChangeableTheme {
 
     /** To identify output from this class in the Logcat. */
     @SuppressWarnings("unused")
@@ -50,16 +49,14 @@ public class SplashActivity
     private boolean mFromSavedInstanceState = false;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Theme.loadTheme(this);
 
         boolean ignoreWatched = (getIntent() != null)
                 && getIntent().getBooleanExtra(Constants.EXTRA_IGNORE_WATCHED, false);
 
-        if (savedInstanceState != null)
-        {
+        if (savedInstanceState != null) {
             mCurrentTutorialPage = savedInstanceState.getInt(ARG_CURRENT_PAGE, 0);
             mFromSavedInstanceState = true;
         }
@@ -71,8 +68,7 @@ public class SplashActivity
         setContentView(R.layout.activity_splash);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        if (preferences.getBoolean(PREF_TUTORIAL_WATCHED, false) && !ignoreWatched)
-        {
+        if (preferences.getBoolean(PREF_TUTORIAL_WATCHED, false) && !ignoreWatched) {
             openMainActivity();
             return;
         }
@@ -83,8 +79,7 @@ public class SplashActivity
     }
 
     @Override
-    protected void onResume()
-    {
+    protected void onResume() {
         super.onResume();
         if (mFromSavedInstanceState)
             mViewPagerContent.setCurrentItem(mCurrentTutorialPage);
@@ -93,17 +88,14 @@ public class SplashActivity
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState)
-    {
+    public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(ARG_CURRENT_PAGE, mCurrentTutorialPage);
     }
 
     @Override
-    public void updateTheme()
-    {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-        {
+    public void updateTheme() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Bitmap icon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
             setTaskDescription(new ActivityManager.TaskDescription("Bowling Companion", icon,
                     Theme.getPrimaryThemeColor()));
@@ -124,13 +116,10 @@ public class SplashActivity
     /**
      * Creates on click listener for skip button to open the main activity.
      */
-    private void setupSkipButton()
-    {
-        findViewById(R.id.tv_skip).setOnClickListener(new View.OnClickListener()
-        {
+    private void setupSkipButton() {
+        findViewById(R.id.tv_skip).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 if (mViewPagerContent.getCurrentItem() < TutorialFragment.TUTORIAL_TOTAL_PAGES - 1)
                     mViewPagerContent.setCurrentItem(mViewPagerContent.getCurrentItem() + 1);
                 else
@@ -142,8 +131,7 @@ public class SplashActivity
     /**
      * Starts an instance of {@link MainActivity}.
      */
-    private void openMainActivity()
-    {
+    private void openMainActivity() {
         Intent mainActivityIntet = new Intent(SplashActivity.this, MainActivity.class);
         startActivity(mainActivityIntet);
         finish();
@@ -152,8 +140,7 @@ public class SplashActivity
     /**
      * Gets adapter for view pager and initializes views.
      */
-    private void setupViewPager()
-    {
+    private void setupViewPager() {
         mViewPagerContent = (ViewPager) findViewById(R.id.splash_view_pager);
         /* Manages pages in the view pager. */
         SplashPagerAdapter splashPagerAdapter = new SplashPagerAdapter(getSupportFragmentManager());
@@ -161,8 +148,7 @@ public class SplashActivity
         LinearLayout linearLayoutToolbar = (LinearLayout) findViewById(R.id.ll_splash_toolbar);
 
         final View[] positionIndicator = new View[TutorialFragment.TUTORIAL_TOTAL_PAGES];
-        for (int i = 0; i < positionIndicator.length; i++)
-        {
+        for (int i = 0; i < positionIndicator.length; i++) {
             final int viewId = getResources().getIdentifier("view_indicator_" + i, "id",
                     getPackageName());
             positionIndicator[i] = linearLayoutToolbar.findViewById(viewId);
@@ -170,11 +156,9 @@ public class SplashActivity
         }
         positionIndicator[mCurrentTutorialPage].setAlpha(INDICATOR_ACTIVE);
 
-        mViewPagerContent.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener()
-        {
+        mViewPagerContent.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
             @Override
-            public void onPageSelected(int position)
-            {
+            public void onPageSelected(int position) {
                 //Changes which page indicator is 'highlighted'
                 positionIndicator[mCurrentTutorialPage].setAlpha(INDICATOR_INACTIVE);
                 positionIndicator[position].setAlpha(INDICATOR_ACTIVE);

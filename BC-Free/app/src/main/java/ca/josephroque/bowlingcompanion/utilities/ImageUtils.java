@@ -13,8 +13,8 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.net.Uri;
 import android.provider.MediaStore;
+import android.util.Log;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.ref.WeakReference;
@@ -29,24 +29,15 @@ import ca.josephroque.bowlingcompanion.database.Contract.GameEntry;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 
 /**
- * Created by Joseph Roque on 15-03-26. Provides methods relating to creating images of the
- * statistics managed by the application.
+ * Created by Joseph Roque on 15-03-26. Provides methods relating to creating images of the statistics managed by the
+ * application.
  */
 @SuppressWarnings("CheckStyle")
-public final class ImageUtils
-{
+final class ImageUtils {
 
     /** Identifies output from this class in Logcat. */
     @SuppressWarnings("unused")
     private static final String TAG = "ImageUtils";
-
-    /**
-     * Default private constructor.
-     */
-    private ImageUtils()
-    {
-        // does nothing
-    }
 
     /** Width of a single game's frames. */
     private static final int BITMAP_GAME_WIDTH = 660;
@@ -84,11 +75,10 @@ public final class ImageUtils
      * @return a formatted bitmap containing the game data
      */
     @SuppressWarnings("UnusedAssignment") //canvas set to null to free memory
-    public static Bitmap createImageFromGame(boolean[][][] pinState,
+    private static Bitmap createImageFromGame(boolean[][][] pinState,
                                              boolean[][] fouls,
                                              short gameScore,
-                                             boolean isManual)
-    {
+                                             boolean isManual) {
         Bitmap bitmap =
                 Bitmap.createBitmap(BITMAP_GAME_WIDTH, BITMAP_GAME_HEIGHT, Bitmap.Config.RGB_565);
         Canvas canvas = new Canvas(bitmap);
@@ -105,22 +95,17 @@ public final class ImageUtils
         int[] frameScores = new int[Constants.NUMBER_OF_FRAMES];
         int foulCount = 0;
 
-        for (int frame = Constants.LAST_FRAME; frame >= 0; frame--)
-        {
+        for (int frame = Constants.LAST_FRAME; frame >= 0; frame--) {
             final String[] ballString = new String[3];
             if (frame == Constants.LAST_FRAME) //Treat last frame differently than rest
             {
-                if (Arrays.equals(pinState[frame][0], Constants.FRAME_PINS_DOWN))
-                {
+                if (Arrays.equals(pinState[frame][0], Constants.FRAME_PINS_DOWN)) {
                     //If first ball is a strike, next two can be strikes/spares
                     ballString[0] = Constants.BALL_STRIKE;
-                    if (Arrays.equals(pinState[frame][1], Constants.FRAME_PINS_DOWN))
-                    {
+                    if (Arrays.equals(pinState[frame][1], Constants.FRAME_PINS_DOWN)) {
                         ballString[1] = Constants.BALL_STRIKE;
                         ballString[2] = Score.getValueOfBall(pinState[frame][2], 2, true, false);
-                    }
-                    else
-                    {
+                    } else {
                         ballString[1] = Score.getValueOfBall(pinState[frame][1], 1, false, false);
                         if (Arrays.equals(pinState[frame][2], Constants.FRAME_PINS_DOWN))
                             ballString[2] = Constants.BALL_SPARE;
@@ -128,63 +113,44 @@ public final class ImageUtils
                             ballString[2] = Score.getValueOfBallDifference(
                                     pinState[frame], 2, false, false);
                     }
-                }
-                else
-                {
+                } else {
                     //If first ball is not a strike, score is calculated normally
                     ballString[0] = Score.getValueOfBall(pinState[frame][0], 0, false, false);
-                    if (Arrays.equals(pinState[frame][1], Constants.FRAME_PINS_DOWN))
-                    {
+                    if (Arrays.equals(pinState[frame][1], Constants.FRAME_PINS_DOWN)) {
                         ballString[1] = Constants.BALL_SPARE;
                         ballString[2] = Score.getValueOfBall(pinState[frame][2], 2, true, false);
-                    }
-                    else
-                    {
+                    } else {
                         ballString[1] =
                                 Score.getValueOfBallDifference(pinState[frame], 1, false, false);
                         ballString[2] =
                                 Score.getValueOfBallDifference(pinState[frame], 2, false, false);
                     }
                 }
-            }
-            else
-            {
+            } else {
                 ballString[0] = Score.getValueOfBallDifference(pinState[frame], 0, false, false);
-                if (!Arrays.equals(pinState[frame][0], Constants.FRAME_PINS_DOWN))
-                {
-                    if (Arrays.equals(pinState[frame][1], Constants.FRAME_PINS_DOWN))
-                    {
+                if (!Arrays.equals(pinState[frame][0], Constants.FRAME_PINS_DOWN)) {
+                    if (Arrays.equals(pinState[frame][1], Constants.FRAME_PINS_DOWN)) {
                         ballString[1] = Constants.BALL_SPARE;
                         ballString[2] =
                                 Score.getValueOfBallDifference(pinState[frame + 1], 0, false, true);
-                    }
-                    else
-                    {
+                    } else {
                         ballString[1] =
                                 Score.getValueOfBallDifference(pinState[frame], 1, false, false);
                         ballString[2] =
                                 Score.getValueOfBallDifference(pinState[frame], 2, false, false);
                     }
-                }
-                else
-                {
+                } else {
                     ballString[1] =
                             Score.getValueOfBallDifference(pinState[frame + 1], 0, false, true);
-                    if (Arrays.equals(pinState[frame + 1][0], Constants.FRAME_PINS_DOWN))
-                    {
-                        if (frame < Constants.LAST_FRAME - 1)
-                        {
+                    if (Arrays.equals(pinState[frame + 1][0], Constants.FRAME_PINS_DOWN)) {
+                        if (frame < Constants.LAST_FRAME - 1) {
                             ballString[2] = Score.getValueOfBallDifference(
                                     pinState[frame + 2], 0, false, true);
-                        }
-                        else
-                        {
+                        } else {
                             ballString[2]
                                     = Score.getValueOfBall(pinState[frame + 1][1], 1, false, true);
                         }
-                    }
-                    else
-                    {
+                    } else {
                         ballString[2] =
                                 Score.getValueOfBallDifference(pinState[frame + 1], 1, false, true);
                     }
@@ -199,10 +165,8 @@ public final class ImageUtils
                     + BITMAP_GAME_FRAME_WIDTH * frame, BALL_TEXT_Y, paintText);
 
             paintText.setTextSize(GAME_SMALL_FONT_SIZE);
-            for (int ball = 0; ball < pinState[frame].length; ball++)
-            {
-                if (fouls[frame][ball])
-                {
+            for (int ball = 0; ball < pinState[frame].length; ball++) {
+                if (fouls[frame][ball]) {
                     foulCount++;
                     canvas.drawText("F", BITMAP_GAME_BALL_WIDTH * ball + BITMAP_GAME_FRAME_WIDTH
                             * frame + BITMAP_GAME_BALL_WIDTH / 2, BITMAP_GAME_BALL_HEIGHT
@@ -217,66 +181,46 @@ public final class ImageUtils
                             + BITMAP_GAME_BALL_HEIGHT, paintBlackOutline);
             paintText.setTextSize(GAME_DEFAULT_FONT_SIZE);
 
-            if (!isManual)
-            {
-                if (frame == Constants.LAST_FRAME)
-                {
-                    for (int b = 2; b >= 0; b--)
-                    {
-                        switch (b)
-                        {
+            if (!isManual) {
+                if (frame == Constants.LAST_FRAME) {
+                    for (int b = 2; b >= 0; b--) {
+                        switch (b) {
                             case 2:
                                 frameScores[frame] += Score.getValueOfFrame(pinState[frame][b]);
                                 break;
                             case 1:
                             case 0:
-                                if (Arrays.equals(pinState[frame][b], Constants.FRAME_PINS_DOWN))
-                                {
+                                if (Arrays.equals(pinState[frame][b], Constants.FRAME_PINS_DOWN)) {
                                     frameScores[frame] += Score.getValueOfFrame(pinState[frame][b]);
                                 }
                                 break;
                             default: //do nothing
                         }
                     }
-                }
-                else
-                {
-                    for (int b = 0; b < 3; b++)
-                    {
-                        if (b < 2 && Arrays.equals(pinState[frame][b], Constants.FRAME_PINS_DOWN))
-                        {
+                } else {
+                    for (int b = 0; b < 3; b++) {
+                        if (b < 2 && Arrays.equals(pinState[frame][b], Constants.FRAME_PINS_DOWN)) {
                             frameScores[frame] += Score.getValueOfFrame(pinState[frame][b]);
                             frameScores[frame] += Score.getValueOfFrame(pinState[frame + 1][0]);
-                            if (b == 0)
-                            {
-                                if (frame == Constants.LAST_FRAME - 1)
-                                {
-                                    if (frameScores[frame] == 30)
-                                    {
+                            if (b == 0) {
+                                if (frame == Constants.LAST_FRAME - 1) {
+                                    if (frameScores[frame] == 30) {
                                         frameScores[frame] +=
                                                 Score.getValueOfFrame(pinState[frame + 1][1]);
-                                    }
-                                    else
-                                    {
+                                    } else {
                                         frameScores[frame] += Score.getValueOfFrameDifference(
                                                 pinState[frame + 1][0], pinState[frame + 1][1]);
                                     }
-                                }
-                                else if (frameScores[frame] < 30)
-                                {
+                                } else if (frameScores[frame] < 30) {
                                     frameScores[frame] += Score.getValueOfFrameDifference(
                                             pinState[frame + 1][0], pinState[frame + 1][1]);
-                                }
-                                else
-                                {
+                                } else {
                                     frameScores[frame] += Score.getValueOfFrame(
                                             pinState[frame + 2][0]);
                                 }
                             }
                             break;
-                        }
-                        else if (b == 2)
-                        {
+                        } else if (b == 2) {
                             frameScores[frame] += Score.getValueOfFrame(pinState[frame][b]);
                         }
                     }
@@ -286,8 +230,7 @@ public final class ImageUtils
 
         int totalScore = 0;
         paintText.setTextSize(GAME_LARGE_FONT_SIZE);
-        for (int i = 0; i < frameScores.length; i++)
-        {
+        for (int i = 0; i < frameScores.length; i++) {
             totalScore += frameScores[i];
             canvas.drawText((!isManual)
                             ? String.valueOf(totalScore)
@@ -347,8 +290,7 @@ public final class ImageUtils
      * @return an image of each games' data and score
      */
     @SuppressWarnings("UnusedAssignment") //canvas set to null to free memory
-    public static Bitmap createImageFromSeries(Context context, long seriesId)
-    {
+    public static Bitmap createImageFromSeries(Context context, long seriesId) {
         List<boolean[][][]> ballsOfGames = new ArrayList<>();
         List<boolean[][]> foulsOfGames = new ArrayList<>();
         List<Short> scoresOfGames = new ArrayList<>();
@@ -377,14 +319,11 @@ public final class ImageUtils
 
         int currentFrame = 0;
         int currentGame = -1;
-        if (cursor.moveToFirst())
-        {
-            while (!cursor.isAfterLast())
-            {
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
                 int frameNumber = cursor.getInt(cursor.getColumnIndex(
                         FrameEntry.COLUMN_FRAME_NUMBER));
-                if (frameNumber == 1)
-                {
+                if (frameNumber == 1) {
                     currentFrame = 0;
                     currentGame++;
                     scoresOfGames.add(cursor.getShort(
@@ -395,8 +334,7 @@ public final class ImageUtils
                     foulsOfGames.add(new boolean[Constants.NUMBER_OF_FRAMES][3]);
                 }
 
-                for (int i = 0; i < 3; i++)
-                {
+                for (int i = 0; i < 3; i++) {
                     int ball = cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_PIN_STATE[i]));
                     boolean[] ballBoolean = Score.ballIntToBoolean(ball);
                     ballsOfGames.get(currentGame)[currentFrame][i] = ballBoolean;
@@ -404,8 +342,7 @@ public final class ImageUtils
 
                 String fouls = Score.foulIntToString(
                         cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_FOULS)));
-                for (int ballCounter = 0; ballCounter < 3; ballCounter++)
-                {
+                for (int ballCounter = 0; ballCounter < 3; ballCounter++) {
                     if (fouls.contains(String.valueOf(ballCounter + 1)))
                         foulsOfGames.get(currentGame)[currentFrame][ballCounter] = true;
                 }
@@ -431,8 +368,7 @@ public final class ImageUtils
         Canvas canvas = new Canvas(bitmap);
         canvas.drawColor(Color.WHITE);
 
-        for (int i = 0; i < numberOfGames; i++)
-        {
+        for (int i = 0; i < numberOfGames; i++) {
             canvas.drawLine(0, BITMAP_GAME_HEIGHT * i - i, BITMAP_SERIES_GAME_NAME_WIDTH,
                     BITMAP_GAME_HEIGHT * i - i, paintBlackOutline);
             canvas.drawText("Game " + (i + 1), 5,
@@ -468,25 +404,24 @@ public final class ImageUtils
     }
 
     /**
-     * A copy of the Android internals  insertImage method, this method populates the meta data with
-     * DATE_ADDED and DATE_TAKEN. This fixes a common problem where media that is inserted manually
-     * gets saved at the end of the gallery (because date is not populated).
+     * A copy of the Android internals  insertImage method, this method populates the meta data with DATE_ADDED and
+     * DATE_TAKEN. This fixes a common problem where media that is inserted manually gets saved at the end of the
+     * gallery (because date is not populated).
      *
      * @param cr n/a
      * @param source n/a
      * @param title n/a
      * @param description n/a
      * @return n/a
-     * @see android.provider.MediaStore.Images.Media#insertImage(android.content.ContentResolver,
-     * Bitmap, String, String)
+     * @see android.provider.MediaStore.Images.Media#insertImage(android.content.ContentResolver, Bitmap, String,
+     * String)
      */
     @SuppressWarnings("all")
     //Ignoring try with automatic resource management in case java 1.6 is used
     public static Uri insertImage(ContentResolver cr,
                                   Bitmap source,
                                   String title,
-                                  String description)
-    {
+                                  String description) {
 
         ContentValues values = new ContentValues();
         values.put(MediaStore.Images.Media.TITLE, title);
@@ -499,19 +434,14 @@ public final class ImageUtils
 
         Uri url = null;
 
-        try
-        {
+        try {
             url = cr.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-            if (source != null)
-            {
+            if (source != null) {
                 OutputStream imageOut = cr.openOutputStream(url);
 
-                try
-                {
+                try {
                     source.compress(Bitmap.CompressFormat.JPEG, 50, imageOut);
-                }
-                finally
-                {
+                } finally {
                     imageOut.close();
                 }
 
@@ -528,17 +458,12 @@ public final class ImageUtils
                         50F,
                         50F,
                         MediaStore.Images.Thumbnails.MICRO_KIND);
-            }
-            else
-            {
+            } else {
                 cr.delete(url, null, null);
                 url = null;
             }
-        }
-        catch (Exception e)
-        {
-            if (url != null)
-            {
+        } catch (Exception e) {
+            if (url != null) {
                 cr.delete(url, null, null);
                 url = null;
             }
@@ -548,9 +473,9 @@ public final class ImageUtils
     }
 
     /**
-     * A copy of the Android internals StoreThumbnail method, it used with the insertImage to
-     * populate the android.provider.MediaStore.Images.Media#insertImage with all the correct meta
-     * data. The StoreThumbnail method is private so it must be duplicated here.
+     * A copy of the Android internals StoreThumbnail method, it used with the insertImage to populate the
+     * android.provider.MediaStore.Images.Media#insertImage with all the correct meta data. The StoreThumbnail method is
+     * private so it must be duplicated here.
      *
      * @param cr n/a
      * @param source n/a
@@ -558,17 +483,15 @@ public final class ImageUtils
      * @param width n/a
      * @param height n/a
      * @param kind n/a
-     * @return n/a
      * @see android.provider.MediaStore.Images.Media (StoreThumbnail private method)
      */
-    private static Bitmap storeThumbnail(
+    private static void storeThumbnail(
             ContentResolver cr,
             Bitmap source,
             long id,
             float width,
             float height,
-            int kind)
-    {
+            int kind) {
 
         // create the matrix to scale it
         Matrix matrix = new Matrix();
@@ -592,20 +515,19 @@ public final class ImageUtils
 
         Uri url = cr.insert(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI, values);
 
-        try
-        {
+        try {
             OutputStream thumbOut = cr.openOutputStream(url);
             thumb.compress(Bitmap.CompressFormat.JPEG, 100, thumbOut);
             thumbOut.close();
-            return thumb;
+        } catch (IOException ex) {
+            Log.e(TAG, "Error saving thumbnail.", ex);
         }
-        catch (FileNotFoundException ex)
-        {
-            return null;
-        }
-        catch (IOException ex)
-        {
-            return null;
-        }
+    }
+
+    /**
+     * Default private constructor.
+     */
+    private ImageUtils() {
+        // does nothing
     }
 }

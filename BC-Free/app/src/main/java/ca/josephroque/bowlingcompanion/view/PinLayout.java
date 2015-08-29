@@ -10,8 +10,7 @@ import android.widget.LinearLayout;
  * Created by Joseph Roque on 2015-07-19. Manages the pins for controlling the game.
  */
 public class PinLayout
-        extends LinearLayout
-{
+        extends LinearLayout {
 
     /** Identifies output from this class in Logcat. */
     @SuppressWarnings("unused")
@@ -24,17 +23,14 @@ public class PinLayout
     private static final int NAVIGATION_DRAWER_EDGE_WIDTH = 20;
 
     @Override
-    public boolean onInterceptTouchEvent(MotionEvent event)
-    {
+    public boolean onInterceptTouchEvent(MotionEvent event) {
         return true;
     }
 
     @Override
-    public boolean onTouchEvent(@NonNull MotionEvent event)
-    {
+    public boolean onTouchEvent(@NonNull MotionEvent event) {
         if (event.getX() < Math.ceil(NAVIGATION_DRAWER_EDGE_WIDTH
-                * getResources().getDisplayMetrics().density))
-        {
+                * getResources().getDisplayMetrics().density)) {
             event.setAction(MotionEvent.ACTION_CANCEL);
             if (mListener != null)
                 mListener.disablePinTouches();
@@ -51,14 +47,12 @@ public class PinLayout
      *
      * @param listener instance of listener
      */
-    public void setInterceptListener(PinInterceptListener listener)
-    {
+    public void setInterceptListener(PinInterceptListener listener) {
         this.mListener = listener;
     }
 
     @Override
-    public void onDetachedFromWindow()
-    {
+    public void onDetachedFromWindow() {
         mListener = null;
         super.onDetachedFromWindow();
     }
@@ -68,8 +62,7 @@ public class PinLayout
      *
      * @param context context
      */
-    public PinLayout(Context context)
-    {
+    public PinLayout(Context context) {
         super(context);
     }
 
@@ -79,8 +72,7 @@ public class PinLayout
      * @param context context
      * @param attr attribute set
      */
-    public PinLayout(Context context, AttributeSet attr)
-    {
+    public PinLayout(Context context, AttributeSet attr) {
         super(context, attr);
     }
 
@@ -91,16 +83,14 @@ public class PinLayout
      * @param attr attribute set
      * @param defStyle style
      */
-    public PinLayout(Context context, AttributeSet attr, int defStyle)
-    {
+    public PinLayout(Context context, AttributeSet attr, int defStyle) {
         super(context, attr, defStyle);
     }
 
     /**
      * Offers methods to handle user events touching the pins.
      */
-    public interface PinInterceptListener
-    {
+    public interface PinInterceptListener {
 
         /**
          * Indicates events when the pins are touched should be disabled.

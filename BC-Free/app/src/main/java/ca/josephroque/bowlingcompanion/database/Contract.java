@@ -3,35 +3,16 @@ package ca.josephroque.bowlingcompanion.database;
 import android.provider.BaseColumns;
 
 /**
- * Created by Joseph Roque on 15-03-12. Defines various objects which represent tables in the schema
- * for the application's database. Member variables represent identifiers for attributes of the
- * tables.
+ * Created by Joseph Roque on 15-03-12. Defines various objects which represent tables in the schema for the
+ * application's database. Member variables represent identifiers for attributes of the tables.
  */
-public final class Contract
-{
-
-    /**
-     * Private constructor, class cannot be instantiated.
-     */
-    private Contract()
-    {
-        // does nothing
-    }
+public final class Contract {
 
     /**
      * Table and column names for SQLite table relevant to bowlers.
      */
     public static final class BowlerEntry
-            implements BaseColumns
-    {
-
-        /**
-         * Private constructor, class cannot be instantiated.
-         */
-        private BowlerEntry()
-        {
-            // does nothing
-        }
+            implements BaseColumns {
 
         /** Name of the table for bowler data. */
         public static final String TABLE_NAME = "bowlers";
@@ -39,22 +20,20 @@ public final class Contract
         public static final String COLUMN_BOWLER_NAME = "bowler_name";
         /** Name of the column for bowlers' most recent date modified. */
         public static final String COLUMN_DATE_MODIFIED = "bowler_date_modified";
+
+        /**
+         * Private constructor, class cannot be instantiated.
+         */
+        private BowlerEntry() {
+            // does nothing
+        }
     }
 
     /**
      * Table and column names for SQLite table relevant to leagues.
      */
     public static final class LeagueEntry
-            implements BaseColumns
-    {
-
-        /**
-         * Private constructor, class cannot be instantiated.
-         */
-        private LeagueEntry()
-        {
-            // does nothing
-        }
+            implements BaseColumns {
 
         /** Name of the table for league data. */
         public static final String TABLE_NAME = "leagues";
@@ -68,22 +47,20 @@ public final class Contract
         public static final String COLUMN_IS_EVENT = "league_is_event";
         /** Name of the column for foreign key to a bowler id. */
         public static final String COLUMN_BOWLER_ID = "league_bowler_id_fk";
+
+        /**
+         * Private constructor, class cannot be instantiated.
+         */
+        private LeagueEntry() {
+            // does nothing
+        }
     }
 
     /**
      * Table and column names for SQLite table relevant to series.
      */
     public static final class SeriesEntry
-            implements BaseColumns
-    {
-
-        /**
-         * Private constructor, class cannot be instantiated.
-         */
-        private SeriesEntry()
-        {
-            // does nothing
-        }
+            implements BaseColumns {
 
         /** Name of the table for series data. */
         public static final String TABLE_NAME = "series";
@@ -91,22 +68,20 @@ public final class Contract
         public static final String COLUMN_SERIES_DATE = "series_date";
         /** Name of the table for foreign key to a league id. */
         public static final String COLUMN_LEAGUE_ID = "series_league_id_fk";
+
+        /**
+         * Private constructor, class cannot be instantiated.
+         */
+        private SeriesEntry() {
+            // does nothing
+        }
     }
 
     /**
      * Table and column names for SQLite table relevant to games.
      */
     public static final class GameEntry
-            implements BaseColumns
-    {
-
-        /**
-         * Private constructor, class cannot be instantiated.
-         */
-        private GameEntry()
-        {
-            // does nothing
-        }
+            implements BaseColumns {
 
         /** Name of the table for game data. */
         public static final String TABLE_NAME = "games";
@@ -122,22 +97,20 @@ public final class Contract
         public static final String COLUMN_MATCH_PLAY = "game_match_play";
         /** Name of the column for foreign key to a series id. */
         public static final String COLUMN_SERIES_ID = "game_series_id_fk";
+
+        /**
+         * Private constructor, class cannot be instantiated.
+         */
+        private GameEntry() {
+            // does nothing
+        }
     }
 
     /**
      * Table and column names for SQLite table relevant to frames.
      */
     public static final class FrameEntry
-            implements BaseColumns
-    {
-
-        /**
-         * Private constructor, class cannot be instantiated.
-         */
-        private FrameEntry()
-        {
-            // does nothing
-        }
+            implements BaseColumns {
 
         /** Name of the table for frame data. */
         public static final String TABLE_NAME = "frames";
@@ -152,5 +125,19 @@ public final class Contract
         public static final String COLUMN_FOULS = "frame_fouls";
         /** Name of the column for foreign key to a game id. */
         public static final String COLUMN_GAME_ID = "frame_game_id_fk";
+
+        /**
+         * Private constructor, class cannot be instantiated.
+         */
+        private FrameEntry() {
+            // does nothing
+        }
+    }
+
+    /**
+     * Private constructor, class cannot be instantiated.
+     */
+    private Contract() {
+        // does nothing
     }
 }

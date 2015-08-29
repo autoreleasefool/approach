@@ -24,8 +24,7 @@ import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
  */
 public class NameAverageAdapter<T extends NameAverageId>
         extends RecyclerView.Adapter<NameAverageAdapter.NameAverageViewHolder>
-        implements View.OnClickListener
-{
+        implements View.OnClickListener {
 
     /** Identifies output from this class in Logcat. */
     @SuppressWarnings("unused")
@@ -48,20 +47,18 @@ public class NameAverageAdapter<T extends NameAverageId>
 
     /** List of names and averages to be displayed by the adapter. */
     private final List<T> mListNamesAndAverages;
+    /** Cached drawables to display as icons for items. */
+    private Drawable[] mItemDrawables;
 
     /** Type of data being represented by this object. */
     private final byte mDataType;
-
-    /** Cached drawables to display as icons for items. */
-    private Drawable[] mItemDrawables;
 
     /**
      * Subclass of RecyclerView.ViewHolder to manage view which will display an image, and text to
      * the user.
      */
     public static final class NameAverageViewHolder
-            extends RecyclerView.ViewHolder
-    {
+            extends RecyclerView.ViewHolder {
 
         /** Displays an image representing the type of data in the row. */
         private ImageView mImageViewType;
@@ -77,16 +74,14 @@ public class NameAverageAdapter<T extends NameAverageId>
          * @param itemLayoutView layout view containing views to display data
          * @param viewType type of view
          */
-        private NameAverageViewHolder(View itemLayoutView, int viewType)
-        {
+        private NameAverageViewHolder(View itemLayoutView, int viewType) {
             super(itemLayoutView);
-            switch (viewType)
-            {
+            switch (viewType) {
                 case VIEWTYPE_ACTIVE:
-                    mImageViewType = (ImageView) itemLayoutView.findViewById(R.id.iv_nameavg_type);
-                    mTextViewName = (TextView) itemLayoutView.findViewById(R.id.tv_nameavg_name);
+                    mImageViewType = (ImageView) itemLayoutView.findViewById(R.id.iv_name_average_type);
+                    mTextViewName = (TextView) itemLayoutView.findViewById(R.id.tv_name_avg_name);
                     mTextViewAverage = (TextView) itemLayoutView.findViewById(
-                            R.id.tv_nameavg_average);
+                            R.id.tv_name_average_average);
                     break;
                 case VIEWTYPE_DELETED:
                     mImageViewType = (ImageView) itemLayoutView.findViewById(R.id.iv_delete);
@@ -108,14 +103,12 @@ public class NameAverageAdapter<T extends NameAverageId>
      */
     public NameAverageAdapter(NameAverageEventHandler handler,
                               List<T> listNameAverages,
-                              byte dataType)
-    {
+                              byte dataType) {
         mEventHandler = handler;
         mListNamesAndAverages = listNameAverages;
         mDataType = dataType;
 
-        switch (mDataType)
-        {
+        switch (mDataType) {
             case DATA_BOWLERS:
                 mItemDrawables = new Drawable[1];
                 break;
@@ -128,11 +121,9 @@ public class NameAverageAdapter<T extends NameAverageId>
     }
 
     @Override
-    public NameAverageViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
-    {
+    public NameAverageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView;
-        switch (viewType)
-        {
+        switch (viewType) {
             case VIEWTYPE_ACTIVE:
                 itemView = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.list_item_name_average, parent, false);
@@ -150,16 +141,13 @@ public class NameAverageAdapter<T extends NameAverageId>
 
     @SuppressWarnings("CheckStyle")
     @Override
-    public void onBindViewHolder(final NameAverageViewHolder holder, final int position)
-    {
+    public void onBindViewHolder(final NameAverageViewHolder holder, final int position) {
         final int viewType = getItemViewType(position);
 
-        switch (viewType)
-        {
+        switch (viewType) {
             case VIEWTYPE_ACTIVE:
                 //Sets text/images depending on data type
-                switch (mDataType)
-                {
+                switch (mDataType) {
                     case DATA_BOWLERS:
                         holder.mTextViewName.setText(mListNamesAndAverages.get(position).getName());
                         if (mItemDrawables[0] == null)
@@ -172,8 +160,7 @@ public class NameAverageAdapter<T extends NameAverageId>
                         holder.mTextViewName.setText(mListNamesAndAverages.get(position)
                                 .getName()
                                 .substring(1));
-                        if (mItemDrawables[0] == null || mItemDrawables[1] == null)
-                        {
+                        if (mItemDrawables[0] == null || mItemDrawables[1] == null) {
                             mItemDrawables[0]
                                     = DisplayUtils.getDrawable(holder.itemView.getResources(),
                                     R.drawable.ic_l_black_24dp);
@@ -200,13 +187,10 @@ public class NameAverageAdapter<T extends NameAverageId>
                 if (mDataType == DATA_LEAGUES_EVENTS)
                     nameToDelete = nameToDelete.substring(1);
                 final long idToDelete = mListNamesAndAverages.get(position).getId();
-                final View.OnClickListener onClickListener = new View.OnClickListener()
-                {
+                final View.OnClickListener onClickListener = new View.OnClickListener() {
                     @Override
-                    public void onClick(View v)
-                    {
-                        if (mEventHandler != null)
-                        {
+                    public void onClick(View v) {
+                        if (mEventHandler != null) {
                             if (v.getId() == R.id.tv_undo_delete)
                                 mEventHandler.onNAItemUndoDelete(idToDelete);
                             else
@@ -227,23 +211,20 @@ public class NameAverageAdapter<T extends NameAverageId>
     }
 
     @Override
-    public void onClick(View v)
-    {
+    public void onClick(View v) {
         //Calls relevant event handler method
         if (mEventHandler != null && mRecyclerView != null)
             mEventHandler.onNAItemClick(mRecyclerView.getChildAdapterPosition(v));
     }
 
     @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView)
-    {
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
         mRecyclerView = recyclerView;
     }
 
     @Override
-    public void onDetachedFromRecyclerView(RecyclerView recyclerView)
-    {
+    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
         super.onDetachedFromRecyclerView(recyclerView);
 
         // Releasing references
@@ -253,14 +234,12 @@ public class NameAverageAdapter<T extends NameAverageId>
     }
 
     @Override
-    public int getItemCount()
-    {
+    public int getItemCount() {
         return mListNamesAndAverages.size();
     }
 
     @Override
-    public int getItemViewType(int position)
-    {
+    public int getItemViewType(int position) {
         return (mListNamesAndAverages.get(position).wasDeleted())
                 ? VIEWTYPE_DELETED
                 : VIEWTYPE_ACTIVE;
@@ -270,8 +249,7 @@ public class NameAverageAdapter<T extends NameAverageId>
      * Provides methods to implement functionality when items in the RecyclerView are interacted
      * with.
      */
-    public interface NameAverageEventHandler
-    {
+    public interface NameAverageEventHandler {
 
         /**
          * Called when an item in the RecyclerView is clicked.

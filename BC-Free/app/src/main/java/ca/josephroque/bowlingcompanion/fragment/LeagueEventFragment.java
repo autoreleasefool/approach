@@ -1,6 +1,5 @@
 package ca.josephroque.bowlingcompanion.fragment;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
@@ -48,9 +47,8 @@ import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
 import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
 
 /**
- * Created by Joseph Roque on 15-03-15. Manages the UI to display information about the leagues
- * being tracked by the application, and offers a callback interface {@link
- * ca.josephroque.bowlingcompanion.fragment.LeagueEventFragment.LeagueEventCallback} for handling
+ * Created by Joseph Roque on 15-03-15. Manages the UI to display information about the leagues being tracked by the
+ * application, and offers a callback interface {@code LeagueEventFragment.LeagueEventCallback} for handling
  * interactions.
  */
 @SuppressWarnings("Convert2Lambda")
@@ -58,8 +56,7 @@ public class LeagueEventFragment
         extends Fragment
         implements NameAverageAdapter.NameAverageEventHandler,
         NewLeagueEventDialog.NewLeagueEventDialogListener,
-        FloatingActionButtonHandler
-{
+        FloatingActionButtonHandler {
 
     /** Identifies output from this class in Logcat. */
     @SuppressWarnings("unused")
@@ -79,36 +76,30 @@ public class LeagueEventFragment
     private List<LeagueEvent> mListLeaguesEvents;
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
     }
 
     @Override
-    public void onAttach(Activity activity)
-    {
-        super.onAttach(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
 
         /*
          * This makes sure the container Activity has implemented
          * the callback interface. If not, an exception is thrown
          */
-        try
-        {
-            mLeagueCallback = (LeagueEventCallback) activity;
-            mSeriesCallback = (SeriesFragment.SeriesCallback) activity;
-        }
-        catch (ClassCastException ex)
-        {
-            throw new ClassCastException(activity.toString()
+        try {
+            mLeagueCallback = (LeagueEventCallback) context;
+            mSeriesCallback = (SeriesFragment.SeriesCallback) context;
+        } catch (ClassCastException ex) {
+            throw new ClassCastException(context.toString()
                     + " must implement OnLeagueSelectedListener and SeriesListener");
         }
     }
 
     @Override
-    public void onDetach()
-    {
+    public void onDetach() {
         super.onDetach();
         mLeagueCallback = null;
         mSeriesCallback = null;
@@ -117,8 +108,7 @@ public class LeagueEventFragment
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
-                             Bundle savedInstanceState)
-    {
+                             Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_list, container, false);
 
         mListLeaguesEvents = new ArrayList<>();
@@ -127,23 +117,19 @@ public class LeagueEventFragment
         mRecyclerViewLeagueEvents.setHasFixedSize(true);
 
         ItemTouchHelper.SimpleCallback touchCallback = new ItemTouchHelper.SimpleCallback(0,
-                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT)
-        {
+                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
             public boolean onMove(RecyclerView recyclerView,
                                   RecyclerView.ViewHolder viewHolder,
-                                  RecyclerView.ViewHolder target)
-            {
+                                  RecyclerView.ViewHolder target) {
                 return false;
             }
 
             @Override
-            public void onSwiped(final RecyclerView.ViewHolder viewHolder, int direction)
-            {
+            public void onSwiped(final RecyclerView.ViewHolder viewHolder, int direction) {
                 final int position = viewHolder.getAdapterPosition();
                 if (mListLeaguesEvents.get(position).getLeagueEventName().substring(1).equals(
-                        Constants.NAME_OPEN_LEAGUE))
-                {
+                        Constants.NAME_OPEN_LEAGUE)) {
                     mAdapterLeagueEvents.notifyItemChanged(position);
                     return;
                 }
@@ -168,12 +154,10 @@ public class LeagueEventFragment
     }
 
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
 
-        if (getActivity() != null)
-        {
+        if (getActivity() != null) {
             MainActivity mainActivity = (MainActivity) getActivity();
             mainActivity.setActionBarTitle(R.string.title_fragment_league_event, true);
             mainActivity.setFloatingActionButtonState(R.drawable.ic_add_black_24dp);
@@ -184,15 +168,13 @@ public class LeagueEventFragment
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_leagues_events, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
-    public void onPrepareOptionsMenu(Menu menu)
-    {
+    public void onPrepareOptionsMenu(Menu menu) {
         boolean drawerOpen = ((MainActivity) getActivity()).isDrawerOpen();
         MenuItem menuItem = menu.findItem(R.id.action_stats).setVisible(!drawerOpen);
         Drawable drawable = menuItem.getIcon();
@@ -202,10 +184,8 @@ public class LeagueEventFragment
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             case R.id.action_stats:
                 //Displays stats of current bowler in a new StatsFragment
                 if (mLeagueCallback != null)
@@ -217,19 +197,15 @@ public class LeagueEventFragment
     }
 
     @Override
-    public void onNAItemClick(final int position)
-    {
+    public void onNAItemClick(final int position) {
         //When league name is clicked, its data is opened in a new SeriesFragment
         new OpenLeagueEventSeriesTask(this).execute(position);
     }
 
     @Override
-    public void onNAItemDelete(long id)
-    {
-        for (int i = 0; i < mListLeaguesEvents.size(); i++)
-        {
-            if (mListLeaguesEvents.get(i).getLeagueEventId() == id)
-            {
+    public void onNAItemDelete(long id) {
+        for (int i = 0; i < mListLeaguesEvents.size(); i++) {
+            if (mListLeaguesEvents.get(i).getLeagueEventId() == id) {
                 LeagueEvent leagueEvent = mListLeaguesEvents.remove(i);
                 mAdapterLeagueEvents.notifyItemRemoved(i);
                 deleteLeagueEvent(leagueEvent.getLeagueEventId());
@@ -238,12 +214,9 @@ public class LeagueEventFragment
     }
 
     @Override
-    public void onNAItemUndoDelete(long id)
-    {
-        for (int i = 0; i < mListLeaguesEvents.size(); i++)
-        {
-            if (mListLeaguesEvents.get(i).getLeagueEventId() == id)
-            {
+    public void onNAItemUndoDelete(long id) {
+        for (int i = 0; i < mListLeaguesEvents.size(); i++) {
+            if (mListLeaguesEvents.get(i).getLeagueEventId() == id) {
                 mListLeaguesEvents.get(i).setIsDeleted(false);
                 mAdapterLeagueEvents.notifyItemChanged(i);
             }
@@ -251,8 +224,7 @@ public class LeagueEventFragment
     }
 
     @Override
-    public void onAddNewLeagueEvent(boolean isEvent, String leagueEventName, byte numberOfGames)
-    {
+    public void onAddNewLeagueEvent(boolean isEvent, String leagueEventName, byte numberOfGames) {
         boolean validInput = true;
         int invalidInputMessageVal = -1;
         String invalidInputMessage = null;
@@ -264,39 +236,31 @@ public class LeagueEventFragment
                 numberOfGames);
 
         if (numberOfGames < 1 || (isEvent && numberOfGames > Constants.MAX_NUMBER_EVENT_GAMES)
-                || (!isEvent && numberOfGames > Constants.MAX_NUMBER_LEAGUE_GAMES))
-        {
+                || (!isEvent && numberOfGames > Constants.MAX_NUMBER_LEAGUE_GAMES)) {
             //User has provided an invalid number of games
             validInput = false;
             invalidInputMessage = "The number of games must be between 1 and "
                     + (isEvent
                     ? Constants.MAX_NUMBER_EVENT_GAMES
                     : Constants.MAX_NUMBER_LEAGUE_GAMES) + " (inclusive).";
-        }
-        else if (leagueEventName.equalsIgnoreCase(Constants.NAME_OPEN_LEAGUE))
-        {
+        } else if (leagueEventName.equalsIgnoreCase(Constants.NAME_OPEN_LEAGUE)) {
             /*
              * User has attempted to create a league or event entitled "Open"
              * which is a reserved name
              */
             validInput = false;
             invalidInputMessageVal = R.string.dialog_default_name;
-        }
-        else if (mListLeaguesEvents.contains(leagueEvent))
-        {
+        } else if (mListLeaguesEvents.contains(leagueEvent)) {
             //User has provided a name which is already in use for a league or event
             validInput = false;
             invalidInputMessageVal = R.string.dialog_name_exists;
-        }
-        else if (!leagueEventName.matches(Constants.REGEX_LEAGUE_EVENT_NAME))
-        {
+        } else if (!leagueEventName.matches(Constants.REGEX_LEAGUE_EVENT_NAME)) {
             //Name is not made up of letters, numbers and spaces
             validInput = false;
             invalidInputMessageVal = R.string.dialog_name_letters_spaces_numbers;
         }
 
-        if (!validInput)
-        {
+        if (!validInput) {
             //Displays an error dialog if the input was not valid and exits the method
             AlertDialog.Builder invalidInputBuilder = new AlertDialog.Builder(getActivity());
             if (invalidInputMessageVal == -1)
@@ -304,11 +268,9 @@ public class LeagueEventFragment
             else
                 invalidInputBuilder.setMessage(invalidInputMessageVal);
             invalidInputBuilder
-                    .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener()
-                    {
+                    .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener() {
                         @Override
-                        public void onClick(DialogInterface dialog, int which)
-                        {
+                        public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                         }
                     })
@@ -321,8 +283,7 @@ public class LeagueEventFragment
     }
 
     @Override
-    public void onFabClick()
-    {
+    public void onFabClick() {
         showLeagueOrEventDialog();
     }
 
@@ -331,8 +292,7 @@ public class LeagueEventFragment
      *
      * @param leagueEventId id of league/event whose data will be deleted
      */
-    private void deleteLeagueEvent(final long leagueEventId)
-    {
+    private void deleteLeagueEvent(final long leagueEventId) {
         SharedPreferences prefs =
                 getActivity().getSharedPreferences(Constants.PREFS, Context.MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = prefs.edit();
@@ -340,43 +300,34 @@ public class LeagueEventFragment
         long quickId = prefs.getLong(Constants.PREF_QUICK_LEAGUE_ID, -1);
 
         //Clears recent/quick ids if they match the deleted league
-        if (recentId == leagueEventId)
-        {
+        if (recentId == leagueEventId) {
             prefsEditor.putLong(Constants.PREF_RECENT_BOWLER_ID, -1)
                     .putLong(Constants.PREF_RECENT_LEAGUE_ID, -1);
         }
-        if (quickId == leagueEventId)
-        {
+        if (quickId == leagueEventId) {
             prefsEditor.putLong(Constants.PREF_QUICK_BOWLER_ID, -1)
                     .putLong(Constants.PREF_QUICK_LEAGUE_ID, -1);
         }
         prefsEditor.apply();
 
         //Deletion occurs on separate thread so UI does not hang
-        new Thread(new Runnable()
-        {
+        new Thread(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 //Deletes data from all tables corresponding to leagueEventId
                 SQLiteDatabase database =
                         DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
                 String[] whereArgs = {String.valueOf(leagueEventId)};
 
                 database.beginTransaction();
-                try
-                {
+                try {
                     database.delete(LeagueEntry.TABLE_NAME,
                             LeagueEntry._ID + "=?",
                             whereArgs);
                     database.setTransactionSuccessful();
-                }
-                catch (Exception ex)
-                {
+                } catch (Exception ex) {
                     Log.e(TAG, "Error deleting from database", ex);
-                }
-                finally
-                {
+                } finally {
                     database.endTransaction();
                 }
             }
@@ -386,26 +337,21 @@ public class LeagueEventFragment
     /**
      * Prompts user to select either league or event to add.
      */
-    private void showLeagueOrEventDialog()
-    {
+    private void showLeagueOrEventDialog() {
         AlertDialog.Builder leagueOrEventBuilder = new AlertDialog.Builder(getActivity());
         leagueOrEventBuilder.setTitle("New league or event?")
                 .setSingleChoiceItems(new CharSequence[]{"League", "Event"}, 0, null)
-                .setPositiveButton(R.string.dialog_add, new DialogInterface.OnClickListener()
-                {
+                .setPositiveButton(R.string.dialog_add, new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
+                    public void onClick(DialogInterface dialog, int which) {
                         showNewLeagueEventDialog(((AlertDialog) dialog)
                                 .getListView().getCheckedItemPosition() == 1);
                         dialog.dismiss();
                     }
                 })
-                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener()
-                {
+                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
+                    public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                     }
                 })
@@ -418,8 +364,7 @@ public class LeagueEventFragment
      *
      * @param newEvent if true, a new event will be made. If false, a new league will be made.
      */
-    private void showNewLeagueEventDialog(boolean newEvent)
-    {
+    private void showNewLeagueEventDialog(boolean newEvent) {
         DialogFragment dialogFragment = NewLeagueEventDialog.newInstance(this);
         Bundle bundle = new Bundle();
         bundle.putBoolean(Constants.EXTRA_EVENT_MODE, newEvent);
@@ -432,18 +377,16 @@ public class LeagueEventFragment
      *
      * @return a new instance of LeagueEventFragment
      */
-    public static LeagueEventFragment newInstance()
-    {
+    public static LeagueEventFragment newInstance() {
         return new LeagueEventFragment();
     }
 
     /**
-     * Loads/updates data for the league/event from the database and creates a new SeriesFragment or
-     * GameFragment to display selected league or event, respectively.
+     * Loads/updates data for the league/event from the database and creates a new SeriesFragment or GameFragment to
+     * display selected league or event, respectively.
      */
     private static final class OpenLeagueEventSeriesTask
-            extends AsyncTask<Integer, Void, Pair<LeagueEvent, Series>>
-    {
+            extends AsyncTask<Integer, Void, Pair<LeagueEvent, Series>> {
 
         /** Weak reference to the parent fragment. */
         private final WeakReference<LeagueEventFragment> mFragment;
@@ -453,14 +396,12 @@ public class LeagueEventFragment
          *
          * @param fragment parent fragment
          */
-        private OpenLeagueEventSeriesTask(LeagueEventFragment fragment)
-        {
+        private OpenLeagueEventSeriesTask(LeagueEventFragment fragment) {
             mFragment = new WeakReference<>(fragment);
         }
 
         @Override
-        protected Pair<LeagueEvent, Series> doInBackground(Integer... position)
-        {
+        protected Pair<LeagueEvent, Series> doInBackground(Integer... position) {
             LeagueEventFragment fragment = mFragment.get();
             if (fragment == null)
                 return null;
@@ -480,20 +421,15 @@ public class LeagueEventFragment
 
             //Updates the date modified in the database of the selected league
             db.beginTransaction();
-            try
-            {
+            try {
                 db.update(LeagueEntry.TABLE_NAME,
                         values,
                         LeagueEntry._ID + "=?",
                         new String[]{String.valueOf(selectedLeagueEvent.getLeagueEventId())});
                 db.setTransactionSuccessful();
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 //does nothing - error updating league date - non-fatal
-            }
-            finally
-            {
+            } finally {
                 db.endTransaction();
             }
 
@@ -502,8 +438,7 @@ public class LeagueEventFragment
              * loaded from the database so an instance of GameFragment can be created, since
              * creating a SeriesFragment would be redundant for a single series.
              */
-            if (isEvent)
-            {
+            if (isEvent) {
                 String rawSeriesQuery = "SELECT "
                         + SeriesEntry._ID + ", "
                         + SeriesEntry.COLUMN_SERIES_DATE
@@ -512,8 +447,7 @@ public class LeagueEventFragment
 
                 Cursor cursor = db.rawQuery(rawSeriesQuery,
                         new String[]{String.valueOf(selectedLeagueEvent.getLeagueEventId())});
-                if (cursor.moveToFirst())
-                {
+                if (cursor.moveToFirst()) {
                     long seriesId = cursor.getLong(
                             cursor.getColumnIndex(SeriesEntry._ID));
                     String seriesDate = cursor.getString(
@@ -521,18 +455,15 @@ public class LeagueEventFragment
                     cursor.close();
 
                     return Pair.create(selectedLeagueEvent, new Series(seriesId, seriesDate, null));
-                }
-                else
+                } else
                     cursor.close();
                 throw new RuntimeException("Event series id could not be loaded from database");
-            }
-            else
+            } else
                 return Pair.create(selectedLeagueEvent, new Series(-1, null, null));
         }
 
         @Override
-        protected void onPostExecute(Pair<LeagueEvent, Series> result)
-        {
+        protected void onPostExecute(Pair<LeagueEvent, Series> result) {
             LeagueEventFragment fragment = mFragment.get();
             if (fragment == null || result == null)
                 return;
@@ -542,30 +473,25 @@ public class LeagueEventFragment
 
             boolean isEvent = result.second.getSeriesId() >= 0;
 
-            if (isEvent)
-            {
+            if (isEvent) {
                 /*
                  * If an event was selected, creates an instance of GameFragment
                  * displaying the event's corresponding series
                  */
 
                 if (fragment.mLeagueCallback != null
-                        && fragment.mSeriesCallback != null)
-                {
+                        && fragment.mSeriesCallback != null) {
                     fragment.mLeagueCallback.onLeagueSelected(result.first, false);
                     fragment.mSeriesCallback.onSeriesSelected(result.second, true);
                 }
-            }
-            else
-            {
+            } else {
                 /*
                  * If a league was selected, creates an instance of SeriesActivity
                  * to display all available series in the league
                  */
                 long bowlerId = mainActivity.getBowlerId();
 
-                if (!result.first.getLeagueEventName().equals(Constants.NAME_OPEN_LEAGUE))
-                {
+                if (!result.first.getLeagueEventName().equals(Constants.NAME_OPEN_LEAGUE)) {
                     mainActivity
                             .getSharedPreferences(Constants.PREFS, Context.MODE_PRIVATE)
                             .edit()
@@ -582,12 +508,10 @@ public class LeagueEventFragment
     }
 
     /**
-     * Loads the names of relevant leagues or events and adds them to the lists to be displayed to
-     * the user.
+     * Loads the names of relevant leagues or events and adds them to the lists to be displayed to the user.
      */
     private static final class LoadLeaguesEventsTask
-            extends AsyncTask<Void, Void, List<LeagueEvent>>
-    {
+            extends AsyncTask<Void, Void, List<LeagueEvent>> {
 
         /** Weak reference to the parent fragment. */
         private final WeakReference<LeagueEventFragment> mFragment;
@@ -597,14 +521,12 @@ public class LeagueEventFragment
          *
          * @param fragment parent fragment
          */
-        private LoadLeaguesEventsTask(LeagueEventFragment fragment)
-        {
+        private LoadLeaguesEventsTask(LeagueEventFragment fragment) {
             mFragment = new WeakReference<>(fragment);
         }
 
         @Override
-        protected void onPreExecute()
-        {
+        protected void onPreExecute() {
             LeagueEventFragment fragment = mFragment.get();
             if (fragment == null)
                 return;
@@ -614,8 +536,7 @@ public class LeagueEventFragment
         }
 
         @Override
-        protected List<LeagueEvent> doInBackground(Void... params)
-        {
+        protected List<LeagueEvent> doInBackground(Void... params) {
             LeagueEventFragment fragment = mFragment.get();
             if (fragment == null)
                 return null;
@@ -647,10 +568,8 @@ public class LeagueEventFragment
             long bowlerId = mainActivity.getBowlerId();
             Cursor cursor = database.rawQuery(rawLeagueEventQuery,
                     new String[]{String.valueOf(bowlerId)});
-            if (cursor.moveToFirst())
-            {
-                while (!cursor.isAfterLast())
-                {
+            if (cursor.moveToFirst()) {
+                while (!cursor.isAfterLast()) {
                     boolean isEvent =
                             cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_IS_EVENT)) == 1;
                     LeagueEvent leagueEvent = new LeagueEvent(cursor.getLong(cursor.getColumnIndex(
@@ -674,8 +593,7 @@ public class LeagueEventFragment
 
         @Override
         @SuppressWarnings("unchecked")
-        protected void onPostExecute(List<LeagueEvent> listLeagueEvents)
-        {
+        protected void onPostExecute(List<LeagueEvent> listLeagueEvents) {
             LeagueEventFragment fragment = mFragment.get();
             if (fragment == null || listLeagueEvents == null)
                 return;
@@ -686,12 +604,11 @@ public class LeagueEventFragment
     }
 
     /**
-     * Creates a new entry in the database for a league or event which is then added to the list of
-     * data to be displayed to the user.
+     * Creates a new entry in the database for a league or event which is then added to the list of data to be displayed
+     * to the user.
      */
     private static final class AddNewLeagueEventTask
-            extends AsyncTask<LeagueEvent, Void, LeagueEvent>
-    {
+            extends AsyncTask<LeagueEvent, Void, LeagueEvent> {
 
         /** Weak reference to the parent fragment. */
         private final WeakReference<LeagueEventFragment> mFragment;
@@ -701,14 +618,12 @@ public class LeagueEventFragment
          *
          * @param fragment parent fragment
          */
-        private AddNewLeagueEventTask(LeagueEventFragment fragment)
-        {
+        private AddNewLeagueEventTask(LeagueEventFragment fragment) {
             mFragment = new WeakReference<>(fragment);
         }
 
         @Override
-        protected LeagueEvent doInBackground(LeagueEvent... league)
-        {
+        protected LeagueEvent doInBackground(LeagueEvent... league) {
             LeagueEventFragment fragment = mFragment.get();
             if (fragment == null)
                 return null;
@@ -731,12 +646,10 @@ public class LeagueEventFragment
             values.put(LeagueEntry.COLUMN_IS_EVENT, league[0].getLeagueEventName().startsWith("E"));
 
             db.beginTransaction();
-            try
-            {
+            try {
                 //Creates the entry for the league or event in the "league" database
                 league[0].setLeagueEventId(db.insert(LeagueEntry.TABLE_NAME, null, values));
-                if (league[0].getLeagueEventName().startsWith("E"))
-                {
+                if (league[0].getLeagueEventName().startsWith("E")) {
                     /*
                      * If the new entry is an event, its series is also created at this time
                      * since there is only a single series to an event
@@ -746,16 +659,14 @@ public class LeagueEventFragment
                     values.put(SeriesEntry.COLUMN_LEAGUE_ID, league[0].getLeagueEventId());
                     long seriesId = db.insert(SeriesEntry.TABLE_NAME, null, values);
 
-                    for (int i = 0; i < league[0].getLeagueEventNumberOfGames(); i++)
-                    {
+                    for (int i = 0; i < league[0].getLeagueEventNumberOfGames(); i++) {
                         values = new ContentValues();
                         values.put(GameEntry.COLUMN_GAME_NUMBER, i + 1);
                         values.put(GameEntry.COLUMN_SCORE, 0);
                         values.put(GameEntry.COLUMN_SERIES_ID, seriesId);
                         long gameId = db.insert(GameEntry.TABLE_NAME, null, values);
 
-                        for (int j = 0; j < Constants.NUMBER_OF_FRAMES; j++)
-                        {
+                        for (int j = 0; j < Constants.NUMBER_OF_FRAMES; j++) {
                             values = new ContentValues();
                             values.put(FrameEntry.COLUMN_FRAME_NUMBER, j + 1);
                             values.put(FrameEntry.COLUMN_GAME_ID, gameId);
@@ -764,13 +675,9 @@ public class LeagueEventFragment
                     }
                 }
                 db.setTransactionSuccessful();
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Log.e(TAG, "Error adding new league", ex);
-            }
-            finally
-            {
+            } finally {
                 db.endTransaction();
             }
 
@@ -778,11 +685,9 @@ public class LeagueEventFragment
         }
 
         @Override
-        protected void onPostExecute(LeagueEvent result)
-        {
+        protected void onPostExecute(LeagueEvent result) {
             LeagueEventFragment fragment = mFragment.get();
-            if (result != null && fragment != null && result.getLeagueEventId() != -1)
-            {
+            if (result != null && fragment != null && result.getLeagueEventId() != -1) {
                 fragment.mListLeaguesEvents.add(0, result);
                 fragment.mAdapterLeagueEvents.notifyItemInserted(0);
                 fragment.mRecyclerViewLeagueEvents.scrollToPosition(0);
@@ -791,15 +696,14 @@ public class LeagueEventFragment
     }
 
     /**
-     * Container Activity must implement this interface to allow SeriesFragment/GameFragment to be
-     * loaded when a league/event is selected.
+     * Container Activity must implement this interface to allow SeriesFragment/GameFragment to be loaded when a
+     * league/event is selected.
      */
-    public interface LeagueEventCallback
-    {
+    public interface LeagueEventCallback {
 
         /**
-         * Should be overridden to create a SeriesFragment with the series belonging to the league
-         * represented by leagueId.
+         * Should be overridden to create a SeriesFragment with the series belonging to the league represented by
+         * leagueId.
          *
          * @param leagueEvent league / event whose series will be displayed
          * @param openSeriesFragment indicates if series fragment should be opened

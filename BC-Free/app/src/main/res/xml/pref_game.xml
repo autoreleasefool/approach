@@ -2,10 +2,10 @@
 
     <CheckBoxPreference
         android:defaultValue="true"
-        android:key="pref_enable_fabs"
-        android:summaryOn="@string/pref_enable_fabs_summaryOn"
-        android:summaryOff="@string/pref_enable_fabs_summaryOff"
-        android:title="@string/pref_enable_fabs_title" />
+        android:key="pref_enable_fab"
+        android:summaryOn="@string/pref_enable_fab_summaryOn"
+        android:summaryOff="@string/pref_enable_fab_summaryOff"
+        android:title="@string/pref_enable_fab_title" />
 
     <CheckBoxPreference
         android:defaultValue="false"

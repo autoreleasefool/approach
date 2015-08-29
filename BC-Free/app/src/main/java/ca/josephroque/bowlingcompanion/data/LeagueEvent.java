@@ -7,8 +7,7 @@ import android.os.Parcelable;
  * Created by Joseph Roque on 2015-07-22. Organizes the data for a league or event.
  */
 public class LeagueEvent
-        implements Parcelable, NameAverageId
-{
+        implements Parcelable, NameAverageId {
 
     /** Unique id of the league / event. */
     private long mLeagueEventId;
@@ -29,8 +28,7 @@ public class LeagueEvent
      * @param average average of the league / event
      * @param numberOfGames number of games in the league / event
      */
-    public LeagueEvent(long id, String name, short average, byte numberOfGames)
-    {
+    public LeagueEvent(long id, String name, short average, byte numberOfGames) {
         this.mLeagueEventId = id;
         this.mLeagueEventName = name;
         this.mLeagueEventAverage = average;
@@ -42,8 +40,7 @@ public class LeagueEvent
      *
      * @param pc league / event data
      */
-    public LeagueEvent(Parcel pc)
-    {
+    public LeagueEvent(Parcel pc) {
         this.mLeagueEventId = pc.readLong();
         this.mLeagueEventName = pc.readString();
         this.mLeagueEventAverage = (short) pc.readInt();
@@ -55,8 +52,7 @@ public class LeagueEvent
      *
      * @return the value of {@code mLeagueEventName}
      */
-    public String getLeagueEventName()
-    {
+    public String getLeagueEventName() {
         return mLeagueEventName;
     }
 
@@ -65,8 +61,7 @@ public class LeagueEvent
      *
      * @return the value of {@code mLeagueEventId}
      */
-    public long getLeagueEventId()
-    {
+    public long getLeagueEventId() {
         return mLeagueEventId;
     }
 
@@ -75,8 +70,7 @@ public class LeagueEvent
      *
      * @return the value of {@code mLeagueEventAverage}
      */
-    public short getLeagueEventAverage()
-    {
+    public short getLeagueEventAverage() {
         return mLeagueEventAverage;
     }
 
@@ -85,8 +79,7 @@ public class LeagueEvent
      *
      * @return the value of {@code mLeagueEventNumberOfGames}
      */
-    public byte getLeagueEventNumberOfGames()
-    {
+    public byte getLeagueEventNumberOfGames() {
         return mLeagueEventNumberOfGames;
     }
 
@@ -95,32 +88,27 @@ public class LeagueEvent
      *
      * @param leagueEventId the new id
      */
-    public void setLeagueEventId(long leagueEventId)
-    {
+    public void setLeagueEventId(long leagueEventId) {
         this.mLeagueEventId = leagueEventId;
     }
 
     @Override
-    public String getName()
-    {
+    public String getName() {
         return getLeagueEventName();
     }
 
     @Override
-    public short getAverage()
-    {
+    public short getAverage() {
         return getLeagueEventAverage();
     }
 
     @Override
-    public long getId()
-    {
+    public long getId() {
         return getLeagueEventId();
     }
 
     @Override
-    public void writeToParcel(Parcel pc, int flags)
-    {
+    public void writeToParcel(Parcel pc, int flags) {
         pc.writeLong(mLeagueEventId);
         pc.writeString(mLeagueEventName);
         pc.writeInt(mLeagueEventAverage);
@@ -128,8 +116,7 @@ public class LeagueEvent
     }
 
     @Override
-    public int describeContents()
-    {
+    public int describeContents() {
         return 0;
     }
 
@@ -137,25 +124,21 @@ public class LeagueEvent
      * Used to create objects and arrays from this class.
      */
     public static final Parcelable.Creator<LeagueEvent> CREATOR
-            = new Parcelable.Creator<LeagueEvent>()
-    {
+            = new Parcelable.Creator<LeagueEvent>() {
 
         @Override
-        public LeagueEvent createFromParcel(Parcel pc)
-        {
+        public LeagueEvent createFromParcel(Parcel pc) {
             return new LeagueEvent(pc);
         }
 
         @Override
-        public LeagueEvent[] newArray(int size)
-        {
+        public LeagueEvent[] newArray(int size) {
             return new LeagueEvent[size];
         }
     };
 
     @Override
-    public boolean equals(Object other)
-    {
+    public boolean equals(Object other) {
         if (other == null || !(other instanceof LeagueEvent))
             return false;
         if (other == this)
@@ -167,22 +150,19 @@ public class LeagueEvent
 
     @SuppressWarnings("CheckStyle")
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         int result = 19;
         int c = getLeagueEventName().hashCode();
         return 37 * result + c;
     }
 
     @Override
-    public void setIsDeleted(boolean deleted)
-    {
+    public void setIsDeleted(boolean deleted) {
         this.mIsDeleted = deleted;
     }
 
     @Override
-    public boolean wasDeleted()
-    {
+    public boolean wasDeleted() {
         return mIsDeleted;
     }
 }

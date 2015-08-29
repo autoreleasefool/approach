@@ -20,14 +20,12 @@ import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
 
 /**
- * Created by Joseph Roque on 15-03-17. Manages series and their associated games for a ListView.
- * Offers a callback interface {@link SeriesAdapter.SeriesEventHandler} to handle interaction
- * events.
+ * Created by Joseph Roque on 15-03-17. Manages series and their associated games for a ListView. Offers a callback
+ * interface {@link SeriesAdapter.SeriesEventHandler} to handle interaction events.
  */
 public class SeriesAdapter
         extends RecyclerView.Adapter<SeriesAdapter.SeriesViewHolder>
-        implements Theme.ChangeableTheme, View.OnClickListener
-{
+        implements Theme.ChangeableTheme, View.OnClickListener {
 
     /** Identifies output from this class in Logcat. */
     @SuppressWarnings("unused")
@@ -54,14 +52,13 @@ public class SeriesAdapter
     private int mEditDrawableFilter = -1;
 
     /** Indicates minimum score values which will be highlighted when displayed. */
-    private int minimumScoreToHighlight = Constants.DEFAULT_GAME_HIGHLIGHT;
+    private int mMinimumScoreToHighlight = Constants.DEFAULT_GAME_HIGHLIGHT;
 
     /**
      * Subclass of RecyclerView.ViewHolder to manage view which will display text to the user.
      */
     public static class SeriesViewHolder
-            extends RecyclerView.ViewHolder
-    {
+            extends RecyclerView.ViewHolder {
 
         /** Displays date of the series. */
         private TextView mTextViewDate;
@@ -78,28 +75,24 @@ public class SeriesAdapter
         private TextView mTextViewUndo;
 
         /**
-         * Calls super constructor and gets instances of ImageView and TextView objects for member
-         * variables from itemLayoutView.
+         * Calls super constructor and gets instances of ImageView and TextView objects for member variables from
+         * itemLayoutView.
          *
          * @param itemLayoutView layout view containing views to display data
          * @param viewType type of view
          */
         @SuppressWarnings("CheckStyle")
-        public SeriesViewHolder(View itemLayoutView, int viewType)
-        {
+        public SeriesViewHolder(View itemLayoutView, int viewType) {
             super(itemLayoutView);
-            switch (viewType)
-            {
+            switch (viewType) {
                 case VIEWTYPE_ACTIVE:
                     mTextViewDate = (TextView) itemLayoutView.findViewById(R.id.tv_series_date);
                     mImageViewEdit = (ImageView) itemLayoutView.findViewById(R.id.iv_edit_date);
 
                     //Adds text views by id to array
                     mArrayTextViewGames = new TextView[Constants.MAX_NUMBER_LEAGUE_GAMES];
-                    for (byte i = 0; i < Constants.MAX_NUMBER_LEAGUE_GAMES; i++)
-                    {
-                        switch (i)
-                        {
+                    for (byte i = 0; i < Constants.MAX_NUMBER_LEAGUE_GAMES; i++) {
+                        switch (i) {
                             case 0:
                                 mArrayTextViewGames[0] = (TextView) itemLayoutView.findViewById(
                                         R.id.tv_series_game_1);
@@ -147,19 +140,16 @@ public class SeriesAdapter
     public SeriesAdapter(
             Activity activity,
             SeriesEventHandler eventHandler,
-            List<Series> listSeries)
-    {
+            List<Series> listSeries) {
         this.mActivity = activity;
         this.mEventHandler = eventHandler;
         this.mListSeries = listSeries;
     }
 
     @Override
-    public SeriesViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
-    {
+    public SeriesViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView;
-        switch (viewType)
-        {
+        switch (viewType) {
             case VIEWTYPE_ACTIVE:
                 itemView = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.list_item_series, parent, false);
@@ -175,129 +165,127 @@ public class SeriesAdapter
     }
 
     @Override
-    public void onBindViewHolder(final SeriesViewHolder holder, final int position)
-    {
+    public void onBindViewHolder(final SeriesViewHolder holder, final int position) {
         final int viewType = getItemViewType(position);
 
-        switch (viewType)
-        {
+        switch (viewType) {
             case VIEWTYPE_ACTIVE:
-                holder.mTextViewDate.setText(mListSeries.get(position).getSeriesDate());
-
-                List<Short> games = mListSeries.get(position).getSeriesGames();
-                final int numberOfGamesInSeries = games.size();
-                for (int i = 0; i < numberOfGamesInSeries; i++)
-                {
-                    /**
-                     * Highlights a score if it is over 300 or applies default theme if not
-                     */
-                    short gameScore = games.get(-i + (numberOfGamesInSeries - 1));
-                    holder.mArrayTextViewGames[i].setText(String.valueOf(gameScore));
-                    if (gameScore >= minimumScoreToHighlight)
-                    {
-                        holder.mArrayTextViewGames[i].setTextColor(Theme.getTertiaryThemeColor());
-                        holder.mArrayTextViewGames[i].setAlpha(1f);
-                    }
-                    else
-                    {
-                        holder.mArrayTextViewGames[i].setTextColor(0xff000000);
-                        holder.mArrayTextViewGames[i].setAlpha(DisplayUtils.BLACK_ICON_ALPHA);
-                    }
-                }
-
-                for (int i = numberOfGamesInSeries; i < Constants.MAX_NUMBER_LEAGUE_GAMES; i++)
-                {
-                    holder.mArrayTextViewGames[i].setText(null);
-                }
-
-                //Sets color of edit button
-                if (mEditDrawable == null)
-                    mEditDrawable = DisplayUtils.getDrawable(holder.itemView.getResources(),
-                            R.drawable.ic_edit_black_24dp);
-                if (mEditDrawableFilter != Theme.getSecondaryThemeColor())
-                {
-                    mEditDrawableFilter = Theme.getSecondaryThemeColor();
-                    mEditDrawable.setColorFilter(mEditDrawableFilter, PorterDuff.Mode.SRC_IN);
-                }
-                holder.mImageViewEdit.setImageDrawable(mEditDrawable);
-
-                holder.mImageViewEdit.setOnClickListener(new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View v)
-                    {
-                        mEventHandler.onEditClick(mRecyclerView.getChildAdapterPosition(
-                                holder.itemView));
-                    }
-                });
-
-                /*
-                 * Below methods are executed when an item in the RecyclerView is
-                 * clicked or long clicked.
-                 */
-                holder.itemView.setOnClickListener(this);
+                bindActiveSeriesItem(holder, position);
                 break;
             case VIEWTYPE_DELETED:
-                final String nameToDelete = mListSeries.get(position).getSeriesDate();
-                final long idToDelete = mListSeries.get(position).getSeriesId();
-                final View.OnClickListener onClickListener = new View.OnClickListener()
-                {
-                    @Override
-                    public void onClick(View v)
-                    {
-                        if (mEventHandler != null)
-                        {
-                            if (v.getId() == R.id.tv_undo_delete)
-                                mEventHandler.onSItemUndoDelete(idToDelete);
-                            else
-                                mEventHandler.onSItemDelete(idToDelete);
-                        }
-                    }
-                };
-                holder.itemView.setOnClickListener(null);
-                holder.itemView.setBackgroundColor(Theme.getTertiaryThemeColor());
-                holder.mTextViewDelete.setText("Click to delete " + nameToDelete);
-                holder.mTextViewDelete.setOnClickListener(onClickListener);
-                holder.mTextViewUndo.setOnClickListener(onClickListener);
-                holder.mImageViewDelete.setOnClickListener(onClickListener);
+                bindDeletedSeriesItem(holder, position);
                 break;
             default:
                 throw new IllegalArgumentException("Invalid view type: " + viewType);
         }
     }
 
+    /**
+     * Sets properties of a view holder for a deleted series item.
+     *
+     * @param holder view holder for deleted item
+     * @param position position of deleted item
+     */
+    private void bindDeletedSeriesItem(SeriesViewHolder holder, int position) {
+        final String nameToDelete = mListSeries.get(position).getSeriesDate();
+        final long idToDelete = mListSeries.get(position).getSeriesId();
+        final View.OnClickListener onClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mEventHandler != null) {
+                    if (v.getId() == R.id.tv_undo_delete)
+                        mEventHandler.onSItemUndoDelete(idToDelete);
+                    else
+                        mEventHandler.onSItemDelete(idToDelete);
+                }
+            }
+        };
+        holder.itemView.setOnClickListener(null);
+        holder.itemView.setBackgroundColor(Theme.getTertiaryThemeColor());
+        holder.mTextViewDelete.setText("Click to delete " + nameToDelete);
+        holder.mTextViewDelete.setOnClickListener(onClickListener);
+        holder.mTextViewUndo.setOnClickListener(onClickListener);
+        holder.mImageViewDelete.setOnClickListener(onClickListener);
+    }
+
+    /**
+     * Sets properties of a view holder for an active series item.
+     *
+     * @param holder view holder for active item
+     * @param position position of active item
+     */
+    private void bindActiveSeriesItem(final SeriesViewHolder holder, int position) {
+        holder.mTextViewDate.setText(mListSeries.get(position).getSeriesDate());
+
+        List<Short> games = mListSeries.get(position).getSeriesGames();
+        final int numberOfGamesInSeries = games.size();
+        for (int i = 0; i < numberOfGamesInSeries; i++) {
+            /**
+             * Highlights a score if it is over 300 or applies default theme if not
+             */
+            short gameScore = games.get(-i + (numberOfGamesInSeries - 1));
+            holder.mArrayTextViewGames[i].setText(String.valueOf(gameScore));
+            if (gameScore >= mMinimumScoreToHighlight) {
+                holder.mArrayTextViewGames[i].setTextColor(Theme.getTertiaryThemeColor());
+                holder.mArrayTextViewGames[i].setAlpha(1f);
+            } else {
+                holder.mArrayTextViewGames[i].setTextColor(DisplayUtils.COLOR_BLACK);
+                holder.mArrayTextViewGames[i].setAlpha(DisplayUtils.BLACK_SECONDARY_TEXT_ALPHA);
+            }
+        }
+
+        for (int i = numberOfGamesInSeries; i < Constants.MAX_NUMBER_LEAGUE_GAMES; i++) {
+            holder.mArrayTextViewGames[i].setText(null);
+        }
+
+        //Sets color of edit button
+        if (mEditDrawable == null)
+            mEditDrawable = DisplayUtils.getDrawable(holder.itemView.getResources(),
+                    R.drawable.ic_edit_black_24dp);
+        if (mEditDrawableFilter != Theme.getSecondaryThemeColor()) {
+            mEditDrawableFilter = Theme.getSecondaryThemeColor();
+            mEditDrawable.setColorFilter(mEditDrawableFilter, PorterDuff.Mode.SRC_IN);
+        }
+        holder.mImageViewEdit.setImageDrawable(mEditDrawable);
+
+        holder.mImageViewEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mEventHandler.onEditClick(mRecyclerView.getChildAdapterPosition(
+                        holder.itemView));
+            }
+        });
+
+        holder.itemView.setOnClickListener(this);
+    }
+
     @Override
-    public void onClick(View v)
-    {
+    public void onClick(View v) {
         //Calls relevant event handler method
         if (mEventHandler != null && mRecyclerView != null)
             mEventHandler.onSItemClick(mRecyclerView.getChildAdapterPosition(v));
     }
 
     @Override
-    public int getItemCount()
-    {
+    public int getItemCount() {
         return mListSeries.size();
     }
 
     @Override
-    public int getItemViewType(int position)
-    {
+    public int getItemViewType(int position) {
         return (mListSeries.get(position).wasDeleted())
                 ? VIEWTYPE_DELETED
                 : VIEWTYPE_ACTIVE;
     }
 
     @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView)
-    {
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
         mRecyclerView = recyclerView;
     }
 
     @Override
-    public void onDetachedFromRecyclerView(RecyclerView recyclerView)
-    {
+    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
         super.onDetachedFromRecyclerView(recyclerView);
 
         // Releasing references
@@ -308,21 +296,18 @@ public class SeriesAdapter
     }
 
     @Override
-    public void updateTheme()
-    {
+    public void updateTheme() {
         if (mActivity != null)
-            minimumScoreToHighlight =
+            mMinimumScoreToHighlight =
                     Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(mActivity)
                             .getString(Constants.KEY_HIGHLIGHT_SCORE, "300"));
         notifyDataSetChanged();
     }
 
     /**
-     * Provides methods to implement functionality when items in the RecyclerView are interacted
-     * with.
+     * Provides methods to implement functionality when items in the RecyclerView are interacted with.
      */
-    public interface SeriesEventHandler
-    {
+    public interface SeriesEventHandler {
 
         /**
          * Called when an item in the RecyclerView is clicked.

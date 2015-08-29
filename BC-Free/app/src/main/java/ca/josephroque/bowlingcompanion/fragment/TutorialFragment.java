@@ -17,13 +17,12 @@ import ca.josephroque.bowlingcompanion.utilities.DataFormatter;
 import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
 
 /**
- * Created by Joseph Roque on 2015-07-24. Displays some content which describes the functionality of
- * the application to the user.
+ * Created by Joseph Roque on 2015-07-24. Displays some content which describes the functionality of the application to
+ * the user.
  */
 public class TutorialFragment
         extends Fragment
-        implements Theme.ChangeableTheme
-{
+        implements Theme.ChangeableTheme {
 
     /** To identify output from this class in the Logcat. */
     @SuppressWarnings("unused")
@@ -40,8 +39,7 @@ public class TutorialFragment
     private static final int TUTORIAL_TEXT_SIZE_SP = 16;
 
     /**
-     * A cached array of the {@link
-     * ca.josephroque.bowlingcompanion.fragment.TutorialFragment.TutorialPage} items.
+     * A cached array of the {@link ca.josephroque.bowlingcompanion.fragment.TutorialFragment.TutorialPage} items.
      */
     private static TutorialPage[] sTutorialPageValues;
 
@@ -63,8 +61,7 @@ public class TutorialFragment
      * @param page tutorial page to show
      * @return a new instance of TutorialFragment
      */
-    public static TutorialFragment newInstance(int page)
-    {
+    public static TutorialFragment newInstance(int page) {
         if (page < 0 || page >= TUTORIAL_TOTAL_PAGES)
             throw new IllegalArgumentException("page must be between 0 and "
                     + (TUTORIAL_TOTAL_PAGES - 1));
@@ -77,8 +74,7 @@ public class TutorialFragment
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         mIsTablet = !getResources().getBoolean(R.bool.portrait_only);
@@ -86,8 +82,7 @@ public class TutorialFragment
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState)
-    {
+                             Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         RelativeLayout rootView =
                 (RelativeLayout) inflater.inflate(R.layout.fragment_tutorial, container, false);
@@ -104,8 +99,7 @@ public class TutorialFragment
     }
 
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
 
         setupTutorialPageAndText((RelativeLayout) getView());
@@ -113,41 +107,37 @@ public class TutorialFragment
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState)
-    {
+    public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(ARG_PAGE, mTutorialPage.ordinal());
     }
 
     @Override
-    public void updateTheme()
-    {
-        if (getView() != null)
-        {
-            switch (mTutorialPage)
-            {
+    public void updateTheme() {
+        if (getView() != null) {
+            switch (mTutorialPage) {
                 case WELCOME:
-                    getView().setBackgroundColor(getResources().getColor(
+                    getView().setBackgroundColor(DisplayUtils.getColorResource(getResources(),
                             R.color.theme_blue_tertiary));
                     break;
                 case ADD_BOWLER_LEAGUE_SERIES:
-                    getView().setBackgroundColor(getResources().getColor(
+                    getView().setBackgroundColor(DisplayUtils.getColorResource(getResources(),
                             R.color.theme_purple_tertiary));
                     break;
                 case LEAGUES_VS_EVENTS:
-                    getView().setBackgroundColor(getResources().getColor(
+                    getView().setBackgroundColor(DisplayUtils.getColorResource(getResources(),
                             R.color.theme_red_tertiary));
                     break;
                 case PIN_GAME_AND_SWIPE:
-                    getView().setBackgroundColor(getResources().getColor(
+                    getView().setBackgroundColor(DisplayUtils.getColorResource(getResources(),
                             R.color.theme_orange_tertiary));
                     break;
                 case STATISTICS_AND_GRAPH:
-                    getView().setBackgroundColor(getResources().getColor(
+                    getView().setBackgroundColor(DisplayUtils.getColorResource(getResources(),
                             R.color.theme_green_tertiary));
                     break;
                 case SETTINGS:
-                    getView().setBackgroundColor(getResources().getColor(
+                    getView().setBackgroundColor(DisplayUtils.getColorResource(getResources(),
                             R.color.theme_gray_tertiary));
                     break;
                 default:
@@ -161,9 +151,7 @@ public class TutorialFragment
      *
      * @param rootView root to attach views to
      */
-    private void setupTutorialPageAndText(RelativeLayout rootView)
-    {
-        FloatingActionButton fab;
+    private void setupTutorialPageAndText(RelativeLayout rootView) {
         final int dp16 = DataFormatter.getPixelsFromDP(getResources().getDisplayMetrics().density,
                 VERTICAL_SPACE);
 
@@ -172,78 +160,26 @@ public class TutorialFragment
         mTextViewTutorial.setPadding(dp16, dp16, dp16, dp16);
         mTextViewTutorial.setGravity(Gravity.CENTER_HORIZONTAL);
         mTextViewTutorial.setTextSize(TypedValue.COMPLEX_UNIT_SP, TUTORIAL_TEXT_SIZE_SP);
-        mTextViewTutorial.setTextColor(getResources().getColor(android.R.color.white));
+        mTextViewTutorial.setTextColor(DisplayUtils.getColorResource(getResources(), android.R.color.white));
 
-        switch (mTutorialPage)
-        {
+        switch (mTutorialPage) {
             case WELCOME:
-                mTextViewTutorial.setText(R.string.text_tutorial_welcome);
-                mViewTutorial = View.inflate(getActivity(), R.layout.tutorial_welcome, null);
+                createWelcomeTutorialPage();
                 break;
             case ADD_BOWLER_LEAGUE_SERIES:
-                mTextViewTutorial.setText(R.string.text_tutorial_add_bowler_league_series);
-                mViewTutorial = View.inflate(getActivity(), R.layout.tutorial_add, null);
-
-                // Setting colors of first fab
-                fab = (FloatingActionButton) mViewTutorial.findViewById(
-                        R.id.fab_tutorial_add_person);
-                DisplayUtils.setFloatingActionButtonColors(fab,
-                        getResources().getColor(R.color.theme_orange_primary),
-                        getResources().getColor(R.color.theme_orange_tertiary));
-                DisplayUtils.fixFloatingActionButtonMargins(getResources(), fab);
-
-                // Setting colors of second fab
-                fab = (FloatingActionButton) mViewTutorial.findViewById(R.id.fab_tutorial_add);
-                DisplayUtils.setFloatingActionButtonColors(fab,
-                        getResources().getColor(R.color.theme_orange_primary),
-                        getResources().getColor(R.color.theme_orange_tertiary));
-                DisplayUtils.fixFloatingActionButtonMargins(getResources(), fab);
-
+                createAddItemTutorialPage();
                 break;
             case LEAGUES_VS_EVENTS:
-                mTextViewTutorial.setText(R.string.text_tutorial_leagues_events);
-                mViewTutorial = View.inflate(getActivity(), R.layout.tutorial_leagues_events, null);
+                createLeaguesAndEventsTutorialPage();
                 break;
             case PIN_GAME_AND_SWIPE:
-                mTextViewTutorial.setText(R.string.text_tutorial_pin_game);
-                mViewTutorial = View.inflate(getActivity(), R.layout.tutorial_pin_game, null);
-
-                mTextViewExtra = new TextView(getActivity());
-                mTextViewExtra.setPadding(dp16, dp16, dp16, dp16);
-                mTextViewExtra.setGravity(Gravity.CENTER_HORIZONTAL);
-                mTextViewExtra.setTextSize(TypedValue.COMPLEX_UNIT_SP, TUTORIAL_TEXT_SIZE_SP);
-                mTextViewExtra.setTextColor(getResources().getColor(android.R.color.white));
-                mTextViewExtra.setText(R.string.text_tutorial_manual_game);
+                createPinGameAndSwipeTutorialPage();
                 break;
             case STATISTICS_AND_GRAPH:
-                mTextViewTutorial.setText(R.string.text_tutorial_statistics);
-                mViewTutorial = View.inflate(getActivity(), R.layout.tutorial_statistics, null);
+                createStatisticsTutorialPage();
                 break;
             case SETTINGS:
-                mTextViewTutorial.setText(R.string.text_tutorial_settings);
-                mViewTutorial = View.inflate(getActivity(), R.layout.tutorial_settings, null);
-
-                // Setting colors of first fab
-                fab = (FloatingActionButton) mViewTutorial.findViewById(R.id.fab_tutorial_add_1);
-                DisplayUtils.setFloatingActionButtonColors(fab,
-                        getResources().getColor(R.color.theme_blue_primary),
-                        getResources().getColor(R.color.theme_blue_tertiary));
-                DisplayUtils.fixFloatingActionButtonMargins(getResources(), fab);
-
-                //Setting colors of second fab
-                fab = (FloatingActionButton) mViewTutorial.findViewById(R.id.fab_tutorial_add_2);
-                DisplayUtils.setFloatingActionButtonColors(fab,
-                        getResources().getColor(R.color.theme_red_primary),
-                        getResources().getColor(R.color.theme_red_tertiary));
-                DisplayUtils.fixFloatingActionButtonMargins(getResources(), fab);
-
-                //Setting colors of third fab
-                fab = (FloatingActionButton) mViewTutorial.findViewById(R.id.fab_tutorial_add_3);
-                DisplayUtils.setFloatingActionButtonColors(fab,
-                        getResources().getColor(R.color.theme_green_primary),
-                        getResources().getColor(R.color.theme_green_tertiary));
-                DisplayUtils.fixFloatingActionButtonMargins(getResources(), fab);
-
+                createSettingsTutorialPage();
                 break;
             default:
                 throw new IllegalStateException("invalid tutorial page: " + mTutorialPage);
@@ -253,12 +189,125 @@ public class TutorialFragment
     }
 
     /**
+     * Sets up layout for settings tutorial.
+     */
+    private void createSettingsTutorialPage() {
+        if (mTutorialPage != TutorialPage.SETTINGS)
+            throw new IllegalStateException("invalid tutorial page");
+
+        FloatingActionButton fab;
+        mTextViewTutorial.setText(R.string.text_tutorial_settings);
+        mViewTutorial = View.inflate(getActivity(), R.layout.tutorial_settings, null);
+
+        // Setting colors of first fab
+        fab = (FloatingActionButton) mViewTutorial.findViewById(R.id.fab_tutorial_add_1);
+        DisplayUtils.setFloatingActionButtonColors(fab,
+                DisplayUtils.getColorResource(getResources(), R.color.theme_blue_primary),
+                DisplayUtils.getColorResource(getResources(), R.color.theme_blue_tertiary));
+        DisplayUtils.fixFloatingActionButtonMargins(getResources(), fab);
+
+        //Setting colors of second fab
+        fab = (FloatingActionButton) mViewTutorial.findViewById(R.id.fab_tutorial_add_2);
+        DisplayUtils.setFloatingActionButtonColors(fab,
+                DisplayUtils.getColorResource(getResources(), R.color.theme_red_primary),
+                DisplayUtils.getColorResource(getResources(), R.color.theme_red_tertiary));
+        DisplayUtils.fixFloatingActionButtonMargins(getResources(), fab);
+
+        //Setting colors of third fab
+        fab = (FloatingActionButton) mViewTutorial.findViewById(R.id.fab_tutorial_add_3);
+        DisplayUtils.setFloatingActionButtonColors(fab,
+                DisplayUtils.getColorResource(getResources(), R.color.theme_green_primary),
+                DisplayUtils.getColorResource(getResources(), R.color.theme_green_tertiary));
+        DisplayUtils.fixFloatingActionButtonMargins(getResources(), fab);
+    }
+
+    /**
+     * Sets up layout for statistics tutorial.
+     */
+    private void createStatisticsTutorialPage() {
+        if (mTutorialPage != TutorialPage.STATISTICS_AND_GRAPH)
+            throw new IllegalStateException("invalid tutorial page");
+
+        mTextViewTutorial.setText(R.string.text_tutorial_statistics);
+        mViewTutorial = View.inflate(getActivity(), R.layout.tutorial_statistics, null);
+    }
+
+    /**
+     * Sets up layout for scoring games tutorial.
+     */
+    private void createPinGameAndSwipeTutorialPage() {
+        if (mTutorialPage != TutorialPage.PIN_GAME_AND_SWIPE)
+            throw new IllegalStateException("invalid tutorial page");
+
+        final int dp16 = DataFormatter.getPixelsFromDP(getResources().getDisplayMetrics().density,
+                VERTICAL_SPACE);
+
+        mTextViewTutorial.setText(R.string.text_tutorial_pin_game);
+        mViewTutorial = View.inflate(getActivity(), R.layout.tutorial_pin_game, null);
+
+        mTextViewExtra = new TextView(getActivity());
+        mTextViewExtra.setPadding(dp16, dp16, dp16, dp16);
+        mTextViewExtra.setGravity(Gravity.CENTER_HORIZONTAL);
+        mTextViewExtra.setTextSize(TypedValue.COMPLEX_UNIT_SP, TUTORIAL_TEXT_SIZE_SP);
+        mTextViewExtra.setTextColor(DisplayUtils.getColorResource(getResources(), android.R.color.white));
+        mTextViewExtra.setText(R.string.text_tutorial_manual_game);
+    }
+
+    /**
+     * Sets up layout for leagues vs. events tutorial.
+     */
+    private void createLeaguesAndEventsTutorialPage() {
+        if (mTutorialPage != TutorialPage.LEAGUES_VS_EVENTS)
+            throw new IllegalStateException("invalid tutorial page");
+
+        mTextViewTutorial.setText(R.string.text_tutorial_leagues_events);
+        mViewTutorial = View.inflate(getActivity(), R.layout.tutorial_leagues_events, null);
+    }
+
+    /**
+     * Sets up layout for adding bowlers/leagues tutorial.
+     */
+    private void createAddItemTutorialPage() {
+        if (mTutorialPage != TutorialPage.ADD_BOWLER_LEAGUE_SERIES)
+            throw new IllegalStateException("invalid tutorial page");
+
+        FloatingActionButton fab;
+        mTextViewTutorial.setText(R.string.text_tutorial_add_bowler_league_series);
+        mViewTutorial = View.inflate(getActivity(), R.layout.tutorial_add, null);
+
+        // Setting colors of first fab
+        fab = (FloatingActionButton) mViewTutorial.findViewById(
+                R.id.fab_tutorial_add_person);
+        DisplayUtils.setFloatingActionButtonColors(fab,
+                DisplayUtils.getColorResource(getResources(), R.color.theme_orange_primary),
+                DisplayUtils.getColorResource(getResources(), R.color.theme_orange_tertiary));
+        DisplayUtils.fixFloatingActionButtonMargins(getResources(), fab);
+
+        // Setting colors of second fab
+        fab = (FloatingActionButton) mViewTutorial.findViewById(R.id.fab_tutorial_add);
+        DisplayUtils.setFloatingActionButtonColors(fab,
+                DisplayUtils.getColorResource(getResources(), R.color.theme_orange_primary),
+                DisplayUtils.getColorResource(getResources(), R.color.theme_orange_tertiary));
+        DisplayUtils.fixFloatingActionButtonMargins(getResources(), fab);
+    }
+
+    /**
+     * Sets up layout for welcome tutorial.
+     */
+    private void createWelcomeTutorialPage() {
+        if (mTutorialPage != TutorialPage.WELCOME)
+            throw new IllegalStateException("invalid tutorial page");
+
+        mTextViewTutorial.setText(R.string.text_tutorial_welcome);
+        mViewTutorial = View.inflate(getActivity(), R.layout.tutorial_welcome, null);
+    }
+
+    /**
      * Sets the layout to alternate between two setups depending on the page.
      *
      * @param rootView root to attach views to
      */
-    private void setTutorialLayout(RelativeLayout rootView)
-    {
+    private void setTutorialLayout(RelativeLayout rootView) {
         final float maxTutorialWidth = getResources().getDimension(R.dimen.max_tutorial_width);
         RelativeLayout.LayoutParams layoutParams;
         rootView.removeAllViews();
@@ -287,8 +336,7 @@ public class TutorialFragment
         layoutParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
         rootView.addView(mTextViewTutorial, layoutParams);
 
-        if (mTextViewExtra != null)
-        {
+        if (mTextViewExtra != null) {
             if (mIsTablet)
                 layoutParams = new RelativeLayout.LayoutParams((int) maxTutorialWidth,
                         ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -304,8 +352,7 @@ public class TutorialFragment
     /**
      * Possible tutorial pages.
      */
-    public enum TutorialPage
-    {
+    public enum TutorialPage {
         /** Tutorial page to introduce the app. */
         WELCOME,
         /** Tutorial page for adding new bowlers, leagues and series. */

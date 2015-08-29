@@ -32,14 +32,6 @@ public final class ShareUtils
     private static final String TAG = "ShareUtils";
 
     /**
-     * Default private constructor.
-     */
-    private ShareUtils()
-    {
-        // does nothing
-    }
-
-    /**
      * Shows a dialog to prompt user to share the series or save it to the device.
      *
      * @param activity parent activity for the dialog
@@ -217,5 +209,13 @@ public final class ShareUtils
                 context.startActivity(Intent.createChooser(intent, "Share Image"));
             }
         }
+    }
+
+    /**
+     * Default private constructor.
+     */
+    private ShareUtils()
+    {
+        // does nothing
     }
 }

@@ -1,6 +1,5 @@
 package ca.josephroque.bowlingcompanion.fragment;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
@@ -47,18 +46,15 @@ import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
 import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
 
 /**
- * Created by Joseph Roque on 15-03-13. Manages the UI to display information about the bowlers
- * being tracked by the application, and offers a callback interface {@link
- * ca.josephroque.bowlingcompanion.fragment.BowlerFragment.BowlerCallback} for handling
- * interactions.
+ * Created by Joseph Roque on 15-03-13. Manages the UI to display information about the bowlers being tracked by the
+ * application, and offers a callback interface {@code BowlerFragment.BowlerCallback} for handling interactions.
  */
 @SuppressWarnings("Convert2Lambda")
 public class BowlerFragment
         extends Fragment
         implements NameAverageAdapter.NameAverageEventHandler,
         NewBowlerDialog.NewBowlerDialogListener,
-        FloatingActionButtonHandler
-{
+        FloatingActionButtonHandler {
 
     /** Identifies output from this class in Logcat. */
     @SuppressWarnings("unused")
@@ -103,38 +99,32 @@ public class BowlerFragment
 
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
     }
 
     @Override
-    public void onAttach(Activity activity)
-    {
-        super.onAttach(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
 
         /*
          * This makes sure the container Activity has implemented
          * the callback interface. If not, an exception is thrown
          */
-        try
-        {
-            mBowlerCallback = (BowlerCallback) activity;
-            mLeagueSelectedCallback = (LeagueEventFragment.LeagueEventCallback) activity;
-            mSeriesCallback = (SeriesFragment.SeriesCallback) activity;
-        }
-        catch (ClassCastException ex)
-        {
-            throw new ClassCastException(activity.toString()
+        try {
+            mBowlerCallback = (BowlerCallback) context;
+            mLeagueSelectedCallback = (LeagueEventFragment.LeagueEventCallback) context;
+            mSeriesCallback = (SeriesFragment.SeriesCallback) context;
+        } catch (ClassCastException ex) {
+            throw new ClassCastException(context.toString()
                     + " must implement OnBowlerSelectedListener, OnLeagueSelectedListener,"
                     + " SeriesListener");
         }
     }
 
     @Override
-    public void onDetach()
-    {
+    public void onDetach() {
         super.onDetach();
         mBowlerCallback = null;
         mLeagueSelectedCallback = null;
@@ -144,8 +134,7 @@ public class BowlerFragment
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
-                             Bundle savedInstanceState)
-    {
+                             Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_list, container, false);
 
         mListBowlers = new ArrayList<>();
@@ -154,19 +143,16 @@ public class BowlerFragment
         mRecyclerViewBowlers.setHasFixedSize(true);
 
         ItemTouchHelper.SimpleCallback touchCallback = new ItemTouchHelper.SimpleCallback(0,
-                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT)
-        {
+                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
             public boolean onMove(RecyclerView recyclerView,
                                   RecyclerView.ViewHolder viewHolder,
-                                  RecyclerView.ViewHolder target)
-            {
+                                  RecyclerView.ViewHolder target) {
                 return false;
             }
 
             @Override
-            public void onSwiped(final RecyclerView.ViewHolder viewHolder, int direction)
-            {
+            public void onSwiped(final RecyclerView.ViewHolder viewHolder, int direction) {
                 final int position = viewHolder.getAdapterPosition();
                 mListBowlers.get(position).setIsDeleted(!mListBowlers.get(position).wasDeleted());
                 mAdapterBowlers.notifyItemChanged(position);
@@ -186,11 +172,9 @@ public class BowlerFragment
     }
 
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
-        if (getActivity() != null)
-        {
+        if (getActivity() != null) {
             MainActivity mainActivity = (MainActivity) getActivity();
             mainActivity.setActionBarTitle(R.string.app_name, true);
             mainActivity.setFloatingActionButtonState(R.drawable.ic_person_add_black_24dp);
@@ -210,18 +194,15 @@ public class BowlerFragment
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_bowlers, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
-    public void onPrepareOptionsMenu(Menu menu)
-    {
+    public void onPrepareOptionsMenu(Menu menu) {
         MainActivity mainActivity = (MainActivity) getActivity();
-        if (mainActivity == null)
-        {
+        if (mainActivity == null) {
             super.onPrepareOptionsMenu(menu);
             return;
         }
@@ -234,10 +215,8 @@ public class BowlerFragment
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             case R.id.action_quick_series:
                 showQuickSeriesDialog();
                 return true;
@@ -247,19 +226,15 @@ public class BowlerFragment
     }
 
     @Override
-    public void onNAItemClick(final int position)
-    {
+    public void onNAItemClick(final int position) {
         //When bowler name is clicked, their leagues are displayed in new fragment
         new OpenBowlerLeaguesTask(this).execute(position);
     }
 
     @Override
-    public void onNAItemDelete(long id)
-    {
-        for (int i = 0; i < mListBowlers.size(); i++)
-        {
-            if (mListBowlers.get(i).getBowlerId() == id)
-            {
+    public void onNAItemDelete(long id) {
+        for (int i = 0; i < mListBowlers.size(); i++) {
+            if (mListBowlers.get(i).getBowlerId() == id) {
                 Bowler bowler = mListBowlers.remove(i);
                 mAdapterBowlers.notifyItemRemoved(i);
                 deleteBowler(bowler.getBowlerId());
@@ -268,12 +243,9 @@ public class BowlerFragment
     }
 
     @Override
-    public void onNAItemUndoDelete(long id)
-    {
-        for (int i = 0; i < mListBowlers.size(); i++)
-        {
-            if (mListBowlers.get(i).getBowlerId() == id)
-            {
+    public void onNAItemUndoDelete(long id) {
+        for (int i = 0; i < mListBowlers.size(); i++) {
+            if (mListBowlers.get(i).getBowlerId() == id) {
                 mListBowlers.get(i).setIsDeleted(false);
                 mAdapterBowlers.notifyItemChanged(i);
             }
@@ -281,20 +253,16 @@ public class BowlerFragment
     }
 
     @Override
-    public void onAddNewBowler(String bowlerName)
-    {
+    public void onAddNewBowler(String bowlerName) {
         boolean validInput = true;
         int invalidInputMessage = -1;
         Bowler newBowler = new Bowler(0, bowlerName, (short) 0);
 
-        if (mListBowlers.contains(newBowler))
-        {
+        if (mListBowlers.contains(newBowler)) {
             //Bowler name already exists in the list
             validInput = false;
             invalidInputMessage = R.string.dialog_name_exists;
-        }
-        else if (!bowlerName.matches(Constants.REGEX_NAME))
-        {
+        } else if (!bowlerName.matches(Constants.REGEX_NAME)) {
             //Name is not made up of letters and spaces
             validInput = false;
             invalidInputMessage = R.string.dialog_name_letters_spaces;
@@ -304,15 +272,12 @@ public class BowlerFragment
          * If the input was invalid for any reason, a dialog is shown
          * to the user and the method does not continue
          */
-        if (!validInput)
-        {
+        if (!validInput) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
             builder.setMessage(invalidInputMessage)
-                    .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener()
-                    {
+                    .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener() {
                         @Override
-                        public void onClick(DialogInterface dialog, int which)
-                        {
+                        public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                         }
                     })
@@ -329,35 +294,29 @@ public class BowlerFragment
     }
 
     @Override
-    public void onFabClick()
-    {
+    public void onFabClick() {
         showNewBowlerDialog();
     }
 
     /**
-     * Prompts user to create a new series with mRecentBowlerId and mRecentLeagueId or
-     * mQuickBowlerId and mQuickLeagueId.
+     * Prompts user to create a new series with mRecentBowlerId and mRecentLeagueId or mQuickBowlerId and
+     * mQuickLeagueId.
      */
-    private void showQuickSeriesDialog()
-    {
+    private void showQuickSeriesDialog() {
         if ((mQuickBowlerId > -1 && mQuickLeagueId > -1)
-                || (mRecentBowlerId > -1 && mRecentLeagueId > -1))
-        {
+                || (mRecentBowlerId > -1 && mRecentLeagueId > -1)) {
             /*
              * If a quick bowler was set, or a bowler has been previously selected,
              * a dialog is displayed to prompt user to create a new series
              */
             final boolean quickOrRecent;
             AlertDialog.Builder quickSeriesBuilder = new AlertDialog.Builder(getActivity());
-            if (mQuickBowlerId == -1 || mQuickLeagueId == -1)
-            {
+            if (mQuickBowlerId == -1 || mQuickLeagueId == -1) {
                 quickSeriesBuilder.setMessage("Create a new series with these settings?"
                         + "\nBowler: " + mRecentBowlerName
                         + "\nLeague: " + mRecentLeagueName);
                 quickOrRecent = false;
-            }
-            else
-            {
+            } else {
                 quickSeriesBuilder.setMessage("Create a new series with these settings?"
                         + "\nBowler: " + mQuickBowlerName
                         + "\nLeague: " + mQuickLeagueName);
@@ -365,20 +324,16 @@ public class BowlerFragment
             }
 
             quickSeriesBuilder.setTitle("Quick Series")
-                    .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener()
-                    {
+                    .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener() {
                         @Override
-                        public void onClick(DialogInterface dialog, int which)
-                        {
-                            if (quickOrRecent)
-                            {
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (quickOrRecent) {
                                 Bowler quickBowler = new Bowler(mQuickBowlerId,
                                         mQuickBowlerName,
                                         (short) 0);
                                 if (mBowlerCallback != null
                                         && mLeagueSelectedCallback != null
-                                        && mSeriesCallback != null)
-                                {
+                                        && mSeriesCallback != null) {
                                     mBowlerCallback.onBowlerSelected(quickBowler,
                                             false,
                                             true);
@@ -390,16 +345,13 @@ public class BowlerFragment
                                             false);
                                     mSeriesCallback.onCreateNewSeries(false);
                                 }
-                            }
-                            else
-                            {
+                            } else {
                                 Bowler recentBowler = new Bowler(mRecentBowlerId,
                                         mRecentBowlerName,
                                         (short) 0);
                                 if (mBowlerCallback != null
                                         && mLeagueSelectedCallback != null
-                                        && mSeriesCallback != null)
-                                {
+                                        && mSeriesCallback != null) {
                                     mBowlerCallback.onBowlerSelected(recentBowler,
                                             false,
                                             true);
@@ -415,28 +367,22 @@ public class BowlerFragment
                             dialog.dismiss();
                         }
                     })
-                    .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener()
-                    {
+                    .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
                         @Override
-                        public void onClick(DialogInterface dialog, int which)
-                        {
+                        public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                         }
                     })
                     .create()
                     .show();
-        }
-        else
-        {
+        } else {
             //If no recent/quick bowler, dialog is displayed to inform user of options
             AlertDialog.Builder quickSeriesDisabledBuilder = new AlertDialog.Builder(getActivity());
             quickSeriesDisabledBuilder.setTitle("Quick Series")
                     .setMessage(R.string.dialog_quick_series_instructions)
-                    .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener()
-                    {
+                    .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener() {
                         @Override
-                        public void onClick(DialogInterface dialog, int which)
-                        {
+                        public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                         }
                     })
@@ -448,8 +394,7 @@ public class BowlerFragment
     /**
      * Opens an instance of NewBowlerDialog and displays it to the user.
      */
-    private void showNewBowlerDialog()
-    {
+    private void showNewBowlerDialog() {
         DialogFragment dialogFragment = NewBowlerDialog.newInstance(this);
         dialogFragment.show(getFragmentManager(), "NewBowlerDialog");
     }
@@ -459,8 +404,7 @@ public class BowlerFragment
      *
      * @param bowlerId id of bowler whose data will be deleted
      */
-    private void deleteBowler(final long bowlerId)
-    {
+    private void deleteBowler(final long bowlerId) {
         SharedPreferences prefs =
                 getActivity().getSharedPreferences(Constants.PREFS, Context.MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = prefs.edit();
@@ -468,40 +412,31 @@ public class BowlerFragment
         long quickId = prefs.getLong(Constants.PREF_QUICK_BOWLER_ID, -1);
 
         //Clears recent/quick ids if they match the deleted bowler
-        if (recentId == bowlerId)
-        {
+        if (recentId == bowlerId) {
             prefsEditor.putLong(Constants.PREF_RECENT_BOWLER_ID, -1)
                     .putLong(Constants.PREF_RECENT_LEAGUE_ID, -1);
         }
-        if (quickId == bowlerId)
-        {
+        if (quickId == bowlerId) {
             prefsEditor.putLong(Constants.PREF_QUICK_BOWLER_ID, -1)
                     .putLong(Constants.PREF_QUICK_LEAGUE_ID, -1);
         }
         prefsEditor.apply();
 
-        new Thread(new Runnable()
-        {
+        new Thread(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 SQLiteDatabase database =
                         DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
                 String[] whereArgs = {String.valueOf(bowlerId)};
                 database.beginTransaction();
-                try
-                {
+                try {
                     database.delete(BowlerEntry.TABLE_NAME,
                             BowlerEntry._ID + "=?",
                             whereArgs);
                     database.setTransactionSuccessful();
-                }
-                catch (Exception e)
-                {
+                } catch (Exception e) {
                     //does nothing
-                }
-                finally
-                {
+                } finally {
                     database.endTransaction();
                 }
             }
@@ -513,8 +448,7 @@ public class BowlerFragment
      *
      * @return a new instance of BowlerFragment
      */
-    public static BowlerFragment newInstance()
-    {
+    public static BowlerFragment newInstance() {
         return new BowlerFragment();
     }
 
@@ -522,8 +456,7 @@ public class BowlerFragment
      * Loads names of bowlers, along with other relevant data, and adds them to recycler view.
      */
     private static final class LoadBowlerAndRecentTask
-            extends AsyncTask<Void, Void, List<Bowler>>
-    {
+            extends AsyncTask<Void, Void, List<Bowler>> {
 
         /** Weak reference to the parent fragment. */
         private final WeakReference<BowlerFragment> mFragment;
@@ -533,14 +466,12 @@ public class BowlerFragment
          *
          * @param fragment parent fragment
          */
-        private LoadBowlerAndRecentTask(BowlerFragment fragment)
-        {
+        private LoadBowlerAndRecentTask(BowlerFragment fragment) {
             mFragment = new WeakReference<>(fragment);
         }
 
         @Override
-        protected void onPreExecute()
-        {
+        protected void onPreExecute() {
             BowlerFragment fragment = mFragment.get();
             if (fragment == null)
                 return;
@@ -550,8 +481,7 @@ public class BowlerFragment
         }
 
         @Override
-        protected List<Bowler> doInBackground(Void... params)
-        {
+        protected List<Bowler> doInBackground(Void... params) {
             //Method exits if fragment gets detached before reaching this call
             BowlerFragment fragment = mFragment.get();
             if (fragment == null)
@@ -611,10 +541,8 @@ public class BowlerFragment
 
             //Adds loaded bowler names and averages to lists to display
             Cursor cursor = database.rawQuery(rawBowlerQuery, rawBowlerArgs);
-            if (cursor.moveToFirst())
-            {
-                while (!cursor.isAfterLast())
-                {
+            if (cursor.moveToFirst()) {
+                while (!cursor.isAfterLast()) {
                     int totalSum = cursor.getInt(cursor.getColumnIndex("totalSum"));
                     int totalCount = cursor.getInt(cursor.getColumnIndex("totalCount"));
                     Bowler bowler = new Bowler(cursor.getLong(cursor.getColumnIndex("bid")),
@@ -629,8 +557,7 @@ public class BowlerFragment
             cursor.close();
 
             //If a recent bowler exists, their name and league is loaded to be used for quick series
-            if (fragment.mRecentBowlerId > -1 && fragment.mRecentLeagueId > -1)
-            {
+            if (fragment.mRecentBowlerId > -1 && fragment.mRecentLeagueId > -1) {
                 String rawRecentQuery = "SELECT "
                         + BowlerEntry.COLUMN_BOWLER_NAME + ", "
                         + LeagueEntry.COLUMN_LEAGUE_NAME + ", "
@@ -647,17 +574,14 @@ public class BowlerFragment
                 };
 
                 cursor = database.rawQuery(rawRecentQuery, rawRecentArgs);
-                if (cursor.moveToFirst())
-                {
+                if (cursor.moveToFirst()) {
                     fragment.mRecentBowlerName = cursor.getString(
                             cursor.getColumnIndex(BowlerEntry.COLUMN_BOWLER_NAME));
                     fragment.mRecentLeagueName = cursor.getString(
                             cursor.getColumnIndex(LeagueEntry.COLUMN_LEAGUE_NAME));
                     fragment.mRecentNumberOfGames = (byte) cursor.getInt(
                             cursor.getColumnIndex(LeagueEntry.COLUMN_NUMBER_OF_GAMES));
-                }
-                else
-                {
+                } else {
                     fragment.mRecentBowlerId = -1;
                     fragment.mRecentLeagueId = -1;
                 }
@@ -665,8 +589,7 @@ public class BowlerFragment
             }
 
             //If a custom bowler is set, their name and league is loaded to be used for quick series
-            if (fragment.mQuickBowlerId > -1 && fragment.mQuickLeagueId > -1)
-            {
+            if (fragment.mQuickBowlerId > -1 && fragment.mQuickLeagueId > -1) {
                 String rawRecentQuery = "SELECT "
                         + BowlerEntry.COLUMN_BOWLER_NAME + ", "
                         + LeagueEntry.COLUMN_LEAGUE_NAME + ", "
@@ -683,17 +606,14 @@ public class BowlerFragment
                 };
 
                 cursor = database.rawQuery(rawRecentQuery, rawRecentArgs);
-                if (cursor.moveToFirst())
-                {
+                if (cursor.moveToFirst()) {
                     fragment.mQuickBowlerName = cursor.getString(
                             cursor.getColumnIndex(BowlerEntry.COLUMN_BOWLER_NAME));
                     fragment.mQuickLeagueName = cursor.getString(
                             cursor.getColumnIndex(LeagueEntry.COLUMN_LEAGUE_NAME));
                     fragment.mQuickNumberOfGames = (byte) cursor.getInt(
                             cursor.getColumnIndex(LeagueEntry.COLUMN_NUMBER_OF_GAMES));
-                }
-                else
-                {
+                } else {
                     fragment.mQuickBowlerId = -1;
                     fragment.mQuickLeagueId = -1;
                 }
@@ -704,8 +624,7 @@ public class BowlerFragment
         }
 
         @Override
-        protected void onPostExecute(List<Bowler> listBowlers)
-        {
+        protected void onPostExecute(List<Bowler> listBowlers) {
             BowlerFragment fragment = mFragment.get();
             if (listBowlers == null || fragment == null)
                 return;
@@ -719,8 +638,7 @@ public class BowlerFragment
      * Sets data to be displayed in new instance of LeagueEventFragment.
      */
     private static final class OpenBowlerLeaguesTask
-            extends AsyncTask<Integer, Void, Bowler>
-    {
+            extends AsyncTask<Integer, Void, Bowler> {
 
         /** Weak reference to the parent fragment. */
         private final WeakReference<BowlerFragment> mFragment;
@@ -730,14 +648,12 @@ public class BowlerFragment
          *
          * @param fragment parent fragment
          */
-        private OpenBowlerLeaguesTask(BowlerFragment fragment)
-        {
+        private OpenBowlerLeaguesTask(BowlerFragment fragment) {
             mFragment = new WeakReference<>(fragment);
         }
 
         @Override
-        protected Bowler doInBackground(Integer... position)
-        {
+        protected Bowler doInBackground(Integer... position) {
             BowlerFragment fragment = mFragment.get();
             if (fragment == null)
                 return null;
@@ -756,20 +672,15 @@ public class BowlerFragment
             values.put(BowlerEntry.COLUMN_DATE_MODIFIED, dateFormat.format(new Date()));
 
             database.beginTransaction();
-            try
-            {
+            try {
                 database.update(BowlerEntry.TABLE_NAME,
                         values,
                         BowlerEntry._ID + "=?",
                         new String[]{String.valueOf(bowler.getBowlerId())});
                 database.setTransactionSuccessful();
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 //does nothing
-            }
-            finally
-            {
+            } finally {
                 database.endTransaction();
             }
 
@@ -777,8 +688,7 @@ public class BowlerFragment
         }
 
         @Override
-        protected void onPostExecute(Bowler result)
-        {
+        protected void onPostExecute(Bowler result) {
             BowlerFragment fragment = mFragment.get();
             if (result == null || fragment == null)
                 return;
@@ -793,8 +703,7 @@ public class BowlerFragment
      * Creates new bowler in the database and adds them to the recycler view.
      */
     private static final class NewBowlerTask
-            extends AsyncTask<Bowler, Void, Bowler>
-    {
+            extends AsyncTask<Bowler, Void, Bowler> {
 
         /** Weak reference to the parent fragment. */
         private final WeakReference<BowlerFragment> mFragment;
@@ -804,14 +713,12 @@ public class BowlerFragment
          *
          * @param fragment parent fragment
          */
-        private NewBowlerTask(BowlerFragment fragment)
-        {
+        private NewBowlerTask(BowlerFragment fragment) {
             mFragment = new WeakReference<>(fragment);
         }
 
         @Override
-        protected Bowler doInBackground(Bowler... bowler)
-        {
+        protected Bowler doInBackground(Bowler... bowler) {
             BowlerFragment fragment = mFragment.get();
             if (fragment == null)
                 return null;
@@ -831,16 +738,14 @@ public class BowlerFragment
             values.put(BowlerEntry.COLUMN_DATE_MODIFIED, currentDate);
 
             database.beginTransaction();
-            try
-            {
+            try {
                 bowler[0].setBowlerId(database.insert(BowlerEntry.TABLE_NAME, null, values));
 
                 /*
                  * Creates an entry in the 'league' table for a default league
                  * for the new bowler being added
                  */
-                if (bowler[0].getBowlerId() != -1)
-                {
+                if (bowler[0].getBowlerId() != -1) {
                     values = new ContentValues();
                     values.put(LeagueEntry.COLUMN_LEAGUE_NAME, Constants.NAME_OPEN_LEAGUE);
                     values.put(LeagueEntry.COLUMN_DATE_MODIFIED, currentDate);
@@ -850,13 +755,9 @@ public class BowlerFragment
                 }
 
                 database.setTransactionSuccessful();
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 //does nothing
-            }
-            finally
-            {
+            } finally {
                 database.endTransaction();
             }
 
@@ -864,16 +765,14 @@ public class BowlerFragment
         }
 
         @Override
-        protected void onPostExecute(Bowler newBowler)
-        {
+        protected void onPostExecute(Bowler newBowler) {
             BowlerFragment fragment = mFragment.get();
 
             /*
              * Adds the new bowler information to the corresponding lists
              * and displays them in the recycler view
              */
-            if (newBowler != null && fragment != null && newBowler.getBowlerId() != -1)
-            {
+            if (newBowler != null && fragment != null && newBowler.getBowlerId() != -1) {
                 fragment.mListBowlers.add(0, newBowler);
                 fragment.mAdapterBowlers.notifyItemInserted(0);
                 fragment.mRecyclerViewBowlers.scrollToPosition(0);
@@ -882,15 +781,14 @@ public class BowlerFragment
     }
 
     /**
-     * Container Activity must implement this interface to allow LeagueEventFragment to be loaded
-     * when a bowler is selected.
+     * Container Activity must implement this interface to allow LeagueEventFragment to be loaded when a bowler is
+     * selected.
      */
-    public interface BowlerCallback
-    {
+    public interface BowlerCallback {
 
         /**
-         * Should be overridden to create a LeagueEventFragment with the leagues belonging to the
-         * bowler represented by bowlerId.
+         * Should be overridden to create a LeagueEventFragment with the leagues belonging to the bowler represented by
+         * bowlerId.
          *
          * @param bowler bowler whose leagues / events will be displayed
          * @param openLeagueFragment if new fragment should be opened

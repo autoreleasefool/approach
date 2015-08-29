@@ -4,24 +4,15 @@ import android.content.Intent;
 import android.net.Uri;
 
 /**
- * Created by Joseph Roque on 15-03-24. Provides methods related to creating and formatting emails
- * which the user can select to create from the application. A local mail application on the device
- * will be used to handle writing and sending the email.
+ * Created by Joseph Roque on 15-03-24. Provides methods related to creating and formatting emails which the user can
+ * select to create from the application. A local mail application on the device will be used to handle writing and
+ * sending the email.
  */
-public final class EmailUtils
-{
+public final class EmailUtils {
 
     /** Identifies output from this class in Logcat. */
     @SuppressWarnings("unused")
     private static final String TAG = "EmailUtils";
-
-    /**
-     * Default private constructor.
-     */
-    private EmailUtils()
-    {
-        // does nothing
-    }
 
     /**
      * Creates an email intent and sets values to parameters.
@@ -34,8 +25,7 @@ public final class EmailUtils
     public static Intent getEmailIntent(
             String recipientEmail,
             String emailSubject,
-            String emailBody)
-    {
+            String emailBody) {
         if (emailBody == null)
             emailBody = "";
 
@@ -58,8 +48,14 @@ public final class EmailUtils
      */
     public static Intent getEmailIntent(
             String recipientEmail,
-            String emailSubject)
-    {
+            String emailSubject) {
         return getEmailIntent(recipientEmail, emailSubject, null);
+    }
+
+    /**
+     * Default private constructor.
+     */
+    private EmailUtils() {
+        // does nothing
     }
 }

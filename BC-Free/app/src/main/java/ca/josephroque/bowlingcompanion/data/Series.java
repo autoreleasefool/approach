@@ -10,8 +10,7 @@ import java.util.List;
  * Created by Joseph Roque on 2015-07-22. Organizes the data for a series.
  */
 public class Series
-        implements Parcelable, DeleteableData
-{
+        implements Parcelable, DeletableData {
 
     /** Unique id of the series. */
     private final long mSeriesId;
@@ -29,8 +28,7 @@ public class Series
      * @param date date the series occurred
      * @param games scores of the games in the series
      */
-    public Series(long id, String date, List<Short> games)
-    {
+    public Series(long id, String date, List<Short> games) {
         this.mSeriesId = id;
         this.mSeriesDate = date;
         this.mSeriesGames = games;
@@ -42,8 +40,7 @@ public class Series
      * @param pc series data
      */
     @SuppressWarnings("unchecked")
-    public Series(Parcel pc)
-    {
+    public Series(Parcel pc) {
         mSeriesId = pc.readLong();
         mSeriesDate = pc.readString();
         mSeriesGames = (ArrayList<Short>) pc.readArrayList(Short.class.getClassLoader());
@@ -54,8 +51,7 @@ public class Series
      *
      * @return the value of {@code mSeriesDate}
      */
-    public String getSeriesDate()
-    {
+    public String getSeriesDate() {
         return mSeriesDate;
     }
 
@@ -64,8 +60,7 @@ public class Series
      *
      * @param seriesDate new value for {@code mSeriesDate}
      */
-    public void setSeriesDate(String seriesDate)
-    {
+    public void setSeriesDate(String seriesDate) {
         this.mSeriesDate = seriesDate;
     }
 
@@ -74,8 +69,7 @@ public class Series
      *
      * @return the value of {@code mSeriesId}
      */
-    public long getSeriesId()
-    {
+    public long getSeriesId() {
         return mSeriesId;
     }
 
@@ -84,8 +78,7 @@ public class Series
      *
      * @return the value of {@code mSeriesGames}
      */
-    public List<Short> getSeriesGames()
-    {
+    public List<Short> getSeriesGames() {
         return mSeriesGames;
     }
 
@@ -94,47 +87,40 @@ public class Series
      *
      * @return the size of {@code mSeriesGames}
      */
-    public byte getNumberOfGames()
-    {
+    public byte getNumberOfGames() {
         return (byte) mSeriesGames.size();
     }
 
     @Override
-    public void writeToParcel(Parcel pc, int flags)
-    {
+    public void writeToParcel(Parcel pc, int flags) {
         pc.writeLong(mSeriesId);
         pc.writeString(mSeriesDate);
         pc.writeList(mSeriesGames);
     }
 
     @Override
-    public int describeContents()
-    {
+    public int describeContents() {
         return 0;
     }
 
     /**
      * Used to create objects and arrays from this class.
      */
-    public static final Parcelable.Creator<Series> CREATOR = new Parcelable.Creator<Series>()
-    {
+    public static final Parcelable.Creator<Series> CREATOR = new Parcelable.Creator<Series>() {
 
         @Override
-        public Series createFromParcel(Parcel pc)
-        {
+        public Series createFromParcel(Parcel pc) {
             return new Series(pc);
         }
 
         @Override
-        public Series[] newArray(int size)
-        {
+        public Series[] newArray(int size) {
             return new Series[size];
         }
     };
 
     @Override
-    public boolean equals(Object other)
-    {
+    public boolean equals(Object other) {
         if (other == null || !(other instanceof Series))
             return false;
         if (other == this)
@@ -146,22 +132,19 @@ public class Series
 
     @SuppressWarnings("CheckStyle")
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         int result = 17;
         int c = (int) (mSeriesId ^ (mSeriesId >> 32));
         return 37 * result + c;
     }
 
     @Override
-    public void setIsDeleted(boolean deleted)
-    {
+    public void setIsDeleted(boolean deleted) {
         this.mIsDeleted = deleted;
     }
 
     @Override
-    public boolean wasDeleted()
-    {
+    public boolean wasDeleted() {
         return mIsDeleted;
     }
 }

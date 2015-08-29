@@ -1,23 +1,14 @@
 package ca.josephroque.bowlingcompanion;
 
 /**
- * Created by Joseph Roque on 15-03-13. <p/> Provides constant values which are accessible across
- * the entire application
+ * Created by Joseph Roque on 15-03-13. <p/> Provides constant values which are accessible across the entire
+ * application
  */
-public final class Constants
-{
+public final class Constants {
 
     /** Identifies output from this class in Logcat. */
     @SuppressWarnings("unused")
     private static final String TAG = "Constants";
-
-    /**
-     * Default private constructor.
-     */
-    private Constants()
-    {
-        // does nothing
-    }
 
     // SETTINGS KEYS
     /** Identifier for preference which should open app in play store. */
@@ -190,4 +181,11 @@ public final class Constants
     public static final int GAME_MAX_SCORE = 450;
     /** Default minimum score to highlight. */
     public static final int DEFAULT_GAME_HIGHLIGHT = 300;
+
+    /**
+     * Default private constructor.
+     */
+    private Constants() {
+        // does nothing
+    }
 }

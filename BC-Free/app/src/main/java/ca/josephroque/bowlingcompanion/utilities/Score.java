@@ -3,24 +3,14 @@ package ca.josephroque.bowlingcompanion.utilities;
 import ca.josephroque.bowlingcompanion.Constants;
 
 /**
- * Created by Joseph Roque on 15-03-19. Provides methods for determining bowling scores based on
- * user input
+ * Created by Joseph Roque on 15-03-19. Provides methods for determining bowling scores based on user input
  */
 @SuppressWarnings("CheckStyle")
-public final class Score
-{
+public final class Score {
 
     /** Identifies output from this class in Logcat. */
     @SuppressWarnings("unused")
     private static final String TAG = "Score";
-
-    /**
-     * Default private constructor.
-     */
-    private Score()
-    {
-        // does nothing
-    }
 
     /**
      * Gets the score value of the frame from the balls.
@@ -28,15 +18,11 @@ public final class Score
      * @param frame the frame to get score of
      * @return score of the frame, in a 5 pin game
      */
-    public static int getValueOfFrame(boolean[] frame)
-    {
+    public static int getValueOfFrame(boolean[] frame) {
         int frameValue = 0;
-        for (byte i = 0; i < frame.length; i++)
-        {
-            if (frame[i])
-            {
-                switch (i)
-                {
+        for (byte i = 0; i < frame.length; i++) {
+            if (frame[i]) {
+                switch (i) {
                     case 0:
                     case 4:
                         frameValue += 2;
@@ -56,22 +42,18 @@ public final class Score
     }
 
     /**
-     * Gets the score value of the frame from the balls, depending on which balls were already
-     * knocked down in the previous frame.
+     * Gets the score value of the frame from the balls, depending on which balls were already knocked down in the
+     * previous frame.
      *
      * @param prevFrame state of the pins in the previous frame
      * @param frameToGet state of the pins the current frame
      * @return score of the frame, in a 5 pin game
      */
-    public static int getValueOfFrameDifference(boolean[] prevFrame, boolean[] frameToGet)
-    {
+    public static int getValueOfFrameDifference(boolean[] prevFrame, boolean[] frameToGet) {
         int frameValue = 0;
-        for (byte i = 0; i < frameToGet.length; i++)
-        {
-            if (frameToGet[i] && !prevFrame[i])
-            {
-                switch (i)
-                {
+        for (byte i = 0; i < frameToGet.length; i++) {
+            if (frameToGet[i] && !prevFrame[i]) {
+                switch (i) {
                     case 0:
                     case 4:
                         frameValue += 2;
@@ -102,15 +84,11 @@ public final class Score
     public static String getValueOfBall(boolean[] pins,
                                         int ball,
                                         boolean shouldReturnSymbol,
-                                        boolean isAfterStrike)
-    {
+                                        boolean isAfterStrike) {
         int ballValue = 0;
-        for (byte i = 0; i < 5; i++)
-        {
-            if (pins[i])
-            {
-                switch (i)
-                {
+        for (byte i = 0; i < 5; i++) {
+            if (pins[i]) {
+                switch (i) {
                     case 0:
                     case 4:
                         ballValue += 2;
@@ -127,8 +105,7 @@ public final class Score
             }
         }
 
-        switch (ballValue)
-        {
+        switch (ballValue) {
             default:
                 throw new RuntimeException("Invalid value for ball: " + ballValue);
             case 0:
@@ -141,72 +118,49 @@ public final class Score
             case 12:
                 return String.valueOf(ballValue);
             case 5:
-                if ((ball == 0 || shouldReturnSymbol) && pins[2])
-                {
+                if ((ball == 0 || shouldReturnSymbol) && pins[2]) {
                     return Constants.BALL_HEAD_PIN;
-                }
-                else
-                {
+                } else {
                     return "5";
                 }
             case 7:
-                if ((ball == 0 || shouldReturnSymbol) && pins[2])
-                {
+                if ((ball == 0 || shouldReturnSymbol) && pins[2]) {
                     return Constants.BALL_HEAD_PIN_2;
-                }
-                else
-                {
+                } else {
                     return "7";
                 }
             case 8:
-                if ((ball == 0 || shouldReturnSymbol) && pins[2])
-                {
+                if ((ball == 0 || shouldReturnSymbol) && pins[2]) {
                     return Constants.BALL_SPLIT;
-                }
-                else
+                } else
                     return "8";
             case 10:
                 if ((ball == 0 || shouldReturnSymbol) && pins[2]
                         && ((pins[0] && pins[1])
-                        || pins[3] && pins[4]))
-                {
+                        || pins[3] && pins[4])) {
                     return Constants.BALL_CHOP_OFF;
-                }
-                else
-                {
+                } else {
                     return "10";
                 }
             case 11:
-                if ((ball == 0 || shouldReturnSymbol) && pins[2])
-                {
+                if ((ball == 0 || shouldReturnSymbol) && pins[2]) {
                     return Constants.BALL_ACE;
-                }
-                else
+                } else
                     return "11";
             case 13:
-                if ((ball == 0 || shouldReturnSymbol) && !pins[0])
-                {
+                if ((ball == 0 || shouldReturnSymbol) && !pins[0]) {
                     return Constants.BALL_LEFT;
-                }
-                else if ((ball == 0 || shouldReturnSymbol) && !pins[4])
-                {
+                } else if ((ball == 0 || shouldReturnSymbol) && !pins[4]) {
                     return Constants.BALL_RIGHT;
-                }
-                else
-                {
+                } else {
                     return "13";
                 }
             case 15:
-                if ((ball == 0 || shouldReturnSymbol))
-                {
+                if ((ball == 0 || shouldReturnSymbol)) {
                     return Constants.BALL_STRIKE;
-                }
-                else if (ball == 1 && !isAfterStrike)
-                {
+                } else if (ball == 1 && !isAfterStrike) {
                     return Constants.BALL_SPARE;
-                }
-                else
-                {
+                } else {
                     return "15";
                 }
         }
@@ -224,28 +178,21 @@ public final class Score
     public static String getValueOfBallDifference(boolean[][] ballsOfFrame,
                                                   int ball,
                                                   boolean shouldReturnSymbol,
-                                                  boolean isAfterStrike)
-    {
+                                                  boolean isAfterStrike) {
         boolean[] pinAlreadyKnockedDown = new boolean[5];
 
-        if (ball > 0)
-        {
-            for (byte j = 0; j < 5; j++)
-            {
-                if (ballsOfFrame[ball - 1][j])
-                {
+        if (ball > 0) {
+            for (byte j = 0; j < 5; j++) {
+                if (ballsOfFrame[ball - 1][j]) {
                     pinAlreadyKnockedDown[j] = true;
                 }
             }
         }
 
         int ballValue = 0;
-        for (byte i = 0; i < 5; i++)
-        {
-            if (ballsOfFrame[ball][i] && !pinAlreadyKnockedDown[i])
-            {
-                switch (i)
-                {
+        for (byte i = 0; i < 5; i++) {
+            if (ballsOfFrame[ball][i] && !pinAlreadyKnockedDown[i]) {
+                switch (i) {
                     case 0:
                     case 4:
                         ballValue += 2;
@@ -262,8 +209,7 @@ public final class Score
             }
         }
 
-        switch (ballValue)
-        {
+        switch (ballValue) {
             default:
                 throw new RuntimeException("Invalid value for ball: " + ballValue);
             case 0:
@@ -327,8 +273,7 @@ public final class Score
      * @param input char to convert to boolean
      * @return true if input is equal to '1', false otherwise
      */
-    public static boolean getBoolean(char input)
-    {
+    public static boolean getBoolean(char input) {
         return input == '1';
     }
 
@@ -338,11 +283,9 @@ public final class Score
      * @param frame array to convert to int
      * @return a integer representing the booleans if they were binary
      */
-    public static int booleanFrameToInt(boolean[] frame)
-    {
+    public static int booleanFrameToInt(boolean[] frame) {
         int ball = 0;
-        for (int i = 0; i < frame.length; i++)
-        {
+        for (int i = 0; i < frame.length; i++) {
             if (frame[i])
                 ball += Math.pow(2, -i + 4);
         }
@@ -355,8 +298,7 @@ public final class Score
      * @param ball int from 0-31
      * @return boolean array binary representation of {@code ball}
      */
-    public static boolean[] ballIntToBoolean(int ball)
-    {
+    public static boolean[] ballIntToBoolean(int ball) {
         if (ball < 0 || ball > 31)
             throw new IllegalArgumentException("cannot convert value: " + ball);
         boolean[] pinState = new boolean[5];
@@ -372,10 +314,8 @@ public final class Score
      * @param i integer representation of the number of fouls
      * @return string representation of the number of fouls
      */
-    public static String foulIntToString(int i)
-    {
-        switch (i)
-        {
+    public static String foulIntToString(int i) {
+        switch (i) {
             default:
                 return "0";
             case 24:
@@ -401,10 +341,8 @@ public final class Score
      * @param s string representation of the number of fouls
      * @return integer representation of the number of fouls
      */
-    public static int foulStringToInt(String s)
-    {
-        switch (s)
-        {
+    public static int foulStringToInt(String s) {
+        switch (s) {
             default:
                 return 0;
             case "3":
@@ -422,5 +360,12 @@ public final class Score
             case "123":
                 return 30;
         }
+    }
+
+    /**
+     * Default private constructor.
+     */
+    private Score() {
+        // does nothing
     }
 }

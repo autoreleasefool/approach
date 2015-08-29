@@ -1,9 +1,9 @@
 package ca.josephroque.bowlingcompanion.fragment;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
@@ -47,10 +47,8 @@ import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
 import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
 
 /**
- * Created by Joseph Roque on 15-03-17. Manages the UI to display information about the series being
- * tracked by the application, and offers a callback interface {@link
- * ca.josephroque.bowlingcompanion.fragment.SeriesFragment.SeriesCallback} for handling
- * interactions.
+ * Created by Joseph Roque on 15-03-17. Manages the UI to display information about the series being tracked by the
+ * application, and offers a callback interface {@code SeriesFragment.SeriesCallback} for handling interactions.
  */
 @SuppressWarnings("Convert2Lambda")
 public class SeriesFragment
@@ -59,8 +57,7 @@ public class SeriesFragment
         Theme.ChangeableTheme,
         SeriesAdapter.SeriesEventHandler,
         ChangeDateDialog.ChangeDateDialogListener,
-        FloatingActionButtonHandler
-{
+        FloatingActionButtonHandler {
 
     /** Identifies output from this class in Logcat. */
     @SuppressWarnings("unused")
@@ -79,34 +76,28 @@ public class SeriesFragment
     private boolean mCombineDialogShown;
 
     @Override
-    public void onCreate(Bundle savedInstaceState)
-    {
+    public void onCreate(Bundle savedInstaceState) {
         super.onCreate(savedInstaceState);
         setHasOptionsMenu(true);
     }
 
     @Override
-    public void onAttach(Activity activity)
-    {
-        super.onAttach(activity);
+    public void onAttach(Context context) {
+        super.onAttach(context);
         /*
          * This makes sure the container Activity has implemented
          * the callback interface. If not, an exception is thrown
          */
-        try
-        {
-            mSeriesCallback = (SeriesCallback) activity;
-        }
-        catch (ClassCastException ex)
-        {
-            throw new ClassCastException(activity.toString()
+        try {
+            mSeriesCallback = (SeriesCallback) context;
+        } catch (ClassCastException ex) {
+            throw new ClassCastException(context.toString()
                     + " must implement SeriesListener");
         }
     }
 
     @Override
-    public void onDetach()
-    {
+    public void onDetach() {
         super.onDetach();
         mSeriesCallback = null;
     }
@@ -114,8 +105,7 @@ public class SeriesFragment
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
-                             Bundle savedInstanceState)
-    {
+                             Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_list, container, false);
 
         mListSeries = new ArrayList<>();
@@ -125,19 +115,16 @@ public class SeriesFragment
         recyclerViewSeries.setHasFixedSize(true);
 
         ItemTouchHelper.SimpleCallback touchCallback = new ItemTouchHelper.SimpleCallback(0,
-                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT)
-        {
+                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
             public boolean onMove(RecyclerView recyclerView,
                                   RecyclerView.ViewHolder viewHolder,
-                                  RecyclerView.ViewHolder target)
-            {
+                                  RecyclerView.ViewHolder target) {
                 return false;
             }
 
             @Override
-            public void onSwiped(final RecyclerView.ViewHolder viewHolder, int direction)
-            {
+            public void onSwiped(final RecyclerView.ViewHolder viewHolder, int direction) {
                 final int position = viewHolder.getAdapterPosition();
                 mListSeries.get(position).setIsDeleted(!mListSeries.get(position).wasDeleted());
                 mAdapterSeries.notifyItemChanged(position);
@@ -156,11 +143,9 @@ public class SeriesFragment
     }
 
     @Override
-    public void onResume()
-    {
+    public void onResume() {
         super.onResume();
-        if (getActivity() != null)
-        {
+        if (getActivity() != null) {
             MainActivity mainActivity = (MainActivity) getActivity();
             mainActivity.setActionBarTitle(R.string.title_fragment_series, true);
             mainActivity.setFloatingActionButtonState(R.drawable.ic_add_black_24dp);
@@ -174,22 +159,19 @@ public class SeriesFragment
     }
 
     @Override
-    public void onPause()
-    {
+    public void onPause() {
         super.onPause();
         mCombineDialogShown = false;
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
-    {
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_series, menu);
         super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
-    public void onPrepareOptionsMenu(Menu menu)
-    {
+    public void onPrepareOptionsMenu(Menu menu) {
         boolean drawerOpen = ((MainActivity) getActivity()).isDrawerOpen();
         MenuItem menuItem = menu.findItem(R.id.action_stats).setVisible(!drawerOpen);
         Drawable drawable = menuItem.getIcon();
@@ -203,10 +185,8 @@ public class SeriesFragment
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch (item.getItemId())
-        {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             case R.id.action_edit_date:
                 showEditDateDialog();
                 return true;
@@ -223,26 +203,21 @@ public class SeriesFragment
     }
 
     @Override
-    public void updateTheme()
-    {
+    public void updateTheme() {
         mAdapterSeries.updateTheme();
     }
 
     @Override
-    public void onSItemClick(final int position)
-    {
+    public void onSItemClick(final int position) {
         //When series is clicked, its games are displayed in a new GameFragment
         if (mSeriesCallback != null)
             mSeriesCallback.onSeriesSelected(mListSeries.get(position), false);
     }
 
     @Override
-    public void onSItemDelete(long id)
-    {
-        for (int i = 0; i < mListSeries.size(); i++)
-        {
-            if (mListSeries.get(i).getSeriesId() == id)
-            {
+    public void onSItemDelete(long id) {
+        for (int i = 0; i < mListSeries.size(); i++) {
+            if (mListSeries.get(i).getSeriesId() == id) {
                 Series series = mListSeries.remove(i);
                 mAdapterSeries.notifyItemRemoved(i);
                 deleteSeries(series.getSeriesId());
@@ -251,12 +226,9 @@ public class SeriesFragment
     }
 
     @Override
-    public void onSItemUndoDelete(long id)
-    {
-        for (int i = 0; i < mListSeries.size(); i++)
-        {
-            if (mListSeries.get(i).getSeriesId() == id)
-            {
+    public void onSItemUndoDelete(long id) {
+        for (int i = 0; i < mListSeries.size(); i++) {
+            if (mListSeries.get(i).getSeriesId() == id) {
                 mListSeries.get(i).setIsDeleted(false);
                 mAdapterSeries.notifyItemChanged(i);
             }
@@ -264,16 +236,14 @@ public class SeriesFragment
     }
 
     @Override
-    public void onEditClick(final int position)
-    {
+    public void onEditClick(final int position) {
         DialogFragment dateDialog = ChangeDateDialog.newInstance(this, mListSeries.get(position));
         dateDialog.show(getFragmentManager(), "ChangeDateDialog");
     }
 
     @SuppressWarnings("CheckStyle")
     @Override
-    public void onChangeDate(final Series series, int year, int month, int day)
-    {
+    public void onChangeDate(final Series series, int year, int month, int day) {
         final int index = mListSeries.indexOf(series);
         final Series seriesInList = mListSeries.get(index);
         Calendar c = Calendar.getInstance();
@@ -285,41 +255,32 @@ public class SeriesFragment
                 0,
                 10)));
 
-        getActivity().runOnUiThread(new Runnable()
-        {
+        getActivity().runOnUiThread(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 mAdapterSeries.notifyItemChanged(index);
             }
         });
 
         ((MainActivity) getActivity()).addSavingThread(
-                new Thread(new Runnable()
-                {
+                new Thread(new Runnable() {
                     @Override
-                    public void run()
-                    {
+                    public void run() {
                         SQLiteDatabase database =
                                 DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
                         ContentValues values = new ContentValues();
                         values.put(SeriesEntry.COLUMN_SERIES_DATE, formattedDate);
 
                         database.beginTransaction();
-                        try
-                        {
+                        try {
                             database.update(SeriesEntry.TABLE_NAME,
                                     values,
                                     SeriesEntry._ID + "=?",
                                     new String[]{String.valueOf(seriesInList.getSeriesId())});
                             database.setTransactionSuccessful();
-                        }
-                        catch (Exception ex)
-                        {
+                        } catch (Exception ex) {
                             Log.e(TAG, "Series date was not updated", ex);
-                        }
-                        finally
-                        {
+                        } finally {
                             database.endTransaction();
                         }
                     }
@@ -327,21 +288,19 @@ public class SeriesFragment
     }
 
     @Override
-    public void onFabClick()
-    {
+    public void onFabClick() {
         if (mSeriesCallback != null)
             mSeriesCallback.onCreateNewSeries(false);
     }
 
     /**
-     * Prompts user to combine series in the league into one. Only shown if the user has not
-     * disabled the option in the preferences.
+     * Prompts user to combine series in the league into one. Only shown if the user has not disabled the option in the
+     * preferences.
      *
-     * @param manuallyOpened if true, the dialog will be shown regardless of their settings, or if
-     * they have seen it before.
+     * @param manuallyOpened if true, the dialog will be shown regardless of their settings, or if they have seen it
+     * before.
      */
-    private void showCombineSeriesDialog(boolean manuallyOpened)
-    {
+    private void showCombineSeriesDialog(boolean manuallyOpened) {
         MainActivity mainActivity = (MainActivity) getActivity();
         if (mainActivity == null || (mCombineDialogShown && !manuallyOpened)
                 || !mainActivity.getLeagueName().substring(1).equals(Constants.NAME_OPEN_LEAGUE))
@@ -355,32 +314,26 @@ public class SeriesFragment
         mCombineDialogShown = true;
         boolean showDialog = false;
         Series prevSeries = null;
-        for (Series series : mListSeries)
-        {
-            if (prevSeries != null && series.getSeriesDate().equals(prevSeries.getSeriesDate()))
-            {
+        for (Series series : mListSeries) {
+            if (prevSeries != null && series.getSeriesDate().equals(prevSeries.getSeriesDate())) {
                 showDialog = true;
                 break;
             }
             prevSeries = series;
         }
 
-        if (showDialog)
-        {
+        if (showDialog) {
             final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
             View rootView = View.inflate(getActivity(), R.layout.dialog_combine_series, null);
 
             dialog.setView(rootView);
             final AlertDialog alertDialog = dialog.create();
 
-            View.OnClickListener listener = new View.OnClickListener()
-            {
+            View.OnClickListener listener = new View.OnClickListener() {
                 @Override
-                public void onClick(View v)
-                {
+                public void onClick(View v) {
                     alertDialog.dismiss();
-                    switch (v.getId())
-                    {
+                    switch (v.getId()) {
                         case R.id.btn_combine:
                             startCombineSimilarSeries();
                             break;
@@ -405,8 +358,7 @@ public class SeriesFragment
     /**
      * Displays a modal dialog to the user while similar series in the league are combined.
      */
-    private void startCombineSimilarSeries()
-    {
+    private void startCombineSimilarSeries() {
         if (getActivity() == null)
             return;
 
@@ -416,15 +368,12 @@ public class SeriesFragment
     /**
      * Informs user of how to change series dates.
      */
-    private void showEditDateDialog()
-    {
+    private void showEditDateDialog() {
         new AlertDialog.Builder(getActivity())
                 .setMessage(R.string.dialog_edit_date)
-                .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener()
-                {
+                .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
+                    public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                     }
                 })
@@ -437,31 +386,23 @@ public class SeriesFragment
      *
      * @param seriesId id of series whose data will be deleted
      */
-    private void deleteSeries(final long seriesId)
-    {
-        new Thread(new Runnable()
-        {
+    private void deleteSeries(final long seriesId) {
+        new Thread(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 String[] whereArgs = {String.valueOf(seriesId)};
                 SQLiteDatabase database =
                         DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
 
                 database.beginTransaction();
-                try
-                {
+                try {
                     database.delete(SeriesEntry.TABLE_NAME,
                             SeriesEntry._ID + "=?",
                             whereArgs);
                     database.setTransactionSuccessful();
-                }
-                catch (Exception ex)
-                {
+                } catch (Exception ex) {
                     Log.i(TAG, "Unable to delete series", ex);
-                }
-                finally
-                {
+                } finally {
                     database.endTransaction();
                 }
             }
@@ -473,18 +414,15 @@ public class SeriesFragment
      *
      * @return a new instance of SeriesFragment
      */
-    public static SeriesFragment newInstance()
-    {
+    public static SeriesFragment newInstance() {
         return new SeriesFragment();
     }
 
     /**
-     * Loads series relevant to the current bowler and league, and displays them in the recycler
-     * view.
+     * Loads series relevant to the current bowler and league, and displays them in the recycler view.
      */
     private static final class LoadSeriesTask
-            extends AsyncTask<Void, Void, List<Series>>
-    {
+            extends AsyncTask<Void, Void, List<Series>> {
 
         /** Weak reference to the parent fragment. */
         private final WeakReference<SeriesFragment> mFragment;
@@ -494,14 +432,12 @@ public class SeriesFragment
          *
          * @param fragment parent fragment
          */
-        private LoadSeriesTask(SeriesFragment fragment)
-        {
+        private LoadSeriesTask(SeriesFragment fragment) {
             mFragment = new WeakReference<>(fragment);
         }
 
         @Override
-        protected void onPreExecute()
-        {
+        protected void onPreExecute() {
             SeriesFragment fragment = mFragment.get();
             if (fragment == null)
                 return;
@@ -511,8 +447,7 @@ public class SeriesFragment
         }
 
         @Override
-        protected List<Series> doInBackground(Void... params)
-        {
+        protected List<Series> doInBackground(Void... params) {
             SeriesFragment fragment = mFragment.get();
             if (fragment == null || mFragment.get().getActivity() == null)
                 return null;
@@ -542,10 +477,8 @@ public class SeriesFragment
             };
 
             Cursor cursor = database.rawQuery(rawSeriesQuery, rawSeriesArgs);
-            if (cursor.moveToFirst())
-            {
-                while (!cursor.isAfterLast())
-                {
+            if (cursor.moveToFirst()) {
+                while (!cursor.isAfterLast()) {
                     long seriesId = cursor.getLong(cursor.getColumnIndex("sid"));
                     String seriesDate = cursor.getString(
                             cursor.getColumnIndex(SeriesEntry.COLUMN_SERIES_DATE));
@@ -569,8 +502,7 @@ public class SeriesFragment
 
         @Override
         @SuppressWarnings("unchecked")
-        protected void onPostExecute(List<Series> listSeries)
-        {
+        protected void onPostExecute(List<Series> listSeries) {
             SeriesFragment fragment = mFragment.get();
             if (listSeries == null || fragment == null)
                 return;
@@ -582,13 +514,11 @@ public class SeriesFragment
     }
 
     /**
-     * Combines series with similar dates in the database into singular series, with maximum 5
-     * games. If a combined series would have more than 5 series, extra games are moved into a new
-     * series.
+     * Combines series with similar dates in the database into singular series, with maximum 5 games. If a combined
+     * series would have more than 5 series, extra games are moved into a new series.
      */
     private static final class CombineSimilarSeriesTask
-            extends AsyncTask<Void, Void, Void>
-    {
+            extends AsyncTask<Void, Void, Void> {
 
         /** Progress dialog. */
         private WeakReference<ProgressDialog> mProgressDialog;
@@ -601,14 +531,12 @@ public class SeriesFragment
          *
          * @param fragment parent fragment
          */
-        private CombineSimilarSeriesTask(SeriesFragment fragment)
-        {
+        private CombineSimilarSeriesTask(SeriesFragment fragment) {
             mFragment = new WeakReference<>(fragment);
         }
 
         @Override
-        protected void onPreExecute()
-        {
+        protected void onPreExecute() {
             SeriesFragment fragment = mFragment.get();
             if (fragment == null || fragment.getActivity() == null)
                 return;
@@ -622,27 +550,22 @@ public class SeriesFragment
         }
 
         @Override
-        protected Void doInBackground(Void... params)
-        {
+        protected Void doInBackground(Void... params) {
             final SeriesFragment fragment = mFragment.get();
-            if (fragment == null)
-            {
+            if (fragment == null) {
                 dismissDialog();
                 return null;
             }
             final MainActivity mainActivity = (MainActivity) fragment.getActivity();
-            if (mainActivity == null)
-            {
+            if (mainActivity == null) {
                 dismissDialog();
                 return null;
             }
 
             mainActivity.addSavingThread(new Thread(
-                    new Runnable()
-                    {
+                    new Runnable() {
                         @Override
-                        public void run()
-                        {
+                        public void run() {
                             SQLiteDatabase db = DatabaseHelper.getInstance(mainActivity)
                                     .getReadableDatabase();
                             String seriesQuery = "SELECT "
@@ -662,21 +585,17 @@ public class SeriesFragment
 
                             String lastSeriesDate = null;
                             int startOfLastSeries = -1;
-                            if (cursor.moveToFirst())
-                            {
-                                while (!cursor.isAfterLast())
-                                {
+                            if (cursor.moveToFirst()) {
+                                while (!cursor.isAfterLast()) {
                                     int gameNumber = cursor.getInt(cursor.getColumnIndex(
                                             GameEntry.COLUMN_GAME_NUMBER));
-                                    if (gameNumber == 1)
-                                    {
+                                    if (gameNumber == 1) {
                                         String seriesDate = cursor.getString(cursor.getColumnIndex(
                                                 SeriesEntry.COLUMN_SERIES_DATE));
                                         String dateFormatted = DataFormatter
                                                 .formattedDateToPrettyCompact(seriesDate);
 
-                                        if (dateFormatted.equals(lastSeriesDate))
-                                        {
+                                        if (dateFormatted.equals(lastSeriesDate)) {
                                             int startOfCurrentSeries = cursor.getPosition();
                                             combineSeries(db,
                                                     cursor,
@@ -695,11 +614,9 @@ public class SeriesFragment
                             if (!cursor.isClosed())
                                 cursor.close();
 
-                            mainActivity.runOnUiThread(new Runnable()
-                            {
+                            mainActivity.runOnUiThread(new Runnable() {
                                 @Override
-                                public void run()
-                                {
+                                public void run() {
                                     dismissDialog();
                                     new LoadSeriesTask(fragment).execute();
                                 }
@@ -721,8 +638,7 @@ public class SeriesFragment
         private void combineSeries(SQLiteDatabase db,
                                    Cursor cursor,
                                    int startOfFirstSeries,
-                                   int startOfSecondSeries)
-        {
+                                   int startOfSecondSeries) {
             int firstSeriesNumGames = startOfSecondSeries - startOfFirstSeries;
             int secondSeriesNumGames = 0;
             cursor.moveToPosition(startOfFirstSeries);
@@ -731,19 +647,16 @@ public class SeriesFragment
             long secondSeriesId = cursor.getLong(cursor.getColumnIndex("sid"));
 
             while (!cursor.isAfterLast()
-                    && cursor.getLong(cursor.getColumnIndex("sid")) == secondSeriesId)
-            {
+                    && cursor.getLong(cursor.getColumnIndex("sid")) == secondSeriesId) {
                 secondSeriesNumGames++;
                 cursor.moveToNext();
             }
 
-            try
-            {
+            try {
                 db.beginTransaction();
 
                 while (secondSeriesNumGames > 0
-                        && firstSeriesNumGames < Constants.MAX_NUMBER_LEAGUE_GAMES)
-                {
+                        && firstSeriesNumGames < Constants.MAX_NUMBER_LEAGUE_GAMES) {
                     cursor.moveToPosition(startOfSecondSeries);
                     long gameId = cursor.getLong(cursor.getColumnIndex("gid"));
                     ContentValues values = new ContentValues();
@@ -760,8 +673,7 @@ public class SeriesFragment
                 }
 
                 int secondSeriesNewNumGames = 0;
-                while (secondSeriesNumGames > 0)
-                {
+                while (secondSeriesNumGames > 0) {
                     cursor.moveToPosition(startOfSecondSeries);
                     long gameId = cursor.getLong(cursor.getColumnIndex("gid"));
                     ContentValues values = new ContentValues();
@@ -777,13 +689,9 @@ public class SeriesFragment
                 }
 
                 db.setTransactionSuccessful();
-            }
-            catch (Exception ex)
-            {
+            } catch (Exception ex) {
                 Log.e(TAG, "Error combining series", ex);
-            }
-            finally
-            {
+            } finally {
                 db.endTransaction();
             }
         }
@@ -791,8 +699,7 @@ public class SeriesFragment
         /**
          * Dismisses the progress dialog if it is still showing.
          */
-        private void dismissDialog()
-        {
+        private void dismissDialog() {
             ProgressDialog pd = mProgressDialog.get();
             if (pd != null)
                 pd.dismiss();
@@ -800,15 +707,14 @@ public class SeriesFragment
     }
 
     /**
-     * Container Activity must implement this interface to allow GameFragment/StatsFragment to be
-     * loaded when a series is selected.
+     * Container Activity must implement this interface to allow GameFragment/StatsFragment to be loaded when a series
+     * is selected.
      */
-    public interface SeriesCallback
-    {
+    public interface SeriesCallback {
 
         /**
-         * Should be overridden to created a GameFragment with the games belonging to the series
-         * represented by seriesId.
+         * Should be overridden to created a GameFragment with the games belonging to the series represented by
+         * seriesId.
          *
          * @param series series whose games will be displayed
          * @param isEvent indicates if an event series is being displayed or not

@@ -15,12 +15,10 @@ import ca.josephroque.bowlingcompanion.R;
 
 /**
  * Created by Joseph Roque on 15-03-15. Provides a dialog and callback interface {@link
- * NewBowlerDialog.NewBowlerDialogListener} for the user to enter the name of a new bowler to track
- * the statistics of.
+ * NewBowlerDialog.NewBowlerDialogListener} for the user to enter the name of a new bowler to track the statistics of.
  */
 public class NewBowlerDialog
-        extends DialogFragment
-{
+        extends DialogFragment {
 
     /** Identifies output from this class in Logcat. */
     @SuppressWarnings("unused")
@@ -31,8 +29,7 @@ public class NewBowlerDialog
 
     @NonNull
     @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState)
-    {
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
         final View dialogView = View.inflate(getActivity(), R.layout.dialog_new_bowler, null);
 
@@ -42,18 +39,15 @@ public class NewBowlerDialog
                 new InputFilter.LengthFilter(Constants.NAME_MAX_LENGTH)
         });
 
-        if (savedInstanceState != null)
-        {
+        if (savedInstanceState != null) {
             //Loads member variables from bundle
             editTextName.setText(savedInstanceState.getCharSequence(Constants.EXTRA_NAME_BOWLER));
         }
 
         dialogBuilder.setView(dialogView)
-                .setPositiveButton(R.string.dialog_add, new DialogInterface.OnClickListener()
-                {
+                .setPositiveButton(R.string.dialog_add, new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
+                    public void onClick(DialogInterface dialog, int which) {
                         //Gets name input and calls listener method if input is valid
                         String bowlerName = editTextName.getText().toString().trim();
                         if (bowlerName.length() > 0)
@@ -61,11 +55,9 @@ public class NewBowlerDialog
                         dialog.dismiss();
                     }
                 })
-                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener()
-                {
+                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
                     @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
+                    public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                     }
                 });
@@ -73,8 +65,7 @@ public class NewBowlerDialog
     }
 
     @Override
-    public void onSaveInstanceState(@NonNull Bundle outState)
-    {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
         //Saves member variables to bundle
@@ -83,11 +74,9 @@ public class NewBowlerDialog
     }
 
     /**
-     * Provides a method to the activity which created this object to handle user interaction with
-     * the dialog.
+     * Provides a method to the activity which created this object to handle user interaction with the dialog.
      */
-    public interface NewBowlerDialogListener
-    {
+    public interface NewBowlerDialogListener {
 
         /**
          * Executed when user opts to add a new bowler.
@@ -98,14 +87,12 @@ public class NewBowlerDialog
     }
 
     /**
-     * Creates a new instance of this DialogFragment and sets the listener to the parameter passed
-     * through this method.
+     * Creates a new instance of this DialogFragment and sets the listener to the parameter passed through this method.
      *
      * @param listener a listener for on click events
      * @return a new instance of NewBowlerDialog
      */
-    public static NewBowlerDialog newInstance(NewBowlerDialogListener listener)
-    {
+    public static NewBowlerDialog newInstance(NewBowlerDialogListener listener) {
         NewBowlerDialog dialog = new NewBowlerDialog();
         dialog.mDialogListener = listener;
         return dialog;

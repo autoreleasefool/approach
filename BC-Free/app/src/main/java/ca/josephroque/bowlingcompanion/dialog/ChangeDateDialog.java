@@ -15,17 +15,18 @@ import ca.josephroque.bowlingcompanion.utilities.DataFormatter;
 
 /**
  * Created by Joseph Roque on 15-03-29. Provides a dialog and callback interface {@link
- * ChangeDateDialog.ChangeDateDialogListener} for the user to change the date associated with a
- * series
+ * ChangeDateDialog.ChangeDateDialogListener} for the user to change the date associated with a series
  */
 public class ChangeDateDialog
         extends DialogFragment
-        implements DatePickerDialog.OnDateSetListener
-{
+        implements DatePickerDialog.OnDateSetListener {
 
     /** Identifies output from this class in Logcat. */
     @SuppressWarnings("unused")
     private static final String TAG = "ChangeDateDialog";
+
+    /** Number of components which make up a date. */
+    private static final byte TOTAL_DATE_COMPONENTS = 3;
 
     /** Dialog which allows user to select a date from a calendar. */
     private DatePickerDialog mDatePicker;
@@ -37,49 +38,44 @@ public class ChangeDateDialog
 
     @Override
     @NonNull
-    public Dialog onCreateDialog(Bundle savedInstanceState)
-    {
+    public Dialog onCreateDialog(Bundle savedInstanceState) {
         int[] date;
-        if (savedInstanceState == null)
-        {
+        if (savedInstanceState == null) {
             mSeries = getArguments().getParcelable(Constants.EXTRA_SERIES);
+            assert mSeries != null;
             date = DataFormatter.prettyCompactToFormattedDate(mSeries.getSeriesDate());
             date[0] -= 1; //Must subtract one because method returns 1-12 for month, need 0-11
-        }
-        else
-        {
+        } else {
             mSeries = savedInstanceState.getParcelable(Constants.EXTRA_SERIES);
             date = savedInstanceState.getIntArray(Constants.EXTRA_NAME_SERIES);
         }
 
-        mDatePicker = new DatePickerDialog(getActivity(), this, date[2], date[0], date[1]);
+        if (date != null && date.length == TOTAL_DATE_COMPONENTS)
+            mDatePicker = new DatePickerDialog(getActivity(), this, date[2], date[0], date[1]);
+        else
+            throw new IllegalStateException("must instantiate date with 3 values: year, month, day");
         return mDatePicker;
     }
 
     @Override
-    public void onDateSet(DatePicker view, int year, int month, int day)
-    {
+    public void onDateSet(DatePicker view, int year, int month, int day) {
         mChangeDateListener.onChangeDate(mSeries, year, month, day);
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState)
-    {
+    public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
         DatePicker datePicker;
-        try
-        {
+        try {
             Field datePickerField = mDatePicker.getClass().getField("mDatePicker");
             datePickerField.setAccessible(true);
             datePicker = (DatePicker) datePickerField.get(mDatePicker);
-        }
-        catch (Exception ex)
-        {
+        } catch (Exception ex) {
             throw new RuntimeException("Changing series date: " + ex.getMessage());
         }
 
-        int[] currentDate = new int[3];
+        int[] currentDate = new int[TOTAL_DATE_COMPONENTS];
         currentDate[0] = datePicker.getMonth();
         currentDate[1] = datePicker.getDayOfMonth();
         currentDate[2] = datePicker.getYear();
@@ -95,8 +91,7 @@ public class ChangeDateDialog
      * @return a new instance ChangeDateDialog
      */
     public static ChangeDateDialog newInstance(ChangeDateDialogListener listener,
-                                               Series series)
-    {
+                                               Series series) {
         ChangeDateDialog dialog = new ChangeDateDialog();
         dialog.mChangeDateListener = listener;
         Bundle args = new Bundle();
@@ -108,8 +103,7 @@ public class ChangeDateDialog
     /**
      * Callback listener for user events.
      */
-    public interface ChangeDateDialogListener
-    {
+    public interface ChangeDateDialogListener {
 
         /**
          * Called when the user selects a date to set.

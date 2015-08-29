@@ -10,12 +10,10 @@ import java.util.Date;
 import java.util.Locale;
 
 /**
- * Created by Joseph Roque on 2015-07-28. Provides methods for managing dates and times as
- * milliseconds since January 1, 1970, at 00:00:00 GMT, as {@link java.util.Date} objects, or as
- * {@link java.util.Calendar} objects.
+ * Created by Joseph Roque on 2015-07-28. Provides methods for managing dates and times as milliseconds since January 1,
+ * 1970, at 00:00:00 GMT, as {@link java.util.Date} objects, or as {@link java.util.Calendar} objects.
  */
-public final class DateUtils
-{
+public final class DateUtils {
 
     /** Identifies output from this class in Logcat. */
     @SuppressWarnings("unused")
@@ -36,15 +34,11 @@ public final class DateUtils
      * @param strDate date as a string in the format 'yyyy-MM-dd HH:mm:ss'
      * @return the date represented by the value in the column
      */
-    public static Date parseEntryDate(String strDate)
-    {
+    public static Date parseEntryDate(String strDate) {
         Date date;
-        try
-        {
+        try {
             date = STRING_TO_DATE.parse(strDate);
-        }
-        catch (ParseException ex)
-        {
+        } catch (ParseException ex) {
             Log.e(TAG, "Unable to parse entry date", ex);
             return null;
         }
@@ -58,8 +52,7 @@ public final class DateUtils
      * @param date date for calendar
      * @return new instance of {@code Calendar}.
      */
-    public static Calendar getCalendarAtMidnight(Date date)
-    {
+    public static Calendar getCalendarAtMidnight(Date date) {
         Calendar calendar = Calendar.getInstance(Locale.CANADA);
         calendar.setTime(date);
         calendar.set(Calendar.HOUR, 0);
@@ -73,8 +66,7 @@ public final class DateUtils
     /**
      * Default private constructor.
      */
-    private DateUtils()
-    {
+    private DateUtils() {
         // does nothing
     }
 }

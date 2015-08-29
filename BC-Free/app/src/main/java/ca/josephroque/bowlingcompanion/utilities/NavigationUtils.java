@@ -1,11 +1,9 @@
 package ca.josephroque.bowlingcompanion.utilities;
 
 /**
- * Created by Joseph Roque on 2015-07-16. Offers utilities to set up the navigation drawer for the
- * application.
+ * Created by Joseph Roque on 2015-07-16. Offers utilities to set up the navigation drawer for the application.
  */
-public final class NavigationUtils
-{
+public final class NavigationUtils {
 
     /** Identifies output from this class in Logcat. */
     @SuppressWarnings("unused")
@@ -28,9 +26,9 @@ public final class NavigationUtils
     public static final String NAVIGATION_ITEM_LEAGUES = "Leagues & Events";
     /** Represents the item for series in the navigation drawer. */
     public static final String NAVIGATION_ITEM_SERIES = "Series";
-    /** Represents the subheader for games in the navigation drawer. */
+    /** Represents the sub header for games in the navigation drawer. */
     public static final String NAVIGATION_SUBHEADER_GAMES = "Games";
-    /** Represents the subheader for other in the navigation drawer. */
+    /** Represents the sub header for other in the navigation drawer. */
     public static final String NAVIGATION_SUBHEADER_OTHER = "Other";
     /** Represents the item for settings in the navigation drawer. */
     public static final String NAVIGATION_ITEM_SETTINGS = "Settings";
@@ -47,8 +45,7 @@ public final class NavigationUtils
      *
      * @param drawerOffset new value for drawer offset
      */
-    public static void setDrawerOffset(float drawerOffset)
-    {
+    public static void setDrawerOffset(float drawerOffset) {
         sDrawerOffset = drawerOffset;
     }
 
@@ -57,16 +54,14 @@ public final class NavigationUtils
      *
      * @return the value of {@code sDrawerOffset}
      */
-    public static float getDrawerOffset()
-    {
+    public static float getDrawerOffset() {
         return sDrawerOffset;
     }
 
     /**
      * Default private constructor.
      */
-    private NavigationUtils()
-    {
+    private NavigationUtils() {
         // does nothing
     }
 }

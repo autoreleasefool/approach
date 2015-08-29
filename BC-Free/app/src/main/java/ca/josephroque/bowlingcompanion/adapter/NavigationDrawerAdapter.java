@@ -20,14 +20,12 @@ import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.utilities.NavigationUtils;
 
 /**
- * Created by Joseph Roque on 15-03-28. Manages the data which will be displayed by the
- * RecyclerView in the Navigation Drawer. Offers a callback interface {@link
- * NavigationDrawerAdapter.NavigationCallback} to handle interaction events.
+ * Created by Joseph Roque on 15-03-28. Manages the data which will be displayed by the RecyclerView in the Navigation
+ * Drawer. Offers a callback interface {@code NavigationDrawerAdapter.NavigationCallback} to handle interaction events.
  */
 public class NavigationDrawerAdapter
         extends RecyclerView.Adapter<NavigationDrawerAdapter.NavigationViewHolder>
-        implements View.OnClickListener
-{
+        implements View.OnClickListener {
 
     /** Identifies output from this class in Logcat. */
     @SuppressWarnings("unused")
@@ -51,8 +49,8 @@ public class NavigationDrawerAdapter
     /** List of options to be displayed in the navigation drawer. */
     private final List<String> mListNavigationItems;
     /**
-     * If an item is of the type {@code VIEW_TYPE_NAVIGATION}, it can feature a subtitle, which can
-     * be found in this array by the item's position.
+     * If an item is of the type {@code VIEW_TYPE_NAVIGATION}, it can feature a subtitle, which can be found in this
+     * array by the item's position.
      */
     private final HashMap<String, String> mArraySubtitle;
     /** Set of positions which are subheader items. */
@@ -73,8 +71,7 @@ public class NavigationDrawerAdapter
      * @param listItems items which will be displayed in the drawer
      */
     public NavigationDrawerAdapter(NavigationCallback callback,
-                                   List<String> listItems)
-    {
+                                   List<String> listItems) {
         this.mListNavigationItems = listItems;
         mArraySubtitle = new HashMap<>();
         mSetSubheaderItems = new TreeSet<>();
@@ -82,11 +79,9 @@ public class NavigationDrawerAdapter
     }
 
     @Override
-    public NavigationViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
-    {
+    public NavigationViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View rootView;
-        switch (viewType)
-        {
+        switch (viewType) {
             case VIEW_TYPE_HEADER:
                 rootView = LayoutInflater.from(parent.getContext())
                         .inflate(R.layout.item_navigation_header, parent, false);
@@ -106,12 +101,10 @@ public class NavigationDrawerAdapter
     }
 
     @Override
-    public void onBindViewHolder(NavigationViewHolder viewHolder, int position)
-    {
+    public void onBindViewHolder(NavigationViewHolder viewHolder, int position) {
         final int viewType = getItemViewType(position);
 
-        switch (viewType)
-        {
+        switch (viewType) {
             case VIEW_TYPE_HEADER:
                 viewHolder.mTextViewTitle.setText(mHeaderTitle);
                 viewHolder.mTextViewSubtitle.setText(mHeaderSubtitle);
@@ -142,8 +135,7 @@ public class NavigationDrawerAdapter
     }
 
     @Override
-    public int getItemViewType(int position)
-    {
+    public int getItemViewType(int position) {
         if (position == 0)
             return VIEW_TYPE_HEADER;
         else if (mSetSubheaderItems.contains(mListNavigationItems.get(position)))
@@ -153,21 +145,18 @@ public class NavigationDrawerAdapter
     }
 
     @Override
-    public int getItemCount()
-    {
+    public int getItemCount() {
         return mListNavigationItems.size();
     }
 
     @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView)
-    {
+    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
         mRecyclerView = recyclerView;
     }
 
     @Override
-    public void onDetachedFromRecyclerView(RecyclerView recyclerView)
-    {
+    public void onDetachedFromRecyclerView(RecyclerView recyclerView) {
         super.onDetachedFromRecyclerView(recyclerView);
 
         // Releasing references
@@ -176,11 +165,9 @@ public class NavigationDrawerAdapter
     }
 
     @Override
-    public void onClick(View src)
-    {
+    public void onClick(View src) {
         final int position = mRecyclerView.getChildAdapterPosition(src);
-        if (mListNavigationItems.get(position).matches("\\w+ \\d+"))
-        {
+        if (mListNavigationItems.get(position).matches("\\w+ \\d+")) {
             final int tempPosition = mCurrentNavigationItem;
             mCurrentNavigationItem = position;
             notifyItemChanged(tempPosition);
@@ -195,18 +182,15 @@ public class NavigationDrawerAdapter
      * @param position position to get icon of
      * @return id of icon drawable
      */
-    private int getItemIcon(int position)
-    {
-        if (mListNavigationItems.get(position).matches("\\w+ \\d+"))
-        {
+    private int getItemIcon(int position) {
+        if (mListNavigationItems.get(position).matches("\\w+ \\d+")) {
             if (mCurrentNavigationItem == position)
                 return R.drawable.ic_radio_button_checked_black_24dp;
             else
                 return R.drawable.ic_radio_button_unchecked_black_24dp;
         }
 
-        switch (mListNavigationItems.get(position))
-        {
+        switch (mListNavigationItems.get(position)) {
             case NavigationUtils.NAVIGATION_ITEM_BOWLERS:
                 return R.drawable.ic_people_black_24dp;
             case NavigationUtils.NAVIGATION_ITEM_LEAGUES:
@@ -225,14 +209,12 @@ public class NavigationDrawerAdapter
     }
 
     /**
-     * Sets a position to be a subheader. If it is already a navigation item or a switch, it is
-     * reassigned.
+     * Sets a position to be a subheader. If it is already a navigation item or a switch, it is reassigned.
      *
      * @param title item to set to subheader
      */
     @SuppressWarnings("unused")
-    public void setPositionToSubheader(String title)
-    {
+    public void setPositionToSubheader(String title) {
         if (!mListNavigationItems.contains(title))
             throw new IllegalArgumentException("Must be valid navigation item");
 
@@ -249,8 +231,7 @@ public class NavigationDrawerAdapter
      * @param title item to get subtitle
      * @param text subtitle text
      */
-    public void setSubtitle(String title, String text)
-    {
+    public void setSubtitle(String title, String text) {
         if (mSetSubheaderItems.contains(title))
             throw new IllegalArgumentException("Can't set subtitle of subheader item: " + title);
 
@@ -265,8 +246,7 @@ public class NavigationDrawerAdapter
      * @param background new background drawable
      */
     @SuppressWarnings("deprecation") // uses undeprecated methods in newer apis
-    private void setDrawableBackground(View view, Drawable background)
-    {
+    private void setDrawableBackground(View view, Drawable background) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
             view.setBackground(background.mutate());
         else
@@ -279,8 +259,7 @@ public class NavigationDrawerAdapter
      * @param context to create drawable
      * @return selectable item background
      */
-    private Drawable getUnselectedBackground(Context context)
-    {
+    private Drawable getUnselectedBackground(Context context) {
         int[] attrs = {android.R.attr.selectableItemBackground};
         TypedArray typedArray = context.obtainStyledAttributes(attrs);
         Drawable unselectedBackground = typedArray.getDrawable(0);
@@ -293,8 +272,7 @@ public class NavigationDrawerAdapter
      *
      * @return mCurrentNavigationItem
      */
-    public int getCurrentItem()
-    {
+    public int getCurrentItem() {
         return mCurrentNavigationItem;
     }
 
@@ -303,8 +281,7 @@ public class NavigationDrawerAdapter
      *
      * @param position new item
      */
-    public void setCurrentItem(int position)
-    {
+    public void setCurrentItem(int position) {
         final int tempPosition = mCurrentNavigationItem;
         mCurrentNavigationItem = position;
         notifyItemChanged(mCurrentNavigationItem);
@@ -316,8 +293,7 @@ public class NavigationDrawerAdapter
      *
      * @param title new title text
      */
-    public void setHeaderTitle(String title)
-    {
+    public void setHeaderTitle(String title) {
         this.mHeaderTitle = title;
     }
 
@@ -326,16 +302,14 @@ public class NavigationDrawerAdapter
      *
      * @param subtitle new subtitle text
      */
-    public void setHeaderSubtitle(String subtitle)
-    {
+    public void setHeaderSubtitle(String subtitle) {
         this.mHeaderSubtitle = subtitle;
     }
 
     /**
      * Callback interface to report user interaction.
      */
-    public interface NavigationCallback
-    {
+    public interface NavigationCallback {
 
         /**
          * Invoked when a user clicks an item in the navigation drawer.
@@ -349,8 +323,7 @@ public class NavigationDrawerAdapter
      * Recycles views for RecyclerView so they do not need to be reinflated.
      */
     public static final class NavigationViewHolder
-            extends RecyclerView.ViewHolder
-    {
+            extends RecyclerView.ViewHolder {
 
         /** Displays an icon for an item in the navigation drawer. */
         private ImageView mImageViewIcon;
@@ -365,12 +338,10 @@ public class NavigationDrawerAdapter
          * @param rootView root item layout
          * @param viewType view type
          */
-        public NavigationViewHolder(View rootView, int viewType)
-        {
+        public NavigationViewHolder(View rootView, int viewType) {
             super(rootView);
 
-            switch (viewType)
-            {
+            switch (viewType) {
                 case VIEW_TYPE_NAVIGATION:
                     mImageViewIcon = (ImageView) rootView.findViewById(R.id.iv_nav_icon);
                 case VIEW_TYPE_HEADER:

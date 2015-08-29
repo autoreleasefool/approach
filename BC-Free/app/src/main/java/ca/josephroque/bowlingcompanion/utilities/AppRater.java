@@ -11,13 +11,10 @@ import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.R;
 
 /**
- * Created by Joseph Roque on 15-03-03. Provides methods for determining the level of user
- * interaction with the application, and offering a prompt to rate the app if they desire, or
- * disable the prompt if not. Retrieved from http://www.androidsnippets.com/
- * prompt-engaged-users-to-rate-your-app-in-the-android-market-appirater
+ * Created by Joseph Roque on 15-03-03. Provides methods for determining the level of user interaction with the
+ * application, and offering a prompt to rate the app if they desire, or disable the prompt if not.
  */
-public final class AppRater
-{
+public final class AppRater {
 
     /** Identifies output from this class in Logcat. */
     @SuppressWarnings("unused")
@@ -34,7 +31,7 @@ public final class AppRater
     /** Identifier for number of times app has been launched, stored in preferences. */
     private static final String PREF_LAUNCH_COUNT = "lc";
     /** Identifier for indicating whether the prompt should be shown or not. */
-    private static final String PREF_DONT_SHOW = "ds";
+    private static final String PREF_DO_NOT_SHOW = "ds";
     /** Identifier for date of first launch, stored in preferences. */
     private static final String PREF_FIRST_LAUNCH = "fl";
 
@@ -42,23 +39,14 @@ public final class AppRater
     private static final long TWO_WEEKS_MILLISECONDS = DAYS_UNTIL_PROMPT * 24 * 60 * 60 * 1000;
 
     /**
-     * Default private constructor.
-     */
-    private AppRater()
-    {
-        // does nothing
-    }
-
-    /**
      * Checks whether conditions to display the prompt have been met and, if so, displays it.
      *
      * @param context context to contain the prompt
      */
-    public static void appLaunched(Context context)
-    {
+    public static void appLaunched(Context context) {
         SharedPreferences preferences =
                 context.getSharedPreferences(Constants.PREFS, Context.MODE_PRIVATE);
-        if (preferences.getBoolean(PREF_DONT_SHOW, false))
+        if (preferences.getBoolean(PREF_DO_NOT_SHOW, false))
             return;
 
         SharedPreferences.Editor editor = preferences.edit();
@@ -69,8 +57,7 @@ public final class AppRater
 
         //Gets the date of the first launch and updates it if not set
         Long dateOfFirstLaunch = preferences.getLong(PREF_FIRST_LAUNCH, 0);
-        if (dateOfFirstLaunch == 0)
-        {
+        if (dateOfFirstLaunch == 0) {
             dateOfFirstLaunch = System.currentTimeMillis();
             editor.putLong(PREF_FIRST_LAUNCH, dateOfFirstLaunch);
         }
@@ -80,8 +67,7 @@ public final class AppRater
 
         //If the conditions have been met, display the prompt
         if (launchCount >= LAUNCHES_UNTIL_PROMPT
-                && System.currentTimeMillis() >= dateToWaitFor)
-        {
+                && System.currentTimeMillis() >= dateToWaitFor) {
             showRateDialog(context, editor);
         }
 
@@ -94,30 +80,23 @@ public final class AppRater
      * @param context context to contain the prompt
      * @param editor preference editor to update preferences
      */
-    public static void showRateDialog(final Context context, final SharedPreferences.Editor editor)
-    {
+    private static void showRateDialog(final Context context, final SharedPreferences.Editor editor) {
         final AlertDialog.Builder dialog = new AlertDialog.Builder(context);
         View rootView = View.inflate(context, R.layout.dialog_rate, null);
 
         dialog.setView(rootView);
         final AlertDialog alertDialog = dialog.create();
 
-        View.OnClickListener listener = new View.OnClickListener()
-        {
+        View.OnClickListener listener = new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 alertDialog.dismiss();
-                switch (v.getId())
-                {
+                switch (v.getId()) {
                     case R.id.btn_rate:
-                        try
-                        {
+                        try {
                             context.startActivity(new Intent(Intent.ACTION_VIEW,
                                     Uri.parse("market://details?id=" + APP_PNAME)));
-                        }
-                        catch (android.content.ActivityNotFoundException ex)
-                        {
+                        } catch (android.content.ActivityNotFoundException ex) {
                             context.startActivity(new Intent(Intent.ACTION_VIEW,
                                     Uri.parse(
                                             "http://play.google.com/store/apps/details?id="
@@ -148,9 +127,15 @@ public final class AppRater
      *
      * @param editor preference editor to update preferences
      */
-    public static void disableAutomaticPrompt(final SharedPreferences.Editor editor)
-    {
-        editor.putBoolean(PREF_DONT_SHOW, true)
+    private static void disableAutomaticPrompt(final SharedPreferences.Editor editor) {
+        editor.putBoolean(PREF_DO_NOT_SHOW, true)
                 .apply();
+    }
+
+    /**
+     * Default private constructor.
+     */
+    private AppRater() {
+        // does nothing
     }
 }

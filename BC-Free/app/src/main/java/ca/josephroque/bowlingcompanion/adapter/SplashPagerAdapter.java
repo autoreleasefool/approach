@@ -10,8 +10,7 @@ import ca.josephroque.bowlingcompanion.fragment.TutorialFragment;
  * Created by Joseph Roque on 2015-07-03. Manages fragments in a view pager.
  */
 public class SplashPagerAdapter
-        extends FragmentStatePagerAdapter
-{
+        extends FragmentStatePagerAdapter {
 
     /** To identify output from this class in the Logcat. */
     @SuppressWarnings("unused")
@@ -22,20 +21,17 @@ public class SplashPagerAdapter
      *
      * @param fm fragment manager
      */
-    public SplashPagerAdapter(FragmentManager fm)
-    {
+    public SplashPagerAdapter(FragmentManager fm) {
         super(fm);
     }
 
     @Override
-    public Fragment getItem(int position)
-    {
+    public Fragment getItem(int position) {
         return TutorialFragment.newInstance(position);
     }
 
     @Override
-    public int getCount()
-    {
+    public int getCount() {
         return TutorialFragment.TUTORIAL_TOTAL_PAGES;
     }
 }

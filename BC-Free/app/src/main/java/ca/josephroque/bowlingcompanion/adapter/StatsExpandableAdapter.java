@@ -14,14 +14,13 @@ import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.view.AnimatedExpandableListView;
 
 /**
- * Created by Joseph Roque on 15-04-03. Manages statistic group headers, names and their
- * associated values for a ListView. Offers a callback interface {@link
- * NameAverageAdapter.NameAverageEventHandler} to handle interaction events.
+ * Created by Joseph Roque on 15-04-03. Manages statistic group headers, names and their associated values for a
+ * ListView. Offers a callback interface {@link NameAverageAdapter.NameAverageEventHandler} to handle interaction
+ * events.
  */
 public class StatsExpandableAdapter
         extends AnimatedExpandableListView.AnimatedExpandableListAdapter
-        implements Theme.ChangeableTheme
-{
+        implements Theme.ChangeableTheme {
 
     /** Identifies output from this class in Logcat. */
     @SuppressWarnings("unused")
@@ -44,22 +43,19 @@ public class StatsExpandableAdapter
      */
     public StatsExpandableAdapter(Context context,
                                   List<String> listHeaders,
-                                  List<List<Pair<String, String>>> listNamesAndValues)
-    {
+                                  List<List<Pair<String, String>>> listNamesAndValues) {
         this.mContext = context;
         this.mListStatHeaders = listHeaders;
         this.mListStatNamesAndValues = listNamesAndValues;
     }
 
     @Override
-    public Pair<String, String> getChild(int groupPosition, int childPosition)
-    {
+    public Pair<String, String> getChild(int groupPosition, int childPosition) {
         return mListStatNamesAndValues.get(groupPosition).get(childPosition);
     }
 
     @Override
-    public long getChildId(int groupPosition, int childPosition)
-    {
+    public long getChildId(int groupPosition, int childPosition) {
         return childPosition;
     }
 
@@ -67,24 +63,20 @@ public class StatsExpandableAdapter
     //getChild guaranteed to return AbstractMap.SimpleEntry<String, String>
     @Override
     public View getRealChildView(int groupPosition,
-                             int childPosition,
-                             boolean isLastChild,
-                             View convertView,
-                             ViewGroup parent)
-    {
+                                 int childPosition,
+                                 boolean isLastChild,
+                                 View convertView,
+                                 ViewGroup parent) {
         final Pair<String, String> childNameAndValue = getChild(groupPosition, childPosition);
 
         StatViewHolder viewHolder;
-        if (convertView == null)
-        {
+        if (convertView == null) {
             viewHolder = new StatViewHolder();
             convertView = View.inflate(mContext, R.layout.list_stats_item, null);
             viewHolder.mTextViewStatName = (TextView) convertView.findViewById(R.id.tv_stat_name);
             viewHolder.mTextViewStatValue = (TextView) convertView.findViewById(R.id.tv_stat_value);
             convertView.setTag(viewHolder);
-        }
-        else
-        {
+        } else {
             viewHolder = (StatViewHolder) convertView.getTag();
         }
 
@@ -95,26 +87,22 @@ public class StatsExpandableAdapter
     }
 
     @Override
-    public int getRealChildrenCount(int groupPosition)
-    {
+    public int getRealChildrenCount(int groupPosition) {
         return mListStatNamesAndValues.get(groupPosition).size();
     }
 
     @Override
-    public String getGroup(int groupPosition)
-    {
+    public String getGroup(int groupPosition) {
         return mListStatHeaders.get(groupPosition);
     }
 
     @Override
-    public int getGroupCount()
-    {
+    public int getGroupCount() {
         return mListStatHeaders.size();
     }
 
     @Override
-    public long getGroupId(int groupPosition)
-    {
+    public long getGroupId(int groupPosition) {
         return groupPosition;
     }
 
@@ -122,21 +110,17 @@ public class StatsExpandableAdapter
     public View getGroupView(int groupPosition,
                              boolean isExpanded,
                              View convertView,
-                             ViewGroup parent)
-    {
+                             ViewGroup parent) {
         String headerTitle = getGroup(groupPosition);
 
         HeaderViewHolder viewHolder;
-        if (convertView == null)
-        {
+        if (convertView == null) {
             viewHolder = new HeaderViewHolder();
             convertView = View.inflate(mContext, R.layout.list_stats_header, null);
             viewHolder.mTextViewHeader = (TextView) convertView.findViewById(R.id.tv_stat_header);
             viewHolder.mBackgroundView = convertView.findViewById(R.id.ll_stats_header);
             convertView.setTag(viewHolder);
-        }
-        else
-        {
+        } else {
             viewHolder = (HeaderViewHolder) convertView.getTag();
         }
 
@@ -148,23 +132,19 @@ public class StatsExpandableAdapter
     }
 
     @Override
-    public boolean hasStableIds()
-    {
+    public boolean hasStableIds() {
         return true;
     }
 
     @Override
-    public boolean isChildSelectable(int groupPosition, int childPosition)
-    {
+    public boolean isChildSelectable(int groupPosition, int childPosition) {
         return true;
     }
 
     /**
-     * Holds views so if an item view is recycled by the list, references are retained to its
-     * children.
+     * Holds views so if an item view is recycled by the list, references are retained to its children.
      */
-    private static class StatViewHolder
-    {
+    private static class StatViewHolder {
 
         /** TextView to display name of a stat. */
         private TextView mTextViewStatName;
@@ -173,11 +153,9 @@ public class StatsExpandableAdapter
     }
 
     /**
-     * Holds views so if a header view is recycled by the list, references are retained to its
-     * children.
+     * Holds views so if a header view is recycled by the list, references are retained to its children.
      */
-    private static class HeaderViewHolder
-    {
+    private static class HeaderViewHolder {
 
         /** TextView to display header of a group. */
         private TextView mTextViewHeader;
@@ -186,8 +164,7 @@ public class StatsExpandableAdapter
     }
 
     @Override
-    public void updateTheme()
-    {
+    public void updateTheme() {
         notifyDataSetChanged();
     }
 }

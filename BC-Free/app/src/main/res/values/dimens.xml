@@ -11,8 +11,8 @@
     <dimen name="navigation_item_height">48dp</dimen>
 
     <!-- List Items -->
-    <dimen name="list_keyline">16dp</dimen>
-    <dimen name="list_text_keyline">72dp</dimen>
+    <dimen name="list_key_line">16dp</dimen>
+    <dimen name="list_text_key_line">72dp</dimen>
 
     <!-- Indicator dimensions -->
     <dimen name="indicator_width">8dp</dimen>
