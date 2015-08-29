@@ -59,6 +59,8 @@
     <string name="text_do_not_combine">Do not combine</string>
     <string name="text_do_not_ask_again">No, don\'t ask again</string>
     <string name="text_skip">Next</string>
+    <string name="text_back">Back</string>
+    <string name="text_continue">Continue</string>
     <string name="text_stats_accumulate">Stat values accumulate over time</string>
     <string name="text_stats_by_week">Stat values are week by week</string>
     <string name="text_opening_graph">Opening graph for stats</string>

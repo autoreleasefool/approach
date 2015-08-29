@@ -17,6 +17,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import ca.josephroque.bowlingcompanion.adapter.SplashPagerAdapter;
 import ca.josephroque.bowlingcompanion.fragment.TutorialFragment;
@@ -46,6 +47,11 @@ public class SplashActivity
     private ViewPager mViewPagerContent;
     /** View to indicate the user's current page in the tutorial. */
     private View mCurrentPageIndicator;
+
+    /** View to provide navigation to the next item. */
+    private TextView mTextViewNext;
+    /** View to provide navigation to the previous item. */
+    private TextView mTextViewBack;
 
     /** Current page of view pager. */
     private int mCurrentTutorialPage = 0;
@@ -79,7 +85,7 @@ public class SplashActivity
 
         preferences.edit().putBoolean(PREF_TUTORIAL_WATCHED, true).apply();
         setupViewPager();
-        setupSkipButton();
+        setupNavigationButtons();
     }
 
     @Override
@@ -120,14 +126,24 @@ public class SplashActivity
     /**
      * Creates on click listener for skip button to open the main activity.
      */
-    private void setupSkipButton() {
-        findViewById(R.id.tv_skip).setOnClickListener(new View.OnClickListener() {
+    private void setupNavigationButtons() {
+        mTextViewNext = (TextView) findViewById(R.id.tv_skip);
+        mTextViewNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mViewPagerContent.getCurrentItem() < TutorialFragment.TUTORIAL_TOTAL_PAGES - 1)
                     mViewPagerContent.setCurrentItem(mViewPagerContent.getCurrentItem() + 1);
                 else
                     openMainActivity();
+            }
+        });
+
+        mTextViewBack = (TextView) findViewById(R.id.tv_back);
+        mTextViewBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mViewPagerContent.getCurrentItem() > 0)
+                    mViewPagerContent.setCurrentItem(mViewPagerContent.getCurrentItem() - 1);
             }
         });
     }
@@ -177,6 +193,15 @@ public class SplashActivity
             @Override
             public void onPageSelected(int position) {
                 mCurrentTutorialPage = position;
+                if (mCurrentTutorialPage == TutorialFragment.TUTORIAL_TOTAL_PAGES - 1)
+                    mTextViewNext.setText(R.string.text_continue);
+                else
+                    mTextViewNext.setText(R.string.text_skip);
+
+                if (mCurrentTutorialPage == 0)
+                    mTextViewBack.setVisibility(View.GONE);
+                else
+                    mTextViewBack.setVisibility(View.VISIBLE);
             }
 
             @Override
