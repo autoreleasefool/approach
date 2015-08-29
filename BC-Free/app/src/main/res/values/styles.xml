@@ -1,11 +1,15 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme"
+    <style name="AppTheme.NoBackground"
            parent="Theme.AppCompat.Light.NoActionBar">
 
         <item name="android:windowBackground">@null</item>
 
+    </style>
+
+    <style name="AppTheme.Background"
+           parent="Theme.AppCompat.Light.NoActionBar">
     </style>
 
 </resources>
