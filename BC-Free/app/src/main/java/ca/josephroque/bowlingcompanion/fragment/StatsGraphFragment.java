@@ -16,6 +16,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -419,12 +420,22 @@ public class StatsGraphFragment
             if (fragment == null || result == null)
                 return;
 
+            // Setting  up UI
+            final float textSizeBody = 14;
             fragment.mTextViewStat.setText(StatUtils.getStatName(fragment.mStatCategory,
                     fragment.mStatIndex, false));
             fragment.mLineChartStats.setDescription(StatUtils.getStatName(fragment.mStatCategory,
                     fragment.mStatIndex, false));
+            fragment.mLineChartStats.setDescriptionTextSize(textSizeBody);
             fragment.mLineChartStats.getAxisLeft().setValueFormatter(new DefaultValueFormatter(0));
+
+            // Styling legend
+            Legend legend = fragment.mLineChartStats.getLegend();
+            legend.setTextSize(textSizeBody);
+
+            // Applying data
             fragment.mLineChartStats.setData(result);
+
             fragment.mLineChartStats.invalidate();
             fragment.setUIEnabled(true);
         }
