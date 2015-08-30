@@ -1110,7 +1110,7 @@ public class GameFragment
 
         rootView.findViewById(R.id.fab_container).setVisibility(
                 (PreferenceManager.getDefaultSharedPreferences(getActivity())
-                        .getBoolean(Constants.KEY_ENABLE_FABS, true) && enabled)
+                        .getBoolean(Constants.KEY_ENABLE_FAB, true) && enabled)
                         ? View.VISIBLE
                         : View.INVISIBLE);
 
