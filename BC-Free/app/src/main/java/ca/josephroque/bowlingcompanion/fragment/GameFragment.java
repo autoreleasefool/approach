@@ -271,7 +271,7 @@ public class GameFragment
                                 alterPinState((byte) i, false);
                         }
                     }
-                    if (mGameCallback != null)
+                    if (mGameCallback != null && !(mCurrentFrame == Constants.LAST_FRAME && mCurrentBall == 2))
                         mGameCallback.resetAutoAdvanceTimer();
                     break;
                 default:
@@ -579,6 +579,10 @@ public class GameFragment
             setFloatingActionButtonState(true, 0);
         if (mPrevFab != null)
             setFloatingActionButtonState(false, 0);
+        mGameCallback.setAutoAdvanceConditions(mImageViewNextBall,
+                mTextViewAutoAdvance,
+                false,
+                Integer.MAX_VALUE);
 
         //Clears color changes to frames and saves the game being edited
         clearFrameColor();
@@ -669,6 +673,8 @@ public class GameFragment
                     showGameLockedDialog();
                 else
                     showResetGameDialog();
+                if (mGameCallback != null)
+                    mGameCallback.stopAutoAdvanceTimer();
                 return true;
 
             case R.id.action_what_if:
@@ -835,7 +841,7 @@ public class GameFragment
                             return;
                         mFouls[mCurrentFrame][mCurrentBall] = !mFouls[mCurrentFrame][mCurrentBall];
                         updateFouls();
-                        if (mGameCallback != null)
+                        if (mGameCallback != null && !(mCurrentFrame == Constants.LAST_FRAME && mCurrentBall == 2))
                             mGameCallback.resetAutoAdvanceTimer();
                         break;
 
@@ -860,7 +866,7 @@ public class GameFragment
 
                     case R.id.iv_clear:
                         clearPins();
-                        if (mGameCallback != null)
+                        if (mGameCallback != null && !(mCurrentFrame == Constants.LAST_FRAME && mCurrentBall == 2))
                             mGameCallback.resetAutoAdvanceTimer();
                         break;
 

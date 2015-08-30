@@ -36,6 +36,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -146,10 +147,10 @@ public class MainActivity
     private final Runnable mAutoAdvanceCallback = new Runnable() {
         @Override
         public void run() {
+            Log.d(TAG, "Auto advance: " + mAutoAdvanceDelayRemaining);
             if (--mAutoAdvanceDelayRemaining <= 0) {
                 mViewAutoAdvance.performClick();
-                setAutoAdvanceConditions(
-                        mViewAutoAdvance, mTextViewAutoAdvanceStatus, false, mAutoAdvanceDelay);
+                stopAutoAdvanceTimer();
             } else {
                 if (mTextViewAutoAdvanceStatus != null) {
                     runOnUiThread(new Runnable() {
@@ -775,6 +776,7 @@ public class MainActivity
 
     @Override
     public void resetAutoAdvanceTimer() {
+        Log.d(TAG, "Auto advancing");
         if (!mAutoAdvanceEnabled)
             return;
 
