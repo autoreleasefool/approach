@@ -1,6 +1,11 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <Preference
+        android:key="pref_facebook_page"
+        android:summary="@string/pref_facebook_page_summary"
+        android:title="@string/pref_facebook_page_title" />
+
+    <Preference
         android:key="pref_developer_website"
         android:summary="@string/pref_developer_website_summary"
         android:title="@string/pref_developer_website_title">

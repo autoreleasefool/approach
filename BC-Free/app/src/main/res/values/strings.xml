@@ -67,6 +67,7 @@
     <string name="text_opening_graph_click">Remember that you can tap on any stat to more easily view a graph of that stat over time.</string>
     <string name="text_next_stat">Next stat</string>
     <string name="text_prev_stat">Previous stat</string>
+    <string name="text_like_on_fb">Be sure to like us on Facebook for news and updates!</string>
 
     <!-- Tutorial -->
     <string name="text_tutorial_welcome">Welcome to your 5 Pin Bowling Companion!</string>
@@ -89,10 +90,12 @@
 
     <!-- Content Descriptions -->
     <string name="description_lock_unlock">Lock or unlock game</string>
-    <string name="description_clear">Clear pins</string>
+    <string name="description_clear_pins">Clear pins</string>
+    <string name="description_close">Close</string>
     <string name="description_foul">Add or remove foul</string>
     <string name="description_reset_frame">Reset the frame</string>
     <string name="description_edit_date">Click to edit date</string>
     <string name="description_match">Set match play results</string>
+    <string name="description_fb">Facebook</string>
 
 </resources>

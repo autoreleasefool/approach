@@ -22,6 +22,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
@@ -42,7 +43,9 @@ import ca.josephroque.bowlingcompanion.database.Contract.LeagueEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.SeriesEntry;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.dialog.NewBowlerDialog;
+import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
+import ca.josephroque.bowlingcompanion.utilities.FacebookUtils;
 import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
 
 /**
@@ -167,6 +170,8 @@ public class BowlerFragment
                 mListBowlers,
                 NameAverageAdapter.DATA_BOWLERS);
         mRecyclerViewBowlers.setAdapter(mAdapterBowlers);
+
+        displayFacebookPagePromotion(rootView);
 
         return rootView;
     }
@@ -389,6 +394,44 @@ public class BowlerFragment
                     .create()
                     .show();
         }
+    }
+
+    /**
+     * Prepares and shows promotional content for Facebook page, if the user has not visited the page before.
+     *
+     * @param rootView fragment root view
+     */
+    private void displayFacebookPagePromotion(View rootView) {
+        if (getActivity() == null)
+            return;
+
+        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+        if (preferences.getBoolean(Constants.PREF_FACEBOOK_PAGE_OPENED, false)
+                || preferences.getBoolean(Constants.PREF_FACEBOOK_CLOSED, false))
+            return;
+
+        final LinearLayout linearLayout = (LinearLayout) rootView.findViewById(R.id.ll_facebook_promotion);
+        linearLayout.setVisibility(View.VISIBLE);
+
+        View.OnClickListener openFacebookListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                linearLayout.setVisibility(View.GONE);
+                preferences.edit().putBoolean(Constants.PREF_FACEBOOK_PAGE_OPENED, true).apply();
+                startActivity(FacebookUtils.newFacebookIntent(getActivity().getPackageManager()));
+            }
+        };
+
+        linearLayout.findViewById(R.id.iv_facebook).setOnClickListener(openFacebookListener);
+        linearLayout.findViewById(R.id.tv_facebook).setOnClickListener(openFacebookListener);
+        linearLayout.findViewById(R.id.iv_facebook_clear).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                preferences.edit().putBoolean(Constants.PREF_FACEBOOK_CLOSED, true).apply();
+                linearLayout.setVisibility(View.GONE);
+            }
+        });
     }
 
     /**

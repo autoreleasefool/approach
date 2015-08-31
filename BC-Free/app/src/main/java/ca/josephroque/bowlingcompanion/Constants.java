@@ -39,6 +39,8 @@ public final class Constants {
     public static final String KEY_ASK_COMBINE = "pref_ask_combine";
     /** Identifier for preference for if floating buttons should be shown when editing a game. */
     public static final String KEY_ENABLE_FAB = "pref_enable_fab";
+    /** Identifier for preference for opening the app's Facebook page. */
+    public static final String KEY_FACEBOOK_PAGE = "pref_facebook_page";
 
     // PREFERENCES
     /** Identifier for SharedPreferences of app. */
@@ -51,6 +53,10 @@ public final class Constants {
     public static final String PREF_QUICK_BOWLER_ID = "QBI";
     /** Identifier for custom set league id, stored in preferences. */
     public static final String PREF_QUICK_LEAGUE_ID = "QLI";
+    /** Identifier for if user has opened the facebook page in the past. */
+    public static final String PREF_FACEBOOK_PAGE_OPENED = "fb_page_opened";
+    /** Identifier for if user has closed the facebook promotional content since opening the app. */
+    public static final String PREF_FACEBOOK_CLOSED = "fb_closed";
 
     // EXTRAS
     /** Identifies the name of a bowler as an extra. */

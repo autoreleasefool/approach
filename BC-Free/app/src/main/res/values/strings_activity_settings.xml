@@ -6,6 +6,8 @@
 
     <!-- Other Settings -->
     <string name="pref_header_other">Other</string>
+    <string name="pref_facebook_page_title">Like us on Facebook</string>
+    <string name="pref_facebook_page_summary">For news and updates</string>
     <string name="pref_developer_website_title">Visit developer website</string>
     <string name="pref_developer_website_summary">Learn more about the developer</string>
     <string name="pref_view_source_title">View source on GitHub</string>

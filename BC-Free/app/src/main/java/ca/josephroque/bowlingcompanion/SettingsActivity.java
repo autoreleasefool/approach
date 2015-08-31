@@ -21,6 +21,7 @@ import ca.josephroque.bowlingcompanion.database.Contract.LeagueEntry;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.utilities.EmailUtils;
+import ca.josephroque.bowlingcompanion.utilities.FacebookUtils;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On handset devices, settings are presented
@@ -117,6 +118,7 @@ public class SettingsActivity
         getPreferenceScreen().addPreference(fakeHeader);
         addPreferencesFromResource(R.xml.pref_other);
 
+        findPreference(Constants.KEY_FACEBOOK_PAGE).setOnPreferenceClickListener(this);
         findPreference(Constants.KEY_RATE).setOnPreferenceClickListener(this);
         findPreference(Constants.KEY_REPORT_BUG).setOnPreferenceClickListener(this);
         findPreference(Constants.KEY_COMMENT_SUGGESTION).setOnPreferenceClickListener(this);
@@ -370,7 +372,10 @@ public class SettingsActivity
 
     @Override
     public boolean onPreferenceClick(Preference preference) {
-        if (preference.getKey().equals(Constants.KEY_RATE)) {
+        if (preference.getKey().equals(Constants.KEY_FACEBOOK_PAGE)) {
+            // Opens facebook app or chrome to display facebook page
+            startActivity(FacebookUtils.newFacebookIntent(getPackageManager()));
+        } else if (preference.getKey().equals(Constants.KEY_RATE)) {
             //Opens Google Play or chrome to display app
             final String appPackageName = getPackageName();
             try {

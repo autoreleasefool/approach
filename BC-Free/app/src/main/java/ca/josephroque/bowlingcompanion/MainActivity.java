@@ -230,6 +230,10 @@ public class MainActivity
                     .add(R.id.fl_main_fragment_container, bowlerFragment,
                             Constants.FRAGMENT_BOWLERS)
                     .commit();
+            PreferenceManager.getDefaultSharedPreferences(MainActivity.this)
+                    .edit()
+                    .remove(Constants.PREF_FACEBOOK_CLOSED)
+                    .apply();
         } else {
             //Loads member variables from bundle
             mBowlerId = savedInstanceState.getLong(Constants.EXTRA_ID_BOWLER, -1);

@@ -115,7 +115,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_margin="8dp"
-            android:contentDescription="@string/description_clear"
+            android:contentDescription="@string/description_clear_pins"
             android:src="@drawable/ic_strike" />
 
         <ImageView
