@@ -973,7 +973,7 @@ public class MainActivity
      * Opens the settings activity.
      */
     private void openSettings() {
-        Intent settingsIntent = new Intent(MainActivity.this, SettingsActivity.class);
+        Intent settingsIntent = new Intent(MainActivity.this, ca.josephroque.bowlingcompanion.SettingsActivity.class);
         startActivity(settingsIntent);
     }
 

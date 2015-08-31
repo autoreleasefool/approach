@@ -20,7 +20,7 @@
     <string name="pref_comment_suggestion_summary">Have a request or an idea for a feature?</string>
 
     <!-- Quick Settings -->
-    <string name="pref_header_quick">Quick Series</string>
+    <string name="pref_header_quick">Quick series</string>
     <string name="pref_enable_quick_title">Enable custom quick series</string>
     <string name="pref_enable_quick_summaryOn">Quick series will use the bowler/league set below</string>
     <string name="pref_enable_quick_summaryOff">Quick series will use most recent bowler/league</string>
@@ -61,6 +61,7 @@
     </string-array>
     
     <!-- Theme Settings -->
+    <string name="pref_header_theme">Theme</string>
     <string name="pref_theme_colors_title">Theme colors</string>
     <string name="pref_theme_colors_dialog">Select a theme color</string>
     <string-array name="pref_theme_colors_names">
@@ -73,7 +74,7 @@
     </string-array>
 
     <!-- Game Settings -->
-    <string name="pref_header_game">Games</string>
+    <string name="pref_header_game">Editing games</string>
     <string name="pref_enable_fab_title">Enable floating buttons</string>
     <string name="pref_enable_fab_summaryOn">Floating buttons are enabled</string>
     <string name="pref_enable_fab_summaryOff">Floating buttons are disabled</string>

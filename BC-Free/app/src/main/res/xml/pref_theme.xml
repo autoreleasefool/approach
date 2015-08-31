@@ -8,4 +8,12 @@
         android:key="pref_theme_colors"
         android:title="@string/pref_theme_colors_title" />
 
+    <ListPreference
+        android:defaultValue="300"
+        android:dialogTitle="@string/pref_highlight_score_title"
+        android:entries="@array/pref_highlight_score_values"
+        android:entryValues="@array/pref_highlight_score_values"
+        android:key="pref_highlight_score"
+        android:title="@string/pref_highlight_score_title" />
+
 </PreferenceScreen>
