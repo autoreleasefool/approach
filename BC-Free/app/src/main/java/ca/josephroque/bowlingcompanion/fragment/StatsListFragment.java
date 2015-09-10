@@ -427,7 +427,7 @@ public class StatsListFragment
                 case StatUtils.LOADING_SERIES_STATS:
                     fragment.mNumberOfGeneralDetails = 3;
                     listStatNamesAndValues.get(fragment.mStatsGeneral).add(1,
-                            Pair.create("League/Event", mainActivity.getLeagueName()));
+                            Pair.create("League/Event", mainActivity.getLeagueName().substring(1)));
                     listStatNamesAndValues.get(fragment.mStatsGeneral).add(2,
                             Pair.create("Date", mainActivity.getSeriesDate()));
                     cursor = fragment.getSeriesCursor();
@@ -435,7 +435,7 @@ public class StatsListFragment
                 case StatUtils.LOADING_GAME_STATS:
                     fragment.mNumberOfGeneralDetails = 4;
                     listStatNamesAndValues.get(fragment.mStatsGeneral).add(1,
-                            Pair.create("League/Event", mainActivity.getLeagueName()));
+                            Pair.create("League/Event", mainActivity.getLeagueName().substring(1)));
                     listStatNamesAndValues.get(fragment.mStatsGeneral).add(2,
                             Pair.create("Date", mainActivity.getSeriesDate()));
                     listStatNamesAndValues.get(fragment.mStatsGeneral).add(3,
