@@ -73,7 +73,7 @@
 
     <!-- Tutorial -->
     <string name="text_tutorial_welcome">Welcome to your 5 Pin Bowling Companion!</string>
-    <string name="text_tutorial_add_bowler_league_series">Begin by creating a new bowler and leagues. Use the \'+\' button to create a new item, or swipe to delete anything you\'ve added.</string>
+    <string name="text_tutorial_add_bowler_league_series">Begin by creating a new bowler and leagues. Use the \'+\' button to create a new item, or press and hold on an item to delete or change its name.</string>
     <string name="text_tutorial_leagues_events">You can create leagues or events. Leagues are a weekly event of 1–5 games. Events are one time only, but can be up to 20 games.</string>
     <string name="text_tutorial_pin_game">Record a game by tapping or swiping to knock over the pins you hit each ball. You can also add fouls, lock games and set match play results.</string>
     <string name="text_tutorial_manual_game">If you need to add a game after you\'ve bowled it, you can using the menu button while editing a game to set a score manually.</string>
