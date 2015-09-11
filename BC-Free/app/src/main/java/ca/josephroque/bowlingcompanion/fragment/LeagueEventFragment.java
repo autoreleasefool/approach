@@ -55,7 +55,7 @@ import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
 public class LeagueEventFragment
         extends Fragment
         implements NameAverageAdapter.NameAverageEventHandler,
-        NameLeagueEventDialog.NewLeagueEventDialogListener,
+        NameLeagueEventDialog.NameLeagueEventDialogListener,
         FloatingActionButtonHandler {
 
     /** Identifies output from this class in Logcat. */

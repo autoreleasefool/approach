@@ -16,6 +16,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -42,7 +43,7 @@ import ca.josephroque.bowlingcompanion.database.Contract.GameEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.LeagueEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.SeriesEntry;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
-import ca.josephroque.bowlingcompanion.dialog.NewBowlerDialog;
+import ca.josephroque.bowlingcompanion.dialog.NameBowlerDialog;
 import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
 import ca.josephroque.bowlingcompanion.utilities.FacebookUtils;
 import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
@@ -55,7 +56,7 @@ import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
 public class BowlerFragment
         extends Fragment
         implements NameAverageAdapter.NameAverageEventHandler,
-        NewBowlerDialog.NewBowlerDialogListener,
+        NameBowlerDialog.NameBowlerDialogListener,
         FloatingActionButtonHandler {
 
     /** Identifies output from this class in Logcat. */
@@ -237,7 +238,8 @@ public class BowlerFragment
 
     @Override
     public void onNAItemLongClick(final int position) {
-
+        // When bowler name is long clicked, a dialog is opened to change or delete the item
+        showLongClickBowlerDialog(position);
     }
 
     @Override
@@ -258,6 +260,62 @@ public class BowlerFragment
                 mListBowlers.get(i).setIsDeleted(false);
                 mAdapterBowlers.notifyItemChanged(i);
             }
+        }
+    }
+
+    @Override
+    public void onChangeBowlerName(final Bowler bowlerToChange, String name) {
+        boolean validInput = true;
+        int invalidInputMessage = -1;
+        final Bowler bowlerWithNewName = new Bowler(bowlerToChange.getId(),
+                name,
+                bowlerToChange.getAverage());
+
+        if (mListBowlers.contains(bowlerWithNewName)) {
+            //Bowler name already exists in the list
+            validInput = false;
+            invalidInputMessage = R.string.dialog_name_exists;
+        } else if (!name.matches(Constants.REGEX_NAME)) {
+            //Name is not made up of letters and spaces
+            validInput = false;
+            invalidInputMessage = R.string.dialog_name_letters_spaces;
+        }
+
+        if (!validInput) {
+            //Displays an error dialog if the input was not valid and exits the method
+            new AlertDialog.Builder(getActivity())
+                    .setMessage(invalidInputMessage)
+                    .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .create()
+                    .show();
+        } else {
+            int position = mListBowlers.indexOf(bowlerToChange);
+            mListBowlers.set(position, bowlerWithNewName);
+            mAdapterBowlers.notifyItemChanged(position);
+
+            ((MainActivity) getActivity()).addSavingThread(new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    SQLiteDatabase database = DatabaseHelper.getInstance(getContext()).getWritableDatabase();
+                    String[] whereArgs = {String.valueOf(bowlerWithNewName.getId())};
+                    ContentValues values = new ContentValues();
+                    values.put(BowlerEntry.COLUMN_BOWLER_NAME, bowlerWithNewName.getBowlerName());
+                    database.beginTransaction();
+                    try {
+                        database.update(BowlerEntry.TABLE_NAME, values, BowlerEntry._ID + "=?", whereArgs);
+                        database.setTransactionSuccessful();
+                    } catch (Exception ex) {
+                        Log.e(TAG, "Error updating bowler name.", ex);
+                    } finally {
+                        database.endTransaction();
+                    }
+                }
+            }));
         }
     }
 
@@ -305,6 +363,77 @@ public class BowlerFragment
     @Override
     public void onFabClick() {
         showNewBowlerDialog();
+    }
+
+    /**
+     * Invoked when a bowler item is long clicked by the user. Displays a dialog with events relevant to the item.
+     *
+     * @param position position of the long clicked item
+     */
+    private void showLongClickBowlerDialog(final int position) {
+        DialogInterface.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (which == DialogInterface.BUTTON_POSITIVE) {
+                    int selectedPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
+                    if (selectedPosition == 0)
+                        promptChangeItemName(position);
+                    else
+                        promptDeleteItem(position);
+                }
+                dialog.dismiss();
+            }
+        };
+
+        final Bowler bowler = mListBowlers.get(position);
+        new AlertDialog.Builder(getContext())
+                .setTitle(bowler.getBowlerName())
+                .setSingleChoiceItems(R.array.arr_long_click_name_average, 0, null)
+                .setPositiveButton(R.string.dialog_okay, onClickListener)
+                .setNegativeButton(R.string.dialog_cancel, onClickListener)
+                .create()
+                .show();
+    }
+
+    /**
+     * Prompts user to change the name of a bowler.
+     *
+     * @param position position of the bowler to change the name of
+     */
+    private void promptChangeItemName(final int position) {
+        DialogFragment dialogFragment = NameBowlerDialog.newInstance(this,
+                true,
+                mListBowlers.get(position));
+        dialogFragment.show(getFragmentManager(), "ChangeNameBowlerDialog");
+    }
+
+    /**
+     * Prompts the user to delete a bowler.
+     *
+     * @param position position of the item to delete
+     */
+    private void promptDeleteItem(final int position) {
+        final Bowler bowler = mListBowlers.get(position);
+        DialogInterface.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (which == DialogInterface.BUTTON_POSITIVE) {
+                    mListBowlers.remove(position);
+                    mAdapterBowlers.notifyItemRemoved(position);
+                    deleteBowler(bowler.getId());
+                }
+                dialog.dismiss();
+            }
+        };
+
+        new AlertDialog.Builder(getContext())
+                .setTitle("Warning!")
+                .setMessage("Are you sure you want to delete " + bowler.getBowlerName()+ "?"
+                        + " This cannot be undone!")
+                .setPositiveButton(R.string.dialog_delete, onClickListener)
+                .setNegativeButton(R.string.dialog_cancel, onClickListener)
+                .create()
+                .show();
     }
 
     /**
@@ -442,7 +571,7 @@ public class BowlerFragment
      * Opens an instance of NewBowlerDialog and displays it to the user.
      */
     private void showNewBowlerDialog() {
-        DialogFragment dialogFragment = NewBowlerDialog.newInstance(this);
+        DialogFragment dialogFragment = NameBowlerDialog.newInstance(this, false, null);
         dialogFragment.show(getFragmentManager(), "NewBowlerDialog");
     }
 

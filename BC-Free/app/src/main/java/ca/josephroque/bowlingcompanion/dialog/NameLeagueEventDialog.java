@@ -17,8 +17,8 @@ import ca.josephroque.bowlingcompanion.data.LeagueEvent;
 
 /**
  * Created by Joseph Roque on 15-03-16. Provides dialog and callback interface {@link
- * NameLeagueEventDialog.NewLeagueEventDialogListener} for the user to enter the name of a new league or event to track
- * the statistics of.
+ * ca.josephroque.bowlingcompanion.dialog.NameLeagueEventDialog.NameLeagueEventDialogListener} for the user to enter the
+ * name of a new league or event to track the statistics of.
  */
 public class NameLeagueEventDialog
         extends DialogFragment {
@@ -33,7 +33,7 @@ public class NameLeagueEventDialog
     private static final String ARG_LEAGUE_EVENT = "arg_league_event";
 
     /** Instance of listener which contains methods that are executed upon user interaction. */
-    private NewLeagueEventDialogListener mDialogListener;
+    private NameLeagueEventDialogListener mDialogListener;
 
     /** If true, a new event is being added, a league otherwise. */
     private boolean mIsEventMode;
@@ -164,7 +164,7 @@ public class NameLeagueEventDialog
     /**
      * Provides a method to the activity which created this object to handle user interaction with the dialog.
      */
-    public interface NewLeagueEventDialogListener {
+    public interface NameLeagueEventDialogListener {
 
         /**
          * Executed when user opts to add a new league or event.
@@ -194,7 +194,7 @@ public class NameLeagueEventDialog
      * @param leagueEvent league / event to change name of. Can be null if {@code editingName} is false
      * @return a new instance of NameLeagueEventDialog
      */
-    public static NameLeagueEventDialog newInstance(NewLeagueEventDialogListener listener,
+    public static NameLeagueEventDialog newInstance(NameLeagueEventDialogListener listener,
                                                     boolean newEvent,
                                                     boolean editingName,
                                                     @Nullable LeagueEvent leagueEvent) {
