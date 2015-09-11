@@ -135,6 +135,29 @@ public final class Contract {
     }
 
     /**
+     * Table and column names for SQLite table relevant to match play results.
+     */
+    public static final class MatchPlayEntry
+            implements BaseColumns {
+
+        /** Name of the table for match play data. */
+        public static final String TABLE_NAME = "match_play";
+        /** Name of the column for the opponent's name. */
+        public static final String COLUMN_OPPONENT_NAME = "match_opp_name";
+        /** Name of the column for the opponent's score. */
+        public static final String COLUMN_OPPONENT_SCORE = "match_opp_score";
+        /** Name of the column for foreign key to a game id. */
+        public static final String COLUMN_GAME_ID = "match_game_id_fk";
+
+        /**
+         * Private constructor, class cannot be instantiated.
+         */
+        private MatchPlayEntry() {
+            // does nothing
+        }
+    }
+
+    /**
      * Private constructor, class cannot be instantiated.
      */
     private Contract() {

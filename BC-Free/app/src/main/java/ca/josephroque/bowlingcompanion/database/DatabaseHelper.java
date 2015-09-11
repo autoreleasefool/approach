@@ -10,6 +10,7 @@ import ca.josephroque.bowlingcompanion.database.Contract.BowlerEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.FrameEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.GameEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.LeagueEntry;
+import ca.josephroque.bowlingcompanion.database.Contract.MatchPlayEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.SeriesEntry;
 import ca.josephroque.bowlingcompanion.utilities.Score;
 
@@ -27,7 +28,7 @@ public final class DatabaseHelper
     /** Name of the database. */
     private static final String DATABASE_NAME = "bowlingdata";
     /** Version of the database, incremented with changes. */
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
 
     /** Singleton instance of the DatabaseHelper. */
     private static DatabaseHelper sDatabaseHelperInstance = null;
@@ -62,6 +63,7 @@ public final class DatabaseHelper
         createSeriesTable(db);
         createGameTable(db);
         createFrameTable(db);
+        createMatchPlayTable(db);
         createTableIndices(db);
     }
 
@@ -81,6 +83,8 @@ public final class DatabaseHelper
                 + GameEntry.TABLE_NAME + "(" + GameEntry._ID + ")");
         db.execSQL("CREATE INDEX frame_id_index ON "
                 + FrameEntry.TABLE_NAME + "(" + FrameEntry._ID + ")");
+        db.execSQL("CREATE INDEX match_id_index ON "
+                + MatchPlayEntry.TABLE_NAME + "(" + MatchPlayEntry._ID + ")");
 
         db.execSQL("CREATE INDEX league_bowler_fk_index ON "
                 + LeagueEntry.TABLE_NAME + "(" + LeagueEntry.COLUMN_BOWLER_ID + ")");
@@ -90,6 +94,8 @@ public final class DatabaseHelper
                 + GameEntry.TABLE_NAME + "(" + GameEntry.COLUMN_SERIES_ID + ")");
         db.execSQL("CREATE INDEX frame_game_fk_index ON "
                 + FrameEntry.TABLE_NAME + "(" + FrameEntry.COLUMN_GAME_ID + ")");
+        db.execSQL("CREATE INDEX match_game_fk_index ON "
+                + MatchPlayEntry.TABLE_NAME + "(" + MatchPlayEntry.COLUMN_GAME_ID + ")");
     }
 
     /**
@@ -200,6 +206,25 @@ public final class DatabaseHelper
                 + ");");
     }
 
+    /**
+     * Executes SQL statement to create table to store match play results.
+     *
+     * @param db database
+     */
+    private void createMatchPlayTable(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE "
+                + MatchPlayEntry.TABLE_NAME + "("
+                + MatchPlayEntry._ID + " INTEGER PRIMARY KEY, "
+                + MatchPlayEntry.COLUMN_OPPONENT_NAME + " TEXT COLLATE NOCASE, "
+                + MatchPlayEntry.COLUMN_OPPONENT_SCORE + " INTEGER NOT NULL DEFAULT 0, "
+                + MatchPlayEntry.COLUMN_GAME_ID + " INTEGER NOT NULL"
+                + " REFERENCES " + GameEntry.TABLE_NAME
+                + " ON UPDATE CASCADE ON DELETE CASCADE, "
+                + "CHECK (" + MatchPlayEntry.COLUMN_OPPONENT_SCORE + " >= 0 AND "
+                + MatchPlayEntry.COLUMN_OPPONENT_SCORE + " <= 450)"
+                + ");");
+    }
+
 
     @Override
     public void onOpen(SQLiteDatabase db) {
@@ -230,6 +255,8 @@ public final class DatabaseHelper
                 case 3:
                     upgradeDatabaseFrom2To3(db);
                     break;
+                case 4:
+                    upgradeDatabaseFrom3To4(db);
                 default:
                     dropTablesAndRecreate(db);
             }
@@ -249,12 +276,15 @@ public final class DatabaseHelper
         db.execSQL("DROP INDEX IF EXISTS series_id_index");
         db.execSQL("DROP INDEX IF EXISTS game_id_index");
         db.execSQL("DROP INDEX IF EXISTS frame_id_index");
+        db.execSQL("DROP INDEX IF EXISTS match_id_index");
 
         db.execSQL("DROP INDEX IF EXISTS league_bowler_fk_index");
         db.execSQL("DROP INDEX IF EXISTS series_league_fk_index");
         db.execSQL("DROP INDEX IF EXISTS game_series_fk_index");
         db.execSQL("DROP INDEX IF EXISTS frame_game_fk_index");
+        db.execSQL("DROP INDEX IF EXISTS match_game_fk_index");
 
+        db.execSQL("DROP TABLE IF EXISTS " + MatchPlayEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + FrameEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + GameEntry.TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + SeriesEntry.TABLE_NAME);
@@ -464,5 +494,18 @@ public final class DatabaseHelper
         } finally {
             db.endTransaction();
         }
+    }
+
+    /**
+     * Upgrades database from oldVersion 3 to newVersion 4.
+     *
+     * @param db to upgrade
+     */
+    private void upgradeDatabaseFrom3To4(SQLiteDatabase db) {
+        createMatchPlayTable(db);
+        db.execSQL("CREATE INDEX match_game_fk_index ON "
+                + MatchPlayEntry.TABLE_NAME + "(" + MatchPlayEntry.COLUMN_GAME_ID + ")");
+        db.execSQL("CREATE INDEX match_id_index ON "
+                + MatchPlayEntry.TABLE_NAME + "(" + MatchPlayEntry._ID + ")");
     }
 }
