@@ -43,7 +43,6 @@ import ca.josephroque.bowlingcompanion.database.Contract.LeagueEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.SeriesEntry;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.dialog.NewBowlerDialog;
-import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
 import ca.josephroque.bowlingcompanion.utilities.FacebookUtils;
 import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
@@ -234,6 +233,11 @@ public class BowlerFragment
     public void onNAItemClick(final int position) {
         //When bowler name is clicked, their leagues are displayed in new fragment
         new OpenBowlerLeaguesTask(this).execute(position);
+    }
+
+    @Override
+    public void onNAItemLongClick(final int position) {
+
     }
 
     @Override

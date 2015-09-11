@@ -24,7 +24,8 @@ import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
  */
 public class NameAverageAdapter<T extends NameAverageId>
         extends RecyclerView.Adapter<NameAverageAdapter.NameAverageViewHolder>
-        implements View.OnClickListener {
+        implements View.OnClickListener,
+        View.OnLongClickListener {
 
     /** Identifies output from this class in Logcat. */
     @SuppressWarnings("unused")
@@ -181,6 +182,7 @@ public class NameAverageAdapter<T extends NameAverageId>
 
                 //Sets actions on click/touch events
                 holder.itemView.setOnClickListener(this);
+                holder.itemView.setOnLongClickListener(this);
                 break;
             case VIEWTYPE_DELETED:
                 String nameToDelete = mListNamesAndAverages.get(position).getName();
@@ -199,6 +201,7 @@ public class NameAverageAdapter<T extends NameAverageId>
                     }
                 };
                 holder.itemView.setOnClickListener(null);
+                holder.itemView.setOnLongClickListener(null);
                 holder.itemView.setBackgroundColor(Theme.getTertiaryThemeColor());
                 holder.mTextViewName.setText("Click to delete " + nameToDelete);
                 holder.mTextViewName.setOnClickListener(onClickListener);
@@ -215,6 +218,15 @@ public class NameAverageAdapter<T extends NameAverageId>
         //Calls relevant event handler method
         if (mEventHandler != null && mRecyclerView != null)
             mEventHandler.onNAItemClick(mRecyclerView.getChildAdapterPosition(v));
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        if (mEventHandler != null && mRecyclerView != null) {
+            mEventHandler.onNAItemLongClick(mRecyclerView.getChildAdapterPosition(v));
+            return true;
+        }
+        return false;
     }
 
     @Override
@@ -257,6 +269,13 @@ public class NameAverageAdapter<T extends NameAverageId>
          * @param position position of the item in the list
          */
         void onNAItemClick(final int position);
+
+        /**
+         * Called when an item in the RecyclerView is long clicked.
+         *
+         * @param position position of the item in the list
+         */
+        void onNAItemLongClick(final int position);
 
         /**
          * Called when an item in the RecyclerView is confirmed by user for deletion.

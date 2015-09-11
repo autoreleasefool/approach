@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="arr_long_click_name_average">
+        <item>Change name</item>
+        <item>Delete item</item>
+    </string-array>
+
+</resources>

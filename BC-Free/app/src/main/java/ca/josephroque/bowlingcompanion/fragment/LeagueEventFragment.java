@@ -42,7 +42,7 @@ import ca.josephroque.bowlingcompanion.database.Contract.GameEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.LeagueEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.SeriesEntry;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
-import ca.josephroque.bowlingcompanion.dialog.NewLeagueEventDialog;
+import ca.josephroque.bowlingcompanion.dialog.NameLeagueEventDialog;
 import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
 import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
 
@@ -55,7 +55,7 @@ import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
 public class LeagueEventFragment
         extends Fragment
         implements NameAverageAdapter.NameAverageEventHandler,
-        NewLeagueEventDialog.NewLeagueEventDialogListener,
+        NameLeagueEventDialog.NewLeagueEventDialogListener,
         FloatingActionButtonHandler {
 
     /** Identifies output from this class in Logcat. */
@@ -203,6 +203,14 @@ public class LeagueEventFragment
     }
 
     @Override
+    public void onNAItemLongClick(final int position) {
+        // When league name is long clicked, a dialog is opened to change or delete the item
+        // Ignores long clicks on the "Open" league
+        if (!Constants.NAME_OPEN_LEAGUE.equals(mListLeaguesEvents.get(position).getLeagueEventName().substring(1)))
+            showLongClickLeagueDialog(position);
+    }
+
+    @Override
     public void onNAItemDelete(long id) {
         for (int i = 0; i < mListLeaguesEvents.size(); i++) {
             if (mListLeaguesEvents.get(i).getLeagueEventId() == id) {
@@ -220,6 +228,72 @@ public class LeagueEventFragment
                 mListLeaguesEvents.get(i).setIsDeleted(false);
                 mAdapterLeagueEvents.notifyItemChanged(i);
             }
+        }
+    }
+
+    @Override
+    public void onChangeLeagueEventName(final LeagueEvent leagueEventToChange, String name) {
+        boolean validInput = true;
+        int invalidInputMessage = -1;
+        final LeagueEvent leagueEventWithNewName = new LeagueEvent(leagueEventToChange.getId(),
+                ((leagueEventToChange.isEvent())
+                        ? "E"
+                        : "L") + name,
+                leagueEventToChange.getAverage(),
+                leagueEventToChange.getLeagueEventNumberOfGames());
+
+        if (name.equalsIgnoreCase(Constants.NAME_OPEN_LEAGUE)) {
+            /*
+             * User has attempted to create a league or event entitled "Open"
+             * which is a reserved name
+             */
+            validInput = false;
+            invalidInputMessage = R.string.dialog_default_name;
+        } else if (mListLeaguesEvents.contains(leagueEventWithNewName)) {
+            //User has provided a name which is already in use for a league or event
+            validInput = false;
+            invalidInputMessage = R.string.dialog_name_exists;
+        } else if (!name.matches(Constants.REGEX_LEAGUE_EVENT_NAME)) {
+            //Name is not made up of letters, numbers and spaces
+            validInput = false;
+            invalidInputMessage = R.string.dialog_name_letters_spaces_numbers;
+        }
+
+        if (!validInput) {
+            //Displays an error dialog if the input was not valid and exits the method
+            new AlertDialog.Builder(getActivity())
+                    .setMessage(invalidInputMessage)
+                    .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .create()
+                    .show();
+        } else {
+            int position = mListLeaguesEvents.indexOf(leagueEventToChange);
+            mListLeaguesEvents.set(position, leagueEventWithNewName);
+            mAdapterLeagueEvents.notifyItemChanged(position);
+
+            ((MainActivity) getActivity()).addSavingThread(new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    SQLiteDatabase database = DatabaseHelper.getInstance(getContext()).getWritableDatabase();
+                    String[] whereArgs = {String.valueOf(leagueEventWithNewName.getId())};
+                    ContentValues values = new ContentValues();
+                    values.put(LeagueEntry.COLUMN_LEAGUE_NAME, leagueEventWithNewName.getLeagueEventName());
+                    database.beginTransaction();
+                    try {
+                        database.update(LeagueEntry.TABLE_NAME, values, LeagueEntry._ID + "=?", whereArgs);
+                        database.setTransactionSuccessful();
+                    } catch (Exception ex) {
+                        Log.e(TAG, "Error updating league/event name.", ex);
+                    } finally {
+                        database.endTransaction();
+                    }
+                }
+            }));
         }
     }
 
@@ -276,10 +350,9 @@ public class LeagueEventFragment
                     })
                     .create()
                     .show();
-            return;
+        } else {
+            new AddNewLeagueEventTask(this).execute(leagueEvent);
         }
-
-        new AddNewLeagueEventTask(this).execute(leagueEvent);
     }
 
     @Override
@@ -288,13 +361,84 @@ public class LeagueEventFragment
     }
 
     /**
+     * Invoked when a league item is long clicked by the user. Displays a dialog with events relevant to the item.
+     *
+     * @param position position of the long clicked item
+     */
+    private void showLongClickLeagueDialog(final int position) {
+        DialogInterface.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (which == DialogInterface.BUTTON_POSITIVE) {
+                    int selectedPosition = ((AlertDialog) dialog).getListView().getCheckedItemPosition();
+                    if (selectedPosition == 0)
+                        promptChangeItemName(position);
+                    else
+                        promptDeleteItem(position);
+                }
+                dialog.dismiss();
+            }
+        };
+
+        final LeagueEvent leagueEvent = mListLeaguesEvents.get(position);
+        new AlertDialog.Builder(getContext())
+                .setTitle(leagueEvent.getLeagueEventName().substring(1))
+                .setSingleChoiceItems(R.array.arr_long_click_name_average, 0, null)
+                .setPositiveButton(R.string.dialog_okay, onClickListener)
+                .setNegativeButton(R.string.dialog_cancel, onClickListener)
+                .create()
+                .show();
+    }
+
+    /**
+     * Prompts user to change the name of a league or event.
+     *
+     * @param position position of the league / event to change the name of
+     */
+    private void promptChangeItemName(final int position) {
+        DialogFragment dialogFragment = NameLeagueEventDialog.newInstance(this,
+                false,
+                true,
+                mListLeaguesEvents.get(position));
+        dialogFragment.show(getFragmentManager(), "ChangeNameLeagueEventDialog");
+    }
+
+    /**
+     * Prompts the user to delete a league or event.
+     *
+     * @param position position of the item to delete
+     */
+    private void promptDeleteItem(final int position) {
+        final LeagueEvent leagueEvent = mListLeaguesEvents.get(position);
+        DialogInterface.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (which == DialogInterface.BUTTON_POSITIVE) {
+                    mListLeaguesEvents.remove(position);
+                    mAdapterLeagueEvents.notifyItemRemoved(position);
+                    deleteLeagueEvent(leagueEvent.getId());
+                }
+                dialog.dismiss();
+            }
+        };
+
+        new AlertDialog.Builder(getContext())
+                .setTitle("Warning!")
+                .setMessage("Are you sure you want to delete " + leagueEvent.getLeagueEventName().substring(1) + "?"
+                        + " This cannot be undone!")
+                .setPositiveButton(R.string.dialog_delete, onClickListener)
+                .setNegativeButton(R.string.dialog_cancel, onClickListener)
+                .create()
+                .show();
+    }
+
+    /**
      * Deletes all data regarding a certain league id in the database.
      *
      * @param leagueEventId id of league/event whose data will be deleted
      */
     private void deleteLeagueEvent(final long leagueEventId) {
-        SharedPreferences prefs =
-                getActivity().getSharedPreferences(Constants.PREFS, Context.MODE_PRIVATE);
+        SharedPreferences prefs = getActivity().getSharedPreferences(Constants.PREFS, Context.MODE_PRIVATE);
         SharedPreferences.Editor prefsEditor = prefs.edit();
         long recentId = prefs.getLong(Constants.PREF_RECENT_LEAGUE_ID, -1);
         long quickId = prefs.getLong(Constants.PREF_QUICK_LEAGUE_ID, -1);
@@ -365,10 +509,7 @@ public class LeagueEventFragment
      * @param newEvent if true, a new event will be made. If false, a new league will be made.
      */
     private void showNewLeagueEventDialog(boolean newEvent) {
-        DialogFragment dialogFragment = NewLeagueEventDialog.newInstance(this);
-        Bundle bundle = new Bundle();
-        bundle.putBoolean(Constants.EXTRA_EVENT_MODE, newEvent);
-        dialogFragment.setArguments(bundle);
+        DialogFragment dialogFragment = NameLeagueEventDialog.newInstance(this, newEvent, false, null);
         dialogFragment.show(getFragmentManager(), "NewLeagueEventDialog");
     }
 

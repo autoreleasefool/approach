@@ -84,6 +84,15 @@ public class LeagueEvent
     }
 
     /**
+     * Checks if this object is a league or an event.
+     *
+     * @return {@code true} if the object's name starts with 'E'
+     */
+    public boolean isEvent() {
+        return getLeagueEventName().startsWith("E");
+    }
+
+    /**
      * Sets a new value for {@code mLeagueEventId}.
      *
      * @param leagueEventId the new id

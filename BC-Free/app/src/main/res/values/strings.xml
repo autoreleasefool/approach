@@ -13,6 +13,8 @@
 
     <!-- Dialog text -->
     <string name="text_undo">Undo</string>
+    <string name="dialog_change">Change</string>
+    <string name="dialog_delete">Delete</string>
     <string name="dialog_create">Create</string>
     <string name="dialog_okay">Okay</string>
     <string name="dialog_cancel">Cancel</string>
