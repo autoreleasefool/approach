@@ -4,6 +4,8 @@ import android.app.ActivityManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
@@ -11,6 +13,7 @@ import android.preference.PreferenceManager;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.view.Window;
@@ -105,9 +108,20 @@ public class SplashActivity
 
     @Override
     public void updateTheme() {
+        String taskName = getResources().getString(R.string.app_name);
+        try {
+            PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            //The .debug specified in gradle
+            if (pInfo.packageName.equals("ca.josephroque.bowlingcompanion.debug")) {
+                taskName += " (DEBUG)";
+            }
+        } catch (PackageManager.NameNotFoundException ex) {
+            Log.e(TAG, "Error finding package name.", ex);
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Bitmap icon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
-            setTaskDescription(new ActivityManager.TaskDescription("Bowling Companion", icon,
+            setTaskDescription(new ActivityManager.TaskDescription(taskName, icon,
                     Theme.getPrimaryThemeColor()));
 
             Window window = getWindow();
@@ -120,6 +134,8 @@ public class SplashActivity
 
             // finally change the color
             window.setStatusBarColor(Theme.getStatusThemeColor());
+        } else {
+            setTitle(taskName);
         }
     }
 

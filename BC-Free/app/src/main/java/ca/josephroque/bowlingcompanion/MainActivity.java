@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.Cursor;
@@ -470,9 +471,20 @@ public class MainActivity
                     .setBackgroundDrawable(new ColorDrawable(Theme.getPrimaryThemeColor()));
         mDrawerRecyclerView.setBackgroundColor(Theme.getPrimaryThemeColor());
 
+        String taskName = getResources().getString(R.string.app_name);
+        try {
+            PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+            //The .debug specified in gradle
+            if (pInfo.packageName.equals("ca.josephroque.bowlingcompanion.debug")) {
+                taskName += " (DEBUG)";
+            }
+        } catch (PackageManager.NameNotFoundException ex) {
+            Log.e(TAG, "Error finding package name.", ex);
+        }
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Bitmap icon = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);
-            setTaskDescription(new ActivityManager.TaskDescription("Bowling Companion", icon,
+            setTaskDescription(new ActivityManager.TaskDescription(taskName, icon,
                     Theme.getPrimaryThemeColor()));
 
             Window window = getWindow();
@@ -485,6 +497,8 @@ public class MainActivity
 
             // finally change the color
             window.setStatusBarColor(Theme.getStatusThemeColor());
+        } else {
+            setTitle(taskName);
         }
 
         if (mPrimaryFab != null) {
