@@ -139,8 +139,8 @@ public class GameFragment
     private boolean[] mGameLocked;
     /** Indicates if a game has a manual score set or not. */
     private boolean[] mManualScoreSet;
-    /** Indicates the results of match play for each game. */
-    private byte[] mMatchPlay;
+    /** Indicates the results of match play for the game. */
+    private byte mMatchPlay;
 
     /** Integer which represents the background color of views in the activity. */
     private int mColorBackground;
@@ -313,9 +313,7 @@ public class GameFragment
             mGameIds = savedInstanceState.getLongArray(Constants.EXTRA_ARRAY_GAME_IDS);
             mFrameIds = savedInstanceState.getLongArray(Constants.EXTRA_ARRAY_FRAME_IDS);
             mGameLocked = savedInstanceState.getBooleanArray(Constants.EXTRA_ARRAY_GAME_LOCKED);
-            mMatchPlay = savedInstanceState.getByteArray(Constants.EXTRA_ARRAY_MATCH_PLAY);
-            mManualScoreSet =
-                    savedInstanceState.getBooleanArray(Constants.EXTRA_ARRAY_MANUAL_SCORE_SET);
+            mManualScoreSet = savedInstanceState.getBooleanArray(Constants.EXTRA_ARRAY_MANUAL_SCORE_SET);
         }
     }
 
@@ -531,7 +529,6 @@ public class GameFragment
             mFrameIds = args.getLongArray(Constants.EXTRA_ARRAY_FRAME_IDS);
             mGameLocked = args.getBooleanArray(Constants.EXTRA_ARRAY_GAME_LOCKED);
             mManualScoreSet = args.getBooleanArray(Constants.EXTRA_ARRAY_MANUAL_SCORE_SET);
-            mMatchPlay = args.getByteArray(Constants.EXTRA_ARRAY_MATCH_PLAY);
         }
 
         mGameScores = new short[((MainActivity) getActivity()).getNumberOfGamesForSeries()];
@@ -608,7 +605,6 @@ public class GameFragment
         outState.putLongArray(Constants.EXTRA_ARRAY_FRAME_IDS, mFrameIds);
         outState.putBooleanArray(Constants.EXTRA_ARRAY_GAME_LOCKED, mGameLocked);
         outState.putBooleanArray(Constants.EXTRA_ARRAY_MANUAL_SCORE_SET, mManualScoreSet);
-        outState.putByteArray(Constants.EXTRA_ARRAY_MATCH_PLAY, mMatchPlay);
         outState.putByte(Constants.EXTRA_CURRENT_GAME, mCurrentGame);
     }
 
@@ -1156,7 +1152,7 @@ public class GameFragment
                         resetGame();
                         saveGame(true);
                         setGameLocked(false);
-                        mMatchPlay[mCurrentGame] = 0;
+                        mMatchPlay = 0;
                         mManualScoreSet[mCurrentGame] = false;
                         clearAllText(true);
                         updateScore();
@@ -1185,17 +1181,17 @@ public class GameFragment
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                switch (mMatchPlay[mCurrentGame]) {
-                    case 0:
+                switch (mMatchPlay) {
+                    case Constants.MATCH_PLAY_NONE:
                         mImageViewMatchPlay.setImageResource(R.drawable.ic_match_none);
                         break;
-                    case 1:
+                    case Constants.MATCH_PLAY_WON:
                         mImageViewMatchPlay.setImageResource(R.drawable.ic_match_win);
                         break;
-                    case 2:
+                    case Constants.MATCH_PLAY_LOST:
                         mImageViewMatchPlay.setImageResource(R.drawable.ic_match_lose);
                         break;
-                    case 3:
+                    case Constants.MATCH_PLAY_TIED:
                         mImageViewMatchPlay.setImageResource(R.drawable.ic_match_tie);
                         break;
                     default: //do nothing
@@ -1270,7 +1266,7 @@ public class GameFragment
                         mGameScoresMinusFouls[mCurrentGame],
                         mGameLocked[mCurrentGame],
                         mManualScoreSet[mCurrentGame],
-                        mMatchPlay[mCurrentGame]));
+                        mMatchPlay));
     }
 
     /**
@@ -2037,6 +2033,17 @@ public class GameFragment
 
                 Cursor cursor = null;
                 try {
+                    cursor = database.query(GameEntry.TABLE_NAME,
+                            new String[]{GameEntry.COLUMN_MATCH_PLAY},
+                            GameEntry._ID + "=?",
+                            new String[]{String.valueOf(mGameIds[mCurrentGame])},
+                            null,
+                            null,
+                            null);
+                    if (cursor.moveToFirst()) {
+                        mMatchPlay = (byte) cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_MATCH_PLAY));
+                    }
+
                     cursor = database.query(FrameEntry.TABLE_NAME,
                             new String[]{
                                     FrameEntry.COLUMN_IS_ACCESSED,
@@ -2267,15 +2274,13 @@ public class GameFragment
     public static GameFragment newInstance(long[] gameIds,
                                            long[] frameIds,
                                            boolean[] gameLocked,
-                                           boolean[] manualScore,
-                                           byte[] matchPlay) {
+                                           boolean[] manualScore) {
         GameFragment gameFragment = new GameFragment();
         Bundle args = new Bundle();
         args.putLongArray(Constants.EXTRA_ARRAY_GAME_IDS, gameIds);
         args.putLongArray(Constants.EXTRA_ARRAY_FRAME_IDS, frameIds);
         args.putBooleanArray(Constants.EXTRA_ARRAY_GAME_LOCKED, gameLocked);
         args.putBooleanArray(Constants.EXTRA_ARRAY_MANUAL_SCORE_SET, manualScore);
-        args.putByteArray(Constants.EXTRA_ARRAY_MATCH_PLAY, matchPlay);
         gameFragment.setArguments(args);
         return gameFragment;
     }

@@ -1155,12 +1155,9 @@ public class MainActivity
                 return null;
 
             long[] gameId = new long[mainActivity.mNumberOfGamesForSeries];
-            //noinspection CheckStyle
-            long[] frameId = new long[mainActivity.mNumberOfGamesForSeries
-                    * Constants.NUMBER_OF_FRAMES];
+            long[] frameId = new long[mainActivity.mNumberOfGamesForSeries * Constants.NUMBER_OF_FRAMES];
             boolean[] gameLocked = new boolean[mainActivity.mNumberOfGamesForSeries];
             boolean[] manualScore = new boolean[mainActivity.mNumberOfGamesForSeries];
-            byte[] matchPlay = new byte[mainActivity.mNumberOfGamesForSeries];
 
             SQLiteDatabase database =
                     DatabaseHelper.getInstance(mainActivity).getReadableDatabase();
@@ -1168,7 +1165,6 @@ public class MainActivity
                     + "game." + GameEntry._ID + " AS gid, "
                     + GameEntry.COLUMN_IS_LOCKED + ", "
                     + GameEntry.COLUMN_IS_MANUAL + ", "
-                    + GameEntry.COLUMN_MATCH_PLAY + ", "
                     + "frame." + FrameEntry._ID + " AS fid"
                     + " FROM " + GameEntry.TABLE_NAME + " AS game"
                     + " INNER JOIN " + FrameEntry.TABLE_NAME + " AS frame"
@@ -1194,15 +1190,13 @@ public class MainActivity
                                 cursor.getColumnIndex(GameEntry.COLUMN_IS_LOCKED)) == 1;
                         manualScore[currentGame] = cursor.getInt(
                                 cursor.getColumnIndex(GameEntry.COLUMN_IS_MANUAL)) == 1;
-                        matchPlay[currentGame] = (byte) cursor.getInt(
-                                cursor.getColumnIndex(GameEntry.COLUMN_MATCH_PLAY));
                     }
                     cursor.moveToNext();
                 }
             }
             cursor.close();
 
-            return new Object[]{gameId, frameId, gameLocked, manualScore, matchPlay, isEvent[0]};
+            return new Object[]{gameId, frameId, gameLocked, manualScore, isEvent[0]};
         }
 
         @SuppressWarnings("CheckStyle")
@@ -1216,11 +1210,9 @@ public class MainActivity
             long[] frameIds = (long[]) params[1];
             boolean[] gameLocked = (boolean[]) params[2];
             boolean[] manualScore = (boolean[]) params[3];
-            byte[] matchPlay = (byte[]) params[4];
-            mainActivity.mIsEventMode = (boolean) params[5];
+            mainActivity.mIsEventMode = (boolean) params[4];
 
-            GameFragment gameFragment = GameFragment.newInstance(gameIds, frameIds, gameLocked,
-                    manualScore, matchPlay);
+            GameFragment gameFragment = GameFragment.newInstance(gameIds, frameIds, gameLocked, manualScore);
             mainActivity.startFragmentTransaction(gameFragment, (mainActivity.isEventMode()
                     ? Constants.FRAGMENT_LEAGUES
                     : Constants.FRAGMENT_SERIES), Constants.FRAGMENT_GAME);
@@ -1281,8 +1273,9 @@ public class MainActivity
                         values = new ContentValues();
                         values.put(FrameEntry.COLUMN_FRAME_NUMBER, j + 1);
                         values.put(FrameEntry.COLUMN_GAME_ID, gameId[i]);
-                        //noinspection CheckStyle
-                        frameId[j + 10 * i] = database.insert(FrameEntry.TABLE_NAME, null, values);
+                        frameId[j + Constants.NUMBER_OF_FRAMES * i] = database.insert(FrameEntry.TABLE_NAME,
+                                null,
+                                values);
                     }
                 }
 
@@ -1313,8 +1306,7 @@ public class MainActivity
                     gameIds,
                     frameIds,
                     new boolean[mainActivity.mNumberOfGamesForSeries],
-                    new boolean[mainActivity.mNumberOfGamesForSeries],
-                    new byte[mainActivity.mNumberOfGamesForSeries]);
+                    new boolean[mainActivity.mNumberOfGamesForSeries]);
             mainActivity.startFragmentTransaction(
                     gameFragment,
                     (mainActivity.isQuickSeries()
