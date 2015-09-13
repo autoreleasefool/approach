@@ -562,11 +562,19 @@ public class GameFragment
             mGameCallback.loadGameScoresForDrawer(mGameIds);
         }
 
+        DisplayUtils.hideKeyboard(getActivity());
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override
             public void run() {
-                setFloatingActionButtonState(false, R.drawable.ic_chevron_left_black_24dp);
-                setFloatingActionButtonState(true, R.drawable.ic_chevron_right_black_24dp);
+                if (mCurrentFrame > 0 || mCurrentBall > 0)
+                    setFloatingActionButtonState(false, R.drawable.ic_chevron_left_black_24dp);
+                else
+                    setFloatingActionButtonState(false, 0);
+
+                if (mCurrentFrame < Constants.LAST_FRAME || mCurrentBall < 2)
+                    setFloatingActionButtonState(true, R.drawable.ic_chevron_right_black_24dp);
+                else
+                    setFloatingActionButtonState(true, 0);
             }
         }, 500);
     }
@@ -820,7 +828,7 @@ public class GameFragment
                         if (mGameLocked[mCurrentGame])
                             showSetMatchPlayLockedDialog();
                         else
-                            showSetMatchPlayDialog();
+                            showSetMatchPlayScreen();
                         if (mGameCallback != null)
                             mGameCallback.stopAutoAdvanceTimer();
                         break;
@@ -979,7 +987,7 @@ public class GameFragment
                 .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        showSetMatchPlayDialog();
+                        showSetMatchPlayScreen();
                         dialog.dismiss();
                     }
                 })
@@ -996,30 +1004,10 @@ public class GameFragment
     /**
      * Prompts user to set results of match play for a game.
      */
-    private void showSetMatchPlayDialog() {
-        new AlertDialog.Builder(getActivity())
-                .setTitle("Set match play")
-                .setSingleChoiceItems(new CharSequence[]{"None", "Won", "Lost", "Tied"},
-                        mMatchPlay[mCurrentGame], null)
-                .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        mMatchPlay[mCurrentGame] =
-                                (byte) ((AlertDialog) dialog).getListView()
-                                        .getCheckedItemPosition();
-                        setMatchPlay();
-                        saveGame(true);
-                        dialog.dismiss();
-                    }
-                })
-                .setNegativeButton(R.string.dialog_cancel, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
-                .create()
-                .show();
+    private void showSetMatchPlayScreen() {
+        MainActivity mainActivity = (MainActivity) getActivity();
+        if (mainActivity != null)
+            mainActivity.openMatchPlayStats(mGameIds[mCurrentGame]);
     }
 
     /**
@@ -2039,6 +2027,8 @@ public class GameFragment
         new Thread(new Runnable() {
             @Override
             public void run() {
+                MainActivity.waitForSaveThreads(new WeakReference<>((MainActivity) getActivity()));
+
                 mCurrentGame = newGame;
                 if (mGameCallback != null)
                     mGameCallback.onGameChanged(mCurrentGame);

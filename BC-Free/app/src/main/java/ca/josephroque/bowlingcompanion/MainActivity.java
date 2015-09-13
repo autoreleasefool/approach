@@ -70,6 +70,7 @@ import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.fragment.BowlerFragment;
 import ca.josephroque.bowlingcompanion.fragment.GameFragment;
 import ca.josephroque.bowlingcompanion.fragment.LeagueEventFragment;
+import ca.josephroque.bowlingcompanion.fragment.MatchPlayFragment;
 import ca.josephroque.bowlingcompanion.fragment.SeriesFragment;
 import ca.josephroque.bowlingcompanion.fragment.StatsGraphFragment;
 import ca.josephroque.bowlingcompanion.fragment.StatsListFragment;
@@ -962,6 +963,18 @@ public class MainActivity
         startFragmentTransaction(fragment,
                 Constants.FRAGMENT_STAT_LIST,
                 Constants.FRAGMENT_STAT_GRAPH);
+    }
+
+    /**
+     * Gets a new instance of {@link ca.josephroque.bowlingcompanion.fragment.MatchPlayFragment} and displays it.
+     *
+     * @param gameId id of game o
+     */
+    public void openMatchPlayStats(long gameId) {
+        MatchPlayFragment fragment = MatchPlayFragment.newInstance(gameId);
+        startFragmentTransaction(fragment,
+                Constants.FRAGMENT_GAME,
+                Constants.FRAGMENT_MATCH_PLAY);
     }
 
     /**

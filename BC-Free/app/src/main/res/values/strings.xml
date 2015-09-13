@@ -5,6 +5,7 @@
     <string name="title_fragment_league_event">Leagues &amp; Events</string>
     <string name="title_fragment_series">Series</string>
     <string name="title_fragment_game">Game Details</string>
+    <string name="title_fragment_match_play">Match Play</string>
     <string name="title_stats_bowler">Bowler Stats</string>
     <string name="title_stats_league">League Stats</string>
     <string name="title_stats_series">Series Stats</string>
@@ -21,6 +22,7 @@
     <string name="dialog_add">Add</string>
     <string name="dialog_name_exists">That name has already been used. You must choose another.</string>
     <string name="dialog_name_letters_spaces">You can only use letters and spaces in a name.</string>
+    <string name="dialog_score_invalid">A valid score must be between 0 and 450 (inclusive).</string>
     <string name="dialog_name_letters_spaces_numbers">You can only use letters, numbers and spaces in a name.</string>
     <string name="dialog_quick_series_instructions">With this button, you can quickly create a new series with your most recently used bowler/league, or set a specific bowler/league in the settings.</string>
     <string name="dialog_set_score">Setting the score for a game manually will clear any previous data about the game. Are you sure you want to do this?</string>
@@ -86,6 +88,24 @@
     <string name="text_stat_value_example">100% [10/10]</string>
     <string name="text_example_bowler">Your name here</string>
     <string name="text_example_league">Bowling Club</string>
+
+    <!-- Match play -->
+    <string name="text_bowler_name">Bowler:</string>
+    <string name="text_league_name">League/Event:</string>
+    <string name="text_series_name">Date:</string>
+    <string name="text_game_number">Game #:</string>
+    <string name="text_score">Score:</string>
+    <string name="text_opponent_name">Opponent\'s name</string>
+    <string name="text_opponent_score">Opponent\'s score</string>
+    <string name="text_none">None</string>
+    <string name="text_won">Won</string>
+    <string name="text_lost">Lost</string>
+    <string name="text_tied">Tied</string>
+    <string name="text_cancel">Cancel</string>
+    <string name="text_save">Save</string>
+    <string name="text_results_saved">Results saved!</string>
+    <string name="text_save_failure">Failed to save results</string>
+    <string name="text_not_loaded">Not finished loading</string>
 
     <!-- Permissions -->
     <string name="permission_request_storage">5 Pin Bowling Companion requires the external storage to save an image of your game to the device.</string>

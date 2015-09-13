@@ -169,6 +169,16 @@ public final class Constants {
     /** Name of a default league available to every bowler. */
     public static final String NAME_OPEN_LEAGUE = "Open";
 
+    // MATCH PLAY
+    /** Represents a game with no match play results set. */
+    public static final byte MATCH_PLAY_NONE = 0;
+    /** Represents a game in which the user won match play. */
+    public static final byte MATCH_PLAY_WON = 1;
+    /** Represents a game in which the user lost match play. */
+    public static final byte MATCH_PLAY_LOST = 2;
+    /** Represents a game in which the user tied match play. */
+    public static final byte MATCH_PLAY_TIED = 3;
+
     // FRAGMENTS
     /** Tag to identify instances of BowlerFragment. */
     public static final String FRAGMENT_BOWLERS = "BowlerFragment";
@@ -182,6 +192,8 @@ public final class Constants {
     public static final String FRAGMENT_STAT_LIST = "StatsListFragment";
     /** Tag to identify instance of StatsGraphFragment. */
     public static final String FRAGMENT_STAT_GRAPH = "StatsGraphFragment";
+    /** Tag to identify instance of MatchPlayFragment. */
+    public static final String FRAGMENT_MATCH_PLAY = "MatchPlayFragment";
 
     /** Maximum score of a 5 pin game. */
     public static final int GAME_MAX_SCORE = 450;

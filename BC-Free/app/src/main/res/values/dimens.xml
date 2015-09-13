@@ -9,6 +9,9 @@
     <dimen name="navigation_separator_padding">8dp</dimen>
     <dimen name="navigation_item_height">48dp</dimen>
 
+    <!-- Match play -->
+    <dimen name="match_play_text_padding">8dp</dimen>
+
     <!-- List Items -->
     <dimen name="list_key_line">16dp</dimen>
     <dimen name="list_text_key_line">72dp</dimen>
