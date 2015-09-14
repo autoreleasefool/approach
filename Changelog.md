@@ -15,6 +15,15 @@ Legacy changelogs
 -----------------
 
 ```
+v2.0.3
+
+- Long click a bowler or league to edit its name
+- Improved match play recording (add your opponent's name and their score)
+- Match play results now appear in the series list (you can disable this in the settings under "Interface")
+- Bugfixes
+```
+
+```
 v2.0
 
 Features
