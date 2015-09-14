@@ -589,18 +589,16 @@ public class LeagueEventFragment
                 Cursor cursor = db.rawQuery(rawSeriesQuery,
                         new String[]{String.valueOf(selectedLeagueEvent.getLeagueEventId())});
                 if (cursor.moveToFirst()) {
-                    long seriesId = cursor.getLong(
-                            cursor.getColumnIndex(SeriesEntry._ID));
-                    String seriesDate = cursor.getString(
-                            cursor.getColumnIndex(SeriesEntry.COLUMN_SERIES_DATE));
+                    long seriesId = cursor.getLong(cursor.getColumnIndex(SeriesEntry._ID));
+                    String seriesDate = cursor.getString(cursor.getColumnIndex(SeriesEntry.COLUMN_SERIES_DATE));
                     cursor.close();
 
-                    return Pair.create(selectedLeagueEvent, new Series(seriesId, seriesDate, null));
+                    return Pair.create(selectedLeagueEvent, new Series(seriesId, seriesDate, null, null));
                 } else
                     cursor.close();
                 throw new RuntimeException("Event series id could not be loaded from database");
             } else
-                return Pair.create(selectedLeagueEvent, new Series(-1, null, null));
+                return Pair.create(selectedLeagueEvent, new Series(-1, null, null, null));
         }
 
         @Override

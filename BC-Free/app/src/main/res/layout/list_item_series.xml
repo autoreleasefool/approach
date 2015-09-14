@@ -23,66 +23,200 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|right">
 
-        <TextView
-            android:id="@+id/tv_series_game_5"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
-            android:alpha="0.54"
-            android:gravity="center"
-            android:textColor="@android:color/black"
-            android:textSize="14sp"
-            tools:ignore="RelativeOverlap" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tv_series_game_4"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
-            android:alpha="0.54"
-            android:gravity="center"
-            android:textColor="@android:color/black"
-            android:textSize="14sp" />
+            <TextView
+                android:id="@+id/tv_series_game_5"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:alpha="0.54"
+                android:gravity="center"
+                android:paddingBottom="@dimen/match_play_text_padding_2"
+                android:paddingLeft="@dimen/match_play_text_padding"
+                android:paddingRight="@dimen/match_play_text_padding"
+                android:paddingTop="@dimen/match_play_text_padding"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                tools:ignore="RelativeOverlap" />
 
-        <TextView
-            android:id="@+id/tv_series_game_3"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
-            android:alpha="0.54"
-            android:gravity="center"
-            android:textColor="@android:color/black"
-            android:textSize="14sp" />
+            <TextView
+                android:id="@+id/tv_series_match_play_5"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:alpha="0.54"
+                android:gravity="center"
+                android:paddingBottom="@dimen/match_play_text_padding"
+                android:paddingLeft="@dimen/match_play_text_padding"
+                android:paddingRight="@dimen/match_play_text_padding"
+                android:paddingTop="@dimen/match_play_text_padding_2"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                tools:ignore="RelativeOverlap" />
 
-        <TextView
-            android:id="@+id/tv_series_game_2"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
-            android:alpha="0.54"
-            android:gravity="center"
-            android:textColor="@android:color/black"
-            android:textSize="14sp" />
+        </LinearLayout>
 
-        <TextView
-            android:id="@+id/tv_series_game_1"
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
-            android:alpha="0.54"
-            android:gravity="center"
-            android:textColor="@android:color/black"
-            android:textSize="14sp" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_series_game_4"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:alpha="0.54"
+                android:gravity="center"
+                android:paddingBottom="@dimen/match_play_text_padding_2"
+                android:paddingLeft="@dimen/match_play_text_padding"
+                android:paddingRight="@dimen/match_play_text_padding"
+                android:paddingTop="@dimen/match_play_text_padding"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                tools:ignore="RelativeOverlap" />
+
+            <TextView
+                android:id="@+id/tv_series_match_play_4"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:alpha="0.54"
+                android:gravity="center"
+                android:paddingBottom="@dimen/match_play_text_padding"
+                android:paddingLeft="@dimen/match_play_text_padding"
+                android:paddingRight="@dimen/match_play_text_padding"
+                android:paddingTop="@dimen/match_play_text_padding_2"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                tools:ignore="RelativeOverlap" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_series_game_3"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:alpha="0.54"
+                android:gravity="center"
+                android:paddingBottom="@dimen/match_play_text_padding_2"
+                android:paddingLeft="@dimen/match_play_text_padding"
+                android:paddingRight="@dimen/match_play_text_padding"
+                android:paddingTop="@dimen/match_play_text_padding"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                tools:ignore="RelativeOverlap" />
+
+            <TextView
+                android:id="@+id/tv_series_match_play_3"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:alpha="0.54"
+                android:gravity="center"
+                android:paddingBottom="@dimen/match_play_text_padding"
+                android:paddingLeft="@dimen/match_play_text_padding"
+                android:paddingRight="@dimen/match_play_text_padding"
+                android:paddingTop="@dimen/match_play_text_padding_2"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                tools:ignore="RelativeOverlap" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_series_game_2"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:alpha="0.54"
+                android:gravity="center"
+                android:paddingBottom="@dimen/match_play_text_padding_2"
+                android:paddingLeft="@dimen/match_play_text_padding"
+                android:paddingRight="@dimen/match_play_text_padding"
+                android:paddingTop="@dimen/match_play_text_padding"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                tools:ignore="RelativeOverlap" />
+
+            <TextView
+                android:id="@+id/tv_series_match_play_2"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:alpha="0.54"
+                android:gravity="center"
+                android:paddingBottom="@dimen/match_play_text_padding"
+                android:paddingLeft="@dimen/match_play_text_padding"
+                android:paddingRight="@dimen/match_play_text_padding"
+                android:paddingTop="@dimen/match_play_text_padding_2"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                tools:ignore="RelativeOverlap" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_series_game_1"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:alpha="0.54"
+                android:gravity="center"
+                android:paddingBottom="@dimen/match_play_text_padding_2"
+                android:paddingLeft="@dimen/match_play_text_padding"
+                android:paddingRight="@dimen/match_play_text_padding"
+                android:paddingTop="@dimen/match_play_text_padding"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                tools:ignore="RelativeOverlap" />
+
+            <TextView
+                android:id="@+id/tv_series_match_play_1"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:alpha="0.54"
+                android:gravity="center"
+                android:paddingBottom="@dimen/match_play_text_padding"
+                android:paddingLeft="@dimen/match_play_text_padding"
+                android:paddingRight="@dimen/match_play_text_padding"
+                android:paddingTop="@dimen/match_play_text_padding_2"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                tools:ignore="RelativeOverlap" />
+
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/iv_edit_date"

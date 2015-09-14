@@ -36,6 +36,9 @@ public class SeriesAdapter
     /** Represents an item in the list which has been deleted. */
     private static final int VIEWTYPE_DELETED = 1;
 
+    /** Textual representations of match play results. */
+    private static final String[] MATCH_PLAY_INDICATORS = {"", "W", "L", "T"};
+
     /** Activity which created the instance of this object. */
     private Activity mActivity;
     /** Instance of handler for callback on user action. */
@@ -64,6 +67,8 @@ public class SeriesAdapter
         private TextView mTextViewDate;
         /** Each TextView displays a different score in the series. */
         private TextView[] mArrayTextViewGames;
+        /** Each TextView displays a different match play result in the series. */
+        private TextView[] mArrayTextViewMatchPlay;
         /** Displays an icon to allow editing of the date of a series. */
         private ImageView mImageViewEdit;
 
@@ -91,32 +96,19 @@ public class SeriesAdapter
 
                     //Adds text views by id to array
                     mArrayTextViewGames = new TextView[Constants.MAX_NUMBER_LEAGUE_GAMES];
-                    for (byte i = 0; i < Constants.MAX_NUMBER_LEAGUE_GAMES; i++) {
-                        switch (i) {
-                            case 0:
-                                mArrayTextViewGames[0] = (TextView) itemLayoutView.findViewById(
-                                        R.id.tv_series_game_1);
-                                break;
-                            case 1:
-                                mArrayTextViewGames[1] = (TextView) itemLayoutView.findViewById(
-                                        R.id.tv_series_game_2);
-                                break;
-                            case 2:
-                                mArrayTextViewGames[2] = (TextView) itemLayoutView.findViewById(
-                                        R.id.tv_series_game_3);
-                                break;
-                            case 3:
-                                mArrayTextViewGames[3] = (TextView) itemLayoutView.findViewById(
-                                        R.id.tv_series_game_4);
-                                break;
-                            case 4:
-                                mArrayTextViewGames[4] = (TextView) itemLayoutView.findViewById(
-                                        R.id.tv_series_game_5);
-                                break;
-                            default:
-                                // does nothing
-                        }
-                    }
+                    mArrayTextViewGames[0] = (TextView) itemLayoutView.findViewById(R.id.tv_series_game_1);
+                    mArrayTextViewGames[1] = (TextView) itemLayoutView.findViewById(R.id.tv_series_game_2);
+                    mArrayTextViewGames[2] = (TextView) itemLayoutView.findViewById(R.id.tv_series_game_3);
+                    mArrayTextViewGames[3] = (TextView) itemLayoutView.findViewById(R.id.tv_series_game_4);
+                    mArrayTextViewGames[4] = (TextView) itemLayoutView.findViewById(R.id.tv_series_game_5);
+
+                    mArrayTextViewMatchPlay = new TextView[Constants.MAX_NUMBER_LEAGUE_GAMES];
+                    mArrayTextViewMatchPlay[0] = (TextView) itemLayoutView.findViewById(R.id.tv_series_match_play_1);
+                    mArrayTextViewMatchPlay[1] = (TextView) itemLayoutView.findViewById(R.id.tv_series_match_play_2);
+                    mArrayTextViewMatchPlay[2] = (TextView) itemLayoutView.findViewById(R.id.tv_series_match_play_3);
+                    mArrayTextViewMatchPlay[3] = (TextView) itemLayoutView.findViewById(R.id.tv_series_match_play_4);
+                    mArrayTextViewMatchPlay[4] = (TextView) itemLayoutView.findViewById(R.id.tv_series_match_play_5);
+
                     break;
                 case VIEWTYPE_DELETED:
                     mImageViewDelete = (ImageView) itemLayoutView.findViewById(R.id.iv_delete);
@@ -218,13 +210,14 @@ public class SeriesAdapter
         holder.mTextViewDate.setText(mListSeries.get(position).getSeriesDate());
 
         List<Short> games = mListSeries.get(position).getSeriesGames();
+        List<Byte> matchPlayResults = mListSeries.get(position).getSeriesMatchPlayResults();
         final int numberOfGamesInSeries = games.size();
         for (int i = 0; i < numberOfGamesInSeries; i++) {
-            /**
-             * Highlights a score if it is over 300 or applies default theme if not
-             */
+            // Highlights a score if it is over 300 or applies default theme if not
             short gameScore = games.get(-i + (numberOfGamesInSeries - 1));
+            byte matchPlay = matchPlayResults.get(-i + (numberOfGamesInSeries - 1));
             holder.mArrayTextViewGames[i].setText(String.valueOf(gameScore));
+            holder.mArrayTextViewMatchPlay[i].setText(MATCH_PLAY_INDICATORS[matchPlay]);
             if (gameScore >= mMinimumScoreToHighlight) {
                 holder.mArrayTextViewGames[i].setTextColor(Theme.getTertiaryThemeColor());
                 holder.mArrayTextViewGames[i].setAlpha(1f);
@@ -236,6 +229,7 @@ public class SeriesAdapter
 
         for (int i = numberOfGamesInSeries; i < Constants.MAX_NUMBER_LEAGUE_GAMES; i++) {
             holder.mArrayTextViewGames[i].setText(null);
+            holder.mArrayTextViewMatchPlay[i].setText(null);
         }
 
         //Sets color of edit button

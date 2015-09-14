@@ -18,6 +18,8 @@ public class Series
     private String mSeriesDate;
     /** Scores of the games in the series. */
     private final List<Short> mSeriesGames;
+    /** Match play results of the games in the series. */
+    private final List<Byte> mSeriesMatchPlay;
     /** Indicates if this series has been deleted. */
     private boolean mIsDeleted;
 
@@ -27,11 +29,13 @@ public class Series
      * @param id unique id of the series
      * @param date date the series occurred
      * @param games scores of the games in the series
+     * @param matchPlay match play results of the games in the series
      */
-    public Series(long id, String date, List<Short> games) {
+    public Series(long id, String date, List<Short> games, List<Byte> matchPlay) {
         this.mSeriesId = id;
         this.mSeriesDate = date;
         this.mSeriesGames = games;
+        this.mSeriesMatchPlay = matchPlay;
     }
 
     /**
@@ -44,6 +48,7 @@ public class Series
         mSeriesId = pc.readLong();
         mSeriesDate = pc.readString();
         mSeriesGames = (ArrayList<Short>) pc.readArrayList(Short.class.getClassLoader());
+        mSeriesMatchPlay = (ArrayList<Byte>) pc.readArrayList(Byte.class.getClassLoader());
     }
 
     /**
@@ -83,6 +88,15 @@ public class Series
     }
 
     /**
+     * Gets the series' math play results.
+     *
+     * @return the value of {@code mSeriesMatchPlay}
+     */
+    public List<Byte> getSeriesMatchPlayResults() {
+        return mSeriesMatchPlay;
+    }
+
+    /**
      * Gets the number of games in the series.
      *
      * @return the size of {@code mSeriesGames}
@@ -96,6 +110,7 @@ public class Series
         pc.writeLong(mSeriesId);
         pc.writeString(mSeriesDate);
         pc.writeList(mSeriesGames);
+        pc.writeList(mSeriesMatchPlay);
     }
 
     @Override

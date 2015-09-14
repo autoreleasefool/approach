@@ -465,7 +465,8 @@ public class SeriesFragment
                     + "series." + SeriesEntry._ID + " AS sid, "
                     + SeriesEntry.COLUMN_SERIES_DATE + ", "
                     + GameEntry.COLUMN_SCORE + ", "
-                    + GameEntry.COLUMN_GAME_NUMBER
+                    + GameEntry.COLUMN_GAME_NUMBER + ", "
+                    + GameEntry.COLUMN_MATCH_PLAY
                     + " FROM " + SeriesEntry.TABLE_NAME + " AS series"
                     + " INNER JOIN " + GameEntry.TABLE_NAME
                     + " ON sid=" + GameEntry.COLUMN_SERIES_ID
@@ -480,17 +481,18 @@ public class SeriesFragment
             if (cursor.moveToFirst()) {
                 while (!cursor.isAfterLast()) {
                     long seriesId = cursor.getLong(cursor.getColumnIndex("sid"));
-                    String seriesDate = cursor.getString(
-                            cursor.getColumnIndex(SeriesEntry.COLUMN_SERIES_DATE));
-                    short gameScore = cursor.getShort(
-                            cursor.getColumnIndex(GameEntry.COLUMN_SCORE));
+                    String seriesDate = cursor.getString(cursor.getColumnIndex(SeriesEntry.COLUMN_SERIES_DATE));
+                    short gameScore = cursor.getShort(cursor.getColumnIndex(GameEntry.COLUMN_SCORE));
+                    byte matchPlay = (byte) cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_MATCH_PLAY));
 
-                    if (listSeries.size() == 0
-                            || listSeries.get(listSeries.size() - 1).getSeriesId() != seriesId)
+                    if (listSeries.size() == 0 || listSeries.get(listSeries.size() - 1).getSeriesId() != seriesId) {
                         listSeries.add(new Series(seriesId,
                                 DataFormatter.formattedDateToPrettyCompact(seriesDate),
-                                new ArrayList<Short>()));
+                                new ArrayList<Short>(),
+                                new ArrayList<Byte>()));
+                    }
 
+                    listSeries.get(listSeries.size() - 1).getSeriesMatchPlayResults().add(matchPlay);
                     listSeries.get(listSeries.size() - 1).getSeriesGames().add(gameScore);
                     cursor.moveToNext();
                 }
