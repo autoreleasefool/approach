@@ -257,6 +257,7 @@ public final class DatabaseHelper
                     break;
                 case 4:
                     upgradeDatabaseFrom3To4(db);
+                    break;
                 default:
                     dropTablesAndRecreate(db);
             }
