@@ -5,6 +5,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -208,28 +209,48 @@ public class SeriesAdapter
      */
     private void bindActiveSeriesItem(final SeriesViewHolder holder, int position) {
         holder.mTextViewDate.setText(mListSeries.get(position).getSeriesDate());
+        int matchPlayPadding = (int) mRecyclerView.getResources().getDimension(R.dimen.match_play_text_padding);
+        int matchPlayHalfPadding = (int) mRecyclerView.getResources().getDimension(R.dimen.match_play_text_padding_2);
 
         List<Short> games = mListSeries.get(position).getSeriesGames();
         List<Byte> matchPlayResults = mListSeries.get(position).getSeriesMatchPlayResults();
+        boolean hasMatchPlayResults = false;
+        for (Byte b : matchPlayResults) {
+            if (b != Constants.MATCH_PLAY_NONE) {
+                hasMatchPlayResults = true;
+                break;
+            }
+        }
+
+        Log.d(TAG, "Has results: " + hasMatchPlayResults);
         final int numberOfGamesInSeries = games.size();
         for (int i = 0; i < numberOfGamesInSeries; i++) {
             // Highlights a score if it is over 300 or applies default theme if not
             short gameScore = games.get(-i + (numberOfGamesInSeries - 1));
-            byte matchPlay = matchPlayResults.get(-i + (numberOfGamesInSeries - 1));
-            holder.mArrayTextViewGames[i].setText(String.valueOf(gameScore));
-            holder.mArrayTextViewMatchPlay[i].setText(MATCH_PLAY_INDICATORS[matchPlay]);
-            if (gameScore >= mMinimumScoreToHighlight) {
-                holder.mArrayTextViewGames[i].setTextColor(Theme.getTertiaryThemeColor());
-                holder.mArrayTextViewGames[i].setAlpha(1f);
+            setGameScoreText(holder.mArrayTextViewGames[i], gameScore);
+
+            if (hasMatchPlayResults) {
+                byte matchPlay = matchPlayResults.get(-i + (numberOfGamesInSeries - 1));
+                holder.mArrayTextViewGames[i].setPadding(matchPlayPadding,
+                        matchPlayPadding,
+                        matchPlayPadding,
+                        matchPlayHalfPadding);
+                holder.mArrayTextViewMatchPlay[i].setVisibility(View.VISIBLE);
+                holder.mArrayTextViewMatchPlay[i].setText(MATCH_PLAY_INDICATORS[matchPlay]);
+                colorMatchPlayText(holder.mArrayTextViewMatchPlay[i], matchPlay);
             } else {
-                holder.mArrayTextViewGames[i].setTextColor(DisplayUtils.COLOR_BLACK);
-                holder.mArrayTextViewGames[i].setAlpha(DisplayUtils.BLACK_SECONDARY_TEXT_ALPHA);
+                holder.mArrayTextViewGames[i].setPadding(matchPlayPadding,
+                        matchPlayPadding,
+                        matchPlayPadding,
+                        matchPlayPadding);
+                holder.mArrayTextViewMatchPlay[i].setVisibility(View.GONE);
             }
         }
 
         for (int i = numberOfGamesInSeries; i < Constants.MAX_NUMBER_LEAGUE_GAMES; i++) {
             holder.mArrayTextViewGames[i].setText(null);
             holder.mArrayTextViewMatchPlay[i].setText(null);
+            holder.mArrayTextViewMatchPlay[i].setVisibility(View.GONE);
         }
 
         //Sets color of edit button
@@ -251,6 +272,50 @@ public class SeriesAdapter
         });
 
         holder.itemView.setOnClickListener(this);
+    }
+
+    /**
+     * Sets the color of the textview based on the match play results.
+     *
+     * @param textViewMatchPlay text view to color
+     * @param matchPlay match play results
+     */
+    private void colorMatchPlayText(TextView textViewMatchPlay, byte matchPlay) {
+        switch (matchPlay) {
+            case Constants.MATCH_PLAY_WON:
+                textViewMatchPlay.setTextColor(DisplayUtils.getColorResource(textViewMatchPlay.getResources(),
+                        R.color.theme_green_tertiary));
+                textViewMatchPlay.setAlpha(1f);
+                break;
+            case Constants.MATCH_PLAY_LOST:
+                textViewMatchPlay.setTextColor(DisplayUtils.getColorResource(textViewMatchPlay.getResources(),
+                        R.color.theme_red_tertiary));
+                textViewMatchPlay.setAlpha(1f);
+                break;
+            case Constants.MATCH_PLAY_TIED:
+                textViewMatchPlay.setTextColor(DisplayUtils.COLOR_BLACK);
+                textViewMatchPlay.setAlpha(DisplayUtils.BLACK_SECONDARY_TEXT_ALPHA);
+                break;
+            default:
+                // does nothing
+        }
+    }
+
+    /**
+     * Sets the text view text to the score of the game and highlights it accordingly.
+     *
+     * @param textViewGame text view to set and highlight
+     * @param gameScore score of the game
+     */
+    private void setGameScoreText(TextView textViewGame, short gameScore) {
+        textViewGame.setText(String.valueOf(gameScore));
+        if (gameScore >= mMinimumScoreToHighlight) {
+            textViewGame.setTextColor(Theme.getTertiaryThemeColor());
+            textViewGame.setAlpha(1f);
+        } else {
+            textViewGame.setTextColor(DisplayUtils.COLOR_BLACK);
+            textViewGame.setAlpha(DisplayUtils.BLACK_SECONDARY_TEXT_ALPHA);
+        }
     }
 
     @Override
