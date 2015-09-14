@@ -106,6 +106,7 @@
     <string name="text_results_saved">Results saved!</string>
     <string name="text_save_failure">Failed to save results</string>
     <string name="text_not_loaded">Not finished loading</string>
+    <string name="text_match_play">Match play:</string>
 
     <!-- Permissions -->
     <string name="permission_request_storage">5 Pin Bowling Companion requires the external storage to save an image of your game to the device.</string>

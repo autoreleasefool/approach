@@ -76,7 +76,7 @@
     <string name="pref_show_match_results_summaryOff">Do not show match results</string>
     <string name="pref_show_match_results_summaryOn">Results will be shown in series</string>
     <string name="pref_highlight_match_results_title">Highlight match results?</string>
-    <string name="pref_highlight_match_results_summaryOn">Wins will be green, loses red</string>
+    <string name="pref_highlight_match_results_summaryOn">Wins will be green, losses red</string>
     <string name="pref_highlight_match_results_summaryOff">All results will be black</string>
 
     <!-- Game Settings -->
