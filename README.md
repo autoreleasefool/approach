@@ -6,6 +6,15 @@ An Android app to track 5-pin bowling statistics. Allows users to track multiple
 
 [View it on the Play Store](https://play.google.com/store/apps/details?id=ca.josephroque.bowlingcompanion)
 
+How to Run
+----------
+
+1. Clone project
+2. Add a strings_ads.xml file to values folder
+3. Add the following line strings_ads.xml:<br />
+```<string name="banner_ad_unit_id">0</string>``` (filler for actual ad id)
+4. Import project into Android Studio and run.
+
 Play Store Description
 ----------------------
 Your 5 Pin Bowling Companion is here!
