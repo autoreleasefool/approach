@@ -61,7 +61,7 @@
     </string-array>
     
     <!-- Theme Settings -->
-    <string name="pref_header_theme">Theme</string>
+    <string name="pref_header_theme">Interface</string>
     <string name="pref_theme_colors_title">Theme colors</string>
     <string name="pref_theme_colors_dialog">Select a theme color</string>
     <string-array name="pref_theme_colors_names">
