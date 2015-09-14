@@ -72,6 +72,12 @@
         <item>Purple</item>
         <item>Grey</item>
     </string-array>
+    <string name="pref_show_match_results_title">Show match results in series?</string>
+    <string name="pref_show_match_results_summaryOff">Do not show match results</string>
+    <string name="pref_show_match_results_summaryOn">Results will be shown in series</string>
+    <string name="pref_highlight_match_results_title">Highlight match results?</string>
+    <string name="pref_highlight_match_results_summaryOn">Wins will be green, loses red</string>
+    <string name="pref_highlight_match_results_summaryOff">All results will be black</string>
 
     <!-- Game Settings -->
     <string name="pref_header_game">Editing games</string>
@@ -99,7 +105,7 @@
 
     <!-- League Settings -->
     <string name="pref_header_league">Leagues</string>
-    <string name="pref_ask_combine_title">Ask to combine series</string>
+    <string name="pref_ask_combine_title">Ask to combine series?</string>
     <string name="pref_ask_combine_summaryOn">Yes, ask to combine similar series</string>
     <string name="pref_ask_combine_summaryOff">Do not ask</string>
 

@@ -16,4 +16,19 @@
         android:key="pref_highlight_score"
         android:title="@string/pref_highlight_score_title" />
 
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="pref_show_match_results"
+        android:summaryOff="@string/pref_show_match_results_summaryOff"
+        android:summaryOn="@string/pref_show_match_results_summaryOn"
+        android:title="@string/pref_show_match_results_title" />
+
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:dependency="pref_show_match_results"
+        android:key="pref_highlight_match_results"
+        android:summaryOff="@string/pref_highlight_match_results_summaryOff"
+        android:summaryOn="@string/pref_highlight_match_results_summaryOn"
+        android:title="@string/pref_highlight_match_results_title" />
+
 </PreferenceScreen>

@@ -5,7 +5,6 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -214,15 +213,18 @@ public class SeriesAdapter
 
         List<Short> games = mListSeries.get(position).getSeriesGames();
         List<Byte> matchPlayResults = mListSeries.get(position).getSeriesMatchPlayResults();
-        boolean hasMatchPlayResults = false;
-        for (Byte b : matchPlayResults) {
-            if (b != Constants.MATCH_PLAY_NONE) {
-                hasMatchPlayResults = true;
-                break;
+        boolean hasMatchPlayResults = PreferenceManager.getDefaultSharedPreferences(holder.itemView.getContext())
+                .getBoolean(Constants.KEY_SHOW_MATCH_RESULTS, true);
+        if (hasMatchPlayResults) {
+            hasMatchPlayResults = false;
+            for (Byte b : matchPlayResults) {
+                if (b != Constants.MATCH_PLAY_NONE) {
+                    hasMatchPlayResults = true;
+                    break;
+                }
             }
         }
 
-        Log.d(TAG, "Has results: " + hasMatchPlayResults);
         final int numberOfGamesInSeries = games.size();
         for (int i = 0; i < numberOfGamesInSeries; i++) {
             // Highlights a score if it is over 300 or applies default theme if not
@@ -281,6 +283,11 @@ public class SeriesAdapter
      * @param matchPlay match play results
      */
     private void colorMatchPlayText(TextView textViewMatchPlay, byte matchPlay) {
+        if (!PreferenceManager.getDefaultSharedPreferences(textViewMatchPlay.getContext())
+                .getBoolean(Constants.KEY_HIGHLIGHT_MATCH_RESULTS, true)) {
+            matchPlay = Constants.MATCH_PLAY_NONE;
+        }
+
         switch (matchPlay) {
             case Constants.MATCH_PLAY_WON:
                 textViewMatchPlay.setTextColor(DisplayUtils.getColorResource(textViewMatchPlay.getResources(),
@@ -292,12 +299,10 @@ public class SeriesAdapter
                         R.color.theme_red_tertiary));
                 textViewMatchPlay.setAlpha(1f);
                 break;
-            case Constants.MATCH_PLAY_TIED:
+            default:
                 textViewMatchPlay.setTextColor(DisplayUtils.COLOR_BLACK);
                 textViewMatchPlay.setAlpha(DisplayUtils.BLACK_SECONDARY_TEXT_ALPHA);
                 break;
-            default:
-                // does nothing
         }
     }
 

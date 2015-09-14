@@ -41,6 +41,10 @@ public final class Constants {
     public static final String KEY_ENABLE_FAB = "pref_enable_fab";
     /** Identifier for preference for opening the app's Facebook page. */
     public static final String KEY_FACEBOOK_PAGE = "pref_facebook_page";
+    /** Identifier for preference to show or hide match play results in series view. */
+    public static final String KEY_SHOW_MATCH_RESULTS = "pref_show_match_results";
+    /** Identifier for preference to highlight match play results in series view. */
+    public static final String KEY_HIGHLIGHT_MATCH_RESULTS = "pref_highlight_match_results";
 
     // PREFERENCES
     /** Identifier for SharedPreferences of app. */
@@ -93,8 +97,6 @@ public final class Constants {
     public static final String EXTRA_ARRAY_MANUAL_SCORE_SET = "EAMSS";
     /** Identifies the current game number for the navigation drawer. */
     public static final String EXTRA_NAV_CURRENT_GAME = "ENCG";
-    /** Identifies an array of bytes to indicate results of match play. */
-    public static final String EXTRA_ARRAY_MATCH_PLAY = "EAMP";
     /** Identifies byte indicating current game in GameFragment. */
     public static final String EXTRA_CURRENT_GAME = "ECG";
     /** Identifies a series object. */
