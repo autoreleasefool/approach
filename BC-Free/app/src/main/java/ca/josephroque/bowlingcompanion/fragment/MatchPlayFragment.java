@@ -74,8 +74,6 @@ public class MatchPlayFragment
     private long mGameId;
     /** Indicates if the fragment was loaded from a saved instance state. */
     private boolean mFromSavedInstanceState;
-    /** Indicates if there are match play results in the database for {@code mGameId}. */
-    private boolean mHasResultsInDatabase;
     /** Indicates if the match play results have finished loading from the database. */
     private boolean mFinishedLoadingResults;
     /** The selected radio button. Used to restore instance state. */
@@ -248,7 +246,6 @@ public class MatchPlayFragment
                 try {
                     String[] whereArgs = {String.valueOf(mGameId)};
                     ContentValues values = new ContentValues();
-                    Log.d(TAG, "Match play save: " + getSelectedMatchPlayRadioButton());
                     values.put(GameEntry.COLUMN_MATCH_PLAY, getSelectedMatchPlayRadioButton());
                     database.update(GameEntry.TABLE_NAME, values, GameEntry._ID + "=?", whereArgs);
 
@@ -256,27 +253,27 @@ public class MatchPlayFragment
                     String opponentScore = mEditTextOpponentScore.getText().toString();
 
                     values = new ContentValues();
+                    values.put(MatchPlayEntry.COLUMN_GAME_ID, mGameId);
                     if (!TextUtils.isEmpty(opponentName))
                         values.put(MatchPlayEntry.COLUMN_OPPONENT_NAME, opponentName);
                     if (!TextUtils.isEmpty(opponentScore))
                         values.put(MatchPlayEntry.COLUMN_OPPONENT_SCORE, Short.parseShort(opponentScore));
                     else
                         values.put(MatchPlayEntry.COLUMN_OPPONENT_SCORE, 0);
-                    if (mHasResultsInDatabase) {
-                        Log.d(TAG, "Updating match play entry");
-                        long result = database.update(MatchPlayEntry.TABLE_NAME,
-                                values,
-                                MatchPlayEntry._ID + "=?",
-                                whereArgs);
-                        if (result == 0)
-                            throw new Exception("Failed to update values in database.");
-                    } else {
-                        Log.d(TAG, "New match play entry");
-                        values.put(MatchPlayEntry.COLUMN_GAME_ID, mGameId);
-                        long result = database.insert(MatchPlayEntry.TABLE_NAME, null, values);
-                        if (result == -1)
-                            throw new Exception("Failed to insert values into database.");
-                    }
+
+                    /*
+                     * Due to the way this method was originally implemented, when match play results were updated,
+                     * often the wrong row in the table was altered. This bug prevented users from saving match play
+                     * results under certain circumstances. This has been fixed, but the old data cannot be safely
+                     * removed all at once, without potentially deleting some of the user's real data. As a fix, when
+                     * a user now saves match play results, any old results for *only that game* are deleted, and the
+                     * new results are inserted, as seen below.
+                     */
+                    database.delete(MatchPlayEntry.TABLE_NAME, MatchPlayEntry.COLUMN_GAME_ID + "=?", whereArgs);
+                    long result = database.insert(MatchPlayEntry.TABLE_NAME, null, values);
+                    if (result == -1)
+                        throw new Exception("Failed to insert values into database.");
+
                     database.setTransactionSuccessful();
                 } catch (Exception ex) {
                     Log.e(TAG, "Error saving match results.", ex);
@@ -285,7 +282,6 @@ public class MatchPlayFragment
                     database.endTransaction();
                 }
 
-                mHasResultsInDatabase = true;
                 final int toastMessage = (saveSuccessful)
                         ? R.string.text_results_saved
                         : R.string.text_save_failure;
@@ -389,10 +385,9 @@ public class MatchPlayFragment
                     + MatchPlayEntry.COLUMN_OPPONENT_NAME + ", "
                     + MatchPlayEntry.COLUMN_OPPONENT_SCORE
                     + " FROM " + MatchPlayEntry.TABLE_NAME
-                    + " WHERE " + MatchPlayEntry._ID + "=?";
+                    + " WHERE " + MatchPlayEntry.COLUMN_GAME_ID + "=?";
             cursor = database.rawQuery(rawMatchQuery, rawArgs);
             if (cursor.moveToFirst()) {
-                fragment.mHasResultsInDatabase = true;
                 if (!cursor.isNull(cursor.getColumnIndex(MatchPlayEntry.COLUMN_OPPONENT_NAME)))
                     opponentName = cursor.getString(cursor.getColumnIndex(MatchPlayEntry.COLUMN_OPPONENT_NAME));
                 opponentScore = cursor.getShort(cursor.getColumnIndex(MatchPlayEntry.COLUMN_OPPONENT_SCORE));
