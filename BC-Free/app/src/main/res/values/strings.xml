@@ -43,7 +43,7 @@
     <string name="action_share">Share</string>
     <string name="action_series_stats">Series stats</string>
     <string name="action_event_stats">Event stats</string>
-    <string name="action_what_if">What if?</string>
+    <string name="action_best_possible">Hi score possible</string>
     <string name="action_reset_game">Reset game</string>
     <string name="action_set_score">Set manual score</string>
     <string name="action_clear_score">Clear manual score</string>

@@ -23,9 +23,9 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/action_what_if"
+        android:id="@+id/action_best_possible"
         android:orderInCategory="30"
-        android:title="@string/action_what_if"
+        android:title="@string/action_best_possible"
         app:showAsAction="never" />
 
     <item

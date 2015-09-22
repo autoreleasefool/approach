@@ -681,9 +681,9 @@ public class GameFragment
                     mGameCallback.stopAutoAdvanceTimer();
                 return true;
 
-            case R.id.action_what_if:
+            case R.id.action_best_possible:
                 //Calculates possible score and displays
-                showWhatIfDialog();
+                showBestPossibleScoreDialog();
                 return true;
 
             case R.id.action_stats:
@@ -1293,7 +1293,7 @@ public class GameFragment
      * Calculates the highest score possible from the current state of the game and displays it in a dialog to the
      * user.
      */
-    private void showWhatIfDialog() {
+    private void showBestPossibleScoreDialog() {
         StringBuilder alertMessageBuilder = new StringBuilder("If you get");
         short possibleScore = Short.parseShort(mTextViewFrames[mCurrentFrame].getText().toString());
 
