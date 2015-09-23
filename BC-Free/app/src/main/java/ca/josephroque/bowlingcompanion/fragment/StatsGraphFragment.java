@@ -574,9 +574,10 @@ public class StatsGraphFragment
                         addLabelOnDateChange = true;
                     lastEntryDate = currentDate;
 
+                    short gameScore = cursor.getShort(cursor.getColumnIndex(GameEntry.COLUMN_SCORE));
                     boolean gameIsManual = (cursor.getInt(cursor.getColumnIndex(
                             Contract.GameEntry.COLUMN_IS_MANUAL)) == 1);
-                    if (gameIsManual) {
+                    if (gameIsManual || gameScore == 0) {
                         cursor.moveToNext();
                         continue;
                     }
@@ -729,9 +730,10 @@ public class StatsGraphFragment
                         addLabelOnDateChange = true;
                     lastEntryDate = currentDate;
 
+                    short gameScore = cursor.getShort(cursor.getColumnIndex(GameEntry.COLUMN_SCORE));
                     boolean gameIsManual = (cursor.getInt(cursor.getColumnIndex(
                             Contract.GameEntry.COLUMN_IS_MANUAL)) == 1);
-                    if (gameIsManual) {
+                    if (gameIsManual || gameScore == 0) {
                         cursor.moveToNext();
                         continue;
                     }
@@ -968,9 +970,10 @@ public class StatsGraphFragment
                         addLabelOnDateChange = true;
                     lastEntryDate = currentDate;
 
+                    short gameScore = cursor.getShort(cursor.getColumnIndex(GameEntry.COLUMN_SCORE));
                     boolean gameIsManual = (cursor.getInt(cursor.getColumnIndex(
                             Contract.GameEntry.COLUMN_IS_MANUAL)) == 1);
-                    if (gameIsManual) {
+                    if (gameIsManual || gameScore == 0) {
                         cursor.moveToNext();
                         continue;
                     }
@@ -1053,9 +1056,10 @@ public class StatsGraphFragment
                         addLabelOnDateChange = true;
                     lastEntryDate = currentDate;
 
+                    short gameScore = cursor.getShort(cursor.getColumnIndex(GameEntry.COLUMN_SCORE));
                     boolean gameIsManual = (cursor.getInt(cursor.getColumnIndex(
                             Contract.GameEntry.COLUMN_IS_MANUAL)) == 1);
-                    if (gameIsManual) {
+                    if (gameIsManual || gameScore == 0) {
                         cursor.moveToNext();
                         continue;
                     }
@@ -1141,8 +1145,7 @@ public class StatsGraphFragment
 
                     currentDate = DateUtils.getCalendarAtMidnight(entryDate);
 
-                    if (addLabelOnDateChange
-                            && currentDate.getTimeInMillis() != lastEntryDate.getTimeInMillis()) {
+                    if (addLabelOnDateChange && currentDate.getTimeInMillis() != lastEntryDate.getTimeInMillis()) {
                         addLabelOnDateChange = false;
                         lastLabelDate = lastEntryDate;
                         if (numberOfGames > 0)
@@ -1164,17 +1167,16 @@ public class StatsGraphFragment
                         addLabelOnDateChange = true;
                     lastEntryDate = currentDate;
 
-                    int gameNumber = cursor.getInt(cursor.getColumnIndex(
-                            GameEntry.COLUMN_GAME_NUMBER));
-                    int frameNumber = cursor.getInt(cursor.getColumnIndex(
-                            FrameEntry.COLUMN_FRAME_NUMBER));
+                    int gameNumber = cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_GAME_NUMBER));
+                    int frameNumber = cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_FRAME_NUMBER));
 
                     if (frameNumber == 1 && gameNumber - 1 == fragment.mStatIndex) {
-                        short gameScore = cursor.getShort(cursor.getColumnIndex(
-                                GameEntry.COLUMN_SCORE));
+                        short gameScore = cursor.getShort(cursor.getColumnIndex(GameEntry.COLUMN_SCORE));
 
-                        numberOfGames++;
-                        totalPinfall += gameScore;
+                        if (gameScore > 0) {
+                            numberOfGames++;
+                            totalPinfall += gameScore;
+                        }
                     }
 
                     cursor.moveToNext();
@@ -1252,8 +1254,7 @@ public class StatsGraphFragment
                             FrameEntry.COLUMN_FRAME_NUMBER));
 
                     if (frameNumber == 1) {
-                        int matchPlay
-                                = cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_MATCH_PLAY));
+                        int matchPlay = cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_MATCH_PLAY));
                         if (matchPlay > 0) {
                             totalMatchPlayGames++;
                             if (matchPlay - 1 == fragment.mStatIndex)
@@ -1360,11 +1361,8 @@ public class StatsGraphFragment
                         addLabelOnDateChange = true;
                     lastEntryDate = currentDate;
 
-                    int gameNumber = cursor.getInt(cursor.getColumnIndex(
-                            GameEntry.COLUMN_GAME_NUMBER));
-                    int frameNumber = cursor.getInt(cursor.getColumnIndex(
-                            FrameEntry.COLUMN_FRAME_NUMBER));
-
+                    int gameNumber = cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_GAME_NUMBER));
+                    int frameNumber = cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_FRAME_NUMBER));
                     if (frameNumber == 1) {
                         if (gameNumber == 1) {
                             if (currentSeries > highSeries)
@@ -1372,13 +1370,15 @@ public class StatsGraphFragment
                             currentSeries = 0;
                         }
 
-                        short gameScore = cursor.getShort(cursor.getColumnIndex(
-                                GameEntry.COLUMN_SCORE));
-                        numberOfGames++;
-                        totalPinfall += gameScore;
-                        currentSeries += gameScore;
-                        if (gameScore > highSingle)
-                            highSingle = gameScore;
+                        short gameScore = cursor.getShort(cursor.getColumnIndex(GameEntry.COLUMN_SCORE));
+
+                        if (gameScore > 0) {
+                            numberOfGames++;
+                            totalPinfall += gameScore;
+                            currentSeries += gameScore;
+                            if (gameScore > highSingle)
+                                highSingle = gameScore;
+                        }
                     }
 
                     cursor.moveToNext();

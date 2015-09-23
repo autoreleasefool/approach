@@ -468,35 +468,32 @@ public class StatsListFragment
                     byte frameNumber = (byte) cursor.getInt(
                             cursor.getColumnIndex(Contract.FrameEntry.COLUMN_FRAME_NUMBER));
                     if (toLoad != StatUtils.LOADING_GAME_STATS && frameNumber == 1) {
-                        short gameScore =
-                                cursor.getShort(cursor.getColumnIndex(
-                                        Contract.GameEntry.COLUMN_SCORE));
-                        byte gameNumber = (byte) cursor.getInt(
-                                cursor.getColumnIndex(Contract.GameEntry.COLUMN_GAME_NUMBER));
-
-                        totalByGame[gameNumber - 1] += gameScore;
-                        countByGame[gameNumber - 1]++;
+                        short gameScore = cursor.getShort(cursor.getColumnIndex(Contract.GameEntry.COLUMN_SCORE));
+                        byte gameNumber
+                                = (byte) cursor.getInt(cursor.getColumnIndex(Contract.GameEntry.COLUMN_GAME_NUMBER));
 
                         byte matchResults = (byte) (cursor.getInt(
                                 cursor.getColumnIndex(Contract.GameEntry.COLUMN_MATCH_PLAY)));
                         if (matchResults > 0)
                             statValues[fragment.mStatsMatch][matchResults - 1]++;
 
-                        if (statValues[fragment.mStatsOverall][StatUtils.STAT_HIGH_SINGLE]
-                                < gameScore)
-                            statValues[fragment.mStatsOverall][StatUtils.STAT_HIGH_SINGLE]
-                                    = gameScore;
-                        statValues[fragment.mStatsOverall][StatUtils.STAT_TOTAL_PINS] += gameScore;
-                        statValues[fragment.mStatsOverall][StatUtils.STAT_NUMBER_OF_GAMES]++;
+                        if (gameScore > 0) {
+                            totalByGame[gameNumber - 1] += gameScore;
+                            countByGame[gameNumber - 1]++;
+
+                            if (gameScore > statValues[fragment.mStatsOverall][StatUtils.STAT_HIGH_SINGLE])
+                                statValues[fragment.mStatsOverall][StatUtils.STAT_HIGH_SINGLE] = gameScore;
+                            statValues[fragment.mStatsOverall][StatUtils.STAT_TOTAL_PINS] += gameScore;
+                            statValues[fragment.mStatsOverall][StatUtils.STAT_NUMBER_OF_GAMES]++;
+                        }
 
                         if (gameNumber == 1) {
-                            if (statValues[fragment.mStatsOverall][StatUtils.STAT_HIGH_SERIES]
-                                    < seriesTotal)
-                                statValues[fragment.mStatsOverall][StatUtils.STAT_HIGH_SERIES]
-                                        = seriesTotal;
+                            if (statValues[fragment.mStatsOverall][StatUtils.STAT_HIGH_SERIES] < seriesTotal)
+                                statValues[fragment.mStatsOverall][StatUtils.STAT_HIGH_SERIES] = seriesTotal;
                             seriesTotal = gameScore;
-                        } else
+                        } else {
                             seriesTotal += gameScore;
+                        }
                     }
 
                     boolean gameIsManual = (cursor.getInt(cursor.getColumnIndex(

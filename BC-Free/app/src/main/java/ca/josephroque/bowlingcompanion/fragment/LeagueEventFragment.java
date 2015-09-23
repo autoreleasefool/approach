@@ -685,8 +685,7 @@ public class LeagueEventFragment
 
             MainActivity.waitForSaveThreads(new WeakReference<>(mainActivity));
 
-            SQLiteDatabase database =
-                    DatabaseHelper.getInstance(mainActivity).getReadableDatabase();
+            SQLiteDatabase database = DatabaseHelper.getInstance(mainActivity).getReadableDatabase();
             List<LeagueEvent> listLeagueEvents = new ArrayList<>();
 
             String rawLeagueEventQuery = "SELECT "
@@ -701,16 +700,16 @@ public class LeagueEventFragment
                     + " LEFT JOIN " + GameEntry.TABLE_NAME + " AS game"
                     + " ON series." + SeriesEntry._ID + "=game." + GameEntry.COLUMN_SERIES_ID
                     + " WHERE " + LeagueEntry.COLUMN_BOWLER_ID + "=?"
+                    + " AND " + GameEntry.COLUMN_SCORE + ">?"
                     + " GROUP BY lid"
                     + " ORDER BY " + LeagueEntry.COLUMN_DATE_MODIFIED + " DESC";
 
             long bowlerId = mainActivity.getBowlerId();
             Cursor cursor = database.rawQuery(rawLeagueEventQuery,
-                    new String[]{String.valueOf(bowlerId)});
+                    new String[]{String.valueOf(bowlerId), String.valueOf(0)});
             if (cursor.moveToFirst()) {
                 while (!cursor.isAfterLast()) {
-                    boolean isEvent =
-                            cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_IS_EVENT)) == 1;
+                    boolean isEvent = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_IS_EVENT)) == 1;
                     LeagueEvent leagueEvent = new LeagueEvent(cursor.getLong(cursor.getColumnIndex(
                             "lid")),
                             ((isEvent)

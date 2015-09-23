@@ -668,12 +668,10 @@ public class BowlerFragment
 
             MainActivity.waitForSaveThreads(new WeakReference<>(mainActivity));
 
-            SQLiteDatabase database =
-                    DatabaseHelper.getInstance(mainActivity).getReadableDatabase();
+            SQLiteDatabase database = DatabaseHelper.getInstance(mainActivity).getReadableDatabase();
             List<Bowler> listBowlers = new ArrayList<>();
 
-            SharedPreferences preferences =
-                    PreferenceManager.getDefaultSharedPreferences(mainActivity);
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mainActivity);
             boolean includeEvents = preferences.getBoolean(Constants.KEY_INCLUDE_EVENTS, true);
             boolean includeOpen = preferences.getBoolean(Constants.KEY_INCLUDE_OPEN, true);
 
@@ -687,6 +685,8 @@ public class BowlerFragment
                     + " INNER JOIN " + GameEntry.TABLE_NAME + " AS game2"
                     + " ON series2." + SeriesEntry._ID + "=" + GameEntry.COLUMN_SERIES_ID
                     + " WHERE "
+                    + " game2." + GameEntry.COLUMN_SCORE + ">?"
+                    + " AND "
                     + (!includeEvents
                     ? LeagueEntry.COLUMN_IS_EVENT
                     : "'0'") + "=?"
@@ -709,7 +709,7 @@ public class BowlerFragment
                     + " ON t.lid2=league." + LeagueEntry._ID
                     + " GROUP BY bowler." + BowlerEntry._ID
                     + " ORDER BY bowler." + BowlerEntry.COLUMN_DATE_MODIFIED + " DESC";
-            String[] rawBowlerArgs = {
+            String[] rawBowlerArgs = {String.valueOf(0),
                     String.valueOf(0), (!includeOpen
                     ? Constants.NAME_OPEN_LEAGUE
                     : String.valueOf(0))
