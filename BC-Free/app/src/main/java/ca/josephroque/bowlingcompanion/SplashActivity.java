@@ -81,6 +81,7 @@ public class SplashActivity
         setContentView(R.layout.activity_splash);
 
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        preferences.edit().putBoolean(Constants.PREF_RATE_ME_SHOWN, false).apply();
         if (preferences.getBoolean(PREF_TUTORIAL_WATCHED, false) && !ignoreWatched) {
             openMainActivity();
             return;

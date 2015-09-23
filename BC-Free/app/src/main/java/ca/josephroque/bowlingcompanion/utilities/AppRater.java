@@ -46,10 +46,12 @@ public final class AppRater {
     public static void appLaunched(Context context) {
         SharedPreferences preferences =
                 context.getSharedPreferences(Constants.PREFS, Context.MODE_PRIVATE);
-        if (preferences.getBoolean(PREF_DO_NOT_SHOW, false))
+        if (preferences.getBoolean(PREF_DO_NOT_SHOW, false)
+                || preferences.getBoolean(Constants.PREF_RATE_ME_SHOWN, false))
             return;
 
         SharedPreferences.Editor editor = preferences.edit();
+        editor.putBoolean(Constants.PREF_RATE_ME_SHOWN, false);
 
         //Gets number of launches and updates the count
         long launchCount = preferences.getLong(PREF_LAUNCH_COUNT, 0) + 1;
