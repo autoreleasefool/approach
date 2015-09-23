@@ -56,6 +56,8 @@ public class SeriesAdapter
 
     /** Indicates minimum score values which will be highlighted when displayed. */
     private int mMinimumScoreToHighlight = Constants.DEFAULT_GAME_HIGHLIGHT;
+    /** Indicates minimum series total values which will be highlighted when displayed. */
+    private int mMinimumSeriesToHighlight = Constants.DEFAULT_SERIES_HIGHLIGHT;
 
     /**
      * Subclass of RecyclerView.ViewHolder to manage view which will display text to the user.
@@ -71,6 +73,8 @@ public class SeriesAdapter
         private TextView[] mArrayTextViewMatchPlay;
         /** Displays an icon to allow editing of the date of a series. */
         private ImageView mImageViewEdit;
+        /** Displays the sum of all the scores in the series. */
+        private TextView mTextViewSeriesTotal;
 
         /** Displays text to confirm deletion of item. */
         private TextView mTextViewDelete;
@@ -93,6 +97,7 @@ public class SeriesAdapter
                 case VIEWTYPE_ACTIVE:
                     mTextViewDate = (TextView) itemLayoutView.findViewById(R.id.tv_series_date);
                     mImageViewEdit = (ImageView) itemLayoutView.findViewById(R.id.iv_edit_date);
+                    mTextViewSeriesTotal = (TextView) itemLayoutView.findViewById(R.id.tv_series_total);
 
                     //Adds text views by id to array
                     mArrayTextViewGames = new TextView[Constants.MAX_NUMBER_LEAGUE_GAMES];
@@ -225,6 +230,9 @@ public class SeriesAdapter
             }
         }
 
+        short seriesTotal = mListSeries.get(position).getSeriesTotal();
+        setSeriesTotalText(holder.mTextViewSeriesTotal, seriesTotal);
+
         final int numberOfGamesInSeries = games.size();
         for (int i = 0; i < numberOfGamesInSeries; i++) {
             // Highlights a score if it is over 300 or applies default theme if not
@@ -257,8 +265,7 @@ public class SeriesAdapter
 
         //Sets color of edit button
         if (mEditDrawable == null)
-            mEditDrawable = DisplayUtils.getDrawable(holder.itemView.getResources(),
-                    R.drawable.ic_edit_black_24dp);
+            mEditDrawable = DisplayUtils.getDrawable(holder.itemView.getResources(), R.drawable.ic_edit_black_24dp);
         if (mEditDrawableFilter != Theme.getSecondaryThemeColor()) {
             mEditDrawableFilter = Theme.getSecondaryThemeColor();
             mEditDrawable.setColorFilter(mEditDrawableFilter, PorterDuff.Mode.SRC_IN);
@@ -268,8 +275,7 @@ public class SeriesAdapter
         holder.mImageViewEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mEventHandler.onEditClick(mRecyclerView.getChildAdapterPosition(
-                        holder.itemView));
+                mEventHandler.onEditClick(mRecyclerView.getChildAdapterPosition(holder.itemView));
             }
         });
 
@@ -307,13 +313,32 @@ public class SeriesAdapter
     }
 
     /**
+     * Sets the text view text to the series total of the game and highlights it accordingly.
+     *
+     * @param textViewTotal text view to set and highlight
+     * @param seriesTotal total of the series
+     */
+    private void setSeriesTotalText(TextView textViewTotal, short seriesTotal) {
+        textViewTotal.setText(Short.toString(seriesTotal));
+        if (seriesTotal >= mMinimumSeriesToHighlight) {
+            textViewTotal.setBackgroundColor(Theme.getStatusThemeColor());
+            textViewTotal.setTextColor(DisplayUtils.COLOR_WHITE);
+            textViewTotal.setAlpha(1f);
+        } else {
+            textViewTotal.setBackgroundColor(0x00000000);
+            textViewTotal.setTextColor(DisplayUtils.COLOR_BLACK);
+            textViewTotal.setAlpha(DisplayUtils.BLACK_SECONDARY_TEXT_ALPHA);
+        }
+    }
+
+    /**
      * Sets the text view text to the score of the game and highlights it accordingly.
      *
      * @param textViewGame text view to set and highlight
      * @param gameScore score of the game
      */
     private void setGameScoreText(TextView textViewGame, short gameScore) {
-        textViewGame.setText(String.valueOf(gameScore));
+        textViewGame.setText(Short.toString(gameScore));
         if (gameScore >= mMinimumScoreToHighlight) {
             textViewGame.setTextColor(Theme.getTertiaryThemeColor());
             textViewGame.setAlpha(1f);
@@ -361,10 +386,21 @@ public class SeriesAdapter
 
     @Override
     public void updateTheme() {
-        if (mActivity != null)
-            mMinimumScoreToHighlight =
-                    Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(mActivity)
-                            .getString(Constants.KEY_HIGHLIGHT_SCORE, "300"));
+        if (mActivity != null) {
+            mMinimumScoreToHighlight = PreferenceManager.getDefaultSharedPreferences(mActivity)
+                    .getInt(Constants.KEY_HIGHLIGHT_SCORE, -1);
+            if (mMinimumScoreToHighlight == -1)
+                mMinimumScoreToHighlight = Constants.DEFAULT_GAME_HIGHLIGHT;
+            else
+                mMinimumScoreToHighlight = mMinimumScoreToHighlight * Constants.HIGHLIGHT_INCREMENT;
+
+            mMinimumSeriesToHighlight = PreferenceManager.getDefaultSharedPreferences(mActivity)
+                    .getInt(Constants.KEY_HIGHLIGHT_SERIES, -1);
+            if (mMinimumSeriesToHighlight == -1)
+                mMinimumSeriesToHighlight = Constants.DEFAULT_SERIES_HIGHLIGHT;
+            else
+                mMinimumSeriesToHighlight = mMinimumSeriesToHighlight * Constants.HIGHLIGHT_INCREMENT;
+        }
         notifyDataSetChanged();
     }
 

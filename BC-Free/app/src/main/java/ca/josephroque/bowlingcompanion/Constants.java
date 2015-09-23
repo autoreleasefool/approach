@@ -31,6 +31,8 @@ public final class Constants {
     public static final String KEY_THEME_COLORS = "pref_theme_colors";
     /** Identifier for preference which allows user to select a minimum score to be highlighted. */
     public static final String KEY_HIGHLIGHT_SCORE = "pref_highlight_score";
+    /** Identifier for preference which allows user to select a minimum series total to be highlighted. */
+    public static final String KEY_HIGHLIGHT_SERIES = "pref_highlight_series";
     /** Identifier for preference which allows user to enable auto advancing frames. */
     public static final String KEY_ENABLE_AUTO_ADVANCE = "pref_enable_auto_advance";
     /** Identifier for preference which allows user to select time interval before auto advance. */
@@ -203,6 +205,10 @@ public final class Constants {
     public static final int GAME_MAX_SCORE = 450;
     /** Default minimum score to highlight. */
     public static final int DEFAULT_GAME_HIGHLIGHT = 300;
+    /** Default minimum series to highlight. */
+    public static final int DEFAULT_SERIES_HIGHLIGHT = 800;
+    /** Highlight increment. */
+    public static final int HIGHLIGHT_INCREMENT = 5;
 
     /**
      * Default private constructor.

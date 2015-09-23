@@ -105,6 +105,18 @@ public class Series
         return (byte) mSeriesGames.size();
     }
 
+    /**
+     * Gets the total of all the games in the series.
+     *
+     * @return sum of final scores
+     */
+    public short getSeriesTotal() {
+        short sum = 0;
+        for (short score : mSeriesGames)
+            sum += score;
+        return sum;
+    }
+
     @Override
     public void writeToParcel(Parcel pc, int flags) {
         pc.writeLong(mSeriesId);

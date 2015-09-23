@@ -1,4 +1,5 @@
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+                  xmlns:highlights="http://schemas.android.com/apk/res-auto">
 
     <ListPreference
         android:defaultValue="Blue"
@@ -8,13 +9,21 @@
         android:key="pref_theme_colors"
         android:title="@string/pref_theme_colors_title" />
 
-    <ListPreference
-        android:defaultValue="300"
-        android:dialogTitle="@string/pref_highlight_score_title"
-        android:entries="@array/pref_highlight_score_values"
-        android:entryValues="@array/pref_highlight_score_values"
+    <ca.josephroque.bowlingcompanion.dialog.HighlightsDialog
+        android:defaultValue="60"
         android:key="pref_highlight_score"
-        android:title="@string/pref_highlight_score_title" />
+        android:title="@string/pref_highlight_score_title"
+        highlights:incrementBy="5"
+        highlights:maximumValue="450"
+        highlights:minimumValue="0" />
+
+    <ca.josephroque.bowlingcompanion.dialog.HighlightsDialog
+        android:defaultValue="160"
+        android:key="pref_highlight_series"
+        android:title="@string/pref_highlight_series_title"
+        highlights:incrementBy="5"
+        highlights:maximumValue="2250"
+        highlights:minimumValue="0" />
 
     <CheckBoxPreference
         android:defaultValue="true"

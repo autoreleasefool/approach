@@ -28,6 +28,8 @@ public final class DisplayUtils {
     public static final float BLACK_SECONDARY_TEXT_ALPHA = 0.54f;
     /** Constant for black color. */
     public static final int COLOR_BLACK = 0xff000000;
+    /** Constant for white color. */
+    public static final int COLOR_WHITE = 0xffffffff;
 
     /**
      * Default private constructor.
