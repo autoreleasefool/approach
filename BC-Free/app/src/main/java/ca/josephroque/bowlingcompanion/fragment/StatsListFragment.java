@@ -496,9 +496,10 @@ public class StatsListFragment
                         }
                     }
 
+                    short gameScore = cursor.getShort(cursor.getColumnIndex(Contract.GameEntry.COLUMN_SCORE));
                     boolean gameIsManual = (cursor.getInt(cursor.getColumnIndex(
                             Contract.GameEntry.COLUMN_IS_MANUAL)) == 1);
-                    if (gameIsManual) {
+                    if (gameIsManual || gameScore == 0) {
                         cursor.moveToNext();
                         continue;
                     }
@@ -731,13 +732,15 @@ public class StatsListFragment
             int totalMatchPlayGames = 0;
             for (int stat : statValues[mStatsMatch])
                 totalMatchPlayGames += stat;
-            for (byte i = 0; i < statValues[mStatsMatch].length; i++)
-                listStatNamesAndValues.get(mStatsMatch).set(i, Pair.create(
-                        listStatNamesAndValues.get(mStatsMatch).get(i).first,
-                        decimalFormat.format(
-                                statValues[mStatsMatch][i] / (double) totalMatchPlayGames * 100)
-                                + "% [" + statValues[mStatsMatch][i] + "/" + totalMatchPlayGames
-                                + "]"));
+            if (totalMatchPlayGames > 0) {
+                for (byte i = 0; i < statValues[mStatsMatch].length; i++)
+                    listStatNamesAndValues.get(mStatsMatch).set(i, Pair.create(
+                            listStatNamesAndValues.get(mStatsMatch).get(i).first,
+                            decimalFormat.format(
+                                    statValues[mStatsMatch][i] / (double) totalMatchPlayGames * 100)
+                                    + "% [" + statValues[mStatsMatch][i] + "/" + totalMatchPlayGames
+                                    + "]"));
+            }
 
             for (byte i = 0; i < statValues[mStatsOverall].length; i++)
                 listStatNamesAndValues.get(mStatsOverall).set(i, Pair.create(
