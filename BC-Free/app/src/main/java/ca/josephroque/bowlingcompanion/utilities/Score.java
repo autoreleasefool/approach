@@ -363,6 +363,21 @@ public final class Score {
     }
 
     /**
+     * Counts the number of pins which are standing in a frame
+     *
+     * @param frame frame to count
+     * @return number of booleans in the array which are {@code true}
+     */
+    public static byte countStandingPins(boolean[] frame) {
+        byte numberOfPinStanding = 0;
+        for (boolean b : frame) {
+            if (b)
+                numberOfPinStanding++;
+        }
+        return numberOfPinStanding;
+    }
+
+    /**
      * Default private constructor.
      */
     private Score() {

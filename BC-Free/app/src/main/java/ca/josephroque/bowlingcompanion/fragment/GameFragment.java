@@ -243,11 +243,9 @@ public class GameFragment
                             @Override
                             public void run() {
                                 if (!mPinState[mCurrentFrame][mCurrentBall][pinTouched])
-                                    mImageViewPins[pinTouched].setImageResource(
-                                            R.drawable.pin_disabled);
+                                    mImageViewPins[pinTouched].setImageResource(R.drawable.pin_disabled);
                                 else
-                                    mImageViewPins[pinTouched].setImageResource(
-                                            R.drawable.pin_enabled);
+                                    mImageViewPins[pinTouched].setImageResource(R.drawable.pin_enabled);
                             }
                         });
                     }
@@ -1750,11 +1748,10 @@ public class GameFragment
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                GradientDrawable drawable = (GradientDrawable)
-                        mTextViewBallScores[mCurrentFrame][mCurrentBall].getBackground();
+                GradientDrawable drawable
+                        = (GradientDrawable) mTextViewBallScores[mCurrentFrame][mCurrentBall].getBackground();
                 drawable.setColor(mColorHighlight);
-                drawable = (GradientDrawable)
-                        mTextViewFrames[mCurrentFrame].getBackground();
+                drawable = (GradientDrawable) mTextViewFrames[mCurrentFrame].getBackground();
                 drawable.setColor(mColorHighlight);
 
                 //Sets images of pins to enabled/disabled depending on
@@ -1783,18 +1780,15 @@ public class GameFragment
                             mImageViewClear.setImageResource(R.drawable.ic_strike);
                             break;
                         case 1:
-                            if (Arrays.equals(
-                                    mPinState[mCurrentFrame][0], Constants.FRAME_PINS_DOWN))
+                            if (Arrays.equals(mPinState[mCurrentFrame][0], Constants.FRAME_PINS_DOWN))
                                 mImageViewClear.setImageResource(R.drawable.ic_strike);
                             else
                                 mImageViewClear.setImageResource(R.drawable.ic_spare);
                             break;
                         case 2:
-                            if (Arrays.equals(
-                                    mPinState[mCurrentFrame][1], Constants.FRAME_PINS_DOWN))
+                            if (Arrays.equals(mPinState[mCurrentFrame][1], Constants.FRAME_PINS_DOWN))
                                 mImageViewClear.setImageResource(R.drawable.ic_strike);
-                            else if (Arrays.equals(
-                                    mPinState[mCurrentFrame][0], Constants.FRAME_PINS_DOWN))
+                            else if (Arrays.equals(mPinState[mCurrentFrame][0], Constants.FRAME_PINS_DOWN))
                                 mImageViewClear.setImageResource(R.drawable.ic_spare);
                             else
                                 mImageViewClear.setImageResource(R.drawable.ic_fifteen);
@@ -1841,8 +1835,7 @@ public class GameFragment
             for (int i = mCurrentBall; i < 3; i++)
                 mPinState[mCurrentFrame][i][pinToSet] = true;
 
-            if (Arrays.equals(mPinState[mCurrentFrame][mCurrentBall],
-                    Constants.FRAME_PINS_DOWN)) {
+            if (Arrays.equals(mPinState[mCurrentFrame][mCurrentBall], Constants.FRAME_PINS_DOWN)) {
                 for (int i = mCurrentBall + 1; i < 3; i++)
                     mFouls[mCurrentFrame][i] = false;
 
@@ -1862,13 +1855,26 @@ public class GameFragment
             for (int i = mCurrentBall; i < 3; i++)
                 mPinState[mCurrentFrame][i][pinToSet] = false;
 
-            if (mCurrentFrame == Constants.LAST_FRAME && mCurrentBall == 1)
-                System.arraycopy(
-                        mPinState[mCurrentFrame][1],
-                        0,
-                        mPinState[mCurrentFrame][2],
-                        0,
-                        mPinState[mCurrentFrame][1].length);
+            if (mCurrentFrame == Constants.LAST_FRAME) {
+                if (mCurrentBall == 1) {
+                    System.arraycopy(mPinState[mCurrentFrame][1],
+                            0,
+                            mPinState[mCurrentFrame][2],
+                            0,
+                            mPinState[mCurrentFrame][1].length);
+                } else if (mCurrentBall == 0 && Score.countStandingPins(mPinState[mCurrentFrame][mCurrentBall]) == 4) {
+                    System.arraycopy(mPinState[mCurrentFrame][0],
+                            0,
+                            mPinState[mCurrentFrame][1],
+                            0,
+                            mPinState[mCurrentFrame][0].length);
+                    System.arraycopy(mPinState[mCurrentFrame][0],
+                            0,
+                            mPinState[mCurrentFrame][2],
+                            0,
+                            mPinState[mCurrentFrame][0].length);
+                }
+            }
         }
 
         mImageViewPins[pinToSet].post(new Runnable() {
