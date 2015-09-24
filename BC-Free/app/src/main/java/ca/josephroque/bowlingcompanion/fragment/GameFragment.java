@@ -1570,8 +1570,28 @@ public class GameFragment
                 getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
+                        boolean highlightStrikesAndSpares = PreferenceManager.getDefaultSharedPreferences(getContext())
+                                .getBoolean(Constants.KEY_ENABLE_STRIKE_HIGHLIGHTS, true);
                         for (byte i = 0; i < 3; i++) {
                             mTextViewBallScores[frameToUpdate][i].setText(ballString[i]);
+                            if (highlightStrikesAndSpares) {
+                                if (frameToUpdate == Constants.LAST_FRAME
+                                        && Arrays.equals(mPinState[frameToUpdate][i], Constants.FRAME_PINS_DOWN)
+                                        && !(i == 2 && !Arrays.equals(mPinState[frameToUpdate][0], Constants.FRAME_PINS_DOWN)
+                                        && !Arrays.equals(mPinState[frameToUpdate][1], Constants.FRAME_PINS_DOWN)))
+                                    mTextViewBallScores[frameToUpdate][i].setTextColor(Theme.getTertiaryThemeColor());
+                                else if ((i == 0 && Arrays.equals(mPinState[frameToUpdate][i],
+                                        Constants.FRAME_PINS_DOWN))
+                                        || (i == 1 && Arrays.equals(mPinState[frameToUpdate][i],
+                                        Constants.FRAME_PINS_DOWN)
+                                        && !Arrays.equals(mPinState[frameToUpdate][0], Constants.FRAME_PINS_DOWN)))
+                                    mTextViewBallScores[frameToUpdate][i].setTextColor(Theme.getTertiaryThemeColor());
+                                else
+                                    mTextViewBallScores[frameToUpdate][i].setTextColor(DisplayUtils.COLOR_BLACK);
+                            } else {
+                                mTextViewBallScores[frameToUpdate][i].setTextColor(DisplayUtils.COLOR_BLACK);
+                            }
+
                             mTextViewFouls[frameToUpdate][i].setText(
                                     (mFouls[frameToUpdate][i])
                                             ? "F"
@@ -1721,16 +1741,6 @@ public class GameFragment
             public void run() {
                 GradientDrawable drawable
                         = (GradientDrawable) mTextViewBallScores[mCurrentFrame][mCurrentBall].getBackground();
-
-                // Changes text color if the frame is a strike or a spare
-                boolean highlightStrikesAndSpares = PreferenceManager.getDefaultSharedPreferences(getContext())
-                        .getBoolean(Constants.KEY_ENABLE_STRIKE_HIGHLIGHTS, true);
-                if (highlightStrikesAndSpares && mCurrentBall != 2
-                        && Arrays.equals(mPinState[mCurrentFrame][mCurrentBall], Constants.FRAME_PINS_DOWN))
-                    mTextViewBallScores[mCurrentFrame][mCurrentBall].setTextColor(Theme.getStatusThemeColor());
-                else
-                    mTextViewBallScores[mCurrentFrame][mCurrentBall].setTextColor(DisplayUtils.COLOR_BLACK);
-
                 drawable.setColor(mColorBackground);
                 drawable = (GradientDrawable) mTextViewFrames[mCurrentFrame].getBackground();
                 drawable.setColor(mColorBackground);
