@@ -641,7 +641,7 @@ public class GameFragment
         menu.findItem(R.id.action_reset_game).setVisible(!drawerOpen);
         menu.findItem(R.id.action_set_score).setVisible(!drawerOpen);
 
-        menu.findItem(R.id.action_what_if).setVisible(
+        menu.findItem(R.id.action_best_possible).setVisible(
                 !mManualScoreSet[mCurrentGame] && !drawerOpen);
     }
 
