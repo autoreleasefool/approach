@@ -26,6 +26,7 @@ import java.util.List;
 
 import ca.josephroque.bowlingcompanion.database.Contract;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
+import ca.josephroque.bowlingcompanion.dialog.HighlightsDialog;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.utilities.EmailUtils;
 import ca.josephroque.bowlingcompanion.utilities.FacebookUtils;
@@ -80,8 +81,8 @@ public class SettingsActivity
     }
 
     /**
-     * Gets a list of {@link ca.josephroque.bowlingcompanion.SettingsActivity.BowlingPreferenceFragment} instances
-     * which are currently visible in the activity.
+     * Gets a list of {@link ca.josephroque.bowlingcompanion.SettingsActivity.BowlingPreferenceFragment} instances which
+     * are currently visible in the activity.
      *
      * @return list of fragments derived from {@code mActiveFragments}
      */
@@ -144,9 +145,19 @@ public class SettingsActivity
             String themeColor = preferences.getString(Constants.KEY_THEME_COLORS, "Blue");
             findPreference(Constants.KEY_THEME_COLORS).setSummary("Current theme is " + themeColor);
 
-            String scoreHighlight = preferences.getString(Constants.KEY_HIGHLIGHT_SCORE, "300");
+            int scoreHighlight = Integer.parseInt(preferences.getString(Constants.KEY_HIGHLIGHT_SCORE, "60"));
             findPreference(Constants.KEY_HIGHLIGHT_SCORE)
-                    .setSummary("Scores over " + scoreHighlight + " will be highlighted");
+                    .setSummary(
+                            "Scores over "
+                                    + (scoreHighlight * Constants.HIGHLIGHT_INCREMENT)
+                                    + " will be highlighted");
+
+            int seriesHighlight = Integer.parseInt(preferences.getString(Constants.KEY_HIGHLIGHT_SERIES, "160"));
+            findPreference(Constants.KEY_HIGHLIGHT_SERIES)
+                    .setSummary(
+                            "Series over "
+                                    + (seriesHighlight * Constants.HIGHLIGHT_INCREMENT)
+                                    + " will be highlighted");
         }
 
         @Override
@@ -160,8 +171,18 @@ public class SettingsActivity
                     Theme.setTheme(getActivity(), themeColor);
                     break;
                 case Constants.KEY_HIGHLIGHT_SCORE:
-                    ListPreference highlightPref = (ListPreference) findPreference(key);
-                    highlightPref.setSummary("Scores over " + highlightPref.getValue() + " will be highlighted");
+                    HighlightsDialog scorePref = (HighlightsDialog) findPreference(key);
+                    int scoreHighlight = scorePref.getValue();
+                    scorePref.setSummary("Scores over "
+                            + (scoreHighlight * Constants.HIGHLIGHT_INCREMENT)
+                            + " will be highlighted");
+                    break;
+                case Constants.KEY_HIGHLIGHT_SERIES:
+                    HighlightsDialog seriesPref = (HighlightsDialog) findPreference(key);
+                    int seriesHighlight = seriesPref.getValue();
+                    seriesPref.setSummary("Series over "
+                            + (seriesHighlight * Constants.HIGHLIGHT_INCREMENT)
+                            + " will be highlighted");
                     break;
                 default:
                     // does nothing

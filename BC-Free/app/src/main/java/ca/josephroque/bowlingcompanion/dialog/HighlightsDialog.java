@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.preference.DialogPreference;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,10 @@ import ca.josephroque.bowlingcompanion.R;
  */
 public class HighlightsDialog
         extends DialogPreference {
+
+    /** Identifies output from this class in Logcat. */
+    @SuppressWarnings("unused")
+    private static final String TAG = "HighlightsDialog";
 
     /** Minimum value the dialog can return. */
     private int mMinimumValue;
@@ -54,7 +59,7 @@ public class HighlightsDialog
 
         try {
             mMaximumValue = a.getInt(R.styleable.Highlights_maximumValue, -1);
-            mMinimumValue = a.getInt(R.styleable.Highlights_maximumValue, 0);
+            mMinimumValue = a.getInt(R.styleable.Highlights_minimumValue, 0);
             mIncrementBy = a.getInt(R.styleable.Highlights_incrementBy, 1);
         } finally {
             a.recycle();
@@ -129,14 +134,15 @@ public class HighlightsDialog
 
     @Override
     protected Object onGetDefaultValue(TypedArray a, int index) {
+        Log.d(TAG, "Getting default value");
         return a.getInt(index, mMinimumValue);
     }
 
     @Override
     protected void onSetInitialValue(boolean restorePersistedValue, Object defaultValue) {
         setValue(restorePersistedValue
-                ? getPersistedInt(mMinimumValue)
-                : (Integer) defaultValue);
+                ? Integer.parseInt(getPersistedString(Integer.toString(mMinimumValue)))
+                : Integer.parseInt(defaultValue.toString()));
     }
 
     /**
@@ -146,7 +152,7 @@ public class HighlightsDialog
      */
     public void setValue(int value) {
         this.mValue = value;
-        persistInt(this.mValue);
+        persistString(Integer.toString(this.mValue));
     }
 
     /**
