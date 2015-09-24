@@ -41,6 +41,8 @@ public final class Constants {
     public static final String KEY_ASK_COMBINE = "pref_ask_combine";
     /** Identifier for preference for if floating buttons should be shown when editing a game. */
     public static final String KEY_ENABLE_FAB = "pref_enable_fab";
+    /** Identifier for preference for strikes and spares should be highlighted while editing a game. */
+    public static final String KEY_ENABLE_STRIKE_HIGHLIGHTS = "pref_enable_strike_highlights";
     /** Identifier for preference for opening the app's Facebook page. */
     public static final String KEY_FACEBOOK_PAGE = "pref_facebook_page";
     /** Identifier for preference to show or hide match play results in series view. */

@@ -1725,7 +1725,9 @@ public class GameFragment
                         = (GradientDrawable) mTextViewBallScores[mCurrentFrame][mCurrentBall].getBackground();
 
                 // Changes text color if the frame is a strike or a spare
-                if (mCurrentBall != 2
+                boolean highlightStrikesAndSpares = PreferenceManager.getDefaultSharedPreferences(getContext())
+                        .getBoolean(Constants.KEY_ENABLE_STRIKE_HIGHLIGHTS, true);
+                if (highlightStrikesAndSpares && mCurrentBall != 2
                         && Arrays.equals(mPinState[mCurrentFrame][mCurrentBall], Constants.FRAME_PINS_DOWN))
                     mTextViewBallScores[mCurrentFrame][mCurrentBall].setTextColor(Theme.getStatusThemeColor());
                 else
