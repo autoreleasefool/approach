@@ -1,14 +1,14 @@
 <resources>
 
     <!-- Graph colors -->
-    <color name="chance_data">#8e44ad</color>
-    <color name="success_data">#2980b9</color>
+    <color name="chance_data">#8E44AD</color>
+    <color name="success_data">#2980B9</color>
 
     <!-- Fragment and list item backgrounds -->
-    <color name="primary_background">#bdc3c7</color>
-    <color name="secondary_background">#ecf0f1</color>
-    <color name="divider">#1e000000</color>
-    <color name="indicator">#ffffff</color>
+    <color name="primary_background">#C6CBCF</color>
+    <color name="secondary_background">#ECF0F1</color>
+    <color name="divider">#1E000000</color>
+    <color name="indicator">#FFFFFF</color>
 
     <!-- Green theme values -->
     <color name="theme_green_highlight">#B4F3B4</color>

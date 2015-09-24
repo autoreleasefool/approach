@@ -1721,11 +1721,18 @@ public class GameFragment
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                GradientDrawable drawable = (GradientDrawable)
-                        mTextViewBallScores[mCurrentFrame][mCurrentBall].getBackground();
+                GradientDrawable drawable
+                        = (GradientDrawable) mTextViewBallScores[mCurrentFrame][mCurrentBall].getBackground();
+
+                // Changes text color if the frame is a strike or a spare
+                if (mCurrentBall != 2
+                        && Arrays.equals(mPinState[mCurrentFrame][mCurrentBall], Constants.FRAME_PINS_DOWN))
+                    mTextViewBallScores[mCurrentFrame][mCurrentBall].setTextColor(Theme.getStatusThemeColor());
+                else
+                    mTextViewBallScores[mCurrentFrame][mCurrentBall].setTextColor(DisplayUtils.COLOR_BLACK);
+
                 drawable.setColor(mColorBackground);
-                drawable = (GradientDrawable)
-                        mTextViewFrames[mCurrentFrame].getBackground();
+                drawable = (GradientDrawable) mTextViewFrames[mCurrentFrame].getBackground();
                 drawable.setColor(mColorBackground);
             }
         });
