@@ -42,5 +42,5 @@ dependencies {
     compile 'com.google.android.gms:play-services-ads:7.8.0'
 
     // Other libraries
-    compile 'com.github.PhilJay:MPAndroidChart:v2.1.4'
+    compile 'com.github.PhilJay:MPAndroidChart:v2.1.3'
 }
