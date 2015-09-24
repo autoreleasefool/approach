@@ -5,6 +5,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.preference.PreferenceManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -387,13 +388,17 @@ public class SeriesAdapter
     @Override
     public void updateTheme() {
         if (mActivity != null) {
-            mMinimumScoreToHighlight = PreferenceManager.getDefaultSharedPreferences(mActivity)
-                    .getInt(Constants.KEY_HIGHLIGHT_SCORE, -1);
+            Log.d(TAG, PreferenceManager.getDefaultSharedPreferences(mActivity)
+                    .getString(Constants.KEY_HIGHLIGHT_SCORE, "-1"));
+            mMinimumScoreToHighlight = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(mActivity)
+                    .getString(Constants.KEY_HIGHLIGHT_SCORE, "-1"));
             if (mMinimumScoreToHighlight == -1)
                 mMinimumScoreToHighlight = Constants.DEFAULT_GAME_HIGHLIGHT;
             else
                 mMinimumScoreToHighlight = mMinimumScoreToHighlight * Constants.HIGHLIGHT_INCREMENT;
 
+            Log.d(TAG, "" + PreferenceManager.getDefaultSharedPreferences(mActivity)
+                    .getInt(Constants.KEY_HIGHLIGHT_SERIES, -1));
             mMinimumSeriesToHighlight = PreferenceManager.getDefaultSharedPreferences(mActivity)
                     .getInt(Constants.KEY_HIGHLIGHT_SERIES, -1);
             if (mMinimumSeriesToHighlight == -1)

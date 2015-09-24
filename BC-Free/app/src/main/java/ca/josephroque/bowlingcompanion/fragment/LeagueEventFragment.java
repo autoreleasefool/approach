@@ -693,37 +693,71 @@ public class LeagueEventFragment
                     + LeagueEntry.COLUMN_LEAGUE_NAME + ", "
                     + LeagueEntry.COLUMN_IS_EVENT + ", "
                     + LeagueEntry.COLUMN_NUMBER_OF_GAMES + ", "
-                    + " AVG(" + GameEntry.COLUMN_SCORE + ") AS avg"
+                    + GameEntry.COLUMN_SCORE
                     + " FROM " + LeagueEntry.TABLE_NAME + " AS league"
                     + " LEFT JOIN " + SeriesEntry.TABLE_NAME + " AS series"
                     + " ON league." + LeagueEntry._ID + "=series." + SeriesEntry.COLUMN_LEAGUE_ID
                     + " LEFT JOIN " + GameEntry.TABLE_NAME + " AS game"
                     + " ON series." + SeriesEntry._ID + "=game." + GameEntry.COLUMN_SERIES_ID
                     + " WHERE " + LeagueEntry.COLUMN_BOWLER_ID + "=?"
-                    + " AND " + GameEntry.COLUMN_SCORE + ">?"
-                    + " GROUP BY lid"
                     + " ORDER BY " + LeagueEntry.COLUMN_DATE_MODIFIED + " DESC";
 
             long bowlerId = mainActivity.getBowlerId();
-            Cursor cursor = database.rawQuery(rawLeagueEventQuery,
-                    new String[]{String.valueOf(bowlerId), String.valueOf(0)});
+            Cursor cursor = database.rawQuery(rawLeagueEventQuery, new String[]{String.valueOf(bowlerId)});
+            long lastLeagueEventId = -1;
+            int leagueTotal = 0;
+            int leagueNumberOfGames = 0;
             if (cursor.moveToFirst()) {
                 while (!cursor.isAfterLast()) {
-                    boolean isEvent = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_IS_EVENT)) == 1;
-                    LeagueEvent leagueEvent = new LeagueEvent(cursor.getLong(cursor.getColumnIndex(
-                            "lid")),
-                            ((isEvent)
-                                    ? "E"
-                                    : "L")
-                                    + cursor.getString(cursor.getColumnIndex(
-                                    LeagueEntry.COLUMN_LEAGUE_NAME)),
-                            cursor.getShort(cursor.getColumnIndex("avg")),
-                            (byte) cursor.getInt(cursor.getColumnIndex(
-                                    LeagueEntry.COLUMN_NUMBER_OF_GAMES)));
-                    listLeagueEvents.add(leagueEvent);
+                    long leagueEventId = cursor.getLong(cursor.getColumnIndex("lid"));
+                    if (leagueEventId != lastLeagueEventId && lastLeagueEventId != -1) {
+                        cursor.moveToPrevious();
+                        boolean isEvent = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_IS_EVENT)) == 1;
+                        short average = (leagueNumberOfGames > 0)
+                                ? (short) (leagueTotal / leagueNumberOfGames)
+                                : 0;
+                        LeagueEvent leagueEvent = new LeagueEvent(cursor.getLong(cursor.getColumnIndex(
+                                "lid")),
+                                ((isEvent)
+                                        ? "E"
+                                        : "L")
+                                        + cursor.getString(cursor.getColumnIndex(
+                                        LeagueEntry.COLUMN_LEAGUE_NAME)),
+                                average,
+                                (byte) cursor.getInt(cursor.getColumnIndex(
+                                        LeagueEntry.COLUMN_NUMBER_OF_GAMES)));
+                        listLeagueEvents.add(leagueEvent);
+                        leagueTotal = 0;
+                        leagueNumberOfGames = 0;
+                        cursor.moveToNext();
+                    }
+                    short score = cursor.getShort(cursor.getColumnIndex(GameEntry.COLUMN_SCORE));
+                    if (score > 0) {
+                        leagueTotal += score;
+                        leagueNumberOfGames++;
+                    }
+
+                    lastLeagueEventId = leagueEventId;
                     cursor.moveToNext();
                 }
+                cursor.moveToPrevious();
+                boolean isEvent = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_IS_EVENT)) == 1;
+                short average = (leagueNumberOfGames > 0)
+                        ? (short) (leagueTotal / leagueNumberOfGames)
+                        : 0;
+                LeagueEvent leagueEvent = new LeagueEvent(cursor.getLong(cursor.getColumnIndex(
+                        "lid")),
+                        ((isEvent)
+                                ? "E"
+                                : "L")
+                                + cursor.getString(cursor.getColumnIndex(
+                                LeagueEntry.COLUMN_LEAGUE_NAME)),
+                        average,
+                        (byte) cursor.getInt(cursor.getColumnIndex(
+                                LeagueEntry.COLUMN_NUMBER_OF_GAMES)));
+                listLeagueEvents.add(leagueEvent);
             }
+
             cursor.close();
 
             return listLeagueEvents;
