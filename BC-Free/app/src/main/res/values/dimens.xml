@@ -17,6 +17,7 @@
     <dimen name="list_key_line">16dp</dimen>
     <dimen name="list_key_line_inset">32dp</dimen>
     <dimen name="list_text_key_line">72dp</dimen>
+    <dimen name="series_padding">4dp</dimen>
 
     <!-- Indicator dimensions -->
     <dimen name="indicator_size">8dp</dimen>
