@@ -1,5 +1,4 @@
-Upcoming changes
-================
+# Upcoming changes
 
 ```
 v3.0
@@ -11,8 +10,34 @@ Features
 - Will provide options to export games to CSV/Excel
 ```
 
-Legacy changelogs
------------------
+## Legacy changelogs
+
+```
+v2.1.1
+
+- Fixed a crash when checking the hi score possible
+```
+
+```
+v2.1
+
+- Games with a score of 0 are now excluded from your average and statistics
+- Strikes and spares are now highlighted in a game to be spotted more easily (you can disable this in the settings)
+- Series now show their total and are highlighted over a certain value (can be changed/disable in settings)
+- Bug fixes
+```
+
+```
+v2.0.5
+
+- Bug fixes
+```
+
+```
+v2.0.4
+
+- Bug fixes
+```
 
 ```
 v2.0.3
