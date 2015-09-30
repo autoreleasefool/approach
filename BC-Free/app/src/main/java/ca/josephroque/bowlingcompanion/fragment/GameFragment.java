@@ -16,6 +16,7 @@ import android.os.Looper;
 import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -1292,8 +1293,17 @@ public class GameFragment
      * user.
      */
     private void showBestPossibleScoreDialog() {
+        byte initialFrame = mCurrentFrame;
+        while (initialFrame > 0 && TextUtils.isEmpty(mTextViewFrames[initialFrame].getText().toString()))
+            initialFrame--;
+
         StringBuilder alertMessageBuilder = new StringBuilder("If you get");
-        short possibleScore = Short.parseShort(mTextViewFrames[mCurrentFrame].getText().toString());
+        short possibleScore;
+        try {
+            possibleScore = Short.parseShort(mTextViewFrames[initialFrame].getText().toString());
+        } catch (NumberFormatException ex) {
+            possibleScore = 0;
+        }
 
         if (mCurrentFrame < Constants.LAST_FRAME) {
             if (Arrays.equals(mPinState[mCurrentFrame][0], Constants.FRAME_PINS_DOWN)) {
