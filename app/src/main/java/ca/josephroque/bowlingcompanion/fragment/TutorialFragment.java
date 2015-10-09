@@ -138,7 +138,7 @@ public class TutorialFragment
                     break;
                 case SETTINGS:
                     getView().setBackgroundColor(DisplayUtils.getColorResource(getResources(),
-                            R.color.theme_gray_tertiary));
+                            R.color.theme_grey_tertiary));
                     break;
                 default:
                     // does nothing

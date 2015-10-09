@@ -19,6 +19,17 @@ public final class Theme {
     @SuppressWarnings("unused")
     private static final String TAG = "Theme";
 
+    /** Represents the primary color of the theme. */
+    public static final byte COLOR_PRIMARY = 0;
+    /** Represents the secondary color of the theme. */
+    public static final byte COLOR_SECONDARY = 1;
+    /** Represents the tertiary color of the theme. */
+    public static final byte COLOR_TERTIARY = 2;
+    /** Represents the highlight color of the theme. */
+    public static final byte COLOR_HIGHLIGHT = 3;
+    /** Represents the status bar color of the theme. */
+    public static final byte COLOR_STATUS = 4;
+
     /** Primary color for the current theme. */
     private static int sThemeColorHighlight = -1;
     /** Primary color for the current theme. */
@@ -54,82 +65,73 @@ public final class Theme {
             themeName = "Blue";
 
         final Resources resources = context.getResources();
-        switch (themeName) {
-            case "Green":
-                loadThemeColors(resources,
-                        R.color.theme_green_highlight,
-                        R.color.theme_green_primary,
-                        R.color.theme_green_secondary,
-                        R.color.theme_green_tertiary,
-                        R.color.theme_green_status);
-                break;
-            case "Orange":
-                loadThemeColors(resources,
-                        R.color.theme_orange_highlight,
-                        R.color.theme_orange_primary,
-                        R.color.theme_orange_secondary,
-                        R.color.theme_orange_tertiary,
-                        R.color.theme_orange_status);
-                break;
-            case "Blue":
-                loadThemeColors(resources,
-                        R.color.theme_blue_highlight,
-                        R.color.theme_blue_primary,
-                        R.color.theme_blue_secondary,
-                        R.color.theme_blue_tertiary,
-                        R.color.theme_blue_status);
-                break;
-            case "Purple":
-                loadThemeColors(resources,
-                        R.color.theme_purple_highlight,
-                        R.color.theme_purple_primary,
-                        R.color.theme_purple_secondary,
-                        R.color.theme_purple_tertiary,
-                        R.color.theme_purple_status);
-                break;
-            case "Red":
-                loadThemeColors(resources,
-                        R.color.theme_red_highlight,
-                        R.color.theme_red_primary,
-                        R.color.theme_red_secondary,
-                        R.color.theme_red_tertiary,
-                        R.color.theme_red_status);
-                break;
-            case "Grey":
-                loadThemeColors(resources,
-                        R.color.theme_gray_highlight,
-                        R.color.theme_gray_primary,
-                        R.color.theme_gray_secondary,
-                        R.color.theme_gray_tertiary,
-                        R.color.theme_gray_status);
-                break;
-            default:
-                //If an invalid theme was selected, the default is applied
-                setTheme(context, "Blue");
-        }
+        updateThemeColors(getThemeColors(resources, themeName));
     }
 
     /**
-     * Loads theme colors from resources.
+     * Updates theme colors for the application.
      *
-     * @param resources to get resources
-     * @param highlightColorId id of highlight theme color
-     * @param primaryColorId id of primary theme color
-     * @param secondaryColorId id of secondary theme color
-     * @param tertiaryColorId id of tertiary theme color
-     * @param statusColorId id of status bar theme color
+     * @param themeColors colors to be used by the theme
      */
-    private static void loadThemeColors(Resources resources,
-                                        int highlightColorId,
-                                        int primaryColorId,
-                                        int secondaryColorId,
-                                        int tertiaryColorId,
-                                        int statusColorId) {
-        sThemeColorHighlight = DisplayUtils.getColorResource(resources, highlightColorId);
-        sThemeColorPrimary = DisplayUtils.getColorResource(resources, primaryColorId);
-        sThemeColorSecondary = DisplayUtils.getColorResource(resources, secondaryColorId);
-        sThemeColorTertiary = DisplayUtils.getColorResource(resources, tertiaryColorId);
-        sThemeColorStatus = DisplayUtils.getColorResource(resources, statusColorId);
+    private static void updateThemeColors(int[] themeColors) {
+        sThemeColorHighlight = themeColors[COLOR_HIGHLIGHT];
+        sThemeColorPrimary = themeColors[COLOR_PRIMARY];
+        sThemeColorSecondary = themeColors[COLOR_SECONDARY];
+        sThemeColorTertiary = themeColors[COLOR_TERTIARY];
+        sThemeColorStatus = themeColors[COLOR_STATUS];
+    }
+
+    public static int[] getThemeColors(Resources resources, String theme) {
+        switch (theme) {
+            default:
+                return new int[]{
+                        DisplayUtils.getColorResource(resources, R.color.theme_blue_primary),
+                        DisplayUtils.getColorResource(resources, R.color.theme_blue_secondary),
+                        DisplayUtils.getColorResource(resources, R.color.theme_blue_tertiary),
+                        DisplayUtils.getColorResource(resources, R.color.theme_blue_highlight),
+                        DisplayUtils.getColorResource(resources, R.color.theme_blue_status),
+                };
+            case "Green":
+                return new int[]{
+                        DisplayUtils.getColorResource(resources, R.color.theme_green_primary),
+                        DisplayUtils.getColorResource(resources, R.color.theme_green_secondary),
+                        DisplayUtils.getColorResource(resources, R.color.theme_green_tertiary),
+                        DisplayUtils.getColorResource(resources, R.color.theme_green_highlight),
+                        DisplayUtils.getColorResource(resources, R.color.theme_green_status),
+                };
+            case "Orange":
+                return new int[]{
+                        DisplayUtils.getColorResource(resources, R.color.theme_orange_primary),
+                        DisplayUtils.getColorResource(resources, R.color.theme_orange_secondary),
+                        DisplayUtils.getColorResource(resources, R.color.theme_orange_tertiary),
+                        DisplayUtils.getColorResource(resources, R.color.theme_orange_highlight),
+                        DisplayUtils.getColorResource(resources, R.color.theme_orange_status),
+                };
+            case "Purple":
+                return new int[]{
+                        DisplayUtils.getColorResource(resources, R.color.theme_purple_primary),
+                        DisplayUtils.getColorResource(resources, R.color.theme_purple_secondary),
+                        DisplayUtils.getColorResource(resources, R.color.theme_purple_tertiary),
+                        DisplayUtils.getColorResource(resources, R.color.theme_purple_highlight),
+                        DisplayUtils.getColorResource(resources, R.color.theme_purple_status),
+                };
+            case "Red":
+                return new int[]{
+                        DisplayUtils.getColorResource(resources, R.color.theme_red_primary),
+                        DisplayUtils.getColorResource(resources, R.color.theme_red_secondary),
+                        DisplayUtils.getColorResource(resources, R.color.theme_red_tertiary),
+                        DisplayUtils.getColorResource(resources, R.color.theme_red_highlight),
+                        DisplayUtils.getColorResource(resources, R.color.theme_red_status),
+                };
+            case "Grey":
+                return new int[]{
+                        DisplayUtils.getColorResource(resources, R.color.theme_grey_primary),
+                        DisplayUtils.getColorResource(resources, R.color.theme_grey_secondary),
+                        DisplayUtils.getColorResource(resources, R.color.theme_grey_tertiary),
+                        DisplayUtils.getColorResource(resources, R.color.theme_grey_highlight),
+                        DisplayUtils.getColorResource(resources, R.color.theme_grey_status),
+                };
+        }
     }
 
     /**

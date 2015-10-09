@@ -46,10 +46,10 @@
     <color name="theme_red_status">#B71C1C</color>
 
     <!-- Gray theme values -->
-    <color name="theme_gray_highlight">#AAAAAE</color>
-    <color name="theme_gray_primary">#808287</color>
-    <color name="theme_gray_secondary">#6B6F74</color>
-    <color name="theme_gray_tertiary">#585C64</color>
-    <color name="theme_gray_status">#212121</color>
+    <color name="theme_grey_highlight">#AAAAAE</color>
+    <color name="theme_grey_primary">#808287</color>
+    <color name="theme_grey_secondary">#6B6F74</color>
+    <color name="theme_grey_tertiary">#585C64</color>
+    <color name="theme_grey_status">#212121</color>
 
 </resources>
