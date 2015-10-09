@@ -544,7 +544,7 @@ public class LeagueEventFragment
         @Override
         protected Pair<LeagueEvent, Series> doInBackground(Integer... position) {
             LeagueEventFragment fragment = mFragment.get();
-            if (fragment == null)
+            if (fragment == null || !fragment.isAdded())
                 return null;
             MainActivity mainActivity = (MainActivity) fragment.getActivity();
             if (mainActivity == null)
@@ -677,7 +677,7 @@ public class LeagueEventFragment
         @Override
         protected List<LeagueEvent> doInBackground(Void... params) {
             LeagueEventFragment fragment = mFragment.get();
-            if (fragment == null)
+            if (fragment == null || !fragment.isAdded())
                 return null;
             MainActivity mainActivity = (MainActivity) fragment.getActivity();
             if (mainActivity == null)
@@ -797,7 +797,7 @@ public class LeagueEventFragment
         @Override
         protected LeagueEvent doInBackground(LeagueEvent... league) {
             LeagueEventFragment fragment = mFragment.get();
-            if (fragment == null)
+            if (fragment == null || !fragment.isAdded())
                 return null;
             MainActivity mainActivity = (MainActivity) fragment.getActivity();
             if (mainActivity == null)

@@ -395,7 +395,7 @@ public class StatsListFragment
         @Override
         protected List<?>[] doInBackground(Byte... statsToLoad) {
             StatsListFragment fragment = mFragment.get();
-            if (fragment == null)
+            if (fragment == null || !fragment.isAdded())
                 return null;
             MainActivity mainActivity = (MainActivity) fragment.getActivity();
             if (mainActivity == null)

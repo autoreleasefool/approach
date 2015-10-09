@@ -354,7 +354,7 @@ public class MatchPlayFragment
         @Override
         protected SparseArray<Object> doInBackground(Long... gameId) {
             MatchPlayFragment fragment = mFragment.get();
-            if (fragment == null || fragment.getActivity() == null)
+            if (fragment == null || !fragment.isAdded() || fragment.getActivity() == null)
                 return null;
 
             MainActivity.waitForSaveThreads(new WeakReference<>((MainActivity) fragment.getActivity()));

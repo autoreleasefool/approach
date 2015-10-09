@@ -660,7 +660,7 @@ public class BowlerFragment
         protected List<Bowler> doInBackground(Void... params) {
             //Method exits if fragment gets detached before reaching this call
             BowlerFragment fragment = mFragment.get();
-            if (fragment == null)
+            if (fragment == null || !fragment.isAdded())
                 return null;
             MainActivity mainActivity = (MainActivity) fragment.getActivity();
             if (mainActivity == null)
@@ -831,7 +831,7 @@ public class BowlerFragment
         @Override
         protected Bowler doInBackground(Integer... position) {
             BowlerFragment fragment = mFragment.get();
-            if (fragment == null)
+            if (fragment == null || !fragment.isAdded())
                 return null;
             MainActivity mainActivity = (MainActivity) fragment.getActivity();
             if (mainActivity == null)
@@ -896,7 +896,7 @@ public class BowlerFragment
         @Override
         protected Bowler doInBackground(Bowler... bowler) {
             BowlerFragment fragment = mFragment.get();
-            if (fragment == null)
+            if (fragment == null || !fragment.isAdded())
                 return null;
             MainActivity mainActivity = (MainActivity) fragment.getActivity();
             if (mainActivity == null)

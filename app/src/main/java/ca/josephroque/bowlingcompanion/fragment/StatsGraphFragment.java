@@ -356,7 +356,7 @@ public class StatsGraphFragment
         @Override
         protected LineData doInBackground(Byte... statsToLoad) {
             StatsGraphFragment fragment = mFragment.get();
-            if (fragment == null)
+            if (fragment == null || !fragment.isAdded())
                 return null;
             MainActivity mainActivity = (MainActivity) fragment.getActivity();
             if (mainActivity == null)

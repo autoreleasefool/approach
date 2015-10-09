@@ -449,7 +449,7 @@ public class SeriesFragment
         @Override
         protected List<Series> doInBackground(Void... params) {
             SeriesFragment fragment = mFragment.get();
-            if (fragment == null || mFragment.get().getActivity() == null)
+            if (fragment == null || !fragment.isAdded() || mFragment.get().getActivity() == null)
                 return null;
             MainActivity mainActivity = (MainActivity) fragment.getActivity();
             if (mainActivity == null)
@@ -554,7 +554,7 @@ public class SeriesFragment
         @Override
         protected Void doInBackground(Void... params) {
             final SeriesFragment fragment = mFragment.get();
-            if (fragment == null) {
+            if (fragment == null || !fragment.isAdded()) {
                 dismissDialog();
                 return null;
             }
