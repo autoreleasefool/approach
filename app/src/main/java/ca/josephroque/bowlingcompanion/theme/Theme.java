@@ -81,6 +81,14 @@ public final class Theme {
         sThemeColorStatus = themeColors[COLOR_STATUS];
     }
 
+    /**
+     * Retrieves the colors for the theme as defined in the resources.
+     *
+     * @param resources to get colors
+     * @param theme theme to load
+     * @return an array of integer colors, where the indices refer to colors as denoted by {@code COLOR_PRIMARY}, {@code
+     * COLOR_SECONDARY}, {@code COLOR_TERTIARY}, {@code COLOR_HIGHLIGHT}, {@code COLOR_STATUS}
+     */
     public static int[] getThemeColors(Resources resources, String theme) {
         switch (theme) {
             default:
