@@ -23,7 +23,7 @@ import static org.junit.Assert.assertThat;
  */
 
 @RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, sdk = 21)
+@Config(constants = BuildConfig.class, sdk = 21, packageName = "ca.josephroque.bowlingcompanion")
 public class ThemeTest {
 
     @Before
