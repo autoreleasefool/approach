@@ -565,7 +565,8 @@ public class SettingsActivity
                 } else if (preference.getKey().equals(Constants.KEY_COMMENT_SUGGESTION)) {
                     Intent emailIntent = EmailUtils.getEmailIntent(
                             "contact@josephroque.ca",
-                            "Comm/Sug: Bowling Companion");
+                            "Comm/Sug: Bowling Companion",
+                            null);
                     startActivity(Intent.createChooser(emailIntent, "Send mail..."));
                     return true;
                 }

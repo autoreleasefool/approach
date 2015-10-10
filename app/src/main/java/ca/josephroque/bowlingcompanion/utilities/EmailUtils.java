@@ -26,32 +26,18 @@ public final class EmailUtils {
             String recipientEmail,
             String emailSubject,
             String emailBody) {
-        if (emailBody == null)
-            emailBody = "";
-
         Intent emailIntent = new Intent(Intent.ACTION_SEND);
         emailIntent.setData(Uri.parse("mailto:"));
         emailIntent.setType("message/rfc822");
-        emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{recipientEmail});
-        emailIntent.putExtra(Intent.EXTRA_SUBJECT, emailSubject);
-        emailIntent.putExtra(Intent.EXTRA_TEXT, emailBody);
+        if (recipientEmail != null)
+            emailIntent.putExtra(Intent.EXTRA_EMAIL, new String[]{recipientEmail});
+        if (emailSubject != null)
+            emailIntent.putExtra(Intent.EXTRA_SUBJECT, emailSubject);
+        if (emailBody != null)
+            emailIntent.putExtra(Intent.EXTRA_TEXT, emailBody);
 
         return emailIntent;
     }
-
-    /**
-     * Creates an intent and sets values to parameters.
-     *
-     * @param recipientEmail email recipient
-     * @param emailSubject subject of the email
-     * @return getEmailIntent(recipientEmail, emailSubject, null)
-     */
-    public static Intent getEmailIntent(
-            String recipientEmail,
-            String emailSubject) {
-        return getEmailIntent(recipientEmail, emailSubject, null);
-    }
-
     /**
      * Default private constructor.
      */

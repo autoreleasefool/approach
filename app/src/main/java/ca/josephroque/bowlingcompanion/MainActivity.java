@@ -754,7 +754,8 @@ public class MainActivity
             case NavigationUtils.NAVIGATION_ITEM_FEEDBACK:
                 Intent emailIntent = EmailUtils.getEmailIntent(
                         "contact@josephroque.ca",
-                        "Comm/Sug: Bowling Companion");
+                        "Comm/Sug: Bowling Companion",
+                        null);
                 startActivity(Intent.createChooser(emailIntent, "Send mail..."));
                 break;
             case NavigationUtils.NAVIGATION_ITEM_SETTINGS:
