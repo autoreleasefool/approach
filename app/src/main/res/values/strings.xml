@@ -50,6 +50,7 @@
     <string name="action_combine_series">Combine series</string>
 
     <!-- TextView text -->
+    <string name="text_avg_num">Avg: %d</string>
     <string name="text_next_ball">Next Ball</string>
     <string name="text_prev_ball">Prev Ball</string>
     <string name="text_open_drawer">Open Navigation Drawer</string>

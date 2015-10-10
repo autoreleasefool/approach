@@ -5,7 +5,6 @@ import ca.josephroque.bowlingcompanion.Constants;
 /**
  * Created by Joseph Roque on 15-03-19. Provides methods for determining bowling scores based on user input
  */
-@SuppressWarnings("CheckStyle")
 public final class Score {
 
     /** Identifies output from this class in Logcat. */

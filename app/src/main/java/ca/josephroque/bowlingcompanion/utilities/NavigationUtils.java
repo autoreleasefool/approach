@@ -27,9 +27,9 @@ public final class NavigationUtils {
     /** Represents the item for series in the navigation drawer. */
     public static final String NAVIGATION_ITEM_SERIES = "Series";
     /** Represents the sub header for games in the navigation drawer. */
-    public static final String NAVIGATION_SUBHEADER_GAMES = "Games";
+    public static final String NAVIGATION_SUB_HEADER_GAMES = "Games";
     /** Represents the sub header for other in the navigation drawer. */
-    public static final String NAVIGATION_SUBHEADER_OTHER = "Other";
+    public static final String NAVIGATION_SUB_HEADER_OTHER = "Other";
     /** Represents the item for settings in the navigation drawer. */
     public static final String NAVIGATION_ITEM_SETTINGS = "Settings";
     /** Represents the item for help in the navigation drawer. */

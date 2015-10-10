@@ -36,7 +36,7 @@ import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.MainActivity;
 import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.adapter.SeriesAdapter;
-import ca.josephroque.bowlingcompanion.data.Series;
+import ca.josephroque.bowlingcompanion.bowling.Series;
 import ca.josephroque.bowlingcompanion.database.Contract.GameEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.SeriesEntry;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
@@ -50,7 +50,6 @@ import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
  * Created by Joseph Roque on 15-03-17. Manages the UI to display information about the series being tracked by the
  * application, and offers a callback interface {@code SeriesFragment.SeriesCallback} for handling interactions.
  */
-@SuppressWarnings("Convert2Lambda")
 public class SeriesFragment
         extends Fragment
         implements
@@ -241,7 +240,6 @@ public class SeriesFragment
         dateDialog.show(getFragmentManager(), "ChangeDateDialog");
     }
 
-    @SuppressWarnings("CheckStyle")
     @Override
     public void onChangeDate(final Series series, int year, int month, int day) {
         final int index = mListSeries.indexOf(series);
@@ -503,7 +501,6 @@ public class SeriesFragment
         }
 
         @Override
-        @SuppressWarnings("unchecked")
         protected void onPostExecute(List<Series> listSeries) {
             SeriesFragment fragment = mFragment.get();
             if (listSeries == null || fragment == null)

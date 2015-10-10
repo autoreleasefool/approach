@@ -55,7 +55,6 @@ import ca.josephroque.bowlingcompanion.view.PinLayout;
  * Created by Joseph Roque on 15-03-18. Manages the UI to display information about the games being tracked by the
  * application, and offers a callback interface {@code GameFragment.GameFragmentCallback} for handling interactions.
  */
-@SuppressWarnings({"Convert2Lambda", "CheckStyle"})
 public class GameFragment
         extends Fragment
         implements Theme.ChangeableTheme,

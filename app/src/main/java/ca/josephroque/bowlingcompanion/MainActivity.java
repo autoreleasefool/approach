@@ -60,9 +60,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import ca.josephroque.bowlingcompanion.adapter.NavigationDrawerAdapter;
-import ca.josephroque.bowlingcompanion.data.Bowler;
-import ca.josephroque.bowlingcompanion.data.LeagueEvent;
-import ca.josephroque.bowlingcompanion.data.Series;
+import ca.josephroque.bowlingcompanion.bowling.Bowler;
+import ca.josephroque.bowlingcompanion.bowling.LeagueEvent;
+import ca.josephroque.bowlingcompanion.bowling.Series;
 import ca.josephroque.bowlingcompanion.database.Contract.FrameEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.GameEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.SeriesEntry;
@@ -87,7 +87,6 @@ import ca.josephroque.bowlingcompanion.view.AnimatedFloatingActionButton;
 /**
  * Created by Joseph Roque. The main activity which handles most interaction with the application.
  */
-@SuppressWarnings("Convert2Lambda")
 public class MainActivity
         extends AppCompatActivity
         implements
@@ -843,7 +842,6 @@ public class MainActivity
     /**
      * Sets up the navigation drawer.
      */
-    @SuppressWarnings("CheckStyle")
     private void setupNavigationDrawer() {
         final int displayWidth = getResources().getDisplayMetrics().widthPixels;
         final int maxNavigationDrawerWidth = (int) Math.ceil(
@@ -865,15 +863,15 @@ public class MainActivity
         mListDrawerOptions = new ArrayList<>();
         mListDrawerOptions.add(NavigationUtils.NAVIGATION_ITEM_HEADER);
         mListDrawerOptions.add(NavigationUtils.NAVIGATION_ITEM_BOWLERS);
-        mListDrawerOptions.add(NavigationUtils.NAVIGATION_SUBHEADER_GAMES);
-        mListDrawerOptions.add(NavigationUtils.NAVIGATION_SUBHEADER_OTHER);
+        mListDrawerOptions.add(NavigationUtils.NAVIGATION_SUB_HEADER_GAMES);
+        mListDrawerOptions.add(NavigationUtils.NAVIGATION_SUB_HEADER_OTHER);
         mListDrawerOptions.add(NavigationUtils.NAVIGATION_ITEM_FEEDBACK);
         mListDrawerOptions.add(NavigationUtils.NAVIGATION_ITEM_HELP);
         mListDrawerOptions.add(NavigationUtils.NAVIGATION_ITEM_SETTINGS);
 
         mDrawerAdapter = new NavigationDrawerAdapter(this, mListDrawerOptions);
-        mDrawerAdapter.setPositionToSubheader(NavigationUtils.NAVIGATION_SUBHEADER_GAMES);
-        mDrawerAdapter.setPositionToSubheader(NavigationUtils.NAVIGATION_SUBHEADER_OTHER);
+        mDrawerAdapter.setPositionToSubHeader(NavigationUtils.NAVIGATION_SUB_HEADER_GAMES);
+        mDrawerAdapter.setPositionToSubHeader(NavigationUtils.NAVIGATION_SUB_HEADER_OTHER);
         mDrawerRecyclerView.setAdapter(mDrawerAdapter);
 
         mDrawerToggle = new ActionBarDrawerToggle(this,
@@ -1200,7 +1198,6 @@ public class MainActivity
             return new Object[]{gameId, frameId, gameLocked, manualScore, isEvent[0]};
         }
 
-        @SuppressWarnings("CheckStyle")
         @Override
         protected void onPostExecute(Object[] params) {
             MainActivity mainActivity = mMainActivity.get();

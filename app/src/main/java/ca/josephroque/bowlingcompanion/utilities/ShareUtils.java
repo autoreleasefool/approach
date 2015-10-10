@@ -26,7 +26,6 @@ import ca.josephroque.bowlingcompanion.R;
  * Created by Joseph Roque on 15-03-26. Provides methods for sharing the statistics and games tracked by the
  * application.
  */
-@SuppressWarnings("Convert2Lambda")
 public final class ShareUtils {
 
     /** Identifies output from this class in Logcat. */
@@ -78,7 +77,6 @@ public final class ShareUtils {
      * @param context the current context
      * @param seriesId id of the series to share
      */
-    @SuppressWarnings("unchecked")
     private static void shareSeries(WeakReference<Context> context, long seriesId) {
         new ShareSeriesTask().execute(Pair.create(context, seriesId));
     }
@@ -104,7 +102,6 @@ public final class ShareUtils {
                 System.gc();
 
                 activity.runOnUiThread(new Runnable() {
-                    @SuppressWarnings("ConstantConditions")
                     @Override
                     public void run() {
                         MediaScannerConnection.scanFile(activity,
@@ -116,14 +113,7 @@ public final class ShareUtils {
                                     }
                                 });
 
-                        Toast toast;
-                        if (imageUri != null)
-                            toast = Toast.makeText(
-                                    activity, "Image successfully saved!", Toast.LENGTH_SHORT);
-                        else
-                            toast = Toast.makeText(
-                                    activity, "Unable to save image", Toast.LENGTH_SHORT);
-                        toast.show();
+                        Toast.makeText(activity, "Image successfully saved!", Toast.LENGTH_SHORT).show();
                     }
                 });
             }

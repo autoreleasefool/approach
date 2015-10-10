@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.data;
+package ca.josephroque.bowlingcompanion.bowling;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * Created by Joseph Roque on 2015-07-22. Organizes the data for a bowler.
  */
 public class Bowler
-        implements Parcelable, NameAverageId {
+        implements Parcelable, AverageIdName {
 
     /** Name of the bowler. */
     private final String mBowlerName;

@@ -15,7 +15,7 @@ import java.util.List;
 
 import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.R;
-import ca.josephroque.bowlingcompanion.data.Series;
+import ca.josephroque.bowlingcompanion.bowling.Series;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
 
@@ -90,7 +90,6 @@ public class SeriesAdapter
          * @param itemLayoutView layout view containing views to display data
          * @param viewType type of view
          */
-        @SuppressWarnings("CheckStyle")
         public SeriesViewHolder(View itemLayoutView, int viewType) {
             super(itemLayoutView);
             switch (viewType) {

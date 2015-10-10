@@ -14,7 +14,6 @@ public class BowlingCompanionApplication extends Application {
     @SuppressWarnings("unused")
     private static final String TAG = "BowlingCompanionApplication";
 
-    @SuppressWarnings("CheckStyle")
     @Override
     public void onCreate() {
         super.onCreate();

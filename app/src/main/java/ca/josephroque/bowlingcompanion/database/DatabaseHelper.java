@@ -234,7 +234,6 @@ public final class DatabaseHelper
         }
     }
 
-    @SuppressWarnings("CheckStyle")
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         /**
@@ -299,7 +298,6 @@ public final class DatabaseHelper
      *
      * @param db to upgrade
      */
-    @SuppressWarnings("CheckStyle")
     private void upgradeDatabaseFrom1To2(SQLiteDatabase db) {
         //Removes foreign key and check constraints from frame table
         db.execSQL("CREATE TABLE frame2 (" + FrameEntry._ID + " INTEGER PRIMARY KEY, "
@@ -418,7 +416,6 @@ public final class DatabaseHelper
      *
      * @param db to upgrade
      */
-    @SuppressWarnings("CheckStyle")
     private void upgradeDatabaseFrom2To3(SQLiteDatabase db) {
         db.execSQL("DROP INDEX IF EXISTS frame_id_index");
         db.execSQL("DROP INDEX IF EXISTS frame_game_fk_index");

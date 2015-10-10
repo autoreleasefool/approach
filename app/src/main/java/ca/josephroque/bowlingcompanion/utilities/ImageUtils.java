@@ -32,7 +32,6 @@ import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
  * Created by Joseph Roque on 15-03-26. Provides methods relating to creating images of the statistics managed by the
  * application.
  */
-@SuppressWarnings("CheckStyle")
 final class ImageUtils {
 
     /** Identifies output from this class in Logcat. */
@@ -416,8 +415,6 @@ final class ImageUtils {
      * @see android.provider.MediaStore.Images.Media#insertImage(android.content.ContentResolver, Bitmap, String,
      * String)
      */
-    @SuppressWarnings("all")
-    //Ignoring try with automatic resource management in case java 1.6 is used
     public static Uri insertImage(ContentResolver cr,
                                   Bitmap source,
                                   String title,

@@ -36,8 +36,8 @@ import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.MainActivity;
 import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.adapter.NameAverageAdapter;
-import ca.josephroque.bowlingcompanion.data.Bowler;
-import ca.josephroque.bowlingcompanion.data.LeagueEvent;
+import ca.josephroque.bowlingcompanion.bowling.Bowler;
+import ca.josephroque.bowlingcompanion.bowling.LeagueEvent;
 import ca.josephroque.bowlingcompanion.database.Contract.BowlerEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.GameEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.LeagueEntry;
@@ -52,7 +52,6 @@ import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
  * Created by Joseph Roque on 15-03-13. Manages the UI to display information about the bowlers being tracked by the
  * application, and offers a callback interface {@code BowlerFragment.BowlerCallback} for handling interactions.
  */
-@SuppressWarnings("Convert2Lambda")
 public class BowlerFragment
         extends Fragment
         implements NameAverageAdapter.NameAverageEventHandler,

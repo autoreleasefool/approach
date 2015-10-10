@@ -35,8 +35,8 @@ import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.MainActivity;
 import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.adapter.NameAverageAdapter;
-import ca.josephroque.bowlingcompanion.data.LeagueEvent;
-import ca.josephroque.bowlingcompanion.data.Series;
+import ca.josephroque.bowlingcompanion.bowling.LeagueEvent;
+import ca.josephroque.bowlingcompanion.bowling.Series;
 import ca.josephroque.bowlingcompanion.database.Contract.FrameEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.GameEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.LeagueEntry;
@@ -51,7 +51,6 @@ import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
  * application, and offers a callback interface {@code LeagueEventFragment.LeagueEventCallback} for handling
  * interactions.
  */
-@SuppressWarnings("Convert2Lambda")
 public class LeagueEventFragment
         extends Fragment
         implements NameAverageAdapter.NameAverageEventHandler,
@@ -764,7 +763,6 @@ public class LeagueEventFragment
         }
 
         @Override
-        @SuppressWarnings("unchecked")
         protected void onPostExecute(List<LeagueEvent> listLeagueEvents) {
             LeagueEventFragment fragment = mFragment.get();
             if (fragment == null || listLeagueEvents == null)
