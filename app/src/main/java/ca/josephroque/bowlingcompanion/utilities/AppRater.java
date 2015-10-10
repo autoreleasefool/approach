@@ -21,7 +21,7 @@ public final class AppRater {
     private static final String TAG = "AppRater";
 
     /** Package the app has been created in. */
-    private static final String APP_PNAME = "ca.josephroque.bowlingcompanion";
+    private static final String APP_PACKAGE_NAME = "ca.josephroque.bowlingcompanion";
 
     /** Minimum number of days to wait before displaying prompt. */
     private static final int DAYS_UNTIL_PROMPT = 14;
@@ -97,12 +97,10 @@ public final class AppRater {
                     case R.id.btn_rate:
                         try {
                             context.startActivity(new Intent(Intent.ACTION_VIEW,
-                                    Uri.parse("market://details?id=" + APP_PNAME)));
+                                    Uri.parse("market://details?id=" + APP_PACKAGE_NAME)));
                         } catch (android.content.ActivityNotFoundException ex) {
                             context.startActivity(new Intent(Intent.ACTION_VIEW,
-                                    Uri.parse(
-                                            "http://play.google.com/store/apps/details?id="
-                                                    + APP_PNAME)));
+                                    Uri.parse("http://play.google.com/store/apps/details?id=" + APP_PACKAGE_NAME)));
                         }
                         disableAutomaticPrompt(editor);
                         break;

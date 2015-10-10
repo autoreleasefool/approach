@@ -20,9 +20,8 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
 /**
- * Created by Joseph Roque on 15-10-08. INSERT CLASS DESCRIPTION HERE
+ * Created by Joseph Roque on 15-10-08. Provides tests for the loading of themes for the application.
  */
-
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(
         constants = BuildConfig.class,
@@ -30,6 +29,10 @@ import static org.junit.Assert.assertThat;
         packageName = "ca.josephroque.bowlingcompanion"
 )
 public class ThemeTest {
+
+    /** Identifies output from this class in Logcat. */
+    @SuppressWarnings("unused")
+    private static final String TAG = "ThemeTest";
 
     /**
      * Sets up the environment before each test runs.
@@ -39,7 +42,7 @@ public class ThemeTest {
     @Before
     public void setUp()
             throws Exception {
-
+        // does nothing
     }
 
     /**
