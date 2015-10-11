@@ -677,7 +677,7 @@ public class StatsListFragment
                             + totalShotsAtMiddle + "]"));
         }
         currentStatPosition++;
-        if (statValues[mStatsGeneral][StatUtils.STAT_SPARE_CONVERSIONS] > 0) {
+        if (spareChances > 0) {
             listStatNamesAndValues.get(mStatsGeneral).set(currentStatPosition, Pair.create(
                     listStatNamesAndValues.get(mStatsGeneral).get(currentStatPosition).first,
                     decimalFormat.format(statValues[mStatsGeneral][StatUtils.STAT_SPARE_CONVERSIONS]
@@ -695,8 +695,6 @@ public class StatsListFragment
                                 statValues[mStatsFirstBall][i] / (double) totalShotsAtMiddle * 100)
                                 + "% [" + statValues[mStatsFirstBall][i] + "/" + totalShotsAtMiddle
                                 + "]"));
-            }
-            if (statValues[mStatsFirstBall][i + 1] > 0) {
                 listStatNamesAndValues.get(mStatsFirstBall).set(currentStatPosition + 1,
                         Pair.create(listStatNamesAndValues.get(mStatsFirstBall)
                                         .get(currentStatPosition + 1).first,
@@ -757,6 +755,7 @@ public class StatsListFragment
         if (!firstBall[2]) {
             return -1;
         }
+        //TODO: here
 
         int numberOfPinsKnockedDown = 0;
         for (boolean knockedDown : firstBall) {
