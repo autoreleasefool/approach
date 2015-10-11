@@ -79,6 +79,7 @@
     <string name="text_avg_num">Avg: %d</string>
     <string name="text_click_to_delete">Click to delete: %s</string>
     <string name="text_number">%d</string>
+    <string name="text_game">Game %d</string>
 
     <!-- Tutorial -->
     <string name="text_tutorial_welcome">Welcome to your 5 Pin Bowling Companion!</string>
