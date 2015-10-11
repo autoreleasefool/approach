@@ -185,8 +185,7 @@ public class BowlerFragment
             mainActivity.setDrawerState(false);
 
             //Loads values for member variables from preferences, if they exist
-            SharedPreferences prefs =
-                    getActivity().getSharedPreferences(Constants.PREFS, Context.MODE_PRIVATE);
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
             mRecentBowlerId = prefs.getLong(Constants.PREF_RECENT_BOWLER_ID, -1);
             mRecentLeagueId = prefs.getLong(Constants.PREF_RECENT_LEAGUE_ID, -1);
             mQuickBowlerId = prefs.getLong(Constants.PREF_QUICK_BOWLER_ID, -1);
@@ -266,9 +265,7 @@ public class BowlerFragment
     public void onChangeBowlerName(final Bowler bowlerToChange, String name) {
         boolean validInput = true;
         int invalidInputMessage = -1;
-        final Bowler bowlerWithNewName = new Bowler(bowlerToChange.getId(),
-                name,
-                bowlerToChange.getAverage());
+        final Bowler bowlerWithNewName = new Bowler(bowlerToChange.getId(), name, bowlerToChange.getAverage());
 
         if (mListBowlers.contains(bowlerWithNewName)) {
             //Bowler name already exists in the list
@@ -427,7 +424,7 @@ public class BowlerFragment
 
         new AlertDialog.Builder(getContext())
                 .setTitle("Warning!")
-                .setMessage("Are you sure you want to delete " + bowler.getBowlerName()+ "?"
+                .setMessage("Are you sure you want to delete " + bowler.getBowlerName() + "?"
                         + " This cannot be undone!")
                 .setPositiveButton(R.string.dialog_delete, onClickListener)
                 .setNegativeButton(R.string.dialog_cancel, onClickListener)
@@ -464,43 +461,7 @@ public class BowlerFragment
                     .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            if (quickOrRecent) {
-                                Bowler quickBowler = new Bowler(mQuickBowlerId,
-                                        mQuickBowlerName,
-                                        (short) 0);
-                                if (mBowlerCallback != null
-                                        && mLeagueSelectedCallback != null
-                                        && mSeriesCallback != null) {
-                                    mBowlerCallback.onBowlerSelected(quickBowler,
-                                            false,
-                                            true);
-                                    mLeagueSelectedCallback.onLeagueSelected(new LeagueEvent(
-                                                    mQuickLeagueId,
-                                                    mQuickLeagueName,
-                                                    (short) 0,
-                                                    mQuickNumberOfGames),
-                                            false);
-                                    mSeriesCallback.onCreateNewSeries(false);
-                                }
-                            } else {
-                                Bowler recentBowler = new Bowler(mRecentBowlerId,
-                                        mRecentBowlerName,
-                                        (short) 0);
-                                if (mBowlerCallback != null
-                                        && mLeagueSelectedCallback != null
-                                        && mSeriesCallback != null) {
-                                    mBowlerCallback.onBowlerSelected(recentBowler,
-                                            false,
-                                            true);
-                                    mLeagueSelectedCallback.onLeagueSelected(new LeagueEvent(
-                                                    mRecentLeagueId,
-                                                    mRecentLeagueName,
-                                                    (short) 0,
-                                                    mRecentNumberOfGames),
-                                            false);
-                                    mSeriesCallback.onCreateNewSeries(false);
-                                }
-                            }
+                            createQuickOrRecentSeries(quickOrRecent);
                             dialog.dismiss();
                         }
                     })
@@ -525,6 +486,46 @@ public class BowlerFragment
                     })
                     .create()
                     .show();
+        }
+    }
+
+    /**
+     * Creates and opens a new series for either the most recently used bowler/league, or for the bowler/league which
+     * has been set for quick series.
+     *
+     * @param quickOrRecent true of a quick series should be created, false for a series with the recent bowler/league
+     */
+    private void createQuickOrRecentSeries(boolean quickOrRecent) {
+        final long bowlerId;
+        final long leagueId;
+        final String bowlerName;
+        final String leagueName;
+        final byte numberOfGames;
+
+        if (quickOrRecent) {
+            bowlerId = mQuickBowlerId;
+            bowlerName = mQuickBowlerName;
+            leagueId = mQuickLeagueId;
+            leagueName = mQuickLeagueName;
+            numberOfGames = mQuickNumberOfGames;
+        } else {
+            bowlerId = mRecentBowlerId;
+            bowlerName = mRecentBowlerName;
+            leagueId = mRecentLeagueId;
+            leagueName = mRecentLeagueName;
+            numberOfGames = mRecentNumberOfGames;
+        }
+
+        Bowler bowler = new Bowler(bowlerId, bowlerName, (short) 0);
+        if (mBowlerCallback != null && mLeagueSelectedCallback != null && mSeriesCallback != null) {
+            mBowlerCallback.onBowlerSelected(bowler, false, true);
+            mLeagueSelectedCallback.onLeagueSelected(new LeagueEvent(
+                            leagueId,
+                            leagueName,
+                            (short) 0,
+                            numberOfGames),
+                    false);
+            mSeriesCallback.onCreateNewSeries(false);
         }
     }
 
@@ -580,28 +581,23 @@ public class BowlerFragment
      * @param bowlerId id of bowler whose data will be deleted
      */
     private void deleteBowler(final long bowlerId) {
-        SharedPreferences prefs =
-                getActivity().getSharedPreferences(Constants.PREFS, Context.MODE_PRIVATE);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
         SharedPreferences.Editor prefsEditor = prefs.edit();
         long recentId = prefs.getLong(Constants.PREF_RECENT_BOWLER_ID, -1);
         long quickId = prefs.getLong(Constants.PREF_QUICK_BOWLER_ID, -1);
 
         //Clears recent/quick ids if they match the deleted bowler
-        if (recentId == bowlerId) {
-            prefsEditor.putLong(Constants.PREF_RECENT_BOWLER_ID, -1)
-                    .putLong(Constants.PREF_RECENT_LEAGUE_ID, -1);
-        }
-        if (quickId == bowlerId) {
-            prefsEditor.putLong(Constants.PREF_QUICK_BOWLER_ID, -1)
-                    .putLong(Constants.PREF_QUICK_LEAGUE_ID, -1);
-        }
+        if (recentId == bowlerId)
+            prefsEditor.putLong(Constants.PREF_RECENT_BOWLER_ID, -1).putLong(Constants.PREF_RECENT_LEAGUE_ID, -1);
+        if (quickId == bowlerId)
+            prefsEditor.putLong(Constants.PREF_QUICK_BOWLER_ID, -1).putLong(Constants.PREF_QUICK_LEAGUE_ID, -1);
+
         prefsEditor.apply();
 
         new Thread(new Runnable() {
             @Override
             public void run() {
-                SQLiteDatabase database =
-                        DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
+                SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
                 String[] whereArgs = {String.valueOf(bowlerId)};
                 database.beginTransaction();
                 try {
@@ -708,12 +704,111 @@ public class BowlerFragment
                     + " ON t.lid2=league." + LeagueEntry._ID
                     + " GROUP BY bowler." + BowlerEntry._ID
                     + " ORDER BY bowler." + BowlerEntry.COLUMN_DATE_MODIFIED + " DESC";
-            String[] rawBowlerArgs = {String.valueOf(0),
+            String[] rawBowlerArgs = {
+                    String.valueOf(0),
                     String.valueOf(0), (!includeOpen
                     ? Constants.NAME_OPEN_LEAGUE
                     : String.valueOf(0))
             };
 
+            getBowlersFromDatabase(database, listBowlers, rawBowlerQuery, rawBowlerArgs);
+
+            //If a recent bowler exists, their name and league is loaded to be used for quick series
+            if (fragment.mRecentBowlerId > -1 && fragment.mRecentLeagueId > -1)
+                getRecentBowlerFromDatabase(fragment, database);
+            //If a custom bowler is set, their name and league is loaded to be used for quick series
+            if (fragment.mQuickBowlerId > -1 && fragment.mQuickLeagueId > -1)
+                getQuickBowlerFromDatabase(fragment, database);
+
+            return listBowlers;
+        }
+
+        /**
+         * Queries the database for the data of the quick bowler and league set by the user.
+         *
+         * @param fragment current fragment
+         * @param database app database
+         */
+        private void getQuickBowlerFromDatabase(BowlerFragment fragment, SQLiteDatabase database) {
+            String rawRecentQuery = "SELECT "
+                    + BowlerEntry.COLUMN_BOWLER_NAME + ", "
+                    + LeagueEntry.COLUMN_LEAGUE_NAME + ", "
+                    + LeagueEntry.COLUMN_NUMBER_OF_GAMES
+                    + " FROM " + BowlerEntry.TABLE_NAME + " AS bowler"
+                    + " INNER JOIN " + LeagueEntry.TABLE_NAME + " AS league"
+                    + " ON bowler." + BowlerEntry._ID
+                    + "=league." + LeagueEntry.COLUMN_BOWLER_ID
+                    + " WHERE bowler." + BowlerEntry._ID + "=?"
+                    + "AND league." + LeagueEntry._ID + "=?";
+            String[] rawRecentArgs = new String[]{
+                    String.valueOf(fragment.mQuickBowlerId),
+                    String.valueOf(fragment.mQuickLeagueId)
+            };
+
+            Cursor cursor = database.rawQuery(rawRecentQuery, rawRecentArgs);
+            if (cursor.moveToFirst()) {
+                fragment.mQuickBowlerName = cursor.getString(
+                        cursor.getColumnIndex(BowlerEntry.COLUMN_BOWLER_NAME));
+                fragment.mQuickLeagueName = cursor.getString(
+                        cursor.getColumnIndex(LeagueEntry.COLUMN_LEAGUE_NAME));
+                fragment.mQuickNumberOfGames = (byte) cursor.getInt(
+                        cursor.getColumnIndex(LeagueEntry.COLUMN_NUMBER_OF_GAMES));
+            } else {
+                fragment.mQuickBowlerId = -1;
+                fragment.mQuickLeagueId = -1;
+            }
+            cursor.close();
+        }
+
+        /**
+         * Queries the database for the data of the most recent bowler and league last used by the user.
+         *
+         * @param fragment current fragment
+         * @param database app database
+         */
+        private void getRecentBowlerFromDatabase(BowlerFragment fragment, SQLiteDatabase database) {
+            String rawRecentQuery = "SELECT "
+                    + BowlerEntry.COLUMN_BOWLER_NAME + ", "
+                    + LeagueEntry.COLUMN_LEAGUE_NAME + ", "
+                    + LeagueEntry.COLUMN_NUMBER_OF_GAMES
+                    + " FROM " + BowlerEntry.TABLE_NAME + " AS bowler"
+                    + " INNER JOIN " + LeagueEntry.TABLE_NAME + " AS league"
+                    + " ON bowler." + BowlerEntry._ID
+                    + "=league." + LeagueEntry.COLUMN_BOWLER_ID
+                    + " WHERE bowler." + BowlerEntry._ID + "=? "
+                    + "AND league." + LeagueEntry._ID + "=?";
+            String[] rawRecentArgs = new String[]{
+                    String.valueOf(fragment.mRecentBowlerId),
+                    String.valueOf(fragment.mRecentLeagueId)
+            };
+
+            Cursor cursor = database.rawQuery(rawRecentQuery, rawRecentArgs);
+            if (cursor.moveToFirst()) {
+                fragment.mRecentBowlerName = cursor.getString(
+                        cursor.getColumnIndex(BowlerEntry.COLUMN_BOWLER_NAME));
+                fragment.mRecentLeagueName = cursor.getString(
+                        cursor.getColumnIndex(LeagueEntry.COLUMN_LEAGUE_NAME));
+                fragment.mRecentNumberOfGames = (byte) cursor.getInt(
+                        cursor.getColumnIndex(LeagueEntry.COLUMN_NUMBER_OF_GAMES));
+            } else {
+                fragment.mRecentBowlerId = -1;
+                fragment.mRecentLeagueId = -1;
+            }
+            cursor.close();
+        }
+
+        /**
+         * Retrieves a list of bowlers and their averages from the database.
+         *
+         * @param database app database
+         * @param listBowlers a list which will contain the bowlers loaded from the database
+         * @param rawBowlerQuery query for bowlers
+         * @param rawBowlerArgs query args
+         */
+        private void getBowlersFromDatabase(SQLiteDatabase database,
+                                            List<Bowler> listBowlers,
+                                            String rawBowlerQuery,
+                                            String[] rawBowlerArgs) {
             //Adds loaded bowler names and averages to lists to display
             Cursor cursor = database.rawQuery(rawBowlerQuery, rawBowlerArgs);
             if (cursor.moveToFirst()) {
@@ -730,72 +825,6 @@ public class BowlerFragment
                 }
             }
             cursor.close();
-
-            //If a recent bowler exists, their name and league is loaded to be used for quick series
-            if (fragment.mRecentBowlerId > -1 && fragment.mRecentLeagueId > -1) {
-                String rawRecentQuery = "SELECT "
-                        + BowlerEntry.COLUMN_BOWLER_NAME + ", "
-                        + LeagueEntry.COLUMN_LEAGUE_NAME + ", "
-                        + LeagueEntry.COLUMN_NUMBER_OF_GAMES
-                        + " FROM " + BowlerEntry.TABLE_NAME + " AS bowler"
-                        + " INNER JOIN " + LeagueEntry.TABLE_NAME + " AS league"
-                        + " ON bowler." + BowlerEntry._ID
-                        + "=league." + LeagueEntry.COLUMN_BOWLER_ID
-                        + " WHERE bowler." + BowlerEntry._ID + "=? "
-                        + "AND league." + LeagueEntry._ID + "=?";
-                String[] rawRecentArgs = new String[]{
-                        String.valueOf(fragment.mRecentBowlerId),
-                        String.valueOf(fragment.mRecentLeagueId)
-                };
-
-                cursor = database.rawQuery(rawRecentQuery, rawRecentArgs);
-                if (cursor.moveToFirst()) {
-                    fragment.mRecentBowlerName = cursor.getString(
-                            cursor.getColumnIndex(BowlerEntry.COLUMN_BOWLER_NAME));
-                    fragment.mRecentLeagueName = cursor.getString(
-                            cursor.getColumnIndex(LeagueEntry.COLUMN_LEAGUE_NAME));
-                    fragment.mRecentNumberOfGames = (byte) cursor.getInt(
-                            cursor.getColumnIndex(LeagueEntry.COLUMN_NUMBER_OF_GAMES));
-                } else {
-                    fragment.mRecentBowlerId = -1;
-                    fragment.mRecentLeagueId = -1;
-                }
-                cursor.close();
-            }
-
-            //If a custom bowler is set, their name and league is loaded to be used for quick series
-            if (fragment.mQuickBowlerId > -1 && fragment.mQuickLeagueId > -1) {
-                String rawRecentQuery = "SELECT "
-                        + BowlerEntry.COLUMN_BOWLER_NAME + ", "
-                        + LeagueEntry.COLUMN_LEAGUE_NAME + ", "
-                        + LeagueEntry.COLUMN_NUMBER_OF_GAMES
-                        + " FROM " + BowlerEntry.TABLE_NAME + " AS bowler"
-                        + " INNER JOIN " + LeagueEntry.TABLE_NAME + " AS league"
-                        + " ON bowler." + BowlerEntry._ID
-                        + "=league." + LeagueEntry.COLUMN_BOWLER_ID
-                        + " WHERE bowler." + BowlerEntry._ID + "=?"
-                        + "AND league." + LeagueEntry._ID + "=?";
-                String[] rawRecentArgs = new String[]{
-                        String.valueOf(fragment.mQuickBowlerId),
-                        String.valueOf(fragment.mQuickLeagueId)
-                };
-
-                cursor = database.rawQuery(rawRecentQuery, rawRecentArgs);
-                if (cursor.moveToFirst()) {
-                    fragment.mQuickBowlerName = cursor.getString(
-                            cursor.getColumnIndex(BowlerEntry.COLUMN_BOWLER_NAME));
-                    fragment.mQuickLeagueName = cursor.getString(
-                            cursor.getColumnIndex(LeagueEntry.COLUMN_LEAGUE_NAME));
-                    fragment.mQuickNumberOfGames = (byte) cursor.getInt(
-                            cursor.getColumnIndex(LeagueEntry.COLUMN_NUMBER_OF_GAMES));
-                } else {
-                    fragment.mQuickBowlerId = -1;
-                    fragment.mQuickLeagueId = -1;
-                }
-                cursor.close();
-            }
-
-            return listBowlers;
         }
 
         @Override

@@ -13,7 +13,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
-import android.util.Pair;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -78,7 +77,7 @@ public final class ShareUtils {
      * @param seriesId id of the series to share
      */
     private static void shareSeries(WeakReference<Context> context, long seriesId) {
-        new ShareSeriesTask().execute(Pair.create(context, seriesId));
+        new ShareSeriesTask(context.get()).execute(seriesId);
     }
 
     /**
@@ -123,19 +122,27 @@ public final class ShareUtils {
     /**
      * Creates an image for the series and prompts user to share it.
      */
-    private static class ShareSeriesTask
-            extends AsyncTask<Pair<WeakReference<Context>, Long>, Void, Pair<WeakReference<Context>,
-            WeakReference<Intent>>> {
+    private static final class ShareSeriesTask
+            extends AsyncTask<Long, Void, WeakReference<Intent>> {
 
-        @SafeVarargs
+        /** Instance of the current context. */
+        private WeakReference<Context> mContext;
+
+        /**
+         * Stores a reference to the context.
+         * @param context current context
+         */
+        private ShareSeriesTask(Context context) {
+            mContext = new WeakReference<>(context);
+        }
+
         @SuppressWarnings("UnusedAssignment") //image set to null to free memory
         @Override
-        public final Pair<WeakReference<Context>, WeakReference<Intent>> doInBackground(
-                Pair<WeakReference<Context>, Long>... params) {
-            Context context = params[0].first.get();
+        public WeakReference<Intent> doInBackground(Long... params) {
+            Context context = mContext.get();
             if (context == null)
                 return null;
-            long seriesId = params[0].second;
+            long seriesId = params[0];
             Bitmap image = ImageUtils.createImageFromSeries(context, seriesId);
             Uri imageUri = ImageUtils.insertImage(context.getContentResolver(),
                     image,
@@ -166,19 +173,20 @@ public final class ShareUtils {
             }
 
             shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
-            return Pair.create(params[0].first, new WeakReference<>(shareIntent));
+            return new WeakReference<>(shareIntent);
         }
 
         @Override
-        public void onPostExecute(Pair<WeakReference<Context>, WeakReference<Intent>> params) {
-            if (params != null) {
-                Context context = params.first.get();
-                Intent intent = params.second.get();
-                if (context == null || intent == null)
-                    return;
+        public void onPostExecute(WeakReference<Intent> intent) {
+            Context context = mContext.get();
+            if (intent == null || context == null)
+                return;
 
-                context.startActivity(Intent.createChooser(intent, "Share Image"));
-            }
+            Intent intentToShare = intent.get();
+            if (intentToShare == null)
+                return;
+
+            context.startActivity(Intent.createChooser(intentToShare, "Share Image"));
         }
     }
 

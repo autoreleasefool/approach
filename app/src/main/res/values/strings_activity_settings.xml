@@ -41,7 +41,7 @@
     <string name="pref_include_open_summaryOff">Open games will NOT be included</string>
     <string name="pref_highlight_score_title">Game highlights</string>
     <string name="pref_highlight_series_title">Series highlights</string>
-    
+
     <!-- Theme Settings -->
     <string name="pref_header_theme">Interface</string>
     <string name="pref_theme_colors_title">Theme colors</string>

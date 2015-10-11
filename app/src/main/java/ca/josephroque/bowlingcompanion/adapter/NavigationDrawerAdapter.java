@@ -83,16 +83,17 @@ public class NavigationDrawerAdapter
         View rootView;
         switch (viewType) {
             case VIEW_TYPE_HEADER:
-                rootView = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.item_navigation_header, parent, false);
+                rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_navigation_header,
+                        parent,
+                        false);
                 break;
             case VIEW_TYPE_SUB_HEADER:
-                rootView = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.item_navigation_sub_header, parent, false);
+                rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_navigation_sub_header,
+                        parent,
+                        false);
                 break;
             case VIEW_TYPE_NAVIGATION:
-                rootView = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.item_navigation, parent, false);
+                rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_navigation, parent, false);
                 break;
             default:
                 throw new IllegalStateException("invalid view type: " + viewType);
@@ -125,12 +126,11 @@ public class NavigationDrawerAdapter
                             getUnselectedBackground(viewHolder.itemView.getContext()));
                 break;
             case VIEW_TYPE_SUB_HEADER:
-                setDrawableBackground(viewHolder.itemView,
-                        getUnselectedBackground(viewHolder.itemView.getContext()));
+                setDrawableBackground(viewHolder.itemView, getUnselectedBackground(viewHolder.itemView.getContext()));
                 viewHolder.mTextViewTitle.setText(mListNavigationItems.get(position));
                 break;
             default:
-                throw new IllegalStateException("invalid view type: " + viewType);
+                throw new IllegalStateException("Invalid view type: " + viewType);
         }
     }
 

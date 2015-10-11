@@ -20,21 +20,19 @@ import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
  * ListView. Offers a callback interface {@link NameAverageAdapter.NameAverageEventHandler} to handle interaction
  * events.
  *
- * @param <T> Object of type NameAverageId which is displayed by this adapter
+ * @param <T> Object of type AverageIdName which is displayed by this adapter
  */
 public class NameAverageAdapter<T extends AverageIdName>
-        extends RecyclerView.Adapter<NameAverageAdapter.NameAverageViewHolder>
-        implements View.OnClickListener,
-        View.OnLongClickListener {
+        extends RecyclerView.Adapter<NameAverageAdapter.NameAverageViewHolder> {
 
     /** Identifies output from this class in Logcat. */
     @SuppressWarnings("unused")
     private static final String TAG = "NameAverageAdapter";
 
     /** Represents an item in the list which is active. */
-    private static final int VIEWTYPE_ACTIVE = 0;
+    private static final int VIEW_TYPE_ACTIVE = 0;
     /** Represents an item in the list which has been deleted. */
-    private static final int VIEWTYPE_DELETED = 1;
+    private static final int VIEW_TYPE_DELETED = 1;
 
     /** Indicates data represents bowlers. */
     public static final byte DATA_BOWLERS = 0;
@@ -54,45 +52,27 @@ public class NameAverageAdapter<T extends AverageIdName>
     /** Type of data being represented by this object. */
     private final byte mDataType;
 
-    /**
-     * Subclass of RecyclerView.ViewHolder to manage view which will display an image, and text to the user.
-     */
-    public static final class NameAverageViewHolder
-            extends RecyclerView.ViewHolder {
-
-        /** Displays an image representing the type of data in the row. */
-        private ImageView mImageViewType;
-        /** Displays the name of the data in the row. */
-        private TextView mTextViewName;
-        /** Displays the average of the data in the row. */
-        private TextView mTextViewAverage;
-
-        /**
-         * Calls super constructor and gets instances of ImageView and TextView objects for member variables from
-         * itemLayoutView.
-         *
-         * @param itemLayoutView layout view containing views to display data
-         * @param viewType type of view
-         */
-        private NameAverageViewHolder(View itemLayoutView, int viewType) {
-            super(itemLayoutView);
-            switch (viewType) {
-                case VIEWTYPE_ACTIVE:
-                    mImageViewType = (ImageView) itemLayoutView.findViewById(R.id.iv_name_average_type);
-                    mTextViewName = (TextView) itemLayoutView.findViewById(R.id.tv_name_avg_name);
-                    mTextViewAverage = (TextView) itemLayoutView.findViewById(
-                            R.id.tv_name_average_average);
-                    break;
-                case VIEWTYPE_DELETED:
-                    mImageViewType = (ImageView) itemLayoutView.findViewById(R.id.iv_delete);
-                    mTextViewName = (TextView) itemLayoutView.findViewById(R.id.tv_delete);
-                    mTextViewAverage = (TextView) itemLayoutView.findViewById(R.id.tv_undo_delete);
-                    break;
-                default:
-                    throw new IllegalArgumentException("view type is invalid: " + viewType);
-            }
+    /** Instance of an on click listener to handle user events when clicking an item. */
+    private View.OnClickListener mClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (mEventHandler != null && mRecyclerView != null)
+                mEventHandler.onNAItemClick(mRecyclerView.getChildAdapterPosition(v));
         }
-    }
+    };
+
+    /** Instance of an on long click listener to handle user events when clicking an item. */
+    private View.OnLongClickListener mLongClickListener = new View.OnLongClickListener() {
+        @Override
+        public boolean onLongClick(View v) {
+            if (mEventHandler != null && mRecyclerView != null) {
+                mEventHandler.onNAItemLongClick(mRecyclerView.getChildAdapterPosition(v));
+                return true;
+            }
+
+            return false;
+        }
+    };
 
     /**
      * Sets member variables to parameters.
@@ -116,7 +96,7 @@ public class NameAverageAdapter<T extends AverageIdName>
                 mItemDrawables = new Drawable[2];
                 break;
             default:
-                throw new IllegalArgumentException("invalid data type: " + mDataType);
+                throw new IllegalArgumentException("Invalid data type: " + mDataType);
         }
     }
 
@@ -124,16 +104,16 @@ public class NameAverageAdapter<T extends AverageIdName>
     public NameAverageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView;
         switch (viewType) {
-            case VIEWTYPE_ACTIVE:
-                itemView = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.list_item_name_average, parent, false);
+            case VIEW_TYPE_ACTIVE:
+                itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_name_average,
+                        parent,
+                        false);
                 break;
-            case VIEWTYPE_DELETED:
-                itemView = LayoutInflater.from(parent.getContext())
-                        .inflate(R.layout.list_item_deleted, parent, false);
+            case VIEW_TYPE_DELETED:
+                itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_deleted, parent, false);
                 break;
             default:
-                throw new IllegalArgumentException("view type is invalid: " + viewType);
+                throw new IllegalArgumentException("View type is invalid: " + viewType);
         }
 
         return new NameAverageViewHolder(itemView, viewType);
@@ -144,87 +124,91 @@ public class NameAverageAdapter<T extends AverageIdName>
         final int viewType = getItemViewType(position);
 
         switch (viewType) {
-            case VIEWTYPE_ACTIVE:
-                //Sets text/images depending on data type
-                switch (mDataType) {
-                    case DATA_BOWLERS:
-                        holder.mTextViewName.setText(mListNamesAndAverages.get(position).getName());
-                        if (mItemDrawables[0] == null)
-                            mItemDrawables[0]
-                                    = DisplayUtils.getDrawable(holder.itemView.getResources(),
-                                    R.drawable.ic_person_black_24dp);
-                        holder.mImageViewType.setImageDrawable(mItemDrawables[0]);
-                        break;
-                    case DATA_LEAGUES_EVENTS:
-                        holder.mTextViewName.setText(mListNamesAndAverages.get(position)
-                                .getName()
-                                .substring(1));
-                        if (mItemDrawables[0] == null || mItemDrawables[1] == null) {
-                            mItemDrawables[0]
-                                    = DisplayUtils.getDrawable(holder.itemView.getResources(),
-                                    R.drawable.ic_l_black_24dp);
-                            mItemDrawables[1]
-                                    = DisplayUtils.getDrawable(holder.itemView.getResources(),
-                                    R.drawable.ic_e_black_24dp);
-                        }
-                        holder.mImageViewType.setImageDrawable(
-                                mListNamesAndAverages.get(position).getName().startsWith("L")
-                                        ? mItemDrawables[0]
-                                        : mItemDrawables[1]);
-                        break;
-                    default:
-                        throw new IllegalStateException("invalid mDataType: " + mDataType);
-                }
-                holder.mTextViewAverage.setText(String.format(mRecyclerView.getResources()
-                        .getString(R.string.text_avg_num), mListNamesAndAverages.get(position).getAverage()));
-
-                //Sets actions on click/touch events
-                holder.itemView.setOnClickListener(this);
-                holder.itemView.setOnLongClickListener(this);
+            case VIEW_TYPE_ACTIVE:
+                bindActiveViewHolder(holder, position);
                 break;
-            case VIEWTYPE_DELETED:
-                String nameToDelete = mListNamesAndAverages.get(position).getName();
-                if (mDataType == DATA_LEAGUES_EVENTS)
-                    nameToDelete = nameToDelete.substring(1);
-                final long idToDelete = mListNamesAndAverages.get(position).getId();
-                final View.OnClickListener onClickListener = new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (mEventHandler != null) {
-                            if (v.getId() == R.id.tv_undo_delete)
-                                mEventHandler.onNAItemUndoDelete(idToDelete);
-                            else
-                                mEventHandler.onNAItemDelete(idToDelete);
-                        }
-                    }
-                };
-                holder.itemView.setOnClickListener(null);
-                holder.itemView.setOnLongClickListener(null);
-                holder.itemView.setBackgroundColor(Theme.getTertiaryThemeColor());
-                holder.mTextViewName.setText("Click to delete " + nameToDelete);
-                holder.mTextViewName.setOnClickListener(onClickListener);
-                holder.mTextViewAverage.setOnClickListener(onClickListener);
-                holder.mImageViewType.setOnClickListener(onClickListener);
+            case VIEW_TYPE_DELETED:
+                bindDeletedViewHolder(holder, position);
                 break;
             default:
-                throw new IllegalArgumentException("invalid view type: " + viewType);
+                throw new IllegalArgumentException("Invalid view type: " + viewType);
         }
     }
 
-    @Override
-    public void onClick(View v) {
-        //Calls relevant event handler method
-        if (mEventHandler != null && mRecyclerView != null)
-            mEventHandler.onNAItemClick(mRecyclerView.getChildAdapterPosition(v));
+    /**
+     * Fills the data for the view holder of an item that has been deleted.
+     *
+     * @param holder view holder
+     * @param position position of item
+     */
+    private void bindDeletedViewHolder(NameAverageViewHolder holder, int position) {
+        String nameToDelete = mListNamesAndAverages.get(position).getName();
+        if (mDataType == DATA_LEAGUES_EVENTS)
+            nameToDelete = nameToDelete.substring(1);
+        final long idToDelete = mListNamesAndAverages.get(position).getId();
+        final View.OnClickListener onClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mEventHandler != null) {
+                    if (v.getId() == R.id.tv_undo_delete)
+                        mEventHandler.onNAItemUndoDelete(idToDelete);
+                    else
+                        mEventHandler.onNAItemDelete(idToDelete);
+                }
+            }
+        };
+        holder.itemView.setOnClickListener(null);
+        holder.itemView.setOnLongClickListener(null);
+        holder.itemView.setBackgroundColor(Theme.getTertiaryThemeColor());
+        holder.mTextViewName.setText(String.format(mRecyclerView.getResources()
+                .getString(R.string.text_click_to_delete), nameToDelete));
+        holder.mTextViewName.setOnClickListener(onClickListener);
+        holder.mTextViewAverage.setOnClickListener(onClickListener);
+        holder.mImageViewType.setOnClickListener(onClickListener);
     }
 
-    @Override
-    public boolean onLongClick(View v) {
-        if (mEventHandler != null && mRecyclerView != null) {
-            mEventHandler.onNAItemLongClick(mRecyclerView.getChildAdapterPosition(v));
-            return true;
+    /**
+     * Fills the data for the view holder of an item.
+     *
+     * @param holder view holder
+     * @param position position of item
+     */
+    private void bindActiveViewHolder(NameAverageViewHolder holder,
+                                      int position) {
+        //Sets text/images depending on data type
+        switch (mDataType) {
+            case DATA_BOWLERS:
+                holder.mTextViewName.setText(mListNamesAndAverages.get(position).getName());
+                if (mItemDrawables[0] == null)
+                    mItemDrawables[0] = DisplayUtils.getDrawable(holder.itemView.getResources(),
+                            R.drawable.ic_person_black_24dp);
+                holder.mImageViewType.setImageDrawable(mItemDrawables[0]);
+                break;
+            case DATA_LEAGUES_EVENTS:
+                holder.mTextViewName.setText(mListNamesAndAverages.get(position).getName().substring(1));
+                if (mItemDrawables[0] == null || mItemDrawables[1] == null) {
+                    mItemDrawables[0] = DisplayUtils.getDrawable(holder.itemView.getResources(),
+                            R.drawable.ic_l_black_24dp);
+                    mItemDrawables[1] = DisplayUtils.getDrawable(holder.itemView.getResources(),
+                            R.drawable.ic_e_black_24dp);
+                }
+                holder.mImageViewType.setImageDrawable(
+                        mListNamesAndAverages.get(position).getName().startsWith("L")
+                                ? mItemDrawables[0]
+                                : mItemDrawables[1]);
+                break;
+            default:
+                throw new IllegalStateException("Invalid mDataType: " + mDataType);
         }
-        return false;
+        holder.mTextViewAverage.setText(String.format(mRecyclerView.getResources()
+                .getString(R.string.text_avg_num), mListNamesAndAverages.get(position).getAverage()));
+
+        //Sets actions on click/touch events
+        holder.itemView.setOnClickListener(mClickListener);
+        holder.itemView.setOnLongClickListener(mLongClickListener);
+        holder.mTextViewName.setOnClickListener(null);
+        holder.mTextViewAverage.setOnClickListener(null);
+        holder.mImageViewType.setOnClickListener(null);
     }
 
     @Override
@@ -251,8 +235,47 @@ public class NameAverageAdapter<T extends AverageIdName>
     @Override
     public int getItemViewType(int position) {
         return (mListNamesAndAverages.get(position).wasDeleted())
-                ? VIEWTYPE_DELETED
-                : VIEWTYPE_ACTIVE;
+                ? VIEW_TYPE_DELETED
+                : VIEW_TYPE_ACTIVE;
+    }
+
+    /**
+     * Subclass of RecyclerView.ViewHolder to manage view which will display an image, and text to the user.
+     */
+    public static final class NameAverageViewHolder
+            extends RecyclerView.ViewHolder {
+
+        /** Displays an image representing the type of data in the row. */
+        private ImageView mImageViewType;
+        /** Displays the name of the data in the row. */
+        private TextView mTextViewName;
+        /** Displays the average of the data in the row. */
+        private TextView mTextViewAverage;
+
+        /**
+         * Calls super constructor and gets instances of ImageView and TextView objects for member variables from
+         * itemLayoutView.
+         *
+         * @param itemLayoutView layout view containing views to display data
+         * @param viewType type of view
+         */
+        private NameAverageViewHolder(View itemLayoutView, int viewType) {
+            super(itemLayoutView);
+            switch (viewType) {
+                case VIEW_TYPE_ACTIVE:
+                    mImageViewType = (ImageView) itemLayoutView.findViewById(R.id.iv_name_average_type);
+                    mTextViewName = (TextView) itemLayoutView.findViewById(R.id.tv_name_avg_name);
+                    mTextViewAverage = (TextView) itemLayoutView.findViewById(R.id.tv_name_average_average);
+                    break;
+                case VIEW_TYPE_DELETED:
+                    mImageViewType = (ImageView) itemLayoutView.findViewById(R.id.iv_delete);
+                    mTextViewName = (TextView) itemLayoutView.findViewById(R.id.tv_delete);
+                    mTextViewAverage = (TextView) itemLayoutView.findViewById(R.id.tv_undo_delete);
+                    break;
+                default:
+                    throw new IllegalArgumentException("View type is invalid:" + viewType);
+            }
+        }
     }
 
     /**

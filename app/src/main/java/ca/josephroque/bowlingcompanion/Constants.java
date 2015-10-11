@@ -126,6 +126,14 @@ public final class Constants {
     public static final byte MAX_NUMBER_EVENT_GAMES = 20;
     /** Maximum number of games in a league. */
     public static final byte MAX_NUMBER_LEAGUE_GAMES = 5;
+    /** Number of balls in a frame. */
+    public static final byte NUMBER_OF_BALLS = 3;
+    /** Number of available pins to knock down. */
+    public static final byte NUMBER_OF_PINS = 5;
+    /** How many points are lost if a foul in invoked. */
+    public static final byte FOUL_VALUE = 15;
+    /** How many points a strike is worth. */
+    public static final byte STRIKE_VALUE = 15;
 
     //SCORING VALUES
     /** Symbol representing a strike. */

@@ -41,8 +41,8 @@ import ca.josephroque.bowlingcompanion.database.Contract.GameEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.SeriesEntry;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.dialog.ChangeDateDialog;
-import ca.josephroque.bowlingcompanion.utilities.DataFormatter;
 import ca.josephroque.bowlingcompanion.theme.Theme;
+import ca.josephroque.bowlingcompanion.utilities.DateUtils;
 import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
 import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
 
@@ -249,9 +249,9 @@ public class SeriesFragment
         final SimpleDateFormat dateFormat =
                 new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
         final String formattedDate = dateFormat.format(c.getTime());
-        seriesInList.setSeriesDate(DataFormatter.formattedDateToPrettyCompact(formattedDate.substring(
+        seriesInList.setSeriesDate(DateUtils.formattedDateToPrettyCompact(formattedDate.substring(
                 0,
-                10)));
+                DateUtils.LENGTH_OF_DATE_MINUS_TIME)));
 
         getActivity().runOnUiThread(new Runnable() {
             @Override
@@ -277,7 +277,7 @@ public class SeriesFragment
                                     new String[]{String.valueOf(seriesInList.getSeriesId())});
                             database.setTransactionSuccessful();
                         } catch (Exception ex) {
-                            Log.e(TAG, "Series date was not updated", ex);
+                            Log.e(TAG, "Series date was not updated.", ex);
                         } finally {
                             database.endTransaction();
                         }
@@ -336,8 +336,7 @@ public class SeriesFragment
                             startCombineSimilarSeries();
                             break;
                         case R.id.btn_do_not_ask:
-                            preferences.edit().putBoolean(Constants.KEY_ASK_COMBINE, false)
-                                    .apply();
+                            preferences.edit().putBoolean(Constants.KEY_ASK_COMBINE, false).apply();
                             break;
                         default:
                             // do nothing
@@ -485,7 +484,7 @@ public class SeriesFragment
 
                     if (listSeries.size() == 0 || listSeries.get(listSeries.size() - 1).getSeriesId() != seriesId) {
                         listSeries.add(new Series(seriesId,
-                                DataFormatter.formattedDateToPrettyCompact(seriesDate),
+                                DateUtils.formattedDateToPrettyCompact(seriesDate),
                                 new ArrayList<Short>(),
                                 new ArrayList<Byte>()));
                     }
@@ -582,34 +581,7 @@ public class SeriesFragment
                             Cursor cursor = db.rawQuery(seriesQuery,
                                     new String[]{String.valueOf(mainActivity.getLeagueId())});
 
-                            String lastSeriesDate = null;
-                            int startOfLastSeries = -1;
-                            if (cursor.moveToFirst()) {
-                                while (!cursor.isAfterLast()) {
-                                    int gameNumber = cursor.getInt(cursor.getColumnIndex(
-                                            GameEntry.COLUMN_GAME_NUMBER));
-                                    if (gameNumber == 1) {
-                                        String seriesDate = cursor.getString(cursor.getColumnIndex(
-                                                SeriesEntry.COLUMN_SERIES_DATE));
-                                        String dateFormatted = DataFormatter
-                                                .formattedDateToPrettyCompact(seriesDate);
-
-                                        if (dateFormatted.equals(lastSeriesDate)) {
-                                            int startOfCurrentSeries = cursor.getPosition();
-                                            combineSeries(db,
-                                                    cursor,
-                                                    startOfLastSeries,
-                                                    startOfCurrentSeries);
-                                            cursor.moveToPosition(startOfCurrentSeries);
-                                        }
-
-                                        startOfLastSeries = cursor.getPosition();
-                                        lastSeriesDate = dateFormatted;
-                                    }
-
-                                    cursor.moveToNext();
-                                }
-                            }
+                            searchForSeriesToCombine(db, cursor);
                             if (!cursor.isClosed())
                                 cursor.close();
 
@@ -624,6 +596,42 @@ public class SeriesFragment
                     }));
 
             return null;
+        }
+
+        /**
+         * Attempts to combine series with less than 5 games each into 1 series with 5 games.
+         *
+         * @param db app database
+         * @param cursor cursor containing series from database
+         */
+        private void searchForSeriesToCombine(SQLiteDatabase db, Cursor cursor) {
+            String lastSeriesDate = null;
+            int startOfLastSeries = -1;
+            if (cursor.moveToFirst()) {
+                while (!cursor.isAfterLast()) {
+                    int gameNumber = cursor.getInt(cursor.getColumnIndex(
+                            GameEntry.COLUMN_GAME_NUMBER));
+                    if (gameNumber == 1) {
+                        String seriesDate = cursor.getString(cursor.getColumnIndex(
+                                SeriesEntry.COLUMN_SERIES_DATE));
+                        String dateFormatted = DateUtils.formattedDateToPrettyCompact(seriesDate);
+
+                        if (dateFormatted.equals(lastSeriesDate)) {
+                            int startOfCurrentSeries = cursor.getPosition();
+                            combineSeries(db,
+                                    cursor,
+                                    startOfLastSeries,
+                                    startOfCurrentSeries);
+                            cursor.moveToPosition(startOfCurrentSeries);
+                        }
+
+                        startOfLastSeries = cursor.getPosition();
+                        lastSeriesDate = dateFormatted;
+                    }
+
+                    cursor.moveToNext();
+                }
+            }
         }
 
         /**

@@ -76,7 +76,7 @@ import ca.josephroque.bowlingcompanion.fragment.StatsGraphFragment;
 import ca.josephroque.bowlingcompanion.fragment.StatsListFragment;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.utilities.AppRater;
-import ca.josephroque.bowlingcompanion.utilities.DataFormatter;
+import ca.josephroque.bowlingcompanion.utilities.DateUtils;
 import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
 import ca.josephroque.bowlingcompanion.utilities.EmailUtils;
 import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
@@ -159,8 +159,8 @@ public class MainActivity
                         public void run() {
                             final int timeToDelay = 1000;
                             mTextViewAutoAdvanceStatus.setVisibility(View.VISIBLE);
-                            mTextViewAutoAdvanceStatus.setText(mAutoAdvanceDelayRemaining
-                                    + " seconds until auto advance");
+                            mTextViewAutoAdvanceStatus.setText(String.format(mTextViewAutoAdvanceStatus.getResources()
+                                    .getString(R.string.text_time_until_auto_advance), mAutoAdvanceDelayRemaining));
                             mAutoAdvanceHandler.postDelayed(mAutoAdvanceCallback, timeToDelay);
                         }
                     });
@@ -1207,7 +1207,9 @@ public class MainActivity
             long[] gameIds = (long[]) params[0];
             long[] frameIds = (long[]) params[1];
             boolean[] gameLocked = (boolean[]) params[2];
+            //noinspection CheckStyle
             boolean[] manualScore = (boolean[]) params[3];
+            //noinspection CheckStyle
             mainActivity.mIsEventMode = (boolean) params[4];
 
             GameFragment gameFragment = GameFragment.newInstance(gameIds, frameIds, gameLocked, manualScore);
@@ -1286,7 +1288,7 @@ public class MainActivity
             }
 
             mainActivity.mSeriesId = seriesId;
-            mainActivity.mSeriesDate = DataFormatter.formattedDateToPrettyCompact(seriesDate);
+            mainActivity.mSeriesDate = DateUtils.formattedDateToPrettyCompact(seriesDate);
             return new Object[]{gameId, frameId};
         }
 

@@ -50,7 +50,6 @@
     <string name="action_combine_series">Combine series</string>
 
     <!-- TextView text -->
-    <string name="text_avg_num">Avg: %d</string>
     <string name="text_next_ball">Next Ball</string>
     <string name="text_prev_ball">Prev Ball</string>
     <string name="text_open_drawer">Open Navigation Drawer</string>
@@ -74,6 +73,12 @@
     <string name="text_prev_stat">Previous stat</string>
     <string name="text_like_on_fb">Be sure to like us on Facebook for news and updates!</string>
     <string name="text_series_total">Series total:</string>
+
+    <!-- Placeholder text -->
+    <string name="text_time_until_auto_advance">%d seconds until auto advance</string>
+    <string name="text_avg_num">Avg: %d</string>
+    <string name="text_click_to_delete">Click to delete: %s</string>
+    <string name="text_number">%d</string>
 
     <!-- Tutorial -->
     <string name="text_tutorial_welcome">Welcome to your 5 Pin Bowling Companion!</string>

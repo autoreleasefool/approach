@@ -1,8 +1,8 @@
-<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
         android:drawable="@drawable/ic_expand_less_black_24dp"
-        android:state_expanded="true"/>
+        android:state_expanded="true" />
     <item
         android:drawable="@drawable/ic_expand_more_black_24dp" />
 

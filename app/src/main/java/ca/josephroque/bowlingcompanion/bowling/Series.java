@@ -159,9 +159,11 @@ public class Series
 
     @Override
     public int hashCode() {
-        int result = 17;
-        int c = (int) (mSeriesId ^ (mSeriesId >> 32));
-        return 37 * result + c;
+        final int result = 17;
+        final int primeNumber = 37;
+        final int bytesOffset = 32;
+        int c = (int) (mSeriesId ^ (mSeriesId >> bytesOffset));
+        return primeNumber * result + c;
     }
 
     @Override

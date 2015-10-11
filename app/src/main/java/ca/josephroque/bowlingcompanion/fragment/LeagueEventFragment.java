@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -437,7 +438,7 @@ public class LeagueEventFragment
      * @param leagueEventId id of league/event whose data will be deleted
      */
     private void deleteLeagueEvent(final long leagueEventId) {
-        SharedPreferences prefs = getActivity().getSharedPreferences(Constants.PREFS, Context.MODE_PRIVATE);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getContext());
         SharedPreferences.Editor prefsEditor = prefs.edit();
         long recentId = prefs.getLong(Constants.PREF_RECENT_LEAGUE_ID, -1);
         long quickId = prefs.getLong(Constants.PREF_QUICK_LEAGUE_ID, -1);
@@ -630,11 +631,9 @@ public class LeagueEventFragment
                 long bowlerId = mainActivity.getBowlerId();
 
                 if (!result.first.getLeagueEventName().equals(Constants.NAME_OPEN_LEAGUE)) {
-                    mainActivity
-                            .getSharedPreferences(Constants.PREFS, Context.MODE_PRIVATE)
+                    PreferenceManager.getDefaultSharedPreferences(mainActivity)
                             .edit()
-                            .putLong(Constants.PREF_RECENT_LEAGUE_ID,
-                                    result.first.getLeagueEventId())
+                            .putLong(Constants.PREF_RECENT_LEAGUE_ID, result.first.getLeagueEventId())
                             .putLong(Constants.PREF_RECENT_BOWLER_ID, bowlerId)
                             .apply();
                 }
@@ -702,6 +701,23 @@ public class LeagueEventFragment
                     + " ORDER BY " + LeagueEntry.COLUMN_DATE_MODIFIED + " DESC";
 
             long bowlerId = mainActivity.getBowlerId();
+            getLeaguesFromDatabase(database, listLeagueEvents, rawLeagueEventQuery, bowlerId);
+
+            return listLeagueEvents;
+        }
+
+        /**
+         * Retrieves a list of leagues/events and their averages from the database.
+         *
+         * @param database app database
+         * @param listLeagueEvents a list which will contain the leagues/events loaded from the database
+         * @param rawLeagueEventQuery query for leagues/events
+         * @param bowlerId id of the bowler
+         */
+        private void getLeaguesFromDatabase(SQLiteDatabase database,
+                                            List<LeagueEvent> listLeagueEvents,
+                                            String rawLeagueEventQuery,
+                                            long bowlerId) {
             Cursor cursor = database.rawQuery(rawLeagueEventQuery, new String[]{String.valueOf(bowlerId)});
             long lastLeagueEventId = -1;
             int leagueTotal = 0;
@@ -758,8 +774,6 @@ public class LeagueEventFragment
             }
 
             cursor.close();
-
-            return listLeagueEvents;
         }
 
         @Override

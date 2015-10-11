@@ -133,12 +133,12 @@ public class Bowler
         return getBowlerName().equals(bowler.getBowlerName());
     }
 
-    @SuppressWarnings("CheckStyle")
     @Override
     public int hashCode() {
-        int result = 89;
+        final int result = 89;
+        final int primeNumber = 37;
         int c = getBowlerName().hashCode();
-        return 37 * result + c;
+        return primeNumber * result + c;
     }
 
     @Override

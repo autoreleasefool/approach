@@ -25,6 +25,13 @@ public final class DatabaseHelper
     @SuppressWarnings("unused")
     private static final String TAG = "DBHelper";
 
+    /** Represents a code associated with the second version of the database. */
+    private static final int DATABASE_VERSION_CODE_2 = 2;
+    /** Represents a code associated with the third version of the database. */
+    private static final int DATABASE_VERSION_CODE_3 = 3;
+    /** Represents a code associated with the fourth version of the database. */
+    private static final int DATABASE_VERSION_CODE_4 = 4;
+
     /** Name of the database. */
     private static final String DATABASE_NAME = "bowlingdata";
     /** Version of the database, incremented with changes. */
@@ -236,7 +243,7 @@ public final class DatabaseHelper
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        /**
+        /*
          * If an older version of the database exists, all the tables and data are dropped
          * and the table is recreated.
          *
@@ -248,17 +255,17 @@ public final class DatabaseHelper
         int upgradeTo = oldVersion + 1;
         while (upgradeTo <= newVersion) {
             switch (upgradeTo) {
-                case 2:
+                case DATABASE_VERSION_CODE_2:
                     upgradeDatabaseFrom1To2(db);
                     break;
-                case 3:
+                case DATABASE_VERSION_CODE_3:
                     upgradeDatabaseFrom2To3(db);
                     break;
-                case 4:
+                case DATABASE_VERSION_CODE_4:
                     upgradeDatabaseFrom3To4(db);
                     break;
                 default:
-                    dropTablesAndRecreate(db);
+                    // does nothing
             }
             upgradeTo++;
         }
@@ -298,6 +305,7 @@ public final class DatabaseHelper
      *
      * @param db to upgrade
      */
+    @SuppressWarnings("CheckStyle") // Only a few method calls across multiple lines. Keeping together for clarity
     private void upgradeDatabaseFrom1To2(SQLiteDatabase db) {
         //Removes foreign key and check constraints from frame table
         db.execSQL("CREATE TABLE frame2 (" + FrameEntry._ID + " INTEGER PRIMARY KEY, "
@@ -416,6 +424,7 @@ public final class DatabaseHelper
      *
      * @param db to upgrade
      */
+    @SuppressWarnings("CheckStyle") // Only a few method calls across multiple lines. Keeping together for clarity
     private void upgradeDatabaseFrom2To3(SQLiteDatabase db) {
         db.execSQL("DROP INDEX IF EXISTS frame_id_index");
         db.execSQL("DROP INDEX IF EXISTS frame_game_fk_index");

@@ -60,73 +60,6 @@ public class SeriesAdapter
     private int mMinimumSeriesToHighlight = Constants.DEFAULT_SERIES_HIGHLIGHT;
 
     /**
-     * Subclass of RecyclerView.ViewHolder to manage view which will display text to the user.
-     */
-    public static class SeriesViewHolder
-            extends RecyclerView.ViewHolder {
-
-        /** Displays date of the series. */
-        private TextView mTextViewDate;
-        /** Each TextView displays a different score in the series. */
-        private TextView[] mArrayTextViewGames;
-        /** Each TextView displays a different match play result in the series. */
-        private TextView[] mArrayTextViewMatchPlay;
-        /** Displays an icon to allow editing of the date of a series. */
-        private ImageView mImageViewEdit;
-        /** Displays the sum of all the scores in the series. */
-        private TextView mTextViewSeriesTotal;
-
-        /** Displays text to confirm deletion of item. */
-        private TextView mTextViewDelete;
-        /** Displays icon to confirm deletion of item. */
-        private ImageView mImageViewDelete;
-        /** Displays text to undo deletion of item. */
-        private TextView mTextViewUndo;
-
-        /**
-         * Calls super constructor and gets instances of ImageView and TextView objects for member variables from
-         * itemLayoutView.
-         *
-         * @param itemLayoutView layout view containing views to display data
-         * @param viewType type of view
-         */
-        public SeriesViewHolder(View itemLayoutView, int viewType) {
-            super(itemLayoutView);
-            switch (viewType) {
-                case VIEWTYPE_ACTIVE:
-                    mTextViewDate = (TextView) itemLayoutView.findViewById(R.id.tv_series_date);
-                    mImageViewEdit = (ImageView) itemLayoutView.findViewById(R.id.iv_edit_date);
-                    mTextViewSeriesTotal = (TextView) itemLayoutView.findViewById(R.id.tv_series_total);
-
-                    //Adds text views by id to array
-                    mArrayTextViewGames = new TextView[Constants.MAX_NUMBER_LEAGUE_GAMES];
-                    mArrayTextViewGames[0] = (TextView) itemLayoutView.findViewById(R.id.tv_series_game_1);
-                    mArrayTextViewGames[1] = (TextView) itemLayoutView.findViewById(R.id.tv_series_game_2);
-                    mArrayTextViewGames[2] = (TextView) itemLayoutView.findViewById(R.id.tv_series_game_3);
-                    mArrayTextViewGames[3] = (TextView) itemLayoutView.findViewById(R.id.tv_series_game_4);
-                    mArrayTextViewGames[4] = (TextView) itemLayoutView.findViewById(R.id.tv_series_game_5);
-
-                    mArrayTextViewMatchPlay = new TextView[Constants.MAX_NUMBER_LEAGUE_GAMES];
-                    mArrayTextViewMatchPlay[0] = (TextView) itemLayoutView.findViewById(R.id.tv_series_match_play_1);
-                    mArrayTextViewMatchPlay[1] = (TextView) itemLayoutView.findViewById(R.id.tv_series_match_play_2);
-                    mArrayTextViewMatchPlay[2] = (TextView) itemLayoutView.findViewById(R.id.tv_series_match_play_3);
-                    mArrayTextViewMatchPlay[3] = (TextView) itemLayoutView.findViewById(R.id.tv_series_match_play_4);
-                    mArrayTextViewMatchPlay[4] = (TextView) itemLayoutView.findViewById(R.id.tv_series_match_play_5);
-
-                    break;
-                case VIEWTYPE_DELETED:
-                    mImageViewDelete = (ImageView) itemLayoutView.findViewById(R.id.iv_delete);
-                    mTextViewDelete = (TextView) itemLayoutView.findViewById(R.id.tv_delete);
-                    mTextViewUndo = (TextView) itemLayoutView.findViewById(R.id.tv_undo_delete);
-                    break;
-                default:
-                    throw new IllegalArgumentException("invalid view type: " + viewType);
-            }
-
-        }
-    }
-
-    /**
      * Sets member variables to parameters.
      *
      * @param activity activity which created this instance
@@ -198,7 +131,8 @@ public class SeriesAdapter
         };
         holder.itemView.setOnClickListener(null);
         holder.itemView.setBackgroundColor(Theme.getTertiaryThemeColor());
-        holder.mTextViewDelete.setText("Click to delete " + nameToDelete);
+        holder.mTextViewDelete.setText(String.format(mRecyclerView.getResources()
+                .getString(R.string.text_click_to_delete), nameToDelete));
         holder.mTextViewDelete.setOnClickListener(onClickListener);
         holder.mTextViewUndo.setOnClickListener(onClickListener);
         holder.mImageViewDelete.setOnClickListener(onClickListener);
@@ -318,7 +252,7 @@ public class SeriesAdapter
      * @param seriesTotal total of the series
      */
     private void setSeriesTotalText(TextView textViewTotal, short seriesTotal) {
-        textViewTotal.setText(Short.toString(seriesTotal));
+        textViewTotal.setText(String.format(textViewTotal.getResources().getString(R.string.text_number), seriesTotal));
         if (seriesTotal >= mMinimumSeriesToHighlight) {
             textViewTotal.setBackgroundColor(Theme.getStatusThemeColor());
             textViewTotal.setTextColor(DisplayUtils.COLOR_WHITE);
@@ -337,7 +271,7 @@ public class SeriesAdapter
      * @param gameScore score of the game
      */
     private void setGameScoreText(TextView textViewGame, short gameScore) {
-        textViewGame.setText(Short.toString(gameScore));
+        textViewGame.setText(String.format(textViewGame.getResources().getString(R.string.text_number), gameScore));
         if (gameScore >= mMinimumScoreToHighlight) {
             textViewGame.setTextColor(Theme.getTertiaryThemeColor());
             textViewGame.setAlpha(1f);
@@ -401,6 +335,77 @@ public class SeriesAdapter
                 mMinimumSeriesToHighlight = mMinimumSeriesToHighlight * Constants.HIGHLIGHT_INCREMENT;
         }
         notifyDataSetChanged();
+    }
+
+    /**
+     * Subclass of RecyclerView.ViewHolder to manage view which will display text to the user.
+     */
+    public static class SeriesViewHolder
+            extends RecyclerView.ViewHolder {
+
+        /** Displays date of the series. */
+        private TextView mTextViewDate;
+        /** Each TextView displays a different score in the series. */
+        private TextView[] mArrayTextViewGames;
+        /** Each TextView displays a different match play result in the series. */
+        private TextView[] mArrayTextViewMatchPlay;
+        /** Displays an icon to allow editing of the date of a series. */
+        private ImageView mImageViewEdit;
+        /** Displays the sum of all the scores in the series. */
+        private TextView mTextViewSeriesTotal;
+
+        /** Displays text to confirm deletion of item. */
+        private TextView mTextViewDelete;
+        /** Displays icon to confirm deletion of item. */
+        private ImageView mImageViewDelete;
+        /** Displays text to undo deletion of item. */
+        private TextView mTextViewUndo;
+
+        /**
+         * Calls super constructor and gets instances of ImageView and TextView objects for member variables from
+         * itemLayoutView.
+         *
+         * @param itemLayoutView layout view containing views to display data
+         * @param viewType type of view
+         */
+        public SeriesViewHolder(View itemLayoutView, int viewType) {
+            super(itemLayoutView);
+            switch (viewType) {
+                case VIEWTYPE_ACTIVE:
+                    mTextViewDate = (TextView) itemLayoutView.findViewById(R.id.tv_series_date);
+                    mImageViewEdit = (ImageView) itemLayoutView.findViewById(R.id.iv_edit_date);
+                    mTextViewSeriesTotal = (TextView) itemLayoutView.findViewById(R.id.tv_series_total);
+
+                    //Adds text views by id to array
+                    mArrayTextViewGames = new TextView[Constants.MAX_NUMBER_LEAGUE_GAMES];
+                    mArrayTextViewGames[0] = (TextView) itemLayoutView.findViewById(R.id.tv_series_game_1);
+                    mArrayTextViewGames[1] = (TextView) itemLayoutView.findViewById(R.id.tv_series_game_2);
+                    mArrayTextViewGames[2] = (TextView) itemLayoutView.findViewById(R.id.tv_series_game_3);
+                    //noinspection CheckStyle - Accessing this in another way may be much slower
+                    mArrayTextViewGames[3] = (TextView) itemLayoutView.findViewById(R.id.tv_series_game_4);
+                    //noinspection CheckStyle - Accessing this in another way may be much slower
+                    mArrayTextViewGames[4] = (TextView) itemLayoutView.findViewById(R.id.tv_series_game_5);
+
+                    mArrayTextViewMatchPlay = new TextView[Constants.MAX_NUMBER_LEAGUE_GAMES];
+                    mArrayTextViewMatchPlay[0] = (TextView) itemLayoutView.findViewById(R.id.tv_series_match_play_1);
+                    mArrayTextViewMatchPlay[1] = (TextView) itemLayoutView.findViewById(R.id.tv_series_match_play_2);
+                    mArrayTextViewMatchPlay[2] = (TextView) itemLayoutView.findViewById(R.id.tv_series_match_play_3);
+                    //noinspection CheckStyle - Accessing this in another way may be much slower
+                    mArrayTextViewMatchPlay[3] = (TextView) itemLayoutView.findViewById(R.id.tv_series_match_play_4);
+                    //noinspection CheckStyle - Accessing this in another way may be much slower
+                    mArrayTextViewMatchPlay[4] = (TextView) itemLayoutView.findViewById(R.id.tv_series_match_play_5);
+
+                    break;
+                case VIEWTYPE_DELETED:
+                    mImageViewDelete = (ImageView) itemLayoutView.findViewById(R.id.iv_delete);
+                    mTextViewDelete = (TextView) itemLayoutView.findViewById(R.id.tv_delete);
+                    mTextViewUndo = (TextView) itemLayoutView.findViewById(R.id.tv_undo_delete);
+                    break;
+                default:
+                    throw new IllegalArgumentException("Invalid view type: " + viewType);
+            }
+
+        }
     }
 
     /**

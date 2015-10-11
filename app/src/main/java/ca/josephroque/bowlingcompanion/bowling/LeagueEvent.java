@@ -157,12 +157,12 @@ public class LeagueEvent
         return getLeagueEventName().equals(leagueEvent.getLeagueEventName());
     }
 
-    @SuppressWarnings("CheckStyle")
     @Override
     public int hashCode() {
-        int result = 19;
+        final int result = 19;
+        final int primeNumber = 37;
         int c = getLeagueEventName().hashCode();
-        return 37 * result + c;
+        return primeNumber * result + c;
     }
 
     @Override
