@@ -142,7 +142,7 @@ public class LeagueEventFragment
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(touchCallback);
         itemTouchHelper.attachToRecyclerView(mRecyclerViewLeagueEvents);
 
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         mRecyclerViewLeagueEvents.setLayoutManager(layoutManager);
 
         mAdapterLeagueEvents = new NameAverageAdapter<>(this,
@@ -261,7 +261,7 @@ public class LeagueEventFragment
 
         if (!validInput) {
             //Displays an error dialog if the input was not valid and exits the method
-            new AlertDialog.Builder(getActivity())
+            new AlertDialog.Builder(getContext())
                     .setMessage(invalidInputMessage)
                     .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener() {
                         @Override
@@ -336,7 +336,7 @@ public class LeagueEventFragment
 
         if (!validInput) {
             //Displays an error dialog if the input was not valid and exits the method
-            AlertDialog.Builder invalidInputBuilder = new AlertDialog.Builder(getActivity());
+            AlertDialog.Builder invalidInputBuilder = new AlertDialog.Builder(getContext());
             if (invalidInputMessageVal == -1)
                 invalidInputBuilder.setMessage(invalidInputMessage);
             else
@@ -460,7 +460,7 @@ public class LeagueEventFragment
             public void run() {
                 //Deletes data from all tables corresponding to leagueEventId
                 SQLiteDatabase database =
-                        DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
+                        DatabaseHelper.getInstance(getContext()).getWritableDatabase();
                 String[] whereArgs = {String.valueOf(leagueEventId)};
 
                 database.beginTransaction();
@@ -482,7 +482,7 @@ public class LeagueEventFragment
      * Prompts user to select either league or event to add.
      */
     private void showLeagueOrEventDialog() {
-        AlertDialog.Builder leagueOrEventBuilder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder leagueOrEventBuilder = new AlertDialog.Builder(getContext());
         leagueOrEventBuilder.setTitle("New league or event?")
                 .setSingleChoiceItems(new CharSequence[]{"League", "Event"}, 0, null)
                 .setPositiveButton(R.string.dialog_add, new DialogInterface.OnClickListener() {

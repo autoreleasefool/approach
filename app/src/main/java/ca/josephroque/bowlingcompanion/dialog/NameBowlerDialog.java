@@ -43,8 +43,8 @@ public class NameBowlerDialog
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
-        final View dialogView = View.inflate(getActivity(), R.layout.dialog_new_bowler, null);
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
+        final View dialogView = View.inflate(getContext(), R.layout.dialog_new_bowler, null);
 
         final EditText editTextName = (EditText) dialogView.findViewById(R.id.et_bowler_name);
         editTextName.setHint("Name (max " + Constants.NAME_MAX_LENGTH + " characters)");

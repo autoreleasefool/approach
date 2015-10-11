@@ -154,7 +154,7 @@ public class TutorialFragment
         final int dp16 = DisplayUtils.getPixelsFromDP(getResources().getDisplayMetrics().density,
                 VERTICAL_SPACE);
 
-        mTextViewTutorial = new TextView(getActivity());
+        mTextViewTutorial = new TextView(getContext());
         mTextViewTutorial.setId(R.id.tv_tutorial);
         mTextViewTutorial.setPadding(dp16, dp16, dp16, dp16);
         mTextViewTutorial.setGravity(Gravity.CENTER_HORIZONTAL);
@@ -196,7 +196,7 @@ public class TutorialFragment
 
         FloatingActionButton fab;
         mTextViewTutorial.setText(R.string.text_tutorial_settings);
-        mViewTutorial = View.inflate(getActivity(), R.layout.tutorial_settings, null);
+        mViewTutorial = View.inflate(getContext(), R.layout.tutorial_settings, null);
 
         // Setting colors of first fab
         fab = (FloatingActionButton) mViewTutorial.findViewById(R.id.fab_tutorial_add_1);
@@ -228,7 +228,7 @@ public class TutorialFragment
             throw new IllegalStateException("invalid tutorial page");
 
         mTextViewTutorial.setText(R.string.text_tutorial_statistics);
-        mViewTutorial = View.inflate(getActivity(), R.layout.tutorial_statistics, null);
+        mViewTutorial = View.inflate(getContext(), R.layout.tutorial_statistics, null);
     }
 
     /**
@@ -242,9 +242,9 @@ public class TutorialFragment
                 VERTICAL_SPACE);
 
         mTextViewTutorial.setText(R.string.text_tutorial_pin_game);
-        mViewTutorial = View.inflate(getActivity(), R.layout.tutorial_pin_game, null);
+        mViewTutorial = View.inflate(getContext(), R.layout.tutorial_pin_game, null);
 
-        mTextViewExtra = new TextView(getActivity());
+        mTextViewExtra = new TextView(getContext());
         mTextViewExtra.setPadding(dp16, dp16, dp16, dp16);
         mTextViewExtra.setGravity(Gravity.CENTER_HORIZONTAL);
         mTextViewExtra.setTextSize(TypedValue.COMPLEX_UNIT_SP, TUTORIAL_TEXT_SIZE_SP);
@@ -260,7 +260,7 @@ public class TutorialFragment
             throw new IllegalStateException("invalid tutorial page");
 
         mTextViewTutorial.setText(R.string.text_tutorial_leagues_events);
-        mViewTutorial = View.inflate(getActivity(), R.layout.tutorial_leagues_events, null);
+        mViewTutorial = View.inflate(getContext(), R.layout.tutorial_leagues_events, null);
     }
 
     /**
@@ -272,11 +272,10 @@ public class TutorialFragment
 
         FloatingActionButton fab;
         mTextViewTutorial.setText(R.string.text_tutorial_add_bowler_league_series);
-        mViewTutorial = View.inflate(getActivity(), R.layout.tutorial_add, null);
+        mViewTutorial = View.inflate(getContext(), R.layout.tutorial_add, null);
 
         // Setting colors of first fab
-        fab = (FloatingActionButton) mViewTutorial.findViewById(
-                R.id.fab_tutorial_add_person);
+        fab = (FloatingActionButton) mViewTutorial.findViewById(R.id.fab_tutorial_add_person);
         DisplayUtils.setFloatingActionButtonColors(fab,
                 DisplayUtils.getColorResource(getResources(), R.color.theme_orange_primary),
                 DisplayUtils.getColorResource(getResources(), R.color.theme_orange_tertiary));
@@ -298,7 +297,7 @@ public class TutorialFragment
             throw new IllegalStateException("invalid tutorial page");
 
         mTextViewTutorial.setText(R.string.text_tutorial_welcome);
-        mViewTutorial = View.inflate(getActivity(), R.layout.tutorial_welcome, null);
+        mViewTutorial = View.inflate(getContext(), R.layout.tutorial_welcome, null);
     }
 
     /**

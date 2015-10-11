@@ -42,7 +42,6 @@ import ca.josephroque.bowlingcompanion.database.Contract.FrameEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.GameEntry;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.dialog.ManualScoreDialog;
-import ca.josephroque.bowlingcompanion.utilities.DataFormatter;
 import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
 import ca.josephroque.bowlingcompanion.utilities.NavigationUtils;
 import ca.josephroque.bowlingcompanion.utilities.Score;
@@ -726,7 +725,7 @@ public class GameFragment
     public void onSetScore(short scoreToSet) {
         if (scoreToSet < 0 || scoreToSet > Constants.GAME_MAX_SCORE) {
             //If an invalid score is given, user is informed and method exists
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             builder.setTitle("Invalid score!")
                     .setMessage(R.string.dialog_bad_score)
                     .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener() {
@@ -975,7 +974,7 @@ public class GameFragment
      * results, but still allow changes if game is locked (such as by a manual score being set)
      */
     private void showSetMatchPlayLockedDialog() {
-        new AlertDialog.Builder(getActivity())
+        new AlertDialog.Builder(getContext())
                 .setTitle("Game is locked")
                 .setMessage(R.string.dialog_match_locked)
                 .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener() {
@@ -1008,7 +1007,7 @@ public class GameFragment
      * Prompts user to reset the current game and set a manual score
      */
     private void showManualScoreDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Set manual score?")
                 .setMessage(R.string.dialog_set_score)
                 .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener() {
@@ -1034,7 +1033,7 @@ public class GameFragment
      * Prompts user to reset the current game and remove a manual score.
      */
     private void showClearManualScoreDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Clear the set score?")
                 .setMessage(R.string.dialog_clear_score)
                 .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener() {
@@ -1097,7 +1096,7 @@ public class GameFragment
         }
 
         rootView.findViewById(R.id.fab_container).setVisibility(
-                (PreferenceManager.getDefaultSharedPreferences(getActivity())
+                (PreferenceManager.getDefaultSharedPreferences(getContext())
                         .getBoolean(Constants.KEY_ENABLE_FAB, true) && enabled)
                         ? View.VISIBLE
                         : View.INVISIBLE);
@@ -1123,7 +1122,7 @@ public class GameFragment
      * Informs user with prompt that the game is current locked.
      */
     private void showGameLockedDialog() {
-        new AlertDialog.Builder(getActivity())
+        new AlertDialog.Builder(getContext())
                 .setTitle("Invalid action!")
                 .setMessage(R.string.dialog_game_locked)
                 .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener() {
@@ -1140,7 +1139,7 @@ public class GameFragment
      * Prompts user to reset the current game.
      */
     private void showResetGameDialog() {
-        new AlertDialog.Builder(getActivity())
+        new AlertDialog.Builder(getContext())
                 .setTitle("Reset Game?")
                 .setMessage(R.string.dialog_reset_game)
                 .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener() {
@@ -1414,7 +1413,7 @@ public class GameFragment
 
         alertMessageBuilder.append(" this ball, and strikes onwards, your final score will be ");
         alertMessageBuilder.append(possibleScore);
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setMessage(alertMessageBuilder.toString())
                 .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener() {
                     @Override
@@ -2063,7 +2062,7 @@ public class GameFragment
                 if (mGameCallback != null)
                     mGameCallback.onGameChanged(mCurrentGame);
                 SQLiteDatabase database =
-                        DatabaseHelper.getInstance(getActivity()).getReadableDatabase();
+                        DatabaseHelper.getInstance(getContext()).getReadableDatabase();
 
                 Cursor cursor = null;
                 try {
@@ -2184,7 +2183,7 @@ public class GameFragment
         MainActivity.waitForSaveThreads(new WeakReference<>((MainActivity) getActivity()));
 
         byte numberOfGames = ((MainActivity) getActivity()).getNumberOfGamesForSeries();
-        SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getReadableDatabase();
+        SQLiteDatabase database = DatabaseHelper.getInstance(getContext()).getReadableDatabase();
         StringBuilder whereBuilder = new StringBuilder(GameEntry._ID + "=?");
         String[] whereArgs = new String[numberOfGames];
         whereArgs[0] = String.valueOf(mGameIds[0]);

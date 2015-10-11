@@ -1404,10 +1404,10 @@ public class StatsGraphFragment
      */
     private Cursor getBowlerOrLeagueCursor(boolean shouldGetLeagueStats) {
         SharedPreferences preferences =
-                PreferenceManager.getDefaultSharedPreferences(getActivity());
+                PreferenceManager.getDefaultSharedPreferences(getContext());
         boolean isEventIncluded = preferences.getBoolean(Constants.KEY_INCLUDE_EVENTS, true);
         boolean isOpenIncluded = preferences.getBoolean(Constants.KEY_INCLUDE_OPEN, true);
-        SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getReadableDatabase();
+        SQLiteDatabase database = DatabaseHelper.getInstance(getContext()).getReadableDatabase();
 
         String rawStatsQuery = "SELECT "
                 + SeriesEntry.COLUMN_SERIES_DATE + ", "

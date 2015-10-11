@@ -45,8 +45,8 @@ public class NameLeagueEventDialog
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
-        final View dialogView = View.inflate(getActivity(), R.layout.dialog_new_league_event, null);
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
+        final View dialogView = View.inflate(getContext(), R.layout.dialog_new_league_event, null);
 
         CharSequence leagueEventName = "";
         CharSequence leagueEventNumberOfGames = "";

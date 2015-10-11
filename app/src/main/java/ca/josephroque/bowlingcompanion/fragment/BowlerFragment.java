@@ -163,7 +163,7 @@ public class BowlerFragment
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(touchCallback);
         itemTouchHelper.attachToRecyclerView(mRecyclerViewBowlers);
 
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         mRecyclerViewBowlers.setLayoutManager(layoutManager);
         mAdapterBowlers = new NameAverageAdapter<>(this,
                 mListBowlers,
@@ -279,7 +279,7 @@ public class BowlerFragment
 
         if (!validInput) {
             //Displays an error dialog if the input was not valid and exits the method
-            new AlertDialog.Builder(getActivity())
+            new AlertDialog.Builder(getContext())
                     .setMessage(invalidInputMessage)
                     .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener() {
                         @Override
@@ -336,7 +336,7 @@ public class BowlerFragment
          * to the user and the method does not continue
          */
         if (!validInput) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             builder.setMessage(invalidInputMessage)
                     .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener() {
                         @Override
@@ -444,7 +444,7 @@ public class BowlerFragment
              * a dialog is displayed to prompt user to create a new series
              */
             final boolean quickOrRecent;
-            AlertDialog.Builder quickSeriesBuilder = new AlertDialog.Builder(getActivity());
+            AlertDialog.Builder quickSeriesBuilder = new AlertDialog.Builder(getContext());
             if (mQuickBowlerId == -1 || mQuickLeagueId == -1) {
                 quickSeriesBuilder.setMessage("Create a new series with these settings?"
                         + "\nBowler: " + mRecentBowlerName
@@ -475,7 +475,7 @@ public class BowlerFragment
                     .show();
         } else {
             //If no recent/quick bowler, dialog is displayed to inform user of options
-            AlertDialog.Builder quickSeriesDisabledBuilder = new AlertDialog.Builder(getActivity());
+            AlertDialog.Builder quickSeriesDisabledBuilder = new AlertDialog.Builder(getContext());
             quickSeriesDisabledBuilder.setTitle("Quick Series")
                     .setMessage(R.string.dialog_quick_series_instructions)
                     .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener() {
@@ -535,10 +535,10 @@ public class BowlerFragment
      * @param rootView fragment root view
      */
     private void displayFacebookPagePromotion(View rootView) {
-        if (getActivity() == null)
+        if (getContext() == null)
             return;
 
-        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
 
         if (preferences.getBoolean(Constants.PREF_FACEBOOK_PAGE_OPENED, false)
                 || preferences.getBoolean(Constants.PREF_FACEBOOK_CLOSED, false))
@@ -552,7 +552,7 @@ public class BowlerFragment
             public void onClick(View v) {
                 linearLayout.setVisibility(View.GONE);
                 preferences.edit().putBoolean(Constants.PREF_FACEBOOK_PAGE_OPENED, true).apply();
-                startActivity(FacebookUtils.newFacebookIntent(getActivity().getPackageManager()));
+                startActivity(FacebookUtils.newFacebookIntent(getContext().getPackageManager()));
             }
         };
 
@@ -597,7 +597,7 @@ public class BowlerFragment
         new Thread(new Runnable() {
             @Override
             public void run() {
-                SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
+                SQLiteDatabase database = DatabaseHelper.getInstance(getContext()).getWritableDatabase();
                 String[] whereArgs = {String.valueOf(bowlerId)};
                 database.beginTransaction();
                 try {

@@ -212,7 +212,7 @@ public class MatchPlayFragment
          * to the user and the method does not continue
          */
         if (invalidInputMessage != -1) {
-            new AlertDialog.Builder(getActivity())
+            new AlertDialog.Builder(getContext())
                     .setTitle(R.string.text_save_failure)
                     .setMessage(invalidInputMessage)
                     .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener() {

@@ -51,7 +51,7 @@ public class ChangeDateDialog
         }
 
         if (date != null && date.length == TOTAL_DATE_COMPONENTS)
-            mDatePicker = new DatePickerDialog(getActivity(), this, date[2], date[0], date[1]);
+            mDatePicker = new DatePickerDialog(getContext(), this, date[2], date[0], date[1]);
         else
             throw new IllegalStateException("must instantiate date with 3 values: year, month, day");
         return mDatePicker;

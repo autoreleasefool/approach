@@ -132,7 +132,7 @@ public class SeriesFragment
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(touchCallback);
         itemTouchHelper.attachToRecyclerView(recyclerViewSeries);
 
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerViewSeries.setLayoutManager(layoutManager);
 
         mAdapterSeries = new SeriesAdapter(getActivity(), this, mListSeries);
@@ -265,7 +265,7 @@ public class SeriesFragment
                     @Override
                     public void run() {
                         SQLiteDatabase database =
-                                DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
+                                DatabaseHelper.getInstance(getContext()).getWritableDatabase();
                         ContentValues values = new ContentValues();
                         values.put(SeriesEntry.COLUMN_SERIES_DATE, formattedDate);
 
@@ -304,8 +304,7 @@ public class SeriesFragment
                 || !mainActivity.getLeagueName().substring(1).equals(Constants.NAME_OPEN_LEAGUE))
             return;
 
-        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(
-                getActivity());
+        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
         if (!preferences.getBoolean(Constants.KEY_ASK_COMBINE, true) && !manuallyOpened)
             return;
 
@@ -321,8 +320,8 @@ public class SeriesFragment
         }
 
         if (showDialog) {
-            final AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-            View rootView = View.inflate(getActivity(), R.layout.dialog_combine_series, null);
+            final AlertDialog.Builder dialog = new AlertDialog.Builder(getContext());
+            View rootView = View.inflate(getContext(), R.layout.dialog_combine_series, null);
 
             dialog.setView(rootView);
             final AlertDialog alertDialog = dialog.create();
@@ -356,7 +355,7 @@ public class SeriesFragment
      * Displays a modal dialog to the user while similar series in the league are combined.
      */
     private void startCombineSimilarSeries() {
-        if (getActivity() == null)
+        if (getContext() == null)
             return;
 
         new CombineSimilarSeriesTask(this).execute();
@@ -366,7 +365,7 @@ public class SeriesFragment
      * Informs user of how to change series dates.
      */
     private void showEditDateDialog() {
-        new AlertDialog.Builder(getActivity())
+        new AlertDialog.Builder(getContext())
                 .setMessage(R.string.dialog_edit_date)
                 .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener() {
                     @Override
@@ -389,7 +388,7 @@ public class SeriesFragment
             public void run() {
                 String[] whereArgs = {String.valueOf(seriesId)};
                 SQLiteDatabase database =
-                        DatabaseHelper.getInstance(getActivity()).getWritableDatabase();
+                        DatabaseHelper.getInstance(getContext()).getWritableDatabase();
 
                 database.beginTransaction();
                 try {
@@ -536,10 +535,10 @@ public class SeriesFragment
         @Override
         protected void onPreExecute() {
             SeriesFragment fragment = mFragment.get();
-            if (fragment == null || fragment.getActivity() == null)
+            if (fragment == null || fragment.getContext() == null)
                 return;
 
-            ProgressDialog pd = new ProgressDialog(fragment.getActivity());
+            ProgressDialog pd = new ProgressDialog(fragment.getContext());
             pd.setTitle("Combining series...");
             pd.setIndeterminate(true);
             pd.setCancelable(false);

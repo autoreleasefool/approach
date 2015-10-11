@@ -33,8 +33,8 @@ public class ManualScoreDialog
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
-        final View dialogView = View.inflate(getActivity(), R.layout.dialog_set_score, null);
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
+        final View dialogView = View.inflate(getContext(), R.layout.dialog_set_score, null);
 
         final EditText editTextScore = (EditText) dialogView.findViewById(R.id.et_score);
         editTextScore.setHint("Score (max 450)");

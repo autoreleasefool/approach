@@ -94,7 +94,7 @@ public class StatsListFragment
         mListStatHeaders = new ArrayList<>();
         mListStatNamesAndValues = new ArrayList<>();
 
-        mAdapterStats = new StatsExpandableAdapter(getActivity(), mListStatHeaders,
+        mAdapterStats = new StatsExpandableAdapter(getContext(), mListStatHeaders,
                 mListStatNamesAndValues);
 
         final AnimatedExpandableListView listView
@@ -228,7 +228,7 @@ public class StatsListFragment
      * Opens a prompt to remind user they can click on stats to see graphs.
      */
     private void openStatsPrompt() {
-        new AlertDialog.Builder(getActivity())
+        new AlertDialog.Builder(getContext())
                 .setTitle(R.string.text_opening_graph)
                 .setMessage(R.string.text_opening_graph_click)
                 .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener() {
@@ -877,10 +877,10 @@ public class StatsListFragment
      */
     private Cursor getBowlerOrLeagueCursor(boolean shouldGetLeagueStats) {
         SharedPreferences preferences =
-                PreferenceManager.getDefaultSharedPreferences(getActivity());
+                PreferenceManager.getDefaultSharedPreferences(getContext());
         boolean isEventIncluded = preferences.getBoolean(Constants.KEY_INCLUDE_EVENTS, true);
         boolean isOpenIncluded = preferences.getBoolean(Constants.KEY_INCLUDE_OPEN, true);
-        SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getReadableDatabase();
+        SQLiteDatabase database = DatabaseHelper.getInstance(getContext()).getReadableDatabase();
 
         String rawStatsQuery = "SELECT "
                 + Contract.GameEntry.COLUMN_SCORE + ", "
@@ -936,7 +936,7 @@ public class StatsListFragment
      * @return a cursor with rows relevant to mSeriesId
      */
     private Cursor getSeriesCursor() {
-        SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getReadableDatabase();
+        SQLiteDatabase database = DatabaseHelper.getInstance(getContext()).getReadableDatabase();
 
         String rawStatsQuery = "SELECT "
                 + Contract.GameEntry.COLUMN_SCORE + ", "
@@ -967,7 +967,7 @@ public class StatsListFragment
      * @return a cursor with rows relevant to mGameId
      */
     private Cursor getGameCursor() {
-        SQLiteDatabase database = DatabaseHelper.getInstance(getActivity()).getReadableDatabase();
+        SQLiteDatabase database = DatabaseHelper.getInstance(getContext()).getReadableDatabase();
         String rawStatsQuery = "SELECT "
                 + Contract.GameEntry.COLUMN_SCORE + ", "
                 + Contract.GameEntry.COLUMN_IS_MANUAL + ", "
