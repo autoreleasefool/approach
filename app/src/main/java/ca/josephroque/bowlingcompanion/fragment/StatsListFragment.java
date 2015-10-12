@@ -750,12 +750,10 @@ public class StatsListFragment
      * @param firstBall the ball thrown
      * @return the state of the pins after a ball was thrown
      */
-    @SuppressWarnings("CheckStyle")
     private int getFirstBallValue(boolean[] firstBall) {
         if (!firstBall[2]) {
             return -1;
         }
-        //TODO: here
 
         int numberOfPinsKnockedDown = 0;
         for (boolean knockedDown : firstBall) {
@@ -763,28 +761,35 @@ public class StatsListFragment
                 numberOfPinsKnockedDown++;
         }
 
-        if (numberOfPinsKnockedDown == 5)
+        if (numberOfPinsKnockedDown == Constants.NUMBER_OF_PINS)
             return Constants.BALL_VALUE_STRIKE;
-        else if (numberOfPinsKnockedDown == 4) {
-            if (!firstBall[0])
+        else if (numberOfPinsKnockedDown == Constants.NUMBER_OF_PINS - 1) {
+            if (!firstBall[Score.LEFT_2_PIN])
                 return Constants.BALL_VALUE_LEFT;
-            else if (!firstBall[4])
+            else if (!firstBall[Score.RIGHT_2_PIN])
                 return Constants.BALL_VALUE_RIGHT;
-        } else if (numberOfPinsKnockedDown == 3) {
-            if (!firstBall[3] && !firstBall[4])
+        } else if (numberOfPinsKnockedDown == Constants.NUMBER_OF_PINS - 2) {
+            if (firstBall[Score.LEFT_2_PIN] && firstBall[Score.LEFT_3_PIN])
                 return Constants.BALL_VALUE_LEFT_CHOP;
-            else if (!firstBall[0] && !firstBall[1])
+            else if (firstBall[Score.RIGHT_2_PIN] && firstBall[Score.RIGHT_3_PIN])
                 return Constants.BALL_VALUE_RIGHT_CHOP;
-            else if (!firstBall[0] && !firstBall[4])
+            else if (firstBall[Score.LEFT_3_PIN] && firstBall[Score.RIGHT_3_PIN])
                 return Constants.BALL_VALUE_ACE;
+            else if ((firstBall[Score.LEFT_2_PIN] && firstBall[Score.RIGHT_3_PIN])
+                    || (firstBall[Score.LEFT_3_PIN] && firstBall[Score.RIGHT_2_PIN]))
+                return Constants.BALL_VALUE_HEAD_PIN_2_3;
         } else if (numberOfPinsKnockedDown == 2) {
-            if (firstBall[1])
+            if (firstBall[Score.LEFT_3_PIN])
                 return Constants.BALL_VALUE_LEFT_SPLIT;
-            else if (firstBall[3])
+            else if (firstBall[Score.RIGHT_3_PIN])
                 return Constants.BALL_VALUE_RIGHT_SPLIT;
+            else if (firstBall[Score.LEFT_2_PIN] || firstBall[Score.RIGHT_2_PIN])
+                return Constants.BALL_VALUE_HEAD_PIN_2;
         } else
             return Constants.BALL_VALUE_HEAD_PIN;
 
+        // Returns a value which indicates the headpin was hit, but no other special ball was thrown
+        //noinspection CheckStyle
         return -2;
     }
 

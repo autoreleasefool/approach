@@ -178,6 +178,10 @@ public final class Constants {
     public static final byte BALL_VALUE_RIGHT_SPLIT = 7;
     /** Indicates a head pin was thrown. */
     public static final byte BALL_VALUE_HEAD_PIN = 8;
+    /** Indicates a head pin and the 2 and 3 pins on opposite sides were knocked down. */
+    public static final byte BALL_VALUE_HEAD_PIN_2_3 = 9;
+    /** Indicates a head pin and a 2 pin were knocked down. */
+    public static final byte BALL_VALUE_HEAD_PIN_2 = 10;
 
     // NAMES
     /** Maximum length of a regular name. */
