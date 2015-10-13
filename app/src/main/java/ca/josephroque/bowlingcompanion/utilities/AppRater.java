@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
+import android.preference.PreferenceManager;
 import android.view.View;
 
 import ca.josephroque.bowlingcompanion.Constants;
@@ -44,8 +45,7 @@ public final class AppRater {
      * @param context context to contain the prompt
      */
     public static void appLaunched(Context context) {
-        SharedPreferences preferences =
-                context.getSharedPreferences(Constants.PREFS, Context.MODE_PRIVATE);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         if (preferences.getBoolean(PREF_DO_NOT_SHOW, false)
                 || preferences.getBoolean(Constants.PREF_RATE_ME_SHOWN, false))
             return;
