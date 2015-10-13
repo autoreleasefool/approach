@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.bowling;
+package ca.josephroque.bowlingcompanion.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * Created by Joseph Roque on 2015-07-22. Organizes the data for a league or event.
  */
 public class LeagueEvent
-        implements Parcelable, AverageIdName {
+        implements Parcelable, NameAverageId {
 
     /** Unique id of the league / event. */
     private long mLeagueEventId;
@@ -157,12 +157,12 @@ public class LeagueEvent
         return getLeagueEventName().equals(leagueEvent.getLeagueEventName());
     }
 
+    @SuppressWarnings("CheckStyle")
     @Override
     public int hashCode() {
-        final int result = 19;
-        final int primeNumber = 37;
+        int result = 19;
         int c = getLeagueEventName().hashCode();
-        return primeNumber * result + c;
+        return 37 * result + c;
     }
 
     @Override

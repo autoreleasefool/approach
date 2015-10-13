@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.theme.Theme;
+import ca.josephroque.bowlingcompanion.utilities.DataFormatter;
 import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
 
 /**
@@ -151,7 +152,7 @@ public class TutorialFragment
      * @param rootView root to attach views to
      */
     private void setupTutorialPageAndText(RelativeLayout rootView) {
-        final int dp16 = DisplayUtils.getPixelsFromDP(getResources().getDisplayMetrics().density,
+        final int dp16 = DataFormatter.getPixelsFromDP(getResources().getDisplayMetrics().density,
                 VERTICAL_SPACE);
 
         mTextViewTutorial = new TextView(getContext());
@@ -238,7 +239,7 @@ public class TutorialFragment
         if (mTutorialPage != TutorialPage.PIN_GAME_AND_SWIPE)
             throw new IllegalStateException("invalid tutorial page");
 
-        final int dp16 = DisplayUtils.getPixelsFromDP(getResources().getDisplayMetrics().density,
+        final int dp16 = DataFormatter.getPixelsFromDP(getResources().getDisplayMetrics().density,
                 VERTICAL_SPACE);
 
         mTextViewTutorial.setText(R.string.text_tutorial_pin_game);
@@ -310,7 +311,7 @@ public class TutorialFragment
         RelativeLayout.LayoutParams layoutParams;
         rootView.removeAllViews();
 
-        final int dp16 = DisplayUtils.getPixelsFromDP(getResources().getDisplayMetrics().density,
+        final int dp16 = DataFormatter.getPixelsFromDP(getResources().getDisplayMetrics().density,
                 VERTICAL_SPACE);
 
         if (mIsTablet)

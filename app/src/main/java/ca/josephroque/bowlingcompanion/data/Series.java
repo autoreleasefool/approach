@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.bowling;
+package ca.josephroque.bowlingcompanion.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -10,7 +10,7 @@ import java.util.List;
  * Created by Joseph Roque on 2015-07-22. Organizes the data for a series.
  */
 public class Series
-        implements Parcelable, DeletableItem {
+        implements Parcelable, DeletableData {
 
     /** Unique id of the series. */
     private final long mSeriesId;
@@ -157,13 +157,12 @@ public class Series
         return getSeriesId() == series.getSeriesId();
     }
 
+    @SuppressWarnings("CheckStyle")
     @Override
     public int hashCode() {
-        final int result = 17;
-        final int primeNumber = 37;
-        final int bytesOffset = 32;
-        int c = (int) (mSeriesId ^ (mSeriesId >> bytesOffset));
-        return primeNumber * result + c;
+        int result = 17;
+        int c = (int) (mSeriesId ^ (mSeriesId >> 32));
+        return 37 * result + c;
     }
 
     @Override

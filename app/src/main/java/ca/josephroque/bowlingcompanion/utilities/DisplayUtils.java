@@ -75,7 +75,7 @@ public final class DisplayUtils {
             final float scale = resources.getDisplayMetrics().density;
             ViewGroup.MarginLayoutParams p =
                     (ViewGroup.MarginLayoutParams) fab.getLayoutParams();
-            p.setMargins(0, 0, getPixelsFromDP(scale, underLollipopMargin), 0);
+            p.setMargins(0, 0, DataFormatter.getPixelsFromDP(scale, underLollipopMargin), 0);
             fab.setLayoutParams(p);
         }
     }
@@ -122,16 +122,5 @@ public final class DisplayUtils {
             InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
-    }
-
-    /**
-     * Converts a dp value to pixels.
-     *
-     * @param scale density of screen
-     * @param dps value to be converted
-     * @return result of conversion from dps to pixels
-     */
-    public static int getPixelsFromDP(float scale, int dps) {
-        return (int) Math.ceil(dps * scale);
     }
 }

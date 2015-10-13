@@ -423,10 +423,8 @@ public class MatchPlayFragment
 
             int gameNumber = (int) result.get(MatchPlayData.GameNumber.ordinal());
             short gameScore = (short) result.get(MatchPlayData.Score.ordinal());
-            fragment.mTextViewGameNumber.setText(String.format(fragment.getResources().getString(R.string.text_number),
-                    gameNumber));
-            fragment.mTextViewScore.setText(String.format(fragment.getResources().getString(R.string.text_number),
-                    gameScore));
+            fragment.mTextViewGameNumber.setText(Integer.toString(gameNumber));
+            fragment.mTextViewScore.setText(Short.toString(gameScore));
 
             if (!fragment.mFromSavedInstanceState) {
                 String opponentName = result.get(MatchPlayData.OpponentName.ordinal(), "").toString();
@@ -435,8 +433,7 @@ public class MatchPlayFragment
                 if (opponentName.length() > 0)
                     fragment.mEditTextOpponentName.setText(opponentName);
                 if (opponentScore > 0)
-                    fragment.mEditTextOpponentScore.setText(String.format(fragment.getResources()
-                            .getString(R.string.text_number), opponentScore));
+                    fragment.mEditTextOpponentScore.setText(Short.toString(opponentScore));
                 Log.d(TAG, "Match play: " + (int) result.get(MatchPlayData.Result.ordinal()));
                 switch ((int) result.get(MatchPlayData.Result.ordinal())) {
                     case Constants.MATCH_PLAY_NONE:

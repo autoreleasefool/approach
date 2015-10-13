@@ -32,6 +32,7 @@ import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
  * Created by Joseph Roque on 15-03-26. Provides methods relating to creating images of the statistics managed by the
  * application.
  */
+@SuppressWarnings("CheckStyle")
 final class ImageUtils {
 
     /** Identifies output from this class in Logcat. */
@@ -75,10 +76,11 @@ final class ImageUtils {
      */
     @SuppressWarnings("UnusedAssignment") //canvas set to null to free memory
     private static Bitmap createImageFromGame(boolean[][][] pinState,
-                                              boolean[][] fouls,
-                                              short gameScore,
-                                              boolean isManual) {
-        Bitmap bitmap = Bitmap.createBitmap(BITMAP_GAME_WIDTH, BITMAP_GAME_HEIGHT, Bitmap.Config.RGB_565);
+                                             boolean[][] fouls,
+                                             short gameScore,
+                                             boolean isManual) {
+        Bitmap bitmap =
+                Bitmap.createBitmap(BITMAP_GAME_WIDTH, BITMAP_GAME_HEIGHT, Bitmap.Config.RGB_565);
         Canvas canvas = new Canvas(bitmap);
         canvas.drawColor(Color.WHITE);
 
@@ -94,10 +96,73 @@ final class ImageUtils {
         int foulCount = 0;
 
         for (int frame = Constants.LAST_FRAME; frame >= 0; frame--) {
-            final String[] ballString = new String[Constants.NUMBER_OF_BALLS];
-            //Treat last frame differently than rest
-            calculateBalls(pinState, frame, ballString);
-            drawBalls(canvas, paintText, frame, ballString);
+            final String[] ballString = new String[3];
+            if (frame == Constants.LAST_FRAME) //Treat last frame differently than rest
+            {
+                if (Arrays.equals(pinState[frame][0], Constants.FRAME_PINS_DOWN)) {
+                    //If first ball is a strike, next two can be strikes/spares
+                    ballString[0] = Constants.BALL_STRIKE;
+                    if (Arrays.equals(pinState[frame][1], Constants.FRAME_PINS_DOWN)) {
+                        ballString[1] = Constants.BALL_STRIKE;
+                        ballString[2] = Score.getValueOfBall(pinState[frame][2], 2, true, false);
+                    } else {
+                        ballString[1] = Score.getValueOfBall(pinState[frame][1], 1, false, false);
+                        if (Arrays.equals(pinState[frame][2], Constants.FRAME_PINS_DOWN))
+                            ballString[2] = Constants.BALL_SPARE;
+                        else
+                            ballString[2] = Score.getValueOfBallDifference(
+                                    pinState[frame], 2, false, false);
+                    }
+                } else {
+                    //If first ball is not a strike, score is calculated normally
+                    ballString[0] = Score.getValueOfBall(pinState[frame][0], 0, false, false);
+                    if (Arrays.equals(pinState[frame][1], Constants.FRAME_PINS_DOWN)) {
+                        ballString[1] = Constants.BALL_SPARE;
+                        ballString[2] = Score.getValueOfBall(pinState[frame][2], 2, true, false);
+                    } else {
+                        ballString[1] =
+                                Score.getValueOfBallDifference(pinState[frame], 1, false, false);
+                        ballString[2] =
+                                Score.getValueOfBallDifference(pinState[frame], 2, false, false);
+                    }
+                }
+            } else {
+                ballString[0] = Score.getValueOfBallDifference(pinState[frame], 0, false, false);
+                if (!Arrays.equals(pinState[frame][0], Constants.FRAME_PINS_DOWN)) {
+                    if (Arrays.equals(pinState[frame][1], Constants.FRAME_PINS_DOWN)) {
+                        ballString[1] = Constants.BALL_SPARE;
+                        ballString[2] =
+                                Score.getValueOfBallDifference(pinState[frame + 1], 0, false, true);
+                    } else {
+                        ballString[1] =
+                                Score.getValueOfBallDifference(pinState[frame], 1, false, false);
+                        ballString[2] =
+                                Score.getValueOfBallDifference(pinState[frame], 2, false, false);
+                    }
+                } else {
+                    ballString[1] =
+                            Score.getValueOfBallDifference(pinState[frame + 1], 0, false, true);
+                    if (Arrays.equals(pinState[frame + 1][0], Constants.FRAME_PINS_DOWN)) {
+                        if (frame < Constants.LAST_FRAME - 1) {
+                            ballString[2] = Score.getValueOfBallDifference(
+                                    pinState[frame + 2], 0, false, true);
+                        } else {
+                            ballString[2]
+                                    = Score.getValueOfBall(pinState[frame + 1][1], 1, false, true);
+                        }
+                    } else {
+                        ballString[2] =
+                                Score.getValueOfBallDifference(pinState[frame + 1], 1, false, true);
+                    }
+                }
+            }
+
+            canvas.drawText(ballString[0], BITMAP_GAME_BALL_WIDTH / 2 + BITMAP_GAME_FRAME_WIDTH
+                    * frame, BALL_TEXT_Y, paintText);
+            canvas.drawText(ballString[1], BITMAP_GAME_BALL_WIDTH + BITMAP_GAME_BALL_WIDTH / 2
+                    + BITMAP_GAME_FRAME_WIDTH * frame, BALL_TEXT_Y, paintText);
+            canvas.drawText(ballString[2], BITMAP_GAME_BALL_WIDTH * 2 + BITMAP_GAME_BALL_WIDTH / 2
+                    + BITMAP_GAME_FRAME_WIDTH * frame, BALL_TEXT_Y, paintText);
 
             paintText.setTextSize(GAME_SMALL_FONT_SIZE);
             for (int ball = 0; ball < pinState[frame].length; ball++) {
@@ -116,11 +181,53 @@ final class ImageUtils {
                             + BITMAP_GAME_BALL_HEIGHT, paintBlackOutline);
             paintText.setTextSize(GAME_DEFAULT_FONT_SIZE);
 
-            if (!isManual)
-                calculateFrameScore(pinState, frameScores, frame);
+            if (!isManual) {
+                if (frame == Constants.LAST_FRAME) {
+                    for (int b = 2; b >= 0; b--) {
+                        switch (b) {
+                            case 2:
+                                frameScores[frame] += Score.getValueOfFrame(pinState[frame][b]);
+                                break;
+                            case 1:
+                            case 0:
+                                if (Arrays.equals(pinState[frame][b], Constants.FRAME_PINS_DOWN)) {
+                                    frameScores[frame] += Score.getValueOfFrame(pinState[frame][b]);
+                                }
+                                break;
+                            default: //do nothing
+                        }
+                    }
+                } else {
+                    for (int b = 0; b < 3; b++) {
+                        if (b < 2 && Arrays.equals(pinState[frame][b], Constants.FRAME_PINS_DOWN)) {
+                            frameScores[frame] += Score.getValueOfFrame(pinState[frame][b]);
+                            frameScores[frame] += Score.getValueOfFrame(pinState[frame + 1][0]);
+                            if (b == 0) {
+                                if (frame == Constants.LAST_FRAME - 1) {
+                                    if (frameScores[frame] == 30) {
+                                        frameScores[frame] +=
+                                                Score.getValueOfFrame(pinState[frame + 1][1]);
+                                    } else {
+                                        frameScores[frame] += Score.getValueOfFrameDifference(
+                                                pinState[frame + 1][0], pinState[frame + 1][1]);
+                                    }
+                                } else if (frameScores[frame] < 30) {
+                                    frameScores[frame] += Score.getValueOfFrameDifference(
+                                            pinState[frame + 1][0], pinState[frame + 1][1]);
+                                } else {
+                                    frameScores[frame] += Score.getValueOfFrame(
+                                            pinState[frame + 2][0]);
+                                }
+                            }
+                            break;
+                        } else if (b == 2) {
+                            frameScores[frame] += Score.getValueOfFrame(pinState[frame][b]);
+                        }
+                    }
+                }
+            }
         }
 
-        final int scoreYOffset = 8;
         int totalScore = 0;
         paintText.setTextSize(GAME_LARGE_FONT_SIZE);
         for (int i = 0; i < frameScores.length; i++) {
@@ -129,11 +236,11 @@ final class ImageUtils {
                             ? String.valueOf(totalScore)
                             : "--",
                     i * BITMAP_GAME_FRAME_WIDTH + BITMAP_GAME_FRAME_WIDTH / 2,
-                    BITMAP_GAME_HEIGHT - scoreYOffset,
+                    BITMAP_GAME_HEIGHT - 8,
                     paintText);
         }
 
-        int scoreWithFouls = totalScore - Constants.FOUL_VALUE * foulCount;
+        int scoreWithFouls = totalScore - 15 * foulCount;
         if (scoreWithFouls < 0)
             scoreWithFouls = 0;
         canvas.drawText((!isManual)
@@ -143,12 +250,40 @@ final class ImageUtils {
                 BITMAP_GAME_HEIGHT / 2 + GAME_LARGE_FONT_SIZE / 2,
                 paintText);
 
-        canvas.drawLines(getPts(), paintBlackOutline);
+        canvas.drawLines(new float[]{
+                        0,
+                        0,
+                        BITMAP_GAME_WIDTH,
+                        0,
+                        0,
+                        0,
+                        0,
+                        BITMAP_GAME_HEIGHT,
+                        0,
+                        BITMAP_GAME_HEIGHT - 1,
+                        BITMAP_GAME_WIDTH,
+                        BITMAP_GAME_HEIGHT - 1,
+                        BITMAP_GAME_WIDTH - 1,
+                        0,
+                        BITMAP_GAME_WIDTH - 1,
+                        BITMAP_GAME_HEIGHT,
+                        0,
+                        BITMAP_GAME_BALL_HEIGHT,
+                        BITMAP_GAME_WIDTH - BITMAP_GAME_FRAME_WIDTH,
+                        BITMAP_GAME_BALL_HEIGHT,
+                        BITMAP_GAME_FRAME_WIDTH * Constants.NUMBER_OF_FRAMES,
+                        0,
+                        BITMAP_GAME_FRAME_WIDTH * Constants.NUMBER_OF_FRAMES,
+                        BITMAP_GAME_HEIGHT
+                },
+                paintBlackOutline);
+
         canvas = null;
         return bitmap;
     }
 
     /**
+<<<<<<< HEAD
      * Gets an array of points to draw lines between to outline a game.
      *
      * @return array of floats representing the vertices of the lines
@@ -308,6 +443,8 @@ final class ImageUtils {
     }
 
     /**
+=======
+>>>>>>> parent of 7ca83f7... Fixing compiler warnings, refactoring code
      * Loads the data of each game in a series and creates a single image to.
      *
      * @param context context used to get an instance of the database
@@ -351,16 +488,15 @@ final class ImageUtils {
                 if (frameNumber == 1) {
                     currentFrame = 0;
                     currentGame++;
-                    scoresOfGames.add(cursor.getShort(cursor.getColumnIndex(GameEntry.COLUMN_SCORE)));
-                    manualScores.add(cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_IS_MANUAL)) == 1);
-                    ballsOfGames.add(new boolean
-                            [Constants.NUMBER_OF_FRAMES]
-                            [Constants.NUMBER_OF_BALLS]
-                            [Constants.NUMBER_OF_PINS]);
-                    foulsOfGames.add(new boolean[Constants.NUMBER_OF_FRAMES][Constants.NUMBER_OF_BALLS]);
+                    scoresOfGames.add(cursor.getShort(
+                            cursor.getColumnIndex(GameEntry.COLUMN_SCORE)));
+                    manualScores.add(cursor.getInt(
+                            cursor.getColumnIndex(GameEntry.COLUMN_IS_MANUAL)) == 1);
+                    ballsOfGames.add(new boolean[Constants.NUMBER_OF_FRAMES][3][5]);
+                    foulsOfGames.add(new boolean[Constants.NUMBER_OF_FRAMES][3]);
                 }
 
-                for (int i = 0; i < Constants.NUMBER_OF_BALLS; i++) {
+                for (int i = 0; i < 3; i++) {
                     int ball = cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_PIN_STATE[i]));
                     boolean[] ballBoolean = Score.ballIntToBoolean(ball);
                     ballsOfGames.get(currentGame)[currentFrame][i] = ballBoolean;
@@ -368,7 +504,7 @@ final class ImageUtils {
 
                 String fouls = Score.foulIntToString(
                         cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_FOULS)));
-                for (int ballCounter = 0; ballCounter < Constants.NUMBER_OF_BALLS; ballCounter++) {
+                for (int ballCounter = 0; ballCounter < 3; ballCounter++) {
                     if (fouls.contains(String.valueOf(ballCounter + 1)))
                         foulsOfGames.get(currentGame)[currentFrame][ballCounter] = true;
                 }
@@ -394,11 +530,10 @@ final class ImageUtils {
         Canvas canvas = new Canvas(bitmap);
         canvas.drawColor(Color.WHITE);
 
-        final int gameNameX = 5;
         for (int i = 0; i < numberOfGames; i++) {
             canvas.drawLine(0, BITMAP_GAME_HEIGHT * i - i, BITMAP_SERIES_GAME_NAME_WIDTH,
                     BITMAP_GAME_HEIGHT * i - i, paintBlackOutline);
-            canvas.drawText("Game " + (i + 1), gameNameX,
+            canvas.drawText("Game " + (i + 1), 5,
                     BITMAP_GAME_HEIGHT * i + GAME_LARGE_FONT_SIZE / 2 + BITMAP_GAME_HEIGHT / 2 - i,
                     paintText);
 
@@ -410,20 +545,7 @@ final class ImageUtils {
             System.gc();
         }
 
-        canvas.drawLines(getPts(numberOfGames), paintBlackOutline);
-        canvas = null;
-
-        return bitmap;
-    }
-
-    /**
-     * Gets an array of points to draw lines between to outline a series.
-     *
-     * @param numberOfGames the number of games in the series
-     * @return array of floats representing the vertices of the lines
-     */
-    private static float[] getPts(int numberOfGames) {
-        return new float[]
+        canvas.drawLines(new float[]
                 {
                         0,
                         0,
@@ -437,7 +559,10 @@ final class ImageUtils {
                         (BITMAP_GAME_HEIGHT - 1) * numberOfGames,
                         BITMAP_SERIES_GAME_NAME_WIDTH,
                         (BITMAP_GAME_HEIGHT - 1) * numberOfGames
-                };
+                }, paintBlackOutline);
+        canvas = null;
+
+        return bitmap;
     }
 
     /**
@@ -453,12 +578,13 @@ final class ImageUtils {
      * @see android.provider.MediaStore.Images.Media#insertImage(android.content.ContentResolver, Bitmap, String,
      * String)
      */
+    @SuppressWarnings("all")
+    //Ignoring try with automatic resource management in case java 1.6 is used
     public static Uri insertImage(ContentResolver cr,
                                   Bitmap source,
                                   String title,
                                   String description) {
-        final int compression = 50;
-        final float thumbnailSize = 50;
+
         ContentValues values = new ContentValues();
         values.put(MediaStore.Images.Media.TITLE, title);
         values.put(MediaStore.Images.Media.DISPLAY_NAME, title);
@@ -472,14 +598,13 @@ final class ImageUtils {
 
         try {
             url = cr.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-            if (source != null && url != null) {
+            if (source != null) {
                 OutputStream imageOut = cr.openOutputStream(url);
 
                 try {
-                    source.compress(Bitmap.CompressFormat.JPEG, compression, imageOut);
+                    source.compress(Bitmap.CompressFormat.JPEG, 50, imageOut);
                 } finally {
-                    if (imageOut != null)
-                        imageOut.close();
+                    imageOut.close();
                 }
 
                 long id = ContentUris.parseId(url);
@@ -492,14 +617,12 @@ final class ImageUtils {
                 storeThumbnail(cr,
                         miniThumb,
                         id,
-                        thumbnailSize,
-                        thumbnailSize,
+                        50F,
+                        50F,
                         MediaStore.Images.Thumbnails.MICRO_KIND);
             } else {
-                if (url != null) {
-                    cr.delete(url, null, null);
-                    url = null;
-                }
+                cr.delete(url, null, null);
+                url = null;
             }
         } catch (Exception e) {
             if (url != null) {
@@ -531,7 +654,6 @@ final class ImageUtils {
             float width,
             float height,
             int kind) {
-        final int compression = 100;
 
         // create the matrix to scale it
         Matrix matrix = new Matrix();
@@ -547,7 +669,7 @@ final class ImageUtils {
                 true
         );
 
-        ContentValues values = new ContentValues();
+        ContentValues values = new ContentValues(4);
         values.put(MediaStore.Images.Thumbnails.KIND, kind);
         values.put(MediaStore.Images.Thumbnails.IMAGE_ID, (int) id);
         values.put(MediaStore.Images.Thumbnails.HEIGHT, thumb.getHeight());
@@ -556,12 +678,9 @@ final class ImageUtils {
         Uri url = cr.insert(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI, values);
 
         try {
-            OutputStream thumbOut = null;
-            if (url != null)
-                thumbOut = cr.openOutputStream(url);
-            thumb.compress(Bitmap.CompressFormat.JPEG, compression, thumbOut);
-            if (thumbOut != null)
-                thumbOut.close();
+            OutputStream thumbOut = cr.openOutputStream(url);
+            thumb.compress(Bitmap.CompressFormat.JPEG, 100, thumbOut);
+            thumbOut.close();
         } catch (IOException ex) {
             Log.e(TAG, "Error saving thumbnail.", ex);
         }

@@ -54,6 +54,7 @@ import ca.josephroque.bowlingcompanion.view.PinLayout;
  * Created by Joseph Roque on 15-03-18. Manages the UI to display information about the games being tracked by the
  * application, and offers a callback interface {@code GameFragment.GameFragmentCallback} for handling interactions.
  */
+@SuppressWarnings({"Convert2Lambda", "CheckStyle"})
 public class GameFragment
         extends Fragment
         implements Theme.ChangeableTheme,
@@ -63,8 +64,12 @@ public class GameFragment
     @SuppressWarnings("unused")
     private static final String TAG = "GameFragment";
 
-    /** Number of milliseconds before the floating action buttons appear when the app opens. */
-    private static final int FAB_STARTUP_TIME = 500;
+    /** Represents the OnClickListener for the frame TextView objects. */
+    private static final byte LISTENER_TEXT_FRAMES = 0;
+    /** Represents the OnClickListener for any other objects. */
+    private static final byte LISTENER_OTHER = 1;
+    /** Represents the OnClickListener for the ball TextView objects. */
+    private static final byte LISTENER_TEXT_BALLS = 2;
 
     /** TextView which displays score on a certain ball in a certain frame. */
     private TextView[][] mTextViewBallScores;
@@ -159,7 +164,7 @@ public class GameFragment
             = new PinLayout.PinInterceptListener() {
 
         /** Indicates if a pin has been altered in a touch event. */
-        private final boolean[] mPinAltered = new boolean[Constants.NUMBER_OF_PINS];
+        private final boolean[] mPinAltered = new boolean[5];
         /** State of first pin touched. */
         private boolean mInitialState;
         /** Indicates if an initial valid pin has been selected. */
@@ -205,7 +210,8 @@ public class GameFragment
 
         @Override
         public void onPinTouch(MotionEvent event) {
-            if (NavigationUtils.getDrawerOffset() > 0 || mGameLocked[mCurrentGame] || mManualScoreSet[mCurrentGame])
+            if (NavigationUtils.getDrawerOffset() > 0
+                    || mGameLocked[mCurrentGame] || mManualScoreSet[mCurrentGame])
                 return;
 
             final int pinTouched;
@@ -222,12 +228,12 @@ public class GameFragment
                     setFirstPinTouched(event);
                     break;
                 case MotionEvent.ACTION_MOVE:
-                    if (!mCanStartDragging || !mInitialStateSet || mLayoutWidth == 0 || event.getX() > mLayoutWidth
-                            || event.getX() < 0)
+                    if (!mCanStartDragging || !mInitialStateSet
+                            || mLayoutWidth == 0 || event.getX() > mLayoutWidth || event.getX() < 0)
                         return;
 
                     // Flip pin image while user is dragging
-                    pinTouched = (int) ((event.getX() / mLayoutWidth) * Constants.NUMBER_OF_PINS);
+                    pinTouched = (int) ((event.getX() / mLayoutWidth) * 5);
                     if (mImageViewPins[pinTouched].isEnabled()
                             && mPinState[mCurrentFrame][mCurrentBall][pinTouched] == mInitialState
                             && !mPinAltered[pinTouched]) {
@@ -272,226 +278,6 @@ public class GameFragment
         }
     };
 
-    /** Listener for when text views which display frames are clicked. */
-    private View.OnClickListener mFrameClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            byte frameToSet = 0;
-            switch (v.getId()) {
-                case R.id.text_frame_9:
-                    frameToSet++;
-                case R.id.text_frame_8:
-                    frameToSet++;
-                case R.id.text_frame_7:
-                    frameToSet++;
-                case R.id.text_frame_6:
-                    frameToSet++;
-                case R.id.text_frame_5:
-                    frameToSet++;
-                case R.id.text_frame_4:
-                    frameToSet++;
-                case R.id.text_frame_3:
-                    frameToSet++;
-                case R.id.text_frame_2:
-                    frameToSet++;
-                case R.id.text_frame_1:
-                    frameToSet++;
-                case R.id.text_frame_0:
-                    //Changes the current frame and updates the GUI
-                    clearFrameColor();
-                    mCurrentFrame = frameToSet;
-                    mCurrentBall = 0;
-                    byte frameUpdateCount = 0;
-                    for (int i = mCurrentFrame; i >= 0; i--) {
-                        if (mHasFrameBeenAccessed[i])
-                            break;
-                        mHasFrameBeenAccessed[i] = true;
-                        frameUpdateCount++;
-                    }
-                    setVisibilityOfNextAndPrevItems();
-                    if (frameUpdateCount > Constants.NUMBER_OF_BALLS)
-                        updateAllBalls();
-                    else
-                        updateBalls(mCurrentFrame, (byte) 0);
-                    updateScore();
-                    updateFrameColor(false);
-                    if (mGameCallback != null)
-                        mGameCallback.stopAutoAdvanceTimer();
-                    break;
-                default:
-                    throw new RuntimeException("Invalid frame id");
-            }
-        }
-    };
-
-    /** Listener for when control objects are clicked. */
-    private View.OnClickListener mControlClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            int viewId = v.getId();
-
-            switch (viewId) {
-                case R.id.iv_match:
-                    if (mGameLocked[mCurrentGame])
-                        showSetMatchPlayLockedDialog();
-                    else
-                        showSetMatchPlayScreen();
-                    if (mGameCallback != null)
-                        mGameCallback.stopAutoAdvanceTimer();
-                    break;
-
-                case R.id.iv_lock:
-                    //Locks the game if it is unlocked,
-                    //unlocks if locked
-                    if (mManualScoreSet[mCurrentGame])
-                        return;
-                    setGameLocked(!mGameLocked[mCurrentGame]);
-                    if (mGameCallback != null)
-                        mGameCallback.stopAutoAdvanceTimer();
-                    break;
-
-                case R.id.iv_foul:
-                    //Sets or removes a foul and updates scores
-                    if (mGameLocked[mCurrentGame] || mManualScoreSet[mCurrentGame])
-                        return;
-                    mFouls[mCurrentFrame][mCurrentBall] = !mFouls[mCurrentFrame][mCurrentBall];
-                    updateFouls();
-                    if (mGameCallback != null && !(mCurrentFrame == Constants.LAST_FRAME && mCurrentBall == 2))
-                        mGameCallback.resetAutoAdvanceTimer();
-                    break;
-
-                case R.id.iv_reset_frame:
-                    //Resets the current frame to ball 0, no fouls, no pins knocked
-                    if (mGameLocked[mCurrentGame] || mManualScoreSet[mCurrentGame])
-                        return;
-                    clearFrameColor();
-                    mCurrentBall = 0;
-                    for (int i = 0; i < Constants.NUMBER_OF_BALLS; i++) {
-                        mFouls[mCurrentFrame][i] = false;
-                        for (int j = 0; j < Constants.NUMBER_OF_PINS; j++)
-                            mPinState[mCurrentFrame][i][j] = false;
-                    }
-                    setVisibilityOfNextAndPrevItems();
-                    updateFrameColor(false);
-                    updateBalls(mCurrentFrame, (byte) 0);
-                    updateScore();
-                    if (mGameCallback != null)
-                        mGameCallback.stopAutoAdvanceTimer();
-                    break;
-
-                case R.id.iv_clear:
-                    clearPins();
-                    if (mGameCallback != null && !(mCurrentFrame == Constants.LAST_FRAME && mCurrentBall == 2))
-                        mGameCallback.resetAutoAdvanceTimer();
-                    break;
-
-                default:
-                    throw new RuntimeException("Unknown other button id");
-            }
-        }
-    };
-
-    /** Listener for when controls which change the current ball are clicked. */
-    private View.OnClickListener mBallChangeClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.iv_next_ball:
-                case R.id.tv_next_ball:
-                case R.id.fab_next_ball:
-                    //Changes the current frame and updates the GUI
-                    if (mCurrentFrame == Constants.LAST_FRAME && mCurrentBall == 2)
-                        return;
-
-                    clearFrameColor();
-                    if (Arrays.equals(mPinState[mCurrentFrame][mCurrentBall],
-                            Constants.FRAME_PINS_DOWN)) {
-                        if (mCurrentFrame < Constants.LAST_FRAME) {
-                            mCurrentBall = 0;
-                            mCurrentFrame++;
-                        } else if (mCurrentBall < 2) {
-                            mCurrentBall++;
-                        }
-                    } else if (++mCurrentBall == Constants.NUMBER_OF_BALLS) {
-                        mCurrentBall = 0;
-                        ++mCurrentFrame;
-                    }
-                    mHasFrameBeenAccessed[mCurrentFrame] = true;
-                    setVisibilityOfNextAndPrevItems();
-                    updateFrameColor(false);
-                    if (mGameCallback != null)
-                        mGameCallback.stopAutoAdvanceTimer();
-                    break;
-
-                case R.id.iv_prev_ball:
-                case R.id.tv_prev_ball:
-                case R.id.fab_prev_ball:
-                    //Changes the current frame and updates the GUI
-                    if (mCurrentFrame == 0 && mCurrentBall == 0)
-                        return;
-
-                    clearFrameColor();
-                    if (--mCurrentBall == -1) {
-                        mCurrentBall = 0;
-                        --mCurrentFrame;
-                        while (!Arrays.equals(mPinState[mCurrentFrame][mCurrentBall],
-                                Constants.FRAME_PINS_DOWN) && mCurrentBall < 2) {
-                            mCurrentBall++;
-                        }
-                    }
-                    setVisibilityOfNextAndPrevItems();
-                    updateFrameColor(false);
-                    if (mGameCallback != null)
-                        mGameCallback.stopAutoAdvanceTimer();
-                    break;
-
-                default:
-                    throw new RuntimeException("Unknown other button id");
-            }
-        }
-    };
-
-    /** Listener for when ball for a frame is clicked. */
-    private View.OnClickListener mBallClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            boolean viewFound = false;
-            for (byte i = 0; i < mTextViewBallScores.length && !viewFound; i++) {
-                for (byte j = 0; j < mTextViewBallScores[i].length; j++) {
-                    if (v == mTextViewBallScores[i][j]) {
-                        viewFound = true;
-
-                        //Changes the current frame and updates the GUI
-                        clearFrameColor();
-                        mCurrentFrame = i;
-                        mCurrentBall = 0;
-                        byte frameUpdateCount = 0;
-                        for (int k = mCurrentFrame; k >= 0; k--) {
-                            if (mHasFrameBeenAccessed[k])
-                                break;
-                            mHasFrameBeenAccessed[k] = true;
-                            frameUpdateCount++;
-                        }
-                        while (!Arrays.equals(mPinState[mCurrentFrame][mCurrentBall],
-                                Constants.FRAME_PINS_DOWN) && mCurrentBall < j) {
-                            mCurrentBall++;
-                        }
-                        setVisibilityOfNextAndPrevItems();
-                        if (frameUpdateCount > Constants.NUMBER_OF_BALLS)
-                            updateAllBalls();
-                        else
-                            updateBalls(mCurrentFrame, (byte) 0);
-                        updateScore();
-                        updateFrameColor(false);
-                        if (mGameCallback != null)
-                            mGameCallback.stopAutoAdvanceTimer();
-                        break;
-                    }
-                }
-            }
-        }
-    };
-
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -529,23 +315,28 @@ public class GameFragment
         }
     }
 
-    @SuppressWarnings({"deprecation", "CheckStyle"}) // uses newer APIs where available
-                                                     // Don't want to split up method
+    @SuppressWarnings("deprecation") // uses newer APIs where available
     @Override
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_games, container, false);
+
+        //Density of screen to set proper width/height of views
+        final float screenDensity = getResources().getDisplayMetrics().density;
+
         mHorizontalScrollViewFrames = (HorizontalScrollView) rootView.findViewById(R.id.hsv_frames);
 
-        RelativeLayout relativeLayout = new RelativeLayout(getContext());
+        RelativeLayout relativeLayout = new RelativeLayout(getActivity());
         RelativeLayout.LayoutParams layoutParams;
-        mTextViewBallScores = new TextView[Constants.NUMBER_OF_FRAMES][Constants.NUMBER_OF_BALLS];
-        mTextViewFouls = new TextView[Constants.NUMBER_OF_FRAMES][Constants.NUMBER_OF_BALLS];
+        mTextViewBallScores = new TextView[Constants.NUMBER_OF_FRAMES][3];
+        mTextViewFouls = new TextView[Constants.NUMBER_OF_FRAMES][3];
         mTextViewFrames = new TextView[Constants.NUMBER_OF_FRAMES];
-        mPinState = new boolean[Constants.NUMBER_OF_FRAMES][Constants.NUMBER_OF_BALLS][Constants.NUMBER_OF_PINS];
-        mFouls = new boolean[Constants.NUMBER_OF_FRAMES][Constants.NUMBER_OF_BALLS];
+        mPinState = new boolean[Constants.NUMBER_OF_FRAMES][3][5];
+        mFouls = new boolean[Constants.NUMBER_OF_FRAMES][3];
         mHasFrameBeenAccessed = new boolean[Constants.NUMBER_OF_FRAMES];
+
+        final View.OnClickListener[] onClickListeners = getOnClickListeners();
 
         /*
          * Following creates TextView objects to display information about state of game and
@@ -553,101 +344,118 @@ public class GameFragment
          */
 
         //Calculates most static view sizes beforehand so they don't have to be recalculated
-        final int frameWidth = 120;
-        final int ballWidth = 40;
-        final int textSize = 12;
-        final float screenDensity = getResources().getDisplayMetrics().density;
-
-        final int dp128 = DisplayUtils.getPixelsFromDP(screenDensity, 128);
-        final int dp120 = DisplayUtils.getPixelsFromDP(screenDensity, frameWidth);
-        final int dp88 = DisplayUtils.getPixelsFromDP(screenDensity, 88);
-        final int dp40 = DisplayUtils.getPixelsFromDP(screenDensity, ballWidth);
-        final int dp41 = DisplayUtils.getPixelsFromDP(screenDensity, 41);
-        final int dp20 = DisplayUtils.getPixelsFromDP(screenDensity, 20);
-        final int dp36 = DisplayUtils.getPixelsFromDP(screenDensity, 36);
+        final int dp128 = DataFormatter.getPixelsFromDP(screenDensity, 128);
+        final int dp120 = DataFormatter.getPixelsFromDP(screenDensity, 120);
+        final int dp88 = DataFormatter.getPixelsFromDP(screenDensity, 88);
+        final int dp40 = DataFormatter.getPixelsFromDP(screenDensity, 40);
+        final int dp41 = DataFormatter.getPixelsFromDP(screenDensity, 41);
+        final int dp20 = DataFormatter.getPixelsFromDP(screenDensity, 20);
+        final int dp36 = DataFormatter.getPixelsFromDP(screenDensity, 36);
         for (int i = 0; i < Constants.NUMBER_OF_FRAMES; i++) {
             //TextView to display score of a frame
-            TextView frameText = new TextView(getContext());
-            setFrameTextViewId(i, frameText);
-            frameText.setTextColor(DisplayUtils.COLOR_BLACK);
+            TextView frameText = new TextView(getActivity());
+            switch (i) {
+                //Id is set so when view is clicked, it can be identified
+                case 0:
+                    frameText.setId(R.id.text_frame_0);
+                    break;
+                case 1:
+                    frameText.setId(R.id.text_frame_1);
+                    break;
+                case 2:
+                    frameText.setId(R.id.text_frame_2);
+                    break;
+                case 3:
+                    frameText.setId(R.id.text_frame_3);
+                    break;
+                case 4:
+                    frameText.setId(R.id.text_frame_4);
+                    break;
+                case 5:
+                    frameText.setId(R.id.text_frame_5);
+                    break;
+                case 6:
+                    frameText.setId(R.id.text_frame_6);
+                    break;
+                case 7:
+                    frameText.setId(R.id.text_frame_7);
+                    break;
+                case 8:
+                    frameText.setId(R.id.text_frame_8);
+                    break;
+                case 9:
+                    frameText.setId(R.id.text_frame_9);
+                    break;
+                default: //do nothing
+            }
+            frameText.setTextColor(0xff000000);
             frameText.setBackgroundResource(R.drawable.background_frame_text);
             frameText.setGravity(Gravity.CENTER);
-            frameText.setOnClickListener(mFrameClickListener);
+            frameText.setOnClickListener(onClickListeners[LISTENER_TEXT_FRAMES]);
 
             layoutParams = new RelativeLayout.LayoutParams(dp120, dp88);
-            layoutParams.leftMargin = DisplayUtils.getPixelsFromDP(screenDensity, frameWidth * i);
+            layoutParams.leftMargin = DataFormatter.getPixelsFromDP(screenDensity, 120 * i);
             layoutParams.topMargin = dp40;
             relativeLayout.addView(frameText, layoutParams);
             mTextViewFrames[i] = frameText;
 
-            for (int j = 0; j < Constants.NUMBER_OF_BALLS; j++) {
+            for (int j = 0; j < 3; j++) {
                 //TextView to display value scored on a certain ball
-                TextView text = new TextView(getContext());
-                text.setTextColor(DisplayUtils.COLOR_BLACK);
+                TextView text = new TextView(getActivity());
+                text.setTextColor(0xff000000);
                 text.setBackgroundResource(R.drawable.background_frame_text);
                 text.setGravity(Gravity.CENTER);
                 layoutParams = new RelativeLayout.LayoutParams(dp40, dp41);
-                layoutParams.leftMargin = DisplayUtils.getPixelsFromDP(screenDensity, frameWidth * i + j * ballWidth);
+                layoutParams.leftMargin = DataFormatter.getPixelsFromDP(screenDensity,
+                        120 * i + j * 40);
                 relativeLayout.addView(text, layoutParams);
                 mTextViewBallScores[i][j] = text;
-                text.setOnClickListener(mBallClickListener);
+                text.setOnClickListener(onClickListeners[LISTENER_TEXT_BALLS]);
 
                 //TextView to display fouls invoked on a certain ball
-                text = new TextView(getContext());
+                text = new TextView(getActivity());
                 text.setGravity(Gravity.CENTER);
-                text.setTextSize(TypedValue.COMPLEX_UNIT_DIP, textSize);
+                text.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
                 layoutParams = new RelativeLayout.LayoutParams(dp40, dp20);
-                layoutParams.leftMargin = DisplayUtils.getPixelsFromDP(screenDensity, frameWidth * i + j * ballWidth);
+                layoutParams.leftMargin = DataFormatter.getPixelsFromDP(screenDensity,
+                        120 * i + j * 40);
                 layoutParams.topMargin = dp40;
                 relativeLayout.addView(text, layoutParams);
                 mTextViewFouls[i][j] = text;
             }
 
             //TextView to display frame number under related frame information
-            frameText = new TextView(getContext());
+            frameText = new TextView(getActivity());
             frameText.setText(String.valueOf(i + 1));
-            frameText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, textSize);
+            frameText.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
             frameText.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
             frameText.setTextColor(DisplayUtils.getColorResource(getResources(), android.R.color.white));
             layoutParams = new RelativeLayout.LayoutParams(dp120, dp36);
-            layoutParams.leftMargin = DisplayUtils.getPixelsFromDP(screenDensity, frameWidth * i);
+            layoutParams.leftMargin = DataFormatter.getPixelsFromDP(screenDensity, 120 * i);
             layoutParams.addRule(RelativeLayout.BELOW, mTextViewFrames[i].getId());
             relativeLayout.addView(frameText, layoutParams);
         }
 
         //TextView to display final score of game
-        mTextViewFinalScore = new TextView(getContext());
+        mTextViewFinalScore = new TextView(getActivity());
         mTextViewFinalScore.setGravity(Gravity.CENTER);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
             mTextViewFinalScore.setTextAppearance(android.R.style.TextAppearance_Large);
         else
-            mTextViewFinalScore.setTextAppearance(getContext(), android.R.style.TextAppearance_Large);
+            mTextViewFinalScore.setTextAppearance(getActivity(), android.R.style.TextAppearance_Large);
         mTextViewFinalScore.setBackgroundResource(R.drawable.background_frame_text);
         layoutParams = new RelativeLayout.LayoutParams(dp120, dp128);
-        layoutParams.leftMargin = DisplayUtils.getPixelsFromDP(screenDensity, Constants.NUMBER_OF_FRAMES * frameWidth);
+        layoutParams.leftMargin = DataFormatter.getPixelsFromDP(screenDensity,
+                Constants.NUMBER_OF_FRAMES * 120);
         relativeLayout.addView(mTextViewFinalScore, layoutParams);
         mHorizontalScrollViewFrames.addView(relativeLayout);
 
-        setupGameControls(rootView);
-
-        return rootView;
-    }
-
-    /**
-     * Gets references to game controls for member variables and defines their appearance and event handlers.
-     *
-     * @param rootView root view
-     */
-    private void setupGameControls(View rootView) {
-        RelativeLayout.LayoutParams layoutParams;
         //Buttons which indicate state of pins in a frame, provide user interaction methods
-        mImageViewPins = new ImageView[Constants.NUMBER_OF_PINS];
+        mImageViewPins = new ImageView[5];
         mImageViewPins[0] = (ImageView) rootView.findViewById(R.id.button_pin_1);
         mImageViewPins[1] = (ImageView) rootView.findViewById(R.id.button_pin_2);
         mImageViewPins[2] = (ImageView) rootView.findViewById(R.id.button_pin_3);
-        //noinspection CheckStyle
         mImageViewPins[3] = (ImageView) rootView.findViewById(R.id.button_pin_4);
-        //noinspection CheckStyle
         mImageViewPins[4] = (ImageView) rootView.findViewById(R.id.button_pin_5);
 
         mLinearLayoutPins = (PinLayout) rootView.findViewById(R.id.ll_pins);
@@ -655,24 +463,15 @@ public class GameFragment
 
         //Loading other views into member variables, setting OnClickListeners
         mImageViewNextBall = (ImageView) rootView.findViewById(R.id.iv_next_ball);
-        mImageViewNextBall.setOnClickListener(mBallChangeClickListener);
+        mImageViewNextBall.setOnClickListener(onClickListeners[LISTENER_OTHER]);
         mImageViewPrevBall = (ImageView) rootView.findViewById(R.id.iv_prev_ball);
-        mImageViewPrevBall.setOnClickListener(mBallChangeClickListener);
+        mImageViewPrevBall.setOnClickListener(onClickListeners[LISTENER_OTHER]);
         mTextViewNextBall = (TextView) rootView.findViewById(R.id.tv_next_ball);
-        mTextViewNextBall.setOnClickListener(mBallChangeClickListener);
+        mTextViewNextBall.setOnClickListener(onClickListeners[LISTENER_OTHER]);
         mTextViewPrevBall = (TextView) rootView.findViewById(R.id.tv_prev_ball);
-        mTextViewPrevBall.setOnClickListener(mBallChangeClickListener);
+        mTextViewPrevBall.setOnClickListener(onClickListeners[LISTENER_OTHER]);
         mImageViewClear = (ImageView) rootView.findViewById(R.id.iv_clear);
-        mImageViewClear.setOnClickListener(mBallChangeClickListener);
-
-        mNextFab = (AnimatedFloatingActionButton) rootView.findViewById(R.id.fab_next_ball);
-        mNextFab.setVisibility(View.GONE);
-        DisplayUtils.fixFloatingActionButtonMargins(getResources(), mNextFab);
-        mNextFab.setOnClickListener(mBallChangeClickListener);
-        mPrevFab = (AnimatedFloatingActionButton) rootView.findViewById(R.id.fab_prev_ball);
-        mPrevFab.setVisibility(View.GONE);
-        DisplayUtils.fixFloatingActionButtonMargins(getResources(), mPrevFab);
-        mPrevFab.setOnClickListener(mBallChangeClickListener);
+        mImageViewClear.setOnClickListener(onClickListeners[LISTENER_OTHER]);
 
         mTextViewGameNumber = (TextView) rootView.findViewById(R.id.tv_game_number);
         layoutParams = (RelativeLayout.LayoutParams) mTextViewGameNumber.getLayoutParams();
@@ -680,65 +479,30 @@ public class GameFragment
         layoutParams.addRule(RelativeLayout.ALIGN_BOTTOM, mTextViewNextBall.getId());
 
         mImageViewFoul = (ImageView) rootView.findViewById(R.id.iv_foul);
-        mImageViewFoul.setOnClickListener(mControlClickListener);
+        mImageViewFoul.setOnClickListener(onClickListeners[LISTENER_OTHER]);
 
         mImageViewResetFrame = (ImageView) rootView.findViewById(R.id.iv_reset_frame);
-        mImageViewResetFrame.setOnClickListener(mControlClickListener);
+        mImageViewResetFrame.setOnClickListener(onClickListeners[LISTENER_OTHER]);
 
         mImageViewLock = (ImageView) rootView.findViewById(R.id.iv_lock);
-        mImageViewLock.setOnClickListener(mControlClickListener);
+        mImageViewLock.setOnClickListener(onClickListeners[LISTENER_OTHER]);
 
         mImageViewMatchPlay = (ImageView) rootView.findViewById(R.id.iv_match);
-        mImageViewMatchPlay.setOnClickListener(mControlClickListener);
+        mImageViewMatchPlay.setOnClickListener(onClickListeners[LISTENER_OTHER]);
 
         mTextViewManualScore = (TextView) rootView.findViewById(R.id.tv_manual_score);
         mTextViewAutoAdvance = (TextView) rootView.findViewById(R.id.tv_auto_advance_status);
 
+        mNextFab = (AnimatedFloatingActionButton) rootView.findViewById(R.id.fab_next_ball);
+        mNextFab.setVisibility(View.GONE);
+        DisplayUtils.fixFloatingActionButtonMargins(getResources(), mNextFab);
+        mNextFab.setOnClickListener(onClickListeners[LISTENER_OTHER]);
+        mPrevFab = (AnimatedFloatingActionButton) rootView.findViewById(R.id.fab_prev_ball);
+        mPrevFab.setVisibility(View.GONE);
+        DisplayUtils.fixFloatingActionButtonMargins(getResources(), mPrevFab);
+        mPrevFab.setOnClickListener(onClickListeners[LISTENER_OTHER]);
 
-    }
-
-    /**
-     * Sets the appropriate id for a TextView which displays a frame.
-     *
-     * @param i ith frame
-     * @param frameText text view
-     */
-    @SuppressWarnings("CheckStyle") // Ignoring hardcoded values that cannot be looped
-    private void setFrameTextViewId(int i, TextView frameText) {
-        switch (i) {
-            //Id is set so when view is clicked, it can be identified
-            case 0:
-                frameText.setId(R.id.text_frame_0);
-                break;
-            case 1:
-                frameText.setId(R.id.text_frame_1);
-                break;
-            case 2:
-                frameText.setId(R.id.text_frame_2);
-                break;
-            case 3:
-                frameText.setId(R.id.text_frame_3);
-                break;
-            case 4:
-                frameText.setId(R.id.text_frame_4);
-                break;
-            case 5:
-                frameText.setId(R.id.text_frame_5);
-                break;
-            case 6:
-                frameText.setId(R.id.text_frame_6);
-                break;
-            case 7:
-                frameText.setId(R.id.text_frame_7);
-                break;
-            case 8:
-                frameText.setId(R.id.text_frame_8);
-                break;
-            case 9:
-                frameText.setId(R.id.text_frame_9);
-                break;
-            default: //do nothing
-        }
+        return rootView;
     }
 
     @Override
@@ -807,7 +571,7 @@ public class GameFragment
                 else
                     setFloatingActionButtonState(true, 0);
             }
-        }, FAB_STARTUP_TIME);
+        }, 500);
     }
 
     @Override
@@ -991,6 +755,222 @@ public class GameFragment
     }
 
     /**
+     * Creates instances of OnClickListener to listen to events created by views in this activity.
+     *
+     * @return OnClickListener instances which are applied to views in this activity
+     */
+    private View.OnClickListener[] getOnClickListeners() {
+        View.OnClickListener[] listeners = new View.OnClickListener[3];
+        listeners[LISTENER_TEXT_FRAMES] = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                byte frameToSet = 0;
+                switch (v.getId()) {
+                    case R.id.text_frame_9:
+                        frameToSet++;
+                    case R.id.text_frame_8:
+                        frameToSet++;
+                    case R.id.text_frame_7:
+                        frameToSet++;
+                    case R.id.text_frame_6:
+                        frameToSet++;
+                    case R.id.text_frame_5:
+                        frameToSet++;
+                    case R.id.text_frame_4:
+                        frameToSet++;
+                    case R.id.text_frame_3:
+                        frameToSet++;
+                    case R.id.text_frame_2:
+                        frameToSet++;
+                    case R.id.text_frame_1:
+                        frameToSet++;
+                    case R.id.text_frame_0:
+                        //Changes the current frame and updates the GUI
+                        clearFrameColor();
+                        mCurrentFrame = frameToSet;
+                        mCurrentBall = 0;
+                        byte frameUpdateCount = 0;
+                        for (int i = mCurrentFrame; i >= 0; i--) {
+                            if (mHasFrameBeenAccessed[i])
+                                break;
+                            mHasFrameBeenAccessed[i] = true;
+                            frameUpdateCount++;
+                        }
+                        setVisibilityOfNextAndPrevItems();
+                        if (frameUpdateCount > 3)
+                            updateAllBalls();
+                        else
+                            updateBalls(mCurrentFrame, (byte) 0);
+                        updateScore();
+                        updateFrameColor(false);
+                        if (mGameCallback != null)
+                            mGameCallback.stopAutoAdvanceTimer();
+                        break;
+                    default:
+                        throw new RuntimeException("Invalid frame id");
+                }
+            }
+        };
+
+        listeners[LISTENER_OTHER] = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int viewId = v.getId();
+
+                switch (viewId) {
+                    case R.id.iv_match:
+                        if (mGameLocked[mCurrentGame])
+                            showSetMatchPlayLockedDialog();
+                        else
+                            showSetMatchPlayScreen();
+                        if (mGameCallback != null)
+                            mGameCallback.stopAutoAdvanceTimer();
+                        break;
+
+                    case R.id.iv_lock:
+                        //Locks the game if it is unlocked,
+                        //unlocks if locked
+                        if (mManualScoreSet[mCurrentGame])
+                            return;
+                        setGameLocked(!mGameLocked[mCurrentGame]);
+                        if (mGameCallback != null)
+                            mGameCallback.stopAutoAdvanceTimer();
+                        break;
+
+                    case R.id.iv_foul:
+                        //Sets or removes a foul and updates scores
+                        if (mGameLocked[mCurrentGame] || mManualScoreSet[mCurrentGame])
+                            return;
+                        mFouls[mCurrentFrame][mCurrentBall] = !mFouls[mCurrentFrame][mCurrentBall];
+                        updateFouls();
+                        if (mGameCallback != null && !(mCurrentFrame == Constants.LAST_FRAME && mCurrentBall == 2))
+                            mGameCallback.resetAutoAdvanceTimer();
+                        break;
+
+                    case R.id.iv_reset_frame:
+                        //Resets the current frame to ball 0, no fouls, no pins knocked
+                        if (mGameLocked[mCurrentGame] || mManualScoreSet[mCurrentGame])
+                            return;
+                        clearFrameColor();
+                        mCurrentBall = 0;
+                        for (int i = 0; i < 3; i++) {
+                            mFouls[mCurrentFrame][i] = false;
+                            for (int j = 0; j < 5; j++)
+                                mPinState[mCurrentFrame][i][j] = false;
+                        }
+                        setVisibilityOfNextAndPrevItems();
+                        updateFrameColor(false);
+                        updateBalls(mCurrentFrame, (byte) 0);
+                        updateScore();
+                        if (mGameCallback != null)
+                            mGameCallback.stopAutoAdvanceTimer();
+                        break;
+
+                    case R.id.iv_clear:
+                        clearPins();
+                        if (mGameCallback != null && !(mCurrentFrame == Constants.LAST_FRAME && mCurrentBall == 2))
+                            mGameCallback.resetAutoAdvanceTimer();
+                        break;
+
+                    case R.id.iv_next_ball:
+                    case R.id.tv_next_ball:
+                    case R.id.fab_next_ball:
+                        //Changes the current frame and updates the GUI
+                        if (mCurrentFrame == Constants.LAST_FRAME && mCurrentBall == 2)
+                            return;
+
+                        clearFrameColor();
+                        if (Arrays.equals(mPinState[mCurrentFrame][mCurrentBall],
+                                Constants.FRAME_PINS_DOWN)) {
+                            if (mCurrentFrame < Constants.LAST_FRAME) {
+                                mCurrentBall = 0;
+                                mCurrentFrame++;
+                            } else if (mCurrentBall < 2) {
+                                mCurrentBall++;
+                            }
+                        } else if (++mCurrentBall == 3) {
+                            mCurrentBall = 0;
+                            ++mCurrentFrame;
+                        }
+                        mHasFrameBeenAccessed[mCurrentFrame] = true;
+                        setVisibilityOfNextAndPrevItems();
+                        updateFrameColor(false);
+                        if (mGameCallback != null)
+                            mGameCallback.stopAutoAdvanceTimer();
+                        break;
+
+                    case R.id.iv_prev_ball:
+                    case R.id.tv_prev_ball:
+                    case R.id.fab_prev_ball:
+                        //Changes the current frame and updates the GUI
+                        if (mCurrentFrame == 0 && mCurrentBall == 0)
+                            return;
+
+                        clearFrameColor();
+                        if (--mCurrentBall == -1) {
+                            mCurrentBall = 0;
+                            --mCurrentFrame;
+                            while (!Arrays.equals(mPinState[mCurrentFrame][mCurrentBall],
+                                    Constants.FRAME_PINS_DOWN) && mCurrentBall < 2) {
+                                mCurrentBall++;
+                            }
+                        }
+                        setVisibilityOfNextAndPrevItems();
+                        updateFrameColor(false);
+                        if (mGameCallback != null)
+                            mGameCallback.stopAutoAdvanceTimer();
+                        break;
+
+                    default:
+                        throw new RuntimeException("Unknown other button id");
+                }
+            }
+        };
+
+        listeners[LISTENER_TEXT_BALLS] = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean viewFound = false;
+                for (byte i = 0; i < mTextViewBallScores.length && !viewFound; i++) {
+                    for (byte j = 0; j < mTextViewBallScores[i].length; j++) {
+                        if (v == mTextViewBallScores[i][j]) {
+                            viewFound = true;
+
+                            //Changes the current frame and updates the GUI
+                            clearFrameColor();
+                            mCurrentFrame = i;
+                            mCurrentBall = 0;
+                            byte frameUpdateCount = 0;
+                            for (int k = mCurrentFrame; k >= 0; k--) {
+                                if (mHasFrameBeenAccessed[k])
+                                    break;
+                                mHasFrameBeenAccessed[k] = true;
+                                frameUpdateCount++;
+                            }
+                            while (!Arrays.equals(mPinState[mCurrentFrame][mCurrentBall],
+                                    Constants.FRAME_PINS_DOWN) && mCurrentBall < j) {
+                                mCurrentBall++;
+                            }
+                            setVisibilityOfNextAndPrevItems();
+                            if (frameUpdateCount > 3)
+                                updateAllBalls();
+                            else
+                                updateBalls(mCurrentFrame, (byte) 0);
+                            updateScore();
+                            updateFrameColor(false);
+                            if (mGameCallback != null)
+                                mGameCallback.stopAutoAdvanceTimer();
+                            break;
+                        }
+                    }
+                }
+            }
+        };
+
+        return listeners;
+    }
+
+    /**
      * Displays prompt to user to inform them the game is locked. Included to prevent accidental changes of match play
      * results, but still allow changes if game is locked (such as by a manual score being set)
      */
@@ -1025,7 +1005,7 @@ public class GameFragment
     }
 
     /**
-     * Prompts user to reset the current game and set a manual score.
+     * Prompts user to reset the current game and set a manual score
      */
     private void showManualScoreDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
@@ -1127,11 +1107,6 @@ public class GameFragment
                 : R.drawable.ic_lock_open);
     }
 
-    /**
-     * Enables or disables the toolbar by setting the appropriate visibility of the items.
-     *
-     * @param enabled true to enable, false to disable
-     */
     private void setToolbarEnabled(boolean enabled) {
         if (enabled) {
             mImageViewClear.setVisibility(View.VISIBLE);
@@ -1253,9 +1228,8 @@ public class GameFragment
 
         long[] framesToSave = new long[Constants.NUMBER_OF_FRAMES];
         boolean[] accessToSave = new boolean[Constants.NUMBER_OF_FRAMES];
-        boolean[][][] pinStateToSave
-                = new boolean[Constants.NUMBER_OF_FRAMES][Constants.NUMBER_OF_BALLS][Constants.NUMBER_OF_PINS];
-        boolean[][] foulsToSave = new boolean[Constants.NUMBER_OF_FRAMES][Constants.NUMBER_OF_BALLS];
+        boolean[][][] pinStateToSave = new boolean[Constants.NUMBER_OF_FRAMES][3][5];
+        boolean[][] foulsToSave = new boolean[Constants.NUMBER_OF_FRAMES][3];
         System.arraycopy(
                 mFrameIds,
                 mCurrentGame * Constants.NUMBER_OF_FRAMES,
@@ -1302,9 +1276,9 @@ public class GameFragment
         mCurrentFrame = 0;
         for (int i = 0; i < Constants.NUMBER_OF_FRAMES; i++) {
             mHasFrameBeenAccessed[i] = false;
-            for (int j = 0; j < Constants.NUMBER_OF_BALLS; j++) {
+            for (int j = 0; j < 3; j++) {
                 mFouls[i][j] = false;
-                for (int k = 0; k < Constants.NUMBER_OF_PINS; k++)
+                for (int k = 0; k < 5; k++)
                     mPinState[i][j][k] = false;
             }
         }
@@ -1317,7 +1291,6 @@ public class GameFragment
      * Calculates the highest score possible from the current state of the game and displays it in a dialog to the
      * user.
      */
-    @SuppressWarnings("CheckStyle") // Method performs one function, so keeping it together makes sense
     private void showBestPossibleScoreDialog() {
         byte initialFrame = mCurrentFrame;
         while (initialFrame > 0 && TextUtils.isEmpty(mTextViewFrames[initialFrame].getText().toString()))
@@ -1333,27 +1306,45 @@ public class GameFragment
 
         if (mCurrentFrame < Constants.LAST_FRAME) {
             if (Arrays.equals(mPinState[mCurrentFrame][0], Constants.FRAME_PINS_DOWN)) {
-                int firstBallNextFrame = Score.getValueOfFrame(mPinState[mCurrentFrame + 1][0], true);
+                int firstBallNextFrame = Score.getValueOfFrame(mPinState[mCurrentFrame + 1][0]);
                 possibleScore -= firstBallNextFrame;
-                if (firstBallNextFrame == Constants.STRIKE_VALUE) {
+                if (firstBallNextFrame == 15) {
                     if (mCurrentFrame < Constants.LAST_FRAME - 1)
-                        possibleScore -= Score.getValueOfFrame(mPinState[mCurrentFrame + 2][0], true);
+                        possibleScore -= Score.getValueOfFrame(mPinState[mCurrentFrame + 2][0]);
                     else
-                        possibleScore -= Score.getValueOfFrame(mPinState[mCurrentFrame + 1][1], true);
+                        possibleScore -= Score.getValueOfFrame(mPinState[mCurrentFrame + 1][1]);
                 } else
                     possibleScore -= Score.getValueOfFrameDifference(mPinState[mCurrentFrame][0],
                             mPinState[mCurrentFrame][1]);
             } else if (Arrays.equals(mPinState[mCurrentFrame][1], Constants.FRAME_PINS_DOWN)) {
-                int firstBallNextFrame = Score.getValueOfFrame(mPinState[mCurrentFrame + 1][0], true);
+                int firstBallNextFrame = Score.getValueOfFrame(mPinState[mCurrentFrame + 1][0]);
                 possibleScore -= firstBallNextFrame;
             }
         } else {
-            for (int i = mCurrentBall + 1; i < Constants.NUMBER_OF_BALLS; i++)
+            for (int i = mCurrentBall + 1; i < 3; i++)
                 possibleScore -= Score.getValueOfFrameDifference(mPinState[mCurrentFrame][i - 1],
                         mPinState[mCurrentFrame][i]);
         }
 
-        int pinsLeftStanding = Score.getValueOfFrame(mPinState[mCurrentFrame][mCurrentBall], false);
+        int pinsLeftStanding = 0;
+        for (int i = 0; i < 5; i++) {
+            if (!mPinState[mCurrentFrame][mCurrentBall][i]) {
+                switch (i) {
+                    case 0:
+                    case 4:
+                        pinsLeftStanding += 2;
+                        break;
+                    case 1:
+                    case 3:
+                        pinsLeftStanding += 3;
+                        break;
+                    case 2:
+                        pinsLeftStanding += 5;
+                        break;
+                    default: //do nothing
+                }
+            }
+        }
 
         boolean strikeLastFrame = false;
         boolean strikeTwoFramesAgo = false;
@@ -1373,21 +1364,24 @@ public class GameFragment
 
         if (mCurrentBall == 0) {
             alertMessageBuilder.append(" a strike");
-            possibleScore += pinsLeftStanding + Constants.STRIKE_VALUE * 2;
-            int secondBall = Score.getValueOfFrameDifference(mPinState[mCurrentFrame][0], mPinState[mCurrentFrame][1]);
-            int thirdBall = Score.getValueOfFrameDifference(mPinState[mCurrentFrame][1], mPinState[mCurrentFrame][2]);
+            possibleScore += pinsLeftStanding + 30;
+            int secondBall = Score.getValueOfFrameDifference(mPinState[mCurrentFrame][0],
+                    mPinState[mCurrentFrame][1]);
+            int thirdBall = Score.getValueOfFrameDifference(mPinState[mCurrentFrame][1],
+                    mPinState[mCurrentFrame][2]);
 
             if (mCurrentFrame < Constants.LAST_FRAME)
                 possibleScore -= secondBall + thirdBall;
             if (strikeLastFrame) {
                 possibleScore -= secondBall;
-                possibleScore += pinsLeftStanding + Constants.STRIKE_VALUE;
+                possibleScore += pinsLeftStanding + 15;
                 if (strikeTwoFramesAgo)
                     possibleScore += pinsLeftStanding;
             } else if (spareLastFrame)
                 possibleScore += pinsLeftStanding;
         } else if (mCurrentBall == 1) {
-            int thirdBall = Score.getValueOfFrameDifference(mPinState[mCurrentFrame][1], mPinState[mCurrentFrame][2]);
+            int thirdBall = Score.getValueOfFrameDifference(mPinState[mCurrentFrame][1],
+                    mPinState[mCurrentFrame][2]);
             if (mCurrentFrame < Constants.LAST_FRAME)
                 possibleScore -= thirdBall;
 
@@ -1396,7 +1390,7 @@ public class GameFragment
                 alertMessageBuilder.append(" a strike");
             else
                 alertMessageBuilder.append(" a spare");
-            possibleScore += pinsLeftStanding + Constants.STRIKE_VALUE;
+            possibleScore += pinsLeftStanding + 15;
             if (strikeLastFrame)
                 possibleScore += pinsLeftStanding;
         } else {
@@ -1407,12 +1401,12 @@ public class GameFragment
                 alertMessageBuilder.append(" fifteen");
             possibleScore += pinsLeftStanding;
         }
-        possibleScore += Constants.STRIKE_VALUE * Constants.NUMBER_OF_BALLS * (Constants.LAST_FRAME - mCurrentFrame);
+        possibleScore += 45 * (Constants.LAST_FRAME - mCurrentFrame);
 
         for (int i = 0; i <= mCurrentFrame; i++) {
-            for (int j = 0; j < Constants.NUMBER_OF_BALLS && !(i == mCurrentFrame && j >= mCurrentBall); j++) {
+            for (int j = 0; j < 3 && !(i == mCurrentFrame && j >= mCurrentBall); j++) {
                 if (mFouls[i][j])
-                    possibleScore -= Constants.FOUL_VALUE;
+                    possibleScore -= 15;
             }
         }
         if (possibleScore < 0)
@@ -1475,7 +1469,7 @@ public class GameFragment
      * Sets text of all TextView instances which display individual ball values.
      */
     private void updateAllBalls() {
-        for (byte i = Constants.LAST_FRAME; i >= 0; i -= Constants.NUMBER_OF_BALLS)
+        for (byte i = Constants.LAST_FRAME; i >= 0; i -= 3)
             updateBalls(i, (byte) 0);
     }
 
@@ -1485,7 +1479,6 @@ public class GameFragment
      * @param frameToUpdate frame of which text should be updated
      * @param leftToUpdate number of frames to the left to update
      */
-    @SuppressWarnings("CheckStyle") // Method performs one task, so keeping it together makes sense
     private void updateBalls(final byte frameToUpdate, final byte leftToUpdate) {
         if (frameToUpdate < 0 || frameToUpdate > Constants.LAST_FRAME)
             return;
@@ -1494,9 +1487,10 @@ public class GameFragment
             @Override
             public void run() {
                 //Sets text depending on state of pins in the frame
-                final String[] ballString = new String[Constants.NUMBER_OF_BALLS];
+                final String[] ballString = new String[3];
                 if (mHasFrameBeenAccessed[frameToUpdate]) {
-                    if (frameToUpdate == Constants.LAST_FRAME) {
+                    if (frameToUpdate == Constants.LAST_FRAME) //Treat last frame differently
+                    {
                         if (Arrays.equals(mPinState[frameToUpdate][0], Constants.FRAME_PINS_DOWN)) {
                             //If first ball is a strike, next two can be strikes/spares
                             ballString[0] = Constants.BALL_STRIKE;
@@ -1587,13 +1581,12 @@ public class GameFragment
                     public void run() {
                         boolean highlightStrikesAndSpares = PreferenceManager.getDefaultSharedPreferences(getContext())
                                 .getBoolean(Constants.KEY_ENABLE_STRIKE_HIGHLIGHTS, true);
-                        for (byte i = 0; i < Constants.NUMBER_OF_BALLS; i++) {
+                        for (byte i = 0; i < 3; i++) {
                             mTextViewBallScores[frameToUpdate][i].setText(ballString[i]);
                             if (highlightStrikesAndSpares) {
                                 if (frameToUpdate == Constants.LAST_FRAME
                                         && Arrays.equals(mPinState[frameToUpdate][i], Constants.FRAME_PINS_DOWN)
-                                        && !(i == 2 && !Arrays.equals(mPinState[frameToUpdate][0],
-                                        Constants.FRAME_PINS_DOWN)
+                                        && !(i == 2 && !Arrays.equals(mPinState[frameToUpdate][0], Constants.FRAME_PINS_DOWN)
                                         && !Arrays.equals(mPinState[frameToUpdate][1], Constants.FRAME_PINS_DOWN)))
                                     mTextViewBallScores[frameToUpdate][i].setTextColor(Theme.getTertiaryThemeColor());
                                 else if ((i == 0 && Arrays.equals(mPinState[frameToUpdate][i],
@@ -1634,7 +1627,6 @@ public class GameFragment
     /**
      * Sets text of the TextView instances which display the score up to the frame to the user.
      */
-    @SuppressWarnings("CheckStyle") // Method performs one task, so it makes sense to keep it together
     private void updateScore() {
         new Thread(new Runnable() {
             @Override
@@ -1646,40 +1638,45 @@ public class GameFragment
                         for (byte b = 2; b >= 0; b--) {
                             switch (b) {
                                 case 2:
-                                    frameScores[f] += Score.getValueOfFrame(mPinState[f][b], true);
+                                    frameScores[f] += Score.getValueOfFrame(mPinState[f][b]);
                                     break;
                                 case 1:
                                 case 0:
-                                    if (Arrays.equals(mPinState[f][b], Constants.FRAME_PINS_DOWN))
-                                        frameScores[f] += Score.getValueOfFrame(mPinState[f][b], true);
+                                    if (Arrays.equals(mPinState[f][b], Constants.FRAME_PINS_DOWN)) {
+                                        frameScores[f] += Score.getValueOfFrame(mPinState[f][b]);
+                                    }
                                     break;
-                                default:
-                                    //do nothing
+                                default: //do nothing
                             }
                         }
                     } else {
-                        for (byte b = 0; b < Constants.NUMBER_OF_BALLS; b++) {
+                        for (byte b = 0; b < 3; b++) {
                             if (b < 2 && Arrays.equals(mPinState[f][b], Constants.FRAME_PINS_DOWN)) {
-                                frameScores[f] += Score.getValueOfFrame(mPinState[f][b], true);
-                                frameScores[f] += Score.getValueOfFrame(mPinState[f + 1][0], true);
+                                frameScores[f] += Score.getValueOfFrame(mPinState[f][b]);
+                                frameScores[f] += Score.getValueOfFrame(mPinState[f + 1][0]);
                                 if (b == 0) {
                                     if (f == Constants.LAST_FRAME - 1) {
-                                        if (frameScores[f] == Constants.STRIKE_VALUE * 2) {
-                                            frameScores[f] += Score.getValueOfFrame(mPinState[f + 1][1], true);
+                                        if (frameScores[f] == 30) {
+                                            frameScores[f] +=
+                                                    Score.getValueOfFrame(mPinState[f + 1][1]);
                                         } else {
-                                            frameScores[f] += Score.getValueOfFrameDifference(mPinState[f + 1][0],
-                                                    mPinState[f + 1][1]);
+                                            frameScores[f] +=
+                                                    Score.getValueOfFrameDifference(
+                                                            mPinState[f + 1][0],
+                                                            mPinState[f + 1][1]);
                                         }
-                                    } else if (frameScores[f] < Constants.STRIKE_VALUE * 2) {
-                                        frameScores[f] += Score.getValueOfFrameDifference(mPinState[f + 1][0],
-                                                mPinState[f + 1][1]);
+                                    } else if (frameScores[f] < 30) {
+                                        frameScores[f] +=
+                                                Score.getValueOfFrameDifference(
+                                                        mPinState[f + 1][0], mPinState[f + 1][1]);
                                     } else {
-                                        frameScores[f] += Score.getValueOfFrame(mPinState[f + 2][0], true);
+                                        frameScores[f] +=
+                                                Score.getValueOfFrame(mPinState[f + 2][0]);
                                     }
                                 }
                                 break;
                             } else if (b == 2) {
-                                frameScores[f] += Score.getValueOfFrame(mPinState[f][b], true);
+                                frameScores[f] += Score.getValueOfFrame(mPinState[f][b]);
                             }
                         }
                     }
@@ -1715,12 +1712,12 @@ public class GameFragment
     private void updateFouls() {
         byte foulCount = 0;
         for (byte i = 0; i < Constants.NUMBER_OF_FRAMES; i++) {
-            for (int j = 0; j < Constants.NUMBER_OF_BALLS; j++) {
+            for (int j = 0; j < 3; j++) {
                 if (mFouls[i][j])
                     foulCount++;
             }
         }
-        short scoreWithFouls = (short) (mGameScores[mCurrentGame] - Constants.FOUL_VALUE * foulCount);
+        short scoreWithFouls = (short) (mGameScores[mCurrentGame] - 15 * foulCount);
         if (scoreWithFouls < 0)
             scoreWithFouls = 0;
         mGameScoresMinusFouls[mCurrentGame] = scoreWithFouls;
@@ -1766,7 +1763,6 @@ public class GameFragment
      *
      * @param initialLoad indicates if this method was called when a game was first loaded
      */
-    @SuppressWarnings("CheckStyle") // Method performs one task, so it makes sense to keep it together
     private void updateFrameColor(final boolean initialLoad) {
         getActivity().runOnUiThread(new Runnable() {
             @Override
@@ -1780,7 +1776,7 @@ public class GameFragment
                 //Sets images of pins to enabled/disabled depending on
                 //if they were knocked down in current frame or a previous one
                 int numberOfPinsStanding = 0;
-                for (byte i = 0; i < Constants.NUMBER_OF_PINS; i++) {
+                for (byte i = 0; i < 5; i++) {
                     if (mPinState[mCurrentFrame][mCurrentBall][i])
                         mImageViewPins[i].setImageResource(R.drawable.pin_disabled);
                     else {
@@ -1855,17 +1851,19 @@ public class GameFragment
         final boolean isPinKnockedOver = mPinState[mCurrentFrame][mCurrentBall][pinToSet];
         final boolean allPinsKnockedOver;
         if (!isPinKnockedOver) {
-            for (int i = mCurrentBall; i < Constants.NUMBER_OF_BALLS; i++)
+            for (int i = mCurrentBall; i < 3; i++)
                 mPinState[mCurrentFrame][i][pinToSet] = true;
 
             if (Arrays.equals(mPinState[mCurrentFrame][mCurrentBall], Constants.FRAME_PINS_DOWN)) {
-                for (int i = mCurrentBall + 1; i < Constants.NUMBER_OF_BALLS; i++)
+                for (int i = mCurrentBall + 1; i < 3; i++)
                     mFouls[mCurrentFrame][i] = false;
 
-                if (mCurrentFrame == Constants.LAST_FRAME && mCurrentBall < 2) {
-                    for (int j = mCurrentBall + 1; j < Constants.NUMBER_OF_BALLS; j++) {
-                        for (int i = 0; i < Constants.NUMBER_OF_PINS; i++)
-                            mPinState[mCurrentFrame][j][i] = false;
+                if (mCurrentFrame == Constants.LAST_FRAME) {
+                    if (mCurrentBall < 2) {
+                        for (int j = mCurrentBall + 1; j < 3; j++) {
+                            for (int i = 0; i < 5; i++)
+                                mPinState[mCurrentFrame][j][i] = false;
+                        }
                     }
                 }
                 allPinsKnockedOver = true;
@@ -1873,7 +1871,7 @@ public class GameFragment
                 allPinsKnockedOver = false;
         } else {
             allPinsKnockedOver = false;
-            for (int i = mCurrentBall; i < Constants.NUMBER_OF_BALLS; i++)
+            for (int i = mCurrentBall; i < 3; i++)
                 mPinState[mCurrentFrame][i][pinToSet] = false;
 
             if (mCurrentFrame == Constants.LAST_FRAME) {
@@ -1883,8 +1881,7 @@ public class GameFragment
                             mPinState[mCurrentFrame][2],
                             0,
                             mPinState[mCurrentFrame][1].length);
-                } else if (mCurrentBall == 0 && Score.countStandingPins(mPinState[mCurrentFrame][mCurrentBall])
-                        == Constants.NUMBER_OF_PINS - 1) {
+                } else if (mCurrentBall == 0 && Score.countStandingPins(mPinState[mCurrentFrame][mCurrentBall]) == 4) {
                     System.arraycopy(mPinState[mCurrentFrame][0],
                             0,
                             mPinState[mCurrentFrame][1],
@@ -1924,8 +1921,8 @@ public class GameFragment
             return;
 
         if (!Arrays.equals(mPinState[mCurrentFrame][mCurrentBall], Constants.FRAME_PINS_DOWN)) {
-            for (int j = mCurrentBall; j < Constants.NUMBER_OF_BALLS; j++) {
-                for (int i = 0; i < Constants.NUMBER_OF_PINS; i++) {
+            for (int j = mCurrentBall; j < 3; j++) {
+                for (int i = 0; i < 5; i++) {
                     mPinState[mCurrentFrame][j][i] =
                             (mCurrentFrame != Constants.LAST_FRAME || (j == mCurrentBall));
                     if (j > mCurrentBall)
@@ -1987,7 +1984,6 @@ public class GameFragment
             final boolean gameLocked,
             final boolean manualScoreSet,
             final byte matchPlay) {
-        // TODO: replace parameters with a single "Game" object
         return new Thread(new Runnable() {
             @Override
             public void run() {
@@ -2015,7 +2011,7 @@ public class GameFragment
 
                     for (byte i = 0; i < Constants.NUMBER_OF_FRAMES; i++) {
                         StringBuilder foulsOfFrame = new StringBuilder();
-                        for (int ballCount = 0; ballCount < Constants.NUMBER_OF_BALLS; ballCount++) {
+                        for (int ballCount = 0; ballCount < 3; ballCount++) {
                             if (fouls[i][ballCount])
                                 foulsOfFrame.append(ballCount + 1);
                         }
@@ -2056,7 +2052,6 @@ public class GameFragment
      *
      * @param newGame index of id in mGameIds to load
      */
-    @SuppressWarnings("CheckStyle") // Method performs one task, so it makes sense to keep it together
     private void loadGameFromDatabase(final byte newGame) {
         clearFrameColor();
         new Thread(new Runnable() {
@@ -2097,14 +2092,14 @@ public class GameFragment
                             null,
                             FrameEntry.COLUMN_FRAME_NUMBER);
 
-                    mFouls = new boolean[Constants.NUMBER_OF_FRAMES][Constants.NUMBER_OF_BALLS];
+                    mFouls = new boolean[Constants.NUMBER_OF_FRAMES][3];
                     byte currentFrameIterator = 0;
                     if (cursor.moveToFirst()) {
                         while (!cursor.isAfterLast()) {
                             byte frameAccessed = (byte) cursor.getInt(
                                     cursor.getColumnIndex(FrameEntry.COLUMN_IS_ACCESSED));
                             mHasFrameBeenAccessed[currentFrameIterator] = (frameAccessed == 1);
-                            for (int i = 0; i < Constants.NUMBER_OF_BALLS; i++) {
+                            for (int i = 0; i < 3; i++) {
                                 int ball = cursor.getInt(cursor.getColumnIndex(
                                         FrameEntry.COLUMN_PIN_STATE[i]));
                                 boolean[] ballBoolean = Score.ballIntToBoolean(ball);
@@ -2112,7 +2107,7 @@ public class GameFragment
                             }
                             String fouls = Score.foulIntToString(cursor.getInt(
                                     cursor.getColumnIndex(FrameEntry.COLUMN_FOULS)));
-                            for (int ballCount = 0; ballCount < Constants.NUMBER_OF_BALLS; ballCount++) {
+                            for (int ballCount = 0; ballCount < 3; ballCount++) {
                                 mFouls[currentFrameIterator][ballCount]
                                         = fouls.contains(String.valueOf(ballCount + 1));
                             }
@@ -2131,7 +2126,7 @@ public class GameFragment
                     public void run() {
                         clearAllText(!mManualScoreSet[mCurrentGame]);
                         getActivity().supportInvalidateOptionsMenu();
-                        mTextViewGameNumber.setText(String.format(getResources().getString(R.string.text_game), mCurrentGame + 1));
+                        mTextViewGameNumber.setText("Game " + (mCurrentGame + 1));
                     }
                 });
                 setMatchPlay();
@@ -2146,7 +2141,8 @@ public class GameFragment
                 updateAllBalls();
                 mHasFrameBeenAccessed[0] = true;
 
-                while (mCurrentFrame < Constants.LAST_FRAME && mHasFrameBeenAccessed[mCurrentFrame + 1])
+                while (mCurrentFrame < Constants.LAST_FRAME
+                        && mHasFrameBeenAccessed[mCurrentFrame + 1])
                     mCurrentFrame++;
 
                 setVisibilityOfNextAndPrevItems();
@@ -2221,9 +2217,6 @@ public class GameFragment
         cursor.close();
     }
 
-    /**
-     * Starts the sharing process when external permission storage is granted by the user.
-     */
     public void externalStoragePermissionGranted() {
         MainActivity mainActivity = (MainActivity) getActivity();
         if (mainActivity != null)

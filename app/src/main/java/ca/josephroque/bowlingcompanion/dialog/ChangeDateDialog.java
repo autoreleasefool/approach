@@ -10,8 +10,8 @@ import android.widget.DatePicker;
 import java.lang.reflect.Field;
 
 import ca.josephroque.bowlingcompanion.Constants;
-import ca.josephroque.bowlingcompanion.bowling.Series;
-import ca.josephroque.bowlingcompanion.utilities.DateUtils;
+import ca.josephroque.bowlingcompanion.data.Series;
+import ca.josephroque.bowlingcompanion.utilities.DataFormatter;
 
 /**
  * Created by Joseph Roque on 15-03-29. Provides a dialog and callback interface {@link
@@ -43,7 +43,7 @@ public class ChangeDateDialog
         if (savedInstanceState == null) {
             mSeries = getArguments().getParcelable(Constants.EXTRA_SERIES);
             assert mSeries != null;
-            date = DateUtils.prettyCompactToFormattedDate(mSeries.getSeriesDate());
+            date = DataFormatter.prettyCompactToFormattedDate(mSeries.getSeriesDate());
             date[0] -= 1; //Must subtract one because method returns 1-12 for month, need 0-11
         } else {
             mSeries = savedInstanceState.getParcelable(Constants.EXTRA_SERIES);

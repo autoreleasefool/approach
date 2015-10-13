@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
+import android.util.Pair;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -25,6 +26,7 @@ import ca.josephroque.bowlingcompanion.R;
  * Created by Joseph Roque on 15-03-26. Provides methods for sharing the statistics and games tracked by the
  * application.
  */
+@SuppressWarnings("Convert2Lambda")
 public final class ShareUtils {
 
     /** Identifies output from this class in Logcat. */
@@ -76,8 +78,9 @@ public final class ShareUtils {
      * @param context the current context
      * @param seriesId id of the series to share
      */
+    @SuppressWarnings("unchecked")
     private static void shareSeries(WeakReference<Context> context, long seriesId) {
-        new ShareSeriesTask(context.get()).execute(seriesId);
+        new ShareSeriesTask().execute(Pair.create(context, seriesId));
     }
 
     /**
@@ -101,6 +104,7 @@ public final class ShareUtils {
                 System.gc();
 
                 activity.runOnUiThread(new Runnable() {
+                    @SuppressWarnings("ConstantConditions")
                     @Override
                     public void run() {
                         MediaScannerConnection.scanFile(activity,
@@ -112,7 +116,14 @@ public final class ShareUtils {
                                     }
                                 });
 
-                        Toast.makeText(activity, "Image successfully saved!", Toast.LENGTH_SHORT).show();
+                        Toast toast;
+                        if (imageUri != null)
+                            toast = Toast.makeText(
+                                    activity, "Image successfully saved!", Toast.LENGTH_SHORT);
+                        else
+                            toast = Toast.makeText(
+                                    activity, "Unable to save image", Toast.LENGTH_SHORT);
+                        toast.show();
                     }
                 });
             }
@@ -122,27 +133,19 @@ public final class ShareUtils {
     /**
      * Creates an image for the series and prompts user to share it.
      */
-    private static final class ShareSeriesTask
-            extends AsyncTask<Long, Void, WeakReference<Intent>> {
+    private static class ShareSeriesTask
+            extends AsyncTask<Pair<WeakReference<Context>, Long>, Void, Pair<WeakReference<Context>,
+            WeakReference<Intent>>> {
 
-        /** Instance of the current context. */
-        private WeakReference<Context> mContext;
-
-        /**
-         * Stores a reference to the context.
-         * @param context current context
-         */
-        private ShareSeriesTask(Context context) {
-            mContext = new WeakReference<>(context);
-        }
-
+        @SafeVarargs
         @SuppressWarnings("UnusedAssignment") //image set to null to free memory
         @Override
-        public WeakReference<Intent> doInBackground(Long... params) {
-            Context context = mContext.get();
+        public final Pair<WeakReference<Context>, WeakReference<Intent>> doInBackground(
+                Pair<WeakReference<Context>, Long>... params) {
+            Context context = params[0].first.get();
             if (context == null)
                 return null;
-            long seriesId = params[0];
+            long seriesId = params[0].second;
             Bitmap image = ImageUtils.createImageFromSeries(context, seriesId);
             Uri imageUri = ImageUtils.insertImage(context.getContentResolver(),
                     image,
@@ -173,20 +176,19 @@ public final class ShareUtils {
             }
 
             shareIntent.putExtra(Intent.EXTRA_STREAM, imageUri);
-            return new WeakReference<>(shareIntent);
+            return Pair.create(params[0].first, new WeakReference<>(shareIntent));
         }
 
         @Override
-        public void onPostExecute(WeakReference<Intent> intent) {
-            Context context = mContext.get();
-            if (intent == null || context == null)
-                return;
+        public void onPostExecute(Pair<WeakReference<Context>, WeakReference<Intent>> params) {
+            if (params != null) {
+                Context context = params.first.get();
+                Intent intent = params.second.get();
+                if (context == null || intent == null)
+                    return;
 
-            Intent intentToShare = intent.get();
-            if (intentToShare == null)
-                return;
-
-            context.startActivity(Intent.createChooser(intentToShare, "Share Image"));
+                context.startActivity(Intent.createChooser(intent, "Share Image"));
+            }
         }
     }
 

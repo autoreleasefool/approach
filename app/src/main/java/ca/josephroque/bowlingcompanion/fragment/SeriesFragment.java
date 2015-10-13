@@ -36,13 +36,13 @@ import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.MainActivity;
 import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.adapter.SeriesAdapter;
-import ca.josephroque.bowlingcompanion.bowling.Series;
+import ca.josephroque.bowlingcompanion.data.Series;
 import ca.josephroque.bowlingcompanion.database.Contract.GameEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.SeriesEntry;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.dialog.ChangeDateDialog;
+import ca.josephroque.bowlingcompanion.utilities.DataFormatter;
 import ca.josephroque.bowlingcompanion.theme.Theme;
-import ca.josephroque.bowlingcompanion.utilities.DateUtils;
 import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
 import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
 
@@ -50,6 +50,7 @@ import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
  * Created by Joseph Roque on 15-03-17. Manages the UI to display information about the series being tracked by the
  * application, and offers a callback interface {@code SeriesFragment.SeriesCallback} for handling interactions.
  */
+@SuppressWarnings("Convert2Lambda")
 public class SeriesFragment
         extends Fragment
         implements
@@ -240,6 +241,7 @@ public class SeriesFragment
         dateDialog.show(getFragmentManager(), "ChangeDateDialog");
     }
 
+    @SuppressWarnings("CheckStyle")
     @Override
     public void onChangeDate(final Series series, int year, int month, int day) {
         final int index = mListSeries.indexOf(series);
@@ -249,9 +251,9 @@ public class SeriesFragment
         final SimpleDateFormat dateFormat =
                 new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
         final String formattedDate = dateFormat.format(c.getTime());
-        seriesInList.setSeriesDate(DateUtils.formattedDateToPrettyCompact(formattedDate.substring(
+        seriesInList.setSeriesDate(DataFormatter.formattedDateToPrettyCompact(formattedDate.substring(
                 0,
-                DateUtils.LENGTH_OF_DATE_MINUS_TIME)));
+                10)));
 
         getActivity().runOnUiThread(new Runnable() {
             @Override
@@ -277,7 +279,7 @@ public class SeriesFragment
                                     new String[]{String.valueOf(seriesInList.getSeriesId())});
                             database.setTransactionSuccessful();
                         } catch (Exception ex) {
-                            Log.e(TAG, "Series date was not updated.", ex);
+                            Log.e(TAG, "Series date was not updated", ex);
                         } finally {
                             database.endTransaction();
                         }
@@ -335,7 +337,8 @@ public class SeriesFragment
                             startCombineSimilarSeries();
                             break;
                         case R.id.btn_do_not_ask:
-                            preferences.edit().putBoolean(Constants.KEY_ASK_COMBINE, false).apply();
+                            preferences.edit().putBoolean(Constants.KEY_ASK_COMBINE, false)
+                                    .apply();
                             break;
                         default:
                             // do nothing
@@ -483,7 +486,7 @@ public class SeriesFragment
 
                     if (listSeries.size() == 0 || listSeries.get(listSeries.size() - 1).getSeriesId() != seriesId) {
                         listSeries.add(new Series(seriesId,
-                                DateUtils.formattedDateToPrettyCompact(seriesDate),
+                                DataFormatter.formattedDateToPrettyCompact(seriesDate),
                                 new ArrayList<Short>(),
                                 new ArrayList<Byte>()));
                     }
@@ -499,6 +502,7 @@ public class SeriesFragment
         }
 
         @Override
+        @SuppressWarnings("unchecked")
         protected void onPostExecute(List<Series> listSeries) {
             SeriesFragment fragment = mFragment.get();
             if (listSeries == null || fragment == null)
@@ -580,7 +584,34 @@ public class SeriesFragment
                             Cursor cursor = db.rawQuery(seriesQuery,
                                     new String[]{String.valueOf(mainActivity.getLeagueId())});
 
-                            searchForSeriesToCombine(db, cursor);
+                            String lastSeriesDate = null;
+                            int startOfLastSeries = -1;
+                            if (cursor.moveToFirst()) {
+                                while (!cursor.isAfterLast()) {
+                                    int gameNumber = cursor.getInt(cursor.getColumnIndex(
+                                            GameEntry.COLUMN_GAME_NUMBER));
+                                    if (gameNumber == 1) {
+                                        String seriesDate = cursor.getString(cursor.getColumnIndex(
+                                                SeriesEntry.COLUMN_SERIES_DATE));
+                                        String dateFormatted = DataFormatter
+                                                .formattedDateToPrettyCompact(seriesDate);
+
+                                        if (dateFormatted.equals(lastSeriesDate)) {
+                                            int startOfCurrentSeries = cursor.getPosition();
+                                            combineSeries(db,
+                                                    cursor,
+                                                    startOfLastSeries,
+                                                    startOfCurrentSeries);
+                                            cursor.moveToPosition(startOfCurrentSeries);
+                                        }
+
+                                        startOfLastSeries = cursor.getPosition();
+                                        lastSeriesDate = dateFormatted;
+                                    }
+
+                                    cursor.moveToNext();
+                                }
+                            }
                             if (!cursor.isClosed())
                                 cursor.close();
 
@@ -595,42 +626,6 @@ public class SeriesFragment
                     }));
 
             return null;
-        }
-
-        /**
-         * Attempts to combine series with less than 5 games each into 1 series with 5 games.
-         *
-         * @param db app database
-         * @param cursor cursor containing series from database
-         */
-        private void searchForSeriesToCombine(SQLiteDatabase db, Cursor cursor) {
-            String lastSeriesDate = null;
-            int startOfLastSeries = -1;
-            if (cursor.moveToFirst()) {
-                while (!cursor.isAfterLast()) {
-                    int gameNumber = cursor.getInt(cursor.getColumnIndex(
-                            GameEntry.COLUMN_GAME_NUMBER));
-                    if (gameNumber == 1) {
-                        String seriesDate = cursor.getString(cursor.getColumnIndex(
-                                SeriesEntry.COLUMN_SERIES_DATE));
-                        String dateFormatted = DateUtils.formattedDateToPrettyCompact(seriesDate);
-
-                        if (dateFormatted.equals(lastSeriesDate)) {
-                            int startOfCurrentSeries = cursor.getPosition();
-                            combineSeries(db,
-                                    cursor,
-                                    startOfLastSeries,
-                                    startOfCurrentSeries);
-                            cursor.moveToPosition(startOfCurrentSeries);
-                        }
-
-                        startOfLastSeries = cursor.getPosition();
-                        lastSeriesDate = dateFormatted;
-                    }
-
-                    cursor.moveToNext();
-                }
-            }
         }
 
         /**

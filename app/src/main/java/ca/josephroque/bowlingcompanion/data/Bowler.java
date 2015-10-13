@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.bowling;
+package ca.josephroque.bowlingcompanion.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -7,7 +7,7 @@ import android.os.Parcelable;
  * Created by Joseph Roque on 2015-07-22. Organizes the data for a bowler.
  */
 public class Bowler
-        implements Parcelable, AverageIdName {
+        implements Parcelable, NameAverageId {
 
     /** Name of the bowler. */
     private final String mBowlerName;
@@ -133,12 +133,12 @@ public class Bowler
         return getBowlerName().equals(bowler.getBowlerName());
     }
 
+    @SuppressWarnings("CheckStyle")
     @Override
     public int hashCode() {
-        final int result = 89;
-        final int primeNumber = 37;
+        int result = 89;
         int c = getBowlerName().hashCode();
-        return primeNumber * result + c;
+        return 37 * result + c;
     }
 
     @Override

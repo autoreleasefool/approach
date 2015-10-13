@@ -13,7 +13,7 @@ import android.widget.EditText;
 
 import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.R;
-import ca.josephroque.bowlingcompanion.bowling.Bowler;
+import ca.josephroque.bowlingcompanion.data.Bowler;
 
 /**
  * Created by Joseph Roque on 15-03-15. Provides a dialog and callback interface {@link

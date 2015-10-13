@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.view;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
@@ -129,6 +130,8 @@ public class AnimatedFloatingActionButton
      *
      * @param drawableId new drawable to set
      */
+    @SuppressLint("NewApi") // Lint confuses FloatingActionButton#setBackgroundTintList for new API
+    // when it is available in the support design library
     private void growFloatingActionButton(final int drawableId) {
         final int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
         mCurrentFabIcon = drawableId;

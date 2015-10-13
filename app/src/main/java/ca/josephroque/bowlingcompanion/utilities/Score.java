@@ -12,45 +12,27 @@ public final class Score {
     @SuppressWarnings("unused")
     private static final String TAG = "Score";
 
-    /** Position of the left 2 pin. */
-    public static final byte LEFT_2_PIN = 0;
-    /** Position of the left 3 pin. */
-    public static final byte LEFT_3_PIN = 1;
-    /** Position of the head pin. */
-    public static final byte HEAD_PIN = 2;
-    /** Position of the right 3 pin. */
-    public static final byte RIGHT_3_PIN = 3;
-    /** Position of the right 2 pin. */
-    public static final byte RIGHT_2_PIN = 4;
-
-    /** Value of a 2 pin. */
-    private static final byte TWO_PIN_VALUE = 2;
-    /** Value of a 3 pin. */
-    private static final byte THREE_PIN_VALUE = 3;
-    /** Value of a head pin. */
-    private static final byte HEAD_PIN_VALUE = 5;
-
     /**
      * Gets the score value of the frame from the balls.
      *
      * @param frame the frame to get score of
      * @return score of the frame, in a 5 pin game
      */
-    public static int getValueOfFrame(boolean[] frame, boolean countPinsKnocked) {
+    public static int getValueOfFrame(boolean[] frame) {
         int frameValue = 0;
         for (byte i = 0; i < frame.length; i++) {
-            if (frame[i] == countPinsKnocked) {
+            if (frame[i]) {
                 switch (i) {
-                    case LEFT_2_PIN:
-                    case RIGHT_2_PIN:
-                        frameValue += TWO_PIN_VALUE;
+                    case 0:
+                    case 4:
+                        frameValue += 2;
                         break;
-                    case LEFT_3_PIN:
-                    case RIGHT_3_PIN:
-                        frameValue += THREE_PIN_VALUE;
+                    case 1:
+                    case 3:
+                        frameValue += 3;
                         break;
-                    case HEAD_PIN:
-                        frameValue += HEAD_PIN_VALUE;
+                    case 2:
+                        frameValue += 5;
                         break;
                     default: //do nothing
                 }
@@ -72,16 +54,16 @@ public final class Score {
         for (byte i = 0; i < frameToGet.length; i++) {
             if (frameToGet[i] && !prevFrame[i]) {
                 switch (i) {
-                    case LEFT_2_PIN:
-                    case RIGHT_2_PIN:
-                        frameValue += TWO_PIN_VALUE;
+                    case 0:
+                    case 4:
+                        frameValue += 2;
                         break;
-                    case LEFT_3_PIN:
-                    case RIGHT_3_PIN:
-                        frameValue += THREE_PIN_VALUE;
+                    case 1:
+                    case 3:
+                        frameValue += 3;
                         break;
-                    case HEAD_PIN:
-                        frameValue += HEAD_PIN_VALUE;
+                    case 2:
+                        frameValue += 5;
                         break;
                     default: //do nothing
                 }
@@ -104,19 +86,19 @@ public final class Score {
                                         boolean shouldReturnSymbol,
                                         boolean isAfterStrike) {
         int ballValue = 0;
-        for (byte i = 0; i < pins.length; i++) {
+        for (byte i = 0; i < 5; i++) {
             if (pins[i]) {
                 switch (i) {
-                    case LEFT_2_PIN:
-                    case RIGHT_2_PIN:
-                        ballValue += TWO_PIN_VALUE;
+                    case 0:
+                    case 4:
+                        ballValue += 2;
                         break;
-                    case LEFT_3_PIN:
-                    case RIGHT_3_PIN:
-                        ballValue += THREE_PIN_VALUE;
+                    case 1:
+                    case 3:
+                        ballValue += 3;
                         break;
-                    case HEAD_PIN:
-                        ballValue += HEAD_PIN_VALUE;
+                    case 2:
+                        ballValue += 5;
                         break;
                     default: //do nothing
                 }
@@ -381,7 +363,7 @@ public final class Score {
     }
 
     /**
-     * Counts the number of pins which are standing in a frame.
+     * Counts the number of pins which are standing in a frame
      *
      * @param frame frame to count
      * @return number of booleans in the array which are {@code true}

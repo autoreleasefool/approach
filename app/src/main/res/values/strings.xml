@@ -74,13 +74,6 @@
     <string name="text_like_on_fb">Be sure to like us on Facebook for news and updates!</string>
     <string name="text_series_total">Series total:</string>
 
-    <!-- Placeholder text -->
-    <string name="text_time_until_auto_advance">%d seconds until auto advance</string>
-    <string name="text_avg_num">Avg: %d</string>
-    <string name="text_click_to_delete">Click to delete: %s</string>
-    <string name="text_number">%d</string>
-    <string name="text_game">Game %d</string>
-
     <!-- Tutorial -->
     <string name="text_tutorial_welcome">Welcome to your 5 Pin Bowling Companion!</string>
     <string name="text_tutorial_add_bowler_league_series">Begin by creating a new bowler and leagues. Use the \'+\' button to create a new item, or press and hold on an item to delete or change its name.</string>

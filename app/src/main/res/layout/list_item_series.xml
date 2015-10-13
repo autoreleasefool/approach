@@ -23,9 +23,9 @@
                 android:layout_height="wrap_content"
                 android:alpha="0.87"
                 android:gravity="center"
-                android:paddingBottom="@dimen/series_padding"
                 android:paddingLeft="@dimen/list_key_line"
                 android:paddingTop="@dimen/series_padding"
+                android:paddingBottom="@dimen/series_padding"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@android:color/black" />
 

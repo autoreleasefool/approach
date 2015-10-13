@@ -1,9 +1,9 @@
-package ca.josephroque.bowlingcompanion.bowling;
+package ca.josephroque.bowlingcompanion.data;
 
 /**
  * Created by Joseph Roque on 2015-07-23. Offers method for setting an item's status to "deleted".
  */
-public interface DeletableItem {
+public interface DeletableData {
 
     /**
      * Sets the object's "deleted" status.

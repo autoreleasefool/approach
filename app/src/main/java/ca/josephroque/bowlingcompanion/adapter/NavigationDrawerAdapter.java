@@ -33,8 +33,8 @@ public class NavigationDrawerAdapter
 
     /** Represents an item in the navigation drawer which is a simple navigation item. */
     private static final int VIEW_TYPE_NAVIGATION = 0;
-    /** Represents an item in the navigation drawer which features a sub header. */
-    private static final int VIEW_TYPE_SUB_HEADER = 1;
+    /** Represents an item in the navigation drawer which features a subheader. */
+    private static final int VIEW_TYPE_SUBHEADER = 1;
     /** Represents an item in the navigation drawer which is a header. */
     private static final int VIEW_TYPE_HEADER = 2;
 
@@ -53,8 +53,8 @@ public class NavigationDrawerAdapter
      * array by the item's position.
      */
     private final HashMap<String, String> mArraySubtitle;
-    /** Set of positions which are sub header items. */
-    private final Set<String> mSetSubHeaderItems;
+    /** Set of positions which are subheader items. */
+    private final Set<String> mSetSubheaderItems;
 
     /** String to display as header text in the navigation drawer. */
     private String mHeaderTitle;
@@ -74,7 +74,7 @@ public class NavigationDrawerAdapter
                                    List<String> listItems) {
         this.mListNavigationItems = listItems;
         mArraySubtitle = new HashMap<>();
-        mSetSubHeaderItems = new TreeSet<>();
+        mSetSubheaderItems = new TreeSet<>();
         this.mCallback = callback;
     }
 
@@ -83,17 +83,16 @@ public class NavigationDrawerAdapter
         View rootView;
         switch (viewType) {
             case VIEW_TYPE_HEADER:
-                rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_navigation_header,
-                        parent,
-                        false);
+                rootView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.item_navigation_header, parent, false);
                 break;
-            case VIEW_TYPE_SUB_HEADER:
-                rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_navigation_sub_header,
-                        parent,
-                        false);
+            case VIEW_TYPE_SUBHEADER:
+                rootView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.item_navigation_subheader, parent, false);
                 break;
             case VIEW_TYPE_NAVIGATION:
-                rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_navigation, parent, false);
+                rootView = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.item_navigation, parent, false);
                 break;
             default:
                 throw new IllegalStateException("invalid view type: " + viewType);
@@ -125,12 +124,13 @@ public class NavigationDrawerAdapter
                     setDrawableBackground(viewHolder.itemView,
                             getUnselectedBackground(viewHolder.itemView.getContext()));
                 break;
-            case VIEW_TYPE_SUB_HEADER:
-                setDrawableBackground(viewHolder.itemView, getUnselectedBackground(viewHolder.itemView.getContext()));
+            case VIEW_TYPE_SUBHEADER:
+                setDrawableBackground(viewHolder.itemView,
+                        getUnselectedBackground(viewHolder.itemView.getContext()));
                 viewHolder.mTextViewTitle.setText(mListNavigationItems.get(position));
                 break;
             default:
-                throw new IllegalStateException("Invalid view type: " + viewType);
+                throw new IllegalStateException("invalid view type: " + viewType);
         }
     }
 
@@ -138,8 +138,8 @@ public class NavigationDrawerAdapter
     public int getItemViewType(int position) {
         if (position == 0)
             return VIEW_TYPE_HEADER;
-        else if (mSetSubHeaderItems.contains(mListNavigationItems.get(position)))
-            return VIEW_TYPE_SUB_HEADER;
+        else if (mSetSubheaderItems.contains(mListNavigationItems.get(position)))
+            return VIEW_TYPE_SUBHEADER;
         else
             return VIEW_TYPE_NAVIGATION;
     }
@@ -209,19 +209,19 @@ public class NavigationDrawerAdapter
     }
 
     /**
-     * Sets a position to be a sub header. If it is already a navigation item or a switch, it is reassigned.
+     * Sets a position to be a subheader. If it is already a navigation item or a switch, it is reassigned.
      *
-     * @param title item to set to sub header
+     * @param title item to set to subheader
      */
     @SuppressWarnings("unused")
-    public void setPositionToSubHeader(String title) {
+    public void setPositionToSubheader(String title) {
         if (!mListNavigationItems.contains(title))
             throw new IllegalArgumentException("Must be valid navigation item");
 
         if (mArraySubtitle.containsKey(title))
             mArraySubtitle.remove(title);
 
-        mSetSubHeaderItems.add(title);
+        mSetSubheaderItems.add(title);
         notifyItemChanged(mListNavigationItems.indexOf(title));
     }
 
@@ -232,8 +232,8 @@ public class NavigationDrawerAdapter
      * @param text subtitle text
      */
     public void setSubtitle(String title, String text) {
-        if (mSetSubHeaderItems.contains(title))
-            throw new IllegalArgumentException("Can't set subtitle of sub header item: " + title);
+        if (mSetSubheaderItems.contains(title))
+            throw new IllegalArgumentException("Can't set subtitle of subheader item: " + title);
 
         mArraySubtitle.put(title, text);
         notifyItemChanged(mListNavigationItems.indexOf(title));

@@ -19,6 +19,7 @@ package ca.josephroque.bowlingcompanion.view;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.drawable.ColorDrawable;
@@ -109,6 +110,7 @@ public class AnimatedExpandableListView
      *    the collapsed group.
      */
 
+    @SuppressWarnings("unused")
     private static final String TAG = AnimatedExpandableListAdapter.class.getSimpleName();
 
     /**
@@ -151,6 +153,7 @@ public class AnimatedExpandableListView
      * @param groupPos The position of the group to expand
      * @return Returns true if the group was expanded. False if the group was already expanded.
      */
+    @SuppressLint("NewApi")
     public boolean expandGroupWithAnimation(int groupPos) {
         boolean lastGroup = groupPos == adapter.getGroupCount() - 1;
         if (lastGroup && Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {

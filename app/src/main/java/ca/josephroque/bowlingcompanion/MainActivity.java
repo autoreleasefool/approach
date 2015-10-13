@@ -60,9 +60,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import ca.josephroque.bowlingcompanion.adapter.NavigationDrawerAdapter;
-import ca.josephroque.bowlingcompanion.bowling.Bowler;
-import ca.josephroque.bowlingcompanion.bowling.LeagueEvent;
-import ca.josephroque.bowlingcompanion.bowling.Series;
+import ca.josephroque.bowlingcompanion.data.Bowler;
+import ca.josephroque.bowlingcompanion.data.LeagueEvent;
+import ca.josephroque.bowlingcompanion.data.Series;
 import ca.josephroque.bowlingcompanion.database.Contract.FrameEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.GameEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.SeriesEntry;
@@ -76,7 +76,7 @@ import ca.josephroque.bowlingcompanion.fragment.StatsGraphFragment;
 import ca.josephroque.bowlingcompanion.fragment.StatsListFragment;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.utilities.AppRater;
-import ca.josephroque.bowlingcompanion.utilities.DateUtils;
+import ca.josephroque.bowlingcompanion.utilities.DataFormatter;
 import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
 import ca.josephroque.bowlingcompanion.utilities.EmailUtils;
 import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
@@ -87,6 +87,7 @@ import ca.josephroque.bowlingcompanion.view.AnimatedFloatingActionButton;
 /**
  * Created by Joseph Roque. The main activity which handles most interaction with the application.
  */
+@SuppressWarnings("Convert2Lambda")
 public class MainActivity
         extends AppCompatActivity
         implements
@@ -159,8 +160,8 @@ public class MainActivity
                         public void run() {
                             final int timeToDelay = 1000;
                             mTextViewAutoAdvanceStatus.setVisibility(View.VISIBLE);
-                            mTextViewAutoAdvanceStatus.setText(String.format(mTextViewAutoAdvanceStatus.getResources()
-                                    .getString(R.string.text_time_until_auto_advance), mAutoAdvanceDelayRemaining));
+                            mTextViewAutoAdvanceStatus.setText(mAutoAdvanceDelayRemaining
+                                    + " seconds until auto advance");
                             mAutoAdvanceHandler.postDelayed(mAutoAdvanceCallback, timeToDelay);
                         }
                     });
@@ -842,6 +843,7 @@ public class MainActivity
     /**
      * Sets up the navigation drawer.
      */
+    @SuppressWarnings("CheckStyle")
     private void setupNavigationDrawer() {
         final int displayWidth = getResources().getDisplayMetrics().widthPixels;
         final int maxNavigationDrawerWidth = (int) Math.ceil(
@@ -863,15 +865,15 @@ public class MainActivity
         mListDrawerOptions = new ArrayList<>();
         mListDrawerOptions.add(NavigationUtils.NAVIGATION_ITEM_HEADER);
         mListDrawerOptions.add(NavigationUtils.NAVIGATION_ITEM_BOWLERS);
-        mListDrawerOptions.add(NavigationUtils.NAVIGATION_SUB_HEADER_GAMES);
-        mListDrawerOptions.add(NavigationUtils.NAVIGATION_SUB_HEADER_OTHER);
+        mListDrawerOptions.add(NavigationUtils.NAVIGATION_SUBHEADER_GAMES);
+        mListDrawerOptions.add(NavigationUtils.NAVIGATION_SUBHEADER_OTHER);
         mListDrawerOptions.add(NavigationUtils.NAVIGATION_ITEM_FEEDBACK);
         mListDrawerOptions.add(NavigationUtils.NAVIGATION_ITEM_HELP);
         mListDrawerOptions.add(NavigationUtils.NAVIGATION_ITEM_SETTINGS);
 
         mDrawerAdapter = new NavigationDrawerAdapter(this, mListDrawerOptions);
-        mDrawerAdapter.setPositionToSubHeader(NavigationUtils.NAVIGATION_SUB_HEADER_GAMES);
-        mDrawerAdapter.setPositionToSubHeader(NavigationUtils.NAVIGATION_SUB_HEADER_OTHER);
+        mDrawerAdapter.setPositionToSubheader(NavigationUtils.NAVIGATION_SUBHEADER_GAMES);
+        mDrawerAdapter.setPositionToSubheader(NavigationUtils.NAVIGATION_SUBHEADER_OTHER);
         mDrawerRecyclerView.setAdapter(mDrawerAdapter);
 
         mDrawerToggle = new ActionBarDrawerToggle(this,
@@ -1198,6 +1200,7 @@ public class MainActivity
             return new Object[]{gameId, frameId, gameLocked, manualScore, isEvent[0]};
         }
 
+        @SuppressWarnings("CheckStyle")
         @Override
         protected void onPostExecute(Object[] params) {
             MainActivity mainActivity = mMainActivity.get();
@@ -1207,9 +1210,7 @@ public class MainActivity
             long[] gameIds = (long[]) params[0];
             long[] frameIds = (long[]) params[1];
             boolean[] gameLocked = (boolean[]) params[2];
-            //noinspection CheckStyle
             boolean[] manualScore = (boolean[]) params[3];
-            //noinspection CheckStyle
             mainActivity.mIsEventMode = (boolean) params[4];
 
             GameFragment gameFragment = GameFragment.newInstance(gameIds, frameIds, gameLocked, manualScore);
@@ -1288,7 +1289,7 @@ public class MainActivity
             }
 
             mainActivity.mSeriesId = seriesId;
-            mainActivity.mSeriesDate = DateUtils.formattedDateToPrettyCompact(seriesDate);
+            mainActivity.mSeriesDate = DataFormatter.formattedDateToPrettyCompact(seriesDate);
             return new Object[]{gameId, frameId};
         }
 
