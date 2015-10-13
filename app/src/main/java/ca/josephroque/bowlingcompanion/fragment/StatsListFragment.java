@@ -29,7 +29,6 @@ import ca.josephroque.bowlingcompanion.adapter.StatsExpandableAdapter;
 import ca.josephroque.bowlingcompanion.database.Contract;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.theme.Theme;
-import ca.josephroque.bowlingcompanion.utilities.DataFormatter;
 import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
 import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
 import ca.josephroque.bowlingcompanion.utilities.Score;
@@ -213,15 +212,15 @@ public class StatsListFragment
             listView.setGroupIndicator(indicator);
             if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
                 listView.setIndicatorBounds(
-                        DataFormatter.getPixelsFromDP(getResources().getDisplayMetrics().density,
+                        DisplayUtils.getPixelsFromDP(getResources().getDisplayMetrics().density,
                                 16),
-                        DataFormatter.getPixelsFromDP(getResources().getDisplayMetrics().density,
+                        DisplayUtils.getPixelsFromDP(getResources().getDisplayMetrics().density,
                                 16) + indicator.getMinimumWidth());
             } else {
                 listView.setIndicatorBoundsRelative(
-                        DataFormatter.getPixelsFromDP(getResources().getDisplayMetrics().density,
+                        DisplayUtils.getPixelsFromDP(getResources().getDisplayMetrics().density,
                                 16),
-                        DataFormatter.getPixelsFromDP(getResources().getDisplayMetrics().density,
+                        DisplayUtils.getPixelsFromDP(getResources().getDisplayMetrics().density,
                                 16) + indicator.getMinimumWidth());
             }
         }

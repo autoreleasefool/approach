@@ -41,8 +41,8 @@ import ca.josephroque.bowlingcompanion.database.Contract.GameEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.SeriesEntry;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.dialog.ChangeDateDialog;
-import ca.josephroque.bowlingcompanion.utilities.DataFormatter;
 import ca.josephroque.bowlingcompanion.theme.Theme;
+import ca.josephroque.bowlingcompanion.utilities.DateUtils;
 import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
 import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
 
@@ -251,7 +251,7 @@ public class SeriesFragment
         final SimpleDateFormat dateFormat =
                 new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
         final String formattedDate = dateFormat.format(c.getTime());
-        seriesInList.setSeriesDate(DataFormatter.formattedDateToPrettyCompact(formattedDate.substring(
+        seriesInList.setSeriesDate(DateUtils.formattedDateToPrettyCompact(formattedDate.substring(
                 0,
                 10)));
 
@@ -486,7 +486,7 @@ public class SeriesFragment
 
                     if (listSeries.size() == 0 || listSeries.get(listSeries.size() - 1).getSeriesId() != seriesId) {
                         listSeries.add(new Series(seriesId,
-                                DataFormatter.formattedDateToPrettyCompact(seriesDate),
+                                DateUtils.formattedDateToPrettyCompact(seriesDate),
                                 new ArrayList<Short>(),
                                 new ArrayList<Byte>()));
                     }
@@ -593,8 +593,7 @@ public class SeriesFragment
                                     if (gameNumber == 1) {
                                         String seriesDate = cursor.getString(cursor.getColumnIndex(
                                                 SeriesEntry.COLUMN_SERIES_DATE));
-                                        String dateFormatted = DataFormatter
-                                                .formattedDateToPrettyCompact(seriesDate);
+                                        String dateFormatted = DateUtils.formattedDateToPrettyCompact(seriesDate);
 
                                         if (dateFormatted.equals(lastSeriesDate)) {
                                             int startOfCurrentSeries = cursor.getPosition();

@@ -186,12 +186,12 @@ final class ImageUtils {
                     for (int b = 2; b >= 0; b--) {
                         switch (b) {
                             case 2:
-                                frameScores[frame] += Score.getValueOfFrame(pinState[frame][b]);
+                                frameScores[frame] += Score.getValueOfFrame(pinState[frame][b], true);
                                 break;
                             case 1:
                             case 0:
                                 if (Arrays.equals(pinState[frame][b], Constants.FRAME_PINS_DOWN)) {
-                                    frameScores[frame] += Score.getValueOfFrame(pinState[frame][b]);
+                                    frameScores[frame] += Score.getValueOfFrame(pinState[frame][b], true);
                                 }
                                 break;
                             default: //do nothing
@@ -200,13 +200,13 @@ final class ImageUtils {
                 } else {
                     for (int b = 0; b < 3; b++) {
                         if (b < 2 && Arrays.equals(pinState[frame][b], Constants.FRAME_PINS_DOWN)) {
-                            frameScores[frame] += Score.getValueOfFrame(pinState[frame][b]);
-                            frameScores[frame] += Score.getValueOfFrame(pinState[frame + 1][0]);
+                            frameScores[frame] += Score.getValueOfFrame(pinState[frame][b], true);
+                            frameScores[frame] += Score.getValueOfFrame(pinState[frame + 1][0], true);
                             if (b == 0) {
                                 if (frame == Constants.LAST_FRAME - 1) {
                                     if (frameScores[frame] == 30) {
                                         frameScores[frame] +=
-                                                Score.getValueOfFrame(pinState[frame + 1][1]);
+                                                Score.getValueOfFrame(pinState[frame + 1][1], true);
                                     } else {
                                         frameScores[frame] += Score.getValueOfFrameDifference(
                                                 pinState[frame + 1][0], pinState[frame + 1][1]);
@@ -216,12 +216,12 @@ final class ImageUtils {
                                             pinState[frame + 1][0], pinState[frame + 1][1]);
                                 } else {
                                     frameScores[frame] += Score.getValueOfFrame(
-                                            pinState[frame + 2][0]);
+                                            pinState[frame + 2][0], true);
                                 }
                             }
                             break;
                         } else if (b == 2) {
-                            frameScores[frame] += Score.getValueOfFrame(pinState[frame][b]);
+                            frameScores[frame] += Score.getValueOfFrame(pinState[frame][b], true);
                         }
                     }
                 }

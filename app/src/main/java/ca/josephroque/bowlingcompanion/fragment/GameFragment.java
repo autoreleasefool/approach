@@ -344,13 +344,13 @@ public class GameFragment
          */
 
         //Calculates most static view sizes beforehand so they don't have to be recalculated
-        final int dp128 = DataFormatter.getPixelsFromDP(screenDensity, 128);
-        final int dp120 = DataFormatter.getPixelsFromDP(screenDensity, 120);
-        final int dp88 = DataFormatter.getPixelsFromDP(screenDensity, 88);
-        final int dp40 = DataFormatter.getPixelsFromDP(screenDensity, 40);
-        final int dp41 = DataFormatter.getPixelsFromDP(screenDensity, 41);
-        final int dp20 = DataFormatter.getPixelsFromDP(screenDensity, 20);
-        final int dp36 = DataFormatter.getPixelsFromDP(screenDensity, 36);
+        final int dp128 = DisplayUtils.getPixelsFromDP(screenDensity, 128);
+        final int dp120 = DisplayUtils.getPixelsFromDP(screenDensity, 120);
+        final int dp88 = DisplayUtils.getPixelsFromDP(screenDensity, 88);
+        final int dp40 = DisplayUtils.getPixelsFromDP(screenDensity, 40);
+        final int dp41 = DisplayUtils.getPixelsFromDP(screenDensity, 41);
+        final int dp20 = DisplayUtils.getPixelsFromDP(screenDensity, 20);
+        final int dp36 = DisplayUtils.getPixelsFromDP(screenDensity, 36);
         for (int i = 0; i < Constants.NUMBER_OF_FRAMES; i++) {
             //TextView to display score of a frame
             TextView frameText = new TextView(getActivity());
@@ -394,7 +394,7 @@ public class GameFragment
             frameText.setOnClickListener(onClickListeners[LISTENER_TEXT_FRAMES]);
 
             layoutParams = new RelativeLayout.LayoutParams(dp120, dp88);
-            layoutParams.leftMargin = DataFormatter.getPixelsFromDP(screenDensity, 120 * i);
+            layoutParams.leftMargin = DisplayUtils.getPixelsFromDP(screenDensity, 120 * i);
             layoutParams.topMargin = dp40;
             relativeLayout.addView(frameText, layoutParams);
             mTextViewFrames[i] = frameText;
@@ -406,7 +406,7 @@ public class GameFragment
                 text.setBackgroundResource(R.drawable.background_frame_text);
                 text.setGravity(Gravity.CENTER);
                 layoutParams = new RelativeLayout.LayoutParams(dp40, dp41);
-                layoutParams.leftMargin = DataFormatter.getPixelsFromDP(screenDensity,
+                layoutParams.leftMargin = DisplayUtils.getPixelsFromDP(screenDensity,
                         120 * i + j * 40);
                 relativeLayout.addView(text, layoutParams);
                 mTextViewBallScores[i][j] = text;
@@ -417,7 +417,7 @@ public class GameFragment
                 text.setGravity(Gravity.CENTER);
                 text.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
                 layoutParams = new RelativeLayout.LayoutParams(dp40, dp20);
-                layoutParams.leftMargin = DataFormatter.getPixelsFromDP(screenDensity,
+                layoutParams.leftMargin = DisplayUtils.getPixelsFromDP(screenDensity,
                         120 * i + j * 40);
                 layoutParams.topMargin = dp40;
                 relativeLayout.addView(text, layoutParams);
@@ -431,7 +431,7 @@ public class GameFragment
             frameText.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL);
             frameText.setTextColor(DisplayUtils.getColorResource(getResources(), android.R.color.white));
             layoutParams = new RelativeLayout.LayoutParams(dp120, dp36);
-            layoutParams.leftMargin = DataFormatter.getPixelsFromDP(screenDensity, 120 * i);
+            layoutParams.leftMargin = DisplayUtils.getPixelsFromDP(screenDensity, 120 * i);
             layoutParams.addRule(RelativeLayout.BELOW, mTextViewFrames[i].getId());
             relativeLayout.addView(frameText, layoutParams);
         }
@@ -445,7 +445,7 @@ public class GameFragment
             mTextViewFinalScore.setTextAppearance(getActivity(), android.R.style.TextAppearance_Large);
         mTextViewFinalScore.setBackgroundResource(R.drawable.background_frame_text);
         layoutParams = new RelativeLayout.LayoutParams(dp120, dp128);
-        layoutParams.leftMargin = DataFormatter.getPixelsFromDP(screenDensity,
+        layoutParams.leftMargin = DisplayUtils.getPixelsFromDP(screenDensity,
                 Constants.NUMBER_OF_FRAMES * 120);
         relativeLayout.addView(mTextViewFinalScore, layoutParams);
         mHorizontalScrollViewFrames.addView(relativeLayout);
@@ -1306,18 +1306,18 @@ public class GameFragment
 
         if (mCurrentFrame < Constants.LAST_FRAME) {
             if (Arrays.equals(mPinState[mCurrentFrame][0], Constants.FRAME_PINS_DOWN)) {
-                int firstBallNextFrame = Score.getValueOfFrame(mPinState[mCurrentFrame + 1][0]);
+                int firstBallNextFrame = Score.getValueOfFrame(mPinState[mCurrentFrame + 1][0], true);
                 possibleScore -= firstBallNextFrame;
                 if (firstBallNextFrame == 15) {
                     if (mCurrentFrame < Constants.LAST_FRAME - 1)
-                        possibleScore -= Score.getValueOfFrame(mPinState[mCurrentFrame + 2][0]);
+                        possibleScore -= Score.getValueOfFrame(mPinState[mCurrentFrame + 2][0], true);
                     else
-                        possibleScore -= Score.getValueOfFrame(mPinState[mCurrentFrame + 1][1]);
+                        possibleScore -= Score.getValueOfFrame(mPinState[mCurrentFrame + 1][1], true);
                 } else
                     possibleScore -= Score.getValueOfFrameDifference(mPinState[mCurrentFrame][0],
                             mPinState[mCurrentFrame][1]);
             } else if (Arrays.equals(mPinState[mCurrentFrame][1], Constants.FRAME_PINS_DOWN)) {
-                int firstBallNextFrame = Score.getValueOfFrame(mPinState[mCurrentFrame + 1][0]);
+                int firstBallNextFrame = Score.getValueOfFrame(mPinState[mCurrentFrame + 1][0], true);
                 possibleScore -= firstBallNextFrame;
             }
         } else {
@@ -1326,25 +1326,7 @@ public class GameFragment
                         mPinState[mCurrentFrame][i]);
         }
 
-        int pinsLeftStanding = 0;
-        for (int i = 0; i < 5; i++) {
-            if (!mPinState[mCurrentFrame][mCurrentBall][i]) {
-                switch (i) {
-                    case 0:
-                    case 4:
-                        pinsLeftStanding += 2;
-                        break;
-                    case 1:
-                    case 3:
-                        pinsLeftStanding += 3;
-                        break;
-                    case 2:
-                        pinsLeftStanding += 5;
-                        break;
-                    default: //do nothing
-                }
-            }
-        }
+        int pinsLeftStanding = Score.getValueOfFrame(mPinState[mCurrentFrame][mCurrentBall], false);
 
         boolean strikeLastFrame = false;
         boolean strikeTwoFramesAgo = false;
@@ -1638,12 +1620,12 @@ public class GameFragment
                         for (byte b = 2; b >= 0; b--) {
                             switch (b) {
                                 case 2:
-                                    frameScores[f] += Score.getValueOfFrame(mPinState[f][b]);
+                                    frameScores[f] += Score.getValueOfFrame(mPinState[f][b], true);
                                     break;
                                 case 1:
                                 case 0:
                                     if (Arrays.equals(mPinState[f][b], Constants.FRAME_PINS_DOWN)) {
-                                        frameScores[f] += Score.getValueOfFrame(mPinState[f][b]);
+                                        frameScores[f] += Score.getValueOfFrame(mPinState[f][b], true);
                                     }
                                     break;
                                 default: //do nothing
@@ -1652,13 +1634,13 @@ public class GameFragment
                     } else {
                         for (byte b = 0; b < 3; b++) {
                             if (b < 2 && Arrays.equals(mPinState[f][b], Constants.FRAME_PINS_DOWN)) {
-                                frameScores[f] += Score.getValueOfFrame(mPinState[f][b]);
-                                frameScores[f] += Score.getValueOfFrame(mPinState[f + 1][0]);
+                                frameScores[f] += Score.getValueOfFrame(mPinState[f][b], true);
+                                frameScores[f] += Score.getValueOfFrame(mPinState[f + 1][0], true);
                                 if (b == 0) {
                                     if (f == Constants.LAST_FRAME - 1) {
                                         if (frameScores[f] == 30) {
                                             frameScores[f] +=
-                                                    Score.getValueOfFrame(mPinState[f + 1][1]);
+                                                    Score.getValueOfFrame(mPinState[f + 1][1], true);
                                         } else {
                                             frameScores[f] +=
                                                     Score.getValueOfFrameDifference(
@@ -1671,12 +1653,12 @@ public class GameFragment
                                                         mPinState[f + 1][0], mPinState[f + 1][1]);
                                     } else {
                                         frameScores[f] +=
-                                                Score.getValueOfFrame(mPinState[f + 2][0]);
+                                                Score.getValueOfFrame(mPinState[f + 2][0], true);
                                     }
                                 }
                                 break;
                             } else if (b == 2) {
-                                frameScores[f] += Score.getValueOfFrame(mPinState[f][b]);
+                                frameScores[f] += Score.getValueOfFrame(mPinState[f][b], true);
                             }
                         }
                     }

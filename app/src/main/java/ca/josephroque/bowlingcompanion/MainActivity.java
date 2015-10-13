@@ -76,7 +76,7 @@ import ca.josephroque.bowlingcompanion.fragment.StatsGraphFragment;
 import ca.josephroque.bowlingcompanion.fragment.StatsListFragment;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.utilities.AppRater;
-import ca.josephroque.bowlingcompanion.utilities.DataFormatter;
+import ca.josephroque.bowlingcompanion.utilities.DateUtils;
 import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
 import ca.josephroque.bowlingcompanion.utilities.EmailUtils;
 import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
@@ -1289,7 +1289,7 @@ public class MainActivity
             }
 
             mainActivity.mSeriesId = seriesId;
-            mainActivity.mSeriesDate = DataFormatter.formattedDateToPrettyCompact(seriesDate);
+            mainActivity.mSeriesDate = DateUtils.formattedDateToPrettyCompact(seriesDate);
             return new Object[]{gameId, frameId};
         }
 

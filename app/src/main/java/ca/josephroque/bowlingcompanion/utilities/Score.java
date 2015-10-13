@@ -12,16 +12,29 @@ public final class Score {
     @SuppressWarnings("unused")
     private static final String TAG = "Score";
 
+    /** Position of the left 2 pin. */
+    public static final byte LEFT_2_PIN = 0;
+    /** Position of the left 3 pin. */
+    public static final byte LEFT_3_PIN = 1;
+    /** Position of the head pin. */
+    public static final byte HEAD_PIN = 2;
+    /** Position of the right 3 pin. */
+    public static final byte RIGHT_3_PIN = 3;
+    /** Position of the right 2 pin. */
+    public static final byte RIGHT_2_PIN = 4;
+
     /**
      * Gets the score value of the frame from the balls.
      *
      * @param frame the frame to get score of
+     * @param knocked if true, the method will get the value of pins which have been knocked over. If false, it will
+     * get the value of pins which are still standing
      * @return score of the frame, in a 5 pin game
      */
-    public static int getValueOfFrame(boolean[] frame) {
+    public static int getValueOfFrame(boolean[] frame, boolean knocked) {
         int frameValue = 0;
         for (byte i = 0; i < frame.length; i++) {
-            if (frame[i]) {
+            if (frame[i] == knocked) {
                 switch (i) {
                     case 0:
                     case 4:
