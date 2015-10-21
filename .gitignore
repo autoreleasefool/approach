@@ -29,5 +29,5 @@ proguard/
 # Log Files
 *.log
 
-# Admob id
-*strings_ads.xml
+# API keys
+/app/src/release/res/values

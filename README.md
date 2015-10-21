@@ -4,11 +4,8 @@ An Android app to track 5-pin bowling statistics. Allows users to track multiple
 [View it on the Play Store](https://play.google.com/store/apps/details?id=ca.josephroque.bowlingcompanion)
 
 ## How to Run
-1. Clone project
-2. Import the project into Android Studio
-3. Add a strings_ads.xml file to values folder
-4. Add the following line strings_ads.xml: ```<string name="banner_ad_unit_id">0</string>``` (filler for actual ad id)
-5. Import project into Android Studio and run.
+1. Clone project ```git clone https://github.com/joseph-roque/bowling-companion.git```
+2. Import the project into Android Studio.
 
 [View the JavaDocs](http://joseph-roque.github.io/bowling-companion/)
 
