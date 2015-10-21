@@ -1,0 +1,14 @@
+language: android
+android:
+  components:
+
+    # Build tools version used by the application
+    - build-tools-23.0.1
+
+    # SDK tools version used by the application
+    - android-23
+
+    # Additional components
+    - extra-android-m2repository
+    - extra-google-m2repository
+    - extra-google-google_play_services
