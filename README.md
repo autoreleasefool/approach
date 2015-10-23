@@ -1,4 +1,7 @@
 # Bowling Companion (5-Pin Bowling Stats)
+
+![Build status](https://travis-ci.org/joseph-roque/bowling-companion.svg?branch=master)
+
 An Android app to track 5-pin bowling statistics. Allows users to track multiple bowlers and leagues, and provides in-depth statistics on their game. Useful for determining areas in which the user's performance can be improved.
 
 [View it on the Play Store](https://play.google.com/store/apps/details?id=ca.josephroque.bowlingcompanion)
