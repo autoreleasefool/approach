@@ -12,3 +12,11 @@ android:
     - extra-android-m2repository
     - extra-google-m2repository
     - extra-google-google_play_services
+script:
+  # for future use run tests      ./gradlew connectedInstrumentTest
+  # all builds and tests          ./gradlew connectedCheck
+  # for only debuf                ./gradlew assembleDebug
+
+  # Only building debug because release build in repository does not
+  # contain all resources, which cannot be committed due to sensitivity.
+  - ./gradlew assembleDebug
