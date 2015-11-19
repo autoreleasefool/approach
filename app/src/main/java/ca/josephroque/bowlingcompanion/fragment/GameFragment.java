@@ -1100,7 +1100,7 @@ public class GameFragment
                 (PreferenceManager.getDefaultSharedPreferences(getContext())
                         .getBoolean(Constants.KEY_ENABLE_FAB, true) && enabled)
                         ? View.VISIBLE
-                        : View.INVISIBLE);
+                        : View.GONE);
 
         mImageViewLock.setImageResource((mGameLocked[mCurrentGame])
                 ? R.drawable.ic_lock
