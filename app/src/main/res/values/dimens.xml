@@ -28,4 +28,7 @@
     <!-- Facebook Logo -->
     <dimen name="facebook_padding">8dp</dimen>
 
+    <!-- Changelog -->
+    <dimen name="changelog_padding">8dp</dimen>
+
 </resources>

@@ -67,6 +67,11 @@ public final class Constants {
     public static final String PREF_FACEBOOK_CLOSED = "fb_closed";
     /** Identifier for if user has been prompted to rate the application since opening it. */
     public static final String PREF_RATE_ME_SHOWN = "rate_shown";
+    /**
+     * Identifier for preference containing the version of the application. If the value is not equivalent to the
+     * current version, then the app has been updated.
+     */
+    public static final String PREF_VERSION = "pref_version";
 
     // EXTRAS
     /** Identifies the name of a bowler as an extra. */

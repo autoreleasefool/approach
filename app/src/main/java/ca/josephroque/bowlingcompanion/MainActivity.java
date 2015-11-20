@@ -76,12 +76,14 @@ import ca.josephroque.bowlingcompanion.fragment.StatsGraphFragment;
 import ca.josephroque.bowlingcompanion.fragment.StatsListFragment;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.utilities.AppRater;
+import ca.josephroque.bowlingcompanion.utilities.Changelog;
 import ca.josephroque.bowlingcompanion.utilities.DateUtils;
 import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
 import ca.josephroque.bowlingcompanion.utilities.EmailUtils;
 import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
 import ca.josephroque.bowlingcompanion.utilities.NavigationUtils;
 import ca.josephroque.bowlingcompanion.utilities.PermissionUtils;
+import ca.josephroque.bowlingcompanion.utilities.Startup;
 import ca.josephroque.bowlingcompanion.view.AnimatedFloatingActionButton;
 
 /**
@@ -259,9 +261,7 @@ public class MainActivity
         }
 
         setupAdView();
-
-        //Checks if the user should be prompted to rate the app
-        AppRater.appLaunched(this);
+        Startup.onStartup(this);
     }
 
     @Override
