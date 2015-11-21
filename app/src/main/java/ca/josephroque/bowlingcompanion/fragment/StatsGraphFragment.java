@@ -20,8 +20,9 @@ import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
-import com.github.mikephil.charting.utils.DefaultValueFormatter;
-import com.github.mikephil.charting.utils.ValueFormatter;
+import com.github.mikephil.charting.formatter.DefaultValueFormatter;
+import com.github.mikephil.charting.formatter.DefaultYAxisValueFormatter;
+import com.github.mikephil.charting.formatter.ValueFormatter;
 
 import java.lang.ref.WeakReference;
 import java.text.DateFormat;
@@ -427,7 +428,7 @@ public class StatsGraphFragment
             fragment.mLineChartStats.setDescription(StatUtils.getStatName(fragment.mStatCategory,
                     fragment.mStatIndex, false));
             fragment.mLineChartStats.setDescriptionTextSize(textSizeBody);
-            fragment.mLineChartStats.getAxisLeft().setValueFormatter(new DefaultValueFormatter(0));
+            fragment.mLineChartStats.getAxisLeft().setValueFormatter(new DefaultYAxisValueFormatter(0));
 
             // Styling legend
             Legend legend = fragment.mLineChartStats.getLegend();
