@@ -516,6 +516,7 @@ public class StatsGraphFragment
             DateFormat dateFormat = DateFormat.getDateInstance(DateFormat.SHORT, Locale.CANADA);
             boolean addLabelOnDateChange = false;
             int totalShotsAtMiddle = 0, middleHits = 0;
+            int leftHits = 0, rightHits = 0;
             int spareChances = 0, spares = 0;
             int strikes = 0;
 
@@ -548,6 +549,14 @@ public class StatsGraphFragment
                                 chanceEntry = new Entry(totalShotsAtMiddle, currentEntry);
                                 successEntry = new Entry(strikes, currentEntry);
                                 break;
+                            case StatUtils.STAT_LEFT_OF_MIDDLE:
+                                chanceEntry = new Entry(totalShotsAtMiddle, currentEntry);
+                                successEntry = new Entry(leftHits, currentEntry);
+                                break;
+                            case StatUtils.STAT_RIGHT_OF_MIDDLE:
+                                chanceEntry = new Entry(totalShotsAtMiddle, currentEntry);
+                                successEntry = new Entry(rightHits, currentEntry);
+                                break;
                             default:
                                 chanceEntry = null;
                                 successEntry = null;
@@ -577,7 +586,7 @@ public class StatsGraphFragment
 
                     short gameScore = cursor.getShort(cursor.getColumnIndex(GameEntry.COLUMN_SCORE));
                     boolean gameIsManual = (cursor.getInt(cursor.getColumnIndex(
-                            Contract.GameEntry.COLUMN_IS_MANUAL)) == 1);
+                            GameEntry.COLUMN_IS_MANUAL)) == 1);
                     if (gameIsManual || gameScore == 0) {
                         cursor.moveToNext();
                         continue;
@@ -591,19 +600,39 @@ public class StatsGraphFragment
 
                     int frameNumber = cursor.getInt(cursor.getColumnIndex(
                             FrameEntry.COLUMN_FRAME_NUMBER));
+                    totalShotsAtMiddle++;
                     if (pinState[0][2])
+                        // Count hits of headpin on first ball
                         middleHits++;
+                    else {
+                        // Count hits left or right of headpin on first ball
+                        if (pinState[0][0] || pinState[0][1])
+                            leftHits++;
+                        if (pinState[0][3] || pinState[0][4])
+                            rightHits++;
+                    }
                     if (frameNumber == Constants.LAST_FRAME) {
-                        totalShotsAtMiddle++;
                         if (Arrays.equals(pinState[0], Constants.FRAME_PINS_DOWN)) {
                             totalShotsAtMiddle++;
                             strikes++;
                             if (Arrays.equals(pinState[1], Constants.FRAME_PINS_DOWN)) {
                                 totalShotsAtMiddle++;
+                                middleHits++;
                                 strikes++;
-                                if (Arrays.equals(pinState[2], Constants.FRAME_PINS_DOWN))
+                                if (Arrays.equals(pinState[2], Constants.FRAME_PINS_DOWN)) {
+                                    middleHits++;
                                     strikes++;
+                                } else {
+                                    if (pinState[2][0] || pinState[2][1])
+                                        leftHits++;
+                                    if (pinState[2][3] || pinState[2][4])
+                                        rightHits++;
+                                }
                             } else {
+                                if (pinState[1][0] || pinState[1][1])
+                                    leftHits++;
+                                if (pinState[1][3] || pinState[1][4])
+                                    rightHits++;
                                 spareChances++;
                                 if (Arrays.equals(pinState[2], Constants.FRAME_PINS_DOWN))
                                     spares++;
@@ -612,13 +641,18 @@ public class StatsGraphFragment
                             spareChances++;
                             if (Arrays.equals(pinState[1], Constants.FRAME_PINS_DOWN)) {
                                 totalShotsAtMiddle++;
+                                middleHits++;
                                 spares++;
                                 if (Arrays.equals(pinState[2], Constants.FRAME_PINS_DOWN))
                                     strikes++;
+                            } else {
+                                if (pinState[1][0] || pinState[1][1])
+                                    leftHits++;
+                                if (pinState[1][3] || pinState[1][4])
+                                    rightHits++;
                             }
                         }
                     } else {
-                        totalShotsAtMiddle++;
                         if (Arrays.equals(pinState[0], Constants.FRAME_PINS_DOWN))
                             strikes++;
                         else {
@@ -648,6 +682,14 @@ public class StatsGraphFragment
                     case StatUtils.STAT_STRIKES:
                         chanceEntry = new Entry(totalShotsAtMiddle, currentEntry);
                         successEntry = new Entry(strikes, currentEntry);
+                        break;
+                    case StatUtils.STAT_LEFT_OF_MIDDLE:
+                        chanceEntry = new Entry(totalShotsAtMiddle, currentEntry);
+                        successEntry = new Entry(leftHits, currentEntry);
+                        break;
+                    case StatUtils.STAT_RIGHT_OF_MIDDLE:
+                        chanceEntry = new Entry(totalShotsAtMiddle, currentEntry);
+                        successEntry = new Entry(rightHits, currentEntry);
                         break;
                     default:
                         chanceEntry = null;

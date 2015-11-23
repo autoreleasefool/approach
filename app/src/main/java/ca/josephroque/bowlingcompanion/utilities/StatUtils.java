@@ -25,9 +25,13 @@ public final class StatUtils {
     /** Indicates index for stat in array. */
     public static final byte STAT_MIDDLE_HIT = 0;
     /** Indicates index for stat in array. */
-    public static final byte STAT_STRIKES = 1;
+    public static final byte STAT_LEFT_OF_MIDDLE = 1;
     /** Indicates index for stat in array. */
-    public static final byte STAT_SPARE_CONVERSIONS = 2;
+    public static final byte STAT_RIGHT_OF_MIDDLE = 2;
+    /** Indicates index for stat in array. */
+    public static final byte STAT_STRIKES = 3;
+    /** Indicates index for stat in array. */
+    public static final byte STAT_SPARE_CONVERSIONS = 4;
 
     /** Indicates index for stat category. */
     public static final byte STAT_CATEGORY_FIRST_BALL = 1;
@@ -320,10 +324,18 @@ public final class StatUtils {
      */
     private static String getGeneralStatName(int statIndex, boolean chanceName) {
         switch (statIndex) {
+            case STAT_LEFT_OF_MIDDLE:
+                return (chanceName)
+                        ? "Total Shots at Middle"
+                        : "Hits Left of Middle";
+            case STAT_RIGHT_OF_MIDDLE:
+                return (chanceName)
+                        ? "Total Shots at Middle"
+                        : "Hits Right of Middle";
             case STAT_MIDDLE_HIT:
                 return (chanceName)
                         ? "Total Shots at Middle"
-                        : "Middle Hit";
+                        : "Middle Hits";
             case STAT_STRIKES:
                 return (chanceName)
                         ? "Total Shots at Middle"

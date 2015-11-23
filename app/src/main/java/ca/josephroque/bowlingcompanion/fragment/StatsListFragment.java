@@ -526,6 +526,12 @@ public class StatsListFragment
                         int ballValue = fragment.getFirstBallValue(pinState[0]);
                         if (ballValue != -1)
                             statValues[fragment.mStatsGeneral][StatUtils.STAT_MIDDLE_HIT]++;
+                        else {
+                            if (pinState[0][0] || pinState[0][1])
+                                statValues[fragment.mStatsGeneral][StatUtils.STAT_LEFT_OF_MIDDLE]++;
+                            if (pinState[0][3] || pinState[0][4])
+                                statValues[fragment.mStatsGeneral][StatUtils.STAT_RIGHT_OF_MIDDLE]++;
+                        }
                         fragment.increaseFirstBallStat(ballValue, statValues, 0);
                         if (ballValue < 5 && ballValue != Constants.BALL_VALUE_STRIKE)
                             spareChances++;
@@ -546,6 +552,12 @@ public class StatsListFragment
                             ballValue = fragment.getFirstBallValue(pinState[1]);
                             if (ballValue != -1)
                                 statValues[fragment.mStatsGeneral][StatUtils.STAT_MIDDLE_HIT]++;
+                            else {
+                                if (pinState[1][0] || pinState[1][1])
+                                    statValues[fragment.mStatsGeneral][StatUtils.STAT_LEFT_OF_MIDDLE]++;
+                                if (pinState[1][3] || pinState[1][4])
+                                    statValues[fragment.mStatsGeneral][StatUtils.STAT_RIGHT_OF_MIDDLE]++;
+                            }
                             fragment.increaseFirstBallStat(ballValue, statValues, 0);
 
                             if (ballValue != 0) {
@@ -564,6 +576,12 @@ public class StatsListFragment
                                 ballValue = fragment.getFirstBallValue(pinState[2]);
                                 if (ballValue != -1)
                                     statValues[fragment.mStatsGeneral][StatUtils.STAT_MIDDLE_HIT]++;
+                                else {
+                                    if (pinState[2][0] || pinState[2][1])
+                                        statValues[fragment.mStatsGeneral][StatUtils.STAT_LEFT_OF_MIDDLE]++;
+                                    if (pinState[2][3] || pinState[2][4])
+                                        statValues[fragment.mStatsGeneral][StatUtils.STAT_RIGHT_OF_MIDDLE]++;
+                                }
                                 fragment.increaseFirstBallStat(ballValue, statValues, 0);
 
                                 if (ballValue != 0) {
@@ -577,6 +595,12 @@ public class StatsListFragment
                         int ballValue = fragment.getFirstBallValue(pinState[0]);
                         if (ballValue != -1)
                             statValues[fragment.mStatsGeneral][StatUtils.STAT_MIDDLE_HIT]++;
+                        else {
+                            if (pinState[0][0] || pinState[0][1])
+                                statValues[fragment.mStatsGeneral][StatUtils.STAT_LEFT_OF_MIDDLE]++;
+                            if (pinState[0][3] || pinState[0][4])
+                                statValues[fragment.mStatsGeneral][StatUtils.STAT_RIGHT_OF_MIDDLE]++;
+                        }
                         fragment.increaseFirstBallStat(ballValue, statValues, 0);
 
                         if (ballValue < 5 && ballValue != Constants.BALL_VALUE_STRIKE)
@@ -667,6 +691,24 @@ public class StatsListFragment
                     decimalFormat.format(statValues[mStatsGeneral][StatUtils.STAT_MIDDLE_HIT]
                             / (double) totalShotsAtMiddle * 100)
                             + "% [" + statValues[mStatsGeneral][StatUtils.STAT_MIDDLE_HIT] + "/"
+                            + totalShotsAtMiddle + "]"));
+        }
+        currentStatPosition++;
+        if (statValues[mStatsGeneral][StatUtils.STAT_LEFT_OF_MIDDLE] > 0) {
+            listStatNamesAndValues.get(mStatsGeneral).set(currentStatPosition, Pair.create(
+                    listStatNamesAndValues.get(mStatsGeneral).get(currentStatPosition).first,
+                    decimalFormat.format(statValues[mStatsGeneral][StatUtils.STAT_LEFT_OF_MIDDLE]
+                            / (double) totalShotsAtMiddle * 100)
+                            + "% [" + statValues[mStatsGeneral][StatUtils.STAT_LEFT_OF_MIDDLE] + "/"
+                            + totalShotsAtMiddle + "]"));
+        }
+        currentStatPosition++;
+        if (statValues[mStatsGeneral][StatUtils.STAT_RIGHT_OF_MIDDLE] > 0) {
+            listStatNamesAndValues.get(mStatsGeneral).set(currentStatPosition, Pair.create(
+                    listStatNamesAndValues.get(mStatsGeneral).get(currentStatPosition).first,
+                    decimalFormat.format(statValues[mStatsGeneral][StatUtils.STAT_RIGHT_OF_MIDDLE]
+                            / (double) totalShotsAtMiddle * 100)
+                            + "% [" + statValues[mStatsGeneral][StatUtils.STAT_RIGHT_OF_MIDDLE] + "/"
                             + totalShotsAtMiddle + "]"));
         }
         currentStatPosition++;
@@ -839,9 +881,8 @@ public class StatsListFragment
 
         switch (ball) {
             case Constants.BALL_VALUE_STRIKE:
-                if (offset == 0) {
+                if (offset == 0)
                     statValues[mStatsGeneral][StatUtils.STAT_STRIKES]++;
-                }
                 break;
             case Constants.BALL_VALUE_LEFT:
                 statValues[mStatsFirstBall][StatUtils.STAT_LEFT + offset]++;
