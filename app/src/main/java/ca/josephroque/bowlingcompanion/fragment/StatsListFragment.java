@@ -176,7 +176,7 @@ public class StatsListFragment
 
             if (mStatsToLoad == StatUtils.LOADING_BOWLER_STATS
                     || mStatsToLoad == StatUtils.LOADING_LEAGUE_STATS)
-                mainActivity.setFloatingActionButtonState(R.drawable.ic_trending_up_black_24dp);
+                mainActivity.setFloatingActionButtonState(R.drawable.ic_timeline_black_24dp);
             else
                 mainActivity.setFloatingActionButtonState(0);
 
