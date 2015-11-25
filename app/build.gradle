@@ -5,7 +5,7 @@ def versionPatch = 3
 
 android {
     compileSdkVersion 23
-    buildToolsVersion "23.0.1"
+    buildToolsVersion "23.0.2"
 
     defaultConfig {
         applicationId "ca.josephroque.bowlingcompanion"
