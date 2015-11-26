@@ -3,6 +3,7 @@ android:
   components:
 
     # Build tools version used by the application
+    - tools
     - build-tools-23.0.2
 
     # SDK tools version used by the application
