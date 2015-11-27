@@ -24,6 +24,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
@@ -74,6 +77,9 @@ public class SeriesFragment
 
     /** Indicates if the dialog to display the combine dialog has already been shown. */
     private boolean mCombineDialogShown;
+
+    /** Indicates if the user is currently selecting a series to duplicate. */
+    private boolean mDuplicatingSeries;
 
     @Override
     public void onCreate(Bundle savedInstaceState) {
@@ -186,6 +192,7 @@ public class SeriesFragment
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        enableDuplicatingSeries(false);
         switch (item.getItemId()) {
             case R.id.action_edit_date:
                 showEditDateDialog();
@@ -196,6 +203,9 @@ public class SeriesFragment
                 return true;
             case R.id.action_combine_series:
                 showCombineSeriesDialog(true);
+                return true;
+            case R.id.action_duplicate_series:
+                showDuplicateSeriesDialog();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -239,6 +249,13 @@ public class SeriesFragment
     public void onEditClick(final int position) {
         DialogFragment dateDialog = ChangeDateDialog.newInstance(this, mListSeries.get(position));
         dateDialog.show(getFragmentManager(), "ChangeDateDialog");
+    }
+
+    @Override
+    public void onDuplicateClick(final int position) {
+        // TODO: duplicate selected series
+        enableDuplicatingSeries(false);
+        Log.d(TAG, "Duplicated: " + position);
     }
 
     @SuppressWarnings("CheckStyle")
@@ -291,6 +308,28 @@ public class SeriesFragment
     public void onFabClick() {
         if (mSeriesCallback != null)
             mSeriesCallback.onCreateNewSeries(false);
+    }
+
+    /**
+     * Prompts user to create a new series by copying another.
+     */
+    private void showDuplicateSeriesDialog() {
+        DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (which == DialogInterface.BUTTON_POSITIVE) {
+                    enableDuplicatingSeries(true);
+                }
+                dialog.dismiss();
+            }
+        };
+
+        new AlertDialog.Builder(getContext())
+                .setMessage(R.string.dialog_duplicate_series)
+                .setPositiveButton(R.string.dialog_okay, listener)
+                .setNegativeButton(R.string.dialog_cancel, listener)
+                .create()
+                .show();
     }
 
     /**
@@ -378,6 +417,48 @@ public class SeriesFragment
                 })
                 .create()
                 .show();
+    }
+
+    /**
+     * Enters or exits a mode where the user can select a series and be prompted to duplicate it.
+     *
+     * @param enable true to enable duplication and show options, false to disable
+     */
+    private void enableDuplicatingSeries(boolean enable) {
+        View rootView = getView();
+        if (rootView == null)
+            return;
+
+        if (mDuplicatingSeries == enable)
+            return;
+        mDuplicatingSeries = enable;
+
+        final LinearLayout linearLayout = (LinearLayout) rootView.findViewById(R.id.ll_active_state);
+        if (mDuplicatingSeries) {
+            View.OnClickListener cancelDuplicateListener = new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    enableDuplicatingSeries(false);
+                }
+            };
+
+            TextView txtCancel = (TextView) linearLayout.findViewById(R.id.tv_active_state);
+            txtCancel.setOnClickListener(cancelDuplicateListener);
+            txtCancel.setText(R.string.text_cancel_duplicate);
+            ImageView ivCopy = (ImageView) linearLayout.findViewById(R.id.iv_active_state);
+            ivCopy.setOnClickListener(cancelDuplicateListener);
+            ivCopy.setImageResource(R.drawable.ic_content_copy_white_24dp);
+            ivCopy.setColorFilter(Theme.getSecondaryThemeColor());
+
+            linearLayout.findViewById(R.id.iv_active_state_clear).setOnClickListener(cancelDuplicateListener);
+            linearLayout.setVisibility(View.VISIBLE);
+        } else {
+            linearLayout.setVisibility(View.GONE);
+            linearLayout.findViewById(R.id.iv_active_state).setOnClickListener(null);
+            linearLayout.findViewById(R.id.tv_active_state).setOnClickListener(null);
+            linearLayout.findViewById(R.id.iv_active_state_clear).setOnClickListener(null);
+        }
+        mAdapterSeries.setDuplicatingSeries(mDuplicatingSeries);
     }
 
     /**

@@ -51,13 +51,18 @@ public class SeriesAdapter
 
     /** Cached drawable for edit icon. */
     private Drawable mEditDrawable;
+    /** Cached drawable for copy icon. */
+    private Drawable mCopyDrawable;
     /** The last color set as the edit drawable filter. */
-    private int mEditDrawableFilter = -1;
+    private int mDrawableFilter;
 
     /** Indicates minimum score values which will be highlighted when displayed. */
     private int mMinimumScoreToHighlight = Constants.DEFAULT_GAME_HIGHLIGHT;
     /** Indicates minimum series total values which will be highlighted when displayed. */
     private int mMinimumSeriesToHighlight = Constants.DEFAULT_SERIES_HIGHLIGHT;
+
+    /** Indicates if the user is currently selecting a series to duplicate. */
+    private boolean mDuplicatingSeries;
 
     /**
      * Subclass of RecyclerView.ViewHolder to manage view which will display text to the user.
@@ -199,7 +204,8 @@ public class SeriesAdapter
         };
         holder.itemView.setOnClickListener(null);
         holder.itemView.setBackgroundColor(Theme.getTertiaryThemeColor());
-        holder.mTextViewDelete.setText("Click to delete " + nameToDelete);
+        holder.mTextViewDelete.setText(String.format(holder.mTextViewDelete.getResources()
+                .getString(R.string.text_click_to_delete), nameToDelete));
         holder.mTextViewDelete.setOnClickListener(onClickListener);
         holder.mTextViewUndo.setOnClickListener(onClickListener);
         holder.mImageViewDelete.setOnClickListener(onClickListener);
@@ -263,19 +269,15 @@ public class SeriesAdapter
             holder.mArrayTextViewMatchPlay[i].setVisibility(View.GONE);
         }
 
-        //Sets color of edit button
-        if (mEditDrawable == null)
-            mEditDrawable = DisplayUtils.getDrawable(holder.itemView.getResources(), R.drawable.ic_edit_black_24dp);
-        if (mEditDrawableFilter != Theme.getSecondaryThemeColor()) {
-            mEditDrawableFilter = Theme.getSecondaryThemeColor();
-            mEditDrawable.setColorFilter(mEditDrawableFilter, PorterDuff.Mode.SRC_IN);
-        }
-        holder.mImageViewEdit.setImageDrawable(mEditDrawable);
+        setItemDrawable(holder.mImageViewEdit);
 
         holder.mImageViewEdit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mEventHandler.onEditClick(mRecyclerView.getChildAdapterPosition(holder.itemView));
+                if (mDuplicatingSeries)
+                    mEventHandler.onDuplicateClick(mRecyclerView.getChildAdapterPosition(holder.itemView));
+                else
+                    mEventHandler.onEditClick(mRecyclerView.getChildAdapterPosition(holder.itemView));
             }
         });
 
@@ -319,7 +321,7 @@ public class SeriesAdapter
      * @param seriesTotal total of the series
      */
     private void setSeriesTotalText(TextView textViewTotal, short seriesTotal) {
-        textViewTotal.setText(Short.toString(seriesTotal));
+        textViewTotal.setText(String.format("%d", seriesTotal));
         if (seriesTotal >= mMinimumSeriesToHighlight) {
             textViewTotal.setBackgroundColor(Theme.getStatusThemeColor());
             textViewTotal.setTextColor(DisplayUtils.COLOR_WHITE);
@@ -338,7 +340,7 @@ public class SeriesAdapter
      * @param gameScore score of the game
      */
     private void setGameScoreText(TextView textViewGame, short gameScore) {
-        textViewGame.setText(Short.toString(gameScore));
+        textViewGame.setText(String.format("%d", gameScore));
         if (gameScore >= mMinimumScoreToHighlight) {
             textViewGame.setTextColor(Theme.getTertiaryThemeColor());
             textViewGame.setAlpha(1f);
@@ -351,8 +353,13 @@ public class SeriesAdapter
     @Override
     public void onClick(View v) {
         //Calls relevant event handler method
-        if (mEventHandler != null && mRecyclerView != null)
-            mEventHandler.onSItemClick(mRecyclerView.getChildAdapterPosition(v));
+        if (mEventHandler != null && mRecyclerView != null) {
+            // If the user is duplicating a series, then the item clicked is duplicated
+            if (mDuplicatingSeries)
+                mEventHandler.onDuplicateClick(mRecyclerView.getChildAdapterPosition(v));
+            else
+                mEventHandler.onSItemClick(mRecyclerView.getChildAdapterPosition(v));
+        }
     }
 
     @Override
@@ -405,6 +412,38 @@ public class SeriesAdapter
     }
 
     /**
+     * Checks if the drawables {@code mEditDrawable} and {@code mCopyDrawable} have been loaded and loads them if not.
+     * Then, sets the relevant drawable of the image view.
+     *
+     * @param imageView image view to set drawable of
+     */
+    private void setItemDrawable(ImageView imageView) {
+        //Sets color of edit button
+        if (mEditDrawable == null)
+            mEditDrawable = DisplayUtils.getDrawable(imageView.getResources(), R.drawable.ic_edit_black_24dp);
+        if (mCopyDrawable == null)
+            mCopyDrawable = DisplayUtils.getDrawable(imageView.getResources(), R.drawable.ic_content_copy_white_24dp);
+        if (mDrawableFilter != Theme.getSecondaryThemeColor()) {
+            mDrawableFilter = Theme.getSecondaryThemeColor();
+            mEditDrawable.setColorFilter(mDrawableFilter, PorterDuff.Mode.SRC_IN);
+            mCopyDrawable.setColorFilter(mDrawableFilter, PorterDuff.Mode.SRC_IN);
+        }
+
+        if (mDuplicatingSeries)
+            imageView.setImageDrawable(mCopyDrawable);
+        else
+            imageView.setImageDrawable(mEditDrawable);
+    }
+
+    public void setDuplicatingSeries(boolean duplicating) {
+        if (mDuplicatingSeries == duplicating)
+            return;
+
+        mDuplicatingSeries = duplicating;
+        notifyDataSetChanged();
+    }
+
+    /**
      * Provides methods to implement functionality when items in the RecyclerView are interacted with.
      */
     public interface SeriesEventHandler {
@@ -436,5 +475,12 @@ public class SeriesAdapter
          * @param position position of the item in the list
          */
         void onEditClick(final int position);
+
+        /**
+         * Called when the duplicate image view for an item in the RecyclerView is clicked.
+         *
+         * @param position position of the item in the list
+         */
+        void onDuplicateClick(final int position);
     }
 }

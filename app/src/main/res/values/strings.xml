@@ -33,6 +33,7 @@
     <string name="dialog_bad_score">Game scores must be between 0 and 450 (inclusive).</string>
     <string name="dialog_edit_date">To change the date of a particular series, click the edit button next to the scores for that series.</string>
     <string name="dialog_match_locked">This game is locked. If you still want to change the match play results, press \'Okay\'. Otherwise, press cancel.</string>
+    <string name="dialog_duplicate_series">By pressing \'Okay\', you can select a series to be duplicated. All scores will be manually set and will affect your average, but not your statistics.</string>
 
     <!-- Action button text -->
     <string name="action_settings">Settings</string>
@@ -48,6 +49,7 @@
     <string name="action_set_score">Set manual score</string>
     <string name="action_clear_score">Clear manual score</string>
     <string name="action_combine_series">Combine series</string>
+    <string name="action_duplicate_series">Duplicate series</string>
 
     <!-- TextView text -->
     <string name="text_next_ball">Next Ball</string>
@@ -73,6 +75,8 @@
     <string name="text_prev_stat">Previous stat</string>
     <string name="text_like_on_fb">Be sure to like us on Facebook for news and updates!</string>
     <string name="text_series_total">Series total:</string>
+    <string name="text_click_to_delete">Click to delete %1$s</string>
+    <string name="text_cancel_duplicate">Duplicating series. Tap to cancel.</string>
 
     <!-- Tutorial -->
     <string name="text_tutorial_welcome">Welcome to your 5 Pin Bowling Companion!</string>

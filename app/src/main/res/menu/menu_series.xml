@@ -16,6 +16,12 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/action_duplicate_series"
+        android:orderInCategory="17"
+        android:title="@string/action_duplicate_series"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/action_edit_date"
         android:orderInCategory="20"
         android:title="@string/action_edit_date"
