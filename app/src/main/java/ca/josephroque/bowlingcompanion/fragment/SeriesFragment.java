@@ -253,9 +253,10 @@ public class SeriesFragment
 
     @Override
     public void onDuplicateClick(final int position) {
-        // TODO: duplicate selected series
         enableDuplicatingSeries(false);
         Log.d(TAG, "Duplicated: " + position);
+
+        new DuplicateSeriesTask(this).execute(mListSeries.get(position));
     }
 
     @SuppressWarnings("CheckStyle")
@@ -592,6 +593,46 @@ public class SeriesFragment
             fragment.mListSeries.addAll(listSeries);
             fragment.mAdapterSeries.notifyDataSetChanged();
             fragment.showCombineSeriesDialog(false);
+        }
+    }
+
+    private static final class DuplicateSeriesTask
+            extends AsyncTask<Series, Void, Void> {
+
+        /** Weak reference to the parent fragment. */
+        private final WeakReference<SeriesFragment> mFragment;
+
+        /**
+         * Assigns a weak reference to the parent fragment.
+         *
+         * @param fragment parent fragment
+         */
+        private DuplicateSeriesTask(SeriesFragment fragment) {
+            mFragment = new WeakReference<>(fragment);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            SeriesFragment fragment = mFragment.get();
+            if (fragment == null || fragment.getContext() == null)
+                return;
+        }
+
+        @Override
+        protected Void doInBackground(Series... series) {
+            SeriesFragment fragment = mFragment.get();
+            if (fragment == null || fragment.getContext() == null)
+                return null;
+
+            Series seriesToDuplicate = series[0];
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            SeriesFragment fragment = mFragment.get();
+            if (fragment == null || fragment.getContext() == null)
+                return;
         }
     }
 
