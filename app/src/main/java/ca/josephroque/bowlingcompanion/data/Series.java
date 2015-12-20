@@ -14,6 +14,8 @@ public class Series
 
     /** Unique id of the series. */
     private final long mSeriesId;
+    /** Id of the league which the series belongs to. */
+    private final long mLeagueId;
     /** Date that the series occurred. */
     private String mSeriesDate;
     /** Scores of the games in the series. */
@@ -26,13 +28,15 @@ public class Series
     /**
      * Assigns references for member variables to parameters.
      *
-     * @param id unique id of the series
+     * @param seriesId unique id of the series
+     * @param leagueId id of the league the series belongs to
      * @param date date the series occurred
      * @param games scores of the games in the series
      * @param matchPlay match play results of the games in the series
      */
-    public Series(long id, String date, List<Short> games, List<Byte> matchPlay) {
-        this.mSeriesId = id;
+    public Series(long seriesId, long leagueId, String date, List<Short> games, List<Byte> matchPlay) {
+        this.mSeriesId = seriesId;
+        this.mLeagueId = leagueId;
         this.mSeriesDate = date;
         this.mSeriesGames = games;
         this.mSeriesMatchPlay = matchPlay;
@@ -46,6 +50,7 @@ public class Series
     @SuppressWarnings("unchecked")
     public Series(Parcel pc) {
         mSeriesId = pc.readLong();
+        mLeagueId = pc.readLong();
         mSeriesDate = pc.readString();
         mSeriesGames = (ArrayList<Short>) pc.readArrayList(Short.class.getClassLoader());
         mSeriesMatchPlay = (ArrayList<Byte>) pc.readArrayList(Byte.class.getClassLoader());
@@ -76,6 +81,15 @@ public class Series
      */
     public long getSeriesId() {
         return mSeriesId;
+    }
+
+    /**
+     * Gets the id of the league that the series belongs to.
+     *
+     * @return the value of {@code mLeagueId}
+     */
+    public long getLeagueId() {
+        return mLeagueId;
     }
 
     /**
@@ -120,6 +134,7 @@ public class Series
     @Override
     public void writeToParcel(Parcel pc, int flags) {
         pc.writeLong(mSeriesId);
+        pc.writeLong(mLeagueId);
         pc.writeString(mSeriesDate);
         pc.writeList(mSeriesGames);
         pc.writeList(mSeriesMatchPlay);
@@ -161,7 +176,7 @@ public class Series
     @Override
     public int hashCode() {
         int result = 17;
-        int c = (int) (mSeriesId ^ (mSeriesId >> 32));
+        int c = (int) ((mSeriesId ^ (mSeriesId >> 32)) + (mLeagueId ^ (mLeagueId >> 32)));
         return 37 * result + c;
     }
 

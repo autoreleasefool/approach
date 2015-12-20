@@ -593,12 +593,13 @@ public class LeagueEventFragment
                     String seriesDate = cursor.getString(cursor.getColumnIndex(SeriesEntry.COLUMN_SERIES_DATE));
                     cursor.close();
 
-                    return Pair.create(selectedLeagueEvent, new Series(seriesId, seriesDate, null, null));
+                    return Pair.create(selectedLeagueEvent,
+                            new Series(seriesId, selectedLeagueEvent.getLeagueEventId(), seriesDate, null, null));
                 } else
                     cursor.close();
                 throw new RuntimeException("Event series id could not be loaded from database");
             } else
-                return Pair.create(selectedLeagueEvent, new Series(-1, null, null, null));
+                return Pair.create(selectedLeagueEvent, new Series(-1, -1, null, null, null));
         }
 
         @Override

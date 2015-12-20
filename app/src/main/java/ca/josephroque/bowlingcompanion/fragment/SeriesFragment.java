@@ -568,6 +568,7 @@ public class SeriesFragment
 
                     if (listSeries.size() == 0 || listSeries.get(listSeries.size() - 1).getSeriesId() != seriesId) {
                         listSeries.add(new Series(seriesId,
+                                mainActivity.getLeagueId(),
                                 DateUtils.formattedDateToPrettyCompact(seriesDate),
                                 new ArrayList<Short>(),
                                 new ArrayList<Byte>()));
