@@ -39,7 +39,7 @@ dependencies {
     compile 'com.android.support:support-v4:23.1.1'
 
     // Play services
-    compile 'com.google.android.gms:play-services-ads:8.3.0'
+    compile 'com.google.android.gms:play-services-ads:8.4.0'
 
     // Other dependencies
     compile 'com.github.PhilJay:MPAndroidChart:v2.1.6'
