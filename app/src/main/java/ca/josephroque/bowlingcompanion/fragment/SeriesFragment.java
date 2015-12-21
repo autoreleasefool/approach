@@ -32,6 +32,7 @@ import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -40,6 +41,7 @@ import ca.josephroque.bowlingcompanion.MainActivity;
 import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.adapter.SeriesAdapter;
 import ca.josephroque.bowlingcompanion.data.Series;
+import ca.josephroque.bowlingcompanion.database.Contract.FrameEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.GameEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.SeriesEntry;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
@@ -254,8 +256,6 @@ public class SeriesFragment
     @Override
     public void onDuplicateClick(final int position) {
         enableDuplicatingSeries(false);
-        Log.d(TAG, "Duplicated: " + position);
-
         new DuplicateSeriesTask(this).execute(mListSeries.get(position));
     }
 
@@ -598,7 +598,7 @@ public class SeriesFragment
     }
 
     private static final class DuplicateSeriesTask
-            extends AsyncTask<Series, Void, Void> {
+            extends AsyncTask<Series, Void, Boolean> {
 
         /** Weak reference to the parent fragment. */
         private final WeakReference<SeriesFragment> mFragment;
@@ -613,27 +613,64 @@ public class SeriesFragment
         }
 
         @Override
-        protected void onPreExecute() {
+        protected Boolean doInBackground(Series... series) {
             SeriesFragment fragment = mFragment.get();
-            if (fragment == null || fragment.getContext() == null)
-                return;
-        }
+            if (fragment == null)
+                return false;
 
-        @Override
-        protected Void doInBackground(Series... series) {
-            SeriesFragment fragment = mFragment.get();
-            if (fragment == null || fragment.getContext() == null)
-                return null;
+            Context context = fragment.getContext();
+            if (context == null)
+                return false;
 
             Series seriesToDuplicate = series[0];
-            return null;
+            long[] gameId = new long[seriesToDuplicate.getNumberOfGames()];
+
+            SQLiteDatabase database = DatabaseHelper.getInstance(context).getReadableDatabase();
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
+            String seriesDate = dateFormat.format(new Date());
+
+            database.beginTransaction();
+            try {
+                ContentValues values = new ContentValues();
+                values.put(SeriesEntry.COLUMN_SERIES_DATE, seriesDate);
+                values.put(SeriesEntry.COLUMN_LEAGUE_ID, seriesToDuplicate.getLeagueId());
+                long seriesId = database.insert(SeriesEntry.TABLE_NAME, null, values);
+
+                List<Short> gameScores = seriesToDuplicate.getSeriesGames();
+                for (byte i = 0; i < gameScores.size(); i++) {
+                    values = new ContentValues();
+                    values.put(GameEntry.COLUMN_GAME_NUMBER, i + 1);
+                    values.put(GameEntry.COLUMN_SCORE, gameScores.get(i));
+                    values.put(GameEntry.COLUMN_IS_LOCKED, 1);
+                    values.put(GameEntry.COLUMN_IS_MANUAL, 1);
+                    values.put(GameEntry.COLUMN_SERIES_ID, seriesId);
+                    gameId[i] = database.insert(GameEntry.TABLE_NAME, null, values);
+
+                    for (byte j = 0; j < Constants.NUMBER_OF_FRAMES; j++) {
+                        values = new ContentValues();
+                        values.put(FrameEntry.COLUMN_FRAME_NUMBER, j + 1);
+                        values.put(FrameEntry.COLUMN_GAME_ID, gameId[i]);
+                        database.insert(FrameEntry.TABLE_NAME, null, values);
+                    }
+                }
+
+                database.setTransactionSuccessful();
+            } catch (Exception ex) {
+                throw new RuntimeException("Could not duplicate series in database: " + ex.getMessage());
+            } finally {
+                database.endTransaction();
+            }
+
+            return true;
         }
 
         @Override
-        protected void onPostExecute(Void result) {
+        protected void onPostExecute(Boolean result) {
             SeriesFragment fragment = mFragment.get();
-            if (fragment == null || fragment.getContext() == null)
+            if (fragment == null || fragment.getContext() == null || !fragment.isVisible())
                 return;
+
+            new LoadSeriesTask(fragment).execute();
         }
     }
 

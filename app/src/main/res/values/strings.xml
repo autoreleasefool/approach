@@ -74,7 +74,7 @@
     <string name="text_next_stat">Next stat</string>
     <string name="text_prev_stat">Previous stat</string>
     <string name="text_like_on_fb">Be sure to like us on Facebook for news and updates!</string>
-    <string name="text_series_total">Series total:</string>
+    <string name="text_series_total">Total:</string>
     <string name="text_click_to_delete">Click to delete %1$s</string>
     <string name="text_cancel_duplicate">Duplicating series. Tap to cancel.</string>
 
