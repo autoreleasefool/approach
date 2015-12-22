@@ -11,7 +11,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import ca.josephroque.bowlingcompanion.R;
-import ca.josephroque.bowlingcompanion.data.NameAverageId;
+import ca.josephroque.bowlingcompanion.wrapper.NameAverageId;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
 

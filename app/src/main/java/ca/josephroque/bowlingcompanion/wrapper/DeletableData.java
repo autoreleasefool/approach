@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.data;
+package ca.josephroque.bowlingcompanion.wrapper;
 
 /**
  * Created by Joseph Roque on 2015-07-23. Offers method for setting an item's status to "deleted".

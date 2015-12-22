@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.data;
+package ca.josephroque.bowlingcompanion.wrapper;
 
 /**
  * Created by Joseph Roque on 2015-07-22. Offers methods for retrieving a name, average and id from an object.

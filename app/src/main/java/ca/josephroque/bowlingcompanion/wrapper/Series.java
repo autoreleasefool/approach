@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.data;
+package ca.josephroque.bowlingcompanion.wrapper;
 
 import android.os.Parcel;
 import android.os.Parcelable;

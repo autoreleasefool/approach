@@ -13,7 +13,7 @@ import android.widget.EditText;
 
 import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.R;
-import ca.josephroque.bowlingcompanion.data.LeagueEvent;
+import ca.josephroque.bowlingcompanion.wrapper.LeagueEvent;
 
 /**
  * Created by Joseph Roque on 15-03-16. Provides dialog and callback interface {@link

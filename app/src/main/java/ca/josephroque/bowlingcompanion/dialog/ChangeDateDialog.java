@@ -10,7 +10,7 @@ import android.widget.DatePicker;
 import java.lang.reflect.Field;
 
 import ca.josephroque.bowlingcompanion.Constants;
-import ca.josephroque.bowlingcompanion.data.Series;
+import ca.josephroque.bowlingcompanion.wrapper.Series;
 import ca.josephroque.bowlingcompanion.utilities.DateUtils;
 
 /**
