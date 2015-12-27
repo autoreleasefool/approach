@@ -41,6 +41,10 @@ public final class Contract {
         public static final String COLUMN_LEAGUE_NAME = "league_name";
         /** Name of the column for the number of games in a league. */
         public static final String COLUMN_NUMBER_OF_GAMES = "league_number_of_games";
+        /** Name of the column for the base average of the league. */
+        public static final String COLUMN_BASE_AVERAGE = "league_base_avg";
+        /** Name of the column for the base number of games of the league. */
+        public static final String COLUMN_BASE_GAMES = "league_base_games";
         /** Name of the column for the leagues' most recent date modified. */
         public static final String COLUMN_DATE_MODIFIED = "league_date_modified";
         /** Name of the column to indicate if the row is an event. */

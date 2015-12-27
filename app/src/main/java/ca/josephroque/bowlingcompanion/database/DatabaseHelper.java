@@ -28,7 +28,7 @@ public final class DatabaseHelper
     /** Name of the database. */
     private static final String DATABASE_NAME = "bowlingdata";
     /** Version of the database, incremented with changes. */
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
 
     /** Singleton instance of the DatabaseHelper. */
     private static DatabaseHelper sDatabaseHelperInstance = null;
@@ -180,6 +180,8 @@ public final class DatabaseHelper
                 + LeagueEntry._ID + " INTEGER PRIMARY KEY, "
                 + LeagueEntry.COLUMN_LEAGUE_NAME + " TEXT NOT NULL COLLATE NOCASE, "
                 + LeagueEntry.COLUMN_NUMBER_OF_GAMES + " INTEGER NOT NULL, "
+                + LeagueEntry.COLUMN_BASE_AVERAGE + " INTEGER NOT NULL DEFAULT -1, "
+                + LeagueEntry.COLUMN_BASE_GAMES + " INTEGER NOT NULL DEFAULT -1, "
                 + LeagueEntry.COLUMN_DATE_MODIFIED + " TEXT NOT NULL, "
                 + LeagueEntry.COLUMN_IS_EVENT + " INTEGER NOT NULL DEFAULT 0, "
                 + LeagueEntry.COLUMN_BOWLER_ID + " INTEGER NOT NULL"
@@ -188,7 +190,9 @@ public final class DatabaseHelper
                 + "CHECK (" + LeagueEntry.COLUMN_NUMBER_OF_GAMES + " > 0 AND "
                 + LeagueEntry.COLUMN_NUMBER_OF_GAMES + " <= 20), "
                 + "CHECK (" + LeagueEntry.COLUMN_IS_EVENT + " = 0 OR "
-                + LeagueEntry.COLUMN_IS_EVENT + " = 1)"
+                + LeagueEntry.COLUMN_IS_EVENT + " = 1), "
+                + "CHECK (" + LeagueEntry.COLUMN_BASE_AVERAGE + " >= -1 AND "
+                + LeagueEntry.COLUMN_BASE_AVERAGE + " <= 450)"
                 + ");");
     }
 
@@ -237,13 +241,6 @@ public final class DatabaseHelper
     @SuppressWarnings("CheckStyle")
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        /**
-         * If an older version of the database exists, all the tables and data are dropped
-         * and the table is recreated.
-         *
-         * In future version, if database is updated then tables should be altered,
-         * not dropped
-         */
         Log.w(TAG, "Upgrading database from version " + oldVersion + " to " + newVersion);
 
         int upgradeTo = oldVersion + 1;
@@ -258,40 +255,12 @@ public final class DatabaseHelper
                 case 4:
                     upgradeDatabaseFrom3To4(db);
                     break;
-                default:
-                    dropTablesAndRecreate(db);
+                case 5:
+                    upgradeDatabaseFrom4To5(db);
+                    break;
             }
             upgradeTo++;
         }
-    }
-
-    /**
-     * Drops all tables in the database and calls onCreate().
-     *
-     * @param db database to wipe
-     */
-    private void dropTablesAndRecreate(SQLiteDatabase db) {
-        Log.i(TAG, "Dropping tables");
-        db.execSQL("DROP INDEX IF EXISTS bowler_id_index");
-        db.execSQL("DROP INDEX IF EXISTS league_id_index");
-        db.execSQL("DROP INDEX IF EXISTS series_id_index");
-        db.execSQL("DROP INDEX IF EXISTS game_id_index");
-        db.execSQL("DROP INDEX IF EXISTS frame_id_index");
-        db.execSQL("DROP INDEX IF EXISTS match_id_index");
-
-        db.execSQL("DROP INDEX IF EXISTS league_bowler_fk_index");
-        db.execSQL("DROP INDEX IF EXISTS series_league_fk_index");
-        db.execSQL("DROP INDEX IF EXISTS game_series_fk_index");
-        db.execSQL("DROP INDEX IF EXISTS frame_game_fk_index");
-        db.execSQL("DROP INDEX IF EXISTS match_game_fk_index");
-
-        db.execSQL("DROP TABLE IF EXISTS " + MatchPlayEntry.TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + FrameEntry.TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + GameEntry.TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + SeriesEntry.TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + LeagueEntry.TABLE_NAME);
-        db.execSQL("DROP TABLE IF EXISTS " + BowlerEntry.TABLE_NAME);
-        onCreate(db);
     }
 
     /**
@@ -491,7 +460,6 @@ public final class DatabaseHelper
             db.setTransactionSuccessful();
         } catch (Exception ex) {
             Log.e(TAG, "Error upgrading db from 2 to 3", ex);
-            dropTablesAndRecreate(db);
         } finally {
             db.endTransaction();
         }
@@ -508,5 +476,31 @@ public final class DatabaseHelper
                 + MatchPlayEntry.TABLE_NAME + "(" + MatchPlayEntry.COLUMN_GAME_ID + ")");
         db.execSQL("CREATE INDEX match_id_index ON "
                 + MatchPlayEntry.TABLE_NAME + "(" + MatchPlayEntry._ID + ")");
+    }
+
+    /**
+     * Upgrades database from oldVersion 4 to newVersion 5.
+     *
+     * @param db to upgrade
+     */
+    private void upgradeDatabaseFrom4To5(SQLiteDatabase db) {
+        db.execSQL("ALTER TABLE " + LeagueEntry.TABLE_NAME
+                + " ADD COLUMN "
+                + LeagueEntry.COLUMN_BASE_AVERAGE + " INTEGER NOT NULL DEFAULT -1;");
+        db.execSQL("ALTER TABLE " + LeagueEntry.TABLE_NAME
+                + " ADD COLUMN "
+                + LeagueEntry.COLUMN_BASE_GAMES + " INTEGER NOT NULL DEFAULT -1;");
+        try {
+            db.beginTransaction();
+            ContentValues values = new ContentValues();
+            values.put(LeagueEntry.COLUMN_BASE_AVERAGE, -1);
+            values.put(LeagueEntry.COLUMN_BASE_GAMES, -1);
+            db.update(LeagueEntry.TABLE_NAME, values, null, null);
+            db.setTransactionSuccessful();
+        } catch (Exception ex) {
+            Log.e(TAG, "Error upgrading from 4 to 5", ex);
+        } finally {
+            db.endTransaction();
+        }
     }
 }
