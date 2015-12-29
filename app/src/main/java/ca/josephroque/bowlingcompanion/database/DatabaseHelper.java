@@ -491,7 +491,7 @@ public final class DatabaseHelper
                 + LeagueEntry.COLUMN_BASE_AVERAGE + " INTEGER NOT NULL DEFAULT -1;");
         db.execSQL("ALTER TABLE " + LeagueEntry.TABLE_NAME
                 + " ADD COLUMN "
-                + LeagueEntry.COLUMN_BASE_GAMES + " INTEGER NOT NULL DEFAULT -1;");
+                + LeagueEntry.COLUMN_BASE_GAMES + " INTEGER NOT NULL DEFAULT 0;");
         try {
             db.beginTransaction();
             ContentValues values = new ContentValues();

@@ -30,7 +30,8 @@ public class LeagueEvent
      * @param id unique id of the league / event
      * @param name name of the league / event
      * @param average average of the league / event
-     * @param baseGames number of games used towards the average
+     * @param baseAverage base average of the league
+     * @param baseGames number of games used towards the base average
      * @param numberOfGames number of games in the league / event
      */
     public LeagueEvent(long id, String name, short average, short baseAverage, int baseGames, byte numberOfGames) {
