@@ -255,7 +255,7 @@ public class LeagueEventFragment
              */
             validInput = false;
             invalidInputMessage = R.string.dialog_default_name;
-        } else if (mListLeaguesEvents.contains(updatedLeagueEvent)) {
+        } else if (mListLeaguesEvents.contains(updatedLeagueEvent) && !leagueEventToChange.equals(updatedLeagueEvent)) {
             //User has provided a name which is already in use for a league or event
             validInput = false;
             invalidInputMessage = R.string.dialog_name_exists;
@@ -263,6 +263,10 @@ public class LeagueEventFragment
             //Name is not made up of letters, numbers and spaces
             validInput = false;
             invalidInputMessage = R.string.dialog_name_letters_spaces_numbers;
+        } else if (baseAverage > 0 && (baseGames < 1 || baseGames > 100000)) {
+            // Base average was added with an invalid number of base games
+            validInput = false;
+            invalidInputMessage = R.string.dialog_invalid_base_games;
         }
 
         if (!validInput) {
