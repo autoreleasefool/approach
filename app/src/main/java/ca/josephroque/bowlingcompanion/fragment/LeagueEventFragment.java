@@ -239,11 +239,15 @@ public class LeagueEventFragment
                                     int baseGames) {
         boolean validInput = true;
         int invalidInputMessage = -1;
+        int incorrectAverage = (baseAverage != leagueEventToChange.getBaseAverage()
+                || baseGames != leagueEventToChange.getBaseGames())
+                ? -1
+                : 1;
         final LeagueEvent updatedLeagueEvent = new LeagueEvent(leagueEventToChange.getId(),
                 ((leagueEventToChange.isEvent())
                         ? "E"
                         : "L") + name,
-                leagueEventToChange.getAverage(),
+                (short) (leagueEventToChange.getAverage() * incorrectAverage),
                 baseAverage,
                 baseGames,
                 leagueEventToChange.getLeagueEventNumberOfGames());
@@ -292,7 +296,7 @@ public class LeagueEventFragment
                     SQLiteDatabase database = DatabaseHelper.getInstance(getContext()).getWritableDatabase();
                     String[] whereArgs = {String.valueOf(updatedLeagueEvent.getId())};
                     ContentValues values = new ContentValues();
-                    values.put(LeagueEntry.COLUMN_LEAGUE_NAME, updatedLeagueEvent.getLeagueEventName());
+                    values.put(LeagueEntry.COLUMN_LEAGUE_NAME, updatedLeagueEvent.getLeagueEventName().substring(1));
                     values.put(LeagueEntry.COLUMN_BASE_AVERAGE, updatedLeagueEvent.getBaseAverage());
                     values.put(LeagueEntry.COLUMN_BASE_GAMES, updatedLeagueEvent.getBaseGames());
                     database.beginTransaction();

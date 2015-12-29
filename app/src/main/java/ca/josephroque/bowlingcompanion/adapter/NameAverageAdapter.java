@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion.adapter;
 
 import android.graphics.drawable.Drawable;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,9 +17,9 @@ import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
 
 /**
- * Created by Joseph Roque on 15-03-13. Manages names of bowlers or leagues/events and their
- * associated averages for a ListView. Offers a callback interface {@link
- * NameAverageAdapter.NameAverageEventHandler} to handle interaction events.
+ * Created by Joseph Roque on 15-03-13. Manages names of bowlers or leagues/events and their associated averages for a
+ * ListView. Offers a callback interface {@link NameAverageAdapter.NameAverageEventHandler} to handle interaction
+ * events.
  *
  * @param <T> Object of type NameAverageId which is displayed by this adapter
  */
@@ -55,8 +56,7 @@ public class NameAverageAdapter<T extends NameAverageId>
     private final byte mDataType;
 
     /**
-     * Subclass of RecyclerView.ViewHolder to manage view which will display an image, and text to
-     * the user.
+     * Subclass of RecyclerView.ViewHolder to manage view which will display an image, and text to the user.
      */
     public static final class NameAverageViewHolder
             extends RecyclerView.ViewHolder {
@@ -69,8 +69,8 @@ public class NameAverageAdapter<T extends NameAverageId>
         private TextView mTextViewAverage;
 
         /**
-         * Calls super constructor and gets instances of ImageView and TextView objects for member
-         * variables from itemLayoutView.
+         * Calls super constructor and gets instances of ImageView and TextView objects for member variables from
+         * itemLayoutView.
          *
          * @param itemLayoutView layout view containing views to display data
          * @param viewType type of view
@@ -177,8 +177,15 @@ public class NameAverageAdapter<T extends NameAverageId>
                     default:
                         throw new IllegalStateException("invalid mDataType: " + mDataType);
                 }
-                holder.mTextViewAverage.setText("Avg: "
-                        + String.valueOf(mListNamesAndAverages.get(position).getAverage()));
+                holder.mTextViewAverage.setText(String.format(holder.mTextViewAverage.getResources()
+                                .getString(R.string.text_average_placeholder),
+                        Math.abs(mListNamesAndAverages.get(position).getAverage())));
+                if (mListNamesAndAverages.get(position).getAverage() < 0)
+                    holder.mTextViewAverage.setTextColor(ContextCompat.getColor(holder.mTextViewAverage.getContext(),
+                            R.color.invalid_average));
+                else
+                    holder.mTextViewAverage.setTextColor(ContextCompat.getColor(holder.mTextViewAverage.getContext(),
+                            android.R.color.black));
 
                 //Sets actions on click/touch events
                 holder.itemView.setOnClickListener(this);
@@ -203,7 +210,8 @@ public class NameAverageAdapter<T extends NameAverageId>
                 holder.itemView.setOnClickListener(null);
                 holder.itemView.setOnLongClickListener(null);
                 holder.itemView.setBackgroundColor(Theme.getTertiaryThemeColor());
-                holder.mTextViewName.setText("Click to delete " + nameToDelete);
+                holder.mTextViewName.setText(String.format(holder.mTextViewName.getResources()
+                        .getString(R.string.text_click_to_delete), nameToDelete));
                 holder.mTextViewName.setOnClickListener(onClickListener);
                 holder.mTextViewAverage.setOnClickListener(onClickListener);
                 holder.mImageViewType.setOnClickListener(onClickListener);
@@ -258,8 +266,7 @@ public class NameAverageAdapter<T extends NameAverageId>
     }
 
     /**
-     * Provides methods to implement functionality when items in the RecyclerView are interacted
-     * with.
+     * Provides methods to implement functionality when items in the RecyclerView are interacted with.
      */
     public interface NameAverageEventHandler {
 

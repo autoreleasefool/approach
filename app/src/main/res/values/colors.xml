@@ -4,6 +4,9 @@
     <color name="chance_data">#8E44AD</color>
     <color name="success_data">#2980B9</color>
 
+    <!-- Attention! Colors -->
+    <color name="invalid_average">#B71C1C</color>
+
     <!-- Fragment and list item backgrounds -->
     <color name="primary_background">#C6CBCF</color>
     <color name="secondary_background">#ECF0F1</color>

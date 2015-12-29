@@ -79,6 +79,7 @@
     <string name="text_click_to_delete">Click to delete %1$s</string>
     <string name="text_cancel_duplicate">Duplicating series. Tap to cancel.</string>
     <string name="text_league_base_average_explanation">If you are starting recording in the middle of a season, add your current average (0&#8211;450) and games played below for a more accurate average. Otherwise, leave them blank. If you only enter an average, the # of games is assumed to be 1. If you only enter the # of games, both fields are ignored.</string>
+    <string name="text_average_placeholder">Avg: %1$d</string>
 
     <!-- Tutorial -->
     <string name="text_tutorial_welcome">Welcome to your 5 Pin Bowling Companion!</string>
