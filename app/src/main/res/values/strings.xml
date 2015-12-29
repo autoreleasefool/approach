@@ -123,6 +123,10 @@
     <!-- Permissions -->
     <string name="permission_request_storage">5 Pin Bowling Companion requires the external storage to save an image of your game to the device.</string>
 
+    <!-- Bugfixes -->
+    <string name="text_bugfix_league_event_extra_letter_title">Fix incorrect league &amp; event names</string>
+    <string name="text_bugfix_league_event_extra_letter_msg">It appears that you may have been affected by a bug in the application which has been fixed. This bug caused renamed leagues and events to have an extra "L" or "E" at the beginning of their new names. This bug has been fixed, and you should now be able to change the name of any incorrect leagues effectively.</string>
+
     <!-- Content Descriptions -->
     <string name="description_lock_unlock">Lock or unlock game</string>
     <string name="description_clear_pins">Clear pins</string>

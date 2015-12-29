@@ -10,6 +10,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -75,6 +76,12 @@ public class LeagueEventFragment
 
     /** List to store league / event data from league / event table in database. */
     private List<LeagueEvent> mListLeaguesEvents;
+
+    /**
+     * Indicates if the user should be prompted to update names of leagues or events that may have been affected by a
+     * bug which existed until v2.1.3.
+     */
+    private boolean mPromptToUpdateIncorrectName = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -536,6 +543,24 @@ public class LeagueEventFragment
     }
 
     /**
+     * Displays a dialog to inform the user of a bug fixed from v2.1.3. The fix allows renamed leagues and events to
+     * be renamed without an extra "L" or "E" appearing.
+     */
+    private void promptToUpdateIncorrectName() {
+        new AlertDialog.Builder(getContext())
+                .setTitle(R.string.text_bugfix_league_event_extra_letter_title)
+                .setMessage(R.string.text_bugfix_league_event_extra_letter_msg)
+                .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                })
+                .create()
+                .show();
+    }
+
+    /**
      * Iterates through the existing list of leagues and events to check if the new name has already been used.
      *
      * @param leagueEvents list of leagues and events
@@ -723,6 +748,9 @@ public class LeagueEventFragment
             if (mainActivity == null)
                 return null;
 
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mainActivity);
+            boolean promptToFixNames = preferences.getBoolean(Constants.PREF_PROMPT_LEAGUE_EVENT_NAME_FIX, true);
+
             MainActivity.waitForSaveThreads(new WeakReference<>(mainActivity));
 
             SQLiteDatabase database = DatabaseHelper.getInstance(mainActivity).getReadableDatabase();
@@ -754,6 +782,7 @@ public class LeagueEventFragment
                     long leagueEventId = cursor.getLong(cursor.getColumnIndex("lid"));
                     if (leagueEventId != lastLeagueEventId && lastLeagueEventId != -1) {
                         cursor.moveToPrevious();
+                        String name = cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_LEAGUE_NAME));
                         boolean isEvent = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_IS_EVENT)) == 1;
                         short baseAverage = cursor.getShort(cursor.getColumnIndex(LeagueEntry.COLUMN_BASE_AVERAGE));
                         int baseGames = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_BASE_GAMES));
@@ -762,7 +791,7 @@ public class LeagueEventFragment
                                 baseAverage,
                                 baseGames);
                         LeagueEvent leagueEvent = new LeagueEvent(cursor.getLong(cursor.getColumnIndex("lid")),
-                                cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_LEAGUE_NAME)),
+                                name,
                                 isEvent,
                                 average,
                                 baseAverage,
@@ -771,6 +800,13 @@ public class LeagueEventFragment
                         listLeagueEvents.add(leagueEvent);
                         leagueTotal = 0;
                         leagueNumberOfGames = 0;
+
+                        if (!fragment.mPromptToUpdateIncorrectName && name.matches("^[LE][A-Z].*")
+                                && promptToFixNames) {
+                            preferences.edit().putBoolean(Constants.PREF_PROMPT_LEAGUE_EVENT_NAME_FIX, false).apply();
+                            fragment.mPromptToUpdateIncorrectName = true;
+                        }
+
                         cursor.moveToNext();
                     }
                     short score = cursor.getShort(cursor.getColumnIndex(GameEntry.COLUMN_SCORE));
@@ -812,6 +848,8 @@ public class LeagueEventFragment
 
             fragment.mListLeaguesEvents.addAll(listLeagueEvents);
             fragment.mAdapterLeagueEvents.notifyDataSetChanged();
+            if (fragment.mPromptToUpdateIncorrectName)
+                fragment.promptToUpdateIncorrectName();
         }
     }
 
