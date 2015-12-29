@@ -2,7 +2,7 @@
 <resources>
 
     <string-array name="arr_long_click_name_average">
-        <item>Change name</item>
+        <item>Change Properties</item>
         <item>Delete item</item>
     </string-array>
 
