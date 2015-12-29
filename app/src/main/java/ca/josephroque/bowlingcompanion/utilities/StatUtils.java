@@ -1,6 +1,14 @@
 package ca.josephroque.bowlingcompanion.utilities;
 
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+
+import java.util.List;
+
 import ca.josephroque.bowlingcompanion.Constants;
+import ca.josephroque.bowlingcompanion.database.Contract;
+import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 
 /**
  * Created by Joseph Roque on 2015-07-25. Methods and constants for identifying and recording statistics.
@@ -348,6 +356,51 @@ public final class StatUtils {
                 throw new IllegalArgumentException(
                         "invalid index " + statIndex + " for general category");
         }
+    }
+
+    /**
+     * Queries the database for the base averages or average of the bowler or league that the stats are being loaded
+     * for.
+     *
+     * @param context to access database
+     * @param id unique id of the league or bowler to get the stats of
+     * @param getLeagueStats {@code true} if getting the stats of a single league, false otherwise
+     * @param baseAverages to append the list of base averages for the league or bowler
+     * @param baseGameCounts to append the list of number of games for the respective base average for the league or
+     * bowler
+     */
+    public static void getBaseAverages(Context context,
+                                 long id,
+                                 boolean getLeagueStats,
+                                 List<Short> baseAverages,
+                                 List<Integer> baseGameCounts) {
+        String baseAverageAndGamesQuery = "SELECT "
+                + Contract.LeagueEntry.COLUMN_BASE_AVERAGE + ", "
+                + Contract.LeagueEntry.COLUMN_BASE_GAMES
+                + " FROM " + Contract.LeagueEntry.TABLE_NAME
+                + (
+                (getLeagueStats)
+                        ? " WHERE " + Contract.LeagueEntry._ID + "=?"
+                        : " WHERE " + Contract.LeagueEntry.COLUMN_BASE_AVERAGE + ">?"
+                                + " AND " + Contract.LeagueEntry.COLUMN_BOWLER_ID + "=?");
+        String[] rawBaseArgs;
+        if (getLeagueStats)
+            rawBaseArgs = new String[]{String.valueOf(id)};
+        else
+            rawBaseArgs = new String[]{String.valueOf(0), String.valueOf(id)};
+
+        SQLiteDatabase database = DatabaseHelper.getInstance(context).getReadableDatabase();
+        Cursor cursor = database.rawQuery(baseAverageAndGamesQuery, rawBaseArgs);
+
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
+                baseAverages.add(cursor.getShort(cursor.getColumnIndex(Contract.LeagueEntry.COLUMN_BASE_AVERAGE)));
+                baseGameCounts.add(cursor.getInt(cursor.getColumnIndex(Contract.LeagueEntry.COLUMN_BASE_GAMES)));
+                cursor.moveToNext();
+            }
+        }
+
+        cursor.close();
     }
 
     /**

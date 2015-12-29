@@ -323,6 +323,8 @@ public class StatsGraphFragment
 
         /** Weak reference to the parent fragment. */
         private final WeakReference<StatsGraphFragment> mFragment;
+        /** Indicates the type of stats being loaded (i.e. for a bowler or a league). */
+        private byte mStatsToLoad;
 
         /**
          * Assigns a weak reference to the parent fragment.
@@ -364,10 +366,10 @@ public class StatsGraphFragment
                 return null;
             MainActivity.waitForSaveThreads(new WeakReference<>(mainActivity));
 
-            final byte toLoad = statsToLoad[0];
+            mStatsToLoad = statsToLoad[0];
             Cursor cursor;
 
-            switch (toLoad) {
+            switch (mStatsToLoad) {
                 case StatUtils.LOADING_LEAGUE_STATS:
                     cursor = fragment.getBowlerOrLeagueCursor(true);
                     break;
@@ -375,7 +377,7 @@ public class StatsGraphFragment
                     cursor = fragment.getBowlerOrLeagueCursor(false);
                     break;
                 default:
-                    throw new IllegalArgumentException("invalid value for toLoad: " + toLoad
+                    throw new IllegalArgumentException("invalid value for toLoad: " + mStatsToLoad
                             + ". must be between 0 and 1 (inclusive)");
             }
 
@@ -1341,6 +1343,26 @@ public class StatsGraphFragment
             boolean addLabelOnDateChange = false;
             int numberOfGames = 0, totalPinfall = 0;
             int highSingle = 0, highSeries = 0, currentSeries = 0;
+
+            if (fragment.mStatAccumulate) {
+                long id = (mStatsToLoad == StatUtils.LOADING_LEAGUE_STATS)
+                        ? ((MainActivity) fragment.getActivity()).getLeagueId()
+                        : ((MainActivity) fragment.getActivity()).getBowlerId();
+                List<Short> baseAverages = new ArrayList<>();
+                List<Integer> baseGameCounts = new ArrayList<>();
+
+                StatUtils.getBaseAverages(fragment.getContext(),
+                        id,
+                        mStatsToLoad == StatUtils.LOADING_LEAGUE_STATS,
+                        baseAverages,
+                        baseGameCounts);
+
+                // Add the base averages from the leagues to the stats
+                for (int i = 0; i < baseAverages.size() && i < baseGameCounts.size(); i++) {
+                    totalPinfall += baseAverages.get(i) * baseGameCounts.get(i);
+                    numberOfGames += baseGameCounts.get(i);
+                }
+            }
 
             int currentEntry = 0;
             if (cursor.moveToFirst()) {

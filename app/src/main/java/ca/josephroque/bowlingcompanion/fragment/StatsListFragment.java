@@ -369,6 +369,11 @@ public class StatsListFragment
         /** Weak reference to the parent fragment. */
         private final WeakReference<StatsListFragment> mFragment;
 
+        /** The base averages of the bowler or league. */
+        private List<Short> mBaseAverages = new ArrayList<>();
+        /** The number of games which contributed to the corresponding base average. */
+        private List<Integer> mBaseGameCounts = new ArrayList<>();
+
         /**
          * Assigns a weak reference to the parent fragment.
          *
@@ -415,12 +420,22 @@ public class StatsListFragment
                 case StatUtils.LOADING_BOWLER_STATS:
                     fragment.mNumberOfGeneralDetails = 1;
                     cursor = fragment.getBowlerOrLeagueCursor(false);
+                    StatUtils.getBaseAverages(fragment.getContext(),
+                            mainActivity.getBowlerId(),
+                            false,
+                            mBaseAverages,
+                            mBaseGameCounts);
                     break;
                 case StatUtils.LOADING_LEAGUE_STATS:
                     fragment.mNumberOfGeneralDetails = 2;
                     listStatNamesAndValues.get(fragment.mStatsGeneral).add(1,
                             Pair.create("League/Event", mainActivity.getLeagueName()));
                     cursor = fragment.getBowlerOrLeagueCursor(true);
+                    StatUtils.getBaseAverages(fragment.getContext(),
+                            mainActivity.getLeagueId(),
+                            true,
+                            mBaseAverages,
+                            mBaseGameCounts);
                     break;
                 case StatUtils.LOADING_SERIES_STATS:
                     fragment.mNumberOfGeneralDetails = 3;
@@ -631,6 +646,13 @@ public class StatsListFragment
                         statValues[fragment.mStatsGameAverage][i] = (countByGame[i] > 0)
                                 ? totalByGame[i] / countByGame[i]
                                 : 0;
+                }
+
+                // Add the base averages from the leagues to the stats
+                for (int i = 0; i < mBaseAverages.size() && i < mBaseGameCounts.size(); i++) {
+                    statValues[fragment.mStatsOverall][StatUtils.STAT_TOTAL_PINS] += mBaseAverages.get(i)
+                            * mBaseGameCounts.get(i);
+                    statValues[fragment.mStatsOverall][StatUtils.STAT_NUMBER_OF_GAMES] += mBaseGameCounts.get(i);
                 }
 
                 if (statValues[fragment.mStatsOverall][StatUtils.STAT_NUMBER_OF_GAMES] > 0) {
