@@ -11,6 +11,8 @@ public class LeagueEvent
 
     /** Unique id of the league / event. */
     private long mLeagueEventId;
+    /** Indicates if this instance represents a league or an event. */
+    private final boolean mIsEvent;
     /** Name of the league / event. */
     private final String mLeagueEventName;
     /** Average of the league / event. */
@@ -29,14 +31,22 @@ public class LeagueEvent
      *
      * @param id unique id of the league / event
      * @param name name of the league / event
+     * @param isEvent indicates if this instance should represent a league or an event
      * @param average average of the league / event
      * @param baseAverage base average of the league
      * @param baseGames number of games used towards the base average
      * @param numberOfGames number of games in the league / event
      */
-    public LeagueEvent(long id, String name, short average, short baseAverage, int baseGames, byte numberOfGames) {
+    public LeagueEvent(long id,
+                       String name,
+                       boolean isEvent,
+                       short average,
+                       short baseAverage,
+                       int baseGames,
+                       byte numberOfGames) {
         this.mLeagueEventId = id;
         this.mLeagueEventName = name;
+        this.mIsEvent = isEvent;
         this.mLeagueEventAverage = average;
         this.mLeagueBaseAverage = baseAverage;
         this.mLeagueBaseGames = baseGames;
@@ -51,6 +61,7 @@ public class LeagueEvent
     public LeagueEvent(Parcel pc) {
         this.mLeagueEventId = pc.readLong();
         this.mLeagueEventName = pc.readString();
+        this.mIsEvent = pc.readInt() == 1;
         this.mLeagueEventAverage = (short) pc.readInt();
         this.mLeagueBaseAverage = (short) pc.readInt();
         this.mLeagueBaseGames = pc.readInt();
@@ -120,10 +131,10 @@ public class LeagueEvent
     /**
      * Checks if this object is a league or an event.
      *
-     * @return {@code true} if the object's name starts with 'E'
+     * @return the value of {@code mIsEvent}
      */
     public boolean isEvent() {
-        return getLeagueEventName().startsWith("E");
+        return mIsEvent;
     }
 
     /**
@@ -154,6 +165,9 @@ public class LeagueEvent
     public void writeToParcel(Parcel pc, int flags) {
         pc.writeLong(mLeagueEventId);
         pc.writeString(mLeagueEventName);
+        pc.writeInt(mIsEvent
+                ? 1
+                : 0);
         pc.writeInt(mLeagueEventAverage);
         pc.writeInt(mLeagueBaseAverage);
         pc.writeInt(mLeagueBaseGames);
@@ -190,7 +204,7 @@ public class LeagueEvent
             return true;
 
         LeagueEvent leagueEvent = (LeagueEvent) other;
-        return getLeagueEventName().equals(leagueEvent.getLeagueEventName());
+        return getLeagueEventName().equals(leagueEvent.getLeagueEventName()) && isEvent() == leagueEvent.isEvent();
     }
 
     @SuppressWarnings("CheckStyle")
@@ -198,6 +212,9 @@ public class LeagueEvent
     public int hashCode() {
         int result = 19;
         int c = getLeagueEventName().hashCode();
+        c += mIsEvent
+                ? 1
+                : 0;
         return 37 * result + c;
     }
 

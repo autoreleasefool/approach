@@ -418,7 +418,7 @@ public class MatchPlayFragment
                 return;
 
             fragment.mTextViewBowler.setText(mainActivity.getBowlerName());
-            fragment.mTextViewLeagueEvent.setText(mainActivity.getLeagueName().substring(1));
+            fragment.mTextViewLeagueEvent.setText(mainActivity.getLeagueName());
             fragment.mTextViewDate.setText(mainActivity.getSeriesDate());
 
             int gameNumber = (int) result.get(MatchPlayData.GameNumber.ordinal());

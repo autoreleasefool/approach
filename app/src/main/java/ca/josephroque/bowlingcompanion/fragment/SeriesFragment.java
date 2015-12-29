@@ -186,8 +186,7 @@ public class SeriesFragment
         if (drawable != null)
             drawable.setAlpha(DisplayUtils.BLACK_ICON_ALPHA);
         menu.findItem(R.id.action_combine_series).setVisible(!drawerOpen
-                && ((MainActivity) getActivity()).getLeagueName().substring(1).equals(
-                Constants.NAME_OPEN_LEAGUE));
+                && ((MainActivity) getActivity()).getLeagueName().equals(Constants.NAME_OPEN_LEAGUE));
         menu.findItem(R.id.action_edit_date).setVisible(!drawerOpen);
         super.onPrepareOptionsMenu(menu);
     }
@@ -269,9 +268,7 @@ public class SeriesFragment
         final SimpleDateFormat dateFormat =
                 new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
         final String formattedDate = dateFormat.format(c.getTime());
-        seriesInList.setSeriesDate(DateUtils.formattedDateToPrettyCompact(formattedDate.substring(
-                0,
-                10)));
+        seriesInList.setSeriesDate(DateUtils.formattedDateToPrettyCompact(formattedDate.substring(0, 10)));
 
         getActivity().runOnUiThread(new Runnable() {
             @Override
@@ -343,7 +340,7 @@ public class SeriesFragment
     private void showCombineSeriesDialog(boolean manuallyOpened) {
         MainActivity mainActivity = (MainActivity) getActivity();
         if (mainActivity == null || (mCombineDialogShown && !manuallyOpened)
-                || !mainActivity.getLeagueName().substring(1).equals(Constants.NAME_OPEN_LEAGUE))
+                || !mainActivity.getLeagueName().equals(Constants.NAME_OPEN_LEAGUE))
             return;
 
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());

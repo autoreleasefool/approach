@@ -129,14 +129,12 @@ public class LeagueEventFragment
             @Override
             public void onSwiped(final RecyclerView.ViewHolder viewHolder, int direction) {
                 final int position = viewHolder.getAdapterPosition();
-                if (mListLeaguesEvents.get(position).getLeagueEventName().substring(1).equals(
-                        Constants.NAME_OPEN_LEAGUE)) {
+                if (mListLeaguesEvents.get(position).getLeagueEventName().equals(Constants.NAME_OPEN_LEAGUE)) {
                     mAdapterLeagueEvents.notifyItemChanged(position);
                     return;
                 }
 
-                mListLeaguesEvents.get(position).setIsDeleted(
-                        !mListLeaguesEvents.get(position).wasDeleted());
+                mListLeaguesEvents.get(position).setIsDeleted(!mListLeaguesEvents.get(position).wasDeleted());
                 mAdapterLeagueEvents.notifyItemChanged(position);
             }
         };
@@ -207,7 +205,7 @@ public class LeagueEventFragment
     public void onNAItemLongClick(final int position) {
         // When league name is long clicked, a dialog is opened to change or delete the item
         // Ignores long clicks on the "Open" league
-        if (!Constants.NAME_OPEN_LEAGUE.equals(mListLeaguesEvents.get(position).getLeagueEventName().substring(1)))
+        if (!Constants.NAME_OPEN_LEAGUE.equals(mListLeaguesEvents.get(position).getLeagueEventName()))
             showLongClickLeagueDialog(position);
     }
 
@@ -244,9 +242,8 @@ public class LeagueEventFragment
                 ? -1
                 : 1;
         final LeagueEvent updatedLeagueEvent = new LeagueEvent(leagueEventToChange.getId(),
-                ((leagueEventToChange.isEvent())
-                        ? "E"
-                        : "L") + name,
+                name,
+                leagueEventToChange.isEvent(),
                 (short) (leagueEventToChange.getAverage() * incorrectAverage),
                 baseAverage,
                 baseGames,
@@ -259,7 +256,7 @@ public class LeagueEventFragment
              */
             validInput = false;
             invalidInputMessage = R.string.dialog_default_name;
-        } else if (mListLeaguesEvents.contains(updatedLeagueEvent) && !leagueEventToChange.equals(updatedLeagueEvent)) {
+        } else if (hasNameBeenUsed(mListLeaguesEvents, name) && !leagueEventToChange.equals(updatedLeagueEvent)) {
             //User has provided a name which is already in use for a league or event
             validInput = false;
             invalidInputMessage = R.string.dialog_name_exists;
@@ -296,7 +293,7 @@ public class LeagueEventFragment
                     SQLiteDatabase database = DatabaseHelper.getInstance(getContext()).getWritableDatabase();
                     String[] whereArgs = {String.valueOf(updatedLeagueEvent.getId())};
                     ContentValues values = new ContentValues();
-                    values.put(LeagueEntry.COLUMN_LEAGUE_NAME, updatedLeagueEvent.getLeagueEventName().substring(1));
+                    values.put(LeagueEntry.COLUMN_LEAGUE_NAME, updatedLeagueEvent.getLeagueEventName());
                     values.put(LeagueEntry.COLUMN_BASE_AVERAGE, updatedLeagueEvent.getBaseAverage());
                     values.put(LeagueEntry.COLUMN_BASE_GAMES, updatedLeagueEvent.getBaseGames());
                     database.beginTransaction();
@@ -323,9 +320,8 @@ public class LeagueEventFragment
         int invalidInputMessageVal = -1;
         String invalidInputMessage = null;
         LeagueEvent leagueEvent = new LeagueEvent(0,
-                ((isEvent)
-                        ? "E"
-                        : "L") + leagueEventName,
+                leagueEventName,
+                isEvent,
                 (short) 0,
                 baseAverage,
                 baseGames,
@@ -346,7 +342,7 @@ public class LeagueEventFragment
              */
             validInput = false;
             invalidInputMessageVal = R.string.dialog_default_name;
-        } else if (mListLeaguesEvents.contains(leagueEvent)) {
+        } else if (hasNameBeenUsed(mListLeaguesEvents, leagueEventName)) {
             //User has provided a name which is already in use for a league or event
             validInput = false;
             invalidInputMessageVal = R.string.dialog_name_exists;
@@ -408,7 +404,7 @@ public class LeagueEventFragment
 
         final LeagueEvent leagueEvent = mListLeaguesEvents.get(position);
         new AlertDialog.Builder(getContext())
-                .setTitle(leagueEvent.getLeagueEventName().substring(1))
+                .setTitle(leagueEvent.getLeagueEventName())
                 .setSingleChoiceItems(R.array.arr_long_click_name_average, 0, null)
                 .setPositiveButton(R.string.dialog_okay, onClickListener)
                 .setNegativeButton(R.string.dialog_cancel, onClickListener)
@@ -450,7 +446,7 @@ public class LeagueEventFragment
 
         new AlertDialog.Builder(getContext())
                 .setTitle("Warning!")
-                .setMessage("Are you sure you want to delete " + leagueEvent.getLeagueEventName().substring(1) + "?"
+                .setMessage("Are you sure you want to delete " + leagueEvent.getLeagueEventName() + "?"
                         + " This cannot be undone!")
                 .setPositiveButton(R.string.dialog_delete, onClickListener)
                 .setNegativeButton(R.string.dialog_cancel, onClickListener)
@@ -540,6 +536,23 @@ public class LeagueEventFragment
     }
 
     /**
+     * Iterates through the existing list of leagues and events to check if the new name has already been used.
+     *
+     * @param leagueEvents list of leagues and events
+     * @param newName a name to check for in the list
+     * @return {@code true} if any of the instances in {@code leagueEvents} has a name that is equal to {@code newName},
+     * or {@code false} otherwise
+     */
+    private static boolean hasNameBeenUsed(List<LeagueEvent> leagueEvents, String newName) {
+        for (LeagueEvent item : leagueEvents) {
+            if (item.getName().equals(newName))
+                return true;
+        }
+
+        return false;
+    }
+
+    /**
      * Creates a new instance of this fragment to display.
      *
      * @return a new instance of LeagueEventFragment
@@ -577,7 +590,7 @@ public class LeagueEventFragment
                 return null;
 
             LeagueEvent selectedLeagueEvent = fragment.mListLeaguesEvents.get(position[0]);
-            boolean isEvent = selectedLeagueEvent.getLeagueEventName().substring(0, 1).equals("E");
+            boolean isEvent = selectedLeagueEvent.isEvent();
 
             SQLiteDatabase db = DatabaseHelper.getInstance(mainActivity).getWritableDatabase();
             SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA);
@@ -748,18 +761,13 @@ public class LeagueEventFragment
                                 leagueNumberOfGames,
                                 baseAverage,
                                 baseGames);
-                        LeagueEvent leagueEvent = new LeagueEvent(cursor.getLong(cursor.getColumnIndex(
-                                "lid")),
-                                ((isEvent)
-                                        ? "E"
-                                        : "L")
-                                        + cursor.getString(cursor.getColumnIndex(
-                                        LeagueEntry.COLUMN_LEAGUE_NAME)),
+                        LeagueEvent leagueEvent = new LeagueEvent(cursor.getLong(cursor.getColumnIndex("lid")),
+                                cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_LEAGUE_NAME)),
+                                isEvent,
                                 average,
                                 baseAverage,
                                 baseGames,
-                                (byte) cursor.getInt(cursor.getColumnIndex(
-                                        LeagueEntry.COLUMN_NUMBER_OF_GAMES)));
+                                (byte) cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NUMBER_OF_GAMES)));
                         listLeagueEvents.add(leagueEvent);
                         leagueTotal = 0;
                         leagueNumberOfGames = 0;
@@ -780,18 +788,13 @@ public class LeagueEventFragment
                 int baseGames = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_BASE_GAMES));
                 short average = Score.getAdjustedAverage(leagueTotal, leagueNumberOfGames, baseAverage, baseGames);
 
-                LeagueEvent leagueEvent = new LeagueEvent(cursor.getLong(cursor.getColumnIndex(
-                        "lid")),
-                        ((isEvent)
-                                ? "E"
-                                : "L")
-                                + cursor.getString(cursor.getColumnIndex(
-                                LeagueEntry.COLUMN_LEAGUE_NAME)),
+                LeagueEvent leagueEvent = new LeagueEvent(cursor.getLong(cursor.getColumnIndex("lid")),
+                        cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_LEAGUE_NAME)),
+                        isEvent,
                         average,
                         baseAverage,
                         baseGames,
-                        (byte) cursor.getInt(cursor.getColumnIndex(
-                                LeagueEntry.COLUMN_NUMBER_OF_GAMES)));
+                        (byte) cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NUMBER_OF_GAMES)));
                 listLeagueEvents.add(leagueEvent);
             }
 
@@ -848,19 +851,19 @@ public class LeagueEventFragment
             String currentDate = df.format(new Date());
 
             ContentValues values = new ContentValues();
-            values.put(LeagueEntry.COLUMN_LEAGUE_NAME, league[0].getLeagueEventName().substring(1));
+            values.put(LeagueEntry.COLUMN_LEAGUE_NAME, league[0].getLeagueEventName());
             values.put(LeagueEntry.COLUMN_DATE_MODIFIED, currentDate);
             values.put(LeagueEntry.COLUMN_BOWLER_ID, bowlerId);
             values.put(LeagueEntry.COLUMN_BASE_AVERAGE, league[0].getBaseAverage());
             values.put(LeagueEntry.COLUMN_BASE_GAMES, league[0].getBaseGames());
             values.put(LeagueEntry.COLUMN_NUMBER_OF_GAMES, league[0].getLeagueEventNumberOfGames());
-            values.put(LeagueEntry.COLUMN_IS_EVENT, league[0].getLeagueEventName().startsWith("E"));
+            values.put(LeagueEntry.COLUMN_IS_EVENT, league[0].isEvent());
 
             db.beginTransaction();
             try {
                 //Creates the entry for the league or event in the "league" database
                 league[0].setLeagueEventId(db.insert(LeagueEntry.TABLE_NAME, null, values));
-                if (league[0].getLeagueEventName().startsWith("E")) {
+                if (league[0].isEvent()) {
                     /*
                      * If the new entry is an event, its series is also created at this time
                      * since there is only a single series to an event

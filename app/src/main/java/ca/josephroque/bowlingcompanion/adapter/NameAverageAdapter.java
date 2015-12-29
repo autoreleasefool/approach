@@ -12,6 +12,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import ca.josephroque.bowlingcompanion.R;
+import ca.josephroque.bowlingcompanion.wrapper.LeagueEvent;
 import ca.josephroque.bowlingcompanion.wrapper.NameAverageId;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
@@ -158,9 +159,7 @@ public class NameAverageAdapter<T extends NameAverageId>
                         holder.mImageViewType.setImageDrawable(mItemDrawables[0]);
                         break;
                     case DATA_LEAGUES_EVENTS:
-                        holder.mTextViewName.setText(mListNamesAndAverages.get(position)
-                                .getName()
-                                .substring(1));
+                        holder.mTextViewName.setText(mListNamesAndAverages.get(position).getName());
                         if (mItemDrawables[0] == null || mItemDrawables[1] == null) {
                             mItemDrawables[0]
                                     = DisplayUtils.getDrawable(holder.itemView.getResources(),
@@ -169,8 +168,9 @@ public class NameAverageAdapter<T extends NameAverageId>
                                     = DisplayUtils.getDrawable(holder.itemView.getResources(),
                                     R.drawable.ic_e_black_24dp);
                         }
+                        LeagueEvent leagueEvent = (LeagueEvent) mListNamesAndAverages.get(position);
                         holder.mImageViewType.setImageDrawable(
-                                mListNamesAndAverages.get(position).getName().startsWith("L")
+                                !leagueEvent.isEvent()
                                         ? mItemDrawables[0]
                                         : mItemDrawables[1]);
                         break;
@@ -193,8 +193,6 @@ public class NameAverageAdapter<T extends NameAverageId>
                 break;
             case VIEWTYPE_DELETED:
                 String nameToDelete = mListNamesAndAverages.get(position).getName();
-                if (mDataType == DATA_LEAGUES_EVENTS)
-                    nameToDelete = nameToDelete.substring(1);
                 final long idToDelete = mListNamesAndAverages.get(position).getId();
                 final View.OnClickListener onClickListener = new View.OnClickListener() {
                     @Override

@@ -478,6 +478,7 @@ public class BowlerFragment
                                     mLeagueSelectedCallback.onLeagueSelected(new LeagueEvent(
                                                     mQuickLeagueId,
                                                     mQuickLeagueName,
+                                                    true,
                                                     (short) 0,
                                                     (short) -1,
                                                     -1,
@@ -498,6 +499,7 @@ public class BowlerFragment
                                     mLeagueSelectedCallback.onLeagueSelected(new LeagueEvent(
                                                     mRecentLeagueId,
                                                     mRecentLeagueName,
+                                                    true,
                                                     (short) 0,
                                                     (short) -1,
                                                     -1,
@@ -804,12 +806,10 @@ public class BowlerFragment
 
                 cursor = database.rawQuery(rawRecentQuery, rawRecentArgs);
                 if (cursor.moveToFirst()) {
-                    fragment.mQuickBowlerName = cursor.getString(
-                            cursor.getColumnIndex(BowlerEntry.COLUMN_BOWLER_NAME));
-                    fragment.mQuickLeagueName = cursor.getString(
-                            cursor.getColumnIndex(LeagueEntry.COLUMN_LEAGUE_NAME));
-                    fragment.mQuickNumberOfGames = (byte) cursor.getInt(
-                            cursor.getColumnIndex(LeagueEntry.COLUMN_NUMBER_OF_GAMES));
+                    fragment.mQuickBowlerName = cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_BOWLER_NAME));
+                    fragment.mQuickLeagueName = cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_LEAGUE_NAME));
+                    fragment.mQuickNumberOfGames
+                            = (byte) cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NUMBER_OF_GAMES));
                 } else {
                     fragment.mQuickBowlerId = -1;
                     fragment.mQuickLeagueId = -1;

@@ -79,7 +79,7 @@ public class NameLeagueEventDialog
             if (mEditing) {
                 mLeagueEvent = arguments.getParcelable(ARG_LEAGUE_EVENT);
                 if (mLeagueEvent != null) {
-                    leagueEventName = mLeagueEvent.getLeagueEventName().substring(1);
+                    leagueEventName = mLeagueEvent.getLeagueEventName();
                     if (mLeagueEvent.getBaseAverage() >= 0)
                         leagueBaseAverage = Short.toString(mLeagueEvent.getBaseAverage());
                     if (mLeagueEvent.getBaseGames() > 0)

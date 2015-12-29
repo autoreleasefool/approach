@@ -313,8 +313,7 @@ public class StatsListFragment
             namesAndValues.add(new ArrayList<Pair<String, String>>());
             mStatsGameAverage = 4;
             final byte numberOfGames = (statsToLoad >= StatUtils.LOADING_LEAGUE_STATS
-                    ? ((mainActivity.getLeagueName().substring(1)
-                    .equals(Constants.NAME_OPEN_LEAGUE))
+                    ? ((mainActivity.getLeagueName().equals(Constants.NAME_OPEN_LEAGUE))
                     ? 5
                     : mainActivity.getDefaultNumberOfGames())
                     : 20);
@@ -420,13 +419,13 @@ public class StatsListFragment
                 case StatUtils.LOADING_LEAGUE_STATS:
                     fragment.mNumberOfGeneralDetails = 2;
                     listStatNamesAndValues.get(fragment.mStatsGeneral).add(1,
-                            Pair.create("League/Event", mainActivity.getLeagueName().substring(1)));
+                            Pair.create("League/Event", mainActivity.getLeagueName()));
                     cursor = fragment.getBowlerOrLeagueCursor(true);
                     break;
                 case StatUtils.LOADING_SERIES_STATS:
                     fragment.mNumberOfGeneralDetails = 3;
                     listStatNamesAndValues.get(fragment.mStatsGeneral).add(1,
-                            Pair.create("League/Event", mainActivity.getLeagueName().substring(1)));
+                            Pair.create("League/Event", mainActivity.getLeagueName()));
                     listStatNamesAndValues.get(fragment.mStatsGeneral).add(2,
                             Pair.create("Date", mainActivity.getSeriesDate()));
                     cursor = fragment.getSeriesCursor();
@@ -434,7 +433,7 @@ public class StatsListFragment
                 case StatUtils.LOADING_GAME_STATS:
                     fragment.mNumberOfGeneralDetails = 4;
                     listStatNamesAndValues.get(fragment.mStatsGeneral).add(1,
-                            Pair.create("League/Event", mainActivity.getLeagueName().substring(1)));
+                            Pair.create("League/Event", mainActivity.getLeagueName()));
                     listStatNamesAndValues.get(fragment.mStatsGeneral).add(2,
                             Pair.create("Date", mainActivity.getSeriesDate()));
                     listStatNamesAndValues.get(fragment.mStatsGeneral).add(3,
@@ -452,8 +451,7 @@ public class StatsListFragment
              */
 
             final byte numberOfGames = (toLoad >= StatUtils.LOADING_LEAGUE_STATS
-                    ? ((mainActivity.getLeagueName().substring(1)
-                    .equals(Constants.NAME_OPEN_LEAGUE))
+                    ? ((mainActivity.getLeagueName().equals(Constants.NAME_OPEN_LEAGUE))
                     ? 5
                     : mainActivity.getDefaultNumberOfGames())
                     : 20);

@@ -574,8 +574,7 @@ public class MainActivity
 
     @Override
     public void onCreateNewSeries(boolean isEvent) {
-        boolean promptNumberOfGames = !isEvent && mLeagueName != null
-                && mLeagueName.substring(1).equals(Constants.NAME_OPEN_LEAGUE);
+        boolean promptNumberOfGames = !isEvent && mLeagueName != null && mLeagueName.equals(Constants.NAME_OPEN_LEAGUE);
 
         if (promptNumberOfGames) {
             final NumberPicker numberPicker = new NumberPicker(this);
@@ -646,7 +645,7 @@ public class MainActivity
         mDrawerAdapter.setCurrentItem(gameFragment.getCurrentGame()
                 + NavigationUtils.NAVIGATION_STATIC_ITEMS + 1 + totalOffset);
         mDrawerAdapter.setHeaderTitle(mBowlerName);
-        mDrawerAdapter.setHeaderSubtitle(mLeagueName.substring(1));
+        mDrawerAdapter.setHeaderSubtitle(mLeagueName);
     }
 
     /**
