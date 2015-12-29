@@ -391,6 +391,44 @@ public final class Score {
     }
 
     /**
+     * Calculates the average of a league based on the games played so far and their scores, along with the base
+     * average of the league (if one has been set).
+     *
+     * @param leagueTotal total of the games recorded in the league
+     * @param leagueNumberOfGames number of games recorded in the league
+     * @param baseAverage base average of the league
+     * @param baseGames number of games which contributed to the base average
+     * @return the average of the league
+     */
+    public static short getAdjustedAverage(int leagueTotal, int leagueNumberOfGames, short baseAverage, int baseGames) {
+        int average = 0;
+
+        // If a base average was provided, it is multiplied by the base number of games so the average is calculated
+        // accurately
+        if (baseAverage >= 0) {
+            if (baseGames < 1)
+                baseGames = 1;
+            average = baseAverage * baseGames;
+        } else {
+            // If no base average is provided, base games is set to 0 so it does not affect later calculations
+            baseGames = 0;
+        }
+
+        // If at least one game was bowled
+        if (leagueNumberOfGames > 0) {
+            // Add the total of the game to the average and divide by the total number of games and base games
+            average += leagueTotal;
+            average /= leagueNumberOfGames + baseGames;
+        } else if (baseGames > 0) {
+            // Otherwise, if a base average was provided, just divide by the number of base games
+            average /= baseGames;
+        }
+
+        // The final value should always be between 0 and 450, so cast it into a short and return
+        return (short) average;
+    }
+
+    /**
      * Default private constructor.
      */
     private Score() {

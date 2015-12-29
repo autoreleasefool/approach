@@ -15,6 +15,10 @@ public class LeagueEvent
     private final String mLeagueEventName;
     /** Average of the league / event. */
     private final short mLeagueEventAverage;
+    /** Initial average of the league. */
+    private final short mLeagueBaseAverage;
+    /** Initial number of games played. */
+    private final int mLeagueBaseGames;
     /** Number of games in the league / event. */
     private final byte mLeagueEventNumberOfGames;
     /** Indicates if this league / event has been deleted. */
@@ -26,12 +30,15 @@ public class LeagueEvent
      * @param id unique id of the league / event
      * @param name name of the league / event
      * @param average average of the league / event
+     * @param baseGames number of games used towards the average
      * @param numberOfGames number of games in the league / event
      */
-    public LeagueEvent(long id, String name, short average, byte numberOfGames) {
+    public LeagueEvent(long id, String name, short average, short baseAverage, int baseGames, byte numberOfGames) {
         this.mLeagueEventId = id;
         this.mLeagueEventName = name;
         this.mLeagueEventAverage = average;
+        this.mLeagueBaseAverage = baseAverage;
+        this.mLeagueBaseGames = baseGames;
         this.mLeagueEventNumberOfGames = numberOfGames;
     }
 
@@ -44,6 +51,8 @@ public class LeagueEvent
         this.mLeagueEventId = pc.readLong();
         this.mLeagueEventName = pc.readString();
         this.mLeagueEventAverage = (short) pc.readInt();
+        this.mLeagueBaseAverage = (short) pc.readInt();
+        this.mLeagueBaseGames = pc.readInt();
         this.mLeagueEventNumberOfGames = pc.readByte();
     }
 
@@ -72,6 +81,30 @@ public class LeagueEvent
      */
     public short getLeagueEventAverage() {
         return mLeagueEventAverage;
+    }
+
+    /**
+     * If this instance is a league, gets its base average.
+     *
+     * @return the value of {@code mLeagueBaseAverage}, or -1 if {@code isEvent()} is true
+     */
+    public short getBaseAverage() {
+        if (isEvent())
+            return -1;
+        else
+            return mLeagueBaseAverage;
+    }
+
+    /**
+     * If this instance is a league, gets the number of games used to achieve the base average.
+     *
+     * @return the value of {@code mLeagueBaseGames}, or -1 if {@code isEvent()} is true
+     */
+    public int getBaseGames() {
+        if (isEvent())
+            return -1;
+        else
+            return mLeagueBaseGames;
     }
 
     /**
@@ -121,6 +154,8 @@ public class LeagueEvent
         pc.writeLong(mLeagueEventId);
         pc.writeString(mLeagueEventName);
         pc.writeInt(mLeagueEventAverage);
+        pc.writeInt(mLeagueBaseAverage);
+        pc.writeInt(mLeagueBaseGames);
         pc.writeByte(mLeagueEventNumberOfGames);
     }
 

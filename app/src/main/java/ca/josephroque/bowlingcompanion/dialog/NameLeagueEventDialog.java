@@ -10,6 +10,7 @@ import android.support.v4.app.DialogFragment;
 import android.text.InputFilter;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.R;
@@ -27,8 +28,11 @@ public class NameLeagueEventDialog
     @SuppressWarnings("unused")
     private static final String TAG = "NewLeagueEventDialog";
 
-    /** Argument to indicate if the dialog should provide an input for the number of games, or just to edit a name. */
-    private static final String ARG_EDITING_NAME = "arg_editing_name";
+    /**
+     * Argument to indicate if the dialog should provide an input for the number of games, or just to edit the
+     * instance.
+     */
+    private static final String ARG_EDITING = "arg_editing";
     /** Argument to indicate the league / event name being changed. */
     private static final String ARG_LEAGUE_EVENT = "arg_league_event";
 
@@ -37,8 +41,8 @@ public class NameLeagueEventDialog
 
     /** If true, a new event is being added, a league otherwise. */
     private boolean mIsEventMode;
-    /** If true, a league or event's name is being changed. */
-    private boolean mEditingName;
+    /** If true, a league or event is being changed. */
+    private boolean mEditing;
     /** The league / event being edited. Null if a new league / event is being created. */
     private LeagueEvent mLeagueEvent;
 
@@ -50,23 +54,36 @@ public class NameLeagueEventDialog
 
         CharSequence leagueEventName = "";
         CharSequence leagueEventNumberOfGames = "";
+        CharSequence leagueBaseAverage = "";
+        CharSequence leagueCurrentGames = "";
 
         if (savedInstanceState != null) {
             //Loads member variables from bundle
             mIsEventMode = savedInstanceState.getBoolean(Constants.EXTRA_EVENT_MODE);
-            mEditingName = savedInstanceState.getBoolean(ARG_EDITING_NAME);
+            mEditing = savedInstanceState.getBoolean(ARG_EDITING);
             leagueEventName = savedInstanceState.getCharSequence(Constants.EXTRA_NAME_LEAGUE);
 
-            if (!mEditingName)
+            if (!mIsEventMode) {
+                leagueBaseAverage = savedInstanceState.getCharSequence(Constants.EXTRA_BASE_AVERAGE);
+                leagueCurrentGames = savedInstanceState.getCharSequence(Constants.EXTRA_BASE_GAMES);
+            }
+
+            if (!mEditing)
                 leagueEventNumberOfGames = savedInstanceState.getCharSequence(Constants.EXTRA_NUMBER_OF_GAMES);
             else
                 mLeagueEvent = savedInstanceState.getParcelable(ARG_LEAGUE_EVENT);
         } else {
             Bundle arguments = getArguments();
             mIsEventMode = arguments.getBoolean(Constants.EXTRA_EVENT_MODE);
-            mEditingName = arguments.getBoolean(ARG_EDITING_NAME);
-            if (mEditingName)
+            mEditing = arguments.getBoolean(ARG_EDITING);
+            if (mEditing) {
                 mLeagueEvent = arguments.getParcelable(ARG_LEAGUE_EVENT);
+                if (mLeagueEvent != null) {
+                    leagueEventName = mLeagueEvent.getLeagueEventName();
+                    leagueBaseAverage = Short.toString(mLeagueEvent.getBaseAverage());
+                    leagueCurrentGames = Integer.toString(mLeagueEvent.getBaseGames());
+                }
+            }
         }
 
         final EditText editTextName = (EditText) dialogView.findViewById(R.id.et_league_event_name);
@@ -78,10 +95,23 @@ public class NameLeagueEventDialog
         editTextName.setFilters(new InputFilter[]{new InputFilter.LengthFilter(Constants.NAME_MAX_LENGTH)});
         editTextName.setText(leagueEventName);
 
-        final EditText editTextNumberOfGames =
-                (EditText) dialogView.findViewById(R.id.et_league_event_games);
+        final EditText editTextBaseAverage = (EditText) dialogView.findViewById(R.id.et_league_base_avg);
+        final EditText editTextCurrentGames = (EditText) dialogView.findViewById(R.id.et_league_base_games);
+        final TextView textViewBaseAverage = (TextView) dialogView.findViewById(R.id.tv_base_avg);
+        if (mIsEventMode) {
+            textViewBaseAverage.setVisibility(View.GONE);
+            editTextCurrentGames.setVisibility(View.GONE);
+            editTextBaseAverage.setVisibility(View.GONE);
+        } else {
+            editTextBaseAverage.setHint("Current Average");
+            editTextBaseAverage.setText(leagueBaseAverage);
+            editTextCurrentGames.setHint("Games so far (max 100,000)");
+            editTextCurrentGames.setText(leagueCurrentGames);
+        }
+
+        final EditText editTextNumberOfGames = (EditText) dialogView.findViewById(R.id.et_league_event_games);
         final int positiveButtonText;
-        if (mEditingName) {
+        if (mEditing) {
             editTextNumberOfGames.setVisibility(View.GONE);
             positiveButtonText = R.string.dialog_change;
         } else {
@@ -96,11 +126,15 @@ public class NameLeagueEventDialog
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (which == DialogInterface.BUTTON_POSITIVE) {
-                    if (mEditingName) {
-                        changeLeagueName(editTextName.getText().toString().trim());
+                    if (mEditing) {
+                        updateLeagueEvent(editTextName.getText().toString().trim(),
+                                editTextBaseAverage.getText().toString().trim(),
+                                editTextCurrentGames.getText().toString().trim());
                     } else {
-                        addNewLeague(editTextName.getText().toString().trim(),
-                                editTextNumberOfGames.getText().toString().trim());
+                        addNewLeagueEvent(editTextName.getText().toString().trim(),
+                                editTextNumberOfGames.getText().toString().trim(),
+                                editTextBaseAverage.getText().toString().trim(),
+                                editTextCurrentGames.getText().toString().trim());
                     }
                 }
                 dialog.dismiss();
@@ -119,11 +153,18 @@ public class NameLeagueEventDialog
 
         //Saves member variables to bundle
         outState.putBoolean(Constants.EXTRA_EVENT_MODE, mIsEventMode);
-        outState.putBoolean(ARG_EDITING_NAME, mEditingName);
+        outState.putBoolean(ARG_EDITING, mEditing);
         outState.putCharSequence(Constants.EXTRA_NAME_LEAGUE,
                 ((EditText) getDialog().findViewById(R.id.et_league_event_name)).getText());
 
-        if (!mEditingName)
+        if (!mIsEventMode) {
+            outState.putCharSequence(Constants.EXTRA_BASE_AVERAGE,
+                    ((EditText) getDialog().findViewById(R.id.et_league_base_avg)).getText());
+            outState.putCharSequence(Constants.EXTRA_BASE_GAMES,
+                    ((EditText) getDialog().findViewById(R.id.et_league_base_games)).getText());
+        }
+
+        if (!mEditing)
             outState.putCharSequence(Constants.EXTRA_NUMBER_OF_GAMES,
                     ((EditText) getDialog().findViewById(R.id.et_league_event_games)).getText());
         else
@@ -131,13 +172,41 @@ public class NameLeagueEventDialog
     }
 
     /**
-     * Checks if the user input is valid, and changes the name of the league / event if so.
+     * Checks if the user input is valid, and changes the name and base average of the league / event if so.
      *
-     * @param newLeagueName new name for league / event
+     * @param leagueName new name for league / event
+     * @param strBaseAverage new base average for the league / event
+     * @param strBaseGames new base number of games for determining the average
      */
-    private void changeLeagueName(String newLeagueName) {
-        if (newLeagueName.length() > 0)
-            mDialogListener.onChangeLeagueEventName(mLeagueEvent, newLeagueName);
+    private void updateLeagueEvent(String leagueName, String strBaseAverage, String strBaseGames) {
+        short baseAverage;
+        int baseGames;
+        if (strBaseAverage.length() > 0) {
+            try {
+                baseAverage = Short.parseShort(strBaseAverage);
+            } catch (NumberFormatException ex) {
+                baseAverage = -1;
+            }
+
+            if (baseAverage > -1 && strBaseGames.length() > 0) {
+                try {
+                    baseGames = Integer.parseInt(strBaseGames);
+                } catch (NumberFormatException ex) {
+                    baseGames = 0;
+                }
+            } else {
+                baseGames = 0;
+            }
+        } else {
+            baseAverage = -1;
+            baseGames = 0;
+        }
+
+        if (baseAverage >= 0 && baseGames == 0)
+            baseGames = 1;
+
+        if (leagueName.length() > 0 && baseAverage >= -1 && baseAverage <= 450 && baseGames >= 0 && baseGames <= 100000)
+            mDialogListener.onUpdateLeagueEvent(mLeagueEvent, leagueName, baseAverage, baseGames);
     }
 
     /**
@@ -145,8 +214,13 @@ public class NameLeagueEventDialog
      *
      * @param newLeagueName name for new league / event
      * @param strNumberOfGames number of games for new league / event
+     * @param strBaseAverage base average of the league
+     * @param strBaseGames base number of games for determining the average
      */
-    private void addNewLeague(String newLeagueName, String strNumberOfGames) {
+    private void addNewLeagueEvent(String newLeagueName,
+                                   String strNumberOfGames,
+                                   String strBaseAverage,
+                                   String strBaseGames) {
         if (newLeagueName.length() > 0 && strNumberOfGames.length() > 0) {
             byte numberOfGames;
             try {
@@ -155,9 +229,37 @@ public class NameLeagueEventDialog
                 numberOfGames = -1;
             }
 
+            short baseAverage;
+            int baseGames;
+            if (strBaseAverage.length() > 0) {
+                try {
+                    baseAverage = Short.parseShort(strBaseAverage);
+                } catch (NumberFormatException ex) {
+                    baseAverage = -1;
+                }
+
+                if (baseAverage > -1 && strBaseGames.length() > 0) {
+                    try {
+                        baseGames = Integer.parseInt(strBaseGames);
+                    } catch (NumberFormatException ex) {
+                        baseGames = 0;
+                    }
+                } else {
+                    baseGames = 1;
+                }
+            } else {
+                baseAverage = -1;
+                baseGames = 0;
+            }
+
+            if (baseAverage >= 0 && baseGames == 0)
+                baseGames = 1;
+
             mDialogListener.onAddNewLeagueEvent(mIsEventMode,
                     newLeagueName,
-                    numberOfGames);
+                    numberOfGames,
+                    baseAverage,
+                    baseGames);
         }
     }
 
@@ -170,41 +272,48 @@ public class NameLeagueEventDialog
          * Executed when user opts to add a new league or event.
          *
          * @param isEvent if true, a new event was added. If false, a new league was added
-         * @param leagueEventName name of the new league or event
+         * @param name name of the new league or event
          * @param numberOfGames number of games in the new league or event
+         * @param baseAverage base average for the game
+         * @param baseGames base number of games for determining the average
          */
-        void onAddNewLeagueEvent(boolean isEvent, String leagueEventName, byte numberOfGames);
+        void onAddNewLeagueEvent(boolean isEvent,
+                                 String name,
+                                 byte numberOfGames,
+                                 short baseAverage,
+                                 int baseGames);
 
         /**
-         * Executed when user opts to change the name of a league or event.
+         * Executed when user opts to change the name or base average of a league or event.
          *
          * @param leagueEvent league or event name that is being changed
-         * @param leagueEventName new name
+         * @param name new name
+         * @param baseAverage new base average for the game
+         * @param baseGames base number of games for determining the average
          */
-        void onChangeLeagueEventName(LeagueEvent leagueEvent, String leagueEventName);
+        void onUpdateLeagueEvent(LeagueEvent leagueEvent, String name, short baseAverage, int baseGames);
     }
 
     /**
      * Creates a new instance of this DialogFragment and sets the listener to the parameter passed through this method.
      *
      * @param listener a listener for on click events
-     * @param newEvent indicates if a new event or league is being created. Ignored if {@code editingName} is {@code
-     * true}
-     * @param editingName if {@code true}, then the name of an event or league is being changed
-     * @param leagueEvent league / event to change name of. Can be null if {@code editingName} is false
+     * @param newEvent indicates if a new event or league is being created. Ignored if {@code editing} is {@code true}
+     * @param editing if {@code true}, then an event or league is being changed
+     * @param leagueEvent league / event to change. Can be null if {@code editing} is false
      * @return a new instance of NameLeagueEventDialog
      */
     public static NameLeagueEventDialog newInstance(NameLeagueEventDialogListener listener,
                                                     boolean newEvent,
-                                                    boolean editingName,
+                                                    boolean editing,
                                                     @Nullable LeagueEvent leagueEvent) {
         NameLeagueEventDialog dialog = new NameLeagueEventDialog();
         dialog.mDialogListener = listener;
 
         Bundle args = new Bundle();
         args.putBoolean(Constants.EXTRA_EVENT_MODE, newEvent);
-        args.putBoolean(ARG_EDITING_NAME, editingName);
-        if (editingName) {
+        args.putBoolean(ARG_EDITING, editing);
+        if (editing) {
             if (leagueEvent == null)
                 throw new IllegalArgumentException("Must provide a league / event to change.");
             else

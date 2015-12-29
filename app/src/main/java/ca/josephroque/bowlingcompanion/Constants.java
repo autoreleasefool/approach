@@ -114,6 +114,10 @@ public final class Constants {
     public static final String EXTRA_SERIES = "ES";
     /** Identifies a boolean indicating if the user has seen a the tutorial. */
     public static final String EXTRA_IGNORE_WATCHED = "EIW";
+    /** Identifies the base average of a league. */
+    public static final String EXTRA_BASE_AVERAGE = "ex_base_avg";
+    /** Identifies the base current number of games of a league. */
+    public static final String EXTRA_BASE_GAMES = "ex_cur_games";
 
     // REGULAR EXPRESSIONS
     /** Regular Expression to match regular names. */

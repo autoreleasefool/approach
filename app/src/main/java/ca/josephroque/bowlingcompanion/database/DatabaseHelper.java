@@ -192,7 +192,9 @@ public final class DatabaseHelper
                 + "CHECK (" + LeagueEntry.COLUMN_IS_EVENT + " = 0 OR "
                 + LeagueEntry.COLUMN_IS_EVENT + " = 1), "
                 + "CHECK (" + LeagueEntry.COLUMN_BASE_AVERAGE + " >= -1 AND "
-                + LeagueEntry.COLUMN_BASE_AVERAGE + " <= 450)"
+                + LeagueEntry.COLUMN_BASE_AVERAGE + " <= 450), "
+                + "CHECK (" + LeagueEntry.COLUMN_BASE_GAMES + " >= 0 AND "
+                + LeagueEntry.COLUMN_BASE_GAMES + "<= 100000)"
                 + ");");
     }
 

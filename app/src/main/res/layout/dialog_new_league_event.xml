@@ -1,27 +1,88 @@
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
-    <EditText
-        android:id="@+id/et_league_event_name"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="4dp"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginTop="12dp"
-        android:inputType="textCapWords" />
+        android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/et_league_event_games"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginTop="4dp"
-        android:inputType="number" />
+        <ca.josephroque.bowlingcompanion.view.CustomTextInputLayout
+            android:id="@+id/textinput_league_event_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-</LinearLayout>
+            <EditText
+                android:id="@+id/et_league_event_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:layout_marginTop="12dp"
+                android:inputType="textCapWords" />
+
+        </ca.josephroque.bowlingcompanion.view.CustomTextInputLayout>
+
+        <ca.josephroque.bowlingcompanion.view.CustomTextInputLayout
+            android:id="@+id/textinput_league_event_games"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/et_league_event_games"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:layout_marginTop="4dp"
+                android:inputType="number" />
+
+        </ca.josephroque.bowlingcompanion.view.CustomTextInputLayout>
+
+        <TextView
+            android:id="@+id/tv_base_avg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:text="@string/text_league_base_average_explanation"/>
+
+        <ca.josephroque.bowlingcompanion.view.CustomTextInputLayout
+            android:id="@+id/textinput_league_base_avg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/et_league_base_avg"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:layout_marginTop="4dp"
+                android:inputType="number" />
+
+        </ca.josephroque.bowlingcompanion.view.CustomTextInputLayout>
+
+        <ca.josephroque.bowlingcompanion.view.CustomTextInputLayout
+            android:id="@+id/textinput_event_base_games"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/et_league_base_games"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="12dp"
+                android:layout_marginLeft="4dp"
+                android:layout_marginRight="4dp"
+                android:layout_marginTop="4dp"
+                android:inputType="number" />
+
+        </ca.josephroque.bowlingcompanion.view.CustomTextInputLayout>
+
+    </LinearLayout>
+
+</ScrollView>

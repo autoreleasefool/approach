@@ -35,6 +35,7 @@ import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.MainActivity;
 import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.adapter.NameAverageAdapter;
+import ca.josephroque.bowlingcompanion.utilities.Score;
 import ca.josephroque.bowlingcompanion.wrapper.LeagueEvent;
 import ca.josephroque.bowlingcompanion.wrapper.Series;
 import ca.josephroque.bowlingcompanion.database.Contract.FrameEntry;
@@ -232,14 +233,19 @@ public class LeagueEventFragment
     }
 
     @Override
-    public void onChangeLeagueEventName(final LeagueEvent leagueEventToChange, String name) {
+    public void onUpdateLeagueEvent(final LeagueEvent leagueEventToChange,
+                                    String name,
+                                    short baseAverage,
+                                    int baseGames) {
         boolean validInput = true;
         int invalidInputMessage = -1;
-        final LeagueEvent leagueEventWithNewName = new LeagueEvent(leagueEventToChange.getId(),
+        final LeagueEvent updatedLeagueEvent = new LeagueEvent(leagueEventToChange.getId(),
                 ((leagueEventToChange.isEvent())
                         ? "E"
                         : "L") + name,
                 leagueEventToChange.getAverage(),
+                baseAverage,
+                baseGames,
                 leagueEventToChange.getLeagueEventNumberOfGames());
 
         if (name.equalsIgnoreCase(Constants.NAME_OPEN_LEAGUE)) {
@@ -249,7 +255,7 @@ public class LeagueEventFragment
              */
             validInput = false;
             invalidInputMessage = R.string.dialog_default_name;
-        } else if (mListLeaguesEvents.contains(leagueEventWithNewName)) {
+        } else if (mListLeaguesEvents.contains(updatedLeagueEvent)) {
             //User has provided a name which is already in use for a league or event
             validInput = false;
             invalidInputMessage = R.string.dialog_name_exists;
@@ -273,16 +279,18 @@ public class LeagueEventFragment
                     .show();
         } else {
             int position = mListLeaguesEvents.indexOf(leagueEventToChange);
-            mListLeaguesEvents.set(position, leagueEventWithNewName);
+            mListLeaguesEvents.set(position, updatedLeagueEvent);
             mAdapterLeagueEvents.notifyItemChanged(position);
 
             ((MainActivity) getActivity()).addSavingThread(new Thread(new Runnable() {
                 @Override
                 public void run() {
                     SQLiteDatabase database = DatabaseHelper.getInstance(getContext()).getWritableDatabase();
-                    String[] whereArgs = {String.valueOf(leagueEventWithNewName.getId())};
+                    String[] whereArgs = {String.valueOf(updatedLeagueEvent.getId())};
                     ContentValues values = new ContentValues();
-                    values.put(LeagueEntry.COLUMN_LEAGUE_NAME, leagueEventWithNewName.getLeagueEventName());
+                    values.put(LeagueEntry.COLUMN_LEAGUE_NAME, updatedLeagueEvent.getLeagueEventName());
+                    values.put(LeagueEntry.COLUMN_BASE_AVERAGE, updatedLeagueEvent.getBaseAverage());
+                    values.put(LeagueEntry.COLUMN_BASE_GAMES, updatedLeagueEvent.getBaseGames());
                     database.beginTransaction();
                     try {
                         database.update(LeagueEntry.TABLE_NAME, values, LeagueEntry._ID + "=?", whereArgs);
@@ -298,7 +306,11 @@ public class LeagueEventFragment
     }
 
     @Override
-    public void onAddNewLeagueEvent(boolean isEvent, String leagueEventName, byte numberOfGames) {
+    public void onAddNewLeagueEvent(boolean isEvent,
+                                    String leagueEventName,
+                                    byte numberOfGames,
+                                    short baseAverage,
+                                    int baseGames) {
         boolean validInput = true;
         int invalidInputMessageVal = -1;
         String invalidInputMessage = null;
@@ -307,6 +319,8 @@ public class LeagueEventFragment
                         ? "E"
                         : "L") + leagueEventName,
                 (short) 0,
+                baseAverage,
+                baseGames,
                 numberOfGames);
 
         if (numberOfGames < 1 || (isEvent && numberOfGames > Constants.MAX_NUMBER_EVENT_GAMES)
@@ -332,6 +346,10 @@ public class LeagueEventFragment
             //Name is not made up of letters, numbers and spaces
             validInput = false;
             invalidInputMessageVal = R.string.dialog_name_letters_spaces_numbers;
+        } else if (baseAverage > 0 && (baseGames < 1 || baseGames > 100000)) {
+            // Base average was added with an invalid number of base games
+            validInput = false;
+            invalidInputMessageVal = R.string.dialog_invalid_base_games;
         }
 
         if (!validInput) {
@@ -693,6 +711,8 @@ public class LeagueEventFragment
                     + "league." + LeagueEntry._ID + " AS lid, "
                     + LeagueEntry.COLUMN_LEAGUE_NAME + ", "
                     + LeagueEntry.COLUMN_IS_EVENT + ", "
+                    + LeagueEntry.COLUMN_BASE_AVERAGE + ", "
+                    + LeagueEntry.COLUMN_BASE_GAMES + ", "
                     + LeagueEntry.COLUMN_NUMBER_OF_GAMES + ", "
                     + GameEntry.COLUMN_SCORE
                     + " FROM " + LeagueEntry.TABLE_NAME + " AS league"
@@ -714,9 +734,12 @@ public class LeagueEventFragment
                     if (leagueEventId != lastLeagueEventId && lastLeagueEventId != -1) {
                         cursor.moveToPrevious();
                         boolean isEvent = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_IS_EVENT)) == 1;
-                        short average = (leagueNumberOfGames > 0)
-                                ? (short) (leagueTotal / leagueNumberOfGames)
-                                : 0;
+                        short baseAverage = cursor.getShort(cursor.getColumnIndex(LeagueEntry.COLUMN_BASE_AVERAGE));
+                        int baseGames = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_BASE_GAMES));
+                        short average = Score.getAdjustedAverage(leagueTotal,
+                                leagueNumberOfGames,
+                                baseAverage,
+                                baseGames);
                         LeagueEvent leagueEvent = new LeagueEvent(cursor.getLong(cursor.getColumnIndex(
                                 "lid")),
                                 ((isEvent)
@@ -725,6 +748,8 @@ public class LeagueEventFragment
                                         + cursor.getString(cursor.getColumnIndex(
                                         LeagueEntry.COLUMN_LEAGUE_NAME)),
                                 average,
+                                baseAverage,
+                                baseGames,
                                 (byte) cursor.getInt(cursor.getColumnIndex(
                                         LeagueEntry.COLUMN_NUMBER_OF_GAMES)));
                         listLeagueEvents.add(leagueEvent);
@@ -743,9 +768,10 @@ public class LeagueEventFragment
                 }
                 cursor.moveToPrevious();
                 boolean isEvent = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_IS_EVENT)) == 1;
-                short average = (leagueNumberOfGames > 0)
-                        ? (short) (leagueTotal / leagueNumberOfGames)
-                        : 0;
+                short baseAverage = cursor.getShort(cursor.getColumnIndex(LeagueEntry.COLUMN_BASE_AVERAGE));
+                int baseGames = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_BASE_GAMES));
+                short average = Score.getAdjustedAverage(leagueTotal, leagueNumberOfGames, baseAverage, baseGames);
+
                 LeagueEvent leagueEvent = new LeagueEvent(cursor.getLong(cursor.getColumnIndex(
                         "lid")),
                         ((isEvent)
@@ -754,6 +780,8 @@ public class LeagueEventFragment
                                 + cursor.getString(cursor.getColumnIndex(
                                 LeagueEntry.COLUMN_LEAGUE_NAME)),
                         average,
+                        baseAverage,
+                        baseGames,
                         (byte) cursor.getInt(cursor.getColumnIndex(
                                 LeagueEntry.COLUMN_NUMBER_OF_GAMES)));
                 listLeagueEvents.add(leagueEvent);
@@ -815,6 +843,8 @@ public class LeagueEventFragment
             values.put(LeagueEntry.COLUMN_LEAGUE_NAME, league[0].getLeagueEventName().substring(1));
             values.put(LeagueEntry.COLUMN_DATE_MODIFIED, currentDate);
             values.put(LeagueEntry.COLUMN_BOWLER_ID, bowlerId);
+            values.put(LeagueEntry.COLUMN_BASE_AVERAGE, league[0].getBaseAverage());
+            values.put(LeagueEntry.COLUMN_BASE_GAMES, league[0].getBaseGames());
             values.put(LeagueEntry.COLUMN_NUMBER_OF_GAMES, league[0].getLeagueEventNumberOfGames());
             values.put(LeagueEntry.COLUMN_IS_EVENT, league[0].getLeagueEventName().startsWith("E"));
 

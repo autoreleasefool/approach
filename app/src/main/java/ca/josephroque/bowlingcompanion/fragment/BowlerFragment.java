@@ -428,7 +428,7 @@ public class BowlerFragment
 
         new AlertDialog.Builder(getContext())
                 .setTitle("Warning!")
-                .setMessage("Are you sure you want to delete " + bowler.getBowlerName()+ "?"
+                .setMessage("Are you sure you want to delete " + bowler.getBowlerName() + "?"
                         + " This cannot be undone!")
                 .setPositiveButton(R.string.dialog_delete, onClickListener)
                 .setNegativeButton(R.string.dialog_cancel, onClickListener)
@@ -479,6 +479,8 @@ public class BowlerFragment
                                                     mQuickLeagueId,
                                                     mQuickLeagueName,
                                                     (short) 0,
+                                                    (short) -1,
+                                                    -1,
                                                     mQuickNumberOfGames),
                                             false);
                                     mSeriesCallback.onCreateNewSeries(false);
@@ -497,6 +499,8 @@ public class BowlerFragment
                                                     mRecentLeagueId,
                                                     mRecentLeagueName,
                                                     (short) 0,
+                                                    (short) -1,
+                                                    -1,
                                                     mRecentNumberOfGames),
                                             false);
                                     mSeriesCallback.onCreateNewSeries(false);
@@ -674,7 +678,7 @@ public class BowlerFragment
             boolean includeEvents = preferences.getBoolean(Constants.KEY_INCLUDE_EVENTS, true);
             boolean includeOpen = preferences.getBoolean(Constants.KEY_INCLUDE_OPEN, true);
 
-            String rawInnerQuery = "SELECT "
+            String gameSumAndCountQuery = "SELECT "
                     + "league2." + LeagueEntry._ID + " AS lid2, "
                     + "SUM(game2." + GameEntry.COLUMN_SCORE + ") AS gameSum, "
                     + "COUNT(game2." + GameEntry._ID + ") AS gameCount"
@@ -695,23 +699,38 @@ public class BowlerFragment
                     : "'0'") + "=?"
                     + " GROUP BY league2." + LeagueEntry._ID;
 
+            String baseAverageAndGamesQuery = "SELECT "
+                    + "league3." + LeagueEntry._ID + " AS lid3, "
+                    + LeagueEntry.COLUMN_BASE_AVERAGE + " * " + LeagueEntry.COLUMN_BASE_GAMES + " AS baseSum, "
+                    + LeagueEntry.COLUMN_BASE_GAMES + " AS baseGames"
+                    + " FROM " + LeagueEntry.TABLE_NAME + " AS league3"
+                    + " WHERE "
+                    + " league3." + LeagueEntry.COLUMN_BASE_AVERAGE + ">?";
+
             //Query to retrieve bowler names and averages from database
             String rawBowlerQuery = "SELECT "
                     + "bowler." + BowlerEntry.COLUMN_BOWLER_NAME + ", "
                     + "bowler." + BowlerEntry._ID + " AS bid, "
                     + "SUM(t.gameSum) AS totalSum, "
-                    + "SUM(t.gameCount) AS totalCount"
+                    + "SUM(t.gameCount) AS totalCount, "
+                    + "SUM(u.baseSum) AS totalBaseSum, "
+                    + "SUM(u.baseGames) AS totalBaseGames"
                     + " FROM " + BowlerEntry.TABLE_NAME + " AS bowler"
                     + " LEFT JOIN " + LeagueEntry.TABLE_NAME + " AS league"
                     + " ON bowler." + BowlerEntry._ID + "=" + LeagueEntry.COLUMN_BOWLER_ID
-                    + " LEFT JOIN (" + rawInnerQuery + ") AS t"
+                    + " LEFT JOIN (" + gameSumAndCountQuery + ") AS t"
                     + " ON t.lid2=league." + LeagueEntry._ID
+                    + " LEFT JOIN (" + baseAverageAndGamesQuery + ") AS u"
+                    + " ON u.lid3=league." + LeagueEntry._ID
                     + " GROUP BY bowler." + BowlerEntry._ID
                     + " ORDER BY bowler." + BowlerEntry.COLUMN_DATE_MODIFIED + " DESC";
-            String[] rawBowlerArgs = {String.valueOf(0),
-                    String.valueOf(0), (!includeOpen
-                    ? Constants.NAME_OPEN_LEAGUE
-                    : String.valueOf(0))
+            String[] rawBowlerArgs = {
+                    String.valueOf(0),
+                    String.valueOf(0),
+                    (!includeOpen
+                            ? Constants.NAME_OPEN_LEAGUE
+                            : String.valueOf(0)),
+                    String.valueOf(0)
             };
 
             //Adds loaded bowler names and averages to lists to display
@@ -720,11 +739,14 @@ public class BowlerFragment
                 while (!cursor.isAfterLast()) {
                     int totalSum = cursor.getInt(cursor.getColumnIndex("totalSum"));
                     int totalCount = cursor.getInt(cursor.getColumnIndex("totalCount"));
+                    int totalBaseSum = cursor.getInt(cursor.getColumnIndex("totalBaseSum"));
+                    int totalBaseGames = cursor.getInt(cursor.getColumnIndex("totalBaseGames"));
+                    short bowlerAverage = (short) ((totalCount + totalBaseGames > 0)
+                            ? (totalSum + totalBaseSum) / (totalCount + totalBaseGames)
+                            : 0);
                     Bowler bowler = new Bowler(cursor.getLong(cursor.getColumnIndex("bid")),
                             cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_BOWLER_NAME)),
-                            (short) ((totalCount > 0)
-                                    ? totalSum / totalCount
-                                    : 0));
+                            bowlerAverage);
                     listBowlers.add(bowler);
                     cursor.moveToNext();
                 }
