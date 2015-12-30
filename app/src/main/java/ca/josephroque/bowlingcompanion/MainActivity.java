@@ -60,6 +60,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import ca.josephroque.bowlingcompanion.adapter.NavigationDrawerAdapter;
+// TODO: reorder imports
 import ca.josephroque.bowlingcompanion.wrapper.Bowler;
 import ca.josephroque.bowlingcompanion.wrapper.LeagueEvent;
 import ca.josephroque.bowlingcompanion.wrapper.Series;
@@ -198,6 +199,8 @@ public class MainActivity
 
     /** The primary floating action button. */
     private AnimatedFloatingActionButton mPrimaryFab;
+    /** The secondary floating action button. */
+    private AnimatedFloatingActionButton mSecondaryFab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -500,11 +503,13 @@ public class MainActivity
             setTitle(taskName);
         }
 
-        if (mPrimaryFab != null) {
-            DisplayUtils.setFloatingActionButtonColors(mPrimaryFab,
-                    Theme.getPrimaryThemeColor(),
-                    Theme.getTertiaryThemeColor());
-        }
+        DisplayUtils.setFloatingActionButtonColors(mPrimaryFab,
+                Theme.getPrimaryThemeColor(),
+                Theme.getTertiaryThemeColor());
+        DisplayUtils.setFloatingActionButtonColors(mSecondaryFab,
+                Theme.getPrimaryThemeColor(),
+                Theme.getTertiaryThemeColor());
+
         if (isDrawerOpen())
             setActionBarTitle(mDrawerTitle, false);
         else
@@ -545,6 +550,11 @@ public class MainActivity
             startFragmentTransaction(leagueEventFragment, Constants.FRAGMENT_BOWLERS,
                     Constants.FRAGMENT_LEAGUES);
         }
+    }
+
+    @Override
+    public void onTeamSelected() {
+        // TODO: display team creation dialog
     }
 
     @Override
@@ -649,12 +659,37 @@ public class MainActivity
     }
 
     /**
-     * Sets the icon of the floating action button with animation.
-     *
-     * @param drawableId id of the drawable for the floating action button
+     * Sets the icon of the two floating action buttons with animation, using the theme colors.
+     * @param primaryDrawableId id of the drawable for the primary floating action button
+     * @param secondaryDrawableId id of the drawable for the secondary floating action button
      */
-    public void setFloatingActionButtonState(int drawableId) {
-        mPrimaryFab.animateIconChanges(drawableId);
+    public void setFloatingActionButtonState(int primaryDrawableId, int secondaryDrawableId) {
+        setFloatingActionButtonState(primaryDrawableId,
+                Theme.getPrimaryThemeColor(),
+                Theme.getTertiaryThemeColor(),
+                secondaryDrawableId,
+                Theme.getPrimaryThemeColor(),
+                Theme.getTertiaryThemeColor());
+    }
+
+    /**
+     * Sets the icon and colors of the two floating action buttons with animation.
+     *
+     * @param primaryDrawableId id of the drawable for the primary floating action button
+     * @param primaryDefaultColor standing color of the primary floating action button
+     * @param primaryPressedColor pressed color of the primary floating action button
+     * @param secondaryDrawableId id of the drawable for the secondary floating action button
+     * @param secondaryDefaultColor standing color of the secondary floating action button
+     * @param secondaryPressedColor pressed color of the secondary floating action button
+     */
+    public void setFloatingActionButtonState(int primaryDrawableId,
+                                             int primaryDefaultColor,
+                                             int primaryPressedColor,
+                                             int secondaryDrawableId,
+                                             int secondaryDefaultColor,
+                                             int secondaryPressedColor) {
+        mPrimaryFab.animate(primaryDrawableId, primaryDefaultColor, primaryPressedColor);
+        mSecondaryFab.animate(secondaryDrawableId, secondaryDefaultColor, secondaryPressedColor);
     }
 
     /**
@@ -819,9 +854,10 @@ public class MainActivity
     }
 
     /**
-     * Sets up the floating action button.
+     * Sets up the floating action buttons.
      */
     private void setupFloatingActionButton() {
+        // Setting up the appearance and actions of the primary Fab
         mPrimaryFab = (AnimatedFloatingActionButton) findViewById(R.id.fab_main);
         DisplayUtils.fixFloatingActionButtonMargins(getResources(), mPrimaryFab);
         mPrimaryFab.setOnClickListener(new View.OnClickListener() {
@@ -832,6 +868,21 @@ public class MainActivity
                     if (fragment != null && fragment.isVisible()
                             && fragment instanceof FloatingActionButtonHandler)
                         ((FloatingActionButtonHandler) fragment).onFabClick();
+                }
+            }
+        });
+
+        // Setting up the appearance and actions of the secondary Fab
+        mSecondaryFab = (AnimatedFloatingActionButton) findViewById(R.id.fab_secondary);
+        DisplayUtils.fixFloatingActionButtonMargins(getResources(), mSecondaryFab);
+        mSecondaryFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentManager fragmentManager = getSupportFragmentManager();
+                for (Fragment fragment : fragmentManager.getFragments()) {
+                    if (fragment != null && fragment.isVisible()
+                            && fragment instanceof FloatingActionButtonHandler)
+                        ((FloatingActionButtonHandler) fragment).onSecondaryFabClick();
                 }
             }
         });

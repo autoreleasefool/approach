@@ -511,7 +511,7 @@ public class GameFragment
         if (getActivity() != null) {
             MainActivity mainActivity = (MainActivity) getActivity();
             mainActivity.setActionBarTitle(R.string.title_fragment_game, true);
-            mainActivity.setFloatingActionButtonState(0);
+            mainActivity.setFloatingActionButtonState(0, 0);
             mainActivity.createGameNavigationDrawer();
             mainActivity.setDrawerState(true);
         }
@@ -2141,9 +2141,9 @@ public class GameFragment
      */
     private void setFloatingActionButtonState(boolean nextFab, int drawableId) {
         if (nextFab && mNextFab != null)
-            mNextFab.animateIconChanges(drawableId);
+            mNextFab.animate(drawableId, Theme.getPrimaryThemeColor(), Theme.getTertiaryThemeColor());
         else if (!nextFab && mPrevFab != null)
-            mPrevFab.animateIconChanges(drawableId);
+            mPrevFab.animate(drawableId, Theme.getPrimaryThemeColor(), Theme.getTertiaryThemeColor());
     }
 
     /**

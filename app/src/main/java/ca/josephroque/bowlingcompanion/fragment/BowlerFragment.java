@@ -36,6 +36,7 @@ import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.MainActivity;
 import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.adapter.NameAverageAdapter;
+import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.wrapper.Bowler;
 import ca.josephroque.bowlingcompanion.wrapper.LeagueEvent;
 import ca.josephroque.bowlingcompanion.database.Contract.BowlerEntry;
@@ -182,8 +183,14 @@ public class BowlerFragment
         if (getActivity() != null) {
             MainActivity mainActivity = (MainActivity) getActivity();
             mainActivity.setActionBarTitle(R.string.app_name, true);
-            mainActivity.setFloatingActionButtonState(R.drawable.ic_person_add_black_24dp);
             mainActivity.setDrawerState(false);
+
+            if (PreferenceManager.getDefaultSharedPreferences(getContext())
+                    .getBoolean(Constants.KEY_ENABLE_TEAM_FAB, true))
+                mainActivity.setFloatingActionButtonState(R.drawable.ic_person_add_black_24dp,
+                        R.drawable.ic_people_black_24dp);
+            else
+                mainActivity.setFloatingActionButtonState(R.drawable.ic_person_add_black_24dp, 0);
 
             //Loads values for member variables from preferences, if they exist
             SharedPreferences prefs =
@@ -363,6 +370,12 @@ public class BowlerFragment
     @Override
     public void onFabClick() {
         showNewBowlerDialog();
+    }
+
+    @Override
+    public void onSecondaryFabClick() {
+        if (mBowlerCallback != null)
+            mBowlerCallback.onTeamSelected();
     }
 
     /**
@@ -994,5 +1007,10 @@ public class BowlerFragment
         void onBowlerSelected(Bowler bowler,
                               boolean openLeagueFragment,
                               boolean isQuickSeries);
+
+        /**
+         * Should be overriden to create a TeamFragment to allow a user to select multiple bowlers to record at once.
+         */
+        void onTeamSelected();
     }
 }

@@ -1,6 +1,5 @@
 package ca.josephroque.bowlingcompanion.view;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
@@ -27,6 +26,10 @@ public class AnimatedFloatingActionButton
 
     /** Current icon of the floating action button. */
     private int mCurrentFabIcon = 0;
+    /** Current initial color of the floating action button. */
+    private int mCurrentFabDefaultColor = 0;
+    /** Current pressed color of the floating action button. */
+    private int mCurrentFabPressedColor = 0;
     /** Indicates if the floating action button is being animated. */
     private boolean mFabIsAnimating = false;
 
@@ -71,13 +74,16 @@ public class AnimatedFloatingActionButton
      * Sets the icon and colors of the floating action button with animation.
      *
      * @param drawableId id of the drawable for the floating action button
+     * @param defaultColor standing color of the floating action button
+     * @param pressedColor pressed color of the floating action button
      */
-    public void animateIconChanges(final int drawableId) {
-        if (drawableId != mCurrentFabIcon || drawableId == 0) {
+    public void animate(final int drawableId, final int defaultColor, final int pressedColor) {
+        if ((drawableId != mCurrentFabIcon || defaultColor != mCurrentFabDefaultColor
+                || pressedColor != mCurrentFabPressedColor) || drawableId == 0) {
             if (mCurrentFabIcon == 0 && drawableId != 0)
-                growFloatingActionButton(drawableId);
+                growFloatingActionButton(drawableId, defaultColor, pressedColor);
             else
-                shrinkFloatingActionButton(drawableId);
+                shrinkFloatingActionButton(drawableId, defaultColor, pressedColor);
         }
     }
 
@@ -85,8 +91,10 @@ public class AnimatedFloatingActionButton
      * Shrinks the floating action button.
      *
      * @param drawableId new drawable to set if fab grows again
+     * @param defaultColor standing color of the floating action button
+     * @param pressedColor pressed color of the floating action button
      */
-    private void shrinkFloatingActionButton(final int drawableId) {
+    private void shrinkFloatingActionButton(final int drawableId, final int defaultColor, final int pressedColor) {
         if (getVisibility() == View.GONE) {
             mCurrentFabIcon = drawableId;
             return;
@@ -113,7 +121,7 @@ public class AnimatedFloatingActionButton
             @Override
             public void onAnimationEnd(Animation animation) {
                 mFabIsAnimating = false;
-                growFloatingActionButton(drawableId);
+                growFloatingActionButton(drawableId, defaultColor, pressedColor);
             }
 
             @Override
@@ -129,10 +137,10 @@ public class AnimatedFloatingActionButton
      * Grows the floating action button.
      *
      * @param drawableId new drawable to set
+     * @param defaultColor standing color of the floating action button
+     * @param pressedColor pressed color of the floating action button
      */
-    @SuppressLint("NewApi") // Lint confuses FloatingActionButton#setBackgroundTintList for new API
-    // when it is available in the support design library
-    private void growFloatingActionButton(final int drawableId) {
+    private void growFloatingActionButton(final int drawableId, final int defaultColor, final int pressedColor) {
         final int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
         mCurrentFabIcon = drawableId;
         if (mCurrentFabIcon != 0)
@@ -142,7 +150,13 @@ public class AnimatedFloatingActionButton
             return;
         }
 
+        // Update the icon and colors of the fab as necessary
         setIcon(mCurrentFabIcon);
+        if (mCurrentFabDefaultColor != defaultColor || mCurrentFabPressedColor != pressedColor) {
+            mCurrentFabDefaultColor = defaultColor;
+            mCurrentFabPressedColor = pressedColor;
+            DisplayUtils.setFloatingActionButtonColors(this, mCurrentFabDefaultColor, mCurrentFabPressedColor);
+        }
 
         ScaleAnimation grow = new ScaleAnimation(0f,
                 1.0f,

@@ -166,7 +166,7 @@ public class LeagueEventFragment
         if (getActivity() != null) {
             MainActivity mainActivity = (MainActivity) getActivity();
             mainActivity.setActionBarTitle(R.string.title_fragment_league_event, true);
-            mainActivity.setFloatingActionButtonState(R.drawable.ic_add_black_24dp);
+            mainActivity.setFloatingActionButtonState(R.drawable.ic_add_black_24dp, 0);
             mainActivity.setDrawerState(false);
         }
 
@@ -387,6 +387,11 @@ public class LeagueEventFragment
     @Override
     public void onFabClick() {
         showLeagueOrEventDialog();
+    }
+
+    @Override
+    public void onSecondaryFabClick() {
+        // does nothing - secondary fab has no function here
     }
 
     /**

@@ -156,7 +156,7 @@ public class SeriesFragment
         if (getActivity() != null) {
             MainActivity mainActivity = (MainActivity) getActivity();
             mainActivity.setActionBarTitle(R.string.title_fragment_series, true);
-            mainActivity.setFloatingActionButtonState(R.drawable.ic_add_black_24dp);
+            mainActivity.setFloatingActionButtonState(R.drawable.ic_add_black_24dp, 0);
             mainActivity.setDrawerState(false);
         }
 
@@ -306,6 +306,11 @@ public class SeriesFragment
     public void onFabClick() {
         if (mSeriesCallback != null)
             mSeriesCallback.onCreateNewSeries(false);
+    }
+
+    @Override
+    public void onSecondaryFabClick() {
+        // does nothing - secondary fab has no function here
     }
 
     /**

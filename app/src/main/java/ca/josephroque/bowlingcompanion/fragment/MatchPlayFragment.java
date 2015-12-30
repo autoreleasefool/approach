@@ -117,7 +117,7 @@ public class MatchPlayFragment
 
         if (getActivity() != null) {
             MainActivity mainActivity = (MainActivity) getActivity();
-            mainActivity.setFloatingActionButtonState(0);
+            mainActivity.setFloatingActionButtonState(0, 0);
             mainActivity.setDrawerState(false);
 
             if (mFromSavedInstanceState && mSelectedRadioButtonId != -1)

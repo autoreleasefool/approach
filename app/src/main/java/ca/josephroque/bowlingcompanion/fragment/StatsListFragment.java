@@ -176,9 +176,9 @@ public class StatsListFragment
 
             if (mStatsToLoad == StatUtils.LOADING_BOWLER_STATS
                     || mStatsToLoad == StatUtils.LOADING_LEAGUE_STATS)
-                mainActivity.setFloatingActionButtonState(R.drawable.ic_timeline_black_24dp);
+                mainActivity.setFloatingActionButtonState(R.drawable.ic_timeline_black_24dp, 0);
             else
-                mainActivity.setFloatingActionButtonState(0);
+                mainActivity.setFloatingActionButtonState(0, 0);
 
             mainActivity.setActionBarTitle(titleToSet, true);
             new LoadStatsListTask(this).execute(mStatsToLoad);
@@ -197,6 +197,11 @@ public class StatsListFragment
         if (mStatsToLoad == StatUtils.LOADING_BOWLER_STATS
                 || mStatsToLoad == StatUtils.LOADING_LEAGUE_STATS)
             openStatsPrompt();
+    }
+
+    @Override
+    public void onSecondaryFabClick() {
+        // does nothing - secondary fab has no function here
     }
 
     /**

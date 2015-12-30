@@ -63,9 +63,12 @@
 
     <!-- Game Settings -->
     <string name="pref_header_game">Editing games</string>
+    <string name="pref_enable_team_fab_title">Enable team scoring button</string>
+    <string name="pref_enable_team_fab_summaryOn">Team scoring button is enabled</string>
+    <string name="pref_enable_team_fab_summaryOff">Team scoring button is not visible</string>
     <string name="pref_enable_fab_title">Enable floating buttons</string>
     <string name="pref_enable_fab_summaryOn">Floating buttons are enabled</string>
-    <string name="pref_enable_fab_summaryOff">Floating buttons are disabled</string>
+    <string name="pref_enable_fab_summaryOff">Floating buttons are not visible</string>
     <string name="pref_enable_strike_highlights_title">Highlight strikes/spares</string>
     <string name="pref_enable_strike_highlights_summaryOn">Mark highlights are enabled</string>
     <string name="pref_enable_strike_highlights_summaryOff">Mark highlights are disabled</string>

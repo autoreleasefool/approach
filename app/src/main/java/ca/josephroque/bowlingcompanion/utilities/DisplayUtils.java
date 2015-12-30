@@ -49,6 +49,9 @@ public final class DisplayUtils {
     public static void setFloatingActionButtonColors(FloatingActionButton fab,
                                                      int primaryColor,
                                                      int rippleColor) {
+        if (fab == null)
+            return;
+
         int[][] states = {
                 {android.R.attr.state_enabled},
                 {android.R.attr.state_pressed},

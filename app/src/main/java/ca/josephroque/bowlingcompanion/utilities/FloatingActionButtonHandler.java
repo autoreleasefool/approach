@@ -9,4 +9,9 @@ public interface FloatingActionButtonHandler {
      * Invoked when the floating action button is clicked.
      */
     void onFabClick();
+
+    /**
+     * Invoked when the secondary floating action button is clicked.
+     */
+    void onSecondaryFabClick();
 }

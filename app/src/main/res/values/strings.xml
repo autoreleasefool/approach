@@ -51,6 +51,7 @@
     <string name="action_clear_score">Clear manual score</string>
     <string name="action_combine_series">Combine series</string>
     <string name="action_duplicate_series">Duplicate series</string>
+    <string name="action_cancel_team">Cancel team</string>
 
     <!-- TextView text -->
     <string name="text_next_ball">Next Ball</string>
