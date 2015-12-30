@@ -15,9 +15,9 @@ import java.util.List;
 
 import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.R;
-import ca.josephroque.bowlingcompanion.wrapper.Series;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
+import ca.josephroque.bowlingcompanion.wrapper.Series;
 
 /**
  * Created by Joseph Roque on 15-03-17. Manages series and their associated games for a ListView. Offers a callback
@@ -435,6 +435,11 @@ public class SeriesAdapter
             imageView.setImageDrawable(mEditDrawable);
     }
 
+    /**
+     * Updates the appearance of the items in the adapter, to indicate if the user is selecting a series to duplicate.
+     *
+     * @param duplicating {@code true} to show a "copy" icon, {@code false} to show the usual "edit" icon
+     */
     public void setDuplicatingSeries(boolean duplicating) {
         if (mDuplicatingSeries == duplicating)
             return;

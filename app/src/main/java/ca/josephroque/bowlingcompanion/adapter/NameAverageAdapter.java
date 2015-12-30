@@ -12,10 +12,10 @@ import android.widget.TextView;
 import java.util.List;
 
 import ca.josephroque.bowlingcompanion.R;
-import ca.josephroque.bowlingcompanion.wrapper.LeagueEvent;
-import ca.josephroque.bowlingcompanion.wrapper.NameAverageId;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
+import ca.josephroque.bowlingcompanion.wrapper.LeagueEvent;
+import ca.josephroque.bowlingcompanion.wrapper.NameAverageId;
 
 /**
  * Created by Joseph Roque on 15-03-13. Manages names of bowlers or leagues/events and their associated averages for a

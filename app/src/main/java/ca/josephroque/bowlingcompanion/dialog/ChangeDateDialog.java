@@ -10,8 +10,8 @@ import android.widget.DatePicker;
 import java.lang.reflect.Field;
 
 import ca.josephroque.bowlingcompanion.Constants;
-import ca.josephroque.bowlingcompanion.wrapper.Series;
 import ca.josephroque.bowlingcompanion.utilities.DateUtils;
+import ca.josephroque.bowlingcompanion.wrapper.Series;
 
 /**
  * Created by Joseph Roque on 15-03-29. Provides a dialog and callback interface {@link

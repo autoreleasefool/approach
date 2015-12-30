@@ -2108,7 +2108,9 @@ public class GameFragment
                     public void run() {
                         clearAllText(!mManualScoreSet[mCurrentGame]);
                         getActivity().supportInvalidateOptionsMenu();
-                        mTextViewGameNumber.setText("Game " + (mCurrentGame + 1));
+                        mTextViewGameNumber.setText(
+                                String.format(getResources().getString(R.string.text_game_placeholder),
+                                        mCurrentGame + 1));
                     }
                 });
                 setMatchPlay();

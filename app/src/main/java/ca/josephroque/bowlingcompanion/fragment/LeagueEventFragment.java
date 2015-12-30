@@ -37,8 +37,6 @@ import ca.josephroque.bowlingcompanion.MainActivity;
 import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.adapter.NameAverageAdapter;
 import ca.josephroque.bowlingcompanion.utilities.Score;
-import ca.josephroque.bowlingcompanion.wrapper.LeagueEvent;
-import ca.josephroque.bowlingcompanion.wrapper.Series;
 import ca.josephroque.bowlingcompanion.database.Contract.FrameEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.GameEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.LeagueEntry;
@@ -47,6 +45,8 @@ import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.dialog.NameLeagueEventDialog;
 import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
 import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
+import ca.josephroque.bowlingcompanion.wrapper.LeagueEvent;
+import ca.josephroque.bowlingcompanion.wrapper.Series;
 
 /**
  * Created by Joseph Roque on 15-03-15. Manages the UI to display information about the leagues being tracked by the
@@ -271,7 +271,7 @@ public class LeagueEventFragment
             //Name is not made up of letters, numbers and spaces
             validInput = false;
             invalidInputMessage = R.string.dialog_name_letters_spaces_numbers;
-        } else if (baseAverage > 0 && (baseGames < 1 || baseGames > 100000)) {
+        } else if (baseAverage > 0 && (baseGames < 1 || baseGames > Constants.MAXIMUM_BASE_GAMES)) {
             // Base average was added with an invalid number of base games
             validInput = false;
             invalidInputMessage = R.string.dialog_invalid_base_games;
@@ -357,7 +357,7 @@ public class LeagueEventFragment
             //Name is not made up of letters, numbers and spaces
             validInput = false;
             invalidInputMessageVal = R.string.dialog_name_letters_spaces_numbers;
-        } else if (baseAverage > 0 && (baseGames < 1 || baseGames > 100000)) {
+        } else if (baseAverage > 0 && (baseGames < 1 || baseGames > Constants.MAXIMUM_BASE_GAMES)) {
             // Base average was added with an invalid number of base games
             validInput = false;
             invalidInputMessageVal = R.string.dialog_invalid_base_games;

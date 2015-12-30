@@ -516,9 +516,15 @@ final class ImageUtils {
         Uri url = cr.insert(MediaStore.Images.Thumbnails.EXTERNAL_CONTENT_URI, values);
 
         try {
-            OutputStream thumbOut = cr.openOutputStream(url);
-            thumb.compress(Bitmap.CompressFormat.JPEG, 100, thumbOut);
-            thumbOut.close();
+            if (url != null) {
+                OutputStream thumbOut = cr.openOutputStream(url);
+                thumb.compress(Bitmap.CompressFormat.JPEG, 100, thumbOut);
+
+                if (thumbOut != null)
+                    thumbOut.close();
+                else
+                    throw new IOException("Could not create output stream.");
+            }
         } catch (IOException ex) {
             Log.e(TAG, "Error saving thumbnail.", ex);
         }

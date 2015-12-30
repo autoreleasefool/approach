@@ -40,7 +40,6 @@ import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.MainActivity;
 import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.adapter.SeriesAdapter;
-import ca.josephroque.bowlingcompanion.wrapper.Series;
 import ca.josephroque.bowlingcompanion.database.Contract.FrameEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.GameEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.SeriesEntry;
@@ -50,6 +49,7 @@ import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.utilities.DateUtils;
 import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
 import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
+import ca.josephroque.bowlingcompanion.wrapper.Series;
 
 /**
  * Created by Joseph Roque on 15-03-17. Manages the UI to display information about the series being tracked by the
@@ -599,6 +599,10 @@ public class SeriesFragment
         }
     }
 
+    /**
+     * Creates a new series entry in the database which is a copy of another series. The new series will use "manual"
+     * games, rather than using the frames, so the user's stats are not affected.
+     */
     private static final class DuplicateSeriesTask
             extends AsyncTask<Series, Void, Boolean> {
 

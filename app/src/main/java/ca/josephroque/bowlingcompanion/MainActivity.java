@@ -60,10 +60,6 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import ca.josephroque.bowlingcompanion.adapter.NavigationDrawerAdapter;
-// TODO: reorder imports
-import ca.josephroque.bowlingcompanion.wrapper.Bowler;
-import ca.josephroque.bowlingcompanion.wrapper.LeagueEvent;
-import ca.josephroque.bowlingcompanion.wrapper.Series;
 import ca.josephroque.bowlingcompanion.database.Contract.FrameEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.GameEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.SeriesEntry;
@@ -84,6 +80,9 @@ import ca.josephroque.bowlingcompanion.utilities.NavigationUtils;
 import ca.josephroque.bowlingcompanion.utilities.PermissionUtils;
 import ca.josephroque.bowlingcompanion.utilities.Startup;
 import ca.josephroque.bowlingcompanion.view.AnimatedFloatingActionButton;
+import ca.josephroque.bowlingcompanion.wrapper.Bowler;
+import ca.josephroque.bowlingcompanion.wrapper.LeagueEvent;
+import ca.josephroque.bowlingcompanion.wrapper.Series;
 
 /**
  * Created by Joseph Roque. The main activity which handles most interaction with the application.
@@ -161,8 +160,9 @@ public class MainActivity
                         public void run() {
                             final int timeToDelay = 1000;
                             mTextViewAutoAdvanceStatus.setVisibility(View.VISIBLE);
-                            mTextViewAutoAdvanceStatus.setText(mAutoAdvanceDelayRemaining
-                                    + " seconds until auto advance");
+                            mTextViewAutoAdvanceStatus.setText(String.format(
+                                    getResources().getString(R.string.text_until_auto_advance_placeholder),
+                                    mAutoAdvanceDelayRemaining));
                             mAutoAdvanceHandler.postDelayed(mAutoAdvanceCallback, timeToDelay);
                         }
                     });

@@ -230,6 +230,8 @@ public final class Constants {
 
     /** Maximum score of a 5 pin game. */
     public static final int GAME_MAX_SCORE = 450;
+    /** The maximum number of games for a base average. */
+    public static final int MAXIMUM_BASE_GAMES = 100000;
     /** Default minimum score to highlight. */
     public static final int DEFAULT_GAME_HIGHLIGHT = 300;
     /** Default minimum series to highlight. */

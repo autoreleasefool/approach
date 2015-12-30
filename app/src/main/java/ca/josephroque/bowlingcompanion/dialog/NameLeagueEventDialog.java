@@ -207,7 +207,8 @@ public class NameLeagueEventDialog
         if (baseAverage >= 0 && baseGames == 0)
             baseGames = 1;
 
-        if (leagueName.length() > 0 && baseAverage >= -1 && baseAverage <= 450 && baseGames >= 0 && baseGames <= 100000)
+        if (leagueName.length() > 0 && baseAverage >= -1 && baseAverage <= Constants.GAME_MAX_SCORE && baseGames >= 0
+                && baseGames <= Constants.MAXIMUM_BASE_GAMES)
             mDialogListener.onUpdateLeagueEvent(mLeagueEvent, leagueName, baseAverage, baseGames);
     }
 

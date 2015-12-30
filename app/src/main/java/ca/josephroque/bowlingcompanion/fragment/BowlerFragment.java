@@ -36,7 +36,6 @@ import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.MainActivity;
 import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.adapter.NameAverageAdapter;
-import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.wrapper.Bowler;
 import ca.josephroque.bowlingcompanion.wrapper.LeagueEvent;
 import ca.josephroque.bowlingcompanion.database.Contract.BowlerEntry;
@@ -479,15 +478,10 @@ public class BowlerFragment
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             if (quickOrRecent) {
-                                Bowler quickBowler = new Bowler(mQuickBowlerId,
-                                        mQuickBowlerName,
-                                        (short) 0);
-                                if (mBowlerCallback != null
-                                        && mLeagueSelectedCallback != null
+                                Bowler quickBowler = new Bowler(mQuickBowlerId, mQuickBowlerName, (short) 0);
+                                if (mBowlerCallback != null && mLeagueSelectedCallback != null
                                         && mSeriesCallback != null) {
-                                    mBowlerCallback.onBowlerSelected(quickBowler,
-                                            false,
-                                            true);
+                                    mBowlerCallback.onBowlerSelected(quickBowler, false, true);
                                     mLeagueSelectedCallback.onLeagueSelected(new LeagueEvent(
                                                     mQuickLeagueId,
                                                     mQuickLeagueName,
@@ -500,15 +494,10 @@ public class BowlerFragment
                                     mSeriesCallback.onCreateNewSeries(false);
                                 }
                             } else {
-                                Bowler recentBowler = new Bowler(mRecentBowlerId,
-                                        mRecentBowlerName,
-                                        (short) 0);
-                                if (mBowlerCallback != null
-                                        && mLeagueSelectedCallback != null
+                                Bowler recentBowler = new Bowler(mRecentBowlerId, mRecentBowlerName, (short) 0);
+                                if (mBowlerCallback != null && mLeagueSelectedCallback != null
                                         && mSeriesCallback != null) {
-                                    mBowlerCallback.onBowlerSelected(recentBowler,
-                                            false,
-                                            true);
+                                    mBowlerCallback.onBowlerSelected(recentBowler, false, true);
                                     mLeagueSelectedCallback.onLeagueSelected(new LeagueEvent(
                                                     mRecentLeagueId,
                                                     mRecentLeagueName,

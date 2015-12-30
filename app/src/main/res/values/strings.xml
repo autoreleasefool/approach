@@ -77,10 +77,14 @@
     <string name="text_prev_stat">Previous stat</string>
     <string name="text_like_on_fb">Be sure to like us on Facebook for news and updates!</string>
     <string name="text_series_total">Total:</string>
-    <string name="text_click_to_delete">Click to delete %1$s</string>
     <string name="text_cancel_duplicate">Duplicating series. Tap to cancel.</string>
     <string name="text_league_base_average_explanation">If you are starting recording in the middle of a season, add your current average (0&#8211;450) and games played below for a more accurate average. Otherwise, leave them blank. If you only enter an average, the # of games is assumed to be 1. If you only enter the # of games, both fields are ignored.</string>
+
+    <!-- Placeholder text -->
+    <string name="text_click_to_delete">Click to delete %1$s</string>
     <string name="text_average_placeholder">Avg: %1$d</string>
+    <string name="text_until_auto_advance_placeholder">%1$d seconds until auto advance</string>
+    <string name="text_game_placeholder">Game %1$d</string>
 
     <!-- Tutorial -->
     <string name="text_tutorial_welcome">Welcome to your 5 Pin Bowling Companion!</string>
