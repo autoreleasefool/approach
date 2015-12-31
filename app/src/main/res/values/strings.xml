@@ -35,6 +35,8 @@
     <string name="dialog_edit_date">To change the date of a particular series, click the edit button next to the scores for that series.</string>
     <string name="dialog_match_locked">This game is locked. If you still want to change the match play results, press \'Okay\'. Otherwise, press cancel.</string>
     <string name="dialog_duplicate_series">By pressing \'Okay\', you can select a series to be duplicated. All scores will be manually set and will affect your average, but not your statistics.</string>
+    <string name="dialog_create_team_title">Create a team?</string>
+    <string name="dialog_create_team_msg">You can now record the scores of an entire team of bowlers at once! Select up to 8 bowlers and either create a new event, or select a league for each. Further directions will be given as you go.</string>
 
     <!-- Action button text -->
     <string name="action_settings">Settings</string>
@@ -79,6 +81,8 @@
     <string name="text_series_total">Total:</string>
     <string name="text_cancel_duplicate">Duplicating series. Tap to cancel.</string>
     <string name="text_league_base_average_explanation">If you are starting recording in the middle of a season, add your current average (0&#8211;450) and games played below for a more accurate average. Otherwise, leave them blank. If you only enter an average, the # of games is assumed to be 1. If you only enter the # of games, both fields are ignored.</string>
+    <string name="text_create_event">Create team event</string>
+    <string name="text_create_league">Create team with leagues</string>
 
     <!-- Placeholder text -->
     <string name="text_click_to_delete">Click to delete %1$s</string>
