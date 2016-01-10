@@ -71,6 +71,8 @@ public final class Constants {
     public static final String PREF_RATE_ME_SHOWN = "rate_shown";
     /** Identifier for if user has been prompted to fix league/event names that may be been incorrectly set. */
     public static final String PREF_PROMPT_LEAGUE_EVENT_NAME_FIX = "le_name_fix";
+    /** Identifier for if user has been informed on the instructions to creating a team. */
+    public static final String PREF_TEAM_INSTRUCTIONS_SHOWN = "team_instruct_shown";
     /**
      * Identifier for preference containing the version of the application. If the value is not equivalent to the
      * current version, then the app has been updated.
@@ -148,6 +150,10 @@ public final class Constants {
     /** The value of a foul in a game. */
     public static final byte FOUL_VALUE = 15;
 
+    // TEAMS
+    /** The maximum number of bowlers that can be added to a single team. */
+    public static final byte MAX_TEAM_MEMBERS = 8;
+
     //SCORING VALUES
     /** Symbol representing a strike. */
     public static final String BALL_STRIKE = "X";
@@ -215,6 +221,8 @@ public final class Constants {
     // FRAGMENTS
     /** Tag to identify instances of BowlerFragment. */
     public static final String FRAGMENT_BOWLERS = "BowlerFragment";
+    /** Tag to identify instances of TeamFragment. */
+    public static final String FRAGMENT_TEAM = "TeamFragment";
     /** Tag to identify instances of LeagueEventFragment. */
     public static final String FRAGMENT_LEAGUES = "LeagueEventFragment";
     /** Tag to identify instances of SeriesFragment. */

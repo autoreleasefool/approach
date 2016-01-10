@@ -2,6 +2,7 @@
 
     <!-- App & Fragment Titles -->
     <string name="app_name">Bowling Companion</string>
+    <string name="title_fragment_team">Creating a Team</string>
     <string name="title_fragment_league_event">Leagues &amp; Events</string>
     <string name="title_fragment_series">Series</string>
     <string name="title_fragment_game">Game Details</string>
@@ -37,6 +38,8 @@
     <string name="dialog_duplicate_series">By pressing \'Okay\', you can select a series to be duplicated. All scores will be manually set and will affect your average, but not your statistics.</string>
     <string name="dialog_create_team_title">Create a team?</string>
     <string name="dialog_create_team_msg">You can now record the scores of an entire team of bowlers at once! Select up to 8 bowlers and either create a new event, or select a league for each. Further directions will be given as you go.</string>
+    <string name="dialog_rename">Rename event</string>
+    <string name="dialog_remove_bowler">Remove bowler</string>
 
     <!-- Action button text -->
     <string name="action_settings">Settings</string>
@@ -83,6 +86,8 @@
     <string name="text_league_base_average_explanation">If you are starting recording in the middle of a season, add your current average (0&#8211;450) and games played below for a more accurate average. Otherwise, leave them blank. If you only enter an average, the # of games is assumed to be 1. If you only enter the # of games, both fields are ignored.</string>
     <string name="text_create_event">Create team event</string>
     <string name="text_create_league">Create team with leagues</string>
+    <string name="text_oversize_team_title">Team too large!</string>
+    <string name="text_identical_event_name_title">Event already exists!</string>
 
     <!-- Placeholder text -->
     <string name="text_click_to_delete">Click to delete %1$s</string>
@@ -90,6 +95,10 @@
     <string name="text_until_auto_advance_placeholder">%1$d seconds until auto advance</string>
     <string name="text_game_placeholder">Game %1$d</string>
     <string name="text_max_games_placeholder">The number of games must be between 1 and %1$d.</string>
+    <string name="text_team_size_so_far_placeholder">Team size: %1$d/%2$d</string>
+    <string name="text_oversize_team_placeholder">You\'ve chosen %1$d bowlers, but the maximum size of a team is %2$d. You will have to remove some bowlers from your team.</string>
+    <string name="text_identical_event_name_placeholder">This bowler already has an event named \'%1$s\'. You can either rename the event to \'%1$s 2\' or remove the bowler from the team.</string>
+    <string name="text_max_name_length_placeholder">%1$s name (max %2$d characters)</string>
 
     <!-- Tutorial -->
     <string name="text_tutorial_welcome">Welcome to your 5 Pin Bowling Companion!</string>

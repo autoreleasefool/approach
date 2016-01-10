@@ -12,6 +12,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.RadioButton;
 
+import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.R;
 
 /**
@@ -34,18 +35,29 @@ public class TeamSetupDialog
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getContext());
         final View dialogView = View.inflate(getContext(), R.layout.dialog_create_team, null);
 
+        // Getting references to input views
         final EditText editTextEventName = (EditText) dialogView.findViewById(R.id.et_team_event_name);
         final EditText editTextEventGames = (EditText) dialogView.findViewById(R.id.et_team_event_games);
         final EditText editTextLeagueGames = (EditText) dialogView.findViewById(R.id.et_team_league_games);
-
         final RadioButton radioButtonEvent = (RadioButton) dialogView.findViewById(R.id.rb_team_event);
         final RadioButton radioButtonLeague = (RadioButton) dialogView.findViewById(R.id.rb_team_league);
+
+        // Setting hints for the text input fields
+        editTextEventName.setHint(String.format(getResources().getString(R.string.text_max_name_length_placeholder),
+                "Event",
+                Constants.NAME_MAX_LENGTH));
+        editTextEventGames.setHint(String.format("# of games (1-%d)", Constants.MAX_NUMBER_EVENT_GAMES));
+        editTextLeagueGames.setHint(String.format("# of games (1-%d)", Constants.MAX_NUMBER_LEAGUE_GAMES));
+
+        // Disabling the league name input to start
+        editTextLeagueGames.setEnabled(false);
 
         radioButtonEvent.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     radioButtonLeague.setChecked(false);
+                    editTextEventName.requestFocus();
                 }
 
                 editTextEventName.setEnabled(isChecked);
@@ -58,6 +70,7 @@ public class TeamSetupDialog
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
                     radioButtonEvent.setChecked(false);
+                    editTextLeagueGames.requestFocus();
                 }
 
                 editTextLeagueGames.setEnabled(isChecked);
@@ -112,8 +125,8 @@ public class TeamSetupDialog
     }
 
     /**
-     * Considers user input for a number of games in a league, provided as a {@link java.lang.CharSequence} object,
-     * and extracts the relevant information to begin creating a team for the user to score.
+     * Considers user input for a number of games in a league, provided as a {@link java.lang.CharSequence} object, and
+     * extracts the relevant information to begin creating a team for the user to score.
      *
      * @param seqNumberOfGames user input; number of games in the leagues.
      */

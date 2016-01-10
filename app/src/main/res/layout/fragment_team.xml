@@ -1,0 +1,64 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@null"
+    android:orientation="vertical"
+    tools:ignore="RtlHardcoded">
+
+    <LinearLayout
+        android:id="@+id/ll_active_state"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/secondary_background"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:contentDescription="@string/description_fb"
+                android:padding="@dimen/facebook_padding"
+                android:src="@drawable/ic_people_black_24dp" />
+
+            <TextView
+                android:id="@+id/tv_team_size"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:alpha="0.87"
+                android:textColor="@android:color/black"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_gravity="bottom"
+            android:background="@color/divider" />
+
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_bowlers"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="vertical" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_leagues"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="vertical"
+        android:visibility="gone" />
+
+</LinearLayout>
