@@ -23,6 +23,7 @@ import android.widget.TextView;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -275,8 +276,9 @@ public class TeamFragment
     public void onItemSelected(byte type, int position) {
         if (type == TeamAdapter.DATA_BOWLERS) {
             Bowler selectedBowler = mAvailableBowlers.get(position);
+            Boolean wasSelected = mSelectedBowlers.get(selectedBowler);
 
-            if (mSelectedBowlers.get(selectedBowler)) {
+            if (wasSelected != null && wasSelected) {
                 // If the bowler was previously selected, remove them from the team
                 mSelectedBowlers.put(selectedBowler, false);
                 mSelectedLeagues.remove(selectedBowler);
@@ -312,7 +314,7 @@ public class TeamFragment
      */
     private boolean checkForIdenticalEvent(List<LeagueEvent> leagueEvents) {
         for (LeagueEvent leagueEvent : leagueEvents) {
-            if (leagueEvent.getName().equalsIgnoreCase(mEventName))
+            if (mEventName.equalsIgnoreCase(leagueEvent.getLeagueEventName()))
                 return true;
         }
 
@@ -591,7 +593,6 @@ public class TeamFragment
             Bowler currentBowler = null;
             if (cursor.moveToFirst()) {
                 while (!cursor.isAfterLast()) {
-                    Log.d(TAG, "Bowler: " + cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_BOWLER_NAME)));
                     long bowlerId = cursor.getLong(cursor.getColumnIndex("bid"));
                     if (bowlerId != lastBowlerId) {
                         String bowlerName = cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_BOWLER_NAME));
@@ -600,17 +601,20 @@ public class TeamFragment
                         mLoadedBowlerLeagueEvents.put(currentBowler, new ArrayList<LeagueEvent>());
                     }
 
-                    long leagueEventId = cursor.getLong(cursor.getColumnIndex("lid"));
-                    String leagueEventName = cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_LEAGUE_NAME));
+                    if (!cursor.isNull(cursor.getColumnIndex("lid"))) {
+                        long leagueEventId = cursor.getLong(cursor.getColumnIndex("lid"));
+                        String leagueEventName
+                                = cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_LEAGUE_NAME));
 
-                    LeagueEvent leagueEvent = new LeagueEvent(leagueEventId,
-                            leagueEventName,
-                            fragment.mCreatingEventTeam,
-                            (short) -1,
-                            (short) -1,
-                            -1,
-                            fragment.mNumberOfTeamGames);
-                    mLoadedBowlerLeagueEvents.get(currentBowler).add(leagueEvent);
+                        LeagueEvent leagueEvent = new LeagueEvent(leagueEventId,
+                                leagueEventName,
+                                fragment.mCreatingEventTeam,
+                                (short) -1,
+                                (short) -1,
+                                -1,
+                                fragment.mNumberOfTeamGames);
+                        mLoadedBowlerLeagueEvents.get(currentBowler).add(leagueEvent);
+                    }
 
                     cursor.moveToNext();
                 }
@@ -645,9 +649,9 @@ public class TeamFragment
                         + "league." + LeagueEntry._ID + " AS lid, "
                         + LeagueEntry.COLUMN_LEAGUE_NAME
                         + " FROM " + BowlerEntry.TABLE_NAME + " AS bowler"
-                        + " LEFT JOIN " + LeagueEntry.TABLE_NAME + " AS league"
+                        + " LEFT OUTER JOIN " + LeagueEntry.TABLE_NAME + " AS league"
                         + " ON bid=" + LeagueEntry.COLUMN_BOWLER_ID
-                        + " WHERE " + LeagueEntry.COLUMN_IS_EVENT + "=?"
+                        + " AND " + LeagueEntry.COLUMN_IS_EVENT + "=?"
                         + " ORDER BY " + BowlerEntry.COLUMN_DATE_MODIFIED + ", "
                         + LeagueEntry.COLUMN_DATE_MODIFIED;
                 rawArgs = new String[]{String.valueOf(1)};
@@ -667,6 +671,8 @@ public class TeamFragment
                         + LeagueEntry.COLUMN_DATE_MODIFIED;
                 rawArgs = new String[]{String.valueOf(0), String.valueOf(numberOfGames), Constants.NAME_OPEN_LEAGUE};
             }
+            Log.d(TAG, rawQuery);
+            Log.d(TAG, Arrays.toString(rawArgs));
 
             return database.rawQuery(rawQuery, rawArgs);
         }

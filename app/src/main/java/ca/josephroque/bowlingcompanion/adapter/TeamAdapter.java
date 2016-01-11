@@ -96,8 +96,11 @@ public class TeamAdapter<T extends NameAverageId>
     @Override
     public void onBindViewHolder(final TeamViewHolder holder, final int position) {
         holder.mTextViewName.setText(mListOptions.get(position).getName());
-        if (mDataType == DATA_BOWLERS)
-            holder.mCheckBoxItemSelected.setChecked(mMapOptionsSelected.get(mListOptions.get(position)));
+        if (mDataType == DATA_BOWLERS) {
+            Boolean selected = mMapOptionsSelected.get(mListOptions.get(position));
+            if (selected != null)
+                holder.mCheckBoxItemSelected.setChecked(selected);
+        }
 
         holder.itemView.setOnClickListener(this);
     }
