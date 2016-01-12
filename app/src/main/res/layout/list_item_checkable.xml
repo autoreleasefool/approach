@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|left"
-        android:paddingLeft="@dimen/list_key_line"
+        android:layout_marginLeft="@dimen/list_key_line"
         tools:ignore="ContentDescription" />
 
     <TextView
