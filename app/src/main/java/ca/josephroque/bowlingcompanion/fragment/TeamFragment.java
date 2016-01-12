@@ -652,8 +652,8 @@ public class TeamFragment
                         + " LEFT OUTER JOIN " + LeagueEntry.TABLE_NAME + " AS league"
                         + " ON bid=" + LeagueEntry.COLUMN_BOWLER_ID
                         + " AND " + LeagueEntry.COLUMN_IS_EVENT + "=?"
-                        + " ORDER BY " + BowlerEntry.COLUMN_DATE_MODIFIED + ", "
-                        + LeagueEntry.COLUMN_DATE_MODIFIED;
+                        + " ORDER BY " + BowlerEntry.COLUMN_DATE_MODIFIED + " DESC, "
+                        + LeagueEntry.COLUMN_DATE_MODIFIED + " DESC";
                 rawArgs = new String[]{String.valueOf(1)};
             } else {
                 rawQuery = "SELECT "
@@ -667,8 +667,8 @@ public class TeamFragment
                         + " WHERE " + LeagueEntry.COLUMN_IS_EVENT + "=?"
                         + " AND (" + LeagueEntry.COLUMN_NUMBER_OF_GAMES + "=?"
                         + " OR " + LeagueEntry.COLUMN_LEAGUE_NAME + "=?)"
-                        + " ORDER BY " + BowlerEntry.COLUMN_DATE_MODIFIED + ", "
-                        + LeagueEntry.COLUMN_DATE_MODIFIED;
+                        + " ORDER BY " + BowlerEntry.COLUMN_DATE_MODIFIED + " DESC, "
+                        + LeagueEntry.COLUMN_DATE_MODIFIED + " DESC";
                 rawArgs = new String[]{String.valueOf(0), String.valueOf(numberOfGames), Constants.NAME_OPEN_LEAGUE};
             }
             Log.d(TAG, rawQuery);
