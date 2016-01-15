@@ -90,16 +90,18 @@ public final class Changelog {
 
         // Creating alert dialog
         final AlertDialog.Builder dialog = new AlertDialog.Builder(context);
-        View rootView = View.inflate(context, R.layout.dialog_changelog, null);
+        View rootView = View.inflate(context, R.layout.dialog_scrollable_text, null);
 
         dialog.setView(rootView);
         final AlertDialog alertDialog = dialog.create();
 
-        // Setting text to changelog
-        TextView txtChangelog = (TextView) rootView.findViewById(R.id.tv_changelog);
-        txtChangelog.setText(getChangelogText(context));
+        // Setting text of changelog
+        ((TextView) rootView.findViewById(R.id.tv_scrollable_text)).setText(
+                FileUtils.retrieveTextFileAsset(context, "changelog.txt"));
+        ((TextView) rootView.findViewById(R.id.tv_scrollable_text_dialog_title)).setText(context.getResources()
+                .getString(R.string.text_changelog));
 
-        rootView.findViewById(R.id.btn_close_changelog).setOnClickListener(new View.OnClickListener() {
+        rootView.findViewById(R.id.btn_close).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 alertDialog.dismiss();
@@ -107,31 +109,6 @@ public final class Changelog {
         });
 
         alertDialog.show();
-    }
-
-    /**
-     * Loads the text for the changelog from the assets.
-     *
-     * @param context to access assets
-     * @return a String containing the changelog text
-     */
-    private static String getChangelogText(Context context) {
-        StringBuilder changelogBuilder = new StringBuilder();
-
-        try {
-            AssetManager am = context.getAssets();
-            InputStream is = am.open("changelog.txt");
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
-            String line;
-            while ((line = br.readLine()) != null) {
-                changelogBuilder.append(line);
-                changelogBuilder.append("\n");
-            }
-        } catch (IOException ex) {
-            Log.e(TAG, "Could not read changelog", ex);
-        }
-
-        return changelogBuilder.toString();
     }
 
     /**

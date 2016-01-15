@@ -134,7 +134,7 @@
     <string name="text_save_failure">Failed to save results</string>
     <string name="text_not_loaded">Not finished loading</string>
     <string name="text_match_play">Match play:</string>
-    <string name="text_close_changelog">Close</string>
+    <string name="text_close">Close</string>
 
     <!-- Changelog -->
     <string name="text_changelog">Changelog</string>
