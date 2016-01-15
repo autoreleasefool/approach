@@ -38,4 +38,9 @@
         android:summary="@string/pref_comment_suggestion_summary"
         android:title="@string/pref_comment_suggestion_title" />
 
+    <Preference
+        android:key="pref_attribution"
+        android:summary="@string/pref_attribution_summary"
+        android:title="@string/pref_attribution_title" />
+
 </PreferenceScreen>

@@ -51,6 +51,8 @@ public final class Constants {
     public static final String KEY_SHOW_MATCH_RESULTS = "pref_show_match_results";
     /** Identifier for preference to highlight match play results in series view. */
     public static final String KEY_HIGHLIGHT_MATCH_RESULTS = "pref_highlight_match_results";
+    /** Identifier for preference to display legal attribution from Open Source Software. */
+    public static final String KEY_ATTRIBUTION = "pref_attribution";
 
     // PREFERENCES
     /** Identifier for SharedPreferences of app. */

@@ -30,6 +30,7 @@ import ca.josephroque.bowlingcompanion.dialog.HighlightsDialog;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.utilities.EmailUtils;
 import ca.josephroque.bowlingcompanion.utilities.FacebookUtils;
+import ca.josephroque.bowlingcompanion.utilities.LegalUtils;
 
 
 /**
@@ -569,6 +570,8 @@ public class SettingsActivity
                             null);
                     startActivity(Intent.createChooser(emailIntent, "Send mail..."));
                     return true;
+                } else if (preference.getKey().equals(Constants.KEY_ATTRIBUTION)) {
+                    LegalUtils.displayAttributions(getActivity());
                 }
                 return false;
             }
@@ -583,6 +586,7 @@ public class SettingsActivity
             findPreference(Constants.KEY_RATE).setOnPreferenceClickListener(mOnClickListener);
             findPreference(Constants.KEY_REPORT_BUG).setOnPreferenceClickListener(mOnClickListener);
             findPreference(Constants.KEY_COMMENT_SUGGESTION).setOnPreferenceClickListener(mOnClickListener);
+            findPreference(Constants.KEY_ATTRIBUTION).setOnPreferenceClickListener(mOnClickListener);
         }
 
         @Override

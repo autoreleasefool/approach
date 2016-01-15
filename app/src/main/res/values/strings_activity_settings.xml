@@ -18,6 +18,8 @@
     <string name="pref_report_bug_summary">Help make the app work better for you</string>
     <string name="pref_comment_suggestion_title">Submit a comment/suggestion</string>
     <string name="pref_comment_suggestion_summary">Have a request or an idea for a feature?</string>
+    <string name="pref_attribution_title">Attributions</string>
+    <string name="pref_attribution_summary">Attributions for Open Source Software</string>
 
     <!-- Quick Settings -->
     <string name="pref_header_quick">Quick series</string>

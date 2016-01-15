@@ -115,6 +115,7 @@
     <string name="text_stat_value_example">100% [10/10]</string>
     <string name="text_example_bowler">Your name here</string>
     <string name="text_example_league">Bowling Club</string>
+    <string name="text_attributions">Attributions</string>
 
     <!-- Match play -->
     <string name="text_bowler_name">Bowler:</string>
