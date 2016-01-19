@@ -47,18 +47,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ```
 
-## Screenshots from Version 2.0
-![Version 2.0 - Select a bowler](/../screenshots/Screenshots/screen_2.0_1.png?raw=true)
-![Version 2.0 - Select a series](/../screenshots/Screenshots/screen_2.0_2.png?raw=true)
-![Version 2.0 - Navigation](/../screenshots/Screenshots/screen_2.0_3.png?raw=true)
-![Version 2.0 - Editing a game](/../screenshots/Screenshots/screen_2.0_4.png?raw=true)
-![Version 2.0 - Statistics](/../screenshots/Screenshots/screen_2.0_5.png?raw=true)
-![Version 2.0 - Graphs](/../screenshots/Screenshots/screen_2.0_6.png?raw=true)
+## Screenshots
 
-## Screenshots from Version 1.0
-![Version 1.0 - Select a bowler](/../screenshots/Screenshots/screen_1.0_1.png?raw=true)
-![Version 1.0 - Select a league](/../screenshots/Screenshots/screen_1.0_2.png?raw=true)
-![Version 1.0 - Select a series](/../screenshots/Screenshots/screen_1.0_3.png?raw=true)
-![Version 1.0 - Locked Game](/../screenshots/Screenshots/screen_1.0_4.png?raw=true)
-![Version 1.0 - Unlocked Game](/../screenshots/Screenshots/screen_1.0_5.png?raw=true)
-![Version 1.0 - Manual Score Game](/../screenshots/Screenshots/screen_1.0_6.png?raw=true)
+#### Screenshots from Version 2.0
+![Version 2.0 - Select a bowler](/screenshots/v2.0_bowlers.png)
+![Version 2.0 - Select a series](/screenshots/v2.0_series.png)
+![Version 2.0 - Navigation](/screenshots/v2.0_nav.png)
+![Version 2.0 - Editing a game](/screenshots/v2.0_editingpart.png)
+![Version 2.0 - Statistics](/screenshots/v2.0_stats.png)
+![Version 2.0 - Graphs](/screenshots/v2.0_statsgraph.png)
+
+#### Screenshots from Version 1.0
+![Version 1.0 - Select a bowler](/screenshots/v1.0_bowlers.png)
+![Version 1.0 - Select a league](/screenshots/v1.0_leagues.png)
+![Version 1.0 - Select a series](/screenshots/v1.0_series.png)
+![Version 1.0 - Locked Game](/screenshots/v1.0_editingfin.png)
+![Version 1.0 - Unlocked Game](/screenshots/v1.0_editingpart.png)
+![Version 1.0 - Manual Score Game](/screenshots/v1.0_manual.png)
