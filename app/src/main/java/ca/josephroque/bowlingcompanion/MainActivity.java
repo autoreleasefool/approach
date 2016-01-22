@@ -56,7 +56,6 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -72,7 +71,6 @@ import ca.josephroque.bowlingcompanion.fragment.MatchPlayFragment;
 import ca.josephroque.bowlingcompanion.fragment.SeriesFragment;
 import ca.josephroque.bowlingcompanion.fragment.StatsGraphFragment;
 import ca.josephroque.bowlingcompanion.fragment.StatsListFragment;
-import ca.josephroque.bowlingcompanion.fragment.TeamFragment;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.utilities.DateUtils;
 import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
@@ -96,7 +94,6 @@ public class MainActivity
         FragmentManager.OnBackStackChangedListener,
         Theme.ChangeableTheme,
         BowlerFragment.BowlerCallback,
-        TeamFragment.TeamCallback,
         LeagueEventFragment.LeagueEventCallback,
         SeriesFragment.SeriesCallback,
         GameFragment.GameFragmentCallback,
@@ -392,7 +389,6 @@ public class MainActivity
 
     @Override
     public void onBackStackChanged() {
-        // TODO: make sure that team fragment gets disposed and pressing back in game goes to bowler fragment
         List<Fragment> fragments = getSupportFragmentManager().getFragments();
         for (Fragment fragment : fragments) {
             if (fragment == null || !fragment.isVisible() || fragment.getTag() == null)
@@ -412,20 +408,6 @@ public class MainActivity
                     mNumberOfGamesForSeries = -1;
                     mIsQuickSeries = false;
                     mCurrentFragmentTitle = Constants.FRAGMENT_BOWLERS;
-                    break;
-                case Constants.FRAGMENT_TEAM:
-                    mBowlerId = -1;
-                    mLeagueId = -1;
-                    mSeriesId = -1;
-                    mGameId = -1;
-                    mGameNumber = -1;
-                    mBowlerName = null;
-                    mLeagueName = null;
-                    mSeriesDate = null;
-                    mDefaultNumberOfGames = -1;
-                    mNumberOfGamesForSeries = -1;
-                    mIsQuickSeries = false;
-                    mCurrentFragmentTitle = Constants.FRAGMENT_TEAM;
                     break;
                 case Constants.FRAGMENT_LEAGUES:
                     mLeagueId = -1;
@@ -571,32 +553,6 @@ public class MainActivity
     }
 
     @Override
-    public void onEventTeamSelected(String eventName, byte numberOfGames) {
-        TeamFragment teamFragment = TeamFragment.newInstance(eventName, numberOfGames);
-        startFragmentTransaction(teamFragment, Constants.FRAGMENT_BOWLERS, Constants.FRAGMENT_TEAM);
-    }
-
-    @Override
-    public void onLeagueTeamSelected(byte numberOfGames) {
-        TeamFragment teamFragment = TeamFragment.newInstance(numberOfGames);
-        startFragmentTransaction(teamFragment, Constants.FRAGMENT_BOWLERS, Constants.FRAGMENT_TEAM);
-    }
-
-    @Override
-    public void onEventTeamFinished(String eventName, byte numberOfGames, List<Bowler> selectedBowlers) {
-        // TODO: show event team
-        Log.d(TAG, "Event team created with " + selectedBowlers.size() + " bowlers.");
-    }
-
-    @Override
-    public void onLeagueTeamFinished(byte numberOfGames,
-                                     List<Bowler> selectedBowlers,
-                                     Map<Bowler, LeagueEvent> selectedLeagues) {
-        Log.d(TAG, "League team created with " + selectedBowlers.size() + " bowlers.");
-        // TODO: show league team
-    }
-
-    @Override
     public void onLeagueSelected(LeagueEvent leagueEvent, boolean openSeriesFragment) {
         mLeagueId = leagueEvent.getLeagueEventId();
         mLeagueName = leagueEvent.getLeagueEventName();
@@ -661,7 +617,7 @@ public class MainActivity
     public void createGameNavigationDrawer() {
         mListDrawerOptions.remove(NavigationUtils.NAVIGATION_ITEM_LEAGUES);
         mListDrawerOptions.remove(NavigationUtils.NAVIGATION_ITEM_SERIES);
-        for (Iterator<String> it = mListDrawerOptions.iterator(); it.hasNext(); )
+        for (Iterator<String> it = mListDrawerOptions.iterator(); it.hasNext();)
             if (it.next().matches("\\w+ \\d+"))
                 it.remove();
         GameFragment gameFragment = null;

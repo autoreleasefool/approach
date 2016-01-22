@@ -2,13 +2,6 @@
 
     <CheckBoxPreference
         android:defaultValue="true"
-        android:key="pref_enable_team_fab"
-        android:summaryOn="@string/pref_enable_team_fab_summaryOn"
-        android:summaryOff="@string/pref_enable_team_fab_summaryOff"
-        android:title="@string/pref_enable_team_fab_title" />
-
-    <CheckBoxPreference
-        android:defaultValue="true"
         android:key="pref_enable_fab"
         android:summaryOn="@string/pref_enable_fab_summaryOn"
         android:summaryOff="@string/pref_enable_fab_summaryOff"

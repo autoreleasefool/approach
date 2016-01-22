@@ -36,7 +36,6 @@ import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.MainActivity;
 import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.adapter.NameAverageAdapter;
-import ca.josephroque.bowlingcompanion.dialog.TeamSetupDialog;
 import ca.josephroque.bowlingcompanion.wrapper.Bowler;
 import ca.josephroque.bowlingcompanion.wrapper.LeagueEvent;
 import ca.josephroque.bowlingcompanion.database.Contract.BowlerEntry;
@@ -58,7 +57,6 @@ public class BowlerFragment
         extends Fragment
         implements NameAverageAdapter.NameAverageEventHandler,
         NameBowlerDialog.NameBowlerDialogListener,
-        TeamSetupDialog.TeamSetupDialogListener,
         FloatingActionButtonHandler {
 
     /** Identifies output from this class in Logcat. */
@@ -185,13 +183,7 @@ public class BowlerFragment
             MainActivity mainActivity = (MainActivity) getActivity();
             mainActivity.setActionBarTitle(R.string.app_name, true);
             mainActivity.setDrawerState(false);
-
-            if (PreferenceManager.getDefaultSharedPreferences(getContext())
-                    .getBoolean(Constants.KEY_ENABLE_TEAM_FAB, true))
-                mainActivity.setFloatingActionButtonState(R.drawable.ic_person_add_black_24dp,
-                        R.drawable.ic_people_black_24dp);
-            else
-                mainActivity.setFloatingActionButtonState(R.drawable.ic_person_add_black_24dp, 0);
+            mainActivity.setFloatingActionButtonState(R.drawable.ic_person_add_black_24dp, 0);
 
             //Loads values for member variables from preferences, if they exist
             SharedPreferences prefs =
@@ -369,94 +361,13 @@ public class BowlerFragment
     }
 
     @Override
-    public void onCreateEventTeam(String eventName, byte numberOfGames) {
-        if (numberOfGames < 0 || numberOfGames > Constants.MAX_NUMBER_EVENT_GAMES) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setMessage(String.format(getResources().getString(R.string.text_max_games_placeholder),
-                    Constants.MAX_NUMBER_EVENT_GAMES))
-                    .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    })
-                    .create()
-                    .show();
-            return;
-        }
-
-        if (mBowlerCallback != null)
-            mBowlerCallback.onEventTeamSelected(eventName, numberOfGames);
-    }
-
-    @Override
-    public void onCreateLeagueTeam(byte numberOfGames) {
-        if (numberOfGames < 0 || numberOfGames > Constants.MAX_NUMBER_LEAGUE_GAMES) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-            builder.setMessage(String.format(getResources().getString(R.string.text_max_games_placeholder),
-                    Constants.MAX_NUMBER_LEAGUE_GAMES))
-                    .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    })
-                    .create()
-                    .show();
-            return;
-        }
-
-        if (mBowlerCallback != null)
-            mBowlerCallback.onLeagueTeamSelected(numberOfGames);
-    }
-
-    @Override
     public void onFabClick() {
         showNewBowlerDialog();
     }
 
     @Override
     public void onSecondaryFabClick() {
-        onTeamSelected();
-    }
-
-    /**
-     * Invoked when the user prompts to create a team to record. If it is the user's first time, a dialog is shown to
-     * inform them of the process, otherwise they are shown a dialog to create a team.
-     */
-    private void onTeamSelected() {
-        final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
-        if (preferences.getBoolean(Constants.PREF_TEAM_INSTRUCTIONS_SHOWN, false)) {
-            DialogInterface.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    if (which == DialogInterface.BUTTON_POSITIVE) {
-                        preferences.edit().putBoolean(Constants.PREF_TEAM_INSTRUCTIONS_SHOWN, true).apply();
-                        showTeamSetupDialog();
-                    }
-                    dialog.dismiss();
-                }
-            };
-
-            new AlertDialog.Builder(getContext())
-                    .setTitle(R.string.dialog_create_team_title)
-                    .setMessage(R.string.dialog_create_team_msg)
-                    .setPositiveButton(R.string.dialog_okay, onClickListener)
-                    .setNegativeButton(R.string.dialog_cancel, onClickListener)
-                    .create()
-                    .show();
-        } else {
-            showTeamSetupDialog();
-        }
-    }
-
-    /**
-     * Displays a dialog for the user to either create a new event and name it, or to select a league for each bowler
-     * that will be a part of the team.
-     */
-    private void showTeamSetupDialog() {
-        DialogFragment dialogFragment = TeamSetupDialog.newInstance(this);
-        dialogFragment.show(getFragmentManager(), "TeamSetupDialog");
+        // does nothing
     }
 
     /**
@@ -1078,20 +989,5 @@ public class BowlerFragment
         void onBowlerSelected(Bowler bowler,
                               boolean openLeagueFragment,
                               boolean isQuickSeries);
-
-        /**
-         * Invoked when the user provides an event name and number of games for an event to be created for a team.
-         *
-         * @param eventName name of the event
-         * @param numberOfGames number of games in the new event
-         */
-        void onEventTeamSelected(String eventName, byte numberOfGames);
-
-        /**
-         * Invoked when the user provides a number of games that leagues must have for a team being created.
-         *
-         * @param numberOfGames number of games that a selected bowler's selected league must have
-         */
-        void onLeagueTeamSelected(byte numberOfGames);
     }
 }

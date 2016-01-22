@@ -338,10 +338,10 @@ public class LeagueEventFragment
                 || (!isEvent && numberOfGames > Constants.MAX_NUMBER_LEAGUE_GAMES)) {
             //User has provided an invalid number of games
             validInput = false;
-            invalidInputMessage = String.format(getResources().getString(R.string.text_max_games_placeholder),
-                    (isEvent
+            invalidInputMessage = "The number of games must be between 1 and "
+                    + (isEvent
                     ? Constants.MAX_NUMBER_EVENT_GAMES
-                    : Constants.MAX_NUMBER_LEAGUE_GAMES));
+                    : Constants.MAX_NUMBER_LEAGUE_GAMES) + " (inclusive).";
         } else if (leagueEventName.equalsIgnoreCase(Constants.NAME_OPEN_LEAGUE)) {
             /*
              * User has attempted to create a league or event entitled "Open"
