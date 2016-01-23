@@ -1,10 +1,9 @@
 # Upcoming changes
 
 ```
-v2.1.4
+v2.2
 
-Changes
-- Moved pin from behind next and previous buttons to above. If your screen is too small, you can hide these buttons in the settings
+- Create teams of bowlers to edit more than one bowler's scores at once
 ```
 
 ```
@@ -13,11 +12,36 @@ v3.0
 Features
 - Will add Pebble Watch companion app support
 - Will add Android Wear support
-- Will allow teams of bowlers to be created
 - Will provide options to export games to CSV/Excel
 ```
 
 ## Legacy changelogs
+
+```
+v2.1.4
+
+What's new
+- Added THIS popup, to inform you of the newest changes each release.
+- Leagues now have a "base average". Start recording a new league in the middle of a season? Long click a league, select "Change properties" and you can set your average so far and the number of games you've played, so your average in the app is more accurate.
+- You can now duplicate a series. Duplicating a series will create a new series for the current date, with the same number of games and scores as the series you duplicate. This new series will use manually set games, and will affect your average, but no other stats.
+- New statistics: percentage of time that your first ball is left or right of the headpin. Find them under "General"
+
+Other changes
+- Added an option to move the pins above the "next" button, instead of behind it, to prevent misclicks. This option is enabled by default.
+- Fixed an issue where changing the name of a league or event sometimes added an "L" or "E" to the start. If this happened to you, you'll receive a pop-up asking if you'd like the names to be fixed.
+```
+
+```
+v2.1.3
+
+- Fixed a bug introduced in v2.1.2 that caused some bowlers to not appear.
+```
+
+```
+v2.1.2
+
+- H2 and H32 (not chop off) are no longer counted as "spare chances".
+```
 
 ```
 v2.1.1
@@ -66,6 +90,7 @@ Features
 - Series in the "Open" league can have 1-5 games
 - You can now combine series in the "Open" league
 - Swipe to delete bowlers/leagues/series
+
 Design
 - Material design
 - New app icon

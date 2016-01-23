@@ -3,16 +3,10 @@ package ca.josephroque.bowlingcompanion.utilities;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.content.res.AssetManager;
 import android.preference.PreferenceManager;
-import android.util.Log;
+import android.text.Html;
 import android.view.View;
 import android.widget.TextView;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 
 import ca.josephroque.bowlingcompanion.R;
 
@@ -38,7 +32,7 @@ public final class Changelog {
      * Defines the amount of time which must have passed since the application was installed before the changelog can be
      * shown, so that new installations are not shown it.
      */
-    private static final long MINIMUM_TIME_REQUIRED_FOR_CHANGELOG = 1000 * 60 * 60 * 24 * 7;
+    private static final long MINIMUM_TIME_REQUIRED_FOR_CHANGELOG = 1000 * 60 * 60 * 24;
 
     /**
      * Returns the value of {@code sShowChangelog} to indicate if changelog should be shown.
@@ -88,6 +82,10 @@ public final class Changelog {
         if (!shouldShowChangelog(context))
             return;
 
+        String changelog = FileUtils.retrieveTextFileAsset(context, "changelog.txt");
+        if (changelog == null)
+            return;
+
         // Creating alert dialog
         final AlertDialog.Builder dialog = new AlertDialog.Builder(context);
         View rootView = View.inflate(context, R.layout.dialog_scrollable_text, null);
@@ -97,7 +95,7 @@ public final class Changelog {
 
         // Setting text of changelog
         ((TextView) rootView.findViewById(R.id.tv_scrollable_text)).setText(
-                FileUtils.retrieveTextFileAsset(context, "changelog.txt"));
+                Html.fromHtml(changelog.replace("\n", "<br />")));
         ((TextView) rootView.findViewById(R.id.tv_scrollable_text_dialog_title)).setText(context.getResources()
                 .getString(R.string.text_changelog));
 
