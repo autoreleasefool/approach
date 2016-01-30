@@ -28,7 +28,7 @@ public final class DatabaseHelper
     /** Name of the database. */
     private static final String DATABASE_NAME = "bowlingdata";
     /** Version of the database, incremented with changes. */
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 6;
 
     /** Singleton instance of the DatabaseHelper. */
     private static DatabaseHelper sDatabaseHelperInstance = null;
@@ -259,6 +259,9 @@ public final class DatabaseHelper
                     break;
                 case 5:
                     upgradeDatabaseFrom4To5(db);
+                    break;
+                case 6:
+                    upgradeDatabaseFrom5to6(db);
                     break;
             }
             upgradeTo++;
@@ -496,11 +499,33 @@ public final class DatabaseHelper
             db.beginTransaction();
             ContentValues values = new ContentValues();
             values.put(LeagueEntry.COLUMN_BASE_AVERAGE, -1);
-            values.put(LeagueEntry.COLUMN_BASE_GAMES, -1);
+            values.put(LeagueEntry.COLUMN_BASE_GAMES, 0);
             db.update(LeagueEntry.TABLE_NAME, values, null, null);
             db.setTransactionSuccessful();
         } catch (Exception ex) {
             Log.e(TAG, "Error upgrading from 4 to 5", ex);
+        } finally {
+            db.endTransaction();
+        }
+    }
+
+    /**
+     * Upgrades database from oldVersion 5 to newVersion 6.
+     *
+     * @param db to upgrade
+     */
+    private void upgradeDatabaseFrom5to6(SQLiteDatabase db) {
+        try {
+            db.beginTransaction();
+            ContentValues values = new ContentValues();
+            values.put(LeagueEntry.COLUMN_BASE_GAMES, 0);
+            db.update(LeagueEntry.TABLE_NAME,
+                    values,
+                    LeagueEntry.COLUMN_BASE_GAMES + "=?",
+                    new String[]{String.valueOf(-1)});
+            db.setTransactionSuccessful();
+        } catch (Exception ex) {
+            Log.e(TAG, "Error upgrading from 5 to 6");
         } finally {
             db.endTransaction();
         }

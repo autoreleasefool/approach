@@ -900,7 +900,9 @@ public class LeagueEventFragment
             values.put(LeagueEntry.COLUMN_BASE_AVERAGE, league[0].getBaseAverage());
             values.put(LeagueEntry.COLUMN_BASE_GAMES, league[0].getBaseGames());
             values.put(LeagueEntry.COLUMN_NUMBER_OF_GAMES, league[0].getLeagueEventNumberOfGames());
-            values.put(LeagueEntry.COLUMN_IS_EVENT, league[0].isEvent());
+            values.put(LeagueEntry.COLUMN_IS_EVENT, league[0].isEvent()
+                    ? 1
+                    : 0);
 
             db.beginTransaction();
             try {

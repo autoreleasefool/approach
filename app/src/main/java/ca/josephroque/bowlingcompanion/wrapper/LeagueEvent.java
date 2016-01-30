@@ -114,7 +114,7 @@ public class LeagueEvent
      */
     public int getBaseGames() {
         if (isEvent())
-            return -1;
+            return 0;
         else
             return mLeagueBaseGames;
     }
