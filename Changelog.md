@@ -18,6 +18,12 @@ Features
 ## Legacy changelogs
 
 ```
+v2.1.6
+
+- Added an option in the settings under "Editing Games" that allows users to disable the new change that moved the pins above the floating buttons.
+```
+
+```
 v2.1.5
 
 - Fixed a bug that prevented new events from being made.
