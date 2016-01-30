@@ -18,6 +18,13 @@ Features
 ## Legacy changelogs
 
 ```
+v2.1.5
+
+- Fixed a bug that prevented new events from being made.
+```
+
+
+```
 v2.1.4
 
 What's new

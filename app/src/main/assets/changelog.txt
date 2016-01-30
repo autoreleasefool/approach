@@ -1,3 +1,6 @@
+<b>v2.1.5</b>
+- Fixed a bug that prevented new events from being made.
+
 <b>v2.1.4</b>
 
 <i>What's new</i>
