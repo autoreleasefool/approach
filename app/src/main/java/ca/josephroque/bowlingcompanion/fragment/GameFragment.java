@@ -1072,6 +1072,9 @@ public class GameFragment
         if (rootView == null)
             return;
 
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getContext());
+        boolean fabsEnabled = preferences.getBoolean(Constants.KEY_ENABLE_FAB, true);
+
         if (enabled) {
             mImageViewNextBall.setVisibility(View.VISIBLE);
             mImageViewPrevBall.setVisibility(View.VISIBLE);
@@ -1083,6 +1086,14 @@ public class GameFragment
             mTextViewManualScore.setText(null);
             mTextViewManualScore.setVisibility(View.INVISIBLE);
             mLinearLayoutPins.setEnabled(true);
+
+            View pinsLayout = rootView.findViewById(R.id.ll_pins);
+            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) pinsLayout.getLayoutParams();
+            if (fabsEnabled && preferences.getBoolean(Constants.KEY_PINS_BEHIND_FABS, false))
+                layoutParams.addRule(RelativeLayout.ABOVE, R.id.iv_lock);
+            else
+                layoutParams.addRule(RelativeLayout.ABOVE, R.id.fab_container);
+            pinsLayout.setLayoutParams(layoutParams);
         } else {
             mImageViewNextBall.setVisibility(View.INVISIBLE);
             mImageViewPrevBall.setVisibility(View.INVISIBLE);
@@ -1096,9 +1107,7 @@ public class GameFragment
             mLinearLayoutPins.setEnabled(false);
         }
 
-        rootView.findViewById(R.id.fab_container).setVisibility(
-                (PreferenceManager.getDefaultSharedPreferences(getContext())
-                        .getBoolean(Constants.KEY_ENABLE_FAB, true) && enabled)
+        rootView.findViewById(R.id.fab_container).setVisibility((fabsEnabled && enabled)
                         ? View.VISIBLE
                         : View.GONE);
 

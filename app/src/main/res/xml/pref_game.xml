@@ -3,23 +3,31 @@
     <CheckBoxPreference
         android:defaultValue="true"
         android:key="pref_enable_fab"
-        android:summaryOn="@string/pref_enable_fab_summaryOn"
         android:summaryOff="@string/pref_enable_fab_summaryOff"
-        android:title="@string/pref_enable_fab_title" />
+        android:summaryOn="@string/pref_enable_fab_summaryOn"
+        android:title="@string/pref_enable_fab_title"/>
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="pref_pins_behind_fabs"
+        android:dependency="pref_enable_fab"
+        android:summaryOff="@string/pref_pins_behind_fabs_summaryOff"
+        android:summaryOn="@string/pref_pins_behind_fabs_summaryOn"
+        android:title="@string/pref_pins_behind_fabs_title"/>
 
     <CheckBoxPreference
         android:defaultValue="true"
         android:key="pref_enable_strike_highlights"
-        android:summaryOn="@string/pref_enable_strike_highlights_summaryOn"
         android:summaryOff="@string/pref_enable_strike_highlights_summaryOff"
-        android:title="@string/pref_enable_strike_highlights_title" />
+        android:summaryOn="@string/pref_enable_strike_highlights_summaryOn"
+        android:title="@string/pref_enable_strike_highlights_title"/>
 
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="pref_enable_auto_advance"
         android:summaryOff="@string/pref_enable_auto_advance_summaryOff"
         android:summaryOn="@string/pref_enable_auto_advance_summaryOn"
-        android:title="@string/pref_enable_auto_advance_title" />
+        android:title="@string/pref_enable_auto_advance_title"/>
 
     <ListPreference
         android:dependency="pref_enable_auto_advance"
@@ -28,6 +36,6 @@
         android:entryValues="@array/pref_auto_advance_times"
         android:key="pref_auto_advance_time"
         android:summary="@string/pref_auto_advance_time_summary"
-        android:title="@string/pref_auto_advance_time_title" />
+        android:title="@string/pref_auto_advance_time_title"/>
 
 </PreferenceScreen>

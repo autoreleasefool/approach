@@ -68,6 +68,9 @@
     <string name="pref_enable_fab_title">Enable floating buttons</string>
     <string name="pref_enable_fab_summaryOn">Floating buttons are enabled</string>
     <string name="pref_enable_fab_summaryOff">Floating buttons are not visible</string>
+    <string name="pref_pins_behind_fabs_title">Show pins behind next/previous buttons</string>
+    <string name="pref_pins_behind_fabs_summaryOn">Pins will be behind floating buttons</string>
+    <string name="pref_pins_behind_fabs_summaryOff">Pins will be above floating buttons</string>
     <string name="pref_enable_strike_highlights_title">Highlight strikes/spares</string>
     <string name="pref_enable_strike_highlights_summaryOn">Mark highlights are enabled</string>
     <string name="pref_enable_strike_highlights_summaryOff">Mark highlights are disabled</string>
