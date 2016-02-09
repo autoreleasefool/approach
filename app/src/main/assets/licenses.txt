@@ -13,6 +13,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 
+<b>Google Material Design Icons</b>
+Copyright 2016 Google
+Licensed under the Creative Common Attribution 4.0 International License (CC-BY 4.0)
+
+For more details, see http://creativecommons.org/licenses/by/4.0/
+
+Retrieved from https://design.google.com/icons/
+
 <b>MPAndroidChart</b>
 Copyright 2015 Philipp Jahoda
 

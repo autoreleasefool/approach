@@ -4,6 +4,7 @@
 v2.2
 
 - Create teams of bowlers to edit more than one bowler's scores at once
+- Adds missing attribution to Google Material Icons
 ```
 
 ```
