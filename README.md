@@ -6,12 +6,6 @@ An Android app to track 5-pin bowling statistics. Allows users to track multiple
 
 [View it on the Play Store](https://play.google.com/store/apps/details?id=ca.josephroque.bowlingcompanion)
 
-## How to Run
-1. Clone project ```git clone https://github.com/joseph-roque/bowling-companion.git```
-2. Import the project into Android Studio.
-
-[View the JavaDocs](http://joseph-roque.github.io/bowling-companion/)
-
 ## Play Store Description
 Your 5 Pin Bowling Companion is here!
 
@@ -29,23 +23,11 @@ Writing to external storage - When you create an image of a series, this image m
 
 Internet access - Allows the app to display ads. We do not ask for or store any information.
 
-## License
+## How to Run
+1. Clone project ```git clone https://github.com/joseph-roque/bowling-companion.git```
+2. Import the project into Android Studio.
 
-```
-Copyright 2015 Joseph Roque
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-```
+[View the JavaDocs](http://joseph-roque.github.io/bowling-companion/)
 
 ## Screenshots
 
@@ -64,3 +46,21 @@ limitations under the License.
 ![Version 1.0 - Locked Game](/screenshots/v1.0_editingfin.png)
 ![Version 1.0 - Unlocked Game](/screenshots/v1.0_editingpart.png)
 ![Version 1.0 - Manual Score Game](/screenshots/v1.0_manual.png)
+
+## License
+
+```
+Copyright 2015 Joseph Roque
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+```
