@@ -111,7 +111,7 @@ public class SplashActivity
         String taskName = getResources().getString(R.string.app_name);
         try {
             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            //The .debug specified in gradle
+            // The .debug specified in gradle
             if (pInfo.packageName.equals("ca.josephroque.bowlingcompanion.debug")) {
                 taskName += " (DEBUG)";
             }

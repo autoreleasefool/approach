@@ -153,8 +153,8 @@ public class StatsListFragment
             MainActivity mainActivity = (MainActivity) getActivity();
             mainActivity.setDrawerState(false);
 
-            //Checks what type of stats should be displayed, depending
-            //on what data is available in the parent activity at the time
+            // Checks what type of stats should be displayed, depending
+            // on what data is available in the parent activity at the time
             int titleToSet;
             if (mainActivity.getGameId() == -1) {
                 if (mainActivity.getSeriesId() == -1) {
@@ -262,7 +262,7 @@ public class StatsListFragment
                                  byte statsToLoad,
                                  List<String> headers,
                                  List<List<Pair<String, String>>> namesAndValues) {
-        //Stat names which could possibly be displayed, depending on stats being loaded
+        // Stat names which could possibly be displayed, depending on stats being loaded
 
         headers.add("General");
         namesAndValues.add(new ArrayList<Pair<String, String>>());
@@ -679,7 +679,7 @@ public class StatsListFragment
             return new List<?>[]{listStatHeaders, listStatNamesAndValues};
         }
 
-        @SuppressWarnings("unchecked") //Types of parameters are known
+        @SuppressWarnings("unchecked") // Types of parameters are known
         @Override
         protected void onPostExecute(List<?>[] lists) {
             StatsListFragment fragment = mFragment.get();

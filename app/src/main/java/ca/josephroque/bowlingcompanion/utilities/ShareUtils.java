@@ -91,7 +91,7 @@ public final class ShareUtils {
      */
     private static void saveSeriesToDevice(final Activity activity, final long seriesId) {
         new Thread(new Runnable() {
-            @SuppressWarnings("UnusedAssignment") //seriesBitmap set to null to free memory
+            @SuppressWarnings("UnusedAssignment") // seriesBitmap set to null to free memory
             @Override
             public void run() {
                 Bitmap seriesBitmap = ImageUtils.createImageFromSeries(activity, seriesId);
@@ -138,7 +138,7 @@ public final class ShareUtils {
             WeakReference<Intent>>> {
 
         @SafeVarargs
-        @SuppressWarnings("UnusedAssignment") //image set to null to free memory
+        @SuppressWarnings("UnusedAssignment") // image set to null to free memory
         @Override
         public final Pair<WeakReference<Context>, WeakReference<Intent>> doInBackground(
                 Pair<WeakReference<Context>, Long>... params) {
@@ -170,7 +170,7 @@ public final class ShareUtils {
                     try {
                         outStream.close();
                     } catch (IOException ex) {
-                        //does nothing - could not close output stream
+                        // does nothing - could not close output stream
                     }
                 }
             }

@@ -90,7 +90,7 @@ public final class DisplayUtils {
      * @param drawableId id of drawable
      * @return drawable which represents {@code drawableId}
      */
-    @SuppressWarnings("deprecation")    //Uses newer APIs when available
+    @SuppressWarnings("deprecation") // Uses newer APIs when available
     public static Drawable getDrawable(Resources res, int drawableId) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
             return res.getDrawable(drawableId, null);

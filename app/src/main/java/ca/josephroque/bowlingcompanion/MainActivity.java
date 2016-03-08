@@ -229,7 +229,7 @@ public class MainActivity
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         if (savedInstanceState == null) {
-            //Creates new BowlerFragment to display data, if no other fragment exists
+            // Creates new BowlerFragment to display data, if no other fragment exists
             Fragment bowlerFragment = BowlerFragment.newInstance();
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.fl_main_fragment_container, bowlerFragment,
@@ -240,7 +240,7 @@ public class MainActivity
                     .remove(Constants.PREF_FACEBOOK_CLOSED)
                     .apply();
         } else {
-            //Loads member variables from bundle
+            // Loads member variables from bundle
             mBowlerId = savedInstanceState.getLong(Constants.EXTRA_ID_BOWLER, -1);
             mLeagueId = savedInstanceState.getLong(Constants.EXTRA_ID_LEAGUE, -1);
             mSeriesId = savedInstanceState.getLong(Constants.EXTRA_ID_SERIES, -1);
@@ -281,7 +281,7 @@ public class MainActivity
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        //Saves member variables to bundle
+        // Saves member variables to bundle
         outState.putLong(Constants.EXTRA_ID_BOWLER, mBowlerId);
         outState.putLong(Constants.EXTRA_ID_LEAGUE, mLeagueId);
         outState.putLong(Constants.EXTRA_ID_SERIES, mSeriesId);
@@ -358,7 +358,7 @@ public class MainActivity
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        //Sets menu items visibility depending on if navigation drawer is open
+        // Sets menu items visibility depending on if navigation drawer is open
         boolean drawerOpen = isDrawerOpen();
         menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
         menu.findItem(R.id.action_tutorial).setVisible(!drawerOpen);
@@ -467,7 +467,7 @@ public class MainActivity
 
     @Override
     public void updateTheme() {
-        //Updates colors and sets theme for MainActivity valid
+        // Updates colors and sets theme for MainActivity valid
         if (getSupportActionBar() != null)
             getSupportActionBar()
                     .setBackgroundDrawable(new ColorDrawable(Theme.getPrimaryThemeColor()));
@@ -476,7 +476,7 @@ public class MainActivity
         String taskName = getResources().getString(R.string.app_name);
         try {
             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-            //The .debug specified in gradle
+            // The .debug specified in gradle
             if (pInfo.packageName.equals("ca.josephroque.bowlingcompanion.debug")) {
                 taskName += " (DEBUG)";
             }
@@ -954,12 +954,12 @@ public class MainActivity
      * Sets up the AdView and requests an ad.
      */
     private void setupAdView() {
-        //Sets the adview to display an ad to the user
+        // Sets the adview to display an ad to the user
         mAdView = (AdView) findViewById(R.id.av_main);
         mAdView.setAdListener(new AdListener() {
             @Override
             public void onAdFailedToLoad(int errorCode) {
-                //If ad fails to load, hides this adview
+                // If ad fails to load, hides this adview
                 runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -1029,12 +1029,12 @@ public class MainActivity
      * @param override indicates if reference to resId title should be saved in mTitle
      */
     public void setActionBarTitle(int resId, boolean override) {
-        //Changing title theme color
-        //final String hexColor = DataFormatter.getHexColorFromInt(Theme.getHeaderFontThemeColor());
+        // Changing title theme color
+        // final String hexColor = DataFormatter.getHexColorFromInt(Theme.getHeaderFontThemeColor());
 
-        //if (getSupportActionBar() != null)
-        //getSupportActionBar().setTitle(Html.fromHtml("<font color=\"" + hexColor + "\">"
-        //+ getResources().getString(resId) + "</font>"));
+        // if (getSupportActionBar() != null)
+        // getSupportActionBar().setTitle(Html.fromHtml("<font color=\"" + hexColor + "\">"
+        // + getResources().getString(resId) + "</font>"));
         if (getSupportActionBar() != null)
             getSupportActionBar().setTitle(resId);
         if (override)
@@ -1376,7 +1376,7 @@ public class MainActivity
      * @param activity source activity
      */
     public static void waitForSaveThreads(WeakReference<MainActivity> activity) {
-        //Waits for saving to database to finish, before loading from database
+        // Waits for saving to database to finish, before loading from database
         while (activity.get() != null && activity.get().mQueueSavingThreads.peek() != null) {
             try {
                 //noinspection CheckStyle
@@ -1385,7 +1385,7 @@ public class MainActivity
                 throw new RuntimeException("Could not wait for threads to finish saving: "
                         + ex.getMessage());
             }
-            //wait for saving threads to finish
+            // wait for saving threads to finish
         }
     }
 

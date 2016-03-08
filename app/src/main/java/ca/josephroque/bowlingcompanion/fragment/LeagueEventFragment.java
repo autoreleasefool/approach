@@ -193,7 +193,7 @@ public class LeagueEventFragment
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_stats:
-                //Displays stats of current bowler in a new StatsFragment
+                // Displays stats of current bowler in a new StatsFragment
                 if (mLeagueCallback != null)
                     mLeagueCallback.onBowlerStatsOpened();
                 return true;
@@ -204,7 +204,7 @@ public class LeagueEventFragment
 
     @Override
     public void onNAItemClick(final int position) {
-        //When league name is clicked, its data is opened in a new SeriesFragment
+        // When league name is clicked, its data is opened in a new SeriesFragment
         new OpenLeagueEventSeriesTask(this).execute(position);
     }
 
@@ -264,11 +264,11 @@ public class LeagueEventFragment
             validInput = false;
             invalidInputMessage = R.string.dialog_default_name;
         } else if (hasNameBeenUsed(mListLeaguesEvents, name) && !leagueEventToChange.equals(updatedLeagueEvent)) {
-            //User has provided a name which is already in use for a league or event
+            // User has provided a name which is already in use for a league or event
             validInput = false;
             invalidInputMessage = R.string.dialog_name_exists;
         } else if (!name.matches(Constants.REGEX_LEAGUE_EVENT_NAME)) {
-            //Name is not made up of letters, numbers and spaces
+            // Name is not made up of letters, numbers and spaces
             validInput = false;
             invalidInputMessage = R.string.dialog_name_letters_spaces_numbers;
         } else if (baseAverage > 0 && (baseGames < 1 || baseGames > Constants.MAXIMUM_BASE_GAMES)) {
@@ -278,7 +278,7 @@ public class LeagueEventFragment
         }
 
         if (!validInput) {
-            //Displays an error dialog if the input was not valid and exits the method
+            // Displays an error dialog if the input was not valid and exits the method
             new AlertDialog.Builder(getContext())
                     .setMessage(invalidInputMessage)
                     .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener() {
@@ -336,7 +336,7 @@ public class LeagueEventFragment
 
         if (numberOfGames < 1 || (isEvent && numberOfGames > Constants.MAX_NUMBER_EVENT_GAMES)
                 || (!isEvent && numberOfGames > Constants.MAX_NUMBER_LEAGUE_GAMES)) {
-            //User has provided an invalid number of games
+            // User has provided an invalid number of games
             validInput = false;
             invalidInputMessage = "The number of games must be between 1 and "
                     + (isEvent
@@ -350,11 +350,11 @@ public class LeagueEventFragment
             validInput = false;
             invalidInputMessageVal = R.string.dialog_default_name;
         } else if (hasNameBeenUsed(mListLeaguesEvents, leagueEventName)) {
-            //User has provided a name which is already in use for a league or event
+            // User has provided a name which is already in use for a league or event
             validInput = false;
             invalidInputMessageVal = R.string.dialog_name_exists;
         } else if (!leagueEventName.matches(Constants.REGEX_LEAGUE_EVENT_NAME)) {
-            //Name is not made up of letters, numbers and spaces
+            // Name is not made up of letters, numbers and spaces
             validInput = false;
             invalidInputMessageVal = R.string.dialog_name_letters_spaces_numbers;
         } else if (baseAverage > 0 && (baseGames < 1 || baseGames > Constants.MAXIMUM_BASE_GAMES)) {
@@ -364,7 +364,7 @@ public class LeagueEventFragment
         }
 
         if (!validInput) {
-            //Displays an error dialog if the input was not valid and exits the method
+            // Displays an error dialog if the input was not valid and exits the method
             AlertDialog.Builder invalidInputBuilder = new AlertDialog.Builder(getContext());
             if (invalidInputMessageVal == -1)
                 invalidInputBuilder.setMessage(invalidInputMessage);
@@ -477,7 +477,7 @@ public class LeagueEventFragment
         long recentId = prefs.getLong(Constants.PREF_RECENT_LEAGUE_ID, -1);
         long quickId = prefs.getLong(Constants.PREF_QUICK_LEAGUE_ID, -1);
 
-        //Clears recent/quick ids if they match the deleted league
+        // Clears recent/quick ids if they match the deleted league
         if (recentId == leagueEventId) {
             prefsEditor.putLong(Constants.PREF_RECENT_BOWLER_ID, -1)
                     .putLong(Constants.PREF_RECENT_LEAGUE_ID, -1);
@@ -488,11 +488,11 @@ public class LeagueEventFragment
         }
         prefsEditor.apply();
 
-        //Deletion occurs on separate thread so UI does not hang
+        // Deletion occurs on separate thread so UI does not hang
         new Thread(new Runnable() {
             @Override
             public void run() {
-                //Deletes data from all tables corresponding to leagueEventId
+                // Deletes data from all tables corresponding to leagueEventId
                 SQLiteDatabase database =
                         DatabaseHelper.getInstance(getContext()).getWritableDatabase();
                 String[] whereArgs = {String.valueOf(leagueEventId)};
@@ -629,7 +629,7 @@ public class LeagueEventFragment
             ContentValues values = new ContentValues();
             values.put(LeagueEntry.COLUMN_DATE_MODIFIED, currentDate);
 
-            //Updates the date modified in the database of the selected league
+            // Updates the date modified in the database of the selected league
             db.beginTransaction();
             try {
                 db.update(LeagueEntry.TABLE_NAME,
@@ -638,7 +638,7 @@ public class LeagueEventFragment
                         new String[]{String.valueOf(selectedLeagueEvent.getLeagueEventId())});
                 db.setTransactionSuccessful();
             } catch (Exception ex) {
-                //does nothing - error updating league date - non-fatal
+                // does nothing - error updating league date - non-fatal
             } finally {
                 db.endTransaction();
             }
@@ -906,7 +906,7 @@ public class LeagueEventFragment
 
             db.beginTransaction();
             try {
-                //Creates the entry for the league or event in the "league" database
+                // Creates the entry for the league or event in the "league" database
                 league[0].setLeagueEventId(db.insert(LeagueEntry.TABLE_NAME, null, values));
                 if (league[0].isEvent()) {
                     /*

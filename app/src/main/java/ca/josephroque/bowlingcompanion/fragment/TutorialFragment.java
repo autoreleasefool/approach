@@ -205,14 +205,14 @@ public class TutorialFragment
                 DisplayUtils.getColorResource(getResources(), R.color.theme_blue_tertiary));
         DisplayUtils.fixFloatingActionButtonMargins(getResources(), fab);
 
-        //Setting colors of second fab
+        // Setting colors of second fab
         fab = (FloatingActionButton) mViewTutorial.findViewById(R.id.fab_tutorial_add_2);
         DisplayUtils.setFloatingActionButtonColors(fab,
                 DisplayUtils.getColorResource(getResources(), R.color.theme_red_primary),
                 DisplayUtils.getColorResource(getResources(), R.color.theme_red_tertiary));
         DisplayUtils.fixFloatingActionButtonMargins(getResources(), fab);
 
-        //Setting colors of third fab
+        // Setting colors of third fab
         fab = (FloatingActionButton) mViewTutorial.findViewById(R.id.fab_tutorial_add_3);
         DisplayUtils.setFloatingActionButtonColors(fab,
                 DisplayUtils.getColorResource(getResources(), R.color.theme_green_primary),

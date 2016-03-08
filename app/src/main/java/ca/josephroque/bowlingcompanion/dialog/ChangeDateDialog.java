@@ -44,7 +44,7 @@ public class ChangeDateDialog
             mSeries = getArguments().getParcelable(Constants.EXTRA_SERIES);
             assert mSeries != null;
             date = DateUtils.prettyCompactToFormattedDate(mSeries.getSeriesDate());
-            date[0] -= 1; //Must subtract one because method returns 1-12 for month, need 0-11
+            date[0] -= 1; // Must subtract one because method returns 1-12 for month, need 0-11
         } else {
             mSeries = savedInstanceState.getParcelable(Constants.EXTRA_SERIES);
             date = savedInstanceState.getIntArray(Constants.EXTRA_NAME_SERIES);

@@ -275,7 +275,7 @@ public final class DatabaseHelper
      */
     @SuppressWarnings("CheckStyle")
     private void upgradeDatabaseFrom1To2(SQLiteDatabase db) {
-        //Removes foreign key and check constraints from frame table
+        // Removes foreign key and check constraints from frame table
         db.execSQL("CREATE TABLE frame2 (" + FrameEntry._ID + " INTEGER PRIMARY KEY, "
                 + FrameEntry.COLUMN_FRAME_NUMBER + " INTEGER NOT NULL, "
                 + FrameEntry.COLUMN_IS_ACCESSED + " INTEGER NOT NULL DEFAULT 0, "
@@ -306,7 +306,7 @@ public final class DatabaseHelper
         db.execSQL("DROP TABLE " + FrameEntry.TABLE_NAME);
         db.execSQL("ALTER TABLE frame2 RENAME TO " + FrameEntry.TABLE_NAME);
 
-        //Adds new column and check constraints to game table
+        // Adds new column and check constraints to game table
         db.execSQL("CREATE TABLE game2 ("
                 + GameEntry._ID + " INTEGER PRIMARY KEY, "
                 + GameEntry.COLUMN_GAME_NUMBER + " INTEGER NOT NULL, "
@@ -339,7 +339,7 @@ public final class DatabaseHelper
         db.execSQL("DROP TABLE " + GameEntry.TABLE_NAME);
         db.execSQL("ALTER TABLE game2 RENAME TO " + GameEntry.TABLE_NAME);
 
-        //Adds foreign key and check constraints to frame table
+        // Adds foreign key and check constraints to frame table
         db.execSQL("CREATE TABLE frame2 ("
                 + FrameEntry._ID + " INTEGER PRIMARY KEY, "
                 + FrameEntry.COLUMN_FRAME_NUMBER + " INTEGER NOT NULL, "

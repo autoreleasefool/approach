@@ -58,7 +58,7 @@ public class NameLeagueEventDialog
         CharSequence leagueCurrentGames = "";
 
         if (savedInstanceState != null) {
-            //Loads member variables from bundle
+            // Loads member variables from bundle
             mIsEventMode = savedInstanceState.getBoolean(Constants.EXTRA_EVENT_MODE);
             mEditing = savedInstanceState.getBoolean(ARG_EDITING);
             leagueEventName = savedInstanceState.getCharSequence(Constants.EXTRA_NAME_LEAGUE);
@@ -153,7 +153,7 @@ public class NameLeagueEventDialog
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
-        //Saves member variables to bundle
+        // Saves member variables to bundle
         outState.putBoolean(Constants.EXTRA_EVENT_MODE, mIsEventMode);
         outState.putBoolean(ARG_EDITING, mEditing);
         outState.putCharSequence(Constants.EXTRA_NAME_LEAGUE,

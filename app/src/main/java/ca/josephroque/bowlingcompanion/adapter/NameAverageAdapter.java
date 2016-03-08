@@ -148,7 +148,7 @@ public class NameAverageAdapter<T extends NameAverageId>
 
         switch (viewType) {
             case VIEWTYPE_ACTIVE:
-                //Sets text/images depending on data type
+                // Sets text/images depending on data type
                 switch (mDataType) {
                     case DATA_BOWLERS:
                         holder.mTextViewName.setText(mListNamesAndAverages.get(position).getName());
@@ -187,7 +187,7 @@ public class NameAverageAdapter<T extends NameAverageId>
                     holder.mTextViewAverage.setTextColor(ContextCompat.getColor(holder.mTextViewAverage.getContext(),
                             android.R.color.black));
 
-                //Sets actions on click/touch events
+                // Sets actions on click/touch events
                 holder.itemView.setOnClickListener(this);
                 holder.itemView.setOnLongClickListener(this);
                 break;
@@ -221,7 +221,7 @@ public class NameAverageAdapter<T extends NameAverageId>
 
     @Override
     public void onClick(View v) {
-        //Calls relevant event handler method
+        // Calls relevant event handler method
         if (mEventHandler != null && mRecyclerView != null)
             mEventHandler.onNAItemClick(mRecyclerView.getChildAdapterPosition(v));
     }

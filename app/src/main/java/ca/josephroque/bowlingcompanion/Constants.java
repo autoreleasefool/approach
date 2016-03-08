@@ -150,7 +150,7 @@ public final class Constants {
     /** The value of a foul in a game. */
     public static final byte FOUL_VALUE = 15;
 
-    //SCORING VALUES
+    // SCORING VALUES
     /** Symbol representing a strike. */
     public static final String BALL_STRIKE = "X";
     /** Symbol representing a spare. */
@@ -174,7 +174,7 @@ public final class Constants {
     /** Array representing the state of all pins as being knocked down. */
     public static final boolean[] FRAME_PINS_DOWN = {true, true, true, true, true};
 
-    //BALL VALUES
+    // BALL VALUES
     /** Indicates a strike was thrown. */
     public static final byte BALL_VALUE_STRIKE = 0;
     /** Indicates a left was thrown. */

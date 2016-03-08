@@ -153,8 +153,8 @@ public class StatsGraphFragment
             mainActivity.setFloatingActionButtonState(0, 0);
             mainActivity.setDrawerState(false);
 
-            //Checks what type of stats should be displayed, depending
-            //on what data is available in the parent activity at the time
+            // Checks what type of stats should be displayed, depending
+            // on what data is available in the parent activity at the time
             byte statsToLoad;
             int titleToSet;
             if (mainActivity.getLeagueId() == -1) {

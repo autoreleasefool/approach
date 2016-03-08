@@ -162,7 +162,7 @@ public class SeriesFragment
 
         updateTheme();
 
-        //Creates AsyncTask to load data from database
+        // Creates AsyncTask to load data from database
         new LoadSeriesTask(this).execute();
     }
 
@@ -220,7 +220,7 @@ public class SeriesFragment
 
     @Override
     public void onSItemClick(final int position) {
-        //When series is clicked, its games are displayed in a new GameFragment
+        // When series is clicked, its games are displayed in a new GameFragment
         if (mSeriesCallback != null)
             mSeriesCallback.onSeriesSelected(mListSeries.get(position), false);
     }

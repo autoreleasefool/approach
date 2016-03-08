@@ -104,7 +104,7 @@ public class SeriesAdapter
                     mImageViewEdit = (ImageView) itemLayoutView.findViewById(R.id.iv_edit_date);
                     mTextViewSeriesTotal = (TextView) itemLayoutView.findViewById(R.id.tv_series_total);
 
-                    //Adds text views by id to array
+                    // Adds text views by id to array
                     mArrayTextViewGames = new TextView[Constants.MAX_NUMBER_LEAGUE_GAMES];
                     mArrayTextViewGames[0] = (TextView) itemLayoutView.findViewById(R.id.tv_series_game_1);
                     mArrayTextViewGames[1] = (TextView) itemLayoutView.findViewById(R.id.tv_series_game_2);
@@ -352,7 +352,7 @@ public class SeriesAdapter
 
     @Override
     public void onClick(View v) {
-        //Calls relevant event handler method
+        // Calls relevant event handler method
         if (mEventHandler != null && mRecyclerView != null) {
             // If the user is duplicating a series, then the item clicked is duplicated
             if (mDuplicatingSeries)
@@ -418,7 +418,7 @@ public class SeriesAdapter
      * @param imageView image view to set drawable of
      */
     private void setItemDrawable(ImageView imageView) {
-        //Sets color of edit button
+        // Sets color of edit button
         if (mEditDrawable == null)
             mEditDrawable = DisplayUtils.getDrawable(imageView.getResources(), R.drawable.ic_edit_black_24dp);
         if (mCopyDrawable == null)

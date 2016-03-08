@@ -185,7 +185,7 @@ public class BowlerFragment
             mainActivity.setDrawerState(false);
             mainActivity.setFloatingActionButtonState(R.drawable.ic_person_add_black_24dp, 0);
 
-            //Loads values for member variables from preferences, if they exist
+            // Loads values for member variables from preferences, if they exist
             SharedPreferences prefs =
                     getActivity().getSharedPreferences(Constants.PREFS, Context.MODE_PRIVATE);
             mRecentBowlerId = prefs.getLong(Constants.PREF_RECENT_BOWLER_ID, -1);
@@ -194,7 +194,7 @@ public class BowlerFragment
             mQuickLeagueId = prefs.getLong(Constants.PREF_QUICK_LEAGUE_ID, -1);
         }
 
-        //Creates AsyncTask to load data from database
+        // Creates AsyncTask to load data from database
         new LoadBowlerAndRecentTask(this).execute();
     }
 
@@ -232,7 +232,7 @@ public class BowlerFragment
 
     @Override
     public void onNAItemClick(final int position) {
-        //When bowler name is clicked, their leagues are displayed in new fragment
+        // When bowler name is clicked, their leagues are displayed in new fragment
         new OpenBowlerLeaguesTask(this).execute(position);
     }
 
@@ -272,17 +272,17 @@ public class BowlerFragment
                 bowlerToChange.getAverage());
 
         if (mListBowlers.contains(bowlerWithNewName)) {
-            //Bowler name already exists in the list
+            // Bowler name already exists in the list
             validInput = false;
             invalidInputMessage = R.string.dialog_name_exists;
         } else if (!name.matches(Constants.REGEX_NAME)) {
-            //Name is not made up of letters and spaces
+            // Name is not made up of letters and spaces
             validInput = false;
             invalidInputMessage = R.string.dialog_name_letters_spaces;
         }
 
         if (!validInput) {
-            //Displays an error dialog if the input was not valid and exits the method
+            // Displays an error dialog if the input was not valid and exits the method
             new AlertDialog.Builder(getContext())
                     .setMessage(invalidInputMessage)
                     .setPositiveButton(R.string.dialog_okay, new DialogInterface.OnClickListener() {
@@ -326,11 +326,11 @@ public class BowlerFragment
         Bowler newBowler = new Bowler(0, bowlerName, (short) 0);
 
         if (mListBowlers.contains(newBowler)) {
-            //Bowler name already exists in the list
+            // Bowler name already exists in the list
             validInput = false;
             invalidInputMessage = R.string.dialog_name_exists;
         } else if (!bowlerName.matches(Constants.REGEX_NAME)) {
-            //Name is not made up of letters and spaces
+            // Name is not made up of letters and spaces
             validInput = false;
             invalidInputMessage = R.string.dialog_name_letters_spaces;
         }
@@ -515,7 +515,7 @@ public class BowlerFragment
                     .create()
                     .show();
         } else {
-            //If no recent/quick bowler, dialog is displayed to inform user of options
+            // If no recent/quick bowler, dialog is displayed to inform user of options
             AlertDialog.Builder quickSeriesDisabledBuilder = new AlertDialog.Builder(getContext());
             quickSeriesDisabledBuilder.setTitle("Quick Series")
                     .setMessage(R.string.dialog_quick_series_instructions)
@@ -588,7 +588,7 @@ public class BowlerFragment
         long recentId = prefs.getLong(Constants.PREF_RECENT_BOWLER_ID, -1);
         long quickId = prefs.getLong(Constants.PREF_QUICK_BOWLER_ID, -1);
 
-        //Clears recent/quick ids if they match the deleted bowler
+        // Clears recent/quick ids if they match the deleted bowler
         if (recentId == bowlerId) {
             prefsEditor.putLong(Constants.PREF_RECENT_BOWLER_ID, -1)
                     .putLong(Constants.PREF_RECENT_LEAGUE_ID, -1);
@@ -611,7 +611,7 @@ public class BowlerFragment
                             whereArgs);
                     database.setTransactionSuccessful();
                 } catch (Exception e) {
-                    //does nothing
+                    // does nothing
                 } finally {
                     database.endTransaction();
                 }
@@ -658,7 +658,7 @@ public class BowlerFragment
 
         @Override
         protected List<Bowler> doInBackground(Void... params) {
-            //Method exits if fragment gets detached before reaching this call
+            // Method exits if fragment gets detached before reaching this call
             BowlerFragment fragment = mFragment.get();
             if (fragment == null || !fragment.isAdded())
                 return null;
@@ -704,7 +704,7 @@ public class BowlerFragment
                     + " WHERE "
                     + " league3." + LeagueEntry.COLUMN_BASE_AVERAGE + ">?";
 
-            //Query to retrieve bowler names and averages from database
+            // Query to retrieve bowler names and averages from database
             String rawBowlerQuery = "SELECT "
                     + "bowler." + BowlerEntry.COLUMN_BOWLER_NAME + ", "
                     + "bowler." + BowlerEntry._ID + " AS bid, "
@@ -730,7 +730,7 @@ public class BowlerFragment
                     String.valueOf(0)
             };
 
-            //Adds loaded bowler names and averages to lists to display
+            // Adds loaded bowler names and averages to lists to display
             Cursor cursor = database.rawQuery(rawBowlerQuery, rawBowlerArgs);
             if (cursor.moveToFirst()) {
                 while (!cursor.isAfterLast()) {
@@ -750,7 +750,7 @@ public class BowlerFragment
             }
             cursor.close();
 
-            //If a recent bowler exists, their name and league is loaded to be used for quick series
+            // If a recent bowler exists, their name and league is loaded to be used for quick series
             if (fragment.mRecentBowlerId > -1 && fragment.mRecentLeagueId > -1) {
                 String rawRecentQuery = "SELECT "
                         + BowlerEntry.COLUMN_BOWLER_NAME + ", "
@@ -782,7 +782,7 @@ public class BowlerFragment
                 cursor.close();
             }
 
-            //If a custom bowler is set, their name and league is loaded to be used for quick series
+            // If a custom bowler is set, their name and league is loaded to be used for quick series
             if (fragment.mQuickBowlerId > -1 && fragment.mQuickLeagueId > -1) {
                 String rawRecentQuery = "SELECT "
                         + BowlerEntry.COLUMN_BOWLER_NAME + ", "
@@ -855,7 +855,7 @@ public class BowlerFragment
 
             Bowler bowler = fragment.mListBowlers.get(position[0]);
 
-            //Updates date which bowler was last accessed in database
+            // Updates date which bowler was last accessed in database
             SQLiteDatabase database =
                     DatabaseHelper.getInstance(mainActivity).getWritableDatabase();
             SimpleDateFormat dateFormat =
@@ -871,7 +871,7 @@ public class BowlerFragment
                         new String[]{String.valueOf(bowler.getBowlerId())});
                 database.setTransactionSuccessful();
             } catch (Exception ex) {
-                //does nothing
+                // does nothing
             } finally {
                 database.endTransaction();
             }
@@ -885,7 +885,7 @@ public class BowlerFragment
             if (result == null || fragment == null)
                 return;
 
-            //Creates new instance of LeagueEventFragment for bowler
+            // Creates new instance of LeagueEventFragment for bowler
             if (fragment.mBowlerCallback != null)
                 fragment.mBowlerCallback.onBowlerSelected(result, true, false);
         }
@@ -948,7 +948,7 @@ public class BowlerFragment
 
                 database.setTransactionSuccessful();
             } catch (Exception ex) {
-                //does nothing
+                // does nothing
             } finally {
                 database.endTransaction();
             }

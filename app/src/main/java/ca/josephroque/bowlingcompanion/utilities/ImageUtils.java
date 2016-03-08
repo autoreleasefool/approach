@@ -74,7 +74,7 @@ final class ImageUtils {
      * @param isManual indicates if the score of the game was manually set
      * @return a formatted bitmap containing the game data
      */
-    @SuppressWarnings("UnusedAssignment") //canvas set to null to free memory
+    @SuppressWarnings("UnusedAssignment") // canvas set to null to free memory
     private static Bitmap createImageFromGame(boolean[][][] pinState,
                                              boolean[][] fouls,
                                              short gameScore,
@@ -97,10 +97,11 @@ final class ImageUtils {
 
         for (int frame = Constants.LAST_FRAME; frame >= 0; frame--) {
             final String[] ballString = new String[3];
-            if (frame == Constants.LAST_FRAME) //Treat last frame differently than rest
+            // Treat last frame differently than rest
+            if (frame == Constants.LAST_FRAME)
             {
                 if (Arrays.equals(pinState[frame][0], Constants.FRAME_PINS_DOWN)) {
-                    //If first ball is a strike, next two can be strikes/spares
+                    // If first ball is a strike, next two can be strikes/spares
                     ballString[0] = Constants.BALL_STRIKE;
                     if (Arrays.equals(pinState[frame][1], Constants.FRAME_PINS_DOWN)) {
                         ballString[1] = Constants.BALL_STRIKE;
@@ -114,7 +115,7 @@ final class ImageUtils {
                                     pinState[frame], 2, false, false);
                     }
                 } else {
-                    //If first ball is not a strike, score is calculated normally
+                    // If first ball is not a strike, score is calculated normally
                     ballString[0] = Score.getValueOfBall(pinState[frame][0], 0, false, false);
                     if (Arrays.equals(pinState[frame][1], Constants.FRAME_PINS_DOWN)) {
                         ballString[1] = Constants.BALL_SPARE;
@@ -194,7 +195,8 @@ final class ImageUtils {
                                     frameScores[frame] += Score.getValueOfFrame(pinState[frame][b], true);
                                 }
                                 break;
-                            default: //do nothing
+                            default:
+                                // do nothing
                         }
                     }
                 } else {
@@ -289,7 +291,7 @@ final class ImageUtils {
      * @param seriesId id of the series to load game from
      * @return an image of each games' data and score
      */
-    @SuppressWarnings("UnusedAssignment") //canvas set to null to free memory
+    @SuppressWarnings("UnusedAssignment") // canvas set to null to free memory
     public static Bitmap createImageFromSeries(Context context, long seriesId) {
         List<boolean[][][]> ballsOfGames = new ArrayList<>();
         List<boolean[][]> foulsOfGames = new ArrayList<>();
@@ -417,7 +419,7 @@ final class ImageUtils {
      * String)
      */
     @SuppressWarnings("all")
-    //Ignoring try with automatic resource management in case java 1.6 is used
+    // Ignoring try with automatic resource management in case java 1.6 is used
     public static Uri insertImage(ContentResolver cr,
                                   Bitmap source,
                                   String title,

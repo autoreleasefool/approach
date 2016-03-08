@@ -131,7 +131,7 @@ public final class DateUtils {
      * @return prettier format of string with full month name
      */
     public static String formattedDateToPrettyCompact(String formattedDate) {
-        //Uses only first 10 characters in date
+        // Uses only first 10 characters in date
         formattedDate = formattedDate.substring(0, 10);
 
         if (formattedDate.matches("\\d{4}-\\d{2}-\\d{2}")) {

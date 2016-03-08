@@ -202,7 +202,7 @@ public class MatchPlayFragment
         }
 
         if (!TextUtils.isEmpty(opponentName) && !opponentName.matches(Constants.REGEX_NAME)) {
-            //Name is not made up of letters and spaces
+            // Name is not made up of letters and spaces
             invalidInputMessage = R.string.dialog_name_letters_spaces;
         }
 

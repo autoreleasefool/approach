@@ -46,39 +46,39 @@ public final class StatUtils {
     /** Indicates index for stat in array. */
     public static final byte STAT_HEAD_PINS = 0;
     /* Indicates index for stat in array. */
-    //public static final byte STAT_HEAD_PINS_SPARED = 1;
+    // public static final byte STAT_HEAD_PINS_SPARED = 1;
     /** Indicates index for stat in array. */
     public static final byte STAT_LEFT = 2;
     /* Indicates index for stat in array. */
-    //public static final byte STAT_LEFT_SPARED = 3;
+    // public static final byte STAT_LEFT_SPARED = 3;
     /** Indicates index for stat in array. */
     public static final byte STAT_RIGHT = 4;
     /* Indicates index for stat in array. */
-    //public static final byte STAT_RIGHT_SPARED = 5;
+    // public static final byte STAT_RIGHT_SPARED = 5;
     /** Indicates index for stat in array. */
     public static final byte STAT_ACES = 6;
     /* Indicates index for stat in array. */
-    //public static final byte STAT_ACES_SPARED = 7;
+    // public static final byte STAT_ACES_SPARED = 7;
     /** Indicates index for stat in array. */
     public static final byte STAT_CHOP = 8;
     /* Indicates index for stat in array. */
-    //public static final byte STAT_CHOP_SPARED = 9;
+    // public static final byte STAT_CHOP_SPARED = 9;
     /** Indicates index for stat in array. */
     public static final byte STAT_LEFT_CHOP = 10;
     /* Indicates index for stat in array. */
-    //public static final byte STAT_LEFT_CHOP_SPARED = 11;
+    // public static final byte STAT_LEFT_CHOP_SPARED = 11;
     /** Indicates index for stat in array. */
     public static final byte STAT_RIGHT_CHOP = 12;
     /* Indicates index for stat in array. */
-    //public static final byte STAT_RIGHT_CHOP_SPARED = 13;
+    // public static final byte STAT_RIGHT_CHOP_SPARED = 13;
     /** Indicates index for stat in array. */
     public static final byte STAT_SPLIT = 14;
     /* Indicates index for stat in array. */
-    //public static final byte STAT_SPLIT_SPARED = 15;
+    // public static final byte STAT_SPLIT_SPARED = 15;
     /** Indicates index for stat in array. */
     public static final byte STAT_LEFT_SPLIT = 16;
     /* Indicates index for stat in array. */
-    //public static final byte STAT_LEFT_SPLIT_SPARED = 17;
+    // public static final byte STAT_LEFT_SPLIT_SPARED = 17;
     /** Indicates index for stat in array. */
     public static final byte STAT_RIGHT_SPLIT = 18;
     /** Indicates index for stat in array. */

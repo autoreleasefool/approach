@@ -60,7 +60,7 @@ public class StatsExpandableAdapter
     }
 
     @SuppressWarnings("unchecked")
-    //getChild guaranteed to return AbstractMap.SimpleEntry<String, String>
+    // getChild guaranteed to return AbstractMap.SimpleEntry<String, String>
     @Override
     public View getRealChildView(int groupPosition,
                                  int childPosition,

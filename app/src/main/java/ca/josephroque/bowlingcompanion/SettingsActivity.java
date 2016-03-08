@@ -395,7 +395,7 @@ public class SettingsActivity
             }
             cursor.close();
 
-            //Gets arrays from lists of names & ids created above
+            // Gets arrays from lists of names & ids created above
             mArrayBowlerIds = new String[listBowlerIds.size()];
             listBowlerIds.toArray(mArrayBowlerIds);
             mArrayBowlerNames = new String[listBowlerNames.size()];
@@ -535,7 +535,7 @@ public class SettingsActivity
                     // Opens facebook app or chrome to display facebook page
                     startActivity(FacebookUtils.newFacebookIntent(getActivity().getPackageManager()));
                 } else if (preference.getKey().equals(Constants.KEY_RATE)) {
-                    //Opens Google Play or chrome to display app
+                    // Opens Google Play or chrome to display app
                     final String appPackageName = getActivity().getPackageName();
                     Intent marketIntent;
                     try {

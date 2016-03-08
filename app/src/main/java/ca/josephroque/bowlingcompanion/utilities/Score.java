@@ -47,7 +47,8 @@ public final class Score {
                     case 2:
                         frameValue += 5;
                         break;
-                    default: //do nothing
+                    default:
+                        // do nothing
                 }
             }
         }
@@ -78,7 +79,8 @@ public final class Score {
                     case 2:
                         frameValue += 5;
                         break;
-                    default: //do nothing
+                    default:
+                        // do nothing
                 }
             }
         }
@@ -113,7 +115,8 @@ public final class Score {
                     case 2:
                         ballValue += 5;
                         break;
-                    default: //do nothing
+                    default:
+                        // do nothing
                 }
             }
         }
@@ -217,7 +220,8 @@ public final class Score {
                     case 2:
                         ballValue += 5;
                         break;
-                    default: //do nothing
+                    default:
+                        // do nothing
                 }
             }
         }
