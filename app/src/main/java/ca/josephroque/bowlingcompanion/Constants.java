@@ -69,8 +69,6 @@ public final class Constants {
     public static final String PREF_FACEBOOK_PAGE_OPENED = "fb_page_opened";
     /** Identifier for if user has closed the facebook promotional content since opening the app. */
     public static final String PREF_FACEBOOK_CLOSED = "fb_closed";
-    /** Identifier for if user has been prompted to rate the application since opening it. */
-    public static final String PREF_RATE_ME_SHOWN = "rate_shown";
     /** Identifier for if user has been prompted to fix league/event names that may be been incorrectly set. */
     public static final String PREF_PROMPT_LEAGUE_EVENT_NAME_FIX = "le_name_fix";
     /**

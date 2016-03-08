@@ -31,11 +31,11 @@ public class BowlingCompanionApplication extends Application {
         } catch (Exception ex) {
             // does nothing
         }
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean(Constants.PREF_RATE_ME_SHOWN, false);
+
         if (convertScoreHighlight) {
-            editor.putString(Constants.KEY_HIGHLIGHT_SCORE, Integer.toString(scoreHighlightInt / 5));
+            preferences.edit()
+                    .putString(Constants.KEY_HIGHLIGHT_SCORE, Integer.toString(scoreHighlightInt / 5))
+                    .apply();
         }
-        editor.apply();
     }
 }

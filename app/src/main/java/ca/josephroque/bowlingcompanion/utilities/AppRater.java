@@ -28,6 +28,8 @@ public final class AppRater {
     private static final int DAYS_UNTIL_PROMPT = 14;
     /** Minimum number of launches to wait before displaying prompt. */
     private static final int LAUNCHES_UNTIL_PROMPT = 3;
+    /** Minimum number of days to wait between showings of the rate prompt. */
+    private static final int DAYS_BETWEEN_PROMPTS = 14;
 
     /** Identifier for number of times app has been launched, stored in preferences. */
     private static final String PREF_LAUNCH_COUNT = "lc";
@@ -35,9 +37,13 @@ public final class AppRater {
     private static final String PREF_DO_NOT_SHOW = "ds";
     /** Identifier for date of first launch, stored in preferences. */
     private static final String PREF_FIRST_LAUNCH = "fl";
+    /** Identifier for date of the last time the app prompted the user to rate. */
+    private static final String PREF_LAST_PROMPT_TIME = "apprate_last_prompt_time";
 
-    /** Two weeks in milliseconds. */
-    private static final long TWO_WEEKS_MILLISECONDS = DAYS_UNTIL_PROMPT * 24 * 60 * 60 * 1000;
+    /** Amount of time the app should wait before showing the rate dialog, in milliseconds. */
+    private static final long MILLISECONDS_UNTIL_PROMPT = DAYS_UNTIL_PROMPT * 24 * 60 * 60 * 1000;
+    /** Amount of time the app should wait between showing the rate dialog, in milliseconds. */
+    private static final long MILLISECONDS_BETWEEN_PROMPTS = DAYS_BETWEEN_PROMPTS * 24 * 60 * 60 * 1000;
 
     /**
      * Checks whether conditions to display the prompt have been met and, if so, displays it.
@@ -46,31 +52,37 @@ public final class AppRater {
      */
     public static void appLaunched(Context context) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
-        if (preferences.getBoolean(PREF_DO_NOT_SHOW, false)
-                || preferences.getBoolean(Constants.PREF_RATE_ME_SHOWN, false))
+        if (preferences.getBoolean(PREF_DO_NOT_SHOW, false))
             return;
 
         SharedPreferences.Editor editor = preferences.edit();
-        editor.putBoolean(Constants.PREF_RATE_ME_SHOWN, false);
 
-        //Gets number of launches and updates the count
+        // Gets number of launches and updates the count
         long launchCount = preferences.getLong(PREF_LAUNCH_COUNT, 0) + 1;
         editor.putLong(PREF_LAUNCH_COUNT, launchCount);
 
-        //Gets the date of the first launch and updates it if not set
+        // Gets the date of the first launch and updates it if not set
         Long dateOfFirstLaunch = preferences.getLong(PREF_FIRST_LAUNCH, 0);
         if (dateOfFirstLaunch == 0) {
             dateOfFirstLaunch = System.currentTimeMillis();
             editor.putLong(PREF_FIRST_LAUNCH, dateOfFirstLaunch);
         }
 
-        //Gets the date to wait for, in milliseconds
-        long dateToWaitFor = dateOfFirstLaunch + TWO_WEEKS_MILLISECONDS;
 
-        //If the conditions have been met, display the prompt
+        // Gets the date to wait for, in milliseconds
+        long dateToWaitFor = dateOfFirstLaunch + MILLISECONDS_UNTIL_PROMPT;
+
+        // Checks if the user has been prompted before and updates the next time to prompt accordingly
+        Long lastPromptTime = preferences.getLong(PREF_LAST_PROMPT_TIME, 0);
+        if (lastPromptTime != 0) {
+          dateToWaitFor = lastPromptTime + MILLISECONDS_BETWEEN_PROMPTS;
+        }
+
+        // If the conditions have been met, display the prompt
         if (launchCount >= LAUNCHES_UNTIL_PROMPT
                 && System.currentTimeMillis() >= dateToWaitFor) {
             showRateDialog(context, editor);
+            editor.putLong(PREF_LAST_PROMPT_TIME, System.currentTimeMillis());
         }
 
         editor.apply();
@@ -129,7 +141,7 @@ public final class AppRater {
      */
     private static void disableAutomaticPrompt(final SharedPreferences.Editor editor) {
         editor.putBoolean(PREF_DO_NOT_SHOW, true)
-                .apply();
+              .apply();
     }
 
     /**
