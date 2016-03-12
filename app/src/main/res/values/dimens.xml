@@ -13,6 +13,10 @@
     <dimen name="match_play_text_padding">8dp</dimen>
     <dimen name="match_play_text_padding_2">4dp</dimen>
 
+    <!-- Transfer -->
+    <dimen name="transfer_text_padding">16dp</dimen>
+    <dimen name="transfer_progress_padding">8dp</dimen>
+
     <!-- List Items -->
     <dimen name="list_key_line">16dp</dimen>
     <dimen name="list_key_line_inset">32dp</dimen>
