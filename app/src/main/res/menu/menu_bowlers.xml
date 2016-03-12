@@ -9,4 +9,10 @@
         android:title="@string/action_quick_series"
         app:showAsAction="ifRoom" />
 
+    <item
+        android:id="@+id/action_transfer"
+        android:orderInCategory="20"
+        android:title="@string/action_transfer"
+        app:showAsAction="never" />
+
 </menu>

@@ -225,6 +225,10 @@ public class BowlerFragment
             case R.id.action_quick_series:
                 showQuickSeriesDialog();
                 return true;
+            case R.id.action_transfer:
+                if (mBowlerCallback != null)
+                    mBowlerCallback.onDataTransferSelected();
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
@@ -989,5 +993,10 @@ public class BowlerFragment
         void onBowlerSelected(Bowler bowler,
                               boolean openLeagueFragment,
                               boolean isQuickSeries);
+
+        /**
+         * Should be overridden to begin the process of transferring the user's data to a new device.
+         */
+        void onDataTransferSelected();
     }
 }

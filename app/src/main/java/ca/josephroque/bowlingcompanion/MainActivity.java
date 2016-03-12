@@ -71,6 +71,7 @@ import ca.josephroque.bowlingcompanion.fragment.MatchPlayFragment;
 import ca.josephroque.bowlingcompanion.fragment.SeriesFragment;
 import ca.josephroque.bowlingcompanion.fragment.StatsGraphFragment;
 import ca.josephroque.bowlingcompanion.fragment.StatsListFragment;
+import ca.josephroque.bowlingcompanion.fragment.TransferFragment;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.utilities.DateUtils;
 import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
@@ -550,6 +551,13 @@ public class MainActivity
             startFragmentTransaction(leagueEventFragment, Constants.FRAGMENT_BOWLERS,
                     Constants.FRAGMENT_LEAGUES);
         }
+    }
+
+    @Override
+    public void onDataTransferSelected() {
+        startFragmentTransaction(TransferFragment.newInstance(),
+                Constants.FRAGMENT_BOWLERS,
+                Constants.FRAGMENT_TRANSFER);
     }
 
     @Override

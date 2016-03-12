@@ -227,6 +227,8 @@ public final class Constants {
     public static final String FRAGMENT_STAT_GRAPH = "StatsGraphFragment";
     /** Tag to identify instance of MatchPlayFragment. */
     public static final String FRAGMENT_MATCH_PLAY = "MatchPlayFragment";
+    /** Tag to identify instance of TransferFragment. */
+    public static final String FRAGMENT_TRANSFER = "TransferFragment";
 
     /** Maximum score of a 5 pin game. */
     public static final int GAME_MAX_SCORE = 450;
