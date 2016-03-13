@@ -14,10 +14,24 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import ca.josephroque.bowlingcompanion.MainActivity;
 import ca.josephroque.bowlingcompanion.R;
+import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
 
@@ -33,8 +47,18 @@ public final class TransferFragment
     @SuppressWarnings("unused")
     private static final String TAG = "TransferFragment";
 
+    /** URL to upload or download data to/from. */
+    private static final String TRANSFER_SERVER_URL = "http://10.0.2.2:8080/upload";
+
+    private static final int ERROR_IO_EXCEPTION = 5;
+    private static final int ERROR_OUT_OF_MEMORY = 4;
+    private static final int ERROR_FILE_NOT_FOUND = 3;
+    private static final int ERROR_MALFORMED_URL = 2;
+    private static final int ERROR_EXCEPTION = 1;
+    private static final int SUCCESS = 0;
+
     /** The current {@link android.os.AsyncTask} being executed, so it can be cancelled if necessary. */
-    private AsyncTask<Void, Integer, Void> mCurrentTransferTask = null;
+    private AsyncTask<Void, Integer, Integer> mCurrentTransferTask = null;
 
     /** LinearLayout that contains the views of the Fragment. */
     private LinearLayout mLinearLayoutRoot = null;
@@ -126,9 +150,10 @@ public final class TransferFragment
      */
     private void setupExportInteractions(View rootView) {
         Button cancelButton = (Button) rootView.findViewById(R.id.btn_cancel);
-        cancelButton.getBackground().setColorFilter(DisplayUtils.getColorResource(getResources(), R.color.theme_red_tertiary),
-                PorterDuff.Mode.MULTIPLY);
-        cancelButton .setOnClickListener(new View.OnClickListener() {
+        cancelButton.getBackground()
+                .setColorFilter(DisplayUtils.getColorResource(getResources(), R.color.theme_red_tertiary),
+                        PorterDuff.Mode.MULTIPLY);
+        cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mCurrentTransferTask != null) {
@@ -171,7 +196,7 @@ public final class TransferFragment
      * Exports the user's data to a remote server.
      */
     private static final class DataExportTask
-            extends AsyncTask<Void, Integer, Void> {
+            extends AsyncTask<Void, Integer, Integer> {
 
         /** Weak reference to the parent fragment. */
         private final WeakReference<TransferFragment> mFragment;
@@ -205,13 +230,131 @@ public final class TransferFragment
         }
 
         @Override
-        protected Void doInBackground(Void... params) {
+        protected Integer doInBackground(Void... params) {
+            TransferFragment fragment = mFragment.get();
+            if (fragment == null || fragment.getContext() == null)
+                return 0;
+
+            // Most of this method retrieved from this StackOverflow question.
+            // http://stackoverflow.com/a/7645328/4896787
+
+            // Preparing the database
+            File dbFile = fragment.getContext().getDatabasePath(DatabaseHelper.DATABASE_NAME);
+            String dbFilePath = dbFile.getAbsolutePath();
+            Log.d(TAG, "Database file: " + dbFilePath);
+
+            DateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_HH:mm:ss", Locale.CANADA);
+
+            HttpURLConnection connection;
+            DataOutputStream outputStream;
+            DataInputStream inputStream;
+
+            final String lineEnd = "\r\n";
+            final String twoHyphens = "--";
+            final String boundary = "*****";
+            int bytesRead;
+            int bytesAvailable;
+            int bufferSize;
+            final int maxBufferSize = 1024 * 1024;
+            final int serverSuccessResponse = 200;
+            byte[] buffer;
+
             try {
-                Thread.sleep(5000);
-            } catch (InterruptedException ex) {
-                Log.d(TAG, "Export interrupted");
+                FileInputStream fileInputStream = new FileInputStream(dbFile);
+                URL url = new URL(TRANSFER_SERVER_URL);
+
+                // Preparing connection for upload
+                connection = (HttpURLConnection) url.openConnection();
+                connection.setDoInput(true);
+                connection.setDoOutput(true);
+                connection.setUseCaches(false);
+                connection.setRequestMethod("POST");
+                connection.setRequestProperty("Connection", "Keep-Alive");
+                connection.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+
+                outputStream = new DataOutputStream(connection.getOutputStream());
+                outputStream.writeBytes(twoHyphens + boundary + lineEnd);
+
+                outputStream.writeBytes("Content-Disposition: form-data; name=\"uploadedfile\";filename=\"" + dbFilePath + "\"" + lineEnd);
+                outputStream.writeBytes(lineEnd);
+
+                bytesAvailable = fileInputStream.available();
+                bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                buffer = new byte[bufferSize];
+
+                Log.d(TAG, "Database size: " + bytesAvailable);
+                bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+                try {
+                    while (bytesRead > 0) {
+                        try {
+                            outputStream.write(buffer, 0, bufferSize);
+                        } catch (OutOfMemoryError ex) {
+                            Log.e(TAG, "Out of memory sending file.", ex);
+                            return ERROR_OUT_OF_MEMORY;
+                        }
+
+                        bytesAvailable = fileInputStream.available();
+                        bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                        bytesRead = fileInputStream.read(buffer, 0, bufferSize);
+                    }
+                } catch (Exception ex) {
+                    Log.e(TAG, "Error sending file.", ex);
+                    return ERROR_EXCEPTION;
+                }
+
+                outputStream.writeBytes(lineEnd);
+                outputStream.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+
+                int serverResponseCode = connection.getResponseCode();
+                String serverResponseMessage = connection.getResponseMessage();
+                Log.d(TAG, "Response code: " + serverResponseCode);
+                Log.d(TAG, "Message: " + serverResponseMessage);
+
+                int response = ERROR_EXCEPTION;
+                if (serverResponseCode == serverSuccessResponse) {
+                    response = SUCCESS;
+                }
+
+                String connectionDate = null;
+                Date serverTime = new Date(connection.getDate());
+                try {
+                    connectionDate = dateFormat.format(serverTime);
+                } catch (Exception ex) {
+                    Log.e(TAG, "Error parsing date.", ex);
+                }
+                Log.d(TAG, "Server response time: " + connectionDate);
+
+                String filename = connectionDate + dbFilePath.substring(dbFilePath.lastIndexOf("."),
+                        dbFilePath.length());
+                Log.d(TAG, "Filename on server: " + filename);
+
+                fileInputStream.close();
+                outputStream.flush();
+                outputStream.close();
+
+                try {
+                  inputStream = new DataInputStream(connection.getInputStream());
+                  String inStr;
+                  while ((inStr = inputStream.readLine()) != null) {
+                    Log.d(TAG, "Server response: " + inStr);
+                  }
+
+                  inputStream.close();
+                } catch (IOException ex) {
+                  Log.e(TAG, "Error reading server response.", ex);
+                }
+
+                return response;
+            } catch (FileNotFoundException ex) {
+                Log.e(TAG, "Unable to find database file.", ex);
+                return ERROR_FILE_NOT_FOUND;
+            } catch (MalformedURLException ex) {
+                Log.e(TAG, "Malformed url. I have no idea how this happened.", ex);
+                return ERROR_MALFORMED_URL;
+            } catch (IOException ex) {
+                Log.e(TAG, "Couldn't open or maintain connection.", ex);
+                return ERROR_IO_EXCEPTION;
             }
-            return null;
         }
 
         @Override
@@ -228,14 +371,20 @@ public final class TransferFragment
         }
 
         @Override
-        protected void onPostExecute(Void result) {
+        protected void onPostExecute(Integer result) {
             TransferFragment fragment = mFragment.get();
             if (fragment == null || fragment.getContext() == null)
                 return;
 
+            Log.d(TAG, "Response: " + result);
             cleanupTask(fragment);
         }
 
+        /**
+         * Returns the fragment to the state it was in before the task was started.
+         *
+         * @param fragment fragment to clean up.
+         */
         private void cleanupTask(TransferFragment fragment) {
             // Disabling cancel button
             View view = fragment.mLastViewAdded.findViewById(R.id.btn_cancel);
