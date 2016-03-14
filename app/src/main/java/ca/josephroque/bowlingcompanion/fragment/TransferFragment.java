@@ -14,15 +14,18 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 
+import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -34,6 +37,7 @@ import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
+import ca.josephroque.bowlingcompanion.utilities.TransferUtils;
 
 /**
  * A {@link android.support.v4.app.Fragment} for users to upload or download data from a remote server to back up their
@@ -50,15 +54,13 @@ public final class TransferFragment
     /** URL to upload or download data to/from. */
     private static final String TRANSFER_SERVER_URL = "http://10.0.2.2:8080/upload";
 
-    private static final int ERROR_IO_EXCEPTION = 5;
-    private static final int ERROR_OUT_OF_MEMORY = 4;
-    private static final int ERROR_FILE_NOT_FOUND = 3;
-    private static final int ERROR_MALFORMED_URL = 2;
-    private static final int ERROR_EXCEPTION = 1;
-    private static final int SUCCESS = 0;
+    /** Represents the number of failed imports. */
+    private static final String IMPORT_FAILURES = "im_fail";
+    /** Represents the number of failed exports. */
+    private static final String EXPORT_FAILURES = "ex_fail";
 
     /** The current {@link android.os.AsyncTask} being executed, so it can be cancelled if necessary. */
-    private AsyncTask<Void, Integer, Integer> mCurrentTransferTask = null;
+    private AsyncTask<Boolean, Integer, Byte> mCurrentTransferTask = null;
 
     /** LinearLayout that contains the views of the Fragment. */
     private LinearLayout mLinearLayoutRoot = null;
@@ -67,6 +69,10 @@ public final class TransferFragment
 
     /** Indicates if the fragment is currently showing the import or export options. */
     private boolean mShowingImport = false;
+    /** Number of times importing data failed. */
+    private int mImportFailures = 0;
+    /** Number of times exporting data failed. */
+    private int mExportFailures = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -86,6 +92,11 @@ public final class TransferFragment
 
         mLinearLayoutRoot = (LinearLayout) rootView.findViewById(R.id.ll_transfer);
 
+        if (savedInstanceState != null) {
+            mImportFailures = savedInstanceState.getInt(IMPORT_FAILURES, 0);
+            mExportFailures = savedInstanceState.getInt(EXPORT_FAILURES, 0);
+        }
+
         return rootView;
     }
 
@@ -99,6 +110,14 @@ public final class TransferFragment
             mainActivity.setDrawerState(false);
             mainActivity.setFloatingActionButtonState(0, 0);
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+
+        outState.putInt(IMPORT_FAILURES, mImportFailures);
+        outState.putInt(EXPORT_FAILURES, mExportFailures);
     }
 
     @Override
@@ -169,10 +188,13 @@ public final class TransferFragment
             public void onClick(View v) {
                 if (mCurrentTransferTask == null) {
                     mCurrentTransferTask = new DataExportTask(TransferFragment.this);
-                    mCurrentTransferTask.execute();
+                    mCurrentTransferTask.execute(mExportFailures > 0);
                 }
             }
         });
+
+        ((ProgressBar) rootView.findViewById(R.id.pb_export)).getProgressDrawable()
+                .setColorFilter(Theme.getPrimaryThemeColor(), PorterDuff.Mode.SRC_IN);
     }
 
     /**
@@ -196,10 +218,12 @@ public final class TransferFragment
      * Exports the user's data to a remote server.
      */
     private static final class DataExportTask
-            extends AsyncTask<Void, Integer, Integer> {
+            extends AsyncTask<Boolean, Integer, Byte> {
 
         /** Weak reference to the parent fragment. */
         private final WeakReference<TransferFragment> mFragment;
+        /** Weak reference to the progress bar for the task. */
+        private final WeakReference<ProgressBar> mProgressBar;
 
         /**
          * Assigns a weak reference to the parent fragment.
@@ -208,6 +232,7 @@ public final class TransferFragment
          */
         private DataExportTask(TransferFragment fragment) {
             mFragment = new WeakReference<>(fragment);
+            mProgressBar = new WeakReference<>((ProgressBar) fragment.mLastViewAdded.findViewById(R.id.pb_export));
         }
 
         @Override
@@ -222,15 +247,16 @@ public final class TransferFragment
             view.setVisibility(View.VISIBLE);
 
             // Displaying progress bar
-            ProgressBar progressBar = (ProgressBar) fragment.mLastViewAdded.findViewById(R.id.pb_export);
-            progressBar.setProgress(0);
+            ProgressBar progressBar = mProgressBar.get();
+            if (progressBar != null)
+                progressBar.setProgress(0);
 
             view = fragment.mLastViewAdded.findViewById(R.id.ll_transfer_progress);
             view.setVisibility(View.VISIBLE);
         }
 
         @Override
-        protected Integer doInBackground(Void... params) {
+        protected Byte doInBackground(Boolean... retry) {
             TransferFragment fragment = mFragment.get();
             if (fragment == null || fragment.getContext() == null)
                 return 0;
@@ -241,21 +267,27 @@ public final class TransferFragment
             // Preparing the database
             File dbFile = fragment.getContext().getDatabasePath(DatabaseHelper.DATABASE_NAME);
             String dbFilePath = dbFile.getAbsolutePath();
+            String dbFileName = dbFile.getName();
             Log.d(TAG, "Database file: " + dbFilePath);
 
             DateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_HH:mm:ss", Locale.CANADA);
 
             HttpURLConnection connection;
             DataOutputStream outputStream;
-            DataInputStream inputStream;
+            BufferedReader reader;
 
+            final int basePercentage = 100;
+            final int timeout = (retry[0])
+                    ? TransferUtils.CONNECTION_TIMEOUT
+                    : TransferUtils.CONNECTION_EXTENDED_TIMEOUT;
             final String lineEnd = "\r\n";
             final String twoHyphens = "--";
             final String boundary = "*****";
+            final String transferApiKey = fragment.getResources().getString(R.string.transfer_api_key);
             int bytesRead;
             int bytesAvailable;
             int bufferSize;
-            final int maxBufferSize = 1024 * 1024;
+            final int maxBufferSize = 1024;
             final int serverSuccessResponse = 200;
             byte[] buffer;
 
@@ -268,29 +300,43 @@ public final class TransferFragment
                 connection.setDoInput(true);
                 connection.setDoOutput(true);
                 connection.setUseCaches(false);
+                connection.setConnectTimeout(timeout);
+                connection.setReadTimeout(timeout);
                 connection.setRequestMethod("POST");
                 connection.setRequestProperty("Connection", "Keep-Alive");
                 connection.setRequestProperty("Content-Type", "multipart/form-data;boundary=" + boundary);
+                connection.setRequestProperty("Authorization", transferApiKey);
 
                 outputStream = new DataOutputStream(connection.getOutputStream());
                 outputStream.writeBytes(twoHyphens + boundary + lineEnd);
 
-                outputStream.writeBytes("Content-Disposition: form-data; name=\"uploadedfile\";filename=\"" + dbFilePath + "\"" + lineEnd);
+                outputStream.writeBytes("Content-Disposition: form-data; name=\"uploadedfile\";filename=\""
+                        + dbFileName + "\"" + lineEnd);
                 outputStream.writeBytes(lineEnd);
 
-                bytesAvailable = fileInputStream.available();
+                final int totalBytes = fileInputStream.available();
+                int lastProgressPercentage = 0;
+                bytesAvailable = totalBytes;
                 bufferSize = Math.min(bytesAvailable, maxBufferSize);
                 buffer = new byte[bufferSize];
 
                 Log.d(TAG, "Database size: " + bytesAvailable);
                 bytesRead = fileInputStream.read(buffer, 0, bufferSize);
                 try {
-                    while (bytesRead > 0) {
+                    while (bytesRead > 0 && !isCancelled()) {
                         try {
                             outputStream.write(buffer, 0, bufferSize);
                         } catch (OutOfMemoryError ex) {
                             Log.e(TAG, "Out of memory sending file.", ex);
-                            return ERROR_OUT_OF_MEMORY;
+                            return TransferUtils.ERROR_OUT_OF_MEMORY;
+                        }
+
+                        // Update the progress bar
+                        int currentProgressPercentage
+                                = (int) ((-bytesAvailable + totalBytes) / (float) totalBytes * basePercentage);
+                        if (currentProgressPercentage > lastProgressPercentage) {
+                            lastProgressPercentage = currentProgressPercentage;
+                            publishProgress(currentProgressPercentage);
                         }
 
                         bytesAvailable = fileInputStream.available();
@@ -299,20 +345,28 @@ public final class TransferFragment
                     }
                 } catch (Exception ex) {
                     Log.e(TAG, "Error sending file.", ex);
-                    return ERROR_EXCEPTION;
+                    return TransferUtils.ERROR_EXCEPTION;
+                }
+
+                if (isCancelled()) {
+                    fileInputStream.close();
+                    outputStream.flush();
+                    outputStream.close();
+                    return TransferUtils.ERROR_CANCELLED;
                 }
 
                 outputStream.writeBytes(lineEnd);
                 outputStream.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
+                publishProgress(basePercentage);
 
                 int serverResponseCode = connection.getResponseCode();
                 String serverResponseMessage = connection.getResponseMessage();
                 Log.d(TAG, "Response code: " + serverResponseCode);
                 Log.d(TAG, "Message: " + serverResponseMessage);
 
-                int response = ERROR_EXCEPTION;
+                byte response = TransferUtils.ERROR_EXCEPTION;
                 if (serverResponseCode == serverSuccessResponse) {
-                    response = SUCCESS;
+                    response = TransferUtils.SUCCESS;
                 }
 
                 String connectionDate = null;
@@ -333,51 +387,80 @@ public final class TransferFragment
                 outputStream.close();
 
                 try {
-                  inputStream = new DataInputStream(connection.getInputStream());
-                  String inStr;
-                  while ((inStr = inputStream.readLine()) != null) {
-                    Log.d(TAG, "Server response: " + inStr);
-                  }
+                    reader = new BufferedReader(
+                            new InputStreamReader(new DataInputStream(connection.getInputStream())));
+                    String inStr = reader.readLine();
+                    while (inStr != null && !isCancelled()) {
+                        Log.d(TAG, "Server response: " + inStr);
+                        inStr = reader.readLine();
+                    }
 
-                  inputStream.close();
+                    reader.close();
                 } catch (IOException ex) {
-                  Log.e(TAG, "Error reading server response.", ex);
+                    Log.e(TAG, "Error reading server response.", ex);
+                    return TransferUtils.ERROR_IO_EXCEPTION;
                 }
 
-                return response;
+                if (isCancelled())
+                    return TransferUtils.ERROR_CANCELLED;
+                else
+                    return response;
             } catch (FileNotFoundException ex) {
                 Log.e(TAG, "Unable to find database file.", ex);
-                return ERROR_FILE_NOT_FOUND;
+                return TransferUtils.ERROR_FILE_NOT_FOUND;
             } catch (MalformedURLException ex) {
                 Log.e(TAG, "Malformed url. I have no idea how this happened.", ex);
-                return ERROR_MALFORMED_URL;
-            } catch (IOException ex) {
+                return TransferUtils.ERROR_MALFORMED_URL;
+            } catch (SocketTimeoutException ex) {
+                Log.e(TAG, "Timed out reading response.", ex);
+                return TransferUtils.ERROR_TIMEOUT;
+            }  catch (IOException ex) {
                 Log.e(TAG, "Couldn't open or maintain connection.", ex);
-                return ERROR_IO_EXCEPTION;
+                return TransferUtils.ERROR_IO_EXCEPTION;
+            } catch (Exception ex) {
+                Log.e(TAG, "Unknown exception.", ex);
+                return TransferUtils.ERROR_EXCEPTION;
             }
         }
 
         @Override
         protected void onProgressUpdate(Integer... progress) {
+            // Updating progress bar
+            ProgressBar progressBar = mProgressBar.get();
+            if (progressBar != null)
+                progressBar.setProgress(progress[0]);
         }
 
         @Override
         protected void onCancelled() {
+            mProgressBar.clear();
+
             TransferFragment fragment = mFragment.get();
             if (fragment == null || fragment.getContext() == null)
                 return;
 
+            Log.d(TAG, "Cancelled");
+
             cleanupTask(fragment);
+            fragment.mExportFailures++;
         }
 
         @Override
-        protected void onPostExecute(Integer result) {
+        protected void onPostExecute(Byte result) {
+            mProgressBar.clear();
+
             TransferFragment fragment = mFragment.get();
             if (fragment == null || fragment.getContext() == null)
                 return;
 
             Log.d(TAG, "Response: " + result);
             cleanupTask(fragment);
+
+            if (result == TransferUtils.SUCCESS) {
+                fragment.mExportFailures = 0;
+            } else {
+                fragment.mExportFailures++;
+            }
         }
 
         /**
