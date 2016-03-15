@@ -51,16 +51,13 @@ public final class TransferFragment
     @SuppressWarnings("unused")
     private static final String TAG = "TransferFragment";
 
-    /** URL to upload or download data to/from. */
-    private static final String TRANSFER_SERVER_URL = "http://10.0.2.2:8080/upload";
-
     /** Represents the number of failed imports. */
     private static final String IMPORT_FAILURES = "im_fail";
     /** Represents the number of failed exports. */
     private static final String EXPORT_FAILURES = "ex_fail";
 
     /** The current {@link android.os.AsyncTask} being executed, so it can be cancelled if necessary. */
-    private AsyncTask<Boolean, Integer, Byte> mCurrentTransferTask = null;
+    private AsyncTask<Boolean, Integer, String> mCurrentTransferTask = null;
 
     /** LinearLayout that contains the views of the Fragment. */
     private LinearLayout mLinearLayoutRoot = null;
@@ -218,7 +215,7 @@ public final class TransferFragment
      * Exports the user's data to a remote server.
      */
     private static final class DataExportTask
-            extends AsyncTask<Boolean, Integer, Byte> {
+            extends AsyncTask<Boolean, Integer, String> {
 
         /** Weak reference to the parent fragment. */
         private final WeakReference<TransferFragment> mFragment;
@@ -255,11 +252,16 @@ public final class TransferFragment
             view.setVisibility(View.VISIBLE);
         }
 
+        @SuppressWarnings("CheckStyle")
         @Override
-        protected Byte doInBackground(Boolean... retry) {
+        protected String doInBackground(Boolean... retry) {
             TransferFragment fragment = mFragment.get();
             if (fragment == null || fragment.getContext() == null)
-                return 0;
+                return TransferUtils.ERROR_EXCEPTION;
+
+            if (!TransferUtils.getServerStatus()) {
+                return TransferUtils.ERROR_UNAVAILABLE;
+            }
 
             // Most of this method retrieved from this StackOverflow question.
             // http://stackoverflow.com/a/7645328/4896787
@@ -287,13 +289,11 @@ public final class TransferFragment
             int bytesRead;
             int bytesAvailable;
             int bufferSize;
-            final int maxBufferSize = 1024;
-            final int serverSuccessResponse = 200;
             byte[] buffer;
 
             try {
                 FileInputStream fileInputStream = new FileInputStream(dbFile);
-                URL url = new URL(TRANSFER_SERVER_URL);
+                URL url = new URL(TransferUtils.getUploadEndpoint());
 
                 // Preparing connection for upload
                 connection = (HttpURLConnection) url.openConnection();
@@ -317,7 +317,7 @@ public final class TransferFragment
                 final int totalBytes = fileInputStream.available();
                 int lastProgressPercentage = 0;
                 bytesAvailable = totalBytes;
-                bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                bufferSize = Math.min(bytesAvailable, TransferUtils.MAX_BUFFER_SIZE);
                 buffer = new byte[bufferSize];
 
                 Log.d(TAG, "Database size: " + bytesAvailable);
@@ -340,7 +340,7 @@ public final class TransferFragment
                         }
 
                         bytesAvailable = fileInputStream.available();
-                        bufferSize = Math.min(bytesAvailable, maxBufferSize);
+                        bufferSize = Math.min(bytesAvailable, TransferUtils.MAX_BUFFER_SIZE);
                         bytesRead = fileInputStream.read(buffer, 0, bufferSize);
                     }
                 } catch (Exception ex) {
@@ -359,16 +359,8 @@ public final class TransferFragment
                 outputStream.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
                 publishProgress(basePercentage);
 
+                // Get info about the status of the server
                 int serverResponseCode = connection.getResponseCode();
-                String serverResponseMessage = connection.getResponseMessage();
-                Log.d(TAG, "Response code: " + serverResponseCode);
-                Log.d(TAG, "Message: " + serverResponseMessage);
-
-                byte response = TransferUtils.ERROR_EXCEPTION;
-                if (serverResponseCode == serverSuccessResponse) {
-                    response = TransferUtils.SUCCESS;
-                }
-
                 String connectionDate = null;
                 Date serverTime = new Date(connection.getDate());
                 try {
@@ -378,33 +370,32 @@ public final class TransferFragment
                 }
                 Log.d(TAG, "Server response time: " + connectionDate);
 
-                String filename = connectionDate + dbFilePath.substring(dbFilePath.lastIndexOf("."),
-                        dbFilePath.length());
-                Log.d(TAG, "Filename on server: " + filename);
-
                 fileInputStream.close();
                 outputStream.flush();
                 outputStream.close();
 
-                try {
-                    reader = new BufferedReader(
-                            new InputStreamReader(new DataInputStream(connection.getInputStream())));
-                    String inStr = reader.readLine();
-                    while (inStr != null && !isCancelled()) {
-                        Log.d(TAG, "Server response: " + inStr);
-                        inStr = reader.readLine();
-                    }
+                StringBuilder responseBuilder = new StringBuilder();
+                if (serverResponseCode == TransferUtils.SUCCESS_RESPONSE) {
+                    try {
+                        reader = new BufferedReader(
+                                new InputStreamReader(new DataInputStream(connection.getInputStream())));
+                        String line = reader.readLine();
+                        while (line != null && !isCancelled()) {
+                            responseBuilder.append(line);
+                            line = reader.readLine();
+                        }
 
-                    reader.close();
-                } catch (IOException ex) {
-                    Log.e(TAG, "Error reading server response.", ex);
-                    return TransferUtils.ERROR_IO_EXCEPTION;
+                        reader.close();
+                    } catch (IOException ex) {
+                        Log.e(TAG, "Error reading server response.", ex);
+                        return TransferUtils.ERROR_IO_EXCEPTION;
+                    }
                 }
 
                 if (isCancelled())
                     return TransferUtils.ERROR_CANCELLED;
                 else
-                    return response;
+                    return responseBuilder.toString();
             } catch (FileNotFoundException ex) {
                 Log.e(TAG, "Unable to find database file.", ex);
                 return TransferUtils.ERROR_FILE_NOT_FOUND;
@@ -446,7 +437,7 @@ public final class TransferFragment
         }
 
         @Override
-        protected void onPostExecute(Byte result) {
+        protected void onPostExecute(String result) {
             mProgressBar.clear();
 
             TransferFragment fragment = mFragment.get();
@@ -456,7 +447,7 @@ public final class TransferFragment
             Log.d(TAG, "Response: " + result);
             cleanupTask(fragment);
 
-            if (result == TransferUtils.SUCCESS) {
+            if (result.contains("requestId")) {
                 fragment.mExportFailures = 0;
             } else {
                 fragment.mExportFailures++;
