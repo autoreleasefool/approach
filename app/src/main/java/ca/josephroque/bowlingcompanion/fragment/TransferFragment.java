@@ -56,6 +56,8 @@ public final class TransferFragment
     private static final String IMPORT_FAILURES = "im_fail";
     /** Represents the number of failed exports. */
     private static final String EXPORT_FAILURES = "ex_fail";
+    /** Represents the last transfer key the user received from the server. */
+    private static final String LAST_KEY_RECEIVED = "last_key";
 
     /** The current {@link android.os.AsyncTask} being executed, so it can be cancelled if necessary. */
     private AsyncTask<Boolean, Integer, String> mCurrentTransferTask = null;
@@ -71,6 +73,9 @@ public final class TransferFragment
     private int mImportFailures = 0;
     /** Number of times exporting data failed. */
     private int mExportFailures = 0;
+
+    /** Last key that the user received from the server after a successful upload. */
+    private String mLastKeyReceived = null;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -93,6 +98,7 @@ public final class TransferFragment
         if (savedInstanceState != null) {
             mImportFailures = savedInstanceState.getInt(IMPORT_FAILURES, 0);
             mExportFailures = savedInstanceState.getInt(EXPORT_FAILURES, 0);
+            mLastKeyReceived = savedInstanceState.getString(LAST_KEY_RECEIVED, null);
         }
 
         return rootView;
@@ -116,6 +122,7 @@ public final class TransferFragment
 
         outState.putInt(IMPORT_FAILURES, mImportFailures);
         outState.putInt(EXPORT_FAILURES, mExportFailures);
+        outState.putString(LAST_KEY_RECEIVED, mLastKeyReceived);
     }
 
     @Override
@@ -165,7 +172,7 @@ public final class TransferFragment
      *
      * @param rootView root CardView.
      */
-    private void setupExportInteractions(View rootView) {
+    private void setupExportInteractions(final View rootView) {
         Button cancelButton = (Button) rootView.findViewById(R.id.btn_cancel);
         cancelButton.getBackground()
                 .setColorFilter(DisplayUtils.getColorResource(getResources(), R.color.theme_red_tertiary),
@@ -191,9 +198,17 @@ public final class TransferFragment
         exportButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mCurrentTransferTask == null) {
-                    mCurrentTransferTask = new DataExportTask(TransferFragment.this);
-                    mCurrentTransferTask.execute(mExportFailures > 0);
+                if (mLastKeyReceived == null) {
+                    if (mCurrentTransferTask == null) {
+                        mCurrentTransferTask = new DataExportTask(TransferFragment.this);
+                        mCurrentTransferTask.execute(mExportFailures > 0);
+                    }
+                } else {
+                    TextView textView = (TextView) rootView.findViewById(R.id.tv_transfer_export_result);
+                    textView.setText(String.format(getResources().getString(R.string.text_transfer_exported_already),
+                            mLastKeyReceived));
+                    textView.setTextColor(DisplayUtils.getColorResource(getResources(), R.color.transfer_error));
+                    textView.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -545,11 +560,12 @@ public final class TransferFragment
                 default:
                     int requestIdIndex = result.indexOf("requestId");
                     if (requestIdIndex >= 0) {
-                        textColor = DisplayUtils.getColorResource(fragment.getResources(), android.R.color.black);
                         int start = requestIdIndex + TransferUtils.TRANSFER_KEY_START;
+                        String key = result.substring(start, start + TransferUtils.TRANSFER_KEY_LENGTH);
+                        fragment.mLastKeyReceived = key;
+                        textColor = DisplayUtils.getColorResource(fragment.getResources(), android.R.color.black);
                         textViewResult.setText(String.format(fragment.getResources()
-                                .getString(R.string.text_transfer_upload_complete),
-                                result.substring(start, start + TransferUtils.TRANSFER_KEY_LENGTH)));
+                                .getString(R.string.text_transfer_upload_complete), key));
                     } else {
                         textViewResult.setText(R.string.text_transfer_unknown_error);
                     }

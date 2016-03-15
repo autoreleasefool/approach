@@ -99,6 +99,7 @@
     <string name="text_transfer_try_again_later">A connection could not be establish, please try again later.</string>
     <string name="text_transfer_unavailable">The server is unavailable, please try again in about an hour.</string>
     <string name="text_transfer_upload_complete">Upload complete! Your code:\n%1$s</string>
+    <string name="text_transfer_exported_already">You\'ve already exported your data to the server. Your code was: %1$s</string>
 
     <!-- Placeholder text -->
     <string name="text_click_to_delete">Click to delete %1$s</string>
