@@ -22,6 +22,13 @@ public final class TransferUtils {
     /** URL to upload or download data to/from. */
     private static final String TRANSFER_SERVER_URL = "http://10.0.2.2:8080/";
 
+    /** Target percentage of transfers. */
+    public static final int TARGET_PERCENTAGE = 100;
+    /** Starting location of the transfer key in the response. */
+    public static final int TRANSFER_KEY_START = 10;
+    /** Length of the transfer key in the response. */
+    public static final int TRANSFER_KEY_LENGTH = 5;
+
     /** Time to wait before closing connection. */
     public static final int CONNECTION_TIMEOUT = 1000 * 10;
     /** Time to wait before closing connection, if previous connections failed. */

@@ -34,6 +34,7 @@
             android:visibility="gone">
 
             <TextView
+                android:id="@+id/tv_export_progress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/transfer_progress_padding"
@@ -57,11 +58,14 @@
             android:id="@+id/tv_transfer_export_result"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/transfer_text_padding"
+            android:layout_marginBottom="@dimen/transfer_text_padding"
+            android:layout_marginLeft="@dimen/transfer_progress_padding"
+            android:layout_marginRight="@dimen/transfer_progress_padding"
             android:alpha="0.87"
-            android:visibility="gone"
+            android:gravity="center_horizontal"
             android:textColor="@android:color/black"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:visibility="gone" />
 
         <LinearLayout
             android:layout_width="match_parent"

@@ -6,6 +6,7 @@
 
     <!-- Attention! Colors -->
     <color name="invalid_average">#B71C1C</color>
+    <color name="transfer_error">#B71C1C</color>
 
     <!-- Fragment and list item backgrounds -->
     <color name="primary_background">#C6CBCF</color>

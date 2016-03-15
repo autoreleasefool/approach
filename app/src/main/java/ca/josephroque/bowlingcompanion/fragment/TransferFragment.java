@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
@@ -173,6 +174,13 @@ public final class TransferFragment
             @Override
             public void onClick(View v) {
                 if (mCurrentTransferTask != null) {
+                    // Display text that task is being cancelled
+                    if (mLastViewAdded != null) {
+                        TextView textView = (TextView) mLastViewAdded.findViewById(R.id.tv_export_progress);
+                        if (textView != null)
+                            textView.setText(R.string.text_cancelling);
+                    }
+
                     mCurrentTransferTask.cancel(true);
                 }
             }
@@ -221,6 +229,8 @@ public final class TransferFragment
         private final WeakReference<TransferFragment> mFragment;
         /** Weak reference to the progress bar for the task. */
         private final WeakReference<ProgressBar> mProgressBar;
+        /** Weak reference to the text view to display results of the text. */
+        private final WeakReference<TextView> mTextViewProgress;
 
         /**
          * Assigns a weak reference to the parent fragment.
@@ -230,6 +240,8 @@ public final class TransferFragment
         private DataExportTask(TransferFragment fragment) {
             mFragment = new WeakReference<>(fragment);
             mProgressBar = new WeakReference<>((ProgressBar) fragment.mLastViewAdded.findViewById(R.id.pb_export));
+            mTextViewProgress = new WeakReference<>(
+                    (TextView) fragment.mLastViewAdded.findViewById(R.id.tv_export_progress));
         }
 
         @Override
@@ -248,11 +260,17 @@ public final class TransferFragment
             if (progressBar != null)
                 progressBar.setProgress(0);
 
-            view = fragment.mLastViewAdded.findViewById(R.id.ll_transfer_progress);
-            view.setVisibility(View.VISIBLE);
+            // Displaying progress text
+            TextView textView = mTextViewProgress.get();
+            if (textView != null)
+                textView.setText(R.string.text_contacting_server);
+
+            // Display appropriate views
+            fragment.mLastViewAdded.findViewById(R.id.tv_transfer_export_result).setVisibility(View.GONE);
+            fragment.mLastViewAdded.findViewById(R.id.ll_transfer_progress).setVisibility(View.VISIBLE);
         }
 
-        @SuppressWarnings("CheckStyle")
+        @SuppressWarnings("CheckStyle") // Ignore length of method
         @Override
         protected String doInBackground(Boolean... retry) {
             TransferFragment fragment = mFragment.get();
@@ -262,6 +280,9 @@ public final class TransferFragment
             if (!TransferUtils.getServerStatus()) {
                 return TransferUtils.ERROR_UNAVAILABLE;
             }
+
+            // Displays text that upload has begun
+            publishProgress(-1);
 
             // Most of this method retrieved from this StackOverflow question.
             // http://stackoverflow.com/a/7645328/4896787
@@ -278,7 +299,6 @@ public final class TransferFragment
             DataOutputStream outputStream;
             BufferedReader reader;
 
-            final int basePercentage = 100;
             final int timeout = (retry[0])
                     ? TransferUtils.CONNECTION_TIMEOUT
                     : TransferUtils.CONNECTION_EXTENDED_TIMEOUT;
@@ -332,8 +352,8 @@ public final class TransferFragment
                         }
 
                         // Update the progress bar
-                        int currentProgressPercentage
-                                = (int) ((-bytesAvailable + totalBytes) / (float) totalBytes * basePercentage);
+                        int currentProgressPercentage = (int) ((-bytesAvailable + totalBytes) / (float) totalBytes
+                                * TransferUtils.TARGET_PERCENTAGE);
                         if (currentProgressPercentage > lastProgressPercentage) {
                             lastProgressPercentage = currentProgressPercentage;
                             publishProgress(currentProgressPercentage);
@@ -349,6 +369,7 @@ public final class TransferFragment
                 }
 
                 if (isCancelled()) {
+                    publishProgress(0);
                     fileInputStream.close();
                     outputStream.flush();
                     outputStream.close();
@@ -357,7 +378,7 @@ public final class TransferFragment
 
                 outputStream.writeBytes(lineEnd);
                 outputStream.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd);
-                publishProgress(basePercentage);
+                publishProgress(TransferUtils.TARGET_PERCENTAGE);
 
                 // Get info about the status of the server
                 int serverResponseCode = connection.getResponseCode();
@@ -405,7 +426,7 @@ public final class TransferFragment
             } catch (SocketTimeoutException ex) {
                 Log.e(TAG, "Timed out reading response.", ex);
                 return TransferUtils.ERROR_TIMEOUT;
-            }  catch (IOException ex) {
+            } catch (IOException ex) {
                 Log.e(TAG, "Couldn't open or maintain connection.", ex);
                 return TransferUtils.ERROR_IO_EXCEPTION;
             } catch (Exception ex) {
@@ -416,10 +437,27 @@ public final class TransferFragment
 
         @Override
         protected void onProgressUpdate(Integer... progress) {
-            // Updating progress bar
-            ProgressBar progressBar = mProgressBar.get();
-            if (progressBar != null)
-                progressBar.setProgress(progress[0]);
+            if (progress[0] < 0) {
+                TextView textView = mTextViewProgress.get();
+                if (textView != null)
+                    textView.setText(R.string.text_uploading);
+            } else if (progress[0] == 0) {
+                TextView textView = mTextViewProgress.get();
+                if (textView != null)
+                    textView.setText(R.string.text_cancelling);
+            } else if (progress[0] >= TransferUtils.TARGET_PERCENTAGE) {
+                ProgressBar progressBar = mProgressBar.get();
+                if (progressBar != null)
+                    progressBar.setProgress(TransferUtils.TARGET_PERCENTAGE);
+                TextView textView = mTextViewProgress.get();
+                if (textView != null)
+                    textView.setText(R.string.text_processing);
+            } else {
+                // Updating progress bar
+                ProgressBar progressBar = mProgressBar.get();
+                if (progressBar != null)
+                    progressBar.setProgress(progress[0]);
+            }
         }
 
         @Override
@@ -433,6 +471,7 @@ public final class TransferFragment
             Log.d(TAG, "Cancelled");
 
             cleanupTask(fragment);
+            displayResult(fragment, TransferUtils.ERROR_CANCELLED);
             fragment.mExportFailures++;
         }
 
@@ -444,11 +483,12 @@ public final class TransferFragment
             if (fragment == null || fragment.getContext() == null)
                 return;
 
-            Log.d(TAG, "Response: " + result);
             cleanupTask(fragment);
+            displayResult(fragment, result);
 
             if (result.contains("requestId")) {
                 fragment.mExportFailures = 0;
+
             } else {
                 fragment.mExportFailures++;
             }
@@ -470,6 +510,54 @@ public final class TransferFragment
             view.setVisibility(View.GONE);
 
             fragment.mCurrentTransferTask = null;
+        }
+
+        /**
+         * Shows a {@code TextView} with the result of the upload.
+         *
+         * @param fragment fragment with text view to display result
+         * @param result string indicating the result of the upload
+         */
+        private void displayResult(TransferFragment fragment, String result) {
+            TextView textViewResult = (TextView) fragment.mLastViewAdded.findViewById(R.id.tv_transfer_export_result);
+            int textColor = DisplayUtils.getColorResource(fragment.getResources(), R.color.transfer_error);
+
+            switch (result) {
+                case TransferUtils.ERROR_CANCELLED:
+                    textViewResult.setText(R.string.text_transfer_cancelled);
+                    break;
+                case TransferUtils.ERROR_IO_EXCEPTION:
+                case TransferUtils.ERROR_EXCEPTION:
+                case TransferUtils.ERROR_MALFORMED_URL:
+                    textViewResult.setText(R.string.text_transfer_unknown_error);
+                    break;
+                case TransferUtils.ERROR_FILE_NOT_FOUND:
+                    textViewResult.setText(R.string.text_transfer_file_not_found);
+                    break;
+                case TransferUtils.ERROR_OUT_OF_MEMORY:
+                    textViewResult.setText(R.string.text_transfer_oom);
+                    break;
+                case TransferUtils.ERROR_TIMEOUT:
+                    textViewResult.setText(R.string.text_transfer_try_again_later);
+                    break;
+                case TransferUtils.ERROR_UNAVAILABLE:
+                    textViewResult.setText(R.string.text_transfer_unavailable);
+                default:
+                    int requestIdIndex = result.indexOf("requestId");
+                    if (requestIdIndex >= 0) {
+                        textColor = DisplayUtils.getColorResource(fragment.getResources(), android.R.color.black);
+                        int start = requestIdIndex + TransferUtils.TRANSFER_KEY_START;
+                        textViewResult.setText(String.format(fragment.getResources()
+                                .getString(R.string.text_transfer_upload_complete),
+                                result.substring(start, start + TransferUtils.TRANSFER_KEY_LENGTH)));
+                    } else {
+                        textViewResult.setText(R.string.text_transfer_unknown_error);
+                    }
+                    break;
+            }
+
+            textViewResult.setTextColor(textColor);
+            textViewResult.setVisibility(View.VISIBLE);
         }
     }
 }

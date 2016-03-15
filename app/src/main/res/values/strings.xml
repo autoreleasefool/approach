@@ -88,6 +88,17 @@
     <string name="text_import">2. Import</string>
     <string name="text_begin">Begin</string>
     <string name="text_progress">Progress</string>
+    <string name="text_contacting_server">Contacting Server</string>
+    <string name="text_uploading">Uploading</string>
+    <string name="text_processing">Processing</string>
+    <string name="text_cancelling">Cancelling</string>
+    <string name="text_transfer_cancelled">Transfer cancelled.</string>
+    <string name="text_transfer_unknown_error">An unknown error occurred.</string>
+    <string name="text_transfer_file_not_found">Your data could not be found.</string>
+    <string name="text_transfer_oom">Application ran out of memory while transferring data.</string>
+    <string name="text_transfer_try_again_later">A connection could not be establish, please try again later.</string>
+    <string name="text_transfer_unavailable">The server is unavailable, please try again in about an hour.</string>
+    <string name="text_transfer_upload_complete">Upload complete! Your code:\n%1$s</string>
 
     <!-- Placeholder text -->
     <string name="text_click_to_delete">Click to delete %1$s</string>
