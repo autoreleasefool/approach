@@ -1,10 +1,12 @@
 package ca.josephroque.bowlingcompanion.fragment;
 
 
+import android.content.DialogInterface;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -40,6 +42,8 @@ import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
 import ca.josephroque.bowlingcompanion.theme.Theme;
 import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
+import ca.josephroque.bowlingcompanion.utilities.FileUtils;
+import ca.josephroque.bowlingcompanion.utilities.NavigationController;
 import ca.josephroque.bowlingcompanion.utilities.TransferUtils;
 
 /**
@@ -293,11 +297,34 @@ public final class TransferFragment
     }
 
     /**
-     * Displays a prompt asking the user if they want to override their current data. If they answer yes, the process
-     * of replacing the old data with the newly downloaded data begins.
+     * Displays a prompt asking the user if they want to override their current data. If they answer yes, the process of
+     * replacing the current data with either the backup data or downloaded data begins.
+     *
+     * @param replaceWithDownloaded {@code true} to replace the default data with newly downloaded data, or {@code
+     * false} to replace downloaded data with the original data
+     * @param deleteDownloaded {@code true} to delete the downloaded data when the overwrite is finished
      */
-    private void promptUserToOverride() {
+    private void promptUserToOverride(final boolean replaceWithDownloaded, final boolean deleteDownloaded) {
+        DialogInterface.OnClickListener onClickListener = new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (which == DialogInterface.BUTTON_POSITIVE) {
+                    new ReplaceBowlerDataTask(TransferFragment.this).execute(replaceWithDownloaded);
+                } else if (deleteDownloaded && replaceWithDownloaded) {
+                    new DeleteBowlerDataTask(TransferFragment.this).execute(true);
+                }
 
+                dialog.dismiss();
+            }
+        };
+
+        new AlertDialog.Builder(getContext())
+                .setTitle(R.string.text_overwrite_data_title)
+                .setMessage(R.string.text_overwrite_data_message)
+                .setPositiveButton(R.string.text_overwrite, onClickListener)
+                .setNegativeButton(R.string.text_cancel, onClickListener)
+                .create()
+                .show();
     }
 
     /**
@@ -307,6 +334,121 @@ public final class TransferFragment
      */
     public static TransferFragment newInstance() {
         return new TransferFragment();
+    }
+
+    /**
+     * Deletes either the user's backup or downloaded bowler data.
+     */
+    private static final class DeleteBowlerDataTask
+            extends AsyncTask<Boolean, Void, Void> {
+
+        /** Weak reference to the parent fragment. */
+        private final WeakReference<TransferFragment> mFragment;
+
+        /**
+         * Assigns a weak reference to the parent fragment.
+         *
+         * @param fragment parent fragment
+         */
+        private DeleteBowlerDataTask(TransferFragment fragment) {
+            mFragment = new WeakReference<>(fragment);
+        }
+
+        @SuppressWarnings("ResultOfMethodCallIgnored")
+        @Override
+        protected Void doInBackground(Boolean... deleteDownloaded) {
+            TransferFragment fragment = mFragment.get();
+            if (fragment == null || fragment.getContext() == null)
+                return null;
+
+            String modifier = (deleteDownloaded[0])
+                    ? TransferUtils.DATA_DOWNLOADED
+                    : TransferUtils.DATA_BACKUP;
+            File originalDatabase = fragment.getContext().getDatabasePath(DatabaseHelper.DATABASE_NAME);
+            File databaseToDelete = new File(originalDatabase.getAbsolutePath() + modifier);
+            databaseToDelete.delete();
+
+            return null;
+        }
+    }
+
+    /**
+     * Replaces the user's current data with either downloaded data or a backup of old data.
+     */
+    private static final class ReplaceBowlerDataTask
+            extends AsyncTask<Boolean, Void, Integer> {
+
+        /** Weak reference to the parent fragment. */
+        private final WeakReference<TransferFragment> mFragment;
+
+        /**
+         * Assigns a weak reference to the parent fragment.
+         *
+         * @param fragment parent fragment
+         */
+        private ReplaceBowlerDataTask(TransferFragment fragment) {
+            mFragment = new WeakReference<>(fragment);
+        }
+
+        @Override
+        protected void onPreExecute() {
+            TransferFragment fragment = mFragment.get();
+            if (fragment == null)
+                return;
+
+            NavigationController navigationController = (NavigationController) fragment.getActivity();
+            if (navigationController == null)
+                return;
+
+            // Disable database and app navigation
+            navigationController.setNavigationEnabled(false);
+            DatabaseHelper.closeInstance();
+        }
+
+        @Override
+        protected Integer doInBackground(Boolean... replaceWithDownloaded) {
+            TransferFragment fragment = mFragment.get();
+            if (fragment == null || fragment.getContext() == null)
+                return 0;
+
+            File originalDatabase = fragment.getContext().getDatabasePath(DatabaseHelper.DATABASE_NAME);
+            File replacementDatabase;
+
+            if (replaceWithDownloaded[0]) {
+                replacementDatabase = new File(originalDatabase.getAbsolutePath() + TransferUtils.DATA_DOWNLOADED);
+
+                if (!FileUtils.copyFile(originalDatabase,
+                        originalDatabase.getAbsolutePath() + TransferUtils.DATA_BACKUP)) {
+                    return R.string.text_backup_failure;
+                }
+            } else {
+                replacementDatabase = new File(originalDatabase.getAbsolutePath() + TransferUtils.DATA_BACKUP);
+            }
+
+            if (!FileUtils.copyFile(replacementDatabase, originalDatabase.getAbsolutePath())) {
+                return R.string.text_transfer_overwrite_failed;
+            }
+
+            return R.string.text_transfer_successful;
+        }
+
+        @Override
+        protected void onPostExecute(Integer result) {
+            TransferFragment fragment = mFragment.get();
+            if (fragment == null)
+                return;
+
+            NavigationController navigationController = (NavigationController) fragment.getActivity();
+            if (navigationController == null)
+                return;
+            navigationController.setNavigationEnabled(true);
+
+            new AlertDialog.Builder(fragment.getContext())
+                    .setMessage(result)
+                    .setPositiveButton(R.string.dialog_okay, null)
+                    .create()
+                    .show();
+        }
     }
 
     /**
@@ -361,9 +503,9 @@ public final class TransferFragment
                 textView.setText(R.string.text_contacting_server);
 
             // Display appropriate views
+            fragment.mLastViewAdded.findViewById(R.id.et_transfer_code).setVisibility(View.GONE);
             fragment.mLastViewAdded.findViewById(R.id.tv_transfer_import_result).setVisibility(View.GONE);
             fragment.mLastViewAdded.findViewById(R.id.ll_transfer_progress).setVisibility(View.VISIBLE);
-            fragment.mLastViewAdded.findViewById(R.id.et_transfer_code).setVisibility(View.GONE);
         }
 
         @SuppressWarnings("CheckStyle") // Ignore length of method
@@ -380,7 +522,7 @@ public final class TransferFragment
             }
 
             File dbFile = fragment.getContext().getDatabasePath(DatabaseHelper.DATABASE_NAME);
-            String dbFilePath = dbFile.getAbsolutePath() + "_dl";
+            String dbFilePath = dbFile.getAbsolutePath() + TransferUtils.DATA_DOWNLOADED;
             dbFile = new File(dbFilePath);
 
             final int timeout = (retry[0])
@@ -510,7 +652,7 @@ public final class TransferFragment
 
             if (result.equals(TransferUtils.SUCCESSFUL_IMPORT)) {
                 fragment.mImportFailures = 0;
-                fragment.promptUserToOverride();
+                fragment.promptUserToOverride(true, true);
             } else {
                 fragment.mImportFailures++;
             }
@@ -531,6 +673,8 @@ public final class TransferFragment
             view = fragment.mLastViewAdded.findViewById(R.id.ll_transfer_progress);
             view.setVisibility(View.GONE);
 
+            fragment.mLastViewAdded.findViewById(R.id.et_transfer_code).setVisibility(View.VISIBLE);
+
             fragment.mCurrentTransferTask = null;
         }
 
@@ -541,7 +685,7 @@ public final class TransferFragment
          * @param result string indicating the result of the upload
          */
         private void displayResult(TransferFragment fragment, String result) {
-            TextView textViewResult = (TextView) fragment.mLastViewAdded.findViewById(R.id.tv_transfer_export_result);
+            TextView textViewResult = (TextView) fragment.mLastViewAdded.findViewById(R.id.tv_transfer_import_result);
             int textColor = DisplayUtils.getColorResource(fragment.getResources(), R.color.transfer_error);
             boolean showTextView = true;
 
@@ -565,6 +709,11 @@ public final class TransferFragment
                     break;
                 case TransferUtils.ERROR_UNAVAILABLE:
                     textViewResult.setText(R.string.text_transfer_unavailable);
+                    break;
+                case TransferUtils.ERROR_INVALID_KEY:
+                    textViewResult.setText(String.format(fragment.getResources()
+                            .getString(R.string.text_transfer_invalid_key), TransferUtils.TRANSFER_KEY_LENGTH));
+                    break;
                 default:
                     showTextView = false;
                     break;

@@ -31,7 +31,7 @@
             android:layout_marginBottom="@dimen/transfer_progress_padding"
             android:layout_marginLeft="@dimen/transfer_progress_padding"
             android:layout_marginRight="@dimen/transfer_progress_padding"
-            android:inputType="textCapCharacters"
+            android:inputType="textCapCharacters|textFilter|textNoSuggestions"
             android:maxLength="5" />
 
         <LinearLayout

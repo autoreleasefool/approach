@@ -55,8 +55,15 @@ public final class TransferUtils {
     /** Represents a successful download of bowler data. */
     public static final String SUCCESSFUL_IMPORT = "IM_SUCCESS";
 
+    /** String modifier to represent location of downloaded data. */
+    public static final String DATA_DOWNLOADED = "_dl";
+    /** String modifier to represent location of backup data. */
+    public static final String DATA_BACKUP = "_backup";
+
     /** Max buffer size during data transfer. */
     public static final int MAX_BUFFER_SIZE = 32 * 1024;
+    /** Buffer size when backing up database. */
+    public static final int BACKUP_BUFFER_SIZE = 1024;
 
     /**
      * Returns the URL for GET requests to check the status of the server.
