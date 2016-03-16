@@ -34,6 +34,8 @@ public final class TransferUtils {
     /** Time to wait before closing connection, if previous connections failed. */
     public static final int CONNECTION_EXTENDED_TIMEOUT = 1000 * 25;
 
+    /** Represents an invalid key provided by the user. */
+    public static final String ERROR_INVALID_KEY = "INVALID_KEY";
     /** Represents an error in which the server is currently unavailable. User should try again later. */
     public static final String ERROR_UNAVAILABLE = "UNAVAILABLE";
     /** Represents a timeout error. */
@@ -50,12 +52,11 @@ public final class TransferUtils {
     public static final String ERROR_MALFORMED_URL = "URL";
     /** Represents any other error which may occur during upload/download. */
     public static final String ERROR_EXCEPTION = "ERROR";
+    /** Represents a successful download of bowler data. */
+    public static final String SUCCESSFUL_IMPORT = "IM_SUCCESS";
 
     /** Max buffer size during data transfer. */
-    public static final int MAX_BUFFER_SIZE = 1024;
-
-    /** The only acceptable response for success from the server. */
-    public static final int SUCCESS_RESPONSE = 200;
+    public static final int MAX_BUFFER_SIZE = 32 * 1024;
 
     /**
      * Returns the URL for GET requests to check the status of the server.
@@ -86,6 +87,58 @@ public final class TransferUtils {
     }
 
     /**
+     * Returns the URL for GET requests to confirm a key is valid.
+     *
+     * @param key unique key to check
+     * @return URL for validity check
+     */
+    public static String getValidKeyEndpoint(String key) {
+        return TRANSFER_SERVER_URL + "valid?key=" + key;
+    }
+
+    /**
+     * Performs a GET request to check if the provided key corresponds to valid data on the server.
+     *
+     * @param key unique key
+     * @return {@code true} if the app should continue with downloading data with the key, {@code false} otherwise.
+     */
+    public static boolean isKeyValid(String key) {
+        try {
+            URL url = new URL(getValidKeyEndpoint(key));
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setConnectTimeout(CONNECTION_TIMEOUT);
+            connection.setReadTimeout(CONNECTION_TIMEOUT);
+
+            int responseCode = connection.getResponseCode();
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                StringBuilder responseMsg = new StringBuilder();
+                BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+                String line = reader.readLine();
+                while (line != null) {
+                    responseMsg.append(line);
+                    line = reader.readLine();
+                }
+                reader.close();
+
+                String response = responseMsg.toString().trim().toUpperCase();
+                Log.d(TAG, "Transfer server status response: " + response);
+
+                // The server is only ready to accept uploads if it responds with "VALID"
+                return response.equals("VALID");
+            } else {
+                Log.e(TAG, "Invalid response getting server status: " + responseCode);
+            }
+        } catch (MalformedURLException ex) {
+            Log.e(TAG, "Error parsing URL. This shouldn't happen.", ex);
+        } catch (IOException ex) {
+            Log.e(TAG, "Error opening or closing connection.", ex);
+        }
+
+        return false;
+    }
+
+    /**
      * Performs a GET request to check the status of the server and if uploading or downloading data is possible. Should
      * NOT be run on the main thread.
      *
@@ -100,7 +153,7 @@ public final class TransferUtils {
             connection.setReadTimeout(CONNECTION_TIMEOUT);
 
             int responseCode = connection.getResponseCode();
-            if (responseCode == SUCCESS_RESPONSE) {
+            if (responseCode == HttpURLConnection.HTTP_OK) {
                 StringBuilder responseMsg = new StringBuilder();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
                 String line = reader.readLine();

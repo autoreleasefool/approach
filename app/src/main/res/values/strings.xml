@@ -84,12 +84,14 @@
     <!-- Transfer text -->
     <string name="text_transfer_info">This tool allows you to transfer your bowling data to a new device. Your data will be uploaded to a remote server, from which you can later download it onto a new device. Currently, the data will only persist for 1 hour on the server before being disposed of. Note that this tool is NOT for backing up your data, but for transferring to a new device.\n\nTo begin, either export and upload your data, or import and download it.</string>
     <string name="text_transfer_export_info">Press \'Begin\' to upload your bowling data to the server. When the upload finishes, you\'ll receive a unique code that will allow you to download the data on a different device.</string>
+    <string name="text_transfer_import_info">Enter your unique code below and press \'Begin\' to download your bowling data. When the download has finished, you will be prompted to load the new data, which will permanently overwrite your data on this device.</string>
     <string name="text_export">1. Export</string>
     <string name="text_import">2. Import</string>
     <string name="text_begin">Begin</string>
     <string name="text_progress">Progress</string>
     <string name="text_contacting_server">Contacting Server</string>
     <string name="text_uploading">Uploading</string>
+    <string name="text_downloading">Downloading</string>
     <string name="text_processing">Processing</string>
     <string name="text_cancelling">Cancelling</string>
     <string name="text_transfer_cancelled">Transfer cancelled.</string>
@@ -100,6 +102,7 @@
     <string name="text_transfer_unavailable">The server is unavailable, please try again in about an hour.</string>
     <string name="text_transfer_upload_complete">Upload complete! Your code:\n%1$s</string>
     <string name="text_transfer_exported_already">You\'ve already exported your data to the server. Your code was: %1$s</string>
+    <string name="text_transfer_invalid_key">Your key should be exactly %1$d characters long.</string>
 
     <!-- Placeholder text -->
     <string name="text_click_to_delete">Click to delete %1$s</string>

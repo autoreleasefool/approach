@@ -6,11 +6,15 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -21,17 +25,15 @@ import java.io.DataOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 import ca.josephroque.bowlingcompanion.MainActivity;
 import ca.josephroque.bowlingcompanion.R;
@@ -222,7 +224,80 @@ public final class TransferFragment
      *
      * @param rootView root CardView.
      */
-    private void setupImportInteractions(View rootView) {
+    private void setupImportInteractions(final View rootView) {
+        Button cancelButton = (Button) rootView.findViewById(R.id.btn_cancel);
+        cancelButton.getBackground()
+                .setColorFilter(DisplayUtils.getColorResource(getResources(), R.color.theme_red_tertiary),
+                        PorterDuff.Mode.MULTIPLY);
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mCurrentTransferTask != null) {
+                    // Display text that task is being cancelled
+                    if (mLastViewAdded != null) {
+                        TextView textView = (TextView) mLastViewAdded.findViewById(R.id.tv_import_progress);
+                        if (textView != null)
+                            textView.setText(R.string.text_cancelling);
+                    }
+
+                    mCurrentTransferTask.cancel(true);
+                }
+            }
+        });
+
+        final Button importButton = (Button) rootView.findViewById(R.id.btn_begin_import);
+        importButton.setEnabled(false);
+        importButton.getBackground().setColorFilter(Theme.getPrimaryThemeColor(), PorterDuff.Mode.MULTIPLY);
+        importButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mCurrentTransferTask == null) {
+                    String transferKey = ((EditText) rootView.findViewById(R.id.et_transfer_code)).getText().toString();
+                    if (!TextUtils.isEmpty(transferKey) && transferKey.length() == TransferUtils.TRANSFER_KEY_LENGTH) {
+                        mCurrentTransferTask = new DataImportTask(TransferFragment.this, transferKey);
+                        mCurrentTransferTask.execute(mImportFailures > 0);
+                    } else {
+                        TextView textView = (TextView) rootView.findViewById(R.id.tv_transfer_import_result);
+                        textView.setText(String.format(getResources().getString(R.string.text_transfer_invalid_key),
+                                TransferUtils.TRANSFER_KEY_LENGTH));
+                        textView.setTextColor(DisplayUtils.getColorResource(getResources(), R.color.transfer_error));
+                        textView.setVisibility(View.VISIBLE);
+                    }
+                }
+            }
+        });
+
+        ((EditText) rootView.findViewById(R.id.et_transfer_code)).addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                // Unused
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                // Unused
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() == TransferUtils.TRANSFER_KEY_LENGTH) {
+                    importButton.setEnabled(true);
+                } else if (importButton.isEnabled()) {
+                    importButton.setEnabled(false);
+                }
+            }
+        });
+
+        ((ProgressBar) rootView.findViewById(R.id.pb_import)).getProgressDrawable()
+                .setColorFilter(Theme.getPrimaryThemeColor(), PorterDuff.Mode.SRC_IN);
+    }
+
+    /**
+     * Displays a prompt asking the user if they want to override their current data. If they answer yes, the process
+     * of replacing the old data with the newly downloaded data begins.
+     */
+    private void promptUserToOverride() {
+
     }
 
     /**
@@ -232,6 +307,274 @@ public final class TransferFragment
      */
     public static TransferFragment newInstance() {
         return new TransferFragment();
+    }
+
+    /**
+     * Imports the user's data from a remote server.
+     */
+    private static final class DataImportTask
+            extends AsyncTask<Boolean, Integer, String> {
+
+        /** Weak reference to the parent fragment. */
+        private final WeakReference<TransferFragment> mFragment;
+        /** Weak reference to the progress bar for the task. */
+        private final WeakReference<ProgressBar> mProgressBar;
+        /** Weak reference to the text view to display results of the text. */
+        private final WeakReference<TextView> mTextViewProgress;
+
+        /** Key which represents data on the server. */
+        private final String mTransferKey;
+
+        /**
+         * Assigns a weak reference to the parent fragment.
+         *
+         * @param fragment parent fragment
+         * @param key unique key for requesting data from server
+         */
+        private DataImportTask(TransferFragment fragment, String key) {
+            mFragment = new WeakReference<>(fragment);
+            mProgressBar = new WeakReference<>((ProgressBar) fragment.mLastViewAdded.findViewById(R.id.pb_import));
+            mTextViewProgress = new WeakReference<>(
+                    (TextView) fragment.mLastViewAdded.findViewById(R.id.tv_import_progress));
+            mTransferKey = key;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            TransferFragment fragment = mFragment.get();
+            if (fragment == null || fragment.getContext() == null)
+                return;
+
+            // Setting up cancel button
+            View view = fragment.mLastViewAdded.findViewById(R.id.btn_cancel);
+            view.setEnabled(true);
+            view.setVisibility(View.VISIBLE);
+
+            // Displaying progress bar
+            ProgressBar progressBar = mProgressBar.get();
+            if (progressBar != null)
+                progressBar.setProgress(-1);
+
+            // Displaying progress text
+            TextView textView = mTextViewProgress.get();
+            if (textView != null)
+                textView.setText(R.string.text_contacting_server);
+
+            // Display appropriate views
+            fragment.mLastViewAdded.findViewById(R.id.tv_transfer_import_result).setVisibility(View.GONE);
+            fragment.mLastViewAdded.findViewById(R.id.ll_transfer_progress).setVisibility(View.VISIBLE);
+            fragment.mLastViewAdded.findViewById(R.id.et_transfer_code).setVisibility(View.GONE);
+        }
+
+        @SuppressWarnings("CheckStyle") // Ignore length of method
+        @Override
+        protected String doInBackground(Boolean... retry) {
+            TransferFragment fragment = mFragment.get();
+            if (fragment == null || fragment.getContext() == null)
+                return TransferUtils.ERROR_EXCEPTION;
+
+            if (!TransferUtils.getServerStatus()) {
+                return TransferUtils.ERROR_UNAVAILABLE;
+            } else if (!TransferUtils.isKeyValid(mTransferKey)) {
+                return TransferUtils.ERROR_INVALID_KEY;
+            }
+
+            File dbFile = fragment.getContext().getDatabasePath(DatabaseHelper.DATABASE_NAME);
+            String dbFilePath = dbFile.getAbsolutePath() + "_dl";
+            dbFile = new File(dbFilePath);
+
+            final int timeout = (retry[0])
+                    ? TransferUtils.CONNECTION_TIMEOUT
+                    : TransferUtils.CONNECTION_EXTENDED_TIMEOUT;
+
+            HttpURLConnection connection;
+
+            try {
+                URL url = new URL(TransferUtils.getDownloadEndpoint(mTransferKey));
+
+                // Preparing connection for upload
+                connection = (HttpURLConnection) url.openConnection();
+                connection.setReadTimeout(timeout);
+                connection.setConnectTimeout(timeout);
+
+                // Get the expected size of the file
+                int contentLength = connection.getContentLength();
+
+                InputStream inputStream = url.openStream();
+                FileOutputStream outputStream = new FileOutputStream(dbFile);
+
+                byte[] data = new byte[TransferUtils.MAX_BUFFER_SIZE];
+                int totalDataRead = 0;
+                int lastProgressPercentage = 0;
+
+                try {
+                    int dataRead = inputStream.read(data);
+                    while (dataRead != -1 && !isCancelled()) {
+                        totalDataRead += dataRead;
+
+                        // Update the progress bar
+                        int currentProgressPercentage = (int) ((totalDataRead) / (float) contentLength
+                                * TransferUtils.TARGET_PERCENTAGE);
+                        if (currentProgressPercentage > lastProgressPercentage) {
+                            lastProgressPercentage = currentProgressPercentage;
+                            publishProgress(currentProgressPercentage);
+                        }
+
+                        outputStream.write(data, 0, dataRead);
+                        dataRead = inputStream.read(data);
+                    }
+                } catch (Exception ex) {
+                    Log.e(TAG, "Error receiving file.", ex);
+                    return TransferUtils.ERROR_EXCEPTION;
+                } finally {
+                    try {
+                        outputStream.close();
+                        if (inputStream != null) {
+                            inputStream.close();
+                        }
+                    } catch (IOException ex) {
+                        Log.e(TAG, "Error closing streams.", ex);
+                    }
+                }
+
+                // Update progress bar
+                publishProgress(TransferUtils.TARGET_PERCENTAGE);
+            } catch (MalformedURLException ex) {
+                Log.e(TAG, "Malformed url. I have no idea how this happened.", ex);
+                return TransferUtils.ERROR_MALFORMED_URL;
+            } catch (SocketTimeoutException ex) {
+                Log.e(TAG, "Timed out reading response.", ex);
+                return TransferUtils.ERROR_TIMEOUT;
+            } catch (IOException ex) {
+                Log.e(TAG, "Couldn't open or maintain connection.", ex);
+                return TransferUtils.ERROR_IO_EXCEPTION;
+            } catch (Exception ex) {
+                Log.e(TAG, "Unknown exception.", ex);
+                return TransferUtils.ERROR_EXCEPTION;
+            }
+
+            return TransferUtils.SUCCESSFUL_IMPORT;
+        }
+
+        @Override
+        public void onProgressUpdate(Integer... progress) {
+            if (progress[0] < 0) {
+                TextView textView = mTextViewProgress.get();
+                if (textView != null)
+                    textView.setText(R.string.text_downloading);
+                ProgressBar progressBar = mProgressBar.get();
+                if (progressBar != null)
+                    progressBar.setProgress(0);
+            } else if (progress[0] == 0) {
+                TextView textView = mTextViewProgress.get();
+                if (textView != null)
+                    textView.setText(R.string.text_cancelling);
+            } else if (progress[0] >= TransferUtils.TARGET_PERCENTAGE) {
+                ProgressBar progressBar = mProgressBar.get();
+                if (progressBar != null)
+                    progressBar.setProgress(TransferUtils.TARGET_PERCENTAGE);
+                TextView textView = mTextViewProgress.get();
+                if (textView != null)
+                    textView.setText(R.string.text_processing);
+            } else {
+                // Updating progress bar
+                ProgressBar progressBar = mProgressBar.get();
+                if (progressBar != null)
+                    progressBar.setProgress(progress[0]);
+            }
+        }
+
+        @Override
+        protected void onCancelled() {
+            mProgressBar.clear();
+
+            TransferFragment fragment = mFragment.get();
+            if (fragment == null || fragment.getContext() == null)
+                return;
+
+            cleanupTask(fragment);
+            displayResult(fragment, TransferUtils.ERROR_CANCELLED);
+            fragment.mImportFailures++;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            mProgressBar.clear();
+
+            TransferFragment fragment = mFragment.get();
+            if (fragment == null || fragment.getContext() == null)
+                return;
+
+            cleanupTask(fragment);
+            displayResult(fragment, result);
+
+            if (result.equals(TransferUtils.SUCCESSFUL_IMPORT)) {
+                fragment.mImportFailures = 0;
+                fragment.promptUserToOverride();
+            } else {
+                fragment.mImportFailures++;
+            }
+        }
+
+        /**
+         * Returns the fragment to the state it was in before the task was started.
+         *
+         * @param fragment fragment to clean up.
+         */
+        private void cleanupTask(TransferFragment fragment) {
+            // Disabling cancel button
+            View view = fragment.mLastViewAdded.findViewById(R.id.btn_cancel);
+            view.setEnabled(false);
+            view.setVisibility(View.GONE);
+
+            // Hiding progress bar
+            view = fragment.mLastViewAdded.findViewById(R.id.ll_transfer_progress);
+            view.setVisibility(View.GONE);
+
+            fragment.mCurrentTransferTask = null;
+        }
+
+        /**
+         * Shows a {@code TextView} with the result of the upload.
+         *
+         * @param fragment fragment with text view to display result
+         * @param result string indicating the result of the upload
+         */
+        private void displayResult(TransferFragment fragment, String result) {
+            TextView textViewResult = (TextView) fragment.mLastViewAdded.findViewById(R.id.tv_transfer_export_result);
+            int textColor = DisplayUtils.getColorResource(fragment.getResources(), R.color.transfer_error);
+            boolean showTextView = true;
+
+            switch (result) {
+                case TransferUtils.ERROR_CANCELLED:
+                    textViewResult.setText(R.string.text_transfer_cancelled);
+                    break;
+                case TransferUtils.ERROR_IO_EXCEPTION:
+                case TransferUtils.ERROR_EXCEPTION:
+                case TransferUtils.ERROR_MALFORMED_URL:
+                    textViewResult.setText(R.string.text_transfer_unknown_error);
+                    break;
+                case TransferUtils.ERROR_FILE_NOT_FOUND:
+                    textViewResult.setText(R.string.text_transfer_file_not_found);
+                    break;
+                case TransferUtils.ERROR_OUT_OF_MEMORY:
+                    textViewResult.setText(R.string.text_transfer_oom);
+                    break;
+                case TransferUtils.ERROR_TIMEOUT:
+                    textViewResult.setText(R.string.text_transfer_try_again_later);
+                    break;
+                case TransferUtils.ERROR_UNAVAILABLE:
+                    textViewResult.setText(R.string.text_transfer_unavailable);
+                default:
+                    showTextView = false;
+                    break;
+            }
+
+            if (showTextView) {
+                textViewResult.setTextColor(textColor);
+                textViewResult.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     /**
@@ -273,7 +616,7 @@ public final class TransferFragment
             // Displaying progress bar
             ProgressBar progressBar = mProgressBar.get();
             if (progressBar != null)
-                progressBar.setProgress(0);
+                progressBar.setProgress(-1);
 
             // Displaying progress text
             TextView textView = mTextViewProgress.get();
@@ -296,9 +639,6 @@ public final class TransferFragment
                 return TransferUtils.ERROR_UNAVAILABLE;
             }
 
-            // Displays text that upload has begun
-            publishProgress(-1);
-
             // Most of this method retrieved from this StackOverflow question.
             // http://stackoverflow.com/a/7645328/4896787
 
@@ -308,11 +648,10 @@ public final class TransferFragment
             String dbFileName = dbFile.getName();
             Log.d(TAG, "Database file: " + dbFilePath);
 
-            DateFormat dateFormat = new SimpleDateFormat("yyyy_MM_dd_HH:mm:ss", Locale.CANADA);
-
             HttpURLConnection connection;
-            DataOutputStream outputStream;
-            BufferedReader reader;
+            FileInputStream fileInputStream = null;
+            DataOutputStream outputStream = null;
+            BufferedReader reader = null;
 
             final int timeout = (retry[0])
                     ? TransferUtils.CONNECTION_TIMEOUT
@@ -327,7 +666,7 @@ public final class TransferFragment
             byte[] buffer;
 
             try {
-                FileInputStream fileInputStream = new FileInputStream(dbFile);
+                fileInputStream = new FileInputStream(dbFile);
                 URL url = new URL(TransferUtils.getUploadEndpoint());
 
                 // Preparing connection for upload
@@ -385,9 +724,6 @@ public final class TransferFragment
 
                 if (isCancelled()) {
                     publishProgress(0);
-                    fileInputStream.close();
-                    outputStream.flush();
-                    outputStream.close();
                     return TransferUtils.ERROR_CANCELLED;
                 }
 
@@ -397,21 +733,9 @@ public final class TransferFragment
 
                 // Get info about the status of the server
                 int serverResponseCode = connection.getResponseCode();
-                String connectionDate = null;
-                Date serverTime = new Date(connection.getDate());
-                try {
-                    connectionDate = dateFormat.format(serverTime);
-                } catch (Exception ex) {
-                    Log.e(TAG, "Error parsing date.", ex);
-                }
-                Log.d(TAG, "Server response time: " + connectionDate);
-
-                fileInputStream.close();
-                outputStream.flush();
-                outputStream.close();
 
                 StringBuilder responseBuilder = new StringBuilder();
-                if (serverResponseCode == TransferUtils.SUCCESS_RESPONSE) {
+                if (serverResponseCode == HttpURLConnection.HTTP_OK) {
                     try {
                         reader = new BufferedReader(
                                 new InputStreamReader(new DataInputStream(connection.getInputStream())));
@@ -420,11 +744,16 @@ public final class TransferFragment
                             responseBuilder.append(line);
                             line = reader.readLine();
                         }
-
-                        reader.close();
                     } catch (IOException ex) {
                         Log.e(TAG, "Error reading server response.", ex);
                         return TransferUtils.ERROR_IO_EXCEPTION;
+                    } finally {
+                        try {
+                            if (reader != null)
+                                reader.close();
+                        } catch (IOException ex) {
+                            Log.d(TAG, "Error closing stream.", ex);
+                        }
                     }
                 }
 
@@ -447,6 +776,17 @@ public final class TransferFragment
             } catch (Exception ex) {
                 Log.e(TAG, "Unknown exception.", ex);
                 return TransferUtils.ERROR_EXCEPTION;
+            } finally {
+                try {
+                    if (fileInputStream != null)
+                        fileInputStream.close();
+                    if (outputStream != null) {
+                        outputStream.flush();
+                        outputStream.close();
+                    }
+                } catch (IOException ex) {
+                    Log.d(TAG, "Error closing streams.", ex);
+                }
             }
         }
 
@@ -456,6 +796,9 @@ public final class TransferFragment
                 TextView textView = mTextViewProgress.get();
                 if (textView != null)
                     textView.setText(R.string.text_uploading);
+                ProgressBar progressBar = mProgressBar.get();
+                if (progressBar != null)
+                    progressBar.setProgress(0);
             } else if (progress[0] == 0) {
                 TextView textView = mTextViewProgress.get();
                 if (textView != null)
@@ -482,8 +825,6 @@ public final class TransferFragment
             TransferFragment fragment = mFragment.get();
             if (fragment == null || fragment.getContext() == null)
                 return;
-
-            Log.d(TAG, "Cancelled");
 
             cleanupTask(fragment);
             displayResult(fragment, TransferUtils.ERROR_CANCELLED);

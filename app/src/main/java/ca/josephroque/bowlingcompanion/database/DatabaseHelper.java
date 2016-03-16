@@ -47,6 +47,16 @@ public final class DatabaseHelper
     }
 
     /**
+     * Close the current instance of the database helper.
+     */
+    public static void closeInstance() {
+        if (sDatabaseHelperInstance != null) {
+            sDatabaseHelperInstance.close();
+            sDatabaseHelperInstance = null;
+        }
+    }
+
+    /**
      * Private constructor for singleton access.
      *
      * @param context the current activity
