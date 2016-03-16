@@ -77,6 +77,7 @@ import ca.josephroque.bowlingcompanion.utilities.DateUtils;
 import ca.josephroque.bowlingcompanion.utilities.DisplayUtils;
 import ca.josephroque.bowlingcompanion.utilities.EmailUtils;
 import ca.josephroque.bowlingcompanion.utilities.FloatingActionButtonHandler;
+import ca.josephroque.bowlingcompanion.utilities.NavigationController;
 import ca.josephroque.bowlingcompanion.utilities.NavigationUtils;
 import ca.josephroque.bowlingcompanion.utilities.PermissionUtils;
 import ca.josephroque.bowlingcompanion.utilities.Startup;
@@ -99,7 +100,8 @@ public class MainActivity
         SeriesFragment.SeriesCallback,
         GameFragment.GameFragmentCallback,
         NavigationDrawerAdapter.NavigationCallback,
-        ActivityCompat.OnRequestPermissionsResultCallback {
+        ActivityCompat.OnRequestPermissionsResultCallback,
+        NavigationController {
 
     /** Identifies output from this class in Logcat. */
     @SuppressWarnings("unused")
@@ -142,6 +144,9 @@ public class MainActivity
     private int mAutoAdvanceDelay;
     /** Time remaining before auto advance delay expires. */
     private int mAutoAdvanceDelayRemaining;
+
+    /** Indicates if the user should be capable of navigating through the app through interactions with the Activity. */
+    private boolean mNavigationEnabled = true;
 
     /** Handler for posting auto advance. */
     private Handler mAutoAdvanceHandler;
@@ -373,6 +378,9 @@ public class MainActivity
                 && mDrawerToggle.onOptionsItemSelected(item))
             return true;
 
+        if (!mNavigationEnabled)
+            return true;
+
         switch (item.getItemId()) {
             case android.R.id.home:
                 onBackPressed();
@@ -449,6 +457,9 @@ public class MainActivity
 
     @Override
     public void onBackPressed() {
+        if (!mNavigationEnabled)
+            return;
+
         if (isDrawerOpen())
             mDrawerLayout.closeDrawer(GravityCompat.START);
         else {
@@ -706,6 +717,9 @@ public class MainActivity
     private void startFragmentTransaction(Fragment fragment,
                                           String backStackTag,
                                           String fragmentTag) {
+        if (!mNavigationEnabled)
+            return;
+
         getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left,
                         R.anim.slide_in_left, R.anim.slide_out_right)
@@ -759,6 +773,10 @@ public class MainActivity
     @Override
     public void onNavigationItemClicked(int position) {
         mDrawerLayout.closeDrawer(GravityCompat.START);
+
+        if (!mNavigationEnabled)
+            return;
+
         if (mListDrawerOptions.get(position).matches("\\w+ \\d+")) {
             mDrawerLayout.closeDrawer(GravityCompat.START);
             GameFragment gameFragment = (GameFragment) getSupportFragmentManager()
@@ -855,6 +873,11 @@ public class MainActivity
     @Override
     public void updateGameScore(byte gameNumber, short gameScore) {
         mDrawerAdapter.setSubtitle("Game " + gameNumber, Short.toString(gameScore));
+    }
+
+    @Override
+    public void setNavigationEnabled(boolean enable) {
+        mNavigationEnabled = enable;
     }
 
     /**
