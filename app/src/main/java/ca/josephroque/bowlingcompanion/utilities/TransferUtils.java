@@ -151,7 +151,7 @@ public final class TransferUtils {
         } catch (MalformedURLException ex) {
             Log.e(TAG, "Error parsing URL. This shouldn't happen.", ex);
         } catch (IOException ex) {
-            Log.e(TAG, "Error opening or closing connection.", ex);
+            Log.e(TAG, "Error opening or closing connection validating key.", ex);
         }
 
         return false;
@@ -193,7 +193,7 @@ public final class TransferUtils {
         } catch (MalformedURLException ex) {
             Log.e(TAG, "Error parsing URL. This shouldn't happen.", ex);
         } catch (IOException ex) {
-            Log.e(TAG, "Error opening or closing connection.", ex);
+            Log.e(TAG, "Error opening or closing connection getting status.", ex);
         }
 
         return false;

@@ -109,7 +109,7 @@
     <string name="text_overwrite_data_message">You have downloaded a set of bowler data from another device. You can overwrite your current data, confirm it\'s correct, then return to this screen to either delete the backup or reload your old data. Are you sure you want to continue?</string>
     <string name="text_overwrite">Overwrite</string>
     <string name="text_backup_failure">The app failed to back up the current data and the process has been cancelled. Your original data is intact.</string>
-    <string name="text_transfer_successful">The app\'s data has been successfully updated. Confirm it\'s validity before returning to the screen to delete the backup.</string>
+    <string name="text_transfer_successful">The app\'s data has been successfully updated. Confirm it\'s validity before returning to this screen to delete the backup.</string>
     <string name="text_transfer_overwrite_failed">The app has failed to overwrite the current data. If you find your data has been corrupted, you can restore a backup from the \'Restore/Delete\' option above.</string>
     <string name="text_delete_backup_prompt">Are you sure you want to delete your backup data? Make sure you confirm it\'s been loaded correctly.</string>
     <string name="text_restore_backup_prompt">Are you sure you want to restore your backup? You\'ll have to redownload any current data.</string>
