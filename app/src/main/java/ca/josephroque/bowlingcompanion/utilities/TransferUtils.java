@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.utilities;
 
+import android.content.res.Resources;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -8,6 +9,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+
+import ca.josephroque.bowlingcompanion.R;
 
 /**
  * Created by Joseph Roque on 2016-03-13. Provides methods and constants for enabling the transferring of data to a new
@@ -20,7 +23,7 @@ public final class TransferUtils {
     private static final String TAG = "TransferUtils";
 
     /** URL to upload or download data to/from. */
-    private static final String TRANSFER_SERVER_URL = "http://10.0.2.2:8080/";
+    private static String sTransferServerUrl = null;
 
     /** Target percentage of transfers. */
     public static final int TARGET_PERCENTAGE = 100;
@@ -71,7 +74,7 @@ public final class TransferUtils {
      * @return URL for server status check
      */
     public static String getStatusEndpoint() {
-        return TRANSFER_SERVER_URL + "status";
+        return sTransferServerUrl + "status";
     }
 
     /**
@@ -80,7 +83,7 @@ public final class TransferUtils {
      * @return URL for data upload
      */
     public static String getUploadEndpoint() {
-        return TRANSFER_SERVER_URL + "upload";
+        return sTransferServerUrl + "upload";
     }
 
     /**
@@ -90,7 +93,7 @@ public final class TransferUtils {
      * @return URL for data download.
      */
     public static String getDownloadEndpoint(String key) {
-        return TRANSFER_SERVER_URL + "download?key=" + key;
+        return sTransferServerUrl + "download?key=" + key;
     }
 
     /**
@@ -100,7 +103,16 @@ public final class TransferUtils {
      * @return URL for validity check
      */
     public static String getValidKeyEndpoint(String key) {
-        return TRANSFER_SERVER_URL + "valid?key=" + key;
+        return sTransferServerUrl + "valid?key=" + key;
+    }
+
+    /**
+     * Loads the base URL for the transfer API.
+     *
+     * @param resources to access strings
+     */
+    public static void loadTransferServerUrl(Resources resources) {
+        sTransferServerUrl = resources.getString(R.string.transfer_url);
     }
 
     /**

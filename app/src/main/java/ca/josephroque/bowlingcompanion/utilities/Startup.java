@@ -37,6 +37,7 @@ public final class Startup {
 
         Changelog.setShowChangelog(context, !oldVersion.equals(newVersion));
 
+        TransferUtils.loadTransferServerUrl(context.getResources());
         AppRater.appLaunched(context);
         Changelog.appLaunched(context);
         updateAppVersion(preferences, newVersion);
