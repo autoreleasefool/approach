@@ -65,6 +65,13 @@ public final class TransferFragment
     /** Represents the last transfer key the user received from the server. */
     private static final String LAST_KEY_RECEIVED = "last_key";
 
+    /** Represents the import cardview. */
+    private static final byte VIEW_IMPORT = 0;
+    /** Represents the export cardview. */
+    private static final byte VIEW_EXPORT = 1;
+    /** Represents the restore/delete cardview. */
+    private static final byte VIEW_RESTORE_DELETE = 2;
+
     /** The current {@link android.os.AsyncTask} being executed, so it can be cancelled if necessary. */
     private AsyncTask<Boolean, Integer, String> mCurrentTransferTask = null;
 
@@ -73,8 +80,8 @@ public final class TransferFragment
     /** Reference to the last view which was added to the layout. */
     private CardView mLastViewAdded = null;
 
-    /** Indicates if the fragment is currently showing the import or export options. */
-    private boolean mShowingImport = false;
+    /** Indicates if the fragment is currently showing the import, export, or restore/delete options. */
+    private byte mCurrentCardView = -1;
     /** Number of times importing data failed. */
     private int mImportFailures = 0;
     /** Number of times exporting data failed. */
@@ -88,16 +95,22 @@ public final class TransferFragment
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_transfer, container, false);
 
-        View.OnClickListener importExportClickListener = new View.OnClickListener() {
+        View.OnClickListener cardClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mCurrentTransferTask == null) {
-                    showImportOrExport(v.getId() == R.id.btn_import);
+                    if (v.getId() == R.id.btn_import)
+                        showCardView(VIEW_IMPORT);
+                    else if (v.getId() == R.id.btn_export)
+                        showCardView(VIEW_EXPORT);
+                    else if (v.getId() == R.id.btn_restore_delete)
+                        showCardView(VIEW_RESTORE_DELETE);
                 }
             }
         };
-        rootView.findViewById(R.id.btn_import).setOnClickListener(importExportClickListener);
-        rootView.findViewById(R.id.btn_export).setOnClickListener(importExportClickListener);
+        rootView.findViewById(R.id.btn_import).setOnClickListener(cardClickListener);
+        rootView.findViewById(R.id.btn_export).setOnClickListener(cardClickListener);
+        rootView.findViewById(R.id.btn_restore_delete).setOnClickListener(cardClickListener);
 
         mLinearLayoutRoot = (LinearLayout) rootView.findViewById(R.id.ll_transfer);
 
@@ -150,22 +163,27 @@ public final class TransferFragment
     /**
      * Animates a container to allow a user to import or export their data.
      *
-     * @param showImport if {@code true}, provides a view for the user to import data. If {@code false}, provides a view
-     * for the user to export data.
+     * @param cardView id of the card view to show.
      */
-    private void showImportOrExport(boolean showImport) {
-        if (showImport != mShowingImport)
+    private void showCardView(byte cardView) {
+        if (cardView != mCurrentCardView)
             hideCurrentCard();
-        mShowingImport = showImport;
+        else
+            return;
+        mCurrentCardView = cardView;
 
-        if (showImport) {
+        if (mCurrentCardView == VIEW_IMPORT) {
             mLastViewAdded = (CardView) LayoutInflater.from(getContext())
                     .inflate(R.layout.cardview_transfer_import, mLinearLayoutRoot, false);
             setupImportInteractions(mLastViewAdded);
-        } else {
+        } else if (mCurrentCardView == VIEW_EXPORT) {
             mLastViewAdded = (CardView) LayoutInflater.from(getContext())
                     .inflate(R.layout.cardview_transfer_export, mLinearLayoutRoot, false);
             setupExportInteractions(mLastViewAdded);
+        } else {
+            mLastViewAdded = (CardView) LayoutInflater.from(getContext())
+                    .inflate(R.layout.cardview_transfer_restore_delete, mLinearLayoutRoot, false);
+            setupRestoreDeleteInteractions(mLastViewAdded);
         }
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
@@ -297,6 +315,47 @@ public final class TransferFragment
     }
 
     /**
+     * Sets listeners and colors for views in the restore/delete CardView.
+     *
+     * @param rootView root CardView.
+     */
+    private void setupRestoreDeleteInteractions(final View rootView) {
+        rootView.findViewById(R.id.btn_restore).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(getContext())
+                        .setMessage(R.string.text_restore_backup_prompt)
+                        .setPositiveButton(R.string.text_restore, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                new ReplaceBowlerDataTask(TransferFragment.this).execute(false);
+                            }
+                        })
+                        .setNegativeButton(R.string.text_cancel, null)
+                        .create()
+                        .show();
+            }
+        });
+
+        rootView.findViewById(R.id.btn_delete).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(getContext())
+                        .setMessage(R.string.text_delete_backup_prompt)
+                        .setPositiveButton(R.string.dialog_delete, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                new DeleteBowlerDataTask(TransferFragment.this).execute(false);
+                            }
+                        })
+                        .setNegativeButton(R.string.text_cancel, null)
+                        .create()
+                        .show();
+            }
+        });
+    }
+
+    /**
      * Displays a prompt asking the user if they want to override their current data. If they answer yes, the process of
      * replacing the current data with either the backup data or downloaded data begins.
      *
@@ -309,7 +368,7 @@ public final class TransferFragment
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (which == DialogInterface.BUTTON_POSITIVE) {
-                    new ReplaceBowlerDataTask(TransferFragment.this).execute(replaceWithDownloaded);
+                    new ReplaceBowlerDataTask(TransferFragment.this).execute(replaceWithDownloaded, deleteDownloaded);
                 } else if (deleteDownloaded && replaceWithDownloaded) {
                     new DeleteBowlerDataTask(TransferFragment.this).execute(true);
                 }
@@ -406,15 +465,20 @@ public final class TransferFragment
         }
 
         @Override
-        protected Integer doInBackground(Boolean... replaceWithDownloaded) {
-            TransferFragment fragment = mFragment.get();
+        protected Integer doInBackground(Boolean... options) {
+            final TransferFragment fragment = mFragment.get();
             if (fragment == null || fragment.getContext() == null)
                 return 0;
+
+            boolean replaceWithDownloaded = options[0];
+            boolean deleteDownloaded = false;
+            if (options.length >= 2)
+                deleteDownloaded = options[1];
 
             File originalDatabase = fragment.getContext().getDatabasePath(DatabaseHelper.DATABASE_NAME);
             File replacementDatabase;
 
-            if (replaceWithDownloaded[0]) {
+            if (replaceWithDownloaded) {
                 replacementDatabase = new File(originalDatabase.getAbsolutePath() + TransferUtils.DATA_DOWNLOADED);
 
                 if (!FileUtils.copyFile(originalDatabase,
@@ -425,8 +489,23 @@ public final class TransferFragment
                 replacementDatabase = new File(originalDatabase.getAbsolutePath() + TransferUtils.DATA_BACKUP);
             }
 
+            if (!replacementDatabase.exists()) {
+                return R.string.text_transfer_nonexist;
+            }
+
             if (!FileUtils.copyFile(replacementDatabase, originalDatabase.getAbsolutePath())) {
                 return R.string.text_transfer_overwrite_failed;
+            }
+
+            if (replaceWithDownloaded && deleteDownloaded) {
+                // Delete the downloaded data if it was successfully copied over
+                fragment.getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d(TAG, "Deleting downloaded");
+                        new DeleteBowlerDataTask(fragment).execute(true);
+                    }
+                });
             }
 
             return R.string.text_transfer_successful;

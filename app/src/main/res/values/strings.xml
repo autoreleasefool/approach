@@ -85,6 +85,7 @@
     <string name="text_transfer_info">This tool allows you to transfer your bowling data to a new device. Your data will be uploaded to a remote server, from which you can later download it onto a new device. Currently, the data will only persist for 1 hour on the server before being disposed of. Note that this tool is NOT for backing up your data, but for transferring to a new device.\n\nTo begin, either export and upload your data, or import and download it.</string>
     <string name="text_transfer_export_info">Press \'Begin\' to upload your bowling data to the server. When the upload finishes, you\'ll receive a unique code that will allow you to download the data on a different device.</string>
     <string name="text_transfer_import_info">Enter your unique code below and press \'Begin\' to download your bowling data. When the download has finished, you will be prompted to load the new data, which will permanently overwrite your data on this device.</string>
+    <string name="text_transfer_restore_delete_info">Below, you can either restore your data from the last backup, or delete your backup to ensure it won\'t take up any space.</string>
     <string name="text_export">1. Export</string>
     <string name="text_import">2. Import</string>
     <string name="text_restore_delete">Restore/Delete</string>
@@ -108,8 +109,14 @@
     <string name="text_overwrite_data_message">You have downloaded a set of bowler data from another device. You can overwrite your current data, confirm it\'s correct, then return to this screen to either delete the backup or reload your old data. Are you sure you want to continue?</string>
     <string name="text_overwrite">Overwrite</string>
     <string name="text_backup_failure">The app failed to back up the current data and the process has been cancelled. Your original data is intact.</string>
-    <string name="text_transfer_successful">The app\'s data has been successfully updated.</string>
+    <string name="text_transfer_successful">The app\'s data has been successfully updated. Confirm it\'s validity before returning to the screen to delete the backup.</string>
     <string name="text_transfer_overwrite_failed">The app has failed to overwrite the current data. If you find your data has been corrupted, you can restore a backup from the \'Restore/Delete\' option above.</string>
+    <string name="text_delete_backup_prompt">Are you sure you want to delete your backup data? Make sure you confirm it\'s been loaded correctly.</string>
+    <string name="text_restore_backup_prompt">Are you sure you want to restore your backup? You\'ll have to redownload any current data.</string>
+    <string name="text_restore">Restore</string>
+    <string name="text_restore_backup">Restore backup</string>
+    <string name="text_delete_backup">Delete backup</string>
+    <string name="text_transfer_nonexist">The requested database doesn\'t seem to exist. Are you sure the download was successful / it hasn\'t been deleted already?</string>
 
     <!-- Placeholder text -->
     <string name="text_click_to_delete">Click to delete %1$s</string>

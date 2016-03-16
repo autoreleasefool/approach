@@ -43,14 +43,13 @@
                     style="?android:attr/buttonBarStyle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="vertical">
 
                     <Button
                         android:id="@+id/btn_export"
                         style="?android:attr/buttonBarButtonStyle"
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
                         android:text="@string/text_export"
                         android:textAllCaps="true"
                         android:textColor="@android:color/black" />
@@ -58,10 +57,18 @@
                     <Button
                         android:id="@+id/btn_import"
                         style="?android:attr/buttonBarButtonStyle"
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
                         android:text="@string/text_import"
+                        android:textAllCaps="true"
+                        android:textColor="@android:color/black" />
+
+                    <Button
+                        android:id="@+id/btn_restore_delete"
+                        style="?android:attr/buttonBarButtonStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/text_restore_delete"
                         android:textAllCaps="true"
                         android:textColor="@android:color/black" />
 
