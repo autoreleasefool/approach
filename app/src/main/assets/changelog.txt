@@ -1,3 +1,6 @@
+<b>v2.1.7</b>
+- Transfer your data to a new device! By accessing the "Transfer data" option in the menu, you can transfer your data to a new device by uploading it to our servers and downloading it elsewhere with your unique code.
+
 <b>v2.1.6</b>
 - Added an option in the settings under "Editing Games" that allows users to disable the new change that moved the pins above the floating buttons.
 

@@ -1,10 +1,15 @@
 # Upcoming changes
 
 ```
+v2.1.8
+
+- Show your average with additional accuracy up to a decimal point.
+```
+
+```
 v2.2
 
 - Create teams of bowlers to edit more than one bowler's scores at once
-- Adds missing attribution to Google Material Icons
 ```
 
 ```
@@ -17,6 +22,13 @@ Features
 ```
 
 ## Legacy changelogs
+
+```
+v2.1.7
+
+- Transfer your data to a new device! By accessing the "Transfer data" option in the menu, you can transfer your data to a new device by uploading it to our servers and downloading it elsewhere with your unique code.
+- Adds missing attribution to Google Material Icons
+```
 
 ```
 v2.1.6
