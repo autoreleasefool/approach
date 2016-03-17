@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.io.BufferedReader;
@@ -93,7 +94,7 @@ public final class TransferFragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_transfer, container, false);
+        final ScrollView rootView = (ScrollView) inflater.inflate(R.layout.fragment_transfer, container, false);
 
         View.OnClickListener cardClickListener = new View.OnClickListener() {
             @Override
@@ -105,6 +106,13 @@ public final class TransferFragment
                         showCardView(VIEW_EXPORT);
                     else if (v.getId() == R.id.btn_restore_delete)
                         showCardView(VIEW_RESTORE_DELETE);
+
+                    rootView.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            rootView.fullScroll(View.FOCUS_DOWN);
+                        }
+                    });
                 }
             }
         };
