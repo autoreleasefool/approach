@@ -105,6 +105,7 @@
     <string name="text_transfer_upload_complete">Upload complete! Your code:\n%1$s</string>
     <string name="text_transfer_exported_already">You\'ve already exported your data to the server. Your code was: %1$s</string>
     <string name="text_transfer_invalid_key">Your key should be exactly %1$d characters long.</string>
+    <string name="text_transfer_no_internet">Could not connect to the Internet.</string>
     <string name="text_overwrite_data_title">Overwrite data?</string>
     <string name="text_overwrite_data_message">You have downloaded a set of bowler data from another device. You can overwrite your current data, confirm it\'s correct, then return to this screen to either delete the backup or reload your old data. Are you sure you want to continue?</string>
     <string name="text_overwrite">Overwrite</string>

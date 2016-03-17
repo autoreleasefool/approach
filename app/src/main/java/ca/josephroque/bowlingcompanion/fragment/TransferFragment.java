@@ -594,7 +594,9 @@ public final class TransferFragment
             if (fragment == null || fragment.getContext() == null)
                 return TransferUtils.ERROR_EXCEPTION;
 
-            if (!TransferUtils.getServerStatus()) {
+            if (!TransferUtils.isConnectionAvailable(fragment.getContext())) {
+                return TransferUtils.ERROR_NO_INTERNET;
+            } else if (!TransferUtils.getServerStatus()) {
                 return TransferUtils.ERROR_UNAVAILABLE;
             } else if (!TransferUtils.isKeyValid(mTransferKey)) {
                 return TransferUtils.ERROR_INVALID_KEY;
@@ -793,6 +795,9 @@ public final class TransferFragment
                     textViewResult.setText(String.format(fragment.getResources()
                             .getString(R.string.text_transfer_invalid_key), TransferUtils.TRANSFER_KEY_LENGTH));
                     break;
+                case TransferUtils.ERROR_NO_INTERNET:
+                    textViewResult.setText(R.string.text_transfer_no_internet);
+                    break;
                 default:
                     showTextView = false;
                     break;
@@ -863,7 +868,9 @@ public final class TransferFragment
             if (fragment == null || fragment.getContext() == null)
                 return TransferUtils.ERROR_EXCEPTION;
 
-            if (!TransferUtils.getServerStatus()) {
+            if (!TransferUtils.isConnectionAvailable(fragment.getContext())) {
+                return TransferUtils.ERROR_NO_INTERNET;
+            } else if (!TransferUtils.getServerStatus()) {
                 return TransferUtils.ERROR_UNAVAILABLE;
             }
 
@@ -1126,6 +1133,10 @@ public final class TransferFragment
                     break;
                 case TransferUtils.ERROR_UNAVAILABLE:
                     textViewResult.setText(R.string.text_transfer_unavailable);
+                    break;
+                case TransferUtils.ERROR_NO_INTERNET:
+                    textViewResult.setText(R.string.text_transfer_no_internet);
+                    break;
                 default:
                     int requestIdIndex = result.indexOf("requestId");
                     if (requestIdIndex >= 0) {

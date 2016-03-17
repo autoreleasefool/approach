@@ -1,6 +1,9 @@
 package ca.josephroque.bowlingcompanion.utilities;
 
+import android.content.Context;
 import android.content.res.Resources;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -37,6 +40,8 @@ public final class TransferUtils {
     /** Time to wait before closing connection, if previous connections failed. */
     public static final int CONNECTION_EXTENDED_TIMEOUT = 1000 * 25;
 
+    /** Represents a lack of available connection to the internet. */
+    public static final String ERROR_NO_INTERNET = "NO_INTERNET";
     /** Represents an invalid key provided by the user. */
     public static final String ERROR_INVALID_KEY = "INVALID_KEY";
     /** Represents an error in which the server is currently unavailable. User should try again later. */
@@ -197,6 +202,18 @@ public final class TransferUtils {
         }
 
         return false;
+    }
+
+    /**
+     * Checks if the device currently has an available connection to the internet.
+     *
+     * @param context the current context
+     * @return {@code true} if an internet connection is available, {@code false} otherwise.
+     */
+    public static boolean isConnectionAvailable(Context context) {
+        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 
     /**
