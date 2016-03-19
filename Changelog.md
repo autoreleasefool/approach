@@ -1,12 +1,6 @@
 # Upcoming changes
 
 ```
-v2.1.8
-
-- Show your average with additional accuracy up to a decimal point.
-```
-
-```
 v2.2
 
 - Create teams of bowlers to edit more than one bowler's scores at once
@@ -22,6 +16,12 @@ Features
 ```
 
 ## Legacy changelogs
+
+```
+v2.1.8
+
+- See your average with up to 1 decimal place by going to Settings > Statistics.
+```
 
 ```
 v2.1.7

@@ -1,3 +1,6 @@
+<b>v2.1.8</b>
+- See your average with up to 1 decimal place by going to Settings > Statistics.
+
 <b>v2.1.7</b>
 - Transfer your data to a new device! By accessing the "Transfer data" option in the menu, you can transfer your data to a new device by uploading it to our servers and downloading it elsewhere with your unique code.
 
