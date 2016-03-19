@@ -16,7 +16,7 @@ public class LeagueEvent
     /** Name of the league / event. */
     private final String mLeagueEventName;
     /** Average of the league / event. */
-    private final short mLeagueEventAverage;
+    private final float mLeagueEventAverage;
     /** Initial average of the league. */
     private final short mLeagueBaseAverage;
     /** Initial number of games played. */
@@ -40,7 +40,7 @@ public class LeagueEvent
     public LeagueEvent(long id,
                        String name,
                        boolean isEvent,
-                       short average,
+                       float average,
                        short baseAverage,
                        int baseGames,
                        byte numberOfGames) {
@@ -62,7 +62,7 @@ public class LeagueEvent
         this.mLeagueEventId = pc.readLong();
         this.mLeagueEventName = pc.readString();
         this.mIsEvent = pc.readInt() == 1;
-        this.mLeagueEventAverage = (short) pc.readInt();
+        this.mLeagueEventAverage = pc.readFloat();
         this.mLeagueBaseAverage = (short) pc.readInt();
         this.mLeagueBaseGames = pc.readInt();
         this.mLeagueEventNumberOfGames = pc.readByte();
@@ -91,7 +91,7 @@ public class LeagueEvent
      *
      * @return the value of {@code mLeagueEventAverage}
      */
-    public short getLeagueEventAverage() {
+    public float getLeagueEventAverage() {
         return mLeagueEventAverage;
     }
 
@@ -152,7 +152,7 @@ public class LeagueEvent
     }
 
     @Override
-    public short getAverage() {
+    public float getAverage() {
         return getLeagueEventAverage();
     }
 
@@ -168,7 +168,7 @@ public class LeagueEvent
         pc.writeInt(mIsEvent
                 ? 1
                 : 0);
-        pc.writeInt(mLeagueEventAverage);
+        pc.writeFloat(mLeagueEventAverage);
         pc.writeInt(mLeagueBaseAverage);
         pc.writeInt(mLeagueBaseGames);
         pc.writeByte(mLeagueEventNumberOfGames);

@@ -168,6 +168,10 @@ public class LeagueEventFragment
             mainActivity.setActionBarTitle(R.string.title_fragment_league_event, true);
             mainActivity.setFloatingActionButtonState(R.drawable.ic_add_black_24dp, 0);
             mainActivity.setDrawerState(false);
+
+            boolean averageAsDecimal = PreferenceManager.getDefaultSharedPreferences(getContext())
+                    .getBoolean(Constants.KEY_AVERAGE_AS_DECIMAL, false);
+            mAdapterLeagueEvents.setDisplayAverageAsDecimal(averageAsDecimal);
         }
 
         new LoadLeaguesEventsTask(this).execute();
@@ -251,7 +255,7 @@ public class LeagueEventFragment
         final LeagueEvent updatedLeagueEvent = new LeagueEvent(leagueEventToChange.getId(),
                 name,
                 leagueEventToChange.isEvent(),
-                (short) (leagueEventToChange.getAverage() * incorrectAverage),
+                leagueEventToChange.getAverage() * incorrectAverage,
                 baseAverage,
                 baseGames,
                 leagueEventToChange.getLeagueEventNumberOfGames());
@@ -791,7 +795,7 @@ public class LeagueEventFragment
                         boolean isEvent = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_IS_EVENT)) == 1;
                         short baseAverage = cursor.getShort(cursor.getColumnIndex(LeagueEntry.COLUMN_BASE_AVERAGE));
                         int baseGames = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_BASE_GAMES));
-                        short average = Score.getAdjustedAverage(leagueTotal,
+                        float average = Score.getAdjustedAverage(leagueTotal,
                                 leagueNumberOfGames,
                                 baseAverage,
                                 baseGames);
@@ -827,7 +831,7 @@ public class LeagueEventFragment
                 boolean isEvent = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_IS_EVENT)) == 1;
                 short baseAverage = cursor.getShort(cursor.getColumnIndex(LeagueEntry.COLUMN_BASE_AVERAGE));
                 int baseGames = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_BASE_GAMES));
-                short average = Score.getAdjustedAverage(leagueTotal, leagueNumberOfGames, baseAverage, baseGames);
+                float average = Score.getAdjustedAverage(leagueTotal, leagueNumberOfGames, baseAverage, baseGames);
 
                 LeagueEvent leagueEvent = new LeagueEvent(cursor.getLong(cursor.getColumnIndex("lid")),
                         cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_LEAGUE_NAME)),

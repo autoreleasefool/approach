@@ -121,7 +121,7 @@
 
     <!-- Placeholder text -->
     <string name="text_click_to_delete">Click to delete %1$s</string>
-    <string name="text_average_placeholder">Avg: %1$d</string>
+    <string name="text_average_placeholder">Avg: %1$s</string>
     <string name="text_until_auto_advance_placeholder">%1$d seconds until auto advance</string>
     <string name="text_game_placeholder">Game %1$d</string>
     <string name="text_max_games_placeholder">The number of games must be between 1 and %1$d.</string>

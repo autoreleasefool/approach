@@ -1,6 +1,13 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="pref_average_as_decimal"
+        android:summaryOff="@string/pref_average_as_decimal_summaryOff"
+        android:summaryOn="@string/pref_average_as_decimal_summaryOn"
+        android:title="@string/pref_average_as_decimal_title" />
+
+    <CheckBoxPreference
         android:defaultValue="true"
         android:key="pref_include_events"
         android:summaryOff="@string/pref_include_events_summaryOff"

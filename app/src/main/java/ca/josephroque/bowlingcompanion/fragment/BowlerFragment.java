@@ -192,6 +192,10 @@ public class BowlerFragment
             mRecentLeagueId = prefs.getLong(Constants.PREF_RECENT_LEAGUE_ID, -1);
             mQuickBowlerId = prefs.getLong(Constants.PREF_QUICK_BOWLER_ID, -1);
             mQuickLeagueId = prefs.getLong(Constants.PREF_QUICK_LEAGUE_ID, -1);
+
+            boolean averageAsDecimal = PreferenceManager.getDefaultSharedPreferences(getContext())
+                    .getBoolean(Constants.KEY_AVERAGE_AS_DECIMAL, false);
+            mAdapterBowlers.setDisplayAverageAsDecimal(averageAsDecimal);
         }
 
         // Creates AsyncTask to load data from database
@@ -742,9 +746,11 @@ public class BowlerFragment
                     int totalCount = cursor.getInt(cursor.getColumnIndex("totalCount"));
                     int totalBaseSum = cursor.getInt(cursor.getColumnIndex("totalBaseSum"));
                     int totalBaseGames = cursor.getInt(cursor.getColumnIndex("totalBaseGames"));
-                    short bowlerAverage = (short) ((totalCount + totalBaseGames > 0)
-                            ? (totalSum + totalBaseSum) / (totalCount + totalBaseGames)
+                    Log.d(TAG, "Sum: " + totalSum + " Count: " + totalCount + " BaseSum: " + totalBaseSum + " BaseGames: " + totalBaseGames);
+                    float bowlerAverage = ((totalCount + totalBaseGames > 0)
+                            ? (totalSum + totalBaseSum) / (float) (totalCount + totalBaseGames)
                             : 0);
+                    Log.d(TAG, "Average2: " + bowlerAverage);
                     Bowler bowler = new Bowler(cursor.getLong(cursor.getColumnIndex("bid")),
                             cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_BOWLER_NAME)),
                             bowlerAverage);

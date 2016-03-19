@@ -35,6 +35,9 @@
 
     <!-- Stats Settings -->
     <string name="pref_header_stats">Statistics</string>
+    <string name="pref_average_as_decimal_title">Show average to 1 decimal?</string>
+    <string name="pref_average_as_decimal_summaryOn">Average will have up to 1 decimal</string>
+    <string name="pref_average_as_decimal_summaryOff">Average will be rounded</string>
     <string name="pref_include_events_title">Include events in stats?</string>
     <string name="pref_include_events_summaryOn">Events will be included</string>
     <string name="pref_include_events_summaryOff">Events will NOT be included</string>

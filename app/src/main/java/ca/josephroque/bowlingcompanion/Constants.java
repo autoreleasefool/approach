@@ -53,6 +53,8 @@ public final class Constants {
     public static final String KEY_HIGHLIGHT_MATCH_RESULTS = "pref_highlight_match_results";
     /** Identifier for preference to display legal attribution from Open Source Software. */
     public static final String KEY_ATTRIBUTION = "pref_attribution";
+    /** Identifier for preference to show averages with up to 1 decimal place of accuracy. */
+    public static final String KEY_AVERAGE_AS_DECIMAL = "pref_average_as_decimal";
 
     // PREFERENCES
     /** Identifier for SharedPreferences of app. */

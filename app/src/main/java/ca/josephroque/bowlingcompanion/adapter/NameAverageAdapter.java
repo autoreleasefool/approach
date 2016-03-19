@@ -56,6 +56,9 @@ public class NameAverageAdapter<T extends NameAverageId>
     /** Type of data being represented by this object. */
     private final byte mDataType;
 
+    /** Indicates how averages will be formatted - as an integer or to a single decimal place. */
+    private boolean mAverageAsDecimal = false;
+
     /**
      * Subclass of RecyclerView.ViewHolder to manage view which will display an image, and text to the user.
      */
@@ -177,9 +180,12 @@ public class NameAverageAdapter<T extends NameAverageId>
                     default:
                         throw new IllegalStateException("invalid mDataType: " + mDataType);
                 }
+
+                String average = DisplayUtils.getFormattedAverage(
+                        Math.abs(mListNamesAndAverages.get(position).getAverage()), mAverageAsDecimal);
+
                 holder.mTextViewAverage.setText(String.format(holder.mTextViewAverage.getResources()
-                                .getString(R.string.text_average_placeholder),
-                        Math.abs(mListNamesAndAverages.get(position).getAverage())));
+                                .getString(R.string.text_average_placeholder), average));
                 if (mListNamesAndAverages.get(position).getAverage() < 0)
                     holder.mTextViewAverage.setTextColor(ContextCompat.getColor(holder.mTextViewAverage.getContext(),
                             R.color.invalid_average));
@@ -261,6 +267,20 @@ public class NameAverageAdapter<T extends NameAverageId>
         return (mListNamesAndAverages.get(position).wasDeleted())
                 ? VIEWTYPE_DELETED
                 : VIEWTYPE_ACTIVE;
+    }
+
+    /**
+     * Updates the adapter to format the averages to either one decimal place or none.
+     *
+     * @param averageAsDecimal {@code true} to show up to one decimal place, {@code false} otherwise
+     */
+    public void setDisplayAverageAsDecimal(boolean averageAsDecimal) {
+        if (averageAsDecimal == mAverageAsDecimal)
+            // Nothing changed
+            return;
+
+        mAverageAsDecimal = averageAsDecimal;
+        notifyDataSetChanged();
     }
 
     /**

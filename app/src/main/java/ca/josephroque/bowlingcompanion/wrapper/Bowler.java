@@ -14,7 +14,7 @@ public class Bowler
     /** Unique id of the bowler. */
     private long mBowlerId;
     /** Average of the bowler. */
-    private final short mBowlerAverage;
+    private final float mBowlerAverage;
     /** Indicates if this bowler has been deleted. */
     private boolean mIsDeleted;
 
@@ -25,7 +25,7 @@ public class Bowler
      * @param name name of the bowler
      * @param average average of the bowler
      */
-    public Bowler(long id, String name, short average) {
+    public Bowler(long id, String name, float average) {
         this.mBowlerId = id;
         this.mBowlerName = name;
         this.mBowlerAverage = average;
@@ -39,7 +39,7 @@ public class Bowler
     public Bowler(Parcel pc) {
         mBowlerId = pc.readLong();
         mBowlerName = pc.readString();
-        mBowlerAverage = (short) pc.readInt();
+        mBowlerAverage = pc.readFloat();
     }
 
 
@@ -75,7 +75,7 @@ public class Bowler
      *
      * @return the value of {@code mBowlerAverage}
      */
-    public short getBowlerAverage() {
+    public float getBowlerAverage() {
         return mBowlerAverage;
     }
 
@@ -85,7 +85,7 @@ public class Bowler
     }
 
     @Override
-    public short getAverage() {
+    public float getAverage() {
         return getBowlerAverage();
     }
 
@@ -98,7 +98,7 @@ public class Bowler
     public void writeToParcel(Parcel pc, int flags) {
         pc.writeLong(mBowlerId);
         pc.writeString(mBowlerName);
-        pc.writeInt(mBowlerAverage);
+        pc.writeFloat(mBowlerAverage);
     }
 
     @Override

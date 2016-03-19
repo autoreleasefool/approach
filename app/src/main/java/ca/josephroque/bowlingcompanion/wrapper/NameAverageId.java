@@ -18,7 +18,7 @@ public interface NameAverageId
      *
      * @return an average for this object
      */
-    short getAverage();
+    float getAverage();
 
     /**
      * Gets the id for this object.
