@@ -77,6 +77,9 @@
     <string name="pref_enable_strike_highlights_title">Highlight strikes/spares</string>
     <string name="pref_enable_strike_highlights_summaryOn">Mark highlights are enabled</string>
     <string name="pref_enable_strike_highlights_summaryOff">Mark highlights are disabled</string>
+    <string name="pref_enable_auto_lock_title">Auto lock games when done?</string>
+    <string name="pref_enable_auto_lock_summaryOn">Games will auto lock</string>
+    <string name="pref_enable_auto_lock_summaryOff">Games will not auto lock</string>
     <string name="pref_enable_auto_advance_title">Auto advance frame</string>
     <string name="pref_enable_auto_advance_summaryOn">Frame will auto advance after an interval of inactivity</string>
     <string name="pref_enable_auto_advance_summaryOff">Frame will not auto advance</string>
