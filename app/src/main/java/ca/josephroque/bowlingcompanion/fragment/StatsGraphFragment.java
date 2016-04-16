@@ -23,6 +23,7 @@ import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.formatter.DefaultValueFormatter;
 import com.github.mikephil.charting.formatter.DefaultYAxisValueFormatter;
 import com.github.mikephil.charting.formatter.ValueFormatter;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
 import java.lang.ref.WeakReference;
 import java.text.DateFormat;
@@ -388,7 +389,7 @@ public class StatsGraphFragment
             if (!cursor.isClosed())
                 cursor.close();
 
-            List<LineDataSet> datasets = new ArrayList<>();
+            List<ILineDataSet> datasets = new ArrayList<>();
             ValueFormatter valueFormatter = new DefaultValueFormatter(0);
 
             LineDataSet datasetSuccess = new LineDataSet(listSuccessEntries,
