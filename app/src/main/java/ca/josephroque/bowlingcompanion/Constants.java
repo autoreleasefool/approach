@@ -55,6 +55,8 @@ public final class Constants {
     public static final String KEY_ATTRIBUTION = "pref_attribution";
     /** Identifier for preference to show averages with up to 1 decimal place of accuracy. */
     public static final String KEY_AVERAGE_AS_DECIMAL = "pref_average_as_decimal";
+    /** Identifier for preference to show current app version. */
+    public static final String KEY_VERSION_NAME = "pref_version_name";
 
     // PREFERENCES
     /** Identifier for SharedPreferences of app. */

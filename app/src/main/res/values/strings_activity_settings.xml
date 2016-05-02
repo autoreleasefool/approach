@@ -20,6 +20,8 @@
     <string name="pref_comment_suggestion_summary">Have a request or an idea for a feature?</string>
     <string name="pref_attribution_title">Attributions</string>
     <string name="pref_attribution_summary">Attributions for Open Source Software</string>
+    <string name="pref_version_placeholder">Version unknown</string>
+    <string name="pref_version_name">App Version</string>
 
     <!-- Quick Settings -->
     <string name="pref_header_quick">Quick series</string>

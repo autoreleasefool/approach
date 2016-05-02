@@ -43,4 +43,9 @@
         android:summary="@string/pref_attribution_summary"
         android:title="@string/pref_attribution_title" />
 
+    <Preference
+        android:key="pref_version_name"
+        android:summary="@string/pref_version_placeholder"
+        android:title="@string/pref_version_name" />
+
 </PreferenceScreen>
