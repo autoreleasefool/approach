@@ -116,9 +116,9 @@ public class MainActivity
     /** Id of current game being used in fragments. */
     private long mGameId = -1;
     /** Number of games in current league/event in fragments. */
-    private byte mDefaultNumberOfGames = -1;
+    private byte mDefaultNumberOfGames;
     /** Number of games in a newly created series. */
-    private byte mNumberOfGamesForSeries = -1;
+    private byte mNumberOfGamesForSeries;
     /** Name of current bowler being used in fragments. */
     private String mBowlerName;
     /** Name of current league being used in fragments. */
@@ -245,6 +245,9 @@ public class MainActivity
                     .edit()
                     .remove(Constants.PREF_FACEBOOK_CLOSED)
                     .apply();
+
+            mDefaultNumberOfGames = -1;
+            mNumberOfGamesForSeries = -1;
         } else {
             // Loads member variables from bundle
             mBowlerId = savedInstanceState.getLong(Constants.EXTRA_ID_BOWLER, -1);
@@ -255,10 +258,8 @@ public class MainActivity
             mBowlerName = savedInstanceState.getString(Constants.EXTRA_NAME_BOWLER);
             mLeagueName = savedInstanceState.getString(Constants.EXTRA_NAME_LEAGUE);
             mSeriesDate = savedInstanceState.getString(Constants.EXTRA_NAME_SERIES);
-            mDefaultNumberOfGames = savedInstanceState.getByte(Constants.EXTRA_NUMBER_OF_GAMES,
-                    (byte) -1);
-            mNumberOfGamesForSeries = savedInstanceState.getByte(Constants.EXTRA_GAMES_IN_SERIES,
-                    (byte) -1);
+            mDefaultNumberOfGames = savedInstanceState.getByte(Constants.EXTRA_NUMBER_OF_GAMES, (byte) -1);
+            mNumberOfGamesForSeries = savedInstanceState.getByte(Constants.EXTRA_GAMES_IN_SERIES, (byte) -1);
             mIsEventMode = savedInstanceState.getBoolean(Constants.EXTRA_EVENT_MODE);
             mIsQuickSeries = savedInstanceState.getBoolean(Constants.EXTRA_QUICK_SERIES);
             int navCurrentGameNumber =
