@@ -271,8 +271,8 @@ public class LeagueEventFragment
             // User has provided a name which is already in use for a league or event
             validInput = false;
             invalidInputMessage = R.string.dialog_name_exists;
-        } else if (!name.matches(Constants.REGEX_LEAGUE_EVENT_NAME)) {
-            // Name is not made up of letters, numbers and spaces
+        } else if (!name.matches(Constants.REGEX_NAME)) {
+            // Name is not made up of valid characters
             validInput = false;
             invalidInputMessage = R.string.dialog_name_letters_spaces_numbers;
         } else if (baseAverage > 0 && (baseGames < 1 || baseGames > Constants.MAXIMUM_BASE_GAMES)) {
@@ -357,8 +357,8 @@ public class LeagueEventFragment
             // User has provided a name which is already in use for a league or event
             validInput = false;
             invalidInputMessageVal = R.string.dialog_name_exists;
-        } else if (!leagueEventName.matches(Constants.REGEX_LEAGUE_EVENT_NAME)) {
-            // Name is not made up of letters, numbers and spaces
+        } else if (!leagueEventName.matches(Constants.REGEX_NAME)) {
+            // Name is not made up of valid characters
             validInput = false;
             invalidInputMessageVal = R.string.dialog_name_letters_spaces_numbers;
         } else if (baseAverage > 0 && (baseGames < 1 || baseGames > Constants.MAXIMUM_BASE_GAMES)) {
