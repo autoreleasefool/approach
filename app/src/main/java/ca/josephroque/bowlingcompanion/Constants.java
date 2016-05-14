@@ -129,10 +129,8 @@ public final class Constants {
 
     // REGULAR EXPRESSIONS
     /** Regular Expression to match regular names. */
-    public static final String REGEX_NAME = "^[A-Za-z]+[ A-Za-z]*[A-Za-z]*$";
-    /** Regular Expression to match regular names with numbers. */
-    public static final String REGEX_LEAGUE_EVENT_NAME =
-            "^[A-Za-z0-9]+[ A-Za-z0-9'!@#$%^&*()_+:\"?/\\~-]*[A-Za-z0-9'!@#$%^&*()_+:\"?/\\~-]*$";
+    public static final String REGEX_NAME
+            = "^[A-Za-z0-9]+[ A-Za-z0-9'!@#$%^&*()_+:\"?/\\~-]*[A-Za-z0-9'!@#$%^&*()_+:\"?/\\~-]*$";
 
     // GAMES
     /** Number of frames in a game. */
