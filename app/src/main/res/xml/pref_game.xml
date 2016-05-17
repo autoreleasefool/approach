@@ -2,6 +2,13 @@
 
     <CheckBoxPreference
         android:defaultValue="true"
+        android:key="pref_prefer_uppercase"
+        android:summaryOff="@string/pref_prefer_uppercase_summaryOff"
+        android:summaryOn="@string/pref_prefer_uppercase_summaryOn"
+        android:title="@string/pref_prefer_uppercase_title" />
+
+    <CheckBoxPreference
+        android:defaultValue="true"
         android:key="pref_enable_fab"
         android:summaryOff="@string/pref_enable_fab_summaryOff"
         android:summaryOn="@string/pref_enable_fab_summaryOn"

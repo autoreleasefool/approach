@@ -57,6 +57,8 @@ public final class Constants {
     public static final String KEY_AVERAGE_AS_DECIMAL = "pref_average_as_decimal";
     /** Identifier for preference to show current app version. */
     public static final String KEY_VERSION_NAME = "pref_version_name";
+    /** Identifier for preference to use uppercase mark identifiers in games instead of upper/lowercase. */
+    public static final String KEY_PREFER_UPPERCASE_MARKS = "pref_prefer_uppercase";
 
     // PREFERENCES
     /** Identifier for SharedPreferences of app. */
