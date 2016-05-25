@@ -22,7 +22,7 @@ public class LeagueEvent
     /** Initial number of games played. */
     private final int mLeagueBaseGames;
     /** Number of games in the league / event. */
-    private final byte mLeagueEventNumberOfGames;
+    private final int mLeagueEventNumberOfGames;
     /** Indicates if this league / event has been deleted. */
     private boolean mIsDeleted;
 
@@ -43,7 +43,7 @@ public class LeagueEvent
                        float average,
                        short baseAverage,
                        int baseGames,
-                       byte numberOfGames) {
+                       int numberOfGames) {
         this.mLeagueEventId = id;
         this.mLeagueEventName = name;
         this.mIsEvent = isEvent;
@@ -65,7 +65,7 @@ public class LeagueEvent
         this.mLeagueEventAverage = pc.readFloat();
         this.mLeagueBaseAverage = (short) pc.readInt();
         this.mLeagueBaseGames = pc.readInt();
-        this.mLeagueEventNumberOfGames = pc.readByte();
+        this.mLeagueEventNumberOfGames = pc.readInt();
     }
 
     /**
@@ -124,7 +124,7 @@ public class LeagueEvent
      *
      * @return the value of {@code mLeagueEventNumberOfGames}
      */
-    public byte getLeagueEventNumberOfGames() {
+    public int getLeagueEventNumberOfGames() {
         return mLeagueEventNumberOfGames;
     }
 
@@ -171,7 +171,7 @@ public class LeagueEvent
         pc.writeFloat(mLeagueEventAverage);
         pc.writeInt(mLeagueBaseAverage);
         pc.writeInt(mLeagueBaseGames);
-        pc.writeByte(mLeagueEventNumberOfGames);
+        pc.writeInt(mLeagueEventNumberOfGames);
     }
 
     @Override

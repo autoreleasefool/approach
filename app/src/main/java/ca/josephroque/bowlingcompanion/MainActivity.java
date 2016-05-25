@@ -116,9 +116,9 @@ public class MainActivity
     /** Id of current game being used in fragments. */
     private long mGameId = -1;
     /** Number of games in current league/event in fragments. */
-    private byte mDefaultNumberOfGames;
+    private int mDefaultNumberOfGames;
     /** Number of games in a newly created series. */
-    private byte mNumberOfGamesForSeries;
+    private int mNumberOfGamesForSeries;
     /** Name of current bowler being used in fragments. */
     private String mBowlerName;
     /** Name of current league being used in fragments. */
@@ -126,7 +126,7 @@ public class MainActivity
     /** Date of current series being used in fragments. */
     private String mSeriesDate;
     /** Game number in series. */
-    private byte mGameNumber;
+    private int mGameNumber;
     /** Indicates if the fragments are in event mode or not. */
     private boolean mIsEventMode;
     /** Indicates if a quick series is being created. */
@@ -254,12 +254,12 @@ public class MainActivity
             mLeagueId = savedInstanceState.getLong(Constants.EXTRA_ID_LEAGUE, -1);
             mSeriesId = savedInstanceState.getLong(Constants.EXTRA_ID_SERIES, -1);
             mGameId = savedInstanceState.getLong(Constants.EXTRA_ID_GAME, -1);
-            mGameNumber = savedInstanceState.getByte(Constants.EXTRA_GAME_NUMBER, (byte) -1);
+            mGameNumber = savedInstanceState.getInt(Constants.EXTRA_GAME_NUMBER, -1);
             mBowlerName = savedInstanceState.getString(Constants.EXTRA_NAME_BOWLER);
             mLeagueName = savedInstanceState.getString(Constants.EXTRA_NAME_LEAGUE);
             mSeriesDate = savedInstanceState.getString(Constants.EXTRA_NAME_SERIES);
-            mDefaultNumberOfGames = savedInstanceState.getByte(Constants.EXTRA_NUMBER_OF_GAMES, (byte) -1);
-            mNumberOfGamesForSeries = savedInstanceState.getByte(Constants.EXTRA_GAMES_IN_SERIES, (byte) -1);
+            mDefaultNumberOfGames = savedInstanceState.getInt(Constants.EXTRA_NUMBER_OF_GAMES, -1);
+            mNumberOfGamesForSeries = savedInstanceState.getInt(Constants.EXTRA_GAMES_IN_SERIES, -1);
             mIsEventMode = savedInstanceState.getBoolean(Constants.EXTRA_EVENT_MODE);
             mIsQuickSeries = savedInstanceState.getBoolean(Constants.EXTRA_QUICK_SERIES);
             int navCurrentGameNumber =
@@ -296,9 +296,9 @@ public class MainActivity
         outState.putString(Constants.EXTRA_NAME_BOWLER, mBowlerName);
         outState.putString(Constants.EXTRA_NAME_LEAGUE, mLeagueName);
         outState.putString(Constants.EXTRA_NAME_SERIES, mSeriesDate);
-        outState.putByte(Constants.EXTRA_NUMBER_OF_GAMES, mDefaultNumberOfGames);
-        outState.putByte(Constants.EXTRA_GAMES_IN_SERIES, mNumberOfGamesForSeries);
-        outState.putByte(Constants.EXTRA_GAME_NUMBER, mGameNumber);
+        outState.putInt(Constants.EXTRA_NUMBER_OF_GAMES, mDefaultNumberOfGames);
+        outState.putInt(Constants.EXTRA_GAMES_IN_SERIES, mNumberOfGamesForSeries);
+        outState.putInt(Constants.EXTRA_GAME_NUMBER, mGameNumber);
         outState.putBoolean(Constants.EXTRA_QUICK_SERIES, mIsQuickSeries);
         outState.putBoolean(Constants.EXTRA_EVENT_MODE, mIsEventMode);
         outState.putInt(Constants.EXTRA_NAV_CURRENT_GAME, mDrawerAdapter.getCurrentItem());
@@ -753,7 +753,7 @@ public class MainActivity
     }
 
     @Override
-    public void onGameChanged(final byte newGameNumber) {
+    public void onGameChanged(final int newGameNumber) {
         int offset = 0;
         while (mListDrawerOptions.size() > offset
                 && !mListDrawerOptions.get(offset).matches("\\w+ \\d+"))
@@ -851,7 +851,6 @@ public class MainActivity
 
     @Override
     public void resetAutoAdvanceTimer() {
-        Log.d(TAG, "Auto advancing");
         if (!mAutoAdvanceEnabled)
             return;
 
@@ -1122,7 +1121,7 @@ public class MainActivity
      *
      * @return value of mDefaultNumberOfGames
      */
-    public byte getDefaultNumberOfGames() {
+    public int getDefaultNumberOfGames() {
         return mDefaultNumberOfGames;
     }
 
@@ -1131,7 +1130,7 @@ public class MainActivity
      *
      * @return value of mNumberOfGamesForSeries
      */
-    public byte getNumberOfGamesForSeries() {
+    public int getNumberOfGamesForSeries() {
         return mNumberOfGamesForSeries;
     }
 
@@ -1167,7 +1166,7 @@ public class MainActivity
      *
      * @return value of mGameNumber
      */
-    public byte getGameNumber() {
+    public int getGameNumber() {
         return mGameNumber;
     }
 

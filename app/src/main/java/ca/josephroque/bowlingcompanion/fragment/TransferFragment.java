@@ -82,7 +82,7 @@ public final class TransferFragment
     private CardView mLastViewAdded = null;
 
     /** Indicates if the fragment is currently showing the import, export, or restore/delete options. */
-    private byte mCurrentCardView = -1;
+    private int mCurrentCardView = -1;
     /** Number of times importing data failed. */
     private int mImportFailures = 0;
     /** Number of times exporting data failed. */

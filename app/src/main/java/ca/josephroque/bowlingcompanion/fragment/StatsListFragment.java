@@ -317,7 +317,7 @@ public class StatsListFragment
             headers.add("Average by Game");
             namesAndValues.add(new ArrayList<Pair<String, String>>());
             mStatsGameAverage = 4;
-            final byte numberOfGames = (statsToLoad >= StatUtils.LOADING_LEAGUE_STATS
+            final int numberOfGames = (statsToLoad >= StatUtils.LOADING_LEAGUE_STATS
                     ? ((mainActivity.getLeagueName().equals(Constants.NAME_OPEN_LEAGUE))
                     ? 5
                     : mainActivity.getDefaultNumberOfGames())
@@ -470,7 +470,7 @@ public class StatsListFragment
              * are affected as each frame is analyzed
              */
 
-            final byte numberOfGames = (toLoad >= StatUtils.LOADING_LEAGUE_STATS
+            final int numberOfGames = (toLoad >= StatUtils.LOADING_LEAGUE_STATS
                     ? ((mainActivity.getLeagueName().equals(Constants.NAME_OPEN_LEAGUE))
                     ? 5
                     : mainActivity.getDefaultNumberOfGames())

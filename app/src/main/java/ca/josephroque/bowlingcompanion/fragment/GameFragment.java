@@ -148,7 +148,7 @@ public class GameFragment
     private int mColorHighlight;
 
     /** The current game being edited. */
-    private byte mCurrentGame = 0;
+    private int mCurrentGame = 0;
     /** The current frame being edited. */
     private byte mCurrentFrame = 0;
     /** The current ball being edited. */
@@ -307,7 +307,7 @@ public class GameFragment
 
         // Loads member variables from saved instance state, if one exists
         if (savedInstanceState != null) {
-            mCurrentGame = savedInstanceState.getByte(Constants.EXTRA_CURRENT_GAME);
+            mCurrentGame = savedInstanceState.getInt(Constants.EXTRA_CURRENT_GAME);
             mGameIds = savedInstanceState.getLongArray(Constants.EXTRA_ARRAY_GAME_IDS);
             mFrameIds = savedInstanceState.getLongArray(Constants.EXTRA_ARRAY_FRAME_IDS);
             mGameLocked = savedInstanceState.getBooleanArray(Constants.EXTRA_ARRAY_GAME_LOCKED);
@@ -603,7 +603,7 @@ public class GameFragment
         outState.putLongArray(Constants.EXTRA_ARRAY_FRAME_IDS, mFrameIds);
         outState.putBooleanArray(Constants.EXTRA_ARRAY_GAME_LOCKED, mGameLocked);
         outState.putBooleanArray(Constants.EXTRA_ARRAY_MANUAL_SCORE_SET, mManualScoreSet);
-        outState.putByte(Constants.EXTRA_CURRENT_GAME, mCurrentGame);
+        outState.putInt(Constants.EXTRA_CURRENT_GAME, mCurrentGame);
     }
 
     @Override
@@ -2043,7 +2043,7 @@ public class GameFragment
      *
      * @param newGame index of id in mGameIds to load
      */
-    private void loadGameFromDatabase(final byte newGame) {
+    private void loadGameFromDatabase(final int newGame) {
         clearFrameColor();
         new Thread(new Runnable() {
             @Override
@@ -2176,7 +2176,7 @@ public class GameFragment
     private void loadInitialScores() {
         MainActivity.waitForSaveThreads(new WeakReference<>((MainActivity) getActivity()));
 
-        byte numberOfGames = ((MainActivity) getActivity()).getNumberOfGamesForSeries();
+        int numberOfGames = ((MainActivity) getActivity()).getNumberOfGamesForSeries();
         SQLiteDatabase database = DatabaseHelper.getInstance(getContext()).getReadableDatabase();
         StringBuilder whereBuilder = new StringBuilder(GameEntry._ID + "=?");
         String[] whereArgs = new String[numberOfGames];
@@ -2221,7 +2221,7 @@ public class GameFragment
      *
      * @return value of mCurrentGame
      */
-    public byte getCurrentGame() {
+    public int getCurrentGame() {
         return mCurrentGame;
     }
 
@@ -2248,7 +2248,7 @@ public class GameFragment
          *
          * @param newGameNumber number of the new game, starting at index 0
          */
-        void onGameChanged(byte newGameNumber);
+        void onGameChanged(int newGameNumber);
 
         /**
          * Sets auto advance values in activity.

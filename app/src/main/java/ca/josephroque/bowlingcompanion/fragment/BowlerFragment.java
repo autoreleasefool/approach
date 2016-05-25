@@ -83,7 +83,7 @@ public class BowlerFragment
     /** Id from 'league' database which represents the most recently edited league. */
     private long mRecentLeagueId = -1;
     /** Number of games in the most recently edited league. */
-    private byte mRecentNumberOfGames = -1;
+    private int mRecentNumberOfGames = -1;
     /** Name of most recently edited bowler. */
     private String mRecentBowlerName;
     /** Name of most recently edited league. */
@@ -94,7 +94,7 @@ public class BowlerFragment
     /** Id from 'league' database which represents the preferred league for quick series. */
     private long mQuickLeagueId = -1;
     /** Number of games in the preferred league. */
-    private byte mQuickNumberOfGames = -1;
+    private int mQuickNumberOfGames = -1;
     /** Name of preferred bowler. */
     private String mQuickBowlerName;
     /** Name of preferred league. */
