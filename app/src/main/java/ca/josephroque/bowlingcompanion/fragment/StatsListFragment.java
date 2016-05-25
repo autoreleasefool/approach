@@ -70,6 +70,11 @@ public class StatsListFragment
     /** Indicates the type of stats which will be loaded. */
     private byte mStatsToLoad = -1;
 
+    /** Indicates if Headpin + 2 should be counted as Headpins. */
+    private boolean mCountH2 = false;
+    /** Indicates if Split + 2 should be counted as Splits. */
+    private boolean mCountS2 = false;
+
     /** List of group headers. */
     private List<String> mListStatHeaders;
     /** List of list of map entries which hold a name and a value, for each group. */
@@ -152,6 +157,11 @@ public class StatsListFragment
         if (getActivity() != null) {
             MainActivity mainActivity = (MainActivity) getActivity();
             mainActivity.setDrawerState(false);
+
+            // Check if the user has opted to count headpins + 2 as headpins or not, as well as splits + 2 as splits
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mainActivity);
+            mCountH2 = preferences.getBoolean(Constants.KEY_COUNT_H2_AS_H, false);
+            mCountS2 = preferences.getBoolean(Constants.KEY_COUNT_S2_AS_S, false);
 
             // Checks what type of stats should be displayed, depending
             // on what data is available in the parent activity at the time
@@ -541,7 +551,7 @@ public class StatsListFragment
 
                     if (frameNumber == Constants.NUMBER_OF_FRAMES) {
                         totalShotsAtMiddle++;
-                        int ballValue = fragment.getFirstBallValue(pinState[0]);
+                        int ballValue = StatUtils.getFirstBallValue(pinState[0], fragment.mCountH2, fragment.mCountS2);
                         if (ballValue != -1)
                             statValues[fragment.mStatsGeneral][StatUtils.STAT_MIDDLE_HIT]++;
                         else {
@@ -567,7 +577,7 @@ public class StatsListFragment
                             }
                         } else {
                             totalShotsAtMiddle++;
-                            ballValue = fragment.getFirstBallValue(pinState[1]);
+                            ballValue = StatUtils.getFirstBallValue(pinState[1], fragment.mCountH2, fragment.mCountS2);
                             if (ballValue != -1)
                                 statValues[fragment.mStatsGeneral][StatUtils.STAT_MIDDLE_HIT]++;
                             else {
@@ -591,7 +601,9 @@ public class StatsListFragment
                                 }
                             } else {
                                 totalShotsAtMiddle++;
-                                ballValue = fragment.getFirstBallValue(pinState[2]);
+                                ballValue = StatUtils.getFirstBallValue(pinState[2],
+                                        fragment.mCountH2,
+                                        fragment.mCountS2);
                                 if (ballValue != -1)
                                     statValues[fragment.mStatsGeneral][StatUtils.STAT_MIDDLE_HIT]++;
                                 else {
@@ -610,7 +622,7 @@ public class StatsListFragment
                         }
                     } else {
                         totalShotsAtMiddle++;
-                        int ballValue = fragment.getFirstBallValue(pinState[0]);
+                        int ballValue = StatUtils.getFirstBallValue(pinState[0], fragment.mCountH2, fragment.mCountS2);
                         if (ballValue != -1)
                             statValues[fragment.mStatsGeneral][StatUtils.STAT_MIDDLE_HIT]++;
                         else {
@@ -814,55 +826,6 @@ public class StatsListFragment
     }
 
     /**
-     * Returns the indicated state of the pins after a ball was thrown.
-     *
-     * @param firstBall the ball thrown
-     * @return the state of the pins after a ball was thrown
-     */
-    private int getFirstBallValue(boolean[] firstBall) {
-        if (!firstBall[2]) {
-            return -1;
-        }
-
-        int numberOfPinsKnockedDown = 0;
-        for (boolean knockedDown : firstBall) {
-            if (knockedDown)
-                numberOfPinsKnockedDown++;
-        }
-
-        if (numberOfPinsKnockedDown == Constants.NUMBER_OF_PINS)
-            return Constants.BALL_VALUE_STRIKE;
-        else if (numberOfPinsKnockedDown == Constants.NUMBER_OF_PINS - 1) {
-            if (!firstBall[Score.LEFT_2_PIN])
-                return Constants.BALL_VALUE_LEFT;
-            else if (!firstBall[Score.RIGHT_2_PIN])
-                return Constants.BALL_VALUE_RIGHT;
-        } else if (numberOfPinsKnockedDown == Constants.NUMBER_OF_PINS - 2) {
-            if (firstBall[Score.LEFT_2_PIN] && firstBall[Score.LEFT_3_PIN])
-                return Constants.BALL_VALUE_LEFT_CHOP;
-            else if (firstBall[Score.RIGHT_2_PIN] && firstBall[Score.RIGHT_3_PIN])
-                return Constants.BALL_VALUE_RIGHT_CHOP;
-            else if (firstBall[Score.LEFT_3_PIN] && firstBall[Score.RIGHT_3_PIN])
-                return Constants.BALL_VALUE_ACE;
-            else if ((firstBall[Score.LEFT_2_PIN] && firstBall[Score.RIGHT_3_PIN])
-                    || (firstBall[Score.LEFT_3_PIN] && firstBall[Score.RIGHT_2_PIN]))
-                return Constants.BALL_VALUE_HEAD_PIN_2_3;
-        } else if (numberOfPinsKnockedDown == 2) {
-            if (firstBall[Score.LEFT_3_PIN])
-                return Constants.BALL_VALUE_LEFT_SPLIT;
-            else if (firstBall[Score.RIGHT_3_PIN])
-                return Constants.BALL_VALUE_RIGHT_SPLIT;
-            else if (firstBall[Score.LEFT_2_PIN] || firstBall[Score.RIGHT_2_PIN])
-                return Constants.BALL_VALUE_HEAD_PIN_2;
-        } else
-            return Constants.BALL_VALUE_HEAD_PIN;
-
-        // Returns a value which indicates the headpin was hit, but no other special ball was thrown
-        //noinspection CheckStyle
-        return -2;
-    }
-
-    /**
      * Counts the total value of pins which were left at the end of a frame on the third ball.
      *
      * @param thirdBall state of the pins after the third ball
@@ -936,8 +899,24 @@ public class StatsListFragment
                 break;
             case Constants.BALL_VALUE_HEAD_PIN:
                 statValues[mStatsFirstBall][StatUtils.STAT_HEAD_PINS + offset]++;
+                break;
             default:
-                // does nothing
+                //                if (mCountH2) {
+                //                    if ((pins[0] || pins[4]) && pins[2]) {
+                //                        statValues[mStatsFirstBall][StatUtils.STAT_HEAD_PINS + offset]++;
+                //                    }
+                //                }
+                //
+                //                if (mCountS2) {
+                //                    if (pins[1] && pins[2] && pins[4]) {
+                //                        statValues[mStatsFirstBall][StatUtils.STAT_LEFT_SPLIT + offset]++;
+                //                        statValues[mStatsFirstBall][StatUtils.STAT_SPLIT + offset]++;
+                //                    } else if (pins[0] && pins[2] && pins[3]) {
+                //                        statValues[mStatsFirstBall][StatUtils.STAT_RIGHT_SPLIT + offset]++;
+                //                        statValues[mStatsFirstBall][StatUtils.STAT_SPLIT + offset]++;
+                //                    }
+                //                }
+                //                break;
         }
     }
 
