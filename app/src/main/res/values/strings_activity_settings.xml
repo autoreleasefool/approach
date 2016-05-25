@@ -40,6 +40,12 @@
     <string name="pref_average_as_decimal_title">Show average to 1 decimal?</string>
     <string name="pref_average_as_decimal_summaryOn">Average will have up to 1 decimal</string>
     <string name="pref_average_as_decimal_summaryOff">Average will be rounded</string>
+    <string name="pref_count_h2_title">Count Headpin + 2 as H in statistics</string>
+    <string name="pref_count_h2_summaryOn">H2 will count as H</string>
+    <string name="pref_count_h2_summaryOff">H2 will NOT count as H</string>
+    <string name="pref_count_s2_title">Count Split + 2 as S in statistics</string>
+    <string name="pref_count_s2_summaryOn">S2 will count as S</string>
+    <string name="pref_count_s2_summaryOff">S2 will NOT count as S</string>
     <string name="pref_include_events_title">Include events in stats?</string>
     <string name="pref_include_events_summaryOn">Events will be included</string>
     <string name="pref_include_events_summaryOff">Events will NOT be included</string>
@@ -48,7 +54,7 @@
     <string name="pref_include_open_summaryOff">Open games will NOT be included</string>
     <string name="pref_highlight_score_title">Game highlights</string>
     <string name="pref_highlight_series_title">Series highlights</string>
-    
+
     <!-- Theme Settings -->
     <string name="pref_header_theme">Interface</string>
     <string name="pref_theme_colors_title">Theme colors</string>
