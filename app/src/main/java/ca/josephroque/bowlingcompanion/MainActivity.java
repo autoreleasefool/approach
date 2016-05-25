@@ -947,52 +947,54 @@ public class MainActivity
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.main_drawer_layout);
         mDrawerRecyclerView = (RecyclerView) findViewById(R.id.main_drawer_list);
-        ViewGroup.LayoutParams layoutParams = mDrawerRecyclerView.getLayoutParams();
-        layoutParams.width = Math.min(displayWidth - toolbarHeight, maxNavigationDrawerWidth);
-        mDrawerRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        if (mDrawerRecyclerView != null && mDrawerLayout != null) {
+            ViewGroup.LayoutParams layoutParams = mDrawerRecyclerView.getLayoutParams();
+            layoutParams.width = Math.min(displayWidth - toolbarHeight, maxNavigationDrawerWidth);
+            mDrawerRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        mListDrawerOptions = new ArrayList<>();
-        mListDrawerOptions.add(NavigationUtils.NAVIGATION_ITEM_HEADER);
-        mListDrawerOptions.add(NavigationUtils.NAVIGATION_ITEM_BOWLERS);
-        mListDrawerOptions.add(NavigationUtils.NAVIGATION_SUBHEADER_GAMES);
-        mListDrawerOptions.add(NavigationUtils.NAVIGATION_SUBHEADER_OTHER);
-        mListDrawerOptions.add(NavigationUtils.NAVIGATION_ITEM_FEEDBACK);
-        mListDrawerOptions.add(NavigationUtils.NAVIGATION_ITEM_HELP);
-        mListDrawerOptions.add(NavigationUtils.NAVIGATION_ITEM_SETTINGS);
+            mListDrawerOptions = new ArrayList<>();
+            mListDrawerOptions.add(NavigationUtils.NAVIGATION_ITEM_HEADER);
+            mListDrawerOptions.add(NavigationUtils.NAVIGATION_ITEM_BOWLERS);
+            mListDrawerOptions.add(NavigationUtils.NAVIGATION_SUBHEADER_GAMES);
+            mListDrawerOptions.add(NavigationUtils.NAVIGATION_SUBHEADER_OTHER);
+            mListDrawerOptions.add(NavigationUtils.NAVIGATION_ITEM_FEEDBACK);
+            mListDrawerOptions.add(NavigationUtils.NAVIGATION_ITEM_HELP);
+            mListDrawerOptions.add(NavigationUtils.NAVIGATION_ITEM_SETTINGS);
 
-        mDrawerAdapter = new NavigationDrawerAdapter(this, mListDrawerOptions);
-        mDrawerAdapter.setPositionToSubheader(NavigationUtils.NAVIGATION_SUBHEADER_GAMES);
-        mDrawerAdapter.setPositionToSubheader(NavigationUtils.NAVIGATION_SUBHEADER_OTHER);
-        mDrawerRecyclerView.setAdapter(mDrawerAdapter);
+            mDrawerAdapter = new NavigationDrawerAdapter(this, mListDrawerOptions);
+            mDrawerAdapter.setPositionToSubheader(NavigationUtils.NAVIGATION_SUBHEADER_GAMES);
+            mDrawerAdapter.setPositionToSubheader(NavigationUtils.NAVIGATION_SUBHEADER_OTHER);
+            mDrawerRecyclerView.setAdapter(mDrawerAdapter);
 
-        mDrawerToggle = new ActionBarDrawerToggle(this,
-                mDrawerLayout,
-                R.string.text_open_drawer,
-                R.string.text_close_drawer) {
+            mDrawerToggle = new ActionBarDrawerToggle(this,
+                    mDrawerLayout,
+                    R.string.text_open_drawer,
+                    R.string.text_close_drawer) {
 
-            /** Called when a drawer has settled in a completely closed state. */
-            @Override
-            public void onDrawerClosed(View view) {
-                super.onDrawerClosed(view);
-                setActionBarTitle(mTitle);
-                invalidateOptionsMenu();
-            }
+                /** Called when a drawer has settled in a completely closed state. */
+                @Override
+                public void onDrawerClosed(View view) {
+                    super.onDrawerClosed(view);
+                    setActionBarTitle(mTitle);
+                    invalidateOptionsMenu();
+                }
 
-            /** Called when a drawer has settled in a completely open state. */
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                setActionBarTitle(mDrawerTitle, false);
-                invalidateOptionsMenu();
-            }
+                /** Called when a drawer has settled in a completely open state. */
+                @Override
+                public void onDrawerOpened(View drawerView) {
+                    super.onDrawerOpened(drawerView);
+                    setActionBarTitle(mDrawerTitle, false);
+                    invalidateOptionsMenu();
+                }
 
-            @Override
-            public void onDrawerSlide(View drawerView, float slideOffset) {
-                super.onDrawerSlide(drawerView, slideOffset);
-                NavigationUtils.setDrawerOffset(slideOffset);
-            }
-        };
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
+                @Override
+                public void onDrawerSlide(View drawerView, float slideOffset) {
+                    super.onDrawerSlide(drawerView, slideOffset);
+                    NavigationUtils.setDrawerOffset(slideOffset);
+                }
+            };
+            mDrawerLayout.addDrawerListener(mDrawerToggle);
+        }
     }
 
     /**
