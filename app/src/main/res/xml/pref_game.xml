@@ -12,36 +12,29 @@
         android:key="pref_enable_fab"
         android:summaryOff="@string/pref_enable_fab_summaryOff"
         android:summaryOn="@string/pref_enable_fab_summaryOn"
-        android:title="@string/pref_enable_fab_title" />
+        android:title="@string/pref_enable_fab_title"/>
 
     <CheckBoxPreference
         android:defaultValue="false"
-        android:dependency="pref_enable_fab"
         android:key="pref_pins_behind_fabs"
+        android:dependency="pref_enable_fab"
         android:summaryOff="@string/pref_pins_behind_fabs_summaryOff"
         android:summaryOn="@string/pref_pins_behind_fabs_summaryOn"
-        android:title="@string/pref_pins_behind_fabs_title" />
+        android:title="@string/pref_pins_behind_fabs_title"/>
 
     <CheckBoxPreference
         android:defaultValue="true"
         android:key="pref_enable_strike_highlights"
         android:summaryOff="@string/pref_enable_strike_highlights_summaryOff"
         android:summaryOn="@string/pref_enable_strike_highlights_summaryOn"
-        android:title="@string/pref_enable_strike_highlights_title" />
-
-    <CheckBoxPreference
-        android:defaultValue="true"
-        android:key="pref_enable_auto_lock"
-        android:summaryOff="@string/pref_enable_auto_lock_summaryOff"
-        android:summaryOn="@string/pref_enable_auto_lock_summaryOn"
-        android:title="@string/pref_enable_auto_lock_title" />
+        android:title="@string/pref_enable_strike_highlights_title"/>
 
     <CheckBoxPreference
         android:defaultValue="false"
         android:key="pref_enable_auto_advance"
         android:summaryOff="@string/pref_enable_auto_advance_summaryOff"
         android:summaryOn="@string/pref_enable_auto_advance_summaryOn"
-        android:title="@string/pref_enable_auto_advance_title" />
+        android:title="@string/pref_enable_auto_advance_title"/>
 
     <ListPreference
         android:dependency="pref_enable_auto_advance"
@@ -50,6 +43,6 @@
         android:entryValues="@array/pref_auto_advance_times"
         android:key="pref_auto_advance_time"
         android:summary="@string/pref_auto_advance_time_summary"
-        android:title="@string/pref_auto_advance_time_title" />
+        android:title="@string/pref_auto_advance_time_title"/>
 
 </PreferenceScreen>
