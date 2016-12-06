@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import ca.josephroque.bowlingcompanion.database.Contract;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
@@ -561,15 +562,15 @@ public class SettingsActivity
                                     + "\n\n";
 
                     Intent emailIntent = EmailUtils.getEmailIntent(
-                            "bugs@josephroque.ca",
-                            "Bug: Bowling Companion",
+                            "contact@josephroque.ca",
+                            String.format(Locale.CANADA, "Bug: Bowling Companion (%d)", BuildConfig.VERSION_CODE),
                             emailBody);
                     startActivity(Intent.createChooser(emailIntent, "Send mail..."));
                     return true;
                 } else if (preference.getKey().equals(Constants.KEY_COMMENT_SUGGESTION)) {
                     Intent emailIntent = EmailUtils.getEmailIntent(
                             "contact@josephroque.ca",
-                            "Comm/Sug: Bowling Companion",
+                            String.format(Locale.CANADA, "Comm/Sug: Bowling Companion (%d)", BuildConfig.VERSION_CODE),
                             null);
                     startActivity(Intent.createChooser(emailIntent, "Send mail..."));
                     return true;
