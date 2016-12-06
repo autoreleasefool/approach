@@ -9,6 +9,8 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.text.InputFilter;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
 
 import ca.josephroque.bowlingcompanion.Constants;
@@ -89,7 +91,12 @@ public class NameBowlerDialog
                         dialog.dismiss();
                     }
                 });
-        return dialogBuilder.create();
+        AlertDialog dialog = dialogBuilder.create();
+        Window dialogWindow = dialog.getWindow();
+        if (dialogWindow != null) {
+            dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+        }
+        return dialog;
     }
 
     @Override
