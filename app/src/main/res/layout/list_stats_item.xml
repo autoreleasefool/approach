@@ -5,6 +5,8 @@
     android:layout_height="match_parent"
     android:foreground="?attr/selectableItemBackground"
     android:orientation="horizontal"
+    android:paddingTop="@dimen/list_item_padding"
+    android:paddingBottom="@dimen/list_item_padding"
     tools:ignore="RtlHardcoded">
 
     <LinearLayout
