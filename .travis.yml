@@ -4,19 +4,16 @@ android:
 
     # Build tools version used by the application
     - tools
-    - build-tools-23.0.2
+    - build-tools-25.0.1
 
     # SDK tools version used by the application
-    - android-23
+    - android-25
 
     # Additional components
     - extra-android-m2repository
     - extra-google-m2repository
     - extra-google-google_play_services
 script:
-  # for future use run tests      ./gradlew connectedInstrumentTest
-  # all builds and tests          ./gradlew connectedCheck
-  # for only debuf                ./gradlew assembleDebug
 
   # Only building debug because release build in repository does not
   # contain all resources, which cannot be committed due to sensitivity.
