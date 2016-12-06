@@ -809,7 +809,7 @@ public class MainActivity
             case NavigationUtils.NAVIGATION_ITEM_FEEDBACK:
                 Intent emailIntent = EmailUtils.getEmailIntent(
                         "contact@josephroque.ca",
-                        "Comm/Sug: Bowling Companion",
+                        String.format(Locale.CANADA, "Comm/Sug: Bowling Companion (%d)", BuildConfig.VERSION_CODE),
                         null);
                 startActivity(Intent.createChooser(emailIntent, "Send mail..."));
                 break;
