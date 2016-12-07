@@ -71,6 +71,9 @@ public class GameFragment
     /** Represents the OnClickListener for the ball TextView objects. */
     private static final byte LISTENER_TEXT_BALLS = 2;
 
+    /** Number of milliseconds to delay auto locking a game for. */
+    private static final int AUTO_LOCK_DELAY = 5 * 1000;
+
     /** TextView which displays score on a certain ball in a certain frame. */
     private TextView[][] mTextViewBallScores;
     /** TextView which displays whether a foul was invoked on a certain ball. */
@@ -269,12 +272,28 @@ public class GameFragment
                                 alterPinState((byte) i, false);
                         }
                     }
-                    if (mGameCallback != null && !(mCurrentFrame == Constants.LAST_FRAME && mCurrentBall == 2))
-                        mGameCallback.resetAutoAdvanceTimer();
+                    if (!(mCurrentFrame == Constants.LAST_FRAME && mCurrentBall == 2)) {
+                        if (mGameCallback != null) {
+                            mGameCallback.resetAutoAdvanceTimer();
+                        }
+                    } else {
+                        startAutoLockTimer();
+                    }
                     break;
                 default:
                     // does nothing
             }
+        }
+    };
+
+    /** Indicates if auto lock functionality is enabled. */
+    private boolean autoLockEnabled = false;
+    private final Handler autoLockHandler = new Handler();
+    /** Runnable which locks the game. */
+    private final Runnable autoLockGame = new Runnable() {
+        @Override
+        public void run() {
+            setGameLocked(true);
         }
     };
 
@@ -535,10 +554,9 @@ public class GameFragment
 
         updateTheme();
 
-        SharedPreferences preferences =
-                PreferenceManager.getDefaultSharedPreferences(getActivity());
-        boolean autoAdvanceEnabled =
-                preferences.getBoolean(Constants.KEY_ENABLE_AUTO_ADVANCE, false);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        boolean autoAdvanceEnabled = preferences.getBoolean(Constants.KEY_ENABLE_AUTO_ADVANCE, false);
+        autoLockEnabled = preferences.getBoolean(Constants.KEY_ENABLE_AUTO_LOCK, true);
 
         String strDelay = preferences.getString(Constants.KEY_AUTO_ADVANCE_TIME, "15 seconds");
         int autoAdvanceDelay = Integer.valueOf(strDelay.substring(0, strDelay.indexOf(" ")));
@@ -577,6 +595,8 @@ public class GameFragment
     @Override
     public void onPause() {
         super.onPause();
+
+        autoLockHandler.removeCallbacks(autoLockGame);
 
         if (mNextFab != null)
             setFloatingActionButtonState(true, 0);
@@ -843,8 +863,13 @@ public class GameFragment
                             return;
                         mFouls[mCurrentFrame][mCurrentBall] = !mFouls[mCurrentFrame][mCurrentBall];
                         updateFouls();
-                        if (mGameCallback != null && !(mCurrentFrame == Constants.LAST_FRAME && mCurrentBall == 2))
-                            mGameCallback.resetAutoAdvanceTimer();
+                        if (!(mCurrentFrame == Constants.LAST_FRAME && mCurrentBall == 2)) {
+                            if (mGameCallback != null) {
+                                mGameCallback.resetAutoAdvanceTimer();
+                            }
+                        } else {
+                            startAutoLockTimer();
+                        }
                         break;
 
                     case R.id.iv_reset_frame:
@@ -868,8 +893,13 @@ public class GameFragment
 
                     case R.id.iv_clear:
                         clearPins();
-                        if (mGameCallback != null && !(mCurrentFrame == Constants.LAST_FRAME && mCurrentBall == 2))
-                            mGameCallback.resetAutoAdvanceTimer();
+                        if (!(mCurrentFrame == Constants.LAST_FRAME && mCurrentBall == 2)) {
+                            if (mGameCallback != null) {
+                                mGameCallback.resetAutoAdvanceTimer();
+                            }
+                        } else {
+                            startAutoLockTimer();
+                        }
                         break;
 
                     case R.id.iv_next_ball:
@@ -1205,6 +1235,16 @@ public class GameFragment
                 }
             }
         });
+    }
+
+    /**
+     * Starts a timer that will lock the current game when the timer runs out.
+     */
+    private void startAutoLockTimer() {
+        autoLockHandler.removeCallbacks(autoLockGame);
+        if (autoLockEnabled) {
+            autoLockHandler.postDelayed(autoLockGame, AUTO_LOCK_DELAY);
+        }
     }
 
     /**
