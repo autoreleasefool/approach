@@ -5,8 +5,6 @@
     android:layout_height="match_parent"
     android:foreground="?attr/selectableItemBackground"
     android:orientation="horizontal"
-    android:paddingTop="@dimen/list_item_padding"
-    android:paddingBottom="@dimen/list_item_padding"
     tools:ignore="RtlHardcoded">
 
     <LinearLayout
@@ -14,6 +12,8 @@
         android:layout_height="match_parent"
         android:background="@android:color/white"
         android:orientation="horizontal"
+        android:paddingTop="@dimen/list_item_padding"
+        android:paddingBottom="@dimen/list_item_padding"
         tools:ignore="UselessParent">
 
         <TextView
