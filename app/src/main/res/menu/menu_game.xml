@@ -17,9 +17,9 @@
         app:showAsAction="ifRoom" />
 
     <item
-        android:id="@+id/action_series_stats"
+        android:id="@+id/action_event_stats"
         android:orderInCategory="20"
-        android:title="@string/action_series_stats"
+        android:title="@string/action_event_stats"
         app:showAsAction="never" />
 
     <item

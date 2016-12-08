@@ -258,14 +258,16 @@
             </LinearLayout>
 
             <ImageView
-                android:id="@+id/iv_edit_date"
+                android:id="@+id/iv_view_series_stats"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical|right"
-                android:layout_marginLeft="4dp"
-                android:contentDescription="@string/description_edit_date"
+                android:contentDescription="@string/description_view_stats"
+                android:paddingBottom="@dimen/list_clickable_padding"
+                android:paddingLeft="@dimen/list_clickable_padding"
                 android:paddingRight="@dimen/list_key_line"
-                android:src="@drawable/ic_edit_black_24dp" />
+                android:paddingTop="@dimen/list_clickable_padding"
+                android:src="@drawable/ic_poll_black_24dp" />
 
         </LinearLayout>
 
