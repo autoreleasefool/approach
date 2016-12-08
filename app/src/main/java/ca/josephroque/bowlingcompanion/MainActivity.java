@@ -745,6 +745,14 @@ public class MainActivity
     }
 
     @Override
+    public void onSeriesStatsOpened(Series series) {
+        mSeriesId = series.getSeriesId();
+        mSeriesDate = series.getSeriesDate();
+        mNumberOfGamesForSeries = series.getNumberOfGames();
+        openStatsFragment(Constants.FRAGMENT_GAME);
+    }
+
+    @Override
     public void onGameStatsOpened(long gameId, byte gameNumber) {
         mGameId = gameId;
         mGameNumber = gameNumber;

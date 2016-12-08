@@ -617,10 +617,7 @@ public class GameFragment
         super.onPrepareOptionsMenu(menu);
 
         // Sets names/visibility of menu items
-        menu.findItem(R.id.action_series_stats)
-                .setTitle(((MainActivity) getActivity()).isEventMode()
-                        ? R.string.action_event_stats
-                        : R.string.action_series_stats);
+        menu.findItem(R.id.action_event_stats).setVisible(((MainActivity) getActivity()).isEventMode());
         menu.findItem(R.id.action_set_score)
                 .setTitle((mManualScoreSet[mCurrentGame])
                         ? R.string.action_clear_score
@@ -635,7 +632,7 @@ public class GameFragment
         drawable = menuItem.getIcon();
         if (drawable != null)
             drawable.setAlpha(DisplayUtils.BLACK_ICON_ALPHA);
-        menu.findItem(R.id.action_series_stats).setVisible(!drawerOpen);
+        menu.findItem(R.id.action_event_stats).setVisible(!drawerOpen);
         menu.findItem(R.id.action_reset_game).setVisible(!drawerOpen);
         menu.findItem(R.id.action_set_score).setVisible(!drawerOpen);
 
@@ -662,7 +659,7 @@ public class GameFragment
                     showManualScoreDialog();
                 return true;
 
-            case R.id.action_series_stats:
+            case R.id.action_event_stats:
                 // Displays all stats related to series of games
                 if (mGameCallback != null)
                     mGameCallback.onSeriesStatsOpened();
