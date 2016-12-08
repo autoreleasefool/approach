@@ -45,6 +45,8 @@ public final class Constants {
     public static final String KEY_PINS_BEHIND_FABS = "pref_pins_behind_fabs";
     /** Identifier for preference for strikes and spares should be highlighted while editing a game. */
     public static final String KEY_ENABLE_STRIKE_HIGHLIGHTS = "pref_enable_strike_highlights";
+    /** Identifier for preference for strikes and spares should be highlighted while editing a game. */
+    public static final String KEY_ENABLE_AUTO_LOCK = "pref_enable_auto_lock";
     /** Identifier for preference for opening the app's Facebook page. */
     public static final String KEY_FACEBOOK_PAGE = "pref_facebook_page";
     /** Identifier for preference to show or hide match play results in series view. */

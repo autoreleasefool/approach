@@ -30,6 +30,13 @@
         android:title="@string/pref_enable_strike_highlights_title"/>
 
     <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="pref_enable_auto_lock"
+        android:summaryOff="@string/pref_enable_auto_lock_summaryOff"
+        android:summaryOn="@string/pref_enable_auto_lock_summaryOn"
+        android:title="@string/pref_enable_auto_lock_title" />
+
+    <CheckBoxPreference
         android:defaultValue="false"
         android:key="pref_enable_auto_advance"
         android:summaryOff="@string/pref_enable_auto_advance_summaryOff"
