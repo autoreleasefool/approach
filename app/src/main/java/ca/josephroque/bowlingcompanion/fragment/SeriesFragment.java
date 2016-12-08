@@ -247,6 +247,12 @@ public class SeriesFragment
     }
 
     @Override
+    public void onViewStatsClick(final int position) {
+        if (mSeriesCallback != null)
+            mSeriesCallback.onSeriesStatsOpened(mListSeries.get(position));
+    }
+
+    @Override
     public void onEditClick(final int position) {
         DialogFragment dateDialog = ChangeDateDialog.newInstance(this, mListSeries.get(position));
         dateDialog.show(getFragmentManager(), "ChangeDateDialog");
@@ -900,5 +906,12 @@ public class SeriesFragment
          * Displays the stats of the current league in a new StatsFragment.
          */
         void onLeagueStatsOpened();
+
+        /**
+         * Displays the stats of the selected series in a new StatsFragment.
+         *
+         * @param series series to view stats for
+         */
+        void onSeriesStatsOpened(Series series);
     }
 }
