@@ -319,20 +319,24 @@ public class MainActivity
                 while (mAppIsRunning.get() || mQueueSavingThreads.peek() != null) {
                     mRunningSaveThread = mQueueSavingThreads.peek();
                     if (mRunningSaveThread != null) {
-                        mRunningSaveThread.start();
-                        try {
-                            mRunningSaveThread.join();
+                        if (mRunningSaveThread.getState() == Thread.State.NEW) {
+                            mRunningSaveThread.start();
+                            try {
+                                mRunningSaveThread.join();
+                                mQueueSavingThreads.poll();
+                            } catch (InterruptedException ex) {
+                                throw new RuntimeException("Error saving game: " + ex.getMessage());
+                            }
+                        } else {
+                            Log.e(TAG, "Thread already started - " + mRunningSaveThread.getState().toString());
                             mQueueSavingThreads.poll();
-                        } catch (InterruptedException ex) {
-                            throw new RuntimeException("Error saving game: " + ex.getMessage());
                         }
                     } else {
                         try {
                             //noinspection CheckStyle
                             Thread.sleep(100);
                         } catch (InterruptedException ex) {
-                            throw new RuntimeException("Error while saving thread sleeping: "
-                                    + ex.getMessage());
+                            throw new RuntimeException("Error while saving thread sleeping: " + ex.getMessage());
                         }
                     }
                 }
