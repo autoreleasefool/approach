@@ -510,7 +510,6 @@ public final class TransferFragment
                 fragment.getActivity().runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Log.d(TAG, "Deleting downloaded");
                         new DeleteBowlerDataTask(fragment).execute(true);
                     }
                 });
@@ -889,7 +888,6 @@ public final class TransferFragment
             File dbFile = fragment.getContext().getDatabasePath(DatabaseHelper.DATABASE_NAME);
             String dbFilePath = dbFile.getAbsolutePath();
             String dbFileName = dbFile.getName();
-            Log.d(TAG, "Database file: " + dbFilePath);
 
             HttpURLConnection connection;
             FileInputStream fileInputStream = null;
@@ -937,7 +935,6 @@ public final class TransferFragment
                 bufferSize = Math.min(bytesAvailable, TransferUtils.MAX_BUFFER_SIZE);
                 buffer = new byte[bufferSize];
 
-                Log.d(TAG, "Database size: " + bytesAvailable);
                 bytesRead = fileInputStream.read(buffer, 0, bufferSize);
                 try {
                     while (bytesRead > 0 && !isCancelled()) {
@@ -995,7 +992,7 @@ public final class TransferFragment
                             if (reader != null)
                                 reader.close();
                         } catch (IOException ex) {
-                            Log.d(TAG, "Error closing stream.", ex);
+                            Log.e(TAG, "Error closing stream.", ex);
                         }
                     }
                 }
@@ -1028,7 +1025,7 @@ public final class TransferFragment
                         outputStream.close();
                     }
                 } catch (IOException ex) {
-                    Log.d(TAG, "Error closing streams.", ex);
+                    Log.e(TAG, "Error closing streams.", ex);
                 }
             }
         }

@@ -156,7 +156,6 @@ public class MainActivity
     private final Runnable mAutoAdvanceCallback = new Runnable() {
         @Override
         public void run() {
-            Log.d(TAG, "Auto advance: " + mAutoAdvanceDelayRemaining);
             if (--mAutoAdvanceDelayRemaining <= 0) {
                 mViewAutoAdvance.performClick();
                 stopAutoAdvanceTimer();

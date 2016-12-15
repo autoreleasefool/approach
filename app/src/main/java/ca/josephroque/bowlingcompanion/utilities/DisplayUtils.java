@@ -143,11 +143,11 @@ public final class DisplayUtils {
      * @return the formatted value as a {@code string}
      */
     public static String getFormattedAverage(float average, boolean toDecimal) {
-        Log.d(TAG, "Average: " + average);
-        if (toDecimal)
+        if (toDecimal) {
             return AVERAGE_DECIMAL_FORMAT.format(average);
-        else
+        } else {
             return AVERAGE_INTEGER_FORMAT.format(average);
+        }
     }
 
     /**

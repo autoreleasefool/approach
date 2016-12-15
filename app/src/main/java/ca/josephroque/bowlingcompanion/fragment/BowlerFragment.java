@@ -746,11 +746,9 @@ public class BowlerFragment
                     int totalCount = cursor.getInt(cursor.getColumnIndex("totalCount"));
                     int totalBaseSum = cursor.getInt(cursor.getColumnIndex("totalBaseSum"));
                     int totalBaseGames = cursor.getInt(cursor.getColumnIndex("totalBaseGames"));
-                    Log.d(TAG, "Sum: " + totalSum + " Count: " + totalCount + " BaseSum: " + totalBaseSum + " BaseGames: " + totalBaseGames);
                     float bowlerAverage = ((totalCount + totalBaseGames > 0)
                             ? (totalSum + totalBaseSum) / (float) (totalCount + totalBaseGames)
                             : 0);
-                    Log.d(TAG, "Average2: " + bowlerAverage);
                     Bowler bowler = new Bowler(cursor.getLong(cursor.getColumnIndex("bid")),
                             cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_BOWLER_NAME)),
                             bowlerAverage);

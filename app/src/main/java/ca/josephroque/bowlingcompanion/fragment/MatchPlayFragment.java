@@ -433,7 +433,6 @@ public class MatchPlayFragment
                     fragment.mEditTextOpponentName.setText(opponentName);
                 if (opponentScore > 0)
                     fragment.mEditTextOpponentScore.setText(String.format("%d", opponentScore));
-                Log.d(TAG, "Match play: " + (int) result.get(MatchPlayData.Result.ordinal()));
                 switch ((int) result.get(MatchPlayData.Result.ordinal())) {
                     case Constants.MATCH_PLAY_NONE:
                         fragment.mRadioGroupMatchResult.check(R.id.rb_result_none);
