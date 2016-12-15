@@ -167,6 +167,7 @@ public class MainActivity
                             final int timeToDelay = 1000;
                             mTextViewAutoAdvanceStatus.setVisibility(View.VISIBLE);
                             mTextViewAutoAdvanceStatus.setText(String.format(
+                                    Locale.CANADA,
                                     getResources().getString(R.string.text_until_auto_advance_placeholder),
                                     mAutoAdvanceDelayRemaining));
                             mAutoAdvanceHandler.postDelayed(mAutoAdvanceCallback, timeToDelay);

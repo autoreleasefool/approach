@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
+import java.util.Locale;
 
 import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.R;
@@ -204,7 +205,7 @@ public class SeriesAdapter
         };
         holder.itemView.setOnClickListener(null);
         holder.itemView.setBackgroundColor(Theme.getTertiaryThemeColor());
-        holder.mTextViewDelete.setText(String.format(holder.mTextViewDelete.getResources()
+        holder.mTextViewDelete.setText(String.format(Locale.CANADA, holder.mTextViewDelete.getResources()
                 .getString(R.string.text_click_to_delete), nameToDelete));
         holder.mTextViewDelete.setOnClickListener(onClickListener);
         holder.mTextViewUndo.setOnClickListener(onClickListener);
@@ -341,7 +342,7 @@ public class SeriesAdapter
      * @param seriesTotal total of the series
      */
     private void setSeriesTotalText(TextView textViewTotal, short seriesTotal) {
-        textViewTotal.setText(String.format("%d", seriesTotal));
+        textViewTotal.setText(String.format(Locale.CANADA, "%d", seriesTotal));
         if (seriesTotal >= mMinimumSeriesToHighlight) {
             textViewTotal.setBackgroundColor(Theme.getStatusThemeColor());
             textViewTotal.setTextColor(DisplayUtils.COLOR_WHITE);
@@ -360,7 +361,7 @@ public class SeriesAdapter
      * @param gameScore score of the game
      */
     private void setGameScoreText(TextView textViewGame, short gameScore) {
-        textViewGame.setText(String.format("%d", gameScore));
+        textViewGame.setText(String.format(Locale.CANADA, "%d", gameScore));
         if (gameScore >= mMinimumScoreToHighlight) {
             textViewGame.setTextColor(Theme.getTertiaryThemeColor());
             textViewGame.setAlpha(1f);

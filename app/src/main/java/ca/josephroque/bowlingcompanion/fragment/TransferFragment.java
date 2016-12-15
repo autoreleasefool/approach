@@ -37,6 +37,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.util.Locale;
 
 import ca.josephroque.bowlingcompanion.MainActivity;
 import ca.josephroque.bowlingcompanion.R;
@@ -237,7 +238,8 @@ public final class TransferFragment
                     }
                 } else {
                     TextView textView = (TextView) rootView.findViewById(R.id.tv_transfer_export_result);
-                    textView.setText(String.format(getResources().getString(R.string.text_transfer_exported_already),
+                    textView.setText(String.format(Locale.CANADA,
+                            getResources().getString(R.string.text_transfer_exported_already),
                             mLastKeyReceived));
                     textView.setTextColor(DisplayUtils.getColorResource(getResources(), R.color.transfer_error));
                     textView.setVisibility(View.VISIBLE);
@@ -288,7 +290,8 @@ public final class TransferFragment
                         mCurrentTransferTask.execute(mImportFailures > 0);
                     } else {
                         TextView textView = (TextView) rootView.findViewById(R.id.tv_transfer_import_result);
-                        textView.setText(String.format(getResources().getString(R.string.text_transfer_invalid_key),
+                        textView.setText(String.format(Locale.CANADA,
+                                getResources().getString(R.string.text_transfer_invalid_key),
                                 TransferUtils.TRANSFER_KEY_LENGTH));
                         textView.setTextColor(DisplayUtils.getColorResource(getResources(), R.color.transfer_error));
                         textView.setVisibility(View.VISIBLE);
@@ -799,7 +802,7 @@ public final class TransferFragment
                     textViewResult.setText(R.string.text_transfer_unavailable);
                     break;
                 case TransferUtils.ERROR_INVALID_KEY:
-                    textViewResult.setText(String.format(fragment.getResources()
+                    textViewResult.setText(String.format(Locale.CANADA, fragment.getResources()
                             .getString(R.string.text_transfer_invalid_key), TransferUtils.TRANSFER_KEY_LENGTH));
                     break;
                 case TransferUtils.ERROR_NO_INTERNET:
@@ -1149,7 +1152,7 @@ public final class TransferFragment
                         String key = result.substring(start, start + TransferUtils.TRANSFER_KEY_LENGTH);
                         fragment.mLastKeyReceived = key;
                         textColor = DisplayUtils.getColorResource(fragment.getResources(), android.R.color.black);
-                        textViewResult.setText(String.format(fragment.getResources()
+                        textViewResult.setText(String.format(Locale.CANADA, fragment.getResources()
                                 .getString(R.string.text_transfer_upload_complete), key));
                     } else {
                         textViewResult.setText(R.string.text_transfer_unknown_error);
