@@ -242,11 +242,11 @@ public class SeriesAdapter
         final int numberOfGamesInSeries = games.size();
         for (int i = 0; i < numberOfGamesInSeries; i++) {
             // Highlights a score if it is over 300 or applies default theme if not
-            short gameScore = games.get(-i + (numberOfGamesInSeries - 1));
+            short gameScore = games.get(i);
             setGameScoreText(holder.mArrayTextViewGames[i], gameScore);
 
             if (hasMatchPlayResults) {
-                byte matchPlay = matchPlayResults.get(-i + (numberOfGamesInSeries - 1));
+                byte matchPlay = matchPlayResults.get(i);
                 holder.mArrayTextViewGames[i].setPadding(matchPlayPadding,
                         matchPlayPadding,
                         matchPlayPadding,
@@ -294,6 +294,13 @@ public class SeriesAdapter
             }
         });
 
+        if (position % 2 == 1) {
+            holder.itemView.setBackgroundColor(DisplayUtils.getColorResource(holder.itemView.getResources(),
+                    R.color.secondary_background_offset));
+        } else {
+            holder.itemView.setBackgroundColor(DisplayUtils.getColorResource(holder.itemView.getResources(),
+                    R.color.secondary_background));
+        }
         holder.itemView.setOnClickListener(this);
     }
 

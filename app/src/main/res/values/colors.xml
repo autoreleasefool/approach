@@ -11,6 +11,7 @@
     <!-- Fragment and list item backgrounds -->
     <color name="primary_background">#C6CBCF</color>
     <color name="secondary_background">#ECF0F1</color>
+    <color name="secondary_background_offset">#E3E3E3</color>
     <color name="divider">#1E000000</color>
     <color name="indicator">#FFFFFF</color>
 
