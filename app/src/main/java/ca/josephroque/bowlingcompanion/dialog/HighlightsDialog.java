@@ -134,7 +134,6 @@ public class HighlightsDialog
 
     @Override
     protected Object onGetDefaultValue(TypedArray a, int index) {
-        Log.d(TAG, "Getting default value");
         return a.getInt(index, mMinimumValue);
     }
 
