@@ -186,12 +186,21 @@ public class NameAverageAdapter<T extends NameAverageId>
 
                 holder.mTextViewAverage.setText(String.format(holder.mTextViewAverage.getResources()
                                 .getString(R.string.text_average_placeholder), average));
-                if (mListNamesAndAverages.get(position).getAverage() < 0)
+                if (mListNamesAndAverages.get(position).getAverage() < 0) {
                     holder.mTextViewAverage.setTextColor(ContextCompat.getColor(holder.mTextViewAverage.getContext(),
                             R.color.invalid_average));
-                else
+                } else {
                     holder.mTextViewAverage.setTextColor(ContextCompat.getColor(holder.mTextViewAverage.getContext(),
                             android.R.color.black));
+                }
+
+                if (position % 2 == 1) {
+                    holder.itemView.setBackgroundColor(DisplayUtils.getColorResource(holder.itemView.getResources(),
+                            R.color.secondary_background_offset));
+                } else {
+                    holder.itemView.setBackgroundColor(DisplayUtils.getColorResource(holder.itemView.getResources(),
+                            R.color.secondary_background));
+                }
 
                 // Sets actions on click/touch events
                 holder.itemView.setOnClickListener(this);

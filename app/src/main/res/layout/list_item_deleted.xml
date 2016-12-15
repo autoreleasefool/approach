@@ -3,10 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
     tools:ignore="RtlHardcoded,RtlSymmetry">
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/list_item_padding"
@@ -23,27 +22,30 @@
 
         <TextView
             android:id="@+id/tv_delete"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="48dp"
+            android:layout_weight="1"
             android:layout_gravity="center_vertical"
-            android:layout_marginLeft="@dimen/list_text_key_line"
-            android:gravity="center_vertical"
+            android:layout_marginLeft="@dimen/list_key_line"
+            android:ellipsize="end"
+            android:gravity="left|center_vertical"
+            android:maxLines="1"
             android:textColor="@android:color/white" />
 
         <TextView
             android:id="@+id/tv_undo_delete"
             android:layout_width="wrap_content"
             android:layout_height="48dp"
-            android:layout_gravity="right|center_vertical"
+            android:layout_gravity="center_vertical"
             android:alpha="0.7"
-            android:gravity="center"
+            android:gravity="right|center_vertical"
             android:paddingLeft="@dimen/list_key_line"
             android:paddingRight="@dimen/list_key_line"
             android:text="@string/text_undo"
             android:textAllCaps="true"
             android:textColor="@android:color/white" />
 
-    </FrameLayout>
+    </LinearLayout>
 
     <View
         android:layout_width="match_parent"
