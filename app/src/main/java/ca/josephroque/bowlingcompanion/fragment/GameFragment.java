@@ -33,6 +33,7 @@ import android.widget.TextView;
 
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
+import java.util.Locale;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import ca.josephroque.bowlingcompanion.Constants;
@@ -2155,7 +2156,7 @@ public class GameFragment
                         clearAllText(!mManualScoreSet[mCurrentGame]);
                         getActivity().supportInvalidateOptionsMenu();
                         mTextViewGameNumber.setText(
-                                String.format(getResources().getString(R.string.text_game_placeholder),
+                                String.format(Locale.CANADA, getResources().getString(R.string.text_game_placeholder),
                                         mCurrentGame + 1));
                     }
                 });

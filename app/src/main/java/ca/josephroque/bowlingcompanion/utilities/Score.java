@@ -1,5 +1,7 @@
 package ca.josephroque.bowlingcompanion.utilities;
 
+import java.util.Locale;
+
 import ca.josephroque.bowlingcompanion.Constants;
 
 /**
@@ -319,7 +321,7 @@ public final class Score {
         if (ball < 0 || ball > 31)
             throw new IllegalArgumentException("cannot convert value: " + ball);
         boolean[] pinState = new boolean[5];
-        String ballBinary = String.format("%5s", Integer.toBinaryString(ball)).replace(' ', '0');
+        String ballBinary = String.format(Locale.CANADA, "%5s", Integer.toBinaryString(ball)).replace(' ', '0');
         for (int i = 0; i < pinState.length; i++)
             pinState[i] = ballBinary.charAt(i) == '1';
         return pinState;

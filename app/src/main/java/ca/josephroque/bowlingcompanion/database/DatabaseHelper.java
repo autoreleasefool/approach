@@ -6,6 +6,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import java.util.Locale;
+
 import ca.josephroque.bowlingcompanion.database.Contract.BowlerEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.FrameEntry;
 import ca.josephroque.bowlingcompanion.database.Contract.GameEntry;
@@ -459,8 +461,7 @@ public final class DatabaseHelper
                             values,
                             FrameEntry.COLUMN_PIN_STATE[j] + "=?",
                             new String[]{
-                                    String.format("%5s",
-                                            Integer.toBinaryString(i)).replace(' ', '0')
+                                    String.format(Locale.CANADA, "%5s", Integer.toBinaryString(i)).replace(' ', '0')
                             });
                 }
             }

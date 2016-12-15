@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
+import java.util.Locale;
 
 import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.MainActivity;
@@ -422,8 +423,8 @@ public class MatchPlayFragment
 
             int gameNumber = (int) result.get(MatchPlayData.GameNumber.ordinal());
             short gameScore = (short) result.get(MatchPlayData.Score.ordinal());
-            fragment.mTextViewGameNumber.setText(String.format("%d", gameNumber));
-            fragment.mTextViewScore.setText(String.format("%d", gameScore));
+            fragment.mTextViewGameNumber.setText(String.format(Locale.CANADA, "%d", gameNumber));
+            fragment.mTextViewScore.setText(String.format(Locale.CANADA, "%d", gameScore));
 
             if (!fragment.mFromSavedInstanceState) {
                 String opponentName = result.get(MatchPlayData.OpponentName.ordinal(), "").toString();
@@ -432,7 +433,7 @@ public class MatchPlayFragment
                 if (opponentName.length() > 0)
                     fragment.mEditTextOpponentName.setText(opponentName);
                 if (opponentScore > 0)
-                    fragment.mEditTextOpponentScore.setText(String.format("%d", opponentScore));
+                    fragment.mEditTextOpponentScore.setText(String.format(Locale.CANADA, "%d", opponentScore));
                 switch ((int) result.get(MatchPlayData.Result.ordinal())) {
                     case Constants.MATCH_PLAY_NONE:
                         fragment.mRadioGroupMatchResult.check(R.id.rb_result_none);

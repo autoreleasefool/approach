@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
+import java.util.Locale;
 
 import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.theme.Theme;
@@ -184,7 +185,7 @@ public class NameAverageAdapter<T extends NameAverageId>
                 String average = DisplayUtils.getFormattedAverage(
                         Math.abs(mListNamesAndAverages.get(position).getAverage()), mAverageAsDecimal);
 
-                holder.mTextViewAverage.setText(String.format(holder.mTextViewAverage.getResources()
+                holder.mTextViewAverage.setText(String.format(Locale.CANADA, holder.mTextViewAverage.getResources()
                                 .getString(R.string.text_average_placeholder), average));
                 if (mListNamesAndAverages.get(position).getAverage() < 0) {
                     holder.mTextViewAverage.setTextColor(ContextCompat.getColor(holder.mTextViewAverage.getContext(),
@@ -223,7 +224,7 @@ public class NameAverageAdapter<T extends NameAverageId>
                 holder.itemView.setOnClickListener(null);
                 holder.itemView.setOnLongClickListener(null);
                 holder.itemView.setBackgroundColor(Theme.getTertiaryThemeColor());
-                holder.mTextViewName.setText(String.format(holder.mTextViewName.getResources()
+                holder.mTextViewName.setText(String.format(Locale.CANADA, holder.mTextViewName.getResources()
                         .getString(R.string.text_click_to_delete), nameToDelete));
                 holder.mTextViewName.setOnClickListener(onClickListener);
                 holder.mTextViewAverage.setOnClickListener(onClickListener);
