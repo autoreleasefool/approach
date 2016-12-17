@@ -76,9 +76,6 @@
 
     <!-- Game Settings -->
     <string name="pref_header_game">Editing games</string>
-    <string name="pref_prefer_uppercase_title">Prefer uppercase mark identifiers</string>
-    <string name="pref_prefer_uppercase_summaryOn">Uppercase mark identifiers will be used</string>
-    <string name="pref_prefer_uppercase_summaryOff">Uppercase mark identifiers will not be used</string>
     <string name="pref_enable_fab_title">Enable floating buttons</string>
     <string name="pref_enable_fab_summaryOn">Floating buttons are enabled</string>
     <string name="pref_enable_fab_summaryOff">Floating buttons are not visible</string>
