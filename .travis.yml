@@ -4,10 +4,10 @@ android:
 
     # Build tools version used by the application
     - tools
-    - build-tools-23.0.2
+    - build-tools-27.0.3
 
     # SDK tools version used by the application
-    - android-23
+    - android-27
 
     # Additional components
     - extra-android-m2repository
