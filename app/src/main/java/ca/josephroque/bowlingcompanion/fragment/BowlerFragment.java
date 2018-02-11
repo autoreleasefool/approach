@@ -309,27 +309,24 @@ public class BowlerFragment
             mListBowlers.set(position, bowlerWithNewName);
             mAdapterBowlers.notifyItemChanged(position);
 
-            MainActivity mainActivity = (MainActivity) getActivity();
-            if (mainActivity != null) {
-                mainActivity.addSavingThread(new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        SQLiteDatabase database = DatabaseHelper.getInstance(getContext()).getWritableDatabase();
-                        String[] whereArgs = {String.valueOf(bowlerWithNewName.getId())};
-                        ContentValues values = new ContentValues();
-                        values.put(BowlerEntry.COLUMN_BOWLER_NAME, bowlerWithNewName.getBowlerName());
-                        database.beginTransaction();
-                        try {
-                            database.update(BowlerEntry.TABLE_NAME, values, BowlerEntry._ID + "=?", whereArgs);
-                            database.setTransactionSuccessful();
-                        } catch (Exception ex) {
-                            Log.e(TAG, "Error updating bowler name.", ex);
-                        } finally {
-                            database.endTransaction();
-                        }
+            ((MainActivity) getActivity()).addSavingThread(new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    SQLiteDatabase database = DatabaseHelper.getInstance(getContext()).getWritableDatabase();
+                    String[] whereArgs = {String.valueOf(bowlerWithNewName.getId())};
+                    ContentValues values = new ContentValues();
+                    values.put(BowlerEntry.COLUMN_BOWLER_NAME, bowlerWithNewName.getBowlerName());
+                    database.beginTransaction();
+                    try {
+                        database.update(BowlerEntry.TABLE_NAME, values, BowlerEntry._ID + "=?", whereArgs);
+                        database.setTransactionSuccessful();
+                    } catch (Exception ex) {
+                        Log.e(TAG, "Error updating bowler name.", ex);
+                    } finally {
+                        database.endTransaction();
                     }
-                }));
-            }
+                }
+            }));
         }
     }
 
@@ -600,43 +597,41 @@ public class BowlerFragment
      * @param bowlerId id of bowler whose data will be deleted
      */
     private void deleteBowler(final long bowlerId) {
-        Activity activity = getActivity();
-        if (activity != null) {
-            SharedPreferences prefs = activity.getSharedPreferences(Constants.PREFS, Context.MODE_PRIVATE);
-            SharedPreferences.Editor prefsEditor = prefs.edit();
-            long recentId = prefs.getLong(Constants.PREF_RECENT_BOWLER_ID, -1);
-            long quickId = prefs.getLong(Constants.PREF_QUICK_BOWLER_ID, -1);
+        SharedPreferences prefs =
+                getActivity().getSharedPreferences(Constants.PREFS, Context.MODE_PRIVATE);
+        SharedPreferences.Editor prefsEditor = prefs.edit();
+        long recentId = prefs.getLong(Constants.PREF_RECENT_BOWLER_ID, -1);
+        long quickId = prefs.getLong(Constants.PREF_QUICK_BOWLER_ID, -1);
 
-            // Clears recent/quick ids if they match the deleted bowler
-            if (recentId == bowlerId) {
-                prefsEditor.putLong(Constants.PREF_RECENT_BOWLER_ID, -1)
-                        .putLong(Constants.PREF_RECENT_LEAGUE_ID, -1);
-            }
-            if (quickId == bowlerId) {
-                prefsEditor.putLong(Constants.PREF_QUICK_BOWLER_ID, -1)
-                        .putLong(Constants.PREF_QUICK_LEAGUE_ID, -1);
-            }
-            prefsEditor.apply();
-
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    SQLiteDatabase database = DatabaseHelper.getInstance(getContext()).getWritableDatabase();
-                    String[] whereArgs = {String.valueOf(bowlerId)};
-                    database.beginTransaction();
-                    try {
-                        database.delete(BowlerEntry.TABLE_NAME,
-                                BowlerEntry._ID + "=?",
-                                whereArgs);
-                        database.setTransactionSuccessful();
-                    } catch (Exception e) {
-                        // does nothing
-                    } finally {
-                        database.endTransaction();
-                    }
-                }
-            }).start();
+        // Clears recent/quick ids if they match the deleted bowler
+        if (recentId == bowlerId) {
+            prefsEditor.putLong(Constants.PREF_RECENT_BOWLER_ID, -1)
+                    .putLong(Constants.PREF_RECENT_LEAGUE_ID, -1);
         }
+        if (quickId == bowlerId) {
+            prefsEditor.putLong(Constants.PREF_QUICK_BOWLER_ID, -1)
+                    .putLong(Constants.PREF_QUICK_LEAGUE_ID, -1);
+        }
+        prefsEditor.apply();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                SQLiteDatabase database = DatabaseHelper.getInstance(getContext()).getWritableDatabase();
+                String[] whereArgs = {String.valueOf(bowlerId)};
+                database.beginTransaction();
+                try {
+                    database.delete(BowlerEntry.TABLE_NAME,
+                            BowlerEntry._ID + "=?",
+                            whereArgs);
+                    database.setTransactionSuccessful();
+                } catch (Exception e) {
+                    // does nothing
+                } finally {
+                    database.endTransaction();
+                }
+            }
+        }).start();
     }
 
     /**
