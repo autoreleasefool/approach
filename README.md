@@ -1,6 +1,6 @@
 # Bowling Companion (5-Pin Bowling Stats)
 
-[![Build status](https://travis-ci.org/joseph-roque/bowling-companion.svg?branch=master)](https://travis-ci.org/joseph-roque/bowling-companion)
+[![Build status](https://travis-ci.org/josephroque/bowling-companion.svg?branch=master)](https://travis-ci.org/josephroque/bowling-companion)
 
 An Android app to track 5-pin bowling statistics. Allows users to track multiple bowlers and leagues, and provides in-depth statistics on their game. Useful for determining areas in which the user's performance can be improved.
 
@@ -15,7 +15,7 @@ With a variety of themes and options to customize the statistics you see, you'll
 
 And the best part? Never pay a cent. This app will never offer you in-app purchases or become a paid service.
 
-This app is also open source. Feel free to check out the repository at https://github.com/joseph-roque/bowling-companion to see the source and even contribute. In addition, as you request and I plan new features, you'll be able to view their progress any time, so long as you understand what you're doing over at GitHub.
+This app is also open source. Feel free to check out the repository at https://github.com/josephroque/bowling-companion to see the source and even contribute. In addition, as you request and I plan new features, you'll be able to view their progress any time, so long as you understand what you're doing over at GitHub.
 
 **Permissions**
 
@@ -24,10 +24,10 @@ Writing to external storage - When you create an image of a series, this image m
 Internet access - Allows the app to display ads. We do not ask for or store any information.
 
 ## How to Run
-1. Clone project ```git clone https://github.com/joseph-roque/bowling-companion.git```
+1. Clone project ```git clone https://github.com/josephroque/bowling-companion.git```
 2. Import the project into Android Studio.
 
-[View the JavaDocs](http://joseph-roque.github.io/bowling-companion/)
+[View the JavaDocs](http://josephroque.github.io/bowling-companion/)
 
 ## Screenshots
 

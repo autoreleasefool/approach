@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
+import java.util.Locale;
 
 import ca.josephroque.bowlingcompanion.R;
 import ca.josephroque.bowlingcompanion.theme.Theme;
@@ -184,14 +185,23 @@ public class NameAverageAdapter<T extends NameAverageId>
                 String average = DisplayUtils.getFormattedAverage(
                         Math.abs(mListNamesAndAverages.get(position).getAverage()), mAverageAsDecimal);
 
-                holder.mTextViewAverage.setText(String.format(holder.mTextViewAverage.getResources()
+                holder.mTextViewAverage.setText(String.format(Locale.CANADA, holder.mTextViewAverage.getResources()
                                 .getString(R.string.text_average_placeholder), average));
-                if (mListNamesAndAverages.get(position).getAverage() < 0)
+                if (mListNamesAndAverages.get(position).getAverage() < 0) {
                     holder.mTextViewAverage.setTextColor(ContextCompat.getColor(holder.mTextViewAverage.getContext(),
                             R.color.invalid_average));
-                else
+                } else {
                     holder.mTextViewAverage.setTextColor(ContextCompat.getColor(holder.mTextViewAverage.getContext(),
                             android.R.color.black));
+                }
+
+                if (position % 2 == 1) {
+                    holder.itemView.setBackgroundColor(DisplayUtils.getColorResource(holder.itemView.getResources(),
+                            R.color.secondary_background_offset));
+                } else {
+                    holder.itemView.setBackgroundColor(DisplayUtils.getColorResource(holder.itemView.getResources(),
+                            R.color.secondary_background));
+                }
 
                 // Sets actions on click/touch events
                 holder.itemView.setOnClickListener(this);
@@ -214,7 +224,7 @@ public class NameAverageAdapter<T extends NameAverageId>
                 holder.itemView.setOnClickListener(null);
                 holder.itemView.setOnLongClickListener(null);
                 holder.itemView.setBackgroundColor(Theme.getTertiaryThemeColor());
-                holder.mTextViewName.setText(String.format(holder.mTextViewName.getResources()
+                holder.mTextViewName.setText(String.format(Locale.CANADA, holder.mTextViewName.getResources()
                         .getString(R.string.text_click_to_delete), nameToDelete));
                 holder.mTextViewName.setOnClickListener(onClickListener);
                 holder.mTextViewAverage.setOnClickListener(onClickListener);

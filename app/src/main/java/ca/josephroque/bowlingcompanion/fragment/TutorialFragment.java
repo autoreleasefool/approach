@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.util.TypedValue;
@@ -80,7 +81,7 @@ public class TutorialFragment
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         RelativeLayout rootView =
@@ -106,7 +107,7 @@ public class TutorialFragment
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(ARG_PAGE, mTutorialPage.ordinal());
     }

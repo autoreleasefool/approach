@@ -7,7 +7,6 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.support.design.widget.FloatingActionButton;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
@@ -143,11 +142,11 @@ public final class DisplayUtils {
      * @return the formatted value as a {@code string}
      */
     public static String getFormattedAverage(float average, boolean toDecimal) {
-        Log.d(TAG, "Average: " + average);
-        if (toDecimal)
+        if (toDecimal) {
             return AVERAGE_DECIMAL_FORMAT.format(average);
-        else
+        } else {
             return AVERAGE_INTEGER_FORMAT.format(average);
+        }
     }
 
     /**

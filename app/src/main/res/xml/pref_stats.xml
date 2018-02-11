@@ -21,4 +21,18 @@
         android:summaryOn="@string/pref_include_open_summaryOn"
         android:title="@string/pref_include_open_title" />
 
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="pref_count_h2_as_h"
+        android:summaryOff="@string/pref_count_h2_summaryOff"
+        android:summaryOn="@string/pref_count_h2_summaryOn"
+        android:title="@string/pref_count_h2_title" />
+
+    <CheckBoxPreference
+        android:defaultValue="false"
+        android:key="pref_count_s2_as_s"
+        android:summaryOff="@string/pref_count_s2_summaryOff"
+        android:summaryOn="@string/pref_count_s2_summaryOn"
+        android:title="@string/pref_count_s2_title" />
+
 </PreferenceScreen>

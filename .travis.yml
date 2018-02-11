@@ -1,23 +1,24 @@
 language: android
 android:
   components:
-
-    # Build tools version used by the application
     - tools
-    - build-tools-23.0.2
-
-    # SDK tools version used by the application
-    - android-23
-
-    # Additional components
-    - extra-android-m2repository
-    - extra-google-m2repository
-    - extra-google-google_play_services
+    - build-tools-27.0.3
+    - android-27
+    - platform-tools
+    - add-on
+    - extra
+licenses:
+    - 'android-sdk-license-.+'
+jdk:
+    - oraclejdk8
+before_install:
+  - yes | sdkmanager "platforms;android-27"
 script:
-  # for future use run tests      ./gradlew connectedInstrumentTest
-  # all builds and tests          ./gradlew connectedCheck
-  # for only debuf                ./gradlew assembleDebug
-
-  # Only building debug because release build in repository does not
-  # contain all resources, which cannot be committed due to sensitivity.
-  - ./gradlew assembleDebug
+    - ./gradlew assembleDebug
+before_cache:
+    - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+cache:
+  directories:
+    - $HOME/.m2
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/

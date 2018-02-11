@@ -45,6 +45,8 @@ public final class Constants {
     public static final String KEY_PINS_BEHIND_FABS = "pref_pins_behind_fabs";
     /** Identifier for preference for strikes and spares should be highlighted while editing a game. */
     public static final String KEY_ENABLE_STRIKE_HIGHLIGHTS = "pref_enable_strike_highlights";
+    /** Identifier for preference for strikes and spares should be highlighted while editing a game. */
+    public static final String KEY_ENABLE_AUTO_LOCK = "pref_enable_auto_lock";
     /** Identifier for preference for opening the app's Facebook page. */
     public static final String KEY_FACEBOOK_PAGE = "pref_facebook_page";
     /** Identifier for preference to show or hide match play results in series view. */
@@ -55,6 +57,14 @@ public final class Constants {
     public static final String KEY_ATTRIBUTION = "pref_attribution";
     /** Identifier for preference to show averages with up to 1 decimal place of accuracy. */
     public static final String KEY_AVERAGE_AS_DECIMAL = "pref_average_as_decimal";
+    /** Identifier for preference to show current app version. */
+    public static final String KEY_VERSION_NAME = "pref_version_name";
+    /** Identifier for preference to use uppercase mark identifiers in games instead of upper/lowercase. */
+    public static final String KEY_PREFER_UPPERCASE_MARKS = "pref_prefer_uppercase";
+    /** Identifier for preference to count Headpin + 2 as a Headpin in statistics. */
+    public static final String KEY_COUNT_H2_AS_H = "pref_count_h2_as_h";
+    /** Identifier for preference to count Split + 2 as a Split in statistics. */
+    public static final String KEY_COUNT_S2_AS_S = "pref_count_s2_as_s";
 
     // PREFERENCES
     /** Identifier for SharedPreferences of app. */
@@ -127,10 +137,8 @@ public final class Constants {
 
     // REGULAR EXPRESSIONS
     /** Regular Expression to match regular names. */
-    public static final String REGEX_NAME = "^[A-Za-z]+[ A-Za-z]*[A-Za-z]*$";
-    /** Regular Expression to match regular names with numbers. */
-    public static final String REGEX_LEAGUE_EVENT_NAME =
-            "^[A-Za-z0-9]+[ A-Za-z0-9'!@#$%^&*()_+:\"?/\\~-]*[A-Za-z0-9'!@#$%^&*()_+:\"?/\\~-]*$";
+    public static final String REGEX_NAME
+            = "^[A-Za-z0-9]+[ A-Za-z0-9'!@#$%^&*()_+:\"?/\\~-]*[A-Za-z0-9'!@#$%^&*()_+:\"?/\\~-]*$";
 
     // GAMES
     /** Number of frames in a game. */
@@ -164,9 +172,9 @@ public final class Constants {
     /** Symbol representing a 'chop off'. */
     public static final String BALL_CHOP_OFF = "C/O";
     /** Symbol representing a 'split'. */
-    public static final String BALL_SPLIT = "Sp";
+    public static final String BALL_SPLIT = "HS";
     /** Symbol representing a 'head pin'. */
-    public static final String BALL_HEAD_PIN = "Hp";
+    public static final String BALL_HEAD_PIN = "HP";
     /** Symbol representing a 'head pin + 2 pin'. */
     public static final String BALL_HEAD_PIN_2 = "H2";
     /** Symbol representing an empty frame. */

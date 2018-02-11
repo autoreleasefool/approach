@@ -5,7 +5,6 @@ import android.content.res.TypedArray;
 import android.preference.DialogPreference;
 import android.support.annotation.NonNull;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -134,7 +133,6 @@ public class HighlightsDialog
 
     @Override
     protected Object onGetDefaultValue(TypedArray a, int index) {
-        Log.d(TAG, "Getting default value");
         return a.getInt(index, mMinimumValue);
     }
 

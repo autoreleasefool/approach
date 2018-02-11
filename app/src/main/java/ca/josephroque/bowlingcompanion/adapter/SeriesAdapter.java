@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
+import java.util.Locale;
 
 import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.R;
@@ -49,11 +50,11 @@ public class SeriesAdapter
     /** List of series which will be displayed. */
     private final List<Series> mListSeries;
 
-    /** Cached drawable for edit icon. */
-    private Drawable mEditDrawable;
+    /** Cached drawable for stats icon. */
+    private Drawable mStatsDrawable;
     /** Cached drawable for copy icon. */
     private Drawable mCopyDrawable;
-    /** The last color set as the edit drawable filter. */
+    /** The last color set as the stats drawable filter. */
     private int mDrawableFilter;
 
     /** Indicates minimum score values which will be highlighted when displayed. */
@@ -76,8 +77,8 @@ public class SeriesAdapter
         private TextView[] mArrayTextViewGames;
         /** Each TextView displays a different match play result in the series. */
         private TextView[] mArrayTextViewMatchPlay;
-        /** Displays an icon to allow editing of the date of a series. */
-        private ImageView mImageViewEdit;
+        /** Displays an icon to view the stats of a series. */
+        private ImageView mImageViewStats;
         /** Displays the sum of all the scores in the series. */
         private TextView mTextViewSeriesTotal;
 
@@ -101,7 +102,7 @@ public class SeriesAdapter
             switch (viewType) {
                 case VIEWTYPE_ACTIVE:
                     mTextViewDate = (TextView) itemLayoutView.findViewById(R.id.tv_series_date);
-                    mImageViewEdit = (ImageView) itemLayoutView.findViewById(R.id.iv_edit_date);
+                    mImageViewStats = (ImageView) itemLayoutView.findViewById(R.id.iv_view_series_stats);
                     mTextViewSeriesTotal = (TextView) itemLayoutView.findViewById(R.id.tv_series_total);
 
                     // Adds text views by id to array
@@ -204,7 +205,7 @@ public class SeriesAdapter
         };
         holder.itemView.setOnClickListener(null);
         holder.itemView.setBackgroundColor(Theme.getTertiaryThemeColor());
-        holder.mTextViewDelete.setText(String.format(holder.mTextViewDelete.getResources()
+        holder.mTextViewDelete.setText(String.format(Locale.CANADA, holder.mTextViewDelete.getResources()
                 .getString(R.string.text_click_to_delete), nameToDelete));
         holder.mTextViewDelete.setOnClickListener(onClickListener);
         holder.mTextViewUndo.setOnClickListener(onClickListener);
@@ -242,11 +243,11 @@ public class SeriesAdapter
         final int numberOfGamesInSeries = games.size();
         for (int i = 0; i < numberOfGamesInSeries; i++) {
             // Highlights a score if it is over 300 or applies default theme if not
-            short gameScore = games.get(-i + (numberOfGamesInSeries - 1));
+            short gameScore = games.get(i);
             setGameScoreText(holder.mArrayTextViewGames[i], gameScore);
 
             if (hasMatchPlayResults) {
-                byte matchPlay = matchPlayResults.get(-i + (numberOfGamesInSeries - 1));
+                byte matchPlay = matchPlayResults.get(i);
                 holder.mArrayTextViewGames[i].setPadding(matchPlayPadding,
                         matchPlayPadding,
                         matchPlayPadding,
@@ -269,18 +270,38 @@ public class SeriesAdapter
             holder.mArrayTextViewMatchPlay[i].setVisibility(View.GONE);
         }
 
-        setItemDrawable(holder.mImageViewEdit);
+        setItemDrawable(holder.mImageViewStats);
 
-        holder.mImageViewEdit.setOnClickListener(new View.OnClickListener() {
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public void onClick(View v) {
-                if (mDuplicatingSeries)
-                    mEventHandler.onDuplicateClick(mRecyclerView.getChildAdapterPosition(holder.itemView));
-                else
+            public boolean onLongClick(View view) {
+                if (mEventHandler != null) {
                     mEventHandler.onEditClick(mRecyclerView.getChildAdapterPosition(holder.itemView));
+                    return true;
+                }
+                return false;
             }
         });
 
+        holder.mImageViewStats.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mEventHandler != null) {
+                    if (mDuplicatingSeries)
+                        mEventHandler.onDuplicateClick(mRecyclerView.getChildAdapterPosition(holder.itemView));
+                    else
+                        mEventHandler.onViewStatsClick(mRecyclerView.getChildAdapterPosition(holder.itemView));
+                }
+            }
+        });
+
+        if (position % 2 == 1) {
+            holder.itemView.setBackgroundColor(DisplayUtils.getColorResource(holder.itemView.getResources(),
+                    R.color.secondary_background_offset));
+        } else {
+            holder.itemView.setBackgroundColor(DisplayUtils.getColorResource(holder.itemView.getResources(),
+                    R.color.secondary_background));
+        }
         holder.itemView.setOnClickListener(this);
     }
 
@@ -321,7 +342,7 @@ public class SeriesAdapter
      * @param seriesTotal total of the series
      */
     private void setSeriesTotalText(TextView textViewTotal, short seriesTotal) {
-        textViewTotal.setText(String.format("%d", seriesTotal));
+        textViewTotal.setText(String.format(Locale.CANADA, "%d", seriesTotal));
         if (seriesTotal >= mMinimumSeriesToHighlight) {
             textViewTotal.setBackgroundColor(Theme.getStatusThemeColor());
             textViewTotal.setTextColor(DisplayUtils.COLOR_WHITE);
@@ -340,7 +361,7 @@ public class SeriesAdapter
      * @param gameScore score of the game
      */
     private void setGameScoreText(TextView textViewGame, short gameScore) {
-        textViewGame.setText(String.format("%d", gameScore));
+        textViewGame.setText(String.format(Locale.CANADA, "%d", gameScore));
         if (gameScore >= mMinimumScoreToHighlight) {
             textViewGame.setTextColor(Theme.getTertiaryThemeColor());
             textViewGame.setAlpha(1f);
@@ -388,7 +409,8 @@ public class SeriesAdapter
         mActivity = null;
         mEventHandler = null;
         mRecyclerView = null;
-        mEditDrawable = null;
+        mCopyDrawable = null;
+        mStatsDrawable = null;
     }
 
     @Override
@@ -412,33 +434,31 @@ public class SeriesAdapter
     }
 
     /**
-     * Checks if the drawables {@code mEditDrawable} and {@code mCopyDrawable} have been loaded and loads them if not.
+     * Checks if the drawables {@code mStatsDrawable} and {@code mCopyDrawable} have been loaded and loads them if not.
      * Then, sets the relevant drawable of the image view.
      *
      * @param imageView image view to set drawable of
      */
     private void setItemDrawable(ImageView imageView) {
-        // Sets color of edit button
-        if (mEditDrawable == null)
-            mEditDrawable = DisplayUtils.getDrawable(imageView.getResources(), R.drawable.ic_edit_black_24dp);
+        if (mStatsDrawable == null)
+            mStatsDrawable = DisplayUtils.getDrawable(imageView.getResources(), R.drawable.ic_poll_black_24dp);
         if (mCopyDrawable == null)
             mCopyDrawable = DisplayUtils.getDrawable(imageView.getResources(), R.drawable.ic_content_copy_white_24dp);
         if (mDrawableFilter != Theme.getSecondaryThemeColor()) {
             mDrawableFilter = Theme.getSecondaryThemeColor();
-            mEditDrawable.setColorFilter(mDrawableFilter, PorterDuff.Mode.SRC_IN);
             mCopyDrawable.setColorFilter(mDrawableFilter, PorterDuff.Mode.SRC_IN);
         }
 
         if (mDuplicatingSeries)
             imageView.setImageDrawable(mCopyDrawable);
         else
-            imageView.setImageDrawable(mEditDrawable);
+            imageView.setImageDrawable(mStatsDrawable);
     }
 
     /**
      * Updates the appearance of the items in the adapter, to indicate if the user is selecting a series to duplicate.
      *
-     * @param duplicating {@code true} to show a "copy" icon, {@code false} to show the usual "edit" icon
+     * @param duplicating {@code true} to show a "copy" icon, {@code false} to show the usual "view stats" icon
      */
     public void setDuplicatingSeries(boolean duplicating) {
         if (mDuplicatingSeries == duplicating)
@@ -475,11 +495,18 @@ public class SeriesAdapter
         void onSItemUndoDelete(long id);
 
         /**
-         * Called when the edit image view for an item in the RecyclerView is clicked.
+         * Called when an item is long pressed.
          *
          * @param position position of the item in the list
          */
         void onEditClick(final int position);
+
+        /**
+         * Called when the stats image view for an item in the RecyclerView is clicked.
+         *
+         * @param position position of the item in the list
+         */
+        void onViewStatsClick(final int position);
 
         /**
          * Called when the duplicate image view for an item in the RecyclerView is clicked.

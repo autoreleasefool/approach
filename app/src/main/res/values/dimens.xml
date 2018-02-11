@@ -18,10 +18,10 @@
     <dimen name="transfer_progress_padding">8dp</dimen>
 
     <!-- List Items -->
+    <dimen name="list_clickable_padding">8dp</dimen>
     <dimen name="list_key_line">16dp</dimen>
-    <dimen name="list_key_line_inset">32dp</dimen>
     <dimen name="list_text_key_line">72dp</dimen>
-    <dimen name="series_padding">4dp</dimen>
+    <dimen name="list_item_padding">8dp</dimen>
 
     <!-- Indicator dimensions -->
     <dimen name="indicator_size">8dp</dimen>

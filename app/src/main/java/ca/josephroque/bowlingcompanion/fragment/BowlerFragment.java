@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.fragment;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
@@ -11,8 +12,10 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -135,7 +138,7 @@ public class BowlerFragment
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater,
+    public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_list, container, false);
@@ -417,7 +420,9 @@ public class BowlerFragment
         DialogFragment dialogFragment = NameBowlerDialog.newInstance(this,
                 true,
                 mListBowlers.get(position));
-        dialogFragment.show(getFragmentManager(), "ChangeNameBowlerDialog");
+        FragmentManager fm = getFragmentManager();
+        if (fm != null)
+            dialogFragment.show(fm, "ChangeNameBowlerDialog");
     }
 
     /**
@@ -581,7 +586,9 @@ public class BowlerFragment
      */
     private void showNewBowlerDialog() {
         DialogFragment dialogFragment = NameBowlerDialog.newInstance(this, false, null);
-        dialogFragment.show(getFragmentManager(), "NewBowlerDialog");
+        FragmentManager fm = getFragmentManager();
+        if (fm != null)
+            dialogFragment.show(fm, "NewBowlerDialog");
     }
 
     /**
@@ -746,11 +753,9 @@ public class BowlerFragment
                     int totalCount = cursor.getInt(cursor.getColumnIndex("totalCount"));
                     int totalBaseSum = cursor.getInt(cursor.getColumnIndex("totalBaseSum"));
                     int totalBaseGames = cursor.getInt(cursor.getColumnIndex("totalBaseGames"));
-                    Log.d(TAG, "Sum: " + totalSum + " Count: " + totalCount + " BaseSum: " + totalBaseSum + " BaseGames: " + totalBaseGames);
                     float bowlerAverage = ((totalCount + totalBaseGames > 0)
                             ? (totalSum + totalBaseSum) / (float) (totalCount + totalBaseGames)
                             : 0);
-                    Log.d(TAG, "Average2: " + bowlerAverage);
                     Bowler bowler = new Bowler(cursor.getLong(cursor.getColumnIndex("bid")),
                             cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_BOWLER_NAME)),
                             bowlerAverage);

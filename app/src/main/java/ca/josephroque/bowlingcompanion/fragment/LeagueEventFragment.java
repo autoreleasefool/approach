@@ -11,6 +11,7 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -114,7 +115,7 @@ public class LeagueEventFragment
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater,
+    public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_list, container, false);
@@ -271,8 +272,8 @@ public class LeagueEventFragment
             // User has provided a name which is already in use for a league or event
             validInput = false;
             invalidInputMessage = R.string.dialog_name_exists;
-        } else if (!name.matches(Constants.REGEX_LEAGUE_EVENT_NAME)) {
-            // Name is not made up of letters, numbers and spaces
+        } else if (!name.matches(Constants.REGEX_NAME)) {
+            // Name is not made up of valid characters
             validInput = false;
             invalidInputMessage = R.string.dialog_name_letters_spaces_numbers;
         } else if (baseAverage > 0 && (baseGames < 1 || baseGames > Constants.MAXIMUM_BASE_GAMES)) {
@@ -357,8 +358,8 @@ public class LeagueEventFragment
             // User has provided a name which is already in use for a league or event
             validInput = false;
             invalidInputMessageVal = R.string.dialog_name_exists;
-        } else if (!leagueEventName.matches(Constants.REGEX_LEAGUE_EVENT_NAME)) {
-            // Name is not made up of letters, numbers and spaces
+        } else if (!leagueEventName.matches(Constants.REGEX_NAME)) {
+            // Name is not made up of valid characters
             validInput = false;
             invalidInputMessageVal = R.string.dialog_name_letters_spaces_numbers;
         } else if (baseAverage > 0 && (baseGames < 1 || baseGames > Constants.MAXIMUM_BASE_GAMES)) {

@@ -12,6 +12,7 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -111,7 +112,7 @@ public class SeriesFragment
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater,
+    public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_list, container, false);
@@ -244,6 +245,12 @@ public class SeriesFragment
                 mAdapterSeries.notifyItemChanged(i);
             }
         }
+    }
+
+    @Override
+    public void onViewStatsClick(final int position) {
+        if (mSeriesCallback != null)
+            mSeriesCallback.onSeriesStatsOpened(mListSeries.get(position));
     }
 
     @Override
@@ -900,5 +907,12 @@ public class SeriesFragment
          * Displays the stats of the current league in a new StatsFragment.
          */
         void onLeagueStatsOpened();
+
+        /**
+         * Displays the stats of the selected series in a new StatsFragment.
+         *
+         * @param series series to view stats for
+         */
+        void onSeriesStatsOpened(Series series);
     }
 }

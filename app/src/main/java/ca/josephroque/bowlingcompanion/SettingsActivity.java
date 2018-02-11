@@ -5,6 +5,8 @@ import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -17,12 +19,14 @@ import android.preference.Preference;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import ca.josephroque.bowlingcompanion.database.Contract;
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper;
@@ -558,15 +562,15 @@ public class SettingsActivity
                                     + "\n\n";
 
                     Intent emailIntent = EmailUtils.getEmailIntent(
-                            "bugs@josephroque.ca",
-                            "Bug: Bowling Companion",
+                            "contact@josephroque.ca",
+                            String.format(Locale.CANADA, "Bug: Bowling Companion (%d)", BuildConfig.VERSION_CODE),
                             emailBody);
                     startActivity(Intent.createChooser(emailIntent, "Send mail..."));
                     return true;
                 } else if (preference.getKey().equals(Constants.KEY_COMMENT_SUGGESTION)) {
                     Intent emailIntent = EmailUtils.getEmailIntent(
                             "contact@josephroque.ca",
-                            "Comm/Sug: Bowling Companion",
+                            String.format(Locale.CANADA, "Comm/Sug: Bowling Companion (%d)", BuildConfig.VERSION_CODE),
                             null);
                     startActivity(Intent.createChooser(emailIntent, "Send mail..."));
                     return true;
@@ -587,6 +591,16 @@ public class SettingsActivity
             findPreference(Constants.KEY_REPORT_BUG).setOnPreferenceClickListener(mOnClickListener);
             findPreference(Constants.KEY_COMMENT_SUGGESTION).setOnPreferenceClickListener(mOnClickListener);
             findPreference(Constants.KEY_ATTRIBUTION).setOnPreferenceClickListener(mOnClickListener);
+
+            // Getting the current version of the app to display
+            try {
+                PackageInfo packageInfo = getActivity().getPackageManager()
+                        .getPackageInfo(getActivity().getPackageName(), 0);
+                findPreference(Constants.KEY_VERSION_NAME).setSummary(packageInfo.versionName
+                        + " (" + packageInfo.versionCode + ")");
+            } catch (PackageManager.NameNotFoundException ex) {
+                Log.e(TAG, "Could not find package name for app version.", ex);
+            }
         }
 
         @Override

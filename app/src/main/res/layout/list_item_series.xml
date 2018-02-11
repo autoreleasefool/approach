@@ -7,68 +7,66 @@
     android:foreground="?attr/selectableItemBackground"
     tools:ignore="RtlHardcoded,RtlSymmetry">
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:orientation="vertical">
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left|center_vertical"
-            android:orientation="vertical">
+            android:layout_gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/tv_series_date"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:alpha="0.87"
-                android:gravity="center"
-                android:paddingLeft="@dimen/list_key_line"
-                android:paddingTop="@dimen/series_padding"
-                android:paddingBottom="@dimen/series_padding"
+                android:padding="@dimen/list_item_padding"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@android:color/black" />
 
-            <RelativeLayout
+            <TextView
+                android:id="@+id/tv_series_total"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:alpha="0.87"
+                android:padding="@dimen/list_item_padding"
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
 
-                <TextView
-                    android:id="@+id/tv_series_total_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
-                    android:layout_gravity="center_vertical|left"
-                    android:layout_marginLeft="@dimen/list_key_line_inset"
-                    android:alpha="0.87"
-                    android:gravity="center"
-                    android:padding="@dimen/series_padding"
-                    android:text="@string/text_series_total"
-                    android:textColor="@android:color/black"
-                    android:textSize="16sp" />
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:background="@color/divider" />
 
-                <TextView
-                    android:id="@+id/tv_series_total"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_toRightOf="@id/tv_series_total_text"
-                    android:alpha="0.87"
-                    android:gravity="center"
-                    android:paddingLeft="@dimen/series_padding"
-                    android:paddingRight="@dimen/series_padding"
-                    android:textColor="@android:color/black"
-                    android:textSize="16sp" />
-
-            </RelativeLayout>
+            <ImageView
+                android:id="@+id/iv_view_series_stats"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:contentDescription="@string/description_view_stats"
+                android:paddingBottom="@dimen/list_clickable_padding"
+                android:paddingLeft="@dimen/list_key_line"
+                android:paddingRight="@dimen/list_key_line"
+                android:paddingTop="@dimen/list_clickable_padding"
+                android:src="@drawable/ic_poll_black_24dp" />
 
         </LinearLayout>
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_gravity="bottom"
+            android:background="@color/divider" />
+
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical|right">
+            android:layout_marginLeft="@dimen/list_item_padding"
+            android:layout_marginRight="@dimen/list_item_padding">
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -76,7 +74,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/tv_series_game_5"
+                    android:id="@+id/tv_series_game_1"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:layout_gravity="center"
@@ -91,81 +89,7 @@
                     android:textSize="16sp" />
 
                 <TextView
-                    android:id="@+id/tv_series_match_play_5"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:alpha="0.54"
-                    android:gravity="center"
-                    android:paddingBottom="@dimen/match_play_text_padding"
-                    android:paddingLeft="@dimen/match_play_text_padding"
-                    android:paddingRight="@dimen/match_play_text_padding"
-                    android:paddingTop="@dimen/match_play_text_padding_2"
-                    android:textColor="@android:color/black"
-                    android:textSize="16sp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tv_series_game_4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:alpha="0.54"
-                    android:gravity="center"
-                    android:paddingBottom="@dimen/match_play_text_padding_2"
-                    android:paddingLeft="@dimen/match_play_text_padding"
-                    android:paddingRight="@dimen/match_play_text_padding"
-                    android:paddingTop="@dimen/match_play_text_padding"
-                    android:textColor="@android:color/black"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/tv_series_match_play_4"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:alpha="0.54"
-                    android:gravity="center"
-                    android:paddingBottom="@dimen/match_play_text_padding"
-                    android:paddingLeft="@dimen/match_play_text_padding"
-                    android:paddingRight="@dimen/match_play_text_padding"
-                    android:paddingTop="@dimen/match_play_text_padding_2"
-                    android:textColor="@android:color/black"
-                    android:textSize="16sp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tv_series_game_3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
-                    android:alpha="0.54"
-                    android:gravity="center"
-                    android:paddingBottom="@dimen/match_play_text_padding_2"
-                    android:paddingLeft="@dimen/match_play_text_padding"
-                    android:paddingRight="@dimen/match_play_text_padding"
-                    android:paddingTop="@dimen/match_play_text_padding"
-                    android:textColor="@android:color/black"
-                    android:textSize="16sp" />
-
-                <TextView
-                    android:id="@+id/tv_series_match_play_3"
+                    android:id="@+id/tv_series_match_play_1"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:layout_gravity="center"
@@ -224,7 +148,7 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/tv_series_game_1"
+                    android:id="@+id/tv_series_game_3"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:layout_gravity="center"
@@ -239,7 +163,7 @@
                     android:textSize="16sp" />
 
                 <TextView
-                    android:id="@+id/tv_series_match_play_1"
+                    android:id="@+id/tv_series_match_play_3"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:layout_gravity="center"
@@ -255,19 +179,83 @@
 
             </LinearLayout>
 
-            <ImageView
-                android:id="@+id/iv_edit_date"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical|right"
-                android:layout_marginLeft="4dp"
-                android:contentDescription="@string/description_edit_date"
-                android:paddingRight="@dimen/list_key_line"
-                android:src="@drawable/ic_edit_black_24dp" />
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_series_game_4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:alpha="0.54"
+                    android:gravity="center"
+                    android:paddingBottom="@dimen/match_play_text_padding_2"
+                    android:paddingLeft="@dimen/match_play_text_padding"
+                    android:paddingRight="@dimen/match_play_text_padding"
+                    android:paddingTop="@dimen/match_play_text_padding"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/tv_series_match_play_4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:alpha="0.54"
+                    android:gravity="center"
+                    android:paddingBottom="@dimen/match_play_text_padding"
+                    android:paddingLeft="@dimen/match_play_text_padding"
+                    android:paddingRight="@dimen/match_play_text_padding"
+                    android:paddingTop="@dimen/match_play_text_padding_2"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_series_game_5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:alpha="0.54"
+                    android:gravity="center"
+                    android:paddingBottom="@dimen/match_play_text_padding_2"
+                    android:paddingLeft="@dimen/match_play_text_padding"
+                    android:paddingRight="@dimen/match_play_text_padding"
+                    android:paddingTop="@dimen/match_play_text_padding"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/tv_series_match_play_5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_gravity="center"
+                    android:layout_weight="1"
+                    android:alpha="0.54"
+                    android:gravity="center"
+                    android:paddingBottom="@dimen/match_play_text_padding"
+                    android:paddingLeft="@dimen/match_play_text_padding"
+                    android:paddingRight="@dimen/match_play_text_padding"
+                    android:paddingTop="@dimen/match_play_text_padding_2"
+                    android:textColor="@android:color/black"
+                    android:textSize="16sp" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
-    </FrameLayout>
+    </LinearLayout>
 
     <View
         android:layout_width="match_parent"

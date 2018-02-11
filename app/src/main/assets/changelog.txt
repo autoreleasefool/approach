@@ -1,3 +1,15 @@
+<b>v2.1.9</b>
+A long awaited update.
+
+- Stability fixes for Android Oreo
+- Fix bugs with "Combine Series"
+- Better font scaling for accessibility
+- Auto lock games after final frame is complete
+- List rows are larger for easier clicking
+- H+2 is now counted as a Headpin, and Split + 2 is a split
+- Allow more characters in bowler and league names
+- Redesign series screen to avoid overlapping scores
+
 <b>v2.1.8</b>
 - See your average with up to 1 decimal place by going to Settings > Statistics.
 

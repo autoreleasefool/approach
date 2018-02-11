@@ -1,21 +1,15 @@
-# Upcoming changes
-
 ```
-v2.2
+v2.1.9
 
-- Create teams of bowlers to edit more than one bowler's scores at once
+- Stability fixes for Android Oreo
+- Fix bugs with "Combine Series"
+- Better font scaling for accessibility
+- Auto lock games after final frame is complete
+- List rows are larger for easier clicking
+- H+2 is now counted as a Headpin, and Split + 2 is a split
+- Allow more characters in bowler and league names
+- Redesign series screen to avoid overlapping scores
 ```
-
-```
-v3.0
-
-Features
-- Will add Pebble Watch companion app support
-- Will add Android Wear support
-- Will provide options to export games to CSV/Excel
-```
-
-## Legacy changelogs
 
 ```
 v2.1.8

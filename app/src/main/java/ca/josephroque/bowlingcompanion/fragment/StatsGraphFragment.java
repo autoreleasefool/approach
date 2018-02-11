@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -94,6 +95,11 @@ public class StatsGraphFragment
     /** Indicates if stats should be accumulated over time, or be calculated week by week. */
     private boolean mStatAccumulate = false;
 
+    /** Indicates if Headpin + 2 should be counted as Headpins. */
+    private boolean mCountH2 = false;
+    /** Indicates if Split + 2 should be counted as Splits. */
+    private boolean mCountS2 = false;
+
     /**
      * Creates a new instance of {@code StatsGraphFragment} with the parameters provided.
      *
@@ -111,7 +117,7 @@ public class StatsGraphFragment
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_stats_graph, container, false);
@@ -153,6 +159,11 @@ public class StatsGraphFragment
             mainActivity.setFloatingActionButtonState(0, 0);
             mainActivity.setDrawerState(false);
 
+            // Check if the user has opted to count headpins + 2 as headpins or not, as well as splits + 2 as splits
+            SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(mainActivity);
+            mCountH2 = preferences.getBoolean(Constants.KEY_COUNT_H2_AS_H, false);
+            mCountS2 = preferences.getBoolean(Constants.KEY_COUNT_S2_AS_S, false);
+
             // Checks what type of stats should be displayed, depending
             // on what data is available in the parent activity at the time
             byte statsToLoad;
@@ -173,7 +184,7 @@ public class StatsGraphFragment
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
         outState.putInt(ARG_STAT_CATEGORY, mStatCategory);
@@ -794,7 +805,7 @@ public class StatsGraphFragment
                             FrameEntry.COLUMN_FRAME_NUMBER));
                     if (frameNumber == Constants.NUMBER_OF_FRAMES) {
                         totalShotsAtMiddle++;
-                        int ballValue = getFirstBallValue(pinState[0]);
+                        int ballValue = StatUtils.getFirstBallValue(pinState[0], fragment.mCountH2, fragment.mCountS2);
                         increaseFirstBallStat(ballValue, firstBallStats, 0);
 
                         if (ballValue != 0) {
@@ -802,7 +813,7 @@ public class StatsGraphFragment
                                 increaseFirstBallStat(ballValue, firstBallStats, 1);
                         } else {
                             totalShotsAtMiddle++;
-                            ballValue = getFirstBallValue(pinState[1]);
+                            ballValue = StatUtils.getFirstBallValue(pinState[1], fragment.mCountH2, fragment.mCountS2);
                             increaseFirstBallStat(ballValue, firstBallStats, 0);
 
                             if (ballValue != 0) {
@@ -810,13 +821,15 @@ public class StatsGraphFragment
                                     increaseFirstBallStat(ballValue, firstBallStats, 1);
                             } else {
                                 totalShotsAtMiddle++;
-                                ballValue = getFirstBallValue(pinState[2]);
+                                ballValue = StatUtils.getFirstBallValue(pinState[2],
+                                        fragment.mCountH2,
+                                        fragment.mCountS2);
                                 increaseFirstBallStat(ballValue, firstBallStats, 0);
                             }
                         }
                     } else {
                         totalShotsAtMiddle++;
-                        int ballValue = getFirstBallValue(pinState[0]);
+                        int ballValue = StatUtils.getFirstBallValue(pinState[0], fragment.mCountH2, fragment.mCountS2);
                         increaseFirstBallStat(ballValue, firstBallStats, 0);
 
                         if (ballValue != 0) {
@@ -848,49 +861,6 @@ public class StatsGraphFragment
                 listSuccessEntries.add(successEntry);
                 listLabels.add(dateFormat.format(lastEntryDate.getTime()));
             }
-        }
-
-        /**
-         * Returns the indicated state of the pins after a ball was thrown.
-         *
-         * @param firstBall the ball thrown
-         * @return the state of the pins after a ball was thrown
-         */
-        @SuppressWarnings("CheckStyle")
-        private int getFirstBallValue(boolean[] firstBall) {
-            if (!firstBall[2]) {
-                return -1;
-            }
-
-            int numberOfPinsKnockedDown = 0;
-            for (boolean knockedDown : firstBall) {
-                if (knockedDown)
-                    numberOfPinsKnockedDown++;
-            }
-
-            if (numberOfPinsKnockedDown == 5)
-                return Constants.BALL_VALUE_STRIKE;
-            else if (numberOfPinsKnockedDown == 4) {
-                if (!firstBall[0])
-                    return Constants.BALL_VALUE_LEFT;
-                else if (!firstBall[4])
-                    return Constants.BALL_VALUE_RIGHT;
-            } else if (numberOfPinsKnockedDown == 3) {
-                if (!firstBall[3] && !firstBall[4])
-                    return Constants.BALL_VALUE_LEFT_CHOP;
-                else if (!firstBall[0] && !firstBall[1])
-                    return Constants.BALL_VALUE_RIGHT_CHOP;
-                else if (!firstBall[0] && !firstBall[4])
-                    return Constants.BALL_VALUE_ACE;
-            } else if (numberOfPinsKnockedDown == 2) {
-                if (firstBall[1])
-                    return Constants.BALL_VALUE_LEFT_SPLIT;
-                else if (firstBall[3])
-                    return Constants.BALL_VALUE_RIGHT_SPLIT;
-            } else
-                return Constants.BALL_VALUE_HEAD_PIN;
-
-            return -2;
         }
 
         /**
@@ -1111,7 +1081,7 @@ public class StatsGraphFragment
 
                     numberOfGames++;
                     //noinspection CheckStyle
-                    boolean[][] pinState = new boolean[3][5];
+                    boolean[][] pinState = new boolean[Constants.NUMBER_OF_BALLS][Constants.NUMBER_OF_FRAMES];
                     for (byte i = 0; i < pinState.length; i++) {
                         pinState[i] = Score.ballIntToBoolean(cursor.getInt(cursor.getColumnIndex(
                                 FrameEntry.COLUMN_PIN_STATE[i])));
@@ -1121,19 +1091,19 @@ public class StatsGraphFragment
                             FrameEntry.COLUMN_FRAME_NUMBER));
 
                     if (frameNumber == Constants.NUMBER_OF_FRAMES) {
-                        int ballValue = getFirstBallValue(pinState[0]);
+                        int ballValue = StatUtils.getFirstBallValue(pinState[0], fragment.mCountH2, fragment.mCountS2);
                         if (ballValue != 0) {
                             if (!Arrays.equals(pinState[1], Constants.FRAME_PINS_DOWN))
                                 totalPinsLeft += countPinsLeftStanding(pinState[2]);
                         } else {
-                            ballValue = getFirstBallValue(pinState[1]);
+                            ballValue = StatUtils.getFirstBallValue(pinState[1], fragment.mCountH2, fragment.mCountS2);
                             if (ballValue != 0) {
                                 if (!Arrays.equals(pinState[2], Constants.FRAME_PINS_DOWN))
                                     totalPinsLeft += countPinsLeftStanding(pinState[2]);
                             }
                         }
                     } else {
-                        int ballValue = getFirstBallValue(pinState[0]);
+                        int ballValue = StatUtils.getFirstBallValue(pinState[0], fragment.mCountH2, fragment.mCountS2);
                         if (ballValue != 0) {
                             if (!Arrays.equals(pinState[1], Constants.FRAME_PINS_DOWN)) {
                                 totalPinsLeft += countPinsLeftStanding(pinState[2]);

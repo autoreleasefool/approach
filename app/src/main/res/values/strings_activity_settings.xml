@@ -20,6 +20,8 @@
     <string name="pref_comment_suggestion_summary">Have a request or an idea for a feature?</string>
     <string name="pref_attribution_title">Attributions</string>
     <string name="pref_attribution_summary">Attributions for Open Source Software</string>
+    <string name="pref_version_placeholder">Version unknown</string>
+    <string name="pref_version_name">App Version</string>
 
     <!-- Quick Settings -->
     <string name="pref_header_quick">Quick series</string>
@@ -38,6 +40,12 @@
     <string name="pref_average_as_decimal_title">Show average to 1 decimal?</string>
     <string name="pref_average_as_decimal_summaryOn">Average will have up to 1 decimal</string>
     <string name="pref_average_as_decimal_summaryOff">Average will be rounded</string>
+    <string name="pref_count_h2_title">Count Headpin + 2 as H in statistics</string>
+    <string name="pref_count_h2_summaryOn">H2 will count as H</string>
+    <string name="pref_count_h2_summaryOff">H2 will NOT count as H</string>
+    <string name="pref_count_s2_title">Count Split + 2 as S in statistics</string>
+    <string name="pref_count_s2_summaryOn">S2 will count as S</string>
+    <string name="pref_count_s2_summaryOff">S2 will NOT count as S</string>
     <string name="pref_include_events_title">Include events in stats?</string>
     <string name="pref_include_events_summaryOn">Events will be included</string>
     <string name="pref_include_events_summaryOff">Events will NOT be included</string>
@@ -46,7 +54,7 @@
     <string name="pref_include_open_summaryOff">Open games will NOT be included</string>
     <string name="pref_highlight_score_title">Game highlights</string>
     <string name="pref_highlight_series_title">Series highlights</string>
-    
+
     <!-- Theme Settings -->
     <string name="pref_header_theme">Interface</string>
     <string name="pref_theme_colors_title">Theme colors</string>
@@ -77,6 +85,9 @@
     <string name="pref_enable_strike_highlights_title">Highlight strikes/spares</string>
     <string name="pref_enable_strike_highlights_summaryOn">Mark highlights are enabled</string>
     <string name="pref_enable_strike_highlights_summaryOff">Mark highlights are disabled</string>
+    <string name="pref_enable_auto_lock_title">Auto lock games when done?</string>
+    <string name="pref_enable_auto_lock_summaryOn">Games will auto lock</string>
+    <string name="pref_enable_auto_lock_summaryOff">Games will not auto lock</string>
     <string name="pref_enable_auto_advance_title">Auto advance frame</string>
     <string name="pref_enable_auto_advance_summaryOn">Frame will auto advance after an interval of inactivity</string>
     <string name="pref_enable_auto_advance_summaryOff">Frame will not auto advance</string>

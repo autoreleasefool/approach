@@ -117,9 +117,9 @@ public class MainActivity
     /** Id of current game being used in fragments. */
     private long mGameId = -1;
     /** Number of games in current league/event in fragments. */
-    private byte mDefaultNumberOfGames = -1;
+    private byte mDefaultNumberOfGames;
     /** Number of games in a newly created series. */
-    private byte mNumberOfGamesForSeries = -1;
+    private byte mNumberOfGamesForSeries;
     /** Name of current bowler being used in fragments. */
     private String mBowlerName;
     /** Name of current league being used in fragments. */
@@ -156,7 +156,6 @@ public class MainActivity
     private final Runnable mAutoAdvanceCallback = new Runnable() {
         @Override
         public void run() {
-            Log.d(TAG, "Auto advance: " + mAutoAdvanceDelayRemaining);
             if (--mAutoAdvanceDelayRemaining <= 0) {
                 mViewAutoAdvance.performClick();
                 stopAutoAdvanceTimer();
@@ -167,8 +166,9 @@ public class MainActivity
                         public void run() {
                             final int timeToDelay = 1000;
                             mTextViewAutoAdvanceStatus.setVisibility(View.VISIBLE);
-                            mTextViewAutoAdvanceStatus.setText(String.format(
-                                    getResources().getString(R.string.text_until_auto_advance_placeholder),
+                            mTextViewAutoAdvanceStatus.setText(getResources().getQuantityString(
+                                    R.plurals.text_until_auto_advance_placeholder,
+                                    mAutoAdvanceDelayRemaining,
                                     mAutoAdvanceDelayRemaining));
                             mAutoAdvanceHandler.postDelayed(mAutoAdvanceCallback, timeToDelay);
                         }
@@ -246,6 +246,9 @@ public class MainActivity
                     .edit()
                     .remove(Constants.PREF_FACEBOOK_CLOSED)
                     .apply();
+
+            mDefaultNumberOfGames = -1;
+            mNumberOfGamesForSeries = -1;
         } else {
             // Loads member variables from bundle
             mBowlerId = savedInstanceState.getLong(Constants.EXTRA_ID_BOWLER, -1);
@@ -256,10 +259,8 @@ public class MainActivity
             mBowlerName = savedInstanceState.getString(Constants.EXTRA_NAME_BOWLER);
             mLeagueName = savedInstanceState.getString(Constants.EXTRA_NAME_LEAGUE);
             mSeriesDate = savedInstanceState.getString(Constants.EXTRA_NAME_SERIES);
-            mDefaultNumberOfGames = savedInstanceState.getByte(Constants.EXTRA_NUMBER_OF_GAMES,
-                    (byte) -1);
-            mNumberOfGamesForSeries = savedInstanceState.getByte(Constants.EXTRA_GAMES_IN_SERIES,
-                    (byte) -1);
+            mDefaultNumberOfGames = savedInstanceState.getByte(Constants.EXTRA_NUMBER_OF_GAMES, (byte) -1);
+            mNumberOfGamesForSeries = savedInstanceState.getByte(Constants.EXTRA_GAMES_IN_SERIES, (byte) -1);
             mIsEventMode = savedInstanceState.getBoolean(Constants.EXTRA_EVENT_MODE);
             mIsQuickSeries = savedInstanceState.getBoolean(Constants.EXTRA_QUICK_SERIES);
             int navCurrentGameNumber =
@@ -318,20 +319,24 @@ public class MainActivity
                 while (mAppIsRunning.get() || mQueueSavingThreads.peek() != null) {
                     mRunningSaveThread = mQueueSavingThreads.peek();
                     if (mRunningSaveThread != null) {
-                        mRunningSaveThread.start();
-                        try {
-                            mRunningSaveThread.join();
+                        if (mRunningSaveThread.getState() == Thread.State.NEW) {
+                            mRunningSaveThread.start();
+                            try {
+                                mRunningSaveThread.join();
+                                mQueueSavingThreads.poll();
+                            } catch (InterruptedException ex) {
+                                throw new RuntimeException("Error saving game: " + ex.getMessage());
+                            }
+                        } else {
+                            Log.e(TAG, "Thread already started - " + mRunningSaveThread.getState().toString());
                             mQueueSavingThreads.poll();
-                        } catch (InterruptedException ex) {
-                            throw new RuntimeException("Error saving game: " + ex.getMessage());
                         }
                     } else {
                         try {
                             //noinspection CheckStyle
                             Thread.sleep(100);
                         } catch (InterruptedException ex) {
-                            throw new RuntimeException("Error while saving thread sleeping: "
-                                    + ex.getMessage());
+                            throw new RuntimeException("Error while saving thread sleeping: " + ex.getMessage());
                         }
                     }
                 }
@@ -745,6 +750,14 @@ public class MainActivity
     }
 
     @Override
+    public void onSeriesStatsOpened(Series series) {
+        mSeriesId = series.getSeriesId();
+        mSeriesDate = series.getSeriesDate();
+        mNumberOfGamesForSeries = series.getNumberOfGames();
+        openStatsFragment(Constants.FRAGMENT_GAME);
+    }
+
+    @Override
     public void onGameStatsOpened(long gameId, byte gameNumber) {
         mGameId = gameId;
         mGameNumber = gameNumber;
@@ -809,7 +822,7 @@ public class MainActivity
             case NavigationUtils.NAVIGATION_ITEM_FEEDBACK:
                 Intent emailIntent = EmailUtils.getEmailIntent(
                         "contact@josephroque.ca",
-                        "Comm/Sug: Bowling Companion",
+                        String.format(Locale.CANADA, "Comm/Sug: Bowling Companion (%d)", BuildConfig.VERSION_CODE),
                         null);
                 startActivity(Intent.createChooser(emailIntent, "Send mail..."));
                 break;
@@ -934,52 +947,54 @@ public class MainActivity
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.main_drawer_layout);
         mDrawerRecyclerView = (RecyclerView) findViewById(R.id.main_drawer_list);
-        ViewGroup.LayoutParams layoutParams = mDrawerRecyclerView.getLayoutParams();
-        layoutParams.width = Math.min(displayWidth - toolbarHeight, maxNavigationDrawerWidth);
-        mDrawerRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        if (mDrawerRecyclerView != null && mDrawerLayout != null) {
+            ViewGroup.LayoutParams layoutParams = mDrawerRecyclerView.getLayoutParams();
+            layoutParams.width = Math.min(displayWidth - toolbarHeight, maxNavigationDrawerWidth);
+            mDrawerRecyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        mListDrawerOptions = new ArrayList<>();
-        mListDrawerOptions.add(NavigationUtils.NAVIGATION_ITEM_HEADER);
-        mListDrawerOptions.add(NavigationUtils.NAVIGATION_ITEM_BOWLERS);
-        mListDrawerOptions.add(NavigationUtils.NAVIGATION_SUBHEADER_GAMES);
-        mListDrawerOptions.add(NavigationUtils.NAVIGATION_SUBHEADER_OTHER);
-        mListDrawerOptions.add(NavigationUtils.NAVIGATION_ITEM_FEEDBACK);
-        mListDrawerOptions.add(NavigationUtils.NAVIGATION_ITEM_HELP);
-        mListDrawerOptions.add(NavigationUtils.NAVIGATION_ITEM_SETTINGS);
+            mListDrawerOptions = new ArrayList<>();
+            mListDrawerOptions.add(NavigationUtils.NAVIGATION_ITEM_HEADER);
+            mListDrawerOptions.add(NavigationUtils.NAVIGATION_ITEM_BOWLERS);
+            mListDrawerOptions.add(NavigationUtils.NAVIGATION_SUBHEADER_GAMES);
+            mListDrawerOptions.add(NavigationUtils.NAVIGATION_SUBHEADER_OTHER);
+            mListDrawerOptions.add(NavigationUtils.NAVIGATION_ITEM_FEEDBACK);
+            mListDrawerOptions.add(NavigationUtils.NAVIGATION_ITEM_HELP);
+            mListDrawerOptions.add(NavigationUtils.NAVIGATION_ITEM_SETTINGS);
 
-        mDrawerAdapter = new NavigationDrawerAdapter(this, mListDrawerOptions);
-        mDrawerAdapter.setPositionToSubheader(NavigationUtils.NAVIGATION_SUBHEADER_GAMES);
-        mDrawerAdapter.setPositionToSubheader(NavigationUtils.NAVIGATION_SUBHEADER_OTHER);
-        mDrawerRecyclerView.setAdapter(mDrawerAdapter);
+            mDrawerAdapter = new NavigationDrawerAdapter(this, mListDrawerOptions);
+            mDrawerAdapter.setPositionToSubheader(NavigationUtils.NAVIGATION_SUBHEADER_GAMES);
+            mDrawerAdapter.setPositionToSubheader(NavigationUtils.NAVIGATION_SUBHEADER_OTHER);
+            mDrawerRecyclerView.setAdapter(mDrawerAdapter);
 
-        mDrawerToggle = new ActionBarDrawerToggle(this,
-                mDrawerLayout,
-                R.string.text_open_drawer,
-                R.string.text_close_drawer) {
+            mDrawerToggle = new ActionBarDrawerToggle(this,
+                    mDrawerLayout,
+                    R.string.text_open_drawer,
+                    R.string.text_close_drawer) {
 
-            /** Called when a drawer has settled in a completely closed state. */
-            @Override
-            public void onDrawerClosed(View view) {
-                super.onDrawerClosed(view);
-                setActionBarTitle(mTitle);
-                invalidateOptionsMenu();
-            }
+                /** Called when a drawer has settled in a completely closed state. */
+                @Override
+                public void onDrawerClosed(View view) {
+                    super.onDrawerClosed(view);
+                    setActionBarTitle(mTitle);
+                    invalidateOptionsMenu();
+                }
 
-            /** Called when a drawer has settled in a completely open state. */
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                setActionBarTitle(mDrawerTitle, false);
-                invalidateOptionsMenu();
-            }
+                /** Called when a drawer has settled in a completely open state. */
+                @Override
+                public void onDrawerOpened(View drawerView) {
+                    super.onDrawerOpened(drawerView);
+                    setActionBarTitle(mDrawerTitle, false);
+                    invalidateOptionsMenu();
+                }
 
-            @Override
-            public void onDrawerSlide(View drawerView, float slideOffset) {
-                super.onDrawerSlide(drawerView, slideOffset);
-                NavigationUtils.setDrawerOffset(slideOffset);
-            }
-        };
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
+                @Override
+                public void onDrawerSlide(View drawerView, float slideOffset) {
+                    super.onDrawerSlide(drawerView, slideOffset);
+                    NavigationUtils.setDrawerOffset(slideOffset);
+                }
+            };
+            mDrawerLayout.addDrawerListener(mDrawerToggle);
+        }
     }
 
     /**
@@ -1335,7 +1350,7 @@ public class MainActivity
             if (mainActivity == null)
                 return null;
 
-            long seriesId = -1;
+            long seriesId;
             long[] gameId = new long[mainActivity.mNumberOfGamesForSeries];
             long[] frameId = new long[mainActivity.mNumberOfGamesForSeries
                     * Constants.NUMBER_OF_FRAMES];
