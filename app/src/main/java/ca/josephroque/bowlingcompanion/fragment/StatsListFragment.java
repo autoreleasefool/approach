@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.util.Pair;
 import android.view.LayoutInflater;
@@ -91,7 +92,7 @@ public class StatsListFragment
 
     @SuppressWarnings("deprecation")
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_stats_list, container, false);
@@ -475,7 +476,7 @@ public class StatsListFragment
                             + ". must be between 0 and 3 (inclusive)");
             }
 
-            /**
+            /*
              * Passes through rows in cursor and updates stats which
              * are affected as each frame is analyzed
              */

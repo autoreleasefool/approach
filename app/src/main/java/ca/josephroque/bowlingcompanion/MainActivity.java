@@ -166,9 +166,9 @@ public class MainActivity
                         public void run() {
                             final int timeToDelay = 1000;
                             mTextViewAutoAdvanceStatus.setVisibility(View.VISIBLE);
-                            mTextViewAutoAdvanceStatus.setText(String.format(
-                                    Locale.CANADA,
-                                    getResources().getString(R.string.text_until_auto_advance_placeholder),
+                            mTextViewAutoAdvanceStatus.setText(getResources().getQuantityString(
+                                    R.plurals.text_until_auto_advance_placeholder,
+                                    mAutoAdvanceDelayRemaining,
                                     mAutoAdvanceDelayRemaining));
                             mAutoAdvanceHandler.postDelayed(mAutoAdvanceCallback, timeToDelay);
                         }
@@ -1350,7 +1350,7 @@ public class MainActivity
             if (mainActivity == null)
                 return null;
 
-            long seriesId = -1;
+            long seriesId;
             long[] gameId = new long[mainActivity.mNumberOfGamesForSeries];
             long[] frameId = new long[mainActivity.mNumberOfGamesForSeries
                     * Constants.NUMBER_OF_FRAMES];

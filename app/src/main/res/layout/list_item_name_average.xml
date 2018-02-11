@@ -29,9 +29,8 @@
             android:layout_weight="1"
             android:layout_gravity="center_vertical"
             android:alpha="0.87"
-            android:ellipsize="middle"
+            android:singleLine="true"
             android:gravity="left|center_vertical"
-            android:maxLines="1"
             android:paddingLeft="@dimen/list_key_line"
             android:textColor="@android:color/black"
             android:textSize="18sp" />

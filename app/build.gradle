@@ -10,7 +10,7 @@ android {
     defaultConfig {
         applicationId "ca.josephroque.bowlingcompanion"
         minSdkVersion 15
-        targetSdkVersion 23
+        targetSdkVersion 27
         versionCode versionMajor * 100 + versionMinor * 10 + versionPatch
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
     }

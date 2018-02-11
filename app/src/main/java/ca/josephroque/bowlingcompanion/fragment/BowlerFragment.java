@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.fragment;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
@@ -11,8 +12,10 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.annotation.NonNull;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -135,7 +138,7 @@ public class BowlerFragment
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater,
+    public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_list, container, false);
@@ -306,24 +309,27 @@ public class BowlerFragment
             mListBowlers.set(position, bowlerWithNewName);
             mAdapterBowlers.notifyItemChanged(position);
 
-            ((MainActivity) getActivity()).addSavingThread(new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    SQLiteDatabase database = DatabaseHelper.getInstance(getContext()).getWritableDatabase();
-                    String[] whereArgs = {String.valueOf(bowlerWithNewName.getId())};
-                    ContentValues values = new ContentValues();
-                    values.put(BowlerEntry.COLUMN_BOWLER_NAME, bowlerWithNewName.getBowlerName());
-                    database.beginTransaction();
-                    try {
-                        database.update(BowlerEntry.TABLE_NAME, values, BowlerEntry._ID + "=?", whereArgs);
-                        database.setTransactionSuccessful();
-                    } catch (Exception ex) {
-                        Log.e(TAG, "Error updating bowler name.", ex);
-                    } finally {
-                        database.endTransaction();
+            MainActivity mainActivity = (MainActivity) getActivity();
+            if (mainActivity != null) {
+                mainActivity.addSavingThread(new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        SQLiteDatabase database = DatabaseHelper.getInstance(getContext()).getWritableDatabase();
+                        String[] whereArgs = {String.valueOf(bowlerWithNewName.getId())};
+                        ContentValues values = new ContentValues();
+                        values.put(BowlerEntry.COLUMN_BOWLER_NAME, bowlerWithNewName.getBowlerName());
+                        database.beginTransaction();
+                        try {
+                            database.update(BowlerEntry.TABLE_NAME, values, BowlerEntry._ID + "=?", whereArgs);
+                            database.setTransactionSuccessful();
+                        } catch (Exception ex) {
+                            Log.e(TAG, "Error updating bowler name.", ex);
+                        } finally {
+                            database.endTransaction();
+                        }
                     }
-                }
-            }));
+                }));
+            }
         }
     }
 
@@ -417,7 +423,9 @@ public class BowlerFragment
         DialogFragment dialogFragment = NameBowlerDialog.newInstance(this,
                 true,
                 mListBowlers.get(position));
-        dialogFragment.show(getFragmentManager(), "ChangeNameBowlerDialog");
+        FragmentManager fm = getFragmentManager();
+        if (fm != null)
+            dialogFragment.show(fm, "ChangeNameBowlerDialog");
     }
 
     /**
@@ -581,7 +589,9 @@ public class BowlerFragment
      */
     private void showNewBowlerDialog() {
         DialogFragment dialogFragment = NameBowlerDialog.newInstance(this, false, null);
-        dialogFragment.show(getFragmentManager(), "NewBowlerDialog");
+        FragmentManager fm = getFragmentManager();
+        if (fm != null)
+            dialogFragment.show(fm, "NewBowlerDialog");
     }
 
     /**
@@ -590,41 +600,43 @@ public class BowlerFragment
      * @param bowlerId id of bowler whose data will be deleted
      */
     private void deleteBowler(final long bowlerId) {
-        SharedPreferences prefs =
-                getActivity().getSharedPreferences(Constants.PREFS, Context.MODE_PRIVATE);
-        SharedPreferences.Editor prefsEditor = prefs.edit();
-        long recentId = prefs.getLong(Constants.PREF_RECENT_BOWLER_ID, -1);
-        long quickId = prefs.getLong(Constants.PREF_QUICK_BOWLER_ID, -1);
+        Activity activity = getActivity();
+        if (activity != null) {
+            SharedPreferences prefs = activity.getSharedPreferences(Constants.PREFS, Context.MODE_PRIVATE);
+            SharedPreferences.Editor prefsEditor = prefs.edit();
+            long recentId = prefs.getLong(Constants.PREF_RECENT_BOWLER_ID, -1);
+            long quickId = prefs.getLong(Constants.PREF_QUICK_BOWLER_ID, -1);
 
-        // Clears recent/quick ids if they match the deleted bowler
-        if (recentId == bowlerId) {
-            prefsEditor.putLong(Constants.PREF_RECENT_BOWLER_ID, -1)
-                    .putLong(Constants.PREF_RECENT_LEAGUE_ID, -1);
-        }
-        if (quickId == bowlerId) {
-            prefsEditor.putLong(Constants.PREF_QUICK_BOWLER_ID, -1)
-                    .putLong(Constants.PREF_QUICK_LEAGUE_ID, -1);
-        }
-        prefsEditor.apply();
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                SQLiteDatabase database = DatabaseHelper.getInstance(getContext()).getWritableDatabase();
-                String[] whereArgs = {String.valueOf(bowlerId)};
-                database.beginTransaction();
-                try {
-                    database.delete(BowlerEntry.TABLE_NAME,
-                            BowlerEntry._ID + "=?",
-                            whereArgs);
-                    database.setTransactionSuccessful();
-                } catch (Exception e) {
-                    // does nothing
-                } finally {
-                    database.endTransaction();
-                }
+            // Clears recent/quick ids if they match the deleted bowler
+            if (recentId == bowlerId) {
+                prefsEditor.putLong(Constants.PREF_RECENT_BOWLER_ID, -1)
+                        .putLong(Constants.PREF_RECENT_LEAGUE_ID, -1);
             }
-        }).start();
+            if (quickId == bowlerId) {
+                prefsEditor.putLong(Constants.PREF_QUICK_BOWLER_ID, -1)
+                        .putLong(Constants.PREF_QUICK_LEAGUE_ID, -1);
+            }
+            prefsEditor.apply();
+
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    SQLiteDatabase database = DatabaseHelper.getInstance(getContext()).getWritableDatabase();
+                    String[] whereArgs = {String.valueOf(bowlerId)};
+                    database.beginTransaction();
+                    try {
+                        database.delete(BowlerEntry.TABLE_NAME,
+                                BowlerEntry._ID + "=?",
+                                whereArgs);
+                        database.setTransactionSuccessful();
+                    } catch (Exception e) {
+                        // does nothing
+                    } finally {
+                        database.endTransaction();
+                    }
+                }
+            }).start();
+        }
     }
 
     /**

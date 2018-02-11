@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
@@ -93,7 +94,7 @@ public final class TransferFragment
     private String mLastKeyReceived = null;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final ScrollView rootView = (ScrollView) inflater.inflate(R.layout.fragment_transfer, container, false);
 
@@ -145,7 +146,7 @@ public final class TransferFragment
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
 
         outState.putInt(IMPORT_FAILURES, mImportFailures);
@@ -290,8 +291,8 @@ public final class TransferFragment
                         mCurrentTransferTask.execute(mImportFailures > 0);
                     } else {
                         TextView textView = (TextView) rootView.findViewById(R.id.tv_transfer_import_result);
-                        textView.setText(String.format(Locale.CANADA,
-                                getResources().getString(R.string.text_transfer_invalid_key),
+                        textView.setText(getResources().getQuantityString(R.plurals.text_transfer_invalid_key,
+                                TransferUtils.TRANSFER_KEY_LENGTH,
                                 TransferUtils.TRANSFER_KEY_LENGTH));
                         textView.setTextColor(DisplayUtils.getColorResource(getResources(), R.color.transfer_error));
                         textView.setVisibility(View.VISIBLE);
@@ -802,8 +803,9 @@ public final class TransferFragment
                     textViewResult.setText(R.string.text_transfer_unavailable);
                     break;
                 case TransferUtils.ERROR_INVALID_KEY:
-                    textViewResult.setText(String.format(Locale.CANADA, fragment.getResources()
-                            .getString(R.string.text_transfer_invalid_key), TransferUtils.TRANSFER_KEY_LENGTH));
+                    textViewResult.setText(fragment.getResources().getQuantityString(R.plurals.text_transfer_invalid_key,
+                            TransferUtils.TRANSFER_KEY_LENGTH,
+                            TransferUtils.TRANSFER_KEY_LENGTH));
                     break;
                 case TransferUtils.ERROR_NO_INTERNET:
                     textViewResult.setText(R.string.text_transfer_no_internet);

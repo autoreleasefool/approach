@@ -44,7 +44,6 @@
     <string name="action_stats">Stats</string>
     <string name="action_edit_date">Change series date</string>
     <string name="action_share">Share</string>
-    <string name="action_series_stats">Series stats</string>
     <string name="action_event_stats">Event stats</string>
     <string name="action_best_possible">Hi score possible</string>
     <string name="action_reset_game">Reset game</string>
@@ -57,8 +56,6 @@
     <!-- TextView text -->
     <string name="text_next_ball">Next Ball</string>
     <string name="text_prev_ball">Prev Ball</string>
-    <string name="text_open_drawer">Open Navigation Drawer</string>
-    <string name="text_close_drawer">Close Navigation Drawer</string>
     <string name="text_rate_prompt">If you like this app, please consider rating it.</string>
     <string name="text_rate_app">Rate</string>
     <string name="text_rate_remind_me">Remind me</string>
@@ -77,7 +74,6 @@
     <string name="text_next_stat">Next stat</string>
     <string name="text_prev_stat">Previous stat</string>
     <string name="text_like_on_fb">Be sure to like us on Facebook for news and updates!</string>
-    <string name="text_series_total">Total:</string>
     <string name="text_cancel_duplicate">Duplicating series. Tap to cancel.</string>
     <string name="text_league_base_average_explanation">If you are starting recording in the middle of a season, add your current average (0&#8211;450) and games played below for a more accurate average. Otherwise, leave them blank. If you only enter an average, the # of games is assumed to be 1. If you only enter the # of games, both fields are ignored.</string>
 
@@ -104,7 +100,10 @@
     <string name="text_transfer_unavailable">The server is unavailable, please try again in about an hour.</string>
     <string name="text_transfer_upload_complete">Upload complete! Your code:\n%1$s</string>
     <string name="text_transfer_exported_already">You\'ve already exported your data to the server. Your code was: %1$s</string>
-    <string name="text_transfer_invalid_key">Your key should be exactly %1$d characters long.</string>
+    <plurals name="text_transfer_invalid_key">
+        <item quantity="one">Your key should be exactly %1$d character long.</item>
+        <item quantity="other">Your key should be exactly %1$d character long.</item>
+    </plurals>
     <string name="text_transfer_no_internet">Could not connect to the Internet.</string>
     <string name="text_overwrite_data_title">Overwrite data?</string>
     <string name="text_overwrite_data_message">You have downloaded a set of bowler data from another device. You can overwrite your current data, confirm it\'s correct, then return to this screen to either delete the backup or reload your old data. Are you sure you want to continue?</string>
@@ -122,10 +121,11 @@
     <!-- Placeholder text -->
     <string name="text_click_to_delete">Click to delete %1$s</string>
     <string name="text_average_placeholder">Avg: %1$s</string>
-    <string name="text_until_auto_advance_placeholder">%1$d seconds until auto advance</string>
+    <plurals name="text_until_auto_advance_placeholder">
+        <item quantity="one">%1$d second until auto advance</item>
+        <item quantity="other">%1$d seconds until auto advance</item>
+    </plurals>
     <string name="text_game_placeholder">Game %1$d</string>
-    <string name="text_max_games_placeholder">The number of games must be between 1 and %1$d.</string>
-    <string name="text_max_name_length_placeholder">%1$s name (max %2$d characters)</string>
 
     <!-- Tutorial -->
     <string name="text_tutorial_welcome">Welcome to your 5 Pin Bowling Companion!</string>

@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.view.View;
 
-import ca.josephroque.bowlingcompanion.Constants;
 import ca.josephroque.bowlingcompanion.R;
 
 /**
