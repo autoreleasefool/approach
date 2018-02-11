@@ -356,7 +356,9 @@ public class SeriesFragment
         boolean showDialog = false;
         Series prevSeries = null;
         for (Series series : mListSeries) {
-            if (prevSeries != null && series.getSeriesDate().equals(prevSeries.getSeriesDate())) {
+            if (prevSeries != null && series.getSeriesDate().equals(prevSeries.getSeriesDate())
+                    && prevSeries.getNumberOfGames() != Constants.MAX_NUMBER_LEAGUE_GAMES
+                    && series.getNumberOfGames() != Constants.MAX_NUMBER_LEAGUE_GAMES) {
                 showDialog = true;
                 break;
             }
