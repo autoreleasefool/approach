@@ -1,9 +1,0 @@
-<resources>
-
-    <declare-styleable name="Highlights">
-        <attr name="minimumValue" format="integer" />
-        <attr name="maximumValue" format="integer" />
-        <attr name="incrementBy" format="integer" />
-    </declare-styleable>
-
-</resources>

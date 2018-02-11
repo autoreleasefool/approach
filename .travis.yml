@@ -1,24 +1,24 @@
 language: android
 android:
-  components:
-    - tools
-    - build-tools-27.0.3
-    - android-27
-    - platform-tools
-    - add-on
-    - extra
+    components:
+        - tools
+        - build-tools-27.0.3
+        - android-27
+        - platform-tools
+        - add-on
+        - extra
 licenses:
     - 'android-sdk-license-.+'
 jdk:
     - oraclejdk8
 before_install:
-  - yes | sdkmanager "platforms;android-27"
+    - yes | sdkmanager "platforms;android-27"
 script:
     - ./gradlew assembleDebug
 before_cache:
     - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
 cache:
-  directories:
-    - $HOME/.m2
-    - $HOME/.gradle/caches/
-    - $HOME/.gradle/wrapper/
+    directories:
+        - $HOME/.m2
+        - $HOME/.gradle/caches/
+        - $HOME/.gradle/wrapper/
