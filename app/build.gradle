@@ -43,7 +43,4 @@ dependencies {
 
     // Other dependencies
     compile 'com.github.PhilJay:MPAndroidChart:v2.1.6'
-
-    // Testing dependencies
-    testCompile "org.robolectric:robolectric:3.0"
 }
