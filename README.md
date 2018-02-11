@@ -27,8 +27,6 @@ Internet access - Allows the app to display ads. We do not ask for or store any 
 1. Clone project ```git clone https://github.com/josephroque/bowling-companion.git```
 2. Import the project into Android Studio.
 
-[View the JavaDocs](http://josephroque.github.io/bowling-companion/)
-
 ## Screenshots
 
 #### Screenshots from Version 2.0
@@ -50,7 +48,7 @@ Internet access - Allows the app to display ads. We do not ask for or store any 
 ## License
 
 ```
-Copyright 2015 Joseph Roque
+Copyright 2015-2018 Joseph Roque
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
