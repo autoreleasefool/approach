@@ -32,6 +32,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -196,7 +197,7 @@ public class MainActivity
     /** Title of the navigation drawer. */
     private int mDrawerTitle;
     /** Title of the activity for when navigation drawer is closed. */
-    private int mTitle;
+    private ActivityTitle mTitle;
     /** Items in the navigation drawer. */
     private ArrayList<String> mListDrawerOptions;
 
@@ -219,7 +220,7 @@ public class MainActivity
         setContentView(R.layout.activity_main);
         mAutoAdvanceHandler = new AutoAdvanceHandler(Looper.getMainLooper());
 
-        mTitle = R.string.app_name;
+        mTitle = new ActivityTitle(R.string.app_name, null);
         mDrawerTitle = R.string.title_drawer;
         Toolbar toolbar = (Toolbar) findViewById(R.id.main_toolbar);
         setSupportActionBar(toolbar);
@@ -525,7 +526,7 @@ public class MainActivity
         if (isDrawerOpen())
             setActionBarTitle(mDrawerTitle, false);
         else
-            setActionBarTitle(mTitle, false);
+            setActionBarTitle(mTitle);
     }
 
     @Override
@@ -960,7 +961,7 @@ public class MainActivity
             @Override
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
-                setActionBarTitle(mTitle, false);
+                setActionBarTitle(mTitle);
                 invalidateOptionsMenu();
             }
 
@@ -1060,16 +1061,30 @@ public class MainActivity
      * @param override indicates if reference to resId title should be saved in mTitle
      */
     public void setActionBarTitle(int resId, boolean override) {
-        // Changing title theme color
-        // final String hexColor = DataFormatter.getHexColorFromInt(Theme.getHeaderFontThemeColor());
+        ActivityTitle title = new ActivityTitle(resId, null);
+        this.setActionBarTitle(title);
+        if (override) {
+            mTitle = title;
+        }
+    }
 
-        // if (getSupportActionBar() != null)
-        // getSupportActionBar().setTitle(Html.fromHtml("<font color=\"" + hexColor + "\">"
-        // + getResources().getString(resId) + "</font>"));
-        if (getSupportActionBar() != null)
-            getSupportActionBar().setTitle(resId);
-        if (override)
-            mTitle = resId;
+    public void setActionBarTitle(CharSequence sequence, boolean override) {
+        ActivityTitle title = new ActivityTitle(0, sequence);
+        this.setActionBarTitle(title);
+        if (override) {
+            mTitle = title;
+        }
+    }
+
+    public void setActionBarTitle(ActivityTitle title) {
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            if (title.sequence != null) {
+                actionBar.setTitle(title.sequence);
+            } else {
+                actionBar.setTitle(title.resId);
+            }
+        }
     }
 
     /**
@@ -1505,6 +1520,27 @@ public class MainActivity
         @Override
         public void handleMessage(Message message) {
             // does nothing;
+        }
+    }
+
+    /**
+     * To store a title as a {@code String} or {@code int}.
+     */
+    private static final class ActivityTitle {
+        /** String ID for title. */
+        private final int resId;
+        /** String for title. */
+        private final CharSequence sequence;
+
+        /**
+         * Set either ID or String for the title of the activity.
+         *
+         * @param resId string ID
+         * @param sequence string sequence
+         */
+        ActivityTitle(int resId, CharSequence sequence) {
+            this.resId = resId;
+            this.sequence = sequence;
         }
     }
 }

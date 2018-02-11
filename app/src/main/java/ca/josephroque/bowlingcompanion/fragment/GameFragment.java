@@ -510,7 +510,7 @@ public class GameFragment
         super.onResume();
         if (getActivity() != null) {
             MainActivity mainActivity = (MainActivity) getActivity();
-            mainActivity.setActionBarTitle(R.string.title_fragment_game, true);
+            mainActivity.setActionBarTitle(mainActivity.getBowlerName(), true);
             mainActivity.setFloatingActionButtonState(0, 0);
             mainActivity.createGameNavigationDrawer();
             mainActivity.setDrawerState(true);
