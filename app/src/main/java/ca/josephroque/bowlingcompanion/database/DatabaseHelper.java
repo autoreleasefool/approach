@@ -82,6 +82,7 @@ public final class DatabaseHelper
         createFrameTable(db);
         createMatchPlayTable(db);
         createTeamTable(db);
+        createTeamBowlerTable(db);
         createTableIndices(db);
     }
 
@@ -444,6 +445,8 @@ public final class DatabaseHelper
                 + GameEntry.TABLE_NAME + "(" + GameEntry.COLUMN_SERIES_ID + ")");
         db.execSQL("CREATE INDEX frame_game_fk_index ON "
                 + FrameEntry.TABLE_NAME + "(" + FrameEntry.COLUMN_GAME_ID + ")");
+
+
     }
 
     /**
@@ -588,8 +591,15 @@ public final class DatabaseHelper
             db.endTransaction();
         }
     }
-    
+
     private void upgradeDatabaseFrom6to7(SQLiteDatabase db) {
+        db.execSQL("ALTER TABLE " + LeagueEntry.TABLE_NAME
+                + " ADD COLUMN "
+                + LeagueEntry.COLUMN_ADDITIONAL_PINFALL + " INTEGER NOT NULL DEFAULT 0;");
+        db.execSQL("ALTER TABLE " + LeagueEntry.TABLE_NAME
+                + " ADD COLUMN "
+                + LeagueEntry.COLUMN_ADDITIONAL_GAMES + " INTEGER NOT NULL DEFAULT 0;");
+
         try {
             db.beginTransaction();
             ContentValues values = new ContentValues();
@@ -598,6 +608,11 @@ public final class DatabaseHelper
                     values,
                     LeagueEntry.COLUMN_LEAGUE_NAME + "=?",
                     new String[]{League.Companion.getOPEN_LEAGUE_NAME()});
+
+            db.execSQL("UPDATE " + LeagueEntry.TABLE_NAME + " SET "
+                    + LeagueEntry.COLUMN_ADDITIONAL_GAMES + "=" + LeagueEntry.COLUMN_BASE_GAMES + ", "
+                    + LeagueEntry.COLUMN_ADDITIONAL_PINFALL + "=" + LeagueEntry.COLUMN_BASE_GAMES + "*" + LeagueEntry.COLUMN_BASE_AVERAGE);
+
             db.setTransactionSuccessful();
         } catch (Exception ex) {
             Log.e(TAG, "Error upgrading from 6 to 7", ex);
