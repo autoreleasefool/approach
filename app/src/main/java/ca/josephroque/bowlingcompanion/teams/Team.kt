@@ -7,7 +7,6 @@ import ca.josephroque.bowlingcompanion.common.INameAverage
  *
  * A single Team, which has a set of bowlers.
  */
-
 data class Team(private val teamName: String,
                 private val teamAverage: Double,
                 private val teamId: Long): INameAverage {

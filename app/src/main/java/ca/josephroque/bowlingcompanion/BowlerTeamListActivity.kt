@@ -1,24 +1,24 @@
 package ca.josephroque.bowlingcompanion
 
-import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
+import android.support.design.widget.FloatingActionButton.OnVisibilityChangedListener
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
-import ca.josephroque.bowlingcompanion.bowlers.Bowler
-import ca.josephroque.bowlingcompanion.bowlers.BowlerFragment
-import ca.josephroque.bowlingcompanion.teams.Team
-import ca.josephroque.bowlingcompanion.teams.TeamFragment
-import kotlinx.android.synthetic.main.activity_main.*
-import android.support.design.widget.FloatingActionButton.OnVisibilityChangedListener
 import android.support.v4.app.FragmentTransaction
-import android.view.View
+import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import ca.josephroque.bowlingcompanion.bowlers.Bowler
+import ca.josephroque.bowlingcompanion.bowlers.BowlerFragment
 import ca.josephroque.bowlingcompanion.bowlers.NewBowlerDialog
+import ca.josephroque.bowlingcompanion.teams.Team
+import ca.josephroque.bowlingcompanion.teams.TeamFragment
 import ca.josephroque.bowlingcompanion.utils.Android
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.experimental.launch
 
 
@@ -54,6 +54,7 @@ class BowlerTeamListActivity : AppCompatActivity(),
         }
     }
 
+    /** @Override */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -63,12 +64,18 @@ class BowlerTeamListActivity : AppCompatActivity(),
         configureFab()
     }
 
+    /**
+     * Configure toolbar for rendering.
+     */
     private fun configureToolbar() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
     }
 
+    /**
+     * Configure tab layout for rendering.
+     */
     private fun configureTabLayout() {
         tabs_main.addTab(tabs_main.newTab().setText(R.string.bowlers))
         tabs_main.addTab(tabs_main.newTab().setText(R.string.teams))
@@ -93,6 +100,9 @@ class BowlerTeamListActivity : AppCompatActivity(),
         })
     }
 
+    /**
+     * Configure floating action buttons for rendering.
+     */
     private fun configureFab() {
         fab_primary.setImageResource(R.drawable.ic_person_add_black_24dp)
         fab_secondary.visibility = View.GONE
@@ -105,6 +115,11 @@ class BowlerTeamListActivity : AppCompatActivity(),
         }
     }
 
+    /**
+     * Hide the specified floating action button.
+     *
+     * @param Int the fab to hide
+     */
     fun hideFab(which: Int) {
         when (which) {
             PRIMARY -> fab_primary.hide()
@@ -112,6 +127,11 @@ class BowlerTeamListActivity : AppCompatActivity(),
         }
     }
 
+    /**
+     * Show the specified floating action button.
+     *
+     * @param Int the fab to show
+     */
     fun showFab(which: Int) {
         when (which) {
             PRIMARY -> fab_primary.show()
@@ -119,25 +139,30 @@ class BowlerTeamListActivity : AppCompatActivity(),
         }
     }
 
+    /** @Override */
     override fun onSupportNavigateUp(): Boolean {
         onBackPressed()
         return super.onSupportNavigateUp()
     }
 
+    /** @Override */
     override fun onBackPressed() {
         super.onBackPressed()
     }
 
+    /** @Override */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
 
+    /** @Override */
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
         menu.findItem(R.id.action_settings)?.isVisible = true
         return super.onPrepareOptionsMenu(menu)
     }
 
+    /** @Override */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.getItemId()) {
             R.id.action_settings -> {
@@ -148,6 +173,9 @@ class BowlerTeamListActivity : AppCompatActivity(),
         }
     }
 
+    /**
+     * Display a prompt to add a new bowler.
+     */
     fun promptNewBowler() {
         val newFragment = NewBowlerDialog()
         val transaction = supportFragmentManager.beginTransaction()
@@ -155,22 +183,34 @@ class BowlerTeamListActivity : AppCompatActivity(),
         transaction.add(android.R.id.content, newFragment).addToBackStack(null).commit()
     }
 
-    override fun createBowler(name: String) {
+    /**
+     * Callback to create a new [Bowler].
+     *
+     * @param name name of the new [Bowler]
+     */
+    override fun onCreateBowler(name: String) {
         launch(Android) {
             Bowler.createNewAndSave(this@BowlerTeamListActivity, name).await()
-
+            // TODO: reload the bowler fragment
         }
     }
 
+    /** @Override. */
     override fun onTeamSelected(team: Team) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
+    /** @Override. */
     override fun onBowlerSelected(bowler: Bowler) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
+    /**
+     * Manages pages for each tab.
+     */
     internal class TabPagerAdapter(fm: FragmentManager, private var tabCount: Int): FragmentPagerAdapter(fm) {
+
+        /** @Override. */
         override fun getItem(position: Int): Fragment? {
             when (position) {
                 0 -> return BowlerFragment.newInstance()
@@ -179,6 +219,7 @@ class BowlerTeamListActivity : AppCompatActivity(),
             }
         }
 
+        /** @Override. */
         override fun getCount(): Int {
             return tabCount
         }

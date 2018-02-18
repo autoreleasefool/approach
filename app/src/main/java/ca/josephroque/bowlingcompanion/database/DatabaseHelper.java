@@ -592,6 +592,11 @@ public final class DatabaseHelper
         }
     }
 
+    /**
+     * Upgrades database from oldVersion 6 to newVersion 7.
+     *
+     * @param db to upgrade
+     */
     private void upgradeDatabaseFrom6to7(SQLiteDatabase db) {
         createTeamTable(db);
         createTeamBowlerTable(db);

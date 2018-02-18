@@ -1,10 +1,8 @@
 package ca.josephroque.bowlingcompanion.bowlers.dummy
 
 import ca.josephroque.bowlingcompanion.bowlers.Bowler
-import ca.josephroque.bowlingcompanion.common.INameAverage
 import ca.josephroque.bowlingcompanion.teams.Team
-import java.util.ArrayList
-import java.util.HashMap
+import java.util.*
 
 /**
  * Helper class for providing sample content.

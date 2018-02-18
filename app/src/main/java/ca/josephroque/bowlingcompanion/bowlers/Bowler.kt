@@ -1,18 +1,17 @@
 package ca.josephroque.bowlingcompanion.bowlers
 
+import android.content.ContentValues
 import android.content.Context
-import kotlinx.coroutines.experimental.*
 import android.preference.PreferenceManager
+import android.util.Log
 import ca.josephroque.bowlingcompanion.common.INameAverage
-import ca.josephroque.bowlingcompanion.database.Contract.BowlerEntry
-import ca.josephroque.bowlingcompanion.database.Contract.GameEntry
-import ca.josephroque.bowlingcompanion.database.Contract.LeagueEntry
-import ca.josephroque.bowlingcompanion.database.Contract.SeriesEntry
+import ca.josephroque.bowlingcompanion.database.Contract.*
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper
 import ca.josephroque.bowlingcompanion.leagues.League
 import ca.josephroque.bowlingcompanion.utils.Settings
-import android.content.ContentValues
-import android.util.Log
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.experimental.async
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -37,8 +36,16 @@ data class Bowler(private val bowlerName: String,
         get() = bowlerId
 
     companion object {
+        /** Logging identifier. */
         private val TAG = "Bowler"
 
+        /**
+         * Create a new [Bowler] and save to the database.
+         *
+         * @param context to get database instance
+         * @param name name of the bowler
+         * @return the new instance
+         */
         fun createNewAndSave(context: Context, name: String): Deferred<Bowler?> {
             return async(CommonPool) {
                 val database = DatabaseHelper.getInstance(context).writableDatabase
@@ -75,6 +82,12 @@ data class Bowler(private val bowlerName: String,
             }
         }
 
+        /**
+         * Get all of the bowlers available in the app.
+         *
+         * @param context to get database instance
+         * @return a [List] of [Bowler] instances from the database.
+         */
         fun fetchAll(context: Context): Deferred<List<Bowler>> {
             return async(CommonPool) {
                 val bowlers: MutableList<Bowler> = ArrayList()

@@ -1,16 +1,17 @@
 package ca.josephroque.bowlingcompanion.common
 
 import android.content.Context
+import android.support.v4.content.ContextCompat
+import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import ca.josephroque.bowlingcompanion.R
-import android.support.v4.content.ContextCompat
-import android.support.v7.widget.DividerItemDecoration
-import android.widget.ImageView
 import ca.josephroque.bowlingcompanion.bowlers.Bowler
+import ca.josephroque.bowlingcompanion.common.NameAverageRecyclerViewAdapter.OnNameAverageInteractionListener
 import ca.josephroque.bowlingcompanion.teams.Team
 
 
@@ -20,15 +21,35 @@ import ca.josephroque.bowlingcompanion.teams.Team
  */
 class NameAverageRecyclerViewAdapter(private var mValues: List<INameAverage>, private val mListener: OnNameAverageInteractionListener?): RecyclerView.Adapter<NameAverageRecyclerViewAdapter.ViewHolder>() {
 
+    companion object {
+        /** Logging identifier. */
+        private val TAG = "NameAverageRecyclerViewAdapter"
+
+        /**
+         * Apply a default [DividerItemDecoration] to the given [RecyclerView].
+         *
+         * @param recyclerView [RecyclerView] to add decorator to
+         * @param context to build [DividerItemDecoration]
+         */
+        fun applyDefaultDivider(recyclerView: RecyclerView, context: Context) {
+            val itemDecorator = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
+            itemDecorator.setDrawable(ContextCompat.getDrawable(context, R.drawable.divider)!!)
+            recyclerView.addItemDecoration(itemDecorator)
+        }
+    }
+
+    /** @Override */
     override fun getItemCount(): Int {
         return mValues.size
     }
 
+    /** @Override */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(R.layout.list_item_name_average, parent, false)
         return ViewHolder(view)
     }
 
+    /** @Override */
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val context = holder.itemView.context
         holder.mItem = mValues[position]
@@ -52,14 +73,27 @@ class NameAverageRecyclerViewAdapter(private var mValues: List<INameAverage>, pr
         }
     }
 
+    /**
+     * Update elements in the [RecyclerView].
+     *
+     * @param items new list of items to display
+     */
     fun setElements(items: List<INameAverage>) {
         mValues = items
+        notifyDataSetChanged()
     }
 
+    /**
+     * View Holder.
+     */
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
+        /** Render name of the INameAverage item. */
         val mNameView: TextView
+        /** Render average of the INameAverage item. */
         val mAverageView: TextView
+        /** Render type indicator of the INameAverage item. */
         val mIconView: ImageView
+        /** INameAverage item. */
         var mItem: INameAverage? = null
 
         init {
@@ -73,16 +107,26 @@ class NameAverageRecyclerViewAdapter(private var mValues: List<INameAverage>, pr
      * Handles interactions with items in the list.
      */
     interface OnNameAverageInteractionListener {
-        fun onNAItemClick(item: INameAverage)
-        fun onNAItemLongClick(item: INameAverage)
-        fun onNAItemDelete(item: INameAverage)
-    }
 
-    companion object {
-        fun applyDefaultDivider(recyclerView: RecyclerView, context: Context) {
-            val itemDecorator = DividerItemDecoration(context, DividerItemDecoration.VERTICAL)
-            itemDecorator.setDrawable(ContextCompat.getDrawable(context, R.drawable.divider)!!)
-            recyclerView.addItemDecoration(itemDecorator)
-        }
+        /**
+         * Indicates user interaction with the item.
+         *
+         * @param item interacted item
+         */
+        fun onNAItemClick(item: INameAverage)
+
+        /**
+         * Indicates long click user interaction with the item.
+         *
+         * @param item interacted item
+         */
+        fun onNAItemLongClick(item: INameAverage)
+
+        /**
+         * Indicates user desire to delete the item.
+         *
+         * @param item deleted item
+         */
+        fun onNAItemDelete(item: INameAverage)
     }
 }

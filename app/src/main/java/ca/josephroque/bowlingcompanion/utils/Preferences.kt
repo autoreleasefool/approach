@@ -5,7 +5,6 @@ package ca.josephroque.bowlingcompanion.utils
  *
  * Keys for user preferences.
  */
-
 object Preferences {
 
     /** Identifier for if user has opened the facebook page in the past.  */

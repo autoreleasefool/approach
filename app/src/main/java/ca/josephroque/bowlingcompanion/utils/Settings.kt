@@ -5,7 +5,6 @@ package ca.josephroque.bowlingcompanion.utils
  *
  * Keys for user settings.
  */
-
 object Settings {
 
     /** Identifier for preference which should open app in play store.  */

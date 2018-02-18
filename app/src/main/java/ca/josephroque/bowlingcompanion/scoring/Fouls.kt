@@ -2,10 +2,15 @@ package ca.josephroque.bowlingcompanion.scoring
 
 /**
  * Copyright (C) 2018 Joseph Roque
+ *
+ * Provides utility methods for scoring fouls.
  */
 class Fouls {
 
     companion object {
+
+        /** Logging identifier. */
+        private val TAG = "Fouls"
 
         /**
          * Gets the String representation of a number of fouls.

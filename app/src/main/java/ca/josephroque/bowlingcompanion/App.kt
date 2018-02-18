@@ -7,9 +7,19 @@ import android.view.inputmethod.InputMethodManager
 
 /**
  * Copyright (C) 2018 Joseph Roque
+ *
+ * Application for custom methods and initialization.
+ * @constructor creates a new [Application]
  */
 class App : Application() {
+
     companion object {
+
+        /**
+         * Hides the soft keyboard with the current activity.
+         *
+         * @param activity the activity context
+         */
         fun hideSoftKeyBoard(activity: Activity) {
             val view = activity.currentFocus
             if (view != null) {

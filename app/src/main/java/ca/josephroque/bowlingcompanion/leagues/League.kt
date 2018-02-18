@@ -3,26 +3,23 @@ package ca.josephroque.bowlingcompanion.leagues
 import android.content.Context
 import ca.josephroque.bowlingcompanion.bowlers.Bowler
 import ca.josephroque.bowlingcompanion.common.INameAverage
+import ca.josephroque.bowlingcompanion.database.Contract.*
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async
-import ca.josephroque.bowlingcompanion.database.Contract.LeagueEntry
-import ca.josephroque.bowlingcompanion.database.Contract.GameEntry
-import ca.josephroque.bowlingcompanion.database.Contract.SeriesEntry
 
 /**
  * Copyright (C) 2018 Joseph Roque
  *
  * A single League, which has a set of series.
  */
-
 data class League(private val leagueName: String,
-             private val leagueAverage: Double,
-             private val leagueId: Long,
-             val isEvent: Boolean,
-             val additionalPinfall: Int,
-             val additionalGames: Int): INameAverage {
+                  private val leagueAverage: Double,
+                  private val leagueId: Long,
+                  val isEvent: Boolean,
+                  val additionalPinfall: Int,
+                  val additionalGames: Int): INameAverage {
 
     override val name: String
         get() = leagueName
@@ -34,10 +31,23 @@ data class League(private val leagueName: String,
         get() = leagueId
 
     companion object {
+        /** Logging identifier. */
         val TAG = "League"
+
+        /** Name of the "Open" league. */
+        @Deprecated("Replaced with [PRACTICE_LEAGUE_NAME")
         val OPEN_LEAGUE_NAME = "Open"
+
+        /** Name of the "Practice" league. */
         val PRACTICE_LEAGUE_NAME = "Practice"
 
+        /**
+         * Get all of the leagues and events belonging to the [Bowler].
+         *
+         * @param context to get database instance
+         * @param bowler the bowler whose leagues to retrieve
+         * @return a [List] of [League] instances from the database.
+         */
         fun fetchAll(context: Context, bowler: Bowler): Deferred<List<League>> {
             return async (CommonPool) {
                 val leagues: MutableList<League> = ArrayList()
