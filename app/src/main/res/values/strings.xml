@@ -1,3 +1,13 @@
 <resources>
+
+    <!-- App resources -->
     <string name="app_name">Bowling Companion</string>
+
+    <!-- Common objects -->
+    <string name="bowlers">Bowlers</string>
+    <string name="teams">Teams</string>
+
+    <!-- Content descriptions -->
+    <string name="iv_name_average">Type indicator</string>
+
 </resources>
