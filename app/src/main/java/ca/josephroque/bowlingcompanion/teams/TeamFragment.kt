@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 
 import ca.josephroque.bowlingcompanion.R
+import ca.josephroque.bowlingcompanion.bowlers.Bowler
 import ca.josephroque.bowlingcompanion.bowlers.dummy.DummyContent
 import ca.josephroque.bowlingcompanion.common.INameAverage
 import ca.josephroque.bowlingcompanion.common.NameAverageRecyclerViewAdapter
@@ -22,7 +23,11 @@ import ca.josephroque.bowlingcompanion.common.NameAverageRecyclerViewAdapter
  */
 class TeamFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageInteractionListener {
 
+    /** Handle team interaction events. */
     private var mListener: OnTeamFragmentInteractionListener? = null
+
+    /** List of teams available. */
+    private var mTeams: List<Bowler> = ArrayList();
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

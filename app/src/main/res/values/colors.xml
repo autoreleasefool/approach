@@ -4,7 +4,7 @@
     <!-- Theme colors -->
     <color name="colorPrimary">#5F27CD</color>
     <color name="colorPrimaryDark">#341F97</color>
-    <color name="colorAccent">#FECA57</color>
+    <color name="colorAccent">#FF9F43</color>
     <color name="colorBackground">#F5F5F5</color>
 
     <color name="colorListPrimary">#EBEBEB</color>

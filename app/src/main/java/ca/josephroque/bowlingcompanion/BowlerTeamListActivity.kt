@@ -13,20 +13,23 @@ import ca.josephroque.bowlingcompanion.teams.Team
 import ca.josephroque.bowlingcompanion.teams.TeamFragment
 import kotlinx.android.synthetic.main.activity_main.*
 import android.support.design.widget.FloatingActionButton.OnVisibilityChangedListener
+import android.support.v4.app.FragmentTransaction
 import android.view.View
 import android.view.Menu
 import android.view.MenuItem
+import ca.josephroque.bowlingcompanion.bowlers.NewBowlerDialog
 import ca.josephroque.bowlingcompanion.utils.Android
 import kotlinx.coroutines.experimental.launch
 
 
-class MainActivity : AppCompatActivity(),
+class BowlerTeamListActivity : AppCompatActivity(),
         BowlerFragment.OnBowlerFragmentInteractionListener,
-        TeamFragment.OnTeamFragmentInteractionListener {
+        TeamFragment.OnTeamFragmentInteractionListener,
+        NewBowlerDialog.OnNewBowlerInteractionListener {
 
     companion object {
         /** Logging identifier. */
-        private val TAG = "MainActivity"
+        private val TAG = "BowlerTeamListActivity"
         /** References primary Fab. */
         val PRIMARY = 0
         /** References secondary Fab. */
@@ -131,7 +134,7 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-        menu.findItem(R.id.action_settings).isVisible = true
+        menu.findItem(R.id.action_settings)?.isVisible = true
         return super.onPrepareOptionsMenu(menu)
     }
 
@@ -146,8 +149,15 @@ class MainActivity : AppCompatActivity(),
     }
 
     fun promptNewBowler() {
+        val newFragment = NewBowlerDialog()
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+        transaction.add(android.R.id.content, newFragment).addToBackStack(null).commit()
+    }
+
+    override fun createBowler(name: String) {
         launch(Android) {
-            Bowler.createNewAndSave(this@MainActivity, name).await()
+            Bowler.createNewAndSave(this@BowlerTeamListActivity, name).await()
 
         }
     }

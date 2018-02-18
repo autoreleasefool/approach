@@ -7,6 +7,17 @@
     <string name="bowlers">Bowlers</string>
     <string name="teams">Teams</string>
 
+    <!-- Menu -->
+    <string name="action_settings">Settings</string>
+    <string name="action_edit">Edit</string>
+    <string name="action_done">Done</string>
+    <string name="action_transfer">Transfer</string>
+    <string name="action_save">Save</string>
+
+    <!-- Bowlers -->
+    <string name="new_bowler">New Bowler</string>
+    <string name="hint_bowler_name">Name</string>
+
     <!-- Content descriptions -->
     <string name="iv_name_average">Type indicator</string>
 

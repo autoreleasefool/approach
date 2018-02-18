@@ -18,7 +18,7 @@ import ca.josephroque.bowlingcompanion.teams.Team
  * [RecyclerView.Adapter] that can display a [INameAverage] and makes a call to the
  * specified [OnNameAverageInteractionListener].
  */
-class NameAverageRecyclerViewAdapter(private val mValues: List<INameAverage>, private val mListener: OnNameAverageInteractionListener?): RecyclerView.Adapter<NameAverageRecyclerViewAdapter.ViewHolder>() {
+class NameAverageRecyclerViewAdapter(private var mValues: List<INameAverage>, private val mListener: OnNameAverageInteractionListener?): RecyclerView.Adapter<NameAverageRecyclerViewAdapter.ViewHolder>() {
 
     override fun getItemCount(): Int {
         return mValues.size
@@ -30,6 +30,7 @@ class NameAverageRecyclerViewAdapter(private val mValues: List<INameAverage>, pr
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
+        val context = holder.itemView.context
         holder.mItem = mValues[position]
         holder.mNameView.text = mValues[position].name
         holder.mAverageView.text = mValues[position].getRoundedAverage(1)
@@ -40,9 +41,19 @@ class NameAverageRecyclerViewAdapter(private val mValues: List<INameAverage>, pr
             holder.mIconView.setImageResource(R.drawable.ic_people_black_24dp)
         }
 
+        if (position % 2 == 0) {
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorListPrimary))
+        } else {
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorListAlternate))
+        }
+
         holder.mView.setOnClickListener {
             mListener?.onNAItemClick(holder.mItem!!)
         }
+    }
+
+    fun setElements(items: List<INameAverage>) {
+        mValues = items
     }
 
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {

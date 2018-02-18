@@ -593,6 +593,9 @@ public final class DatabaseHelper
     }
 
     private void upgradeDatabaseFrom6to7(SQLiteDatabase db) {
+        createTeamTable(db);
+        createTeamBowlerTable(db);
+
         db.execSQL("ALTER TABLE " + LeagueEntry.TABLE_NAME
                 + " ADD COLUMN "
                 + LeagueEntry.COLUMN_ADDITIONAL_PINFALL + " INTEGER NOT NULL DEFAULT 0;");
