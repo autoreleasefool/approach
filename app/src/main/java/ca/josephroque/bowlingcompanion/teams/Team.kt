@@ -1,6 +1,10 @@
 package ca.josephroque.bowlingcompanion.teams
 
+import android.os.Parcel
+import android.os.Parcelable
 import ca.josephroque.bowlingcompanion.common.INameAverage
+import ca.josephroque.bowlingcompanion.common.KParcelable
+import ca.josephroque.bowlingcompanion.common.parcelableCreator
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -9,7 +13,7 @@ import ca.josephroque.bowlingcompanion.common.INameAverage
  */
 data class Team(private val teamName: String,
                 private val teamAverage: Double,
-                private val teamId: Long): INameAverage {
+                private val teamId: Long): INameAverage, KParcelable {
 
     override val name: String
         get() = teamName
@@ -19,4 +23,28 @@ data class Team(private val teamName: String,
 
     override val id: Long
         get() = teamId
+
+    /**
+     * Construct [Team] from a [Parcel]
+     */
+    private constructor(p: Parcel): this(
+            teamName = p.readString(),
+            teamAverage = p.readDouble(),
+            teamId = p.readLong()
+    )
+
+    /** @Override */
+    override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
+        writeString(name)
+        writeDouble(average)
+        writeLong(id)
+    }
+
+    companion object {
+        /** Logging identifier. */
+        private val TAG = "Team"
+
+        /** Creator, required by [Parcelable]. */
+        @JvmField val CREATOR = parcelableCreator(::Team)
+    }
 }

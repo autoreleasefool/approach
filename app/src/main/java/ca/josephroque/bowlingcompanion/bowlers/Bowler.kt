@@ -2,9 +2,13 @@ package ca.josephroque.bowlingcompanion.bowlers
 
 import android.content.ContentValues
 import android.content.Context
+import android.os.Parcel
+import android.os.Parcelable
 import android.preference.PreferenceManager
 import android.util.Log
 import ca.josephroque.bowlingcompanion.common.INameAverage
+import ca.josephroque.bowlingcompanion.common.KParcelable
+import ca.josephroque.bowlingcompanion.common.parcelableCreator
 import ca.josephroque.bowlingcompanion.database.Contract.*
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper
 import ca.josephroque.bowlingcompanion.leagues.League
@@ -24,7 +28,7 @@ import java.util.*
 
 data class Bowler(private val bowlerName: String,
                   private val bowlerAverage: Double,
-                  private val bowlerId: Long): INameAverage {
+                  private val bowlerId: Long): INameAverage, KParcelable {
 
     override val name: String
         get() = bowlerName
@@ -35,9 +39,29 @@ data class Bowler(private val bowlerName: String,
     override val id: Long
         get() = bowlerId
 
+    /**
+     * Construct [Bowler] from a [Parcel]
+     */
+    private constructor(p: Parcel): this(
+            bowlerName = p.readString(),
+            bowlerAverage = p.readDouble(),
+            bowlerId = p.readLong()
+    )
+
+    /** @Override */
+    override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
+        writeString(name)
+        writeDouble(average)
+        writeLong(id)
+    }
+
     companion object {
+
         /** Logging identifier. */
         private val TAG = "Bowler"
+
+        /** Creator, required by [Parcelable]. */
+        @JvmField val CREATOR = parcelableCreator(::Bowler)
 
         /**
          * Create a new [Bowler] and save to the database.
