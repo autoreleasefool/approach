@@ -9,8 +9,8 @@ import android.view.*
 import android.view.inputmethod.InputMethodManager
 import ca.josephroque.bowlingcompanion.App
 import ca.josephroque.bowlingcompanion.R
-import kotlinx.android.synthetic.main.dialog_new_bowler.*
-import kotlinx.android.synthetic.main.dialog_new_bowler.view.*
+import kotlinx.android.synthetic.main.dialog_bowler.*
+import kotlinx.android.synthetic.main.dialog_bowler.view.*
 
 
 /**
@@ -18,23 +18,48 @@ import kotlinx.android.synthetic.main.dialog_new_bowler.view.*
  *
  * Dialog to create a new bowler.
  */
-class NewBowlerDialog : DialogFragment() {
+class BowlerDialog : DialogFragment() {
 
     companion object {
         /** Logging identifier. */
-        private val TAG = "NewBowlerDialog"
+        private val TAG = "BowlerDialog"
+
+        /** Identifier for the [Bowler] to be edited. */
+        private val ARG_BOWLER = "arg_bowler"
+
+        fun newInstance(bowler: Bowler?): BowlerDialog {
+            val dialog = BowlerDialog()
+            val args = Bundle()
+
+            if (bowler != null) {
+                args.putParcelable(ARG_BOWLER, bowler)
+            }
+
+            dialog.arguments = args
+            return dialog
+        }
     }
 
+    /** Bowler to be edited, or null if a new bowler is to be created. */
+    private var mBowler: Bowler? = null
+
     /** Interaction handler. */
-    private var mListener: OnNewBowlerInteractionListener? = null
+    private var mListener: OnBowlerDialogInteractionListener? = null
 
     /** @Override */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val rootView = inflater.inflate(R.layout.dialog_new_bowler, container, false)
-        rootView.toolbar_new_bowler.setTitle(R.string.new_bowler)
+        mBowler = arguments?.getParcelable(ARG_BOWLER) ?: savedInstanceState?.getParcelable(ARG_BOWLER)
+
+        val rootView = inflater.inflate(R.layout.dialog_bowler, container, false)
+
+        if (mBowler == null) {
+            rootView.toolbar_bowler.setTitle(R.string.new_bowler)
+        } else {
+            rootView.toolbar_bowler.setTitle(R.string.edit_bowler)
+        }
 
         val activity = activity as? AppCompatActivity
-        activity?.setSupportActionBar(rootView.toolbar_new_bowler)
+        activity?.setSupportActionBar(rootView.toolbar_bowler)
 
         val actionBar = activity?.supportActionBar
         actionBar?.setDisplayHomeAsUpEnabled(true)
@@ -48,10 +73,10 @@ class NewBowlerDialog : DialogFragment() {
     /** @Override */
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        if (context is OnNewBowlerInteractionListener) {
+        if (context is OnBowlerDialogInteractionListener) {
             mListener = context
         } else {
-            throw RuntimeException(context!!.toString() + " must implement OnNewBowlerInteractionListener")
+            throw RuntimeException(context!!.toString() + " must implement OnBowlerDialogInteractionListener")
         }
     }
 
@@ -69,6 +94,16 @@ class NewBowlerDialog : DialogFragment() {
         input_name.requestFocus()
         val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.showSoftInput(input_name, InputMethodManager.SHOW_IMPLICIT)
+
+        if (mBowler != null) {
+            btn_delete.visibility = View.VISIBLE
+        }
+    }
+
+    /** @Override */
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable(ARG_BOWLER, mBowler)
     }
 
     /** @Override */
@@ -81,7 +116,7 @@ class NewBowlerDialog : DialogFragment() {
     /** @Override */
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         menu.clear()
-        inflater.inflate(R.menu.menu_new_bowler, menu)
+        inflater.inflate(R.menu.menu_bowler_dialog, menu)
     }
 
     /** @Override */
@@ -103,7 +138,7 @@ class NewBowlerDialog : DialogFragment() {
     /**
      * Handles interactions with the dialog.
      */
-    interface OnNewBowlerInteractionListener {
+    interface OnBowlerDialogInteractionListener {
 
         /**
          * Indicates when the user has prompted to create a new [Bowler]

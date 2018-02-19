@@ -22,14 +22,14 @@ object DummyContent {
     val LEAGUE_MAP: MutableMap<Long, League> = HashMap()
     val EVENT_MAP: MutableMap<Long, League> = HashMap()
 
-    private val COUNT = 25
+    private const val COUNT = 25
 
     init {
         for (i in 1..COUNT) {
-            addBowler(createDummyBowler(i))
-            addTeam(createDummyTeam(i))
-            addLeague(createDummyLeague(i))
-            addEvent(createDummyEvent(i))
+            addBowler(createDummyBowler())
+            addTeam(createDummyTeam())
+            addLeague(createDummyLeague())
+            addEvent(createDummyEvent())
         }
     }
 
@@ -53,19 +53,19 @@ object DummyContent {
         EVENT_MAP.put(league.id, league)
     }
 
-    private fun createDummyBowler(position: Int): Bowler {
+    private fun createDummyBowler(): Bowler {
         return Bowler("Trevor Hansen", 193.5, 0L)
     }
 
-    private fun createDummyTeam(position: Int): Team {
+    private fun createDummyTeam(): Team {
         return Team("4 Steps Boys", 193.5, 0L)
     }
 
-    private fun createDummyLeague(position: Int): League {
+    private fun createDummyLeague(): League {
         return League("Wednesday Night, 16-17", 203.4, 0L, false, 3)
     }
 
-    private fun createDummyEvent(position: Int): League {
+    private fun createDummyEvent(): League {
         return League("4 Steps, 2017", 212.9, 0L, true, 5)
     }
 }

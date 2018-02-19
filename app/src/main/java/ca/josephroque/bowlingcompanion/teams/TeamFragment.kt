@@ -10,9 +10,9 @@ import android.view.View
 import android.view.ViewGroup
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.bowlers.Bowler
-import ca.josephroque.bowlingcompanion.bowlers.dummy.DummyContent
 import ca.josephroque.bowlingcompanion.common.INameAverage
 import ca.josephroque.bowlingcompanion.common.NameAverageRecyclerViewAdapter
+import ca.josephroque.bowlingcompanion.dummy.DummyContent
 
 /**
  * Copyright (C) 2018 Joseph Roque

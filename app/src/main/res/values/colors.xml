@@ -11,6 +11,8 @@
     <color name="colorListAlternate">#F5F5F5</color>
     <color name="colorDivider">#33000000</color>
 
+    <color name="dangerRed">#EE5253</color>
+
     <!-- Text colors -->
     <color name="primaryWhiteText">#FFFFFF</color>
     <color name="secondaryWhiteText">#B2FFFFFF</color>

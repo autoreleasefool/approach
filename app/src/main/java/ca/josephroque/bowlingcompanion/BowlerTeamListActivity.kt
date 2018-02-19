@@ -12,33 +12,31 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import ca.josephroque.bowlingcompanion.bowlers.Bowler
 import ca.josephroque.bowlingcompanion.bowlers.BowlerFragment
-import ca.josephroque.bowlingcompanion.bowlers.NewBowlerDialog
+import ca.josephroque.bowlingcompanion.bowlers.BowlerDialog
 import ca.josephroque.bowlingcompanion.teams.Team
 import ca.josephroque.bowlingcompanion.teams.TeamFragment
 import ca.josephroque.bowlingcompanion.utils.Android
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_bowler_team_list.*
 import kotlinx.coroutines.experimental.launch
+import java.lang.ref.WeakReference
 
 
 class BowlerTeamListActivity : AppCompatActivity(),
         BowlerFragment.OnBowlerFragmentInteractionListener,
         TeamFragment.OnTeamFragmentInteractionListener,
-        NewBowlerDialog.OnNewBowlerInteractionListener {
+        BowlerDialog.OnBowlerDialogInteractionListener {
 
     companion object {
         /** Logging identifier. */
         private val TAG = "BowlerTeamListActivity"
-        /** References primary Fab. */
-        val PRIMARY = 0
-        /** References secondary Fab. */
-        val SECONDARY = 1
     }
 
     /** Active tab. */
     private val currentTab: Int
-        get() = pager_main.currentItem
+        get() = pager_bowlers_teams.currentItem
 
     /** Handle visibility changes in the fab. */
     val fabVisibilityChangedListener = object : OnVisibilityChangedListener() {
@@ -46,18 +44,18 @@ class BowlerTeamListActivity : AppCompatActivity(),
             super.onHidden(fab)
 
             when (currentTab) {
-                0 -> fab_primary.setImageResource(R.drawable.ic_person_add_black_24dp)
-                1 -> fab_primary.setImageResource(R.drawable.ic_group_add_black_24dp)
+                0 -> fab?.setImageResource(R.drawable.ic_person_add_black_24dp)
+                1 -> fab?.setImageResource(R.drawable.ic_group_add_black_24dp)
             }
 
-            fab_primary.show()
+            fab?.show()
         }
     }
 
     /** @Override */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_bowler_team_list)
 
         configureToolbar()
         configureTabLayout()
@@ -68,7 +66,7 @@ class BowlerTeamListActivity : AppCompatActivity(),
      * Configure toolbar for rendering.
      */
     private fun configureToolbar() {
-        setSupportActionBar(toolbar)
+        setSupportActionBar(toolbar_bowlers_teams)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
     }
@@ -77,21 +75,22 @@ class BowlerTeamListActivity : AppCompatActivity(),
      * Configure tab layout for rendering.
      */
     private fun configureTabLayout() {
-        tabs_main.addTab(tabs_main.newTab().setText(R.string.bowlers))
-        tabs_main.addTab(tabs_main.newTab().setText(R.string.teams))
+        tabs_bowlers_teams.addTab(tabs_bowlers_teams.newTab().setText(R.string.bowlers))
+        tabs_bowlers_teams.addTab(tabs_bowlers_teams.newTab().setText(R.string.teams))
+        pager_bowlers_teams.scrollingEnabled = false
 
-        val adapter = TabPagerAdapter(supportFragmentManager, tabs_main.tabCount)
-        pager_main.adapter = adapter
+        val adapter = BowlersTeamsPagerAdapter(supportFragmentManager, tabs_bowlers_teams.tabCount)
+        pager_bowlers_teams.adapter = adapter
 
-        pager_main.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs_main))
-        tabs_main.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
+        pager_bowlers_teams.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs_bowlers_teams))
+        tabs_bowlers_teams.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
-                pager_main.currentItem = tab.position
+                pager_bowlers_teams.currentItem = tab.position
 
-                if (fab_primary.visibility == View.VISIBLE) {
-                    fab_primary.hide(fabVisibilityChangedListener)
+                if (fab.visibility == View.VISIBLE) {
+                    fab.hide(fabVisibilityChangedListener)
                 } else {
-                    fabVisibilityChangedListener.onHidden(fab_primary)
+                    fabVisibilityChangedListener.onHidden(fab)
                 }
             }
 
@@ -104,38 +103,13 @@ class BowlerTeamListActivity : AppCompatActivity(),
      * Configure floating action buttons for rendering.
      */
     private fun configureFab() {
-        fab_primary.setImageResource(R.drawable.ic_person_add_black_24dp)
-        fab_secondary.visibility = View.GONE
+        fab.setImageResource(R.drawable.ic_person_add_black_24dp)
 
-        fab_primary.setOnClickListener {
+        fab.setOnClickListener {
             when (currentTab) {
                 0 -> promptNewBowler()
                 1 -> TODO("not implemented")
             }
-        }
-    }
-
-    /**
-     * Hide the specified floating action button.
-     *
-     * @param Int the fab to hide
-     */
-    fun hideFab(which: Int) {
-        when (which) {
-            PRIMARY -> fab_primary.hide()
-            SECONDARY -> fab_secondary.hide()
-        }
-    }
-
-    /**
-     * Show the specified floating action button.
-     *
-     * @param Int the fab to show
-     */
-    fun showFab(which: Int) {
-        when (which) {
-            PRIMARY -> fab_primary.show()
-            SECONDARY -> fab_secondary.show()
         }
     }
 
@@ -157,27 +131,25 @@ class BowlerTeamListActivity : AppCompatActivity(),
     }
 
     /** @Override */
-    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-        menu.findItem(R.id.action_settings)?.isVisible = true
-        return super.onPrepareOptionsMenu(menu)
-    }
-
-    /** @Override */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.getItemId()) {
-            R.id.action_settings -> {
-//                openSettings()
-                return true
+        return when (item.itemId) {
+            R.id.action_transfer -> {
+                // initiateTransfer()
+                true
             }
-            else -> return super.onOptionsItemSelected(item)
+            R.id.action_settings -> {
+                // openSettings()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
     /**
      * Display a prompt to add a new bowler.
      */
-    fun promptNewBowler() {
-        val newFragment = NewBowlerDialog()
+    private fun promptNewBowler() {
+        val newFragment = BowlerDialog.newInstance(null)
         val transaction = supportFragmentManager.beginTransaction()
         transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
         transaction.add(android.R.id.content, newFragment).addToBackStack(null).commit()
@@ -191,7 +163,9 @@ class BowlerTeamListActivity : AppCompatActivity(),
     override fun onCreateBowler(name: String) {
         launch(Android) {
             Bowler.createNewAndSave(this@BowlerTeamListActivity, name).await()
-            // TODO: reload the bowler fragment
+            val adapter = pager_bowlers_teams.adapter as? BowlersTeamsPagerAdapter
+            val bowlerFragment = adapter?.getFragment(pager_bowlers_teams.currentItem) as? BowlerFragment
+            bowlerFragment?.refreshBowlerList()
         }
     }
 
@@ -208,20 +182,43 @@ class BowlerTeamListActivity : AppCompatActivity(),
     /**
      * Manages pages for each tab.
      */
-    internal class TabPagerAdapter(fm: FragmentManager, private var tabCount: Int): FragmentPagerAdapter(fm) {
+    internal class BowlersTeamsPagerAdapter(fm: FragmentManager, private var tabCount: Int): FragmentPagerAdapter(fm) {
+
+        /** Weak references to the fragments in the pager. */
+        private val mFragmentReferenceMap: MutableMap<Int, WeakReference<Fragment>> = HashMap()
 
         /** @Override. */
         override fun getItem(position: Int): Fragment? {
+            val fragment: Fragment
             when (position) {
-                0 -> return BowlerFragment.newInstance()
-                1 -> return TeamFragment.newInstance()
+                0 -> fragment = BowlerFragment.newInstance()
+                1 -> fragment = TeamFragment.newInstance()
                 else -> return null
             }
+
+            mFragmentReferenceMap.put(position, WeakReference(fragment))
+            return fragment
+        }
+
+        /** @Override. */
+        override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
+            super.destroyItem(container, position, `object`)
+            mFragmentReferenceMap.remove(position)
         }
 
         /** @Override. */
         override fun getCount(): Int {
             return tabCount
+        }
+
+        /**
+         * Get a reference to a fragment in the pager.
+         *
+         * @param position the fragment to get
+         * @return the fragment at [position]
+         */
+        fun getFragment(position: Int): Fragment? {
+            return mFragmentReferenceMap.get(position)?.get()
         }
     }
 }

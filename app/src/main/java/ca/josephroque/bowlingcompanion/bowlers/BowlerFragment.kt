@@ -6,11 +6,10 @@ import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.*
-import ca.josephroque.bowlingcompanion.BowlerTeamListActivity
 import ca.josephroque.bowlingcompanion.R
-import ca.josephroque.bowlingcompanion.bowlers.dummy.DummyContent
 import ca.josephroque.bowlingcompanion.common.INameAverage
 import ca.josephroque.bowlingcompanion.common.NameAverageRecyclerViewAdapter
+import ca.josephroque.bowlingcompanion.dummy.DummyContent
 import ca.josephroque.bowlingcompanion.utils.Android
 import kotlinx.coroutines.experimental.launch
 
@@ -40,28 +39,8 @@ class BowlerFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageI
     private var mListener: OnBowlerFragmentInteractionListener? = null
     /** Adapter to manage rendering the list of bowlers. */
     private var mBowlerAdapter: NameAverageRecyclerViewAdapter? = null
-
-    /** Indicates if the list of bowlers is currently being edited. */
-    private var mEditingBowlers: Boolean = false
-        private set(value) {
-            val activity: BowlerTeamListActivity = activity as? BowlerTeamListActivity ?: return
-            if (value) {
-                activity.hideFab(BowlerTeamListActivity.PRIMARY)
-            } else {
-                activity.showFab(BowlerTeamListActivity.PRIMARY)
-            }
-
-            activity.invalidateOptionsMenu()
-        }
-
     /** Bowlers to display. */
     private var mBowlers: List<Bowler> = ArrayList()
-
-    /** @Override */
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setHasOptionsMenu(true)
-    }
 
     /** @Override */
     override fun onCreateView(inflater: LayoutInflater,
@@ -73,44 +52,11 @@ class BowlerFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageI
             val context = view.getContext()
             mBowlerAdapter = NameAverageRecyclerViewAdapter(DummyContent.BOWLERS, this)
 
-            view.adapter = mBowlerAdapter
             view.layoutManager = LinearLayoutManager(context)
+            view.adapter = mBowlerAdapter
             NameAverageRecyclerViewAdapter.applyDefaultDivider(view, context)
         }
         return view
-    }
-
-    /** @Override */
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.menu_bowlers, menu)
-        super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    /** @Override */
-    override fun onPrepareOptionsMenu(menu: Menu) {
-        menu.findItem(R.id.action_edit)?.isVisible = !mEditingBowlers
-        menu.findItem(R.id.action_done).isVisible = mEditingBowlers
-        super.onPrepareOptionsMenu(menu)
-    }
-
-    /** @Override */
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.action_edit -> {
-                mEditingBowlers = true
-                return true
-            }
-            R.id.action_done -> {
-                mEditingBowlers = false
-                return true
-            }
-            R.id.action_transfer -> {
-//                if (mBowlerCallback != null)
-//                    mBowlerCallback.onDataTransferSelected()
-                return true
-            }
-            else -> return super.onOptionsItemSelected(item)
-        }
     }
 
     /** @Override */
@@ -132,8 +78,13 @@ class BowlerFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageI
     /** @Override */
     override fun onResume() {
         super.onResume()
-        mEditingBowlers = false
+        refreshBowlerList()
+    }
 
+    /**
+     * Reload the list of bowlers and update list.
+     */
+    fun refreshBowlerList() {
         val context = context?: return
         launch(Android) {
             val bowlers = Bowler.fetchAll(context)
@@ -166,7 +117,9 @@ class BowlerFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageI
     }
 
     /** @Override */
-    override fun onNAItemLongClick(item: INameAverage) {}
+    override fun onNAItemLongClick(item: INameAverage) {
+
+    }
 
     /**
      * Handles interactions with the Bowler list.

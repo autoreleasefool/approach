@@ -9,4 +9,9 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="DeleteButton" parent="Widget.AppCompat.Button">
+        <item name="colorButtonNormal">@color/dangerRed</item>
+        <item name="android:textColor">@color/primaryWhiteText</item>
+    </style>
+
 </resources>

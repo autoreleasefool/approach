@@ -16,7 +16,9 @@
 
     <!-- Bowlers -->
     <string name="new_bowler">New Bowler</string>
+    <string name="edit_bowler">Edit Bowler</string>
     <string name="hint_bowler_name">Name</string>
+    <string name="delete_bowler">Delete Bowler</string>
 
     <!-- Content descriptions -->
     <string name="iv_name_average">Type indicator</string>

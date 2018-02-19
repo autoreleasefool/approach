@@ -6,9 +6,11 @@
     android:tag="fragment_team_list"
     android:name="ca.josephroque.bowlingcompanion.teams.TeamFragment"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="0dp"
     android:layout_marginLeft="@dimen/activity_margin"
     android:layout_marginRight="@dimen/activity_margin"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent"
     app:layoutManager="LinearLayoutManager"
     tools:context="ca.josephroque.bowlingcompanion.teams.TeamFragment"
     tools:listitem="@layout/list_item_name_average" />
