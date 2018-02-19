@@ -5,6 +5,7 @@ import ca.josephroque.bowlingcompanion.bowlers.Bowler
 import ca.josephroque.bowlingcompanion.common.INameAverage
 import ca.josephroque.bowlingcompanion.database.Contract.*
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper
+import ca.josephroque.bowlingcompanion.scoring.Average
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async
@@ -19,7 +20,8 @@ data class League(private val leagueName: String,
                   private val leagueId: Long,
                   val isEvent: Boolean,
                   val additionalPinfall: Int,
-                  val additionalGames: Int): INameAverage {
+                  val additionalGames: Int,
+                  val gamesPerSeries: Int): INameAverage {
 
     override val name: String
         get() = leagueName
@@ -70,43 +72,40 @@ data class League(private val leagueName: String,
                         + " ORDER BY " + LeagueEntry.COLUMN_DATE_MODIFIED + " DESC")
 
                 val cursor = database.rawQuery(rawLeagueEventQuery, arrayOf(bowler.id.toString()))
-                var lastLeagueEventId: Long = -1
+                var lastId: Long = -1
                 var leagueNumberOfGames = 0
                 var leagueTotal = 0
                 if (cursor.moveToFirst()) {
                     while (!cursor.isAfterLast) {
-                        val leagueEventId = cursor.getLong(cursor.getColumnIndex("lid"))
-                        if (leagueEventId != lastLeagueEventId && lastLeagueEventId != -1L) {
+                        val newId = cursor.getLong(cursor.getColumnIndex("lid"))
+                        if (newId != lastId && lastId != -1L) {
                             cursor.moveToPrevious()
+
+                            val id = cursor.getLong(cursor.getColumnIndex("lid"))
                             val name = cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_LEAGUE_NAME))
                             val isEvent = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_IS_EVENT)) == 1
                             val additionalPinfall = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_ADDITIONAL_PINFALL))
                             val additionalGames = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_ADDITIONAL_GAMES))
+                            val gamesPerSeries = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NUMBER_OF_GAMES))
 
-                            val average = Score.getAdjustedAverage(
+                            val average = Average.getAdjustedAverage(
                                     leagueTotal,
                                     leagueNumberOfGames,
                                     additionalPinfall,
                                     additionalGames)
 
-                            val leagueEvent = LeagueEvent(
-                                    cursor.getLong(cursor.getColumnIndex("lid")),
+                            val league = League(
                                     name,
-                                    isEvent,
                                     average,
-                                    baseAverage,
-                                    baseGames,
-                                    cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NUMBER_OF_GAMES)) as Byte)
+                                    id,
+                                    isEvent,
+                                    additionalPinfall,
+                                    additionalGames,
+                                    gamesPerSeries)
 
-                            leagues.add(leagueEvent)
+                            leagues.add(league)
                             leagueTotal = 0
                             leagueNumberOfGames = 0
-
-                            if (!fragment.mPromptToUpdateIncorrectName && name.matches("^[LE][A-Z].*".toRegex())
-                                    && promptToFixNames) {
-                                preferences.edit().putBoolean(Constants.PREF_PROMPT_LEAGUE_EVENT_NAME_FIX, false).apply()
-                                fragment.mPromptToUpdateIncorrectName = true
-                            }
 
                             cursor.moveToNext()
                         }
@@ -116,23 +115,28 @@ data class League(private val leagueName: String,
                             leagueNumberOfGames++
                         }
 
-                        lastLeagueEventId = leagueEventId
+                        lastId = newId
                         cursor.moveToNext()
                     }
                     cursor.moveToPrevious()
-                    val isEvent = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_IS_EVENT)) === 1
-                    val baseAverage = cursor.getShort(cursor.getColumnIndex(LeagueEntry.COLUMN_BASE_AVERAGE))
-                    val baseGames = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_BASE_GAMES))
-                    val average = Score.getAdjustedAverage(leagueTotal, leagueNumberOfGames, baseAverage, baseGames)
+                    val id = cursor.getLong(cursor.getColumnIndex("lid"))
+                    val name = cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_LEAGUE_NAME))
+                    val isEvent = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_IS_EVENT)) == 1
+                    val additionalPinfall = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_ADDITIONAL_PINFALL))
+                    val additionalGames = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_ADDITIONAL_GAMES))
+                    val average = Average.getAdjustedAverage(leagueTotal, leagueNumberOfGames, additionalPinfall, additionalGames)
+                    val gamesPerSeries = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NUMBER_OF_GAMES))
 
-                    val leagueEvent = LeagueEvent(cursor.getLong(cursor.getColumnIndex("lid")),
-                            cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_LEAGUE_NAME)),
-                            isEvent,
+                    val league = League(
+                            name,
                             average,
-                            baseAverage,
-                            baseGames,
-                            cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NUMBER_OF_GAMES)) as Byte)
-                    listLeagueEvents.add(leagueEvent)
+                            id,
+                            isEvent,
+                            additionalPinfall,
+                            additionalGames,
+                            gamesPerSeries)
+
+                    leagues.add(league)
                 }
 
                 cursor.close()
