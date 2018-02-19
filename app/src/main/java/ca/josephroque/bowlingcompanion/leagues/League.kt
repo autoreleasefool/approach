@@ -19,8 +19,6 @@ data class League(private val leagueName: String,
                   private val leagueAverage: Double,
                   private val leagueId: Long,
                   val isEvent: Boolean,
-                  val additionalPinfall: Int,
-                  val additionalGames: Int,
                   val gamesPerSeries: Int): INameAverage {
 
     override val name: String
@@ -37,7 +35,7 @@ data class League(private val leagueName: String,
         val TAG = "League"
 
         /** Name of the "Open" league. */
-        @Deprecated("Replaced with [PRACTICE_LEAGUE_NAME")
+        @Deprecated("Replaced with PRACTICE_LEAGUE_NAME")
         val OPEN_LEAGUE_NAME = "Open"
 
         /** Name of the "Practice" league. */
@@ -99,8 +97,6 @@ data class League(private val leagueName: String,
                                     average,
                                     id,
                                     isEvent,
-                                    additionalPinfall,
-                                    additionalGames,
                                     gamesPerSeries)
 
                             leagues.add(league)
@@ -132,8 +128,6 @@ data class League(private val leagueName: String,
                             average,
                             id,
                             isEvent,
-                            additionalPinfall,
-                            additionalGames,
                             gamesPerSeries)
 
                     leagues.add(league)
