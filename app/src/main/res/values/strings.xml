@@ -8,17 +8,24 @@
     <string name="teams">Teams</string>
 
     <!-- Menu -->
+    <string name="action_send_feedback">Send feedback</string>
     <string name="action_settings">Settings</string>
-    <string name="action_edit">Edit</string>
-    <string name="action_done">Done</string>
     <string name="action_transfer">Transfer</string>
     <string name="action_save">Save</string>
 
     <!-- Bowlers -->
-    <string name="new_bowler">New Bowler</string>
-    <string name="edit_bowler">Edit Bowler</string>
+    <string name="new_bowler">New bowler</string>
+    <string name="edit_bowler">Edit bowler</string>
     <string name="hint_bowler_name">Name</string>
-    <string name="delete_bowler">Delete Bowler</string>
+    <string name="delete_bowler">Delete bowler</string>
+
+    <!-- Email -->
+    <string name="send_email">Send email&#8230;</string>
+    <string name="feedback_email_recipient">contact@josephroque.ca</string>
+    <string name="feedback_email_subject">Comm/Sug: Bowling Companion (%d)</string>
+    <string name="bug_email_recipient">contact@josephroque.ca</string>
+    <string name="bug_email_subject">Bug: Bowling Companion (%d)</string>
+    <string name="bug_email_body">Please try to include as much of the following information as possible:\nWhere in the application the bug occurred,\nWhat you were doing when the bug occurred,\nThe nature of the bug - fatal, minor, cosmetic (the way the app looks)</string>
 
     <!-- Content descriptions -->
     <string name="iv_name_average">Type indicator</string>

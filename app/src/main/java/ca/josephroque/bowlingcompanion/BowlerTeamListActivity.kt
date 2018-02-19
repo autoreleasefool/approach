@@ -19,6 +19,7 @@ import ca.josephroque.bowlingcompanion.bowlers.BowlerDialog
 import ca.josephroque.bowlingcompanion.teams.Team
 import ca.josephroque.bowlingcompanion.teams.TeamFragment
 import ca.josephroque.bowlingcompanion.utils.Android
+import ca.josephroque.bowlingcompanion.utils.EmailUtil
 import kotlinx.android.synthetic.main.activity_bowler_team_list.*
 import kotlinx.coroutines.experimental.launch
 import java.lang.ref.WeakReference
@@ -139,6 +140,15 @@ class BowlerTeamListActivity : AppCompatActivity(),
             }
             R.id.action_settings -> {
                 // openSettings()
+                true
+            }
+            R.id.action_feedback -> {
+                EmailUtil.sendEmail(
+                        this,
+                        resources.getString(R.string.feedback_email_recipient),
+                        String.format(resources.getString(R.string.feedback_email_subject), BuildConfig.VERSION_CODE),
+                        null
+                )
                 true
             }
             else -> super.onOptionsItemSelected(item)
