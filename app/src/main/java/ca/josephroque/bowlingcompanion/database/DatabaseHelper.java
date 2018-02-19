@@ -20,7 +20,7 @@ import ca.josephroque.bowlingcompanion.leagues.League;
 import ca.josephroque.bowlingcompanion.scoring.Fouls;
 
 /**
- * * Copyright (c) 2015 Joseph Roque.
+ * * Copyright (C) 2015 Joseph Roque
  *
  * Manages interactions with the application's database, including the creation,
  * updates and deletion.

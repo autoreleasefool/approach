@@ -3,7 +3,7 @@ package ca.josephroque.bowlingcompanion.database;
 import android.provider.BaseColumns;
 
 /**
- * Copyright (c) 2015 Joseph Roque.
+ * Copyright (c) 2015 Joseph Roque
  *
  * Defines various objects which represent tables in the schema for the
  * application's database. Member variables represent identifiers for attributes of the tables.

@@ -2,6 +2,8 @@ package ca.josephroque.bowlingcompanion.scoring
 
 /**
  * Copyright (C) 2018 Joseph Roque
+ *
+ * Provides utility methods for calculating averages.
  */
 class Average {
 

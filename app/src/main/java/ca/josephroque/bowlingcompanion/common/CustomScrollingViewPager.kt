@@ -7,6 +7,8 @@ import android.view.MotionEvent
 
 /**
  * Copyright (C) 2018 Joseph Roque
+ *
+ * Enable or disable scrolling in a ViewPager.
  */
 class CustomScrollingViewPager : ViewPager {
 

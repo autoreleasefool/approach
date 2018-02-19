@@ -16,6 +16,8 @@ import ca.josephroque.bowlingcompanion.teams.Team
 
 
 /**
+ * Copyright (C) 2018 Joseph Roque
+ *
  * [RecyclerView.Adapter] that can display a [INameAverage] and makes a call to the
  * specified [OnNameAverageInteractionListener].
  */
