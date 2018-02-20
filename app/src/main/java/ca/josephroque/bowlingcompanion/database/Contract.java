@@ -191,9 +191,9 @@ public final class Contract {
         /** Name of the table for team bowlers data. */
         public static final String TABLE_NAME = "teams_bowlers";
         /** Name of the column for the team id. */
-        public static final String COLUMN_TEAM_ID = "team_id_fk";
+        public static final String COLUMN_TEAM_ID = "team_bowler_team_id_fk";
         /** Name of the column for the bowler id. */
-        public static final String COLUMN_BOWLER_ID = "bowler_id_fk";
+        public static final String COLUMN_BOWLER_ID = "team_bowler_bowler_id_fk";
 
         /**
          * Private constructor, class cannot be instantiated.

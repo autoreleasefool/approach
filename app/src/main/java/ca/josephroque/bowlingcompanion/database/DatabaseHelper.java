@@ -118,9 +118,9 @@ public final class DatabaseHelper
         db.execSQL("CREATE INDEX match_game_fk_index ON "
                 + MatchPlayEntry.TABLE_NAME + "(" + MatchPlayEntry.COLUMN_GAME_ID + ")");
         db.execSQL("CREATE INDEX team_bowler_bowler_fk_index ON "
-                + TeamEntry.TABLE_NAME + "(" + TeamBowlerEntry.COLUMN_BOWLER_ID + ")");
+                + TeamBowlerEntry.TABLE_NAME + "(" + TeamBowlerEntry.COLUMN_BOWLER_ID + ")");
         db.execSQL("CREATE INDEX team_bowler_team_fk_index ON "
-                + TeamEntry.TABLE_NAME + "(" + TeamBowlerEntry.COLUMN_TEAM_ID + ")");
+                + TeamBowlerEntry.TABLE_NAME + "(" + TeamBowlerEntry.COLUMN_TEAM_ID + ")");
     }
 
     /**
@@ -238,6 +238,20 @@ public final class DatabaseHelper
     }
 
     /**
+     * Executes SQL statement to create table to store teams.
+     *
+     * @param db database
+     */
+    private void createTeamTable(SQLiteDatabase db) {
+        db.execSQL("CREATE TABLE "
+                + TeamEntry.TABLE_NAME + "("
+                + TeamEntry._ID + " INTEGER PRIMARY KEY, "
+                + TeamEntry.COLUMN_TEAM_NAME + " TEXT NOT NULL COLLATE NOCASE, "
+                + TeamEntry.COLUMN_DATE_MODIFIED + " TEXT NOT NULL"
+                + ");");
+    }
+
+    /**
      * Executes SQL statement to create table to store team members.
      *
      * @param db database
@@ -252,20 +266,6 @@ public final class DatabaseHelper
                 + " REFERENCES " + TeamEntry.TABLE_NAME
                 + " ON UPDATE CASCADE ON DELETE CASCADE, "
                 + "PRIMARY KEY (" + TeamBowlerEntry.COLUMN_BOWLER_ID + ", " + TeamBowlerEntry.COLUMN_TEAM_ID + ")"
-                + ");");
-    }
-
-    /**
-     * Executes SQL statement to create table to store teams.
-     *
-     * @param db database
-     */
-    private void createTeamTable(SQLiteDatabase db) {
-        db.execSQL("CREATE TABLE "
-                + TeamEntry.TABLE_NAME + "("
-                + TeamEntry._ID + " INTEGER PRIMARY KEY, "
-                + TeamEntry.COLUMN_TEAM_NAME + " TEXT NOT NULL COLLATE NOCASE, "
-                + TeamEntry.COLUMN_DATE_MODIFIED + " TEXT NOT NULL"
                 + ");");
     }
 
