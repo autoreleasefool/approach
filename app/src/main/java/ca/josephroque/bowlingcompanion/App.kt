@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion
 import android.app.Activity
 import android.app.Application
 import android.content.Context
+import android.support.v7.preference.PreferenceManager
 import android.view.inputmethod.InputMethodManager
 
 /**
@@ -12,6 +13,11 @@ import android.view.inputmethod.InputMethodManager
  * @constructor creates a new [Application]
  */
 class App : Application() {
+
+    override fun onCreate() {
+        super.onCreate()
+        PreferenceManager.setDefaultValues(this, R.xml.pref_app, false);
+    }
 
     companion object {
 

@@ -23,6 +23,10 @@ import ca.josephroque.bowlingcompanion.utils.EmailUtil
 import kotlinx.android.synthetic.main.activity_bowler_team_list.*
 import kotlinx.coroutines.experimental.launch
 import java.lang.ref.WeakReference
+import ca.josephroque.bowlingcompanion.settings.SettingsActivity
+import android.content.Intent
+
+
 
 
 class BowlerTeamListActivity : AppCompatActivity(),
@@ -139,7 +143,7 @@ class BowlerTeamListActivity : AppCompatActivity(),
                 true
             }
             R.id.action_settings -> {
-                // openSettings()
+                openSettings()
                 true
             }
             R.id.action_feedback -> {
@@ -153,6 +157,14 @@ class BowlerTeamListActivity : AppCompatActivity(),
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    /**
+     * Opens the settings activity.
+     */
+    private fun openSettings() {
+        val settingsIntent = Intent(this, SettingsActivity::class.java)
+        startActivity(settingsIntent)
     }
 
     /**

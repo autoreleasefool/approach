@@ -2,6 +2,7 @@
 
     <!-- App resources -->
     <string name="app_name">Bowling Companion</string>
+    <string name="title_activity_settings">Settings</string>
 
     <!-- Common objects -->
     <string name="bowlers">Bowlers</string>
@@ -19,6 +20,9 @@
     <string name="hint_bowler_name">Name</string>
     <string name="delete_bowler">Delete bowler</string>
 
+    <!-- Content descriptions -->
+    <string name="iv_name_average">Type indicator</string>
+
     <!-- Email -->
     <string name="send_email">Send email&#8230;</string>
     <string name="feedback_email_recipient">contact@josephroque.ca</string>
@@ -27,7 +31,100 @@
     <string name="bug_email_subject">Bug: Bowling Companion (%d)</string>
     <string name="bug_email_body">Please try to include as much of the following information as possible:\nWhere in the application the bug occurred,\nWhat you were doing when the bug occurred,\nThe nature of the bug - fatal, minor, cosmetic (the way the app looks)</string>
 
-    <!-- Content descriptions -->
-    <string name="iv_name_average">Type indicator</string>
+    <!-- Websites -->
+    <string name="facebook_page">https://www.facebook.com/BowlingCompanion/</string>
+    <string name="play_store_link">https://play.google.com/store/apps/details?id=ca.josephroque.bowlingcompanion</string>
+    <string name="developer_website">http://josephroque.ca</string>
+    <string name="open_source_repository">https://github.com/josephroqueca/bowling-companion</string>
+
+    <!-- General preferences -->
+    <string name="pref_category_general">General</string>
+    <string name="pref_highlight_score_enabled_title">Highlight high games</string>
+    <string name="pref_highlight_score_enabled_summary_on">High games will be highlighted</string>
+    <string name="pref_highlight_score_enabled_summary_off">No games highlighted</string>
+    <string name="pref_highlight_score_title">Minimum score to highlight</string>
+    <string name="pref_highlight_score_summary">Highlight games above a certain score</string>
+    <string name="pref_highlight_series_enabled_title">Highlight high series</string>
+    <string name="pref_highlight_series_enabled_summary_on">High series will be highlighted</string>
+    <string name="pref_highlight_series_enabled_summary_off">No series highlighted</string>
+    <string name="pref_highlight_series_title">Minimum series total to highlight</string>
+    <string name="pref_highlight_series_summary">Highlight series above a certain score</string>
+    <string name="pref_average_as_decimal_title">Show average as decimal?</string>
+    <string name="pref_average_as_decimal_summary_on">Up to 1 decimal</string>
+    <string name="pref_average_as_decimal_summary_off">No decimals</string>
+    <string name="pref_ask_combine_title">Combine similar series?</string>
+    <string name="pref_ask_combine_summary_on">Yes, ask me to combine series</string>
+    <string name="pref_ask_combine_summary_off">No, don\'t combine series</string>
+
+    <!-- Scoring preferences -->
+    <string name="pref_category_scoring">Scoring</string>
+    <string name="pref_enable_auto_advance_title">Enable auto advance?</string>
+    <string name="pref_enable_auto_advance_summary_on">Frame will auto advance after inactivity</string>
+    <string name="pref_enable_auto_advance_summary_off">Auto advance disabled</string>
+    <string name="pref_auto_advance_time_title">Auto advance interval</string>
+    <string name="pref_auto_advance_time_summary">Time of inactivity before advance</string>
+    <string name="pref_auto_advance_time_summary_seconds">Wait %ss before frame advances</string>
+    <string name="pref_auto_advance_time_dialog">Set auto advance interval</string>
+    <string name="pref_enable_fab_title">Enable floating next button?</string>
+    <string name="pref_enable_fab_summary_on">Next button available</string>
+    <string name="pref_enable_fab_summary_off">Floating next button disabled</string>
+    <string name="pref_pins_behind_fab_title">Extend pins behind floating button?</string>
+    <string name="pref_pins_behind_fab_summary_on">Pins extend to bottom of screen</string>
+    <string name="pref_pins_behind_fab_summary_off">Pins will not appear behind buttons</string>
+    <string name="pref_enable_strike_highlights_title">Highlight marks?</string>
+    <string name="pref_enable_strike_highlights_summary_on">Strikes and spares will be highlighted</string>
+    <string name="pref_enable_strike_highlights_summary_off">Mark highlighting disabled</string>
+    <string name="pref_enable_auto_lock_title">Auto lock games?</string>
+    <string name="pref_enable_auto_lock_summary_on">Games will lock after final frame</string>
+    <string name="pref_enable_auto_lock_summary_off">Games must be locked manually</string>
+
+    <!-- Stat preferences -->
+    <string name="pref_category_stats">Statistics</string>
+    <string name="pref_include_events_title">Include events?</string>
+    <string name="pref_include_events_summary_on">Bowler stats include events</string>
+    <string name="pref_include_events_summary_off">Events not included in stats</string>
+    <string name="pref_include_open_title">Include practice?</string>
+    <string name="pref_include_open_summary_on">Bowler stats include practice games</string>
+    <string name="pref_include_open_summary_off">Practice not included in stats</string>
+    <string name="pref_count_h2_as_h_title">Count H2 as HP?</string>
+    <string name="pref_count_h2_as_h_summary_on">H2 will add to headpin count</string>
+    <string name="pref_count_h2_as_h_summary_off">Headpins won\'t include H2</string>
+    <string name="pref_count_s2_as_s_title">Count S2 as SP?</string>
+    <string name="pref_count_s2_as_s_summary_on">S2 will add to split count</string>
+    <string name="pref_count_s2_as_s_summary_off">Splits won\'t include S2</string>
+
+    <!-- Match play preferences -->
+    <string name="pref_category_match_play">Match play</string>
+    <string name="pref_show_match_results_title">Show match play results?</string>
+    <string name="pref_show_match_results_summary_on">Series show match play results</string>
+    <string name="pref_show_match_results_summary_off">Match play results hidden</string>
+    <string name="pref_highlight_match_results_title">Highlight match play results?</string>
+    <string name="pref_highlight_match_results_summary_on">Wins and losses highlighted</string>
+    <string name="pref_highlight_match_results_summary_off">Match play highlights disabled</string>
+
+    <!-- Feedback preferences -->
+    <string name="pref_category_feedback">Feedback</string>
+    <string name="pref_rate_title">Rate the app</string>
+    <string name="pref_rate_summary">Your feedback is appreciated</string>
+    <string name="pref_report_bug_title">Report a bug</string>
+    <string name="pref_report_bug_summary">Help the app work better for you</string>
+    <string name="pref_send_feedback_title">Send feedback</string>
+    <string name="pref_send_feedback_summary">Provide comments and suggestions</string>
+
+    <!-- Other preferences -->
+    <string name="pref_category_other">Other</string>
+    <string name="pref_facebook_title">Visit us on Facebook</string>
+    <string name="pref_facebook_summary">For news and updates</string>
+    <string name="pref_developer_website_title">Visit the developer website</string>
+    <string name="pref_developer_website_summary">To learn more about the developer</string>
+    <string name="pref_view_source_title">View source on GitHub</string>
+    <string name="pref_view_source_summary">Check out the open source repository</string>
+    <string name="pref_attributions_title">Open Source Libraries</string>
+    <string name="pref_attributions_summary">Libraries we depend on</string>
+    <string name="pref_version_title">App version</string>
+    <string name="pref_version_summary">Version unknown</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

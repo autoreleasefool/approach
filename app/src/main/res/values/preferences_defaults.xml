@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- General -->
+
+    <bool name="pref_highlight_score_enabled_default">true</bool>
+    <bool name="pref_highlight_series_enabled_default">true</bool>
+    <bool name="pref_average_as_decimal_default">true</bool>
+    <bool name="pref_ask_combine_default">true</bool>
+
+    <!-- Scoring -->
+
+    <bool name="pref_enable_auto_advance_default">false</bool>
+    <string name="pref_auto_advance_default">10</string>
+    <bool name="pref_enable_fab_default">true</bool>
+    <bool name="pref_pins_behind_fab_default">true</bool>
+    <bool name="pref_enable_strike_highlights_default">true</bool>
+    <bool name="pref_enable_auto_lock_default">false</bool>
+
+    <!-- Statistics -->
+
+    <bool name="pref_include_events_default">true</bool>
+    <bool name="pref_include_open_default">true</bool>
+    <bool name="pref_count_h2_as_h_default">false</bool>
+    <bool name="pref_count_s2_as_s_default">false</bool>
+
+    <!-- Match play -->
+
+    <bool name="pref_show_match_results_default">true</bool>
+    <bool name="pref_highlight_match_results_default">true</bool>
+
+</resources>

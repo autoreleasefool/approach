@@ -19,5 +19,4 @@ object Preferences {
      */
     val VERSION = "pref_version"
 
-
 }
