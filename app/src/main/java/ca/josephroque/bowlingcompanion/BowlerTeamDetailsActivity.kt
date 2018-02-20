@@ -3,6 +3,11 @@ package ca.josephroque.bowlingcompanion
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 
+/**
+ * Copyright (C) 2018 Joseph Roque
+ *
+ * Activity to display bowler or team details
+ */
 class BowlerTeamDetailsActivity : AppCompatActivity() {
 
     /** @Override */

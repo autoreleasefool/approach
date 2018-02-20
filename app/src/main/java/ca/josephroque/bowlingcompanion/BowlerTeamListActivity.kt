@@ -26,9 +26,11 @@ import java.lang.ref.WeakReference
 import ca.josephroque.bowlingcompanion.settings.SettingsActivity
 import android.content.Intent
 
-
-
-
+/**
+ * Copyright (C) 2018 Joseph Roque
+ *
+ * Activity to display bowler and team fragments.
+ */
 class BowlerTeamListActivity : AppCompatActivity(),
         BowlerFragment.OnBowlerFragmentInteractionListener,
         TeamFragment.OnTeamFragmentInteractionListener,
