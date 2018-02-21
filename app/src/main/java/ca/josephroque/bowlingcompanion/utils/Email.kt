@@ -10,11 +10,11 @@ import ca.josephroque.bowlingcompanion.R
  *
  * Provides methods related to creating and formatting emails
  */
-class EmailUtil {
+class Email {
 
     companion object {
         /** Logging identifier. */
-        private val TAG = "EmailUtil"
+        private val TAG = "Email"
 
         /**
          * Prompts user to send an email with the provided parameters.

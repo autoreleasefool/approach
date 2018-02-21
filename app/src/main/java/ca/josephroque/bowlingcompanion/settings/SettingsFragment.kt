@@ -6,8 +6,7 @@ import android.support.v7.preference.Preference
 import android.support.v7.preference.PreferenceFragmentCompat
 import ca.josephroque.bowlingcompanion.BuildConfig
 import ca.josephroque.bowlingcompanion.R
-import ca.josephroque.bowlingcompanion.utils.EmailUtil
-import ca.josephroque.bowlingcompanion.utils.Settings
+import ca.josephroque.bowlingcompanion.utils.Email
 import android.content.Intent
 import android.net.Uri
 
@@ -24,7 +23,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             Settings.REPORT_BUG -> {
                 val activity = activity
                 if (activity != null) {
-                    EmailUtil.sendEmail(
+                    Email.sendEmail(
                             activity,
                             resources.getString(R.string.bug_email_recipient),
                             resources.getString(R.string.bug_email_subject),
@@ -36,7 +35,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             Settings.SEND_FEEDBACK -> {
                 val activity = activity
                 if (activity != null) {
-                    EmailUtil.sendEmail(
+                    Email.sendEmail(
                             activity,
                             resources.getString(R.string.feedback_email_recipient),
                             resources.getString(R.string.feedback_email_subject),

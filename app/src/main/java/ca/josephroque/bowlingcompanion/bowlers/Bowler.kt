@@ -12,7 +12,7 @@ import ca.josephroque.bowlingcompanion.common.parcelableCreator
 import ca.josephroque.bowlingcompanion.database.Contract.*
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper
 import ca.josephroque.bowlingcompanion.leagues.League
-import ca.josephroque.bowlingcompanion.utils.Settings
+import ca.josephroque.bowlingcompanion.settings.Settings
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async

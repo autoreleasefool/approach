@@ -10,7 +10,7 @@ import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.INameAverage
 import ca.josephroque.bowlingcompanion.common.NameAverageRecyclerViewAdapter
 import ca.josephroque.bowlingcompanion.dummy.DummyContent
-import ca.josephroque.bowlingcompanion.utils.Android
+import ca.josephroque.bowlingcompanion.common.Android
 import kotlinx.coroutines.experimental.launch
 
 

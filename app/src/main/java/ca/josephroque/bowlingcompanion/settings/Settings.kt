@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.utils
+package ca.josephroque.bowlingcompanion.settings
 
 /**
  * Copyright (C) 2018 Joseph Roque

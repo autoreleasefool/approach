@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.utils
+package ca.josephroque.bowlingcompanion.common
 
 /*
  * Copyright 2017 Miguel Castiblanco

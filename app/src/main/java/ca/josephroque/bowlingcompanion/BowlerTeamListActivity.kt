@@ -18,8 +18,8 @@ import ca.josephroque.bowlingcompanion.bowlers.BowlerFragment
 import ca.josephroque.bowlingcompanion.bowlers.BowlerDialog
 import ca.josephroque.bowlingcompanion.teams.Team
 import ca.josephroque.bowlingcompanion.teams.TeamFragment
-import ca.josephroque.bowlingcompanion.utils.Android
-import ca.josephroque.bowlingcompanion.utils.EmailUtil
+import ca.josephroque.bowlingcompanion.common.Android
+import ca.josephroque.bowlingcompanion.utils.Email
 import kotlinx.android.synthetic.main.activity_bowler_team_list.*
 import kotlinx.coroutines.experimental.launch
 import java.lang.ref.WeakReference
@@ -149,7 +149,7 @@ class BowlerTeamListActivity : AppCompatActivity(),
                 true
             }
             R.id.action_feedback -> {
-                EmailUtil.sendEmail(
+                Email.sendEmail(
                         this,
                         resources.getString(R.string.feedback_email_recipient),
                         String.format(resources.getString(R.string.feedback_email_subject), BuildConfig.VERSION_CODE),
