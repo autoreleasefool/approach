@@ -9,6 +9,7 @@ import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.utils.Email
 import android.content.Intent
 import android.net.Uri
+import ca.josephroque.bowlingcompanion.utils.Facebook
 
 
 /**
@@ -63,7 +64,11 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
                 TODO("not implemented") // Show open source attributions
             }
             Settings.FACEBOOK -> {
-                TODO("not implemented") // Show facebook page
+                val context = context
+                if (context != null) {
+                    Facebook.openFacebookPage(context)
+                }
+                true
             }
              else -> false// Does nothing
         }
