@@ -22,10 +22,9 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
     private val mOnPreferenceClickListener = Preference.OnPreferenceClickListener {
         when (it.key) {
             Settings.REPORT_BUG -> {
-                val activity = activity
-                if (activity != null) {
+                activity?.let {
                     Email.sendEmail(
-                            activity,
+                            it,
                             resources.getString(R.string.bug_email_recipient),
                             resources.getString(R.string.bug_email_subject),
                             resources.getString(R.string.bug_email_body)
@@ -34,10 +33,9 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
                 true
             }
             Settings.SEND_FEEDBACK -> {
-                val activity = activity
-                if (activity != null) {
+                activity?.let {
                     Email.sendEmail(
-                            activity,
+                            it,
                             resources.getString(R.string.feedback_email_recipient),
                             resources.getString(R.string.feedback_email_subject),
                             null
@@ -46,9 +44,8 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
                 true
             }
             Settings.RATE -> {
-                val activity = activity
-                if (activity != null) {
-                    val appPackageName = activity.packageName
+                activity?.let {
+                    val appPackageName = it.packageName
                     var marketIntent: Intent
                     try {
                         marketIntent = Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName))
@@ -64,10 +61,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
                 TODO("not implemented") // Show open source attributions
             }
             Settings.FACEBOOK -> {
-                val context = context
-                if (context != null) {
-                    Facebook.openFacebookPage(context)
-                }
+                context?.let { Facebook.openFacebookPage(it) }
                 true
             }
              else -> false// Does nothing

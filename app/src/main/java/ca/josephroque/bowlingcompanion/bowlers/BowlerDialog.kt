@@ -30,11 +30,7 @@ class BowlerDialog : DialogFragment() {
         fun newInstance(bowler: Bowler?): BowlerDialog {
             val dialog = BowlerDialog()
             val args = Bundle()
-
-            if (bowler != null) {
-                args.putParcelable(ARG_BOWLER, bowler)
-            }
-
+            bowler?.let { args.putParcelable(ARG_BOWLER, bowler) }
             dialog.arguments = args
             return dialog
         }
@@ -61,10 +57,11 @@ class BowlerDialog : DialogFragment() {
         val activity = activity as? AppCompatActivity
         activity?.setSupportActionBar(rootView.toolbar_bowler)
 
-        val actionBar = activity?.supportActionBar
-        actionBar?.setDisplayHomeAsUpEnabled(true)
-        actionBar?.setDisplayShowHomeEnabled(true)
-        actionBar?.setHomeAsUpIndicator(R.drawable.ic_close_white_24dp)
+        activity?.supportActionBar?.apply {
+            setDisplayHomeAsUpEnabled(true)
+            setDisplayShowHomeEnabled(true)
+            setHomeAsUpIndicator(R.drawable.ic_close_white_24dp)
+        }
 
         setHasOptionsMenu(true)
         return rootView
@@ -73,11 +70,8 @@ class BowlerDialog : DialogFragment() {
     /** @Override */
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        if (context is OnBowlerDialogInteractionListener) {
-            mListener = context
-        } else {
-            throw RuntimeException(context!!.toString() + " must implement OnBowlerDialogInteractionListener")
-        }
+        context as? OnBowlerDialogInteractionListener ?: throw RuntimeException(context!!.toString() + " must implement OnBowlerDialogInteractionListener")
+        mListener = context
     }
 
     /** @Override */
@@ -95,9 +89,7 @@ class BowlerDialog : DialogFragment() {
         val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.showSoftInput(input_name, InputMethodManager.SHOW_IMPLICIT)
 
-        if (mBowler != null) {
-            btn_delete.visibility = View.VISIBLE
-        }
+        mBowler?.let { btn_delete.visibility = View.VISIBLE }
     }
 
     /** @Override */

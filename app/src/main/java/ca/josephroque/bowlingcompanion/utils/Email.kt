@@ -28,12 +28,10 @@ class Email {
             val intent = Intent(Intent.ACTION_SEND)
             intent.data = Uri.parse("mailto:")
             intent.type = "message/rfc822"
-            if (recipient != null)
-                intent.putExtra(Intent.EXTRA_EMAIL, arrayOf<String>(recipient))
-            if (subject!= null)
-                intent.putExtra(Intent.EXTRA_SUBJECT, subject)
-            if (body != null)
-                intent.putExtra(Intent.EXTRA_TEXT, body)
+
+            recipient?.let { intent.putExtra(Intent.EXTRA_EMAIL, arrayOf<String>(it)) }
+            subject?.let { intent.putExtra(Intent.EXTRA_SUBJECT, it) }
+            body?.let { intent.putExtra(Intent.EXTRA_TEXT, it) }
 
             activity.startActivity(Intent.createChooser(intent, activity.resources.getString(R.string.send_email)))
         }

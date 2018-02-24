@@ -76,9 +76,11 @@ data class Bowler(private val bowlerName: String,
                 val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA)
                 val currentDate = dateFormat.format(Date())
 
-                var values = ContentValues()
-                values.put(BowlerEntry.COLUMN_BOWLER_NAME, name)
-                values.put(BowlerEntry.COLUMN_DATE_MODIFIED, currentDate)
+                var values = ContentValues().apply {
+                    put(BowlerEntry.COLUMN_BOWLER_NAME, name)
+                    put(BowlerEntry.COLUMN_DATE_MODIFIED, currentDate)
+                }
+
 
                 var bowlerId: Long = -1L
 
@@ -87,11 +89,12 @@ data class Bowler(private val bowlerName: String,
                     bowlerId = database.insert(BowlerEntry.TABLE_NAME, null, values)
 
                     if (bowlerId != -1L) {
-                        values = ContentValues()
-                        values.put(LeagueEntry.COLUMN_LEAGUE_NAME, League.PRACTICE_LEAGUE_NAME)
-                        values.put(LeagueEntry.COLUMN_DATE_MODIFIED, currentDate)
-                        values.put(LeagueEntry.COLUMN_BOWLER_ID, bowlerId)
-                        values.put(LeagueEntry.COLUMN_NUMBER_OF_GAMES, 1)
+                        values = ContentValues().apply {
+                            put(LeagueEntry.COLUMN_LEAGUE_NAME, League.PRACTICE_LEAGUE_NAME)
+                            put(LeagueEntry.COLUMN_DATE_MODIFIED, currentDate)
+                            put(LeagueEntry.COLUMN_BOWLER_ID, bowlerId)
+                            put(LeagueEntry.COLUMN_NUMBER_OF_GAMES, 1)
+                        }
                         database.insert(LeagueEntry.TABLE_NAME, null, values)
                     }
 
