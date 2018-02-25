@@ -42,7 +42,7 @@ data class Team(private val teamName: String,
 
     companion object {
         /** Logging identifier. */
-        private val TAG = "Team"
+        private const val TAG = "Team"
 
         /** Creator, required by [Parcelable]. */
         @JvmField val CREATOR = parcelableCreator(::Team)

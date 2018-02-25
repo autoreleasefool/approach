@@ -14,7 +14,7 @@ class Email {
 
     companion object {
         /** Logging identifier. */
-        private val TAG = "Email"
+        private const val TAG = "Email"
 
         /**
          * Prompts user to send an email with the provided parameters.

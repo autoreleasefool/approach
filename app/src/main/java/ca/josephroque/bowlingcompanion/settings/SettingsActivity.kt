@@ -6,6 +6,7 @@ import ca.josephroque.bowlingcompanion.R
 
 class SettingsActivity : AppCompatActivity() {
 
+    /** @Override */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setTheme(R.style.SettingTheme)

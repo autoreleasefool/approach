@@ -58,7 +58,7 @@ data class Bowler(private val bowlerName: String,
     companion object {
 
         /** Logging identifier. */
-        private val TAG = "Bowler"
+        private const val TAG = "Bowler"
 
         /** Creator, required by [Parcelable]. */
         @JvmField val CREATOR = parcelableCreator(::Bowler)

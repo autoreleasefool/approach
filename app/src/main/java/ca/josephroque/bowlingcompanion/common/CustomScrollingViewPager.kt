@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.common
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.support.v4.view.ViewPager
 import android.util.AttributeSet
@@ -21,6 +22,7 @@ class CustomScrollingViewPager : ViewPager {
     /**
      * Interrupt if scrolling is disabled.
      */
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(ev: MotionEvent?): Boolean {
         return scrollingEnabled && super.onTouchEvent(ev)
     }

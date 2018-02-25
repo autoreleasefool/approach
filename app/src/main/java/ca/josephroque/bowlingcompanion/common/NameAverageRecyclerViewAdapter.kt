@@ -25,7 +25,7 @@ class NameAverageRecyclerViewAdapter(private var mValues: List<INameAverage>, pr
 
     companion object {
         /** Logging identifier. */
-        private val TAG = "NameAverageRecyclerViewAdapter"
+        private const val TAG = "NameAverageRecyclerViewAdapter"
 
         /**
          * Apply a default [DividerItemDecoration] to the given [RecyclerView].

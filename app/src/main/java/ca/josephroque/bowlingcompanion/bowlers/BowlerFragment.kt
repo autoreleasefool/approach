@@ -23,7 +23,7 @@ class BowlerFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageI
 
     companion object {
         /** Logging identifier. */
-        private val TAG = "BowlerFragment"
+        private const val TAG = "BowlerFragment"
 
         /**
          * Creates a new instance.

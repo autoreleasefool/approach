@@ -8,6 +8,8 @@ package ca.josephroque.bowlingcompanion.scoring
 class Average {
 
     companion object {
+        /** Logging identifier. */
+        private const val TAG = "Average"
 
         /**
          * Calculates the average of a league based on the games played so far, their scores, and any additional games

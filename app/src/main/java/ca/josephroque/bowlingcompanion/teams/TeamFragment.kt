@@ -22,9 +22,8 @@ import ca.josephroque.bowlingcompanion.dummy.DummyContent
 class TeamFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageInteractionListener {
 
     companion object {
-
         /** Logging identifier. */
-        private val TAG = "TeamFragment"
+        private const val TAG = "TeamFragment"
 
         /**
          * Creates a new instance.

@@ -54,7 +54,7 @@ data class League(private val leagueName: String,
 
     companion object {
         /** Logging identifier. */
-        private val TAG = "League"
+        private const val TAG = "League"
 
         /** Creator, required by [Parcelable]. */
         @JvmField val CREATOR = parcelableCreator(::League)

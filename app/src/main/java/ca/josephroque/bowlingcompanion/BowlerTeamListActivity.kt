@@ -38,7 +38,7 @@ class BowlerTeamListActivity : AppCompatActivity(),
 
     companion object {
         /** Logging identifier. */
-        private val TAG = "BowlerTeamListActivity"
+        private const val TAG = "BowlerTeamListActivity"
     }
 
     /** Active tab. */

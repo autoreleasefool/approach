@@ -8,9 +8,8 @@ package ca.josephroque.bowlingcompanion.scoring
 class Fouls {
 
     companion object {
-
         /** Logging identifier. */
-        private val TAG = "Fouls"
+        private const val TAG = "Fouls"
 
         /**
          * Gets the String representation of a number of fouls.

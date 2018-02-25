@@ -17,7 +17,7 @@ class Facebook {
 
     companion object {
         /** Logging identifier. */
-        private val TAG = "Facebook"
+        private const val TAG = "Facebook"
 
         /**
          * Intent to open the official Facebook app. If the Facebook app is not installed then the

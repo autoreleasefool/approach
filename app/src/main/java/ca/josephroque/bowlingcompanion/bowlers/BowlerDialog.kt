@@ -22,10 +22,10 @@ class BowlerDialog : DialogFragment() {
 
     companion object {
         /** Logging identifier. */
-        private val TAG = "BowlerDialog"
+        private const val TAG = "BowlerDialog"
 
         /** Identifier for the [Bowler] to be edited. */
-        private val ARG_BOWLER = "arg_bowler"
+        private const val ARG_BOWLER = "${TAG}_BOWLER"
 
         fun newInstance(bowler: Bowler?): BowlerDialog {
             val dialog = BowlerDialog()
