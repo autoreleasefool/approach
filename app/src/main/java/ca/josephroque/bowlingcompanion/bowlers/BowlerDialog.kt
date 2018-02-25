@@ -43,7 +43,11 @@ class BowlerDialog : DialogFragment() {
     private var mListener: OnBowlerDialogInteractionListener? = null
 
     /** @Override */
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
+    ): View? {
         mBowler = arguments?.getParcelable(ARG_BOWLER) ?: savedInstanceState?.getParcelable(ARG_BOWLER)
 
         val rootView = inflater.inflate(R.layout.dialog_bowler, container, false)

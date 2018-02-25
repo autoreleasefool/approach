@@ -90,19 +90,16 @@ class NameAverageRecyclerViewAdapter(private var mValues: List<INameAverage>, pr
      */
     inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
         /** Render name of the INameAverage item. */
-        val mNameView: TextView
+        val mNameView: TextView = mView.findViewById(R.id.tv_name)
+
         /** Render average of the INameAverage item. */
-        val mAverageView: TextView
+        val mAverageView: TextView = mView.findViewById(R.id.tv_average)
+
         /** Render type indicator of the INameAverage item. */
-        val mIconView: ImageView
+        val mIconView: ImageView = mView.findViewById(R.id.iv_name_average)
+
         /** INameAverage item. */
         var mItem: INameAverage? = null
-
-        init {
-            mNameView = mView.findViewById(R.id.tv_name)
-            mAverageView = mView.findViewById(R.id.tv_average)
-            mIconView = mView.findViewById(R.id.iv_name_average)
-        }
     }
 
     /**

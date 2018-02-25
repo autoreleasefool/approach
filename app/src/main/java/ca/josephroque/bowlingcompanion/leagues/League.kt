@@ -17,11 +17,13 @@ import kotlinx.coroutines.experimental.async
  *
  * A single League, which has a set of series.
  */
-data class League(private val leagueName: String,
-                  private val leagueAverage: Double,
-                  private val leagueId: Long,
-                  val isEvent: Boolean,
-                  val gamesPerSeries: Int): INameAverage, KParcelable {
+data class League(
+        private val leagueName: String,
+        private val leagueAverage: Double,
+        private val leagueId: Long,
+        private val isEvent: Boolean,
+        private val gamesPerSeries: Int
+): INameAverage, KParcelable {
 
     override val name: String
         get() = leagueName

@@ -43,9 +43,11 @@ class BowlerFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageI
     private var mBowlers: List<Bowler> = ArrayList()
 
     /** @Override */
-    override fun onCreateView(inflater: LayoutInflater,
-                              container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
+    ): View? {
         val view = inflater.inflate(R.layout.fragment_bowler_list, container, false)
 
         if (view is RecyclerView) {
@@ -62,11 +64,8 @@ class BowlerFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageI
     /** @Override */
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        if (context is OnBowlerFragmentInteractionListener) {
-            mListener = context
-        } else {
-            throw RuntimeException(context!!.toString() + " must implement OnBowlerFragmentInteractionListener")
-        }
+        context as? OnBowlerFragmentInteractionListener ?: throw RuntimeException(context!!.toString() + " must implement OnBowlerFragmentInteractionListener")
+        mListener = context
     }
 
     /** @Override */

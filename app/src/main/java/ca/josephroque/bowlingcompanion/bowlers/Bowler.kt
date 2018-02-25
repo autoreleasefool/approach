@@ -26,9 +26,11 @@ import java.util.*
  * A single Bowler, who has leagues, events, series, games, and stats.
  */
 
-data class Bowler(private val bowlerName: String,
-                  private val bowlerAverage: Double,
-                  private val bowlerId: Long): INameAverage, KParcelable {
+data class Bowler(
+        private val bowlerName: String,
+        private val bowlerAverage: Double,
+        private val bowlerId: Long
+): INameAverage, KParcelable {
 
     override val name: String
         get() = bowlerName

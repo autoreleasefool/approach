@@ -47,9 +47,11 @@ class TeamFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageInt
     }
 
     /** @Override */
-    override fun onCreateView(inflater: LayoutInflater,
-                              container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
+    ): View? {
         val view = inflater.inflate(R.layout.fragment_team_list, container, false)
 
         // Set the adapter
@@ -65,11 +67,8 @@ class TeamFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageInt
     /** @Override */
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        if (context is OnTeamFragmentInteractionListener) {
-            mListener = context
-        } else {
-            throw RuntimeException(context!!.toString() + " must implement OnTeamFragmentInteractionListener")
-        }
+        context as? OnTeamFragmentInteractionListener ?: throw RuntimeException(context!!.toString() + " must implement OnTeamFragmentInteractionListener")
+        mListener = context
     }
 
     /** @Override */
