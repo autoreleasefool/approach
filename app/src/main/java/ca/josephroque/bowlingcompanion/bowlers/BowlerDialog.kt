@@ -37,10 +37,10 @@ class BowlerDialog : DialogFragment() {
     }
 
     /** Bowler to be edited, or null if a new bowler is to be created. */
-    private var mBowler: Bowler? = null
+    private var bowler: Bowler? = null
 
     /** Interaction handler. */
-    private var mListener: OnBowlerDialogInteractionListener? = null
+    private var listener: OnBowlerDialogInteractionListener? = null
 
     /** @Override */
     override fun onCreateView(
@@ -48,11 +48,11 @@ class BowlerDialog : DialogFragment() {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        mBowler = arguments?.getParcelable(ARG_BOWLER) ?: savedInstanceState?.getParcelable(ARG_BOWLER)
+        bowler = arguments?.getParcelable(ARG_BOWLER) ?: savedInstanceState?.getParcelable(ARG_BOWLER)
 
         val rootView = inflater.inflate(R.layout.dialog_bowler, container, false)
 
-        if (mBowler == null) {
+        if (bowler == null) {
             rootView.toolbar_bowler.setTitle(R.string.new_bowler)
         } else {
             rootView.toolbar_bowler.setTitle(R.string.edit_bowler)
@@ -75,13 +75,13 @@ class BowlerDialog : DialogFragment() {
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         context as? OnBowlerDialogInteractionListener ?: throw RuntimeException(context!!.toString() + " must implement OnBowlerDialogInteractionListener")
-        mListener = context
+        listener = context
     }
 
     /** @Override */
     override fun onDetach() {
         super.onDetach()
-        mListener = null
+        listener = null
     }
 
     /** @Override */
@@ -93,13 +93,13 @@ class BowlerDialog : DialogFragment() {
         val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.showSoftInput(input_name, InputMethodManager.SHOW_IMPLICIT)
 
-        mBowler?.let { btn_delete.visibility = View.VISIBLE }
+        bowler?.let { btn_delete.visibility = View.VISIBLE }
     }
 
     /** @Override */
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putParcelable(ARG_BOWLER, mBowler)
+        outState.putParcelable(ARG_BOWLER, bowler)
     }
 
     /** @Override */
@@ -122,7 +122,7 @@ class BowlerDialog : DialogFragment() {
 
         return when (item.itemId) {
             R.id.action_save -> {
-                mListener?.onCreateBowler(input_name.text.toString())
+                listener?.onCreateBowler(input_name.text.toString())
                 true
             }
             else -> {

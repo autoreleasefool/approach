@@ -36,11 +36,11 @@ class BowlerFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageI
     }
 
     /** Interaction handler. */
-    private var mListener: OnBowlerFragmentInteractionListener? = null
+    private var listener: OnBowlerFragmentInteractionListener? = null
     /** Adapter to manage rendering the list of bowlers. */
-    private var mBowlerAdapter: NameAverageRecyclerViewAdapter? = null
+    private var bowlerAdapter: NameAverageRecyclerViewAdapter? = null
     /** Bowlers to display. */
-    private var mBowlers: List<Bowler> = ArrayList()
+    private var bowlers: List<Bowler> = ArrayList()
 
     /** @Override */
     override fun onCreateView(
@@ -52,10 +52,10 @@ class BowlerFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageI
 
         if (view is RecyclerView) {
             val context = view.getContext()
-            mBowlerAdapter = NameAverageRecyclerViewAdapter(DummyContent.BOWLERS, this)
+            bowlerAdapter = NameAverageRecyclerViewAdapter(DummyContent.BOWLERS, this)
 
             view.layoutManager = LinearLayoutManager(context)
-            view.adapter = mBowlerAdapter
+            view.adapter = bowlerAdapter
             NameAverageRecyclerViewAdapter.applyDefaultDivider(view, context)
         }
         return view
@@ -65,13 +65,13 @@ class BowlerFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageI
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         context as? OnBowlerFragmentInteractionListener ?: throw RuntimeException(context!!.toString() + " must implement OnBowlerFragmentInteractionListener")
-        mListener = context
+        listener = context
     }
 
     /** @Override */
     override fun onDetach() {
         super.onDetach()
-        mListener = null
+        listener = null
     }
 
     /** @Override */
@@ -87,9 +87,9 @@ class BowlerFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageI
         val context = context?: return
         launch(Android) {
             val bowlers = Bowler.fetchAll(context)
-            mBowlers = bowlers.await()
-            mBowlerAdapter?.setElements(mBowlers)
-            mBowlerAdapter?.notifyDataSetChanged()
+            this@BowlerFragment.bowlers = bowlers.await()
+            bowlerAdapter?.setElements(this@BowlerFragment.bowlers)
+            bowlerAdapter?.notifyDataSetChanged()
         }
     }
 
@@ -100,7 +100,7 @@ class BowlerFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageI
      */
     override fun onNAItemClick(item: INameAverage) {
         if (item is Bowler) {
-            mListener?.onBowlerSelected(item)
+            listener?.onBowlerSelected(item)
         }
     }
 

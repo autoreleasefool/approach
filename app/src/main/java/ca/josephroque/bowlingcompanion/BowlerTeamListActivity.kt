@@ -127,11 +127,6 @@ class BowlerTeamListActivity : AppCompatActivity(),
     }
 
     /** @Override */
-    override fun onBackPressed() {
-        super.onBackPressed()
-    }
-
-    /** @Override */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
@@ -209,25 +204,24 @@ class BowlerTeamListActivity : AppCompatActivity(),
     internal class BowlersTeamsPagerAdapter(fm: FragmentManager, private var tabCount: Int): FragmentPagerAdapter(fm) {
 
         /** Weak references to the fragments in the pager. */
-        private val mFragmentReferenceMap: MutableMap<Int, WeakReference<Fragment>> = HashMap()
+        private val fragmentReferenceMap: MutableMap<Int, WeakReference<Fragment>> = HashMap()
 
         /** @Override. */
         override fun getItem(position: Int): Fragment? {
-            val fragment: Fragment
-            when (position) {
-                0 -> fragment = BowlerFragment.newInstance()
-                1 -> fragment = TeamFragment.newInstance()
+            val fragment: Fragment = when (position) {
+                0 -> BowlerFragment.newInstance()
+                1 -> TeamFragment.newInstance()
                 else -> return null
             }
 
-            mFragmentReferenceMap.put(position, WeakReference(fragment))
+            fragmentReferenceMap[position] = WeakReference(fragment)
             return fragment
         }
 
         /** @Override. */
         override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
             super.destroyItem(container, position, `object`)
-            mFragmentReferenceMap.remove(position)
+            fragmentReferenceMap.remove(position)
         }
 
         /** @Override. */
@@ -242,7 +236,7 @@ class BowlerTeamListActivity : AppCompatActivity(),
          * @return the fragment at [position]
          */
         fun getFragment(position: Int): Fragment? {
-            return mFragmentReferenceMap.get(position)?.get()
+            return fragmentReferenceMap[position]?.get()
         }
     }
 }

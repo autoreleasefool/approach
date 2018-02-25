@@ -21,7 +21,10 @@ import ca.josephroque.bowlingcompanion.teams.Team
  * [RecyclerView.Adapter] that can display a [INameAverage] and makes a call to the
  * specified [OnNameAverageInteractionListener].
  */
-class NameAverageRecyclerViewAdapter(private var mValues: List<INameAverage>, private val mListener: OnNameAverageInteractionListener?): RecyclerView.Adapter<NameAverageRecyclerViewAdapter.ViewHolder>() {
+class NameAverageRecyclerViewAdapter(
+        private var values: List<INameAverage>,
+        private var listener: OnNameAverageInteractionListener?
+): RecyclerView.Adapter<NameAverageRecyclerViewAdapter.ViewHolder>() {
 
     companion object {
         /** Logging identifier. */
@@ -40,9 +43,14 @@ class NameAverageRecyclerViewAdapter(private var mValues: List<INameAverage>, pr
         }
     }
 
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView?) {
+        super.onDetachedFromRecyclerView(recyclerView)
+        listener = null
+    }
+
     /** @Override */
     override fun getItemCount(): Int {
-        return mValues.size
+        return values.size
     }
 
     /** @Override */
@@ -54,14 +62,14 @@ class NameAverageRecyclerViewAdapter(private var mValues: List<INameAverage>, pr
     /** @Override */
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val context = holder.itemView.context
-        holder.mItem = mValues[position]
-        holder.mNameView.text = mValues[position].name
-        holder.mAverageView.text = mValues[position].getRoundedAverage(1)
+        holder.item = values[position]
+        holder.tvName.text = values[position].name
+        holder.tvAverage.text = values[position].getRoundedAverage(1)
 
-        if (holder.mItem is Bowler) {
-            holder.mIconView.setImageResource(R.drawable.ic_person_black_24dp)
-        } else if (holder.mItem is Team) {
-            holder.mIconView.setImageResource(R.drawable.ic_people_black_24dp)
+        if (holder.item is Bowler) {
+            holder.ivIcon.setImageResource(R.drawable.ic_person_black_24dp)
+        } else if (holder.item is Team) {
+            holder.ivIcon.setImageResource(R.drawable.ic_people_black_24dp)
         }
 
         if (position % 2 == 0) {
@@ -70,8 +78,8 @@ class NameAverageRecyclerViewAdapter(private var mValues: List<INameAverage>, pr
             holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorListAlternate))
         }
 
-        holder.mView.setOnClickListener {
-            mListener?.onNAItemClick(holder.mItem!!)
+        holder.view.setOnClickListener {
+            listener?.onNAItemClick(holder.item!!)
         }
     }
 
@@ -81,25 +89,25 @@ class NameAverageRecyclerViewAdapter(private var mValues: List<INameAverage>, pr
      * @param items new list of items to display
      */
     fun setElements(items: List<INameAverage>) {
-        mValues = items
+        values = items
         notifyDataSetChanged()
     }
 
     /**
      * View Holder.
      */
-    inner class ViewHolder(val mView: View) : RecyclerView.ViewHolder(mView) {
+    inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         /** Render name of the INameAverage item. */
-        val mNameView: TextView = mView.findViewById(R.id.tv_name)
+        val tvName: TextView = view.findViewById(R.id.tv_name)
 
         /** Render average of the INameAverage item. */
-        val mAverageView: TextView = mView.findViewById(R.id.tv_average)
+        val tvAverage: TextView = view.findViewById(R.id.tv_average)
 
         /** Render type indicator of the INameAverage item. */
-        val mIconView: ImageView = mView.findViewById(R.id.iv_name_average)
+        val ivIcon: ImageView = view.findViewById(R.id.iv_name_average)
 
         /** INameAverage item. */
-        var mItem: INameAverage? = null
+        var item: INameAverage? = null
     }
 
     /**

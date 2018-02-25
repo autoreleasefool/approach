@@ -19,7 +19,7 @@ import ca.josephroque.bowlingcompanion.utils.Facebook
  */
 class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
 
-    private val mOnPreferenceClickListener = Preference.OnPreferenceClickListener {
+    private val onPreferenceClickListener = Preference.OnPreferenceClickListener {
         when (it.key) {
             Settings.REPORT_BUG -> {
                 activity?.let {

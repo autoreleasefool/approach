@@ -36,10 +36,10 @@ class TeamFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageInt
     }
 
     /** Handle team interaction events. */
-    private var mListener: OnTeamFragmentInteractionListener? = null
+    private var listener: OnTeamFragmentInteractionListener? = null
 
     /** List of teams available. */
-    private var mTeams: List<Bowler> = ArrayList()
+    private var teams: List<Bowler> = ArrayList()
 
     /** @Override */
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -68,13 +68,13 @@ class TeamFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageInt
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         context as? OnTeamFragmentInteractionListener ?: throw RuntimeException(context!!.toString() + " must implement OnTeamFragmentInteractionListener")
-        mListener = context
+        listener = context
     }
 
     /** @Override */
     override fun onDetach() {
         super.onDetach()
-        mListener = null
+        listener = null
     }
 
     /** @Override */
