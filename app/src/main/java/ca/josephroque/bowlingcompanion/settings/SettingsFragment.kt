@@ -9,7 +9,12 @@ import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.utils.Email
 import android.content.Intent
 import android.net.Uri
+import android.support.v4.app.FragmentTransaction
+import android.support.v7.app.AppCompatActivity
+import ca.josephroque.bowlingcompanion.common.ScrollableTextFragment
 import ca.josephroque.bowlingcompanion.utils.Facebook
+import ca.josephroque.bowlingcompanion.utils.Files
+import ca.josephroque.bowlingcompanion.utils.toSpanned
 
 
 /**
@@ -22,47 +27,23 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
     private val onPreferenceClickListener = Preference.OnPreferenceClickListener {
         when (it.key) {
             Settings.REPORT_BUG -> {
-                activity?.let {
-                    Email.sendEmail(
-                            it,
-                            resources.getString(R.string.bug_email_recipient),
-                            resources.getString(R.string.bug_email_subject),
-                            resources.getString(R.string.bug_email_body)
-                    )
-                }
+                sendBugReportEmail()
                 true
             }
             Settings.SEND_FEEDBACK -> {
-                activity?.let {
-                    Email.sendEmail(
-                            it,
-                            resources.getString(R.string.feedback_email_recipient),
-                            resources.getString(R.string.feedback_email_subject),
-                            null
-                    )
-                }
+                sendFeedbackEmail()
                 true
             }
             Settings.RATE -> {
-                activity?.let {
-                    val appPackageName = it.packageName
-                    val marketIntent = try {
-                        Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName))
-                    } catch (ex: android.content.ActivityNotFoundException) {
-                        Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName))
-                    }
-
-                    startActivity(marketIntent)
-                }
+                displayPlayStoreListing()
                 true
             }
             Settings.ATTRIBUTIONS -> {
-                TODO("not implemented") // Show open source attributions
+                displayAttributions()
+                true
             }
             Settings.FACEBOOK -> {
-                activity?.let {
-                    it.startActivity(Facebook.getFacebookPageIntent(it))
-                }
+                displayFacebookPage()
                 true
             }
              else -> false// Does nothing
@@ -96,6 +77,80 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
     /** @Override */
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         updatePreferenceSummaries()
+    }
+
+    /**
+     * Prompts the user to send a bug report email.
+     */
+    private fun sendBugReportEmail() {
+        activity?.let {
+            Email.sendEmail(
+                    it,
+                    resources.getString(R.string.bug_email_recipient),
+                    resources.getString(R.string.bug_email_subject),
+                    resources.getString(R.string.bug_email_body)
+            )
+        }
+    }
+
+    /**
+     * Prompts the user to send a feedback email.
+     */
+    private fun sendFeedbackEmail() {
+        activity?.let {
+            Email.sendEmail(
+                    it,
+                    resources.getString(R.string.feedback_email_recipient),
+                    resources.getString(R.string.feedback_email_subject),
+                    null
+            )
+        }
+    }
+
+    /**
+     * Displays the app's Play Store listing, in either the Google Play app, or the web browser.
+     */
+    private fun displayPlayStoreListing() {
+        activity?.let {
+            val appPackageName = it.packageName
+            val marketIntent = try {
+                Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName))
+            } catch (ex: android.content.ActivityNotFoundException) {
+                Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName))
+            }
+
+            startActivity(marketIntent)
+        }
+    }
+
+    /**
+     * Displays the open source library attributions for the app.
+     */
+    private fun displayAttributions() {
+        activity?.let { activity ->
+            var licenseText = Files.retrieveTextFileAsset(activity, "licenses.txt")
+
+            licenseText?.let {
+                val fragment = ScrollableTextFragment.newInstance(
+                        R.string.open_source_libraries,
+                        it.replace("\n", "<br />").toSpanned()
+                )
+                val transaction = activity.supportFragmentManager.beginTransaction()
+                transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                transaction.replace(R.id.pref_container, fragment)
+                transaction.addToBackStack(null)
+                transaction.commit()
+            }
+        }
+    }
+
+    /**
+     * Opens the Bowling Companion Facebook page.
+     */
+    private fun displayFacebookPage() {
+        activity?.let {
+            it.startActivity(Facebook.getFacebookPageIntent(it))
+        }
     }
 
     /**
