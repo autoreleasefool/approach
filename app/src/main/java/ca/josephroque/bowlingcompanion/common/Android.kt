@@ -26,7 +26,7 @@ import kotlin.coroutines.experimental.ContinuationInterceptor
  * Android Continuation, guarantees that, when resumed, is on the UI Thread
  * Created by macastiblancot on 2/13/17.
  */
-private class AndroidContinuation<T>(val cont: Continuation<T>) : Continuation<T> by cont {
+private class AndroidContinuation<in T>(val cont: Continuation<T>) : Continuation<T> by cont {
     override fun resume(value: T) {
         if (Looper.myLooper() == Looper.getMainLooper()) cont.resume(value)
         else Handler(Looper.getMainLooper()).post { cont.resume(value) }

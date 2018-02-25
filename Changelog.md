@@ -96,7 +96,7 @@ v2.0.3
 - Long click a bowler or league to edit its name
 - Improved match play recording (add your opponent's name and their score)
 - Match play results now appear in the series list (you can disable this in the settings under "Interface")
-- Bugfixes
+- Bug fixes
 ```
 
 ```
@@ -105,7 +105,7 @@ v2.0
 Features
 - Added a new tutorial on first startup
 - Adding graphs for stats
-- Support for tablets and landscaPe
+- Support for tablets and landscape
 - Swipe to knock over pins
 - Series in the "Open" league can have 1-5 games
 - You can now combine series in the "Open" league

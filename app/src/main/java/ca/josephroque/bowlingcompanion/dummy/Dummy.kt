@@ -35,22 +35,22 @@ object DummyContent {
 
     private fun addBowler(bowler: Bowler) {
         BOWLERS.add(bowler)
-        BOWLER_MAP.put(bowler.id, bowler)
+        BOWLER_MAP[bowler.id] = bowler
     }
 
     private fun addTeam(team: Team) {
         TEAMS.add(team)
-        TEAM_MAP.put(team.id, team)
+        TEAM_MAP[team.id] = team
     }
 
     private fun addLeague(league: League) {
         LEAGUES.add(league)
-        LEAGUE_MAP.put(league.id, league)
+        LEAGUE_MAP[league.id] = league
     }
 
     private fun addEvent(league: League) {
         EVENTS.add(league)
-        EVENT_MAP.put(league.id, league)
+        EVENT_MAP[league.id] = league
     }
 
     private fun createDummyBowler(): Bowler {

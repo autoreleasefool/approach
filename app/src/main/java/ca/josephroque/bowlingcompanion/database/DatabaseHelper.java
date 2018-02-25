@@ -612,6 +612,7 @@ public final class DatabaseHelper
             db.beginTransaction();
             ContentValues values = new ContentValues();
             values.put(LeagueEntry.COLUMN_LEAGUE_NAME, League.Companion.getPRACTICE_LEAGUE_NAME());
+            //noinspection deprecation
             db.update(LeagueEntry.TABLE_NAME,
                     values,
                     LeagueEntry.COLUMN_LEAGUE_NAME + "=?",

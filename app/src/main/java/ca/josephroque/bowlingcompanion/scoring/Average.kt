@@ -25,11 +25,7 @@ class Average {
             val totalPinfall = trackedPinfall + additionalPinfall
             val totalGames = trackedGames + additionalGames
 
-            if (totalGames > 0) {
-                return totalPinfall.div(totalGames.toDouble())
-            } else {
-                return 0.0
-            }
+            return if (totalGames > 0) totalPinfall.div(totalGames.toDouble()) else 0.0
         }
     }
 
