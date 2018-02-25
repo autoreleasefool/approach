@@ -98,9 +98,9 @@ class TeamFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageInt
     interface OnTeamFragmentInteractionListener {
 
         /**
-         * Indicates a bowler has been selected and further details should be shown to the user.
+         * Indicates a team has been selected and further details should be shown to the user.
          *
-         * @param bowler the bowler that the user has selected
+         * @param team the team that the user has selected
          */
         fun onTeamSelected(team: Team)
     }

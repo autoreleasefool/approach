@@ -66,7 +66,7 @@ data class League(
         val OPEN_LEAGUE_NAME = "Open"
 
         /** Name of the "Practice" league. */
-        const val PRACTICE_LEAGUE_NAME = "Practice"
+        val PRACTICE_LEAGUE_NAME = "Practice"
 
         /**
          * Get all of the leagues and events belonging to the [Bowler].
