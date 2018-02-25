@@ -156,6 +156,16 @@ class BowlerTeamListActivity : AppCompatActivity(),
         }
     }
 
+    /** @Override */
+    override fun onBackPressed() {
+        val count = supportFragmentManager.backStackEntryCount
+        if (count == 0) {
+            super.onBackPressed()
+        } else {
+            supportFragmentManager.popBackStack()
+        }
+    }
+
     /**
      * Opens the settings activity.
      */
