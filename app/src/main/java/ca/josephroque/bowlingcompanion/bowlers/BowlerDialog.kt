@@ -118,6 +118,8 @@ class BowlerDialog : DialogFragment() {
     /** @Override */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         App.hideSoftKeyBoard(activity!!)
+
+        activity?.supportFragmentManager?.popBackStack()
         dismiss()
 
         return when (item.itemId) {

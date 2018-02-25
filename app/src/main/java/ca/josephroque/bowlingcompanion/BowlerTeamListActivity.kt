@@ -179,9 +179,11 @@ class BowlerTeamListActivity : AppCompatActivity(),
      */
     private fun promptNewBowler() {
         val newFragment = BowlerDialog.newInstance(null)
-        val transaction = supportFragmentManager.beginTransaction()
-        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-        transaction.add(android.R.id.content, newFragment).addToBackStack(null).commit()
+        supportFragmentManager.beginTransaction()
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .add(android.R.id.content, newFragment)
+                .addToBackStack(null)
+                .commit()
     }
 
     /**

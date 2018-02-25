@@ -10,8 +10,7 @@ import ca.josephroque.bowlingcompanion.utils.Email
 import android.content.Intent
 import android.net.Uri
 import android.support.v4.app.FragmentTransaction
-import android.support.v7.app.AppCompatActivity
-import ca.josephroque.bowlingcompanion.common.ScrollableTextFragment
+import ca.josephroque.bowlingcompanion.common.ScrollableTextDialog
 import ca.josephroque.bowlingcompanion.utils.Facebook
 import ca.josephroque.bowlingcompanion.utils.Files
 import ca.josephroque.bowlingcompanion.utils.toSpanned
@@ -128,18 +127,25 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
      */
     private fun displayAttributions() {
         activity?.let { activity ->
-            var licenseText = Files.retrieveTextFileAsset(activity, "licenses.txt")
+            val licenseText = Files.retrieveTextFileAsset(activity, "licenses.txt")
 
             licenseText?.let {
-                val fragment = ScrollableTextFragment.newInstance(
+                val fragment = ScrollableTextDialog.newInstance(
                         R.string.open_source_libraries,
                         it.replace("\n", "<br />").toSpanned()
                 )
-                val transaction = activity.supportFragmentManager.beginTransaction()
-                transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                transaction.replace(R.id.pref_container, fragment)
-                transaction.addToBackStack(null)
-                transaction.commit()
+
+                activity.supportFragmentManager.beginTransaction()
+                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                        .add(android.R.id.content, fragment)
+                        .addToBackStack(null)
+                        .commit()
+
+//                val transaction = activity.supportFragmentManager.beginTransaction()
+//                transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+//                transaction.replace(R.id.pref_container, fragment)
+//                transaction.addToBackStack(null)
+//                transaction.commit()
             }
         }
     }
