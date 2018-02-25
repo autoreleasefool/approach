@@ -46,11 +46,10 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
             Settings.RATE -> {
                 activity?.let {
                     val appPackageName = it.packageName
-                    var marketIntent: Intent
-                    try {
-                        marketIntent = Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName))
+                    val marketIntent = try {
+                        Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName))
                     } catch (ex: android.content.ActivityNotFoundException) {
-                        marketIntent = Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName))
+                        Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName))
                     }
 
                     startActivity(marketIntent)
@@ -61,7 +60,9 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
                 TODO("not implemented") // Show open source attributions
             }
             Settings.FACEBOOK -> {
-                context?.let { Facebook.openFacebookPage(it) }
+                activity?.let {
+                    it.startActivity(Facebook.getFacebookPageIntent(it))
+                }
                 true
             }
              else -> false// Does nothing
@@ -70,7 +71,13 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
 
     /** @Override */
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        addPreferencesFromResource(R.xml.pref_app);
+        addPreferencesFromResource(R.xml.pref_app)
+
+        findPreference(Settings.REPORT_BUG).onPreferenceClickListener = onPreferenceClickListener
+        findPreference(Settings.SEND_FEEDBACK).onPreferenceClickListener = onPreferenceClickListener
+        findPreference(Settings.RATE).onPreferenceClickListener = onPreferenceClickListener
+        findPreference(Settings.ATTRIBUTIONS).onPreferenceClickListener = onPreferenceClickListener
+        findPreference(Settings.FACEBOOK).onPreferenceClickListener = onPreferenceClickListener
     }
 
     /** @Override */
@@ -104,7 +111,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
 
     companion object {
         /** Logging identifier. */
-        private val TAG = "SettingsFragment"
+        private const val TAG = "SettingsFragment"
 
         /**
          * Create a new instance of the fragment.

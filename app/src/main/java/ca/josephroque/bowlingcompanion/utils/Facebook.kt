@@ -3,7 +3,6 @@ package ca.josephroque.bowlingcompanion.utils
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.content.pm.ApplicationInfo
 import android.net.Uri
 import ca.josephroque.bowlingcompanion.R
 
@@ -26,7 +25,7 @@ class Facebook {
          * @param context context to get resources and packages
          * @return An intent that will open the Facebook page/profile
          */
-        fun openFacebookPage(context: Context): Intent {
+        fun getFacebookPageIntent(context: Context): Intent {
             val facebookPageUrl = context.resources.getString(R.string.facebook_page)
             var uri = Uri.parse(facebookPageUrl)
             val pm = context.packageManager
