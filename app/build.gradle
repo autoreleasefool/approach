@@ -10,6 +10,8 @@ def versionPatch = 0
 
 android {
     compileSdkVersion 27
+    buildToolsVersion "27.0.3"
+
     defaultConfig {
         applicationId "ca.josephroque.bowlingcompanion"
         minSdkVersion 15

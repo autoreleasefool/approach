@@ -1,24 +1,29 @@
 language: android
+sudo: required
+jdk: oraclejdk8
+before_cache:
+    - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+    - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+cache:
+    directories:
+        - $HOME/.gradle/caches/
+        - $HOME/.gradle/wrapper/
+        - $HOME/.android/build-cache
+env:
+    global:
+        - ANDROID_API=27
+        - ANDROID_BUILD_TOOLS=27.0.3
 android:
     components:
         - tools
-        - build-tools-27.0.3
-        - android-27
         - platform-tools
-        - add-on
+        - build-tools-$ANDROID_BUILD_TOOLS
+        - android-$ANDROID_API
         - extra
-licenses:
-    - 'android-sdk-license-.+'
-jdk:
-    - oraclejdk8
+    licenses:
+        - 'android-sdk-license-.+'
+        - 'google-gdk-license-.+'
 before_install:
     - yes | sdkmanager "platforms;android-27"
 script:
-    - ./gradlew assembleDebug
-before_cache:
-    - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
-cache:
-    directories:
-        - $HOME/.m2
-        - $HOME/.gradle/caches/
-        - $HOME/.gradle/wrapper/
+    - ./gradlew clean assembleDebug
