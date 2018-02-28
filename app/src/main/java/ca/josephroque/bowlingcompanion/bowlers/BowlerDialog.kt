@@ -124,7 +124,11 @@ class BowlerDialog : DialogFragment() {
 
         return when (item.itemId) {
             R.id.action_save -> {
-                listener?.onCreateBowler(input_name.text.toString())
+                if (bowler == null) {
+                    listener?.onFinishBowler(Bowler(input_name.text.toString(), 0.0, -1))
+                } else {
+                    listener?.onFinishBowler(Bowler(input_name.text.toString(), bowler!!.average, bowler!!.id))
+                }
                 true
             }
             else -> {
@@ -139,10 +143,10 @@ class BowlerDialog : DialogFragment() {
     interface OnBowlerDialogInteractionListener {
 
         /**
-         * Indicates when the user has prompted to create a new [Bowler]
+         * Indicates when the user has finished editing the [Bowler]
          *
-         * @param name the name for their new [Bowler]
+         * @param bowler the finished [Bowler]
          */
-        fun onCreateBowler(name: String)
+        fun onFinishBowler(bowler: Bowler)
     }
 }

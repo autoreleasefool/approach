@@ -114,7 +114,7 @@ class BowlerTeamListActivity : AppCompatActivity(),
 
         fab.setOnClickListener {
             when (currentTab) {
-                0 -> promptNewBowler()
+                0 -> promptAddOrEditBowler()
                 1 -> TODO("not implemented")
             }
         }
@@ -175,10 +175,12 @@ class BowlerTeamListActivity : AppCompatActivity(),
     }
 
     /**
-     * Display a prompt to add a new bowler.
+     * Display a prompt to add or edit a bowler.
+     *
+     * @param bowler the bowler to edit, or null if a new bowler should be added
      */
-    private fun promptNewBowler() {
-        val newFragment = BowlerDialog.newInstance(null)
+    private fun promptAddOrEditBowler(bowler: Bowler? = null) {
+        val newFragment = BowlerDialog.newInstance(bowler)
         supportFragmentManager.beginTransaction()
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                 .add(android.R.id.content, newFragment)
@@ -186,17 +188,18 @@ class BowlerTeamListActivity : AppCompatActivity(),
                 .commit()
     }
 
-    /**
-     * Callback to create a new [Bowler].
-     *
-     * @param name name of the new [Bowler]
-     */
-    override fun onCreateBowler(name: String) {
+    /** @Override */
+    override fun onFinishBowler(bowler: Bowler) {
         launch(Android) {
-            Bowler.createNewAndSave(this@BowlerTeamListActivity, name).await()
-            val adapter = pager_bowlers_teams.adapter as? BowlersTeamsPagerAdapter
-            val bowlerFragment = adapter?.getFragment(pager_bowlers_teams.currentItem) as? BowlerFragment
-            bowlerFragment?.refreshBowlerList()
+            val (savedBowler, error) = bowler.save(this@BowlerTeamListActivity).await()
+
+            if (savedBowler == null) {
+                TODO("Display the error")
+            } else {
+                val adapter = pager_bowlers_teams.adapter as? BowlersTeamsPagerAdapter
+                val bowlerFragment = adapter?.getFragment(pager_bowlers_teams.currentItem) as? BowlerFragment
+                bowlerFragment?.refreshBowlerList(savedBowler)
+            }
         }
     }
 
@@ -206,8 +209,12 @@ class BowlerTeamListActivity : AppCompatActivity(),
     }
 
     /** @Override. */
-    override fun onBowlerSelected(bowler: Bowler) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onBowlerSelected(bowler: Bowler, toEdit: Boolean) {
+        if (toEdit) {
+            promptAddOrEditBowler(bowler)
+        } else {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
     }
 
     /**

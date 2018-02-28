@@ -21,6 +21,11 @@
     <string name="hint_bowler_name">Name</string>
     <string name="delete_bowler">Delete bowler</string>
 
+    <!-- Errors -->
+    <string name="error_bowler_name_invalid">You can only use letters, spaces, and the following characters: \'!@#$%^&amp;*()_+:"?/~-.</string>
+    <string name="error_bowler_name_in_use">That name has already been used. You must choose another.</string>
+    <string name="error_bowler_not_saved">An error occurred and the bowler could not be saved.</string>
+
     <!-- Content descriptions -->
     <string name="iv_name_average">Type indicator</string>
 

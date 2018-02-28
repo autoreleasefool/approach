@@ -77,19 +77,26 @@ class BowlerFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageI
     /** @Override */
     override fun onResume() {
         super.onResume()
-        refreshBowlerList()
+        refreshBowlerList(null)
     }
 
     /**
      * Reload the list of bowlers and update list.
+     *
+     * @param bowler if the bowler exists in the list only that entry will be updated
      */
-    fun refreshBowlerList() {
+    fun refreshBowlerList(bowler: Bowler?) {
         val context = context?: return
         launch(Android) {
-            val bowlers = Bowler.fetchAll(context)
-            this@BowlerFragment.bowlers = bowlers.await()
-            bowlerAdapter?.setElements(this@BowlerFragment.bowlers)
-            bowlerAdapter?.notifyDataSetChanged()
+            val index = bowler?.indexInList(this@BowlerFragment.bowlers) ?: -1
+            if (index == -1) {
+                val bowlers = Bowler.fetchAll(context).await()
+                this@BowlerFragment.bowlers = bowlers
+                bowlerAdapter?.setElements(this@BowlerFragment.bowlers)
+                bowlerAdapter?.notifyDataSetChanged()
+            } else {
+                bowlerAdapter?.notifyItemChanged(index)
+            }
         }
     }
 
@@ -100,7 +107,7 @@ class BowlerFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageI
      */
     override fun onNAItemClick(item: INameAverage) {
         if (item is Bowler) {
-            listener?.onBowlerSelected(item)
+            listener?.onBowlerSelected(item, false)
         }
     }
 
@@ -111,13 +118,18 @@ class BowlerFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageI
      */
     override fun onNAItemDelete(item: INameAverage) {
         if (item is Bowler) {
-
         }
     }
 
-    /** @Override */
+    /**
+     * Shows option to edit the selected bowler.
+     *
+     * @param item the bowler the user wishes to edit
+     */
     override fun onNAItemLongClick(item: INameAverage) {
-
+        if (item is Bowler) {
+            listener?.onBowlerSelected(item, true)
+        }
     }
 
     /**
@@ -129,7 +141,8 @@ class BowlerFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageI
          * Indicates a bowler has been selected and further details should be shown to the user.
          *
          * @param bowler the bowler that the user has selected
+         * @param toEdit indicate if the user's intent is to edit the [Bowler] or select
          */
-        fun onBowlerSelected(bowler: Bowler)
+        fun onBowlerSelected(bowler: Bowler, toEdit: Boolean)
     }
 }
