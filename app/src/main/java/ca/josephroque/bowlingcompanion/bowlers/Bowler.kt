@@ -43,6 +43,8 @@ data class Bowler(
     override val id: Long
         get() = bowlerId
 
+    override var isDeleted: Boolean = false
+
     /**
      * Construct [Bowler] from a [Parcel]
      */

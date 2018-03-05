@@ -26,6 +26,8 @@ data class Team(
     override val id: Long
         get() = teamId
 
+    override var isDeleted: Boolean = false
+
     /**
      * Construct [Team] from a [Parcel]
      */

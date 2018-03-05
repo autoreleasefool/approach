@@ -34,6 +34,8 @@ data class League(
     override val id: Long
         get() = leagueId
 
+    override var isDeleted: Boolean = false
+
     /**
      * Construct [League] from a [Parcel]
      */

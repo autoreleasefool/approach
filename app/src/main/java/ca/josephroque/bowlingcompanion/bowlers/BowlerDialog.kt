@@ -93,7 +93,10 @@ class BowlerDialog : DialogFragment() {
         val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.showSoftInput(input_name, InputMethodManager.SHOW_IMPLICIT)
 
-        bowler?.let { btn_delete.visibility = View.VISIBLE }
+        bowler?.let {
+            btn_delete.visibility = View.VISIBLE
+            input_name.setText(it.name)
+        }
     }
 
     /** @Override */

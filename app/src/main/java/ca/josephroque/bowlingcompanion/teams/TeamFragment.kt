@@ -59,6 +59,7 @@ class TeamFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageInt
             val context = view.getContext()
             view.layoutManager = LinearLayoutManager(context)
             view.adapter = NameAverageRecyclerViewAdapter(DummyContent.TEAMS, this)
+            view.setHasFixedSize(true)
             NameAverageRecyclerViewAdapter.applyDefaultDivider(view, context)
         }
         return view
@@ -89,6 +90,11 @@ class TeamFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageInt
 
     /** @Override */
     override fun onNAItemLongClick(item: INameAverage) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    /** @Override */
+    override fun onNAItemSwipe(item: INameAverage) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 

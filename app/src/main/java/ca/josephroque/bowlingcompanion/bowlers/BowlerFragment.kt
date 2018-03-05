@@ -53,9 +53,11 @@ class BowlerFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageI
         if (view is RecyclerView) {
             val context = view.getContext()
             bowlerAdapter = NameAverageRecyclerViewAdapter(DummyContent.BOWLERS, this)
+            bowlerAdapter?.swipingEnabled = true
 
             view.layoutManager = LinearLayoutManager(context)
             view.adapter = bowlerAdapter
+            view.setHasFixedSize(true)
             NameAverageRecyclerViewAdapter.applyDefaultDivider(view, context)
         }
         return view
@@ -93,9 +95,8 @@ class BowlerFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageI
                 val bowlers = Bowler.fetchAll(context).await()
                 this@BowlerFragment.bowlers = bowlers
                 bowlerAdapter?.setElements(this@BowlerFragment.bowlers)
-                bowlerAdapter?.notifyDataSetChanged()
             } else {
-                bowlerAdapter?.notifyItemChanged(index)
+                bowlerAdapter?.setElementAt(index, bowler!!)
             }
         }
     }
@@ -118,6 +119,22 @@ class BowlerFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageI
      */
     override fun onNAItemDelete(item: INameAverage) {
         if (item is Bowler) {
+            TODO("Delete bowler")
+        }
+    }
+
+    /**
+     * Sets the bowler to be deleted or active again (toggles from current state).
+     *
+     * @param item the bowler to delete or activate
+     */
+    override fun onNAItemSwipe(item: INameAverage) {
+        if (item is Bowler) {
+            val index = item.indexInList(bowlers)
+            if (index != -1) {
+                item.isDeleted = !item.isDeleted
+                bowlerAdapter?.setElementAt(index, item)
+            }
         }
     }
 
