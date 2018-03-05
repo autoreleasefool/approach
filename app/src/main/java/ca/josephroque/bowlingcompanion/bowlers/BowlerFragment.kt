@@ -40,7 +40,7 @@ class BowlerFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageI
     /** Adapter to manage rendering the list of bowlers. */
     private var bowlerAdapter: NameAverageRecyclerViewAdapter? = null
     /** Bowlers to display. */
-    private var bowlers: List<Bowler> = ArrayList()
+    private var bowlers: MutableList<Bowler> = ArrayList()
 
     /** @Override */
     override fun onCreateView(
@@ -52,7 +52,7 @@ class BowlerFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageI
 
         if (view is RecyclerView) {
             val context = view.getContext()
-            bowlerAdapter = NameAverageRecyclerViewAdapter(DummyContent.BOWLERS, this)
+            bowlerAdapter = NameAverageRecyclerViewAdapter(emptyList(), this)
             bowlerAdapter?.swipingEnabled = true
 
             view.layoutManager = LinearLayoutManager(context)
@@ -96,7 +96,8 @@ class BowlerFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageI
                 this@BowlerFragment.bowlers = bowlers
                 bowlerAdapter?.setElements(this@BowlerFragment.bowlers)
             } else {
-                bowlerAdapter?.setElementAt(index, bowler!!)
+                bowlers[index] = bowler!!
+                bowlerAdapter?.notifyItemChanged(index)
             }
         }
     }
@@ -118,8 +119,14 @@ class BowlerFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageI
      * @param item the bowler the user wishes to delete
      */
     override fun onNAItemDelete(item: INameAverage) {
+        val context = context ?: return
         if (item is Bowler) {
-            TODO("Delete bowler")
+            val index = item.indexInList(this@BowlerFragment.bowlers)
+            if (index != -1) {
+                this@BowlerFragment.bowlers.removeAt(index)
+                bowlerAdapter?.notifyItemRemoved(index)
+                item.delete(context)
+            }
         }
     }
 
@@ -133,7 +140,7 @@ class BowlerFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageI
             val index = item.indexInList(bowlers)
             if (index != -1) {
                 item.isDeleted = !item.isDeleted
-                bowlerAdapter?.setElementAt(index, item)
+                bowlerAdapter?.notifyItemChanged(index)
             }
         }
     }

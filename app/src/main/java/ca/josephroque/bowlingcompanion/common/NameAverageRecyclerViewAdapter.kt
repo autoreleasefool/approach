@@ -181,13 +181,6 @@ class NameAverageRecyclerViewAdapter(
         notifyDataSetChanged()
     }
 
-    fun setElementAt(index: Int, item: INameAverage) {
-        val mutable = values.toMutableList()
-        mutable[index] = item
-        values = mutable.toList()
-        notifyItemChanged(index)
-    }
-
     /** @Override */
     override fun onClick(v: View) {
         recyclerView?.let {
