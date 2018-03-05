@@ -20,7 +20,7 @@ import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async
 import java.text.SimpleDateFormat
 import java.util.*
-
+import ca.josephroque.bowlingcompanion.database.Contract.BowlerEntry
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -69,9 +69,129 @@ data class Bowler(
      */
     fun save(context: Context): Deferred<Pair<Bowler?, String>> {
         return if (id < 0) {
-            Bowler.createNewAndSave(context, this.name)
+            createNewAndSave(context)
         } else {
-            Bowler.update(context, this)
+            update(context)
+        }
+    }
+
+    /**
+     * Create a new [Bowler] and save to the database.
+     *
+     * @param context to get database instance
+     * @return [Bowler] if successful and [String] if an error occurred
+     */
+    private fun createNewAndSave(context: Context): Deferred<Pair<Bowler?, String>> {
+        return async(CommonPool) {
+            if (!isBowlerNameValid(name)) {
+                return@async Pair(null, context.resources.getString(R.string.error_bowler_name_invalid))
+            } else if (!isBowlerNameUnique(context, name).await()) {
+                return@async Pair(null, context.resources.getString(R.string.error_bowler_name_in_use))
+            }
+
+            val database = DatabaseHelper.getInstance(context).writableDatabase
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA)
+            val currentDate = dateFormat.format(Date())
+
+            var values = ContentValues().apply {
+                put(BowlerEntry.COLUMN_BOWLER_NAME, name)
+                put(BowlerEntry.COLUMN_DATE_MODIFIED, currentDate)
+            }
+
+            val bowlerId: Long
+
+            database.beginTransaction()
+            try {
+                bowlerId = database.insert(BowlerEntry.TABLE_NAME, null, values)
+
+                if (bowlerId != -1L) {
+                    values = ContentValues().apply {
+                        put(LeagueEntry.COLUMN_LEAGUE_NAME, League.PRACTICE_LEAGUE_NAME)
+                        put(LeagueEntry.COLUMN_DATE_MODIFIED, currentDate)
+                        put(LeagueEntry.COLUMN_BOWLER_ID, bowlerId)
+                        put(LeagueEntry.COLUMN_NUMBER_OF_GAMES, 1)
+                    }
+                    database.insert(LeagueEntry.TABLE_NAME, null, values)
+                }
+
+                database.setTransactionSuccessful()
+            } catch (ex: Exception) {
+                Log.e(TAG, "Could not create a new bowler")
+                return@async Pair(null, context.resources.getString(R.string.error_bowler_not_saved))
+            } finally {
+                database.endTransaction()
+            }
+
+            Pair(Bowler(name, 0.0, bowlerId), "")
+        }
+    }
+
+    /**
+     * Update the [Bowler] in the database.
+     *
+     * @param context context to get database instance
+     * @return [Bowler] if successful and [String] if an error occurred
+     */
+    private fun update(context: Context): Deferred<Pair<Bowler?, String>> {
+        return async(CommonPool) {
+            if (!isBowlerNameValid(name)) {
+                return@async Pair(null, context.resources.getString(R.string.error_bowler_name_invalid))
+            } else if (!isBowlerNameUnique(context, name).await()) {
+                return@async Pair(null, context.resources.getString(R.string.error_bowler_name_in_use))
+            }
+
+            val database = DatabaseHelper.getInstance(context).writableDatabase
+
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA)
+            val currentDate = dateFormat.format(Date())
+
+            val values = ContentValues().apply {
+                put(BowlerEntry.COLUMN_BOWLER_NAME, name)
+                put(BowlerEntry.COLUMN_DATE_MODIFIED, currentDate)
+            }
+
+            database.beginTransaction()
+            try {
+                database.update(
+                        BowlerEntry.TABLE_NAME,
+                        values,
+                        "${BowlerEntry._ID}=?",
+                        arrayOf(id.toString()))
+
+                database.setTransactionSuccessful()
+            } catch (ex: Exception) {
+                Log.e(TAG, "Could not update bowler")
+                return@async Pair(null, context.resources.getString(R.string.error_bowler_not_saved))
+            } finally {
+                database.endTransaction()
+            }
+
+            Pair(this@Bowler, "")
+        }
+    }
+
+    /**
+     * Delete this [Bowler] from the database.
+     *
+     * @param context to get database instance
+     */
+    fun delete(context: Context): Deferred<Unit> {
+        return async(CommonPool) {
+            val database = DatabaseHelper.getInstance(context).writableDatabase
+            val whereArgs = arrayOf(id.toString())
+            database.beginTransaction()
+            try {
+                database.delete(BowlerEntry.TABLE_NAME,
+                        BowlerEntry._ID + "=?",
+                        whereArgs)
+                database.setTransactionSuccessful()
+            } catch (e: Exception) {
+                // Does nothing
+                // If there's an error deleting this bowler, then they just remain in the
+                // user's data and no harm is done.
+            } finally {
+                database.endTransaction()
+            }
         }
     }
 
@@ -96,107 +216,10 @@ data class Bowler(
         @JvmField val CREATOR = parcelableCreator(::Bowler)
 
         /**
-         * Create a new [Bowler] and save to the database.
-         *
-         * @param context to get database instance
-         * @param name name of the bowler
-         * @return [Bowler] if successful and [String] if an error occurred
-         */
-        fun createNewAndSave(context: Context, name: String): Deferred<Pair<Bowler?, String>> {
-            return async(CommonPool) {
-                if (!isBowlerNameValid(name)) {
-                    return@async Pair(null, context.resources.getString(R.string.error_bowler_name_invalid))
-                } else if (!isBowlerNameUnique(context, name).await()) {
-                    return@async Pair(null, context.resources.getString(R.string.error_bowler_name_in_use))
-                }
-
-                val database = DatabaseHelper.getInstance(context).writableDatabase
-                val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA)
-                val currentDate = dateFormat.format(Date())
-
-                var values = ContentValues().apply {
-                    put(BowlerEntry.COLUMN_BOWLER_NAME, name)
-                    put(BowlerEntry.COLUMN_DATE_MODIFIED, currentDate)
-                }
-
-                val bowlerId: Long
-
-                database.beginTransaction()
-                try {
-                    bowlerId = database.insert(BowlerEntry.TABLE_NAME, null, values)
-
-                    if (bowlerId != -1L) {
-                        values = ContentValues().apply {
-                            put(LeagueEntry.COLUMN_LEAGUE_NAME, League.PRACTICE_LEAGUE_NAME)
-                            put(LeagueEntry.COLUMN_DATE_MODIFIED, currentDate)
-                            put(LeagueEntry.COLUMN_BOWLER_ID, bowlerId)
-                            put(LeagueEntry.COLUMN_NUMBER_OF_GAMES, 1)
-                        }
-                        database.insert(LeagueEntry.TABLE_NAME, null, values)
-                    }
-
-                    database.setTransactionSuccessful()
-                } catch (ex: Exception) {
-                    Log.e(TAG, "Could not create a new bowler")
-                    return@async Pair(null, context.resources.getString(R.string.error_bowler_not_saved))
-                } finally {
-                    database.endTransaction()
-                }
-
-                Pair(Bowler(name, 0.0, bowlerId), "")
-            }
-        }
-
-        /**
-         * Update the [Bowler] in the database.
-         *
-         * @param context context to get database instance
-         * @param bowler the bowler to update
-         * @return [Bowler] if successful and [String] if an error occurred
-         */
-        fun update(context: Context, bowler: Bowler): Deferred<Pair<Bowler?, String>> {
-            return async(CommonPool) {
-                if (!isBowlerNameValid(bowler.name)) {
-                    return@async Pair(null, context.resources.getString(R.string.error_bowler_name_invalid))
-                } else if (!isBowlerNameUnique(context, bowler.name).await()) {
-                    return@async Pair(null, context.resources.getString(R.string.error_bowler_name_in_use))
-                }
-
-                val database = DatabaseHelper.getInstance(context).writableDatabase
-
-                val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA)
-                val currentDate = dateFormat.format(Date())
-
-                val values = ContentValues().apply {
-                    put(BowlerEntry.COLUMN_BOWLER_NAME, bowler.name)
-                    put(BowlerEntry.COLUMN_DATE_MODIFIED, currentDate)
-                }
-
-                database.beginTransaction()
-                try {
-                    database.update(
-                            BowlerEntry.TABLE_NAME,
-                            values,
-                            "${BowlerEntry._ID}=?",
-                            arrayOf(bowler.id.toString()))
-
-                    database.setTransactionSuccessful()
-                } catch (ex: Exception) {
-                    Log.e(TAG, "Could not update bowler")
-                    return@async Pair(null, context.resources.getString(R.string.error_bowler_not_saved))
-                } finally {
-                    database.endTransaction()
-                }
-
-                Pair(bowler, "")
-            }
-        }
-
-        /**
          * Check if a name is a valid [Bowler] name.
          *
          * @param name name to check
-         * @return [true] if the name is valid, [false] otherwise
+         * @return true if the name is valid, false otherwise
          */
         private fun isBowlerNameValid(name: String): Boolean = REGEX_NAME.matches(name)
 
@@ -205,7 +228,7 @@ data class Bowler(
          *
          * @param context to get database instance
          * @param name name to check
-         * @return [true] if the name is not already in the database, [false] otherwise
+         * @return true if the name is not already in the database, false otherwise
          */
         private fun isBowlerNameUnique(context: Context, name: String): Deferred<Boolean> {
             return async(CommonPool) {
@@ -240,9 +263,9 @@ data class Bowler(
          * Get all of the bowlers available in the app.
          *
          * @param context to get database instance
-         * @return a [List] of [Bowler] instances from the database.
+         * @return a [MutableList] of [Bowler] instances from the database.
          */
-        fun fetchAll(context: Context): Deferred<List<Bowler>> {
+        fun fetchAll(context: Context): Deferred<MutableList<Bowler>> {
             return async(CommonPool) {
                 val bowlers: MutableList<Bowler> = ArrayList()
 
