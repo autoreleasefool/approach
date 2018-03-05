@@ -203,6 +203,13 @@ class BowlerTeamListActivity : AppCompatActivity(),
         }
     }
 
+    /** @Override */
+    override fun onDeleteBowler(bowler: Bowler) {
+        val adapter = pager_bowlers_teams.adapter as? BowlersTeamsPagerAdapter
+        val bowlerFragment = adapter?.getFragment(pager_bowlers_teams.currentItem) as? BowlerFragment
+        bowlerFragment?.onNAItemDelete(bowler)
+    }
+
     /** @Override. */
     override fun onTeamSelected(team: Team) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.

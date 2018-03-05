@@ -2,15 +2,19 @@ package ca.josephroque.bowlingcompanion.bowlers
 
 import android.app.Dialog
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import ca.josephroque.bowlingcompanion.App
 import ca.josephroque.bowlingcompanion.R
+import ca.josephroque.bowlingcompanion.utils.safeLet
 import kotlinx.android.synthetic.main.dialog_bowler.*
 import kotlinx.android.synthetic.main.dialog_bowler.view.*
+import kotlinx.android.synthetic.main.fragment_team_list.*
 
 
 /**
@@ -18,7 +22,7 @@ import kotlinx.android.synthetic.main.dialog_bowler.view.*
  *
  * Dialog to create a new bowler.
  */
-class BowlerDialog : DialogFragment() {
+class BowlerDialog : DialogFragment(), View.OnClickListener {
 
     companion object {
         /** Logging identifier. */
@@ -57,6 +61,8 @@ class BowlerDialog : DialogFragment() {
         } else {
             rootView.toolbar_bowler.setTitle(R.string.edit_bowler)
         }
+
+        rootView.btn_delete.setOnClickListener(this)
 
         val activity = activity as? AppCompatActivity
         activity?.setSupportActionBar(rootView.toolbar_bowler)
@@ -97,6 +103,8 @@ class BowlerDialog : DialogFragment() {
             btn_delete.visibility = View.VISIBLE
             input_name.setText(it.name)
         }
+
+        input_name.setSelection(input_name.text.length)
     }
 
     /** @Override */
@@ -120,11 +128,7 @@ class BowlerDialog : DialogFragment() {
 
     /** @Override */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        App.hideSoftKeyBoard(activity!!)
-
-        activity?.supportFragmentManager?.popBackStack()
         dismiss()
-
         return when (item.itemId) {
             R.id.action_save -> {
                 if (bowler == null) {
@@ -140,6 +144,30 @@ class BowlerDialog : DialogFragment() {
         }
     }
 
+    /** @Override */
+    override fun onClick(v: View?) {
+        safeLet(context, bowler) { context, bowler ->
+            AlertDialog.Builder(context)
+                    .setTitle(String.format(context.resources.getString(R.string.query_delete_item), bowler.name))
+                    .setMessage(R.string.dialog_delete_item_message)
+                    .setPositiveButton(R.string.delete, { _, _ ->
+                        listener?.onDeleteBowler(bowler)
+                        dismiss()
+                    })
+                    .setNegativeButton(R.string.cancel, null)
+                    .show()
+        }
+    }
+
+    /**
+     * Clean up dialog before calling super.
+     */
+    override fun dismiss() {
+        App.hideSoftKeyBoard(activity!!)
+        activity?.supportFragmentManager?.popBackStack()
+        super.dismiss()
+    }
+
     /**
      * Handles interactions with the dialog.
      */
@@ -151,5 +179,12 @@ class BowlerDialog : DialogFragment() {
          * @param bowler the finished [Bowler]
          */
         fun onFinishBowler(bowler: Bowler)
+
+        /**
+         * Indicates the user wishes to delete the [Bowler].
+         *
+         * @param bowler the deleted [Bowler]
+         */
+        fun onDeleteBowler(bowler: Bowler)
     }
 }

@@ -7,7 +7,10 @@
 
     <!-- Common actions -->
     <string name="undo">Undo</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
     <string name="query_delete_item">Delete %s?</string>
+    <string name="dialog_delete_item_message">You can\'t recover this data once it\'s gone!</string>
 
     <!-- Common objects -->
     <string name="bowlers">Bowlers</string>
@@ -24,6 +27,7 @@
     <string name="edit_bowler">Edit bowler</string>
     <string name="hint_bowler_name">Name</string>
     <string name="delete_bowler">Delete bowler</string>
+
 
     <!-- Errors -->
     <string name="error_bowler_name_invalid">You can only use letters, spaces, and the following characters: \'!@#$%^&amp;*()_+:"?/~-.</string>
