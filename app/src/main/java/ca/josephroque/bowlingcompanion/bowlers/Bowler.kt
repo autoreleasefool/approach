@@ -119,7 +119,7 @@ data class Bowler(
                     put(BowlerEntry.COLUMN_DATE_MODIFIED, currentDate)
                 }
 
-                var bowlerId: Long = -1L
+                val bowlerId: Long
 
                 database.beginTransaction()
                 try {
