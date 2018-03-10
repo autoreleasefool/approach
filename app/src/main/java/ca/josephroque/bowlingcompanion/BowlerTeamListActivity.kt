@@ -196,8 +196,8 @@ class BowlerTeamListActivity : AppCompatActivity(),
         launch(Android) {
             val (savedBowler, error) = bowler.save(this@BowlerTeamListActivity).await()
 
-            if (savedBowler == null) {
-                TODO("Display the error")
+            if (savedBowler == null && error != null) {
+                error.show(this@BowlerTeamListActivity)
             } else {
                 val adapter = pager_bowlers_teams.adapter as? BowlersTeamsPagerAdapter
                 val bowlerFragment = adapter?.getFragment(pager_bowlers_teams.currentItem) as? BowlerFragment

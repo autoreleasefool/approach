@@ -21,6 +21,8 @@ import kotlinx.coroutines.experimental.async
 import java.text.SimpleDateFormat
 import java.util.*
 import ca.josephroque.bowlingcompanion.database.Contract.BowlerEntry
+import ca.josephroque.bowlingcompanion.utils.BCError
+import ca.josephroque.bowlingcompanion.utils.Preferences
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -65,9 +67,9 @@ data class Bowler(
      * Save the current bowler to the database. Creates a new [Bowler] if id < 0.
      *
      * @param context to get database instance
-     * @return [Bowler] if successful and [String] if an error occurred
+     * @return [Bowler] if successful and [BCError] if an error occurred
      */
-    fun save(context: Context): Deferred<Pair<Bowler?, String>> {
+    fun save(context: Context): Deferred<Pair<Bowler?, BCError?>> {
         return if (id < 0) {
             createNewAndSave(context)
         } else {
@@ -81,12 +83,22 @@ data class Bowler(
      * @param context to get database instance
      * @return [Bowler] if successful and [String] if an error occurred
      */
-    private fun createNewAndSave(context: Context): Deferred<Pair<Bowler?, String>> {
+    private fun createNewAndSave(context: Context): Deferred<Pair<Bowler?, BCError?>> {
         return async(CommonPool) {
             if (!isBowlerNameValid(name)) {
-                return@async Pair(null, context.resources.getString(R.string.error_bowler_name_invalid))
+                val error = BCError(
+                        context.resources.getString(R.string.error_saving_bowler),
+                        context.resources.getString(R.string.error_bowler_name_invalid),
+                        BCError.Severity.Error
+                )
+                return@async Pair(null, error)
             } else if (!isBowlerNameUnique(context, name).await()) {
-                return@async Pair(null, context.resources.getString(R.string.error_bowler_name_in_use))
+                val error = BCError(
+                        context.resources.getString(R.string.error_saving_bowler),
+                        context.resources.getString(R.string.error_bowler_name_in_use),
+                        BCError.Severity.Error
+                )
+                return@async Pair(null, error)
             }
 
             val database = DatabaseHelper.getInstance(context).writableDatabase
@@ -117,12 +129,17 @@ data class Bowler(
                 database.setTransactionSuccessful()
             } catch (ex: Exception) {
                 Log.e(TAG, "Could not create a new bowler")
-                return@async Pair(null, context.resources.getString(R.string.error_bowler_not_saved))
+                val error = BCError(
+                        context.resources.getString(R.string.error_saving_bowler),
+                        context.resources.getString(R.string.error_bowler_not_saved),
+                        BCError.Severity.Error
+                )
+                return@async Pair(null, error)
             } finally {
                 database.endTransaction()
             }
 
-            Pair(Bowler(name, 0.0, bowlerId), "")
+            Pair(Bowler(name, 0.0, bowlerId), null)
         }
     }
 
@@ -132,12 +149,22 @@ data class Bowler(
      * @param context context to get database instance
      * @return [Bowler] if successful and [String] if an error occurred
      */
-    private fun update(context: Context): Deferred<Pair<Bowler?, String>> {
+    private fun update(context: Context): Deferred<Pair<Bowler?, BCError?>> {
         return async(CommonPool) {
             if (!isBowlerNameValid(name)) {
-                return@async Pair(null, context.resources.getString(R.string.error_bowler_name_invalid))
-            } else if (!isBowlerNameUnique(context, name).await()) {
-                return@async Pair(null, context.resources.getString(R.string.error_bowler_name_in_use))
+                val error = BCError(
+                        context.resources.getString(R.string.error_saving_bowler),
+                        context.resources.getString(R.string.error_bowler_name_invalid),
+                        BCError.Severity.Error
+                )
+                return@async Pair(null, error)
+            } else if (!isBowlerNameUnique(context, name, id).await()) {
+                val error = BCError(
+                        context.resources.getString(R.string.error_saving_bowler),
+                        context.resources.getString(R.string.error_bowler_name_in_use),
+                        BCError.Severity.Error
+                )
+                return@async Pair(null, error)
             }
 
             val database = DatabaseHelper.getInstance(context).writableDatabase
@@ -161,12 +188,17 @@ data class Bowler(
                 database.setTransactionSuccessful()
             } catch (ex: Exception) {
                 Log.e(TAG, "Could not update bowler")
-                return@async Pair(null, context.resources.getString(R.string.error_bowler_not_saved))
+                val error = BCError(
+                        context.resources.getString(R.string.error_saving_bowler),
+                        context.resources.getString(R.string.error_bowler_not_saved),
+                        BCError.Severity.Error
+                )
+                return@async Pair(null, error)
             } finally {
                 database.endTransaction()
             }
 
-            Pair(this@Bowler, "")
+            Pair(this@Bowler, null)
         }
     }
 
@@ -241,9 +273,10 @@ data class Bowler(
          *
          * @param context to get database instance
          * @param name name to check
+         * @param id id of the existing bowler, so if the name is unchanged it can be saved
          * @return true if the name is not already in the database, false otherwise
          */
-        private fun isBowlerNameUnique(context: Context, name: String): Deferred<Boolean> {
+        private fun isBowlerNameUnique(context: Context, name: String, id: Long = -1): Deferred<Boolean> {
             return async(CommonPool) {
                 val database = DatabaseHelper.getInstance(context).readableDatabase
 
@@ -252,8 +285,8 @@ data class Bowler(
                     cursor = database.query(
                             BowlerEntry.TABLE_NAME,
                             arrayOf(BowlerEntry.COLUMN_BOWLER_NAME),
-                            "${BowlerEntry.COLUMN_BOWLER_NAME}=?",
-                            arrayOf(name),
+                            "${BowlerEntry.COLUMN_BOWLER_NAME}=? AND ${BowlerEntry._ID}!=?",
+                            arrayOf(name, id.toString()),
                             "",
                             "",
                             ""
