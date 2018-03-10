@@ -102,7 +102,7 @@ class BowlerFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageI
                 true
             }
             else -> {
-                true
+                false
             }
         }
     }

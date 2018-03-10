@@ -131,6 +131,7 @@ class BowlerTeamListActivity : AppCompatActivity(),
 
     /** @Override */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        super.onCreateOptionsMenu(menu)
         menuInflater.inflate(R.menu.menu_main, menu)
         return true
     }
