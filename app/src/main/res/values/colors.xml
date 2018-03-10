@@ -12,6 +12,8 @@
     <color name="colorDivider">#33000000</color>
 
     <color name="dangerRed">#EE5253</color>
+    <color name="warningYellow">#F1C40F</color>
+    <color name="infoBlue">#3498DB</color>
 
     <!-- Text colors -->
     <color name="primaryWhiteText">#FFFFFF</color>
