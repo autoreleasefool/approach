@@ -2,19 +2,19 @@ package ca.josephroque.bowlingcompanion.bowlers
 
 import android.app.Dialog
 import android.content.Context
-import android.content.DialogInterface
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import ca.josephroque.bowlingcompanion.App
 import ca.josephroque.bowlingcompanion.R
+import ca.josephroque.bowlingcompanion.utils.Color
 import ca.josephroque.bowlingcompanion.utils.safeLet
 import kotlinx.android.synthetic.main.dialog_bowler.*
 import kotlinx.android.synthetic.main.dialog_bowler.view.*
-import kotlinx.android.synthetic.main.fragment_team_list.*
 
 
 /**
@@ -63,17 +63,40 @@ class BowlerDialog : DialogFragment(), View.OnClickListener {
         }
 
         rootView.btn_delete.setOnClickListener(this)
+        rootView.toolbar_bowler.apply {
+            inflateMenu(R.menu.menu_bowler_dialog)
+            menu.findItem(R.id.action_save).isEnabled = bowler?.name?.isNotEmpty() == true
+            setNavigationIcon(R.drawable.ic_close_white_24dp)
+            setNavigationOnClickListener {
+                dismiss()
+            }
+            setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.action_save -> {
+                        val name = this@BowlerDialog.view?.input_name?.text.toString()
+                        if (name.isNotEmpty()) {
+                            dismiss()
+                            if (bowler == null) {
+                                listener?.onFinishBowler(Bowler(name, 0.0, -1))
+                            } else {
+                                listener?.onFinishBowler(Bowler(name, bowler!!.average, bowler!!.id))
+                            }
+                        }
 
-        val activity = activity as? AppCompatActivity
-        activity?.setSupportActionBar(rootView.toolbar_bowler)
-
-        activity?.supportActionBar?.apply {
-            setDisplayHomeAsUpEnabled(true)
-            setDisplayShowHomeEnabled(true)
-            setHomeAsUpIndicator(R.drawable.ic_close_white_24dp)
+                        true
+                    }
+                    else -> false
+                }
+            }
         }
+        rootView.input_name.addTextChangedListener(object: TextWatcher {
+            override fun afterTextChanged(s: Editable?) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                updateSaveButton(s)
+            }
+        })
 
-        setHasOptionsMenu(true)
         return rootView
     }
 
@@ -105,6 +128,7 @@ class BowlerDialog : DialogFragment(), View.OnClickListener {
         }
 
         input_name.setSelection(input_name.text.length)
+        updateSaveButton(bowler?.name)
     }
 
     /** @Override */
@@ -118,30 +142,6 @@ class BowlerDialog : DialogFragment(), View.OnClickListener {
         val dialog = super.onCreateDialog(savedInstanceState)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         return dialog
-    }
-
-    /** @Override */
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        menu.clear()
-        inflater.inflate(R.menu.menu_bowler_dialog, menu)
-    }
-
-    /** @Override */
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        dismiss()
-        return when (item.itemId) {
-            R.id.action_save -> {
-                if (bowler == null) {
-                    listener?.onFinishBowler(Bowler(input_name.text.toString(), 0.0, -1))
-                } else {
-                    listener?.onFinishBowler(Bowler(input_name.text.toString(), bowler!!.average, bowler!!.id))
-                }
-                true
-            }
-            else -> {
-                true
-            }
-        }
     }
 
     /** @Override */
@@ -166,6 +166,22 @@ class BowlerDialog : DialogFragment(), View.OnClickListener {
         App.hideSoftKeyBoard(activity!!)
         activity?.supportFragmentManager?.popBackStack()
         super.dismiss()
+    }
+
+    /**
+     * Update save button state based on text entered.
+     *
+     * @param text the text entered
+     */
+    private fun updateSaveButton(text: CharSequence?) {
+        val saveButton = view?.toolbar_bowler?.menu?.findItem(R.id.action_save)
+        if (text?.isNotEmpty() == true) {
+            saveButton?.isEnabled = true
+            saveButton?.icon?.alpha = Color.ALPHA_ENABLED
+        } else {
+            saveButton?.isEnabled = false
+            saveButton?.icon?.alpha = Color.ALPHA_DISABLED
+        }
     }
 
     /**
