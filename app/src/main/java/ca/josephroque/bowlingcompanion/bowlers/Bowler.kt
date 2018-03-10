@@ -216,6 +216,19 @@ data class Bowler(
         @JvmField val CREATOR = parcelableCreator(::Bowler)
 
         /**
+         * Order by which to sort bowlers.
+         */
+        enum class Sort {
+            Alphabetically,
+            LastModified;
+
+            companion object {
+                private val map = Sort.values().associateBy(Sort::ordinal)
+                fun fromInt(type: Int) = map[type]
+            }
+        }
+
+        /**
          * Check if a name is a valid [Bowler] name.
          *
          * @param name name to check
@@ -272,6 +285,7 @@ data class Bowler(
                 val preferences = PreferenceManager.getDefaultSharedPreferences(context)
                 val includeEvents = preferences.getBoolean(Settings.INCLUDE_EVENTS, true)
                 val includeOpen = preferences.getBoolean(Settings.INCLUDE_OPEN, true)
+                val sortBy = Sort.fromInt(preferences.getInt(Preferences.BOWLER_SORT_ORDER, Sort.Alphabetically.ordinal))
 
                 val database = DatabaseHelper.getInstance(context).readableDatabase
 
@@ -300,6 +314,12 @@ data class Bowler(
                         + " WHERE "
                         + " league3." + LeagueEntry.COLUMN_BASE_AVERAGE + ">?")
 
+                val orderQueryBy = if (sortBy == Sort.Alphabetically) {
+                    " ORDER BY bowler." + BowlerEntry.COLUMN_BOWLER_NAME
+                } else {
+                    " ORDER BY bowler." + BowlerEntry.COLUMN_DATE_MODIFIED + " DESC"
+                }
+
                 // Query to retrieve bowler names and averages from database
                 val rawBowlerQuery = ("SELECT "
                         + "bowler." + BowlerEntry.COLUMN_BOWLER_NAME + ", "
@@ -316,7 +336,7 @@ data class Bowler(
                         + " LEFT JOIN (" + baseAverageAndGamesQuery + ") AS u"
                         + " ON u.lid3=league." + LeagueEntry._ID
                         + " GROUP BY bowler." + BowlerEntry._ID
-                        + " ORDER BY bowler." + BowlerEntry.COLUMN_DATE_MODIFIED + " DESC")
+                        + orderQueryBy)
 
                 val rawBowlerArgs = arrayOf(
                         0.toString(),

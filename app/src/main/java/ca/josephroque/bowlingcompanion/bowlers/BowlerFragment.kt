@@ -1,16 +1,20 @@
 package ca.josephroque.bowlingcompanion.bowlers
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.v4.app.Fragment
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.*
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.INameAverage
 import ca.josephroque.bowlingcompanion.common.NameAverageRecyclerViewAdapter
-import ca.josephroque.bowlingcompanion.dummy.DummyContent
 import ca.josephroque.bowlingcompanion.common.Android
+import ca.josephroque.bowlingcompanion.utils.Preferences
 import kotlinx.coroutines.experimental.launch
 
 
@@ -60,6 +64,8 @@ class BowlerFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageI
             view.setHasFixedSize(true)
             NameAverageRecyclerViewAdapter.applyDefaultDivider(view, context)
         }
+
+        setHasOptionsMenu(true)
         return view
     }
 
@@ -82,6 +88,25 @@ class BowlerFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageI
         refreshBowlerList(null)
     }
 
+    /** @Override */
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_bowlers, menu)
+    }
+
+    /** @Override */
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_sort_by -> {
+                showSortByDialog()
+                true
+            }
+            else -> {
+                true
+            }
+        }
+    }
+
     /**
      * Reload the list of bowlers and update list.
      *
@@ -99,6 +124,28 @@ class BowlerFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageI
                 bowlers[index] = bowler!!
                 bowlerAdapter?.notifyItemChanged(index)
             }
+        }
+    }
+
+    /**
+     * Prompt user to sort the list of bowlers in another order. Caches the chosen order.
+     */
+    @SuppressLint("ApplySharedPref")
+    private fun showSortByDialog() {
+        context?.let {
+            AlertDialog.Builder(it)
+                    .setTitle(it.resources.getString(R.string.sort_items))
+                    .setItems(R.array.bowler_sort_options, { dialog: DialogInterface, which: Int ->
+                        val order = Bowler.Companion.Sort.fromInt(which)
+                        order?.let {
+                            PreferenceManager.getDefaultSharedPreferences(context)
+                                    .edit()
+                                    .putInt(Preferences.BOWLER_SORT_ORDER, it.ordinal)
+                                    .commit()
+                            refreshBowlerList(null)
+                        }
+                    })
+                    .show()
         }
     }
 

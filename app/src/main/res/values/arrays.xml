@@ -27,4 +27,9 @@
         <item>120</item>
     </string-array>
 
+    <string-array name="bowler_sort_options">
+        <item>Alphabetically</item>
+        <item>Last modified</item>
+    </string-array>
+
 </resources>

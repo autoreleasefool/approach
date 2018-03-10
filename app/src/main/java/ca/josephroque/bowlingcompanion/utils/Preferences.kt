@@ -19,4 +19,9 @@ object Preferences {
      */
     const val VERSION = "pref_version"
 
+    /**
+     * Identifier for preference indicating sort order which user prefers for bowlers.
+     */
+    const val BOWLER_SORT_ORDER = "pref_bowler_sort_order"
+
 }
