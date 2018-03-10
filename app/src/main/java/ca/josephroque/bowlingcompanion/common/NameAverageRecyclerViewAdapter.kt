@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion.common
 
 import android.content.Context
+import android.graphics.Color
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.RecyclerView
@@ -128,10 +129,11 @@ class NameAverageRecyclerViewAdapter(
         holder.tvName?.text = values[position].name
         holder.tvAverage?.text = values[position].getRoundedAverage(1)
 
+        holder.ivIcon?.setColorFilter(Color.BLACK)
         if (holder.item is Bowler) {
-            holder.ivIcon?.setImageResource(R.drawable.ic_person_black_24dp)
+            holder.ivIcon?.setImageResource(R.drawable.ic_person_white_24dp)
         } else if (holder.item is Team) {
-            holder.ivIcon?.setImageResource(R.drawable.ic_people_black_24dp)
+            holder.ivIcon?.setImageResource(R.drawable.ic_people_white_24dp)
         }
 
         if (position % 2 == 0) {

@@ -25,6 +25,7 @@ import kotlinx.coroutines.experimental.launch
 import java.lang.ref.WeakReference
 import ca.josephroque.bowlingcompanion.settings.SettingsActivity
 import android.content.Intent
+import android.graphics.Color
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -48,14 +49,15 @@ class BowlerTeamListActivity : AppCompatActivity(),
     /** Handle visibility changes in the fab. */
     val fabVisibilityChangedListener = object : OnVisibilityChangedListener() {
         override fun onHidden(fab: FloatingActionButton?) {
-            super.onHidden(fab)
+            fab?.let {
+                it.setColorFilter(Color.BLACK)
+                when (currentTab) {
+                    0 -> it.setImageResource(R.drawable.ic_person_add_white_24dp)
+                    1 -> it.setImageResource(R.drawable.ic_group_add_white_24dp)
+                }
 
-            when (currentTab) {
-                0 -> fab?.setImageResource(R.drawable.ic_person_add_black_24dp)
-                1 -> fab?.setImageResource(R.drawable.ic_group_add_black_24dp)
+                it.show()
             }
-
-            fab?.show()
         }
     }
 
@@ -110,7 +112,8 @@ class BowlerTeamListActivity : AppCompatActivity(),
      * Configure floating action buttons for rendering.
      */
     private fun configureFab() {
-        fab.setImageResource(R.drawable.ic_person_add_black_24dp)
+        fab?.setColorFilter(Color.BLACK)
+        fab.setImageResource(R.drawable.ic_person_add_white_24dp)
 
         fab.setOnClickListener {
             when (currentTab) {
