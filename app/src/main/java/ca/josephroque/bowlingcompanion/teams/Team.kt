@@ -33,8 +33,7 @@ import kotlin.collections.ArrayList
 data class Team(
         private val teamName: String,
         private val teamId: Long,
-        private val teamMembers: List<String>,
-        private val teamMemberIds: List<Long>
+        private val teamMembers: List<Pair<String, Long>>
 ): KParcelable, IDeletable {
 
     val name: String
@@ -45,11 +44,8 @@ data class Team(
 
     override var isDeleted: Boolean = false
 
-    /* Names of members of the team. */
+    /* Names and IDs of members of the team. */
     val members = teamMembers
-
-    /** IDs of members of the team. */
-    val memberIds = teamMemberIds
 
     /**
      * Construct [Team] from a [Parcel]
@@ -57,14 +53,18 @@ data class Team(
     private constructor(p: Parcel): this(
             teamName = p.readString(),
             teamId = p.readLong(),
-            teamMembers = arrayListOf<String>().apply {
-                p.readStringList(this)
-            },
-            teamMemberIds = arrayListOf<Long>().apply {
-                val size = p.readInt()
+            teamMembers = arrayListOf<Pair<String, Long>>().apply {
+                val names: MutableList<String> = ArrayList()
+                p.readStringList(names)
+
                 val memberIdArr = LongArray(size)
                 p.readLongArray(memberIdArr)
-                memberIdArr.toCollection(this)
+                val ids: MutableList<Long> = ArrayList()
+                memberIdArr.toCollection(ids)
+
+                names.forEachIndexed({ index, name ->
+                    this.add(Pair(name, ids[index]))
+                })
             }
     )
 
@@ -72,9 +72,16 @@ data class Team(
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeString(name)
         writeLong(id)
-        writeStringList(members)
-        writeInt(memberIds.size)
-        writeLongArray(memberIds.toLongArray())
+
+        val names: MutableList<String> = ArrayList()
+        val ids: MutableList<Long> = ArrayList()
+        members.forEach({
+            names.add(it.first)
+            ids.add(it.second)
+        })
+
+        writeStringList(names)
+        writeLongArray(ids.toLongArray())
     }
 
     /**
@@ -131,7 +138,7 @@ data class Team(
                 teamId = database.insert(TeamEntry.TABLE_NAME, null, values)
                 members.forEach {
                     values = ContentValues().apply {
-                        put(TeamBowlerEntry.COLUMN_BOWLER_ID, it)
+                        put(TeamBowlerEntry.COLUMN_BOWLER_ID, it.second)
                         put(TeamBowlerEntry.COLUMN_TEAM_ID, teamId)
                     }
 
@@ -151,7 +158,7 @@ data class Team(
                 database.endTransaction()
             }
 
-            Pair(Team(name, teamId, members, memberIds), null)
+            Pair(Team(name, teamId, members), null)
         }
     }
 
@@ -206,7 +213,7 @@ data class Team(
 
                 members.forEach {
                     values = ContentValues().apply {
-                        put(TeamBowlerEntry.COLUMN_BOWLER_ID, it)
+                        put(TeamBowlerEntry.COLUMN_BOWLER_ID, it.second)
                         put(TeamBowlerEntry.COLUMN_TEAM_ID, teamId)
                     }
 
@@ -346,7 +353,8 @@ data class Team(
                 val rawTeamQuery = ("SELECT "
                         + "team." + TeamEntry.COLUMN_TEAM_NAME + ", "
                         + "team." + TeamEntry._ID + " AS tid, "
-                        + "bowler." + BowlerEntry.COLUMN_BOWLER_NAME + " "
+                        + "bowler." + BowlerEntry.COLUMN_BOWLER_NAME + ", "
+                        + "bowler." + BowlerEntry._ID + " as bid "
                         + "FROM " + TeamEntry.TABLE_NAME + " AS team "
                         + "JOIN " + TeamBowlerEntry.TABLE_NAME + " AS tb "
                         + "ON team." + TeamEntry._ID + "=" + TeamBowlerEntry.COLUMN_TEAM_ID + " "
@@ -361,7 +369,7 @@ data class Team(
                     if (cursor.moveToFirst()) {
                         var teamId = cursor.getLong(cursor.getColumnIndex("tid"))
                         var teamName = cursor.getString(cursor.getColumnIndex(TeamEntry.COLUMN_TEAM_NAME))
-                        var members: MutableList<String> = ArrayList()
+                        var members: MutableList<Pair<String, Long>> = ArrayList()
 
                         while (!cursor.isAfterLast) {
                             val currentTeamId = cursor.getLong(cursor.getColumnIndex("tid"))
@@ -378,7 +386,10 @@ data class Team(
                                 members = ArrayList()
                             }
 
-                            members.add(cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_BOWLER_NAME)))
+                            members.add(Pair(
+                                    cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_BOWLER_NAME)),
+                                    cursor.getLong(cursor.getColumnIndex("bid"))
+                            ))
                             cursor.moveToNext()
                         }
                     }
