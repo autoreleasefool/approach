@@ -81,7 +81,7 @@ data class Bowler(
      * Create a new [Bowler] and save to the database.
      *
      * @param context to get database instance
-     * @return [Bowler] if successful and [String] if an error occurred
+     * @return [Bowler] if successful and [BCError] if an error occurred
      */
     private fun createNewAndSave(context: Context): Deferred<Pair<Bowler?, BCError?>> {
         return async(CommonPool) {
@@ -147,7 +147,7 @@ data class Bowler(
      * Update the [Bowler] in the database.
      *
      * @param context context to get database instance
-     * @return [Bowler] if successful and [String] if an error occurred
+     * @return [Bowler] if successful and [BCError] if an error occurred
      */
     private fun update(context: Context): Deferred<Pair<Bowler?, BCError?>> {
         return async(CommonPool) {
@@ -202,13 +202,13 @@ data class Bowler(
         }
     }
 
-    /**
-     * Delete this [Bowler] from the database.
-     *
-     * @param context to get database instance
-     */
-    fun delete(context: Context): Deferred<Unit> {
+    /** @Override */
+    override fun delete(context: Context): Deferred<Unit> {
         return async(CommonPool) {
+            if (id < 0) {
+                return@async
+            }
+
             val database = DatabaseHelper.getInstance(context).writableDatabase
             val whereArgs = arrayOf(id.toString())
             database.beginTransaction()
@@ -242,7 +242,7 @@ data class Bowler(
         private const val TAG = "Bowler"
 
         /** Valid regex for a name. */
-        private val REGEX_NAME = "^[A-Za-z0-9]+[ A-Za-z0-9'!@#$%^&*()_+:\"?/~-]*[A-Za-z0-9'!@#$%^&*()_+:\"?/~-]*$".toRegex()
+        val REGEX_NAME = "^[A-Za-z0-9]+[ A-Za-z0-9'!@#$%^&*()_+:\"?/~-]*[A-Za-z0-9'!@#$%^&*()_+:\"?/~-]*$".toRegex()
 
         /** Creator, required by [Parcelable]. */
         @JvmField val CREATOR = parcelableCreator(::Bowler)

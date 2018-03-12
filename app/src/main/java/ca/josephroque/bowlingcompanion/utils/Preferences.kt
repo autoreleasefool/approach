@@ -24,4 +24,10 @@ object Preferences {
      */
     const val BOWLER_SORT_ORDER = "pref_bowler_sort_order"
 
+    /**
+     * Identifier for preference indicating sort order which user prefers for teams.
+     * Identical sort order to [BOWLER_SORT_ORDER].
+     */
+    const val TEAM_SORT_ORDER = BOWLER_SORT_ORDER
+
 }
