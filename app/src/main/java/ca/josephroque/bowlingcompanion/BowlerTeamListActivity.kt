@@ -118,7 +118,7 @@ class BowlerTeamListActivity : AppCompatActivity(),
         fab.setOnClickListener {
             when (currentTab) {
                 0 -> promptAddOrEditBowler()
-                1 -> TODO("not implemented")
+                1 -> promptAddOrEditTeam()
             }
         }
     }
@@ -190,6 +190,15 @@ class BowlerTeamListActivity : AppCompatActivity(),
                 .add(android.R.id.content, newFragment)
                 .addToBackStack(null)
                 .commit()
+    }
+
+    /**
+     * Display a prompt to add or edit a team.
+     *
+     * @param team the team to edit, or null if a new team should be added
+     */
+    private fun promptAddOrEditTeam(team: Team? = null) {
+        TODO("not implemented")
     }
 
     /** @Override */

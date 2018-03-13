@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.common
+package ca.josephroque.bowlingcompanion.teams
 
 import android.content.Context
 import android.graphics.Color
@@ -12,26 +12,24 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import ca.josephroque.bowlingcompanion.R
-import ca.josephroque.bowlingcompanion.bowlers.Bowler
-import ca.josephroque.bowlingcompanion.common.NameAverageRecyclerViewAdapter.OnNameAverageInteractionListener
 
 
 /**
  * Copyright (C) 2018 Joseph Roque
  *
- * [RecyclerView.Adapter] that can display a [INameAverage] and makes a call to the
- * specified [OnNameAverageInteractionListener].
+ * [RecyclerView.Adapter] that can display a [Team] and makes a call to the
+ * specified [OnTeamInteractionListener].
  */
-class NameAverageRecyclerViewAdapter(
-        private var values: List<INameAverage>,
-        private var listener: OnNameAverageInteractionListener?
-): RecyclerView.Adapter<NameAverageRecyclerViewAdapter.ViewHolder>(),
-    View.OnClickListener,
-    View.OnLongClickListener {
+class TeamRecyclerViewAdapter(
+        private var values: List<Team>,
+        private var listener: OnTeamInteractionListener?
+): RecyclerView.Adapter<TeamRecyclerViewAdapter.ViewHolder>(),
+        View.OnClickListener,
+        View.OnLongClickListener {
 
     companion object {
         /** Logging identifier. */
-        private const val TAG = "NameAverageRecyclerViewAdapter"
+        private const val TAG = "TeamRecyclerViewAdapter"
 
         /** Views can be active and accessible, or deleted. */
         private enum class ViewType {
@@ -100,7 +98,7 @@ class NameAverageRecyclerViewAdapter(
             ViewType.Active -> {
                 LayoutInflater
                         .from(parent.context)
-                        .inflate(R.layout.list_item_name_average, parent, false)
+                        .inflate(R.layout.list_item_team, parent, false)
             }
             ViewType.Deleted -> {
                 LayoutInflater
@@ -123,7 +121,7 @@ class NameAverageRecyclerViewAdapter(
     }
 
     /**
-     * Set up views to display an active [INameAverage] item.
+     * Set up views to display an active [Team] item.
      *
      * @param holder the views to display item in
      * @param position the item to display
@@ -132,12 +130,9 @@ class NameAverageRecyclerViewAdapter(
         val context = holder.itemView.context
         holder.item = values[position]
         holder.tvName?.text = values[position].name
-        holder.tvAverage?.text = values[position].getRoundedAverage(1)
 
         holder.ivIcon?.setColorFilter(Color.BLACK)
-        if (holder.item is Bowler) {
-            holder.ivIcon?.setImageResource(R.drawable.ic_person_white_24dp)
-        }
+        holder.ivIcon?.setImageResource(R.drawable.ic_people_white_24dp)
 
         if (position % 2 == 0) {
             holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorListPrimary))
@@ -150,7 +145,7 @@ class NameAverageRecyclerViewAdapter(
     }
 
     /**
-     * Set up views to display a deleted [INameAverage] item.
+     * Set up views to display a deleted [Team] item.
      *
      * @param holder the views to display item in
      * @param position the item to display
@@ -166,9 +161,9 @@ class NameAverageRecyclerViewAdapter(
 
         val deletedItemListener = View.OnClickListener {
             if (it.id == R.id.tv_undo) {
-                listener?.onNAItemSwipe(values[position])
+                listener?.onTeamItemSwipe(values[position])
             } else {
-                listener?.onNAItemDelete(values[position])
+                listener?.onTeamItemDelete(values[position])
             }
         }
 
@@ -181,7 +176,7 @@ class NameAverageRecyclerViewAdapter(
      *
      * @param items new list of items to display
      */
-    fun setElements(items: List<INameAverage>) {
+    fun setElements(items: List<Team>) {
         values = items
         notifyDataSetChanged()
     }
@@ -189,14 +184,14 @@ class NameAverageRecyclerViewAdapter(
     /** @Override */
     override fun onClick(v: View) {
         recyclerView?.let {
-            listener?.onNAItemClick(values[it.getChildAdapterPosition(v)])
+            listener?.onTeamItemClick(values[it.getChildAdapterPosition(v)])
         }
     }
 
     /** @Override */
     override fun onLongClick(v: View): Boolean {
         recyclerView?.let {
-            listener?.onNAItemLongClick(values[it.getChildAdapterPosition(v)])
+            listener?.onTeamItemLongClick(values[it.getChildAdapterPosition(v)])
             return true
         }
 
@@ -219,7 +214,7 @@ class NameAverageRecyclerViewAdapter(
             if (swipingEnabled) {
                 viewHolder?.let {
                     val position = it.adapterPosition
-                    listener?.onNAItemSwipe(values[position])
+                    listener?.onTeamItemSwipe(values[position])
                 }
             }
         }
@@ -244,51 +239,49 @@ class NameAverageRecyclerViewAdapter(
     inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         /** Render name of the item. */
         val tvName: TextView? = view.findViewById(R.id.tv_name)
-        /** Render average of the item. */
-        val tvAverage: TextView? = view.findViewById(R.id.tv_average)
         /** Render type indicator of the item. */
-        val ivIcon: ImageView? = view.findViewById(R.id.iv_name_average)
+        val ivIcon: ImageView? = view.findViewById(R.id.iv_team)
 
         /** Render name of the deleted item. */
         val tvDeleted: TextView? = view.findViewById(R.id.tv_deleted)
         /** Button to undo deletion of an item. */
         val tvUndo: TextView? = view.findViewById(R.id.tv_undo)
 
-        /** INameAverage item. */
-        var item: INameAverage? = null
+        /** Team item. */
+        var item: Team? = null
     }
 
     /**
      * Handles interactions with items in the list.
      */
-    interface OnNameAverageInteractionListener {
+    interface OnTeamInteractionListener {
 
         /**
          * Indicates user interaction with the item.
          *
          * @param item interacted item
          */
-        fun onNAItemClick(item: INameAverage)
+        fun onTeamItemClick(item: Team)
 
         /**
          * Indicates long click user interaction with the item.
          *
          * @param item interacted item
          */
-        fun onNAItemLongClick(item: INameAverage)
+        fun onTeamItemLongClick(item: Team)
 
         /**
          * Indicates user swiped an item away.
          *
          * @param item swiped item
          */
-        fun onNAItemSwipe(item: INameAverage)
+        fun onTeamItemSwipe(item: Team)
 
         /**
          * Indicates user deleted an item.
          *
          * @param item deleted item
          */
-        fun onNAItemDelete(item: INameAverage)
+        fun onTeamItemDelete(item: Team)
     }
 }
