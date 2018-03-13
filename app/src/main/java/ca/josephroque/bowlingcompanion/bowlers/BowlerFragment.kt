@@ -90,7 +90,7 @@ class BowlerFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageI
 
     /** @Override */
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater);
+        super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.menu_bowlers, menu)
     }
 
@@ -135,7 +135,7 @@ class BowlerFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageI
         context?.let {
             AlertDialog.Builder(it)
                     .setTitle(it.resources.getString(R.string.sort_items))
-                    .setItems(R.array.bowler_sort_options, { dialog: DialogInterface, which: Int ->
+                    .setItems(R.array.bowler_sort_options, { _, which: Int ->
                         val order = Bowler.Companion.Sort.fromInt(which)
                         order?.let {
                             PreferenceManager.getDefaultSharedPreferences(context)
