@@ -9,14 +9,14 @@ import java.text.DecimalFormat
  */
 interface INameAverage: IDeletable {
 
+    /** Unique ID of the object. */
+    var id: Long
+
     /** Name of the object. */
-    val name: String
+    var name: String
 
     /** Average of the object. */
-    val average: Double
-
-    /** Unique ID of the object. */
-    val id: Long
+    var average: Double
 
     /**
      * Round the average to a number of decimal places and return as a [String] for display

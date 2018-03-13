@@ -14,7 +14,6 @@ import android.widget.TextView
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.bowlers.Bowler
 import ca.josephroque.bowlingcompanion.common.NameAverageRecyclerViewAdapter.OnNameAverageInteractionListener
-import ca.josephroque.bowlingcompanion.teams.Team
 
 
 /**
@@ -32,7 +31,7 @@ class NameAverageRecyclerViewAdapter(
 
     companion object {
         /** Logging identifier. */
-        private const val   TAG = "NameAverageRecyclerViewAdapter"
+        private const val TAG = "NameAverageRecyclerViewAdapter"
 
         /** Views can be active and accessible, or deleted. */
         private enum class ViewType {
@@ -132,8 +131,6 @@ class NameAverageRecyclerViewAdapter(
         holder.ivIcon?.setColorFilter(Color.BLACK)
         if (holder.item is Bowler) {
             holder.ivIcon?.setImageResource(R.drawable.ic_person_white_24dp)
-        } else if (holder.item is Team) {
-            holder.ivIcon?.setImageResource(R.drawable.ic_people_white_24dp)
         }
 
         if (position % 2 == 0) {

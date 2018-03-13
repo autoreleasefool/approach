@@ -31,29 +31,20 @@ import kotlin.collections.ArrayList
  * A single Team, which has a set of bowlers.
  */
 data class Team(
-        private val teamName: String,
-        private val teamId: Long,
-        private val teamMembers: List<Pair<String, Long>>
+        var id: Long,
+        var name: String,
+        var members: MutableList<Pair<String, Long>>
 ): KParcelable, IDeletable {
 
-    val name: String
-        get() = teamName
-
-    val id: Long
-        get() = teamId
-
     override var isDeleted: Boolean = false
-
-    /* Names and IDs of members of the team. */
-    val members = teamMembers
 
     /**
      * Construct [Team] from a [Parcel]
      */
     private constructor(p: Parcel): this(
-            teamName = p.readString(),
-            teamId = p.readLong(),
-            teamMembers = arrayListOf<Pair<String, Long>>().apply {
+            id = p.readLong(),
+            name = p.readString(),
+            members = arrayListOf<Pair<String, Long>>().apply {
                 val names: MutableList<String> = ArrayList()
                 p.readStringList(names)
 
@@ -70,8 +61,8 @@ data class Team(
 
     /** @Override */
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
-        writeString(name)
         writeLong(id)
+        writeString(name)
 
         val names: MutableList<String> = ArrayList()
         val ids: MutableList<Long> = ArrayList()
@@ -85,12 +76,12 @@ data class Team(
     }
 
     /**
-     * Save the current team to the database. Creates a new [Team] if id < 0.
+     * Save the current team to the database.
      *
      * @param context to get database instance
-     * @return [Team] if successful and [BCError] if an error occurred
+     * @return [BCError] only if an error occurred
      */
-    fun save(context: Context): Deferred<Pair<Team?, BCError?>> {
+    fun save(context: Context): Deferred<BCError?> {
         return if (id < 0) {
             createNewAndSave(context)
         } else {
@@ -99,27 +90,25 @@ data class Team(
     }
 
     /**
-     * Create a new [Team] and save to the database.
+     * Create a new [TeamEntry] in the database.
      *
      * @param context to get database instance
-     * @return [Team] if successful and [BCError] if an error occurred
+     * @return [BCError] only if an error occurred
      */
-    private fun createNewAndSave(context: Context): Deferred<Pair<Team?, BCError?>> {
+    private fun createNewAndSave(context: Context): Deferred<BCError?> {
         return async(CommonPool) {
             if (!isTeamNameValid(name)) {
-                val error = BCError(
+                return@async BCError(
                         context.resources.getString(R.string.error_saving_team),
                         context.resources.getString(R.string.error_team_name_invalid),
                         BCError.Severity.Error
                 )
-                return@async Pair(null, error)
             } else if (!isTeamNameUnique(context, name).await()) {
-                val error = BCError(
+                return@async BCError(
                         context.resources.getString(R.string.error_saving_team),
                         context.resources.getString(R.string.error_team_name_in_use),
                         BCError.Severity.Error
                 )
-                return@async Pair(null, error)
             }
 
             val database = DatabaseHelper.getInstance(context).writableDatabase
@@ -145,45 +134,43 @@ data class Team(
                     database.insert(TeamBowlerEntry.TABLE_NAME, null, values)
                 }
 
+                this@Team.id = teamId
                 database.setTransactionSuccessful()
             } catch (ex: Exception) {
                 Log.e(TAG, "Could not create a new team")
-                val error = BCError(
+                return@async BCError(
                         context.resources.getString(R.string.error_saving_team),
                         context.resources.getString(R.string.error_team_not_saved),
                         BCError.Severity.Error
                 )
-                return@async Pair(null, error)
             } finally {
                 database.endTransaction()
             }
 
-            Pair(Team(name, teamId, members), null)
+            null
         }
     }
 
     /**
-     * Update the [Team] in the database.
+     * Update the [TeamEntry] in the database.
      *
      * @param context context to get database instance
-     * @return [Team] if successful and [BCError] if an error occurred
+     * @return [BCError] only if an error occurred
      */
-    private fun update(context: Context): Deferred<Pair<Team?, BCError?>> {
+    private fun update(context: Context): Deferred<BCError?> {
         return async(CommonPool) {
             if (!isTeamNameValid(name)) {
-                val error = BCError(
+                return@async BCError(
                         context.resources.getString(R.string.error_saving_team),
                         context.resources.getString(R.string.error_team_name_invalid),
                         BCError.Severity.Error
                 )
-                return@async Pair(null, error)
             } else if (!isTeamNameUnique(context, name, id).await()) {
-                val error = BCError(
+                return@async BCError(
                         context.resources.getString(R.string.error_saving_team),
                         context.resources.getString(R.string.error_team_name_in_use),
                         BCError.Severity.Error
                 )
-                return@async Pair(null, error)
             }
 
             val database = DatabaseHelper.getInstance(context).writableDatabase
@@ -208,13 +195,13 @@ data class Team(
                 database.delete(
                         TeamBowlerEntry.TABLE_NAME,
                         "${TeamBowlerEntry.COLUMN_TEAM_ID}=?",
-                        arrayOf(teamId.toString())
+                        arrayOf(id.toString())
                 )
 
                 members.forEach {
                     values = ContentValues().apply {
                         put(TeamBowlerEntry.COLUMN_BOWLER_ID, it.second)
-                        put(TeamBowlerEntry.COLUMN_TEAM_ID, teamId)
+                        put(TeamBowlerEntry.COLUMN_TEAM_ID, id)
                     }
 
                     database.insert(TeamBowlerEntry.TABLE_NAME, null, values)
@@ -223,17 +210,16 @@ data class Team(
                 database.setTransactionSuccessful()
             } catch (ex: Exception) {
                 Log.e(TAG, "Could not update team")
-                val error = BCError(
+                return@async BCError(
                         context.resources.getString(R.string.error_saving_team),
                         context.resources.getString(R.string.error_team_not_saved),
                         BCError.Severity.Error
                 )
-                return@async Pair(null, error)
             } finally {
                 database.endTransaction()
             }
 
-            Pair(this@Team, null)
+            null
         }
     }
 
@@ -245,12 +231,11 @@ data class Team(
             }
 
             val database = DatabaseHelper.getInstance(context).writableDatabase
-            val whereArgs = arrayOf(id.toString())
             database.beginTransaction()
             try {
                 database.delete(TeamEntry.TABLE_NAME,
                         TeamEntry._ID + "=?",
-                        whereArgs)
+                        arrayOf(id.toString()))
                 database.setTransactionSuccessful()
             } catch (e: Exception) {
                 // Does nothing
@@ -375,8 +360,8 @@ data class Team(
                             val currentTeamId = cursor.getLong(cursor.getColumnIndex("tid"))
                             if (teamId != currentTeamId) {
                                 val team = Team(
-                                        teamName,
                                         teamId,
+                                        teamName,
                                         members
                                 )
                                 teams.add(team)

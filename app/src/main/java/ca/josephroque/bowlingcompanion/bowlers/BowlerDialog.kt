@@ -77,9 +77,10 @@ class BowlerDialog : DialogFragment(), View.OnClickListener {
                         if (name.isNotEmpty()) {
                             dismiss()
                             if (bowler == null) {
-                                listener?.onFinishBowler(Bowler(name, 0.0, -1))
+                                listener?.onFinishBowler(Bowler(-1, name, 0.0))
                             } else {
-                                listener?.onFinishBowler(Bowler(name, bowler!!.average, bowler!!.id))
+                                bowler!!.name = name
+                                listener?.onFinishBowler(bowler!!)
                             }
                         }
 

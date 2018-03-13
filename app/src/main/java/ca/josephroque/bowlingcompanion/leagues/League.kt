@@ -18,21 +18,12 @@ import kotlinx.coroutines.experimental.async
  * A single League, which has a set of series.
  */
 data class League(
-        private val leagueName: String,
-        private val leagueAverage: Double,
-        private val leagueId: Long,
-        private val isEvent: Boolean,
-        private val gamesPerSeries: Int
+        override var id: Long,
+        override var name: String,
+        override var average: Double,
+        val isEvent: Boolean,
+        val gamesPerSeries: Int
 ): INameAverage, KParcelable {
-
-    override val name: String
-        get() = leagueName
-
-    override val average: Double
-        get() = leagueAverage
-
-    override val id: Long
-        get() = leagueId
 
     override var isDeleted: Boolean = false
 
@@ -40,20 +31,44 @@ data class League(
      * Construct [League] from a [Parcel]
      */
     private constructor(p: Parcel): this(
-            leagueName = p.readString(),
-            leagueAverage = p.readDouble(),
-            leagueId = p.readLong(),
+            id = p.readLong(),
+            name = p.readString(),
+            average = p.readDouble(),
             isEvent = p.readBoolean(),
             gamesPerSeries = p.readInt()
     )
 
     /** @Override */
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
+        writeLong(id)
         writeString(name)
         writeDouble(average)
-        writeLong(id)
         writeBoolean(isEvent)
         writeInt(gamesPerSeries)
+    }
+
+    /** @Override */
+    override fun delete(context: Context): Deferred<Unit> {
+        return async(CommonPool) {
+            if (id < 0) {
+                return@async
+            }
+
+            val database = DatabaseHelper.getInstance(context).writableDatabase
+            database.beginTransaction()
+            try {
+                database.delete(LeagueEntry.TABLE_NAME,
+                        LeagueEntry._ID + "=?",
+                        arrayOf(id.toString()))
+                database.setTransactionSuccessful()
+            } catch (e: Exception) {
+                // Does nothing
+                // If there's an error deleting this league, then they just remain in the
+                // user's data and no harm is done.
+            } finally {
+                database.endTransaction()
+            }
+        }
     }
 
     companion object {
@@ -68,7 +83,7 @@ data class League(
         val OPEN_LEAGUE_NAME = "Open"
 
         /** Name of the "Practice" league. */
-        val PRACTICE_LEAGUE_NAME = "Practice"
+        const val PRACTICE_LEAGUE_NAME = "Practice"
 
         /**
          * Get all of the leagues and events belonging to the [Bowler].
@@ -122,9 +137,9 @@ data class League(
                                     additionalGames)
 
                             val league = League(
+                                    id,
                                     name,
                                     average,
-                                    id,
                                     isEvent,
                                     gamesPerSeries)
 
@@ -153,9 +168,9 @@ data class League(
                     val gamesPerSeries = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NUMBER_OF_GAMES))
 
                     val league = League(
+                            id,
                             name,
                             average,
-                            id,
                             isEvent,
                             gamesPerSeries)
 

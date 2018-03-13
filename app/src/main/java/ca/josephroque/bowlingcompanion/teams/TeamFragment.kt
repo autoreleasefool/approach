@@ -58,7 +58,7 @@ class TeamFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageInt
         if (view is RecyclerView) {
             val context = view.getContext()
             view.layoutManager = LinearLayoutManager(context)
-            view.adapter = NameAverageRecyclerViewAdapter(DummyContent.TEAMS, this)
+            view.adapter = NameAverageRecyclerViewAdapter(DummyContent.BOWLERS, this)
             view.setHasFixedSize(true)
             NameAverageRecyclerViewAdapter.applyDefaultDivider(view, context)
         }

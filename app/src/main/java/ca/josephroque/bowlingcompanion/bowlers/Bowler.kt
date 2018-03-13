@@ -31,19 +31,10 @@ import ca.josephroque.bowlingcompanion.utils.Preferences
  */
 
 data class Bowler(
-        private val bowlerName: String,
-        private val bowlerAverage: Double,
-        private val bowlerId: Long
+        override var id: Long,
+        override var name: String,
+        override var average: Double
 ): INameAverage, KParcelable {
-
-    override val name: String
-        get() = bowlerName
-
-    override val average: Double
-        get() = bowlerAverage
-
-    override val id: Long
-        get() = bowlerId
 
     override var isDeleted: Boolean = false
 
@@ -51,25 +42,25 @@ data class Bowler(
      * Construct [Bowler] from a [Parcel]
      */
     private constructor(p: Parcel): this(
-            bowlerName = p.readString(),
-            bowlerAverage = p.readDouble(),
-            bowlerId = p.readLong()
+            id = p.readLong(),
+            name = p.readString(),
+            average = p.readDouble()
     )
 
     /** @Override */
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
+        writeLong(id)
         writeString(name)
         writeDouble(average)
-        writeLong(id)
     }
 
     /**
-     * Save the current bowler to the database. Creates a new [Bowler] if id < 0.
+     * Save the current bowler to the database.
      *
      * @param context to get database instance
-     * @return [Bowler] if successful and [BCError] if an error occurred
+     * @return [BCError] only if an error occurred
      */
-    fun save(context: Context): Deferred<Pair<Bowler?, BCError?>> {
+    fun save(context: Context): Deferred<BCError?> {
         return if (id < 0) {
             createNewAndSave(context)
         } else {
@@ -78,27 +69,25 @@ data class Bowler(
     }
 
     /**
-     * Create a new [Bowler] and save to the database.
+     * Create a new [BowlerEntry] in the database.
      *
      * @param context to get database instance
-     * @return [Bowler] if successful and [BCError] if an error occurred
+     * @return [BCError] only if an error occurred
      */
-    private fun createNewAndSave(context: Context): Deferred<Pair<Bowler?, BCError?>> {
+    private fun createNewAndSave(context: Context): Deferred<BCError?> {
         return async(CommonPool) {
             if (!isBowlerNameValid(name)) {
-                val error = BCError(
+                return@async BCError(
                         context.resources.getString(R.string.error_saving_bowler),
                         context.resources.getString(R.string.error_bowler_name_invalid),
                         BCError.Severity.Error
                 )
-                return@async Pair(null, error)
             } else if (!isBowlerNameUnique(context, name).await()) {
-                val error = BCError(
+                return@async BCError(
                         context.resources.getString(R.string.error_saving_bowler),
                         context.resources.getString(R.string.error_bowler_name_in_use),
                         BCError.Severity.Error
                 )
-                return@async Pair(null, error)
             }
 
             val database = DatabaseHelper.getInstance(context).writableDatabase
@@ -126,45 +115,43 @@ data class Bowler(
                     database.insert(LeagueEntry.TABLE_NAME, null, values)
                 }
 
+                this@Bowler.id = bowlerId
                 database.setTransactionSuccessful()
             } catch (ex: Exception) {
                 Log.e(TAG, "Could not create a new bowler")
-                val error = BCError(
+                return@async BCError(
                         context.resources.getString(R.string.error_saving_bowler),
                         context.resources.getString(R.string.error_bowler_not_saved),
                         BCError.Severity.Error
                 )
-                return@async Pair(null, error)
             } finally {
                 database.endTransaction()
             }
 
-            Pair(Bowler(name, 0.0, bowlerId), null)
+            null
         }
     }
 
     /**
-     * Update the [Bowler] in the database.
+     * Update the [BowlerEntry] in the database.
      *
      * @param context context to get database instance
-     * @return [Bowler] if successful and [BCError] if an error occurred
+     * @return [BCError] only if an error occurred
      */
-    private fun update(context: Context): Deferred<Pair<Bowler?, BCError?>> {
+    private fun update(context: Context): Deferred<BCError?> {
         return async(CommonPool) {
             if (!isBowlerNameValid(name)) {
-                val error = BCError(
+                return@async BCError(
                         context.resources.getString(R.string.error_saving_bowler),
                         context.resources.getString(R.string.error_bowler_name_invalid),
                         BCError.Severity.Error
                 )
-                return@async Pair(null, error)
             } else if (!isBowlerNameUnique(context, name, id).await()) {
-                val error = BCError(
+                return@async BCError(
                         context.resources.getString(R.string.error_saving_bowler),
                         context.resources.getString(R.string.error_bowler_name_in_use),
                         BCError.Severity.Error
                 )
-                return@async Pair(null, error)
             }
 
             val database = DatabaseHelper.getInstance(context).writableDatabase
@@ -188,17 +175,16 @@ data class Bowler(
                 database.setTransactionSuccessful()
             } catch (ex: Exception) {
                 Log.e(TAG, "Could not update bowler")
-                val error = BCError(
+                return@async BCError(
                         context.resources.getString(R.string.error_saving_bowler),
                         context.resources.getString(R.string.error_bowler_not_saved),
                         BCError.Severity.Error
                 )
-                return@async Pair(null, error)
             } finally {
                 database.endTransaction()
             }
 
-            Pair(this@Bowler, null)
+            null
         }
     }
 
@@ -210,12 +196,11 @@ data class Bowler(
             }
 
             val database = DatabaseHelper.getInstance(context).writableDatabase
-            val whereArgs = arrayOf(id.toString())
             database.beginTransaction()
             try {
                 database.delete(BowlerEntry.TABLE_NAME,
                         BowlerEntry._ID + "=?",
-                        whereArgs)
+                        arrayOf(id.toString()))
                 database.setTransactionSuccessful()
             } catch (e: Exception) {
                 // Does nothing
@@ -392,9 +377,9 @@ data class Bowler(
                                     0.0
 
                         val bowler = Bowler(
+                                cursor.getLong(cursor.getColumnIndex("bid")),
                                 cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_BOWLER_NAME)),
-                                bowlerAverage,
-                                cursor.getLong(cursor.getColumnIndex("bid")))
+                                bowlerAverage)
                         bowlers.add(bowler)
                         cursor.moveToNext()
                     }
