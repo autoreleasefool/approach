@@ -80,7 +80,7 @@ data class League(
 
         /** Name of the "Open" league. */
         @Deprecated("Replaced with PRACTICE_LEAGUE_NAME")
-        val OPEN_LEAGUE_NAME = "Open"
+        const val OPEN_LEAGUE_NAME = "Open"
 
         /** Name of the "Practice" league. */
         const val PRACTICE_LEAGUE_NAME = "Practice"

@@ -611,12 +611,12 @@ public final class DatabaseHelper
         try {
             db.beginTransaction();
             ContentValues values = new ContentValues();
-            values.put(LeagueEntry.COLUMN_LEAGUE_NAME, League.Companion.getPRACTICE_LEAGUE_NAME());
+            values.put(LeagueEntry.COLUMN_LEAGUE_NAME, League.PRACTICE_LEAGUE_NAME);
             //noinspection deprecation
             db.update(LeagueEntry.TABLE_NAME,
                     values,
                     LeagueEntry.COLUMN_LEAGUE_NAME + "=?",
-                    new String[]{League.Companion.getOPEN_LEAGUE_NAME()});
+                    new String[]{League.OPEN_LEAGUE_NAME});
 
             db.execSQL("UPDATE " + LeagueEntry.TABLE_NAME + " SET "
                     + LeagueEntry.COLUMN_ADDITIONAL_GAMES + "=" + LeagueEntry.COLUMN_BASE_GAMES + ", "
