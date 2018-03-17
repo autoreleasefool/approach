@@ -9,6 +9,7 @@ import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
 import ca.josephroque.bowlingcompanion.R
@@ -36,6 +37,7 @@ class NameAverageRecyclerViewAdapter(
         /** Views can be active and accessible, or deleted. */
         private enum class ViewType {
             Active,
+            Selected,
             Deleted;
 
             companion object {
@@ -58,13 +60,30 @@ class NameAverageRecyclerViewAdapter(
     }
 
     /** Indicates if swiping is enabled on items in the [RecyclerView]. */
-    var swipingEnabled: Boolean = false
+    var swipeable: Boolean = false
+        set(value) {
+            if (value) {
+                multiSelect = false
+            }
+        }
+
+    /** Indicates if the list should be multi-select (if true), or single-select. */
+    var multiSelect: Boolean = false
+        set(value) {
+            if (value) {
+                swipeable = false
+            }
+            selectedItems.clear()
+        }
 
     /** Reference to the attached [RecyclerView]. */
     private var recyclerView: RecyclerView? = null
 
     /** Handles complex interactions with the [RecyclerView] (swipe/drag). */
     private var itemTouchHelper: ItemTouchHelper? = null
+
+    /** Currently selected items */
+    private val selectedItems: MutableSet<INameAverage> = HashSet()
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
@@ -87,17 +106,17 @@ class NameAverageRecyclerViewAdapter(
 
     /** @Override */
     override fun getItemViewType(position: Int): Int {
-        return if (values[position].isDeleted) {
-            ViewType.Deleted.ordinal
-        } else {
-            ViewType.Active.ordinal
+        return when {
+            swipeable && values[position].isDeleted -> ViewType.Deleted.ordinal
+            multiSelect && selectedItems.contains(values[position]) -> ViewType.Selected.ordinal
+            else -> ViewType.Active.ordinal
         }
     }
 
     /** @Override */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = when (ViewType.fromInt(viewType)) {
-            ViewType.Active -> {
+            ViewType.Active, ViewType.Selected -> {
                 LayoutInflater
                         .from(parent.context)
                         .inflate(R.layout.list_item_name_average, parent, false)
@@ -117,6 +136,7 @@ class NameAverageRecyclerViewAdapter(
         val viewType = ViewType.fromInt(getItemViewType(position))
         when(viewType) {
             ViewType.Active -> bindActiveViewHolder(holder, position)
+            ViewType.Selected -> bindSelectedViewHolder(holder, position)
             ViewType.Deleted -> bindDeletedViewHolder(holder, position)
             else -> throw IllegalArgumentException("View Type `$viewType` is invalid")
         }
@@ -138,6 +158,35 @@ class NameAverageRecyclerViewAdapter(
         if (holder.item is Bowler) {
             holder.ivIcon?.setImageResource(R.drawable.ic_person_white_24dp)
         }
+
+        holder.ivIcon?.visibility = View.VISIBLE
+        holder.checkBox?.visibility = View.GONE
+
+        if (position % 2 == 0) {
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorListPrimary))
+        } else {
+            holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorListAlternate))
+        }
+
+        holder.view.setOnClickListener(this)
+        holder.view.setOnLongClickListener(this)
+    }
+
+    /**
+     * Set up views to display a selected [INameAverage] item.
+     *
+     * @param holder the views to display item in
+     * @param position the item to display
+     */
+    private fun bindSelectedViewHolder(holder: ViewHolder, position: Int) {
+        val context = holder.itemView.context
+        holder.item = values[position]
+        holder.tvName?.text = values[position].name
+        holder.tvAverage?.text = values[position].getRoundedAverage(1)
+        holder.checkBox?.isChecked = selectedItems.contains(values[position])
+
+        holder.ivIcon?.visibility = View.GONE
+        holder.checkBox?.visibility = View.VISIBLE
 
         if (position % 2 == 0) {
             holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorListPrimary))
@@ -171,7 +220,6 @@ class NameAverageRecyclerViewAdapter(
                 listener?.onNAItemDelete(values[position])
             }
         }
-
         holder.view.setOnClickListener(deletedItemListener)
         holder.tvUndo?.setOnClickListener(deletedItemListener)
     }
@@ -189,13 +237,25 @@ class NameAverageRecyclerViewAdapter(
     /** @Override */
     override fun onClick(v: View) {
         recyclerView?.let {
-            listener?.onNAItemClick(values[it.getChildAdapterPosition(v)])
+            val position = it.getChildAdapterPosition(v)
+            val item = values[position]
+            if (multiSelect) {
+                if (!selectedItems.remove(item)) {
+                    selectedItems.add(item)
+                }
+                notifyItemChanged(position)
+            }
+            listener?.onNAItemClick(item)
         }
     }
 
     /** @Override */
     override fun onLongClick(v: View): Boolean {
         recyclerView?.let {
+            if (multiSelect) {
+                return false
+            }
+
             listener?.onNAItemLongClick(values[it.getChildAdapterPosition(v)])
             return true
         }
@@ -216,7 +276,7 @@ class NameAverageRecyclerViewAdapter(
 
         /** @Override */
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder?, direction: Int) {
-            if (swipingEnabled) {
+            if (swipeable) {
                 viewHolder?.let {
                     val position = it.adapterPosition
                     listener?.onNAItemSwipe(values[position])
@@ -225,12 +285,12 @@ class NameAverageRecyclerViewAdapter(
         }
 
         /**
-         * Disable swiping when [swipingEnabled] is false.
+         * Disable swiping when [swipeable] is false.
          *
          * @Override
          */
         override fun getMovementFlags(recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder?): Int {
-            return if (swipingEnabled) {
+            return if (swipeable) {
                 ItemTouchHelper.Callback.makeMovementFlags(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT)
             } else {
                 0
@@ -248,6 +308,8 @@ class NameAverageRecyclerViewAdapter(
         val tvAverage: TextView? = view.findViewById(R.id.tv_average)
         /** Render type indicator of the item. */
         val ivIcon: ImageView? = view.findViewById(R.id.iv_name_average)
+        /** Render a checkbox indicating if the item is selected or not. Invisible by default. */
+        val checkBox: CheckBox? = view.findViewById(R.id.check_name_average)
 
         /** Render name of the deleted item. */
         val tvDeleted: TextView? = view.findViewById(R.id.tv_deleted)
