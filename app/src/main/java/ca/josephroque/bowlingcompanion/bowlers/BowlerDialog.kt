@@ -74,7 +74,7 @@ class BowlerDialog : DialogFragment(), View.OnClickListener {
                 when (it.itemId) {
                     R.id.action_save -> {
                         val name = this@BowlerDialog.view?.input_name?.text.toString()
-                        if (name.isNotEmpty()) {
+                        if (canSave(name)) {
                             dismiss()
                             if (bowler == null) {
                                 listener?.onFinishBowler(Bowler(-1, name, 0.0))
@@ -170,13 +170,23 @@ class BowlerDialog : DialogFragment(), View.OnClickListener {
     }
 
     /**
+     * Checks if the bowler can be saved or not.
+     *
+     * @param name the bowler name
+     * @return true if the bowler name is not empty, false otherwise
+     */
+    private fun canSave(name: CharSequence?): Boolean {
+        return name?.isNotEmpty() == true
+    }
+
+    /**
      * Update save button state based on text entered.
      *
      * @param text the text entered
      */
     private fun updateSaveButton(text: CharSequence?) {
         val saveButton = view?.toolbar_bowler?.menu?.findItem(R.id.action_save)
-        if (text?.isNotEmpty() == true) {
+        if (canSave(text)) {
             saveButton?.isEnabled = true
             saveButton?.icon?.alpha = Color.ALPHA_ENABLED
         } else {

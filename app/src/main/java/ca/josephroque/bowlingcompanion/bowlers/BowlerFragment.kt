@@ -120,7 +120,6 @@ class BowlerFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageI
                 this@BowlerFragment.bowlers = bowlers
                 bowlerAdapter?.setElements(this@BowlerFragment.bowlers)
             } else {
-                bowlers[index] = bowler!!
                 bowlerAdapter?.notifyItemChanged(index)
             }
         }

@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- Activity resources -->
     <dimen name="activity_margin">16dp</dimen>
 
+    <!-- Common components -->
     <dimen name="text_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
 
@@ -11,5 +13,8 @@
     <dimen name="list_item_margin">16dp</dimen>
     <dimen name="list_item_min_height">72dp</dimen>
     <dimen name="list_default_icon_size">40dp</dimen>
+
+    <!-- Teams -->
+    <dimen name="team_members_list_height">320dp</dimen>
 
 </resources>

@@ -26,6 +26,7 @@ import java.lang.ref.WeakReference
 import ca.josephroque.bowlingcompanion.settings.SettingsActivity
 import android.content.Intent
 import android.graphics.Color
+import ca.josephroque.bowlingcompanion.teams.TeamDialog
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -35,7 +36,8 @@ import android.graphics.Color
 class BowlerTeamListActivity : AppCompatActivity(),
         BowlerFragment.OnBowlerFragmentInteractionListener,
         TeamFragment.OnTeamFragmentInteractionListener,
-        BowlerDialog.OnBowlerDialogInteractionListener {
+        BowlerDialog.OnBowlerDialogInteractionListener,
+        TeamDialog.OnTeamDialogInteractionListener {
 
     companion object {
         /** Logging identifier. */
@@ -198,7 +200,12 @@ class BowlerTeamListActivity : AppCompatActivity(),
      * @param team the team to edit, or null if a new team should be added
      */
     private fun promptAddOrEditTeam(team: Team? = null) {
-        TODO("not implemented")
+        val newFragment = TeamDialog.newInstance(team)
+        supportFragmentManager.beginTransaction()
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .add(android.R.id.content, newFragment)
+                .addToBackStack(null)
+                .commit()
     }
 
     /** @Override */
@@ -221,6 +228,28 @@ class BowlerTeamListActivity : AppCompatActivity(),
         val adapter = pager_bowlers_teams.adapter as? BowlersTeamsPagerAdapter
         val bowlerFragment = adapter?.getFragment(pager_bowlers_teams.currentItem) as? BowlerFragment
         bowlerFragment?.onNAItemDelete(bowler)
+    }
+
+    /** @Override */
+    override fun onFinishTeam(team: Team) {
+        launch(Android) {
+            val error = team.save(this@BowlerTeamListActivity).await()
+
+            if (error != null) {
+                error.show(this@BowlerTeamListActivity)
+            } else {
+                val adapter = pager_bowlers_teams.adapter as? BowlersTeamsPagerAdapter
+                val teamFragment = adapter?.getFragment(pager_bowlers_teams.currentItem) as? TeamFragment
+                teamFragment?.refreshTeamList(team)
+            }
+        }
+    }
+
+    /** @Override */
+    override fun onDeleteTeam(team: Team) {
+        val adapter = pager_bowlers_teams.adapter as? BowlersTeamsPagerAdapter
+        val teamFragment = adapter?.getFragment(pager_bowlers_teams.currentItem) as? TeamFragment
+        teamFragment?.onTeamItemDelete(team)
     }
 
     /** @Override. */

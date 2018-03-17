@@ -32,12 +32,12 @@ class NameAverageRecyclerViewAdapter(
 
     companion object {
         /** Logging identifier. */
-        private const val TAG = "NameAverageRecyclerViewAdapter"
+        private const val TAG = "NARecyclerViewAdapter"
 
         /** Views can be active and accessible, or deleted. */
         private enum class ViewType {
             Active,
-            Selected,
+            Selectable,
             Deleted;
 
             companion object {
@@ -73,7 +73,8 @@ class NameAverageRecyclerViewAdapter(
             if (value) {
                 swipeable = false
             }
-            selectedItems.clear()
+            field = value
+            _selectedItems?.clear()
         }
 
     /** Reference to the attached [RecyclerView]. */
@@ -83,7 +84,15 @@ class NameAverageRecyclerViewAdapter(
     private var itemTouchHelper: ItemTouchHelper? = null
 
     /** Currently selected items */
-    private val selectedItems: MutableSet<INameAverage> = HashSet()
+    private var _selectedItems: MutableSet<INameAverage>? = null
+    val selectedItems: Set<INameAverage>
+        get() {
+            if (_selectedItems == null) {
+                _selectedItems = HashSet()
+            }
+
+            return _selectedItems ?: throw AssertionError("Set to null by another thread")
+        }
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
@@ -108,7 +117,7 @@ class NameAverageRecyclerViewAdapter(
     override fun getItemViewType(position: Int): Int {
         return when {
             swipeable && values[position].isDeleted -> ViewType.Deleted.ordinal
-            multiSelect && selectedItems.contains(values[position]) -> ViewType.Selected.ordinal
+            multiSelect -> ViewType.Selectable.ordinal
             else -> ViewType.Active.ordinal
         }
     }
@@ -116,7 +125,7 @@ class NameAverageRecyclerViewAdapter(
     /** @Override */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = when (ViewType.fromInt(viewType)) {
-            ViewType.Active, ViewType.Selected -> {
+            ViewType.Active, ViewType.Selectable -> {
                 LayoutInflater
                         .from(parent.context)
                         .inflate(R.layout.list_item_name_average, parent, false)
@@ -134,9 +143,9 @@ class NameAverageRecyclerViewAdapter(
     /** @Override */
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val viewType = ViewType.fromInt(getItemViewType(position))
-        when(viewType) {
+        when (viewType) {
             ViewType.Active -> bindActiveViewHolder(holder, position)
-            ViewType.Selected -> bindSelectedViewHolder(holder, position)
+            ViewType.Selectable -> bindSelectableViewHolder(holder, position)
             ViewType.Deleted -> bindDeletedViewHolder(holder, position)
             else -> throw IllegalArgumentException("View Type `$viewType` is invalid")
         }
@@ -173,12 +182,12 @@ class NameAverageRecyclerViewAdapter(
     }
 
     /**
-     * Set up views to display a selected [INameAverage] item.
+     * Set up views to display a selectable [INameAverage] item.
      *
      * @param holder the views to display item in
      * @param position the item to display
      */
-    private fun bindSelectedViewHolder(holder: ViewHolder, position: Int) {
+    private fun bindSelectableViewHolder(holder: ViewHolder, position: Int) {
         val context = holder.itemView.context
         holder.item = values[position]
         holder.tvName?.text = values[position].name
@@ -240,8 +249,10 @@ class NameAverageRecyclerViewAdapter(
             val position = it.getChildAdapterPosition(v)
             val item = values[position]
             if (multiSelect) {
-                if (!selectedItems.remove(item)) {
-                    selectedItems.add(item)
+                _selectedItems?.let {
+                    if (!it.remove(item)) {
+                        it.add(item)
+                    }
                 }
                 notifyItemChanged(position)
             }

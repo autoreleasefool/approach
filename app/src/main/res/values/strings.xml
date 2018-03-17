@@ -41,6 +41,8 @@
     <string name="edit_team">Edit team</string>
     <string name="hint_team_name">Name</string>
     <string name="delete_team">Delete team</string>
+    <string name="select_team_members">Select members</string>
+    <string name="error_no_bowlers">You must have at least 1 bowler before you can create a team</string>
 
     <string name="error_saving_team">Error saving team!</string>
     <string name="error_team_name_invalid">You can only use letters, spaces, and the following characters: \'!@#$%^&amp;*()_+:"?/~-.</string>
