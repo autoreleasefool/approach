@@ -212,15 +212,6 @@ data class Bowler(
         }
     }
 
-    /**
-     * Check if this [Bowler] exists in a list
-     *
-     * @param list the list of bowlers to check
-     * @return index of this item in the list if the [id] of this [Bowler] matches the [id] of a
-     *         [Bowler] in the list
-     */
-    fun indexInList(list: List<Bowler>): Int = (0 until list.size).firstOrNull { list[it].id == id } ?: -1
-
     companion object {
 
         /** Logging identifier. */

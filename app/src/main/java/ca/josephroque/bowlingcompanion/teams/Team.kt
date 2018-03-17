@@ -10,6 +10,7 @@ import android.util.Log
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.bowlers.Bowler
 import ca.josephroque.bowlingcompanion.common.IDeletable
+import ca.josephroque.bowlingcompanion.common.IIdentifiable
 import ca.josephroque.bowlingcompanion.common.KParcelable
 import ca.josephroque.bowlingcompanion.common.parcelableCreator
 import ca.josephroque.bowlingcompanion.database.Contract.BowlerEntry
@@ -31,10 +32,10 @@ import kotlin.collections.ArrayList
  * A single Team, which has a set of bowlers.
  */
 data class Team(
-        var id: Long,
+        override var id: Long,
         var name: String,
         var members: MutableList<Pair<String, Long>>
-): KParcelable, IDeletable {
+): KParcelable, IDeletable, IIdentifiable {
 
     override var isDeleted: Boolean = false
 

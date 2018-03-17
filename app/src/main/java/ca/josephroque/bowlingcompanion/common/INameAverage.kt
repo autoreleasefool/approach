@@ -5,12 +5,9 @@ import java.text.DecimalFormat
 /**
  * Copyright (C) 2018 Joseph Roque
  *
- * Enforces objects which have a name, average, and ID.
+ * Enforces objects to have a name and average.
  */
-interface INameAverage: IDeletable {
-
-    /** Unique ID of the object. */
-    var id: Long
+interface INameAverage: IDeletable, IIdentifiable {
 
     /** Name of the object. */
     var name: String

@@ -54,18 +54,33 @@ object DummyContent {
     }
 
     private fun createDummyBowler(): Bowler {
-        return Bowler("Trevor Hansen", 193.5, 0L)
+        return Bowler(0L, "Trevor Hansen", 193.5)
     }
 
     private fun createDummyTeam(): Team {
-        return Team("4 Steps Boys", 193.5, 0L)
+        val members = arrayListOf(
+                Pair("John", 0L),
+                Pair("Jacob", 0L),
+                Pair("Jingle", 0L),
+                Pair("Heimer", 0L),
+                Pair("Schmitt", 0L),
+                Pair("John", 0L),
+                Pair("Jacob", 0L),
+                Pair("Jingle", 0L),
+                Pair("Heimer", 0L),
+                Pair("John", 0L),
+                Pair("Jacob", 0L),
+                Pair("Jingle", 0L),
+                Pair("Heimer", 0L)
+        )
+        return Team(0L, "4 Steps Boys", members)
     }
 
     private fun createDummyLeague(): League {
-        return League("Wednesday Night, 16-17", 203.4, 0L, false, 3)
+        return League(0L, "Wednesday Night, 16-17", 203.4, false, 3)
     }
 
     private fun createDummyEvent(): League {
-        return League("4 Steps, 2017", 212.9, 0L, true, 5)
+        return League(0L, "4 Steps, 2017", 212.9, true, 5)
     }
 }
