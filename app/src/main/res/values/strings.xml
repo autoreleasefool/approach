@@ -37,6 +37,11 @@
     <string name="error_bowler_not_saved">An error occurred and the bowler could not be saved.</string>
 
     <!-- Teams -->
+    <string name="new_team">New team</string>
+    <string name="edit_team">Edit team</string>
+    <string name="hint_team_name">Name</string>
+    <string name="delete_team">Delete team</string>
+
     <string name="error_saving_team">Error saving team!</string>
     <string name="error_team_name_invalid">You can only use letters, spaces, and the following characters: \'!@#$%^&amp;*()_+:"?/~-.</string>
     <string name="error_team_name_in_use">That name has already been used. You must choose another.</string>

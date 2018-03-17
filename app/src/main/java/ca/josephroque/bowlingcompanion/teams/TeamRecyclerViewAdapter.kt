@@ -12,6 +12,8 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import ca.josephroque.bowlingcompanion.R
+import com.nex3z.flowlayout.FlowLayout
+import kotlinx.android.synthetic.main.list_item_team.view.*
 
 
 /**
@@ -128,17 +130,28 @@ class TeamRecyclerViewAdapter(
      */
     private fun bindActiveViewHolder(holder: ViewHolder, position: Int) {
         val context = holder.itemView.context
-        holder.item = values[position]
-        holder.tvName?.text = values[position].name
+        val team = values[position]
+        holder.item = team
+        holder.tvName?.text = team.name
 
-        holder.ivIcon?.setColorFilter(Color.BLACK)
-        holder.ivIcon?.setImageResource(R.drawable.ic_people_white_24dp)
+        val drawables = holder.tvName?.compoundDrawables
+        drawables?.let {
+            it[0].alpha = ca.josephroque.bowlingcompanion.utils.Color.ALPHA_SECONDARY
+        }
 
         if (position % 2 == 0) {
             holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorListPrimary))
         } else {
             holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorListAlternate))
         }
+
+        holder.flowMembers?.removeAllViews()
+        team.members.forEach({
+            val memberView = TextView(holder.view.context)
+            memberView.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            memberView.text = it.first
+            holder.flowMembers?.addView(memberView)
+        })
 
         holder.view.setOnClickListener(this)
         holder.view.setOnLongClickListener(this)
@@ -239,8 +252,8 @@ class TeamRecyclerViewAdapter(
     inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         /** Render name of the item. */
         val tvName: TextView? = view.findViewById(R.id.tv_name)
-        /** Render type indicator of the item. */
-        val ivIcon: ImageView? = view.findViewById(R.id.iv_team)
+        /** Render members of the team. */
+        val flowMembers: FlowLayout? = view.findViewById(R.id.flow_members)
 
         /** Render name of the deleted item. */
         val tvDeleted: TextView? = view.findViewById(R.id.tv_deleted)

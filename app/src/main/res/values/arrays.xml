@@ -32,4 +32,9 @@
         <item>Last modified</item>
     </string-array>
 
+    <string-array name="team_sort_options">
+        <item>Alphabetically</item>
+        <item>Last modified</item>
+    </string-array>
+
 </resources>
