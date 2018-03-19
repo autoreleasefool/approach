@@ -90,7 +90,7 @@ class TeamFragment : Fragment(), TeamRecyclerViewAdapter.OnTeamInteractionListen
     /** @Override */
     override fun onResume() {
         super.onResume()
-//        refreshTeamList(null)
+        refreshTeamList()
     }
 
     /** @Override */
@@ -117,7 +117,7 @@ class TeamFragment : Fragment(), TeamRecyclerViewAdapter.OnTeamInteractionListen
      *
      * @param team if the team exists in the list only that entry will be updated
      */
-    fun refreshTeamList(team: Team?) {
+    fun refreshTeamList(team: Team? = null) {
         val context = context?: return
         launch(Android) {
             val index = team?.indexInList(this@TeamFragment.teams) ?: -1
@@ -126,7 +126,6 @@ class TeamFragment : Fragment(), TeamRecyclerViewAdapter.OnTeamInteractionListen
                 this@TeamFragment.teams = teams
                 teamAdapter?.setElements(this@TeamFragment.teams)
             } else {
-                teams[index] = team!!
                 teamAdapter?.notifyItemChanged(index)
             }
         }
@@ -147,8 +146,7 @@ class TeamFragment : Fragment(), TeamRecyclerViewAdapter.OnTeamInteractionListen
                                     .edit()
                                     .putInt(Preferences.TEAM_SORT_ORDER, it.ordinal)
                                     .commit()
-//                            TODO: refreshTeamList(null)
-
+                            refreshTeamList()
                         }
                     })
                     .show()
