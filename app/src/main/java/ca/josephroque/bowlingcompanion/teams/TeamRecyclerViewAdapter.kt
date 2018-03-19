@@ -174,9 +174,9 @@ class TeamRecyclerViewAdapter(
 
         val deletedItemListener = View.OnClickListener {
             if (it.id == R.id.tv_undo) {
-                listener?.onTeamItemSwipe(values[position])
+                listener?.onTeamSwipe(values[position])
             } else {
-                listener?.onTeamItemDelete(values[position])
+                listener?.onTeamDelete(values[position])
             }
         }
 
@@ -197,14 +197,14 @@ class TeamRecyclerViewAdapter(
     /** @Override */
     override fun onClick(v: View) {
         recyclerView?.let {
-            listener?.onTeamItemClick(values[it.getChildAdapterPosition(v)])
+            listener?.onTeamClick(values[it.getChildAdapterPosition(v)])
         }
     }
 
     /** @Override */
     override fun onLongClick(v: View): Boolean {
         recyclerView?.let {
-            listener?.onTeamItemLongClick(values[it.getChildAdapterPosition(v)])
+            listener?.onTeamLongClick(values[it.getChildAdapterPosition(v)])
             return true
         }
 
@@ -227,7 +227,7 @@ class TeamRecyclerViewAdapter(
             if (swipingEnabled) {
                 viewHolder?.let {
                     val position = it.adapterPosition
-                    listener?.onTeamItemSwipe(values[position])
+                    listener?.onTeamSwipe(values[position])
                 }
             }
         }
@@ -272,29 +272,29 @@ class TeamRecyclerViewAdapter(
         /**
          * Indicates user interaction with the item.
          *
-         * @param item interacted item
+         * @param team interacted team
          */
-        fun onTeamItemClick(item: Team)
+        fun onTeamClick(team: Team)
 
         /**
-         * Indicates long click user interaction with the item.
+         * Indicates long click user interaction with the team.
          *
-         * @param item interacted item
+         * @param team interacted team
          */
-        fun onTeamItemLongClick(item: Team)
+        fun onTeamLongClick(team: Team)
 
         /**
-         * Indicates user swiped an item away.
+         * Indicates user swiped a team away.
          *
-         * @param item swiped item
+         * @param team swiped team
          */
-        fun onTeamItemSwipe(item: Team)
+        fun onTeamSwipe(team: Team)
 
         /**
-         * Indicates user deleted an item.
+         * Indicates user deleted a team.
          *
-         * @param item deleted item
+         * @param team deleted team
          */
-        fun onTeamItemDelete(item: Team)
+        fun onTeamDelete(team: Team)
     }
 }

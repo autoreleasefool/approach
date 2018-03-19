@@ -166,9 +166,9 @@ class BowlerFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageI
     override fun onNAItemDelete(item: INameAverage) {
         val context = context ?: return
         if (item is Bowler) {
-            val index = item.indexInList(this@BowlerFragment.bowlers)
+            val index = item.indexInList(bowlers)
             if (index != -1) {
-                this@BowlerFragment.bowlers.removeAt(index)
+                bowlers.removeAt(index)
                 bowlerAdapter?.notifyItemRemoved(index)
                 item.delete(context)
             }

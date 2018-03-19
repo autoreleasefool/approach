@@ -253,8 +253,12 @@ class BowlerTeamListActivity : AppCompatActivity(),
     }
 
     /** @Override. */
-    override fun onTeamSelected(team: Team) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onTeamSelected(team: Team, toEdit: Boolean) {
+        if (toEdit) {
+            promptAddOrEditTeam(team)
+        } else {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
     }
 
     /** @Override. */

@@ -154,23 +154,33 @@ class TeamFragment : Fragment(), TeamRecyclerViewAdapter.OnTeamInteractionListen
     }
 
     /** @Override */
-    override fun onTeamItemClick(item: Team) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onTeamClick(team: Team) {
+        listener?.onTeamSelected(team, false)
     }
 
     /** @Override */
-    override fun onTeamItemDelete(item: Team) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onTeamDelete(team: Team) {
+        val context = context ?: return
+        val index = team.indexInList(teams)
+        if (index != -1) {
+            teams.removeAt(index)
+            teamAdapter?.notifyItemRemoved(index)
+            team.delete(context)
+        }
     }
 
     /** @Override */
-    override fun onTeamItemLongClick(item: Team) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onTeamLongClick(team: Team) {
+        listener?.onTeamSelected(team, true)
     }
 
     /** @Override */
-    override fun onTeamItemSwipe(item: Team) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onTeamSwipe(team: Team) {
+        val index = team.indexInList(teams)
+        if (index != -1) {
+            team.isDeleted = !team.isDeleted
+            teamAdapter?.notifyItemChanged(index)
+        }
     }
 
     /**
@@ -182,7 +192,8 @@ class TeamFragment : Fragment(), TeamRecyclerViewAdapter.OnTeamInteractionListen
          * Indicates a team has been selected and further details should be shown to the user.
          *
          * @param team the team that the user has selected
+         * @param toEdit indicate if the user's intent is to edit the [Team] or select
          */
-        fun onTeamSelected(team: Team)
+        fun onTeamSelected(team: Team, toEdit: Boolean)
     }
 }
