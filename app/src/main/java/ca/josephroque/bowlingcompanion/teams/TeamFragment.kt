@@ -12,7 +12,6 @@ import android.view.*
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.bowlers.Bowler
 import ca.josephroque.bowlingcompanion.common.Android
-import ca.josephroque.bowlingcompanion.common.NameAverageRecyclerViewAdapter
 import ca.josephroque.bowlingcompanion.dummy.DummyContent
 import ca.josephroque.bowlingcompanion.utils.Preferences
 import kotlinx.coroutines.experimental.launch
@@ -67,7 +66,7 @@ class TeamFragment : Fragment(), TeamRecyclerViewAdapter.OnTeamInteractionListen
             view.layoutManager = LinearLayoutManager(context)
             view.adapter = teamAdapter
             view.setHasFixedSize(true)
-            NameAverageRecyclerViewAdapter.applyDefaultDivider(view, context)
+            TeamRecyclerViewAdapter.applyDefaultDivider(view, context)
         }
 
         setHasOptionsMenu(true)
