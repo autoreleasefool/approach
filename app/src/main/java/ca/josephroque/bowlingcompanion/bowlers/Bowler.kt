@@ -361,9 +361,10 @@ data class Bowler(
                         0.toString())
 
                 // Adds loaded bowler names and averages to lists to display
-                val cursor = database.rawQuery(rawBowlerQuery, rawBowlerArgs)
-                if (cursor.moveToFirst()) {
-                    while (!cursor.isAfterLast) {
+                var cursor: Cursor? = null
+                try {
+                    cursor = database.rawQuery(rawBowlerQuery, rawBowlerArgs)
+                    while (cursor.moveToNext()) {
                         val totalSum = cursor.getInt(cursor.getColumnIndex("totalSum"))
                         val totalCount = cursor.getInt(cursor.getColumnIndex("totalCount"))
                         val totalBaseSum = cursor.getInt(cursor.getColumnIndex("totalBaseSum"))
@@ -379,10 +380,10 @@ data class Bowler(
                                 cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_BOWLER_NAME)),
                                 bowlerAverage)
                         bowlers.add(bowler)
-                        cursor.moveToNext()
                     }
+                } finally {
+                    cursor?.close()
                 }
-                cursor.close()
 
                 bowlers
             }
