@@ -43,22 +43,13 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <Button
-                android:id="@+id/btn_delete"
-                android:visibility="gone"
+            <TextView
+                style="@style/HeaderText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/text_margin"
                 android:layout_marginRight="@dimen/text_margin"
                 android:layout_marginBottom="@dimen/text_margin"
-                android:text="@string/delete_team"
-                android:theme="@style/DeleteButton" />
-
-            <TextView
-                style="@style/HeaderText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/text_margin"
                 android:textAlignment="textStart"
                 android:gravity="start"
                 android:text="@string/select_team_members" />
@@ -82,6 +73,15 @@
                 android:layout_height="wrap_content"
                 app:layoutManager="LinearLayoutManager"
                 tools:listitem="@layout/list_item_name_average" />
+
+            <Button
+                android:id="@+id/btn_delete"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/text_margin"
+                android:text="@string/delete_team"
+                android:theme="@style/DeleteButton" />
 
         </LinearLayout>
 

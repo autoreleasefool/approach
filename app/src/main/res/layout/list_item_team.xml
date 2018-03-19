@@ -11,14 +11,12 @@
 
     <TextView
         android:id="@+id/tv_name"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_margin="@dimen/list_item_margin"
-        android:layout_weight="1"
         android:layout_gravity="center_vertical"
         android:singleLine="true"
-        android:textAppearance="?attr/textAppearanceListItem"
-        android:drawableLeft="@drawable/ic_people_white_24dp" />
+        android:textAppearance="?attr/textAppearanceListItem" />
 
     <View
         android:layout_width="match_parent"
@@ -30,6 +28,7 @@
         android:id="@+id/flow_members"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_margin="@dimen/base_margin"
         app:flChildSpacing="@dimen/list_item_margin"
         app:flRowSpacing="@dimen/list_item_margin" />
 

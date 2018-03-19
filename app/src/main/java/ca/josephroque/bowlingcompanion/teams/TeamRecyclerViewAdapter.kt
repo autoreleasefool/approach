@@ -1,7 +1,6 @@
 package ca.josephroque.bowlingcompanion.teams
 
 import android.content.Context
-import android.graphics.Color
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.RecyclerView
@@ -9,11 +8,10 @@ import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 import ca.josephroque.bowlingcompanion.R
 import com.nex3z.flowlayout.FlowLayout
-import kotlinx.android.synthetic.main.list_item_team.view.*
+import com.robertlevonyan.views.chip.Chip
 
 
 /**
@@ -134,11 +132,6 @@ class TeamRecyclerViewAdapter(
         holder.item = team
         holder.tvName?.text = team.name
 
-        val drawables = holder.tvName?.compoundDrawables
-        drawables?.let {
-            it[0].alpha = ca.josephroque.bowlingcompanion.utils.Color.ALPHA_SECONDARY
-        }
-
         if (position % 2 == 0) {
             holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorListPrimary))
         } else {
@@ -147,11 +140,14 @@ class TeamRecyclerViewAdapter(
 
         holder.flowMembers?.removeAllViews()
         team.members.forEach({
-            val memberView = TextView(holder.view.context)
-            memberView.layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            memberView.text = it.first
+            val memberView = Chip(context)
+            memberView.chipText = it.first
+            memberView.changeBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary))
+            memberView.textColor = ContextCompat.getColor(context, R.color.primaryWhiteText)
             holder.flowMembers?.addView(memberView)
         })
+        val chipMargin = context.resources.getDimension(R.dimen.chip_margin).toInt()
+        holder.flowMembers?.childSpacing = chipMargin
 
         holder.view.setOnClickListener(this)
         holder.view.setOnLongClickListener(this)
