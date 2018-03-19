@@ -76,18 +76,9 @@ data class Bowler(
      */
     private fun createNewAndSave(context: Context): Deferred<BCError?> {
         return async(CommonPool) {
-            if (!isBowlerNameValid(name)) {
-                return@async BCError(
-                        context.resources.getString(R.string.error_saving_bowler),
-                        context.resources.getString(R.string.error_bowler_name_invalid),
-                        BCError.Severity.Error
-                )
-            } else if (!isBowlerNameUnique(context, name).await()) {
-                return@async BCError(
-                        context.resources.getString(R.string.error_saving_bowler),
-                        context.resources.getString(R.string.error_bowler_name_in_use),
-                        BCError.Severity.Error
-                )
+            val error = validateSavePreconditions(context).await()
+            if (error != null) {
+                return@async error
             }
 
             val database = DatabaseHelper.getInstance(context).writableDatabase
@@ -140,18 +131,9 @@ data class Bowler(
      */
     private fun update(context: Context): Deferred<BCError?> {
         return async(CommonPool) {
-            if (!isBowlerNameValid(name)) {
-                return@async BCError(
-                        context.resources.getString(R.string.error_saving_bowler),
-                        context.resources.getString(R.string.error_bowler_name_invalid),
-                        BCError.Severity.Error
-                )
-            } else if (!isBowlerNameUnique(context, name, id).await()) {
-                return@async BCError(
-                        context.resources.getString(R.string.error_saving_bowler),
-                        context.resources.getString(R.string.error_bowler_name_in_use),
-                        BCError.Severity.Error
-                )
+            val error = validateSavePreconditions(context).await()
+            if (error != null) {
+                return@async error
             }
 
             val database = DatabaseHelper.getInstance(context).writableDatabase
@@ -209,6 +191,31 @@ data class Bowler(
             } finally {
                 database.endTransaction()
             }
+        }
+    }
+
+    /**
+     * Ensure all preconditions to save are met.
+     *
+     * @param context to get error strings
+     */
+    private fun validateSavePreconditions(context: Context): Deferred<BCError?> {
+        return async(CommonPool) {
+            if (!isBowlerNameValid(name)) {
+                return@async BCError(
+                        context.resources.getString(R.string.error_saving_bowler),
+                        context.resources.getString(R.string.error_bowler_name_invalid),
+                        BCError.Severity.Error
+                )
+            } else if (!isBowlerNameUnique(context, name, id).await()) {
+                return@async BCError(
+                        context.resources.getString(R.string.error_saving_bowler),
+                        context.resources.getString(R.string.error_bowler_name_in_use),
+                        BCError.Severity.Error
+                )
+            }
+
+            return@async null
         }
     }
 

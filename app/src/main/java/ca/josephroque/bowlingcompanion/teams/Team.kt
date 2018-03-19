@@ -98,18 +98,9 @@ data class Team(
      */
     private fun createNewAndSave(context: Context): Deferred<BCError?> {
         return async(CommonPool) {
-            if (!isTeamNameValid(name)) {
-                return@async BCError(
-                        context.resources.getString(R.string.error_saving_team),
-                        context.resources.getString(R.string.error_team_name_invalid),
-                        BCError.Severity.Error
-                )
-            } else if (!isTeamNameUnique(context, name).await()) {
-                return@async BCError(
-                        context.resources.getString(R.string.error_saving_team),
-                        context.resources.getString(R.string.error_team_name_in_use),
-                        BCError.Severity.Error
-                )
+            val error = validateSavePreconditions(context).await()
+            if (error != null) {
+                return@async error
             }
 
             val database = DatabaseHelper.getInstance(context).writableDatabase
@@ -160,18 +151,9 @@ data class Team(
      */
     private fun update(context: Context): Deferred<BCError?> {
         return async(CommonPool) {
-            if (!isTeamNameValid(name)) {
-                return@async BCError(
-                        context.resources.getString(R.string.error_saving_team),
-                        context.resources.getString(R.string.error_team_name_invalid),
-                        BCError.Severity.Error
-                )
-            } else if (!isTeamNameUnique(context, name, id).await()) {
-                return@async BCError(
-                        context.resources.getString(R.string.error_saving_team),
-                        context.resources.getString(R.string.error_team_name_in_use),
-                        BCError.Severity.Error
-                )
+            val error = validateSavePreconditions(context).await()
+            if (error != null) {
+                return@async error
             }
 
             val database = DatabaseHelper.getInstance(context).writableDatabase
@@ -245,6 +227,38 @@ data class Team(
             } finally {
                 database.endTransaction()
             }
+        }
+    }
+
+    /**
+     * Ensure all preconditions to save are met.
+     *
+     * @param context to get error strings
+     * @return [BCError] if a precondition is not met, null otherwise
+     */
+    private fun validateSavePreconditions(context: Context): Deferred<BCError?> {
+        return async(CommonPool) {
+            if (!isTeamNameValid(name)) {
+                return@async BCError(
+                        context.resources.getString(R.string.error_saving_team),
+                        context.resources.getString(R.string.error_team_name_invalid),
+                        BCError.Severity.Error
+                )
+            } else if (!isTeamNameUnique(context, name, id).await()) {
+                return@async BCError(
+                        context.resources.getString(R.string.error_saving_team),
+                        context.resources.getString(R.string.error_team_name_in_use),
+                        BCError.Severity.Error
+                )
+            } else if (members.isEmpty()) {
+                return@async BCError(
+                        context.resources.getString(R.string.error_saving_team),
+                        context.resources.getString(R.string.error_team_has_no_members),
+                        BCError.Severity.Error
+                )
+            }
+
+            return@async null
         }
     }
 
