@@ -82,18 +82,18 @@ class TeamDialog : DialogFragment(),
         val rootView = inflater.inflate(R.layout.dialog_team, container, false)
         val context = context ?: return rootView
 
+        bowlerAdapter = NameAverageRecyclerViewAdapter(emptyList(), this)
+        bowlerAdapter?.multiSelect = true
+
         if (team == null) {
             rootView.toolbar_team.setTitle(R.string.new_team)
         } else {
             rootView.toolbar_team.setTitle(R.string.edit_team)
         }
 
-        bowlerAdapter = NameAverageRecyclerViewAdapter(emptyList(), this)
-        bowlerAdapter?.multiSelect = true
 
         rootView.list_bowlers.layoutManager = LinearLayoutManager(context)
         rootView.list_bowlers.adapter = bowlerAdapter
-        rootView.list_bowlers.setHasFixedSize(true)
         NameAverageRecyclerViewAdapter.applyDefaultDivider(rootView.list_bowlers, context)
 
         rootView.btn_delete.setOnClickListener(this)
@@ -156,10 +156,11 @@ class TeamDialog : DialogFragment(),
     override fun onResume() {
         super.onResume()
 
-        // Requesting input focus and showing keyboard
-        input_name.requestFocus()
-        val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.showSoftInput(input_name, InputMethodManager.SHOW_IMPLICIT)
+        activity?.let {
+            input_name.clearFocus()
+            App.hideSoftKeyBoard(it)
+        }
+
 
         team?.let {
             btn_delete.visibility = View.VISIBLE
@@ -203,8 +204,11 @@ class TeamDialog : DialogFragment(),
      * Clean up dialog before calling super.
      */
     override fun dismiss() {
-        App.hideSoftKeyBoard(activity!!)
-        activity?.supportFragmentManager?.popBackStack()
+        activity?.let {
+            App.hideSoftKeyBoard(it)
+            it.supportFragmentManager?.popBackStack()
+        }
+
         super.dismiss()
     }
 
@@ -230,28 +234,27 @@ class TeamDialog : DialogFragment(),
 
     /**
      * Reload the list of bowlers and update list.
-     *
-     * @param bowler if the bowler exists in the list only that entry will be updated
      */
-    private fun refreshBowlerList(bowler: Bowler? = null) {
+    private fun refreshBowlerList() {
         val context = context?: return
         launch(Android) {
-            val index = bowler?.indexInList(this@TeamDialog.bowlers) ?: -1
-            if (index == -1) {
-                val bowlers = Bowler.fetchAll(context).await()
-                this@TeamDialog.bowlers = bowlers
-                bowlerAdapter?.setElements(this@TeamDialog.bowlers)
-            } else {
-                bowlerAdapter?.notifyItemChanged(index)
-            }
+            val bowlers = Bowler.fetchAll(context).await()
+            this@TeamDialog.bowlers = bowlers
+            bowlerAdapter?.setElements(bowlers)
 
-            if (this@TeamDialog.bowlers.isEmpty()) {
+            if (bowlers.isEmpty()) {
                 list_bowlers.visibility = View.GONE
                 tv_error_no_bowlers.visibility = View.VISIBLE
             } else {
                 list_bowlers.visibility = View.VISIBLE
                 tv_error_no_bowlers.visibility = View.GONE
             }
+
+            val ids: MutableSet<Long> = HashSet()
+            team?.members?.forEach({
+                ids.add(it.second)
+            })
+            bowlerAdapter?.setSelectedElementsWithIds(ids)
         }
     }
 

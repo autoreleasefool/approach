@@ -5,8 +5,10 @@
     <dimen name="activity_margin">16dp</dimen>
 
     <!-- Common components -->
-    <dimen name="text_margin">16dp</dimen>
-    <dimen name="fab_margin">16dp</dimen>
+    <dimen name="base_margin">16dp</dimen>
+    <dimen name="text_margin">@dimen/base_margin</dimen>
+    <dimen name="fab_margin">@dimen/base_margin</dimen>
+    <dimen name="chip_margin">@dimen/base_margin</dimen>
 
     <!-- List -->
     <dimen name="list_bottom_padding">48dp</dimen>

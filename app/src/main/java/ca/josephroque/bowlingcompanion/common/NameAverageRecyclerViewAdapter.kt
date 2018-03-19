@@ -75,7 +75,7 @@ class NameAverageRecyclerViewAdapter(
                 throw AssertionError("Cannot be multiSelect and swipeable simultaneously")
             }
             field = value
-            _selectedItems?.clear()
+            _selectedItems.clear()
         }
 
     /** Reference to the attached [RecyclerView]. */
@@ -85,15 +85,9 @@ class NameAverageRecyclerViewAdapter(
     private var itemTouchHelper: ItemTouchHelper? = null
 
     /** Currently selected items */
-    private var _selectedItems: MutableSet<INameAverage>? = null
+    private var _selectedItems: MutableSet<INameAverage> = HashSet()
     val selectedItems: Set<INameAverage>
-        get() {
-            if (_selectedItems == null) {
-                _selectedItems = HashSet()
-            }
-
-            return _selectedItems ?: throw AssertionError("Set to null by another thread")
-        }
+        get() = _selectedItems
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
@@ -244,13 +238,34 @@ class NameAverageRecyclerViewAdapter(
         notifyDataSetChanged()
     }
 
+    /**
+     * Select the set of items with [ids] in the given set.
+     *
+     * @param ids items with these ids will be selected
+     */
+    fun setSelectedElementsWithIds(ids: Set<Long>) {
+        if (multiSelect) {
+            values.forEachIndexed({ index: Int, it: INameAverage ->
+                if (ids.contains(it.id)) {
+                    if (_selectedItems.add(it)) {
+                        notifyItemChanged(index)
+                    }
+                } else {
+                    if (_selectedItems.remove(it)) {
+                        notifyItemChanged(index)
+                    }
+                }
+            })
+        }
+    }
+
     /** @Override */
     override fun onClick(v: View) {
         recyclerView?.let {
             val position = it.getChildAdapterPosition(v)
             val item = values[position]
             if (multiSelect) {
-                _selectedItems?.let {
+                _selectedItems.let {
                     if (!it.remove(item)) {
                         it.add(item)
                     }
