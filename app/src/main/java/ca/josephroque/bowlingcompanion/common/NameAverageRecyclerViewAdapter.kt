@@ -62,16 +62,17 @@ class NameAverageRecyclerViewAdapter(
     /** Indicates if swiping is enabled on items in the [RecyclerView]. */
     var swipeable: Boolean = false
         set(value) {
-            if (value) {
-                multiSelect = false
+            if (multiSelect) {
+                throw AssertionError("Cannot be multiSelect and swipeable simultaneously")
             }
+            field = value
         }
 
     /** Indicates if the list should be multi-select (if true), or single-select. */
     var multiSelect: Boolean = false
         set(value) {
-            if (value) {
-                swipeable = false
+            if (swipeable) {
+                throw AssertionError("Cannot be multiSelect and swipeable simultaneously")
             }
             field = value
             _selectedItems?.clear()
