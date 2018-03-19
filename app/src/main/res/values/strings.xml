@@ -47,6 +47,7 @@
     <string name="error_saving_team">Error saving team!</string>
     <string name="error_team_name_invalid">You can only use letters, spaces, and the following characters: \'!@#$%^&amp;*()_+:"?/~-.</string>
     <string name="error_team_name_in_use">That name has already been used. You must choose another.</string>
+    <string name="error_team_has_no_members">A team must have at least 1 member.</string>
     <string name="error_team_not_saved">An error occurred and the team could not be saved.</string>
 
     <!-- Content descriptions -->

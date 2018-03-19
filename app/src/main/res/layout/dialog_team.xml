@@ -70,14 +70,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/text_margin"
+                android:layout_marginRight="@dimen/text_margin"
                 android:layout_marginBottom="@dimen/text_margin"
-                android:textAlignment="center"
+                android:textAlignment="textStart"
+                android:gravity="start"
                 android:text="@string/error_no_bowlers" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/list_bowlers"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/team_members_list_height"
+                android:layout_height="wrap_content"
                 app:layoutManager="LinearLayoutManager"
                 tools:listitem="@layout/list_item_name_average" />
 
