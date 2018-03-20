@@ -11,10 +11,12 @@ import android.view.*
 import android.view.inputmethod.InputMethodManager
 import ca.josephroque.bowlingcompanion.App
 import ca.josephroque.bowlingcompanion.R
+import ca.josephroque.bowlingcompanion.common.Android
 import ca.josephroque.bowlingcompanion.utils.Color
 import ca.josephroque.bowlingcompanion.utils.safeLet
 import kotlinx.android.synthetic.main.dialog_bowler.*
 import kotlinx.android.synthetic.main.dialog_bowler.view.*
+import kotlinx.coroutines.experimental.launch
 
 
 /**
@@ -73,17 +75,7 @@ class BowlerDialog : DialogFragment(), View.OnClickListener {
             setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.action_save -> {
-                        val name = this@BowlerDialog.view?.input_name?.text.toString()
-                        if (canSave(name)) {
-                            dismiss()
-                            if (bowler == null) {
-                                listener?.onFinishBowler(Bowler(-1, name, 0.0))
-                            } else {
-                                bowler!!.name = name
-                                listener?.onFinishBowler(bowler!!)
-                            }
-                        }
-
+                        saveBowler()
                         true
                     }
                     else -> false
@@ -192,6 +184,33 @@ class BowlerDialog : DialogFragment(), View.OnClickListener {
         } else {
             saveButton?.isEnabled = false
             saveButton?.icon?.alpha = Color.ALPHA_DISABLED
+        }
+    }
+
+    /**
+     * Save the current bowler. Show errors if there are any.
+     */
+    private fun saveBowler() {
+        launch(Android) {
+            this@BowlerDialog.context?.let {
+                val oldName = bowler?.name ?: ""
+                val name = this@BowlerDialog.view?.input_name?.text.toString()
+
+                if (canSave(name)) {
+                    val newBowler = bowler ?: Bowler(-1, name, 0.0)
+                    newBowler.name = name
+
+                    val error = newBowler.save(it).await()
+                    if (error != null) {
+                        error.show(it)
+                        newBowler.name = oldName
+                        input_name.setText(oldName)
+                    } else {
+                        dismiss()
+                        listener?.onFinishBowler(newBowler)
+                    }
+                }
+            }
         }
     }
 

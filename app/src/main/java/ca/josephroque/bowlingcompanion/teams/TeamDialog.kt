@@ -9,7 +9,6 @@ import android.support.v7.widget.LinearLayoutManager
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.*
-import android.view.inputmethod.InputMethodManager
 import ca.josephroque.bowlingcompanion.App
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.bowlers.Bowler
@@ -106,22 +105,7 @@ class TeamDialog : DialogFragment(),
             setOnMenuItemClickListener {
                 when (it.itemId) {
                     R.id.action_save -> {
-                        val name = this@TeamDialog.view?.input_name?.text.toString()
-                        val members = selectedBowlers
-                        members?.let {
-                            if (canSave(name, it)) {
-                                dismiss()
-                                if (team == null) {
-                                    listener?.onFinishTeam(Team(-1, name, it))
-                                } else {
-                                    team!!.name = name
-                                    team!!.members = it
-                                    listener?.onFinishTeam(team!!)
-                                }
-                            }
-
-                        }
-
+                        saveTeam()
                         true
                     }
                     else -> false
@@ -229,6 +213,41 @@ class TeamDialog : DialogFragment(),
         } else {
             saveButton?.isEnabled = false
             saveButton?.icon?.alpha = Color.ALPHA_DISABLED
+        }
+    }
+
+    /**
+     * Save the current team. Show errors if there are any.
+     */
+    private fun saveTeam() {
+        launch(Android) {
+            this@TeamDialog.context?.let { context ->
+                val oldName = team?.name ?: ""
+                val oldMembers = team?.members ?: ArrayList()
+
+                val name = this@TeamDialog.view?.input_name?.text.toString()
+                val members = selectedBowlers
+
+                members?.let {
+                    if (canSave(name, it)) {
+                        val newTeam = team ?: Team(-1, name, it)
+                        newTeam.name = name
+                        newTeam.members = it
+
+                        val error = newTeam.save(context).await()
+                        if (error != null) {
+                            error.show(context)
+                            newTeam.name = oldName
+                            newTeam.members = oldMembers
+                            input_name.setText(oldName)
+                            refreshBowlerList()
+                        } else {
+                            dismiss()
+                            listener?.onFinishTeam(newTeam)
+                        }
+                    }
+                }
+            }
         }
     }
 
