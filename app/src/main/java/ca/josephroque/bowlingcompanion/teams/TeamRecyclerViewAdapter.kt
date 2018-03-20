@@ -141,6 +141,8 @@ class TeamRecyclerViewAdapter(
         holder.flowMembers?.removeAllViews()
         team.members.forEach({
             val memberView = Chip(context)
+            memberView.isFocusable = false
+            memberView.isClickable = false
             memberView.chipText = it.first
             memberView.changeBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary))
             memberView.textColor = ContextCompat.getColor(context, R.color.primaryWhiteText)
