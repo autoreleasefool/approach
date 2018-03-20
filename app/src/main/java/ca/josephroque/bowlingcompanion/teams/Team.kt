@@ -366,20 +366,32 @@ data class Team(
                 var cursor: Cursor? = null
                 try {
                     cursor = database.rawQuery(rawTeamQuery, emptyArray())
-                    var members: MutableList<Pair<String, Long>> = ArrayList()
-                    while (cursor.moveToNext()) {
-                        val teamId = cursor.getLong(cursor.getColumnIndex("tid"))
-                        val teamName = cursor.getString(cursor.getColumnIndex(TeamEntry.COLUMN_TEAM_NAME))
-                        members.add(Pair(
-                                cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_BOWLER_NAME)),
-                                cursor.getLong(cursor.getColumnIndex("bid"))
-                        ))
+                    if (cursor.moveToFirst()) {
+                        var teamId = cursor.getLong(cursor.getColumnIndex("tid"))
+                        var teamName = cursor.getString(cursor.getColumnIndex(TeamEntry.COLUMN_TEAM_NAME))
+                        var members: MutableList<Pair<String, Long>> = ArrayList()
 
-                        if (cursor.isLast || cursor.getLong(cursor.getColumnIndex("tid")) != teamId) {
-                            teams.add(Team(teamId, teamName, members))
-                            members = ArrayList()
+                        while (!cursor.isAfterLast) {
+                            val newId = cursor.getLong(cursor.getColumnIndex("tid"))
+                            if (newId != teamId) {
+                                teams.add(Team(teamId, teamName, members))
+
+                                teamId = newId
+                                teamName = cursor.getString(cursor.getColumnIndex(TeamEntry.COLUMN_TEAM_NAME))
+                                members = ArrayList()
+                            }
+
+                            members.add(Pair(
+                                    cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_BOWLER_NAME)),
+                                    cursor.getLong(cursor.getColumnIndex("bid"))
+                            ))
+                            cursor.moveToNext()
                         }
+
+                        teams.add(Team(teamId, teamName, members))
                     }
+
+
                 } finally {
                     cursor?.close()
                 }
