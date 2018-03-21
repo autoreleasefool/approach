@@ -10,7 +10,6 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.*
 import ca.josephroque.bowlingcompanion.R
-import ca.josephroque.bowlingcompanion.common.INameAverage
 import ca.josephroque.bowlingcompanion.common.NameAverageRecyclerViewAdapter
 import ca.josephroque.bowlingcompanion.common.Android
 import ca.josephroque.bowlingcompanion.utils.Preferences
@@ -22,7 +21,9 @@ import kotlinx.coroutines.experimental.launch
  *
  * A fragment representing a list of Bowlers.
  */
-class BowlerFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageInteractionListener {
+class BowlerFragment : Fragment(),
+        NameAverageRecyclerViewAdapter.OnNameAverageInteractionListener<Bowler>
+{
 
     companion object {
         /** Logging identifier. */
@@ -41,7 +42,7 @@ class BowlerFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageI
     /** Interaction handler. */
     private var listener: OnBowlerFragmentInteractionListener? = null
     /** Adapter to manage rendering the list of bowlers. */
-    private var bowlerAdapter: NameAverageRecyclerViewAdapter? = null
+    private var bowlerAdapter: NameAverageRecyclerViewAdapter<Bowler>? = null
     /** Bowlers to display. */
     private var bowlers: MutableList<Bowler> = ArrayList()
 
@@ -84,7 +85,7 @@ class BowlerFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageI
     /** @Override */
     override fun onResume() {
         super.onResume()
-        refreshBowlerList(null)
+        refreshBowlerList()
     }
 
     /** @Override */
@@ -111,7 +112,7 @@ class BowlerFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageI
      *
      * @param bowler if the bowler exists in the list only that entry will be updated
      */
-    fun refreshBowlerList(bowler: Bowler?) {
+    fun refreshBowlerList(bowler: Bowler? = null) {
         val context = context?: return
         launch(Android) {
             val index = bowler?.indexInList(this@BowlerFragment.bowlers) ?: -1
@@ -140,7 +141,7 @@ class BowlerFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageI
                                     .edit()
                                     .putInt(Preferences.BOWLER_SORT_ORDER, it.ordinal)
                                     .commit()
-                            refreshBowlerList(null)
+                            refreshBowlerList()
                         }
                     })
                     .show()
@@ -152,10 +153,8 @@ class BowlerFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageI
      *
      * @param item the bowler the user is interacting with
      */
-    override fun onNAItemClick(item: INameAverage) {
-        if (item is Bowler) {
-            listener?.onBowlerSelected(item, false)
-        }
+    override fun onNAItemClick(item: Bowler) {
+        listener?.onBowlerSelected(item, false)
     }
 
     /**
@@ -163,15 +162,13 @@ class BowlerFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageI
      *
      * @param item the bowler the user wishes to delete
      */
-    override fun onNAItemDelete(item: INameAverage) {
+    override fun onNAItemDelete(item: Bowler) {
         val context = context ?: return
-        if (item is Bowler) {
-            val index = item.indexInList(bowlers)
-            if (index != -1) {
-                bowlers.removeAt(index)
-                bowlerAdapter?.notifyItemRemoved(index)
-                item.delete(context)
-            }
+        val index = item.indexInList(bowlers)
+        if (index != -1) {
+            bowlers.removeAt(index)
+            bowlerAdapter?.notifyItemRemoved(index)
+            item.delete(context)
         }
     }
 
@@ -180,13 +177,11 @@ class BowlerFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageI
      *
      * @param item the bowler to delete or activate
      */
-    override fun onNAItemSwipe(item: INameAverage) {
-        if (item is Bowler) {
-            val index = item.indexInList(bowlers)
-            if (index != -1) {
-                item.isDeleted = !item.isDeleted
-                bowlerAdapter?.notifyItemChanged(index)
-            }
+    override fun onNAItemSwipe(item: Bowler) {
+        val index = item.indexInList(bowlers)
+        if (index != -1) {
+            item.isDeleted = !item.isDeleted
+            bowlerAdapter?.notifyItemChanged(index)
         }
     }
 
@@ -195,10 +190,8 @@ class BowlerFragment : Fragment(), NameAverageRecyclerViewAdapter.OnNameAverageI
      *
      * @param item the bowler the user wishes to edit
      */
-    override fun onNAItemLongClick(item: INameAverage) {
-        if (item is Bowler) {
-            listener?.onBowlerSelected(item, true)
-        }
+    override fun onNAItemLongClick(item: Bowler) {
+        listener?.onBowlerSelected(item, true)
     }
 
     /**

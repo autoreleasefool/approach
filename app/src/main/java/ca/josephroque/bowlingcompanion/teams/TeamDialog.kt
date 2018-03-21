@@ -13,7 +13,6 @@ import ca.josephroque.bowlingcompanion.App
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.bowlers.Bowler
 import ca.josephroque.bowlingcompanion.common.Android
-import ca.josephroque.bowlingcompanion.common.INameAverage
 import ca.josephroque.bowlingcompanion.common.NameAverageRecyclerViewAdapter
 import ca.josephroque.bowlingcompanion.utils.Color
 import ca.josephroque.bowlingcompanion.utils.safeLet
@@ -29,7 +28,7 @@ import kotlinx.coroutines.experimental.launch
  */
 class TeamDialog : DialogFragment(),
         View.OnClickListener,
-        NameAverageRecyclerViewAdapter.OnNameAverageInteractionListener {
+        NameAverageRecyclerViewAdapter.OnNameAverageInteractionListener<Bowler> {
 
     companion object {
         /** Logging identifier. */
@@ -54,7 +53,7 @@ class TeamDialog : DialogFragment(),
     private var listener: OnTeamDialogInteractionListener? = null
 
     /** Adapter to manage rendering the list of bowlers. */
-    private var bowlerAdapter: NameAverageRecyclerViewAdapter? = null
+    private var bowlerAdapter: NameAverageRecyclerViewAdapter<Bowler>? = null
 
     /** Bowlers to display. */
     private var bowlers: MutableList<Bowler> = ArrayList()
@@ -278,18 +277,18 @@ class TeamDialog : DialogFragment(),
     }
 
     /** @Override */
-    override fun onNAItemClick(item: INameAverage) {
+    override fun onNAItemClick(item: Bowler) {
         updateSaveButton(input_name.text, selectedBowlers)
     }
 
     /** Not used. */
-    override fun onNAItemDelete(item: INameAverage) {}
+    override fun onNAItemDelete(item: Bowler) {}
 
     /** Not used. */
-    override fun onNAItemLongClick(item: INameAverage) {}
+    override fun onNAItemLongClick(item: Bowler) {}
 
     /** Not used. */
-    override fun onNAItemSwipe(item: INameAverage) {}
+    override fun onNAItemSwipe(item: Bowler) {}
 
     /**
      * Handles interactions with the dialog.

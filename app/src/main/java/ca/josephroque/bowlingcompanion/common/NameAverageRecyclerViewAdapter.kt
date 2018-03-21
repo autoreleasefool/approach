@@ -6,7 +6,6 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.widget.DividerItemDecoration
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,10 +23,10 @@ import ca.josephroque.bowlingcompanion.common.NameAverageRecyclerViewAdapter.OnN
  * [RecyclerView.Adapter] that can display a [INameAverage] and makes a call to the
  * specified [OnNameAverageInteractionListener].
  */
-class NameAverageRecyclerViewAdapter(
-        private var values: List<INameAverage>,
-        private var listener: OnNameAverageInteractionListener?
-): RecyclerView.Adapter<NameAverageRecyclerViewAdapter.ViewHolder>(),
+class NameAverageRecyclerViewAdapter<T : INameAverage>(
+        private var values: List<T>,
+        private var listener: OnNameAverageInteractionListener<T>?
+): RecyclerView.Adapter<NameAverageRecyclerViewAdapter<T>.ViewHolder>(),
     View.OnClickListener,
     View.OnLongClickListener {
 
@@ -86,8 +85,8 @@ class NameAverageRecyclerViewAdapter(
     private var itemTouchHelper: ItemTouchHelper? = null
 
     /** Currently selected items */
-    private var _selectedItems: MutableSet<INameAverage> = HashSet()
-    val selectedItems: Set<INameAverage>
+    private var _selectedItems: MutableSet<T> = HashSet()
+    val selectedItems: Set<T>
         get() = _selectedItems
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
@@ -234,7 +233,7 @@ class NameAverageRecyclerViewAdapter(
      *
      * @param items new list of items to display
      */
-    fun setElements(items: List<INameAverage>) {
+    fun setElements(items: List<T>) {
         values = items
         notifyDataSetChanged()
     }
@@ -246,7 +245,7 @@ class NameAverageRecyclerViewAdapter(
      */
     fun setSelectedElementsWithIds(ids: Set<Long>) {
         if (multiSelect) {
-            values.forEachIndexed({ index: Int, it: INameAverage ->
+            values.forEachIndexed({ index: Int, it: T ->
                 if (ids.contains(it.id)) {
                     if (_selectedItems.add(it)) {
                         notifyItemChanged(index)
@@ -345,40 +344,40 @@ class NameAverageRecyclerViewAdapter(
         val tvUndo: TextView? = view.findViewById(R.id.tv_undo)
 
         /** INameAverage item. */
-        var item: INameAverage? = null
+        var item: T? = null
     }
 
     /**
      * Handles interactions with items in the list.
      */
-    interface OnNameAverageInteractionListener {
+    interface OnNameAverageInteractionListener<in T : INameAverage> {
 
         /**
          * Indicates user interaction with the item.
          *
          * @param item interacted item
          */
-        fun onNAItemClick(item: INameAverage)
+        fun onNAItemClick(item: T)
 
         /**
          * Indicates long click user interaction with the item.
          *
          * @param item interacted item
          */
-        fun onNAItemLongClick(item: INameAverage)
+        fun onNAItemLongClick(item: T)
 
         /**
          * Indicates user swiped an item away.
          *
          * @param item swiped item
          */
-        fun onNAItemSwipe(item: INameAverage)
+        fun onNAItemSwipe(item: T)
 
         /**
          * Indicates user deleted an item.
          *
          * @param item deleted item
          */
-        fun onNAItemDelete(item: INameAverage)
+        fun onNAItemDelete(item: T)
     }
 }
