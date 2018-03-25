@@ -86,13 +86,26 @@ data class League(
         const val PRACTICE_LEAGUE_NAME = "Practice"
 
         /**
+         * Order by which to sort bowlers.
+         */
+        enum class Sort {
+            Alphabetically,
+            LastModified;
+
+            companion object {
+                private val map = Sort.values().associateBy(Sort::ordinal)
+                fun fromInt(type: Int) = map[type]
+            }
+        }
+
+        /**
          * Get all of the leagues and events belonging to the [Bowler].
          *
          * @param context to get database instance
          * @param bowler the bowler whose leagues to retrieve
-         * @return a [List] of [League] instances from the database.
+         * @return a [MutableList] of [League] instances from the database.
          */
-        fun fetchAll(context: Context, bowler: Bowler): Deferred<List<League>> {
+        fun fetchAll(context: Context, bowler: Bowler): Deferred<MutableList<League>> {
             return async (CommonPool) {
                 val leagues: MutableList<League> = ArrayList()
                 val database = DatabaseHelper.getInstance(context).readableDatabase

@@ -266,7 +266,10 @@ class BowlerTeamListActivity : AppCompatActivity(),
         if (toEdit) {
             promptAddOrEditBowler(bowler)
         } else {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            val intent = Intent(baseContext, BowlerDetailsActivity::class.java).apply {
+                putExtra(BowlerDetailsActivity.INTENT_BOWLER, bowler)
+            }
+            startActivity(intent)
         }
     }
 
