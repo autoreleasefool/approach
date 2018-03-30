@@ -3,16 +3,25 @@ package ca.josephroque.bowlingcompanion
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
+import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentManager
+import android.support.v4.app.FragmentPagerAdapter
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import ca.josephroque.bowlingcompanion.BowlerDetailsActivity.LeaguesEventsPagerAdapter.Companion.EVENT_FRAGMENT
+import ca.josephroque.bowlingcompanion.BowlerDetailsActivity.LeaguesEventsPagerAdapter.Companion.LEAGUE_FRAGMENT
 import ca.josephroque.bowlingcompanion.bowlers.Bowler
 import ca.josephroque.bowlingcompanion.leagues.League
 import ca.josephroque.bowlingcompanion.leagues.LeagueFragment
 import ca.josephroque.bowlingcompanion.settings.SettingsActivity
 import ca.josephroque.bowlingcompanion.utils.Email
 import kotlinx.android.synthetic.main.activity_bowler_details.*
+import java.lang.ref.WeakReference
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -31,22 +40,34 @@ class BowlerDetailsActivity : AppCompatActivity() {
 
     private var bowler: Bowler? = null
 
+    /** Active tab. */
+    private val currentTab: Int
+        get() = pager_leagues_events.currentItem
+
+    /** Handle visibility changes in the fab. */
+    val fabVisibilityChangedListener = object : FloatingActionButton.OnVisibilityChangedListener() {
+        override fun onHidden(fab: FloatingActionButton?) {
+            fab?.let {
+                it.setColorFilter(Color.BLACK)
+                when (currentTab) {
+                    0 -> it.setImageResource(R.drawable.ic_person_add_white_24dp)
+                    1 -> it.setImageResource(R.drawable.ic_group_add_white_24dp)
+                }
+
+                it.show()
+            }
+        }
+    }
+
     /** @Override */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_bowler_details)
 
-        bowler = intent.getParcelableExtra<Bowler>(INTENT_BOWLER)
-        val bowler = bowler ?: return
-
-        if (savedInstanceState == null) {
-            val leagueFragment = LeagueFragment.newInstance(bowler)
-            supportFragmentManager.beginTransaction()
-                    .add(R.id.fragment_holder, leagueFragment, LeagueFragment::class.simpleName)
-                    .commit()
-        }
+        bowler = intent.getParcelableExtra(INTENT_BOWLER)
 
         configureToolbar()
+        configureTabLayout()
         configureFab()
     }
 
@@ -60,14 +81,47 @@ class BowlerDetailsActivity : AppCompatActivity() {
     }
 
     /**
+     * Configure tab layout for rendering.
+     */
+    private fun configureTabLayout() {
+        val bowler = bowler ?: return
+
+        tabs_leagues_events.addTab(tabs_leagues_events.newTab().setText(R.string.leagues))
+        tabs_leagues_events.addTab(tabs_leagues_events.newTab().setText(R.string.events))
+        pager_leagues_events.scrollingEnabled = false
+
+        val adapter = BowlerDetailsActivity.LeaguesEventsPagerAdapter(supportFragmentManager, tabs_leagues_events.tabCount, bowler)
+        pager_leagues_events.adapter = adapter
+
+        pager_leagues_events.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs_leagues_events))
+        tabs_leagues_events.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
+            override fun onTabSelected(tab: TabLayout.Tab) {
+                pager_leagues_events.currentItem = tab.position
+
+                if (fab.visibility == View.VISIBLE) {
+                    fab.hide(fabVisibilityChangedListener)
+                } else {
+                    fabVisibilityChangedListener.onHidden(fab)
+                }
+            }
+
+            override fun onTabUnselected(tab: TabLayout.Tab) {}
+            override fun onTabReselected(tab: TabLayout.Tab) {}
+        })
+    }
+
+    /**
      * Configure floating action buttons for rendering.
      */
     private fun configureFab() {
         fab?.setColorFilter(Color.BLACK)
-        fab.setImageResource(R.drawable.ic_person_add_white_24dp)
+        fab.setImageResource(R.drawable.ic_add_white_24dp)
 
         fab.setOnClickListener {
-            promptAddOrEditLeague()
+            when (currentTab) {
+                LEAGUE_FRAGMENT -> promptAddOrEditLeague(false)
+                EVENT_FRAGMENT -> promptAddOrEditLeague(true)
+            }
         }
     }
 
@@ -125,10 +179,63 @@ class BowlerDetailsActivity : AppCompatActivity() {
     /**
      * Display a prompt to add or edit a league.
      *
+     * @param isEvent true to add an event, false to add a league
      * @param league the league to edit, or null if a new league should be added
      */
-    private fun promptAddOrEditLeague(league: League? = null) {
+    private fun promptAddOrEditLeague(isEvent: Boolean, league: League? = null) {
         TODO("Not implemented")
     }
 
+    /**
+     * Manages pages for each tab.
+     */
+    internal class LeaguesEventsPagerAdapter(
+            fm: FragmentManager,
+            private var tabCount: Int,
+            private var bowler: Bowler
+    ): FragmentPagerAdapter(fm) {
+
+        companion object {
+            /** Index for [LeagueFragment]. */
+            const val LEAGUE_FRAGMENT = 0
+            /** Index for [LeagueFragment] showing events. */
+            const val EVENT_FRAGMENT = 1
+        }
+
+        /** Weak references to the fragments in the pager. */
+        private val fragmentReferenceMap: MutableMap<Int, WeakReference<Fragment>> = HashMap()
+
+        /** @Override. */
+        override fun getItem(position: Int): Fragment? {
+            val fragment: Fragment = when (position) {
+                LEAGUE_FRAGMENT -> LeagueFragment.newInstance(bowler, false)
+                EVENT_FRAGMENT -> LeagueFragment.newInstance(bowler, true)
+                else -> return null
+            }
+
+            fragmentReferenceMap[position] = WeakReference(fragment)
+            return fragment
+        }
+
+        /** @Override. */
+        override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
+            super.destroyItem(container, position, `object`)
+            fragmentReferenceMap.remove(position)
+        }
+
+        /** @Override. */
+        override fun getCount(): Int {
+            return tabCount
+        }
+
+        /**
+         * Get a reference to a fragment in the pager.
+         *
+         * @param position the fragment to get
+         * @return the fragment at [position]
+         */
+        fun getFragment(position: Int): Fragment? {
+            return fragmentReferenceMap[position]?.get()
+        }
+    }
 }

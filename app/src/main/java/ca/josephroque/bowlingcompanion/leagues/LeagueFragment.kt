@@ -32,15 +32,21 @@ class LeagueFragment : Fragment(),
         /** Identifier for the argument that represents the [Bowler] whose leagues are displayed. */
         private const val ARG_BOWLER = "${TAG}_bowler"
 
+        /** Identifier for the argument indicating if this fragment should list leagues or events. */
+        private const val ARG_SHOW_EVENTS = "${TAG}_events"
+
         /**
          * Creates a new instance.
          *
+         * @param bowler bowler to load leagues/events of
+         * @param showEvents true to show bowler's events, false to show leagues
          * @return the new instance
          */
-        fun newInstance(bowler: Bowler): LeagueFragment {
+        fun newInstance(bowler: Bowler, showEvents: Boolean): LeagueFragment {
             val fragment = LeagueFragment()
             val args = Bundle()
             args.putParcelable(ARG_BOWLER, bowler)
+            args.putBoolean(ARG_SHOW_EVENTS, showEvents)
             fragment.arguments = args
             return fragment
         }
@@ -51,6 +57,9 @@ class LeagueFragment : Fragment(),
 
     /** The bowler whose leagues are to be displayed. */
     private var bowler: Bowler? = null
+
+    /** Indicates if this fragment should list leagues or events. */
+    private var showEvents: Boolean = false
 
     /** Adapter to manage rendering the list of leagues. */
     private var leagueAdapter: NameAverageRecyclerViewAdapter<League>? = null
@@ -66,6 +75,7 @@ class LeagueFragment : Fragment(),
     ): View? {
         val view = inflater.inflate(R.layout.fragment_league_list, container, false)
         bowler = savedInstanceState?.getParcelable(ARG_BOWLER) ?: arguments?.getParcelable(ARG_BOWLER)
+        showEvents = arguments?.getBoolean(ARG_SHOW_EVENTS) ?: false
 
         if (view is RecyclerView) {
             val context = view.getContext()

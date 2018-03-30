@@ -17,14 +17,28 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/fragment_holder"
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tabs_leagues_events"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_bowler_details"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:tabMode="fixed"
+        app:tabGravity="fill"
+        app:tabTextColor="@color/secondaryWhiteText"
+        app:tabSelectedTextColor="@color/primaryWhiteText" />
+
+    <ca.josephroque.bowlingcompanion.common.CustomScrollingViewPager
+        android:id="@+id/pager_leagues_events"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/toolbar_bowler_details"
+        app:layout_constraintTop_toBottomOf="@id/tabs_leagues_events"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
