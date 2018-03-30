@@ -79,6 +79,16 @@ data class Bowler(
     }
 
     /**
+     * Get all [League] instances belonging to this [Bowler] in the database which are events.
+     *
+     * @param context to access database
+     * @return a [MutableList] of [League] instances
+     */
+    fun fetchEvents(context: Context): Deferred<MutableList<League>> {
+        return League.fetchAll(context, this, false, true)
+    }
+
+    /**
      * Create a new [BowlerEntry] in the database.
      *
      * @param context to get database instance

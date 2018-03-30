@@ -103,9 +103,11 @@ data class League(
          *
          * @param context to get database instance
          * @param bowler the bowler whose leagues to retrieve
+         * @param includeLeagues true to include [League] instances which are leagues
+         * @param includeEvents true to include [League] instances which are events
          * @return a [MutableList] of [League] instances from the database.
          */
-        fun fetchAll(context: Context, bowler: Bowler): Deferred<MutableList<League>> {
+        fun fetchAll(context: Context, bowler: Bowler, includeLeagues: Boolean = true, includeEvents: Boolean = false): Deferred<MutableList<League>> {
             return async (CommonPool) {
                 val leagues: MutableList<League> = ArrayList()
                 val database = DatabaseHelper.getInstance(context).readableDatabase
@@ -156,7 +158,10 @@ data class League(
                                     isEvent,
                                     gamesPerSeries)
 
-                            leagues.add(league)
+                            if ((includeEvents && isEvent) || (includeLeagues && !isEvent)) {
+                                leagues.add(league)
+                            }
+
                             leagueTotal = 0
                             leagueNumberOfGames = 0
 
@@ -187,7 +192,9 @@ data class League(
                             isEvent,
                             gamesPerSeries)
 
-                    leagues.add(league)
+                    if ((includeEvents && isEvent) || (includeLeagues && !isEvent)) {
+                        leagues.add(league)
+                    }
                 }
 
                 cursor.close()
