@@ -66,7 +66,7 @@ class BowlerDialog : DialogFragment(), View.OnClickListener {
 
         rootView.btn_delete.setOnClickListener(this)
         rootView.toolbar_bowler.apply {
-            inflateMenu(R.menu.menu_bowler_dialog)
+            inflateMenu(R.menu.menu_dialog_bowler)
             menu.findItem(R.id.action_save).isEnabled = bowler?.name?.isNotEmpty() == true
             setNavigationIcon(R.drawable.ic_close_white_24dp)
             setNavigationOnClickListener {

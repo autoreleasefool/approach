@@ -11,7 +11,6 @@ import android.support.v7.widget.RecyclerView
 import android.view.*
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.bowlers.Bowler
-import ca.josephroque.bowlingcompanion.common.INameAverage
 import ca.josephroque.bowlingcompanion.common.NameAverageRecyclerViewAdapter
 import ca.josephroque.bowlingcompanion.common.Android
 import ca.josephroque.bowlingcompanion.utils.Preferences
@@ -105,7 +104,7 @@ class LeagueFragment : Fragment(),
     /** @Override */
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_leagues, menu)
+        inflater.inflate(R.menu.menu_fragment_leagues, menu)
     }
 
     /** @Override */

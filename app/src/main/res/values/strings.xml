@@ -17,6 +17,8 @@
     <!-- Common objects -->
     <string name="bowlers">Bowlers</string>
     <string name="teams">Teams</string>
+    <string name="leagues">Leagues</string>
+    <string name="events">Events</string>
 
     <!-- Menu -->
     <string name="action_send_feedback">Send feedback</string>

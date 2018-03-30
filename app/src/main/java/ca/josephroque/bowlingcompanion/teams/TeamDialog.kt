@@ -96,7 +96,7 @@ class TeamDialog : DialogFragment(),
 
         rootView.btn_delete.setOnClickListener(this)
         rootView.toolbar_team.apply {
-            inflateMenu(R.menu.menu_team_dialog)
+            inflateMenu(R.menu.menu_dialog_team)
             setNavigationIcon(R.drawable.ic_close_white_24dp)
             setNavigationOnClickListener {
                 dismiss()

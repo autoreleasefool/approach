@@ -80,7 +80,7 @@ class BowlerDetailsActivity : AppCompatActivity() {
     /** @Override */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         super.onCreateOptionsMenu(menu)
-        menuInflater.inflate(R.menu.menu_main, menu)
+        menuInflater.inflate(R.menu.menu_activity_leagues_events, menu)
         return true
     }
 

@@ -56,8 +56,8 @@ class BowlerTeamListActivity : AppCompatActivity(),
             fab?.let {
                 it.setColorFilter(Color.BLACK)
                 when (currentTab) {
-                    0 -> it.setImageResource(R.drawable.ic_person_add_white_24dp)
-                    1 -> it.setImageResource(R.drawable.ic_group_add_white_24dp)
+                    BOWLER_FRAGMENT -> it.setImageResource(R.drawable.ic_person_add_white_24dp)
+                    TEAM_FRAGMENT -> it.setImageResource(R.drawable.ic_group_add_white_24dp)
                 }
 
                 it.show()
@@ -121,8 +121,8 @@ class BowlerTeamListActivity : AppCompatActivity(),
 
         fab.setOnClickListener {
             when (currentTab) {
-                0 -> promptAddOrEditBowler()
-                1 -> promptAddOrEditTeam()
+                BOWLER_FRAGMENT -> promptAddOrEditBowler()
+                TEAM_FRAGMENT -> promptAddOrEditTeam()
             }
         }
     }
@@ -136,7 +136,7 @@ class BowlerTeamListActivity : AppCompatActivity(),
     /** @Override */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         super.onCreateOptionsMenu(menu)
-        menuInflater.inflate(R.menu.menu_main, menu)
+        menuInflater.inflate(R.menu.menu_activity_bowlers_teams, menu)
         return true
     }
 
