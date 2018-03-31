@@ -141,7 +141,11 @@ class LeagueFragment : Fragment(),
             bowler?.let {
                 val index = league?.indexInList(this@LeagueFragment.leagues) ?: -1
                 if (index == -1) {
-                    val leagues = it.fetchLeagues(context).await()
+                    val leagues = if (showEvents) {
+                        it.fetchEvents(context).await()
+                    } else {
+                        it.fetchLeagues(context).await()
+                    }
                     this@LeagueFragment.leagues = leagues
                     leagueAdapter?.setElements(this@LeagueFragment.leagues)
                 } else {
