@@ -55,7 +55,7 @@ class TeamFragment : Fragment(), TeamRecyclerViewAdapter.OnTeamInteractionListen
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_team_list, container, false)
+        val view = inflater.inflate(R.layout.fragment_common_list, container, false)
 
         // Set the adapter
         if (view is RecyclerView) {

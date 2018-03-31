@@ -73,7 +73,7 @@ class LeagueFragment : Fragment(),
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_league_list, container, false)
+        val view = inflater.inflate(R.layout.fragment_common_list, container, false)
         bowler = savedInstanceState?.getParcelable(ARG_BOWLER) ?: arguments?.getParcelable(ARG_BOWLER)
         showEvents = arguments?.getBoolean(ARG_SHOW_EVENTS) ?: false
 
