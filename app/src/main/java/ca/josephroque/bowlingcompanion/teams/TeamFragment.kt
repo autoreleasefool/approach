@@ -12,7 +12,6 @@ import android.view.*
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.bowlers.Bowler
 import ca.josephroque.bowlingcompanion.common.Android
-import ca.josephroque.bowlingcompanion.dummy.DummyContent
 import ca.josephroque.bowlingcompanion.utils.Preferences
 import kotlinx.coroutines.experimental.launch
 
@@ -60,7 +59,7 @@ class TeamFragment : Fragment(), TeamRecyclerViewAdapter.OnTeamInteractionListen
         // Set the adapter
         if (view is RecyclerView) {
             val context = view.getContext()
-            teamAdapter = TeamRecyclerViewAdapter(DummyContent.TEAMS, this)
+            teamAdapter = TeamRecyclerViewAdapter(emptyList(), this)
             teamAdapter?.swipingEnabled = true
 
             view.layoutManager = LinearLayoutManager(context)
