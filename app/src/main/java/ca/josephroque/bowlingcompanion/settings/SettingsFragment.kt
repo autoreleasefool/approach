@@ -23,6 +23,20 @@ import ca.josephroque.bowlingcompanion.utils.toSpanned
  */
 class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
 
+    companion object {
+        /** Logging identifier. */
+        private const val TAG = "SettingsFragment"
+
+        /**
+         * Create a new instance of the fragment.
+         *
+         * @return the new instance
+         */
+        fun newInstance(): SettingsFragment {
+            return SettingsFragment()
+        }
+    }
+
     private val onPreferenceClickListener = Preference.OnPreferenceClickListener {
         when (it.key) {
             Settings.REPORT_BUG -> {
@@ -45,7 +59,7 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
                 displayFacebookPage()
                 true
             }
-             else -> false// Does nothing
+            else -> false// Does nothing
         }
     }
 
@@ -113,9 +127,9 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         activity?.let {
             val appPackageName = it.packageName
             val marketIntent = try {
-                Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName))
+                Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$appPackageName"))
             } catch (ex: android.content.ActivityNotFoundException) {
-                Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName))
+                Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$appPackageName"))
             }
 
             startActivity(marketIntent)
@@ -168,19 +182,5 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
 
         val autoAdvanceTime = prefs.getString(Settings.AUTO_ADVANCE_TIME, resources.getString(R.string.pref_auto_advance_default))
         findPreference(Settings.AUTO_ADVANCE_TIME).summary = resources.getString(R.string.pref_auto_advance_time_summary_seconds, autoAdvanceTime)
-    }
-
-    companion object {
-        /** Logging identifier. */
-        private const val TAG = "SettingsFragment"
-
-        /**
-         * Create a new instance of the fragment.
-         *
-         * @return the new instance
-         */
-        fun newInstance(): SettingsFragment {
-            return SettingsFragment()
-        }
     }
 }
