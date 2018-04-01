@@ -298,7 +298,7 @@ data class Team(
          *
          * @param context to get database instance
          * @param name name to check
-         * @param id id of the existing tean, so if the name is unchanged it can be saved
+         * @param id id of the existing team, so if the name is unchanged it can be saved
          * @return true if the name is not already in the database, false otherwise
          */
         private fun isTeamNameUnique(context: Context, name: String, id: Long = -1): Deferred<Boolean> {

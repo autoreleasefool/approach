@@ -16,7 +16,4 @@
     <dimen name="list_item_min_height">72dp</dimen>
     <dimen name="list_default_icon_size">40dp</dimen>
 
-    <!-- Teams -->
-    <dimen name="team_members_list_height">320dp</dimen>
-
 </resources>

@@ -126,7 +126,7 @@
             android:title="@string/pref_count_s2_as_s_title"
             android:summaryOn="@string/pref_count_s2_as_s_summary_on"
             android:summaryOff="@string/pref_count_s2_as_s_summary_off"
-            android:defaultValue="@pref_count_s2_as_s_default" />
+            android:defaultValue="@bool/pref_count_s2_as_s_default" />
 
     </android.support.v7.preference.PreferenceCategory>
 

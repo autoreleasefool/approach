@@ -29,7 +29,7 @@ class Email {
             intent.data = Uri.parse("mailto:")
             intent.type = "message/rfc822"
 
-            recipient?.let { intent.putExtra(Intent.EXTRA_EMAIL, arrayOf<String>(it)) }
+            recipient?.let { intent.putExtra(Intent.EXTRA_EMAIL, arrayOf(it)) }
             subject?.let { intent.putExtra(Intent.EXTRA_SUBJECT, it) }
             body?.let { intent.putExtra(Intent.EXTRA_TEXT, it) }
 

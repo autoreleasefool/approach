@@ -17,7 +17,7 @@ class CustomScrollingViewPager : ViewPager {
     constructor(context: Context, attrs: AttributeSet?): super(context, attrs)
 
     /** Enable or disable scrolling on the view. */
-    var scrollingEnabled = true;
+    var scrollingEnabled = true
 
     /**
      * Interrupt if scrolling is disabled.
