@@ -4,23 +4,22 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.*
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.bowlers.Bowler
-import ca.josephroque.bowlingcompanion.common.Android
+import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
 import ca.josephroque.bowlingcompanion.utils.Preferences
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.experimental.async
 
 /**
  * Copyright (C) 2018 Joseph Roque
  *
  * A fragment representing a list of Teams.
  */
-class TeamFragment : Fragment(), TeamRecyclerViewAdapter.OnTeamInteractionListener {
+class TeamFragment : ListFragment<Team, TeamRecyclerViewAdapter.ViewHolder, TeamRecyclerViewAdapter>() {
 
     companion object {
         /** Logging identifier. */
@@ -38,15 +37,6 @@ class TeamFragment : Fragment(), TeamRecyclerViewAdapter.OnTeamInteractionListen
 
     /** Handle team interaction events. */
     private var listener: OnTeamFragmentInteractionListener? = null
-    /** Adapter to manage rendering the list of team. */
-    private var teamAdapter: TeamRecyclerViewAdapter? = null
-    /** List of teams available. */
-    private var teams: MutableList<Team> = ArrayList()
-
-    /** @Override */
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     /** @Override */
     override fun onCreateView(
@@ -54,22 +44,8 @@ class TeamFragment : Fragment(), TeamRecyclerViewAdapter.OnTeamInteractionListen
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_common_list, container, false)
-
-        // Set the adapter
-        if (view is RecyclerView) {
-            val context = view.getContext()
-            teamAdapter = TeamRecyclerViewAdapter(emptyList(), this)
-            teamAdapter?.swipingEnabled = true
-
-            view.layoutManager = LinearLayoutManager(context)
-            view.adapter = teamAdapter
-            view.setHasFixedSize(true)
-            TeamRecyclerViewAdapter.applyDefaultDivider(view, context)
-        }
-
         setHasOptionsMenu(true)
-        return view
+        return inflater.inflate(R.layout.fragment_common_list, container, false)
     }
 
     /** @Override */
@@ -83,12 +59,6 @@ class TeamFragment : Fragment(), TeamRecyclerViewAdapter.OnTeamInteractionListen
     override fun onDetach() {
         super.onDetach()
         listener = null
-    }
-
-    /** @Override */
-    override fun onResume() {
-        super.onResume()
-        refreshTeamList()
     }
 
     /** @Override */
@@ -110,23 +80,21 @@ class TeamFragment : Fragment(), TeamRecyclerViewAdapter.OnTeamInteractionListen
         }
     }
 
-    /**
-     * Reload the list of teams and update list.
-     *
-     * @param team if the team exists in the list only that entry will be updated
-     */
-    fun refreshTeamList(team: Team? = null) {
-        val context = context?: return
-        launch(Android) {
-            val index = team?.indexInList(this@TeamFragment.teams) ?: -1
-            if (index == -1) {
-                val teams = Team.fetchAll(context).await()
-                this@TeamFragment.teams = teams
-                teamAdapter?.setElements(this@TeamFragment.teams)
-            } else {
-                teamAdapter?.notifyItemChanged(index)
+    /** @Override */
+    override fun fetchItems(): Deferred<MutableList<Team>> {
+        return async(CommonPool) {
+            this@TeamFragment.context?.let {
+                return@async Team.fetchAll(it).await()
             }
+
+            emptyList<Team>().toMutableList()
         }
+    }
+
+    override fun buildAdapter(): TeamRecyclerViewAdapter {
+        val adapter = TeamRecyclerViewAdapter(emptyList(), this)
+        adapter.swipeable = true
+        return adapter
     }
 
     /**
@@ -144,7 +112,7 @@ class TeamFragment : Fragment(), TeamRecyclerViewAdapter.OnTeamInteractionListen
                                     .edit()
                                     .putInt(Preferences.TEAM_SORT_ORDER, it.ordinal)
                                     .commit()
-                            refreshTeamList()
+                            refreshList()
                         }
                     })
                     .show()
@@ -152,32 +120,32 @@ class TeamFragment : Fragment(), TeamRecyclerViewAdapter.OnTeamInteractionListen
     }
 
     /** @Override */
-    override fun onTeamClick(team: Team) {
-        listener?.onTeamSelected(team, false)
+    override fun onItemClick(item: Team) {
+        listener?.onTeamSelected(item, false)
     }
 
     /** @Override */
-    override fun onTeamDelete(team: Team) {
+    override fun onItemDelete(item: Team) {
         val context = context ?: return
-        val index = team.indexInList(teams)
+        val index = item.indexInList(items)
         if (index != -1) {
-            teams.removeAt(index)
-            teamAdapter?.notifyItemRemoved(index)
-            team.delete(context)
+            items.removeAt(index)
+            adapter?.notifyItemRemoved(index)
+            item.delete(context)
         }
     }
 
     /** @Override */
-    override fun onTeamLongClick(team: Team) {
-        listener?.onTeamSelected(team, true)
+    override fun onItemLongClick(item: Team) {
+        listener?.onTeamSelected(item, true)
     }
 
     /** @Override */
-    override fun onTeamSwipe(team: Team) {
-        val index = team.indexInList(teams)
+    override fun onItemSwipe(item: Team) {
+        val index = item.indexInList(items)
         if (index != -1) {
-            team.isDeleted = !team.isDeleted
-            teamAdapter?.notifyItemChanged(index)
+            item.isDeleted = !item.isDeleted
+            adapter?.notifyItemChanged(index)
         }
     }
 

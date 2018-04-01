@@ -13,7 +13,8 @@ import ca.josephroque.bowlingcompanion.App
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.bowlers.Bowler
 import ca.josephroque.bowlingcompanion.common.Android
-import ca.josephroque.bowlingcompanion.common.NameAverageRecyclerViewAdapter
+import ca.josephroque.bowlingcompanion.common.adapters.BaseRecyclerViewAdapter
+import ca.josephroque.bowlingcompanion.common.adapters.NameAverageRecyclerViewAdapter
 import ca.josephroque.bowlingcompanion.utils.Color
 import ca.josephroque.bowlingcompanion.utils.safeLet
 import kotlinx.android.synthetic.main.dialog_team.*
@@ -28,7 +29,7 @@ import kotlinx.coroutines.experimental.launch
  */
 class TeamDialog : DialogFragment(),
         View.OnClickListener,
-        NameAverageRecyclerViewAdapter.OnNameAverageInteractionListener<Bowler> {
+        BaseRecyclerViewAdapter.OnAdapterInteractionListener<Bowler> {
 
     companion object {
         /** Logging identifier. */
@@ -92,7 +93,7 @@ class TeamDialog : DialogFragment(),
 
         rootView.list_bowlers.layoutManager = LinearLayoutManager(context)
         rootView.list_bowlers.adapter = bowlerAdapter
-        NameAverageRecyclerViewAdapter.applyDefaultDivider(rootView.list_bowlers, context)
+        BaseRecyclerViewAdapter.applyDefaultDivider(rootView.list_bowlers, context)
 
         rootView.btn_delete.setOnClickListener(this)
         rootView.toolbar_team.apply {
@@ -277,18 +278,18 @@ class TeamDialog : DialogFragment(),
     }
 
     /** @Override */
-    override fun onNAItemClick(item: Bowler) {
+    override fun onItemClick(item: Bowler) {
         updateSaveButton(input_name.text, selectedBowlers)
     }
 
     /** Not used. */
-    override fun onNAItemDelete(item: Bowler) {}
+    override fun onItemDelete(item: Bowler) {}
 
     /** Not used. */
-    override fun onNAItemLongClick(item: Bowler) {}
+    override fun onItemLongClick(item: Bowler) {}
 
     /** Not used. */
-    override fun onNAItemSwipe(item: Bowler) {}
+    override fun onItemSwipe(item: Bowler) {}
 
     /**
      * Handles interactions with the dialog.

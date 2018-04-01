@@ -4,26 +4,23 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.*
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.bowlers.Bowler
-import ca.josephroque.bowlingcompanion.common.NameAverageRecyclerViewAdapter
-import ca.josephroque.bowlingcompanion.common.Android
+import ca.josephroque.bowlingcompanion.common.adapters.NameAverageRecyclerViewAdapter
+import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
 import ca.josephroque.bowlingcompanion.utils.Preferences
-import kotlinx.coroutines.experimental.launch
-
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.experimental.async
 
 /**
  * Copyright (C) 2018 Joseph Roque
  *
  * A fragment representing a list of leagues.
  */
-class LeagueFragment : Fragment(),
-        NameAverageRecyclerViewAdapter.OnNameAverageInteractionListener<League> {
+class LeagueFragment : ListFragment<League, NameAverageRecyclerViewAdapter<League>.ViewHolder, NameAverageRecyclerViewAdapter<League>>() {
 
     companion object {
         /** Logging identifier. */
@@ -61,35 +58,17 @@ class LeagueFragment : Fragment(),
     /** Indicates if this fragment should list leagues or events. */
     private var showEvents: Boolean = false
 
-    /** Adapter to manage rendering the list of leagues. */
-    private var leagueAdapter: NameAverageRecyclerViewAdapter<League>? = null
-
-    /** Bowlers to display. */
-    private var leagues: MutableList<League> = ArrayList()
-
     /** @Override */
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_common_list, container, false)
         bowler = savedInstanceState?.getParcelable(ARG_BOWLER) ?: arguments?.getParcelable(ARG_BOWLER)
         showEvents = arguments?.getBoolean(ARG_SHOW_EVENTS) ?: false
-
-        if (view is RecyclerView) {
-            val context = view.getContext()
-            leagueAdapter = NameAverageRecyclerViewAdapter(emptyList(), this)
-            leagueAdapter?.swipeable = true
-
-            view.layoutManager = LinearLayoutManager(context)
-            view.adapter = leagueAdapter
-            view.setHasFixedSize(true)
-            NameAverageRecyclerViewAdapter.applyDefaultDivider(view, context)
-        }
-
         setHasOptionsMenu(true)
-        return view
+
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     /** @Override */
@@ -103,12 +82,6 @@ class LeagueFragment : Fragment(),
     override fun onDetach() {
         super.onDetach()
         listener = null
-    }
-
-    /** @Override */
-    override fun onResume() {
-        super.onResume()
-        refreshLeagueList()
     }
 
     /** @Override */
@@ -130,28 +103,27 @@ class LeagueFragment : Fragment(),
         }
     }
 
-    /**
-     * Reload the list of leagues and update list.
-     *
-     * @param league if the league exists in the list only that entry will be updated
-     */
-    fun refreshLeagueList(league: League? = null) {
-        val context = context?: return
-        launch(Android) {
-            bowler?.let {
-                val index = league?.indexInList(this@LeagueFragment.leagues) ?: -1
-                if (index == -1) {
-                    val leagues = if (showEvents) {
-                        it.fetchEvents(context).await()
+    /** @Override */
+    override fun buildAdapter(): NameAverageRecyclerViewAdapter<League> {
+        val adapter = NameAverageRecyclerViewAdapter(emptyList(), this)
+        adapter.swipeable = true
+        return adapter
+    }
+
+    /** @Override */
+    override fun fetchItems(): Deferred<MutableList<League>> {
+        return async(CommonPool) {
+            this@LeagueFragment.context?.let { context ->
+                bowler?.let {
+                    if (showEvents) {
+                        return@async it.fetchEvents(context).await()
                     } else {
-                        it.fetchLeagues(context).await()
+                        return@async it.fetchLeagues(context).await()
                     }
-                    this@LeagueFragment.leagues = leagues
-                    leagueAdapter?.setElements(this@LeagueFragment.leagues)
-                } else {
-                    leagueAdapter?.notifyItemChanged(index)
                 }
             }
+
+            emptyList<League>().toMutableList()
         }
     }
 
@@ -170,56 +142,40 @@ class LeagueFragment : Fragment(),
                                     .edit()
                                     .putInt(Preferences.LEAGUE_SORT_ORDER, it.ordinal)
                                     .commit()
-                            refreshLeagueList()
+                            refreshList()
                         }
                     })
                     .show()
         }
     }
 
-    /**
-     * Handles interaction with the selected league.
-     *
-     * @param item the league the user is interacting with
-     */
-    override fun onNAItemClick(item: League) {
+    /** @Override */
+    override fun onItemClick(item: League) {
         listener?.onLeagueSelected(item, false)
     }
 
-    /**
-     * Deletes the selected league.
-     *
-     * @param item the league the user wishes to delete
-     */
-    override fun onNAItemDelete(item: League) {
+    /** @Override */
+    override fun onItemDelete(item: League) {
         val context = context ?: return
-        val index = item.indexInList(leagues)
+        val index = item.indexInList(items)
         if (index != -1) {
-            leagues.removeAt(index)
-            leagueAdapter?.notifyItemRemoved(index)
+            items.removeAt(index)
+            adapter?.notifyItemRemoved(index)
             item.delete(context)
         }
     }
 
-    /**
-     * Sets the league to be deleted or active again (toggles from current state).
-     *
-     * @param item the league to delete or activate
-     */
-    override fun onNAItemSwipe(item: League) {
-        val index = item.indexInList(leagues)
+    /** @Override */
+    override fun onItemSwipe(item: League) {
+        val index = item.indexInList(items)
         if (index != -1) {
             item.isDeleted = !item.isDeleted
-            leagueAdapter?.notifyItemChanged(index)
+            adapter?.notifyItemChanged(index)
         }
     }
 
-    /**
-     * Shows option to edit the selected league.
-     *
-     * @param item the league the user wishes to edit
-     */
-    override fun onNAItemLongClick(item: League) {
+    /** @Override */
+    override fun onItemLongClick(item: League) {
         listener?.onLeagueSelected(item, true)
     }
 
@@ -231,7 +187,7 @@ class LeagueFragment : Fragment(),
         /**
          * Indicates a league has been selected and further details should be shown to the user.
          *
-         * @param bowler the league that the user has selected
+         * @param league the league that the user has selected
          * @param toEdit indicate if the user's intent is to edit the [League] or select
          */
         fun onLeagueSelected(league: League, toEdit: Boolean)

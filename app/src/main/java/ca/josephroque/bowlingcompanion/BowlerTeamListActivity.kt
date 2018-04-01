@@ -28,6 +28,7 @@ import android.content.Intent
 import android.graphics.Color
 import ca.josephroque.bowlingcompanion.BowlerTeamListActivity.BowlersTeamsPagerAdapter.Companion.BOWLER_FRAGMENT
 import ca.josephroque.bowlingcompanion.BowlerTeamListActivity.BowlersTeamsPagerAdapter.Companion.TEAM_FRAGMENT
+import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
 import ca.josephroque.bowlingcompanion.teams.TeamDialog
 
 /**
@@ -174,6 +175,19 @@ class BowlerTeamListActivity : AppCompatActivity(),
     }
 
     /**
+     * Refresh lists in all tabs.
+     */
+    fun refreshTabs() {
+        val adapter = pager_bowlers_teams.adapter as? BowlersTeamsPagerAdapter
+        adapter?.let {
+            for (i in 0 until it.count) {
+                val fragment = it.getFragment(i) as? ListFragment<*,*,*>
+                fragment?.refreshList()
+            }
+        }
+    }
+
+    /**
      * Opens the settings activity.
      */
     private fun openSettings() {
@@ -213,20 +227,20 @@ class BowlerTeamListActivity : AppCompatActivity(),
     override fun onFinishBowler(bowler: Bowler) {
         val adapter = pager_bowlers_teams.adapter as? BowlersTeamsPagerAdapter
         val bowlerFragment = adapter?.getFragment(BOWLER_FRAGMENT) as? BowlerFragment
-        bowlerFragment?.refreshBowlerList(bowler)
+        bowlerFragment?.refreshList(bowler)
 
         val teamFragment = adapter?.getFragment(TEAM_FRAGMENT) as? TeamFragment
-        teamFragment?.refreshTeamList()
+        teamFragment?.refreshList()
     }
 
     /** @Override */
     override fun onDeleteBowler(bowler: Bowler) {
         val adapter = pager_bowlers_teams.adapter as? BowlersTeamsPagerAdapter
         val bowlerFragment = adapter?.getFragment(BOWLER_FRAGMENT) as? BowlerFragment
-        bowlerFragment?.onNAItemDelete(bowler)
+        bowlerFragment?.onItemDelete(bowler)
 
         val teamFragment = adapter?.getFragment(TEAM_FRAGMENT) as? TeamFragment
-        teamFragment?.refreshTeamList()
+        teamFragment?.refreshList()
     }
 
     /** @Override */
@@ -239,7 +253,7 @@ class BowlerTeamListActivity : AppCompatActivity(),
             } else {
                 val adapter = pager_bowlers_teams.adapter as? BowlersTeamsPagerAdapter
                 val teamFragment = adapter?.getFragment(TEAM_FRAGMENT) as? TeamFragment
-                teamFragment?.refreshTeamList(team)
+                teamFragment?.refreshList(team)
             }
         }
     }
@@ -248,7 +262,7 @@ class BowlerTeamListActivity : AppCompatActivity(),
     override fun onDeleteTeam(team: Team) {
         val adapter = pager_bowlers_teams.adapter as? BowlersTeamsPagerAdapter
         val teamFragment = adapter?.getFragment(TEAM_FRAGMENT) as? TeamFragment
-        teamFragment?.onTeamDelete(team)
+        teamFragment?.onItemDelete(team)
     }
 
     /** @Override. */

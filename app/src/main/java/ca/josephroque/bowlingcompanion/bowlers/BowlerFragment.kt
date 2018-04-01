@@ -4,26 +4,23 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.support.v4.app.Fragment
 import android.support.v7.app.AlertDialog
-import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.*
+import ca.josephroque.bowlingcompanion.BowlerTeamListActivity
 import ca.josephroque.bowlingcompanion.R
-import ca.josephroque.bowlingcompanion.common.NameAverageRecyclerViewAdapter
-import ca.josephroque.bowlingcompanion.common.Android
+import ca.josephroque.bowlingcompanion.common.adapters.NameAverageRecyclerViewAdapter
+import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
 import ca.josephroque.bowlingcompanion.utils.Preferences
-import kotlinx.coroutines.experimental.launch
-
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.experimental.async
 
 /**
  * Copyright (C) 2018 Joseph Roque
  *
  * A fragment representing a list of Bowlers.
  */
-class BowlerFragment : Fragment(),
-        NameAverageRecyclerViewAdapter.OnNameAverageInteractionListener<Bowler>
-{
+class BowlerFragment : ListFragment<Bowler, NameAverageRecyclerViewAdapter<Bowler>.ViewHolder, NameAverageRecyclerViewAdapter<Bowler>>() {
 
     companion object {
         /** Logging identifier. */
@@ -41,10 +38,6 @@ class BowlerFragment : Fragment(),
 
     /** Interaction handler. */
     private var listener: OnBowlerFragmentInteractionListener? = null
-    /** Adapter to manage rendering the list of bowlers. */
-    private var bowlerAdapter: NameAverageRecyclerViewAdapter<Bowler>? = null
-    /** Bowlers to display. */
-    private var bowlers: MutableList<Bowler> = ArrayList()
 
     /** @Override */
     override fun onCreateView(
@@ -52,21 +45,8 @@ class BowlerFragment : Fragment(),
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(R.layout.fragment_common_list, container, false)
-
-        if (view is RecyclerView) {
-            val context = view.getContext()
-            bowlerAdapter = NameAverageRecyclerViewAdapter(emptyList(), this)
-            bowlerAdapter?.swipeable = true
-
-            view.layoutManager = LinearLayoutManager(context)
-            view.adapter = bowlerAdapter
-            view.setHasFixedSize(true)
-            NameAverageRecyclerViewAdapter.applyDefaultDivider(view, context)
-        }
-
         setHasOptionsMenu(true)
-        return view
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     /** @Override */
@@ -80,12 +60,6 @@ class BowlerFragment : Fragment(),
     override fun onDetach() {
         super.onDetach()
         listener = null
-    }
-
-    /** @Override */
-    override fun onResume() {
-        super.onResume()
-        refreshBowlerList()
     }
 
     /** @Override */
@@ -107,22 +81,21 @@ class BowlerFragment : Fragment(),
         }
     }
 
-    /**
-     * Reload the list of bowlers and update list.
-     *
-     * @param bowler if the bowler exists in the list only that entry will be updated
-     */
-    fun refreshBowlerList(bowler: Bowler? = null) {
-        val context = context?: return
-        launch(Android) {
-            val index = bowler?.indexInList(this@BowlerFragment.bowlers) ?: -1
-            if (index == -1) {
-                val bowlers = Bowler.fetchAll(context).await()
-                this@BowlerFragment.bowlers = bowlers
-                bowlerAdapter?.setElements(this@BowlerFragment.bowlers)
-            } else {
-                bowlerAdapter?.notifyItemChanged(index)
+    /** @Override */
+    override fun buildAdapter(): NameAverageRecyclerViewAdapter<Bowler> {
+        val adapter = NameAverageRecyclerViewAdapter(emptyList(), this)
+        adapter.swipeable = true
+        return adapter
+    }
+
+    /** @Override */
+    override fun fetchItems(): Deferred<MutableList<Bowler>> {
+        return async(CommonPool) {
+            this@BowlerFragment.context?.let {
+                Bowler.fetchAll(it).await()
             }
+
+            emptyList<Bowler>().toMutableList()
         }
     }
 
@@ -141,56 +114,40 @@ class BowlerFragment : Fragment(),
                                     .edit()
                                     .putInt(Preferences.BOWLER_SORT_ORDER, it.ordinal)
                                     .commit()
-                            refreshBowlerList()
+                            (activity as? BowlerTeamListActivity)?.refreshTabs()
                         }
                     })
                     .show()
         }
     }
 
-    /**
-     * Handles interaction with the selected bowler.
-     *
-     * @param item the bowler the user is interacting with
-     */
-    override fun onNAItemClick(item: Bowler) {
+    /** @Override */
+    override fun onItemClick(item: Bowler) {
         listener?.onBowlerSelected(item, false)
     }
 
-    /**
-     * Deletes the selected bowler.
-     *
-     * @param item the bowler the user wishes to delete
-     */
-    override fun onNAItemDelete(item: Bowler) {
+    /** @Override */
+    override fun onItemDelete(item: Bowler) {
         val context = context ?: return
-        val index = item.indexInList(bowlers)
+        val index = item.indexInList(items)
         if (index != -1) {
-            bowlers.removeAt(index)
-            bowlerAdapter?.notifyItemRemoved(index)
+            items.removeAt(index)
+            adapter?.notifyItemRemoved(index)
             item.delete(context)
         }
     }
 
-    /**
-     * Sets the bowler to be deleted or active again (toggles from current state).
-     *
-     * @param item the bowler to delete or activate
-     */
-    override fun onNAItemSwipe(item: Bowler) {
-        val index = item.indexInList(bowlers)
+    /** @Override */
+    override fun onItemSwipe(item: Bowler) {
+        val index = item.indexInList(items)
         if (index != -1) {
             item.isDeleted = !item.isDeleted
-            bowlerAdapter?.notifyItemChanged(index)
+            adapter?.notifyItemChanged(index)
         }
     }
 
-    /**
-     * Shows option to edit the selected bowler.
-     *
-     * @param item the bowler the user wishes to edit
-     */
-    override fun onNAItemLongClick(item: Bowler) {
+    /** @Override */
+    override fun onItemLongClick(item: Bowler) {
         listener?.onBowlerSelected(item, true)
     }
 
