@@ -38,6 +38,7 @@ class BowlerDetailsActivity : BaseActivity(),
         const val INTENT_BOWLER = "${TAG}_bowler"
     }
 
+    /** The user's selected bowler. */
     private var bowler: Bowler? = null
 
     /** Active tab. */
@@ -47,15 +48,7 @@ class BowlerDetailsActivity : BaseActivity(),
     /** Handle visibility changes in the fab. */
     val fabVisibilityChangedListener = object : FloatingActionButton.OnVisibilityChangedListener() {
         override fun onHidden(fab: FloatingActionButton?) {
-            fab?.let {
-                it.setColorFilter(Color.BLACK)
-                when (currentTab) {
-                    0 -> it.setImageResource(R.drawable.ic_person_add_white_24dp)
-                    1 -> it.setImageResource(R.drawable.ic_group_add_white_24dp)
-                }
-
-                it.show()
-            }
+            fab?.show()
         }
     }
 

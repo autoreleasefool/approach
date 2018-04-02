@@ -12,6 +12,7 @@ import android.widget.TextView
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.bowlers.Bowler
 import ca.josephroque.bowlingcompanion.common.INameAverage
+import ca.josephroque.bowlingcompanion.leagues.League
 
 
 /**
@@ -88,13 +89,20 @@ class NameAverageRecyclerViewAdapter<T : INameAverage>(
      */
     private fun bindActiveViewHolder(holder: ViewHolder, position: Int) {
         val context = holder.itemView.context
-        holder.item = values[position]
-        holder.tvName?.text = values[position].name
-        holder.tvAverage?.text = values[position].getRoundedAverage(1)
+        val item = values[position]
+        holder.item = item
+        holder.tvName?.text = item.name
+        holder.tvAverage?.text = item.getRoundedAverage(1)
 
         holder.ivIcon?.setColorFilter(Color.BLACK)
-        if (holder.item is Bowler) {
+        if (item is Bowler) {
             holder.ivIcon?.setImageResource(R.drawable.ic_person_white_24dp)
+        } else if (item is League) {
+            if (item.isEvent) {
+                holder.ivIcon?.setImageResource(R.drawable.ic_e_black_24dp)
+            } else {
+                holder.ivIcon?.setImageResource(R.drawable.ic_l_black_24dp)
+            }
         }
 
         holder.ivIcon?.visibility = View.VISIBLE
