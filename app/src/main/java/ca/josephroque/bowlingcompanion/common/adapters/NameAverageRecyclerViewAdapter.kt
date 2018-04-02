@@ -21,8 +21,8 @@ import ca.josephroque.bowlingcompanion.common.INameAverage
  * specified listener.
  */
 class NameAverageRecyclerViewAdapter<T : INameAverage>(
-        private var values: List<T>,
-        private var listener: OnAdapterInteractionListener<T>?
+        values: List<T>,
+        listener: OnAdapterInteractionListener<T>?
 ): BaseRecyclerViewAdapter<T, NameAverageRecyclerViewAdapter<T>.ViewHolder>(values, listener) {
 
     companion object {

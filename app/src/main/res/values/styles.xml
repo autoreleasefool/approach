@@ -11,7 +11,7 @@
     </style>
 
     <style name="AppTheme.NoBackground" parent="AppTheme">
-        <item name="colorBackground">@null</item>
+        <item name="android:background">@android:color/transparent</item>
     </style>
 
     <style name="DeleteButton" parent="Widget.AppCompat.Button">

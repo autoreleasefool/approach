@@ -82,11 +82,11 @@ class TeamFragment : ListFragment<Team, TeamRecyclerViewAdapter.ViewHolder, Team
 
     /** @Override */
     override fun fetchItems(): Deferred<MutableList<Team>> {
-        return async(CommonPool) {
-            this@TeamFragment.context?.let {
-                return@async Team.fetchAll(it).await()
-            }
+        context?.let {
+            return Team.fetchAll(it)
+        }
 
+        return async(CommonPool) {
             emptyList<Team>().toMutableList()
         }
     }

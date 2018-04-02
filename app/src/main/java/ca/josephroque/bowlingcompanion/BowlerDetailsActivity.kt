@@ -26,7 +26,9 @@ import java.lang.ref.WeakReference
  *
  * Activity to display bowler details.
  */
-class BowlerDetailsActivity : BaseActivity() {
+class BowlerDetailsActivity : BaseActivity(),
+        LeagueFragment.OnLeagueFragmentInteractionListener
+{
 
     companion object {
         /** Logging identifier. */
@@ -158,6 +160,11 @@ class BowlerDetailsActivity : BaseActivity() {
      */
     private fun promptAddOrEditLeague(isEvent: Boolean, league: League? = null) {
         TODO("Not implemented")
+    }
+
+    /** @Override */
+    override fun onLeagueSelected(league: League, toEdit: Boolean) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     /**

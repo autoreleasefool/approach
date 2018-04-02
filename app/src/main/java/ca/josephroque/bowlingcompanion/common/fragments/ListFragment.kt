@@ -55,6 +55,7 @@ abstract class ListFragment<Item: IIdentifiable, ViewHolder: RecyclerView.ViewHo
         return view
     }
 
+    /** @Override */
     override fun onResume() {
         super.onResume()
         refreshList()

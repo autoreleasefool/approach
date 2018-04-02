@@ -17,8 +17,8 @@ import com.robertlevonyan.views.chip.Chip
  * [RecyclerView.Adapter] that can display a [Team] and makes a call to the listener.
  */
 class TeamRecyclerViewAdapter(
-        private var values: List<Team>,
-        private var listener: BaseRecyclerViewAdapter.OnAdapterInteractionListener<Team>?
+        values: List<Team>,
+        listener: BaseRecyclerViewAdapter.OnAdapterInteractionListener<Team>?
 ): BaseRecyclerViewAdapter<Team, TeamRecyclerViewAdapter.ViewHolder>(values, listener) {
 
     companion object {

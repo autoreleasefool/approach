@@ -15,8 +15,8 @@ import ca.josephroque.bowlingcompanion.common.IIdentifiable
  * A basic [RecyclerView.Adapter] to handle common operations.
  */
 abstract class BaseRecyclerViewAdapter<Item: IIdentifiable, ViewHolder: RecyclerView.ViewHolder>(
-        private var values: List<Item>,
-        private var listener: OnAdapterInteractionListener<Item>?
+        protected var values: List<Item>,
+        protected var listener: OnAdapterInteractionListener<Item>?
 ) : RecyclerView.Adapter<ViewHolder>(),
         View.OnClickListener,
         View.OnLongClickListener {

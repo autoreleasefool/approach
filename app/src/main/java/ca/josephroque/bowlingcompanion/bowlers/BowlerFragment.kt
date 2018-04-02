@@ -90,11 +90,11 @@ class BowlerFragment : ListFragment<Bowler, NameAverageRecyclerViewAdapter<Bowle
 
     /** @Override */
     override fun fetchItems(): Deferred<MutableList<Bowler>> {
-        return async(CommonPool) {
-            this@BowlerFragment.context?.let {
-                Bowler.fetchAll(it).await()
-            }
+        context?.let {
+            return Bowler.fetchAll(it)
+        }
 
+        return async(CommonPool) {
             emptyList<Bowler>().toMutableList()
         }
     }

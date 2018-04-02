@@ -10,5 +10,4 @@
     android:clipToPadding="false"
     android:paddingBottom="@dimen/list_item_min_height"
     app:layout_constraintTop_toTopOf="parent"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
+    app:layout_constraintBottom_toBottomOf="parent" />
