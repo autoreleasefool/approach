@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion.bowlers
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v7.app.AlertDialog
@@ -85,6 +86,7 @@ class BowlerFragment : ListFragment<Bowler, NameAverageRecyclerViewAdapter<Bowle
     override fun buildAdapter(): NameAverageRecyclerViewAdapter<Bowler> {
         val adapter = NameAverageRecyclerViewAdapter(emptyList(), this)
         adapter.swipeable = true
+        adapter.buildImageResource = { _, _ -> Pair(R.drawable.ic_person_white_24dp, Color.BLACK) }
         return adapter
     }
 

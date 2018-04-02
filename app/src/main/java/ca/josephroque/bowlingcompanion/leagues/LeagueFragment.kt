@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion.leagues
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v7.app.AlertDialog
@@ -107,6 +108,13 @@ class LeagueFragment : ListFragment<League, NameAverageRecyclerViewAdapter<Leagu
     override fun buildAdapter(): NameAverageRecyclerViewAdapter<League> {
         val adapter = NameAverageRecyclerViewAdapter(emptyList(), this)
         adapter.swipeable = true
+        adapter.buildImageResource = { item, _ ->
+            if (item.isEvent) {
+                Pair(R.drawable.ic_event_white_24dp, Color.BLACK)
+            } else {
+                Pair(R.drawable.ic_league_white_24dp, Color.BLACK)
+            }
+        }
         return adapter
     }
 

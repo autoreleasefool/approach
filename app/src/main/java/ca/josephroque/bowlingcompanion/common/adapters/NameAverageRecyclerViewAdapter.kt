@@ -10,10 +10,7 @@ import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
 import ca.josephroque.bowlingcompanion.R
-import ca.josephroque.bowlingcompanion.bowlers.Bowler
 import ca.josephroque.bowlingcompanion.common.INameAverage
-import ca.josephroque.bowlingcompanion.leagues.League
-
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -41,6 +38,18 @@ class NameAverageRecyclerViewAdapter<T : INameAverage>(
                 fun fromInt(type: Int) = map[type]
             }
         }
+    }
+
+    /**
+     * Optional function to build image resource for an item.
+     * First Int is the image resource ID, second is the color filter to apply.
+     */
+    var buildImageResource: ((item: T, position: Int) -> Pair<Int, Int>)? = null
+
+    /** @Override */
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView)
+        buildImageResource = null
     }
 
     /** @Override */
@@ -94,15 +103,10 @@ class NameAverageRecyclerViewAdapter<T : INameAverage>(
         holder.tvName?.text = item.name
         holder.tvAverage?.text = item.getRoundedAverage(1)
 
-        holder.ivIcon?.setColorFilter(Color.BLACK)
-        if (item is Bowler) {
-            holder.ivIcon?.setImageResource(R.drawable.ic_person_white_24dp)
-        } else if (item is League) {
-            if (item.isEvent) {
-                holder.ivIcon?.setImageResource(R.drawable.ic_e_black_24dp)
-            } else {
-                holder.ivIcon?.setImageResource(R.drawable.ic_l_black_24dp)
-            }
+        val imageResource = buildImageResource?.invoke(item, position)
+        imageResource?.let {
+            holder.ivIcon?.setImageResource(it.first)
+            holder.ivIcon?.setColorFilter(it.second)
         }
 
         holder.ivIcon?.visibility = View.VISIBLE
