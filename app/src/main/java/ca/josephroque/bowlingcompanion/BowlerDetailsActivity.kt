@@ -1,6 +1,5 @@
 package ca.josephroque.bowlingcompanion
 
-import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
@@ -8,7 +7,6 @@ import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
-import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -16,9 +14,9 @@ import android.view.ViewGroup
 import ca.josephroque.bowlingcompanion.BowlerDetailsActivity.LeaguesEventsPagerAdapter.Companion.EVENT_FRAGMENT
 import ca.josephroque.bowlingcompanion.BowlerDetailsActivity.LeaguesEventsPagerAdapter.Companion.LEAGUE_FRAGMENT
 import ca.josephroque.bowlingcompanion.bowlers.Bowler
+import ca.josephroque.bowlingcompanion.common.activities.BaseActivity
 import ca.josephroque.bowlingcompanion.leagues.League
 import ca.josephroque.bowlingcompanion.leagues.LeagueFragment
-import ca.josephroque.bowlingcompanion.settings.SettingsActivity
 import ca.josephroque.bowlingcompanion.utils.Email
 import kotlinx.android.synthetic.main.activity_bowler_details.*
 import java.lang.ref.WeakReference
@@ -28,7 +26,7 @@ import java.lang.ref.WeakReference
  *
  * Activity to display bowler details.
  */
-class BowlerDetailsActivity : AppCompatActivity() {
+class BowlerDetailsActivity : BaseActivity() {
 
     companion object {
         /** Logging identifier. */
@@ -126,12 +124,6 @@ class BowlerDetailsActivity : AppCompatActivity() {
     }
 
     /** @Override */
-    override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
-        return super.onSupportNavigateUp()
-    }
-
-    /** @Override */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         super.onCreateOptionsMenu(menu)
         menuInflater.inflate(R.menu.menu_activity_leagues_events, menu)
@@ -156,24 +148,6 @@ class BowlerDetailsActivity : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
-    }
-
-    /** @Override */
-    override fun onBackPressed() {
-        val count = supportFragmentManager.backStackEntryCount
-        if (count == 0) {
-            super.onBackPressed()
-        } else {
-            supportFragmentManager.popBackStack()
-        }
-    }
-
-    /**
-     * Opens the settings activity.
-     */
-    private fun openSettings() {
-        val settingsIntent = Intent(this, SettingsActivity::class.java)
-        startActivity(settingsIntent)
     }
 
     /**

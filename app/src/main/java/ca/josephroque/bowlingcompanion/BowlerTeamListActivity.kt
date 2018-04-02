@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.app.FragmentTransaction
-import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -28,6 +27,7 @@ import android.content.Intent
 import android.graphics.Color
 import ca.josephroque.bowlingcompanion.BowlerTeamListActivity.BowlersTeamsPagerAdapter.Companion.BOWLER_FRAGMENT
 import ca.josephroque.bowlingcompanion.BowlerTeamListActivity.BowlersTeamsPagerAdapter.Companion.TEAM_FRAGMENT
+import ca.josephroque.bowlingcompanion.common.activities.BaseActivity
 import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
 import ca.josephroque.bowlingcompanion.teams.TeamDialog
 
@@ -36,7 +36,7 @@ import ca.josephroque.bowlingcompanion.teams.TeamDialog
  *
  * Activity to display bowler and team fragments.
  */
-class BowlerTeamListActivity : AppCompatActivity(),
+class BowlerTeamListActivity : BaseActivity(),
         BowlerFragment.OnBowlerFragmentInteractionListener,
         TeamFragment.OnTeamFragmentInteractionListener,
         BowlerDialog.OnBowlerDialogInteractionListener,
@@ -129,12 +129,6 @@ class BowlerTeamListActivity : AppCompatActivity(),
     }
 
     /** @Override */
-    override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
-        return super.onSupportNavigateUp()
-    }
-
-    /** @Override */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         super.onCreateOptionsMenu(menu)
         menuInflater.inflate(R.menu.menu_activity_bowlers_teams, menu)
@@ -164,16 +158,6 @@ class BowlerTeamListActivity : AppCompatActivity(),
         }
     }
 
-    /** @Override */
-    override fun onBackPressed() {
-        val count = supportFragmentManager.backStackEntryCount
-        if (count == 0) {
-            super.onBackPressed()
-        } else {
-            supportFragmentManager.popBackStack()
-        }
-    }
-
     /**
      * Refresh lists in all tabs.
      */
@@ -185,14 +169,6 @@ class BowlerTeamListActivity : AppCompatActivity(),
                 fragment?.refreshList()
             }
         }
-    }
-
-    /**
-     * Opens the settings activity.
-     */
-    private fun openSettings() {
-        val settingsIntent = Intent(this, SettingsActivity::class.java)
-        startActivity(settingsIntent)
     }
 
     /**
