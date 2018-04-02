@@ -116,8 +116,8 @@ data class League(
                         + "league." + LeagueEntry._ID + " AS lid, "
                         + LeagueEntry.COLUMN_LEAGUE_NAME + ", "
                         + LeagueEntry.COLUMN_IS_EVENT + ", "
-                        + LeagueEntry.COLUMN_BASE_AVERAGE + ", "
-                        + LeagueEntry.COLUMN_BASE_GAMES + ", "
+                        + LeagueEntry.COLUMN_ADDITIONAL_PINFALL + ", "
+                        + LeagueEntry.COLUMN_ADDITIONAL_GAMES + ", "
                         + LeagueEntry.COLUMN_NUMBER_OF_GAMES + ", "
                         + GameEntry.COLUMN_SCORE
                         + " FROM " + LeagueEntry.TABLE_NAME + " AS league"

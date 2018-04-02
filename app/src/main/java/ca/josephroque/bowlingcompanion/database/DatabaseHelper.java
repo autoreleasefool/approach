@@ -207,6 +207,8 @@ public final class DatabaseHelper
                 + LeagueEntry.COLUMN_NUMBER_OF_GAMES + " INTEGER NOT NULL, "
                 + LeagueEntry.COLUMN_BASE_AVERAGE + " INTEGER NOT NULL DEFAULT -1, "
                 + LeagueEntry.COLUMN_BASE_GAMES + " INTEGER NOT NULL DEFAULT 0, "
+                + LeagueEntry.COLUMN_ADDITIONAL_PINFALL + " INTEGER NOT NULL DEFAULT 0, "
+                + LeagueEntry.COLUMN_ADDITIONAL_GAMES + " INTEGER NOT NULL DEFAULT 0, "
                 + LeagueEntry.COLUMN_DATE_MODIFIED + " TEXT NOT NULL, "
                 + LeagueEntry.COLUMN_IS_EVENT + " INTEGER NOT NULL DEFAULT 0, "
                 + LeagueEntry.COLUMN_BOWLER_ID + " INTEGER NOT NULL"
