@@ -1,14 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:theme="@style/AppTheme.NoBackground"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:fitsSystemWindows="true"
-    android:clickable="true"
-    android:focusable="true"
-    android:background="@color/colorBackground">
+    style="@style/Dialog"
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar_scrollable"
@@ -17,15 +10,11 @@
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary" />
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <ScrollView style="@style/BaseContainer">
 
         <TextView
-            android:id="@+id/tv_scrollable"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/text_margin"/>
+            style="@style/BodyText"
+            android:id="@+id/tv_scrollable" />
 
     </ScrollView>
 
