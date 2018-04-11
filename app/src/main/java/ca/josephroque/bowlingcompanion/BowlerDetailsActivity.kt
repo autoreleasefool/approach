@@ -7,6 +7,7 @@ import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
+import android.support.v4.app.FragmentTransaction
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -16,6 +17,7 @@ import ca.josephroque.bowlingcompanion.BowlerDetailsActivity.LeaguesEventsPagerA
 import ca.josephroque.bowlingcompanion.bowlers.Bowler
 import ca.josephroque.bowlingcompanion.common.activities.BaseActivity
 import ca.josephroque.bowlingcompanion.leagues.League
+import ca.josephroque.bowlingcompanion.leagues.LeagueDialog
 import ca.josephroque.bowlingcompanion.leagues.LeagueFragment
 import ca.josephroque.bowlingcompanion.utils.Email
 import kotlinx.android.synthetic.main.activity_bowler_details.*
@@ -27,7 +29,8 @@ import java.lang.ref.WeakReference
  * Activity to display bowler details.
  */
 class BowlerDetailsActivity : BaseActivity(),
-        LeagueFragment.OnLeagueFragmentInteractionListener
+        LeagueFragment.OnLeagueFragmentInteractionListener,
+        LeagueDialog.OnLeagueDialogInteractionListener
 {
 
     companion object {
@@ -152,11 +155,27 @@ class BowlerDetailsActivity : BaseActivity(),
      * @param league the league to edit, or null if a new league should be added
      */
     private fun promptAddOrEditLeague(isEvent: Boolean, league: League? = null) {
-        TODO("Not implemented")
+        val bowler = bowler ?: return
+        val newFragment = LeagueDialog.newInstance(bowler, league, isEvent)
+        supportFragmentManager.beginTransaction()
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .add(android.R.id.content, newFragment)
+                .addToBackStack(null)
+                .commit()
     }
 
     /** @Override */
     override fun onLeagueSelected(league: League, toEdit: Boolean) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    /** @Override */
+    override fun onFinishLeague(league: League) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    /** @Override */
+    override fun onDeleteLeague(league: League) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 

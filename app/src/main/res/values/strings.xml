@@ -52,6 +52,36 @@
     <string name="error_team_has_no_members">A team must have at least 1 member.</string>
     <string name="error_team_not_saved">An error occurred and the team could not be saved.</string>
 
+    <!-- Leagues -->
+    <string name="create_new_league_event">Create a new…</string>
+    <string name="number_of_games">Number of games</string>
+    <string name="league">League</string>
+    <string name="new_league">New league</string>
+    <string name="edit_league">Edit league</string>
+    <string name="hint_league_event_name">Name</string>
+    <string name="delete_league">Delete league</string>
+    <string name="league_additional_games_description">Do you have any unrecorded games you want to add to this league?</string>
+    <string name="hint_league_additional_pinfall">Additional Pinfall</string>
+    <string name="hint_league_additional_games">Additional Games</string>
+
+    <string name="error_saving_league">Error saving league!</string>
+    <string name="error_league_name_invalid">You can only use letters, spaces, and the following characters: \'!@#$%^&amp;*()_+:"?/~-.</string>
+    <string name="error_league_name_in_use">That name has already been used. You must choose another.</string>
+    <string name="error_league_additional_info_invalid">You can only use numbers in your additional games and pinfall!</string>
+    <string name="error_league_additional_info_unbalanced">Your additional pinfall and games cannot equal an average greater than 450.</string>
+    <string name="error_league_not_saved">An error occurred and the league could not be saved.</string>
+
+    <!-- Events -->
+    <string name="event">Event</string>
+    <string name="new_event">New event</string>
+    <string name="edit_event">Edit event</string>
+    <string name="delete_event">Delete event</string>
+
+    <string name="error_saving_event">Error saving event!</string>
+    <string name="error_event_name_invalid">You can only use letters, spaces, and the following characters: \'!@#$%^&amp;*()_+:"?/~-.</string>
+    <string name="error_event_name_in_use">That name has already been used. You must choose another.</string>
+    <string name="error_event_not_saved">An error occurred and the event could not be saved.</string>
+
     <!-- Content descriptions -->
     <string name="iv_name_average">Type indicator</string>
     <string name="iv_delete_item">Delete Item</string>

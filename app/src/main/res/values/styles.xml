@@ -16,6 +16,8 @@
         <item name="android:background">@android:color/transparent</item>
     </style>
 
+    <!-- Basic Components -->
+
     <style name="BaseContainer">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -24,6 +26,14 @@
         <item name="android:paddingRight">0dp</item>
         <item name="android:paddingTop">@dimen/base_margin</item>
         <item name="android:paddingBottom">@dimen/base_margin</item>
+    </style>
+
+    <style name="Divider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">@color/colorDivider</item>
+        <item name="android:layout_marginTop">@dimen/base_margin</item>
+        <item name="android:layout_marginBottom">@dimen/base_margin</item>
     </style>
 
     <!-- Toolbars -->
@@ -95,6 +105,35 @@
         <item name="android:layout_margin">@dimen/fab_margin</item>
         <item name="layout_constraintRight_toRightOf">parent</item>
         <item name="layout_constraintBottom_toBottomOf">parent</item>
+    </style>
+
+    <!-- Radio Buttons & CheckBoxes -->
+
+    <style name="RadioButton">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">@dimen/base_margin_large</item>
+        <item name="android:layout_marginRight">@dimen/base_margin_large</item>
+        <item name="android:layout_marginTop">@dimen/base_margin</item>
+        <item name="android:layout_marginBottom">@dimen/base_margin</item>
+    </style>
+
+    <style name="CheckBox">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">@dimen/base_margin_large</item>
+        <item name="android:layout_marginRight">@dimen/base_margin_large</item>
+        <item name="android:layout_marginTop">@dimen/base_margin</item>
+        <item name="android:layout_marginBottom">@dimen/base_margin</item>
+    </style>
+
+    <style name="NumberPicker">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">@dimen/base_margin_large</item>
+        <item name="android:layout_marginRight">@dimen/base_margin_large</item>
+        <item name="android:layout_marginTop">@dimen/base_margin</item>
+        <item name="android:layout_marginBottom">@dimen/base_margin</item>
     </style>
 
     <!-- Text -->
