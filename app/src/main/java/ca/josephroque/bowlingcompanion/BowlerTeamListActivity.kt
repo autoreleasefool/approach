@@ -221,17 +221,9 @@ class BowlerTeamListActivity : BaseActivity(),
 
     /** @Override */
     override fun onFinishTeam(team: Team) {
-        launch(Android) {
-            val error = team.save(this@BowlerTeamListActivity).await()
-
-            if (error != null) {
-                error.show(this@BowlerTeamListActivity)
-            } else {
-                val adapter = pager_bowlers_teams.adapter as? BowlersTeamsPagerAdapter
-                val teamFragment = adapter?.getFragment(TEAM_FRAGMENT) as? TeamFragment
-                teamFragment?.refreshList(team)
-            }
-        }
+        val adapter = pager_bowlers_teams.adapter as? BowlersTeamsPagerAdapter
+        val teamFragment = adapter?.getFragment(TEAM_FRAGMENT) as? TeamFragment
+        teamFragment?.refreshList(team)
     }
 
     /** @Override */
