@@ -171,12 +171,24 @@ class BowlerDetailsActivity : BaseActivity(),
 
     /** @Override */
     override fun onFinishLeague(league: League) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val adapter = pager_leagues_events.adapter as? LeaguesEventsPagerAdapter
+        val leagueFragment = if (league.isEvent) {
+            adapter?.getFragment(LEAGUE_FRAGMENT) as? LeagueFragment
+        } else {
+            adapter?.getFragment(EVENT_FRAGMENT) as? LeagueFragment
+        }
+        leagueFragment?.refreshList(league)
     }
 
     /** @Override */
     override fun onDeleteLeague(league: League) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val adapter = pager_leagues_events.adapter as? LeaguesEventsPagerAdapter
+        val leagueFragment = if (league.isEvent) {
+            adapter?.getFragment(LEAGUE_FRAGMENT) as? LeagueFragment
+        } else {
+            adapter?.getFragment(EVENT_FRAGMENT) as? LeagueFragment
+        }
+        leagueFragment?.onItemDelete(league)
     }
 
     /**
