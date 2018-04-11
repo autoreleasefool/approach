@@ -277,6 +277,15 @@ data class League(
         /** Name of the "Practice" league. */
         const val PRACTICE_LEAGUE_NAME = "Practice"
 
+        /** Maximum number of games in a league or event. */
+        const val MAX_NUMBER_OF_GAMES = 20
+
+        /** Minimum number of games in a league or event. */
+        const val MIN_NUMBER_OF_GAMES = 1
+
+        /** Default number of games in a league or event. */
+        const val DEFAULT_NUMBER_OF_GAMES = 1
+
         /**
          * Order by which to sort bowlers.
          */

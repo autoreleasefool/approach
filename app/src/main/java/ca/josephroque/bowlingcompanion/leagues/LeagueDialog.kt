@@ -209,9 +209,9 @@ class LeagueDialog : DialogFragment() {
      * @param rootView the root view
      */
     private fun setupNumberPicker(rootView: View) {
-        rootView.picker_number_of_games.minValue = 1
-        rootView.picker_number_of_games.maxValue = 20
-        rootView.picker_number_of_games.value = 1
+        rootView.picker_number_of_games.minValue = League.MIN_NUMBER_OF_GAMES
+        rootView.picker_number_of_games.maxValue = League.MAX_NUMBER_OF_GAMES
+        rootView.picker_number_of_games.value = League.DEFAULT_NUMBER_OF_GAMES
         rootView.picker_number_of_games.wrapSelectorWheel = false
     }
 
@@ -242,6 +242,7 @@ class LeagueDialog : DialogFragment() {
             layout_delete_league.visibility = View.VISIBLE
             layout_new_league_event.visibility = View.GONE
             picker_number_of_games.visibility = View.GONE
+            picker_number_of_games.value = it.gamesPerSeries
 
             if (it.isEvent) {
                 layout_additional_games?.visibility = View.GONE
