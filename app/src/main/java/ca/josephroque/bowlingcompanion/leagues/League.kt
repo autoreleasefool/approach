@@ -18,10 +18,9 @@ import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async
 import java.text.SimpleDateFormat
 import java.util.*
-import ca.josephroque.bowlingcompanion.database.Contract.FrameEntry
 import ca.josephroque.bowlingcompanion.database.Contract.GameEntry
-import ca.josephroque.bowlingcompanion.games.Game
 import ca.josephroque.bowlingcompanion.database.Contract.LeagueEntry
+import ca.josephroque.bowlingcompanion.series.Series
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -65,6 +64,16 @@ data class League(
         writeInt(gamesPerSeries)
         writeInt(additionalPinfall)
         writeInt(additionalGames)
+    }
+
+    /**
+     * Get all [Series] instances belonging to this [League].
+     *
+     * @param context to get database instance
+     * @return a [MutableList] of [Series] items
+     */
+    fun fetchSeries(context: Context): Deferred<MutableList<Series>> {
+        return Series.fetchAll(context, this)
     }
 
     /**
@@ -118,33 +127,18 @@ data class League(
                      * since there is only a single series to an event
                      */
 
-                    values = ContentValues().apply {
-                        put(SeriesEntry.COLUMN_SERIES_DATE, currentDate)
-                        put(SeriesEntry.COLUMN_LEAGUE_ID, leagueId)
-                    }
-                    val seriesId = database.insert(SeriesEntry.TABLE_NAME, null, values)
+                    val series = Series(
+                            this@League,
+                            -1,
+                            currentDate,
+                            gamesPerSeries,
+                            IntArray(gamesPerSeries).toList(),
+                            ByteArray(gamesPerSeries).toList()
+                    )
 
-                    if (seriesId != -1L) {
-                        for (i in 0 until gamesPerSeries) {
-                            values = ContentValues()
-                            values.put(GameEntry.COLUMN_GAME_NUMBER, i + 1)
-                            values.put(GameEntry.COLUMN_SCORE, 0)
-                            values.put(GameEntry.COLUMN_SERIES_ID, seriesId)
-                            val gameId = database.insert(GameEntry.TABLE_NAME, null, values)
-
-                            if (gameId != -1L) {
-                                for (j in 0 until Game.NUMBER_OF_FRAMES) {
-                                    values = ContentValues()
-                                    values.put(FrameEntry.COLUMN_FRAME_NUMBER, j + 1)
-                                    values.put(FrameEntry.COLUMN_GAME_ID, gameId)
-                                    database.insert(FrameEntry.TABLE_NAME, null, values)
-                                }
-                            } else {
-                                throw IllegalStateException("Game was not saved, ID is -1")
-                            }
-                        }
-                    } else {
-                        throw IllegalStateException("Series was not saved, ID is -1")
+                    val seriesError = series.save(context).await()
+                    if (seriesError != null || series.id == -1L) {
+                        throw IllegalStateException("Series was not saved.")
                     }
                 }
 

@@ -82,6 +82,14 @@
     <string name="error_event_name_in_use">That name has already been used. You must choose another.</string>
     <string name="error_event_not_saved">An error occurred and the event could not be saved.</string>
 
+    <!-- Series -->
+    <string name="series">Series</string>
+    <string name="edit_series">Edit series</string>
+    <string name="delete_series">Delete series</string>
+
+    <string name="error_saving_series">Error saving series!</string>
+    <string name="error_series_not_saved">An error occurred and the series could not be saved.</string>
+
     <!-- Content descriptions -->
     <string name="iv_name_average">Type indicator</string>
     <string name="iv_delete_item">Delete Item</string>
