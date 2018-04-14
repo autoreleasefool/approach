@@ -98,6 +98,9 @@ class LeagueFragment : ListFragment<League, NameAverageRecyclerViewAdapter<Leagu
                 showSortByDialog()
                 true
             }
+            R.id.action_stats -> {
+                TODO("bowler stats not implemented")
+            }
             else -> {
                 false
             }

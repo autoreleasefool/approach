@@ -26,6 +26,7 @@
     <string name="action_transfer">Transfer</string>
     <string name="action_save">Save</string>
     <string name="action_sort_by">Sort by</string>
+    <string name="action_bowler_stats">Bowler stats</string>
 
     <!-- Bowlers -->
     <string name="new_bowler">New bowler</string>
