@@ -128,7 +128,7 @@ class LeagueDialog : DialogFragment() {
 
         rootView.btn_delete.setOnClickListener(onClickListener)
         rootView.toolbar_league.apply {
-            inflateMenu(R.menu.menu_dialogue_league)
+            inflateMenu(R.menu.menu_dialog_league)
             menu.findItem(R.id.action_save).isEnabled = league?.name?.isNotEmpty() == true
             setNavigationIcon(R.drawable.ic_close_white_24dp)
             setNavigationOnClickListener {
