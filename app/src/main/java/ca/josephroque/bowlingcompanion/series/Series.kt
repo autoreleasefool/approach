@@ -18,7 +18,9 @@ import kotlinx.coroutines.experimental.async
 import android.util.Log
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.IDeletable
+import ca.josephroque.bowlingcompanion.common.IIdentifiable
 import ca.josephroque.bowlingcompanion.games.Game
+import ca.josephroque.bowlingcompanion.utils.DateUtils
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -26,14 +28,19 @@ import ca.josephroque.bowlingcompanion.games.Game
  * A series of games in a [League].
  */
 data class Series(val league: League,
-                  var id: Long,
+                  override var id: Long,
                   var date: String,
                   var numberOfGames: Int,
                   var scores: List<Int>,
                   var matchPlay: List<Byte>
-): IDeletable, KParcelable {
+): IIdentifiable, IDeletable, KParcelable {
 
+    /** @Override */
     override var isDeleted: Boolean = false
+
+    /** Beautifies the date to be displayed. */
+    val prettyDate: String
+        get() = DateUtils.formattedDateToPrettyCompact(date)
 
     /**
      * Construct [Series] from a [Parcel]
