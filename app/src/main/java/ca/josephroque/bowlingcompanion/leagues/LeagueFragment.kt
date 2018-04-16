@@ -101,9 +101,7 @@ class LeagueFragment : ListFragment<League, NameAverageRecyclerViewAdapter<Leagu
             R.id.action_stats -> {
                 TODO("bowler stats not implemented")
             }
-            else -> {
-                false
-            }
+            else -> false
         }
     }
 

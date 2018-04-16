@@ -206,6 +206,9 @@ data class Series(val league: League,
         /** Creator, required by [Parcelable]. */
         @JvmField val CREATOR = parcelableCreator(::Series)
 
+        /** Argument identifier for showing condensed or expanded view of series. */
+        const val SHOW_CONDENSED_VIEW = "series_show_condensed_view"
+
         /**
          * Get all of the series belonging to the [League].
          *
