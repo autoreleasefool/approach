@@ -15,6 +15,15 @@
     <color name="warningYellow">#F1C40F</color>
     <color name="infoBlue">#3498DB</color>
 
+    <!-- Score highlights -->
+    <color name="seriesHighlight">@color/colorPrimary</color>
+    <color name="gameHighlight">@color/colorPrimary</color>
+
+    <!-- Match play -->
+    <color name="matchPlayWin">#27AE60</color>
+    <color name="matchPlayLoss">@color/dangerRed</color>
+    <color name="matchPlayTie">@color/primaryBlackText</color>
+
     <!-- Text colors -->
     <color name="primaryWhiteText">#FFFFFF</color>
     <color name="secondaryWhiteText">#B2FFFFFF</color>

@@ -207,7 +207,19 @@ data class Series(val league: League,
         @JvmField val CREATOR = parcelableCreator(::Series)
 
         /** Argument identifier for showing condensed or expanded view of series. */
-        const val SHOW_CONDENSED_VIEW = "series_show_condensed_view"
+        const val PREFERRED_VIEW = "series_preferred_view"
+
+        /**
+         * View to display series as.
+         */
+        enum class View {
+            Expanded, Condensed;
+
+            companion object {
+                private val map = View.values().associateBy(View::ordinal)
+                fun fromInt(type: Int) = map[type]
+            }
+        }
 
         /**
          * Get all of the series belonging to the [League].

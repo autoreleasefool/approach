@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.series
 
+import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.support.v7.preference.PreferenceManager
@@ -7,6 +8,7 @@ import android.view.*
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
 import ca.josephroque.bowlingcompanion.leagues.League
+import ca.josephroque.bowlingcompanion.settings.Settings
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async
@@ -40,14 +42,16 @@ class SeriesFragment : ListFragment<Series, SeriesRecyclerViewAdapter.ViewHolder
     /** The league whose series are to be displayed. */
     private var league: League? = null
 
-    private var showCondensedView: Boolean = false
+    private var seriesView: Series.Companion.View = Series.Companion.View.Expanded
         set(value) {
             context?.let {
                 PreferenceManager.getDefaultSharedPreferences(it)
                         .edit()
-                        .putBoolean(Series.SHOW_CONDENSED_VIEW, value)
+                        .putInt(Series.PREFERRED_VIEW, value.ordinal)
                         .apply()
             }
+            adapter?.seriesView = value
+            (context as? Activity)?.invalidateOptionsMenu()
             field = value
         }
 
@@ -59,8 +63,8 @@ class SeriesFragment : ListFragment<Series, SeriesRecyclerViewAdapter.ViewHolder
     ): View? {
         league = savedInstanceState?.getParcelable(ARG_LEAGUE) ?: arguments?.getParcelable(ARG_LEAGUE)
         context?.let {
-            showCondensedView = PreferenceManager.getDefaultSharedPreferences(it)
-                    .getBoolean(Series.SHOW_CONDENSED_VIEW, false)
+            seriesView = Series.Companion.View.fromInt(PreferenceManager.getDefaultSharedPreferences(it)
+                    .getInt(Series.PREFERRED_VIEW, Series.Companion.View.Expanded.ordinal))!!
         }
 
         setHasOptionsMenu(true)
@@ -69,6 +73,18 @@ class SeriesFragment : ListFragment<Series, SeriesRecyclerViewAdapter.ViewHolder
 
     override fun onResume() {
         super.onResume()
+        val context = context ?: return
+        val preferenceManager = PreferenceManager.getDefaultSharedPreferences(context)
+
+        val minSeriesHighlight = preferenceManager.getString(Settings.HIGHLIGHT_SERIES, "-1").toInt()
+        val minScoreHighlight = preferenceManager.getString(Settings.HIGHLIGHT_SCORE, "-1").toInt()
+        val shouldHighlightSeries = preferenceManager.getBoolean(Settings.HIGHLIGHT_SERIES_ENABLED, true) && minSeriesHighlight >= 0
+        val shouldHighlightScores = preferenceManager.getBoolean(Settings.HIGHLIGHT_SCORE_ENABLED, true) && minScoreHighlight >= 0
+
+        adapter?.gameHighlightMin = minScoreHighlight
+        adapter?.seriesHighlightMin = minSeriesHighlight
+        adapter?.shouldHighlightSeries = shouldHighlightSeries
+        adapter?.shouldHighlightScores = shouldHighlightScores
     }
 
     /** @Override. */
@@ -91,10 +107,30 @@ class SeriesFragment : ListFragment<Series, SeriesRecyclerViewAdapter.ViewHolder
     }
 
     /** @Override */
+    override fun onPrepareOptionsMenu(menu: Menu) {
+        super.onPrepareOptionsMenu(menu)
+        when (seriesView) {
+            Series.Companion.View.Expanded -> {
+                menu.findItem(R.id.action_series_expanded_view).isVisible = false
+                menu.findItem(R.id.action_series_condensed_view).isVisible = true
+            }
+            Series.Companion.View.Condensed -> {
+                menu.findItem(R.id.action_series_expanded_view).isVisible = true
+                menu.findItem(R.id.action_series_condensed_view).isVisible = false
+            }
+        }
+    }
+
+    /** @Override */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_stats -> {
                 TODO("league stats not implemented")
+            }
+            R.id.action_series_condensed_view, R.id.action_series_expanded_view -> {
+                val view = if (item.itemId == R.id.action_series_expanded_view) Series.Companion.View.Expanded else Series.Companion.View.Condensed
+                seriesView = view
+                return true
             }
             else -> false
         }
@@ -104,7 +140,7 @@ class SeriesFragment : ListFragment<Series, SeriesRecyclerViewAdapter.ViewHolder
     override fun buildAdapter(): SeriesRecyclerViewAdapter {
         val adapter = SeriesRecyclerViewAdapter(emptyList(), this)
         adapter.swipeable = true
-        adapter.showCondensedView = showCondensedView
+        adapter.seriesView = seriesView
         return adapter
     }
 
