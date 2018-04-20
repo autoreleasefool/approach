@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
@@ -146,7 +147,14 @@ class BowlerDetailsActivity : BaseActivity(),
 
     /** @Override */
     override fun onLeagueSelected(league: League, toEdit: Boolean) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (toEdit) {
+            promptAddOrEditLeague(league.isEvent, league)
+        } else {
+            val intent = Intent(baseContext, LeagueDetailsActivity::class.java).apply {
+                putExtra(LeagueDetailsActivity.INTENT_LEAGUE, league)
+            }
+            startActivity(intent)
+        }
     }
 
     /** @Override */
