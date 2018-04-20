@@ -128,26 +128,6 @@ class BowlerDetailsActivity : BaseActivity(),
         return true
     }
 
-    /** @Override */
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_settings -> {
-                openSettings()
-                true
-            }
-            R.id.action_feedback -> {
-                Email.sendEmail(
-                        this,
-                        resources.getString(R.string.feedback_email_recipient),
-                        String.format(resources.getString(R.string.feedback_email_subject), BuildConfig.VERSION_CODE),
-                        null
-                )
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
     /**
      * Display a prompt to add or edit a league.
      *
