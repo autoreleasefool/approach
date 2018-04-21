@@ -155,20 +155,18 @@ abstract class BaseRecyclerViewAdapter<Item: IIdentifiable, ViewHolder: Recycler
 
         /** @Override */
         override fun onMove(
-                recyclerView: RecyclerView?,
-                viewHolder: RecyclerView.ViewHolder?,
-                target: RecyclerView.ViewHolder?
+                recyclerView: RecyclerView,
+                viewHolder: RecyclerView.ViewHolder,
+                target: RecyclerView.ViewHolder
         ): Boolean {
             return false
         }
 
         /** @Override */
-        override fun onSwiped(viewHolder: RecyclerView.ViewHolder?, direction: Int) {
+        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
             if (swipeable) {
-                viewHolder?.let {
-                    val position = it.adapterPosition
-                    listener?.onItemSwipe(values[position])
-                }
+                val position = viewHolder.adapterPosition
+                listener?.onItemSwipe(values[position])
             }
         }
 
@@ -177,7 +175,7 @@ abstract class BaseRecyclerViewAdapter<Item: IIdentifiable, ViewHolder: Recycler
          *
          * @Override
          */
-        override fun getMovementFlags(recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder?): Int {
+        override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
             return if (swipeable) {
                 ItemTouchHelper.Callback.makeMovementFlags(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT)
             } else {

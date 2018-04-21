@@ -27,7 +27,7 @@ class App : Application() {
          * @param activity the activity context
          */
         fun hideSoftKeyBoard(activity: Activity) {
-            activity.currentFocus.let {
+            activity.currentFocus?.let {
                 val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(it.windowToken, 0)
             }
