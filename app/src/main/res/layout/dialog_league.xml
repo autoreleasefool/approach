@@ -58,7 +58,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textCapWords|textPersonName"
-                    android:imeOptions="flagNoFullscreen"
+                    android:imeOptions="flagNoFullscreen|actionDone"
                     android:hint="@string/hint_league_event_name"/>
 
             </android.support.design.widget.TextInputLayout>
@@ -131,7 +131,7 @@
                             android:layout_height="wrap_content"
                             android:inputType="number"
                             android:digits=",0123456789"
-                            android:imeOptions="flagNoFullscreen"
+                            android:imeOptions="flagNoFullscreen|actionNext"
                             android:hint="@string/hint_league_additional_pinfall" />
 
                     </android.support.design.widget.TextInputLayout>
@@ -146,7 +146,7 @@
                             android:layout_height="wrap_content"
                             android:inputType="number"
                             android:digits=",0123456789"
-                            android:imeOptions="flagNoFullscreen"
+                            android:imeOptions="flagNoFullscreen|actionDone"
                             android:hint="@string/hint_league_additional_games" />
 
                     </android.support.design.widget.TextInputLayout>

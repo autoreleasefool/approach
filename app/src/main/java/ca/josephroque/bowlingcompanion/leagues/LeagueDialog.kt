@@ -199,7 +199,7 @@ class LeagueDialog : DialogFragment() {
         additionalPinfall.addTextChangedListener(textWatcherPinfall)
 
         rootView.checkbox_additional_games.setOnCheckedChangeListener { _, isChecked ->
-            view?.layout_additional_games_details?.visibility = if (isChecked) View.VISIBLE else View.GONE
+            layout_additional_games_details.visibility = if (isChecked) View.VISIBLE else View.GONE
         }
     }
 
