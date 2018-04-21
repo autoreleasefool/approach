@@ -116,7 +116,7 @@ class TeamDialog : DialogFragment(),
             override fun afterTextChanged(s: Editable?) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                updateSaveButton(s, selectedBowlers)
+                updateSaveButton()
             }
         })
 
@@ -152,7 +152,6 @@ class TeamDialog : DialogFragment(),
         }
 
         input_name.setSelection(input_name.text.length)
-        updateSaveButton(team?.name, team?.members)
         refreshBowlerList()
     }
 
@@ -196,18 +195,22 @@ class TeamDialog : DialogFragment(),
         super.dismiss()
     }
 
-    private fun canSave(name: CharSequence?, members: List<Pair<String, Long>>?): Boolean {
-        return name?.isNotEmpty() == true && (members?.size ?: 0) > 0
+    /**
+     *
+     */
+    private fun canSave(): Boolean {
+        val name = input_name.text.toString()
+        val members = selectedBowlers
+
+        return name.isNotEmpty() && (members?.size ?: 0) > 0
     }
 
     /**
      * Update save button state based on text entered.
-     *
-     * @param text the text entered
      */
-    private fun updateSaveButton(text: CharSequence?, members: List<Pair<String, Long>>?) {
-        val saveButton = view?.toolbar_team?.menu?.findItem(R.id.action_save)
-        if (canSave(text, members)) {
+    private fun updateSaveButton() {
+        val saveButton = toolbar_team.menu.findItem(R.id.action_save)
+        if (canSave()) {
             saveButton?.isEnabled = true
             saveButton?.icon?.alpha = Color.ALPHA_ENABLED
         } else {
@@ -225,11 +228,11 @@ class TeamDialog : DialogFragment(),
                 val oldName = team?.name ?: ""
                 val oldMembers = team?.members ?: ArrayList()
 
-                val name = this@TeamDialog.view?.input_name?.text.toString()
+                val name = input_name.text.toString()
                 val members = selectedBowlers
 
                 members?.let {
-                    if (canSave(name, it)) {
+                    if (canSave()) {
                         val newTeam = team ?: Team(-1, name, it)
                         newTeam.name = name
                         newTeam.members = it
@@ -274,12 +277,13 @@ class TeamDialog : DialogFragment(),
                 ids.add(it.second)
             })
             bowlerAdapter?.setSelectedElementsWithIds(ids)
+            updateSaveButton()
         }
     }
 
     /** @Override */
     override fun onItemClick(item: Bowler) {
-        updateSaveButton(input_name.text, selectedBowlers)
+        updateSaveButton()
     }
 
     /** Not used. */

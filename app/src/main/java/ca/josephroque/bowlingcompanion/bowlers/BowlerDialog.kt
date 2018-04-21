@@ -86,7 +86,7 @@ class BowlerDialog : DialogFragment(), View.OnClickListener {
             override fun afterTextChanged(s: Editable?) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                updateSaveButton(s)
+                updateSaveButton()
             }
         })
 
@@ -121,7 +121,7 @@ class BowlerDialog : DialogFragment(), View.OnClickListener {
         }
 
         input_name.setSelection(input_name.text.length)
-        updateSaveButton(bowler?.name)
+        updateSaveButton()
     }
 
     /** @Override */
@@ -164,21 +164,18 @@ class BowlerDialog : DialogFragment(), View.OnClickListener {
     /**
      * Checks if the bowler can be saved or not.
      *
-     * @param name the bowler name
      * @return true if the bowler name is not empty, false otherwise
      */
-    private fun canSave(name: CharSequence?): Boolean {
-        return name?.isNotEmpty() == true
+    private fun canSave(): Boolean {
+        return input_name.text.isNotEmpty()
     }
 
     /**
      * Update save button state based on text entered.
-     *
-     * @param text the text entered
      */
-    private fun updateSaveButton(text: CharSequence?) {
+    private fun updateSaveButton() {
         val saveButton = view?.toolbar_bowler?.menu?.findItem(R.id.action_save)
-        if (canSave(text)) {
+        if (canSave()) {
             saveButton?.isEnabled = true
             saveButton?.icon?.alpha = Color.ALPHA_ENABLED
         } else {
@@ -194,9 +191,9 @@ class BowlerDialog : DialogFragment(), View.OnClickListener {
         launch(Android) {
             this@BowlerDialog.context?.let {
                 val oldName = bowler?.name ?: ""
-                val name = this@BowlerDialog.view?.input_name?.text.toString()
+                val name = input_name.text.toString()
 
-                if (canSave(name)) {
+                if (canSave()) {
                     val newBowler = bowler ?: Bowler(-1, name, 0.0)
                     newBowler.name = name
 
