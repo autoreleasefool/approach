@@ -116,7 +116,10 @@ class BowlerFragment : ListFragment<Bowler, NameAverageRecyclerViewAdapter<Bowle
                                     .edit()
                                     .putInt(Preferences.BOWLER_SORT_ORDER, it.ordinal)
                                     .commit()
-                            (activity as? BowlerTeamListActivity)?.refreshTabs()
+
+                            val ignoredSet: MutableSet<Int> = HashSet()
+                            ignoredSet.add(BowlerTeamListActivity.BOWLER_FRAGMENT)
+                            (activity as? BowlerTeamListActivity)?.refreshTabs(ignoredSet)
                         }
                     })
                     .show()
@@ -135,7 +138,14 @@ class BowlerFragment : ListFragment<Bowler, NameAverageRecyclerViewAdapter<Bowle
         if (index != -1) {
             items.removeAt(index)
             adapter?.notifyItemRemoved(index)
-            item.delete(context)
+
+            async(CommonPool) {
+                item.delete(context).await()
+
+                val ignoredSet: MutableSet<Int> = HashSet()
+                ignoredSet.add(BowlerTeamListActivity.BOWLER_FRAGMENT)
+                (activity as? BowlerTeamListActivity)?.refreshTabs(ignoredSet)
+            }
         }
     }
 

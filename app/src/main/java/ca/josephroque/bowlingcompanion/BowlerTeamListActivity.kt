@@ -17,16 +17,10 @@ import ca.josephroque.bowlingcompanion.bowlers.BowlerFragment
 import ca.josephroque.bowlingcompanion.bowlers.BowlerDialog
 import ca.josephroque.bowlingcompanion.teams.Team
 import ca.josephroque.bowlingcompanion.teams.TeamFragment
-import ca.josephroque.bowlingcompanion.common.Android
-import ca.josephroque.bowlingcompanion.utils.Email
 import kotlinx.android.synthetic.main.activity_bowler_team_list.*
-import kotlinx.coroutines.experimental.launch
 import java.lang.ref.WeakReference
-import ca.josephroque.bowlingcompanion.settings.SettingsActivity
 import android.content.Intent
 import android.graphics.Color
-import ca.josephroque.bowlingcompanion.BowlerTeamListActivity.BowlersTeamsPagerAdapter.Companion.BOWLER_FRAGMENT
-import ca.josephroque.bowlingcompanion.BowlerTeamListActivity.BowlersTeamsPagerAdapter.Companion.TEAM_FRAGMENT
 import ca.josephroque.bowlingcompanion.common.activities.BaseActivity
 import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
 import ca.josephroque.bowlingcompanion.teams.TeamDialog
@@ -45,6 +39,12 @@ class BowlerTeamListActivity : BaseActivity(),
     companion object {
         /** Logging identifier. */
         private const val TAG = "BowlerTeamListActivity"
+
+        /** Index for [BowlerFragment]. */
+        const val BOWLER_FRAGMENT = 0
+
+        /** Index for [TeamFragment]. */
+        const val TEAM_FRAGMENT = 1
     }
 
     /** Active tab. */
@@ -147,11 +147,17 @@ class BowlerTeamListActivity : BaseActivity(),
 
     /**
      * Refresh lists in all tabs.
+     *
+     * @param ignored fragment IDs to ignore
      */
-    fun refreshTabs() {
+    fun refreshTabs(ignored: Set<Int> = HashSet()) {
         val adapter = pager_bowlers_teams.adapter as? BowlersTeamsPagerAdapter
         adapter?.let {
             for (i in 0 until it.count) {
+                if (ignored.contains(i)) {
+                    continue
+                }
+
                 val fragment = it.getFragment(i) as? ListFragment<*,*,*>
                 fragment?.refreshList()
             }
@@ -245,13 +251,6 @@ class BowlerTeamListActivity : BaseActivity(),
      * Manages pages for each tab.
      */
     internal class BowlersTeamsPagerAdapter(fm: FragmentManager, private var tabCount: Int): FragmentPagerAdapter(fm) {
-
-        companion object {
-            /** Index for [BowlerFragment]. */
-            const val BOWLER_FRAGMENT = 0
-            /** Index for [TeamFragment]. */
-            const val TEAM_FRAGMENT = 1
-        }
 
         /** Weak references to the fragments in the pager. */
         private val fragmentReferenceMap: MutableMap<Int, WeakReference<Fragment>> = HashMap()
