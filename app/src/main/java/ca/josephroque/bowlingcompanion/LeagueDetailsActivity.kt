@@ -47,6 +47,15 @@ class LeagueDetailsActivity: BaseActivity(),
         }
     }
 
+    /** @Override */
+    override fun onResume() {
+        super.onResume()
+
+        league?.let {
+            supportActionBar?.title = it.name
+        }
+    }
+
     /**
      * Configure toolbar for rendering.
      */
