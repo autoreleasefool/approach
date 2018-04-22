@@ -120,8 +120,8 @@ data class Series(val league: League,
                                 values = ContentValues().apply {
                                     put(FrameEntry.COLUMN_FRAME_NUMBER, j + 1)
                                     put(FrameEntry.COLUMN_GAME_ID, gameId)
-                                    database.insert(FrameEntry.TABLE_NAME, null, values)
                                 }
+                                database.insert(FrameEntry.TABLE_NAME, null, values)
                             }
                         } else {
                             throw IllegalStateException("Game was not saved, ID is -1")
