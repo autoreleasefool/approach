@@ -21,28 +21,31 @@ class SeriesScoreView: LinearLayout {
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         orientation = LinearLayout.VERTICAL
-        LayoutInflater.from(context).inflate(R.layout.view_series_score, this, true)
+        val layout = LayoutInflater.from(context).inflate(R.layout.view_series_score, this, true)
+
+        scoreText = layout.findViewById(R.id.tv_score)
+        matchPlayText = layout.findViewById(R.id.tv_match_play)
     }
 
-    val scoreText: TextView = findViewById(R.id.tv_score)
+    var scoreText: TextView? = null
 
-    val matchPlayText: TextView = findViewById(R.id.tv_match_play)
+    var matchPlayText: TextView? = null
 
     var score: Int = 0
         set(value) {
-            scoreText.text = value.toString()
+            scoreText?.text = value.toString()
             field = value
         }
 
     var matchPlay: MatchPlayResult = MatchPlayResult.NONE
         set(value) {
             when (value) {
-                MatchPlayResult.NONE -> matchPlayText.text = null
-                MatchPlayResult.WON -> matchPlayText.text = context.getString(R.string.match_play_won_short)
-                MatchPlayResult.LOST -> matchPlayText.text = context.getString(R.string.match_play_lost_short)
-                MatchPlayResult.TIED -> matchPlayText.text = context.getString(R.string.match_play_tied_short)
+                MatchPlayResult.NONE -> matchPlayText?.text = null
+                MatchPlayResult.WON -> matchPlayText?.text = context.getString(R.string.match_play_won_short)
+                MatchPlayResult.LOST -> matchPlayText?.text = context.getString(R.string.match_play_lost_short)
+                MatchPlayResult.TIED -> matchPlayText?.text = context.getString(R.string.match_play_tied_short)
             }
-            matchPlayText.visibility = if (value == MatchPlayResult.NONE) View.GONE else View.VISIBLE
+            matchPlayText?.visibility = if (value == MatchPlayResult.NONE) View.GONE else View.VISIBLE
             field = value
         }
 }

@@ -24,7 +24,7 @@ class SeriesRecyclerViewAdapter(
 
     companion object {
         /** Logging identifier. */
-        private const val TAG = "SeriesRecyclerViewAdapter"
+        private const val TAG = "SeriesRVAdapter"
 
         private enum class ViewType {
             Active,
@@ -170,16 +170,16 @@ class SeriesRecyclerViewAdapter(
             scoreView.matchPlay = matchPlayResult
 
             if (shouldHighlightScores && series.scores[i] >= gameHighlightMin) {
-                scoreView.scoreText.setTextColor(ContextCompat.getColor(context, R.color.gameHighlight))
+                scoreView.scoreText?.setTextColor(ContextCompat.getColor(context, R.color.gameHighlight))
             } else {
-                scoreView.scoreText.setTextColor(ContextCompat.getColor(context, R.color.primaryBlackText))
+                scoreView.scoreText?.setTextColor(ContextCompat.getColor(context, R.color.primaryBlackText))
             }
 
             when (matchPlayResult) {
-                MatchPlayResult.NONE -> scoreView.matchPlayText.setTextColor(ContextCompat.getColor(context, R.color.primaryBlackText))
-                MatchPlayResult.WON -> scoreView.matchPlayText.setTextColor(ContextCompat.getColor(context, R.color.matchPlayWin))
-                MatchPlayResult.LOST -> scoreView.matchPlayText.setTextColor(ContextCompat.getColor(context, R.color.matchPlayLoss))
-                MatchPlayResult.TIED -> scoreView.matchPlayText.setTextColor(ContextCompat.getColor(context, R.color.matchPlayTie))
+                MatchPlayResult.NONE -> scoreView.matchPlayText?.setTextColor(ContextCompat.getColor(context, R.color.primaryBlackText))
+                MatchPlayResult.WON -> scoreView.matchPlayText?.setTextColor(ContextCompat.getColor(context, R.color.matchPlayWin))
+                MatchPlayResult.LOST -> scoreView.matchPlayText?.setTextColor(ContextCompat.getColor(context, R.color.matchPlayLoss))
+                MatchPlayResult.TIED -> scoreView.matchPlayText?.setTextColor(ContextCompat.getColor(context, R.color.matchPlayTie))
             }
 
             holder.flowScores?.addView(scoreView)

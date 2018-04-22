@@ -11,7 +11,7 @@
         style="@style/Toolbar"
         android:id="@+id/toolbar_league_details" />
 
-    <FrameLayout
+    <android.support.constraint.ConstraintLayout
         android:id="@+id/layout_league_details"
         android:layout_width="match_parent"
         android:layout_height="0dp"
