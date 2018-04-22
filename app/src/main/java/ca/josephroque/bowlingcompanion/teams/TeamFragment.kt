@@ -45,7 +45,7 @@ class TeamFragment : ListFragment<Team, TeamRecyclerViewAdapter.ViewHolder, Team
             savedInstanceState: Bundle?
     ): View? {
         setHasOptionsMenu(true)
-        return inflater.inflate(R.layout.fragment_common_list, container, false)
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     /** @Override */
