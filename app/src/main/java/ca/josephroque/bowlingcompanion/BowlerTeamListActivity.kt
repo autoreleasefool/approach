@@ -1,5 +1,7 @@
 package ca.josephroque.bowlingcompanion
 
+import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.FloatingActionButton.OnVisibilityChangedListener
@@ -13,17 +15,15 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import ca.josephroque.bowlingcompanion.bowlers.Bowler
-import ca.josephroque.bowlingcompanion.bowlers.BowlerFragment
 import ca.josephroque.bowlingcompanion.bowlers.BowlerDialog
+import ca.josephroque.bowlingcompanion.bowlers.BowlerFragment
+import ca.josephroque.bowlingcompanion.common.activities.BaseActivity
+import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
 import ca.josephroque.bowlingcompanion.teams.Team
+import ca.josephroque.bowlingcompanion.teams.TeamDialog
 import ca.josephroque.bowlingcompanion.teams.TeamFragment
 import kotlinx.android.synthetic.main.activity_bowler_team_list.*
 import java.lang.ref.WeakReference
-import android.content.Intent
-import android.graphics.Color
-import ca.josephroque.bowlingcompanion.common.activities.BaseActivity
-import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
-import ca.josephroque.bowlingcompanion.teams.TeamDialog
 
 /**
  * Copyright (C) 2018 Joseph Roque

@@ -10,7 +10,6 @@ import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
 import android.support.v4.app.FragmentTransaction
 import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import ca.josephroque.bowlingcompanion.BowlerDetailsActivity.LeaguesEventsPagerAdapter.Companion.EVENT_FRAGMENT
@@ -20,7 +19,6 @@ import ca.josephroque.bowlingcompanion.common.activities.BaseActivity
 import ca.josephroque.bowlingcompanion.leagues.League
 import ca.josephroque.bowlingcompanion.leagues.LeagueDialog
 import ca.josephroque.bowlingcompanion.leagues.LeagueFragment
-import ca.josephroque.bowlingcompanion.utils.Email
 import kotlinx.android.synthetic.main.activity_bowler_details.*
 import java.lang.ref.WeakReference
 

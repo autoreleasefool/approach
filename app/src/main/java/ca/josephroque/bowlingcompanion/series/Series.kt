@@ -4,23 +4,21 @@ import android.content.ContentValues
 import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
-import ca.josephroque.bowlingcompanion.common.KParcelable
-import ca.josephroque.bowlingcompanion.common.parcelableCreator
-import ca.josephroque.bowlingcompanion.database.Contract.FrameEntry
-import ca.josephroque.bowlingcompanion.database.Contract.GameEntry
-import ca.josephroque.bowlingcompanion.database.Contract.SeriesEntry
-import ca.josephroque.bowlingcompanion.database.DatabaseHelper
-import ca.josephroque.bowlingcompanion.leagues.League
-import ca.josephroque.bowlingcompanion.utils.BCError
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.Deferred
-import kotlinx.coroutines.experimental.async
 import android.util.Log
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.IDeletable
 import ca.josephroque.bowlingcompanion.common.IIdentifiable
+import ca.josephroque.bowlingcompanion.common.KParcelable
+import ca.josephroque.bowlingcompanion.common.parcelableCreator
+import ca.josephroque.bowlingcompanion.database.Contract.*
+import ca.josephroque.bowlingcompanion.database.DatabaseHelper
 import ca.josephroque.bowlingcompanion.games.Game
+import ca.josephroque.bowlingcompanion.leagues.League
+import ca.josephroque.bowlingcompanion.utils.BCError
 import ca.josephroque.bowlingcompanion.utils.DateUtils
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.experimental.async
 
 /**
  * Copyright (C) 2018 Joseph Roque

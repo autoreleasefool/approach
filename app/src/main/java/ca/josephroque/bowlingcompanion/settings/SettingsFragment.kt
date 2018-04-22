@@ -1,16 +1,16 @@
 package ca.josephroque.bowlingcompanion.settings
 
+import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Bundle
+import android.support.v4.app.FragmentTransaction
 import android.support.v7.preference.Preference
 import android.support.v7.preference.PreferenceFragmentCompat
 import ca.josephroque.bowlingcompanion.BuildConfig
 import ca.josephroque.bowlingcompanion.R
-import ca.josephroque.bowlingcompanion.utils.Email
-import android.content.Intent
-import android.net.Uri
-import android.support.v4.app.FragmentTransaction
 import ca.josephroque.bowlingcompanion.common.ScrollableTextDialog
+import ca.josephroque.bowlingcompanion.utils.Email
 import ca.josephroque.bowlingcompanion.utils.Facebook
 import ca.josephroque.bowlingcompanion.utils.Files
 import ca.josephroque.bowlingcompanion.utils.toSpanned
