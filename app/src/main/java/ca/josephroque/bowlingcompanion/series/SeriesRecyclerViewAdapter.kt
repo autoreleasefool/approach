@@ -27,7 +27,8 @@ class SeriesRecyclerViewAdapter(
         private const val TAG = "SeriesRVAdapter"
 
         private enum class ViewType {
-            Active,
+            Condensed,
+            Expanded,
             Deleted;
 
             companion object {
@@ -75,29 +76,26 @@ class SeriesRecyclerViewAdapter(
     /** @Override */
     override fun getItemViewType(position: Int): Int {
         return when {
-            swipeable && values[position].isDeleted -> ViewType.Deleted.ordinal
-            else -> ViewType.Active.ordinal
+            values[position].isDeleted -> ViewType.Deleted.ordinal
+            !values[position].isDeleted && seriesView == Series.Companion.View.Condensed -> ViewType.Condensed.ordinal
+            !values[position].isDeleted && seriesView == Series.Companion.View.Expanded -> ViewType.Expanded.ordinal
+            else -> throw IllegalArgumentException("Position `$position` is invalid")
         }
     }
 
     /** @Override */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = when (ViewType.fromInt(viewType)) {
-            ViewType.Active -> {
-                when (seriesView) {
-                    Series.Companion.View.Condensed -> LayoutInflater
-                            .from(parent.context)
-                            .inflate(R.layout.list_item_series_condensed, parent, false)
-                    Series.Companion.View.Expanded -> LayoutInflater
-                            .from(parent.context)
-                            .inflate(R.layout.list_item_series_expanded, parent, false)
-                }
-            }
-            ViewType.Deleted -> {
-                LayoutInflater
-                        .from(parent.context)
-                        .inflate(R.layout.list_item_deleted, parent, false)
-            } else -> throw IllegalArgumentException("View Type `$viewType` is invalid")
+            ViewType.Condensed -> LayoutInflater
+                    .from(parent.context)
+                    .inflate(R.layout.list_item_series_condensed, parent, false)
+            ViewType.Expanded -> LayoutInflater
+                    .from(parent.context)
+                    .inflate(R.layout.list_item_series_expanded, parent, false)
+            ViewType.Deleted -> LayoutInflater
+                    .from(parent.context)
+                    .inflate(R.layout.list_item_deleted, parent, false)
+            else -> throw IllegalArgumentException("View Type `$viewType` is invalid")
         }
 
         return ViewHolder(view)
@@ -106,10 +104,10 @@ class SeriesRecyclerViewAdapter(
     /** @Override */
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val viewType = ViewType.fromInt(getItemViewType(position))
-        when {
-            viewType == ViewType.Active && seriesView == Series.Companion.View.Condensed -> bindCondensedViewHolder(holder, position)
-            viewType == ViewType.Active && seriesView == Series.Companion.View.Expanded  -> bindExpandedViewHolder(holder, position)
-            viewType == ViewType.Deleted -> bindDeletedViewHolder(holder, position)
+        when (viewType) {
+            ViewType.Condensed -> bindCondensedViewHolder(holder, position)
+            ViewType.Expanded -> bindExpandedViewHolder(holder, position)
+            ViewType.Deleted -> bindDeletedViewHolder(holder, position)
             else -> throw IllegalArgumentException("View Type `$viewType` is invalid")
         }
     }
@@ -221,6 +219,10 @@ class SeriesRecyclerViewAdapter(
         holder.tvUndo?.setOnClickListener(deletedItemListener)
     }
 
+
+    /**
+     * View holder.
+     */
     inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
         /** Render date of the series. */
         val tvDate: TextView? = view.findViewById(R.id.tv_date)

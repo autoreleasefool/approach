@@ -1,6 +1,5 @@
 package ca.josephroque.bowlingcompanion.series
 
-import android.app.Activity
 import android.content.Context
 import android.os.Bundle
 import android.support.v7.preference.PreferenceManager
@@ -50,8 +49,9 @@ class SeriesFragment : ListFragment<Series, SeriesRecyclerViewAdapter.ViewHolder
                         .putInt(Series.PREFERRED_VIEW, value.ordinal)
                         .apply()
             }
+
+            activity?.invalidateOptionsMenu()
             adapter?.seriesView = value
-            (context as? Activity)?.invalidateOptionsMenu()
             field = value
         }
 
@@ -71,6 +71,7 @@ class SeriesFragment : ListFragment<Series, SeriesRecyclerViewAdapter.ViewHolder
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
+    /** @Override. */
     override fun onResume() {
         super.onResume()
         val context = context ?: return
@@ -104,11 +105,7 @@ class SeriesFragment : ListFragment<Series, SeriesRecyclerViewAdapter.ViewHolder
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.menu_fragment_series, menu)
-    }
 
-    /** @Override */
-    override fun onPrepareOptionsMenu(menu: Menu) {
-        super.onPrepareOptionsMenu(menu)
         when (seriesView) {
             Series.Companion.View.Expanded -> {
                 menu.findItem(R.id.action_series_expanded_view).isVisible = false
