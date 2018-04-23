@@ -240,8 +240,8 @@ class BowlerTeamListActivity : BaseActivity(),
         if (toEdit) {
             promptAddOrEditBowler(bowler)
         } else {
-            val intent = Intent(baseContext, BowlerDetailsActivity::class.java).apply {
-                putExtra(BowlerDetailsActivity.INTENT_BOWLER, bowler)
+            val intent = Intent(baseContext, LeagueEventListActivity::class.java).apply {
+                putExtra(LeagueEventListActivity.INTENT_BOWLER, bowler)
             }
             startActivity(intent)
         }

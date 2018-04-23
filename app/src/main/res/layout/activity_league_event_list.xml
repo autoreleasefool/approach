@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="ca.josephroque.bowlingcompanion.BowlerDetailsActivity">
+    tools:context="ca.josephroque.bowlingcompanion.LeagueEventListActivity">
 
     <android.support.v7.widget.Toolbar
         style="@style/Toolbar"

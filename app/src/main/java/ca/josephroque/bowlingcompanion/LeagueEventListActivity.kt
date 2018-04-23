@@ -12,14 +12,14 @@ import android.support.v4.app.FragmentTransaction
 import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
-import ca.josephroque.bowlingcompanion.BowlerDetailsActivity.LeaguesEventsPagerAdapter.Companion.EVENT_FRAGMENT
-import ca.josephroque.bowlingcompanion.BowlerDetailsActivity.LeaguesEventsPagerAdapter.Companion.LEAGUE_FRAGMENT
+import ca.josephroque.bowlingcompanion.LeagueEventListActivity.LeaguesEventsPagerAdapter.Companion.EVENT_FRAGMENT
+import ca.josephroque.bowlingcompanion.LeagueEventListActivity.LeaguesEventsPagerAdapter.Companion.LEAGUE_FRAGMENT
 import ca.josephroque.bowlingcompanion.bowlers.Bowler
 import ca.josephroque.bowlingcompanion.common.activities.BaseActivity
 import ca.josephroque.bowlingcompanion.leagues.League
 import ca.josephroque.bowlingcompanion.leagues.LeagueDialog
 import ca.josephroque.bowlingcompanion.leagues.LeagueFragment
-import kotlinx.android.synthetic.main.activity_bowler_details.*
+import kotlinx.android.synthetic.main.activity_league_event_list.*
 import java.lang.ref.WeakReference
 
 /**
@@ -27,14 +27,14 @@ import java.lang.ref.WeakReference
  *
  * Activity to display bowler details.
  */
-class BowlerDetailsActivity : BaseActivity(),
+class LeagueEventListActivity : BaseActivity(),
         LeagueFragment.OnLeagueFragmentInteractionListener,
         LeagueDialog.OnLeagueDialogInteractionListener
 {
 
     companion object {
         /** Logging identifier. */
-        private const val TAG = "BowlerDetailsActivity"
+        private const val TAG = "LeagueEventListActivity"
 
         /** Intent argument for passing a [Bowler] to this activity. */
         const val INTENT_BOWLER = "${TAG}_bowler"
@@ -57,7 +57,7 @@ class BowlerDetailsActivity : BaseActivity(),
     /** @Override */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_bowler_details)
+        setContentView(R.layout.activity_league_event_list)
 
         bowler = intent.getParcelableExtra(INTENT_BOWLER)
 
@@ -94,7 +94,7 @@ class BowlerDetailsActivity : BaseActivity(),
         tabs_leagues_events.addTab(tabs_leagues_events.newTab().setText(R.string.events))
         pager_leagues_events.scrollingEnabled = false
 
-        val adapter = BowlerDetailsActivity.LeaguesEventsPagerAdapter(supportFragmentManager, tabs_leagues_events.tabCount, bowler)
+        val adapter = LeagueEventListActivity.LeaguesEventsPagerAdapter(supportFragmentManager, tabs_leagues_events.tabCount, bowler)
         pager_leagues_events.adapter = adapter
 
         pager_leagues_events.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabs_leagues_events))
@@ -157,8 +157,8 @@ class BowlerDetailsActivity : BaseActivity(),
         if (toEdit) {
             promptAddOrEditLeague(league.isEvent, league)
         } else {
-            val intent = Intent(baseContext, LeagueDetailsActivity::class.java).apply {
-                putExtra(LeagueDetailsActivity.INTENT_LEAGUE, league)
+            val intent = Intent(baseContext, SeriesListActivity::class.java).apply {
+                putExtra(SeriesListActivity.INTENT_LEAGUE, league)
             }
             startActivity(intent)
         }

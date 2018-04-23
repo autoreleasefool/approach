@@ -7,20 +7,20 @@ import ca.josephroque.bowlingcompanion.common.activities.BaseActivity
 import ca.josephroque.bowlingcompanion.leagues.League
 import ca.josephroque.bowlingcompanion.series.Series
 import ca.josephroque.bowlingcompanion.series.SeriesFragment
-import kotlinx.android.synthetic.main.activity_league_details.*
+import kotlinx.android.synthetic.main.activity_series_list.*
 
 /**
  * Copyright (C) 2018 Joseph Roque
  *
  * Activity to display league details.
  */
-class LeagueDetailsActivity: BaseActivity(),
+class SeriesListActivity: BaseActivity(),
         SeriesFragment.OnSeriesFragmentInteractionListener
 {
 
     companion object {
         /** Logging identifier. */
-        private const val TAG = "LeagueDetailsActivity"
+        private const val TAG = "SeriesListActivity"
 
         /** Intent argument for passing a [League] to this activity. */
         const val INTENT_LEAGUE = "${TAG}_league"
@@ -31,7 +31,7 @@ class LeagueDetailsActivity: BaseActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_league_details)
+        setContentView(R.layout.activity_series_list)
 
         league = intent.getParcelableExtra(INTENT_LEAGUE)
         val league = league ?: return
