@@ -6,12 +6,17 @@
         style="@style/BodyText"
         android:id="@+id/tv_score"
         android:layout_width="wrap_content"
+        android:layout_margin="0dp"
+        android:layout_marginBottom="@dimen/base_margin_small"
+        android:layout_gravity="center_horizontal"
         android:textAlignment="center" />
 
     <TextView
         style="@style/BodyText"
         android:id="@+id/tv_match_play"
         android:layout_width="wrap_content"
+        android:layout_margin="0dp"
+        android:layout_gravity="center_horizontal"
         android:textAlignment="center" />
 
 </merge>
