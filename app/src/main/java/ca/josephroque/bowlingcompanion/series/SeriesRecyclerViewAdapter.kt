@@ -46,14 +46,14 @@ class SeriesRecyclerViewAdapter(
         }
 
     /** Minimum color to highlight a series. */
-    var seriesHighlightMin: Int = 0
+    var seriesHighlightMin: Int = -1
         set(value) {
             notifyDataSetChanged()
             field = value
         }
 
     /** Minimum color to highlight a game. */
-    var gameHighlightMin: Int = 0
+    var gameHighlightMin: Int = -1
         set(value) {
             notifyDataSetChanged()
             field = value
@@ -123,8 +123,16 @@ class SeriesRecyclerViewAdapter(
         val series = values[position]
         holder.series = series
 
+        val seriesTotal = series.scores.sum()
+
         holder.tvDate?.text = series.prettyDate
-        holder.tvTotal?.text = series.scores.sum().toString()
+        holder.tvTotal?.text = seriesTotal.toString()
+
+        if (shouldHighlightSeries && seriesTotal >= seriesHighlightMin) {
+            holder.tvTotal?.setTextColor(ContextCompat.getColor(context, R.color.seriesHighlight))
+        } else {
+            holder.tvTotal?.setTextColor(ContextCompat.getColor(context, R.color.primaryBlackText))
+        }
 
         if (position % 2 == 0) {
             holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorListPrimary))

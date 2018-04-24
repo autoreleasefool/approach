@@ -77,13 +77,13 @@ class SeriesFragment : ListFragment<Series, SeriesRecyclerViewAdapter.ViewHolder
         val context = context ?: return
         val preferenceManager = PreferenceManager.getDefaultSharedPreferences(context)
 
-        val minSeriesHighlight = preferenceManager.getString(Settings.HIGHLIGHT_SERIES, "-1").toInt()
-        val minScoreHighlight = preferenceManager.getString(Settings.HIGHLIGHT_SCORE, "-1").toInt()
-        val shouldHighlightSeries = preferenceManager.getBoolean(Settings.HIGHLIGHT_SERIES_ENABLED, true) && minSeriesHighlight >= 0
-        val shouldHighlightScores = preferenceManager.getBoolean(Settings.HIGHLIGHT_SCORE_ENABLED, true) && minScoreHighlight >= 0
+        val minSeriesHighlight = preferenceManager.getString(Settings.HIGHLIGHT_SERIES, "800").toInt()
+        val minScoreHighlight = preferenceManager.getString(Settings.HIGHLIGHT_SCORE, "300").toInt()
+        val shouldHighlightSeries = preferenceManager.getBoolean(Settings.HIGHLIGHT_SERIES_ENABLED, true)
+        val shouldHighlightScores = preferenceManager.getBoolean(Settings.HIGHLIGHT_SCORE_ENABLED, true)
 
-        adapter?.gameHighlightMin = minScoreHighlight
-        adapter?.seriesHighlightMin = minSeriesHighlight
+        adapter?.gameHighlightMin = minSeriesHighlight
+        adapter?.seriesHighlightMin = minScoreHighlight
         adapter?.shouldHighlightSeries = shouldHighlightSeries
         adapter?.shouldHighlightScores = shouldHighlightScores
     }
