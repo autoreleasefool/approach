@@ -47,7 +47,7 @@
 
             </LinearLayout>
 
-            <!-- Name -->
+            <!-- Basic info -->
 
             <android.support.design.widget.TextInputLayout
                 style="@style/BodyText"
@@ -63,23 +63,20 @@
 
             </android.support.design.widget.TextInputLayout>
 
-            <!-- Number of games -->
+            <android.support.design.widget.TextInputLayout
+                style="@style/BodyText"
+                android:id="@+id/input_layout_number_of_games">
 
-            <LinearLayout
-                android:id="@+id/layout_number_of_games"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/input_number_of_games"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="number"
+                    android:digits="0123456789"
+                    android:imeOptions="flagNoFullscreen|actionDone"
+                    android:hint="@string/hint_league_number_of_games"/>
 
-                <TextView
-                    style="@style/HeaderText"
-                    android:text="@string/number_of_games" />
-
-                <NumberPicker
-                    style="@style/NumberPicker"
-                    android:id="@+id/picker_number_of_games" />
-
-            </LinearLayout>
+            </android.support.design.widget.TextInputLayout>
 
             <!-- Highlights -->
 

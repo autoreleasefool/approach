@@ -267,6 +267,13 @@ data class League(
                         context.resources.getString(errorMessage),
                         BCError.Severity.Error
                 )
+            } else if (gamesPerSeries < 1 || gamesPerSeries > MAX_NUMBER_OF_GAMES) {
+                val errorMessage = R.string.error_league_number_of_games_invalid
+                return@async BCError(
+                        context.resources.getString(errorTitle),
+                        context.resources.getString(errorMessage),
+                        BCError.Severity.Error
+                )
             }
 
             return@async null

@@ -160,7 +160,7 @@ class SeriesRecyclerViewAdapter(
         holder.tvDate?.text = series.prettyDate
         holder.tvTotal?.text = seriesTotal.toString()
 
-        if (shouldHighlightSeries && seriesTotal >= seriesHighlightMin) {
+        if (shouldHighlightSeries && seriesHighlightMin > 0 && seriesTotal >= seriesHighlightMin) {
             holder.tvTotal?.setTextColor(ContextCompat.getColor(context, R.color.seriesHighlight))
         } else {
             holder.tvTotal?.setTextColor(ContextCompat.getColor(context, R.color.primaryBlackText))
@@ -175,7 +175,7 @@ class SeriesRecyclerViewAdapter(
             scoreView.score = series.scores[i]
             scoreView.matchPlay = matchPlayResult
 
-            if (shouldHighlightScores && series.scores[i] >= gameHighlightMin) {
+            if (shouldHighlightScores && gameHighlightMin > 0 && series.scores[i] >= gameHighlightMin) {
                 scoreView.scoreText?.setTextColor(ContextCompat.getColor(context, R.color.gameHighlight))
             } else {
                 scoreView.scoreText?.setTextColor(ContextCompat.getColor(context, R.color.primaryBlackText))

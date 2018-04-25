@@ -114,7 +114,6 @@ class LeagueDialog : DialogFragment() {
         setupLeagueTypeInput(rootView)
         setupNameInput(rootView)
         setupAdditionalGamesInput(rootView)
-        setupNumberPicker(rootView)
 
         return rootView
     }
@@ -208,18 +207,6 @@ class LeagueDialog : DialogFragment() {
         }
     }
 
-    /**
-     * Set up number picker for constraints.
-     *
-     * @param rootView the root view
-     */
-    private fun setupNumberPicker(rootView: View) {
-        rootView.picker_number_of_games.minValue = League.MIN_NUMBER_OF_GAMES
-        rootView.picker_number_of_games.maxValue = League.MAX_NUMBER_OF_GAMES
-        rootView.picker_number_of_games.value = League.DEFAULT_NUMBER_OF_GAMES
-        rootView.picker_number_of_games.wrapSelectorWheel = false
-    }
-
     /** @Override */
     override fun onAttach(context: Context?) {
         super.onAttach(context)
@@ -246,8 +233,7 @@ class LeagueDialog : DialogFragment() {
         league?.let {
             layout_delete_league.visibility = View.VISIBLE
             layout_new_league_event.visibility = View.GONE
-            picker_number_of_games.visibility = View.GONE
-            picker_number_of_games.value = it.gamesPerSeries
+            input_number_of_games.visibility = View.GONE
 
             if (it.isEvent) {
                 layout_additional_games?.visibility = View.GONE
@@ -318,7 +304,10 @@ class LeagueDialog : DialogFragment() {
      */
     private fun resetInputs(league: League) {
         input_name.setText(league.name)
+        input_number_of_games.setText(league.gamesPerSeries.toString())
         checkbox_additional_games.isChecked = league.additionalPinfall > 0 || league.additionalGames > 0
+        input_game_highlight.setText(league.gameHighlight.toString())
+        input_series_highlight.setText(league.seriesHighlight.toString())
         input_additional_pinfall.setText(league.additionalPinfall.toString())
         input_additional_games.setText(league.additionalGames.toString())
     }
@@ -353,7 +342,10 @@ class LeagueDialog : DialogFragment() {
 
                 if (canSave()) {
                     val name = input_name.text.toString()
-                    val numberOfGames = picker_number_of_games.value
+                    val numberOfGamesStr = input_number_of_games.text.toString()
+                    var numberOfGames = 1
+
+
                     val hasAdditional = checkbox_additional_games.isChecked
                     val additionalPinfallStr = input_additional_pinfall.text.toString().replace(",", "")
                     val additionalGamesStr = input_additional_games.text.toString().replace(",", "")
@@ -364,6 +356,17 @@ class LeagueDialog : DialogFragment() {
                     val seriesHighlightStr = input_series_highlight.text.toString().replace(",", "")
                     var gameHighlight = 0
                     var seriesHighlight = 0
+
+                    try {
+                        numberOfGames = numberOfGamesStr.toInt()
+                    } catch (ex: NumberFormatException) {
+                        BCError(
+                                it.resources.getString(R.string.error_saving_league),
+                                it.resources.getString(R.string.error_league_number_of_games_invalid),
+                                BCError.Severity.Error
+                        ).show(it)
+                        return@launch
+                    }
 
                     if (hasAdditional) {
                         try {
@@ -379,7 +382,7 @@ class LeagueDialog : DialogFragment() {
                         }
                     }
 
-                    if (isEvent) {
+                    if (!isEvent) {
                         try {
                             gameHighlight = gameHighlightStr.toInt()
                             seriesHighlight = seriesHighlightStr.toInt()
@@ -411,7 +414,7 @@ class LeagueDialog : DialogFragment() {
 
 
                         resetInputs(newLeague)
-                        input_name.setText(oldName)
+                        if (league != null) input_name.setText(oldName)
                     } else {
                         dismiss()
                         listener?.onFinishLeague(newLeague)
