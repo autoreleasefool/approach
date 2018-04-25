@@ -11,16 +11,15 @@ import ca.josephroque.bowlingcompanion.bowlers.Bowler
 import ca.josephroque.bowlingcompanion.common.*
 import ca.josephroque.bowlingcompanion.database.Contract.*
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper
+import ca.josephroque.bowlingcompanion.games.Game
 import ca.josephroque.bowlingcompanion.scoring.Average
+import ca.josephroque.bowlingcompanion.series.Series
 import ca.josephroque.bowlingcompanion.utils.BCError
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async
 import java.text.SimpleDateFormat
 import java.util.*
-import ca.josephroque.bowlingcompanion.database.Contract.GameEntry
-import ca.josephroque.bowlingcompanion.database.Contract.LeagueEntry
-import ca.josephroque.bowlingcompanion.series.Series
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -35,7 +34,9 @@ data class League(
         val isEvent: Boolean,
         val gamesPerSeries: Int,
         var additionalPinfall: Int,
-        var additionalGames: Int
+        var additionalGames: Int,
+        var gameHighlight: Int,
+        var seriesHighlight: Int
 ): INameAverage, KParcelable {
 
     override var isDeleted: Boolean = false
@@ -51,7 +52,9 @@ data class League(
             isEvent = p.readBoolean(),
             gamesPerSeries = p.readInt(),
             additionalPinfall = p.readInt(),
-            additionalGames = p.readInt()
+            additionalGames = p.readInt(),
+            gameHighlight = p.readInt(),
+            seriesHighlight = p.readInt()
     )
 
     /** @Override */
@@ -64,6 +67,8 @@ data class League(
         writeInt(gamesPerSeries)
         writeInt(additionalPinfall)
         writeInt(additionalGames)
+        writeInt(gameHighlight)
+        writeInt(seriesHighlight)
     }
 
     /**
@@ -107,7 +112,7 @@ data class League(
             val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA)
             val currentDate = dateFormat.format(Date())
 
-            var values = ContentValues().apply {
+            val values = ContentValues().apply {
                 put(LeagueEntry.COLUMN_LEAGUE_NAME, name)
                 put(LeagueEntry.COLUMN_DATE_MODIFIED, currentDate)
                 put(LeagueEntry.COLUMN_BOWLER_ID, bowler.id)
@@ -115,6 +120,8 @@ data class League(
                 put(LeagueEntry.COLUMN_ADDITIONAL_GAMES, additionalGames)
                 put(LeagueEntry.COLUMN_NUMBER_OF_GAMES, gamesPerSeries)
                 put(LeagueEntry.COLUMN_IS_EVENT, isEvent)
+                put(LeagueEntry.COLUMN_GAME_HIGHLIGHT, gameHighlight)
+                put(LeagueEntry.COLUMN_SERIES_HIGHLIGHT, seriesHighlight)
             }
 
             database.beginTransaction()
@@ -180,6 +187,8 @@ data class League(
                 put(LeagueEntry.COLUMN_LEAGUE_NAME, name)
                 put(LeagueEntry.COLUMN_ADDITIONAL_PINFALL, additionalPinfall)
                 put(LeagueEntry.COLUMN_ADDITIONAL_GAMES, additionalGames)
+                put(LeagueEntry.COLUMN_GAME_HIGHLIGHT, gameHighlight)
+                put(LeagueEntry.COLUMN_SERIES_HIGHLIGHT, seriesHighlight)
                 put(LeagueEntry.COLUMN_DATE_MODIFIED, currentDate)
             }
 
@@ -243,6 +252,16 @@ data class League(
                     (additionalPinfall.toDouble() / additionalGames.toDouble() > 450)
             ) {
                 val errorMessage = R.string.error_league_additional_info_unbalanced
+                return@async BCError(
+                        context.resources.getString(errorTitle),
+                        context.resources.getString(errorMessage),
+                        BCError.Severity.Error
+                )
+            } else if (
+                gameHighlight < 0 || gameHighlight > Game.MAX_SCORE ||
+                seriesHighlight < 0 || seriesHighlight > Game.MAX_SCORE * gamesPerSeries
+            ) {
+                val errorMessage = R.string.error_league_highlight_invalid
                 return@async BCError(
                         context.resources.getString(errorTitle),
                         context.resources.getString(errorMessage),
@@ -358,6 +377,8 @@ data class League(
                         + LeagueEntry.COLUMN_IS_EVENT + ", "
                         + LeagueEntry.COLUMN_ADDITIONAL_PINFALL + ", "
                         + LeagueEntry.COLUMN_ADDITIONAL_GAMES + ", "
+                        + LeagueEntry.COLUMN_GAME_HIGHLIGHT + ", "
+                        + LeagueEntry.COLUMN_SERIES_HIGHLIGHT + ", "
                         + LeagueEntry.COLUMN_NUMBER_OF_GAMES + ", "
                         + GameEntry.COLUMN_SCORE
                         + " FROM " + LeagueEntry.TABLE_NAME + " AS league"
@@ -383,6 +404,8 @@ data class League(
                             val isEvent = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_IS_EVENT)) == 1
                             val additionalPinfall = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_ADDITIONAL_PINFALL))
                             val additionalGames = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_ADDITIONAL_GAMES))
+                            val gameHighlight = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_GAME_HIGHLIGHT))
+                            val seriesHighlight = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_SERIES_HIGHLIGHT))
                             val gamesPerSeries = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NUMBER_OF_GAMES))
                             val average = Average.getAdjustedAverage(leagueTotal, leagueNumberOfGames, additionalPinfall, additionalGames)
 
@@ -394,7 +417,9 @@ data class League(
                                     isEvent,
                                     gamesPerSeries,
                                     additionalPinfall,
-                                    additionalGames)
+                                    additionalGames,
+                                    gameHighlight,
+                                    seriesHighlight)
 
                             if ((includeEvents && isEvent) || (includeLeagues && !isEvent)) {
                                 leagues.add(league)
@@ -420,6 +445,8 @@ data class League(
                     val isEvent = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_IS_EVENT)) == 1
                     val additionalPinfall = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_ADDITIONAL_PINFALL))
                     val additionalGames = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_ADDITIONAL_GAMES))
+                    val gameHighlight = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_GAME_HIGHLIGHT))
+                    val seriesHighlight = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_SERIES_HIGHLIGHT))
                     val average = Average.getAdjustedAverage(leagueTotal, leagueNumberOfGames, additionalPinfall, additionalGames)
                     val gamesPerSeries = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NUMBER_OF_GAMES))
 
@@ -431,7 +458,9 @@ data class League(
                             isEvent,
                             gamesPerSeries,
                             additionalPinfall,
-                            additionalGames)
+                            additionalGames,
+                            gameHighlight,
+                            seriesHighlight)
 
                     if ((includeEvents && isEvent) || (includeLeagues && !isEvent)) {
                         leagues.add(league)

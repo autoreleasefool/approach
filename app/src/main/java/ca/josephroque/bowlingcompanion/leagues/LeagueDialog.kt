@@ -75,10 +75,12 @@ class LeagueDialog : DialogFragment() {
             R.id.radio_event -> {
                 isEvent = true
                 layout_additional_games?.visibility = View.GONE
+                layout_highlights?.visibility = View.GONE
             }
             R.id.radio_league -> {
                 isEvent = false
                 layout_additional_games?.visibility = View.VISIBLE
+                layout_highlights?.visibility = View.VISIBLE
             }
             R.id.btn_delete -> {
                 safeLet(context, league) { context, league ->
@@ -249,7 +251,9 @@ class LeagueDialog : DialogFragment() {
 
             if (it.isEvent) {
                 layout_additional_games?.visibility = View.GONE
+                layout_highlights?.visibility = View.GONE
             } else {
+                layout_highlights?.visibility = View.VISIBLE
                 if (it.additionalPinfall > 0 || it.additionalGames > 0) {
                     checkbox_additional_games?.isChecked = true
                     layout_additional_games_details.visibility = View.VISIBLE
@@ -344,6 +348,8 @@ class LeagueDialog : DialogFragment() {
                 val oldName = league?.name ?: ""
                 val oldAdditionalPinfall = league?.additionalPinfall ?: 0
                 val oldAdditionalGames = league?.additionalGames ?: 0
+                val oldGameHighlight = league?.gameHighlight ?: 0
+                val oldSeriesHighlight = league?.seriesHighlight ?: 0
 
                 if (canSave()) {
                     val name = input_name.text.toString()
@@ -353,6 +359,11 @@ class LeagueDialog : DialogFragment() {
                     val additionalGamesStr = input_additional_games.text.toString().replace(",", "")
                     var additionalPinfall = 0
                     var additionalGames = 0
+
+                    val gameHighlightStr = input_game_highlight.text.toString().replace(",", "")
+                    val seriesHighlightStr = input_series_highlight.text.toString().replace(",", "")
+                    var gameHighlight = 0
+                    var seriesHighlight = 0
 
                     if (hasAdditional) {
                         try {
@@ -368,10 +379,26 @@ class LeagueDialog : DialogFragment() {
                         }
                     }
 
-                    val newLeague = league ?: League(bowler,-1, name, 0.0, isEvent, numberOfGames, additionalPinfall, additionalGames)
+                    if (isEvent) {
+                        try {
+                            gameHighlight = gameHighlightStr.toInt()
+                            seriesHighlight = seriesHighlightStr.toInt()
+                        } catch (ex: NumberFormatException) {
+                            BCError(
+                                    it.resources.getString(R.string.error_saving_league),
+                                    it.resources.getString(R.string.error_league_highlight_invalid),
+                                    BCError.Severity.Error
+                            ).show(it)
+                            return@launch
+                        }
+                    }
+
+                    val newLeague = league ?: League(bowler,-1, name, 0.0, isEvent, numberOfGames, additionalPinfall, additionalGames, gameHighlight, seriesHighlight)
                     newLeague.name = name
                     newLeague.additionalPinfall = additionalPinfall
                     newLeague.additionalGames = additionalGames
+                    newLeague.gameHighlight = gameHighlight
+                    newLeague.seriesHighlight = seriesHighlight
 
                     val error = newLeague.save(it).await()
                     if (error != null) {
@@ -379,6 +406,9 @@ class LeagueDialog : DialogFragment() {
                         newLeague.name = oldName
                         newLeague.additionalPinfall = oldAdditionalPinfall
                         newLeague.additionalGames = oldAdditionalGames
+                        newLeague.additionalPinfall = oldGameHighlight
+                        newLeague.additionalGames = oldSeriesHighlight
+
 
                         resetInputs(newLeague)
                         input_name.setText(oldName)

@@ -67,12 +67,15 @@
     <string name="league_additional_games_description">Do you have any unrecorded games you want to add to this league?</string>
     <string name="hint_league_additional_pinfall">Additional Pinfall</string>
     <string name="hint_league_additional_games">Additional Games</string>
+    <string name="hint_league_game_highlight">Highlight scores greater than (optional)</string>
+    <string name="hint_league_series_highlight">Highlight series greater than (optional)</string>
 
     <string name="error_saving_league">Error saving league!</string>
     <string name="error_league_name_invalid">You can only use letters, spaces, and the following characters: \'!@#$%^&amp;*()_+:"?/~-.</string>
     <string name="error_league_name_in_use">That name has already been used. You must choose another.</string>
     <string name="error_league_additional_info_invalid">You can only use numbers in your additional games and pinfall!</string>
     <string name="error_league_additional_info_unbalanced">Your additional pinfall and games cannot equal an average greater than 450.</string>
+    <string name="error_league_highlight_invalid">Your game highlight must be between 0 and 450, and series highlight cannot be greater than the maximum total series.</string>
     <string name="error_league_not_saved">An error occurred and the league could not be saved.</string>
 
     <!-- Events -->

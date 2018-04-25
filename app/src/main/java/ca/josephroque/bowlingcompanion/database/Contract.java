@@ -51,6 +51,10 @@ public final class Contract {
         public static final String COLUMN_ADDITIONAL_PINFALL = "league_additional_pinfall";
         /** Name of the column for the additional games of the league. */
         public static final String COLUMN_ADDITIONAL_GAMES = "league_additional_games";
+        /** Name of the column for the minimum score in the league to highlight. */
+        public static final String COLUMN_GAME_HIGHLIGHT = "league_game_highlight";
+        /** Name of the column for the minimum series total in the league to highlight. */
+        public static final String COLUMN_SERIES_HIGHLIGHT = "league_series_highlight";
         /** Name of the column for the leagues' most recent date modified. */
         public static final String COLUMN_DATE_MODIFIED = "league_date_modified";
         /** Name of the column to indicate if the row is an event. */
