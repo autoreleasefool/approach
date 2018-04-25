@@ -75,15 +75,14 @@ class SeriesFragment : ListFragment<Series, SeriesRecyclerViewAdapter.ViewHolder
     override fun onResume() {
         super.onResume()
         val context = context ?: return
+        val league = league ?: return
         val preferenceManager = PreferenceManager.getDefaultSharedPreferences(context)
 
-        val minSeriesHighlight = preferenceManager.getString(Settings.HIGHLIGHT_SERIES, "800").toInt()
-        val minScoreHighlight = preferenceManager.getString(Settings.HIGHLIGHT_SCORE, "300").toInt()
         val shouldHighlightSeries = preferenceManager.getBoolean(Settings.HIGHLIGHT_SERIES_ENABLED, true)
         val shouldHighlightScores = preferenceManager.getBoolean(Settings.HIGHLIGHT_SCORE_ENABLED, true)
 
-        adapter?.gameHighlightMin = minSeriesHighlight
-        adapter?.seriesHighlightMin = minScoreHighlight
+        adapter?.gameHighlightMin = league.gameHighlight
+        adapter?.seriesHighlightMin = league.seriesHighlight
         adapter?.shouldHighlightSeries = shouldHighlightSeries
         adapter?.shouldHighlightScores = shouldHighlightScores
     }

@@ -46,14 +46,14 @@ class SeriesRecyclerViewAdapter(
         }
 
     /** Minimum color to highlight a series. */
-    var seriesHighlightMin: Int = -1
+    var seriesHighlightMin: Int = 0
         set(value) {
             notifyDataSetChanged()
             field = value
         }
 
     /** Minimum color to highlight a game. */
-    var gameHighlightMin: Int = -1
+    var gameHighlightMin: Int = 0
         set(value) {
             notifyDataSetChanged()
             field = value
