@@ -32,5 +32,17 @@ class App : Application() {
                 imm.hideSoftInputFromWindow(it.windowToken, 0)
             }
         }
+
+        /**
+         * Shows the soft keyboard with the current activity.
+         *
+         * @param activity the activity context
+         */
+        fun showSoftKeyBoard(activity: Activity) {
+            activity.currentFocus?.let {
+                val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                imm.showSoftInput(it, 0)
+            }
+        }
     }
 }
