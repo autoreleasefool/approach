@@ -11,7 +11,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import ca.josephroque.bowlingcompanion.App
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.bowlers.Bowler
@@ -76,11 +78,13 @@ class LeagueDialog : DialogFragment() {
                 isEvent = true
                 layout_additional_games?.visibility = View.GONE
                 layout_highlights?.visibility = View.GONE
+                setImeOptions()
             }
             R.id.radio_league -> {
                 isEvent = false
                 layout_additional_games?.visibility = View.VISIBLE
                 layout_highlights?.visibility = View.VISIBLE
+                setImeOptions()
             }
             R.id.btn_delete -> {
                 safeLet(context, league) { context, league ->
@@ -204,6 +208,7 @@ class LeagueDialog : DialogFragment() {
 
         rootView.checkbox_additional_games.setOnCheckedChangeListener { _, isChecked ->
             layout_additional_games_details.visibility = if (isChecked) View.VISIBLE else View.GONE
+            setImeOptions()
         }
     }
 
@@ -257,6 +262,7 @@ class LeagueDialog : DialogFragment() {
         }
 
         input_name.setSelection(input_name.text.length)
+        setImeOptions()
         updateSaveButton()
     }
 
@@ -310,6 +316,34 @@ class LeagueDialog : DialogFragment() {
         input_series_highlight.setText(league.seriesHighlight.toString())
         input_additional_pinfall.setText(league.additionalPinfall.toString())
         input_additional_games.setText(league.additionalGames.toString())
+    }
+
+    /**
+     * Adjust IME options for text fields based on state of the league being created.
+     */
+    private fun setImeOptions() {
+        input_name.imeOptions = if (league == null || !isEvent)
+            EditorInfo.IME_FLAG_NO_FULLSCREEN or EditorInfo.IME_ACTION_NEXT
+        else
+            EditorInfo.IME_FLAG_NO_FULLSCREEN or EditorInfo.IME_ACTION_DONE
+
+        input_number_of_games.imeOptions = if (!isEvent)
+            EditorInfo.IME_FLAG_NO_FULLSCREEN or EditorInfo.IME_ACTION_NEXT
+        else
+            EditorInfo.IME_FLAG_NO_FULLSCREEN or EditorInfo.IME_ACTION_DONE
+
+        input_series_highlight.imeOptions = if (!isEvent && checkbox_additional_games.isChecked)
+            EditorInfo.IME_FLAG_NO_FULLSCREEN or EditorInfo.IME_ACTION_NEXT
+        else
+            EditorInfo.IME_FLAG_NO_FULLSCREEN or EditorInfo.IME_ACTION_DONE
+
+        val activity = activity ?: return
+        val focusedField = view?.findFocus() as? EditText ?: return
+
+        App.hideSoftKeyBoard(activity)
+        val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.restartInput(focusedField)
+        App.showSoftKeyBoard(activity)
     }
 
     /**
@@ -415,6 +449,7 @@ class LeagueDialog : DialogFragment() {
 
                         resetInputs(newLeague)
                         if (league != null) input_name.setText(oldName)
+                        setImeOptions()
                     } else {
                         dismiss()
                         listener?.onFinishLeague(newLeague)
