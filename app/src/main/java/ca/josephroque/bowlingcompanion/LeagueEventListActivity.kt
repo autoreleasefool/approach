@@ -168,9 +168,9 @@ class LeagueEventListActivity : BaseActivity(),
     override fun onFinishLeague(league: League) {
         val adapter = pager_leagues_events.adapter as? LeaguesEventsPagerAdapter
         val leagueFragment = if (league.isEvent) {
-            adapter?.getFragment(LEAGUE_FRAGMENT) as? LeagueFragment
-        } else {
             adapter?.getFragment(EVENT_FRAGMENT) as? LeagueFragment
+        } else {
+            adapter?.getFragment(LEAGUE_FRAGMENT) as? LeagueFragment
         }
         leagueFragment?.refreshList(league)
     }
