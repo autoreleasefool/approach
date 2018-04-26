@@ -137,7 +137,7 @@ data class League(
                     val series = Series(
                             this@League,
                             -1,
-                            currentDate,
+                            Date(),
                             gamesPerSeries,
                             IntArray(gamesPerSeries).toList(),
                             ByteArray(gamesPerSeries).toList()

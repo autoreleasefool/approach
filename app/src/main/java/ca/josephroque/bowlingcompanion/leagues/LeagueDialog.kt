@@ -47,6 +47,13 @@ class LeagueDialog : DialogFragment() {
         /** Identifier for if the league is an event or not. */
         private const val ARG_IS_EVENT = "${TAG}_is_event"
 
+        /**
+         * Create a new instance of the [LeagueDialog].
+         *
+         * @param bowler bowler that will own the league
+         * @param league a [League] to edit, or null to create a new league
+         * @param isEvent true to create an event, false to create a league
+         */
         fun newInstance(bowler: Bowler, league: League?, isEvent: Boolean): LeagueDialog {
             val dialog = LeagueDialog()
             val args = Bundle()
@@ -377,8 +384,7 @@ class LeagueDialog : DialogFragment() {
                 if (canSave()) {
                     val name = input_name.text.toString()
                     val numberOfGamesStr = input_number_of_games.text.toString()
-                    var numberOfGames = 1
-
+                    val numberOfGames: Int
 
                     val hasAdditional = checkbox_additional_games.isChecked
                     val additionalPinfallStr = input_additional_pinfall.text.toString().replace(",", "")
