@@ -6,10 +6,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import android.util.Log
 import ca.josephroque.bowlingcompanion.R
-import ca.josephroque.bowlingcompanion.common.IDeletable
-import ca.josephroque.bowlingcompanion.common.IIdentifiable
-import ca.josephroque.bowlingcompanion.common.KParcelable
-import ca.josephroque.bowlingcompanion.common.parcelableCreator
+import ca.josephroque.bowlingcompanion.common.*
 import ca.josephroque.bowlingcompanion.database.Contract.*
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper
 import ca.josephroque.bowlingcompanion.games.Game
@@ -19,6 +16,7 @@ import ca.josephroque.bowlingcompanion.utils.DateUtils
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async
+import java.util.*
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -27,7 +25,7 @@ import kotlinx.coroutines.experimental.async
  */
 data class Series(val league: League,
                   override var id: Long,
-                  var date: String,
+                  var date: Date,
                   var numberOfGames: Int,
                   var scores: List<Int>,
                   var matchPlay: List<Byte>
@@ -38,7 +36,7 @@ data class Series(val league: League,
 
     /** Beautifies the date to be displayed. */
     val prettyDate: String
-        get() = DateUtils.formattedDateToPrettyCompact(date)
+        get() = DateUtils.dateToPretty(date)
 
     /**
      * Construct [Series] from a [Parcel]
@@ -46,7 +44,7 @@ data class Series(val league: League,
     private constructor(p: Parcel): this(
             league = p.readParcelable<League>(League::class.java.classLoader),
             id = p.readLong(),
-            date = p.readString(),
+            date = p.readDate()!!,
             numberOfGames = p.readInt(),
             scores = arrayListOf<Int>().apply {
                 val size = p.readInt()
@@ -66,7 +64,7 @@ data class Series(val league: League,
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeParcelable(league, 0)
         writeLong(id)
-        writeString(date)
+        writeDate(date)
         writeInt(numberOfGames)
         writeInt(scores.size)
         writeIntArray(scores.toIntArray())
@@ -98,7 +96,7 @@ data class Series(val league: League,
         return async(CommonPool) {
             val database = DatabaseHelper.getInstance(context).writableDatabase
             var values = ContentValues().apply {
-                put(SeriesEntry.COLUMN_SERIES_DATE, date)
+                put(SeriesEntry.COLUMN_SERIES_DATE, DateUtils.dateToSeriesDate(date))
                 put(SeriesEntry.COLUMN_LEAGUE_ID, league.id)
             }
 
@@ -156,7 +154,7 @@ data class Series(val league: League,
         return async(CommonPool) {
             val database = DatabaseHelper.getInstance(context).writableDatabase
             val values = ContentValues().apply {
-                put(SeriesEntry.COLUMN_SERIES_DATE, date)
+                put(SeriesEntry.COLUMN_SERIES_DATE, DateUtils.dateToSeriesDate(date))
             }
 
             database.beginTransaction()
@@ -256,7 +254,7 @@ data class Series(val league: League,
                             cursor.moveToPrevious()
 
                             val id = cursor.getLong(cursor.getColumnIndex("sid"))
-                            val seriesDate = cursor.getString(cursor.getColumnIndex(SeriesEntry.COLUMN_SERIES_DATE))
+                            val seriesDate = DateUtils.seriesDateToDate(cursor.getString(cursor.getColumnIndex(SeriesEntry.COLUMN_SERIES_DATE)))
                             val series = Series(
                                     league,
                                     id,
@@ -282,7 +280,7 @@ data class Series(val league: League,
 
                     cursor.moveToPrevious()
                     val id = cursor.getLong(cursor.getColumnIndex("sid"))
-                    val seriesDate = cursor.getString(cursor.getColumnIndex(SeriesEntry.COLUMN_SERIES_DATE))
+                    val seriesDate = DateUtils.seriesDateToDate(cursor.getString(cursor.getColumnIndex(SeriesEntry.COLUMN_SERIES_DATE)))
                     val series = Series(
                             league,
                             id,
