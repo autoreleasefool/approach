@@ -113,6 +113,27 @@ class SeriesRecyclerViewAdapter(
     }
 
     /**
+     * Check if a series should be highlighted.
+     *
+     * @param seriesTotal the series total
+     * @return true if the series total is high enough to highlight, and highlighting is active,
+     *         false otherwise
+     */
+    private fun shouldHighlightSeries(seriesTotal: Int): Boolean {
+        return shouldHighlightSeries && seriesHighlightMin > 0 && seriesTotal >= seriesHighlightMin
+    }
+
+    /**
+     * Check if a game should be highlighted.
+     *
+     * @param score the score of the game
+     * @return true if the score is high enough to highlight, and highlighting is active false otherwise
+     */
+    private fun shouldHighlightGame(score: Int): Boolean {
+        return shouldHighlightScores && gameHighlightMin > 0 && score >= gameHighlightMin
+    }
+
+    /**
      * Sets up views to display a [Series] in a condensed view.
      *
      * @param holder the views to display items in
@@ -128,7 +149,7 @@ class SeriesRecyclerViewAdapter(
         holder.tvDate?.text = series.prettyDate
         holder.tvTotal?.text = seriesTotal.toString()
 
-        if (shouldHighlightSeries && seriesTotal >= seriesHighlightMin) {
+        if (shouldHighlightSeries(seriesTotal)) {
             holder.tvTotal?.setTextColor(ContextCompat.getColor(context, R.color.seriesHighlight))
         } else {
             holder.tvTotal?.setTextColor(ContextCompat.getColor(context, R.color.primaryBlackText))
@@ -160,7 +181,7 @@ class SeriesRecyclerViewAdapter(
         holder.tvDate?.text = series.prettyDate
         holder.tvTotal?.text = seriesTotal.toString()
 
-        if (shouldHighlightSeries && seriesHighlightMin > 0 && seriesTotal >= seriesHighlightMin) {
+        if (shouldHighlightSeries(seriesTotal)) {
             holder.tvTotal?.setTextColor(ContextCompat.getColor(context, R.color.seriesHighlight))
         } else {
             holder.tvTotal?.setTextColor(ContextCompat.getColor(context, R.color.primaryBlackText))
@@ -175,7 +196,7 @@ class SeriesRecyclerViewAdapter(
             scoreView.score = series.scores[i]
             scoreView.matchPlay = matchPlayResult
 
-            if (shouldHighlightScores && gameHighlightMin > 0 && series.scores[i] >= gameHighlightMin) {
+            if (shouldHighlightGame(series.scores[i])) {
                 scoreView.scoreText?.setTextColor(ContextCompat.getColor(context, R.color.gameHighlight))
             } else {
                 scoreView.scoreText?.setTextColor(ContextCompat.getColor(context, R.color.primaryBlackText))
