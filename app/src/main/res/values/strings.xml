@@ -94,6 +94,7 @@
     <string name="series">Series</string>
     <string name="edit_series">Edit series</string>
     <string name="delete_series">Delete series</string>
+    <string name="series_current_date">Current date</string>
     <string name="change_date">Change date</string>
 
     <string name="error_saving_series">Error saving series!</string>

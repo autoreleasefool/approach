@@ -2,10 +2,12 @@ package ca.josephroque.bowlingcompanion
 
 import android.graphics.Color
 import android.os.Bundle
+import android.support.v4.app.FragmentTransaction
 import android.view.Menu
 import ca.josephroque.bowlingcompanion.common.activities.BaseActivity
 import ca.josephroque.bowlingcompanion.leagues.League
 import ca.josephroque.bowlingcompanion.series.Series
+import ca.josephroque.bowlingcompanion.series.SeriesDialog
 import ca.josephroque.bowlingcompanion.series.SeriesFragment
 import kotlinx.android.synthetic.main.activity_series_list.*
 
@@ -15,7 +17,8 @@ import kotlinx.android.synthetic.main.activity_series_list.*
  * Activity to display league details.
  */
 class SeriesListActivity: BaseActivity(),
-        SeriesFragment.OnSeriesFragmentInteractionListener
+        SeriesFragment.OnSeriesFragmentInteractionListener,
+        SeriesDialog.OnSeriesDialogInteractionListener
 {
 
     companion object {
@@ -90,11 +93,43 @@ class SeriesListActivity: BaseActivity(),
      * @param series the series to edit, or null if a new series should be added
      */
     private fun promptAddOrEditSeries(series: Series? = null) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (series != null) {
+            val newFragment = SeriesDialog.newInstance(series)
+            supportFragmentManager.beginTransaction()
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    .add(android.R.id.content, newFragment)
+                    .addToBackStack(null)
+                    .commit()
+        } else {
+            TODO("not implemented")
+        }
+    }
+
+    /**
+     * Refresh the list of series.
+     */
+    private fun refreshSeries(series: Series? = null) {
+        val fragment = supportFragmentManager.findFragmentById(R.id.layout_league_details) as? SeriesFragment ?: return
+        fragment.refreshList(series)
     }
 
     /** @Override */
     override fun onSeriesSelected(series: Series, toEdit: Boolean) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        if (toEdit) {
+            promptAddOrEditSeries(series)
+        } else {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
+    }
+
+    /** @Override */
+    override fun onFinishSeries(series: Series) {
+        refreshSeries(series)
+    }
+
+    /** @Override */
+    override fun onDeleteSeries(series: Series) {
+        val fragment = supportFragmentManager.findFragmentById(R.id.layout_league_details) as? SeriesFragment ?: return
+        fragment.onItemDelete(series)
     }
 }

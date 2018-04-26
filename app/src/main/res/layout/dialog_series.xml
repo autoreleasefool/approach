@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/Dialog">
+
+    <android.support.v7.widget.Toolbar
+        style="@style/Toolbar"
+        android:id="@+id/toolbar_series" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout style="@style/BaseContainer">
+
+            <TextView
+                style="@style/HeaderText"
+                android:text="@string/series_current_date" />
+
+            <TextView
+                style="@style/BodyText"
+                android:id="@+id/tv_date" />
+
+            <Button
+                style="@style/PrimaryButton"
+                android:id="@+id/btn_change_date"
+                android:text="@string/change_date" />
+
+            <View style="@style/Divider" />
+
+            <Button
+                style="@style/DeleteButton"
+                android:id="@+id/btn_delete"
+                android:text="@string/delete_series" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

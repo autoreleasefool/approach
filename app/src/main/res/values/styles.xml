@@ -84,18 +84,22 @@
 
     <!-- Buttons -->
 
-    <!-- Keep in line with v21/styles.xml -->
-    <style name="DeleteButton" parent="Widget.AppCompat.Button">
-        <item name="android:theme">@style/DeleteButton</item>
+    <style name="PrimaryButton" parent="Widget.AppCompat.Button">
+        <item name="android:theme">@style/PrimaryButton</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="colorButtonNormal">@color/dangerRed</item>
         <item name="android:textColor">@color/primaryWhiteText</item>
         <item name="android:layout_marginLeft">@dimen/base_margin_large</item>
         <item name="android:layout_marginRight">@dimen/base_margin_large</item>
         <item name="android:layout_marginTop">@dimen/base_margin</item>
         <item name="android:layout_marginBottom">@dimen/base_margin</item>
+    </style>
 
+    <!-- Keep in line with v21/styles.xml -->
+    <style name="DeleteButton" parent="@style/PrimaryButton">
+        <item name="android:theme">@style/DeleteButton</item>
+        <item name="colorButtonNormal">@color/dangerRed</item>
+        <item name="android:textColor">@color/primaryWhiteText</item>
     </style>
 
     <style name="FloatingActionButton">
