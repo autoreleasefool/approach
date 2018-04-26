@@ -88,6 +88,7 @@
         <item name="android:theme">@style/PrimaryButton</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
+        <item name="colorButtonNormal">@color/colorPrimary</item>
         <item name="android:textColor">@color/primaryWhiteText</item>
         <item name="android:layout_marginLeft">@dimen/base_margin_large</item>
         <item name="android:layout_marginRight">@dimen/base_margin_large</item>
