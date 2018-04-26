@@ -140,8 +140,8 @@ class SeriesRecyclerViewAdapter(
             holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorListAlternate))
         }
 
-        holder.view.setOnClickListener(this)
-        holder.view.setOnLongClickListener(this)
+        holder.itemView.setOnClickListener(this)
+        holder.itemView.setOnLongClickListener(this)
     }
 
     /**
@@ -197,8 +197,8 @@ class SeriesRecyclerViewAdapter(
             holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorListAlternate))
         }
 
-        holder.view.setOnClickListener(this)
-        holder.view.setOnLongClickListener(this)
+        holder.itemView.setOnClickListener(this)
+        holder.itemView.setOnLongClickListener(this)
     }
 
     /**
@@ -223,7 +223,8 @@ class SeriesRecyclerViewAdapter(
                 listener?.onItemDelete(values[position])
             }
         }
-        holder.view.setOnClickListener(deletedItemListener)
+        holder.itemView.setOnClickListener(deletedItemListener)
+        holder.itemView.setOnLongClickListener(null)
         holder.tvUndo?.setOnClickListener(deletedItemListener)
     }
 

@@ -117,8 +117,8 @@ class NameAverageRecyclerViewAdapter<T : INameAverage>(
             holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorListAlternate))
         }
 
-        holder.view.setOnClickListener(this)
-        holder.view.setOnLongClickListener(this)
+        holder.itemView.setOnClickListener(this)
+        holder.itemView.setOnLongClickListener(this)
     }
 
     /**
@@ -143,8 +143,8 @@ class NameAverageRecyclerViewAdapter<T : INameAverage>(
             holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorListAlternate))
         }
 
-        holder.view.setOnClickListener(this)
-        holder.view.setOnLongClickListener(this)
+        holder.itemView.setOnClickListener(this)
+        holder.itemView.setOnLongClickListener(this)
     }
 
     /**
@@ -169,7 +169,8 @@ class NameAverageRecyclerViewAdapter<T : INameAverage>(
                 listener?.onItemDelete(values[position])
             }
         }
-        holder.view.setOnClickListener(deletedItemListener)
+        holder.itemView.setOnClickListener(deletedItemListener)
+        holder.itemView.setOnLongClickListener(null)
         holder.tvUndo?.setOnClickListener(deletedItemListener)
     }
 

@@ -105,8 +105,8 @@ class TeamRecyclerViewAdapter(
         val chipMargin = context.resources.getDimension(R.dimen.chip_margin).toInt()
         holder.flowMembers?.childSpacing = chipMargin
 
-        holder.view.setOnClickListener(this)
-        holder.view.setOnLongClickListener(this)
+        holder.itemView.setOnClickListener(this)
+        holder.itemView.setOnLongClickListener(this)
     }
 
     /**
@@ -132,7 +132,8 @@ class TeamRecyclerViewAdapter(
             }
         }
 
-        holder.view.setOnClickListener(deletedItemListener)
+        holder.itemView.setOnClickListener(deletedItemListener)
+        holder.itemView.setOnLongClickListener(null)
         holder.tvUndo?.setOnClickListener(deletedItemListener)
     }
 
