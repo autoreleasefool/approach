@@ -16,14 +16,8 @@ object Settings {
     /** Identifier for preference to enable highlighting scores.  */
     const val HIGHLIGHT_SCORE_ENABLED = "pref_highlight_score_enabled"
 
-    /** Identifier for preference which allows user to select a minimum score to be highlighted.  */
-    const val HIGHLIGHT_SCORE = "pref_highlight_score"
-
     /** Identifier for preference to enable highlighting series.  */
     const val HIGHLIGHT_SERIES_ENABLED = "pref_highlight_series_enabled"
-
-    /** Identifier for preference which allows user to select a minimum series total to be highlighted.  */
-    const val HIGHLIGHT_SERIES = "pref_highlight_series"
 
     /** Identifier for preference to show averages with up to 1 decimal place of accuracy.  */
     const val AVERAGE_AS_DECIMAL = "pref_average_as_decimal"

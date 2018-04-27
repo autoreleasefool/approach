@@ -12,24 +12,12 @@
             android:summaryOff="@string/pref_highlight_score_enabled_summary_off"
             android:defaultValue="@bool/pref_highlight_score_enabled_default" />
 
-        <android.support.v7.preference.Preference
-            android:dependency="pref_highlight_score_enabled"
-            android:key="pref_highlight_score"
-            android:title="@string/pref_highlight_score_title"
-            android:summary="@string/pref_highlight_score_summary" />
-
         <android.support.v7.preference.SwitchPreferenceCompat
             android:key="pref_highlight_series_enabled"
             android:title="@string/pref_highlight_series_enabled_title"
             android:summaryOn="@string/pref_highlight_series_enabled_summary_on"
             android:summaryOff="@string/pref_highlight_series_enabled_summary_off"
             android:defaultValue="@bool/pref_highlight_series_enabled_default" />
-
-        <android.support.v7.preference.Preference
-            android:dependency="pref_highlight_series_enabled"
-            android:key="pref_highlight_series"
-            android:title="@string/pref_highlight_series_title"
-            android:summary="@string/pref_highlight_series_summary" />
 
         <android.support.v7.preference.CheckBoxPreference
             android:key="pref_average_as_decimal"
