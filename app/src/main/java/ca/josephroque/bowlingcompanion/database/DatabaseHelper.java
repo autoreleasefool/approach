@@ -209,8 +209,8 @@ public final class DatabaseHelper
                 + LeagueEntry.COLUMN_BASE_GAMES + " INTEGER NOT NULL DEFAULT 0, "
                 + LeagueEntry.COLUMN_ADDITIONAL_PINFALL + " INTEGER NOT NULL DEFAULT 0, "
                 + LeagueEntry.COLUMN_ADDITIONAL_GAMES + " INTEGER NOT NULL DEFAULT 0, "
-                + LeagueEntry.COLUMN_GAME_HIGHLIGHT + " INTEGER NOT NULL DEFAULT 0, "
-                + LeagueEntry.COLUMN_SERIES_HIGHLIGHT + " INTEGER NOT NULL DEFAULT 0, "
+                + LeagueEntry.COLUMN_GAME_HIGHLIGHT + " INTEGER NOT NULL DEFAULT -1, "
+                + LeagueEntry.COLUMN_SERIES_HIGHLIGHT + " INTEGER NOT NULL DEFAULT -1, "
                 + LeagueEntry.COLUMN_DATE_MODIFIED + " TEXT NOT NULL, "
                 + LeagueEntry.COLUMN_IS_EVENT + " INTEGER NOT NULL DEFAULT 0, "
                 + LeagueEntry.COLUMN_BOWLER_ID + " INTEGER NOT NULL"
@@ -613,10 +613,10 @@ public final class DatabaseHelper
                 + LeagueEntry.COLUMN_ADDITIONAL_GAMES + " INTEGER NOT NULL DEFAULT 0;");
         db.execSQL("ALTER TABLE " + LeagueEntry.TABLE_NAME
                 + " ADD COLUMN "
-                + LeagueEntry.COLUMN_GAME_HIGHLIGHT + " INTEGER NOT NULL DEFAULT 0;");
+                + LeagueEntry.COLUMN_GAME_HIGHLIGHT + " INTEGER NOT NULL DEFAULT -1;");
         db.execSQL("ALTER TABLE " + LeagueEntry.TABLE_NAME
                 + " ADD COLUMN "
-                + LeagueEntry.COLUMN_SERIES_HIGHLIGHT + " INTEGER NOT NULL DEFAULT 0;");
+                + LeagueEntry.COLUMN_SERIES_HIGHLIGHT + " INTEGER NOT NULL DEFAULT -1;");
 
         try {
             db.beginTransaction();

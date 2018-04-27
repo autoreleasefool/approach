@@ -9,6 +9,7 @@ import android.widget.TextView
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.adapters.BaseRecyclerViewAdapter
 import ca.josephroque.bowlingcompanion.games.MatchPlayResult
+import ca.josephroque.bowlingcompanion.leagues.League
 import com.nex3z.flowlayout.FlowLayout
 
 /**
@@ -116,11 +117,16 @@ class SeriesRecyclerViewAdapter(
      * Check if a series should be highlighted.
      *
      * @param seriesTotal the series total
+     * @param numberOfGames number of games in the series
      * @return true if the series total is high enough to highlight, and highlighting is active,
      *         false otherwise
      */
-    private fun shouldHighlightSeries(seriesTotal: Int): Boolean {
-        return shouldHighlightSeries && seriesHighlightMin > 0 && seriesTotal >= seriesHighlightMin
+    private fun shouldHighlightSeries(seriesTotal: Int, numberOfGames: Int): Boolean {
+        return when {
+            seriesHighlightMin > 0 -> shouldHighlightSeries && seriesTotal > seriesHighlightMin
+            seriesHighlightMin == -1 -> shouldHighlightSeries && seriesTotal > League.DEFAULT_SERIES_HIGHLIGHT[numberOfGames - 1]
+            else -> false
+        }
     }
 
     /**
@@ -130,7 +136,11 @@ class SeriesRecyclerViewAdapter(
      * @return true if the score is high enough to highlight, and highlighting is active false otherwise
      */
     private fun shouldHighlightGame(score: Int): Boolean {
-        return shouldHighlightScores && gameHighlightMin > 0 && score >= gameHighlightMin
+        return when {
+            gameHighlightMin > 0 -> shouldHighlightScores && score > gameHighlightMin
+            gameHighlightMin == -1 -> shouldHighlightScores && score > League.DEFAULT_GAME_HIGHLIGHT
+            else -> false
+        }
     }
 
     /**
@@ -149,7 +159,7 @@ class SeriesRecyclerViewAdapter(
         holder.tvDate?.text = series.prettyDate
         holder.tvTotal?.text = seriesTotal.toString()
 
-        if (shouldHighlightSeries(seriesTotal)) {
+        if (shouldHighlightSeries(seriesTotal, series.numberOfGames)) {
             holder.tvTotal?.setTextColor(ContextCompat.getColor(context, R.color.seriesHighlight))
         } else {
             holder.tvTotal?.setTextColor(ContextCompat.getColor(context, R.color.primaryBlackText))
@@ -181,7 +191,7 @@ class SeriesRecyclerViewAdapter(
         holder.tvDate?.text = series.prettyDate
         holder.tvTotal?.text = seriesTotal.toString()
 
-        if (shouldHighlightSeries(seriesTotal)) {
+        if (shouldHighlightSeries(seriesTotal, series.numberOfGames)) {
             holder.tvTotal?.setTextColor(ContextCompat.getColor(context, R.color.seriesHighlight))
         } else {
             holder.tvTotal?.setTextColor(ContextCompat.getColor(context, R.color.primaryBlackText))

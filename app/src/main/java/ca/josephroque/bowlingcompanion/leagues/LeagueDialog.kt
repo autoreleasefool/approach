@@ -408,7 +408,7 @@ class LeagueDialog : DialogFragment() {
                         return@launch
                     }
 
-                    if (hasAdditional) {
+                    if (hasAdditional && additionalGamesStr.isNotEmpty() && additionalPinfallStr.isNotEmpty()) {
                         try {
                             additionalPinfall = additionalPinfallStr.toInt()
                             additionalGames = additionalGamesStr.toInt()
@@ -422,7 +422,7 @@ class LeagueDialog : DialogFragment() {
                         }
                     }
 
-                    if (!isEvent) {
+                    if (!isEvent && gameHighlightStr.isNotEmpty() && seriesHighlightStr.isNotEmpty()) {
                         try {
                             gameHighlight = gameHighlightStr.toInt()
                             seriesHighlight = seriesHighlightStr.toInt()

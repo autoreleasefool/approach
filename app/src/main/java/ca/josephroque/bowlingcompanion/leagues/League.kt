@@ -267,7 +267,7 @@ data class League(
                         context.resources.getString(errorMessage),
                         BCError.Severity.Error
                 )
-            } else if (gamesPerSeries < 1 || gamesPerSeries > MAX_NUMBER_OF_GAMES) {
+            } else if (gamesPerSeries < MIN_NUMBER_OF_GAMES || gamesPerSeries > MAX_NUMBER_OF_GAMES) {
                 val errorMessage = R.string.error_league_number_of_games_invalid
                 return@async BCError(
                         context.resources.getString(errorTitle),
@@ -305,6 +305,12 @@ data class League(
 
         /** Default number of games in a league or event. */
         const val DEFAULT_NUMBER_OF_GAMES = 1
+
+        /** Default minimum game score to highlight when a minimum is not defined. */
+        const val DEFAULT_GAME_HIGHLIGHT = 300
+
+        /** Default minimum series total to highlight when a minimum is not defined. */
+        val DEFAULT_SERIES_HIGHLIGHT = intArrayOf(250, 500, 750, 1000, 1250, 1500, 1750, 2000, 2250, 2500, 2750, 3000, 3250, 3500, 3750, 4000, 4250, 4500, 4750, 5000)
 
         /**
          * Order by which to sort bowlers.
