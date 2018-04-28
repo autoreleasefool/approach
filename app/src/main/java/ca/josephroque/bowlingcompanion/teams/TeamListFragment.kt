@@ -19,24 +19,24 @@ import kotlinx.coroutines.experimental.async
  *
  * A fragment representing a list of Teams.
  */
-class TeamFragment : ListFragment<Team, TeamRecyclerViewAdapter.ViewHolder, TeamRecyclerViewAdapter>() {
+class TeamListFragment : ListFragment<Team, TeamRecyclerViewAdapter.ViewHolder, TeamRecyclerViewAdapter>() {
 
     companion object {
         /** Logging identifier. */
-        private const val TAG = "TeamFragment"
+        private const val TAG = "TeamListFragment"
 
         /**
          * Creates a new instance.
          *
          * @return the new instance
          */
-        fun newInstance(): TeamFragment {
-            return TeamFragment()
+        fun newInstance(): TeamListFragment {
+            return TeamListFragment()
         }
     }
 
     /** Handle team interaction events. */
-    private var listener: OnTeamFragmentInteractionListener? = null
+    private var listener: OnTeamListFragmentInteractionListener? = null
 
     /** @Override */
     override fun onCreateView(
@@ -51,7 +51,7 @@ class TeamFragment : ListFragment<Team, TeamRecyclerViewAdapter.ViewHolder, Team
     /** @Override */
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        context as? OnTeamFragmentInteractionListener ?: throw RuntimeException(context!!.toString() + " must implement OnTeamFragmentInteractionListener")
+        context as? OnTeamListFragmentInteractionListener ?: throw RuntimeException(context!!.toString() + " must implement OnTeamListFragmentInteractionListener")
         listener = context
     }
 
@@ -152,7 +152,7 @@ class TeamFragment : ListFragment<Team, TeamRecyclerViewAdapter.ViewHolder, Team
     /**
      * Handles interactions with the Team list.
      */
-    interface OnTeamFragmentInteractionListener {
+    interface OnTeamListFragmentInteractionListener {
 
         /**
          * Indicates a team has been selected and further details should be shown to the user.

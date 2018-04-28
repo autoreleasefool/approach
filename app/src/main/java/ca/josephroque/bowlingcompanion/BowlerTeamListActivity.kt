@@ -21,7 +21,7 @@ import ca.josephroque.bowlingcompanion.common.activities.BaseActivity
 import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
 import ca.josephroque.bowlingcompanion.teams.Team
 import ca.josephroque.bowlingcompanion.teams.TeamDialog
-import ca.josephroque.bowlingcompanion.teams.TeamFragment
+import ca.josephroque.bowlingcompanion.teams.TeamListFragment
 import kotlinx.android.synthetic.main.activity_bowler_team_list.*
 import java.lang.ref.WeakReference
 
@@ -32,7 +32,7 @@ import java.lang.ref.WeakReference
  */
 class BowlerTeamListActivity : BaseActivity(),
         BowlerFragment.OnBowlerFragmentInteractionListener,
-        TeamFragment.OnTeamFragmentInteractionListener,
+        TeamListFragment.OnTeamListFragmentInteractionListener,
         BowlerDialog.OnBowlerDialogInteractionListener,
         TeamDialog.OnTeamDialogInteractionListener {
 
@@ -43,7 +43,7 @@ class BowlerTeamListActivity : BaseActivity(),
         /** Index for [BowlerFragment]. */
         const val BOWLER_FRAGMENT = 0
 
-        /** Index for [TeamFragment]. */
+        /** Index for [TeamListFragment]. */
         const val TEAM_FRAGMENT = 1
     }
 
@@ -198,7 +198,7 @@ class BowlerTeamListActivity : BaseActivity(),
         val bowlerFragment = adapter?.getFragment(BOWLER_FRAGMENT) as? BowlerFragment
         bowlerFragment?.refreshList(bowler)
 
-        val teamFragment = adapter?.getFragment(TEAM_FRAGMENT) as? TeamFragment
+        val teamFragment = adapter?.getFragment(TEAM_FRAGMENT) as? TeamListFragment
         teamFragment?.refreshList()
     }
 
@@ -208,21 +208,21 @@ class BowlerTeamListActivity : BaseActivity(),
         val bowlerFragment = adapter?.getFragment(BOWLER_FRAGMENT) as? BowlerFragment
         bowlerFragment?.onItemDelete(bowler)
 
-        val teamFragment = adapter?.getFragment(TEAM_FRAGMENT) as? TeamFragment
+        val teamFragment = adapter?.getFragment(TEAM_FRAGMENT) as? TeamListFragment
         teamFragment?.refreshList()
     }
 
     /** @Override */
     override fun onFinishTeam(team: Team) {
         val adapter = pager_bowlers_teams.adapter as? BowlersTeamsPagerAdapter
-        val teamFragment = adapter?.getFragment(TEAM_FRAGMENT) as? TeamFragment
+        val teamFragment = adapter?.getFragment(TEAM_FRAGMENT) as? TeamListFragment
         teamFragment?.refreshList(team)
     }
 
     /** @Override */
     override fun onDeleteTeam(team: Team) {
         val adapter = pager_bowlers_teams.adapter as? BowlersTeamsPagerAdapter
-        val teamFragment = adapter?.getFragment(TEAM_FRAGMENT) as? TeamFragment
+        val teamFragment = adapter?.getFragment(TEAM_FRAGMENT) as? TeamListFragment
         teamFragment?.onItemDelete(team)
     }
 
@@ -259,7 +259,7 @@ class BowlerTeamListActivity : BaseActivity(),
         override fun getItem(position: Int): Fragment? {
             val fragment: Fragment = when (position) {
                 BOWLER_FRAGMENT -> BowlerFragment.newInstance()
-                TEAM_FRAGMENT -> TeamFragment.newInstance()
+                TEAM_FRAGMENT -> TeamListFragment.newInstance()
                 else -> return null
             }
 
