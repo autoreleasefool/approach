@@ -21,11 +21,11 @@ import kotlinx.coroutines.experimental.async
  *
  * A fragment representing a list of leagues.
  */
-class LeagueFragment : ListFragment<League, NameAverageRecyclerViewAdapter<League>.ViewHolder, NameAverageRecyclerViewAdapter<League>>() {
+class LeagueListFragment : ListFragment<League, NameAverageRecyclerViewAdapter<League>.ViewHolder, NameAverageRecyclerViewAdapter<League>>() {
 
     companion object {
         /** Logging identifier. */
-        private const val TAG = "LeagueFragment"
+        private const val TAG = "LeagueListFragment"
 
         /** Identifier for the argument that represents the [Bowler] whose leagues are displayed. */
         private const val ARG_BOWLER = "${TAG}_bowler"
@@ -40,8 +40,8 @@ class LeagueFragment : ListFragment<League, NameAverageRecyclerViewAdapter<Leagu
          * @param showEvents true to show bowler's events, false to show leagues
          * @return the new instance
          */
-        fun newInstance(bowler: Bowler, showEvents: Boolean): LeagueFragment {
-            val fragment = LeagueFragment()
+        fun newInstance(bowler: Bowler, showEvents: Boolean): LeagueListFragment {
+            val fragment = LeagueListFragment()
             val args = Bundle()
             args.putParcelable(ARG_BOWLER, bowler)
             args.putBoolean(ARG_SHOW_EVENTS, showEvents)
@@ -51,7 +51,7 @@ class LeagueFragment : ListFragment<League, NameAverageRecyclerViewAdapter<Leagu
     }
 
     /** Interaction handler. */
-    private var listener: OnLeagueFragmentInteractionListener? = null
+    private var listener: OnLeagueListFragmentInteractionListener? = null
 
     /** The bowler whose leagues are to be displayed. */
     private var bowler: Bowler? = null
@@ -75,7 +75,7 @@ class LeagueFragment : ListFragment<League, NameAverageRecyclerViewAdapter<Leagu
     /** @Override */
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        context as? OnLeagueFragmentInteractionListener ?: throw RuntimeException(context!!.toString() + " must implement OnLeagueFragmentInteractionListener")
+        context as? OnLeagueListFragmentInteractionListener ?: throw RuntimeException(context!!.toString() + " must implement OnLeagueListFragmentInteractionListener")
         listener = context
     }
 
@@ -122,7 +122,7 @@ class LeagueFragment : ListFragment<League, NameAverageRecyclerViewAdapter<Leagu
     /** @Override */
     override fun fetchItems(): Deferred<MutableList<League>> {
         return async(CommonPool) {
-            this@LeagueFragment.context?.let { context ->
+            this@LeagueListFragment.context?.let { context ->
                 bowler?.let {
                     if (showEvents) {
                         return@async it.fetchEvents(context).await()
@@ -191,7 +191,7 @@ class LeagueFragment : ListFragment<League, NameAverageRecyclerViewAdapter<Leagu
     /**
      * Handles interactions with the list of leagues.
      */
-    interface OnLeagueFragmentInteractionListener {
+    interface OnLeagueListFragmentInteractionListener {
 
         /**
          * Indicates a league has been selected and further details should be shown to the user.

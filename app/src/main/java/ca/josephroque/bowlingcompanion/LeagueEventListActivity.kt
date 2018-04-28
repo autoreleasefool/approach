@@ -18,7 +18,7 @@ import ca.josephroque.bowlingcompanion.bowlers.Bowler
 import ca.josephroque.bowlingcompanion.common.activities.BaseActivity
 import ca.josephroque.bowlingcompanion.leagues.League
 import ca.josephroque.bowlingcompanion.leagues.LeagueDialog
-import ca.josephroque.bowlingcompanion.leagues.LeagueFragment
+import ca.josephroque.bowlingcompanion.leagues.LeagueListFragment
 import kotlinx.android.synthetic.main.activity_league_event_list.*
 import java.lang.ref.WeakReference
 
@@ -28,7 +28,7 @@ import java.lang.ref.WeakReference
  * Activity to display bowler details.
  */
 class LeagueEventListActivity : BaseActivity(),
-        LeagueFragment.OnLeagueFragmentInteractionListener,
+        LeagueListFragment.OnLeagueListFragmentInteractionListener,
         LeagueDialog.OnLeagueDialogInteractionListener
 {
 
@@ -168,9 +168,9 @@ class LeagueEventListActivity : BaseActivity(),
     override fun onFinishLeague(league: League) {
         val adapter = pager_leagues_events.adapter as? LeaguesEventsPagerAdapter
         val leagueFragment = if (league.isEvent) {
-            adapter?.getFragment(EVENT_FRAGMENT) as? LeagueFragment
+            adapter?.getFragment(EVENT_FRAGMENT) as? LeagueListFragment
         } else {
-            adapter?.getFragment(LEAGUE_FRAGMENT) as? LeagueFragment
+            adapter?.getFragment(LEAGUE_FRAGMENT) as? LeagueListFragment
         }
         leagueFragment?.refreshList(league)
     }
@@ -179,9 +179,9 @@ class LeagueEventListActivity : BaseActivity(),
     override fun onDeleteLeague(league: League) {
         val adapter = pager_leagues_events.adapter as? LeaguesEventsPagerAdapter
         val leagueFragment = if (league.isEvent) {
-            adapter?.getFragment(LEAGUE_FRAGMENT) as? LeagueFragment
+            adapter?.getFragment(LEAGUE_FRAGMENT) as? LeagueListFragment
         } else {
-            adapter?.getFragment(EVENT_FRAGMENT) as? LeagueFragment
+            adapter?.getFragment(EVENT_FRAGMENT) as? LeagueListFragment
         }
         leagueFragment?.onItemDelete(league)
     }
@@ -196,9 +196,9 @@ class LeagueEventListActivity : BaseActivity(),
     ): FragmentPagerAdapter(fm) {
 
         companion object {
-            /** Index for [LeagueFragment]. */
+            /** Index for [LeagueListFragment]. */
             const val LEAGUE_FRAGMENT = 0
-            /** Index for [LeagueFragment] showing events. */
+            /** Index for [LeagueListFragment] showing events. */
             const val EVENT_FRAGMENT = 1
         }
 
@@ -208,8 +208,8 @@ class LeagueEventListActivity : BaseActivity(),
         /** @Override. */
         override fun getItem(position: Int): Fragment? {
             val fragment: Fragment = when (position) {
-                LEAGUE_FRAGMENT -> LeagueFragment.newInstance(bowler, false)
-                EVENT_FRAGMENT -> LeagueFragment.newInstance(bowler, true)
+                LEAGUE_FRAGMENT -> LeagueListFragment.newInstance(bowler, false)
+                EVENT_FRAGMENT -> LeagueListFragment.newInstance(bowler, true)
                 else -> return null
             }
 
