@@ -21,24 +21,24 @@ import kotlinx.coroutines.experimental.async
  *
  * A fragment representing a list of Bowlers.
  */
-class BowlerFragment : ListFragment<Bowler, NameAverageRecyclerViewAdapter<Bowler>.ViewHolder, NameAverageRecyclerViewAdapter<Bowler>>() {
+class BowlerListFragment : ListFragment<Bowler, NameAverageRecyclerViewAdapter<Bowler>.ViewHolder, NameAverageRecyclerViewAdapter<Bowler>>() {
 
     companion object {
         /** Logging identifier. */
-        private const val TAG = "BowlerFragment"
+        private const val TAG = "BowlerListFragment"
 
         /**
          * Creates a new instance.
          *
          * @return the new instance
          */
-        fun newInstance(): BowlerFragment {
-            return BowlerFragment()
+        fun newInstance(): BowlerListFragment {
+            return BowlerListFragment()
         }
     }
 
     /** Interaction handler. */
-    private var listener: OnBowlerFragmentInteractionListener? = null
+    private var listener: OnBowlerListFragmentInteractionListener? = null
 
     /** @Override */
     override fun onCreateView(
@@ -53,7 +53,7 @@ class BowlerFragment : ListFragment<Bowler, NameAverageRecyclerViewAdapter<Bowle
     /** @Override */
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        context as? OnBowlerFragmentInteractionListener ?: throw RuntimeException(context!!.toString() + " must implement OnBowlerFragmentInteractionListener")
+        context as? OnBowlerListFragmentInteractionListener ?: throw RuntimeException(context!!.toString() + " must implement OnBowlerListFragmentInteractionListener")
         listener = context
     }
 
@@ -166,7 +166,7 @@ class BowlerFragment : ListFragment<Bowler, NameAverageRecyclerViewAdapter<Bowle
     /**
      * Handles interactions with the Bowler list.
      */
-    interface OnBowlerFragmentInteractionListener {
+    interface OnBowlerListFragmentInteractionListener {
 
         /**
          * Indicates a bowler has been selected and further details should be shown to the user.

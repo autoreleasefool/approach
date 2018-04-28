@@ -16,7 +16,7 @@ import android.view.View
 import android.view.ViewGroup
 import ca.josephroque.bowlingcompanion.bowlers.Bowler
 import ca.josephroque.bowlingcompanion.bowlers.BowlerDialog
-import ca.josephroque.bowlingcompanion.bowlers.BowlerFragment
+import ca.josephroque.bowlingcompanion.bowlers.BowlerListFragment
 import ca.josephroque.bowlingcompanion.common.activities.BaseActivity
 import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
 import ca.josephroque.bowlingcompanion.teams.Team
@@ -31,7 +31,7 @@ import java.lang.ref.WeakReference
  * Activity to display bowler and team fragments.
  */
 class BowlerTeamListActivity : BaseActivity(),
-        BowlerFragment.OnBowlerFragmentInteractionListener,
+        BowlerListFragment.OnBowlerListFragmentInteractionListener,
         TeamListFragment.OnTeamListFragmentInteractionListener,
         BowlerDialog.OnBowlerDialogInteractionListener,
         TeamDialog.OnTeamDialogInteractionListener {
@@ -40,7 +40,7 @@ class BowlerTeamListActivity : BaseActivity(),
         /** Logging identifier. */
         private const val TAG = "BowlerTeamListActivity"
 
-        /** Index for [BowlerFragment]. */
+        /** Index for [BowlerListFragment]. */
         const val BOWLER_FRAGMENT = 0
 
         /** Index for [TeamListFragment]. */
@@ -195,7 +195,7 @@ class BowlerTeamListActivity : BaseActivity(),
     /** @Override */
     override fun onFinishBowler(bowler: Bowler) {
         val adapter = pager_bowlers_teams.adapter as? BowlersTeamsPagerAdapter
-        val bowlerFragment = adapter?.getFragment(BOWLER_FRAGMENT) as? BowlerFragment
+        val bowlerFragment = adapter?.getFragment(BOWLER_FRAGMENT) as? BowlerListFragment
         bowlerFragment?.refreshList(bowler)
 
         val teamFragment = adapter?.getFragment(TEAM_FRAGMENT) as? TeamListFragment
@@ -205,7 +205,7 @@ class BowlerTeamListActivity : BaseActivity(),
     /** @Override */
     override fun onDeleteBowler(bowler: Bowler) {
         val adapter = pager_bowlers_teams.adapter as? BowlersTeamsPagerAdapter
-        val bowlerFragment = adapter?.getFragment(BOWLER_FRAGMENT) as? BowlerFragment
+        val bowlerFragment = adapter?.getFragment(BOWLER_FRAGMENT) as? BowlerListFragment
         bowlerFragment?.onItemDelete(bowler)
 
         val teamFragment = adapter?.getFragment(TEAM_FRAGMENT) as? TeamListFragment
@@ -258,7 +258,7 @@ class BowlerTeamListActivity : BaseActivity(),
         /** @Override. */
         override fun getItem(position: Int): Fragment? {
             val fragment: Fragment = when (position) {
-                BOWLER_FRAGMENT -> BowlerFragment.newInstance()
+                BOWLER_FRAGMENT -> BowlerListFragment.newInstance()
                 TEAM_FRAGMENT -> TeamListFragment.newInstance()
                 else -> return null
             }
