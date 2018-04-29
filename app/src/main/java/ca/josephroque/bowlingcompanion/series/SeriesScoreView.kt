@@ -5,9 +5,9 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
-import android.widget.TextView
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.games.MatchPlayResult
+import kotlinx.android.synthetic.main.view_series_score.view.*
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -21,31 +21,32 @@ class SeriesScoreView: LinearLayout {
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         orientation = LinearLayout.VERTICAL
-        val layout = LayoutInflater.from(context).inflate(R.layout.view_series_score, this, true)
-
-        scoreText = layout.findViewById(R.id.tv_score)
-        matchPlayText = layout.findViewById(R.id.tv_match_play)
+        LayoutInflater.from(context).inflate(R.layout.view_series_score, this, true)
     }
-
-    var scoreText: TextView? = null
-
-    var matchPlayText: TextView? = null
 
     var score: Int = 0
         set(value) {
-            scoreText?.text = value.toString()
+            tv_score.text = value.toString()
             field = value
         }
 
     var matchPlay: MatchPlayResult = MatchPlayResult.NONE
         set(value) {
             when (value) {
-                MatchPlayResult.NONE -> matchPlayText?.text = null
-                MatchPlayResult.WON -> matchPlayText?.text = context.getString(R.string.match_play_won_short)
-                MatchPlayResult.LOST -> matchPlayText?.text = context.getString(R.string.match_play_lost_short)
-                MatchPlayResult.TIED -> matchPlayText?.text = context.getString(R.string.match_play_tied_short)
+                MatchPlayResult.NONE -> tv_match_play.text = null
+                MatchPlayResult.WON -> tv_match_play.text = context.getString(R.string.match_play_won_short)
+                MatchPlayResult.LOST -> tv_match_play.text = context.getString(R.string.match_play_lost_short)
+                MatchPlayResult.TIED -> tv_match_play.text = context.getString(R.string.match_play_tied_short)
             }
-            matchPlayText?.visibility = if (value == MatchPlayResult.NONE) View.GONE else View.VISIBLE
+            tv_match_play.visibility = if (value == MatchPlayResult.NONE) View.GONE else View.VISIBLE
             field = value
         }
+
+    fun setScoreTextColor(color: Int) {
+        tv_score.setTextColor(color)
+    }
+
+    fun setMatchPlayTextColor(color: Int) {
+        tv_match_play.setTextColor(color)
+    }
 }

@@ -207,16 +207,16 @@ class SeriesRecyclerViewAdapter(
             scoreView.matchPlay = matchPlayResult
 
             if (shouldHighlightGame(series.scores[i])) {
-                scoreView.scoreText?.setTextColor(ContextCompat.getColor(context, R.color.gameHighlight))
+                scoreView.setScoreTextColor(ContextCompat.getColor(context, R.color.gameHighlight))
             } else {
-                scoreView.scoreText?.setTextColor(ContextCompat.getColor(context, R.color.primaryBlackText))
+                scoreView.setScoreTextColor(ContextCompat.getColor(context, R.color.primaryBlackText))
             }
 
             when (matchPlayResult) {
-                MatchPlayResult.NONE -> scoreView.matchPlayText?.setTextColor(ContextCompat.getColor(context, R.color.primaryBlackText))
-                MatchPlayResult.WON -> scoreView.matchPlayText?.setTextColor(ContextCompat.getColor(context, R.color.matchPlayWin))
-                MatchPlayResult.LOST -> scoreView.matchPlayText?.setTextColor(ContextCompat.getColor(context, R.color.matchPlayLoss))
-                MatchPlayResult.TIED -> scoreView.matchPlayText?.setTextColor(ContextCompat.getColor(context, R.color.matchPlayTie))
+                MatchPlayResult.NONE -> scoreView.setMatchPlayTextColor(ContextCompat.getColor(context, R.color.primaryBlackText))
+                MatchPlayResult.WON -> scoreView.setMatchPlayTextColor(ContextCompat.getColor(context, R.color.matchPlayWin))
+                MatchPlayResult.LOST -> scoreView.setMatchPlayTextColor(ContextCompat.getColor(context, R.color.matchPlayLoss))
+                MatchPlayResult.TIED -> scoreView.setMatchPlayTextColor(ContextCompat.getColor(context, R.color.matchPlayTie))
             }
 
             holder.flowScores?.addView(scoreView)
