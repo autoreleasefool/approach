@@ -10,7 +10,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".BowlerTeamListActivity">
+        <activity android:name=".NavigationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -20,8 +20,6 @@
         <activity
             android:name=".settings.SettingsActivity"
             android:label="@string/title_activity_settings" />
-        <activity android:name=".LeagueEventListActivity" />
-        <activity android:name=".SeriesListActivity" />
     </application>
 
 </manifest>

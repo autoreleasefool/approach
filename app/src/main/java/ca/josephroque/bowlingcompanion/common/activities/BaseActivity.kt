@@ -44,12 +44,7 @@ abstract class BaseActivity : AppCompatActivity() {
                 true
             }
             R.id.action_feedback -> {
-                Email.sendEmail(
-                        this,
-                        resources.getString(R.string.feedback_email_recipient),
-                        String.format(resources.getString(R.string.feedback_email_subject), BuildConfig.VERSION_CODE),
-                        null
-                )
+                prepareFeedbackEmail()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -57,9 +52,21 @@ abstract class BaseActivity : AppCompatActivity() {
     }
 
     /**
+     * Prepare an email with the subject and recipient pre-filled.
+     */
+    private fun prepareFeedbackEmail() {
+        Email.sendEmail(
+                this,
+                resources.getString(R.string.feedback_email_recipient),
+                String.format(resources.getString(R.string.feedback_email_subject), BuildConfig.VERSION_CODE),
+                null
+        )
+    }
+
+    /**
      * Opens the settings activity.
      */
-    protected fun openSettings() {
+    private fun openSettings() {
         val settingsIntent = Intent(this, SettingsActivity::class.java)
         startActivity(settingsIntent)
     }

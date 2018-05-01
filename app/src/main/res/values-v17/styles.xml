@@ -28,4 +28,5 @@
         <item name="android:layout_marginTop">@dimen/text_margin_vertical</item>
         <item name="android:layout_marginBottom">@dimen/text_margin_vertical</item>
     </style>
+
 </resources>

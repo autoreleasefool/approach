@@ -1,7 +1,6 @@
 package ca.josephroque.bowlingcompanion.bowlers
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -51,11 +50,11 @@ class BowlerListFragment : ListFragment<Bowler, NameAverageRecyclerViewAdapter<B
     }
 
     /** @Override */
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-        context as? OnBowlerListFragmentInteractionListener ?: throw RuntimeException(context!!.toString() + " must implement OnBowlerListFragmentInteractionListener")
-        listener = context
-    }
+//    override fun onAttach(context: Context?) {
+//        super.onAttach(context)
+//        context as? OnBowlerListFragmentInteractionListener ?: throw RuntimeException(context!!.toString() + " must implement OnBowlerListFragmentInteractionListener")
+//        listener = context
+//    }
 
     /** @Override */
     override fun onDetach() {

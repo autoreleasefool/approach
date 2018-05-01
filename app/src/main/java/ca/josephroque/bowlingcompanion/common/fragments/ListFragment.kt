@@ -19,7 +19,7 @@ import kotlinx.coroutines.experimental.launch
  *
  * Basic [Fragment] implementation with a list.
  */
-abstract class ListFragment<Item: IIdentifiable, ViewHolder: RecyclerView.ViewHolder, Adapter: BaseRecyclerViewAdapter<Item, ViewHolder>>: Fragment(),
+abstract class ListFragment<Item: IIdentifiable, ViewHolder: RecyclerView.ViewHolder, Adapter: BaseRecyclerViewAdapter<Item, ViewHolder>>: BaseFragment(),
         BaseRecyclerViewAdapter.OnAdapterInteractionListener<Item>
 {
 

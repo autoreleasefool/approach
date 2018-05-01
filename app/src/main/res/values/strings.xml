@@ -14,6 +14,11 @@
     <string name="dialog_delete_item_message">You can\'t recover this data once it\'s gone!</string>
     <string name="sort_items">Sort items</string>
 
+    <!-- Tabs -->
+    <string name="tab_record">Record</string>
+    <string name="tab_statistics">Statistics</string>
+    <string name="tab_equipment">Equipment</string>
+
     <!-- Common objects -->
     <string name="bowlers">Bowlers</string>
     <string name="teams">Teams</string>
