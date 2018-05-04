@@ -2,29 +2,77 @@ package ca.josephroque.bowlingcompanion
 
 import android.os.Bundle
 import android.support.annotation.IdRes
-import android.util.Log
+import android.support.v4.app.Fragment
 import ca.josephroque.bowlingcompanion.bowlers.BowlerListFragment
 import ca.josephroque.bowlingcompanion.common.activities.BaseActivity
 import ca.josephroque.bowlingcompanion.common.fragments.BaseFragment
+import com.ncapdevi.fragnav.FragNavController
 import kotlinx.android.synthetic.main.activity_navigation.*
 
-class NavigationActivity : BaseActivity() {
+class NavigationActivity : BaseActivity(),
+        FragNavController.TransactionListener,
+        FragNavController.RootFragmentListener,
+        BaseFragment.FragmentNavigation {
 
     companion object {
         /** Logging identifier. */
-        private const val TAG = "NavigationActivity"
+        private val TAG = NavigationActivity::class.java.simpleName
 
-        /** Cache the default tab to load on open. */
-        private const val DEFAULT_TAB = R.id.action_record
+        enum class BottomTab {
+            Record, Statistics, Equipment;
+
+            companion object {
+                private val map = BottomTab.values().associateBy(BottomTab::ordinal)
+                fun fromInt(type: Int) = map[type]
+                fun fromId(@IdRes id: Int): BottomTab {
+                    return when (id) {
+                        R.id.action_record -> Record
+                        R.id.action_statistics -> Statistics
+                        R.id.action_equipment -> Equipment
+                        else -> throw RuntimeException("$id is not valid BottomTab id")
+                    }
+                }
+            }
+        }
     }
+
+    private var fragNavController: FragNavController? = null
 
     /** @Override. */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_navigation)
 
+        setupToolbar()
         setupBottomNavigation()
-        onTabSelected(DEFAULT_TAB)
+        setupFragNavController(savedInstanceState)
+    }
+
+    /** @Override */
+    override fun onBackPressed() {
+        if (fragNavController?.popFragment()?.not() == true) {
+            super.onBackPressed()
+        }
+    }
+
+    /** @Override */
+    override fun onSaveInstanceState(outState: Bundle?) {
+        super.onSaveInstanceState(outState)
+        fragNavController?.onSaveInstanceState(outState!!)
+    }
+
+    /** @Override */
+    override fun pushFragment(fragment: BaseFragment) {
+        fragNavController?.pushFragment(fragment)
+    }
+
+    /**
+     * Configure toolbar for rendering.
+     */
+    private fun setupToolbar() {
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
     }
 
     /**
@@ -32,43 +80,46 @@ class NavigationActivity : BaseActivity() {
      */
     private fun setupBottomNavigation() {
         bottom_navigation.setOnNavigationItemSelectedListener {
-            onTabSelected(it.itemId)
+            fragNavController?.switchTab(BottomTab.fromId(it.itemId).ordinal)
             return@setOnNavigationItemSelectedListener true
         }
+
+        bottom_navigation.setOnNavigationItemReselectedListener {
+            fragNavController?.clearStack()
+        }
     }
 
     /**
-     * Handle tab changes.
+     * Build the [FragNavController] for bottom tab navigation.
      *
-     * @param tab the new tab to display
+     * @param savedInstanceState the activity saved instance state
      */
-    private fun onTabSelected(@IdRes tab: Int) {
+    private fun setupFragNavController(savedInstanceState: Bundle?) {
+        val builder = FragNavController.newBuilder(savedInstanceState, supportFragmentManager, R.id.fragment_container)
+        builder.rootFragmentListener(this, BottomTab.values().size)
+    }
+
+    /** @Override */
+    override fun getRootFragment(index: Int): Fragment {
+        val tab = BottomTab.fromInt(index)
         val fragmentName: String
-        when (tab) {
-            R.id.action_record -> fragmentName = BowlerListFragment::class.java.name
-            R.id.action_statistics -> {
-                fragmentName = BowlerListFragment::class.java.name
-                Log.d(TAG, "Statistics")
-            }
-            R.id.action_equipment -> {
-                fragmentName = BowlerListFragment::class.java.name
-                Log.d(TAG, "Equipment")
-            }
-            else -> throw RuntimeException("Tab has not been registered in NavigationActivity.")
+        fragmentName = when (tab) {
+            BottomTab.Record -> BowlerListFragment::class.java.name
+            BottomTab.Equipment -> BowlerListFragment::class.java.name // TODO: enable equipment tab
+            BottomTab.Statistics -> BowlerListFragment::class.java.name // TODO: enable statistics tab
+            else -> throw RuntimeException("$index is not a valid tab index")
         }
 
-        showFragment(fragmentName)
+        return BaseFragment.newInstance(fragmentName)
     }
 
-    /**
-     * Create a new instance of the specified fragment and show it.
-     *
-     * @param fragmentName class name of the fragment to show
-     */
-    private fun showFragment(fragmentName: String) {
-        val fragment = BaseFragment.newInstance(fragmentName)
-        supportFragmentManager.beginTransaction()
-                .replace(R.id.fragment_container, fragment, fragmentName)
-                .commit()
+    /** @Override */
+    override fun onFragmentTransaction(fragment: Fragment?, transactionType: FragNavController.TransactionType?) {
+        supportActionBar?.setDisplayHomeAsUpEnabled(fragNavController?.isRootFragment?.not() ?: false)
+    }
+
+    /** @Override */
+    override fun onTabTransaction(fragment: Fragment?, index: Int) {
+        supportActionBar?.setDisplayHomeAsUpEnabled(fragNavController?.isRootFragment?.not() ?: false)
     }
 }

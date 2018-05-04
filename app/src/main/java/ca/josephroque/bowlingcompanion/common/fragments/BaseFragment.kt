@@ -2,16 +2,17 @@ package ca.josephroque.bowlingcompanion.common.fragments
 
 import android.content.Context
 import android.support.v4.app.Fragment
-import ca.josephroque.bowlingcompanion.common.activities.BaseActivity
 
 /**
  * Copyright (C) 2018 Joseph Roque
+ *
+ * BaseFragment for all fragments in the application.
  */
-open class BaseFragment : Fragment() {
+abstract class BaseFragment : Fragment() {
 
     companion object {
         /** Logging identifier. */
-        private const val TAG = "BaseFragment"
+        private val TAG = BaseFragment::class.java.simpleName
 
         /**
          * Create a new instance of [BaseFragment] based on [name] and return it.
@@ -28,10 +29,33 @@ open class BaseFragment : Fragment() {
         }
     }
 
+    /** Fragment navigation instance. */
+    protected var fragmentNavigation: FragmentNavigation? = null
+
     /** @Override */
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        (context as? BaseActivity) ?: throw RuntimeException("Parent activity must be instance of BaseActivity")
+        context as? FragmentNavigation ?: throw RuntimeException("Parent activity must implement FragmentNavigation")
+        fragmentNavigation = context
+    }
+
+    /** @Override */
+    override fun onDetach() {
+        super.onDetach()
+        fragmentNavigation = null
+    }
+
+    /**
+     * Accessor to activity's fragment stack
+     */
+    interface FragmentNavigation {
+
+        /**
+         * Push a new fragment onto the stack
+         *
+         * @param fragment the fragment to push
+         */
+        fun pushFragment(fragment: BaseFragment)
     }
 
 }

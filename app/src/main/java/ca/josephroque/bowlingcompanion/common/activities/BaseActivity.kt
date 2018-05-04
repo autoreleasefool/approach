@@ -17,23 +17,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
     companion object {
         /** Logging identifier. */
-        private const val TAG = "BaseActivity"
-    }
-
-    /** @Override */
-    override fun onSupportNavigateUp(): Boolean {
-        onBackPressed()
-        return super.onSupportNavigateUp()
-    }
-
-    /** @Override */
-    override fun onBackPressed() {
-        val count = supportFragmentManager.backStackEntryCount
-        if (count == 0) {
-            super.onBackPressed()
-        } else {
-            supportFragmentManager.popBackStack()
-        }
+        private val TAG = BaseActivity::class.simpleName
     }
 
     /** @Override */
