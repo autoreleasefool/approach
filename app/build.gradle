@@ -54,6 +54,7 @@ dependencies {
 
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    compile "org.jetbrains.kotlin:kotlin-reflect:1.2.40-release-66 (1.2.40)"
 }
 
 kotlin {
