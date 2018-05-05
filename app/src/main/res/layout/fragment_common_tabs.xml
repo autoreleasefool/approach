@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.TabLayout
+        style="@style/TabLayout"
+        android:id="@+id/tabbed_fragment_tabs"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <ca.josephroque.bowlingcompanion.common.CustomScrollingViewPager
+        style="@style/ViewPager"
+        android:id="@+id/tabbed_fragment_pager"
+        app:layout_constraintTop_toBottomOf="@id/tabbed_fragment_tabs"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+    <android.support.design.widget.FloatingActionButton
+        style="@style/FloatingActionButton"
+        android:id="@+id/tabbed_fragment_fab" />
+
+</android.support.constraint.ConstraintLayout>
