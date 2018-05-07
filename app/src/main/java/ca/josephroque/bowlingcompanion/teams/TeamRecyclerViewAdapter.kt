@@ -19,7 +19,7 @@ import com.robertlevonyan.views.chip.Chip
 class TeamRecyclerViewAdapter(
         values: List<Team>,
         listener: BaseRecyclerViewAdapter.OnAdapterInteractionListener<Team>?
-): BaseRecyclerViewAdapter<Team, TeamRecyclerViewAdapter.ViewHolder>(values, listener) {
+): BaseRecyclerViewAdapter<Team>(values, listener) {
 
     companion object {
         /** Logging identifier. */
@@ -47,111 +47,85 @@ class TeamRecyclerViewAdapter(
     }
 
     /** @Override */
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = when (ViewType.fromInt(viewType)) {
-            ViewType.Active -> {
-                LayoutInflater
-                        .from(parent.context)
-                        .inflate(R.layout.list_item_team, parent, false)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseRecyclerViewAdapter<Team>.ViewHolder {
+        return when (ViewType.fromInt(viewType)) {
+            ViewType.Active -> { ViewHolderActive(LayoutInflater
+                    .from(parent.context)
+                    .inflate(R.layout.list_item_team, parent, false))
             }
-            ViewType.Deleted -> {
-                LayoutInflater
-                        .from(parent.context)
-                        .inflate(R.layout.list_item_deleted, parent, false)
+            ViewType.Deleted -> { ViewHolderDeleted(LayoutInflater
+                    .from(parent.context)
+                    .inflate(R.layout.list_item_deleted, parent, false))
             } else -> throw IllegalArgumentException("View Type `$viewType` is invalid")
         }
-
-        return ViewHolder(view)
     }
 
     /** @Override */
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val viewType = ViewType.fromInt(getItemViewType(position))
-        when(viewType) {
-            ViewType.Active -> bindActiveViewHolder(holder, position)
-            ViewType.Deleted -> bindDeletedViewHolder(holder, position)
-            else -> throw IllegalArgumentException("View Type `$viewType` is invalid")
-        }
+    override fun onBindViewHolder(holder: BaseRecyclerViewAdapter<Team>.ViewHolder, position: Int) {
+        holder.bind(values[position], position)
     }
 
-    /**
-     * Set up views to display an active [Team] item.
-     *
-     * @param holder the views to display item in
-     * @param position the item to display
-     */
-    private fun bindActiveViewHolder(holder: ViewHolder, position: Int) {
-        val context = holder.itemView.context
-        val team = values[position]
-        holder.item = team
-        holder.tvName?.text = team.name
-
-        if (position % 2 == 0) {
-            holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorListPrimary))
-        } else {
-            holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorListAlternate))
-        }
-
-        holder.flowMembers?.removeAllViews()
-        team.members.forEach({
-            val memberView = Chip(context)
-            memberView.isFocusable = false
-            memberView.isClickable = false
-            memberView.chipText = it.first
-            memberView.changeBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary))
-            memberView.textColor = ContextCompat.getColor(context, R.color.primaryWhiteText)
-            holder.flowMembers?.addView(memberView)
-        })
-        val chipMargin = context.resources.getDimension(R.dimen.chip_margin).toInt()
-        holder.flowMembers?.childSpacing = chipMargin
-
-        holder.itemView.setOnClickListener(this)
-        holder.itemView.setOnLongClickListener(this)
-    }
-
-    /**
-     * Set up views to display a deleted [Team] item.
-     *
-     * @param holder the views to display item in
-     * @param position the item to display
-     */
-    private fun bindDeletedViewHolder(holder: ViewHolder, position: Int) {
-        val context = holder.itemView.context
-        holder.item = values[position]
-
-        holder.tvDeleted?.text = String.format(
-                context.resources.getString(R.string.query_delete_item),
-                values[position].name
-        )
-
-        val deletedItemListener = View.OnClickListener {
-            if (it.id == R.id.tv_undo) {
-                listener?.onItemSwipe(values[position])
-            } else {
-                listener?.onItemDelete(values[position])
-            }
-        }
-
-        holder.itemView.setOnClickListener(deletedItemListener)
-        holder.itemView.setOnLongClickListener(null)
-        holder.tvUndo?.setOnClickListener(deletedItemListener)
-    }
-
-    /**
-     * View Holder.
-     */
-    inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+    inner class ViewHolderActive(view: View) : BaseRecyclerViewAdapter<Team>.ViewHolder(view) {
         /** Render name of the item. */
-        val tvName: TextView? = view.findViewById(R.id.tv_name)
+        private val tvName: TextView? = view.findViewById(R.id.tv_name)
         /** Render members of the team. */
-        val flowMembers: FlowLayout? = view.findViewById(R.id.flow_members)
+        private val flowMembers: FlowLayout? = view.findViewById(R.id.flow_members)
 
+        override fun bind(item: Team, position: Int) {
+            val context = itemView.context
+            tvName?.text = item.name
+
+            if (position % 2 == 0) {
+                itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorListPrimary))
+            } else {
+                itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorListAlternate))
+            }
+
+            flowMembers?.removeAllViews()
+            item.members.forEach({
+                val memberView = Chip(context)
+                memberView.isFocusable = false
+                memberView.isClickable = false
+                memberView.chipText = it.first
+                memberView.changeBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary))
+                memberView.textColor = ContextCompat.getColor(context, R.color.primaryWhiteText)
+                flowMembers?.addView(memberView)
+            })
+            val chipMargin = context.resources.getDimension(R.dimen.chip_margin).toInt()
+            flowMembers?.childSpacing = chipMargin
+
+            itemView.setOnClickListener(this@TeamRecyclerViewAdapter)
+            itemView.setOnLongClickListener(this@TeamRecyclerViewAdapter)
+        }
+    }
+
+    /**
+     * Build and render a deleted item in the list.
+     */
+    inner class ViewHolderDeleted(view: View) : BaseRecyclerViewAdapter<Team>.ViewHolder(view) {
         /** Render name of the deleted item. */
-        val tvDeleted: TextView? = view.findViewById(R.id.tv_deleted)
+        private val tvDeleted: TextView? = view.findViewById(R.id.tv_deleted)
         /** Button to undo deletion of an item. */
-        val tvUndo: TextView? = view.findViewById(R.id.tv_undo)
+        private val tvUndo: TextView? = view.findViewById(R.id.tv_undo)
 
-        /** Team item. */
-        var item: Team? = null
+        override fun bind(item: Team, position: Int) {
+            val context = itemView.context
+
+            tvDeleted?.text = String.format(
+                    context.resources.getString(R.string.query_delete_item),
+                    values[position].name
+            )
+
+            val deletedItemListener = View.OnClickListener {
+                if (it.id == R.id.tv_undo) {
+                    listener?.onItemSwipe(values[position])
+                } else {
+                    listener?.onItemDelete(values[position])
+                }
+            }
+            itemView.setOnClickListener(deletedItemListener)
+            itemView.setOnLongClickListener(null)
+            tvUndo?.setOnClickListener(deletedItemListener)
+        }
     }
 }

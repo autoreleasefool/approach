@@ -21,7 +21,7 @@ import com.nex3z.flowlayout.FlowLayout
 class SeriesRecyclerViewAdapter(
         values: List<Series>,
         listener: BaseRecyclerViewAdapter.OnAdapterInteractionListener<Series>?
-): BaseRecyclerViewAdapter<Series, SeriesRecyclerViewAdapter.ViewHolder>(values, listener) {
+): BaseRecyclerViewAdapter<Series>(values, listener) {
 
     companion object {
         /** Logging identifier. */
@@ -85,32 +85,24 @@ class SeriesRecyclerViewAdapter(
     }
 
     /** @Override */
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = when (ViewType.fromInt(viewType)) {
-            ViewType.Condensed -> LayoutInflater
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseRecyclerViewAdapter<Series>.ViewHolder {
+        return when (ViewType.fromInt(viewType)) {
+            ViewType.Condensed -> ViewHolderCondensed(LayoutInflater
                     .from(parent.context)
-                    .inflate(R.layout.list_item_series_condensed, parent, false)
-            ViewType.Expanded -> LayoutInflater
+                    .inflate(R.layout.list_item_series_condensed, parent, false))
+            ViewType.Expanded -> ViewHolderExpanded(LayoutInflater
                     .from(parent.context)
-                    .inflate(R.layout.list_item_series_expanded, parent, false)
-            ViewType.Deleted -> LayoutInflater
+                    .inflate(R.layout.list_item_series_expanded, parent, false))
+            ViewType.Deleted -> ViewHolderDeleted(LayoutInflater
                     .from(parent.context)
-                    .inflate(R.layout.list_item_deleted, parent, false)
+                    .inflate(R.layout.list_item_deleted, parent, false))
             else -> throw IllegalArgumentException("View Type `$viewType` is invalid")
         }
-
-        return ViewHolder(view)
     }
 
     /** @Override */
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val viewType = ViewType.fromInt(getItemViewType(position))
-        when (viewType) {
-            ViewType.Condensed -> bindCondensedViewHolder(holder, position)
-            ViewType.Expanded -> bindExpandedViewHolder(holder, position)
-            ViewType.Deleted -> bindDeletedViewHolder(holder, position)
-            else -> throw IllegalArgumentException("View Type `$viewType` is invalid")
-        }
+    override fun onBindViewHolder(holder: BaseRecyclerViewAdapter<Series>.ViewHolder, position: Int) {
+        holder.bind(values[position], position)
     }
 
     /**
@@ -144,126 +136,42 @@ class SeriesRecyclerViewAdapter(
     }
 
     /**
-     * Sets up views to display a [Series] in a condensed view.
-     *
-     * @param holder the views to display items in
-     * @param position the item to display
+     * Build and render a condensed series.
      */
-    private fun bindCondensedViewHolder(holder: ViewHolder, position: Int) {
-        val context = holder.itemView.context
-        val series = values[position]
-        holder.series = series
+    inner class ViewHolderCondensed(view: View) : BaseRecyclerViewAdapter<Series>.ViewHolder(view) {
+        /** Render date of the series. */
+        val tvDate: TextView? = view.findViewById(R.id.tv_date)
+        /** Render total of the series. */
+        val tvTotal: TextView? = view.findViewById(R.id.tv_total)
 
-        val seriesTotal = series.scores.sum()
+        override fun bind(item: Series, position: Int) {
+            val context = itemView.context
+            val seriesTotal = item.scores.sum()
 
-        holder.tvDate?.text = series.prettyDate
-        holder.tvTotal?.text = seriesTotal.toString()
+            tvDate?.text = item.prettyDate
+            tvTotal?.text = seriesTotal.toString()
 
-        if (shouldHighlightSeries(seriesTotal, series.numberOfGames)) {
-            holder.tvTotal?.setTextColor(ContextCompat.getColor(context, R.color.seriesHighlight))
-        } else {
-            holder.tvTotal?.setTextColor(ContextCompat.getColor(context, R.color.primaryBlackText))
-        }
-
-        if (position % 2 == 0) {
-            holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorListPrimary))
-        } else {
-            holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorListAlternate))
-        }
-
-        holder.itemView.setOnClickListener(this)
-        holder.itemView.setOnLongClickListener(this)
-    }
-
-    /**
-     * Sets up views to display a [Series] in an expanded view.
-     *
-     * @param holder the views to display items in
-     * @param position the item to display
-     */
-    private fun bindExpandedViewHolder(holder: ViewHolder, position: Int) {
-        val context = holder.itemView.context
-        val series = values[position]
-        holder.series = series
-
-        val seriesTotal = series.scores.sum()
-
-        holder.tvDate?.text = series.prettyDate
-        holder.tvTotal?.text = seriesTotal.toString()
-
-        if (shouldHighlightSeries(seriesTotal, series.numberOfGames)) {
-            holder.tvTotal?.setTextColor(ContextCompat.getColor(context, R.color.seriesHighlight))
-        } else {
-            holder.tvTotal?.setTextColor(ContextCompat.getColor(context, R.color.primaryBlackText))
-        }
-
-        holder.flowScores?.removeAllViews()
-        for (i in 0 until series.scores.size) {
-            val scoreView = SeriesScoreView(context)
-            val matchPlayResult = MatchPlayResult.fromInt(series.matchPlay[i].toInt())!!
-            scoreView.isFocusable = false
-            scoreView.isClickable = false
-            scoreView.score = series.scores[i]
-            scoreView.matchPlay = matchPlayResult
-
-            if (shouldHighlightGame(series.scores[i])) {
-                scoreView.setScoreTextColor(ContextCompat.getColor(context, R.color.gameHighlight))
+            if (shouldHighlightSeries(seriesTotal, item.numberOfGames)) {
+                tvTotal?.setTextColor(ContextCompat.getColor(context, R.color.seriesHighlight))
             } else {
-                scoreView.setScoreTextColor(ContextCompat.getColor(context, R.color.primaryBlackText))
+                tvTotal?.setTextColor(ContextCompat.getColor(context, R.color.primaryBlackText))
             }
 
-            when (matchPlayResult) {
-                MatchPlayResult.NONE -> scoreView.setMatchPlayTextColor(ContextCompat.getColor(context, R.color.primaryBlackText))
-                MatchPlayResult.WON -> scoreView.setMatchPlayTextColor(ContextCompat.getColor(context, R.color.matchPlayWin))
-                MatchPlayResult.LOST -> scoreView.setMatchPlayTextColor(ContextCompat.getColor(context, R.color.matchPlayLoss))
-                MatchPlayResult.TIED -> scoreView.setMatchPlayTextColor(ContextCompat.getColor(context, R.color.matchPlayTie))
-            }
-
-            holder.flowScores?.addView(scoreView)
-        }
-
-        if (position % 2 == 0) {
-            holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorListPrimary))
-        } else {
-            holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorListAlternate))
-        }
-
-        holder.itemView.setOnClickListener(this)
-        holder.itemView.setOnLongClickListener(this)
-    }
-
-    /**
-     * Sets up views to display a deleted [Series].
-     *
-     * @param holder the views to display items in
-     * @param position the item to display
-     */
-    private fun bindDeletedViewHolder(holder: ViewHolder, position: Int) {
-        val context = holder.itemView.context
-        holder.series = values[position]
-
-        holder.tvDeleted?.text = String.format(
-                context.resources.getString(R.string.query_delete_item),
-                values[position].prettyDate
-        )
-
-        val deletedItemListener = View.OnClickListener {
-            if (it.id == R.id.tv_undo) {
-                listener?.onItemSwipe(values[position])
+            if (position % 2 == 0) {
+                itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorListPrimary))
             } else {
-                listener?.onItemDelete(values[position])
+                itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorListAlternate))
             }
+
+            itemView.setOnClickListener(this@SeriesRecyclerViewAdapter)
+            itemView.setOnLongClickListener(this@SeriesRecyclerViewAdapter)
         }
-        holder.itemView.setOnClickListener(deletedItemListener)
-        holder.itemView.setOnLongClickListener(null)
-        holder.tvUndo?.setOnClickListener(deletedItemListener)
     }
 
-
     /**
-     * View holder.
+     * Build and render an expanded series.
      */
-    inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+    inner class ViewHolderExpanded(view: View) : BaseRecyclerViewAdapter<Series>.ViewHolder(view) {
         /** Render date of the series. */
         val tvDate: TextView? = view.findViewById(R.id.tv_date)
         /** Render total of the series. */
@@ -272,12 +180,82 @@ class SeriesRecyclerViewAdapter(
         /** Render set of scores in the series. */
         val flowScores: FlowLayout? = view.findViewById(R.id.flow_scores)
 
-        /** Render name of the deleted item. */
-        val tvDeleted: TextView? = view.findViewById(R.id.tv_deleted)
-        /** Button to undo deletion of an item. */
-        val tvUndo: TextView? = view.findViewById(R.id.tv_undo)
+        override fun bind(item: Series, position: Int) {
+            val context = itemView.context
+            val seriesTotal = item.scores.sum()
 
-        /** Series item. */
-        var series: Series? = null
+            tvDate?.text = item.prettyDate
+            tvTotal?.text = seriesTotal.toString()
+
+            if (shouldHighlightSeries(seriesTotal, item.numberOfGames)) {
+                tvTotal?.setTextColor(ContextCompat.getColor(context, R.color.seriesHighlight))
+            } else {
+                tvTotal?.setTextColor(ContextCompat.getColor(context, R.color.primaryBlackText))
+            }
+
+            flowScores?.removeAllViews()
+            for (i in 0 until item.scores.size) {
+                val scoreView = SeriesScoreView(context)
+                val matchPlayResult = MatchPlayResult.fromInt(item.matchPlay[i].toInt())!!
+                scoreView.isFocusable = false
+                scoreView.isClickable = false
+                scoreView.score = item.scores[i]
+                scoreView.matchPlay = matchPlayResult
+
+                if (shouldHighlightGame(item.scores[i])) {
+                    scoreView.setScoreTextColor(ContextCompat.getColor(context, R.color.gameHighlight))
+                } else {
+                    scoreView.setScoreTextColor(ContextCompat.getColor(context, R.color.primaryBlackText))
+                }
+
+                when (matchPlayResult) {
+                    MatchPlayResult.NONE -> scoreView.setMatchPlayTextColor(ContextCompat.getColor(context, R.color.primaryBlackText))
+                    MatchPlayResult.WON -> scoreView.setMatchPlayTextColor(ContextCompat.getColor(context, R.color.matchPlayWin))
+                    MatchPlayResult.LOST -> scoreView.setMatchPlayTextColor(ContextCompat.getColor(context, R.color.matchPlayLoss))
+                    MatchPlayResult.TIED -> scoreView.setMatchPlayTextColor(ContextCompat.getColor(context, R.color.matchPlayTie))
+                }
+
+                flowScores?.addView(scoreView)
+            }
+
+            if (position % 2 == 0) {
+                itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorListPrimary))
+            } else {
+                itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorListAlternate))
+            }
+
+            itemView.setOnClickListener(this@SeriesRecyclerViewAdapter)
+            itemView.setOnLongClickListener(this@SeriesRecyclerViewAdapter)
+        }
+    }
+
+    /**
+     * Build and render a deleted item in the list.
+     */
+    inner class ViewHolderDeleted(view: View) : BaseRecyclerViewAdapter<Series>.ViewHolder(view) {
+        /** Render name of the deleted item. */
+        private val tvDeleted: TextView? = view.findViewById(R.id.tv_deleted)
+        /** Button to undo deletion of an item. */
+        private val tvUndo: TextView? = view.findViewById(R.id.tv_undo)
+
+        override fun bind(item: Series, position: Int) {
+            val context = itemView.context
+
+            tvDeleted?.text = String.format(
+                    context.resources.getString(R.string.query_delete_item),
+                    values[position].prettyDate
+            )
+
+            val deletedItemListener = View.OnClickListener {
+                if (it.id == R.id.tv_undo) {
+                    listener?.onItemSwipe(values[position])
+                } else {
+                    listener?.onItemDelete(values[position])
+                }
+            }
+            itemView.setOnClickListener(deletedItemListener)
+            itemView.setOnLongClickListener(null)
+            tvUndo?.setOnClickListener(deletedItemListener)
+        }
     }
 }

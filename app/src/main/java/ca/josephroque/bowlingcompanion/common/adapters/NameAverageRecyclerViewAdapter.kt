@@ -20,7 +20,7 @@ import ca.josephroque.bowlingcompanion.common.INameAverage
 class NameAverageRecyclerViewAdapter<T : INameAverage>(
         values: List<T>,
         listener: OnAdapterInteractionListener<T>?
-): BaseRecyclerViewAdapter<T, NameAverageRecyclerViewAdapter<T>.ViewHolder>(values, listener) {
+): BaseRecyclerViewAdapter<T>(values, listener) {
 
     companion object {
         /** Logging identifier. */
@@ -61,138 +61,98 @@ class NameAverageRecyclerViewAdapter<T : INameAverage>(
     }
 
     /** @Override */
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = when (ViewType.fromInt(viewType)) {
-            ViewType.Active, ViewType.Selectable -> {
-                LayoutInflater
-                        .from(parent.context)
-                        .inflate(R.layout.list_item_name_average, parent, false)
-            }
-            ViewType.Deleted -> {
-                LayoutInflater
-                        .from(parent.context)
-                        .inflate(R.layout.list_item_deleted, parent, false)
-            } else -> throw IllegalArgumentException("View Type `$viewType` is invalid")
-        }
-
-        return ViewHolder(view)
-    }
-
-    /** @Override */
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val viewType = ViewType.fromInt(getItemViewType(position))
-        when (viewType) {
-            ViewType.Active -> bindActiveViewHolder(holder, position)
-            ViewType.Selectable -> bindSelectableViewHolder(holder, position)
-            ViewType.Deleted -> bindDeletedViewHolder(holder, position)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseRecyclerViewAdapter<T>.ViewHolder {
+        return when (ViewType.fromInt(viewType)) {
+            ViewType.Active, ViewType.Selectable -> ViewHolderActive(
+                    LayoutInflater
+                            .from(parent.context)
+                            .inflate(R.layout.list_item_name_average, parent, false),
+                    viewType == ViewType.Selectable.ordinal
+                    )
+            ViewType.Deleted -> ViewHolderDeleted(LayoutInflater
+                    .from(parent.context)
+                    .inflate(R.layout.list_item_deleted, parent, false))
             else -> throw IllegalArgumentException("View Type `$viewType` is invalid")
         }
     }
 
-    /**
-     * Set up views to display an active [INameAverage] item.
-     *
-     * @param holder the views to display item in
-     * @param position the item to display
-     */
-    private fun bindActiveViewHolder(holder: ViewHolder, position: Int) {
-        val context = holder.itemView.context
-        val item = values[position]
-        holder.item = item
-        holder.tvName?.text = item.name
-        holder.tvAverage?.text = item.getRoundedAverage(1)
-
-        val imageResource = buildImageResource?.invoke(item, position)
-        imageResource?.let {
-            holder.ivIcon?.setImageResource(it.first)
-            holder.ivIcon?.setColorFilter(it.second)
-        }
-
-        holder.ivIcon?.visibility = View.VISIBLE
-        holder.checkBox?.visibility = View.GONE
-
-        if (position % 2 == 0) {
-            holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorListPrimary))
-        } else {
-            holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorListAlternate))
-        }
-
-        holder.itemView.setOnClickListener(this)
-        holder.itemView.setOnLongClickListener(this)
+    /** @Override */
+    override fun onBindViewHolder(holder: BaseRecyclerViewAdapter<T>.ViewHolder, position: Int) {
+        holder.bind(values[position], position)
     }
 
     /**
-     * Set up views to display a selectable [INameAverage] item.
-     *
-     * @param holder the views to display item in
-     * @param position the item to display
+     * Build and render an active or selectable item in the list.
      */
-    private fun bindSelectableViewHolder(holder: ViewHolder, position: Int) {
-        val context = holder.itemView.context
-        holder.item = values[position]
-        holder.tvName?.text = values[position].name
-        holder.tvAverage?.text = values[position].getRoundedAverage(1)
-        holder.checkBox?.isChecked = selectedItems.contains(values[position])
-
-        holder.ivIcon?.visibility = View.GONE
-        holder.checkBox?.visibility = View.VISIBLE
-
-        if (position % 2 == 0) {
-            holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorListPrimary))
-        } else {
-            holder.itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorListAlternate))
-        }
-
-        holder.itemView.setOnClickListener(this)
-        holder.itemView.setOnLongClickListener(this)
-    }
-
-    /**
-     * Set up views to display a deleted [INameAverage] item.
-     *
-     * @param holder the views to display item in
-     * @param position the item to display
-     */
-    private fun bindDeletedViewHolder(holder: ViewHolder, position: Int) {
-        val context = holder.itemView.context
-        holder.item = values[position]
-
-        holder.tvDeleted?.text = String.format(
-                context.resources.getString(R.string.query_delete_item),
-                values[position].name
-        )
-
-        val deletedItemListener = View.OnClickListener {
-            if (it.id == R.id.tv_undo) {
-                listener?.onItemSwipe(values[position])
-            } else {
-                listener?.onItemDelete(values[position])
-            }
-        }
-        holder.itemView.setOnClickListener(deletedItemListener)
-        holder.itemView.setOnLongClickListener(null)
-        holder.tvUndo?.setOnClickListener(deletedItemListener)
-    }
-
-    /**
-     * View Holder.
-     */
-    inner class ViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+    inner class ViewHolderActive(view: View, private val selectable: Boolean) : BaseRecyclerViewAdapter<T>.ViewHolder(view) {
         /** Render name of the item. */
-        val tvName: TextView? = view.findViewById(R.id.tv_name)
+        private val tvName: TextView? = view.findViewById(R.id.tv_name)
         /** Render average of the item. */
-        val tvAverage: TextView? = view.findViewById(R.id.tv_average)
+        private val tvAverage: TextView? = view.findViewById(R.id.tv_average)
         /** Render type indicator of the item. */
-        val ivIcon: ImageView? = view.findViewById(R.id.iv_name_average)
+        private val ivIcon: ImageView? = view.findViewById(R.id.iv_name_average)
         /** Render a checkbox indicating if the item is selected or not. Invisible by default. */
-        val checkBox: CheckBox? = view.findViewById(R.id.check_name_average)
+        private val checkBox: CheckBox? = view.findViewById(R.id.check_name_average)
 
+        override fun bind(item: T, position: Int) {
+            val context = itemView.context
+            tvName?.text = item.name
+            tvAverage?.text = item.getRoundedAverage(1)
+            checkBox?.isChecked = selectable && selectedItems.contains(item)
+
+            if (selectable) {
+                ivIcon?.visibility = View.GONE
+                checkBox?.visibility = View.VISIBLE
+                checkBox?.isChecked = selectedItems.contains(item)
+            } else {
+                ivIcon?.visibility = View.VISIBLE
+                checkBox?.visibility = View.GONE
+
+                val imageResource = buildImageResource?.invoke(item, position)
+                imageResource?.let {
+                    ivIcon?.setImageResource(it.first)
+                    ivIcon?.setColorFilter(it.second)
+                }
+            }
+
+            if (position % 2 == 0) {
+                itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorListPrimary))
+            } else {
+                itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorListAlternate))
+            }
+
+            itemView.setOnClickListener(this@NameAverageRecyclerViewAdapter)
+            itemView.setOnLongClickListener(this@NameAverageRecyclerViewAdapter)
+        }
+    }
+
+    /**
+     * Build and render a deleted item in the list.
+     */
+    inner class ViewHolderDeleted(view: View) : BaseRecyclerViewAdapter<T>.ViewHolder(view) {
         /** Render name of the deleted item. */
-        val tvDeleted: TextView? = view.findViewById(R.id.tv_deleted)
+        private val tvDeleted: TextView? = view.findViewById(R.id.tv_deleted)
         /** Button to undo deletion of an item. */
-        val tvUndo: TextView? = view.findViewById(R.id.tv_undo)
+        private val tvUndo: TextView? = view.findViewById(R.id.tv_undo)
 
-        /** INameAverage item. */
-        var item: T? = null
+        override fun bind(item: T, position: Int) {
+            val context = itemView.context
+
+            tvDeleted?.text = String.format(
+                    context.resources.getString(R.string.query_delete_item),
+                    values[position].name
+            )
+
+            val deletedItemListener = View.OnClickListener {
+                if (it.id == R.id.tv_undo) {
+                    listener?.onItemSwipe(values[position])
+                } else {
+                    listener?.onItemDelete(values[position])
+                }
+            }
+            itemView.setOnClickListener(deletedItemListener)
+            itemView.setOnLongClickListener(null)
+            tvUndo?.setOnClickListener(deletedItemListener)
+        }
     }
 }
