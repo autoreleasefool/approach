@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.IRefreshable
 import kotlinx.android.synthetic.main.fragment_common_tabs.*
+import kotlinx.android.synthetic.main.fragment_common_tabs.view.*
 import java.lang.ref.WeakReference
 
 /**
@@ -27,7 +28,7 @@ abstract class TabbedFragment : BaseFragment() {
 
     /** Active tab. */
     protected val currentTab: Int
-        get() = tabbed_fragment_pager.currentItem
+        get() = tabbed_fragment_pager?.currentItem ?: 0
 
     /** Handle visibility changes in the fab. */
     val fabVisibilityChangeListener = object : FloatingActionButton.OnVisibilityChangedListener() {
@@ -44,9 +45,9 @@ abstract class TabbedFragment : BaseFragment() {
     /** @Override */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.fragment_common_tabs, container, false)
-        configureToolbar()
-        configureTabLayout()
-        configureFab()
+        configureToolbar(rootView)
+        configureTabLayout(rootView)
+        configureFab(rootView)
         return rootView
     }
 
@@ -79,30 +80,34 @@ abstract class TabbedFragment : BaseFragment() {
 
     /**
      * Configure toolbar for rendering.
+     *
+     * @param rootView the root view of the fragment
      */
-    private fun configureToolbar() {
+    private fun configureToolbar(rootView: View) {
         // TODO: configure toolbar for tabbed fragment
     }
 
     /**
      * Configure tab layout for rendering.
+     *
+     * @param rootView the root view of the fragment
      */
-    private fun configureTabLayout() {
-        addTabs(tabbed_fragment_tabs)
-        tabbed_fragment_pager.scrollingEnabled = false
+    private fun configureTabLayout(rootView: View) {
+        addTabs(rootView.tabbed_fragment_tabs)
+        rootView.tabbed_fragment_pager.scrollingEnabled = false
 
-        val adapter = buildPagerAdapter(tabbed_fragment_tabs.tabCount)
-        tabbed_fragment_pager.adapter = adapter
+        val adapter = buildPagerAdapter(rootView.tabbed_fragment_tabs.tabCount)
+        rootView.tabbed_fragment_pager.adapter = adapter
 
-        tabbed_fragment_pager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabbed_fragment_tabs))
-        tabbed_fragment_tabs.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
+        rootView.tabbed_fragment_pager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(rootView.tabbed_fragment_tabs))
+        rootView.tabbed_fragment_tabs.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
-                tabbed_fragment_pager.currentItem = tab.position
+                rootView.tabbed_fragment_pager.currentItem = tab.position
 
-                if (tabbed_fragment_fab.visibility == View.VISIBLE) {
-                    tabbed_fragment_fab.hide(fabVisibilityChangeListener)
+                if (rootView.tabbed_fragment_fab.visibility == View.VISIBLE) {
+                    rootView.tabbed_fragment_fab.hide(fabVisibilityChangeListener)
                 } else {
-                    fabVisibilityChangeListener.onHidden(tabbed_fragment_fab)
+                    fabVisibilityChangeListener.onHidden(rootView.tabbed_fragment_fab)
                 }
             }
 
@@ -113,12 +118,14 @@ abstract class TabbedFragment : BaseFragment() {
 
     /**
      * Configure floating action buttons for rendering.
+     *
+     * @param rootView the root view of the fragment
      */
-    private fun configureFab() {
+    private fun configureFab(rootView: View) {
         val image = getFabImage(currentTab) ?: return
-        tabbed_fragment_fab.setColorFilter(Color.BLACK)
-        tabbed_fragment_fab.setImageResource(image)
-        tabbed_fragment_fab.setOnClickListener {
+        rootView.tabbed_fragment_fab.setColorFilter(Color.BLACK)
+        rootView.tabbed_fragment_fab.setImageResource(image)
+        rootView.tabbed_fragment_fab.setOnClickListener {
             onFabSelected()
         }
     }

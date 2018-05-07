@@ -16,7 +16,7 @@ class NavigationActivity : BaseActivity(),
 
     companion object {
         /** Logging identifier. */
-        private val TAG = "NavigationActivity"
+        private const val TAG = "NavigationActivity"
 
         enum class BottomTab {
             Record, Statistics, Equipment;
@@ -85,7 +85,8 @@ class NavigationActivity : BaseActivity(),
         }
 
         bottom_navigation.setOnNavigationItemReselectedListener {
-            fragNavController?.clearStack()
+            // TODO: probably refresh the current fragment, not reset the stack
+//            fragNavController?.clearStack()
         }
     }
 
@@ -96,7 +97,10 @@ class NavigationActivity : BaseActivity(),
      */
     private fun setupFragNavController(savedInstanceState: Bundle?) {
         val builder = FragNavController.newBuilder(savedInstanceState, supportFragmentManager, R.id.fragment_container)
-        builder.rootFragmentListener(this, BottomTab.values().size)
+                .rootFragmentListener(this@NavigationActivity, BottomTab.values().size)
+                .transactionListener(this@NavigationActivity)
+        // TODO: look into .fragmentHideStrategy(FragNavController.HIDE), .eager(true)
+        fragNavController = builder.build()
     }
 
     /** @Override */
@@ -104,7 +108,7 @@ class NavigationActivity : BaseActivity(),
         val tab = BottomTab.fromInt(index)
         val fragmentName: String
         fragmentName = when (tab) {
-            BottomTab.Record -> BowlerListFragment::class.java.name
+            BottomTab.Record -> BowlerTeamTabbedFragment::class.java.name
             BottomTab.Equipment -> BowlerListFragment::class.java.name // TODO: enable equipment tab
             BottomTab.Statistics -> BowlerListFragment::class.java.name // TODO: enable statistics tab
             else -> throw RuntimeException("$index is not a valid tab index")

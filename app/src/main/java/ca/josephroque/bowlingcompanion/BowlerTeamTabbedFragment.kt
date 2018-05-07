@@ -27,13 +27,22 @@ class BowlerTeamTabbedFragment : TabbedFragment(),
 
     companion object {
         /** Logging identifier */
-        private val TAG = "BowlerTeamTabbedFragment"
+        private const val TAG = "BowlerTeamTabFragment"
 
         /** Index for [BowlerListFragment] tab. */
         const val BOWLER_FRAGMENT = 0
 
         /** Index for [TeamListFragment] tab. */
         const val TEAM_FRAGMENT = 1
+
+        /**
+         * Creates a new instance.
+         *
+         * @return the new instance
+         */
+        fun newInstance(): BowlerTeamTabbedFragment {
+            return BowlerTeamTabbedFragment()
+        }
     }
 
     /** @Override */
