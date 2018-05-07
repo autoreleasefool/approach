@@ -3,7 +3,6 @@ package ca.josephroque.bowlingcompanion
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
-import android.support.v4.app.FragmentTransaction
 import ca.josephroque.bowlingcompanion.bowlers.Bowler
 import ca.josephroque.bowlingcompanion.bowlers.BowlerDialog
 import ca.josephroque.bowlingcompanion.bowlers.BowlerListFragment
@@ -72,7 +71,7 @@ class BowlerTeamTabbedFragment : TabbedFragment(),
     }
 
     /** @Override */
-    override fun getFabImage(currentTab: Int): Int? {
+    override fun getFabImage(): Int? {
         return when (Tab.fromInt(currentTab)) {
             Tab.Bowlers -> R.drawable.ic_person_add_white_24dp
             Tab.Teams -> R.drawable.ic_group_add_white_24dp
@@ -81,7 +80,7 @@ class BowlerTeamTabbedFragment : TabbedFragment(),
     }
 
     /** @Override */
-    override fun onFabSelected() {
+    override fun onFabClick() {
         when (Tab.fromInt(currentTab)) {
             Tab.Bowlers -> promptAddOrEditBowler()
             Tab.Teams -> promptAddOrEditTeam()

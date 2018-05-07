@@ -1,8 +1,6 @@
 package ca.josephroque.bowlingcompanion.common.fragments
 
-import android.graphics.Color
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
@@ -11,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import ca.josephroque.bowlingcompanion.R
+import ca.josephroque.bowlingcompanion.common.IFloatingActionButtonHandler
 import ca.josephroque.bowlingcompanion.common.IRefreshable
 import kotlinx.android.synthetic.main.fragment_common_tabs.*
 import kotlinx.android.synthetic.main.fragment_common_tabs.view.*
@@ -19,7 +18,8 @@ import java.lang.ref.WeakReference
 /**
  * Copyright (C) 2018 Joseph Roque
  */
-abstract class TabbedFragment : BaseFragment() {
+abstract class TabbedFragment : BaseFragment(),
+        IFloatingActionButtonHandler {
 
     companion object {
         /** Logging identifier. */
@@ -30,34 +30,13 @@ abstract class TabbedFragment : BaseFragment() {
     protected val currentTab: Int
         get() = tabbed_fragment_pager?.currentItem ?: 0
 
-    /** Handle visibility changes in the fab. */
-    val fabVisibilityChangeListener = object : FloatingActionButton.OnVisibilityChangedListener() {
-        override fun onHidden(fab: FloatingActionButton?) {
-            fab?.let {
-                it.setColorFilter(Color.BLACK)
-                val image = getFabImage(currentTab) ?: return
-                it.setImageResource(image)
-                it.show()
-            }
-        }
-    }
-
     /** @Override */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.fragment_common_tabs, container, false)
         configureToolbar(rootView)
         configureTabLayout(rootView)
-        configureFab(rootView)
         return rootView
     }
-
-    /**
-     * Get the image to display on the Fab for a certain tab.
-     *
-     * @param currentTab the tab to be displayed
-     * @return an image resource id, or null to hide the fab
-     * */
-    abstract fun getFabImage(currentTab: Int): Int?
 
     /**
      * Add tabs to the tab layout.
@@ -72,11 +51,6 @@ abstract class TabbedFragment : BaseFragment() {
      * @param tabCount number of tabs
      */
     abstract fun buildPagerAdapter(tabCount: Int): BaseFragmentPagerAdapter
-
-    /**
-     * Invoked when the floating action button is selected, so subclasses may handle.
-     */
-    abstract fun onFabSelected()
 
     /**
      * Configure toolbar for rendering.
@@ -103,33 +77,12 @@ abstract class TabbedFragment : BaseFragment() {
         rootView.tabbed_fragment_tabs.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 rootView.tabbed_fragment_pager.currentItem = tab.position
-
-                if (rootView.tabbed_fragment_fab.visibility == View.VISIBLE) {
-                    rootView.tabbed_fragment_fab.hide(fabVisibilityChangeListener)
-                } else {
-                    fabVisibilityChangeListener.onHidden(rootView.tabbed_fragment_fab)
-                }
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {}
             override fun onTabReselected(tab: TabLayout.Tab) {}
         })
     }
-
-    /**
-     * Configure floating action buttons for rendering.
-     *
-     * @param rootView the root view of the fragment
-     */
-    private fun configureFab(rootView: View) {
-        val image = getFabImage(currentTab) ?: return
-        rootView.tabbed_fragment_fab.setColorFilter(Color.BLACK)
-        rootView.tabbed_fragment_fab.setImageResource(image)
-        rootView.tabbed_fragment_fab.setOnClickListener {
-            onFabSelected()
-        }
-    }
-
 
     /**
      * Refresh lists in all tabs.

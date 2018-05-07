@@ -1,10 +1,14 @@
 package ca.josephroque.bowlingcompanion
 
+import android.graphics.Color
 import android.os.Bundle
 import android.support.annotation.IdRes
+import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
+import android.view.View
 import ca.josephroque.bowlingcompanion.bowlers.BowlerListFragment
+import ca.josephroque.bowlingcompanion.common.IFloatingActionButtonHandler
 import ca.josephroque.bowlingcompanion.common.activities.BaseActivity
 import ca.josephroque.bowlingcompanion.common.fragments.BaseFragment
 import com.ncapdevi.fragnav.FragNavController
@@ -37,7 +41,31 @@ class NavigationActivity : BaseActivity(),
         }
     }
 
+    /** Controller for fragment navigation. */
     private var fragNavController: FragNavController? = null
+
+    /** Drawable to display in the floating action button. */
+    private var fabImage: Int? = null
+        set(value) {
+            field = value
+            if (fab.visibility == View.VISIBLE) {
+                fab.hide(fabVisibilityChangeListener)
+            } else {
+                fabVisibilityChangeListener.onHidden(fab)
+            }
+        }
+
+    /** Handle visibility changes in the fab. */
+    private val fabVisibilityChangeListener = object : FloatingActionButton.OnVisibilityChangedListener() {
+        override fun onHidden(fab: FloatingActionButton?) {
+            fab?.let {
+                it.setColorFilter(Color.BLACK)
+                val image = fabImage ?: return
+                it.setImageResource(image)
+                it.show()
+            }
+        }
+    }
 
     /** @Override. */
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,6 +74,7 @@ class NavigationActivity : BaseActivity(),
 
         setupToolbar()
         setupBottomNavigation()
+        setupFab()
         setupFragNavController(savedInstanceState)
     }
 
@@ -97,6 +126,19 @@ class NavigationActivity : BaseActivity(),
     }
 
     /**
+     * Configure floating action button for rendering.
+     */
+    private fun setupFab() {
+        fab.setOnClickListener {
+            for (fragment in supportFragmentManager.fragments) {
+                if (fragment != null && fragment.isVisible && fragment is IFloatingActionButtonHandler) {
+                    fragment.onFabClick()
+                }
+            }
+        }
+    }
+
+    /**
      * Build the [FragNavController] for bottom tab navigation.
      *
      * @param savedInstanceState the activity saved instance state
@@ -126,10 +168,16 @@ class NavigationActivity : BaseActivity(),
     /** @Override */
     override fun onFragmentTransaction(fragment: Fragment?, transactionType: FragNavController.TransactionType?) {
         supportActionBar?.setDisplayHomeAsUpEnabled(fragNavController?.isRootFragment?.not() ?: false)
+        if (fragment is IFloatingActionButtonHandler) {
+            fabImage = fragment.getFabImage()
+        }
     }
 
     /** @Override */
     override fun onTabTransaction(fragment: Fragment?, index: Int) {
         supportActionBar?.setDisplayHomeAsUpEnabled(fragNavController?.isRootFragment?.not() ?: false)
+        if (fragment is IFloatingActionButtonHandler) {
+            fabImage = fragment.getFabImage()
+        }
     }
 }

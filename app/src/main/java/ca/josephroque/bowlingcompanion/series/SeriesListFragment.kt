@@ -37,6 +37,7 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter.ViewHo
     /** The league whose series are to be displayed. */
     private var league: League? = null
 
+    /** Indicates how to render series in the list. */
     private var seriesView: Series.Companion.View = Series.Companion.View.Expanded
         set(value) {
             context?.let {

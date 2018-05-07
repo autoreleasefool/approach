@@ -89,12 +89,12 @@ class LeagueEventTabbedFragment : TabbedFragment(),
     }
 
     /** @Override */
-    override fun getFabImage(currentTab: Int): Int? {
+    override fun getFabImage(): Int? {
         return R.drawable.ic_add_white_24dp
     }
 
     /** @Override */
-    override fun onFabSelected() {
+    override fun onFabClick() {
         when (Tab.fromInt(currentTab)) {
             Tab.Leagues -> promptAddOrEditLeague(false)
             Tab.Events -> promptAddOrEditLeague(true)
