@@ -14,6 +14,7 @@ import ca.josephroque.bowlingcompanion.common.fragments.TabbedFragment
 import ca.josephroque.bowlingcompanion.leagues.League
 import ca.josephroque.bowlingcompanion.leagues.LeagueDialog
 import ca.josephroque.bowlingcompanion.leagues.LeagueListFragment
+import ca.josephroque.bowlingcompanion.series.SeriesListFragment
 import kotlinx.android.synthetic.main.fragment_common_tabs.*
 
 /**
@@ -108,7 +109,7 @@ class LeagueEventTabbedFragment : TabbedFragment(),
             if (longPress) {
                 promptAddOrEditLeague(item.isEvent, item)
             } else {
-                TODO("select league")
+                showSeries(item)
             }
         } else {
             throw RuntimeException("LeagueEventTabbedFragment can only handle League and item is $item")
@@ -147,6 +148,16 @@ class LeagueEventTabbedFragment : TabbedFragment(),
         val bowler = bowler ?: return
         val newFragment = LeagueDialog.newInstance(bowler, league, isEvent)
         fragmentNavigation?.pushDialogFragment(newFragment)
+    }
+
+    /**
+     * Show list of series for the league.
+     *
+     * @param league league to show series for
+     */
+    private fun showSeries(league: League) {
+        val newFragment = SeriesListFragment.newInstance(league)
+        fragmentNavigation?.pushFragment(newFragment)
     }
 
     /**

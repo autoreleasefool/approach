@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.support.v7.preference.PreferenceManager
 import android.view.*
 import ca.josephroque.bowlingcompanion.R
+import ca.josephroque.bowlingcompanion.common.IFloatingActionButtonHandler
 import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
 import ca.josephroque.bowlingcompanion.leagues.League
 import ca.josephroque.bowlingcompanion.settings.Settings
@@ -16,7 +17,9 @@ import kotlinx.coroutines.experimental.async
  *
  * A fragment representing a list of series.
  */
-class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter.ViewHolder, SeriesRecyclerViewAdapter>() {
+class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter.ViewHolder, SeriesRecyclerViewAdapter>(),
+        SeriesDialog.OnSeriesDialogInteractionListener,
+        IFloatingActionButtonHandler {
 
     companion object {
         /** Logging identifier. */
@@ -134,6 +137,40 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter.ViewHo
             }
 
             emptyList<Series>().toMutableList()
+        }
+    }
+
+    /** @Override */
+    override fun getFabImage(): Int? {
+        return R.drawable.ic_add_white_24dp
+    }
+
+    /** @Override */
+    override fun onFabClick() {
+        promptAddOrEditSeries()
+    }
+
+    /** @Override */
+    override fun onFinishSeries(series: Series) {
+        refreshList(series)
+    }
+
+    /** @Override */
+    override fun onDeleteSeries(series: Series) {
+        onItemDelete(series)
+    }
+
+    /**
+     * Display a prompt to add or edit a series.
+     *
+     * @param series the series to edit, or null if a new series should be added
+     */
+    private fun promptAddOrEditSeries(series: Series? = null) {
+        if (series != null) {
+            val newFragment = SeriesDialog.newInstance(series)
+            fragmentNavigation?.pushDialogFragment(newFragment)
+        } else {
+            TODO("not implemented")
         }
     }
 }
