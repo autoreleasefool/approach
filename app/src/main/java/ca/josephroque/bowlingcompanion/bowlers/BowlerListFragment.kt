@@ -36,9 +36,6 @@ class BowlerListFragment : ListFragment<Bowler, NameAverageRecyclerViewAdapter<B
         }
     }
 
-    /** Interaction handler. */
-    private var listener: OnBowlerListFragmentInteractionListener? = null
-
     /** @Override */
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -47,19 +44,6 @@ class BowlerListFragment : ListFragment<Bowler, NameAverageRecyclerViewAdapter<B
     ): View? {
         setHasOptionsMenu(true)
         return super.onCreateView(inflater, container, savedInstanceState)
-    }
-
-    /** @Override */
-//    override fun onAttach(context: Context?) {
-//        super.onAttach(context)
-//        context as? OnBowlerListFragmentInteractionListener ?: throw RuntimeException(context!!.toString() + " must implement OnBowlerListFragmentInteractionListener")
-//        listener = context
-//    }
-
-    /** @Override */
-    override fun onDetach() {
-        super.onDetach()
-        listener = null
     }
 
     /** @Override */
@@ -117,62 +101,11 @@ class BowlerListFragment : ListFragment<Bowler, NameAverageRecyclerViewAdapter<B
                                     .commit()
 
                             val ignoredSet: MutableSet<Int> = HashSet()
-                            ignoredSet.add(BowlerTeamListActivity.BOWLER_FRAGMENT)
-                            (activity as? BowlerTeamListActivity)?.refreshTabs(ignoredSet)
+                            ignoredSet.add(BowlerTeamTabbedFragment.BOWLER_FRAGMENT)
+                            (parentFragment as? BowlerTeamTabbedFragment)?.refreshTabs(ignoredSet)
                         }
                     })
                     .show()
         }
-    }
-
-    /** @Override */
-    override fun onItemClick(item: Bowler) {
-        listener?.onBowlerSelected(item, false)
-    }
-
-    /** @Override */
-    override fun onItemDelete(item: Bowler) {
-        val context = context ?: return
-        val index = item.indexInList(items)
-        if (index != -1) {
-            items.removeAt(index)
-            adapter?.notifyItemRemoved(index)
-
-            async(CommonPool) {
-                item.delete(context).await()
-
-                val ignoredSet: MutableSet<Int> = HashSet()
-                ignoredSet.add(BowlerTeamListActivity.BOWLER_FRAGMENT)
-                (activity as? BowlerTeamListActivity)?.refreshTabs(ignoredSet)
-            }
-        }
-    }
-
-    /** @Override */
-    override fun onItemSwipe(item: Bowler) {
-        val index = item.indexInList(items)
-        if (index != -1) {
-            item.isDeleted = !item.isDeleted
-            adapter?.notifyItemChanged(index)
-        }
-    }
-
-    /** @Override */
-    override fun onItemLongClick(item: Bowler) {
-        listener?.onBowlerSelected(item, true)
-    }
-
-    /**
-     * Handles interactions with the Bowler list.
-     */
-    interface OnBowlerListFragmentInteractionListener {
-
-        /**
-         * Indicates a bowler has been selected and further details should be shown to the user.
-         *
-         * @param bowler the bowler that the user has selected
-         * @param toEdit indicate if the user's intent is to edit the [Bowler] or select
-         */
-        fun onBowlerSelected(bowler: Bowler, toEdit: Boolean)
     }
 }

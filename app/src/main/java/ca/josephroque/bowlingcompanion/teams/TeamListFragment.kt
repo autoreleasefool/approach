@@ -1,7 +1,6 @@
 package ca.josephroque.bowlingcompanion.teams
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v7.app.AlertDialog
@@ -35,9 +34,6 @@ class TeamListFragment : ListFragment<Team, TeamRecyclerViewAdapter.ViewHolder, 
         }
     }
 
-    /** Handle team interaction events. */
-    private var listener: OnTeamListFragmentInteractionListener? = null
-
     /** @Override */
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -46,19 +42,6 @@ class TeamListFragment : ListFragment<Team, TeamRecyclerViewAdapter.ViewHolder, 
     ): View? {
         setHasOptionsMenu(true)
         return super.onCreateView(inflater, container, savedInstanceState)
-    }
-
-    /** @Override */
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-        context as? OnTeamListFragmentInteractionListener ?: throw RuntimeException(context!!.toString() + " must implement OnTeamListFragmentInteractionListener")
-        listener = context
-    }
-
-    /** @Override */
-    override fun onDetach() {
-        super.onDetach()
-        listener = null
     }
 
     /** @Override */
@@ -117,49 +100,5 @@ class TeamListFragment : ListFragment<Team, TeamRecyclerViewAdapter.ViewHolder, 
                     })
                     .show()
         }
-    }
-
-    /** @Override */
-    override fun onItemClick(item: Team) {
-        listener?.onTeamSelected(item, false)
-    }
-
-    /** @Override */
-    override fun onItemDelete(item: Team) {
-        val context = context ?: return
-        val index = item.indexInList(items)
-        if (index != -1) {
-            items.removeAt(index)
-            adapter?.notifyItemRemoved(index)
-            item.delete(context)
-        }
-    }
-
-    /** @Override */
-    override fun onItemLongClick(item: Team) {
-        listener?.onTeamSelected(item, true)
-    }
-
-    /** @Override */
-    override fun onItemSwipe(item: Team) {
-        val index = item.indexInList(items)
-        if (index != -1) {
-            item.isDeleted = !item.isDeleted
-            adapter?.notifyItemChanged(index)
-        }
-    }
-
-    /**
-     * Handles interactions with the Team list.
-     */
-    interface OnTeamListFragmentInteractionListener {
-
-        /**
-         * Indicates a team has been selected and further details should be shown to the user.
-         *
-         * @param team the team that the user has selected
-         * @param toEdit indicate if the user's intent is to edit the [Team] or select
-         */
-        fun onTeamSelected(team: Team, toEdit: Boolean)
     }
 }

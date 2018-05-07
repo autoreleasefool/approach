@@ -50,9 +50,6 @@ class LeagueListFragment : ListFragment<League, NameAverageRecyclerViewAdapter<L
         }
     }
 
-    /** Interaction handler. */
-    private var listener: OnLeagueListFragmentInteractionListener? = null
-
     /** The bowler whose leagues are to be displayed. */
     private var bowler: Bowler? = null
 
@@ -70,19 +67,6 @@ class LeagueListFragment : ListFragment<League, NameAverageRecyclerViewAdapter<L
         setHasOptionsMenu(true)
 
         return super.onCreateView(inflater, container, savedInstanceState)
-    }
-
-    /** @Override */
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-        context as? OnLeagueListFragmentInteractionListener ?: throw RuntimeException(context!!.toString() + " must implement OnLeagueListFragmentInteractionListener")
-        listener = context
-    }
-
-    /** @Override */
-    override fun onDetach() {
-        super.onDetach()
-        listener = null
     }
 
     /** @Override */
@@ -156,49 +140,5 @@ class LeagueListFragment : ListFragment<League, NameAverageRecyclerViewAdapter<L
                     })
                     .show()
         }
-    }
-
-    /** @Override */
-    override fun onItemClick(item: League) {
-        listener?.onLeagueSelected(item, false)
-    }
-
-    /** @Override */
-    override fun onItemDelete(item: League) {
-        val context = context ?: return
-        val index = item.indexInList(items)
-        if (index != -1) {
-            items.removeAt(index)
-            adapter?.notifyItemRemoved(index)
-            item.delete(context)
-        }
-    }
-
-    /** @Override */
-    override fun onItemSwipe(item: League) {
-        val index = item.indexInList(items)
-        if (index != -1) {
-            item.isDeleted = !item.isDeleted
-            adapter?.notifyItemChanged(index)
-        }
-    }
-
-    /** @Override */
-    override fun onItemLongClick(item: League) {
-        listener?.onLeagueSelected(item, true)
-    }
-
-    /**
-     * Handles interactions with the list of leagues.
-     */
-    interface OnLeagueListFragmentInteractionListener {
-
-        /**
-         * Indicates a league has been selected and further details should be shown to the user.
-         *
-         * @param league the league that the user has selected
-         * @param toEdit indicate if the user's intent is to edit the [League] or select
-         */
-        fun onLeagueSelected(league: League, toEdit: Boolean)
     }
 }

@@ -17,7 +17,6 @@ import kotlinx.android.synthetic.main.activity_series_list.*
  * Activity to display league details.
  */
 class SeriesListActivity: BaseActivity(),
-        SeriesFragment.OnSeriesFragmentInteractionListener,
         SeriesDialog.OnSeriesDialogInteractionListener
 {
 
@@ -111,15 +110,6 @@ class SeriesListActivity: BaseActivity(),
     private fun refreshSeries(series: Series? = null) {
         val fragment = supportFragmentManager.findFragmentById(R.id.layout_league_details) as? SeriesFragment ?: return
         fragment.refreshList(series)
-    }
-
-    /** @Override */
-    override fun onSeriesSelected(series: Series, toEdit: Boolean) {
-        if (toEdit) {
-            promptAddOrEditSeries(series)
-        } else {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        }
     }
 
     /** @Override */

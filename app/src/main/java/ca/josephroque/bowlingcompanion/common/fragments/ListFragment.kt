@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.common.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
@@ -9,7 +10,9 @@ import android.view.View
 import android.view.ViewGroup
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.Android
+import ca.josephroque.bowlingcompanion.common.IDeletable
 import ca.josephroque.bowlingcompanion.common.IIdentifiable
+import ca.josephroque.bowlingcompanion.common.IRefreshable
 import ca.josephroque.bowlingcompanion.common.adapters.BaseRecyclerViewAdapter
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.launch
@@ -20,7 +23,8 @@ import kotlinx.coroutines.experimental.launch
  * Basic [Fragment] implementation with a list.
  */
 abstract class ListFragment<Item: IIdentifiable, ViewHolder: RecyclerView.ViewHolder, Adapter: BaseRecyclerViewAdapter<Item, ViewHolder>>: BaseFragment(),
-        BaseRecyclerViewAdapter.OnAdapterInteractionListener<Item>
+        BaseRecyclerViewAdapter.OnAdapterInteractionListener<Item>,
+        IRefreshable
 {
 
     companion object {
@@ -33,6 +37,9 @@ abstract class ListFragment<Item: IIdentifiable, ViewHolder: RecyclerView.ViewHo
 
     /** Items to display. */
     protected var items: MutableList<Item> = ArrayList()
+
+    /** Handle list interaction events. */
+    protected var listener: OnListFragmentInteractionListener? = null
 
     /** @Override */
     override fun onCreateView(
@@ -56,9 +63,57 @@ abstract class ListFragment<Item: IIdentifiable, ViewHolder: RecyclerView.ViewHo
     }
 
     /** @Override */
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        val parent = parentFragment as? OnListFragmentInteractionListener ?: throw RuntimeException("${parentFragment!!.toString()} must implement OnListFragmentInteractionListener")
+        listener = parent
+    }
+
+    /** @Override */
+    override fun onDetach() {
+        super.onDetach()
+        listener = null
+    }
+
+    /** @Override */
     override fun onResume() {
         super.onResume()
         refreshList()
+    }
+
+    /** @Override */
+    override fun refresh() {
+        refreshList()
+    }
+
+    /** @Override */
+    override fun onItemClick(item: Item) {
+        listener?.onItemSelected(item, false)
+    }
+
+    /** @Override */
+    override fun onItemDelete(item: Item) {
+        val context = context ?: return
+        val index = item.indexInList(items)
+        if (index != -1 && item is IDeletable) {
+            items.removeAt(index)
+            adapter?.notifyItemRemoved(index)
+            item.delete(context)
+        }
+    }
+
+    /** @Override */
+    override fun onItemLongClick(item: Item) {
+        listener?.onItemSelected(item, true)
+    }
+
+    /** @Override */
+    override fun onItemSwipe(item: Item) {
+        val index = item.indexInList(items)
+        if (index != -1 && item is IDeletable) {
+            item.isDeleted = !item.isDeleted
+            adapter?.notifyItemChanged(index)
+        }
     }
 
     /**
@@ -92,4 +147,18 @@ abstract class ListFragment<Item: IIdentifiable, ViewHolder: RecyclerView.ViewHo
      * @return the adapter for the list of items.
      */
     abstract fun buildAdapter(): Adapter
+
+    /**
+     * Handle interactions with the list.
+     */
+    interface OnListFragmentInteractionListener {
+
+        /**
+         * Indicates an item has been selected.
+         *
+         * @param item the item that the user has selected
+         * @param longPress true if the item was long pressed, false if it was touched
+         */
+        fun onItemSelected(item: IIdentifiable, longPress: Boolean)
+    }
 }

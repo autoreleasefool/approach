@@ -35,9 +35,6 @@ class SeriesFragment : ListFragment<Series, SeriesRecyclerViewAdapter.ViewHolder
         }
     }
 
-    /** Interaction handler. */
-    private var listener: OnSeriesFragmentInteractionListener? = null
-
     /** The league whose series are to be displayed. */
     private var league: League? = null
 
@@ -85,19 +82,6 @@ class SeriesFragment : ListFragment<Series, SeriesRecyclerViewAdapter.ViewHolder
         adapter?.seriesHighlightMin = league.seriesHighlight
         adapter?.shouldHighlightSeries = shouldHighlightSeries
         adapter?.shouldHighlightScores = shouldHighlightScores
-    }
-
-    /** @Override. */
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-        context as? OnSeriesFragmentInteractionListener ?: throw RuntimeException(context!!.toString() + " must implement OnSeriesFragmentInteractionListener ")
-        listener = context
-    }
-
-    /** @Override. */
-    override fun onDetach() {
-        super.onDetach()
-        listener = null
     }
 
     /** @Override. */
@@ -152,48 +136,4 @@ class SeriesFragment : ListFragment<Series, SeriesRecyclerViewAdapter.ViewHolder
             emptyList<Series>().toMutableList()
         }
     }
-
-    /** @Override */
-    override fun onItemClick(item: Series) {
-        listener?.onSeriesSelected(item, false)
-    }
-
-    override fun onItemDelete(item: Series) {
-        val context = context ?: return
-        val index = item.indexInList(items)
-        if (index != -1) {
-            items.removeAt(index)
-            adapter?.notifyItemRemoved(index)
-            item.delete(context)
-        }
-    }
-
-    /** @Override */
-    override fun onItemSwipe(item: Series) {
-        val index = item.indexInList(items)
-        if (index != -1) {
-            item.isDeleted = !item.isDeleted
-            adapter?.notifyItemChanged(index)
-        }
-    }
-
-    /** @Override */
-    override fun onItemLongClick(item: Series) {
-        listener?.onSeriesSelected(item, true)
-    }
-
-    /**
-     * Handles interactions with the list of leagues.
-     */
-    interface OnSeriesFragmentInteractionListener {
-
-        /**
-         * Indicates a series has been selected and further details should be shown to the user.
-         *
-         * @param league the series that the user has selected
-         * @param toEdit indicate if the user's intent is to edit the [Series] or select
-         */
-        fun onSeriesSelected(series: Series, toEdit: Boolean)
-    }
-
 }

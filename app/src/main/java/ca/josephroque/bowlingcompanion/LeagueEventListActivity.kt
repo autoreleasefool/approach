@@ -28,7 +28,6 @@ import java.lang.ref.WeakReference
  * Activity to display bowler details.
  */
 class LeagueEventListActivity : BaseActivity(),
-        LeagueListFragment.OnLeagueListFragmentInteractionListener,
         LeagueDialog.OnLeagueDialogInteractionListener
 {
 
@@ -150,18 +149,6 @@ class LeagueEventListActivity : BaseActivity(),
                 .add(android.R.id.content, newFragment)
                 .addToBackStack(null)
                 .commit()
-    }
-
-    /** @Override */
-    override fun onLeagueSelected(league: League, toEdit: Boolean) {
-        if (toEdit) {
-            promptAddOrEditLeague(league.isEvent, league)
-        } else {
-            val intent = Intent(baseContext, SeriesListActivity::class.java).apply {
-                putExtra(SeriesListActivity.INTENT_LEAGUE, league)
-            }
-            startActivity(intent)
-        }
     }
 
     /** @Override */
