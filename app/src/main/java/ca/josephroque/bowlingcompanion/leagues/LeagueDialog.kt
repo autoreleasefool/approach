@@ -222,8 +222,8 @@ class LeagueDialog : DialogFragment() {
     /** @Override */
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        context as? OnLeagueDialogInteractionListener ?: throw RuntimeException(context!!.toString() + " must implement OnLeagueDialogInteractionListener")
-        listener = context
+        val parent = parentFragment as? OnLeagueDialogInteractionListener ?: throw RuntimeException("${parentFragment!!} must implement OnLeagueDialogInteractionListener")
+        listener = parent
     }
 
     /** @Override */

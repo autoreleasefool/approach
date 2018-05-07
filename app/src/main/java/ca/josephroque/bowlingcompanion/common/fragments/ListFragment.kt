@@ -65,7 +65,7 @@ abstract class ListFragment<Item: IIdentifiable, ViewHolder: RecyclerView.ViewHo
     /** @Override */
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        val parent = parentFragment as? OnListFragmentInteractionListener ?: throw RuntimeException("${parentFragment!!.toString()} must implement OnListFragmentInteractionListener")
+        val parent = parentFragment as? OnListFragmentInteractionListener ?: throw RuntimeException("${parentFragment!!} must implement OnListFragmentInteractionListener")
         listener = parent
     }
 

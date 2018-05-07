@@ -101,7 +101,7 @@ class BowlerListFragment : ListFragment<Bowler, NameAverageRecyclerViewAdapter<B
                                     .commit()
 
                             val ignoredSet: MutableSet<Int> = HashSet()
-                            ignoredSet.add(BowlerTeamTabbedFragment.BOWLER_FRAGMENT)
+                            ignoredSet.add(BowlerTeamTabbedFragment.Companion.Tab.Bowlers.ordinal)
                             (parentFragment as? BowlerTeamTabbedFragment)?.refreshTabs(ignoredSet)
                         }
                     })

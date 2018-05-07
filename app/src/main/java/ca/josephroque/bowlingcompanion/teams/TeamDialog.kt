@@ -129,8 +129,8 @@ class TeamDialog : DialogFragment(),
     /** @Override */
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        context as? OnTeamDialogInteractionListener ?: throw RuntimeException(context!!.toString() + " must implement OnTeamDialogInteractionListener")
-        listener = context
+        val parent = parentFragment as? OnTeamDialogInteractionListener ?: throw RuntimeException("${parentFragment!!} must implement OnTeamDialogInteractionListener")
+        listener = parent
     }
 
     /** @Override */
