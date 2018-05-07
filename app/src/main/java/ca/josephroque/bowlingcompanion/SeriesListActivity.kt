@@ -8,7 +8,7 @@ import ca.josephroque.bowlingcompanion.common.activities.BaseActivity
 import ca.josephroque.bowlingcompanion.leagues.League
 import ca.josephroque.bowlingcompanion.series.Series
 import ca.josephroque.bowlingcompanion.series.SeriesDialog
-import ca.josephroque.bowlingcompanion.series.SeriesFragment
+import ca.josephroque.bowlingcompanion.series.SeriesListFragment
 import kotlinx.android.synthetic.main.activity_series_list.*
 
 /**
@@ -42,7 +42,7 @@ class SeriesListActivity: BaseActivity(),
         configureFab()
 
         if (savedInstanceState == null) {
-            val fragment = SeriesFragment.newInstance(league)
+            val fragment = SeriesListFragment.newInstance(league)
             supportFragmentManager.beginTransaction()
                     .add(R.id.layout_league_details, fragment, null)
                     .commit()
@@ -108,7 +108,7 @@ class SeriesListActivity: BaseActivity(),
      * Refresh the list of series.
      */
     private fun refreshSeries(series: Series? = null) {
-        val fragment = supportFragmentManager.findFragmentById(R.id.layout_league_details) as? SeriesFragment ?: return
+        val fragment = supportFragmentManager.findFragmentById(R.id.layout_league_details) as? SeriesListFragment ?: return
         fragment.refreshList(series)
     }
 
@@ -119,7 +119,7 @@ class SeriesListActivity: BaseActivity(),
 
     /** @Override */
     override fun onDeleteSeries(series: Series) {
-        val fragment = supportFragmentManager.findFragmentById(R.id.layout_league_details) as? SeriesFragment ?: return
+        val fragment = supportFragmentManager.findFragmentById(R.id.layout_league_details) as? SeriesListFragment ?: return
         fragment.onItemDelete(series)
     }
 }

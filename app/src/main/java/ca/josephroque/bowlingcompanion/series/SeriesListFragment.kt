@@ -1,6 +1,5 @@
 package ca.josephroque.bowlingcompanion.series
 
-import android.content.Context
 import android.os.Bundle
 import android.support.v7.preference.PreferenceManager
 import android.view.*
@@ -17,17 +16,17 @@ import kotlinx.coroutines.experimental.async
  *
  * A fragment representing a list of series.
  */
-class SeriesFragment : ListFragment<Series, SeriesRecyclerViewAdapter.ViewHolder, SeriesRecyclerViewAdapter>() {
+class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter.ViewHolder, SeriesRecyclerViewAdapter>() {
 
     companion object {
         /** Logging identifier. */
-        private const val TAG = "SeriesFragment"
+        private const val TAG = "SeriesListFragment"
 
         /** Identifier for the argument that represents the [League] whose series are displayed. */
         private const val ARG_LEAGUE = "${TAG}_league"
 
-        fun newInstance(league: League): SeriesFragment {
-            val fragment = SeriesFragment()
+        fun newInstance(league: League): SeriesListFragment {
+            val fragment = SeriesListFragment()
             val args = Bundle()
             args.putParcelable(ARG_LEAGUE, league)
             fragment.arguments = args
@@ -127,7 +126,7 @@ class SeriesFragment : ListFragment<Series, SeriesRecyclerViewAdapter.ViewHolder
     /** @Override */
     override fun fetchItems(): Deferred<MutableList<Series>> {
         return async(CommonPool) {
-            this@SeriesFragment.context?.let { context ->
+            this@SeriesListFragment.context?.let { context ->
                 league?.let {
                     return@async it.fetchSeries(context).await()
                 }
