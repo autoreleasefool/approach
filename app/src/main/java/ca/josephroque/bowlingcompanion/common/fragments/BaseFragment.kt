@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion.common.fragments
 
 import android.content.Context
+import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
 
 /**
@@ -51,11 +52,18 @@ abstract class BaseFragment : Fragment() {
     interface FragmentNavigation {
 
         /**
-         * Push a new fragment onto the stack
+         * Push a new [Fragment] onto the stack
          *
          * @param fragment the fragment to push
          */
         fun pushFragment(fragment: BaseFragment)
+
+        /**
+         * Push a new [DialogFragment] onto the stack
+         *
+         * @aparam fragment the fragment to push
+         */
+        fun pushDialogFragment(fragment: DialogFragment)
     }
 
 }

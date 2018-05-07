@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion
 
 import android.os.Bundle
 import android.support.annotation.IdRes
+import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
 import ca.josephroque.bowlingcompanion.bowlers.BowlerListFragment
 import ca.josephroque.bowlingcompanion.common.activities.BaseActivity
@@ -64,6 +65,11 @@ class NavigationActivity : BaseActivity(),
     /** @Override */
     override fun pushFragment(fragment: BaseFragment) {
         fragNavController?.pushFragment(fragment)
+    }
+
+    /** @Override */
+    override fun pushDialogFragment(fragment: DialogFragment) {
+        fragNavController?.showDialogFragment(fragment)
     }
 
     /**

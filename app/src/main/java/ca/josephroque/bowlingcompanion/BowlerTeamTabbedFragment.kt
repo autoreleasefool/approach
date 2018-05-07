@@ -29,11 +29,25 @@ class BowlerTeamTabbedFragment : TabbedFragment(),
         /** Logging identifier */
         private const val TAG = "BowlerTeamTabFragment"
 
-        /** Index for [BowlerListFragment] tab. */
-        const val BOWLER_FRAGMENT = 0
+        /** Tabs available in the fragment. */
+        enum class Tab {
+            Bowlers, Teams;
 
-        /** Index for [TeamListFragment] tab. */
-        const val TEAM_FRAGMENT = 1
+            companion object {
+                private val map = Tab.values().associateBy(Tab::ordinal)
+                fun fromInt(type: Int) = map[type]
+            }
+
+            /**
+             * Get the title for the tab.
+             */
+            fun getTitle(): Int {
+                return when (this) {
+                    Bowlers -> R.string.bowlers
+                    Teams -> R.string.teams
+                }
+            }
+        }
 
         /**
          * Creates a new instance.
@@ -52,24 +66,26 @@ class BowlerTeamTabbedFragment : TabbedFragment(),
 
     /** @Override */
     override fun addTabs(tabLayout: TabLayout) {
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.bowlers))
-        tabLayout.addTab(tabLayout.newTab().setText(R.string.teams))
+        for (tab in Tab.values()) {
+            tabLayout.addTab(tabLayout.newTab().setText(tab.getTitle()))
+        }
     }
 
     /** @Override */
     override fun getFabImage(currentTab: Int): Int? {
-        return when (currentTab) {
-            BOWLER_FRAGMENT -> R.drawable.ic_person_add_white_24dp
-            TEAM_FRAGMENT -> R.drawable.ic_group_add_white_24dp
+        return when (Tab.fromInt(currentTab)) {
+            Tab.Bowlers -> R.drawable.ic_person_add_white_24dp
+            Tab.Teams -> R.drawable.ic_group_add_white_24dp
             else -> throw RuntimeException("$currentTab is not a valid tab for BowlerTeamTabbedFragment")
         }
     }
 
     /** @Override */
     override fun onFabSelected() {
-        when (currentTab) {
-            BOWLER_FRAGMENT -> promptAddOrEditBowler()
-            TEAM_FRAGMENT -> promptAddOrEditTeam()
+        when (Tab.fromInt(currentTab)) {
+            Tab.Bowlers -> promptAddOrEditBowler()
+            Tab.Teams -> promptAddOrEditTeam()
+            else -> throw RuntimeException("$currentTab is not a valid tab for BowlerTeamTabbedFragment")
         }
     }
 
@@ -80,7 +96,7 @@ class BowlerTeamTabbedFragment : TabbedFragment(),
                 if (longPress) {
                     promptAddOrEditBowler(item)
                 } else {
-                    TODO("Select bowler")
+                    showLeaguesAndEvents(item)
                 }
             }
             is Team -> {
@@ -101,11 +117,7 @@ class BowlerTeamTabbedFragment : TabbedFragment(),
      */
     private fun promptAddOrEditBowler(bowler: Bowler? = null) {
         val newFragment = BowlerDialog.newInstance(bowler)
-        childFragmentManager.beginTransaction()
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .add(android.R.id.content, newFragment)
-                .addToBackStack(null)
-                .commit()
+        fragmentNavigation?.pushDialogFragment(newFragment)
     }
 
     /**
@@ -115,44 +127,50 @@ class BowlerTeamTabbedFragment : TabbedFragment(),
      */
     private fun promptAddOrEditTeam(team: Team? = null) {
         val newFragment = TeamDialog.newInstance(team)
-        childFragmentManager.beginTransaction()
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .add(android.R.id.content, newFragment)
-                .addToBackStack(null)
-                .commit()
+        fragmentNavigation?.pushDialogFragment(newFragment)
+    }
+
+    /**
+     * Push fragment to show leagues and events of a [Bowler]
+     *
+     * @param bowler the bowler whose leagues and events will be showm
+     */
+    private fun showLeaguesAndEvents(bowler: Bowler) {
+        val newFragment = LeagueEventTabbedFragment.newInstance(bowler)
+        fragmentNavigation?.pushFragment(newFragment)
     }
 
     /** @Override */
     override fun onFinishBowler(bowler: Bowler) {
         val adapter = tabbed_fragment_pager.adapter as? BowlerTeamPagerAdapter
-        val bowlerFragment = adapter?.getFragment(BOWLER_FRAGMENT) as? BowlerListFragment
+        val bowlerFragment = adapter?.getFragment(Tab.Bowlers.ordinal) as? BowlerListFragment
         bowlerFragment?.refreshList(bowler)
 
-        val teamFragment = adapter?.getFragment(TEAM_FRAGMENT) as? TeamListFragment
+        val teamFragment = adapter?.getFragment(Tab.Teams.ordinal) as? TeamListFragment
         teamFragment?.refreshList()
     }
 
     /** @Override */
     override fun onDeleteBowler(bowler: Bowler) {
         val adapter = tabbed_fragment_pager.adapter as? BowlerTeamPagerAdapter
-        val bowlerFragment = adapter?.getFragment(BOWLER_FRAGMENT) as? BowlerListFragment
+        val bowlerFragment = adapter?.getFragment(Tab.Bowlers.ordinal) as? BowlerListFragment
         bowlerFragment?.onItemDelete(bowler)
 
-        val teamFragment = adapter?.getFragment(TEAM_FRAGMENT) as? TeamListFragment
+        val teamFragment = adapter?.getFragment(Tab.Teams.ordinal) as? TeamListFragment
         teamFragment?.refreshList()
     }
 
     /** @Override */
     override fun onFinishTeam(team: Team) {
         val adapter = tabbed_fragment_pager.adapter as? BowlerTeamPagerAdapter
-        val teamFragment = adapter?.getFragment(TEAM_FRAGMENT) as? TeamListFragment
+        val teamFragment = adapter?.getFragment(Tab.Teams.ordinal) as? TeamListFragment
         teamFragment?.refreshList(team)
     }
 
     /** @Override */
     override fun onDeleteTeam(team: Team) {
         val adapter = tabbed_fragment_pager.adapter as? BowlerTeamPagerAdapter
-        val teamFragment = adapter?.getFragment(TEAM_FRAGMENT) as? TeamListFragment
+        val teamFragment = adapter?.getFragment(Tab.Teams.ordinal) as? TeamListFragment
         teamFragment?.onItemDelete(team)
     }
 
@@ -161,14 +179,15 @@ class BowlerTeamTabbedFragment : TabbedFragment(),
      */
     class BowlerTeamPagerAdapter(
             fragmentManager: FragmentManager,
-            tabCount: Int): BaseFragmentPagerAdapter(fragmentManager, tabCount) {
+            tabCount: Int
+    ): BaseFragmentPagerAdapter(fragmentManager, tabCount) {
 
         /** @Override */
         override fun buildFragment(position: Int): Fragment? {
-            return when (position) {
-                BOWLER_FRAGMENT -> BowlerListFragment.newInstance()
-                TEAM_FRAGMENT -> TeamListFragment.newInstance()
-                else -> return null
+            return when (Tab.fromInt(position)) {
+                Tab.Bowlers -> BowlerListFragment.newInstance()
+                Tab.Teams -> TeamListFragment.newInstance()
+                else -> null
             }
         }
     }
