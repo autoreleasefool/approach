@@ -6,7 +6,7 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v7.app.AlertDialog
 import android.view.*
-import ca.josephroque.bowlingcompanion.BowlerTeamListActivity
+import ca.josephroque.bowlingcompanion.BowlerTeamTabbedFragment
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.adapters.NameAverageRecyclerViewAdapter
 import ca.josephroque.bowlingcompanion.common.fragments.ListFragment

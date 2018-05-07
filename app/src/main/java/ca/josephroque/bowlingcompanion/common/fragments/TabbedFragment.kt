@@ -129,14 +129,14 @@ abstract class TabbedFragment : BaseFragment() {
      *
      * @param ignored fragment tags to ignore
      */
-    fun refreshTabs(ignored: Set<String> = HashSet()) {
+    fun refreshTabs(ignored: Set<Int> = HashSet()) {
         // TODO: figure out how to use ignored
         val adapter = tabbed_fragment_pager.adapter as? BaseFragmentPagerAdapter
         adapter?.let {
             for (i in 0 until it.count) {
-//                if (ignored.contains(i)) {
-//                    continue
-//                }
+                if (ignored.contains(i)) {
+                    continue
+                }
 
                 val fragment = it.getFragment(i) as? IRefreshable
                 fragment?.refresh()
