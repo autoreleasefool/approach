@@ -111,9 +111,6 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
     /** @Override */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_stats -> {
-                TODO("league stats not implemented")
-            }
             R.id.action_series_condensed_view, R.id.action_series_expanded_view -> {
                 val view = if (item.itemId == R.id.action_series_expanded_view) Series.Companion.View.Expanded else Series.Companion.View.Condensed
                 seriesView = view

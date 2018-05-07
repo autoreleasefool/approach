@@ -10,11 +10,4 @@
         android:title="@string/action_sort_by"
         app:showAsAction="ifRoom" />
 
-    <item
-        android:id="@+id/action_stats"
-        android:orderInCategory="2"
-        android:icon="@drawable/ic_stats_white_24dp"
-        android:title="@string/action_bowler_stats"
-        app:showAsAction="ifRoom" />
-
 </menu>
