@@ -11,13 +11,15 @@ import ca.josephroque.bowlingcompanion.bowlers.BowlerListFragment
 import ca.josephroque.bowlingcompanion.common.IFloatingActionButtonHandler
 import ca.josephroque.bowlingcompanion.common.activities.BaseActivity
 import ca.josephroque.bowlingcompanion.common.fragments.BaseFragment
+import ca.josephroque.bowlingcompanion.common.fragments.TabbedFragment
 import com.ncapdevi.fragnav.FragNavController
 import kotlinx.android.synthetic.main.activity_navigation.*
 
 class NavigationActivity : BaseActivity(),
         FragNavController.TransactionListener,
         FragNavController.RootFragmentListener,
-        BaseFragment.FragmentNavigation {
+        BaseFragment.FragmentNavigation,
+        TabbedFragment.TabbedFragmentDelegate {
 
     companion object {
         /** Logging identifier. */
@@ -80,7 +82,7 @@ class NavigationActivity : BaseActivity(),
 
     /** @Override */
     override fun onBackPressed() {
-        if (fragNavController?.popFragment()?.not() == true) {
+        if (fragNavController?.isRootFragment == true || fragNavController?.popFragment()?.not() == true) {
             super.onBackPressed()
         }
     }
@@ -177,6 +179,15 @@ class NavigationActivity : BaseActivity(),
     override fun onTabTransaction(fragment: Fragment?, index: Int) {
         supportActionBar?.setDisplayHomeAsUpEnabled(fragNavController?.isRootFragment?.not() ?: false)
         if (fragment is IFloatingActionButtonHandler) {
+            fabImage = fragment.getFabImage()
+        }
+    }
+
+    /** @Override */
+    override fun onTabSwitched() {
+        // Refresh floating action button image from the current fragment
+        val fragment = fragNavController?.currentFrag
+        if (fragment != null && fragment is IFloatingActionButtonHandler) {
             fabImage = fragment.getFabImage()
         }
     }

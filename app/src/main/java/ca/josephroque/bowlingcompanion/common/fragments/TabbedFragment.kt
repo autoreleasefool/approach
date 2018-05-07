@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.common.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
@@ -17,6 +18,8 @@ import java.lang.ref.WeakReference
 
 /**
  * Copyright (C) 2018 Joseph Roque
+ *
+ * Base implementation for a fragment with tabs.
  */
 abstract class TabbedFragment : BaseFragment(),
         IFloatingActionButtonHandler {
@@ -30,12 +33,28 @@ abstract class TabbedFragment : BaseFragment(),
     protected val currentTab: Int
         get() = tabbed_fragment_pager?.currentItem ?: 0
 
+    /** Delegate for [TabbedFragment] events. */
+    private var delegate: TabbedFragmentDelegate? = null
+
     /** @Override */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.fragment_common_tabs, container, false)
         configureToolbar(rootView)
         configureTabLayout(rootView)
         return rootView
+    }
+
+    /** @Override */
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        context as? TabbedFragmentDelegate ?: throw RuntimeException("${context!!} must implement OnLeagueDialogInteractionListener")
+        delegate = context
+    }
+
+    /** @Override */
+    override fun onDetach() {
+        super.onDetach()
+        delegate = null
     }
 
     /**
@@ -77,6 +96,7 @@ abstract class TabbedFragment : BaseFragment(),
         rootView.tabbed_fragment_tabs.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 rootView.tabbed_fragment_pager.currentItem = tab.position
+                delegate?.onTabSwitched()
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab) {}
@@ -146,6 +166,17 @@ abstract class TabbedFragment : BaseFragment(),
          * @return the fragment, or null if the position is invalid
          */
         abstract fun buildFragment(position: Int): Fragment?
+    }
+
+    /**
+     * Delegate for [TabbedFragment] events.
+     */
+    interface TabbedFragmentDelegate {
+
+        /**
+         * Invoked when the current tab changes.
+         */
+        fun onTabSwitched()
     }
 }
 

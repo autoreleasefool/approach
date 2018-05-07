@@ -180,7 +180,6 @@ class BowlerTeamTabbedFragment : TabbedFragment(),
             fragmentManager: FragmentManager,
             tabCount: Int
     ): BaseFragmentPagerAdapter(fragmentManager, tabCount) {
-
         /** @Override */
         override fun buildFragment(position: Int): Fragment? {
             return when (Tab.fromInt(position)) {
