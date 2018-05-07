@@ -22,7 +22,7 @@ import kotlinx.coroutines.experimental.launch
  *
  * Basic [Fragment] implementation with a list.
  */
-abstract class ListFragment<Item: IIdentifiable, ViewHolder: RecyclerView.ViewHolder, Adapter: BaseRecyclerViewAdapter<Item, ViewHolder>>: BaseFragment(),
+abstract class ListFragment<Item: IIdentifiable, Adapter: BaseRecyclerViewAdapter<Item>>: BaseFragment(),
         BaseRecyclerViewAdapter.OnAdapterInteractionListener<Item>,
         IRefreshable
 {

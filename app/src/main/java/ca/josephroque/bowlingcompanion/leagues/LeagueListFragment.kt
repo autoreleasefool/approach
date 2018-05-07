@@ -21,7 +21,7 @@ import kotlinx.coroutines.experimental.async
  *
  * A fragment representing a list of leagues.
  */
-class LeagueListFragment : ListFragment<League, NameAverageRecyclerViewAdapter<League>.ViewHolder, NameAverageRecyclerViewAdapter<League>>() {
+class LeagueListFragment : ListFragment<League, NameAverageRecyclerViewAdapter<League>>() {
 
     companion object {
         /** Logging identifier. */

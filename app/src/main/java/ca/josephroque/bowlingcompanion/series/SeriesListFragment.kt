@@ -5,6 +5,7 @@ import android.support.v7.preference.PreferenceManager
 import android.view.*
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.IFloatingActionButtonHandler
+import ca.josephroque.bowlingcompanion.common.IIdentifiable
 import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
 import ca.josephroque.bowlingcompanion.leagues.League
 import ca.josephroque.bowlingcompanion.settings.Settings
@@ -17,8 +18,9 @@ import kotlinx.coroutines.experimental.async
  *
  * A fragment representing a list of series.
  */
-class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter.ViewHolder, SeriesRecyclerViewAdapter>(),
+class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
         SeriesDialog.OnSeriesDialogInteractionListener,
+        ListFragment.OnListFragmentInteractionListener,
         IFloatingActionButtonHandler {
 
     companion object {
@@ -68,6 +70,7 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter.ViewHo
         }
 
         setHasOptionsMenu(true)
+        listener = this
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -158,6 +161,17 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter.ViewHo
     /** @Override */
     override fun onDeleteSeries(series: Series) {
         onItemDelete(series)
+    }
+
+    /** @Override */
+    override fun onItemSelected(item: IIdentifiable, longPress: Boolean) {
+        if (item is Series) {
+            if (longPress) {
+                promptAddOrEditSeries(item)
+            } else {
+                TODO("select series")
+            }
+        }
     }
 
     /**

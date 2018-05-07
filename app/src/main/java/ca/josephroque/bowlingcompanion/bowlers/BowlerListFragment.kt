@@ -20,7 +20,7 @@ import kotlinx.coroutines.experimental.async
  *
  * A fragment representing a list of Bowlers.
  */
-class BowlerListFragment : ListFragment<Bowler, NameAverageRecyclerViewAdapter<Bowler>.ViewHolder, NameAverageRecyclerViewAdapter<Bowler>>() {
+class BowlerListFragment : ListFragment<Bowler, NameAverageRecyclerViewAdapter<Bowler>>() {
 
     companion object {
         /** Logging identifier. */

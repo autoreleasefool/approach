@@ -18,7 +18,7 @@ import kotlinx.coroutines.experimental.async
  *
  * A fragment representing a list of Teams.
  */
-class TeamListFragment : ListFragment<Team, TeamRecyclerViewAdapter.ViewHolder, TeamRecyclerViewAdapter>() {
+class TeamListFragment : ListFragment<Team, TeamRecyclerViewAdapter>() {
 
     companion object {
         /** Logging identifier. */

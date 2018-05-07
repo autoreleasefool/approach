@@ -61,7 +61,7 @@ abstract class BaseFragment : Fragment() {
         /**
          * Push a new [DialogFragment] onto the stack
          *
-         * @aparam fragment the fragment to push
+         * @param fragment the fragment to push
          */
         fun pushDialogFragment(fragment: DialogFragment)
     }
