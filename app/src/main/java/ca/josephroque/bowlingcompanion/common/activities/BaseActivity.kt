@@ -17,7 +17,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
     companion object {
         /** Logging identifier. */
-        private val TAG = BaseActivity::class.simpleName
+        private val TAG = "BaseActivity"
     }
 
     /** @Override */

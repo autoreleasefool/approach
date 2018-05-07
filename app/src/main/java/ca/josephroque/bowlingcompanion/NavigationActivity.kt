@@ -16,7 +16,7 @@ class NavigationActivity : BaseActivity(),
 
     companion object {
         /** Logging identifier. */
-        private val TAG = NavigationActivity::class.java.simpleName
+        private val TAG = "NavigationActivity"
 
         enum class BottomTab {
             Record, Statistics, Equipment;

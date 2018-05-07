@@ -16,7 +16,7 @@ class BowlerTeamTabbedFragment : TabbedFragment() {
 
     companion object {
         /** Logging identifier */
-        private val TAG = BowlerTeamTabbedFragment::class.java.simpleName
+        private val TAG = "BowlerTeamTabbedFragment"
 
         /** Index for [BowlerListFragment] tab. */
         const val BOWLER_FRAGMENT = 0

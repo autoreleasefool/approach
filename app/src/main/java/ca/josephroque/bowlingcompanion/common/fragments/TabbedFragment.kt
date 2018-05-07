@@ -22,7 +22,7 @@ abstract class TabbedFragment : BaseFragment() {
 
     companion object {
         /** Logging identifier. */
-        private val TAG = TabbedFragment::class.java.simpleName
+        private val TAG = "TabbedFragment"
     }
 
     /** Active tab. */
