@@ -13,7 +13,7 @@ abstract class BaseFragment : Fragment() {
 
     companion object {
         /** Logging identifier. */
-        private val TAG = "BaseFragment"
+        private const val TAG = "BaseFragment"
 
         /**
          * Create a new instance of [BaseFragment] based on [name] and return it.
