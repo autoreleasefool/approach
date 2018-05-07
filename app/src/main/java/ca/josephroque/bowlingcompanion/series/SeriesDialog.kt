@@ -128,8 +128,8 @@ class SeriesDialog : DialogFragment(), DatePickerDialog.OnDateSetListener {
     /** @Override */
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        context as? OnSeriesDialogInteractionListener ?: throw RuntimeException(context!!.toString() + " must implement OnSeriesDialogInteractionListener")
-        listener = context
+        val parentFragment = parentFragment as? OnSeriesDialogInteractionListener ?: throw RuntimeException("${parentFragment!!} must implement OnSeriesDialogInteractionListener")
+        listener = parentFragment
     }
 
     /** @Override */

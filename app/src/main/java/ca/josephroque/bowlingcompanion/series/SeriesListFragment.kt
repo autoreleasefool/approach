@@ -35,6 +35,7 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
             val args = Bundle()
             args.putParcelable(ARG_LEAGUE, league)
             fragment.arguments = args
+            fragment.canIgnoreListener = true
             return fragment
         }
     }

@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion.common.activities
 
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
+import android.view.Menu
 import android.view.MenuItem
 import ca.josephroque.bowlingcompanion.BuildConfig
 import ca.josephroque.bowlingcompanion.R

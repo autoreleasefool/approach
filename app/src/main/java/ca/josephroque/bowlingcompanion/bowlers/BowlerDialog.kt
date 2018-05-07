@@ -96,8 +96,8 @@ class BowlerDialog : DialogFragment(), View.OnClickListener {
     /** @Override */
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        val parent = parentFragment as? OnBowlerDialogInteractionListener ?: throw RuntimeException("${parentFragment!!} must implement OnBowlerDialogInteractionListener")
-        listener = parent
+        context as? OnBowlerDialogInteractionListener ?: throw RuntimeException(context!!.toString() + " must implement OnBowlerDialogInteractionListener")
+        listener = context
     }
 
     /** @Override */

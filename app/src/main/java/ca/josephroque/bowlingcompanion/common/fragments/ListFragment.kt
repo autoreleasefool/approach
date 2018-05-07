@@ -41,6 +41,9 @@ abstract class ListFragment<Item: IIdentifiable, Adapter: BaseRecyclerViewAdapte
     /** Handle list interaction events. */
     protected var listener: OnListFragmentInteractionListener? = null
 
+    /** Set to true to ignore check for parentFragment listener in onAttach. */
+    protected var canIgnoreListener = false
+
     /** @Override */
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -65,6 +68,10 @@ abstract class ListFragment<Item: IIdentifiable, Adapter: BaseRecyclerViewAdapte
     /** @Override */
     override fun onAttach(context: Context?) {
         super.onAttach(context)
+        if (canIgnoreListener) {
+            return
+        }
+
         val parent = parentFragment as? OnListFragmentInteractionListener ?: throw RuntimeException("${parentFragment!!} must implement OnListFragmentInteractionListener")
         listener = parent
     }
