@@ -6,6 +6,7 @@ import android.support.annotation.IdRes
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
+import android.support.v4.app.FragmentTransaction
 import android.view.View
 import ca.josephroque.bowlingcompanion.bowlers.BowlerListFragment
 import ca.josephroque.bowlingcompanion.common.interfaces.IFloatingActionButtonHandler
@@ -13,6 +14,7 @@ import ca.josephroque.bowlingcompanion.common.activities.BaseActivity
 import ca.josephroque.bowlingcompanion.common.fragments.BaseFragment
 import ca.josephroque.bowlingcompanion.common.fragments.TabbedFragment
 import com.ncapdevi.fragnav.FragNavController
+import com.ncapdevi.fragnav.FragNavTransactionOptions
 import kotlinx.android.synthetic.main.activity_navigation.*
 
 class NavigationActivity : BaseActivity(),
@@ -95,7 +97,10 @@ class NavigationActivity : BaseActivity(),
 
     /** @Override */
     override fun pushFragment(fragment: BaseFragment) {
-        fragNavController?.pushFragment(fragment)
+        val transactionOptions = FragNavTransactionOptions.newBuilder()
+                .transition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .build()
+        fragNavController?.pushFragment(fragment, transactionOptions)
     }
 
     /** @Override */

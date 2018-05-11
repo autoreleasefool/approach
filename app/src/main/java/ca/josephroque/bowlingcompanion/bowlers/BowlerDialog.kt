@@ -49,6 +49,12 @@ class BowlerDialog : DialogFragment(), View.OnClickListener {
     private var listener: OnBowlerDialogInteractionListener? = null
 
     /** @Override */
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.Dialog)
+    }
+
+    /** @Override */
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
@@ -57,14 +63,23 @@ class BowlerDialog : DialogFragment(), View.OnClickListener {
         bowler = arguments?.getParcelable(ARG_BOWLER) ?: savedInstanceState?.getParcelable(ARG_BOWLER)
 
         val rootView = inflater.inflate(R.layout.dialog_bowler, container, false)
+        setupToolbar(rootView)
+        setupInput(rootView)
+        return rootView
+    }
 
+    /**
+     * Set up title, style, and listeners for toolbar.
+     *
+     * @param rootView the root view
+     */
+    private fun setupToolbar(rootView: View) {
         if (bowler == null) {
             rootView.toolbar_bowler.setTitle(R.string.new_bowler)
         } else {
             rootView.toolbar_bowler.setTitle(R.string.edit_bowler)
         }
 
-        rootView.btn_delete.setOnClickListener(this)
         rootView.toolbar_bowler.apply {
             inflateMenu(R.menu.menu_dialog_bowler)
             menu.findItem(R.id.action_save).isEnabled = bowler?.name?.isNotEmpty() == true
@@ -82,6 +97,15 @@ class BowlerDialog : DialogFragment(), View.OnClickListener {
                 }
             }
         }
+    }
+
+    /**
+     * Set up input items for callbacks on interactions.
+     *
+     * @param rootView the root view
+     */
+    private fun setupInput(rootView: View) {
+        rootView.btn_delete.setOnClickListener(this)
         rootView.input_name.addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(s: Editable?) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -89,8 +113,6 @@ class BowlerDialog : DialogFragment(), View.OnClickListener {
                 updateSaveButton()
             }
         })
-
-        return rootView
     }
 
     /** @Override */
@@ -104,6 +126,12 @@ class BowlerDialog : DialogFragment(), View.OnClickListener {
     override fun onDetach() {
         super.onDetach()
         listener = null
+    }
+
+    /** @Override */
+    override fun onStart() {
+        super.onStart()
+        dialog.window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
     }
 
     /** @Override */

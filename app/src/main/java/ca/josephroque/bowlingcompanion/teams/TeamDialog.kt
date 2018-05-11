@@ -74,6 +74,12 @@ class TeamDialog : DialogFragment(),
         }
 
     /** @Override */
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.Dialog)
+    }
+
+    /** @Override */
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
@@ -82,23 +88,24 @@ class TeamDialog : DialogFragment(),
         team = arguments?.getParcelable(ARG_TEAM) ?: savedInstanceState?.getParcelable(ARG_TEAM)
 
         val rootView = inflater.inflate(R.layout.dialog_team, container, false)
-        val context = context ?: return rootView
+        setupToolbar(rootView)
+        setupBowlers(rootView)
+        setupInput(rootView)
+        return rootView
+    }
 
-        bowlerAdapter = NameAverageRecyclerViewAdapter(emptyList(), this)
-        bowlerAdapter?.multiSelect = true
-
+    /**
+     * Set up title, style, and listeners for toolbar.
+     *
+     * @param rootView the root view
+     */
+    private fun setupToolbar(rootView: View) {
         if (team == null) {
             rootView.toolbar_team.setTitle(R.string.new_team)
         } else {
             rootView.toolbar_team.setTitle(R.string.edit_team)
         }
 
-
-        rootView.list_bowlers.layoutManager = LinearLayoutManager(context)
-        rootView.list_bowlers.adapter = bowlerAdapter
-        BaseRecyclerViewAdapter.applyDefaultDivider(rootView.list_bowlers, context)
-
-        rootView.btn_delete.setOnClickListener(this)
         rootView.toolbar_team.apply {
             inflateMenu(R.menu.menu_dialog_team)
             setNavigationIcon(R.drawable.ic_close_white_24dp)
@@ -115,6 +122,31 @@ class TeamDialog : DialogFragment(),
                 }
             }
         }
+    }
+
+    /**
+     * Set up list of bowlers to select team members from.
+     *
+     * @param rootView the root view
+     */
+    private fun setupBowlers(rootView: View) {
+        val context = context ?: return
+
+        bowlerAdapter = NameAverageRecyclerViewAdapter(emptyList(), this)
+        bowlerAdapter?.multiSelect = true
+
+        rootView.list_bowlers.layoutManager = LinearLayoutManager(context)
+        rootView.list_bowlers.adapter = bowlerAdapter
+        BaseRecyclerViewAdapter.applyDefaultDivider(rootView.list_bowlers, context)
+    }
+
+    /**
+     * Set up input items for callbacks on interactions.
+     *
+     * @param rootView the root view
+     */
+    private fun setupInput(rootView: View) {
+        rootView.btn_delete.setOnClickListener(this)
         rootView.input_name.addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(s: Editable?) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -122,8 +154,6 @@ class TeamDialog : DialogFragment(),
                 updateSaveButton()
             }
         })
-
-        return rootView
     }
 
     /** @Override */
@@ -139,6 +169,11 @@ class TeamDialog : DialogFragment(),
         listener = null
     }
 
+    /** @Override */
+    override fun onStart() {
+        super.onStart()
+        dialog.window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+    }
     /** @Override */
     override fun onResume() {
         super.onResume()

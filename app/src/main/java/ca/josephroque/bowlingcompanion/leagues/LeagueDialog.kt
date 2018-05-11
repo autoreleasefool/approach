@@ -110,6 +110,12 @@ class LeagueDialog : DialogFragment() {
     }
 
     /** @Override */
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.Dialog)
+    }
+
+    /** @Override */
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
@@ -231,6 +237,12 @@ class LeagueDialog : DialogFragment() {
         super.onDetach()
         listener = null
         onClickListener = null
+    }
+
+    /** @Override */
+    override fun onStart() {
+        super.onStart()
+        dialog.window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
     }
 
     /** @Override */

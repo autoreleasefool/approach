@@ -87,12 +87,17 @@ class SeriesDialog : DialogFragment(), DatePickerDialog.OnDateSetListener {
     }
 
     /** @Override */
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.Dialog)
+    }
+
+    /** @Override */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         series = savedInstanceState?.getParcelable(ARG_SERIES) ?: arguments?.getParcelable(ARG_SERIES)
         currentDate = Date(savedInstanceState?.getLong(ARG_DATE) ?: series?.date?.time ?: 0)
 
         val rootView = inflater.inflate(R.layout.dialog_series, container, false)
-
         setupToolbar(rootView)
         return rootView
     }
@@ -137,6 +142,12 @@ class SeriesDialog : DialogFragment(), DatePickerDialog.OnDateSetListener {
         super.onDetach()
         listener = null
         onClickListener = null
+    }
+
+    /** @Override */
+    override fun onStart() {
+        super.onStart()
+        dialog.window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
     }
 
     /** @Override */
