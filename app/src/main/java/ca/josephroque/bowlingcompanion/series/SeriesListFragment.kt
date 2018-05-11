@@ -4,8 +4,8 @@ import android.os.Bundle
 import android.support.v7.preference.PreferenceManager
 import android.view.*
 import ca.josephroque.bowlingcompanion.R
-import ca.josephroque.bowlingcompanion.common.IFloatingActionButtonHandler
-import ca.josephroque.bowlingcompanion.common.IIdentifiable
+import ca.josephroque.bowlingcompanion.common.interfaces.IFloatingActionButtonHandler
+import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
 import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
 import ca.josephroque.bowlingcompanion.leagues.League
 import ca.josephroque.bowlingcompanion.settings.Settings

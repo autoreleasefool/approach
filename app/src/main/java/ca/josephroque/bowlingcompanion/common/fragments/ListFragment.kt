@@ -10,9 +10,9 @@ import android.view.View
 import android.view.ViewGroup
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.Android
-import ca.josephroque.bowlingcompanion.common.IDeletable
-import ca.josephroque.bowlingcompanion.common.IIdentifiable
-import ca.josephroque.bowlingcompanion.common.IRefreshable
+import ca.josephroque.bowlingcompanion.common.interfaces.IDeletable
+import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
+import ca.josephroque.bowlingcompanion.common.interfaces.IRefreshable
 import ca.josephroque.bowlingcompanion.common.adapters.BaseRecyclerViewAdapter
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.launch
@@ -36,7 +36,7 @@ abstract class ListFragment<Item: IIdentifiable, Adapter: BaseRecyclerViewAdapte
     protected var adapter: Adapter? = null
 
     /** Items to display. */
-    protected var items: MutableList<Item> = ArrayList()
+    private var items: MutableList<Item> = ArrayList()
 
     /** Handle list interaction events. */
     protected var listener: OnListFragmentInteractionListener? = null

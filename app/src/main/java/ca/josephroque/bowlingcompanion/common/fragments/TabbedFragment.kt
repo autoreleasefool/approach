@@ -10,8 +10,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import ca.josephroque.bowlingcompanion.R
-import ca.josephroque.bowlingcompanion.common.IFloatingActionButtonHandler
-import ca.josephroque.bowlingcompanion.common.IRefreshable
+import ca.josephroque.bowlingcompanion.common.interfaces.IFloatingActionButtonHandler
+import ca.josephroque.bowlingcompanion.common.interfaces.IRefreshable
 import kotlinx.android.synthetic.main.fragment_common_tabs.*
 import kotlinx.android.synthetic.main.fragment_common_tabs.view.*
 import java.lang.ref.WeakReference

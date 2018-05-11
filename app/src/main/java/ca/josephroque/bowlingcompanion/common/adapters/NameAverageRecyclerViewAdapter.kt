@@ -9,7 +9,7 @@ import android.widget.CheckBox
 import android.widget.ImageView
 import android.widget.TextView
 import ca.josephroque.bowlingcompanion.R
-import ca.josephroque.bowlingcompanion.common.INameAverage
+import ca.josephroque.bowlingcompanion.common.interfaces.INameAverage
 
 /**
  * Copyright (C) 2018 Joseph Roque

@@ -6,7 +6,7 @@ import android.support.v4.app.FragmentManager
 import ca.josephroque.bowlingcompanion.bowlers.Bowler
 import ca.josephroque.bowlingcompanion.bowlers.BowlerDialog
 import ca.josephroque.bowlingcompanion.bowlers.BowlerListFragment
-import ca.josephroque.bowlingcompanion.common.IIdentifiable
+import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
 import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
 import ca.josephroque.bowlingcompanion.common.fragments.TabbedFragment
 import ca.josephroque.bowlingcompanion.teams.Team

@@ -6,7 +6,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import android.util.Log
 import ca.josephroque.bowlingcompanion.R
-import ca.josephroque.bowlingcompanion.common.*
+import ca.josephroque.bowlingcompanion.common.interfaces.*
 import ca.josephroque.bowlingcompanion.database.Contract.*
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper
 import ca.josephroque.bowlingcompanion.games.Game

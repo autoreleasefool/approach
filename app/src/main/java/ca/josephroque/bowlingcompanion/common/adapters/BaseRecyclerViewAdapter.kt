@@ -7,7 +7,7 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.View
 import ca.josephroque.bowlingcompanion.R
-import ca.josephroque.bowlingcompanion.common.IIdentifiable
+import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
 
 /**
  * Copyright (C) 2018 Joseph Roque

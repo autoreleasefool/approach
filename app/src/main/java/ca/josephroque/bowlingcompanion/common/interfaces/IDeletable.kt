@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.common
+package ca.josephroque.bowlingcompanion.common.interfaces
 
 import android.content.Context
 import kotlinx.coroutines.experimental.Deferred

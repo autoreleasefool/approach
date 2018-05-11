@@ -8,9 +8,9 @@ import android.os.Parcelable
 import android.preference.PreferenceManager
 import android.util.Log
 import ca.josephroque.bowlingcompanion.R
-import ca.josephroque.bowlingcompanion.common.INameAverage
-import ca.josephroque.bowlingcompanion.common.KParcelable
-import ca.josephroque.bowlingcompanion.common.parcelableCreator
+import ca.josephroque.bowlingcompanion.common.interfaces.INameAverage
+import ca.josephroque.bowlingcompanion.common.interfaces.KParcelable
+import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
 import ca.josephroque.bowlingcompanion.database.Contract.*
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper
 import ca.josephroque.bowlingcompanion.leagues.League

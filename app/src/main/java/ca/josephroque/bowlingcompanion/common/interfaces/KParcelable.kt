@@ -1,6 +1,6 @@
 @file:Suppress("NOTHING_TO_INLINE", "unused")
 
-package ca.josephroque.bowlingcompanion.common
+package ca.josephroque.bowlingcompanion.common.interfaces
 
 import android.os.Parcel
 import android.os.Parcelable
