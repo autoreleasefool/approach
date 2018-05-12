@@ -128,11 +128,7 @@ data class Team(
                 database.setTransactionSuccessful()
             } catch (ex: Exception) {
                 Log.e(TAG, "Could not create a new team")
-                return@async BCError(
-                        context.resources.getString(R.string.error_saving_team),
-                        context.resources.getString(R.string.error_team_not_saved),
-                        BCError.Severity.Error
-                )
+                return@async BCError(R.string.error_saving_team, R.string.error_team_not_saved)
             } finally {
                 database.endTransaction()
             }
@@ -191,11 +187,7 @@ data class Team(
                 database.setTransactionSuccessful()
             } catch (ex: Exception) {
                 Log.e(TAG, "Could not update team")
-                return@async BCError(
-                        context.resources.getString(R.string.error_saving_team),
-                        context.resources.getString(R.string.error_team_not_saved),
-                        BCError.Severity.Error
-                )
+                return@async BCError(R.string.error_saving_team, R.string.error_team_not_saved)
             } finally {
                 database.endTransaction()
             }
@@ -236,27 +228,22 @@ data class Team(
      */
     private fun validateSavePreconditions(context: Context): Deferred<BCError?> {
         return async(CommonPool) {
-            if (!isTeamNameValid(name)) {
-                return@async BCError(
-                        context.resources.getString(R.string.error_saving_team),
-                        context.resources.getString(R.string.error_team_name_invalid),
-                        BCError.Severity.Error
-                )
+            val errorMessage = R.string.issue_saving_team
+            val errorTitle: Int? = if (!isTeamNameValid(name)) {
+                R.string.error_team_name_invalid
             } else if (!isTeamNameUnique(context, name, id).await()) {
-                return@async BCError(
-                        context.resources.getString(R.string.error_saving_team),
-                        context.resources.getString(R.string.error_team_name_in_use),
-                        BCError.Severity.Error
-                )
+                R.string.error_team_name_in_use
             } else if (members.isEmpty()) {
-                return@async BCError(
-                        context.resources.getString(R.string.error_saving_team),
-                        context.resources.getString(R.string.error_team_has_no_members),
-                        BCError.Severity.Error
-                )
+                R.string.error_team_has_no_members
+            } else {
+                null
             }
 
-            return@async null
+            return@async if (errorTitle != null) {
+                BCError(errorTitle, errorMessage, BCError.Severity.Warning)
+            } else {
+                null
+            }
         }
     }
 

@@ -213,7 +213,7 @@ data class Bowler(
      */
     private fun validateSavePreconditions(context: Context): Deferred<BCError?> {
         return async(CommonPool) {
-            val errorTitle = R.string.error_saving_bowler
+            val errorTitle = R.string.issue_saving_bowler
             val errorMessage: Int? = if (!isBowlerNameValid(name)) {
                 R.string.error_bowler_name_invalid
             } else if (!isBowlerNameUnique(context, name, id).await()) {
