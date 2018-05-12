@@ -413,9 +413,9 @@ class LeagueDialog : DialogFragment() {
                         numberOfGames = numberOfGamesStr.toInt()
                     } catch (ex: NumberFormatException) {
                         BCError(
-                                it.resources.getString(R.string.error_saving_league),
-                                it.resources.getString(R.string.error_league_number_of_games_invalid),
-                                BCError.Severity.Error
+                                R.string.error_saving_league,
+                                R.string.error_league_number_of_games_invalid,
+                                BCError.Severity.Warning
                         ).show(it)
                         return@launch
                     }
@@ -426,9 +426,9 @@ class LeagueDialog : DialogFragment() {
                             additionalGames = additionalGamesStr.toInt()
                         } catch (ex: NumberFormatException) {
                             BCError(
-                                    it.resources.getString(R.string.error_saving_league),
-                                    it.resources.getString(R.string.error_league_additional_info_invalid),
-                                    BCError.Severity.Error
+                                    R.string.error_saving_league,
+                                    R.string.error_league_additional_info_invalid,
+                                    BCError.Severity.Warning
                             ).show(it)
                             return@launch
                         }
@@ -440,9 +440,9 @@ class LeagueDialog : DialogFragment() {
                             seriesHighlight = seriesHighlightStr.toInt()
                         } catch (ex: NumberFormatException) {
                             BCError(
-                                    it.resources.getString(R.string.error_saving_league),
-                                    it.resources.getString(R.string.error_league_highlight_invalid),
-                                    BCError.Severity.Error
+                                    R.string.error_saving_league,
+                                    R.string.error_league_highlight_invalid,
+                                    BCError.Severity.Warning
                             ).show(it)
                             return@launch
                         }

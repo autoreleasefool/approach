@@ -131,11 +131,7 @@ data class Series(val league: League,
                 database.setTransactionSuccessful()
             } catch (ex: Exception) {
                 Log.e(TAG, "Could not create a new series")
-                return@async BCError(
-                        context.resources.getString(R.string.error_saving_series),
-                        context.resources.getString(R.string.error_series_not_saved),
-                        BCError.Severity.Error
-                )
+                return@async BCError(R.string.error_saving_series, R.string.error_series_not_saved)
             } finally {
                 database.endTransaction()
             }
