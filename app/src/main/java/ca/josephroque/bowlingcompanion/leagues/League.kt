@@ -153,11 +153,7 @@ data class League(
                 database.setTransactionSuccessful()
             } catch (ex: Exception) {
                 Log.e(TAG, "Could not create a new league")
-                return@async BCError(
-                        context.resources.getString(R.string.error_saving_league),
-                        context.resources.getString(R.string.error_league_not_saved),
-                        BCError.Severity.Error
-                )
+                return@async BCError(R.string.error_saving_league, R.string.error_league_not_saved)
             } finally {
                 database.endTransaction()
             }
@@ -228,55 +224,45 @@ data class League(
         }
     }
 
+    /**
+     * Check if conditions to save a league are met before saving.
+     *
+     * @param context to get resources for error messages if there are any
+     * @return an error to show if preconditions fail
+     */
     private fun validateSavePreconditions(context: Context): Deferred<BCError?> {
         return async(CommonPool) {
             val errorTitle = if (isEvent) R.string.error_saving_event else R.string.error_saving_league
+            val errorMessage: Int?
             if (!isLeagueNameValid(name)) {
-                val errorMessage = if (isEvent) R.string.error_event_name_invalid else R.string.error_league_name_invalid
-                return@async BCError(
-                        context.resources.getString(errorTitle),
-                        context.resources.getString(errorMessage),
-                        BCError.Severity.Error
-                )
+                errorMessage = if (isEvent) R.string.error_event_name_invalid else R.string.error_league_name_invalid
             } else if (!isLeagueNameUnique(context, name, id).await()) {
-                val errorMessage = if (isEvent) R.string.error_event_name_in_use else R.string.error_league_name_in_use
-                return@async BCError(
-                        context.resources.getString(errorTitle),
-                        context.resources.getString(errorMessage),
-                        BCError.Severity.Error
-                )
+                errorMessage = if (isEvent) R.string.error_event_name_in_use else R.string.error_league_name_in_use
+            } else if (name == PRACTICE_LEAGUE_NAME) {
+                errorMessage = R.string.error_cannot_edit_practice_league
             } else if (
                     (isEvent && (additionalPinfall != 0 || additionalGames != 0)) ||
                     (additionalPinfall < 0 || additionalGames < 0) ||
                     (additionalPinfall > 0 && additionalGames == 0) ||
                     (additionalPinfall.toDouble() / additionalGames.toDouble() > 450)
             ) {
-                val errorMessage = R.string.error_league_additional_info_unbalanced
-                return@async BCError(
-                        context.resources.getString(errorTitle),
-                        context.resources.getString(errorMessage),
-                        BCError.Severity.Error
-                )
+                errorMessage = R.string.error_league_additional_info_unbalanced
             } else if (
                 gameHighlight < 0 || gameHighlight > Game.MAX_SCORE ||
                 seriesHighlight < 0 || seriesHighlight > Game.MAX_SCORE * gamesPerSeries
             ) {
-                val errorMessage = R.string.error_league_highlight_invalid
-                return@async BCError(
-                        context.resources.getString(errorTitle),
-                        context.resources.getString(errorMessage),
-                        BCError.Severity.Error
-                )
+                errorMessage = R.string.error_league_highlight_invalid
             } else if (gamesPerSeries < MIN_NUMBER_OF_GAMES || gamesPerSeries > MAX_NUMBER_OF_GAMES) {
-                val errorMessage = R.string.error_league_number_of_games_invalid
-                return@async BCError(
-                        context.resources.getString(errorTitle),
-                        context.resources.getString(errorMessage),
-                        BCError.Severity.Error
-                )
+                errorMessage = R.string.error_league_number_of_games_invalid
+            } else {
+                errorMessage = null
             }
 
-            return@async null
+            return@async if (errorMessage != null) {
+                BCError(errorTitle, errorMessage, BCError.Severity.Warning)
+            } else {
+                null
+            }
         }
     }
 

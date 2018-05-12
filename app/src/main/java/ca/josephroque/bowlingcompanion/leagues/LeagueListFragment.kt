@@ -1,7 +1,6 @@
 package ca.josephroque.bowlingcompanion.leagues
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -11,6 +10,7 @@ import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.bowlers.Bowler
 import ca.josephroque.bowlingcompanion.common.adapters.NameAverageRecyclerViewAdapter
 import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
+import ca.josephroque.bowlingcompanion.utils.BCError
 import ca.josephroque.bowlingcompanion.utils.Preferences
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
@@ -137,5 +137,35 @@ class LeagueListFragment : ListFragment<League, NameAverageRecyclerViewAdapter<L
                     })
                     .show()
         }
+    }
+
+    /**
+     * Disable deleting the Practice league
+     *
+     * @param item the league to be deleted
+     */
+    override fun onItemDelete(item: League) {
+        if (item.name == League.PRACTICE_LEAGUE_NAME) {
+            context?.let {
+                BCError(
+                        R.string.error_deleting_league,
+                        R.string.error_cannot_delete_practice_league,
+                        BCError.Severity.Warning
+                ).show(it)
+            }
+            return
+        }
+
+        super.onItemDelete(item)
+    }
+
+    /**
+     * Disable long pressing the league item.
+     *
+     * @param item the league that was long clicked
+     */
+    override fun onItemLongClick(item: League) {
+        if (item.name == League.PRACTICE_LEAGUE_NAME) return
+        super.onItemClick(item)
     }
 }

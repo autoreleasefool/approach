@@ -18,7 +18,6 @@
     <string name="error_unknown_title">An unknown error occurred!</string>
     <string name="error_unknown_message">Please try again later.</string>
 
-
     <!-- Tabs -->
     <string name="tab_record">Record</string>
     <string name="tab_statistics">Statistics</string>
@@ -79,7 +78,10 @@
     <string name="hint_league_additional_games">Additional Games</string>
     <string name="hint_league_game_highlight">Highlight scores greater than (optional)</string>
     <string name="hint_league_series_highlight">Highlight series greater than (optional)</string>
+    <string name="error_cannot_delete_practice_league">The Practice league cannot be deleted.</string>
+    <string name="error_cannot_edit_practice_league">The Practice league cannot be edited.</string>
 
+    <string name="error_deleting_league">Unable to delete league!</string>
     <string name="error_saving_league">Error saving league!</string>
     <string name="error_league_name_invalid">You can only use letters, spaces, and the following characters: \'!@#$%^&amp;*()_+:"?/~-.</string>
     <string name="error_league_name_in_use">That name has already been used. You must choose another.</string>
