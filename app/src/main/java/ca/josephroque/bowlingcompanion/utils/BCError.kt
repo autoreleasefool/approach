@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion.utils
 import android.content.Context
 import android.graphics.PorterDuff
 import android.graphics.drawable.Drawable
+import android.support.annotation.StringRes
 import android.support.v4.content.res.ResourcesCompat
 import android.support.v7.app.AlertDialog
 import ca.josephroque.bowlingcompanion.R
@@ -12,7 +13,9 @@ import ca.josephroque.bowlingcompanion.R
  *
  * Record and display user errors in the app.
  */
-class BCError(private val title: String, private val message: String, private val severity: Severity) {
+class BCError(@StringRes private val title: Int = R.string.error_unknown_title,
+              @StringRes private val message: Int = R.string.error_unknown_message,
+              private val severity: Severity = Severity.Error) {
 
     enum class Severity {
         Error,
@@ -50,5 +53,4 @@ class BCError(private val title: String, private val message: String, private va
                 .create()
                 .show()
     }
-
 }
