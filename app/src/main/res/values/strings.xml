@@ -100,6 +100,7 @@
     <string name="edit_event">Edit event</string>
     <string name="delete_event">Delete event</string>
 
+    <string name="issue_saving_event">Issue saving event!</string>
     <string name="error_saving_event">Error saving event!</string>
     <string name="error_event_name_invalid">You can only use letters, spaces, and the following characters: \'!@#$%^&amp;*()_+:"?/~-.</string>
     <string name="error_event_name_in_use">That name has already been used. You must choose another.</string>

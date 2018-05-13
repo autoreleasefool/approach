@@ -232,7 +232,7 @@ data class League(
      */
     private fun validateSavePreconditions(context: Context): Deferred<BCError?> {
         return async(CommonPool) {
-            val errorTitle = if (isEvent) R.string.error_saving_event else R.string.error_saving_league
+            val errorTitle = if (isEvent) R.string.issue_saving_event else R.string.issue_saving_league
             val errorMessage: Int?
             if (!isLeagueNameValid(name)) {
                 errorMessage = if (isEvent) R.string.error_event_name_invalid else R.string.error_league_name_invalid
