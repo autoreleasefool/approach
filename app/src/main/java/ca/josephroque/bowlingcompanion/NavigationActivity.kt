@@ -17,22 +17,30 @@ import com.ncapdevi.fragnav.FragNavController
 import com.ncapdevi.fragnav.FragNavTransactionOptions
 import kotlinx.android.synthetic.main.activity_navigation.*
 
+/**
+ * Activity to handle navigation across the app and through sub-fragments.
+ */
 class NavigationActivity : BaseActivity(),
         FragNavController.TransactionListener,
         FragNavController.RootFragmentListener,
         BaseFragment.FragmentNavigation,
-        TabbedFragment.TabbedFragmentDelegate {
+        TabbedFragment.TabbedFragmentDelegate
+{
 
     companion object {
         /** Logging identifier. */
+        @Suppress("unused")
         private const val TAG = "NavigationActivity"
 
+        /**
+         * Tabs at the bottom of the screen
+         */
         enum class BottomTab {
             Record, Statistics, Equipment;
 
             companion object {
                 private val map = BottomTab.values().associateBy(BottomTab::ordinal)
-                fun fromInt(type: Int) = map[type]
+                fun fromInt(type: Int) = available[type]
                 fun fromId(@IdRes id: Int): BottomTab {
                     return when (id) {
                         R.id.action_record -> Record
@@ -41,7 +49,22 @@ class NavigationActivity : BaseActivity(),
                         else -> throw RuntimeException("$id is not valid BottomTab id")
                     }
                 }
+
+                /** List of available tabs. */
+                val available: List<BottomTab> by lazy {
+                    map.entries.filter({ it.value.isAvailable }).map { it.value }
+                }
             }
+
+            /** Indicate if the tab is active and should be shown. */
+            val isAvailable: Boolean
+                get() {
+                    return when (this) {
+                        Record -> true
+                        Statistics -> true
+                        Equipment -> false // TODO: enable equipments tab when ready
+                    }
+                }
         }
     }
 
@@ -152,7 +175,7 @@ class NavigationActivity : BaseActivity(),
      */
     private fun setupFragNavController(savedInstanceState: Bundle?) {
         val builder = FragNavController.newBuilder(savedInstanceState, supportFragmentManager, R.id.fragment_container)
-                .rootFragmentListener(this@NavigationActivity, BottomTab.values().size)
+                .rootFragmentListener(this@NavigationActivity, BottomTab.available.size)
                 .transactionListener(this@NavigationActivity)
         // TODO: look into .fragmentHideStrategy(FragNavController.HIDE), .eager(true)
         fragNavController = builder.build()
