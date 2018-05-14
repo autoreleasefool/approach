@@ -124,11 +124,10 @@ abstract class BaseRecyclerViewAdapter<Item : IIdentifiable>(
             val position = it.getChildAdapterPosition(v)
             val item = items[position]
             if (multiSelect) {
-                _selectedItems.let {
-                    if (!it.remove(item)) {
-                        it.add(item)
-                    }
+                if (!_selectedItems.remove(item)) {
+                    _selectedItems.add(item)
                 }
+
                 notifyItemChanged(position)
             }
             listener?.onItemClick(item)

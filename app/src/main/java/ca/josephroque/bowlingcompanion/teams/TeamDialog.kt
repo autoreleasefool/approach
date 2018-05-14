@@ -71,7 +71,7 @@ class TeamDialog : DialogFragment(),
     private var bowlers: MutableList<Bowler> = ArrayList()
 
     /** Current list of selected bowlers. */
-    private val selectedBowlers: MutableList<Pair<String, Long>>?
+    private val selectedBowlers: List<Pair<String, Long>>?
         get() {
             val selected = bowlerAdapter?.selectedItems ?: return null
             val list: MutableList<Pair<String, Long>> = ArrayList()
@@ -279,9 +279,10 @@ class TeamDialog : DialogFragment(),
 
                 members?.let {
                     if (canSave()) {
-                        val newTeam = team ?: Team(-1, name, it)
+                        val mutableMembers = it.toMutableList()
+                        val newTeam = team ?: Team(-1, name, mutableMembers)
                         newTeam.name = name
-                        newTeam.members = it
+                        newTeam.members = mutableMembers
 
                         val error = newTeam.save(context).await()
                         if (error != null) {
