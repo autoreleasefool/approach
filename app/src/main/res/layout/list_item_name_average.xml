@@ -18,38 +18,23 @@
         android:layout_marginLeft="@dimen/list_item_margin"
         android:layout_gravity="center_vertical"
         android:checked="false"
+        android:focusable="false"
+        android:clickable="false"
         android:visibility="gone" />
 
     <ImageView
+        style="@style/ListItemIcon"
         android:id="@+id/iv_name_average"
-        android:layout_width="@dimen/list_default_icon_size"
-        android:layout_height="@dimen/list_default_icon_size"
-        android:layout_marginTop="@dimen/list_item_margin"
-        android:layout_marginBottom="@dimen/list_item_margin"
-        android:layout_marginLeft="@dimen/list_item_margin"
-        android:layout_gravity="center_vertical"
-        android:alpha="0.7"
         android:contentDescription="@string/iv_name_average" />
 
     <TextView
+        style="@style/ListItemBodyText"
         android:id="@+id/tv_name"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/list_item_margin"
-        android:layout_weight="1"
-        android:layout_gravity="center_vertical"
-        android:singleLine="true"
-        android:textAppearance="?attr/textAppearanceListItem" />
+        android:layout_weight="1" />
 
     <TextView
-        android:id="@+id/tv_average"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/list_item_margin"
-        android:layout_marginBottom="@dimen/list_item_margin"
-        android:layout_marginRight="@dimen/list_item_margin"
-        android:layout_gravity="center_vertical"
-        android:singleLine="true"
-        android:textAppearance="?attr/textAppearanceListItem" />
+        style="@style/ListItemDetailText"
+        android:id="@+id/tv_average" />
 
 </LinearLayout>

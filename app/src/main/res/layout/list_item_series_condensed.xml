@@ -10,24 +10,13 @@
     tools:ignore="RtlHardcoded">
 
     <TextView
+        style="@style/ListItemBodyText"
         android:id="@+id/tv_date"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/list_item_margin"
-        android:layout_weight="1"
-        android:layout_gravity="center_vertical"
-        android:singleLine="true"
-        android:textAppearance="?attr/textAppearanceListItem" />
+        android:layout_weight="1" />
 
     <TextView
-        android:id="@+id/tv_total"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/list_item_margin"
-        android:layout_marginBottom="@dimen/list_item_margin"
-        android:layout_marginRight="@dimen/list_item_margin"
-        android:layout_gravity="center_vertical"
-        android:singleLine="true"
-        android:textAppearance="?attr/textAppearanceListItem" />
+        style="@style/ListItemBodyText"
+        android:id="@+id/tv_total" />
 
 </LinearLayout>

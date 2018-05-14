@@ -12,37 +12,25 @@
     tools:ignore="RtlHardcoded">
 
     <ImageView
-        android:layout_width="@dimen/list_default_icon_size"
-        android:layout_height="@dimen/list_default_icon_size"
-        android:layout_marginTop="@dimen/list_item_margin"
-        android:layout_marginBottom="@dimen/list_item_margin"
-        android:layout_marginLeft="@dimen/list_item_margin"
-        android:layout_gravity="center_vertical"
-        android:alpha="0.7"
+        style="@style/ListItemIcon"
         android:contentDescription="@string/iv_delete_item"
         app:srcCompat="@drawable/ic_delete_white_24dp" />
 
     <TextView
+        style="@style/ListItemBodyText"
         android:id="@+id/tv_deleted"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/list_item_margin"
         android:layout_weight="1"
-        android:layout_gravity="center_vertical"
-        android:singleLine="true"
-        android:textColor="@color/primaryWhiteText"
-        android:textAppearance="?attr/textAppearanceListItem" />
+        android:textColor="@color/primaryWhiteText" />
 
     <TextView
+        style="@style/ListItemBodyText"
         android:id="@+id/tv_undo"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_margin="0dp"
         android:padding="@dimen/list_item_margin"
-        android:layout_gravity="center_vertical"
-        android:singleLine="true"
         android:textAllCaps="true"
         android:textColor="@color/primaryWhiteText"
-        android:text="@string/undo"
-        android:textAppearance="?attr/textAppearanceListItem" />
+        android:text="@string/undo" />
 
 </LinearLayout>

@@ -2,7 +2,6 @@
 <resources>
 
     <!-- Keep in line with values/styles.xml -->
-
     <style name="HeaderText" parent="@android:style/TextAppearance">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
@@ -16,6 +15,7 @@
         <item name="android:layout_marginBottom">@dimen/text_margin_vertical</item>
     </style>
 
+    <!-- Keep in line with values/styles.xml -->
     <style name="BodyText" parent="@android:style/TextAppearance">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>

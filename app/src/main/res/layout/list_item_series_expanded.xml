@@ -17,34 +17,18 @@
         android:foreground="?attr/selectableItemBackground">
 
         <TextView
+            style="@style/ListItemBodyText"
             android:id="@+id/tv_date"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/list_item_margin"
-            android:layout_weight="1"
-            android:layout_gravity="center_vertical"
-            android:singleLine="true"
-            android:textAppearance="?attr/textAppearanceListItem" />
+            android:layout_weight="1" />
 
         <TextView
-            android:id="@+id/tv_total"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/list_item_margin"
-            android:layout_marginBottom="@dimen/list_item_margin"
-            android:layout_marginRight="@dimen/list_item_margin"
-            android:layout_gravity="center_vertical"
-            android:singleLine="true"
-            android:textAppearance="?attr/textAppearanceListItem" />
+            style="@style/ListItemDetailText"
+            android:id="@+id/tv_total" />
 
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1px"
-        android:layout_marginLeft="@dimen/list_item_margin"
-        android:layout_marginRight="@dimen/list_item_margin"
-        android:background="@color/colorDivider" />
+    <View style="@style/Separator.Inset.Both" />
 
     <com.nex3z.flowlayout.FlowLayout
         android:id="@+id/flow_scores"

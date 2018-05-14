@@ -141,6 +141,20 @@
         <item name="android:layout_marginBottom">@dimen/base_margin</item>
     </style>
 
+    <!-- Images -->
+
+    <style name="ListItemIcon">
+        <item name="android:layout_width">@dimen/list_default_icon_size</item>
+        <item name="android:layout_height">@dimen/list_default_icon_size</item>
+        <item name="android:layout_marginTop">@dimen/list_item_margin</item>
+        <item name="android:layout_marginBottom">@dimen/list_item_margin</item>
+        <item name="android:layout_marginLeft">@dimen/list_item_margin</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:alpha">0.7</item>
+        <item name="android:focusable">false</item>
+        <item name="android:clickable">false</item>
+    </style>
+
     <!-- Text -->
 
     <!-- Keep in line with v17/styles.xml -->
@@ -170,6 +184,44 @@
         <item name="android:layout_marginTop">@dimen/text_margin_vertical</item>
         <item name="android:layout_marginBottom">@dimen/text_margin_vertical</item>
     </style>
+
+    <style name="ListItemBodyText" parent="BodyText">
+        <item name="android:layout_margin">@dimen/list_item_margin</item>
+        <item name="android:layout_gravity">center_vertical</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:focusable">false</item>
+        <item name="android:clickable">false</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textAppearance">?attr/textAppearanceListItem</item>
+    </style>
+
+    <style name="ListItemDetailText" parent="ListItemBodyText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_marginLeft">0dp</item>
+    </style>
+
+    <!-- Separators -->
+
+    <style name="Separator">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1px</item>
+        <item name="android:background">@color/colorDivider</item>
+    </style>
+
+    <style name="Separator.Inset.Left" parent="Separator">
+        <item name="android:layout_marginLeft">@dimen/base_margin_large</item>
+    </style>
+
+    <style name="Separator.Inset.Right" parent="Separator">
+        <item name="android:layout_marginRight">@dimen/base_margin_large</item>
+    </style>
+
+    <style name="Separator.Inset.Both" parent="Separator">
+        <item name="android:layout_marginLeft">@dimen/base_margin_large</item>
+        <item name="android:layout_marginRight">@dimen/base_margin_large</item>
+    </style>
+
+    <!-- Settings -->
 
     <style name="SettingTheme" parent="AppTheme">
         <item name="colorAccent">@color/colorPrimary</item>
