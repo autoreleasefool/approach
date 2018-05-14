@@ -87,13 +87,14 @@ class TeamRecyclerViewAdapter(
 
             flowMembers?.removeAllViews()
             item.members.forEach({
-                val memberView = Chip(context)
-                memberView.isFocusable = false
-                memberView.isClickable = false
-                memberView.chipText = it.first
-                memberView.changeBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary))
-                memberView.textColor = ContextCompat.getColor(context, R.color.primaryWhiteText)
-                flowMembers?.addView(memberView)
+                Chip(context).apply {
+                    isFocusable = false
+                    isClickable = false
+                    chipText = it.first
+                    changeBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary))
+                    textColor = ContextCompat.getColor(context, R.color.primaryWhiteText)
+                    flowMembers?.addView(this)
+                }
             })
             val chipMargin = context.resources.getDimension(R.dimen.chip_margin).toInt()
             flowMembers?.childSpacing = chipMargin
