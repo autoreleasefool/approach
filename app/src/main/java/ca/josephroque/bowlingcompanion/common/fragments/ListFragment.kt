@@ -136,7 +136,7 @@ abstract class ListFragment<Item: IIdentifiable, Adapter: BaseRecyclerViewAdapte
             if (index == -1) {
                 val items = fetchItems().await()
                 this@ListFragment.items = items
-                adapter?.setElements(items)
+                adapter?.items = items
             } else {
                 adapter?.notifyItemChanged(index)
             }

@@ -15,7 +15,7 @@ import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
  * A basic [RecyclerView.Adapter] to handle common operations.
  */
 abstract class BaseRecyclerViewAdapter<Item : IIdentifiable>(
-        protected var values: List<Item>,
+        values: List<Item>,
         protected var listener: OnAdapterInteractionListener<Item>?
 ) : RecyclerView.Adapter<BaseRecyclerViewAdapter<Item>.ViewHolder>(),
         View.OnClickListener,
@@ -64,6 +64,13 @@ abstract class BaseRecyclerViewAdapter<Item : IIdentifiable>(
     /** Reference to the attached [RecyclerView]. */
     private var recyclerView: RecyclerView? = null
 
+    /** List of items displayed in the adapter. */
+    var items: List<Item> = values
+        set(value) {
+            field = value
+            notifyDataSetChanged()
+        }
+
     /** Currently selected items */
     private var _selectedItems: MutableSet<Item> = HashSet()
     val selectedItems: Set<Item>
@@ -87,17 +94,7 @@ abstract class BaseRecyclerViewAdapter<Item : IIdentifiable>(
 
     /** @Override */
     override fun getItemCount(): Int {
-        return values.size
-    }
-
-    /**
-     * Update elements in the [RecyclerView].
-     *
-     * @param items new list of items to display
-     */
-    fun setElements(items: List<Item>) {
-        values = items
-        notifyDataSetChanged()
+        return items.size
     }
 
     /**
@@ -107,7 +104,7 @@ abstract class BaseRecyclerViewAdapter<Item : IIdentifiable>(
      */
     fun setSelectedElementsWithIds(ids: Set<Long>) {
         if (multiSelect) {
-            values.forEachIndexed({ index: Int, it: Item ->
+            items.forEachIndexed({ index: Int, it: Item ->
                 if (ids.contains(it.id)) {
                     if (_selectedItems.add(it)) {
                         notifyItemChanged(index)
@@ -125,7 +122,7 @@ abstract class BaseRecyclerViewAdapter<Item : IIdentifiable>(
     override fun onClick(v: View) {
         recyclerView?.let {
             val position = it.getChildAdapterPosition(v)
-            val item = values[position]
+            val item = items[position]
             if (multiSelect) {
                 _selectedItems.let {
                     if (!it.remove(item)) {
@@ -145,7 +142,7 @@ abstract class BaseRecyclerViewAdapter<Item : IIdentifiable>(
                 return false
             }
 
-            listener?.onItemLongClick(values[it.getChildAdapterPosition(v)])
+            listener?.onItemLongClick(items[it.getChildAdapterPosition(v)])
             return true
         }
 
@@ -184,7 +181,7 @@ abstract class BaseRecyclerViewAdapter<Item : IIdentifiable>(
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
             if (swipeable) {
                 val position = viewHolder.adapterPosition
-                listener?.onItemSwipe(values[position])
+                listener?.onItemSwipe(items[position])
             }
         }
 

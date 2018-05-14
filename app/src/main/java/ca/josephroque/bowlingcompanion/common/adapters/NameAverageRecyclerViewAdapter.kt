@@ -18,9 +18,9 @@ import ca.josephroque.bowlingcompanion.common.interfaces.INameAverage
  * specified listener.
  */
 class NameAverageRecyclerViewAdapter<T : INameAverage>(
-        values: List<T>,
+        items: List<T>,
         listener: OnAdapterInteractionListener<T>?
-) : BaseRecyclerViewAdapter<T>(values, listener) {
+) : BaseRecyclerViewAdapter<T>(items, listener) {
 
     companion object {
         /** Logging identifier. */
@@ -55,7 +55,7 @@ class NameAverageRecyclerViewAdapter<T : INameAverage>(
     /** @Override */
     override fun getItemViewType(position: Int): Int {
         return when {
-            swipeable && values[position].isDeleted -> ViewType.Deleted.ordinal
+            swipeable && items[position].isDeleted -> ViewType.Deleted.ordinal
             multiSelect -> ViewType.Selectable.ordinal
             else -> ViewType.Active.ordinal
         }
@@ -79,7 +79,7 @@ class NameAverageRecyclerViewAdapter<T : INameAverage>(
 
     /** @Override */
     override fun onBindViewHolder(holder: BaseRecyclerViewAdapter<T>.ViewHolder, position: Int) {
-        holder.bind(values[position], position)
+        holder.bind(items[position], position)
     }
 
     /**
@@ -141,14 +141,14 @@ class NameAverageRecyclerViewAdapter<T : INameAverage>(
 
             tvDeleted?.text = String.format(
                     context.resources.getString(R.string.query_delete_item),
-                    values[position].name
+                    items[position].name
             )
 
             val deletedItemListener = View.OnClickListener {
                 if (it.id == R.id.tv_undo) {
-                    listener?.onItemSwipe(values[position])
+                    listener?.onItemSwipe(items[position])
                 } else {
-                    listener?.onItemDelete(values[position])
+                    listener?.onItemDelete(items[position])
                 }
             }
             itemView.setOnClickListener(deletedItemListener)

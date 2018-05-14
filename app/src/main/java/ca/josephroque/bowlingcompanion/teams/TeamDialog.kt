@@ -308,7 +308,7 @@ class TeamDialog : DialogFragment(),
         launch(Android) {
             val bowlers = Bowler.fetchAll(context).await()
             this@TeamDialog.bowlers = bowlers
-            bowlerAdapter?.setElements(bowlers)
+            bowlerAdapter?.items = bowlers
 
             if (bowlers.isEmpty()) {
                 list_bowlers.visibility = View.GONE

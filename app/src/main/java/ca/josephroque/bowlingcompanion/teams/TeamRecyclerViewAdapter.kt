@@ -17,9 +17,9 @@ import com.robertlevonyan.views.chip.Chip
  * [RecyclerView.Adapter] that can display a [Team] and makes a call to the listener.
  */
 class TeamRecyclerViewAdapter(
-        values: List<Team>,
+        items: List<Team>,
         listener: BaseRecyclerViewAdapter.OnAdapterInteractionListener<Team>?
-) : BaseRecyclerViewAdapter<Team>(values, listener) {
+) : BaseRecyclerViewAdapter<Team>(items, listener) {
 
     companion object {
         /** Logging identifier. */
@@ -40,7 +40,7 @@ class TeamRecyclerViewAdapter(
 
     /** @Override */
     override fun getItemViewType(position: Int): Int {
-        return if (values[position].isDeleted) {
+        return if (items[position].isDeleted) {
             ViewType.Deleted.ordinal
         } else {
             ViewType.Active.ordinal
@@ -63,7 +63,7 @@ class TeamRecyclerViewAdapter(
 
     /** @Override */
     override fun onBindViewHolder(holder: BaseRecyclerViewAdapter<Team>.ViewHolder, position: Int) {
-        holder.bind(values[position], position)
+        holder.bind(items[position], position)
     }
 
     /**
@@ -117,14 +117,14 @@ class TeamRecyclerViewAdapter(
 
             tvDeleted?.text = String.format(
                     context.resources.getString(R.string.query_delete_item),
-                    values[position].name
+                    items[position].name
             )
 
             val deletedItemListener = View.OnClickListener {
                 if (it.id == R.id.tv_undo) {
-                    listener?.onItemSwipe(values[position])
+                    listener?.onItemSwipe(items[position])
                 } else {
-                    listener?.onItemDelete(values[position])
+                    listener?.onItemDelete(items[position])
                 }
             }
             itemView.setOnClickListener(deletedItemListener)
