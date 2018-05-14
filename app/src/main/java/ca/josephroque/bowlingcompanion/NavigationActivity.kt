@@ -218,17 +218,29 @@ class NavigationActivity : BaseActivity(),
 
     /** @Override */
     override fun onFragmentTransaction(fragment: Fragment?, transactionType: FragNavController.TransactionType?) {
-        supportActionBar?.setDisplayHomeAsUpEnabled(fragNavController?.isRootFragment?.not() ?: false)
-        if (fragment is IFloatingActionButtonHandler) {
-            fabImage = fragment.getFabImage()
-        }
+        handleFragmentChange(fragment)
     }
 
     /** @Override */
     override fun onTabTransaction(fragment: Fragment?, index: Int) {
+        handleFragmentChange(fragment)
+    }
+
+    /**
+     * Update activity state for fragment changes.
+     *
+     * @param fragment the new fragment being displayed
+     */
+    private fun handleFragmentChange(fragment: Fragment?) {
         supportActionBar?.setDisplayHomeAsUpEnabled(fragNavController?.isRootFragment?.not() ?: false)
         if (fragment is IFloatingActionButtonHandler) {
             fabImage = fragment.getFabImage()
+        }
+
+        toolbar.elevation = if (fragment is TabbedFragment) {
+            0F
+        } else {
+            resources.getDimension(R.dimen.base_elevation)
         }
     }
 
