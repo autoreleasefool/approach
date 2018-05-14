@@ -124,7 +124,7 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
                 seriesView = view
                 return true
             }
-            else -> false
+            else -> super.onOptionsItemSelected(item)
         }
     }
 

@@ -60,9 +60,7 @@ class BowlerListFragment : ListFragment<Bowler, NameAverageRecyclerViewAdapter<B
                 showSortByDialog()
                 true
             }
-            else -> {
-                false
-            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 

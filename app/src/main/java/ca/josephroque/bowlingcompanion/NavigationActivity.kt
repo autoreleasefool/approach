@@ -3,12 +3,10 @@ package ca.josephroque.bowlingcompanion
 import android.graphics.Color
 import android.os.Bundle
 import android.support.annotation.IdRes
-import android.support.constraint.ConstraintLayout
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentTransaction
-import android.util.Log
 import android.view.View
 import ca.josephroque.bowlingcompanion.bowlers.BowlerListFragment
 import ca.josephroque.bowlingcompanion.common.interfaces.IFloatingActionButtonHandler
@@ -118,6 +116,15 @@ class NavigationActivity : BaseActivity(),
     override fun onBackPressed() {
         if (fragNavController?.isRootFragment == true || fragNavController?.popFragment()?.not() == true) {
             super.onBackPressed()
+        }
+    }
+
+    /** @Override */
+    override fun onSupportNavigateUp(): Boolean {
+        return if (fragNavController?.isRootFragment == true || fragNavController?.popFragment()?.not() == true) {
+            false
+        } else {
+            super.onSupportNavigateUp()
         }
     }
 

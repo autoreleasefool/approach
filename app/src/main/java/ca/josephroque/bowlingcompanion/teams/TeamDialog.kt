@@ -126,7 +126,7 @@ class TeamDialog : DialogFragment(),
                         saveTeam()
                         true
                     }
-                    else -> false
+                    else -> super.onOptionsItemSelected(it)
                 }
             }
         }

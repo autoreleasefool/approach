@@ -125,7 +125,7 @@ class SeriesDialog : DialogFragment(), DatePickerDialog.OnDateSetListener {
                         saveSeries()
                         true
                     }
-                    else -> false
+                    else -> super.onOptionsItemSelected(it)
                 }
             }
         }

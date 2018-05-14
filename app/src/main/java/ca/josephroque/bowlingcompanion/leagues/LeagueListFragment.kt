@@ -83,7 +83,7 @@ class LeagueListFragment : ListFragment<League, NameAverageRecyclerViewAdapter<L
                 showSortByDialog()
                 true
             }
-            else -> false
+            else -> super.onOptionsItemSelected(item)
         }
     }
 

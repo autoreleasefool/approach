@@ -161,7 +161,7 @@ class LeagueDialog : DialogFragment() {
                         saveLeague()
                         true
                     }
-                    else -> false
+                    else -> super.onOptionsItemSelected(it)
                 }
             }
         }

@@ -58,9 +58,7 @@ class TeamListFragment : ListFragment<Team, TeamRecyclerViewAdapter>() {
                 showSortByDialog()
                 true
             }
-            else -> {
-                false
-            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 

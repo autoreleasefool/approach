@@ -99,7 +99,7 @@ class BowlerDialog : DialogFragment(), View.OnClickListener {
                         saveBowler()
                         true
                     }
-                    else -> false
+                    else -> super.onOptionsItemSelected(it)
                 }
             }
         }
