@@ -16,7 +16,7 @@
         android:layout_weight="1" />
 
     <TextView
-        style="@style/ListItemBodyText"
+        style="@style/ListItemDetailText"
         android:id="@+id/tv_total" />
 
 </LinearLayout>
