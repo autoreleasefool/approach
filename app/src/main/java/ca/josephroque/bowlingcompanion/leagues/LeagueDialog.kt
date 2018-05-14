@@ -83,14 +83,12 @@ class LeagueDialog : DialogFragment() {
         when (clicked.id) {
             R.id.radio_event -> {
                 isEvent = true
-                layout_additional_games?.visibility = View.GONE
-                layout_highlights?.visibility = View.GONE
+                setLeagueOptionsVisible()
                 setImeOptions()
             }
             R.id.radio_league -> {
                 isEvent = false
-                layout_additional_games?.visibility = View.VISIBLE
-                layout_highlights?.visibility = View.VISIBLE
+                setLeagueOptionsVisible()
                 setImeOptions()
             }
             R.id.btn_delete -> {
@@ -282,6 +280,7 @@ class LeagueDialog : DialogFragment() {
 
         input_name.setSelection(input_name.text.length)
         setImeOptions()
+        setLeagueOptionsVisible()
         updateSaveButton()
     }
 
@@ -363,6 +362,20 @@ class LeagueDialog : DialogFragment() {
         val imm = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.restartInput(focusedField)
         App.showSoftKeyBoard(activity)
+    }
+
+    /**
+     * Set which options are visible for the user to provide details about the league / event
+     * they want to create.
+     */
+    private fun setLeagueOptionsVisible() {
+        if (isEvent) {
+            layout_additional_games?.visibility = View.GONE
+            layout_highlights?.visibility = View.GONE
+        } else {
+            layout_additional_games?.visibility = View.VISIBLE
+            layout_highlights?.visibility = View.VISIBLE
+        }
     }
 
     /**
