@@ -3,10 +3,12 @@ package ca.josephroque.bowlingcompanion
 import android.graphics.Color
 import android.os.Bundle
 import android.support.annotation.IdRes
+import android.support.constraint.ConstraintLayout
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentTransaction
+import android.util.Log
 import android.view.View
 import ca.josephroque.bowlingcompanion.bowlers.BowlerListFragment
 import ca.josephroque.bowlingcompanion.common.interfaces.IFloatingActionButtonHandler
@@ -47,6 +49,13 @@ class NavigationActivity : BaseActivity(),
                         R.id.action_statistics -> Statistics
                         R.id.action_equipment -> Equipment
                         else -> throw RuntimeException("$id is not valid BottomTab id")
+                    }
+                }
+                fun toId(tab: BottomTab): Int {
+                    return when (tab) {
+                        Record -> R.id.action_record
+                        Statistics -> R.id.action_statistics
+                        Equipment -> R.id.action_equipment
                     }
                 }
 
@@ -144,6 +153,12 @@ class NavigationActivity : BaseActivity(),
      * Add listeners to bottom view navigation.
      */
     private fun setupBottomNavigation() {
+        val unavailableTabs: Set<BottomTab> = BottomTab.values().toSet() - BottomTab.available.toSet()
+        if (unavailableTabs.isNotEmpty()) {
+            unavailableTabs.forEach { bottom_navigation.menu.removeItem(BottomTab.toId(it)) }
+            bottom_navigation.invalidate()
+        }
+
         bottom_navigation.setOnNavigationItemSelectedListener {
             fragNavController?.switchTab(BottomTab.fromId(it.itemId).ordinal)
             return@setOnNavigationItemSelectedListener true
@@ -189,7 +204,6 @@ class NavigationActivity : BaseActivity(),
             BottomTab.Record -> BowlerTeamTabbedFragment::class.java.name
             BottomTab.Equipment -> BowlerListFragment::class.java.name // TODO: enable equipment tab
             BottomTab.Statistics -> BowlerListFragment::class.java.name // TODO: enable statistics tab
-            else -> throw RuntimeException("$index is not a valid tab index")
         }
 
         return BaseFragment.newInstance(fragmentName)
