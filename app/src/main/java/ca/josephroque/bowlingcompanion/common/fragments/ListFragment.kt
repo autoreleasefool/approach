@@ -22,13 +22,15 @@ import kotlinx.coroutines.experimental.launch
  *
  * Basic [Fragment] implementation with a list.
  */
-abstract class ListFragment<Item: IIdentifiable, Adapter: BaseRecyclerViewAdapter<Item>>: BaseFragment(),
+abstract class ListFragment<Item: IIdentifiable, Adapter: BaseRecyclerViewAdapter<Item>> :
+        BaseFragment(),
         BaseRecyclerViewAdapter.OnAdapterInteractionListener<Item>,
         IRefreshable
 {
 
     companion object {
         /** Logging identifier. */
+        @Suppress("unused")
         private const val TAG = "ListFragment"
     }
 

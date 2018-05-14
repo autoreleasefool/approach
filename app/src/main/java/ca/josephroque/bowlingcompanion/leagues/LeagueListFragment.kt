@@ -25,6 +25,7 @@ class LeagueListFragment : ListFragment<League, NameAverageRecyclerViewAdapter<L
 
     companion object {
         /** Logging identifier. */
+        @Suppress("unused")
         private const val TAG = "LeagueListFragment"
 
         /** Identifier for the argument that represents the [Bowler] whose leagues are displayed. */

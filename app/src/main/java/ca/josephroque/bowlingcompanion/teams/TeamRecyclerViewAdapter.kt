@@ -19,10 +19,11 @@ import com.robertlevonyan.views.chip.Chip
 class TeamRecyclerViewAdapter(
         values: List<Team>,
         listener: BaseRecyclerViewAdapter.OnAdapterInteractionListener<Team>?
-): BaseRecyclerViewAdapter<Team>(values, listener) {
+) : BaseRecyclerViewAdapter<Team>(values, listener) {
 
     companion object {
         /** Logging identifier. */
+        @Suppress("unused")
         private const val TAG = "TeamRecyclerViewAdapter"
 
         /** Views can be active and accessible, or deleted. */
@@ -65,6 +66,9 @@ class TeamRecyclerViewAdapter(
         holder.bind(values[position], position)
     }
 
+    /**
+     * Build and render an active item in the list.
+     */
     inner class ViewHolderActive(view: View) : BaseRecyclerViewAdapter<Team>.ViewHolder(view) {
         /** Render name of the item. */
         private val tvName: TextView? = view.findViewById(R.id.tv_name)

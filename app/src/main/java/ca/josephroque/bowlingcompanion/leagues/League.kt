@@ -37,8 +37,9 @@ data class League(
         var additionalGames: Int,
         var gameHighlight: Int,
         var seriesHighlight: Int
-): INameAverage, KParcelable {
+) : INameAverage, KParcelable {
 
+    /** @Override */
     override var isDeleted: Boolean = false
 
     /**
@@ -274,6 +275,7 @@ data class League(
         private val REGEX_NAME = Bowler.REGEX_NAME
 
         /** Creator, required by [Parcelable]. */
+        @Suppress("unused")
         @JvmField val CREATOR = parcelableCreator(::League)
 
         /** Name of the "Open" league. */

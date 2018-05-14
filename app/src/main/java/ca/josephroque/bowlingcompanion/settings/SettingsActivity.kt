@@ -4,6 +4,9 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import ca.josephroque.bowlingcompanion.R
 
+/**
+ * Base activity to change user settings.
+ */
 class SettingsActivity : AppCompatActivity() {
 
     /** @Override */

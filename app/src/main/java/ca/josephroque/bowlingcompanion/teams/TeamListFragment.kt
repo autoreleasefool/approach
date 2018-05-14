@@ -22,6 +22,7 @@ class TeamListFragment : ListFragment<Team, TeamRecyclerViewAdapter>() {
 
     companion object {
         /** Logging identifier. */
+        @Suppress("unused")
         private const val TAG = "TeamListFragment"
 
         /**
@@ -74,6 +75,7 @@ class TeamListFragment : ListFragment<Team, TeamRecyclerViewAdapter>() {
         }
     }
 
+    /** @Override */
     override fun buildAdapter(): TeamRecyclerViewAdapter {
         val adapter = TeamRecyclerViewAdapter(emptyList(), this)
         adapter.swipeable = true

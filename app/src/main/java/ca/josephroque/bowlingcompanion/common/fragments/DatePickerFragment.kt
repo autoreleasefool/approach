@@ -10,11 +10,16 @@ import java.util.*
 
 /**
  * Copyright (C) 2018 Joseph Roque
+ *
+ * Pick a date.
  */
-class DatePickerFragment : DialogFragment(), DatePickerDialog.OnDateSetListener {
+class DatePickerFragment : DialogFragment(),
+        DatePickerDialog.OnDateSetListener
+{
 
     companion object {
         /** Logging identifier. */
+        @Suppress("unused")
         private const val TAG = "DatePickerDialog"
 
         /** Year to show in the calendar. */
@@ -66,5 +71,4 @@ class DatePickerFragment : DialogFragment(), DatePickerDialog.OnDateSetListener 
     override fun onDateSet(view: DatePicker, year: Int, month: Int, day: Int) {
         listener?.onDateSet(view, year, month, day)
     }
-
 }

@@ -22,10 +22,12 @@ import java.lang.ref.WeakReference
  * Base implementation for a fragment with tabs.
  */
 abstract class TabbedFragment : BaseFragment(),
-        IFloatingActionButtonHandler {
+        IFloatingActionButtonHandler
+{
 
     companion object {
         /** Logging identifier. */
+        @Suppress("unused")
         private const val TAG = "TabbedFragment"
     }
 
@@ -39,7 +41,6 @@ abstract class TabbedFragment : BaseFragment(),
     /** @Override */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.fragment_common_tabs, container, false)
-        configureToolbar(rootView)
         configureTabLayout(rootView)
         return rootView
     }
@@ -70,15 +71,6 @@ abstract class TabbedFragment : BaseFragment(),
      * @param tabCount number of tabs
      */
     abstract fun buildPagerAdapter(tabCount: Int): BaseFragmentPagerAdapter
-
-    /**
-     * Configure toolbar for rendering.
-     *
-     * @param rootView the root view of the fragment
-     */
-    private fun configureToolbar(rootView: View) {
-        // TODO: configure toolbar for tabbed fragment
-    }
 
     /**
      * Configure tab layout for rendering.
@@ -124,9 +116,13 @@ abstract class TabbedFragment : BaseFragment(),
         }
     }
 
+    /**
+     * Base class for managing fragment paging.
+     */
     abstract class BaseFragmentPagerAdapter(
             fragmentManager: FragmentManager,
-            private val tabCount: Int): FragmentPagerAdapter(fragmentManager) {
+            private val tabCount: Int
+    ) : FragmentPagerAdapter(fragmentManager) {
 
         /** Weak references to the fragments in the pager. */
         private val fragmentReferenceMap: MutableMap<Int, WeakReference<Fragment>> = HashMap(tabCount)
@@ -179,5 +175,3 @@ abstract class TabbedFragment : BaseFragment(),
         fun onTabSwitched()
     }
 }
-
-

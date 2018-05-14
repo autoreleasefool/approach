@@ -33,5 +33,4 @@ class CustomScrollingViewPager : ViewPager {
     override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
         return scrollingEnabled && super.onInterceptTouchEvent(ev)
     }
-
 }

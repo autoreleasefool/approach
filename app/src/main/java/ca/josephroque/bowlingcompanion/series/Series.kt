@@ -29,7 +29,7 @@ data class Series(val league: League,
                   var numberOfGames: Int,
                   var scores: List<Int>,
                   var matchPlay: List<Byte>
-): IIdentifiable, IDeletable, KParcelable {
+) : IIdentifiable, IDeletable, KParcelable {
 
     /** @Override */
     override var isDeleted: Boolean = false
@@ -193,9 +193,11 @@ data class Series(val league: League,
 
     companion object {
         /** Logging identifier. */
+        @Suppress("unused")
         private const val TAG = "Series"
 
         /** Creator, required by [Parcelable]. */
+        @Suppress("unused")
         @JvmField val CREATOR = parcelableCreator(::Series)
 
         /** Argument identifier for showing condensed or expanded view of series. */

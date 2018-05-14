@@ -32,6 +32,7 @@ class SeriesDialog : DialogFragment(), DatePickerDialog.OnDateSetListener {
 
     companion object {
         /** Logging identifier. */
+        @Suppress("unused")
         private const val TAG = "SeriesDialog"
 
         /** Identifier for the [Series] to be edited. */
@@ -255,5 +256,4 @@ class SeriesDialog : DialogFragment(), DatePickerDialog.OnDateSetListener {
          */
         fun onDeleteSeries(series: Series)
     }
-
 }

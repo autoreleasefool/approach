@@ -14,7 +14,7 @@ import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
  *
  * A basic [RecyclerView.Adapter] to handle common operations.
  */
-abstract class BaseRecyclerViewAdapter<Item: IIdentifiable>(
+abstract class BaseRecyclerViewAdapter<Item : IIdentifiable>(
         protected var values: List<Item>,
         protected var listener: OnAdapterInteractionListener<Item>?
 ) : RecyclerView.Adapter<BaseRecyclerViewAdapter<Item>.ViewHolder>(),
@@ -23,6 +23,7 @@ abstract class BaseRecyclerViewAdapter<Item: IIdentifiable>(
 
     companion object {
         /** Logging identifier. */
+        @Suppress("unused")
         private const val TAG = "BaseRecyclerViewAdapter"
 
         /**

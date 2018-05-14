@@ -22,10 +22,12 @@ import kotlinx.android.synthetic.main.fragment_common_tabs.*
 class BowlerTeamTabbedFragment : TabbedFragment(),
         ListFragment.OnListFragmentInteractionListener,
         BowlerDialog.OnBowlerDialogInteractionListener,
-        TeamDialog.OnTeamDialogInteractionListener {
+        TeamDialog.OnTeamDialogInteractionListener
+{
 
     companion object {
         /** Logging identifier */
+        @Suppress("unused")
         private const val TAG = "BowlerTeamTabFragment"
 
         /** Tabs available in the fragment. */
@@ -189,5 +191,4 @@ class BowlerTeamTabbedFragment : TabbedFragment(),
             }
         }
     }
-
 }

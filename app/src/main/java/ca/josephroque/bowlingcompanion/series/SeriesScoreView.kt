@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion.series
 
 import android.content.Context
+import android.graphics.Color
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -24,12 +25,14 @@ class SeriesScoreView: LinearLayout {
         LayoutInflater.from(context).inflate(R.layout.view_series_score, this, true)
     }
 
+    /** Score to display in the view. */
     var score: Int = 0
         set(value) {
             tv_score.text = value.toString()
             field = value
         }
 
+    /** Match play result to display in the view */
     var matchPlay: MatchPlayResult = MatchPlayResult.NONE
         set(value) {
             when (value) {
@@ -42,11 +45,17 @@ class SeriesScoreView: LinearLayout {
             field = value
         }
 
-    fun setScoreTextColor(color: Int) {
-        tv_score.setTextColor(color)
-    }
+    /** Text color of the score text field. */
+    var scoreTextColor: Int = Color.BLACK
+        set(value) {
+            tv_score.setTextColor(value)
+            field = value
+        }
 
-    fun setMatchPlayTextColor(color: Int) {
-        tv_match_play.setTextColor(color)
-    }
+    /** Text color of the match play result text field. */
+    var matchPlayTextColor: Int = Color.BLACK
+        set(value) {
+            tv_match_play.setTextColor(value)
+            field = value
+        }
 }

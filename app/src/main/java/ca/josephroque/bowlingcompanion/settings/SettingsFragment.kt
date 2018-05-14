@@ -21,10 +21,13 @@ import ca.josephroque.bowlingcompanion.utils.toSpanned
  *
  * Display user preferences and allow manipulation.
  */
-class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
+class SettingsFragment : PreferenceFragmentCompat(),
+        SharedPreferences.OnSharedPreferenceChangeListener
+{
 
     companion object {
         /** Logging identifier. */
+        @Suppress("unused")
         private const val TAG = "SettingsFragment"
 
         /**
@@ -37,6 +40,9 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
         }
     }
 
+    /**
+     * Handle special cases for preferences interactions.
+     */
     private val onPreferenceClickListener = Preference.OnPreferenceClickListener {
         when (it.key) {
             Settings.REPORT_BUG -> {
@@ -154,12 +160,6 @@ class SettingsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedP
                         .add(android.R.id.content, fragment)
                         .addToBackStack(null)
                         .commit()
-
-//                val transaction = activity.supportFragmentManager.beginTransaction()
-//                transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-//                transaction.replace(R.id.pref_container, fragment)
-//                transaction.addToBackStack(null)
-//                transaction.commit()
             }
         }
     }

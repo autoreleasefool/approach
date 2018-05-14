@@ -34,5 +34,4 @@ object Preferences {
      * Identifier for preference indicating sort order which user prefers for leagues.
      */
     const val LEAGUE_SORT_ORDER = "pref_league_sort_order"
-
 }

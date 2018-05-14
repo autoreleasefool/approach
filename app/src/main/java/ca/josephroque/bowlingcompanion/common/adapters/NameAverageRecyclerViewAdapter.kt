@@ -20,10 +20,11 @@ import ca.josephroque.bowlingcompanion.common.interfaces.INameAverage
 class NameAverageRecyclerViewAdapter<T : INameAverage>(
         values: List<T>,
         listener: OnAdapterInteractionListener<T>?
-): BaseRecyclerViewAdapter<T>(values, listener) {
+) : BaseRecyclerViewAdapter<T>(values, listener) {
 
     companion object {
         /** Logging identifier. */
+        @Suppress("unused")
         private const val TAG = "NARecyclerViewAdapter"
 
         /** Views can be active and accessible, or deleted. */

@@ -94,5 +94,4 @@ object Settings {
 
     /** Identifier for preference to show current app version.  */
     const val VERSION_NAME = "pref_version_name"
-
 }

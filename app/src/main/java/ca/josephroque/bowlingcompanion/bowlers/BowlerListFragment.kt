@@ -24,6 +24,7 @@ class BowlerListFragment : ListFragment<Bowler, NameAverageRecyclerViewAdapter<B
 
     companion object {
         /** Logging identifier. */
+        @Suppress("unused")
         private const val TAG = "BowlerListFragment"
 
         /**

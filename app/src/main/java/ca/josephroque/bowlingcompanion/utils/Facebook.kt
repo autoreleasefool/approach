@@ -16,6 +16,7 @@ class Facebook {
 
     companion object {
         /** Logging identifier. */
+        @Suppress("unused")
         private const val TAG = "Facebook"
 
         /**
@@ -41,5 +42,4 @@ class Facebook {
             return Intent(Intent.ACTION_VIEW, uri)
         }
     }
-
 }

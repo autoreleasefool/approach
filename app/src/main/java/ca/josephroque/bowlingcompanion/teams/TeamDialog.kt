@@ -32,15 +32,23 @@ import kotlinx.coroutines.experimental.launch
  */
 class TeamDialog : DialogFragment(),
         View.OnClickListener,
-        BaseRecyclerViewAdapter.OnAdapterInteractionListener<Bowler> {
+        BaseRecyclerViewAdapter.OnAdapterInteractionListener<Bowler>
+{
 
     companion object {
         /** Logging identifier. */
+        @Suppress("unused")
         private const val TAG = "TeamDialog"
 
         /** Identifier for the [Team] to be edited. */
         private const val ARG_TEAM = "${TAG}_TEAM"
 
+        /**
+         * Create a new instance of the dialog.
+         *
+         * @param team [Team] to edit, or null to create a new team
+         * @return the new instance
+         */
         fun newInstance(team: Team?): TeamDialog {
             val dialog = TeamDialog()
             val args = Bundle()
@@ -234,7 +242,7 @@ class TeamDialog : DialogFragment(),
     }
 
     /**
-     *
+     * Determine if the team can be saved or not.
      */
     private fun canSave(): Boolean {
         val name = input_name.text.toString()
@@ -324,13 +332,13 @@ class TeamDialog : DialogFragment(),
         updateSaveButton()
     }
 
-    /** Not used. */
+    /** @Override */
     override fun onItemDelete(item: Bowler) {}
 
-    /** Not used. */
+    /** @Override */
     override fun onItemLongClick(item: Bowler) {}
 
-    /** Not used. */
+    /** @Override */
     override fun onItemSwipe(item: Bowler) {}
 
     /**

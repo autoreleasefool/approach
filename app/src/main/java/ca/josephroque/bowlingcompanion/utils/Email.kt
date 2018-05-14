@@ -14,6 +14,7 @@ class Email {
 
     companion object {
         /** Logging identifier. */
+        @Suppress("unused")
         private const val TAG = "Email"
 
         /**

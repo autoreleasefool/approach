@@ -20,6 +20,7 @@ class ScrollableTextDialog : DialogFragment() {
 
     companion object {
         /** Logging identifier. */
+        @Suppress("unused")
         private const val TAG = "ScrollableTextDialog"
 
         /** Argument identifier for title of fragment. */
@@ -113,5 +114,4 @@ class ScrollableTextDialog : DialogFragment() {
         dismiss()
         return true
     }
-
 }

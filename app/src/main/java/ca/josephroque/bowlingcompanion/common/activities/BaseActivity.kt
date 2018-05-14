@@ -18,6 +18,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
     companion object {
         /** Logging identifier. */
+        @Suppress("unused")
         private const val TAG = "BaseActivity"
     }
 

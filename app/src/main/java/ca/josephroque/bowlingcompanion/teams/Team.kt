@@ -35,6 +35,7 @@ data class Team(
         var members: MutableList<Pair<String, Long>>
 ): KParcelable, IDeletable, IIdentifiable {
 
+    /** @Override */
     override var isDeleted: Boolean = false
 
     /**
@@ -249,12 +250,14 @@ data class Team(
 
     companion object {
         /** Logging identifier. */
+        @Suppress("unused")
         private const val TAG = "Team"
 
         /** Valid regex for a name. */
         private val REGEX_NAME = Bowler.REGEX_NAME
 
         /** Creator, required by [Parcelable]. */
+        @Suppress("unused")
         @JvmField val CREATOR = parcelableCreator(::Team)
 
         /**

@@ -29,13 +29,13 @@ import ca.josephroque.bowlingcompanion.utils.Preferences
  *
  * A single Bowler, who has leagues, events, series, games, and stats.
  */
-
 data class Bowler(
         override var id: Long,
         override var name: String,
         override var average: Double
-): INameAverage, KParcelable {
+) : INameAverage, KParcelable {
 
+    /** @Override */
     override var isDeleted: Boolean = false
 
     /**
@@ -121,7 +121,7 @@ data class Bowler(
                         put(LeagueEntry.COLUMN_LEAGUE_NAME, League.PRACTICE_LEAGUE_NAME)
                         put(LeagueEntry.COLUMN_DATE_MODIFIED, currentDate)
                         put(LeagueEntry.COLUMN_BOWLER_ID, bowlerId)
-                        put(LeagueEntry.COLUMN_NUMBER_OF_GAMES, 1)
+                        put(LeagueEntry.COLUMN_NUMBER_OF_GAMES, League.DEFAULT_NUMBER_OF_GAMES)
                     }
                     database.insert(LeagueEntry.TABLE_NAME, null, values)
                 }
@@ -233,12 +233,14 @@ data class Bowler(
     companion object {
 
         /** Logging identifier. */
+        @Suppress("unused")
         private const val TAG = "Bowler"
 
         /** Valid regex for a name. */
         val REGEX_NAME = "^[A-Za-z0-9]+[ A-Za-z0-9'!@#$%^&*()_+:\"?/~-]*[A-Za-z0-9'!@#$%^&*()_+:\"?/~-]*$".toRegex()
 
         /** Creator, required by [Parcelable]. */
+        @Suppress("unused")
         @JvmField val CREATOR = parcelableCreator(::Bowler)
 
         /**

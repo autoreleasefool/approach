@@ -21,12 +21,16 @@ import com.nex3z.flowlayout.FlowLayout
 class SeriesRecyclerViewAdapter(
         values: List<Series>,
         listener: BaseRecyclerViewAdapter.OnAdapterInteractionListener<Series>?
-): BaseRecyclerViewAdapter<Series>(values, listener) {
+) : BaseRecyclerViewAdapter<Series>(values, listener) {
 
     companion object {
         /** Logging identifier. */
+        @Suppress("unused")
         private const val TAG = "SeriesRVAdapter"
 
+        /**
+         * Possible types of series views to be displayed.
+         */
         private enum class ViewType {
             Condensed,
             Expanded,
@@ -140,10 +144,11 @@ class SeriesRecyclerViewAdapter(
      */
     inner class ViewHolderCondensed(view: View) : BaseRecyclerViewAdapter<Series>.ViewHolder(view) {
         /** Render date of the series. */
-        val tvDate: TextView? = view.findViewById(R.id.tv_date)
+        private val tvDate: TextView? = view.findViewById(R.id.tv_date)
         /** Render total of the series. */
-        val tvTotal: TextView? = view.findViewById(R.id.tv_total)
+        private val tvTotal: TextView? = view.findViewById(R.id.tv_total)
 
+        /** @Override */
         override fun bind(item: Series, position: Int) {
             val context = itemView.context
             val seriesTotal = item.scores.sum()
@@ -173,13 +178,14 @@ class SeriesRecyclerViewAdapter(
      */
     inner class ViewHolderExpanded(view: View) : BaseRecyclerViewAdapter<Series>.ViewHolder(view) {
         /** Render date of the series. */
-        val tvDate: TextView? = view.findViewById(R.id.tv_date)
+        private val tvDate: TextView? = view.findViewById(R.id.tv_date)
         /** Render total of the series. */
-        val tvTotal: TextView? = view.findViewById(R.id.tv_total)
+        private val tvTotal: TextView? = view.findViewById(R.id.tv_total)
 
         /** Render set of scores in the series. */
-        val flowScores: FlowLayout? = view.findViewById(R.id.flow_scores)
+        private val flowScores: FlowLayout? = view.findViewById(R.id.flow_scores)
 
+        /** @Override */
         override fun bind(item: Series, position: Int) {
             val context = itemView.context
             val seriesTotal = item.scores.sum()
@@ -202,17 +208,17 @@ class SeriesRecyclerViewAdapter(
                 scoreView.score = item.scores[i]
                 scoreView.matchPlay = matchPlayResult
 
-                if (shouldHighlightGame(item.scores[i])) {
-                    scoreView.setScoreTextColor(ContextCompat.getColor(context, R.color.gameHighlight))
+                scoreView.scoreTextColor = if (shouldHighlightGame(item.scores[i])) {
+                    ContextCompat.getColor(context, R.color.gameHighlight)
                 } else {
-                    scoreView.setScoreTextColor(ContextCompat.getColor(context, R.color.primaryBlackText))
+                    ContextCompat.getColor(context, R.color.primaryBlackText)
                 }
 
                 when (matchPlayResult) {
-                    MatchPlayResult.NONE -> scoreView.setMatchPlayTextColor(ContextCompat.getColor(context, R.color.primaryBlackText))
-                    MatchPlayResult.WON -> scoreView.setMatchPlayTextColor(ContextCompat.getColor(context, R.color.matchPlayWin))
-                    MatchPlayResult.LOST -> scoreView.setMatchPlayTextColor(ContextCompat.getColor(context, R.color.matchPlayLoss))
-                    MatchPlayResult.TIED -> scoreView.setMatchPlayTextColor(ContextCompat.getColor(context, R.color.matchPlayTie))
+                    MatchPlayResult.NONE -> scoreView.matchPlayTextColor = ContextCompat.getColor(context, R.color.primaryBlackText)
+                    MatchPlayResult.WON -> scoreView.matchPlayTextColor = ContextCompat.getColor(context, R.color.matchPlayWin)
+                    MatchPlayResult.LOST -> scoreView.matchPlayTextColor = ContextCompat.getColor(context, R.color.matchPlayLoss)
+                    MatchPlayResult.TIED -> scoreView.matchPlayTextColor = ContextCompat.getColor(context, R.color.matchPlayTie)
                 }
 
                 flowScores?.addView(scoreView)
@@ -238,6 +244,7 @@ class SeriesRecyclerViewAdapter(
         /** Button to undo deletion of an item. */
         private val tvUndo: TextView? = view.findViewById(R.id.tv_undo)
 
+        /** @Override */
         override fun bind(item: Series, position: Int) {
             val context = itemView.context
 

@@ -17,12 +17,20 @@ class BCError(@StringRes private val title: Int = R.string.error_unknown_title,
               @StringRes private val message: Int = R.string.error_unknown_message,
               private val severity: Severity = Severity.Error) {
 
+    /**
+     * Severity of the error.
+     */
     enum class Severity {
         Error,
         Warning,
         Info,
     }
 
+    /**
+     * Show the error in a dialog with an appropriate icon.
+     *
+     * @param context parent context
+     */
     fun show(context: Context) {
         var icon: Drawable?
         val color: Int

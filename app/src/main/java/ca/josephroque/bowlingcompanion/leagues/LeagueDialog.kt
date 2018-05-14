@@ -26,7 +26,6 @@ import kotlinx.android.synthetic.main.dialog_league.*
 import kotlinx.android.synthetic.main.dialog_league.view.*
 import kotlinx.coroutines.experimental.launch
 
-
 /**
  * Copyright (C) 2018 Joseph Roque
  *
@@ -36,6 +35,7 @@ class LeagueDialog : DialogFragment() {
 
     companion object {
         /** Logging identifier. */
+        @Suppress("unused")
         private const val TAG = "LeagueDialog"
 
         /** Identifier for the [Bowler] that will own the [League]. */

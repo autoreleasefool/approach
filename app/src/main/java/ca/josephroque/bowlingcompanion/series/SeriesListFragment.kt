@@ -21,15 +21,23 @@ import kotlinx.coroutines.experimental.async
 class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
         SeriesDialog.OnSeriesDialogInteractionListener,
         ListFragment.OnListFragmentInteractionListener,
-        IFloatingActionButtonHandler {
+        IFloatingActionButtonHandler
+{
 
     companion object {
         /** Logging identifier. */
+        @Suppress("unused")
         private const val TAG = "SeriesListFragment"
 
         /** Identifier for the argument that represents the [League] whose series are displayed. */
         private const val ARG_LEAGUE = "${TAG}_league"
 
+        /**
+         * Create a new instance
+         *
+         * @param league the league whose series will be listed
+         * @return the new instance
+         */
         fun newInstance(league: League): SeriesListFragment {
             val fragment = SeriesListFragment()
             val args = Bundle()

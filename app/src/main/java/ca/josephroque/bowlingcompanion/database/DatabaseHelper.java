@@ -20,7 +20,7 @@ import ca.josephroque.bowlingcompanion.leagues.League;
 import ca.josephroque.bowlingcompanion.scoring.Fouls;
 
 /**
- * * Copyright (C) 2015 Joseph Roque
+ * Copyright (C) 2015 Joseph Roque
  *
  * Manages interactions with the application's database, including the creation,
  * updates and deletion.
@@ -525,7 +525,7 @@ public final class DatabaseHelper
                 db.update(FrameEntry.TABLE_NAME,
                         values,
                         FrameEntry.COLUMN_FOULS + "=?",
-                        new String[]{Fouls.Companion.foulIntToString(i)});
+                        new String[]{Fouls.INSTANCE.foulIntToString(i)});
             }
             db.setTransactionSuccessful();
         } catch (Exception ex) {

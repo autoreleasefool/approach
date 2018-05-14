@@ -9,13 +9,22 @@ import android.widget.EditText
  *
  * Adds thousands separators to [EditText].
  */
-open class ThousandsTextWatcher(val groupingSeparator: String, val decimalSeparator: String) : TextWatcher {
+open class ThousandsTextWatcher(
+        private val groupingSeparator: String,
+        private val decimalSeparator: String
+) : TextWatcher {
 
-    private var busy = false
+    /** Indicates if the watcher is busy performing a previous action. */
+    private var isBusy = false
 
+    /**
+     * Parse the new text value and add commas where appropriate for numerical values.
+     *
+     * @param s the new text
+     */
     override fun afterTextChanged(s: Editable?) {
-        if (s != null && !busy) {
-            busy = true
+        if (s != null && !isBusy) {
+            isBusy = true
 
             var place = 0
 
@@ -40,13 +49,13 @@ open class ThousandsTextWatcher(val groupingSeparator: String, val decimalSepara
                 i--
             }
 
-            busy = false
+            isBusy = false
         }
     }
 
-    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-    }
+    /** @Override */
+    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
-    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-    }
+    /** @Override */
+    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 }

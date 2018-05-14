@@ -13,6 +13,7 @@ abstract class BaseFragment : Fragment() {
 
     companion object {
         /** Logging identifier. */
+        @Suppress("unused")
         private const val TAG = "BaseFragment"
 
         /**
@@ -65,5 +66,4 @@ abstract class BaseFragment : Fragment() {
          */
         fun pushDialogFragment(fragment: DialogFragment)
     }
-
 }

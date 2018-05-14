@@ -14,12 +14,16 @@ import android.view.inputmethod.InputMethodManager
  */
 class App : Application() {
 
+    /** @Override */
     override fun onCreate() {
         super.onCreate()
         PreferenceManager.setDefaultValues(this, R.xml.pref_app, false)
     }
 
     companion object {
+        /** Logging identifier. */
+        @Suppress("unused")
+        private const val TAG = "BowlingCompanionApp"
 
         /**
          * Hides the soft keyboard with the current activity.

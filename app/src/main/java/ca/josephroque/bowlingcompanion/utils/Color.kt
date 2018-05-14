@@ -1,10 +1,12 @@
 package ca.josephroque.bowlingcompanion.utils
 
+
 /**
  * Copyright (C) 2018 Joseph Roque
  *
  * Color extensions.
  */
+@Suppress("MemberVisibilityCanBePrivate")
 object Color {
 
     /** Maximum alpha value. */
@@ -21,5 +23,4 @@ object Color {
 
     /** Alpha value for enabled items. 100% */
     const val ALPHA_ENABLED = ALPHA_PRIMARY
-
 }

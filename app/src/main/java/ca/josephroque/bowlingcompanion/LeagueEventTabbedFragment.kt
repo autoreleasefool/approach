@@ -25,10 +25,12 @@ import kotlinx.android.synthetic.main.fragment_common_tabs.*
  */
 class LeagueEventTabbedFragment : TabbedFragment(),
         ListFragment.OnListFragmentInteractionListener,
-        LeagueDialog.OnLeagueDialogInteractionListener {
+        LeagueDialog.OnLeagueDialogInteractionListener
+{
 
     companion object {
         /** Logging identifier */
+        @Suppress("unused")
         private const val TAG = "LeagueEventTabFragment"
 
         /** Argument identifier for passing a [Bowler] to this fragment. */
@@ -72,6 +74,7 @@ class LeagueEventTabbedFragment : TabbedFragment(),
     /** The user's selected bowler. */
     private var bowler: Bowler? = null
 
+    /** @Override */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         bowler = savedInstanceState?.getParcelable(ARG_BOWLER) ?: arguments?.getParcelable(ARG_BOWLER)
         return super.onCreateView(inflater, container, savedInstanceState)

@@ -28,11 +28,17 @@ class BowlerDialog : DialogFragment(), View.OnClickListener {
 
     companion object {
         /** Logging identifier. */
+        @Suppress("unused")
         private const val TAG = "BowlerDialog"
 
         /** Identifier for the [Bowler] to be edited. */
         private const val ARG_BOWLER = "${TAG}_BOWLER"
 
+        /**
+         * Create a new instance of the dialog.
+         *
+         * @param bowler [Bowler] to edit, or null to create a new bowler
+         */
         fun newInstance(bowler: Bowler?): BowlerDialog {
             val dialog = BowlerDialog()
             val args = Bundle()
