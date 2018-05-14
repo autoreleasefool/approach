@@ -20,7 +20,7 @@
         android:id="@+id/flow_members"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/base_margin"
+        android:layout_margin="@dimen/base_margin_large"
         app:flChildSpacing="@dimen/list_item_margin"
         app:flRowSpacing="@dimen/list_item_margin" />
 
