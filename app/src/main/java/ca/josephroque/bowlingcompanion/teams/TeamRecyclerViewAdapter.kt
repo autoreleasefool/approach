@@ -96,8 +96,6 @@ class TeamRecyclerViewAdapter(
                     flowMembers?.addView(this)
                 }
             })
-            val chipMargin = context.resources.getDimension(R.dimen.chip_margin).toInt()
-            flowMembers?.childSpacing = chipMargin
 
             itemView.setOnClickListener(this@TeamRecyclerViewAdapter)
             itemView.setOnLongClickListener(this@TeamRecyclerViewAdapter)
