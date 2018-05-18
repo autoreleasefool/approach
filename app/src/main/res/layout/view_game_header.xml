@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/linearLayout"
+    android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    android:background="@color/colorPrimaryLight"
+    app:layout_constraintLeft_toLeftOf="parent"
+    app:layout_constraintRight_toRightOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
+
+    <TextView
+        style="@style/BodyText"
+        android:id="@+id/tv_prev_ball"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/ball_prev"
+        android:textAllCaps="true"
+        android:textColor="@color/primaryWhiteText"
+        app:layout_constraintBottom_toBottomOf="parent" />
+
+    <TextView
+        style="@style/BodyText"
+        android:id="@+id/tv_game_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textColor="@color/primaryWhiteText"
+        app:layout_constraintBaseline_toBaselineOf="@+id/tv_prev_ball"
+        app:layout_constraintRight_toLeftOf="@+id/tv_next_ball"
+        app:layout_constraintLeft_toRightOf="@+id/tv_prev_ball" />
+
+    <TextView
+        style="@style/BodyText"
+        android:id="@+id/tv_next_ball"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/ball_next"
+        android:textAllCaps="true"
+        android:textColor="@color/primaryWhiteText"
+        app:layout_constraintBaseline_toBaselineOf="@+id/tv_game_number" />
+
+</merge>

@@ -117,6 +117,11 @@
     <string name="issue_saving_series">Issue saving series!</string>
     <string name="error_series_not_saved">An error occurred and the series could not be saved.</string>
 
+    <!-- Games -->
+    <string name="ball_prev">Prev</string>
+    <string name="ball_next">Next</string>
+    <string name="game_number">Game %d</string>
+
     <!-- Match play -->
     <string name="match_play_won">Won</string>
     <string name="match_play_lost">Lost</string>
