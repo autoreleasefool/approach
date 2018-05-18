@@ -87,7 +87,9 @@ class TeamRecyclerViewAdapter(
 
             flowMembers?.removeAllViews()
             item.members.forEach({
+                val viewId = View.generateViewId()
                 Chip(context).apply {
+                    id = viewId
                     isFocusable = false
                     isClickable = false
                     chipText = it.first

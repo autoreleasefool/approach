@@ -201,8 +201,10 @@ class SeriesRecyclerViewAdapter(
 
             flowScores?.removeAllViews()
             for (i in 0 until item.scores.size) {
+                val id = View.generateViewId()
                 val scoreView = SeriesScoreView(context)
                 val matchPlayResult = MatchPlayResult.fromInt(item.matchPlay[i].toInt())!!
+                scoreView.id = id
                 scoreView.isFocusable = false
                 scoreView.isClickable = false
                 scoreView.score = item.scores[i]
