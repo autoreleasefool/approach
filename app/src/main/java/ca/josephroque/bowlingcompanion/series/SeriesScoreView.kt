@@ -2,6 +2,8 @@ package ca.josephroque.bowlingcompanion.series
 
 import android.content.Context
 import android.graphics.Color
+import android.os.Bundle
+import android.os.Parcelable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -17,12 +19,54 @@ import kotlinx.android.synthetic.main.view_series_score.view.*
  */
 class SeriesScoreView: LinearLayout {
 
+    companion object {
+        /** Logging identifier. */
+        @Suppress("unused")
+        private const val TAG = "SeriesScoreView"
+
+        /** Tag to save super state. */
+        private const val SUPER_STATE = "${TAG}_super_state"
+        /** Tag to save state of score. */
+        private const val SCORE = "${TAG}_score"
+        /** Tag to save state of match play. */
+        private const val MATCH_PLAY = "${TAG}_match_play"
+        /** Tag to save state of score text color. */
+        private const val SCORE_TEXT_COLOR = "${TAG}_score_text_color"
+        /** Tag to save state of match play text color. */
+        private const val MATCH_PLAY_TEXT_COLOR = "${TAG}_match_play_text_color"
+    }
+
     /** Required constructors */
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         orientation = LinearLayout.VERTICAL
         LayoutInflater.from(context).inflate(R.layout.view_series_score, this, true)
+    }
+
+    /** @Override */
+    override fun onSaveInstanceState(): Parcelable {
+        val bundle = Bundle()
+        bundle.putParcelable(SUPER_STATE, super.onSaveInstanceState())
+        bundle.putInt(SCORE, score)
+        bundle.putInt(SCORE_TEXT_COLOR, scoreTextColor)
+        bundle.putInt(MATCH_PLAY, matchPlay.ordinal)
+        bundle.putInt(MATCH_PLAY_TEXT_COLOR, matchPlayTextColor)
+        return bundle
+    }
+
+    /** @Override */
+    override fun onRestoreInstanceState(state: Parcelable?) {
+        var superState: Parcelable? = null
+        if (state is Bundle) {
+            score = state.getInt(SCORE)
+            scoreTextColor = state.getInt(SCORE_TEXT_COLOR)
+            matchPlay = MatchPlayResult.fromInt(state.getInt(MATCH_PLAY))!!
+            matchPlayTextColor = state.getInt(MATCH_PLAY_TEXT_COLOR)
+            superState = state.getParcelable(SUPER_STATE)
+        }
+
+        super.onRestoreInstanceState(superState)
     }
 
     /** Score to display in the view. */
