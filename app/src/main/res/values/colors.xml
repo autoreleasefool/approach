@@ -2,6 +2,8 @@
 <resources>
 
     <!-- Theme colors -->
+    <color name="colorPrimaryWashedOut">#D7D7FF</color>
+    <color name="colorPrimaryLight">#7B3DF4</color>
     <color name="colorPrimary">#5F27CD</color>
     <color name="colorPrimaryDark">#341F97</color>
     <color name="colorAccent">#FF9F43</color>
