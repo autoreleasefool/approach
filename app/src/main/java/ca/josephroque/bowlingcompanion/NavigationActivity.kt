@@ -235,6 +235,8 @@ class NavigationActivity : BaseActivity(),
         supportActionBar?.setDisplayHomeAsUpEnabled(fragNavController?.isRootFragment?.not() ?: false)
         if (fragment is IFloatingActionButtonHandler) {
             fabImage = fragment.getFabImage()
+        } else {
+            fabImage = null
         }
 
         toolbar.elevation = if (fragment is TabbedFragment) {
