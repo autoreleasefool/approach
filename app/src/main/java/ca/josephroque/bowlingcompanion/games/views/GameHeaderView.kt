@@ -3,9 +3,10 @@ package ca.josephroque.bowlingcompanion.games.views
 import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
-import android.support.constraint.ConstraintLayout
+import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.widget.LinearLayout
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.games.Frame
 import ca.josephroque.bowlingcompanion.games.Game
@@ -16,7 +17,7 @@ import kotlinx.android.synthetic.main.view_game_header.view.*
  *
  * Header of a game which displays the game number and navigation buttons.
  */
-class GameHeaderView : ConstraintLayout {
+class GameHeaderView : LinearLayout {
 
     companion object {
         /** Logging identifier. */
@@ -38,6 +39,7 @@ class GameHeaderView : ConstraintLayout {
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         val rootView = LayoutInflater.from(context).inflate(R.layout.view_game_header, this, true)
+        rootView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimaryLight))
         rootView.tv_game_number.text = String.format(resources.getString(R.string.game_number), currentGame)
     }
 

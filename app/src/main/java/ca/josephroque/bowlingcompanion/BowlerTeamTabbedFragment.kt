@@ -134,7 +134,7 @@ class BowlerTeamTabbedFragment : TabbedFragment(),
     /**
      * Push fragment to show leagues and events of a [Bowler]
      *
-     * @param bowler the bowler whose leagues and events will be showm
+     * @param bowler the bowler whose leagues and events will be shown
      */
     private fun showLeaguesAndEvents(bowler: Bowler) {
         val newFragment = LeagueEventTabbedFragment.newInstance(bowler)

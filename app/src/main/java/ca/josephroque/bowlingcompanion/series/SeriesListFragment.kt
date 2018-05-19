@@ -7,6 +7,7 @@ import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.interfaces.IFloatingActionButtonHandler
 import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
 import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
+import ca.josephroque.bowlingcompanion.games.GameFragment
 import ca.josephroque.bowlingcompanion.leagues.League
 import ca.josephroque.bowlingcompanion.settings.Settings
 import kotlinx.coroutines.experimental.CommonPool
@@ -175,7 +176,7 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
             if (longPress) {
                 promptAddOrEditSeries(item)
             } else {
-                TODO("select series")
+                showGameDetails(item)
             }
         }
     }
@@ -192,5 +193,15 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
         } else {
             TODO("not implemented")
         }
+    }
+
+    /**
+     * Push fragment to show game details of a [Series]
+     *
+     * @param series the series whose games will be shown
+     */
+    private fun showGameDetails(series: Series) {
+        val newFragment = GameFragment.newInstance()
+        fragmentNavigation?.pushFragment(newFragment)
     }
 }
