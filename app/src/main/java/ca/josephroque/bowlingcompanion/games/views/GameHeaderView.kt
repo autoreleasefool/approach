@@ -66,12 +66,17 @@ class GameHeaderView : LinearLayout {
         super.onRestoreInstanceState(superState)
     }
 
+    /** Current game to display in the header. */
     var currentGame: Int = 1
         set(value) {
             tv_game_number.text = String.format(resources.getString(R.string.game_number), value)
             field = value
         }
 
+    /**
+     * The current ball. If [currentBall] and [currentFrame] are equal to 1, disable the previous
+     * ball button. If they are equal to their max values, disable the next ball button.
+     */
     var currentBall: Int = 1
         set(value) {
             tv_prev_ball.isEnabled = value != 1 || currentFrame != 1
@@ -79,6 +84,10 @@ class GameHeaderView : LinearLayout {
             field = value
         }
 
+    /**
+     * The current frame. If [currentBall] and [currentFrame] are equal to 1, disable the previous
+     * ball button. If they are equal to their max values, disable the next ball button.
+     */
     var currentFrame: Int = 1
         set(value) {
             tv_prev_ball.isEnabled = value != 1 || currentBall != 1
