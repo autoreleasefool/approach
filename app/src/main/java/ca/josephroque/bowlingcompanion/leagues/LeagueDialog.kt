@@ -400,12 +400,6 @@ class LeagueDialog : DialogFragment() {
 
         launch(Android) {
             this@LeagueDialog.context?.let {
-                val oldName = league?.name ?: ""
-                val oldAdditionalPinfall = league?.additionalPinfall ?: 0
-                val oldAdditionalGames = league?.additionalGames ?: 0
-                val oldGameHighlight = league?.gameHighlight ?: 0
-                val oldSeriesHighlight = league?.seriesHighlight ?: 0
-
                 if (canSave()) {
                     val name = input_name.text.toString()
                     val numberOfGamesStr = input_number_of_games.text.toString()
@@ -461,27 +455,42 @@ class LeagueDialog : DialogFragment() {
                         }
                     }
 
-                    val newLeague = league ?: League(bowler,-1, name, 0.0, isEvent, numberOfGames, additionalPinfall, additionalGames, gameHighlight, seriesHighlight)
-                    newLeague.name = name
-                    newLeague.additionalPinfall = additionalPinfall
-                    newLeague.additionalGames = additionalGames
-                    newLeague.gameHighlight = gameHighlight
-                    newLeague.seriesHighlight = seriesHighlight
+                    val oldLeague = league
+                    val (newLeague, error) = if (oldLeague != null) {
+                        League.save(
+                                context = it,
+                                id = oldLeague.id,
+                                bowler = oldLeague.bowler,
+                                name = name,
+                                average = oldLeague.average,
+                                isEvent = oldLeague.isEvent,
+                                gamesPerSeries = oldLeague.gamesPerSeries,
+                                additionalPinfall = additionalPinfall,
+                                additionalGames = additionalGames,
+                                gameHighlight = gameHighlight,
+                                seriesHighlight = seriesHighlight
+                        ).await()
+                    } else {
+                        League.save(
+                                context = it,
+                                id = -1,
+                                bowler = bowler,
+                                name = name,
+                                isEvent = isEvent,
+                                gamesPerSeries = numberOfGames,
+                                additionalPinfall = additionalPinfall,
+                                additionalGames = additionalGames,
+                                gameHighlight = gameHighlight,
+                                seriesHighlight = seriesHighlight
+                        ).await()
+                    }
 
-                    val error = newLeague.save(it).await()
                     if (error != null) {
                         error.show(it)
-                        newLeague.name = oldName
-                        newLeague.additionalPinfall = oldAdditionalPinfall
-                        newLeague.additionalGames = oldAdditionalGames
-                        newLeague.additionalPinfall = oldGameHighlight
-                        newLeague.additionalGames = oldSeriesHighlight
 
-
-                        resetInputs(newLeague)
-                        if (league != null) input_name.setText(oldName)
+                        league?.let { resetInputs(it) }
                         setImeOptions()
-                    } else {
+                    } else if (newLeague != null) {
                         dismiss()
                         listener?.onFinishLeague(newLeague)
                     }

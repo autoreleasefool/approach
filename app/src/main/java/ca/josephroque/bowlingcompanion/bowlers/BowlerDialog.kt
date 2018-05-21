@@ -12,13 +12,11 @@ import android.view.inputmethod.InputMethodManager
 import ca.josephroque.bowlingcompanion.App
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.Android
-import ca.josephroque.bowlingcompanion.utils.BCError
 import ca.josephroque.bowlingcompanion.utils.Color
 import ca.josephroque.bowlingcompanion.utils.safeLet
 import kotlinx.android.synthetic.main.dialog_bowler.*
 import kotlinx.android.synthetic.main.dialog_bowler.view.*
 import kotlinx.coroutines.experimental.launch
-
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -229,17 +227,10 @@ class BowlerDialog : DialogFragment(), View.OnClickListener {
 
                 if (canSave()) {
                     val oldBowler = bowler
-                    val newBowler: Bowler?
-                    val error: BCError?
-
-                    if (oldBowler != null) {
-                        val (b, e) = Bowler.save(it, oldBowler.id, name, oldBowler.average).await()
-                        newBowler = b
-                        error = e
+                    val (newBowler, error) = if (oldBowler != null) {
+                        Bowler.save(it, oldBowler.id, name, oldBowler.average).await()
                     } else {
-                        val (b, e) = Bowler.save(it, -1, name).await()
-                        newBowler = b
-                        error = e
+                        Bowler.save(it, -1, name).await()
                     }
 
                     if (error != null) {

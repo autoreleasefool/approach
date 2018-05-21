@@ -8,7 +8,6 @@ import android.os.Parcelable
 import android.preference.PreferenceManager
 import android.util.Log
 import ca.josephroque.bowlingcompanion.R
-import ca.josephroque.bowlingcompanion.common.interfaces.IDeletable
 import ca.josephroque.bowlingcompanion.common.interfaces.INameAverage
 import ca.josephroque.bowlingcompanion.common.interfaces.KParcelable
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
@@ -51,6 +50,15 @@ data class Bowler(
             average = p.readDouble()
     )
 
+    /**
+     * Construct [Bowler] from a [Bowler].
+     */
+    constructor(bowler: Bowler): this(
+            id = bowler.id,
+            name = bowler.name,
+            average = bowler.average
+    )
+
     /** @Override */
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeLong(id)
@@ -60,14 +68,14 @@ data class Bowler(
 
     /** @Override */
     override fun markForDeletion(): Bowler {
-        val newInstance = Bowler(id, name, average)
+        val newInstance = Bowler(this)
         newInstance._isDeleted = true
         return newInstance
     }
 
     /** @Override */
-    override fun cleanDeletion(): IDeletable {
-        val newInstance = Bowler(id, name, average)
+    override fun cleanDeletion(): Bowler {
+        val newInstance = Bowler(this)
         newInstance._isDeleted = false
         return this
     }
@@ -158,7 +166,11 @@ data class Bowler(
          * @param id id of the existing bowler, so if the name is unchanged it can be saved
          * @return true if the name is not already in the database, false otherwise
          */
-        private fun isBowlerNameUnique(context: Context, name: String, id: Long = -1): Deferred<Boolean> {
+        private fun isBowlerNameUnique(
+                context: Context,
+                name: String,
+                id: Long = -1
+        ): Deferred<Boolean> {
             return async(CommonPool) {
                 val database = DatabaseHelper.getInstance(context).readableDatabase
 
@@ -195,9 +207,11 @@ data class Bowler(
          * @param name name for the bowler
          * @return [BCError] if any conditions are not met, or null if the bowler can be saved
          */
-        private fun validateSavePreconditions(context: Context,
-                                                     id: Long,
-                                                     name: String): Deferred<BCError?> {
+        private fun validateSavePreconditions(
+                context: Context,
+                id: Long,
+                name: String
+        ): Deferred<BCError?> {
             return async(CommonPool) {
                 val errorTitle = R.string.issue_saving_bowler
                 val errorMessage: Int? = if (!isBowlerNameValid(name)) {
@@ -225,10 +239,12 @@ data class Bowler(
          * @param average average of the bowler to apply to the new [Bowler]
          * @return the saved [Bowler] or a [BCError] if any errors occurred
          */
-        fun save(context: Context,
-                 id: Long,
-                 name: String,
-                 average: Double = 0.0): Deferred<Pair<Bowler?, BCError?>> {
+        fun save(
+                context: Context,
+                id: Long,
+                name: String,
+                average: Double = 0.0
+        ): Deferred<Pair<Bowler?, BCError?>> {
             return if (id < 0) {
                 createNewAndSave(context, name)
             } else {
@@ -300,10 +316,12 @@ data class Bowler(
          * @param average average of the bowler
          * @return [BCError] only if an error occurred
          */
-        private fun update(context: Context,
-                           id: Long,
-                           name: String,
-                           average: Double): Deferred<Pair<Bowler?, BCError?>> {
+        private fun update(
+                context: Context,
+                id: Long,
+                name: String,
+                average: Double
+        ): Deferred<Pair<Bowler?, BCError?>> {
             return async(CommonPool) {
                 val error = validateSavePreconditions(context, id, name).await()
                 if (error != null) {

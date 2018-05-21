@@ -28,19 +28,22 @@ import java.util.*
  */
 data class League(
         val bowler: Bowler,
-        override var id: Long,
-        override var name: String,
-        override var average: Double,
+        override val id: Long,
+        override val name: String,
+        override val average: Double,
         val isEvent: Boolean,
         val gamesPerSeries: Int,
-        var additionalPinfall: Int,
-        var additionalGames: Int,
-        var gameHighlight: Int,
-        var seriesHighlight: Int
+        val additionalPinfall: Int,
+        val additionalGames: Int,
+        val gameHighlight: Int,
+        val seriesHighlight: Int
 ) : INameAverage, KParcelable {
 
+    /** Private field to indicate if the item is deleted. */
+    private var _isDeleted: Boolean = false
     /** @Override */
-    override var isDeleted: Boolean = false
+    override val isDeleted: Boolean
+        get() = _isDeleted
 
     /**
      * Construct [League] from a [Parcel]
@@ -58,6 +61,22 @@ data class League(
             seriesHighlight = p.readInt()
     )
 
+    /**
+     * Construct [League] from a [League]
+     */
+    constructor(league: League): this(
+            bowler = league.bowler,
+            id = league.id,
+            name = league.name,
+            average = league.average,
+            isEvent = league.isEvent,
+            gamesPerSeries = league.gamesPerSeries,
+            additionalPinfall = league.additionalPinfall,
+            additionalGames = league.additionalGames,
+            gameHighlight = league.gameHighlight,
+            seriesHighlight = league.seriesHighlight
+    )
+
     /** @Override */
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeParcelable(bowler, 0)
@@ -72,6 +91,20 @@ data class League(
         writeInt(seriesHighlight)
     }
 
+    /** @Override */
+    override fun markForDeletion(): League {
+        val newInstance = League(this)
+        newInstance._isDeleted = true
+        return newInstance
+    }
+
+    /** @Override */
+    override fun cleanDeletion(): League {
+        val newInstance = League(this)
+        newInstance._isDeleted = false
+        return this
+    }
+
     /**
      * Get all [Series] instances belonging to this [League].
      *
@@ -80,127 +113,6 @@ data class League(
      */
     fun fetchSeries(context: Context): Deferred<MutableList<Series>> {
         return Series.fetchAll(context, this)
-    }
-
-    /**
-     * Save the current bowler to the database.
-     *
-     * @param context to get database instance
-     * @return [BCError] only if an error occurred
-     */
-    fun save(context: Context): Deferred<BCError?> {
-        return if (id < 0) {
-            createNewAndSave(context)
-        } else {
-            update(context)
-        }
-    }
-
-    /**
-     * Create a new [LeagueEntry] in the database.
-     *
-     * @param context to get database instance
-     * @return [BCError] only if an error occurred
-     */
-    private fun createNewAndSave(context: Context): Deferred<BCError?> {
-        return async(CommonPool) {
-            val error = validateSavePreconditions(context).await()
-            if (error != null) {
-                return@async error
-            }
-
-            val database = DatabaseHelper.getInstance(context).writableDatabase
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA)
-            val currentDate = dateFormat.format(Date())
-
-            val values = ContentValues().apply {
-                put(LeagueEntry.COLUMN_LEAGUE_NAME, name)
-                put(LeagueEntry.COLUMN_DATE_MODIFIED, currentDate)
-                put(LeagueEntry.COLUMN_BOWLER_ID, bowler.id)
-                put(LeagueEntry.COLUMN_ADDITIONAL_PINFALL, additionalPinfall)
-                put(LeagueEntry.COLUMN_ADDITIONAL_GAMES, additionalGames)
-                put(LeagueEntry.COLUMN_NUMBER_OF_GAMES, gamesPerSeries)
-                put(LeagueEntry.COLUMN_IS_EVENT, isEvent)
-                put(LeagueEntry.COLUMN_GAME_HIGHLIGHT, gameHighlight)
-                put(LeagueEntry.COLUMN_SERIES_HIGHLIGHT, seriesHighlight)
-            }
-
-            database.beginTransaction()
-            try {
-                val leagueId = database.insert(LeagueEntry.TABLE_NAME, null, values)
-
-                if (leagueId != -1L && isEvent) {
-                    /*
-                     * If the new entry is an event, its series is also created at this time
-                     * since there is only a single series to an event
-                     */
-
-                    val series = Series(
-                            this@League,
-                            -1,
-                            Date(),
-                            gamesPerSeries,
-                            IntArray(gamesPerSeries).toList(),
-                            ByteArray(gamesPerSeries).toList()
-                    )
-
-                    val seriesError = series.save(context).await()
-                    if (seriesError != null || series.id == -1L) {
-                        throw IllegalStateException("Series was not saved.")
-                    }
-                }
-
-                this@League.id = leagueId
-                database.setTransactionSuccessful()
-            } catch (ex: Exception) {
-                Log.e(TAG, "Could not create a new league")
-                return@async BCError(R.string.error_saving_league, R.string.error_league_not_saved)
-            } finally {
-                database.endTransaction()
-            }
-
-            null
-        }
-    }
-
-    /**
-     * Update the [LeagueEntry] in the database.
-     *
-     * @param context context to get database instance
-     * @return [BCError] only if an error occurred
-     */
-    private fun update(context: Context): Deferred<BCError?> {
-        return async(CommonPool) {
-            val error = validateSavePreconditions(context).await()
-            if (error != null) {
-                return@async error
-            }
-
-            val database = DatabaseHelper.getInstance(context).writableDatabase
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA)
-            val currentDate = dateFormat.format(Date())
-
-            val values = ContentValues().apply {
-                put(LeagueEntry.COLUMN_LEAGUE_NAME, name)
-                put(LeagueEntry.COLUMN_ADDITIONAL_PINFALL, additionalPinfall)
-                put(LeagueEntry.COLUMN_ADDITIONAL_GAMES, additionalGames)
-                put(LeagueEntry.COLUMN_GAME_HIGHLIGHT, gameHighlight)
-                put(LeagueEntry.COLUMN_SERIES_HIGHLIGHT, seriesHighlight)
-                put(LeagueEntry.COLUMN_DATE_MODIFIED, currentDate)
-            }
-
-            database.beginTransaction()
-            try {
-                database.update(LeagueEntry.TABLE_NAME, values, LeagueEntry._ID + "=?", arrayOf(id.toString()))
-                database.setTransactionSuccessful()
-            } catch (ex: Exception) {
-                Log.e(TAG, "Error updating league/event details ($name, $additionalPinfall, $additionalGames)", ex)
-            } finally {
-                database.endTransaction()
-            }
-
-            null
-        }
     }
 
     /** @Override */
@@ -221,48 +133,6 @@ data class League(
                 // user's data and no harm is done.
             } finally {
                 database.endTransaction()
-            }
-        }
-    }
-
-    /**
-     * Check if conditions to save a league are met before saving.
-     *
-     * @param context to get resources for error messages if there are any
-     * @return an error to show if preconditions fail
-     */
-    private fun validateSavePreconditions(context: Context): Deferred<BCError?> {
-        return async(CommonPool) {
-            val errorTitle = if (isEvent) R.string.issue_saving_event else R.string.issue_saving_league
-            val errorMessage: Int?
-            if (!isLeagueNameValid(name)) {
-                errorMessage = if (isEvent) R.string.error_event_name_invalid else R.string.error_league_name_invalid
-            } else if (!isLeagueNameUnique(context, name, id).await()) {
-                errorMessage = if (isEvent) R.string.error_event_name_in_use else R.string.error_league_name_in_use
-            } else if (name == PRACTICE_LEAGUE_NAME) {
-                errorMessage = R.string.error_cannot_edit_practice_league
-            } else if (
-                    (isEvent && (additionalPinfall != 0 || additionalGames != 0)) ||
-                    (additionalPinfall < 0 || additionalGames < 0) ||
-                    (additionalPinfall > 0 && additionalGames == 0) ||
-                    (additionalPinfall.toDouble() / additionalGames.toDouble() > 450)
-            ) {
-                errorMessage = R.string.error_league_additional_info_unbalanced
-            } else if (
-                gameHighlight < 0 || gameHighlight > Game.MAX_SCORE ||
-                seriesHighlight < 0 || seriesHighlight > Game.MAX_SCORE * gamesPerSeries
-            ) {
-                errorMessage = R.string.error_league_highlight_invalid
-            } else if (gamesPerSeries < MIN_NUMBER_OF_GAMES || gamesPerSeries > MAX_NUMBER_OF_GAMES) {
-                errorMessage = R.string.error_league_number_of_games_invalid
-            } else {
-                errorMessage = null
-            }
-
-            return@async if (errorMessage != null) {
-                BCError(errorTitle, errorMessage, BCError.Severity.Warning)
-            } else {
-                null
             }
         }
     }
@@ -359,6 +229,299 @@ data class League(
         }
 
         /**
+         * Check if conditions to save a league are met before saving.
+         *
+         * @param context to get resources for error messages if there are any
+         * @param id -1 to create a new league, or the league id to update
+         * @param name name of the league
+         * @param isEvent true to create an event, false to create a league
+         * @param gamesPerSeries number of games per series in the league
+         * @param additionalPinfall additional total pinfall not recorded in the app for the league
+         * @param additionalGames additional games not recorded in the app for the league
+         * @param gameHighlight minimum score to highlight when viewing games
+         * @param seriesHighlight minimum series total to highlight when viewing series
+         * @return an error to show if preconditions fail
+         */
+        private fun validateSavePreconditions(
+                context: Context,
+                id: Long,
+                name: String,
+                isEvent: Boolean,
+                gamesPerSeries: Int,
+                additionalPinfall: Int,
+                additionalGames: Int,
+                gameHighlight: Int,
+                seriesHighlight: Int
+        ): Deferred<BCError?> {
+            return async(CommonPool) {
+                val errorTitle = if (isEvent) R.string.issue_saving_event else R.string.issue_saving_league
+                val errorMessage: Int?
+                if (!isLeagueNameValid(name)) {
+                    errorMessage = if (isEvent) R.string.error_event_name_invalid else R.string.error_league_name_invalid
+                } else if (!isLeagueNameUnique(context, name, id).await()) {
+                    errorMessage = if (isEvent) R.string.error_event_name_in_use else R.string.error_league_name_in_use
+                } else if (name == PRACTICE_LEAGUE_NAME) {
+                    errorMessage = R.string.error_cannot_edit_practice_league
+                } else if (
+                        (isEvent && (additionalPinfall != 0 || additionalGames != 0)) ||
+                        (additionalPinfall < 0 || additionalGames < 0) ||
+                        (additionalPinfall > 0 && additionalGames == 0) ||
+                        (additionalPinfall.toDouble() / additionalGames.toDouble() > 450)
+                ) {
+                    errorMessage = R.string.error_league_additional_info_unbalanced
+                } else if (
+                        gameHighlight < 0 || gameHighlight > Game.MAX_SCORE ||
+                        seriesHighlight < 0 || seriesHighlight > Game.MAX_SCORE * gamesPerSeries
+                ) {
+                    errorMessage = R.string.error_league_highlight_invalid
+                } else if (gamesPerSeries < MIN_NUMBER_OF_GAMES || gamesPerSeries > MAX_NUMBER_OF_GAMES) {
+                    errorMessage = R.string.error_league_number_of_games_invalid
+                } else {
+                    errorMessage = null
+                }
+
+                return@async if (errorMessage != null) {
+                    BCError(errorTitle, errorMessage, BCError.Severity.Warning)
+                } else {
+                    null
+                }
+            }
+        }
+
+        /**
+         * Save the league to the database.
+         *
+         * @param context to get database instance
+         * @param bowler the bowler that will own the league
+         * @param id -1 to create a new league, or the league id to update
+         * @param name name of the league
+         * @param isEvent true to create an event, false to create a league
+         * @param gamesPerSeries number of games per series in the league
+         * @param additionalPinfall additional total pinfall not recorded in the app for the league
+         * @param additionalGames additional games not recorded in the app for the league
+         * @param gameHighlight minimum score to highlight when viewing games
+         * @param seriesHighlight minimum series total to highlight when viewing series
+         * @param average average of the league, defaults to 0.0
+         * @return the saved [League] or [BCError] if an error occurred
+         */
+        fun save(
+                context: Context,
+                bowler: Bowler,
+                id: Long,
+                name: String,
+                isEvent: Boolean,
+                gamesPerSeries: Int,
+                additionalPinfall: Int,
+                additionalGames: Int,
+                gameHighlight: Int,
+                seriesHighlight: Int,
+                average: Double = 0.0
+        ): Deferred<Pair<League?, BCError?>> {
+            return if (id < 0) {
+                createNewAndSave(context, bowler, name, isEvent, gamesPerSeries, additionalPinfall, additionalGames, gameHighlight, seriesHighlight)
+            } else {
+                update(context, bowler, id, name, average, isEvent, gamesPerSeries, additionalPinfall, additionalGames, gameHighlight, seriesHighlight)
+            }
+        }
+
+        /**
+         * Create a new [LeagueEntry] in the database.
+         *
+         * @param context to get database instance
+         * @param bowler id the bowler that will own the league
+         * @param name name of the league
+         * @param isEvent true to create an event, false to create a league
+         * @param gamesPerSeries number of games per series in the league
+         * @param additionalPinfall additional total pinfall not recorded in the app for the league
+         * @param additionalGames additional games not recorded in the app for the league
+         * @param gameHighlight minimum score to highlight when viewing games
+         * @param seriesHighlight minimum series total to highlight when viewing series
+         * @return [BCError] only if an error occurred
+         */
+        private fun createNewAndSave(
+                context: Context,
+                bowler: Bowler,
+                name: String,
+                isEvent: Boolean,
+                gamesPerSeries: Int,
+                additionalPinfall: Int,
+                additionalGames: Int,
+                gameHighlight: Int,
+                seriesHighlight: Int
+        ): Deferred<Pair<League?, BCError?>> {
+            return async(CommonPool) {
+                val error = validateSavePreconditions(
+                        context = context,
+                        id = -1,
+                        name = name,
+                        isEvent = isEvent,
+                        gamesPerSeries = gamesPerSeries,
+                        additionalPinfall = additionalPinfall,
+                        additionalGames = additionalGames,
+                        gameHighlight = gameHighlight,
+                        seriesHighlight = seriesHighlight
+
+                ).await()
+                if (error != null) {
+                    return@async Pair(null, error)
+                }
+
+                val database = DatabaseHelper.getInstance(context).writableDatabase
+                val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA)
+                val currentDate = dateFormat.format(Date())
+
+                val values = ContentValues().apply {
+                    put(LeagueEntry.COLUMN_LEAGUE_NAME, name)
+                    put(LeagueEntry.COLUMN_DATE_MODIFIED, currentDate)
+                    put(LeagueEntry.COLUMN_BOWLER_ID, bowler.id)
+                    put(LeagueEntry.COLUMN_ADDITIONAL_PINFALL, additionalPinfall)
+                    put(LeagueEntry.COLUMN_ADDITIONAL_GAMES, additionalGames)
+                    put(LeagueEntry.COLUMN_NUMBER_OF_GAMES, gamesPerSeries)
+                    put(LeagueEntry.COLUMN_IS_EVENT, isEvent)
+                    put(LeagueEntry.COLUMN_GAME_HIGHLIGHT, gameHighlight)
+                    put(LeagueEntry.COLUMN_SERIES_HIGHLIGHT, seriesHighlight)
+                }
+
+                val league: League
+                database.beginTransaction()
+                try {
+                    val leagueId = database.insert(LeagueEntry.TABLE_NAME, null, values)
+                    league = League(
+                            bowler = bowler,
+                            id = -1,
+                            name = name,
+                            average = 0.0,
+                            isEvent = isEvent,
+                            gamesPerSeries = gamesPerSeries,
+                            additionalPinfall = additionalPinfall,
+                            additionalGames = additionalGames,
+                            gameHighlight = gameHighlight,
+                            seriesHighlight = seriesHighlight
+                    )
+
+                    if (leagueId != -1L && isEvent) {
+
+
+                        /*
+                         * If the new entry is an event, its series is also created at this time
+                         * since there is only a single series to an event
+                         */
+
+                        val series = Series(
+                                league,
+                                -1,
+                                Date(),
+                                gamesPerSeries,
+                                IntArray(gamesPerSeries).toList(),
+                                ByteArray(gamesPerSeries).toList()
+                        )
+
+                        val seriesError = series.save(context).await()
+                        if (seriesError != null || series.id == -1L) {
+                            throw IllegalStateException("Series was not saved.")
+                        }
+                    }
+
+                    database.setTransactionSuccessful()
+                } catch (ex: Exception) {
+                    Log.e(TAG, "Could not create a new league")
+                    return@async Pair(
+                            null,
+                            BCError(R.string.error_saving_league, R.string.error_league_not_saved)
+                    )
+                } finally {
+                    database.endTransaction()
+                }
+
+                Pair(league, null)
+            }
+        }
+
+        /**
+         * Update the league entry in the database.
+         *
+         * @param context to get database instance
+         * @param bowler the bowler that will own the league
+         * @param id the league id to update
+         * @param name name of the league
+         * @param average average of the league
+         * @param isEvent true to create an event, false to create a league
+         * @param gamesPerSeries number of games per series in the league
+         * @param additionalPinfall additional total pinfall not recorded in the app for the league
+         * @param additionalGames additional games not recorded in the app for the league
+         * @param gameHighlight minimum score to highlight when viewing games
+         * @param seriesHighlight minimum series total to highlight when viewing series
+         * @return the saved [League] or [BCError] if an error occurred
+         */
+        fun update(
+                context: Context,
+                bowler: Bowler,
+                id: Long,
+                name: String,
+                average: Double,
+                isEvent: Boolean,
+                gamesPerSeries: Int,
+                additionalPinfall: Int,
+                additionalGames: Int,
+                gameHighlight: Int,
+                seriesHighlight: Int
+        ): Deferred<Pair<League?, BCError?>> {
+            return async(CommonPool) {
+                val error = validateSavePreconditions(
+                        context = context,
+                        id = id,
+                        name = name,
+                        isEvent = isEvent,
+                        gamesPerSeries = gamesPerSeries,
+                        additionalPinfall = additionalPinfall,
+                        additionalGames = additionalGames,
+                        gameHighlight = gameHighlight,
+                        seriesHighlight = seriesHighlight
+
+                ).await()
+                if (error != null) {
+                    return@async Pair(null, error)
+                }
+
+                val database = DatabaseHelper.getInstance(context).writableDatabase
+                val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA)
+                val currentDate = dateFormat.format(Date())
+
+                val values = ContentValues().apply {
+                    put(LeagueEntry.COLUMN_LEAGUE_NAME, name)
+                    put(LeagueEntry.COLUMN_ADDITIONAL_PINFALL, additionalPinfall)
+                    put(LeagueEntry.COLUMN_ADDITIONAL_GAMES, additionalGames)
+                    put(LeagueEntry.COLUMN_GAME_HIGHLIGHT, gameHighlight)
+                    put(LeagueEntry.COLUMN_SERIES_HIGHLIGHT, seriesHighlight)
+                    put(LeagueEntry.COLUMN_DATE_MODIFIED, currentDate)
+                }
+
+                database.beginTransaction()
+                try {
+                    database.update(LeagueEntry.TABLE_NAME, values, LeagueEntry._ID + "=?", arrayOf(id.toString()))
+                    database.setTransactionSuccessful()
+                } catch (ex: Exception) {
+                    Log.e(TAG, "Error updating league/event details ($name, $additionalPinfall, $additionalGames)", ex)
+                } finally {
+                    database.endTransaction()
+                }
+
+                Pair(League(
+                        bowler = bowler,
+                        id = id,
+                        name = name,
+                        average = average,
+                        isEvent = isEvent,
+                        gamesPerSeries = gamesPerSeries,
+                        additionalPinfall = additionalPinfall,
+                        additionalGames = additionalGames,
+                        gameHighlight = gameHighlight,
+                        seriesHighlight = seriesHighlight
+                ), null)
+            }
+        }
+
+        /**
          * Get all of the leagues and events belonging to the [Bowler].
          *
          * @param context to get database instance
@@ -367,7 +530,12 @@ data class League(
          * @param includeEvents true to include [League] instances which are events
          * @return a [MutableList] of [League] instances from the database.
          */
-        fun fetchAll(context: Context, bowler: Bowler, includeLeagues: Boolean = true, includeEvents: Boolean = false): Deferred<MutableList<League>> {
+        fun fetchAll(
+                context: Context,
+                bowler: Bowler,
+                includeLeagues: Boolean = true,
+                includeEvents: Boolean = false
+        ): Deferred<MutableList<League>> {
             return async (CommonPool) {
                 val leagues: MutableList<League> = ArrayList()
                 val database = DatabaseHelper.getInstance(context).readableDatabase
