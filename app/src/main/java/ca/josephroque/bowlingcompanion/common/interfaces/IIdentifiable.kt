@@ -8,7 +8,7 @@ package ca.josephroque.bowlingcompanion.common.interfaces
 interface IIdentifiable {
 
     /** Unique ID of the object. */
-    var id: Long
+    val id: Long
 
     /**
      * Check if this [IIdentifiable] exists in a list

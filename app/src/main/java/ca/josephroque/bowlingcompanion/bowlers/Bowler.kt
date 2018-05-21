@@ -8,6 +8,7 @@ import android.os.Parcelable
 import android.preference.PreferenceManager
 import android.util.Log
 import ca.josephroque.bowlingcompanion.R
+import ca.josephroque.bowlingcompanion.common.interfaces.IDeletable
 import ca.josephroque.bowlingcompanion.common.interfaces.INameAverage
 import ca.josephroque.bowlingcompanion.common.interfaces.KParcelable
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
@@ -30,13 +31,16 @@ import ca.josephroque.bowlingcompanion.utils.Preferences
  * A single Bowler, who has leagues, events, series, games, and stats.
  */
 data class Bowler(
-        override var id: Long,
-        override var name: String,
-        override var average: Double
+        override val id: Long,
+        override val name: String,
+        override val average: Double
 ) : INameAverage, KParcelable {
 
+    /** Private field to indicate if the item is deleted. */
+    private var _isDeleted: Boolean = false
     /** @Override */
-    override var isDeleted: Boolean = false
+    override val isDeleted: Boolean
+        get() = _isDeleted
 
     /**
      * Construct [Bowler] from a [Parcel]
@@ -54,18 +58,18 @@ data class Bowler(
         writeDouble(average)
     }
 
-    /**
-     * Save the current bowler to the database.
-     *
-     * @param context to get database instance
-     * @return [BCError] only if an error occurred
-     */
-    fun save(context: Context): Deferred<BCError?> {
-        return if (id < 0) {
-            createNewAndSave(context)
-        } else {
-            update(context)
-        }
+    /** @Override */
+    override fun markForDeletion(): Bowler {
+        val newInstance = Bowler(id, name, average)
+        newInstance._isDeleted = true
+        return newInstance
+    }
+
+    /** @Override */
+    override fun cleanDeletion(): IDeletable {
+        val newInstance = Bowler(id, name, average)
+        newInstance._isDeleted = false
+        return this
     }
 
     /**
@@ -88,100 +92,6 @@ data class Bowler(
         return League.fetchAll(context, this, false, true)
     }
 
-    /**
-     * Create a new [BowlerEntry] in the database.
-     *
-     * @param context to get database instance
-     * @return [BCError] only if an error occurred
-     */
-    private fun createNewAndSave(context: Context): Deferred<BCError?> {
-        return async(CommonPool) {
-            val error = validateSavePreconditions(context).await()
-            if (error != null) {
-                return@async error
-            }
-
-            val database = DatabaseHelper.getInstance(context).writableDatabase
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA)
-            val currentDate = dateFormat.format(Date())
-
-            var values = ContentValues().apply {
-                put(BowlerEntry.COLUMN_BOWLER_NAME, name)
-                put(BowlerEntry.COLUMN_DATE_MODIFIED, currentDate)
-            }
-
-            val bowlerId: Long
-
-            database.beginTransaction()
-            try {
-                bowlerId = database.insert(BowlerEntry.TABLE_NAME, null, values)
-
-                if (bowlerId != -1L) {
-                    values = ContentValues().apply {
-                        put(LeagueEntry.COLUMN_LEAGUE_NAME, League.PRACTICE_LEAGUE_NAME)
-                        put(LeagueEntry.COLUMN_DATE_MODIFIED, currentDate)
-                        put(LeagueEntry.COLUMN_BOWLER_ID, bowlerId)
-                        put(LeagueEntry.COLUMN_NUMBER_OF_GAMES, League.DEFAULT_NUMBER_OF_GAMES)
-                    }
-                    database.insert(LeagueEntry.TABLE_NAME, null, values)
-                }
-
-                this@Bowler.id = bowlerId
-                database.setTransactionSuccessful()
-            } catch (ex: Exception) {
-                Log.e(TAG, "Could not create a new bowler")
-                return@async BCError(R.string.error_saving_bowler, R.string.error_bowler_not_saved)
-            } finally {
-                database.endTransaction()
-            }
-
-            null
-        }
-    }
-
-    /**
-     * Update the [BowlerEntry] in the database.
-     *
-     * @param context context to get database instance
-     * @return [BCError] only if an error occurred
-     */
-    private fun update(context: Context): Deferred<BCError?> {
-        return async(CommonPool) {
-            val error = validateSavePreconditions(context).await()
-            if (error != null) {
-                return@async error
-            }
-
-            val database = DatabaseHelper.getInstance(context).writableDatabase
-
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA)
-            val currentDate = dateFormat.format(Date())
-
-            val values = ContentValues().apply {
-                put(BowlerEntry.COLUMN_BOWLER_NAME, name)
-                put(BowlerEntry.COLUMN_DATE_MODIFIED, currentDate)
-            }
-
-            database.beginTransaction()
-            try {
-                database.update(
-                        BowlerEntry.TABLE_NAME,
-                        values,
-                        "${BowlerEntry._ID}=?",
-                        arrayOf(id.toString()))
-
-                database.setTransactionSuccessful()
-            } catch (ex: Exception) {
-                Log.e(TAG, "Could not update bowler")
-                return@async BCError(R.string.error_saving_bowler, R.string.error_bowler_not_saved)
-            } finally {
-                database.endTransaction()
-            }
-
-            null
-        }
-    }
-
     /** @Override */
     override fun delete(context: Context): Deferred<Unit> {
         return async(CommonPool) {
@@ -202,30 +112,6 @@ data class Bowler(
                 // user's data and no harm is done.
             } finally {
                 database.endTransaction()
-            }
-        }
-    }
-
-    /**
-     * Ensure all preconditions to save are met.
-     *
-     * @param context to get error strings
-     */
-    private fun validateSavePreconditions(context: Context): Deferred<BCError?> {
-        return async(CommonPool) {
-            val errorTitle = R.string.issue_saving_bowler
-            val errorMessage: Int? = if (!isBowlerNameValid(name)) {
-                R.string.error_bowler_name_invalid
-            } else if (!isBowlerNameUnique(context, name, id).await()) {
-                R.string.error_bowler_name_in_use
-            } else {
-                null
-            }
-
-            return@async if (errorMessage != null) {
-                BCError(errorTitle, errorMessage, BCError.Severity.Warning)
-            } else {
-                null
             }
         }
     }
@@ -298,6 +184,162 @@ data class Bowler(
                 }
 
                 true
+            }
+        }
+
+        /**
+         * Ensure all preconditions to save are met.
+         *
+         * @param context to get error strings
+         * @param id id for the bowler
+         * @param name name for the bowler
+         * @return [BCError] if any conditions are not met, or null if the bowler can be saved
+         */
+        private fun validateSavePreconditions(context: Context,
+                                                     id: Long,
+                                                     name: String): Deferred<BCError?> {
+            return async(CommonPool) {
+                val errorTitle = R.string.issue_saving_bowler
+                val errorMessage: Int? = if (!isBowlerNameValid(name)) {
+                    R.string.error_bowler_name_invalid
+                } else if (!isBowlerNameUnique(context, name, id).await()) {
+                    R.string.error_bowler_name_in_use
+                } else {
+                    null
+                }
+
+                return@async if (errorMessage != null) {
+                    BCError(errorTitle, errorMessage, BCError.Severity.Warning)
+                } else {
+                    null
+                }
+            }
+        }
+
+        /**
+         * Save the bowler to the database.
+         *
+         * @param context to get database instance
+         * @param id id of the bowler to save, or -1 to create a new entry
+         * @param name name of the bowler to save
+         * @param average average of the bowler to apply to the new [Bowler]
+         * @return the saved [Bowler] or a [BCError] if any errors occurred
+         */
+        fun save(context: Context,
+                 id: Long,
+                 name: String,
+                 average: Double = 0.0): Deferred<Pair<Bowler?, BCError?>> {
+            return if (id < 0) {
+                createNewAndSave(context, name)
+            } else {
+                update(context, id, name, average)
+            }
+        }
+
+        /**
+         * Create a new [BowlerEntry] in the database.
+         *
+         * @param context to get database instance
+         * @param name name of the bowler to create
+         * @return [Bowler] if the save was successful, or [BCError] if an error occurred
+         */
+        private fun createNewAndSave(context: Context,
+                                     name: String): Deferred<Pair<Bowler?, BCError?>> {
+            return async(CommonPool) {
+                val error = validateSavePreconditions(context, -1, name).await()
+                if (error != null) {
+                    return@async Pair(null, error)
+                }
+
+                val database = DatabaseHelper.getInstance(context).writableDatabase
+                val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA)
+                val currentDate = dateFormat.format(Date())
+
+                var values = ContentValues().apply {
+                    put(BowlerEntry.COLUMN_BOWLER_NAME, name)
+                    put(BowlerEntry.COLUMN_DATE_MODIFIED, currentDate)
+                }
+
+                val bowlerId: Long
+
+                database.beginTransaction()
+                try {
+                    bowlerId = database.insert(BowlerEntry.TABLE_NAME, null, values)
+
+                    if (bowlerId != -1L) {
+                        values = ContentValues().apply {
+                            put(LeagueEntry.COLUMN_LEAGUE_NAME, League.PRACTICE_LEAGUE_NAME)
+                            put(LeagueEntry.COLUMN_DATE_MODIFIED, currentDate)
+                            put(LeagueEntry.COLUMN_BOWLER_ID, bowlerId)
+                            put(LeagueEntry.COLUMN_NUMBER_OF_GAMES, League.DEFAULT_NUMBER_OF_GAMES)
+                        }
+                        database.insert(LeagueEntry.TABLE_NAME, null, values)
+                    }
+
+                    database.setTransactionSuccessful()
+                } catch (ex: Exception) {
+                    Log.e(TAG, "Could not create a new bowler")
+                    return@async Pair(
+                            null,
+                            BCError(R.string.error_saving_bowler, R.string.error_bowler_not_saved)
+                    )
+                } finally {
+                    database.endTransaction()
+                }
+
+                Pair(Bowler(bowlerId, name, 0.0), null)
+            }
+        }
+
+        /**
+         * Update the [BowlerEntry] in the database.
+         *
+         * @param context context to get database instance
+         * @param id id of the entry to update
+         * @param name name for the bowler
+         * @param average average of the bowler
+         * @return [BCError] only if an error occurred
+         */
+        private fun update(context: Context,
+                           id: Long,
+                           name: String,
+                           average: Double): Deferred<Pair<Bowler?, BCError?>> {
+            return async(CommonPool) {
+                val error = validateSavePreconditions(context, id, name).await()
+                if (error != null) {
+                    return@async Pair(null, error)
+                }
+
+                val database = DatabaseHelper.getInstance(context).writableDatabase
+
+                val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA)
+                val currentDate = dateFormat.format(Date())
+
+                val values = ContentValues().apply {
+                    put(BowlerEntry.COLUMN_BOWLER_NAME, name)
+                    put(BowlerEntry.COLUMN_DATE_MODIFIED, currentDate)
+                }
+
+                database.beginTransaction()
+                try {
+                    database.update(
+                            BowlerEntry.TABLE_NAME,
+                            values,
+                            "${BowlerEntry._ID}=?",
+                            arrayOf(id.toString()))
+
+                    database.setTransactionSuccessful()
+                } catch (ex: Exception) {
+                    Log.e(TAG, "Could not update bowler")
+                    return@async Pair(
+                            null,
+                            BCError(R.string.error_saving_bowler, R.string.error_bowler_not_saved)
+                    )
+                } finally {
+                    database.endTransaction()
+                }
+
+                Pair(Bowler(id, name, average), null)
             }
         }
 

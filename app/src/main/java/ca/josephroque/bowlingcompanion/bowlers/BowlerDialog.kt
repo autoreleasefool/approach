@@ -12,6 +12,7 @@ import android.view.inputmethod.InputMethodManager
 import ca.josephroque.bowlingcompanion.App
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.Android
+import ca.josephroque.bowlingcompanion.utils.BCError
 import ca.josephroque.bowlingcompanion.utils.Color
 import ca.josephroque.bowlingcompanion.utils.safeLet
 import kotlinx.android.synthetic.main.dialog_bowler.*
@@ -224,19 +225,27 @@ class BowlerDialog : DialogFragment(), View.OnClickListener {
     private fun saveBowler() {
         launch(Android) {
             this@BowlerDialog.context?.let {
-                val oldName = bowler?.name ?: ""
                 val name = input_name.text.toString()
 
                 if (canSave()) {
-                    val newBowler = bowler ?: Bowler(-1, name, 0.0)
-                    newBowler.name = name
+                    val oldBowler = bowler
+                    val newBowler: Bowler?
+                    val error: BCError?
 
-                    val error = newBowler.save(it).await()
+                    if (oldBowler != null) {
+                        val (b, e) = Bowler.save(it, oldBowler.id, name, oldBowler.average).await()
+                        newBowler = b
+                        error = e
+                    } else {
+                        val (b, e) = Bowler.save(it, -1, name).await()
+                        newBowler = b
+                        error = e
+                    }
+
                     if (error != null) {
                         error.show(it)
-                        newBowler.name = oldName
-                        input_name.setText(oldName)
-                    } else {
+                        input_name.setText(bowler?.name)
+                    } else if (newBowler != null) {
                         dismiss()
                         listener?.onFinishBowler(newBowler)
                     }

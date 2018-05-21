@@ -120,7 +120,14 @@ abstract class ListFragment<Item: IIdentifiable, Adapter: BaseRecyclerViewAdapte
     override fun onItemSwipe(item: Item) {
         val index = item.indexInList(items)
         if (index != -1 && item is IDeletable) {
-            item.isDeleted = !item.isDeleted
+            @Suppress("UNCHECKED_CAST")
+            val updatedItem: Item = if (item.isDeleted) {
+                item.cleanDeletion() as Item
+            } else {
+                item.markForDeletion() as Item
+            }
+
+            items[index] = updatedItem
             adapter?.notifyItemChanged(index)
         }
     }
@@ -133,11 +140,12 @@ abstract class ListFragment<Item: IIdentifiable, Adapter: BaseRecyclerViewAdapte
     fun refreshList(item: Item? = null) {
         launch(Android) {
             val index = item?.indexInList(this@ListFragment.items) ?: -1
-            if (index == -1) {
+            if (item == null || index == -1) {
                 val items = fetchItems().await()
                 this@ListFragment.items = items
                 adapter?.items = items
             } else {
+                this@ListFragment.items[index] = item
                 adapter?.notifyItemChanged(index)
             }
         }

@@ -10,10 +10,10 @@ import java.text.DecimalFormat
 interface INameAverage: IDeletable, IIdentifiable {
 
     /** Name of the object. */
-    var name: String
+    val name: String
 
     /** Average of the object. */
-    var average: Double
+    val average: Double
 
     /**
      * Round the average to a number of decimal places and return as a [String] for display
