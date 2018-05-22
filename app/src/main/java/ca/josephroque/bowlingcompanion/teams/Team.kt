@@ -30,13 +30,16 @@ import kotlin.collections.ArrayList
  * A single Team, which has a set of bowlers.
  */
 data class Team(
-        override var id: Long,
-        var name: String,
-        var members: MutableList<Pair<String, Long>>
+        override val id: Long,
+        val name: String,
+        val members: List<Pair<String, Long>>
 ): KParcelable, IDeletable, IIdentifiable {
 
+    /** Private field to indicate if the item is deleted. */
+    private var _isDeleted: Boolean = false
     /** @Override */
-    override var isDeleted: Boolean = false
+    override val isDeleted: Boolean
+        get() = _isDeleted
 
     /**
      * Construct [Team] from a [Parcel]
@@ -59,6 +62,15 @@ data class Team(
             }
     )
 
+    /**
+     * Construct [Team] from a [Team].
+     */
+    constructor(team: Team): this(
+            id = team.id,
+            name = team.name,
+            members = team.members
+    )
+
     /** @Override */
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeLong(id)
@@ -75,126 +87,18 @@ data class Team(
         writeLongArray(ids.toLongArray())
     }
 
-    /**
-     * Save the current team to the database.
-     *
-     * @param context to get database instance
-     * @return [BCError] only if an error occurred
-     */
-    fun save(context: Context): Deferred<BCError?> {
-        return if (id < 0) {
-            createNewAndSave(context)
-        } else {
-            update(context)
-        }
+    /** @Override */
+    override fun markForDeletion(): Team {
+        val newInstance = Team(this)
+        newInstance._isDeleted = true
+        return newInstance
     }
 
-    /**
-     * Create a new [TeamEntry] in the database.
-     *
-     * @param context to get database instance
-     * @return [BCError] only if an error occurred
-     */
-    private fun createNewAndSave(context: Context): Deferred<BCError?> {
-        return async(CommonPool) {
-            val error = validateSavePreconditions(context).await()
-            if (error != null) {
-                return@async error
-            }
-
-            val database = DatabaseHelper.getInstance(context).writableDatabase
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA)
-            val currentDate = dateFormat.format(Date())
-
-            var values = ContentValues().apply {
-                put(TeamEntry.COLUMN_TEAM_NAME, name)
-                put(TeamEntry.COLUMN_DATE_MODIFIED, currentDate)
-            }
-
-            val teamId: Long
-
-            database.beginTransaction()
-            try {
-                teamId = database.insert(TeamEntry.TABLE_NAME, null, values)
-                members.forEach {
-                    values = ContentValues().apply {
-                        put(TeamBowlerEntry.COLUMN_BOWLER_ID, it.second)
-                        put(TeamBowlerEntry.COLUMN_TEAM_ID, teamId)
-                    }
-
-                    database.insert(TeamBowlerEntry.TABLE_NAME, null, values)
-                }
-
-                this@Team.id = teamId
-                database.setTransactionSuccessful()
-            } catch (ex: Exception) {
-                Log.e(TAG, "Could not create a new team")
-                return@async BCError(R.string.error_saving_team, R.string.error_team_not_saved)
-            } finally {
-                database.endTransaction()
-            }
-
-            null
-        }
-    }
-
-    /**
-     * Update the [TeamEntry] in the database.
-     *
-     * @param context context to get database instance
-     * @return [BCError] only if an error occurred
-     */
-    private fun update(context: Context): Deferred<BCError?> {
-        return async(CommonPool) {
-            val error = validateSavePreconditions(context).await()
-            if (error != null) {
-                return@async error
-            }
-
-            val database = DatabaseHelper.getInstance(context).writableDatabase
-
-            val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA)
-            val currentDate = dateFormat.format(Date())
-
-            var values = ContentValues().apply {
-                put(TeamEntry.COLUMN_TEAM_NAME, name)
-                put(TeamEntry.COLUMN_DATE_MODIFIED, currentDate)
-            }
-
-            database.beginTransaction()
-            try {
-                database.update(
-                        TeamEntry.TABLE_NAME,
-                        values,
-                        "${TeamEntry._ID}=?",
-                        arrayOf(id.toString())
-                )
-
-                database.delete(
-                        TeamBowlerEntry.TABLE_NAME,
-                        "${TeamBowlerEntry.COLUMN_TEAM_ID}=?",
-                        arrayOf(id.toString())
-                )
-
-                members.forEach {
-                    values = ContentValues().apply {
-                        put(TeamBowlerEntry.COLUMN_BOWLER_ID, it.second)
-                        put(TeamBowlerEntry.COLUMN_TEAM_ID, id)
-                    }
-
-                    database.insert(TeamBowlerEntry.TABLE_NAME, null, values)
-                }
-
-                database.setTransactionSuccessful()
-            } catch (ex: Exception) {
-                Log.e(TAG, "Could not update team")
-                return@async BCError(R.string.error_saving_team, R.string.error_team_not_saved)
-            } finally {
-                database.endTransaction()
-            }
-
-            null
-        }
+    /** @Override */
+    override fun cleanDeletion(): Team {
+        val newInstance = Team(this)
+        newInstance._isDeleted = false
+        return this
     }
 
     /** @Override */
@@ -217,33 +121,6 @@ data class Team(
                 // user's data and no harm is done.
             } finally {
                 database.endTransaction()
-            }
-        }
-    }
-
-    /**
-     * Ensure all preconditions to save are met.
-     *
-     * @param context to get error strings
-     * @return [BCError] if a precondition is not met, null otherwise
-     */
-    private fun validateSavePreconditions(context: Context): Deferred<BCError?> {
-        return async(CommonPool) {
-            val errorMessage = R.string.issue_saving_team
-            val errorTitle: Int? = if (!isTeamNameValid(name)) {
-                R.string.error_team_name_invalid
-            } else if (!isTeamNameUnique(context, name, id).await()) {
-                R.string.error_team_name_in_use
-            } else if (members.isEmpty()) {
-                R.string.error_team_has_no_members
-            } else {
-                null
-            }
-
-            return@async if (errorTitle != null) {
-                BCError(errorTitle, errorMessage, BCError.Severity.Warning)
-            } else {
-                null
             }
         }
     }
@@ -315,6 +192,190 @@ data class Team(
                 }
 
                 true
+            }
+        }
+
+        /**
+         * Ensure all preconditions to save are met.
+         *
+         * @param context to get error strings
+         * @param id -1 for a new team, or the id of the existing team
+         * @param name name for the team
+         * @param members list of team member ids and names
+         * @return [BCError] if a precondition is not met, null otherwise
+         */
+        private fun validateSavePreconditions(
+                context: Context,
+                id: Long,
+                name: String,
+                members: List<Pair<String, Long>>
+        ): Deferred<BCError?> {
+            return async(CommonPool) {
+                val errorMessage = R.string.issue_saving_team
+                val errorTitle: Int? = if (!isTeamNameValid(name)) {
+                    R.string.error_team_name_invalid
+                } else if (!isTeamNameUnique(context, name, id).await()) {
+                    R.string.error_team_name_in_use
+                } else if (members.isEmpty()) {
+                    R.string.error_team_has_no_members
+                } else {
+                    null
+                }
+
+                return@async if (errorTitle != null) {
+                    BCError(errorTitle, errorMessage, BCError.Severity.Warning)
+                } else {
+                    null
+                }
+            }
+        }
+
+        /**
+         * Save the current team to the database.
+         *
+         * @param context to get database instance
+         * @param id -1 for a new team, or the id of the existing team
+         * @param name name for the team
+         * @param members list of team member ids and names
+         * @return the saved [Team] or a [BCError] if any errors occurred
+         */
+        fun save(
+                context: Context,
+                id: Long,
+                name: String,
+                members: List<Pair<String, Long>>
+        ): Deferred<Pair<Team?, BCError?>> {
+            return if (id < 0) {
+                createNewAndSave(context, name, members)
+            } else {
+                update(context, id, name, members)
+            }
+        }
+
+        /**
+         * Create a new [TeamEntry] in the database.
+         *
+         * @param context to get database instance
+         * @param name name for the team
+         * @param members list of team member ids and names
+         * @return the saved [Team] or a [BCError] if any errors occurred
+         */
+        private fun createNewAndSave(
+                context: Context,
+                name: String,
+                members: List<Pair<String, Long>>
+        ): Deferred<Pair<Team?, BCError?>> {
+            return async(CommonPool) {
+                val error = validateSavePreconditions(context, -1, name, members).await()
+                if (error != null) {
+                    return@async Pair(null, error)
+                }
+
+                val database = DatabaseHelper.getInstance(context).writableDatabase
+                val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA)
+                val currentDate = dateFormat.format(Date())
+
+                var values = ContentValues().apply {
+                    put(TeamEntry.COLUMN_TEAM_NAME, name)
+                    put(TeamEntry.COLUMN_DATE_MODIFIED, currentDate)
+                }
+
+                val teamId: Long
+
+                database.beginTransaction()
+                try {
+                    teamId = database.insert(TeamEntry.TABLE_NAME, null, values)
+                    members.forEach {
+                        values = ContentValues().apply {
+                            put(TeamBowlerEntry.COLUMN_BOWLER_ID, it.second)
+                            put(TeamBowlerEntry.COLUMN_TEAM_ID, teamId)
+                        }
+
+                        database.insert(TeamBowlerEntry.TABLE_NAME, null, values)
+                    }
+
+                    database.setTransactionSuccessful()
+                } catch (ex: Exception) {
+                    Log.e(TAG, "Could not create a new team")
+                    return@async Pair(
+                            null,
+                            BCError(R.string.error_saving_team, R.string.error_team_not_saved)
+                    )
+                } finally {
+                    database.endTransaction()
+                }
+
+                Pair(Team(teamId, name, members), null)
+            }
+        }
+
+        /**
+         * Update the [TeamEntry] in the database.
+         *
+         * @param context context to get database instance
+         * @param id id of the team to update
+         * @param name name for the team
+         * @param members list of team member ids and names
+         * @return the saved [Team] or a [BCError] if any errors occurred
+         */
+        private fun update(
+                context: Context,
+                id: Long,
+                name: String,
+                members: List<Pair<String, Long>>
+        ): Deferred<Pair<Team?, BCError?>> {
+            return async(CommonPool) {
+                val error = validateSavePreconditions(context, id, name, members).await()
+                if (error != null) {
+                    return@async Pair(null, error)
+                }
+
+                val database = DatabaseHelper.getInstance(context).writableDatabase
+
+                val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA)
+                val currentDate = dateFormat.format(Date())
+
+                var values = ContentValues().apply {
+                    put(TeamEntry.COLUMN_TEAM_NAME, name)
+                    put(TeamEntry.COLUMN_DATE_MODIFIED, currentDate)
+                }
+
+                database.beginTransaction()
+                try {
+                    database.update(
+                            TeamEntry.TABLE_NAME,
+                            values,
+                            "${TeamEntry._ID}=?",
+                            arrayOf(id.toString())
+                    )
+
+                    database.delete(
+                            TeamBowlerEntry.TABLE_NAME,
+                            "${TeamBowlerEntry.COLUMN_TEAM_ID}=?",
+                            arrayOf(id.toString())
+                    )
+
+                    members.forEach {
+                        values = ContentValues().apply {
+                            put(TeamBowlerEntry.COLUMN_BOWLER_ID, it.second)
+                            put(TeamBowlerEntry.COLUMN_TEAM_ID, id)
+                        }
+
+                        database.insert(TeamBowlerEntry.TABLE_NAME, null, values)
+                    }
+
+                    database.setTransactionSuccessful()
+                } catch (ex: Exception) {
+                    Log.e(TAG, "Could not update team")
+                    return@async Pair(
+                            null,
+                            BCError(R.string.error_saving_team, R.string.error_team_not_saved)
+                    )
+                } finally {
+                    database.endTransaction()
+                }
+
+                Pair(Team(id, name, members), null)
             }
         }
 

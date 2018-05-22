@@ -257,7 +257,7 @@ data class Bowler(
          *
          * @param context to get database instance
          * @param name name of the bowler to create
-         * @return [Bowler] if the save was successful, or [BCError] if an error occurred
+         * @return the saved [Bowler] or a [BCError] if any errors occurred
          */
         private fun createNewAndSave(context: Context,
                                      name: String): Deferred<Pair<Bowler?, BCError?>> {
@@ -314,7 +314,7 @@ data class Bowler(
          * @param id id of the entry to update
          * @param name name for the bowler
          * @param average average of the bowler
-         * @return [BCError] only if an error occurred
+         * @return the saved [Bowler] or a [BCError] if any errors occurred
          */
         private fun update(
                 context: Context,

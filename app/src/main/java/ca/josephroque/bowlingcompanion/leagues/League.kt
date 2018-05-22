@@ -336,7 +336,7 @@ data class League(
          * @param additionalGames additional games not recorded in the app for the league
          * @param gameHighlight minimum score to highlight when viewing games
          * @param seriesHighlight minimum series total to highlight when viewing series
-         * @return [BCError] only if an error occurred
+         * @return the saved [League] or [BCError] if an error occurred
          */
         private fun createNewAndSave(
                 context: Context,

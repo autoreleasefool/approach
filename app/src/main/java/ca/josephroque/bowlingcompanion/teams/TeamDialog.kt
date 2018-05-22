@@ -271,27 +271,23 @@ class TeamDialog : DialogFragment(),
     private fun saveTeam() {
         launch(Android) {
             this@TeamDialog.context?.let { context ->
-                val oldName = team?.name ?: ""
-                val oldMembers = team?.members ?: ArrayList()
-
                 val name = input_name.text.toString()
                 val members = selectedBowlers
 
                 members?.let {
                     if (canSave()) {
-                        val mutableMembers = it.toMutableList()
-                        val newTeam = team ?: Team(-1, name, mutableMembers)
-                        newTeam.name = name
-                        newTeam.members = mutableMembers
+                        val oldTeam = team
+                        val (newTeam, error) = if (oldTeam!= null) {
+                            Team.save(context, oldTeam.id, name, it).await()
+                        } else {
+                            Team.save(context, -1, name, it).await()
+                        }
 
-                        val error = newTeam.save(context).await()
                         if (error != null) {
                             error.show(context)
-                            newTeam.name = oldName
-                            newTeam.members = oldMembers
-                            input_name.setText(oldName)
+                            input_name.setText(oldTeam?.name)
                             refreshBowlerList()
-                        } else {
+                        } else if (newTeam != null) {
                             dismiss()
                             listener?.onFinishTeam(newTeam)
                         }
