@@ -195,20 +195,25 @@ class SeriesDialog : DialogFragment(), DatePickerDialog.OnDateSetListener {
     private fun saveSeries() {
         launch(Android) {
             val context = this@SeriesDialog.context ?: return@launch
-            val series = this@SeriesDialog.series ?: return@launch
+            val oldSeries = this@SeriesDialog.series ?: return@launch
             val currentDate = this@SeriesDialog.currentDate ?: return@launch
 
-            val oldDate = series.date
-            series.date = currentDate
+            val (newSeries, error) = Series.save(
+                    context = context,
+                    id = oldSeries.id,
+                    league = oldSeries.league,
+                    date = currentDate,
+                    numberOfGames = oldSeries.numberOfGames,
+                    scores = oldSeries.scores,
+                    matchPlay = oldSeries.matchPlay
+            ).await()
 
-            val error = series.save(context).await()
             if (error != null) {
                 error.show(context)
-                series.date = oldDate
-                tv_date.text = series.prettyDate
-            } else {
+                tv_date.text = oldSeries.prettyDate
+            } else if (newSeries != null) {
                 dismiss()
-                listener?.onFinishSeries(series)
+                listener?.onFinishSeries(newSeries)
             }
         }
     }

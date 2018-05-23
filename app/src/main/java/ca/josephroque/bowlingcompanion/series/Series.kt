@@ -23,16 +23,20 @@ import java.util.*
  *
  * A series of games in a [League].
  */
-data class Series(val league: League,
-                  override var id: Long,
-                  var date: Date,
-                  var numberOfGames: Int,
-                  var scores: List<Int>,
-                  var matchPlay: List<Byte>
+data class Series(
+        val league: League,
+        override val id: Long,
+        val date: Date,
+        val numberOfGames: Int,
+        val scores: List<Int>,
+        val matchPlay: List<Byte>
 ) : IIdentifiable, IDeletable, KParcelable {
 
+    /** Private field to indicate if the item is deleted. */
+    private var _isDeleted: Boolean = false
     /** @Override */
-    override var isDeleted: Boolean = false
+    override val isDeleted: Boolean
+        get() = _isDeleted
 
     /** Beautifies the date to be displayed. */
     val prettyDate: String
@@ -60,6 +64,18 @@ data class Series(val league: League,
             }
     )
 
+    /**
+     * Construct [Series] from a [Series].
+     */
+    constructor(series: Series): this(
+            league = series.league,
+            id = series.id,
+            date = series.date,
+            numberOfGames = series.numberOfGames,
+            scores = series.scores,
+            matchPlay = series.matchPlay
+    )
+
     /** @Override */
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeParcelable(league, 0)
@@ -72,99 +88,18 @@ data class Series(val league: League,
         writeByteArray(matchPlay.toByteArray())
     }
 
-    /**
-     * Save this series to the database.
-     *
-     * @param context to get database instance
-     * @return [BCError] only if an error occurred
-     */
-    fun save(context: Context): Deferred<BCError?> {
-        return if (id < 0) {
-            createNewAndSave(context)
-        } else {
-            update(context)
-        }
+    /** @Override */
+    override fun markForDeletion(): Series {
+        val newInstance = Series(this)
+        newInstance._isDeleted = true
+        return newInstance
     }
 
-    /**
-     * Create a new [SeriesEntry] in the database.
-     *
-     * @param context to get database instance
-     * @return [BCError] only if an error occurred
-     */
-    private fun createNewAndSave(context: Context): Deferred<BCError?> {
-        return async(CommonPool) {
-            val database = DatabaseHelper.getInstance(context).writableDatabase
-            var values = ContentValues().apply {
-                put(SeriesEntry.COLUMN_SERIES_DATE, DateUtils.dateToSeriesDate(date))
-                put(SeriesEntry.COLUMN_LEAGUE_ID, league.id)
-            }
-
-            database.beginTransaction()
-            try {
-                val seriesId = database.insert(SeriesEntry.TABLE_NAME, null, values)
-
-                if (seriesId != -1L) {
-                    for (i in 0 until numberOfGames) {
-                        values = ContentValues().apply {
-                            put(GameEntry.COLUMN_GAME_NUMBER, i + 1)
-                            put(GameEntry.COLUMN_SCORE, 0)
-                            put(GameEntry.COLUMN_SERIES_ID, seriesId)
-                        }
-                        val gameId = database.insert(GameEntry.TABLE_NAME, null, values)
-
-                        if (gameId != -1L) {
-                            for (j in 0 until Game.NUMBER_OF_FRAMES) {
-                                values = ContentValues().apply {
-                                    put(FrameEntry.COLUMN_FRAME_NUMBER, j + 1)
-                                    put(FrameEntry.COLUMN_GAME_ID, gameId)
-                                }
-                                database.insert(FrameEntry.TABLE_NAME, null, values)
-                            }
-                        } else {
-                            throw IllegalStateException("Game was not saved, ID is -1")
-                        }
-                    }
-                }
-
-                this@Series.id = seriesId
-                database.setTransactionSuccessful()
-            } catch (ex: Exception) {
-                Log.e(TAG, "Could not create a new series")
-                return@async BCError(R.string.error_saving_series, R.string.error_series_not_saved)
-            } finally {
-                database.endTransaction()
-            }
-
-            null
-        }
-    }
-
-    /**
-     * Update the [SeriesEntry] in the database.
-     *
-     * @param context to get database instance
-     * @return [BCError] only if an error occurred
-     */
-    private fun update(context: Context): Deferred<BCError?> {
-        return async(CommonPool) {
-            val database = DatabaseHelper.getInstance(context).writableDatabase
-            val values = ContentValues().apply {
-                put(SeriesEntry.COLUMN_SERIES_DATE, DateUtils.dateToSeriesDate(date))
-            }
-
-            database.beginTransaction()
-            try {
-                database.update(SeriesEntry.TABLE_NAME, values, "${SeriesEntry._ID}=?", arrayOf(id.toString()))
-                database.setTransactionSuccessful()
-            } catch (ex: Exception) {
-                Log.e(TAG, "Error updating series details ($id, $date)", ex)
-            } finally {
-                database.endTransaction()
-            }
-
-            null
-        }
+    /** @Override */
+    override fun cleanDeletion(): Series {
+        val newInstance = Series(this)
+        newInstance._isDeleted = false
+        return this
     }
 
     /** @Override */
@@ -212,6 +147,151 @@ data class Series(val league: League,
             companion object {
                 private val map = View.values().associateBy(View::ordinal)
                 fun fromInt(type: Int) = map[type]
+            }
+        }
+
+        /**
+         * Save this series to the database.
+         *
+         * @param context to get database instance
+         * @param id -1 to create a new series, or id of the series to update
+         * @param league league that owns the series
+         * @param date date of the series
+         * @param numberOfGames number of games in the series
+         * @param scores scores of the games in the series
+         * @param matchPlay match play results of the games in the series
+         * @return [BCError] only if an error occurred
+         */
+        fun save(
+                context: Context,
+                league: League,
+                id: Long,
+                date: Date,
+                numberOfGames: Int,
+                scores: List<Int>,
+                matchPlay: List<Byte>
+        ): Deferred<Pair<Series?, BCError?>> {
+            return if (id < 0) {
+                createNewAndSave(context, league, date, numberOfGames, scores, matchPlay)
+            } else {
+                update(context, id, league, date, numberOfGames, scores, matchPlay)
+            }
+        }
+
+        /**
+         * Create a new [SeriesEntry] in the database.
+         *
+         * @param context to get database instance
+         * @param league league that owns the series
+         * @param date date of the series
+         * @param numberOfGames number of games in the series
+         * @param scores scores of the games in the series
+         * @param matchPlay match play results of the games in the series
+         * @return [BCError] only if an error occurred
+         */
+        private fun createNewAndSave(
+                context: Context,
+                league: League,
+                date: Date,
+                numberOfGames: Int,
+                scores: List<Int>,
+                matchPlay: List<Byte>
+        ): Deferred<Pair<Series?, BCError?>> {
+            return async(CommonPool) {
+                val database = DatabaseHelper.getInstance(context).writableDatabase
+                var values = ContentValues().apply {
+                    put(SeriesEntry.COLUMN_SERIES_DATE, DateUtils.dateToSeriesDate(date))
+                    put(SeriesEntry.COLUMN_LEAGUE_ID, league.id)
+                }
+
+                val seriesId: Long
+                database.beginTransaction()
+                try {
+                    seriesId = database.insert(SeriesEntry.TABLE_NAME, null, values)
+
+                    if (seriesId != -1L) {
+                        for (i in 0 until numberOfGames) {
+                            values = ContentValues().apply {
+                                put(GameEntry.COLUMN_GAME_NUMBER, i + 1)
+                                put(GameEntry.COLUMN_SCORE, 0)
+                                put(GameEntry.COLUMN_SERIES_ID, seriesId)
+                            }
+                            val gameId = database.insert(GameEntry.TABLE_NAME, null, values)
+
+                            if (gameId != -1L) {
+                                for (j in 0 until Game.NUMBER_OF_FRAMES) {
+                                    values = ContentValues().apply {
+                                        put(FrameEntry.COLUMN_FRAME_NUMBER, j + 1)
+                                        put(FrameEntry.COLUMN_GAME_ID, gameId)
+                                    }
+                                    database.insert(FrameEntry.TABLE_NAME, null, values)
+                                }
+                            } else {
+                                throw IllegalStateException("Game was not saved, ID is -1")
+                            }
+                        }
+                    }
+
+                    database.setTransactionSuccessful()
+                } catch (ex: Exception) {
+                    Log.e(TAG, "Could not create a new series")
+                    return@async Pair(
+                            null,
+                            BCError(R.string.error_saving_series, R.string.error_series_not_saved)
+                    )
+                } finally {
+                    database.endTransaction()
+                }
+
+                Pair(Series(
+                        league = league,
+                        id = seriesId,
+                        date = date,
+                        numberOfGames = numberOfGames,
+                        scores = scores,
+                        matchPlay = matchPlay
+                ), null)
+            }
+        }
+
+        /**
+         * Update the [SeriesEntry] in the database.
+         *
+         * @param context to get database instance
+         * @param id id of the series to update
+         * @param league league that owns the series
+         * @param date date of the series
+         * @param numberOfGames number of games in the series
+         * @param scores scores of the games in the series
+         * @param matchPlay match play results of the games in the series
+         * @return [BCError] only if an error occurred
+         */
+        private fun update(
+                context: Context,
+                id: Long,
+                league: League,
+                date: Date,
+                numberOfGames: Int,
+                scores: List<Int>,
+                matchPlay: List<Byte>
+        ): Deferred<Pair<Series?, BCError?>> {
+            return async(CommonPool) {
+                val database = DatabaseHelper.getInstance(context).writableDatabase
+                val values = ContentValues().apply {
+                    put(SeriesEntry.COLUMN_SERIES_DATE, DateUtils.dateToSeriesDate(date))
+                }
+
+                database.beginTransaction()
+                try {
+                    database.update(SeriesEntry.TABLE_NAME, values, "${SeriesEntry._ID}=?", arrayOf(id.toString()))
+                    database.setTransactionSuccessful()
+                } catch (ex: Exception) {
+                    Log.e(TAG, "Error updating series details ($id, $date)", ex)
+                } finally {
+                    database.endTransaction()
+                }
+
+                Pair(Series(league, id, date, numberOfGames, scores, matchPlay), null)
             }
         }
 

@@ -400,24 +400,20 @@ data class League(
                     )
 
                     if (leagueId != -1L && isEvent) {
-
-
                         /*
                          * If the new entry is an event, its series is also created at this time
                          * since there is only a single series to an event
                          */
-
-                        val series = Series(
-                                league,
-                                -1,
-                                Date(),
-                                gamesPerSeries,
-                                IntArray(gamesPerSeries).toList(),
-                                ByteArray(gamesPerSeries).toList()
-                        )
-
-                        val seriesError = series.save(context).await()
-                        if (seriesError != null || series.id == -1L) {
+                        val (series, seriesError) = Series.save(
+                                context = context,
+                                league = league,
+                                id = -1,
+                                date = Date(),
+                                numberOfGames = gamesPerSeries,
+                                scores = IntArray(gamesPerSeries).toList(),
+                                matchPlay = ByteArray(gamesPerSeries).toList()
+                        ).await()
+                        if (seriesError != null || (series?.id ?: -1L) == -1L) {
                             throw IllegalStateException("Series was not saved.")
                         }
                     }
