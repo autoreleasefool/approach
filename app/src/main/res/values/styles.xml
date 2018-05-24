@@ -162,7 +162,7 @@
     <style name="HeaderText" parent="@android:style/TextAppearance">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">#000000</item>
+        <item name="android:textColor">@color/primaryBlackText</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textSize">20sp</item>
         <item name="android:textAlignment">textStart</item>
@@ -175,7 +175,7 @@
     <style name="BodyText" parent="@android:style/TextAppearance">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textColor">#000000</item>
+        <item name="android:textColor">@color/primaryBlackText</item>
         <item name="android:textStyle">normal</item>
         <item name="android:textSize">14sp</item>
         <item name="android:textAlignment">textStart</item>
@@ -183,6 +183,23 @@
         <item name="android:layout_marginRight">@dimen/text_margin_horizontal</item>
         <item name="android:layout_marginTop">@dimen/text_margin_vertical</item>
         <item name="android:layout_marginBottom">@dimen/text_margin_vertical</item>
+    </style>
+
+    <style name="FrameText" parent="@android:style/TextAppearance">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/primaryBlackText</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:layout_margin">@dimen/base_margin</item>
+    </style>
+
+    <style name="FrameFoulText" parent="FrameText">
+        <item name="android:textColor">@color/secondaryBlackText</item>
+        <item name="android:textSize">12sp</item>
+        <item name="android:gravity">top</item>
+        <item name="android:layout_margin">@dimen/base_margin_small</item>
     </style>
 
     <style name="ListItemBodyText" parent="BodyText">

@@ -15,6 +15,9 @@ data class Game(val score: Int) {
         /** Number of frames in a single game. */
         const val NUMBER_OF_FRAMES = 10
 
+        /** Number of pins used in the game. */
+        const val NUMBER_OF_PINS = 5
+
         /** Maximum possible score. */
         const val MAX_SCORE = 450
     }

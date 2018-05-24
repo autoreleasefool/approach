@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <!-- Balls -->
+
+    <TextView
+        style="@style/FrameText"
+        android:id="@+id/tv_ball_1"
+        android:minWidth="@dimen/frame_ball_size"
+        android:minHeight="@dimen/frame_ball_size"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <TextView
+        style="@style/FrameText"
+        android:id="@+id/tv_ball_2"
+        android:minWidth="@dimen/frame_ball_size"
+        android:minHeight="@dimen/frame_ball_size"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/tv_ball_1" />
+
+    <TextView
+        style="@style/FrameText"
+        android:id="@+id/tv_ball_3"
+        android:minWidth="@dimen/frame_ball_size"
+        android:minHeight="@dimen/frame_ball_size"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/tv_ball_2"
+        app:layout_constraintRight_toRightOf="parent" />
+
+    <!-- Fouls -->
+
+    <TextView
+        style="@style/FrameFoulText"
+        android:id="@+id/tv_foul_1"
+        android:minWidth="@dimen/frame_foul_size"
+        android:text="@string/foul_indicator"
+        android:visibility="invisible"
+        app:layout_constraintTop_toBottomOf="@id/tv_ball_1"
+        app:layout_constraintLeft_toLeftOf="@id/tv_ball_1"
+        app:layout_constraintRight_toRightOf="@id/tv_ball_1" />
+
+    <TextView
+        style="@style/FrameFoulText"
+        android:id="@+id/tv_foul_2"
+        android:minWidth="@dimen/frame_foul_size"
+        android:text="@string/foul_indicator"
+        android:visibility="invisible"
+        app:layout_constraintTop_toBottomOf="@id/tv_ball_2"
+        app:layout_constraintLeft_toLeftOf="@id/tv_ball_2"
+        app:layout_constraintRight_toRightOf="@id/tv_ball_2" />
+
+    <TextView
+        style="@style/FrameFoulText"
+        android:id="@+id/tv_foul_3"
+        android:minWidth="@dimen/frame_foul_size"
+        android:text="@string/foul_indicator"
+        android:visibility="invisible"
+        app:layout_constraintTop_toBottomOf="@id/tv_ball_3"
+        app:layout_constraintLeft_toLeftOf="@id/tv_ball_3"
+        app:layout_constraintRight_toRightOf="@id/tv_ball_3" />
+    
+    <!-- Score -->
+
+    <TextView
+        style="@style/FrameText"
+        android:id="@+id/tv_score"
+        android:minWidth="@dimen/frame_width"
+        android:minHeight="@dimen/frame_score_height"
+        app:layout_constraintTop_toBottomOf="@id/tv_foul_1"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent" />
+
+</merge>

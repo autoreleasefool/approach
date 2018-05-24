@@ -121,6 +121,7 @@
     <string name="ball_prev">Prev</string>
     <string name="ball_next">Next</string>
     <string name="game_number">Game %d</string>
+    <string name="foul_indicator">F</string>
 
     <!-- Match play -->
     <string name="match_play_won">Won</string>
