@@ -16,20 +16,9 @@ import ca.josephroque.bowlingcompanion.common.interfaces.IFloatingActionButtonHa
 class GameFragment : BaseFragment(),
         IFloatingActionButtonHandler {
 
-    companion object {
-        /** Logging identifier. */
-        @Suppress("unused")
-        private const val TAG = "GameFragment"
-
-        /**
-         * Creates a new instance.
-         *
-         * @return the new instance
-         */
-        fun newInstance(): GameFragment {
-            return GameFragment()
-        }
-    }
+    /** IDs for frame views. */
+    private val frameViewIds = intArrayOf(R.id.frame_1, R.id.frame_2, R.id.frame_3, R.id.frame_4,
+            R.id.frame_5, R.id.frame_6, R.id.frame_7, R.id.frame_8, R.id.frame_9, R.id.frame_10)
 
     /** @Override */
     override fun onCreateView(
@@ -49,5 +38,20 @@ class GameFragment : BaseFragment(),
     /** @Override */
     override fun onFabClick() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    companion object {
+        /** Logging identifier. */
+        @Suppress("unused")
+        private const val TAG = "GameFragment"
+
+        /**
+         * Creates a new instance.
+         *
+         * @return the new instance
+         */
+        fun newInstance(): GameFragment {
+            return GameFragment()
+        }
     }
 }
