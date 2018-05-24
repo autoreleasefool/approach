@@ -104,13 +104,13 @@ class FrameView : LinearLayout {
      */
     private fun updateCurrentFrame() {
         ballViewIds.forEachIndexed { index, i ->
-            val backgroundColor = ContextCompat.getColor(context,
-                    if (currentBall == index && isCurrentFrame) R.color.frameActive else R.color.frameInactive)
-            findViewById<TextView>(i).setBackgroundColor(backgroundColor)
+            val backgroundDrawable = ContextCompat.getDrawable(context,
+                    if (currentBall == index && isCurrentFrame) R.drawable.frame_background_active else R.drawable.frame_background_inactive)
+            findViewById<TextView>(i).background = backgroundDrawable
         }
 
-        val backgroundColor = ContextCompat.getColor(context,
-                if (isCurrentFrame) R.color.frameActive else R.color.frameInactive)
-        frame.setBackgroundColor(backgroundColor)
+        val backgroundDrawable = ContextCompat.getDrawable(context,
+                if (isCurrentFrame) R.drawable.frame_background_active else R.drawable.frame_background_inactive)
+        frame.background = backgroundDrawable
     }
 }

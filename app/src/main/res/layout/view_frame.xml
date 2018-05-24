@@ -17,6 +17,7 @@
             android:id="@+id/tv_ball_1"
             android:minWidth="@dimen/frame_ball_size"
             android:minHeight="@dimen/frame_ball_size"
+            android:background="@drawable/frame_background_active"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toLeftOf="parent" />
 
@@ -25,6 +26,7 @@
             android:id="@+id/tv_ball_2"
             android:minWidth="@dimen/frame_ball_size"
             android:minHeight="@dimen/frame_ball_size"
+            android:background="@drawable/frame_background_active"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toRightOf="@id/tv_ball_1" />
 
@@ -33,6 +35,7 @@
             android:id="@+id/tv_ball_3"
             android:minWidth="@dimen/frame_ball_size"
             android:minHeight="@dimen/frame_ball_size"
+            android:background="@drawable/frame_background_active"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintLeft_toRightOf="@id/tv_ball_2"
             app:layout_constraintRight_toRightOf="parent" />
@@ -76,6 +79,7 @@
             android:id="@+id/tv_score"
             android:minWidth="@dimen/frame_width"
             android:minHeight="@dimen/frame_score_height"
+            android:background="@drawable/frame_background_active"
             app:layout_constraintTop_toBottomOf="@id/tv_ball_1"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
