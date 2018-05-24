@@ -13,11 +13,11 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ScrollView
+    <HorizontalScrollView
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:fillViewport="true"
+        android:scrollbars="none"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/game_header">
@@ -89,6 +89,6 @@
 
         </LinearLayout>
 
-    </ScrollView>
+    </HorizontalScrollView>
 
 </android.support.constraint.ConstraintLayout>
