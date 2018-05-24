@@ -5,10 +5,10 @@
     <dimen name="activity_margin">16dp</dimen>
 
     <!-- Common components -->
+    <dimen name="base_margin_tiny">2dp</dimen>
     <dimen name="base_margin_small">4dp</dimen>
     <dimen name="base_margin">8dp</dimen>
     <dimen name="base_margin_large">16dp</dimen>
-
     <dimen name="base_elevation">4dp</dimen>
 
     <dimen name="text_margin_horizontal">@dimen/base_margin_large</dimen>

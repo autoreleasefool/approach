@@ -37,4 +37,8 @@
     <color name="tabDisabled">#9B9B9B</color>
     <color name="bottomNavigationColor">#ffffff</color>
 
+    <!-- Games -->
+    <color name="frameInactive">@color/colorPrimaryWashedOut</color>
+    <color name="frameActive">#F5F5FF</color>
+
 </resources>

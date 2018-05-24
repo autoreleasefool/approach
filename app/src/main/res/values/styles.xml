@@ -192,14 +192,22 @@
         <item name="android:textStyle">normal</item>
         <item name="android:textSize">14sp</item>
         <item name="android:textAlignment">center</item>
-        <item name="android:layout_margin">@dimen/base_margin</item>
+        <item name="android:gravity">center</item>
+        <item name="android:padding">@dimen/base_margin</item>
     </style>
 
     <style name="FrameFoulText" parent="FrameText">
         <item name="android:textColor">@color/secondaryBlackText</item>
-        <item name="android:textSize">12sp</item>
+        <item name="android:textSize">10sp</item>
         <item name="android:gravity">top</item>
-        <item name="android:layout_margin">@dimen/base_margin_small</item>
+        <item name="android:padding">@dimen/base_margin_small</item>
+    </style>
+
+    <style name="FrameNumberText" parent="FrameText">
+        <item name="android:textColor">@color/primaryWhiteText</item>
+        <item name="android:textSize">10sp</item>
+        <item name="android:gravity">top</item>
+        <item name="android:padding">@dimen/base_margin_tiny</item>
     </style>
 
     <style name="ListItemBodyText" parent="BodyText">

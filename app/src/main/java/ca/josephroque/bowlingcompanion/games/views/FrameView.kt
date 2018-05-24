@@ -1,9 +1,6 @@
 package ca.josephroque.bowlingcompanion.games.views
 
 import android.content.Context
-import android.os.Bundle
-import android.os.Parcelable
-import android.support.constraint.ConstraintLayout
 import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -11,17 +8,14 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import ca.josephroque.bowlingcompanion.R
-import ca.josephroque.bowlingcompanion.games.Frame
-import ca.josephroque.bowlingcompanion.games.Game
 import kotlinx.android.synthetic.main.view_frame.view.*
-import kotlinx.android.synthetic.main.view_game_header.view.*
 
 /**
  * Copyright (C) 2018 Joseph Roque
  *
  * Displays context for a single frame.
  */
-class FrameView : ConstraintLayout {
+class FrameView : LinearLayout {
 
     companion object {
         /** Logging identifier. */
@@ -38,7 +32,19 @@ class FrameView : ConstraintLayout {
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
+        orientation = VERTICAL
         LayoutInflater.from(context).inflate(R.layout.view_frame, this, true)
+
+        val frameAttr = context.theme.obtainStyledAttributes(
+                attrs,
+                R.styleable.Frame,
+                0, 0)
+
+        try {
+            frameNumber = frameAttr.getInt(R.styleable.Frame_frameNumber, frameNumber)
+        } finally {
+            frameAttr.recycle()
+        }
     }
 
     /**
@@ -65,7 +71,46 @@ class FrameView : ConstraintLayout {
         }
     }
 
+    /** Frame number to display beneath the score. */
+    var frameNumber: Int = 0
+        set(value) {
+            field = value
+            tv_frame_number.text = value.toString()
+        }
+
     /** Score of the frame. */
     var score: Int = 0
-        set(value) { tv_score.text = score.toString() }
+        set(value) {
+            field = value
+            tv_score.text = value.toString()
+        }
+
+    /** Current active ball in the frame. */
+    var currentBall: Int = 0
+        set(value) {
+            field = value
+            updateCurrentFrame()
+        }
+
+    /** True if this is the current active frame, false otherwise. */
+    var isCurrentFrame: Boolean = false
+        set(value) {
+            field = value
+            updateCurrentFrame()
+        }
+
+    /**
+     * Update background colors of the views depending on if this is the current frame or not.
+     */
+    private fun updateCurrentFrame() {
+        ballViewIds.forEachIndexed { index, i ->
+            val backgroundColor = ContextCompat.getColor(context,
+                    if (currentBall == index && isCurrentFrame) R.color.frameActive else R.color.frameInactive)
+            findViewById<TextView>(i).setBackgroundColor(backgroundColor)
+        }
+
+        val backgroundColor = ContextCompat.getColor(context,
+                if (isCurrentFrame) R.color.frameActive else R.color.frameInactive)
+        frame.setBackgroundColor(backgroundColor)
+    }
 }
