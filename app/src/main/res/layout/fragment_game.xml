@@ -87,6 +87,20 @@
                 android:layout_height="wrap_content"
                 app:frameNumber="10" />
 
+            <TextView
+                android:id="@+id/tv_final_score"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:minWidth="@dimen/frame_width"
+                android:textColor="@color/primaryBlackText"
+                android:textStyle="normal"
+                android:textSize="14sp"
+                android:textAlignment="center"
+                android:gravity="center"
+                android:padding="@dimen/base_margin"
+                android:layout_marginBottom="@dimen/frame_number_height"
+                android:background="@drawable/frame_background_inactive" />
+
         </LinearLayout>
 
     </HorizontalScrollView>
