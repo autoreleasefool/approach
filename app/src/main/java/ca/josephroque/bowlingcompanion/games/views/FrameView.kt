@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.view_frame.view.*
  *
  * Displays context for a single frame.
  */
-class FrameView : LinearLayout {
+class FrameView : LinearLayout, View.OnClickListener {
 
     companion object {
         /** Logging identifier. */
@@ -27,6 +27,8 @@ class FrameView : LinearLayout {
     private val ballViewIds = intArrayOf(R.id.tv_ball_1, R.id.tv_ball_2, R.id.tv_ball_3)
     /** IDs for foul views. */
     private val foulViewIds = intArrayOf(R.id.tv_foul_1, R.id.tv_foul_2, R.id.tv_foul_3)
+    /** Listener for events. */
+    var delegate: FrameInteractionDelegate? = null
 
     /** Required constructors */
     constructor(context: Context) : this(context, null)
@@ -45,6 +47,17 @@ class FrameView : LinearLayout {
         } finally {
             frameAttr.recycle()
         }
+
+        ballViewIds.forEach {
+            findViewById<TextView>(it).setOnClickListener(this)
+        }
+        frame.setOnClickListener(this)
+    }
+
+    /** @Override */
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        delegate = null
     }
 
     /**
@@ -72,10 +85,10 @@ class FrameView : LinearLayout {
     }
 
     /** Frame number to display beneath the score. */
-    var frameNumber: Int = 0
+    var frameNumber: Int = 1
         set(value) {
             field = value
-            tv_frame_number.text = value.toString()
+            tv_frame_number.text = (value - 1).toString()
         }
 
     /** Score of the frame. */
@@ -112,5 +125,42 @@ class FrameView : LinearLayout {
         val backgroundDrawable = ContextCompat.getDrawable(context,
                 if (isCurrentFrame) R.drawable.frame_background_active else R.drawable.frame_background_inactive)
         frame.background = backgroundDrawable
+    }
+
+    /** @Override */
+    override fun onClick(v: View?) {
+        val view = v ?: return
+
+        val ballIdIndex = ballViewIds.indexOf(view.id)
+        if (ballIdIndex > -1) {
+            delegate?.onBallSelected(ballIdIndex, frameNumber - 1)
+            return
+        }
+
+        val isFrame = frame.id == view.id
+        if (isFrame) {
+            delegate?.onFrameSelected(frameNumber - 1)
+        }
+    }
+
+    /**
+     * Handle interactions with the view.
+     */
+    interface FrameInteractionDelegate {
+
+        /**
+         * Invoked when a ball view is touched by the user.
+         *
+         * @param ball the ball selected (zero-based)
+         * @param frame the frame number (zero-based)
+         */
+        fun onBallSelected(ball: Int, frame: Int)
+
+        /**
+         * Invoked when a frame view is touched by the user.
+         *
+         * @param frame the frame number (zero-based)
+         */
+        fun onFrameSelected(frame: Int)
     }
 }
