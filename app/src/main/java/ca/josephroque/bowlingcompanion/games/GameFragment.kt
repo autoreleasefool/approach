@@ -8,7 +8,8 @@ import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.fragments.BaseFragment
 import ca.josephroque.bowlingcompanion.common.interfaces.IFloatingActionButtonHandler
 import ca.josephroque.bowlingcompanion.games.views.FrameView
-import kotlinx.android.synthetic.main.view_frame.*
+import ca.josephroque.bowlingcompanion.games.views.PinLayout
+import kotlinx.android.synthetic.main.fragment_game.view.*
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -17,7 +18,8 @@ import kotlinx.android.synthetic.main.view_frame.*
  */
 class GameFragment : BaseFragment(),
         IFloatingActionButtonHandler,
-        FrameView.FrameInteractionDelegate {
+        FrameView.FrameInteractionDelegate,
+        PinLayout.PinLayoutInteractionDelegate {
 
     /** IDs for frame views. */
     private val frameViewIds = intArrayOf(R.id.frame_1, R.id.frame_2, R.id.frame_3, R.id.frame_4,
@@ -31,6 +33,14 @@ class GameFragment : BaseFragment(),
     /** The current ball being edited. */
     private var currentBall: Int = 0
 
+    /** The current pins up (false) and knocked down (true) for each frame, ball, and pin. */
+    @Suppress("LABEL_NAME_CLASH")
+    private var pinState: Array<Array<BooleanArray>> = Array(Game.NUMBER_OF_FRAMES, {
+        return@Array Array(Frame.NUMBER_OF_BALLS, {
+            return@Array BooleanArray(Game.NUMBER_OF_PINS)
+        })
+    })
+
     /** @Override */
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -43,6 +53,8 @@ class GameFragment : BaseFragment(),
         frameViewIds.forEachIndexed { index, it ->
             frameViews[index] = view.findViewById(it)
         }
+
+        view.pin_layout.delegate = this
 
         return view
     }
@@ -79,6 +91,18 @@ class GameFragment : BaseFragment(),
     /** @Override */
     override fun onFrameSelected(frame: Int) {
         onBallSelected(0, frame)
+    }
+
+    /** @Override */
+    override fun getPinState(pin: Int): Boolean {
+        return pinState[currentFrame][currentBall][pin]
+    }
+
+    /** @Override */
+    override fun updatePinState(pins: IntArray, state: Boolean) {
+        pins.forEach {
+            pinState[currentFrame][currentBall][it] = state
+        }
     }
 
     companion object {

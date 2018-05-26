@@ -135,6 +135,11 @@
     <!-- Content descriptions -->
     <string name="iv_name_average">Type indicator</string>
     <string name="iv_delete_item">Delete Item</string>
+    <string name="pin_left_2">Left 2 Pin</string>
+    <string name="pin_left_3">Left 3 Pin</string>
+    <string name="pin_head">Head Pin</string>
+    <string name="pin_right_3">Right 3 Pin</string>
+    <string name="pin_right_2">Right 2 Pin</string>
 
     <!-- Email -->
     <string name="send_email">Send email&#8230;</string>
