@@ -1,6 +1,8 @@
 package ca.josephroque.bowlingcompanion.games.views
 
 import android.content.Context
+import android.os.Bundle
+import android.os.Parcelable
 import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.LayoutInflater
@@ -21,6 +23,17 @@ class FrameView : LinearLayout, View.OnClickListener {
         /** Logging identifier. */
         @Suppress("unused")
         private const val TAG = "FrameView"
+
+        /** Tag to save super state. */
+        private const val SUPER_STATE = "${TAG}_super_state"
+        /** Tag to save state of the frame this view represents. */
+        private const val STATE_FRAME_NUMBER = "${TAG}_frame_number"
+        /** Tag to save state of current ball. */
+        private const val STATE_CURRENT_BALL = "${TAG}_current_ball"
+        /** Tag to save state of score. */
+        private const val STATE_SCORE = "${TAG}_score"
+        /** Tag to save state of current frame. */
+        private const val STATE_CURRENT_FRAME = "${TAG}_current_frame"
     }
 
     /** IDs for ball views. */
@@ -29,6 +42,34 @@ class FrameView : LinearLayout, View.OnClickListener {
     private val foulViewIds = intArrayOf(R.id.tv_foul_1, R.id.tv_foul_2, R.id.tv_foul_3)
     /** Listener for events. */
     var delegate: FrameInteractionDelegate? = null
+
+    /** Frame number to display beneath the score. */
+    var frameNumber: Int = 1
+        set(value) {
+            field = value
+            tv_frame_number.text = (value - 1).toString()
+        }
+
+    /** Score of the frame. */
+    var score: Int = 0
+        set(value) {
+            field = value
+            tv_score.text = value.toString()
+        }
+
+    /** Current active ball in the frame. */
+    var currentBall: Int = 0
+        set(value) {
+            field = value
+            updateCurrentFrame()
+        }
+
+    /** True if this is the current active frame, false otherwise. */
+    var isCurrentFrame: Boolean = false
+        set(value) {
+            field = value
+            updateCurrentFrame()
+        }
 
     /** Required constructors */
     constructor(context: Context) : this(context, null)
@@ -52,6 +93,31 @@ class FrameView : LinearLayout, View.OnClickListener {
             findViewById<TextView>(it).setOnClickListener(this)
         }
         frame.setOnClickListener(this)
+    }
+
+    /** @Override */
+    override fun onSaveInstanceState(): Parcelable {
+        val bundle = Bundle()
+        bundle.putParcelable(SUPER_STATE, super.onSaveInstanceState())
+        bundle.putInt(STATE_FRAME_NUMBER, frameNumber)
+        bundle.putInt(STATE_SCORE, score)
+        bundle.putInt(STATE_CURRENT_BALL, currentBall)
+        bundle.putBoolean(STATE_CURRENT_FRAME, isCurrentFrame)
+        return bundle
+    }
+
+    /** @Override */
+    override fun onRestoreInstanceState(state: Parcelable?) {
+        var superState: Parcelable? = null
+        if (state is Bundle) {
+            frameNumber = state.getInt(STATE_FRAME_NUMBER)
+            score = state.getInt(STATE_SCORE)
+            currentBall = state.getInt(STATE_CURRENT_BALL)
+            isCurrentFrame = state.getBoolean(STATE_CURRENT_FRAME)
+            superState = state.getParcelable(SUPER_STATE)
+        }
+
+        super.onRestoreInstanceState(superState)
     }
 
     /** @Override */
@@ -83,34 +149,6 @@ class FrameView : LinearLayout, View.OnClickListener {
             View.INVISIBLE
         }
     }
-
-    /** Frame number to display beneath the score. */
-    var frameNumber: Int = 1
-        set(value) {
-            field = value
-            tv_frame_number.text = (value - 1).toString()
-        }
-
-    /** Score of the frame. */
-    var score: Int = 0
-        set(value) {
-            field = value
-            tv_score.text = value.toString()
-        }
-
-    /** Current active ball in the frame. */
-    var currentBall: Int = 0
-        set(value) {
-            field = value
-            updateCurrentFrame()
-        }
-
-    /** True if this is the current active frame, false otherwise. */
-    var isCurrentFrame: Boolean = false
-        set(value) {
-            field = value
-            updateCurrentFrame()
-        }
 
     /**
      * Update background colors of the views depending on if this is the current frame or not.
