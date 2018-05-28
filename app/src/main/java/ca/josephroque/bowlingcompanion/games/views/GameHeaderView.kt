@@ -6,6 +6,7 @@ import android.os.Parcelable
 import android.support.v4.content.ContextCompat
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.LinearLayout
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.games.Frame
@@ -17,7 +18,7 @@ import kotlinx.android.synthetic.main.view_game_header.view.*
  *
  * Header of a game which displays the game number and navigation buttons.
  */
-class GameHeaderView : LinearLayout {
+class GameHeaderView : LinearLayout, View.OnClickListener {
 
     companion object {
         /** Logging identifier. */
@@ -33,6 +34,9 @@ class GameHeaderView : LinearLayout {
         /** Tag to save state of current ball. */
         private const val STATE_CURRENT_BALL = "${TAG}_current_ball"
     }
+
+    /** Handle interactions with the view. */
+    var delegate: GameHeaderInteractionDelegate? = null
 
     /** Current game to display in the header. */
     var currentGame: Int = 1
@@ -67,9 +71,11 @@ class GameHeaderView : LinearLayout {
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        val rootView = LayoutInflater.from(context).inflate(R.layout.view_game_header, this, true)
-        rootView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimaryLight))
-        rootView.tv_game_number.text = String.format(resources.getString(R.string.game_number), currentGame)
+        LayoutInflater.from(context).inflate(R.layout.view_game_header, this, true)
+        setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimaryLight))
+        tv_game_number.text = String.format(resources.getString(R.string.game_number), currentGame)
+        tv_next_ball.setOnClickListener(this)
+        tv_prev_ball.setOnClickListener(this)
     }
 
     /** @Override */
@@ -93,5 +99,36 @@ class GameHeaderView : LinearLayout {
         }
 
         super.onRestoreInstanceState(superState)
+    }
+
+    /** @Override */
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        delegate = null
+    }
+
+    /** @Override */
+    override fun onClick(v: View?) {
+        val view = v ?: return
+        when (view.id) {
+            R.id.tv_prev_ball -> delegate?.onPrevBall()
+            R.id.tv_next_ball -> delegate?.onNextBall()
+        }
+    }
+
+    /**
+     * Handle interactions with the view.
+     */
+    interface GameHeaderInteractionDelegate {
+
+        /**
+         * Indicates user wishes to switch to the next ball.
+         */
+        fun onNextBall()
+
+        /**
+         * Indicates user wishes to switch to the previous ball.
+         */
+        fun onPrevBall()
     }
 }
