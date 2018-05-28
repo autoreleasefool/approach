@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        style="@style/GameFooterIcon"
+        android:id="@+id/iv_clear_pins"
+        android:contentDescription="@string/iv_clear_pins"
+        android:src="@drawable/ic_clear_pins_strike"
+        app:layout_constraintLeft_toLeftOf="parent" />
+
+    <ImageView
+        style="@style/GameFooterIcon"
+        android:id="@+id/iv_foul"
+        android:contentDescription="@string/iv_foul"
+        android:src="@drawable/ic_foul_inactive"
+        app:layout_constraintLeft_toRightOf="@id/iv_clear_pins" />
+
+    <ImageView
+        style="@style/GameFooterIcon"
+        android:id="@+id/iv_match_play"
+        android:contentDescription="@string/iv_match_play"
+        android:src="@drawable/ic_match_play_none"
+        app:layout_constraintRight_toLeftOf="@id/iv_lock" />
+
+    <ImageView
+        style="@style/GameFooterIcon"
+        android:id="@+id/iv_lock"
+        android:contentDescription="@string/iv_lock"
+        android:src="@drawable/ic_lock_open"
+        app:layout_constraintRight_toRightOf="parent" />
+
+</merge>

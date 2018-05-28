@@ -140,6 +140,10 @@
     <string name="pin_head">Head Pin</string>
     <string name="pin_right_3">Right 3 Pin</string>
     <string name="pin_right_2">Right 2 Pin</string>
+    <string name="iv_clear_pins">Clear pins</string>
+    <string name="iv_foul">Foul</string>
+    <string name="iv_match_play">Match play settings</string>
+    <string name="iv_lock">Lock game</string>
 
     <!-- Email -->
     <string name="send_email">Send email&#8230;</string>

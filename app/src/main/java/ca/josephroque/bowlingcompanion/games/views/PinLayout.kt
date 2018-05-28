@@ -13,6 +13,8 @@ import ca.josephroque.bowlingcompanion.games.Game
 
 /**
  * Copyright (C) 2018 Joseph Roque
+ *
+ * Display pins and handle touch events for the pins.
  */
 class PinLayout : ConstraintLayout {
 
