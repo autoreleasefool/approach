@@ -152,7 +152,7 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
 
     /** @Override */
     override fun getFabImage(): Int? {
-        return R.drawable.ic_add_white_24dp
+        return R.drawable.ic_add
     }
 
     /** @Override */

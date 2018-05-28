@@ -6,21 +6,21 @@
     <item
         android:id="@+id/action_record"
         android:enabled="true"
-        android:icon="@drawable/ic_play_arrow_white_24dp"
+        android:icon="@drawable/ic_play_arrow"
         android:title="@string/tab_record"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_statistics"
         android:enabled="true"
-        android:icon="@drawable/ic_stats_white_24dp"
+        android:icon="@drawable/ic_stats"
         android:title="@string/tab_statistics"
         app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/action_equipment"
         android:enabled="true"
-        android:icon="@drawable/ic_equipment_white_24dp"
+        android:icon="@drawable/ic_equipment"
         android:title="@string/tab_equipment"
         app:showAsAction="ifRoom" />
 

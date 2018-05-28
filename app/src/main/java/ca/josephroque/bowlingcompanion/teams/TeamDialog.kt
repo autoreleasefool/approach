@@ -116,7 +116,7 @@ class TeamDialog : DialogFragment(),
 
         rootView.toolbar_team.apply {
             inflateMenu(R.menu.menu_dialog_team)
-            setNavigationIcon(R.drawable.ic_close_white_24dp)
+            setNavigationIcon(R.drawable.ic_close)
             setNavigationOnClickListener {
                 dismiss()
             }

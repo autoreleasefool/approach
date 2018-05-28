@@ -14,7 +14,7 @@
     <ImageView
         style="@style/ListItemIcon"
         android:contentDescription="@string/iv_delete_item"
-        app:srcCompat="@drawable/ic_delete_white_24dp" />
+        app:srcCompat="@drawable/ic_delete" />
 
     <TextView
         style="@style/ListItemBodyText"

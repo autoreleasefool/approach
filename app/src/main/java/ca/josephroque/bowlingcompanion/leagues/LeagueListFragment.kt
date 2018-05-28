@@ -93,9 +93,9 @@ class LeagueListFragment : ListFragment<League, NameAverageRecyclerViewAdapter<L
         adapter.swipeable = true
         adapter.buildImageResource = { item, _ ->
             if (item.isEvent) {
-                Pair(R.drawable.ic_event_white_24dp, Color.BLACK)
+                Pair(R.drawable.ic_event, Color.BLACK)
             } else {
-                Pair(R.drawable.ic_league_white_24dp, Color.BLACK)
+                Pair(R.drawable.ic_league, Color.BLACK)
             }
         }
         return adapter

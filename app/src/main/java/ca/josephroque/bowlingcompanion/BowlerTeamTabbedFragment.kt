@@ -75,8 +75,8 @@ class BowlerTeamTabbedFragment : TabbedFragment(),
     /** @Override */
     override fun getFabImage(): Int? {
         return when (Tab.fromInt(currentTab)) {
-            Tab.Bowlers -> R.drawable.ic_person_add_white_24dp
-            Tab.Teams -> R.drawable.ic_group_add_white_24dp
+            Tab.Bowlers -> R.drawable.ic_person_add
+            Tab.Teams -> R.drawable.ic_group_add
             else -> throw RuntimeException("$currentTab is not a valid tab for BowlerTeamTabbedFragment")
         }
     }

@@ -69,7 +69,7 @@ class GameFragment : BaseFragment(),
 
     /** @Override */
     override fun getFabImage(): Int? {
-        return R.drawable.ic_arrow_forward_white_24dp
+        return R.drawable.ic_arrow_forward
     }
 
     /** @Override */

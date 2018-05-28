@@ -68,7 +68,7 @@ class BowlerListFragment : ListFragment<Bowler, NameAverageRecyclerViewAdapter<B
     override fun buildAdapter(): NameAverageRecyclerViewAdapter<Bowler> {
         val adapter = NameAverageRecyclerViewAdapter(emptyList(), this)
         adapter.swipeable = true
-        adapter.buildImageResource = { _, _ -> Pair(R.drawable.ic_person_white_24dp, Color.BLACK) }
+        adapter.buildImageResource = { _, _ -> Pair(R.drawable.ic_person, Color.BLACK) }
         return adapter
     }
 

@@ -37,15 +37,15 @@ class BCError(@StringRes private val title: Int = R.string.error_unknown_title,
 
         when (severity) {
             Severity.Error -> {
-                icon = ResourcesCompat.getDrawable(context.resources, R.drawable.ic_error_white_24dp, null)
+                icon = ResourcesCompat.getDrawable(context.resources, R.drawable.ic_error, null)
                 color = ResourcesCompat.getColor(context.resources, R.color.dangerRed, null)
             }
             Severity.Warning -> {
-                icon = ResourcesCompat.getDrawable(context.resources, R.drawable.ic_warning_white_24dp, null)
+                icon = ResourcesCompat.getDrawable(context.resources, R.drawable.ic_warning, null)
                 color = ResourcesCompat.getColor(context.resources, R.color.warningYellow, null)
             }
             Severity.Info -> {
-                icon = ResourcesCompat.getDrawable(context.resources, R.drawable.ic_info_white_24dp, null)
+                icon = ResourcesCompat.getDrawable(context.resources, R.drawable.ic_info, null)
                 color = ResourcesCompat.getColor(context.resources, R.color.infoBlue, null)
             }
         }
