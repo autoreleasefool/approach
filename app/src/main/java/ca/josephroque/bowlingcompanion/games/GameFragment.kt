@@ -8,7 +8,10 @@ import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.fragments.BaseFragment
 import ca.josephroque.bowlingcompanion.common.interfaces.IFloatingActionButtonHandler
 import ca.josephroque.bowlingcompanion.games.views.FrameView
+import ca.josephroque.bowlingcompanion.games.views.GameFooterView
+import ca.josephroque.bowlingcompanion.games.views.GameHeaderView
 import ca.josephroque.bowlingcompanion.games.views.PinLayout
+import kotlinx.android.synthetic.main.fragment_game.*
 import kotlinx.android.synthetic.main.fragment_game.view.*
 
 /**
@@ -19,7 +22,9 @@ import kotlinx.android.synthetic.main.fragment_game.view.*
 class GameFragment : BaseFragment(),
         IFloatingActionButtonHandler,
         FrameView.FrameInteractionDelegate,
-        PinLayout.PinLayoutInteractionDelegate {
+        PinLayout.PinLayoutInteractionDelegate,
+        GameFooterView.GameFooterInteractionDelegate,
+        GameHeaderView.GameHeaderInteractionDelegate {
 
     /** IDs for frame views. */
     private val frameViewIds = intArrayOf(R.id.frame_1, R.id.frame_2, R.id.frame_3, R.id.frame_4,
@@ -54,8 +59,6 @@ class GameFragment : BaseFragment(),
             frameViews[index] = view.findViewById(it)
         }
 
-        view.pin_layout.delegate = this
-
         return view
     }
 
@@ -65,6 +68,10 @@ class GameFragment : BaseFragment(),
         frameViews.forEach {
             it?.delegate = this
         }
+
+        pin_layout.delegate = this
+        game_footer.delegate = this
+        game_header.delegate = this
     }
 
     /** @Override */
@@ -76,6 +83,8 @@ class GameFragment : BaseFragment(),
     override fun onFabClick() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
+
+    // MARK: FrameInteractionDelegate
 
     /** @Override */
     override fun onBallSelected(ball: Int, frame: Int) {
@@ -93,6 +102,8 @@ class GameFragment : BaseFragment(),
         onBallSelected(0, frame)
     }
 
+    // MARK: PinLayoutInteractionDelegate
+
     /** @Override */
     override fun getPinState(pin: Int): Boolean {
         return pinState[currentFrame][currentBall][pin]
@@ -103,6 +114,40 @@ class GameFragment : BaseFragment(),
         pins.forEach {
             pinState[currentFrame][currentBall][it] = state
         }
+    }
+
+    // MARK: GameFooterInteractionDelegate
+
+    /** @Override */
+    override fun onClearPins() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    /** @Override */
+    override fun onFoulToggle() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    /** @Override */
+    override fun onLockToggle() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    /** @Override */
+    override fun onMatchPlaySettings() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    // MARK: GameHeaderInteractionDelegate
+
+    /** @Override */
+    override fun onNextBall() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    /** @Override */
+    override fun onPrevBall() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     companion object {
