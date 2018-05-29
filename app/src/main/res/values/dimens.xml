@@ -10,13 +10,13 @@
     <dimen name="base_margin">8dp</dimen>
     <dimen name="base_margin_large">16dp</dimen>
     <dimen name="base_elevation">4dp</dimen>
+    <dimen name="base_icon_size">44dp</dimen>
 
     <dimen name="text_margin_horizontal">@dimen/base_margin_large</dimen>
     <dimen name="text_margin_vertical">@dimen/base_margin</dimen>
     <dimen name="chip_margin">@dimen/base_margin</dimen>
     <dimen name="fab_margin">@dimen/base_margin_large</dimen>
     <dimen name="divider_height">1dp</dimen>
-    <dimen name="base_icon_size">40dp</dimen>
 
     <!-- List -->
     <dimen name="list_bottom_padding">48dp</dimen>
