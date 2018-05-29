@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.adapters.BaseRecyclerViewAdapter
-import ca.josephroque.bowlingcompanion.games.MatchPlayResult
+import ca.josephroque.bowlingcompanion.matchplay.MatchPlayResult
 import ca.josephroque.bowlingcompanion.leagues.League
 import com.nex3z.flowlayout.FlowLayout
 

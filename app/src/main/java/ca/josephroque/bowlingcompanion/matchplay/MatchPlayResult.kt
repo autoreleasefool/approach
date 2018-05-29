@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.games
+package ca.josephroque.bowlingcompanion.matchplay
 
 import ca.josephroque.bowlingcompanion.R
 

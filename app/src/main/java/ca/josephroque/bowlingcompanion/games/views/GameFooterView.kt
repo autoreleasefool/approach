@@ -8,7 +8,7 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import ca.josephroque.bowlingcompanion.R
-import ca.josephroque.bowlingcompanion.games.MatchPlayResult
+import ca.josephroque.bowlingcompanion.matchplay.MatchPlayResult
 import kotlinx.android.synthetic.main.view_game_footer.view.*
 
 /**

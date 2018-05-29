@@ -9,7 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import ca.josephroque.bowlingcompanion.R
-import ca.josephroque.bowlingcompanion.games.MatchPlayResult
+import ca.josephroque.bowlingcompanion.matchplay.MatchPlayResult
 import kotlinx.android.synthetic.main.view_series_score.view.*
 
 /**
