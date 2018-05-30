@@ -132,6 +132,10 @@ class PinLayout : ConstraintLayout {
         val pinView = pinViews[pinTouched] ?: return
         val delegate = delegate ?: return
 
+        if (pinAltered[pinTouched]) {
+            return
+        }
+
         if (!pinView.isEnabled) {
             if (firstPin) {
                 initialStateSet = false
