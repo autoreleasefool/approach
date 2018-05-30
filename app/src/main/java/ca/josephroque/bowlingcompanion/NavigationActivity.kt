@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion
 import android.graphics.Color
 import android.os.Bundle
 import android.support.annotation.IdRes
+import android.support.design.widget.BottomSheetDialogFragment
 import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
@@ -145,6 +146,11 @@ class NavigationActivity : BaseActivity(),
     /** @Override */
     override fun pushDialogFragment(fragment: DialogFragment) {
         fragNavController?.showDialogFragment(fragment)
+    }
+
+    /** @Override */
+    override fun showBottomSheet(fragment: BottomSheetDialogFragment, tag: String) {
+        fragment.show(supportFragmentManager, tag)
     }
 
     /**

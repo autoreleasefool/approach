@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion.common.fragments
 
 import android.content.Context
+import android.support.design.widget.BottomSheetDialogFragment
 import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
 
@@ -65,5 +66,13 @@ abstract class BaseFragment : Fragment() {
          * @param fragment the fragment to push
          */
         fun pushDialogFragment(fragment: DialogFragment)
+
+        /**
+         * Push a new [BottomSheetDialogFragment] onto the stack
+         *
+         * @param fragment the fragment to push
+         * @param tag necessary tag for the fragment
+         */
+        fun showBottomSheet(fragment: BottomSheetDialogFragment, tag: String)
     }
 }
