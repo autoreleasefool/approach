@@ -128,6 +128,8 @@
     <string name="hint_opponent_score">Opponent\'s score</string>
 
     <!-- Match play -->
+    <string name="issue_setting_match_play">Issue setting match play!</string>
+    <string name="error_match_play_score_invalid">Opponent\'s score must be between 0 and 450.</string>
     <string name="match_play_none">None</string>
     <string name="match_play_won">Won</string>
     <string name="match_play_lost">Lost</string>

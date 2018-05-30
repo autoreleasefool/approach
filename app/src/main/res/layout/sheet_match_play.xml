@@ -41,7 +41,7 @@
                 android:id="@+id/input_opponent_score"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="textCapWords|textPersonName"
+                android:inputType="number"
                 android:imeOptions="flagNoFullscreen|actionDone"
                 android:hint="@string/hint_opponent_score"/>
 
