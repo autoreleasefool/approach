@@ -122,8 +122,13 @@
     <string name="ball_next">Next</string>
     <string name="game_number">Game %d</string>
     <string name="foul_indicator">F</string>
+    <string name="match_play_header">Match play</string>
+    <string name="match_play_result">Result</string>
+    <string name="hint_opponent_name">Opponent\'s name</string>
+    <string name="hint_opponent_score">Opponent\'s score</string>
 
     <!-- Match play -->
+    <string name="match_play_none">None</string>
     <string name="match_play_won">Won</string>
     <string name="match_play_lost">Lost</string>
     <string name="match_play_tied">Tied</string>

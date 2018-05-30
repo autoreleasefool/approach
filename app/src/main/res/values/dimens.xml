@@ -17,6 +17,7 @@
     <dimen name="chip_margin">@dimen/base_margin</dimen>
     <dimen name="fab_margin">@dimen/base_margin_large</dimen>
     <dimen name="divider_height">1dp</dimen>
+    <dimen name="bottom_sheet_height">340dp</dimen>
 
     <!-- List -->
     <dimen name="list_bottom_padding">48dp</dimen>

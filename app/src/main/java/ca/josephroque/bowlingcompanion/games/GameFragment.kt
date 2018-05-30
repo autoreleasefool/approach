@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion.games
 
 import android.os.Bundle
+import android.support.design.widget.BottomSheetBehavior
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,8 +12,9 @@ import ca.josephroque.bowlingcompanion.games.views.FrameView
 import ca.josephroque.bowlingcompanion.games.views.GameFooterView
 import ca.josephroque.bowlingcompanion.games.views.GameHeaderView
 import ca.josephroque.bowlingcompanion.games.views.PinLayout
+import ca.josephroque.bowlingcompanion.matchplay.MatchPlaySheet
 import kotlinx.android.synthetic.main.fragment_game.*
-import kotlinx.android.synthetic.main.fragment_game.view.*
+import kotlinx.android.synthetic.main.sheet_match_play.view.*
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -59,9 +61,12 @@ class GameFragment : BaseFragment(),
             frameViews[index] = view.findViewById(it)
         }
 
+        setupBottomSheet(view)
+
         return view
     }
 
+    /** @Override */
     override fun onStart() {
         super.onStart()
 
@@ -72,6 +77,20 @@ class GameFragment : BaseFragment(),
         pin_layout.delegate = this
         game_footer.delegate = this
         game_header.delegate = this
+    }
+
+    private fun setupBottomSheet(rootView: View) {
+        val bottomSheet = rootView.sheet_match_play
+        val sheetBehavior = BottomSheetBehavior.from(bottomSheet)
+        sheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+
+        // TODO: do I need this?
+        sheetBehavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+            /** @Override */
+            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+            /** @Override */
+            override fun onStateChanged(bottomSheet: View, newState: Int) {}
+        })
     }
 
     /** @Override */
@@ -135,7 +154,8 @@ class GameFragment : BaseFragment(),
 
     /** @Override */
     override fun onMatchPlaySettings() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val fragment = MatchPlaySheet.newInstance()
+        fragmentNavigation?.showBottomSheet(fragment, MatchPlaySheet.FRAGMENT_TAG)
     }
 
     // MARK: GameHeaderInteractionDelegate

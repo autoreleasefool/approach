@@ -185,6 +185,10 @@
         <item name="android:layout_marginBottom">@dimen/text_margin_vertical</item>
     </style>
 
+    <style name="SubHeaderText" parent="HeaderText">
+        <item name="android:textSize">18sp</item>
+    </style>
+
     <style name="BodyText" parent="@android:style/TextAppearance">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
