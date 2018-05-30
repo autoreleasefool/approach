@@ -43,7 +43,7 @@
 
                 </RadioGroup>
 
-                <View style="@style/Divider" />
+                <View style="@style/HorizontalDivider" />
 
             </LinearLayout>
 
@@ -86,7 +86,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <View style="@style/Divider" />
+                <View style="@style/HorizontalDivider" />
 
                 <android.support.design.widget.TextInputLayout
                     style="@style/BodyText"
@@ -128,7 +128,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <View style="@style/Divider" />
+                <View style="@style/HorizontalDivider" />
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -203,7 +203,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <View style="@style/Divider" />
+                <View style="@style/HorizontalDivider" />
 
                 <Button
                     style="@style/DeleteButton"
