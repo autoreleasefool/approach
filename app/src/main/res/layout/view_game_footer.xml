@@ -18,18 +18,27 @@
         android:src="@drawable/ic_foul_inactive"
         app:layout_constraintLeft_toRightOf="@id/iv_clear_pins" />
 
+    <View
+        style="@style/VerticalDivider"
+        android:id="@+id/divider"
+        android:layout_height="0dp"
+        android:background="@android:color/white"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/iv_foul" />
+
     <ImageView
         style="@style/GameFooterIcon"
         android:id="@+id/iv_match_play"
         android:contentDescription="@string/iv_match_play"
         android:src="@drawable/ic_match_play_none"
-        app:layout_constraintRight_toLeftOf="@id/iv_lock" />
+        app:layout_constraintLeft_toRightOf="@id/divider" />
 
     <ImageView
         style="@style/GameFooterIcon"
         android:id="@+id/iv_lock"
         android:contentDescription="@string/iv_lock"
         android:src="@drawable/ic_lock_open"
-        app:layout_constraintRight_toRightOf="parent" />
+        app:layout_constraintLeft_toRightOf="@id/iv_match_play" />
 
 </merge>
