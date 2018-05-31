@@ -103,7 +103,7 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
     /** @Override. */
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_fragment_series, menu)
+        inflater.inflate(R.menu.fragment_series, menu)
 
         when (seriesView) {
             Series.Companion.View.Expanded -> {

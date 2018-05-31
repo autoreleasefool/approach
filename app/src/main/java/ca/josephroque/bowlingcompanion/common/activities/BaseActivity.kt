@@ -24,7 +24,7 @@ abstract class BaseActivity : AppCompatActivity() {
 
     /** @Override */
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_base_activity, menu)
+        menuInflater.inflate(R.menu.base_activity, menu)
         return true
     }
 

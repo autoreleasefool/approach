@@ -73,7 +73,7 @@ class LeagueListFragment : ListFragment<League, NameAverageRecyclerViewAdapter<L
     /** @Override */
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_fragment_leagues, menu)
+        inflater.inflate(R.menu.fragment_leagues, menu)
     }
 
     /** @Override */

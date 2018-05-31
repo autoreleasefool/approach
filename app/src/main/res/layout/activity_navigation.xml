@@ -30,7 +30,7 @@
         app:itemBackground="@color/bottomNavigationColor"
         app:itemIconTint="@drawable/tab_color_state"
         app:itemTextColor="@drawable/tab_color_state"
-        app:menu="@menu/menu_bottom_navigation" />
+        app:menu="@menu/bottom_navigation" />
 
     <android.support.design.widget.FloatingActionButton
         style="@style/FloatingActionButton"

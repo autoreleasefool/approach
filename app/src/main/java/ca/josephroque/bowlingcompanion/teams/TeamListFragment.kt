@@ -48,7 +48,7 @@ class TeamListFragment : ListFragment<Team, TeamRecyclerViewAdapter>() {
     /** @Override */
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_fragment_teams, menu)
+        inflater.inflate(R.menu.fragment_teams, menu)
     }
 
     /** @Override */

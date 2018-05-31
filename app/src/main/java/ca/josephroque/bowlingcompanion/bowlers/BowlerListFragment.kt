@@ -50,7 +50,7 @@ class BowlerListFragment : ListFragment<Bowler, NameAverageRecyclerViewAdapter<B
     /** @Override */
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_fragment_bowlers, menu)
+        inflater.inflate(R.menu.fragment_bowlers, menu)
     }
 
     /** @Override */

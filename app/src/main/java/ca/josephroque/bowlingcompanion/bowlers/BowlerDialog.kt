@@ -86,7 +86,7 @@ class BowlerDialog : DialogFragment(), View.OnClickListener {
         }
 
         rootView.toolbar_bowler.apply {
-            inflateMenu(R.menu.menu_dialog_bowler)
+            inflateMenu(R.menu.dialog_bowler)
             menu.findItem(R.id.action_save).isEnabled = bowler?.name?.isNotEmpty() == true
             setNavigationIcon(R.drawable.ic_close)
             setNavigationOnClickListener {
