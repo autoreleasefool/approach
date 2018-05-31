@@ -4,7 +4,7 @@
     <!-- Activity resources -->
     <dimen name="activity_margin">16dp</dimen>
 
-    <!-- Common components -->
+    <!-- Spacing -->
     <dimen name="base_margin_tiny">2dp</dimen>
     <dimen name="base_margin_small">4dp</dimen>
     <dimen name="base_margin">8dp</dimen>
@@ -12,6 +12,15 @@
     <dimen name="base_elevation">4dp</dimen>
     <dimen name="base_icon_size">44dp</dimen>
 
+    <!-- Text -->
+    <dimen name="text_title">20sp</dimen>
+    <dimen name="text_subtitle">18sp</dimen>
+    <dimen name="text_list_item">16sp</dimen>
+    <dimen name="text_body">14sp</dimen>
+    <dimen name="text_caption">12sp</dimen>
+    <dimen name="text_tiny">10sp</dimen>
+
+    <!-- Common components -->
     <dimen name="text_margin_horizontal">@dimen/base_margin_large</dimen>
     <dimen name="text_margin_vertical">@dimen/base_margin</dimen>
     <dimen name="chip_margin">@dimen/base_margin</dimen>

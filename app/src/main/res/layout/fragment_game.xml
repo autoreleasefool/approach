@@ -100,7 +100,7 @@
                     android:minWidth="@dimen/frame_width"
                     android:textColor="@color/primaryBlackText"
                     android:textStyle="normal"
-                    android:textSize="14sp"
+                    android:textSize="@dimen/text_body"
                     android:textAlignment="center"
                     android:gravity="center"
                     android:padding="@dimen/base_margin"
