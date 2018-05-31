@@ -14,6 +14,7 @@ import ca.josephroque.bowlingcompanion.games.views.GameHeaderView
 import ca.josephroque.bowlingcompanion.games.views.PinLayout
 import ca.josephroque.bowlingcompanion.matchplay.MatchPlayResult
 import ca.josephroque.bowlingcompanion.matchplay.MatchPlaySheet
+import ca.josephroque.bowlingcompanion.series.Series
 import kotlinx.android.synthetic.main.fragment_game.*
 import kotlinx.android.synthetic.main.sheet_match_play.*
 import kotlinx.android.synthetic.main.sheet_match_play.view.*
@@ -51,12 +52,16 @@ class GameFragment : BaseFragment(),
         })
     })
 
+    /** The series being edited. */
+    private var series: Series? = null
+
     /** @Override */
     override fun onCreateView(
             inflater: LayoutInflater,
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
+        series = savedInstanceState?.getParcelable(ARG_SERIES) ?: arguments?.getParcelable(ARG_SERIES)
         val view = inflater.inflate(R.layout.fragment_game, container, false)
 
         frameViews = arrayOfNulls(frameViewIds.size)
@@ -196,13 +201,28 @@ class GameFragment : BaseFragment(),
         @Suppress("unused")
         private const val TAG = "GameFragment"
 
+        /** Argument identifier for passing a [Series] to this fragment. */
+        private const val ARG_SERIES = "${TAG}_series"
+
         /**
          * Creates a new instance.
          *
+         * @param series the series to edit games for
          * @return the new instance
          */
-        fun newInstance(): GameFragment {
-            return GameFragment()
+        fun newInstance(series: Series): GameFragment {
+            val fragment = GameFragment()
+            val args = Bundle()
+            args.putParcelable(ARG_SERIES, series)
+            fragment.arguments = args
+            return fragment
         }
+    }
+
+    /**
+     * Handle interactions with the game fragment.
+     */
+    interface OnGameFragmentInteractionListener {
+        fun enableFab(enabled: Boolean)
     }
 }
