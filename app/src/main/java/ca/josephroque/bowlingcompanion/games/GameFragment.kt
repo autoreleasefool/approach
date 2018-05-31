@@ -12,8 +12,10 @@ import ca.josephroque.bowlingcompanion.games.views.FrameView
 import ca.josephroque.bowlingcompanion.games.views.GameFooterView
 import ca.josephroque.bowlingcompanion.games.views.GameHeaderView
 import ca.josephroque.bowlingcompanion.games.views.PinLayout
+import ca.josephroque.bowlingcompanion.matchplay.MatchPlayResult
 import ca.josephroque.bowlingcompanion.matchplay.MatchPlaySheet
 import kotlinx.android.synthetic.main.fragment_game.*
+import kotlinx.android.synthetic.main.sheet_match_play.*
 import kotlinx.android.synthetic.main.sheet_match_play.view.*
 
 /**
@@ -26,7 +28,8 @@ class GameFragment : BaseFragment(),
         FrameView.FrameInteractionDelegate,
         PinLayout.PinLayoutInteractionDelegate,
         GameFooterView.GameFooterInteractionDelegate,
-        GameHeaderView.GameHeaderInteractionDelegate {
+        GameHeaderView.GameHeaderInteractionDelegate,
+        MatchPlaySheet.MatchPlaySheetDelegate {
 
     /** IDs for frame views. */
     private val frameViewIds = intArrayOf(R.id.frame_1, R.id.frame_2, R.id.frame_3, R.id.frame_4,
@@ -168,6 +171,24 @@ class GameFragment : BaseFragment(),
     /** @Override */
     override fun onPrevBall() {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    // MARK: MatchPlaySheetDelegate
+
+    /** @Override */
+    override fun onFinishedSettingMatchPlayResults(
+            opponentName: String,
+            opponentScore: Int,
+            matchPlayResult: MatchPlayResult,
+            inputValid: Boolean
+    ) {
+        if (!inputValid) {
+            val sheetBehavior = BottomSheetBehavior.from(sheet_match_play)
+            sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            return
+        }
+
+        // TODO: set match play values
     }
 
     companion object {
