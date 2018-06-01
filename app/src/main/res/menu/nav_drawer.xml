@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:id="@+id/nav_group_back_navigation">
+
+        <item
+            android:id="@+id/nav_bowlers_teams"
+            android:icon="@drawable/ic_group"
+            android:title="@string/nav_bowlers_teams" />
+
+        <item
+            android:id="@+id/nav_leagues_events"
+            android:icon="@drawable/ic_league"
+            android:title="@string/nav_leagues_events" />
+
+        <item
+            android:id="@+id/nav_series"
+            android:icon="@drawable/ic_event"
+            android:title="@string/nav_series" />
+
+    </group>
+
+    <group
+        android:id="@+id/nav_group_games"
+        android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/nav_game_1"
+            android:icon="@drawable/ic_group"
+            android:title="@string/nav_game_1" />
+
+        <item
+            android:id="@+id/nav_game_2"
+            android:icon="@drawable/ic_group"
+            android:title="@string/nav_game_2" />
+
+        <item
+            android:id="@+id/nav_game_3"
+            android:icon="@drawable/ic_group"
+            android:title="@string/nav_game_3" />
+
+        <item
+            android:id="@+id/nav_game_4"
+            android:icon="@drawable/ic_group"
+            android:title="@string/nav_game_4" />
+
+        <item
+            android:id="@+id/nav_game_5"
+            android:icon="@drawable/ic_group"
+            android:title="@string/nav_game_5" />
+
+        <item
+            android:id="@+id/nav_game_6"
+            android:icon="@drawable/ic_group"
+            android:title="@string/nav_game_6" />
+
+        <item
+            android:id="@+id/nav_game_7"
+            android:icon="@drawable/ic_group"
+            android:title="@string/nav_game_7" />
+
+        <item
+            android:id="@+id/nav_game_8"
+            android:icon="@drawable/ic_group"
+            android:title="@string/nav_game_8" />
+
+        <item
+            android:id="@+id/nav_game_9"
+            android:icon="@drawable/ic_group"
+            android:title="@string/nav_game_9" />
+
+        <item
+            android:id="@+id/nav_game_10"
+            android:icon="@drawable/ic_group"
+            android:title="@string/nav_game_10" />
+
+        <item
+            android:id="@+id/nav_game_11"
+            android:icon="@drawable/ic_group"
+            android:title="@string/nav_game_11" />
+
+        <item
+            android:id="@+id/nav_game_12"
+            android:icon="@drawable/ic_group"
+            android:title="@string/nav_game_12" />
+
+        <item
+            android:id="@+id/nav_game_13"
+            android:icon="@drawable/ic_group"
+            android:title="@string/nav_game_13" />
+
+        <item
+            android:id="@+id/nav_game_14"
+            android:icon="@drawable/ic_group"
+            android:title="@string/nav_game_14" />
+
+        <item
+            android:id="@+id/nav_game_15"
+            android:icon="@drawable/ic_group"
+            android:title="@string/nav_game_15" />
+
+        <item
+            android:id="@+id/nav_game_16"
+            android:icon="@drawable/ic_group"
+            android:title="@string/nav_game_16" />
+
+        <item
+            android:id="@+id/nav_game_17"
+            android:icon="@drawable/ic_group"
+            android:title="@string/nav_game_17" />
+
+        <item
+            android:id="@+id/nav_game_18"
+            android:icon="@drawable/ic_group"
+            android:title="@string/nav_game_18" />
+
+        <item
+            android:id="@+id/nav_game_19"
+            android:icon="@drawable/ic_group"
+            android:title="@string/nav_game_19" />
+
+        <item
+            android:id="@+id/nav_game_20"
+            android:icon="@drawable/ic_group"
+            android:title="@string/nav_game_20" />
+
+    </group>
+
+    <group android:id="@+id/nav_group_other">
+
+        <item
+            android:id="@+id/nav_feedback"
+            android:icon="@drawable/ic_email"
+            android:title="@string/nav_feedback" />
+
+        <item
+            android:id="@+id/nav_help"
+            android:icon="@drawable/ic_info"
+            android:title="@string/nav_help" />
+
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_settings"
+            android:title="@string/nav_settings" />
+
+    </group>
+
+</menu>

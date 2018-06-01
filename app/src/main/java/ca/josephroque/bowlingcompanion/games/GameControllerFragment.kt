@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.fragments.TabbedFragment
+import ca.josephroque.bowlingcompanion.common.interfaces.INavigationDrawerHandler
 import ca.josephroque.bowlingcompanion.series.Series
 
 /**
@@ -16,7 +17,8 @@ import ca.josephroque.bowlingcompanion.series.Series
  *
  * Manage tabs to show games for the team of bowlers.
  */
-class GameControllerFragment : TabbedFragment() {
+class GameControllerFragment : TabbedFragment(),
+        INavigationDrawerHandler {
 
     companion object {
         /** Logging identifier */
@@ -83,8 +85,12 @@ class GameControllerFragment : TabbedFragment() {
 
     /** @Override */
     override fun onFabClick() {
-
         TODO("not implemented")
+    }
+
+    /** @Override */
+    override fun onNavDrawerItemSelected(itemId: Int) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     /**

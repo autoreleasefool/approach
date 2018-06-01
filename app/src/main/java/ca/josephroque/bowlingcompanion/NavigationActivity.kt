@@ -5,15 +5,19 @@ import android.os.Bundle
 import android.support.annotation.IdRes
 import android.support.design.widget.BottomSheetDialogFragment
 import android.support.design.widget.FloatingActionButton
+import android.support.design.widget.NavigationView
 import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentTransaction
+import android.support.v4.view.GravityCompat
+import android.view.MenuItem
 import android.view.View
 import ca.josephroque.bowlingcompanion.bowlers.BowlerListFragment
 import ca.josephroque.bowlingcompanion.common.interfaces.IFloatingActionButtonHandler
 import ca.josephroque.bowlingcompanion.common.activities.BaseActivity
 import ca.josephroque.bowlingcompanion.common.fragments.BaseFragment
 import ca.josephroque.bowlingcompanion.common.fragments.TabbedFragment
+import ca.josephroque.bowlingcompanion.common.interfaces.INavigationDrawerHandler
 import com.ncapdevi.fragnav.FragNavController
 import com.ncapdevi.fragnav.FragNavTransactionOptions
 import kotlinx.android.synthetic.main.activity_navigation.*
@@ -79,6 +83,17 @@ class NavigationActivity : BaseActivity(),
     /** Controller for fragment navigation. */
     private var fragNavController: FragNavController? = null
 
+    /** The current visible fragment in the activity. */
+    private val currentFragment: Fragment?
+        get() {
+            for (fragment in supportFragmentManager.fragments) {
+                if (fragment != null && fragment.isVisible) {
+                    return fragment
+                }
+            }
+            return null
+        }
+
     /** Drawable to display in the floating action button. */
     private var fabImage: Int? = null
         set(value) {
@@ -108,6 +123,7 @@ class NavigationActivity : BaseActivity(),
         setContentView(R.layout.activity_navigation)
 
         setupToolbar()
+        setupNavigationDrawer()
         setupBottomNavigation()
         setupFab()
         setupFragNavController(savedInstanceState)
@@ -127,6 +143,18 @@ class NavigationActivity : BaseActivity(),
         } else {
             super.onSupportNavigateUp()
         }
+    }
+
+    /** @Override */
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        currentFragment?.let {
+            if (item.itemId == android.R.id.home && currentFragment is INavigationDrawerHandler) {
+                drawer_layout.openDrawer(GravityCompat.START)
+                return true
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
     }
 
     /** @Override */
@@ -183,15 +211,32 @@ class NavigationActivity : BaseActivity(),
         }
     }
 
+    /** Add listeners to navigation drawer. */
+    private fun setupNavigationDrawer() {
+        nav_drawer.setNavigationItemSelectedListener { menuItem ->
+            if (menuItem.isCheckable) {
+                menuItem.isChecked = true
+            }
+            drawer_layout.closeDrawers()
+
+            currentFragment?.let {
+                if (it is INavigationDrawerHandler) {
+                    it.onNavDrawerItemSelected(menuItem.itemId)
+                }
+            }
+
+            return@setNavigationItemSelectedListener true
+        }
+    }
+
     /**
      * Configure floating action button for rendering.
      */
     private fun setupFab() {
         fab.setOnClickListener {
-            for (fragment in supportFragmentManager.fragments) {
-                if (fragment != null && fragment.isVisible && fragment is IFloatingActionButtonHandler) {
-                    fragment.onFabClick()
-                }
+            val currentFragment = currentFragment ?: return@setOnClickListener
+            if (currentFragment is IFloatingActionButtonHandler) {
+                currentFragment.onFabClick()
             }
         }
     }
@@ -239,11 +284,17 @@ class NavigationActivity : BaseActivity(),
      */
     private fun handleFragmentChange(fragment: Fragment?) {
         supportActionBar?.setDisplayHomeAsUpEnabled(fragNavController?.isRootFragment?.not() ?: false)
-        if (fragment is IFloatingActionButtonHandler) {
-            fabImage = fragment.getFabImage()
+        fabImage = if (fragment is IFloatingActionButtonHandler) {
+            fragment.getFabImage()
         } else {
-            fabImage = null
+            null
         }
+
+        supportActionBar?.setHomeAsUpIndicator(if (fragment is INavigationDrawerHandler) {
+            R.drawable.ic_menu
+        } else {
+            R.drawable.ic_arrow_back
+        })
 
         toolbar.elevation = if (fragment is TabbedFragment) {
             0F
