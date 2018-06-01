@@ -12,6 +12,7 @@ import android.support.v4.view.GravityCompat
 import android.view.MenuItem
 import android.view.View
 import ca.josephroque.bowlingcompanion.bowlers.BowlerListFragment
+import ca.josephroque.bowlingcompanion.common.NavigationDrawerController
 import ca.josephroque.bowlingcompanion.common.interfaces.IFloatingActionButtonHandler
 import ca.josephroque.bowlingcompanion.common.activities.BaseActivity
 import ca.josephroque.bowlingcompanion.common.fragments.BaseFragment
@@ -20,6 +21,7 @@ import ca.josephroque.bowlingcompanion.common.interfaces.INavigationDrawerHandle
 import com.ncapdevi.fragnav.FragNavController
 import com.ncapdevi.fragnav.FragNavTransactionOptions
 import kotlinx.android.synthetic.main.activity_navigation.*
+import java.lang.ref.WeakReference
 
 /**
  * Activity to handle navigation across the app and through sub-fragments.
@@ -81,6 +83,9 @@ class NavigationActivity : BaseActivity(),
 
     /** Controller for fragment navigation. */
     private var fragNavController: FragNavController? = null
+
+    /** Controller for navigation drawer. */
+    private lateinit var navDrawerController: NavigationDrawerController
 
     /** The current visible fragment in the activity. */
     private val currentFragment: Fragment?
@@ -212,15 +217,25 @@ class NavigationActivity : BaseActivity(),
 
     /** Add listeners to navigation drawer. */
     private fun setupNavigationDrawer() {
+        navDrawerController = NavigationDrawerController(WeakReference(nav_drawer))
         nav_drawer.setNavigationItemSelectedListener { menuItem ->
             if (menuItem.isCheckable) {
                 menuItem.isChecked = true
             }
             drawer_layout.closeDrawers()
 
-            currentFragment?.let {
-                if (it is INavigationDrawerHandler) {
-                    it.onNavDrawerItemSelected(menuItem.itemId)
+            when (menuItem.itemId) {
+                R.id.nav_bowlers_teams -> TODO("not implemented")
+                R.id.nav_leagues_events -> TODO("not implemented")
+                R.id.nav_series -> TODO("not implemented")
+                R.id.nav_feedback -> prepareFeedbackEmail()
+                R.id.nav_settings -> openSettings()
+                else -> {
+                    currentFragment?.let {
+                        if (it is INavigationDrawerHandler) {
+                            it.onNavDrawerItemSelected(menuItem.itemId)
+                        }
+                    }
                 }
             }
 
@@ -289,11 +304,12 @@ class NavigationActivity : BaseActivity(),
             null
         }
 
-        supportActionBar?.setHomeAsUpIndicator(if (fragment is INavigationDrawerHandler) {
-            R.drawable.ic_menu
+        if (fragment is INavigationDrawerHandler) {
+            fragment.navigationDrawerController = navDrawerController
+            supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_menu)
         } else {
-            R.drawable.ic_arrow_back
-        })
+            supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back)
+        }
 
         toolbar.elevation = if (fragment is TabbedFragment) {
             0F

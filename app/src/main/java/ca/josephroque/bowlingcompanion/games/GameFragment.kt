@@ -39,6 +39,12 @@ class GameFragment : BaseFragment(),
     /** Frame view instances. */
     private lateinit var frameViews: Array<FrameView?>
 
+    /** The number of the current game in its series. */
+    private var gameNumber: Int = 0
+        set(value) {
+            field = value
+            game_header.currentGame = gameNumber
+        }
     /** The current frame being edited. */
     private var currentFrame: Int = 0
     /** The current ball being edited. */

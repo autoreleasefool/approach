@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion.common.interfaces
 
 import android.support.annotation.IdRes
+import ca.josephroque.bowlingcompanion.common.NavigationDrawerController
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -8,6 +9,9 @@ import android.support.annotation.IdRes
  * Indicate an object can handle a Navigation Drawer event.
  */
 interface INavigationDrawerHandler {
+
+    /** Controller for the navigation drawer. */
+    var navigationDrawerController: NavigationDrawerController
 
     /**
      * Invoked when an item in the Navigation Drawer is selected.

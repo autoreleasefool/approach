@@ -50,7 +50,7 @@ abstract class BaseActivity : AppCompatActivity() {
     /**
      * Prepare an email with the subject and recipient pre-filled.
      */
-    private fun prepareFeedbackEmail() {
+    fun prepareFeedbackEmail() {
         Email.sendEmail(
                 this,
                 resources.getString(R.string.feedback_email_recipient),
@@ -62,7 +62,7 @@ abstract class BaseActivity : AppCompatActivity() {
     /**
      * Opens the settings activity.
      */
-    private fun openSettings() {
+    fun openSettings() {
         val settingsIntent = Intent(this, SettingsActivity::class.java)
         startActivity(settingsIntent)
     }

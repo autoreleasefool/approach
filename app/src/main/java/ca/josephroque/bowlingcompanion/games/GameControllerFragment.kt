@@ -8,8 +8,8 @@ import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import ca.josephroque.bowlingcompanion.NavigationActivity
 import ca.josephroque.bowlingcompanion.R
+import ca.josephroque.bowlingcompanion.common.NavigationDrawerController
 import ca.josephroque.bowlingcompanion.common.fragments.TabbedFragment
 import ca.josephroque.bowlingcompanion.common.interfaces.INavigationDrawerHandler
 import ca.josephroque.bowlingcompanion.series.Series
@@ -45,6 +45,9 @@ class GameControllerFragment : TabbedFragment(),
             return fragment
         }
     }
+
+    /** Controls for the navigation drawer. */
+    override lateinit var navigationDrawerController: NavigationDrawerController
 
     /** The list of series for which games are being edited. */
     private var seriesList: List<Series>? = null
