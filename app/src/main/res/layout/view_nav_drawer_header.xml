@@ -4,23 +4,32 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@android:color/transparent">
+    android:background="@color/colorPrimary">
 
     <TextView
         style="@style/HeaderText"
         android:id="@+id/nav_app_title"
         android:layout_width="0dp"
-        android:layout_margin="0dp"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginTop="@dimen/nav_header_top_margin"
         android:padding="@dimen/base_margin_large"
         android:background="@color/colorPrimary"
         android:text="@string/app_name"
         android:textColor="@color/primaryWhiteText"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent" />
 
     <android.support.constraint.ConstraintLayout
-        style="@style/NavDrawerSection"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:id="@+id/nav_bowler_section"
+        android:paddingTop="@dimen/base_margin"
+        android:paddingBottom="@dimen/base_margin"
+        android:background="@color/colorPrimaryLight"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/nav_app_title">
 
         <TextView
@@ -29,6 +38,7 @@
             android:layout_width="0dp"
             android:textStyle="normal"
             android:textColor="@color/primaryWhiteText"
+            android:maxLines="1"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -39,6 +49,7 @@
             android:layout_width="0dp"
             android:textStyle="normal"
             android:textColor="@color/secondaryWhiteText"
+            android:maxLines="1"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/nav_bowler_name" />
@@ -46,6 +57,8 @@
         <View
             style="@style/HorizontalDivider"
             android:layout_width="0dp"
+            android:layout_marginTop="@dimen/base_margin_large"
+            android:layout_marginBottom="0dp"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@id/nav_league_name"

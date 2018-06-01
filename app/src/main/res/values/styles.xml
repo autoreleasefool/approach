@@ -40,6 +40,10 @@
     <style name="VerticalDivider" parent="HorizontalDivider">
         <item name="android:layout_width">1dp</item>
         <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_marginTop">0dp</item>
+        <item name="android:layout_marginBottom">0dp</item>
+        <item name="android:layout_marginLeft">@dimen/base_margin</item>
+        <item name="android:layout_marginRight">@dimen/base_margin</item>
     </style>
 
     <!-- Toolbars -->
@@ -275,17 +279,6 @@
     <style name="Separator.Inset.Both" parent="Separator">
         <item name="android:layout_marginLeft">@dimen/base_margin_large</item>
         <item name="android:layout_marginRight">@dimen/base_margin_large</item>
-    </style>
-
-    <!-- Navigation drawer -->
-    <style name="NavDrawerSection">
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:paddingTop">@dimen/base_margin</item>
-        <item name="android:paddingBottom">@dimen/base_margin</item>
-        <item name="android:background">@color/colorPrimaryLight</item>
-        <item name="layout_constraintLeft_toLeftOf">parent</item>
-        <item name="layout_constraintRight_toRightOf">parent</item>
     </style>
 
     <!-- Settings -->

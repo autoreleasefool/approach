@@ -4,13 +4,16 @@ import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
+import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import ca.josephroque.bowlingcompanion.NavigationActivity
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.fragments.TabbedFragment
 import ca.josephroque.bowlingcompanion.common.interfaces.INavigationDrawerHandler
 import ca.josephroque.bowlingcompanion.series.Series
+import kotlinx.android.synthetic.main.fragment_common_tabs.*
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -75,6 +78,19 @@ class GameControllerFragment : TabbedFragment(),
             it.forEach {
                 tabLayout.addTab(tabLayout.newTab().setText(it.league.bowler.name))
             }
+        }
+    }
+
+    /** @Override */
+    override fun onStart() {
+        super.onStart()
+        val seriesList = seriesList ?: return
+        if (seriesList.size == 1) {
+            tabbed_fragment_tabs.visibility = View.GONE
+            (activity as? AppCompatActivity)?.supportActionBar?.elevation = resources.getDimension(R.dimen.base_elevation)
+        } else {
+            tabbed_fragment_tabs.visibility = View.VISIBLE
+            (activity as? AppCompatActivity)?.supportActionBar?.elevation = 0F
         }
     }
 

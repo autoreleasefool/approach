@@ -32,6 +32,12 @@
     <color name="primaryBlackText">#000000</color>
     <color name="secondaryBlackText">#B2000000</color>
 
+    <!-- Icon colors -->
+    <color name="primaryWhiteIcon">#FFFFFF</color>
+    <color name="secondaryWhiteIcon">#B2FFFFFF</color>
+    <color name="primaryBlackIcon">#000000</color>
+    <color name="secondaryBlackIcon">#B2000000</color>
+
     <!-- Navigation -->
     <color name="tabSelected">@color/colorPrimary</color>
     <color name="tabDisabled">#9B9B9B</color>

@@ -23,6 +23,8 @@
         android:id="@+id/divider"
         android:layout_height="0dp"
         android:background="@android:color/white"
+        android:layout_marginTop="@dimen/base_margin"
+        android:layout_marginBottom="@dimen/base_margin"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/iv_foul" />
