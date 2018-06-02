@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion.games
 
 import android.os.Bundle
+import android.support.annotation.IdRes
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
@@ -53,10 +54,17 @@ class GameControllerFragment : TabbedFragment(),
     private var seriesList: List<Series>? = null
 
     /** The current series being edited. */
-    private var currentSeries: Int = 0
+    private val currentSeries: Int
+        get() = tabbed_fragment_pager.currentItem
 
     /** The current game being edited. */
     private var currentGame: Int = 0
+        set(value) {
+            field = value
+            val adapter = tabbed_fragment_pager.adapter as? GameControllerPagerAdapter
+            val gameFragment = adapter?.getFragment(currentSeries) as? GameFragment
+            gameFragment?.gameNumber = value
+        }
 
     /** @Override */
     @Suppress("UNCHECKED_CAST")
@@ -108,8 +116,11 @@ class GameControllerFragment : TabbedFragment(),
     }
 
     /** @Override */
-    override fun onNavDrawerItemSelected(itemId: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override fun onNavDrawerItemSelected(@IdRes itemId: Int) {
+        val game = NavigationDrawerController.navGameItemIds.indexOf(itemId)
+        if (game >= 0) {
+            currentGame = game
+        }
     }
 
     /**

@@ -21,23 +21,20 @@ class NavigationDrawerController(
         @Suppress("unused")
         private const val TAG = "GameControllerFragment"
 
-        /** Number of spaces to place between the game number and the game score. */
-        private const val SPACES_BETWEEN_GAME_SCORE = 8
+        /** IDs for the game items in the menu. */
+        val navGameItemIds = intArrayOf(R.id.nav_game_1, R.id.nav_game_2, R.id.nav_game_3,
+                R.id.nav_game_4, R.id.nav_game_5, R.id.nav_game_6, R.id.nav_game_7, R.id.nav_game_8,
+                R.id.nav_game_9, R.id.nav_game_10, R.id.nav_game_11, R.id.nav_game_12,
+                R.id.nav_game_13, R.id.nav_game_14, R.id.nav_game_15, R.id.nav_game_16,
+                R.id.nav_game_17, R.id.nav_game_18, R.id.nav_game_19, R.id.nav_game_20)
     }
-
-    /** IDs for the game items in the menu. */
-    private val gameItemIds = intArrayOf(R.id.nav_game_1, R.id.nav_game_2, R.id.nav_game_3,
-            R.id.nav_game_4, R.id.nav_game_5, R.id.nav_game_6, R.id.nav_game_7, R.id.nav_game_8,
-            R.id.nav_game_9, R.id.nav_game_10, R.id.nav_game_11, R.id.nav_game_12, R.id.nav_game_13,
-            R.id.nav_game_14, R.id.nav_game_15, R.id.nav_game_16, R.id.nav_game_17,
-            R.id.nav_game_18, R.id.nav_game_19, R.id.nav_game_20)
 
     /** The number of game items to display in the navigation drawer. */
     var numberOfGames: Int = League.MAX_NUMBER_OF_GAMES
         set(value) {
             field = value
             navigationView.get()?.let {
-                gameItemIds.forEachIndexed { index, id ->
+                navGameItemIds.forEachIndexed { index, id ->
                     val gameItem = it.menu.findItem(id)
                     gameItem.isVisible = index < value
                 }
