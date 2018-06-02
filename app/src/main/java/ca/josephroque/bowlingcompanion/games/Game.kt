@@ -15,6 +15,9 @@ data class Game(val score: Int) {
         /** Number of frames in a single game. */
         const val NUMBER_OF_FRAMES = 10
 
+        /** Index of the last frame in a game. */
+        const val LAST_FRAME = NUMBER_OF_FRAMES - 1
+
         /** Number of pins used in the game. */
         const val NUMBER_OF_PINS = 5
 

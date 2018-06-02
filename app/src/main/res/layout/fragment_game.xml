@@ -34,6 +34,12 @@
                 android:orientation="horizontal">
 
                 <ca.josephroque.bowlingcompanion.games.views.FrameView
+                    android:id="@+id/frame_0"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:frameNumber="0" />
+
+                <ca.josephroque.bowlingcompanion.games.views.FrameView
                     android:id="@+id/frame_1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -86,12 +92,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:frameNumber="9" />
-
-                <ca.josephroque.bowlingcompanion.games.views.FrameView
-                    android:id="@+id/frame_10"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:frameNumber="10" />
 
                 <TextView
                     android:id="@+id/tv_final_score"

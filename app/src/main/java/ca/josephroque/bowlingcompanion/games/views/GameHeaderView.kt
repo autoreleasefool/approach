@@ -39,20 +39,20 @@ class GameHeaderView : LinearLayout, View.OnClickListener {
     var delegate: GameHeaderInteractionDelegate? = null
 
     /** Current game to display in the header. */
-    var currentGame: Int = 1
+    var currentGame: Int = 0
         set(value) {
-            tv_game_number.text = String.format(resources.getString(R.string.game_number), value)
             field = value
+            tv_game_number.text = String.format(resources.getString(R.string.game_number), value + 1)
         }
 
     /**
      * The current ball. If [currentBall] and [currentFrame] are equal to 1, disable the previous
      * ball button. If they are equal to their max values, disable the next ball button.
      */
-    var currentBall: Int = 1
+    var currentBall: Int = 0
         set(value) {
-            tv_prev_ball.isEnabled = value != 1 || currentFrame != 1
-            tv_next_ball.isEnabled = value != Frame.NUMBER_OF_BALLS || currentFrame != Game.NUMBER_OF_FRAMES
+            tv_prev_ball.isEnabled = value != 0 || currentFrame != 0
+            tv_next_ball.isEnabled = value != Frame.LAST_BALL || currentFrame != Game.LAST_FRAME
             field = value
         }
 
@@ -60,10 +60,10 @@ class GameHeaderView : LinearLayout, View.OnClickListener {
      * The current frame. If [currentBall] and [currentFrame] are equal to 1, disable the previous
      * ball button. If they are equal to their max values, disable the next ball button.
      */
-    var currentFrame: Int = 1
+    var currentFrame: Int = 0
         set(value) {
-            tv_prev_ball.isEnabled = value != 1 || currentBall != 1
-            tv_next_ball.isEnabled = value != Game.NUMBER_OF_FRAMES|| currentBall != Frame.NUMBER_OF_BALLS
+            tv_prev_ball.isEnabled = value != 0 || currentBall != 0
+            tv_next_ball.isEnabled = value != Game.LAST_FRAME || currentBall != Frame.LAST_BALL
             field = value
         }
 
@@ -73,7 +73,7 @@ class GameHeaderView : LinearLayout, View.OnClickListener {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         LayoutInflater.from(context).inflate(R.layout.view_game_header, this, true)
         setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimaryLight))
-        tv_game_number.text = String.format(resources.getString(R.string.game_number), currentGame)
+        tv_game_number.text = String.format(resources.getString(R.string.game_number), currentGame + 1)
         tv_next_ball.setOnClickListener(this)
         tv_prev_ball.setOnClickListener(this)
     }

@@ -44,10 +44,10 @@ class FrameView : LinearLayout, View.OnClickListener {
     var delegate: FrameInteractionDelegate? = null
 
     /** Frame number to display beneath the score. */
-    var frameNumber: Int = 1
+    var frameNumber: Int = 0
         set(value) {
             field = value
-            tv_frame_number.text = (value - 1).toString()
+            tv_frame_number.text = (value + 1).toString()
         }
 
     /** Score of the frame. */
@@ -171,13 +171,13 @@ class FrameView : LinearLayout, View.OnClickListener {
 
         val ballIdIndex = ballViewIds.indexOf(view.id)
         if (ballIdIndex > -1) {
-            delegate?.onBallSelected(ballIdIndex, frameNumber - 1)
+            delegate?.onBallSelected(ballIdIndex, frameNumber)
             return
         }
 
         val isFrame = frame.id == view.id
         if (isFrame) {
-            delegate?.onFrameSelected(frameNumber - 1)
+            delegate?.onFrameSelected(frameNumber)
         }
     }
 

@@ -14,5 +14,8 @@ data class Frame(val number: Int) {
 
         /** Number of balls in a frame. */
         const val NUMBER_OF_BALLS = 3
+
+        /** Index of the last ball in a frame. */
+        const val LAST_BALL = NUMBER_OF_BALLS - 1
     }
 }

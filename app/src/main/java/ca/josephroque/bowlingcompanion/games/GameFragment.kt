@@ -33,14 +33,14 @@ class GameFragment : BaseFragment(),
         MatchPlaySheet.MatchPlaySheetDelegate {
 
     /** IDs for frame views. */
-    private val frameViewIds = intArrayOf(R.id.frame_1, R.id.frame_2, R.id.frame_3, R.id.frame_4,
-            R.id.frame_5, R.id.frame_6, R.id.frame_7, R.id.frame_8, R.id.frame_9, R.id.frame_10)
+    private val frameViewIds = intArrayOf(R.id.frame_0, R.id.frame_1, R.id.frame_2, R.id.frame_3,
+            R.id.frame_4, R.id.frame_5, R.id.frame_6, R.id.frame_7, R.id.frame_8, R.id.frame_9)
 
     /** Frame view instances. */
     private lateinit var frameViews: Array<FrameView?>
 
     /** The number of the current game in its series. */
-    private var gameNumber: Int = 0
+    var gameNumber: Int = 0
         set(value) {
             field = value
             game_header.currentGame = gameNumber
