@@ -325,7 +325,7 @@ class TeamDialog : DialogFragment(),
 
             val ids: MutableSet<Long> = HashSet()
             team?.members?.forEach({
-                ids.add(it.id)
+                ids.add(it.bowlerId)
             })
             bowlerAdapter?.setSelectedElementsWithIds(ids)
             updateSaveButton()
