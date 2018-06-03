@@ -81,6 +81,12 @@ class GameFragment : BaseFragment(),
     }
 
     /** @Override */
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable(ARG_SERIES, series)
+    }
+
+    /** @Override */
     override fun onStart() {
         super.onStart()
 
@@ -97,14 +103,6 @@ class GameFragment : BaseFragment(),
         val bottomSheet = rootView.sheet_match_play
         val sheetBehavior = BottomSheetBehavior.from(bottomSheet)
         sheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-
-        // TODO: do I need this?
-        sheetBehavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-            /** @Override */
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {}
-            /** @Override */
-            override fun onStateChanged(bottomSheet: View, newState: Int) {}
-        })
     }
 
     /** @Override */

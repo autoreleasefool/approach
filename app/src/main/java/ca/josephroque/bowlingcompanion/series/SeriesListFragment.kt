@@ -84,6 +84,12 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
+    /** @Override */
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable(ARG_LEAGUE, league)
+    }
+
     /** @Override. */
     override fun onResume() {
         super.onResume()

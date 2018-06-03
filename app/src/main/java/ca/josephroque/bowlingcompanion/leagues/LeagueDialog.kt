@@ -287,9 +287,11 @@ class LeagueDialog : DialogFragment() {
     /** @Override */
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putParcelable(ARG_BOWLER, bowler)
-        outState.putParcelable(ARG_LEAGUE, league)
-        outState.putBoolean(ARG_IS_EVENT, isEvent)
+        outState.apply {
+            putParcelable(ARG_BOWLER, bowler)
+            putParcelable(ARG_LEAGUE, league)
+            putBoolean(ARG_IS_EVENT, isEvent)
+        }
     }
 
     /** @Override */

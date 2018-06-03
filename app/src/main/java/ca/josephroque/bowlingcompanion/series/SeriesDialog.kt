@@ -161,7 +161,12 @@ class SeriesDialog : DialogFragment(), DatePickerDialog.OnDateSetListener {
     /** @Override */
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putParcelable(ARG_SERIES, series)
+        outState.apply {
+            putParcelable(ARG_SERIES, series)
+            currentDate?.let {
+                putLong(ARG_DATE, it.time)
+            }
+        }
     }
 
     /** @Override */
