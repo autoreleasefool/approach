@@ -32,7 +32,7 @@ import kotlin.collections.ArrayList
 data class Team(
         override val id: Long,
         val name: String,
-        val members: List<Pair<String, Long>>
+        val members: List<TeamMember>
 ): KParcelable, IDeletable, IIdentifiable {
 
     /** Private field to indicate if the item is deleted. */
@@ -47,17 +47,10 @@ data class Team(
     private constructor(p: Parcel): this(
             id = p.readLong(),
             name = p.readString(),
-            members = arrayListOf<Pair<String, Long>>().apply {
-                val names: MutableList<String> = ArrayList()
-                p.readStringList(names)
-
-                val memberIdArr = LongArray(size)
-                p.readLongArray(memberIdArr)
-                val ids: MutableList<Long> = ArrayList()
-                memberIdArr.toCollection(ids)
-
-                names.forEachIndexed({ index, name ->
-                    this.add(Pair(name, ids[index]))
+            members = arrayListOf<TeamMember>().apply {
+                val parcelableArray = p.readParcelableArray(TeamMember::class.java.classLoader)
+                this.addAll(parcelableArray.map {
+                    return@map it as TeamMember
                 })
             }
     )
@@ -75,16 +68,7 @@ data class Team(
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeLong(id)
         writeString(name)
-
-        val names: MutableList<String> = ArrayList()
-        val ids: MutableList<Long> = ArrayList()
-        members.forEach({
-            names.add(it.first)
-            ids.add(it.second)
-        })
-
-        writeStringList(names)
-        writeLongArray(ids.toLongArray())
+        writeParcelableArray(members.toTypedArray(), 0)
     }
 
     /** @Override */
@@ -201,14 +185,14 @@ data class Team(
          * @param context to get error strings
          * @param id -1 for a new team, or the id of the existing team
          * @param name name for the team
-         * @param members list of team member ids and names
+         * @param members list of team members
          * @return [BCError] if a precondition is not met, null otherwise
          */
         private fun validateSavePreconditions(
                 context: Context,
                 id: Long,
                 name: String,
-                members: List<Pair<String, Long>>
+                members: List<TeamMember>
         ): Deferred<BCError?> {
             return async(CommonPool) {
                 val errorMessage = R.string.issue_saving_team
@@ -236,14 +220,14 @@ data class Team(
          * @param context to get database instance
          * @param id -1 for a new team, or the id of the existing team
          * @param name name for the team
-         * @param members list of team member ids and names
+         * @param members list of team members
          * @return the saved [Team] or a [BCError] if any errors occurred
          */
         fun save(
                 context: Context,
                 id: Long,
                 name: String,
-                members: List<Pair<String, Long>>
+                members: List<TeamMember>
         ): Deferred<Pair<Team?, BCError?>> {
             return if (id < 0) {
                 createNewAndSave(context, name, members)
@@ -257,13 +241,13 @@ data class Team(
          *
          * @param context to get database instance
          * @param name name for the team
-         * @param members list of team member ids and names
+         * @param members list of team members
          * @return the saved [Team] or a [BCError] if any errors occurred
          */
         private fun createNewAndSave(
                 context: Context,
                 name: String,
-                members: List<Pair<String, Long>>
+                members: List<TeamMember>
         ): Deferred<Pair<Team?, BCError?>> {
             return async(CommonPool) {
                 val error = validateSavePreconditions(context, -1, name, members).await()
@@ -287,7 +271,7 @@ data class Team(
                     teamId = database.insert(TeamEntry.TABLE_NAME, null, values)
                     members.forEach {
                         values = ContentValues().apply {
-                            put(TeamBowlerEntry.COLUMN_BOWLER_ID, it.second)
+                            put(TeamBowlerEntry.COLUMN_BOWLER_ID, it.bowlerId)
                             put(TeamBowlerEntry.COLUMN_TEAM_ID, teamId)
                         }
 
@@ -315,14 +299,14 @@ data class Team(
          * @param context context to get database instance
          * @param id id of the team to update
          * @param name name for the team
-         * @param members list of team member ids and names
+         * @param members list of team members
          * @return the saved [Team] or a [BCError] if any errors occurred
          */
         private fun update(
                 context: Context,
                 id: Long,
                 name: String,
-                members: List<Pair<String, Long>>
+                members: List<TeamMember>
         ): Deferred<Pair<Team?, BCError?>> {
             return async(CommonPool) {
                 val error = validateSavePreconditions(context, id, name, members).await()
@@ -357,7 +341,7 @@ data class Team(
 
                     members.forEach {
                         values = ContentValues().apply {
-                            put(TeamBowlerEntry.COLUMN_BOWLER_ID, it.second)
+                            put(TeamBowlerEntry.COLUMN_BOWLER_ID, it.bowlerId)
                             put(TeamBowlerEntry.COLUMN_TEAM_ID, id)
                         }
 
@@ -403,7 +387,8 @@ data class Team(
                         + "team." + TeamEntry.COLUMN_TEAM_NAME + ", "
                         + "team." + TeamEntry._ID + " AS tid, "
                         + "bowler." + BowlerEntry.COLUMN_BOWLER_NAME + ", "
-                        + "bowler." + BowlerEntry._ID + " as bid "
+                        + "bowler." + BowlerEntry._ID + " as bid, "
+                        + "tb." + TeamBowlerEntry._ID + " as tbid "
                         + "FROM " + TeamEntry.TABLE_NAME + " AS team "
                         + "JOIN " + TeamBowlerEntry.TABLE_NAME + " AS tb "
                         + "ON team." + TeamEntry._ID + "=" + TeamBowlerEntry.COLUMN_TEAM_ID + " "
@@ -418,7 +403,7 @@ data class Team(
                     if (cursor.moveToFirst()) {
                         var teamId = cursor.getLong(cursor.getColumnIndex("tid"))
                         var teamName = cursor.getString(cursor.getColumnIndex(TeamEntry.COLUMN_TEAM_NAME))
-                        var members: MutableList<Pair<String, Long>> = ArrayList()
+                        var members: MutableList<TeamMember> = ArrayList()
 
                         while (!cursor.isAfterLast) {
                             val newId = cursor.getLong(cursor.getColumnIndex("tid"))
@@ -430,9 +415,10 @@ data class Team(
                                 members = ArrayList()
                             }
 
-                            members.add(Pair(
-                                    cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_BOWLER_NAME)),
-                                    cursor.getLong(cursor.getColumnIndex("bid"))
+                            members.add(TeamMember(
+                                    id = cursor.getLong(cursor.getColumnIndex("tbid")),
+                                    bowlerName = cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_BOWLER_NAME)),
+                                    bowlerId = cursor.getLong(cursor.getColumnIndex("bid"))
                             ))
                             cursor.moveToNext()
                         }

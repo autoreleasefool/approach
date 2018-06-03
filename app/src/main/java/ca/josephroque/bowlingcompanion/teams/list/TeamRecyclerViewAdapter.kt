@@ -93,7 +93,7 @@ class TeamRecyclerViewAdapter(
                     id = viewId
                     isFocusable = false
                     isClickable = false
-                    chipText = it.first
+                    chipText = it.bowlerName
                     changeBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary))
                     textColor = ContextCompat.getColor(context, R.color.primaryWhiteText)
                     flowMembers?.addView(this)
