@@ -388,7 +388,7 @@ data class League(
                     val leagueId = database.insert(LeagueEntry.TABLE_NAME, null, values)
                     league = League(
                             bowler = bowler,
-                            id = -1,
+                            id = leagueId,
                             name = name,
                             average = 0.0,
                             isEvent = isEvent,
@@ -399,7 +399,7 @@ data class League(
                             seriesHighlight = seriesHighlight
                     )
 
-                    if (leagueId != -1L && isEvent) {
+                    if (league.id != -1L && isEvent) {
                         /*
                          * If the new entry is an event, its series is also created at this time
                          * since there is only a single series to an event
