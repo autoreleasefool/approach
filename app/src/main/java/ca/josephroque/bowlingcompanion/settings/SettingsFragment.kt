@@ -155,11 +155,12 @@ class SettingsFragment : PreferenceFragmentCompat(),
                         it.replace("\n", "<br />").toSpanned()
                 )
 
-                activity.supportFragmentManager.beginTransaction()
-                        .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                        .add(android.R.id.content, fragment)
-                        .addToBackStack(null)
-                        .commit()
+                activity.supportFragmentManager.beginTransaction().apply {
+                    setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    add(android.R.id.content, fragment)
+                    addToBackStack(null)
+                    commit()
+                }
             }
         }
     }
