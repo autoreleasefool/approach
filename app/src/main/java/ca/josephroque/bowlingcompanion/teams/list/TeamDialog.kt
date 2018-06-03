@@ -19,6 +19,7 @@ import ca.josephroque.bowlingcompanion.common.Android
 import ca.josephroque.bowlingcompanion.common.adapters.BaseRecyclerViewAdapter
 import ca.josephroque.bowlingcompanion.common.adapters.NameAverageRecyclerViewAdapter
 import ca.josephroque.bowlingcompanion.teams.Team
+import ca.josephroque.bowlingcompanion.teams.TeamMember
 import ca.josephroque.bowlingcompanion.utils.Color
 import ca.josephroque.bowlingcompanion.utils.safeLet
 import kotlinx.android.synthetic.main.dialog_team.*
@@ -72,12 +73,17 @@ class TeamDialog : DialogFragment(),
     private var bowlers: MutableList<Bowler> = ArrayList()
 
     /** Current list of selected bowlers. */
-    private val selectedBowlers: List<Pair<String, Long>>?
+    private val selectedBowlers: List<TeamMember>?
         get() {
+            val team = team ?: return null
             val selected = bowlerAdapter?.selectedItems ?: return null
-            val list: MutableList<Pair<String, Long>> = ArrayList()
+            val list: MutableList<TeamMember> = ArrayList()
             selected.forEach({
-                list.add(Pair(it.name, it.id))
+                list.add(TeamMember(
+                        teamId = team.id,
+                        bowlerName = it.name,
+                        bowlerId = it.id
+                ))
             })
             return list
         }
@@ -319,7 +325,7 @@ class TeamDialog : DialogFragment(),
 
             val ids: MutableSet<Long> = HashSet()
             team?.members?.forEach({
-                ids.add(it.second)
+                ids.add(it.id)
             })
             bowlerAdapter?.setSelectedElementsWithIds(ids)
             updateSaveButton()

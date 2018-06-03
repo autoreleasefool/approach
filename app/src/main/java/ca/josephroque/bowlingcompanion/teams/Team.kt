@@ -387,8 +387,7 @@ data class Team(
                         + "team." + TeamEntry.COLUMN_TEAM_NAME + ", "
                         + "team." + TeamEntry._ID + " AS tid, "
                         + "bowler." + BowlerEntry.COLUMN_BOWLER_NAME + ", "
-                        + "bowler." + BowlerEntry._ID + " as bid, "
-                        + "tb." + TeamBowlerEntry._ID + " as tbid "
+                        + "bowler." + BowlerEntry._ID + " as bid "
                         + "FROM " + TeamEntry.TABLE_NAME + " AS team "
                         + "JOIN " + TeamBowlerEntry.TABLE_NAME + " AS tb "
                         + "ON team." + TeamEntry._ID + "=" + TeamBowlerEntry.COLUMN_TEAM_ID + " "
@@ -416,7 +415,7 @@ data class Team(
                             }
 
                             members.add(TeamMember(
-                                    id = cursor.getLong(cursor.getColumnIndex("tbid")),
+                                    teamId = teamId,
                                     bowlerName = cursor.getString(cursor.getColumnIndex(BowlerEntry.COLUMN_BOWLER_NAME)),
                                     bowlerId = cursor.getLong(cursor.getColumnIndex("bid"))
                             ))
