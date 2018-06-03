@@ -67,16 +67,13 @@ class TeamDialog : DialogFragment(),
     private var listener: OnTeamDialogInteractionListener? = null
 
     /** Adapter to manage rendering the list of bowlers. */
-    private var bowlerAdapter: NameAverageRecyclerViewAdapter<Bowler>? = null
-
-    /** Bowlers to display. */
-    private var bowlers: MutableList<Bowler> = ArrayList()
+    private lateinit var bowlerAdapter: NameAverageRecyclerViewAdapter<Bowler>
 
     /** Current list of selected bowlers. */
     private val selectedBowlers: List<TeamMember>?
         get() {
             val team = team ?: return null
-            val selected = bowlerAdapter?.selectedItems ?: return null
+            val selected = bowlerAdapter.selectedItems
             val list: MutableList<TeamMember> = ArrayList()
             selected.forEach({
                 list.add(TeamMember(
@@ -148,7 +145,7 @@ class TeamDialog : DialogFragment(),
         val context = context ?: return
 
         bowlerAdapter = NameAverageRecyclerViewAdapter(emptyList(), this)
-        bowlerAdapter?.multiSelect = true
+        bowlerAdapter.multiSelect = true
 
         rootView.list_bowlers.layoutManager = LinearLayoutManager(context)
         rootView.list_bowlers.adapter = bowlerAdapter
@@ -312,9 +309,6 @@ class TeamDialog : DialogFragment(),
         val context = context?: return
         launch(Android) {
             val bowlers = Bowler.fetchAll(context).await()
-            this@TeamDialog.bowlers = bowlers
-            bowlerAdapter?.items = bowlers
-
             if (bowlers.isEmpty()) {
                 list_bowlers.visibility = View.GONE
                 tv_error_no_bowlers.visibility = View.VISIBLE
@@ -327,7 +321,7 @@ class TeamDialog : DialogFragment(),
             team?.members?.forEach({
                 ids.add(it.bowlerId)
             })
-            bowlerAdapter?.setSelectedElementsWithIds(ids)
+            bowlerAdapter.setSelectedElementsWithIds(ids)
             updateSaveButton()
         }
     }
