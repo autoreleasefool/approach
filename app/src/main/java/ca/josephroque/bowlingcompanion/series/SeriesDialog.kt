@@ -115,7 +115,7 @@ class SeriesDialog : DialogFragment(), DatePickerDialog.OnDateSetListener {
         rootView.btn_delete.setOnClickListener(onClickListener)
         rootView.toolbar_series.apply {
             inflateMenu(R.menu.dialog_series)
-            setNavigationIcon(R.drawable.ic_close)
+            setNavigationIcon(R.drawable.ic_dismiss)
             setNavigationOnClickListener {
                 dismiss()
             }

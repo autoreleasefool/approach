@@ -77,7 +77,7 @@ class ScrollableTextDialog : DialogFragment() {
         activity?.supportActionBar?.apply {
             setDisplayHomeAsUpEnabled(true)
             setDisplayShowHomeEnabled(true)
-            setHomeAsUpIndicator(R.drawable.ic_close)
+            setHomeAsUpIndicator(R.drawable.ic_dismiss)
         }
 
         setHasOptionsMenu(true)

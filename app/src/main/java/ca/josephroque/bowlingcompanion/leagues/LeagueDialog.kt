@@ -149,7 +149,7 @@ class LeagueDialog : DialogFragment() {
         rootView.toolbar_league.apply {
             inflateMenu(R.menu.dialog_league)
             menu.findItem(R.id.action_save).isEnabled = league?.name?.isNotEmpty() == true
-            setNavigationIcon(R.drawable.ic_close)
+            setNavigationIcon(R.drawable.ic_dismiss)
             setNavigationOnClickListener {
                 dismiss()
             }
