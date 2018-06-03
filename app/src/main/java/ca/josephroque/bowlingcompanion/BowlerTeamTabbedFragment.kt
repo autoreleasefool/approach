@@ -10,6 +10,7 @@ import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
 import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
 import ca.josephroque.bowlingcompanion.common.fragments.TabbedFragment
 import ca.josephroque.bowlingcompanion.teams.Team
+import ca.josephroque.bowlingcompanion.teams.details.TeamDetailsFragment
 import ca.josephroque.bowlingcompanion.teams.list.TeamDialog
 import ca.josephroque.bowlingcompanion.teams.list.TeamListFragment
 import kotlinx.android.synthetic.main.fragment_common_tabs.*
@@ -104,7 +105,7 @@ class BowlerTeamTabbedFragment : TabbedFragment(),
                 if (longPress) {
                     promptAddOrEditTeam(item)
                 } else {
-                    TODO("Select team")
+                    showTeamDetails(item)
                 }
             }
             else -> throw RuntimeException("BowlerTeamTabbedFragment can only handle Bowler or Team and item is $item")
@@ -138,6 +139,16 @@ class BowlerTeamTabbedFragment : TabbedFragment(),
      */
     private fun showLeaguesAndEvents(bowler: Bowler) {
         val newFragment = LeagueEventTabbedFragment.newInstance(bowler)
+        fragmentNavigation?.pushFragment(newFragment)
+    }
+
+    /**
+     * Push fragment to show details of a [Team].
+     *
+     * @param team the team whose details will be shown
+     */
+    private fun showTeamDetails(team: Team) {
+        val newFragment = TeamDetailsFragment.newInstance(team)
         fragmentNavigation?.pushFragment(newFragment)
     }
 

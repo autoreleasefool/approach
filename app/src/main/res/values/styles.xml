@@ -234,7 +234,10 @@
     </style>
 
     <style name="ListItemBodyText" parent="BodyText">
-        <item name="android:layout_margin">@dimen/list_item_margin</item>
+        <item name="android:layout_marginTop">@dimen/list_item_margin</item>
+        <item name="android:layout_marginBottom">@dimen/list_item_margin</item>
+        <item name="android:layout_marginLeft">@dimen/list_item_margin</item>
+        <item name="android:layout_marginRight">@dimen/list_item_margin</item>
         <item name="android:layout_gravity">center_vertical</item>
         <item name="android:singleLine">true</item>
         <item name="android:focusable">false</item>

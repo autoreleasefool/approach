@@ -59,6 +59,8 @@
     <string name="delete_team">Delete team</string>
     <string name="select_team_members">Select members</string>
     <string name="error_no_bowlers">You must have at least 1 bowler before you can create a team</string>
+    <string name="no_league_selected">No league selected</string>
+    <string name="no_series_selected">N/A</string>
 
     <string name="error_saving_team">Error saving team!</string>
     <string name="issue_saving_team">Issue saving team!</string>
@@ -179,6 +181,7 @@
     <string name="iv_foul">Foul</string>
     <string name="iv_match_play">Match play settings</string>
     <string name="iv_lock">Lock game</string>
+    <string name="iv_team_member_icon">Team member type indicator</string>
 
     <!-- Email -->
     <string name="send_email">Send email&#8230;</string>
