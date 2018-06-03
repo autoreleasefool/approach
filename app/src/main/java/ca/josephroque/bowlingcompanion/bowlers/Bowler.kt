@@ -100,6 +100,16 @@ data class Bowler(
         return League.fetchAll(context, this, false, true)
     }
 
+    /**
+     * Get all [League] instances belonging to this [Bowler] in the database.
+     *
+     * @param context to access database
+     * @return a [MutableList] of [League] instances
+     */
+    fun fetchLeaguesAndEvents(context: Context): Deferred<MutableList<League>> {
+        return League.fetchAll(context, this, true, true)
+    }
+
     /** @Override */
     override fun delete(context: Context): Deferred<Unit> {
         return async(CommonPool) {
