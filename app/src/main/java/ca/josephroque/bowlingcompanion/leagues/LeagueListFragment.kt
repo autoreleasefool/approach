@@ -32,22 +32,36 @@ class LeagueListFragment : ListFragment<League, NameAverageRecyclerViewAdapter<L
         private const val ARG_BOWLER = "${TAG}_bowler"
 
         /** Identifier for the argument indicating if this fragment should list leagues or events. */
-        private const val ARG_SHOW_EVENTS = "${TAG}_events"
+        private const val ARG_SHOW = "${TAG}_show"
 
         /**
          * Creates a new instance.
          *
          * @param bowler bowler to load leagues/events of
-         * @param showEvents true to show bowler's events, false to show leagues
+         * @param show what type of leagues to show in the list
          * @return the new instance
          */
-        fun newInstance(bowler: Bowler, showEvents: Boolean): LeagueListFragment {
+        fun newInstance(bowler: Bowler, show: Show): LeagueListFragment {
             val fragment = LeagueListFragment()
             val args = Bundle()
             args.putParcelable(ARG_BOWLER, bowler)
-            args.putBoolean(ARG_SHOW_EVENTS, showEvents)
+            args.putInt(ARG_SHOW, show.ordinal)
             fragment.arguments = args
             return fragment
+        }
+
+        /**
+         * What type of leagues to show in the list.
+         */
+        enum class Show {
+            Events,
+            Leagues,
+            Both;
+
+            companion object {
+                private val map = Show.values().associateBy(Show::ordinal)
+                fun fromInt(type: Int) = map[type]
+            }
         }
     }
 
@@ -55,7 +69,7 @@ class LeagueListFragment : ListFragment<League, NameAverageRecyclerViewAdapter<L
     private var bowler: Bowler? = null
 
     /** Indicates if this fragment should list leagues or events. */
-    private var showEvents: Boolean = false
+    private var show: Show = Show.Both
 
     /** @Override */
     override fun onCreateView(
@@ -64,10 +78,20 @@ class LeagueListFragment : ListFragment<League, NameAverageRecyclerViewAdapter<L
             savedInstanceState: Bundle?
     ): View? {
         bowler = savedInstanceState?.getParcelable(ARG_BOWLER) ?: arguments?.getParcelable(ARG_BOWLER)
-        showEvents = arguments?.getBoolean(ARG_SHOW_EVENTS) ?: false
+        show = Show.fromInt(arguments?.getInt(ARG_SHOW) ?: Show.Both.ordinal)!!
         setHasOptionsMenu(true)
 
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    /** @Override */
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+
+        outState.apply {
+            putParcelable(ARG_BOWLER, bowler)
+            putInt(ARG_SHOW, show.ordinal)
+        }
     }
 
     /** @Override */
@@ -106,10 +130,10 @@ class LeagueListFragment : ListFragment<League, NameAverageRecyclerViewAdapter<L
         return async(CommonPool) {
             this@LeagueListFragment.context?.let { context ->
                 bowler?.let {
-                    if (showEvents) {
-                        return@async it.fetchEvents(context).await()
-                    } else {
-                        return@async it.fetchLeagues(context).await()
+                    when (show) {
+                        Show.Events -> return@async it.fetchEvents(context).await()
+                        Show.Leagues -> return@async it.fetchLeagues(context).await()
+                        Show.Both -> return@async it.fetchLeaguesAndEvents(context).await()
                     }
                 }
             }

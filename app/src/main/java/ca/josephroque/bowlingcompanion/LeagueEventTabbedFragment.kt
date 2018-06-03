@@ -176,8 +176,8 @@ class LeagueEventTabbedFragment : TabbedFragment(),
         override fun buildFragment(position: Int): Fragment? {
             bowler?.let {
                 return when (Tab.fromInt(position)) {
-                    Tab.Leagues -> LeagueListFragment.newInstance(bowler, false)
-                    Tab.Events -> LeagueListFragment.newInstance(bowler, true)
+                    Tab.Leagues -> LeagueListFragment.newInstance(bowler, LeagueListFragment.Companion.Show.Leagues)
+                    Tab.Events -> LeagueListFragment.newInstance(bowler, LeagueListFragment.Companion.Show.Events)
                     else -> null
                 }
             }
