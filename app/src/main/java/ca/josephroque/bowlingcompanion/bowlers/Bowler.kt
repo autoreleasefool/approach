@@ -372,12 +372,29 @@ data class Bowler(
         }
 
         /**
+         * Fetch a single bowler from the app by their ID.
+         *
+         * @return a [Bowler] if the ID was valid, null otherwise
+         */
+        fun fetch(context: Context, id: Long): Deferred<Bowler?> {
+            return async(CommonPool) {
+                val bowlerList = fetchAll(context, id).await()
+                if (bowlerList.size == 1) {
+                    bowlerList[0]
+                } else {
+                    null
+                }
+            }
+        }
+
+        /**
          * Get all of the bowlers available in the app.
          *
          * @param context to get database instance
+         * @param filterId filter to a single bowler ID
          * @return a [MutableList] of [Bowler] instances from the database.
          */
-        fun fetchAll(context: Context): Deferred<MutableList<Bowler>> {
+        fun fetchAll(context: Context, filterId: Long = -1): Deferred<MutableList<Bowler>> {
             return async(CommonPool) {
                 val bowlers: MutableList<Bowler> = ArrayList()
 
@@ -434,14 +451,17 @@ data class Bowler(
                         + " ON t.lid2=league." + LeagueEntry._ID
                         + " LEFT JOIN (" + baseAverageAndGamesQuery + ") AS u"
                         + " ON u.lid3=league." + LeagueEntry._ID
+                        + " WHERE "
+                        + (if (filterId != -1L) "bid" else "'0'") + "=?"
                         + " GROUP BY bowler." + BowlerEntry._ID
                         + orderQueryBy)
 
                 val rawBowlerArgs = arrayOf(
-                        0.toString(),
-                        0.toString(),
-                        if (!includeOpen) League.PRACTICE_LEAGUE_NAME else 0.toString(),
-                        0.toString())
+                        /* game2.SCORE > */ 0.toString(),
+                        /* COLUMN_IS_EVENT || 0 = */ 0.toString(),
+                        /* COLUMN_LEAGUE_NAME || 0 = */ if (!includeOpen) League.PRACTICE_LEAGUE_NAME else 0.toString(),
+                        /* COLUMN_BASE_AVERAGE > */ 0.toString(),
+                        /* bid || 0 */ if (filterId != -1L) filterId.toString() else 0.toString())
 
                 // Adds loaded bowler names and averages to lists to display
                 var cursor: Cursor? = null
