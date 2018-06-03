@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.teams
+package ca.josephroque.bowlingcompanion.teams.list
 
 import android.annotation.SuppressLint
 import android.os.Bundle
@@ -8,6 +8,7 @@ import android.view.*
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.bowlers.Bowler
 import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
+import ca.josephroque.bowlingcompanion.teams.Team
 import ca.josephroque.bowlingcompanion.utils.Preferences
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred

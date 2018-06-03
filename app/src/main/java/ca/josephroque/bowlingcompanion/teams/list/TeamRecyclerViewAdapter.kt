@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.teams
+package ca.josephroque.bowlingcompanion.teams.list
 
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.adapters.BaseRecyclerViewAdapter
+import ca.josephroque.bowlingcompanion.teams.Team
 import com.nex3z.flowlayout.FlowLayout
 import com.robertlevonyan.views.chip.Chip
 

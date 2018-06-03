@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.teams
+package ca.josephroque.bowlingcompanion.teams.list
 
 import android.app.Dialog
 import android.content.Context
@@ -18,6 +18,7 @@ import ca.josephroque.bowlingcompanion.bowlers.Bowler
 import ca.josephroque.bowlingcompanion.common.Android
 import ca.josephroque.bowlingcompanion.common.adapters.BaseRecyclerViewAdapter
 import ca.josephroque.bowlingcompanion.common.adapters.NameAverageRecyclerViewAdapter
+import ca.josephroque.bowlingcompanion.teams.Team
 import ca.josephroque.bowlingcompanion.utils.Color
 import ca.josephroque.bowlingcompanion.utils.safeLet
 import kotlinx.android.synthetic.main.dialog_team.*
@@ -167,7 +168,8 @@ class TeamDialog : DialogFragment(),
     /** @Override */
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        val parent = parentFragment as? OnTeamDialogInteractionListener ?: throw RuntimeException("${parentFragment!!} must implement OnTeamDialogInteractionListener")
+        val parent = parentFragment as? OnTeamDialogInteractionListener
+                ?: throw RuntimeException("${parentFragment!!} must implement OnTeamDialogInteractionListener")
         listener = parent
     }
 

@@ -10,8 +10,8 @@ import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
 import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
 import ca.josephroque.bowlingcompanion.common.fragments.TabbedFragment
 import ca.josephroque.bowlingcompanion.teams.Team
-import ca.josephroque.bowlingcompanion.teams.TeamDialog
-import ca.josephroque.bowlingcompanion.teams.TeamListFragment
+import ca.josephroque.bowlingcompanion.teams.list.TeamDialog
+import ca.josephroque.bowlingcompanion.teams.list.TeamListFragment
 import kotlinx.android.synthetic.main.fragment_common_tabs.*
 
 /**
