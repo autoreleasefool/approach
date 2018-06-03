@@ -69,6 +69,10 @@
     <string name="error_team_has_no_members">A team must have at least 1 member.</string>
     <string name="error_team_not_saved">An error occurred and the team could not be saved.</string>
 
+    <!-- Team Members -->
+    <string name="team_members">Team members</string>
+    <string name="team_members_select_league">Select an event, or a league and series for each bowler</string>
+
     <!-- Leagues -->
     <string name="create_new_league_event">Create a new…</string>
     <string name="league">League</string>

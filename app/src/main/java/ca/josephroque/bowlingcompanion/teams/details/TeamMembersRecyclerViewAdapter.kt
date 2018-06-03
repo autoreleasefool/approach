@@ -16,7 +16,7 @@ import ca.josephroque.bowlingcompanion.teams.TeamMember
  *
  * [BaseRecyclerViewAdapter] that can display the members of a [Team].
  */
-class TeamDetailsRecyclerViewAdapter(
+class TeamMembersRecyclerViewAdapter(
         items: List<TeamMember>,
         listener: BaseRecyclerViewAdapter.OnAdapterInteractionListener<TeamMember>
 ) : BaseRecyclerViewAdapter<TeamMember>(items, listener) {
@@ -24,7 +24,7 @@ class TeamDetailsRecyclerViewAdapter(
     companion object {
         /** Logging identifier. */
         @Suppress("unused")
-        private const val TAG = "TeamDetailsRecyclerViewAdapter"
+        private const val TAG = "TeamMembersRecyclerViewAdapter"
     }
 
     /** @Override */
@@ -83,7 +83,7 @@ class TeamDetailsRecyclerViewAdapter(
                 itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorListAlternate))
             }
 
-            itemView.setOnClickListener(this@TeamDetailsRecyclerViewAdapter)
+            itemView.setOnClickListener(this@TeamMembersRecyclerViewAdapter)
         }
     }
 }

@@ -4,25 +4,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import ca.josephroque.bowlingcompanion.R
-import ca.josephroque.bowlingcompanion.common.fragments.BaseFragment
 import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
-import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
 import ca.josephroque.bowlingcompanion.teams.Team
 import ca.josephroque.bowlingcompanion.teams.TeamMember
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.experimental.async
 
 /**
  * Copyright (C) 2018 Joseph Roque
  *
- * A fragment representing the details of a single team and its members.
+ * A fragment to display a list of team members.
  */
-class TeamDetailsFragment : BaseFragment(),
-        ListFragment.OnListFragmentInteractionListener {
+class TeamMembersListFragment : ListFragment<TeamMember, TeamMembersRecyclerViewAdapter>() {
 
     companion object {
         /** Logging identifier. */
         @Suppress("unused")
-        private const val TAG = "TeamDetailsFragment"
+        private const val TAG = "TeamMembersListFragment"
 
         /** Identifier for the argument that represents the [Team] whose details are displayed. */
         private const val ARG_TEAM = "${TAG}_team"
@@ -33,8 +32,8 @@ class TeamDetailsFragment : BaseFragment(),
          * @param team team to load details of
          * @return the new instance
          */
-        fun newInstance(team: Team): TeamDetailsFragment {
-            val fragment = TeamDetailsFragment()
+        fun newInstance(team: Team): TeamMembersListFragment {
+            val fragment = TeamMembersListFragment()
             val args = Bundle()
             args.putParcelable(ARG_TEAM, team)
             fragment.arguments = args
@@ -48,26 +47,22 @@ class TeamDetailsFragment : BaseFragment(),
     /** @Override */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         team = savedInstanceState?.getParcelable(ARG_TEAM) ?: arguments?.getParcelable(ARG_TEAM)
-        setHasOptionsMenu(true)
-        val view = inflater.inflate(R.layout.fragment_team_details, container, false)
-
-        val team = team
-        if (savedInstanceState == null && team != null) {
-            // TODO: is there a way to embed this directly in XML?
-            val fragment = TeamMembersListFragment.newInstance(team)
-            childFragmentManager.beginTransaction().apply {
-                add(R.id.fragment_container, fragment)
-                commit()
-            }
-        }
-
-        return view
+        return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     /** @Override */
-    override fun onItemSelected(item: IIdentifiable, longPress: Boolean) {
-        if (item is TeamMember) {
-            TODO("not implemented")
+    override fun buildAdapter(): TeamMembersRecyclerViewAdapter {
+        val teamMembers: List<TeamMember> = team?.members ?: emptyList()
+        return TeamMembersRecyclerViewAdapter(teamMembers, this)
+    }
+
+    /** @Override */
+    override fun fetchItems(): Deferred<MutableList<TeamMember>> {
+        return async(CommonPool) {
+            team?.let {
+                return@async it.members.toMutableList()
+            }
+            emptyList<TeamMember>().toMutableList()
         }
     }
 }
