@@ -24,10 +24,10 @@ class ScrollableTextDialog : DialogFragment() {
         private const val TAG = "ScrollableTextDialog"
 
         /** Argument identifier for title of fragment. */
-        private const val TITLE = "${TAG}_TITLE"
+        private const val ARG_TITLE = "${TAG}_title"
 
         /** Argument identifier for text to display. */
-        private const val TEXT = "${TAG}_TEXT"
+        private const val ARG_TEXT = "${TAG}_text"
 
         /**
          * Create a new instance of [ScrollableTextDialog].
@@ -38,8 +38,8 @@ class ScrollableTextDialog : DialogFragment() {
         fun newInstance(@StringRes title: Int, text: CharSequence): ScrollableTextDialog {
             val fragment = ScrollableTextDialog()
             val args = Bundle().apply {
-                putInt(TITLE, title)
-                putCharSequence(TEXT, text)
+                putInt(ARG_TITLE, title)
+                putCharSequence(ARG_TEXT, text)
             }
 
             fragment.arguments = args
@@ -59,14 +59,9 @@ class ScrollableTextDialog : DialogFragment() {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        savedInstanceState?.let {
-            title = it.getInt(TITLE)
-            text = it.getCharSequence(TEXT)
-        } ?: run {
-            arguments?.let {
-                title = it.getInt(TITLE)
-                text = it.getCharSequence(TEXT)
-            }
+        arguments?.let {
+            title = it.getInt(ARG_TITLE)
+            text = it.getCharSequence(ARG_TEXT)
         }
 
         val rootView = inflater.inflate(R.layout.dialog_scrollable_text, container, false)
@@ -82,15 +77,6 @@ class ScrollableTextDialog : DialogFragment() {
 
         setHasOptionsMenu(true)
         return rootView
-    }
-
-    /** @Override */
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.apply {
-            putInt(TITLE, title)
-            putCharSequence(TEXT, text)
-        }
     }
 
     /** @Override */

@@ -87,13 +87,13 @@ class GameFooterView : ConstraintLayout, View.OnClickListener {
 
     /** @Override */
     override fun onSaveInstanceState(): Parcelable {
-        val bundle = Bundle()
-        bundle.putParcelable(SUPER_STATE, super.onSaveInstanceState())
-        bundle.putInt(STATE_CURRENT_BALL, currentBall)
-        bundle.putInt(STATE_MATCH_PLAY_RESULT, matchPlayResult.ordinal)
-        bundle.putBoolean(STATE_LOCK, isGameLocked)
-        bundle.putBoolean(STATE_FOUL, isFoulActive)
-        return bundle
+        return Bundle().apply {
+            putParcelable(SUPER_STATE, super.onSaveInstanceState())
+            putInt(STATE_CURRENT_BALL, currentBall)
+            putInt(STATE_MATCH_PLAY_RESULT, matchPlayResult.ordinal)
+            putBoolean(STATE_LOCK, isGameLocked)
+            putBoolean(STATE_FOUL, isFoulActive)
+        }
     }
 
     /** @Override */

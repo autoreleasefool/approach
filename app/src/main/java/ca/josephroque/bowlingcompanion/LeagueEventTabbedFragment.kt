@@ -64,9 +64,7 @@ class LeagueEventTabbedFragment : TabbedFragment(),
          */
         fun newInstance(bowler: Bowler): LeagueEventTabbedFragment {
             val fragment = LeagueEventTabbedFragment()
-            val args = Bundle()
-            args.putParcelable(ARG_BOWLER, bowler)
-            fragment.arguments = args
+            fragment.arguments = Bundle().apply { putParcelable(ARG_BOWLER, bowler) }
             return fragment
         }
     }

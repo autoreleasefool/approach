@@ -56,11 +56,11 @@ class LeagueDialog : DialogFragment() {
          */
         fun newInstance(bowler: Bowler, league: League?, isEvent: Boolean): LeagueDialog {
             val dialog = LeagueDialog()
-            val args = Bundle()
-            args.putParcelable(ARG_BOWLER, bowler)
-            args.putBoolean(ARG_IS_EVENT, isEvent)
-            league?.let { args.putParcelable(ARG_LEAGUE, league) }
-            dialog.arguments = args
+            dialog.arguments = Bundle().apply {
+                putParcelable(ARG_BOWLER, bowler)
+                putBoolean(ARG_IS_EVENT, isEvent)
+                league?.let { putParcelable(ARG_LEAGUE, league) }
+            }
             return dialog
         }
     }
@@ -119,9 +119,11 @@ class LeagueDialog : DialogFragment() {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        bowler = savedInstanceState?.getParcelable(ARG_BOWLER) ?: arguments?.getParcelable(ARG_BOWLER)
-        league = savedInstanceState?.getParcelable(ARG_LEAGUE) ?: arguments?.getParcelable(ARG_LEAGUE)
-        isEvent = savedInstanceState?.getBoolean(ARG_IS_EVENT) ?: arguments?.getBoolean(ARG_IS_EVENT) ?: false
+        arguments?.let {
+            bowler = it.getParcelable(ARG_BOWLER)
+            league = it.getParcelable(ARG_LEAGUE)
+            isEvent = it.getBoolean(ARG_IS_EVENT)
+        }
 
         val rootView = inflater.inflate(R.layout.dialog_league, container, false)
 
@@ -282,16 +284,6 @@ class LeagueDialog : DialogFragment() {
         setImeOptions()
         setLeagueOptionsVisible()
         updateSaveButton()
-    }
-
-    /** @Override */
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.apply {
-            putParcelable(ARG_BOWLER, bowler)
-            putParcelable(ARG_LEAGUE, league)
-            putBoolean(ARG_IS_EVENT, isEvent)
-        }
     }
 
     /** @Override */

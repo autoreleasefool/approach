@@ -48,9 +48,7 @@ class SeriesDialog : DialogFragment(), DatePickerDialog.OnDateSetListener {
          */
         fun newInstance(series: Series): SeriesDialog {
             val dialog = SeriesDialog()
-            val args = Bundle()
-            args.putParcelable(ARG_SERIES, series)
-            dialog.arguments = args
+            dialog.arguments = Bundle().apply { putParcelable(ARG_SERIES, series) }
             return dialog
         }
     }
@@ -95,7 +93,7 @@ class SeriesDialog : DialogFragment(), DatePickerDialog.OnDateSetListener {
 
     /** @Override */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        series = savedInstanceState?.getParcelable(ARG_SERIES) ?: arguments?.getParcelable(ARG_SERIES)
+        series = arguments?.getParcelable(ARG_SERIES)
         currentDate = Date(savedInstanceState?.getLong(ARG_DATE) ?: series?.date?.time ?: 0)
 
         val rootView = inflater.inflate(R.layout.dialog_series, container, false)
@@ -161,11 +159,8 @@ class SeriesDialog : DialogFragment(), DatePickerDialog.OnDateSetListener {
     /** @Override */
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.apply {
-            putParcelable(ARG_SERIES, series)
-            currentDate?.let {
-                putLong(ARG_DATE, it.time)
-            }
+        currentDate?.let {
+            outState.putLong(ARG_DATE, it.time)
         }
     }
 

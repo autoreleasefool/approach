@@ -80,12 +80,12 @@ class GameHeaderView : LinearLayout, View.OnClickListener {
 
     /** @Override */
     override fun onSaveInstanceState(): Parcelable {
-        val bundle = Bundle()
-        bundle.putParcelable(SUPER_STATE, super.onSaveInstanceState())
-        bundle.putInt(STATE_CURRENT_GAME, currentGame)
-        bundle.putInt(STATE_CURRENT_FRAME, currentFrame)
-        bundle.putInt(STATE_CURRENT_BALL, currentBall)
-        return bundle
+        return Bundle().apply {
+            putParcelable(SUPER_STATE, super.onSaveInstanceState())
+            putInt(STATE_CURRENT_GAME, currentGame)
+            putInt(STATE_CURRENT_FRAME, currentFrame)
+            putInt(STATE_CURRENT_BALL, currentBall)
+        }
     }
 
     /** @Override */

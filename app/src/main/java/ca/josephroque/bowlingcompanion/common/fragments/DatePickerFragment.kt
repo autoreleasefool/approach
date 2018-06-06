@@ -33,11 +33,11 @@ class DatePickerFragment : DialogFragment(),
 
         fun newInstance(calendar: Calendar): DatePickerFragment {
             val fragment = DatePickerFragment()
-            val args = Bundle()
-            args.putInt(ARG_DAY, calendar.get(Calendar.DAY_OF_MONTH))
-            args.putInt(ARG_MONTH, calendar.get(Calendar.MONTH))
-            args.putInt(ARG_YEAR, calendar.get(Calendar.YEAR))
-            fragment.arguments = args
+            fragment.arguments = Bundle().apply {
+                putInt(ARG_DAY, calendar.get(Calendar.DAY_OF_MONTH))
+                putInt(ARG_MONTH, calendar.get(Calendar.MONTH))
+                putInt(ARG_YEAR, calendar.get(Calendar.YEAR))
+            }
             return fragment
         }
     }

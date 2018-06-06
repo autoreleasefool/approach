@@ -50,11 +50,11 @@ class LeagueListFragment : ListFragment<League, NameAverageRecyclerViewAdapter<L
          */
         fun newInstance(bowler: Bowler, show: Show, singleSelectMode: Boolean = false): LeagueListFragment {
             val fragment = LeagueListFragment()
-            val args = Bundle()
-            args.putParcelable(ARG_BOWLER, bowler)
-            args.putInt(ARG_SHOW, show.ordinal)
-            args.putBoolean(ARG_SINGLE_SELECT_MODE, singleSelectMode)
-            fragment.arguments = args
+            fragment.arguments = Bundle().apply {
+                putParcelable(ARG_BOWLER, bowler)
+                putInt(ARG_SHOW, show.ordinal)
+                putBoolean(ARG_SINGLE_SELECT_MODE, singleSelectMode)
+            }
             return fragment
         }
 
@@ -68,11 +68,11 @@ class LeagueListFragment : ListFragment<League, NameAverageRecyclerViewAdapter<L
          */
         fun newInstance(bowlerId: Long, show: Show, singleSelectMode: Boolean = false): LeagueListFragment {
             val fragment = LeagueListFragment()
-            val args = Bundle()
-            args.putLong(ARG_BOWLER_ID, bowlerId)
-            args.putInt(ARG_SHOW, show.ordinal)
-            args.putBoolean(ARG_SINGLE_SELECT_MODE, singleSelectMode)
-            fragment.arguments = args
+            fragment.arguments = Bundle().apply {
+                putLong(ARG_BOWLER_ID, bowlerId)
+                putInt(ARG_SHOW, show.ordinal)
+                putBoolean(ARG_SINGLE_SELECT_MODE, singleSelectMode)
+            }
             return fragment
         }
 

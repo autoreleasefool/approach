@@ -36,9 +36,7 @@ class TeamDetailsFragment : BaseFragment(),
          */
         fun newInstance(team: Team): TeamDetailsFragment {
             val fragment = TeamDetailsFragment()
-            val args = Bundle()
-            args.putParcelable(ARG_TEAM, team)
-            fragment.arguments = args
+            fragment.arguments = Bundle().apply { putParcelable(ARG_TEAM, team) }
             return fragment
         }
     }

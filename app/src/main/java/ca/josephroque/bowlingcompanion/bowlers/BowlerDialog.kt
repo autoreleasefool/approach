@@ -40,9 +40,7 @@ class BowlerDialog : DialogFragment(), View.OnClickListener {
          */
         fun newInstance(bowler: Bowler?): BowlerDialog {
             val dialog = BowlerDialog()
-            val args = Bundle()
-            bowler?.let { args.putParcelable(ARG_BOWLER, bowler) }
-            dialog.arguments = args
+            dialog.arguments = Bundle().apply { bowler?.let { putParcelable(ARG_BOWLER, bowler) } }
             return dialog
         }
     }
@@ -65,7 +63,7 @@ class BowlerDialog : DialogFragment(), View.OnClickListener {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        bowler = arguments?.getParcelable(ARG_BOWLER) ?: savedInstanceState?.getParcelable(ARG_BOWLER)
+        bowler = arguments?.getParcelable(ARG_BOWLER)
 
         val rootView = inflater.inflate(R.layout.dialog_bowler, container, false)
         setupToolbar(rootView)
@@ -155,12 +153,6 @@ class BowlerDialog : DialogFragment(), View.OnClickListener {
 
         input_name.setSelection(input_name.text.length)
         updateSaveButton()
-    }
-
-    /** @Override */
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putParcelable(ARG_BOWLER, bowler)
     }
 
     /** @Override */

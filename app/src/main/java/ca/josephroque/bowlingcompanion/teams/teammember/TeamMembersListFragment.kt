@@ -33,9 +33,7 @@ class TeamMembersListFragment : ListFragment<TeamMember, TeamMembersRecyclerView
          */
         fun newInstance(team: Team): TeamMembersListFragment {
             val fragment = TeamMembersListFragment()
-            val args = Bundle()
-            args.putParcelable(ARG_TEAM, team)
-            fragment.arguments = args
+            fragment.arguments = Bundle().apply { putParcelable(ARG_TEAM, team) }
             return fragment
         }
     }

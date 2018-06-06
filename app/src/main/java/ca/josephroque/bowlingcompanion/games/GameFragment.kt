@@ -67,7 +67,7 @@ class GameFragment : BaseFragment(),
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        series = savedInstanceState?.getParcelable(ARG_SERIES) ?: arguments?.getParcelable(ARG_SERIES)
+        series = arguments?.getParcelable(ARG_SERIES)
         val view = inflater.inflate(R.layout.fragment_game, container, false)
 
         frameViews = arrayOfNulls(frameViewIds.size)
@@ -78,12 +78,6 @@ class GameFragment : BaseFragment(),
         setupBottomSheet(view)
 
         return view
-    }
-
-    /** @Override */
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putParcelable(ARG_SERIES, series)
     }
 
     /** @Override */
@@ -216,9 +210,7 @@ class GameFragment : BaseFragment(),
          */
         fun newInstance(series: Series): GameFragment {
             val fragment = GameFragment()
-            val args = Bundle()
-            args.putParcelable(ARG_SERIES, series)
-            fragment.arguments = args
+            fragment.arguments = Bundle().apply { putParcelable(ARG_SERIES, series) }
             return fragment
         }
     }

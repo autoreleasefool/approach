@@ -53,9 +53,7 @@ class TeamDialog : DialogFragment(),
          */
         fun newInstance(team: Team?): TeamDialog {
             val dialog = TeamDialog()
-            val args = Bundle()
-            team?.let { args.putParcelable(ARG_TEAM, team) }
-            dialog.arguments = args
+            dialog.arguments = Bundle().apply { team?.let { putParcelable(ARG_TEAM, team) } }
             return dialog
         }
     }
@@ -97,7 +95,7 @@ class TeamDialog : DialogFragment(),
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        team = arguments?.getParcelable(ARG_TEAM) ?: savedInstanceState?.getParcelable(ARG_TEAM)
+        team = arguments?.getParcelable(ARG_TEAM)
 
         val rootView = inflater.inflate(R.layout.dialog_team, container, false)
         setupToolbar(rootView)
@@ -204,12 +202,6 @@ class TeamDialog : DialogFragment(),
 
         input_name.setSelection(input_name.text.length)
         refreshBowlerList()
-    }
-
-    /** @Override */
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putParcelable(ARG_TEAM, team)
     }
 
     /** @Override */

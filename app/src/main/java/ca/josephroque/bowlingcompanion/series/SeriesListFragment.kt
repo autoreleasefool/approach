@@ -41,10 +41,8 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
          */
         fun newInstance(league: League): SeriesListFragment {
             val fragment = SeriesListFragment()
-            val args = Bundle()
-            args.putParcelable(ARG_LEAGUE, league)
-            fragment.arguments = args
             fragment.canIgnoreListener = true
+            fragment.arguments = Bundle().apply { putParcelable(ARG_LEAGUE, league) }
             return fragment
         }
     }
@@ -73,7 +71,7 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        league = savedInstanceState?.getParcelable(ARG_LEAGUE) ?: arguments?.getParcelable(ARG_LEAGUE)
+        league = arguments?.getParcelable(ARG_LEAGUE)
         context?.let {
             seriesView = Series.Companion.View.fromInt(PreferenceManager.getDefaultSharedPreferences(it)
                     .getInt(Series.PREFERRED_VIEW, Series.Companion.View.Expanded.ordinal))!!
@@ -82,12 +80,6 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
         setHasOptionsMenu(true)
         listener = this
         return super.onCreateView(inflater, container, savedInstanceState)
-    }
-
-    /** @Override */
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putParcelable(ARG_LEAGUE, league)
     }
 
     /** @Override. */

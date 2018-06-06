@@ -97,13 +97,13 @@ class FrameView : LinearLayout, View.OnClickListener {
 
     /** @Override */
     override fun onSaveInstanceState(): Parcelable {
-        val bundle = Bundle()
-        bundle.putParcelable(SUPER_STATE, super.onSaveInstanceState())
-        bundle.putInt(STATE_FRAME_NUMBER, frameNumber)
-        bundle.putInt(STATE_SCORE, score)
-        bundle.putInt(STATE_CURRENT_BALL, currentBall)
-        bundle.putBoolean(STATE_CURRENT_FRAME, isCurrentFrame)
-        return bundle
+        return Bundle().apply {
+            putParcelable(SUPER_STATE, super.onSaveInstanceState())
+            putInt(STATE_FRAME_NUMBER, frameNumber)
+            putInt(STATE_SCORE, score)
+            putInt(STATE_CURRENT_BALL, currentBall)
+            putBoolean(STATE_CURRENT_FRAME, isCurrentFrame)
+        }
     }
 
     /** @Override */

@@ -40,9 +40,7 @@ class GameControllerFragment : TabbedFragment(),
          */
         fun newInstance(series: List<Series>): GameControllerFragment {
             val fragment = GameControllerFragment()
-            val args = Bundle()
-            args.putParcelableArray(ARG_SERIES, series.toTypedArray())
-            fragment.arguments = args
+            fragment.arguments = Bundle().apply { putParcelableArray(ARG_SERIES, series.toTypedArray()) }
             return fragment
         }
     }
