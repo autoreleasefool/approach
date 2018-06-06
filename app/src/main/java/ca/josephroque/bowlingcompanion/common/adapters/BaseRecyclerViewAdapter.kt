@@ -46,6 +46,7 @@ abstract class BaseRecyclerViewAdapter<Item : IIdentifiable>(
                 throw AssertionError("Cannot be multiSelect and swipeable simultaneously")
             }
             field = value
+            notifyDataSetChanged()
         }
 
     /** Indicates if the list should be multi-select (if true), or single-select. */
@@ -56,6 +57,14 @@ abstract class BaseRecyclerViewAdapter<Item : IIdentifiable>(
             }
             field = value
             _selectedItems.clear()
+            notifyDataSetChanged()
+        }
+
+    /** Indicates if the items can be long pressed or not. */
+    var longPressable: Boolean = false
+        set(value) {
+            field = value
+            notifyDataSetChanged()
         }
 
     /** Handles complex interactions with the [RecyclerView] (swipe/drag). */
@@ -136,6 +145,10 @@ abstract class BaseRecyclerViewAdapter<Item : IIdentifiable>(
 
     /** @Override */
     override fun onLongClick(v: View): Boolean {
+        if (!longPressable) {
+            return false
+        }
+
         recyclerView?.let {
             if (multiSelect) {
                 return false
