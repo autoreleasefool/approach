@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.teams.details
+package ca.josephroque.bowlingcompanion.teams.teammember
 
 import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
@@ -9,7 +9,6 @@ import android.widget.TextView
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.adapters.BaseRecyclerViewAdapter
 import ca.josephroque.bowlingcompanion.teams.Team
-import ca.josephroque.bowlingcompanion.teams.TeamMember
 
 /**
  * Copyright (C) 2018 Joseph Roque

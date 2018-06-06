@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.teams.details
+package ca.josephroque.bowlingcompanion.teams.teammember
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
 import ca.josephroque.bowlingcompanion.teams.Team
-import ca.josephroque.bowlingcompanion.teams.TeamMember
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async

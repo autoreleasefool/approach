@@ -9,7 +9,8 @@ import ca.josephroque.bowlingcompanion.common.fragments.BaseFragment
 import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
 import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
 import ca.josephroque.bowlingcompanion.teams.Team
-import ca.josephroque.bowlingcompanion.teams.TeamMember
+import ca.josephroque.bowlingcompanion.teams.teammember.TeamMember
+import ca.josephroque.bowlingcompanion.teams.teammember.TeamMembersListFragment
 
 /**
  * Copyright (C) 2018 Joseph Roque

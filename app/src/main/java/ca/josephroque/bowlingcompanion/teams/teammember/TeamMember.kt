@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.teams
+package ca.josephroque.bowlingcompanion.teams.teammember
 
 import android.os.Parcel
 import android.os.Parcelable
