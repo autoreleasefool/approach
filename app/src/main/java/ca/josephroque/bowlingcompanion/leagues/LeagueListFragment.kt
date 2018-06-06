@@ -31,21 +31,47 @@ class LeagueListFragment : ListFragment<League, NameAverageRecyclerViewAdapter<L
         /** Identifier for the argument that represents the [Bowler] whose leagues are displayed. */
         private const val ARG_BOWLER = "${TAG}_bowler"
 
+        /** Identifier for the argument that represents the id of the [Bowler] whose leagues are displayed. */
+        private const val ARG_BOWLER_ID = "${TAG}_bowler_id"
+
         /** Identifier for the argument indicating if this fragment should list leagues or events. */
         private const val ARG_SHOW = "${TAG}_show"
+
+        /** Identifier for the single select mode. */
+        private const val ARG_SINGLE_SELECT_MODE = "${TAG}_single_select"
 
         /**
          * Creates a new instance.
          *
          * @param bowler bowler to load leagues/events of
          * @param show what type of leagues to show in the list
+         * @param singleSelectMode disables swiping and long press of the list
          * @return the new instance
          */
-        fun newInstance(bowler: Bowler, show: Show): LeagueListFragment {
+        fun newInstance(bowler: Bowler, show: Show, singleSelectMode: Boolean = false): LeagueListFragment {
             val fragment = LeagueListFragment()
             val args = Bundle()
             args.putParcelable(ARG_BOWLER, bowler)
             args.putInt(ARG_SHOW, show.ordinal)
+            args.putBoolean(ARG_SINGLE_SELECT_MODE, singleSelectMode)
+            fragment.arguments = args
+            return fragment
+        }
+
+        /**
+         * Creates a new instance.
+         *
+         * @param bowlerId id of bowler to load leagues/events of
+         * @param show what type of leagues to show in the list
+         * @param singleSelectMode disables swiping and long press of the list
+         * @return the new instance
+         */
+        fun newInstance(bowlerId: Long, show: Show, singleSelectMode: Boolean = false): LeagueListFragment {
+            val fragment = LeagueListFragment()
+            val args = Bundle()
+            args.putLong(ARG_BOWLER_ID, bowlerId)
+            args.putInt(ARG_SHOW, show.ordinal)
+            args.putBoolean(ARG_SINGLE_SELECT_MODE, singleSelectMode)
             fragment.arguments = args
             return fragment
         }
@@ -68,8 +94,14 @@ class LeagueListFragment : ListFragment<League, NameAverageRecyclerViewAdapter<L
     /** The bowler whose leagues are to be displayed. */
     private var bowler: Bowler? = null
 
+    /** The id of the bowler whose leagues are to be displayed. Only used if `bowler` is unavailable. */
+    private var bowlerId: Long? = null
+
     /** Indicates if this fragment should list leagues or events. */
     private var show: Show = Show.Both
+
+    /** When true, the features of the fragment are limited to only offer selecting a single league. */
+    private var singleSelectMode: Boolean = false
 
     /** @Override */
     override fun onCreateView(
@@ -77,21 +109,15 @@ class LeagueListFragment : ListFragment<League, NameAverageRecyclerViewAdapter<L
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        bowler = savedInstanceState?.getParcelable(ARG_BOWLER) ?: arguments?.getParcelable(ARG_BOWLER)
-        show = Show.fromInt(arguments?.getInt(ARG_SHOW) ?: Show.Both.ordinal)!!
+        arguments?.let {
+            bowler = it.getParcelable(ARG_BOWLER)
+            bowlerId = it.getLong(ARG_BOWLER_ID)
+            show = Show.fromInt(it.getInt(ARG_SHOW))!!
+            singleSelectMode = it.getBoolean(ARG_SINGLE_SELECT_MODE)
+        }
         setHasOptionsMenu(true)
 
         return super.onCreateView(inflater, container, savedInstanceState)
-    }
-
-    /** @Override */
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-
-        outState.apply {
-            putParcelable(ARG_BOWLER, bowler)
-            putInt(ARG_SHOW, show.ordinal)
-        }
     }
 
     /** @Override */
@@ -114,7 +140,8 @@ class LeagueListFragment : ListFragment<League, NameAverageRecyclerViewAdapter<L
     /** @Override */
     override fun buildAdapter(): NameAverageRecyclerViewAdapter<League> {
         val adapter = NameAverageRecyclerViewAdapter(emptyList(), this)
-        adapter.swipeable = true
+        adapter.swipeable = !singleSelectMode
+        adapter.longPressable = !singleSelectMode
         adapter.buildImageResource = { item, _ ->
             if (item.isEvent) {
                 Pair(R.drawable.ic_event, Color.BLACK)
@@ -129,6 +156,11 @@ class LeagueListFragment : ListFragment<League, NameAverageRecyclerViewAdapter<L
     override fun fetchItems(): Deferred<MutableList<League>> {
         return async(CommonPool) {
             this@LeagueListFragment.context?.let { context ->
+                val bowlerId = bowlerId
+                if (bowler == null && bowlerId != null) {
+                    bowler = Bowler.fetch(context, bowlerId).await()
+                }
+
                 bowler?.let {
                     when (show) {
                         Show.Events -> return@async it.fetchEvents(context).await()
