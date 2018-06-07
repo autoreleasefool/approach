@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.NavigationDrawerController
+import ca.josephroque.bowlingcompanion.common.adapters.BaseFragmentPagerAdapter
 import ca.josephroque.bowlingcompanion.common.fragments.TabbedFragment
 import ca.josephroque.bowlingcompanion.common.interfaces.INavigationDrawerHandler
 import ca.josephroque.bowlingcompanion.series.Series
