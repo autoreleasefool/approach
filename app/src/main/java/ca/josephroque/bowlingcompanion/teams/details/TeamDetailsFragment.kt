@@ -10,6 +10,7 @@ import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
 import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
 import ca.josephroque.bowlingcompanion.teams.Team
 import ca.josephroque.bowlingcompanion.teams.teammember.TeamMember
+import ca.josephroque.bowlingcompanion.teams.teammember.TeamMemberDialog
 import ca.josephroque.bowlingcompanion.teams.teammember.TeamMembersListFragment
 import kotlinx.android.synthetic.main.view_team_member_header.view.*
 
@@ -19,7 +20,8 @@ import kotlinx.android.synthetic.main.view_team_member_header.view.*
  * A fragment representing the details of a single team and its members.
  */
 class TeamDetailsFragment : BaseFragment(),
-        ListFragment.OnListFragmentInteractionListener {
+        ListFragment.OnListFragmentInteractionListener,
+        TeamMemberDialog.OnTeamMemberDialogInteractionListener {
 
     companion object {
         /** Logging identifier. */
@@ -77,7 +79,13 @@ class TeamDetailsFragment : BaseFragment(),
     /** @Override */
     override fun onItemSelected(item: IIdentifiable, longPress: Boolean) {
         if (item is TeamMember) {
-            TODO("not implemented")
+            val fragment = TeamMemberDialog.newInstance(item)
+            fragmentNavigation?.pushDialogFragment(fragment)
         }
+    }
+
+    /** @Override */
+    override fun onFinishTeamMember(teamMember: TeamMember) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

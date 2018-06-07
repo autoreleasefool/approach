@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    style="@style/Dialog"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <android.support.v7.widget.Toolbar
+        style="@style/Toolbar"
+        android:id="@+id/toolbar_team_member" />
+
+    <include
+        layout="@layout/view_team_member_header"
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/fragment_container"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <android.support.v7.widget.Toolbar
+        style="@style/Toolbar"
+        android:background="?attr/colorPrimaryDark"
+        android:id="@+id/toolbar_team_member_bottom"
+        android:elevation="0dp" />
+
+</LinearLayout>

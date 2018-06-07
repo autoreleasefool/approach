@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion.leagues
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -115,9 +116,19 @@ class LeagueListFragment : ListFragment<League, NameAverageRecyclerViewAdapter<L
             show = Show.fromInt(it.getInt(ARG_SHOW))!!
             singleSelectMode = it.getBoolean(ARG_SINGLE_SELECT_MODE)
         }
-        setHasOptionsMenu(true)
+
+        setHasOptionsMenu(!singleSelectMode)
 
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    /** @Override */
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        if (singleSelectMode) {
+            val parent = parentFragment as? OnListFragmentInteractionListener ?: return
+            listener = parent
+        }
     }
 
     /** @Override */

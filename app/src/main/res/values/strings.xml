@@ -13,6 +13,8 @@
     <string name="query_delete_item">Delete %s?</string>
     <string name="dialog_delete_item_message">You can\'t recover this data once it\'s gone!</string>
     <string name="sort_items">Sort items</string>
+    <string name="start">Start</string>
+    <string name="bowl">Bowl</string>
 
     <!-- Errors -->
     <string name="error_unknown_title">An unknown error occurred!</string>
@@ -39,6 +41,7 @@
     <string name="action_league_stats">League stats</string>
     <string name="action_condensed_series">Condensed view</string>
     <string name="action_expanded_series">Expanded view</string>
+    <string name="action_create_new">Create new</string>
 
     <!-- Bowlers -->
     <string name="new_bowler">New bowler</string>
@@ -71,7 +74,9 @@
 
     <!-- Team Members -->
     <string name="team_members">Team members</string>
-    <string name="team_members_select_league">Select an event, or a league and series for each bowler</string>
+    <string name="team_members_select_league">Select an event, or a league and series for each bowler.</string>
+    <string name="team_members_leagues_select_a_league">Select a league or event below for the bowler.</string>
+    <string name="team_members_series_select_a_series">Select a series below for the bowler or create a new one.</string>
 
     <!-- Leagues -->
     <string name="create_new_league_event">Create a new…</string>

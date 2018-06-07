@@ -90,8 +90,8 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
                     .getInt(Series.PREFERRED_VIEW, Series.Companion.View.Expanded.ordinal))!!
         }
 
-        setHasOptionsMenu(true)
-        listener = this
+        setHasOptionsMenu(!singleSelectMode)
+        listener = listener ?: this
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
