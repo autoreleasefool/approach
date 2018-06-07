@@ -1,7 +1,9 @@
 package ca.josephroque.bowlingcompanion.common.fragments
 
 import android.content.Context
+import android.os.Bundle
 import android.support.v4.app.DialogFragment
+import ca.josephroque.bowlingcompanion.R
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -18,6 +20,11 @@ abstract class BaseDialogFragment : DialogFragment() {
 
     /** Fragment navigation instance. */
     protected var fragmentNavigation: BaseFragment.FragmentNavigation? = null
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        dialog.window.attributes.windowAnimations = R.style.DialogAnimation
+    }
 
     /** @Override */
     override fun onAttach(context: Context?) {
