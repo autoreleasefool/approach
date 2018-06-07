@@ -15,6 +15,7 @@ import ca.josephroque.bowlingcompanion.bowlers.BowlerListFragment
 import ca.josephroque.bowlingcompanion.common.NavigationDrawerController
 import ca.josephroque.bowlingcompanion.common.interfaces.IFloatingActionButtonHandler
 import ca.josephroque.bowlingcompanion.common.activities.BaseActivity
+import ca.josephroque.bowlingcompanion.common.fragments.BaseDialogFragment
 import ca.josephroque.bowlingcompanion.common.fragments.BaseFragment
 import ca.josephroque.bowlingcompanion.common.fragments.TabbedFragment
 import ca.josephroque.bowlingcompanion.common.interfaces.INavigationDrawerHandler
@@ -176,7 +177,7 @@ class NavigationActivity : BaseActivity(),
     }
 
     /** @Override */
-    override fun pushDialogFragment(fragment: DialogFragment) {
+    override fun pushDialogFragment(fragment: BaseDialogFragment) {
         fragNavController?.showDialogFragment(fragment)
     }
 

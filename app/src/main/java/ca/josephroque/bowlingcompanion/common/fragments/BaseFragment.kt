@@ -65,7 +65,7 @@ abstract class BaseFragment : Fragment() {
          *
          * @param fragment the fragment to push
          */
-        fun pushDialogFragment(fragment: DialogFragment)
+        fun pushDialogFragment(fragment: BaseDialogFragment)
 
         /**
          * Push a new [BottomSheetDialogFragment] onto the stack

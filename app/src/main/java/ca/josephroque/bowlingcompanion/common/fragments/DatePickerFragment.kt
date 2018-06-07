@@ -3,17 +3,15 @@ package ca.josephroque.bowlingcompanion.common.fragments
 import android.app.DatePickerDialog
 import android.app.Dialog
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
 import android.widget.DatePicker
 import java.util.*
-
 
 /**
  * Copyright (C) 2018 Joseph Roque
  *
  * Pick a date.
  */
-class DatePickerFragment : DialogFragment(),
+class DatePickerFragment : BaseDialogFragment(),
         DatePickerDialog.OnDateSetListener
 {
 

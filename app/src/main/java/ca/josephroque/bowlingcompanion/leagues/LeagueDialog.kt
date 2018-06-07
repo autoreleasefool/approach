@@ -19,6 +19,7 @@ import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.bowlers.Bowler
 import ca.josephroque.bowlingcompanion.common.Android
 import ca.josephroque.bowlingcompanion.common.ThousandsTextWatcher
+import ca.josephroque.bowlingcompanion.common.fragments.BaseDialogFragment
 import ca.josephroque.bowlingcompanion.utils.BCError
 import ca.josephroque.bowlingcompanion.utils.Color
 import ca.josephroque.bowlingcompanion.utils.safeLet
@@ -31,7 +32,7 @@ import kotlinx.coroutines.experimental.launch
  *
  * Dialog to create a new league.
  */
-class LeagueDialog : DialogFragment() {
+class LeagueDialog : BaseDialogFragment() {
 
     companion object {
         /** Logging identifier. */

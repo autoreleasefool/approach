@@ -12,6 +12,7 @@ import android.view.inputmethod.InputMethodManager
 import ca.josephroque.bowlingcompanion.App
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.Android
+import ca.josephroque.bowlingcompanion.common.fragments.BaseDialogFragment
 import ca.josephroque.bowlingcompanion.utils.Color
 import ca.josephroque.bowlingcompanion.utils.safeLet
 import kotlinx.android.synthetic.main.dialog_bowler.*
@@ -23,7 +24,7 @@ import kotlinx.coroutines.experimental.launch
  *
  * Dialog to create a new bowler.
  */
-class BowlerDialog : DialogFragment(), View.OnClickListener {
+class BowlerDialog : BaseDialogFragment(), View.OnClickListener {
 
     companion object {
         /** Logging identifier. */

@@ -14,6 +14,7 @@ import android.widget.DatePicker
 import ca.josephroque.bowlingcompanion.App
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.Android
+import ca.josephroque.bowlingcompanion.common.fragments.BaseDialogFragment
 import ca.josephroque.bowlingcompanion.common.fragments.DatePickerFragment
 import ca.josephroque.bowlingcompanion.utils.Color
 import ca.josephroque.bowlingcompanion.utils.DateUtils
@@ -28,7 +29,7 @@ import java.util.*
  *
  * Dialog to edit a series.
  */
-class SeriesDialog : DialogFragment(), DatePickerDialog.OnDateSetListener {
+class SeriesDialog : BaseDialogFragment(), DatePickerDialog.OnDateSetListener {
 
     companion object {
         /** Logging identifier. */

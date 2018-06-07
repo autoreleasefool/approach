@@ -18,6 +18,7 @@ import ca.josephroque.bowlingcompanion.bowlers.Bowler
 import ca.josephroque.bowlingcompanion.common.Android
 import ca.josephroque.bowlingcompanion.common.adapters.BaseRecyclerViewAdapter
 import ca.josephroque.bowlingcompanion.common.adapters.NameAverageRecyclerViewAdapter
+import ca.josephroque.bowlingcompanion.common.fragments.BaseDialogFragment
 import ca.josephroque.bowlingcompanion.teams.Team
 import ca.josephroque.bowlingcompanion.teams.teammember.TeamMember
 import ca.josephroque.bowlingcompanion.utils.Color
@@ -26,13 +27,12 @@ import kotlinx.android.synthetic.main.dialog_team.*
 import kotlinx.android.synthetic.main.dialog_team.view.*
 import kotlinx.coroutines.experimental.launch
 
-
 /**
  * Copyright (C) 2018 Joseph Roque
  *
  * Dialog to create a new team.
  */
-class TeamDialog : DialogFragment(),
+class TeamDialog : BaseDialogFragment(),
         View.OnClickListener,
         BaseRecyclerViewAdapter.OnAdapterInteractionListener<Bowler>
 {

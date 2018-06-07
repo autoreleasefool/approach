@@ -1,13 +1,12 @@
 package ca.josephroque.bowlingcompanion.common
 
-
 import android.app.Dialog
 import android.os.Bundle
 import android.support.annotation.StringRes
-import android.support.v4.app.DialogFragment
 import android.support.v7.app.AppCompatActivity
 import android.view.*
 import ca.josephroque.bowlingcompanion.R
+import ca.josephroque.bowlingcompanion.common.fragments.BaseDialogFragment
 import kotlinx.android.synthetic.main.dialog_scrollable_text.*
 import kotlinx.android.synthetic.main.dialog_scrollable_text.view.*
 
@@ -16,7 +15,7 @@ import kotlinx.android.synthetic.main.dialog_scrollable_text.view.*
  *
  * Presents scrollable text.
  */
-class ScrollableTextDialog : DialogFragment() {
+class ScrollableTextDialog : BaseDialogFragment() {
 
     companion object {
         /** Logging identifier. */
