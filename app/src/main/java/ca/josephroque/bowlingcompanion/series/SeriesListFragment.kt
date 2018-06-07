@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.series
 
+import android.content.Context
 import android.os.Bundle
 import android.support.v7.preference.PreferenceManager
 import android.view.*
@@ -33,22 +34,31 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
         /** Identifier for the argument that represents the [League] whose series are displayed. */
         private const val ARG_LEAGUE = "${TAG}_league"
 
+        /** Identifier for the single select mode. */
+        private const val ARG_SINGLE_SELECT_MODE = "${TAG}_single_select"
+
         /**
          * Create a new instance
          *
          * @param league the league whose series will be listed
          * @return the new instance
          */
-        fun newInstance(league: League): SeriesListFragment {
+        fun newInstance(league: League, singleSelectMode: Boolean = false): SeriesListFragment {
             val fragment = SeriesListFragment()
             fragment.canIgnoreListener = true
-            fragment.arguments = Bundle().apply { putParcelable(ARG_LEAGUE, league) }
+            fragment.arguments = Bundle().apply {
+                putParcelable(ARG_LEAGUE, league)
+                putBoolean(ARG_SINGLE_SELECT_MODE, singleSelectMode)
+            }
             return fragment
         }
     }
 
     /** The league whose series are to be displayed. */
     private var league: League? = null
+
+    /** When true, the features of the fragment are limited to only offer selecting a single series. */
+    private var singleSelectMode: Boolean = false
 
     /** Indicates how to render series in the list. */
     private var seriesView: Series.Companion.View = Series.Companion.View.Expanded
@@ -71,7 +81,10 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        league = arguments?.getParcelable(ARG_LEAGUE)
+        arguments?.let {
+            league = it.getParcelable(ARG_LEAGUE)
+            singleSelectMode = it.getBoolean(ARG_SINGLE_SELECT_MODE)
+        }
         context?.let {
             seriesView = Series.Companion.View.fromInt(PreferenceManager.getDefaultSharedPreferences(it)
                     .getInt(Series.PREFERRED_VIEW, Series.Companion.View.Expanded.ordinal))!!
@@ -80,6 +93,15 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
         setHasOptionsMenu(true)
         listener = this
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    /** @Override */
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        if (singleSelectMode) {
+            val parent = parentFragment as? OnListFragmentInteractionListener ?: return
+            listener = parent
+        }
     }
 
     /** @Override. */
@@ -92,10 +114,12 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
         val shouldHighlightSeries = preferenceManager.getBoolean(Settings.HIGHLIGHT_SERIES_ENABLED, true)
         val shouldHighlightScores = preferenceManager.getBoolean(Settings.HIGHLIGHT_SCORE_ENABLED, true)
 
-        adapter?.gameHighlightMin = league.gameHighlight
-        adapter?.seriesHighlightMin = league.seriesHighlight
-        adapter?.shouldHighlightSeries = shouldHighlightSeries
-        adapter?.shouldHighlightScores = shouldHighlightScores
+        adapter?.let {
+            it.gameHighlightMin = league.gameHighlight
+            it.seriesHighlightMin = league.seriesHighlight
+            it.shouldHighlightSeries = shouldHighlightSeries
+            it.shouldHighlightScores = shouldHighlightScores
+        }
     }
 
     /** @Override. */
@@ -130,7 +154,8 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
     /** @Override */
     override fun buildAdapter(): SeriesRecyclerViewAdapter {
         val adapter = SeriesRecyclerViewAdapter(emptyList(), this)
-        adapter.swipeable = true
+        adapter.swipeable = !singleSelectMode
+        adapter.longPressable = !singleSelectMode
         adapter.seriesView = seriesView
         return adapter
     }
@@ -150,7 +175,11 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
 
     /** @Override */
     override fun getFabImage(): Int? {
-        return R.drawable.ic_add
+        return if (singleSelectMode) {
+            R.drawable.ic_add
+        } else {
+            null
+        }
     }
 
     /** @Override */
