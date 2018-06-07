@@ -11,6 +11,7 @@ import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
 import ca.josephroque.bowlingcompanion.teams.Team
 import ca.josephroque.bowlingcompanion.teams.teammember.TeamMember
 import ca.josephroque.bowlingcompanion.teams.teammember.TeamMembersListFragment
+import kotlinx.android.synthetic.main.view_team_member_header.view.*
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -60,7 +61,17 @@ class TeamDetailsFragment : BaseFragment(),
             }
         }
 
+        setupHeader(view)
+
         return view
+    }
+
+    /**
+     * Set up the header of the view.
+     */
+    private fun setupHeader(rootView: View) {
+        rootView.tv_header_title.setText(R.string.team_members)
+        rootView.tv_header_caption.setText(R.string.team_members_select_league)
     }
 
     /** @Override */
