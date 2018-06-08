@@ -90,7 +90,7 @@ class TeamMembersListFragment : ListFragment<TeamMember, TeamMembersRecyclerView
      *
      * @return true if all members have a league associated, false otherwise
      */
-    fun allTeamMembersReady(): Boolean {
+    private fun allTeamMembersReady(): Boolean {
         return (adapter?.items?.filter { it.leagueName != null }?.size ?: -1) == (adapter?.items?.size ?: -2)
     }
 

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.fragments.BaseFragment
 import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
+import ca.josephroque.bowlingcompanion.common.interfaces.IFloatingActionButtonHandler
 import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
 import ca.josephroque.bowlingcompanion.teams.Team
 import ca.josephroque.bowlingcompanion.teams.teammember.TeamMember
@@ -20,6 +21,7 @@ import kotlinx.android.synthetic.main.view_team_member_header.view.*
  * A fragment representing the details of a single team and its members.
  */
 class TeamDetailsFragment : BaseFragment(),
+        IFloatingActionButtonHandler,
         ListFragment.OnListFragmentInteractionListener,
         TeamMemberDialog.OnTeamMemberDialogInteractionListener,
         TeamMembersListFragment.OnTeamMembersListFragmentInteractionListener {
@@ -82,6 +84,22 @@ class TeamDetailsFragment : BaseFragment(),
     }
 
     /** @Override */
+    override fun getFabImage(): Int? {
+        return if (allTeamMembersReady) {
+            R.drawable.ic_ball
+        } else {
+            null
+        }
+    }
+
+    /** @Override */
+    override fun onFabClick() {
+        if (allTeamMembersReady) {
+            TODO("not implemented")
+        }
+    }
+
+    /** @Override */
     override fun onItemSelected(item: IIdentifiable, longPress: Boolean) {
         if (item is TeamMember) {
             val fragment = TeamMemberDialog.newInstance(item)
@@ -102,5 +120,6 @@ class TeamDetailsFragment : BaseFragment(),
     /** @Override */
     override fun onTeamMembersReadyChanged(ready: Boolean) {
         allTeamMembersReady = ready
+        fabProvider?.invalidateFab()
     }
 }
