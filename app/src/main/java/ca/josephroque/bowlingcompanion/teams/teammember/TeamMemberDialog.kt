@@ -102,27 +102,9 @@ class TeamMemberDialog : BaseDialogFragment(),
                 if (selectedLeague == null) {
                     dismiss()
                 } else {
+                    selectedLeague = null
                     childFragmentManager.popBackStack()
                 }
-            }
-        }
-
-        rootView.toolbar_team_member_bottom.apply {
-            inflateMenu(R.menu.dialog_team_member_bottom)
-            setOnMenuItemClickListener {
-                when (it.itemId) {
-                    R.id.action_create_new -> {
-                        saveTeamMember()
-                        true
-                    }
-                    else -> super.onOptionsItemSelected(it)
-                }
-            }
-
-            visibility = if (selectedLeague == null) {
-                View.GONE
-            } else {
-                View.VISIBLE
             }
         }
     }
@@ -138,7 +120,6 @@ class TeamMemberDialog : BaseDialogFragment(),
         if (forLeague) {
             rootView.tv_header_title.setText(R.string.league)
             rootView.tv_header_caption.setText(R.string.team_members_leagues_select_a_league)
-            rootView.toolbar_team_member_bottom.visibility = View.GONE
 
             rootView.toolbar_team_member.apply {
                 setNavigationIcon(R.drawable.ic_dismiss)
@@ -147,7 +128,6 @@ class TeamMemberDialog : BaseDialogFragment(),
         } else {
             rootView.tv_header_title.setText(R.string.series)
             rootView.tv_header_caption.setText(R.string.team_members_series_select_a_series)
-            rootView.toolbar_team_member_bottom.visibility = View.VISIBLE
 
             rootView.toolbar_team_member.apply {
                 setNavigationIcon(R.drawable.ic_arrow_back)

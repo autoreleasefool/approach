@@ -20,10 +20,4 @@
         android:layout_height="0dp"
         android:layout_weight="1" />
 
-    <android.support.v7.widget.Toolbar
-        style="@style/Toolbar"
-        android:background="?attr/colorPrimaryDark"
-        android:id="@+id/toolbar_team_member_bottom"
-        android:elevation="0dp" />
-
 </LinearLayout>

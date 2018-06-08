@@ -51,19 +51,18 @@ class TeamDetailsFragment : BaseFragment(),
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         team = savedInstanceState?.getParcelable(ARG_TEAM) ?: arguments?.getParcelable(ARG_TEAM)
         setHasOptionsMenu(true)
+
         val view = inflater.inflate(R.layout.fragment_team_details, container, false)
+        setupHeader(view)
 
         val team = team
         if (savedInstanceState == null && team != null) {
-            // TODO: is there a way to embed this directly in XML?
             val fragment = TeamMembersListFragment.newInstance(team)
             childFragmentManager.beginTransaction().apply {
                 add(R.id.fragment_container, fragment)
                 commit()
             }
         }
-
-        setupHeader(view)
 
         return view
     }
