@@ -1,16 +1,15 @@
 package ca.josephroque.bowlingcompanion
 
-import android.graphics.Color
 import android.os.Bundle
 import android.support.annotation.IdRes
 import android.support.design.widget.BottomSheetDialogFragment
-import android.support.design.widget.FloatingActionButton
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentTransaction
 import android.support.v4.view.GravityCompat
 import android.view.MenuItem
 import android.view.View
 import ca.josephroque.bowlingcompanion.bowlers.BowlerListFragment
+import ca.josephroque.bowlingcompanion.common.FabController
 import ca.josephroque.bowlingcompanion.common.NavigationDrawerController
 import ca.josephroque.bowlingcompanion.common.interfaces.IFloatingActionButtonHandler
 import ca.josephroque.bowlingcompanion.common.activities.BaseActivity
@@ -88,6 +87,9 @@ class NavigationActivity : BaseActivity(),
     /** Controller for navigation drawer. */
     private lateinit var navDrawerController: NavigationDrawerController
 
+    /** Controller for floating action button. */
+    private lateinit var fabController: FabController
+
     /** The current visible fragment in the activity. */
     private val currentFragment: Fragment?
         get() {
@@ -98,29 +100,6 @@ class NavigationActivity : BaseActivity(),
             }
             return null
         }
-
-    /** Drawable to display in the floating action button. */
-    private var fabImage: Int? = null
-        set(value) {
-            field = value
-            if (fab.visibility == View.VISIBLE) {
-                fab.hide(fabVisibilityChangeListener)
-            } else {
-                fabVisibilityChangeListener.onHidden(fab)
-            }
-        }
-
-    /** Handle visibility changes in the fab. */
-    private val fabVisibilityChangeListener = object : FloatingActionButton.OnVisibilityChangedListener() {
-        override fun onHidden(fab: FloatingActionButton?) {
-            fab?.let {
-                it.setColorFilter(Color.BLACK)
-                val image = fabImage ?: return
-                it.setImageResource(image)
-                it.show()
-            }
-        }
-    }
 
     /** @Override. */
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -247,7 +226,7 @@ class NavigationActivity : BaseActivity(),
     /** @Override */
     override fun invalidateFab() {
         val fragment = currentFragment
-        fabImage = if (fragment is IFloatingActionButtonHandler) {
+        fabController.image = if (fragment is IFloatingActionButtonHandler) {
             fragment.getFabImage()
         } else {
             null
@@ -258,12 +237,12 @@ class NavigationActivity : BaseActivity(),
      * Configure floating action button for rendering.
      */
     private fun setupFab() {
-        fab.setOnClickListener {
-            val currentFragment = currentFragment ?: return@setOnClickListener
+        fabController = FabController(fab, View.OnClickListener {
+            val currentFragment = currentFragment ?: return@OnClickListener
             if (currentFragment is IFloatingActionButtonHandler) {
                 currentFragment.onFabClick()
             }
-        }
+        })
     }
 
     /**
@@ -309,7 +288,7 @@ class NavigationActivity : BaseActivity(),
      */
     private fun handleFragmentChange(fragment: Fragment?) {
         supportActionBar?.setDisplayHomeAsUpEnabled(fragNavController?.isRootFragment?.not() ?: false)
-        fabImage = if (fragment is IFloatingActionButtonHandler) {
+        fabController.image = if (fragment is IFloatingActionButtonHandler) {
             fragment.getFabImage()
         } else {
             null
@@ -331,10 +310,6 @@ class NavigationActivity : BaseActivity(),
 
     /** @Override */
     override fun onTabSwitched() {
-        // Refresh floating action button image from the current fragment
-        val fragment = fragNavController?.currentFrag
-        if (fragment != null && fragment is IFloatingActionButtonHandler) {
-            fabImage = fragment.getFabImage()
-        }
+        invalidateFab()
     }
 }
