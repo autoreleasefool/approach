@@ -66,14 +66,17 @@ class TeamMembersRecyclerViewAdapter(
             } else {
                 tvLeagueName.setText(R.string.no_league_selected)
                 tvLeagueName.setTextColor(ContextCompat.getColor(context, R.color.dangerRed))
+
+                tvSeriesName.setText(R.string.no_series_selected)
+                tvSeriesName.setTextColor(ContextCompat.getColor(context, R.color.dangerRed))
             }
 
             if (item.seriesName != null) {
                 tvSeriesName.text = item.seriesName
                 tvSeriesName.setTextColor(ContextCompat.getColor(context, R.color.primaryBlackText))
-            } else {
-                tvSeriesName.setText(R.string.no_series_selected)
-                tvSeriesName.setTextColor(ContextCompat.getColor(context, R.color.dangerRed))
+            } else if (item.leagueName != null) {
+                tvSeriesName.setText(R.string.create_new_series)
+                tvSeriesName.setTextColor(ContextCompat.getColor(context, R.color.primaryBlackText))
             }
 
             if (position % 2 == 0) {

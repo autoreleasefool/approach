@@ -77,6 +77,7 @@
     <string name="team_members_select_league">Select an event, or a league and series for each bowler.</string>
     <string name="team_members_leagues_select_a_league">Select a league or event below for the bowler.</string>
     <string name="team_members_series_select_a_series">Select a series below for the bowler or create a new one.</string>
+    <string name="create_new_series">New series</string>
 
     <!-- Leagues -->
     <string name="create_new_league_event">Create a new…</string>

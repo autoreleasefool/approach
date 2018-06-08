@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.view.Window
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.Android
+import ca.josephroque.bowlingcompanion.common.FabController
 import ca.josephroque.bowlingcompanion.common.fragments.BaseDialogFragment
 import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
 import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
@@ -68,6 +69,9 @@ class TeamMemberDialog : BaseDialogFragment(),
     /** The series selected by the user for the team member. */
     private var selectedSeries: Series? = null
 
+    /** Controller for floating action button. */
+    private lateinit var fabController: FabController
+
     /** @Override */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,6 +89,7 @@ class TeamMemberDialog : BaseDialogFragment(),
 
         val rootView = inflater.inflate(R.layout.dialog_team_member, container, false)
         setupToolbar(rootView)
+        setupFab(rootView)
         prepareActions(rootView, selectedLeague == null)
         setupChildFragment(savedInstanceState)
         childFragmentManager.addOnBackStackChangedListener(this)
@@ -110,7 +115,20 @@ class TeamMemberDialog : BaseDialogFragment(),
     }
 
     /**
-     * Set up the header and footer toolbar of the view.
+     * Set up the floating action button controller.
+     *
+     * @param rootView the root view
+     */
+    private fun setupFab(rootView: View) {
+        fabController = FabController(rootView.fab, View.OnClickListener {
+            if (selectedLeague != null) {
+                saveTeamMember()
+            }
+        })
+    }
+
+    /**
+     * Set up the header and actions of the view.
      *
      * @param rootView the root view
      * @param forLeague true if the actions are for the league list, false if they are for the
@@ -120,6 +138,7 @@ class TeamMemberDialog : BaseDialogFragment(),
         if (forLeague) {
             rootView.tv_header_title.setText(R.string.league)
             rootView.tv_header_caption.setText(R.string.team_members_leagues_select_a_league)
+            fabController.image = null
 
             rootView.toolbar_team_member.apply {
                 setNavigationIcon(R.drawable.ic_dismiss)
@@ -128,6 +147,7 @@ class TeamMemberDialog : BaseDialogFragment(),
         } else {
             rootView.tv_header_title.setText(R.string.series)
             rootView.tv_header_caption.setText(R.string.team_members_series_select_a_series)
+            fabController.image = R.drawable.ic_add
 
             rootView.toolbar_team_member.apply {
                 setNavigationIcon(R.drawable.ic_arrow_back)
@@ -176,6 +196,7 @@ class TeamMemberDialog : BaseDialogFragment(),
     override fun onStart() {
         super.onStart()
         dialog.window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        view?.let { prepareActions(it, selectedLeague == null) }
     }
 
     /** @Override */
