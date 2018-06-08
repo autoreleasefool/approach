@@ -98,6 +98,7 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
     /** @Override */
     override fun onAttach(context: Context?) {
         super.onAttach(context)
+        singleSelectMode = arguments?.getBoolean(ARG_SINGLE_SELECT_MODE) ?: false
         if (singleSelectMode) {
             val parent = parentFragment as? OnListFragmentInteractionListener ?: return
             listener = parent
