@@ -30,6 +30,7 @@ class NavigationActivity : BaseActivity(),
         FragNavController.TransactionListener,
         FragNavController.RootFragmentListener,
         BaseFragment.FragmentNavigation,
+        BaseFragment.FabProvider,
         TabbedFragment.TabbedFragmentDelegate
 {
 
@@ -240,6 +241,16 @@ class NavigationActivity : BaseActivity(),
             }
 
             return@setNavigationItemSelectedListener true
+        }
+    }
+
+    /** @Override */
+    override fun invalidateFab() {
+        val fragment = currentFragment
+        fabImage = if (fragment is IFloatingActionButtonHandler) {
+            fragment.getFabImage()
+        } else {
+            null
         }
     }
 

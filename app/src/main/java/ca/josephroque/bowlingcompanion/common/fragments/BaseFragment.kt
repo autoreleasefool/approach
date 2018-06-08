@@ -35,17 +35,23 @@ abstract class BaseFragment : Fragment() {
     /** Fragment navigation instance. */
     protected var fragmentNavigation: FragmentNavigation? = null
 
+    /** Fab provider instance. */
+    protected var fabProvider: FabProvider? = null
+
     /** @Override */
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         context as? FragmentNavigation ?: throw RuntimeException("Parent activity must implement FragmentNavigation")
         fragmentNavigation = context
+        context as? FabProvider ?: throw RuntimeException("Parent activity must implement FabProvider")
+        fabProvider = context
     }
 
     /** @Override */
     override fun onDetach() {
         super.onDetach()
         fragmentNavigation = null
+        fabProvider = null
     }
 
     /**
@@ -74,5 +80,16 @@ abstract class BaseFragment : Fragment() {
          * @param tag necessary tag for the fragment
          */
         fun showBottomSheet(fragment: BottomSheetDialogFragment, tag: String)
+    }
+
+    /**
+     * Accessor to activity's floating action button.
+     */
+    interface FabProvider {
+
+        /**
+         * Ask floating action button provider to reload fab properties.
+         */
+        fun invalidateFab()
     }
 }

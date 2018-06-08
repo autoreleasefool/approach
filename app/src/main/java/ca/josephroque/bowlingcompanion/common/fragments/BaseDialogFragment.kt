@@ -21,6 +21,9 @@ abstract class BaseDialogFragment : DialogFragment() {
     /** Fragment navigation instance. */
     protected var fragmentNavigation: BaseFragment.FragmentNavigation? = null
 
+    /** Fab provider instance. */
+    protected var fabProvider: BaseFragment.FabProvider? = null
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         dialog.window.attributes.windowAnimations = R.style.DialogAnimation
@@ -31,11 +34,14 @@ abstract class BaseDialogFragment : DialogFragment() {
         super.onAttach(context)
         context as? BaseFragment.FragmentNavigation ?: throw RuntimeException("Parent activity must implement FragmentNavigation")
         fragmentNavigation = context
+        context as? BaseFragment.FabProvider ?: throw RuntimeException("Parent activity must implement FabProvider")
+        fabProvider = context
     }
 
     /** @Override */
     override fun onDetach() {
         super.onDetach()
         fragmentNavigation = null
+        fabProvider = null
     }
 }
