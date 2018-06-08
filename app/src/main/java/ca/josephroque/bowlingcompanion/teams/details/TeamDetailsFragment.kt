@@ -21,7 +21,8 @@ import kotlinx.android.synthetic.main.view_team_member_header.view.*
  */
 class TeamDetailsFragment : BaseFragment(),
         ListFragment.OnListFragmentInteractionListener,
-        TeamMemberDialog.OnTeamMemberDialogInteractionListener {
+        TeamMemberDialog.OnTeamMemberDialogInteractionListener,
+        TeamMembersListFragment.OnTeamMembersListFragmentInteractionListener {
 
     companion object {
         /** Logging identifier. */
@@ -47,6 +48,9 @@ class TeamDetailsFragment : BaseFragment(),
     /** The team whose details are to be displayed. */
     private var team: Team? = null
 
+    /** Indicate if all team members are ready for bowling to begin. */
+    private var allTeamMembersReady: Boolean = false
+
     /** @Override */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         team = savedInstanceState?.getParcelable(ARG_TEAM) ?: arguments?.getParcelable(ARG_TEAM)
@@ -69,6 +73,8 @@ class TeamDetailsFragment : BaseFragment(),
 
     /**
      * Set up the header of the view.
+     *
+     * @param rootView the root view
      */
     private fun setupHeader(rootView: View) {
         rootView.tv_header_title.setText(R.string.team_members)
@@ -91,5 +97,10 @@ class TeamDetailsFragment : BaseFragment(),
                     val list = it as? TeamMembersListFragment ?: return
                     list.refreshList(teamMember)
                 }
+    }
+
+    /** @Override */
+    override fun onTeamMembersReadyChanged(ready: Boolean) {
+        allTeamMembersReady = ready
     }
 }

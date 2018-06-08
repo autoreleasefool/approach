@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.teams.teammember
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -41,10 +42,26 @@ class TeamMembersListFragment : ListFragment<TeamMember, TeamMembersRecyclerView
     /** The team whose details are to be displayed. */
     private var team: Team? = null
 
+    /** Interaction teamMemberListener. */
+    private var teamMemberListener: OnTeamMembersListFragmentInteractionListener? = null
+
     /** @Override */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         team = savedInstanceState?.getParcelable(ARG_TEAM) ?: arguments?.getParcelable(ARG_TEAM)
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    /** @Override */
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        val parent = parentFragment as? OnTeamMembersListFragmentInteractionListener ?: throw RuntimeException("${parentFragment!!} must implement OnTeamMembersListFragmentInteractionListener")
+        teamMemberListener = parent
+    }
+
+    /** @Override */
+    override fun onDetach() {
+        super.onDetach()
+        teamMemberListener = null
     }
 
     /** @Override */
@@ -61,5 +78,33 @@ class TeamMembersListFragment : ListFragment<TeamMember, TeamMembersRecyclerView
             }
             emptyList<TeamMember>().toMutableList()
         }
+    }
+
+    /** @Override */
+    override fun listWasRefreshed() {
+        teamMemberListener?.onTeamMembersReadyChanged(allTeamMembersReady())
+    }
+
+    /**
+     * Check if all team members are ready to begin bowling.
+     *
+     * @return true if all members have a league associated, false otherwise
+     */
+    fun allTeamMembersReady(): Boolean {
+        return (adapter?.items?.filter { it.leagueName != null }?.size ?: -1) == (adapter?.items?.size ?: -2)
+    }
+
+    /**
+     * Handle interactions with the list.
+     */
+    interface OnTeamMembersListFragmentInteractionListener {
+
+        /**
+         * Called when the team members that are ready change.
+         *
+         * @param ready true when all team members are ready to bowl, false otherwise.
+         */
+        fun onTeamMembersReadyChanged(ready: Boolean)
+
     }
 }

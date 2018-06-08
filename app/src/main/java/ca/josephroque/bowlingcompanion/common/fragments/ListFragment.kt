@@ -148,8 +148,12 @@ abstract class ListFragment<Item: IIdentifiable, Adapter: BaseRecyclerViewAdapte
                 this@ListFragment.items[index] = item
                 adapter?.notifyItemChanged(index)
             }
+            listWasRefreshed()
         }
     }
+
+    /** Overridable method called after the list of items is refreshed. */
+    open fun listWasRefreshed() {}
 
     /**
      * Retrieve a fresh list of [Item] instances.
