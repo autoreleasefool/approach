@@ -215,6 +215,7 @@ class TeamMemberDialog : BaseDialogFragment(),
                         seriesId = selectedSeries?.id ?: -1
                 )
                 listener?.onFinishTeamMember(newTeamMember)
+                dismiss()
             }
         }
     }
@@ -225,7 +226,6 @@ class TeamMemberDialog : BaseDialogFragment(),
             selectedLeague = item
             if (item.isEvent) {
                 saveTeamMember()
-                dismiss()
             } else {
                 val fragment = SeriesListFragment.newInstance(item, true)
                 childFragmentManager.beginTransaction().apply {
@@ -237,7 +237,6 @@ class TeamMemberDialog : BaseDialogFragment(),
         } else if (item is Series) {
             selectedSeries = item
             saveTeamMember()
-            dismiss()
         }
     }
 
