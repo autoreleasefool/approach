@@ -85,6 +85,11 @@ class TeamDetailsFragment : BaseFragment(),
 
     /** @Override */
     override fun onFinishTeamMember(teamMember: TeamMember) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        childFragmentManager.fragments
+                .filter { it != null && it.isVisible }
+                .forEach {
+                    val list = it as? TeamMembersListFragment ?: return
+                    list.refreshList(teamMember)
+                }
     }
 }
