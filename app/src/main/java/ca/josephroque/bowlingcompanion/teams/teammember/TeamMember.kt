@@ -5,6 +5,8 @@ import android.os.Parcelable
 import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
 import ca.josephroque.bowlingcompanion.common.interfaces.KParcelable
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
+import ca.josephroque.bowlingcompanion.leagues.League
+import ca.josephroque.bowlingcompanion.series.Series
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -15,10 +17,8 @@ data class TeamMember(
         val teamId: Long,
         val bowlerName: String,
         val bowlerId: Long,
-        val leagueName: String? = null,
-        val leagueId: Long = -1,
-        val seriesName: String? = null,
-        val seriesId: Long = -1
+        val league: League? = null,
+        val series: Series? = null
 ) : IIdentifiable, KParcelable {
 
     /**
@@ -35,10 +35,8 @@ data class TeamMember(
             teamId = p.readLong(),
             bowlerName = p.readString(),
             bowlerId = p.readLong(),
-            leagueName = p.readString(),
-            leagueId = p.readLong(),
-            seriesName = p.readString(),
-            seriesId = p.readLong()
+            league = p.readParcelable<League>(League::class.java.classLoader),
+            series = p.readParcelable<Series>(Series::class.java.classLoader)
     )
 
     /**
@@ -48,10 +46,8 @@ data class TeamMember(
             teamId = teamMember.teamId,
             bowlerName = teamMember.bowlerName,
             bowlerId = teamMember.bowlerId,
-            leagueName = teamMember.leagueName,
-            leagueId = teamMember.leagueId,
-            seriesName = teamMember.seriesName,
-            seriesId = teamMember.seriesId
+            league = teamMember.league,
+            series = teamMember.series
     )
 
     /** @Override */
@@ -59,10 +55,8 @@ data class TeamMember(
         writeLong(teamId)
         writeString(bowlerName)
         writeLong(bowlerId)
-        writeString(leagueName)
-        writeLong(leagueId)
-        writeString(seriesName)
-        writeLong(seriesId)
+        writeParcelable(league, 0)
+        writeParcelable(series, 0)
     }
 
     companion object {

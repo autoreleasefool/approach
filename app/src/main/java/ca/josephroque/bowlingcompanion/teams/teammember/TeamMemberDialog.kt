@@ -230,10 +230,8 @@ class TeamMemberDialog : BaseDialogFragment(),
                         teamId = teamMember.teamId,
                         bowlerName = teamMember.bowlerName,
                         bowlerId = teamMember.bowlerId,
-                        leagueName = league.name,
-                        leagueId = league.id,
-                        seriesName = selectedSeries?.prettyDate,
-                        seriesId = selectedSeries?.id ?: -1
+                        league = league,
+                        series = selectedSeries
                 )
                 listener?.onFinishTeamMember(newTeamMember)
                 dismiss()

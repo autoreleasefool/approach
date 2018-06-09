@@ -60,8 +60,8 @@ class TeamMembersRecyclerViewAdapter(
 
             tvBowlerName.text = item.bowlerName
 
-            if (item.leagueName != null) {
-                tvLeagueName.text = item.leagueName
+            if (item.league != null) {
+                tvLeagueName.text = item.league.name
                 tvLeagueName.setTextColor(ContextCompat.getColor(context, R.color.primaryBlackText))
             } else {
                 tvLeagueName.setText(R.string.no_league_selected)
@@ -71,10 +71,10 @@ class TeamMembersRecyclerViewAdapter(
                 tvSeriesName.setTextColor(ContextCompat.getColor(context, R.color.dangerRed))
             }
 
-            if (item.seriesName != null) {
-                tvSeriesName.text = item.seriesName
+            if (item.series != null) {
+                tvSeriesName.text = item.series.prettyDate
                 tvSeriesName.setTextColor(ContextCompat.getColor(context, R.color.primaryBlackText))
-            } else if (item.leagueName != null) {
+            } else if (item.league != null) {
                 tvSeriesName.setText(R.string.create_new_series)
                 tvSeriesName.setTextColor(ContextCompat.getColor(context, R.color.primaryBlackText))
             }
