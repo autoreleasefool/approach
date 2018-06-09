@@ -115,6 +115,29 @@ data class League(
         return Series.fetchAll(context, this)
     }
 
+    /**
+     * Create a new series belonging to this [League].
+     *
+     * @param context to get database instance
+     * @param inTransaction if true, the method should not handle the database transaction as one
+     *                      has already been created in another context
+     * @return a [BCError] if any error occurred, or the [Series] if successfully created.
+     */
+    fun createNewSeries(context: Context, inTransaction: Boolean = false): Deferred<Pair<Series?, BCError?>> {
+        return async(CommonPool) {
+            return@async Series.save(
+                    context = context,
+                    league = this@League,
+                    id = -1,
+                    date = Date(),
+                    numberOfGames = gamesPerSeries,
+                    scores = IntArray(gamesPerSeries).toList(),
+                    matchPlay = ByteArray(gamesPerSeries).toList(),
+                    inTransaction = inTransaction
+            ).await()
+        }
+    }
+
     /** @Override */
     override fun delete(context: Context): Deferred<Unit> {
         return async(CommonPool) {
@@ -404,15 +427,7 @@ data class League(
                          * If the new entry is an event, its series is also created at this time
                          * since there is only a single series to an event
                          */
-                        val (series, seriesError) = Series.save(
-                                context = context,
-                                league = league,
-                                id = -1,
-                                date = Date(),
-                                numberOfGames = gamesPerSeries,
-                                scores = IntArray(gamesPerSeries).toList(),
-                                matchPlay = ByteArray(gamesPerSeries).toList()
-                        ).await()
+                        val (series, seriesError) = league.createNewSeries(context).await()
                         if (seriesError != null || (series?.id ?: -1L) == -1L) {
                             throw IllegalStateException("Series was not saved.")
                         }
