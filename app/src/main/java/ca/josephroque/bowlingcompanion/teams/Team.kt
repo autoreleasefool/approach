@@ -15,6 +15,7 @@ import ca.josephroque.bowlingcompanion.common.interfaces.KParcelable
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
 import ca.josephroque.bowlingcompanion.database.Contract.*
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper
+import ca.josephroque.bowlingcompanion.series.Series
 import ca.josephroque.bowlingcompanion.teams.teammember.TeamMember
 import ca.josephroque.bowlingcompanion.utils.BCError
 import ca.josephroque.bowlingcompanion.utils.Preferences
@@ -41,6 +42,10 @@ data class Team(
     /** @Override */
     override val isDeleted: Boolean
         get() = _isDeleted
+
+    /** Get the list of series for the team members. */
+    val series: List<Series>
+        get() = members.map { it.series!! }
 
     /**
      * Construct [Team] from a [Parcel]
@@ -108,6 +113,25 @@ data class Team(
                 database.endTransaction()
             }
         }
+    }
+
+    /**
+     * Replace a member of the team with a newer instance.
+     *
+     * @param newMember the team member to add
+     * @return a new instance of [Team]
+     */
+    fun replaceTeamMember(newMember: TeamMember): Team {
+        val oldMembers = members.toMutableList()
+        val replacedMemberIndex = newMember.indexInList(members)
+        assert(replacedMemberIndex > -1)
+        oldMembers[replacedMemberIndex] = newMember
+
+        return Team(
+                id = this.id,
+                name = this.name,
+                members = oldMembers
+        )
     }
 
     companion object {
