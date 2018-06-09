@@ -99,7 +99,7 @@ data class Series(
     override fun cleanDeletion(): Series {
         val newInstance = Series(this)
         newInstance._isDeleted = false
-        return this
+        return newInstance
     }
 
     /** @Override */

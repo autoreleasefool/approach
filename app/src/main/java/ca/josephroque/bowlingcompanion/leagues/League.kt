@@ -102,7 +102,7 @@ data class League(
     override fun cleanDeletion(): League {
         val newInstance = League(this)
         newInstance._isDeleted = false
-        return this
+        return newInstance
     }
 
     /**

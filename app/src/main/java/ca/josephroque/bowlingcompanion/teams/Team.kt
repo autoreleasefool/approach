@@ -88,7 +88,7 @@ data class Team(
     override fun cleanDeletion(): Team {
         val newInstance = Team(this)
         newInstance._isDeleted = false
-        return this
+        return newInstance
     }
 
     /** @Override */
