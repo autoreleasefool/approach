@@ -21,12 +21,12 @@ class FabController(
     /** Drawable to display in the floating action button. */
     var image: Int? = null
         set(value) {
+            field = value
             if (floatingActionButton.visibility == View.VISIBLE) {
                 floatingActionButton.hide(fabVisibilityChangeListener)
             } else {
                 fabVisibilityChangeListener.onHidden(floatingActionButton)
             }
-            field = value
         }
 
     /** Handle visibility changes in the fab. */
