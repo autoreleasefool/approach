@@ -160,6 +160,8 @@ data class Series(
          * @param numberOfGames number of games in the series
          * @param scores scores of the games in the series
          * @param matchPlay match play results of the games in the series
+         * @param inTransaction if true, the method should not handle the database transaction as one
+         *                      has already been created in another context
          * @return [BCError] only if an error occurred
          */
         fun save(
@@ -169,12 +171,13 @@ data class Series(
                 date: Date,
                 numberOfGames: Int,
                 scores: List<Int>,
-                matchPlay: List<Byte>
+                matchPlay: List<Byte>,
+                inTransaction: Boolean = false
         ): Deferred<Pair<Series?, BCError?>> {
             return if (id < 0) {
-                createNewAndSave(context, league, date, numberOfGames, scores, matchPlay)
+                createNewAndSave(context, league, date, numberOfGames, scores, matchPlay, inTransaction)
             } else {
-                update(context, id, league, date, numberOfGames, scores, matchPlay)
+                update(context, id, league, date, numberOfGames, scores, matchPlay, inTransaction)
             }
         }
 
@@ -187,6 +190,8 @@ data class Series(
          * @param numberOfGames number of games in the series
          * @param scores scores of the games in the series
          * @param matchPlay match play results of the games in the series
+         * @param inTransaction if true, the method should not handle the database transaction as one
+         *                      has already been created in another context
          * @return [BCError] only if an error occurred
          */
         private fun createNewAndSave(
@@ -195,7 +200,8 @@ data class Series(
                 date: Date,
                 numberOfGames: Int,
                 scores: List<Int>,
-                matchPlay: List<Byte>
+                matchPlay: List<Byte>,
+                inTransaction: Boolean = false
         ): Deferred<Pair<Series?, BCError?>> {
             return async(CommonPool) {
                 val database = DatabaseHelper.getInstance(context).writableDatabase
@@ -205,7 +211,9 @@ data class Series(
                 }
 
                 val seriesId: Long
-                database.beginTransaction()
+                if (!inTransaction) {
+                    database.beginTransaction()
+                }
                 try {
                     seriesId = database.insert(SeriesEntry.TABLE_NAME, null, values)
 
@@ -232,7 +240,9 @@ data class Series(
                         }
                     }
 
-                    database.setTransactionSuccessful()
+                    if (!inTransaction) {
+                        database.setTransactionSuccessful()
+                    }
                 } catch (ex: Exception) {
                     Log.e(TAG, "Could not create a new series")
                     return@async Pair(
@@ -264,6 +274,8 @@ data class Series(
          * @param numberOfGames number of games in the series
          * @param scores scores of the games in the series
          * @param matchPlay match play results of the games in the series
+         * @param inTransaction if true, the method should not handle the database transaction as one
+         *                      has already been created in another context
          * @return [BCError] only if an error occurred
          */
         private fun update(
@@ -273,7 +285,8 @@ data class Series(
                 date: Date,
                 numberOfGames: Int,
                 scores: List<Int>,
-                matchPlay: List<Byte>
+                matchPlay: List<Byte>,
+                inTransaction: Boolean = false
         ): Deferred<Pair<Series?, BCError?>> {
             return async(CommonPool) {
                 val database = DatabaseHelper.getInstance(context).writableDatabase
@@ -281,10 +294,14 @@ data class Series(
                     put(SeriesEntry.COLUMN_SERIES_DATE, DateUtils.dateToSeriesDate(date))
                 }
 
-                database.beginTransaction()
+                if (!inTransaction) {
+                    database.beginTransaction()
+                }
                 try {
                     database.update(SeriesEntry.TABLE_NAME, values, "${SeriesEntry._ID}=?", arrayOf(id.toString()))
-                    database.setTransactionSuccessful()
+                    if (!inTransaction) {
+                        database.setTransactionSuccessful()
+                    }
                 } catch (ex: Exception) {
                     Log.e(TAG, "Error updating series details ($id, $date)", ex)
                 } finally {
