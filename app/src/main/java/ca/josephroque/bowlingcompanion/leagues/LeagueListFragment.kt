@@ -234,6 +234,6 @@ class LeagueListFragment : ListFragment<League, NameAverageRecyclerViewAdapter<L
      */
     override fun onItemLongClick(item: League) {
         if (item.name == League.PRACTICE_LEAGUE_NAME) return
-        super.onItemClick(item)
+        super.onItemLongClick(item)
     }
 }

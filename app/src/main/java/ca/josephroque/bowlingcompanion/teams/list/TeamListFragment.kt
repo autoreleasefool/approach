@@ -78,6 +78,7 @@ class TeamListFragment : ListFragment<Team, TeamRecyclerViewAdapter>() {
     override fun buildAdapter(): TeamRecyclerViewAdapter {
         val adapter = TeamRecyclerViewAdapter(emptyList(), this)
         adapter.swipeable = true
+        adapter.longPressable = true
         return adapter
     }
 
