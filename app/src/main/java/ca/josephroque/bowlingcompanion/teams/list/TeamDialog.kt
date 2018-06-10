@@ -68,14 +68,13 @@ class TeamDialog : BaseDialogFragment(),
     private lateinit var bowlerAdapter: NameAverageRecyclerViewAdapter<Bowler>
 
     /** Current list of selected bowlers. */
-    private val selectedBowlers: List<TeamMember>?
+    private val selectedBowlers: List<TeamMember>
         get() {
-            val team = team ?: return null
             val selected = bowlerAdapter.selectedItems
             val list: MutableList<TeamMember> = ArrayList()
             selected.forEach({
                 list.add(TeamMember(
-                        teamId = team.id,
+                        teamId = team?.id ?: -1,
                         bowlerName = it.name,
                         bowlerId = it.id
                 ))
@@ -245,7 +244,7 @@ class TeamDialog : BaseDialogFragment(),
         val name = input_name.text.toString()
         val members = selectedBowlers
 
-        return name.isNotEmpty() && (members?.size ?: 0) > 0
+        return name.isNotEmpty() && members.isNotEmpty()
     }
 
     /**
@@ -269,25 +268,22 @@ class TeamDialog : BaseDialogFragment(),
         launch(Android) {
             this@TeamDialog.context?.let { context ->
                 val name = input_name.text.toString()
-                val members = selectedBowlers
 
-                members?.let {
-                    if (canSave()) {
-                        val oldTeam = team
-                        val (newTeam, error) = if (oldTeam!= null) {
-                            Team.save(context, oldTeam.id, name, it).await()
-                        } else {
-                            Team.save(context, -1, name, it).await()
-                        }
+                if (canSave()) {
+                    val oldTeam = team
+                    val (newTeam, error) = if (oldTeam!= null) {
+                        Team.save(context, oldTeam.id, name, selectedBowlers).await()
+                    } else {
+                        Team.save(context, -1, name, selectedBowlers).await()
+                    }
 
-                        if (error != null) {
-                            error.show(context)
-                            input_name.setText(oldTeam?.name)
-                            refreshBowlerList()
-                        } else if (newTeam != null) {
-                            dismiss()
-                            listener?.onFinishTeam(newTeam)
-                        }
+                    if (error != null) {
+                        error.show(context)
+                        input_name.setText(oldTeam?.name)
+                        refreshBowlerList()
+                    } else if (newTeam != null) {
+                        dismiss()
+                        listener?.onFinishTeam(newTeam)
                     }
                 }
             }
