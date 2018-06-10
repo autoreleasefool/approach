@@ -313,6 +313,7 @@ class TeamDialog : BaseDialogFragment(),
             team?.members?.forEach({
                 ids.add(it.bowlerId)
             })
+            bowlerAdapter.items = bowlers
             bowlerAdapter.setSelectedElementsWithIds(ids)
             updateSaveButton()
         }
