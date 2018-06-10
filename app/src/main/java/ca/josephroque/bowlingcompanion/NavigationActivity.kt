@@ -17,6 +17,7 @@ import ca.josephroque.bowlingcompanion.common.fragments.BaseDialogFragment
 import ca.josephroque.bowlingcompanion.common.fragments.BaseFragment
 import ca.josephroque.bowlingcompanion.common.fragments.TabbedFragment
 import ca.josephroque.bowlingcompanion.common.interfaces.INavigationDrawerHandler
+import ca.josephroque.bowlingcompanion.series.SeriesListFragment
 import com.ncapdevi.fragnav.FragNavController
 import com.ncapdevi.fragnav.FragNavTransactionOptions
 import kotlinx.android.synthetic.main.activity_navigation.*
@@ -205,9 +206,9 @@ class NavigationActivity : BaseActivity(),
             drawer_layout.closeDrawers()
 
             when (menuItem.itemId) {
-                R.id.nav_bowlers_teams -> TODO("not implemented")
-                R.id.nav_leagues_events -> TODO("not implemented")
-                R.id.nav_series -> TODO("not implemented")
+                R.id.nav_bowlers_teams -> popBackTo(BowlerTeamTabbedFragment::class.java.name)
+                R.id.nav_leagues_events -> popBackTo(LeagueEventTabbedFragment::class.java.name)
+                R.id.nav_series -> popBackTo(SeriesListFragment::class.java.name)
                 R.id.nav_feedback -> prepareFeedbackEmail()
                 R.id.nav_settings -> openSettings()
                 else -> {
@@ -311,5 +312,24 @@ class NavigationActivity : BaseActivity(),
     /** @Override */
     override fun onTabSwitched() {
         invalidateFab()
+    }
+
+    /**
+     * Pop back to a fragment in the stack.
+     *
+     * @param fragmentName name of the fragment to show
+     */
+    private fun popBackTo(fragmentName: String) {
+        val fragments = fragNavController?.currentStack ?: return
+        var popTarget: Int? = null
+
+        for (i in 0 until fragments.size) {
+            if (fragments[i]::class.java.name == fragmentName) {
+                popTarget = fragments.size - i - 1
+                break
+            }
+        }
+
+        popTarget?.let { fragNavController?.popFragments(it) }
     }
 }
