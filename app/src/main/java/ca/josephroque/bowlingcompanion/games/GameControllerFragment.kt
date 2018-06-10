@@ -102,6 +102,11 @@ class GameControllerFragment : TabbedFragment(),
             tabbed_fragment_tabs.visibility = View.VISIBLE
             (activity as? AppCompatActivity)?.supportActionBar?.elevation = 0F
         }
+
+        navigationDrawerController.numberOfGames = seriesList[currentSeries].numberOfGames
+        navigationDrawerController.bowlerName = seriesList[currentSeries].league.bowler.name
+        navigationDrawerController.leagueName = seriesList[currentSeries].league.name
+
     }
 
     /** @Override */
