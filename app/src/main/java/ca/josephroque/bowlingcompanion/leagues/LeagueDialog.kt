@@ -258,7 +258,7 @@ class LeagueDialog : BaseDialogFragment() {
         league?.let {
             layout_delete_league.visibility = View.VISIBLE
             layout_new_league_event.visibility = View.GONE
-            input_number_of_games.visibility = View.GONE
+            input_number_of_games.isEnabled = false
 
             if (it.isEvent) {
                 layout_additional_games?.visibility = View.GONE
