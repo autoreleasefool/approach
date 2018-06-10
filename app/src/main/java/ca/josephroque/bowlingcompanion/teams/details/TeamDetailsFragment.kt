@@ -5,15 +5,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import ca.josephroque.bowlingcompanion.R
+import ca.josephroque.bowlingcompanion.common.Android
 import ca.josephroque.bowlingcompanion.common.fragments.BaseFragment
 import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
 import ca.josephroque.bowlingcompanion.common.interfaces.IFloatingActionButtonHandler
 import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
+import ca.josephroque.bowlingcompanion.database.DatabaseHelper
+import ca.josephroque.bowlingcompanion.games.GameControllerFragment
+import ca.josephroque.bowlingcompanion.series.Series
 import ca.josephroque.bowlingcompanion.teams.Team
 import ca.josephroque.bowlingcompanion.teams.teammember.TeamMember
 import ca.josephroque.bowlingcompanion.teams.teammember.TeamMemberDialog
 import ca.josephroque.bowlingcompanion.teams.teammember.TeamMembersListFragment
+import ca.josephroque.bowlingcompanion.utils.BCError
 import kotlinx.android.synthetic.main.view_team_member_header.view.*
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.launch
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -52,6 +61,12 @@ class TeamDetailsFragment : BaseFragment(),
 
     /** Indicate if all team members are ready for bowling to begin. */
     private var allTeamMembersReady: Boolean = false
+        set(value) {
+            if (field != value) {
+                field = value
+                fabProvider?.invalidateFab()
+            }
+        }
 
     /** @Override */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -94,8 +109,18 @@ class TeamDetailsFragment : BaseFragment(),
 
     /** @Override */
     override fun onFabClick() {
-        if (allTeamMembersReady) {
-            TODO("not implemented")
+        context?.let {
+            launch(Android) {
+                val error = attemptToBowl().await()
+                if (error != null) {
+                    error.show(it)
+                    return@launch
+                }
+
+                val seriesList = team?.series ?: return@launch
+                val fragment = GameControllerFragment.newInstance(seriesList)
+                fragmentNavigation?.pushFragment(fragment)
+            }
         }
     }
 
@@ -114,12 +139,96 @@ class TeamDetailsFragment : BaseFragment(),
                 .forEach {
                     val list = it as? TeamMembersListFragment ?: return
                     list.refreshList(teamMember)
+                    team = team?.replaceTeamMember(teamMember)
                 }
     }
 
     /** @Override */
     override fun onTeamMembersReadyChanged(ready: Boolean) {
         allTeamMembersReady = ready
-        fabProvider?.invalidateFab()
+    }
+
+    /**
+     * Attempt to begin a new round of bowling.
+     *
+     * @return [BCError] if any errors occur, or null if the [Team] is ready to bowl.
+     */
+    private fun attemptToBowl(): Deferred<BCError?> {
+        return async(CommonPool) {
+            val context = this@TeamDetailsFragment.context ?: return@async BCError()
+            val team = this@TeamDetailsFragment.team ?: return@async BCError()
+
+            if (allTeamMembersReady) {
+                allTeamMembersReady = false
+                val teamMemberSeries: MutableMap<TeamMember, Series> = HashMap()
+
+                val database = DatabaseHelper.getInstance(context).writableDatabase
+                var transactionBegun = false
+
+                // Create series in the database for each team member, if one does not exist,
+                // or retrieve the existing series if it does.
+                try {
+                    team.members.forEach {
+                        val league = it.league!!
+
+                        when {
+                            league.isEvent -> {
+                                val eventSeries = league.fetchSeries(context).await()
+                                assert(eventSeries.size == 1)
+                                teamMemberSeries[it] = eventSeries.first()
+                            }
+                            it.series == null -> {
+                                if (!transactionBegun) {
+                                    transactionBegun = true
+                                    database.beginTransaction()
+                                }
+
+                                val (newSeries, seriesError) = league.createNewSeries(
+                                        context = context,
+                                        inTransaction = true
+                                ).await()
+
+                                if (newSeries != null) {
+                                    teamMemberSeries[it] = newSeries
+                                } else if (seriesError != null) {
+                                    return@async seriesError
+                                }
+                            }
+                            else -> {
+                                teamMemberSeries[it] = it.series
+                            }
+                        }
+                    }
+
+                    if (transactionBegun) {
+                        database.setTransactionSuccessful()
+                    }
+                } finally {
+                    if (transactionBegun) {
+                        database.endTransaction()
+                    }
+                }
+
+                // Replace immutable [TeamMember] instances with updated series
+                val membersWithSeries = team.members.map {
+                    return@map TeamMember(
+                            teamId =  it.teamId,
+                            bowlerName = it.bowlerName,
+                            bowlerId = it.bowlerId,
+                            league = it.league,
+                            series = teamMemberSeries[it]
+                    )
+                }
+
+                // Replace team with updated members
+                this@TeamDetailsFragment.team = Team(
+                        id = team.id,
+                        name = team.name,
+                        members = membersWithSeries
+                )
+            }
+
+            return@async null
+        }
     }
 }
