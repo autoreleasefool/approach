@@ -45,7 +45,7 @@ abstract class TabbedFragment : BaseFragment(),
     /** @Override */
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        context as? TabbedFragmentDelegate ?: throw RuntimeException("${context!!} must implement OnLeagueDialogInteractionListener")
+        context as? TabbedFragmentDelegate ?: throw RuntimeException("${context!!} must implement TabbedFragmentDelegate")
         delegate = context
     }
 
@@ -70,6 +70,13 @@ abstract class TabbedFragment : BaseFragment(),
     abstract fun buildPagerAdapter(tabCount: Int): BaseFragmentPagerAdapter
 
     /**
+     * For subclasses to respond to tab changes.
+     *
+     * @param newTab the new tab
+     */
+    abstract fun handleTabSwitch(newTab: Int)
+
+    /**
      * Configure tab layout for rendering.
      *
      * @param rootView the root view of the fragment
@@ -85,6 +92,7 @@ abstract class TabbedFragment : BaseFragment(),
         rootView.tabbed_fragment_tabs.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 rootView.tabbed_fragment_pager.currentItem = tab.position
+                handleTabSwitch(tab.position)
                 delegate?.onTabSwitched()
             }
 

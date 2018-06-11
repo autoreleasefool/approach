@@ -92,6 +92,9 @@ class LeagueEventTabbedFragment : TabbedFragment(),
     }
 
     /** @Override */
+    override fun handleTabSwitch(newTab: Int) {}
+
+    /** @Override */
     override fun getFabImage(): Int? {
         return R.drawable.ic_add
     }

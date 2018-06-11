@@ -92,6 +92,10 @@ class GameControllerFragment : TabbedFragment(),
     }
 
     /** @Override */
+    override fun handleTabSwitch(newTab: Int) {
+    }
+
+    /** @Override */
     override fun onStart() {
         super.onStart()
         val seriesList = seriesList ?: return

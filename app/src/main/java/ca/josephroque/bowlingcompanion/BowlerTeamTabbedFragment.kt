@@ -75,6 +75,9 @@ class BowlerTeamTabbedFragment : TabbedFragment(),
     }
 
     /** @Override */
+    override fun handleTabSwitch(newTab: Int) {}
+
+    /** @Override */
     override fun getFabImage(): Int? {
         return when (Tab.fromInt(currentTab)) {
             Tab.Bowlers -> R.drawable.ic_person_add
