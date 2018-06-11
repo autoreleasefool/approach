@@ -60,9 +60,7 @@ class GameControllerFragment : TabbedFragment(),
     private var currentGame: Int = 0
         set(value) {
             field = value
-            val adapter = tabbed_fragment_pager.adapter as? GameControllerPagerAdapter
-            val gameFragment = adapter?.getFragment(currentSeries) as? GameFragment
-            gameFragment?.gameNumber = value
+            onGameChanged(value)
         }
 
     /** @Override */
@@ -84,6 +82,7 @@ class GameControllerFragment : TabbedFragment(),
 
     /** @Override */
     override fun addTabs(tabLayout: TabLayout) {
+        tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
         seriesList?.let {
             it.forEach {
                 tabLayout.addTab(tabLayout.newTab().setText(it.league.bowler.name))
@@ -93,6 +92,7 @@ class GameControllerFragment : TabbedFragment(),
 
     /** @Override */
     override fun handleTabSwitch(newTab: Int) {
+        onSeriesChanged(currentSeries)
     }
 
     /** @Override */
@@ -106,11 +106,6 @@ class GameControllerFragment : TabbedFragment(),
             tabbed_fragment_tabs.visibility = View.VISIBLE
             (activity as? AppCompatActivity)?.supportActionBar?.elevation = 0F
         }
-
-        navigationDrawerController.numberOfGames = seriesList[currentSeries].numberOfGames
-        navigationDrawerController.bowlerName = seriesList[currentSeries].league.bowler.name
-        navigationDrawerController.leagueName = seriesList[currentSeries].league.name
-
     }
 
     /** @Override */
@@ -129,6 +124,30 @@ class GameControllerFragment : TabbedFragment(),
         if (game >= 0) {
             currentGame = game
         }
+    }
+
+    /**
+     * Handle when series changes.
+     *
+     * @param currentSeries the new series
+     */
+    private fun onSeriesChanged(currentSeries: Int) {
+        seriesList?.let {
+            navigationDrawerController.numberOfGames = it[currentSeries].numberOfGames
+            navigationDrawerController.bowlerName = it[currentSeries].league.bowler.name
+            navigationDrawerController.leagueName = it[currentSeries].league.name
+        }
+    }
+
+    /**
+     * Handle when game changes.
+     *
+     * @param currentGame the new game
+     */
+    private fun onGameChanged(currentGame: Int) {
+        val adapter = tabbed_fragment_pager.adapter as? GameControllerPagerAdapter
+        val gameFragment = adapter?.getFragment(currentSeries) as? GameFragment
+        gameFragment?.gameNumber = currentGame
     }
 
     /**
