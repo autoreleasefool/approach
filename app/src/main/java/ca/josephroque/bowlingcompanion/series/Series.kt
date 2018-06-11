@@ -250,7 +250,9 @@ data class Series(
                             BCError(R.string.error_saving_series, R.string.error_series_not_saved)
                     )
                 } finally {
-                    database.endTransaction()
+                    if (!inTransaction) {
+                        database.endTransaction()
+                    }
                 }
 
                 Pair(Series(
@@ -305,7 +307,9 @@ data class Series(
                 } catch (ex: Exception) {
                     Log.e(TAG, "Error updating series details ($id, $date)", ex)
                 } finally {
-                    database.endTransaction()
+                    if (!inTransaction) {
+                        database.endTransaction()
+                    }
                 }
 
                 Pair(Series(league, id, date, numberOfGames, scores, matchPlay), null)
