@@ -5,15 +5,18 @@ import android.os.Bundle
 import android.support.v7.preference.PreferenceManager
 import android.view.*
 import ca.josephroque.bowlingcompanion.R
+import ca.josephroque.bowlingcompanion.common.Android
 import ca.josephroque.bowlingcompanion.common.interfaces.IFloatingActionButtonHandler
 import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
 import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
 import ca.josephroque.bowlingcompanion.games.GameControllerFragment
 import ca.josephroque.bowlingcompanion.leagues.League
 import ca.josephroque.bowlingcompanion.settings.Settings
+import ca.josephroque.bowlingcompanion.utils.safeLet
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.launch
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -176,11 +179,7 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
 
     /** @Override */
     override fun getFabImage(): Int? {
-        return if (singleSelectMode) {
-            R.drawable.ic_add
-        } else {
-            null
-        }
+        return R.drawable.ic_add
     }
 
     /** @Override */
@@ -219,7 +218,16 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
             val newFragment = SeriesDialog.newInstance(series)
             fragmentNavigation?.pushDialogFragment(newFragment)
         } else {
-            TODO("not implemented")
+            safeLet(context, league) { context, league ->
+                launch(Android) {
+                    val (newSeries, seriesError) = league.createNewSeries(context).await()
+                    if (seriesError != null) {
+                        seriesError.show(context)
+                    } else if (newSeries != null) {
+                        showGameDetails(newSeries)
+                    }
+                }
+            }
         }
     }
 
