@@ -46,14 +46,13 @@ class SeriesScoreView: LinearLayout {
 
     /** @Override */
     override fun onSaveInstanceState(): Parcelable {
-        val bundle = Bundle().apply {
+        return Bundle().apply {
             putParcelable(SUPER_STATE, super.onSaveInstanceState())
             putInt(SCORE, score)
             putInt(SCORE_TEXT_COLOR, scoreTextColor)
             putInt(MATCH_PLAY, matchPlay.ordinal)
             putInt(MATCH_PLAY_TEXT_COLOR, matchPlayTextColor)
         }
-        return bundle
     }
 
     /** @Override */

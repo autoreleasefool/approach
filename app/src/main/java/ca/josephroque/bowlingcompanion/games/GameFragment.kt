@@ -61,6 +61,8 @@ class GameFragment : BaseFragment(),
     /** The series being edited. */
     private var series: Series? = null
 
+    // MARK: Overrides
+
     /** @Override */
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -93,6 +95,9 @@ class GameFragment : BaseFragment(),
         game_header.delegate = this
     }
 
+    /**
+     * Set behaviour and appearance of bottom sheet.
+     */
     private fun setupBottomSheet(rootView: View) {
         val bottomSheet = rootView.sheet_match_play
         val sheetBehavior = BottomSheetBehavior.from(bottomSheet)
@@ -194,6 +199,8 @@ class GameFragment : BaseFragment(),
         // TODO: set match play values
     }
 
+    // MARK: Companion Object
+
     companion object {
         /** Logging identifier. */
         @Suppress("unused")
@@ -214,6 +221,8 @@ class GameFragment : BaseFragment(),
             return fragment
         }
     }
+
+    // MARK: OnGameFragmentInteractionListener
 
     /**
      * Handle interactions with the game fragment.

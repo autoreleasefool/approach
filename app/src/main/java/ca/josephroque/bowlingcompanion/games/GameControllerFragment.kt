@@ -64,7 +64,6 @@ class GameControllerFragment : TabbedFragment(),
         }
 
     /** @Override */
-    @Suppress("UNCHECKED_CAST")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val parcelableSeries = savedInstanceState?.getParcelableArray(ARG_SERIES) ?: arguments?.getParcelableArray(ARG_SERIES)
         parcelableSeries?.let {

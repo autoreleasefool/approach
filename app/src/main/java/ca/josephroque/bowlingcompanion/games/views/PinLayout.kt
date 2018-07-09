@@ -7,7 +7,6 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.widget.ImageView
-import android.widget.LinearLayout
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.games.Game
 
