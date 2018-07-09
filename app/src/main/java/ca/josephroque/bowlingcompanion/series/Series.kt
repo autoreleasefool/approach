@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion.series
 
 import android.content.ContentValues
 import android.content.Context
+import android.database.Cursor
 import android.os.Parcel
 import android.os.Parcelable
 import android.util.Log
@@ -345,6 +346,25 @@ data class Series(
                 var scores: MutableList<Int> = ArrayList()
                 var matchPlay: MutableList<Byte> = ArrayList()
 
+                /**
+                 * Build a new [Series] instance from a cursor to the database.
+                 *
+                 * @param cursor database accessor
+                 * @return a new series
+                 */
+                fun buildSeriesFromCursor(cursor: Cursor): Series {
+                    val id = cursor.getLong(cursor.getColumnIndex("sid"))
+                    val seriesDate = DateUtils.seriesDateToDate(cursor.getString(cursor.getColumnIndex(SeriesEntry.COLUMN_SERIES_DATE)))
+                    return Series(
+                            league,
+                            id,
+                            seriesDate,
+                            scores.size,
+                            scores,
+                            matchPlay
+                    )
+                }
+
                 val cursor = database.rawQuery(rawSeriesQuery, arrayOf(league.id.toString()))
                 if (cursor.moveToFirst()) {
                     while (!cursor.isAfterLast) {
@@ -352,21 +372,10 @@ data class Series(
                         if (newId != lastId && lastId != -1L) {
                             cursor.moveToPrevious()
 
-                            val id = cursor.getLong(cursor.getColumnIndex("sid"))
-                            val seriesDate = DateUtils.seriesDateToDate(cursor.getString(cursor.getColumnIndex(SeriesEntry.COLUMN_SERIES_DATE)))
-                            val series = Series(
-                                    league,
-                                    id,
-                                    seriesDate,
-                                    scores.size,
-                                    scores,
-                                    matchPlay
-                            )
+                            seriesList.add(buildSeriesFromCursor(cursor))
 
-                            seriesList.add(series)
                             scores = ArrayList()
                             matchPlay = ArrayList()
-
                             cursor.moveToNext()
                         }
 
@@ -378,18 +387,7 @@ data class Series(
                     }
 
                     cursor.moveToPrevious()
-                    val id = cursor.getLong(cursor.getColumnIndex("sid"))
-                    val seriesDate = DateUtils.seriesDateToDate(cursor.getString(cursor.getColumnIndex(SeriesEntry.COLUMN_SERIES_DATE)))
-                    val series = Series(
-                            league,
-                            id,
-                            seriesDate,
-                            scores.size,
-                            scores,
-                            matchPlay
-                    )
-
-                    seriesList.add(series)
+                    seriesList.add(buildSeriesFromCursor(cursor))
                 }
                 cursor.close()
 

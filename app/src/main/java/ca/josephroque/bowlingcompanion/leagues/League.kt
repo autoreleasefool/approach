@@ -573,36 +573,57 @@ data class League(
                 var lastId: Long = -1
                 var leagueNumberOfGames = 0
                 var leagueTotal = 0
+
+                /**
+                 * Checks if the league at the cursor is an event or not.
+                 *
+                 * @param cursor database accessor
+                 * @return true if the league is an event, false otherwise
+                 */
+                fun isCurrentLeagueEvent(cursor: Cursor): Boolean {
+                    return cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_IS_EVENT)) == 1
+                }
+
+                /**
+                 * Build a new [League] instance from a cursor to the database.
+                 *
+                 * @param cursor database accessor
+                 * @return a new league
+                 */
+                fun buildLeagueFromCursor(cursor: Cursor): League {
+                    val id = cursor.getLong(cursor.getColumnIndex("lid"))
+                    val name = cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_LEAGUE_NAME))
+                    val additionalPinfall = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_ADDITIONAL_PINFALL))
+                    val additionalGames = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_ADDITIONAL_GAMES))
+                    val gameHighlight = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_GAME_HIGHLIGHT))
+                    val seriesHighlight = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_SERIES_HIGHLIGHT))
+                    val gamesPerSeries = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NUMBER_OF_GAMES))
+                    val average = Average.getAdjustedAverage(leagueTotal, leagueNumberOfGames, additionalPinfall, additionalGames)
+                    val isEvent = isCurrentLeagueEvent(cursor)
+
+                    return League(
+                            bowler,
+                            id,
+                            name,
+                            average,
+                            isEvent,
+                            gamesPerSeries,
+                            additionalPinfall,
+                            additionalGames,
+                            gameHighlight,
+                            seriesHighlight
+                    )
+                }
+
                 if (cursor.moveToFirst()) {
                     while (!cursor.isAfterLast) {
                         val newId = cursor.getLong(cursor.getColumnIndex("lid"))
                         if (newId != lastId && lastId != -1L) {
                             cursor.moveToPrevious()
 
-                            val id = cursor.getLong(cursor.getColumnIndex("lid"))
-                            val name = cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_LEAGUE_NAME))
-                            val isEvent = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_IS_EVENT)) == 1
-                            val additionalPinfall = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_ADDITIONAL_PINFALL))
-                            val additionalGames = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_ADDITIONAL_GAMES))
-                            val gameHighlight = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_GAME_HIGHLIGHT))
-                            val seriesHighlight = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_SERIES_HIGHLIGHT))
-                            val gamesPerSeries = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NUMBER_OF_GAMES))
-                            val average = Average.getAdjustedAverage(leagueTotal, leagueNumberOfGames, additionalPinfall, additionalGames)
-
-                            val league = League(
-                                    bowler,
-                                    id,
-                                    name,
-                                    average,
-                                    isEvent,
-                                    gamesPerSeries,
-                                    additionalPinfall,
-                                    additionalGames,
-                                    gameHighlight,
-                                    seriesHighlight)
-
+                            val isEvent = isCurrentLeagueEvent(cursor)
                             if ((includeEvents && isEvent) || (includeLeagues && !isEvent)) {
-                                leagues.add(league)
+                                leagues.add(buildLeagueFromCursor(cursor))
                             }
 
                             leagueTotal = 0
@@ -620,30 +641,10 @@ data class League(
                         cursor.moveToNext()
                     }
                     cursor.moveToPrevious()
-                    val id = cursor.getLong(cursor.getColumnIndex("lid"))
-                    val name = cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_LEAGUE_NAME))
-                    val isEvent = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_IS_EVENT)) == 1
-                    val additionalPinfall = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_ADDITIONAL_PINFALL))
-                    val additionalGames = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_ADDITIONAL_GAMES))
-                    val gameHighlight = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_GAME_HIGHLIGHT))
-                    val seriesHighlight = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_SERIES_HIGHLIGHT))
-                    val average = Average.getAdjustedAverage(leagueTotal, leagueNumberOfGames, additionalPinfall, additionalGames)
-                    val gamesPerSeries = cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_NUMBER_OF_GAMES))
 
-                    val league = League(
-                            bowler,
-                            id,
-                            name,
-                            average,
-                            isEvent,
-                            gamesPerSeries,
-                            additionalPinfall,
-                            additionalGames,
-                            gameHighlight,
-                            seriesHighlight)
-
+                    val isEvent = isCurrentLeagueEvent(cursor)
                     if ((includeEvents && isEvent) || (includeLeagues && !isEvent)) {
-                        leagues.add(league)
+                        leagues.add(buildLeagueFromCursor(cursor))
                     }
                 }
 
