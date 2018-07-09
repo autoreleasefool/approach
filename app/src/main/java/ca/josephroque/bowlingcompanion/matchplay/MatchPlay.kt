@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion.matchplay
 
 import android.os.Parcel
+import android.os.Parcelable
 import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
 import ca.josephroque.bowlingcompanion.common.interfaces.KParcelable
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator

@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.games
 
+import android.os.Parcelable
 import android.os.Parcel
 import ca.josephroque.bowlingcompanion.common.interfaces.*
 
@@ -11,19 +12,11 @@ import ca.josephroque.bowlingcompanion.common.interfaces.*
 data class Frame(
         val gameId: Long,
         override val id: Long,
-        val ordinal: Int
+        val ordinal: Int,
+        var isAccessed: Boolean,
+        var pinState: Array<BooleanArray>,
+        var ballFouled: BooleanArray
 ): IIdentifiable, KParcelable {
-
-    /** Indicates if the frame has been accessed or not. */
-    var isAccessed: Boolean = false
-
-    /** Current state of each pin, for each ball. True is down, false is up. */
-    var pinState: Array<BooleanArray> = Array(NUMBER_OF_BALLS, {
-        return@Array BooleanArray(Game.NUMBER_OF_PINS)
-    })
-
-    /** Foul state for each ball. True is fouled, false is no foul. */
-    var ballFouled: BooleanArray = BooleanArray(NUMBER_OF_BALLS)
 
     /**
      * Construct a [Frame] from a [Parcel].
@@ -31,14 +24,17 @@ data class Frame(
     private constructor(p: Parcel): this(
             gameId = p.readLong(),
             id = p.readLong(),
-            ordinal = p.readInt()
-    ) {
-        isAccessed = p.readBoolean()
-        for (i in 0 until NUMBER_OF_BALLS) {
-            p.readBooleanArray(pinState[i])
-        }
-        p.readBooleanArray(ballFouled)
-    }
+            ordinal = p.readInt(),
+            isAccessed = p.readBoolean(),
+            pinState = Array(NUMBER_OF_BALLS, {
+                val pinState = BooleanArray(Game.NUMBER_OF_PINS)
+                p.readBooleanArray(pinState)
+                return@Array pinState
+            }),
+            ballFouled = BooleanArray(NUMBER_OF_BALLS).apply {
+                p.readBooleanArray(this)
+            }
+    )
 
     /** @Override */
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {

@@ -127,6 +127,16 @@ data class Series(
         }
     }
 
+    /**
+     * Load the list of games for this series.
+     *
+     * @param context to get database instance
+     * @return the list of games for the series
+     */
+    fun fetchGames(context: Context): Deferred<MutableList<Game>> {
+        return Game.fetchSeriesGames(context, this)
+    }
+
     companion object {
         /** Logging identifier. */
         @Suppress("unused")
