@@ -1,11 +1,13 @@
 package ca.josephroque.bowlingcompanion.games
 
+import android.content.Context
 import android.os.Bundle
 import android.support.design.widget.BottomSheetBehavior
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import ca.josephroque.bowlingcompanion.R
+import ca.josephroque.bowlingcompanion.common.Android
 import ca.josephroque.bowlingcompanion.common.fragments.BaseFragment
 import ca.josephroque.bowlingcompanion.common.interfaces.IFloatingActionButtonHandler
 import ca.josephroque.bowlingcompanion.games.views.FrameView
@@ -18,6 +20,7 @@ import ca.josephroque.bowlingcompanion.series.Series
 import kotlinx.android.synthetic.main.fragment_game.*
 import kotlinx.android.synthetic.main.sheet_match_play.*
 import kotlinx.android.synthetic.main.sheet_match_play.view.*
+import kotlinx.coroutines.experimental.launch
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -47,22 +50,14 @@ class GameFragment : BaseFragment(),
         set(value) {
             field = value
             game_header.currentGame = gameNumber
+            gameState.currentGameIdx = gameNumber
         }
-    /** The current frame being edited. */
-    private var currentFrame: Int = 0
-    /** The current ball being edited. */
-    private var currentBall: Int = 0
-
-    /** The current pins up (false) and knocked down (true) for each frame, ball, and pin. */
-    @Suppress("LABEL_NAME_CLASH")
-    private var pinState: Array<Array<BooleanArray>> = Array(Game.NUMBER_OF_FRAMES, {
-        return@Array Array(Frame.NUMBER_OF_BALLS, {
-            return@Array BooleanArray(Game.NUMBER_OF_PINS)
-        })
-    })
 
     /** The series being edited. */
     private var series: Series? = null
+
+    /** Manage the state of the current game. */
+    private lateinit var gameState: GameState
 
     // MARK: Overrides
 
@@ -111,6 +106,21 @@ class GameFragment : BaseFragment(),
         game_header.delegate = this
     }
 
+    /** @Override */
+    override fun onResume() {
+        super.onResume()
+        val context = context ?: return
+        series?.let {
+            gameState = GameState(it, gameStateListener)
+            launch(Android) {
+                gameState.loadGames(context).await()
+                refresh()
+            }
+        }
+
+        onBallSelected(0, 0)
+    }
+
     /**
      * Set behaviour and appearance of bottom sheet.
      */
@@ -134,13 +144,8 @@ class GameFragment : BaseFragment(),
 
     /** @Override */
     override fun onBallSelected(ball: Int, frame: Int) {
-        currentBall = ball
-        currentFrame = frame
-
-        frameViews.forEachIndexed { index, it ->
-            it?.isCurrentFrame = (index == currentFrame)
-            it?.currentBall = currentBall
-        }
+        gameState.currentFrameIdx = frame
+        gameState.currentBallIdx = ball
     }
 
     /** @Override */
@@ -152,21 +157,20 @@ class GameFragment : BaseFragment(),
 
     /** @Override */
     override fun getPinState(pin: Int): Boolean {
-        return pinState[currentFrame][currentBall][pin]
+        return if (gameState.gamesLoaded) gameState.currentPinState[pin].isDown else false
     }
 
     /** @Override */
     override fun updatePinState(pins: IntArray, state: Boolean) {
-        pins.forEach {
-            pinState[currentFrame][currentBall][it] = state
-        }
+        if (!gameState.gamesLoaded) { return }
+        pins.forEach { gameState.currentPinState[it].isDown = state }
     }
 
     // MARK: GameFooterInteractionDelegate
 
     /** @Override */
     override fun onClearPins() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        updatePinState((1..Game.NUMBER_OF_PINS).map { it - 1 }.toIntArray(), true)
     }
 
     /** @Override */
@@ -213,6 +217,21 @@ class GameFragment : BaseFragment(),
         }
 
         // TODO: set match play values
+    }
+
+    // MARK: GameStateListener
+
+    /** Handle events from game state changes. */
+    val gameStateListener = object : GameState.GameStateListener {
+        /** @Override */
+        override fun onLastBallEntered() {
+            listener?.enableFab(false)
+        }
+
+        /** @Override */
+        override fun onLastBallExited() {
+            listener?.enableFab(true)
+        }
     }
 
     // MARK: Companion Object
