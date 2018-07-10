@@ -14,7 +14,7 @@ data class Frame(
         override val id: Long,
         val ordinal: Int,
         var isAccessed: Boolean,
-        var pinState: Array<BooleanArray>,
+        var pinState: Array<Deck>,
         var ballFouled: BooleanArray
 ): IIdentifiable, KParcelable {
 
@@ -27,9 +27,9 @@ data class Frame(
             ordinal = p.readInt(),
             isAccessed = p.readBoolean(),
             pinState = Array(NUMBER_OF_BALLS, {
-                val pinState = BooleanArray(Game.NUMBER_OF_PINS)
-                p.readBooleanArray(pinState)
-                return@Array pinState
+                val pins = BooleanArray(Game.NUMBER_OF_PINS)
+                p.readBooleanArray(pins)
+                return@Array Pin.deckFromBooleanArray(pins)
             }),
             ballFouled = BooleanArray(NUMBER_OF_BALLS).apply {
                 p.readBooleanArray(this)
@@ -43,7 +43,7 @@ data class Frame(
         writeInt(ordinal)
         writeBoolean(isAccessed)
         for (i in 0 until NUMBER_OF_BALLS) {
-            writeBooleanArray(pinState[i])
+            writeBooleanArray(pinState[i].toBooleanArray())
         }
         writeBooleanArray(ballFouled)
     }
