@@ -9,10 +9,10 @@ import ca.josephroque.bowlingcompanion.database.Contract.FrameEntry
 import ca.josephroque.bowlingcompanion.database.Contract.GameEntry
 import ca.josephroque.bowlingcompanion.database.Contract.MatchPlayEntry
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper
+import ca.josephroque.bowlingcompanion.games.lane.*
 import ca.josephroque.bowlingcompanion.matchplay.MatchPlay
 import ca.josephroque.bowlingcompanion.matchplay.MatchPlayResult
 import ca.josephroque.bowlingcompanion.scoring.Fouls
-import ca.josephroque.bowlingcompanion.scoring.Pin
 import ca.josephroque.bowlingcompanion.series.Series
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
@@ -63,6 +63,86 @@ data class Game(
         writeBoolean(isManual)
         writeParcelableArray(frames.toTypedArray(), 0)
         writeParcelable(matchPlay, 0)
+    }
+
+    /**
+     * Get the first frame which hasn't been accessed in a game, or the last frame if all frames
+     * have been accessed.
+     */
+    val firstNewFrame: Int
+        get() {
+            for (i in 0 until frames.size) {
+                if (!frames[i].isAccessed) {
+                    return i
+                }
+            }
+
+            return Game.LAST_FRAME
+        }
+
+    /**
+     * Gets the cumulative score of each frame of this game.
+     *
+     * @return the cumulative scores of each frame, as strings
+     */
+    fun getScoreTextForFrames(): List<String> {
+        val frameScores = IntArray(frames.size)
+        for (frameIdx in frames.size - 1 downTo 0) {
+            val frame = frames[frameIdx]
+
+            // Score last frame differently than other frames
+            if (frame.zeroBasedOrdinal == Game.LAST_FRAME) {
+                for (ballIdx in Frame.LAST_BALL downTo 0) {
+                    if (ballIdx == Frame.LAST_BALL) {
+                        // Always add the value of the 3rd ball
+                        frameScores[frameIdx] = frame.pinState[ballIdx].value(false)
+                    } else if (frame.pinState[ballIdx].arePinsCleared()) {
+                        // If all pins were knocked down in a previous ball, add the full
+                        // value of that ball (it's a strike/spare)
+                        frameScores[frameIdx] += frame.pinState[ballIdx].value(false)
+                    }
+                }
+            } else {
+                val nextFrame = frames[frameIdx + 1]
+                for (ballIdx in 0 until  Frame.NUMBER_OF_BALLS) {
+                    if (ballIdx == Frame.LAST_BALL) {
+                        // If the loop is not exited by this point, there's no strike or spare
+                        // Add basic value of the frame
+                        frameScores[frameIdx] += frame.pinState[ballIdx].value(false)
+                    } else if (frame.pinState[ballIdx].arePinsCleared()) {
+                        // Either spare or strike occurred, add ball 0 of this frame and next
+                        frameScores[frameIdx] += frame.pinState[ballIdx].value(false)
+                        frameScores[frameIdx] += nextFrame.pinState[0].value(false)
+                        val double = frameScores[frameIdx] == Frame.MAX_VALUE * 2
+
+                        // Strike in this frame
+                        if (ballIdx == 0) {
+                            if (nextFrame.zeroBasedOrdinal == Game.LAST_FRAME) {
+                                // 9th frame must get additional scoring from 10th frame only
+                                if (double) {
+                                    frameScores[frameIdx] += nextFrame.pinState[1].value(false)
+                                } else {
+                                    frameScores[frameIdx] += nextFrame.pinState[1].difference(nextFrame.pinState[0])
+                                }
+                            } else if (!double) {
+                                frameScores[frameIdx] += nextFrame.pinState[1].difference(nextFrame.pinState[0])
+                            } else {
+                                frameScores[frameIdx] += frames[frameIdx + 2].pinState[0].value(false)
+                            }
+                        }
+                        break
+                    }
+                }
+            }
+        }
+
+        var totalScore = 0
+        for (i in 0 until frames.size) {
+            totalScore += frameScores[i]
+            frameScores[i] = totalScore
+        }
+
+        return frameScores.map { it.toString() }
     }
 
     companion object {
@@ -178,7 +258,7 @@ data class Game(
                                 cursor.getInt(cursor.getColumnIndex("frame.${FrameEntry.COLUMN_FRAME_NUMBER}")),
                                 cursor.getInt(cursor.getColumnIndex("frame.${FrameEntry.COLUMN_IS_ACCESSED}")) == 1,
                                 Array(NUMBER_OF_FRAMES, {
-                                    return@Array Pin.ballIntToBoolean(cursor.getInt(cursor.getColumnIndex("frame.${FrameEntry.COLUMN_PIN_STATE[it]}")))
+                                    return@Array Pin.deckFromInt(cursor.getInt(cursor.getColumnIndex("frame.${FrameEntry.COLUMN_PIN_STATE[it]}")))
                                 }),
                                 BooleanArray(Frame.NUMBER_OF_BALLS, {
                                     return@BooleanArray Fouls.foulIntToString(cursor.getInt(cursor.getColumnIndex("frame.${FrameEntry.COLUMN_FOULS}"))).contains(it.toString())

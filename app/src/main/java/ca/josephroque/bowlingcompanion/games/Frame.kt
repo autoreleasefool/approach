@@ -3,6 +3,9 @@ package ca.josephroque.bowlingcompanion.games
 import android.os.Parcelable
 import android.os.Parcel
 import ca.josephroque.bowlingcompanion.common.interfaces.*
+import ca.josephroque.bowlingcompanion.games.lane.Deck
+import ca.josephroque.bowlingcompanion.games.lane.Pin
+import ca.josephroque.bowlingcompanion.games.lane.toBooleanArray
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -48,6 +51,10 @@ data class Frame(
         writeBooleanArray(ballFouled)
     }
 
+    /** Ordinal of the frame, zero based. Frames are numbered 0 to 9 this way. */
+    val zeroBasedOrdinal: Int
+        get() = ordinal - 1
+
     companion object {
         /** Logging identifier. */
         @Suppress("unused")
@@ -62,5 +69,8 @@ data class Frame(
 
         /** Index of the last ball in a frame. */
         const val LAST_BALL = NUMBER_OF_BALLS - 1
+
+        /** Max value of a single frame. */
+        const val MAX_VALUE = 15
     }
 }
