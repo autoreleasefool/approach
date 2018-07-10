@@ -79,7 +79,6 @@
             android:id="@+id/tv_score"
             android:minWidth="@dimen/frame_width"
             android:minHeight="@dimen/frame_score_height"
-            android:background="@drawable/frame_background_active"
             app:layout_constraintTop_toBottomOf="@id/tv_ball_1"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
