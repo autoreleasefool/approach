@@ -32,6 +32,9 @@ class GameFragment : BaseFragment(),
         GameHeaderView.GameHeaderInteractionDelegate,
         MatchPlaySheet.MatchPlaySheetDelegate {
 
+    /** Interaction listener. */
+    private var listener: OnGameFragmentInteractionListener? = null
+
     /** IDs for frame views. */
     private val frameViewIds = intArrayOf(R.id.frame_0, R.id.frame_1, R.id.frame_2, R.id.frame_3,
             R.id.frame_4, R.id.frame_5, R.id.frame_6, R.id.frame_7, R.id.frame_8, R.id.frame_9)
@@ -80,6 +83,19 @@ class GameFragment : BaseFragment(),
         setupBottomSheet(view)
 
         return view
+    }
+
+    /** @Override */
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        val parent = parentFragment as? OnGameFragmentInteractionListener?: throw RuntimeException("${parentFragment!!} must implement OnGameFragmentInteractionListener")
+        listener = parent
+    }
+
+    /** @Override */
+    override fun onDetach() {
+        super.onDetach()
+        listener = null
     }
 
     /** @Override */

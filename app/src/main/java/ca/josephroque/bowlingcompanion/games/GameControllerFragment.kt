@@ -23,7 +23,8 @@ import kotlinx.android.synthetic.main.fragment_common_tabs.*
  * Manage tabs to show games for the team of bowlers.
  */
 class GameControllerFragment : TabbedFragment(),
-        INavigationDrawerHandler {
+        INavigationDrawerHandler,
+        GameFragment.OnGameFragmentInteractionListener {
 
     companion object {
         /** Logging identifier */
@@ -62,6 +63,9 @@ class GameControllerFragment : TabbedFragment(),
             field = value
             onGameChanged(value)
         }
+
+    /** Indicates if the floating action button should be enabled or not. */
+    private var fabEnabled: Boolean = true
 
     /** @Override */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -109,11 +113,14 @@ class GameControllerFragment : TabbedFragment(),
 
     /** @Override */
     override fun getFabImage(): Int? {
-        return R.drawable.ic_arrow_forward
+        return if (fabEnabled) R.drawable.ic_arrow_forward else null
     }
 
     /** @Override */
     override fun onFabClick() {
+        if (!fabEnabled) {
+            return
+        }
         TODO("not implemented")
     }
 
@@ -123,6 +130,12 @@ class GameControllerFragment : TabbedFragment(),
         if (game >= 0) {
             currentGame = game
         }
+    }
+
+    /** @Override */
+    override fun enableFab(enabled: Boolean) {
+        fabEnabled = enabled
+        fabProvider?.invalidateFab()
     }
 
     /**
