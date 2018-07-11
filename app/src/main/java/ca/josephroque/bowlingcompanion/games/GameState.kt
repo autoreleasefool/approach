@@ -48,6 +48,12 @@ class GameState(private val series: Series, private val listener: GameStateListe
     var currentFrameIdx: Int = 0
         set(newFrame) {
             if (newFrame >= 0 && newFrame < Game.NUMBER_OF_FRAMES) {
+                if (newFrame > field) {
+                    for (i in 0..newFrame) {
+                        currentGame.frames[i].isAccessed = true
+                    }
+                }
+
                 field = newFrame
                 currentBallIdx = 0
             }
