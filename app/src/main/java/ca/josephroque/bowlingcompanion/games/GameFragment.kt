@@ -163,8 +163,6 @@ class GameFragment : BaseFragment(),
                 frameViews[index]?.setFoulEnabled(ballIdx, foul)
             })
         })
-
-
     }
 
     /** @Override */
@@ -185,6 +183,8 @@ class GameFragment : BaseFragment(),
     override fun onBallSelected(ball: Int, frame: Int) {
         gameState.currentFrameIdx = frame
         gameState.currentBallIdx = ball
+        game_header.currentFrame = gameState.currentFrameIdx
+        game_header.currentBall = gameState.currentBallIdx
         refresh()
     }
 

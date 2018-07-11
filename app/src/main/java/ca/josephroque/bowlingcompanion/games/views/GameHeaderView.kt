@@ -46,7 +46,7 @@ class GameHeaderView : LinearLayout, View.OnClickListener {
         }
 
     /**
-     * The current ball. If [currentBall] and [currentFrame] are equal to 1, disable the previous
+     * The current ball. If [currentBall] and [currentFrame] are equal to 0, disable the previous
      * ball button. If they are equal to their max values, disable the next ball button.
      */
     var currentBall: Int = 0
@@ -57,7 +57,7 @@ class GameHeaderView : LinearLayout, View.OnClickListener {
         }
 
     /**
-     * The current frame. If [currentBall] and [currentFrame] are equal to 1, disable the previous
+     * The current frame. If [currentBall] and [currentFrame] are equal to 0, disable the previous
      * ball button. If they are equal to their max values, disable the next ball button.
      */
     var currentFrame: Int = 0
