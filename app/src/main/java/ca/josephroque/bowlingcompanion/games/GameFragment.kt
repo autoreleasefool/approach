@@ -130,6 +130,43 @@ class GameFragment : BaseFragment(),
         sheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
+    /**
+     * Refresh the UI.
+     */
+    private fun refresh() {
+        if (!gameState.gamesLoaded) { return }
+
+        // Update active frames
+        frameViews.forEachIndexed { index, it ->
+            it?.isCurrentFrame = (index == gameState.currentFrameIdx)
+            it?.currentBall = gameState.currentBallIdx
+        }
+
+        // Update scores of the frames
+        val scoreText = gameState.currentGame.getScoreTextForFrames()
+        scoreText.forEachIndexed({ index, score ->
+            frameViews[index]?.setFrameText(score)
+        })
+        tv_final_score.text = gameState.currentGame.score.toString()
+
+        // Update balls of the frames
+        val ballText = gameState.currentGame.getBallTextForFrames()
+        ballText.forEachIndexed({ index, balls ->
+            balls.forEachIndexed({ ballIdx, ball ->
+                frameViews[index]?.setBallText(ballIdx, ball)
+            })
+        })
+
+        // Update fouls of the frames
+        gameState.currentGame.frames.forEachIndexed({ index, frame ->
+            frame.ballFouled.forEachIndexed({ ballIdx, foul ->
+                frameViews[index]?.setFoulEnabled(ballIdx, foul)
+            })
+        })
+
+
+    }
+
     /** @Override */
     override fun getFabImage(): Int? {
         return R.drawable.ic_arrow_forward
@@ -137,7 +174,9 @@ class GameFragment : BaseFragment(),
 
     /** @Override */
     override fun onFabClick() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        gameState.nextBall()
+        refresh()
+        // TODO: change bowler if necessary
     }
 
     // MARK: FrameInteractionDelegate
@@ -146,6 +185,7 @@ class GameFragment : BaseFragment(),
     override fun onBallSelected(ball: Int, frame: Int) {
         gameState.currentFrameIdx = frame
         gameState.currentBallIdx = ball
+        refresh()
     }
 
     /** @Override */
@@ -164,6 +204,7 @@ class GameFragment : BaseFragment(),
     override fun updatePinState(pins: IntArray, state: Boolean) {
         if (!gameState.gamesLoaded) { return }
         pins.forEach { gameState.currentPinState[it].isDown = state }
+        refresh()
     }
 
     // MARK: GameFooterInteractionDelegate
@@ -175,12 +216,16 @@ class GameFragment : BaseFragment(),
 
     /** @Override */
     override fun onFoulToggle() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        val frameView = frameViews[gameState.currentFrameIdx] ?: return
+        gameState.toggleFoul()
+        frameView.setFoulEnabled(gameState.currentBallIdx, gameState.currentBallFouled)
+        refresh()
     }
 
     /** @Override */
     override fun onLockToggle() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        gameState.toggleLock()
+        refresh()
     }
 
     /** @Override */
@@ -193,12 +238,15 @@ class GameFragment : BaseFragment(),
 
     /** @Override */
     override fun onNextBall() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        gameState.nextBall()
+        onBallSelected(gameState.currentBallIdx, gameState.currentFrameIdx)
+        // TODO: change bowler if necessary
     }
 
     /** @Override */
     override fun onPrevBall() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        gameState.prevBall()
+        onBallSelected(gameState.currentBallIdx, gameState.currentFrameIdx)
     }
 
     // MARK: MatchPlaySheetDelegate

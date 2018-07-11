@@ -133,7 +133,17 @@ class FrameView : LinearLayout, View.OnClickListener {
      * @param text text to set
      */
     fun setBallText(ball: Int, text: String) {
+        // TODO: should highlight
         findViewById<TextView>(ballViewIds[ball]).text = text
+    }
+
+    /**
+     * Set the score for the frame.
+     *
+     * @param text the score to set
+     */
+    fun setFrameText(text: String) {
+        tv_score.text = text
     }
 
     /**
