@@ -165,6 +165,16 @@ class GameFragment : BaseFragment(),
         })
     }
 
+    /**
+     * Save the current frame of the game state to the database.
+     */
+    private fun saveCurrentFrame() {
+        val saveState = gameState.deepyCopy()
+        // TODO: Create thread to save and add to queue
+    }
+
+    // MARK: IFloatingActionButtonHandler
+
     /** @Override */
     override fun getFabImage(): Int? {
         return R.drawable.ic_arrow_forward
@@ -181,6 +191,7 @@ class GameFragment : BaseFragment(),
 
     /** @Override */
     override fun onBallSelected(ball: Int, frame: Int) {
+        saveCurrentFrame()
         gameState.currentFrameIdx = frame
         gameState.currentBallIdx = ball
         game_header.currentFrame = gameState.currentFrameIdx

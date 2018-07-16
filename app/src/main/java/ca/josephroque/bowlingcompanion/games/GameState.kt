@@ -86,6 +86,21 @@ class GameState(private val series: Series, private val listener: GameStateListe
         get() = currentFrameIdx == Game.LAST_FRAME && currentBallIdx == Frame.LAST_BALL
 
     /**
+     * Create a deep copy of this game state.
+     *
+     * @return a new instance of [GameState]
+     */
+    fun deepyCopy(): GameState {
+        val copy = GameState(series, listener)
+        copy.games.addAll(this.games.map { it.deepCopy() })
+        copy.currentGameIdx = this.currentGameIdx
+        copy.currentFrameIdx = this.currentFrameIdx
+        copy.currentBallIdx = this.currentBallIdx
+        copy.gamesLoaded = true
+        return copy
+    }
+
+    /**
      * Toggle the foul on or off for the current ball.
      */
     fun toggleFoul() {

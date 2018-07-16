@@ -39,6 +39,29 @@ data class Frame(
             }
     )
 
+    /**
+     * Construct a [Frame] from a [Frame].
+     */
+    private constructor(other: Frame): this(
+            gameId = other.gameId,
+            id = other.id,
+            ordinal = other.ordinal,
+            isAccessed = other.isAccessed,
+            pinState = Array(NUMBER_OF_BALLS, {
+                return@Array other.pinState[it].map { it.deepCopy() }.toTypedArray()
+            }),
+            ballFouled = other.ballFouled.clone()
+    )
+
+    /**
+     * Create a deep copy of this frame.
+     *
+     * @return a new instance of [Frame]
+     */
+    fun deepCopy(): Frame {
+        return Frame(this)
+    }
+
     /** @Override */
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeLong(gameId)

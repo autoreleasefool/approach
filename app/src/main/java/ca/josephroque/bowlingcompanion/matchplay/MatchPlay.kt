@@ -30,6 +30,17 @@ data class MatchPlay(
             result = MatchPlayResult.fromInt(p.readInt())!!
     )
 
+    /**
+     * Construct a [MatchPlay] from a [MatchPlay].
+     */
+    private constructor(other: MatchPlay): this(
+            gameId = other.gameId,
+            id = other.id,
+            opponentName = other.opponentName,
+            opponentScore = other.opponentScore,
+            result = other.result
+    )
+
     /** @Override */
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeLong(gameId)
@@ -37,6 +48,15 @@ data class MatchPlay(
         writeString(opponentName)
         writeInt(opponentScore)
         writeInt(result.ordinal)
+    }
+
+    /**
+     * Create a deep copy of this match play.
+     *
+     * @return a new instance of [MatchPlay]
+     */
+    fun deepCopy(): MatchPlay {
+        return MatchPlay(this)
     }
 
     companion object {

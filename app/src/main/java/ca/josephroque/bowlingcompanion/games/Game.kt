@@ -53,6 +53,20 @@ data class Game(
             matchPlay = p.readParcelable<MatchPlay>(MatchPlay::class.java.classLoader)
     )
 
+    /**
+     * Construct a [Game] from a [Game].
+     */
+    private constructor(other: Game): this(
+            series = other.series,
+            id = other.id,
+            ordinal = other.ordinal,
+            score = other.score,
+            isLocked = other.isLocked,
+            isManual = other.isManual,
+            frames = other.frames.map { it.deepCopy() },
+            matchPlay = other.matchPlay.deepCopy()
+    )
+
     /** @Override */
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeParcelable(series, 0)
@@ -63,6 +77,15 @@ data class Game(
         writeBoolean(isManual)
         writeParcelableArray(frames.toTypedArray(), 0)
         writeParcelable(matchPlay, 0)
+    }
+
+    /**
+     * Create a deep copy of this game.
+     *
+     * @return a new instance of [Game]
+     */
+    fun deepCopy(): Game {
+        return Game(this)
     }
 
     /**

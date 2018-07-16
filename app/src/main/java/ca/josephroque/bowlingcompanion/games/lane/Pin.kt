@@ -28,6 +28,21 @@ enum class Pin {
             }
         }
 
+    /**
+     * Create a deep copy of this pin.
+     *
+     * @return a new instance of [Pin]
+     */
+    fun deepCopy(): Pin {
+        val pin = when (this) {
+            Two -> Two
+            Three -> Three
+            Five -> Five
+        }
+        pin.isDown = this.isDown
+        return pin
+    }
+
     companion object {
 
         /**
