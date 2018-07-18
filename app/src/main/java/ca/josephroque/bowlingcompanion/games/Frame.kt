@@ -6,6 +6,7 @@ import ca.josephroque.bowlingcompanion.common.interfaces.*
 import ca.josephroque.bowlingcompanion.games.lane.Deck
 import ca.josephroque.bowlingcompanion.games.lane.Pin
 import ca.josephroque.bowlingcompanion.games.lane.toBooleanArray
+import ca.josephroque.bowlingcompanion.scoring.Fouls
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -77,6 +78,19 @@ data class Frame(
     /** Ordinal of the frame, zero based. Frames are numbered 0 to 9 this way. */
     val zeroBasedOrdinal: Int
         get() = ordinal - 1
+
+    /** LEGACY: garbage method of serializing fouls to database. */
+    val dbFoulString: String
+        get() {
+            val builder = StringBuilder()
+            ballFouled.forEachIndexed { index, _ -> builder.append(index + 1) }
+            if (builder.isEmpty()) { builder.append(0) }
+            return builder.toString()
+        }
+
+    /** LEGACY: garbage method of serializing fouls to database. */
+    val dbFouls: Int
+        get() = Fouls.foulStringToInt(dbFoulString)
 
     companion object {
         /** Logging identifier. */
