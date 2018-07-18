@@ -21,6 +21,7 @@ import kotlinx.android.synthetic.main.fragment_game.*
 import kotlinx.android.synthetic.main.sheet_match_play.*
 import kotlinx.android.synthetic.main.sheet_match_play.view.*
 import kotlinx.coroutines.experimental.launch
+import java.lang.ref.WeakReference
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -48,6 +49,7 @@ class GameFragment : BaseFragment(),
     /** The number of the current game in its series. */
     var gameNumber: Int = 0
         set(value) {
+            saveCurrentGame()
             field = value
             game_header.currentGame = gameNumber
             gameState.currentGameIdx = gameNumber
@@ -97,10 +99,7 @@ class GameFragment : BaseFragment(),
     override fun onStart() {
         super.onStart()
 
-        frameViews.forEach {
-            it?.delegate = this
-        }
-
+        frameViews.forEach { it?.delegate = this }
         pin_layout.delegate = this
         game_footer.delegate = this
         game_header.delegate = this
@@ -119,6 +118,12 @@ class GameFragment : BaseFragment(),
         }
 
         onBallSelected(0, 0)
+    }
+
+    /** @Override */
+    override fun onPause() {
+        super.onPause()
+        context?.let { gameState.saveGame(WeakReference(it)) }
     }
 
     /**
@@ -169,8 +174,14 @@ class GameFragment : BaseFragment(),
      * Save the current frame of the game state to the database.
      */
     private fun saveCurrentFrame() {
-        val saveState = gameState.deepyCopy()
-        // TODO: Create thread to save and add to queue
+        context?.let { gameState.saveFrame(WeakReference(it)) }
+    }
+
+    /**
+     * Save the current game of the game state to the database.
+     */
+    private fun saveCurrentGame() {
+        context?.let { gameState.saveGame(WeakReference(it)) }
     }
 
     // MARK: IFloatingActionButtonHandler
@@ -281,7 +292,7 @@ class GameFragment : BaseFragment(),
     // MARK: GameStateListener
 
     /** Handle events from game state changes. */
-    val gameStateListener = object : GameState.GameStateListener {
+    private val gameStateListener = object : GameState.GameStateListener {
         /** @Override */
         override fun onLastBallEntered() {
             listener?.enableFab(false)

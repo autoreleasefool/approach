@@ -1,11 +1,13 @@
 package ca.josephroque.bowlingcompanion.games
 
 import android.content.Context
+import ca.josephroque.bowlingcompanion.database.Saviour
 import ca.josephroque.bowlingcompanion.games.lane.Deck
 import ca.josephroque.bowlingcompanion.series.Series
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async
+import java.lang.ref.WeakReference
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -13,6 +15,12 @@ import kotlinx.coroutines.experimental.async
  * Manages the loading, saving, and updating of the state of a game.
  */
 class GameState(private val series: Series, private val listener: GameStateListener) {
+
+    companion object {
+        /** Logging identifier. */
+        @Suppress("unused")
+        private const val TAG = "GameState"
+    }
 
     /** Indicates if the games for the series have been loaded. */
     var gamesLoaded: Boolean = false
@@ -90,7 +98,7 @@ class GameState(private val series: Series, private val listener: GameStateListe
      *
      * @return a new instance of [GameState]
      */
-    fun deepyCopy(): GameState {
+    fun deepCopy(): GameState {
         val copy = GameState(series, listener)
         copy.games.addAll(this.games.map { it.deepCopy() })
         copy.currentGameIdx = this.currentGameIdx
@@ -154,6 +162,26 @@ class GameState(private val series: Series, private val listener: GameStateListe
             this@GameState.games.addAll(games)
             return@async true
         }
+    }
+
+    /**
+     * Save the current frame/game state to the database.
+     *
+     * @param context to access database
+     */
+    fun saveFrame(context: WeakReference<Context>) {
+        val copy = currentFrame.deepCopy()
+        Saviour.instance.saveFrame(context, currentGame.score, copy)
+    }
+
+    /**
+     * Save the current game state to the database.
+     *
+     * @param context to access database
+     */
+    fun saveGame(context: WeakReference<Context>) {
+        val copy = currentGame.deepCopy()
+        Saviour.instance.saveGame(context, copy)
     }
 
     /**
