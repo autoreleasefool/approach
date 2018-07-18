@@ -14,9 +14,9 @@ import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
 data class MatchPlay(
         val gameId: Long,
         override val id: Long,
-        val opponentName: String,
-        val opponentScore: Int,
-        val result: MatchPlayResult
+        var opponentName: String,
+        var opponentScore: Int,
+        var result: MatchPlayResult
 ): IIdentifiable, KParcelable {
 
     /**

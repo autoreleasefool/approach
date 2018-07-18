@@ -185,6 +185,16 @@ class GameState(private val series: Series, private val listener: GameStateListe
     }
 
     /**
+     * Save the current match play results to the database.
+     *
+     * @param context to access database
+     */
+    fun saveMatchPlay(context: WeakReference<Context>) {
+        val copy = currentGame.matchPlay.deepCopy()
+        Saviour.instance.saveMatchPlay(context, copy)
+    }
+
+    /**
      * Handle events from game state changes.
      */
     interface GameStateListener {

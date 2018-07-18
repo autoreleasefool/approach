@@ -293,7 +293,14 @@ class GameFragment : BaseFragment(),
             return
         }
 
-        // TODO: set match play values
+        gameState.currentGame.matchPlay.apply {
+            this.opponentName = opponentName
+            this.opponentScore = opponentScore
+            this.result = matchPlayResult
+        }
+
+        context?.let { gameState.saveMatchPlay(WeakReference(it)) }
+        refresh()
     }
 
     // MARK: GameStateListener
