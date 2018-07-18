@@ -11,6 +11,7 @@ import ca.josephroque.bowlingcompanion.bowlers.Bowler
 import ca.josephroque.bowlingcompanion.common.interfaces.*
 import ca.josephroque.bowlingcompanion.database.Contract.*
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper
+import ca.josephroque.bowlingcompanion.database.Saviour
 import ca.josephroque.bowlingcompanion.games.Game
 import ca.josephroque.bowlingcompanion.scoring.Average
 import ca.josephroque.bowlingcompanion.series.Series
@@ -145,7 +146,7 @@ data class League(
                 return@async
             }
 
-            val database = DatabaseHelper.getInstance(context).writableDatabase
+            val database = Saviour.instance.getWritableDatabase(context).await()
             database.beginTransaction()
             try {
                 database.delete(LeagueEntry.TABLE_NAME, LeagueEntry._ID + "=?", arrayOf(id.toString()))
@@ -224,7 +225,7 @@ data class League(
          */
         private fun isLeagueNameUnique(context: Context, name: String, id: Long = -1): Deferred<Boolean> {
             return async(CommonPool) {
-                val database = DatabaseHelper.getInstance(context).readableDatabase
+                val database = Saviour.instance.getReadableDatabase(context).await()
 
                 var cursor: Cursor? = null
                 try {
@@ -389,7 +390,7 @@ data class League(
                     return@async Pair(null, error)
                 }
 
-                val database = DatabaseHelper.getInstance(context).writableDatabase
+                val database = Saviour.instance.getWritableDatabase(context).await()
                 val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA)
                 val currentDate = dateFormat.format(Date())
 
@@ -494,7 +495,7 @@ data class League(
                     return@async Pair(null, error)
                 }
 
-                val database = DatabaseHelper.getInstance(context).writableDatabase
+                val database = Saviour.instance.getWritableDatabase(context).await()
                 val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA)
                 val currentDate = dateFormat.format(Date())
 
@@ -549,7 +550,7 @@ data class League(
         ): Deferred<MutableList<League>> {
             return async (CommonPool) {
                 val leagues: MutableList<League> = ArrayList()
-                val database = DatabaseHelper.getInstance(context).readableDatabase
+                val database = Saviour.instance.getReadableDatabase(context).await()
 
                 val rawLeagueEventQuery = ("SELECT "
                         + "league." + LeagueEntry._ID + " AS lid, "

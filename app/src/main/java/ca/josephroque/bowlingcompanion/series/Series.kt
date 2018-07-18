@@ -10,6 +10,7 @@ import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.interfaces.*
 import ca.josephroque.bowlingcompanion.database.Contract.*
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper
+import ca.josephroque.bowlingcompanion.database.Saviour
 import ca.josephroque.bowlingcompanion.games.Game
 import ca.josephroque.bowlingcompanion.leagues.League
 import ca.josephroque.bowlingcompanion.utils.BCError
@@ -110,7 +111,7 @@ data class Series(
                 return@async
             }
 
-            val database = DatabaseHelper.getInstance(context).writableDatabase
+            val database = Saviour.instance.getWritableDatabase(context).await()
             database.beginTransaction()
             try {
                 database.delete(SeriesEntry.TABLE_NAME,
@@ -215,7 +216,7 @@ data class Series(
                 inTransaction: Boolean = false
         ): Deferred<Pair<Series?, BCError?>> {
             return async(CommonPool) {
-                val database = DatabaseHelper.getInstance(context).writableDatabase
+                val database = Saviour.instance.getWritableDatabase(context).await()
                 var values = ContentValues().apply {
                     put(SeriesEntry.COLUMN_SERIES_DATE, DateUtils.dateToSeriesDate(date))
                     put(SeriesEntry.COLUMN_LEAGUE_ID, league.id)
@@ -302,7 +303,7 @@ data class Series(
                 inTransaction: Boolean = false
         ): Deferred<Pair<Series?, BCError?>> {
             return async(CommonPool) {
-                val database = DatabaseHelper.getInstance(context).writableDatabase
+                val database = Saviour.instance.getWritableDatabase(context).await()
                 val values = ContentValues().apply {
                     put(SeriesEntry.COLUMN_SERIES_DATE, DateUtils.dateToSeriesDate(date))
                 }
@@ -337,7 +338,7 @@ data class Series(
         fun fetchAll(context: Context, league: League): Deferred<MutableList<Series>> {
             return async(CommonPool) {
                 val seriesList: MutableList<Series> = ArrayList()
-                val database = DatabaseHelper.getInstance(context).readableDatabase
+                val database = Saviour.instance.getReadableDatabase(context).await()
 
                 val rawSeriesQuery = ("SELECT "
                         + "series.${SeriesEntry._ID} AS sid, "

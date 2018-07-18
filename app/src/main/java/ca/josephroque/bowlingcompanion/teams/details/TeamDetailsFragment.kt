@@ -11,6 +11,7 @@ import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
 import ca.josephroque.bowlingcompanion.common.interfaces.IFloatingActionButtonHandler
 import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper
+import ca.josephroque.bowlingcompanion.database.Saviour
 import ca.josephroque.bowlingcompanion.games.GameControllerFragment
 import ca.josephroque.bowlingcompanion.series.Series
 import ca.josephroque.bowlingcompanion.teams.Team
@@ -162,7 +163,7 @@ class TeamDetailsFragment : BaseFragment(),
                 allTeamMembersReady = false
                 val teamMemberSeries: MutableMap<TeamMember, Series> = HashMap()
 
-                val database = DatabaseHelper.getInstance(context).writableDatabase
+                val database = Saviour.instance.getWritableDatabase(context).await()
                 var transactionBegun = false
 
                 // Create series in the database for each team member, if one does not exist,

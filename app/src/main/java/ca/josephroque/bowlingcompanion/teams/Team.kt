@@ -15,6 +15,7 @@ import ca.josephroque.bowlingcompanion.common.interfaces.KParcelable
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
 import ca.josephroque.bowlingcompanion.database.Contract.*
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper
+import ca.josephroque.bowlingcompanion.database.Saviour
 import ca.josephroque.bowlingcompanion.series.Series
 import ca.josephroque.bowlingcompanion.teams.teammember.TeamMember
 import ca.josephroque.bowlingcompanion.utils.BCError
@@ -98,7 +99,7 @@ data class Team(
                 return@async
             }
 
-            val database = DatabaseHelper.getInstance(context).writableDatabase
+            val database = Saviour.instance.getWritableDatabase(context).await()
             database.beginTransaction()
             try {
                 database.delete(TeamEntry.TABLE_NAME,
@@ -177,7 +178,7 @@ data class Team(
          */
         private fun isTeamNameUnique(context: Context, name: String, id: Long = -1): Deferred<Boolean> {
             return async(CommonPool) {
-                val database = DatabaseHelper.getInstance(context).readableDatabase
+                val database = Saviour.instance.getReadableDatabase(context).await()
 
                 var cursor: Cursor? = null
                 try {
@@ -280,7 +281,7 @@ data class Team(
                     return@async Pair(null, error)
                 }
 
-                val database = DatabaseHelper.getInstance(context).writableDatabase
+                val database = Saviour.instance.getWritableDatabase(context).await()
                 val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA)
                 val currentDate = dateFormat.format(Date())
 
@@ -339,8 +340,7 @@ data class Team(
                     return@async Pair(null, error)
                 }
 
-                val database = DatabaseHelper.getInstance(context).writableDatabase
-
+                val database = Saviour.instance.getWritableDatabase(context).await()
                 val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA)
                 val currentDate = dateFormat.format(Date())
 
@@ -400,7 +400,7 @@ data class Team(
 
                 val preferences = PreferenceManager.getDefaultSharedPreferences(context)
                 val sortBy = Sort.fromInt(preferences.getInt(Preferences.TEAM_SORT_ORDER, Sort.Alphabetically.ordinal))
-                val database = DatabaseHelper.getInstance(context).readableDatabase
+                val database = Saviour.instance.getReadableDatabase(context).await()
 
                 val orderQueryBy = if (sortBy == Sort.Alphabetically) {
                     " ORDER BY team." + TeamEntry.COLUMN_TEAM_NAME

@@ -21,6 +21,7 @@ import kotlinx.coroutines.experimental.async
 import java.text.SimpleDateFormat
 import java.util.*
 import ca.josephroque.bowlingcompanion.database.Contract.BowlerEntry
+import ca.josephroque.bowlingcompanion.database.Saviour
 import ca.josephroque.bowlingcompanion.utils.BCError
 import ca.josephroque.bowlingcompanion.utils.Preferences
 
@@ -117,7 +118,7 @@ data class Bowler(
                 return@async
             }
 
-            val database = DatabaseHelper.getInstance(context).writableDatabase
+            val database = Saviour.instance.getWritableDatabase(context).await()
             database.beginTransaction()
             try {
                 database.delete(BowlerEntry.TABLE_NAME,
@@ -182,7 +183,7 @@ data class Bowler(
                 id: Long = -1
         ): Deferred<Boolean> {
             return async(CommonPool) {
-                val database = DatabaseHelper.getInstance(context).readableDatabase
+                val database = Saviour.instance.getReadableDatabase(context).await()
 
                 var cursor: Cursor? = null
                 try {
@@ -277,7 +278,7 @@ data class Bowler(
                     return@async Pair(null, error)
                 }
 
-                val database = DatabaseHelper.getInstance(context).writableDatabase
+                val database = Saviour.instance.getWritableDatabase(context).await()
                 val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA)
                 val currentDate = dateFormat.format(Date())
 
@@ -338,8 +339,7 @@ data class Bowler(
                     return@async Pair(null, error)
                 }
 
-                val database = DatabaseHelper.getInstance(context).writableDatabase
-
+                val database = Saviour.instance.getWritableDatabase(context).await()
                 val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA)
                 val currentDate = dateFormat.format(Date())
 
@@ -397,13 +397,12 @@ data class Bowler(
         fun fetchAll(context: Context, filterId: Long = -1): Deferred<MutableList<Bowler>> {
             return async(CommonPool) {
                 val bowlers: MutableList<Bowler> = ArrayList()
+                val database = Saviour.instance.getReadableDatabase(context).await()
 
                 val preferences = PreferenceManager.getDefaultSharedPreferences(context)
                 val includeEvents = preferences.getBoolean(Settings.INCLUDE_EVENTS, true)
                 val includeOpen = preferences.getBoolean(Settings.INCLUDE_OPEN, true)
                 val sortBy = Sort.fromInt(preferences.getInt(Preferences.BOWLER_SORT_ORDER, Sort.Alphabetically.ordinal))
-
-                val database = DatabaseHelper.getInstance(context).readableDatabase
 
                 val gameSumAndCountQuery = ("SELECT "
                         + "league2." + LeagueEntry._ID + " AS lid2, "

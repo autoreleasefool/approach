@@ -222,11 +222,37 @@ class Saviour private constructor() {
     /**
      * Wait for all co-routines saving to complete before loading from the database.
      */
-    fun waitForSaviour(): Deferred<Unit> {
+    private fun waitForSaviour(): Deferred<Unit> {
         return async (CommonPool) {
             while (saveQueue.isNotEmpty()) {
                 delay(100)
             }
+        }
+    }
+
+    /**
+     * Await a readable instance of the database.
+     *
+     * @param context to get database instance
+     * @return a readable database instance when all saving is complete
+     */
+    fun getReadableDatabase(context: Context): Deferred<SQLiteDatabase> {
+        return async (CommonPool) {
+            waitForSaviour().await()
+            return@async DatabaseHelper.getInstance(context).readableDatabase
+        }
+    }
+
+    /**
+     * Await a writable instance of the database.
+     *
+     * @param context to get database instance
+     * @return a writable database instance when all saving is complete
+     */
+    fun getWritableDatabase(context: Context): Deferred<SQLiteDatabase> {
+        return async (CommonPool) {
+            waitForSaviour().await()
+            return@async DatabaseHelper.getInstance(context).writableDatabase
         }
     }
 
