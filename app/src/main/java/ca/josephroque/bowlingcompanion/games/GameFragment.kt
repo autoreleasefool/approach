@@ -168,6 +168,13 @@ class GameFragment : BaseFragment(),
                 frameViews[index]?.setFoulEnabled(ballIdx, foul)
             })
         })
+
+        game_footer.apply {
+            isFoulActive = gameState.currentFrame.ballFouled[gameState.currentBallIdx]
+            isGameLocked = gameState.currentGame.isLocked
+            currentBall = gameState.currentBallIdx
+            matchPlayResult = gameState.currentGame.matchPlay.result
+        }
     }
 
     /**
