@@ -368,7 +368,7 @@ data class Game(
                                     return@Array Pin.deckFromInt(cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_PIN_STATE[it])))
                                 }),
                                 ballFouled = BooleanArray(Frame.NUMBER_OF_BALLS, {
-                                    return@BooleanArray Fouls.foulIntToString(cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_FOULS))).contains(it.toString())
+                                    return@BooleanArray Fouls.foulIntToString(cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_FOULS))).contains((it + 1).toString())
                                 })
                         ))
 
