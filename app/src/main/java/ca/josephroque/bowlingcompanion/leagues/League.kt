@@ -27,7 +27,7 @@ import java.util.*
  *
  * A single League, which has a set of series.
  */
-data class League(
+class League(
         val bowler: Bowler,
         override val id: Long,
         override val name: String,

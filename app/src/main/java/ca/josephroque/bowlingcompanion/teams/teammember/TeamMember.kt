@@ -13,7 +13,7 @@ import ca.josephroque.bowlingcompanion.series.Series
  *
  * Member of a team.
  */
-data class TeamMember(
+class TeamMember(
         val teamId: Long,
         val bowlerName: String,
         val bowlerId: Long,

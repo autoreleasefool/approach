@@ -23,7 +23,7 @@ import kotlinx.coroutines.experimental.async
  *
  * A single game recording.
  */
-data class Game(
+class Game(
         val series: Series,
         override val id: Long,
         val ordinal: Int,

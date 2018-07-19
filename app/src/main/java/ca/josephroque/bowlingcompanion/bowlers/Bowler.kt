@@ -30,7 +30,7 @@ import ca.josephroque.bowlingcompanion.utils.Preferences
  *
  * A single Bowler, who has leagues, events, series, games, and stats.
  */
-data class Bowler(
+class Bowler(
         override val id: Long,
         override val name: String,
         override val average: Double

@@ -32,7 +32,7 @@ import kotlin.collections.ArrayList
  *
  * A single Team, which has a set of bowlers.
  */
-data class Team(
+class Team(
         override val id: Long,
         val name: String,
         val members: List<TeamMember>

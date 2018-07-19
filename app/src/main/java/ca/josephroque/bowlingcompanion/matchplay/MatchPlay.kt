@@ -11,7 +11,7 @@ import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
  *
  * Data about Match Play for a single game.
  */
-data class MatchPlay(
+class MatchPlay(
         val gameId: Long,
         override val id: Long,
         var opponentName: String,

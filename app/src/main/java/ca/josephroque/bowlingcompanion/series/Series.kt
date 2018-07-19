@@ -25,7 +25,7 @@ import java.util.*
  *
  * A series of games in a [League].
  */
-data class Series(
+class Series(
         val league: League,
         override val id: Long,
         val date: Date,

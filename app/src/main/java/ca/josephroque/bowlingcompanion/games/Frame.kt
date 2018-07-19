@@ -13,7 +13,7 @@ import ca.josephroque.bowlingcompanion.scoring.Fouls
  *
  * A single frame in a game.
  */
-data class Frame(
+class Frame(
         val gameId: Long,
         override val id: Long,
         val ordinal: Int,
