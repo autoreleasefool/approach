@@ -80,10 +80,10 @@ data class Frame(
         get() = ordinal - 1
 
     /** LEGACY: garbage method of serializing fouls to database. */
-    val dbFoulString: String
+    private val dbFoulString: String
         get() {
             val builder = StringBuilder()
-            ballFouled.forEachIndexed { index, _ -> builder.append(index + 1) }
+            ballFouled.forEachIndexed { index, foul -> if (foul) { builder.append(index + 1) } }
             if (builder.isEmpty()) { builder.append(0) }
             return builder.toString()
         }
