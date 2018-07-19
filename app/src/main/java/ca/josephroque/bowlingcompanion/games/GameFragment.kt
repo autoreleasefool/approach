@@ -209,7 +209,9 @@ class GameFragment : BaseFragment(),
 
     /** @Override */
     override fun onBallSelected(ball: Int, frame: Int) {
-        saveCurrentFrame()
+        if (gameState.gamesLoaded) {
+            saveCurrentFrame()
+        }
         gameState.currentFrameIdx = frame
         gameState.currentBallIdx = ball
         game_header.currentFrame = gameState.currentFrameIdx
