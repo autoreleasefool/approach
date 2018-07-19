@@ -8,7 +8,6 @@ import ca.josephroque.bowlingcompanion.common.interfaces.*
 import ca.josephroque.bowlingcompanion.database.Contract.FrameEntry
 import ca.josephroque.bowlingcompanion.database.Contract.GameEntry
 import ca.josephroque.bowlingcompanion.database.Contract.MatchPlayEntry
-import ca.josephroque.bowlingcompanion.database.DatabaseHelper
 import ca.josephroque.bowlingcompanion.database.Saviour
 import ca.josephroque.bowlingcompanion.games.lane.*
 import ca.josephroque.bowlingcompanion.matchplay.MatchPlay
@@ -309,7 +308,7 @@ data class Game(
                         + " LEFT JOIN ${FrameEntry.TABLE_NAME} as frame"
                         + " ON gid=${FrameEntry.COLUMN_GAME_ID}"
                         + " WHERE ${GameEntry.COLUMN_SERIES_ID}=?"
-                        + " GROUP BY gid"
+                        + " GROUP BY gid, fid"
                         + " ORDER BY game.${GameEntry.COLUMN_GAME_NUMBER}, frame.${FrameEntry.COLUMN_FRAME_NUMBER}")
 
                 var lastId: Long = -1
@@ -323,26 +322,26 @@ data class Game(
                  */
                 fun buildGameFromCursor(cursor: Cursor):Game {
                     val id = cursor.getLong(cursor.getColumnIndex("gid"))
-                    val gameNumber = cursor.getInt(cursor.getColumnIndex("game.${GameEntry.COLUMN_GAME_NUMBER}"))
-                    val score = cursor.getInt(cursor.getColumnIndex("game.${GameEntry.COLUMN_SCORE}"))
-                    val isLocked = cursor.getInt(cursor.getColumnIndex("game.${GameEntry.COLUMN_IS_LOCKED}")) == 1
-                    val isManual = cursor.getInt(cursor.getColumnIndex("game.${GameEntry.COLUMN_IS_MANUAL}")) == 1
-                    val matchPlayResult = MatchPlayResult.fromInt(cursor.getInt(cursor.getColumnIndex("game.${GameEntry.COLUMN_MATCH_PLAY}")))
+                    val gameNumber = cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_GAME_NUMBER))
+                    val score = cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_SCORE))
+                    val isLocked = cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_IS_LOCKED)) == 1
+                    val isManual = cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_IS_MANUAL)) == 1
+                    val matchPlayResult = MatchPlayResult.fromInt(cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_MATCH_PLAY)))
 
                     return Game(
-                            series,
-                            id,
-                            gameNumber,
-                            score,
-                            isLocked,
-                            isManual,
-                            frames,
-                            MatchPlay(
-                                    id,
-                                    cursor.getLong(cursor.getColumnIndex("match.${MatchPlayEntry._ID}")),
-                                    cursor.getString(cursor.getColumnIndex("match.${MatchPlayEntry.COLUMN_OPPONENT_NAME}")),
-                                    cursor.getInt(cursor.getColumnIndex("match.${MatchPlayEntry.COLUMN_OPPONENT_SCORE}")),
-                                    matchPlayResult!!
+                            series = series,
+                            id = id,
+                            ordinal = gameNumber,
+                            score = score,
+                            isLocked = isLocked,
+                            isManual = isManual,
+                            frames = frames,
+                            matchPlay = MatchPlay(
+                                    gameId = id,
+                                    id = cursor.getLong(cursor.getColumnIndex("mid")),
+                                    opponentName = cursor.getString(cursor.getColumnIndex(MatchPlayEntry.COLUMN_OPPONENT_NAME)) ?: "",
+                                    opponentScore = cursor.getInt(cursor.getColumnIndex(MatchPlayEntry.COLUMN_OPPONENT_SCORE)),
+                                    result = matchPlayResult!!
                             )
                     )
                 }
@@ -361,15 +360,15 @@ data class Game(
                         }
 
                         frames.add(Frame(
-                                newId,
-                                cursor.getLong(cursor.getColumnIndex("frame.${FrameEntry._ID}")),
-                                cursor.getInt(cursor.getColumnIndex("frame.${FrameEntry.COLUMN_FRAME_NUMBER}")),
-                                cursor.getInt(cursor.getColumnIndex("frame.${FrameEntry.COLUMN_IS_ACCESSED}")) == 1,
-                                Array(NUMBER_OF_FRAMES, {
-                                    return@Array Pin.deckFromInt(cursor.getInt(cursor.getColumnIndex("frame.${FrameEntry.COLUMN_PIN_STATE[it]}")))
+                                gameId = newId,
+                                id = cursor.getLong(cursor.getColumnIndex("fid")),
+                                ordinal = cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_FRAME_NUMBER)),
+                                isAccessed = cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_IS_ACCESSED)) == 1,
+                                pinState = Array(Frame.NUMBER_OF_BALLS, {
+                                    return@Array Pin.deckFromInt(cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_PIN_STATE[it])))
                                 }),
-                                BooleanArray(Frame.NUMBER_OF_BALLS, {
-                                    return@BooleanArray Fouls.foulIntToString(cursor.getInt(cursor.getColumnIndex("frame.${FrameEntry.COLUMN_FOULS}"))).contains(it.toString())
+                                ballFouled = BooleanArray(Frame.NUMBER_OF_BALLS, {
+                                    return@BooleanArray Fouls.foulIntToString(cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_FOULS))).contains(it.toString())
                                 })
                         ))
 
