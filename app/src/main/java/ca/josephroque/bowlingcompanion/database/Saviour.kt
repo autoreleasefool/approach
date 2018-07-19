@@ -16,6 +16,7 @@ import ca.josephroque.bowlingcompanion.matchplay.MatchPlay
 import kotlinx.coroutines.experimental.*
 import java.lang.ref.WeakReference
 import java.util.*
+import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -27,6 +28,9 @@ class Saviour private constructor() {
 
     /** Holds a Singleton instance of this class. */
     private object Holder { val INSTANCE = Saviour() }
+
+    /** Indicates if the saviour main co-routine is running. */
+    private var saviourIsRunning = AtomicBoolean(false)
 
     companion object {
         /** Logging identifier. */
@@ -44,6 +48,18 @@ class Saviour private constructor() {
      * Launch a co-routine to save to the database in the background.
      */
     init {
+        launchSaviourProcessor()
+    }
+
+    /**
+     * Begin the saviour co-routine, if it hasn't already been started.
+     */
+    private fun launchSaviourProcessor() {
+        if (saviourIsRunning.get()) {
+            return
+        }
+
+        saviourIsRunning.set(true)
         launch (CommonPool) {
             while (App.isRunning.get() || saveQueue.isNotEmpty()) {
                 val saveRoutine = saveQueue.poll()
@@ -53,6 +69,8 @@ class Saviour private constructor() {
                     Log.e(TAG, "Saviour thread already processed - $saveRoutine")
                 }
             }
+
+            saviourIsRunning.set(false)
         }
     }
 
@@ -150,6 +168,7 @@ class Saviour private constructor() {
         }
 
         saveQueue.offer(job)
+        launchSaviourProcessor()
     }
 
     /**
@@ -176,6 +195,7 @@ class Saviour private constructor() {
         }
 
         saveQueue.offer(job)
+        launchSaviourProcessor()
     }
 
     /**
@@ -217,6 +237,7 @@ class Saviour private constructor() {
         }
 
         saveQueue.offer(job)
+        launchSaviourProcessor()
     }
 
     /**
@@ -224,6 +245,7 @@ class Saviour private constructor() {
      */
     private fun waitForSaviour(): Deferred<Unit> {
         return async (CommonPool) {
+            launchSaviourProcessor()
             while (saveQueue.isNotEmpty()) {
                 delay(100)
             }

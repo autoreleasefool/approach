@@ -26,12 +26,12 @@ class App : Application(), LifecycleObserver {
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     fun onAppBackgrounded() {
-        isRunning.set(true)
+        isRunning.set(false)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     fun onAppForegrounded() {
-        isRunning.set(false)
+        isRunning.set(true)
     }
 
     companion object {
