@@ -10,7 +10,6 @@ import ca.josephroque.bowlingcompanion.common.fragments.BaseFragment
 import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
 import ca.josephroque.bowlingcompanion.common.interfaces.IFloatingActionButtonHandler
 import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
-import ca.josephroque.bowlingcompanion.database.DatabaseHelper
 import ca.josephroque.bowlingcompanion.database.Saviour
 import ca.josephroque.bowlingcompanion.games.GameControllerFragment
 import ca.josephroque.bowlingcompanion.series.Series
@@ -213,7 +212,7 @@ class TeamDetailsFragment : BaseFragment(),
                 // Replace immutable [TeamMember] instances with updated series
                 val membersWithSeries = team.members.map {
                     return@map TeamMember(
-                            teamId =  it.teamId,
+                            teamId = it.teamId,
                             bowlerName = it.bowlerName,
                             bowlerId = it.bowlerId,
                             league = it.league,

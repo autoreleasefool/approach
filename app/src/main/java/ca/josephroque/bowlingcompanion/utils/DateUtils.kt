@@ -1,7 +1,8 @@
 package ca.josephroque.bowlingcompanion.utils
 
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
 /**
  * Copyright (C) 2018 Joseph Roque

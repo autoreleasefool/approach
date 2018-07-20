@@ -6,7 +6,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import java.math.BigDecimal
 import java.math.BigInteger
-import java.util.*
+import java.util.Date
 
 /**
  * Source: https://medium.com/@BladeCoder/reducing-parcelable-boilerplate-code-using-kotlin-741c3124a49a
@@ -19,14 +19,16 @@ interface KParcelable : Parcelable {
 // Creator factory functions
 
 inline fun <reified T> parcelableCreator(
-        crossinline create: (Parcel) -> T) =
+    crossinline create: (Parcel) -> T
+) =
         object : Parcelable.Creator<T> {
             override fun createFromParcel(source: Parcel) = create(source)
             override fun newArray(size: Int) = arrayOfNulls<T>(size)
         }
 
 inline fun <reified T> parcelableClassLoaderCreator(
-        crossinline create: (Parcel, ClassLoader) -> T) =
+    crossinline create: (Parcel, ClassLoader) -> T
+) =
         object : Parcelable.ClassLoaderCreator<T> {
             override fun createFromParcel(source: Parcel, loader: ClassLoader) =
                     create(source, loader)

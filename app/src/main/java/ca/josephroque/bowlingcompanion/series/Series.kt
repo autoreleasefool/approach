@@ -7,9 +7,15 @@ import android.os.Parcel
 import android.os.Parcelable
 import android.util.Log
 import ca.josephroque.bowlingcompanion.R
-import ca.josephroque.bowlingcompanion.common.interfaces.*
-import ca.josephroque.bowlingcompanion.database.Contract.*
-import ca.josephroque.bowlingcompanion.database.DatabaseHelper
+import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
+import ca.josephroque.bowlingcompanion.common.interfaces.IDeletable
+import ca.josephroque.bowlingcompanion.common.interfaces.KParcelable
+import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
+import ca.josephroque.bowlingcompanion.common.interfaces.readDate
+import ca.josephroque.bowlingcompanion.common.interfaces.writeDate
+import ca.josephroque.bowlingcompanion.database.Contract.FrameEntry
+import ca.josephroque.bowlingcompanion.database.Contract.GameEntry
+import ca.josephroque.bowlingcompanion.database.Contract.SeriesEntry
 import ca.josephroque.bowlingcompanion.database.Saviour
 import ca.josephroque.bowlingcompanion.games.Game
 import ca.josephroque.bowlingcompanion.leagues.League
@@ -18,7 +24,7 @@ import ca.josephroque.bowlingcompanion.utils.DateUtils
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async
-import java.util.*
+import java.util.Date
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -26,12 +32,12 @@ import java.util.*
  * A series of games in a [League].
  */
 class Series(
-        val league: League,
-        override val id: Long,
-        val date: Date,
-        val numberOfGames: Int,
-        val scores: List<Int>,
-        val matchPlay: List<Byte>
+    val league: League,
+    override val id: Long,
+    val date: Date,
+    val numberOfGames: Int,
+    val scores: List<Int>,
+    val matchPlay: List<Byte>
 ) : IIdentifiable, IDeletable, KParcelable {
 
     /** Private field to indicate if the item is deleted. */
@@ -115,8 +121,8 @@ class Series(
             database.beginTransaction()
             try {
                 database.delete(SeriesEntry.TABLE_NAME,
-                         "${SeriesEntry._ID}=?",
-                        arrayOf(id.toString()))
+                    "${SeriesEntry._ID}=?",
+                    arrayOf(id.toString()))
                 database.setTransactionSuccessful()
             } catch (e: Exception) {
                 // Does nothing
@@ -177,14 +183,14 @@ class Series(
          * @return [BCError] only if an error occurred
          */
         fun save(
-                context: Context,
-                league: League,
-                id: Long,
-                date: Date,
-                numberOfGames: Int,
-                scores: List<Int>,
-                matchPlay: List<Byte>,
-                inTransaction: Boolean = false
+            context: Context,
+            league: League,
+            id: Long,
+            date: Date,
+            numberOfGames: Int,
+            scores: List<Int>,
+            matchPlay: List<Byte>,
+            inTransaction: Boolean = false
         ): Deferred<Pair<Series?, BCError?>> {
             return if (id < 0) {
                 createNewAndSave(context, league, date, numberOfGames, scores, matchPlay, inTransaction)
@@ -207,13 +213,13 @@ class Series(
          * @return [BCError] only if an error occurred
          */
         private fun createNewAndSave(
-                context: Context,
-                league: League,
-                date: Date,
-                numberOfGames: Int,
-                scores: List<Int>,
-                matchPlay: List<Byte>,
-                inTransaction: Boolean = false
+            context: Context,
+            league: League,
+            date: Date,
+            numberOfGames: Int,
+            scores: List<Int>,
+            matchPlay: List<Byte>,
+            inTransaction: Boolean = false
         ): Deferred<Pair<Series?, BCError?>> {
             return async(CommonPool) {
                 val database = Saviour.instance.getWritableDatabase(context).await()
@@ -293,14 +299,14 @@ class Series(
          * @return [BCError] only if an error occurred
          */
         private fun update(
-                context: Context,
-                id: Long,
-                league: League,
-                date: Date,
-                numberOfGames: Int,
-                scores: List<Int>,
-                matchPlay: List<Byte>,
-                inTransaction: Boolean = false
+            context: Context,
+            id: Long,
+            league: League,
+            date: Date,
+            numberOfGames: Int,
+            scores: List<Int>,
+            matchPlay: List<Byte>,
+            inTransaction: Boolean = false
         ): Deferred<Pair<Series?, BCError?>> {
             return async(CommonPool) {
                 val database = Saviour.instance.getWritableDatabase(context).await()
@@ -340,18 +346,18 @@ class Series(
                 val seriesList: MutableList<Series> = ArrayList()
                 val database = Saviour.instance.getReadableDatabase(context).await()
 
-                val rawSeriesQuery = ("SELECT "
-                        + "series.${SeriesEntry._ID} AS sid, "
-                        + "${SeriesEntry.COLUMN_SERIES_DATE}, "
-                        + "${GameEntry.COLUMN_SCORE}, "
-                        + "${GameEntry.COLUMN_GAME_NUMBER}, "
-                        + GameEntry.COLUMN_MATCH_PLAY
-                        + " FROM ${SeriesEntry.TABLE_NAME} AS series"
-                        + " INNER JOIN ${GameEntry.TABLE_NAME}"
-                        + " ON sid=${GameEntry.COLUMN_SERIES_ID}"
-                        + " WHERE ${SeriesEntry.COLUMN_LEAGUE_ID}=?"
-                        + " ORDER BY ${SeriesEntry.COLUMN_SERIES_DATE} DESC, "
-                        + GameEntry.COLUMN_GAME_NUMBER)
+                val rawSeriesQuery = ("SELECT " +
+                        "series.${SeriesEntry._ID} AS sid, " +
+                        "${SeriesEntry.COLUMN_SERIES_DATE}, " +
+                        "${GameEntry.COLUMN_SCORE}, " +
+                        "${GameEntry.COLUMN_GAME_NUMBER}, " +
+                        GameEntry.COLUMN_MATCH_PLAY +
+                        " FROM ${SeriesEntry.TABLE_NAME} AS series" +
+                        " INNER JOIN ${GameEntry.TABLE_NAME}" +
+                        " ON sid=${GameEntry.COLUMN_SERIES_ID}" +
+                        " WHERE ${SeriesEntry.COLUMN_LEAGUE_ID}=?" +
+                        " ORDER BY ${SeriesEntry.COLUMN_SERIES_DATE} DESC, " +
+                        GameEntry.COLUMN_GAME_NUMBER)
 
                 var lastId: Long = -1
                 var scores: MutableList<Int> = ArrayList()

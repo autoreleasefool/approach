@@ -13,9 +13,11 @@ import ca.josephroque.bowlingcompanion.R
  *
  * Record and display user errors in the app.
  */
-class BCError(@StringRes private val title: Int = R.string.error_unknown_title,
-              @StringRes private val message: Int = R.string.error_unknown_message,
-              private val severity: Severity = Severity.Error) {
+class BCError(
+    @StringRes private val title: Int = R.string.error_unknown_title,
+    @StringRes private val message: Int = R.string.error_unknown_message,
+    private val severity: Severity = Severity.Error
+) {
 
     /**
      * Severity of the error.

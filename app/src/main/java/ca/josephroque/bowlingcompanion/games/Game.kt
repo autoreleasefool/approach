@@ -4,12 +4,22 @@ import android.content.Context
 import android.database.Cursor
 import android.os.Parcel
 import android.os.Parcelable
-import ca.josephroque.bowlingcompanion.common.interfaces.*
+import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
+import ca.josephroque.bowlingcompanion.common.interfaces.KParcelable
+import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
+import ca.josephroque.bowlingcompanion.common.interfaces.readBoolean
+import ca.josephroque.bowlingcompanion.common.interfaces.writeBoolean
 import ca.josephroque.bowlingcompanion.database.Contract.FrameEntry
 import ca.josephroque.bowlingcompanion.database.Contract.GameEntry
 import ca.josephroque.bowlingcompanion.database.Contract.MatchPlayEntry
 import ca.josephroque.bowlingcompanion.database.Saviour
-import ca.josephroque.bowlingcompanion.games.lane.*
+import ca.josephroque.bowlingcompanion.games.lane.arePinsCleared
+import ca.josephroque.bowlingcompanion.games.lane.Ball
+import ca.josephroque.bowlingcompanion.games.lane.ballValue
+import ca.josephroque.bowlingcompanion.games.lane.ballValueDifference
+import ca.josephroque.bowlingcompanion.games.lane.Pin
+import ca.josephroque.bowlingcompanion.games.lane.value
+import ca.josephroque.bowlingcompanion.games.lane.valueDifference
 import ca.josephroque.bowlingcompanion.matchplay.MatchPlay
 import ca.josephroque.bowlingcompanion.matchplay.MatchPlayResult
 import ca.josephroque.bowlingcompanion.scoring.Fouls
@@ -24,15 +34,15 @@ import kotlinx.coroutines.experimental.async
  * A single game recording.
  */
 class Game(
-        val series: Series,
-        override val id: Long,
-        val ordinal: Int,
-        var score: Int,
-        var isLocked: Boolean,
-        var isManual: Boolean,
-        val frames: List<Frame>,
-        val matchPlay: MatchPlay
-): IIdentifiable, KParcelable {
+    val series: Series,
+    override val id: Long,
+    val ordinal: Int,
+    var score: Int,
+    var isLocked: Boolean,
+    var isManual: Boolean,
+    val frames: List<Frame>,
+    val matchPlay: MatchPlay
+) : IIdentifiable, KParcelable {
 
     /**
      * Construct a [Game] from a [Parcel].
@@ -127,7 +137,7 @@ class Game(
                         // Second ball is not a strike
                         balls[1] = frame.pinState[1].ballValue(1, false, false)
                         balls[2] = if (frame.pinState[2].arePinsCleared())
-                             Ball.Spare.toString()
+                            Ball.Spare.toString()
                         else
                             frame.pinState[2].ballValueDifference(frame.pinState[1], 2, false, false)
                     }
@@ -211,7 +221,7 @@ class Game(
                 }
             } else {
                 val nextFrame = frames[frameIdx + 1]
-                for (ballIdx in 0 until  Frame.NUMBER_OF_BALLS) {
+                for (ballIdx in 0 until Frame.NUMBER_OF_BALLS) {
                     if (ballIdx == Frame.LAST_BALL) {
                         // If the loop is not exited by this point, there's no strike or spare
                         // Add basic value of the frame
@@ -285,31 +295,31 @@ class Game(
                 val gameList: MutableList<Game> = ArrayList(series.numberOfGames)
                 val database = Saviour.instance.getReadableDatabase(context).await()
 
-                val query = ("SELECT "
-                        + "game.${GameEntry._ID} AS gid, "
-                        + "game.${GameEntry.COLUMN_GAME_NUMBER}, "
-                        + "game.${GameEntry.COLUMN_SCORE}, "
-                        + "game.${GameEntry.COLUMN_IS_LOCKED}, "
-                        + "game.${GameEntry.COLUMN_IS_MANUAL}, "
-                        + "game.${GameEntry.COLUMN_MATCH_PLAY}, "
-                        + "match.${MatchPlayEntry._ID} as mid, "
-                        + "match.${MatchPlayEntry.COLUMN_OPPONENT_SCORE}, "
-                        + "match.${MatchPlayEntry.COLUMN_OPPONENT_NAME}, "
-                        + "frame.${FrameEntry._ID} as fid, "
-                        + "frame.${FrameEntry.COLUMN_FRAME_NUMBER}, "
-                        + "frame.${FrameEntry.COLUMN_IS_ACCESSED}, "
-                        + "frame.${FrameEntry.COLUMN_PIN_STATE[0]}, "
-                        + "frame.${FrameEntry.COLUMN_PIN_STATE[1]}, "
-                        + "frame.${FrameEntry.COLUMN_PIN_STATE[2]}, "
-                        + "frame.${FrameEntry.COLUMN_FOULS}"
-                        + " FROM ${GameEntry.TABLE_NAME} AS game"
-                        + " LEFT JOIN ${MatchPlayEntry.TABLE_NAME} as match"
-                        + " ON gid=${MatchPlayEntry.COLUMN_GAME_ID}"
-                        + " LEFT JOIN ${FrameEntry.TABLE_NAME} as frame"
-                        + " ON gid=${FrameEntry.COLUMN_GAME_ID}"
-                        + " WHERE ${GameEntry.COLUMN_SERIES_ID}=?"
-                        + " GROUP BY gid, fid"
-                        + " ORDER BY game.${GameEntry.COLUMN_GAME_NUMBER}, frame.${FrameEntry.COLUMN_FRAME_NUMBER}")
+                val query = ("SELECT " +
+                        "game.${GameEntry._ID} AS gid, " +
+                        "game.${GameEntry.COLUMN_GAME_NUMBER}, " +
+                        "game.${GameEntry.COLUMN_SCORE}, " +
+                        "game.${GameEntry.COLUMN_IS_LOCKED}, " +
+                        "game.${GameEntry.COLUMN_IS_MANUAL}, " +
+                        "game.${GameEntry.COLUMN_MATCH_PLAY}, " +
+                        "match.${MatchPlayEntry._ID} as mid, " +
+                        "match.${MatchPlayEntry.COLUMN_OPPONENT_SCORE}, " +
+                        "match.${MatchPlayEntry.COLUMN_OPPONENT_NAME}, " +
+                        "frame.${FrameEntry._ID} as fid, " +
+                        "frame.${FrameEntry.COLUMN_FRAME_NUMBER}, " +
+                        "frame.${FrameEntry.COLUMN_IS_ACCESSED}, " +
+                        "frame.${FrameEntry.COLUMN_PIN_STATE[0]}, " +
+                        "frame.${FrameEntry.COLUMN_PIN_STATE[1]}, " +
+                        "frame.${FrameEntry.COLUMN_PIN_STATE[2]}, " +
+                        "frame.${FrameEntry.COLUMN_FOULS}" +
+                        " FROM ${GameEntry.TABLE_NAME} AS game" +
+                        " LEFT JOIN ${MatchPlayEntry.TABLE_NAME} as match" +
+                        " ON gid=${MatchPlayEntry.COLUMN_GAME_ID}" +
+                        " LEFT JOIN ${FrameEntry.TABLE_NAME} as frame" +
+                        " ON gid=${FrameEntry.COLUMN_GAME_ID}" +
+                        " WHERE ${GameEntry.COLUMN_SERIES_ID}=?" +
+                        " GROUP BY gid, fid" +
+                        " ORDER BY game.${GameEntry.COLUMN_GAME_NUMBER}, frame.${FrameEntry.COLUMN_FRAME_NUMBER}")
 
                 var lastId: Long = -1
                 var frames: MutableList<Frame> = ArrayList(NUMBER_OF_FRAMES)
@@ -320,7 +330,7 @@ class Game(
                  * @param cursor database accessor
                  * @return a new game
                  */
-                fun buildGameFromCursor(cursor: Cursor):Game {
+                fun buildGameFromCursor(cursor: Cursor): Game {
                     val id = cursor.getLong(cursor.getColumnIndex("gid"))
                     val gameNumber = cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_GAME_NUMBER))
                     val score = cursor.getInt(cursor.getColumnIndex(GameEntry.COLUMN_SCORE))
@@ -385,5 +395,4 @@ class Game(
             }
         }
     }
-
 }

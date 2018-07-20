@@ -2,7 +2,11 @@ package ca.josephroque.bowlingcompanion.games
 
 import android.os.Parcelable
 import android.os.Parcel
-import ca.josephroque.bowlingcompanion.common.interfaces.*
+import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
+import ca.josephroque.bowlingcompanion.common.interfaces.KParcelable
+import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
+import ca.josephroque.bowlingcompanion.common.interfaces.readBoolean
+import ca.josephroque.bowlingcompanion.common.interfaces.writeBoolean
 import ca.josephroque.bowlingcompanion.games.lane.Deck
 import ca.josephroque.bowlingcompanion.games.lane.Pin
 import ca.josephroque.bowlingcompanion.games.lane.toBooleanArray
@@ -14,13 +18,13 @@ import ca.josephroque.bowlingcompanion.scoring.Fouls
  * A single frame in a game.
  */
 class Frame(
-        val gameId: Long,
-        override val id: Long,
-        val ordinal: Int,
-        var isAccessed: Boolean,
-        var pinState: Array<Deck>,
-        var ballFouled: BooleanArray
-): IIdentifiable, KParcelable {
+    val gameId: Long,
+    override val id: Long,
+    val ordinal: Int,
+    var isAccessed: Boolean,
+    var pinState: Array<Deck>,
+    var ballFouled: BooleanArray
+) : IIdentifiable, KParcelable {
 
     /**
      * Construct a [Frame] from a [Parcel].

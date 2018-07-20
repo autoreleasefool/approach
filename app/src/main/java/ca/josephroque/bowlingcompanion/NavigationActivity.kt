@@ -31,8 +31,7 @@ class NavigationActivity : BaseActivity(),
         FragNavController.RootFragmentListener,
         BaseFragment.FragmentNavigation,
         BaseFragment.FabProvider,
-        TabbedFragment.TabbedFragmentDelegate
-{
+        TabbedFragment.TabbedFragmentDelegate {
 
     companion object {
         /** Logging identifier. */

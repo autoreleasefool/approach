@@ -1,6 +1,5 @@
 package ca.josephroque.bowlingcompanion.utils
 
-
 /**
  * Copyright (C) 2018 Joseph Roque
  *

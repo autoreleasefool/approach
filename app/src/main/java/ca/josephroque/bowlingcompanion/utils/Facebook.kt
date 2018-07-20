@@ -6,7 +6,6 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import ca.josephroque.bowlingcompanion.R
 
-
 /**
  * Copyright (C) 2018 Joseph Roque
  *

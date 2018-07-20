@@ -4,7 +4,11 @@ import android.app.Dialog
 import android.os.Bundle
 import android.support.annotation.StringRes
 import android.support.v7.app.AppCompatActivity
-import android.view.*
+import android.view.LayoutInflater
+import android.view.MenuItem
+import android.view.Window
+import android.view.View
+import android.view.ViewGroup
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.fragments.BaseDialogFragment
 import kotlinx.android.synthetic.main.dialog_scrollable_text.*
@@ -54,9 +58,9 @@ class ScrollableTextDialog : BaseDialogFragment() {
 
     /** @Override */
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         arguments?.let {
             title = it.getInt(ARG_TITLE)

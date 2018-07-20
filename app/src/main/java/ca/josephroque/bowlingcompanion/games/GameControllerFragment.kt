@@ -166,10 +166,10 @@ class GameControllerFragment : TabbedFragment(),
      * Pager adapter for games.
      */
     class GameControllerPagerAdapter(
-            fragmentManager: FragmentManager,
-            tabCount: Int,
-            private val seriesList: List<Series>?
-    ): BaseFragmentPagerAdapter(fragmentManager, tabCount) {
+        fragmentManager: FragmentManager,
+        tabCount: Int,
+        private val seriesList: List<Series>?
+    ) : BaseFragmentPagerAdapter(fragmentManager, tabCount) {
 
         /** @Override */
         override fun buildFragment(position: Int): Fragment? {
@@ -180,5 +180,4 @@ class GameControllerFragment : TabbedFragment(),
             return null
         }
     }
-
 }

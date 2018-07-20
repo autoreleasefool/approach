@@ -7,7 +7,7 @@ import java.text.DecimalFormat
  *
  * Enforces objects to have a name and average.
  */
-interface INameAverage: IDeletable, IIdentifiable {
+interface INameAverage : IDeletable, IIdentifiable {
 
     /** Name of the object. */
     val name: String

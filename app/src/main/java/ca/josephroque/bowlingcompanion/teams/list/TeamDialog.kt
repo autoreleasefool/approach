@@ -34,8 +34,7 @@ import kotlinx.coroutines.experimental.launch
  */
 class TeamDialog : BaseDialogFragment(),
         View.OnClickListener,
-        BaseRecyclerViewAdapter.OnAdapterInteractionListener<Bowler>
-{
+        BaseRecyclerViewAdapter.OnAdapterInteractionListener<Bowler> {
 
     companion object {
         /** Logging identifier. */
@@ -90,9 +89,9 @@ class TeamDialog : BaseDialogFragment(),
 
     /** @Override */
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         team = arguments?.getParcelable(ARG_TEAM)
 
@@ -156,7 +155,7 @@ class TeamDialog : BaseDialogFragment(),
      */
     private fun setupInput(rootView: View) {
         rootView.btn_delete.setOnClickListener(this)
-        rootView.input_name.addTextChangedListener(object: TextWatcher {
+        rootView.input_name.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -192,7 +191,6 @@ class TeamDialog : BaseDialogFragment(),
             input_name.clearFocus()
             App.hideSoftKeyBoard(it)
         }
-
 
         team?.let {
             btn_delete.visibility = View.VISIBLE
@@ -271,7 +269,7 @@ class TeamDialog : BaseDialogFragment(),
 
                 if (canSave()) {
                     val oldTeam = team
-                    val (newTeam, error) = if (oldTeam!= null) {
+                    val (newTeam, error) = if (oldTeam != null) {
                         Team.save(context, oldTeam.id, name, selectedBowlers).await()
                     } else {
                         Team.save(context, -1, name, selectedBowlers).await()
@@ -294,7 +292,7 @@ class TeamDialog : BaseDialogFragment(),
      * Reload the list of bowlers and update list.
      */
     private fun refreshBowlerList() {
-        val context = context?: return
+        val context = context ?: return
         launch(Android) {
             val bowlers = Bowler.fetchAll(context).await()
             if (bowlers.isEmpty()) {

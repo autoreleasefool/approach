@@ -7,7 +7,10 @@ import android.support.v4.app.DialogFragment
 import android.support.v7.app.AlertDialog
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Window
+import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import ca.josephroque.bowlingcompanion.App
 import ca.josephroque.bowlingcompanion.R
@@ -60,9 +63,9 @@ class BowlerDialog : BaseDialogFragment(), View.OnClickListener {
 
     /** @Override */
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         bowler = arguments?.getParcelable(ARG_BOWLER)
 
@@ -110,7 +113,7 @@ class BowlerDialog : BaseDialogFragment(), View.OnClickListener {
      */
     private fun setupInput(rootView: View) {
         rootView.btn_delete.setOnClickListener(this)
-        rootView.input_name.addTextChangedListener(object: TextWatcher {
+        rootView.input_name.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {

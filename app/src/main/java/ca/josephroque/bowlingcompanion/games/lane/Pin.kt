@@ -1,15 +1,28 @@
 package ca.josephroque.bowlingcompanion.games.lane
 
-import java.util.*
-
+import java.util.Locale
 
 /**
  * Copyright (C) 2018 Joseph Roque
  *
  * Pins with their values.
  */
-enum class Pin {
-    Two, Three, Five;
+class Pin(val type: Type) {
+
+    /** Type of the  pin. */
+    enum class Type {
+        Two, Three, Five;
+
+        /** Value of the pin. */
+        val value: Int
+            get() {
+                return when (this) {
+                    Two -> 2
+                    Three -> 3
+                    Five -> 5
+                }
+            }
+    }
 
     /** Indicates if the pin is down or not. */
     var isDown: Boolean = false
@@ -20,13 +33,7 @@ enum class Pin {
 
     /** Value of the pin. */
     val value: Int
-        get() {
-            return when (this) {
-                Two -> 2
-                Three -> 3
-                Five -> 5
-            }
-        }
+        get() = type.value
 
     /**
      * Create a deep copy of this pin.
@@ -34,24 +41,23 @@ enum class Pin {
      * @return a new instance of [Pin]
      */
     fun deepCopy(): Pin {
-        val pin = when (this) {
-            Two -> Two
-            Three -> Three
-            Five -> Five
+        val pin = when (type) {
+            Type.Two -> Pin(Type.Two)
+            Type.Three -> Pin(Type.Three)
+            Type.Five -> Pin(Type.Five)
         }
         pin.isDown = this.isDown
         return pin
     }
 
     companion object {
-
         /**
          * Gets a new instance of a clean deck.
          *
          * @return a set of five pins, all standing
          */
-        fun buildDeck(): Deck {
-            return arrayOf(Two, Three, Five, Three, Two)
+        private fun buildDeck(): Deck {
+            return arrayOf(Pin(Type.Two), Pin(Type.Three), Pin(Type.Five), Pin(Type.Three), Pin(Type.Two))
         }
 
         /**

@@ -116,9 +116,9 @@ class LeagueDialog : BaseDialogFragment() {
 
     /** @Override */
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         arguments?.let {
             bowler = it.getParcelable(ARG_BOWLER)
@@ -187,7 +187,7 @@ class LeagueDialog : BaseDialogFragment() {
      * @param rootView the root view
      */
     private fun setupNameInput(rootView: View) {
-        rootView.input_name.addTextChangedListener(object: TextWatcher {
+        rootView.input_name.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {

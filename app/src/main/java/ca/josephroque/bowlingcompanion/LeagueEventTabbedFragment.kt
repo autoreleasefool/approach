@@ -26,8 +26,7 @@ import kotlinx.android.synthetic.main.fragment_common_tabs.*
  */
 class LeagueEventTabbedFragment : TabbedFragment(),
         ListFragment.OnListFragmentInteractionListener,
-        LeagueDialog.OnLeagueDialogInteractionListener
-{
+        LeagueDialog.OnLeagueDialogInteractionListener {
 
     companion object {
         /** Logging identifier */
@@ -169,10 +168,10 @@ class LeagueEventTabbedFragment : TabbedFragment(),
      * Pager adapter for league and event fragments.
      */
     class LeagueEventPagerAdapter(
-            fragmentManager: FragmentManager,
-            tabCount: Int,
-            private val bowler: Bowler?
-    ): BaseFragmentPagerAdapter(fragmentManager, tabCount) {
+        fragmentManager: FragmentManager,
+        tabCount: Int,
+        private val bowler: Bowler?
+    ) : BaseFragmentPagerAdapter(fragmentManager, tabCount) {
 
         /** @Override */
         override fun buildFragment(position: Int): Fragment? {

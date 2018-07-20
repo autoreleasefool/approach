@@ -105,6 +105,5 @@ class TeamMembersListFragment : ListFragment<TeamMember, TeamMembersRecyclerView
          * @param ready true when all team members are ready to bowl, false otherwise.
          */
         fun onTeamMembersReadyChanged(ready: Boolean)
-
     }
 }

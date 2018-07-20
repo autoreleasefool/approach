@@ -22,7 +22,8 @@ import ca.josephroque.bowlingcompanion.utils.safeLet
 import kotlinx.android.synthetic.main.dialog_series.*
 import kotlinx.android.synthetic.main.dialog_series.view.*
 import kotlinx.coroutines.experimental.launch
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 
 /**
  * Copyright (C) 2018 Joseph Roque

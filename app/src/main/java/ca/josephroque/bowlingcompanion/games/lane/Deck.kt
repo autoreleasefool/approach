@@ -1,7 +1,5 @@
 package ca.josephroque.bowlingcompanion.games.lane
 
-import ca.josephroque.bowlingcompanion.games.Game
-
 /**
  * Copyright (C) 2018 Joseph Roque
  *

@@ -140,10 +140,10 @@ class MatchPlaySheet : BottomSheetDialogFragment() {
          * @param inputValid indicates if the user input is valid or not
          */
         fun onFinishedSettingMatchPlayResults(
-                opponentName: String,
-                opponentScore: Int,
-                matchPlayResult: MatchPlayResult,
-                inputValid: Boolean
+            opponentName: String,
+            opponentScore: Int,
+            matchPlayResult: MatchPlayResult,
+            inputValid: Boolean
         )
     }
 }

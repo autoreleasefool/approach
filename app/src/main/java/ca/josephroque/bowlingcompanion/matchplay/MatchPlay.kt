@@ -12,12 +12,12 @@ import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
  * Data about Match Play for a single game.
  */
 class MatchPlay(
-        val gameId: Long,
-        override val id: Long,
-        var opponentName: String,
-        var opponentScore: Int,
-        var result: MatchPlayResult
-): IIdentifiable, KParcelable {
+    val gameId: Long,
+    override val id: Long,
+    var opponentName: String,
+    var opponentScore: Int,
+    var result: MatchPlayResult
+) : IIdentifiable, KParcelable {
 
     /**
      * Construct a [MatchPlay] from a [Parcel].
@@ -68,5 +68,4 @@ class MatchPlay(
         @Suppress("unused")
         @JvmField val CREATOR = parcelableCreator(::MatchPlay)
     }
-
 }

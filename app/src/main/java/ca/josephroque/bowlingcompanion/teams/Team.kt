@@ -13,8 +13,9 @@ import ca.josephroque.bowlingcompanion.common.interfaces.IDeletable
 import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
 import ca.josephroque.bowlingcompanion.common.interfaces.KParcelable
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
-import ca.josephroque.bowlingcompanion.database.Contract.*
-import ca.josephroque.bowlingcompanion.database.DatabaseHelper
+import ca.josephroque.bowlingcompanion.database.Contract.BowlerEntry
+import ca.josephroque.bowlingcompanion.database.Contract.TeamBowlerEntry
+import ca.josephroque.bowlingcompanion.database.Contract.TeamEntry
 import ca.josephroque.bowlingcompanion.database.Saviour
 import ca.josephroque.bowlingcompanion.series.Series
 import ca.josephroque.bowlingcompanion.teams.teammember.TeamMember
@@ -24,7 +25,8 @@ import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 import kotlin.collections.ArrayList
 
 /**
@@ -33,10 +35,10 @@ import kotlin.collections.ArrayList
  * A single Team, which has a set of bowlers.
  */
 class Team(
-        override val id: Long,
-        val name: String,
-        val members: List<TeamMember>
-): KParcelable, IDeletable, IIdentifiable {
+    override val id: Long,
+    val name: String,
+    val members: List<TeamMember>
+) : KParcelable, IDeletable, IIdentifiable {
 
     /** Private field to indicate if the item is deleted. */
     private var _isDeleted: Boolean = false
@@ -215,10 +217,10 @@ class Team(
          * @return [BCError] if a precondition is not met, null otherwise
          */
         private fun validateSavePreconditions(
-                context: Context,
-                id: Long,
-                name: String,
-                members: List<TeamMember>
+            context: Context,
+            id: Long,
+            name: String,
+            members: List<TeamMember>
         ): Deferred<BCError?> {
             return async(CommonPool) {
                 val errorMessage = R.string.issue_saving_team
@@ -250,10 +252,10 @@ class Team(
          * @return the saved [Team] or a [BCError] if any errors occurred
          */
         fun save(
-                context: Context,
-                id: Long,
-                name: String,
-                members: List<TeamMember>
+            context: Context,
+            id: Long,
+            name: String,
+            members: List<TeamMember>
         ): Deferred<Pair<Team?, BCError?>> {
             return if (id < 0) {
                 createNewAndSave(context, name, members)
@@ -271,9 +273,9 @@ class Team(
          * @return the saved [Team] or a [BCError] if any errors occurred
          */
         private fun createNewAndSave(
-                context: Context,
-                name: String,
-                members: List<TeamMember>
+            context: Context,
+            name: String,
+            members: List<TeamMember>
         ): Deferred<Pair<Team?, BCError?>> {
             return async(CommonPool) {
                 val error = validateSavePreconditions(context, -1, name, members).await()
@@ -329,10 +331,10 @@ class Team(
          * @return the saved [Team] or a [BCError] if any errors occurred
          */
         private fun update(
-                context: Context,
-                id: Long,
-                name: String,
-                members: List<TeamMember>
+            context: Context,
+            id: Long,
+            name: String,
+            members: List<TeamMember>
         ): Deferred<Pair<Team?, BCError?>> {
             return async(CommonPool) {
                 val error = validateSavePreconditions(context, id, name, members).await()
@@ -408,18 +410,18 @@ class Team(
                     " ORDER BY team." + TeamEntry.COLUMN_DATE_MODIFIED + " DESC"
                 }
 
-                val rawTeamQuery = ("SELECT "
-                        + "team." + TeamEntry.COLUMN_TEAM_NAME + ", "
-                        + "team." + TeamEntry._ID + " AS tid, "
-                        + "bowler." + BowlerEntry.COLUMN_BOWLER_NAME + ", "
-                        + "bowler." + BowlerEntry._ID + " as bid "
-                        + "FROM " + TeamEntry.TABLE_NAME + " AS team "
-                        + "JOIN " + TeamBowlerEntry.TABLE_NAME + " AS tb "
-                        + "ON team." + TeamEntry._ID + "=" + TeamBowlerEntry.COLUMN_TEAM_ID + " "
-                        + "JOIN " + BowlerEntry.TABLE_NAME + " AS bowler "
-                        + "ON tb." + TeamBowlerEntry.COLUMN_BOWLER_ID + "=bowler." + BowlerEntry._ID
-                        + orderQueryBy + ", "
-                        + "bowler." + BowlerEntry.COLUMN_BOWLER_NAME)
+                val rawTeamQuery = ("SELECT " +
+                        "team." + TeamEntry.COLUMN_TEAM_NAME + ", " +
+                        "team." + TeamEntry._ID + " AS tid, " +
+                        "bowler." + BowlerEntry.COLUMN_BOWLER_NAME + ", " +
+                        "bowler." + BowlerEntry._ID + " as bid " +
+                        "FROM " + TeamEntry.TABLE_NAME + " AS team " +
+                        "JOIN " + TeamBowlerEntry.TABLE_NAME + " AS tb " +
+                        "ON team." + TeamEntry._ID + "=" + TeamBowlerEntry.COLUMN_TEAM_ID + " " +
+                        "JOIN " + BowlerEntry.TABLE_NAME + " AS bowler " +
+                        "ON tb." + TeamBowlerEntry.COLUMN_BOWLER_ID + "=bowler." + BowlerEntry._ID +
+                        orderQueryBy + ", " +
+                        "bowler." + BowlerEntry.COLUMN_BOWLER_NAME)
 
                 var cursor: Cursor? = null
                 try {
@@ -449,8 +451,6 @@ class Team(
 
                         teams.add(Team(teamId, teamName, members))
                     }
-
-
                 } finally {
                     cursor?.close()
                 }

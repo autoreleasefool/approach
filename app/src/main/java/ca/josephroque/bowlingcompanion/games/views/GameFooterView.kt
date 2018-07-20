@@ -42,7 +42,7 @@ class GameFooterView : ConstraintLayout, View.OnClickListener {
     var currentBall: Int = 0
         set(value) {
             field = value
-            iv_clear_pins.setImageResource(when(value) {
+            iv_clear_pins.setImageResource(when (value) {
                 1 -> R.drawable.ic_clear_pins_spare
                 2 -> R.drawable.ic_clear_pins_fifteen
                 else -> R.drawable.ic_clear_pins_strike

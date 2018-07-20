@@ -10,8 +10,8 @@ import android.widget.EditText
  * Adds thousands separators to [EditText].
  */
 open class ThousandsTextWatcher(
-        private val groupingSeparator: String,
-        private val decimalSeparator: String
+    private val groupingSeparator: String,
+    private val decimalSeparator: String
 ) : TextWatcher {
 
     /** Indicates if the watcher is busy performing a previous action. */

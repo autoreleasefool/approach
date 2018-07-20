@@ -15,8 +15,8 @@ import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
  * A basic [RecyclerView.Adapter] to handle common operations.
  */
 abstract class BaseRecyclerViewAdapter<Item : IIdentifiable>(
-        values: List<Item>,
-        protected var listener: OnAdapterInteractionListener<Item>?
+    values: List<Item>,
+    protected var listener: OnAdapterInteractionListener<Item>?
 ) : RecyclerView.Adapter<BaseRecyclerViewAdapter<Item>.ViewHolder>(),
         View.OnClickListener,
         View.OnLongClickListener {
@@ -178,13 +178,13 @@ abstract class BaseRecyclerViewAdapter<Item : IIdentifiable>(
     /**
      * Callback for swipe events.
      */
-    inner class SwipeCallback: ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+    inner class SwipeCallback : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
 
         /** @Override */
         override fun onMove(
-                recyclerView: RecyclerView,
-                viewHolder: RecyclerView.ViewHolder,
-                target: RecyclerView.ViewHolder
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder,
+            target: RecyclerView.ViewHolder
         ): Boolean {
             return false
         }

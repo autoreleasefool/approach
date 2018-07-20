@@ -65,9 +65,9 @@ class GameFragment : BaseFragment(),
 
     /** @Override */
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         series = arguments?.getParcelable(ARG_SERIES)
         val view = inflater.inflate(R.layout.fragment_game, container, false)
@@ -85,7 +85,7 @@ class GameFragment : BaseFragment(),
     /** @Override */
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        val parent = parentFragment as? OnGameFragmentInteractionListener?: throw RuntimeException("${parentFragment!!} must implement OnGameFragmentInteractionListener")
+        val parent = parentFragment as? OnGameFragmentInteractionListener ?: throw RuntimeException("${parentFragment!!} must implement OnGameFragmentInteractionListener")
         listener = parent
     }
 
@@ -284,10 +284,10 @@ class GameFragment : BaseFragment(),
 
     /** @Override */
     override fun onFinishedSettingMatchPlayResults(
-            opponentName: String,
-            opponentScore: Int,
-            matchPlayResult: MatchPlayResult,
-            inputValid: Boolean
+        opponentName: String,
+        opponentScore: Int,
+        matchPlayResult: MatchPlayResult,
+        inputValid: Boolean
     ) {
         if (!inputValid) {
             val sheetBehavior = BottomSheetBehavior.from(sheet_match_play)

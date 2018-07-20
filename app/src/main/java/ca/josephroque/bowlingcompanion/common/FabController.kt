@@ -10,8 +10,8 @@ import android.view.View
  * Control the floating action button with common actions.
  */
 class FabController(
-        private val floatingActionButton: FloatingActionButton,
-        listener: View.OnClickListener
+    private val floatingActionButton: FloatingActionButton,
+    listener: View.OnClickListener
 ) {
 
     init {

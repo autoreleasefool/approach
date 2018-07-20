@@ -15,15 +15,13 @@ import ca.josephroque.bowlingcompanion.utils.Facebook
 import ca.josephroque.bowlingcompanion.utils.Files
 import ca.josephroque.bowlingcompanion.utils.toSpanned
 
-
 /**
  * Copyright (C) 2018 Joseph Roque
  *
  * Display user preferences and allow manipulation.
  */
 class SettingsFragment : PreferenceFragmentCompat(),
-        SharedPreferences.OnSharedPreferenceChangeListener
-{
+        SharedPreferences.OnSharedPreferenceChangeListener {
 
     companion object {
         /** Logging identifier. */
@@ -65,7 +63,7 @@ class SettingsFragment : PreferenceFragmentCompat(),
                 displayFacebookPage()
                 true
             }
-            else -> false// Does nothing
+            else -> false // Does nothing
         }
     }
 

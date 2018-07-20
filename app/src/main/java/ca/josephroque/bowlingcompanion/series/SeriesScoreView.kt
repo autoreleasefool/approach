@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.view_series_score.view.*
  *
  * Display a score and its match play result in unison.
  */
-class SeriesScoreView: LinearLayout {
+class SeriesScoreView : LinearLayout {
 
     companion object {
         /** Logging identifier. */

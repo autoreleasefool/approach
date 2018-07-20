@@ -4,7 +4,7 @@ import android.app.DatePickerDialog
 import android.app.Dialog
 import android.os.Bundle
 import android.widget.DatePicker
-import java.util.*
+import java.util.Calendar
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -12,8 +12,7 @@ import java.util.*
  * Pick a date.
  */
 class DatePickerFragment : BaseDialogFragment(),
-        DatePickerDialog.OnDateSetListener
-{
+        DatePickerDialog.OnDateSetListener {
 
     companion object {
         /** Logging identifier. */
@@ -45,7 +44,7 @@ class DatePickerFragment : BaseDialogFragment(),
 
     /** @Override */
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val calendar  = Calendar.getInstance()
+        val calendar = Calendar.getInstance()
         var year = calendar.get(Calendar.YEAR)
         var month = calendar.get(Calendar.MONTH)
         var day = calendar.get(Calendar.DAY_OF_MONTH)

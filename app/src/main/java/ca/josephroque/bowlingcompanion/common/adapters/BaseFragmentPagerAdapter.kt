@@ -12,8 +12,8 @@ import java.lang.ref.WeakReference
  * Base class for managing fragment paging.
  */
 abstract class BaseFragmentPagerAdapter(
-        fragmentManager: FragmentManager,
-        private val tabCount: Int
+    fragmentManager: FragmentManager,
+    private val tabCount: Int
 ) : FragmentPagerAdapter(fragmentManager) {
 
     /** Weak references to the fragments in the pager. */

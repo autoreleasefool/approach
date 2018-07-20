@@ -11,15 +11,17 @@ import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.interfaces.INameAverage
 import ca.josephroque.bowlingcompanion.common.interfaces.KParcelable
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
-import ca.josephroque.bowlingcompanion.database.Contract.*
-import ca.josephroque.bowlingcompanion.database.DatabaseHelper
+import ca.josephroque.bowlingcompanion.database.Contract.GameEntry
+import ca.josephroque.bowlingcompanion.database.Contract.LeagueEntry
+import ca.josephroque.bowlingcompanion.database.Contract.SeriesEntry
 import ca.josephroque.bowlingcompanion.leagues.League
 import ca.josephroque.bowlingcompanion.settings.Settings
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 import ca.josephroque.bowlingcompanion.database.Contract.BowlerEntry
 import ca.josephroque.bowlingcompanion.database.Saviour
 import ca.josephroque.bowlingcompanion.utils.BCError
@@ -31,9 +33,9 @@ import ca.josephroque.bowlingcompanion.utils.Preferences
  * A single Bowler, who has leagues, events, series, games, and stats.
  */
 class Bowler(
-        override val id: Long,
-        override val name: String,
-        override val average: Double
+    override val id: Long,
+    override val name: String,
+    override val average: Double
 ) : INameAverage, KParcelable {
 
     /** Private field to indicate if the item is deleted. */
@@ -178,9 +180,9 @@ class Bowler(
          * @return true if the name is not already in the database, false otherwise
          */
         private fun isBowlerNameUnique(
-                context: Context,
-                name: String,
-                id: Long = -1
+            context: Context,
+            name: String,
+            id: Long = -1
         ): Deferred<Boolean> {
             return async(CommonPool) {
                 val database = Saviour.instance.getReadableDatabase(context).await()
@@ -219,9 +221,9 @@ class Bowler(
          * @return [BCError] if any conditions are not met, or null if the bowler can be saved
          */
         private fun validateSavePreconditions(
-                context: Context,
-                id: Long,
-                name: String
+            context: Context,
+            id: Long,
+            name: String
         ): Deferred<BCError?> {
             return async(CommonPool) {
                 val errorTitle = R.string.issue_saving_bowler
@@ -251,10 +253,10 @@ class Bowler(
          * @return the saved [Bowler] or a [BCError] if any errors occurred
          */
         fun save(
-                context: Context,
-                id: Long,
-                name: String,
-                average: Double = 0.0
+            context: Context,
+            id: Long,
+            name: String,
+            average: Double = 0.0
         ): Deferred<Pair<Bowler?, BCError?>> {
             return if (id < 0) {
                 createNewAndSave(context, name)
@@ -270,8 +272,10 @@ class Bowler(
          * @param name name of the bowler to create
          * @return the saved [Bowler] or a [BCError] if any errors occurred
          */
-        private fun createNewAndSave(context: Context,
-                                     name: String): Deferred<Pair<Bowler?, BCError?>> {
+        private fun createNewAndSave(
+            context: Context,
+            name: String
+        ): Deferred<Pair<Bowler?, BCError?>> {
             return async(CommonPool) {
                 val error = validateSavePreconditions(context, -1, name).await()
                 if (error != null) {
@@ -328,10 +332,10 @@ class Bowler(
          * @return the saved [Bowler] or a [BCError] if any errors occurred
          */
         private fun update(
-                context: Context,
-                id: Long,
-                name: String,
-                average: Double
+            context: Context,
+            id: Long,
+            name: String,
+            average: Double
         ): Deferred<Pair<Bowler?, BCError?>> {
             return async(CommonPool) {
                 val error = validateSavePreconditions(context, id, name).await()
@@ -404,30 +408,30 @@ class Bowler(
                 val includeOpen = preferences.getBoolean(Settings.INCLUDE_OPEN, true)
                 val sortBy = Sort.fromInt(preferences.getInt(Preferences.BOWLER_SORT_ORDER, Sort.Alphabetically.ordinal))
 
-                val gameSumAndCountQuery = ("SELECT "
-                        + "league2." + LeagueEntry._ID + " AS lid2, "
-                        + "SUM(game2." + GameEntry.COLUMN_SCORE + ") AS gameSum, "
-                        + "COUNT(game2." + GameEntry._ID + ") AS gameCount"
-                        + " FROM " + LeagueEntry.TABLE_NAME + " AS league2"
-                        + " INNER JOIN " + SeriesEntry.TABLE_NAME + " AS series2"
-                        + " ON lid2=" + SeriesEntry.COLUMN_LEAGUE_ID
-                        + " INNER JOIN " + GameEntry.TABLE_NAME + " AS game2"
-                        + " ON series2." + SeriesEntry._ID + "=" + GameEntry.COLUMN_SERIES_ID
-                        + " WHERE "
-                        + " game2." + GameEntry.COLUMN_SCORE + ">?"
-                        + " AND "
-                        + (if (!includeEvents) LeagueEntry.COLUMN_IS_EVENT else "'0'") + "=?"
-                        + " AND "
-                        + (if (!includeOpen) LeagueEntry.COLUMN_LEAGUE_NAME + "!" else "'0'") + "=?"
-                        + " GROUP BY league2." + LeagueEntry._ID)
+                val gameSumAndCountQuery = ("SELECT " +
+                        "league2." + LeagueEntry._ID + " AS lid2, " +
+                        "SUM(game2." + GameEntry.COLUMN_SCORE + ") AS gameSum, " +
+                        "COUNT(game2." + GameEntry._ID + ") AS gameCount" +
+                        " FROM " + LeagueEntry.TABLE_NAME + " AS league2" +
+                        " INNER JOIN " + SeriesEntry.TABLE_NAME + " AS series2" +
+                        " ON lid2=" + SeriesEntry.COLUMN_LEAGUE_ID +
+                        " INNER JOIN " + GameEntry.TABLE_NAME + " AS game2" +
+                        " ON series2." + SeriesEntry._ID + "=" + GameEntry.COLUMN_SERIES_ID +
+                        " WHERE " +
+                        " game2." + GameEntry.COLUMN_SCORE + ">?" +
+                        " AND " +
+                        (if (!includeEvents) LeagueEntry.COLUMN_IS_EVENT else "'0'") + "=?" +
+                        " AND " +
+                        (if (!includeOpen) LeagueEntry.COLUMN_LEAGUE_NAME + "!" else "'0'") + "=?" +
+                        " GROUP BY league2." + LeagueEntry._ID)
 
-                val baseAverageAndGamesQuery = ("SELECT "
-                        + "league3." + LeagueEntry._ID + " AS lid3, "
-                        + LeagueEntry.COLUMN_BASE_AVERAGE + " * " + LeagueEntry.COLUMN_BASE_GAMES + " AS baseSum, "
-                        + LeagueEntry.COLUMN_BASE_GAMES + " AS baseGames"
-                        + " FROM " + LeagueEntry.TABLE_NAME + " AS league3"
-                        + " WHERE "
-                        + " league3." + LeagueEntry.COLUMN_BASE_AVERAGE + ">?")
+                val baseAverageAndGamesQuery = ("SELECT " +
+                        "league3." + LeagueEntry._ID + " AS lid3, " +
+                        LeagueEntry.COLUMN_BASE_AVERAGE + " * " + LeagueEntry.COLUMN_BASE_GAMES + " AS baseSum, " +
+                        LeagueEntry.COLUMN_BASE_GAMES + " AS baseGames" +
+                        " FROM " + LeagueEntry.TABLE_NAME + " AS league3" +
+                        " WHERE " +
+                        " league3." + LeagueEntry.COLUMN_BASE_AVERAGE + ">?")
 
                 val orderQueryBy = if (sortBy == Sort.Alphabetically) {
                     " ORDER BY bowler." + BowlerEntry.COLUMN_BOWLER_NAME
@@ -436,24 +440,24 @@ class Bowler(
                 }
 
                 // Query to retrieve bowler names and averages from database
-                val rawBowlerQuery = ("SELECT "
-                        + "bowler." + BowlerEntry.COLUMN_BOWLER_NAME + ", "
-                        + "bowler." + BowlerEntry._ID + " AS bid, "
-                        + "SUM(t.gameSum) AS totalSum, "
-                        + "SUM(t.gameCount) AS totalCount, "
-                        + "SUM(u.baseSum) AS totalBaseSum, "
-                        + "SUM(u.baseGames) AS totalBaseGames"
-                        + " FROM " + BowlerEntry.TABLE_NAME + " AS bowler"
-                        + " LEFT JOIN " + LeagueEntry.TABLE_NAME + " AS league"
-                        + " ON bowler." + BowlerEntry._ID + "=" + LeagueEntry.COLUMN_BOWLER_ID
-                        + " LEFT JOIN (" + gameSumAndCountQuery + ") AS t"
-                        + " ON t.lid2=league." + LeagueEntry._ID
-                        + " LEFT JOIN (" + baseAverageAndGamesQuery + ") AS u"
-                        + " ON u.lid3=league." + LeagueEntry._ID
-                        + " WHERE "
-                        + (if (filterId != -1L) "bid" else "'0'") + "=?"
-                        + " GROUP BY bowler." + BowlerEntry._ID
-                        + orderQueryBy)
+                val rawBowlerQuery = ("SELECT " +
+                        "bowler." + BowlerEntry.COLUMN_BOWLER_NAME + ", " +
+                        "bowler." + BowlerEntry._ID + " AS bid, " +
+                        "SUM(t.gameSum) AS totalSum, " +
+                        "SUM(t.gameCount) AS totalCount, " +
+                        "SUM(u.baseSum) AS totalBaseSum, " +
+                        "SUM(u.baseGames) AS totalBaseGames" +
+                        " FROM " + BowlerEntry.TABLE_NAME + " AS bowler" +
+                        " LEFT JOIN " + LeagueEntry.TABLE_NAME + " AS league" +
+                        " ON bowler." + BowlerEntry._ID + "=" + LeagueEntry.COLUMN_BOWLER_ID +
+                        " LEFT JOIN (" + gameSumAndCountQuery + ") AS t" +
+                        " ON t.lid2=league." + LeagueEntry._ID +
+                        " LEFT JOIN (" + baseAverageAndGamesQuery + ") AS u" +
+                        " ON u.lid3=league." + LeagueEntry._ID +
+                        " WHERE " +
+                        (if (filterId != -1L) "bid" else "'0'") + "=?" +
+                        " GROUP BY bowler." + BowlerEntry._ID +
+                        orderQueryBy)
 
                 val rawBowlerArgs = arrayOf(
                         /* game2.SCORE > */ 0.toString(),

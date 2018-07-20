@@ -13,7 +13,7 @@ import java.lang.ref.WeakReference
  * but not alter the contents otherwise.
  */
 class NavigationDrawerController(
-        private val navigationView: WeakReference<NavigationView>
+    private val navigationView: WeakReference<NavigationView>
 ) {
 
     companion object {

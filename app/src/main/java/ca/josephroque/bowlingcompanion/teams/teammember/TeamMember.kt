@@ -14,11 +14,11 @@ import ca.josephroque.bowlingcompanion.series.Series
  * Member of a team.
  */
 class TeamMember(
-        val teamId: Long,
-        val bowlerName: String,
-        val bowlerId: Long,
-        val league: League? = null,
-        val series: Series? = null
+    val teamId: Long,
+    val bowlerName: String,
+    val bowlerId: Long,
+    val league: League? = null,
+    val series: Series? = null
 ) : IIdentifiable, KParcelable {
 
     /**
@@ -73,5 +73,4 @@ class TeamMember(
         /** Number of bits to use from beginning of bowler id for team member id. */
         private const val BOWLER_ID_TRIM = 0xFFFFFFFF
     }
-
 }

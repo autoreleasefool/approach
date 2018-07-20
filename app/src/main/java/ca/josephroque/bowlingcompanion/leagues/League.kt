@@ -8,9 +8,14 @@ import android.os.Parcelable
 import android.util.Log
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.bowlers.Bowler
-import ca.josephroque.bowlingcompanion.common.interfaces.*
-import ca.josephroque.bowlingcompanion.database.Contract.*
-import ca.josephroque.bowlingcompanion.database.DatabaseHelper
+import ca.josephroque.bowlingcompanion.common.interfaces.INameAverage
+import ca.josephroque.bowlingcompanion.common.interfaces.KParcelable
+import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
+import ca.josephroque.bowlingcompanion.common.interfaces.readBoolean
+import ca.josephroque.bowlingcompanion.common.interfaces.writeBoolean
+import ca.josephroque.bowlingcompanion.database.Contract.GameEntry
+import ca.josephroque.bowlingcompanion.database.Contract.LeagueEntry
+import ca.josephroque.bowlingcompanion.database.Contract.SeriesEntry
 import ca.josephroque.bowlingcompanion.database.Saviour
 import ca.josephroque.bowlingcompanion.games.Game
 import ca.josephroque.bowlingcompanion.scoring.Average
@@ -20,24 +25,25 @@ import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Date
+import java.util.Locale
 
 /**
  * Copyright (C) 2018 Joseph Roque
  *
  * A single League, which has a set of series.
  */
-class League(
-        val bowler: Bowler,
-        override val id: Long,
-        override val name: String,
-        override val average: Double,
-        val isEvent: Boolean,
-        val gamesPerSeries: Int,
-        val additionalPinfall: Int,
-        val additionalGames: Int,
-        val gameHighlight: Int,
-        val seriesHighlight: Int
+data class League(
+    val bowler: Bowler,
+    override val id: Long,
+    override val name: String,
+    override val average: Double,
+    val isEvent: Boolean,
+    val gamesPerSeries: Int,
+    val additionalPinfall: Int,
+    val additionalGames: Int,
+    val gameHighlight: Int,
+    val seriesHighlight: Int
 ) : INameAverage, KParcelable {
 
     /** Private field to indicate if the item is deleted. */
@@ -267,15 +273,15 @@ class League(
          * @return an error to show if preconditions fail
          */
         private fun validateSavePreconditions(
-                context: Context,
-                id: Long,
-                name: String,
-                isEvent: Boolean,
-                gamesPerSeries: Int,
-                additionalPinfall: Int,
-                additionalGames: Int,
-                gameHighlight: Int,
-                seriesHighlight: Int
+            context: Context,
+            id: Long,
+            name: String,
+            isEvent: Boolean,
+            gamesPerSeries: Int,
+            additionalPinfall: Int,
+            additionalGames: Int,
+            gameHighlight: Int,
+            seriesHighlight: Int
         ): Deferred<BCError?> {
             return async(CommonPool) {
                 val errorTitle = if (isEvent) R.string.issue_saving_event else R.string.issue_saving_league
@@ -329,17 +335,17 @@ class League(
          * @return the saved [League] or [BCError] if an error occurred
          */
         fun save(
-                context: Context,
-                bowler: Bowler,
-                id: Long,
-                name: String,
-                isEvent: Boolean,
-                gamesPerSeries: Int,
-                additionalPinfall: Int,
-                additionalGames: Int,
-                gameHighlight: Int,
-                seriesHighlight: Int,
-                average: Double = 0.0
+            context: Context,
+            bowler: Bowler,
+            id: Long,
+            name: String,
+            isEvent: Boolean,
+            gamesPerSeries: Int,
+            additionalPinfall: Int,
+            additionalGames: Int,
+            gameHighlight: Int,
+            seriesHighlight: Int,
+            average: Double = 0.0
         ): Deferred<Pair<League?, BCError?>> {
             return if (id < 0) {
                 createNewAndSave(context, bowler, name, isEvent, gamesPerSeries, additionalPinfall, additionalGames, gameHighlight, seriesHighlight)
@@ -363,15 +369,15 @@ class League(
          * @return the saved [League] or [BCError] if an error occurred
          */
         private fun createNewAndSave(
-                context: Context,
-                bowler: Bowler,
-                name: String,
-                isEvent: Boolean,
-                gamesPerSeries: Int,
-                additionalPinfall: Int,
-                additionalGames: Int,
-                gameHighlight: Int,
-                seriesHighlight: Int
+            context: Context,
+            bowler: Bowler,
+            name: String,
+            isEvent: Boolean,
+            gamesPerSeries: Int,
+            additionalPinfall: Int,
+            additionalGames: Int,
+            gameHighlight: Int,
+            seriesHighlight: Int
         ): Deferred<Pair<League?, BCError?>> {
             return async(CommonPool) {
                 val error = validateSavePreconditions(
@@ -466,17 +472,17 @@ class League(
          * @return the saved [League] or [BCError] if an error occurred
          */
         fun update(
-                context: Context,
-                bowler: Bowler,
-                id: Long,
-                name: String,
-                average: Double,
-                isEvent: Boolean,
-                gamesPerSeries: Int,
-                additionalPinfall: Int,
-                additionalGames: Int,
-                gameHighlight: Int,
-                seriesHighlight: Int
+            context: Context,
+            bowler: Bowler,
+            id: Long,
+            name: String,
+            average: Double,
+            isEvent: Boolean,
+            gamesPerSeries: Int,
+            additionalPinfall: Int,
+            additionalGames: Int,
+            gameHighlight: Int,
+            seriesHighlight: Int
         ): Deferred<Pair<League?, BCError?>> {
             return async(CommonPool) {
                 val error = validateSavePreconditions(
@@ -543,32 +549,32 @@ class League(
          * @return a [MutableList] of [League] instances from the database.
          */
         fun fetchAll(
-                context: Context,
-                bowler: Bowler,
-                includeLeagues: Boolean = true,
-                includeEvents: Boolean = false
+            context: Context,
+            bowler: Bowler,
+            includeLeagues: Boolean = true,
+            includeEvents: Boolean = false
         ): Deferred<MutableList<League>> {
-            return async (CommonPool) {
+            return async(CommonPool) {
                 val leagues: MutableList<League> = ArrayList()
                 val database = Saviour.instance.getReadableDatabase(context).await()
 
-                val rawLeagueEventQuery = ("SELECT "
-                        + "league." + LeagueEntry._ID + " AS lid, "
-                        + LeagueEntry.COLUMN_LEAGUE_NAME + ", "
-                        + LeagueEntry.COLUMN_IS_EVENT + ", "
-                        + LeagueEntry.COLUMN_ADDITIONAL_PINFALL + ", "
-                        + LeagueEntry.COLUMN_ADDITIONAL_GAMES + ", "
-                        + LeagueEntry.COLUMN_GAME_HIGHLIGHT + ", "
-                        + LeagueEntry.COLUMN_SERIES_HIGHLIGHT + ", "
-                        + LeagueEntry.COLUMN_NUMBER_OF_GAMES + ", "
-                        + GameEntry.COLUMN_SCORE
-                        + " FROM " + LeagueEntry.TABLE_NAME + " AS league"
-                        + " LEFT JOIN " + SeriesEntry.TABLE_NAME + " AS series"
-                        + " ON league." + LeagueEntry._ID + "=series." + SeriesEntry.COLUMN_LEAGUE_ID
-                        + " LEFT JOIN " + GameEntry.TABLE_NAME + " AS game"
-                        + " ON series." + SeriesEntry._ID + "=game." + GameEntry.COLUMN_SERIES_ID
-                        + " WHERE " + LeagueEntry.COLUMN_BOWLER_ID + "=?"
-                        + " ORDER BY " + LeagueEntry.COLUMN_DATE_MODIFIED + " DESC")
+                val rawLeagueEventQuery = ("SELECT " +
+                        "league." + LeagueEntry._ID + " AS lid, " +
+                        LeagueEntry.COLUMN_LEAGUE_NAME + ", " +
+                        LeagueEntry.COLUMN_IS_EVENT + ", " +
+                        LeagueEntry.COLUMN_ADDITIONAL_PINFALL + ", " +
+                        LeagueEntry.COLUMN_ADDITIONAL_GAMES + ", " +
+                        LeagueEntry.COLUMN_GAME_HIGHLIGHT + ", " +
+                        LeagueEntry.COLUMN_SERIES_HIGHLIGHT + ", " +
+                        LeagueEntry.COLUMN_NUMBER_OF_GAMES + ", " +
+                        GameEntry.COLUMN_SCORE +
+                        " FROM " + LeagueEntry.TABLE_NAME + " AS league" +
+                        " LEFT JOIN " + SeriesEntry.TABLE_NAME + " AS series" +
+                        " ON league." + LeagueEntry._ID + "=series." + SeriesEntry.COLUMN_LEAGUE_ID +
+                        " LEFT JOIN " + GameEntry.TABLE_NAME + " AS game" +
+                        " ON series." + SeriesEntry._ID + "=game." + GameEntry.COLUMN_SERIES_ID +
+                        " WHERE " + LeagueEntry.COLUMN_BOWLER_ID + "=?" +
+                        " ORDER BY " + LeagueEntry.COLUMN_DATE_MODIFIED + " DESC")
 
                 val cursor = database.rawQuery(rawLeagueEventQuery, arrayOf(bowler.id.toString()))
                 var lastId: Long = -1

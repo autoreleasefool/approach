@@ -13,9 +13,16 @@ import ca.josephroque.bowlingcompanion.games.Frame
 import ca.josephroque.bowlingcompanion.games.Game
 import ca.josephroque.bowlingcompanion.games.lane.toInt
 import ca.josephroque.bowlingcompanion.matchplay.MatchPlay
-import kotlinx.coroutines.experimental.*
+import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.delay
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.CoroutineStart
+import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.experimental.Job
+import kotlinx.coroutines.experimental.launch
 import java.lang.ref.WeakReference
-import java.util.*
+import java.util.LinkedList
+import java.util.Queue
 import java.util.concurrent.atomic.AtomicBoolean
 
 /**
@@ -60,7 +67,7 @@ class Saviour private constructor() {
         }
 
         saviourIsRunning.set(true)
-        launch (CommonPool) {
+        launch(CommonPool) {
             while (App.isRunning.get() || saveQueue.isNotEmpty()) {
                 val saveRoutine = saveQueue.poll()
                 if (!saveRoutine.isCompleted && !saveRoutine.isCancelled) {
@@ -141,7 +148,7 @@ class Saviour private constructor() {
      * @param frame frame to save
      */
     fun saveFrame(weakContext: WeakReference<Context>, score: Int, frame: Frame) {
-        val job = launch (context = Android, start = CoroutineStart.LAZY) {
+        val job = launch(context = Android, start = CoroutineStart.LAZY) {
             val strongContext = weakContext.get() ?: return@launch
             val database = DatabaseHelper.getInstance(strongContext).writableDatabase
 
@@ -178,7 +185,7 @@ class Saviour private constructor() {
      * @param matchPlay match play details to save
      */
     fun saveMatchPlay(weakContext: WeakReference<Context>, matchPlay: MatchPlay) {
-        val job = launch (context = Android, start = CoroutineStart.LAZY) {
+        val job = launch(context = Android, start = CoroutineStart.LAZY) {
             val strongContext = weakContext.get() ?: return@launch
             val database = DatabaseHelper.getInstance(strongContext).writableDatabase
 
@@ -205,7 +212,7 @@ class Saviour private constructor() {
      * @param game game to save
      */
     fun saveGame(weakContext: WeakReference<Context>, game: Game) {
-        val job = launch (context = Android, start = CoroutineStart.LAZY) {
+        val job = launch(context = Android, start = CoroutineStart.LAZY) {
             val strongContext = weakContext.get() ?: return@launch
             val database = DatabaseHelper.getInstance(strongContext).writableDatabase
 
@@ -244,7 +251,7 @@ class Saviour private constructor() {
      * Wait for all co-routines saving to complete before loading from the database.
      */
     private fun waitForSaviour(): Deferred<Unit> {
-        return async (CommonPool) {
+        return async(CommonPool) {
             launchSaviourProcessor()
             while (saveQueue.isNotEmpty()) {
                 delay(100)
@@ -259,7 +266,7 @@ class Saviour private constructor() {
      * @return a readable database instance when all saving is complete
      */
     fun getReadableDatabase(context: Context): Deferred<SQLiteDatabase> {
-        return async (CommonPool) {
+        return async(CommonPool) {
             waitForSaviour().await()
             return@async DatabaseHelper.getInstance(context).readableDatabase
         }
@@ -272,10 +279,9 @@ class Saviour private constructor() {
      * @return a writable database instance when all saving is complete
      */
     fun getWritableDatabase(context: Context): Deferred<SQLiteDatabase> {
-        return async (CommonPool) {
+        return async(CommonPool) {
             waitForSaviour().await()
             return@async DatabaseHelper.getInstance(context).writableDatabase
         }
     }
-
 }

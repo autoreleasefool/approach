@@ -19,8 +19,7 @@ import kotlinx.android.synthetic.main.fragment_common_tabs.view.*
  * Base implementation for a fragment with tabs.
  */
 abstract class TabbedFragment : BaseFragment(),
-        IFloatingActionButtonHandler
-{
+        IFloatingActionButtonHandler {
 
     companion object {
         /** Logging identifier. */
@@ -89,7 +88,7 @@ abstract class TabbedFragment : BaseFragment(),
         rootView.tabbed_fragment_pager.adapter = adapter
 
         rootView.tabbed_fragment_pager.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(rootView.tabbed_fragment_tabs))
-        rootView.tabbed_fragment_tabs.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
+        rootView.tabbed_fragment_tabs.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabSelected(tab: TabLayout.Tab) {
                 rootView.tabbed_fragment_pager.currentItem = tab.position
                 handleTabSwitch(tab.position)

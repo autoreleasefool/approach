@@ -3,7 +3,12 @@ package ca.josephroque.bowlingcompanion.series
 import android.content.Context
 import android.os.Bundle
 import android.support.v7.preference.PreferenceManager
-import android.view.*
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.Android
 import ca.josephroque.bowlingcompanion.common.interfaces.IFloatingActionButtonHandler
@@ -26,8 +31,7 @@ import kotlinx.coroutines.experimental.launch
 class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
         SeriesDialog.OnSeriesDialogInteractionListener,
         ListFragment.OnListFragmentInteractionListener,
-        IFloatingActionButtonHandler
-{
+        IFloatingActionButtonHandler {
 
     companion object {
         /** Logging identifier. */
@@ -80,9 +84,9 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
 
     /** @Override. */
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         arguments?.let {
             league = it.getParcelable(ARG_LEAGUE)

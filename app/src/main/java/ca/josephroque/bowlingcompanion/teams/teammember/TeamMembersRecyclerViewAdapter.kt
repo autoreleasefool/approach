@@ -16,8 +16,8 @@ import ca.josephroque.bowlingcompanion.teams.Team
  * [BaseRecyclerViewAdapter] that can display the members of a [Team].
  */
 class TeamMembersRecyclerViewAdapter(
-        items: List<TeamMember>,
-        listener: BaseRecyclerViewAdapter.OnAdapterInteractionListener<TeamMember>
+    items: List<TeamMember>,
+    listener: BaseRecyclerViewAdapter.OnAdapterInteractionListener<TeamMember>
 ) : BaseRecyclerViewAdapter<TeamMember>(items, listener) {
 
     companion object {

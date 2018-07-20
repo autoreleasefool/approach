@@ -36,7 +36,7 @@ object Fouls {
      * @param s string representation of the number of fouls
      * @return integer representation of the number of fouls
      */
-    fun foulStringToInt(s: String) : Int {
+    fun foulStringToInt(s: String): Int {
         return when (s) {
             "3" -> 24
             "2" -> 25

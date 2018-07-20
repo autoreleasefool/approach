@@ -21,10 +21,12 @@ object Average {
      * @param additionalGames additional, untracked games for the league
      * @return the average of the league
      */
-    fun getAdjustedAverage(trackedPinfall: Int,
-                           trackedGames: Int,
-                           additionalPinfall: Int,
-                           additionalGames: Int): Double {
+    fun getAdjustedAverage(
+        trackedPinfall: Int,
+        trackedGames: Int,
+        additionalPinfall: Int,
+        additionalGames: Int
+    ): Double {
         val totalPinfall = trackedPinfall + additionalPinfall
         val totalGames = trackedGames + additionalGames
 

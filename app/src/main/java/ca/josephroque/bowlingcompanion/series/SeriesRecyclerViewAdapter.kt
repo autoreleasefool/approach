@@ -19,8 +19,8 @@ import com.nex3z.flowlayout.FlowLayout
  * upon interactions.
  */
 class SeriesRecyclerViewAdapter(
-        values: List<Series>,
-        listener: BaseRecyclerViewAdapter.OnAdapterInteractionListener<Series>?
+    values: List<Series>,
+    listener: BaseRecyclerViewAdapter.OnAdapterInteractionListener<Series>?
 ) : BaseRecyclerViewAdapter<Series>(values, listener) {
 
     companion object {

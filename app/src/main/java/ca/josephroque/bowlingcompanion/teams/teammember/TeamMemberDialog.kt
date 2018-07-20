@@ -80,9 +80,9 @@ class TeamMemberDialog : BaseDialogFragment(),
 
     /** @Override */
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         teamMember = arguments?.getParcelable(ARG_TEAM_MEMBER)
         selectedLeague = savedInstanceState?.getParcelable(ARG_SELECTED_LEAGUE)

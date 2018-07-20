@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.Log
 import java.io.BufferedReader
 
-
 /**
  * Copyright (C) 2018 Joseph Roque
  *

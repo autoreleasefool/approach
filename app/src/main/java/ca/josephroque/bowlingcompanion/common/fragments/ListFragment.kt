@@ -22,11 +22,10 @@ import kotlinx.coroutines.experimental.launch
  *
  * Basic [Fragment] implementation with a list.
  */
-abstract class ListFragment<Item: IIdentifiable, Adapter: BaseRecyclerViewAdapter<Item>> :
+abstract class ListFragment<Item : IIdentifiable, Adapter : BaseRecyclerViewAdapter<Item>> :
         BaseFragment(),
         BaseRecyclerViewAdapter.OnAdapterInteractionListener<Item>,
-        IRefreshable
-{
+        IRefreshable {
 
     companion object {
         /** Logging identifier. */
@@ -48,9 +47,9 @@ abstract class ListFragment<Item: IIdentifiable, Adapter: BaseRecyclerViewAdapte
 
     /** @Override */
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_common_list, container, false)
 
