@@ -249,7 +249,7 @@ class GameFragment : BaseFragment(),
 
     /** @Override */
     override fun onClearPins() {
-        updatePinState((1..Game.NUMBER_OF_PINS).map { it - 1 }.toIntArray(), true)
+        updatePinState((0 until Game.NUMBER_OF_PINS).toList().toIntArray(), true)
     }
 
     /** @Override */
