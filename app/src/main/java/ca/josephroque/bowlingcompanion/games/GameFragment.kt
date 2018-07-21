@@ -140,40 +140,47 @@ class GameFragment : BaseFragment(),
      */
     private fun refresh() {
         if (!gameState.gamesLoaded) { return }
+        launch(Android) {
+            val scoreText = gameState.currentGame.getScoreTextForFrames().await()
+            val ballText = gameState.currentGame.getBallTextForFrames().await()
 
-        // Update active frames
-        frameViews.forEachIndexed { index, it ->
-            it?.isCurrentFrame = (index == gameState.currentFrameIdx)
-            it?.currentBall = gameState.currentBallIdx
-        }
+            // Update active frames
+            frameViews.forEachIndexed { index, it ->
+                it?.isCurrentFrame = (index == gameState.currentFrameIdx)
+                it?.currentBall = gameState.currentBallIdx
+            }
 
-        // Update scores of the frames
-        val scoreText = gameState.currentGame.getScoreTextForFrames()
-        scoreText.forEachIndexed({ index, score ->
-            frameViews[index]?.setFrameText(score)
-        })
-        tv_final_score.text = gameState.currentGame.score.toString()
-
-        // Update balls of the frames
-        val ballText = gameState.currentGame.getBallTextForFrames()
-        ballText.forEachIndexed({ index, balls ->
-            balls.forEachIndexed({ ballIdx, ball ->
-                frameViews[index]?.setBallText(ballIdx, ball)
+            // Update scores of the frames
+            scoreText.forEachIndexed({ index, score ->
+                frameViews[index]?.setFrameText(score)
             })
-        })
+            tv_final_score.text = gameState.currentGame.score.toString()
 
-        // Update fouls of the frames
-        gameState.currentGame.frames.forEachIndexed({ index, frame ->
-            frame.ballFouled.forEachIndexed({ ballIdx, foul ->
-                frameViews[index]?.setFoulEnabled(ballIdx, foul)
+            // Update balls of the frames
+            ballText.forEachIndexed({ index, balls ->
+                balls.forEachIndexed({ ballIdx, ball ->
+                    frameViews[index]?.setBallText(ballIdx, ball)
+                })
             })
-        })
 
-        game_footer.apply {
-            isFoulActive = gameState.currentFrame.ballFouled[gameState.currentBallIdx]
-            isGameLocked = gameState.currentGame.isLocked
-            currentBall = gameState.currentBallIdx
-            matchPlayResult = gameState.currentGame.matchPlay.result
+            // Update fouls of the frames
+            gameState.currentGame.frames.forEachIndexed({ index, frame ->
+                frame.ballFouled.forEachIndexed({ ballIdx, foul ->
+                    frameViews[index]?.setFoulEnabled(ballIdx, foul)
+                })
+            })
+
+            // Update up/down pins
+            gameState.currentPinState.forEachIndexed { index, pin ->
+                pin_layout.setPinEnabled(index, pin.isDown)
+            }
+
+            game_footer.apply {
+                isFoulActive = gameState.currentFrame.ballFouled[gameState.currentBallIdx]
+                isGameLocked = gameState.currentGame.isLocked
+                currentBall = gameState.currentBallIdx
+                matchPlayResult = gameState.currentGame.matchPlay.result
+            }
         }
     }
 
