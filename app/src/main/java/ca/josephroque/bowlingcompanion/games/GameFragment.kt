@@ -49,7 +49,7 @@ class GameFragment : BaseFragment(),
     /** The number of the current game in its series. */
     var gameNumber: Int = 0
         set(value) {
-            saveCurrentGame()
+            saveCurrentGame(false)
             field = value
             game_header.currentGame = gameNumber
             gameState.currentGameIdx = gameNumber
@@ -187,14 +187,22 @@ class GameFragment : BaseFragment(),
     /**
      * Save the current frame of the game state to the database.
      */
-    private fun saveCurrentFrame() {
+    private fun saveCurrentFrame(ignoreManualScore: Boolean) {
+        if (!ignoreManualScore && gameState.currentGame.isManual) {
+            return
+        }
+
         context?.let { gameState.saveFrame(WeakReference(it)) }
     }
 
     /**
      * Save the current game of the game state to the database.
      */
-    private fun saveCurrentGame() {
+    private fun saveCurrentGame(ignoreManualScore: Boolean) {
+        if (!ignoreManualScore && gameState.currentGame.isManual) {
+            return
+        }
+
         context?.let { gameState.saveGame(WeakReference(it)) }
     }
 
