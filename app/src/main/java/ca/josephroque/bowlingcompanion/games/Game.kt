@@ -104,13 +104,8 @@ class Game(
      */
     val firstNewFrame: Int
         get() {
-            for (i in 0 until frames.size) {
-                if (!frames[i].isAccessed) {
-                    return i
-                }
-            }
-
-            return Game.LAST_FRAME
+            val firstFrameNotAccessed = frames.indexOfFirst { frame -> !frame.isAccessed }
+            return if (firstFrameNotAccessed > -1) firstFrameNotAccessed else Game.LAST_FRAME
         }
 
     /**
