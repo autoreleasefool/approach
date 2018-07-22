@@ -268,12 +268,12 @@ class GameFragment : BaseFragment(),
     // MARK: PinLayoutInteractionDelegate
 
     /** @Override */
-    override fun getPinState(pin: Int): Boolean {
+    override fun isPinDown(pin: Int): Boolean {
         return if (gameState.gamesLoaded) gameState.currentPinState[pin].isDown else false
     }
 
     /** @Override */
-    override fun updatePinState(pins: IntArray, state: Boolean) {
+    override fun setPins(pins: IntArray, state: Boolean) {
         if (!gameState.gamesLoaded) { return }
         pins.forEach { gameState.currentPinState[it].isDown = state }
         render()
@@ -283,7 +283,7 @@ class GameFragment : BaseFragment(),
 
     /** @Override */
     override fun onClearPins() {
-        updatePinState((0 until Game.NUMBER_OF_PINS).toList().toIntArray(), true)
+        setPins((0 until Game.NUMBER_OF_PINS).toList().toIntArray(), true)
     }
 
     /** @Override */

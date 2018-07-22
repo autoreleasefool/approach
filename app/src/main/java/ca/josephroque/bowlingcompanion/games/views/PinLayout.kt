@@ -38,7 +38,7 @@ class PinLayout : ConstraintLayout {
     private var initialStateSet: Boolean = false
 
     /** Initial state of the first pin touched. */
-    private var initialState: Boolean = false
+    private var initialPinDown: Boolean = false
 
     /** True when the user is dragging, false otherwise. */
     private var isDragging: Boolean = false
@@ -142,21 +142,22 @@ class PinLayout : ConstraintLayout {
             return
         }
 
-        val pinState = delegate.getPinState(pinTouched)
+        val pinDown = delegate.isPinDown(pinTouched)
         if (!initialStateSet) {
             if (firstPin) {
                 initialStateSet = true
-                initialState = pinState
+                initialPinDown = pinDown
             } else {
                 return
             }
-        } else if (pinState != initialState) {
+        } else if (pinDown != initialPinDown) {
             return
         }
 
         pinAltered[pinTouched] = true
         pinView.post {
-            pinView.setImageResource(if (pinState) R.drawable.pin_enabled else R.drawable.pin_disabled)
+            // Use the opposite image since we are toggling the pins from down to up or up to down
+            pinView.setImageResource(if (pinDown) R.drawable.pin_enabled else R.drawable.pin_disabled)
         }
     }
 
@@ -174,7 +175,7 @@ class PinLayout : ConstraintLayout {
             }
         }
 
-        delegate?.updatePinState(pins.toIntArray(), !initialState)
+        delegate?.setPins(pins.toIntArray(), !initialPinDown)
     }
 
     /**
@@ -198,7 +199,7 @@ class PinLayout : ConstraintLayout {
          * @param pins array of indices to update
          * @param state new state for the pins
          */
-        fun updatePinState(pins: IntArray, state: Boolean)
+        fun setPins(pins: IntArray, state: Boolean)
 
         /**
          * Get the up or down state of a pin.
@@ -206,6 +207,6 @@ class PinLayout : ConstraintLayout {
          * @param pin the pin to get the state of
          * @return true if the pin is knocked down, false if it is up
          */
-        fun getPinState(pin: Int): Boolean
+        fun isPinDown(pin: Int): Boolean
     }
 }
