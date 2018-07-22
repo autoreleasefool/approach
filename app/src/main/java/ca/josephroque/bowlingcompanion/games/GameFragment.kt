@@ -53,6 +53,7 @@ class GameFragment : BaseFragment(),
             field = value
             game_header.currentGame = gameNumber
             gameState.currentGameIdx = gameNumber
+            render(ballChanged = true, isGameFirstRender = true)
         }
 
     /** The series being edited. */
@@ -113,7 +114,7 @@ class GameFragment : BaseFragment(),
             gameState = GameState(it, gameStateListener)
             launch(Android) {
                 gameState.loadGames(context).await()
-                refresh()
+                render(ballChanged = true, isGameFirstRender = true)
             }
         }
 
@@ -137,8 +138,11 @@ class GameFragment : BaseFragment(),
 
     /**
      * Refresh the UI.
+     *
+     * @param ballChanged only focus on the next frame if the current ball changed
+     * @param isGameFirstRender if this is the first render of a game
      */
-    private fun refresh() {
+    private fun render(ballChanged: Boolean = false, isGameFirstRender: Boolean= false) {
         if (!gameState.gamesLoaded) { return }
         launch(Android) {
             val scoreText = gameState.currentGame.getScoreTextForFrames().await()
@@ -181,6 +185,10 @@ class GameFragment : BaseFragment(),
                 currentBall = gameState.currentBallIdx
                 matchPlayResult = gameState.currentGame.matchPlay.result
             }
+
+            if (ballChanged || isGameFirstRender) {
+                focusOnFrame(isGameFirstRender)
+            }
         }
     }
 
@@ -206,6 +214,24 @@ class GameFragment : BaseFragment(),
         context?.let { gameState.saveGame(WeakReference(it)) }
     }
 
+    /**
+     * Scrolls the position of the frames so the current frame is 1 from the left, or at least visible.
+     *
+     * @param isGameFirstRender indicates if this method was called on the game's first load
+     */
+    private fun focusOnFrame(isGameFirstRender: Boolean) {
+        hsv_frames.post {
+            val left = if (gameState.currentFrameIdx >= 1 && !(isGameFirstRender && gameState.currentFrameIdx == Game.LAST_FRAME)) {
+                val prevFrame = frameViews[gameState.currentFrameIdx - 1] ?: return@post
+                prevFrame.left
+            } else {
+                val frame = frameViews[gameState.currentFrameIdx - 1] ?: return@post
+                frame.left
+            }
+            hsv_frames.smoothScrollTo(left, 0)
+        }
+    }
+
     // MARK: IFloatingActionButtonHandler
 
     /** @Override */
@@ -216,7 +242,7 @@ class GameFragment : BaseFragment(),
     /** @Override */
     override fun onFabClick() {
         gameState.nextBall()
-        refresh()
+        render(ballChanged = true)
         // TODO: change bowler if necessary
     }
 
@@ -225,13 +251,13 @@ class GameFragment : BaseFragment(),
     /** @Override */
     override fun onBallSelected(ball: Int, frame: Int) {
         if (gameState.gamesLoaded) {
-            saveCurrentFrame()
+            saveCurrentFrame(false)
         }
         gameState.currentFrameIdx = frame
         gameState.currentBallIdx = ball
         game_header.currentFrame = gameState.currentFrameIdx
         game_header.currentBall = gameState.currentBallIdx
-        refresh()
+        render(ballChanged = true)
     }
 
     /** @Override */
@@ -250,7 +276,7 @@ class GameFragment : BaseFragment(),
     override fun updatePinState(pins: IntArray, state: Boolean) {
         if (!gameState.gamesLoaded) { return }
         pins.forEach { gameState.currentPinState[it].isDown = state }
-        refresh()
+        render()
     }
 
     // MARK: GameFooterInteractionDelegate
@@ -265,13 +291,13 @@ class GameFragment : BaseFragment(),
         val frameView = frameViews[gameState.currentFrameIdx] ?: return
         gameState.toggleFoul()
         frameView.setFoulEnabled(gameState.currentBallIdx, gameState.currentBallFouled)
-        refresh()
+        render()
     }
 
     /** @Override */
     override fun onLockToggle() {
         gameState.toggleLock()
-        refresh()
+        render()
     }
 
     /** @Override */
@@ -317,7 +343,7 @@ class GameFragment : BaseFragment(),
         }
 
         context?.let { gameState.saveMatchPlay(WeakReference(it)) }
-        refresh()
+        render()
     }
 
     // MARK: GameStateListener
