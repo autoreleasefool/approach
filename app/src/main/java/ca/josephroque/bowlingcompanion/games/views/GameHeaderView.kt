@@ -11,7 +11,9 @@ import android.widget.LinearLayout
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.games.Frame
 import ca.josephroque.bowlingcompanion.games.Game
-import kotlinx.android.synthetic.main.view_game_header.view.*
+import kotlinx.android.synthetic.main.view_game_header.view.tv_game_number as gameNumber
+import kotlinx.android.synthetic.main.view_game_header.view.tv_next_ball as nextBall
+import kotlinx.android.synthetic.main.view_game_header.view.tv_prev_ball as prevBall
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -42,7 +44,7 @@ class GameHeaderView : LinearLayout, View.OnClickListener {
     var currentGame: Int = 0
         set(value) {
             field = value
-            tv_game_number.text = String.format(resources.getString(R.string.game_number), value + 1)
+            gameNumber.text = String.format(resources.getString(R.string.game_number), value + 1)
         }
 
     /**
@@ -51,8 +53,8 @@ class GameHeaderView : LinearLayout, View.OnClickListener {
      */
     var currentBall: Int = 0
         set(value) {
-            tv_prev_ball.isEnabled = value != 0 || currentFrame != 0
-            tv_next_ball.isEnabled = value != Frame.LAST_BALL || currentFrame != Game.LAST_FRAME
+            prevBall.isEnabled = value != 0 || currentFrame != 0
+            nextBall.isEnabled = value != Frame.LAST_BALL || currentFrame != Game.LAST_FRAME
             field = value
         }
 
@@ -62,8 +64,8 @@ class GameHeaderView : LinearLayout, View.OnClickListener {
      */
     var currentFrame: Int = 0
         set(value) {
-            tv_prev_ball.isEnabled = value != 0 || currentBall != 0
-            tv_next_ball.isEnabled = value != Game.LAST_FRAME || currentBall != Frame.LAST_BALL
+            prevBall.isEnabled = value != 0 || currentBall != 0
+            nextBall.isEnabled = value != Game.LAST_FRAME || currentBall != Frame.LAST_BALL
             field = value
         }
 
@@ -73,9 +75,9 @@ class GameHeaderView : LinearLayout, View.OnClickListener {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         LayoutInflater.from(context).inflate(R.layout.view_game_header, this, true)
         setBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimaryLight))
-        tv_game_number.text = String.format(resources.getString(R.string.game_number), currentGame + 1)
-        tv_next_ball.setOnClickListener(this)
-        tv_prev_ball.setOnClickListener(this)
+        gameNumber.text = String.format(resources.getString(R.string.game_number), currentGame + 1)
+        nextBall.setOnClickListener(this)
+        prevBall.setOnClickListener(this)
     }
 
     /** @Override */

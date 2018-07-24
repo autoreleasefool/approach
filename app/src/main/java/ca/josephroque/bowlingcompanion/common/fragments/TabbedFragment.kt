@@ -10,7 +10,7 @@ import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.adapters.BaseFragmentPagerAdapter
 import ca.josephroque.bowlingcompanion.common.interfaces.IFloatingActionButtonHandler
 import ca.josephroque.bowlingcompanion.common.interfaces.IRefreshable
-import kotlinx.android.synthetic.main.fragment_common_tabs.*
+import kotlinx.android.synthetic.main.fragment_common_tabs.tabbed_fragment_pager as fragmentPager
 import kotlinx.android.synthetic.main.fragment_common_tabs.view.*
 
 /**
@@ -29,7 +29,7 @@ abstract class TabbedFragment : BaseFragment(),
 
     /** Active tab. */
     protected val currentTab: Int
-        get() = tabbed_fragment_pager?.currentItem ?: 0
+        get() = fragmentPager?.currentItem ?: 0
 
     /** Delegate for [TabbedFragment] events. */
     private var delegate: TabbedFragmentDelegate? = null
@@ -107,7 +107,7 @@ abstract class TabbedFragment : BaseFragment(),
      */
     fun refreshTabs(ignored: Set<Int> = HashSet()) {
         // TODO: figure out how to use ignored
-        val adapter = tabbed_fragment_pager.adapter as? BaseFragmentPagerAdapter
+        val adapter = fragmentPager.adapter as? BaseFragmentPagerAdapter
         adapter?.let {
             for (i in 0 until it.count) {
                 if (ignored.contains(i)) {

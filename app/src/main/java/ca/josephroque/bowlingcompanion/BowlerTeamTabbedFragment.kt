@@ -14,7 +14,7 @@ import ca.josephroque.bowlingcompanion.teams.Team
 import ca.josephroque.bowlingcompanion.teams.details.TeamDetailsFragment
 import ca.josephroque.bowlingcompanion.teams.list.TeamDialog
 import ca.josephroque.bowlingcompanion.teams.list.TeamListFragment
-import kotlinx.android.synthetic.main.fragment_common_tabs.*
+import kotlinx.android.synthetic.main.fragment_common_tabs.tabbed_fragment_pager as fragmentPager
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -157,7 +157,7 @@ class BowlerTeamTabbedFragment : TabbedFragment(),
 
     /** @Override */
     override fun onFinishBowler(bowler: Bowler) {
-        val adapter = tabbed_fragment_pager.adapter as? BowlerTeamPagerAdapter
+        val adapter = fragmentPager.adapter as? BowlerTeamPagerAdapter
         val bowlerFragment = adapter?.getFragment(Tab.Bowlers.ordinal) as? BowlerListFragment
         bowlerFragment?.refreshList(bowler)
 
@@ -167,7 +167,7 @@ class BowlerTeamTabbedFragment : TabbedFragment(),
 
     /** @Override */
     override fun onDeleteBowler(bowler: Bowler) {
-        val adapter = tabbed_fragment_pager.adapter as? BowlerTeamPagerAdapter
+        val adapter = fragmentPager.adapter as? BowlerTeamPagerAdapter
         val bowlerFragment = adapter?.getFragment(Tab.Bowlers.ordinal) as? BowlerListFragment
         bowlerFragment?.onItemDelete(bowler)
 
@@ -177,14 +177,14 @@ class BowlerTeamTabbedFragment : TabbedFragment(),
 
     /** @Override */
     override fun onFinishTeam(team: Team) {
-        val adapter = tabbed_fragment_pager.adapter as? BowlerTeamPagerAdapter
+        val adapter = fragmentPager.adapter as? BowlerTeamPagerAdapter
         val teamFragment = adapter?.getFragment(Tab.Teams.ordinal) as? TeamListFragment
         teamFragment?.refreshList(team)
     }
 
     /** @Override */
     override fun onDeleteTeam(team: Team) {
-        val adapter = tabbed_fragment_pager.adapter as? BowlerTeamPagerAdapter
+        val adapter = fragmentPager.adapter as? BowlerTeamPagerAdapter
         val teamFragment = adapter?.getFragment(Tab.Teams.ordinal) as? TeamListFragment
         teamFragment?.onItemDelete(team)
     }

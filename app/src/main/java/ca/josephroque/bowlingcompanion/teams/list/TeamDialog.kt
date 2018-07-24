@@ -23,7 +23,11 @@ import ca.josephroque.bowlingcompanion.teams.Team
 import ca.josephroque.bowlingcompanion.teams.teammember.TeamMember
 import ca.josephroque.bowlingcompanion.utils.Color
 import ca.josephroque.bowlingcompanion.utils.safeLet
-import kotlinx.android.synthetic.main.dialog_team.*
+import kotlinx.android.synthetic.main.dialog_team.btn_delete as deleteButton
+import kotlinx.android.synthetic.main.dialog_team.input_name as nameInput
+import kotlinx.android.synthetic.main.dialog_team.list_bowlers as bowlersList
+import kotlinx.android.synthetic.main.dialog_team.toolbar_team as teamToolbar
+import kotlinx.android.synthetic.main.dialog_team.tv_error_no_bowlers as noBowlersError
 import kotlinx.android.synthetic.main.dialog_team.view.*
 import kotlinx.coroutines.experimental.launch
 
@@ -188,16 +192,16 @@ class TeamDialog : BaseDialogFragment(),
         super.onResume()
 
         activity?.let {
-            input_name.clearFocus()
+            nameInput.clearFocus()
             App.hideSoftKeyBoard(it)
         }
 
         team?.let {
-            btn_delete.visibility = View.VISIBLE
-            input_name.setText(it.name)
+            deleteButton.visibility = View.VISIBLE
+            nameInput.setText(it.name)
         }
 
-        input_name.setSelection(input_name.text.length)
+        nameInput.setSelection(nameInput.text.length)
         refreshBowlerList()
     }
 
@@ -239,7 +243,7 @@ class TeamDialog : BaseDialogFragment(),
      * Determine if the team can be saved or not.
      */
     private fun canSave(): Boolean {
-        val name = input_name.text.toString()
+        val name = nameInput.text.toString()
         val members = selectedBowlers
 
         return name.isNotEmpty() && members.isNotEmpty()
@@ -249,7 +253,7 @@ class TeamDialog : BaseDialogFragment(),
      * Update save button state based on text entered.
      */
     private fun updateSaveButton() {
-        val saveButton = toolbar_team.menu.findItem(R.id.action_save)
+        val saveButton = teamToolbar.menu.findItem(R.id.action_save)
         if (canSave()) {
             saveButton?.isEnabled = true
             saveButton?.icon?.alpha = Color.ALPHA_ENABLED
@@ -265,7 +269,7 @@ class TeamDialog : BaseDialogFragment(),
     private fun saveTeam() {
         launch(Android) {
             this@TeamDialog.context?.let { context ->
-                val name = input_name.text.toString()
+                val name = nameInput.text.toString()
 
                 if (canSave()) {
                     val oldTeam = team
@@ -277,7 +281,7 @@ class TeamDialog : BaseDialogFragment(),
 
                     if (error != null) {
                         error.show(context)
-                        input_name.setText(oldTeam?.name)
+                        nameInput.setText(oldTeam?.name)
                         refreshBowlerList()
                     } else if (newTeam != null) {
                         dismiss()
@@ -296,11 +300,11 @@ class TeamDialog : BaseDialogFragment(),
         launch(Android) {
             val bowlers = Bowler.fetchAll(context).await()
             if (bowlers.isEmpty()) {
-                list_bowlers.visibility = View.GONE
-                tv_error_no_bowlers.visibility = View.VISIBLE
+                bowlersList.visibility = View.GONE
+                noBowlersError.visibility = View.VISIBLE
             } else {
-                list_bowlers.visibility = View.VISIBLE
-                tv_error_no_bowlers.visibility = View.GONE
+                bowlersList.visibility = View.VISIBLE
+                noBowlersError.visibility = View.GONE
             }
 
             val ids: MutableSet<Long> = HashSet()

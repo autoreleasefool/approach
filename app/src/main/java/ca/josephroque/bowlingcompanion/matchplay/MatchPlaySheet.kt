@@ -14,7 +14,11 @@ import android.widget.FrameLayout
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.games.Game
 import ca.josephroque.bowlingcompanion.utils.BCError
-import kotlinx.android.synthetic.main.sheet_match_play.*
+import kotlinx.android.synthetic.main.sheet_match_play.input_opponent_name as opponentName
+import kotlinx.android.synthetic.main.sheet_match_play.input_opponent_score as opponentScore
+import kotlinx.android.synthetic.main.sheet_match_play.radio_match_play_lost as matchPlayLost
+import kotlinx.android.synthetic.main.sheet_match_play.radio_match_play_won as matchPlayWon
+import kotlinx.android.synthetic.main.sheet_match_play.radio_match_play_tied as matchPlayTied
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -81,16 +85,16 @@ class MatchPlaySheet : BottomSheetDialogFragment() {
      */
     private fun handleUserExit() {
         var inputValid = true
-        val name = input_opponent_name.text.toString()
+        val name = opponentName.text.toString()
         val matchPlayResult = when {
-            radio_match_play_won.isChecked -> MatchPlayResult.WON
-            radio_match_play_lost.isChecked -> MatchPlayResult.LOST
-            radio_match_play_tied.isChecked -> MatchPlayResult.TIED
+            matchPlayWon.isChecked -> MatchPlayResult.WON
+            matchPlayLost.isChecked -> MatchPlayResult.LOST
+            matchPlayTied.isChecked -> MatchPlayResult.TIED
             else -> MatchPlayResult.NONE
         }
         var score: Int = -1
         try {
-            score = input_opponent_score.text.toString().toInt()
+            score = opponentScore.text.toString().toInt()
             if (score < 0 || score > Game.MAX_SCORE) {
                 throw NumberFormatException()
             }

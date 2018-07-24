@@ -10,7 +10,8 @@ import android.view.View
 import android.widget.LinearLayout
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.matchplay.MatchPlayResult
-import kotlinx.android.synthetic.main.view_series_score.view.*
+import kotlinx.android.synthetic.main.view_series_score.view.tv_score as tvScore
+import kotlinx.android.synthetic.main.view_series_score.view.tv_match_play as tvMatchPlay
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -72,7 +73,7 @@ class SeriesScoreView : LinearLayout {
     /** Score to display in the view. */
     var score: Int = 0
         set(value) {
-            tv_score.text = value.toString()
+            tvScore.text = value.toString()
             field = value
         }
 
@@ -80,26 +81,26 @@ class SeriesScoreView : LinearLayout {
     var matchPlay: MatchPlayResult = MatchPlayResult.NONE
         set(value) {
             when (value) {
-                MatchPlayResult.NONE -> tv_match_play.text = null
-                MatchPlayResult.WON -> tv_match_play.text = context.getString(R.string.match_play_won_short)
-                MatchPlayResult.LOST -> tv_match_play.text = context.getString(R.string.match_play_lost_short)
-                MatchPlayResult.TIED -> tv_match_play.text = context.getString(R.string.match_play_tied_short)
+                MatchPlayResult.NONE -> tvMatchPlay.text = null
+                MatchPlayResult.WON -> tvMatchPlay.text = context.getString(R.string.match_play_won_short)
+                MatchPlayResult.LOST -> tvMatchPlay.text = context.getString(R.string.match_play_lost_short)
+                MatchPlayResult.TIED -> tvMatchPlay.text = context.getString(R.string.match_play_tied_short)
             }
-            tv_match_play.visibility = if (value == MatchPlayResult.NONE) View.GONE else View.VISIBLE
+            tvMatchPlay.visibility = if (value == MatchPlayResult.NONE) View.GONE else View.VISIBLE
             field = value
         }
 
     /** Text color of the score text field. */
     var scoreTextColor: Int = Color.BLACK
         set(value) {
-            tv_score.setTextColor(value)
+            tvScore.setTextColor(value)
             field = value
         }
 
     /** Text color of the match play result text field. */
     var matchPlayTextColor: Int = Color.BLACK
         set(value) {
-            tv_match_play.setTextColor(value)
+            tvMatchPlay.setTextColor(value)
             field = value
         }
 }

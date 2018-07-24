@@ -16,7 +16,7 @@ import ca.josephroque.bowlingcompanion.leagues.League
 import ca.josephroque.bowlingcompanion.leagues.LeagueDialog
 import ca.josephroque.bowlingcompanion.leagues.LeagueListFragment
 import ca.josephroque.bowlingcompanion.series.SeriesListFragment
-import kotlinx.android.synthetic.main.fragment_common_tabs.*
+import kotlinx.android.synthetic.main.fragment_common_tabs.tabbed_fragment_pager as fragmentPager
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -122,7 +122,7 @@ class LeagueEventTabbedFragment : TabbedFragment(),
 
     /** @Override */
     override fun onFinishLeague(league: League) {
-        val adapter = tabbed_fragment_pager.adapter as? LeagueEventPagerAdapter
+        val adapter = fragmentPager.adapter as? LeagueEventPagerAdapter
         val leagueFragment = if (league.isEvent) {
             adapter?.getFragment(Tab.Events.ordinal) as? LeagueListFragment
         } else {
@@ -133,7 +133,7 @@ class LeagueEventTabbedFragment : TabbedFragment(),
 
     /** @Override */
     override fun onDeleteLeague(league: League) {
-        val adapter = tabbed_fragment_pager.adapter as? LeagueEventPagerAdapter
+        val adapter = fragmentPager.adapter as? LeagueEventPagerAdapter
         val leagueFragment = if (league.isEvent) {
             adapter?.getFragment(Tab.Events.ordinal) as? LeagueListFragment
         } else {

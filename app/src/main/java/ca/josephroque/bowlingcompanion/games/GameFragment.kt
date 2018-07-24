@@ -17,8 +17,12 @@ import ca.josephroque.bowlingcompanion.games.views.PinLayout
 import ca.josephroque.bowlingcompanion.matchplay.MatchPlayResult
 import ca.josephroque.bowlingcompanion.matchplay.MatchPlaySheet
 import ca.josephroque.bowlingcompanion.series.Series
-import kotlinx.android.synthetic.main.fragment_game.*
-import kotlinx.android.synthetic.main.sheet_match_play.*
+import kotlinx.android.synthetic.main.fragment_game.game_footer as gameFooter
+import kotlinx.android.synthetic.main.fragment_game.game_header as gameHeader
+import kotlinx.android.synthetic.main.fragment_game.hsv_frames as hsvFrames
+import kotlinx.android.synthetic.main.fragment_game.pin_layout as pinLayout
+import kotlinx.android.synthetic.main.fragment_game.tv_final_score as finalScore
+import kotlinx.android.synthetic.main.sheet_match_play.sheet_match_play as matchPlaySheet
 import kotlinx.android.synthetic.main.sheet_match_play.view.*
 import kotlinx.coroutines.experimental.launch
 import java.lang.ref.WeakReference
@@ -51,7 +55,7 @@ class GameFragment : BaseFragment(),
         set(value) {
             saveCurrentGame(false)
             field = value
-            game_header.currentGame = gameNumber
+            gameHeader.currentGame = gameNumber
             gameState.currentGameIdx = gameNumber
             render(ballChanged = true, isGameFirstRender = true)
         }
@@ -101,9 +105,9 @@ class GameFragment : BaseFragment(),
         super.onStart()
 
         frameViews.forEach { it?.delegate = this }
-        pin_layout.delegate = this
-        game_footer.delegate = this
-        game_header.delegate = this
+        pinLayout.delegate = this
+        gameFooter.delegate = this
+        gameHeader.delegate = this
     }
 
     /** @Override */
@@ -142,7 +146,7 @@ class GameFragment : BaseFragment(),
      * @param ballChanged only focus on the next frame if the current ball changed
      * @param isGameFirstRender if this is the first render of a game
      */
-    private fun render(ballChanged: Boolean = false, isGameFirstRender: Boolean= false) {
+    private fun render(ballChanged: Boolean = false, isGameFirstRender: Boolean = false) {
         if (!gameState.gamesLoaded) { return }
         launch(Android) {
             val scoreText = gameState.currentGame.getScoreTextForFrames().await()
@@ -158,7 +162,7 @@ class GameFragment : BaseFragment(),
             scoreText.forEachIndexed({ index, score ->
                 frameViews[index]?.setFrameText(score)
             })
-            tv_final_score.text = gameState.currentGame.score.toString()
+            finalScore.text = gameState.currentGame.score.toString()
 
             // Update balls of the frames
             ballText.forEachIndexed({ index, balls ->
@@ -176,10 +180,10 @@ class GameFragment : BaseFragment(),
 
             // Update up/down pins
             gameState.currentPinState.forEachIndexed { index, pin ->
-                pin_layout.setPinEnabled(index, pin.isDown)
+                pinLayout.setPinEnabled(index, pin.isDown)
             }
 
-            game_footer.apply {
+            gameFooter.apply {
                 isFoulActive = gameState.currentFrame.ballFouled[gameState.currentBallIdx]
                 isGameLocked = gameState.currentGame.isLocked
                 currentBall = gameState.currentBallIdx
@@ -220,7 +224,7 @@ class GameFragment : BaseFragment(),
      * @param isGameFirstRender indicates if this method was called on the game's first load
      */
     private fun focusOnFrame(isGameFirstRender: Boolean) {
-        hsv_frames.post {
+        hsvFrames.post {
             val left = if (gameState.currentFrameIdx >= 1 && !(isGameFirstRender && gameState.currentFrameIdx == Game.LAST_FRAME)) {
                 val prevFrame = frameViews[gameState.currentFrameIdx - 1] ?: return@post
                 prevFrame.left
@@ -228,7 +232,7 @@ class GameFragment : BaseFragment(),
                 val frame = frameViews[gameState.currentFrameIdx - 1] ?: return@post
                 frame.left
             }
-            hsv_frames.smoothScrollTo(left, 0)
+            hsvFrames.smoothScrollTo(left, 0)
         }
     }
 
@@ -255,8 +259,8 @@ class GameFragment : BaseFragment(),
         }
         gameState.currentFrameIdx = frame
         gameState.currentBallIdx = ball
-        game_header.currentFrame = gameState.currentFrameIdx
-        game_header.currentBall = gameState.currentBallIdx
+        gameHeader.currentFrame = gameState.currentFrameIdx
+        gameHeader.currentBall = gameState.currentBallIdx
         render(ballChanged = true)
     }
 
@@ -331,7 +335,7 @@ class GameFragment : BaseFragment(),
         inputValid: Boolean
     ) {
         if (!inputValid) {
-            val sheetBehavior = BottomSheetBehavior.from(sheet_match_play)
+            val sheetBehavior = BottomSheetBehavior.from(matchPlaySheet)
             sheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
             return
         }

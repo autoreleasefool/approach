@@ -19,7 +19,8 @@ import ca.josephroque.bowlingcompanion.common.fragments.DatePickerFragment
 import ca.josephroque.bowlingcompanion.utils.Color
 import ca.josephroque.bowlingcompanion.utils.DateUtils
 import ca.josephroque.bowlingcompanion.utils.safeLet
-import kotlinx.android.synthetic.main.dialog_series.*
+import kotlinx.android.synthetic.main.dialog_series.tv_date as dateText
+import kotlinx.android.synthetic.main.dialog_series.toolbar_series as seriesToolbar
 import kotlinx.android.synthetic.main.dialog_series.view.*
 import kotlinx.coroutines.experimental.launch
 import java.util.Calendar
@@ -154,7 +155,7 @@ class SeriesDialog : BaseDialogFragment(), DatePickerDialog.OnDateSetListener {
     /** @Override */
     override fun onResume() {
         super.onResume()
-        currentDate?.let { tv_date.text = DateUtils.dateToPretty(it) }
+        currentDate?.let { dateText.text = DateUtils.dateToPretty(it) }
         updateSaveButton()
     }
 
@@ -186,7 +187,7 @@ class SeriesDialog : BaseDialogFragment(), DatePickerDialog.OnDateSetListener {
      * Update save button state based on if the series can be saved or not.
      */
     private fun updateSaveButton() {
-        val saveButton = toolbar_series?.menu?.findItem(R.id.action_save)
+        val saveButton = seriesToolbar?.menu?.findItem(R.id.action_save)
         saveButton?.isEnabled = true
         saveButton?.icon?.alpha = Color.ALPHA_ENABLED
     }
@@ -212,7 +213,7 @@ class SeriesDialog : BaseDialogFragment(), DatePickerDialog.OnDateSetListener {
 
             if (error != null) {
                 error.show(context)
-                tv_date.text = oldSeries.prettyDate
+                dateText.text = oldSeries.prettyDate
             } else if (newSeries != null) {
                 dismiss()
                 listener?.onFinishSeries(newSeries)
@@ -241,7 +242,7 @@ class SeriesDialog : BaseDialogFragment(), DatePickerDialog.OnDateSetListener {
         calendar.set(Calendar.MONTH, month)
         calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
         currentDate = calendar.time
-        tv_date.text = DateUtils.dateToPretty(currentDate!!)
+        dateText.text = DateUtils.dateToPretty(currentDate!!)
     }
 
     /**

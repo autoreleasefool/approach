@@ -20,7 +20,11 @@ import ca.josephroque.bowlingcompanion.common.interfaces.INavigationDrawerHandle
 import ca.josephroque.bowlingcompanion.series.SeriesListFragment
 import com.ncapdevi.fragnav.FragNavController
 import com.ncapdevi.fragnav.FragNavTransactionOptions
-import kotlinx.android.synthetic.main.activity_navigation.*
+import kotlinx.android.synthetic.main.activity_navigation.bottom_navigation as bottomNavigation
+import kotlinx.android.synthetic.main.activity_navigation.drawer_layout as drawerLayout
+import kotlinx.android.synthetic.main.activity_navigation.fab as fab
+import kotlinx.android.synthetic.main.activity_navigation.nav_drawer as navDrawer
+import kotlinx.android.synthetic.main.activity_navigation.toolbar as toolbar
 import java.lang.ref.WeakReference
 
 /**
@@ -133,7 +137,7 @@ class NavigationActivity : BaseActivity(),
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         currentFragment?.let {
             if (item.itemId == android.R.id.home && currentFragment is INavigationDrawerHandler) {
-                drawer_layout.openDrawer(GravityCompat.START)
+                drawerLayout.openDrawer(GravityCompat.START)
                 return true
             }
         }
@@ -180,16 +184,16 @@ class NavigationActivity : BaseActivity(),
     private fun setupBottomNavigation() {
         val unavailableTabs: Set<BottomTab> = BottomTab.values().toSet() - BottomTab.available.toSet()
         if (unavailableTabs.isNotEmpty()) {
-            unavailableTabs.forEach { bottom_navigation.menu.removeItem(BottomTab.toId(it)) }
-            bottom_navigation.invalidate()
+            unavailableTabs.forEach { bottomNavigation.menu.removeItem(BottomTab.toId(it)) }
+            bottomNavigation.invalidate()
         }
 
-        bottom_navigation.setOnNavigationItemSelectedListener {
+        bottomNavigation.setOnNavigationItemSelectedListener {
             fragNavController?.switchTab(BottomTab.fromId(it.itemId).ordinal)
             return@setOnNavigationItemSelectedListener true
         }
 
-        bottom_navigation.setOnNavigationItemReselectedListener {
+        bottomNavigation.setOnNavigationItemReselectedListener {
             // TODO: probably refresh the current fragment, not reset the stack
 //            fragNavController?.clearStack()
         }
@@ -197,12 +201,12 @@ class NavigationActivity : BaseActivity(),
 
     /** Add listeners to navigation drawer. */
     private fun setupNavigationDrawer() {
-        navDrawerController = NavigationDrawerController(WeakReference(nav_drawer))
-        nav_drawer.setNavigationItemSelectedListener { menuItem ->
+        navDrawerController = NavigationDrawerController(WeakReference(navDrawer))
+        navDrawer.setNavigationItemSelectedListener { menuItem ->
             if (menuItem.isCheckable) {
                 menuItem.isChecked = true
             }
-            drawer_layout.closeDrawers()
+            drawerLayout.closeDrawers()
 
             when (menuItem.itemId) {
                 R.id.nav_bowlers_teams -> popBackTo(BowlerTeamTabbedFragment::class.java.name)

@@ -10,7 +10,9 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import ca.josephroque.bowlingcompanion.R
-import kotlinx.android.synthetic.main.view_frame.view.*
+import kotlinx.android.synthetic.main.view_frame.view.frame as frame
+import kotlinx.android.synthetic.main.view_frame.view.tv_frame_number as tvFrameNumber
+import kotlinx.android.synthetic.main.view_frame.view.tv_score as tvScore
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -47,14 +49,14 @@ class FrameView : LinearLayout, View.OnClickListener {
     var frameNumber: Int = 0
         set(value) {
             field = value
-            tv_frame_number.text = (value + 1).toString()
+            tvFrameNumber.text = (value + 1).toString()
         }
 
     /** Score of the frame. */
     var score: Int = 0
         set(value) {
             field = value
-            tv_score.text = value.toString()
+            tvScore.text = value.toString()
         }
 
     /** Current active ball in the frame. */
@@ -143,7 +145,7 @@ class FrameView : LinearLayout, View.OnClickListener {
      * @param text the score to set
      */
     fun setFrameText(text: String) {
-        tv_score.text = text
+        tvScore.text = text
     }
 
     /**

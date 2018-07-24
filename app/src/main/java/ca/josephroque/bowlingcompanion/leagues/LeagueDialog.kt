@@ -23,7 +23,19 @@ import ca.josephroque.bowlingcompanion.common.fragments.BaseDialogFragment
 import ca.josephroque.bowlingcompanion.utils.BCError
 import ca.josephroque.bowlingcompanion.utils.Color
 import ca.josephroque.bowlingcompanion.utils.safeLet
-import kotlinx.android.synthetic.main.dialog_league.*
+import kotlinx.android.synthetic.main.dialog_league.checkbox_additional_games as additionalGamesCheckbox
+import kotlinx.android.synthetic.main.dialog_league.input_additional_games as additionalGamesInput
+import kotlinx.android.synthetic.main.dialog_league.input_additional_pinfall as additionalPinfallInput
+import kotlinx.android.synthetic.main.dialog_league.input_game_highlight as gameHighlightInput
+import kotlinx.android.synthetic.main.dialog_league.input_series_highlight as seriesHighlightInput
+import kotlinx.android.synthetic.main.dialog_league.input_name as nameInput
+import kotlinx.android.synthetic.main.dialog_league.input_number_of_games as numberOfGamesInput
+import kotlinx.android.synthetic.main.dialog_league.layout_additional_games_details as additionalGamesLayoutDetails
+import kotlinx.android.synthetic.main.dialog_league.layout_additional_games as additionalGamesLayout
+import kotlinx.android.synthetic.main.dialog_league.layout_delete_league as deleteLeagueLayout
+import kotlinx.android.synthetic.main.dialog_league.layout_highlights as highlightsLayout
+import kotlinx.android.synthetic.main.dialog_league.layout_new_league_event as newLeagueEventLayout
+import kotlinx.android.synthetic.main.dialog_league.toolbar_league as leagueToolbar
 import kotlinx.android.synthetic.main.dialog_league.view.*
 import kotlinx.coroutines.experimental.launch
 
@@ -221,7 +233,7 @@ class LeagueDialog : BaseDialogFragment() {
         additionalPinfall.addTextChangedListener(textWatcherPinfall)
 
         rootView.checkbox_additional_games.setOnCheckedChangeListener { _, isChecked ->
-            layout_additional_games_details.visibility = if (isChecked) View.VISIBLE else View.GONE
+            additionalGamesLayoutDetails.visibility = if (isChecked) View.VISIBLE else View.GONE
             setImeOptions()
         }
     }
@@ -251,37 +263,37 @@ class LeagueDialog : BaseDialogFragment() {
         super.onResume()
 
         // Requesting input focus and showing keyboard
-        input_name.requestFocus()
+        nameInput.requestFocus()
         val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.showSoftInput(input_name, InputMethodManager.SHOW_IMPLICIT)
+        imm.showSoftInput(nameInput, InputMethodManager.SHOW_IMPLICIT)
 
         league?.let {
-            layout_delete_league.visibility = View.VISIBLE
-            layout_new_league_event.visibility = View.GONE
-            input_number_of_games.isEnabled = false
+            deleteLeagueLayout.visibility = View.VISIBLE
+            newLeagueEventLayout.visibility = View.GONE
+            numberOfGamesInput.isEnabled = false
 
             if (it.isEvent) {
-                layout_additional_games?.visibility = View.GONE
-                layout_highlights?.visibility = View.GONE
+                additionalGamesLayout?.visibility = View.GONE
+                highlightsLayout?.visibility = View.GONE
             } else {
-                layout_highlights?.visibility = View.VISIBLE
+                highlightsLayout?.visibility = View.VISIBLE
                 if (it.additionalPinfall > 0 || it.additionalGames > 0) {
-                    checkbox_additional_games?.isChecked = true
-                    layout_additional_games_details.visibility = View.VISIBLE
-                    input_additional_games.setText(it.additionalGames.toString())
-                    input_additional_pinfall.setText(it.additionalPinfall.toString())
+                    additionalGamesCheckbox?.isChecked = true
+                    additionalGamesLayoutDetails.visibility = View.VISIBLE
+                    additionalGamesInput.setText(it.additionalGames.toString())
+                    additionalPinfallInput.setText(it.additionalPinfall.toString())
                 } else {
-                    checkbox_additional_games?.isChecked = false
-                    layout_additional_games_details.visibility = View.GONE
-                    input_additional_pinfall.setText("")
-                    input_additional_games.setText("")
+                    additionalGamesCheckbox?.isChecked = false
+                    additionalGamesLayoutDetails.visibility = View.GONE
+                    additionalGamesInput.setText("")
+                    additionalPinfallInput.setText("")
                 }
             }
 
             resetInputs(it)
         }
 
-        input_name.setSelection(input_name.text.length)
+        nameInput.setSelection(nameInput.text.length)
         setImeOptions()
         setLeagueOptionsVisible()
         updateSaveButton()
@@ -307,10 +319,10 @@ class LeagueDialog : BaseDialogFragment() {
      * Checks if the league can be saved or not.
      */
     private fun canSave(): Boolean {
-        val name = input_name.text.toString()
-        val hasAdditional = checkbox_additional_games.isChecked
-        val additionalPinfall = input_additional_pinfall.text.toString()
-        val additionalGames = input_additional_games.text.toString()
+        val name = nameInput.text.toString()
+        val hasAdditional = additionalGamesCheckbox.isChecked
+        val additionalGames = additionalGamesInput.text.toString()
+        val additionalPinfall = additionalPinfallInput.text.toString()
 
         return (isEvent && name.isNotEmpty()) ||
                 (!isEvent && name.isNotEmpty() && ((hasAdditional && additionalPinfall.isNotEmpty() && additionalGames.isNotEmpty()) || !hasAdditional))
@@ -322,30 +334,30 @@ class LeagueDialog : BaseDialogFragment() {
      * @param league the league to reset values to
      */
     private fun resetInputs(league: League) {
-        input_name.setText(league.name)
-        input_number_of_games.setText(league.gamesPerSeries.toString())
-        checkbox_additional_games.isChecked = league.additionalPinfall > 0 || league.additionalGames > 0
-        input_game_highlight.setText(league.gameHighlight.toString())
-        input_series_highlight.setText(league.seriesHighlight.toString())
-        input_additional_pinfall.setText(league.additionalPinfall.toString())
-        input_additional_games.setText(league.additionalGames.toString())
+        nameInput.setText(league.name)
+        numberOfGamesInput.setText(league.gamesPerSeries.toString())
+        additionalGamesCheckbox.isChecked = league.additionalPinfall > 0 || league.additionalGames > 0
+        gameHighlightInput.setText(league.gameHighlight.toString())
+        seriesHighlightInput.setText(league.seriesHighlight.toString())
+        additionalGamesInput.setText(league.additionalGames.toString())
+        additionalPinfallInput.setText(league.additionalPinfall.toString())
     }
 
     /**
      * Adjust IME options for text fields based on state of the league being created.
      */
     private fun setImeOptions() {
-        input_name.imeOptions = if (league == null || !isEvent)
+        nameInput.imeOptions = if (league == null || !isEvent)
             EditorInfo.IME_FLAG_NO_FULLSCREEN or EditorInfo.IME_ACTION_NEXT
         else
             EditorInfo.IME_FLAG_NO_FULLSCREEN or EditorInfo.IME_ACTION_DONE
 
-        input_number_of_games.imeOptions = if (!isEvent)
+        numberOfGamesInput.imeOptions = if (!isEvent)
             EditorInfo.IME_FLAG_NO_FULLSCREEN or EditorInfo.IME_ACTION_NEXT
         else
             EditorInfo.IME_FLAG_NO_FULLSCREEN or EditorInfo.IME_ACTION_DONE
 
-        input_series_highlight.imeOptions = if (!isEvent && checkbox_additional_games.isChecked)
+        seriesHighlightInput.imeOptions = if (!isEvent && additionalGamesCheckbox.isChecked)
             EditorInfo.IME_FLAG_NO_FULLSCREEN or EditorInfo.IME_ACTION_NEXT
         else
             EditorInfo.IME_FLAG_NO_FULLSCREEN or EditorInfo.IME_ACTION_DONE
@@ -365,11 +377,11 @@ class LeagueDialog : BaseDialogFragment() {
      */
     private fun setLeagueOptionsVisible() {
         if (isEvent) {
-            layout_additional_games?.visibility = View.GONE
-            layout_highlights?.visibility = View.GONE
+            additionalGamesLayout?.visibility = View.GONE
+            highlightsLayout?.visibility = View.GONE
         } else {
-            layout_additional_games?.visibility = View.VISIBLE
-            layout_highlights?.visibility = View.VISIBLE
+            additionalGamesLayout?.visibility = View.VISIBLE
+            highlightsLayout?.visibility = View.VISIBLE
         }
     }
 
@@ -377,7 +389,7 @@ class LeagueDialog : BaseDialogFragment() {
      * Update save button state based on if the league can be saved or not.
      */
     private fun updateSaveButton() {
-        val saveButton = toolbar_league?.menu?.findItem(R.id.action_save)
+        val saveButton = leagueToolbar?.menu?.findItem(R.id.action_save)
         if (canSave()) {
             saveButton?.isEnabled = true
             saveButton?.icon?.alpha = Color.ALPHA_ENABLED
@@ -396,18 +408,18 @@ class LeagueDialog : BaseDialogFragment() {
         launch(Android) {
             this@LeagueDialog.context?.let {
                 if (canSave()) {
-                    val name = input_name.text.toString()
-                    val numberOfGamesStr = input_number_of_games.text.toString()
+                    val name = nameInput.text.toString()
+                    val numberOfGamesStr = numberOfGamesInput.text.toString()
                     val numberOfGames: Int
 
-                    val hasAdditional = checkbox_additional_games.isChecked
-                    val additionalPinfallStr = input_additional_pinfall.text.toString().replace(",", "")
-                    val additionalGamesStr = input_additional_games.text.toString().replace(",", "")
+                    val hasAdditional = additionalGamesCheckbox.isChecked
+                    val additionalGamesStr = additionalGamesInput.text.toString().replace(",", "")
+                    val additionalPinfallStr = additionalPinfallInput.text.toString().replace(",", "")
                     var additionalPinfall = 0
                     var additionalGames = 0
 
-                    val gameHighlightStr = input_game_highlight.text.toString().replace(",", "")
-                    val seriesHighlightStr = input_series_highlight.text.toString().replace(",", "")
+                    val gameHighlightStr = gameHighlightInput.text.toString().replace(",", "")
+                    val seriesHighlightStr = seriesHighlightInput.text.toString().replace(",", "")
                     var gameHighlight = 0
                     var seriesHighlight = 0
 

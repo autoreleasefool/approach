@@ -15,7 +15,8 @@ import ca.josephroque.bowlingcompanion.common.adapters.BaseFragmentPagerAdapter
 import ca.josephroque.bowlingcompanion.common.fragments.TabbedFragment
 import ca.josephroque.bowlingcompanion.common.interfaces.INavigationDrawerHandler
 import ca.josephroque.bowlingcompanion.series.Series
-import kotlinx.android.synthetic.main.fragment_common_tabs.*
+import kotlinx.android.synthetic.main.fragment_common_tabs.tabbed_fragment_pager as fragmentPager
+import kotlinx.android.synthetic.main.fragment_common_tabs.tabbed_fragment_tabs as fragmentTabs
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -55,7 +56,7 @@ class GameControllerFragment : TabbedFragment(),
 
     /** The current series being edited. */
     private val currentSeries: Int
-        get() = tabbed_fragment_pager.currentItem
+        get() = fragmentPager.currentItem
 
     /** The current game being edited. */
     private var currentGame: Int = 0
@@ -103,10 +104,10 @@ class GameControllerFragment : TabbedFragment(),
         super.onStart()
         val seriesList = seriesList ?: return
         if (seriesList.size == 1) {
-            tabbed_fragment_tabs.visibility = View.GONE
+            fragmentTabs.visibility = View.GONE
             (activity as? AppCompatActivity)?.supportActionBar?.elevation = resources.getDimension(R.dimen.base_elevation)
         } else {
-            tabbed_fragment_tabs.visibility = View.VISIBLE
+            fragmentTabs.visibility = View.VISIBLE
             (activity as? AppCompatActivity)?.supportActionBar?.elevation = 0F
         }
     }
@@ -157,7 +158,7 @@ class GameControllerFragment : TabbedFragment(),
      * @param currentGame the new game
      */
     private fun onGameChanged(currentGame: Int) {
-        val adapter = tabbed_fragment_pager.adapter as? GameControllerPagerAdapter
+        val adapter = fragmentPager.adapter as? GameControllerPagerAdapter
         val gameFragment = adapter?.getFragment(currentSeries) as? GameFragment
         gameFragment?.gameNumber = currentGame
     }

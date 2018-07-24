@@ -18,7 +18,8 @@ import ca.josephroque.bowlingcompanion.common.Android
 import ca.josephroque.bowlingcompanion.common.fragments.BaseDialogFragment
 import ca.josephroque.bowlingcompanion.utils.Color
 import ca.josephroque.bowlingcompanion.utils.safeLet
-import kotlinx.android.synthetic.main.dialog_bowler.*
+import kotlinx.android.synthetic.main.dialog_bowler.input_name as nameInput
+import kotlinx.android.synthetic.main.dialog_bowler.btn_delete as deleteButton
 import kotlinx.android.synthetic.main.dialog_bowler.view.*
 import kotlinx.coroutines.experimental.launch
 
@@ -146,16 +147,16 @@ class BowlerDialog : BaseDialogFragment(), View.OnClickListener {
         super.onResume()
 
         // Requesting input focus and showing keyboard
-        input_name.requestFocus()
+        nameInput.requestFocus()
         val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.showSoftInput(input_name, InputMethodManager.SHOW_IMPLICIT)
+        imm.showSoftInput(nameInput, InputMethodManager.SHOW_IMPLICIT)
 
         bowler?.let {
-            btn_delete.visibility = View.VISIBLE
-            input_name.setText(it.name)
+            deleteButton.visibility = View.VISIBLE
+            nameInput.setText(it.name)
         }
 
-        input_name.setSelection(input_name.text.length)
+        nameInput.setSelection(nameInput.text.length)
         updateSaveButton()
     }
 
@@ -196,7 +197,7 @@ class BowlerDialog : BaseDialogFragment(), View.OnClickListener {
      * @return true if the bowler name is not empty, false otherwise
      */
     private fun canSave(): Boolean {
-        return input_name.text.isNotEmpty()
+        return nameInput.text.isNotEmpty()
     }
 
     /**
@@ -219,7 +220,7 @@ class BowlerDialog : BaseDialogFragment(), View.OnClickListener {
     private fun saveBowler() {
         launch(Android) {
             this@BowlerDialog.context?.let {
-                val name = input_name.text.toString()
+                val name = nameInput.text.toString()
 
                 if (canSave()) {
                     val oldBowler = bowler
@@ -231,7 +232,7 @@ class BowlerDialog : BaseDialogFragment(), View.OnClickListener {
 
                     if (error != null) {
                         error.show(it)
-                        input_name.setText(bowler?.name)
+                        nameInput.setText(bowler?.name)
                     } else if (newBowler != null) {
                         dismiss()
                         listener?.onFinishBowler(newBowler)

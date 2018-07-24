@@ -11,7 +11,8 @@ import android.view.View
 import android.view.ViewGroup
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.fragments.BaseDialogFragment
-import kotlinx.android.synthetic.main.dialog_scrollable_text.*
+import kotlinx.android.synthetic.main.dialog_scrollable_text.toolbar_scrollable as scrollableToolbar
+import kotlinx.android.synthetic.main.dialog_scrollable_text.tv_scrollable as scrollableTextView
 import kotlinx.android.synthetic.main.dialog_scrollable_text.view.*
 
 /**
@@ -86,8 +87,8 @@ class ScrollableTextDialog : BaseDialogFragment() {
     override fun onResume() {
         super.onResume()
 
-        toolbar_scrollable.setTitle(title)
-        tv_scrollable.text = text
+        scrollableToolbar.setTitle(title)
+        scrollableTextView.text = text
     }
 
     /** @Override */

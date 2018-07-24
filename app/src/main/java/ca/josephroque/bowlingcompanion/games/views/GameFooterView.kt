@@ -9,7 +9,10 @@ import android.view.LayoutInflater
 import android.view.View
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.matchplay.MatchPlayResult
-import kotlinx.android.synthetic.main.view_game_footer.view.*
+import kotlinx.android.synthetic.main.view_game_footer.view.iv_clear_pins as clearPinsIcon
+import kotlinx.android.synthetic.main.view_game_footer.view.iv_foul as foulIcon
+import kotlinx.android.synthetic.main.view_game_footer.view.iv_lock as lockIcon
+import kotlinx.android.synthetic.main.view_game_footer.view.iv_match_play as matchPlayIcon
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -42,7 +45,7 @@ class GameFooterView : ConstraintLayout, View.OnClickListener {
     var currentBall: Int = 0
         set(value) {
             field = value
-            iv_clear_pins.setImageResource(when (value) {
+            clearPinsIcon.setImageResource(when (value) {
                 1 -> R.drawable.ic_clear_pins_spare
                 2 -> R.drawable.ic_clear_pins_fifteen
                 else -> R.drawable.ic_clear_pins_strike
@@ -53,14 +56,14 @@ class GameFooterView : ConstraintLayout, View.OnClickListener {
     var matchPlayResult: MatchPlayResult = MatchPlayResult.NONE
         set(value) {
             field = value
-            iv_match_play.setImageResource(value.getIcon())
+            matchPlayIcon.setImageResource(value.getIcon())
         }
 
     /** Indicates if the current game is locked, which determines state of the game lock button. */
     var isGameLocked: Boolean = false
         set(value) {
             field = value
-            iv_lock.setImageResource(if (value) R.drawable.ic_lock else R.drawable.ic_lock_open)
+            lockIcon.setImageResource(if (value) R.drawable.ic_lock else R.drawable.ic_lock_open)
         }
 
     /**
@@ -70,7 +73,7 @@ class GameFooterView : ConstraintLayout, View.OnClickListener {
     var isFoulActive: Boolean = false
         set(value) {
             field = value
-            iv_foul.setImageResource(if (value) R.drawable.ic_foul_active else R.drawable.ic_foul_inactive)
+            foulIcon.setImageResource(if (value) R.drawable.ic_foul_active else R.drawable.ic_foul_inactive)
         }
 
     /** Required constructors */
@@ -79,10 +82,10 @@ class GameFooterView : ConstraintLayout, View.OnClickListener {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
         LayoutInflater.from(context).inflate(R.layout.view_game_footer, this, true)
 
-        iv_clear_pins.setOnClickListener(this)
-        iv_foul.setOnClickListener(this)
-        iv_lock.setOnClickListener(this)
-        iv_match_play.setOnClickListener(this)
+        clearPinsIcon.setOnClickListener(this)
+        foulIcon.setOnClickListener(this)
+        lockIcon.setOnClickListener(this)
+        matchPlayIcon.setOnClickListener(this)
     }
 
     /** @Override */
