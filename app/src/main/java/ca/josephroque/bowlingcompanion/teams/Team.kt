@@ -411,17 +411,17 @@ class Team(
                 }
 
                 val rawTeamQuery = ("SELECT " +
-                        "team." + TeamEntry.COLUMN_TEAM_NAME + ", " +
-                        "team." + TeamEntry._ID + " AS tid, " +
-                        "bowler." + BowlerEntry.COLUMN_BOWLER_NAME + ", " +
-                        "bowler." + BowlerEntry._ID + " as bid " +
-                        "FROM " + TeamEntry.TABLE_NAME + " AS team " +
-                        "JOIN " + TeamBowlerEntry.TABLE_NAME + " AS tb " +
-                        "ON team." + TeamEntry._ID + "=" + TeamBowlerEntry.COLUMN_TEAM_ID + " " +
-                        "JOIN " + BowlerEntry.TABLE_NAME + " AS bowler " +
-                        "ON tb." + TeamBowlerEntry.COLUMN_BOWLER_ID + "=bowler." + BowlerEntry._ID +
-                        orderQueryBy + ", " +
-                        "bowler." + BowlerEntry.COLUMN_BOWLER_NAME)
+                        "team.${TeamEntry.COLUMN_TEAM_NAME}, " +
+                        "team.${TeamEntry._ID} AS tid, " +
+                        "bowler.${BowlerEntry.COLUMN_BOWLER_NAME}, " +
+                        "bowler.${BowlerEntry._ID} as bid " +
+                        "FROM ${TeamEntry.TABLE_NAME} AS team " +
+                        "JOIN ${TeamBowlerEntry.TABLE_NAME} AS tb " +
+                        "ON team.${TeamEntry._ID}=${TeamBowlerEntry.COLUMN_TEAM_ID} " +
+                        "JOIN ${BowlerEntry.TABLE_NAME} AS bowler " +
+                        "ON tb.${TeamBowlerEntry.COLUMN_BOWLER_ID}=bowler.${BowlerEntry._ID} " +
+                        "$orderQueryBy, " +
+                        "bowler.${BowlerEntry.COLUMN_BOWLER_NAME}")
 
                 var cursor: Cursor? = null
                 try {

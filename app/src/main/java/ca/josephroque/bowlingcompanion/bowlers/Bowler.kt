@@ -410,21 +410,18 @@ class Bowler(
                 val sortBy = Sort.fromInt(preferences.getInt(Preferences.BOWLER_SORT_ORDER, Sort.Alphabetically.ordinal))
 
                 val gameSumAndCountQuery = ("SELECT " +
-                        "league2." + LeagueEntry._ID + " AS lid2, " +
-                        "SUM(game2." + GameEntry.COLUMN_SCORE + ") AS gameSum, " +
-                        "COUNT(game2." + GameEntry._ID + ") AS gameCount" +
-                        " FROM " + LeagueEntry.TABLE_NAME + " AS league2" +
-                        " INNER JOIN " + SeriesEntry.TABLE_NAME + " AS series2" +
-                        " ON lid2=" + SeriesEntry.COLUMN_LEAGUE_ID +
-                        " INNER JOIN " + GameEntry.TABLE_NAME + " AS game2" +
-                        " ON series2." + SeriesEntry._ID + "=" + GameEntry.COLUMN_SERIES_ID +
-                        " WHERE " +
-                        " game2." + GameEntry.COLUMN_SCORE + ">?" +
-                        " AND " +
-                        (if (!includeEvents) LeagueEntry.COLUMN_IS_EVENT else "'0'") + "=?" +
-                        " AND " +
-                        (if (!includeOpen) LeagueEntry.COLUMN_LEAGUE_NAME + "!" else "'0'") + "=?" +
-                        " GROUP BY league2." + LeagueEntry._ID)
+                        "league2.${LeagueEntry._ID} AS lid2, " +
+                        "SUM(game2.${GameEntry.COLUMN_SCORE}) AS gameSum, " +
+                        "COUNT(game2.${GameEntry._ID}) AS gameCount " +
+                        "FROM ${LeagueEntry.TABLE_NAME} AS league2 " +
+                        "INNER JOIN ${SeriesEntry.TABLE_NAME} AS series2 " +
+                        "ON lid2=${SeriesEntry.COLUMN_LEAGUE_ID} " +
+                        "INNER JOIN ${GameEntry.TABLE_NAME} AS game2 " +
+                        "ON series2.${SeriesEntry._ID}=${GameEntry.COLUMN_SERIES_ID} " +
+                        "WHERE game2.${GameEntry.COLUMN_SCORE}>? " +
+                        "AND " + (if (!includeEvents) LeagueEntry.COLUMN_IS_EVENT else "'0'") + "=? " +
+                        "AND " + (if (!includeOpen) LeagueEntry.COLUMN_LEAGUE_NAME + "!" else "'0'") + "=? " +
+                        "GROUP BY league2.${LeagueEntry._ID}")
 
                 val additionalAverageQuery = ("SELECT " +
                         "league3.${LeagueEntry._ID} AS lid3, " +
@@ -434,29 +431,28 @@ class Bowler(
                         "WHERE league3.${LeagueEntry.COLUMN_ADDITIONAL_PINFALL}>?")
 
                 val orderQueryBy = if (sortBy == Sort.Alphabetically) {
-                    " ORDER BY bowler." + BowlerEntry.COLUMN_BOWLER_NAME
+                    "ORDER BY bowler.${BowlerEntry.COLUMN_BOWLER_NAME} "
                 } else {
-                    " ORDER BY bowler." + BowlerEntry.COLUMN_DATE_MODIFIED + " DESC"
+                    "ORDER BY bowler.${BowlerEntry.COLUMN_DATE_MODIFIED} DESC "
                 }
 
                 // Query to retrieve bowler names and averages from database
                 val rawBowlerQuery = ("SELECT " +
-                        "bowler." + BowlerEntry.COLUMN_BOWLER_NAME + ", " +
-                        "bowler." + BowlerEntry._ID + " AS bid, " +
+                        "bowler.${BowlerEntry.COLUMN_BOWLER_NAME}, " +
+                        "bowler.${BowlerEntry._ID} AS bid, " +
                         "SUM(t.gameSum) AS totalPinfall, " +
                         "SUM(t.gameCount) AS totalGames, " +
                         "SUM(u.additionalPinfall) AS totalAdditionalPinfall, " +
-                        "SUM(u.additionalGames) AS totalAdditionalGames" +
-                        " FROM " + BowlerEntry.TABLE_NAME + " AS bowler" +
-                        " LEFT JOIN " + LeagueEntry.TABLE_NAME + " AS league" +
-                        " ON bowler." + BowlerEntry._ID + "=" + LeagueEntry.COLUMN_BOWLER_ID +
-                        " LEFT JOIN (" + gameSumAndCountQuery + ") AS t" +
-                        " ON t.lid2=league." + LeagueEntry._ID +
-                        " LEFT JOIN (" + additionalAverageQuery + ") AS u" +
-                        " ON u.lid3=league." + LeagueEntry._ID +
-                        " WHERE " +
-                        (if (filterId != -1L) "bid" else "'0'") + "=?" +
-                        " GROUP BY bowler." + BowlerEntry._ID +
+                        "SUM(u.additionalGames) AS totalAdditionalGames " +
+                        "FROM ${BowlerEntry.TABLE_NAME} AS bowler " +
+                        "LEFT JOIN ${LeagueEntry.TABLE_NAME} AS league " +
+                        "ON bowler.${BowlerEntry._ID}=${LeagueEntry.COLUMN_BOWLER_ID} " +
+                        "LEFT JOIN ($gameSumAndCountQuery) AS t " +
+                        "ON t.lid2=league.${LeagueEntry._ID} " +
+                        "LEFT JOIN ($additionalAverageQuery) AS u " +
+                        "ON u.lid3=league.${LeagueEntry._ID} " +
+                        "WHERE " + (if (filterId != -1L) "bid" else "'0'") + "=? " +
+                        "GROUP BY bowler.${BowlerEntry._ID} " +
                         orderQueryBy)
 
                 val rawBowlerArgs = arrayOf(

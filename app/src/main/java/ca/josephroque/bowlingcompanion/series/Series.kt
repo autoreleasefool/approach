@@ -351,13 +351,12 @@ class Series(
                         "${SeriesEntry.COLUMN_SERIES_DATE}, " +
                         "${GameEntry.COLUMN_SCORE}, " +
                         "${GameEntry.COLUMN_GAME_NUMBER}, " +
-                        GameEntry.COLUMN_MATCH_PLAY +
-                        " FROM ${SeriesEntry.TABLE_NAME} AS series" +
-                        " INNER JOIN ${GameEntry.TABLE_NAME}" +
-                        " ON sid=${GameEntry.COLUMN_SERIES_ID}" +
-                        " WHERE ${SeriesEntry.COLUMN_LEAGUE_ID}=?" +
-                        " ORDER BY ${SeriesEntry.COLUMN_SERIES_DATE} DESC, " +
-                        GameEntry.COLUMN_GAME_NUMBER)
+                        "${GameEntry.COLUMN_MATCH_PLAY} " +
+                        "FROM ${SeriesEntry.TABLE_NAME} AS series " +
+                        "INNER JOIN ${GameEntry.TABLE_NAME} " +
+                        "ON sid=${GameEntry.COLUMN_SERIES_ID} " +
+                        "WHERE ${SeriesEntry.COLUMN_LEAGUE_ID}=? " +
+                        "ORDER BY ${SeriesEntry.COLUMN_SERIES_DATE} DESC, ${GameEntry.COLUMN_GAME_NUMBER}")
 
                 var lastId: Long = -1
                 var scores: MutableList<Int> = ArrayList()

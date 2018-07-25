@@ -559,22 +559,22 @@ data class League(
                 val database = Saviour.instance.getReadableDatabase(context).await()
 
                 val rawLeagueEventQuery = ("SELECT " +
-                        "league." + LeagueEntry._ID + " AS lid, " +
-                        LeagueEntry.COLUMN_LEAGUE_NAME + ", " +
-                        LeagueEntry.COLUMN_IS_EVENT + ", " +
-                        LeagueEntry.COLUMN_ADDITIONAL_PINFALL + ", " +
-                        LeagueEntry.COLUMN_ADDITIONAL_GAMES + ", " +
-                        LeagueEntry.COLUMN_GAME_HIGHLIGHT + ", " +
-                        LeagueEntry.COLUMN_SERIES_HIGHLIGHT + ", " +
-                        LeagueEntry.COLUMN_NUMBER_OF_GAMES + ", " +
-                        GameEntry.COLUMN_SCORE +
-                        " FROM " + LeagueEntry.TABLE_NAME + " AS league" +
-                        " LEFT JOIN " + SeriesEntry.TABLE_NAME + " AS series" +
-                        " ON league." + LeagueEntry._ID + "=series." + SeriesEntry.COLUMN_LEAGUE_ID +
-                        " LEFT JOIN " + GameEntry.TABLE_NAME + " AS game" +
-                        " ON series." + SeriesEntry._ID + "=game." + GameEntry.COLUMN_SERIES_ID +
-                        " WHERE " + LeagueEntry.COLUMN_BOWLER_ID + "=?" +
-                        " ORDER BY " + LeagueEntry.COLUMN_DATE_MODIFIED + " DESC")
+                        "league.${LeagueEntry._ID} AS lid, " +
+                        "${LeagueEntry.COLUMN_LEAGUE_NAME}, " +
+                        "${LeagueEntry.COLUMN_IS_EVENT}, " +
+                        "${LeagueEntry.COLUMN_ADDITIONAL_PINFALL}, " +
+                        "${LeagueEntry.COLUMN_ADDITIONAL_GAMES}, " +
+                        "${LeagueEntry.COLUMN_GAME_HIGHLIGHT}, " +
+                        "${LeagueEntry.COLUMN_SERIES_HIGHLIGHT}, " +
+                        "${LeagueEntry.COLUMN_NUMBER_OF_GAMES}, " +
+                        "${GameEntry.COLUMN_SCORE} " +
+                        "FROM ${LeagueEntry.TABLE_NAME} AS league " +
+                        "LEFT JOIN ${SeriesEntry.TABLE_NAME} AS series " +
+                        "ON league.${LeagueEntry._ID}=series.${SeriesEntry.COLUMN_LEAGUE_ID} " +
+                        "LEFT JOIN ${GameEntry.TABLE_NAME} AS game " +
+                        "ON series.${SeriesEntry._ID}=game.${GameEntry.COLUMN_SERIES_ID} " +
+                        "WHERE ${LeagueEntry.COLUMN_BOWLER_ID}=? " +
+                        "ORDER BY ${LeagueEntry.COLUMN_DATE_MODIFIED} DESC ")
 
                 val cursor = database.rawQuery(rawLeagueEventQuery, arrayOf(bowler.id.toString()))
                 var lastId: Long = -1

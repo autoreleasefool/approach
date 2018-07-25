@@ -310,15 +310,15 @@ class Game(
                         "frame.${FrameEntry.COLUMN_PIN_STATE[0]}, " +
                         "frame.${FrameEntry.COLUMN_PIN_STATE[1]}, " +
                         "frame.${FrameEntry.COLUMN_PIN_STATE[2]}, " +
-                        "frame.${FrameEntry.COLUMN_FOULS}" +
-                        " FROM ${GameEntry.TABLE_NAME} AS game" +
-                        " LEFT JOIN ${MatchPlayEntry.TABLE_NAME} as match" +
-                        " ON gid=${MatchPlayEntry.COLUMN_GAME_ID}" +
-                        " LEFT JOIN ${FrameEntry.TABLE_NAME} as frame" +
-                        " ON gid=${FrameEntry.COLUMN_GAME_ID}" +
-                        " WHERE ${GameEntry.COLUMN_SERIES_ID}=?" +
-                        " GROUP BY gid, fid" +
-                        " ORDER BY game.${GameEntry.COLUMN_GAME_NUMBER}, frame.${FrameEntry.COLUMN_FRAME_NUMBER}")
+                        "frame.${FrameEntry.COLUMN_FOULS} " +
+                        "FROM ${GameEntry.TABLE_NAME} AS game " +
+                        "LEFT JOIN ${MatchPlayEntry.TABLE_NAME} as match " +
+                        "ON gid=${MatchPlayEntry.COLUMN_GAME_ID} " +
+                        "LEFT JOIN ${FrameEntry.TABLE_NAME} as frame " +
+                        "ON gid=${FrameEntry.COLUMN_GAME_ID} " +
+                        "WHERE ${GameEntry.COLUMN_SERIES_ID}=? " +
+                        "GROUP BY gid, fid " +
+                        "ORDER BY game.${GameEntry.COLUMN_GAME_NUMBER}, frame.${FrameEntry.COLUMN_FRAME_NUMBER}")
 
                 var lastId: Long = -1
                 var frames: MutableList<Frame> = ArrayList(NUMBER_OF_FRAMES)
