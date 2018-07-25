@@ -200,6 +200,8 @@ public final class DatabaseHelper
      * @param db database
      */
     private void createLeagueTable(SQLiteDatabase db) {
+        // To keep databases consistent, ignore deprecated database fields
+        // noinspection deprecation
         db.execSQL("CREATE TABLE "
                 + LeagueEntry.TABLE_NAME + "("
                 + LeagueEntry._ID + " INTEGER PRIMARY KEY, "
@@ -554,16 +556,21 @@ public final class DatabaseHelper
      * @param db to upgrade
      */
     private void upgradeDatabaseFrom4To5(SQLiteDatabase db) {
+        // To keep databases consistent, ignore deprecated database fields
+        // noinspection deprecation
         db.execSQL("ALTER TABLE " + LeagueEntry.TABLE_NAME
                 + " ADD COLUMN "
                 + LeagueEntry.COLUMN_BASE_AVERAGE + " INTEGER NOT NULL DEFAULT -1;");
+        // noinspection deprecation
         db.execSQL("ALTER TABLE " + LeagueEntry.TABLE_NAME
                 + " ADD COLUMN "
                 + LeagueEntry.COLUMN_BASE_GAMES + " INTEGER NOT NULL DEFAULT 0;");
         try {
             db.beginTransaction();
             ContentValues values = new ContentValues();
+            // noinspection deprecation
             values.put(LeagueEntry.COLUMN_BASE_AVERAGE, -1);
+            // noinspection deprecation
             values.put(LeagueEntry.COLUMN_BASE_GAMES, 0);
             db.update(LeagueEntry.TABLE_NAME, values, null, null);
             db.setTransactionSuccessful();
@@ -580,10 +587,13 @@ public final class DatabaseHelper
      * @param db to upgrade
      */
     private void upgradeDatabaseFrom5to6(SQLiteDatabase db) {
+        // To keep databases consistent, ignore deprecated database fields
         try {
             db.beginTransaction();
             ContentValues values = new ContentValues();
+            // noinspection deprecation
             values.put(LeagueEntry.COLUMN_BASE_GAMES, 0);
+            // noinspection deprecation
             db.update(LeagueEntry.TABLE_NAME,
                     values,
                     LeagueEntry.COLUMN_BASE_GAMES + "=?",
@@ -627,7 +637,7 @@ public final class DatabaseHelper
                     values,
                     LeagueEntry.COLUMN_LEAGUE_NAME + "=?",
                     new String[]{League.OPEN_LEAGUE_NAME});
-
+            // noinspection deprecation
             db.execSQL("UPDATE " + LeagueEntry.TABLE_NAME + " SET "
                     + LeagueEntry.COLUMN_ADDITIONAL_GAMES + "=" + LeagueEntry.COLUMN_BASE_GAMES + ", "
                     + LeagueEntry.COLUMN_ADDITIONAL_PINFALL + "=" + LeagueEntry.COLUMN_BASE_GAMES + "*" + LeagueEntry.COLUMN_BASE_AVERAGE);

@@ -24,6 +24,7 @@ import java.util.Date
 import java.util.Locale
 import ca.josephroque.bowlingcompanion.database.Contract.BowlerEntry
 import ca.josephroque.bowlingcompanion.database.Saviour
+import ca.josephroque.bowlingcompanion.scoring.Average
 import ca.josephroque.bowlingcompanion.utils.BCError
 import ca.josephroque.bowlingcompanion.utils.Preferences
 
@@ -425,13 +426,12 @@ class Bowler(
                         (if (!includeOpen) LeagueEntry.COLUMN_LEAGUE_NAME + "!" else "'0'") + "=?" +
                         " GROUP BY league2." + LeagueEntry._ID)
 
-                val baseAverageAndGamesQuery = ("SELECT " +
-                        "league3." + LeagueEntry._ID + " AS lid3, " +
-                        LeagueEntry.COLUMN_BASE_AVERAGE + " * " + LeagueEntry.COLUMN_BASE_GAMES + " AS baseSum, " +
-                        LeagueEntry.COLUMN_BASE_GAMES + " AS baseGames" +
-                        " FROM " + LeagueEntry.TABLE_NAME + " AS league3" +
-                        " WHERE " +
-                        " league3." + LeagueEntry.COLUMN_BASE_AVERAGE + ">?")
+                val additionalAverageQuery = ("SELECT " +
+                        "league3.${LeagueEntry._ID} AS lid3, " +
+                        "${LeagueEntry.COLUMN_ADDITIONAL_PINFALL} AS additionalPinfall, " +
+                        "${LeagueEntry.COLUMN_ADDITIONAL_GAMES} AS additionalGames " +
+                        "FROM ${LeagueEntry.TABLE_NAME} AS league3 " +
+                        "WHERE league3.${LeagueEntry.COLUMN_ADDITIONAL_PINFALL}>?")
 
                 val orderQueryBy = if (sortBy == Sort.Alphabetically) {
                     " ORDER BY bowler." + BowlerEntry.COLUMN_BOWLER_NAME
@@ -443,16 +443,16 @@ class Bowler(
                 val rawBowlerQuery = ("SELECT " +
                         "bowler." + BowlerEntry.COLUMN_BOWLER_NAME + ", " +
                         "bowler." + BowlerEntry._ID + " AS bid, " +
-                        "SUM(t.gameSum) AS totalSum, " +
-                        "SUM(t.gameCount) AS totalCount, " +
-                        "SUM(u.baseSum) AS totalBaseSum, " +
-                        "SUM(u.baseGames) AS totalBaseGames" +
+                        "SUM(t.gameSum) AS totalPinfall, " +
+                        "SUM(t.gameCount) AS totalGames, " +
+                        "SUM(u.additionalPinfall) AS totalAdditionalPinfall, " +
+                        "SUM(u.additionalGames) AS totalAdditionalGames" +
                         " FROM " + BowlerEntry.TABLE_NAME + " AS bowler" +
                         " LEFT JOIN " + LeagueEntry.TABLE_NAME + " AS league" +
                         " ON bowler." + BowlerEntry._ID + "=" + LeagueEntry.COLUMN_BOWLER_ID +
                         " LEFT JOIN (" + gameSumAndCountQuery + ") AS t" +
                         " ON t.lid2=league." + LeagueEntry._ID +
-                        " LEFT JOIN (" + baseAverageAndGamesQuery + ") AS u" +
+                        " LEFT JOIN (" + additionalAverageQuery + ") AS u" +
                         " ON u.lid3=league." + LeagueEntry._ID +
                         " WHERE " +
                         (if (filterId != -1L) "bid" else "'0'") + "=?" +
@@ -463,7 +463,7 @@ class Bowler(
                         /* game2.SCORE > */ 0.toString(),
                         /* COLUMN_IS_EVENT || 0 = */ 0.toString(),
                         /* COLUMN_LEAGUE_NAME || 0 = */ if (!includeOpen) League.PRACTICE_LEAGUE_NAME else 0.toString(),
-                        /* COLUMN_BASE_AVERAGE > */ 0.toString(),
+                        /* COLUMN_ADDITIONAL_PINFALL > */ 0.toString(),
                         /* bid || 0 */ if (filterId != -1L) filterId.toString() else 0.toString())
 
                 // Adds loaded bowler names and averages to lists to display
@@ -471,15 +471,11 @@ class Bowler(
                 try {
                     cursor = database.rawQuery(rawBowlerQuery, rawBowlerArgs)
                     while (cursor.moveToNext()) {
-                        val totalSum = cursor.getInt(cursor.getColumnIndex("totalSum"))
-                        val totalCount = cursor.getInt(cursor.getColumnIndex("totalCount"))
-                        val totalBaseSum = cursor.getInt(cursor.getColumnIndex("totalBaseSum"))
-                        val totalBaseGames = cursor.getInt(cursor.getColumnIndex("totalBaseGames"))
-                        val bowlerAverage: Double =
-                                if (totalCount + totalBaseGames > 0)
-                                    (totalSum + totalBaseSum) / (totalCount + totalBaseGames).toDouble()
-                                else
-                                    0.0
+                        val totalPinfall = cursor.getInt(cursor.getColumnIndex("totalPinfall"))
+                        val totalGames = cursor.getInt(cursor.getColumnIndex("totalGames"))
+                        val totalAdditionalPinfall = cursor.getInt(cursor.getColumnIndex("totalAdditionalPinfall"))
+                        val totalAdditionalGames = cursor.getInt(cursor.getColumnIndex("totalAdditionalGames"))
+                        val bowlerAverage = Average.getAdjustedAverage(totalPinfall, totalGames, totalAdditionalPinfall, totalAdditionalGames)
 
                         val bowler = Bowler(
                                 cursor.getLong(cursor.getColumnIndex("bid")),

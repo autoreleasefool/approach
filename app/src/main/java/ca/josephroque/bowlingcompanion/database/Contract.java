@@ -43,9 +43,23 @@ public final class Contract {
         public static final String COLUMN_LEAGUE_NAME = "league_name";
         /** Name of the column for the number of games in a league. */
         public static final String COLUMN_NUMBER_OF_GAMES = "league_number_of_games";
-        /** Name of the column for the additional pinfall of the league. */
+        /**
+         * Name of the column for the additional pinfall of the league.
+         *
+         * @deprecated replaced by combination of COLUMN_ADDITIONAL_PINFALL and
+         *             COLUMN_ADDITIONAL_GAMES
+         */
+        @SuppressWarnings("DeprecatedIsStillUsed")
+        @Deprecated
         public static final String COLUMN_BASE_AVERAGE = "league_base_avg";
-        /** Name of the column for the base number of games of the league. */
+        /**
+         * Name of the column for the base number of games of the league.
+         *
+         * @deprecated replaced by combination of COLUMN_ADDITIONAL_PINFALL and
+         *             COLUMN_ADDITIONAL_GAMES
+         */
+        @SuppressWarnings("DeprecatedIsStillUsed")
+        @Deprecated
         public static final String COLUMN_BASE_GAMES = "league_base_games";
         /** Name of the column for the additional pinfall of the league. */
         public static final String COLUMN_ADDITIONAL_PINFALL = "league_additional_pinfall";
