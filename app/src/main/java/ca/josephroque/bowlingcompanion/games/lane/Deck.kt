@@ -12,7 +12,6 @@ typealias Deck = Array<Pin>
 /**
  * Map a deck to a BooleanArray.
  *
- * @param pins the deck to map
  * @return a BooleanArray indicating which pins are down
  */
 fun Deck.toBooleanArray(): BooleanArray {

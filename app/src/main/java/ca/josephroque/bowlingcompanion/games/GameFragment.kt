@@ -229,7 +229,7 @@ class GameFragment : BaseFragment(),
                 val prevFrame = frameViews[gameState.currentFrameIdx - 1] ?: return@post
                 prevFrame.left
             } else {
-                val frame = frameViews[gameState.currentFrameIdx - 1] ?: return@post
+                val frame = frameViews[gameState.currentFrameIdx] ?: return@post
                 frame.left
             }
             hsvFrames.smoothScrollTo(left, 0)
