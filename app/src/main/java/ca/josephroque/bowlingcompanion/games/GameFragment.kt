@@ -228,7 +228,7 @@ class GameFragment : BaseFragment(),
      * @param isGameFirstRender indicates if this method was called on the game's first load
      */
     private fun focusOnFrame(isGameFirstRender: Boolean) {
-        val left = if (gameState.currentFrameIdx >= 1 && !(isGameFirstRender && gameState.currentFrameIdx == Game.LAST_FRAME)) {
+        val left = if (gameState.currentFrameIdx >= 1 && !(isGameFirstRender && gameState.isLastFrame)) {
             val prevFrame = frameViews[gameState.currentFrameIdx - 1] ?: return
             prevFrame.left
         } else {

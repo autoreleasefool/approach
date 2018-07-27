@@ -80,7 +80,7 @@ class GameState(private val series: Series, private val listener: GameStateListe
         }
 
     /** When true, do not update the current ball when the frame is changed. */
-    var skipBallListenerUpdate: Boolean = false
+    private var skipBallListenerUpdate: Boolean = false
 
     /** Indicates if the current ball for the current game/frame has a foul. */
     val currentBallFouled: Boolean
@@ -92,7 +92,11 @@ class GameState(private val series: Series, private val listener: GameStateListe
 
     /** Returns true if the user is currently on the last ball of the game. */
     val isLastBall: Boolean
-        get() = currentFrameIdx == Game.LAST_FRAME && currentBallIdx == Frame.LAST_BALL
+        get() = isLastFrame && currentBallIdx == Frame.LAST_BALL
+
+    /** Returns true if the user is currently on the last frame of the game. */
+    val isLastFrame: Boolean
+        get() = currentFrameIdx == Game.LAST_FRAME
 
     /**
      * Create a deep copy of this game state.
@@ -105,7 +109,7 @@ class GameState(private val series: Series, private val listener: GameStateListe
         copy.currentGameIdx = this.currentGameIdx
         copy.currentFrameIdx = this.currentFrameIdx
         copy.currentBallIdx = this.currentBallIdx
-        copy.gamesLoaded = true
+        copy.gamesLoaded = this.gamesLoaded
         return copy
     }
 
