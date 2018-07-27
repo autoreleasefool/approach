@@ -205,9 +205,9 @@ class PinLayout : ConstraintLayout {
          * Handle when a touch event has completed and some pins have changed state.
          *
          * @param pins array of indices to update
-         * @param state new state for the pins
+         * @param isDown new state for the pins
          */
-        fun setPins(pins: IntArray, state: Boolean)
+        fun setPins(pins: IntArray, isDown: Boolean)
 
         /**
          * Get the up or down state of a pin.

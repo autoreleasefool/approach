@@ -187,6 +187,10 @@ class GameFragment : BaseFragment(),
                 pinLayout.updatePinImage(index, pin.isDown)
             }
 
+            // Set which pins are enabled/disabled
+            gameState.enabledPins.forEach { pinLayout.setPinEnabled(it, true) }
+            gameState.disabledPins.forEach { pinLayout.setPinEnabled(it, false) }
+
             gameFooter.apply {
                 isFoulActive = gameState.currentFrame.ballFouled[gameState.currentBallIdx]
                 isGameLocked = gameState.currentGame.isLocked
@@ -271,9 +275,8 @@ class GameFragment : BaseFragment(),
     }
 
     /** @Override */
-    override fun setPins(pins: IntArray, state: Boolean) {
-        if (!gameState.gamesLoaded) { return }
-        pins.forEach { gameState.currentPinState[it].isDown = state }
+    override fun setPins(pins: IntArray, isDown: Boolean) {
+        gameState.setPins(pins, isDown)
         render()
     }
 
