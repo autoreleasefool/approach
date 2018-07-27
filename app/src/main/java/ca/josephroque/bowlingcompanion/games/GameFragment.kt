@@ -121,6 +121,7 @@ class GameFragment : BaseFragment(),
             gameState = GameState(it, gameStateListener)
             launch(Android) {
                 gameState.loadGames(context).await()
+                gameState.currentFrame.isAccessed = true
                 render(ballChanged = true, isGameFirstRender = true)
             }
         }
@@ -234,7 +235,7 @@ class GameFragment : BaseFragment(),
             val frame = frameViews[gameState.currentFrameIdx] ?: return
             frame.left
         }
-        hsvFrames.smoothScrollTo(left, 0)
+        hsvFrames.post { hsvFrames.smoothScrollTo(left, 0) }
     }
 
     // MARK: IFloatingActionButtonHandler

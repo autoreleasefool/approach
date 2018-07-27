@@ -132,6 +132,7 @@ class GameState(private val series: Series, private val listener: GameStateListe
      * Go to the previous ball. Decrement the frame if necessary.
      */
     fun prevBall() {
+        // TODO: go to the last ball of the previous frame
         if (currentBallIdx == 0 && currentFrameIdx > 0) {
             currentFrameIdx -= 1
         } else if (currentBallIdx > 0) {
