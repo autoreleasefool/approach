@@ -157,6 +157,11 @@ class GameState(private val series: Series, private val listener: GameStateListe
         currentFrameIdx = frame
         skipBallListenerUpdate = false
 
+        if (frame == Game.LAST_FRAME) {
+            currentBallIdx = ball
+            return
+        }
+
         var newBall = 0
         while (newBall < ball && !currentFrame.pinState[newBall].arePinsCleared()) {
             newBall++
