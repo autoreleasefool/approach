@@ -127,10 +127,10 @@ class GameState(private val series: Series, private val listener: GameStateListe
      * Go to the next ball. Increment the frame if necessary.
      */
     fun nextBall() {
-        if (currentBallIdx == Frame.LAST_BALL && currentFrameIdx < Game.LAST_FRAME) {
-            currentFrameIdx += 1
+        if ((currentBallIdx == Frame.LAST_BALL && currentFrameIdx < Game.LAST_FRAME) || currentPinState.arePinsCleared()) {
+            attemptToSetFrameAndBall(currentFrameIdx + 1, 0)
         } else if (currentBallIdx < Frame.LAST_BALL) {
-            currentBallIdx += 1
+            attemptToSetFrameAndBall(currentFrameIdx, currentBallIdx + 1)
         }
     }
 
@@ -138,11 +138,10 @@ class GameState(private val series: Series, private val listener: GameStateListe
      * Go to the previous ball. Decrement the frame if necessary.
      */
     fun prevBall() {
-        // TODO: go to the last ball of the previous frame
         if (currentBallIdx == 0 && currentFrameIdx > 0) {
-            currentFrameIdx -= 1
+            attemptToSetFrameAndBall(currentFrameIdx - 1, Frame.LAST_BALL)
         } else if (currentBallIdx > 0) {
-            currentBallIdx -= 1
+            attemptToSetFrameAndBall(currentFrameIdx, currentBallIdx - 1)
         }
     }
 
