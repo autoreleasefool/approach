@@ -155,10 +155,8 @@ class PinLayout : ConstraintLayout {
         }
 
         pinAltered[pinTouched] = true
-        pinView.post {
-            // Use the opposite image since we are toggling the pins from down to up or up to down
-            pinView.setImageResource(if (pinDown) R.drawable.pin_enabled else R.drawable.pin_disabled)
-        }
+        // Use the opposite image since we are toggling the pins from down to up or up to down
+        updatePinImage(pinTouched, !pinDown)
     }
 
     /**
@@ -186,6 +184,16 @@ class PinLayout : ConstraintLayout {
      */
     fun setPinEnabled(pin: Int, enabled: Boolean) {
         pinViews[pin]?.isEnabled = enabled
+    }
+
+    /**
+     * Set the pin image to the up or down stat.e
+     *
+     * @param pin the pin to update the image for
+     * @param enabled true to enabled, false to disable
+     */
+    fun updatePinImage(pin: Int, isDown: Boolean) {
+        pinViews[pin]?.post { pinViews[pin]?.setImageResource(if (isDown) R.drawable.pin_disabled else R.drawable.pin_enabled) }
     }
 
     /**

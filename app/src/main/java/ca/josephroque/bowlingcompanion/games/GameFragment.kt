@@ -184,7 +184,7 @@ class GameFragment : BaseFragment(),
 
             // Update up/down pins
             gameState.currentPinState.forEachIndexed { index, pin ->
-                pinLayout.setPinEnabled(index, pin.isDown)
+                pinLayout.updatePinImage(index, pin.isDown)
             }
 
             gameFooter.apply {
