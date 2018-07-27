@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion.games
 import android.content.Context
 import ca.josephroque.bowlingcompanion.database.Saviour
 import ca.josephroque.bowlingcompanion.games.lane.Deck
+import ca.josephroque.bowlingcompanion.games.lane.arePinsCleared
 import ca.josephroque.bowlingcompanion.series.Series
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
@@ -63,7 +64,9 @@ class GameState(private val series: Series, private val listener: GameStateListe
                 }
 
                 field = newFrame
-                currentBallIdx = 0
+                if (!skipBallListenerUpdate) {
+                    currentBallIdx = 0
+                }
             }
         }
 
@@ -75,6 +78,9 @@ class GameState(private val series: Series, private val listener: GameStateListe
                 listener.onBallChanged()
             }
         }
+
+    /** When true, do not update the current ball when the frame is changed. */
+    var skipBallListenerUpdate: Boolean = false
 
     /** Indicates if the current ball for the current game/frame has a foul. */
     val currentBallFouled: Boolean
@@ -138,6 +144,24 @@ class GameState(private val series: Series, private val listener: GameStateListe
         } else if (currentBallIdx > 0) {
             currentBallIdx -= 1
         }
+    }
+
+    /**
+     * Set the frame and ball, if possible according to the current game state, or ignored.
+     *
+     * @param frame the new frame
+     * @param ball the new ball
+     */
+    fun attemptToSetFrameAndBall(frame: Int, ball: Int) {
+        skipBallListenerUpdate = true
+        currentFrameIdx = frame
+        skipBallListenerUpdate = false
+
+        var newBall = 0
+        while (newBall < ball && !currentFrame.pinState[newBall].arePinsCleared()) {
+            newBall++
+        }
+        currentBallIdx = newBall
     }
 
     /**
