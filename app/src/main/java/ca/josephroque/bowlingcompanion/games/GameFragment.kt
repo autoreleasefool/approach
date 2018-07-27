@@ -224,16 +224,14 @@ class GameFragment : BaseFragment(),
      * @param isGameFirstRender indicates if this method was called on the game's first load
      */
     private fun focusOnFrame(isGameFirstRender: Boolean) {
-        hsvFrames.post {
-            val left = if (gameState.currentFrameIdx >= 1 && !(isGameFirstRender && gameState.currentFrameIdx == Game.LAST_FRAME)) {
-                val prevFrame = frameViews[gameState.currentFrameIdx - 1] ?: return@post
-                prevFrame.left
-            } else {
-                val frame = frameViews[gameState.currentFrameIdx] ?: return@post
-                frame.left
-            }
-            hsvFrames.smoothScrollTo(left, 0)
+        val left = if (gameState.currentFrameIdx >= 1 && !(isGameFirstRender && gameState.currentFrameIdx == Game.LAST_FRAME)) {
+            val prevFrame = frameViews[gameState.currentFrameIdx - 1] ?: return
+            prevFrame.left
+        } else {
+            val frame = frameViews[gameState.currentFrameIdx] ?: return
+            frame.left
         }
+        hsvFrames.smoothScrollTo(left, 0)
     }
 
     // MARK: IFloatingActionButtonHandler

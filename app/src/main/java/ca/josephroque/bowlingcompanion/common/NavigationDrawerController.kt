@@ -45,13 +45,17 @@ class NavigationDrawerController(
     var bowlerName: CharSequence? = null
         set(value) {
             field = value
-            navigationView.get()?.getHeaderView(0)?.findViewById<TextView>(R.id.nav_bowler_name)?.text = value
+            navigationView.get()?.post {
+                navigationView.get()?.getHeaderView(0)?.findViewById<TextView>(R.id.nav_bowler_name)?.text = value
+            }
         }
 
     /** The name of the league to display in the navigation drawer. */
     var leagueName: CharSequence? = null
         set(value) {
             field = value
-            navigationView.get()?.getHeaderView(0)?.findViewById<TextView>(R.id.nav_league_name)?.text = value
+            navigationView.get()?.post {
+                navigationView.get()?.getHeaderView(0)?.findViewById<TextView>(R.id.nav_league_name)?.text = value
+            }
         }
 }
