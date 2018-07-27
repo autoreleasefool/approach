@@ -19,6 +19,15 @@ fun Deck.toBooleanArray(): BooleanArray {
 }
 
 /**
+ * Create a deep copy of this deck.
+ *
+ * @return a new instance of [Deck]
+ */
+fun Deck.deepCopy(): Deck {
+    return this.map { pin -> Pin(pin.type).apply { isDown = pin.isDown } }.toTypedArray()
+}
+
+/**
  * Creates an int from this deck.
  *
  * @return a integer representing the pins
@@ -84,7 +93,7 @@ fun Deck.ballValue(ballIdx: Int, returnSymbol: Boolean, afterStrike: Boolean): S
  * @param afterStrike indicates if the ball being counted was after a strike
  */
 fun Deck.ballValueDifference(other: Deck, ballIdx: Int, returnSymbol: Boolean, afterStrike: Boolean): String {
-    val deck = this.copyOf()
+    val deck = this.deepCopy()
     for (i in 0 until other.size) {
         if (other[i].isDown) { deck[i].isDown = false }
     }
