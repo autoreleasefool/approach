@@ -151,7 +151,7 @@ class GameState(private val series: Series, private val listener: GameStateListe
      * Go to the next ball. Increment the frame if necessary.
      */
     fun nextBall() {
-        if ((currentBallIdx == Frame.LAST_BALL && currentFrameIdx < Game.LAST_FRAME) || currentPinState.arePinsCleared()) {
+        if (!isLastFrame && (currentBallIdx == Frame.LAST_BALL || currentPinState.arePinsCleared())) {
             attemptToSetFrameAndBall(currentFrameIdx + 1, 0)
         } else if (currentBallIdx < Frame.LAST_BALL) {
             attemptToSetFrameAndBall(currentFrameIdx, currentBallIdx + 1)
