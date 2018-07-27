@@ -113,6 +113,12 @@ class GameControllerFragment : TabbedFragment(),
     }
 
     /** @Override */
+    override fun onResume() {
+        super.onResume()
+        onSeriesChanged(currentSeries)
+    }
+
+    /** @Override */
     override fun getFabImage(): Int? {
         return if (fabEnabled) R.drawable.ic_arrow_forward else null
     }
