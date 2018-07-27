@@ -257,7 +257,9 @@ class Game(
                 frameScores[i] = totalScore
             }
 
-            return@async frameScores.map { it.toString() }
+            return@async frames.mapIndexed { index, frame ->
+                return@mapIndexed if (!frame.isAccessed) "" else frameScores[index].toString()
+            }
         }
     }
 
