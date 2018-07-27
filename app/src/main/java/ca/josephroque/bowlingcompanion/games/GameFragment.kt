@@ -66,6 +66,9 @@ class GameFragment : BaseFragment(),
     /** Manage the state of the current game. */
     private lateinit var gameState: GameState
 
+    /** Indicates if the current ball is the last ball prior to ball changes. */
+    private var wasLastBall: Boolean = false
+
     // MARK: Overrides
 
     /** @Override */
@@ -243,9 +246,7 @@ class GameFragment : BaseFragment(),
 
     /** @Override */
     override fun onFabClick() {
-        gameState.nextBall()
-        render(ballChanged = true)
-        // TODO: change bowler if necessary
+        onNextBall()
     }
 
     // MARK: FrameInteractionDelegate
@@ -257,9 +258,6 @@ class GameFragment : BaseFragment(),
         }
         gameState.currentFrameIdx = frame
         gameState.currentBallIdx = ball
-        gameHeader.currentFrame = gameState.currentFrameIdx
-        gameHeader.currentBall = gameState.currentBallIdx
-        render(ballChanged = true)
     }
 
     /** @Override */
@@ -313,14 +311,12 @@ class GameFragment : BaseFragment(),
     /** @Override */
     override fun onNextBall() {
         gameState.nextBall()
-        onBallSelected(gameState.currentBallIdx, gameState.currentFrameIdx)
         // TODO: change bowler if necessary
     }
 
     /** @Override */
     override fun onPrevBall() {
         gameState.prevBall()
-        onBallSelected(gameState.currentBallIdx, gameState.currentFrameIdx)
     }
 
     // MARK: MatchPlaySheetDelegate
@@ -353,13 +349,17 @@ class GameFragment : BaseFragment(),
     /** Handle events from game state changes. */
     private val gameStateListener = object : GameState.GameStateListener {
         /** @Override */
-        override fun onLastBallEntered() {
-            listener?.enableFab(false)
-        }
+        override fun onBallChanged() {
+            if (wasLastBall && !gameState.isLastBall) {
+                listener?.enableFab(true)
+            } else if (!wasLastBall && gameState.isLastBall) {
+                listener?.enableFab(false)
+            }
 
-        /** @Override */
-        override fun onLastBallExited() {
-            listener?.enableFab(true)
+            wasLastBall = gameState.isLastBall
+            gameHeader.currentFrame = gameState.currentFrameIdx
+            gameHeader.currentBall = gameState.currentBallIdx
+            render(ballChanged = true)
         }
     }
 

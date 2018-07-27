@@ -70,14 +70,9 @@ class GameState(private val series: Series, private val listener: GameStateListe
     /** The current ball being edited. */
     var currentBallIdx: Int = 0
         set(newBall) {
-            val wasLastBall = isLastBall
             if (newBall >= 0 && newBall < Frame.NUMBER_OF_BALLS) {
                 field = newBall
-                if (isLastBall) {
-                    listener.onLastBallEntered()
-                } else if (wasLastBall) {
-                    listener.onLastBallExited()
-                }
+                listener.onBallChanged()
             }
         }
 
@@ -90,7 +85,7 @@ class GameState(private val series: Series, private val listener: GameStateListe
         get() = currentFrame.pinState[currentBallIdx]
 
     /** Returns true if the user is currently on the last ball of the game. */
-    private val isLastBall: Boolean
+    val isLastBall: Boolean
         get() = currentFrameIdx == Game.LAST_FRAME && currentBallIdx == Frame.LAST_BALL
 
     /**
@@ -199,13 +194,8 @@ class GameState(private val series: Series, private val listener: GameStateListe
      */
     interface GameStateListener {
         /**
-         * Called when the user enters the last ball of a game.
+         * Called when the current ball is updated.
          */
-        fun onLastBallEntered()
-
-        /**
-         * Called when the user exits the last ball of a game.
-         */
-        fun onLastBallExited()
+        fun onBallChanged()
     }
 }
