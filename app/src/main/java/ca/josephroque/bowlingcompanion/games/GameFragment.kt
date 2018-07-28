@@ -133,7 +133,7 @@ class GameFragment : BaseFragment(),
     /** @Override */
     override fun onPause() {
         super.onPause()
-        context?.let { gameState.saveGame(WeakReference(it)) }
+        context?.let { gameState.saveGame(WeakReference(it), true) }
     }
 
     /**
@@ -219,24 +219,20 @@ class GameFragment : BaseFragment(),
 
     /**
      * Save the current frame of the game state to the database.
+     *
+     * @param ignoreManualScore ignore any manual score set and save the frame
      */
     private fun saveCurrentFrame(ignoreManualScore: Boolean) {
-        if (!ignoreManualScore && gameState.currentGame.isManual) {
-            return
-        }
-
-        context?.let { gameState.saveFrame(WeakReference(it)) }
+        context?.let { gameState.saveFrame(WeakReference(it), ignoreManualScore) }
     }
 
     /**
      * Save the current game of the game state to the database.
+     *
+     * @param ignoreManualScore ignore any manual score set and save the game
      */
     private fun saveCurrentGame(ignoreManualScore: Boolean) {
-        if (!ignoreManualScore && gameState.currentGame.isManual) {
-            return
-        }
-
-        context?.let { gameState.saveGame(WeakReference(it)) }
+        context?.let { gameState.saveGame(WeakReference(it), ignoreManualScore) }
     }
 
     /**

@@ -82,6 +82,10 @@ class GameState(private val series: Series, private val listener: GameStateListe
     /** When true, do not update the current ball when the frame is changed. */
     private var skipBallListenerUpdate: Boolean = false
 
+    /** Checks if the current game can be edited or not. */
+    private val isGameEditable: Boolean
+        get() = !currentGame.isLocked && !currentGame.isManual
+
     /** Indicates if the current ball for the current game/frame has a foul. */
     val currentBallFouled: Boolean
         get() = currentFrame.ballFouled[currentBallIdx]
@@ -137,6 +141,7 @@ class GameState(private val series: Series, private val listener: GameStateListe
      * Toggle the foul on or off for the current ball.
      */
     fun toggleFoul() {
+        if (!isGameEditable) { return }
         currentFrame.ballFouled[currentBallIdx] = !currentFrame.ballFouled[currentBallIdx]
     }
 
@@ -144,6 +149,7 @@ class GameState(private val series: Series, private val listener: GameStateListe
      * Toggle the lock for the current game on or off.
      */
     fun toggleLock() {
+        if (currentGame.isManual) { return }
         currentGame.isLocked = !currentGame.isLocked
     }
 
@@ -199,6 +205,8 @@ class GameState(private val series: Series, private val listener: GameStateListe
      * @param isDown new state for the pins
      */
     fun setPins(pins: IntArray, isDown: Boolean) {
+        if (!isGameEditable) { return }
+
         if (isDown) {
             for (i in currentBallIdx..Frame.LAST_BALL) {
                 pins.forEach { currentFrame.pinState[i][it].isDown = isDown }
@@ -256,8 +264,10 @@ class GameState(private val series: Series, private val listener: GameStateListe
      * Save the current frame/game state to the database.
      *
      * @param context to access database
+     * @param ignoreManualScore ignore any manual score set and save the frame
      */
-    fun saveFrame(context: WeakReference<Context>) {
+    fun saveFrame(context: WeakReference<Context>, ignoreManualScore: Boolean) {
+        if (!ignoreManualScore && currentGame.isManual) { return }
         val copy = currentFrame.deepCopy()
         Saviour.instance.saveFrame(context, currentGame.score, copy)
     }
@@ -266,8 +276,10 @@ class GameState(private val series: Series, private val listener: GameStateListe
      * Save the current game state to the database.
      *
      * @param context to access database
+     * @param ignoreManualScore ignore any manual score set and save the game
      */
-    fun saveGame(context: WeakReference<Context>) {
+    fun saveGame(context: WeakReference<Context>, ignoreManualScore: Boolean) {
+        if (!ignoreManualScore && currentGame.isManual) { return }
         val copy = currentGame.deepCopy()
         Saviour.instance.saveGame(context, copy)
     }
