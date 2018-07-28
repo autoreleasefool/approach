@@ -4,6 +4,7 @@ import android.content.Context
 import ca.josephroque.bowlingcompanion.database.Saviour
 import ca.josephroque.bowlingcompanion.games.lane.Deck
 import ca.josephroque.bowlingcompanion.games.lane.arePinsCleared
+import ca.josephroque.bowlingcompanion.matchplay.MatchPlayResult
 import ca.josephroque.bowlingcompanion.series.Series
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
@@ -143,6 +144,7 @@ class GameState(private val series: Series, private val listener: GameStateListe
     fun toggleFoul() {
         if (!isGameEditable) { return }
         currentFrame.ballFouled[currentBallIdx] = !currentFrame.ballFouled[currentBallIdx]
+        currentGame.markDirty()
     }
 
     /**
@@ -151,6 +153,22 @@ class GameState(private val series: Series, private val listener: GameStateListe
     fun toggleLock() {
         if (currentGame.isManual) { return }
         currentGame.isLocked = !currentGame.isLocked
+    }
+
+    /**
+     * Set the game match play results.
+     *
+     * @param opponentName name of the opponent for match play
+     * @param opponentScore score of the opponent for match play
+     * @param result result of the match play
+     */
+    fun setMatchPlay(opponentName: String, opponentScore: Int, result: MatchPlayResult) {
+        currentGame.matchPlay.apply {
+            this.opponentName = opponentName
+            this.opponentScore = opponentScore
+            this.result = result
+        }
+        currentGame.markDirty()
     }
 
     /**
@@ -196,6 +214,7 @@ class GameState(private val series: Series, private val listener: GameStateListe
             newBall++
         }
         currentBallIdx = newBall
+        currentGame.markDirty()
     }
 
     /**
@@ -238,6 +257,8 @@ class GameState(private val series: Series, private val listener: GameStateListe
                 }
             }
         }
+
+        currentGame.markDirty()
     }
 
     /**

@@ -37,8 +37,8 @@ class Game(
     val series: Series,
     override val id: Long,
     val ordinal: Int,
-    var score: Int,
     var isLocked: Boolean,
+    var initialScore: Int,
     var isManual: Boolean,
     val frames: List<Frame>,
     val matchPlay: MatchPlay
@@ -51,7 +51,7 @@ class Game(
             series = p.readParcelable<Series>(Series::class.java.classLoader),
             id = p.readLong(),
             ordinal = p.readInt(),
-            score = p.readInt(),
+            initialScore = p.readInt(),
             isLocked = p.readBoolean(),
             isManual = p.readBoolean(),
             frames = arrayListOf<Frame>().apply {
@@ -70,7 +70,7 @@ class Game(
             series = other.series,
             id = other.id,
             ordinal = other.ordinal,
-            score = other.score,
+            initialScore = other.score,
             isLocked = other.isLocked,
             isManual = other.isManual,
             frames = other.frames.map { it.deepCopy() },
@@ -107,6 +107,93 @@ class Game(
             val firstFrameNotAccessed = frames.indexOfFirst { frame -> !frame.isAccessed }
             return if (firstFrameNotAccessed > -1) firstFrameNotAccessed else Game.LAST_FRAME
         }
+
+    /** Marks the score as dirty and needing recalculation. */
+    private var dirty: Boolean = true
+
+    /** The score of the game. */
+    var score: Int = initialScore
+        get() {
+            if (dirty) { frameScores.hashCode() }
+            return field
+        }
+
+    /** Number of fouls in the game. */
+    val fouls: Int
+        get() = frames.map { frame -> frame.ballFouled.count { it } }.sum()
+
+    /** Backing field for [frameScores]. */
+    private var _frameScores: IntArray = IntArray(frames.size)
+        get() {
+            if (!dirty) { return field }
+            val frameScores = IntArray(frames.size)
+            for (frameIdx in frames.size - 1 downTo 0) {
+                val frame = frames[frameIdx]
+
+                // Score last frame differently than other frames
+                if (frame.zeroBasedOrdinal == Game.LAST_FRAME) {
+                    for (ballIdx in Frame.LAST_BALL downTo 0) {
+                        if (ballIdx == Frame.LAST_BALL) {
+                            // Always add the value of the 3rd ball
+                            frameScores[frameIdx] = frame.pinState[ballIdx].value(false)
+                        } else if (frame.pinState[ballIdx].arePinsCleared()) {
+                            // If all pins were knocked down in a previous ball, add the full
+                            // value of that ball (it's a strike/spare)
+                            frameScores[frameIdx] += frame.pinState[ballIdx].value(false)
+                        }
+                    }
+                } else {
+                    val nextFrame = frames[frameIdx + 1]
+                    for (ballIdx in 0 until Frame.NUMBER_OF_BALLS) {
+                        if (ballIdx == Frame.LAST_BALL) {
+                            // If the loop is not exited by this point, there's no strike or spare
+                            // Add basic value of the frame
+                            frameScores[frameIdx] += frame.pinState[ballIdx].value(false)
+                        } else if (frame.pinState[ballIdx].arePinsCleared()) {
+                            // Either spare or strike occurred, add ball 0 of this frame and next
+                            frameScores[frameIdx] += frame.pinState[ballIdx].value(false)
+                            frameScores[frameIdx] += nextFrame.pinState[0].value(false)
+                            val double = frameScores[frameIdx] == Frame.MAX_VALUE * 2
+
+                            // Strike in this frame
+                            if (ballIdx == 0) {
+                                if (nextFrame.zeroBasedOrdinal == Game.LAST_FRAME) {
+                                    // 9th frame must get additional scoring from 10th frame only
+                                    if (double) {
+                                        frameScores[frameIdx] += nextFrame.pinState[1].value(false)
+                                    } else {
+                                        frameScores[frameIdx] += nextFrame.pinState[1].valueDifference(nextFrame.pinState[0])
+                                    }
+                                } else if (!double) {
+                                    frameScores[frameIdx] += nextFrame.pinState[1].valueDifference(nextFrame.pinState[0])
+                                } else {
+                                    frameScores[frameIdx] += frames[frameIdx + 2].pinState[0].value(false)
+                                }
+                            }
+                            break
+                        }
+                    }
+                }
+            }
+
+            // Get the accumulative score for each frame
+            var totalScore = 0
+            for (i in 0 until frames.size) {
+                totalScore += frameScores[i]
+                frameScores[i] = totalScore
+            }
+
+            // Calculate the final score of the game
+            score = totalScore - fouls * Game.FOUL_PENALTY
+            dirty = false
+
+            field = frameScores
+            return frameScores
+        }
+
+    /** Scores for each frame. */
+    val frameScores: IntArray
+        get() = _frameScores.copyOf()
 
     /**
      * Gets the text for each ball of each frame from this game.
@@ -195,72 +282,28 @@ class Game(
     }
 
     /**
-     * Gets the cumulative score of each frame of this game.
+     * Gets the cumulative score of each frame of this game. The final entry in the returned array
+     * is the score of the game with fouls accounted for.
      *
-     * @return the cumulative scores of each frame, as strings
+     * @return the cumulative scores of each frame, as strings.
      */
     fun getScoreTextForFrames(): Deferred<List<String>> {
         return async(CommonPool) {
-            val frameScores = IntArray(frames.size)
-            for (frameIdx in frames.size - 1 downTo 0) {
-                val frame = frames[frameIdx]
-
-                // Score last frame differently than other frames
-                if (frame.zeroBasedOrdinal == Game.LAST_FRAME) {
-                    for (ballIdx in Frame.LAST_BALL downTo 0) {
-                        if (ballIdx == Frame.LAST_BALL) {
-                            // Always add the value of the 3rd ball
-                            frameScores[frameIdx] = frame.pinState[ballIdx].value(false)
-                        } else if (frame.pinState[ballIdx].arePinsCleared()) {
-                            // If all pins were knocked down in a previous ball, add the full
-                            // value of that ball (it's a strike/spare)
-                            frameScores[frameIdx] += frame.pinState[ballIdx].value(false)
-                        }
-                    }
+            return@async frameScores.mapIndexed { index, score ->
+                return@mapIndexed if (index <= Game.LAST_FRAME) {
+                    if (!frames[index].isAccessed) "" else score.toString()
                 } else {
-                    val nextFrame = frames[frameIdx + 1]
-                    for (ballIdx in 0 until Frame.NUMBER_OF_BALLS) {
-                        if (ballIdx == Frame.LAST_BALL) {
-                            // If the loop is not exited by this point, there's no strike or spare
-                            // Add basic value of the frame
-                            frameScores[frameIdx] += frame.pinState[ballIdx].value(false)
-                        } else if (frame.pinState[ballIdx].arePinsCleared()) {
-                            // Either spare or strike occurred, add ball 0 of this frame and next
-                            frameScores[frameIdx] += frame.pinState[ballIdx].value(false)
-                            frameScores[frameIdx] += nextFrame.pinState[0].value(false)
-                            val double = frameScores[frameIdx] == Frame.MAX_VALUE * 2
-
-                            // Strike in this frame
-                            if (ballIdx == 0) {
-                                if (nextFrame.zeroBasedOrdinal == Game.LAST_FRAME) {
-                                    // 9th frame must get additional scoring from 10th frame only
-                                    if (double) {
-                                        frameScores[frameIdx] += nextFrame.pinState[1].value(false)
-                                    } else {
-                                        frameScores[frameIdx] += nextFrame.pinState[1].valueDifference(nextFrame.pinState[0])
-                                    }
-                                } else if (!double) {
-                                    frameScores[frameIdx] += nextFrame.pinState[1].valueDifference(nextFrame.pinState[0])
-                                } else {
-                                    frameScores[frameIdx] += frames[frameIdx + 2].pinState[0].value(false)
-                                }
-                            }
-                            break
-                        }
-                    }
+                    score.toString()
                 }
             }
-
-            var totalScore = 0
-            for (i in 0 until frames.size) {
-                totalScore += frameScores[i]
-                frameScores[i] = totalScore
-            }
-
-            return@async frames.mapIndexed { index, frame ->
-                return@mapIndexed if (!frame.isAccessed) "" else frameScores[index].toString()
-            }
         }
+    }
+
+    /**
+     * Mark the game as dirty after a field is updated.
+     */
+    fun markDirty() {
+        dirty = true
     }
 
     companion object {
@@ -283,6 +326,9 @@ class Game(
 
         /** Maximum possible score. */
         const val MAX_SCORE = 450
+
+        /** Number of points lost for a foul. */
+        const val FOUL_PENALTY = 15
 
         /**
          * Load a list of games for a series
@@ -343,7 +389,7 @@ class Game(
                             series = series,
                             id = id,
                             ordinal = gameNumber,
-                            score = score,
+                            initialScore = score,
                             isLocked = isLocked,
                             isManual = isManual,
                             frames = frames,

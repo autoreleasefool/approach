@@ -344,12 +344,7 @@ class GameFragment : BaseFragment(),
             return
         }
 
-        gameState.currentGame.matchPlay.apply {
-            this.opponentName = opponentName
-            this.opponentScore = opponentScore
-            this.result = matchPlayResult
-        }
-
+        gameState.setMatchPlay(opponentName, opponentScore, matchPlayResult)
         context?.let { gameState.saveMatchPlay(WeakReference(it)) }
         render()
     }
