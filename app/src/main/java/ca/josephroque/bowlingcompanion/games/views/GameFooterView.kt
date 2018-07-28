@@ -41,15 +41,11 @@ class GameFooterView : ConstraintLayout, View.OnClickListener {
     /** Delegate for interactions. */
     var delegate: GameFooterInteractionDelegate? = null
 
-    /** The current ball, which determines state of the clear pin button. */
-    var currentBall: Int = 0
+    /** The drawable for the clear pin button. */
+    var clearIcon: Int = R.drawable.ic_clear_pins_strike
         set(value) {
             field = value
-            clearPinsIcon.setImageResource(when (value) {
-                1 -> R.drawable.ic_clear_pins_spare
-                2 -> R.drawable.ic_clear_pins_fifteen
-                else -> R.drawable.ic_clear_pins_strike
-            })
+            clearPinsIcon.setImageResource(field)
         }
 
     /** The current match play result, which determines state of the match play button. */
@@ -92,7 +88,7 @@ class GameFooterView : ConstraintLayout, View.OnClickListener {
     override fun onSaveInstanceState(): Parcelable {
         return Bundle().apply {
             putParcelable(SUPER_STATE, super.onSaveInstanceState())
-            putInt(STATE_CURRENT_BALL, currentBall)
+            putInt(STATE_CURRENT_BALL, clearIcon)
             putInt(STATE_MATCH_PLAY_RESULT, matchPlayResult.ordinal)
             putBoolean(STATE_LOCK, isGameLocked)
             putBoolean(STATE_FOUL, isFoulActive)
@@ -103,7 +99,7 @@ class GameFooterView : ConstraintLayout, View.OnClickListener {
     override fun onRestoreInstanceState(state: Parcelable?) {
         var superState: Parcelable? = null
         if (state is Bundle) {
-            currentBall = state.getInt(STATE_CURRENT_BALL)
+            clearIcon = state.getInt(STATE_CURRENT_BALL)
             matchPlayResult = MatchPlayResult.fromInt(state.getInt(STATE_MATCH_PLAY_RESULT))!!
             isGameLocked = state.getBoolean(STATE_LOCK)
             isFoulActive = state.getBoolean(STATE_FOUL)

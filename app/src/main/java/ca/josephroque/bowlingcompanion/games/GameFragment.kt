@@ -10,6 +10,7 @@ import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.Android
 import ca.josephroque.bowlingcompanion.common.fragments.BaseFragment
 import ca.josephroque.bowlingcompanion.common.interfaces.IFloatingActionButtonHandler
+import ca.josephroque.bowlingcompanion.games.lane.arePinsCleared
 import ca.josephroque.bowlingcompanion.games.views.FrameView
 import ca.josephroque.bowlingcompanion.games.views.GameFooterView
 import ca.josephroque.bowlingcompanion.games.views.GameHeaderView
@@ -191,11 +192,23 @@ class GameFragment : BaseFragment(),
             gameState.enabledPins.forEach { pinLayout.setPinEnabled(it, true) }
             gameState.disabledPins.forEach { pinLayout.setPinEnabled(it, false) }
 
+            // Set icons in game footer
             gameFooter.apply {
                 isFoulActive = gameState.currentFrame.ballFouled[gameState.currentBallIdx]
                 isGameLocked = gameState.currentGame.isLocked
-                currentBall = gameState.currentBallIdx
                 matchPlayResult = gameState.currentGame.matchPlay.result
+                clearIcon = when {
+                    gameState.currentBallIdx == 0 ||
+                        (gameState.isLastFrame && gameState.currentBallIdx == 1 && gameState.currentFrame.pinState[0].arePinsCleared()) ||
+                        (gameState.isLastFrame && gameState.currentBallIdx == 2 && gameState.currentFrame.pinState[1].arePinsCleared()) -> {
+                        R.drawable.ic_clear_pins_strike
+                    }
+                    gameState.currentBallIdx == 1 ||
+                        (gameState.currentBallIdx == 2 && gameState.currentFrame.pinState[0].arePinsCleared()) -> {
+                        R.drawable.ic_clear_pins_spare
+                    }
+                    else -> R.drawable.ic_clear_pins_fifteen
+                }
             }
 
             if (ballChanged || isGameFirstRender) {
