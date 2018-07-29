@@ -124,22 +124,6 @@ class GameState(private val series: Series, private val listener: GameStateListe
             return (0 until Game.NUMBER_OF_PINS).filter { it !in enabled }.toIntArray()
         }
 
-
-    /**
-     * Create a deep copy of this game state.
-     *
-     * @return a new instance of [GameState]
-     */
-    fun deepCopy(): GameState {
-        val copy = GameState(series, listener)
-        copy.games.addAll(this.games.map { it.deepCopy() })
-        copy.currentGameIdx = this.currentGameIdx
-        copy.currentFrameIdx = this.currentFrameIdx
-        copy.currentBallIdx = this.currentBallIdx
-        copy.gamesLoaded = this.gamesLoaded
-        return copy
-    }
-
     /**
      * Toggle the foul on or off for the current ball.
      */
