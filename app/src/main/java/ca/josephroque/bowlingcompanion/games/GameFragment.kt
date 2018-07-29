@@ -69,8 +69,8 @@ class GameFragment : BaseFragment(),
     /** Manage the state of the current game. */
     private lateinit var gameState: GameState
 
-    /** Manage the auto lock state. */
-    private lateinit var autoLockController: AutoLockController
+    /** Manage the automatic game events. */
+    private lateinit var autoEventController: GameAutoEventController
 
     /** Indicates if the current ball is the last ball prior to ball changes. */
     private var wasLastBall: Boolean = false
@@ -128,10 +128,13 @@ class GameFragment : BaseFragment(),
             gameState.loadGames(context)
         }
 
+        // Enable automatic events
+        autoEventController = GameAutoEventController(autoEventDelegate)
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
-        val autoLockEnabled = preferences.getBoolean(Settings.ENABLE_AUTO_LOCK, true)
 
-        autoLockController = AutoLockController(autoLockEnabled, autoLockDelegate)
+        // Automatic lock at end of game
+        val autoLockEnabled = preferences.getBoolean(Settings.ENABLE_AUTO_LOCK, true)
+        if (autoLockEnabled) autoEventController.enable(GameAutoEventController.AutoEvent.Lock)
 
         onBallSelected(0, 0)
     }
@@ -139,7 +142,7 @@ class GameFragment : BaseFragment(),
     /** @Override */
     override fun onPause() {
         super.onPause()
-        autoLockController.pause()
+        autoEventController.pauseAll()
         context?.let { gameState.saveGame(WeakReference(it), true) }
     }
 
@@ -293,7 +296,7 @@ class GameFragment : BaseFragment(),
     /** @Override */
     override fun setPins(pins: IntArray, isDown: Boolean) {
         gameState.setPins(pins, isDown)
-        if (gameState.isLastBall) { autoLockController.extend() }
+        if (gameState.isLastBall) { autoEventController.delay(GameAutoEventController.AutoEvent.Lock) }
         render()
     }
 
@@ -309,14 +312,14 @@ class GameFragment : BaseFragment(),
         val frameView = frameViews[gameState.currentFrameIdx] ?: return
         gameState.toggleFoul()
         frameView.setFoulEnabled(gameState.currentBallIdx, gameState.currentBallFouled)
-        if (gameState.isLastBall) { autoLockController.extend() }
+        if (gameState.isLastBall) { autoEventController.delay(GameAutoEventController.AutoEvent.Lock) }
         render()
     }
 
     /** @Override */
     override fun onLockToggle() {
         gameState.toggleLock()
-        if (gameState.isLastBall) { autoLockController.manualOverride() }
+        autoEventController.disable(GameAutoEventController.AutoEvent.Lock)
         render()
     }
 
@@ -365,7 +368,7 @@ class GameFragment : BaseFragment(),
     private val gameStateListener = object : GameState.GameStateListener {
         /** @Override */
         override fun onGamesLoaded() {
-            if (gameState.currentGame.isLocked) { autoLockController.manualOverride() }
+            if (gameState.currentGame.isLocked) { autoEventController.disable(GameAutoEventController.AutoEvent.Lock) }
             gameState.currentFrame.isAccessed = true
             render(ballChanged = true, isGameFirstRender = true)
         }
@@ -385,13 +388,18 @@ class GameFragment : BaseFragment(),
         }
     }
 
-    // MARK: AutoLockDelegate
+    // MARK: GameAutoEventDelegate
 
-    /** Handle events from auto lock controller. */
-    private val autoLockDelegate = object : AutoLockController.AutoLockDelegate {
+    /** Handle events from auto event controller. */
+    private val autoEventDelegate = object : GameAutoEventController.GameAutoEventDelegate {
         /** @Override */
         override fun autoLockGame() {
             gameState.lockGame()
+        }
+
+        /** @Override */
+        override fun autoAdvanceGame() {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         }
     }
 
