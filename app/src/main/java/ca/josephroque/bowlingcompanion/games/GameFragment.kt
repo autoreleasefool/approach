@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion.games
 
 import android.content.Context
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.design.widget.BottomSheetBehavior
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +19,7 @@ import ca.josephroque.bowlingcompanion.games.views.PinLayout
 import ca.josephroque.bowlingcompanion.matchplay.MatchPlayResult
 import ca.josephroque.bowlingcompanion.matchplay.MatchPlaySheet
 import ca.josephroque.bowlingcompanion.series.Series
+import ca.josephroque.bowlingcompanion.settings.Settings
 import kotlinx.android.synthetic.main.fragment_game.game_footer as gameFooter
 import kotlinx.android.synthetic.main.fragment_game.game_header as gameHeader
 import kotlinx.android.synthetic.main.fragment_game.hsv_frames as hsvFrames
@@ -66,6 +68,9 @@ class GameFragment : BaseFragment(),
 
     /** Manage the state of the current game. */
     private lateinit var gameState: GameState
+
+    /** Manage the auto lock state. */
+    private lateinit var autoLockController: AutoLockController
 
     /** Indicates if the current ball is the last ball prior to ball changes. */
     private var wasLastBall: Boolean = false
@@ -120,12 +125,13 @@ class GameFragment : BaseFragment(),
         val context = context ?: return
         series?.let {
             gameState = GameState(it, gameStateListener)
-            launch(Android) {
-                gameState.loadGames(context).await()
-                gameState.currentFrame.isAccessed = true
-                render(ballChanged = true, isGameFirstRender = true)
-            }
+            gameState.loadGames(context)
         }
+
+        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+        val autoLockEnabled = preferences.getBoolean(Settings.ENABLE_AUTO_LOCK, true)
+
+        autoLockController = AutoLockController(autoLockEnabled, autoLockDelegate)
 
         onBallSelected(0, 0)
     }
@@ -133,6 +139,7 @@ class GameFragment : BaseFragment(),
     /** @Override */
     override fun onPause() {
         super.onPause()
+        autoLockController.pause()
         context?.let { gameState.saveGame(WeakReference(it), true) }
     }
 
@@ -286,6 +293,7 @@ class GameFragment : BaseFragment(),
     /** @Override */
     override fun setPins(pins: IntArray, isDown: Boolean) {
         gameState.setPins(pins, isDown)
+        if (gameState.isLastBall) { autoLockController.extend() }
         render()
     }
 
@@ -301,12 +309,14 @@ class GameFragment : BaseFragment(),
         val frameView = frameViews[gameState.currentFrameIdx] ?: return
         gameState.toggleFoul()
         frameView.setFoulEnabled(gameState.currentBallIdx, gameState.currentBallFouled)
+        if (gameState.isLastBall) { autoLockController.extend() }
         render()
     }
 
     /** @Override */
     override fun onLockToggle() {
         gameState.toggleLock()
+        if (gameState.isLastBall) { autoLockController.manualOverride() }
         render()
     }
 
@@ -354,6 +364,13 @@ class GameFragment : BaseFragment(),
     /** Handle events from game state changes. */
     private val gameStateListener = object : GameState.GameStateListener {
         /** @Override */
+        override fun onGamesLoaded() {
+            if (gameState.currentGame.isLocked) { autoLockController.manualOverride() }
+            gameState.currentFrame.isAccessed = true
+            render(ballChanged = true, isGameFirstRender = true)
+        }
+
+        /** @Override */
         override fun onBallChanged() {
             if (wasLastBall && !gameState.isLastBall) {
                 listener?.enableFab(true)
@@ -365,6 +382,16 @@ class GameFragment : BaseFragment(),
             gameHeader.currentFrame = gameState.currentFrameIdx
             gameHeader.currentBall = gameState.currentBallIdx
             render(ballChanged = true)
+        }
+    }
+
+    // MARK: AutoLockDelegate
+
+    /** Handle events from auto lock controller. */
+    private val autoLockDelegate = object : AutoLockController.AutoLockDelegate {
+        /** @Override */
+        override fun autoLockGame() {
+            gameState.lockGame()
         }
     }
 

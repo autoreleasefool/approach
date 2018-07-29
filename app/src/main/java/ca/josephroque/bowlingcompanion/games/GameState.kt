@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion.games
 
 import android.content.Context
+import ca.josephroque.bowlingcompanion.common.Android
 import ca.josephroque.bowlingcompanion.database.Saviour
 import ca.josephroque.bowlingcompanion.games.lane.Deck
 import ca.josephroque.bowlingcompanion.games.lane.arePinsCleared
@@ -9,6 +10,7 @@ import ca.josephroque.bowlingcompanion.series.Series
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.launch
 import java.lang.ref.WeakReference
 
 /**
@@ -156,6 +158,14 @@ class GameState(private val series: Series, private val listener: GameStateListe
     }
 
     /**
+     * Lock the current game.
+     */
+    fun lockGame() {
+        if (currentGame.isManual) { return }
+        currentGame.isLocked = true
+    }
+
+    /**
      * Set the game match play results.
      *
      * @param opponentName name of the opponent for match play
@@ -277,6 +287,11 @@ class GameState(private val series: Series, private val listener: GameStateListe
             gamesLoaded = true
             this@GameState.games.clear()
             this@GameState.games.addAll(games)
+
+            launch(Android) {
+                listener.onGamesLoaded()
+            }
+
             return@async true
         }
     }
@@ -323,5 +338,10 @@ class GameState(private val series: Series, private val listener: GameStateListe
          * Called when the current ball is updated.
          */
         fun onBallChanged()
+
+        /**
+         * Called when the games finish loading.
+         */
+        fun onGamesLoaded()
     }
 }
