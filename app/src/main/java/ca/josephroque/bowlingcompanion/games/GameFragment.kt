@@ -19,7 +19,6 @@ import ca.josephroque.bowlingcompanion.games.views.PinLayout
 import ca.josephroque.bowlingcompanion.matchplay.MatchPlayResult
 import ca.josephroque.bowlingcompanion.matchplay.MatchPlaySheet
 import ca.josephroque.bowlingcompanion.series.Series
-import ca.josephroque.bowlingcompanion.settings.Settings
 import kotlinx.android.synthetic.main.fragment_game.game_footer as gameFooter
 import kotlinx.android.synthetic.main.fragment_game.game_header as gameHeader
 import kotlinx.android.synthetic.main.fragment_game.hsv_frames as hsvFrames
@@ -129,12 +128,9 @@ class GameFragment : BaseFragment(),
         }
 
         // Enable automatic events
-        autoEventController = GameAutoEventController(autoEventDelegate)
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
-
-        // Automatic lock at end of game
-        val autoLockEnabled = preferences.getBoolean(Settings.ENABLE_AUTO_LOCK, true)
-        if (autoLockEnabled) autoEventController.enable(GameAutoEventController.AutoEvent.Lock)
+        autoEventController = GameAutoEventController(preferences, autoEventDelegate)
+        autoEventController.pauseAll()
 
         onBallSelected(0, 0)
     }
@@ -297,6 +293,7 @@ class GameFragment : BaseFragment(),
     override fun setPins(pins: IntArray, isDown: Boolean) {
         gameState.setPins(pins, isDown)
         if (gameState.isLastBall) { autoEventController.delay(GameAutoEventController.AutoEvent.Lock) }
+        autoEventController.delay(GameAutoEventController.AutoEvent.AdvanceFrame)
         render()
     }
 
@@ -313,6 +310,7 @@ class GameFragment : BaseFragment(),
         gameState.toggleFoul()
         frameView.setFoulEnabled(gameState.currentBallIdx, gameState.currentBallFouled)
         if (gameState.isLastBall) { autoEventController.delay(GameAutoEventController.AutoEvent.Lock) }
+        autoEventController.delay(GameAutoEventController.AutoEvent.AdvanceFrame)
         render()
     }
 
@@ -320,6 +318,7 @@ class GameFragment : BaseFragment(),
     override fun onLockToggle() {
         gameState.toggleLock()
         autoEventController.disable(GameAutoEventController.AutoEvent.Lock)
+        autoEventController.pause(GameAutoEventController.AutoEvent.AdvanceFrame)
         render()
     }
 
@@ -327,6 +326,7 @@ class GameFragment : BaseFragment(),
     override fun onMatchPlaySettings() {
         val fragment = MatchPlaySheet.newInstance()
         fragmentNavigation?.showBottomSheet(fragment, MatchPlaySheet.FRAGMENT_TAG)
+        autoEventController.pause(GameAutoEventController.AutoEvent.AdvanceFrame)
     }
 
     // MARK: GameHeaderInteractionDelegate
@@ -334,12 +334,14 @@ class GameFragment : BaseFragment(),
     /** @Override */
     override fun onNextBall() {
         gameState.nextBall()
+        autoEventController.delay(GameAutoEventController.AutoEvent.AdvanceFrame)
         // TODO: change bowler if necessary
     }
 
     /** @Override */
     override fun onPrevBall() {
         gameState.prevBall()
+        autoEventController.delay(GameAutoEventController.AutoEvent.AdvanceFrame)
     }
 
     // MARK: MatchPlaySheetDelegate
@@ -384,6 +386,7 @@ class GameFragment : BaseFragment(),
             wasLastBall = gameState.isLastBall
             gameHeader.currentFrame = gameState.currentFrameIdx
             gameHeader.currentBall = gameState.currentBallIdx
+            autoEventController.pause(GameAutoEventController.AutoEvent.AdvanceFrame)
             render(ballChanged = true)
         }
     }
@@ -395,6 +398,11 @@ class GameFragment : BaseFragment(),
         /** @Override */
         override fun autoLockGame() {
             gameState.lockGame()
+        }
+
+        /** @Override */
+        override fun autoAdvanceCountDown(secondsRemaining: Int) {
+            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
         }
 
         /** @Override */
