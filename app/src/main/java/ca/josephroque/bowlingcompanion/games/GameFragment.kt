@@ -402,12 +402,12 @@ class GameFragment : BaseFragment(),
 
         /** @Override */
         override fun autoAdvanceCountDown(secondsRemaining: Int) {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
         }
 
         /** @Override */
         override fun autoAdvanceGame() {
-            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+            TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
         }
     }
 

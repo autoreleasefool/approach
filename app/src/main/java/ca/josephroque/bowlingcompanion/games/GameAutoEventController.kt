@@ -43,7 +43,6 @@ class GameAutoEventController(
         val strDelay = preferences.getString(Settings.AUTO_ADVANCE_TIME, "15 seconds")
         autoAdvanceTotalDelay = Integer.valueOf(strDelay.substring(0, strDelay.indexOf(" ")))
         AutoEvent.ADVANCE_FRAME_DELAY = autoAdvanceTotalDelayMilliseconds
-
     }
 
     /** Set of events mapped to their enabled status. */
