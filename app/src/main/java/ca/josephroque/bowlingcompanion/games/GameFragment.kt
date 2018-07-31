@@ -96,6 +96,16 @@ class GameFragment : BaseFragment(),
     }
 
     /** @Override */
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        // Enable automatic events
+        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+        autoEventController = GameAutoEventController(preferences, autoEventDelegate)
+        autoEventController.pauseAll()
+    }
+
+    /** @Override */
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         val parent = parentFragment as? OnGameFragmentInteractionListener ?: throw RuntimeException("${parentFragment!!} must implement OnGameFragmentInteractionListener")
@@ -129,8 +139,7 @@ class GameFragment : BaseFragment(),
 
         // Enable automatic events
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
-        autoEventController = GameAutoEventController(preferences, autoEventDelegate)
-        autoEventController.pauseAll()
+        autoEventController.init(preferences)
 
         onBallSelected(0, 0)
     }

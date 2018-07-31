@@ -28,9 +28,14 @@ class GameAutoEventController(
         private val autoAdvanceTotalDelayMilliseconds = autoAdvanceTotalDelay * 1000L
     }
 
-    init {
-        AutoEvent.values().forEach { enabledEvents[it] = false }
+    init { init(preferences) }
 
+    /**
+     * Initialize the events from preferences.
+     *
+     * @param preferences the user's preferences
+     */
+    fun init(preferences: SharedPreferences) {
         // Enable auto lock
         val autoLockEnabled = preferences.getBoolean(Settings.ENABLE_AUTO_LOCK, true)
         if (autoLockEnabled) enable(GameAutoEventController.AutoEvent.Lock)
@@ -40,13 +45,10 @@ class GameAutoEventController(
         if (autoAdvanceEnabled) enable(AutoEvent.AdvanceFrame)
 
         // Set auto advance delay time
-        val strDelay = preferences.getString(Settings.AUTO_ADVANCE_TIME, "15 seconds")
-        autoAdvanceTotalDelay = Integer.valueOf(strDelay.substring(0, strDelay.indexOf(" ")))
+        val strDelay = preferences.getString(Settings.AUTO_ADVANCE_TIME, "10")
+        autoAdvanceTotalDelay = Integer.valueOf(strDelay)
         AutoEvent.ADVANCE_FRAME_DELAY = autoAdvanceTotalDelayMilliseconds
     }
-
-    /** Set of events mapped to their enabled status. */
-    private val enabledEvents: HashMap<AutoEvent, Boolean> = HashMap()
 
     /** Handlers to perform events. */
     private val autoEventHandler: HashMap<AutoEvent, Handler> = HashMap()
@@ -56,7 +58,7 @@ class GameAutoEventController(
         val map = HashMap<AutoEvent, Runnable>()
         map[AutoEvent.AdvanceFrame] = Runnable {
             launch(Android) {
-                if (enabledEvents[AutoEvent.AdvanceFrame] != true) { return@launch }
+                if (!AutoEvent.AdvanceFrame.isEnabled) { return@launch }
                 if (autoAdvanceSecondsRemaining > 0) {
                     autoAdvanceSecondsRemaining -= 1
                     start(AutoEvent.AdvanceFrame)
@@ -68,7 +70,7 @@ class GameAutoEventController(
         }
         map[AutoEvent.Lock] = Runnable {
             launch(Android) {
-                if (enabledEvents[AutoEvent.Lock] != true) { return@launch }
+                if (!AutoEvent.Lock.isEnabled) { return@launch }
                 delegate.autoLockGame()
                 pause(AutoEvent.Lock)
             }
@@ -84,8 +86,8 @@ class GameAutoEventController(
      *
      * @param event the event to enable
      */
-    fun enable(event: AutoEvent) {
-        enabledEvents[event] = true
+    private fun enable(event: AutoEvent) {
+        event.isEnabled = true
     }
 
     /**
@@ -95,7 +97,7 @@ class GameAutoEventController(
      */
     fun disable(event: AutoEvent) {
         autoEventHandler[event]?.removeCallbacks(autoEventRunnable[event])
-        enabledEvents[event] = false
+        event.isEnabled = false
     }
 
     /**
@@ -113,7 +115,7 @@ class GameAutoEventController(
      * @param event the event to pause
      */
     fun start(event: AutoEvent) {
-        if (enabledEvents[event] != true) { return }
+        if (!event.isEnabled) { return }
         autoEventHandler[event]?.postDelayed(autoEventRunnable[event], event.delay)
     }
 
@@ -154,6 +156,9 @@ class GameAutoEventController(
                     Lock -> LOCK_DELAY
                 }
             }
+
+        /** Indicates if the event is currently enabled or not. */
+        var isEnabled: Boolean = false
 
         companion object {
             /** Current delay for frame auto advance. */
