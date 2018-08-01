@@ -119,8 +119,8 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
         val league = league ?: return
         val preferenceManager = PreferenceManager.getDefaultSharedPreferences(context)
 
-        val shouldHighlightSeries = preferenceManager.getBoolean(Settings.HIGHLIGHT_SERIES_ENABLED, true)
-        val shouldHighlightScores = preferenceManager.getBoolean(Settings.HIGHLIGHT_SCORE_ENABLED, true)
+        val shouldHighlightSeries = preferenceManager.getBoolean(Settings.HighlightSeriesEnabled.prefName, Settings.HighlightSeriesEnabled.booleanDefault)
+        val shouldHighlightScores = preferenceManager.getBoolean(Settings.HighlightScoreEnabled.prefName, Settings.HighlightScoreEnabled.booleanDefault)
 
         adapter?.let {
             it.gameHighlightMin = league.gameHighlight

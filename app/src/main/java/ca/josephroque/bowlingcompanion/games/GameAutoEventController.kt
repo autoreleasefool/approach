@@ -37,15 +37,15 @@ class GameAutoEventController(
      */
     fun init(preferences: SharedPreferences) {
         // Enable auto lock
-        val autoLockEnabled = preferences.getBoolean(Settings.ENABLE_AUTO_LOCK, true)
+        val autoLockEnabled = preferences.getBoolean(Settings.EnableAutoLock.prefName, Settings.EnableAutoLock.booleanDefault)
         if (autoLockEnabled) enable(GameAutoEventController.AutoEvent.Lock)
 
         // Enable auto advance
-        val autoAdvanceEnabled = preferences.getBoolean(Settings.ENABLE_AUTO_ADVANCE, false)
+        val autoAdvanceEnabled = preferences.getBoolean(Settings.EnableAutoAdvance.prefName, Settings.EnableAutoAdvance.booleanDefault)
         if (autoAdvanceEnabled) enable(AutoEvent.AdvanceFrame)
 
         // Set auto advance delay time
-        val strDelay = preferences.getString(Settings.AUTO_ADVANCE_TIME, "10")
+        val strDelay = preferences.getString(Settings.AutoAdvanceTime.prefName, Settings.AutoAdvanceTime.stringDefault)
         autoAdvanceTotalDelay = Integer.valueOf(strDelay)
         AutoEvent.ADVANCE_FRAME_DELAY = autoAdvanceTotalDelayMilliseconds
     }

@@ -43,23 +43,23 @@ class SettingsFragment : PreferenceFragmentCompat(),
      */
     private val onPreferenceClickListener = Preference.OnPreferenceClickListener {
         when (it.key) {
-            Settings.REPORT_BUG -> {
+            Settings.ReportBug.prefName -> {
                 sendBugReportEmail()
                 true
             }
-            Settings.SEND_FEEDBACK -> {
+            Settings.SendFeedback.prefName -> {
                 sendFeedbackEmail()
                 true
             }
-            Settings.RATE -> {
+            Settings.Rate.prefName -> {
                 displayPlayStoreListing()
                 true
             }
-            Settings.ATTRIBUTIONS -> {
+            Settings.Attributions.prefName -> {
                 displayAttributions()
                 true
             }
-            Settings.FACEBOOK -> {
+            Settings.Facebook.prefName -> {
                 displayFacebookPage()
                 true
             }
@@ -71,11 +71,11 @@ class SettingsFragment : PreferenceFragmentCompat(),
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.pref_app)
 
-        findPreference(Settings.REPORT_BUG).onPreferenceClickListener = onPreferenceClickListener
-        findPreference(Settings.SEND_FEEDBACK).onPreferenceClickListener = onPreferenceClickListener
-        findPreference(Settings.RATE).onPreferenceClickListener = onPreferenceClickListener
-        findPreference(Settings.ATTRIBUTIONS).onPreferenceClickListener = onPreferenceClickListener
-        findPreference(Settings.FACEBOOK).onPreferenceClickListener = onPreferenceClickListener
+        findPreference(Settings.ReportBug.prefName).onPreferenceClickListener = onPreferenceClickListener
+        findPreference(Settings.SendFeedback.prefName).onPreferenceClickListener = onPreferenceClickListener
+        findPreference(Settings.Rate.prefName).onPreferenceClickListener = onPreferenceClickListener
+        findPreference(Settings.Attributions.prefName).onPreferenceClickListener = onPreferenceClickListener
+        findPreference(Settings.Facebook.prefName).onPreferenceClickListener = onPreferenceClickListener
     }
 
     /** @Override */
@@ -177,9 +177,9 @@ class SettingsFragment : PreferenceFragmentCompat(),
      */
     private fun updatePreferenceSummaries() {
         val prefs = preferenceScreen.sharedPreferences
-        findPreference(Settings.VERSION_NAME).summary = BuildConfig.VERSION_NAME
+        findPreference(Settings.VersionName.prefName).summary = BuildConfig.VERSION_NAME
 
-        val autoAdvanceTime = prefs.getString(Settings.AUTO_ADVANCE_TIME, resources.getString(R.string.pref_auto_advance_default))
-        findPreference(Settings.AUTO_ADVANCE_TIME).summary = resources.getString(R.string.pref_auto_advance_time_summary_seconds, autoAdvanceTime)
+        val autoAdvanceTime = prefs.getString(Settings.AutoAdvanceTime.prefName, Settings.AutoAdvanceTime.stringDefault)
+        findPreference(Settings.AutoAdvanceTime.prefName).summary = resources.getString(R.string.pref_auto_advance_time_summary_seconds, autoAdvanceTime)
     }
 }

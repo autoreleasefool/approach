@@ -405,8 +405,8 @@ class Bowler(
                 val database = Saviour.instance.getReadableDatabase(context).await()
 
                 val preferences = PreferenceManager.getDefaultSharedPreferences(context)
-                val includeEvents = preferences.getBoolean(Settings.INCLUDE_EVENTS, true)
-                val includeOpen = preferences.getBoolean(Settings.INCLUDE_OPEN, true)
+                val includeEvents = preferences.getBoolean(Settings.IncludeEvents.prefName, Settings.IncludeEvents.booleanDefault)
+                val includeOpen = preferences.getBoolean(Settings.IncludeOpen.prefName, Settings.IncludeOpen.booleanDefault)
                 val sortBy = Sort.fromInt(preferences.getInt(Preferences.BOWLER_SORT_ORDER, Sort.Alphabetically.ordinal))
 
                 val gameSumAndCountQuery = ("SELECT " +
