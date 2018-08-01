@@ -51,7 +51,11 @@ class GameAutoEventController(
     }
 
     /** Handlers to perform events. */
-    private val autoEventHandler: HashMap<AutoEvent, Handler> = HashMap()
+    private val autoEventHandler: HashMap<AutoEvent, Handler> by lazy {
+        val map = HashMap<AutoEvent, Handler>()
+        AutoEvent.values().forEach { map[it] = Handler() }
+        return@lazy map
+    }
 
     /** Runnable to execute the automatic events. */
     private val autoEventRunnable: HashMap<AutoEvent, Runnable> by lazy {

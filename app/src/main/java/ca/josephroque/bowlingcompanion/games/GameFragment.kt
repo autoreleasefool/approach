@@ -343,14 +343,12 @@ class GameFragment : BaseFragment(),
     /** @Override */
     override fun onNextBall() {
         gameState.nextBall()
-        autoEventController.delay(GameAutoEventController.AutoEvent.AdvanceFrame)
         // TODO: change bowler if necessary
     }
 
     /** @Override */
     override fun onPrevBall() {
         gameState.prevBall()
-        autoEventController.delay(GameAutoEventController.AutoEvent.AdvanceFrame)
     }
 
     // MARK: MatchPlaySheetDelegate
@@ -395,6 +393,11 @@ class GameFragment : BaseFragment(),
             wasLastBall = gameState.isLastBall
             gameHeader.currentFrame = gameState.currentFrameIdx
             gameHeader.currentBall = gameState.currentBallIdx
+            if (gameState.isLastBall) {
+                autoEventController.delay(GameAutoEventController.AutoEvent.Lock)
+            } else {
+                autoEventController.pause(GameAutoEventController.AutoEvent.Lock)
+            }
             autoEventController.pause(GameAutoEventController.AutoEvent.AdvanceFrame)
             render(ballChanged = true)
         }
@@ -407,6 +410,7 @@ class GameFragment : BaseFragment(),
         /** @Override */
         override fun autoLockGame() {
             gameState.lockGame()
+            render()
         }
 
         /** @Override */
