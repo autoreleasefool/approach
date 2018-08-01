@@ -251,6 +251,13 @@ class GameFragment : BaseFragment(),
     }
 
     /**
+     * Save the match play results for the game.
+     */
+    private fun saveMatchPlay() {
+        context?.let { gameState.saveMatchPlay(WeakReference(it)) }
+    }
+
+    /**
      * Scrolls the position of the frames so the current frame is 1 from the left, or at least visible.
      *
      * @param isGameFirstRender indicates if this method was called on the game's first load
@@ -328,6 +335,7 @@ class GameFragment : BaseFragment(),
         gameState.toggleLock()
         autoEventController.disable(GameAutoEventController.AutoEvent.Lock)
         autoEventController.pause(GameAutoEventController.AutoEvent.AdvanceFrame)
+        saveCurrentGame(false)
         render()
     }
 
@@ -342,12 +350,14 @@ class GameFragment : BaseFragment(),
 
     /** @Override */
     override fun onNextBall() {
+        saveCurrentFrame(false)
         gameState.nextBall()
         // TODO: change bowler if necessary
     }
 
     /** @Override */
     override fun onPrevBall() {
+        saveCurrentFrame(false)
         gameState.prevBall()
     }
 
@@ -367,7 +377,7 @@ class GameFragment : BaseFragment(),
         }
 
         gameState.setMatchPlay(opponentName, opponentScore, matchPlayResult)
-        context?.let { gameState.saveMatchPlay(WeakReference(it)) }
+        saveMatchPlay()
         render()
     }
 

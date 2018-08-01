@@ -208,7 +208,10 @@ class GameState(private val series: Series, private val listener: GameStateListe
             newBall++
         }
         currentBallIdx = newBall
-        currentGame.markDirty()
+
+        if (gamesLoaded) {
+            currentGame.markDirty()
+        }
     }
 
     /**
