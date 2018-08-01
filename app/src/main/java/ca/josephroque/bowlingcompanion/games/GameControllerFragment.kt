@@ -128,7 +128,11 @@ class GameControllerFragment : TabbedFragment(),
         if (!fabEnabled) {
             return
         }
-        TODO("not implemented")
+
+        // TODO: move to next bowler
+        val adapter = fragmentPager?.adapter as? GameControllerPagerAdapter
+        val gameFragment = adapter?.getFragment(currentTab) as? GameFragment
+        gameFragment?.onFabClick()
     }
 
     /** @Override */
