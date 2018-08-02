@@ -60,6 +60,14 @@ class GameFragment : BaseFragment(),
             gameHeader.currentGame = gameNumber
             gameState.currentGameIdx = gameNumber
             render(ballChanged = true, isGameFirstRender = true)
+
+            if (gameState.currentGame.isLocked) {
+                autoEventController.disable(GameAutoEventController.AutoEvent.Lock)
+                autoEventController.disable(GameAutoEventController.AutoEvent.AdvanceFrame)
+            } else {
+                val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+                autoEventController.init(preferences)
+            }
         }
 
     /** The series being edited. */
@@ -387,7 +395,10 @@ class GameFragment : BaseFragment(),
     private val gameStateListener = object : GameState.GameStateListener {
         /** @Override */
         override fun onGamesLoaded() {
-            if (gameState.currentGame.isLocked) { autoEventController.disable(GameAutoEventController.AutoEvent.Lock) }
+            if (gameState.currentGame.isLocked) {
+                autoEventController.disable(GameAutoEventController.AutoEvent.Lock)
+                autoEventController.disable(GameAutoEventController.AutoEvent.AdvanceFrame)
+            }
             gameState.currentFrame.isAccessed = true
             render(ballChanged = true, isGameFirstRender = true)
         }
@@ -425,12 +436,12 @@ class GameFragment : BaseFragment(),
 
         /** @Override */
         override fun autoAdvanceCountDown(secondsRemaining: Int) {
-            TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
+            // TODO: not implemented
         }
 
         /** @Override */
         override fun autoAdvanceGame() {
-            TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
+            // TODO: not implemented
         }
     }
 

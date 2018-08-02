@@ -23,9 +23,6 @@ class GameAutoEventController(
 
         /** Total seconds to delay before auto advance. */
         private var autoAdvanceTotalDelay: Int = 0
-
-        /** Total milliseconds to delay before auto advance. */
-        private val autoAdvanceTotalDelayMilliseconds = autoAdvanceTotalDelay * 1000L
     }
 
     init { init(preferences) }
@@ -47,7 +44,6 @@ class GameAutoEventController(
         // Set auto advance delay time
         val strDelay = preferences.getString(Settings.AutoAdvanceTime.prefName, Settings.AutoAdvanceTime.stringDefault)
         autoAdvanceTotalDelay = Integer.valueOf(strDelay)
-        AutoEvent.ADVANCE_FRAME_DELAY = autoAdvanceTotalDelayMilliseconds
     }
 
     /** Handlers to perform events. */
