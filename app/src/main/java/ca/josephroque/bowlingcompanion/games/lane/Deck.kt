@@ -43,6 +43,13 @@ fun Deck.toInt(): Int {
 }
 
 /**
+ * Reset the deck to all pins up.
+ */
+fun Deck.reset() {
+    this.forEach { it.isDown = false }
+}
+
+/**
  * Gets the value of pins on deck, or knocked down.
  *
  * @param onDeck true to get the value of the pins still standing, false to get those knocked down

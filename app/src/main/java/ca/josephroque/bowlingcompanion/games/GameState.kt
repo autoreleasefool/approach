@@ -5,6 +5,7 @@ import ca.josephroque.bowlingcompanion.common.Android
 import ca.josephroque.bowlingcompanion.database.Saviour
 import ca.josephroque.bowlingcompanion.games.lane.Deck
 import ca.josephroque.bowlingcompanion.games.lane.arePinsCleared
+import ca.josephroque.bowlingcompanion.games.lane.reset
 import ca.josephroque.bowlingcompanion.matchplay.MatchPlayResult
 import ca.josephroque.bowlingcompanion.series.Series
 import kotlinx.coroutines.experimental.CommonPool
@@ -256,6 +257,27 @@ class GameState(private val series: Series, private val listener: GameStateListe
         }
 
         currentGame.markDirty()
+    }
+
+    /**
+     * Reset the current game.
+     *
+     * @param context to save newly reset game
+     */
+    fun resetGame(context: WeakReference<Context>) {
+        currentGame.isManual = false
+        currentGame.isLocked = false
+        currentGame.frames.forEach { frame ->
+            for (i in 0..Frame.NUMBER_OF_BALLS) {
+                frame.ballFouled[i] = false
+                frame.pinState[i].reset()
+            }
+
+            frame.isAccessed = false
+        }
+
+        attemptToSetFrameAndBall(0, 0)
+        saveGame(context, true)
     }
 
     /**

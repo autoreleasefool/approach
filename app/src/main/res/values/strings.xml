@@ -42,6 +42,7 @@
     <string name="action_condensed_series">Condensed view</string>
     <string name="action_expanded_series">Expanded view</string>
     <string name="action_create_new">Create new</string>
+    <string name="action_reset">Reset game</string>
 
     <!-- Bowlers -->
     <string name="new_bowler">New bowler</string>

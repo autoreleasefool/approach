@@ -170,6 +170,18 @@ class GameFragment : BaseFragment(),
         context?.let { gameState.saveGame(WeakReference(it), true) }
     }
 
+    /** @Override */
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        return when (item?.itemId) {
+            R.id.action_reset_game -> {
+                resetGame()
+                true
+            }
+            else -> return super.onOptionsItemSelected(item)
+        }
+        // TODO: stopAutoAdvanceFrame on reset game
+    }
+
     /**
      * Set behaviour and appearance of bottom sheet.
      */
@@ -290,6 +302,13 @@ class GameFragment : BaseFragment(),
             frame.left
         }
         hsvFrames.post { hsvFrames.smoothScrollTo(left, 0) }
+    }
+
+    /**
+     * Reset the current game to a new state.
+     */
+    private fun resetGame() {
+        context?.let { gameState.resetGame(WeakReference(it)) }
     }
 
     // MARK: IFloatingActionButtonHandler
