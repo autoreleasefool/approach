@@ -127,6 +127,17 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
+        
+        <TextView
+            style="@style/BodyText"
+            android:id="@+id/tv_auto_advance"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="@color/primaryWhiteText"
+            android:textAlignment="textStart"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/game_footer" />
 
     </android.support.constraint.ConstraintLayout>
 

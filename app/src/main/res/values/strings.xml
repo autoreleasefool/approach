@@ -138,6 +138,10 @@
     <string name="match_play_result">Result</string>
     <string name="hint_opponent_name">Opponent\'s name</string>
     <string name="hint_opponent_score">Opponent\'s score</string>
+    <plurals name="time_until_auto_advance">
+        <item quantity="one">Auto advancing frame in %1$d second</item>
+        <item quantity="other">Auto advancing frame in %1$d seconds</item>
+    </plurals>
 
     <!-- Match play -->
     <string name="issue_setting_match_play">Issue setting match play!</string>

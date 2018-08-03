@@ -24,6 +24,7 @@ import kotlinx.android.synthetic.main.fragment_game.game_header as gameHeader
 import kotlinx.android.synthetic.main.fragment_game.hsv_frames as hsvFrames
 import kotlinx.android.synthetic.main.fragment_game.pin_layout as pinLayout
 import kotlinx.android.synthetic.main.fragment_game.tv_final_score as finalScore
+import kotlinx.android.synthetic.main.fragment_game.tv_auto_advance as autoAdvance
 import kotlinx.android.synthetic.main.sheet_match_play.sheet_match_play as matchPlaySheet
 import kotlinx.android.synthetic.main.sheet_match_play.view.*
 import kotlinx.coroutines.experimental.launch
@@ -430,7 +431,12 @@ class GameFragment : BaseFragment(),
     private val autoEventDelegate = object : GameAutoEventController.GameAutoEventDelegate {
         /** @Override */
         override fun autoAdvanceCountDown(secondsRemaining: Int) {
-            // TODO: not implemented
+            autoAdvance.text = resources.getQuantityString(
+                R.plurals.time_until_auto_advance,
+                secondsRemaining,
+                secondsRemaining
+            )
+            autoAdvance.visibility = View.VISIBLE
         }
 
         /** @Override */
@@ -450,7 +456,7 @@ class GameFragment : BaseFragment(),
         override fun autoEventDelayed(event: GameAutoEventController.AutoEvent) {
             when (event) {
                 GameAutoEventController.AutoEvent.AdvanceFrame -> {
-
+                    autoAdvance.visibility = View.GONE
                 }
                 GameAutoEventController.AutoEvent.Lock -> {} // Do nothing
             }
@@ -460,7 +466,7 @@ class GameFragment : BaseFragment(),
         override fun autoEventPaused(event: GameAutoEventController.AutoEvent) {
             when (event) {
                 GameAutoEventController.AutoEvent.AdvanceFrame -> {
-
+                    autoAdvance.visibility = View.GONE
                 }
                 GameAutoEventController.AutoEvent.Lock -> {} // Do nothing
             }
