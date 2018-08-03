@@ -5,6 +5,9 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.design.widget.BottomSheetBehavior
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import ca.josephroque.bowlingcompanion.R
@@ -91,6 +94,7 @@ class GameFragment : BaseFragment(),
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        setHasOptionsMenu(true)
         series = arguments?.getParcelable(ARG_SERIES)
         val view = inflater.inflate(R.layout.fragment_game, container, false)
 
@@ -112,6 +116,12 @@ class GameFragment : BaseFragment(),
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
         autoEventController = GameAutoEventController(preferences, autoEventDelegate)
         autoEventController.pauseAll()
+    }
+
+    /** @Override */
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.fragment_game, menu)
     }
 
     /** @Override */
