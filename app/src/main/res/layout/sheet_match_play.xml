@@ -2,12 +2,14 @@
 <android.support.v4.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/sheet_match_play"
     android:layout_width="match_parent"
     android:layout_height="@dimen/bottom_sheet_height"
     android:background="@color/colorBackground"
     app:behavior_hideable="true"
-    app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+    app:layout_behavior="android.support.design.widget.BottomSheetBehavior"
+    tools:ignore="Overdraw">
 
     <LinearLayout style="@style/BaseContainer">
 

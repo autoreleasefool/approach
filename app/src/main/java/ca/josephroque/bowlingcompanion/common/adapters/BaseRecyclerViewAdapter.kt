@@ -113,7 +113,7 @@ abstract class BaseRecyclerViewAdapter<Item : IIdentifiable>(
      */
     fun setSelectedElementsWithIds(ids: Set<Long>) {
         if (multiSelect) {
-            items.forEachIndexed({ index: Int, it: Item ->
+            items.forEachIndexed { index: Int, it: Item ->
                 if (ids.contains(it.id)) {
                     if (_selectedItems.add(it)) {
                         notifyItemChanged(index)
@@ -123,7 +123,7 @@ abstract class BaseRecyclerViewAdapter<Item : IIdentifiable>(
                         notifyItemChanged(index)
                     }
                 }
-            })
+            }
         }
     }
 

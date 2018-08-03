@@ -198,16 +198,16 @@ class LeagueListFragment : ListFragment<League, NameAverageRecyclerViewAdapter<L
         context?.let {
             AlertDialog.Builder(it)
                     .setTitle(it.resources.getString(R.string.sort_items))
-                    .setItems(R.array.league_sort_options, { _, which: Int ->
+                    .setItems(R.array.league_sort_options) { _, which: Int ->
                         val order = League.Companion.Sort.fromInt(which)
-                        order?.let {
+                        order?.let { sort ->
                             PreferenceManager.getDefaultSharedPreferences(context)
                                     .edit()
-                                    .putInt(Preferences.LEAGUE_SORT_ORDER, it.ordinal)
+                                    .putInt(Preferences.LEAGUE_SORT_ORDER, sort.ordinal)
                                     .commit()
                             refreshList()
                         }
-                    })
+                    }
                     .show()
         }
     }

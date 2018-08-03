@@ -57,7 +57,7 @@
         <item name="android:theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:background">?attr/colorPrimary</item>
+        <item name="android:background">?android:attr/colorPrimary</item>
         <item name="android:elevation">@dimen/base_elevation</item>
         <item name="layout_constraintTop_toTopOf">parent</item>
         <item name="layout_constraintLeft_toLeftOf">parent</item>
@@ -248,7 +248,7 @@
         <item name="android:focusable">false</item>
         <item name="android:clickable">false</item>
         <item name="android:textSize">@dimen/text_list_item</item>
-        <item name="android:textAppearance">?attr/textAppearanceListItem</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceListItem</item>
     </style>
 
     <style name="ListItemDetailText" parent="ListItemBodyText">

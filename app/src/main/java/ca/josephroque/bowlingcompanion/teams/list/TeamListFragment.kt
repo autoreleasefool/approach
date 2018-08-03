@@ -95,16 +95,16 @@ class TeamListFragment : ListFragment<Team, TeamRecyclerViewAdapter>() {
         context?.let {
             AlertDialog.Builder(it)
                     .setTitle(it.resources.getString(R.string.sort_items))
-                    .setItems(R.array.team_sort_options, { _, which: Int ->
+                    .setItems(R.array.team_sort_options) { _, which: Int ->
                         val order = Bowler.Companion.Sort.fromInt(which)
-                        order?.let {
+                        order?.let { sort ->
                             PreferenceManager.getDefaultSharedPreferences(context)
                                     .edit()
-                                    .putInt(Preferences.TEAM_SORT_ORDER, it.ordinal)
+                                    .putInt(Preferences.TEAM_SORT_ORDER, sort.ordinal)
                                     .commit()
                             refreshList()
                         }
-                    })
+                    }
                     .show()
         }
     }

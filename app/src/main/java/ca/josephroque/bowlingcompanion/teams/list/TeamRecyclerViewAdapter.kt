@@ -87,7 +87,7 @@ class TeamRecyclerViewAdapter(
             }
 
             flowMembers?.removeAllViews()
-            item.members.forEach({
+            item.members.forEach {
                 val viewId = View.generateViewId()
                 Chip(context).apply {
                     id = viewId
@@ -98,7 +98,7 @@ class TeamRecyclerViewAdapter(
                     textColor = ContextCompat.getColor(context, R.color.primaryWhiteText)
                     flowMembers?.addView(this)
                 }
-            })
+            }
 
             itemView.setOnClickListener(this@TeamRecyclerViewAdapter)
             itemView.setOnLongClickListener(this@TeamRecyclerViewAdapter)

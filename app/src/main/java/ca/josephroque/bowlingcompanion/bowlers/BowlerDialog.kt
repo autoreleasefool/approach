@@ -173,10 +173,10 @@ class BowlerDialog : BaseDialogFragment(), View.OnClickListener {
             AlertDialog.Builder(context)
                     .setTitle(String.format(context.resources.getString(R.string.query_delete_item), bowler.name))
                     .setMessage(R.string.dialog_delete_item_message)
-                    .setPositiveButton(R.string.delete, { _, _ ->
+                    .setPositiveButton(R.string.delete) { _, _ ->
                         listener?.onDeleteBowler(bowler)
                         dismiss()
-                    })
+                    }
                     .setNegativeButton(R.string.cancel, null)
                     .show()
         }

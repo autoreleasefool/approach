@@ -34,11 +34,11 @@ class Frame(
             id = p.readLong(),
             ordinal = p.readInt(),
             isAccessed = p.readBoolean(),
-            pinState = Array(NUMBER_OF_BALLS, {
+            pinState = Array(NUMBER_OF_BALLS) {
                 val pins = BooleanArray(Game.NUMBER_OF_PINS)
                 p.readBooleanArray(pins)
                 return@Array Pin.deckFromBooleanArray(pins)
-            }),
+            },
             ballFouled = BooleanArray(NUMBER_OF_BALLS).apply {
                 p.readBooleanArray(this)
             }
@@ -52,9 +52,9 @@ class Frame(
             id = other.id,
             ordinal = other.ordinal,
             isAccessed = other.isAccessed,
-            pinState = Array(NUMBER_OF_BALLS, {
-                return@Array other.pinState[it].map { it.deepCopy() }.toTypedArray()
-            }),
+            pinState = Array(NUMBER_OF_BALLS) {
+                return@Array other.pinState[it].map { pin -> pin.deepCopy() }.toTypedArray()
+            },
             ballFouled = other.ballFouled.clone()
     )
 

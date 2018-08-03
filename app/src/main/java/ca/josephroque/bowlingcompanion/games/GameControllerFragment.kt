@@ -73,7 +73,7 @@ class GameControllerFragment : TabbedFragment(),
         val parcelableSeries = savedInstanceState?.getParcelableArray(ARG_SERIES) ?: arguments?.getParcelableArray(ARG_SERIES)
         parcelableSeries?.let {
             val mutableSeriesList: MutableList<Series> = ArrayList()
-            parcelableSeries.forEach { mutableSeriesList.add(it as Series) }
+            parcelableSeries.forEach { series -> mutableSeriesList.add(series as Series) }
             seriesList = mutableSeriesList
         }
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -88,8 +88,8 @@ class GameControllerFragment : TabbedFragment(),
     override fun addTabs(tabLayout: TabLayout) {
         tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
         seriesList?.let {
-            it.forEach {
-                tabLayout.addTab(tabLayout.newTab().setText(it.league.bowler.name))
+            it.forEach { series ->
+                tabLayout.addTab(tabLayout.newTab().setText(series.league.bowler.name))
             }
         }
     }

@@ -3,11 +3,13 @@
     style="@style/BaseContainer"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:paddingTop="@dimen/base_margin"
     android:paddingBottom="@dimen/base_margin"
-    android:background="@color/colorPrimaryLight">
+    android:background="@color/colorPrimaryLight"
+    tools:ignore="Overdraw">
     
     <TextView
         style="@style/SubHeaderText"

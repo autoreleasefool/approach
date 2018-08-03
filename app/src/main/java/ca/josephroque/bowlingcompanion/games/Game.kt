@@ -207,7 +207,7 @@ class Game(
                     return@mapIndexed arrayOf("", "", "")
                 }
 
-                val balls = Array(Frame.NUMBER_OF_BALLS, { "" })
+                val balls = Array(Frame.NUMBER_OF_BALLS) { "" }
                 if (frame.zeroBasedOrdinal == Game.LAST_FRAME) {
                     if (frame.pinState[0].arePinsCleared()) {
                         // If the first ball is a strike, the next two could be strikes/spares
@@ -421,12 +421,12 @@ class Game(
                                 id = cursor.getLong(cursor.getColumnIndex("fid")),
                                 ordinal = cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_FRAME_NUMBER)),
                                 isAccessed = cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_IS_ACCESSED)) == 1,
-                                pinState = Array(Frame.NUMBER_OF_BALLS, {
+                                pinState = Array(Frame.NUMBER_OF_BALLS) {
                                     return@Array Pin.deckFromInt(cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_PIN_STATE[it])))
-                                }),
-                                ballFouled = BooleanArray(Frame.NUMBER_OF_BALLS, {
+                                },
+                                ballFouled = BooleanArray(Frame.NUMBER_OF_BALLS) {
                                     return@BooleanArray Fouls.foulIntToString(cursor.getInt(cursor.getColumnIndex(FrameEntry.COLUMN_FOULS))).contains((it + 1).toString())
-                                })
+                                }
                         ))
 
                         lastId = newId

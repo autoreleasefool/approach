@@ -8,7 +8,7 @@
     android:minHeight="@dimen/list_item_min_height"
     android:orientation="horizontal"
     android:background="@color/dangerRed"
-    android:foreground="?attr/selectableItemBackground"
+    android:foreground="?android:attr/selectableItemBackground"
     tools:ignore="RtlHardcoded">
 
     <ImageView

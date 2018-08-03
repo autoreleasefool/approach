@@ -109,10 +109,10 @@ class LeagueDialog : BaseDialogFragment() {
                     AlertDialog.Builder(context)
                             .setTitle(String.format(context.resources.getString(R.string.query_delete_item), league.name))
                             .setMessage(R.string.dialog_delete_item_message)
-                            .setPositiveButton(R.string.delete, { _, _ ->
+                            .setPositiveButton(R.string.delete) { _, _ ->
                                 listener?.onDeleteLeague(league)
                                 dismiss()
-                            })
+                            }
                             .setNegativeButton(R.string.cancel, null)
                             .show()
                 }
@@ -406,7 +406,7 @@ class LeagueDialog : BaseDialogFragment() {
         val bowler = bowler ?: return
 
         launch(Android) {
-            this@LeagueDialog.context?.let {
+            this@LeagueDialog.context?.let { context ->
                 if (canSave()) {
                     val name = nameInput.text.toString()
                     val numberOfGamesStr = numberOfGamesInput.text.toString()
@@ -430,7 +430,7 @@ class LeagueDialog : BaseDialogFragment() {
                                 R.string.issue_saving_league,
                                 R.string.error_league_number_of_games_invalid,
                                 BCError.Severity.Warning
-                        ).show(it)
+                        ).show(context)
                         return@launch
                     }
 
@@ -443,7 +443,7 @@ class LeagueDialog : BaseDialogFragment() {
                                     R.string.issue_saving_league,
                                     R.string.error_league_additional_info_invalid,
                                     BCError.Severity.Warning
-                            ).show(it)
+                            ).show(context)
                             return@launch
                         }
                     }
@@ -457,7 +457,7 @@ class LeagueDialog : BaseDialogFragment() {
                                     R.string.issue_saving_league,
                                     R.string.error_league_highlight_invalid,
                                     BCError.Severity.Warning
-                            ).show(it)
+                            ).show(context)
                             return@launch
                         }
                     }
@@ -465,7 +465,7 @@ class LeagueDialog : BaseDialogFragment() {
                     val oldLeague = league
                     val (newLeague, error) = if (oldLeague != null) {
                         League.save(
-                                context = it,
+                                context = context,
                                 id = oldLeague.id,
                                 bowler = oldLeague.bowler,
                                 name = name,
@@ -479,7 +479,7 @@ class LeagueDialog : BaseDialogFragment() {
                         ).await()
                     } else {
                         League.save(
-                                context = it,
+                                context = context,
                                 id = -1,
                                 bowler = bowler,
                                 name = name,
@@ -493,7 +493,7 @@ class LeagueDialog : BaseDialogFragment() {
                     }
 
                     if (error != null) {
-                        error.show(it)
+                        error.show(context)
 
                         league?.let { resetInputs(it) }
                         setImeOptions()

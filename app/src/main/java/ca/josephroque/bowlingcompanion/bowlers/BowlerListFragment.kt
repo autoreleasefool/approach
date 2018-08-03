@@ -97,19 +97,19 @@ class BowlerListFragment : ListFragment<Bowler, NameAverageRecyclerViewAdapter<B
         context?.let {
             AlertDialog.Builder(it)
                     .setTitle(it.resources.getString(R.string.sort_items))
-                    .setItems(R.array.bowler_sort_options, { _, which: Int ->
+                    .setItems(R.array.bowler_sort_options) { _, which: Int ->
                         val order = Bowler.Companion.Sort.fromInt(which)
-                        order?.let {
+                        order?.let { sort ->
                             PreferenceManager.getDefaultSharedPreferences(context)
                                     .edit()
-                                    .putInt(Preferences.BOWLER_SORT_ORDER, it.ordinal)
+                                    .putInt(Preferences.BOWLER_SORT_ORDER, sort.ordinal)
                                     .commit()
 
                             val ignoredSet: MutableSet<Int> = HashSet()
                             ignoredSet.add(BowlerTeamTabbedFragment.Companion.Tab.Bowlers.ordinal)
                             (parentFragment as? BowlerTeamTabbedFragment)?.refreshTabs(ignoredSet)
                         }
-                    })
+                    }
                     .show()
         }
     }

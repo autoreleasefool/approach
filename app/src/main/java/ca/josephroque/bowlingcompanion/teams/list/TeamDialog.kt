@@ -75,13 +75,13 @@ class TeamDialog : BaseDialogFragment(),
         get() {
             val selected = bowlerAdapter.selectedItems
             val list: MutableList<TeamMember> = ArrayList()
-            selected.forEach({
+            selected.forEach {
                 list.add(TeamMember(
                         teamId = team?.id ?: -1,
                         bowlerName = it.name,
                         bowlerId = it.id
                 ))
-            })
+            }
             return list
         }
 
@@ -218,10 +218,10 @@ class TeamDialog : BaseDialogFragment(),
             AlertDialog.Builder(context)
                     .setTitle(String.format(context.resources.getString(R.string.query_delete_item), team.name))
                     .setMessage(R.string.dialog_delete_item_message)
-                    .setPositiveButton(R.string.delete, { _, _ ->
+                    .setPositiveButton(R.string.delete) { _, _ ->
                         listener?.onDeleteTeam(team)
                         dismiss()
-                    })
+                    }
                     .setNegativeButton(R.string.cancel, null)
                     .show()
         }
@@ -308,9 +308,9 @@ class TeamDialog : BaseDialogFragment(),
             }
 
             val ids: MutableSet<Long> = HashSet()
-            team?.members?.forEach({
+            team?.members?.forEach {
                 ids.add(it.bowlerId)
-            })
+            }
             bowlerAdapter.items = bowlers
             bowlerAdapter.setSelectedElementsWithIds(ids)
             updateSaveButton()

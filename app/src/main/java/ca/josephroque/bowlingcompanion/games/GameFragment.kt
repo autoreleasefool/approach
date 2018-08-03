@@ -188,24 +188,24 @@ class GameFragment : BaseFragment(),
             }
 
             // Update scores of the frames
-            scoreText.forEachIndexed({ index, score ->
+            scoreText.forEachIndexed { index, score ->
                 frameViews[index]?.setFrameText(score)
-            })
+            }
             finalScore.text = gameState.currentGame.score.toString()
 
             // Update balls of the frames
-            ballText.forEachIndexed({ index, balls ->
-                balls.forEachIndexed({ ballIdx, ball ->
+            ballText.forEachIndexed { index, balls ->
+                balls.forEachIndexed { ballIdx, ball ->
                     frameViews[index]?.setBallText(ballIdx, ball)
-                })
-            })
+                }
+            }
 
             // Update fouls of the frames
-            gameState.currentGame.frames.forEachIndexed({ index, frame ->
-                frame.ballFouled.forEachIndexed({ ballIdx, foul ->
+            gameState.currentGame.frames.forEachIndexed { index, frame ->
+                frame.ballFouled.forEachIndexed { ballIdx, foul ->
                     frameViews[index]?.setFoulEnabled(ballIdx, foul)
-                })
-            })
+                }
+            }
 
             // Update up/down pins
             gameState.currentPinState.forEachIndexed { index, pin ->

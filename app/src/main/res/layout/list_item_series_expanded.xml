@@ -14,7 +14,7 @@
         android:layout_height="wrap_content"
         android:minHeight="@dimen/list_item_min_height"
         android:orientation="horizontal"
-        android:foreground="?attr/selectableItemBackground">
+        android:foreground="?android:attr/selectableItemBackground">
 
         <TextView
             style="@style/ListItemBodyText"

@@ -69,7 +69,7 @@ class NavigationActivity : BaseActivity(),
 
                 /** List of available tabs. */
                 val available: List<BottomTab> by lazy {
-                    map.entries.filter({ it.value.isAvailable }).map { it.value }
+                    map.entries.filter { it.value.isAvailable }.map { it.value }
                 }
             }
 
