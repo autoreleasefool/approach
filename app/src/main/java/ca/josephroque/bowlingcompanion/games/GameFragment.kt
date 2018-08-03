@@ -429,19 +429,41 @@ class GameFragment : BaseFragment(),
     /** Handle events from auto event controller. */
     private val autoEventDelegate = object : GameAutoEventController.GameAutoEventDelegate {
         /** @Override */
-        override fun autoLockGame() {
-            gameState.lockGame()
-            render()
-        }
-
-        /** @Override */
         override fun autoAdvanceCountDown(secondsRemaining: Int) {
             // TODO: not implemented
         }
 
         /** @Override */
-        override fun autoAdvanceGame() {
-            // TODO: not implemented
+        override fun autoEventFired(event: GameAutoEventController.AutoEvent) {
+            when (event) {
+                GameAutoEventController.AutoEvent.Lock -> {
+                    gameState.lockGame()
+                    render()
+                }
+                GameAutoEventController.AutoEvent.AdvanceFrame -> {
+                    onNextBall()
+                }
+            }
+        }
+
+        /** @Override */
+        override fun autoEventDelayed(event: GameAutoEventController.AutoEvent) {
+            when (event) {
+                GameAutoEventController.AutoEvent.AdvanceFrame -> {
+
+                }
+                GameAutoEventController.AutoEvent.Lock -> {} // Do nothing
+            }
+        }
+
+        /** @Override */
+        override fun autoEventPaused(event: GameAutoEventController.AutoEvent) {
+            when (event) {
+                GameAutoEventController.AutoEvent.AdvanceFrame -> {
+
+                }
+                GameAutoEventController.AutoEvent.Lock -> {} // Do nothing
+            }
         }
     }
 

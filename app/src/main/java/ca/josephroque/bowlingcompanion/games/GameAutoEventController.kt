@@ -64,14 +64,14 @@ class GameAutoEventController(
                     start(AutoEvent.AdvanceFrame)
                     delegate.autoAdvanceCountDown(autoAdvanceSecondsRemaining)
                 } else {
-                    delegate.autoAdvanceGame()
+                    delegate.autoEventFired(AutoEvent.AdvanceFrame)
                 }
             }
         }
         map[AutoEvent.Lock] = Runnable {
             launch(Android) {
                 if (!AutoEvent.Lock.isEnabled) { return@launch }
-                delegate.autoLockGame()
+                delegate.autoEventFired(AutoEvent.Lock)
                 pause(AutoEvent.Lock)
             }
         }
@@ -107,6 +107,7 @@ class GameAutoEventController(
      */
     fun pause(event: AutoEvent) {
         autoEventHandler[event]?.removeCallbacks(autoEventRunnable[event])
+        delegate.autoEventPaused(event)
     }
 
     /**
@@ -127,12 +128,11 @@ class GameAutoEventController(
     fun delay(event: AutoEvent) {
         pause(event)
         when (event) {
-            AutoEvent.AdvanceFrame -> {
-                autoAdvanceSecondsRemaining = autoAdvanceTotalDelay
-            }
-            else -> {} // Do nothing
+            AutoEvent.AdvanceFrame -> autoAdvanceSecondsRemaining = autoAdvanceTotalDelay
+            AutoEvent.Lock -> {} // Do nothing
         }
         start(event)
+        delegate.autoEventDelayed(event)
     }
 
     /**
@@ -174,14 +174,25 @@ class GameAutoEventController(
      */
     interface GameAutoEventDelegate {
         /**
-         * Auto lock the game.
+         * Called when an auto event is fired.
+         *
+         * @param event the event fired
          */
-        fun autoLockGame()
+        fun autoEventFired(event: AutoEvent)
 
         /**
-         * Auto advance the current ball.
+         * Called when an auto event is delayed.
+         *
+         * @param event the event delayed
          */
-        fun autoAdvanceGame()
+        fun autoEventDelayed(event: AutoEvent)
+
+        /**
+         * Called when an auto event is paused.
+         *
+         * @param event the event paused
+         */
+        fun autoEventPaused(event: AutoEvent)
 
         /**
          * Count down the auto advance timer.
