@@ -50,6 +50,7 @@ class GameState(private val series: Series, private val listener: GameStateListe
             if (newGame >= 0 && newGame < series.numberOfGames) {
                 field = newGame
                 currentFrameIdx = games[currentGameIdx].firstNewFrame
+                moveToLastSavedFrame()
             }
         }
 
@@ -220,6 +221,17 @@ class GameState(private val series: Series, private val listener: GameStateListe
     }
 
     /**
+     * Move the frame of the current game which was last saved.
+     */
+    private fun moveToLastSavedFrame() {
+        var lastSavedFrame = Game.LAST_FRAME
+        while (!currentGame.frames[lastSavedFrame].isAccessed) {
+            lastSavedFrame--
+        }
+        attemptToSetFrameAndBall(lastSavedFrame, 0)
+    }
+
+    /**
      * Set the state of the pins for the current ball.
      *
      * @param pins the pin indices to update
@@ -301,6 +313,7 @@ class GameState(private val series: Series, private val listener: GameStateListe
             gamesLoaded = true
             this@GameState.games.clear()
             this@GameState.games.addAll(games)
+            moveToLastSavedFrame()
 
             launch(Android) {
                 listener.onGamesLoaded()
