@@ -236,8 +236,12 @@ class GameFragment : BaseFragment(),
             }
 
             // Set which pins are enabled/disabled
-            gameState.enabledPins.forEach { pinLayout.setPinEnabled(it, true) }
-            gameState.disabledPins.forEach { pinLayout.setPinEnabled(it, false) }
+            if (gameState.currentGame.isLocked) {
+                for (i in 0 until Game.NUMBER_OF_PINS) { pinLayout.setPinEnabled(i, false) }
+            } else {
+                gameState.enabledPins.forEach { pinLayout.setPinEnabled(it, true) }
+                gameState.disabledPins.forEach { pinLayout.setPinEnabled(it, false) }
+            }
 
             // Set icons in game footer
             gameFooter.apply {
