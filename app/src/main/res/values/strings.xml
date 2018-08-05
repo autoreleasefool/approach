@@ -42,7 +42,6 @@
     <string name="action_condensed_series">Condensed view</string>
     <string name="action_expanded_series">Expanded view</string>
     <string name="action_create_new">Create new</string>
-    <string name="action_reset">Reset game</string>
 
     <!-- Bowlers -->
     <string name="new_bowler">New bowler</string>
@@ -144,6 +143,10 @@
         <item quantity="other">Auto advancing frame in %1$d seconds</item>
     </plurals>
 
+    <string name="action_reset_game">Reset game</string>
+    <string name="reset">Reset</string>
+    <string name="dialog_reset_game_title">Reset game?</string>
+    <string name="dialog_reset_game_message">Are you sure you want to reset this game? The data cannot be recovered.</string>
     <!-- Match play -->
     <string name="issue_setting_match_play">Issue setting match play!</string>
     <string name="error_match_play_score_invalid">Opponent\'s score must be between 0 and 450.</string>

@@ -268,7 +268,7 @@ class GameState(private val series: Series, private val listener: GameStateListe
         currentGame.isManual = false
         currentGame.isLocked = false
         currentGame.frames.forEach { frame ->
-            for (i in 0..Frame.NUMBER_OF_BALLS) {
+            for (i in 0 until Frame.NUMBER_OF_BALLS) {
                 frame.ballFouled[i] = false
                 frame.pinState[i].reset()
             }
@@ -277,6 +277,7 @@ class GameState(private val series: Series, private val listener: GameStateListe
         }
 
         attemptToSetFrameAndBall(0, 0)
+        currentFrame.isAccessed = true
         saveGame(context, true)
     }
 

@@ -14,6 +14,7 @@ import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.Android
 import ca.josephroque.bowlingcompanion.common.fragments.BaseFragment
 import ca.josephroque.bowlingcompanion.common.interfaces.IFloatingActionButtonHandler
+import ca.josephroque.bowlingcompanion.games.dialogs.ResetGameDialog
 import ca.josephroque.bowlingcompanion.games.lane.arePinsCleared
 import ca.josephroque.bowlingcompanion.games.views.FrameView
 import ca.josephroque.bowlingcompanion.games.views.GameFooterView
@@ -172,14 +173,14 @@ class GameFragment : BaseFragment(),
 
     /** @Override */
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        autoEventController.pauseAll()
         return when (item?.itemId) {
             R.id.action_reset_game -> {
-                resetGame()
+                showResetGameDialog()
                 true
             }
             else -> return super.onOptionsItemSelected(item)
         }
-        // TODO: stopAutoAdvanceFrame on reset game
     }
 
     /**
@@ -460,8 +461,9 @@ class GameFragment : BaseFragment(),
     private val autoEventDelegate = object : GameAutoEventController.GameAutoEventDelegate {
         /** @Override */
         override fun autoAdvanceCountDown(secondsRemaining: Int) {
+            val autoAdvanceStringId = if (gameState.frameHasNextBall) R.plurals.time_until_auto_advance_ball else R.plurals.time_until_auto_advance_frame
             autoAdvance.text = resources.getQuantityString(
-                R.plurals.time_until_auto_advance,
+                autoAdvanceStringId,
                 secondsRemaining,
                 secondsRemaining
             )
@@ -499,6 +501,19 @@ class GameFragment : BaseFragment(),
                 }
                 GameAutoEventController.AutoEvent.Lock -> {} // Do nothing
             }
+        }
+    }
+
+    // MARK: Dialogs
+
+    /**
+     * Prompt the user to reset the current game.
+     */
+    private fun showResetGameDialog() {
+        context?.let {
+            ResetGameDialog.show(it, WeakReference({
+                resetGame()
+            }))
         }
     }
 
