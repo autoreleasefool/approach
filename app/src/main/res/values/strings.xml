@@ -138,9 +138,16 @@
     <string name="match_play_result">Result</string>
     <string name="hint_opponent_name">Opponent\'s name</string>
     <string name="hint_opponent_score">Opponent\'s score</string>
-    <plurals name="time_until_auto_advance">
-        <item quantity="one">Auto advancing frame in %1$d second</item>
-        <item quantity="other">Auto advancing frame in %1$d seconds</item>
+
+    <!-- Game details -->
+    <plurals name="time_until_auto_advance_ball">
+        <item quantity="one">Next ball in %1$d second</item>
+        <item quantity="other">Next ball in %1$d seconds</item>
+    </plurals>
+
+    <plurals name="time_until_auto_advance_frame">
+        <item quantity="one">Next frame in %1$d second</item>
+        <item quantity="other">Next frame in %1$d seconds</item>
     </plurals>
 
     <string name="action_reset_game">Reset game</string>

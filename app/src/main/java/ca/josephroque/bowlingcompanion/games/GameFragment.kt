@@ -116,7 +116,6 @@ class GameFragment : BaseFragment(),
         // Enable automatic events
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
         autoEventController = GameAutoEventController(preferences, autoEventDelegate)
-        autoEventController.pauseAll()
     }
 
     /** @Override */
@@ -160,6 +159,7 @@ class GameFragment : BaseFragment(),
         // Enable automatic events
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
         autoEventController.init(preferences)
+        autoEventController.pauseAll()
 
         onBallSelected(0, 0)
     }
@@ -348,7 +348,7 @@ class GameFragment : BaseFragment(),
     override fun setPins(pins: IntArray, isDown: Boolean) {
         gameState.setPins(pins, isDown)
         if (gameState.isLastBall) { autoEventController.delay(GameAutoEventController.AutoEvent.Lock) }
-        autoEventController.delay(GameAutoEventController.AutoEvent.AdvanceFrame)
+        if (!gameState.isLastBall) { autoEventController.delay(GameAutoEventController.AutoEvent.AdvanceFrame) }
         render()
     }
 
@@ -365,7 +365,7 @@ class GameFragment : BaseFragment(),
         gameState.toggleFoul()
         frameView.setFoulEnabled(gameState.currentBallIdx, gameState.currentBallFouled)
         if (gameState.isLastBall) { autoEventController.delay(GameAutoEventController.AutoEvent.Lock) }
-        autoEventController.delay(GameAutoEventController.AutoEvent.AdvanceFrame)
+        if (!gameState.isLastBall) { autoEventController.delay(GameAutoEventController.AutoEvent.AdvanceFrame) }
         render()
     }
 

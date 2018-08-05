@@ -106,6 +106,10 @@ class GameState(private val series: Series, private val listener: GameStateListe
     val isLastFrame: Boolean
         get() = currentFrameIdx == Game.LAST_FRAME
 
+    /** Returns true if the current frame has a next ball. */
+    val frameHasNextBall: Boolean
+        get() = currentBallIdx != Frame.LAST_BALL && (isLastFrame || !currentPinState.arePinsCleared())
+
     /** Get an array of pin indices indicating which pins are enabled for the current frame. */
     val enabledPins: IntArray
         get() {
@@ -170,10 +174,10 @@ class GameState(private val series: Series, private val listener: GameStateListe
      * Go to the next ball. Increment the frame if necessary.
      */
     fun nextBall() {
-        if (!isLastFrame && (currentBallIdx == Frame.LAST_BALL || currentPinState.arePinsCleared())) {
-            attemptToSetFrameAndBall(currentFrameIdx + 1, 0)
-        } else if (currentBallIdx < Frame.LAST_BALL) {
+        if (frameHasNextBall) {
             attemptToSetFrameAndBall(currentFrameIdx, currentBallIdx + 1)
+        } else if (!isLastFrame) {
+            attemptToSetFrameAndBall(currentFrameIdx + 1, 0)
         }
     }
 
