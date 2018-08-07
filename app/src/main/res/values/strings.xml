@@ -154,6 +154,18 @@
     <string name="reset">Reset</string>
     <string name="dialog_reset_game_title">Reset game?</string>
     <string name="dialog_reset_game_message">Are you sure you want to reset this game? The data cannot be recovered.</string>
+
+    <string name="action_set_score">Set manual score</string>
+    <string name="set_score">Set score</string>
+    <string name="dialog_set_score_title">Set a manual score?</string>
+    <string name="dialog_set_score_message">Setting a manual score for this game will overwrite your balls and frames. Are you sure you want to set a manual score?</string>
+    <string name="max_score">Score (max 450)</string>
+
+    <string name="action_clear_score">Clear manual score</string>
+    <string name="clear_score">Clear score</string>
+    <string name="dialog_clear_score_title">Clear the manual score?</string>
+    <string name="dialog_clear_score_message">Clearing the manual score will reset the game so you can put in your own ball and frame data. Are you sure you want to clear the score?</string>
+
     <!-- Match play -->
     <string name="issue_setting_match_play">Issue setting match play!</string>
     <string name="error_match_play_score_invalid">Opponent\'s score must be between 0 and 450.</string>

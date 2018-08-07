@@ -331,6 +331,16 @@ class Game(
         const val FOUL_PENALTY = 15
 
         /**
+         * Returns true if [score] is a valid score in the game.
+         *
+         * @param score the score to check
+         * @return true if the score is greater than or equal to 0 and less than or equal to the max score
+         */
+        fun isValidScore(score: Int): Boolean {
+            return score in 0..MAX_SCORE
+        }
+
+        /**
          * Load a list of games for a series
          *
          * @param context to get database instance

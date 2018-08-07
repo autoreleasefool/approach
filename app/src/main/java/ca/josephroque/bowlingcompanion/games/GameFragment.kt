@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.design.widget.BottomSheetBehavior
+import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -14,6 +15,7 @@ import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.Android
 import ca.josephroque.bowlingcompanion.common.fragments.BaseFragment
 import ca.josephroque.bowlingcompanion.common.interfaces.IFloatingActionButtonHandler
+import ca.josephroque.bowlingcompanion.games.dialogs.ManualScoreDialog
 import ca.josephroque.bowlingcompanion.games.dialogs.ResetGameDialog
 import ca.josephroque.bowlingcompanion.games.lane.arePinsCleared
 import ca.josephroque.bowlingcompanion.games.views.FrameView
@@ -45,7 +47,8 @@ class GameFragment : BaseFragment(),
         PinLayout.PinLayoutInteractionDelegate,
         GameFooterView.GameFooterInteractionDelegate,
         GameHeaderView.GameHeaderInteractionDelegate,
-        MatchPlaySheet.MatchPlaySheetDelegate {
+        MatchPlaySheet.MatchPlaySheetDelegate,
+        ManualScoreDialog.ManualScoreDialogDelegate {
 
     /** Interaction listener. */
     private var listener: OnGameFragmentInteractionListener? = null
@@ -175,6 +178,14 @@ class GameFragment : BaseFragment(),
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         autoEventController.pauseAll()
         return when (item?.itemId) {
+            R.id.action_set_score -> {
+                showManualScoreDialog()
+                true
+            }
+            R.id.action_clear_score -> {
+                showClearManualScoreDialog()
+                true
+            }
             R.id.action_reset_game -> {
                 showResetGameDialog()
                 true
@@ -508,6 +519,13 @@ class GameFragment : BaseFragment(),
         }
     }
 
+    // MARK: ManualScoreDialogDelegate
+
+    /** @Override */
+    override fun onScoreSet(score: Int) {
+        print("Score set")
+    }
+
     // MARK: Dialogs
 
     /**
@@ -518,6 +536,41 @@ class GameFragment : BaseFragment(),
             ResetGameDialog.show(it, WeakReference({
                 resetGame()
             }))
+        }
+    }
+
+    /**
+     * Prompt the user to set a manual score.
+     */
+    private fun showManualScoreDialog() {
+        context?.let {
+            AlertDialog.Builder(it)
+                    .setTitle(R.string.dialog_set_score_title)
+                    .setMessage(R.string.dialog_set_score_message)
+                    .setPositiveButton(R.string.reset) { _, _ ->
+                        val newFragment = ManualScoreDialog.newInstance()
+                        fragmentNavigation?.pushDialogFragment(newFragment)
+                    }
+                    .setNegativeButton(R.string.cancel, null)
+                    .create()
+                    .show()
+        }
+    }
+
+    /**
+     * Prompt the user to clear a manual score.
+     */
+    private fun showClearManualScoreDialog() {
+        context?.let {
+            AlertDialog.Builder(it)
+                    .setTitle(R.string.dialog_clear_score_title)
+                    .setMessage(R.string.dialog_clear_score_message)
+                    .setPositiveButton(R.string.clear_score) { _, _ ->
+
+                    }
+                    .setNegativeButton(R.string.cancel, null)
+                    .create()
+                    .show()
         }
     }
 
