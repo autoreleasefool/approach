@@ -25,9 +25,11 @@ import ca.josephroque.bowlingcompanion.games.views.PinLayout
 import ca.josephroque.bowlingcompanion.matchplay.MatchPlayResult
 import ca.josephroque.bowlingcompanion.matchplay.MatchPlaySheet
 import ca.josephroque.bowlingcompanion.series.Series
+import ca.josephroque.bowlingcompanion.utils.BCError
 import kotlinx.android.synthetic.main.fragment_game.game_footer as gameFooter
 import kotlinx.android.synthetic.main.fragment_game.game_header as gameHeader
 import kotlinx.android.synthetic.main.fragment_game.hsv_frames as hsvFrames
+import kotlinx.android.synthetic.main.fragment_game.manual_score as manualScore
 import kotlinx.android.synthetic.main.fragment_game.pin_layout as pinLayout
 import kotlinx.android.synthetic.main.fragment_game.tv_final_score as finalScore
 import kotlinx.android.synthetic.main.fragment_game.tv_auto_advance as autoAdvance
@@ -47,8 +49,7 @@ class GameFragment : BaseFragment(),
         PinLayout.PinLayoutInteractionDelegate,
         GameFooterView.GameFooterInteractionDelegate,
         GameHeaderView.GameHeaderInteractionDelegate,
-        MatchPlaySheet.MatchPlaySheetDelegate,
-        ManualScoreDialog.ManualScoreDialogDelegate {
+        MatchPlaySheet.MatchPlaySheetDelegate {
 
     /** Interaction listener. */
     private var listener: OnGameFragmentInteractionListener? = null
@@ -254,6 +255,18 @@ class GameFragment : BaseFragment(),
                 gameState.disabledPins.forEach { pinLayout.setPinEnabled(it, false) }
             }
 
+            // Show/hide the pin layout and score when the score is manual
+            gameHeader.isManualScoreSet = gameState.currentGame.isManual
+            if (gameState.currentGame.isManual) {
+                pinLayout.visibility = View.GONE
+                hsvFrames.visibility = View.GONE
+                manualScore.visibility = View.VISIBLE
+            } else {
+                pinLayout.visibility = View.VISIBLE
+                hsvFrames.visibility = View.VISIBLE
+                manualScore.visibility = View.GONE
+            }
+
             // Set icons in game footer
             gameFooter.apply {
                 isFoulActive = gameState.currentFrame.ballFouled[gameState.currentBallIdx]
@@ -271,6 +284,7 @@ class GameFragment : BaseFragment(),
                     }
                     else -> R.drawable.ic_clear_pins_fifteen
                 }
+                isManualScoreSet = gameState.currentGame.isManual
             }
 
             if (ballChanged || isGameFirstRender) {
@@ -468,6 +482,16 @@ class GameFragment : BaseFragment(),
             autoEventController.pause(GameAutoEventController.AutoEvent.AdvanceFrame)
             render(ballChanged = true)
         }
+
+        /** @Override */
+        override fun onManualScoreSet() {
+            render(ballChanged = true, isGameFirstRender = false)
+        }
+
+        /** @Override */
+        override fun onManualScoreCleared() {
+            render(ballChanged = true, isGameFirstRender = false)
+        }
     }
 
     // MARK: GameAutoEventDelegate
@@ -519,13 +543,6 @@ class GameFragment : BaseFragment(),
         }
     }
 
-    // MARK: ManualScoreDialogDelegate
-
-    /** @Override */
-    override fun onScoreSet(score: Int) {
-        print("Score set")
-    }
-
     // MARK: Dialogs
 
     /**
@@ -543,13 +560,23 @@ class GameFragment : BaseFragment(),
      * Prompt the user to set a manual score.
      */
     private fun showManualScoreDialog() {
-        context?.let {
-            AlertDialog.Builder(it)
+        context?.let { context ->
+            AlertDialog.Builder(context)
                     .setTitle(R.string.dialog_set_score_title)
                     .setMessage(R.string.dialog_set_score_message)
-                    .setPositiveButton(R.string.reset) { _, _ ->
-                        val newFragment = ManualScoreDialog.newInstance()
-                        fragmentNavigation?.pushDialogFragment(newFragment)
+                    .setPositiveButton(R.string.set_score) { _, _ ->
+                        ManualScoreDialog.showSetScoreDialog(context) {
+                            if (!Game.isValidScore(it)) {
+                                BCError(
+                                        R.string.error_manual_score_invalid_title,
+                                        R.string.error_manual_score_invalid_message,
+                                        BCError.Severity.Warning
+                                ).show(context)
+                                return@showSetScoreDialog
+                            }
+
+                            gameState.setManualScore(WeakReference(context), it)
+                        }
                     }
                     .setNegativeButton(R.string.cancel, null)
                     .create()
@@ -562,15 +589,9 @@ class GameFragment : BaseFragment(),
      */
     private fun showClearManualScoreDialog() {
         context?.let {
-            AlertDialog.Builder(it)
-                    .setTitle(R.string.dialog_clear_score_title)
-                    .setMessage(R.string.dialog_clear_score_message)
-                    .setPositiveButton(R.string.clear_score) { _, _ ->
-
-                    }
-                    .setNegativeButton(R.string.cancel, null)
-                    .create()
-                    .show()
+            ManualScoreDialog.showClearScoreDialog(it) {
+                gameState.clearManualScore(WeakReference(it))
+            }
         }
     }
 

@@ -156,6 +156,34 @@ class GameState(private val series: Series, private val listener: GameStateListe
     }
 
     /**
+     * Set a manual score for the game and save the game.
+     *
+     * @param context to save the game
+     * @param score new manual score
+     */
+    fun setManualScore(context: WeakReference<Context>, score: Int) {
+        currentGame.isLocked = true
+        currentGame.isManual = true
+        currentGame.score = score
+        saveGame(context, true)
+        attemptToSetFrameAndBall(0, 0)
+        listener.onManualScoreSet()
+    }
+
+    /**
+     * Clear the manual score for the current game and save.
+     *
+     * @param context to save the game
+     */
+    fun clearManualScore(context: WeakReference<Context>) {
+        currentGame.isLocked = false
+        currentGame.isManual = false
+        saveGame(context, false)
+        attemptToSetFrameAndBall(0, 0)
+        listener.onManualScoreCleared()
+    }
+
+    /**
      * Set the game match play results.
      *
      * @param opponentName name of the opponent for match play
@@ -370,5 +398,15 @@ class GameState(private val series: Series, private val listener: GameStateListe
          * Called when the games finish loading.
          */
         fun onGamesLoaded()
+
+        /**
+         * Called when the manual score of the game is set.
+         */
+        fun onManualScoreSet()
+
+        /**
+         * Called when the manual score of the game is cleared.
+         */
+        fun onManualScoreCleared()
     }
 }

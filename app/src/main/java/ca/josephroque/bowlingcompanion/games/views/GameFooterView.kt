@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.matchplay.MatchPlayResult
+import kotlinx.android.synthetic.main.view_game_footer.view.divider as divider
 import kotlinx.android.synthetic.main.view_game_footer.view.iv_clear_pins as clearPinsIcon
 import kotlinx.android.synthetic.main.view_game_footer.view.iv_foul as foulIcon
 import kotlinx.android.synthetic.main.view_game_footer.view.iv_lock as lockIcon
@@ -36,6 +37,8 @@ class GameFooterView : ConstraintLayout, View.OnClickListener {
         private const val STATE_LOCK = "${TAG}_lock"
         /** Tag to save the current foul state. */
         private const val STATE_FOUL = "${TAG}_foul"
+        /** Tag to save the current manual score state. */
+        private const val STATE_MANUAL_SCORE = "${TAG}_manual"
     }
 
     /** Delegate for interactions. */
@@ -72,6 +75,15 @@ class GameFooterView : ConstraintLayout, View.OnClickListener {
             foulIcon.setImageResource(if (value) R.drawable.ic_foul_active else R.drawable.ic_foul_inactive)
         }
 
+    var isManualScoreSet: Boolean = false
+        set(value) {
+            field = value
+            val visible = if (value) View.GONE else View.VISIBLE
+            clearPinsIcon.visibility = visible
+            foulIcon.visibility = visible
+            divider.visibility = visible
+        }
+
     /** Required constructors */
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
@@ -92,6 +104,7 @@ class GameFooterView : ConstraintLayout, View.OnClickListener {
             putInt(STATE_MATCH_PLAY_RESULT, matchPlayResult.ordinal)
             putBoolean(STATE_LOCK, isGameLocked)
             putBoolean(STATE_FOUL, isFoulActive)
+            putBoolean(STATE_MANUAL_SCORE, isManualScoreSet)
         }
     }
 
@@ -103,6 +116,7 @@ class GameFooterView : ConstraintLayout, View.OnClickListener {
             matchPlayResult = MatchPlayResult.fromInt(state.getInt(STATE_MATCH_PLAY_RESULT))!!
             isGameLocked = state.getBoolean(STATE_LOCK)
             isFoulActive = state.getBoolean(STATE_FOUL)
+            isManualScoreSet = state.getBoolean(STATE_MANUAL_SCORE)
             superState = state.getParcelable(SUPER_STATE)
         }
 

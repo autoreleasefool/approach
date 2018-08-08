@@ -35,6 +35,8 @@ class GameHeaderView : LinearLayout, View.OnClickListener {
         private const val STATE_CURRENT_FRAME = "${TAG}_current_frame"
         /** Tag to save state of current ball. */
         private const val STATE_CURRENT_BALL = "${TAG}_current_ball"
+        /** Tag to save state of manual score */
+        private const val STATE_MANUAL_SCORE = "${TAG}_manual"
     }
 
     /** Handle interactions with the view. */
@@ -69,6 +71,18 @@ class GameHeaderView : LinearLayout, View.OnClickListener {
             field = value
         }
 
+    /**
+     * Indicates if a manual score is set for the current game. Hides or shows the prev and next ball
+     * button depending on if a manual score is set.
+     */
+    var isManualScoreSet: Boolean = false
+        set(value) {
+            field = value
+            val visibility = if (value) View.GONE else View.VISIBLE
+            prevBall.visibility = visibility
+            nextBall.visibility = visibility
+        }
+
     /** Required constructors */
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
@@ -87,6 +101,7 @@ class GameHeaderView : LinearLayout, View.OnClickListener {
             putInt(STATE_CURRENT_GAME, currentGame)
             putInt(STATE_CURRENT_FRAME, currentFrame)
             putInt(STATE_CURRENT_BALL, currentBall)
+            putBoolean(STATE_MANUAL_SCORE, isManualScoreSet)
         }
     }
 
@@ -97,6 +112,7 @@ class GameHeaderView : LinearLayout, View.OnClickListener {
             currentGame = state.getInt(STATE_CURRENT_GAME)
             currentFrame = state.getInt(STATE_CURRENT_FRAME)
             currentBall = state.getInt(STATE_CURRENT_BALL)
+            isManualScoreSet = state.getBoolean(STATE_MANUAL_SCORE)
             superState = state.getParcelable(SUPER_STATE)
         }
 

@@ -161,6 +161,9 @@
     <string name="dialog_set_score_message">Setting a manual score for this game will overwrite your balls and frames. Are you sure you want to set a manual score?</string>
     <string name="max_score">Score (max 450)</string>
 
+    <string name="error_manual_score_invalid_title">Score is invalid!</string>
+    <string name="error_manual_score_invalid_message">Your score must be between 0 and 450.</string>
+
     <string name="action_clear_score">Clear manual score</string>
     <string name="clear_score">Clear score</string>
     <string name="dialog_clear_score_title">Clear the manual score?</string>
