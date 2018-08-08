@@ -254,7 +254,7 @@ class GameState(private val series: Series, private val listener: GameStateListe
      */
     private fun moveToLastSavedFrame() {
         var lastSavedFrame = Game.LAST_FRAME
-        while (!currentGame.frames[lastSavedFrame].isAccessed) {
+        while (!currentGame.frames[lastSavedFrame].isAccessed && lastSavedFrame > 0) {
             lastSavedFrame--
         }
         attemptToSetFrameAndBall(lastSavedFrame, 0)
