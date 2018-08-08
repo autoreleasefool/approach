@@ -129,6 +129,14 @@ class GameFragment : BaseFragment(),
     }
 
     /** @Override */
+    override fun onPrepareOptionsMenu(menu: Menu?) {
+        super.onPrepareOptionsMenu(menu)
+        if (!gameState.gamesLoaded) { return }
+        menu?.findItem(R.id.action_set_score)?.isVisible = !gameState.currentGame.isManual
+        menu?.findItem(R.id.action_clear_score)?.isVisible = gameState.currentGame.isManual
+    }
+
+    /** @Override */
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         val parent = parentFragment as? OnGameFragmentInteractionListener ?: throw RuntimeException("${parentFragment!!} must implement OnGameFragmentInteractionListener")
@@ -460,6 +468,7 @@ class GameFragment : BaseFragment(),
                 autoEventController.disable(GameAutoEventController.AutoEvent.AdvanceFrame)
             }
             gameState.currentFrame.isAccessed = true
+            activity?.invalidateOptionsMenu()
             render(ballChanged = true, isGameFirstRender = true)
         }
 
@@ -485,11 +494,13 @@ class GameFragment : BaseFragment(),
 
         /** @Override */
         override fun onManualScoreSet() {
+            activity?.invalidateOptionsMenu()
             render(ballChanged = true, isGameFirstRender = false)
         }
 
         /** @Override */
         override fun onManualScoreCleared() {
+            activity?.invalidateOptionsMenu()
             render(ballChanged = true, isGameFirstRender = false)
         }
     }
