@@ -478,9 +478,10 @@ class GameFragment : BaseFragment(),
 
         /** @Override */
         override fun onBallChanged() {
-            if (wasLastBall && !gameState.isLastBall) {
+            val isManual = gameState.gamesLoaded && gameState.currentGame.isManual
+            if (!isManual && wasLastBall && !gameState.isLastBall) {
                 listener?.enableFab(true)
-            } else if (!wasLastBall && gameState.isLastBall) {
+            } else if (isManual || (!wasLastBall && gameState.isLastBall)) {
                 listener?.enableFab(false)
             }
 
@@ -498,12 +499,14 @@ class GameFragment : BaseFragment(),
 
         /** @Override */
         override fun onManualScoreSet() {
+            listener?.enableFab(false)
             activity?.invalidateOptionsMenu()
             render(ballChanged = true, isGameFirstRender = false)
         }
 
         /** @Override */
         override fun onManualScoreCleared() {
+            listener?.enableFab(!gameState.isLastBall)
             activity?.invalidateOptionsMenu()
             render(ballChanged = true, isGameFirstRender = false)
         }
