@@ -188,7 +188,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/primaryBlackText</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textSize">@dimen/text_title</item>
+        <item name="android:textSize">@dimen/text_header</item>
         <item name="android:textAlignment">textStart</item>
         <item name="android:layout_marginLeft">@dimen/text_margin_horizontal</item>
         <item name="android:layout_marginRight">@dimen/text_margin_horizontal</item>
@@ -196,8 +196,12 @@
         <item name="android:layout_marginBottom">@dimen/text_margin_vertical</item>
     </style>
 
+    <style name="TitleText" parent="HeaderText">
+        <item name="android:textSize">@dimen/text_title</item>
+    </style>
+
     <style name="SubHeaderText" parent="HeaderText">
-        <item name="android:textSize">@dimen/text_subtitle</item>
+        <item name="android:textSize">@dimen/text_subheader</item>
     </style>
 
     <style name="BodyText" parent="@android:style/TextAppearance">

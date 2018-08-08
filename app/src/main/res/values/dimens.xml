@@ -13,8 +13,9 @@
     <dimen name="base_icon_size">44dp</dimen>
 
     <!-- Text -->
-    <dimen name="text_title">20sp</dimen>
-    <dimen name="text_subtitle">18sp</dimen>
+    <dimen name="text_title">48sp</dimen>
+    <dimen name="text_header">20sp</dimen>
+    <dimen name="text_subheader">18sp</dimen>
     <dimen name="text_list_item">16sp</dimen>
     <dimen name="text_body">14sp</dimen>
     <dimen name="text_caption">12sp</dimen>

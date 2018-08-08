@@ -268,10 +268,14 @@ class GameFragment : BaseFragment(),
             if (gameState.currentGame.isManual) {
                 pinLayout.visibility = View.GONE
                 hsvFrames.visibility = View.GONE
+
+                manualScore.text = gameState.currentGame.score.toString()
                 manualScore.visibility = View.VISIBLE
             } else {
                 pinLayout.visibility = View.VISIBLE
                 hsvFrames.visibility = View.VISIBLE
+
+                manualScore.text = null
                 manualScore.visibility = View.GONE
             }
 

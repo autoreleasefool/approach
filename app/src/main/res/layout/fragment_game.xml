@@ -126,6 +126,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:textColor="@color/primaryWhiteText"
             app:layout_constraintTop_toBottomOf="@id/game_header"
             app:layout_constraintBottom_toTopOf="@id/game_footer"
             app:layout_constraintLeft_toLeftOf="parent"
