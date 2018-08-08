@@ -114,6 +114,7 @@ class Game(
     /** The score of the game. */
     var score: Int = initialScore
         get() {
+            if (isManual) { return field }
             if (dirty) { frameScores.hashCode() }
             return field
         }
@@ -184,8 +185,10 @@ class Game(
             }
 
             // Calculate the final score of the game
-            score = totalScore - fouls * Game.FOUL_PENALTY
-            dirty = false
+            if (!isManual) {
+                score = totalScore - fouls * Game.FOUL_PENALTY
+                dirty = false
+            }
 
             field = frameScores
             return frameScores
