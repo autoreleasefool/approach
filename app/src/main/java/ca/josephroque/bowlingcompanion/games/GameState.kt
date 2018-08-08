@@ -162,6 +162,7 @@ class GameState(private val series: Series, private val listener: GameStateListe
      * @param score new manual score
      */
     fun setManualScore(context: WeakReference<Context>, score: Int) {
+        resetGame(context)
         currentGame.isLocked = true
         currentGame.isManual = true
         currentGame.score = score
