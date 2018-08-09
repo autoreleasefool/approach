@@ -281,6 +281,10 @@ class GameState(private val series: Series, private val listener: GameStateListe
                             currentFrame.pinState[j].forEach { it.isDown = false }
                         }
                     }
+
+                    if (isLastFrame) {
+                        break
+                    }
                 }
             }
         } else {
