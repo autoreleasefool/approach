@@ -256,21 +256,21 @@ class Game(
                     } else {
                         // When the first ball is a strike, show the pins knocked down in the next frame, or empty frames
                         if (nextFrame.isAccessed) {
-                            balls[1] = nextFrame.pinState[0].ballValue(0, false, true)
+                            balls[1] = nextFrame.pinState[0].ballValue(1, false, true)
                             if (nextFrame.pinState[0].arePinsCleared()) {
                                 // When the next frame is a strike, the 3rd ball will have to come from the frame after
                                 if (frame.zeroBasedOrdinal < Game.LAST_FRAME - 1) {
                                     val nextNextFrame = frames[index + 2]
                                     balls[2] = if (nextNextFrame.isAccessed)
-                                        nextNextFrame.pinState[0].ballValue(0, false, true)
+                                        nextNextFrame.pinState[0].ballValue(2, false, true)
                                     else
                                         Ball.None.toString()
                                 } else {
                                     // In the 9th frame, the 3rd ball comes from the 10th frame's second ball
-                                    balls[2] = nextFrame.pinState[1].ballValue(1, false, true)
+                                    balls[2] = nextFrame.pinState[1].ballValue(2, false, true)
                                 }
                             } else {
-                                balls[2] = nextFrame.pinState[1].ballValueDifference(nextFrame.pinState[0], 1, false, true)
+                                balls[2] = nextFrame.pinState[1].ballValueDifference(nextFrame.pinState[0], 2, false, true)
                             }
                         } else {
                             balls[1] = Ball.None.toString()
