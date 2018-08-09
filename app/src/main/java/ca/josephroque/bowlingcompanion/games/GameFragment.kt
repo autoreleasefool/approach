@@ -16,6 +16,7 @@ import ca.josephroque.bowlingcompanion.common.Android
 import ca.josephroque.bowlingcompanion.common.fragments.BaseFragment
 import ca.josephroque.bowlingcompanion.common.interfaces.IFloatingActionButtonHandler
 import ca.josephroque.bowlingcompanion.games.dialogs.ManualScoreDialog
+import ca.josephroque.bowlingcompanion.games.dialogs.PossibleScoreDialog
 import ca.josephroque.bowlingcompanion.games.dialogs.ResetGameDialog
 import ca.josephroque.bowlingcompanion.games.lane.arePinsCleared
 import ca.josephroque.bowlingcompanion.games.views.FrameView
@@ -134,6 +135,8 @@ class GameFragment : BaseFragment(),
         if (!gameState.gamesLoaded) { return }
         menu?.findItem(R.id.action_set_score)?.isVisible = !gameState.currentGame.isManual
         menu?.findItem(R.id.action_clear_score)?.isVisible = gameState.currentGame.isManual
+        menu?.findItem(R.id.action_best_possible)?.isVisible = !gameState.currentGame.isManual
+        menu?.findItem(R.id.action_event_stats)?.isVisible = gameState.currentGame.series.league.isEvent
     }
 
     /** @Override */
@@ -193,6 +196,10 @@ class GameFragment : BaseFragment(),
             }
             R.id.action_clear_score -> {
                 showClearManualScoreDialog()
+                true
+            }
+            R.id.action_best_possible -> {
+                showBestScorePossible()
                 true
             }
             R.id.action_reset_game -> {
@@ -562,6 +569,13 @@ class GameFragment : BaseFragment(),
     }
 
     // MARK: Dialogs
+
+    /**
+     * Show the user their best score possible this game.
+     */
+    private fun showBestScorePossible() {
+        context?.let { PossibleScoreDialog.show(it, gameState.currentGame.deepCopy(), gameState.currentFrameIdx, gameState.currentBallIdx) }
+    }
 
     /**
      * Prompt the user to reset the current game.

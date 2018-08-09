@@ -155,6 +155,8 @@
     <string name="dialog_reset_game_title">Reset game?</string>
     <string name="dialog_reset_game_message">Are you sure you want to reset this game? The data cannot be recovered.</string>
 
+    <string name="action_best_possible">What if I strikeout?</string>
+
     <string name="action_set_score">Set manual score</string>
     <string name="set_score">Set score</string>
     <string name="dialog_set_score_title">Set a manual score?</string>
@@ -168,6 +170,12 @@
     <string name="clear_score">Clear score</string>
     <string name="dialog_clear_score_title">Clear the manual score?</string>
     <string name="dialog_clear_score_message">Clearing the manual score will reset the game so you can put in your own ball and frame data. Are you sure you want to clear the score?</string>
+
+    <string name="dialog_best_possible_title">Best possible score</string>
+    <string name="dialog_best_possible_message">If you get %1$s this ball, and strikes onwards, your final score will be %2$d</string>
+    <string name="best_possible_strike">a strike</string>
+    <string name="best_possible_spare">a spare</string>
+    <string name="best_possible_fifteen">fifteen</string>
 
     <!-- Match play -->
     <string name="issue_setting_match_play">Issue setting match play!</string>

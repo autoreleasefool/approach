@@ -17,6 +17,12 @@
         app:showAsAction="never" />
 
     <item
+        android:id="@+id/action_best_possible"
+        android:orderInCategory="6"
+        android:title="@string/action_best_possible"
+        app:showAsAction="never" />
+
+    <item
         android:id="@+id/action_reset_game"
         android:orderInCategory="7"
         android:title="@string/action_reset_game"
