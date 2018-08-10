@@ -453,7 +453,6 @@ class GameFragment : BaseFragment(),
         } else {
             gameState.nextBall()
         }
-
     }
 
     /** @Override */

@@ -215,11 +215,10 @@ class GameControllerFragment : TabbedFragment(),
             if (currentGame != nextGame) {
                 currentGame = nextGame
             }
-            
+
             // Only return true if the bowler has switched, not the game
             return switchedBowler
         }
-
 
         // No next bowler found
         return false
