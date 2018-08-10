@@ -101,7 +101,6 @@ class GameFragment : BaseFragment(),
         savedInstanceState: Bundle?
     ): View? {
         setHasOptionsMenu(true)
-        series = arguments?.getParcelable(ARG_SERIES)
         val view = inflater.inflate(R.layout.fragment_game, container, false)
 
         frameViews = arrayOfNulls(frameViewIds.size)
@@ -117,6 +116,7 @@ class GameFragment : BaseFragment(),
     /** @Override */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        series = arguments?.getParcelable(ARG_SERIES)
 
         // Enable automatic events
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
@@ -174,7 +174,9 @@ class GameFragment : BaseFragment(),
         gameHeader.delegate = this
 
         // Advance to the last edited frame of the game
-        gameState.moveToLastSavedFrame()
+        if (gameState.gamesLoaded) {
+            gameState.moveToLastSavedFrame()
+        }
     }
 
     /** @Override */
@@ -498,6 +500,7 @@ class GameFragment : BaseFragment(),
 
         /** @Override */
         override fun onBallChanged() {
+            render(ballChanged = true)
             if (gameState.currentBallIdx == 0) {
                 if (listener?.nextBowler(false) == true) {
                     return
@@ -520,7 +523,6 @@ class GameFragment : BaseFragment(),
                 autoEventController.pause(GameAutoEventController.AutoEvent.Lock)
             }
             autoEventController.pause(GameAutoEventController.AutoEvent.AdvanceFrame)
-            render(ballChanged = true)
         }
 
         /** @Override */
