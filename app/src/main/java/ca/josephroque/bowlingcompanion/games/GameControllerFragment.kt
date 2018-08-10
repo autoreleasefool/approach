@@ -55,8 +55,9 @@ class GameControllerFragment : TabbedFragment(),
     private var seriesList: List<Series>? = null
 
     /** The current series being edited. */
-    private val currentSeries: Int
+    private var currentSeries: Int
         get() = fragmentPager.currentItem
+        set(value) { fragmentPager.currentItem = value }
 
     /** The current game being edited. */
     private var currentGame: Int = 0
@@ -118,37 +119,6 @@ class GameControllerFragment : TabbedFragment(),
         onSeriesChanged(currentSeries)
     }
 
-    /** @Override */
-    override fun getFabImage(): Int? {
-        return if (fabEnabled) R.drawable.ic_arrow_forward else null
-    }
-
-    /** @Override */
-    override fun onFabClick() {
-        if (!fabEnabled) {
-            return
-        }
-
-        // TODO: move to next bowler
-        val adapter = fragmentPager?.adapter as? GameControllerPagerAdapter
-        val gameFragment = adapter?.getFragment(currentTab) as? GameFragment
-        gameFragment?.onFabClick()
-    }
-
-    /** @Override */
-    override fun onNavDrawerItemSelected(@IdRes itemId: Int) {
-        val game = NavigationDrawerController.navGameItemIds.indexOf(itemId)
-        if (game >= 0) {
-            currentGame = game
-        }
-    }
-
-    /** @Override */
-    override fun enableFab(enabled: Boolean) {
-        fabEnabled = enabled
-        fabProvider?.invalidateFab()
-    }
-
     /**
      * Handle when series changes.
      *
@@ -171,6 +141,88 @@ class GameControllerFragment : TabbedFragment(),
         val adapter = fragmentPager.adapter as? GameControllerPagerAdapter
         val gameFragment = adapter?.getFragment(currentSeries) as? GameFragment
         gameFragment?.gameNumber = currentGame
+    }
+
+    // MARK: IFloatingActionButtonHandler
+
+    /** @Override */
+    override fun getFabImage(): Int? {
+        return if (fabEnabled) R.drawable.ic_arrow_forward else null
+    }
+
+    /** @Override */
+    override fun onFabClick() {
+        if (!fabEnabled) {
+            return
+        }
+
+        val adapter = fragmentPager?.adapter as? GameControllerPagerAdapter
+        val gameFragment = adapter?.getFragment(currentTab) as? GameFragment
+        gameFragment?.onFabClick()
+    }
+
+    // MARK: INavigationDrawerHandler
+
+    /** @Override */
+    override fun onNavDrawerItemSelected(@IdRes itemId: Int) {
+        val game = NavigationDrawerController.navGameItemIds.indexOf(itemId)
+        if (game >= 0) {
+            currentGame = game
+        }
+    }
+
+    // MARK: OnGameFragmentInteractionListener
+
+    /** @Override */
+    override fun enableFab(enabled: Boolean) {
+        fabEnabled = enabled
+        fabProvider?.invalidateFab()
+    }
+
+    /** @Override */
+    override fun nextBowler(isLastFrame: Boolean): Boolean {
+        val seriesList = seriesList ?: return false
+        if (seriesList.size == 1) return false
+
+        // Find the next bowler in the remaining list to switch to with games to still play
+        var nextSeries = currentSeries + 1
+        while (nextSeries <= seriesList.lastIndex && seriesList[nextSeries].numberOfGames <= currentGame) {
+            nextSeries += 1
+        }
+
+        // If there's a bowler found, switch to them and exit
+        if (nextSeries <= seriesList.lastIndex) {
+            currentSeries = nextSeries
+            return true
+        }
+
+        // If we were on the last frame, then the next bowler will be on the next game
+        val nextGame = if (isLastFrame) currentGame + 1 else currentGame
+        nextSeries = 0
+
+        // Find the first bowler in the list to switch to with games still to play
+        while (nextSeries <= seriesList.lastIndex && seriesList[nextSeries].numberOfGames <= nextGame) {
+            nextSeries += 1
+        }
+
+        // If there's a bowler found, switch to them, update the game, and exit
+        var switchedBowler = false
+        if (nextSeries <= seriesList.lastIndex) {
+            if (currentSeries != nextSeries) {
+                currentSeries = nextSeries
+                switchedBowler = true
+            }
+            if (currentGame != nextGame) {
+                currentGame = nextGame
+            }
+            
+            // Only return true if the bowler has switched, not the game
+            return switchedBowler
+        }
+
+
+        // No next bowler found
+        return false
     }
 
     /**

@@ -121,6 +121,12 @@ class GameFragment : BaseFragment(),
         // Enable automatic events
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
         autoEventController = GameAutoEventController(preferences, autoEventDelegate)
+
+        val context = context ?: return
+        series?.let {
+            gameState = GameState(it, gameStateListener)
+            gameState.loadGames(context)
+        }
     }
 
     /** @Override */
@@ -156,33 +162,36 @@ class GameFragment : BaseFragment(),
     override fun onStart() {
         super.onStart()
 
-        frameViews.forEach { it?.delegate = this }
-        pinLayout.delegate = this
-        gameFooter.delegate = this
-        gameHeader.delegate = this
-    }
-
-    /** @Override */
-    override fun onResume() {
-        super.onResume()
-        val context = context ?: return
-        series?.let {
-            gameState = GameState(it, gameStateListener)
-            gameState.loadGames(context)
-        }
-
         // Enable automatic events
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
         autoEventController.init(preferences)
         autoEventController.pauseAll()
 
-        onBallSelected(0, 0)
+        // Set delegates
+        frameViews.forEach { it?.delegate = this }
+        pinLayout.delegate = this
+        gameFooter.delegate = this
+        gameHeader.delegate = this
+
+        // Advance to the last edited frame of the game
+        gameState.moveToLastSavedFrame()
+    }
+
+    /** @Override */
+    override fun onStop() {
+        super.onStop()
+        autoEventController.pauseAll()
+    }
+
+    /** @Override */
+    override fun onResume() {
+        super.onResume()
+        render(ballChanged = false, isGameFirstRender = false)
     }
 
     /** @Override */
     override fun onPause() {
         super.onPause()
-        autoEventController.pauseAll()
         context?.let { gameState.saveGame(WeakReference(it), true) }
     }
 
@@ -438,8 +447,13 @@ class GameFragment : BaseFragment(),
     /** @Override */
     override fun onNextBall() {
         saveCurrentFrame(false)
-        gameState.nextBall()
-        // TODO: change bowler if necessary
+
+        if (gameState.isLastBall) {
+            listener?.nextBowler(true)
+        } else {
+            gameState.nextBall()
+        }
+
     }
 
     /** @Override */
@@ -485,6 +499,12 @@ class GameFragment : BaseFragment(),
 
         /** @Override */
         override fun onBallChanged() {
+            if (gameState.currentBallIdx == 0) {
+                if (listener?.nextBowler(false) == true) {
+                    return
+                }
+            }
+
             val isManual = gameState.gamesLoaded && gameState.currentGame.isManual
             if (!isManual && wasLastBall && !gameState.isLastBall) {
                 listener?.enableFab(true)
@@ -656,6 +676,19 @@ class GameFragment : BaseFragment(),
      * Handle interactions with the game fragment.
      */
     interface OnGameFragmentInteractionListener {
+        /**
+         * Enable or disable the floating action button.
+         *
+         * @param enabled to enable or disable
+         */
         fun enableFab(enabled: Boolean)
+
+        /**
+         * Prompt for the next bowler.
+         *
+         * @param isLastFrame true if the game is in the last frame
+         * @return true if the next bowler was switched to, false otherwise.
+         */
+        fun nextBowler(isLastFrame: Boolean): Boolean
     }
 }

@@ -252,7 +252,7 @@ class GameState(private val series: Series, private val listener: GameStateListe
     /**
      * Move the frame of the current game which was last saved.
      */
-    private fun moveToLastSavedFrame() {
+    fun moveToLastSavedFrame() {
         var lastSavedFrame = Game.LAST_FRAME
         while (!currentGame.frames[lastSavedFrame].isAccessed && lastSavedFrame > 0) {
             lastSavedFrame--
