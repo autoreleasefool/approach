@@ -55,7 +55,7 @@ class TeamMembersListFragment :
 
     /** @Override */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        team = savedInstanceState?.getParcelable(ARG_TEAM) ?: arguments?.getParcelable(ARG_TEAM)
+        team = arguments?.getParcelable(ARG_TEAM)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 

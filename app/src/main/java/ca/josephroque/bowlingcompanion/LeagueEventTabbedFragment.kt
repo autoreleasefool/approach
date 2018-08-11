@@ -74,7 +74,7 @@ class LeagueEventTabbedFragment : TabbedFragment(),
 
     /** @Override */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        bowler = savedInstanceState?.getParcelable(ARG_BOWLER) ?: arguments?.getParcelable(ARG_BOWLER)
+        bowler = arguments?.getParcelable(ARG_BOWLER)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 

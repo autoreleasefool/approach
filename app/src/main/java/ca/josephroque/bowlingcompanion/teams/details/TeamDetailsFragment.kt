@@ -70,7 +70,7 @@ class TeamDetailsFragment : BaseFragment(),
 
     /** @Override */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        team = savedInstanceState?.getParcelable(ARG_TEAM) ?: arguments?.getParcelable(ARG_TEAM)
+        team = arguments?.getParcelable(ARG_TEAM)
         setHasOptionsMenu(true)
 
         val view = inflater.inflate(R.layout.fragment_team_details, container, false)

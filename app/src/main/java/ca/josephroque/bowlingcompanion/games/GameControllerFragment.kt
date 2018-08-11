@@ -75,7 +75,7 @@ class GameControllerFragment : TabbedFragment(),
     /** @Override */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
-        val parcelableSeries = savedInstanceState?.getParcelableArray(ARG_SERIES) ?: arguments?.getParcelableArray(ARG_SERIES)
+        val parcelableSeries = arguments?.getParcelableArray(ARG_SERIES)
         parcelableSeries?.let {
             val mutableSeriesList: MutableList<Series> = ArrayList()
             parcelableSeries.forEach { series -> mutableSeriesList.add(series as Series) }
