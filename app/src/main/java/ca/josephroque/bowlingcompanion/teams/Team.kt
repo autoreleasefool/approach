@@ -37,7 +37,8 @@ import kotlin.collections.ArrayList
 class Team(
     override val id: Long,
     val name: String,
-    val members: List<TeamMember>
+    val members: List<TeamMember>,
+    val initialOrder: List<Long>? = null
 ) : KParcelable, IDeletable, IIdentifiable {
 
     /** Private field to indicate if the item is deleted. */
@@ -46,9 +47,18 @@ class Team(
     override val isDeleted: Boolean
         get() = _isDeleted
 
+    /** Get the members of the team in the sorted order. */
+    val membersInOrder: List<TeamMember>
+        get() {
+            return members.sortedWith(compareBy { order.indexOf(it.id) })
+        }
+
     /** Get the list of series for the team members. */
     val series: List<Series>
-        get() = members.map { it.series!! }
+        get() = membersInOrder.map { it.series!! }
+
+    /** Ordering of the team members. */
+    val order: List<Long> = initialOrder?.toMutableList() ?: members.map { it.id }
 
     /**
      * Construct [Team] from a [Parcel]
@@ -61,6 +71,12 @@ class Team(
                 this.addAll(parcelableArray.map {
                     return@map it as TeamMember
                 })
+            },
+            initialOrder = arrayListOf<Long>().apply {
+                val size = p.readInt()
+                val array = LongArray(size)
+                p.readLongArray(array)
+                this.addAll(array.toList())
             }
     )
 
@@ -70,7 +86,8 @@ class Team(
     constructor(team: Team): this(
             id = team.id,
             name = team.name,
-            members = team.members
+            members = team.members,
+            initialOrder = team.order
     )
 
     /** @Override */
@@ -78,6 +95,8 @@ class Team(
         writeLong(id)
         writeString(name)
         writeParcelableArray(members.toTypedArray(), 0)
+        writeInt(order.size)
+        writeLongArray(order.toLongArray())
     }
 
     /** @Override */
