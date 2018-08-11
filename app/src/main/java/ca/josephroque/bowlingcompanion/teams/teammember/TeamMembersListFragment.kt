@@ -19,8 +19,7 @@ import java.util.Collections
  */
 class TeamMembersListFragment :
     ListFragment<TeamMember, TeamMembersRecyclerViewAdapter>(),
-    TeamMembersRecyclerViewAdapter.TeamMemberMoveInteractionListener
-{
+    TeamMembersRecyclerViewAdapter.TeamMemberMoveInteractionListener {
 
     companion object {
         /** Logging identifier. */
