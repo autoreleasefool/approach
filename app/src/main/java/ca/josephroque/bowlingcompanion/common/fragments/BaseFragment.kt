@@ -60,6 +60,11 @@ abstract class BaseFragment : Fragment() {
     interface FragmentNavigation {
 
         /**
+         * Pop the current [Fragment].
+         */
+        fun popFragment()
+
+        /**
          * Push a new [Fragment] onto the stack
          *
          * @param fragment the fragment to push

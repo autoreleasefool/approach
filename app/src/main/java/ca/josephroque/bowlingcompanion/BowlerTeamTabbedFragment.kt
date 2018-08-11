@@ -151,7 +151,7 @@ class BowlerTeamTabbedFragment : TabbedFragment(),
      * @param team the team whose details will be shown
      */
     private fun showTeamDetails(team: Team) {
-        val newFragment = TeamDetailsFragment.newInstance(team)
+        val newFragment = TeamDetailsFragment.newInstance(team, false)
         fragmentNavigation?.pushFragment(newFragment)
     }
 

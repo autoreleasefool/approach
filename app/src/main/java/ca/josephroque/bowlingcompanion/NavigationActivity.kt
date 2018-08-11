@@ -154,6 +154,11 @@ class NavigationActivity : BaseActivity(),
     }
 
     /** @Override */
+    override fun popFragment() {
+        fragNavController?.popFragment()
+    }
+
+    /** @Override */
     override fun pushFragment(fragment: BaseFragment) {
         val transactionOptions = FragNavTransactionOptions.newBuilder()
                 .transition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)

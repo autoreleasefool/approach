@@ -74,9 +74,10 @@
 
     <!-- Team Members -->
     <string name="team_members">Team members</string>
-    <string name="team_members_select_league">Select an event, or a league and series for each bowler.</string>
+    <string name="team_members_select_league">Tap each bowler to select an event or league for them.\nChange the order of the bowlers by holding and dragging them.</string>
     <string name="team_members_leagues_select_a_league">Select a league or event below for the bowler.</string>
     <string name="team_members_series_select_a_series">Select a series below for the bowler or create a new one.</string>
+    <string name="team_members_reorder">Change the order of the bowlers by holding and dragging them.</string>
     <string name="create_new_series">New series</string>
 
     <!-- Leagues -->

@@ -28,8 +28,9 @@ abstract class TabbedFragment : BaseFragment(),
     }
 
     /** Active tab. */
-    protected val currentTab: Int
+    protected var currentTab: Int
         get() = fragmentPager?.currentItem ?: 0
+        set(value) { fragmentPager?.currentItem = value }
 
     /** Delegate for [TabbedFragment] events. */
     private var delegate: TabbedFragmentDelegate? = null
@@ -81,6 +82,7 @@ abstract class TabbedFragment : BaseFragment(),
      * @param rootView the root view of the fragment
      */
     private fun configureTabLayout(rootView: View) {
+        rootView.tabbed_fragment_tabs.removeAllTabs()
         addTabs(rootView.tabbed_fragment_tabs)
         rootView.tabbed_fragment_pager.scrollingEnabled = false
 
@@ -98,6 +100,13 @@ abstract class TabbedFragment : BaseFragment(),
             override fun onTabUnselected(tab: TabLayout.Tab) {}
             override fun onTabReselected(tab: TabLayout.Tab) {}
         })
+    }
+
+    /**
+     * Reset the tab layout.
+     */
+    fun resetTabLayout() {
+        configureTabLayout(view!!)
     }
 
     /**
