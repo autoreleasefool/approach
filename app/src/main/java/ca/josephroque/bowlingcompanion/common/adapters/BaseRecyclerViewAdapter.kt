@@ -89,7 +89,7 @@ abstract class BaseRecyclerViewAdapter<Item : IIdentifiable>(
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
         super.onAttachedToRecyclerView(recyclerView)
         this.recyclerView = recyclerView
-        itemTouchHelper = ItemTouchHelper(SwipeCallback())
+        itemTouchHelper = ItemTouchHelper(buildItemTouchHelper())
         itemTouchHelper?.attachToRecyclerView(this.recyclerView)
     }
 
@@ -159,6 +159,15 @@ abstract class BaseRecyclerViewAdapter<Item : IIdentifiable>(
         }
 
         return false
+    }
+
+    /**
+     * Build a [ItemTouchHelper] for the list.
+     *
+     * @return an instance of [SwipeCallback]
+     */
+    open fun buildItemTouchHelper(): ItemTouchHelper.Callback {
+        return SwipeCallback()
     }
 
     /**
