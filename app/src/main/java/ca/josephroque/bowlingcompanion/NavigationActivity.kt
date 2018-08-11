@@ -6,6 +6,7 @@ import android.support.design.widget.BottomSheetDialogFragment
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentTransaction
 import android.support.v4.view.GravityCompat
+import android.support.v4.widget.DrawerLayout
 import android.view.MenuItem
 import android.view.View
 import ca.josephroque.bowlingcompanion.bowlers.BowlerListFragment
@@ -18,6 +19,7 @@ import ca.josephroque.bowlingcompanion.common.fragments.BaseFragment
 import ca.josephroque.bowlingcompanion.common.fragments.TabbedFragment
 import ca.josephroque.bowlingcompanion.common.interfaces.INavigationDrawerHandler
 import ca.josephroque.bowlingcompanion.series.SeriesListFragment
+import ca.josephroque.bowlingcompanion.teams.details.TeamDetailsFragment
 import com.ncapdevi.fragnav.FragNavController
 import com.ncapdevi.fragnav.FragNavTransactionOptions
 import kotlinx.android.synthetic.main.activity_navigation.bottom_navigation as bottomNavigation
@@ -210,7 +212,10 @@ class NavigationActivity : BaseActivity(),
 
             when (menuItem.itemId) {
                 R.id.nav_bowlers_teams -> popBackTo(BowlerTeamTabbedFragment::class.java.name)
-                R.id.nav_leagues_events -> popBackTo(LeagueEventTabbedFragment::class.java.name)
+                R.id.nav_leagues_events -> {
+                    popBackTo(TeamDetailsFragment::class.java.name)
+                    popBackTo(LeagueEventTabbedFragment::class.java.name)
+                }
                 R.id.nav_series -> popBackTo(SeriesListFragment::class.java.name)
                 R.id.nav_feedback -> prepareFeedbackEmail()
                 R.id.nav_settings -> openSettings()
@@ -301,8 +306,10 @@ class NavigationActivity : BaseActivity(),
         if (fragment is INavigationDrawerHandler) {
             fragment.navigationDrawerController = navDrawerController
             supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_menu)
+            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
         } else {
             supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back)
+            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
         }
 
         toolbar.elevation = if (fragment is TabbedFragment) {

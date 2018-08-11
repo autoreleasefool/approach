@@ -29,6 +29,15 @@ class NavigationDrawerController(
                 R.id.nav_game_17, R.id.nav_game_18, R.id.nav_game_19, R.id.nav_game_20)
     }
 
+    /** Hide certain items if there is a team member's games being displayed in the navigation drawer. */
+    var isTeamMember: Boolean = false
+        set(value) {
+            field = value
+            navigationView.get()?.let {
+                it.menu.findItem(R.id.nav_series).isVisible = !value
+            }
+        }
+
     /** The number of game items to display in the navigation drawer. */
     var numberOfGames: Int = League.MAX_NUMBER_OF_GAMES
         set(value) {

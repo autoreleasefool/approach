@@ -144,6 +144,7 @@ class GameControllerFragment : TabbedFragment(),
         super.onResume()
         onSeriesChanged(currentSeries)
         activity?.invalidateOptionsMenu()
+        navigationDrawerController.isTeamMember = (seriesList?.size ?: 0) > 1
     }
 
     /**
