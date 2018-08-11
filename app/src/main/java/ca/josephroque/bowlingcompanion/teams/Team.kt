@@ -49,9 +49,7 @@ class Team(
 
     /** Get the members of the team in the sorted order. */
     val membersInOrder: List<TeamMember>
-        get() {
-            return members.sortedWith(compareBy { order.indexOf(it.id) })
-        }
+        get() = members.sortedWith(compareBy { order.indexOf(it.id) })
 
     /** Get the list of series for the team members. */
     val series: List<Series>

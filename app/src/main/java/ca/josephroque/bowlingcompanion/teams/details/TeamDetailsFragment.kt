@@ -148,6 +148,11 @@ class TeamDetailsFragment : BaseFragment(),
         allTeamMembersReady = ready
     }
 
+    /** @Override */
+    override fun onTeamMembersReordered(order: List<Long>) {
+        team?.let { team = Team(it.id, it.name, it.members, order) }
+    }
+
     /**
      * Attempt to begin a new round of bowling.
      *
@@ -224,7 +229,8 @@ class TeamDetailsFragment : BaseFragment(),
                 this@TeamDetailsFragment.team = Team(
                         id = team.id,
                         name = team.name,
-                        members = membersWithSeries
+                        members = membersWithSeries,
+                        initialOrder = team.order
                 )
             }
 

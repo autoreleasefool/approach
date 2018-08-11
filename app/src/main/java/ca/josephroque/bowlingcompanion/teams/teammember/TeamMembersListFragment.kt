@@ -10,13 +10,17 @@ import ca.josephroque.bowlingcompanion.teams.Team
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async
+import java.util.Collections
 
 /**
  * Copyright (C) 2018 Joseph Roque
  *
  * A fragment to display a list of team members.
  */
-class TeamMembersListFragment : ListFragment<TeamMember, TeamMembersRecyclerViewAdapter>() {
+class TeamMembersListFragment :
+    ListFragment<TeamMember, TeamMembersRecyclerViewAdapter>(),
+    TeamMembersRecyclerViewAdapter.TeamMemberMoveInteractionListener
+{
 
     companion object {
         /** Logging identifier. */
@@ -45,6 +49,10 @@ class TeamMembersListFragment : ListFragment<TeamMember, TeamMembersRecyclerView
     /** Interaction teamMemberListener. */
     private var teamMemberListener: OnTeamMembersListFragmentInteractionListener? = null
 
+    /** Indicates if all team members are ready to begin a game. */
+    private val allTeamMembersReady: Boolean
+        get() = (adapter?.items?.filter { it.league != null }?.size ?: -1) == (adapter?.items?.size ?: -2)
+
     /** @Override */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         team = savedInstanceState?.getParcelable(ARG_TEAM) ?: arguments?.getParcelable(ARG_TEAM)
@@ -67,14 +75,15 @@ class TeamMembersListFragment : ListFragment<TeamMember, TeamMembersRecyclerView
     /** @Override */
     override fun buildAdapter(): TeamMembersRecyclerViewAdapter {
         val teamMembers: List<TeamMember> = team?.members ?: emptyList()
-        return TeamMembersRecyclerViewAdapter(teamMembers, this)
+        val teamMembersOrder: List<Long> = team?.order ?: emptyList()
+        return TeamMembersRecyclerViewAdapter(teamMembers, teamMembersOrder, this, this)
     }
 
     /** @Override */
     override fun fetchItems(): Deferred<MutableList<TeamMember>> {
         return async(CommonPool) {
             team?.let {
-                return@async it.members.toMutableList()
+                return@async it.membersInOrder.toMutableList()
             }
             emptyList<TeamMember>().toMutableList()
         }
@@ -82,16 +91,26 @@ class TeamMembersListFragment : ListFragment<TeamMember, TeamMembersRecyclerView
 
     /** @Override */
     override fun listWasRefreshed() {
-        teamMemberListener?.onTeamMembersReadyChanged(allTeamMembersReady())
+        teamMemberListener?.onTeamMembersReadyChanged(allTeamMembersReady)
     }
 
-    /**
-     * Check if all team members are ready to begin bowling.
-     *
-     * @return true if all members have a league associated, false otherwise
-     */
-    private fun allTeamMembersReady(): Boolean {
-        return (adapter?.items?.filter { it.league != null }?.size ?: -1) == (adapter?.items?.size ?: -2)
+    /** @Override */
+    override fun onTeamMemberMoved(from: Int, to: Int) {
+        val team = team ?: return
+        val teamMemberOrder = team.order.toMutableList()
+        if (from < to) {
+            for (i in from until to) {
+                Collections.swap(teamMemberOrder, i, i + 1)
+            }
+        } else {
+            for (i in from downTo to + 1) {
+                Collections.swap(teamMemberOrder, i, i - 1)
+            }
+        }
+
+        adapter?.itemsOrder = teamMemberOrder
+        adapter?.notifyItemMoved(from, to)
+        teamMemberListener?.onTeamMembersReordered(teamMemberOrder)
     }
 
     /**
@@ -105,5 +124,12 @@ class TeamMembersListFragment : ListFragment<TeamMember, TeamMembersRecyclerView
          * @param ready true when all team members are ready to bowl, false otherwise.
          */
         fun onTeamMembersReadyChanged(ready: Boolean)
+
+        /**
+         * Called when the user re-orders the team members.
+         *
+         * @param order the new order of team members
+         */
+        fun onTeamMembersReordered(order: List<Long>)
     }
 }

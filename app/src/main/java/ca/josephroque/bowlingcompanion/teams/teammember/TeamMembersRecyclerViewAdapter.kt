@@ -1,6 +1,8 @@
 package ca.josephroque.bowlingcompanion.teams.teammember
 
 import android.support.v4.content.ContextCompat
+import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.helper.ItemTouchHelper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,13 +19,25 @@ import ca.josephroque.bowlingcompanion.teams.Team
  */
 class TeamMembersRecyclerViewAdapter(
     items: List<TeamMember>,
-    listener: BaseRecyclerViewAdapter.OnAdapterInteractionListener<TeamMember>
+    var itemsOrder: List<Long>,
+    listener: BaseRecyclerViewAdapter.OnAdapterInteractionListener<TeamMember>,
+    private var moveListener: TeamMemberMoveInteractionListener?
 ) : BaseRecyclerViewAdapter<TeamMember>(items, listener) {
 
     companion object {
         /** Logging identifier. */
         @Suppress("unused")
         private const val TAG = "TeamMembersRecyclerViewAdapter"
+    }
+
+    /** @Override */
+    override fun getItemAt(position: Int): TeamMember {
+        return items.first { it.id == itemsOrder[position] }
+    }
+
+    /** @Override */
+    override fun getPositionOfItem(item: TeamMember): Int {
+        return itemsOrder.indexOf(item.id)
     }
 
     /** @Override */
@@ -39,8 +53,20 @@ class TeamMembersRecyclerViewAdapter(
         )
     }
 
+    /** @Override */
+    override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
+        super.onDetachedFromRecyclerView(recyclerView)
+        moveListener = null
+    }
+
+    /** @Override */
     override fun onBindViewHolder(holder: BaseRecyclerViewAdapter<TeamMember>.ViewHolder, position: Int) {
-        holder.bind(items[position], position)
+        holder.bind(getItemAt(position), position)
+    }
+
+    /** @Override */
+    override fun buildItemTouchHelper(): ItemTouchHelper.Callback {
+        return DragCallback()
     }
 
     inner class ViewHolder(view: View) : BaseRecyclerViewAdapter<TeamMember>.ViewHolder(view) {
@@ -55,7 +81,7 @@ class TeamMembersRecyclerViewAdapter(
 
         override fun bind(item: TeamMember, position: Int) {
             val context = itemView.context
-            ivIcon.setImageResource(R.drawable.ic_person)
+            ivIcon.setImageResource(R.drawable.ic_menu)
             ivIcon.setColorFilter(ContextCompat.getColor(context, R.color.primaryBlackIcon))
 
             tvBowlerName.text = item.bowlerName
@@ -87,5 +113,44 @@ class TeamMembersRecyclerViewAdapter(
 
             itemView.setOnClickListener(this@TeamMembersRecyclerViewAdapter)
         }
+    }
+    /**
+     * Allow dragging of the Team Members for re-ordering.
+     */
+    inner class DragCallback : ItemTouchHelper.Callback() {
+
+        /** @Override */
+        override fun isLongPressDragEnabled() = true
+
+        /** @Override */
+        override fun isItemViewSwipeEnabled() = false
+
+        /** @Override */
+        override fun getMovementFlags(recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder?): Int {
+            return makeMovementFlags(ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0)
+        }
+
+        /** @Override */
+        override fun onMove(recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder?, target: RecyclerView.ViewHolder?): Boolean {
+            moveListener?.onTeamMemberMoved(viewHolder!!.adapterPosition, target!!.adapterPosition)
+            return true
+        }
+
+        /** @Override */
+        override fun onSwiped(viewHolder: RecyclerView.ViewHolder?, direction: Int) {}
+    }
+
+    /**
+     * Callback to move team members.
+     */
+    interface TeamMemberMoveInteractionListener {
+
+        /**
+         * Move a team member.
+         *
+         * @param from old position
+         * @param to new position
+         */
+        fun onTeamMemberMoved(from: Int, to: Int)
     }
 }
