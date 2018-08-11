@@ -55,7 +55,7 @@ class NameAverageRecyclerViewAdapter<T : INameAverage>(
     /** @Override */
     override fun getItemViewType(position: Int): Int {
         return when {
-            swipeable && items[position].isDeleted -> ViewType.Deleted.ordinal
+            swipeable && getItemAt(position).isDeleted -> ViewType.Deleted.ordinal
             multiSelect -> ViewType.Selectable.ordinal
             else -> ViewType.Active.ordinal
         }
@@ -79,7 +79,7 @@ class NameAverageRecyclerViewAdapter<T : INameAverage>(
 
     /** @Override */
     override fun onBindViewHolder(holder: BaseRecyclerViewAdapter<T>.ViewHolder, position: Int) {
-        holder.bind(items[position], position)
+        holder.bind(getItemAt(position), position)
     }
 
     /**
@@ -141,14 +141,14 @@ class NameAverageRecyclerViewAdapter<T : INameAverage>(
 
             tvDeleted?.text = String.format(
                     context.resources.getString(R.string.query_delete_item),
-                    items[position].name
+                    getItemAt(position).name
             )
 
             val deletedItemListener = View.OnClickListener {
                 if (it.id == R.id.tv_undo) {
-                    listener?.onItemSwipe(items[position])
+                    listener?.onItemSwipe(getItemAt(position))
                 } else {
-                    listener?.onItemDelete(items[position])
+                    listener?.onItemDelete(getItemAt(position))
                 }
             }
             itemView.setOnClickListener(deletedItemListener)

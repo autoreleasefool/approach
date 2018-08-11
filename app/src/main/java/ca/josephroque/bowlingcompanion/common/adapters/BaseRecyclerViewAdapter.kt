@@ -80,6 +80,26 @@ abstract class BaseRecyclerViewAdapter<Item : IIdentifiable>(
             notifyDataSetChanged()
         }
 
+    /**
+     * Get the item at the given position.
+     *
+     * @param position the position to get
+     * @return the item at the position
+     */
+    open fun getItemAt(position: Int): Item {
+        return items[position]
+    }
+
+    /**
+     * Get the position of the given item.
+     *
+     * @param item item to get position of
+     * @return the position of the item
+     */
+    open fun getPositionOfItem(item: Item): Int {
+        return items.indexOf(item)
+    }
+
     /** Currently selected items */
     private var _selectedItems: MutableSet<Item> = HashSet()
     val selectedItems: Set<Item>
@@ -131,7 +151,7 @@ abstract class BaseRecyclerViewAdapter<Item : IIdentifiable>(
     override fun onClick(v: View) {
         recyclerView?.let {
             val position = it.getChildAdapterPosition(v)
-            val item = items[position]
+            val item = getItemAt(position)
             if (multiSelect) {
                 if (!_selectedItems.remove(item)) {
                     _selectedItems.add(item)
@@ -154,7 +174,7 @@ abstract class BaseRecyclerViewAdapter<Item : IIdentifiable>(
                 return false
             }
 
-            listener?.onItemLongClick(items[it.getChildAdapterPosition(v)])
+            listener?.onItemLongClick(getItemAt(it.getChildAdapterPosition(v)))
             return true
         }
 
@@ -202,7 +222,7 @@ abstract class BaseRecyclerViewAdapter<Item : IIdentifiable>(
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
             if (swipeable) {
                 val position = viewHolder.adapterPosition
-                listener?.onItemSwipe(items[position])
+                listener?.onItemSwipe(getItemAt(position))
             }
         }
 

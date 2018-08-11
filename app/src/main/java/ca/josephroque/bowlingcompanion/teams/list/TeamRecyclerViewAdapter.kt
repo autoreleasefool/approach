@@ -41,7 +41,7 @@ class TeamRecyclerViewAdapter(
 
     /** @Override */
     override fun getItemViewType(position: Int): Int {
-        return if (items[position].isDeleted) {
+        return if (getItemAt(position).isDeleted) {
             ViewType.Deleted.ordinal
         } else {
             ViewType.Active.ordinal
@@ -64,7 +64,7 @@ class TeamRecyclerViewAdapter(
 
     /** @Override */
     override fun onBindViewHolder(holder: BaseRecyclerViewAdapter<Team>.ViewHolder, position: Int) {
-        holder.bind(items[position], position)
+        holder.bind(getItemAt(position), position)
     }
 
     /**
@@ -119,14 +119,14 @@ class TeamRecyclerViewAdapter(
 
             tvDeleted?.text = String.format(
                     context.resources.getString(R.string.query_delete_item),
-                    items[position].name
+                    getItemAt(position).name
             )
 
             val deletedItemListener = View.OnClickListener {
                 if (it.id == R.id.tv_undo) {
-                    listener?.onItemSwipe(items[position])
+                    listener?.onItemSwipe(getItemAt(position))
                 } else {
-                    listener?.onItemDelete(items[position])
+                    listener?.onItemDelete(getItemAt(position))
                 }
             }
             itemView.setOnClickListener(deletedItemListener)

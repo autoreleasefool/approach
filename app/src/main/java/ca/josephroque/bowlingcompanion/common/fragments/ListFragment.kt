@@ -127,7 +127,7 @@ abstract class ListFragment<Item : IIdentifiable, Adapter : BaseRecyclerViewAdap
             }
 
             items[index] = updatedItem
-            adapter?.notifyItemChanged(index)
+            adapter?.notifyItemChanged(adapter?.getPositionOfItem(item) ?: index)
         }
     }
 
@@ -145,7 +145,7 @@ abstract class ListFragment<Item : IIdentifiable, Adapter : BaseRecyclerViewAdap
                 adapter?.items = items
             } else {
                 this@ListFragment.items[index] = item
-                adapter?.notifyItemChanged(index)
+                adapter?.notifyItemChanged(adapter?.getPositionOfItem(item) ?: index)
             }
             listWasRefreshed()
         }

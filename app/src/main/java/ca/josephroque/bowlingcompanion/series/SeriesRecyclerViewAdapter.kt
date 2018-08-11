@@ -81,9 +81,9 @@ class SeriesRecyclerViewAdapter(
     /** @Override */
     override fun getItemViewType(position: Int): Int {
         return when {
-            items[position].isDeleted -> ViewType.Deleted.ordinal
-            !items[position].isDeleted && seriesView == Series.Companion.View.Condensed -> ViewType.Condensed.ordinal
-            !items[position].isDeleted && seriesView == Series.Companion.View.Expanded -> ViewType.Expanded.ordinal
+            getItemAt(position).isDeleted -> ViewType.Deleted.ordinal
+            !getItemAt(position).isDeleted && seriesView == Series.Companion.View.Condensed -> ViewType.Condensed.ordinal
+            !getItemAt(position).isDeleted && seriesView == Series.Companion.View.Expanded -> ViewType.Expanded.ordinal
             else -> throw IllegalArgumentException("Position `$position` is invalid")
         }
     }
@@ -106,7 +106,7 @@ class SeriesRecyclerViewAdapter(
 
     /** @Override */
     override fun onBindViewHolder(holder: BaseRecyclerViewAdapter<Series>.ViewHolder, position: Int) {
-        holder.bind(items[position], position)
+        holder.bind(getItemAt(position), position)
     }
 
     /**
@@ -252,14 +252,14 @@ class SeriesRecyclerViewAdapter(
 
             tvDeleted?.text = String.format(
                     context.resources.getString(R.string.query_delete_item),
-                    items[position].prettyDate
+                    getItemAt(position).prettyDate
             )
 
             val deletedItemListener = View.OnClickListener {
                 if (it.id == R.id.tv_undo) {
-                    listener?.onItemSwipe(items[position])
+                    listener?.onItemSwipe(getItemAt(position))
                 } else {
-                    listener?.onItemDelete(items[position])
+                    listener?.onItemDelete(getItemAt(position))
                 }
             }
             itemView.setOnClickListener(deletedItemListener)
