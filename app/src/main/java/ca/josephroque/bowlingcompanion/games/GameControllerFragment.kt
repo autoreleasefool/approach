@@ -7,6 +7,9 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import ca.josephroque.bowlingcompanion.R
@@ -71,6 +74,7 @@ class GameControllerFragment : TabbedFragment(),
 
     /** @Override */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        setHasOptionsMenu(true)
         val parcelableSeries = savedInstanceState?.getParcelableArray(ARG_SERIES) ?: arguments?.getParcelableArray(ARG_SERIES)
         parcelableSeries?.let {
             val mutableSeriesList: MutableList<Series> = ArrayList()
@@ -78,6 +82,28 @@ class GameControllerFragment : TabbedFragment(),
             seriesList = mutableSeriesList
         }
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    /** @Override */
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.fragment_game_controller, menu)
+    }
+
+    /** @Override */
+    override fun onPrepareOptionsMenu(menu: Menu?) {
+        super.onPrepareOptionsMenu(menu)
+        menu?.findItem(R.id.action_change_bowler_order)?.isVisible = (seriesList?.size ?: 0) > 1
+    }
+
+    /** @Override */
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        return when (item?.itemId) {
+            R.id.action_change_bowler_order -> {
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
     }
 
     /** @Override */
@@ -117,6 +143,7 @@ class GameControllerFragment : TabbedFragment(),
     override fun onResume() {
         super.onResume()
         onSeriesChanged(currentSeries)
+        activity?.invalidateOptionsMenu()
     }
 
     /**
