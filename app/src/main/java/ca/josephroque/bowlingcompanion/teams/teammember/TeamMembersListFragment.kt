@@ -97,16 +97,17 @@ class TeamMembersListFragment :
     override fun onTeamMemberMoved(from: Int, to: Int) {
         val team = team ?: return
         val teamMemberOrder = team.order.toMutableList()
-        if (from < to) {
-            for (i in from until to) {
-                Collections.swap(teamMemberOrder, i, i + 1)
-            }
-        } else {
-            for (i in from downTo to + 1) {
-                Collections.swap(teamMemberOrder, i, i - 1)
-            }
-        }
+        Collections.swap(teamMemberOrder, from, to)
 
+        // Update the team with the new order
+        this@TeamMembersListFragment.team = Team(
+                id = team.id,
+                name = team.name,
+                members = team.members,
+                initialOrder = teamMemberOrder)
+        arguments?.putParcelable(ARG_TEAM, this@TeamMembersListFragment.team)
+
+        // Update adapter and listener
         adapter?.itemsOrder = teamMemberOrder
         adapter?.notifyItemMoved(from, to)
         teamMemberListener?.onTeamMembersReordered(teamMemberOrder)

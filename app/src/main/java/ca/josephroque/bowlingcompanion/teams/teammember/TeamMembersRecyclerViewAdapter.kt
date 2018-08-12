@@ -108,6 +108,7 @@ class TeamMembersRecyclerViewAdapter(
             itemView.setOnClickListener(this@TeamMembersRecyclerViewAdapter)
         }
     }
+
     /**
      * Allow dragging of the Team Members for re-ordering.
      */
