@@ -155,6 +155,9 @@
     <string name="dialog_reset_game_title">Reset game?</string>
     <string name="dialog_reset_game_message">Are you sure you want to reset this game? The data cannot be recovered.</string>
 
+    <string name="action_share">Share</string>
+    <string name="action_game_stats">Stats for game</string>
+    <string name="action_event_stats">Stats for series</string>
     <string name="action_best_possible">What if I strikeout?</string>
 
     <string name="action_set_score">Set manual score</string>
