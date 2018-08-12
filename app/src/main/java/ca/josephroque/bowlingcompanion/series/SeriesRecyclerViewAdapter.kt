@@ -162,12 +162,6 @@ class SeriesRecyclerViewAdapter(
                 tvTotal?.setTextColor(ContextCompat.getColor(context, R.color.primaryBlackText))
             }
 
-            if (position % 2 == 0) {
-                itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorListPrimary))
-            } else {
-                itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorListAlternate))
-            }
-
             itemView.setOnClickListener(this@SeriesRecyclerViewAdapter)
             itemView.setOnLongClickListener(this@SeriesRecyclerViewAdapter)
         }
@@ -224,12 +218,6 @@ class SeriesRecyclerViewAdapter(
                 }
 
                 flowScores?.addView(scoreView)
-            }
-
-            if (position % 2 == 0) {
-                itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorListPrimary))
-            } else {
-                itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorListAlternate))
             }
 
             itemView.setOnClickListener(this@SeriesRecyclerViewAdapter)

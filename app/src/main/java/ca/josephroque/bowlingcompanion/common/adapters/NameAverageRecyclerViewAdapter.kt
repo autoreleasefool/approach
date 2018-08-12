@@ -116,12 +116,6 @@ class NameAverageRecyclerViewAdapter<T : INameAverage>(
                 }
             }
 
-            if (position % 2 == 0) {
-                itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorListPrimary))
-            } else {
-                itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorListAlternate))
-            }
-
             itemView.setOnClickListener(this@NameAverageRecyclerViewAdapter)
             itemView.setOnLongClickListener(this@NameAverageRecyclerViewAdapter)
         }

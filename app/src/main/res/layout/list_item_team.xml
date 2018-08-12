@@ -8,6 +8,7 @@
     android:minHeight="@dimen/list_item_min_height"
     android:orientation="vertical"
     android:foreground="?android:attr/selectableItemBackground"
+    android:background="@color/colorListPrimary"
     tools:ignore="RtlHardcoded">
 
     <TextView

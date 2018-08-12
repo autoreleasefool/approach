@@ -9,8 +9,8 @@
     <color name="colorAccent">#FF9F43</color>
     <color name="colorBackground">#F5F5F5</color>
 
-    <color name="colorListPrimary">#EBEBEB</color>
-    <color name="colorListAlternate">#F5F5F5</color>
+    <color name="colorListPrimary">#F5F5F5</color>
+    <color name="colorListAlternate">#EBEBEB</color>
     <color name="colorDivider">#33000000</color>
 
     <color name="dangerRed">#EE5253</color>

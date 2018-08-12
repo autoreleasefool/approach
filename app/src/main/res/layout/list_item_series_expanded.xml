@@ -7,6 +7,7 @@
     android:layout_height="wrap_content"
     android:minHeight="@dimen/list_item_min_height"
     android:orientation="vertical"
+    android:background="@color/colorListPrimary"
     tools:ignore="RtlHardcoded">
 
     <LinearLayout

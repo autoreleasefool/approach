@@ -80,12 +80,6 @@ class TeamRecyclerViewAdapter(
             val context = itemView.context
             tvName?.text = item.name
 
-            if (position % 2 == 0) {
-                itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorListPrimary))
-            } else {
-                itemView.setBackgroundColor(ContextCompat.getColor(context, R.color.colorListAlternate))
-            }
-
             flowMembers?.removeAllViews()
             item.members.forEach {
                 val viewId = View.generateViewId()
