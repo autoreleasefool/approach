@@ -77,7 +77,6 @@
     <string name="team_members_select_league">Tap each bowler to select an event or league for them.\nChange the order of the bowlers by holding and dragging them.</string>
     <string name="team_members_leagues_select_a_league">Select a league or event below for the bowler.</string>
     <string name="team_members_series_select_a_series">Select a series below for the bowler or create a new one.</string>
-    <string name="team_members_reorder">Change the order of the bowlers by holding and dragging them.</string>
     <string name="create_new_series">New series</string>
 
     <!-- Leagues -->
@@ -156,7 +155,6 @@
     <string name="dialog_reset_game_title">Reset game?</string>
     <string name="dialog_reset_game_message">Are you sure you want to reset this game? The data cannot be recovered.</string>
 
-    <string name="action_change_bowler_order">Change bowler order</string>
     <string name="action_best_possible">What if I strikeout?</string>
 
     <string name="action_set_score">Set manual score</string>

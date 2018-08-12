@@ -1,7 +1,5 @@
 package ca.josephroque.bowlingcompanion.teams.details
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -47,31 +45,21 @@ class TeamDetailsFragment : BaseFragment(),
         /** Identifier for the argument that represents the [Team] whose details are displayed. */
         private const val ARG_TEAM = "${TAG}_team"
 
-        /** Identifier for the argument that determines if the fragment will be used to reorder the team members. */
-        private const val ARG_REORDER = "${TAG}_reorder"
-
         /**
          * Creates a new instance.
          *
          * @param team team to load details of
-         * @param reorder true to limit features of the fragment to only reordering
          * @return the new instance
          */
-        fun newInstance(team: Team, reorder: Boolean): TeamDetailsFragment {
+        fun newInstance(team: Team): TeamDetailsFragment {
             val fragment = TeamDetailsFragment()
-            fragment.arguments = Bundle().apply {
-                putParcelable(ARG_TEAM, team)
-                putBoolean(ARG_REORDER, reorder)
-            }
+            fragment.arguments = Bundle().apply { putParcelable(ARG_TEAM, team) }
             return fragment
         }
     }
 
     /** The team whose details are to be displayed. */
     private var team: Team? = null
-
-    /** Indicates if the fragment is limited to reordering only the team members. */
-    private var reorder: Boolean = false
 
     /** Indicate if all team members are ready for bowling to begin. */
     private var allTeamMembersReady: Boolean = false
@@ -85,8 +73,6 @@ class TeamDetailsFragment : BaseFragment(),
     /** @Override */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         team = arguments?.getParcelable(ARG_TEAM)
-        reorder = arguments?.getBoolean(ARG_REORDER) ?: false
-        if (reorder) { allTeamMembersReady = true }
 
         val view = inflater.inflate(R.layout.fragment_team_details, container, false)
         setupHeader(view)
@@ -103,42 +89,27 @@ class TeamDetailsFragment : BaseFragment(),
         return view
     }
 
+    /** @Override */
+    override fun onResume() {
+        super.onResume()
+        fabProvider?.invalidateFab()
+    }
+
     /**
      * Set up the header of the view.
      *
      * @param rootView the root view
      */
     private fun setupHeader(rootView: View) {
-        if (reorder) {
-            rootView.tv_header_title.setText(R.string.team_members)
-            rootView.tv_header_caption.setText(R.string.team_members_reorder)
-        } else {
-            rootView.tv_header_title.setText(R.string.team_members)
-            rootView.tv_header_caption.setText(R.string.team_members_select_league)
-        }
+        rootView.tv_header_title.setText(R.string.team_members)
+        rootView.tv_header_caption.setText(R.string.team_members_select_league)
     }
 
     /** @Override */
-    override fun getFabImage(): Int? {
-        return when {
-            reorder -> R.drawable.ic_done
-            allTeamMembersReady -> R.drawable.ic_ball
-            else -> null
-        }
-    }
+    override fun getFabImage(): Int? = if (allTeamMembersReady) R.drawable.ic_ball else null
 
     /** @Override */
     override fun onFabClick() {
-        if (reorder) {
-            targetFragment?.onActivityResult(
-                    0,
-                    Activity.RESULT_OK,
-                    Intent().apply { putExtra(GameControllerFragment.INTENT_ARG_TEAM, team) }
-            )
-            fragmentNavigation?.popFragment()
-            return
-        }
-
         safeLet(context, team) { context, team ->
             launch(Android) {
                 val error = attemptToBowl().await()
@@ -155,7 +126,6 @@ class TeamDetailsFragment : BaseFragment(),
 
     /** @Override */
     override fun onItemSelected(item: IIdentifiable, longPress: Boolean) {
-        if (reorder) { return }
         if (item is TeamMember) {
             val fragment = TeamMemberDialog.newInstance(item)
             fragmentNavigation?.pushDialogFragment(fragment)
@@ -175,7 +145,7 @@ class TeamDetailsFragment : BaseFragment(),
 
     /** @Override */
     override fun onTeamMembersReadyChanged(ready: Boolean) {
-        allTeamMembersReady = reorder || ready
+        allTeamMembersReady = ready
     }
 
     /** @Override */

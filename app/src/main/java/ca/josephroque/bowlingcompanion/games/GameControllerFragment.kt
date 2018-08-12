@@ -1,6 +1,5 @@
 package ca.josephroque.bowlingcompanion.games
 
-import android.content.Intent
 import android.os.Bundle
 import android.support.annotation.IdRes
 import android.support.design.widget.TabLayout
@@ -8,9 +7,6 @@ import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import ca.josephroque.bowlingcompanion.R
@@ -19,8 +15,6 @@ import ca.josephroque.bowlingcompanion.common.adapters.BaseFragmentPagerAdapter
 import ca.josephroque.bowlingcompanion.common.fragments.TabbedFragment
 import ca.josephroque.bowlingcompanion.common.interfaces.INavigationDrawerHandler
 import ca.josephroque.bowlingcompanion.series.Series
-import ca.josephroque.bowlingcompanion.teams.details.TeamDetailsFragment
-import ca.josephroque.bowlingcompanion.teams.Team
 import kotlinx.android.synthetic.main.fragment_common_tabs.tabbed_fragment_pager as fragmentPager
 import kotlinx.android.synthetic.main.fragment_common_tabs.tabbed_fragment_tabs as fragmentTabs
 
@@ -43,9 +37,6 @@ class GameControllerFragment : TabbedFragment(),
 
         /** Argument identifier for passing a [SeriesManager] to this fragment. */
         private const val ARG_SERIES_MANAGER = "${TAG}_series"
-
-        /** Argument to pass a [Team] to this fragment through an intent. */
-        const val INTENT_ARG_TEAM = "${TAG}_team"
 
         /**
          * Creates a new instance.
@@ -88,29 +79,6 @@ class GameControllerFragment : TabbedFragment(),
             1 -> seriesManager = arguments?.getParcelable<SeriesManager.BowlerSeries>(ARG_SERIES_MANAGER)
         }
         return super.onCreateView(inflater, container, savedInstanceState)
-    }
-
-    /** @Override */
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.fragment_game_controller, menu)
-    }
-
-    /** @Override */
-    override fun onPrepareOptionsMenu(menu: Menu?) {
-        super.onPrepareOptionsMenu(menu)
-        menu?.findItem(R.id.action_change_bowler_order)?.isVisible = (seriesManager?.seriesList?.size ?: 0) > 1
-    }
-
-    /** @Override */
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
-        return when (item?.itemId) {
-            R.id.action_change_bowler_order -> {
-                reorderBowlers()
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
     }
 
     /** @Override */
@@ -165,28 +133,6 @@ class GameControllerFragment : TabbedFragment(),
             navigationDrawerController.bowlerName = it[currentSeries].league.bowler.name
             navigationDrawerController.leagueName = it[currentSeries].league.name
         }
-    }
-
-    /**
-     * Open fragment to reorder bowlers on the team.
-     */
-    private fun reorderBowlers() {
-        val teamSeries = seriesManager as? SeriesManager.TeamSeries ?: return
-        val fragment = TeamDetailsFragment.newInstance(teamSeries.team, reorder = true)
-        fragment.setTargetFragment(this, 0)
-        fragmentNavigation?.pushFragment(fragment)
-    }
-
-    /** @Override */
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        val team = data?.getParcelableExtra<Team>(INTENT_ARG_TEAM) ?: return
-        seriesManager = SeriesManager.TeamSeries(team)
-        val seriesManager = seriesManager ?: return
-        arguments?.putParcelable(ARG_SERIES_MANAGER, seriesManager)
-        val oldSeries = seriesManager.seriesList[currentTab]
-        resetTabLayout()
-        currentTab = seriesManager.seriesList.indexOf(oldSeries)
-        onSeriesChanged(currentTab)
     }
 
     /**
