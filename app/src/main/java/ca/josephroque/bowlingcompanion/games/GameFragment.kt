@@ -451,7 +451,7 @@ class GameFragment : BaseFragment(),
         saveCurrentFrame(false)
 
         if (gameState.isLastBall) {
-            listener?.nextBowler(true)
+            listener?.nextBowlerOrGame(true)
         } else {
             gameState.nextBall()
         }
@@ -502,19 +502,22 @@ class GameFragment : BaseFragment(),
         override fun onBallChanged() {
             render(ballChanged = true)
             if (gameState.currentBallIdx == 0) {
-                if (listener?.nextBowler(false) == true) {
+                if (listener?.nextBowlerOrGame(false) == true) {
                     return
                 }
             }
 
+            val hasNextBowlerOrGame = listener?.hasNextBowlerOrGame == true || gameState.currentGameIdx < (series?.numberOfGames ?: 1) - 1
             val isManual = gameState.gamesLoaded && gameState.currentGame.isManual
-            if (!isManual && wasLastBall && !gameState.isLastBall) {
-                listener?.enableFab(true)
-            } else if (isManual || (!wasLastBall && gameState.isLastBall)) {
+            if (hasNextBowlerOrGame || (!isManual && wasLastBall && !gameState.isLastBall)) {
+                if (listener?.isFabEnabled == false) {
+                    listener?.enableFab(true)
+                }
+            } else if ((isManual || (!wasLastBall && gameState.isLastBall))) {
                 listener?.enableFab(false)
             }
-
             wasLastBall = gameState.isLastBall
+
             gameHeader.currentFrame = gameState.currentFrameIdx
             gameHeader.currentBall = gameState.currentBallIdx
             if (gameState.isLastBall) {
@@ -677,6 +680,12 @@ class GameFragment : BaseFragment(),
      * Handle interactions with the game fragment.
      */
     interface OnGameFragmentInteractionListener {
+        /** Determine if there is another bowler/game to progress to after the current bowler/game. */
+        val hasNextBowlerOrGame: Boolean
+
+        /** Determine if the fab is enabled. */
+        val isFabEnabled: Boolean
+
         /**
          * Enable or disable the floating action button.
          *
@@ -685,11 +694,11 @@ class GameFragment : BaseFragment(),
         fun enableFab(enabled: Boolean)
 
         /**
-         * Prompt for the next bowler.
+         * Move to the next bowler or game.
          *
          * @param isLastFrame true if the game is in the last frame
-         * @return true if the next bowler was switched to, false otherwise.
+         * @return true if the next bowler/game was switched to, false otherwise.
          */
-        fun nextBowler(isLastFrame: Boolean): Boolean
+        fun nextBowlerOrGame(isLastFrame: Boolean): Boolean
     }
 }

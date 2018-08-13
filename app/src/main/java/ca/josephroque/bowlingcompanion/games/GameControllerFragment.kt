@@ -177,15 +177,26 @@ class GameControllerFragment : TabbedFragment(),
     // MARK: OnGameFragmentInteractionListener
 
     /** @Override */
+    override val isFabEnabled: Boolean
+        get() = fabEnabled
+
+    /** @Override */
     override fun enableFab(enabled: Boolean) {
         fabEnabled = enabled
         fabProvider?.invalidateFab()
     }
 
     /** @Override */
-    override fun nextBowler(isLastFrame: Boolean): Boolean {
+    override val hasNextBowlerOrGame: Boolean
+        get() {
+            val seriesList = seriesManager?.seriesList ?: return false
+            return seriesList.size > 1 || currentGame < seriesList[currentTab].numberOfGames - 1
+        }
+
+    /** @Override */
+    override fun nextBowlerOrGame(isLastFrame: Boolean): Boolean {
         val seriesList = seriesManager?.seriesList ?: return false
-        if (seriesList.size == 1) return false
+        if (!hasNextBowlerOrGame) return false
 
         // Find the next bowler in the remaining list to switch to with games to still play
         var nextSeries = currentTab + 1
