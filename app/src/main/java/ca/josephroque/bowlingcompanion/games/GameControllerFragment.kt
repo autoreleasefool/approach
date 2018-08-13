@@ -194,9 +194,9 @@ class GameControllerFragment : TabbedFragment(),
         }
 
     /** @Override */
-    override fun nextBowlerOrGame(isLastFrame: Boolean): Boolean {
-        val seriesList = seriesManager?.seriesList ?: return false
-        if (!hasNextBowlerOrGame) return false
+    override fun nextBowlerOrGame(isLastFrame: Boolean): GameFragment.NextBowlerResult {
+        val seriesList = seriesManager?.seriesList ?: return GameFragment.NextBowlerResult.None
+        if (!hasNextBowlerOrGame) return GameFragment.NextBowlerResult.None
 
         // Find the next bowler in the remaining list to switch to with games to still play
         var nextSeries = currentTab + 1
@@ -207,7 +207,7 @@ class GameControllerFragment : TabbedFragment(),
         // If there's a bowler found, switch to them and exit
         if (nextSeries <= seriesList.lastIndex) {
             currentTab = nextSeries
-            return true
+            return GameFragment.NextBowlerResult.NextBowler
         }
 
         // If we were on the last frame, then the next bowler will be on the next game
@@ -222,6 +222,10 @@ class GameControllerFragment : TabbedFragment(),
         // If there's a bowler found, switch to them, update the game, and exit
         var switchedBowler = false
         if (nextSeries <= seriesList.lastIndex) {
+            if (currentTab == nextSeries && currentGame == nextGame) {
+                // There's no switch happening
+                return GameFragment.NextBowlerResult.None
+            }
             if (currentTab != nextSeries) {
                 currentTab = nextSeries
                 switchedBowler = true
@@ -230,12 +234,11 @@ class GameControllerFragment : TabbedFragment(),
                 currentGame = nextGame
             }
 
-            // Only return true if the bowler has switched, not the game
-            return switchedBowler
+            return if (switchedBowler) GameFragment.NextBowlerResult.NextBowlerGame else GameFragment.NextBowlerResult.NextGame
         }
 
         // No next bowler found
-        return false
+        return GameFragment.NextBowlerResult.None
     }
 
     /**

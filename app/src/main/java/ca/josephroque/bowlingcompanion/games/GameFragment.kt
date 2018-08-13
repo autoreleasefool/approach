@@ -462,11 +462,15 @@ class GameFragment : BaseFragment(),
     override fun onNextBall() {
         saveCurrentFrame(false)
 
-        if (gameState.isLastBall || gameState.currentGame.isManual) {
-            listener?.nextBowlerOrGame(true)
-        } else {
-            gameState.nextBall()
+        if (!gameState.frameHasNextBall || gameState.currentGame.isManual) {
+            val nextBowlerResult = listener?.nextBowlerOrGame(gameState.isLastFrame)
+            when (nextBowlerResult) {
+                NextBowlerResult.NextBowlerGame, NextBowlerResult.NextGame -> { return }
+                else -> {} // does nothing
+            }
         }
+
+        gameState.nextBall()
     }
 
     /** @Override */
@@ -513,12 +517,6 @@ class GameFragment : BaseFragment(),
         /** @Override */
         override fun onBallChanged() {
             render(ballChanged = true)
-            if (gameState.currentBallIdx == 0) {
-                if (listener?.nextBowlerOrGame(false) == true) {
-                    return
-                }
-            }
-
             invalidateFab()
             gameHeader.currentFrame = gameState.currentFrameIdx
             gameHeader.currentBall = gameState.currentBallIdx
@@ -699,8 +697,15 @@ class GameFragment : BaseFragment(),
          * Move to the next bowler or game.
          *
          * @param isLastFrame true if the game is in the last frame
-         * @return true if the next bowler/game was switched to, false otherwise.
+         * @return result of the method invocation
          */
-        fun nextBowlerOrGame(isLastFrame: Boolean): Boolean
+        fun nextBowlerOrGame(isLastFrame: Boolean): NextBowlerResult
+    }
+
+    /**
+     * Represents possible states after [OnGameFragmentInteractionListener.nextBowlerOrGame] is called.
+     */
+    enum class NextBowlerResult {
+        NextBowler, NextGame, NextBowlerGame, None;
     }
 }
