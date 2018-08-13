@@ -12,7 +12,7 @@ import ca.josephroque.bowlingcompanion.teams.Team
  *
  * Manage the series being edited.
  */
-sealed class SeriesManager: KParcelable {
+sealed class SeriesManager : KParcelable {
 
     /** Manage a team's series. */
     data class TeamSeries(val team: Team) : SeriesManager() {
@@ -29,7 +29,7 @@ sealed class SeriesManager: KParcelable {
     }
 
     /** Manage a bowler's series. */
-    data class BowlerSeries(val series: Series): SeriesManager() {
+    data class BowlerSeries(val series: Series) : SeriesManager() {
         companion object {
             /** Creator, required by [Parcelable]. */
             @Suppress("unused")
