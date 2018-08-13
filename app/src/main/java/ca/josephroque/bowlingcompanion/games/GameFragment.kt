@@ -89,9 +89,6 @@ class GameFragment : BaseFragment(),
     /** Manage the automatic game events. */
     private lateinit var autoEventController: GameAutoEventController
 
-    /** Indicates if the current ball is the last ball prior to ball changes. */
-    private var wasLastBall: Boolean = false
-
     // MARK: Overrides
 
     /** @Override */
@@ -371,6 +368,21 @@ class GameFragment : BaseFragment(),
         context?.let { gameState.resetGame(WeakReference(it)) }
     }
 
+    /**
+     * Update the floating action button state.
+     */
+    private fun invalidateFab() {
+        val hasNextBowlerOrGame = listener?.hasNextBowlerOrGame == true || gameState.currentGameIdx < (series?.numberOfGames ?: 1) - 1
+        val isManual = gameState.gamesLoaded && gameState.currentGame.isManual
+        if (hasNextBowlerOrGame || !gameState.isLastBall) {
+            if (listener?.isFabEnabled == false) {
+                listener?.enableFab(true)
+            }
+        } else if (isManual || gameState.isLastBall) {
+            listener?.enableFab(false)
+        }
+    }
+
     // MARK: IFloatingActionButtonHandler
 
     /** @Override */
@@ -450,7 +462,7 @@ class GameFragment : BaseFragment(),
     override fun onNextBall() {
         saveCurrentFrame(false)
 
-        if (gameState.isLastBall) {
+        if (gameState.isLastBall || gameState.currentGame.isManual) {
             listener?.nextBowlerOrGame(true)
         } else {
             gameState.nextBall()
@@ -507,17 +519,7 @@ class GameFragment : BaseFragment(),
                 }
             }
 
-            val hasNextBowlerOrGame = listener?.hasNextBowlerOrGame == true || gameState.currentGameIdx < (series?.numberOfGames ?: 1) - 1
-            val isManual = gameState.gamesLoaded && gameState.currentGame.isManual
-            if (hasNextBowlerOrGame || (!isManual && wasLastBall && !gameState.isLastBall)) {
-                if (listener?.isFabEnabled == false) {
-                    listener?.enableFab(true)
-                }
-            } else if ((isManual || (!wasLastBall && gameState.isLastBall))) {
-                listener?.enableFab(false)
-            }
-            wasLastBall = gameState.isLastBall
-
+            invalidateFab()
             gameHeader.currentFrame = gameState.currentFrameIdx
             gameHeader.currentBall = gameState.currentBallIdx
             if (gameState.isLastBall) {
@@ -530,14 +532,14 @@ class GameFragment : BaseFragment(),
 
         /** @Override */
         override fun onManualScoreSet() {
-            listener?.enableFab(false)
+            invalidateFab()
             activity?.invalidateOptionsMenu()
             render(ballChanged = true, isGameFirstRender = false)
         }
 
         /** @Override */
         override fun onManualScoreCleared() {
-            listener?.enableFab(!gameState.isLastBall)
+            invalidateFab()
             activity?.invalidateOptionsMenu()
             render(ballChanged = true, isGameFirstRender = false)
         }
