@@ -1,6 +1,5 @@
 package ca.josephroque.bowlingcompanion.common.adapters
 
-import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -96,7 +95,6 @@ class NameAverageRecyclerViewAdapter<T : INameAverage>(
         private val checkBox: CheckBox? = view.findViewById(R.id.check_name_average)
 
         override fun bind(item: T, position: Int) {
-            val context = itemView.context
             tvName?.text = item.name
             tvAverage?.text = item.getRoundedAverage(1)
             checkBox?.isChecked = selectable && selectedItems.contains(item)
