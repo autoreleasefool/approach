@@ -33,8 +33,8 @@ class NavigationDrawerController(
     var isTeamMember: Boolean = false
         set(value) {
             field = value
-            navigationView.get()?.let {
-                it.menu.findItem(R.id.nav_series).isVisible = !value
+            navigationView.get()?.post {
+                navigationView.get()?.menu?.findItem(R.id.nav_series)?.isVisible = !value
             }
         }
 
@@ -42,10 +42,9 @@ class NavigationDrawerController(
     var numberOfGames: Int = League.MAX_NUMBER_OF_GAMES
         set(value) {
             field = value
-            navigationView.get()?.let {
+            navigationView.get()?.post {
                 navGameItemIds.forEachIndexed { index, id ->
-                    val gameItem = it.menu.findItem(id)
-                    gameItem.isVisible = index < value
+                    navigationView.get()?.menu?.findItem(id)?.isVisible = index < value
                 }
             }
         }
@@ -65,6 +64,17 @@ class NavigationDrawerController(
             field = value
             navigationView.get()?.post {
                 navigationView.get()?.getHeaderView(0)?.findViewById<TextView>(R.id.nav_league_name)?.text = value
+            }
+        }
+
+    /** The current game number */
+    var gameNumber: Int = 0
+        set(value) {
+            field = value
+            navigationView.get()?.post {
+                navGameItemIds.forEachIndexed { index, id ->
+                    navigationView.get()?.menu?.findItem(id)?.isChecked = value == index
+                }
             }
         }
 }

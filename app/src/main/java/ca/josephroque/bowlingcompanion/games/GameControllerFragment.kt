@@ -64,7 +64,7 @@ class GameControllerFragment : TabbedFragment(),
     private var currentGame: Int = 0
         set(value) {
             field = value
-            onGameChanged(value)
+            navigationDrawerController.gameNumber = currentGame
         }
 
     /** Indicates if the floating action button should be enabled or not. */
