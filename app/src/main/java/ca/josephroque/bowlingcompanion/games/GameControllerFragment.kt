@@ -64,6 +64,11 @@ class GameControllerFragment : TabbedFragment(),
     private var currentGame: Int = 0
         set(value) {
             field = value
+
+            val adapter = fragmentPager.adapter as? GameControllerPagerAdapter
+            val gameFragment = adapter?.getFragment(currentTab) as? GameFragment
+            gameFragment?.gameNumber = currentGame
+
             navigationDrawerController.gameNumber = currentGame
         }
 
@@ -135,17 +140,6 @@ class GameControllerFragment : TabbedFragment(),
         }
     }
 
-    /**
-     * Handle when game changes.
-     *
-     * @param currentGame the new game
-     */
-    private fun onGameChanged(currentGame: Int) {
-        val adapter = fragmentPager.adapter as? GameControllerPagerAdapter
-        val gameFragment = adapter?.getFragment(currentTab) as? GameFragment
-        gameFragment?.gameNumber = currentGame
-    }
-
     // MARK: IFloatingActionButtonHandler
 
     /** @Override */
@@ -190,11 +184,11 @@ class GameControllerFragment : TabbedFragment(),
     override val hasNextBowlerOrGame: Boolean
         get() {
             val seriesList = seriesManager?.seriesList ?: return false
-            return seriesList.size > 1 || currentGame < seriesList[currentTab].numberOfGames - 1
+            return seriesList.lastIndex > currentTab || seriesList.any { currentGame < it.numberOfGames - 1 }
         }
 
     /** @Override */
-    override fun nextBowlerOrGame(isLastFrame: Boolean): GameFragment.NextBowlerResult {
+    override fun nextBowlerOrGame(isEndOfGame: Boolean): GameFragment.NextBowlerResult {
         val seriesList = seriesManager?.seriesList ?: return GameFragment.NextBowlerResult.None
         if (!hasNextBowlerOrGame) return GameFragment.NextBowlerResult.None
 
@@ -211,7 +205,7 @@ class GameControllerFragment : TabbedFragment(),
         }
 
         // If we were on the last frame, then the next bowler will be on the next game
-        val nextGame = if (isLastFrame) currentGame + 1 else currentGame
+        val nextGame = if (isEndOfGame) currentGame + 1 else currentGame
         nextSeries = 0
 
         // Find the first bowler in the list to switch to with games still to play

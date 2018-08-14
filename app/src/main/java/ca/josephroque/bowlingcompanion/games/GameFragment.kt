@@ -372,7 +372,7 @@ class GameFragment : BaseFragment(),
      * Update the floating action button state.
      */
     private fun invalidateFab() {
-        val hasNextBowlerOrGame = listener?.hasNextBowlerOrGame == true || gameState.currentGameIdx < (series?.numberOfGames ?: 1) - 1
+        val hasNextBowlerOrGame = listener?.hasNextBowlerOrGame == true
         val isManual = gameState.gamesLoaded && gameState.currentGame.isManual
         if (hasNextBowlerOrGame || !gameState.isLastBall) {
             if (listener?.isFabEnabled == false) {
@@ -463,7 +463,7 @@ class GameFragment : BaseFragment(),
         saveCurrentFrame(false)
 
         if (!gameState.frameHasNextBall || gameState.currentGame.isManual) {
-            val nextBowlerResult = listener?.nextBowlerOrGame(gameState.isLastFrame)
+            val nextBowlerResult = listener?.nextBowlerOrGame(gameState.isLastFrame || gameState.currentGame.isManual)
             when (nextBowlerResult) {
                 NextBowlerResult.NextBowlerGame, NextBowlerResult.NextGame -> { return }
                 else -> {} // does nothing
@@ -696,10 +696,10 @@ class GameFragment : BaseFragment(),
         /**
          * Move to the next bowler or game.
          *
-         * @param isLastFrame true if the game is in the last frame
+         * @param isEndOfGame true if the game is complete
          * @return result of the method invocation
          */
-        fun nextBowlerOrGame(isLastFrame: Boolean): NextBowlerResult
+        fun nextBowlerOrGame(isEndOfGame: Boolean): NextBowlerResult
     }
 
     /**
