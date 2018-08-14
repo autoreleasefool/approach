@@ -518,8 +518,9 @@ class GameFragment : BaseFragment(),
         override fun onBallChanged() {
             render(ballChanged = true)
             invalidateFab()
-            gameHeader.currentFrame = gameState.currentFrameIdx
-            gameHeader.currentBall = gameState.currentBallIdx
+
+            gameHeader.hasPreviousFrame = !gameState.isFirstBall && !gameState.currentGame.isManual
+            gameHeader.hasNextFrame = listener?.isFabEnabled == true
             if (gameState.isLastBall) {
                 autoEventController.delay(GameAutoEventController.AutoEvent.Lock)
             } else {

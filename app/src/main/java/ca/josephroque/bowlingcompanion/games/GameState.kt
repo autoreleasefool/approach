@@ -99,6 +99,10 @@ class GameState(private val series: Series, private val listener: GameStateListe
     val currentPinState: Deck
         get() = currentFrame.pinState[currentBallIdx]
 
+    /** Returns true if the user is currently on the first ball of the game. */
+    val isFirstBall: Boolean
+        get() = currentFrameIdx == 0 && currentBallIdx == 0
+
     /** Returns true if the user is currently on the last ball of the game. */
     val isLastBall: Boolean
         get() = isLastFrame && currentBallIdx == Frame.LAST_BALL

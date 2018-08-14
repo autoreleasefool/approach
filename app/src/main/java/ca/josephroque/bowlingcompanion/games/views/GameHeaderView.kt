@@ -9,8 +9,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import ca.josephroque.bowlingcompanion.R
-import ca.josephroque.bowlingcompanion.games.Frame
-import ca.josephroque.bowlingcompanion.games.Game
 import kotlinx.android.synthetic.main.view_game_header.view.tv_game_number as gameNumber
 import kotlinx.android.synthetic.main.view_game_header.view.tv_next_ball as nextBall
 import kotlinx.android.synthetic.main.view_game_header.view.tv_prev_ball as prevBall
@@ -31,10 +29,10 @@ class GameHeaderView : LinearLayout, View.OnClickListener {
         private const val SUPER_STATE = "${TAG}_super_state"
         /** Tag to save state of current game. */
         private const val STATE_CURRENT_GAME = "${TAG}_current_game"
-        /** Tag to save state of current frame. */
-        private const val STATE_CURRENT_FRAME = "${TAG}_current_frame"
-        /** Tag to save state of current ball. */
-        private const val STATE_CURRENT_BALL = "${TAG}_current_ball"
+        /** Tag to save state of if there is a next frame. */
+        private const val STATE_NEXT_FRAME = "${TAG}_next_frame"
+        /** Tag to save state of if there is a previous frame. */
+        private const val STATE_PREV_FRAME = "${TAG}_prev_frame"
         /** Tag to save state of manual score */
         private const val STATE_MANUAL_SCORE = "${TAG}_manual"
     }
@@ -44,43 +42,30 @@ class GameHeaderView : LinearLayout, View.OnClickListener {
 
     /** Current game to display in the header. */
     var currentGame: Int = 0
+        set(value) { gameNumber.text = String.format(resources.getString(R.string.game_number), value + 1) }
+
+    /** Indicates if there is a previous frame to return to. */
+    var hasPreviousFrame: Boolean = false
         set(value) {
             field = value
-            gameNumber.text = String.format(resources.getString(R.string.game_number), value + 1)
+            invalidateButtons()
+        }
+
+    /** Indicates if there is a next frame to advance to. */
+    var hasNextFrame: Boolean = true
+        set(value) {
+            field = value
+            invalidateButtons()
         }
 
     /**
-     * The current ball. If [currentBall] and [currentFrame] are equal to 0, disable the previous
-     * ball button. If they are equal to their max values, disable the next ball button.
-     */
-    var currentBall: Int = 0
-        set(value) {
-            prevBall.isEnabled = value != 0 || currentFrame != 0
-            nextBall.isEnabled = value != Frame.LAST_BALL || currentFrame != Game.LAST_FRAME
-            field = value
-        }
-
-    /**
-     * The current frame. If [currentBall] and [currentFrame] are equal to 0, disable the previous
-     * ball button. If they are equal to their max values, disable the next ball button.
-     */
-    var currentFrame: Int = 0
-        set(value) {
-            prevBall.isEnabled = value != 0 || currentBall != 0
-            nextBall.isEnabled = value != Game.LAST_FRAME || currentBall != Frame.LAST_BALL
-            field = value
-        }
-
-    /**
-     * Indicates if a manual score is set for the current game. Hides or shows the prev and next ball
+     * Indicates if a manual score is set for the current game. Hides or shows the prev ball
      * button depending on if a manual score is set.
      */
     var isManualScoreSet: Boolean = false
         set(value) {
             field = value
-            val visibility = if (value) View.GONE else View.VISIBLE
-            prevBall.visibility = visibility
-            nextBall.visibility = visibility
+            invalidateButtons()
         }
 
     /** Required constructors */
@@ -99,8 +84,8 @@ class GameHeaderView : LinearLayout, View.OnClickListener {
         return Bundle().apply {
             putParcelable(SUPER_STATE, super.onSaveInstanceState())
             putInt(STATE_CURRENT_GAME, currentGame)
-            putInt(STATE_CURRENT_FRAME, currentFrame)
-            putInt(STATE_CURRENT_BALL, currentBall)
+            putBoolean(STATE_NEXT_FRAME, hasNextFrame)
+            putBoolean(STATE_PREV_FRAME, hasPreviousFrame)
             putBoolean(STATE_MANUAL_SCORE, isManualScoreSet)
         }
     }
@@ -110,8 +95,8 @@ class GameHeaderView : LinearLayout, View.OnClickListener {
         var superState: Parcelable? = null
         if (state is Bundle) {
             currentGame = state.getInt(STATE_CURRENT_GAME)
-            currentFrame = state.getInt(STATE_CURRENT_FRAME)
-            currentBall = state.getInt(STATE_CURRENT_BALL)
+            hasNextFrame = state.getBoolean(STATE_NEXT_FRAME)
+            hasPreviousFrame = state.getBoolean(STATE_PREV_FRAME)
             isManualScoreSet = state.getBoolean(STATE_MANUAL_SCORE)
             superState = state.getParcelable(SUPER_STATE)
         }
@@ -132,6 +117,17 @@ class GameHeaderView : LinearLayout, View.OnClickListener {
             R.id.tv_prev_ball -> delegate?.onPrevBall()
             R.id.tv_next_ball -> delegate?.onNextBall()
         }
+    }
+
+    /**
+     * Update the state of the next and prev ball buttons.
+     */
+    private fun invalidateButtons() {
+        val prevVisibility = if (!isManualScoreSet && hasPreviousFrame) View.VISIBLE else View.INVISIBLE
+        prevBall.post { prevBall.visibility = prevVisibility }
+
+        val nextVisibility = if (hasNextFrame) View.VISIBLE else View.INVISIBLE
+        nextBall.post { nextBall.visibility = nextVisibility }
     }
 
     /**
