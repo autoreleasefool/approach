@@ -15,7 +15,7 @@ import ca.josephroque.bowlingcompanion.common.interfaces.IFloatingActionButtonHa
 import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
 import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
 import ca.josephroque.bowlingcompanion.games.GameControllerFragment
-import ca.josephroque.bowlingcompanion.games.SeriesManager
+import ca.josephroque.bowlingcompanion.games.SeriesProvider
 import ca.josephroque.bowlingcompanion.leagues.League
 import ca.josephroque.bowlingcompanion.settings.Settings
 import ca.josephroque.bowlingcompanion.utils.safeLet
@@ -242,7 +242,7 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
      * @param series the series whose games will be shown
      */
     private fun showGameDetails(series: Series) {
-        val newFragment = GameControllerFragment.newInstance(SeriesManager.BowlerSeries(series))
+        val newFragment = GameControllerFragment.newInstance(SeriesProvider.BowlerSeries(series))
         fragmentNavigation?.pushFragment(newFragment)
     }
 }

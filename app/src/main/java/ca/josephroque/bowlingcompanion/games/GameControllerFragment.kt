@@ -32,23 +32,23 @@ class GameControllerFragment : TabbedFragment(),
         @Suppress("unused")
         private const val TAG = "GameControllerFragment"
 
-        /** Argument identifier for passing a [SeriesManager] type. */
-        private const val ARG_SERIES_MANAGER_TYPE = "${TAG}_type"
+        /** Argument identifier for passing a [SeriesProvider] type. */
+        private const val ARG_SERIES_PROVIDER_TYPE = "${TAG}_type"
 
-        /** Argument identifier for passing a [SeriesManager] to this fragment. */
-        private const val ARG_SERIES_MANAGER = "${TAG}_series"
+        /** Argument identifier for passing a [SeriesProvider] to this fragment. */
+        private const val ARG_SERIES_PROVIDER = "${TAG}_series"
 
         /**
          * Creates a new instance.
          *
-         * @param seriesManager the series to edit games for
+         * @param seriesProvider the series to edit games for
          * @return the new instance
          */
-        fun newInstance(seriesManager: SeriesManager): GameControllerFragment {
+        fun newInstance(seriesProvider: SeriesProvider): GameControllerFragment {
             val fragment = GameControllerFragment()
             fragment.arguments = Bundle().apply {
-                putInt(ARG_SERIES_MANAGER_TYPE, seriesManager.describeContents())
-                putParcelable(ARG_SERIES_MANAGER, seriesManager)
+                putInt(ARG_SERIES_PROVIDER_TYPE, seriesProvider.describeContents())
+                putParcelable(ARG_SERIES_PROVIDER, seriesProvider)
             }
             return fragment
         }
@@ -58,7 +58,7 @@ class GameControllerFragment : TabbedFragment(),
     override lateinit var navigationDrawerController: NavigationDrawerController
 
     /** The series being edited. */
-    private var seriesManager: SeriesManager? = null
+    private var seriesProvider: SeriesProvider? = null
 
     /** The current game being edited. */
     private var currentGame: Int = 0
@@ -78,23 +78,23 @@ class GameControllerFragment : TabbedFragment(),
     /** @Override */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
-        val seriesType = arguments?.getInt(ARG_SERIES_MANAGER_TYPE) ?: 0
+        val seriesType = arguments?.getInt(ARG_SERIES_PROVIDER_TYPE) ?: 0
         when (seriesType) {
-            0 -> seriesManager = arguments?.getParcelable<SeriesManager.TeamSeries>(ARG_SERIES_MANAGER)
-            1 -> seriesManager = arguments?.getParcelable<SeriesManager.BowlerSeries>(ARG_SERIES_MANAGER)
+            0 -> seriesProvider = arguments?.getParcelable<SeriesProvider.TeamSeries>(ARG_SERIES_PROVIDER)
+            1 -> seriesProvider = arguments?.getParcelable<SeriesProvider.BowlerSeries>(ARG_SERIES_PROVIDER)
         }
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     /** @Override */
     override fun buildPagerAdapter(tabCount: Int): BaseFragmentPagerAdapter {
-        return GameControllerPagerAdapter(childFragmentManager, tabCount, seriesManager?.seriesList)
+        return GameControllerPagerAdapter(childFragmentManager, tabCount, seriesProvider?.seriesList)
     }
 
     /** @Override */
     override fun addTabs(tabLayout: TabLayout) {
         tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
-        seriesManager?.seriesList?.let {
+        seriesProvider?.seriesList?.let {
             it.forEach { series ->
                 tabLayout.addTab(tabLayout.newTab().setText(series.league.bowler.name))
             }
@@ -109,7 +109,7 @@ class GameControllerFragment : TabbedFragment(),
     /** @Override */
     override fun onStart() {
         super.onStart()
-        val seriesList = seriesManager?.seriesList ?: return
+        val seriesList = seriesProvider?.seriesList ?: return
         if (seriesList.size == 1) {
             fragmentTabs.visibility = View.GONE
             (activity as? AppCompatActivity)?.supportActionBar?.elevation = resources.getDimension(R.dimen.base_elevation)
@@ -124,7 +124,7 @@ class GameControllerFragment : TabbedFragment(),
         super.onResume()
         onSeriesChanged(currentTab)
         activity?.invalidateOptionsMenu()
-        navigationDrawerController.isTeamMember = seriesManager is SeriesManager.TeamSeries
+        navigationDrawerController.isTeamMember = seriesProvider is SeriesProvider.TeamSeries
     }
 
     /**
@@ -133,7 +133,7 @@ class GameControllerFragment : TabbedFragment(),
      * @param currentSeries the new series
      */
     private fun onSeriesChanged(currentSeries: Int) {
-        seriesManager?.seriesList?.let {
+        seriesProvider?.seriesList?.let {
             navigationDrawerController.numberOfGames = it[currentSeries].numberOfGames
             navigationDrawerController.bowlerName = it[currentSeries].league.bowler.name
             navigationDrawerController.leagueName = it[currentSeries].league.name
@@ -183,13 +183,13 @@ class GameControllerFragment : TabbedFragment(),
     /** @Override */
     override val hasNextBowlerOrGame: Boolean
         get() {
-            val seriesList = seriesManager?.seriesList ?: return false
+            val seriesList = seriesProvider?.seriesList ?: return false
             return seriesList.lastIndex > currentTab || seriesList.any { currentGame < it.numberOfGames - 1 }
         }
 
     /** @Override */
     override fun nextBowlerOrGame(isEndOfGame: Boolean): GameFragment.NextBowlerResult {
-        val seriesList = seriesManager?.seriesList ?: return GameFragment.NextBowlerResult.None
+        val seriesList = seriesProvider?.seriesList ?: return GameFragment.NextBowlerResult.None
         if (!hasNextBowlerOrGame) return GameFragment.NextBowlerResult.None
 
         // Find the next bowler in the remaining list to switch to with games to still play

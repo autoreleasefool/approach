@@ -12,7 +12,7 @@ import ca.josephroque.bowlingcompanion.common.interfaces.IFloatingActionButtonHa
 import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
 import ca.josephroque.bowlingcompanion.database.Saviour
 import ca.josephroque.bowlingcompanion.games.GameControllerFragment
-import ca.josephroque.bowlingcompanion.games.SeriesManager
+import ca.josephroque.bowlingcompanion.games.SeriesProvider
 import ca.josephroque.bowlingcompanion.series.Series
 import ca.josephroque.bowlingcompanion.teams.Team
 import ca.josephroque.bowlingcompanion.teams.teammember.TeamMember
@@ -118,7 +118,7 @@ class TeamDetailsFragment : BaseFragment(),
                     return@launch
                 }
 
-                val fragment = GameControllerFragment.newInstance(SeriesManager.TeamSeries(team))
+                val fragment = GameControllerFragment.newInstance(SeriesProvider.TeamSeries(team))
                 fragmentNavigation?.pushFragment(fragment)
             }
         }
