@@ -40,7 +40,7 @@ sealed class SeriesProvider : KParcelable {
         /**
          * Construct [BowlerSeries] from a [Parcel].
          */
-        constructor(parcel: Parcel): this(parcel.readParcelable<Series>(Series::class.java.classLoader))
+        constructor(p: Parcel): this(p.readParcelable<Series>(Series::class.java.classLoader))
     }
 
     /** List of series. */

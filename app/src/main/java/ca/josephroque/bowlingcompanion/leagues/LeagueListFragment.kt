@@ -130,9 +130,10 @@ class LeagueListFragment : ListFragment<League, NameAverageRecyclerViewAdapter<L
     /** @Override */
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        if (singleSelectMode) {
-            val parent = parentFragment as? OnListFragmentInteractionListener ?: return
-            listener = parent
+        listener = if (singleSelectMode) {
+            parentFragment as? OnListFragmentInteractionListener ?: return
+        } else {
+            null
         }
     }
 
