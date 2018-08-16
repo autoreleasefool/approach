@@ -79,10 +79,7 @@ class GameControllerFragment : TabbedFragment(),
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
         val seriesType = arguments?.getInt(ARG_SERIES_PROVIDER_TYPE) ?: 0
-        when (seriesType) {
-            0 -> seriesProvider = arguments?.getParcelable<SeriesProvider.TeamSeries>(ARG_SERIES_PROVIDER)
-            1 -> seriesProvider = arguments?.getParcelable<SeriesProvider.BowlerSeries>(ARG_SERIES_PROVIDER)
-        }
+        seriesProvider = SeriesProvider.getParcelable(arguments, ARG_SERIES_PROVIDER, seriesType)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 

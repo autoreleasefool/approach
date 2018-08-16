@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.games
 
+import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
 import ca.josephroque.bowlingcompanion.common.interfaces.KParcelable
@@ -61,9 +62,29 @@ sealed class SeriesProvider : KParcelable {
 
     /** @Override */
     override fun describeContents(): Int {
+        // When changing, update `SeriesProvider.getParcelable`
         return when (this) {
             is TeamSeries -> 0
             is BowlerSeries -> 1
+        }
+    }
+
+    companion object {
+        /**
+         * Get the [SeriesProvider] from the [Bundle] depending on the given [type].
+         *
+         * @param arguments bundle to get provider from
+         * @param key the key identifying the [Parcel] in the [Bundle]
+         * @param type the type of provider to get
+         * @return the [SeriesProvider]
+         */
+        fun getParcelable(arguments: Bundle?, key: String, type: Int): SeriesProvider? {
+            return when (type) {
+                // When changing, update `SeriesProvider::describeContents`
+                0 -> arguments?.getParcelable<TeamSeries>(key)
+                1 -> arguments?.getParcelable<BowlerSeries>(key)
+                else -> throw IllegalArgumentException("SeriesProvider type $type does not exist")
+            }
         }
     }
 }
