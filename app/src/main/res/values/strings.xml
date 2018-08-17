@@ -193,6 +193,14 @@
     <string name="match_play_tied_short">T</string>
 
     <!-- Statistics -->
+    <string name="statistics_category_general">General</string>
+    <string name="statistics_category_first_ball">First ball</string>
+    <string name="statistics_category_fouls">Fouls</string>
+    <string name="statistics_category_pins_on_deck">Pins left on deck</string>
+    <string name="statistics_category_average">Average</string>
+    <string name="statistics_category_match_play">Match play</string>
+    <string name="statistics_category_overall">Overall</string>
+
     <string name="statistic_bowler">Bowler</string>
     <string name="statistic_middle_hits">Middle hits</string>
     <string name="statistic_left_of_middle">Hits left of middle</string>
