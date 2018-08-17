@@ -1,8 +1,10 @@
 package ca.josephroque.bowlingcompanion.statistics.provider
 
+import android.content.res.Resources
 import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
+import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
 import ca.josephroque.bowlingcompanion.common.interfaces.KParcelable
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
@@ -15,16 +17,22 @@ import java.text.DecimalFormat
  */
 sealed class Statistic : IIdentifiable, KParcelable {
 
-    /** Name of the statistic. */
-    abstract val name: String
+    /** Uniquely identify each statistic. */
+    abstract val identifier: Identifier
 
     /** Value to be displayed by the statistic. */
     abstract val displayValue: String
 
+    /** @Override */
+    override val id: Long
+        get() = identifier.ordinal.toLong()
+
+    /** Name to display. */
+    fun getDisplayName(resources: Resources): String = resources.getString(identifier.displayName)
+
     /** A statistic with a percentage value to display. */
     data class PercentageStatistic(
-        override val id: Long,
-        override val name: String,
+        override val identifier: Identifier,
         val numerator: Int,
         val denominator: Int
     ) : Statistic() {
@@ -40,37 +48,35 @@ sealed class Statistic : IIdentifiable, KParcelable {
         /**
          * Construct [PercentageStatistic] from a [Parcel].
          */
-        constructor(p: Parcel): this(p.readLong(), p.readString(), p.readInt(), p.readInt())
+        constructor(p: Parcel): this(Identifier.fromInt(p.readInt())!!, p.readInt(), p.readInt())
 
         /** @Override */
         override val displayValue: String
-            get() = formatter.format(numerator.div(denominator.toDouble()))
+            get() = "${formatter.format(numerator.div(denominator.toDouble()))}% [$numerator/$denominator]"
 
         /** @Override */
         override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
-            writeLong(id)
-            writeString(name)
+            writeInt(identifier.ordinal)
             writeInt(numerator)
             writeInt(denominator)
         }
     }
 
     /** A statistic with a numeric value to display. */
-    data class FlatStatistic(
-        override val id: Long,
-        override val name: String,
+    data class IntegerStatistic(
+        override val identifier: Identifier,
         val value: Int
     ) : Statistic() {
         companion object {
             /** Creator, required by [Parcelable]. */
             @Suppress("unused")
-            @JvmField val CREATOR = parcelableCreator(::FlatStatistic)
+            @JvmField val CREATOR = parcelableCreator(::IntegerStatistic)
         }
 
         /**
-         * Construct [FlatStatistic] from a [Parcel].
+         * Construct [IntegerStatistic] from a [Parcel].
          */
-        constructor(p: Parcel): this(p.readLong(), p.readString(), p.readInt())
+        constructor(p: Parcel): this(Identifier.fromInt(p.readInt())!!, p.readInt())
 
         /** @Override */
         override val displayValue: String
@@ -78,8 +84,7 @@ sealed class Statistic : IIdentifiable, KParcelable {
 
         /** @Override */
         override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
-            writeLong(id)
-            writeString(name)
+            writeInt(identifier.ordinal)
             writeInt(value)
         }
     }
@@ -89,7 +94,7 @@ sealed class Statistic : IIdentifiable, KParcelable {
         // When changing, update `Statistic.getParcelable`
         return when (this) {
             is PercentageStatistic -> 0
-            is FlatStatistic -> 1
+            is IntegerStatistic -> 1
         }
     }
 
@@ -98,7 +103,7 @@ sealed class Statistic : IIdentifiable, KParcelable {
          * Get the [Statistic] from the [Bundle] depending on the given [type].
          *
          * @param arguments bundle to get statistic from
-         * @param key the key identiftying the [Parcel] in the [Bundle]
+         * @param key the key identifying the [Parcel] in the [Bundle]
          * @param type the type of statistic to get
          * @return the [Statistic]
          */
@@ -106,8 +111,18 @@ sealed class Statistic : IIdentifiable, KParcelable {
             return when (type) {
                 // When changing, update `Statistic::describeContents`
                 0 -> arguments?.getParcelable<PercentageStatistic>(key)
-                1 -> arguments?.getParcelable<FlatStatistic>(key)
+                1 -> arguments?.getParcelable<IntegerStatistic>(key)
                 else -> throw IllegalArgumentException("Statistic type $type does not exist")
+            }
+        }
+
+        /** IDs for statistics. */
+        enum class Identifier(val displayName: Int) {
+            MiddleHits(R.string.statistic_middle_hits);
+
+            companion object {
+                private val map = Identifier.values().associateBy(Identifier::ordinal)
+                fun fromInt(type: Int) = map[type]
             }
         }
     }
