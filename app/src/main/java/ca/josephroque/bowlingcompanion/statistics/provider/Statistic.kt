@@ -6,6 +6,7 @@ import android.os.Parcelable
 import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
 import ca.josephroque.bowlingcompanion.common.interfaces.KParcelable
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
+import java.text.DecimalFormat
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -14,14 +15,26 @@ import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
  */
 sealed class Statistic : IIdentifiable, KParcelable {
 
+    /** Name of the statistic. */
+    abstract val name: String
+
+    /** Value to be displayed by the statistic. */
     abstract val displayValue: String
 
     /** A statistic with a percentage value to display. */
-    data class PercentageStatistic(override val id: Long, val name: String, val numerator: Int, val denominator: Int) : Statistic() {
+    data class PercentageStatistic(
+        override val id: Long,
+        override val name: String,
+        val numerator: Int,
+        val denominator: Int
+    ) : Statistic() {
         companion object {
             /** Creator, required by [Parcelable]. */
             @Suppress("unused")
             @JvmField val CREATOR = parcelableCreator(::PercentageStatistic)
+
+            /** Format percentages consistently. */
+            private val formatter = DecimalFormat("#.##")
         }
 
         /**
@@ -31,7 +44,7 @@ sealed class Statistic : IIdentifiable, KParcelable {
 
         /** @Override */
         override val displayValue: String
-            get() = ""
+            get() = formatter.format(numerator.div(denominator.toDouble()))
 
         /** @Override */
         override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
@@ -43,7 +56,11 @@ sealed class Statistic : IIdentifiable, KParcelable {
     }
 
     /** A statistic with a numeric value to display. */
-    data class FlatStatistic(override val id: Long, val name: String, val value: Int) : Statistic() {
+    data class FlatStatistic(
+        override val id: Long,
+        override val name: String,
+        val value: Int
+    ) : Statistic() {
         companion object {
             /** Creator, required by [Parcelable]. */
             @Suppress("unused")
