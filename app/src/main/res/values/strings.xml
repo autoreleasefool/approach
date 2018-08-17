@@ -201,7 +201,11 @@
     <string name="statistics_category_match_play">Match play</string>
     <string name="statistics_category_overall">Overall</string>
 
+    <string name="statistic_team">Team</string>
     <string name="statistic_bowler">Bowler</string>
+    <string name="statistic_league">League/Event</string>
+    <string name="statistic_series">Date</string>
+    <string name="statistic_game">Game #</string>
     <string name="statistic_middle_hits">Middle hits</string>
     <string name="statistic_left_of_middle">Hits left of middle</string>
     <string name="statistic_right_of_middle">Hits right of middle</string>

@@ -147,7 +147,11 @@ sealed class Statistic : IIdentifiable, KParcelable {
 
         /** IDs for statistics. */
         enum class Identifier(val displayName: Int, val category: StatisticsCategory) {
+            Team(R.string.statistic_team, StatisticsCategory.General),
             Bowler(R.string.statistic_bowler, StatisticsCategory.General),
+            League(R.string.statistic_league, StatisticsCategory.General),
+            Series(R.string.statistic_series, StatisticsCategory.General),
+            Game(R.string.statistic_game, StatisticsCategory.General),
             MiddleHits(R.string.statistic_middle_hits, StatisticsCategory.General),
             HitsLeftOfMiddle(R.string.statistic_left_of_middle, StatisticsCategory.General),
             HitsRightOfMiddle(R.string.statistic_right_of_middle, StatisticsCategory.General),
