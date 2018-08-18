@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.statistics.provider
+package ca.josephroque.bowlingcompanion.statistics
 
 import android.content.res.Resources
 import ca.josephroque.bowlingcompanion.R
@@ -9,7 +9,7 @@ import ca.josephroque.bowlingcompanion.R
  * Categorize similar statistics into groups to be displayed together
  * in a list.
  */
-enum class StatisticsCategory {
+enum class StatisticsCategory : StatisticListItem {
     General,
     FirstBall,
     Fouls,
@@ -19,12 +19,12 @@ enum class StatisticsCategory {
     Overall;
 
     /**
-     * Get the name of the category.
+     * Get the title of the category.
      *
      * @param resources to get string
-     * @return the name from the app resources
+     * @return the title from the app resources
      */
-    fun getName(resources: Resources): String {
+    fun getTitle(resources: Resources): String {
         return when (this) {
             General -> resources.getString(R.string.statistics_category_general)
             FirstBall -> resources.getString(R.string.statistics_category_first_ball)
@@ -36,11 +36,14 @@ enum class StatisticsCategory {
         }
     }
 
+    /** @Override */
+    override val id: Long = this.ordinal.toLong()
+
     /**
      * Filter a list of [Statistic] to only those which belong to this category.
      *
      * @param statistics the list of statistics to filter
      * @return a filtered list of [Statistic]
      */
-    fun filterStatistics(statistics: List<Statistic>): List<Statistic> = statistics.filter { this == it.identifier.category }
+    fun filterStatistics(statistics: List<Statistic>): List<Statistic> = statistics.filter { this == it.category }
 }
