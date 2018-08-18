@@ -11,6 +11,7 @@
 
     <color name="colorListPrimary">#F5F5F5</color>
     <color name="colorListAlternate">#EBEBEB</color>
+    <color name="colorListTertiary">#C1C1C1</color>
     <color name="colorDivider">#33000000</color>
 
     <color name="dangerRed">#EE5253</color>
@@ -46,5 +47,9 @@
     <!-- Games -->
     <color name="frameInactive">@color/colorPrimaryWashedOut</color>
     <color name="frameActive">#F5F5FF</color>
+
+    <!-- Statistics -->
+    <color name="statisticItemTitle">@color/colorListTertiary</color>
+    <color name="statisticItemValue">@color/colorListPrimary</color>
 
 </resources>
