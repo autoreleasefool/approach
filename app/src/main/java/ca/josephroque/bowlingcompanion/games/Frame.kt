@@ -96,6 +96,10 @@ class Frame(
     val dbFouls: Int
         get() = Fouls.foulStringToInt(dbFoulString)
 
+    /** Number of pins left on deck at the end of the frame. */
+    val pinsLeftOnDeck: Int
+        get() = pinState[Frame.NUMBER_OF_BALLS].sumBy { if (it.onDeck) it.value else 0 }
+
     companion object {
         /** Logging identifier. */
         @Suppress("unused")
