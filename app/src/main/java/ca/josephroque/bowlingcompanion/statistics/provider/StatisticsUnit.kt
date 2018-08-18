@@ -8,6 +8,10 @@ import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
 import ca.josephroque.bowlingcompanion.games.Game
 import ca.josephroque.bowlingcompanion.leagues.League
 import ca.josephroque.bowlingcompanion.series.Series
+import ca.josephroque.bowlingcompanion.statistics.Statistic
+import ca.josephroque.bowlingcompanion.statistics.StatisticListItem
+import ca.josephroque.bowlingcompanion.statistics.StatisticsCategory
+import ca.josephroque.bowlingcompanion.statistics.impl.*
 import ca.josephroque.bowlingcompanion.teams.Team
 
 /**
@@ -21,6 +25,10 @@ class StatisticsUnit(
     val statistics: List<Statistic>
 ) : KParcelable {
 
+    /** Generify [statistics]. */
+    val statisticListItems: List<StatisticListItem>
+        get() = statistics
+
     companion object {
         /** Logging identifier */
         @Suppress("unused")
@@ -31,6 +39,7 @@ class StatisticsUnit(
         @JvmField val CREATOR = parcelableCreator(::StatisticsUnit)
 
         fun buildFromTeam(team: Team): List<StatisticsUnit> {
+            // Return team + all bowlers
             return ArrayList()
         }
 
@@ -69,14 +78,14 @@ class StatisticsUnit(
                 }
 
             /** Statistics to exclude when display this unit's statistics. */
-            val exludedStatistics: Set<Statistic.Companion.Identifier>
+            val exludedStatistics: Set<Int>
                 get() {
                     return when (this) {
-                        Team -> setOf(Statistic.Companion.Identifier.Bowler, Statistic.Companion.Identifier.League, Statistic.Companion.Identifier.Series, Statistic.Companion.Identifier.Game)
-                        Bowler -> setOf(Statistic.Companion.Identifier.League, Statistic.Companion.Identifier.Series, Statistic.Companion.Identifier.Game)
-                        League -> setOf(Statistic.Companion.Identifier.Series, Statistic.Companion.Identifier.Game)
-                        Series -> setOf(Statistic.Companion.Identifier.Game)
-                        Game -> setOf(Statistic.Companion.Identifier.AveragePinsLeft)
+                        Team -> setOf(BowlerNameStatistic.Id, LeagueNameStatistic.Id, SeriesNameStatistic.Id, GameNameStatistic.Id)
+                        Bowler -> setOf(LeagueNameStatistic.Id, SeriesNameStatistic.Id, GameNameStatistic.Id)
+                        League -> setOf(SeriesNameStatistic.Id, GameNameStatistic.Id)
+                        Series -> setOf(GameNameStatistic.Id)
+                        Game -> setOf(AveragePinsLeftStatistic.Id)
                     }
                 }
 
