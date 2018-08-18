@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
-import ca.josephroque.bowlingcompanion.statistics.provider.Statistic
+import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsUnit
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
@@ -16,7 +16,7 @@ import kotlinx.coroutines.experimental.async
  *
  * A fragment which displays the stats of a [StatisticsUnit] in a list.
  */
-class StatisticsListFragment : ListFragment<Statistic, StatisticsRecyclerViewAdapter>() {
+class StatisticsListFragment : ListFragment<StatisticListItem, StatisticsRecyclerViewAdapter>() {
 
     companion object {
         /** Logging identifier. */
@@ -54,9 +54,12 @@ class StatisticsListFragment : ListFragment<Statistic, StatisticsRecyclerViewAda
     }
 
     /** @Override */
-    override fun fetchItems(): Deferred<MutableList<Statistic>> {
+    override fun fetchItems(): Deferred<MutableList<StatisticListItem>> {
         return async(CommonPool) {
-            unit?.statistics?.toMutableList() ?: emptyList<Statistic>().toMutableList()
+            unit?.statisticListItems?.toMutableList() ?: emptyList<StatisticListItem>().toMutableList()
         }
     }
 }
+
+/** An item to display in the list of statistics. */
+interface StatisticListItem : IIdentifiable
