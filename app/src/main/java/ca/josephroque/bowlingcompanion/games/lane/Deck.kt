@@ -9,6 +9,26 @@ package ca.josephroque.bowlingcompanion.games.lane
 /** Alias for an array of pins. */
 typealias Deck = Array<Pin>
 
+/** The left 2 pin on the deck. */
+val Deck.left2Pin: Pin
+    get() = this[0]
+
+/** The left 3 pin on the deck. */
+val Deck.left3Pin: Pin
+    get() = this[1]
+
+/** The head pin on the deck. */
+val Deck.headPin: Pin
+    get() = this[2]
+
+/** The right 3 pin on the deck. */
+val Deck.right3Pin: Pin
+    get() = this[3]
+
+/** The right 2 pin on the deck. */
+val Deck.right2Pin: Pin
+    get() = this[4]
+
 /**
  * Map a deck to a BooleanArray.
  *
