@@ -15,8 +15,8 @@ import ca.josephroque.bowlingcompanion.common.adapters.BaseRecyclerViewAdapter
  * upon interactions.
  */
 class StatisticsRecyclerViewAdapter(
-        values: List<StatisticListItem>,
-        listener: BaseRecyclerViewAdapter.OnAdapterInteractionListener<StatisticListItem>?
+    values: List<StatisticListItem>,
+    listener: BaseRecyclerViewAdapter.OnAdapterInteractionListener<StatisticListItem>?
 ) : BaseRecyclerViewAdapter<StatisticListItem>(values, listener) {
 
     companion object {

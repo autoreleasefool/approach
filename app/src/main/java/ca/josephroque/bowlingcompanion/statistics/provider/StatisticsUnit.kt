@@ -11,7 +11,11 @@ import ca.josephroque.bowlingcompanion.series.Series
 import ca.josephroque.bowlingcompanion.statistics.Statistic
 import ca.josephroque.bowlingcompanion.statistics.StatisticListItem
 import ca.josephroque.bowlingcompanion.statistics.StatisticsCategory
-import ca.josephroque.bowlingcompanion.statistics.impl.*
+import ca.josephroque.bowlingcompanion.statistics.impl.AveragePinsLeftStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.BowlerNameStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.LeagueNameStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.GameNameStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.SeriesNameStatistic
 import ca.josephroque.bowlingcompanion.teams.Team
 
 /**
