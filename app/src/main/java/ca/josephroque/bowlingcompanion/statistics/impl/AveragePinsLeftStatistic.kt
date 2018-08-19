@@ -51,17 +51,6 @@ class AveragePinsLeftStatistic(override var total: Int, override var divisor: In
      */
     constructor(p: Parcel): this(total = p.readInt(), divisor = p.readInt())
 
-    /** @Override */
-    override fun describeContents(): Int {
-        return titleId
-    }
-
-    /** @Override */
-    override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
-        writeInt(total)
-        writeInt(divisor)
-    }
-
     // MARK: Overrides
 
     /** @Override */

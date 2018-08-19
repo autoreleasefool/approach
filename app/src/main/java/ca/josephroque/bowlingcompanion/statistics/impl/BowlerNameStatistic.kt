@@ -46,16 +46,6 @@ class BowlerNameStatistic(override var value: String = "") : StringStatistic {
      */
     constructor(p: Parcel): this(value = p.readString())
 
-    /** @Override */
-    override fun describeContents(): Int {
-        return titleId
-    }
-
-    /** @Override */
-    override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
-        writeString(value)
-    }
-
     // MARK: Overrides
 
     /** @Override */

@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion.statistics
 
 import android.content.res.Resources
+import android.os.Parcel
 import ca.josephroque.bowlingcompanion.common.interfaces.KParcelable
 import ca.josephroque.bowlingcompanion.games.Frame
 import ca.josephroque.bowlingcompanion.games.Game
@@ -62,6 +63,11 @@ interface Statistic : StatisticListItem, KParcelable {
     fun getTitle(resources: Resources): String {
         return resources.getString(titleId)
     }
+
+    /** @Override */
+    override fun describeContents(): Int {
+        return titleId
+    }
 }
 
 /**
@@ -82,6 +88,12 @@ interface PercentageStatistic : Statistic {
     /** @Override */
     override val displayValue: String
         get() = "${formatter.format(numerator.div(denominator.toDouble()))}% [$numerator/$denominator]"
+
+    /** @Override */
+    override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
+        writeInt(numerator)
+        writeInt(denominator)
+    }
 }
 
 /**
@@ -97,6 +109,12 @@ interface AverageStatistic : Statistic {
     /** @Override */
     override val displayValue: String
         get() = total.div(divisor).toString()
+
+    /** @Override */
+    override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
+        writeInt(total)
+        writeInt(divisor)
+    }
 }
 
 /**
@@ -121,4 +139,9 @@ interface StringStatistic : Statistic {
     /** @Override */
     override val displayValue: String
         get() = value
+
+    /** @Override */
+    override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
+        writeString(value)
+    }
 }
