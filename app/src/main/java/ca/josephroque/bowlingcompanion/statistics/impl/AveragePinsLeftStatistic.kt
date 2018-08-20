@@ -7,7 +7,6 @@ import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
 import ca.josephroque.bowlingcompanion.games.Frame
 import ca.josephroque.bowlingcompanion.games.Game
 import ca.josephroque.bowlingcompanion.statistics.AverageStatistic
-import ca.josephroque.bowlingcompanion.statistics.Statistic
 import ca.josephroque.bowlingcompanion.statistics.StatisticsCategory
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsUnit
 
@@ -32,7 +31,6 @@ class AveragePinsLeftStatistic(override var total: Int, override var divisor: In
 
     override val titleId = Id
     override val id = Id.toLong()
-    override val referenceFrame = Statistic.Companion.ReferenceFrame.ByFrame
     override val category = StatisticsCategory.PinsOnDeck
 
     // MARK: Parcelable

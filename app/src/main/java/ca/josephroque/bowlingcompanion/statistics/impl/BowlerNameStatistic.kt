@@ -6,7 +6,6 @@ import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
 import ca.josephroque.bowlingcompanion.games.Frame
 import ca.josephroque.bowlingcompanion.games.Game
-import ca.josephroque.bowlingcompanion.statistics.Statistic
 import ca.josephroque.bowlingcompanion.statistics.StatisticsCategory
 import ca.josephroque.bowlingcompanion.statistics.StringStatistic
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsUnit
@@ -27,7 +26,6 @@ class BowlerNameStatistic(override var value: String = "") : StringStatistic {
 
     override val titleId = Id
     override val id = Id.toLong()
-    override val referenceFrame = Statistic.Companion.ReferenceFrame.ByUnit
     override val category = StatisticsCategory.General
 
     // MARK: Parcelable

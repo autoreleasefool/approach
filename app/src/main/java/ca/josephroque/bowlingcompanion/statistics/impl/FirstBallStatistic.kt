@@ -5,7 +5,6 @@ import ca.josephroque.bowlingcompanion.games.Game
 import ca.josephroque.bowlingcompanion.games.lane.Deck
 import ca.josephroque.bowlingcompanion.games.lane.arePinsCleared
 import ca.josephroque.bowlingcompanion.statistics.PercentageStatistic
-import ca.josephroque.bowlingcompanion.statistics.Statistic
 import ca.josephroque.bowlingcompanion.statistics.StatisticsCategory
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsUnit
 
@@ -42,7 +41,6 @@ abstract class FirstBallStatistic(override var numerator: Int, override var deno
     /** Indicates if this statistic will be modified by a given [Deck]. */
     abstract fun isModifiedBy(deck: Deck): Boolean
 
-    override val referenceFrame = Statistic.Companion.ReferenceFrame.ByFrame
     override val category = StatisticsCategory.FirstBall
 
     // MARK: Overrides

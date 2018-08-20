@@ -7,9 +7,7 @@ import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
 import ca.josephroque.bowlingcompanion.games.Frame
 import ca.josephroque.bowlingcompanion.games.Game
 import ca.josephroque.bowlingcompanion.matchplay.MatchPlayResult
-import ca.josephroque.bowlingcompanion.statistics.AverageStatistic
 import ca.josephroque.bowlingcompanion.statistics.PercentageStatistic
-import ca.josephroque.bowlingcompanion.statistics.Statistic
 import ca.josephroque.bowlingcompanion.statistics.StatisticsCategory
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsUnit
 
@@ -32,7 +30,6 @@ class GamesLostStatistic(override var numerator: Int, override var denominator: 
 
     override val titleId = Id
     override val id = Id.toLong()
-    override val referenceFrame = Statistic.Companion.ReferenceFrame.ByGame
     override val category = StatisticsCategory.MatchPlay
 
     // MARK: Parcelable

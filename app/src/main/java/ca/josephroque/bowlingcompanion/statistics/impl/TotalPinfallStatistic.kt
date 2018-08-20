@@ -7,7 +7,6 @@ import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
 import ca.josephroque.bowlingcompanion.games.Frame
 import ca.josephroque.bowlingcompanion.games.Game
 import ca.josephroque.bowlingcompanion.statistics.IntegerStatistic
-import ca.josephroque.bowlingcompanion.statistics.Statistic
 import ca.josephroque.bowlingcompanion.statistics.StatisticsCategory
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsUnit
 
@@ -27,7 +26,6 @@ class TotalPinfallStatistic(override var value: Int) : IntegerStatistic {
 
     override val titleId = Id
     override val id = Id.toLong()
-    override val referenceFrame = Statistic.Companion.ReferenceFrame.ByGame
     override val category = StatisticsCategory.Overall
 
     // MARK: Parcelable

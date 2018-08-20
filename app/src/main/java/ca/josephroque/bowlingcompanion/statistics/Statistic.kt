@@ -21,9 +21,6 @@ interface Statistic : StatisticListItem, KParcelable {
     /** Value to be displayed by the statistic. */
     val displayValue: String
 
-    /** The reference frame of the statistic. */
-    val referenceFrame: ReferenceFrame
-
     /** Category that the statistic belongs to. */
     val category: StatisticsCategory
 
@@ -44,15 +41,6 @@ interface Statistic : StatisticListItem, KParcelable {
 
     /** Modify the statistic given a [Frame]. */
     fun modify(frame: Frame) {}
-
-    companion object {
-        /**
-         * Determines what level of detail a statistic requires to be calculated.
-         */
-        enum class ReferenceFrame {
-            ByUnit, ByGame, ByFrame
-        }
-    }
 
     /**
      * Get the title of the statistic.
