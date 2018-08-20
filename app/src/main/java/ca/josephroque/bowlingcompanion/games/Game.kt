@@ -36,6 +36,7 @@ import kotlinx.coroutines.experimental.async
 class Game(
     val series: Series,
     override val id: Long,
+    /** Ordinal starts at 1 */
     val ordinal: Int,
     var isLocked: Boolean,
     var initialScore: Int,

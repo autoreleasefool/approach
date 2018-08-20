@@ -127,6 +127,11 @@ interface IntegerStatistic : Statistic {
     /** @Override */
     override val displayValue: String
         get() = value.toString()
+
+    /** @Override */
+    override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
+        writeInt(value)
+    }
 }
 
 /**
