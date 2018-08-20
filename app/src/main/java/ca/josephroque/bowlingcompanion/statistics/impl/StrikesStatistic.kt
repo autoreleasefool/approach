@@ -5,21 +5,19 @@ import android.os.Parcelable
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
 import ca.josephroque.bowlingcompanion.games.lane.Deck
-import ca.josephroque.bowlingcompanion.games.lane.headPin
-import ca.josephroque.bowlingcompanion.games.lane.left2Pin
-import ca.josephroque.bowlingcompanion.games.lane.left3Pin
+import ca.josephroque.bowlingcompanion.games.lane.arePinsCleared
 
 /**
  * Copyright (C) 2018 Joseph Roque
  *
- * Percentage of shots which hit left of the middle pin.
+ * Percentage of shots which are strikes.
  */
-class LeftOfMiddleHitsStatistic(numerator: Int, denominator: Int) : FirstBallStatistic(numerator, denominator) {
+class StrikesStatistic(numerator: Int, denominator: Int) : FirstBallStatistic(numerator, denominator) {
 
     // MARK: Modifiers
 
     /** @Override */
-    override fun isModifiedBy(deck: Deck): Boolean = deck.headPin.onDeck && (deck.left2Pin.isDown || deck.left3Pin.isDown)
+    override fun isModifiedBy(deck: Deck): Boolean = deck.arePinsCleared()
 
     override val titleId = Id
     override val id = Id.toLong()
@@ -29,10 +27,10 @@ class LeftOfMiddleHitsStatistic(numerator: Int, denominator: Int) : FirstBallSta
     companion object {
         /** Creator, required by [Parcelable]. */
         @Suppress("unused")
-        @JvmField val CREATOR = parcelableCreator(::LeftOfMiddleHitsStatistic)
+        @JvmField val CREATOR = parcelableCreator(::StrikesStatistic)
 
         /** Unique ID for the statistic. */
-        const val Id = R.string.statistic_left_of_middle
+        const val Id = R.string.statistic_strikes
     }
 
     /**

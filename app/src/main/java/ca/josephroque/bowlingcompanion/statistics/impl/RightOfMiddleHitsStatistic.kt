@@ -5,6 +5,7 @@ import android.os.Parcelable
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
 import ca.josephroque.bowlingcompanion.games.lane.Deck
+import ca.josephroque.bowlingcompanion.games.lane.headPin
 import ca.josephroque.bowlingcompanion.games.lane.right2Pin
 import ca.josephroque.bowlingcompanion.games.lane.right3Pin
 
@@ -18,7 +19,7 @@ class RightOfMiddleHitsStatistic(numerator: Int, denominator: Int) : FirstBallSt
     // MARK: Modifiers
 
     /** @Override */
-    override fun isModifiedBy(deck: Deck): Boolean = deck.right2Pin.isDown || deck.right3Pin.isDown
+    override fun isModifiedBy(deck: Deck): Boolean = deck.headPin.onDeck && (deck.right2Pin.isDown || deck.right3Pin.isDown)
 
     override val titleId = Id
     override val id = Id.toLong()
