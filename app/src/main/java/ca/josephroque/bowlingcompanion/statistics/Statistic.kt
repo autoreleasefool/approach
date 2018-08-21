@@ -5,6 +5,7 @@ import android.os.Parcel
 import ca.josephroque.bowlingcompanion.common.interfaces.KParcelable
 import ca.josephroque.bowlingcompanion.games.Frame
 import ca.josephroque.bowlingcompanion.games.Game
+import ca.josephroque.bowlingcompanion.series.Series
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsUnit
 import java.text.DecimalFormat
 
@@ -25,19 +26,25 @@ interface Statistic : StatisticListItem, KParcelable {
     val category: StatisticsCategory
 
     /** Indicates if this statistic will be modified by a given [StatisticsUnit]. */
-    fun isModifiedBy(unit: StatisticsUnit): Boolean
+    fun isModifiedBy(unit: StatisticsUnit) = false
 
     /** Modify the statistic given a [StatisticsUnit]. */
     fun modify(unit: StatisticsUnit) {}
 
+    /** Indicates if this statistic will be modified by a given [Series]. */
+    fun isModifiedBy(series: Series) = false
+
+    /** Modify the statistic given a [Series]. */
+    fun modify(series: Series) {}
+
     /** Indicates if this statistic will be modified by a given [Game]. */
-    fun isModifiedBy(game: Game): Boolean
+    fun isModifiedBy(game: Game) = false
 
     /** Modify the statistic given a [Game]. */
     fun modify(game: Game) {}
 
     /** Indicates if this statistic will be modified by a given [Frame]. */
-    fun isModifiedBy(frame: Frame): Boolean
+    fun isModifiedBy(frame: Frame) = false
 
     /** Modify the statistic given a [Frame]. */
     fun modify(frame: Frame) {}
