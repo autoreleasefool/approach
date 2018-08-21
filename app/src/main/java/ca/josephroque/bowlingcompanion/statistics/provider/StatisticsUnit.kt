@@ -11,11 +11,15 @@ import ca.josephroque.bowlingcompanion.series.Series
 import ca.josephroque.bowlingcompanion.statistics.Statistic
 import ca.josephroque.bowlingcompanion.statistics.StatisticListItem
 import ca.josephroque.bowlingcompanion.statistics.StatisticsCategory
-import ca.josephroque.bowlingcompanion.statistics.impl.AveragePinsLeftStatistic
-import ca.josephroque.bowlingcompanion.statistics.impl.BowlerNameStatistic
-import ca.josephroque.bowlingcompanion.statistics.impl.LeagueNameStatistic
-import ca.josephroque.bowlingcompanion.statistics.impl.GameNameStatistic
-import ca.josephroque.bowlingcompanion.statistics.impl.SeriesNameStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.pinsleftondeck.AveragePinsLeftStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.general.BowlerNameStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.overall.GameAverageStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.general.LeagueNameStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.general.GameNameStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.overall.HighSingleStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.overall.NumberOfGamesStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.general.SeriesNameStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.overall.TotalPinfallStatistic
 import ca.josephroque.bowlingcompanion.teams.Team
 
 /**
@@ -76,8 +80,8 @@ class StatisticsUnit(
                 get() {
                     return when (this) {
                         Team, Bowler, League -> emptySet()
-                        Series -> setOf(StatisticsCategory.Average)
-                        Game -> setOf(StatisticsCategory.Average, StatisticsCategory.MatchPlay, StatisticsCategory.Overall)
+                        Series -> setOf(StatisticsCategory.Average, StatisticsCategory.Series)
+                        Game -> setOf(StatisticsCategory.Average, StatisticsCategory.MatchPlay, StatisticsCategory.Series)
                     }
                 }
 
@@ -89,7 +93,7 @@ class StatisticsUnit(
                         Bowler -> setOf(LeagueNameStatistic.Id, SeriesNameStatistic.Id, GameNameStatistic.Id)
                         League -> setOf(SeriesNameStatistic.Id, GameNameStatistic.Id)
                         Series -> setOf(GameNameStatistic.Id)
-                        Game -> setOf(AveragePinsLeftStatistic.Id)
+                        Game -> setOf(AveragePinsLeftStatistic.Id, GameAverageStatistic.Id, HighSingleStatistic.Id, TotalPinfallStatistic.Id, NumberOfGamesStatistic.Id)
                     }
                 }
 

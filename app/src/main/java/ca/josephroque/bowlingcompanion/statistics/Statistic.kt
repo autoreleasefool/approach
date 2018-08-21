@@ -6,6 +6,66 @@ import ca.josephroque.bowlingcompanion.common.interfaces.KParcelable
 import ca.josephroque.bowlingcompanion.games.Frame
 import ca.josephroque.bowlingcompanion.games.Game
 import ca.josephroque.bowlingcompanion.series.Series
+import ca.josephroque.bowlingcompanion.statistics.impl.firstball.AcesSparedStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.firstball.AcesStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.pinsleftondeck.AveragePinsLeftStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.general.BowlerNameStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.firstball.ChopOffsSparedStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.firstball.ChopOffsStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.foul.FoulsStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.average.Game10AverageStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.average.Game11AverageStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.average.Game12AverageStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.average.Game13AverageStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.average.Game14AverageStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.average.Game15AverageStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.average.Game16AverageStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.average.Game17AverageStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.average.Game18AverageStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.average.Game19AverageStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.average.Game1AverageStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.average.Game20AverageStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.average.Game2AverageStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.average.Game3AverageStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.average.Game4AverageStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.average.Game5AverageStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.average.Game6AverageStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.average.Game7AverageStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.average.Game8AverageStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.average.Game9AverageStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.overall.GameAverageStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.general.GameNameStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.matchplay.GamesLostStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.matchplay.GamesTiedStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.matchplay.GamesWonStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.firstball.HeadPinsSparedStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.firstball.HeadPinsStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.overall.HighSingleStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.general.LeagueNameStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.firstball.LeftChopOffsSparedStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.firstball.LeftChopOffsStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.overall.LeftOfMiddleHitsStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.firstball.LeftSplitsSparedStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.firstball.LeftSplitsStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.firstball.LeftsSparedStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.firstball.LeftsStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.overall.MiddleHitsStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.overall.NumberOfGamesStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.firstball.RightChopOffsSparedStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.firstball.RightChopOffsStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.overall.RightOfMiddleHitsStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.firstball.RightSplitsSparedStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.firstball.RightSplitsStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.firstball.RightsSparedStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.firstball.RightsStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.general.SeriesNameStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.overall.SpareConversionsStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.firstball.SplitsSparedStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.firstball.SplitsStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.overall.StrikesStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.general.TeamNameStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.overall.TotalPinfallStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.pinsleftondeck.TotalPinsLeftStatistic
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsUnit
 import java.text.DecimalFormat
 
@@ -62,6 +122,80 @@ interface Statistic : StatisticListItem, KParcelable {
     /** @Override */
     override fun describeContents(): Int {
         return titleId
+    }
+
+    companion object {
+        val order: List<Int> = listOf(
+            // General
+            TeamNameStatistic.Id,
+            BowlerNameStatistic.Id,
+            LeagueNameStatistic.Id,
+            SeriesNameStatistic.Id,
+            GameNameStatistic.Id,
+            // Overall
+            HighSingleStatistic.Id,
+            TotalPinfallStatistic.Id,
+            NumberOfGamesStatistic.Id,
+            GameAverageStatistic.Id,
+            MiddleHitsStatistic.Id,
+            LeftOfMiddleHitsStatistic.Id,
+            RightOfMiddleHitsStatistic.Id,
+            StrikesStatistic.Id,
+            SpareConversionsStatistic.Id,
+            // First Ball
+            HeadPinsStatistic.Id,
+            HeadPinsSparedStatistic.Id,
+            LeftsStatistic.Id,
+            LeftsSparedStatistic.Id,
+            RightsStatistic.Id,
+            RightsSparedStatistic.Id,
+            AcesStatistic.Id,
+            AcesSparedStatistic.Id,
+            ChopOffsStatistic.Id,
+            ChopOffsSparedStatistic.Id,
+            LeftChopOffsStatistic.Id,
+            LeftChopOffsSparedStatistic.Id,
+            RightChopOffsStatistic.Id,
+            RightChopOffsSparedStatistic.Id,
+            SplitsStatistic.Id,
+            SplitsSparedStatistic.Id,
+            LeftSplitsStatistic.Id,
+            LeftSplitsSparedStatistic.Id,
+            RightSplitsStatistic.Id,
+            RightSplitsSparedStatistic.Id,
+            // Fouls
+            FoulsStatistic.Id,
+            // Pins Left on Deck
+            TotalPinsLeftStatistic.Id,
+            AveragePinsLeftStatistic.Id,
+            // Average
+            Game1AverageStatistic.Id,
+            Game2AverageStatistic.Id,
+            Game3AverageStatistic.Id,
+            Game4AverageStatistic.Id,
+            Game5AverageStatistic.Id,
+            Game6AverageStatistic.Id,
+            Game7AverageStatistic.Id,
+            Game8AverageStatistic.Id,
+            Game9AverageStatistic.Id,
+            Game10AverageStatistic.Id,
+            Game11AverageStatistic.Id,
+            Game12AverageStatistic.Id,
+            Game13AverageStatistic.Id,
+            Game14AverageStatistic.Id,
+            Game15AverageStatistic.Id,
+            Game16AverageStatistic.Id,
+            Game17AverageStatistic.Id,
+            Game18AverageStatistic.Id,
+            Game19AverageStatistic.Id,
+            Game20AverageStatistic.Id,
+            // Series
+
+            // Match Play
+            GamesWonStatistic.Id,
+            GamesLostStatistic.Id,
+            GamesTiedStatistic.Id
+        )
     }
 }
 

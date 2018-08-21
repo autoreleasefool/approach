@@ -11,12 +11,13 @@ import ca.josephroque.bowlingcompanion.R
  */
 enum class StatisticsCategory : StatisticListItem {
     General,
+    Overall,
     FirstBall,
     Fouls,
     PinsOnDeck,
-    Average,
     MatchPlay,
-    Overall;
+    Average,
+    Series;
 
     /**
      * Get the title of the category.
@@ -31,6 +32,7 @@ enum class StatisticsCategory : StatisticListItem {
             Fouls -> resources.getString(R.string.statistics_category_fouls)
             PinsOnDeck -> resources.getString(R.string.statistics_category_pins_on_deck)
             Average -> resources.getString(R.string.statistics_category_average)
+            Series -> resources.getString(R.string.statistics_category_series)
             MatchPlay -> resources.getString(R.string.statistics_category_match_play)
             Overall -> resources.getString(R.string.statistics_category_overall)
         }

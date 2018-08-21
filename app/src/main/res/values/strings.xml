@@ -194,18 +194,26 @@
 
     <!-- Statistics -->
     <string name="statistics_category_general">General</string>
+    <string name="statistics_category_overall">Overall</string>
     <string name="statistics_category_first_ball">First ball</string>
     <string name="statistics_category_fouls">Fouls</string>
     <string name="statistics_category_pins_on_deck">Pins left on deck</string>
-    <string name="statistics_category_average">Average</string>
     <string name="statistics_category_match_play">Match play</string>
-    <string name="statistics_category_overall">Overall</string>
+    <string name="statistics_category_average">Average</string>
+    <string name="statistics_category_series">Series</string>
 
+    <!-- General statistics -->
     <string name="statistic_team">Team</string>
     <string name="statistic_bowler">Bowler</string>
     <string name="statistic_league">League/Event</string>
     <string name="statistic_series">Date</string>
     <string name="statistic_game">Game #</string>
+    <string name="statistic_average">Average</string>
+    <string name="statistic_high_single">High single</string>
+    <string name="statistic_high_series">High series</string>
+    <string name="statistic_total_pinfall">Total pinfall</string>
+    <string name="statistic_number_of_games"># of games</string>
+    <!-- First ball statistics -->
     <string name="statistic_middle_hits">Middle hits</string>
     <string name="statistic_left_of_middle">Hits left of middle</string>
     <string name="statistic_right_of_middle">Hits right of middle</string>
@@ -231,9 +239,12 @@
     <string name="statistic_left_splits_spared">Left splits spared</string>
     <string name="statistic_right_splits">Right splits</string>
     <string name="statistic_right_splits_spared">Right splits spared</string>
+    <!-- Foul statistics -->
     <string name="statistic_fouls">Fouls</string>
+    <!-- Pins left on deck statistics -->
     <string name="statistic_pins_left">Total pins left</string>
     <string name="statistic_average_pins_left">Average pins left</string>
+    <!-- Game average statistics -->
     <string name="statistic_average_1">Average in Game 1</string>
     <string name="statistic_average_2">Average in Game 2</string>
     <string name="statistic_average_3">Average in Game 3</string>
@@ -254,14 +265,11 @@
     <string name="statistic_average_18">Average in Game 18</string>
     <string name="statistic_average_19">Average in Game 19</string>
     <string name="statistic_average_20">Average in Game 20</string>
+    <!-- High series statistics -->
+    <!-- Match play statistics -->
     <string name="statistic_games_won">Games won</string>
     <string name="statistic_games_lost">Games lost</string>
     <string name="statistic_games_tied">Games tied</string>
-    <string name="statistic_average">Average</string>
-    <string name="statistic_high_single">High single</string>
-    <string name="statistic_high_series">High series</string>
-    <string name="statistic_total_pinfall">Total pinfall</string>
-    <string name="statistic_number_of_games"># of games</string>
 
     <!-- Navigation Drawer -->
     <string name="nav_bowlers_teams">Bowlers &amp; Teams</string>
