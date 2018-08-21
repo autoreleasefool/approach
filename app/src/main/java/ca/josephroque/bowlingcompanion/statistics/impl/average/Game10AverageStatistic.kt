@@ -4,32 +4,19 @@ import android.os.Parcel
 import android.os.Parcelable
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
-import ca.josephroque.bowlingcompanion.games.Frame
-import ca.josephroque.bowlingcompanion.games.Game
-import ca.josephroque.bowlingcompanion.statistics.AverageStatistic
-import ca.josephroque.bowlingcompanion.statistics.StatisticsCategory
-import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsUnit
 
 /**
  * Copyright (C) 2018 Joseph Roque
  *
- * Average score in 10th game of series.
+ * Average score in the 10th game of a series.
  */
-class Game10AverageStatistic(override var total: Int, override var divisor: Int) : AverageStatistic {
+class Game10AverageStatistic(total: Int, divisor: Int) : PerGameAverageStatistic(total, divisor) {
 
-    // MARK: Modifiers
+    // MARK: Overrides
 
-    /** @Override */
-    override fun modify(game: Game) {
-        if (game.ordinal == 10) {
-            divisor++
-            total += game.score
-        }
-    }
-
+    override val gameNumber = 10
     override val titleId = Id
     override val id = Id.toLong()
-    override val category = StatisticsCategory.Average
 
     // MARK: Parcelable
 
@@ -46,15 +33,4 @@ class Game10AverageStatistic(override var total: Int, override var divisor: Int)
      * Construct this statistic from a [Parcel].
      */
     constructor(p: Parcel): this(total = p.readInt(), divisor = p.readInt())
-
-    // MARK: Overrides
-
-    /** @Override */
-    override fun isModifiedBy(frame: Frame) = false
-
-    /** @Override */
-    override fun isModifiedBy(game: Game) = true
-
-    /** @Override */
-    override fun isModifiedBy(unit: StatisticsUnit) = false
 }
