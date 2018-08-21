@@ -66,6 +66,25 @@ import ca.josephroque.bowlingcompanion.statistics.impl.overall.StrikesStatistic
 import ca.josephroque.bowlingcompanion.statistics.impl.general.TeamNameStatistic
 import ca.josephroque.bowlingcompanion.statistics.impl.overall.TotalPinfallStatistic
 import ca.josephroque.bowlingcompanion.statistics.impl.pinsleftondeck.TotalPinsLeftStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.series.HighSeriesOf10Statistic
+import ca.josephroque.bowlingcompanion.statistics.impl.series.HighSeriesOf11Statistic
+import ca.josephroque.bowlingcompanion.statistics.impl.series.HighSeriesOf12Statistic
+import ca.josephroque.bowlingcompanion.statistics.impl.series.HighSeriesOf13Statistic
+import ca.josephroque.bowlingcompanion.statistics.impl.series.HighSeriesOf14Statistic
+import ca.josephroque.bowlingcompanion.statistics.impl.series.HighSeriesOf15Statistic
+import ca.josephroque.bowlingcompanion.statistics.impl.series.HighSeriesOf16Statistic
+import ca.josephroque.bowlingcompanion.statistics.impl.series.HighSeriesOf17Statistic
+import ca.josephroque.bowlingcompanion.statistics.impl.series.HighSeriesOf18Statistic
+import ca.josephroque.bowlingcompanion.statistics.impl.series.HighSeriesOf19Statistic
+import ca.josephroque.bowlingcompanion.statistics.impl.series.HighSeriesOf20Statistic
+import ca.josephroque.bowlingcompanion.statistics.impl.series.HighSeriesOf2Statistic
+import ca.josephroque.bowlingcompanion.statistics.impl.series.HighSeriesOf3Statistic
+import ca.josephroque.bowlingcompanion.statistics.impl.series.HighSeriesOf4Statistic
+import ca.josephroque.bowlingcompanion.statistics.impl.series.HighSeriesOf5Statistic
+import ca.josephroque.bowlingcompanion.statistics.impl.series.HighSeriesOf6Statistic
+import ca.josephroque.bowlingcompanion.statistics.impl.series.HighSeriesOf7Statistic
+import ca.josephroque.bowlingcompanion.statistics.impl.series.HighSeriesOf8Statistic
+import ca.josephroque.bowlingcompanion.statistics.impl.series.HighSeriesOf9Statistic
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsUnit
 import java.text.DecimalFormat
 
@@ -190,7 +209,25 @@ interface Statistic : StatisticListItem, KParcelable {
             Game19AverageStatistic.Id,
             Game20AverageStatistic.Id,
             // Series
-
+            HighSeriesOf2Statistic.Id,
+            HighSeriesOf3Statistic.Id,
+            HighSeriesOf4Statistic.Id,
+            HighSeriesOf5Statistic.Id,
+            HighSeriesOf6Statistic.Id,
+            HighSeriesOf7Statistic.Id,
+            HighSeriesOf8Statistic.Id,
+            HighSeriesOf9Statistic.Id,
+            HighSeriesOf10Statistic.Id,
+            HighSeriesOf11Statistic.Id,
+            HighSeriesOf12Statistic.Id,
+            HighSeriesOf13Statistic.Id,
+            HighSeriesOf14Statistic.Id,
+            HighSeriesOf15Statistic.Id,
+            HighSeriesOf16Statistic.Id,
+            HighSeriesOf17Statistic.Id,
+            HighSeriesOf18Statistic.Id,
+            HighSeriesOf19Statistic.Id,
+            HighSeriesOf20Statistic.Id,
             // Match Play
             GamesWonStatistic.Id,
             GamesLostStatistic.Id,

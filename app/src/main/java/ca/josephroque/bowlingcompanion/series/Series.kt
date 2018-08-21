@@ -50,6 +50,10 @@ class Series(
     val prettyDate: String
         get() = DateUtils.dateToPretty(date)
 
+    /** Series total. */
+    val total: Int
+        get() = scores.sum()
+
     /**
      * Construct [Series] from a [Parcel]
      */

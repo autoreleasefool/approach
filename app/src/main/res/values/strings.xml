@@ -266,6 +266,25 @@
     <string name="statistic_average_19">Average in Game 19</string>
     <string name="statistic_average_20">Average in Game 20</string>
     <!-- High series statistics -->
+    <string name="statistic_high_series_of_2">High series of 2</string>
+    <string name="statistic_high_series_of_3">High series of 3</string>
+    <string name="statistic_high_series_of_4">High series of 4</string>
+    <string name="statistic_high_series_of_5">High series of 5</string>
+    <string name="statistic_high_series_of_6">High series of 6</string>
+    <string name="statistic_high_series_of_7">High series of 7</string>
+    <string name="statistic_high_series_of_8">High series of 8</string>
+    <string name="statistic_high_series_of_9">High series of 9</string>
+    <string name="statistic_high_series_of_10">High series of 10</string>
+    <string name="statistic_high_series_of_11">High series of 11</string>
+    <string name="statistic_high_series_of_12">High series of 12</string>
+    <string name="statistic_high_series_of_13">High series of 13</string>
+    <string name="statistic_high_series_of_14">High series of 14</string>
+    <string name="statistic_high_series_of_15">High series of 15</string>
+    <string name="statistic_high_series_of_16">High series of 16</string>
+    <string name="statistic_high_series_of_17">High series of 17</string>
+    <string name="statistic_high_series_of_18">High series of 18</string>
+    <string name="statistic_high_series_of_19">High series of 19</string>
+    <string name="statistic_high_series_of_20">High series of 20</string>
     <!-- Match play statistics -->
     <string name="statistic_games_won">Games won</string>
     <string name="statistic_games_lost">Games lost</string>
