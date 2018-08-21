@@ -13,7 +13,6 @@ import ca.josephroque.bowlingcompanion.common.adapters.BaseFragmentPagerAdapter
 import ca.josephroque.bowlingcompanion.common.fragments.TabbedFragment
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProvider
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsUnit
-import kotlinx.android.synthetic.main.fragment_common_tabs.tabbed_fragment_pager as fragmentPager
 import kotlinx.android.synthetic.main.fragment_common_tabs.tabbed_fragment_tabs as fragmentTabs
 
 /**
@@ -62,7 +61,7 @@ class StatisticsFragment : TabbedFragment() {
 
     /** @Override */
     override fun buildPagerAdapter(tabCount: Int): BaseFragmentPagerAdapter {
-        return StatisticsListPagerAdapter(childFragmentManager, tabCount, statisticsProvider?.units )
+        return StatisticsListPagerAdapter(childFragmentManager, tabCount, statisticsProvider?.units)
     }
 
     /** @Override */
@@ -77,7 +76,6 @@ class StatisticsFragment : TabbedFragment() {
 
     /** @Override */
     override fun handleTabSwitch(newTab: Int) {
-
     }
 
     /** @Override */
@@ -102,16 +100,15 @@ class StatisticsFragment : TabbedFragment() {
 
     /** @Override */
     override fun onFabClick() {
-
     }
 
     /**
      * Pager adapter for games.
      */
     class StatisticsListPagerAdapter(
-            fragmentManager: FragmentManager,
-            tabCount: Int,
-            private val statisticsUnits: List<StatisticsUnit>?
+        fragmentManager: FragmentManager,
+        tabCount: Int,
+        private val statisticsUnits: List<StatisticsUnit>?
     ) : BaseFragmentPagerAdapter(fragmentManager, tabCount) {
 
         /** @Override */
@@ -123,5 +120,4 @@ class StatisticsFragment : TabbedFragment() {
             return null
         }
     }
-
 }

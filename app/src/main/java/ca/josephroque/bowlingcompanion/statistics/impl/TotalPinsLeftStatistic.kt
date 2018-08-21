@@ -28,7 +28,7 @@ class TotalPinsLeftStatistic(override var value: Int) : IntegerStatistic {
     override val id = Id.toLong()
     override val category = StatisticsCategory.PinsOnDeck
     override fun isModifiedBy(frame: Frame) = true
-    
+
     // MARK: Parcelable
 
     companion object {

@@ -4,7 +4,9 @@ import android.os.Parcel
 import android.os.Parcelable
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
-import ca.josephroque.bowlingcompanion.games.lane.*
+import ca.josephroque.bowlingcompanion.games.lane.Deck
+import ca.josephroque.bowlingcompanion.games.lane.arePinsCleared
+import ca.josephroque.bowlingcompanion.games.lane.isLeftChopOff
 
 /**
  * Copyright (C) 2018 Joseph Roque
