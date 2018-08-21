@@ -6,7 +6,6 @@ import ca.josephroque.bowlingcompanion.games.lane.Deck
 import ca.josephroque.bowlingcompanion.games.lane.arePinsCleared
 import ca.josephroque.bowlingcompanion.statistics.PercentageStatistic
 import ca.josephroque.bowlingcompanion.statistics.StatisticsCategory
-import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsUnit
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -38,19 +37,13 @@ abstract class FirstBallStatistic(override var numerator: Int, override var deno
         }
     }
 
-    /** Indicates if this statistic will be modified by a given [Deck]. */
-    abstract fun isModifiedBy(deck: Deck): Boolean
-
-    override val category = StatisticsCategory.FirstBall
-
     // MARK: Overrides
 
-    /** @Override */
-    override fun isModifiedBy(frame: Frame) = frame.pinState.any { isModifiedBy(it) }
+    override fun isModifiedBy(frame: Frame) = true
+    override val category = StatisticsCategory.FirstBall
 
-    /** @Override */
-    override fun isModifiedBy(game: Game) = false
+    // MARK: FirstBallStatistic
 
-    /** @Override */
-    override fun isModifiedBy(unit: StatisticsUnit) = false
+    /** Indicates if this statistic will be modified by a given [Deck]. */
+    abstract fun isModifiedBy(deck: Deck): Boolean
 }

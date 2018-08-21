@@ -5,7 +5,7 @@ import android.os.Parcelable
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
 import ca.josephroque.bowlingcompanion.games.lane.Deck
-import ca.josephroque.bowlingcompanion.games.lane.headPin
+import ca.josephroque.bowlingcompanion.games.lane.isMiddleHit
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -17,7 +17,9 @@ class MiddleHitsStatistic(numerator: Int, denominator: Int) : FirstBallStatistic
     // MARK: Modifiers
 
     /** @Override */
-    override fun isModifiedBy(deck: Deck): Boolean = deck.headPin.isDown
+    override fun isModifiedBy(deck: Deck) = deck.isMiddleHit
+
+    // MARK: Overrides
 
     override val titleId = Id
     override val id = Id.toLong()

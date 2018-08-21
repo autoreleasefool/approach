@@ -25,9 +25,12 @@ class GameAverageStatistic(override var total: Int, override var divisor: Int) :
         total += game.score
     }
 
+    // MARK: Overrides
+
     override val titleId = Id
     override val id = Id.toLong()
     override val category = StatisticsCategory.Overall
+    override fun isModifiedBy(game: Game) = true
 
     // MARK: Parcelable
 
@@ -44,15 +47,4 @@ class GameAverageStatistic(override var total: Int, override var divisor: Int) :
      * Construct this statistic from a [Parcel].
      */
     constructor(p: Parcel): this(total = p.readInt(), divisor = p.readInt())
-
-    // MARK: Overrides
-
-    /** @Override */
-    override fun isModifiedBy(frame: Frame) = false
-
-    /** @Override */
-    override fun isModifiedBy(game: Game) = true
-
-    /** @Override */
-    override fun isModifiedBy(unit: StatisticsUnit) = false
 }

@@ -4,11 +4,9 @@ import android.os.Parcel
 import android.os.Parcelable
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
-import ca.josephroque.bowlingcompanion.games.Frame
 import ca.josephroque.bowlingcompanion.games.Game
 import ca.josephroque.bowlingcompanion.statistics.IntegerStatistic
 import ca.josephroque.bowlingcompanion.statistics.StatisticsCategory
-import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsUnit
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -24,9 +22,12 @@ class HighSingleStatistic(override var value: Int) : IntegerStatistic {
         value = maxOf(value, game.score)
     }
 
+    // MARK: Overrides
+
     override val titleId = Id
     override val id = Id.toLong()
     override val category = StatisticsCategory.Overall
+    override fun isModifiedBy(game: Game) = true
 
     // MARK: Parcelable
 
@@ -43,15 +44,4 @@ class HighSingleStatistic(override var value: Int) : IntegerStatistic {
      * Construct this statistic from a [Parcel].
      */
     constructor(p: Parcel): this(value = p.readInt())
-
-    // MARK: Overrides
-
-    /** @Override */
-    override fun isModifiedBy(frame: Frame) = false
-
-    /** @Override */
-    override fun isModifiedBy(game: Game) = true
-
-    /** @Override */
-    override fun isModifiedBy(unit: StatisticsUnit) = false
 }

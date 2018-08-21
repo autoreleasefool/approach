@@ -5,9 +5,7 @@ import android.os.Parcelable
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
 import ca.josephroque.bowlingcompanion.games.lane.Deck
-import ca.josephroque.bowlingcompanion.games.lane.headPin
-import ca.josephroque.bowlingcompanion.games.lane.right3Pin
-import ca.josephroque.bowlingcompanion.games.lane.value
+import ca.josephroque.bowlingcompanion.games.lane.isRightSplit
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -19,7 +17,9 @@ class RightSplitsStatistic(numerator: Int, denominator: Int) : FirstBallStatisti
     // MARK: Modifiers
 
     /** @Override */
-    override fun isModifiedBy(deck: Deck): Boolean = isRightSplit(deck)
+    override fun isModifiedBy(deck: Deck) = deck.isRightSplit
+
+    // MARK: Overrides
 
     override val titleId = Id
     override val id = Id.toLong()
@@ -33,13 +33,6 @@ class RightSplitsStatistic(numerator: Int, denominator: Int) : FirstBallStatisti
 
         /** Unique ID for the statistic. */
         const val Id = R.string.statistic_right_splits
-
-        /**
-         * Check for a right split.
-         *
-         * @param deck the deck to check
-         */
-        fun isRightSplit(deck: Deck): Boolean = deck.value(true) == 8 && deck.headPin.isDown && deck.right3Pin.isDown
     }
 
     /**

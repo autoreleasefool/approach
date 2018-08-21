@@ -5,9 +5,7 @@ import android.os.Parcelable
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
 import ca.josephroque.bowlingcompanion.games.lane.Deck
-import ca.josephroque.bowlingcompanion.games.lane.headPin
-import ca.josephroque.bowlingcompanion.games.lane.left2Pin
-import ca.josephroque.bowlingcompanion.games.lane.left3Pin
+import ca.josephroque.bowlingcompanion.games.lane.isHitLeftOfMiddle
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -19,7 +17,9 @@ class LeftOfMiddleHitsStatistic(numerator: Int, denominator: Int) : FirstBallSta
     // MARK: Modifiers
 
     /** @Override */
-    override fun isModifiedBy(deck: Deck): Boolean = deck.headPin.onDeck && (deck.left2Pin.isDown || deck.left3Pin.isDown)
+    override fun isModifiedBy(deck: Deck) = deck.isHitLeftOfMiddle
+
+    // MARK: Overrides
 
     override val titleId = Id
     override val id = Id.toLong()

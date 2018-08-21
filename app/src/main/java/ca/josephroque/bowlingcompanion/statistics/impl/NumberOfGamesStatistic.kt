@@ -24,9 +24,12 @@ class NumberOfGamesStatistic(override var value: Int) : IntegerStatistic {
         value++
     }
 
+    // MARK: Overrides
+
     override val titleId = Id
     override val id = Id.toLong()
     override val category = StatisticsCategory.Overall
+    override fun isModifiedBy(game: Game) = true
 
     // MARK: Parcelable
 
@@ -43,15 +46,4 @@ class NumberOfGamesStatistic(override var value: Int) : IntegerStatistic {
      * Construct this statistic from a [Parcel].
      */
     constructor(p: Parcel): this(value = p.readInt())
-
-    // MARK: Overrides
-
-    /** @Override */
-    override fun isModifiedBy(frame: Frame) = false
-
-    /** @Override */
-    override fun isModifiedBy(game: Game) = true
-
-    /** @Override */
-    override fun isModifiedBy(unit: StatisticsUnit) = false
 }

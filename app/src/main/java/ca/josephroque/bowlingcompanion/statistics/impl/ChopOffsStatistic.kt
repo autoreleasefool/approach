@@ -5,6 +5,7 @@ import android.os.Parcelable
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
 import ca.josephroque.bowlingcompanion.games.lane.Deck
+import ca.josephroque.bowlingcompanion.games.lane.isChopOff
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -16,7 +17,7 @@ class ChopOffsStatistic(numerator: Int, denominator: Int) : FirstBallStatistic(n
     // MARK: Modifiers
 
     /** @Override */
-    override fun isModifiedBy(deck: Deck): Boolean = RightChopOffsStatistic.isRightChopOff(deck) || LeftChopOffsStatistic.isLeftChopOff(deck)
+    override fun isModifiedBy(deck: Deck) = deck.isChopOff
 
     override val titleId = Id
     override val id = Id.toLong()

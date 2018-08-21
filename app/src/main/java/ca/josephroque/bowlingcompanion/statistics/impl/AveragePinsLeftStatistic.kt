@@ -8,7 +8,6 @@ import ca.josephroque.bowlingcompanion.games.Frame
 import ca.josephroque.bowlingcompanion.games.Game
 import ca.josephroque.bowlingcompanion.statistics.AverageStatistic
 import ca.josephroque.bowlingcompanion.statistics.StatisticsCategory
-import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsUnit
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -29,16 +28,21 @@ class AveragePinsLeftStatistic(override var total: Int, override var divisor: In
         divisor++
     }
 
+    // MARK: Overrides
+
     override val titleId = Id
     override val id = Id.toLong()
     override val category = StatisticsCategory.PinsOnDeck
+    override fun isModifiedBy(frame: Frame) = true
+    override fun isModifiedBy(game: Game) = true
 
     // MARK: Parcelable
 
     companion object {
         /** Creator, required by [Parcelable]. */
         @Suppress("unused")
-        @JvmField val CREATOR = parcelableCreator(::AveragePinsLeftStatistic)
+        @JvmField
+        val CREATOR = parcelableCreator(::AveragePinsLeftStatistic)
 
         /** Unique ID for the statistic. */
         const val Id = R.string.statistic_average_pins_left
@@ -47,16 +51,5 @@ class AveragePinsLeftStatistic(override var total: Int, override var divisor: In
     /**
      * Construct this statistic from a [Parcel].
      */
-    constructor(p: Parcel): this(total = p.readInt(), divisor = p.readInt())
-
-    // MARK: Overrides
-
-    /** @Override */
-    override fun isModifiedBy(frame: Frame) = true
-
-    /** @Override */
-    override fun isModifiedBy(game: Game) = true
-
-    /** @Override */
-    override fun isModifiedBy(unit: StatisticsUnit) = false
+    constructor(p: Parcel) : this(total = p.readInt(), divisor = p.readInt())
 }

@@ -28,9 +28,12 @@ class GamesTiedStatistic(override var numerator: Int, override var denominator: 
         }
     }
 
+    // MARK: Overrides
+
     override val titleId = Id
     override val id = Id.toLong()
     override val category = StatisticsCategory.MatchPlay
+    override fun isModifiedBy(game: Game) = true
 
     // MARK: Parcelable
 
@@ -47,15 +50,4 @@ class GamesTiedStatistic(override var numerator: Int, override var denominator: 
      * Construct this statistic from a [Parcel].
      */
     constructor(p: Parcel): this(numerator = p.readInt(), denominator = p.readInt())
-
-    // MARK: Overrides
-
-    /** @Override */
-    override fun isModifiedBy(frame: Frame) = false
-
-    /** @Override */
-    override fun isModifiedBy(game: Game) = true
-
-    /** @Override */
-    override fun isModifiedBy(unit: StatisticsUnit) = false
 }

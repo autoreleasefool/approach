@@ -17,7 +17,9 @@ class StrikesStatistic(numerator: Int, denominator: Int) : FirstBallStatistic(nu
     // MARK: Modifiers
 
     /** @Override */
-    override fun isModifiedBy(deck: Deck): Boolean = deck.arePinsCleared()
+    override fun isModifiedBy(deck: Deck) = deck.arePinsCleared()
+
+    // MARK: Overrides
 
     override val titleId = Id
     override val id = Id.toLong()

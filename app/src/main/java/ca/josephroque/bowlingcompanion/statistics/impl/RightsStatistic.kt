@@ -5,8 +5,7 @@ import android.os.Parcelable
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
 import ca.josephroque.bowlingcompanion.games.lane.Deck
-import ca.josephroque.bowlingcompanion.games.lane.left2Pin
-import ca.josephroque.bowlingcompanion.games.lane.value
+import ca.josephroque.bowlingcompanion.games.lane.isRight
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -18,7 +17,9 @@ class RightsStatistic(numerator: Int, denominator: Int) : FirstBallStatistic(num
     // MARK: Modifiers
 
     /** @Override */
-    override fun isModifiedBy(deck: Deck): Boolean = deck.value(false) == 13 && deck.left2Pin.onDeck
+    override fun isModifiedBy(deck: Deck) = deck.isRight
+
+    // MARK: Overrides
 
     override val titleId = Id
     override val id = Id.toLong()

@@ -5,7 +5,7 @@ import android.os.Parcelable
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
 import ca.josephroque.bowlingcompanion.games.lane.Deck
-import ca.josephroque.bowlingcompanion.games.lane.value
+import ca.josephroque.bowlingcompanion.games.lane.isAce
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -17,7 +17,7 @@ class AcesStatistic(numerator: Int, denominator: Int) : FirstBallStatistic(numer
     // MARK: Modifiers
 
     /** @Override */
-    override fun isModifiedBy(deck: Deck): Boolean = deck.value(false) == 11
+    override fun isModifiedBy(deck: Deck) = deck.isAce
 
     override val titleId = Id
     override val id = Id.toLong()

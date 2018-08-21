@@ -24,9 +24,12 @@ class SeriesNameStatistic(override var value: String = "") : StringStatistic {
         value = unit.name
     }
 
+    // MARK: Overrides
+
     override val titleId = Id
     override val id = Id.toLong()
     override val category = StatisticsCategory.General
+    override fun isModifiedBy(unit: StatisticsUnit) = true
 
     // MARK: Parcelable
 
@@ -43,15 +46,4 @@ class SeriesNameStatistic(override var value: String = "") : StringStatistic {
      * Construct this statistic from a [Parcel].
      */
     constructor(p: Parcel): this(value = p.readString())
-
-    // MARK: Overrides
-
-    /** @Override */
-    override fun isModifiedBy(frame: Frame) = false
-
-    /** @Override */
-    override fun isModifiedBy(game: Game) = false
-
-    /** @Override */
-    override fun isModifiedBy(unit: StatisticsUnit) = true
 }
