@@ -21,7 +21,7 @@ class RightSplitsSparedStatistic(numerator: Int, denominator: Int) : SecondBallS
     override fun isModifiedByFirstBall(deck: Deck) = deck.isRightSplit
 
     /** @Override */
-    override fun isModifiedBySecondBall(deck: Deck) = deck.arePinsCleared()
+    override fun isModifiedBySecondBall(deck: Deck) = deck.arePinsCleared
 
     // MARK: Overrides
 

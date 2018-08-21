@@ -21,7 +21,7 @@ class AcesSparedStatistic(numerator: Int, denominator: Int) : SecondBallStatisti
     override fun isModifiedByFirstBall(deck: Deck) = deck.isAce
 
     /** @Override */
-    override fun isModifiedBySecondBall(deck: Deck) = deck.arePinsCleared()
+    override fun isModifiedBySecondBall(deck: Deck) = deck.arePinsCleared
 
     override val titleId = Id
     override val id = Id.toLong()

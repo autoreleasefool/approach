@@ -25,12 +25,12 @@ abstract class FirstBallStatistic(override var numerator: Int, override var deno
         if (frame.zeroBasedOrdinal == Game.LAST_FRAME) {
             // In the 10th frame, for each time the first or second ball cleared the lane, add
             // another middle hit chance, and check if the statistic is modified
-            if (frame.pinState[0].arePinsCleared()) {
+            if (frame.pinState[0].arePinsCleared) {
                 denominator++
                 numerator += if (isModifiedBy(frame.pinState[1])) 1 else 0
             }
 
-            if (frame.pinState[1].arePinsCleared()) {
+            if (frame.pinState[1].arePinsCleared) {
                 denominator++
                 numerator += if (isModifiedBy(frame.pinState[2])) 1 else 0
             }

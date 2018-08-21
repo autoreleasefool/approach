@@ -21,7 +21,7 @@ class RightsSparedStatistic(numerator: Int, denominator: Int) : SecondBallStatis
     override fun isModifiedByFirstBall(deck: Deck) = deck.isRight
 
     /** @Override */
-    override fun isModifiedBySecondBall(deck: Deck) = deck.arePinsCleared()
+    override fun isModifiedBySecondBall(deck: Deck) = deck.arePinsCleared
 
     // MARK: Overrides
 

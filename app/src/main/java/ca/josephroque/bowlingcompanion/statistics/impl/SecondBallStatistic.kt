@@ -22,16 +22,16 @@ abstract class SecondBallStatistic(override var numerator: Int, override var den
         if (frame.zeroBasedOrdinal == Game.LAST_FRAME) {
             // In the 10th frame, for each time the first or second ball cleared the lane,
             // add another second ball opportunity and check if the statistic is modified
-            if (!frame.pinState[0].arePinsCleared() && isModifiedByFirstBall(frame.pinState[0], frame.pinState[1])) {
+            if (!frame.pinState[0].arePinsCleared && isModifiedByFirstBall(frame.pinState[0], frame.pinState[1])) {
                 denominator++
                 numerator + if (isModifiedBySecondBall(frame.pinState[1])) 1 else 0
-            } else if (!frame.pinState[1].arePinsCleared() && isModifiedByFirstBall(frame.pinState[1], frame.pinState[2])) {
+            } else if (!frame.pinState[1].arePinsCleared && isModifiedByFirstBall(frame.pinState[1], frame.pinState[2])) {
                 denominator++
                 numerator + if (isModifiedBySecondBall(frame.pinState[2])) 1 else 0
             }
         } else {
             // Every frame which is not a strike adds 1 possible hit
-            if (!frame.pinState[0].arePinsCleared() && isModifiedByFirstBall(frame.pinState[0], frame.pinState[1])) {
+            if (!frame.pinState[0].arePinsCleared && isModifiedByFirstBall(frame.pinState[0], frame.pinState[1])) {
                 denominator++
                 numerator + if (isModifiedBySecondBall(frame.pinState[1])) 1 else 0
             }

@@ -80,6 +80,10 @@ val Deck.isHitRightOfMiddle: Boolean
 val Deck.isMiddleHit: Boolean
     get() = this.headPin.isDown
 
+/** Checks if all pins have been knocked down. */
+val Deck.arePinsCleared: Boolean
+    get() = this.all { it.isDown }
+
 /**
  * Map a deck to a BooleanArray.
  *
@@ -177,15 +181,6 @@ fun Deck.ballValueDifference(other: Deck, ballIdx: Int, returnSymbol: Boolean, a
     }
 
     return deck.ballValue(ballIdx, returnSymbol, afterStrike)
-}
-
-/**
- * Checks if all pins have been knocked down.
- *
- * @return true if all pins are down, false if at least one is not down.
- */
-fun Deck.arePinsCleared(): Boolean {
-    return this.all { it.isDown }
 }
 
 /**

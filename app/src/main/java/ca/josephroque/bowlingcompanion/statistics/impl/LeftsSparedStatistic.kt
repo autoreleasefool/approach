@@ -21,7 +21,7 @@ class LeftsSparedStatistic(numerator: Int, denominator: Int) : SecondBallStatist
     override fun isModifiedByFirstBall(deck: Deck) = deck.isLeft
 
     /** @Override */
-    override fun isModifiedBySecondBall(deck: Deck) = deck.arePinsCleared()
+    override fun isModifiedBySecondBall(deck: Deck) = deck.arePinsCleared
 
     // MARK: Overrides
 

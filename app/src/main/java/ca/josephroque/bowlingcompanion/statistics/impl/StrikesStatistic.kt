@@ -17,7 +17,7 @@ class StrikesStatistic(numerator: Int, denominator: Int) : FirstBallStatistic(nu
     // MARK: Modifiers
 
     /** @Override */
-    override fun isModifiedBy(deck: Deck) = deck.arePinsCleared()
+    override fun isModifiedBy(deck: Deck) = deck.arePinsCleared
 
     // MARK: Overrides
 

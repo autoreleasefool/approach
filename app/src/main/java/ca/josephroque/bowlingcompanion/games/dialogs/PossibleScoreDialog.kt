@@ -23,9 +23,9 @@ object PossibleScoreDialog {
         // Get the best ball the user could throw for this frame
         val ball = if (currentFrame == Game.LAST_FRAME) {
             when {
-                currentBall == 0 || currentGame.frames[currentFrame].pinState[currentBall - 1].arePinsCleared() ->
+                currentBall == 0 || currentGame.frames[currentFrame].pinState[currentBall - 1].arePinsCleared ->
                     context.resources.getString(R.string.best_possible_strike)
-                currentBall == 1 || currentGame.frames[currentFrame].pinState[currentBall - 2].arePinsCleared() ->
+                currentBall == 1 || currentGame.frames[currentFrame].pinState[currentBall - 2].arePinsCleared ->
                     context.resources.getString(R.string.best_possible_spare)
                 else ->
                     context.resources.getString(R.string.best_possible_spare)

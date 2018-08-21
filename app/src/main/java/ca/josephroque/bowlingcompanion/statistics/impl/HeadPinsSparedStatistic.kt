@@ -21,7 +21,7 @@ class HeadPinsSparedStatistic(numerator: Int, denominator: Int) : SecondBallStat
     override fun isModifiedByFirstBall(deck: Deck) = deck.isHeadPin
 
     /** @Override */
-    override fun isModifiedBySecondBall(deck: Deck) = deck.arePinsCleared()
+    override fun isModifiedBySecondBall(deck: Deck) = deck.arePinsCleared
 
     // MARK: Overrides
 

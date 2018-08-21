@@ -113,7 +113,7 @@ class GameState(private val series: Series, private val listener: GameStateListe
 
     /** Returns true if the current frame has a next ball. */
     val frameHasNextBall: Boolean
-        get() = currentBallIdx != Frame.LAST_BALL && (isLastFrame || !currentPinState.arePinsCleared())
+        get() = currentBallIdx != Frame.LAST_BALL && (isLastFrame || !currentPinState.arePinsCleared)
 
     /** Get an array of pin indices indicating which pins are enabled for the current frame. */
     val enabledPins: IntArray
@@ -122,7 +122,7 @@ class GameState(private val series: Series, private val listener: GameStateListe
                 return@filter (
                     currentBallIdx == 0 ||
                     !currentFrame.pinState[currentBallIdx - 1][it].isDown ||
-                    (isLastFrame && currentFrame.pinState[currentBallIdx - 1].arePinsCleared())
+                    (isLastFrame && currentFrame.pinState[currentBallIdx - 1].arePinsCleared)
                 )
             }.toIntArray()
         }
@@ -243,7 +243,7 @@ class GameState(private val series: Series, private val listener: GameStateListe
         }
 
         var newBall = 0
-        while (newBall < ball && !currentFrame.pinState[newBall].arePinsCleared()) {
+        while (newBall < ball && !currentFrame.pinState[newBall].arePinsCleared) {
             newBall++
         }
         currentBallIdx = newBall
@@ -277,7 +277,7 @@ class GameState(private val series: Series, private val listener: GameStateListe
             for (i in currentBallIdx..Frame.LAST_BALL) {
                 pins.forEach { currentFrame.pinState[i][it].isDown = isDown }
 
-                if (currentFrame.pinState[i].arePinsCleared()) {
+                if (currentFrame.pinState[i].arePinsCleared) {
                     for (j in (i + 1)..Frame.LAST_BALL) {
                         currentFrame.ballFouled[j] = false
 
@@ -292,14 +292,14 @@ class GameState(private val series: Series, private val listener: GameStateListe
                 }
             }
         } else {
-            val werePinsCleared = currentPinState.arePinsCleared()
+            val werePinsCleared = currentPinState.arePinsCleared
             for (i in currentBallIdx..Frame.LAST_BALL) {
                 pins.forEach { currentFrame.pinState[i][it].isDown = isDown }
             }
 
             // In the last frame, when the first/second ball was a strike and no longer is, copy the state to the later balls
             if (isLastFrame) {
-                if (currentBallIdx < Frame.LAST_BALL && werePinsCleared && !currentPinState.arePinsCleared()) {
+                if (currentBallIdx < Frame.LAST_BALL && werePinsCleared && !currentPinState.arePinsCleared) {
                     currentPinState.forEachIndexed { index, pin ->
                         for (i in (currentBallIdx + 1)..Frame.LAST_BALL) {
                             currentFrame.pinState[i][index].isDown = pin.isDown

@@ -301,12 +301,12 @@ class GameFragment : BaseFragment(),
                 matchPlayResult = gameState.currentGame.matchPlay.result
                 clearIcon = when {
                     gameState.currentBallIdx == 0 ||
-                        (gameState.isLastFrame && gameState.currentBallIdx == 1 && gameState.currentFrame.pinState[0].arePinsCleared()) ||
-                        (gameState.isLastFrame && gameState.currentBallIdx == 2 && gameState.currentFrame.pinState[1].arePinsCleared()) -> {
+                        (gameState.isLastFrame && gameState.currentBallIdx == 1 && gameState.currentFrame.pinState[0].arePinsCleared) ||
+                        (gameState.isLastFrame && gameState.currentBallIdx == 2 && gameState.currentFrame.pinState[1].arePinsCleared) -> {
                         R.drawable.ic_clear_pins_strike
                     }
                     gameState.currentBallIdx == 1 ||
-                        (gameState.currentBallIdx == 2 && gameState.currentFrame.pinState[0].arePinsCleared()) -> {
+                        (gameState.currentBallIdx == 2 && gameState.currentFrame.pinState[0].arePinsCleared) -> {
                         R.drawable.ic_clear_pins_spare
                     }
                     else -> R.drawable.ic_clear_pins_fifteen

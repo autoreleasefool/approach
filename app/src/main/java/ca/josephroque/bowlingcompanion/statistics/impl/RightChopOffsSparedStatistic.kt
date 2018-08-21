@@ -21,7 +21,7 @@ class RightChopOffsSparedStatistic(numerator: Int, denominator: Int) : SecondBal
     override fun isModifiedByFirstBall(deck: Deck) = deck.isRightChopOff
 
     /** @Override */
-    override fun isModifiedBySecondBall(deck: Deck) = deck.arePinsCleared()
+    override fun isModifiedBySecondBall(deck: Deck) = deck.arePinsCleared
 
     // MARK: Overrides
 

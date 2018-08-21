@@ -21,7 +21,7 @@ class ChopOffsSparedStatistic(numerator: Int, denominator: Int) : SecondBallStat
     override fun isModifiedByFirstBall(deck: Deck) = deck.isChopOff
 
     /** @Override */
-    override fun isModifiedBySecondBall(deck: Deck) = deck.arePinsCleared()
+    override fun isModifiedBySecondBall(deck: Deck) = deck.arePinsCleared
 
     override val titleId = Id
     override val id = Id.toLong()

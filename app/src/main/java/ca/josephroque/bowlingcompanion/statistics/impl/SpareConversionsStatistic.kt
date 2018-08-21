@@ -22,11 +22,11 @@ class SpareConversionsStatistic(numerator: Int, denominator: Int) : SecondBallSt
     /** @Override */
     override fun isModifiedByFirstBall(firstBall: Deck, secondBall: Deck): Boolean {
         // Don't add a spare chance if the first ball was a split / head pin / aces, unless the second shot was a spare
-        return !firstBall.arePinsCleared() && ((!firstBall.isAce && !firstBall.isHeadPin && !firstBall.isSplit) || secondBall.arePinsCleared())
+        return !firstBall.arePinsCleared && ((!firstBall.isAce && !firstBall.isHeadPin && !firstBall.isSplit) || secondBall.arePinsCleared)
     }
 
     /** @Override */
-    override fun isModifiedBySecondBall(deck: Deck) = deck.arePinsCleared()
+    override fun isModifiedBySecondBall(deck: Deck) = deck.arePinsCleared
 
     // MARK: Overrides
 
