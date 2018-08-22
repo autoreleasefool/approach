@@ -418,8 +418,8 @@ class GameFragment : BaseFragment(),
     /** @Override */
     override fun setPins(pins: IntArray, isDown: Boolean) {
         gameState.setPins(pins, isDown)
-        if (gameState.isLastBall) { autoEventController.delay(GameAutoEventController.AutoEvent.Lock) }
-        if (!gameState.isLastBall) { autoEventController.delay(GameAutoEventController.AutoEvent.AdvanceFrame) }
+        if (!gameState.currentGame.isLocked && gameState.isLastBall) { autoEventController.delay(GameAutoEventController.AutoEvent.Lock) }
+        if (!gameState.currentGame.isLocked && !gameState.isLastBall) { autoEventController.delay(GameAutoEventController.AutoEvent.AdvanceFrame) }
         render()
     }
 
@@ -435,8 +435,8 @@ class GameFragment : BaseFragment(),
         val frameView = frameViews[gameState.currentFrameIdx] ?: return
         gameState.toggleFoul()
         frameView.setFoulEnabled(gameState.currentBallIdx, gameState.currentBallFouled)
-        if (gameState.isLastBall) { autoEventController.delay(GameAutoEventController.AutoEvent.Lock) }
-        if (!gameState.isLastBall) { autoEventController.delay(GameAutoEventController.AutoEvent.AdvanceFrame) }
+        if (!gameState.currentGame.isLocked && gameState.isLastBall) { autoEventController.delay(GameAutoEventController.AutoEvent.Lock) }
+        if (!gameState.currentGame.isLocked && !gameState.isLastBall) { autoEventController.delay(GameAutoEventController.AutoEvent.AdvanceFrame) }
         render()
     }
 
