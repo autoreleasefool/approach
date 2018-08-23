@@ -4,18 +4,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_game_stats"
-        android:orderInCategory="2"
-        android:title="@string/action_game_stats"
-        app:showAsAction="never" />
-
-    <item
-        android:id="@+id/action_event_stats"
-        android:orderInCategory="3"
-        android:title="@string/action_event_stats"
-        app:showAsAction="never" />
-
-    <item
         android:id="@+id/action_set_score"
         android:orderInCategory="4"
         android:title="@string/action_set_score"
