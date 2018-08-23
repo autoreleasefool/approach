@@ -96,6 +96,10 @@ class NavigationActivity : BaseActivity(),
     /** Controller for floating action button. */
     private lateinit var fabController: FabController
 
+    /** @Override */
+    override val stackSize: Int
+        get() = fragNavController?.currentStack?.size ?: 0
+
     /** The current visible fragment in the activity. */
     private val currentFragment: Fragment?
         get() {

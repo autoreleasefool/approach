@@ -59,6 +59,9 @@ abstract class BaseFragment : Fragment() {
      */
     interface FragmentNavigation {
 
+        /** Number of fragments on the current stack. */
+        val stackSize: Int
+
         /**
          * Push a new [Fragment] onto the stack
          *
