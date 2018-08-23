@@ -14,6 +14,8 @@ import ca.josephroque.bowlingcompanion.database.Saviour
 import ca.josephroque.bowlingcompanion.games.GameControllerFragment
 import ca.josephroque.bowlingcompanion.games.SeriesProvider
 import ca.josephroque.bowlingcompanion.series.Series
+import ca.josephroque.bowlingcompanion.statistics.provider.IStatisticsContext
+import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProvider
 import ca.josephroque.bowlingcompanion.teams.Team
 import ca.josephroque.bowlingcompanion.teams.teammember.TeamMember
 import ca.josephroque.bowlingcompanion.teams.teammember.TeamMemberDialog
@@ -35,7 +37,8 @@ class TeamDetailsFragment : BaseFragment(),
         IFloatingActionButtonHandler,
         ListFragment.OnListFragmentInteractionListener,
         TeamMemberDialog.OnTeamMemberDialogInteractionListener,
-        TeamMembersListFragment.OnTeamMembersListFragmentInteractionListener {
+        TeamMembersListFragment.OnTeamMembersListFragmentInteractionListener,
+        IStatisticsContext {
 
     companion object {
         /** Logging identifier. */
@@ -55,6 +58,16 @@ class TeamDetailsFragment : BaseFragment(),
             val fragment = TeamDetailsFragment()
             fragment.arguments = Bundle().apply { putParcelable(ARG_TEAM, team) }
             return fragment
+        }
+    }
+
+    /** @Override */
+    override val statisticsProviders: List<StatisticsProvider> by lazy {
+        val team = team
+        return@lazy if (team != null) {
+            arrayListOf(StatisticsProvider.TeamStatistics(team))
+        } else {
+            emptyList<StatisticsProvider>()
         }
     }
 

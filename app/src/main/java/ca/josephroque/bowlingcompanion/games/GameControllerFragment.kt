@@ -59,17 +59,24 @@ class GameControllerFragment : TabbedFragment(),
 
     /** @Override */
     override val statisticsProviders: List<StatisticsProvider> by lazy {
+        val seriesProvider = seriesProvider
         val seriesList = seriesProvider?.seriesList
         val adapter = fragmentPager.adapter as? GameControllerPagerAdapter
         val gameFragment = adapter?.getFragment(currentTab) as? GameFragment
 
         return@lazy if (seriesList != null && gameFragment != null) {
-            arrayListOf(
+            val providers: MutableList<StatisticsProvider> = arrayListOf(
                 StatisticsProvider.BowlerStatistics(seriesList[currentTab].league.bowler),
                 StatisticsProvider.LeagueStatistics(seriesList[currentTab].league),
                 StatisticsProvider.SeriesStatistics(seriesList[currentTab]),
                 StatisticsProvider.GameStatistics(gameFragment.currentGameForStatistics)
             )
+
+            if (seriesProvider is SeriesProvider.TeamSeries) {
+                providers.add(0, StatisticsProvider.TeamStatistics(seriesProvider.team))
+            }
+
+            providers
         } else {
             emptyList<StatisticsProvider>()
         }
