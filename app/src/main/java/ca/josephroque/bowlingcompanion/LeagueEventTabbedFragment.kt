@@ -73,12 +73,12 @@ class LeagueEventTabbedFragment : TabbedFragment(),
     }
 
     /** @Override */
-    override val statisticsProviders: Array<StatisticsProvider> by lazy {
+    override val statisticsProviders: List<StatisticsProvider> by lazy {
         val bowler = bowler
         return@lazy if (bowler != null) {
-            arrayOf<StatisticsProvider>(StatisticsProvider.BowlerStatistics(bowler))
+            arrayListOf<StatisticsProvider>(StatisticsProvider.BowlerStatistics(bowler))
         } else {
-            emptyArray()
+            emptyList<StatisticsProvider>()
         }
     }
 

@@ -66,15 +66,15 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
     }
 
     /** @Override */
-    override val statisticsProviders: Array<StatisticsProvider> by lazy {
+    override val statisticsProviders: List<StatisticsProvider> by lazy {
         val league = league
         return@lazy if (league != null) {
-            arrayOf(
+            arrayListOf(
                 StatisticsProvider.BowlerStatistics(league.bowler),
                 StatisticsProvider.LeagueStatistics(league)
             )
         } else {
-            emptyArray()
+            emptyList<StatisticsProvider>()
         }
     }
 
