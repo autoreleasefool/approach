@@ -18,6 +18,8 @@ import ca.josephroque.bowlingcompanion.games.GameControllerFragment
 import ca.josephroque.bowlingcompanion.games.SeriesProvider
 import ca.josephroque.bowlingcompanion.leagues.League
 import ca.josephroque.bowlingcompanion.settings.Settings
+import ca.josephroque.bowlingcompanion.statistics.IStatisticsContext
+import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProvider
 import ca.josephroque.bowlingcompanion.utils.safeLet
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
@@ -32,7 +34,8 @@ import kotlinx.coroutines.experimental.launch
 class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
         SeriesDialog.OnSeriesDialogInteractionListener,
         ListFragment.OnListFragmentInteractionListener,
-        IFloatingActionButtonHandler {
+        IFloatingActionButtonHandler,
+        IStatisticsContext {
 
     companion object {
         /** Logging identifier. */
@@ -59,6 +62,19 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
                 putBoolean(ARG_SINGLE_SELECT_MODE, singleSelectMode)
             }
             return fragment
+        }
+    }
+
+    /** @Override */
+    override val statisticsProviders: Array<StatisticsProvider> by lazy {
+        val league = league
+        return@lazy if (league != null) {
+            arrayOf(
+                StatisticsProvider.BowlerStatistics(league.bowler),
+                StatisticsProvider.LeagueStatistics(league)
+            )
+        } else {
+            emptyArray()
         }
     }
 

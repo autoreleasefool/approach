@@ -83,6 +83,10 @@ class GameFragment : BaseFragment(),
     /** The series being edited. */
     private var series: Series? = null
 
+    /** A copy of the current game to present statistics with. */
+    val currentGameForStatistics: Game
+        get() = gameState.currentGame.deepCopy()
+
     /** Manage the state of the current game. */
     private lateinit var gameState: GameState
 

@@ -15,6 +15,8 @@ import ca.josephroque.bowlingcompanion.common.adapters.BaseFragmentPagerAdapter
 import ca.josephroque.bowlingcompanion.common.fragments.TabbedFragment
 import ca.josephroque.bowlingcompanion.common.interfaces.INavigationDrawerHandler
 import ca.josephroque.bowlingcompanion.series.Series
+import ca.josephroque.bowlingcompanion.statistics.IStatisticsContext
+import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProvider
 import kotlinx.android.synthetic.main.fragment_common_tabs.tabbed_fragment_pager as fragmentPager
 import kotlinx.android.synthetic.main.fragment_common_tabs.tabbed_fragment_tabs as fragmentTabs
 
@@ -25,7 +27,8 @@ import kotlinx.android.synthetic.main.fragment_common_tabs.tabbed_fragment_tabs 
  */
 class GameControllerFragment : TabbedFragment(),
         INavigationDrawerHandler,
-        GameFragment.OnGameFragmentInteractionListener {
+        GameFragment.OnGameFragmentInteractionListener,
+        IStatisticsContext {
 
     companion object {
         /** Logging identifier */
@@ -51,6 +54,24 @@ class GameControllerFragment : TabbedFragment(),
                 putParcelable(ARG_SERIES_PROVIDER, seriesProvider)
             }
             return fragment
+        }
+    }
+
+    /** @Override */
+    override val statisticsProviders: Array<StatisticsProvider> by lazy {
+        val seriesList = seriesProvider?.seriesList
+        val adapter = fragmentPager.adapter as? GameControllerPagerAdapter
+        val gameFragment = adapter?.getFragment(currentTab) as? GameFragment
+
+        return@lazy if (seriesList != null && gameFragment != null) {
+            arrayOf(
+                StatisticsProvider.BowlerStatistics(seriesList[currentTab].league.bowler),
+                StatisticsProvider.LeagueStatistics(seriesList[currentTab].league),
+                StatisticsProvider.SeriesStatistics(seriesList[currentTab]),
+                StatisticsProvider.GameStatistics(gameFragment.currentGameForStatistics)
+            )
+        } else {
+            emptyArray()
         }
     }
 

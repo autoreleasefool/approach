@@ -16,6 +16,8 @@ import ca.josephroque.bowlingcompanion.leagues.League
 import ca.josephroque.bowlingcompanion.leagues.LeagueDialog
 import ca.josephroque.bowlingcompanion.leagues.LeagueListFragment
 import ca.josephroque.bowlingcompanion.series.SeriesListFragment
+import ca.josephroque.bowlingcompanion.statistics.IStatisticsContext
+import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProvider
 import kotlinx.android.synthetic.main.fragment_common_tabs.tabbed_fragment_pager as fragmentPager
 
 /**
@@ -26,7 +28,8 @@ import kotlinx.android.synthetic.main.fragment_common_tabs.tabbed_fragment_pager
  */
 class LeagueEventTabbedFragment : TabbedFragment(),
         ListFragment.OnListFragmentInteractionListener,
-        LeagueDialog.OnLeagueDialogInteractionListener {
+        LeagueDialog.OnLeagueDialogInteractionListener,
+        IStatisticsContext {
 
     companion object {
         /** Logging identifier */
@@ -66,6 +69,16 @@ class LeagueEventTabbedFragment : TabbedFragment(),
             val fragment = LeagueEventTabbedFragment()
             fragment.arguments = Bundle().apply { putParcelable(ARG_BOWLER, bowler) }
             return fragment
+        }
+    }
+
+    /** @Override */
+    override val statisticsProviders: Array<StatisticsProvider> by lazy {
+        val bowler = bowler
+        return@lazy if (bowler != null) {
+            arrayOf<StatisticsProvider>(StatisticsProvider.BowlerStatistics(bowler))
+        } else {
+            emptyArray()
         }
     }
 
