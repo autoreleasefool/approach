@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import ca.josephroque.bowlingcompanion.common.fragments.BaseFragment
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProvider
-import kotlinx.android.synthetic.main.fragment_common_tabs.tabbed_fragment_tabs as fragmentTabs
 
 /**
  * Copyright (C) 2018 Joseph Roque

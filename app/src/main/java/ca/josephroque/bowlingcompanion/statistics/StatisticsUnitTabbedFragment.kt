@@ -103,9 +103,9 @@ class StatisticsUnitTabbedFragment : TabbedFragment() {
      * Pager adapter for statistic units.
      */
     class StatisticsUnitPagerAdapter(
-            fragmentManager: FragmentManager,
-            tabCount: Int,
-            private val statisticsUnits: List<StatisticsUnit>
+        fragmentManager: FragmentManager,
+        tabCount: Int,
+        private val statisticsUnits: List<StatisticsUnit>
     ) : BaseFragmentPagerAdapter(fragmentManager, tabCount) {
 
         /** @Override */
