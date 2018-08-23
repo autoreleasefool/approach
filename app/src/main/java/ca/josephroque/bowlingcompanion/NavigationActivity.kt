@@ -19,6 +19,8 @@ import ca.josephroque.bowlingcompanion.common.fragments.BaseFragment
 import ca.josephroque.bowlingcompanion.common.fragments.TabbedFragment
 import ca.josephroque.bowlingcompanion.common.interfaces.INavigationDrawerHandler
 import ca.josephroque.bowlingcompanion.series.SeriesListFragment
+import ca.josephroque.bowlingcompanion.statistics.provider.IStatisticsContext
+import ca.josephroque.bowlingcompanion.statistics.BaseStatisticsFragment
 import ca.josephroque.bowlingcompanion.teams.details.TeamDetailsFragment
 import com.ncapdevi.fragnav.FragNavController
 import com.ncapdevi.fragnav.FragNavTransactionOptions
@@ -53,6 +55,7 @@ class NavigationActivity : BaseActivity(),
             companion object {
                 private val map = BottomTab.values().associateBy(BottomTab::ordinal)
                 fun fromInt(type: Int) = available[type]
+                fun toInt(type: BottomTab) = available.indexOf(type)
                 fun fromId(@IdRes id: Int): BottomTab {
                     return when (id) {
                         R.id.action_record -> Record
@@ -278,7 +281,7 @@ class NavigationActivity : BaseActivity(),
         fragmentName = when (tab) {
             BottomTab.Record -> BowlerTeamTabbedFragment::class.java.name
             BottomTab.Equipment -> BowlerListFragment::class.java.name // TODO: enable equipment tab
-            BottomTab.Statistics -> BowlerListFragment::class.java.name // TODO: enable statistics tab
+            BottomTab.Statistics -> BaseStatisticsFragment::class.java.name
         }
 
         return BaseFragment.newInstance(fragmentName)
@@ -292,6 +295,12 @@ class NavigationActivity : BaseActivity(),
     /** @Override */
     override fun onTabTransaction(fragment: Fragment?, index: Int) {
         handleFragmentChange(fragment)
+
+        if (BottomTab.fromInt(index) == BottomTab.Statistics) {
+            // TODO: when adding equipment tab, update how this gets the provider
+            val statisticsContext = fragNavController?.getStack(BottomTab.toInt(BottomTab.Record))?.peek() as? IStatisticsContext ?: return
+            fragment?.arguments = BaseStatisticsFragment.buildArguments(statisticsContext.statisticsProviders)
+        }
     }
 
     /**
