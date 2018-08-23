@@ -18,7 +18,7 @@ import ca.josephroque.bowlingcompanion.games.GameControllerFragment
 import ca.josephroque.bowlingcompanion.games.SeriesProvider
 import ca.josephroque.bowlingcompanion.leagues.League
 import ca.josephroque.bowlingcompanion.settings.Settings
-import ca.josephroque.bowlingcompanion.statistics.IStatisticsContext
+import ca.josephroque.bowlingcompanion.statistics.provider.IStatisticsContext
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProvider
 import ca.josephroque.bowlingcompanion.utils.safeLet
 import kotlinx.coroutines.experimental.CommonPool

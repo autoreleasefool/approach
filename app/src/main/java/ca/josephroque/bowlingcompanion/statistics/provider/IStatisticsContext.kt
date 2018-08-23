@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.statistics
+package ca.josephroque.bowlingcompanion.statistics.provider
 
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProvider
 

@@ -16,7 +16,7 @@ import ca.josephroque.bowlingcompanion.leagues.League
 import ca.josephroque.bowlingcompanion.leagues.LeagueDialog
 import ca.josephroque.bowlingcompanion.leagues.LeagueListFragment
 import ca.josephroque.bowlingcompanion.series.SeriesListFragment
-import ca.josephroque.bowlingcompanion.statistics.IStatisticsContext
+import ca.josephroque.bowlingcompanion.statistics.provider.IStatisticsContext
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProvider
 import kotlinx.android.synthetic.main.fragment_common_tabs.tabbed_fragment_pager as fragmentPager
 
