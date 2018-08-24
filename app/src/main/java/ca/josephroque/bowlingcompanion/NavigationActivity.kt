@@ -297,10 +297,7 @@ class NavigationActivity : BaseActivity(),
         handleFragmentChange(fragment)
 
         if (BottomTab.fromInt(index) == BottomTab.Statistics) {
-            // TODO: when adding equipment tab, update how this gets the provider
             fragNavController?.clearStack()
-            val statisticsContext = fragNavController?.getStack(BottomTab.toInt(BottomTab.Record))?.peek() as? IStatisticsContext ?: return
-            fragment?.arguments = BaseStatisticsFragment.buildArguments(statisticsContext.statisticsProviders)
         }
     }
 
@@ -330,6 +327,11 @@ class NavigationActivity : BaseActivity(),
             0F
         } else {
             resources.getDimension(R.dimen.base_elevation)
+        }
+
+        if (fragment is BaseStatisticsFragment) {
+            val statisticsContext = fragNavController?.getStack(BottomTab.toInt(BottomTab.Record))?.peek() as? IStatisticsContext ?: return
+            fragment.arguments = BaseStatisticsFragment.buildArguments(statisticsContext.statisticsProviders)
         }
     }
 

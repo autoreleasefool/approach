@@ -58,7 +58,9 @@ class BaseStatisticsFragment : BaseFragment() {
     private lateinit var statisticsProviders: List<StatisticsProvider>
 
     /** @Override */
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onStart() {
+        super.onStart()
+
         val providerCount = arguments?.getInt(ARG_STATISTICS_PROVIDER_COUNT) ?: 0
         statisticsProviders = if (providerCount > 0) {
             val types = arguments?.getIntArray(ARG_STATISTICS_PROVIDER_TYPE)
@@ -71,13 +73,6 @@ class BaseStatisticsFragment : BaseFragment() {
         } else {
             emptyList()
         }
-
-        return super.onCreateView(inflater, container, savedInstanceState)
-    }
-
-    /** @Override */
-    override fun onStart() {
-        super.onStart()
 
         // When there are no other fragments, push the relevant fragment onto the stack
         val isOnlyFragment = (fragmentNavigation?.stackSize ?: 1) == 1
