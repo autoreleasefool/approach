@@ -112,7 +112,7 @@ sealed class StatisticsProvider : IIdentifiable, KParcelable {
         constructor(p: Parcel): this(p.readParcelable<Game>(Game::class.java.classLoader))
 
         override val id = game.id.and(0xB00000000000000L)
-        override val name = game.ordinal.toString()
+        override val name = "Game ${game.ordinal}"
         override val typeName = R.string.game
     }
 

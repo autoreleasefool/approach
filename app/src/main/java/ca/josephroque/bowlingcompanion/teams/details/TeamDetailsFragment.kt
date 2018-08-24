@@ -103,8 +103,8 @@ class TeamDetailsFragment : BaseFragment(),
     }
 
     /** @Override */
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
         fabProvider?.invalidateFab()
     }
 
