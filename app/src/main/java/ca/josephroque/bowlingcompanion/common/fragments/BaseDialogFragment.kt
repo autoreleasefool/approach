@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion.common.fragments
 import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
+import ca.josephroque.bowlingcompanion.NavigationActivity
 import ca.josephroque.bowlingcompanion.R
 
 /**
@@ -23,6 +24,10 @@ abstract class BaseDialogFragment : DialogFragment() {
 
     /** Fab provider instance. */
     protected var fabProvider: BaseFragment.FabProvider? = null
+
+    /** Get the navigation activity. */
+    protected val navigationActivity: NavigationActivity?
+        get() = activity as? NavigationActivity
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)

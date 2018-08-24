@@ -5,7 +5,6 @@ import android.support.annotation.IdRes
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
-import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -137,10 +136,10 @@ class GameControllerFragment : TabbedFragment(),
         val seriesList = seriesProvider?.seriesList ?: return
         if (seriesList.size == 1) {
             fragmentTabs.visibility = View.GONE
-            (activity as? AppCompatActivity)?.supportActionBar?.elevation = resources.getDimension(R.dimen.base_elevation)
+            navigationActivity?.supportActionBar?.elevation = resources.getDimension(R.dimen.base_elevation)
         } else {
             fragmentTabs.visibility = View.VISIBLE
-            (activity as? AppCompatActivity)?.supportActionBar?.elevation = 0F
+            navigationActivity?.supportActionBar?.elevation = 0F
         }
     }
 
