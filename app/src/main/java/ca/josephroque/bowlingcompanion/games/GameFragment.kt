@@ -221,6 +221,11 @@ class GameFragment : BaseFragment(),
         }
     }
 
+    /** @Override */
+    override fun updateToolbarTitle() {
+        // Intentionally left blank
+    }
+
     /**
      * Set behaviour and appearance of bottom sheet.
      */

@@ -91,4 +91,9 @@ class BaseStatisticsFragment : BaseFragment() {
             fragmentNavigation?.pushFragment(newFragment)
         }
     }
+
+    /** @Override */
+    override fun updateToolbarTitle() {
+        // TODO: not implemented
+    }
 }

@@ -81,6 +81,11 @@ class StatisticsProviderListFragment : ListFragment<StatisticsProvider, Statisti
     }
 
     /** @Override */
+    override fun updateToolbarTitle() {
+        // TODO: not implemented
+    }
+
+    /** @Override */
     override fun buildAdapter(): StatisticsProviderRecyclerViewAdapter {
         return StatisticsProviderRecyclerViewAdapter(emptyList(), this)
     }

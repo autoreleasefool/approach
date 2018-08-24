@@ -339,6 +339,17 @@ class NavigationActivity : BaseActivity(),
     }
 
     /**
+     * Set the title and subtitle of the toolbar.
+     *
+     * @param title title for the toolbar
+     * @param subtitle subtitle for the toolbar
+     */
+    fun setToolbarTitle(title: String? = null, subtitle: String? = null) {
+        supportActionBar?.title = title
+        supportActionBar?.subtitle = subtitle
+    }
+
+    /**
      * Pop back to a fragment in the stack.
      *
      * @param fragmentName name of the fragment to show

@@ -108,6 +108,11 @@ class TeamDetailsFragment : BaseFragment(),
         fabProvider?.invalidateFab()
     }
 
+    /** @Override */
+    override fun updateToolbarTitle() {
+        team?.let { navigationActivity?.setToolbarTitle(it.name) }
+    }
+
     /**
      * Set up the header of the view.
      *

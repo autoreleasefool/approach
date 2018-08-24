@@ -92,6 +92,11 @@ class LeagueEventTabbedFragment : TabbedFragment(),
     }
 
     /** @Override */
+    override fun updateToolbarTitle() {
+        bowler?.let { navigationActivity?.setToolbarTitle(it.name) }
+    }
+
+    /** @Override */
     override fun buildPagerAdapter(tabCount: Int): BaseFragmentPagerAdapter {
         return LeagueEventPagerAdapter(childFragmentManager, tabCount, bowler)
     }

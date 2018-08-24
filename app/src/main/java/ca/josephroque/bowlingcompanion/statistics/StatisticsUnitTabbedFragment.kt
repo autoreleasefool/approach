@@ -55,6 +55,11 @@ class StatisticsUnitTabbedFragment : TabbedFragment() {
     }
 
     /** @Override */
+    override fun updateToolbarTitle() {
+        // TODO: not implemented
+    }
+
+    /** @Override */
     override fun buildPagerAdapter(tabCount: Int): BaseFragmentPagerAdapter {
         return StatisticsUnitPagerAdapter(childFragmentManager, tabCount, statisticsProvider.units)
     }

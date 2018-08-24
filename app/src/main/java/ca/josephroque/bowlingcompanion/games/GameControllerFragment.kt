@@ -127,7 +127,7 @@ class GameControllerFragment : TabbedFragment(),
 
     /** @Override */
     override fun handleTabSwitch(newTab: Int) {
-        onSeriesChanged(newTab)
+        onSeriesChanged()
     }
 
     /** @Override */
@@ -146,22 +146,27 @@ class GameControllerFragment : TabbedFragment(),
     /** @Override */
     override fun onResume() {
         super.onResume()
-        onSeriesChanged(currentTab)
+        onSeriesChanged()
         activity?.invalidateOptionsMenu()
         navigationDrawerController.isTeamMember = seriesProvider is SeriesProvider.TeamSeries
     }
 
     /**
      * Handle when series changes.
-     *
-     * @param currentSeries the new series
      */
-    private fun onSeriesChanged(currentSeries: Int) {
+    private fun onSeriesChanged() {
         seriesProvider?.seriesList?.let {
-            navigationDrawerController.numberOfGames = it[currentSeries].numberOfGames
-            navigationDrawerController.bowlerName = it[currentSeries].league.bowler.name
-            navigationDrawerController.leagueName = it[currentSeries].league.name
+            navigationDrawerController.numberOfGames = it[currentTab].numberOfGames
+            navigationDrawerController.bowlerName = it[currentTab].league.bowler.name
+            navigationDrawerController.leagueName = it[currentTab].league.name
         }
+
+        updateToolbarTitle()
+    }
+
+    /** @Override */
+    override fun updateToolbarTitle() {
+        seriesProvider?.seriesList?.let {navigationActivity?.setToolbarTitle(it[currentTab].league.bowler.name) }
     }
 
     // MARK: IFloatingActionButtonHandler

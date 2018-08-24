@@ -49,6 +49,11 @@ class StatisticsListFragment : ListFragment<StatisticListItem, StatisticsRecycle
     }
 
     /** @Override */
+    override fun updateToolbarTitle() {
+        TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
+    }
+
+    /** @Override */
     override fun buildAdapter(): StatisticsRecyclerViewAdapter {
         TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
     }

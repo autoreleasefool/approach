@@ -43,6 +43,11 @@ abstract class BaseFragment : Fragment() {
     protected val navigationActivity: NavigationActivity?
         get() = activity as? NavigationActivity
 
+    /**
+     * Update title in the toolbar.
+     */
+    abstract fun updateToolbarTitle()
+
     /** @Override */
     override fun onAttach(context: Context?) {
         super.onAttach(context)
@@ -57,6 +62,12 @@ abstract class BaseFragment : Fragment() {
         super.onDetach()
         fragmentNavigation = null
         fabProvider = null
+    }
+
+    /** @Override */
+    override fun onStart() {
+        super.onStart()
+        updateToolbarTitle()
     }
 
     /**

@@ -62,6 +62,11 @@ class BowlerTeamTabbedFragment : TabbedFragment(),
     }
 
     /** @Override */
+    override fun updateToolbarTitle() {
+        navigationActivity?.setToolbarTitle(resources.getString(R.string.app_name))
+    }
+
+    /** @Override */
     override fun buildPagerAdapter(tabCount: Int): BaseFragmentPagerAdapter {
         return BowlerTeamPagerAdapter(childFragmentManager, tabCount)
     }

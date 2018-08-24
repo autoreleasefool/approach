@@ -89,6 +89,11 @@ class BowlerListFragment : ListFragment<Bowler, NameAverageRecyclerViewAdapter<B
         }
     }
 
+    /** @Override */
+    override fun updateToolbarTitle() {
+        // Intentionally left blank
+    }
+
     /**
      * Prompt user to sort the list of bowlers in another order. Caches the chosen order.
      */

@@ -59,6 +59,11 @@ class TeamMembersListFragment :
     }
 
     /** @Override */
+    override fun updateToolbarTitle() {
+        // Intentionally left blank
+    }
+
+    /** @Override */
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         val parent = parentFragment as? OnTeamMembersListFragmentInteractionListener ?: throw RuntimeException("${parentFragment!!} must implement OnTeamMembersListFragmentInteractionListener")

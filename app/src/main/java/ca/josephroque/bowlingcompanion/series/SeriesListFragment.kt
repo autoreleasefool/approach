@@ -199,6 +199,11 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
     }
 
     /** @Override */
+    override fun updateToolbarTitle() {
+        league?.let { navigationActivity?.setToolbarTitle(it.bowler.name, it.name) }
+    }
+
+    /** @Override */
     override fun getFabImage(): Int? {
         return R.drawable.ic_add
     }

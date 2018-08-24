@@ -58,6 +58,11 @@ class TeamListFragment : ListFragment<Team, TeamRecyclerViewAdapter>() {
     }
 
     /** @Override */
+    override fun updateToolbarTitle() {
+        // Intentionally left blank
+    }
+
+    /** @Override */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_sort_by -> {

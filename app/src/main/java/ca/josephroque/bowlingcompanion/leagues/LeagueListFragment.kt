@@ -191,6 +191,11 @@ class LeagueListFragment : ListFragment<League, NameAverageRecyclerViewAdapter<L
         }
     }
 
+    /** @Override */
+    override fun updateToolbarTitle() {
+        // Intentionally left blank
+    }
+
     /**
      * Prompt user to sort the list of leagues in another order. Caches the chosen order.
      */
