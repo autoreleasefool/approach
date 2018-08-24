@@ -44,6 +44,7 @@
     <string name="action_create_new">Create new</string>
 
     <!-- Bowlers -->
+    <string name="bowler">Bowler</string>
     <string name="new_bowler">New bowler</string>
     <string name="edit_bowler">Edit bowler</string>
     <string name="hint_bowler_name">Name</string>
@@ -56,6 +57,7 @@
     <string name="error_bowler_not_saved">An error occurred and the bowler could not be saved.</string>
 
     <!-- Teams -->
+    <string name="team">Team</string>
     <string name="new_team">New team</string>
     <string name="edit_team">Edit team</string>
     <string name="hint_team_name">Name</string>
@@ -80,8 +82,8 @@
     <string name="create_new_series">New series</string>
 
     <!-- Leagues -->
-    <string name="create_new_league_event">Create a new…</string>
     <string name="league">League</string>
+    <string name="create_new_league_event">Create a new…</string>
     <string name="new_league">New league</string>
     <string name="edit_league">Edit league</string>
     <string name="hint_league_event_name">Name</string>
@@ -130,6 +132,7 @@
     <string name="error_series_not_saved">An error occurred and the series could not be saved.</string>
 
     <!-- Games -->
+    <string name="game">Game</string>
     <string name="ball_prev">Prev</string>
     <string name="ball_next">Next</string>
     <string name="game_number">Game %d</string>

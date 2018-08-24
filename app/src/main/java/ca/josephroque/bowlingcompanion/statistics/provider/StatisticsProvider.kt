@@ -3,7 +3,9 @@ package ca.josephroque.bowlingcompanion.statistics.provider
 import android.os.Bundle
 import android.os.Parcel
 import android.os.Parcelable
+import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.bowlers.Bowler
+import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
 import ca.josephroque.bowlingcompanion.common.interfaces.KParcelable
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
 import ca.josephroque.bowlingcompanion.games.Game
@@ -16,7 +18,13 @@ import ca.josephroque.bowlingcompanion.teams.Team
  *
  * Provide statistics from a bowler to display.
  */
-sealed class StatisticsProvider : KParcelable {
+sealed class StatisticsProvider : IIdentifiable, KParcelable {
+
+    /** Name of the collection the instance provides. */
+    abstract val name: String
+
+    /** Display name of the provider type. */
+    abstract val typeName: Int
 
     /** Provide a team's statistics. */
     data class TeamStatistics(val team: Team) : StatisticsProvider() {
@@ -30,6 +38,10 @@ sealed class StatisticsProvider : KParcelable {
          * Construct [TeamStatistics] from a [Parcel].
          */
         constructor(p: Parcel): this(p.readParcelable<Team>(Team::class.java.classLoader))
+
+        override val id = team.id.and(0xF00000000000000L)
+        override val name = team.name
+        override val typeName = R.string.team
     }
 
     /** Provide a bowler's statistics. */
@@ -44,6 +56,10 @@ sealed class StatisticsProvider : KParcelable {
          * Construct [BowlerStatistics] from a [Parcel].
          */
         constructor(p: Parcel): this(p.readParcelable<Bowler>(Bowler::class.java.classLoader))
+
+        override val id = bowler.id.and(0xE00000000000000L)
+        override val name = bowler.name
+        override val typeName = R.string.bowler
     }
 
     /** Provide a league's statistics. */
@@ -58,6 +74,10 @@ sealed class StatisticsProvider : KParcelable {
          * Construct [LeagueStatistics] from a [Parcel].
          */
         constructor(p: Parcel): this(p.readParcelable<League>(League::class.java.classLoader))
+
+        override val id = league.id.and(0xD00000000000000L)
+        override val name = league.name
+        override val typeName = R.string.league
     }
 
     /** Provide a series's statistics. */
@@ -72,6 +92,10 @@ sealed class StatisticsProvider : KParcelable {
          * Construct [SeriesStatistics] from a [Parcel].
          */
         constructor(p: Parcel): this(p.readParcelable<Series>(Series::class.java.classLoader))
+
+        override val id = series.id.and(0xC00000000000000L)
+        override val name = series.prettyDate
+        override val typeName = R.string.series
     }
 
     /** Provide a game's statistics. */
@@ -86,6 +110,10 @@ sealed class StatisticsProvider : KParcelable {
          * Construct [GameStatistics] from a [Parcel].
          */
         constructor(p: Parcel): this(p.readParcelable<Game>(Game::class.java.classLoader))
+
+        override val id = game.id.and(0xB00000000000000L)
+        override val name = game.ordinal.toString()
+        override val typeName = R.string.game
     }
 
     /** The statistics to be displayed. */
