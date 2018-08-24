@@ -50,7 +50,7 @@ class StatisticsUnitTabbedFragment : TabbedFragment() {
     /** @Override */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val type = arguments?.getInt(ARG_STATISTICS_PROVIDER_TYPE)!!
-        statisticsProvider = arguments?.getParcelable(ARG_STATISTICS_PROVIDER)!!
+        statisticsProvider = StatisticsProvider.getParcelable(arguments, ARG_STATISTICS_PROVIDER, type)!!
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
