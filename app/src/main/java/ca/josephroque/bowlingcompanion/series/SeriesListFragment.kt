@@ -56,7 +56,6 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
          */
         fun newInstance(league: League, singleSelectMode: Boolean = false): SeriesListFragment {
             val fragment = SeriesListFragment()
-            fragment.canIgnoreListener = true
             fragment.arguments = Bundle().apply {
                 putParcelable(ARG_LEAGUE, league)
                 putBoolean(ARG_SINGLE_SELECT_MODE, singleSelectMode)
@@ -115,12 +114,13 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
         }
 
         setHasOptionsMenu(!singleSelectMode)
-        listener = listener ?: this
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     /** @Override */
     override fun onAttach(context: Context?) {
+        canIgnoreListener = true
+        listener = this
         super.onAttach(context)
         singleSelectMode = arguments?.getBoolean(ARG_SINGLE_SELECT_MODE) ?: false
         if (singleSelectMode) {
