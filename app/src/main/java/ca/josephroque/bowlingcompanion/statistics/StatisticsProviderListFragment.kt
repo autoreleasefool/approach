@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion.statistics
 
 import android.content.Context
 import android.os.Bundle
+import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
 import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProvider
@@ -82,7 +83,7 @@ class StatisticsProviderListFragment : ListFragment<StatisticsProvider, Statisti
 
     /** @Override */
     override fun updateToolbarTitle() {
-        // TODO: not implemented
+        navigationActivity?.setToolbarTitle(resources.getString(R.string.statistics))
     }
 
     /** @Override */

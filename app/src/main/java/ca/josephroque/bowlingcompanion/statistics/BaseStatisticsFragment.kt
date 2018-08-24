@@ -94,6 +94,6 @@ class BaseStatisticsFragment : BaseFragment() {
 
     /** @Override */
     override fun updateToolbarTitle() {
-        // TODO: not implemented
+        // Intentionally left blank
     }
 }

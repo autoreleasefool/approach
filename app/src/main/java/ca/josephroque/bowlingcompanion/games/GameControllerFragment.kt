@@ -166,7 +166,7 @@ class GameControllerFragment : TabbedFragment(),
 
     /** @Override */
     override fun updateToolbarTitle() {
-        seriesProvider?.seriesList?.let {navigationActivity?.setToolbarTitle(it[currentTab].league.bowler.name) }
+        seriesProvider?.seriesList?.let { navigationActivity?.setToolbarTitle(it[currentTab].league.bowler.name) }
     }
 
     // MARK: IFloatingActionButtonHandler

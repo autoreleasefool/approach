@@ -194,6 +194,7 @@
     <string name="match_play_tied_short">T</string>
 
     <!-- Statistics -->
+    <string name="statistics">Statistics</string>
     <string name="statistics_category_general">General</string>
     <string name="statistics_category_overall">Overall</string>
     <string name="statistics_category_first_ball">First ball</string>

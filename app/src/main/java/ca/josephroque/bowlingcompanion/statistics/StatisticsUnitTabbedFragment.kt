@@ -56,7 +56,7 @@ class StatisticsUnitTabbedFragment : TabbedFragment() {
 
     /** @Override */
     override fun updateToolbarTitle() {
-        // TODO: not implemented
+        navigationActivity?.setToolbarTitle(resources.getString(R.string.statistics), statisticsProvider.name)
     }
 
     /** @Override */

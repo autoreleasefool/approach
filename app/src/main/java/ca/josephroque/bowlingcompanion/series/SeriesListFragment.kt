@@ -200,7 +200,9 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
 
     /** @Override */
     override fun updateToolbarTitle() {
-        league?.let { navigationActivity?.setToolbarTitle(it.bowler.name, it.name) }
+        if (!singleSelectMode) {
+            league?.let { navigationActivity?.setToolbarTitle(it.bowler.name, it.name) }
+        }
     }
 
     /** @Override */
