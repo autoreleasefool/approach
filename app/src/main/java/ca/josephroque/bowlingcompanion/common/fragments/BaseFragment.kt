@@ -4,6 +4,7 @@ import android.content.Context
 import android.support.design.widget.BottomSheetDialogFragment
 import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
+import ca.josephroque.bowlingcompanion.NavigationActivity
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -37,6 +38,10 @@ abstract class BaseFragment : Fragment() {
 
     /** Fab provider instance. */
     protected var fabProvider: FabProvider? = null
+
+    /** Get the navigation activity. */
+    protected val navigationActivity: NavigationActivity?
+        get() = activity as? NavigationActivity
 
     /** @Override */
     override fun onAttach(context: Context?) {
