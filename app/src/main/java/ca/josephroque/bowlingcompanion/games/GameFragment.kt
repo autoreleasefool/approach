@@ -143,7 +143,6 @@ class GameFragment : BaseFragment(),
         menu?.findItem(R.id.action_set_score)?.isVisible = !gameState.currentGame.isManual
         menu?.findItem(R.id.action_clear_score)?.isVisible = gameState.currentGame.isManual
         menu?.findItem(R.id.action_best_possible)?.isVisible = !gameState.currentGame.isManual
-        menu?.findItem(R.id.action_event_stats)?.isVisible = gameState.currentGame.series.league.isEvent
     }
 
     /** @Override */
