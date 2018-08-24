@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import ca.josephroque.bowlingcompanion.common.adapters.BaseRecyclerViewAdapter
 import ca.josephroque.bowlingcompanion.common.fragments.BaseFragment
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProvider
 
@@ -13,8 +12,7 @@ import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProvider
  *
  * Display the user's statistics.
  */
-class BaseStatisticsFragment : BaseFragment(),
-        BaseRecyclerViewAdapter.OnAdapterInteractionListener<StatisticsProvider>{
+class BaseStatisticsFragment : BaseFragment() {
 
     companion object {
         /** Logging identifier. */
@@ -71,7 +69,6 @@ class BaseStatisticsFragment : BaseFragment(),
                 }
             }
         } else {
-            // TODO: handle empty list special case
             emptyList()
         }
 
@@ -79,11 +76,11 @@ class BaseStatisticsFragment : BaseFragment(),
     }
 
     /** @Override */
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onStart() {
+        super.onStart()
 
         // When there are no other fragments, push the relevant fragment onto the stack
-        val isOnlyFragment = (fragmentNavigation?.stackSize ?: 1) > 1
+        val isOnlyFragment = (fragmentNavigation?.stackSize ?: 1) == 1
         if (isOnlyFragment) {
             val newFragment = when {
                 statisticsProviders.isEmpty() -> TODO("not implemented")
@@ -93,27 +90,5 @@ class BaseStatisticsFragment : BaseFragment(),
 
             fragmentNavigation?.pushFragment(newFragment)
         }
-    }
-
-    // MARK: BaseRecyclerViewAdapter.OnAdapterInteractionListener
-
-    /** @Override */
-    override fun onItemClick(item: StatisticsProvider) {
-        TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
-    }
-
-    /** @Override */
-    override fun onItemDelete(item: StatisticsProvider) {
-        // Intentionally left blank
-    }
-
-    /** @Override */
-    override fun onItemLongClick(item: StatisticsProvider) {
-        // Intentionally left blank
-    }
-
-    /** @Override */
-    override fun onItemSwipe(item: StatisticsProvider) {
-        // Intentionally left blank
     }
 }

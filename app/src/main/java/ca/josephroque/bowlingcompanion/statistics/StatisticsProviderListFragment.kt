@@ -1,7 +1,9 @@
 package ca.josephroque.bowlingcompanion.statistics
 
+import android.content.Context
 import android.os.Bundle
 import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
+import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProvider
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
@@ -12,7 +14,8 @@ import kotlinx.coroutines.experimental.async
  *
  * A fragment representing a list of [StatisticsProvider]s.
  */
-class StatisticsProviderListFragment : ListFragment<StatisticsProvider, StatisticsProviderRecyclerViewAdapter>() {
+class StatisticsProviderListFragment : ListFragment<StatisticsProvider, StatisticsProviderRecyclerViewAdapter>(),
+        ListFragment.OnListFragmentInteractionListener {
 
     companion object {
         /** Logging identifier. */
@@ -46,7 +49,7 @@ class StatisticsProviderListFragment : ListFragment<StatisticsProvider, Statisti
         }
     }
 
-    /** List of [StatisticProvider]s to display. */
+    /** List of [StatisticsProvider]s to display. */
     private lateinit var statisticsProviders: List<StatisticsProvider>
 
     /** @Override */
@@ -65,6 +68,19 @@ class StatisticsProviderListFragment : ListFragment<StatisticsProvider, Statisti
     }
 
     /** @Override */
+    override fun onAttach(context: Context?) {
+        canIgnoreListener = true
+        listener = this
+        super.onAttach(context)
+    }
+
+    /** @Override */
+    override fun onResume() {
+        super.onResume()
+        navigationActivity?.supportActionBar?.setDisplayHomeAsUpEnabled(false)
+    }
+
+    /** @Override */
     override fun buildAdapter(): StatisticsProviderRecyclerViewAdapter {
         return StatisticsProviderRecyclerViewAdapter(emptyList(), this)
     }
@@ -74,5 +90,10 @@ class StatisticsProviderListFragment : ListFragment<StatisticsProvider, Statisti
         return async(CommonPool) {
             statisticsProviders.toMutableList()
         }
+    }
+
+    /** @Override */
+    override fun onItemSelected(item: IIdentifiable, longPress: Boolean) {
+        TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
     }
 }
