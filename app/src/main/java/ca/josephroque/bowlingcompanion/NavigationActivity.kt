@@ -120,7 +120,11 @@ class NavigationActivity : BaseActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_navigation)
 
+        // If you don't have an analytics token available, comment out the following line and uncomment
+        // the one after it to disable analytics altogether.
+        // This is only available for debug builds, and a token must be provided for release builds
         Analytics.initialize(this)
+        // Analytics.disableTracking()
 
         setupToolbar()
         setupNavigationDrawer()
