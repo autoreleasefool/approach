@@ -22,6 +22,7 @@ import ca.josephroque.bowlingcompanion.series.SeriesListFragment
 import ca.josephroque.bowlingcompanion.statistics.provider.IStatisticsContext
 import ca.josephroque.bowlingcompanion.statistics.BaseStatisticsFragment
 import ca.josephroque.bowlingcompanion.teams.details.TeamDetailsFragment
+import ca.josephroque.bowlingcompanion.utils.Analytics
 import com.ncapdevi.fragnav.FragNavController
 import com.ncapdevi.fragnav.FragNavTransactionOptions
 import kotlinx.android.synthetic.main.activity_navigation.bottom_navigation as bottomNavigation
@@ -119,11 +120,19 @@ class NavigationActivity : BaseActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_navigation)
 
+        Analytics.initialize(this)
+
         setupToolbar()
         setupNavigationDrawer()
         setupBottomNavigation()
         setupFab()
         setupFragNavController(savedInstanceState)
+    }
+
+    /** @Override */
+    override fun onDestroy() {
+        super.onDestroy()
+        Analytics.instance.flush()
     }
 
     /** @Override */

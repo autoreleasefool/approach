@@ -1,9 +1,6 @@
 package ca.josephroque.bowlingcompanion.statistics
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import ca.josephroque.bowlingcompanion.common.fragments.BaseFragment
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProvider
 
