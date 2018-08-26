@@ -6,6 +6,7 @@ import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.games.Frame
 import ca.josephroque.bowlingcompanion.games.Game
 import ca.josephroque.bowlingcompanion.games.lane.arePinsCleared
+import ca.josephroque.bowlingcompanion.utils.Analytics
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -63,5 +64,7 @@ object PossibleScoreDialog {
                 .setPositiveButton(R.string.okay, null)
                 .create()
                 .show()
+
+        Analytics.trackViewPossibleScore(currentGame.score, currentFrame)
     }
 }

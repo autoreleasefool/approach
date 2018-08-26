@@ -20,6 +20,7 @@ import ca.josephroque.bowlingcompanion.bowlers.Bowler
 import ca.josephroque.bowlingcompanion.common.Android
 import ca.josephroque.bowlingcompanion.common.ThousandsTextWatcher
 import ca.josephroque.bowlingcompanion.common.fragments.BaseDialogFragment
+import ca.josephroque.bowlingcompanion.utils.Analytics
 import ca.josephroque.bowlingcompanion.utils.BCError
 import ca.josephroque.bowlingcompanion.utils.Color
 import ca.josephroque.bowlingcompanion.utils.safeLet
@@ -112,6 +113,8 @@ class LeagueDialog : BaseDialogFragment() {
                             .setPositiveButton(R.string.delete) { _, _ ->
                                 listener?.onDeleteLeague(league)
                                 dismiss()
+
+                                Analytics.trackDeleteLeague()
                             }
                             .setNegativeButton(R.string.cancel, null)
                             .show()
@@ -500,6 +503,12 @@ class LeagueDialog : BaseDialogFragment() {
                     } else if (newLeague != null) {
                         dismiss()
                         listener?.onFinishLeague(newLeague)
+
+                        if (oldLeague == null) {
+                            Analytics.trackCreateLeague(isEvent, numberOfGames, hasAdditional)
+                        } else {
+                            Analytics.trackEditLeague()
+                        }
                     }
                 }
             }

@@ -8,6 +8,7 @@ import ca.josephroque.bowlingcompanion.games.lane.arePinsCleared
 import ca.josephroque.bowlingcompanion.games.lane.reset
 import ca.josephroque.bowlingcompanion.matchplay.MatchPlayResult
 import ca.josephroque.bowlingcompanion.series.Series
+import ca.josephroque.bowlingcompanion.utils.Analytics
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async
@@ -149,6 +150,10 @@ class GameState(private val series: Series, private val listener: GameStateListe
     fun toggleLock() {
         if (currentGame.isManual) { return }
         currentGame.isLocked = !currentGame.isLocked
+
+        if (currentGame.isLocked) {
+            Analytics.trackLockGame()
+        }
     }
 
     /**

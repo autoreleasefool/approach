@@ -21,6 +21,7 @@ import ca.josephroque.bowlingcompanion.common.adapters.NameAverageRecyclerViewAd
 import ca.josephroque.bowlingcompanion.common.fragments.BaseDialogFragment
 import ca.josephroque.bowlingcompanion.teams.Team
 import ca.josephroque.bowlingcompanion.teams.teammember.TeamMember
+import ca.josephroque.bowlingcompanion.utils.Analytics
 import ca.josephroque.bowlingcompanion.utils.Color
 import ca.josephroque.bowlingcompanion.utils.safeLet
 import kotlinx.android.synthetic.main.dialog_team.btn_delete as deleteButton
@@ -221,6 +222,8 @@ class TeamDialog : BaseDialogFragment(),
                     .setPositiveButton(R.string.delete) { _, _ ->
                         listener?.onDeleteTeam(team)
                         dismiss()
+
+                        Analytics.trackDeleteTeam()
                     }
                     .setNegativeButton(R.string.cancel, null)
                     .show()
@@ -286,6 +289,12 @@ class TeamDialog : BaseDialogFragment(),
                     } else if (newTeam != null) {
                         dismiss()
                         listener?.onFinishTeam(newTeam)
+
+                        if (oldTeam == null) {
+                            Analytics.trackCreateTeam(selectedBowlers.size)
+                        } else {
+                            Analytics.trackEditTeam()
+                        }
                     }
                 }
             }

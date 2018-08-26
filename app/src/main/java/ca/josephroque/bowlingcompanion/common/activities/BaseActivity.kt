@@ -7,6 +7,7 @@ import android.view.MenuItem
 import ca.josephroque.bowlingcompanion.BuildConfig
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.settings.SettingsActivity
+import ca.josephroque.bowlingcompanion.utils.Analytics
 import ca.josephroque.bowlingcompanion.utils.Email
 
 /**
@@ -57,6 +58,8 @@ abstract class BaseActivity : AppCompatActivity() {
                 String.format(resources.getString(R.string.feedback_email_subject), BuildConfig.VERSION_CODE),
                 null
         )
+
+        Analytics.trackSendFeedback()
     }
 
     /**
@@ -65,5 +68,7 @@ abstract class BaseActivity : AppCompatActivity() {
     fun openSettings() {
         val settingsIntent = Intent(this, SettingsActivity::class.java)
         startActivity(settingsIntent)
+
+        Analytics.trackViewSettings()
     }
 }

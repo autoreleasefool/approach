@@ -20,6 +20,7 @@ import ca.josephroque.bowlingcompanion.teams.Team
 import ca.josephroque.bowlingcompanion.teams.teammember.TeamMember
 import ca.josephroque.bowlingcompanion.teams.teammember.TeamMemberDialog
 import ca.josephroque.bowlingcompanion.teams.teammember.TeamMembersListFragment
+import ca.josephroque.bowlingcompanion.utils.Analytics
 import ca.josephroque.bowlingcompanion.utils.BCError
 import ca.josephroque.bowlingcompanion.utils.safeLet
 import kotlinx.android.synthetic.main.view_team_member_header.view.*
@@ -169,6 +170,8 @@ class TeamDetailsFragment : BaseFragment(),
     /** @Override */
     override fun onTeamMembersReordered(order: List<Long>) {
         team?.let { team = Team(it.id, it.name, it.members, order) }
+
+        Analytics.trackReorderTeamMembers()
     }
 
     /**

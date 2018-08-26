@@ -14,6 +14,7 @@ import ca.josephroque.bowlingcompanion.teams.Team
 import ca.josephroque.bowlingcompanion.teams.details.TeamDetailsFragment
 import ca.josephroque.bowlingcompanion.teams.list.TeamDialog
 import ca.josephroque.bowlingcompanion.teams.list.TeamListFragment
+import ca.josephroque.bowlingcompanion.utils.Analytics
 import kotlinx.android.synthetic.main.fragment_common_tabs.tabbed_fragment_pager as fragmentPager
 
 /**
@@ -148,6 +149,8 @@ class BowlerTeamTabbedFragment : TabbedFragment(),
     private fun showLeaguesAndEvents(bowler: Bowler) {
         val newFragment = LeagueEventTabbedFragment.newInstance(bowler)
         fragmentNavigation?.pushFragment(newFragment)
+
+        Analytics.trackSelectBowler()
     }
 
     /**
@@ -158,6 +161,8 @@ class BowlerTeamTabbedFragment : TabbedFragment(),
     private fun showTeamDetails(team: Team) {
         val newFragment = TeamDetailsFragment.newInstance(team)
         fragmentNavigation?.pushFragment(newFragment)
+
+        Analytics.trackSelectTeam()
     }
 
     /** @Override */

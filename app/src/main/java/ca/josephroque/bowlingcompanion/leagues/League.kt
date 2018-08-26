@@ -52,6 +52,10 @@ data class League(
     override val isDeleted: Boolean
         get() = _isDeleted
 
+    /** True if this league is the Practice league, false otherwise. */
+    val isPractice: Boolean
+        get() = name == PRACTICE_LEAGUE_NAME
+
     /**
      * Construct [League] from a [Parcel]
      */

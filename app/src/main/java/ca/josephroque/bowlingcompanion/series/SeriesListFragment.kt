@@ -20,6 +20,7 @@ import ca.josephroque.bowlingcompanion.leagues.League
 import ca.josephroque.bowlingcompanion.settings.Settings
 import ca.josephroque.bowlingcompanion.statistics.provider.IStatisticsContext
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProvider
+import ca.josephroque.bowlingcompanion.utils.Analytics
 import ca.josephroque.bowlingcompanion.utils.safeLet
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
@@ -158,10 +159,14 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
             Series.Companion.View.Expanded -> {
                 menu.findItem(R.id.action_series_expanded_view).isVisible = false
                 menu.findItem(R.id.action_series_condensed_view).isVisible = true
+
+                Analytics.trackToggledSeriesView(Series.Companion.View.Expanded)
             }
             Series.Companion.View.Condensed -> {
                 menu.findItem(R.id.action_series_expanded_view).isVisible = true
                 menu.findItem(R.id.action_series_condensed_view).isVisible = false
+
+                Analytics.trackToggledSeriesView(Series.Companion.View.Condensed)
             }
         }
     }
@@ -234,6 +239,8 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
                 promptAddOrEditSeries(item)
             } else {
                 showGameDetails(item)
+
+                Analytics.trackSelectSeries()
             }
         }
     }
@@ -255,6 +262,8 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
                         seriesError.show(context)
                     } else if (newSeries != null) {
                         showGameDetails(newSeries)
+
+                        Analytics.trackCreateSeries()
                     }
                 }
             }
@@ -269,5 +278,7 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
     private fun showGameDetails(series: Series) {
         val newFragment = GameControllerFragment.newInstance(SeriesProvider.BowlerSeries(series))
         fragmentNavigation?.pushFragment(newFragment)
+
+        Analytics.trackSelectSeries()
     }
 }

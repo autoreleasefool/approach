@@ -136,7 +136,7 @@ class NavigationActivity : BaseActivity(),
     /** @Override */
     override fun onDestroy() {
         super.onDestroy()
-        Analytics.instance.flush()
+        Analytics.flush()
     }
 
     /** @Override */

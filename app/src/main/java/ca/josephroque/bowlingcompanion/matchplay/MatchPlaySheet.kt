@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.games.Game
+import ca.josephroque.bowlingcompanion.utils.Analytics
 import ca.josephroque.bowlingcompanion.utils.BCError
 import kotlinx.android.synthetic.main.sheet_match_play.input_opponent_name as opponentName
 import kotlinx.android.synthetic.main.sheet_match_play.input_opponent_score as opponentScore
@@ -110,6 +111,8 @@ class MatchPlaySheet : BottomSheetDialogFragment() {
         }
 
         delegate?.onFinishedSettingMatchPlayResults(name, score, matchPlayResult, inputValid)
+
+        Analytics.trackRecordMatchPlay()
     }
 
     companion object {

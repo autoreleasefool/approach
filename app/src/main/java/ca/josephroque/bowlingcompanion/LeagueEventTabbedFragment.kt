@@ -18,6 +18,7 @@ import ca.josephroque.bowlingcompanion.leagues.LeagueListFragment
 import ca.josephroque.bowlingcompanion.series.SeriesListFragment
 import ca.josephroque.bowlingcompanion.statistics.provider.IStatisticsContext
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProvider
+import ca.josephroque.bowlingcompanion.utils.Analytics
 import kotlinx.android.synthetic.main.fragment_common_tabs.tabbed_fragment_pager as fragmentPager
 
 /**
@@ -132,6 +133,7 @@ class LeagueEventTabbedFragment : TabbedFragment(),
                 promptAddOrEditLeague(item.isEvent, item)
             } else {
                 showSeries(item)
+                Analytics.trackSelectLeague(item.isPractice, item.isEvent)
             }
         } else {
             throw RuntimeException("LeagueEventTabbedFragment can only handle League and item is $item")

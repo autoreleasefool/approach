@@ -26,6 +26,7 @@ import ca.josephroque.bowlingcompanion.games.views.PinLayout
 import ca.josephroque.bowlingcompanion.matchplay.MatchPlayResult
 import ca.josephroque.bowlingcompanion.matchplay.MatchPlaySheet
 import ca.josephroque.bowlingcompanion.series.Series
+import ca.josephroque.bowlingcompanion.utils.Analytics
 import ca.josephroque.bowlingcompanion.utils.BCError
 import kotlinx.android.synthetic.main.fragment_game.game_footer as gameFooter
 import kotlinx.android.synthetic.main.fragment_game.game_header as gameHeader
@@ -617,6 +618,8 @@ class GameFragment : BaseFragment(),
         context?.let {
             ResetGameDialog.show(it, WeakReference({
                 resetGame()
+
+                Analytics.trackResetGame()
             }))
         }
     }
@@ -641,6 +644,8 @@ class GameFragment : BaseFragment(),
                             }
 
                             gameState.setManualScore(WeakReference(context), it)
+
+                            Analytics.trackSetGameManualScore()
                         }
                     }
                     .setNegativeButton(R.string.cancel, null)

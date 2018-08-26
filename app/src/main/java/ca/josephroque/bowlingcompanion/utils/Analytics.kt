@@ -76,7 +76,7 @@ class Analytics private constructor() {
             instance.mixpanel.track("Teams - Edited")
         }
 
-        fun trackRorderTeamMembers() {
+        fun trackReorderTeamMembers() {
             if (instance.disableTracking) return
             instance.mixpanel.track("Teams - Reorder")
         }
@@ -191,7 +191,7 @@ class Analytics private constructor() {
             instance.mixpanel.track("Games - Locked")
         }
 
-        fun trackGameViewedPossibleScore(possibleScore: Int, frame: Int) {
+        fun trackViewPossibleScore(possibleScore: Int, frame: Int) {
             if (instance.disableTracking) return
             val properties: MutableMap<String, Any> = hashMapOf(
                     "Score" to possibleScore.toString(),

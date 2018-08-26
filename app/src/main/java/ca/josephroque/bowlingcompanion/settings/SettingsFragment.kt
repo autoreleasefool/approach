@@ -10,6 +10,7 @@ import android.support.v7.preference.PreferenceFragmentCompat
 import ca.josephroque.bowlingcompanion.BuildConfig
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.ScrollableTextDialog
+import ca.josephroque.bowlingcompanion.utils.Analytics
 import ca.josephroque.bowlingcompanion.utils.Email
 import ca.josephroque.bowlingcompanion.utils.Facebook
 import ca.josephroque.bowlingcompanion.utils.Files
@@ -38,9 +39,30 @@ class SettingsFragment : PreferenceFragmentCompat(),
         }
     }
 
-    /**
-     * Handle special cases for preferences interactions.
-     */
+    /** Handle preference changes. */
+    private val onPreferenceChangedListener = SharedPreferences.OnSharedPreferenceChangeListener { preferences, key ->
+        when (key) {
+            Settings.EnableAutoAdvance.prefName -> {
+                val enabled = preferences.getBoolean(Settings.EnableAutoAdvance.prefName, Settings.EnableAutoAdvance.booleanDefault)
+                if (enabled) {
+                    Analytics.trackEnableAutoAdvance()
+                } else {
+                    Analytics.trackDisableAutoAdvance()
+                }
+            }
+            Settings.EnableAutoLock.prefName -> {
+                val enabled = preferences.getBoolean(Settings.EnableAutoLock.prefName, Settings.EnableAutoLock.booleanDefault)
+                if (enabled) {
+                    Analytics.trackEnableAutoLock()
+                } else {
+                    Analytics.trackDisableAutoLock()
+                }
+            }
+            else -> {} // Do nothing
+        }
+    }
+
+    /** Handle special cases for preferences interactions. */
     private val onPreferenceClickListener = Preference.OnPreferenceClickListener {
         when (it.key) {
             Settings.ReportBug.prefName -> {
@@ -63,8 +85,28 @@ class SettingsFragment : PreferenceFragmentCompat(),
                 displayFacebookPage()
                 true
             }
+            Settings.DeveloperWebsite.prefName -> {
+                Analytics.trackViewWebsite()
+                true
+            }
+            Settings.ViewSource.prefName -> {
+                Analytics.trackViewSource()
+                true
+            }
             else -> false // Does nothing
         }
+    }
+
+    /** @Override */
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        preferenceManager.sharedPreferences.registerOnSharedPreferenceChangeListener(onPreferenceChangedListener)
+    }
+
+    /** @Override */
+    override fun onDestroy() {
+        super.onDestroy()
+        preferenceManager.sharedPreferences.unregisterOnSharedPreferenceChangeListener(onPreferenceChangedListener)
     }
 
     /** @Override */
@@ -76,6 +118,8 @@ class SettingsFragment : PreferenceFragmentCompat(),
         findPreference(Settings.Rate.prefName).onPreferenceClickListener = onPreferenceClickListener
         findPreference(Settings.Attributions.prefName).onPreferenceClickListener = onPreferenceClickListener
         findPreference(Settings.Facebook.prefName).onPreferenceClickListener = onPreferenceClickListener
+        findPreference(Settings.DeveloperWebsite.prefName).onPreferenceClickListener = onPreferenceClickListener
+        findPreference(Settings.ViewSource.prefName).onPreferenceClickListener = onPreferenceClickListener
     }
 
     /** @Override */
@@ -108,6 +152,8 @@ class SettingsFragment : PreferenceFragmentCompat(),
                     resources.getString(R.string.bug_email_body)
             )
         }
+
+        Analytics.trackReportBug()
     }
 
     /**
@@ -122,6 +168,8 @@ class SettingsFragment : PreferenceFragmentCompat(),
                     null
             )
         }
+
+        Analytics.trackSendFeedback()
     }
 
     /**
@@ -138,6 +186,8 @@ class SettingsFragment : PreferenceFragmentCompat(),
 
             startActivity(marketIntent)
         }
+
+        Analytics.trackRate()
     }
 
     /**
@@ -161,6 +211,8 @@ class SettingsFragment : PreferenceFragmentCompat(),
                 }
             }
         }
+
+        Analytics.trackViewAttributions()
     }
 
     /**
@@ -170,6 +222,8 @@ class SettingsFragment : PreferenceFragmentCompat(),
         activity?.let {
             it.startActivity(Facebook.getFacebookPageIntent(it))
         }
+
+        Analytics.trackViewFacebook()
     }
 
     /**

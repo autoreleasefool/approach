@@ -16,6 +16,7 @@ import ca.josephroque.bowlingcompanion.common.interfaces.INavigationDrawerHandle
 import ca.josephroque.bowlingcompanion.series.Series
 import ca.josephroque.bowlingcompanion.statistics.provider.IStatisticsContext
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProvider
+import ca.josephroque.bowlingcompanion.utils.Analytics
 import kotlinx.android.synthetic.main.fragment_common_tabs.tabbed_fragment_pager as fragmentPager
 import kotlinx.android.synthetic.main.fragment_common_tabs.tabbed_fragment_tabs as fragmentTabs
 
@@ -97,6 +98,8 @@ class GameControllerFragment : TabbedFragment(),
             gameFragment?.gameNumber = currentGame
 
             navigationDrawerController.gameNumber = currentGame
+
+            Analytics.trackChangedGame()
         }
 
     /** Indicates if the floating action button should be enabled or not. */

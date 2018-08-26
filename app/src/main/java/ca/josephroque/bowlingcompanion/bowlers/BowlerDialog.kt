@@ -16,6 +16,7 @@ import ca.josephroque.bowlingcompanion.App
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.Android
 import ca.josephroque.bowlingcompanion.common.fragments.BaseDialogFragment
+import ca.josephroque.bowlingcompanion.utils.Analytics
 import ca.josephroque.bowlingcompanion.utils.Color
 import ca.josephroque.bowlingcompanion.utils.safeLet
 import kotlinx.android.synthetic.main.dialog_bowler.input_name as nameInput
@@ -176,6 +177,8 @@ class BowlerDialog : BaseDialogFragment(), View.OnClickListener {
                     .setPositiveButton(R.string.delete) { _, _ ->
                         listener?.onDeleteBowler(bowler)
                         dismiss()
+
+                        Analytics.trackDeleteBowler()
                     }
                     .setNegativeButton(R.string.cancel, null)
                     .show()
@@ -236,6 +239,12 @@ class BowlerDialog : BaseDialogFragment(), View.OnClickListener {
                     } else if (newBowler != null) {
                         dismiss()
                         listener?.onFinishBowler(newBowler)
+
+                        if (oldBowler == null) {
+                            Analytics.trackCreateBowler()
+                        } else {
+                            Analytics.trackEditBowler()
+                        }
                     }
                 }
             }

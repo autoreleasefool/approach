@@ -16,6 +16,7 @@ import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.bowlers.Bowler
 import ca.josephroque.bowlingcompanion.common.adapters.NameAverageRecyclerViewAdapter
 import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
+import ca.josephroque.bowlingcompanion.utils.Analytics
 import ca.josephroque.bowlingcompanion.utils.BCError
 import ca.josephroque.bowlingcompanion.utils.Preferences
 import kotlinx.coroutines.experimental.CommonPool
@@ -212,6 +213,8 @@ class LeagueListFragment : ListFragment<League, NameAverageRecyclerViewAdapter<L
                                     .putInt(Preferences.LEAGUE_SORT_ORDER, sort.ordinal)
                                     .commit()
                             refreshList()
+
+                            Analytics.trackSortedLeagues(order)
                         }
                     }
                     .show()
@@ -224,7 +227,7 @@ class LeagueListFragment : ListFragment<League, NameAverageRecyclerViewAdapter<L
      * @param item the league to be deleted
      */
     override fun onItemDelete(item: League) {
-        if (item.name == League.PRACTICE_LEAGUE_NAME) {
+        if (item.isPractice) {
             context?.let {
                 BCError(
                         R.string.error_deleting_league,
@@ -244,7 +247,7 @@ class LeagueListFragment : ListFragment<League, NameAverageRecyclerViewAdapter<L
      * @param item the league that was long clicked
      */
     override fun onItemLongClick(item: League) {
-        if (item.name == League.PRACTICE_LEAGUE_NAME) return
+        if (item.isPractice) return
         super.onItemLongClick(item)
     }
 }

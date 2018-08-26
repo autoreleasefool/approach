@@ -16,6 +16,7 @@ import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.Android
 import ca.josephroque.bowlingcompanion.common.fragments.BaseDialogFragment
 import ca.josephroque.bowlingcompanion.common.fragments.DatePickerFragment
+import ca.josephroque.bowlingcompanion.utils.Analytics
 import ca.josephroque.bowlingcompanion.utils.Color
 import ca.josephroque.bowlingcompanion.utils.DateUtils
 import ca.josephroque.bowlingcompanion.utils.safeLet
@@ -80,6 +81,8 @@ class SeriesDialog : BaseDialogFragment(), DatePickerDialog.OnDateSetListener {
                             .setPositiveButton(R.string.delete) { _, _ ->
                                 listener?.onDeleteSeries(series)
                                 dismiss()
+
+                                Analytics.trackDeleteSeries()
                             }
                             .setNegativeButton(R.string.cancel, null)
                             .show()
@@ -217,6 +220,8 @@ class SeriesDialog : BaseDialogFragment(), DatePickerDialog.OnDateSetListener {
             } else if (newSeries != null) {
                 dismiss()
                 listener?.onFinishSeries(newSeries)
+
+                Analytics.trackEditSeries()
             }
         }
     }

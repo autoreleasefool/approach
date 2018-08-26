@@ -15,6 +15,7 @@ import ca.josephroque.bowlingcompanion.BowlerTeamTabbedFragment
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.adapters.NameAverageRecyclerViewAdapter
 import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
+import ca.josephroque.bowlingcompanion.utils.Analytics
 import ca.josephroque.bowlingcompanion.utils.Preferences
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
@@ -113,6 +114,8 @@ class BowlerListFragment : ListFragment<Bowler, NameAverageRecyclerViewAdapter<B
                             val ignoredSet: MutableSet<Int> = HashSet()
                             ignoredSet.add(BowlerTeamTabbedFragment.Companion.Tab.Bowlers.ordinal)
                             (parentFragment as? BowlerTeamTabbedFragment)?.refreshTabs(ignoredSet)
+
+                            Analytics.trackSortedBowlers(order)
                         }
                     }
                     .show()
