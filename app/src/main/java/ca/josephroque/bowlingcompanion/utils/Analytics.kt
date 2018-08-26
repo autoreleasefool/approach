@@ -3,7 +3,18 @@ package ca.josephroque.bowlingcompanion.utils
 import android.content.Context
 import ca.josephroque.bowlingcompanion.BuildConfig
 import ca.josephroque.bowlingcompanion.R
+import ca.josephroque.bowlingcompanion.database.Contract.BowlerEntry
+import ca.josephroque.bowlingcompanion.database.Contract.FrameEntry
+import ca.josephroque.bowlingcompanion.database.Contract.GameEntry
+import ca.josephroque.bowlingcompanion.database.Contract.LeagueEntry
+import ca.josephroque.bowlingcompanion.database.Contract.MatchPlayEntry
+import ca.josephroque.bowlingcompanion.database.Contract.SeriesEntry
+import ca.josephroque.bowlingcompanion.database.Contract.TeamEntry
+import ca.josephroque.bowlingcompanion.database.DatabaseHelper
 import com.mixpanel.android.mpmetrics.MixpanelAPI
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.launch
+import java.io.File
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -23,9 +34,11 @@ class Analytics private constructor() {
          */
         fun initialize(context: Context) {
             assert(!dangerousInstance.disableTracking) { "You cannot initialize analytics once tracking has been disabled." }
+            val initInstance = dangerousInstance
             val projectToken = context.resources.getString(R.string.mixpanelToken)
-            dangerousInstance.mixpanel = MixpanelAPI.getInstance(context, projectToken)
-            dangerousInstance.initialized = true
+            initInstance.mixpanel = MixpanelAPI.getInstance(context, projectToken)
+            initInstance.refreshSuperProperties(context)
+            initInstance.initialized = true
         }
 
         /**
@@ -59,6 +72,43 @@ class Analytics private constructor() {
 
     /** Instance of Mixpanel to record events. */
     private lateinit var mixpanel: MixpanelAPI
+
+    /**
+     * Set user super properties.
+     */
+    fun refreshSuperProperties(context: Context) {
+        launch (CommonPool) {
+            val properties: MutableMap<String, Any> = HashMap()
+
+            // Get database properties
+            val db = DatabaseHelper.getInstance(context).readableDatabase
+            val dbSize = File(db.path).length()
+            properties["Database size"] = dbSize
+
+            // Get row counts for each table
+            val tables = hashMapOf(
+                TeamEntry.TABLE_NAME to "Team",
+                BowlerEntry.TABLE_NAME to "Bowler",
+                LeagueEntry.TABLE_NAME to "League",
+                SeriesEntry.TABLE_NAME to "Series",
+                GameEntry.TABLE_NAME to "Game",
+                FrameEntry.TABLE_NAME to "Frame",
+                MatchPlayEntry.TABLE_NAME to "MatchPlay"
+            )
+
+            for (table in tables) {
+                val tableName = table.key
+                val property = table.value
+
+                val cursor = db.rawQuery("SELECT COALESCE(MAX(id)+1, 0) FROM $tableName", null, null)
+                val count = cursor.getInt(0)
+                properties["$property row count"] = count
+                cursor.close()
+            }
+
+            mixpanel.registerSuperPropertiesMap(properties)
+        }
+    }
 
     /**
      * Flush events which have not been recorded yet to the server.
