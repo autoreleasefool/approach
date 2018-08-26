@@ -19,6 +19,17 @@ class Analytics private constructor() {
     private object HOLDER { val INSTANCE = Analytics() }
 
     companion object {
+        /** Singleton instance */
+        private val instance: Analytics by lazy {
+            assert(instance.initialized) { "The Mixpanel instance was accessed before being initialized." }
+            HOLDER.INSTANCE
+        }
+
+        /** Singleton instance without accessor assertion. */
+        private val dangerousInstance: Analytics by lazy {
+            HOLDER.INSTANCE
+        }
+
         /**
          * Initialize the analytics engine.
          *
@@ -26,10 +37,9 @@ class Analytics private constructor() {
          */
         fun initialize(context: Context) {
             assert(!dangerousInstance.disableTracking) { "You cannot initialize analytics once tracking has been disabled." }
-            val initInstance = dangerousInstance
             val projectToken = context.resources.getString(R.string.mixpanelToken)
-            initInstance.mixpanel = MixpanelAPI.getInstance(context, projectToken)
-            initInstance.initialized = true
+            dangerousInstance.mixpanel = MixpanelAPI.getInstance(context, projectToken)
+            dangerousInstance.initialized = true
         }
 
         /**
@@ -41,17 +51,6 @@ class Analytics private constructor() {
                 assert(!instance.initialized) { "You must disable tracking before initializing analytics." }
                 dangerousInstance.disableTracking = true
             }
-        }
-
-        /** Singleton instance */
-        val instance: Analytics by lazy {
-            assert(instance.initialized) { "The Mixpanel instance was accessed before being initialized." }
-            HOLDER.INSTANCE
-        }
-
-        /** Singleton instance without accessor assertion. */
-        private val dangerousInstance: Analytics by lazy {
-            HOLDER.INSTANCE
         }
 
         // MARK: Team events
