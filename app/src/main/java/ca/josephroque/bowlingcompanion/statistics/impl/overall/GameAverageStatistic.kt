@@ -44,5 +44,5 @@ class GameAverageStatistic(override var total: Int, override var divisor: Int) :
     /**
      * Construct this statistic from a [Parcel].
      */
-    constructor(p: Parcel): this(total = p.readInt(), divisor = p.readInt())
+    private constructor(p: Parcel): this(total = p.readInt(), divisor = p.readInt())
 }

@@ -42,5 +42,5 @@ class LeftChopOffsSparedStatistic(numerator: Int, denominator: Int) : SecondBall
     /**
      * Construct this statistic from a [Parcel].
      */
-    constructor(p: Parcel): this(numerator = p.readInt(), denominator = p.readInt())
+    private constructor(p: Parcel): this(numerator = p.readInt(), denominator = p.readInt())
 }

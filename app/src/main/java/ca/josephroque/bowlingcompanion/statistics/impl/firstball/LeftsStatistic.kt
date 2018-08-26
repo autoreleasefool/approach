@@ -38,5 +38,5 @@ class LeftsStatistic(numerator: Int, denominator: Int) : FirstBallStatistic(nume
     /**
      * Construct this statistic from a [Parcel].
      */
-    constructor(p: Parcel): this(numerator = p.readInt(), denominator = p.readInt())
+    private constructor(p: Parcel): this(numerator = p.readInt(), denominator = p.readInt())
 }

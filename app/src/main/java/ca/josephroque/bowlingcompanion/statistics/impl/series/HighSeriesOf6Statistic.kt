@@ -32,5 +32,5 @@ class HighSeriesOf6Statistic(value: Int) : HighSeriesStatistic(value) {
     /**
      * Construct this statistic from a [Parcel].
      */
-    constructor(p: Parcel): this(value = p.readInt())
+    private constructor(p: Parcel): this(value = p.readInt())
 }

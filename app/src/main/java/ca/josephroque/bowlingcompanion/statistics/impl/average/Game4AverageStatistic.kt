@@ -32,5 +32,5 @@ class Game4AverageStatistic(total: Int, divisor: Int) : PerGameAverageStatistic(
     /**
      * Construct this statistic from a [Parcel].
      */
-    constructor(p: Parcel): this(total = p.readInt(), divisor = p.readInt())
+    private constructor(p: Parcel): this(total = p.readInt(), divisor = p.readInt())
 }

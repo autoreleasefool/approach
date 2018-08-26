@@ -51,5 +51,5 @@ class AveragePinsLeftStatistic(override var total: Int, override var divisor: In
     /**
      * Construct this statistic from a [Parcel].
      */
-    constructor(p: Parcel) : this(total = p.readInt(), divisor = p.readInt())
+    private constructor(p: Parcel) : this(total = p.readInt(), divisor = p.readInt())
 }

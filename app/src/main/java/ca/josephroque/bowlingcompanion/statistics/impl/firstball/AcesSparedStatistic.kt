@@ -40,5 +40,5 @@ class AcesSparedStatistic(numerator: Int, denominator: Int) : SecondBallStatisti
     /**
      * Construct this statistic from a [Parcel].
      */
-    constructor(p: Parcel): this(numerator = p.readInt(), denominator = p.readInt())
+    private constructor(p: Parcel): this(numerator = p.readInt(), denominator = p.readInt())
 }

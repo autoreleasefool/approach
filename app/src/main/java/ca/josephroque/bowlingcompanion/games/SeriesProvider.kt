@@ -26,7 +26,7 @@ sealed class SeriesProvider : KParcelable {
         /**
          * Construct [TeamSeries] from a [Parcel].
          */
-        constructor(p: Parcel): this(p.readParcelable<Team>(Team::class.java.classLoader))
+        private constructor(p: Parcel): this(p.readParcelable<Team>(Team::class.java.classLoader))
     }
 
     /** Manage a bowler's series. */
@@ -40,7 +40,7 @@ sealed class SeriesProvider : KParcelable {
         /**
          * Construct [BowlerSeries] from a [Parcel].
          */
-        constructor(p: Parcel): this(p.readParcelable<Series>(Series::class.java.classLoader))
+        private constructor(p: Parcel): this(p.readParcelable<Series>(Series::class.java.classLoader))
     }
 
     /** List of series. */

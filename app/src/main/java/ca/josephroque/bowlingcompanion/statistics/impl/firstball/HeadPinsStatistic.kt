@@ -38,5 +38,5 @@ class HeadPinsStatistic(numerator: Int, denominator: Int) : FirstBallStatistic(n
     /**
      * Construct this statistic from a [Parcel].
      */
-    constructor(p: Parcel): this(numerator = p.readInt(), denominator = p.readInt())
+    private constructor(p: Parcel): this(numerator = p.readInt(), denominator = p.readInt())
 }

@@ -38,7 +38,7 @@ sealed class StatisticsProvider : IIdentifiable, KParcelable {
         /**
          * Construct [TeamStatistics] from a [Parcel].
          */
-        constructor(p: Parcel): this(p.readParcelable<Team>(Team::class.java.classLoader))
+        private constructor(p: Parcel): this(p.readParcelable<Team>(Team::class.java.classLoader))
 
         override val id = team.id.and(0xF00000000000000L)
         override val name = team.name
@@ -56,7 +56,7 @@ sealed class StatisticsProvider : IIdentifiable, KParcelable {
         /**
          * Construct [BowlerStatistics] from a [Parcel].
          */
-        constructor(p: Parcel): this(p.readParcelable<Bowler>(Bowler::class.java.classLoader))
+        private constructor(p: Parcel): this(p.readParcelable<Bowler>(Bowler::class.java.classLoader))
 
         override val id = bowler.id.and(0xE00000000000000L)
         override val name = bowler.name
@@ -74,7 +74,7 @@ sealed class StatisticsProvider : IIdentifiable, KParcelable {
         /**
          * Construct [LeagueStatistics] from a [Parcel].
          */
-        constructor(p: Parcel): this(p.readParcelable<League>(League::class.java.classLoader))
+        private constructor(p: Parcel): this(p.readParcelable<League>(League::class.java.classLoader))
 
         override val id = league.id.and(0xD00000000000000L)
         override val name = league.name
@@ -92,7 +92,7 @@ sealed class StatisticsProvider : IIdentifiable, KParcelable {
         /**
          * Construct [SeriesStatistics] from a [Parcel].
          */
-        constructor(p: Parcel): this(p.readParcelable<Series>(Series::class.java.classLoader))
+        private constructor(p: Parcel): this(p.readParcelable<Series>(Series::class.java.classLoader))
 
         override val id = series.id.and(0xC00000000000000L)
         override val name = series.prettyDate
@@ -110,7 +110,7 @@ sealed class StatisticsProvider : IIdentifiable, KParcelable {
         /**
          * Construct [GameStatistics] from a [Parcel].
          */
-        constructor(p: Parcel): this(p.readParcelable<Game>(Game::class.java.classLoader))
+        private constructor(p: Parcel): this(p.readParcelable<Game>(Game::class.java.classLoader))
 
         override val id = game.id.and(0xB00000000000000L)
         override val name = "Game ${game.ordinal}"

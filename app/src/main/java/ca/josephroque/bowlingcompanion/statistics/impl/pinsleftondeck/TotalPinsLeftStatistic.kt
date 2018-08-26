@@ -43,5 +43,5 @@ class TotalPinsLeftStatistic(override var value: Int) : IntegerStatistic {
     /**
      * Construct this statistic from a [Parcel].
      */
-    constructor(p: Parcel): this(value = p.readInt())
+    private constructor(p: Parcel): this(value = p.readInt())
 }
