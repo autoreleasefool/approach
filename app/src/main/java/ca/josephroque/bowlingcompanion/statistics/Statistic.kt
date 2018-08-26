@@ -64,6 +64,8 @@ import ca.josephroque.bowlingcompanion.statistics.impl.firstball.SplitsSparedSta
 import ca.josephroque.bowlingcompanion.statistics.impl.firstball.SplitsStatistic
 import ca.josephroque.bowlingcompanion.statistics.impl.overall.StrikesStatistic
 import ca.josephroque.bowlingcompanion.statistics.impl.general.TeamNameStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.matchplay.StrikeMiddleHitsStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.overall.StrikeMiddleHitsStatistic
 import ca.josephroque.bowlingcompanion.statistics.impl.overall.TotalPinfallStatistic
 import ca.josephroque.bowlingcompanion.statistics.impl.pinsleftondeck.TotalPinsLeftStatistic
 import ca.josephroque.bowlingcompanion.statistics.impl.series.HighSeriesOf10Statistic
@@ -159,6 +161,7 @@ interface Statistic : StatisticListItem, KParcelable {
             MiddleHitsStatistic.Id,
             LeftOfMiddleHitsStatistic.Id,
             RightOfMiddleHitsStatistic.Id,
+            StrikeMiddleHitsStatistic.Id,
             StrikesStatistic.Id,
             SpareConversionsStatistic.Id,
             // First Ball

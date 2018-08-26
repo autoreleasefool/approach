@@ -215,12 +215,14 @@
     <string name="statistic_high_series">High series</string>
     <string name="statistic_total_pinfall">Total pinfall</string>
     <string name="statistic_number_of_games"># of games</string>
-    <!-- First ball statistics -->
+    <!-- Overall statistics -->
     <string name="statistic_middle_hits">Middle hits</string>
     <string name="statistic_left_of_middle">Hits left of middle</string>
     <string name="statistic_right_of_middle">Hits right of middle</string>
-    <string name="statistic_strikes">Strikes</string>
+    <string name="statistic_strike_middle_hits">Middle hits which were strikes</string>
+    <string name="statistic_strikes">Total strikes</string>
     <string name="statistic_spare_conversion">Spare conversions</string>
+    <!-- First ball statistics -->
     <string name="statistic_head_pins">Head pins</string>
     <string name="statistic_head_pins_spared">Head pins spared</string>
     <string name="statistic_lefts">Lefts</string>
