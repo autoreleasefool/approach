@@ -14,7 +14,7 @@ import ca.josephroque.bowlingcompanion.database.Saviour
 import ca.josephroque.bowlingcompanion.games.GameControllerFragment
 import ca.josephroque.bowlingcompanion.games.SeriesProvider
 import ca.josephroque.bowlingcompanion.series.Series
-import ca.josephroque.bowlingcompanion.statistics.provider.IStatisticsContext
+import ca.josephroque.bowlingcompanion.statistics.interfaces.IStatisticsContext
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProvider
 import ca.josephroque.bowlingcompanion.teams.Team
 import ca.josephroque.bowlingcompanion.teams.teammember.TeamMember

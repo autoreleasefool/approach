@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.statistics
+package ca.josephroque.bowlingcompanion.statistics.unit
 
 import android.os.Bundle
 import android.support.design.widget.TabLayout
@@ -10,8 +10,8 @@ import android.view.ViewGroup
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.adapters.BaseFragmentPagerAdapter
 import ca.josephroque.bowlingcompanion.common.fragments.TabbedFragment
+import ca.josephroque.bowlingcompanion.statistics.list.StatisticsListFragment
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProvider
-import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsUnit
 import ca.josephroque.bowlingcompanion.utils.Analytics
 import kotlinx.android.synthetic.main.fragment_common_tabs.tabbed_fragment_tabs as fragmentTabs
 

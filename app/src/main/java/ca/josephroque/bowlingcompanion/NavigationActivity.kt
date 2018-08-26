@@ -19,7 +19,7 @@ import ca.josephroque.bowlingcompanion.common.fragments.BaseFragment
 import ca.josephroque.bowlingcompanion.common.fragments.TabbedFragment
 import ca.josephroque.bowlingcompanion.common.interfaces.INavigationDrawerHandler
 import ca.josephroque.bowlingcompanion.series.SeriesListFragment
-import ca.josephroque.bowlingcompanion.statistics.provider.IStatisticsContext
+import ca.josephroque.bowlingcompanion.statistics.interfaces.IStatisticsContext
 import ca.josephroque.bowlingcompanion.statistics.BaseStatisticsFragment
 import ca.josephroque.bowlingcompanion.teams.details.TeamDetailsFragment
 import ca.josephroque.bowlingcompanion.utils.Analytics
@@ -343,7 +343,8 @@ class NavigationActivity : BaseActivity(),
         }
 
         if (fragment is BaseStatisticsFragment) {
-            val statisticsContext = fragNavController?.getStack(BottomTab.toInt(BottomTab.Record))?.peek() as? IStatisticsContext ?: return
+            val statisticsContext = fragNavController?.getStack(BottomTab.toInt(BottomTab.Record))?.peek() as? IStatisticsContext
+                    ?: return
             fragment.arguments = BaseStatisticsFragment.buildArguments(statisticsContext.statisticsProviders)
         }
     }

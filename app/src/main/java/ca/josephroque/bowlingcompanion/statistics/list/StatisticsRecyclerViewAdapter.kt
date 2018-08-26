@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.statistics
+package ca.josephroque.bowlingcompanion.statistics.list
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import android.widget.TextView
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.adapters.BaseRecyclerViewAdapter
+import ca.josephroque.bowlingcompanion.statistics.Statistic
+import ca.josephroque.bowlingcompanion.statistics.StatisticsCategory
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -15,8 +17,8 @@ import ca.josephroque.bowlingcompanion.common.adapters.BaseRecyclerViewAdapter
  * upon interactions.
  */
 class StatisticsRecyclerViewAdapter(
-    values: List<StatisticListItem>,
-    listener: BaseRecyclerViewAdapter.OnAdapterInteractionListener<StatisticListItem>?
+        values: List<StatisticListItem>,
+        listener: BaseRecyclerViewAdapter.OnAdapterInteractionListener<StatisticListItem>?
 ) : BaseRecyclerViewAdapter<StatisticListItem>(values, listener) {
 
     companion object {

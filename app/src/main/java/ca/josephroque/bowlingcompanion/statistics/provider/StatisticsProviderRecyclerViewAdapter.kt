@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.statistics
+package ca.josephroque.bowlingcompanion.statistics.provider
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.adapters.BaseRecyclerViewAdapter
-import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProvider
 
 /**
  * Copyright (C) 2018 Joseph Roque

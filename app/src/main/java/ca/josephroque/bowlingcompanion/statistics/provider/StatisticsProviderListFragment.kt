@@ -1,11 +1,10 @@
-package ca.josephroque.bowlingcompanion.statistics
+package ca.josephroque.bowlingcompanion.statistics.provider
 
 import android.content.Context
 import android.os.Bundle
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
 import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
-import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProvider
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async

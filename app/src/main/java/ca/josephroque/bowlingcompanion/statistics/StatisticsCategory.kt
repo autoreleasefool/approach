@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion.statistics
 
 import android.content.res.Resources
 import ca.josephroque.bowlingcompanion.R
+import ca.josephroque.bowlingcompanion.statistics.list.StatisticListItem
 
 /**
  * Copyright (C) 2018 Joseph Roque

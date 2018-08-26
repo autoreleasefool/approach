@@ -86,7 +86,8 @@ import ca.josephroque.bowlingcompanion.statistics.impl.series.HighSeriesOf6Stati
 import ca.josephroque.bowlingcompanion.statistics.impl.series.HighSeriesOf7Statistic
 import ca.josephroque.bowlingcompanion.statistics.impl.series.HighSeriesOf8Statistic
 import ca.josephroque.bowlingcompanion.statistics.impl.series.HighSeriesOf9Statistic
-import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsUnit
+import ca.josephroque.bowlingcompanion.statistics.list.StatisticListItem
+import ca.josephroque.bowlingcompanion.statistics.unit.StatisticsUnit
 import java.text.DecimalFormat
 
 /**

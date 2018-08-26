@@ -1,4 +1,6 @@
-package ca.josephroque.bowlingcompanion.statistics.provider
+package ca.josephroque.bowlingcompanion.statistics.interfaces
+
+import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProvider
 
 /**
  * Copyright (C) 2018 Joseph Roque

@@ -6,7 +6,7 @@ import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
 import ca.josephroque.bowlingcompanion.statistics.StatisticsCategory
 import ca.josephroque.bowlingcompanion.statistics.StringStatistic
-import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsUnit
+import ca.josephroque.bowlingcompanion.statistics.unit.StatisticsUnit
 
 /**
  * Copyright (C) 2018 Joseph Roque

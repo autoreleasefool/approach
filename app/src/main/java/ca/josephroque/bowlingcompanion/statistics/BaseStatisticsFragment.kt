@@ -3,6 +3,8 @@ package ca.josephroque.bowlingcompanion.statistics
 import android.os.Bundle
 import ca.josephroque.bowlingcompanion.common.fragments.BaseFragment
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProvider
+import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProviderListFragment
+import ca.josephroque.bowlingcompanion.statistics.unit.StatisticsUnitTabbedFragment
 
 /**
  * Copyright (C) 2018 Joseph Roque

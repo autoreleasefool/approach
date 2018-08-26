@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.statistics.provider
+package ca.josephroque.bowlingcompanion.statistics.unit
 
 import android.os.Parcel
 import android.os.Parcelable
@@ -9,7 +9,7 @@ import ca.josephroque.bowlingcompanion.games.Game
 import ca.josephroque.bowlingcompanion.leagues.League
 import ca.josephroque.bowlingcompanion.series.Series
 import ca.josephroque.bowlingcompanion.statistics.Statistic
-import ca.josephroque.bowlingcompanion.statistics.StatisticListItem
+import ca.josephroque.bowlingcompanion.statistics.list.StatisticListItem
 import ca.josephroque.bowlingcompanion.statistics.StatisticsCategory
 import ca.josephroque.bowlingcompanion.statistics.impl.pinsleftondeck.AveragePinsLeftStatistic
 import ca.josephroque.bowlingcompanion.statistics.impl.general.BowlerNameStatistic
@@ -28,9 +28,9 @@ import ca.josephroque.bowlingcompanion.teams.Team
  * A single unit which provides a list of statistics to be displayed.
  */
 class StatisticsUnit(
-    private val levelOfDetail: LevelOfDetail,
-    val name: String,
-    val statistics: List<Statistic>
+        private val levelOfDetail: LevelOfDetail,
+        val name: String,
+        val statistics: List<Statistic>
 ) : KParcelable {
 
     /** Generify [statistics]. */

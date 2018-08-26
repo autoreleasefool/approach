@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.statistics
+package ca.josephroque.bowlingcompanion.statistics.list
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
 import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
-import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsUnit
+import ca.josephroque.bowlingcompanion.statistics.unit.StatisticsUnit
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async

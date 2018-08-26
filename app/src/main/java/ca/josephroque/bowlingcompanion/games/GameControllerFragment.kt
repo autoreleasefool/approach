@@ -14,7 +14,7 @@ import ca.josephroque.bowlingcompanion.common.adapters.BaseFragmentPagerAdapter
 import ca.josephroque.bowlingcompanion.common.fragments.TabbedFragment
 import ca.josephroque.bowlingcompanion.common.interfaces.INavigationDrawerHandler
 import ca.josephroque.bowlingcompanion.series.Series
-import ca.josephroque.bowlingcompanion.statistics.provider.IStatisticsContext
+import ca.josephroque.bowlingcompanion.statistics.interfaces.IStatisticsContext
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProvider
 import ca.josephroque.bowlingcompanion.utils.Analytics
 import kotlinx.android.synthetic.main.fragment_common_tabs.tabbed_fragment_pager as fragmentPager

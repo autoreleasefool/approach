@@ -11,6 +11,7 @@ import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
 import ca.josephroque.bowlingcompanion.games.Game
 import ca.josephroque.bowlingcompanion.leagues.League
 import ca.josephroque.bowlingcompanion.series.Series
+import ca.josephroque.bowlingcompanion.statistics.unit.StatisticsUnit
 import ca.josephroque.bowlingcompanion.teams.Team
 
 /**
