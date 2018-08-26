@@ -53,6 +53,258 @@ class Analytics private constructor() {
         private val dangerousInstance: Analytics by lazy {
             HOLDER.INSTANCE
         }
+
+        // MARK: Team events
+
+        fun trackSelectTeam() {
+            if (instance.disableTracking) return
+            instance.mixpanel.track("Teams - Selected")
+        }
+
+        fun trackCreateTeam(numberOfMembers: Int) {
+            if (instance.disableTracking) return
+            val properties: MutableMap<String, Any> = hashMapOf("Members" to numberOfMembers.toString())
+            instance.mixpanel.trackMap("Teams - Create", properties)
+        }
+
+        fun trackDeleteTeam() {
+            if (instance.disableTracking) return
+            instance.mixpanel.track("Teams - Deleted")
+        }
+
+        fun trackEditTeam() {
+            if (instance.disableTracking) return
+            instance.mixpanel.track("Teams - Edited")
+        }
+
+        fun trackRorderTeamMembers() {
+            if (instance.disableTracking) return
+            instance.mixpanel.track("Teams - Reorder")
+        }
+
+        // MARK: Bowler events
+
+        fun trackSelectBowler() {
+            if (instance.disableTracking) return
+            instance.mixpanel.track("Bowlers - Select")
+        }
+
+        fun trackCreateBowler() {
+            if (instance.disableTracking) return
+            instance.mixpanel.track("Bowlers - Create")
+        }
+
+        fun trackDeleteBowler() {
+            if (instance.disableTracking) return
+            instance.mixpanel.track("Bowlers - Delete")
+        }
+
+        fun trackEditBowler() {
+            if (instance.disableTracking) return
+            instance.mixpanel.track("Bowlers - Edit")
+        }
+
+        fun trackSortedBowlers(order: Bowler.Companion.Sort) {
+            if (instance.disableTracking) return
+            val properties: MutableMap<String, Any> = hashMapOf("Sort" to order.name)
+            instance.mixpanel.trackMap("Bowlers - Sorted", properties)
+        }
+
+        // MARK: League events
+
+        fun trackSelectLeague(isPractice: Boolean, isEvent: Boolean) {
+            if (instance.disableTracking) return
+            val properties: MutableMap<String, Any> = hashMapOf(
+                    "Practice" to isPractice.toString(),
+                    "Event" to isEvent.toString()
+            )
+            instance.mixpanel.trackMap("Leagues - Select", properties)
+        }
+
+        fun trackCreateLeague(isEvent: Boolean, numberOfGames: Int, hasAdditionalInfo: Boolean) {
+            if (instance.disableTracking) return
+            val properties: MutableMap<String, Any> = hashMapOf(
+                    "Event" to isEvent.toString(),
+                    "Games" to numberOfGames.toString(),
+                    "Additional Info" to hasAdditionalInfo.toString()
+            )
+            instance.mixpanel.trackMap("Leagues - Create", properties)
+        }
+
+        fun trackDeleteLeague() {
+            if (instance.disableTracking) return
+            instance.mixpanel.track("Leagues - Delete")
+        }
+
+        fun trackEditLeague() {
+            if (instance.disableTracking) return
+            instance.mixpanel.track("Leagues - Edit")
+        }
+
+        fun trackSortedLeagues(order: League.Companion.Sort) {
+            if (instance.disableTracking) return
+            val properties: MutableMap<String, Any> = hashMapOf("Sort" to order.name)
+            instance.mixpanel.trackMap("Leagues - Sorted", properties)
+        }
+
+        // MARK: Series events
+
+        fun trackSelectSeries() {
+            if (instance.disableTracking) return
+            instance.mixpanel.track("Series - Select")
+        }
+
+        fun trackCreateSeries() {
+            if (instance.disableTracking) return
+            instance.mixpanel.track("Series - Create")
+        }
+
+        fun trackDeleteSeries() {
+            if (instance.disableTracking) return
+            instance.mixpanel.track("Series - Delete")
+        }
+
+        fun trackEditSeries() {
+            if (instance.disableTracking) return
+            instance.mixpanel.track("Series - Edit")
+        }
+
+        fun trackToggledSeriesView(view: Series.Companion.View) {
+            if (instance.disableTracking) return
+            val properties: MutableMap<String, Any> = hashMapOf("View" to view.name)
+            instance.mixpanel.trackMap("Series - Toggled View", properties)
+        }
+
+        // MARK: Game events
+
+        fun trackChangedGame() {
+            if (instance.disableTracking) return
+            instance.mixpanel.track("Game - Select")
+        }
+
+        fun trackSetGameManualScore() {
+            if (instance.disableTracking) return
+            instance.mixpanel.track("Games - Manual Score")
+        }
+
+        fun trackLockGame() {
+            if (instance.disableTracking) return
+            instance.mixpanel.track("Games - Locked")
+        }
+
+        fun trackGameViewedPossibleScore(possibleScore: Int, frame: Int) {
+            if (instance.disableTracking) return
+            val properties: MutableMap<String, Any> = hashMapOf(
+                    "Score" to possibleScore.toString(),
+                    "Frame" to frame.toString()
+            )
+            instance.mixpanel.trackMap("Games - View Possible Score", properties)
+        }
+
+        fun trackResetGame() {
+            if (instance.disableTracking) return
+            instance.mixpanel.track("Games - Reset")
+        }
+
+        // MARK: Match Play events
+
+        fun trackRecordMatchPlay() {
+            if (instance.disableTracking) return
+            instance.mixpanel.track("Match Play - Record")
+        }
+
+        // MARK: Statistics events
+
+        fun trackViewStatisticsList() {
+            if (instance.disableTracking) return
+            instance.mixpanel.track("Statistics - View List")
+        }
+
+        fun beginTrackingStatisticsLoaded() {
+            if (instance.disableTracking) return
+            instance.mixpanel.timeEvent("Statistics - Load")
+        }
+
+        fun trackStatisticsLoaded() {
+            if (instance.disableTracking) return
+            instance.mixpanel.track("Statistics - Load")
+        }
+
+        fun trackViewStatisticsGraph(statisticName: String) {
+            if (instance.disableTracking) return
+            val properties: MutableMap<String, Any> = hashMapOf("Statistic" to statisticName)
+            instance.mixpanel.trackMap("Statistics - View Graph", properties)
+        }
+
+        // MARK: Settings
+
+        fun trackViewSettings() {
+            if (instance.disableTracking) return
+            instance.mixpanel.track("Settings - View")
+        }
+
+        fun trackEnableAutoAdvance() {
+            if (instance.disableTracking) return
+            instance.mixpanel.track("Auto Advance - Enable")
+        }
+
+        fun trackDisableAutoAdvance() {
+            if (instance.disableTracking) return
+            instance.mixpanel.track("Auto Advance - Disable")
+        }
+
+        fun trackEnableAutoLock() {
+            if (instance.disableTracking) return
+            instance.mixpanel.track("Auto Lock - Enable")
+        }
+
+        fun trackDisableAutoLock() {
+            if (instance.disableTracking) return
+            instance.mixpanel.track("Auto Lock - Disable")
+        }
+
+        fun trackRate() {
+            if (instance.disableTracking) return
+            instance.mixpanel.track("Settings - Rate")
+        }
+
+        fun trackReportBug() {
+            if (instance.disableTracking) return
+            instance.mixpanel.track("Settings - Report Bug")
+        }
+
+        fun trackSendFeedback() {
+            if (instance.disableTracking) return
+            instance.mixpanel.track("Settings - Send Feedback")
+        }
+
+        fun trackViewFacebook() {
+            if (instance.disableTracking) return
+            instance.mixpanel.track("Settings - View Facebook")
+        }
+
+        fun trackViewWebsite() {
+            if (instance.disableTracking) return
+            instance.mixpanel.track("Settings - View Website")
+        }
+
+        fun trackViewSource() {
+            if (instance.disableTracking) return
+            instance.mixpanel.track("Settings - View Source")
+        }
+
+        fun trackViewAttributions() {
+            if (instance.disableTracking) return
+            instance.mixpanel.track("Settings - View Attributions")
+        }
+
+        /**
+         * Flush events which have not been recorded yet to the server.
+         */
+        fun flush() {
+            if (instance.disableTracking) return
+            instance.mixpanel.flush()
+        }
     }
 
     /** Indicates if the analytics instance has been initialized yet or not. */
@@ -63,256 +315,4 @@ class Analytics private constructor() {
 
     /** Instance of Mixpanel to record events. */
     private lateinit var mixpanel: MixpanelAPI
-
-    // MARK: Team events
-
-    fun trackSelectTeam() {
-        if (disableTracking) return
-        mixpanel.track("Teams - Selected")
-    }
-
-    fun trackCreateTeam(numberOfMembers: Int) {
-        if (disableTracking) return
-        val properties: MutableMap<String, Any> = hashMapOf("Members" to numberOfMembers.toString())
-        mixpanel.trackMap("Teams - Create", properties)
-    }
-
-    fun trackDeleteTeam() {
-        if (disableTracking) return
-        mixpanel.track("Teams - Deleted")
-    }
-
-    fun trackEditTeam() {
-        if (disableTracking) return
-        mixpanel.track("Teams - Edited")
-    }
-
-    fun trackRorderTeamMembers() {
-        if (disableTracking) return
-        mixpanel.track("Teams - Reorder")
-    }
-
-    // MARK: Bowler events
-
-    fun trackSelectBowler() {
-        if (disableTracking) return
-        mixpanel.track("Bowlers - Select")
-    }
-
-    fun trackCreateBowler() {
-        if (disableTracking) return
-        mixpanel.track("Bowlers - Create")
-    }
-
-    fun trackDeleteBowler() {
-        if (disableTracking) return
-        mixpanel.track("Bowlers - Delete")
-    }
-
-    fun trackEditBowler() {
-        if (disableTracking) return
-        mixpanel.track("Bowlers - Edit")
-    }
-
-    fun trackSortedBowlers(order: Bowler.Companion.Sort) {
-        if (disableTracking) return
-        val properties: MutableMap<String, Any> = hashMapOf("Sort" to order.name)
-        mixpanel.trackMap("Bowlers - Sorted", properties)
-    }
-
-    // MARK: League events
-
-    fun trackSelectLeague(isPractice: Boolean, isEvent: Boolean) {
-        if (disableTracking) return
-        val properties: MutableMap<String, Any> = hashMapOf(
-            "Practice" to isPractice.toString(),
-            "Event" to isEvent.toString()
-        )
-        mixpanel.trackMap("Leagues - Select", properties)
-    }
-
-    fun trackCreateLeague(isEvent: Boolean, numberOfGames: Int, hasAdditionalInfo: Boolean) {
-        if (disableTracking) return
-        val properties: MutableMap<String, Any> = hashMapOf(
-            "Event" to isEvent.toString(),
-            "Games" to numberOfGames.toString(),
-            "Additional Info" to hasAdditionalInfo.toString()
-        )
-        mixpanel.trackMap("Leagues - Create", properties)
-    }
-
-    fun trackDeleteLeague() {
-        if (disableTracking) return
-        mixpanel.track("Leagues - Delete")
-    }
-
-    fun trackEditLeague() {
-        if (disableTracking) return
-        mixpanel.track("Leagues - Edit")
-    }
-
-    fun trackSortedLeagues(order: League.Companion.Sort) {
-        if (disableTracking) return
-        val properties: MutableMap<String, Any> = hashMapOf("Sort" to order.name)
-        mixpanel.trackMap("Leagues - Sorted", properties)
-    }
-
-    // MARK: Series events
-
-    fun trackSelectSeries() {
-        if (disableTracking) return
-        mixpanel.track("Series - Select")
-    }
-
-    fun trackCreateSeries() {
-        if (disableTracking) return
-        mixpanel.track("Series - Create")
-    }
-
-    fun trackDeleteSeries() {
-        if (disableTracking) return
-        mixpanel.track("Series - Delete")
-    }
-
-    fun trackEditSeries() {
-        if (disableTracking) return
-        mixpanel.track("Series - Edit")
-    }
-
-    fun trackToggledSeriesView(view: Series.Companion.View) {
-        if (disableTracking) return
-        val properties: MutableMap<String, Any> = hashMapOf("View" to view.name)
-        mixpanel.trackMap("Series - Toggled View", properties)
-    }
-
-    // MARK: Game events
-
-    fun trackChangedGame() {
-        if (disableTracking) return
-        mixpanel.track("Game - Select")
-    }
-
-    fun trackSetGameManualScore() {
-        if (disableTracking) return
-        mixpanel.track("Games - Manual Score")
-    }
-
-    fun trackLockGame() {
-        if (disableTracking) return
-        mixpanel.track("Games - Locked")
-    }
-
-    fun trackGameViewedPossibleScore(possibleScore: Int, frame: Int) {
-        if (disableTracking) return
-        val properties: MutableMap<String, Any> = hashMapOf(
-                "Score" to possibleScore.toString(),
-                "Frame" to frame.toString()
-        )
-        mixpanel.trackMap("Games - View Possible Score", properties)
-    }
-
-    fun trackResetGame() {
-        if (disableTracking) return
-        mixpanel.track("Games - Reset")
-    }
-
-    // MARK: Match Play events
-
-    fun trackRecordMatchPlay() {
-        if (disableTracking) return
-        mixpanel.track("Match Play - Record")
-    }
-
-    // MARK: Statistics events
-
-    fun trackViewStatisticsList() {
-        if (disableTracking) return
-        mixpanel.track("Statistics - View List")
-    }
-
-    fun beginTrackingStatisticsLoaded() {
-        if (disableTracking) return
-        mixpanel.timeEvent("Statistics - Load")
-    }
-
-    fun trackStatisticsLoaded() {
-        if (disableTracking) return
-        mixpanel.track("Statistics - Load")
-    }
-
-    fun trackViewStatisticsGraph(statisticName: String) {
-        if (disableTracking) return
-        val properties: MutableMap<String, Any> = hashMapOf("Statistic" to statisticName)
-        mixpanel.trackMap("Statistics - View Graph", properties)
-    }
-
-    // MARK: Settings
-
-    fun trackViewSettings() {
-        if (disableTracking) return
-        mixpanel.track("Settings - View")
-    }
-
-    fun trackEnableAutoAdvance() {
-        if (disableTracking) return
-        mixpanel.track("Auto Advance - Enable")
-    }
-
-    fun trackDisableAutoAdvance() {
-        if (disableTracking) return
-        mixpanel.track("Auto Advance - Disable")
-    }
-
-    fun trackEnableAutoLock() {
-        if (disableTracking) return
-        mixpanel.track("Auto Lock - Enable")
-    }
-
-    fun trackDisableAutoLock() {
-        if (disableTracking) return
-        mixpanel.track("Auto Lock - Disable")
-    }
-
-    fun trackRate() {
-        if (disableTracking) return
-        mixpanel.track("Settings - Rate")
-    }
-
-    fun trackReportBug() {
-        if (disableTracking) return
-        mixpanel.track("Settings - Report Bug")
-    }
-
-    fun trackSendFeedback() {
-        if (disableTracking) return
-        mixpanel.track("Settings - Send Feedback")
-    }
-
-    fun trackViewFacebook() {
-        if (disableTracking) return
-        mixpanel.track("Settings - View Facebook")
-    }
-
-    fun trackViewWebsite() {
-        if (disableTracking) return
-        mixpanel.track("Settings - View Website")
-    }
-
-    fun trackViewSource() {
-        if (disableTracking) return
-        mixpanel.track("Settings - View Source")
-    }
-
-    fun trackViewAttributions() {
-        if (disableTracking) return
-        mixpanel.track("Settings - View Attributions")
-    }
-
-    /**
-     * Flush events which have not been recorded yet to the server.
-     */
-    fun flush() {
-        if (disableTracking) return
-        mixpanel.flush()
-    }
 }
