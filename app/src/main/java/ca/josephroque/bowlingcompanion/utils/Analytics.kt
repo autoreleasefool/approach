@@ -297,6 +297,11 @@ class Analytics private constructor() {
             instance.mixpanel.track("Settings - View Attributions")
         }
 
+        fun trackViewPrivacyPolicy() {
+            if (instance.disableTracking) return
+            instance.mixpanel.track("Settings - View Privacy Policy")
+        }
+
         /**
          * Flush events which have not been recorded yet to the server.
          */
