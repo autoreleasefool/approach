@@ -38,7 +38,7 @@ class Analytics private constructor() {
         @Suppress("unused")
         fun disableTracking() {
             if (BuildConfig.DEBUG) {
-                assert(!instance.initialized) { "You must disable tracking before initializing analytics. "}
+                assert(!instance.initialized) { "You must disable tracking before initializing analytics." }
                 dangerousInstance.disableTracking = true
             }
         }
@@ -73,7 +73,8 @@ class Analytics private constructor() {
 
     fun trackCreateTeam(numberOfMembers: Int) {
         if (disableTracking) return
-        mixpanel.track("Teams - Create")
+        val properties: MutableMap<String, Any> = hashMapOf("Members" to numberOfMembers.toString())
+        mixpanel.trackMap("Teams - Create", properties)
     }
 
     fun trackDeleteTeam() {
@@ -115,19 +116,29 @@ class Analytics private constructor() {
 
     fun trackSortedBowlers(order: Bowler.Companion.Sort) {
         if (disableTracking) return
-        mixpanel.track("Bowlers - Sorted")
+        val properties: MutableMap<String, Any> = hashMapOf("Sort" to order.name)
+        mixpanel.trackMap("Bowlers - Sorted", properties)
     }
 
     // MARK: League events
 
     fun trackSelectLeague(isPractice: Boolean, isEvent: Boolean) {
         if (disableTracking) return
-        mixpanel.track("Leagues - Select")
+        val properties: MutableMap<String, Any> = hashMapOf(
+            "Practice" to isPractice.toString(),
+            "Event" to isEvent.toString()
+        )
+        mixpanel.trackMap("Leagues - Select", properties)
     }
 
     fun trackCreateLeague(isEvent: Boolean, numberOfGames: Int, hasAdditionalInfo: Boolean) {
         if (disableTracking) return
-        mixpanel.track("Leagues - Create")
+        val properties: MutableMap<String, Any> = hashMapOf(
+            "Event" to isEvent.toString(),
+            "Games" to numberOfGames.toString(),
+            "Additional Info" to hasAdditionalInfo.toString()
+        )
+        mixpanel.trackMap("Leagues - Create", properties)
     }
 
     fun trackDeleteLeague() {
@@ -142,7 +153,8 @@ class Analytics private constructor() {
 
     fun trackSortedLeagues(order: League.Companion.Sort) {
         if (disableTracking) return
-        mixpanel.track("Leagues - Sorted")
+        val properties: MutableMap<String, Any> = hashMapOf("Sort" to order.name)
+        mixpanel.trackMap("Leagues - Sorted", properties)
     }
 
     // MARK: Series events
@@ -169,7 +181,8 @@ class Analytics private constructor() {
 
     fun trackToggledSeriesView(view: Series.Companion.View) {
         if (disableTracking) return
-        mixpanel.track("Series - Toggled View")
+        val properties: MutableMap<String, Any> = hashMapOf("View" to view.name)
+        mixpanel.trackMap("Series - Toggled View", properties)
     }
 
     // MARK: Game events
@@ -191,7 +204,11 @@ class Analytics private constructor() {
 
     fun trackGameViewedPossibleScore(possibleScore: Int, frame: Int) {
         if (disableTracking) return
-        mixpanel.track("Games - View Possible Score")
+        val properties: MutableMap<String, Any> = hashMapOf(
+                "Score" to possibleScore.toString(),
+                "Frame" to frame.toString()
+        )
+        mixpanel.trackMap("Games - View Possible Score", properties)
     }
 
     fun trackResetGame() {
@@ -225,7 +242,8 @@ class Analytics private constructor() {
 
     fun trackViewStatisticsGraph(statisticName: String) {
         if (disableTracking) return
-        mixpanel.track("Statistics - View Graph")
+        val properties: MutableMap<String, Any> = hashMapOf("Statistic" to statisticName)
+        mixpanel.trackMap("Statistics - View Graph", properties)
     }
 
     // MARK: Settings
