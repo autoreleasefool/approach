@@ -21,7 +21,7 @@ class Analytics private constructor() {
     companion object {
         /** Singleton instance */
         private val instance: Analytics by lazy {
-            assert(instance.initialized) { "The Mixpanel instance was accessed before being initialized." }
+            assert(HOLDER.INSTANCE.initialized) { "The Mixpanel instance was accessed before being initialized." }
             HOLDER.INSTANCE
         }
 
