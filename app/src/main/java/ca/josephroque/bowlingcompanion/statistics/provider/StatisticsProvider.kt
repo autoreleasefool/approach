@@ -126,15 +126,15 @@ sealed class StatisticsProvider : IIdentifiable, KParcelable {
     val units: List<StatisticsUnit> by lazy {
         return@lazy when (this) {
             is TeamStatistics -> {
-                listOf(
-                        TeamUnit(team)
-                // TODO: add the bowlers here
-                )
+                val units: MutableList<StatisticsUnit> = ArrayList(team.members.size + 1)
+                units.add(TeamUnit(team.id, team.name))
+                units.addAll(team.members.map { BowlerUnit(it.bowlerId, it.bowlerName) })
+                units
             }
-            is BowlerStatistics -> listOf(BowlerUnit(bowler))
-            is LeagueStatistics -> listOf(LeagueUnit(league))
-            is SeriesStatistics -> listOf(SeriesUnit(series))
-            is GameStatistics -> listOf(GameUnit(game))
+            is BowlerStatistics -> listOf(BowlerUnit(bowler.id, bowler.name))
+            is LeagueStatistics -> listOf(LeagueUnit(league.id, league.name))
+            is SeriesStatistics -> listOf(SeriesUnit(series.id, series.date))
+            is GameStatistics -> listOf(GameUnit(game.series.id, game.id, game.ordinal))
         }
     }
 
