@@ -41,12 +41,4 @@ enum class StatisticsCategory : StatisticListItem {
 
     /** @Override */
     override val id: Long = this.ordinal.toLong()
-
-    /**
-     * Filter a list of [Statistic] to only those which belong to this category.
-     *
-     * @param statistics the list of statistics to filter
-     * @return a filtered list of [Statistic]
-     */
-    fun filterStatistics(statistics: List<Statistic>): List<Statistic> = statistics.filter { this == it.category }
 }

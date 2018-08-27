@@ -151,7 +151,7 @@ interface Statistic : StatisticListItem, KParcelable {
          *
          * @return a list with a new instance of each [Statistic]
          */
-        fun getFreshStatistics(): List<Statistic> = listOf(
+        fun getFreshStatistics(): MutableList<Statistic> = mutableListOf(
                 // General
                 TeamNameStatistic(),
                 BowlerNameStatistic(),

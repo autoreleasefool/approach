@@ -39,18 +39,62 @@ abstract class StatisticsUnit(initialStatistics: MutableList<StatisticListItem>?
     protected var cachedStatistics: MutableList<StatisticListItem>? = initialStatistics
 
     /**
+     * Get a list of [StatSeries] for building the statistics.
+     *
+     * @param context to get access to the database
+     * @return a list of [StatSeries]
+     */
+    protected abstract fun getSeriesForStatistics(context: Context): Deferred<List<StatSeries>>
+
+    /**
      * Build the unit's statistics. This should return a new list each time it is called.
      * Caching for this method exists in the [StatisticsUnit] abstract class.
      *
      * @param context to get access to the database
      * @return a list of [Statistic]s
      */
-    protected abstract fun getSeriesForStatistics(context: Context): Deferred<List<StatSeries>>
-
     private fun buildStatistics(context: Context): Deferred<MutableList<StatisticListItem>> {
         return async(CommonPool) {
-            val series = getSeriesForStatistics(context)
-            return@async emptyList<StatisticListItem>().toMutableList()
+            val seriesList = getSeriesForStatistics(context).await()
+            val statistics = Statistic.getFreshStatistics()
+
+            // Filter out categories which the unit does not accept
+            for (category in excludedCategories) {
+                statistics.removeAll { it.category == category }
+            }
+
+            // Filter out statistics which the unit does not accept
+            for (statisticId in excludedStatisticIds) {
+                statistics.removeAll { it.titleId == statisticId }
+            }
+
+            // Parse the remaining statistics and update as per the unit/series/game/frame
+            for (series in seriesList) {
+                for (statistic in statistics) {
+                    // Only allow the [StatisticsUnit] to modify each stat once
+                    if (series == seriesList.first()) {
+                        if (statistic.isModifiedBy(this@StatisticsUnit)) {
+                            statistic.modify(this@StatisticsUnit)
+                        }
+                    }
+
+                    if (statistic.isModifiedBy(series)) {
+                        statistic.modify(series)
+                    }
+
+                    for (game in series.games) {
+                        if (statistic.isModifiedBy(game)) {
+                            statistic.modify(game)
+                        }
+
+                        for (frame in game.frames) {
+                            statistic.modify(frame)
+                        }
+                    }
+                }
+            }
+
+            return@async statistics.toMutableList<StatisticListItem>()
         }
     }
 
