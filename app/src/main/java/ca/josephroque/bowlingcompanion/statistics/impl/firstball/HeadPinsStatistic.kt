@@ -12,7 +12,7 @@ import ca.josephroque.bowlingcompanion.games.lane.isHeadPin
  *
  * Percentage of shots which are head pins.
  */
-class HeadPinsStatistic(numerator: Int, denominator: Int) : FirstBallStatistic(numerator, denominator) {
+class HeadPinsStatistic(numerator: Int = 0, denominator: Int = 0) : FirstBallStatistic(numerator, denominator) {
 
     // MARK: Modifiers
 

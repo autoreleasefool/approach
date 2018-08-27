@@ -13,7 +13,7 @@ import ca.josephroque.bowlingcompanion.statistics.immutable.StatGame
  *
  * Total number of games.
  */
-class NumberOfGamesStatistic(override var value: Int) : IntegerStatistic {
+class NumberOfGamesStatistic(override var value: Int = 0) : IntegerStatistic {
 
     // MARK: Modifiers
 

@@ -13,7 +13,7 @@ import ca.josephroque.bowlingcompanion.games.lane.isRight
  *
  * Percentage of possible rights which the user successfully spared.
  */
-class RightsSparedStatistic(numerator: Int, denominator: Int) : SecondBallStatistic(numerator, denominator) {
+class RightsSparedStatistic(numerator: Int = 0, denominator: Int = 0) : SecondBallStatistic(numerator, denominator) {
 
     // MARK: Modifiers
 

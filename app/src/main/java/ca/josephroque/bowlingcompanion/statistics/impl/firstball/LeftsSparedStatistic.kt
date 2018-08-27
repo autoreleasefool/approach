@@ -13,7 +13,7 @@ import ca.josephroque.bowlingcompanion.games.lane.isLeft
  *
  * Percentage of possible lefts which the user successfully spared.
  */
-class LeftsSparedStatistic(numerator: Int, denominator: Int) : SecondBallStatistic(numerator, denominator) {
+class LeftsSparedStatistic(numerator: Int = 0, denominator: Int = 0) : SecondBallStatistic(numerator, denominator) {
 
     // MARK: Modifiers
 

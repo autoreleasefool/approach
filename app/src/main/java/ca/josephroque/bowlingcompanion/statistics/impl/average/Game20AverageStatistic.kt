@@ -10,7 +10,7 @@ import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
  *
  * Average score in the 20th game of a series.
  */
-class Game20AverageStatistic(total: Int, divisor: Int) : PerGameAverageStatistic(total, divisor) {
+class Game20AverageStatistic(total: Int = 0, divisor: Int = 0) : PerGameAverageStatistic(total, divisor) {
 
     // MARK: Overrides
 

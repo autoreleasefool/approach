@@ -13,7 +13,7 @@ import ca.josephroque.bowlingcompanion.statistics.immutable.StatFrame
  *
  * Total number of fouls.
  */
-class FoulsStatistic(override var value: Int) : IntegerStatistic {
+class FoulsStatistic(override var value: Int = 0) : IntegerStatistic {
 
     // MARK: Modifiers
 

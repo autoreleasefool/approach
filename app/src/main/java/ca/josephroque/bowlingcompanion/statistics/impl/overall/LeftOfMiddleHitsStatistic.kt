@@ -13,7 +13,7 @@ import ca.josephroque.bowlingcompanion.statistics.impl.firstball.FirstBallStatis
  *
  * Percentage of shots which hit left of the middle pin.
  */
-class LeftOfMiddleHitsStatistic(numerator: Int, denominator: Int) : FirstBallStatistic(numerator, denominator) {
+class LeftOfMiddleHitsStatistic(numerator: Int = 0, denominator: Int = 0) : FirstBallStatistic(numerator, denominator) {
 
     // MARK: Modifiers
 

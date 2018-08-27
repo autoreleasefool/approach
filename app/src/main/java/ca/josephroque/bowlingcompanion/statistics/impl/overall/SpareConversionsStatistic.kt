@@ -16,7 +16,7 @@ import ca.josephroque.bowlingcompanion.statistics.impl.firstball.SecondBallStati
  *
  * Percentage of possible spares which the user successfully spared.
  */
-class SpareConversionsStatistic(numerator: Int, denominator: Int) : SecondBallStatistic(numerator, denominator) {
+class SpareConversionsStatistic(numerator: Int = 0, denominator: Int = 0) : SecondBallStatistic(numerator, denominator) {
 
     // MARK: Modifiers
 

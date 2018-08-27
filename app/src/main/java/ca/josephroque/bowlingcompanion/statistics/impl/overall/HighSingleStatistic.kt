@@ -13,7 +13,7 @@ import ca.josephroque.bowlingcompanion.statistics.immutable.StatGame
  *
  * Highest score across games.
  */
-class HighSingleStatistic(override var value: Int) : IntegerStatistic {
+class HighSingleStatistic(override var value: Int = 0) : IntegerStatistic {
 
     // MARK: Modifiers
 

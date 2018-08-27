@@ -13,7 +13,7 @@ import ca.josephroque.bowlingcompanion.statistics.immutable.StatGame
  *
  * Total pinfall.
  */
-class TotalPinfallStatistic(override var value: Int) : IntegerStatistic {
+class TotalPinfallStatistic(override var value: Int = 0) : IntegerStatistic {
 
     // MARK: Modifiers
 

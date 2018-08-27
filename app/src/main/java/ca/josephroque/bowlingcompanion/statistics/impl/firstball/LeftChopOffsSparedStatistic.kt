@@ -13,7 +13,7 @@ import ca.josephroque.bowlingcompanion.games.lane.isLeftChopOff
  *
  * Percentage of possible left chop offs which the user successfully spared.
  */
-class LeftChopOffsSparedStatistic(numerator: Int, denominator: Int) : SecondBallStatistic(numerator, denominator) {
+class LeftChopOffsSparedStatistic(numerator: Int = 0, denominator: Int = 0) : SecondBallStatistic(numerator, denominator) {
 
     // MARK: Modifiers
 

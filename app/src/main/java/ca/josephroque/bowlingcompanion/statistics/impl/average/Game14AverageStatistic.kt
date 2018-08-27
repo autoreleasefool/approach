@@ -10,7 +10,7 @@ import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
  *
  * Average score in the 14th game of a series.
  */
-class Game14AverageStatistic(total: Int, divisor: Int) : PerGameAverageStatistic(total, divisor) {
+class Game14AverageStatistic(total: Int = 0, divisor: Int = 0) : PerGameAverageStatistic(total, divisor) {
 
     // MARK: Overrides
 

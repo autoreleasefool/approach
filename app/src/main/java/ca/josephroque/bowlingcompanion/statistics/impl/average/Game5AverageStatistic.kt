@@ -10,7 +10,7 @@ import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
  *
  * Average score in the 5th game of a series.
  */
-class Game5AverageStatistic(total: Int, divisor: Int) : PerGameAverageStatistic(total, divisor) {
+class Game5AverageStatistic(total: Int = 0, divisor: Int = 0) : PerGameAverageStatistic(total, divisor) {
 
     // MARK: Overrides
 

@@ -12,7 +12,7 @@ import ca.josephroque.bowlingcompanion.games.lane.isSplit
  *
  * Percentage of shots which are splits.
  */
-class SplitsStatistic(numerator: Int, denominator: Int) : FirstBallStatistic(numerator, denominator) {
+class SplitsStatistic(numerator: Int = 0, denominator: Int = 0) : FirstBallStatistic(numerator, denominator) {
 
     // MARK: Modifiers
 

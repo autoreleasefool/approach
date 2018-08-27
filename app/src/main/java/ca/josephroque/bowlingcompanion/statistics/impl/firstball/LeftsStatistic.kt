@@ -12,7 +12,7 @@ import ca.josephroque.bowlingcompanion.games.lane.isLeft
  *
  * Percentage of shots which are lefts.
  */
-class LeftsStatistic(numerator: Int, denominator: Int) : FirstBallStatistic(numerator, denominator) {
+class LeftsStatistic(numerator: Int = 0, denominator: Int = 0) : FirstBallStatistic(numerator, denominator) {
 
     // MARK: Modifiers
 

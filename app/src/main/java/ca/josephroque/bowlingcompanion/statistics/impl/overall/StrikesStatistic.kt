@@ -13,7 +13,7 @@ import ca.josephroque.bowlingcompanion.statistics.impl.firstball.FirstBallStatis
  *
  * Percentage of shots which are strikes.
  */
-class StrikesStatistic(numerator: Int, denominator: Int) : FirstBallStatistic(numerator, denominator) {
+class StrikesStatistic(numerator: Int = 0, denominator: Int = 0) : FirstBallStatistic(numerator, denominator) {
 
     // MARK: Modifiers
 

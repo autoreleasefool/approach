@@ -9,7 +9,7 @@ import ca.josephroque.bowlingcompanion.statistics.immutable.StatGame
  *
  * Average score in the nth game of a series.
  */
-abstract class PerGameAverageStatistic(override var total: Int, override var divisor: Int) : AverageStatistic {
+abstract class PerGameAverageStatistic(override var total: Int = 0, override var divisor: Int = 0) : AverageStatistic {
 
     // MARK: Modifiers
 

@@ -12,7 +12,7 @@ import ca.josephroque.bowlingcompanion.games.lane.isAce
  *
  * Percentage of shots which are aces.
  */
-class AcesStatistic(numerator: Int, denominator: Int) : FirstBallStatistic(numerator, denominator) {
+class AcesStatistic(numerator: Int = 0, denominator: Int = 0) : FirstBallStatistic(numerator, denominator) {
 
     // MARK: Modifiers
 

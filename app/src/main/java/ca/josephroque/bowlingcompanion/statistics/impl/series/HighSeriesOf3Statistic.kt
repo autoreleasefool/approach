@@ -10,7 +10,7 @@ import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
  *
  * Highest series of 3 games.
  */
-class HighSeriesOf3Statistic(value: Int) : HighSeriesStatistic(value) {
+class HighSeriesOf3Statistic(value: Int = 0) : HighSeriesStatistic(value) {
 
     // MARK: Overrides
 

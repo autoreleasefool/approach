@@ -13,7 +13,7 @@ import ca.josephroque.bowlingcompanion.games.lane.isRightSplit
  *
  * Percentage of possible right splits which the user successfully spared.
  */
-class RightSplitsSparedStatistic(numerator: Int, denominator: Int) : SecondBallStatistic(numerator, denominator) {
+class RightSplitsSparedStatistic(numerator: Int = 0, denominator: Int = 0) : SecondBallStatistic(numerator, denominator) {
 
     // MARK: Modifiers
 

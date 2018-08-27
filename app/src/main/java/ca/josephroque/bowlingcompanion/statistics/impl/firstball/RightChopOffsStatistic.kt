@@ -12,7 +12,7 @@ import ca.josephroque.bowlingcompanion.games.lane.isRightChopOff
  *
  * Percentage of shots which are right chop offs.
  */
-class RightChopOffsStatistic(numerator: Int, denominator: Int) : FirstBallStatistic(numerator, denominator) {
+class RightChopOffsStatistic(numerator: Int = 0, denominator: Int = 0) : FirstBallStatistic(numerator, denominator) {
 
     // MARK: Modifiers
 

@@ -13,7 +13,7 @@ import ca.josephroque.bowlingcompanion.statistics.impl.firstball.FirstBallStatis
  *
  * Percentage of shots which hit right of the middle pin.
  */
-class RightOfMiddleHitsStatistic(numerator: Int, denominator: Int) : FirstBallStatistic(numerator, denominator) {
+class RightOfMiddleHitsStatistic(numerator: Int = 0, denominator: Int = 0) : FirstBallStatistic(numerator, denominator) {
 
     // MARK: Modifiers
 

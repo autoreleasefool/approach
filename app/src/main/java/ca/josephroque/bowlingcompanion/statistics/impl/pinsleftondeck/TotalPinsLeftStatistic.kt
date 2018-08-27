@@ -13,7 +13,7 @@ import ca.josephroque.bowlingcompanion.statistics.immutable.StatFrame
  *
  * Totals pins left on deck across all games.
  */
-class TotalPinsLeftStatistic(override var value: Int) : IntegerStatistic {
+class TotalPinsLeftStatistic(override var value: Int = 0) : IntegerStatistic {
 
     // MARK: Modifiers
 

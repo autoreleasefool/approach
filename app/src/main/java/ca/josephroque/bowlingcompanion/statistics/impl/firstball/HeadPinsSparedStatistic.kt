@@ -13,7 +13,7 @@ import ca.josephroque.bowlingcompanion.games.lane.isHeadPin
  *
  * Percentage of possible head pins which the user successfully spared.
  */
-class HeadPinsSparedStatistic(numerator: Int, denominator: Int) : SecondBallStatistic(numerator, denominator) {
+class HeadPinsSparedStatistic(numerator: Int = 0, denominator: Int = 0) : SecondBallStatistic(numerator, denominator) {
 
     // MARK: Modifiers
 

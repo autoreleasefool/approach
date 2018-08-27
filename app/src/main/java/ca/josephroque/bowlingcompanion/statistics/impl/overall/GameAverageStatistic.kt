@@ -13,7 +13,7 @@ import ca.josephroque.bowlingcompanion.statistics.immutable.StatGame
  *
  * Average score across all games.
  */
-class GameAverageStatistic(override var total: Int, override var divisor: Int) : AverageStatistic {
+class GameAverageStatistic(override var total: Int = 0, override var divisor: Int = 0) : AverageStatistic {
 
     // MARK: Modifiers
 

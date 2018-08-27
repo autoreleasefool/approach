@@ -14,7 +14,7 @@ import ca.josephroque.bowlingcompanion.statistics.immutable.StatGame
  *
  * Average pins left on deck per game.
  */
-class AveragePinsLeftStatistic(override var total: Int, override var divisor: Int) : AverageStatistic {
+class AveragePinsLeftStatistic(override var total: Int = 0, override var divisor: Int = 0) : AverageStatistic {
 
     // MARK: Modifiers
 

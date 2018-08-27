@@ -9,7 +9,7 @@ import ca.josephroque.bowlingcompanion.statistics.immutable.StatSeries
  *
  * Parent class for statistics which are high series of different number of games.
  */
-abstract class HighSeriesStatistic(override var value: Int) : IntegerStatistic {
+abstract class HighSeriesStatistic(override var value: Int = 0) : IntegerStatistic {
 
     // MARK: Modifiers
 

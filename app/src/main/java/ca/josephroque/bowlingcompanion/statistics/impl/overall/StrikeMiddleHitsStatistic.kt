@@ -15,7 +15,7 @@ import ca.josephroque.bowlingcompanion.statistics.immutable.StatFrame
  *
  * Percentage of middle hits which were strikes
  */
-class StrikeMiddleHitsStatistic(override var numerator: Int, override var denominator: Int) : PercentageStatistic {
+class StrikeMiddleHitsStatistic(override var numerator: Int = 0, override var denominator: Int = 0) : PercentageStatistic {
 
     // MARK: Modifiers
 

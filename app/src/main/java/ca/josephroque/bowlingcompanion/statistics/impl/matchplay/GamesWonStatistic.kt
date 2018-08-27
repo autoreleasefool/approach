@@ -14,7 +14,7 @@ import ca.josephroque.bowlingcompanion.statistics.immutable.StatGame
  *
  * Percentage of match play games won.
  */
-class GamesWonStatistic(override var numerator: Int, override var denominator: Int) : PercentageStatistic {
+class GamesWonStatistic(override var numerator: Int = 0, override var denominator: Int = 0) : PercentageStatistic {
 
     // MARK: Modifiers
 

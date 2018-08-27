@@ -12,7 +12,7 @@ import ca.josephroque.bowlingcompanion.games.lane.isRight
  *
  * Percentage of shots which are rights.
  */
-class RightsStatistic(numerator: Int, denominator: Int) : FirstBallStatistic(numerator, denominator) {
+class RightsStatistic(numerator: Int = 0, denominator: Int = 0) : FirstBallStatistic(numerator, denominator) {
 
     // MARK: Modifiers
 
