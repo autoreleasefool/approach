@@ -349,7 +349,11 @@ interface PercentageStatistic : Statistic {
 
     /** @Override */
     override val displayValue: String
-        get() = "${formatter.format(numerator.div(denominator.toDouble()))}% [$numerator/$denominator]"
+        get() = if (denominator > 0) {
+            "${formatter.format(numerator.div(denominator.toDouble()))}% [$numerator/$denominator]"
+        } else {
+            "—"
+        }
 
     /** @Override */
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
@@ -370,7 +374,7 @@ interface AverageStatistic : Statistic {
 
     /** @Override */
     override val displayValue: String
-        get() = total.div(divisor).toString()
+        get() = if (divisor > 0) total.div(divisor).toString() else "—"
 
     /** @Override */
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
