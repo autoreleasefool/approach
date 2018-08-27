@@ -4,11 +4,11 @@ import android.os.Parcel
 import android.os.Parcelable
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
-import ca.josephroque.bowlingcompanion.games.Frame
 import ca.josephroque.bowlingcompanion.games.lane.arePinsCleared
 import ca.josephroque.bowlingcompanion.games.lane.isMiddleHit
 import ca.josephroque.bowlingcompanion.statistics.PercentageStatistic
 import ca.josephroque.bowlingcompanion.statistics.StatisticsCategory
+import ca.josephroque.bowlingcompanion.statistics.immutable.StatFrame
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -20,7 +20,7 @@ class StrikeMiddleHitsStatistic(override var numerator: Int, override var denomi
     // MARK: Modifiers
 
     /** @Override */
-    override fun modify(frame: Frame) {
+    override fun modify(frame: StatFrame) {
         if (frame.pinState[0].isMiddleHit) {
             denominator++
 
@@ -35,7 +35,7 @@ class StrikeMiddleHitsStatistic(override var numerator: Int, override var denomi
     override val titleId = Id
     override val id = Id.toLong()
     override val category = StatisticsCategory.Overall
-    override fun isModifiedBy(frame: Frame) = true
+    override fun isModifiedBy(frame: StatFrame) = true
 
     // MARK: Parcelable
 

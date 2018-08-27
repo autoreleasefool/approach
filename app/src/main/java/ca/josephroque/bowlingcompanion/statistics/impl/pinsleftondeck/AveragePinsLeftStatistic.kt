@@ -4,10 +4,10 @@ import android.os.Parcel
 import android.os.Parcelable
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
-import ca.josephroque.bowlingcompanion.games.Frame
-import ca.josephroque.bowlingcompanion.games.Game
 import ca.josephroque.bowlingcompanion.statistics.AverageStatistic
 import ca.josephroque.bowlingcompanion.statistics.StatisticsCategory
+import ca.josephroque.bowlingcompanion.statistics.immutable.StatFrame
+import ca.josephroque.bowlingcompanion.statistics.immutable.StatGame
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -19,12 +19,12 @@ class AveragePinsLeftStatistic(override var total: Int, override var divisor: In
     // MARK: Modifiers
 
     /** @Override */
-    override fun modify(frame: Frame) {
+    override fun modify(frame: StatFrame) {
         total += frame.pinsLeftOnDeck
     }
 
     /** @Override */
-    override fun modify(game: Game) {
+    override fun modify(game: StatGame) {
         divisor++
     }
 
@@ -33,8 +33,8 @@ class AveragePinsLeftStatistic(override var total: Int, override var divisor: In
     override val titleId = Id
     override val id = Id.toLong()
     override val category = StatisticsCategory.PinsOnDeck
-    override fun isModifiedBy(frame: Frame) = true
-    override fun isModifiedBy(game: Game) = true
+    override fun isModifiedBy(frame: StatFrame) = true
+    override fun isModifiedBy(game: StatGame) = true
 
     // MARK: Parcelable
 

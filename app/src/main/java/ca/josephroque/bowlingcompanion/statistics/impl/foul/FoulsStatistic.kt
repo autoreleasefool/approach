@@ -4,9 +4,9 @@ import android.os.Parcel
 import android.os.Parcelable
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
-import ca.josephroque.bowlingcompanion.games.Frame
 import ca.josephroque.bowlingcompanion.statistics.IntegerStatistic
 import ca.josephroque.bowlingcompanion.statistics.StatisticsCategory
+import ca.josephroque.bowlingcompanion.statistics.immutable.StatFrame
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -18,7 +18,7 @@ class FoulsStatistic(override var value: Int) : IntegerStatistic {
     // MARK: Modifiers
 
     /** @Override */
-    override fun modify(frame: Frame) {
+    override fun modify(frame: StatFrame) {
         value += frame.ballFouled.sumBy { if (it) 1 else 0 }
     }
 
@@ -27,7 +27,7 @@ class FoulsStatistic(override var value: Int) : IntegerStatistic {
     override val titleId = Id
     override val id = Id.toLong()
     override val category = StatisticsCategory.Fouls
-    override fun isModifiedBy(frame: Frame) = true
+    override fun isModifiedBy(frame: StatFrame) = true
 
     // MARK: Parcelable
 

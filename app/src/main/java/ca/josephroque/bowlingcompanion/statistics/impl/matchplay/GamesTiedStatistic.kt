@@ -4,10 +4,10 @@ import android.os.Parcel
 import android.os.Parcelable
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
-import ca.josephroque.bowlingcompanion.games.Game
 import ca.josephroque.bowlingcompanion.matchplay.MatchPlayResult
 import ca.josephroque.bowlingcompanion.statistics.PercentageStatistic
 import ca.josephroque.bowlingcompanion.statistics.StatisticsCategory
+import ca.josephroque.bowlingcompanion.statistics.immutable.StatGame
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -19,9 +19,9 @@ class GamesTiedStatistic(override var numerator: Int, override var denominator: 
     // MARK: Modifiers
 
     /** @Override */
-    override fun modify(game: Game) {
+    override fun modify(game: StatGame) {
         denominator++
-        if (game.matchPlay.result == MatchPlayResult.TIED) {
+        if (game.matchPlay == MatchPlayResult.TIED) {
             numerator++
         }
     }
@@ -31,7 +31,7 @@ class GamesTiedStatistic(override var numerator: Int, override var denominator: 
     override val titleId = Id
     override val id = Id.toLong()
     override val category = StatisticsCategory.MatchPlay
-    override fun isModifiedBy(game: Game) = true
+    override fun isModifiedBy(game: StatGame) = true
 
     // MARK: Parcelable
 

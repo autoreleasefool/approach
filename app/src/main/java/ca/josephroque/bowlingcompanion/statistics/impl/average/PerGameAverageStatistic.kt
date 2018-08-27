@@ -1,8 +1,8 @@
 package ca.josephroque.bowlingcompanion.statistics.impl.average
 
-import ca.josephroque.bowlingcompanion.games.Game
 import ca.josephroque.bowlingcompanion.statistics.AverageStatistic
 import ca.josephroque.bowlingcompanion.statistics.StatisticsCategory
+import ca.josephroque.bowlingcompanion.statistics.immutable.StatGame
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -14,7 +14,7 @@ abstract class PerGameAverageStatistic(override var total: Int, override var div
     // MARK: Modifiers
 
     /** @Override */
-    override fun modify(game: Game) {
+    override fun modify(game: StatGame) {
         if (game.ordinal == gameNumber) {
             divisor++
             total += game.score
@@ -24,7 +24,7 @@ abstract class PerGameAverageStatistic(override var total: Int, override var div
     // MARK: Overrides
 
     override val category = StatisticsCategory.Average
-    override fun isModifiedBy(game: Game) = true
+    override fun isModifiedBy(game: StatGame) = true
 
     // MARK: PerGameAverageStatistic
 

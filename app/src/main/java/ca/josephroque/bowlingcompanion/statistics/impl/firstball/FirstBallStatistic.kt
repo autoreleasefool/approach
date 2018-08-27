@@ -1,11 +1,11 @@
 package ca.josephroque.bowlingcompanion.statistics.impl.firstball
 
-import ca.josephroque.bowlingcompanion.games.Frame
 import ca.josephroque.bowlingcompanion.games.Game
 import ca.josephroque.bowlingcompanion.games.lane.Deck
 import ca.josephroque.bowlingcompanion.games.lane.arePinsCleared
 import ca.josephroque.bowlingcompanion.statistics.PercentageStatistic
 import ca.josephroque.bowlingcompanion.statistics.StatisticsCategory
+import ca.josephroque.bowlingcompanion.statistics.immutable.StatFrame
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -18,7 +18,7 @@ abstract class FirstBallStatistic(override var numerator: Int, override var deno
     // MARK: Modifiers
 
     /** @Override */
-    override fun modify(frame: Frame) {
+    override fun modify(frame: StatFrame) {
         // Every frame adds 1 possible hit
         denominator++
         numerator += if (isModifiedBy(frame.pinState[0])) 1 else 0
@@ -39,7 +39,7 @@ abstract class FirstBallStatistic(override var numerator: Int, override var deno
 
     // MARK: Overrides
 
-    override fun isModifiedBy(frame: Frame) = true
+    override fun isModifiedBy(frame: StatFrame) = true
     override val category = StatisticsCategory.FirstBall
 
     // MARK: FirstBallStatistic

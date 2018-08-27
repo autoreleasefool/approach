@@ -3,9 +3,9 @@ package ca.josephroque.bowlingcompanion.statistics
 import android.content.res.Resources
 import android.os.Parcel
 import ca.josephroque.bowlingcompanion.common.interfaces.KParcelable
-import ca.josephroque.bowlingcompanion.games.Frame
-import ca.josephroque.bowlingcompanion.games.Game
-import ca.josephroque.bowlingcompanion.series.Series
+import ca.josephroque.bowlingcompanion.statistics.immutable.StatFrame
+import ca.josephroque.bowlingcompanion.statistics.immutable.StatGame
+import ca.josephroque.bowlingcompanion.statistics.immutable.StatSeries
 import ca.josephroque.bowlingcompanion.statistics.impl.firstball.AcesSparedStatistic
 import ca.josephroque.bowlingcompanion.statistics.impl.firstball.AcesStatistic
 import ca.josephroque.bowlingcompanion.statistics.impl.pinsleftondeck.AveragePinsLeftStatistic
@@ -112,23 +112,23 @@ interface Statistic : StatisticListItem, KParcelable {
     /** Modify the statistic given a [StatisticsUnit]. */
     fun modify(unit: StatisticsUnit) {}
 
-    /** Indicates if this statistic will be modified by a given [Series]. */
-    fun isModifiedBy(series: Series) = false
+    /** Indicates if this statistic will be modified by a given [StatSeries]. */
+    fun isModifiedBy(series: StatSeries) = false
 
-    /** Modify the statistic given a [Series]. */
-    fun modify(series: Series) {}
+    /** Modify the statistic given a [StatSeries]. */
+    fun modify(series: StatSeries) {}
 
-    /** Indicates if this statistic will be modified by a given [Game]. */
-    fun isModifiedBy(game: Game) = false
+    /** Indicates if this statistic will be modified by a given [StatGame]. */
+    fun isModifiedBy(game: StatGame) = false
 
-    /** Modify the statistic given a [Game]. */
-    fun modify(game: Game) {}
+    /** Modify the statistic given a [StatGame]. */
+    fun modify(game: StatGame) {}
 
-    /** Indicates if this statistic will be modified by a given [Frame]. */
-    fun isModifiedBy(frame: Frame) = false
+    /** Indicates if this statistic will be modified by a given [StatFrame]. */
+    fun isModifiedBy(frame: StatFrame) = false
 
-    /** Modify the statistic given a [Frame]. */
-    fun modify(frame: Frame) {}
+    /** Modify the statistic given a [StatFrame]. */
+    fun modify(frame: StatFrame) {}
 
     /**
      * Get the title of the statistic.

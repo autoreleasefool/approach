@@ -1,11 +1,11 @@
 package ca.josephroque.bowlingcompanion.statistics.impl.firstball
 
-import ca.josephroque.bowlingcompanion.games.Frame
 import ca.josephroque.bowlingcompanion.games.Game
 import ca.josephroque.bowlingcompanion.games.lane.Deck
 import ca.josephroque.bowlingcompanion.games.lane.arePinsCleared
 import ca.josephroque.bowlingcompanion.statistics.PercentageStatistic
 import ca.josephroque.bowlingcompanion.statistics.StatisticsCategory
+import ca.josephroque.bowlingcompanion.statistics.immutable.StatFrame
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -18,7 +18,7 @@ abstract class SecondBallStatistic(override var numerator: Int, override var den
     // MARK: Modifiers
 
     /** @Override */
-    override fun modify(frame: Frame) {
+    override fun modify(frame: StatFrame) {
         if (frame.zeroBasedOrdinal == Game.LAST_FRAME) {
             // In the 10th frame, for each time the first or second ball cleared the lane,
             // add another second ball opportunity and check if the statistic is modified
@@ -63,5 +63,5 @@ abstract class SecondBallStatistic(override var numerator: Int, override var den
     // MARK: Overrides
 
     override val category = StatisticsCategory.FirstBall
-    override fun isModifiedBy(frame: Frame) = true
+    override fun isModifiedBy(frame: StatFrame) = true
 }
