@@ -7,8 +7,6 @@ import android.os.Parcelable
 import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
 import ca.josephroque.bowlingcompanion.common.interfaces.KParcelable
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
-import ca.josephroque.bowlingcompanion.common.interfaces.readDate
-import ca.josephroque.bowlingcompanion.common.interfaces.writeDate
 import ca.josephroque.bowlingcompanion.database.Contract.BowlerEntry
 import ca.josephroque.bowlingcompanion.database.Contract.GameEntry
 import ca.josephroque.bowlingcompanion.database.Contract.FrameEntry
@@ -22,11 +20,9 @@ import ca.josephroque.bowlingcompanion.games.lane.Pin
 import ca.josephroque.bowlingcompanion.leagues.League
 import ca.josephroque.bowlingcompanion.matchplay.MatchPlayResult
 import ca.josephroque.bowlingcompanion.scoring.Fouls
-import ca.josephroque.bowlingcompanion.utils.DateUtils
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async
-import java.util.Date
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -35,13 +31,8 @@ import java.util.Date
  */
 class StatSeries(
     override val id: Long,
-    val date: Date,
     val games: List<StatGame>
 ) : IIdentifiable, KParcelable {
-
-    /** Beautifies the date to be displayed. */
-    val prettyDate: String
-        get() = DateUtils.dateToPretty(date)
 
     /** Series total. */
     val total: Int
@@ -54,7 +45,6 @@ class StatSeries(
      */
     private constructor(p: Parcel): this(
         id = p.readLong(),
-        date = p.readDate()!!,
         games = arrayListOf<StatGame>().apply {
             val parcelableArray = p.readParcelableArray(StatGame::class.java.classLoader)
             this.addAll(parcelableArray.map {
@@ -66,7 +56,6 @@ class StatSeries(
     /** @Override */
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeLong(id)
-        writeDate(date)
         writeParcelableArray(games.toTypedArray(), 0)
     }
 
@@ -82,7 +71,6 @@ class StatSeries(
         /** Fields to query to create a series. */
         private val queryFields = (
                 "series.${SeriesEntry._ID} as sid, "
-                + "series.${SeriesEntry.COLUMN_SERIES_DATE}, "
                 + "${StatGame.QUERY_FIELDS.joinToString(separator = ", ")}, "
                 + StatFrame.QUERY_FIELDS.joinToString(separator = ", "))
 
@@ -217,7 +205,6 @@ class StatSeries(
                 fun buildSeriesFromCursor(cursor: Cursor): StatSeries {
                     return StatSeries(
                             id = cursor.getLong(cursor.getColumnIndex("sid")),
-                            date = DateUtils.seriesDateToDate(cursor.getString(cursor.getColumnIndex(SeriesEntry.COLUMN_SERIES_DATE))),
                             games = games
                     )
                 }
