@@ -5,15 +5,13 @@ import android.os.Parcel
 import android.os.Parcelable
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
 import ca.josephroque.bowlingcompanion.statistics.StatisticsCategory
+import ca.josephroque.bowlingcompanion.statistics.immutable.StatSeries
 import ca.josephroque.bowlingcompanion.statistics.impl.general.BowlerNameStatistic
 import ca.josephroque.bowlingcompanion.statistics.impl.general.GameNameStatistic
 import ca.josephroque.bowlingcompanion.statistics.impl.general.LeagueNameStatistic
 import ca.josephroque.bowlingcompanion.statistics.impl.general.SeriesNameStatistic
-import ca.josephroque.bowlingcompanion.statistics.list.StatisticListItem
 import ca.josephroque.bowlingcompanion.teams.Team
-import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
-import kotlinx.coroutines.experimental.async
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -31,11 +29,8 @@ class TeamUnit(val teamId: Long, teamName: String, parcel: Parcel? = null) : Sta
     // MARK: StatisticsUnit
 
     /** @Override */
-    override fun buildStatistics(context: Context): Deferred<MutableList<StatisticListItem>> {
-        // TODO: build team statistics
-        return async(CommonPool) {
-            return@async emptyList<StatisticListItem>().toMutableList()
-        }
+    override fun getSeriesForStatistics(context: Context): Deferred<List<StatSeries>> {
+        return StatSeries.loadSeriesForTeam(context, teamId)
     }
 
     // MARK: KParcelable

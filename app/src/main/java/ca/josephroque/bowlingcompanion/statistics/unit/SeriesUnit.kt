@@ -8,12 +8,10 @@ import ca.josephroque.bowlingcompanion.common.interfaces.readDate
 import ca.josephroque.bowlingcompanion.common.interfaces.writeDate
 import ca.josephroque.bowlingcompanion.series.Series
 import ca.josephroque.bowlingcompanion.statistics.StatisticsCategory
+import ca.josephroque.bowlingcompanion.statistics.immutable.StatSeries
 import ca.josephroque.bowlingcompanion.statistics.impl.general.GameNameStatistic
-import ca.josephroque.bowlingcompanion.statistics.list.StatisticListItem
 import ca.josephroque.bowlingcompanion.utils.DateUtils
-import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
-import kotlinx.coroutines.experimental.async
 import java.util.Date
 
 /**
@@ -33,11 +31,8 @@ class SeriesUnit(val seriesId: Long, val seriesDate: Date, parcel: Parcel? = nul
     // MARK: StatisticsUnit
 
     /** @Override */
-    override fun buildStatistics(context: Context): Deferred<MutableList<StatisticListItem>> {
-        // TODO: build series statistics
-        return async(CommonPool) {
-            return@async emptyList<StatisticListItem>().toMutableList()
-        }
+    override fun getSeriesForStatistics(context: Context): Deferred<List<StatSeries>> {
+        return StatSeries.loadSeriesForSeries(context, seriesId)
     }
 
     // MARK: KParcelable

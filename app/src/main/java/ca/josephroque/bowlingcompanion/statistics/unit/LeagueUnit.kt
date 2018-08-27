@@ -6,12 +6,10 @@ import android.os.Parcelable
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
 import ca.josephroque.bowlingcompanion.leagues.League
 import ca.josephroque.bowlingcompanion.statistics.StatisticsCategory
+import ca.josephroque.bowlingcompanion.statistics.immutable.StatSeries
 import ca.josephroque.bowlingcompanion.statistics.impl.general.GameNameStatistic
 import ca.josephroque.bowlingcompanion.statistics.impl.general.SeriesNameStatistic
-import ca.josephroque.bowlingcompanion.statistics.list.StatisticListItem
-import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
-import kotlinx.coroutines.experimental.async
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -29,11 +27,8 @@ class LeagueUnit(val leagueId: Long, leagueName: String, parcel: Parcel? = null)
     // MARK: StatisticsUnit
 
     /** @Override */
-    override fun buildStatistics(context: Context): Deferred<MutableList<StatisticListItem>> {
-        // TODO: build league statistics
-        return async(CommonPool) {
-            return@async emptyList<StatisticListItem>().toMutableList()
-        }
+    override fun getSeriesForStatistics(context: Context): Deferred<List<StatSeries>> {
+        return StatSeries.loadSeriesForLeague(context, leagueId)
     }
 
     // MARK: KParcelable

@@ -6,15 +6,13 @@ import android.os.Parcelable
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
 import ca.josephroque.bowlingcompanion.games.Game
 import ca.josephroque.bowlingcompanion.statistics.StatisticsCategory
+import ca.josephroque.bowlingcompanion.statistics.immutable.StatSeries
 import ca.josephroque.bowlingcompanion.statistics.impl.overall.GameAverageStatistic
 import ca.josephroque.bowlingcompanion.statistics.impl.overall.HighSingleStatistic
 import ca.josephroque.bowlingcompanion.statistics.impl.overall.NumberOfGamesStatistic
 import ca.josephroque.bowlingcompanion.statistics.impl.overall.TotalPinfallStatistic
 import ca.josephroque.bowlingcompanion.statistics.impl.pinsleftondeck.AveragePinsLeftStatistic
-import ca.josephroque.bowlingcompanion.statistics.list.StatisticListItem
-import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
-import kotlinx.coroutines.experimental.async
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -32,11 +30,8 @@ class GameUnit(val seriesId: Long, val gameId: Long, val gameOrdinal: Int, parce
     // MARK: StatisticsUnit
 
     /** @Override */
-    override fun buildStatistics(context: Context): Deferred<MutableList<StatisticListItem>> {
-        // TODO: build game statistics
-        return async(CommonPool) {
-            return@async emptyList<StatisticListItem>().toMutableList()
-        }
+    override fun getSeriesForStatistics(context: Context): Deferred<List<StatSeries>> {
+        return StatSeries.loadSeriesForSeries(context, seriesId)
     }
 
     // MARK: KParcelable

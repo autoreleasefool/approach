@@ -7,6 +7,7 @@ import ca.josephroque.bowlingcompanion.common.interfaces.readBoolean
 import ca.josephroque.bowlingcompanion.common.interfaces.writeBoolean
 import ca.josephroque.bowlingcompanion.statistics.Statistic
 import ca.josephroque.bowlingcompanion.statistics.StatisticsCategory
+import ca.josephroque.bowlingcompanion.statistics.immutable.StatSeries
 import ca.josephroque.bowlingcompanion.statistics.list.StatisticListItem
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
@@ -44,7 +45,14 @@ abstract class StatisticsUnit(initialStatistics: MutableList<StatisticListItem>?
      * @param context to get access to the database
      * @return a list of [Statistic]s
      */
-    protected abstract fun buildStatistics(context: Context): Deferred<MutableList<StatisticListItem>>
+    protected abstract fun getSeriesForStatistics(context: Context): Deferred<List<StatSeries>>
+
+    private fun buildStatistics(context: Context): Deferred<MutableList<StatisticListItem>> {
+        return async(CommonPool) {
+            val series = getSeriesForStatistics(context)
+            return@async emptyList<StatisticListItem>().toMutableList()
+        }
+    }
 
     /**
      * Get the unit's statistics to be displayed.
