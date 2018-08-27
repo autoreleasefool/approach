@@ -4,12 +4,9 @@ import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
-import ca.josephroque.bowlingcompanion.common.interfaces.readBoolean
 import ca.josephroque.bowlingcompanion.common.interfaces.readDate
-import ca.josephroque.bowlingcompanion.common.interfaces.writeBoolean
 import ca.josephroque.bowlingcompanion.common.interfaces.writeDate
 import ca.josephroque.bowlingcompanion.series.Series
-import ca.josephroque.bowlingcompanion.statistics.Statistic
 import ca.josephroque.bowlingcompanion.statistics.StatisticsCategory
 import ca.josephroque.bowlingcompanion.statistics.impl.general.GameNameStatistic
 import ca.josephroque.bowlingcompanion.statistics.list.StatisticListItem
@@ -24,7 +21,7 @@ import java.util.Date
  *
  * A [Series] whose statistics can be loaded and displayed.
  */
-class SeriesUnit(val seriesId: Long, val seriesDate: Date, initialStatistics: MutableList<StatisticListItem>? = null) : StatisticsUnit(initialStatistics) {
+class SeriesUnit(val seriesId: Long, val seriesDate: Date, parcel: Parcel? = null) : StatisticsUnit(parcel) {
 
     // MARK: Overrides
 
@@ -49,18 +46,7 @@ class SeriesUnit(val seriesId: Long, val seriesDate: Date, initialStatistics: Mu
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeLong(seriesId)
         writeDate(seriesDate)
-
-        val statistics = cachedStatistics
-        if (statistics != null) {
-            writeBoolean(true)
-            writeInt(statistics.size)
-            writeIntArray(statistics.map { (it as Statistic).titleId }.toIntArray())
-            for (statistic in statistics) {
-                writeParcelable((statistic as Statistic), 0)
-            }
-        } else {
-            writeBoolean(false)
-        }
+        writeStatisticsToParcel(this)
     }
 
     /**
@@ -69,19 +55,7 @@ class SeriesUnit(val seriesId: Long, val seriesDate: Date, initialStatistics: Mu
     private constructor(p: Parcel): this(
             seriesId = p.readLong(),
             seriesDate = p.readDate()!!,
-            initialStatistics = if (p.readBoolean()) {
-                ArrayList<StatisticListItem>().apply {
-                    val statisticsSize = p.readInt()
-                    val statisticTypes = IntArray(statisticsSize)
-                    p.readIntArray(statisticTypes)
-
-                    for (i in 0 until statisticsSize) {
-                        this.add(Statistic.readParcelable(p, statisticTypes[i]))
-                    }
-                }
-            } else {
-                null
-            }
+            parcel = p
     )
 
     companion object {
