@@ -11,7 +11,12 @@ import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
 import ca.josephroque.bowlingcompanion.games.Game
 import ca.josephroque.bowlingcompanion.leagues.League
 import ca.josephroque.bowlingcompanion.series.Series
+import ca.josephroque.bowlingcompanion.statistics.unit.BowlerUnit
+import ca.josephroque.bowlingcompanion.statistics.unit.GameUnit
+import ca.josephroque.bowlingcompanion.statistics.unit.LeagueUnit
+import ca.josephroque.bowlingcompanion.statistics.unit.SeriesUnit
 import ca.josephroque.bowlingcompanion.statistics.unit.StatisticsUnit
+import ca.josephroque.bowlingcompanion.statistics.unit.TeamUnit
 import ca.josephroque.bowlingcompanion.teams.Team
 
 /**
@@ -120,11 +125,16 @@ sealed class StatisticsProvider : IIdentifiable, KParcelable {
     /** The statistics to be displayed. */
     val units: List<StatisticsUnit> by lazy {
         return@lazy when (this) {
-            is TeamStatistics -> StatisticsUnit.buildFromTeam(team)
-            is BowlerStatistics -> StatisticsUnit.buildFromBowler(bowler)
-            is LeagueStatistics -> StatisticsUnit.buildFromLeague(league)
-            is SeriesStatistics -> StatisticsUnit.buildFromSeries(series)
-            is GameStatistics -> StatisticsUnit.buildFromGame(game)
+            is TeamStatistics -> {
+                listOf(
+                        TeamUnit(team)
+                // TODO: add the bowlers here
+                )
+            }
+            is BowlerStatistics -> listOf(BowlerUnit(bowler))
+            is LeagueStatistics -> listOf(LeagueUnit(league))
+            is SeriesStatistics -> listOf(SeriesUnit(series))
+            is GameStatistics -> listOf(GameUnit(game))
         }
     }
 

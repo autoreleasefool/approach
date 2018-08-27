@@ -86,7 +86,7 @@ class StatisticsUnitTabbedFragment : TabbedFragment() {
 
     /** @Override */
     override fun handleTabSwitch(newTab: Int) {
-        // TODO: handle unit tab switch
+        // TODO: set the tabs to the same scroll point
     }
 
     /** @Override */

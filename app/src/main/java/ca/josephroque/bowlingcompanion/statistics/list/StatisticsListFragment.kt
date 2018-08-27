@@ -40,11 +40,11 @@ class StatisticsListFragment : ListFragment<StatisticListItem, StatisticsRecycle
     }
 
     /** The unit whose statistics are to be displayed. */
-    private var unit: StatisticsUnit? = null
+    private lateinit var unit: StatisticsUnit
 
     /** @Override */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        unit = arguments?.getParcelable(ARG_UNIT)
+        unit = arguments?.getParcelable(ARG_UNIT)!!
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -55,13 +55,17 @@ class StatisticsListFragment : ListFragment<StatisticListItem, StatisticsRecycle
 
     /** @Override */
     override fun buildAdapter(): StatisticsRecyclerViewAdapter {
-        TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
+        return StatisticsRecyclerViewAdapter(emptyList(), this)
     }
 
     /** @Override */
     override fun fetchItems(): Deferred<MutableList<StatisticListItem>> {
+        context?.let {
+            return unit.getStatistics(it)
+        }
+
         return async(CommonPool) {
-            unit?.statisticListItems?.toMutableList() ?: emptyList<StatisticListItem>().toMutableList()
+            emptyList<StatisticListItem>().toMutableList()
         }
     }
 }
