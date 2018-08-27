@@ -21,11 +21,11 @@ import kotlinx.coroutines.experimental.async
  *
  * A [League] whose statistics can be loaded and displayed.
  */
-class LeagueUnit(val league: League, initialStatistics: MutableList<StatisticListItem>? = null) : StatisticsUnit(initialStatistics) {
+class LeagueUnit(val leagueId: Long, leagueName: String, initialStatistics: MutableList<StatisticListItem>? = null) : StatisticsUnit(initialStatistics) {
 
     // MARK: Overrides
 
-    override val name: String = league.name
+    override val name: String = leagueName
     override val excludedCategories: Set<StatisticsCategory> = emptySet()
     override val excludedStatisticIds: Set<Int> = setOf(SeriesNameStatistic.Id, GameNameStatistic.Id)
 
@@ -43,7 +43,8 @@ class LeagueUnit(val league: League, initialStatistics: MutableList<StatisticLis
 
     /** @Override */
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
-        writeParcelable(league, 0)
+        writeLong(leagueId)
+        writeString(name)
 
         val statistics = cachedStatistics
         if (statistics != null) {
@@ -62,7 +63,8 @@ class LeagueUnit(val league: League, initialStatistics: MutableList<StatisticLis
      * Construct a [LeagueUnit] from a [Parcel].
      */
     private constructor(p: Parcel): this(
-            league = p.readParcelable(League::class.java.classLoader),
+            leagueId = p.readLong(),
+            leagueName = p.readString(),
             initialStatistics = if (p.readBoolean()) {
                 ArrayList<StatisticListItem>().apply {
                     val statisticsSize = p.readInt()

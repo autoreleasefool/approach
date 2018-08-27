@@ -24,11 +24,11 @@ import kotlinx.coroutines.experimental.async
  *
  * A [Game] whose statistics can be loaded and displayed.
  */
-class GameUnit(val game: Game, initialStatistics: MutableList<StatisticListItem>? = null) : StatisticsUnit(initialStatistics) {
+class GameUnit(val gameId: Long, val gameOrdinal: Int, initialStatistics: MutableList<StatisticListItem>? = null) : StatisticsUnit(initialStatistics) {
 
     // MARK: Overrides
 
-    override val name = "Game ${game.ordinal}"
+    override val name = "Game $gameOrdinal"
     override val excludedCategories = setOf(StatisticsCategory.Average, StatisticsCategory.MatchPlay, StatisticsCategory.Series)
     override val excludedStatisticIds = setOf(AveragePinsLeftStatistic.Id, GameAverageStatistic.Id, HighSingleStatistic.Id, TotalPinfallStatistic.Id, NumberOfGamesStatistic.Id)
 
@@ -46,7 +46,8 @@ class GameUnit(val game: Game, initialStatistics: MutableList<StatisticListItem>
 
     /** @Override */
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
-        writeParcelable(game, 0)
+        writeLong(gameId)
+        writeInt(gameOrdinal)
 
         val statistics = cachedStatistics
         if (statistics != null) {
@@ -65,7 +66,8 @@ class GameUnit(val game: Game, initialStatistics: MutableList<StatisticListItem>
      * Construct a [GameUnit] from a [Parcel].
      */
     private constructor(p: Parcel): this(
-            game = p.readParcelable(Game::class.java.classLoader),
+            gameId = p.readLong(),
+            gameOrdinal = p.readInt(),
             initialStatistics = if (p.readBoolean()) {
                 ArrayList<StatisticListItem>().apply {
                     val statisticsSize = p.readInt()

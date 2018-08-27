@@ -22,11 +22,11 @@ import kotlinx.coroutines.experimental.async
  *
  * A [Bowler] whose statistics can be loaded and displayed.
  */
-class BowlerUnit(val bowler: Bowler, initialStatistics: MutableList<StatisticListItem>? = null) : StatisticsUnit(initialStatistics) {
+class BowlerUnit(val bowlerId: Long, bowlerName: String, initialStatistics: MutableList<StatisticListItem>? = null) : StatisticsUnit(initialStatistics) {
 
     // MARK: Overrides
 
-    override val name: String = bowler.name
+    override val name: String = bowlerName
     override val excludedCategories: Set<StatisticsCategory> = emptySet()
     override val excludedStatisticIds: Set<Int> = setOf(LeagueNameStatistic.Id, SeriesNameStatistic.Id, GameNameStatistic.Id)
 
@@ -44,7 +44,8 @@ class BowlerUnit(val bowler: Bowler, initialStatistics: MutableList<StatisticLis
 
     /** @Override */
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
-        writeParcelable(bowler, 0)
+        writeLong(bowlerId)
+        writeString(name)
 
         val statistics = cachedStatistics
         if (statistics != null) {
@@ -63,7 +64,8 @@ class BowlerUnit(val bowler: Bowler, initialStatistics: MutableList<StatisticLis
      * Construct a [BowlerUnit] from a [Parcel].
      */
     private constructor(p: Parcel): this(
-            bowler = p.readParcelable(Bowler::class.java.classLoader),
+            bowlerId = p.readLong(),
+            bowlerName = p.readString(),
             initialStatistics = if (p.readBoolean()) {
                 ArrayList<StatisticListItem>().apply {
                     val statisticsSize = p.readInt()
