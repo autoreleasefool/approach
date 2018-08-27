@@ -86,7 +86,7 @@ class BowlerListFragment : ListFragment<Bowler, NameAverageRecyclerViewAdapter<B
         }
 
         return async(CommonPool) {
-            emptyList<Bowler>().toMutableList()
+            mutableListOf<Bowler>()
         }
     }
 

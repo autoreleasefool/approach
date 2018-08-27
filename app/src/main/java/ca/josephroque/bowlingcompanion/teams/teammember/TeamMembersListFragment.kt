@@ -89,7 +89,7 @@ class TeamMembersListFragment :
             team?.let {
                 return@async it.membersInOrder.toMutableList()
             }
-            emptyList<TeamMember>().toMutableList()
+            mutableListOf<TeamMember>()
         }
     }
 

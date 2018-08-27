@@ -65,7 +65,7 @@ class StatisticsListFragment : ListFragment<StatisticListItem, StatisticsRecycle
         }
 
         return async(CommonPool) {
-            emptyList<StatisticListItem>().toMutableList()
+            mutableListOf<StatisticListItem>()
         }
     }
 }

@@ -188,7 +188,7 @@ class LeagueListFragment : ListFragment<League, NameAverageRecyclerViewAdapter<L
                 }
             }
 
-            emptyList<League>().toMutableList()
+            mutableListOf<League>()
         }
     }
 

@@ -80,7 +80,7 @@ class TeamListFragment : ListFragment<Team, TeamRecyclerViewAdapter>() {
         }
 
         return async(CommonPool) {
-            emptyList<Team>().toMutableList()
+            mutableListOf<Team>()
         }
     }
 

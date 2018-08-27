@@ -201,7 +201,7 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
                 }
             }
 
-            emptyList<Series>().toMutableList()
+            mutableListOf<Series>()
         }
     }
 
