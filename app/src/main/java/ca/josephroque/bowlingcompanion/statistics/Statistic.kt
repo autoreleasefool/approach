@@ -146,6 +146,102 @@ interface Statistic : StatisticListItem, KParcelable {
     }
 
     companion object {
+        /**
+         * Get a full list of new instances of [Statistic]s.
+         *
+         * @return a list with a new instance of each [Statistic]
+         */
+        fun getFreshStatistics(): List<Statistic> = listOf(
+                // General
+                TeamNameStatistic(),
+                BowlerNameStatistic(),
+                LeagueNameStatistic(),
+                SeriesNameStatistic(),
+                GameNameStatistic(),
+                // Overall
+                HighSingleStatistic(),
+                TotalPinfallStatistic(),
+                NumberOfGamesStatistic(),
+                GameAverageStatistic(),
+                MiddleHitsStatistic(),
+                LeftOfMiddleHitsStatistic(),
+                RightOfMiddleHitsStatistic(),
+                StrikeMiddleHitsStatistic(),
+                StrikesStatistic(),
+                SpareConversionsStatistic(),
+                // First Ball
+                HeadPinsStatistic(),
+                HeadPinsSparedStatistic(),
+                LeftsStatistic(),
+                LeftsSparedStatistic(),
+                RightsStatistic(),
+                RightsSparedStatistic(),
+                AcesStatistic(),
+                AcesSparedStatistic(),
+                ChopOffsStatistic(),
+                ChopOffsSparedStatistic(),
+                LeftChopOffsStatistic(),
+                LeftChopOffsSparedStatistic(),
+                RightChopOffsStatistic(),
+                RightChopOffsSparedStatistic(),
+                SplitsStatistic(),
+                SplitsSparedStatistic(),
+                LeftSplitsStatistic(),
+                LeftSplitsSparedStatistic(),
+                RightSplitsStatistic(),
+                RightSplitsSparedStatistic(),
+                // Fouls
+                FoulsStatistic(),
+                // Pins Left on Deck
+                TotalPinsLeftStatistic(),
+                AveragePinsLeftStatistic(),
+                // Average
+                Game1AverageStatistic(),
+                Game2AverageStatistic(),
+                Game3AverageStatistic(),
+                Game4AverageStatistic(),
+                Game5AverageStatistic(),
+                Game6AverageStatistic(),
+                Game7AverageStatistic(),
+                Game8AverageStatistic(),
+                Game9AverageStatistic(),
+                Game10AverageStatistic(),
+                Game11AverageStatistic(),
+                Game12AverageStatistic(),
+                Game13AverageStatistic(),
+                Game14AverageStatistic(),
+                Game15AverageStatistic(),
+                Game16AverageStatistic(),
+                Game17AverageStatistic(),
+                Game18AverageStatistic(),
+                Game19AverageStatistic(),
+                Game20AverageStatistic(),
+                // Series
+                HighSeriesOf2Statistic(),
+                HighSeriesOf3Statistic(),
+                HighSeriesOf4Statistic(),
+                HighSeriesOf5Statistic(),
+                HighSeriesOf6Statistic(),
+                HighSeriesOf7Statistic(),
+                HighSeriesOf8Statistic(),
+                HighSeriesOf9Statistic(),
+                HighSeriesOf10Statistic(),
+                HighSeriesOf11Statistic(),
+                HighSeriesOf12Statistic(),
+                HighSeriesOf13Statistic(),
+                HighSeriesOf14Statistic(),
+                HighSeriesOf15Statistic(),
+                HighSeriesOf16Statistic(),
+                HighSeriesOf17Statistic(),
+                HighSeriesOf18Statistic(),
+                HighSeriesOf19Statistic(),
+                HighSeriesOf20Statistic(),
+                // Match Play
+                GamesWonStatistic(),
+                GamesLostStatistic(),
+                GamesTiedStatistic()
+        )
+
         val order: List<Int> = listOf(
             // General
             TeamNameStatistic.Id,
