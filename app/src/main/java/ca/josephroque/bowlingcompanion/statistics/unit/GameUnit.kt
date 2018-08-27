@@ -21,7 +21,7 @@ import kotlinx.coroutines.experimental.async
  *
  * A [Game] whose statistics can be loaded and displayed.
  */
-class GameUnit(val gameId: Long, val gameOrdinal: Int, parcel: Parcel? = null) : StatisticsUnit(parcel) {
+class GameUnit(val seriesId: Long, val gameId: Long, val gameOrdinal: Int, parcel: Parcel? = null) : StatisticsUnit(parcel) {
 
     // MARK: Overrides
 
@@ -43,6 +43,7 @@ class GameUnit(val gameId: Long, val gameOrdinal: Int, parcel: Parcel? = null) :
 
     /** @Override */
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
+        writeLong(seriesId)
         writeLong(gameId)
         writeInt(gameOrdinal)
         writeStatisticsToParcel(this)
@@ -52,6 +53,7 @@ class GameUnit(val gameId: Long, val gameOrdinal: Int, parcel: Parcel? = null) :
      * Construct a [GameUnit] from a [Parcel].
      */
     private constructor(p: Parcel): this(
+            seriesId = p.readLong(),
             gameId = p.readLong(),
             gameOrdinal = p.readInt(),
             parcel = p
