@@ -34,7 +34,7 @@ class AveragePinsLeftStatistic(override var total: Int = 0, override var divisor
     override val id = Id.toLong()
     override val category = StatisticsCategory.PinsOnDeck
     override fun isModifiedBy(frame: StatFrame) = true
-    override fun isModifiedBy(game: StatGame) = true
+    override fun isModifiedBy(game: StatGame) = !game.isManual && game.score > 0
 
     // MARK: Parcelable
 

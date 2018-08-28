@@ -88,8 +88,13 @@ abstract class StatisticsUnit(initialStatistics: MutableList<StatisticListItem>?
                             statistic.modify(game)
                         }
 
+                        // Don't process frames for games with score 0 or manual games
+                        if (game.isManual || game.score == 0) {
+                            continue
+                        }
+
                         for (frame in game.frames) {
-                            if (statistic.isModifiedBy(frame)) {
+                            if (frame.isAccessed && statistic.isModifiedBy(frame)) {
                                 statistic.modify(frame)
                             }
                         }

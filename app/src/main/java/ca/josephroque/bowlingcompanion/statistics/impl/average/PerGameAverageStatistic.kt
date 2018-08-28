@@ -24,7 +24,7 @@ abstract class PerGameAverageStatistic(override var total: Int = 0, override var
     // MARK: Overrides
 
     override val category = StatisticsCategory.Average
-    override fun isModifiedBy(game: StatGame) = true
+    override fun isModifiedBy(game: StatGame) = game.score > 0
 
     // MARK: PerGameAverageStatistic
 

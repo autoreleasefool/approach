@@ -31,7 +31,7 @@ class GamesWonStatistic(override var numerator: Int = 0, override var denominato
     override val titleId = Id
     override val id = Id.toLong()
     override val category = StatisticsCategory.MatchPlay
-    override fun isModifiedBy(game: StatGame) = true
+    override fun isModifiedBy(game: StatGame) = game.matchPlay != MatchPlayResult.NONE
 
     // MARK: Parcelable
 

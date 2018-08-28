@@ -27,7 +27,7 @@ class NumberOfGamesStatistic(override var value: Int = 0) : IntegerStatistic {
     override val titleId = Id
     override val id = Id.toLong()
     override val category = StatisticsCategory.Overall
-    override fun isModifiedBy(game: StatGame) = true
+    override fun isModifiedBy(game: StatGame) = game.score > 0
 
     // MARK: Parcelable
 
