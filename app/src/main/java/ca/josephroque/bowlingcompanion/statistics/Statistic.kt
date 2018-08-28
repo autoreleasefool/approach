@@ -352,7 +352,7 @@ interface PercentageStatistic : Statistic {
     /** @Override */
     override val displayValue: String
         get() = if (denominator > 0) {
-            "${formatter.format(numerator.div(denominator.toDouble()))}% [$numerator/$denominator]"
+            "${formatter.format(numerator.div(denominator.toDouble()).times(100))}% [$numerator/$denominator]"
         } else {
             "—"
         }
