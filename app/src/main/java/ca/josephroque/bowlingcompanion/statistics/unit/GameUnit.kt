@@ -48,7 +48,17 @@ class GameUnit(
 
     /** @Override */
     override fun getSeriesForStatistics(context: Context): Deferred<List<StatSeries>> {
-        return StatSeries.loadSeriesForSeries(context, seriesId)
+        return async(CommonPool) {
+            val seriesList = StatSeries.loadSeriesForSeries(context, seriesId).await()
+            var series = seriesList.firstOrNull() ?: return@async seriesList
+
+            series = StatSeries(
+                id = series.id,
+                games = series.games.filter { it.ordinal == gameOrdinal }
+            )
+
+            return@async listOf(series)
+        }
     }
 
     // MARK: KParcelable
