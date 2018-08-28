@@ -91,6 +91,8 @@ class StatisticsRecyclerViewAdapter(
         private val tvTitle: TextView? = view.findViewById(R.id.tv_title)
         /** Render value of the statistic. */
         private val tvValue: TextView? = view.findViewById(R.id.tv_value)
+        /** Render subtitle of the statistic. */
+        private val tvSubtitle: TextView? = view.findViewById(R.id.tv_subtitle)
 
         /** @Override */
         override fun bind(item: StatisticListItem, position: Int) {
@@ -99,6 +101,14 @@ class StatisticsRecyclerViewAdapter(
 
             tvTitle?.text = statistic.getTitle(context.resources)
             tvValue?.text = statistic.displayValue
+
+            val subtitle = statistic.getSubtitle()
+            if (subtitle != null) {
+                tvSubtitle?.text = subtitle
+                tvSubtitle?.visibility = View.VISIBLE
+            } else {
+                tvSubtitle?.visibility = View.GONE
+            }
 
             itemView.setOnClickListener(this@StatisticsRecyclerViewAdapter)
         }

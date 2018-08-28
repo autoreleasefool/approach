@@ -102,6 +102,9 @@ interface Statistic : StatisticListItem, KParcelable {
     /** Value to be displayed by the statistic. */
     val displayValue: String
 
+    /** Optional subtitle to be displayed by the statistic. */
+    fun getSubtitle(): String? { return null }
+
     /** Category that the statistic belongs to. */
     val category: StatisticsCategory
 

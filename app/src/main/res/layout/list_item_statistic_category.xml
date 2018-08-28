@@ -11,7 +11,7 @@
     tools:ignore="RtlHardcoded">
 
     <TextView
-        style="@style/ListItemBodyText"
+        style="@style/StatisticListItemBodyText"
         android:id="@+id/tv_title"
         android:layout_width="match_parent"
         android:textSize="@dimen/text_header"
