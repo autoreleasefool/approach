@@ -70,9 +70,9 @@ class StatSeries(
 
         /** Fields to query to create a series. */
         private val queryFields = (
-                "series.${SeriesEntry._ID} as sid, "
-                + "${StatGame.QUERY_FIELDS.joinToString(separator = ", ")}, "
-                + "${StatFrame.QUERY_FIELDS.joinToString(separator = ", ")} ")
+                "series.${SeriesEntry._ID} as sid, " +
+                "${StatGame.QUERY_FIELDS.joinToString(separator = ", ")}, " +
+                "${StatFrame.QUERY_FIELDS.joinToString(separator = ", ")} ")
 
         /**
          * Build a list of [StatSeries] from a team.
@@ -82,26 +82,26 @@ class StatSeries(
          * @return the list of series from the database
          */
         fun loadSeriesForTeam(context: Context, teamId: Long): Deferred<List<StatSeries>> {
-            val query = ("SELECT "
-                    + queryFields
-                    + "FROM ${TeamBowlerEntry.TABLE_NAME} as teamBowlers "
-                    + "INNER JOIN ${BowlerEntry.TABLE_NAME} as bowler "
-                    + "ON ${TeamBowlerEntry.COLUMN_BOWLER_ID}=bowler.${BowlerEntry._ID} "
-                    + "INNER JOIN ${LeagueEntry.TABLE_NAME} as league "
-                    + "ON ${BowlerEntry._ID}=${LeagueEntry.COLUMN_BOWLER_ID} "
-                    + "INNER JOIN ${SeriesEntry.TABLE_NAME} as series "
-                    + "ON league.${LeagueEntry._ID}=${SeriesEntry.COLUMN_LEAGUE_ID} "
-                    + "INNER JOIN ${GameEntry.TABLE_NAME} as game "
-                    + "ON series.${SeriesEntry._ID}=game.${GameEntry.COLUMN_SERIES_ID} "
-                    + "INNER JOIN ${FrameEntry.TABLE_NAME} as frame "
-                    + "ON game.${GameEntry._ID}=frame.${FrameEntry.COLUMN_GAME_ID} "
-                    + "WHERE .${TeamBowlerEntry.COLUMN_TEAM_ID}=? "
-                    + "ORDER BY "
-                    + "bowler.${BowlerEntry._ID}, "
-                    + "league.${LeagueEntry._ID}, "
-                    + "series.${SeriesEntry.COLUMN_SERIES_DATE}, "
-                    + "game.${GameEntry.COLUMN_GAME_NUMBER}, "
-                    + "frame.${FrameEntry.COLUMN_FRAME_NUMBER}")
+            val query = ("SELECT " +
+                    queryFields +
+                    "FROM ${TeamBowlerEntry.TABLE_NAME} as teamBowlers " +
+                    "INNER JOIN ${BowlerEntry.TABLE_NAME} as bowler " +
+                    "ON ${TeamBowlerEntry.COLUMN_BOWLER_ID}=bowler.${BowlerEntry._ID} " +
+                    "INNER JOIN ${LeagueEntry.TABLE_NAME} as league " +
+                    "ON ${BowlerEntry._ID}=${LeagueEntry.COLUMN_BOWLER_ID} " +
+                    "INNER JOIN ${SeriesEntry.TABLE_NAME} as series " +
+                    "ON league.${LeagueEntry._ID}=${SeriesEntry.COLUMN_LEAGUE_ID} " +
+                    "INNER JOIN ${GameEntry.TABLE_NAME} as game " +
+                    "ON series.${SeriesEntry._ID}=game.${GameEntry.COLUMN_SERIES_ID} " +
+                    "INNER JOIN ${FrameEntry.TABLE_NAME} as frame " +
+                    "ON game.${GameEntry._ID}=frame.${FrameEntry.COLUMN_GAME_ID} " +
+                    "WHERE .${TeamBowlerEntry.COLUMN_TEAM_ID}=? " +
+                    "ORDER BY " +
+                    "bowler.${BowlerEntry._ID}, " +
+                    "league.${LeagueEntry._ID}, " +
+                    "series.${SeriesEntry.COLUMN_SERIES_DATE}, " +
+                    "game.${GameEntry.COLUMN_GAME_NUMBER}, " +
+                    "frame.${FrameEntry.COLUMN_FRAME_NUMBER}")
             val args = arrayOf(teamId.toString())
             return loadSeries(context, query, args)
         }
@@ -114,21 +114,21 @@ class StatSeries(
          * @return the list of series from the database
          */
         fun loadSeriesForBowler(context: Context, bowlerId: Long): Deferred<List<StatSeries>> {
-            val query = ("SELECT "
-                    + queryFields
-                    + "FROM ${LeagueEntry.TABLE_NAME} as league "
-                    + "INNER JOIN ${SeriesEntry.TABLE_NAME} as series "
-                    + "ON league.${LeagueEntry._ID}=${SeriesEntry.COLUMN_LEAGUE_ID} "
-                    + "INNER JOIN ${GameEntry.TABLE_NAME} as game "
-                    + "ON series.${SeriesEntry._ID}=game.${GameEntry.COLUMN_SERIES_ID} "
-                    + "INNER JOIN ${FrameEntry.TABLE_NAME} as frame "
-                    + "ON game.${GameEntry._ID}=frame.${FrameEntry.COLUMN_GAME_ID} "
-                    + "WHERE league.${LeagueEntry.COLUMN_BOWLER_ID}=? "
-                    + "ORDER BY "
-                    + "league.${LeagueEntry._ID}, "
-                    + "series.${SeriesEntry.COLUMN_SERIES_DATE}, "
-                    + "game.${GameEntry.COLUMN_GAME_NUMBER}, "
-                    + "frame.${FrameEntry.COLUMN_FRAME_NUMBER}")
+            val query = ("SELECT " +
+                    queryFields +
+                    "FROM ${LeagueEntry.TABLE_NAME} as league " +
+                    "INNER JOIN ${SeriesEntry.TABLE_NAME} as series " +
+                    "ON league.${LeagueEntry._ID}=${SeriesEntry.COLUMN_LEAGUE_ID} " +
+                    "INNER JOIN ${GameEntry.TABLE_NAME} as game " +
+                    "ON series.${SeriesEntry._ID}=game.${GameEntry.COLUMN_SERIES_ID} " +
+                    "INNER JOIN ${FrameEntry.TABLE_NAME} as frame " +
+                    "ON game.${GameEntry._ID}=frame.${FrameEntry.COLUMN_GAME_ID} " +
+                    "WHERE league.${LeagueEntry.COLUMN_BOWLER_ID}=? " +
+                    "ORDER BY " +
+                    "league.${LeagueEntry._ID}, " +
+                    "series.${SeriesEntry.COLUMN_SERIES_DATE}, " +
+                    "game.${GameEntry.COLUMN_GAME_NUMBER}, " +
+                    "frame.${FrameEntry.COLUMN_FRAME_NUMBER}")
             val args = arrayOf(bowlerId.toString())
             return loadSeries(context, query, args)
         }
@@ -141,18 +141,18 @@ class StatSeries(
          * @return the list of series from the database
          */
         fun loadSeriesForLeague(context: Context, leagueId: Long): Deferred<List<StatSeries>> {
-            val query = ("SELECT "
-                    + queryFields
-                    + "FROM ${SeriesEntry.TABLE_NAME} as series "
-                    + "INNER JOIN ${GameEntry.TABLE_NAME} as game "
-                    + "ON series.${SeriesEntry._ID}=game.${GameEntry.COLUMN_SERIES_ID} "
-                    + "INNER JOIN ${FrameEntry.TABLE_NAME} as frame "
-                    + "ON game.${GameEntry._ID}=frame.${FrameEntry.COLUMN_GAME_ID} "
-                    + "WHERE series.${SeriesEntry.COLUMN_LEAGUE_ID}=? "
-                    + "ORDER BY "
-                    + "series.${SeriesEntry.COLUMN_SERIES_DATE}, "
-                    + "game.${GameEntry.COLUMN_GAME_NUMBER}, "
-                    + "frame.${FrameEntry.COLUMN_FRAME_NUMBER}")
+            val query = ("SELECT " +
+                    queryFields +
+                    "FROM ${SeriesEntry.TABLE_NAME} as series " +
+                    "INNER JOIN ${GameEntry.TABLE_NAME} as game " +
+                    "ON series.${SeriesEntry._ID}=game.${GameEntry.COLUMN_SERIES_ID} " +
+                    "INNER JOIN ${FrameEntry.TABLE_NAME} as frame " +
+                    "ON game.${GameEntry._ID}=frame.${FrameEntry.COLUMN_GAME_ID} " +
+                    "WHERE series.${SeriesEntry.COLUMN_LEAGUE_ID}=? " +
+                    "ORDER BY " +
+                    "series.${SeriesEntry.COLUMN_SERIES_DATE}, " +
+                    "game.${GameEntry.COLUMN_GAME_NUMBER}, " +
+                    "frame.${FrameEntry.COLUMN_FRAME_NUMBER}")
             val args = arrayOf(leagueId.toString())
             return loadSeries(context, query, args)
         }
@@ -165,15 +165,15 @@ class StatSeries(
          * @return the list of series from the database
          */
         fun loadSeriesForSeries(context: Context, seriesId: Long): Deferred<List<StatSeries>> {
-            val query = ("SELECT "
-                    + queryFields
-                    + "FROM ${SeriesEntry.TABLE_NAME} as series "
-                    + "INNER JOIN ${GameEntry.TABLE_NAME} as game "
-                    + "ON series.${SeriesEntry._ID}=game.${GameEntry.COLUMN_SERIES_ID} "
-                    + "INNER JOIN ${FrameEntry.TABLE_NAME} as frame "
-                    + "ON game.${GameEntry._ID}=frame.${FrameEntry.COLUMN_GAME_ID} "
-                    + "WHERE series.${SeriesEntry._ID}=? "
-                    + "ORDER BY game.${GameEntry.COLUMN_GAME_NUMBER}, frame.${FrameEntry.COLUMN_FRAME_NUMBER}")
+            val query = ("SELECT " +
+                    queryFields +
+                    "FROM ${SeriesEntry.TABLE_NAME} as series " +
+                    "INNER JOIN ${GameEntry.TABLE_NAME} as game " +
+                    "ON series.${SeriesEntry._ID}=game.${GameEntry.COLUMN_SERIES_ID} " +
+                    "INNER JOIN ${FrameEntry.TABLE_NAME} as frame " +
+                    "ON game.${GameEntry._ID}=frame.${FrameEntry.COLUMN_GAME_ID} " +
+                    "WHERE series.${SeriesEntry._ID}=? " +
+                    "ORDER BY game.${GameEntry.COLUMN_GAME_NUMBER}, frame.${FrameEntry.COLUMN_FRAME_NUMBER}")
             val args = arrayOf(seriesId.toString())
             return loadSeries(context, query, args)
         }
