@@ -8,6 +8,8 @@ import ca.josephroque.bowlingcompanion.common.interfaces.writeBoolean
 import ca.josephroque.bowlingcompanion.statistics.Statistic
 import ca.josephroque.bowlingcompanion.statistics.StatisticsCategory
 import ca.josephroque.bowlingcompanion.statistics.immutable.StatSeries
+import ca.josephroque.bowlingcompanion.statistics.impl.average.PerGameAverageStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.series.HighSeriesStatistic
 import ca.josephroque.bowlingcompanion.statistics.list.StatisticListItem
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
@@ -102,6 +104,13 @@ abstract class StatisticsUnit(initialStatistics: MutableList<StatisticListItem>?
                 }
             }
 
+            // Filter invalid statistics
+            statistics.removeAll {
+                (it is HighSeriesStatistic && it.value == 0)
+                || (it is PerGameAverageStatistic && it.total == 0)
+            }
+
+            // Add categories in place in the list
             var lastCategory: StatisticsCategory? = null
             for (statistic in statistics) {
                 if (statistic.category != lastCategory) {
