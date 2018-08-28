@@ -63,7 +63,6 @@ import ca.josephroque.bowlingcompanion.statistics.impl.overall.SpareConversionsS
 import ca.josephroque.bowlingcompanion.statistics.impl.firstball.SplitsSparedStatistic
 import ca.josephroque.bowlingcompanion.statistics.impl.firstball.SplitsStatistic
 import ca.josephroque.bowlingcompanion.statistics.impl.overall.StrikesStatistic
-import ca.josephroque.bowlingcompanion.statistics.impl.general.TeamNameStatistic
 import ca.josephroque.bowlingcompanion.statistics.impl.overall.StrikeMiddleHitsStatistic
 import ca.josephroque.bowlingcompanion.statistics.impl.overall.TotalPinfallStatistic
 import ca.josephroque.bowlingcompanion.statistics.impl.pinsleftondeck.TotalPinsLeftStatistic
@@ -153,7 +152,6 @@ interface Statistic : StatisticListItem, KParcelable {
          */
         fun getFreshStatistics(): MutableList<Statistic> = mutableListOf(
                 // General
-                TeamNameStatistic(),
                 BowlerNameStatistic(),
                 LeagueNameStatistic(),
                 SeriesNameStatistic(),
@@ -242,97 +240,6 @@ interface Statistic : StatisticListItem, KParcelable {
                 GamesTiedStatistic()
         )
 
-        val order: List<Int> = listOf(
-            // General
-            TeamNameStatistic.Id,
-            BowlerNameStatistic.Id,
-            LeagueNameStatistic.Id,
-            SeriesNameStatistic.Id,
-            GameNameStatistic.Id,
-            // Overall
-            HighSingleStatistic.Id,
-            TotalPinfallStatistic.Id,
-            NumberOfGamesStatistic.Id,
-            GameAverageStatistic.Id,
-            MiddleHitsStatistic.Id,
-            LeftOfMiddleHitsStatistic.Id,
-            RightOfMiddleHitsStatistic.Id,
-            StrikeMiddleHitsStatistic.Id,
-            StrikesStatistic.Id,
-            SpareConversionsStatistic.Id,
-            // First Ball
-            HeadPinsStatistic.Id,
-            HeadPinsSparedStatistic.Id,
-            LeftsStatistic.Id,
-            LeftsSparedStatistic.Id,
-            RightsStatistic.Id,
-            RightsSparedStatistic.Id,
-            AcesStatistic.Id,
-            AcesSparedStatistic.Id,
-            ChopOffsStatistic.Id,
-            ChopOffsSparedStatistic.Id,
-            LeftChopOffsStatistic.Id,
-            LeftChopOffsSparedStatistic.Id,
-            RightChopOffsStatistic.Id,
-            RightChopOffsSparedStatistic.Id,
-            SplitsStatistic.Id,
-            SplitsSparedStatistic.Id,
-            LeftSplitsStatistic.Id,
-            LeftSplitsSparedStatistic.Id,
-            RightSplitsStatistic.Id,
-            RightSplitsSparedStatistic.Id,
-            // Fouls
-            FoulsStatistic.Id,
-            // Pins Left on Deck
-            TotalPinsLeftStatistic.Id,
-            AveragePinsLeftStatistic.Id,
-            // Average
-            Game1AverageStatistic.Id,
-            Game2AverageStatistic.Id,
-            Game3AverageStatistic.Id,
-            Game4AverageStatistic.Id,
-            Game5AverageStatistic.Id,
-            Game6AverageStatistic.Id,
-            Game7AverageStatistic.Id,
-            Game8AverageStatistic.Id,
-            Game9AverageStatistic.Id,
-            Game10AverageStatistic.Id,
-            Game11AverageStatistic.Id,
-            Game12AverageStatistic.Id,
-            Game13AverageStatistic.Id,
-            Game14AverageStatistic.Id,
-            Game15AverageStatistic.Id,
-            Game16AverageStatistic.Id,
-            Game17AverageStatistic.Id,
-            Game18AverageStatistic.Id,
-            Game19AverageStatistic.Id,
-            Game20AverageStatistic.Id,
-            // Series
-            HighSeriesOf2Statistic.Id,
-            HighSeriesOf3Statistic.Id,
-            HighSeriesOf4Statistic.Id,
-            HighSeriesOf5Statistic.Id,
-            HighSeriesOf6Statistic.Id,
-            HighSeriesOf7Statistic.Id,
-            HighSeriesOf8Statistic.Id,
-            HighSeriesOf9Statistic.Id,
-            HighSeriesOf10Statistic.Id,
-            HighSeriesOf11Statistic.Id,
-            HighSeriesOf12Statistic.Id,
-            HighSeriesOf13Statistic.Id,
-            HighSeriesOf14Statistic.Id,
-            HighSeriesOf15Statistic.Id,
-            HighSeriesOf16Statistic.Id,
-            HighSeriesOf17Statistic.Id,
-            HighSeriesOf18Statistic.Id,
-            HighSeriesOf19Statistic.Id,
-            HighSeriesOf20Statistic.Id,
-            // Match Play
-            GamesWonStatistic.Id,
-            GamesLostStatistic.Id,
-            GamesTiedStatistic.Id
-        )
-
         /**
          * Read a [Statistic] from a [Parcel] and cast to the proper type based on the given ID.
          *
@@ -342,7 +249,6 @@ interface Statistic : StatisticListItem, KParcelable {
          */
         fun readParcelable(p: Parcel, id: Int): Statistic {
             return when (id) {
-                TeamNameStatistic.Id -> p.readParcelable<TeamNameStatistic>(TeamNameStatistic::class.java.classLoader)
                 BowlerNameStatistic.Id -> p.readParcelable<BowlerNameStatistic>(BowlerNameStatistic::class.java.classLoader)
                 LeagueNameStatistic.Id -> p.readParcelable<LeagueNameStatistic>(LeagueNameStatistic::class.java.classLoader)
                 SeriesNameStatistic.Id -> p.readParcelable<SeriesNameStatistic>(SeriesNameStatistic::class.java.classLoader)
