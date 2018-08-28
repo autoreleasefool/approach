@@ -27,7 +27,7 @@ class GameAverageStatistic(override var total: Int = 0, override var divisor: In
 
     override val titleId = Id
     override val id = Id.toLong()
-    override val category = StatisticsCategory.General
+    override val category = StatisticsCategory.Overall
     override fun isModifiedBy(game: StatGame) = true
 
     // MARK: Parcelable

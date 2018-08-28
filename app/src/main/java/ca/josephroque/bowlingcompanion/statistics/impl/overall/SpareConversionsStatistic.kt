@@ -9,6 +9,7 @@ import ca.josephroque.bowlingcompanion.games.lane.arePinsCleared
 import ca.josephroque.bowlingcompanion.games.lane.isAce
 import ca.josephroque.bowlingcompanion.games.lane.isHeadPin
 import ca.josephroque.bowlingcompanion.games.lane.isSplit
+import ca.josephroque.bowlingcompanion.statistics.StatisticsCategory
 import ca.josephroque.bowlingcompanion.statistics.impl.firstball.SecondBallStatistic
 
 /**
@@ -33,6 +34,7 @@ class SpareConversionsStatistic(numerator: Int = 0, denominator: Int = 0) : Seco
 
     override val titleId = Id
     override val id = Id.toLong()
+    override val category = StatisticsCategory.Overall
 
     // MARK: Parcelable
 

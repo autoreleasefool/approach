@@ -6,6 +6,7 @@ import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
 import ca.josephroque.bowlingcompanion.games.lane.Deck
 import ca.josephroque.bowlingcompanion.games.lane.arePinsCleared
+import ca.josephroque.bowlingcompanion.statistics.StatisticsCategory
 import ca.josephroque.bowlingcompanion.statistics.impl.firstball.FirstBallStatistic
 
 /**
@@ -24,6 +25,7 @@ class StrikesStatistic(numerator: Int = 0, denominator: Int = 0) : FirstBallStat
 
     override val titleId = Id
     override val id = Id.toLong()
+    override val category = StatisticsCategory.Overall
 
     // MARK: Parcelable
 
