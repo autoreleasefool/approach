@@ -6,6 +6,10 @@ import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
 import ca.josephroque.bowlingcompanion.statistics.StatisticsCategory
 import ca.josephroque.bowlingcompanion.statistics.StringStatistic
+import ca.josephroque.bowlingcompanion.statistics.unit.BowlerUnit
+import ca.josephroque.bowlingcompanion.statistics.unit.GameUnit
+import ca.josephroque.bowlingcompanion.statistics.unit.LeagueUnit
+import ca.josephroque.bowlingcompanion.statistics.unit.SeriesUnit
 import ca.josephroque.bowlingcompanion.statistics.unit.StatisticsUnit
 
 /**
@@ -19,7 +23,12 @@ class BowlerNameStatistic(override var value: String = "") : StringStatistic {
 
     /** @Override */
     override fun modify(unit: StatisticsUnit) {
-        value = unit.name
+        when (unit) {
+            is GameUnit -> value = unit.bowlerName
+            is SeriesUnit -> value = unit.bowlerName
+            is LeagueUnit -> value = unit.bowlerName
+            is BowlerUnit -> value = unit.name
+        }
     }
 
     // MARK: Overrides

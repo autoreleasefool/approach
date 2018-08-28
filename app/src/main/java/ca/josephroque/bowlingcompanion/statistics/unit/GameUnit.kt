@@ -4,6 +4,8 @@ import android.content.Context
 import android.os.Parcel
 import android.os.Parcelable
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
+import ca.josephroque.bowlingcompanion.common.interfaces.readDate
+import ca.josephroque.bowlingcompanion.common.interfaces.writeDate
 import ca.josephroque.bowlingcompanion.games.Game
 import ca.josephroque.bowlingcompanion.statistics.StatisticsCategory
 import ca.josephroque.bowlingcompanion.statistics.immutable.StatSeries
@@ -12,14 +14,29 @@ import ca.josephroque.bowlingcompanion.statistics.impl.overall.HighSingleStatist
 import ca.josephroque.bowlingcompanion.statistics.impl.overall.NumberOfGamesStatistic
 import ca.josephroque.bowlingcompanion.statistics.impl.overall.TotalPinfallStatistic
 import ca.josephroque.bowlingcompanion.statistics.impl.pinsleftondeck.AveragePinsLeftStatistic
+import ca.josephroque.bowlingcompanion.utils.DateUtils
+import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.experimental.async
+import java.util.*
 
 /**
  * Copyright (C) 2018 Joseph Roque
  *
  * A [Game] whose statistics can be loaded and displayed.
  */
-class GameUnit(val seriesId: Long, val gameId: Long, val gameOrdinal: Int, parcel: Parcel? = null) : StatisticsUnit(parcel) {
+class GameUnit(
+    val bowlerName: String,
+    val leagueName: String,
+    val seriesDate: Date,
+    val seriesId: Long,
+    val gameId: Long,
+    val gameOrdinal: Int,
+    parcel: Parcel? = null
+) : StatisticsUnit(parcel) {
+
+    /** Format the series date. */
+    val prettySeriesDate = DateUtils.dateToPretty(seriesDate)
 
     // MARK: Overrides
 
@@ -38,6 +55,9 @@ class GameUnit(val seriesId: Long, val gameId: Long, val gameOrdinal: Int, parce
 
     /** @Override */
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
+        writeString(bowlerName)
+        writeString(leagueName)
+        writeDate(seriesDate)
         writeLong(seriesId)
         writeLong(gameId)
         writeInt(gameOrdinal)
@@ -48,6 +68,9 @@ class GameUnit(val seriesId: Long, val gameId: Long, val gameOrdinal: Int, parce
      * Construct a [GameUnit] from a [Parcel].
      */
     private constructor(p: Parcel): this(
+            bowlerName = p.readString(),
+            leagueName = p.readString(),
+            seriesDate = p.readDate()!!,
             seriesId = p.readLong(),
             gameId = p.readLong(),
             gameOrdinal = p.readInt(),

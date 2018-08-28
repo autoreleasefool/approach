@@ -132,9 +132,9 @@ sealed class StatisticsProvider : IIdentifiable, KParcelable {
                 units
             }
             is BowlerStatistics -> listOf(BowlerUnit(bowler.id, bowler.name))
-            is LeagueStatistics -> listOf(LeagueUnit(league.id, league.name))
-            is SeriesStatistics -> listOf(SeriesUnit(series.id, series.date))
-            is GameStatistics -> listOf(GameUnit(game.series.id, game.id, game.ordinal))
+            is LeagueStatistics -> listOf(LeagueUnit(league.bowler.name, league.id, league.name))
+            is SeriesStatistics -> listOf(SeriesUnit(series.league.bowler.name, series.league.name, series.id, series.date))
+            is GameStatistics -> listOf(GameUnit(game.series.league.bowler.name, game.series.league.name, game.series.date, game.series.id, game.id, game.ordinal))
         }
     }
 

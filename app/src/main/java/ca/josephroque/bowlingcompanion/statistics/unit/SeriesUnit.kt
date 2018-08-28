@@ -19,7 +19,13 @@ import java.util.Date
  *
  * A [Series] whose statistics can be loaded and displayed.
  */
-class SeriesUnit(val seriesId: Long, val seriesDate: Date, parcel: Parcel? = null) : StatisticsUnit(parcel) {
+class SeriesUnit(
+    val bowlerName: String,
+    val leagueName: String,
+    val seriesId: Long,
+    val seriesDate: Date,
+    parcel: Parcel? = null
+) : StatisticsUnit(parcel) {
 
     // MARK: Overrides
 
@@ -39,6 +45,8 @@ class SeriesUnit(val seriesId: Long, val seriesDate: Date, parcel: Parcel? = nul
 
     /** @Override */
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
+        writeString(bowlerName)
+        writeString(leagueName)
         writeLong(seriesId)
         writeDate(seriesDate)
         writeStatisticsToParcel(this)
@@ -48,6 +56,8 @@ class SeriesUnit(val seriesId: Long, val seriesDate: Date, parcel: Parcel? = nul
      * Construct a [SeriesUnit] from a [Parcel].
      */
     private constructor(p: Parcel): this(
+            bowlerName = p.readString(),
+            leagueName = p.readString(),
             seriesId = p.readLong(),
             seriesDate = p.readDate()!!,
             parcel = p

@@ -16,7 +16,7 @@ import kotlinx.coroutines.experimental.Deferred
  *
  * A [League] whose statistics can be loaded and displayed.
  */
-class LeagueUnit(val leagueId: Long, leagueName: String, parcel: Parcel? = null) : StatisticsUnit(parcel) {
+class LeagueUnit(val bowlerName: String, val leagueId: Long, leagueName: String, parcel: Parcel? = null) : StatisticsUnit(parcel) {
 
     // MARK: Overrides
 
@@ -35,6 +35,7 @@ class LeagueUnit(val leagueId: Long, leagueName: String, parcel: Parcel? = null)
 
     /** @Override */
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
+        writeString(bowlerName)
         writeLong(leagueId)
         writeString(name)
         writeStatisticsToParcel(this)
@@ -44,6 +45,7 @@ class LeagueUnit(val leagueId: Long, leagueName: String, parcel: Parcel? = null)
      * Construct a [LeagueUnit] from a [Parcel].
      */
     private constructor(p: Parcel): this(
+            bowlerName = p.readString(),
             leagueId = p.readLong(),
             leagueName = p.readString(),
             parcel = p
