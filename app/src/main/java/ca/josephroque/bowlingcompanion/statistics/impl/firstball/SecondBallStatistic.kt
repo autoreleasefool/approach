@@ -13,7 +13,7 @@ import ca.josephroque.bowlingcompanion.statistics.immutable.StatFrame
  * Parent class for statistics which are calculated based on the user throwing a second ball
  * at a deck of pins.
  */
-abstract class SecondBallStatistic(override var numerator: Int = 0, override var denominator: Int = 0) : PercentageStatistic {
+abstract class SecondBallStatistic(override var numerator: Int = 0, override var denominator: Int = 0, var incompatible: Int = 0) : PercentageStatistic {
 
     // MARK: Modifiers
 
@@ -28,6 +28,8 @@ abstract class SecondBallStatistic(override var numerator: Int = 0, override var
             } else if (!frame.pinState[1].arePinsCleared && isModifiedByFirstBall(frame.pinState[1], frame.pinState[2])) {
                 denominator++
                 numerator + if (isModifiedBySecondBall(frame.pinState[2])) 1 else 0
+            } else if (!frame.pinState[2].arePinsCleared && isModifiedByFirstBall(frame.pinState[2])) {
+                incompatible++
             }
         } else {
             // Every frame which is not a strike adds 1 possible hit
@@ -64,4 +66,13 @@ abstract class SecondBallStatistic(override var numerator: Int = 0, override var
 
     override val category = StatisticsCategory.FirstBall
     override fun isModifiedBy(frame: StatFrame) = true
+
+    /** @Override */
+    override fun getSubtitle(): String? {
+        return if (incompatible > 0) {
+            "$incompatible thrown in 10th frame on the last ball could not be spared"
+        } else {
+            null
+        }
+    }
 }

@@ -148,6 +148,9 @@ interface Statistic : StatisticListItem, KParcelable {
     }
 
     companion object {
+        /** Displayed value for an empty statistic. */
+        const val EMPTY_STATISTIC = "—"
+
         /**
          * Get a full list of new instances of [Statistic]s.
          *
@@ -357,7 +360,7 @@ interface PercentageStatistic : Statistic {
         get() = if (denominator > 0) {
             "${formatter.format(numerator.div(denominator.toDouble()).times(100))}% [$numerator/$denominator]"
         } else {
-            "—"
+            Statistic.EMPTY_STATISTIC
         }
 
     /** @Override */
@@ -379,7 +382,7 @@ interface AverageStatistic : Statistic {
 
     /** @Override */
     override val displayValue: String
-        get() = if (divisor > 0) total.div(divisor).toString() else "—"
+        get() = if (divisor > 0) total.div(divisor).toString() else Statistic.EMPTY_STATISTIC
 
     /** @Override */
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
