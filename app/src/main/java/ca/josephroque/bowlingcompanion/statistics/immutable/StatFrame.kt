@@ -29,7 +29,7 @@ class StatFrame(
 
     /** Number of pins left on deck at the end of the frame. */
     val pinsLeftOnDeck: Int
-        get() = pinState[Frame.NUMBER_OF_BALLS].sumBy { if (it.onDeck) it.value else 0 }
+        get() = pinState[Frame.LAST_BALL].sumBy { if (it.onDeck) it.value else 0 }
 
     /** Ordinal of the frame, zero based. Frames are numbered 0 to 9 this way. */
     val zeroBasedOrdinal: Int

@@ -76,7 +76,7 @@ class BaseStatisticsFragment : BaseFragment() {
         // When there are no other fragments, push the relevant fragment onto the stack
         val isOnlyFragment = (fragmentNavigation?.stackSize ?: 1) == 1
         if (isOnlyFragment) {
-            val newFragment = when {
+            val newFragment: BaseFragment = when {
                 statisticsProviders.isEmpty() -> TODO("not implemented")
                 statisticsProviders.size == 1 -> StatisticsUnitTabbedFragment.newInstance(statisticsProviders[0])
                 else -> StatisticsProviderListFragment.newInstance(statisticsProviders)

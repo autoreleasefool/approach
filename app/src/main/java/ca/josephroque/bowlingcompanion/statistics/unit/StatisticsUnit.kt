@@ -57,6 +57,7 @@ abstract class StatisticsUnit(initialStatistics: MutableList<StatisticListItem>?
         return async(CommonPool) {
             val seriesList = getSeriesForStatistics(context).await()
             val statistics = Statistic.getFreshStatistics()
+            val statisticListItems: MutableList<StatisticListItem> = ArrayList(statistics.size + StatisticsCategory.values().size)
 
             // Filter out categories which the unit does not accept
             for (category in excludedCategories) {
@@ -88,13 +89,24 @@ abstract class StatisticsUnit(initialStatistics: MutableList<StatisticListItem>?
                         }
 
                         for (frame in game.frames) {
-                            statistic.modify(frame)
+                            if (statistic.isModifiedBy(frame)) {
+                                statistic.modify(frame)
+                            }
                         }
                     }
                 }
             }
 
-            return@async statistics.toMutableList<StatisticListItem>()
+            var lastCategory: StatisticsCategory? = null
+            for (statistic in statistics) {
+                if (statistic.category != lastCategory) {
+                    statisticListItems.add(statistic.category)
+                    lastCategory = statistic.category
+                }
+                statisticListItems.add(statistic)
+            }
+
+            return@async statisticListItems
         }
     }
 

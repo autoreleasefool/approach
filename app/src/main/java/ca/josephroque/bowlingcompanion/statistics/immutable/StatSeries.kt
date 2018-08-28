@@ -72,7 +72,7 @@ class StatSeries(
         private val queryFields = (
                 "series.${SeriesEntry._ID} as sid, "
                 + "${StatGame.QUERY_FIELDS.joinToString(separator = ", ")}, "
-                + StatFrame.QUERY_FIELDS.joinToString(separator = ", "))
+                + "${StatFrame.QUERY_FIELDS.joinToString(separator = ", ")} ")
 
         /**
          * Build a list of [StatSeries] from a team.

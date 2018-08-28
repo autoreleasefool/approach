@@ -5,6 +5,7 @@ import android.os.Bundle
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
 import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
+import ca.josephroque.bowlingcompanion.statistics.unit.StatisticsUnitTabbedFragment
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async
@@ -99,6 +100,9 @@ class StatisticsProviderListFragment : ListFragment<StatisticsProvider, Statisti
 
     /** @Override */
     override fun onItemSelected(item: IIdentifiable, longPress: Boolean) {
-        TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
+        if (item is StatisticsProvider) {
+            val newFragment = StatisticsUnitTabbedFragment.newInstance(item)
+            fragmentNavigation?.pushFragment(newFragment)
+        }
     }
 }
