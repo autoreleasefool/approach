@@ -9,10 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.adapters.BaseFragmentPagerAdapter
-import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
 import ca.josephroque.bowlingcompanion.common.fragments.TabbedFragment
-import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
-import ca.josephroque.bowlingcompanion.statistics.list.StatisticsListFragment
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProvider
 import ca.josephroque.bowlingcompanion.utils.Analytics
 import kotlinx.android.synthetic.main.fragment_common_tabs.tabbed_fragment_tabs as fragmentTabs
@@ -22,8 +19,7 @@ import kotlinx.android.synthetic.main.fragment_common_tabs.tabbed_fragment_tabs 
  *
  * View a list of statistics for each unit in a tabbed layout.
  */
-class StatisticsUnitTabbedFragment : TabbedFragment(),
-        ListFragment.OnListFragmentInteractionListener {
+class StatisticsUnitTabbedFragment : TabbedFragment() {
 
     companion object {
         /** Logging identifier. */
@@ -117,13 +113,6 @@ class StatisticsUnitTabbedFragment : TabbedFragment(),
         // Intentionally left blank
     }
 
-    // MARK: OnListFragmentInteractionListener
-
-    /** @Override */
-    override fun onItemSelected(item: IIdentifiable, longPress: Boolean) {
-        TODO("not implemeneted")
-    }
-
     // MARK: StatisticsUnitPagerAdapter
 
     /**
@@ -137,7 +126,7 @@ class StatisticsUnitTabbedFragment : TabbedFragment(),
 
         /** @Override */
         override fun buildFragment(position: Int): Fragment? {
-            return StatisticsListFragment.newInstance(statisticsUnits[position])
+            return StatisticsUnitDetailsFragment.newInstance(statisticsUnits[position])
         }
     }
 }
