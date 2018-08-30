@@ -51,6 +51,7 @@ dependencies {
     implementation 'com.nex3z:flow-layout:1.2.2'
     implementation 'com.robertlevonyan.view:MaterialChipView:1.2.1'
     implementation 'com.ncapdevi:frag-nav:2.4.0'
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
 
     implementation "com.mixpanel.android:mixpanel-android:5.4.1"
     implementation "com.google.android.gms:play-services-gcm:15.0.1"
