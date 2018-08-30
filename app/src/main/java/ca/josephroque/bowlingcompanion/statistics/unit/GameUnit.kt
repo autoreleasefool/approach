@@ -71,7 +71,7 @@ class GameUnit(
         writeLong(seriesId)
         writeLong(gameId)
         writeInt(gameOrdinal)
-        writeStatisticsToParcel(this)
+        writeCacheToParcel(this)
     }
 
     /**

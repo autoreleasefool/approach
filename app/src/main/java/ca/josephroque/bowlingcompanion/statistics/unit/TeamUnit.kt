@@ -39,7 +39,7 @@ class TeamUnit(val teamId: Long, teamName: String, parcel: Parcel? = null) : Sta
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeLong(teamId)
         writeString(name)
-        writeStatisticsToParcel(this)
+        writeCacheToParcel(this)
     }
 
     /**

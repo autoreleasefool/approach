@@ -49,7 +49,7 @@ class SeriesUnit(
         writeString(leagueName)
         writeLong(seriesId)
         writeDate(seriesDate)
-        writeStatisticsToParcel(this)
+        writeCacheToParcel(this)
     }
 
     /**

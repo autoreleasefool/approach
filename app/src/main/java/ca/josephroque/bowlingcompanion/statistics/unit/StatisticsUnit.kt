@@ -20,7 +20,7 @@ import kotlinx.coroutines.experimental.async
  *
  * A single unit which provides a list of statistics to be displayed.
  */
-abstract class StatisticsUnit(initialStatistics: MutableList<StatisticListItem>? = null) : KParcelable {
+abstract class StatisticsUnit(initialSeries: List<StatSeries>? = null, initialStatistics: MutableList<StatisticListItem>? = null) : KParcelable {
 
     companion object {
         /** Logging identifier */
@@ -36,6 +36,9 @@ abstract class StatisticsUnit(initialStatistics: MutableList<StatisticListItem>?
 
     /** Set of ids for [Statistic]s which must not be displayed for the unit. */
     abstract val excludedStatisticIds: Set<Int>
+
+    /** Cache of series. */
+    protected var cachedSeries: List<StatSeries>? = initialSeries
 
     /** Cache of statistics. */
     protected var cachedStatistics: MutableList<StatisticListItem>? = initialStatistics
@@ -57,7 +60,7 @@ abstract class StatisticsUnit(initialStatistics: MutableList<StatisticListItem>?
      */
     private fun buildStatistics(context: Context): Deferred<MutableList<StatisticListItem>> {
         return async(CommonPool) {
-            val seriesList = getSeriesForStatistics(context).await()
+            val seriesList = this@StatisticsUnit.cachedSeries ?: getSeriesForStatistics(context).await()
             val statistics = Statistic.getFreshStatistics()
             val statisticListItems: MutableList<StatisticListItem> = ArrayList(statistics.size + StatisticsCategory.values().size)
 
@@ -146,6 +149,16 @@ abstract class StatisticsUnit(initialStatistics: MutableList<StatisticListItem>?
      * Construct a [StatisticsUnit] from a [Parcel].
      */
     protected constructor(p: Parcel? = null): this(
+            initialSeries = if (p != null && p.readBoolean()) {
+                ArrayList<StatSeries>().apply {
+                    val array = p.readParcelableArray(StatSeries::class.java.classLoader)
+                    for (i in 0 until array.size) {
+                        add(array[i] as StatSeries)
+                    }
+                }
+            } else {
+                null
+            },
             initialStatistics = if (p != null && p.readBoolean()) {
                 ArrayList<StatisticListItem>().apply {
                     val statisticsSize = p.readInt()
@@ -162,11 +175,19 @@ abstract class StatisticsUnit(initialStatistics: MutableList<StatisticListItem>?
     )
 
     /**
-     * Write the unit's cached statistics to the [Parcel].
+     * Write the unit's cached series and statistics to the [Parcel].
      *
      * @param p the parcel to write to
      */
-    protected fun writeStatisticsToParcel(p: Parcel) = with(p) {
+    protected fun writeCacheToParcel(p: Parcel) = with(p) {
+        val series = cachedSeries
+        if (series != null) {
+            writeBoolean(true)
+            writeParcelableArray(series.toTypedArray(), 0)
+        } else {
+            writeBoolean(false)
+        }
+
         val statistics = cachedStatistics
         if (statistics != null) {
             writeBoolean(true)

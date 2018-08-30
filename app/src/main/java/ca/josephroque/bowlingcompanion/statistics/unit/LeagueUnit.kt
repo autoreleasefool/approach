@@ -38,7 +38,7 @@ class LeagueUnit(val bowlerName: String, val leagueId: Long, leagueName: String,
         writeString(bowlerName)
         writeLong(leagueId)
         writeString(name)
-        writeStatisticsToParcel(this)
+        writeCacheToParcel(this)
     }
 
     /**

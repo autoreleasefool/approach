@@ -38,7 +38,7 @@ class BowlerUnit(val bowlerId: Long, bowlerName: String, parcel: Parcel? = null)
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeLong(bowlerId)
         writeString(name)
-        writeStatisticsToParcel(this)
+        writeCacheToParcel(this)
     }
 
     /**
