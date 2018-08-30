@@ -18,7 +18,7 @@ import ca.josephroque.bowlingcompanion.utils.DateUtils
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async
-import java.util.*
+import java.util.Date
 
 /**
  * Copyright (C) 2018 Joseph Roque

@@ -106,8 +106,8 @@ abstract class StatisticsUnit(initialStatistics: MutableList<StatisticListItem>?
 
             // Filter invalid statistics
             statistics.removeAll {
-                (it is HighSeriesStatistic && it.value == 0)
-                || (it is PerGameAverageStatistic && it.total == 0)
+                (it is HighSeriesStatistic && it.value == 0) ||
+                (it is PerGameAverageStatistic && it.total == 0)
             }
 
             // Add categories in place in the list

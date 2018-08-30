@@ -108,6 +108,9 @@ interface Statistic : StatisticListItem, KParcelable {
     /** Category that the statistic belongs to. */
     val category: StatisticsCategory
 
+    /** Indicates if a graph can be generated from the statistic. */
+    val canBeGraphed: Boolean
+
     /** Indicates if this statistic will be modified by a given [StatisticsUnit]. */
     fun isModifiedBy(unit: StatisticsUnit) = false
 
@@ -356,6 +359,10 @@ interface PercentageStatistic : Statistic {
     var denominator: Int
 
     /** @Override */
+    override val canBeGraphed
+        get() = true
+
+    /** @Override */
     override val displayValue: String
         get() = if (denominator > 0) {
             "${formatter.format(numerator.div(denominator.toDouble()).times(100))}% [$numerator/$denominator]"
@@ -385,6 +392,10 @@ interface AverageStatistic : Statistic {
         get() = if (divisor > 0) total.div(divisor).toString() else Statistic.EMPTY_STATISTIC
 
     /** @Override */
+    override val canBeGraphed
+        get() = true
+
+    /** @Override */
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeInt(total)
         writeInt(divisor)
@@ -401,6 +412,10 @@ interface IntegerStatistic : Statistic {
     /** @Override */
     override val displayValue: String
         get() = value.toString()
+
+    /** @Override */
+    override val canBeGraphed
+        get() = true
 
     /** @Override */
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
@@ -423,4 +438,8 @@ interface StringStatistic : Statistic {
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeString(value)
     }
+
+    /** @Override */
+    override val canBeGraphed
+        get() = false
 }
