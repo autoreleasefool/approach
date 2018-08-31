@@ -1,6 +1,8 @@
 package ca.josephroque.bowlingcompanion.statistics
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuInflater
 import ca.josephroque.bowlingcompanion.common.fragments.BaseFragment
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProvider
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProviderListFragment
@@ -55,6 +57,18 @@ class BaseStatisticsFragment : BaseFragment() {
 
     /** The stats being displayed. */
     private lateinit var statisticsProviders: List<StatisticsProvider>
+
+    /** @Override */
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+    /** @Override */
+    override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
+        menu?.clear()
+        super.onCreateOptionsMenu(menu, inflater)
+    }
 
     /** @Override */
     override fun onStart() {
