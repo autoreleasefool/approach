@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion.statistics.graph
 
 import android.content.Context
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import android.view.ViewGroup
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.Android
 import ca.josephroque.bowlingcompanion.common.fragments.BaseFragment
+import ca.josephroque.bowlingcompanion.settings.Settings
 import ca.josephroque.bowlingcompanion.statistics.Statistic
 import ca.josephroque.bowlingcompanion.statistics.StatisticHelper
 import ca.josephroque.bowlingcompanion.statistics.unit.StatisticsUnit
@@ -80,7 +82,11 @@ class StatisticGraphFragment : BaseFragment(),
         val view = inflater.inflate(R.layout.fragment_statistic_graph, container, false)
         view.tv_next_statistic.setOnClickListener(this)
         view.tv_prev_statistic.setOnClickListener(this)
-        view.switch_accumulate.setOnCheckedChangeListener { _, _ ->
+        view.switch_accumulate.setOnCheckedChangeListener { _, isChecked ->
+            PreferenceManager.getDefaultSharedPreferences(context)
+                    .edit()
+                    .putBoolean(Settings.AccumulateStatistics.prefName, isChecked)
+                    .apply()
             updateAccumulateText()
             buildChart()
         }
@@ -131,7 +137,11 @@ class StatisticGraphFragment : BaseFragment(),
      * Update the accumulate switch label.
      */
     private fun updateAccumulateText() {
-        if (switchAccumulate.isChecked) {
+        val accumulateOverTime = PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean(Settings.AccumulateStatistics.prefName, Settings.AccumulateStatistics.booleanDefault)
+        switchAccumulate.isChecked = accumulateOverTime
+
+        if (accumulateOverTime) {
             textAccumulate.setText(R.string.statistic_graph_accumulate)
         } else {
             textAccumulate.setText(R.string.statistic_graph_week_by_week)

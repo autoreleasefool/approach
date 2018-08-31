@@ -7,6 +7,11 @@ package ca.josephroque.bowlingcompanion.settings
  */
 enum class Settings(val prefName: String) {
 
+    /* Settings not in preferences */
+
+    /** Identifier for preference to accumulate statistics over time vs week by week. */
+    AccumulateStatistics("accumulate_statistics"),
+
     /* Keep in line with preferences_defaults.xml */
 
     // MARK: General
@@ -129,6 +134,7 @@ enum class Settings(val prefName: String) {
                 CountS2AsS -> false
                 ShowMatchResults -> true
                 HighlightMatchResults -> true
+                AccumulateStatistics -> false
                 else -> null
             }
         }
