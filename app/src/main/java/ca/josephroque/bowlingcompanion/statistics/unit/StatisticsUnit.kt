@@ -8,6 +8,7 @@ import ca.josephroque.bowlingcompanion.common.interfaces.writeBoolean
 import ca.josephroque.bowlingcompanion.statistics.Statistic
 import ca.josephroque.bowlingcompanion.statistics.StatisticHelper
 import ca.josephroque.bowlingcompanion.statistics.StatisticsCategory
+import ca.josephroque.bowlingcompanion.statistics.graph.StatisticsGraphLine
 import ca.josephroque.bowlingcompanion.statistics.immutable.StatSeries
 import ca.josephroque.bowlingcompanion.statistics.impl.average.PerGameAverageStatistic
 import ca.josephroque.bowlingcompanion.statistics.impl.series.HighSeriesStatistic
@@ -77,9 +78,9 @@ abstract class StatisticsUnit(initialSeries: List<StatSeries>? = null, initialSt
      * @param context to get access to the database
      * @param statisticId id of the statistic to build
      * @param accumulative true to accumulate statistic over all time, false for week by week
-     * @return the list of [Entry] items to display the statistic in a graph
+     * @return the list of [StatisticsGraphLine] items to display the statistic in a graph
      */
-    fun getStatisticGraphData(context: Context, statisticId: Long, accumulative: Boolean): Deferred<Pair<List<List<Entry>>, List<String>>> {
+    fun getStatisticGraphData(context: Context, statisticId: Long, accumulative: Boolean): Deferred<Pair<List<StatisticsGraphLine>, List<String>>> {
         return async (CommonPool) {
             val graphData: MutableList<MutableList<Entry>> = ArrayList()
             val graphLabels: MutableList<String> = ArrayList()
@@ -88,7 +89,7 @@ abstract class StatisticsUnit(initialSeries: List<StatSeries>? = null, initialSt
             val statistic = StatisticHelper.getStatistic(statisticId)
 
             if (!statistic.canBeGraphed || seriesList.isEmpty()) {
-                return@async Pair(graphData, graphLabels)
+                return@async Pair(emptyList<StatisticsGraphLine>(), graphLabels)
             }
 
             // To determine current week and when to add a new entry to the chart
@@ -124,7 +125,16 @@ abstract class StatisticsUnit(initialSeries: List<StatSeries>? = null, initialSt
             addGraphEntries(graphData, xPos, statistic)
             graphLabels.add(DateUtils.dateToShort(lastDate))
 
-            return@async Pair(graphData, graphLabels)
+            val lines: List<StatisticsGraphLine> = graphData.mapIndexed { index, data ->
+                val label = when(index) {
+                    0 -> context.resources.getString(statistic.primaryGraphDataLabelId)
+                    1 -> context.resources.getString(statistic.secondaryGraphDataLabelId!!)
+                    else -> throw IllegalAccessException("Only up to 2 lines are available for a statistic.")
+                }
+                return@mapIndexed StatisticsGraphLine(label, data)
+            }
+
+            return@async Pair(lines, graphLabels)
         }
     }
 
