@@ -208,6 +208,20 @@
     <string name="statistic_graph_accumulate">Accumulate values over time</string>
     <string name="statistic_graph_week_by_week">Compare values week by week</string>
 
+    <string name="statistic_total_shots_at_middle">Total shots at middle</string>
+    <string name="statistic_total_aces">Total aces</string>
+    <string name="statistic_total_head_pins">Total head pins</string>
+    <string name="statistic_total_lefts">Total lefts</string>
+    <string name="statistic_total_rights">Total rights</string>
+    <string name="statistic_total_chop_offs">Total chop offs</string>
+    <string name="statistic_total_left_chop_offs">Total left chops</string>
+    <string name="statistic_total_right_chop_offs">Total right chops</string>
+    <string name="statistic_total_splits">Total splits</string>
+    <string name="statistic_total_left_splits">Total left splits</string>
+    <string name="statistic_total_right_splits">Total right splits</string>
+    <string name="statistic_total_match_play_games_recorded">Total match play games</string>
+    <string name="statistic_total_spare_chances">Total spare chances</string>
+
     <!-- General statistics -->
     <string name="statistic_team">Team</string>
     <string name="statistic_bowler">Bowler</string>

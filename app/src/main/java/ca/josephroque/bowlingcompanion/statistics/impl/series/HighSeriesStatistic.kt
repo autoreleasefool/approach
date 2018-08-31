@@ -21,7 +21,8 @@ abstract class HighSeriesStatistic(override var value: Int = 0) : IntegerStatist
     }
 
     // MARK: Overrides
-
+    override val secondaryGraphDataLabelId: Int?
+        get() = null
     override fun isModifiedBy(series: StatSeries) = true
     override val category = StatisticsCategory.Series
 

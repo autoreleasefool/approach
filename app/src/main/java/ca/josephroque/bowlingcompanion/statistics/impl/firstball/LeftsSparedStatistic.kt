@@ -27,6 +27,7 @@ class LeftsSparedStatistic(numerator: Int = 0, denominator: Int = 0) : SecondBal
 
     override val titleId = Id
     override val id = Id.toLong()
+    override val secondaryGraphDataLabelId = R.string.statistic_total_lefts
 
     // MARK: Parcelable
 

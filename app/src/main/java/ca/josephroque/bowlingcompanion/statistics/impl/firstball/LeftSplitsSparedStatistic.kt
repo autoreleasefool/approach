@@ -27,6 +27,7 @@ class LeftSplitsSparedStatistic(numerator: Int = 0, denominator: Int = 0) : Seco
 
     override val titleId = Id
     override val id = Id.toLong()
+    override val secondaryGraphDataLabelId = R.string.statistic_total_left_splits
 
     // MARK: Parcelable
 

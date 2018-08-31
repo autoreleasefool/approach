@@ -35,6 +35,7 @@ class StrikeMiddleHitsStatistic(override var numerator: Int = 0, override var de
     override val titleId = Id
     override val id = Id.toLong()
     override val category = StatisticsCategory.Overall
+    override val secondaryGraphDataLabelId = R.string.statistic_total_shots_at_middle
     override fun isModifiedBy(frame: StatFrame) = true
 
     // MARK: Parcelable

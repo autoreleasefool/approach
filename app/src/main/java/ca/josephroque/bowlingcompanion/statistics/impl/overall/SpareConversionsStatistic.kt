@@ -35,6 +35,7 @@ class SpareConversionsStatistic(numerator: Int = 0, denominator: Int = 0) : Seco
     override val titleId = Id
     override val id = Id.toLong()
     override val category = StatisticsCategory.Overall
+    override val secondaryGraphDataLabelId = R.string.statistic_total_spare_chances
 
     // MARK: Parcelable
 

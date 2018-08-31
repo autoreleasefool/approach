@@ -23,6 +23,7 @@ class RightsStatistic(numerator: Int = 0, denominator: Int = 0) : FirstBallStati
 
     override val titleId = Id
     override val id = Id.toLong()
+    override val secondaryGraphDataLabelId = R.string.statistic_total_rights
 
     // MARK: Parcelable
 

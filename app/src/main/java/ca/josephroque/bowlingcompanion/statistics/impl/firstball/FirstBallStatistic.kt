@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.statistics.impl.firstball
 
+import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.games.Game
 import ca.josephroque.bowlingcompanion.games.lane.Deck
 import ca.josephroque.bowlingcompanion.games.lane.arePinsCleared
@@ -41,6 +42,7 @@ abstract class FirstBallStatistic(override var numerator: Int = 0, override var 
 
     override fun isModifiedBy(frame: StatFrame) = true
     override val category = StatisticsCategory.FirstBall
+    override val secondaryGraphDataLabelId = R.string.statistic_total_shots_at_middle
 
     // MARK: FirstBallStatistic
 

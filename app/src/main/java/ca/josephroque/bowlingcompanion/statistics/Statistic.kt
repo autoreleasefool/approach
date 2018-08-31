@@ -38,6 +38,13 @@ interface Statistic : StatisticListItem, KParcelable {
     /** Get a secondary Y position for a graph entry from the statistic's current state, if available. */
     val secondaryGraphY: Float?
 
+    /** Label for the primary graph data. */
+    val primaryGraphDataLabelId: Int
+        get() = titleId
+
+    /** Label for the secondary graph data. */
+    val secondaryGraphDataLabelId: Int?
+
     /** Indicates if this statistic will be modified by a given [StatisticsUnit]. */
     fun isModifiedBy(unit: StatisticsUnit) = false
 
@@ -161,6 +168,9 @@ interface AverageStatistic : Statistic {
     override val secondaryGraphY: Float?
         get() = null
 
+    override val secondaryGraphDataLabelId: Int?
+        get() = null
+
     /** @Override */
     override val displayValue: String
         get() {
@@ -205,6 +215,9 @@ interface IntegerStatistic : Statistic {
     override val secondaryGraphY: Float?
         get() = null
 
+    override val secondaryGraphDataLabelId: Int?
+        get() = null
+
     /** @Override */
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeInt(value)
@@ -236,6 +249,9 @@ interface StringStatistic : Statistic {
 
     override val secondaryGraphY: Float?
         get() = throw IllegalAccessException("StringStatistic does not have a secondaryGraphY")
+
+    override val secondaryGraphDataLabelId: Int?
+        get() = throw IllegalAccessException("StringStatistic does not have a secondaryGraphDataLabelId")
 
     /** @Override */
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
