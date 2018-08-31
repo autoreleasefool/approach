@@ -111,6 +111,9 @@ interface Statistic : StatisticListItem, KParcelable {
     /** Indicates if a graph can be generated from the statistic. */
     val canBeGraphed: Boolean
 
+    /** Get entries for the graph from the statistic's current state. */
+    fun getGraphY(): List<Float>
+
     /** Indicates if this statistic will be modified by a given [StatisticsUnit]. */
     fun isModifiedBy(unit: StatisticsUnit) = false
 
@@ -134,6 +137,9 @@ interface Statistic : StatisticListItem, KParcelable {
 
     /** Modify the statistic given a [StatFrame]. */
     fun modify(frame: StatFrame) {}
+
+    /** Zero the statistic. */
+    fun zero()
 
     /**
      * Get the title of the statistic.
@@ -362,10 +368,20 @@ interface PercentageStatistic : Statistic {
     override val canBeGraphed
         get() = true
 
+    /** Get the percentage. */
+    val percentage: Double
+        get() {
+            return if (denominator > 0) {
+                numerator.div(denominator.toDouble()).times(100)
+            } else {
+                0.0
+            }
+        }
+
     /** @Override */
     override val displayValue: String
         get() = if (denominator > 0) {
-            "${formatter.format(numerator.div(denominator.toDouble()).times(100))}% [$numerator/$denominator]"
+            "${formatter.format(percentage)}% [$numerator/$denominator]"
         } else {
             Statistic.EMPTY_STATISTIC
         }
@@ -375,6 +391,15 @@ interface PercentageStatistic : Statistic {
         writeInt(numerator)
         writeInt(denominator)
     }
+
+    /** @Override */
+    override fun zero() {
+        numerator = 0
+        denominator = 0
+    }
+
+    /** @Override */
+    override fun getGraphY() = listOf(denominator.toFloat(), percentage.toFloat())
 }
 
 /**
@@ -387,9 +412,14 @@ interface AverageStatistic : Statistic {
     /** Divisor to average total across. */
     var divisor: Int
 
+    val average: Double
+        get() = if (divisor > 0) total.div(divisor.toDouble()) else 0.0
+
     /** @Override */
     override val displayValue: String
-        get() = if (divisor > 0) total.div(divisor).toString() else Statistic.EMPTY_STATISTIC
+        get() {
+            return if (average > 0) average.toString() else Statistic.EMPTY_STATISTIC
+        }
 
     /** @Override */
     override val canBeGraphed
@@ -400,6 +430,15 @@ interface AverageStatistic : Statistic {
         writeInt(total)
         writeInt(divisor)
     }
+
+    /** @Override */
+    override fun zero() {
+        total = 0
+        divisor = 0
+    }
+
+    /** @Override */
+    override fun getGraphY() = listOf(average.toFloat())
 }
 
 /**
@@ -421,6 +460,14 @@ interface IntegerStatistic : Statistic {
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeInt(value)
     }
+
+    /** @Override */
+    override fun zero() {
+        value = 0
+    }
+
+    /** @Override */
+    override fun getGraphY() = listOf(value.toFloat())
 }
 
 /**
@@ -442,4 +489,12 @@ interface StringStatistic : Statistic {
     /** @Override */
     override val canBeGraphed
         get() = false
+
+    /** @Override */
+    override fun zero() {
+        value = ""
+    }
+
+    /** @Override */
+    override fun getGraphY() = throw IllegalAccessException("Cannot get the graph entry for a StringStatistic.")
 }
