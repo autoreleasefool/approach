@@ -7,10 +7,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import ca.josephroque.bowlingcompanion.R
+import ca.josephroque.bowlingcompanion.common.Android
 import ca.josephroque.bowlingcompanion.common.fragments.BaseFragment
 import ca.josephroque.bowlingcompanion.statistics.Statistic
 import ca.josephroque.bowlingcompanion.statistics.StatisticHelper
 import ca.josephroque.bowlingcompanion.statistics.unit.StatisticsUnit
+import com.github.mikephil.charting.components.Description
+import com.github.mikephil.charting.components.Legend
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.formatter.IAxisValueFormatter
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.launch
 import kotlinx.android.synthetic.main.fragment_statistic_graph.tv_title as textTitle
 import kotlinx.android.synthetic.main.fragment_statistic_graph.tv_prev_statistic as textPrevStatistic
 import kotlinx.android.synthetic.main.fragment_statistic_graph.tv_next_statistic as textNextStatistic
@@ -129,9 +139,75 @@ class StatisticGraphFragment : BaseFragment(),
     }
 
     /**
+     * Apply styling to a [LineDataSet] depending on its index.
+     *
+     * @param context to get colors
+     * @param dataSet to apply styling to
+     * @param lineIndex index of the line in the graph
+     */
+    private fun addChartDataStyling(context: Context, dataSet: LineDataSet, lineIndex: Int) {
+        when (lineIndex) {
+            0 -> dataSet.color = ContextCompat.getColor(context, R.color.colorPrimary)
+            1 -> dataSet.color = ContextCompat.getColor(context, R.color.dangerRed)
+            else -> throw IllegalAccessException("Only up to 2 lines are available for a statistic.")
+        }
+    }
+
+    /**
+     * Build the chart data.
+     *
+     * @param context to get colors
+     * @param graphLines data to display a line in the graph
+     * @return a list of [LineDataSet] to display
+     */
+    private fun buildChartData(context: Context, graphLines: List<StatisticsGraphLine>): Deferred<LineData> {
+        return async(CommonPool) {
+            val dataSets: List<LineDataSet> = graphLines.mapIndexed { index, graphLine ->
+                val dataSet = LineDataSet(graphLine.entries, graphLine.label)
+                addChartDataStyling(context, dataSet, index)
+                return@mapIndexed dataSet
+            }
+
+            return@async LineData(dataSets.toList())
+        }
+    }
+
+    /**
+     * Build a value formatter for the XAxis for the graph.
+     *
+     * @param graphLabels labels for the XAxis
+     * @return a value formatter
+     */
+    private fun buildChartXAxisFormatter(graphLabels: List<String>): IAxisValueFormatter {
+        return IAxisValueFormatter { value, _ -> graphLabels[value.toInt()] }
+    }
+
+    /**
      * Build the chart out of the data from the [StatisticsUnit].
      */
     private fun buildChart() {
+        val context = context ?: return
+        launch(Android) {
+            val (graphLines, graphLabels) = unit.getStatisticGraphData(context, statisticId, switchAccumulate.isChecked).await()
+            chart.data = buildChartData(context, graphLines).await()
+            chart.xAxis.valueFormatter = buildChartXAxisFormatter(graphLabels)
+            fixChartProperties()
+            chart.invalidate()
+        }
+    }
+
+    /**
+     * Apply some general formatting to the chart to clean up its appearance.
+     */
+    private fun fixChartProperties() {
+        chart.description = Description().apply { text = "" }
+        chart.legend.apply {
+            isEnabled = true
+            textSize = resources.getDimension(R.dimen.text_caption)
+            horizontalAlignment = Legend.LegendHorizontalAlignment.LEFT
+            verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
+            form = Legend.LegendForm.LINE
+        }
     }
 
     // MARK: OnClickListener

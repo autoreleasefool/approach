@@ -81,7 +81,7 @@ abstract class StatisticsUnit(initialSeries: List<StatSeries>? = null, initialSt
      * @return the list of [StatisticsGraphLine] items to display the statistic in a graph
      */
     fun getStatisticGraphData(context: Context, statisticId: Long, accumulative: Boolean): Deferred<Pair<List<StatisticsGraphLine>, List<String>>> {
-        return async (CommonPool) {
+        return async(CommonPool) {
             val graphData: MutableList<MutableList<Entry>> = ArrayList()
             val graphLabels: MutableList<String> = ArrayList()
 
@@ -126,7 +126,7 @@ abstract class StatisticsUnit(initialSeries: List<StatSeries>? = null, initialSt
             graphLabels.add(DateUtils.dateToShort(lastDate))
 
             val lines: List<StatisticsGraphLine> = graphData.mapIndexed { index, data ->
-                val label = when(index) {
+                val label = when (index) {
                     0 -> context.resources.getString(statistic.primaryGraphDataLabelId)
                     1 -> context.resources.getString(statistic.secondaryGraphDataLabelId!!)
                     else -> throw IllegalAccessException("Only up to 2 lines are available for a statistic.")
