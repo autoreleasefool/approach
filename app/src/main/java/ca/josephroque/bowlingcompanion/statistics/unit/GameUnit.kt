@@ -54,7 +54,8 @@ class GameUnit(
 
             series = StatSeries(
                 id = series.id,
-                games = series.games.filter { it.ordinal == gameOrdinal }
+                games = series.games.filter { it.ordinal == gameOrdinal },
+                date = series.date
             )
 
             return@async listOf(series)
