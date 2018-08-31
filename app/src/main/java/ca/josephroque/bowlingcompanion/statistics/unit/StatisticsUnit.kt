@@ -11,9 +11,11 @@ import ca.josephroque.bowlingcompanion.statistics.immutable.StatSeries
 import ca.josephroque.bowlingcompanion.statistics.impl.average.PerGameAverageStatistic
 import ca.josephroque.bowlingcompanion.statistics.impl.series.HighSeriesStatistic
 import ca.josephroque.bowlingcompanion.statistics.list.StatisticListItem
+import com.github.mikephil.charting.data.Entry
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async
+import java.util.Calendar
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -52,6 +54,73 @@ abstract class StatisticsUnit(initialSeries: List<StatSeries>? = null, initialSt
     protected abstract fun getSeriesForStatistics(context: Context): Deferred<List<StatSeries>>
 
     /**
+     * Get the unit's statistics to be displayed.
+     *
+     * @param context to get access to the database
+     * @return a list of [Statistic]s
+     */
+    fun getStatistics(context: Context): Deferred<MutableList<StatisticListItem>> {
+        return async(CommonPool) {
+            if (cachedStatistics == null) {
+                cachedStatistics = buildStatistics(context).await()
+            }
+
+            return@async cachedStatistics!!
+        }
+    }
+
+    /**
+     * Build the graph entries for a single statistic from the unit/
+     *
+     * @param context to get access to the database
+     * @param statisticId id of the statistic to build
+     * @param accumulative true to accumulate statistic over all time, false for week by week
+     * @return the list of [Entry] items to display the statistic in a graph
+     */
+    fun getStatisticGraphData(context: Context, statisticId: Long, accumulative: Boolean): Deferred<List<List<Entry>>> {
+        return async (CommonPool) {
+            val graphData: MutableList<MutableList<Entry>> = ArrayList()
+            val seriesList = this@StatisticsUnit.cachedSeries ?: getSeriesForStatistics(context).await()
+            val statistics = Statistic.getFreshStatistics()
+            val statistic = statistics.first { it.id == statisticId }
+
+            if (!statistic.canBeGraphed || seriesList.isEmpty()) {
+                return@async graphData
+            }
+
+            // To determine current week and when to add a new entry to the chart
+            val calendar = Calendar.getInstance()
+            calendar.time = seriesList[0].date
+            var lastYear = calendar.get(Calendar.YEAR)
+            var lastWeek = calendar.get(Calendar.WEEK_OF_YEAR)
+            var xPos = 0F
+
+            for (series in seriesList) {
+                calendar.time = series.date
+                val newYear = calendar.get(Calendar.YEAR)
+                val newWeek = calendar.get(Calendar.WEEK_OF_YEAR)
+
+                // Either the year or week has incremented, so an entry should be added to the graph
+                if (newYear > lastYear || newWeek > lastWeek) {
+                    addGraphEntries(graphData, xPos, statistic)
+                    if (!accumulative) statistic.zero()
+                    xPos++
+                }
+
+                adjustStatisticBySeries(statistic, series)
+
+                lastYear = newYear
+                lastWeek = newWeek
+            }
+
+            // Add the final entry
+            addGraphEntries(graphData, xPos, statistic)
+
+            return@async graphData
+        }
+    }
+
+    /**
      * Build the unit's statistics. This should return a new list each time it is called.
      * Caching for this method exists in the [StatisticsUnit] abstract class.
      *
@@ -74,36 +143,17 @@ abstract class StatisticsUnit(initialSeries: List<StatSeries>? = null, initialSt
                 statistics.removeAll { it.titleId == statisticId }
             }
 
+            // Only allow the [StatisticsUnit] to modify each stat once
+            for (statistic in statistics) {
+                if (statistic.isModifiedBy(this@StatisticsUnit)) {
+                    statistic.modify(this@StatisticsUnit)
+                }
+            }
+
             // Parse the remaining statistics and update as per the unit/series/game/frame
             for (series in seriesList) {
                 for (statistic in statistics) {
-                    // Only allow the [StatisticsUnit] to modify each stat once
-                    if (series == seriesList.first()) {
-                        if (statistic.isModifiedBy(this@StatisticsUnit)) {
-                            statistic.modify(this@StatisticsUnit)
-                        }
-                    }
-
-                    if (statistic.isModifiedBy(series)) {
-                        statistic.modify(series)
-                    }
-
-                    for (game in series.games) {
-                        if (statistic.isModifiedBy(game)) {
-                            statistic.modify(game)
-                        }
-
-                        // Don't process frames for games with score 0 or manual games
-                        if (game.isManual || game.score == 0) {
-                            continue
-                        }
-
-                        for (frame in game.frames) {
-                            if (frame.isAccessed && statistic.isModifiedBy(frame)) {
-                                statistic.modify(frame)
-                            }
-                        }
-                    }
+                    adjustStatisticBySeries(statistic, series)
                 }
             }
 
@@ -128,18 +178,50 @@ abstract class StatisticsUnit(initialSeries: List<StatSeries>? = null, initialSt
     }
 
     /**
-     * Get the unit's statistics to be displayed.
+     * Iterate over the series and its games/frames to modify the statistic in place accordingly.
      *
-     * @param context to get access to the database
-     * @return a list of [Statistic]s
+     * @param statistic the statistic to adjust
+     * @param series the series that will modify the statistic
      */
-    fun getStatistics(context: Context): Deferred<MutableList<StatisticListItem>> {
-        return async(CommonPool) {
-            if (cachedStatistics == null) {
-                cachedStatistics = buildStatistics(context).await()
+    private fun adjustStatisticBySeries(statistic: Statistic, series: StatSeries) {
+        if (statistic.isModifiedBy(series)) {
+            statistic.modify(series)
+        }
+
+        for (game in series.games) {
+            if (statistic.isModifiedBy(game)) {
+                statistic.modify(game)
             }
 
-            return@async cachedStatistics!!
+            // Don't process frames for games with score 0 or manual games
+            if (game.isManual || game.score == 0) {
+                continue
+            }
+
+            for (frame in game.frames) {
+                if (frame.isAccessed && statistic.isModifiedBy(frame)) {
+                    statistic.modify(frame)
+                }
+            }
+        }
+    }
+
+    /**
+     * Add entries to [graphData] from the statistic's current state.
+     *
+     * @param graphData to add entries to
+     * @param xPos x position of the entries to add
+     * @param statistic to get entry y positions
+     */
+    private fun addGraphEntries(graphData: MutableList<MutableList<Entry>>, xPos: Float, statistic: Statistic) {
+        statistic.primaryGraphY?.let {
+            if (graphData.size < 1) { graphData.add(ArrayList()) }
+            graphData[0].add(Entry(xPos, it))
+        }
+
+        statistic.secondaryGraphY?.let {
+            if (graphData.size < 2) { graphData.add(ArrayList()) }
+            graphData[1].add(Entry(xPos, it))
         }
     }
 

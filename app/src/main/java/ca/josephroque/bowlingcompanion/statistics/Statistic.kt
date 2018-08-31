@@ -111,8 +111,11 @@ interface Statistic : StatisticListItem, KParcelable {
     /** Indicates if a graph can be generated from the statistic. */
     val canBeGraphed: Boolean
 
-    /** Get entries for the graph from the statistic's current state. */
-    fun getGraphY(): List<Float>
+    /** Get a primary Y position for a graph entry from the statistic's current state, if available. */
+    val primaryGraphY: Float?
+
+    /** Get a secondary Y position for a graph entry from the statistic's current state, if available. */
+    val secondaryGraphY: Float?
 
     /** Indicates if this statistic will be modified by a given [StatisticsUnit]. */
     fun isModifiedBy(unit: StatisticsUnit) = false
@@ -368,6 +371,12 @@ interface PercentageStatistic : Statistic {
     override val canBeGraphed
         get() = true
 
+    override val primaryGraphY: Float?
+        get() = percentage.toFloat()
+
+    override val secondaryGraphY: Float?
+        get() = denominator.toFloat()
+
     /** Get the percentage. */
     val percentage: Double
         get() {
@@ -397,9 +406,6 @@ interface PercentageStatistic : Statistic {
         numerator = 0
         denominator = 0
     }
-
-    /** @Override */
-    override fun getGraphY() = listOf(denominator.toFloat(), percentage.toFloat())
 }
 
 /**
@@ -414,6 +420,12 @@ interface AverageStatistic : Statistic {
 
     val average: Double
         get() = if (divisor > 0) total.div(divisor.toDouble()) else 0.0
+
+    override val primaryGraphY: Float?
+        get() = average.toFloat()
+
+    override val secondaryGraphY: Float?
+        get() = null
 
     /** @Override */
     override val displayValue: String
@@ -436,9 +448,6 @@ interface AverageStatistic : Statistic {
         total = 0
         divisor = 0
     }
-
-    /** @Override */
-    override fun getGraphY() = listOf(average.toFloat())
 }
 
 /**
@@ -456,6 +465,12 @@ interface IntegerStatistic : Statistic {
     override val canBeGraphed
         get() = true
 
+    override val primaryGraphY: Float?
+        get() = value.toFloat()
+
+    override val secondaryGraphY: Float?
+        get() = null
+
     /** @Override */
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeInt(value)
@@ -465,9 +480,6 @@ interface IntegerStatistic : Statistic {
     override fun zero() {
         value = 0
     }
-
-    /** @Override */
-    override fun getGraphY() = listOf(value.toFloat())
 }
 
 /**
@@ -482,19 +494,22 @@ interface StringStatistic : Statistic {
         get() = value
 
     /** @Override */
+    override val canBeGraphed
+        get() = false
+
+    override val primaryGraphY: Float?
+        get() = throw IllegalAccessException("StringStatistic does not have a primaryGraphY")
+
+    override val secondaryGraphY: Float?
+        get() = throw IllegalAccessException("StringStatistic does not have a secondaryGraphY")
+
+    /** @Override */
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeString(value)
     }
 
     /** @Override */
-    override val canBeGraphed
-        get() = false
-
-    /** @Override */
     override fun zero() {
         value = ""
     }
-
-    /** @Override */
-    override fun getGraphY() = throw IllegalAccessException("Cannot get the graph entry for a StringStatistic.")
 }
