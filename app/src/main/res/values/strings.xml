@@ -204,6 +204,10 @@
     <string name="statistics_category_average">Average</string>
     <string name="statistics_category_series">Series</string>
 
+    <!-- Statistics Graph -->
+    <string name="statistic_graph_accumulate">Accumulate values over time</string>
+    <string name="statistic_graph_week_by_week">Compare values week by week</string>
+
     <!-- General statistics -->
     <string name="statistic_team">Team</string>
     <string name="statistic_bowler">Bowler</string>

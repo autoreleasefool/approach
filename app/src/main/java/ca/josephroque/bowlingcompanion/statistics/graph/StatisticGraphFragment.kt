@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion.statistics.graph
 
 import android.content.Context
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,13 +10,21 @@ import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.fragments.BaseFragment
 import ca.josephroque.bowlingcompanion.statistics.Statistic
 import ca.josephroque.bowlingcompanion.statistics.unit.StatisticsUnit
+import kotlinx.android.synthetic.main.fragment_statistic_graph.tv_title as textTitle
+import kotlinx.android.synthetic.main.fragment_statistic_graph.tv_prev_statistic as textPrevStatistic
+import kotlinx.android.synthetic.main.fragment_statistic_graph.tv_next_statistic as textNextStatistic
+import kotlinx.android.synthetic.main.fragment_statistic_graph.chart as chart
+import kotlinx.android.synthetic.main.fragment_statistic_graph.tv_accumulate as textAccumulate
+import kotlinx.android.synthetic.main.fragment_statistic_graph.switch_accumulate as switchAccumulate
+import kotlinx.android.synthetic.main.fragment_statistic_graph.view.*
 
 /**
  * Copyright (C) 2018 Joseph Roque
  *
  * Create a graph of a [Statistic] over time.
  */
-class StatisticGraphFragment : BaseFragment() {
+class StatisticGraphFragment : BaseFragment(),
+        View.OnClickListener {
 
     companion object {
         /** Logging identifier. */
@@ -33,11 +42,11 @@ class StatisticGraphFragment : BaseFragment() {
          *
          * @return the new instance
          */
-        fun newInstance(unit: StatisticsUnit, statisticId: Int): StatisticGraphFragment {
+        fun newInstance(unit: StatisticsUnit, statisticId: Long): StatisticGraphFragment {
             return StatisticGraphFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(ARG_STATISTIC_UNIT, unit)
-                    putInt(ARG_STATISTIC, statisticId)
+                    putLong(ARG_STATISTIC, statisticId)
                 }
             }
         }
@@ -46,9 +55,25 @@ class StatisticGraphFragment : BaseFragment() {
     /** Fragment delegate. */
     private var delegate: StatisticGraphDelegate? = null
 
-    /** @Overrride */
+    /** Unit to display statistic for. */
+    private lateinit var unit: StatisticsUnit
+
+    /** ID of the static to create. */
+    private var statisticId: Long = 0
+
+    /** @Override */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_statistic_graph, container, false)
+        unit = arguments?.getParcelable(ARG_STATISTIC_UNIT)!!
+        statisticId = arguments?.getLong(ARG_STATISTIC)!!
+
+        val view = inflater.inflate(R.layout.fragment_statistic_graph, container, false)
+        view.tv_next_statistic.setOnClickListener(this)
+        view.tv_prev_statistic.setOnClickListener(this)
+        view.switch_accumulate.setOnCheckedChangeListener { _, _ ->
+            updateAccumulateText()
+            buildChart()
+        }
+        return view
     }
 
     /** @Override */
@@ -65,9 +90,62 @@ class StatisticGraphFragment : BaseFragment() {
         delegate = null
     }
 
+    /** @Override */
+    override fun onStart() {
+        super.onStart()
+
+        updateAccumulateText()
+        updateStatisticTitles()
+        buildChart()
+    }
+
+    /** @Override */
     override fun updateToolbarTitle() {
         // Intentionally left blank
     }
+
+    /**
+     * Set the header, and prev and next button titles to the proper names based on the current statistic.
+     */
+    private fun updateStatisticTitles() {
+        // FIXME: Find a better way to get the title of multiple statistics than creating the entire list
+        val statistics = Statistic.getFreshStatistics()
+        statistics.retainAll { it.canBeGraphed }
+        val statIndex = statistics.indexOfFirst { it.id == statisticId }
+
+        textTitle.setText(statistics[statIndex].titleId)
+        if (statIndex > 0) textPrevStatistic.setText(statistics[statIndex - 1].titleId)
+        if (statIndex < statistics.lastIndex) textNextStatistic.setText(statistics[statIndex + 1].titleId)
+    }
+
+    /**
+     * Update the accumulate switch label.
+     */
+    private fun updateAccumulateText() {
+        if (switchAccumulate.isChecked) {
+            textAccumulate.setText(R.string.statistic_graph_accumulate)
+        } else {
+            textAccumulate.setText(R.string.statistic_graph_week_by_week)
+        }
+    }
+
+    /**
+     * Build the chart out of the data from the [StatisticsUnit].
+     */
+    private fun buildChart() {
+    }
+
+    // MARK: OnClickListener
+
+    override fun onClick(v: View?) {
+        when (v?.id) {
+            R.id.tv_prev_statistic -> delegate?.prevStatistic(statisticId)
+            R.id.tv_next_statistic -> delegate?.nextStatistic(statisticId)
+            else -> {} // Do nothing
+        }
+    }
+
+    // MARK: StatisticGraphDelegate
 
     /**
      * Handle events in the fragment.
@@ -78,13 +156,13 @@ class StatisticGraphFragment : BaseFragment() {
          *
          * @param statisticId the current statistic
          */
-        fun nextStatistic(statisticId: Int)
+        fun nextStatistic(statisticId: Long)
 
         /**
          * Show the previous statistic.
          *
          * @param statisticId the current statistic
          */
-        fun prevStatistic(statisticId: Int)
+        fun prevStatistic(statisticId: Long)
     }
 }
