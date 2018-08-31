@@ -11,6 +11,7 @@ import ca.josephroque.bowlingcompanion.statistics.immutable.StatSeries
 import ca.josephroque.bowlingcompanion.statistics.impl.average.PerGameAverageStatistic
 import ca.josephroque.bowlingcompanion.statistics.impl.series.HighSeriesStatistic
 import ca.josephroque.bowlingcompanion.statistics.list.StatisticListItem
+import ca.josephroque.bowlingcompanion.utils.DateUtils
 import com.github.mikephil.charting.data.Entry
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
@@ -77,46 +78,53 @@ abstract class StatisticsUnit(initialSeries: List<StatSeries>? = null, initialSt
      * @param accumulative true to accumulate statistic over all time, false for week by week
      * @return the list of [Entry] items to display the statistic in a graph
      */
-    fun getStatisticGraphData(context: Context, statisticId: Long, accumulative: Boolean): Deferred<List<List<Entry>>> {
+    fun getStatisticGraphData(context: Context, statisticId: Long, accumulative: Boolean): Deferred<Pair<List<List<Entry>>, List<String>>> {
         return async (CommonPool) {
             val graphData: MutableList<MutableList<Entry>> = ArrayList()
+            val graphLabels: MutableList<String> = ArrayList()
+
             val seriesList = this@StatisticsUnit.cachedSeries ?: getSeriesForStatistics(context).await()
             val statistics = Statistic.getFreshStatistics()
             val statistic = statistics.first { it.id == statisticId }
 
             if (!statistic.canBeGraphed || seriesList.isEmpty()) {
-                return@async graphData
+                return@async Pair(graphData, graphLabels)
             }
 
             // To determine current week and when to add a new entry to the chart
             val calendar = Calendar.getInstance()
             calendar.time = seriesList[0].date
+            var lastDate = seriesList[0].date
             var lastYear = calendar.get(Calendar.YEAR)
             var lastWeek = calendar.get(Calendar.WEEK_OF_YEAR)
             var xPos = 0F
 
             for (series in seriesList) {
                 calendar.time = series.date
+                val newDate = series.date
                 val newYear = calendar.get(Calendar.YEAR)
                 val newWeek = calendar.get(Calendar.WEEK_OF_YEAR)
 
                 // Either the year or week has incremented, so an entry should be added to the graph
                 if (newYear > lastYear || newWeek > lastWeek) {
                     addGraphEntries(graphData, xPos, statistic)
+                    graphLabels.add(DateUtils.dateToShort(lastDate))
                     if (!accumulative) statistic.zero()
                     xPos++
                 }
 
                 adjustStatisticBySeries(statistic, series)
 
+                lastDate = newDate
                 lastYear = newYear
                 lastWeek = newWeek
             }
 
             // Add the final entry
             addGraphEntries(graphData, xPos, statistic)
+            graphLabels.add(DateUtils.dateToShort(lastDate))
 
-            return@async graphData
+            return@async Pair(graphData, graphLabels)
         }
     }
 

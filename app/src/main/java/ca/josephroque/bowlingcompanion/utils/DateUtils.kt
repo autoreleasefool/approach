@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.utils
 
+import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -16,6 +17,9 @@ object DateUtils {
 
     /** Date formatter for pretty dates. */
     private val prettyDateFormatter = SimpleDateFormat("MMMM dd, yyyy", Locale.CANADA)
+
+    /** Date formatter for short dates. */
+    private val shortDateFormatter = DateFormat.getDateInstance(DateFormat.SHORT, Locale.CANADA)
 
     /**
      * Convert a series date [String] to a [Date].
@@ -45,5 +49,15 @@ object DateUtils {
      */
     fun dateToPretty(date: Date): String {
         return prettyDateFormatter.format(date)
+    }
+
+    /**
+     * Converts [Date] to a shorter format.
+     *
+     * @param date date to format
+     * @return shorter format of string with month and day
+     */
+    fun dateToShort(date: Date): String {
+        return shortDateFormatter.format(date)
     }
 }
