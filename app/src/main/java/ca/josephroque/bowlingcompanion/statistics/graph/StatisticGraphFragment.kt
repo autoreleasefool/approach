@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.fragments.BaseFragment
 import ca.josephroque.bowlingcompanion.statistics.Statistic
+import ca.josephroque.bowlingcompanion.statistics.StatisticHelper
 import ca.josephroque.bowlingcompanion.statistics.unit.StatisticsUnit
 import kotlinx.android.synthetic.main.fragment_statistic_graph.tv_title as textTitle
 import kotlinx.android.synthetic.main.fragment_statistic_graph.tv_prev_statistic as textPrevStatistic
@@ -108,14 +109,12 @@ class StatisticGraphFragment : BaseFragment(),
      * Set the header, and prev and next button titles to the proper names based on the current statistic.
      */
     private fun updateStatisticTitles() {
-        // FIXME: Find a better way to get the title of multiple statistics than creating the entire list
-        val statistics = Statistic.getFreshStatistics()
-        statistics.retainAll { it.canBeGraphed }
-        val statIndex = statistics.indexOfFirst { it.id == statisticId }
+        val statistic = StatisticHelper.getStatistic(statisticId)
+        val (nextStatistic, previousStatistic) = StatisticHelper.getAdjacentStatistics(statisticId)
 
-        textTitle.setText(statistics[statIndex].titleId)
-        if (statIndex > 0) textPrevStatistic.setText(statistics[statIndex - 1].titleId)
-        if (statIndex < statistics.lastIndex) textNextStatistic.setText(statistics[statIndex + 1].titleId)
+        textTitle.setText(statistic.titleId)
+        textPrevStatistic.setText(previousStatistic?.titleId ?: 0)
+        textNextStatistic.setText(nextStatistic?.titleId ?: 0)
     }
 
     /**

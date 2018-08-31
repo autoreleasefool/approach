@@ -6,6 +6,7 @@ import ca.josephroque.bowlingcompanion.common.interfaces.KParcelable
 import ca.josephroque.bowlingcompanion.common.interfaces.readBoolean
 import ca.josephroque.bowlingcompanion.common.interfaces.writeBoolean
 import ca.josephroque.bowlingcompanion.statistics.Statistic
+import ca.josephroque.bowlingcompanion.statistics.StatisticHelper
 import ca.josephroque.bowlingcompanion.statistics.StatisticsCategory
 import ca.josephroque.bowlingcompanion.statistics.immutable.StatSeries
 import ca.josephroque.bowlingcompanion.statistics.impl.average.PerGameAverageStatistic
@@ -84,8 +85,7 @@ abstract class StatisticsUnit(initialSeries: List<StatSeries>? = null, initialSt
             val graphLabels: MutableList<String> = ArrayList()
 
             val seriesList = this@StatisticsUnit.cachedSeries ?: getSeriesForStatistics(context).await()
-            val statistics = Statistic.getFreshStatistics()
-            val statistic = statistics.first { it.id == statisticId }
+            val statistic = StatisticHelper.getStatistic(statisticId)
 
             if (!statistic.canBeGraphed || seriesList.isEmpty()) {
                 return@async Pair(graphData, graphLabels)
@@ -138,7 +138,7 @@ abstract class StatisticsUnit(initialSeries: List<StatSeries>? = null, initialSt
     private fun buildStatistics(context: Context): Deferred<MutableList<StatisticListItem>> {
         return async(CommonPool) {
             val seriesList = this@StatisticsUnit.cachedSeries ?: getSeriesForStatistics(context).await()
-            val statistics = Statistic.getFreshStatistics()
+            val statistics = StatisticHelper.getFreshStatistics()
             val statisticListItems: MutableList<StatisticListItem> = ArrayList(statistics.size + StatisticsCategory.values().size)
 
             // Filter out categories which the unit does not accept
@@ -256,7 +256,7 @@ abstract class StatisticsUnit(initialSeries: List<StatSeries>? = null, initialSt
                     p.readIntArray(statisticTypes)
 
                     for (i in 0 until statisticsSize) {
-                        this.add(Statistic.readParcelable(p, statisticTypes[i]))
+                        this.add(StatisticHelper.readParcelable(p, statisticTypes[i]))
                     }
                 }
             } else {
