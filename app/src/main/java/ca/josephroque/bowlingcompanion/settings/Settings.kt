@@ -18,9 +18,11 @@ enum class Settings(val prefName: String) {
     HighlightSeriesEnabled("pref_highlight_series_enabled"),
 
     /** Identifier for preference to show averages with up to 1 decimal place of accuracy.  */
+    // TODO: setting unused
     AverageAsDecimal("pref_average_as_decimal"),
 
     /** Identifier for preference for if app should ask user to combine similar series.  */
+    // TODO: setting unused
     AskCombine("pref_ask_combine"),
 
     // MARK: Scoring
@@ -35,34 +37,43 @@ enum class Settings(val prefName: String) {
     EnableAutoLock("pref_enable_auto_lock"),
 
     /** Identifier for preference for if floating buttons should be shown when editing a game.  */
+    // TODO: setting unused
     EnableFab("pref_enable_fab"),
 
     /** Identifier for preference if pins should be displayed behind or above floating action buttons.  */
+    // TODO: setting unused
     PinsBehindFabs("pref_pins_behind_fabs"),
 
     /** Identifier for preference for strikes and spares should be highlighted while editing a game.  */
+    // TODO: setting unused
     EnableStrikeHighlights("pref_enable_strike_highlights"),
 
     // MARK: Stats
 
     /** Identifier for preference which indicates if events should be included in stats.  */
+    // TODO: setting unused
     IncludeEvents("pref_include_events"),
 
     /** Identifier for preference which indicates if open games should be included in stats.  */
+    // TODO: setting unused
     IncludeOpen("pref_include_open"),
 
     /** Identifier for preference to count Headpin + 2 as a Headpin in statistics.  */
+    // TODO: setting unused
     CountH2AsH("pref_count_h2_as_h"),
 
     /** Identifier for preference to count Split + 2 as a Split in statistics.  */
+    // TODO: setting unused
     CountS2AsS("pref_count_s2_as_s"),
 
     // MARK: Match play
 
     /** Identifier for preference to show or hide match play results in series view.  */
+    // TODO: setting unused
     ShowMatchResults("pref_show_match_results"),
 
     /** Identifier for preference to highlight match play results in series view.  */
+    // TODO: setting unused
     HighlightMatchResults("pref_highlight_match_results"),
 
     // MARK: Feedback
