@@ -113,7 +113,7 @@ interface PercentageStatistic : Statistic {
         get() = true
 
     override val primaryGraphY: Float?
-        get() = percentage.toFloat()
+        get() = numerator.toFloat()
 
     override val secondaryGraphY: Float?
         get() = denominator.toFloat()
