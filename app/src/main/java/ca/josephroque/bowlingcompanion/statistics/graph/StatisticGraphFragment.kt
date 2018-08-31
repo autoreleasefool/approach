@@ -146,11 +146,14 @@ class StatisticGraphFragment : BaseFragment(),
      * @param lineIndex index of the line in the graph
      */
     private fun addChartDataStyling(context: Context, dataSet: LineDataSet, lineIndex: Int) {
-        when (lineIndex) {
-            0 -> dataSet.color = ContextCompat.getColor(context, R.color.colorPrimary)
-            1 -> dataSet.color = ContextCompat.getColor(context, R.color.dangerRed)
+        val color = when (lineIndex) {
+            0 -> ContextCompat.getColor(context, R.color.colorPrimary)
+            1 -> ContextCompat.getColor(context, R.color.dangerRed)
             else -> throw IllegalAccessException("Only up to 2 lines are available for a statistic.")
         }
+
+        dataSet.color = color
+        dataSet.setCircleColor(color)
     }
 
     /**
@@ -203,7 +206,7 @@ class StatisticGraphFragment : BaseFragment(),
         chart.description = Description().apply { text = "" }
         chart.legend.apply {
             isEnabled = true
-            textSize = resources.getDimension(R.dimen.text_caption)
+            textSize = resources.getDimension(R.dimen.text_caption_dp) / resources.displayMetrics.density
             horizontalAlignment = Legend.LegendHorizontalAlignment.LEFT
             verticalAlignment = Legend.LegendVerticalAlignment.BOTTOM
             form = Legend.LegendForm.LINE

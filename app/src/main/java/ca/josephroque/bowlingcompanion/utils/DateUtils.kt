@@ -19,7 +19,7 @@ object DateUtils {
     private val prettyDateFormatter = SimpleDateFormat("MMMM dd, yyyy", Locale.CANADA)
 
     /** Date formatter for short dates. */
-    private val shortDateFormatter = DateFormat.getDateInstance(DateFormat.SHORT, Locale.CANADA)
+    private val shortDateFormatter = SimpleDateFormat("MM/dd", Locale.CANADA)
 
     /**
      * Convert a series date [String] to a [Date].

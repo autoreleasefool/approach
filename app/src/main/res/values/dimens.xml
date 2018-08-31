@@ -19,6 +19,7 @@
     <dimen name="text_list_item">16sp</dimen>
     <dimen name="text_body">14sp</dimen>
     <dimen name="text_caption">12sp</dimen>
+    <dimen name="text_caption_dp">12dp</dimen>
     <dimen name="text_tiny">10sp</dimen>
 
     <!-- Common components -->
