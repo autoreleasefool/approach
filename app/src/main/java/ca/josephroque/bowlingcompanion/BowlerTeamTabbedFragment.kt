@@ -1,8 +1,12 @@
 package ca.josephroque.bowlingcompanion
 
+import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import ca.josephroque.bowlingcompanion.bowlers.Bowler
 import ca.josephroque.bowlingcompanion.bowlers.BowlerDialog
 import ca.josephroque.bowlingcompanion.bowlers.BowlerListFragment
@@ -14,6 +18,7 @@ import ca.josephroque.bowlingcompanion.teams.Team
 import ca.josephroque.bowlingcompanion.teams.details.TeamDetailsFragment
 import ca.josephroque.bowlingcompanion.teams.list.TeamDialog
 import ca.josephroque.bowlingcompanion.teams.list.TeamListFragment
+import ca.josephroque.bowlingcompanion.transfer.TransferDialogFragment
 import ca.josephroque.bowlingcompanion.utils.Analytics
 import kotlinx.android.synthetic.main.fragment_common_tabs.tabbed_fragment_pager as fragmentPager
 
@@ -59,6 +64,29 @@ class BowlerTeamTabbedFragment : TabbedFragment(),
          */
         fun newInstance(): BowlerTeamTabbedFragment {
             return BowlerTeamTabbedFragment()
+        }
+    }
+
+    /** @Override */
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setHasOptionsMenu(true)
+    }
+
+    /** @Override */
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        super.onCreateOptionsMenu(menu, inflater)
+        inflater.inflate(R.menu.fragment_bowlers_teams, menu)
+    }
+
+    /** @Override */
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_transfer -> {
+                showTransferFragment()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
@@ -119,6 +147,14 @@ class BowlerTeamTabbedFragment : TabbedFragment(),
             }
             else -> throw RuntimeException("BowlerTeamTabbedFragment can only handle Bowler or Team and item is $item")
         }
+    }
+
+    /**
+     * Display a fragment for the user to transfer their data.
+     */
+    private fun showTransferFragment() {
+        val newFragment = TransferDialogFragment.newInstance()
+        fragmentNavigation?.pushDialogFragment(newFragment)
     }
 
     /**

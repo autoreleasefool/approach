@@ -34,7 +34,7 @@
     <!-- Menu -->
     <string name="action_send_feedback">Send feedback</string>
     <string name="action_settings">Settings</string>
-    <string name="action_transfer">Transfer</string>
+    <string name="action_transfer">Transfer data</string>
     <string name="action_save">Save</string>
     <string name="action_sort_by">Sort by</string>
     <string name="action_bowler_stats">Bowler stats</string>
@@ -42,6 +42,14 @@
     <string name="action_condensed_series">Condensed view</string>
     <string name="action_expanded_series">Expanded view</string>
     <string name="action_create_new">Create new</string>
+
+    <!-- Transfer -->
+    <string name="transfer_data">Transfer data</string>
+    <string name="transfer_instructions_p1">This tool allows you to transfer your bowling data to a new device. Your data will be uploaded anonymously, and you can later download it onto a new device. Your data will be available to download for 1 hour to give you ample time to transfer to a new device.</string>
+    <string name="transfer_instructions_p2">After you have imported the data on your new device, be sure to delete the backup.</string>
+    <string name="transfer_step_1">1. Export</string>
+    <string name="transfer_step_2">2. Import</string>
+    <string name="transfer_step_3">3. Restore or delete</string>
 
     <!-- Bowlers -->
     <string name="bowler">Bowler</string>
