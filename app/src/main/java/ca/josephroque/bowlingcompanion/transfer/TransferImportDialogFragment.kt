@@ -65,5 +65,4 @@ class TransferImportDialogFragment : BaseDialogFragment() {
             }
         }
     }
-
 }
