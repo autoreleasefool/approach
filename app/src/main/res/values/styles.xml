@@ -158,6 +158,17 @@
         <item name="android:layout_marginBottom">@dimen/base_margin</item>
     </style>
 
+    <!-- Progress Bar -->
+    <style name="ProgressBar" parent="Widget.AppCompat.ProgressBar.Horizontal">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:indeterminate">false</item>
+        <item name="android:layout_marginLeft">@dimen/base_margin_large</item>
+        <item name="android:layout_marginRight">@dimen/base_margin_large</item>
+        <item name="android:layout_marginTop">@dimen/base_margin</item>
+        <item name="android:layout_marginBottom">@dimen/base_margin</item>
+    </style>
+
     <!-- Images -->
 
     <style name="ListItemIcon">

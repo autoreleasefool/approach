@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/Dialog">
+
+    <android.support.v7.widget.Toolbar
+        style="@style/Toolbar"
+        android:id="@+id/toolbar_transfer" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout style="@style/BaseContainer">
+
+            <TextView
+                style="@style/BodyText"
+                android:text="@string/transfer_import_instructions" />
+
+            <android.support.design.widget.TextInputLayout
+                style="@style/BodyText"
+                android:id="@+id/input_layout_code"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.design.widget.TextInputEditText
+                    android:id="@+id/input_code"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textCapCharacters"
+                    android:imeOptions="flagNoFullscreen|actionDone"
+                    android:hint="@string/hint_code" />
+
+            </android.support.design.widget.TextInputLayout>
+
+            <ProgressBar
+                style="@style/ProgressBar"
+                android:id="@+id/import_progress"
+                android:visibility="gone" />
+
+            <TextView
+                style="@style/BodyText"
+                android:layout_marginTop="0dp"
+                android:id="@+id/import_progress_text"
+                android:visibility="gone" />
+
+            <TextView
+                style="@style/BodyText"
+                android:id="@+id/import_next_step"
+                android:text="@string/import_next_step"
+                android:textAlignment="center"
+                android:visibility="gone" />
+
+            <Button
+                style="@style/PrimaryButton"
+                android:id="@+id/btn_import"
+                android:text="@string/begin" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

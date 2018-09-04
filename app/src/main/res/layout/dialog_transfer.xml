@@ -15,12 +15,10 @@
 
             <TextView
                 style="@style/BodyText"
-                android:id="@+id/tv_transfer_instructions_p1"
                 android:text="@string/transfer_instructions_p1" />
 
             <TextView
                 style="@style/BodyText"
-                android:id="@+id/tv_transfer_instructions_p2"
                 android:text="@string/transfer_instructions_p2" />
 
             <Button

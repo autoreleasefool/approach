@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/Dialog">
+
+    <android.support.v7.widget.Toolbar
+        style="@style/Toolbar"
+        android:id="@+id/toolbar_transfer" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout style="@style/BaseContainer">
+
+            <TextView
+                style="@style/BodyText"
+                android:text="@string/transfer_export_instructions" />
+
+            <ProgressBar
+                style="@style/ProgressBar"
+                android:id="@+id/export_progress"
+                android:visibility="gone" />
+
+            <TextView
+                style="@style/BodyText"
+                android:layout_marginTop="0dp"
+                android:id="@+id/export_progress_text"
+                android:visibility="gone" />
+
+            <TextView
+                style="@style/BodyText"
+                android:id="@+id/export_status"
+                android:textAlignment="center"
+                android:visibility="gone" />
+
+            <TextView
+                style="@style/BodyText"
+                android:id="@+id/export_next_step"
+                android:text="@string/export_next_step"
+                android:textAlignment="center"
+                android:visibility="gone" />
+
+            <Button
+                style="@style/PrimaryButton"
+                android:id="@+id/btn_export"
+                android:text="@string/begin" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>
