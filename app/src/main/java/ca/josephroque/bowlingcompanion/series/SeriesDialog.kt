@@ -103,6 +103,8 @@ class SeriesDialog : BaseDialogFragment(), DatePickerDialog.OnDateSetListener {
         currentDate = Date(savedInstanceState?.getLong(ARG_DATE) ?: series?.date?.time ?: 0)
 
         val rootView = inflater.inflate(R.layout.dialog_series, container, false)
+        rootView.btn_change_date.setOnClickListener(onClickListener)
+        rootView.btn_delete.setOnClickListener(onClickListener)
         setupToolbar(rootView)
         return rootView
     }
@@ -113,11 +115,8 @@ class SeriesDialog : BaseDialogFragment(), DatePickerDialog.OnDateSetListener {
      * @param rootView the root view
      */
     private fun setupToolbar(rootView: View) {
-        rootView.toolbar_series.setTitle(R.string.edit_series)
-
-        rootView.btn_change_date.setOnClickListener(onClickListener)
-        rootView.btn_delete.setOnClickListener(onClickListener)
         rootView.toolbar_series.apply {
+            setTitle(R.string.edit_series)
             inflateMenu(R.menu.dialog_series)
             setNavigationIcon(R.drawable.ic_dismiss)
             setNavigationOnClickListener {
