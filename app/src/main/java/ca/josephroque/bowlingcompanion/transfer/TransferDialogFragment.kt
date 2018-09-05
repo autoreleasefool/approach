@@ -5,6 +5,7 @@ import android.support.v4.app.DialogFragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import ca.josephroque.bowlingcompanion.App
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.fragments.BaseDialogFragment
 import kotlinx.android.synthetic.main.dialog_transfer.view.*
@@ -59,6 +60,12 @@ class TransferDialogFragment : BaseDialogFragment() {
         view.btn_restore_delete.setOnClickListener(onClickListener)
 
         return view
+    }
+
+    override fun dismiss() {
+        App.hideSoftKeyBoard(activity!!)
+        activity?.supportFragmentManager?.popBackStack()
+        super.dismiss()
     }
 
     /**
