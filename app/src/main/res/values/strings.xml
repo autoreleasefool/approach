@@ -47,6 +47,7 @@
     <string name="transfer_data">Transfer data</string>
     <string name="export">Export</string>
     <string name="data_import">Import</string>
+    <string name="restore_or_delete">Restore or Delete</string>
     <string name="transfer_instructions_p1">This tool allows you to transfer your bowling data to a new device. Your data will be uploaded anonymously, and you can later download it onto a new device. Your data will be available to download for 1 hour to give you ample time to transfer to a new device.</string>
     <string name="transfer_instructions_p2">After you have imported the data on your new device, be sure to delete the backup.</string>
     <string name="transfer_step_1">1. Export</string>
@@ -62,6 +63,8 @@
     <string name="transfer_import_instructions">Enter your code below and press ‘Begin’ to download your bowling data. When the download has finished, you will be prompted to load the new data, which will permantently overwrite your data on this device.</string>
     <string name="import_next_step">After you have confirmed that the data was successfully imported, you should return to this screen and proceed with option "3.&nbsp;Restore&nbsp;or&nbsp;delete"</string>
     <string name="hint_code">Code</string>
+    <string name="transfer_restore_delete_instructions">Below, you can either restore your data from the last backup, or delete your backup to ensure it won\'t take up any space on your device.</string>
+    <string name="restore">Restore</string>
 
     <!-- Bowlers -->
     <string name="bowler">Bowler</string>

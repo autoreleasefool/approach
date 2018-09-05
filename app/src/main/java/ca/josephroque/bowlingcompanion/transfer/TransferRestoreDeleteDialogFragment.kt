@@ -7,40 +7,32 @@ import android.view.View
 import android.view.ViewGroup
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.fragments.BaseDialogFragment
-import kotlinx.android.synthetic.main.dialog_transfer.view.*
-import java.lang.IllegalArgumentException
+import kotlinx.android.synthetic.main.dialog_transfer_restore_delete.view.*
 
 /**
  * Copyright (C) 2018 Joseph Roque
  *
- * A fragment to enable transferring the user's data to a new device, or transferring from another device to their current one.
+ * A dialog fragment to restore or delete the user's data.
  */
-class TransferDialogFragment : BaseDialogFragment() {
+class TransferRestoreDeleteDialogFragment : BaseDialogFragment() {
 
     companion object {
         /** Logging identifier */
         @Suppress("unused")
-        private const val TAG = "TransferDialogFragment"
+        private const val TAG = "TransferResDelFragment"
 
         /**
          * Create a new instance.
          *
          * @return the new instance
          */
-        fun newInstance(): TransferDialogFragment {
-            return TransferDialogFragment()
+        fun newInstance(): TransferRestoreDeleteDialogFragment {
+            return TransferRestoreDeleteDialogFragment()
         }
     }
 
     private val onClickListener = View.OnClickListener {
-        val newFragment = when (it.id) {
-            R.id.btn_export -> TransferExportDialogFragment.newInstance()
-            R.id.btn_import -> TransferImportDialogFragment.newInstance()
-            R.id.btn_restore_delete -> TransferRestoreDeleteDialogFragment.newInstance()
-            else -> throw IllegalArgumentException("$TAG: button not set up in onClickListener")
-        }
-
-        fragmentNavigation?.pushDialogFragment(newFragment)
+        TODO("restore or delete")
     }
 
     /** @Override */
@@ -51,12 +43,11 @@ class TransferDialogFragment : BaseDialogFragment() {
 
     /** @Override */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.dialog_transfer, container, false)
+        val view = inflater.inflate(R.layout.dialog_transfer_restore_delete, container, false)
 
         setupToolbar(view)
-        view.btn_export.setOnClickListener(onClickListener)
-        view.btn_import.setOnClickListener(onClickListener)
-        view.btn_restore_delete.setOnClickListener(onClickListener)
+        view.btn_restore.setOnClickListener(onClickListener)
+        view.btn_delete.setOnClickListener(onClickListener)
 
         return view
     }
@@ -68,8 +59,8 @@ class TransferDialogFragment : BaseDialogFragment() {
      */
     private fun setupToolbar(rootView: View) {
         rootView.toolbar_transfer.apply {
-            setTitle(R.string.transfer_data)
-            setNavigationIcon(R.drawable.ic_dismiss)
+            setTitle(R.string.restore_or_delete)
+            setNavigationIcon(R.drawable.ic_arrow_back)
             setNavigationOnClickListener {
                 dismiss()
             }
