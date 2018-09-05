@@ -15,8 +15,8 @@ import ca.josephroque.bowlingcompanion.common.adapters.BaseRecyclerViewAdapter
  * specified delegate.
  */
 class StatisticsProviderRecyclerViewAdapter(
-        items: List<StatisticsProvider>,
-        delegate: AdapterDelegate<StatisticsProvider>?
+    items: List<StatisticsProvider>,
+    delegate: AdapterDelegate<StatisticsProvider>?
 ) : BaseRecyclerViewAdapter<StatisticsProvider>(items, delegate) {
 
     companion object {

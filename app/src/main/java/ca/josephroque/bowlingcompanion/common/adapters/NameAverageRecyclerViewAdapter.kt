@@ -17,8 +17,8 @@ import ca.josephroque.bowlingcompanion.common.interfaces.INameAverage
  * specified delegate.
  */
 class NameAverageRecyclerViewAdapter<T : INameAverage>(
-        items: List<T>,
-        delegate: AdapterDelegate<T>?
+    items: List<T>,
+    delegate: AdapterDelegate<T>?
 ) : BaseRecyclerViewAdapter<T>(items, delegate) {
 
     companion object {

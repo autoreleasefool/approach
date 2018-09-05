@@ -18,8 +18,8 @@ import com.robertlevonyan.views.chip.Chip
  * [RecyclerView.Adapter] that can display a [Team] and makes a call to the delegate.
  */
 class TeamRecyclerViewAdapter(
-        items: List<Team>,
-        delegate: BaseRecyclerViewAdapter.AdapterDelegate<Team>?
+    items: List<Team>,
+    delegate: BaseRecyclerViewAdapter.AdapterDelegate<Team>?
 ) : BaseRecyclerViewAdapter<Team>(items, delegate) {
 
     companion object {
