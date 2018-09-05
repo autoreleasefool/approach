@@ -30,7 +30,7 @@ import kotlinx.coroutines.experimental.launch
  * Dialog to select league and series for a team member.
  */
 class TeamMemberDialog : BaseDialogFragment(),
-        ListFragment.OnListFragmentInteractionListener,
+        ListFragment.ListFragmentDelegate,
         FragmentManager.OnBackStackChangedListener {
 
     companion object {
@@ -61,7 +61,7 @@ class TeamMemberDialog : BaseDialogFragment(),
     private var teamMember: TeamMember? = null
 
     /** Interaction handler. */
-    private var listener: OnTeamMemberDialogInteractionListener? = null
+    private var delegate: TeamMemberDialogDelegate? = null
 
     /** The league selected by the user for the team member. */
     private var selectedLeague: League? = null
@@ -181,15 +181,15 @@ class TeamMemberDialog : BaseDialogFragment(),
     /** @Override */
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        val parent = parentFragment as? OnTeamMemberDialogInteractionListener
-                ?: throw RuntimeException("${parentFragment!!} must implement OnTeamMemberDialogInteractionListener")
-        listener = parent
+        val parent = parentFragment as? TeamMemberDialogDelegate
+                ?: throw RuntimeException("${parentFragment!!} must implement TeamMemberDialogDelegate")
+        delegate = parent
     }
 
     /** @Override */
     override fun onDetach() {
         super.onDetach()
-        listener = null
+        delegate = null
     }
 
     /** @Override */
@@ -233,7 +233,7 @@ class TeamMemberDialog : BaseDialogFragment(),
                         league = league,
                         series = selectedSeries
                 )
-                listener?.onFinishTeamMember(newTeamMember)
+                delegate?.onFinishTeamMember(newTeamMember)
                 dismiss()
             }
         }
@@ -265,7 +265,7 @@ class TeamMemberDialog : BaseDialogFragment(),
     }
 
     /** Handles interactions with the dialog. */
-    interface OnTeamMemberDialogInteractionListener {
+    interface TeamMemberDialogDelegate {
 
         /**
          * Indicates when the user has finished editing the [TeamMember].

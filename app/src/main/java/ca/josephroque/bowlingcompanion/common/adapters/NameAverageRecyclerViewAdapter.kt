@@ -14,12 +14,12 @@ import ca.josephroque.bowlingcompanion.common.interfaces.INameAverage
  * Copyright (C) 2018 Joseph Roque
  *
  * [RecyclerView.Adapter] that can display a [INameAverage] and makes a call to the
- * specified listener.
+ * specified delegate.
  */
 class NameAverageRecyclerViewAdapter<T : INameAverage>(
-    items: List<T>,
-    listener: OnAdapterInteractionListener<T>?
-) : BaseRecyclerViewAdapter<T>(items, listener) {
+        items: List<T>,
+        delegate: AdapterDelegate<T>?
+) : BaseRecyclerViewAdapter<T>(items, delegate) {
 
     companion object {
         /** Logging identifier. */
@@ -138,9 +138,9 @@ class NameAverageRecyclerViewAdapter<T : INameAverage>(
 
             val deletedItemListener = View.OnClickListener {
                 if (it.id == R.id.tv_undo) {
-                    listener?.onItemSwipe(getItemAt(position))
+                    delegate?.onItemSwipe(getItemAt(position))
                 } else {
-                    listener?.onItemDelete(getItemAt(position))
+                    delegate?.onItemDelete(getItemAt(position))
                 }
             }
             itemView.setOnClickListener(deletedItemListener)

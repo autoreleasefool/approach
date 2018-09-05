@@ -55,7 +55,7 @@ class BowlerDialog : BaseDialogFragment(), View.OnClickListener {
     private var bowler: Bowler? = null
 
     /** Interaction handler. */
-    private var listener: OnBowlerDialogInteractionListener? = null
+    private var delegate: BowlerDialogDelegate? = null
 
     /** @Override */
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -127,14 +127,14 @@ class BowlerDialog : BaseDialogFragment(), View.OnClickListener {
     /** @Override */
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        val parentFragment = parentFragment as? OnBowlerDialogInteractionListener ?: throw RuntimeException("${parentFragment!!} must implement OnBowlerDialogInteractionListener")
-        listener = parentFragment
+        val parentFragment = parentFragment as? BowlerDialogDelegate ?: throw RuntimeException("${parentFragment!!} must implement BowlerDialogDelegate")
+        delegate = parentFragment
     }
 
     /** @Override */
     override fun onDetach() {
         super.onDetach()
-        listener = null
+        delegate = null
     }
 
     /** @Override */
@@ -175,7 +175,7 @@ class BowlerDialog : BaseDialogFragment(), View.OnClickListener {
                     .setTitle(String.format(context.resources.getString(R.string.query_delete_item), bowler.name))
                     .setMessage(R.string.dialog_delete_item_message)
                     .setPositiveButton(R.string.delete) { _, _ ->
-                        listener?.onDeleteBowler(bowler)
+                        delegate?.onDeleteBowler(bowler)
                         dismiss()
 
                         Analytics.trackDeleteBowler()
@@ -238,7 +238,7 @@ class BowlerDialog : BaseDialogFragment(), View.OnClickListener {
                         nameInput.setText(bowler?.name)
                     } else if (newBowler != null) {
                         dismiss()
-                        listener?.onFinishBowler(newBowler)
+                        delegate?.onFinishBowler(newBowler)
 
                         if (oldBowler == null) {
                             Analytics.trackCreateBowler()
@@ -254,7 +254,7 @@ class BowlerDialog : BaseDialogFragment(), View.OnClickListener {
     /**
      * Handles interactions with the dialog.
      */
-    interface OnBowlerDialogInteractionListener {
+    interface BowlerDialogDelegate {
 
         /**
          * Indicates when the user has finished editing the [Bowler]

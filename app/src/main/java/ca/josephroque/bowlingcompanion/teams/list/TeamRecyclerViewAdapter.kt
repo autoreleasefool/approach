@@ -15,12 +15,12 @@ import com.robertlevonyan.views.chip.Chip
 /**
  * Copyright (C) 2018 Joseph Roque
  *
- * [RecyclerView.Adapter] that can display a [Team] and makes a call to the listener.
+ * [RecyclerView.Adapter] that can display a [Team] and makes a call to the delegate.
  */
 class TeamRecyclerViewAdapter(
-    items: List<Team>,
-    listener: BaseRecyclerViewAdapter.OnAdapterInteractionListener<Team>?
-) : BaseRecyclerViewAdapter<Team>(items, listener) {
+        items: List<Team>,
+        delegate: BaseRecyclerViewAdapter.AdapterDelegate<Team>?
+) : BaseRecyclerViewAdapter<Team>(items, delegate) {
 
     companion object {
         /** Logging identifier. */
@@ -118,9 +118,9 @@ class TeamRecyclerViewAdapter(
 
             val deletedItemListener = View.OnClickListener {
                 if (it.id == R.id.tv_undo) {
-                    listener?.onItemSwipe(getItemAt(position))
+                    delegate?.onItemSwipe(getItemAt(position))
                 } else {
-                    listener?.onItemDelete(getItemAt(position))
+                    delegate?.onItemDelete(getItemAt(position))
                 }
             }
             itemView.setOnClickListener(deletedItemListener)

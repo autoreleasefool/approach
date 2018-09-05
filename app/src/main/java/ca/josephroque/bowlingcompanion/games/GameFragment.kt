@@ -53,8 +53,8 @@ class GameFragment : BaseFragment(),
         GameHeaderView.GameHeaderInteractionDelegate,
         MatchPlaySheet.MatchPlaySheetDelegate {
 
-    /** Interaction listener. */
-    private var listener: OnGameFragmentInteractionListener? = null
+    /** Interaction delegate. */
+    private var delegate: GameFragmentDelegate? = null
 
     /** IDs for frame views. */
     private val frameViewIds = intArrayOf(R.id.frame_0, R.id.frame_1, R.id.frame_2, R.id.frame_3,
@@ -126,7 +126,7 @@ class GameFragment : BaseFragment(),
 
         val context = context ?: return
         series?.let {
-            gameState = GameState(it, gameStateListener)
+            gameState = GameState(it, gameStateDelegate)
             gameState.loadGames(context)
         }
     }
@@ -149,14 +149,14 @@ class GameFragment : BaseFragment(),
     /** @Override */
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        val parent = parentFragment as? OnGameFragmentInteractionListener ?: throw RuntimeException("${parentFragment!!} must implement OnGameFragmentInteractionListener")
-        listener = parent
+        val parent = parentFragment as? GameFragmentDelegate ?: throw RuntimeException("${parentFragment!!} must implement GameFragmentDelegate")
+        delegate = parent
     }
 
     /** @Override */
     override fun onDetach() {
         super.onDetach()
-        listener = null
+        delegate = null
     }
 
     /** @Override */
@@ -381,14 +381,14 @@ class GameFragment : BaseFragment(),
      * Update the floating action button state.
      */
     private fun invalidateFab() {
-        val hasNextBowlerOrGame = listener?.hasNextBowlerOrGame == true
+        val hasNextBowlerOrGame = delegate?.hasNextBowlerOrGame == true
         val isManual = gameState.gamesLoaded && gameState.currentGame.isManual
         if (hasNextBowlerOrGame || !gameState.isLastBall) {
-            if (listener?.isFabEnabled == false) {
-                listener?.enableFab(true)
+            if (delegate?.isFabEnabled == false) {
+                delegate?.enableFab(true)
             }
         } else if (isManual || gameState.isLastBall) {
-            listener?.enableFab(false)
+            delegate?.enableFab(false)
         }
     }
 
@@ -472,7 +472,7 @@ class GameFragment : BaseFragment(),
         saveCurrentFrame(false)
 
         if (!gameState.frameHasNextBall || gameState.currentGame.isManual) {
-            val nextBowlerResult = listener?.nextBowlerOrGame(gameState.isLastFrame || gameState.currentGame.isManual)
+            val nextBowlerResult = delegate?.nextBowlerOrGame(gameState.isLastFrame || gameState.currentGame.isManual)
             when (nextBowlerResult) {
                 NextBowlerResult.NextBowlerGame, NextBowlerResult.NextGame -> { return }
                 else -> {} // does nothing
@@ -508,10 +508,10 @@ class GameFragment : BaseFragment(),
         render()
     }
 
-    // MARK: GameStateListener
+    // MARK: GameStateDelegate
 
     /** Handle events from game state changes. */
-    private val gameStateListener = object : GameState.GameStateListener {
+    private val gameStateDelegate = object : GameState.GameStateDelegate {
         /** @Override */
         override fun onGamesLoaded() {
             if (gameState.currentGame.isLocked) {
@@ -529,7 +529,7 @@ class GameFragment : BaseFragment(),
             invalidateFab()
 
             gameHeader.hasPreviousFrame = !gameState.isFirstBall && !gameState.currentGame.isManual
-            gameHeader.hasNextFrame = listener?.isFabEnabled == true
+            gameHeader.hasNextFrame = delegate?.isFabEnabled == true
             if (gameState.isLastBall) {
                 autoEventController.delay(GameAutoEventController.AutoEvent.Lock)
             } else {
@@ -688,12 +688,12 @@ class GameFragment : BaseFragment(),
         }
     }
 
-    // MARK: OnGameFragmentInteractionListener
+    // MARK: GameFragmentDelegate
 
     /**
      * Handle interactions with the game fragment.
      */
-    interface OnGameFragmentInteractionListener {
+    interface GameFragmentDelegate {
         /** Determine if there is another bowler/game to progress to after the current bowler/game. */
         val hasNextBowlerOrGame: Boolean
 
@@ -717,7 +717,7 @@ class GameFragment : BaseFragment(),
     }
 
     /**
-     * Represents possible states after [OnGameFragmentInteractionListener.nextBowlerOrGame] is called.
+     * Represents possible states after [GameFragmentDelegate.nextBowlerOrGame] is called.
      */
     enum class NextBowlerResult {
         NextBowler, NextGame, NextBowlerGame, None;

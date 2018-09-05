@@ -13,13 +13,13 @@ import ca.josephroque.bowlingcompanion.statistics.StatisticsCategory
 /**
  * Copyright (C) 2018 Joseph Roque
  *
- * [RecyclerView.Adapter] that can display a list of [StatisticListItem]s and makes calls to the specified listener
+ * [RecyclerView.Adapter] that can display a list of [StatisticListItem]s and makes calls to the specified delegate
  * upon interactions.
  */
 class StatisticsRecyclerViewAdapter(
-    values: List<StatisticListItem>,
-    listener: BaseRecyclerViewAdapter.OnAdapterInteractionListener<StatisticListItem>?
-) : BaseRecyclerViewAdapter<StatisticListItem>(values, listener) {
+        values: List<StatisticListItem>,
+        delegate: BaseRecyclerViewAdapter.AdapterDelegate<StatisticListItem>?
+) : BaseRecyclerViewAdapter<StatisticListItem>(values, delegate) {
 
     companion object {
         /** Logging identifier. */

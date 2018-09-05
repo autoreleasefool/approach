@@ -39,7 +39,7 @@ import kotlinx.coroutines.experimental.launch
  */
 class TeamDialog : BaseDialogFragment(),
         View.OnClickListener,
-        BaseRecyclerViewAdapter.OnAdapterInteractionListener<Bowler> {
+        BaseRecyclerViewAdapter.AdapterDelegate<Bowler> {
 
     companion object {
         /** Logging identifier. */
@@ -66,7 +66,7 @@ class TeamDialog : BaseDialogFragment(),
     private var team: Team? = null
 
     /** Interaction handler. */
-    private var listener: OnTeamDialogInteractionListener? = null
+    private var delegate: TeamDialogDelegate? = null
 
     /** Adapter to manage rendering the list of bowlers. */
     private lateinit var bowlerAdapter: NameAverageRecyclerViewAdapter<Bowler>
@@ -172,15 +172,15 @@ class TeamDialog : BaseDialogFragment(),
     /** @Override */
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        val parent = parentFragment as? OnTeamDialogInteractionListener
-                ?: throw RuntimeException("${parentFragment!!} must implement OnTeamDialogInteractionListener")
-        listener = parent
+        val parent = parentFragment as? TeamDialogDelegate
+                ?: throw RuntimeException("${parentFragment!!} must implement TeamDialogDelegate")
+        delegate = parent
     }
 
     /** @Override */
     override fun onDetach() {
         super.onDetach()
-        listener = null
+        delegate = null
     }
 
     /** @Override */
@@ -220,7 +220,7 @@ class TeamDialog : BaseDialogFragment(),
                     .setTitle(String.format(context.resources.getString(R.string.query_delete_item), team.name))
                     .setMessage(R.string.dialog_delete_item_message)
                     .setPositiveButton(R.string.delete) { _, _ ->
-                        listener?.onDeleteTeam(team)
+                        delegate?.onDeleteTeam(team)
                         dismiss()
 
                         Analytics.trackDeleteTeam()
@@ -288,7 +288,7 @@ class TeamDialog : BaseDialogFragment(),
                         refreshBowlerList()
                     } else if (newTeam != null) {
                         dismiss()
-                        listener?.onFinishTeam(newTeam)
+                        delegate?.onFinishTeam(newTeam)
 
                         if (oldTeam == null) {
                             Analytics.trackCreateTeam(selectedBowlers.size)
@@ -343,7 +343,7 @@ class TeamDialog : BaseDialogFragment(),
     /**
      * Handles interactions with the dialog.
      */
-    interface OnTeamDialogInteractionListener {
+    interface TeamDialogDelegate {
 
         /**
          * Indicates when the user has finished editing the [Team]

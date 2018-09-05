@@ -20,7 +20,7 @@ import java.lang.ref.WeakReference
  *
  * Manages the loading, saving, and updating of the state of a game.
  */
-class GameState(private val series: Series, private val listener: GameStateListener) {
+class GameState(private val series: Series, private val delegate: GameStateDelegate) {
 
     companion object {
         /** Logging identifier. */
@@ -81,7 +81,7 @@ class GameState(private val series: Series, private val listener: GameStateListe
         set(newBall) {
             if (newBall >= 0 && newBall < Frame.NUMBER_OF_BALLS) {
                 field = newBall
-                listener.onBallChanged()
+                delegate.onBallChanged()
             }
         }
 
@@ -177,7 +177,7 @@ class GameState(private val series: Series, private val listener: GameStateListe
         currentGame.score = score
         saveGame(context, true)
         attemptToSetFrameAndBall(0, 0)
-        listener.onManualScoreSet()
+        delegate.onManualScoreSet()
     }
 
     /**
@@ -190,7 +190,7 @@ class GameState(private val series: Series, private val listener: GameStateListe
         currentGame.isManual = false
         saveGame(context, false)
         attemptToSetFrameAndBall(0, 0)
-        listener.onManualScoreCleared()
+        delegate.onManualScoreCleared()
     }
 
     /**
@@ -358,7 +358,7 @@ class GameState(private val series: Series, private val listener: GameStateListe
             moveToLastSavedFrame()
 
             launch(Android) {
-                listener.onGamesLoaded()
+                delegate.onGamesLoaded()
             }
 
             return@async true
@@ -402,7 +402,7 @@ class GameState(private val series: Series, private val listener: GameStateListe
     /**
      * Handle events from game state changes.
      */
-    interface GameStateListener {
+    interface GameStateDelegate {
         /**
          * Called when the current ball is updated.
          */

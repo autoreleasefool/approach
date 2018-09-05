@@ -18,7 +18,7 @@ import ca.josephroque.bowlingcompanion.statistics.list.StatisticsListFragment
  * Display details for a [StatisticsUnit].
  */
 class StatisticsUnitDetailsFragment : BaseFragment(),
-        ListFragment.OnListFragmentInteractionListener,
+        ListFragment.ListFragmentDelegate,
         StatisticGraphFragment.StatisticGraphDelegate {
 
     companion object {
@@ -79,7 +79,7 @@ class StatisticsUnitDetailsFragment : BaseFragment(),
         TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
     }
 
-    // MARK: OnListFragmentInteractionListener
+    // MARK: ListFragmentDelegate
 
     /** @Override */
     override fun onItemSelected(item: IIdentifiable, longPress: Boolean) {

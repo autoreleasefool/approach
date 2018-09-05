@@ -36,9 +36,9 @@ import kotlinx.coroutines.experimental.launch
  */
 class TeamDetailsFragment : BaseFragment(),
         IFloatingActionButtonHandler,
-        ListFragment.OnListFragmentInteractionListener,
-        TeamMemberDialog.OnTeamMemberDialogInteractionListener,
-        TeamMembersListFragment.OnTeamMembersListFragmentInteractionListener,
+        ListFragment.ListFragmentDelegate,
+        TeamMemberDialog.TeamMemberDialogDelegate,
+        TeamMembersListFragment.TeamMemberListFragmentDelegate,
         IStatisticsContext {
 
     companion object {

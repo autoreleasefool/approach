@@ -15,13 +15,13 @@ import com.nex3z.flowlayout.FlowLayout
 /**
  * Copyright (C) 2018 Joseph Roque
  *
- * [RecyclerView.Adapter] that can display a [Series] and makes a call to the specified listener
+ * [RecyclerView.Adapter] that can display a [Series] and makes a call to the specified delegate
  * upon interactions.
  */
 class SeriesRecyclerViewAdapter(
-    values: List<Series>,
-    listener: BaseRecyclerViewAdapter.OnAdapterInteractionListener<Series>?
-) : BaseRecyclerViewAdapter<Series>(values, listener) {
+        values: List<Series>,
+        delegate: BaseRecyclerViewAdapter.AdapterDelegate<Series>?
+) : BaseRecyclerViewAdapter<Series>(values, delegate) {
 
     companion object {
         /** Logging identifier. */
@@ -245,9 +245,9 @@ class SeriesRecyclerViewAdapter(
 
             val deletedItemListener = View.OnClickListener {
                 if (it.id == R.id.tv_undo) {
-                    listener?.onItemSwipe(getItemAt(position))
+                    delegate?.onItemSwipe(getItemAt(position))
                 } else {
-                    listener?.onItemDelete(getItemAt(position))
+                    delegate?.onItemDelete(getItemAt(position))
                 }
             }
             itemView.setOnClickListener(deletedItemListener)

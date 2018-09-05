@@ -28,9 +28,9 @@ import kotlinx.android.synthetic.main.fragment_common_tabs.tabbed_fragment_pager
  * A fragment with tabs to switch between a [BowlerListFragment] and [TeamListFragment]
  */
 class BowlerTeamTabbedFragment : TabbedFragment(),
-        ListFragment.OnListFragmentInteractionListener,
-        BowlerDialog.OnBowlerDialogInteractionListener,
-        TeamDialog.OnTeamDialogInteractionListener {
+        ListFragment.ListFragmentDelegate,
+        BowlerDialog.BowlerDialogDelegate,
+        TeamDialog.TeamDialogDelegate {
 
     companion object {
         /** Logging identifier */

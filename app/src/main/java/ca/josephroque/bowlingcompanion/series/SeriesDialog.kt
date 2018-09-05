@@ -64,7 +64,7 @@ class SeriesDialog : BaseDialogFragment(), DatePickerDialog.OnDateSetListener {
     private var currentDate: Date? = null
 
     /** Interaction handler. */
-    private var listener: OnSeriesDialogInteractionListener? = null
+    private var delegate: SeriesDialogDelegate? = null
 
     /** View OnClickListener. */
     private var onClickListener: View.OnClickListener? = View.OnClickListener {
@@ -79,7 +79,7 @@ class SeriesDialog : BaseDialogFragment(), DatePickerDialog.OnDateSetListener {
                             .setTitle(String.format(context.resources.getString(R.string.query_delete_item), series.prettyDate))
                             .setMessage(R.string.dialog_delete_item_message)
                             .setPositiveButton(R.string.delete) { _, _ ->
-                                listener?.onDeleteSeries(series)
+                                delegate?.onDeleteSeries(series)
                                 dismiss()
 
                                 Analytics.trackDeleteSeries()
@@ -137,14 +137,14 @@ class SeriesDialog : BaseDialogFragment(), DatePickerDialog.OnDateSetListener {
     /** @Override */
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        val parentFragment = parentFragment as? OnSeriesDialogInteractionListener ?: throw RuntimeException("${parentFragment!!} must implement OnSeriesDialogInteractionListener")
-        listener = parentFragment
+        val parentFragment = parentFragment as? SeriesDialogDelegate ?: throw RuntimeException("${parentFragment!!} must implement SeriesDialogDelegate")
+        delegate = parentFragment
     }
 
     /** @Override */
     override fun onDetach() {
         super.onDetach()
-        listener = null
+        delegate = null
         onClickListener = null
     }
 
@@ -218,7 +218,7 @@ class SeriesDialog : BaseDialogFragment(), DatePickerDialog.OnDateSetListener {
                 dateText.text = oldSeries.prettyDate
             } else if (newSeries != null) {
                 dismiss()
-                listener?.onFinishSeries(newSeries)
+                delegate?.onFinishSeries(newSeries)
 
                 Analytics.trackEditSeries()
             }
@@ -252,7 +252,7 @@ class SeriesDialog : BaseDialogFragment(), DatePickerDialog.OnDateSetListener {
     /**
      * Handles interaction with the dialog.
      */
-    interface OnSeriesDialogInteractionListener {
+    interface SeriesDialogDelegate {
 
         /**
          * Indicates when the user has finished editing the [Series].

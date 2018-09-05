@@ -28,8 +28,8 @@ import kotlinx.android.synthetic.main.fragment_common_tabs.tabbed_fragment_pager
  * [LeagueListFragment] showing events.
  */
 class LeagueEventTabbedFragment : TabbedFragment(),
-        ListFragment.OnListFragmentInteractionListener,
-        LeagueDialog.OnLeagueDialogInteractionListener,
+        ListFragment.ListFragmentDelegate,
+        LeagueDialog.LeagueDialogDelegate,
         IStatisticsContext {
 
     companion object {

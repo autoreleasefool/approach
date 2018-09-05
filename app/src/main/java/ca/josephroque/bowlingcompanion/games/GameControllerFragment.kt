@@ -27,7 +27,7 @@ import kotlinx.android.synthetic.main.fragment_common_tabs.tabbed_fragment_tabs 
  */
 class GameControllerFragment : TabbedFragment(),
         INavigationDrawerHandler,
-        GameFragment.OnGameFragmentInteractionListener,
+        GameFragment.GameFragmentDelegate,
         IStatisticsContext {
 
     companion object {
@@ -200,7 +200,7 @@ class GameControllerFragment : TabbedFragment(),
         }
     }
 
-    // MARK: OnGameFragmentInteractionListener
+    // MARK: GameFragmentDelegate
 
     /** @Override */
     override val isFabEnabled: Boolean

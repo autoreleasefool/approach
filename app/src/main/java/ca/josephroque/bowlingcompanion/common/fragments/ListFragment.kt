@@ -24,7 +24,7 @@ import kotlinx.coroutines.experimental.launch
  */
 abstract class ListFragment<Item : IIdentifiable, Adapter : BaseRecyclerViewAdapter<Item>> :
         BaseFragment(),
-        BaseRecyclerViewAdapter.OnAdapterInteractionListener<Item>,
+        BaseRecyclerViewAdapter.AdapterDelegate<Item>,
         IRefreshable {
 
     companion object {
@@ -40,10 +40,10 @@ abstract class ListFragment<Item : IIdentifiable, Adapter : BaseRecyclerViewAdap
     private var items: MutableList<Item> = ArrayList()
 
     /** Handle list interaction events. */
-    protected var listener: OnListFragmentInteractionListener? = null
+    protected var delegate: ListFragmentDelegate? = null
 
-    /** Set to true to ignore check for parentFragment listener in onAttach. */
-    protected var canIgnoreListener = false
+    /** Set to true to ignore check for parentFragment delegate in onAttach. */
+    protected var canIgnoreDelegate = false
 
     /** @Override */
     override fun onCreateView(
@@ -69,18 +69,18 @@ abstract class ListFragment<Item : IIdentifiable, Adapter : BaseRecyclerViewAdap
     /** @Override */
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        if (canIgnoreListener) {
+        if (canIgnoreDelegate) {
             return
         }
 
-        val parent = parentFragment as? OnListFragmentInteractionListener ?: throw RuntimeException("${parentFragment!!} must implement OnListFragmentInteractionListener")
-        listener = parent
+        val parent = parentFragment as? ListFragmentDelegate ?: throw RuntimeException("${parentFragment!!} must implement ListFragmentDelegate")
+        delegate = parent
     }
 
     /** @Override */
     override fun onDetach() {
         super.onDetach()
-        listener = null
+        delegate = null
     }
 
     /** @Override */
@@ -96,7 +96,7 @@ abstract class ListFragment<Item : IIdentifiable, Adapter : BaseRecyclerViewAdap
 
     /** @Override */
     override fun onItemClick(item: Item) {
-        listener?.onItemSelected(item, false)
+        delegate?.onItemSelected(item, false)
     }
 
     /** @Override */
@@ -112,7 +112,7 @@ abstract class ListFragment<Item : IIdentifiable, Adapter : BaseRecyclerViewAdap
 
     /** @Override */
     override fun onItemLongClick(item: Item) {
-        listener?.onItemSelected(item, true)
+        delegate?.onItemSelected(item, true)
     }
 
     /** @Override */
@@ -171,7 +171,7 @@ abstract class ListFragment<Item : IIdentifiable, Adapter : BaseRecyclerViewAdap
     /**
      * Handle interactions with the list.
      */
-    interface OnListFragmentInteractionListener {
+    interface ListFragmentDelegate {
 
         /**
          * Indicates an item has been selected.

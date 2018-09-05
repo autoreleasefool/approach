@@ -19,7 +19,7 @@ import java.util.Collections
  */
 class TeamMembersListFragment :
     ListFragment<TeamMember, TeamMembersRecyclerViewAdapter>(),
-    TeamMembersRecyclerViewAdapter.TeamMemberMoveInteractionListener {
+    TeamMembersRecyclerViewAdapter.TeamMemberMoveDelegate {
 
     companion object {
         /** Logging identifier. */
@@ -45,8 +45,8 @@ class TeamMembersListFragment :
     /** The team whose details are to be displayed. */
     private var team: Team? = null
 
-    /** Interaction teamMemberListener. */
-    private var teamMemberListener: OnTeamMembersListFragmentInteractionListener? = null
+    /** Interaction delegate. */
+    private var teamMemberDelegate: TeamMemberListFragmentDelegate? = null
 
     /** Indicates if all team members are ready to begin a game. */
     private val allTeamMembersReady: Boolean
@@ -66,14 +66,14 @@ class TeamMembersListFragment :
     /** @Override */
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        val parent = parentFragment as? OnTeamMembersListFragmentInteractionListener ?: throw RuntimeException("${parentFragment!!} must implement OnTeamMembersListFragmentInteractionListener")
-        teamMemberListener = parent
+        val parent = parentFragment as? TeamMemberListFragmentDelegate ?: throw RuntimeException("${parentFragment!!} must implement TeamMemberListFragmentDelegate")
+        teamMemberDelegate = parent
     }
 
     /** @Override */
     override fun onDetach() {
         super.onDetach()
-        teamMemberListener = null
+        teamMemberDelegate = null
     }
 
     /** @Override */
@@ -95,7 +95,7 @@ class TeamMembersListFragment :
 
     /** @Override */
     override fun listWasRefreshed() {
-        teamMemberListener?.onTeamMembersReadyChanged(allTeamMembersReady)
+        teamMemberDelegate?.onTeamMembersReadyChanged(allTeamMembersReady)
     }
 
     /** @Override */
@@ -112,16 +112,16 @@ class TeamMembersListFragment :
                 initialOrder = teamMemberOrder)
         arguments?.putParcelable(ARG_TEAM, this@TeamMembersListFragment.team)
 
-        // Update adapter and listener
+        // Update adapter and delegate
         adapter?.itemsOrder = teamMemberOrder
         adapter?.notifyItemMoved(from, to)
-        teamMemberListener?.onTeamMembersReordered(teamMemberOrder)
+        teamMemberDelegate?.onTeamMembersReordered(teamMemberOrder)
     }
 
     /**
      * Handle interactions with the list.
      */
-    interface OnTeamMembersListFragmentInteractionListener {
+    interface TeamMemberListFragmentDelegate {
 
         /**
          * Called when the team members that are ready change.

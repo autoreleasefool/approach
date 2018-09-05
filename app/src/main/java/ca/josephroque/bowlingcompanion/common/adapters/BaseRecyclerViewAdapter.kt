@@ -16,7 +16,7 @@ import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
  */
 abstract class BaseRecyclerViewAdapter<Item : IIdentifiable>(
     values: List<Item>,
-    protected var listener: OnAdapterInteractionListener<Item>?
+    protected var delegate: AdapterDelegate<Item>?
 ) : RecyclerView.Adapter<BaseRecyclerViewAdapter<Item>.ViewHolder>(),
         View.OnClickListener,
         View.OnLongClickListener {
@@ -117,7 +117,7 @@ abstract class BaseRecyclerViewAdapter<Item : IIdentifiable>(
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
         super.onDetachedFromRecyclerView(recyclerView)
         this.recyclerView = null
-        listener = null
+        delegate = null
         itemTouchHelper = null
     }
 
@@ -159,7 +159,7 @@ abstract class BaseRecyclerViewAdapter<Item : IIdentifiable>(
 
                 notifyItemChanged(position)
             }
-            listener?.onItemClick(item)
+            delegate?.onItemClick(item)
         }
     }
 
@@ -174,7 +174,7 @@ abstract class BaseRecyclerViewAdapter<Item : IIdentifiable>(
                 return false
             }
 
-            listener?.onItemLongClick(getItemAt(it.getChildAdapterPosition(v)))
+            delegate?.onItemLongClick(getItemAt(it.getChildAdapterPosition(v)))
             return true
         }
 
@@ -222,7 +222,7 @@ abstract class BaseRecyclerViewAdapter<Item : IIdentifiable>(
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
             if (swipeable) {
                 val position = viewHolder.adapterPosition
-                listener?.onItemSwipe(getItemAt(position))
+                delegate?.onItemSwipe(getItemAt(position))
             }
         }
 
@@ -243,7 +243,7 @@ abstract class BaseRecyclerViewAdapter<Item : IIdentifiable>(
     /**
      * Handles interactions with items in the list.
      */
-    interface OnAdapterInteractionListener<in T : Any> {
+    interface AdapterDelegate<in T : Any> {
 
         /**
          * Indicates user interaction with the item.

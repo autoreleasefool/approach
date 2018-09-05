@@ -33,8 +33,8 @@ import kotlinx.coroutines.experimental.launch
  * A fragment representing a list of series.
  */
 class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
-        SeriesDialog.OnSeriesDialogInteractionListener,
-        ListFragment.OnListFragmentInteractionListener,
+        SeriesDialog.SeriesDialogDelegate,
+        ListFragment.ListFragmentDelegate,
         IFloatingActionButtonHandler,
         IStatisticsContext {
 
@@ -120,13 +120,13 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
 
     /** @Override */
     override fun onAttach(context: Context?) {
-        canIgnoreListener = true
-        listener = this
+        canIgnoreDelegate = true
+        delegate = this
         super.onAttach(context)
         singleSelectMode = arguments?.getBoolean(ARG_SINGLE_SELECT_MODE) ?: false
         if (singleSelectMode) {
-            val parent = parentFragment as? OnListFragmentInteractionListener ?: return
-            listener = parent
+            val parent = parentFragment as? ListFragmentDelegate ?: return
+            delegate = parent
         }
     }
 

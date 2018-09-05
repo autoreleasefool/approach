@@ -16,7 +16,7 @@ import kotlinx.coroutines.experimental.async
  * A fragment representing a list of [StatisticsProvider]s.
  */
 class StatisticsProviderListFragment : ListFragment<StatisticsProvider, StatisticsProviderRecyclerViewAdapter>(),
-        ListFragment.OnListFragmentInteractionListener {
+        ListFragment.ListFragmentDelegate {
 
     companion object {
         /** Logging identifier. */
@@ -70,8 +70,8 @@ class StatisticsProviderListFragment : ListFragment<StatisticsProvider, Statisti
 
     /** @Override */
     override fun onAttach(context: Context?) {
-        canIgnoreListener = true
-        listener = this
+        canIgnoreDelegate = true
+        delegate = this
         super.onAttach(context)
     }
 

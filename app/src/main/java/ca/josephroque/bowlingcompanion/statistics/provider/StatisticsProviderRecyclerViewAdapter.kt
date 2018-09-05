@@ -12,12 +12,12 @@ import ca.josephroque.bowlingcompanion.common.adapters.BaseRecyclerViewAdapter
  * Copyright (C) 2018 Joseph Roque
  *
  * [RecyclerView.Adapter] that can display a [StatisticsProvider] and makes a call to the
- * specified listener.
+ * specified delegate.
  */
 class StatisticsProviderRecyclerViewAdapter(
-    items: List<StatisticsProvider>,
-    listener: OnAdapterInteractionListener<StatisticsProvider>?
-) : BaseRecyclerViewAdapter<StatisticsProvider>(items, listener) {
+        items: List<StatisticsProvider>,
+        delegate: AdapterDelegate<StatisticsProvider>?
+) : BaseRecyclerViewAdapter<StatisticsProvider>(items, delegate) {
 
     companion object {
         /** Logging identifier. */

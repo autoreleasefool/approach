@@ -18,11 +18,11 @@ import ca.josephroque.bowlingcompanion.teams.Team
  * [BaseRecyclerViewAdapter] that can display the members of a [Team].
  */
 class TeamMembersRecyclerViewAdapter(
-    items: List<TeamMember>,
-    var itemsOrder: List<Long>,
-    listener: BaseRecyclerViewAdapter.OnAdapterInteractionListener<TeamMember>,
-    private var moveListener: TeamMemberMoveInteractionListener?
-) : BaseRecyclerViewAdapter<TeamMember>(items, listener) {
+        items: List<TeamMember>,
+        var itemsOrder: List<Long>,
+        delegate: BaseRecyclerViewAdapter.AdapterDelegate<TeamMember>,
+        private var moveDelegate: TeamMemberMoveDelegate?
+) : BaseRecyclerViewAdapter<TeamMember>(items, delegate) {
 
     companion object {
         /** Logging identifier. */
@@ -56,7 +56,7 @@ class TeamMembersRecyclerViewAdapter(
     /** @Override */
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
         super.onDetachedFromRecyclerView(recyclerView)
-        moveListener = null
+        moveDelegate = null
     }
 
     /** @Override */
@@ -127,7 +127,7 @@ class TeamMembersRecyclerViewAdapter(
 
         /** @Override */
         override fun onMove(recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder?, target: RecyclerView.ViewHolder?): Boolean {
-            moveListener?.onTeamMemberMoved(viewHolder!!.adapterPosition, target!!.adapterPosition)
+            moveDelegate?.onTeamMemberMoved(viewHolder!!.adapterPosition, target!!.adapterPosition)
             return true
         }
 
@@ -138,7 +138,7 @@ class TeamMembersRecyclerViewAdapter(
     /**
      * Callback to move team members.
      */
-    interface TeamMemberMoveInteractionListener {
+    interface TeamMemberMoveDelegate {
 
         /**
          * Move a team member.

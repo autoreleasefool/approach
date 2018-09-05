@@ -89,7 +89,7 @@ class LeagueDialog : BaseDialogFragment() {
     private var isEvent: Boolean = false
 
     /** Interaction handler. */
-    private var listener: OnLeagueDialogInteractionListener? = null
+    private var delegate: LeagueDialogDelegate? = null
 
     /** View OnClickListener. */
     private var onClickListener: View.OnClickListener? = View.OnClickListener {
@@ -111,7 +111,7 @@ class LeagueDialog : BaseDialogFragment() {
                             .setTitle(String.format(context.resources.getString(R.string.query_delete_item), league.name))
                             .setMessage(R.string.dialog_delete_item_message)
                             .setPositiveButton(R.string.delete) { _, _ ->
-                                listener?.onDeleteLeague(league)
+                                delegate?.onDeleteLeague(league)
                                 dismiss()
 
                                 Analytics.trackDeleteLeague()
@@ -244,14 +244,14 @@ class LeagueDialog : BaseDialogFragment() {
     /** @Override */
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        val parent = parentFragment as? OnLeagueDialogInteractionListener ?: throw RuntimeException("${parentFragment!!} must implement OnLeagueDialogInteractionListener")
-        listener = parent
+        val parent = parentFragment as? LeagueDialogDelegate ?: throw RuntimeException("${parentFragment!!} must implement LeagueDialogDelegate")
+        delegate = parent
     }
 
     /** @Override */
     override fun onDetach() {
         super.onDetach()
-        listener = null
+        delegate = null
         onClickListener = null
     }
 
@@ -502,7 +502,7 @@ class LeagueDialog : BaseDialogFragment() {
                         setImeOptions()
                     } else if (newLeague != null) {
                         dismiss()
-                        listener?.onFinishLeague(newLeague)
+                        delegate?.onFinishLeague(newLeague)
 
                         if (oldLeague == null) {
                             Analytics.trackCreateLeague(isEvent, numberOfGames, hasAdditional)
@@ -518,7 +518,7 @@ class LeagueDialog : BaseDialogFragment() {
     /**
      * Handles interactions with the dialog.
      */
-    interface OnLeagueDialogInteractionListener {
+    interface LeagueDialogDelegate {
 
         /**
          * Indicates when the user has finished editing the [League]
