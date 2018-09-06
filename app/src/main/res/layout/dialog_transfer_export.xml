@@ -17,15 +17,10 @@
                 style="@style/BodyText"
                 android:text="@string/transfer_export_instructions" />
 
-            <ProgressBar
-                style="@style/ProgressBar"
-                android:id="@+id/export_progress"
-                android:visibility="gone" />
-
-            <TextView
-                style="@style/BodyText"
-                android:layout_marginTop="0dp"
-                android:id="@+id/export_progress_text"
+            <ca.josephroque.bowlingcompanion.transfer.view.ProgressView
+                android:id="@+id/progress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:visibility="gone" />
 
             <TextView

@@ -61,7 +61,7 @@
     <string name="export_upload_complete">Upload complete! Your code:\n%s</string>
     <string name="export_next_step">On your other device, open this menu and select option "2. Import"</string>
     <string name="transfer_import_instructions">Enter your code below and press ‘Begin’ to download your bowling data. When the download has finished, you will be prompted to load the new data, which will permantently overwrite your data on this device.</string>
-    <string name="import_next_step">After you have confirmed that the data was successfully imported, you should return to this screen and proceed with option "3.&nbsp;Restore&nbsp;or&nbsp;delete"</string>
+    <string name="import_next_step">After you have confirmed that the data was successfully imported, you should return to this screen and proceed with option "3.\u00A0Restore\u00A0or\u00A0delete"</string>
     <string name="hint_code">Code</string>
     <string name="transfer_restore_delete_instructions">Below, you can either restore your data from the last backup, or delete your backup to ensure it won\'t take up any space on your device.</string>
     <string name="restore">Restore</string>
