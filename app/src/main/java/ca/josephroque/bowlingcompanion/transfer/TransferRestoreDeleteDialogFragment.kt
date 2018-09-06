@@ -18,15 +18,9 @@ import kotlinx.android.synthetic.main.dialog_transfer_restore_delete.view.*
 class TransferRestoreDeleteDialogFragment : BaseDialogFragment() {
 
     companion object {
-        /** Logging identifier */
         @Suppress("unused")
         private const val TAG = "TransferResDelFragment"
 
-        /**
-         * Create a new instance.
-         *
-         * @return the new instance
-         */
         fun newInstance(): TransferRestoreDeleteDialogFragment {
             return TransferRestoreDeleteDialogFragment()
         }
@@ -36,13 +30,13 @@ class TransferRestoreDeleteDialogFragment : BaseDialogFragment() {
         TODO("restore or delete")
     }
 
-    /** @Override */
+    // MARK: Lifecycle functions
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(DialogFragment.STYLE_NORMAL, R.style.Dialog)
     }
 
-    /** @Override */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.dialog_transfer_restore_delete, container, false)
 
@@ -59,11 +53,8 @@ class TransferRestoreDeleteDialogFragment : BaseDialogFragment() {
         super.dismiss()
     }
 
-    /**
-     * Set up title, style, and listeners for toolbar.
-     *
-     * @param rootView the root view
-     */
+    // MARK: Private functions
+
     private fun setupToolbar(rootView: View) {
         rootView.toolbar_transfer.apply {
             setTitle(R.string.restore_or_delete)

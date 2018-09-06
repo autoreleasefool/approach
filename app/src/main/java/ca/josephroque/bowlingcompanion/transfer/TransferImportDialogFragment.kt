@@ -18,15 +18,9 @@ import kotlinx.android.synthetic.main.dialog_transfer_import.view.*
 class TransferImportDialogFragment : BaseDialogFragment() {
 
     companion object {
-        /** Logging identifier */
         @Suppress("unused")
         private const val TAG = "TransferImportDialogFragment"
 
-        /**
-         * Create a new instance.
-         *
-         * @return the new instance
-         */
         fun newInstance(): TransferImportDialogFragment {
             return TransferImportDialogFragment()
         }
@@ -36,18 +30,21 @@ class TransferImportDialogFragment : BaseDialogFragment() {
         TODO("Begin import")
     }
 
-    /** @Override */
+    // MARK: Lifecycle functions
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(DialogFragment.STYLE_NORMAL, R.style.Dialog)
     }
 
-    /** @Override */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.dialog_transfer_import, container, false)
 
         setupToolbar(view)
-        view.btn_import.setOnClickListener(onClickListener)
+        view.btn_import.apply {
+            setOnClickListener(onClickListener)
+            isEnabled = false
+        }
 
         return view
     }
@@ -58,11 +55,8 @@ class TransferImportDialogFragment : BaseDialogFragment() {
         super.dismiss()
     }
 
-    /**
-     * Set up title, style, and listeners for toolbar.
-     *
-     * @param rootView the root view
-     */
+    // MARK: Private functions
+
     private fun setupToolbar(rootView: View) {
         rootView.toolbar_transfer.apply {
             setTitle(R.string.data_import)
