@@ -57,6 +57,7 @@
     <string name="begin">Begin</string>
     <string name="uploading">Uploading…</string>
     <string name="downloading">Downloading…</string>
+    <string name="loading">Loading…</string>
     <string name="connecting_to_server">Connecting to server…</string>
     <string name="export_upload_complete">Upload complete! Your code:\n%s</string>
     <string name="export_next_step">On your other device, open this menu and select option "2. Import"</string>
@@ -65,6 +66,16 @@
     <string name="hint_code">Code</string>
     <string name="transfer_restore_delete_instructions">Below, you can either restore your data from the last backup, or delete your backup to ensure it won\'t take up any space on your device.</string>
     <string name="restore">Restore</string>
+
+    <!-- Transfer errors -->
+    <string name="error_no_internet">Could not connect to the Internet</string>
+    <string name="error_invalid_key">Your key should be exactly 5 characters long</string>
+    <string name="error_server_unavailable">The server is unavailable, please try again later</string>
+    <string name="error_timeout">A connection could not be established, please try again later</string>
+    <string name="error_cancelled">Transfer cancelled</string>
+    <string name="error_file_not_found">Your data could not be found</string>
+    <string name="error_out_of_memory">The applicatuin ran out of memory while transferring</string>
+    <string name="error_unknown">An unknown error occurred</string>
 
     <!-- Bowlers -->
     <string name="bowler">Bowler</string>
