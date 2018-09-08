@@ -71,10 +71,10 @@
     <string name="error_no_internet">Could not connect to the Internet</string>
     <string name="error_invalid_key">Your key should be exactly 5 characters long</string>
     <string name="error_server_unavailable">The server is unavailable, please try again later</string>
-    <string name="error_timeout">A connection could not be established, please try again later</string>
+    <string name="error_timeout">Took too long to reach the server, please try again later</string>
     <string name="error_cancelled">Transfer cancelled</string>
     <string name="error_file_not_found">Your data could not be found</string>
-    <string name="error_out_of_memory">The applicatuin ran out of memory while transferring</string>
+    <string name="error_out_of_memory">The application ran out of memory while transferring</string>
     <string name="error_unknown">An unknown error occurred</string>
 
     <!-- Bowlers -->
