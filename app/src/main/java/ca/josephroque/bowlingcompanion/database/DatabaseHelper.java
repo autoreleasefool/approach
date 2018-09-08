@@ -32,7 +32,7 @@ public final class DatabaseHelper
     private static final String TAG = "DBHelper";
 
     /** Name of the database. */
-    private static final String DATABASE_NAME = "bowlingdata";
+    public static final String DATABASE_NAME = "bowlingdata";
 
     /** Version of the database, incremented with changes. */
     private static final int DATABASE_VERSION = 7;

@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import ca.josephroque.bowlingcompanion.App
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.fragments.BaseDialogFragment
+import ca.josephroque.bowlingcompanion.database.DatabaseHelper
 import kotlinx.android.synthetic.main.dialog_transfer.view.*
 import java.lang.IllegalArgumentException
 
@@ -54,6 +55,11 @@ class TransferDialogFragment : BaseDialogFragment() {
         view.btn_restore_delete.setOnClickListener(onClickListener)
 
         return view
+    }
+
+    override fun onStart() {
+        super.onStart()
+        DatabaseHelper.closeInstance()
     }
 
     override fun dismiss() {
