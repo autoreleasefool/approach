@@ -28,7 +28,6 @@ import java.io.FileInputStream
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 
-
 /**
  * Copyright (C) 2018 Joseph Roque
  *
@@ -61,7 +60,7 @@ class TransferServerConnection private constructor(context: Context) {
 
             val isTransferring: Boolean
                 get() {
-                    return when(this) {
+                    return when (this) {
                         Waiting, Connecting, Connected, Error -> false
                         Loading, Uploading, Downloading -> true
                     }
@@ -106,6 +105,8 @@ class TransferServerConnection private constructor(context: Context) {
             } else {
                 WeakReference(value)
             }
+
+            onStateChanged(_state, serverError)
         }
         get() = progressViewWrapper?.get()
 
@@ -117,6 +118,8 @@ class TransferServerConnection private constructor(context: Context) {
             } else {
                 WeakReference(value)
             }
+
+            onStateChanged(_state, serverError)
         }
         get() = cancelButtonWrapper?.get()
 
@@ -126,7 +129,7 @@ class TransferServerConnection private constructor(context: Context) {
 
     private val uploadEndpoint: String = listOf(BuildConfig.TRANSFER_SERVER_URL, "upload").joinToString("/")
 
-    private fun downloadEnpoint(key: String): String = listOf(BuildConfig.TRANSFER_SERVER_URL, "download?key=$key").joinToString("/")
+    private fun downloadEndpoint(key: String): String = listOf(BuildConfig.TRANSFER_SERVER_URL, "download?key=$key").joinToString("/")
 
     private fun validKeyEndpoint(key: String): String = listOf(BuildConfig.TRANSFER_SERVER_URL, "valid?key=$key").joinToString("/")
 
@@ -312,10 +315,10 @@ class TransferServerConnection private constructor(context: Context) {
     fun uploadUserData(): Deferred<String?> {
         return async(CommonPool) {
             _state = State.Loading
-            val (error, code) = internalUploadUserData().await()
+            val (error, key) = internalUploadUserData().await()
             if (error == null) {
                 _state = State.Connected
-                return@async code
+                return@async key
             } else {
                 _state = State.Error
                 serverError = error
@@ -487,7 +490,7 @@ class TransferServerConnection private constructor(context: Context) {
 
             _state = State.Downloading
             try {
-                val url = URL(downloadEnpoint(key))
+                val url = URL(downloadEndpoint(key))
 
                 // Preparing connection for upload
                 val connection = url.openConnection() as HttpURLConnection
@@ -550,7 +553,6 @@ class TransferServerConnection private constructor(context: Context) {
                 Log.e(TAG, "Unknown exception.", ex)
                 return@async ServerError.Unknown
             }
-
 
             return@async null
         }

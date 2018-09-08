@@ -23,7 +23,6 @@ class UserData(context: Context) {
         this@UserData.context.get()?.getDatabasePath(DatabaseHelper.DATABASE_NAME)?.absolutePath
     }
 
-
     val downloadFile by lazy { File(downloadPath) }
     private val downloadPath by lazy {
         val dbPath = this@UserData.context.get()?.getDatabasePath(DatabaseHelper.DATABASE_NAME)?.absolutePath
@@ -40,6 +39,16 @@ class UserData(context: Context) {
 
     fun backup(): Deferred<Boolean> {
         return Files.copyFile(dataFile, backupFile)
+    }
+
+    fun overwriteData(): Deferred<Boolean> {
+        return async(CommonPool) {
+            if (downloadFile.exists()) {
+                return@async Files.copyFile(downloadFile, dataFile).await()
+            }
+
+            return@async false
+        }
     }
 
     fun restoreBackup(): Deferred<Boolean> {

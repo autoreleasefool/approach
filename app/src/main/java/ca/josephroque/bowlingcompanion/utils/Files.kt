@@ -64,7 +64,6 @@ object Files {
                 } catch (ex: IOException) {
                     Log.e(TAG, "Failed to close backup streams.", ex)
                 }
-
             }
 
             return@async false

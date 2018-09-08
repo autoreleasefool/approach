@@ -19,12 +19,12 @@
 
             <android.support.design.widget.TextInputLayout
                 style="@style/BodyText"
-                android:id="@+id/input_layout_code"
+                android:id="@+id/input_layout_key"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <android.support.design.widget.TextInputEditText
-                    android:id="@+id/input_code"
+                    android:id="@+id/input_key"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textCapCharacters"

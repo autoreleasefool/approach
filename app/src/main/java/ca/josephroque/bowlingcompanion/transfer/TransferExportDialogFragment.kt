@@ -7,9 +7,17 @@ import android.view.View
 import android.view.ViewGroup
 import ca.josephroque.bowlingcompanion.App
 import ca.josephroque.bowlingcompanion.R
+import ca.josephroque.bowlingcompanion.common.Android
 import ca.josephroque.bowlingcompanion.common.fragments.BaseDialogFragment
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper
+import kotlinx.android.synthetic.main.dialog_transfer_export.export_status as exportStatus
+import kotlinx.android.synthetic.main.dialog_transfer_export.export_next_step as exportNextStep
+import kotlinx.android.synthetic.main.dialog_transfer_export.btn_cancel as cancelButton
+import kotlinx.android.synthetic.main.dialog_transfer_export.btn_export as exportButton
+import kotlinx.android.synthetic.main.dialog_transfer_export.progress as progressView
 import kotlinx.android.synthetic.main.dialog_transfer_export.view.*
+import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.experimental.launch
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -27,8 +35,17 @@ class TransferExportDialogFragment : BaseDialogFragment() {
         }
     }
 
+    private var exportDeferred: Deferred<String?>? = null
+
     private val onClickListener = View.OnClickListener {
-        TODO("Begin export")
+        when (it.id) {
+            R.id.btn_export -> {
+                exportUserData()
+            }
+            R.id.btn_cancel -> {
+                exportDeferred?.cancel()
+            }
+        }
     }
 
     // MARK: Lifecycle functions
@@ -43,6 +60,7 @@ class TransferExportDialogFragment : BaseDialogFragment() {
 
         setupToolbar(view)
         view.btn_export.setOnClickListener(onClickListener)
+        view.btn_cancel.setOnClickListener(onClickListener)
 
         return view
     }
@@ -50,6 +68,10 @@ class TransferExportDialogFragment : BaseDialogFragment() {
     override fun onStart() {
         super.onStart()
         DatabaseHelper.closeInstance()
+
+        dialog.setOnKeyListener { _, keyCode, _ ->
+            return@setOnKeyListener keyCode == android.view.KeyEvent.KEYCODE_BACK && exportDeferred != null
+        }
     }
 
     override fun dismiss() {
@@ -60,12 +82,54 @@ class TransferExportDialogFragment : BaseDialogFragment() {
 
     // MARK: Private functions
 
+    private fun getServerConnection(): TransferServerConnection? {
+        val context = this@TransferExportDialogFragment.context ?: return null
+        return TransferServerConnection.openConnection(context).apply {
+            this.progressView = this@TransferExportDialogFragment.progressView
+            this.cancelButton = this@TransferExportDialogFragment.cancelButton
+        }
+    }
+
     private fun setupToolbar(rootView: View) {
         rootView.toolbar_transfer.apply {
             setTitle(R.string.export)
             setNavigationIcon(R.drawable.ic_arrow_back)
             setNavigationOnClickListener {
                 dismiss()
+            }
+        }
+    }
+
+    private fun exportFailed() {
+        exportButton.visibility = View.VISIBLE
+        exportStatus.visibility = View.GONE
+        exportNextStep.visibility = View.GONE
+    }
+
+    private fun exportSucceeded(key: String) {
+        exportNextStep.visibility = View.VISIBLE
+        exportStatus.apply {
+            text = resources.getString(R.string.export_upload_complete, key)
+            visibility = View.VISIBLE
+        }
+    }
+
+    private fun exportUserData() {
+        launch(Android) {
+            val connection = getServerConnection() ?: return@launch
+            exportButton.visibility = View.GONE
+
+            if (!connection.prepareConnection().await()) {
+                exportFailed()
+            }
+
+            exportDeferred = connection.uploadUserData()
+            val key = exportDeferred?.await()
+            exportDeferred = null
+            if (key == null) {
+                exportFailed()
+            } else {
+                exportSucceeded(key)
             }
         }
     }
