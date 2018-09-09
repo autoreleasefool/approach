@@ -35,7 +35,7 @@ class TransferExportDialogFragment : BaseDialogFragment() {
         }
     }
 
-    private var exportDeferred: Deferred<String?>? = null
+    private var exportTask: Deferred<String?>? = null
 
     private val onClickListener = View.OnClickListener {
         when (it.id) {
@@ -43,7 +43,8 @@ class TransferExportDialogFragment : BaseDialogFragment() {
                 exportUserData()
             }
             R.id.btn_cancel -> {
-                exportDeferred?.cancel()
+                exportTask?.cancel()
+                exportTask = null
             }
         }
     }
@@ -70,7 +71,7 @@ class TransferExportDialogFragment : BaseDialogFragment() {
         DatabaseHelper.closeInstance()
 
         dialog.setOnKeyListener { _, keyCode, _ ->
-            return@setOnKeyListener keyCode == android.view.KeyEvent.KEYCODE_BACK && exportDeferred != null
+            return@setOnKeyListener keyCode == android.view.KeyEvent.KEYCODE_BACK && exportTask != null
         }
     }
 
@@ -123,9 +124,9 @@ class TransferExportDialogFragment : BaseDialogFragment() {
                 exportFailed()
             }
 
-            exportDeferred = connection.uploadUserData()
-            val key = exportDeferred?.await()
-            exportDeferred = null
+            exportTask = connection.uploadUserData()
+            val key = exportTask?.await()
+            exportTask = null
             if (key == null) {
                 exportFailed()
             } else {

@@ -17,6 +17,11 @@
                 style="@style/BodyText"
                 android:text="@string/transfer_restore_delete_instructions" />
 
+            <TextView
+                style="@style/BodyText"
+                android:id="@+id/tv_no_backup"
+                android:text="@string/no_backup_exists" />
+
             <Button
                 style="@style/PrimaryButton"
                 android:id="@+id/btn_restore"

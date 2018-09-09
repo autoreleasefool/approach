@@ -20,6 +20,8 @@ import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.launch
 import android.content.DialogInterface
 import android.support.v7.app.AlertDialog
+import ca.josephroque.bowlingcompanion.utils.BCError
+import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
 
 /**
@@ -38,7 +40,8 @@ class TransferImportDialogFragment : BaseDialogFragment() {
         }
     }
 
-    private var importDeferred: Deferred<Boolean?>? = null
+    private var fileTask: Deferred<Int?>? = null
+    private var importTask: Deferred<Boolean?>? = null
 
     private val onClickListener = View.OnClickListener {
         when (it.id) {
@@ -47,7 +50,8 @@ class TransferImportDialogFragment : BaseDialogFragment() {
                 importUserData(code)
             }
             R.id.btn_cancel -> {
-                importDeferred?.cancel()
+                importTask?.cancel()
+                importTask = null
             }
         }
     }
@@ -74,7 +78,7 @@ class TransferImportDialogFragment : BaseDialogFragment() {
         DatabaseHelper.closeInstance()
 
         dialog.setOnKeyListener { _, keyCode, _ ->
-            return@setOnKeyListener keyCode == android.view.KeyEvent.KEYCODE_BACK && importDeferred != null
+            return@setOnKeyListener keyCode == android.view.KeyEvent.KEYCODE_BACK && importTask != null && fileTask != null
         }
     }
 
@@ -123,8 +127,8 @@ class TransferImportDialogFragment : BaseDialogFragment() {
                 importFailed()
             }
 
-            importDeferred = connection.downloadUserData(key)
-            if (importDeferred?.await() == true) {
+            importTask = connection.downloadUserData(key)
+            if (importTask?.await() == true) {
                 importSucceeded()
             } else {
                 importFailed()
@@ -133,21 +137,39 @@ class TransferImportDialogFragment : BaseDialogFragment() {
     }
 
     private fun overwriteData(userData: UserData) {
+        val context = this@TransferImportDialogFragment.context ?: return
         launch(Android) {
-            importDeferred = async(Android) {
-                userData.backup().await()
-                userData.overwriteData().await()
+            fileTask = async(CommonPool) {
+                if (!userData.backup().await()) {
+                    return@async R.string.error_data_backup_failed
+                }
+                if (!userData.overwriteData().await()) {
+                    userData.deleteBackup().await()
+                    return@async R.string.error_overwrite_data_failed
+                }
+
+                userData.deleteDownload().await()
+
+                return@async null
             }
-            importDeferred?.await()
-            importDeferred = null
+
+            val error = fileTask?.await()
+            fileTask = null
+
+            if (error != null) {
+                BCError(R.string.import_error, error, BCError.Severity.Error).show(context)
+            }
         }
     }
 
     private fun deleteDownload(userData: UserData) {
         launch(Android) {
-            importDeferred = userData.deleteDownload()
-            importDeferred?.await()
-            importDeferred = null
+            fileTask = async(CommonPool) {
+                userData.deleteDownload().await()
+                return@async null
+            }
+            fileTask?.await()
+            fileTask = null
         }
     }
 

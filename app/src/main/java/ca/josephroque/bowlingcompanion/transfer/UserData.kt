@@ -25,14 +25,14 @@ class UserData(context: Context) {
 
     val downloadFile by lazy { File(downloadPath) }
     private val downloadPath by lazy {
-        val dbPath = this@UserData.context.get()?.getDatabasePath(DatabaseHelper.DATABASE_NAME)?.absolutePath
+        val dbPath = this@UserData.context.get()?.filesDir?.absolutePath
         dbPath?.let { return@lazy "${dbPath}_dl" }
         return@lazy null
     }
 
     val backupFile by lazy { File(backupPath) }
     private val backupPath by lazy {
-        val dbPath = this@UserData.context.get()?.getDatabasePath(DatabaseHelper.DATABASE_NAME)?.absolutePath
+        val dbPath = this@UserData.context.get()?.filesDir?.absolutePath
         dbPath?.let { return@lazy "${dbPath}_backup" }
         return@lazy null
     }
