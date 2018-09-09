@@ -20,6 +20,7 @@ import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.launch
 import android.content.DialogInterface
 import android.support.v7.app.AlertDialog
+import ca.josephroque.bowlingcompanion.utils.Analytics
 import ca.josephroque.bowlingcompanion.utils.BCError
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
@@ -121,6 +122,7 @@ class TransferImportDialogFragment : BaseDialogFragment() {
     private fun importUserData(key: String) {
         launch(Android) {
             val connection = getServerConnection() ?: return@launch
+            Analytics.trackTransferImport(Analytics.Companion.EventTime.Begin)
             importButton.visibility = View.GONE
 
             if (!connection.prepareConnection().await()) {
@@ -133,6 +135,7 @@ class TransferImportDialogFragment : BaseDialogFragment() {
             } else {
                 importFailed()
             }
+            Analytics.trackTransferImport(Analytics.Companion.EventTime.End)
         }
     }
 

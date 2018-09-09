@@ -52,6 +52,10 @@ class Analytics private constructor() {
             }
         }
 
+        enum class EventTime {
+            Begin, End
+        }
+
         // MARK: Team events
 
         fun trackSelectTeam() {
@@ -218,20 +222,54 @@ class Analytics private constructor() {
             instance.mixpanel.track("Statistics - View List")
         }
 
-        fun beginTrackingStatisticsLoaded() {
+        fun trackStatisticsLoaded(time: EventTime) {
             if (instance.disableTracking) return
-            instance.mixpanel.timeEvent("Statistics - Load")
-        }
-
-        fun trackStatisticsLoaded() {
-            if (instance.disableTracking) return
-            instance.mixpanel.track("Statistics - Load")
+            val eventName = "Statistics - Load"
+            when (time) {
+                EventTime.Begin -> instance.mixpanel.timeEvent(eventName)
+                EventTime.End -> instance.mixpanel.track(eventName)
+            }
         }
 
         fun trackViewStatisticsGraph(statisticName: String) {
             if (instance.disableTracking) return
             val properties: MutableMap<String, Any> = hashMapOf("Statistic" to statisticName)
             instance.mixpanel.trackMap("Statistics - View Graph", properties)
+        }
+
+        // MARK: Transfer events
+
+        fun trackViewTransferMenu() {
+            if (instance.disableTracking) return
+            instance.mixpanel.track("Transfer - View")
+        }
+
+        fun trackTransferExport(time: EventTime) {
+            if (instance.disableTracking) return
+            val eventName = "Transfer - Export"
+            when (time) {
+                EventTime.Begin -> instance.mixpanel.timeEvent(eventName)
+                EventTime.End -> instance.mixpanel.track(eventName)
+            }
+        }
+
+        fun trackTransferImport(time: EventTime) {
+            if (instance.disableTracking) return
+            val eventName = "Transfer - Import"
+            when (time) {
+                EventTime.Begin -> instance.mixpanel.timeEvent(eventName)
+                EventTime.End -> instance.mixpanel.track(eventName)
+            }
+        }
+
+        fun trackTransferRestoreBackup() {
+            if (instance.disableTracking) return
+            instance.mixpanel.track("Transfer - Restore Backup")
+        }
+
+        fun trackTransferDeleteBackup() {
+            if (instance.disableTracking) return
+            instance.mixpanel.track("Transfer - Delete Backup")
         }
 
         // MARK: Settings

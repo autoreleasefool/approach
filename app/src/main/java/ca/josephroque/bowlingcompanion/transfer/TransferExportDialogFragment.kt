@@ -10,6 +10,7 @@ import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.Android
 import ca.josephroque.bowlingcompanion.common.fragments.BaseDialogFragment
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper
+import ca.josephroque.bowlingcompanion.utils.Analytics
 import kotlinx.android.synthetic.main.dialog_transfer_export.export_status as exportStatus
 import kotlinx.android.synthetic.main.dialog_transfer_export.export_next_step as exportNextStep
 import kotlinx.android.synthetic.main.dialog_transfer_export.btn_cancel as cancelButton
@@ -125,6 +126,8 @@ class TransferExportDialogFragment : BaseDialogFragment() {
     private fun exportUserData() {
         launch(Android) {
             val connection = getServerConnection() ?: return@launch
+            Analytics.trackTransferExport(Analytics.Companion.EventTime.Begin)
+
             exportButton.visibility = View.GONE
 
             if (!connection.prepareConnection().await()) {
@@ -139,6 +142,8 @@ class TransferExportDialogFragment : BaseDialogFragment() {
             } else {
                 exportSucceeded(serverResponse)
             }
+
+            Analytics.trackTransferExport(Analytics.Companion.EventTime.End)
         }
     }
 }

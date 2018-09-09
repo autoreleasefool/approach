@@ -12,6 +12,7 @@ import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.Android
 import ca.josephroque.bowlingcompanion.common.fragments.BaseDialogFragment
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper
+import ca.josephroque.bowlingcompanion.utils.Analytics
 import ca.josephroque.bowlingcompanion.utils.BCError
 import kotlinx.android.synthetic.main.dialog_transfer_restore_delete.tv_no_backup as noBackupText
 import kotlinx.android.synthetic.main.dialog_transfer_restore_delete.btn_restore as restoreButton
@@ -135,6 +136,8 @@ class TransferRestoreDeleteDialogFragment : BaseDialogFragment() {
 
     private fun deleteBackup() {
         val context = context ?: return
+        Analytics.trackTransferDeleteBackup()
+
         val userData = UserData(context)
         launch(Android) {
             fileTask = async(CommonPool) {
@@ -172,6 +175,8 @@ class TransferRestoreDeleteDialogFragment : BaseDialogFragment() {
 
     private fun restoreBackup() {
         val context = context ?: return
+        Analytics.trackTransferRestoreBackup()
+
         val userData = UserData(context)
         launch(Android) {
             fileTask = async(CommonPool) {

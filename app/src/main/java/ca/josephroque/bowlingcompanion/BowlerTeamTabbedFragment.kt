@@ -84,6 +84,7 @@ class BowlerTeamTabbedFragment : TabbedFragment(),
         return when (item.itemId) {
             R.id.action_transfer -> {
                 showTransferFragment()
+                Analytics.trackViewTransferMenu()
                 true
             }
             else -> super.onOptionsItemSelected(item)
