@@ -107,7 +107,14 @@ class TransferExportDialogFragment : BaseDialogFragment() {
         exportNextStep.visibility = View.GONE
     }
 
-    private fun exportSucceeded(key: String) {
+    private fun exportSucceeded(serverResponse: String) {
+        val requestIdRegex = "requestId:(.*)".toRegex()
+        val key = requestIdRegex.matchEntire(serverResponse)?.groups?.get(1)?.value
+        if (key == null) {
+            exportFailed()
+            return
+        }
+
         exportNextStep.visibility = View.VISIBLE
         exportStatus.apply {
             text = resources.getString(R.string.export_upload_complete, key)
@@ -125,12 +132,12 @@ class TransferExportDialogFragment : BaseDialogFragment() {
             }
 
             exportTask = connection.uploadUserData()
-            val key = exportTask?.await()
+            val serverResponse = exportTask?.await()
             exportTask = null
-            if (key == null) {
+            if (serverResponse == null) {
                 exportFailed()
             } else {
-                exportSucceeded(key)
+                exportSucceeded(serverResponse)
             }
         }
     }
