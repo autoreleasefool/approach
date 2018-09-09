@@ -6,6 +6,7 @@ import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
 import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
 import ca.josephroque.bowlingcompanion.statistics.unit.StatisticsUnitTabbedFragment
+import ca.josephroque.bowlingcompanion.utils.Analytics
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async
@@ -103,6 +104,8 @@ class StatisticsProviderListFragment : ListFragment<StatisticsProvider, Statisti
         if (item is StatisticsProvider) {
             val newFragment = StatisticsUnitTabbedFragment.newInstance(item)
             fragmentNavigation?.pushFragment(newFragment)
+
+            Analytics.trackViewStatisticsList()
         }
     }
 }

@@ -9,8 +9,10 @@ import ca.josephroque.bowlingcompanion.common.fragments.BaseFragment
 import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
 import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
 import ca.josephroque.bowlingcompanion.statistics.Statistic
+import ca.josephroque.bowlingcompanion.statistics.StatisticHelper
 import ca.josephroque.bowlingcompanion.statistics.graph.StatisticGraphFragment
 import ca.josephroque.bowlingcompanion.statistics.list.StatisticsListFragment
+import ca.josephroque.bowlingcompanion.utils.Analytics
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -71,12 +73,30 @@ class StatisticsUnitDetailsFragment : BaseFragment(),
 
     /** @Override */
     override fun nextStatistic(statisticId: Long) {
-        TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
+        val (nextStatistic, _) = StatisticHelper.getAdjacentStatistics(statisticId)
+        nextStatistic?.let {
+            val graphFragment = StatisticGraphFragment.newInstance(unit, nextStatistic.id)
+            childFragmentManager.beginTransaction().apply {
+                replace(R.id.fragment_container, graphFragment)
+                commit()
+            }
+
+            Analytics.trackViewStatisticsGraph(it.getTitle(resources))
+        }
     }
 
     /** @Override */
     override fun prevStatistic(statisticId: Long) {
-        TODO("not implemented") // To change body of created functions use File | Settings | File Templates.
+        val (_, prevStatistic) = StatisticHelper.getAdjacentStatistics(statisticId)
+        prevStatistic?.let {
+            val graphFragment = StatisticGraphFragment.newInstance(unit, prevStatistic.id)
+            childFragmentManager.beginTransaction().apply {
+                replace(R.id.fragment_container, graphFragment)
+                commit()
+            }
+
+            Analytics.trackViewStatisticsGraph(it.getTitle(resources))
+        }
     }
 
     // MARK: ListFragmentDelegate
@@ -90,6 +110,8 @@ class StatisticsUnitDetailsFragment : BaseFragment(),
                     replace(R.id.fragment_container, graphFragment)
                     commit()
                 }
+
+                Analytics.trackViewStatisticsGraph(item.getTitle(resources))
             }
         }
     }

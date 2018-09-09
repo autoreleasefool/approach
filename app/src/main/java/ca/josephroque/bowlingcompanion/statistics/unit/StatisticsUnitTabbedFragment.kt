@@ -11,7 +11,6 @@ import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.adapters.BaseFragmentPagerAdapter
 import ca.josephroque.bowlingcompanion.common.fragments.TabbedFragment
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProvider
-import ca.josephroque.bowlingcompanion.utils.Analytics
 import kotlinx.android.synthetic.main.fragment_common_tabs.tabbed_fragment_tabs as fragmentTabs
 
 /**
@@ -49,15 +48,6 @@ class StatisticsUnitTabbedFragment : TabbedFragment() {
 
     /** The [StatisticsProvider] whose units' statistics are being displayed. */
     private lateinit var statisticsProvider: StatisticsProvider
-
-    /** @Override */
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        if (savedInstanceState == null) {
-            // Track analytics event when fragment is first created only
-            Analytics.trackViewStatisticsList()
-        }
-    }
 
     /** @Override */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
