@@ -38,7 +38,9 @@ object Files {
     fun copyFile(source: File, dest: File): Deferred<Boolean> {
         val bufferSize = 1024
         return async(CommonPool) {
-            dest.delete()
+            if (dest.exists()) {
+                dest.delete()
+            }
 
             var inputStream: InputStream? = null
             var outputStream: OutputStream? = null
