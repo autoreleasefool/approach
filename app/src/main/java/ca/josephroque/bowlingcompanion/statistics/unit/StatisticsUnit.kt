@@ -13,6 +13,7 @@ import ca.josephroque.bowlingcompanion.statistics.immutable.StatSeries
 import ca.josephroque.bowlingcompanion.statistics.impl.average.PerGameAverageStatistic
 import ca.josephroque.bowlingcompanion.statistics.impl.series.HighSeriesStatistic
 import ca.josephroque.bowlingcompanion.statistics.list.StatisticListItem
+import ca.josephroque.bowlingcompanion.utils.Analytics
 import ca.josephroque.bowlingcompanion.utils.DateUtils
 import com.github.mikephil.charting.data.Entry
 import kotlinx.coroutines.experimental.CommonPool
@@ -147,6 +148,8 @@ abstract class StatisticsUnit(initialSeries: List<StatSeries>? = null, initialSt
      */
     private fun buildStatistics(context: Context): Deferred<MutableList<StatisticListItem>> {
         return async(CommonPool) {
+            Analytics.trackStatisticsLoaded(Analytics.Companion.EventTime.Begin)
+
             val seriesList = this@StatisticsUnit.cachedSeries ?: getSeriesForStatistics(context).await()
             val statistics = StatisticHelper.getFreshStatistics()
             val statisticListItems: MutableList<StatisticListItem> = ArrayList(statistics.size + StatisticsCategory.values().size)
@@ -190,6 +193,8 @@ abstract class StatisticsUnit(initialSeries: List<StatSeries>? = null, initialSt
                 }
                 statisticListItems.add(statistic)
             }
+
+            Analytics.trackStatisticsLoaded(Analytics.Companion.EventTime.End)
 
             return@async statisticListItems
         }

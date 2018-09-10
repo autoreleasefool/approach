@@ -2,7 +2,6 @@ package ca.josephroque.bowlingcompanion.utils
 
 import android.content.Context
 import ca.josephroque.bowlingcompanion.BuildConfig
-import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.bowlers.Bowler
 import ca.josephroque.bowlingcompanion.leagues.League
 import ca.josephroque.bowlingcompanion.series.Series
