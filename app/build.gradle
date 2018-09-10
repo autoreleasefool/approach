@@ -36,10 +36,10 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
-            buildConfigField "String", "TRANSFER_SERVER_URL", ""
-            buildConfigField "String", "TRANSFER_API_KEY", ""
-            buildConfigField "String", "BANNER_AD_UNIT_ID", ""
-            buildConfigField "String", "MIXPANEL_TOKEN", ""
+            buildConfigField "String", "TRANSFER_SERVER_URL", "\"\""
+            buildConfigField "String", "TRANSFER_API_KEY", "\"\""
+            buildConfigField "String", "BANNER_AD_UNIT_ID", "\"\""
+            buildConfigField "String", "MIXPANEL_TOKEN", "\"\""
         }
     }
 }
