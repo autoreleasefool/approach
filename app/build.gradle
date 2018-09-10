@@ -27,10 +27,10 @@ android {
             minifyEnabled false
             applicationIdSuffix ".debug"
 
-            buildConfigField "String", "TRANSFER_SERVER_URL", "localhost"
-            buildConfigField "String", "TRANSFER_API_KEY", "API_KEY_GOES_HERE"
-            buildConfigField "String", "BANNER_AD_UNIT_ID", "API_KEY_GOES_HERE"
-            buildConfigField "String", "MIXPANEL_TOKEN", "API_KEY_GOES_HERE"
+            buildConfigField "String", "TRANSFER_SERVER_URL", "\"localhost\""
+            buildConfigField "String", "TRANSFER_API_KEY", "\"API_KEY_GOES_HERE\""
+            buildConfigField "String", "BANNER_AD_UNIT_ID", "\"API_KEY_GOES_HERE\""
+            buildConfigField "String", "MIXPANEL_TOKEN", "\"API_KEY_GOES_HERE\""
         }
         release {
             minifyEnabled false
