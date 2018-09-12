@@ -1,54 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/Dialog">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <android.support.v7.widget.Toolbar
-        style="@style/Toolbar"
-        android:id="@+id/toolbar_transfer" />
+    <LinearLayout style="@style/BaseContainer">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        <TextView
+            style="@style/BodyText"
+            android:text="@string/transfer_export_instructions" />
 
-        <LinearLayout style="@style/BaseContainer">
+        <ca.josephroque.bowlingcompanion.transfer.view.ProgressView
+            android:id="@+id/progress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
 
-            <TextView
-                style="@style/BodyText"
-                android:text="@string/transfer_export_instructions" />
+        <TextView
+            style="@style/BodyText"
+            android:id="@+id/export_status"
+            android:textAlignment="center"
+            android:visibility="gone" />
 
-            <ca.josephroque.bowlingcompanion.transfer.view.ProgressView
-                android:id="@+id/progress"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone" />
+        <TextView
+            style="@style/BodyText"
+            android:id="@+id/export_next_step"
+            android:text="@string/export_next_step"
+            android:textAlignment="center"
+            android:visibility="gone" />
 
-            <TextView
-                style="@style/BodyText"
-                android:id="@+id/export_status"
-                android:textAlignment="center"
-                android:visibility="gone" />
+        <Button
+            style="@style/PrimaryButton"
+            android:id="@+id/btn_export"
+            android:text="@string/begin" />
 
-            <TextView
-                style="@style/BodyText"
-                android:id="@+id/export_next_step"
-                android:text="@string/export_next_step"
-                android:textAlignment="center"
-                android:visibility="gone" />
+        <Button
+            style="@style/DeleteButton"
+            android:id="@+id/btn_cancel"
+            android:text="@string/cancel"
+            android:visibility="gone" />
 
-            <Button
-                style="@style/PrimaryButton"
-                android:id="@+id/btn_export"
-                android:text="@string/begin" />
+    </LinearLayout>
 
-            <Button
-                style="@style/DeleteButton"
-                android:id="@+id/btn_cancel"
-                android:text="@string/cancel"
-                android:visibility="gone" />
-
-        </LinearLayout>
-
-    </ScrollView>
-
-</LinearLayout>
+</ScrollView>

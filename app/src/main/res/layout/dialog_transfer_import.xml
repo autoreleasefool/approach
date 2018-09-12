@@ -1,64 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/Dialog">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <android.support.v7.widget.Toolbar
-        style="@style/Toolbar"
-        android:id="@+id/toolbar_transfer" />
+    <LinearLayout style="@style/BaseContainer">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        <TextView
+            style="@style/BodyText"
+            android:text="@string/transfer_import_instructions" />
 
-        <LinearLayout style="@style/BaseContainer">
+        <android.support.design.widget.TextInputLayout
+            style="@style/BodyText"
+            android:id="@+id/input_layout_key"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-            <TextView
-                style="@style/BodyText"
-                android:text="@string/transfer_import_instructions" />
-
-            <android.support.design.widget.TextInputLayout
-                style="@style/BodyText"
-                android:id="@+id/input_layout_key"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <android.support.design.widget.TextInputEditText
-                    android:id="@+id/input_key"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textCapCharacters"
-                    android:imeOptions="flagNoFullscreen|actionDone"
-                    android:hint="@string/hint_code" />
-
-            </android.support.design.widget.TextInputLayout>
-
-            <ca.josephroque.bowlingcompanion.transfer.view.ProgressView
-                android:id="@+id/progress"
+            <android.support.design.widget.TextInputEditText
+                android:id="@+id/input_key"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:visibility="gone" />
+                android:inputType="textCapCharacters"
+                android:imeOptions="flagNoFullscreen|actionDone"
+                android:hint="@string/hint_code" />
 
-            <TextView
-                style="@style/BodyText"
-                android:id="@+id/import_next_step"
-                android:text="@string/import_next_step"
-                android:textAlignment="center"
-                android:visibility="gone" />
+        </android.support.design.widget.TextInputLayout>
 
-            <Button
-                style="@style/PrimaryButton"
-                android:id="@+id/btn_import"
-                android:text="@string/begin" />
+        <ca.josephroque.bowlingcompanion.transfer.view.ProgressView
+            android:id="@+id/progress"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
 
-            <Button
-                style="@style/DeleteButton"
-                android:id="@+id/btn_cancel"
-                android:text="@string/cancel"
-                android:visibility="gone" />
+        <TextView
+            style="@style/BodyText"
+            android:id="@+id/import_next_step"
+            android:text="@string/import_next_step"
+            android:textAlignment="center"
+            android:visibility="gone" />
 
-        </LinearLayout>
+        <Button
+            style="@style/PrimaryButton"
+            android:id="@+id/btn_import"
+            android:text="@string/begin" />
 
-    </ScrollView>
+        <Button
+            style="@style/DeleteButton"
+            android:id="@+id/btn_cancel"
+            android:text="@string/cancel"
+            android:visibility="gone" />
 
-</LinearLayout>
+    </LinearLayout>
+
+</ScrollView>

@@ -18,7 +18,7 @@ import ca.josephroque.bowlingcompanion.teams.Team
 import ca.josephroque.bowlingcompanion.teams.details.TeamDetailsFragment
 import ca.josephroque.bowlingcompanion.teams.list.TeamDialog
 import ca.josephroque.bowlingcompanion.teams.list.TeamListFragment
-import ca.josephroque.bowlingcompanion.transfer.TransferDialogFragment
+import ca.josephroque.bowlingcompanion.transfer.BaseTransferDialogFragment
 import ca.josephroque.bowlingcompanion.utils.Analytics
 import kotlinx.android.synthetic.main.fragment_common_tabs.tabbed_fragment_pager as fragmentPager
 
@@ -154,7 +154,7 @@ class BowlerTeamTabbedFragment : TabbedFragment(),
      * Display a fragment for the user to transfer their data.
      */
     private fun showTransferFragment() {
-        val newFragment = TransferDialogFragment.newInstance()
+        val newFragment = BaseTransferDialogFragment.newInstance()
         fragmentNavigation?.pushDialogFragment(newFragment)
     }
 

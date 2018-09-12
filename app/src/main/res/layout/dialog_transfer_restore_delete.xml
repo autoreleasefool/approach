@@ -1,39 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/Dialog">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <android.support.v7.widget.Toolbar
-        style="@style/Toolbar"
-        android:id="@+id/toolbar_transfer" />
+    <LinearLayout style="@style/BaseContainer">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        <TextView
+            style="@style/BodyText"
+            android:text="@string/transfer_restore_delete_instructions" />
 
-        <LinearLayout style="@style/BaseContainer">
+        <TextView
+            style="@style/BodyText"
+            android:id="@+id/tv_no_backup"
+            android:text="@string/no_backup_exists" />
 
-            <TextView
-                style="@style/BodyText"
-                android:text="@string/transfer_restore_delete_instructions" />
+        <Button
+            style="@style/PrimaryButton"
+            android:id="@+id/btn_restore"
+            android:text="@string/restore" />
 
-            <TextView
-                style="@style/BodyText"
-                android:id="@+id/tv_no_backup"
-                android:text="@string/no_backup_exists" />
+        <Button
+            style="@style/PrimaryButton"
+            android:id="@+id/btn_delete"
+            android:text="@string/delete" />
 
-            <Button
-                style="@style/PrimaryButton"
-                android:id="@+id/btn_restore"
-                android:text="@string/restore" />
+    </LinearLayout>
 
-            <Button
-                style="@style/PrimaryButton"
-                android:id="@+id/btn_delete"
-                android:text="@string/delete" />
-
-        </LinearLayout>
-
-    </ScrollView>
-
-</LinearLayout>
+</ScrollView>

@@ -1,15 +1,11 @@
 package ca.josephroque.bowlingcompanion.transfer
 
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import ca.josephroque.bowlingcompanion.App
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.Android
-import ca.josephroque.bowlingcompanion.common.fragments.BaseDialogFragment
-import ca.josephroque.bowlingcompanion.database.DatabaseHelper
 import kotlinx.android.synthetic.main.dialog_transfer_import.import_next_step as importNextStep
 import kotlinx.android.synthetic.main.dialog_transfer_import.btn_cancel as cancelButton
 import kotlinx.android.synthetic.main.dialog_transfer_import.btn_import as importButton
@@ -28,16 +24,16 @@ import kotlinx.coroutines.experimental.async
 /**
  * Copyright (C) 2018 Joseph Roque
  *
- * A dialog fragment to import user's data.
+ * A fragment to import user's data.
  */
-class TransferImportDialogFragment : BaseDialogFragment() {
+class TransferImportFragment : BaseTransferFragment() {
 
     companion object {
         @Suppress("unused")
-        private const val TAG = "TransferImportDialogFragment"
+        private const val TAG = "TransferImportFragment"
 
-        fun newInstance(): TransferImportDialogFragment {
-            return TransferImportDialogFragment()
+        fun newInstance(): TransferImportFragment {
+            return TransferImportFragment()
         }
     }
 
@@ -57,55 +53,29 @@ class TransferImportDialogFragment : BaseDialogFragment() {
         }
     }
 
-    // MARK: Lifecycle functions
+    // MARK: BaseTransferFragment
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.Dialog)
-    }
+    override val toolbarTitle = R.string.data_import
+    override val isBackEnabled = importTask == null && fileTask == null
+
+    // MARK: Lifecycle functions
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.dialog_transfer_import, container, false)
 
-        setupToolbar(view)
         view.btn_import.setOnClickListener(onClickListener)
         view.btn_cancel.setOnClickListener(onClickListener)
 
         return view
     }
 
-    override fun onStart() {
-        super.onStart()
-        DatabaseHelper.closeInstance()
-
-        dialog.setOnKeyListener { _, keyCode, _ ->
-            return@setOnKeyListener keyCode == android.view.KeyEvent.KEYCODE_BACK && importTask != null && fileTask != null
-        }
-    }
-
-    override fun dismiss() {
-        App.hideSoftKeyBoard(activity!!)
-        activity?.supportFragmentManager?.popBackStack()
-        super.dismiss()
-    }
-
     // MARK: Private functions
 
     private fun getServerConnection(): TransferServerConnection? {
-        val context = this@TransferImportDialogFragment.context ?: return null
+        val context = this@TransferImportFragment.context ?: return null
         return TransferServerConnection.openConnection(context).apply {
-            this.progressView = this@TransferImportDialogFragment.progressView
-            this.cancelButton = this@TransferImportDialogFragment.cancelButton
-        }
-    }
-
-    private fun setupToolbar(rootView: View) {
-        rootView.toolbar_transfer.apply {
-            setTitle(R.string.data_import)
-            setNavigationIcon(R.drawable.ic_arrow_back)
-            setNavigationOnClickListener {
-                dismiss()
-            }
+            this.progressView = this@TransferImportFragment.progressView
+            this.cancelButton = this@TransferImportFragment.cancelButton
         }
     }
 
@@ -140,7 +110,7 @@ class TransferImportDialogFragment : BaseDialogFragment() {
     }
 
     private fun overwriteData(userData: UserData) {
-        val context = this@TransferImportDialogFragment.context ?: return
+        val context = this@TransferImportFragment.context ?: return
         launch(Android) {
             fileTask = async(CommonPool) {
                 if (!userData.backup().await()) {

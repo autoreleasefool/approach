@@ -1,43 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/Dialog">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
-    <android.support.v7.widget.Toolbar
-        style="@style/Toolbar"
-        android:id="@+id/toolbar_transfer" />
+    <LinearLayout style="@style/BaseContainer">
 
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        <TextView
+            style="@style/BodyText"
+            android:text="@string/transfer_instructions_p1" />
 
-        <LinearLayout style="@style/BaseContainer">
+        <TextView
+            style="@style/BodyText"
+            android:text="@string/transfer_instructions_p2" />
 
-            <TextView
-                style="@style/BodyText"
-                android:text="@string/transfer_instructions_p1" />
+        <Button
+            style="@style/PrimaryButton"
+            android:id="@+id/btn_export"
+            android:text="@string/transfer_step_1" />
 
-            <TextView
-                style="@style/BodyText"
-                android:text="@string/transfer_instructions_p2" />
+        <Button
+            style="@style/PrimaryButton"
+            android:id="@+id/btn_import"
+            android:text="@string/transfer_step_2" />
 
-            <Button
-                style="@style/PrimaryButton"
-                android:id="@+id/btn_export"
-                android:text="@string/transfer_step_1" />
+        <Button
+            style="@style/PrimaryButton"
+            android:id="@+id/btn_restore_delete"
+            android:text="@string/transfer_step_3" />
 
-            <Button
-                style="@style/PrimaryButton"
-                android:id="@+id/btn_import"
-                android:text="@string/transfer_step_2" />
+    </LinearLayout>
 
-            <Button
-                style="@style/PrimaryButton"
-                android:id="@+id/btn_restore_delete"
-                android:text="@string/transfer_step_3" />
-
-        </LinearLayout>
-
-    </ScrollView>
-
-</LinearLayout>
+</ScrollView>

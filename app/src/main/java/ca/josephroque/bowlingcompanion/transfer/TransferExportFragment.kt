@@ -1,15 +1,11 @@
 package ca.josephroque.bowlingcompanion.transfer
 
 import android.os.Bundle
-import android.support.v4.app.DialogFragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import ca.josephroque.bowlingcompanion.App
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.Android
-import ca.josephroque.bowlingcompanion.common.fragments.BaseDialogFragment
-import ca.josephroque.bowlingcompanion.database.DatabaseHelper
 import ca.josephroque.bowlingcompanion.utils.Analytics
 import kotlinx.android.synthetic.main.dialog_transfer_export.export_status as exportStatus
 import kotlinx.android.synthetic.main.dialog_transfer_export.export_next_step as exportNextStep
@@ -23,16 +19,16 @@ import kotlinx.coroutines.experimental.launch
 /**
  * Copyright (C) 2018 Joseph Roque
  *
- * A dialog fragment to export user's data.
+ * A fragment to export user's data.
  */
-class TransferExportDialogFragment : BaseDialogFragment() {
+class TransferExportFragment : BaseTransferFragment() {
 
     companion object {
         @Suppress("unused")
-        private const val TAG = "TransferExportDialogFragment"
+        private const val TAG = "TransferExportFragment"
 
-        fun newInstance(): TransferExportDialogFragment {
-            return TransferExportDialogFragment()
+        fun newInstance(): TransferExportFragment {
+            return TransferExportFragment()
         }
     }
 
@@ -50,55 +46,29 @@ class TransferExportDialogFragment : BaseDialogFragment() {
         }
     }
 
-    // MARK: Lifecycle functions
+    // MARK: BaseTransferFragment
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setStyle(DialogFragment.STYLE_NORMAL, R.style.Dialog)
-    }
+    override val toolbarTitle = R.string.export
+    override val isBackEnabled = exportTask == null
+
+    // MARK: Lifecycle functions
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.dialog_transfer_export, container, false)
 
-        setupToolbar(view)
         view.btn_export.setOnClickListener(onClickListener)
         view.btn_cancel.setOnClickListener(onClickListener)
 
         return view
     }
 
-    override fun onStart() {
-        super.onStart()
-        DatabaseHelper.closeInstance()
-
-        dialog.setOnKeyListener { _, keyCode, _ ->
-            return@setOnKeyListener keyCode == android.view.KeyEvent.KEYCODE_BACK && exportTask != null
-        }
-    }
-
-    override fun dismiss() {
-        App.hideSoftKeyBoard(activity!!)
-        activity?.supportFragmentManager?.popBackStack()
-        super.dismiss()
-    }
-
     // MARK: Private functions
 
     private fun getServerConnection(): TransferServerConnection? {
-        val context = this@TransferExportDialogFragment.context ?: return null
+        val context = this@TransferExportFragment.context ?: return null
         return TransferServerConnection.openConnection(context).apply {
-            this.progressView = this@TransferExportDialogFragment.progressView
-            this.cancelButton = this@TransferExportDialogFragment.cancelButton
-        }
-    }
-
-    private fun setupToolbar(rootView: View) {
-        rootView.toolbar_transfer.apply {
-            setTitle(R.string.export)
-            setNavigationIcon(R.drawable.ic_arrow_back)
-            setNavigationOnClickListener {
-                dismiss()
-            }
+            this.progressView = this@TransferExportFragment.progressView
+            this.cancelButton = this@TransferExportFragment.cancelButton
         }
     }
 
