@@ -15,7 +15,7 @@ android {
     defaultConfig {
         applicationId "ca.josephroque.bowlingcompanion"
         minSdkVersion 21
-        targetSdkVersion 27
+        targetSdkVersion 28
         versionCode versionMajor * 100 + versionMinor * 10 + versionPatch
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
