@@ -15,7 +15,7 @@ android {
     defaultConfig {
         applicationId "ca.josephroque.bowlingcompanion"
         minSdkVersion 21
-        targetSdkVersion 28
+        targetSdkVersion 27
         versionCode versionMajor * 100 + versionMinor * 10 + versionPatch
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -27,7 +27,7 @@ android {
             minifyEnabled false
             applicationIdSuffix ".debug"
 
-            buildConfigField "String", "TRANSFER_SERVER_URL", "\"localhost\""
+            buildConfigField "String", "TRANSFER_SERVER_URL", "\"http://10.0.2.2:8080\""
             buildConfigField "String", "TRANSFER_API_KEY", "\"API_KEY_GOES_HERE\""
             buildConfigField "String", "BANNER_AD_UNIT_ID", "\"API_KEY_GOES_HERE\""
             buildConfigField "String", "MIXPANEL_TOKEN", "\"API_KEY_GOES_HERE\""
