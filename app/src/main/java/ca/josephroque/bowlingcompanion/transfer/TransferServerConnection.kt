@@ -15,6 +15,10 @@ import android.net.ConnectivityManager
 import android.util.Log
 import ca.josephroque.bowlingcompanion.BuildConfig
 import ca.josephroque.bowlingcompanion.database.DatabaseHelper
+import kotlinx.coroutines.experimental.CoroutineExceptionHandler
+import kotlinx.coroutines.experimental.Job
+import kotlinx.coroutines.experimental.JobCancellationException
+import kotlinx.coroutines.experimental.yield
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.InputStreamReader
@@ -86,7 +90,7 @@ class TransferServerConnection private constructor(context: Context) {
     private var _state: State = State.Waiting
         set(value) {
             field = value
-            onStateChanged(field)
+            onStateChanged(field, serverError)
         }
     val state: State
         get() = _state
@@ -212,10 +216,20 @@ class TransferServerConnection private constructor(context: Context) {
 
     // MARK: Connection functions
 
-    fun prepareConnection(): Deferred<Boolean> {
-        return async(CommonPool) {
+    fun prepareConnection(parentJob: Job? = null): Deferred<Boolean> {
+        val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
+            Log.d(TAG, "Handling prepareConnection cancellation.")
+            _state = State.Error
+            serverError = if (throwable is JobCancellationException) {
+                ServerError.Cancelled
+            } else {
+                ServerError.Unknown
+            }
+        }
+
+        return async(CommonPool + exceptionHandler, parent = parentJob) {
             _state = State.Connecting
-            val error = internalPrepareConnection().await()
+            val error = internalPrepareConnection(parentJob, exceptionHandler).await()
             if (error == null) {
                 _state = State.Connected
                 return@async true
@@ -227,13 +241,14 @@ class TransferServerConnection private constructor(context: Context) {
         }
     }
 
-    private fun internalPrepareConnection(): Deferred<ServerError?> {
-        return async(CommonPool) {
+    private fun internalPrepareConnection(parentJob: Job?, exceptionHandler: CoroutineExceptionHandler): Deferred<ServerError?> {
+        return async(CommonPool + exceptionHandler, parent = parentJob) {
             if (!isConnectionAvailable()) {
                 return@async ServerError.NoInternet
             }
 
             try {
+                yield()
                 val url = URL(statusEndpoint)
                 val connection = url.openConnection() as HttpURLConnection
                 val response = getConnectionBody(connection)
@@ -242,19 +257,23 @@ class TransferServerConnection private constructor(context: Context) {
 
                 // The server is only ready to accept uploads if it responds with "OK"
                 if (response == "OK") {
+                    yield()
                     _state = State.Connected
                     return@async null
                 } else {
                     return@async ServerError.ServerUnavailable
                 }
+            } catch (ex: JobCancellationException) {
+                Log.e(TAG, "prepareConnection - Connection was cancelled before it could be opened.", ex)
+                return@async ServerError.Cancelled
             } catch (ex: MalformedURLException) {
-                Log.e(TAG, "Error parsing URL. This shouldn't happen.", ex)
+                Log.e(TAG, "prepareConnection - Error parsing URL. This shouldn't happen.", ex)
                 return@async ServerError.MalformedURL
             } catch (ex: SocketTimeoutException) {
-                Log.e(TAG, "Server timed out during connection.", ex)
+                Log.e(TAG, "prepareConnection - Server timed out during connection.", ex)
                 return@async ServerError.Timeout
             } catch (ex: IOException) {
-                Log.e(TAG, "Error opening or closing connection getting status.", ex)
+                Log.e(TAG, "prepareConnection - Error opening or closing connection getting status.", ex)
                 return@async ServerError.IOException
             } catch (ex: Exception) {
                 return@async ServerError.ServerUnavailable
@@ -262,10 +281,20 @@ class TransferServerConnection private constructor(context: Context) {
         }
     }
 
-    fun isKeyValid(key: String): Deferred<Boolean> {
-        return async(CommonPool) {
+    fun isKeyValid(key: String, parentJob: Job?): Deferred<Boolean> {
+        val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
+            Log.d(TAG, "Handling isKeyValid cancellation.")
+            _state = State.Error
+            serverError = if (throwable is JobCancellationException) {
+                ServerError.Cancelled
+            } else {
+                ServerError.Unknown
+            }
+        }
+
+        return async(CommonPool + exceptionHandler, parent = parentJob) {
             _state = State.Loading
-            val error = internalIsKeyValid(key).await()
+            val error = internalIsKeyValid(key, parentJob, exceptionHandler).await()
             if (error == null) {
                 _state = State.Connected
                 return@async true
@@ -277,14 +306,15 @@ class TransferServerConnection private constructor(context: Context) {
         }
     }
 
-    private fun internalIsKeyValid(key: String): Deferred<ServerError?> {
+    private fun internalIsKeyValid(key: String, parentJob: Job?, exceptionHandler: CoroutineExceptionHandler): Deferred<ServerError?> {
         assert(_state == State.Connected) { "Ensure the server is connected before you contact it." }
-        return async(CommonPool) {
+        return async(CommonPool + exceptionHandler, parent = parentJob) {
             if (!isConnectionAvailable()) {
                 return@async ServerError.NoInternet
             }
 
             try {
+                yield()
                 val url = URL(validKeyEndpoint(key))
                 val connection = url.openConnection() as HttpURLConnection
                 val response = getConnectionBody(connection)
@@ -292,19 +322,23 @@ class TransferServerConnection private constructor(context: Context) {
                 Log.d(TAG, "Transfer server status response: $response")
 
                 // The key is only valid if the server responds with "VALID"
+                yield()
                 if (response == "VALID") {
                     return@async null
                 } else {
                     return@async ServerError.InvalidKey
                 }
+            } catch (ex: JobCancellationException) {
+                Log.e(TAG, "isKeyValid - User cancelled connection.")
+                return@async ServerError.Cancelled
             } catch (ex: MalformedURLException) {
-                Log.e(TAG, "Error parsing URL. This shouldn't happen.", ex)
+                Log.e(TAG, "isKeyValid - Error parsing URL. This shouldn't happen.", ex)
                 return@async ServerError.MalformedURL
             } catch (ex: SocketTimeoutException) {
-                Log.e(TAG, "Server timed out during connection.", ex)
+                Log.e(TAG, "isKeyValid - Server timed out during connection.", ex)
                 return@async ServerError.Timeout
             } catch (ex: IOException) {
-                Log.e(TAG, "Error opening or closing connection validating key.", ex)
+                Log.e(TAG, "isKeyValid - Error opening or closing connection validating key.", ex)
                 return@async ServerError.IOException
             } catch (ex: Exception) {
                 return@async ServerError.Unknown
@@ -312,10 +346,20 @@ class TransferServerConnection private constructor(context: Context) {
         }
     }
 
-    fun uploadUserData(): Deferred<String?> {
-        return async(CommonPool) {
+    fun uploadUserData(parentJob: Job? = null): Deferred<String?> {
+        val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
+            Log.d(TAG, "Handling uploadUserData exception")
+            _state = State.Error
+            serverError = if (throwable is JobCancellationException) {
+                ServerError.Cancelled
+            } else {
+                ServerError.Unknown
+            }
+        }
+
+        return async(CommonPool + exceptionHandler, parent = parentJob) {
             _state = State.Loading
-            val (error, key) = internalUploadUserData().await()
+            val (error, key) = internalUploadUserData(parentJob, exceptionHandler).await()
             if (error == null) {
                 _state = State.Connected
                 return@async key
@@ -329,9 +373,9 @@ class TransferServerConnection private constructor(context: Context) {
 
     // Most of this method retrieved from this StackOverflow question.
     // http://stackoverflow.com/a/7645328/4896787
-    private fun internalUploadUserData(): Deferred<Pair<ServerError?, String?>> {
+    private fun internalUploadUserData(parentJob: Job? = null, exceptionHandler: CoroutineExceptionHandler): Deferred<Pair<ServerError?, String?>> {
         assert(_state == State.Connected) { "Ensure the server is connected before you contact it." }
-        return async(CommonPool) {
+        return async(CommonPool + exceptionHandler, parent = parentJob) {
             if (!isConnectionAvailable()) {
                 return@async Pair(ServerError.NoInternet, null)
             }
@@ -345,6 +389,7 @@ class TransferServerConnection private constructor(context: Context) {
 
             _state = State.Uploading
             try {
+                yield()
                 fileInputStream = FileInputStream(dbFile)
                 val url = URL(uploadEndpoint)
 
@@ -360,6 +405,7 @@ class TransferServerConnection private constructor(context: Context) {
                 connection.setRequestProperty("Content-Type", "multipart/form-data;boundary=$MULTIPART_BOUNDARY")
                 connection.setRequestProperty("Authorization", BuildConfig.TRANSFER_API_KEY)
 
+                yield()
                 outputStream = DataOutputStream(connection.outputStream)
                 outputStream.writeBytes("$HYPHEN_SEPARATOR$MULTIPART_BOUNDARY$LINE_END")
                 outputStream.writeBytes("Content-Disposition: form-data; name=\"uploadedfile\";filename=\"${dbFile.name}\"$LINE_END")
@@ -371,9 +417,11 @@ class TransferServerConnection private constructor(context: Context) {
                 var bufferSize = Math.min(bytesAvailable, MAX_BUFFER_SIZE)
                 val buffer = ByteArray(bufferSize)
 
+                yield()
                 var bytesRead = fileInputStream.read(buffer, 0, bufferSize)
                 try {
-                    while (bytesRead > 0 && isActive) {
+                    while (bytesRead > 0) {
+                        yield()
                         try {
                             outputStream.write(buffer, 0, bufferSize)
                         } catch (ex: OutOfMemoryError) {
@@ -392,16 +440,15 @@ class TransferServerConnection private constructor(context: Context) {
                         bufferSize = Math.min(bytesAvailable, MAX_BUFFER_SIZE)
                         bytesRead = fileInputStream.read(buffer, 0, bufferSize)
                     }
+                } catch (ex: JobCancellationException) {
+                    Log.e(TAG, "upload - User cancelled upload.")
+                    return@async Pair(ServerError.Cancelled, null)
                 } catch (ex: Exception) {
-                    Log.e(TAG, "Error sending file.", ex)
+                    Log.e(TAG, "upload - Error sending file.", ex)
                     return@async Pair(ServerError.Unknown, null)
                 }
 
-                if (!isActive) {
-                    publishProgress(0)
-                    return@async Pair(ServerError.Cancelled, null)
-                }
-
+                yield()
                 outputStream.writeBytes(LINE_END)
                 outputStream.writeBytes("$HYPHEN_SEPARATOR$MULTIPART_BOUNDARY$HYPHEN_SEPARATOR$LINE_END")
                 publishProgress(100)
@@ -409,20 +456,25 @@ class TransferServerConnection private constructor(context: Context) {
                 val responseBuilder = StringBuilder()
                 if (connection.responseCode == HttpURLConnection.HTTP_OK) {
                     try {
+                        yield()
                         reader = BufferedReader(InputStreamReader(DataInputStream(connection.inputStream)))
                         var line = reader.readLine()
-                        while (line != null && isActive) {
+                        while (line != null) {
+                            yield()
                             responseBuilder.append(line)
                             line = reader.readLine()
                         }
+                    } catch (ex: JobCancellationException) {
+                        Log.e(TAG, "upload - User cancelled upload.")
+                        return@async Pair(ServerError.Cancelled, null)
                     } catch (ex: IOException) {
-                        Log.e(TAG, "Error reading server response.", ex)
+                        Log.e(TAG, "upload - Error reading server response.", ex)
                         return@async Pair(ServerError.IOException, null)
                     } finally {
                         try {
                             reader?.close()
                         } catch (ex: IOException) {
-                            Log.e(TAG, "Error closing stream.", ex)
+                            Log.e(TAG, "upload - Error closing stream.", ex)
                         }
                     }
                 }
@@ -432,20 +484,23 @@ class TransferServerConnection private constructor(context: Context) {
                 } else {
                     Pair(null, responseBuilder.toString())
                 }
+            } catch (ex: JobCancellationException) {
+                Log.e(TAG, "upload - User cancelled upload.")
+                return@async Pair(ServerError.Cancelled, null)
             } catch (ex: FileNotFoundException) {
-                Log.e(TAG, "Unable to find database file.", ex)
+                Log.e(TAG, "upload - Unable to find database file.", ex)
                 return@async Pair(ServerError.FileNotFound, null)
             } catch (ex: MalformedURLException) {
-                Log.e(TAG, "Malformed url. I have no idea how this happened.", ex)
+                Log.e(TAG, "upload - Malformed url. I have no idea how this happened.", ex)
                 return@async Pair(ServerError.MalformedURL, null)
             } catch (ex: SocketTimeoutException) {
-                Log.e(TAG, "Timed out reading response.", ex)
+                Log.e(TAG, "upload - Timed out reading response.", ex)
                 return@async Pair(ServerError.Timeout, null)
             } catch (ex: IOException) {
-                Log.e(TAG, "Couldn't open or maintain connection.", ex)
+                Log.e(TAG, "upload - Couldn't open or maintain connection.", ex)
                 return@async Pair(ServerError.IOException, null)
             } catch (ex: Exception) {
-                Log.e(TAG, "Unknown exception.", ex)
+                Log.e(TAG, "upload - Unknown exception.", ex)
                 return@async Pair(ServerError.Unknown, null)
             } finally {
                 try {
@@ -455,16 +510,26 @@ class TransferServerConnection private constructor(context: Context) {
                         it.close()
                     }
                 } catch (ex: IOException) {
-                    Log.e(TAG, "Error closing streams.", ex)
+                    Log.e(TAG, "upload - Error closing streams.", ex)
                 }
             }
         }
     }
 
-    fun downloadUserData(key: String): Deferred<Boolean> {
-        return async(CommonPool) {
+    fun downloadUserData(key: String, parentJob: Job?): Deferred<Boolean> {
+        val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
+            Log.d(TAG, "Handling downloadUserData exception")
+            _state = State.Error
+            serverError = if (throwable is JobCancellationException) {
+                ServerError.Cancelled
+            } else {
+                ServerError.Unknown
+            }
+        }
+
+        return async(CommonPool + exceptionHandler, parent = parentJob) {
             _state = State.Loading
-            val error = internalDownloadUserData(key).await()
+            val error = internalDownloadUserData(key, parentJob, exceptionHandler).await()
             if (error == null) {
                 _state = State.Connected
                 return@async true
@@ -476,12 +541,12 @@ class TransferServerConnection private constructor(context: Context) {
         }
     }
 
-    fun internalDownloadUserData(key: String): Deferred<ServerError?> {
+    fun internalDownloadUserData(key: String, parentJob: Job?, exceptionHandler: CoroutineExceptionHandler): Deferred<ServerError?> {
         assert(_state == State.Connected) { "Ensure the server is connected before you contact it." }
-        return async(CommonPool) {
+        return async(CommonPool + exceptionHandler, parent = parentJob) {
             if (!isConnectionAvailable()) {
                 return@async ServerError.NoInternet
-            } else if (!isKeyValid(key).await()) {
+            } else if (!isKeyValid(key, parentJob).await()) {
                 return@async ServerError.InvalidKey
             }
 
@@ -490,6 +555,7 @@ class TransferServerConnection private constructor(context: Context) {
 
             _state = State.Downloading
             try {
+                yield()
                 val url = URL(downloadEndpoint(key))
 
                 // Preparing connection for upload
@@ -506,8 +572,10 @@ class TransferServerConnection private constructor(context: Context) {
                 var lastProgressPercentage = 0
 
                 try {
+                    yield()
                     var dataRead = inputStream!!.read(data)
-                    while (dataRead != -1 && isActive) {
+                    while (dataRead != -1) {
+                        yield()
                         totalDataRead += dataRead
 
                         // Update the progress bar
@@ -520,26 +588,26 @@ class TransferServerConnection private constructor(context: Context) {
                         outputStream.write(data, 0, dataRead)
                         dataRead = inputStream.read(data)
                     }
+                } catch (ex: JobCancellationException) {
+                    Log.e(TAG, "download - User cancelled download.")
+                    return@async ServerError.Cancelled
                 } catch (ex: Exception) {
-                    Log.e(TAG, "Error receiving file.", ex)
+                    Log.e(TAG, "download - Error receiving file.", ex)
                     return@async ServerError.Unknown
                 } finally {
                     try {
                         outputStream.close()
                         inputStream?.close()
                     } catch (ex: IOException) {
-                        Log.e(TAG, "Error closing streams.", ex)
+                        Log.e(TAG, "download - Error closing streams.", ex)
                         return@async ServerError.IOException
                     }
                 }
-
-                if (!isActive) {
-                    publishProgress(0)
-                    return@async ServerError.Cancelled
-                }
-
-                // Update progress bar
+                yield()
                 publishProgress(100)
+            } catch (ex: JobCancellationException) {
+                Log.e(TAG, "download - User cancelled download.")
+                return@async ServerError.Cancelled
             } catch (ex: MalformedURLException) {
                 Log.e(TAG, "Malformed url. I have no idea how this happened.", ex)
                 return@async ServerError.MalformedURL

@@ -19,6 +19,7 @@ import android.support.v7.app.AlertDialog
 import ca.josephroque.bowlingcompanion.utils.Analytics
 import ca.josephroque.bowlingcompanion.utils.BCError
 import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.async
 
 /**
@@ -38,7 +39,7 @@ class TransferImportFragment : BaseTransferFragment() {
     }
 
     private var fileTask: Deferred<Int?>? = null
-    private var importTask: Deferred<Boolean?>? = null
+    private var importJob: Job? = null
 
     private val onClickListener = View.OnClickListener {
         when (it.id) {
@@ -47,8 +48,8 @@ class TransferImportFragment : BaseTransferFragment() {
                 importUserData(code)
             }
             R.id.btn_cancel -> {
-                importTask?.cancel()
-                importTask = null
+                importJob?.cancel()
+                importJob = null
             }
         }
     }
@@ -56,7 +57,7 @@ class TransferImportFragment : BaseTransferFragment() {
     // MARK: BaseTransferFragment
 
     override val toolbarTitle = R.string.data_import
-    override val isBackEnabled = importTask == null && fileTask == null
+    override val isBackEnabled = importJob == null && fileTask == null
 
     // MARK: Lifecycle functions
 
@@ -90,21 +91,24 @@ class TransferImportFragment : BaseTransferFragment() {
     }
 
     private fun importUserData(key: String) {
-        launch(Android) {
+        importJob = Job()
+
+        launch(Android, parent = importJob) {
+            val parentJob = importJob ?: return@launch
             val connection = getServerConnection() ?: return@launch
             Analytics.trackTransferImport(Analytics.Companion.EventTime.Begin)
             importButton.visibility = View.GONE
 
-            if (!connection.prepareConnection().await()) {
+            if (!connection.prepareConnection(parentJob).await()) {
                 importFailed()
             }
 
-            importTask = connection.downloadUserData(key)
-            if (importTask?.await() == true) {
+            if (connection.downloadUserData(key, parentJob).await()) {
                 importSucceeded()
             } else {
                 importFailed()
             }
+
             Analytics.trackTransferImport(Analytics.Companion.EventTime.End)
         }
     }

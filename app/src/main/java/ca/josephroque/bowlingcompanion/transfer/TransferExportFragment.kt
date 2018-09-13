@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.dialog_transfer_export.btn_cancel as cance
 import kotlinx.android.synthetic.main.dialog_transfer_export.btn_export as exportButton
 import kotlinx.android.synthetic.main.dialog_transfer_export.progress as progressView
 import kotlinx.android.synthetic.main.dialog_transfer_export.view.*
-import kotlinx.coroutines.experimental.Deferred
+import kotlinx.coroutines.experimental.Job
 import kotlinx.coroutines.experimental.launch
 
 /**
@@ -32,7 +32,7 @@ class TransferExportFragment : BaseTransferFragment() {
         }
     }
 
-    private var exportTask: Deferred<String?>? = null
+    private var exportJob: Job? = null
 
     private val onClickListener = View.OnClickListener {
         when (it.id) {
@@ -40,8 +40,8 @@ class TransferExportFragment : BaseTransferFragment() {
                 exportUserData()
             }
             R.id.btn_cancel -> {
-                exportTask?.cancel()
-                exportTask = null
+                exportJob?.cancel()
+                exportJob = null
             }
         }
     }
@@ -49,7 +49,7 @@ class TransferExportFragment : BaseTransferFragment() {
     // MARK: BaseTransferFragment
 
     override val toolbarTitle = R.string.export
-    override val isBackEnabled = exportTask == null
+    override val isBackEnabled = exportJob == null
 
     // MARK: Lifecycle functions
 
@@ -94,19 +94,21 @@ class TransferExportFragment : BaseTransferFragment() {
     }
 
     private fun exportUserData() {
-        launch(Android) {
+        exportJob = Job()
+
+        launch(Android, parent = exportJob) {
+            val parentJob = exportJob ?: return@launch
             val connection = getServerConnection() ?: return@launch
             Analytics.trackTransferExport(Analytics.Companion.EventTime.Begin)
 
             exportButton.visibility = View.GONE
 
-            if (!connection.prepareConnection().await()) {
+            if (!connection.prepareConnection(parentJob).await()) {
                 exportFailed()
             }
 
-            exportTask = connection.uploadUserData()
-            val serverResponse = exportTask?.await()
-            exportTask = null
+            val serverResponse = connection.uploadUserData(parentJob).await()
+            exportJob = null
             if (serverResponse == null) {
                 exportFailed()
             } else {
