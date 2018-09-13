@@ -31,7 +31,7 @@ class BaseTransferDialogFragment : BaseDialogFragment(), TransferMenuFragment.Tr
     }
 
     private val onBackStackChangedListener = FragmentManager.OnBackStackChangedListener {
-        toolbar.setNavigationIcon(if (childFragmentManager.fragments.size > 0) {
+        toolbar.setNavigationIcon(if (childFragmentManager.backStackEntryCount > 0) {
             R.drawable.ic_arrow_back
         } else {
             R.drawable.ic_dismiss
@@ -92,7 +92,7 @@ class BaseTransferDialogFragment : BaseDialogFragment(), TransferMenuFragment.Tr
                     if (!it.isBackEnabled) { return@setNavigationOnClickListener }
                 }
 
-                if (childFragmentManager.fragments.size > 0) {
+                if (childFragmentManager.backStackEntryCount > 0) {
                     childFragmentManager.popBackStack()
                 } else {
                     dismiss()
