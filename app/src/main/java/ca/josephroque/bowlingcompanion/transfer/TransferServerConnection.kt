@@ -48,6 +48,7 @@ class TransferServerConnection private constructor(context: Context) {
         private const val HYPHEN_SEPARATOR = "--"
         private const val LINE_END = "\r\n"
         private const val MAX_BUFFER_SIZE = 32 * 1024
+        const val VALID_KEY_LENGTH = 5
 
         fun openConnection(context: Context): TransferServerConnection {
             return TransferServerConnection(context)
@@ -218,7 +219,6 @@ class TransferServerConnection private constructor(context: Context) {
 
     fun prepareConnection(parentJob: Job? = null): Deferred<Boolean> {
         val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
-            Log.d(TAG, "Handling prepareConnection cancellation.")
             _state = State.Error
             serverError = if (throwable is JobCancellationException) {
                 ServerError.Cancelled
@@ -288,7 +288,6 @@ class TransferServerConnection private constructor(context: Context) {
 
     fun isKeyValid(key: String, parentJob: Job?): Deferred<Boolean> {
         val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
-            Log.d(TAG, "Handling isKeyValid cancellation.")
             _state = State.Error
             serverError = if (throwable is JobCancellationException) {
                 ServerError.Cancelled
@@ -298,7 +297,6 @@ class TransferServerConnection private constructor(context: Context) {
         }
 
         return async(CommonPool + exceptionHandler, parent = parentJob) {
-            _state = State.Loading
             val error = internalIsKeyValid(key, parentJob, exceptionHandler).await()
             if (error == null) {
                 _state = State.Connected
@@ -312,8 +310,9 @@ class TransferServerConnection private constructor(context: Context) {
     }
 
     private fun internalIsKeyValid(key: String, parentJob: Job?, exceptionHandler: CoroutineExceptionHandler): Deferred<ServerError?> {
-        assert(_state == State.Connected) { "Ensure the server is connected before you contact it." }
         return async(CommonPool + exceptionHandler, parent = parentJob) {
+            assert(_state == State.Connected) { "Ensure the server is connected before you contact it." }
+            _state = State.Loading
             if (!isConnectionAvailable()) {
                 return@async ServerError.NoInternet
             }
@@ -387,8 +386,8 @@ class TransferServerConnection private constructor(context: Context) {
     // Most of this method retrieved from this StackOverflow question.
     // http://stackoverflow.com/a/7645328/4896787
     private fun internalUploadUserData(parentJob: Job? = null, exceptionHandler: CoroutineExceptionHandler): Deferred<Pair<ServerError?, String?>> {
-        assert(_state == State.Connected) { "Ensure the server is connected before you contact it." }
         return async(CommonPool + exceptionHandler, parent = parentJob) {
+            assert(_state == State.Connected) { "Ensure the server is connected before you contact it." }
             _state = State.Loading
             if (!isConnectionAvailable()) {
                 return@async Pair(ServerError.NoInternet, null)
@@ -532,7 +531,6 @@ class TransferServerConnection private constructor(context: Context) {
 
     fun downloadUserData(key: String, parentJob: Job?): Deferred<Boolean> {
         val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
-            Log.d(TAG, "Handling downloadUserData exception")
             _state = State.Error
             serverError = if (throwable is JobCancellationException) {
                 ServerError.Cancelled
@@ -555,8 +553,8 @@ class TransferServerConnection private constructor(context: Context) {
     }
 
     fun internalDownloadUserData(key: String, parentJob: Job?, exceptionHandler: CoroutineExceptionHandler): Deferred<ServerError?> {
-        assert(_state == State.Connected) { "Ensure the server is connected before you contact it." }
         return async(CommonPool + exceptionHandler, parent = parentJob) {
+            assert(_state == State.Connected) { "Ensure the server is connected before you contact it." }
             _state = State.Loading
             if (!isConnectionAvailable()) {
                 return@async ServerError.NoInternet

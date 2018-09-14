@@ -34,6 +34,12 @@
 
         <TextView
             style="@style/BodyText"
+            android:id="@+id/import_status"
+            android:textAlignment="center"
+            android:visibility="gone" />
+
+        <TextView
+            style="@style/BodyText"
             android:id="@+id/import_next_step"
             android:text="@string/import_next_step"
             android:textAlignment="center"

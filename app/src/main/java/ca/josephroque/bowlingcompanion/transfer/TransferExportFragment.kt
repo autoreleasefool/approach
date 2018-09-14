@@ -119,7 +119,7 @@ class TransferExportFragment : BaseTransferFragment() {
                 } else {
                     exportSucceeded(serverResponse!!)
                 }
-            } catch(ex: Exception) {
+            } catch (ex: Exception) {
                 exportFailed()
             } finally {
                 Analytics.trackTransferExport(Analytics.Companion.EventTime.End)

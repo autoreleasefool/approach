@@ -9,6 +9,7 @@ import ca.josephroque.bowlingcompanion.common.Android
 import kotlinx.android.synthetic.main.dialog_transfer_import.import_next_step as importNextStep
 import kotlinx.android.synthetic.main.dialog_transfer_import.btn_cancel as cancelButton
 import kotlinx.android.synthetic.main.dialog_transfer_import.btn_import as importButton
+import kotlinx.android.synthetic.main.dialog_transfer_import.import_status as importStatus
 import kotlinx.android.synthetic.main.dialog_transfer_import.progress as progressView
 import kotlinx.android.synthetic.main.dialog_transfer_import.input_key as keyInput
 import kotlinx.android.synthetic.main.dialog_transfer_import.view.*
@@ -16,6 +17,9 @@ import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.launch
 import android.content.DialogInterface
 import android.support.v7.app.AlertDialog
+import android.text.Editable
+import android.text.TextWatcher
+import ca.josephroque.bowlingcompanion.App
 import ca.josephroque.bowlingcompanion.utils.Analytics
 import ca.josephroque.bowlingcompanion.utils.BCError
 import kotlinx.coroutines.experimental.CommonPool
@@ -41,16 +45,32 @@ class TransferImportFragment : BaseTransferFragment() {
     private var fileTask: Deferred<Int?>? = null
     private var importJob: Job? = null
 
-    private val onClickListener = View.OnClickListener {
-        when (it.id) {
+    private val onClickListener = View.OnClickListener { view ->
+        when (view.id) {
             R.id.btn_import -> {
-                val code = keyInput.text.toString()
+                val code = keyInput.text.toString().toUpperCase()
+                keyInput.clearFocus()
+                activity?.let { App.hideSoftKeyBoard(it) }
                 importUserData(code)
             }
             R.id.btn_cancel -> {
                 importJob?.cancel()
                 importJob = null
             }
+        }
+    }
+
+    private val textChangedListener = object : TextWatcher {
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            // Intentionally left blank
+        }
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            // Intentionally left blank
+        }
+
+        override fun afterTextChanged(s: Editable?) {
+            importButton.isEnabled = s?.length == TransferServerConnection.VALID_KEY_LENGTH
         }
     }
 
@@ -70,6 +90,17 @@ class TransferImportFragment : BaseTransferFragment() {
         return view
     }
 
+    override fun onStart() {
+        super.onStart()
+        keyInput.addTextChangedListener(textChangedListener)
+        textChangedListener.afterTextChanged(keyInput.text)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        keyInput.removeTextChangedListener(textChangedListener)
+    }
+
     // MARK: Private functions
 
     private fun getServerConnection(): TransferServerConnection? {
@@ -83,33 +114,46 @@ class TransferImportFragment : BaseTransferFragment() {
     private fun importFailed() {
         importButton.visibility = View.VISIBLE
         importNextStep.visibility = View.GONE
+        importStatus.apply {
+            text = resources.getString(R.string.import_download_failed)
+            visibility = View.VISIBLE
+        }
     }
 
     private fun importSucceeded() {
         importNextStep.visibility = View.VISIBLE
+        importStatus.visibility = View.GONE
         promptUserToOverrideData()
     }
 
     private fun importUserData(key: String) {
         importJob = Job()
 
-        launch(Android, parent = importJob) {
-            val parentJob = importJob ?: return@launch
-            val connection = getServerConnection() ?: return@launch
+        launch(Android) {
             Analytics.trackTransferImport(Analytics.Companion.EventTime.Begin)
-            importButton.visibility = View.GONE
+            try {
+                val parentJob = importJob ?: return@launch
+                val connection = getServerConnection() ?: return@launch
 
-            if (!connection.prepareConnection(parentJob).await()) {
+                importButton.visibility = View.GONE
+                importStatus.visibility = View.GONE
+
+                if (!connection.prepareConnection(parentJob).await()) {
+                    importFailed()
+                }
+
+                val downloadSuccess = connection.downloadUserData(key, parentJob).await()
+                importJob = null
+                if (downloadSuccess) {
+                    importSucceeded()
+                } else {
+                    importFailed()
+                }
+            } catch (ex: Exception) {
                 importFailed()
+            } finally {
+                Analytics.trackTransferImport(Analytics.Companion.EventTime.End)
             }
-
-            if (connection.downloadUserData(key, parentJob).await()) {
-                importSucceeded()
-            } else {
-                importFailed()
-            }
-
-            Analytics.trackTransferImport(Analytics.Companion.EventTime.End)
         }
     }
 

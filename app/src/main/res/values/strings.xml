@@ -85,7 +85,7 @@
 
     <!-- Transfer errors -->
     <string name="error_no_internet">Could not connect to the Internet</string>
-    <string name="error_invalid_key">Your key should be exactly 5 characters long</string>
+    <string name="error_invalid_key">This key is invalid.</string>
     <string name="error_server_unavailable">The server is unavailable, please try again later</string>
     <string name="error_timeout">Took too long to reach the server, please try again later</string>
     <string name="error_cancelled">Transfer cancelled</string>
