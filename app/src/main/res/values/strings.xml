@@ -15,6 +15,7 @@
     <string name="sort_items">Sort items</string>
     <string name="start">Start</string>
     <string name="bowl">Bowl</string>
+    <string name="begin">Begin</string>
 
     <!-- Errors -->
     <string name="error_unknown_title">An unknown error occurred!</string>
@@ -51,27 +52,31 @@
     <string name="transfer_step_1">1.\u00A0Export</string>
     <string name="transfer_step_2">2.\u00A0Import</string>
     <string name="transfer_step_3">3.\u00A0Restore or\u00A0delete</string>
+    <string name="connecting_to_server">Connecting to server…</string>
+    <string name="loading">Loading…</string>
+
+    <!-- Transfer: exports -->
+    <string name="export">Export</string>
     <string name="transfer_export_instructions">Press \'Begin\' to upload your bowling data. When the upload finishes, you will receive a unique code that will allow you to download the data on a different device.</string>
     <string name="export_next_step">On your other device, open this menu and select option "2.\u00A0Import"</string>
-    <string name="transfer_import_instructions">Enter your code below and press ‘Begin’ to download your bowling data. When the download has finished, you will be prompted to load the new data, which will permanently overwrite your data on this device.</string>
-    <string name="import_next_step">After you have confirmed that the data was successfully imported, you should return to this screen and proceed with option "3.\u00A0Restore\u00A0or\u00A0delete"</string>
-    <string name="transfer_restore_delete_instructions">Below, you can either restore your data from the last backup, or delete your backup to ensure it won\'t take up any space on your device.</string>
-    <string name="hint_code">Code</string>
     <string name="export_upload_complete">Upload complete! Your code:\n%s</string>
     <string name="export_upload_failed">Upload failed! Please try again.</string>
-
-    <string name="export">Export</string>
-    <string name="data_import">Import</string>
-    <string name="begin">Begin</string>
-    <string name="restore">Restore</string>
     <string name="uploading">Uploading…</string>
-    <string name="downloading">Downloading…</string>
-    <string name="loading">Loading…</string>
-    <string name="connecting_to_server">Connecting to server…</string>
 
+    <!-- Transfer: imports -->
+    <string name="data_import">Import</string>
+    <string name="transfer_import_instructions">Enter your code below and press \'Begin\' to download your bowling data. When the download has finished, you will be prompted to load the new data, which will overwrite any other data on this device.</string>
+    <string name="import_next_step">After you have confirmed that the data was successfully imported, you should return to this screen and proceed with option "3.\u00A0Restore\u00A0or\u00A0delete"</string>
+    <string name="hint_code">Code</string>
+    <string name="import_download_failed">Download failed! Please try again.</string>
+    <string name="downloading">Downloading…</string>
     <string name="overwrite_data_title">Overwrite data?</string>
     <string name="overwrite_data_message">You have downloaded a set of bowler data from another device. You can overwrite your current data, confirm it\'s correct, then return to this menu to either delete the backup or reload your old data. Are you sure you want to continue?</string>
     <string name="overwrite">Overwrite</string>
+
+    <!-- Transfer: restore or delete -->
+    <string name="transfer_restore_delete_instructions">Below, you can either restore your data from the last backup, or delete your backup to ensure it won\'t take up any space on your device.</string>
+    <string name="restore">Restore</string>
     <string name="restore_backup_title">Restore backup?</string>
     <string name="restore_backup_message">Restoring your backup will overwrite the data you have downloaded, and you will need to download it again if you want to use it. Are you sure you want to restore your backup?</string>
     <string name="delete_backup_title">Delete backup?</string>
@@ -93,7 +98,7 @@
     <string name="error_delete_backup_failed_title">Deleting backup failed</string>
     <string name="error_delete_backup_failed_message">The data backup could not be deleted. This might be because it no longer exists.</string>
     <string name="error_restore_backup_failed_title">Restoring backup failed</string>
-    <string name="error_restore_backup_failed_message">The data backup could not be restore. This might be because it no longer exists.</string>
+    <string name="error_restore_backup_failed_message">The data backup could not be restored. This might be because it no longer exists.</string>
 
     <!-- Bowlers -->
     <string name="bowler">Bowler</string>
