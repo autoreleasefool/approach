@@ -48,16 +48,17 @@
     <string name="restore_or_delete">Restore or Delete</string>
     <string name="transfer_instructions_p1">This tool allows you to transfer your bowling data to a new device. Your data will be uploaded anonymously, and you can later download it onto a new device. Your data will be available to download for 1 hour to give you ample time to transfer to a new device.</string>
     <string name="transfer_instructions_p2">After you have imported the data on your new device, be sure to delete the backup.</string>
-    <string name="transfer_step_1">1. Export</string>
-    <string name="transfer_step_2">2. Import</string>
-    <string name="transfer_step_3">3. Restore or delete</string>
+    <string name="transfer_step_1">1.\u00A0Export</string>
+    <string name="transfer_step_2">2.\u00A0Import</string>
+    <string name="transfer_step_3">3.\u00A0Restore or\u00A0delete</string>
     <string name="transfer_export_instructions">Press \'Begin\' to upload your bowling data. When the upload finishes, you will receive a unique code that will allow you to download the data on a different device.</string>
-    <string name="export_next_step">On your other device, open this menu and select option "2. Import"</string>
+    <string name="export_next_step">On your other device, open this menu and select option "2.\u00A0Import"</string>
     <string name="transfer_import_instructions">Enter your code below and press ‘Begin’ to download your bowling data. When the download has finished, you will be prompted to load the new data, which will permanently overwrite your data on this device.</string>
     <string name="import_next_step">After you have confirmed that the data was successfully imported, you should return to this screen and proceed with option "3.\u00A0Restore\u00A0or\u00A0delete"</string>
     <string name="transfer_restore_delete_instructions">Below, you can either restore your data from the last backup, or delete your backup to ensure it won\'t take up any space on your device.</string>
     <string name="hint_code">Code</string>
     <string name="export_upload_complete">Upload complete! Your code:\n%s</string>
+    <string name="export_upload_failed">Upload failed! Please try again.</string>
 
     <string name="export">Export</string>
     <string name="data_import">Import</string>

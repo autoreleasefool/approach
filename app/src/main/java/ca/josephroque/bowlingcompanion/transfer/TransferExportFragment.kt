@@ -74,8 +74,11 @@ class TransferExportFragment : BaseTransferFragment() {
 
     private fun exportFailed() {
         exportButton.visibility = View.VISIBLE
-        exportStatus.visibility = View.GONE
         exportNextStep.visibility = View.GONE
+        exportStatus.apply {
+            text = resources.getString(R.string.export_upload_failed)
+            visibility = View.VISIBLE
+        }
     }
 
     private fun exportSucceeded(serverResponse: String) {
@@ -96,26 +99,31 @@ class TransferExportFragment : BaseTransferFragment() {
     private fun exportUserData() {
         exportJob = Job()
 
-        launch(Android, parent = exportJob) {
-            val parentJob = exportJob ?: return@launch
-            val connection = getServerConnection() ?: return@launch
+        launch(Android) {
             Analytics.trackTransferExport(Analytics.Companion.EventTime.Begin)
+            try {
+                val parentJob = exportJob ?: return@launch
+                val connection = getServerConnection() ?: return@launch
 
-            exportButton.visibility = View.GONE
+                exportButton.visibility = View.GONE
+                exportStatus.visibility = View.GONE
 
-            if (!connection.prepareConnection(parentJob).await()) {
+                if (!connection.prepareConnection(parentJob).await()) {
+                    exportFailed()
+                }
+
+                val serverResponse = connection.uploadUserData(parentJob).await()
+                exportJob = null
+                if (serverResponse.isNullOrEmpty()) {
+                    exportFailed()
+                } else {
+                    exportSucceeded(serverResponse!!)
+                }
+            } catch(ex: Exception) {
                 exportFailed()
+            } finally {
+                Analytics.trackTransferExport(Analytics.Companion.EventTime.End)
             }
-
-            val serverResponse = connection.uploadUserData(parentJob).await()
-            exportJob = null
-            if (serverResponse == null) {
-                exportFailed()
-            } else {
-                exportSucceeded(serverResponse)
-            }
-
-            Analytics.trackTransferExport(Analytics.Companion.EventTime.End)
         }
     }
 }

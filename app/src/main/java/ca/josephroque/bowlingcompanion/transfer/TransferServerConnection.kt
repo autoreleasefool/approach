@@ -229,7 +229,12 @@ class TransferServerConnection private constructor(context: Context) {
 
         return async(CommonPool + exceptionHandler, parent = parentJob) {
             _state = State.Connecting
-            val error = internalPrepareConnection(parentJob, exceptionHandler).await()
+            val error: ServerError? = try {
+                internalPrepareConnection(parentJob, exceptionHandler).await()
+            } catch (ex: JobCancellationException) {
+                ServerError.Cancelled
+            }
+
             if (error == null) {
                 _state = State.Connected
                 return@async true
@@ -348,7 +353,6 @@ class TransferServerConnection private constructor(context: Context) {
 
     fun uploadUserData(parentJob: Job? = null): Deferred<String?> {
         val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
-            Log.d(TAG, "Handling uploadUserData exception")
             _state = State.Error
             serverError = if (throwable is JobCancellationException) {
                 ServerError.Cancelled
@@ -358,8 +362,17 @@ class TransferServerConnection private constructor(context: Context) {
         }
 
         return async(CommonPool + exceptionHandler, parent = parentJob) {
-            _state = State.Loading
-            val (error, key) = internalUploadUserData(parentJob, exceptionHandler).await()
+            var error: ServerError?
+            var key: String?
+            try {
+                val errorAndKey = internalUploadUserData(parentJob, exceptionHandler).await()
+                error = errorAndKey.first
+                key = errorAndKey.second
+            } catch (ex: JobCancellationException) {
+                error = ServerError.Cancelled
+                key = null
+            }
+
             if (error == null) {
                 _state = State.Connected
                 return@async key
@@ -376,6 +389,7 @@ class TransferServerConnection private constructor(context: Context) {
     private fun internalUploadUserData(parentJob: Job? = null, exceptionHandler: CoroutineExceptionHandler): Deferred<Pair<ServerError?, String?>> {
         assert(_state == State.Connected) { "Ensure the server is connected before you contact it." }
         return async(CommonPool + exceptionHandler, parent = parentJob) {
+            _state = State.Loading
             if (!isConnectionAvailable()) {
                 return@async Pair(ServerError.NoInternet, null)
             }
@@ -528,7 +542,6 @@ class TransferServerConnection private constructor(context: Context) {
         }
 
         return async(CommonPool + exceptionHandler, parent = parentJob) {
-            _state = State.Loading
             val error = internalDownloadUserData(key, parentJob, exceptionHandler).await()
             if (error == null) {
                 _state = State.Connected
@@ -544,6 +557,7 @@ class TransferServerConnection private constructor(context: Context) {
     fun internalDownloadUserData(key: String, parentJob: Job?, exceptionHandler: CoroutineExceptionHandler): Deferred<ServerError?> {
         assert(_state == State.Connected) { "Ensure the server is connected before you contact it." }
         return async(CommonPool + exceptionHandler, parent = parentJob) {
+            _state = State.Loading
             if (!isConnectionAvailable()) {
                 return@async ServerError.NoInternet
             } else if (!isKeyValid(key, parentJob).await()) {
