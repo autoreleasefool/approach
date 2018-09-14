@@ -8,6 +8,7 @@
     <color name="colorPrimaryDark">#341F97</color>
     <color name="colorAccent">#FF9F43</color>
     <color name="colorBackground">#F5F5F5</color>
+    <color name="colorDisabled">#9B9B9B</color>
 
     <color name="colorListPrimary">#F5F5F5</color>
     <color name="colorListAlternate">#EBEBEB</color>
@@ -41,7 +42,7 @@
 
     <!-- Navigation -->
     <color name="tabSelected">@color/colorPrimary</color>
-    <color name="tabDisabled">#9B9B9B</color>
+    <color name="tabDisabled">@color/colorDisabled</color>
     <color name="bottomNavigationColor">#ffffff</color>
 
     <!-- Games -->

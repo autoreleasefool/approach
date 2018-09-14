@@ -105,7 +105,7 @@
         <item name="android:theme">@style/PrimaryButton</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:colorButtonNormal">@color/colorPrimary</item>
+        <item name="android:background">@drawable/primary_button</item>
         <item name="android:textColor">@color/primaryWhiteText</item>
         <item name="android:layout_marginLeft">@dimen/base_margin_large</item>
         <item name="android:layout_marginRight">@dimen/base_margin_large</item>
@@ -115,8 +115,7 @@
 
     <style name="DeleteButton" parent="@style/PrimaryButton">
         <item name="android:theme">@style/DeleteButton</item>
-        <item name="android:colorButtonNormal">@color/dangerRed</item>
-        <item name="android:colorAccent">@color/dangerRed</item>
+        <item name="android:background">@drawable/delete_button</item>
         <item name="android:textColor">@color/primaryWhiteText</item>
     </style>
 
