@@ -1,6 +1,5 @@
 package ca.josephroque.bowlingcompanion.bowlers
 
-import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.preference.PreferenceManager
@@ -29,37 +28,26 @@ import kotlinx.coroutines.experimental.async
 class BowlerListFragment : ListFragment<Bowler, NameAverageRecyclerViewAdapter<Bowler>>() {
 
     companion object {
-        /** Logging identifier. */
         @Suppress("unused")
         private const val TAG = "BowlerListFragment"
 
-        /**
-         * Creates a new instance.
-         *
-         * @return the new instance
-         */
         fun newInstance(): BowlerListFragment {
             return BowlerListFragment()
         }
     }
 
-    /** @Override */
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    // MARK Lifecycle functions
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    /** @Override */
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.fragment_bowlers, menu)
     }
 
-    /** @Override */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_sort_by -> {
@@ -70,7 +58,8 @@ class BowlerListFragment : ListFragment<Bowler, NameAverageRecyclerViewAdapter<B
         }
     }
 
-    /** @Override */
+    // MARK: ListFragment
+
     override fun buildAdapter(): NameAverageRecyclerViewAdapter<Bowler> {
         val adapter = NameAverageRecyclerViewAdapter(emptyList(), this)
         adapter.swipeable = true
@@ -79,7 +68,6 @@ class BowlerListFragment : ListFragment<Bowler, NameAverageRecyclerViewAdapter<B
         return adapter
     }
 
-    /** @Override */
     override fun fetchItems(): Deferred<MutableList<Bowler>> {
         context?.let {
             return Bowler.fetchAll(it)
@@ -90,15 +78,14 @@ class BowlerListFragment : ListFragment<Bowler, NameAverageRecyclerViewAdapter<B
         }
     }
 
-    /** @Override */
+    // MARK: BaseFragment
+
     override fun updateToolbarTitle() {
         // Intentionally left blank
     }
 
-    /**
-     * Prompt user to sort the list of bowlers in another order. Caches the chosen order.
-     */
-    @SuppressLint("ApplySharedPref")
+    // MARK: Private functions
+
     private fun showSortByDialog() {
         context?.let {
             AlertDialog.Builder(it)
@@ -109,7 +96,7 @@ class BowlerListFragment : ListFragment<Bowler, NameAverageRecyclerViewAdapter<B
                             PreferenceManager.getDefaultSharedPreferences(context)
                                     .edit()
                                     .putInt(Preferences.BOWLER_SORT_ORDER, sort.ordinal)
-                                    .commit()
+                                    .apply()
 
                             val ignoredSet: MutableSet<Int> = HashSet()
                             ignoredSet.add(BowlerTeamTabbedFragment.Companion.Tab.Bowlers.ordinal)

@@ -4,7 +4,6 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.os.Parcel
-import android.os.Parcelable
 import android.preference.PreferenceManager
 import android.util.Log
 import ca.josephroque.bowlingcompanion.R
@@ -39,82 +38,60 @@ class Bowler(
     override val average: Double
 ) : INameAverage, KParcelable {
 
-    /** Private field to indicate if the item is deleted. */
     private var _isDeleted: Boolean = false
-    /** @Override */
     override val isDeleted: Boolean
         get() = _isDeleted
 
-    /**
-     * Construct [Bowler] from a [Parcel]
-     */
+    // MARK: Constructors
+
     private constructor(p: Parcel): this(
             id = p.readLong(),
             name = p.readString(),
             average = p.readDouble()
     )
 
-    /**
-     * Construct [Bowler] from a [Bowler].
-     */
     constructor(bowler: Bowler): this(
             id = bowler.id,
             name = bowler.name,
             average = bowler.average
     )
 
-    /** @Override */
+    // MARK: KParcelable
+
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeLong(id)
         writeString(name)
         writeDouble(average)
     }
 
-    /** @Override */
+    // MARK: Bowler
+
+    fun fetchLeagues(context: Context): Deferred<MutableList<League>> {
+        return League.fetchAll(context, this)
+    }
+
+    fun fetchEvents(context: Context): Deferred<MutableList<League>> {
+        return League.fetchAll(context, this, false, true)
+    }
+
+    fun fetchLeaguesAndEvents(context: Context): Deferred<MutableList<League>> {
+        return League.fetchAll(context, this, true, true)
+    }
+
+    // MARK: IDeletable
+
     override fun markForDeletion(): Bowler {
         val newInstance = Bowler(this)
         newInstance._isDeleted = true
         return newInstance
     }
 
-    /** @Override */
     override fun cleanDeletion(): Bowler {
         val newInstance = Bowler(this)
         newInstance._isDeleted = false
         return newInstance
     }
 
-    /**
-     * Get all [League] instances belonging to this [Bowler] in the database.
-     *
-     * @param context to access database
-     * @return a [MutableList] of [League] instances
-     */
-    fun fetchLeagues(context: Context): Deferred<MutableList<League>> {
-        return League.fetchAll(context, this)
-    }
-
-    /**
-     * Get all [League] instances belonging to this [Bowler] in the database which are events.
-     *
-     * @param context to access database
-     * @return a [MutableList] of [League] instances
-     */
-    fun fetchEvents(context: Context): Deferred<MutableList<League>> {
-        return League.fetchAll(context, this, false, true)
-    }
-
-    /**
-     * Get all [League] instances belonging to this [Bowler] in the database.
-     *
-     * @param context to access database
-     * @return a [MutableList] of [League] instances
-     */
-    fun fetchLeaguesAndEvents(context: Context): Deferred<MutableList<League>> {
-        return League.fetchAll(context, this, true, true)
-    }
-
-    /** @Override */
     override fun delete(context: Context): Deferred<Unit> {
         return async(CommonPool) {
             if (id < 0) {
@@ -139,21 +116,14 @@ class Bowler(
     }
 
     companion object {
-
-        /** Logging identifier. */
         @Suppress("unused")
         private const val TAG = "Bowler"
 
-        /** Valid regex for a name. */
-        val REGEX_NAME = "^[A-Za-z0-9]+[ A-Za-z0-9'!@#$%^&*()_+:\"?/~-]*[A-Za-z0-9'!@#$%^&*()_+:\"?/~-]*$".toRegex()
-
-        /** Creator, required by [Parcelable]. */
         @Suppress("unused")
         @JvmField val CREATOR = parcelableCreator(::Bowler)
 
-        /**
-         * Order by which to sort bowlers.
-         */
+        val REGEX_NAME = "^[A-Za-z0-9]+[ A-Za-z0-9'!@#$%^&*()_+:\"?/~-]*[A-Za-z0-9'!@#$%^&*()_+:\"?/~-]*$".toRegex()
+
         enum class Sort {
             Alphabetically,
             LastModified;
@@ -164,27 +134,9 @@ class Bowler(
             }
         }
 
-        /**
-         * Check if a name is a valid [Bowler] name.
-         *
-         * @param name name to check
-         * @return true if the name is valid, false otherwise
-         */
         private fun isBowlerNameValid(name: String): Boolean = REGEX_NAME.matches(name)
 
-        /**
-         * Check if a name is unique in the Bowler database.
-         *
-         * @param context to get database instance
-         * @param name name to check
-         * @param id id of the existing bowler, so if the name is unchanged it can be saved
-         * @return true if the name is not already in the database, false otherwise
-         */
-        private fun isBowlerNameUnique(
-            context: Context,
-            name: String,
-            id: Long = -1
-        ): Deferred<Boolean> {
+        private fun isBowlerNameUnique(context: Context, name: String, id: Long = -1): Deferred<Boolean> {
             return async(CommonPool) {
                 val database = Saviour.instance.getReadableDatabase(context).await()
 
@@ -213,19 +165,7 @@ class Bowler(
             }
         }
 
-        /**
-         * Ensure all preconditions to save are met.
-         *
-         * @param context to get error strings
-         * @param id id for the bowler
-         * @param name name for the bowler
-         * @return [BCError] if any conditions are not met, or null if the bowler can be saved
-         */
-        private fun validateSavePreconditions(
-            context: Context,
-            id: Long,
-            name: String
-        ): Deferred<BCError?> {
+        private fun validateSavePreconditions(context: Context, id: Long, name: String): Deferred<BCError?> {
             return async(CommonPool) {
                 val errorTitle = R.string.issue_saving_bowler
                 val errorMessage: Int? = if (!isBowlerNameValid(name)) {
@@ -244,21 +184,7 @@ class Bowler(
             }
         }
 
-        /**
-         * Save the bowler to the database.
-         *
-         * @param context to get database instance
-         * @param id id of the bowler to save, or -1 to create a new entry
-         * @param name name of the bowler to save
-         * @param average average of the bowler to apply to the new [Bowler]
-         * @return the saved [Bowler] or a [BCError] if any errors occurred
-         */
-        fun save(
-            context: Context,
-            id: Long,
-            name: String,
-            average: Double = 0.0
-        ): Deferred<Pair<Bowler?, BCError?>> {
+        fun save(context: Context, id: Long, name: String, average: Double = 0.0): Deferred<Pair<Bowler?, BCError?>> {
             return if (id < 0) {
                 createNewAndSave(context, name)
             } else {
@@ -266,17 +192,7 @@ class Bowler(
             }
         }
 
-        /**
-         * Create a new [BowlerEntry] in the database.
-         *
-         * @param context to get database instance
-         * @param name name of the bowler to create
-         * @return the saved [Bowler] or a [BCError] if any errors occurred
-         */
-        private fun createNewAndSave(
-            context: Context,
-            name: String
-        ): Deferred<Pair<Bowler?, BCError?>> {
+        private fun createNewAndSave(context: Context, name: String): Deferred<Pair<Bowler?, BCError?>> {
             return async(CommonPool) {
                 val error = validateSavePreconditions(context, -1, name).await()
                 if (error != null) {
@@ -323,21 +239,7 @@ class Bowler(
             }
         }
 
-        /**
-         * Update the [BowlerEntry] in the database.
-         *
-         * @param context context to get database instance
-         * @param id id of the entry to update
-         * @param name name for the bowler
-         * @param average average of the bowler
-         * @return the saved [Bowler] or a [BCError] if any errors occurred
-         */
-        private fun update(
-            context: Context,
-            id: Long,
-            name: String,
-            average: Double
-        ): Deferred<Pair<Bowler?, BCError?>> {
+        private fun update(context: Context, id: Long, name: String, average: Double): Deferred<Pair<Bowler?, BCError?>> {
             return async(CommonPool) {
                 val error = validateSavePreconditions(context, id, name).await()
                 if (error != null) {
@@ -376,11 +278,6 @@ class Bowler(
             }
         }
 
-        /**
-         * Fetch a single bowler from the app by their ID.
-         *
-         * @return a [Bowler] if the ID was valid, null otherwise
-         */
         fun fetch(context: Context, id: Long): Deferred<Bowler?> {
             return async(CommonPool) {
                 val bowlerList = fetchAll(context, id).await()
@@ -392,13 +289,6 @@ class Bowler(
             }
         }
 
-        /**
-         * Get all of the bowlers available in the app.
-         *
-         * @param context to get database instance
-         * @param filterId filter to a single bowler ID
-         * @return a [MutableList] of [Bowler] instances from the database.
-         */
         fun fetchAll(context: Context, filterId: Long = -1): Deferred<MutableList<Bowler>> {
             return async(CommonPool) {
                 val bowlers: MutableList<Bowler> = ArrayList()

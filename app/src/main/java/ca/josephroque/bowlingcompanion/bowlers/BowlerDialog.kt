@@ -29,21 +29,14 @@ import kotlinx.coroutines.experimental.launch
  *
  * Dialog to create a new bowler.
  */
-class BowlerDialog : BaseDialogFragment(), View.OnClickListener {
+class BowlerDialog : BaseDialogFragment() {
 
     companion object {
-        /** Logging identifier. */
         @Suppress("unused")
         private const val TAG = "BowlerDialog"
 
-        /** Identifier for the [Bowler] to be edited. */
         private const val ARG_BOWLER = "${TAG}_BOWLER"
 
-        /**
-         * Create a new instance of the dialog.
-         *
-         * @param bowler [Bowler] to edit, or null to create a new bowler
-         */
         fun newInstance(bowler: Bowler?): BowlerDialog {
             val dialog = BowlerDialog()
             dialog.arguments = Bundle().apply { bowler?.let { putParcelable(ARG_BOWLER, bowler) } }
@@ -51,24 +44,33 @@ class BowlerDialog : BaseDialogFragment(), View.OnClickListener {
         }
     }
 
-    /** Bowler to be edited, or null if a new bowler is to be created. */
     private var bowler: Bowler? = null
-
-    /** Interaction handler. */
     private var delegate: BowlerDialogDelegate? = null
 
-    /** @Override */
+    private val deleteListener = View.OnClickListener {
+        safeLet(context, bowler) { context, bowler ->
+            AlertDialog.Builder(context)
+                    .setTitle(String.format(context.resources.getString(R.string.query_delete_item), bowler.name))
+                    .setMessage(R.string.dialog_delete_item_message)
+                    .setPositiveButton(R.string.delete) { _, _ ->
+                        delegate?.onDeleteBowler(bowler)
+                        dismiss()
+
+                        Analytics.trackDeleteBowler()
+                    }
+                    .setNegativeButton(R.string.cancel, null)
+                    .show()
+        }
+    }
+
+    // MARK: Lifecycle functions
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(DialogFragment.STYLE_NORMAL, R.style.Dialog)
     }
 
-    /** @Override */
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         bowler = arguments?.getParcelable(ARG_BOWLER)
 
         val rootView = inflater.inflate(R.layout.dialog_bowler, container, false)
@@ -78,11 +80,45 @@ class BowlerDialog : BaseDialogFragment(), View.OnClickListener {
         return rootView
     }
 
-    /**
-     * Set up title, style, and listeners for toolbar.
-     *
-     * @param rootView the root view
-     */
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = super.onCreateDialog(savedInstanceState)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        return dialog
+    }
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        val parentFragment = parentFragment as? BowlerDialogDelegate ?: throw RuntimeException("${parentFragment!!} must implement BowlerDialogDelegate")
+        delegate = parentFragment
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        delegate = null
+    }
+
+    override fun onStart() {
+        super.onStart()
+        dialog.window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+
+        // Requesting input focus and showing keyboard
+        nameInput.requestFocus()
+        val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(nameInput, InputMethodManager.SHOW_IMPLICIT)
+
+        bowler?.let { deleteButton.visibility = View.VISIBLE }
+        nameInput.setSelection(nameInput.text.length)
+        updateSaveButton()
+    }
+
+    override fun dismiss() {
+        App.hideSoftKeyBoard(activity!!)
+        activity?.supportFragmentManager?.popBackStack()
+        super.dismiss()
+    }
+
+    // MARK: Private functions
+
     private fun setupToolbar(rootView: View) {
         if (bowler == null) {
             rootView.toolbar_bowler.setTitle(R.string.new_bowler)
@@ -109,13 +145,8 @@ class BowlerDialog : BaseDialogFragment(), View.OnClickListener {
         }
     }
 
-    /**
-     * Set up input items for callbacks on interactions.
-     *
-     * @param rootView the root view
-     */
     private fun setupInput(rootView: View) {
-        rootView.btn_delete.setOnClickListener(this)
+        rootView.btn_delete.setOnClickListener(deleteListener)
         rootView.input_name.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -125,80 +156,8 @@ class BowlerDialog : BaseDialogFragment(), View.OnClickListener {
         })
     }
 
-    /** @Override */
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-        val parentFragment = parentFragment as? BowlerDialogDelegate ?: throw RuntimeException("${parentFragment!!} must implement BowlerDialogDelegate")
-        delegate = parentFragment
-    }
+    private fun canSave() = nameInput.text.isNotEmpty()
 
-    /** @Override */
-    override fun onDetach() {
-        super.onDetach()
-        delegate = null
-    }
-
-    /** @Override */
-    override fun onStart() {
-        super.onStart()
-        dialog.window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-
-        // Requesting input focus and showing keyboard
-        nameInput.requestFocus()
-        val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.showSoftInput(nameInput, InputMethodManager.SHOW_IMPLICIT)
-
-
-        bowler?.let { deleteButton.visibility = View.VISIBLE }
-        nameInput.setSelection(nameInput.text.length)
-        updateSaveButton()
-    }
-
-    /** @Override */
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = super.onCreateDialog(savedInstanceState)
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        return dialog
-    }
-
-    /** @Override */
-    override fun onClick(v: View?) {
-        safeLet(context, bowler) { context, bowler ->
-            AlertDialog.Builder(context)
-                    .setTitle(String.format(context.resources.getString(R.string.query_delete_item), bowler.name))
-                    .setMessage(R.string.dialog_delete_item_message)
-                    .setPositiveButton(R.string.delete) { _, _ ->
-                        delegate?.onDeleteBowler(bowler)
-                        dismiss()
-
-                        Analytics.trackDeleteBowler()
-                    }
-                    .setNegativeButton(R.string.cancel, null)
-                    .show()
-        }
-    }
-
-    /**
-     * Clean up dialog before calling super.
-     */
-    override fun dismiss() {
-        App.hideSoftKeyBoard(activity!!)
-        activity?.supportFragmentManager?.popBackStack()
-        super.dismiss()
-    }
-
-    /**
-     * Checks if the bowler can be saved or not.
-     *
-     * @return true if the bowler name is not empty, false otherwise
-     */
-    private fun canSave(): Boolean {
-        return nameInput.text.isNotEmpty()
-    }
-
-    /**
-     * Update save button state based on text entered.
-     */
     private fun updateSaveButton() {
         val saveButton = view?.toolbar_bowler?.menu?.findItem(R.id.action_save)
         if (canSave()) {
@@ -210,9 +169,6 @@ class BowlerDialog : BaseDialogFragment(), View.OnClickListener {
         }
     }
 
-    /**
-     * Save the current bowler. Show errors if there are any.
-     */
     private fun saveBowler() {
         launch(Android) {
             this@BowlerDialog.context?.let { context ->
@@ -249,23 +205,10 @@ class BowlerDialog : BaseDialogFragment(), View.OnClickListener {
         nameInput.setText(bowler.name)
     }
 
-    /**
-     * Handles interactions with the dialog.
-     */
+    // MARK: BowlerDialogDelegate
+
     interface BowlerDialogDelegate {
-
-        /**
-         * Indicates when the user has finished editing the [Bowler]
-         *
-         * @param bowler the finished [Bowler]
-         */
         fun onFinishBowler(bowler: Bowler)
-
-        /**
-         * Indicates the user wishes to delete the [Bowler].
-         *
-         * @param bowler the deleted [Bowler]
-         */
         fun onDeleteBowler(bowler: Bowler)
     }
 }
