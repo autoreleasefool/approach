@@ -11,6 +11,7 @@ import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.adapters.BaseFragmentPagerAdapter
 import ca.josephroque.bowlingcompanion.common.fragments.TabbedFragment
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProvider
+import ca.josephroque.bowlingcompanion.utils.Analytics
 import kotlinx.android.synthetic.main.fragment_common_tabs.tabbed_fragment_tabs as fragmentTabs
 
 /**
@@ -53,6 +54,12 @@ class StatisticsUnitTabbedFragment : TabbedFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val type = arguments?.getInt(ARG_STATISTICS_PROVIDER_TYPE)!!
         statisticsProvider = StatisticsProvider.getParcelable(arguments, ARG_STATISTICS_PROVIDER, type)!!
+
+        // Record analytics only when the view is opened the first time, not restore from state
+        if (savedInstanceState == null) {
+            Analytics.trackViewStatisticsList()
+        }
+
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 

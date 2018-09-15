@@ -6,7 +6,6 @@ import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
 import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
 import ca.josephroque.bowlingcompanion.statistics.unit.StatisticsUnitTabbedFragment
-import ca.josephroque.bowlingcompanion.utils.Analytics
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async
@@ -16,28 +15,18 @@ import kotlinx.coroutines.experimental.async
  *
  * A fragment representing a list of [StatisticsProvider]s.
  */
-class StatisticsProviderListFragment : ListFragment<StatisticsProvider, StatisticsProviderRecyclerViewAdapter>(),
+class StatisticsProviderListFragment : ListFragment<StatisticsProvider,
+        StatisticsProviderRecyclerViewAdapter>(),
         ListFragment.ListFragmentDelegate {
 
     companion object {
-        /** Logging identifier. */
         @Suppress("unused")
         private const val TAG = "SPListFragment"
 
-        /** Argument identifier for the number of [StatisticsProvider]s. */
         private const val ARG_STATISTIC_PROVIDERS_COUNT = "${TAG}_count"
-
-        /** Argument identifier for the [StatisticsProvider] types. */
         private const val ARG_STATISTIC_PROVIDERS_TYPE = "${TAG}_type"
-
-        /** Argument identifier for the [StatisticsProvider]s to display. */
         private const val ARG_STATISTIC_PROVIDER = "${TAG}_providers"
 
-        /**
-         * Creates a new instance.
-         *
-         * @return the new instance
-         */
         fun newInstance(statisticsProviders: List<StatisticsProvider>): StatisticsProviderListFragment {
             val fragment = StatisticsProviderListFragment()
             fragment.arguments = Bundle().apply {
@@ -51,10 +40,10 @@ class StatisticsProviderListFragment : ListFragment<StatisticsProvider, Statisti
         }
     }
 
-    /** List of [StatisticsProvider]s to display. */
     private lateinit var statisticsProviders: List<StatisticsProvider>
 
-    /** @Override */
+    // MARK: Lifecycle functions
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -69,43 +58,36 @@ class StatisticsProviderListFragment : ListFragment<StatisticsProvider, Statisti
         }
     }
 
-    /** @Override */
     override fun onAttach(context: Context?) {
         canIgnoreDelegate = true
         delegate = this
         super.onAttach(context)
     }
 
-    /** @Override */
-    override fun onStart() {
-        super.onStart()
-        navigationActivity?.supportActionBar?.setDisplayHomeAsUpEnabled(false)
-    }
+    // MARK: BaseFragment
 
-    /** @Override */
     override fun updateToolbarTitle() {
         navigationActivity?.setToolbarTitle(resources.getString(R.string.statistics))
     }
 
-    /** @Override */
+    // MARK: ListFragment
+
     override fun buildAdapter(): StatisticsProviderRecyclerViewAdapter {
         return StatisticsProviderRecyclerViewAdapter(emptyList(), this)
     }
 
-    /** @Override */
     override fun fetchItems(): Deferred<MutableList<StatisticsProvider>> {
         return async(CommonPool) {
             statisticsProviders.toMutableList()
         }
     }
 
-    /** @Override */
+    // MARK: ListFragmentDelegate
+
     override fun onItemSelected(item: IIdentifiable, longPress: Boolean) {
         if (item is StatisticsProvider) {
             val newFragment = StatisticsUnitTabbedFragment.newInstance(item)
             fragmentNavigation?.pushFragment(newFragment)
-
-            Analytics.trackViewStatisticsList()
         }
     }
 }

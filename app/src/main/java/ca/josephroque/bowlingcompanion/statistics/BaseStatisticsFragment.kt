@@ -16,34 +16,17 @@ import ca.josephroque.bowlingcompanion.statistics.unit.StatisticsUnitTabbedFragm
 class BaseStatisticsFragment : BaseFragment() {
 
     companion object {
-        /** Logging identifier. */
         @Suppress("unused")
         private const val TAG = "BaseStatisticsFragment"
 
-        /** Argument identifier for the number of [StatisticsProvider]s that are present. */
         private const val ARG_STATISTICS_PROVIDER_COUNT = "${TAG}_count"
-
-        /** Argument identifier for passing an array of [StatisticsProvider] type. */
         private const val ARG_STATISTICS_PROVIDER_TYPE = "${TAG}_type"
-
-        /** Argument identifier for passing an array of [StatisticsProvider] to this fragment. */
         private const val ARG_STATISTICS_PROVIDER = "${TAG}_stats"
 
-        /**
-         * Creates a new instance.
-         *
-         * @return the new instance
-         */
         fun newInstance(): BaseStatisticsFragment {
             return BaseStatisticsFragment()
         }
 
-        /**
-         * Build the bundle to provide as arguments for this fragment.
-         *
-         * @param statisticsProviders the statistics providers
-         * @return [Bundle] to use for arguments
-         */
         fun buildArguments(statisticsProviders: List<StatisticsProvider>): Bundle {
             return Bundle().apply {
                 putInt(ARG_STATISTICS_PROVIDER_COUNT, statisticsProviders.size)
@@ -55,22 +38,20 @@ class BaseStatisticsFragment : BaseFragment() {
         }
     }
 
-    /** The stats being displayed. */
     private lateinit var statisticsProviders: List<StatisticsProvider>
 
-    /** @Override */
+    // MARK: Lifecycle functions
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
     }
 
-    /** @Override */
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         menu?.clear()
         super.onCreateOptionsMenu(menu, inflater)
     }
 
-    /** @Override */
     override fun onStart() {
         super.onStart()
 
@@ -100,7 +81,8 @@ class BaseStatisticsFragment : BaseFragment() {
         }
     }
 
-    /** @Override */
+    // MARK: BaseFragment
+
     override fun updateToolbarTitle() {
         // Intentionally left blank
     }

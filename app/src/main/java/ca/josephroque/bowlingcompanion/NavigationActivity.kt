@@ -130,7 +130,19 @@ class NavigationActivity : BaseActivity(),
     }
 
     override fun onBackPressed() {
-        if (fragNavController?.isRootFragment == true || fragNavController?.popFragment()?.not() == true) {
+        val fragNavController = fragNavController
+        if (fragNavController != null) {
+            if (BottomTab.fromInt(fragNavController.currentStackIndex) == BottomTab.Statistics
+                    && (fragNavController.currentStack?.size ?: 0) <= 2) {
+                fragNavController.switchTab(BottomTab.Record.ordinal)
+                bottomNavigation.selectedItemId = BottomTab.toId(BottomTab.Record)
+                return
+            }
+
+            if (fragNavController.isRootFragment || fragNavController.popFragment().not()) {
+                super.onBackPressed()
+            }
+        } else {
             super.onBackPressed()
         }
     }
@@ -174,12 +186,6 @@ class NavigationActivity : BaseActivity(),
         fragment.show(supportFragmentManager, tag)
     }
 
-    override fun popFragment(fragment: BaseFragment) {
-        if (currentFragment == fragment) {
-            onBackPressed()
-        }
-    }
-
     // MARK: FabProvider
 
     override fun invalidateFab() {
@@ -208,11 +214,11 @@ class NavigationActivity : BaseActivity(),
     // MARK: TransactionListener
 
     override fun onFragmentTransaction(fragment: Fragment?, transactionType: FragNavController.TransactionType?) {
-        handleFragmentChange(fragment, isTabTransaction = false)
+        handleFragmentChange(fragment)
     }
 
     override fun onTabTransaction(fragment: Fragment?, index: Int) {
-        handleFragmentChange(fragment, isTabTransaction = true)
+        handleFragmentChange(fragment)
 
         if (BottomTab.fromInt(index) == BottomTab.Statistics) {
             fragNavController?.clearStack()
@@ -234,7 +240,7 @@ class NavigationActivity : BaseActivity(),
 
     // MARK: Private functions
 
-    private fun handleFragmentChange(fragment: Fragment?, isTabTransaction: Boolean) {
+    private fun handleFragmentChange(fragment: Fragment?) {
         supportActionBar?.setDisplayHomeAsUpEnabled(fragNavController?.isRootFragment?.not() ?: false)
         fabController.image = if (fragment is IFloatingActionButtonHandler) {
             fragment.getFabImage()
@@ -258,13 +264,9 @@ class NavigationActivity : BaseActivity(),
         }
 
         if (fragment is BaseStatisticsFragment) {
-            if (isTabTransaction) {
-                val statisticsContext = fragNavController?.getStack(BottomTab.toInt(BottomTab.Record))?.peek() as? IStatisticsContext
-                        ?: return
-                fragment.arguments = BaseStatisticsFragment.buildArguments(statisticsContext.statisticsProviders)
-            } else {
-                onBackPressed()
-            }
+            val statisticsContext = fragNavController?.getStack(BottomTab.toInt(BottomTab.Record))?.peek() as? IStatisticsContext
+                    ?: return
+            fragment.arguments = BaseStatisticsFragment.buildArguments(statisticsContext.statisticsProviders)
         }
     }
 

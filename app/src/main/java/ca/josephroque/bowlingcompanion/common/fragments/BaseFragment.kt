@@ -67,7 +67,6 @@ abstract class BaseFragment : Fragment() {
         fun pushFragment(fragment: BaseFragment)
         fun pushDialogFragment(fragment: BaseDialogFragment)
         fun showBottomSheet(fragment: BottomSheetDialogFragment, tag: String)
-        fun popFragment(fragment: BaseFragment)
     }
 
     // MARK: FabProvider
