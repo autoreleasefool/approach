@@ -31,6 +31,10 @@
     <dimen name="bottom_sheet_height">340dp</dimen>
     <dimen name="nav_header_top_margin">40dp</dimen>
 
+    <!-- Empty view -->
+    <dimen name="empty_image_width">240dp</dimen>
+    <dimen name="empty_image_height">240dp</dimen>
+
     <!-- List -->
     <dimen name="list_bottom_padding">48dp</dimen>
     <dimen name="list_item_margin">16dp</dimen>

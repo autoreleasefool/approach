@@ -397,6 +397,9 @@
     <string name="nav_help">Help</string>
     <string name="nav_settings">Settings</string>
 
+    <!-- Empty view -->
+    <string name="base_statistics_empty">You\'ll have to go back and select a team or bowler to see statistics.</string>
+
     <!-- Content descriptions -->
     <string name="iv_name_average">Type indicator</string>
     <string name="iv_delete_item">Delete Item</string>
@@ -410,6 +413,7 @@
     <string name="iv_match_play">Match play settings</string>
     <string name="iv_lock">Lock game</string>
     <string name="iv_team_member_icon">Team member type indicator</string>
+    <string name="empty_image_view">Empty state</string>
 
     <!-- Email -->
     <string name="send_email">Send email&#8230;</string>

@@ -1,12 +1,17 @@
 package ca.josephroque.bowlingcompanion.statistics
 
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
+import android.view.View
+import android.view.ViewGroup
+import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.fragments.BaseFragment
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProvider
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProviderListFragment
 import ca.josephroque.bowlingcompanion.statistics.unit.StatisticsUnitTabbedFragment
+import kotlinx.android.synthetic.main.fragment_base_statistics.statistics_empty_view as emptyView
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -47,6 +52,10 @@ class BaseStatisticsFragment : BaseFragment() {
         setHasOptionsMenu(true)
     }
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_base_statistics, container, false)
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?, inflater: MenuInflater?) {
         menu?.clear()
         super.onCreateOptionsMenu(menu, inflater)
@@ -79,6 +88,20 @@ class BaseStatisticsFragment : BaseFragment() {
 
             fragmentNavigation?.pushFragment(newFragment)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        emptyView.apply {
+            emptyImageId = R.drawable.base_statistics_empty
+            emptyTextId = R.string.base_statistics_empty
+            visibility = View.VISIBLE
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        emptyView.visibility = View.GONE
     }
 
     // MARK: BaseFragment
