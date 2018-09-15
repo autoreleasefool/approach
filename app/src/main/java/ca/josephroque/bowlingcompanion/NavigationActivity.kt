@@ -46,13 +46,9 @@ class NavigationActivity : BaseActivity(),
         BaseDialogFragment.OnDismissListener {
 
     companion object {
-        /** Logging identifier. */
         @Suppress("unused")
         private const val TAG = "NavigationActivity"
 
-        /**
-         * Tabs at the bottom of the screen
-         */
         enum class BottomTab {
             Record, Statistics, Equipment;
 
@@ -76,13 +72,11 @@ class NavigationActivity : BaseActivity(),
                     }
                 }
 
-                /** List of available tabs. */
                 val available: List<BottomTab> by lazy {
-                    map.entries.filter { it.value.isAvailable }.map { it.value }
+                    map.entries.asSequence().filter { it.value.isAvailable }.map { it.value }.toList()
                 }
             }
 
-            /** Indicate if the tab is active and should be shown. */
             val isAvailable: Boolean
                 get() {
                     return when (this) {
@@ -94,20 +88,13 @@ class NavigationActivity : BaseActivity(),
         }
     }
 
-    /** Controller for fragment navigation. */
     private var fragNavController: FragNavController? = null
-
-    /** Controller for navigation drawer. */
     private lateinit var navDrawerController: NavigationDrawerController
-
-    /** Controller for floating action button. */
     private lateinit var fabController: FabController
 
-    /** @Override */
     override val stackSize: Int
         get() = fragNavController?.currentStack?.size ?: 0
 
-    /** The current visible fragment in the activity. */
     private val currentFragment: Fragment?
         get() {
             for (fragment in supportFragmentManager.fragments) {
@@ -118,7 +105,8 @@ class NavigationActivity : BaseActivity(),
             return null
         }
 
-    /** @Override. */
+    // MARK: Lifecycle functions
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_navigation)
@@ -136,29 +124,22 @@ class NavigationActivity : BaseActivity(),
         setupFragNavController(savedInstanceState)
     }
 
-    /** @Override */
     override fun onDestroy() {
         super.onDestroy()
         Analytics.flush()
     }
 
-    /** @Override */
     override fun onBackPressed() {
         if (fragNavController?.isRootFragment == true || fragNavController?.popFragment()?.not() == true) {
             super.onBackPressed()
         }
     }
 
-    /** @Override */
     override fun onSupportNavigateUp(): Boolean {
-        return if (fragNavController?.isRootFragment == true || fragNavController?.popFragment()?.not() == true) {
-            false
-        } else {
-            super.onSupportNavigateUp()
-        }
+        onBackPressed()
+        return true
     }
 
-    /** @Override */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         currentFragment?.let {
             if (item.itemId == android.R.id.home && currentFragment is INavigationDrawerHandler) {
@@ -170,13 +151,13 @@ class NavigationActivity : BaseActivity(),
         return super.onOptionsItemSelected(item)
     }
 
-    /** @Override */
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
         fragNavController?.onSaveInstanceState(outState!!)
     }
 
-    /** @Override */
+    // MARK: FragmentNavigation
+
     override fun pushFragment(fragment: BaseFragment) {
         val transactionOptions = FragNavTransactionOptions.newBuilder()
                 .transition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
@@ -184,29 +165,115 @@ class NavigationActivity : BaseActivity(),
         fragNavController?.pushFragment(fragment, transactionOptions)
     }
 
-    /** @Override */
     override fun pushDialogFragment(fragment: BaseDialogFragment) {
         fragment.onDismissListener = this
         fragNavController?.showDialogFragment(fragment)
     }
 
-    /** @Override */
     override fun showBottomSheet(fragment: BottomSheetDialogFragment, tag: String) {
         fragment.show(supportFragmentManager, tag)
     }
 
-    /**
-     * Configure toolbar for rendering.
-     */
+    override fun popFragment(fragment: BaseFragment) {
+        if (currentFragment == fragment) {
+            onBackPressed()
+        }
+    }
+
+    // MARK: FabProvider
+
+    override fun invalidateFab() {
+        val fragment = currentFragment
+        fabController.image = if (fragment is IFloatingActionButtonHandler) {
+            fragment.getFabImage()
+        } else {
+            null
+        }
+    }
+
+    // MARK: RootFragmentListener
+
+    override fun getRootFragment(index: Int): Fragment {
+        val tab = BottomTab.fromInt(index)
+        val fragmentName: String
+        fragmentName = when (tab) {
+            BottomTab.Record -> BowlerTeamTabbedFragment::class.java.name
+            BottomTab.Equipment -> BowlerListFragment::class.java.name // FIXME: enable equipment tab
+            BottomTab.Statistics -> BaseStatisticsFragment::class.java.name
+        }
+
+        return BaseFragment.newInstance(fragmentName)
+    }
+
+    // MARK: TransactionListener
+
+    override fun onFragmentTransaction(fragment: Fragment?, transactionType: FragNavController.TransactionType?) {
+        handleFragmentChange(fragment, isTabTransaction = false)
+    }
+
+    override fun onTabTransaction(fragment: Fragment?, index: Int) {
+        handleFragmentChange(fragment, isTabTransaction = true)
+
+        if (BottomTab.fromInt(index) == BottomTab.Statistics) {
+            fragNavController?.clearStack()
+        }
+    }
+
+    // MARK: TabbedFragmentDelegate
+
+    override fun onTabSwitched() {
+        invalidateFab()
+    }
+
+    // MARK: NavigationActivity
+
+    fun setToolbarTitle(title: String? = null, subtitle: String? = null) {
+        supportActionBar?.title = title
+        supportActionBar?.subtitle = subtitle
+    }
+
+    // MARK: Private functions
+
+    private fun handleFragmentChange(fragment: Fragment?, isTabTransaction: Boolean) {
+        supportActionBar?.setDisplayHomeAsUpEnabled(fragNavController?.isRootFragment?.not() ?: false)
+        fabController.image = if (fragment is IFloatingActionButtonHandler) {
+            fragment.getFabImage()
+        } else {
+            null
+        }
+
+        if (fragment is INavigationDrawerHandler) {
+            fragment.navigationDrawerController = navDrawerController
+            supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_menu)
+            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+        } else {
+            supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back)
+            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+        }
+
+        toolbar.elevation = if (fragment is TabbedFragment) {
+            0F
+        } else {
+            resources.getDimension(R.dimen.base_elevation)
+        }
+
+        if (fragment is BaseStatisticsFragment) {
+            if (isTabTransaction) {
+                val statisticsContext = fragNavController?.getStack(BottomTab.toInt(BottomTab.Record))?.peek() as? IStatisticsContext
+                        ?: return
+                fragment.arguments = BaseStatisticsFragment.buildArguments(statisticsContext.statisticsProviders)
+            } else {
+                onBackPressed()
+            }
+        }
+    }
+
     private fun setupToolbar() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
     }
 
-    /**
-     * Add listeners to bottom view navigation.
-     */
     private fun setupBottomNavigation() {
         val unavailableTabs: Set<BottomTab> = BottomTab.values().toSet() - BottomTab.available.toSet()
         if (unavailableTabs.isNotEmpty()) {
@@ -225,7 +292,6 @@ class NavigationActivity : BaseActivity(),
         }
     }
 
-    /** Add listeners to navigation drawer. */
     private fun setupNavigationDrawer() {
         navDrawerController = NavigationDrawerController(WeakReference(navDrawer))
         navDrawer.setNavigationItemSelectedListener { menuItem ->
@@ -256,19 +322,6 @@ class NavigationActivity : BaseActivity(),
         }
     }
 
-    /** @Override */
-    override fun invalidateFab() {
-        val fragment = currentFragment
-        fabController.image = if (fragment is IFloatingActionButtonHandler) {
-            fragment.getFabImage()
-        } else {
-            null
-        }
-    }
-
-    /**
-     * Configure floating action button for rendering.
-     */
     private fun setupFab() {
         fabController = FabController(fab, View.OnClickListener {
             val currentFragment = currentFragment ?: return@OnClickListener
@@ -278,95 +331,12 @@ class NavigationActivity : BaseActivity(),
         })
     }
 
-    /**
-     * Build the [FragNavController] for bottom tab navigation.
-     *
-     * @param savedInstanceState the activity saved instance state
-     */
     private fun setupFragNavController(savedInstanceState: Bundle?) {
         val builder = FragNavController.newBuilder(savedInstanceState, supportFragmentManager, R.id.fragment_container)
                 .rootFragmentListener(this@NavigationActivity, BottomTab.available.size)
                 .transactionListener(this@NavigationActivity)
         // FIXME: look into .fragmentHideStrategy(FragNavController.HIDE), .eager(true)
         fragNavController = builder.build()
-    }
-
-    /** @Override */
-    override fun getRootFragment(index: Int): Fragment {
-        val tab = BottomTab.fromInt(index)
-        val fragmentName: String
-        fragmentName = when (tab) {
-            BottomTab.Record -> BowlerTeamTabbedFragment::class.java.name
-            BottomTab.Equipment -> BowlerListFragment::class.java.name // FIXME: enable equipment tab
-            BottomTab.Statistics -> BaseStatisticsFragment::class.java.name
-        }
-
-        return BaseFragment.newInstance(fragmentName)
-    }
-
-    /** @Override */
-    override fun onFragmentTransaction(fragment: Fragment?, transactionType: FragNavController.TransactionType?) {
-        handleFragmentChange(fragment)
-    }
-
-    /** @Override */
-    override fun onTabTransaction(fragment: Fragment?, index: Int) {
-        handleFragmentChange(fragment)
-
-        if (BottomTab.fromInt(index) == BottomTab.Statistics) {
-            fragNavController?.clearStack()
-        }
-    }
-
-    /**
-     * Update activity state for fragment changes.
-     *
-     * @param fragment the new fragment being displayed
-     */
-    private fun handleFragmentChange(fragment: Fragment?) {
-        supportActionBar?.setDisplayHomeAsUpEnabled(fragNavController?.isRootFragment?.not() ?: false)
-        fabController.image = if (fragment is IFloatingActionButtonHandler) {
-            fragment.getFabImage()
-        } else {
-            null
-        }
-
-        if (fragment is INavigationDrawerHandler) {
-            fragment.navigationDrawerController = navDrawerController
-            supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_menu)
-            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-        } else {
-            supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back)
-            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-        }
-
-        toolbar.elevation = if (fragment is TabbedFragment) {
-            0F
-        } else {
-            resources.getDimension(R.dimen.base_elevation)
-        }
-
-        if (fragment is BaseStatisticsFragment) {
-            val statisticsContext = fragNavController?.getStack(BottomTab.toInt(BottomTab.Record))?.peek() as? IStatisticsContext
-                    ?: return
-            fragment.arguments = BaseStatisticsFragment.buildArguments(statisticsContext.statisticsProviders)
-        }
-    }
-
-    /** @Override */
-    override fun onTabSwitched() {
-        invalidateFab()
-    }
-
-    /**
-     * Set the title and subtitle of the toolbar.
-     *
-     * @param title title for the toolbar
-     * @param subtitle subtitle for the toolbar
-     */
-    fun setToolbarTitle(title: String? = null, subtitle: String? = null) {
-        supportActionBar?.title = title
-        supportActionBar?.subtitle = subtitle
     }
 
     /**

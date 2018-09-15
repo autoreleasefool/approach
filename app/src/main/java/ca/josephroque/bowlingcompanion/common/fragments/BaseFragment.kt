@@ -14,15 +14,9 @@ import ca.josephroque.bowlingcompanion.NavigationActivity
 abstract class BaseFragment : Fragment() {
 
     companion object {
-        /** Logging identifier. */
         @Suppress("unused")
         private const val TAG = "BaseFragment"
 
-        /**
-         * Create a new instance of [BaseFragment] based on [name] and return it.
-         *
-         * @param name class name to instantiate
-         */
         fun newInstance(name: String): BaseFragment {
             try {
                 val fragmentClass = Class.forName(name)
@@ -33,22 +27,18 @@ abstract class BaseFragment : Fragment() {
         }
     }
 
-    /** Fragment navigation instance. */
     protected var fragmentNavigation: FragmentNavigation? = null
-
-    /** Fab provider instance. */
     protected var fabProvider: FabProvider? = null
 
-    /** Get the navigation activity. */
     protected val navigationActivity: NavigationActivity?
         get() = activity as? NavigationActivity
 
-    /**
-     * Update title in the toolbar.
-     */
+    // MARK: BaseFragment
+
     abstract fun updateToolbarTitle()
 
-    /** @Override */
+    // MARK: Lifecycle functions
+
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         context as? FragmentNavigation ?: throw RuntimeException("Parent activity must implement FragmentNavigation")
@@ -57,58 +47,32 @@ abstract class BaseFragment : Fragment() {
         fabProvider = context
     }
 
-    /** @Override */
     override fun onDetach() {
         super.onDetach()
         fragmentNavigation = null
         fabProvider = null
     }
 
-    /** @Override */
     override fun onStart() {
         super.onStart()
         updateToolbarTitle()
     }
 
-    /**
-     * Accessor to activity's fragment stack
-     */
+    // MARK: FragmentNavigation
+
     interface FragmentNavigation {
 
-        /** Number of fragments on the current stack. */
         val stackSize: Int
 
-        /**
-         * Push a new [Fragment] onto the stack
-         *
-         * @param fragment the fragment to push
-         */
         fun pushFragment(fragment: BaseFragment)
-
-        /**
-         * Push a new [DialogFragment] onto the stack
-         *
-         * @param fragment the fragment to push
-         */
         fun pushDialogFragment(fragment: BaseDialogFragment)
-
-        /**
-         * Push a new [BottomSheetDialogFragment] onto the stack
-         *
-         * @param fragment the fragment to push
-         * @param tag necessary tag for the fragment
-         */
         fun showBottomSheet(fragment: BottomSheetDialogFragment, tag: String)
+        fun popFragment(fragment: BaseFragment)
     }
 
-    /**
-     * Accessor to activity's floating action button.
-     */
-    interface FabProvider {
+    // MARK: FabProvider
 
-        /**
-         * Ask floating action button provider to reload fab properties.
-         */
+    interface FabProvider {
         fun invalidateFab()
     }
 }
