@@ -1,6 +1,5 @@
 package ca.josephroque.bowlingcompanion.teams.list
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.support.v7.app.AlertDialog
@@ -95,7 +94,6 @@ class TeamListFragment : ListFragment<Team, TeamRecyclerViewAdapter>() {
     /**
      * Prompt user to sort the list of teams in another order. Caches the chosen order.
      */
-    @SuppressLint("ApplySharedPref")
     private fun showSortByDialog() {
         context?.let {
             AlertDialog.Builder(it)
@@ -106,7 +104,7 @@ class TeamListFragment : ListFragment<Team, TeamRecyclerViewAdapter>() {
                             PreferenceManager.getDefaultSharedPreferences(context)
                                     .edit()
                                     .putInt(Preferences.TEAM_SORT_ORDER, sort.ordinal)
-                                    .commit()
+                                    .apply()
                             refreshList()
                         }
                     }

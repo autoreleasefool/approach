@@ -1,6 +1,5 @@
 package ca.josephroque.bowlingcompanion.leagues
 
-import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
@@ -200,7 +199,6 @@ class LeagueListFragment : ListFragment<League, NameAverageRecyclerViewAdapter<L
     /**
      * Prompt user to sort the list of leagues in another order. Caches the chosen order.
      */
-    @SuppressLint("ApplySharedPref")
     private fun showSortByDialog() {
         context?.let {
             AlertDialog.Builder(it)
@@ -211,7 +209,7 @@ class LeagueListFragment : ListFragment<League, NameAverageRecyclerViewAdapter<L
                             PreferenceManager.getDefaultSharedPreferences(context)
                                     .edit()
                                     .putInt(Preferences.LEAGUE_SORT_ORDER, sort.ordinal)
-                                    .commit()
+                                    .apply()
                             refreshList()
 
                             Analytics.trackSortedLeagues(order)
