@@ -130,15 +130,12 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
         }
     }
 
-    /** @Override. */
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
         val context = context ?: return
         val league = league ?: return
 
-        // TODO: move to onStart
         val preferenceManager = PreferenceManager.getDefaultSharedPreferences(context)
-
         val shouldHighlightSeries = preferenceManager.getBoolean(Settings.HighlightSeriesEnabled.prefName, Settings.HighlightSeriesEnabled.booleanDefault)
         val shouldHighlightScores = preferenceManager.getBoolean(Settings.HighlightScoreEnabled.prefName, Settings.HighlightScoreEnabled.booleanDefault)
 

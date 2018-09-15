@@ -116,7 +116,6 @@ abstract class TabbedFragment : BaseFragment(),
      * @param ignored fragment tags to ignore
      */
     fun refreshTabs(ignored: Set<Int> = HashSet()) {
-        // TODO: figure out how to use ignored
         val adapter = fragmentPager.adapter as? BaseFragmentPagerAdapter
         adapter?.let {
             for (i in 0 until it.count) {

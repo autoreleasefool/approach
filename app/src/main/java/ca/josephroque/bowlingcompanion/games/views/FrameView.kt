@@ -135,7 +135,7 @@ class FrameView : LinearLayout, View.OnClickListener {
      * @param text text to set
      */
     fun setBallText(ball: Int, text: String) {
-        // TODO: should highlight
+        // TODO: should highlight strikes and spares
         findViewById<TextView>(ballViewIds[ball]).text = text
     }
 

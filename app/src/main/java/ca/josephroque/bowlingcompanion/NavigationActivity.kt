@@ -88,7 +88,7 @@ class NavigationActivity : BaseActivity(),
                     return when (this) {
                         Record -> true
                         Statistics -> true
-                        Equipment -> false // TODO: enable equipments tab when ready
+                        Equipment -> false // FIXME: enable equipments tab when ready
                     }
                 }
         }
@@ -220,7 +220,7 @@ class NavigationActivity : BaseActivity(),
         }
 
         bottomNavigation.setOnNavigationItemReselectedListener {
-            // TODO: probably refresh the current fragment, not reset the stack
+            // FIXME: probably refresh the current fragment, not reset the stack
 //            fragNavController?.clearStack()
         }
     }
@@ -287,7 +287,7 @@ class NavigationActivity : BaseActivity(),
         val builder = FragNavController.newBuilder(savedInstanceState, supportFragmentManager, R.id.fragment_container)
                 .rootFragmentListener(this@NavigationActivity, BottomTab.available.size)
                 .transactionListener(this@NavigationActivity)
-        // TODO: look into .fragmentHideStrategy(FragNavController.HIDE), .eager(true)
+        // FIXME: look into .fragmentHideStrategy(FragNavController.HIDE), .eager(true)
         fragNavController = builder.build()
     }
 
@@ -297,7 +297,7 @@ class NavigationActivity : BaseActivity(),
         val fragmentName: String
         fragmentName = when (tab) {
             BottomTab.Record -> BowlerTeamTabbedFragment::class.java.name
-            BottomTab.Equipment -> BowlerListFragment::class.java.name // TODO: enable equipment tab
+            BottomTab.Equipment -> BowlerListFragment::class.java.name // FIXME: enable equipment tab
             BottomTab.Statistics -> BaseStatisticsFragment::class.java.name
         }
 
