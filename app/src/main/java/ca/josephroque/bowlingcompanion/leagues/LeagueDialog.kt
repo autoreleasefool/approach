@@ -143,6 +143,7 @@ class LeagueDialog : BaseDialogFragment() {
 
         val rootView = inflater.inflate(R.layout.dialog_league, container, false)
 
+        league?.let { resetInputs(it, rootView) }
         setupToolbar(rootView)
         setupLeagueTypeInput(rootView)
         setupNameInput(rootView)
@@ -259,11 +260,6 @@ class LeagueDialog : BaseDialogFragment() {
     override fun onStart() {
         super.onStart()
         dialog.window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-    }
-
-    /** @Override */
-    override fun onResume() {
-        super.onResume()
 
         // Requesting input focus and showing keyboard
         nameInput.requestFocus()
@@ -292,8 +288,6 @@ class LeagueDialog : BaseDialogFragment() {
                     additionalPinfallInput.setText("")
                 }
             }
-
-            resetInputs(it)
         }
 
         nameInput.setSelection(nameInput.text.length)
@@ -336,7 +330,15 @@ class LeagueDialog : BaseDialogFragment() {
      *
      * @param league the league to reset values to
      */
-    private fun resetInputs(league: League) {
+    private fun resetInputs(league: League, rootView: View? = null) {
+        val nameInput = rootView?.input_name ?: this.nameInput
+        val numberOfGamesInput = rootView?.input_number_of_games ?: this.numberOfGamesInput
+        val additionalGamesCheckbox = rootView?.checkbox_additional_games ?: this.additionalGamesCheckbox
+        val gameHighlightInput = rootView?.input_game_highlight ?: this.gameHighlightInput
+        val seriesHighlightInput = rootView?.input_series_highlight ?: this.seriesHighlightInput
+        val additionalGamesInput = rootView?.input_additional_games ?: this.additionalGamesInput
+        val additionalPinfallInput = rootView?.input_additional_pinfall ?: this.additionalPinfallInput
+
         nameInput.setText(league.name)
         numberOfGamesInput.setText(league.gamesPerSeries.toString())
         additionalGamesCheckbox.isChecked = league.additionalPinfall > 0 || league.additionalGames > 0

@@ -84,8 +84,8 @@ abstract class ListFragment<Item : IIdentifiable, Adapter : BaseRecyclerViewAdap
     }
 
     /** @Override */
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
         refreshList()
     }
 

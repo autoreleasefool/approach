@@ -72,6 +72,7 @@ class BowlerDialog : BaseDialogFragment(), View.OnClickListener {
         bowler = arguments?.getParcelable(ARG_BOWLER)
 
         val rootView = inflater.inflate(R.layout.dialog_bowler, container, false)
+        bowler?.let { resetInputs(it, rootView) }
         setupToolbar(rootView)
         setupInput(rootView)
         return rootView
@@ -141,22 +142,14 @@ class BowlerDialog : BaseDialogFragment(), View.OnClickListener {
     override fun onStart() {
         super.onStart()
         dialog.window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-    }
-
-    /** @Override */
-    override fun onResume() {
-        super.onResume()
 
         // Requesting input focus and showing keyboard
         nameInput.requestFocus()
         val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.showSoftInput(nameInput, InputMethodManager.SHOW_IMPLICIT)
 
-        bowler?.let {
-            deleteButton.visibility = View.VISIBLE
-            nameInput.setText(it.name)
-        }
 
+        bowler?.let { deleteButton.visibility = View.VISIBLE }
         nameInput.setSelection(nameInput.text.length)
         updateSaveButton()
     }
@@ -222,20 +215,20 @@ class BowlerDialog : BaseDialogFragment(), View.OnClickListener {
      */
     private fun saveBowler() {
         launch(Android) {
-            this@BowlerDialog.context?.let {
+            this@BowlerDialog.context?.let { context ->
                 val name = nameInput.text.toString()
 
                 if (canSave()) {
                     val oldBowler = bowler
                     val (newBowler, error) = if (oldBowler != null) {
-                        Bowler.save(it, oldBowler.id, name, oldBowler.average).await()
+                        Bowler.save(context, oldBowler.id, name, oldBowler.average).await()
                     } else {
-                        Bowler.save(it, -1, name).await()
+                        Bowler.save(context, -1, name).await()
                     }
 
                     if (error != null) {
-                        error.show(it)
-                        nameInput.setText(bowler?.name)
+                        error.show(context)
+                        bowler?.let { resetInputs(it) }
                     } else if (newBowler != null) {
                         dismiss()
                         delegate?.onFinishBowler(newBowler)
@@ -249,6 +242,11 @@ class BowlerDialog : BaseDialogFragment(), View.OnClickListener {
                 }
             }
         }
+    }
+
+    private fun resetInputs(bowler: Bowler, rootView: View? = null) {
+        val nameInput = rootView?.input_name ?: this.nameInput
+        nameInput.setText(bowler.name)
     }
 
     /**

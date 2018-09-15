@@ -144,11 +144,7 @@ class GameControllerFragment : TabbedFragment(),
             fragmentTabs.visibility = View.VISIBLE
             navigationActivity?.supportActionBar?.elevation = 0F
         }
-    }
 
-    /** @Override */
-    override fun onResume() {
-        super.onResume()
         onSeriesChanged()
         activity?.invalidateOptionsMenu()
         navigationDrawerController.isTeamMember = seriesProvider is SeriesProvider.TeamSeries

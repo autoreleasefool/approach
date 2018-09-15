@@ -126,16 +126,15 @@ class SettingsFragment : PreferenceFragmentCompat(),
         findPreference(Settings.ViewSource.prefName).onPreferenceClickListener = onPreferenceClickListener
     }
 
-    /** @Override */
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
         preferenceScreen.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
         updatePreferenceSummaries()
     }
 
     /** @Override */
-    override fun onPause() {
-        super.onPause()
+    override fun onStop() {
+        super.onStop()
         preferenceScreen.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
     }
 

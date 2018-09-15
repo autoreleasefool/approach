@@ -101,6 +101,7 @@ class TeamDialog : BaseDialogFragment(),
         team = arguments?.getParcelable(ARG_TEAM)
 
         val rootView = inflater.inflate(R.layout.dialog_team, container, false)
+        team?.let { resetInputs(it, rootView) }
         setupToolbar(rootView)
         setupBowlers(rootView)
         setupInput(rootView)
@@ -187,21 +188,13 @@ class TeamDialog : BaseDialogFragment(),
     override fun onStart() {
         super.onStart()
         dialog.window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-    }
-    /** @Override */
-    override fun onResume() {
-        super.onResume()
 
         activity?.let {
             nameInput.clearFocus()
             App.hideSoftKeyBoard(it)
         }
 
-        team?.let {
-            deleteButton.visibility = View.VISIBLE
-            nameInput.setText(it.name)
-        }
-
+        team?.let { deleteButton.visibility = View.VISIBLE }
         nameInput.setSelection(nameInput.text.length)
         refreshBowlerList()
     }
@@ -284,7 +277,7 @@ class TeamDialog : BaseDialogFragment(),
 
                     if (error != null) {
                         error.show(context)
-                        nameInput.setText(oldTeam?.name)
+                        oldTeam?.let { resetInputs(it) }
                         refreshBowlerList()
                     } else if (newTeam != null) {
                         dismiss()
@@ -326,37 +319,27 @@ class TeamDialog : BaseDialogFragment(),
         }
     }
 
-    /** @Override */
+    // MARK: Private functions
+
+    private fun resetInputs(team: Team, rootView: View? = null) {
+        val nameInput = rootView?.input_name ?: this.nameInput
+        nameInput.setText(team.name)
+    }
+
+    // MARK: AdapterDelegate
+
     override fun onItemClick(item: Bowler) {
         updateSaveButton()
     }
 
-    /** @Override */
     override fun onItemDelete(item: Bowler) {}
-
-    /** @Override */
     override fun onItemLongClick(item: Bowler) {}
-
-    /** @Override */
     override fun onItemSwipe(item: Bowler) {}
 
-    /**
-     * Handles interactions with the dialog.
-     */
+    // MARK: TeamDialogDelegate
+
     interface TeamDialogDelegate {
-
-        /**
-         * Indicates when the user has finished editing the [Team]
-         *
-         * @param team the finished [Team]
-         */
         fun onFinishTeam(team: Team)
-
-        /**
-         * Indicates the user wishes to delete the [Team].
-         *
-         * @param team the deleted [Team]
-         */
         fun onDeleteTeam(team: Team)
     }
 }

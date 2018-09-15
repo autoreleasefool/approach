@@ -77,8 +77,8 @@ class StatisticsProviderListFragment : ListFragment<StatisticsProvider, Statisti
     }
 
     /** @Override */
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
         navigationActivity?.supportActionBar?.setDisplayHomeAsUpEnabled(false)
     }
 

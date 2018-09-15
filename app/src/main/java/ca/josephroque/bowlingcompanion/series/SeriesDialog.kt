@@ -152,11 +152,7 @@ class SeriesDialog : BaseDialogFragment(), DatePickerDialog.OnDateSetListener {
     override fun onStart() {
         super.onStart()
         dialog.window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-    }
 
-    /** @Override */
-    override fun onResume() {
-        super.onResume()
         currentDate?.let { dateText.text = DateUtils.dateToPretty(it) }
         updateSaveButton()
     }

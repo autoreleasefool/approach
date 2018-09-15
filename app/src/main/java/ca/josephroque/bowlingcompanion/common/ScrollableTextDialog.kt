@@ -84,8 +84,8 @@ class ScrollableTextDialog : BaseDialogFragment() {
     }
 
     /** @Override */
-    override fun onResume() {
-        super.onResume()
+    override fun onStart() {
+        super.onStart()
 
         scrollableToolbar.setTitle(title)
         scrollableTextView.text = text
