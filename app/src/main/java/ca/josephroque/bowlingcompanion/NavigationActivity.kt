@@ -18,10 +18,12 @@ import ca.josephroque.bowlingcompanion.common.fragments.BaseDialogFragment
 import ca.josephroque.bowlingcompanion.common.fragments.BaseFragment
 import ca.josephroque.bowlingcompanion.common.fragments.TabbedFragment
 import ca.josephroque.bowlingcompanion.common.interfaces.INavigationDrawerHandler
+import ca.josephroque.bowlingcompanion.common.interfaces.IRefreshable
 import ca.josephroque.bowlingcompanion.series.SeriesListFragment
 import ca.josephroque.bowlingcompanion.statistics.interfaces.IStatisticsContext
 import ca.josephroque.bowlingcompanion.statistics.BaseStatisticsFragment
 import ca.josephroque.bowlingcompanion.teams.details.TeamDetailsFragment
+import ca.josephroque.bowlingcompanion.transfer.BaseTransferDialogFragment
 import ca.josephroque.bowlingcompanion.utils.Analytics
 import com.ncapdevi.fragnav.FragNavController
 import com.ncapdevi.fragnav.FragNavTransactionOptions
@@ -40,7 +42,8 @@ class NavigationActivity : BaseActivity(),
         FragNavController.RootFragmentListener,
         BaseFragment.FragmentNavigation,
         BaseFragment.FabProvider,
-        TabbedFragment.TabbedFragmentDelegate {
+        TabbedFragment.TabbedFragmentDelegate,
+        BaseDialogFragment.OnDismissListener {
 
     companion object {
         /** Logging identifier. */
@@ -183,6 +186,7 @@ class NavigationActivity : BaseActivity(),
 
     /** @Override */
     override fun pushDialogFragment(fragment: BaseDialogFragment) {
+        fragment.onDismissListener = this
         fragNavController?.showDialogFragment(fragment)
     }
 
@@ -382,5 +386,17 @@ class NavigationActivity : BaseActivity(),
         }
 
         popTarget?.let { fragNavController?.popFragments(it) }
+    }
+
+    // MARK: OnDismissListener
+
+    override fun onDismiss(dismissedFragment: BaseDialogFragment) {
+        if (dismissedFragment is BaseTransferDialogFragment) {
+            for (fragment in supportFragmentManager.fragments) {
+                if (fragment != null && fragment is IRefreshable) {
+                    fragment.refresh()
+                }
+            }
+        }
     }
 }

@@ -19,7 +19,8 @@ import kotlinx.android.synthetic.main.fragment_common_tabs.view.*
  * Base implementation for a fragment with tabs.
  */
 abstract class TabbedFragment : BaseFragment(),
-        IFloatingActionButtonHandler {
+        IFloatingActionButtonHandler,
+        IRefreshable {
 
     companion object {
         /** Logging identifier. */
@@ -127,6 +128,10 @@ abstract class TabbedFragment : BaseFragment(),
                 fragment?.refresh()
             }
         }
+    }
+
+    override fun refresh() {
+        refreshTabs()
     }
 
     /**

@@ -14,39 +14,51 @@ import ca.josephroque.bowlingcompanion.R
 abstract class BaseDialogFragment : DialogFragment() {
 
     companion object {
-        /** Logging identifier. */
         @Suppress("unused")
         private const val TAG = "BaseDialogFragment"
     }
 
-    /** Fragment navigation instance. */
     protected var fragmentNavigation: BaseFragment.FragmentNavigation? = null
 
-    /** Fab provider instance. */
     protected var fabProvider: BaseFragment.FabProvider? = null
 
-    /** Get the navigation activity. */
+    var onDismissListener: OnDismissListener? = null
+
     protected val navigationActivity: NavigationActivity?
         get() = activity as? NavigationActivity
+
+    // MARK: Lifecycle functions
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         dialog.window.attributes.windowAnimations = R.style.DialogAnimation
     }
 
-    /** @Override */
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         context as? BaseFragment.FragmentNavigation ?: throw RuntimeException("Parent activity must implement FragmentNavigation")
         fragmentNavigation = context
         context as? BaseFragment.FabProvider ?: throw RuntimeException("Parent activity must implement FabProvider")
         fabProvider = context
+        context as? BaseDialogFragment.OnDismissListener ?: return
+        onDismissListener = context
     }
 
-    /** @Override */
     override fun onDetach() {
         super.onDetach()
         fragmentNavigation = null
         fabProvider = null
+        onDismissListener = null
+    }
+
+    override fun dismiss() {
+        super.dismiss()
+        onDismissListener?.onDismiss(this)
+    }
+
+    // MARK: OnDismissListener
+
+    interface OnDismissListener {
+        fun onDismiss(dismissedFragment: BaseDialogFragment)
     }
 }
