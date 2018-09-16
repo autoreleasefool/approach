@@ -126,11 +126,20 @@ class StatisticGraphFragment : BaseFragment(),
      */
     private fun updateStatisticTitles() {
         val statistic = StatisticHelper.getStatistic(statisticId)
-        val (nextStatistic, previousStatistic) = StatisticHelper.getAdjacentStatistics(statisticId)
+        val (previousStatistic, nextStatistic) = StatisticHelper.getAdjacentStatistics(statisticId)
 
         textTitle.setText(statistic.titleId)
-        textPrevStatistic.setText(previousStatistic?.titleId ?: 0)
-        textNextStatistic.setText(nextStatistic?.titleId ?: 0)
+        if (previousStatistic != null) {
+            textPrevStatistic.setText(previousStatistic.titleId)
+        } else {
+            textPrevStatistic.text = null
+        }
+
+        if (nextStatistic != null) {
+            textNextStatistic.setText(nextStatistic.titleId)
+        } else {
+            textNextStatistic.text = null
+        }
     }
 
     /**

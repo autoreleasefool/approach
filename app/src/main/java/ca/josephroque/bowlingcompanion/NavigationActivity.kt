@@ -23,7 +23,6 @@ import ca.josephroque.bowlingcompanion.series.SeriesListFragment
 import ca.josephroque.bowlingcompanion.statistics.interfaces.IStatisticsContext
 import ca.josephroque.bowlingcompanion.statistics.BaseStatisticsFragment
 import ca.josephroque.bowlingcompanion.teams.details.TeamDetailsFragment
-import ca.josephroque.bowlingcompanion.transfer.BaseTransferDialogFragment
 import ca.josephroque.bowlingcompanion.utils.Analytics
 import com.ncapdevi.fragnav.FragNavController
 import com.ncapdevi.fragnav.FragNavTransactionOptions

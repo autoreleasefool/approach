@@ -2,7 +2,6 @@ package ca.josephroque.bowlingcompanion.statistics.unit
 
 import android.content.Context
 import android.os.Parcel
-import android.os.Parcelable
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
 import ca.josephroque.bowlingcompanion.common.interfaces.readDate
 import ca.josephroque.bowlingcompanion.common.interfaces.writeDate

@@ -69,7 +69,7 @@ class StatisticsUnitDetailsFragment : BaseFragment(),
     // MARK: StatisticGraphDelegate
 
     override fun nextStatistic(statisticId: Long) {
-        val (nextStatistic, _) = StatisticHelper.getAdjacentStatistics(statisticId)
+        val (_, nextStatistic) = StatisticHelper.getAdjacentStatistics(statisticId)
         nextStatistic?.let {
             val graphFragment = StatisticGraphFragment.newInstance(unit, nextStatistic.id)
             showStatisticGraph(graphFragment)
@@ -79,7 +79,7 @@ class StatisticsUnitDetailsFragment : BaseFragment(),
     }
 
     override fun prevStatistic(statisticId: Long) {
-        val (_, prevStatistic) = StatisticHelper.getAdjacentStatistics(statisticId)
+        val (prevStatistic, _) = StatisticHelper.getAdjacentStatistics(statisticId)
         prevStatistic?.let {
             val graphFragment = StatisticGraphFragment.newInstance(unit, prevStatistic.id)
             showStatisticGraph(graphFragment)
