@@ -363,12 +363,9 @@ class NavigationActivity : BaseActivity(),
     // MARK: OnDismissListener
 
     override fun onDismiss(dismissedFragment: BaseDialogFragment) {
-        if (dismissedFragment is BaseTransferDialogFragment) {
-            for (fragment in supportFragmentManager.fragments) {
-                if (fragment != null && fragment is IRefreshable) {
-                    fragment.refresh()
-                }
-            }
+        val currentFragment = currentFragment ?: return
+        if (currentFragment is IRefreshable) {
+            currentFragment.refresh()
         }
     }
 }

@@ -52,8 +52,8 @@ abstract class BaseDialogFragment : DialogFragment() {
     }
 
     override fun dismiss() {
-        super.dismiss()
         onDismissListener?.onDismiss(this)
+        super.dismiss()
     }
 
     // MARK: OnDismissListener
