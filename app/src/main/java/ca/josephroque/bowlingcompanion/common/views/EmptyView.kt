@@ -4,6 +4,7 @@ import android.content.Context
 import android.support.constraint.ConstraintLayout
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import ca.josephroque.bowlingcompanion.R
 import kotlinx.android.synthetic.main.view_empty.view.empty_image as emptyImage
 import kotlinx.android.synthetic.main.view_empty.view.empty_text as emptyText
@@ -28,13 +29,22 @@ class EmptyView : ConstraintLayout {
         LayoutInflater.from(context).inflate(R.layout.view_empty, this, true)
     }
 
-    var emptyImageId: Int = 0
+    var emptyImageId: Int? = null
         set(value) {
-            emptyImage.setImageResource(value)
+            if (value != null) {
+                emptyImage.setImageResource(value)
+                emptyImage.visibility = View.VISIBLE
+            } else {
+                emptyImage.visibility = View.INVISIBLE
+            }
         }
 
-    var emptyTextId: Int = 0
+    var emptyTextId: Int? = null
         set(value) {
-            emptyText.setText(value)
+            if (value != null) {
+                emptyText.setText(value)
+            } else {
+                emptyText.text = null
+            }
         }
 }

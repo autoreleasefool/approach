@@ -40,8 +40,8 @@ abstract class ListFragment<Item : IIdentifiable, Adapter : BaseRecyclerViewAdap
     protected var delegate: ListFragmentDelegate? = null
     protected var canIgnoreDelegate = false
 
-    abstract val emptyViewImage: Int
-    abstract val emptyViewText: Int
+    abstract val emptyViewImage: Int?
+    abstract val emptyViewText: Int?
 
     // MARK: Lifecycle functions
 
