@@ -96,14 +96,14 @@ class StatSeries(
                     "INNER JOIN ${BowlerEntry.TABLE_NAME} as bowler " +
                     "ON ${TeamBowlerEntry.COLUMN_BOWLER_ID}=bowler.${BowlerEntry._ID} " +
                     "INNER JOIN ${LeagueEntry.TABLE_NAME} as league " +
-                    "ON ${BowlerEntry._ID}=${LeagueEntry.COLUMN_BOWLER_ID} " +
+                    "ON bowler.${BowlerEntry._ID}=${LeagueEntry.COLUMN_BOWLER_ID} " +
                     "INNER JOIN ${SeriesEntry.TABLE_NAME} as series " +
                     "ON league.${LeagueEntry._ID}=${SeriesEntry.COLUMN_LEAGUE_ID} " +
                     "INNER JOIN ${GameEntry.TABLE_NAME} as game " +
                     "ON series.${SeriesEntry._ID}=game.${GameEntry.COLUMN_SERIES_ID} " +
                     "INNER JOIN ${FrameEntry.TABLE_NAME} as frame " +
                     "ON game.${GameEntry._ID}=frame.${FrameEntry.COLUMN_GAME_ID} " +
-                    "WHERE .${TeamBowlerEntry.COLUMN_TEAM_ID}=? " +
+                    "WHERE teamBowlers.${TeamBowlerEntry.COLUMN_TEAM_ID}=? " +
                     "ORDER BY " +
                     "bowler.${BowlerEntry._ID}, " +
                     "league.${LeagueEntry._ID}, " +
