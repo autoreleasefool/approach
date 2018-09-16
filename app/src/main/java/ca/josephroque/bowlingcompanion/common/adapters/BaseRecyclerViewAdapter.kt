@@ -97,7 +97,7 @@ abstract class BaseRecyclerViewAdapter<Item : IIdentifiable>(
      * @return the position of the item
      */
     open fun getPositionOfItem(item: Item): Int {
-        return items.indexOf(item)
+        return item.indexInList(items)
     }
 
     /** Currently selected items */
