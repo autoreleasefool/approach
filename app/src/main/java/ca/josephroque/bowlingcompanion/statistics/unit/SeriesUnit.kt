@@ -34,27 +34,8 @@ class SeriesUnit(
     override val excludedCategories: Set<StatisticsCategory> = setOf(StatisticsCategory.Average, StatisticsCategory.Series)
     override val excludedStatisticIds: Set<Int> = setOf(GameNameStatistic.Id)
 
-    // MARK: StatisticsUnit
+    // MARK: Constructors
 
-    /** @Override */
-    override fun getSeriesForStatistics(context: Context): Deferred<List<StatSeries>> {
-        return StatSeries.loadSeriesForSeries(context, seriesId)
-    }
-
-    // MARK: KParcelable
-
-    /** @Override */
-    override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
-        writeString(bowlerName)
-        writeString(leagueName)
-        writeLong(seriesId)
-        writeDate(seriesDate)
-        writeCacheToParcel(this)
-    }
-
-    /**
-     * Construct a [SeriesUnit] from a [Parcel].
-     */
     private constructor(p: Parcel): this(
             bowlerName = p.readString(),
             leagueName = p.readString(),
@@ -63,12 +44,26 @@ class SeriesUnit(
             parcel = p
     )
 
+    // MARK: StatisticsUnit
+
+    override fun getSeriesForStatistics(context: Context): Deferred<List<StatSeries>> {
+        return StatSeries.loadSeriesForSeries(context, seriesId)
+    }
+
+    // MARK: KParcelable
+
+    override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
+        writeString(bowlerName)
+        writeString(leagueName)
+        writeLong(seriesId)
+        writeDate(seriesDate)
+        writeCacheToParcel(this)
+    }
+
     companion object {
-        /** Logging identifier */
         @Suppress("unused")
         private const val TAG = "SeriesUnit"
 
-        /** Creator, required by [Parcelable]. */
         @Suppress("unused")
         @JvmField val CREATOR = parcelableCreator(::SeriesUnit)
     }

@@ -2,7 +2,6 @@ package ca.josephroque.bowlingcompanion.statistics.unit
 
 import android.content.Context
 import android.os.Parcel
-import android.os.Parcelable
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
 import ca.josephroque.bowlingcompanion.statistics.StatisticsCategory
 import ca.josephroque.bowlingcompanion.statistics.immutable.StatSeries
@@ -20,43 +19,36 @@ import kotlinx.coroutines.experimental.Deferred
  */
 class TeamUnit(val teamId: Long, teamName: String, parcel: Parcel? = null) : StatisticsUnit(parcel) {
 
-    // MARK: Overrides
-
     override val name: String = teamName
     override val excludedCategories: Set<StatisticsCategory> = emptySet()
     override val excludedStatisticIds: Set<Int> = setOf(BowlerNameStatistic.Id, LeagueNameStatistic.Id, SeriesNameStatistic.Id, GameNameStatistic.Id)
 
-    // MARK: StatisticsUnit
+    // MARK: Constructors
 
-    /** @Override */
-    override fun getSeriesForStatistics(context: Context): Deferred<List<StatSeries>> {
-        return StatSeries.loadSeriesForTeam(context, teamId)
-    }
-
-    // MARK: KParcelable
-
-    /** @Override */
-    override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
-        writeLong(teamId)
-        writeString(name)
-        writeCacheToParcel(this)
-    }
-
-    /**
-     * Construct a [TeamUnit] from a [Parcel].
-     */
     private constructor(p: Parcel): this(
             teamId = p.readLong(),
             teamName = p.readString(),
             parcel = p
     )
 
+    // MARK: StatisticsUnit
+
+    override fun getSeriesForStatistics(context: Context): Deferred<List<StatSeries>> {
+        return StatSeries.loadSeriesForTeam(context, teamId)
+    }
+
+    // MARK: KParcelable
+
+    override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
+        writeLong(teamId)
+        writeString(name)
+        writeCacheToParcel(this)
+    }
+
     companion object {
-        /** Logging identifier */
         @Suppress("unused")
         private const val TAG = "TeamUnit"
 
-        /** Creator, required by [Parcelable]. */
         @Suppress("unused")
         @JvmField val CREATOR = parcelableCreator(::TeamUnit)
     }

@@ -29,40 +29,49 @@ import java.util.Calendar
 abstract class StatisticsUnit(initialSeries: List<StatSeries>? = null, initialStatistics: MutableList<StatisticListItem>? = null) : KParcelable {
 
     companion object {
-        /** Logging identifier */
         @Suppress("unused")
         private const val TAG = "StatisticsUnit"
     }
 
-    /** Name of the unit. */
     abstract val name: String
-
-    /** Set of [StatisticsCategory]s which must not be displayed for the unit. */
     abstract val excludedCategories: Set<StatisticsCategory>
-
-    /** Set of ids for [Statistic]s which must not be displayed for the unit. */
     abstract val excludedStatisticIds: Set<Int>
 
-    /** Cache of series. */
     protected var cachedSeries: List<StatSeries>? = initialSeries
-
-    /** Cache of statistics. */
     protected var cachedStatistics: MutableList<StatisticListItem>? = initialStatistics
 
-    /**
-     * Get a list of [StatSeries] for building the statistics.
-     *
-     * @param context to get access to the database
-     * @return a list of [StatSeries]
-     */
+    // MARK: Constructors
+
+    protected constructor(p: Parcel? = null): this(
+            initialSeries = if (p != null && p.readBoolean()) {
+                ArrayList<StatSeries>().apply {
+                    val array = p.readParcelableArray(StatSeries::class.java.classLoader)
+                    for (i in 0 until array.size) {
+                        add(array[i] as StatSeries)
+                    }
+                }
+            } else {
+                null
+            },
+            initialStatistics = if (p != null && p.readBoolean()) {
+                ArrayList<StatisticListItem>().apply {
+                    val statisticsSize = p.readInt()
+                    val statisticTypes = IntArray(statisticsSize)
+                    p.readIntArray(statisticTypes)
+
+                    for (i in 0 until statisticsSize) {
+                        this.add(StatisticHelper.readParcelable(p, statisticTypes[i]))
+                    }
+                }
+            } else {
+                null
+            }
+    )
+
+    // MARK: StatisticsUnit
+
     protected abstract fun getSeriesForStatistics(context: Context): Deferred<List<StatSeries>>
 
-    /**
-     * Get the unit's statistics to be displayed.
-     *
-     * @param context to get access to the database
-     * @return a list of [Statistic]s
-     */
     fun getStatistics(context: Context): Deferred<MutableList<StatisticListItem>> {
         return async(CommonPool) {
             if (cachedStatistics == null) {
@@ -73,14 +82,6 @@ abstract class StatisticsUnit(initialSeries: List<StatSeries>? = null, initialSt
         }
     }
 
-    /**
-     * Build the graph entries for a single statistic from the unit/
-     *
-     * @param context to get access to the database
-     * @param statisticId id of the statistic to build
-     * @param accumulative true to accumulate statistic over all time, false for week by week
-     * @return the list of [StatisticsGraphLine] items to display the statistic in a graph
-     */
     fun getStatisticGraphData(context: Context, statisticId: Long, accumulative: Boolean): Deferred<Pair<List<StatisticsGraphLine>, List<String>>> {
         return async(CommonPool) {
             val graphData: MutableList<MutableList<Entry>> = ArrayList()
@@ -139,13 +140,8 @@ abstract class StatisticsUnit(initialSeries: List<StatSeries>? = null, initialSt
         }
     }
 
-    /**
-     * Build the unit's statistics. This should return a new list each time it is called.
-     * Caching for this method exists in the [StatisticsUnit] abstract class.
-     *
-     * @param context to get access to the database
-     * @return a list of [Statistic]s
-     */
+    // MARK: Private functions
+
     private fun buildStatistics(context: Context): Deferred<MutableList<StatisticListItem>> {
         return async(CommonPool) {
             Analytics.trackStatisticsLoaded(Analytics.Companion.EventTime.Begin)
@@ -200,12 +196,6 @@ abstract class StatisticsUnit(initialSeries: List<StatSeries>? = null, initialSt
         }
     }
 
-    /**
-     * Iterate over the series and its games/frames to modify the statistic in place accordingly.
-     *
-     * @param statistic the statistic to adjust
-     * @param series the series that will modify the statistic
-     */
     private fun adjustStatisticBySeries(statistic: Statistic, series: StatSeries) {
         if (statistic.isModifiedBy(series)) {
             statistic.modify(series)
@@ -229,13 +219,6 @@ abstract class StatisticsUnit(initialSeries: List<StatSeries>? = null, initialSt
         }
     }
 
-    /**
-     * Add entries to [graphData] from the statistic's current state.
-     *
-     * @param graphData to add entries to
-     * @param xPos x position of the entries to add
-     * @param statistic to get entry y positions
-     */
     private fun addGraphEntries(graphData: MutableList<MutableList<Entry>>, xPos: Float, statistic: Statistic) {
         statistic.primaryGraphY?.let {
             if (graphData.size < 1) { graphData.add(ArrayList()) }
@@ -248,42 +231,6 @@ abstract class StatisticsUnit(initialSeries: List<StatSeries>? = null, initialSt
         }
     }
 
-    // MARK: KParcelable
-
-    /**
-     * Construct a [StatisticsUnit] from a [Parcel].
-     */
-    protected constructor(p: Parcel? = null): this(
-            initialSeries = if (p != null && p.readBoolean()) {
-                ArrayList<StatSeries>().apply {
-                    val array = p.readParcelableArray(StatSeries::class.java.classLoader)
-                    for (i in 0 until array.size) {
-                        add(array[i] as StatSeries)
-                    }
-                }
-            } else {
-                null
-            },
-            initialStatistics = if (p != null && p.readBoolean()) {
-                ArrayList<StatisticListItem>().apply {
-                    val statisticsSize = p.readInt()
-                    val statisticTypes = IntArray(statisticsSize)
-                    p.readIntArray(statisticTypes)
-
-                    for (i in 0 until statisticsSize) {
-                        this.add(StatisticHelper.readParcelable(p, statisticTypes[i]))
-                    }
-                }
-            } else {
-                null
-            }
-    )
-
-    /**
-     * Write the unit's cached series and statistics to the [Parcel].
-     *
-     * @param p the parcel to write to
-     */
     protected fun writeCacheToParcel(p: Parcel) = with(p) {
         val series = cachedSeries
         if (series != null) {

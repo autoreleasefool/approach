@@ -2,7 +2,6 @@ package ca.josephroque.bowlingcompanion.statistics.unit
 
 import android.content.Context
 import android.os.Parcel
-import android.os.Parcelable
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
 import ca.josephroque.bowlingcompanion.common.interfaces.readDate
 import ca.josephroque.bowlingcompanion.common.interfaces.writeDate
@@ -35,14 +34,23 @@ class GameUnit(
     parcel: Parcel? = null
 ) : StatisticsUnit(parcel) {
 
-    /** Format the series date. */
     val prettySeriesDate = DateUtils.dateToPretty(seriesDate)
-
-    // MARK: Overrides
 
     override val name = "Game $gameOrdinal"
     override val excludedCategories = setOf(StatisticsCategory.Average, StatisticsCategory.MatchPlay, StatisticsCategory.Series)
     override val excludedStatisticIds = setOf(AveragePinsLeftStatistic.Id, GameAverageStatistic.Id, HighSingleStatistic.Id, TotalPinfallStatistic.Id, NumberOfGamesStatistic.Id)
+
+    // MARK: Constructors
+
+    private constructor(p: Parcel): this(
+            bowlerName = p.readString(),
+            leagueName = p.readString(),
+            seriesDate = p.readDate()!!,
+            seriesId = p.readLong(),
+            gameId = p.readLong(),
+            gameOrdinal = p.readInt(),
+            parcel = p
+    )
 
     // MARK: StatisticsUnit
 
@@ -64,7 +72,6 @@ class GameUnit(
 
     // MARK: KParcelable
 
-    /** @Override */
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeString(bowlerName)
         writeString(leagueName)
@@ -75,25 +82,10 @@ class GameUnit(
         writeCacheToParcel(this)
     }
 
-    /**
-     * Construct a [GameUnit] from a [Parcel].
-     */
-    private constructor(p: Parcel): this(
-            bowlerName = p.readString(),
-            leagueName = p.readString(),
-            seriesDate = p.readDate()!!,
-            seriesId = p.readLong(),
-            gameId = p.readLong(),
-            gameOrdinal = p.readInt(),
-            parcel = p
-    )
-
     companion object {
-        /** Logging identifier */
         @Suppress("unused")
         private const val TAG = "GameUnit"
 
-        /** Creator, required by [Parcelable]. */
         @Suppress("unused")
         @JvmField val CREATOR = parcelableCreator(::GameUnit)
     }

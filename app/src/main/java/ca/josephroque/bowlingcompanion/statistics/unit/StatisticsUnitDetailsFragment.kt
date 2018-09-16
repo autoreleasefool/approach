@@ -24,19 +24,11 @@ class StatisticsUnitDetailsFragment : BaseFragment(),
         StatisticGraphFragment.StatisticGraphDelegate {
 
     companion object {
-        /** Logging identifier. */
         @Suppress("unused")
         private const val TAG = "StatUnitDetailsFragment"
 
-        /** Identifier for the argument that represents the [StatisticsUnit] whose details are displayed. */
         private const val ARG_UNIT = "${TAG}_unit"
 
-        /**
-         * Creates a new instance.
-         *
-         * @param unit unit to load details of
-         * @return the new instance
-         */
         fun newInstance(unit: StatisticsUnit): StatisticsUnitDetailsFragment {
             return StatisticsUnitDetailsFragment().apply {
                 arguments = Bundle().apply { putParcelable(ARG_UNIT, unit) }
@@ -44,10 +36,10 @@ class StatisticsUnitDetailsFragment : BaseFragment(),
         }
     }
 
-    /** The unit whose statistics are to be displayed. */
     private lateinit var unit: StatisticsUnit
 
-    /** @Override */
+    // MARK: Lifecycle functions
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         unit = arguments?.getParcelable(ARG_UNIT)!!
 
@@ -64,14 +56,14 @@ class StatisticsUnitDetailsFragment : BaseFragment(),
         return view
     }
 
-    /** @Override */
+    // MARK: BaseFragment
+
     override fun updateToolbarTitle() {
         // Intentionally left blank
     }
 
     // MARK: StatisticGraphDelegate
 
-    /** @Override */
     override fun nextStatistic(statisticId: Long) {
         val (nextStatistic, _) = StatisticHelper.getAdjacentStatistics(statisticId)
         nextStatistic?.let {
@@ -85,7 +77,6 @@ class StatisticsUnitDetailsFragment : BaseFragment(),
         }
     }
 
-    /** @Override */
     override fun prevStatistic(statisticId: Long) {
         val (_, prevStatistic) = StatisticHelper.getAdjacentStatistics(statisticId)
         prevStatistic?.let {
@@ -101,7 +92,6 @@ class StatisticsUnitDetailsFragment : BaseFragment(),
 
     // MARK: ListFragmentDelegate
 
-    /** @Override */
     override fun onItemSelected(item: IIdentifiable, longPress: Boolean) {
         if (item is Statistic) {
             if (item.canBeGraphed) {

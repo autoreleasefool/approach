@@ -2,7 +2,6 @@ package ca.josephroque.bowlingcompanion.statistics.unit
 
 import android.content.Context
 import android.os.Parcel
-import android.os.Parcelable
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
 import ca.josephroque.bowlingcompanion.leagues.League
 import ca.josephroque.bowlingcompanion.statistics.StatisticsCategory
@@ -24,26 +23,8 @@ class LeagueUnit(val bowlerName: String, val leagueId: Long, leagueName: String,
     override val excludedCategories: Set<StatisticsCategory> = emptySet()
     override val excludedStatisticIds: Set<Int> = setOf(SeriesNameStatistic.Id, GameNameStatistic.Id)
 
-    // MARK: StatisticsUnit
+    // MARK: Constructors
 
-    /** @Override */
-    override fun getSeriesForStatistics(context: Context): Deferred<List<StatSeries>> {
-        return StatSeries.loadSeriesForLeague(context, leagueId)
-    }
-
-    // MARK: KParcelable
-
-    /** @Override */
-    override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
-        writeString(bowlerName)
-        writeLong(leagueId)
-        writeString(name)
-        writeCacheToParcel(this)
-    }
-
-    /**
-     * Construct a [LeagueUnit] from a [Parcel].
-     */
     private constructor(p: Parcel): this(
             bowlerName = p.readString(),
             leagueId = p.readLong(),
@@ -51,12 +32,25 @@ class LeagueUnit(val bowlerName: String, val leagueId: Long, leagueName: String,
             parcel = p
     )
 
+    // MARK: StatisticsUnit
+
+    override fun getSeriesForStatistics(context: Context): Deferred<List<StatSeries>> {
+        return StatSeries.loadSeriesForLeague(context, leagueId)
+    }
+
+    // MARK: KParcelable
+
+    override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
+        writeString(bowlerName)
+        writeLong(leagueId)
+        writeString(name)
+        writeCacheToParcel(this)
+    }
+
     companion object {
-        /** Logging identifier */
         @Suppress("unused")
         private const val TAG = "LeagueUnit"
 
-        /** Creator, required by [Parcelable]. */
         @Suppress("unused")
         @JvmField val CREATOR = parcelableCreator(::LeagueUnit)
     }
