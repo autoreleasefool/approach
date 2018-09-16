@@ -23,65 +23,63 @@ abstract class TabbedFragment : BaseFragment(),
         IRefreshable {
 
     companion object {
-        /** Logging identifier. */
         @Suppress("unused")
         private const val TAG = "TabbedFragment"
     }
 
-    /** Active tab. */
     protected var currentTab: Int
         get() = fragmentPager?.currentItem ?: 0
         set(value) { fragmentPager?.currentItem = value }
 
-    /** Delegate for [TabbedFragment] events. */
     private var delegate: TabbedFragmentDelegate? = null
 
-    /** @Override */
+    // MARK: Lifecycle functions
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val rootView = inflater.inflate(R.layout.fragment_common_tabs, container, false)
         configureTabLayout(rootView)
         return rootView
     }
 
-    /** @Override */
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         context as? TabbedFragmentDelegate ?: throw RuntimeException("${context!!} must implement TabbedFragmentDelegate")
         delegate = context
     }
 
-    /** @Override */
     override fun onDetach() {
         super.onDetach()
         delegate = null
     }
 
-    /**
-     * Add tabs to the tab layout.
-     *
-     * @param tabLayout to create and add tabs
-     */
+    // MARK: TabbedFragment
+
+    fun resetTabLayout() {
+        configureTabLayout(view!!)
+    }
+
+    fun refreshTabs(ignored: Set<Int> = HashSet()) {
+        val adapter = fragmentPager.adapter as? BaseFragmentPagerAdapter
+        adapter?.let {
+            for (i in 0 until it.count) {
+                if (ignored.contains(i)) {
+                    continue
+                }
+
+                val fragment = it.getFragment(i) as? IRefreshable
+                fragment?.refresh()
+            }
+        }
+    }
+
     abstract fun addTabs(tabLayout: TabLayout)
 
-    /**
-     * Create an instance of [BaseFragmentPagerAdapter] to manage the fragment instances for each tab.
-     *
-     * @param tabCount number of tabs
-     */
     abstract fun buildPagerAdapter(tabCount: Int): BaseFragmentPagerAdapter
 
-    /**
-     * For subclasses to respond to tab changes.
-     *
-     * @param newTab the new tab
-     */
     abstract fun handleTabSwitch(newTab: Int)
 
-    /**
-     * Configure tab layout for rendering.
-     *
-     * @param rootView the root view of the fragment
-     */
+    // MARK: Private functions
+
     private fun configureTabLayout(rootView: View) {
         rootView.tabbed_fragment_tabs.removeAllTabs()
         addTabs(rootView.tabbed_fragment_tabs)
@@ -103,44 +101,23 @@ abstract class TabbedFragment : BaseFragment(),
         })
     }
 
-    /**
-     * Reset the tab layout.
-     */
-    fun resetTabLayout() {
-        configureTabLayout(view!!)
-    }
-
-    /**
-     * Refresh lists in all tabs.
-     *
-     * @param ignored fragment tags to ignore
-     */
-    fun refreshTabs(ignored: Set<Int> = HashSet()) {
-        val adapter = fragmentPager.adapter as? BaseFragmentPagerAdapter
-        adapter?.let {
-            for (i in 0 until it.count) {
-                if (ignored.contains(i)) {
-                    continue
-                }
-
-                val fragment = it.getFragment(i) as? IRefreshable
-                fragment?.refresh()
-            }
-        }
-    }
+    // MARK: IRefreshable
 
     override fun refresh() {
         refreshTabs()
     }
 
-    /**
-     * Delegate for [TabbedFragment] events.
-     */
-    interface TabbedFragmentDelegate {
+    // MARK: BaseFragment
 
-        /**
-         * Invoked when the current tab changes.
-         */
+    override fun popChildFragment(): Boolean {
+        val adapter = fragmentPager.adapter as? BaseFragmentPagerAdapter
+        val fragment = adapter?.getFragment(currentTab) as? BaseFragment
+        return fragment?.popChildFragment() ?: super.popChildFragment()
+    }
+
+    // MARK: TabbedFragmentDelegate
+
+    interface TabbedFragmentDelegate {
         fun onTabSwitched()
     }
 }

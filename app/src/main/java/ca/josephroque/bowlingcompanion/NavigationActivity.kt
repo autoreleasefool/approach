@@ -95,11 +95,11 @@ class NavigationActivity : BaseActivity(),
     override val stackSize: Int
         get() = fragNavController?.currentStack?.size ?: 0
 
-    private val currentFragment: Fragment?
+    private val currentFragment: BaseFragment?
         get() {
             for (fragment in supportFragmentManager.fragments) {
                 if (fragment != null && fragment.isVisible) {
-                    return fragment
+                    return fragment as? BaseFragment ?: throw java.lang.RuntimeException("$fragment is not a BaseFragment")
                 }
             }
             return null
@@ -132,6 +132,10 @@ class NavigationActivity : BaseActivity(),
     override fun onBackPressed() {
         val fragNavController = fragNavController
         if (fragNavController != null) {
+            if (currentFragment?.popChildFragment() == true) {
+                return
+            }
+
             if (BottomTab.fromInt(fragNavController.currentStackIndex) == BottomTab.Statistics &&
                     (fragNavController.currentStack?.size ?: 0) <= 2) {
                 fragNavController.switchTab(BottomTab.Record.ordinal)

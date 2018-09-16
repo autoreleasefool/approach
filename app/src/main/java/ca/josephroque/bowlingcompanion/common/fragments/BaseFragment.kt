@@ -36,6 +36,8 @@ abstract class BaseFragment : Fragment() {
 
     abstract fun updateToolbarTitle()
 
+    open fun popChildFragment(): Boolean = false
+
     // MARK: Lifecycle functions
 
     override fun onAttach(context: Context?) {

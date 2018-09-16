@@ -62,16 +62,17 @@ class StatisticsUnitDetailsFragment : BaseFragment(),
         // Intentionally left blank
     }
 
+    override fun popChildFragment(): Boolean {
+        return childFragmentManager.popBackStackImmediate()
+    }
+
     // MARK: StatisticGraphDelegate
 
     override fun nextStatistic(statisticId: Long) {
         val (nextStatistic, _) = StatisticHelper.getAdjacentStatistics(statisticId)
         nextStatistic?.let {
             val graphFragment = StatisticGraphFragment.newInstance(unit, nextStatistic.id)
-            childFragmentManager.beginTransaction().apply {
-                replace(R.id.fragment_container, graphFragment)
-                commit()
-            }
+            showStatisticGraph(graphFragment)
 
             Analytics.trackViewStatisticsGraph(it.getTitle(resources))
         }
@@ -81,10 +82,7 @@ class StatisticsUnitDetailsFragment : BaseFragment(),
         val (_, prevStatistic) = StatisticHelper.getAdjacentStatistics(statisticId)
         prevStatistic?.let {
             val graphFragment = StatisticGraphFragment.newInstance(unit, prevStatistic.id)
-            childFragmentManager.beginTransaction().apply {
-                replace(R.id.fragment_container, graphFragment)
-                commit()
-            }
+            showStatisticGraph(graphFragment)
 
             Analytics.trackViewStatisticsGraph(it.getTitle(resources))
         }
@@ -96,13 +94,24 @@ class StatisticsUnitDetailsFragment : BaseFragment(),
         if (item is Statistic) {
             if (item.canBeGraphed) {
                 val graphFragment = StatisticGraphFragment.newInstance(unit, item.id)
-                childFragmentManager.beginTransaction().apply {
-                    replace(R.id.fragment_container, graphFragment)
-                    commit()
-                }
+                showStatisticGraph(graphFragment)
 
                 Analytics.trackViewStatisticsGraph(item.getTitle(resources))
             }
+        }
+    }
+
+    // MARK: Private functions
+
+    private fun showStatisticGraph(graphFragment: StatisticGraphFragment) {
+        childFragmentManager.beginTransaction().apply {
+            add(R.id.fragment_container, graphFragment)
+
+            if (childFragmentManager.fragments.size == 1) {
+                addToBackStack("StatisticsList")
+            }
+
+            commit()
         }
     }
 }
