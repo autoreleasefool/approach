@@ -40,6 +40,9 @@ class StatisticsProviderListFragment : ListFragment<StatisticsProvider,
         }
     }
 
+    override val emptyViewImage = R.drawable.empty_view_statistics
+    override val emptyViewText = R.string.empty_view_statistics_providers
+
     private lateinit var statisticsProviders: List<StatisticsProvider>
 
     // MARK: Lifecycle functions

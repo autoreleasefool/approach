@@ -2,7 +2,6 @@ package ca.josephroque.bowlingcompanion.common.fragments
 
 import android.content.Context
 import android.support.design.widget.BottomSheetDialogFragment
-import android.support.v4.app.DialogFragment
 import android.support.v4.app.Fragment
 import ca.josephroque.bowlingcompanion.NavigationActivity
 

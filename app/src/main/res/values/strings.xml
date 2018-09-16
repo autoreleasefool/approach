@@ -398,7 +398,14 @@
     <string name="nav_settings">Settings</string>
 
     <!-- Empty view -->
-    <string name="base_statistics_empty">You\'ll have to go back and select a team or bowler to see statistics.</string>
+    <string name="empty_view_statistics_providers">You\'ll have to go back and select a team or bowler to see statistics.</string>
+    <string name="empty_view_statistics">An error occurred while loading your statistics. Try restarting the app.</string>
+    <string name="empty_view_teams">Use the \'+\' to add a new team.</string>
+    <string name="empty_view_team_members">A team has to have at least 1 team member.</string>
+    <string name="empty_view_bowlers">Use the \'+\' to add a new bowler.</string>
+    <string name="empty_view_leagues">Use the \'+\' to add a new league.</string>
+    <string name="empty_view_events">Use the \'+\' to add a new event.</string>
+    <string name="empty_view_series">Use the \'+\' to add a new series.</string>
 
     <!-- Content descriptions -->
     <string name="iv_name_average">Type indicator</string>

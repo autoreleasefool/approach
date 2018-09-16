@@ -26,42 +26,29 @@ import kotlinx.coroutines.experimental.async
 class TeamListFragment : ListFragment<Team, TeamRecyclerViewAdapter>() {
 
     companion object {
-        /** Logging identifier. */
         @Suppress("unused")
         private const val TAG = "TeamListFragment"
 
-        /**
-         * Creates a new instance.
-         *
-         * @return the new instance
-         */
         fun newInstance(): TeamListFragment {
             return TeamListFragment()
         }
     }
 
-    /** @Override */
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override val emptyViewImage = R.drawable.empty_view_teams
+    override val emptyViewText = R.string.empty_view_teams
+
+    // MARK: Lifecycle functions
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    /** @Override */
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.fragment_teams, menu)
     }
 
-    /** @Override */
-    override fun updateToolbarTitle() {
-        // Intentionally left blank
-    }
-
-    /** @Override */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_sort_by -> {
@@ -72,7 +59,14 @@ class TeamListFragment : ListFragment<Team, TeamRecyclerViewAdapter>() {
         }
     }
 
-    /** @Override */
+    // MARK: BaseFragment
+
+    override fun updateToolbarTitle() {
+        // Intentionally left blank
+    }
+
+    // MARK: ListFragment
+
     override fun fetchItems(): Deferred<MutableList<Team>> {
         context?.let {
             return Team.fetchAll(it)
@@ -83,7 +77,6 @@ class TeamListFragment : ListFragment<Team, TeamRecyclerViewAdapter>() {
         }
     }
 
-    /** @Override */
     override fun buildAdapter(): TeamRecyclerViewAdapter {
         val adapter = TeamRecyclerViewAdapter(emptyList(), this)
         adapter.swipeable = true
@@ -91,9 +84,8 @@ class TeamListFragment : ListFragment<Team, TeamRecyclerViewAdapter>() {
         return adapter
     }
 
-    /**
-     * Prompt user to sort the list of teams in another order. Caches the chosen order.
-     */
+    // MARK: Private functions
+
     private fun showSortByDialog() {
         context?.let {
             AlertDialog.Builder(it)

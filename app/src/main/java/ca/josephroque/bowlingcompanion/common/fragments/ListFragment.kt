@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +13,9 @@ import ca.josephroque.bowlingcompanion.common.interfaces.IDeletable
 import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
 import ca.josephroque.bowlingcompanion.common.interfaces.IRefreshable
 import ca.josephroque.bowlingcompanion.common.adapters.BaseRecyclerViewAdapter
+import kotlinx.android.synthetic.main.fragment_common_list.view.*
+import kotlinx.android.synthetic.main.fragment_common_list.list as list
+import kotlinx.android.synthetic.main.fragment_common_list.list_empty_view as emptyView
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.launch
 
@@ -28,45 +30,27 @@ abstract class ListFragment<Item : IIdentifiable, Adapter : BaseRecyclerViewAdap
         IRefreshable {
 
     companion object {
-        /** Logging identifier. */
         @Suppress("unused")
         private const val TAG = "ListFragment"
     }
 
-    /** Adapter to manage rendering the list of items. */
     protected var adapter: Adapter? = null
-
-    /** Items to display. */
     private var items: MutableList<Item> = ArrayList()
 
-    /** Handle list interaction events. */
     protected var delegate: ListFragmentDelegate? = null
-
-    /** Set to true to ignore check for parentFragment delegate in onAttach. */
     protected var canIgnoreDelegate = false
 
-    /** @Override */
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        val view = inflater.inflate(R.layout.fragment_common_list, container, false)
+    abstract val emptyViewImage: Int
+    abstract val emptyViewText: Int
 
-        if (view is RecyclerView) {
-            val context = view.getContext()
-            adapter = buildAdapter()
+    // MARK: Lifecycle functions
 
-            view.layoutManager = LinearLayoutManager(context)
-            view.adapter = adapter
-            view.setHasFixedSize(true)
-            BaseRecyclerViewAdapter.applyDefaultDivider(view, context)
-        }
-
-        return view
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val rootView = inflater.inflate(R.layout.fragment_common_list, container, false)
+        setupRecyclerView(rootView)
+        return rootView
     }
 
-    /** @Override */
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         if (canIgnoreDelegate) {
@@ -77,29 +61,26 @@ abstract class ListFragment<Item : IIdentifiable, Adapter : BaseRecyclerViewAdap
         delegate = parent
     }
 
-    /** @Override */
     override fun onDetach() {
         super.onDetach()
         delegate = null
     }
 
-    /** @Override */
     override fun onStart() {
         super.onStart()
         refreshList()
     }
 
-    /** @Override */
     override fun refresh() {
         refreshList()
     }
 
-    /** @Override */
+    // MARK: AdapterDelegate
+
     override fun onItemClick(item: Item) {
         delegate?.onItemSelected(item, false)
     }
 
-    /** @Override */
     override fun onItemDelete(item: Item) {
         val context = context ?: return
         val index = item.indexInList(items)
@@ -110,12 +91,10 @@ abstract class ListFragment<Item : IIdentifiable, Adapter : BaseRecyclerViewAdap
         }
     }
 
-    /** @Override */
     override fun onItemLongClick(item: Item) {
         delegate?.onItemSelected(item, true)
     }
 
-    /** @Override */
     override fun onItemSwipe(item: Item) {
         val index = item.indexInList(items)
         if (index != -1 && item is IDeletable) {
@@ -131,11 +110,14 @@ abstract class ListFragment<Item : IIdentifiable, Adapter : BaseRecyclerViewAdap
         }
     }
 
-    /**
-     * Refresh the list of items.
-     *
-     * @param item if this item is in the list, only it should be updated
-     */
+    // MARK: ListFragment
+
+    abstract fun fetchItems(): Deferred<MutableList<Item>>
+
+    abstract fun buildAdapter(): Adapter
+
+    open fun listWasRefreshed() {}
+
     fun refreshList(item: Item? = null) {
         launch(Android) {
             val index = item?.indexInList(this@ListFragment.items) ?: -1
@@ -147,38 +129,40 @@ abstract class ListFragment<Item : IIdentifiable, Adapter : BaseRecyclerViewAdap
                 this@ListFragment.items[index] = item
                 adapter?.notifyItemChanged(adapter?.getPositionOfItem(item) ?: index)
             }
+
+            updateEmptyView()
             listWasRefreshed()
         }
     }
 
-    /** Overridable method called after the list of items is refreshed. */
-    open fun listWasRefreshed() {}
+    // MARK: Private functions
 
-    /**
-     * Retrieve a fresh list of [Item] instances.
-     *
-     * @return list of items
-     */
-    abstract fun fetchItems(): Deferred<MutableList<Item>>
+    private fun setupRecyclerView(rootView: View) {
+        val context = context ?: return
+        adapter = buildAdapter()
+        rootView.list.layoutManager = LinearLayoutManager(context)
+        rootView.list.adapter = adapter
+        rootView.list.setHasFixedSize(true)
+        BaseRecyclerViewAdapter.applyDefaultDivider(rootView.list, context)
+    }
 
-    /**
-     * Build an instance of [Adapter].
-     *
-     * @return the adapter for the list of items.
-     */
-    abstract fun buildAdapter(): Adapter
+    private fun updateEmptyView() {
+        if (items.isEmpty()) {
+            list.visibility = View.GONE
+            emptyView.apply {
+                emptyImageId = this@ListFragment.emptyViewImage
+                emptyTextId = this@ListFragment.emptyViewText
+                visibility = View.VISIBLE
+            }
+        } else {
+            list.visibility = View.VISIBLE
+            emptyView.visibility = View.GONE
+        }
+    }
 
-    /**
-     * Handle interactions with the list.
-     */
+    // MARK: ListFragmentDelegate
+
     interface ListFragmentDelegate {
-
-        /**
-         * Indicates an item has been selected.
-         *
-         * @param item the item that the user has selected
-         * @param longPress true if the item was long pressed, false if it was touched
-         */
         fun onItemSelected(item: IIdentifiable, longPress: Boolean)
     }
 }

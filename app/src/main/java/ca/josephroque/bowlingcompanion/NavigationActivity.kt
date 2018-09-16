@@ -132,8 +132,8 @@ class NavigationActivity : BaseActivity(),
     override fun onBackPressed() {
         val fragNavController = fragNavController
         if (fragNavController != null) {
-            if (BottomTab.fromInt(fragNavController.currentStackIndex) == BottomTab.Statistics
-                    && (fragNavController.currentStack?.size ?: 0) <= 2) {
+            if (BottomTab.fromInt(fragNavController.currentStackIndex) == BottomTab.Statistics &&
+                    (fragNavController.currentStack?.size ?: 0) <= 2) {
                 fragNavController.switchTab(BottomTab.Record.ordinal)
                 bottomNavigation.selectedItemId = BottomTab.toId(BottomTab.Record)
                 return

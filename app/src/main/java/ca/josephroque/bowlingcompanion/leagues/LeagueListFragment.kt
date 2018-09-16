@@ -30,30 +30,14 @@ import kotlinx.coroutines.experimental.async
 class LeagueListFragment : ListFragment<League, NameAverageRecyclerViewAdapter<League>>() {
 
     companion object {
-        /** Logging identifier. */
         @Suppress("unused")
         private const val TAG = "LeagueListFragment"
 
-        /** Identifier for the argument that represents the [Bowler] whose leagues are displayed. */
         private const val ARG_BOWLER = "${TAG}_bowler"
-
-        /** Identifier for the argument that represents the id of the [Bowler] whose leagues are displayed. */
         private const val ARG_BOWLER_ID = "${TAG}_bowler_id"
-
-        /** Identifier for the argument indicating if this fragment should list leagues or events. */
         private const val ARG_SHOW = "${TAG}_show"
-
-        /** Identifier for the single select mode. */
         private const val ARG_SINGLE_SELECT_MODE = "${TAG}_single_select"
 
-        /**
-         * Creates a new instance.
-         *
-         * @param bowler bowler to load leagues/events of
-         * @param show what type of leagues to show in the list
-         * @param singleSelectMode disables swiping and long press of the list
-         * @return the new instance
-         */
         fun newInstance(bowler: Bowler, show: Show, singleSelectMode: Boolean = false): LeagueListFragment {
             val fragment = LeagueListFragment()
             fragment.arguments = Bundle().apply {
@@ -64,14 +48,6 @@ class LeagueListFragment : ListFragment<League, NameAverageRecyclerViewAdapter<L
             return fragment
         }
 
-        /**
-         * Creates a new instance.
-         *
-         * @param bowlerId id of bowler to load leagues/events of
-         * @param show what type of leagues to show in the list
-         * @param singleSelectMode disables swiping and long press of the list
-         * @return the new instance
-         */
         fun newInstance(bowlerId: Long, show: Show, singleSelectMode: Boolean = false): LeagueListFragment {
             val fragment = LeagueListFragment()
             fragment.arguments = Bundle().apply {
@@ -82,9 +58,6 @@ class LeagueListFragment : ListFragment<League, NameAverageRecyclerViewAdapter<L
             return fragment
         }
 
-        /**
-         * What type of leagues to show in the list.
-         */
         enum class Show {
             Events,
             Leagues,
@@ -97,24 +70,19 @@ class LeagueListFragment : ListFragment<League, NameAverageRecyclerViewAdapter<L
         }
     }
 
-    /** The bowler whose leagues are to be displayed. */
     private var bowler: Bowler? = null
-
-    /** The id of the bowler whose leagues are to be displayed. Only used if `bowler` is unavailable. */
     private var bowlerId: Long? = null
-
-    /** Indicates if this fragment should list leagues or events. */
     private var show: Show = Show.Both
-
-    /** When true, the features of the fragment are limited to only offer selecting a single league. */
     private var singleSelectMode: Boolean = false
 
-    /** @Override */
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override val emptyViewImage: Int
+        get() = if (show == Show.Events) R.drawable.empty_view_events else R.drawable.empty_view_leagues
+    override val emptyViewText: Int
+        get() = if (show == Show.Events) R.string.empty_view_events else R.string.empty_view_leagues
+
+    // MARK: Lifecycle functions
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         arguments?.let {
             bowler = it.getParcelable(ARG_BOWLER)
             bowlerId = it.getLong(ARG_BOWLER_ID)
@@ -127,7 +95,6 @@ class LeagueListFragment : ListFragment<League, NameAverageRecyclerViewAdapter<L
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    /** @Override */
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         delegate = if (!singleSelectMode) {
@@ -137,13 +104,11 @@ class LeagueListFragment : ListFragment<League, NameAverageRecyclerViewAdapter<L
         }
     }
 
-    /** @Override */
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.fragment_leagues, menu)
     }
 
-    /** @Override */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_sort_by -> {
@@ -154,7 +119,14 @@ class LeagueListFragment : ListFragment<League, NameAverageRecyclerViewAdapter<L
         }
     }
 
-    /** @Override */
+    // MARK: BaseFragment
+
+    override fun updateToolbarTitle() {
+        // Intentionally left blank
+    }
+
+    // MARK: ListFragment
+
     override fun buildAdapter(): NameAverageRecyclerViewAdapter<League> {
         val adapter = NameAverageRecyclerViewAdapter(emptyList(), this)
         adapter.swipeable = !singleSelectMode
@@ -169,7 +141,6 @@ class LeagueListFragment : ListFragment<League, NameAverageRecyclerViewAdapter<L
         return adapter
     }
 
-    /** @Override */
     override fun fetchItems(): Deferred<MutableList<League>> {
         return async(CommonPool) {
             this@LeagueListFragment.context?.let { context ->
@@ -191,14 +162,8 @@ class LeagueListFragment : ListFragment<League, NameAverageRecyclerViewAdapter<L
         }
     }
 
-    /** @Override */
-    override fun updateToolbarTitle() {
-        // Intentionally left blank
-    }
+    // MARK: Private functions
 
-    /**
-     * Prompt user to sort the list of leagues in another order. Caches the chosen order.
-     */
     private fun showSortByDialog() {
         context?.let {
             AlertDialog.Builder(it)
@@ -219,12 +184,10 @@ class LeagueListFragment : ListFragment<League, NameAverageRecyclerViewAdapter<L
         }
     }
 
-    /**
-     * Disable deleting the Practice league
-     *
-     * @param item the league to be deleted
-     */
+    // MARK: AdapterDelegate
+
     override fun onItemDelete(item: League) {
+        // Disable deleting the practice league
         if (item.isPractice) {
             context?.let {
                 BCError(
@@ -239,12 +202,8 @@ class LeagueListFragment : ListFragment<League, NameAverageRecyclerViewAdapter<L
         super.onItemDelete(item)
     }
 
-    /**
-     * Disable long pressing the league item.
-     *
-     * @param item the league that was long clicked
-     */
     override fun onItemLongClick(item: League) {
+        // Disable long pressing the practice league
         if (item.isPractice) return
         super.onItemLongClick(item)
     }

@@ -93,8 +93,8 @@ class BaseStatisticsFragment : BaseFragment() {
     override fun onResume() {
         super.onResume()
         emptyView.apply {
-            emptyImageId = R.drawable.base_statistics_empty
-            emptyTextId = R.string.base_statistics_empty
+            emptyImageId = R.drawable.empty_view_statistics
+            emptyTextId = R.string.empty_view_statistics_providers
             visibility = View.VISIBLE
         }
     }

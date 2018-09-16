@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
 import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
 import ca.josephroque.bowlingcompanion.statistics.unit.StatisticsUnit
@@ -19,19 +20,11 @@ import kotlinx.coroutines.experimental.async
 class StatisticsListFragment : ListFragment<StatisticListItem, StatisticsRecyclerViewAdapter>() {
 
     companion object {
-        /** Logging identifier. */
         @Suppress("unused")
         private const val TAG = "StatisticsListFragment"
 
-        /** Identifier for the unit to display statistics for. */
         private const val ARG_UNIT = "${TAG}_unit"
 
-        /**
-         * Creates a new instance.
-         *
-         * @param unit unit to display stats for
-         * @return the new instance
-         */
         fun newInstance(unit: StatisticsUnit): StatisticsListFragment {
             return StatisticsListFragment().apply {
                 arguments = Bundle().apply { putParcelable(ARG_UNIT, unit) }
@@ -39,26 +32,30 @@ class StatisticsListFragment : ListFragment<StatisticListItem, StatisticsRecycle
         }
     }
 
-    /** The unit whose statistics are to be displayed. */
+    override val emptyViewImage = R.drawable.empty_view_statistics
+    override val emptyViewText = R.string.empty_view_statistics
+
     private lateinit var unit: StatisticsUnit
 
-    /** @Override */
+    // MARK: Lifecycle functions
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         unit = arguments?.getParcelable(ARG_UNIT)!!
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    /** @Override */
+    // MARK: BaseFragment
+
     override fun updateToolbarTitle() {
         // Intentionally left blank
     }
 
-    /** @Override */
+    // MARK: ListFragment
+
     override fun buildAdapter(): StatisticsRecyclerViewAdapter {
         return StatisticsRecyclerViewAdapter(emptyList(), this)
     }
 
-    /** @Override */
     override fun fetchItems(): Deferred<MutableList<StatisticListItem>> {
         context?.let {
             return unit.getStatistics(it)

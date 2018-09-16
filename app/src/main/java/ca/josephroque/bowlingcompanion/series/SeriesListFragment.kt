@@ -39,22 +39,12 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
         IStatisticsContext {
 
     companion object {
-        /** Logging identifier. */
         @Suppress("unused")
         private const val TAG = "SeriesListFragment"
 
-        /** Identifier for the argument that represents the [League] whose series are displayed. */
         private const val ARG_LEAGUE = "${TAG}_league"
-
-        /** Identifier for the single select mode. */
         private const val ARG_SINGLE_SELECT_MODE = "${TAG}_single_select"
 
-        /**
-         * Create a new instance
-         *
-         * @param league the league whose series will be listed
-         * @return the new instance
-         */
         fun newInstance(league: League, singleSelectMode: Boolean = false): SeriesListFragment {
             val fragment = SeriesListFragment()
             fragment.arguments = Bundle().apply {
@@ -65,7 +55,9 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
         }
     }
 
-    /** @Override */
+    override val emptyViewImage = R.drawable.empty_view_series
+    override val emptyViewText = R.string.empty_view_series
+
     override val statisticsProviders: List<StatisticsProvider> by lazy {
         val league = league
         return@lazy if (league != null) {
@@ -78,13 +70,9 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
         }
     }
 
-    /** The league whose series are to be displayed. */
     private var league: League? = null
-
-    /** When true, the features of the fragment are limited to only offer selecting a single series. */
     private var singleSelectMode: Boolean = false
 
-    /** Indicates how to render series in the list. */
     private var seriesView: Series.Companion.View = Series.Companion.View.Expanded
         set(value) {
             context?.let {
@@ -99,12 +87,9 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
             field = value
         }
 
-    /** @Override. */
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    // MARK: Lifecycle functions
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         arguments?.let {
             league = it.getParcelable(ARG_LEAGUE)
             singleSelectMode = it.getBoolean(ARG_SINGLE_SELECT_MODE)
@@ -118,7 +103,6 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    /** @Override */
     override fun onAttach(context: Context?) {
         canIgnoreDelegate = true
         delegate = this
@@ -147,7 +131,6 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
         }
     }
 
-    /** @Override. */
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.fragment_series, menu)
@@ -168,7 +151,6 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
         }
     }
 
-    /** @Override */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_series_condensed_view, R.id.action_series_expanded_view -> {
@@ -180,7 +162,16 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
         }
     }
 
-    /** @Override */
+    // MARK: BaseFragment
+
+    override fun updateToolbarTitle() {
+        if (!singleSelectMode) {
+            league?.let { navigationActivity?.setToolbarTitle(it.bowler.name, it.name) }
+        }
+    }
+
+    // MARK: ListFragment
+
     override fun buildAdapter(): SeriesRecyclerViewAdapter {
         val adapter = SeriesRecyclerViewAdapter(emptyList(), this)
         adapter.swipeable = !singleSelectMode
@@ -189,7 +180,6 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
         return adapter
     }
 
-    /** @Override */
     override fun fetchItems(): Deferred<MutableList<Series>> {
         return async(CommonPool) {
             this@SeriesListFragment.context?.let { context ->
@@ -202,34 +192,28 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
         }
     }
 
-    /** @Override */
-    override fun updateToolbarTitle() {
-        if (!singleSelectMode) {
-            league?.let { navigationActivity?.setToolbarTitle(it.bowler.name, it.name) }
-        }
-    }
+    // MARK: IFloatingActionButtonHandler
 
-    /** @Override */
     override fun getFabImage(): Int? {
         return R.drawable.ic_add
     }
 
-    /** @Override */
     override fun onFabClick() {
         promptAddOrEditSeries()
     }
 
-    /** @Override */
+    // MARK: SeriesDialogDelegate
+
     override fun onFinishSeries(series: Series) {
         refreshList(series)
     }
 
-    /** @Override */
     override fun onDeleteSeries(series: Series) {
         onItemDelete(series)
     }
 
-    /** @Override */
+    // MARK: AdapterDelegate
+
     override fun onItemSelected(item: IIdentifiable, longPress: Boolean) {
         if (item is Series) {
             if (longPress) {
@@ -242,11 +226,8 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
         }
     }
 
-    /**
-     * Display a prompt to add or edit a series.
-     *
-     * @param series the series to edit, or null if a new series should be added
-     */
+    // MARK: Private functions
+
     private fun promptAddOrEditSeries(series: Series? = null) {
         if (series != null) {
             val newFragment = SeriesDialog.newInstance(series)
@@ -267,11 +248,6 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
         }
     }
 
-    /**
-     * Push fragment to show game details of a [Series]
-     *
-     * @param series the series whose games will be shown
-     */
     private fun showGameDetails(series: Series) {
         val newFragment = GameControllerFragment.newInstance(SeriesProvider.BowlerSeries(series))
         fragmentNavigation?.pushFragment(newFragment)

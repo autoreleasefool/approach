@@ -36,6 +36,9 @@ class BowlerListFragment : ListFragment<Bowler, NameAverageRecyclerViewAdapter<B
         }
     }
 
+    override val emptyViewImage = R.drawable.empty_view_bowlers
+    override val emptyViewText = R.string.empty_view_bowlers
+
     // MARK Lifecycle functions
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
