@@ -10,6 +10,7 @@ import android.support.v4.widget.DrawerLayout
 import android.view.MenuItem
 import android.view.View
 import ca.josephroque.bowlingcompanion.bowlers.BowlerListFragment
+import ca.josephroque.bowlingcompanion.common.Android
 import ca.josephroque.bowlingcompanion.common.FabController
 import ca.josephroque.bowlingcompanion.common.NavigationDrawerController
 import ca.josephroque.bowlingcompanion.common.interfaces.IFloatingActionButtonHandler
@@ -21,11 +22,12 @@ import ca.josephroque.bowlingcompanion.common.interfaces.INavigationDrawerHandle
 import ca.josephroque.bowlingcompanion.common.interfaces.IRefreshable
 import ca.josephroque.bowlingcompanion.series.SeriesListFragment
 import ca.josephroque.bowlingcompanion.statistics.interfaces.IStatisticsContext
-import ca.josephroque.bowlingcompanion.statistics.BaseStatisticsFragment
+import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProviderListFragment
 import ca.josephroque.bowlingcompanion.teams.details.TeamDetailsFragment
 import ca.josephroque.bowlingcompanion.utils.Analytics
 import com.ncapdevi.fragnav.FragNavController
 import com.ncapdevi.fragnav.FragNavTransactionOptions
+import kotlinx.coroutines.experimental.launch
 import kotlinx.android.synthetic.main.activity_navigation.bottom_navigation as bottomNavigation
 import kotlinx.android.synthetic.main.activity_navigation.drawer_layout as drawerLayout
 import kotlinx.android.synthetic.main.activity_navigation.fab as fab
@@ -137,8 +139,7 @@ class NavigationActivity : BaseActivity(),
                 return
             }
 
-            if (BottomTab.fromInt(fragNavController.currentStackIndex) == BottomTab.Statistics &&
-                    (fragNavController.currentStack?.size ?: 0) <= 2) {
+            if (BottomTab.fromInt(fragNavController.currentStackIndex) == BottomTab.Statistics && fragNavController.isRootFragment) {
                 fragNavController.switchTab(BottomTab.Record.ordinal)
                 bottomNavigation.selectedItemId = BottomTab.toId(BottomTab.Record)
                 return
@@ -210,7 +211,7 @@ class NavigationActivity : BaseActivity(),
         fragmentName = when (tab) {
             BottomTab.Record -> BowlerTeamTabbedFragment::class.java.name
             BottomTab.Equipment -> BowlerListFragment::class.java.name // FIXME: enable equipment tab
-            BottomTab.Statistics -> BaseStatisticsFragment::class.java.name
+            BottomTab.Statistics -> StatisticsProviderListFragment::class.java.name
         }
 
         return BaseFragment.newInstance(fragmentName)
@@ -224,10 +225,6 @@ class NavigationActivity : BaseActivity(),
 
     override fun onTabTransaction(fragment: Fragment?, index: Int) {
         handleFragmentChange(fragment)
-
-        if (BottomTab.fromInt(index) == BottomTab.Statistics) {
-            fragNavController?.clearStack()
-        }
     }
 
     // MARK: TabbedFragmentDelegate
@@ -246,7 +243,11 @@ class NavigationActivity : BaseActivity(),
     // MARK: Private functions
 
     private fun handleFragmentChange(fragment: Fragment?) {
-        supportActionBar?.setDisplayHomeAsUpEnabled(fragNavController?.isRootFragment?.not() ?: false)
+        fragNavController?.let {
+            val showBackButton = it.isRootFragment.not() || BottomTab.fromInt(it.currentStackIndex) == BottomTab.Statistics
+            supportActionBar?.setDisplayHomeAsUpEnabled(showBackButton)
+        }
+
         fabController.image = if (fragment is IFloatingActionButtonHandler) {
             fragment.getFabImage()
         } else {
@@ -268,15 +269,14 @@ class NavigationActivity : BaseActivity(),
             resources.getDimension(R.dimen.base_elevation)
         }
 
-        if (fragment is BaseStatisticsFragment) {
-            val statisticsContext = fragNavController?.getStack(BottomTab.toInt(BottomTab.Record))?.peek() as? IStatisticsContext
-                    ?: return
-            fragment.arguments = BaseStatisticsFragment.buildArguments(statisticsContext.statisticsProviders)
-        }
-
         if (poppedBack) {
             poppedBack = false
             refreshCurrentFragment()
+        }
+
+        if (fragment is StatisticsProviderListFragment) {
+            val statisticsContext = fragNavController?.getStack(BottomTab.toInt(BottomTab.Record))?.peek() as? IStatisticsContext
+            fragment.arguments = StatisticsProviderListFragment.buildArguments(statisticsContext?.statisticsProviders ?: emptyList())
         }
     }
 
@@ -294,7 +294,10 @@ class NavigationActivity : BaseActivity(),
         }
 
         bottomNavigation.setOnNavigationItemSelectedListener {
-            fragNavController?.switchTab(BottomTab.fromId(it.itemId).ordinal)
+            launch(Android) {
+                fragNavController?.switchTab(BottomTab.fromId(it.itemId).ordinal)
+            }
+
             return@setOnNavigationItemSelectedListener true
         }
 

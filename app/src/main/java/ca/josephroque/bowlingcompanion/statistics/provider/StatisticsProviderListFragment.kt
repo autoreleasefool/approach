@@ -27,16 +27,18 @@ class StatisticsProviderListFragment : ListFragment<StatisticsProvider,
         private const val ARG_STATISTIC_PROVIDERS_TYPE = "${TAG}_type"
         private const val ARG_STATISTIC_PROVIDER = "${TAG}_providers"
 
-        fun newInstance(statisticsProviders: List<StatisticsProvider>): StatisticsProviderListFragment {
-            val fragment = StatisticsProviderListFragment()
-            fragment.arguments = Bundle().apply {
+        fun newInstance(): StatisticsProviderListFragment {
+            return StatisticsProviderListFragment()
+        }
+
+        fun buildArguments(statisticsProviders: List<StatisticsProvider>): Bundle {
+            return Bundle().apply {
                 putInt(ARG_STATISTIC_PROVIDERS_COUNT, statisticsProviders.size)
                 statisticsProviders.forEachIndexed { index, provider ->
                     putInt("${ARG_STATISTIC_PROVIDERS_TYPE}_$index", provider.describeContents())
                     putParcelable("${ARG_STATISTIC_PROVIDER}_$index", provider)
                 }
             }
-            return fragment
         }
     }
 
@@ -47,24 +49,22 @@ class StatisticsProviderListFragment : ListFragment<StatisticsProvider,
 
     // MARK: Lifecycle functions
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        val providers: MutableList<StatisticsProvider> = ArrayList()
-        statisticsProviders = providers
-
-        val arguments = arguments ?: return
-        val providerCount = arguments.getInt(ARG_STATISTIC_PROVIDERS_COUNT)
-        for (i in 0 until providerCount) {
-            val type = arguments.getInt("${ARG_STATISTIC_PROVIDERS_TYPE}_$i")
-            providers.add(StatisticsProvider.getParcelable(arguments, "${ARG_STATISTIC_PROVIDER}_$i", type)!!)
-        }
+    override fun onStart() {
+        initStatisticsProviders()
+        super.onStart()
     }
 
     override fun onAttach(context: Context?) {
         canIgnoreDelegate = true
         delegate = this
         super.onAttach(context)
+    }
+
+    override fun setArguments(args: Bundle?) {
+        super.setArguments(args)
+        if (activity == null) { return }
+        initStatisticsProviders()
+        refresh()
     }
 
     // MARK: BaseFragment
@@ -91,6 +91,20 @@ class StatisticsProviderListFragment : ListFragment<StatisticsProvider,
         if (item is StatisticsProvider) {
             val newFragment = StatisticsUnitTabbedFragment.newInstance(item)
             fragmentNavigation?.pushFragment(newFragment)
+        }
+    }
+
+    // MARK: Private functions
+
+    private fun initStatisticsProviders() {
+        val providers: MutableList<StatisticsProvider> = ArrayList()
+        statisticsProviders = providers
+
+        val arguments = arguments ?: return
+        val providerCount = arguments.getInt(ARG_STATISTIC_PROVIDERS_COUNT)
+        for (i in 0 until providerCount) {
+            val type = arguments.getInt("${ARG_STATISTIC_PROVIDERS_TYPE}_$i")
+            providers.add(StatisticsProvider.getParcelable(arguments, "${ARG_STATISTIC_PROVIDER}_$i", type)!!)
         }
     }
 }
