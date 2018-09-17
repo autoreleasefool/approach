@@ -91,6 +91,8 @@ class NavigationActivity : BaseActivity(),
     private lateinit var navDrawerController: NavigationDrawerController
     private lateinit var fabController: FabController
 
+    private var poppedBack = false
+
     override val stackSize: Int
         get() = fragNavController?.currentStack?.size ?: 0
 
@@ -271,6 +273,11 @@ class NavigationActivity : BaseActivity(),
                     ?: return
             fragment.arguments = BaseStatisticsFragment.buildArguments(statisticsContext.statisticsProviders)
         }
+
+        if (poppedBack) {
+            poppedBack = false
+            refreshCurrentFragment()
+        }
     }
 
     private fun setupToolbar() {
@@ -344,11 +351,6 @@ class NavigationActivity : BaseActivity(),
         fragNavController = builder.build()
     }
 
-    /**
-     * Pop back to a fragment in the stack.
-     *
-     * @param fragmentName name of the fragment to show
-     */
     private fun popBackTo(fragmentName: String) {
         val fragments = fragNavController?.currentStack ?: return
         var popTarget: Int? = null
@@ -360,15 +362,22 @@ class NavigationActivity : BaseActivity(),
             }
         }
 
-        popTarget?.let { fragNavController?.popFragments(it) }
+        popTarget?.let {
+            poppedBack = true
+            fragNavController?.popFragments(it)
+        }
+    }
+
+    private fun refreshCurrentFragment() {
+        val currentFragment = currentFragment ?: return
+        if (currentFragment is IRefreshable) {
+            currentFragment.refresh()
+        }
     }
 
     // MARK: OnDismissListener
 
     override fun onDismiss(dismissedFragment: BaseDialogFragment) {
-        val currentFragment = currentFragment ?: return
-        if (currentFragment is IRefreshable) {
-            currentFragment.refresh()
-        }
+        refreshCurrentFragment()
     }
 }
