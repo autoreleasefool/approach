@@ -318,6 +318,12 @@
     <string name="statistic_left_splits_spared">Left splits spared</string>
     <string name="statistic_right_splits">Right splits</string>
     <string name="statistic_right_splits_spared">Right splits spared</string>
+    <string name="statistic_twelves">Twelves (H322)</string>
+    <string name="statistic_twelves_spared">Twelves spared</string>
+    <string name="statistic_left_twelves">Twelve, left 3 pin</string>
+    <string name="statistic_left_twelves_spared">Twelve, left 3 pin, spared</string>
+    <string name="statistic_right_twelves">Twelve, right 3 pin</string>
+    <string name="statistic_right_twelves_spared">Twelve, right 3 pin, spared</string>
     <!-- Foul statistics -->
     <string name="statistic_fouls">Fouls</string>
     <!-- Pins left on deck statistics -->

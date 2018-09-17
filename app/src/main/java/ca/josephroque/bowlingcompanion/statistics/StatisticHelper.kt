@@ -31,16 +31,22 @@ import ca.josephroque.bowlingcompanion.statistics.impl.firstball.LeftChopOffsSpa
 import ca.josephroque.bowlingcompanion.statistics.impl.firstball.LeftChopOffsStatistic
 import ca.josephroque.bowlingcompanion.statistics.impl.firstball.LeftSplitsSparedStatistic
 import ca.josephroque.bowlingcompanion.statistics.impl.firstball.LeftSplitsStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.firstball.LeftTwelvesSparedStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.firstball.LeftTwelvesStatistic
 import ca.josephroque.bowlingcompanion.statistics.impl.firstball.LeftsSparedStatistic
 import ca.josephroque.bowlingcompanion.statistics.impl.firstball.LeftsStatistic
 import ca.josephroque.bowlingcompanion.statistics.impl.firstball.RightChopOffsSparedStatistic
 import ca.josephroque.bowlingcompanion.statistics.impl.firstball.RightChopOffsStatistic
 import ca.josephroque.bowlingcompanion.statistics.impl.firstball.RightSplitsSparedStatistic
 import ca.josephroque.bowlingcompanion.statistics.impl.firstball.RightSplitsStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.firstball.RightTwelvesSparedStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.firstball.RightTwelvesStatistic
 import ca.josephroque.bowlingcompanion.statistics.impl.firstball.RightsSparedStatistic
 import ca.josephroque.bowlingcompanion.statistics.impl.firstball.RightsStatistic
 import ca.josephroque.bowlingcompanion.statistics.impl.firstball.SplitsSparedStatistic
 import ca.josephroque.bowlingcompanion.statistics.impl.firstball.SplitsStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.firstball.TwelvesSparedStatistic
+import ca.josephroque.bowlingcompanion.statistics.impl.firstball.TwelvesStatistic
 import ca.josephroque.bowlingcompanion.statistics.impl.foul.FoulsStatistic
 import ca.josephroque.bowlingcompanion.statistics.impl.general.BowlerNameStatistic
 import ca.josephroque.bowlingcompanion.statistics.impl.general.GameNameStatistic
@@ -129,6 +135,12 @@ object StatisticHelper {
         LeftSplitsSparedStatistic(),
         RightSplitsStatistic(),
         RightSplitsSparedStatistic(),
+        TwelvesStatistic(),
+        TwelvesSparedStatistic(),
+        LeftTwelvesStatistic(),
+        LeftTwelvesSparedStatistic(),
+        RightTwelvesStatistic(),
+        RightTwelvesSparedStatistic(),
         // Fouls
         FoulsStatistic(),
         // Pins Left on Deck
@@ -224,6 +236,12 @@ object StatisticHelper {
             LeftSplitsSparedStatistic.Id -> p.readParcelable<LeftSplitsSparedStatistic>(LeftsSparedStatistic::class.java.classLoader)
             RightSplitsStatistic.Id -> p.readParcelable<RightSplitsStatistic>(RightSplitsStatistic::class.java.classLoader)
             RightSplitsSparedStatistic.Id -> p.readParcelable<RightSplitsSparedStatistic>(RightsSparedStatistic::class.java.classLoader)
+            TwelvesStatistic.Id -> p.readParcelable<TwelvesStatistic>(TwelvesStatistic::class.java.classLoader)
+            TwelvesSparedStatistic.Id -> p.readParcelable<TwelvesSparedStatistic>(TwelvesSparedStatistic::class.java.classLoader)
+            LeftTwelvesStatistic.Id -> p.readParcelable<LeftTwelvesStatistic>(LeftTwelvesStatistic::class.java.classLoader)
+            LeftTwelvesSparedStatistic.Id -> p.readParcelable<LeftTwelvesSparedStatistic>(LeftTwelvesSparedStatistic::class.java.classLoader)
+            RightTwelvesStatistic.Id -> p.readParcelable<RightTwelvesStatistic>(RightTwelvesStatistic::class.java.classLoader)
+            RightTwelvesSparedStatistic.Id -> p.readParcelable<RightTwelvesSparedStatistic>(RightTwelvesSparedStatistic::class.java.classLoader)
             FoulsStatistic.Id -> p.readParcelable<FoulsStatistic>(FoulsStatistic::class.java.classLoader)
             TotalPinsLeftStatistic.Id -> p.readParcelable<TotalPinsLeftStatistic>(TotalPinsLeftStatistic::class.java.classLoader)
             AveragePinsLeftStatistic.Id -> p.readParcelable<AveragePinsLeftStatistic>(AveragePinsLeftStatistic::class.java.classLoader)
@@ -309,6 +327,12 @@ object StatisticHelper {
             LeftSplitsSparedStatistic.Id -> LeftSplitsSparedStatistic()
             RightSplitsStatistic.Id -> RightSplitsStatistic()
             RightSplitsSparedStatistic.Id -> RightSplitsSparedStatistic()
+            TwelvesStatistic.Id -> TwelvesStatistic()
+            TwelvesSparedStatistic.Id -> TwelvesSparedStatistic()
+            LeftTwelvesStatistic.Id -> LeftTwelvesStatistic()
+            LeftTwelvesSparedStatistic.Id -> LeftTwelvesSparedStatistic()
+            RightTwelvesStatistic.Id -> RightTwelvesStatistic()
+            RightTwelvesSparedStatistic.Id -> RightTwelvesSparedStatistic()
             FoulsStatistic.Id -> FoulsStatistic()
             TotalPinsLeftStatistic.Id -> TotalPinsLeftStatistic()
             AveragePinsLeftStatistic.Id -> AveragePinsLeftStatistic()
