@@ -3,7 +3,6 @@ package ca.josephroque.bowlingcompanion.statistics.immutable
 import android.content.Context
 import android.database.Cursor
 import android.os.Parcel
-import android.os.Parcelable
 import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
 import ca.josephroque.bowlingcompanion.common.interfaces.KParcelable
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
@@ -39,15 +38,11 @@ class StatSeries(
     val date: Date
 ) : IIdentifiable, KParcelable {
 
-    /** Series total. */
     val total: Int
         get() = games.sumBy { it.score }
 
     // MARK: KParcelable
 
-    /**
-     * Construct a [StatSeries] from a [Parcel].
-     */
     private constructor(p: Parcel): this(
         id = p.readLong(),
         games = arrayListOf<StatGame>().apply {
@@ -59,7 +54,6 @@ class StatSeries(
         date = p.readDate()!!
     )
 
-    /** @Override */
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeLong(id)
         writeParcelableArray(games.toTypedArray(), 0)
@@ -67,28 +61,18 @@ class StatSeries(
     }
 
     companion object {
-        /** Logging identifier. */
         @Suppress("unused")
         private const val TAG = "StatSeries"
 
-        /** Creator, required by [Parcelable]. */
         @Suppress("unused")
         @JvmField val CREATOR = parcelableCreator(::StatSeries)
 
-        /** Fields to query to create a series. */
         private val queryFields = (
                 "series.${SeriesEntry._ID} as sid, " +
                 "series.${SeriesEntry.COLUMN_SERIES_DATE}, " +
                 "${StatGame.QUERY_FIELDS.joinToString(separator = ", ")}, " +
                 "${StatFrame.QUERY_FIELDS.joinToString(separator = ", ")} ")
 
-        /**
-         * Build a list of [StatSeries] from a team.
-         *
-         * @param context to access database
-         * @param teamId id of the team to get series for
-         * @return the list of series from the database
-         */
         fun loadSeriesForTeam(context: Context, teamId: Long): Deferred<List<StatSeries>> {
             val query = ("SELECT " +
                     queryFields +
@@ -105,22 +89,14 @@ class StatSeries(
                     "ON game.${GameEntry._ID}=frame.${FrameEntry.COLUMN_GAME_ID} " +
                     "WHERE teamBowlers.${TeamBowlerEntry.COLUMN_TEAM_ID}=? " +
                     "ORDER BY " +
-                    "bowler.${BowlerEntry._ID}, " +
-                    "league.${LeagueEntry._ID}, " +
                     "series.${SeriesEntry.COLUMN_SERIES_DATE}, " +
+                    "series.${SeriesEntry._ID}, " +
                     "game.${GameEntry.COLUMN_GAME_NUMBER}, " +
                     "frame.${FrameEntry.COLUMN_FRAME_NUMBER}")
             val args = arrayOf(teamId.toString())
             return loadSeries(context, query, args)
         }
 
-        /**
-         * Build a list of [StatSeries] from a bowler.
-         *
-         * @param context to access database
-         * @param bowlerId id of the bowler to get series for
-         * @return the list of series from the database
-         */
         fun loadSeriesForBowler(context: Context, bowlerId: Long): Deferred<List<StatSeries>> {
             val query = ("SELECT " +
                     queryFields +
@@ -133,21 +109,14 @@ class StatSeries(
                     "ON game.${GameEntry._ID}=frame.${FrameEntry.COLUMN_GAME_ID} " +
                     "WHERE league.${LeagueEntry.COLUMN_BOWLER_ID}=? " +
                     "ORDER BY " +
-                    "league.${LeagueEntry._ID}, " +
                     "series.${SeriesEntry.COLUMN_SERIES_DATE}, " +
+                    "series.${SeriesEntry._ID}, " +
                     "game.${GameEntry.COLUMN_GAME_NUMBER}, " +
                     "frame.${FrameEntry.COLUMN_FRAME_NUMBER}")
             val args = arrayOf(bowlerId.toString())
             return loadSeries(context, query, args)
         }
 
-        /**
-         * Build a list of [StatSeries] from a league.
-         *
-         * @param context to access database
-         * @param leagueId id of the league to get series for
-         * @return the list of series from the database
-         */
         fun loadSeriesForLeague(context: Context, leagueId: Long): Deferred<List<StatSeries>> {
             val query = ("SELECT " +
                     queryFields +
@@ -159,19 +128,13 @@ class StatSeries(
                     "WHERE series.${SeriesEntry.COLUMN_LEAGUE_ID}=? " +
                     "ORDER BY " +
                     "series.${SeriesEntry.COLUMN_SERIES_DATE}, " +
+                    "series.${SeriesEntry._ID}, " +
                     "game.${GameEntry.COLUMN_GAME_NUMBER}, " +
                     "frame.${FrameEntry.COLUMN_FRAME_NUMBER}")
             val args = arrayOf(leagueId.toString())
             return loadSeries(context, query, args)
         }
 
-        /**
-         * Build a list of [StatSeries] from a series.
-         *
-         * @param context to access database
-         * @param seriesId id of the series to get series for
-         * @return the list of series from the database
-         */
         fun loadSeriesForSeries(context: Context, seriesId: Long): Deferred<List<StatSeries>> {
             val query = ("SELECT " +
                     queryFields +
@@ -186,14 +149,6 @@ class StatSeries(
             return loadSeries(context, query, args)
         }
 
-        /**
-         * Build a list of [StatSeries] from a query.
-         *
-         * @param context to access database
-         * @param query query to get cursor
-         * @param args args for the query
-         * @return the list of series from the database
-         */
         private fun loadSeries(context: Context, query: String, args: Array<String>): Deferred<List<StatSeries>> {
             return async(CommonPool) {
                 val db = DatabaseHelper.getInstance(context).writableDatabase
@@ -204,12 +159,6 @@ class StatSeries(
                 var games: MutableList<StatGame> = ArrayList(League.MAX_NUMBER_OF_GAMES)
                 var frames: MutableList<StatFrame> = ArrayList(Game.NUMBER_OF_FRAMES)
 
-                /**
-                 * Build a series from a cursor into the database.
-                 *
-                 * @param cursor database accessor
-                 * @return a new series
-                 */
                 fun buildSeriesFromCursor(cursor: Cursor): StatSeries {
                     return StatSeries(
                             id = cursor.getLong(cursor.getColumnIndex("sid")),
@@ -218,12 +167,6 @@ class StatSeries(
                     )
                 }
 
-                /**
-                 * Build a game from a cursor into the database.
-                 *
-                 * @param cursor database accessor
-                 * @return a new game
-                 */
                 fun buildGameFromCursor(cursor: Cursor): StatGame {
                     return StatGame(
                             id = cursor.getLong(cursor.getColumnIndex("gid")),
