@@ -27,19 +27,33 @@ android {
             minifyEnabled false
             applicationIdSuffix ".debug"
 
-            buildConfigField "String", "TRANSFER_SERVER_URL", "\"http://10.0.2.2:8080\""
-            buildConfigField "String", "TRANSFER_API_KEY", "\"API_KEY_GOES_HERE\""
-            buildConfigField "String", "BANNER_AD_UNIT_ID", "\"API_KEY_GOES_HERE\""
-            buildConfigField "String", "MIXPANEL_TOKEN", "\"API_KEY_GOES_HERE\""
+            def apiKeys = [
+                    ["TRANSFER_SERVER_URL", "http://10.0.2.2:8080"],
+                    ["BANNER_AD_UNIT_ID", "ca-app-pub-3940256099942544/6300978111"],
+                    ["TRANSFER_API_KEY", "API_KEY_GOES_HERE"],
+                    ["MIXPANEL_TOKEN", "API_KEY_GOES_HERE"]
+            ]
+
+            apiKeys.each { key, value ->
+                buildConfigField "String", key, "\"${value}\""
+                resValue "string", key, value
+            }
         }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
 
-            buildConfigField "String", "TRANSFER_SERVER_URL", "\"\""
-            buildConfigField "String", "TRANSFER_API_KEY", "\"\""
-            buildConfigField "String", "BANNER_AD_UNIT_ID", "\"\""
-            buildConfigField "String", "MIXPANEL_TOKEN", "\"\""
+            def apiKeys = [
+                    ["TRANSFER_SERVER_URL", "API_KEY_GOES_HERE"],
+                    ["BANNER_AD_UNIT_ID", "API_KEY_GOES_HERE"],
+                    ["TRANSFER_API_KEY", "API_KEY_GOES_HERE"],
+                    ["MIXPANEL_TOKEN", "API_KEY_GOES_HERE"]
+            ]
+
+            apiKeys.each { key, value ->
+                buildConfigField "String", key, "\"${value}\""
+                resValue "string", key, value
+            }
         }
     }
 }
