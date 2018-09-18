@@ -10,11 +10,6 @@ import android.text.Spanned
  * String utilities.
  */
 
-/**
- * Create a spanned version of this string.
- *
- * @return the string as a [Spanned]
- */
 fun String.toSpanned(): Spanned {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
         return Html.fromHtml(this, Html.FROM_HTML_MODE_LEGACY)

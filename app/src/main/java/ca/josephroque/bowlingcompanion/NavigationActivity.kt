@@ -25,6 +25,7 @@ import ca.josephroque.bowlingcompanion.statistics.interfaces.IStatisticsContext
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProviderListFragment
 import ca.josephroque.bowlingcompanion.teams.details.TeamDetailsFragment
 import ca.josephroque.bowlingcompanion.utils.Analytics
+import ca.josephroque.bowlingcompanion.utils.isVisible
 import com.ncapdevi.fragnav.FragNavController
 import com.ncapdevi.fragnav.FragNavTransactionOptions
 import kotlinx.coroutines.experimental.launch
@@ -109,7 +110,7 @@ class NavigationActivity : BaseActivity(),
         }
 
     val isFullscreen: Boolean
-        get() = bottomNavigation.visibility != View.VISIBLE
+        get() = !bottomNavigation.isVisible
 
     // MARK: Lifecycle functions
 

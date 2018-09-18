@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion.common
 import android.graphics.Color
 import android.support.design.widget.FloatingActionButton
 import android.view.View
+import ca.josephroque.bowlingcompanion.utils.isVisible
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -22,7 +23,7 @@ class FabController(
     var image: Int? = null
         set(value) {
             field = value
-            if (floatingActionButton.visibility == View.VISIBLE) {
+            if (floatingActionButton.isVisible) {
                 floatingActionButton.hide(fabVisibilityChangeListener)
             } else {
                 fabVisibilityChangeListener.onHidden(floatingActionButton)
