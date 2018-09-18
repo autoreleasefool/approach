@@ -213,6 +213,7 @@ class StatisticGraphFragment : BaseFragment(),
             val (graphLines, graphLabels) = unit.getStatisticGraphData(context, statisticId, switchAccumulate.isChecked).await()
             chart.data = buildChartData(context, graphLines).await()
             chart.xAxis.valueFormatter = buildChartXAxisFormatter(graphLabels)
+            chart.xAxis.labelCount = graphLabels.size
             fixChartProperties()
             chart.invalidate()
         }

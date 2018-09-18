@@ -37,8 +37,8 @@ abstract class StatisticsUnit(initialSeries: List<StatSeries>? = null, initialSt
     abstract val excludedCategories: Set<StatisticsCategory>
     abstract val excludedStatisticIds: Set<Int>
 
-    protected var cachedSeries: List<StatSeries>? = initialSeries
-    protected var cachedStatistics: MutableList<StatisticListItem>? = initialStatistics
+    private var cachedSeries: List<StatSeries>? = initialSeries
+    private var cachedStatistics: MutableList<StatisticListItem>? = initialStatistics
 
     // MARK: Constructors
 
@@ -102,6 +102,13 @@ abstract class StatisticsUnit(initialSeries: List<StatSeries>? = null, initialSt
             var lastWeek = calendar.get(Calendar.WEEK_OF_YEAR)
             var xPos = 0F
 
+            fun updateGraph() {
+                addGraphEntries(graphData, xPos, statistic)
+                graphLabels.add(DateUtils.dateToShort(lastDate))
+                if (!accumulative) statistic.zero()
+                xPos++
+            }
+
             for (series in seriesList) {
                 calendar.time = series.date
                 val newDate = series.date
@@ -110,10 +117,7 @@ abstract class StatisticsUnit(initialSeries: List<StatSeries>? = null, initialSt
 
                 // Either the year or week has incremented, so an entry should be added to the graph
                 if (newYear > lastYear || newWeek > lastWeek) {
-                    addGraphEntries(graphData, xPos, statistic)
-                    graphLabels.add(DateUtils.dateToShort(lastDate))
-                    if (!accumulative) statistic.zero()
-                    xPos++
+                    updateGraph()
                 }
 
                 adjustStatisticBySeries(statistic, series)
@@ -124,8 +128,7 @@ abstract class StatisticsUnit(initialSeries: List<StatSeries>? = null, initialSt
             }
 
             // Add the final entry
-            addGraphEntries(graphData, xPos, statistic)
-            graphLabels.add(DateUtils.dateToShort(lastDate))
+            updateGraph()
 
             val lines: List<StatisticsGraphLine> = graphData.mapIndexed { index, data ->
                 val label = when (index) {
