@@ -31,22 +31,12 @@ class GameControllerFragment : TabbedFragment(),
         IStatisticsContext {
 
     companion object {
-        /** Logging identifier */
         @Suppress("unused")
         private const val TAG = "GameControllerFragment"
 
-        /** Argument identifier for passing a [SeriesProvider] type. */
         private const val ARG_SERIES_PROVIDER_TYPE = "${TAG}_type"
-
-        /** Argument identifier for passing a [SeriesProvider] to this fragment. */
         private const val ARG_SERIES_PROVIDER = "${TAG}_series"
 
-        /**
-         * Creates a new instance.
-         *
-         * @param seriesProvider the series to edit games for
-         * @return the new instance
-         */
         fun newInstance(seriesProvider: SeriesProvider): GameControllerFragment {
             val fragment = GameControllerFragment()
             fragment.arguments = Bundle().apply {
@@ -57,7 +47,6 @@ class GameControllerFragment : TabbedFragment(),
         }
     }
 
-    /** @Override */
     override val statisticsProviders: List<StatisticsProvider> by lazy {
         val seriesProvider = seriesProvider
         val seriesList = seriesProvider?.seriesList
@@ -82,13 +71,10 @@ class GameControllerFragment : TabbedFragment(),
         }
     }
 
-    /** Controls for the navigation drawer. */
     override lateinit var navigationDrawerController: NavigationDrawerController
-
-    /** The series being edited. */
     private var seriesProvider: SeriesProvider? = null
+    private var fabEnabled: Boolean = true
 
-    /** The current game being edited. */
     private var currentGame: Int = 0
         set(value) {
             field = value
@@ -102,10 +88,8 @@ class GameControllerFragment : TabbedFragment(),
             Analytics.trackChangedGame()
         }
 
-    /** Indicates if the floating action button should be enabled or not. */
-    private var fabEnabled: Boolean = true
+    // MARK: Lifecycle functions
 
-    /** @Override */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
         val seriesType = arguments?.getInt(ARG_SERIES_PROVIDER_TYPE) ?: 0
@@ -113,27 +97,6 @@ class GameControllerFragment : TabbedFragment(),
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    /** @Override */
-    override fun buildPagerAdapter(tabCount: Int): BaseFragmentPagerAdapter {
-        return GameControllerPagerAdapter(childFragmentManager, tabCount, seriesProvider?.seriesList)
-    }
-
-    /** @Override */
-    override fun addTabs(tabLayout: TabLayout) {
-        tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
-        seriesProvider?.seriesList?.let {
-            it.forEach { series ->
-                tabLayout.addTab(tabLayout.newTab().setText(series.league.bowler.name))
-            }
-        }
-    }
-
-    /** @Override */
-    override fun handleTabSwitch(newTab: Int) {
-        onSeriesChanged()
-    }
-
-    /** @Override */
     override fun onStart() {
         super.onStart()
         val seriesList = seriesProvider?.seriesList ?: return
@@ -150,9 +113,27 @@ class GameControllerFragment : TabbedFragment(),
         navigationDrawerController.isTeamMember = seriesProvider is SeriesProvider.TeamSeries
     }
 
-    /**
-     * Handle when series changes.
-     */
+    // MARK: TabbedFragment
+
+    override fun buildPagerAdapter(tabCount: Int): BaseFragmentPagerAdapter {
+        return GameControllerPagerAdapter(childFragmentManager, tabCount, seriesProvider?.seriesList)
+    }
+
+    override fun addTabs(tabLayout: TabLayout) {
+        tabLayout.tabMode = TabLayout.MODE_SCROLLABLE
+        seriesProvider?.seriesList?.let {
+            it.forEach { series ->
+                tabLayout.addTab(tabLayout.newTab().setText(series.league.bowler.name))
+            }
+        }
+    }
+
+    override fun handleTabSwitch(newTab: Int) {
+        onSeriesChanged()
+    }
+
+    // MARK: Private functions
+
     private fun onSeriesChanged() {
         seriesProvider?.seriesList?.let {
             navigationDrawerController.numberOfGames = it[currentTab].numberOfGames
@@ -163,19 +144,18 @@ class GameControllerFragment : TabbedFragment(),
         updateToolbarTitle()
     }
 
-    /** @Override */
+    // MARK: BaseFragment
+
     override fun updateToolbarTitle() {
         seriesProvider?.seriesList?.let { navigationActivity?.setToolbarTitle(it[currentTab].league.bowler.name) }
     }
 
     // MARK: IFloatingActionButtonHandler
 
-    /** @Override */
     override fun getFabImage(): Int? {
         return if (fabEnabled) R.drawable.ic_arrow_forward else null
     }
 
-    /** @Override */
     override fun onFabClick() {
         if (!fabEnabled) {
             return
@@ -188,7 +168,6 @@ class GameControllerFragment : TabbedFragment(),
 
     // MARK: INavigationDrawerHandler
 
-    /** @Override */
     override fun onNavDrawerItemSelected(@IdRes itemId: Int) {
         val game = NavigationDrawerController.navGameItemIds.indexOf(itemId)
         if (game >= 0) {
@@ -198,24 +177,20 @@ class GameControllerFragment : TabbedFragment(),
 
     // MARK: GameFragmentDelegate
 
-    /** @Override */
     override val isFabEnabled: Boolean
         get() = fabEnabled
 
-    /** @Override */
     override fun enableFab(enabled: Boolean) {
         fabEnabled = enabled
         fabProvider?.invalidateFab()
     }
 
-    /** @Override */
     override val hasNextBowlerOrGame: Boolean
         get() {
             val seriesList = seriesProvider?.seriesList ?: return false
             return seriesList.lastIndex > currentTab || seriesList.any { currentGame < it.numberOfGames - 1 }
         }
 
-    /** @Override */
     override fun nextBowlerOrGame(isEndOfGame: Boolean): GameFragment.NextBowlerResult {
         val seriesList = seriesProvider?.seriesList ?: return GameFragment.NextBowlerResult.None
         if (!hasNextBowlerOrGame) return GameFragment.NextBowlerResult.None
@@ -263,16 +238,21 @@ class GameControllerFragment : TabbedFragment(),
         return GameFragment.NextBowlerResult.None
     }
 
-    /**
-     * Pager adapter for games.
-     */
+    override val isFullscreen: Boolean
+        get() = navigationActivity?.isFullscreen == true
+
+    override fun toggleFullscreen() {
+        navigationActivity?.toggleFullscreen()
+    }
+
+    // MARK: GameControllerPagerAdapter
+
     class GameControllerPagerAdapter(
         fragmentManager: FragmentManager,
         tabCount: Int,
         private val seriesList: List<Series>?
     ) : BaseFragmentPagerAdapter(fragmentManager, tabCount) {
 
-        /** @Override */
         override fun buildFragment(position: Int): Fragment? {
             seriesList?.let {
                 return GameFragment.newInstance(seriesList[position])

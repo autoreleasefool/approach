@@ -427,6 +427,7 @@
     <string name="iv_lock">Lock game</string>
     <string name="iv_team_member_icon">Team member type indicator</string>
     <string name="empty_image_view">Empty state</string>
+    <string name="iv_fullscreen">Fullscreen</string>
 
     <!-- Email -->
     <string name="send_email">Send email&#8230;</string>

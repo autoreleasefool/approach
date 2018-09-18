@@ -108,6 +108,9 @@ class NavigationActivity : BaseActivity(),
             return null
         }
 
+    val isFullscreen: Boolean
+        get() = bottomNavigation.visibility != View.VISIBLE
+
     // MARK: Lifecycle functions
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -125,6 +128,13 @@ class NavigationActivity : BaseActivity(),
         setupBottomNavigation()
         setupFab()
         setupFragNavController(savedInstanceState)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (isFullscreen) {
+            toggleFullscreen()
+        }
     }
 
     override fun onDestroy() {
@@ -240,6 +250,16 @@ class NavigationActivity : BaseActivity(),
         supportActionBar?.subtitle = subtitle
     }
 
+    fun toggleFullscreen() {
+        if (!isFullscreen) {
+            supportActionBar?.hide()
+            bottomNavigation.visibility = View.GONE
+        } else {
+            supportActionBar?.show()
+            bottomNavigation.visibility = View.VISIBLE
+        }
+    }
+
     // MARK: Private functions
 
     private fun handleFragmentChange(fragment: Fragment?) {
@@ -267,6 +287,10 @@ class NavigationActivity : BaseActivity(),
             0F
         } else {
             resources.getDimension(R.dimen.base_elevation)
+        }
+
+        if (isFullscreen) {
+            toggleFullscreen()
         }
 
         if (poppedBack) {

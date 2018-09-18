@@ -53,17 +53,26 @@ class GameFragment : BaseFragment(),
         GameHeaderView.GameHeaderInteractionDelegate,
         MatchPlaySheet.MatchPlaySheetDelegate {
 
-    /** Interaction delegate. */
+    companion object {
+        @Suppress("unused")
+        private const val TAG = "GameFragment"
+
+        private const val ARG_SERIES = "${TAG}_series"
+
+        fun newInstance(series: Series): GameFragment {
+            val fragment = GameFragment()
+            fragment.arguments = Bundle().apply { putParcelable(ARG_SERIES, series) }
+            return fragment
+        }
+    }
+
     private var delegate: GameFragmentDelegate? = null
 
-    /** IDs for frame views. */
     private val frameViewIds = intArrayOf(R.id.frame_0, R.id.frame_1, R.id.frame_2, R.id.frame_3,
             R.id.frame_4, R.id.frame_5, R.id.frame_6, R.id.frame_7, R.id.frame_8, R.id.frame_9)
 
-    /** Frame view instances. */
     private lateinit var frameViews: Array<FrameView?>
 
-    /** The number of the current game in its series. */
     var gameNumber: Int = 0
         set(value) {
             saveCurrentGame(false)
@@ -81,27 +90,17 @@ class GameFragment : BaseFragment(),
             }
         }
 
-    /** The series being edited. */
     private var series: Series? = null
 
-    /** A copy of the current game to present statistics with. */
     val currentGameForStatistics: Game
         get() = gameState.currentGame.deepCopy()
 
-    /** Manage the state of the current game. */
     private lateinit var gameState: GameState
-
-    /** Manage the automatic game events. */
     private lateinit var autoEventController: GameAutoEventController
 
-    // MARK: Overrides
+    // MARK: Lifecycle functions
 
-    /** @Override */
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
         val view = inflater.inflate(R.layout.fragment_game, container, false)
 
@@ -115,7 +114,6 @@ class GameFragment : BaseFragment(),
         return view
     }
 
-    /** @Override */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         series = arguments?.getParcelable(ARG_SERIES)
@@ -131,13 +129,11 @@ class GameFragment : BaseFragment(),
         }
     }
 
-    /** @Override */
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.fragment_game, menu)
     }
 
-    /** @Override */
     override fun onPrepareOptionsMenu(menu: Menu?) {
         super.onPrepareOptionsMenu(menu)
         if (!gameState.gamesLoaded) { return }
@@ -146,20 +142,17 @@ class GameFragment : BaseFragment(),
         menu?.findItem(R.id.action_best_possible)?.isVisible = !gameState.currentGame.isManual
     }
 
-    /** @Override */
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         val parent = parentFragment as? GameFragmentDelegate ?: throw RuntimeException("${parentFragment!!} must implement GameFragmentDelegate")
         delegate = parent
     }
 
-    /** @Override */
     override fun onDetach() {
         super.onDetach()
         delegate = null
     }
 
-    /** @Override */
     override fun onStart() {
         super.onStart()
 
@@ -180,25 +173,21 @@ class GameFragment : BaseFragment(),
         }
     }
 
-    /** @Override */
     override fun onStop() {
         super.onStop()
         autoEventController.pauseAll()
     }
 
-    /** @Override */
     override fun onResume() {
         super.onResume()
         render(ballChanged = false, isGameFirstRender = false)
     }
 
-    /** @Override */
     override fun onPause() {
         super.onPause()
         context?.let { gameState.saveGame(WeakReference(it), true) }
     }
 
-    /** @Override */
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         autoEventController.pauseAll()
         return when (item?.itemId) {
@@ -222,26 +211,20 @@ class GameFragment : BaseFragment(),
         }
     }
 
-    /** @Override */
+    // MARK: BaseFragment
+
     override fun updateToolbarTitle() {
         // Intentionally left blank
     }
 
-    /**
-     * Set behaviour and appearance of bottom sheet.
-     */
+    // MARK: Private functions
+
     private fun setupBottomSheet(rootView: View) {
         val bottomSheet = rootView.sheet_match_play
         val sheetBehavior = BottomSheetBehavior.from(bottomSheet)
         sheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
     }
 
-    /**
-     * Refresh the UI.
-     *
-     * @param ballChanged only focus on the next frame if the current ball changed
-     * @param isGameFirstRender if this is the first render of a game
-     */
     private fun render(ballChanged: Boolean = false, isGameFirstRender: Boolean = false) {
         if (!gameState.gamesLoaded) { return }
         launch(Android) {
@@ -305,20 +288,21 @@ class GameFragment : BaseFragment(),
 
             // Set icons in game footer
             gameFooter.apply {
+                isFullscreen = this@GameFragment.delegate?.isFullscreen == true
                 isFoulActive = gameState.currentFrame.ballFouled[gameState.currentBallIdx]
                 isGameLocked = gameState.currentGame.isLocked
                 matchPlayResult = gameState.currentGame.matchPlay.result
-                clearIcon = when {
+                clear = when {
                     gameState.currentBallIdx == 0 ||
                         (gameState.isLastFrame && gameState.currentBallIdx == 1 && gameState.currentFrame.pinState[0].arePinsCleared) ||
                         (gameState.isLastFrame && gameState.currentBallIdx == 2 && gameState.currentFrame.pinState[1].arePinsCleared) -> {
-                        R.drawable.ic_clear_pins_strike
+                        GameFooterView.Companion.Clear.Strike
                     }
                     gameState.currentBallIdx == 1 ||
                         (gameState.currentBallIdx == 2 && gameState.currentFrame.pinState[0].arePinsCleared) -> {
-                        R.drawable.ic_clear_pins_spare
+                        GameFooterView.Companion.Clear.Spare
                     }
-                    else -> R.drawable.ic_clear_pins_fifteen
+                    else -> GameFooterView.Companion.Clear.Fifteen
                 }
                 isManualScoreSet = gameState.currentGame.isManual
             }
@@ -329,36 +313,18 @@ class GameFragment : BaseFragment(),
         }
     }
 
-    /**
-     * Save the current frame of the game state to the database.
-     *
-     * @param ignoreManualScore ignore any manual score set and save the frame
-     */
     private fun saveCurrentFrame(ignoreManualScore: Boolean) {
         context?.let { gameState.saveFrame(WeakReference(it), ignoreManualScore) }
     }
 
-    /**
-     * Save the current game of the game state to the database.
-     *
-     * @param ignoreManualScore ignore any manual score set and save the game
-     */
     private fun saveCurrentGame(ignoreManualScore: Boolean) {
         context?.let { gameState.saveGame(WeakReference(it), ignoreManualScore) }
     }
 
-    /**
-     * Save the match play results for the game.
-     */
     private fun saveMatchPlay() {
         context?.let { gameState.saveMatchPlay(WeakReference(it)) }
     }
 
-    /**
-     * Scrolls the position of the frames so the current frame is 1 from the left, or at least visible.
-     *
-     * @param isGameFirstRender indicates if this method was called on the game's first load
-     */
     private fun focusOnFrame(isGameFirstRender: Boolean) {
         val left = if (gameState.currentFrameIdx >= 1 && !(isGameFirstRender && gameState.isLastFrame)) {
             val prevFrame = frameViews[gameState.currentFrameIdx - 1] ?: return
@@ -370,16 +336,10 @@ class GameFragment : BaseFragment(),
         hsvFrames.post { hsvFrames.smoothScrollTo(left, 0) }
     }
 
-    /**
-     * Reset the current game to a new state.
-     */
     private fun resetGame() {
         context?.let { gameState.resetGame(WeakReference(it)) }
     }
 
-    /**
-     * Update the floating action button state.
-     */
     private fun invalidateFab() {
         val hasNextBowlerOrGame = delegate?.hasNextBowlerOrGame == true
         val isManual = gameState.gamesLoaded && gameState.currentGame.isManual
@@ -394,37 +354,31 @@ class GameFragment : BaseFragment(),
 
     // MARK: IFloatingActionButtonHandler
 
-    /** @Override */
     override fun getFabImage(): Int? {
         return R.drawable.ic_arrow_forward
     }
 
-    /** @Override */
     override fun onFabClick() {
         onNextBall()
     }
 
     // MARK: FrameInteractionDelegate
 
-    /** @Override */
     override fun onBallSelected(ball: Int, frame: Int) {
         if (gameState.gamesLoaded) { saveCurrentFrame(false) }
         gameState.attemptToSetFrameAndBall(frame, ball)
     }
 
-    /** @Override */
     override fun onFrameSelected(frame: Int) {
         onBallSelected(0, frame)
     }
 
     // MARK: PinLayoutInteractionDelegate
 
-    /** @Override */
     override fun isPinDown(pin: Int): Boolean {
         return if (gameState.gamesLoaded) gameState.currentPinState[pin].isDown else false
     }
 
-    /** @Override */
     override fun setPins(pins: IntArray, isDown: Boolean) {
         gameState.setPins(pins, isDown)
         if (!gameState.currentGame.isLocked && gameState.isLastBall) { autoEventController.delay(GameAutoEventController.AutoEvent.Lock) }
@@ -434,12 +388,10 @@ class GameFragment : BaseFragment(),
 
     // MARK: GameFooterInteractionDelegate
 
-    /** @Override */
     override fun onClearPins() {
         setPins((0 until Game.NUMBER_OF_PINS).toList().toIntArray(), true)
     }
 
-    /** @Override */
     override fun onFoulToggle() {
         val frameView = frameViews[gameState.currentFrameIdx] ?: return
         gameState.toggleFoul()
@@ -449,7 +401,6 @@ class GameFragment : BaseFragment(),
         render()
     }
 
-    /** @Override */
     override fun onLockToggle() {
         gameState.toggleLock()
         autoEventController.disable(GameAutoEventController.AutoEvent.Lock)
@@ -458,16 +409,19 @@ class GameFragment : BaseFragment(),
         render()
     }
 
-    /** @Override */
     override fun onMatchPlaySettings() {
         val fragment = MatchPlaySheet.newInstance()
         fragmentNavigation?.showBottomSheet(fragment, MatchPlaySheet.FRAGMENT_TAG)
         autoEventController.pause(GameAutoEventController.AutoEvent.AdvanceFrame)
     }
 
+    override fun onFullscreenToggle() {
+        delegate?.toggleFullscreen()
+        render()
+    }
+
     // MARK: GameHeaderInteractionDelegate
 
-    /** @Override */
     override fun onNextBall() {
         saveCurrentFrame(false)
 
@@ -482,7 +436,6 @@ class GameFragment : BaseFragment(),
         gameState.nextBall()
     }
 
-    /** @Override */
     override fun onPrevBall() {
         saveCurrentFrame(false)
         gameState.prevBall()
@@ -490,7 +443,6 @@ class GameFragment : BaseFragment(),
 
     // MARK: MatchPlaySheetDelegate
 
-    /** @Override */
     override fun onFinishedSettingMatchPlayResults(
         opponentName: String,
         opponentScore: Int,
@@ -510,9 +462,7 @@ class GameFragment : BaseFragment(),
 
     // MARK: GameStateDelegate
 
-    /** Handle events from game state changes. */
     private val gameStateDelegate = object : GameState.GameStateDelegate {
-        /** @Override */
         override fun onGamesLoaded() {
             if (gameState.currentGame.isLocked) {
                 autoEventController.disable(GameAutoEventController.AutoEvent.Lock)
@@ -523,7 +473,6 @@ class GameFragment : BaseFragment(),
             render(ballChanged = true, isGameFirstRender = true)
         }
 
-        /** @Override */
         override fun onBallChanged() {
             render(ballChanged = true)
             invalidateFab()
@@ -538,14 +487,12 @@ class GameFragment : BaseFragment(),
             autoEventController.pause(GameAutoEventController.AutoEvent.AdvanceFrame)
         }
 
-        /** @Override */
         override fun onManualScoreSet() {
             invalidateFab()
             activity?.invalidateOptionsMenu()
             render(ballChanged = true, isGameFirstRender = false)
         }
 
-        /** @Override */
         override fun onManualScoreCleared() {
             invalidateFab()
             activity?.invalidateOptionsMenu()
@@ -555,9 +502,7 @@ class GameFragment : BaseFragment(),
 
     // MARK: GameAutoEventDelegate
 
-    /** Handle events from auto event controller. */
     private val autoEventDelegate = object : GameAutoEventController.GameAutoEventDelegate {
-        /** @Override */
         override fun autoAdvanceCountDown(secondsRemaining: Int) {
             val autoAdvanceStringId = if (gameState.frameHasNextBall) R.plurals.time_until_auto_advance_ball else R.plurals.time_until_auto_advance_frame
             autoAdvance.text = resources.getQuantityString(
@@ -568,7 +513,6 @@ class GameFragment : BaseFragment(),
             autoAdvance.visibility = View.VISIBLE
         }
 
-        /** @Override */
         override fun autoEventFired(event: GameAutoEventController.AutoEvent) {
             when (event) {
                 GameAutoEventController.AutoEvent.Lock -> {
@@ -581,7 +525,6 @@ class GameFragment : BaseFragment(),
             }
         }
 
-        /** @Override */
         override fun autoEventDelayed(event: GameAutoEventController.AutoEvent) {
             when (event) {
                 GameAutoEventController.AutoEvent.AdvanceFrame -> {
@@ -591,7 +534,6 @@ class GameFragment : BaseFragment(),
             }
         }
 
-        /** @Override */
         override fun autoEventPaused(event: GameAutoEventController.AutoEvent) {
             when (event) {
                 GameAutoEventController.AutoEvent.AdvanceFrame -> {
@@ -604,16 +546,10 @@ class GameFragment : BaseFragment(),
 
     // MARK: Dialogs
 
-    /**
-     * Show the user their best score possible this game.
-     */
     private fun showBestScorePossible() {
         context?.let { PossibleScoreDialog.show(it, gameState.currentGame.deepCopy(), gameState.currentFrameIdx, gameState.currentBallIdx) }
     }
 
-    /**
-     * Prompt the user to reset the current game.
-     */
     private fun showResetGameDialog() {
         context?.let {
             ResetGameDialog.show(it, WeakReference({
@@ -624,9 +560,6 @@ class GameFragment : BaseFragment(),
         }
     }
 
-    /**
-     * Prompt the user to set a manual score.
-     */
     private fun showManualScoreDialog() {
         context?.let { context ->
             AlertDialog.Builder(context)
@@ -654,9 +587,6 @@ class GameFragment : BaseFragment(),
         }
     }
 
-    /**
-     * Prompt the user to clear a manual score.
-     */
     private fun showClearManualScoreDialog() {
         context?.let {
             ManualScoreDialog.showClearScoreDialog(it) {
@@ -665,60 +595,18 @@ class GameFragment : BaseFragment(),
         }
     }
 
-    // MARK: Companion Object
-
-    companion object {
-        /** Logging identifier. */
-        @Suppress("unused")
-        private const val TAG = "GameFragment"
-
-        /** Argument identifier for passing a [Series] to this fragment. */
-        private const val ARG_SERIES = "${TAG}_series"
-
-        /**
-         * Creates a new instance.
-         *
-         * @param series the series to edit games for
-         * @return the new instance
-         */
-        fun newInstance(series: Series): GameFragment {
-            val fragment = GameFragment()
-            fragment.arguments = Bundle().apply { putParcelable(ARG_SERIES, series) }
-            return fragment
-        }
-    }
-
     // MARK: GameFragmentDelegate
 
-    /**
-     * Handle interactions with the game fragment.
-     */
     interface GameFragmentDelegate {
-        /** Determine if there is another bowler/game to progress to after the current bowler/game. */
         val hasNextBowlerOrGame: Boolean
-
-        /** Determine if the fab is enabled. */
         val isFabEnabled: Boolean
+        val isFullscreen: Boolean
 
-        /**
-         * Enable or disable the floating action button.
-         *
-         * @param enabled to enable or disable
-         */
         fun enableFab(enabled: Boolean)
-
-        /**
-         * Move to the next bowler or game.
-         *
-         * @param isEndOfGame true if the game is complete
-         * @return result of the method invocation
-         */
         fun nextBowlerOrGame(isEndOfGame: Boolean): NextBowlerResult
+        fun toggleFullscreen()
     }
 
-    /**
-     * Represents possible states after [GameFragmentDelegate.nextBowlerOrGame] is called.
-     */
     enum class NextBowlerResult {
         NextBowler, NextGame, NextBowlerGame, None;
     }
