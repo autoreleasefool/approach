@@ -40,21 +40,12 @@ class StatisticGraphFragment : BaseFragment(),
         View.OnClickListener {
 
     companion object {
-        /** Logging identifier. */
         @Suppress("unused")
         private const val TAG = "StatisticGraphFragment"
 
-        /** Identifier for the argument that represents the [StatisticsUnit] whose details are displayed. */
         private const val ARG_STATISTIC_UNIT = "${TAG}_unit"
-
-        /** Argument identifier for the statistic to be graphed. */
         private const val ARG_STATISTIC = "${TAG}_statistic"
 
-        /**
-         * Creates a new instance.
-         *
-         * @return the new instance
-         */
         fun newInstance(unit: StatisticsUnit, statisticId: Long): StatisticGraphFragment {
             return StatisticGraphFragment().apply {
                 arguments = Bundle().apply {
@@ -65,16 +56,12 @@ class StatisticGraphFragment : BaseFragment(),
         }
     }
 
-    /** Fragment delegate. */
     private var delegate: StatisticGraphDelegate? = null
-
-    /** Unit to display statistic for. */
     private lateinit var unit: StatisticsUnit
-
-    /** ID of the static to create. */
     private var statisticId: Long = 0
 
-    /** @Override */
+    // MARK: Lifecycle functions
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         unit = arguments?.getParcelable(ARG_STATISTIC_UNIT)!!
         statisticId = arguments?.getLong(ARG_STATISTIC)!!
@@ -93,7 +80,6 @@ class StatisticGraphFragment : BaseFragment(),
         return view
     }
 
-    /** @Override */
     override fun onAttach(context: Context?) {
         super.onAttach(context)
 
@@ -101,13 +87,11 @@ class StatisticGraphFragment : BaseFragment(),
         delegate = parent
     }
 
-    /** @Override */
     override fun onDetach() {
         super.onDetach()
         delegate = null
     }
 
-    /** @Override */
     override fun onStart() {
         super.onStart()
 
@@ -116,14 +100,14 @@ class StatisticGraphFragment : BaseFragment(),
         buildChart()
     }
 
-    /** @Override */
+    // MARK: BaseFragment
+
     override fun updateToolbarTitle() {
         // Intentionally left blank
     }
 
-    /**
-     * Set the header, and prev and next button titles to the proper names based on the current statistic.
-     */
+    // MARK: Private functions
+
     private fun updateStatisticTitles() {
         val statistic = StatisticHelper.getStatistic(statisticId)
         val (previousStatistic, nextStatistic) = StatisticHelper.getAdjacentStatistics(statisticId)
@@ -142,9 +126,6 @@ class StatisticGraphFragment : BaseFragment(),
         }
     }
 
-    /**
-     * Update the accumulate switch label.
-     */
     private fun updateAccumulateText() {
         val accumulateOverTime = PreferenceManager.getDefaultSharedPreferences(context)
                 .getBoolean(Settings.AccumulateStatistics.prefName, Settings.AccumulateStatistics.booleanDefault)
@@ -157,13 +138,6 @@ class StatisticGraphFragment : BaseFragment(),
         }
     }
 
-    /**
-     * Apply styling to a [LineDataSet] depending on its index.
-     *
-     * @param context to get colors
-     * @param dataSet to apply styling to
-     * @param lineIndex index of the line in the graph
-     */
     private fun addChartDataStyling(context: Context, dataSet: LineDataSet, lineIndex: Int) {
         val color = when (lineIndex) {
             0 -> ContextCompat.getColor(context, R.color.colorPrimary)
@@ -175,13 +149,6 @@ class StatisticGraphFragment : BaseFragment(),
         dataSet.setCircleColor(color)
     }
 
-    /**
-     * Build the chart data.
-     *
-     * @param context to get colors
-     * @param graphLines data to display a line in the graph
-     * @return a list of [LineDataSet] to display
-     */
     private fun buildChartData(context: Context, graphLines: List<StatisticsGraphLine>): Deferred<LineData> {
         return async(CommonPool) {
             val dataSets: List<LineDataSet> = graphLines.mapIndexed { index, graphLine ->
@@ -194,19 +161,10 @@ class StatisticGraphFragment : BaseFragment(),
         }
     }
 
-    /**
-     * Build a value formatter for the XAxis for the graph.
-     *
-     * @param graphLabels labels for the XAxis
-     * @return a value formatter
-     */
     private fun buildChartXAxisFormatter(graphLabels: List<String>): IAxisValueFormatter {
         return IAxisValueFormatter { value, _ -> graphLabels[value.toInt()] }
     }
 
-    /**
-     * Build the chart out of the data from the [StatisticsUnit].
-     */
     private fun buildChart() {
         val context = context ?: return
         launch(Android) {
@@ -219,9 +177,6 @@ class StatisticGraphFragment : BaseFragment(),
         }
     }
 
-    /**
-     * Apply some general formatting to the chart to clean up its appearance.
-     */
     private fun fixChartProperties() {
         chart.description = Description().apply { text = "" }
         chart.legend.apply {
@@ -245,22 +200,8 @@ class StatisticGraphFragment : BaseFragment(),
 
     // MARK: StatisticGraphDelegate
 
-    /**
-     * Handle events in the fragment.
-     */
     interface StatisticGraphDelegate {
-        /**
-         * Show the next statistic.
-         *
-         * @param statisticId the current statistic
-         */
         fun nextStatistic(statisticId: Long)
-
-        /**
-         * Show the previous statistic.
-         *
-         * @param statisticId the current statistic
-         */
         fun prevStatistic(statisticId: Long)
     }
 }
