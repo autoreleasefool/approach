@@ -4,7 +4,6 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.os.Parcel
-import android.os.Parcelable
 import android.util.Log
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.bowlers.Bowler

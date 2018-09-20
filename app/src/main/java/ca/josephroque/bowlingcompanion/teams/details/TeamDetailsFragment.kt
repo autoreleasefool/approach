@@ -42,19 +42,11 @@ class TeamDetailsFragment : BaseFragment(),
         IStatisticsContext {
 
     companion object {
-        /** Logging identifier. */
         @Suppress("unused")
         private const val TAG = "TeamDetailsFragment"
 
-        /** Identifier for the argument that represents the [Team] whose details are displayed. */
         private const val ARG_TEAM = "${TAG}_team"
 
-        /**
-         * Creates a new instance.
-         *
-         * @param team team to load details of
-         * @return the new instance
-         */
         fun newInstance(team: Team): TeamDetailsFragment {
             val fragment = TeamDetailsFragment()
             fragment.arguments = Bundle().apply { putParcelable(ARG_TEAM, team) }
@@ -62,7 +54,6 @@ class TeamDetailsFragment : BaseFragment(),
         }
     }
 
-    /** @Override */
     override val statisticsProviders: List<StatisticsProvider> by lazy {
         val team = team
         return@lazy if (team != null) {
@@ -72,10 +63,8 @@ class TeamDetailsFragment : BaseFragment(),
         }
     }
 
-    /** The team whose details are to be displayed. */
     private var team: Team? = null
 
-    /** Indicate if all team members are ready for bowling to begin. */
     private var allTeamMembersReady: Boolean = false
         set(value) {
             if (field != value) {
@@ -84,7 +73,8 @@ class TeamDetailsFragment : BaseFragment(),
             }
         }
 
-    /** @Override */
+    // MARK: Lifecycle functions
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         team = arguments?.getParcelable(ARG_TEAM)
 
@@ -103,31 +93,21 @@ class TeamDetailsFragment : BaseFragment(),
         return view
     }
 
-    /** @Override */
     override fun onStart() {
         super.onStart()
         fabProvider?.invalidateFab()
     }
 
-    /** @Override */
+    // MARK: BaseFragment
+
     override fun updateToolbarTitle() {
         team?.let { navigationActivity?.setToolbarTitle(it.name) }
     }
 
-    /**
-     * Set up the header of the view.
-     *
-     * @param rootView the root view
-     */
-    private fun setupHeader(rootView: View) {
-        rootView.tv_header_title.setText(R.string.team_members)
-        rootView.tv_header_caption.setText(R.string.team_members_select_league)
-    }
+    // MARK: IFloatingActionButtonHandler
 
-    /** @Override */
     override fun getFabImage(): Int? = if (allTeamMembersReady) R.drawable.ic_ball else null
 
-    /** @Override */
     override fun onFabClick() {
         safeLet(context, team) { context, team ->
             launch(Android) {
@@ -143,7 +123,8 @@ class TeamDetailsFragment : BaseFragment(),
         }
     }
 
-    /** @Override */
+    // MARK: ListFragmentDelegate
+
     override fun onItemSelected(item: IIdentifiable, longPress: Boolean) {
         if (item is TeamMember) {
             val fragment = TeamMemberDialog.newInstance(item)
@@ -151,7 +132,8 @@ class TeamDetailsFragment : BaseFragment(),
         }
     }
 
-    /** @Override */
+    // MARK: TeamMemberDialogDelegate
+
     override fun onFinishTeamMember(teamMember: TeamMember) {
         childFragmentManager.fragments
                 .filter { it != null && it.isVisible }
@@ -162,23 +144,25 @@ class TeamDetailsFragment : BaseFragment(),
                 }
     }
 
-    /** @Override */
+    // MARK: TeamMemberListFragmentDelegate
+
     override fun onTeamMembersReadyChanged(ready: Boolean) {
         allTeamMembersReady = ready
     }
 
-    /** @Override */
     override fun onTeamMembersReordered(order: List<Long>) {
         team?.let { team = Team(it.id, it.name, it.members, order) }
 
         Analytics.trackReorderTeamMembers()
     }
 
-    /**
-     * Attempt to begin a new round of bowling.
-     *
-     * @return [BCError] if any errors occur, or null if the [Team] is ready to bowl.
-     */
+    // MARK: Private functions
+
+    private fun setupHeader(rootView: View) {
+        rootView.tv_header_title.setText(R.string.team_members)
+        rootView.tv_header_caption.setText(R.string.team_members_select_league)
+    }
+
     private fun attemptToBowl(): Deferred<BCError?> {
         return async(CommonPool) {
             val context = this@TeamDetailsFragment.context ?: return@async BCError()

@@ -23,11 +23,9 @@ class TeamRecyclerViewAdapter(
 ) : BaseRecyclerViewAdapter<Team>(items, delegate) {
 
     companion object {
-        /** Logging identifier. */
         @Suppress("unused")
         private const val TAG = "TeamRecyclerViewAdapter"
 
-        /** Views can be active and accessible, or deleted. */
         private enum class ViewType {
             Active,
             Deleted;
@@ -39,7 +37,8 @@ class TeamRecyclerViewAdapter(
         }
     }
 
-    /** @Override */
+    // MARK: BaseRecyclerViewAdapter
+
     override fun getItemViewType(position: Int): Int {
         return if (getItemAt(position).isDeleted) {
             ViewType.Deleted.ordinal
@@ -48,7 +47,6 @@ class TeamRecyclerViewAdapter(
         }
     }
 
-    /** @Override */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseRecyclerViewAdapter<Team>.ViewHolder {
         return when (ViewType.fromInt(viewType)) {
             ViewType.Active -> { ViewHolderActive(LayoutInflater
@@ -62,18 +60,14 @@ class TeamRecyclerViewAdapter(
         }
     }
 
-    /** @Override */
     override fun onBindViewHolder(holder: BaseRecyclerViewAdapter<Team>.ViewHolder, position: Int) {
         holder.bind(getItemAt(position), position)
     }
 
-    /**
-     * Build and render an active item in the list.
-     */
+    // MARK: ViewHolderActive
+
     inner class ViewHolderActive(view: View) : BaseRecyclerViewAdapter<Team>.ViewHolder(view) {
-        /** Render name of the item. */
         private val tvName: TextView? = view.findViewById(R.id.tv_name)
-        /** Render members of the team. */
         private val flowMembers: FlowLayout? = view.findViewById(R.id.flow_members)
 
         override fun bind(item: Team, position: Int) {
@@ -99,13 +93,10 @@ class TeamRecyclerViewAdapter(
         }
     }
 
-    /**
-     * Build and render a deleted item in the list.
-     */
+    // MARK: ViewHolderDeleted
+
     inner class ViewHolderDeleted(view: View) : BaseRecyclerViewAdapter<Team>.ViewHolder(view) {
-        /** Render name of the deleted item. */
         private val tvDeleted: TextView? = view.findViewById(R.id.tv_deleted)
-        /** Button to undo deletion of an item. */
         private val tvUndo: TextView? = view.findViewById(R.id.tv_undo)
 
         override fun bind(item: Team, position: Int) {

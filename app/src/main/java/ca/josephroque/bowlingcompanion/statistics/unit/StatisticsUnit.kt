@@ -247,6 +247,7 @@ abstract class StatisticsUnit(initialSeries: List<StatSeries>? = null, initialSt
         if (statistics != null) {
             writeBoolean(true)
             writeInt(statistics.size)
+            // TODO: java.lang.ClassCastException: ca.josephroque.bowlingcompanion.statistics.StatisticsCategory cannot be cast to ca.josephroque.bowlingcompanion.statistics.Statistic
             writeIntArray(statistics.map { (it as Statistic).titleId }.toIntArray())
             for (statistic in statistics) {
                 writeParcelable((statistic as Statistic), 0)

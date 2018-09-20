@@ -38,23 +38,14 @@ import kotlinx.coroutines.experimental.launch
  * Dialog to create a new team.
  */
 class TeamDialog : BaseDialogFragment(),
-        View.OnClickListener,
         BaseRecyclerViewAdapter.AdapterDelegate<Bowler> {
 
     companion object {
-        /** Logging identifier. */
         @Suppress("unused")
         private const val TAG = "TeamDialog"
 
-        /** Identifier for the [Team] to be edited. */
         private const val ARG_TEAM = "${TAG}_TEAM"
 
-        /**
-         * Create a new instance of the dialog.
-         *
-         * @param team [Team] to edit, or null to create a new team
-         * @return the new instance
-         */
         fun newInstance(team: Team?): TeamDialog {
             val dialog = TeamDialog()
             dialog.arguments = Bundle().apply { team?.let { putParcelable(ARG_TEAM, team) } }
@@ -62,16 +53,10 @@ class TeamDialog : BaseDialogFragment(),
         }
     }
 
-    /** Team to be edited, or null if a new team is to be created. */
     private var team: Team? = null
-
-    /** Interaction handler. */
     private var delegate: TeamDialogDelegate? = null
-
-    /** Adapter to manage rendering the list of bowlers. */
     private lateinit var bowlerAdapter: NameAverageRecyclerViewAdapter<Bowler>
 
-    /** Current list of selected bowlers. */
     private val selectedBowlers: List<TeamMember>
         get() {
             val selected = bowlerAdapter.selectedItems
@@ -86,18 +71,30 @@ class TeamDialog : BaseDialogFragment(),
             return list
         }
 
-    /** @Override */
+    private val onClickListener = View.OnClickListener {
+        safeLet(context, team) { context, team ->
+            AlertDialog.Builder(context)
+                    .setTitle(String.format(context.resources.getString(R.string.query_delete_item), team.name))
+                    .setMessage(R.string.dialog_delete_item_message)
+                    .setPositiveButton(R.string.delete) { _, _ ->
+                        delegate?.onDeleteTeam(team)
+                        dismiss()
+
+                        Analytics.trackDeleteTeam()
+                    }
+                    .setNegativeButton(R.string.cancel, null)
+                    .show()
+        }
+    }
+
+    // MARK: Lifecycle functions
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(DialogFragment.STYLE_NORMAL, R.style.Dialog)
     }
 
-    /** @Override */
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         team = arguments?.getParcelable(ARG_TEAM)
 
         val rootView = inflater.inflate(R.layout.dialog_team, container, false)
@@ -108,11 +105,49 @@ class TeamDialog : BaseDialogFragment(),
         return rootView
     }
 
-    /**
-     * Set up title, style, and listeners for toolbar.
-     *
-     * @param rootView the root view
-     */
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        val parent = parentFragment as? TeamDialogDelegate
+                ?: throw RuntimeException("${parentFragment!!} must implement TeamDialogDelegate")
+        delegate = parent
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        delegate = null
+    }
+
+    override fun onStart() {
+        super.onStart()
+        dialog.window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+
+        activity?.let {
+            nameInput.clearFocus()
+            App.hideSoftKeyBoard(it)
+        }
+
+        team?.let { deleteButton.visibility = View.VISIBLE }
+        nameInput.setSelection(nameInput.text.length)
+        refreshBowlerList()
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = super.onCreateDialog(savedInstanceState)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        return dialog
+    }
+
+    override fun dismiss() {
+        activity?.let {
+            App.hideSoftKeyBoard(it)
+            it.supportFragmentManager?.popBackStack()
+        }
+
+        super.dismiss()
+    }
+
+    // MARK: Private functions
+
     private fun setupToolbar(rootView: View) {
         if (team == null) {
             rootView.toolbar_team.setTitle(R.string.new_team)
@@ -138,11 +173,6 @@ class TeamDialog : BaseDialogFragment(),
         }
     }
 
-    /**
-     * Set up list of bowlers to select team members from.
-     *
-     * @param rootView the root view
-     */
     private fun setupBowlers(rootView: View) {
         val context = context ?: return
 
@@ -154,13 +184,8 @@ class TeamDialog : BaseDialogFragment(),
         BaseRecyclerViewAdapter.applyDefaultDivider(rootView.list_bowlers, context)
     }
 
-    /**
-     * Set up input items for callbacks on interactions.
-     *
-     * @param rootView the root view
-     */
     private fun setupInput(rootView: View) {
-        rootView.btn_delete.setOnClickListener(this)
+        rootView.btn_delete.setOnClickListener(onClickListener)
         rootView.input_name.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {}
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -170,74 +195,6 @@ class TeamDialog : BaseDialogFragment(),
         })
     }
 
-    /** @Override */
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-        val parent = parentFragment as? TeamDialogDelegate
-                ?: throw RuntimeException("${parentFragment!!} must implement TeamDialogDelegate")
-        delegate = parent
-    }
-
-    /** @Override */
-    override fun onDetach() {
-        super.onDetach()
-        delegate = null
-    }
-
-    /** @Override */
-    override fun onStart() {
-        super.onStart()
-        dialog.window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-
-        activity?.let {
-            nameInput.clearFocus()
-            App.hideSoftKeyBoard(it)
-        }
-
-        team?.let { deleteButton.visibility = View.VISIBLE }
-        nameInput.setSelection(nameInput.text.length)
-        refreshBowlerList()
-    }
-
-    /** @Override */
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = super.onCreateDialog(savedInstanceState)
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        return dialog
-    }
-
-    /** @Override */
-    override fun onClick(v: View?) {
-        safeLet(context, team) { context, team ->
-            AlertDialog.Builder(context)
-                    .setTitle(String.format(context.resources.getString(R.string.query_delete_item), team.name))
-                    .setMessage(R.string.dialog_delete_item_message)
-                    .setPositiveButton(R.string.delete) { _, _ ->
-                        delegate?.onDeleteTeam(team)
-                        dismiss()
-
-                        Analytics.trackDeleteTeam()
-                    }
-                    .setNegativeButton(R.string.cancel, null)
-                    .show()
-        }
-    }
-
-    /**
-     * Clean up dialog before calling super.
-     */
-    override fun dismiss() {
-        activity?.let {
-            App.hideSoftKeyBoard(it)
-            it.supportFragmentManager?.popBackStack()
-        }
-
-        super.dismiss()
-    }
-
-    /**
-     * Determine if the team can be saved or not.
-     */
     private fun canSave(): Boolean {
         val name = nameInput.text.toString()
         val members = selectedBowlers
@@ -245,9 +202,6 @@ class TeamDialog : BaseDialogFragment(),
         return name.isNotEmpty() && members.isNotEmpty()
     }
 
-    /**
-     * Update save button state based on text entered.
-     */
     private fun updateSaveButton() {
         val saveButton = teamToolbar.menu.findItem(R.id.action_save)
         if (canSave()) {
@@ -259,9 +213,6 @@ class TeamDialog : BaseDialogFragment(),
         }
     }
 
-    /**
-     * Save the current team. Show errors if there are any.
-     */
     private fun saveTeam() {
         launch(Android) {
             this@TeamDialog.context?.let { context ->
@@ -294,9 +245,6 @@ class TeamDialog : BaseDialogFragment(),
         }
     }
 
-    /**
-     * Reload the list of bowlers and update list.
-     */
     private fun refreshBowlerList() {
         val context = context ?: return
         launch(Android) {
@@ -318,8 +266,6 @@ class TeamDialog : BaseDialogFragment(),
             updateSaveButton()
         }
     }
-
-    // MARK: Private functions
 
     private fun resetInputs(team: Team, rootView: View? = null) {
         val nameInput = rootView?.input_name ?: this.nameInput

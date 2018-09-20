@@ -30,8 +30,6 @@ import android.content.DialogInterface
 import android.support.v7.app.AlertDialog
 import android.widget.NumberPicker
 
-
-
 /**
  * Copyright (C) 2018 Joseph Roque
  *

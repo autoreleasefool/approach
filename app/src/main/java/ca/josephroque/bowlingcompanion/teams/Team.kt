@@ -4,7 +4,6 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.os.Parcel
-import android.os.Parcelable
 import android.preference.PreferenceManager
 import android.util.Log
 import ca.josephroque.bowlingcompanion.R
@@ -41,26 +40,20 @@ class Team(
     val initialOrder: List<Long>? = null
 ) : KParcelable, IDeletable, IIdentifiable {
 
-    /** Private field to indicate if the item is deleted. */
     private var _isDeleted: Boolean = false
-    /** @Override */
     override val isDeleted: Boolean
         get() = _isDeleted
 
-    /** Get the members of the team in the sorted order. */
     val membersInOrder: List<TeamMember>
         get() = members.sortedWith(compareBy { order.indexOf(it.id) })
 
-    /** Get the list of series for the team members. */
     val series: List<Series>
         get() = membersInOrder.map { it.series!! }
 
-    /** Ordering of the team members. */
     val order: List<Long> = initialOrder?.toMutableList() ?: members.map { it.id }
 
-    /**
-     * Construct [Team] from a [Parcel]
-     */
+    // MARK: Constructors
+
     private constructor(p: Parcel): this(
             id = p.readLong(),
             name = p.readString(),
@@ -78,9 +71,6 @@ class Team(
             }
     )
 
-    /**
-     * Construct [Team] from a [Team].
-     */
     constructor(team: Team): this(
             id = team.id,
             name = team.name,
@@ -88,7 +78,8 @@ class Team(
             initialOrder = team.order
     )
 
-    /** @Override */
+    // MARK: Parcelable
+
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeLong(id)
         writeString(name)
@@ -97,21 +88,20 @@ class Team(
         writeLongArray(order.toLongArray())
     }
 
-    /** @Override */
+    // MARK: IDeletable
+
     override fun markForDeletion(): Team {
         val newInstance = Team(this)
         newInstance._isDeleted = true
         return newInstance
     }
 
-    /** @Override */
     override fun cleanDeletion(): Team {
         val newInstance = Team(this)
         newInstance._isDeleted = false
         return newInstance
     }
 
-    /** @Override */
     override fun delete(context: Context): Deferred<Unit> {
         return async(CommonPool) {
             if (id < 0) {
@@ -135,12 +125,8 @@ class Team(
         }
     }
 
-    /**
-     * Replace a member of the team with a newer instance.
-     *
-     * @param newMember the team member to add
-     * @return a new instance of [Team]
-     */
+    // MARK: Team
+
     fun replaceTeamMember(newMember: TeamMember): Team {
         val oldMembers = members.toMutableList()
         val replacedMemberIndex = newMember.indexInList(members)
@@ -155,20 +141,14 @@ class Team(
     }
 
     companion object {
-        /** Logging identifier. */
         @Suppress("unused")
         private const val TAG = "Team"
 
-        /** Valid regex for a name. */
-        private val REGEX_NAME = Bowler.REGEX_NAME
-
-        /** Creator, required by [Parcelable]. */
         @Suppress("unused")
         @JvmField val CREATOR = parcelableCreator(::Team)
 
-        /**
-         * Order by which to sort teams.
-         */
+        private val REGEX_NAME = Bowler.REGEX_NAME
+
         enum class Sort {
             Alphabetically,
             LastModified;
@@ -179,22 +159,8 @@ class Team(
             }
         }
 
-        /**
-         * Check if a name is a valid [Team] name.
-         *
-         * @param name name to check
-         * @return true if the name is valid, false otherwise
-         */
         private fun isTeamNameValid(name: String): Boolean = REGEX_NAME.matches(name)
 
-        /**
-         * Check if a name is unique in the Team database.
-         *
-         * @param context to get database instance
-         * @param name name to check
-         * @param id id of the existing team, so if the name is unchanged it can be saved
-         * @return true if the name is not already in the database, false otherwise
-         */
         private fun isTeamNameUnique(context: Context, name: String, id: Long = -1): Deferred<Boolean> {
             return async(CommonPool) {
                 val database = Saviour.instance.getReadableDatabase(context).await()
@@ -224,21 +190,7 @@ class Team(
             }
         }
 
-        /**
-         * Ensure all preconditions to save are met.
-         *
-         * @param context to get error strings
-         * @param id -1 for a new team, or the id of the existing team
-         * @param name name for the team
-         * @param members list of team members
-         * @return [BCError] if a precondition is not met, null otherwise
-         */
-        private fun validateSavePreconditions(
-            context: Context,
-            id: Long,
-            name: String,
-            members: List<TeamMember>
-        ): Deferred<BCError?> {
+        private fun validateSavePreconditions(context: Context, id: Long, name: String, members: List<TeamMember>): Deferred<BCError?> {
             return async(CommonPool) {
                 val errorMessage = R.string.issue_saving_team
                 val errorTitle: Int? = if (!isTeamNameValid(name)) {
@@ -259,21 +211,7 @@ class Team(
             }
         }
 
-        /**
-         * Save the current team to the database.
-         *
-         * @param context to get database instance
-         * @param id -1 for a new team, or the id of the existing team
-         * @param name name for the team
-         * @param members list of team members
-         * @return the saved [Team] or a [BCError] if any errors occurred
-         */
-        fun save(
-            context: Context,
-            id: Long,
-            name: String,
-            members: List<TeamMember>
-        ): Deferred<Pair<Team?, BCError?>> {
+        fun save(context: Context, id: Long, name: String, members: List<TeamMember>): Deferred<Pair<Team?, BCError?>> {
             return if (id < 0) {
                 createNewAndSave(context, name, members)
             } else {
@@ -281,19 +219,7 @@ class Team(
             }
         }
 
-        /**
-         * Create a new [TeamEntry] in the database.
-         *
-         * @param context to get database instance
-         * @param name name for the team
-         * @param members list of team members
-         * @return the saved [Team] or a [BCError] if any errors occurred
-         */
-        private fun createNewAndSave(
-            context: Context,
-            name: String,
-            members: List<TeamMember>
-        ): Deferred<Pair<Team?, BCError?>> {
+        private fun createNewAndSave(context: Context, name: String, members: List<TeamMember>): Deferred<Pair<Team?, BCError?>> {
             return async(CommonPool) {
                 val error = validateSavePreconditions(context, -1, name, members).await()
                 if (error != null) {
@@ -338,21 +264,7 @@ class Team(
             }
         }
 
-        /**
-         * Update the [TeamEntry] in the database.
-         *
-         * @param context context to get database instance
-         * @param id id of the team to update
-         * @param name name for the team
-         * @param members list of team members
-         * @return the saved [Team] or a [BCError] if any errors occurred
-         */
-        private fun update(
-            context: Context,
-            id: Long,
-            name: String,
-            members: List<TeamMember>
-        ): Deferred<Pair<Team?, BCError?>> {
+        private fun update(context: Context, id: Long, name: String, members: List<TeamMember>): Deferred<Pair<Team?, BCError?>> {
             return async(CommonPool) {
                 val error = validateSavePreconditions(context, id, name, members).await()
                 if (error != null) {
@@ -407,12 +319,6 @@ class Team(
             }
         }
 
-        /**
-         * Get all of the teams available in the app.
-         *
-         * @param context to get database instance
-         * @return a [MutableList] of [Team] instances from the database
-         */
         fun fetchAll(context: Context): Deferred<MutableList<Team>> {
             return async(CommonPool) {
                 val teams: MutableList<Team> = ArrayList()

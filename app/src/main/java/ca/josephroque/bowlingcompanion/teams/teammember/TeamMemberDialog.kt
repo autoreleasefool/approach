@@ -34,22 +34,12 @@ class TeamMemberDialog : BaseDialogFragment(),
         FragmentManager.OnBackStackChangedListener {
 
     companion object {
-        /** Logging identifier. */
         @Suppress("unused")
         private const val TAG = "TeamMemberDialog"
 
-        /** Identifier for the [TeamMember] to be edited. */
         private const val ARG_TEAM_MEMBER = "${TAG}_team_member"
-
-        /** Identifier for the [League] selected for the [TeamMember]. */
         private const val ARG_SELECTED_LEAGUE = "${TAG}_selected_league"
 
-        /**
-         * Create a new instance of the dialog.
-         *
-         * @param teamMember [TeamMember] to select league for
-         * @return the new instance
-         */
         fun newInstance(teamMember: TeamMember): TeamMemberDialog {
             val dialog = TeamMemberDialog()
             dialog.arguments = Bundle().apply { putParcelable(ARG_TEAM_MEMBER, teamMember) }
@@ -57,33 +47,21 @@ class TeamMemberDialog : BaseDialogFragment(),
         }
     }
 
-    /** Team member to select league for. */
     private var teamMember: TeamMember? = null
-
-    /** Interaction handler. */
+    private var selectedLeague: League? = null
+    private var selectedSeries: Series? = null
     private var delegate: TeamMemberDialogDelegate? = null
 
-    /** The league selected by the user for the team member. */
-    private var selectedLeague: League? = null
-
-    /** The series selected by the user for the team member. */
-    private var selectedSeries: Series? = null
-
-    /** Controller for floating action button. */
     private lateinit var fabController: FabController
 
-    /** @Override */
+    // MARK: Lifecycle functions
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(DialogFragment.STYLE_NORMAL, R.style.Dialog)
     }
 
-    /** @Override */
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         teamMember = arguments?.getParcelable(ARG_TEAM_MEMBER)
         selectedLeague = savedInstanceState?.getParcelable(ARG_SELECTED_LEAGUE)
 
@@ -96,11 +74,69 @@ class TeamMemberDialog : BaseDialogFragment(),
         return rootView
     }
 
-    /**
-     * Set up title, style, and listeners for toolbar.
-     *
-     * @param rootView the root view
-     */
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        val parent = parentFragment as? TeamMemberDialogDelegate
+                ?: throw RuntimeException("${parentFragment!!} must implement TeamMemberDialogDelegate")
+        delegate = parent
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        delegate = null
+    }
+
+    override fun onStart() {
+        super.onStart()
+        dialog.window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        view?.let { prepareActions(it, selectedLeague == null) }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable(ARG_SELECTED_LEAGUE, selectedLeague)
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = super.onCreateDialog(savedInstanceState)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        return dialog
+    }
+
+    override fun dismiss() {
+        activity?.supportFragmentManager?.popBackStack()
+        super.dismiss()
+    }
+
+    // MARK: ListFragmentDelegate
+
+    override fun onItemSelected(item: IIdentifiable, longPress: Boolean) {
+        if (item is League) {
+            selectedLeague = item
+            if (item.isEvent) {
+                saveTeamMember()
+            } else {
+                val fragment = SeriesListFragment.newInstance(item, true)
+                childFragmentManager.beginTransaction().apply {
+                    replace(R.id.fragment_container, fragment)
+                    addToBackStack(resources.getString(R.string.leagues))
+                    commit()
+                }
+            }
+        } else if (item is Series) {
+            selectedSeries = item
+            saveTeamMember()
+        }
+    }
+
+    // MARK: OnBackStackChangedListener
+
+    override fun onBackStackChanged() {
+        view?.let { prepareActions(it, childFragmentManager.backStackEntryCount == 0) }
+    }
+
+    // MARK: Private functions
+
     private fun setupToolbar(rootView: View) {
         rootView.toolbar_team_member.apply {
             setNavigationOnClickListener {
@@ -114,11 +150,6 @@ class TeamMemberDialog : BaseDialogFragment(),
         }
     }
 
-    /**
-     * Set up the floating action button controller.
-     *
-     * @param rootView the root view
-     */
     private fun setupFab(rootView: View) {
         fabController = FabController(rootView.fab, View.OnClickListener {
             if (selectedLeague != null) {
@@ -127,13 +158,6 @@ class TeamMemberDialog : BaseDialogFragment(),
         })
     }
 
-    /**
-     * Set up the header and actions of the view.
-     *
-     * @param rootView the root view
-     * @param forLeague true if the actions are for the league list, false if they are for the
-     *                  series list
-     */
     private fun prepareActions(rootView: View, forLeague: Boolean) {
         if (forLeague) {
             rootView.tv_header_title.setText(R.string.league)
@@ -156,11 +180,6 @@ class TeamMemberDialog : BaseDialogFragment(),
         }
     }
 
-    /**
-     * Create the child fragment if it has not been created yet.
-     *
-     * @param savedInstanceState the saved instance state
-     */
     private fun setupChildFragment(savedInstanceState: Bundle?) {
         teamMember?.let {
             if (savedInstanceState == null) {
@@ -178,51 +197,6 @@ class TeamMemberDialog : BaseDialogFragment(),
         }
     }
 
-    /** @Override */
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-        val parent = parentFragment as? TeamMemberDialogDelegate
-                ?: throw RuntimeException("${parentFragment!!} must implement TeamMemberDialogDelegate")
-        delegate = parent
-    }
-
-    /** @Override */
-    override fun onDetach() {
-        super.onDetach()
-        delegate = null
-    }
-
-    /** @Override */
-    override fun onStart() {
-        super.onStart()
-        dialog.window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-        view?.let { prepareActions(it, selectedLeague == null) }
-    }
-
-    /** @Override */
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putParcelable(ARG_SELECTED_LEAGUE, selectedLeague)
-    }
-
-    /** @Override */
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = super.onCreateDialog(savedInstanceState)
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        return dialog
-    }
-
-    /**
-     * Clean up dialog before calling super.
-     */
-    override fun dismiss() {
-        activity?.supportFragmentManager?.popBackStack()
-        super.dismiss()
-    }
-
-    /**
-     * Save the current team member. Show errors if there are any.
-     */
     private fun saveTeamMember() {
         launch(Android) {
             safeLet(teamMember, selectedLeague) { teamMember, league ->
@@ -239,39 +213,9 @@ class TeamMemberDialog : BaseDialogFragment(),
         }
     }
 
-    /** @Override */
-    override fun onItemSelected(item: IIdentifiable, longPress: Boolean) {
-        if (item is League) {
-            selectedLeague = item
-            if (item.isEvent) {
-                saveTeamMember()
-            } else {
-                val fragment = SeriesListFragment.newInstance(item, true)
-                childFragmentManager.beginTransaction().apply {
-                    replace(R.id.fragment_container, fragment)
-                    addToBackStack(resources.getString(R.string.leagues))
-                    commit()
-                }
-            }
-        } else if (item is Series) {
-            selectedSeries = item
-            saveTeamMember()
-        }
-    }
+    // MARK: TeamMemberDialogDelegate
 
-    /** @Override */
-    override fun onBackStackChanged() {
-        view?.let { prepareActions(it, childFragmentManager.backStackEntryCount == 0) }
-    }
-
-    /** Handles interactions with the dialog. */
     interface TeamMemberDialogDelegate {
-
-        /**
-         * Indicates when the user has finished editing the [TeamMember].
-         *
-         * @param teamMember the finished [TeamMember]
-         */
         fun onFinishTeamMember(teamMember: TeamMember)
     }
 }

@@ -1,7 +1,6 @@
 package ca.josephroque.bowlingcompanion.teams.teammember
 
 import android.os.Parcel
-import android.os.Parcelable
 import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
 import ca.josephroque.bowlingcompanion.common.interfaces.KParcelable
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
@@ -21,6 +20,19 @@ class TeamMember(
     val series: Series? = null
 ) : IIdentifiable, KParcelable {
 
+    companion object {
+        @Suppress("unused")
+        private const val TAG = "TeamMember"
+
+        @Suppress("unused")
+        @JvmField val CREATOR = parcelableCreator(::TeamMember)
+
+        /** Bit count to shift team id for team member id. */
+        private const val TEAM_ID_SHIFT = 32
+        /** Number of bits to use from beginning of bowler id for team member id. */
+        private const val BOWLER_ID_TRIM = 0xFFFFFFFF
+    }
+
     /**
      * ID is a concatenation of the first 32 bits of the team ID and first 32 bits
      * of the bowler ID.
@@ -28,9 +40,8 @@ class TeamMember(
     override val id: Long
         get() = teamId.shl(TEAM_ID_SHIFT).or(bowlerId.and(BOWLER_ID_TRIM))
 
-    /**
-     * Construct [TeamMember] from a [Parcel]
-     */
+    // MARK: Constructors
+
     private constructor(p: Parcel): this(
             teamId = p.readLong(),
             bowlerName = p.readString(),
@@ -39,9 +50,6 @@ class TeamMember(
             series = p.readParcelable<Series>(Series::class.java.classLoader)
     )
 
-    /**
-     * Construct [TeamMember] from a [TeamMember].
-     */
     constructor(teamMember: TeamMember): this(
             teamId = teamMember.teamId,
             bowlerName = teamMember.bowlerName,
@@ -50,27 +58,13 @@ class TeamMember(
             series = teamMember.series
     )
 
-    /** @Override */
+    // MARK: Parcelable
+
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeLong(teamId)
         writeString(bowlerName)
         writeLong(bowlerId)
         writeParcelable(league, 0)
         writeParcelable(series, 0)
-    }
-
-    companion object {
-        /** Logging identifier. */
-        @Suppress("unused")
-        private const val TAG = "TeamMember"
-
-        /** Creator, required by [Parcelable]. */
-        @Suppress("unused")
-        @JvmField val CREATOR = parcelableCreator(::TeamMember)
-
-        /** Bit count to shift team id for team member id. */
-        private const val TEAM_ID_SHIFT = 32
-        /** Number of bits to use from beginning of bowler id for team member id. */
-        private const val BOWLER_ID_TRIM = 0xFFFFFFFF
     }
 }

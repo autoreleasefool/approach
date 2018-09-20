@@ -25,27 +25,24 @@ class TeamMembersRecyclerViewAdapter(
 ) : BaseRecyclerViewAdapter<TeamMember>(items, delegate) {
 
     companion object {
-        /** Logging identifier. */
         @Suppress("unused")
         private const val TAG = "TeamMembersRecyclerViewAdapter"
     }
 
-    /** @Override */
+    // MARK: BaseRecyclerViewAdapter
+
     override fun getItemAt(position: Int): TeamMember {
         return items.first { it.id == itemsOrder[position] }
     }
 
-    /** @Override */
     override fun getPositionOfItem(item: TeamMember): Int {
         return itemsOrder.indexOf(item.id)
     }
 
-    /** @Override */
     override fun getItemViewType(position: Int): Int {
         return 0
     }
 
-    /** @Override */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(LayoutInflater
                 .from(parent.context)
@@ -53,30 +50,25 @@ class TeamMembersRecyclerViewAdapter(
         )
     }
 
-    /** @Override */
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
         super.onDetachedFromRecyclerView(recyclerView)
         moveDelegate = null
     }
 
-    /** @Override */
     override fun onBindViewHolder(holder: BaseRecyclerViewAdapter<TeamMember>.ViewHolder, position: Int) {
         holder.bind(getItemAt(position), position)
     }
 
-    /** @Override */
     override fun buildItemTouchHelper(): ItemTouchHelper.Callback {
         return DragCallback()
     }
 
+    // MARK: ViewHolder
+
     inner class ViewHolder(view: View) : BaseRecyclerViewAdapter<TeamMember>.ViewHolder(view) {
-        /** Render name of the team member. */
         private val tvBowlerName: TextView = view.findViewById(R.id.tv_team_member_name)
-        /** Render league selected for the member to bowl. */
         private val tvLeagueName: TextView = view.findViewById(R.id.tv_team_member_league)
-        /** Render series selected for the member to bowl. */
         private val tvSeriesName: TextView = view.findViewById(R.id.tv_team_member_series)
-        /** Render type indicator for the member. */
         private val ivIcon: ImageView = view.findViewById(R.id.iv_team_member_icon)
 
         override fun bind(item: TeamMember, position: Int) {
@@ -109,43 +101,27 @@ class TeamMembersRecyclerViewAdapter(
         }
     }
 
-    /**
-     * Allow dragging of the Team Members for re-ordering.
-     */
+    // MARK: DragCallback
+
     inner class DragCallback : ItemTouchHelper.Callback() {
-
-        /** @Override */
         override fun isLongPressDragEnabled() = true
-
-        /** @Override */
         override fun isItemViewSwipeEnabled() = false
 
-        /** @Override */
         override fun getMovementFlags(recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder?): Int {
             return makeMovementFlags(ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0)
         }
 
-        /** @Override */
         override fun onMove(recyclerView: RecyclerView?, viewHolder: RecyclerView.ViewHolder?, target: RecyclerView.ViewHolder?): Boolean {
             moveDelegate?.onTeamMemberMoved(viewHolder!!.adapterPosition, target!!.adapterPosition)
             return true
         }
 
-        /** @Override */
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder?, direction: Int) {}
     }
 
-    /**
-     * Callback to move team members.
-     */
-    interface TeamMemberMoveDelegate {
+    // MARK: TeamMemberMoveDelegate
 
-        /**
-         * Move a team member.
-         *
-         * @param from old position
-         * @param to new position
-         */
+    interface TeamMemberMoveDelegate {
         fun onTeamMemberMoved(from: Int, to: Int)
     }
 }
