@@ -209,6 +209,7 @@ class TeamDetailsFragment : BaseFragment(),
                                     database.beginTransaction()
                                 }
 
+                                // TODO: override for practice league
                                 val (newSeries, seriesError) = league.createNewSeries(
                                         context = context,
                                         inTransaction = true

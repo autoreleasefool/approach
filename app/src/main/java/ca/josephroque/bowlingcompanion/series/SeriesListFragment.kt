@@ -26,6 +26,11 @@ import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
+import android.content.DialogInterface
+import android.support.v7.app.AlertDialog
+import android.widget.NumberPicker
+
+
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -233,16 +238,49 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
             val newFragment = SeriesDialog.newInstance(series)
             fragmentNavigation?.pushDialogFragment(newFragment)
         } else {
-            safeLet(context, league) { context, league ->
-                launch(Android) {
-                    val (newSeries, seriesError) = league.createNewSeries(context).await()
-                    if (seriesError != null) {
-                        seriesError.show(context)
-                    } else if (newSeries != null) {
-                        showGameDetails(newSeries)
+            val league = league ?: return
+            if (league.isPractice) {
+                promptPracticeSeriesNumberOfGames()
+            } else {
+                createNewSeries(league.gamesPerSeries)
+            }
+        }
+    }
 
-                        Analytics.trackCreateSeries()
-                    }
+    private fun promptPracticeSeriesNumberOfGames() {
+        val context = context ?: return
+
+        val numberPicker = NumberPicker(context)
+        numberPicker.maxValue = League.MAX_NUMBER_OF_GAMES
+        numberPicker.minValue = 1
+        numberPicker.wrapSelectorWheel = false
+
+        val listener = DialogInterface.OnClickListener { dialog, which ->
+            if (which == DialogInterface.BUTTON_POSITIVE) {
+                createNewSeries(numberPicker.value)
+            }
+            dialog.dismiss()
+        }
+
+        AlertDialog.Builder(context)
+                .setTitle("How many games?")
+                .setView(numberPicker)
+                .setPositiveButton(R.string.bowl, listener)
+                .setNegativeButton(R.string.cancel, listener)
+                .create()
+                .show()
+    }
+
+    private fun createNewSeries(numberOfGames: Int) {
+        safeLet(context, league) { context, league ->
+            launch(Android) {
+                val (newSeries, seriesError) = league.createNewSeries(context, numberOfPracticeGamesOverride = numberOfGames).await()
+                if (seriesError != null) {
+                    seriesError.show(context)
+                } else if (newSeries != null) {
+                    showGameDetails(newSeries)
+
+                    Analytics.trackCreateSeries()
                 }
             }
         }

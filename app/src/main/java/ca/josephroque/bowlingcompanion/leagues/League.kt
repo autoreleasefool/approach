@@ -102,16 +102,22 @@ data class League(
         return Series.fetchAll(context, this)
     }
 
-    fun createNewSeries(context: Context, inTransaction: Boolean = false): Deferred<Pair<Series?, BCError?>> {
+    fun createNewSeries(context: Context, inTransaction: Boolean = false, numberOfPracticeGamesOverride: Int? = null): Deferred<Pair<Series?, BCError?>> {
+        val numberOfGames = if (isPractice) {
+            numberOfPracticeGamesOverride ?: gamesPerSeries
+        } else {
+            gamesPerSeries
+        }
+
         return async(CommonPool) {
             return@async Series.save(
                     context = context,
                     league = this@League,
                     id = -1,
                     date = Date(),
-                    numberOfGames = gamesPerSeries,
-                    scores = IntArray(gamesPerSeries).toList(),
-                    matchPlay = ByteArray(gamesPerSeries).toList(),
+                    numberOfGames = numberOfGames,
+                    scores = IntArray(numberOfGames).toList(),
+                    matchPlay = ByteArray(numberOfGames).toList(),
                     inTransaction = inTransaction
             ).await()
         }
