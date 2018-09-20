@@ -48,26 +48,13 @@ import kotlinx.coroutines.experimental.launch
 class LeagueDialog : BaseDialogFragment() {
 
     companion object {
-        /** Logging identifier. */
         @Suppress("unused")
         private const val TAG = "LeagueDialog"
 
-        /** Identifier for the [Bowler] that will own the [League]. */
         private const val ARG_BOWLER = "${TAG}_bowler"
-
-        /** Identifier for the [League] to be edited. */
         private const val ARG_LEAGUE = "${TAG}_league"
-
-        /** Identifier for if the league is an event or not. */
         private const val ARG_IS_EVENT = "${TAG}_is_event"
 
-        /**
-         * Create a new instance of the [LeagueDialog].
-         *
-         * @param bowler bowler that will own the league
-         * @param league a [League] to edit, or null to create a new league
-         * @param isEvent true to create an event, false to create a league
-         */
         fun newInstance(bowler: Bowler, league: League?, isEvent: Boolean): LeagueDialog {
             val dialog = LeagueDialog()
             dialog.arguments = Bundle().apply {
@@ -79,19 +66,11 @@ class LeagueDialog : BaseDialogFragment() {
         }
     }
 
-    /** Owner of the league. */
     private var bowler: Bowler? = null
-
-    /** League to be edited, or null if a new league is to be created. */
     private var league: League? = null
-
-    /** True if the league should be an event, false otherwise. */
     private var isEvent: Boolean = false
-
-    /** Interaction handler. */
     private var delegate: LeagueDialogDelegate? = null
 
-    /** View OnClickListener. */
     private var onClickListener: View.OnClickListener? = View.OnClickListener {
         val clicked = it ?: return@OnClickListener
         when (clicked.id) {
@@ -123,13 +102,13 @@ class LeagueDialog : BaseDialogFragment() {
         }
     }
 
-    /** @Override */
+    // MARK: Lifecycle functions
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(DialogFragment.STYLE_NORMAL, R.style.Dialog)
     }
 
-    /** @Override */
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -152,111 +131,18 @@ class LeagueDialog : BaseDialogFragment() {
         return rootView
     }
 
-    /**
-     * Set up title, style, and listeners for toolbar.
-     *
-     * @param rootView the root view
-     */
-    private fun setupToolbar(rootView: View) {
-        if (league == null) {
-            rootView.toolbar_league.setTitle(R.string.new_league)
-        } else {
-            rootView.toolbar_league.setTitle(R.string.edit_league)
-        }
-
-        rootView.btn_delete.setOnClickListener(onClickListener)
-        rootView.toolbar_league.apply {
-            inflateMenu(R.menu.dialog_league)
-            menu.findItem(R.id.action_save).isEnabled = league?.name?.isNotEmpty() == true
-            setNavigationIcon(R.drawable.ic_dismiss)
-            setNavigationOnClickListener {
-                dismiss()
-            }
-            setOnMenuItemClickListener {
-                when (it.itemId) {
-                    R.id.action_save -> {
-                        saveLeague()
-                        true
-                    }
-                    else -> super.onOptionsItemSelected(it)
-                }
-            }
-        }
-    }
-
-    /**
-     * Set up listeners for league type radio buttons.
-     *
-     * @param rootView the root view
-     */
-    private fun setupLeagueTypeInput(rootView: View) {
-        rootView.radio_league.setOnClickListener(onClickListener)
-        rootView.radio_event.setOnClickListener(onClickListener)
-
-        rootView.radio_league.isChecked = !isEvent
-        rootView.radio_event.isChecked = isEvent
-    }
-
-    /**
-     * Set up listeners for name input view.
-     *
-     * @param rootView the root view
-     */
-    private fun setupNameInput(rootView: View) {
-        rootView.input_name.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {}
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                updateSaveButton()
-            }
-        })
-    }
-
-    /**
-     * Set up listeners for additional games input views.
-     *
-     * @param rootView the root view
-     */
-    private fun setupAdditionalGamesInput(rootView: View) {
-        val additionalGames = rootView.input_additional_games
-        val textWatcherGames = object : ThousandsTextWatcher(",", ".") {
-            override fun afterTextChanged(s: Editable?) {
-                super.afterTextChanged(s)
-                updateSaveButton()
-            }
-        }
-        additionalGames.addTextChangedListener(textWatcherGames)
-
-        val additionalPinfall = rootView.input_additional_pinfall
-        val textWatcherPinfall = object : ThousandsTextWatcher(",", ".") {
-            override fun afterTextChanged(s: Editable?) {
-                super.afterTextChanged(s)
-                updateSaveButton()
-            }
-        }
-        additionalPinfall.addTextChangedListener(textWatcherPinfall)
-
-        rootView.checkbox_additional_games.setOnCheckedChangeListener { _, isChecked ->
-            additionalGamesLayoutDetails.visibility = if (isChecked) View.VISIBLE else View.GONE
-            setImeOptions()
-        }
-    }
-
-    /** @Override */
     override fun onAttach(context: Context?) {
         super.onAttach(context)
         val parent = parentFragment as? LeagueDialogDelegate ?: throw RuntimeException("${parentFragment!!} must implement LeagueDialogDelegate")
         delegate = parent
     }
 
-    /** @Override */
     override fun onDetach() {
         super.onDetach()
         delegate = null
         onClickListener = null
     }
 
-    /** @Override */
     override fun onStart() {
         super.onStart()
         dialog.window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
@@ -296,25 +182,90 @@ class LeagueDialog : BaseDialogFragment() {
         updateSaveButton()
     }
 
-    /** @Override */
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         return dialog
     }
 
-    /**
-     * Clean up dialog before calling super.
-     */
     override fun dismiss() {
         App.hideSoftKeyBoard(activity!!)
         activity?.supportFragmentManager?.popBackStack()
         super.dismiss()
     }
 
-    /**
-     * Checks if the league can be saved or not.
-     */
+    // MARK: Private functions
+
+    private fun setupToolbar(rootView: View) {
+        if (league == null) {
+            rootView.toolbar_league.setTitle(R.string.new_league)
+        } else {
+            rootView.toolbar_league.setTitle(R.string.edit_league)
+        }
+
+        rootView.btn_delete.setOnClickListener(onClickListener)
+        rootView.toolbar_league.apply {
+            inflateMenu(R.menu.dialog_league)
+            menu.findItem(R.id.action_save).isEnabled = league?.name?.isNotEmpty() == true
+            setNavigationIcon(R.drawable.ic_dismiss)
+            setNavigationOnClickListener {
+                dismiss()
+            }
+            setOnMenuItemClickListener {
+                when (it.itemId) {
+                    R.id.action_save -> {
+                        saveLeague()
+                        true
+                    }
+                    else -> super.onOptionsItemSelected(it)
+                }
+            }
+        }
+    }
+
+    private fun setupLeagueTypeInput(rootView: View) {
+        rootView.radio_league.setOnClickListener(onClickListener)
+        rootView.radio_event.setOnClickListener(onClickListener)
+
+        rootView.radio_league.isChecked = !isEvent
+        rootView.radio_event.isChecked = isEvent
+    }
+
+    private fun setupNameInput(rootView: View) {
+        rootView.input_name.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {}
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                updateSaveButton()
+            }
+        })
+    }
+
+    private fun setupAdditionalGamesInput(rootView: View) {
+        val additionalGames = rootView.input_additional_games
+        val textWatcherGames = object : ThousandsTextWatcher(",", ".") {
+            override fun afterTextChanged(s: Editable?) {
+                super.afterTextChanged(s)
+                updateSaveButton()
+            }
+        }
+        additionalGames.addTextChangedListener(textWatcherGames)
+
+        val additionalPinfall = rootView.input_additional_pinfall
+        val textWatcherPinfall = object : ThousandsTextWatcher(",", ".") {
+            override fun afterTextChanged(s: Editable?) {
+                super.afterTextChanged(s)
+                updateSaveButton()
+            }
+        }
+        additionalPinfall.addTextChangedListener(textWatcherPinfall)
+
+        rootView.checkbox_additional_games.setOnCheckedChangeListener { _, isChecked ->
+            additionalGamesLayoutDetails.visibility = if (isChecked) View.VISIBLE else View.GONE
+            setImeOptions()
+        }
+    }
+
     private fun canSave(): Boolean {
         val name = nameInput.text.toString()
         val hasAdditional = additionalGamesCheckbox.isChecked
@@ -325,11 +276,6 @@ class LeagueDialog : BaseDialogFragment() {
                 (!isEvent && name.isNotEmpty() && ((hasAdditional && additionalPinfall.isNotEmpty() && additionalGames.isNotEmpty()) || !hasAdditional))
     }
 
-    /**
-     * Reset user input values to the league values.
-     *
-     * @param league the league to reset values to
-     */
     private fun resetInputs(league: League, rootView: View? = null) {
         val nameInput = rootView?.input_name ?: this.nameInput
         val numberOfGamesInput = rootView?.input_number_of_games ?: this.numberOfGamesInput
@@ -348,24 +294,24 @@ class LeagueDialog : BaseDialogFragment() {
         additionalPinfallInput.setText(league.additionalPinfall.toString())
     }
 
-    /**
-     * Adjust IME options for text fields based on state of the league being created.
-     */
     private fun setImeOptions() {
-        nameInput.imeOptions = if (league == null || !isEvent)
+        nameInput.imeOptions = if (league == null || !isEvent) {
             EditorInfo.IME_FLAG_NO_FULLSCREEN or EditorInfo.IME_ACTION_NEXT
-        else
+        } else {
             EditorInfo.IME_FLAG_NO_FULLSCREEN or EditorInfo.IME_ACTION_DONE
+        }
 
-        numberOfGamesInput.imeOptions = if (!isEvent)
+        numberOfGamesInput.imeOptions = if (!isEvent) {
             EditorInfo.IME_FLAG_NO_FULLSCREEN or EditorInfo.IME_ACTION_NEXT
-        else
+        } else {
             EditorInfo.IME_FLAG_NO_FULLSCREEN or EditorInfo.IME_ACTION_DONE
+        }
 
-        seriesHighlightInput.imeOptions = if (!isEvent && additionalGamesCheckbox.isChecked)
+        seriesHighlightInput.imeOptions = if (!isEvent && additionalGamesCheckbox.isChecked) {
             EditorInfo.IME_FLAG_NO_FULLSCREEN or EditorInfo.IME_ACTION_NEXT
-        else
+        } else {
             EditorInfo.IME_FLAG_NO_FULLSCREEN or EditorInfo.IME_ACTION_DONE
+        }
 
         val activity = activity ?: return
         val focusedField = view?.findFocus() as? EditText ?: return
@@ -376,10 +322,6 @@ class LeagueDialog : BaseDialogFragment() {
         App.showSoftKeyBoard(activity)
     }
 
-    /**
-     * Set which options are visible for the user to provide details about the league / event
-     * they want to create.
-     */
     private fun setLeagueOptionsVisible() {
         if (isEvent) {
             additionalGamesLayout?.visibility = View.GONE
@@ -390,9 +332,6 @@ class LeagueDialog : BaseDialogFragment() {
         }
     }
 
-    /**
-     * Update save button state based on if the league can be saved or not.
-     */
     private fun updateSaveButton() {
         val saveButton = leagueToolbar?.menu?.findItem(R.id.action_save)
         if (canSave()) {
@@ -404,9 +343,6 @@ class LeagueDialog : BaseDialogFragment() {
         }
     }
 
-    /**
-     * Save the current league. Show errors if there are any.
-     */
     private fun saveLeague() {
         val bowler = bowler ?: return
 
@@ -517,23 +453,10 @@ class LeagueDialog : BaseDialogFragment() {
         }
     }
 
-    /**
-     * Handles interactions with the dialog.
-     */
+    // MARK: LeagueDialogDelegate
+
     interface LeagueDialogDelegate {
-
-        /**
-         * Indicates when the user has finished editing the [League]
-         *
-         * @param league the finished [League]
-         */
         fun onFinishLeague(league: League)
-
-        /**
-         * Indicates the user wishes to delete the [League].
-         *
-         * @param league the deleted [League]
-         */
         fun onDeleteLeague(league: League)
     }
 }

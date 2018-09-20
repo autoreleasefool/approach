@@ -46,19 +46,15 @@ data class League(
     val seriesHighlight: Int
 ) : INameAverage, KParcelable {
 
-    /** Private field to indicate if the item is deleted. */
     private var _isDeleted: Boolean = false
-    /** @Override */
     override val isDeleted: Boolean
         get() = _isDeleted
 
-    /** True if this league is the Practice league, false otherwise. */
     val isPractice: Boolean
         get() = name == PRACTICE_LEAGUE_NAME
 
-    /**
-     * Construct [League] from a [Parcel]
-     */
+    // MARK: Constructors
+
     private constructor(p: Parcel): this(
             bowler = p.readParcelable<Bowler>(Bowler::class.java.classLoader),
             id = p.readLong(),
@@ -72,9 +68,6 @@ data class League(
             seriesHighlight = p.readInt()
     )
 
-    /**
-     * Construct [League] from a [League]
-     */
     constructor(league: League): this(
             bowler = league.bowler,
             id = league.id,
@@ -88,7 +81,8 @@ data class League(
             seriesHighlight = league.seriesHighlight
     )
 
-    /** @Override */
+    // MARK: Parcelable
+
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeParcelable(bowler, 0)
         writeLong(id)
@@ -102,38 +96,12 @@ data class League(
         writeInt(seriesHighlight)
     }
 
-    /** @Override */
-    override fun markForDeletion(): League {
-        val newInstance = League(this)
-        newInstance._isDeleted = true
-        return newInstance
-    }
+    // MARK: League
 
-    /** @Override */
-    override fun cleanDeletion(): League {
-        val newInstance = League(this)
-        newInstance._isDeleted = false
-        return newInstance
-    }
-
-    /**
-     * Get all [Series] instances belonging to this [League].
-     *
-     * @param context to get database instance
-     * @return a [MutableList] of [Series] items
-     */
     fun fetchSeries(context: Context): Deferred<MutableList<Series>> {
         return Series.fetchAll(context, this)
     }
 
-    /**
-     * Create a new series belonging to this [League].
-     *
-     * @param context to get database instance
-     * @param inTransaction if true, the method should not handle the database transaction as one
-     *                      has already been created in another context
-     * @return a [BCError] if any error occurred, or the [Series] if successfully created.
-     */
     fun createNewSeries(context: Context, inTransaction: Boolean = false): Deferred<Pair<Series?, BCError?>> {
         return async(CommonPool) {
             return@async Series.save(
@@ -149,7 +117,20 @@ data class League(
         }
     }
 
-    /** @Override */
+    // MARK: IDeletable
+
+    override fun markForDeletion(): League {
+        val newInstance = League(this)
+        newInstance._isDeleted = true
+        return newInstance
+    }
+
+    override fun cleanDeletion(): League {
+        val newInstance = League(this)
+        newInstance._isDeleted = false
+        return newInstance
+    }
+
     override fun delete(context: Context): Deferred<Unit> {
         return async(CommonPool) {
             if (id < 0) {
@@ -172,41 +153,25 @@ data class League(
     }
 
     companion object {
-        /** Logging identifier. */
+        @Suppress("unused")
         private const val TAG = "League"
 
-        /** Valid regex for a name. */
-        private val REGEX_NAME = Bowler.REGEX_NAME
-
-        /** Creator, required by [Parcelable]. */
         @Suppress("unused")
         @JvmField val CREATOR = parcelableCreator(::League)
 
-        /** Name of the "Open" league. */
+        private val REGEX_NAME = Bowler.REGEX_NAME
+
         @Deprecated("Replaced with PRACTICE_LEAGUE_NAME")
         const val OPEN_LEAGUE_NAME = "Open"
-
-        /** Name of the "Practice" league. */
         const val PRACTICE_LEAGUE_NAME = "Practice"
 
-        /** Maximum number of games in a league or event. */
         const val MAX_NUMBER_OF_GAMES = 20
-
-        /** Minimum number of games in a league or event. */
         const val MIN_NUMBER_OF_GAMES = 1
 
-        /** Default number of games in a league or event. */
         const val DEFAULT_NUMBER_OF_GAMES = 1
-
-        /** Default minimum game score to highlight when a minimum is not defined. */
         const val DEFAULT_GAME_HIGHLIGHT = 300
-
-        /** Default minimum series total to highlight when a minimum is not defined. */
         val DEFAULT_SERIES_HIGHLIGHT = intArrayOf(250, 500, 750, 1000, 1250, 1500, 1750, 2000, 2250, 2500, 2750, 3000, 3250, 3500, 3750, 4000, 4250, 4500, 4750, 5000)
 
-        /**
-         * Order by which to sort bowlers.
-         */
         enum class Sort {
             Alphabetically,
             LastModified;
@@ -217,22 +182,8 @@ data class League(
             }
         }
 
-        /**
-         * Check if a name is a valid [League] name.
-         *
-         * @param name name to check
-         * @return true if the name is valid, false otherwise
-         */
         private fun isLeagueNameValid(name: String): Boolean = REGEX_NAME.matches(name)
 
-        /**
-         * Check if a name is unique in the League database.
-         *
-         * @param context to get database instance
-         * @param name name to check
-         * @param id id of the existing league, so if the name is unchanged it can be saved
-         * @return true if the name is not already in the database, false otherwise
-         */
         private fun isLeagueNameUnique(context: Context, name: String, id: Long = -1): Deferred<Boolean> {
             return async(CommonPool) {
                 val database = Saviour.instance.getReadableDatabase(context).await()
@@ -262,20 +213,6 @@ data class League(
             }
         }
 
-        /**
-         * Check if conditions to save a league are met before saving.
-         *
-         * @param context to get resources for error messages if there are any
-         * @param id -1 to create a new league, or the league id to update
-         * @param name name of the league
-         * @param isEvent true to create an event, false to create a league
-         * @param gamesPerSeries number of games per series in the league
-         * @param additionalPinfall additional total pinfall not recorded in the app for the league
-         * @param additionalGames additional games not recorded in the app for the league
-         * @param gameHighlight minimum score to highlight when viewing games
-         * @param seriesHighlight minimum series total to highlight when viewing series
-         * @return an error to show if preconditions fail
-         */
         private fun validateSavePreconditions(
             context: Context,
             id: Long,
@@ -322,22 +259,6 @@ data class League(
             }
         }
 
-        /**
-         * Save the league to the database.
-         *
-         * @param context to get database instance
-         * @param bowler the bowler that will own the league
-         * @param id -1 to create a new league, or the league id to update
-         * @param name name of the league
-         * @param isEvent true to create an event, false to create a league
-         * @param gamesPerSeries number of games per series in the league
-         * @param additionalPinfall additional total pinfall not recorded in the app for the league
-         * @param additionalGames additional games not recorded in the app for the league
-         * @param gameHighlight minimum score to highlight when viewing games
-         * @param seriesHighlight minimum series total to highlight when viewing series
-         * @param average average of the league, defaults to 0.0
-         * @return the saved [League] or [BCError] if an error occurred
-         */
         fun save(
             context: Context,
             bowler: Bowler,
@@ -358,20 +279,6 @@ data class League(
             }
         }
 
-        /**
-         * Create a new [LeagueEntry] in the database.
-         *
-         * @param context to get database instance
-         * @param bowler id the bowler that will own the league
-         * @param name name of the league
-         * @param isEvent true to create an event, false to create a league
-         * @param gamesPerSeries number of games per series in the league
-         * @param additionalPinfall additional total pinfall not recorded in the app for the league
-         * @param additionalGames additional games not recorded in the app for the league
-         * @param gameHighlight minimum score to highlight when viewing games
-         * @param seriesHighlight minimum series total to highlight when viewing series
-         * @return the saved [League] or [BCError] if an error occurred
-         */
         private fun createNewAndSave(
             context: Context,
             bowler: Bowler,
@@ -459,22 +366,6 @@ data class League(
             }
         }
 
-        /**
-         * Update the league entry in the database.
-         *
-         * @param context to get database instance
-         * @param bowler the bowler that will own the league
-         * @param id the league id to update
-         * @param name name of the league
-         * @param average average of the league
-         * @param isEvent true to create an event, false to create a league
-         * @param gamesPerSeries number of games per series in the league
-         * @param additionalPinfall additional total pinfall not recorded in the app for the league
-         * @param additionalGames additional games not recorded in the app for the league
-         * @param gameHighlight minimum score to highlight when viewing games
-         * @param seriesHighlight minimum series total to highlight when viewing series
-         * @return the saved [League] or [BCError] if an error occurred
-         */
         fun update(
             context: Context,
             bowler: Bowler,
@@ -543,15 +434,6 @@ data class League(
             }
         }
 
-        /**
-         * Get all of the leagues and events belonging to the [Bowler].
-         *
-         * @param context to get database instance
-         * @param bowler the bowler whose leagues to retrieve
-         * @param includeLeagues true to include [League] instances which are leagues
-         * @param includeEvents true to include [League] instances which are events
-         * @return a [MutableList] of [League] instances from the database.
-         */
         fun fetchAll(
             context: Context,
             bowler: Bowler,
@@ -585,22 +467,10 @@ data class League(
                 var leagueNumberOfGames = 0
                 var leagueTotal = 0
 
-                /**
-                 * Checks if the league at the cursor is an event or not.
-                 *
-                 * @param cursor database accessor
-                 * @return true if the league is an event, false otherwise
-                 */
                 fun isCurrentLeagueEvent(cursor: Cursor): Boolean {
                     return cursor.getInt(cursor.getColumnIndex(LeagueEntry.COLUMN_IS_EVENT)) == 1
                 }
 
-                /**
-                 * Build a new [League] instance from a cursor to the database.
-                 *
-                 * @param cursor database accessor
-                 * @return a new league
-                 */
                 fun buildLeagueFromCursor(cursor: Cursor): League {
                     val id = cursor.getLong(cursor.getColumnIndex("lid"))
                     val name = cursor.getString(cursor.getColumnIndex(LeagueEntry.COLUMN_LEAGUE_NAME))
