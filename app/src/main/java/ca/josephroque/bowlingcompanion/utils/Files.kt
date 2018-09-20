@@ -20,7 +20,6 @@ import java.io.OutputStream
  */
 object Files {
 
-    /** Logging identifier. */
     @Suppress("unused")
     private const val TAG = "Files"
 

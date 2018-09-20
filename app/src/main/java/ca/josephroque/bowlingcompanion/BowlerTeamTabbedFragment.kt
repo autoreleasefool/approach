@@ -33,11 +33,9 @@ class BowlerTeamTabbedFragment : TabbedFragment(),
         TeamDialog.TeamDialogDelegate {
 
     companion object {
-        /** Logging identifier */
         @Suppress("unused")
         private const val TAG = "BowlerTeamTabFragment"
 
-        /** Tabs available in the fragment. */
         enum class Tab {
             Bowlers, Teams;
 
@@ -46,40 +44,30 @@ class BowlerTeamTabbedFragment : TabbedFragment(),
                 fun fromInt(type: Int) = map[type]
             }
 
-            /**
-             * Get the title for the tab.
-             */
-            fun getTitle(): Int {
-                return when (this) {
+            val title: Int
+                get() = when (this) {
                     Bowlers -> R.string.bowlers
                     Teams -> R.string.teams
                 }
-            }
         }
 
-        /**
-         * Creates a new instance.
-         *
-         * @return the new instance
-         */
         fun newInstance(): BowlerTeamTabbedFragment {
             return BowlerTeamTabbedFragment()
         }
     }
 
-    /** @Override */
+    // MARK: Lifecycle functions
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
     }
 
-    /** @Override */
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
         inflater.inflate(R.menu.fragment_bowlers_teams, menu)
     }
 
-    /** @Override */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_transfer -> {
@@ -91,27 +79,28 @@ class BowlerTeamTabbedFragment : TabbedFragment(),
         }
     }
 
-    /** @Override */
+    // MARK: BaseFragment
+
     override fun updateToolbarTitle() {
         navigationActivity?.setToolbarTitle(resources.getString(R.string.app_name))
     }
 
-    /** @Override */
+    // MARK: TabbedFragment
+
     override fun buildPagerAdapter(tabCount: Int): BaseFragmentPagerAdapter {
         return BowlerTeamPagerAdapter(childFragmentManager, tabCount)
     }
 
-    /** @Override */
     override fun addTabs(tabLayout: TabLayout) {
         for (tab in Tab.values()) {
-            tabLayout.addTab(tabLayout.newTab().setText(tab.getTitle()))
+            tabLayout.addTab(tabLayout.newTab().setText(tab.title))
         }
     }
 
-    /** @Override */
     override fun handleTabSwitch(newTab: Int) {}
 
-    /** @Override */
+    // MARK: IFloatingActionButtonHandler
+
     override fun getFabImage(): Int? {
         return when (Tab.fromInt(currentTab)) {
             Tab.Bowlers -> R.drawable.ic_person_add
@@ -120,7 +109,6 @@ class BowlerTeamTabbedFragment : TabbedFragment(),
         }
     }
 
-    /** @Override */
     override fun onFabClick() {
         when (Tab.fromInt(currentTab)) {
             Tab.Bowlers -> promptAddOrEditBowler()
@@ -129,7 +117,8 @@ class BowlerTeamTabbedFragment : TabbedFragment(),
         }
     }
 
-    /** @Override */
+    // MARK: ListFragmentDelegate
+
     override fun onItemSelected(item: IIdentifiable, longPress: Boolean) {
         when (item) {
             is Bowler -> {
@@ -150,39 +139,23 @@ class BowlerTeamTabbedFragment : TabbedFragment(),
         }
     }
 
-    /**
-     * Display a fragment for the user to transfer their data.
-     */
+    // MARK: Private functions
+
     private fun showTransferFragment() {
         val newFragment = BaseTransferDialogFragment.newInstance()
         fragmentNavigation?.pushDialogFragment(newFragment)
     }
 
-    /**
-     * Display a prompt to add or edit a bowler.
-     *
-     * @param bowler the bowler to edit, or null if a new bowler should be added
-     */
     private fun promptAddOrEditBowler(bowler: Bowler? = null) {
         val newFragment = BowlerDialog.newInstance(bowler)
         fragmentNavigation?.pushDialogFragment(newFragment)
     }
 
-    /**
-     * Display a prompt to add or edit a team.
-     *
-     * @param team the team to edit, or null if a new team should be added
-     */
     private fun promptAddOrEditTeam(team: Team? = null) {
         val newFragment = TeamDialog.newInstance(team)
         fragmentNavigation?.pushDialogFragment(newFragment)
     }
 
-    /**
-     * Push fragment to show leagues and events of a [Bowler]
-     *
-     * @param bowler the bowler whose leagues and events will be shown
-     */
     private fun showLeaguesAndEvents(bowler: Bowler) {
         val newFragment = LeagueEventTabbedFragment.newInstance(bowler)
         fragmentNavigation?.pushFragment(newFragment)
@@ -190,11 +163,6 @@ class BowlerTeamTabbedFragment : TabbedFragment(),
         Analytics.trackSelectBowler()
     }
 
-    /**
-     * Push fragment to show details of a [Team].
-     *
-     * @param team the team whose details will be shown
-     */
     private fun showTeamDetails(team: Team) {
         val newFragment = TeamDetailsFragment.newInstance(team)
         fragmentNavigation?.pushFragment(newFragment)
@@ -202,7 +170,8 @@ class BowlerTeamTabbedFragment : TabbedFragment(),
         Analytics.trackSelectTeam()
     }
 
-    /** @Override */
+    // MARK: BowlerDialogDelegate
+
     override fun onFinishBowler(bowler: Bowler) {
         val adapter = fragmentPager.adapter as? BowlerTeamPagerAdapter
         val bowlerFragment = adapter?.getFragment(Tab.Bowlers.ordinal) as? BowlerListFragment
@@ -212,7 +181,6 @@ class BowlerTeamTabbedFragment : TabbedFragment(),
         teamFragment?.refreshList()
     }
 
-    /** @Override */
     override fun onDeleteBowler(bowler: Bowler) {
         val adapter = fragmentPager.adapter as? BowlerTeamPagerAdapter
         val bowlerFragment = adapter?.getFragment(Tab.Bowlers.ordinal) as? BowlerListFragment
@@ -222,28 +190,26 @@ class BowlerTeamTabbedFragment : TabbedFragment(),
         teamFragment?.refreshList()
     }
 
-    /** @Override */
+    // MARK: TeamDialogDelegate
+
     override fun onFinishTeam(team: Team) {
         val adapter = fragmentPager.adapter as? BowlerTeamPagerAdapter
         val teamFragment = adapter?.getFragment(Tab.Teams.ordinal) as? TeamListFragment
         teamFragment?.refreshList(team)
     }
 
-    /** @Override */
     override fun onDeleteTeam(team: Team) {
         val adapter = fragmentPager.adapter as? BowlerTeamPagerAdapter
         val teamFragment = adapter?.getFragment(Tab.Teams.ordinal) as? TeamListFragment
         teamFragment?.onItemDelete(team)
     }
 
-    /**
-     * Pager adapter for bowler and team fragments.
-     */
+    // MARK: BowlerTeamPagerAdapter
+
     class BowlerTeamPagerAdapter(
         fragmentManager: FragmentManager,
         tabCount: Int
     ) : BaseFragmentPagerAdapter(fragmentManager, tabCount) {
-        /** @Override */
         override fun buildFragment(position: Int): Fragment? {
             return when (Tab.fromInt(position)) {
                 Tab.Bowlers -> BowlerListFragment.newInstance()

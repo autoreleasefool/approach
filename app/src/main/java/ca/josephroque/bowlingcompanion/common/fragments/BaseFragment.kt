@@ -42,12 +42,8 @@ abstract class BaseFragment : Fragment() {
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        if (context is FragmentNavigation) {
-            fragmentNavigation = context
-        }
-        if (context is FabProvider) {
-            fabProvider = context
-        }
+        fragmentNavigation = context as? BaseFragment.FragmentNavigation
+        fabProvider = context as? BaseFragment.FabProvider
     }
 
     override fun onDetach() {

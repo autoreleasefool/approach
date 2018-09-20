@@ -36,12 +36,9 @@ abstract class BaseDialogFragment : DialogFragment() {
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        context as? BaseFragment.FragmentNavigation ?: throw RuntimeException("Parent activity must implement FragmentNavigation")
-        fragmentNavigation = context
-        context as? BaseFragment.FabProvider ?: throw RuntimeException("Parent activity must implement FabProvider")
-        fabProvider = context
-        context as? BaseDialogFragment.OnDismissListener ?: return
-        onDismissListener = context
+        fragmentNavigation = context as? BaseFragment.FragmentNavigation
+        fabProvider = context as? BaseFragment.FabProvider
+        onDismissListener = context as? OnDismissListener
     }
 
     override fun onDetach() {
