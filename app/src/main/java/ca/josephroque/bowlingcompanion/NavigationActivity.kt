@@ -160,7 +160,6 @@ class NavigationActivity : BaseActivity(),
         super.onDestroy()
         Analytics.flush()
         adView.destroy()
-        StartupManager.destroy()
     }
 
     override fun onBackPressed() {
