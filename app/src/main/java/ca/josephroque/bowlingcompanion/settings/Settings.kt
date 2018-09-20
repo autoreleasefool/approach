@@ -110,7 +110,7 @@ enum class Settings(val prefName: String) {
     PrivacyPolicy("pref_view_privacy_policy"),
 
     /** Identifier for preference to show current app version.  */
-    VersionName("pref_version_name"),
+    VersionName("pref_version_name");
 
     // MARK: Defaults
 
