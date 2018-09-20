@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion.common
 import android.app.Dialog
 import android.os.Bundle
 import android.support.annotation.StringRes
+import android.support.v4.app.DialogFragment
 import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -10,7 +11,6 @@ import android.view.Window
 import android.view.View
 import android.view.ViewGroup
 import ca.josephroque.bowlingcompanion.R
-import ca.josephroque.bowlingcompanion.common.fragments.BaseDialogFragment
 import kotlinx.android.synthetic.main.dialog_scrollable_text.toolbar_scrollable as scrollableToolbar
 import kotlinx.android.synthetic.main.dialog_scrollable_text.tv_scrollable as scrollableTextView
 import kotlinx.android.synthetic.main.dialog_scrollable_text.view.*
@@ -20,25 +20,15 @@ import kotlinx.android.synthetic.main.dialog_scrollable_text.view.*
  *
  * Presents scrollable text.
  */
-class ScrollableTextDialog : BaseDialogFragment() {
+class ScrollableTextDialog : DialogFragment() {
 
     companion object {
-        /** Logging identifier. */
         @Suppress("unused")
         private const val TAG = "ScrollableTextDialog"
 
-        /** Argument identifier for title of fragment. */
         private const val ARG_TITLE = "${TAG}_title"
-
-        /** Argument identifier for text to display. */
         private const val ARG_TEXT = "${TAG}_text"
 
-        /**
-         * Create a new instance of [ScrollableTextDialog].
-         *
-         * @param text the text to display
-         * @return the new instance
-         */
         fun newInstance(@StringRes title: Int, text: CharSequence): ScrollableTextDialog {
             val fragment = ScrollableTextDialog()
             val args = Bundle().apply {
@@ -51,18 +41,12 @@ class ScrollableTextDialog : BaseDialogFragment() {
         }
     }
 
-    /** Title of the fragment. */
     private var title: Int = 0
-
-    /** String to display. */
     private var text: CharSequence? = null
 
-    /** @Override */
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
+    // MARK: Lifecycle functions
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         arguments?.let {
             title = it.getInt(ARG_TITLE)
             text = it.getCharSequence(ARG_TEXT)
@@ -83,7 +67,6 @@ class ScrollableTextDialog : BaseDialogFragment() {
         return rootView
     }
 
-    /** @Override */
     override fun onStart() {
         super.onStart()
 
@@ -91,14 +74,12 @@ class ScrollableTextDialog : BaseDialogFragment() {
         scrollableTextView.text = text
     }
 
-    /** @Override */
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val dialog = super.onCreateDialog(savedInstanceState)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
         return dialog
     }
 
-    /** @Override */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         activity?.supportFragmentManager?.popBackStack()
         dismiss()
