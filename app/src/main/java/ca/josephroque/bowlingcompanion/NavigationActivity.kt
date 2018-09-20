@@ -25,6 +25,7 @@ import ca.josephroque.bowlingcompanion.statistics.interfaces.IStatisticsContext
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProviderListFragment
 import ca.josephroque.bowlingcompanion.teams.details.TeamDetailsFragment
 import ca.josephroque.bowlingcompanion.utils.Analytics
+import ca.josephroque.bowlingcompanion.utils.StartupManager
 import ca.josephroque.bowlingcompanion.utils.isVisible
 import com.ncapdevi.fragnav.FragNavController
 import com.ncapdevi.fragnav.FragNavTransactionOptions
@@ -135,6 +136,7 @@ class NavigationActivity : BaseActivity(),
         setupFab()
         setupFragNavController(savedInstanceState)
         setupAdView()
+        StartupManager.start(this)
     }
 
     override fun onResume() {
@@ -158,6 +160,7 @@ class NavigationActivity : BaseActivity(),
         super.onDestroy()
         Analytics.flush()
         adView.destroy()
+        StartupManager.destroy()
     }
 
     override fun onBackPressed() {

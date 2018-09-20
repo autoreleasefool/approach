@@ -110,7 +110,13 @@ enum class Settings(val prefName: String) {
     PrivacyPolicy("pref_view_privacy_policy"),
 
     /** Identifier for preference to show current app version.  */
-    VersionName("pref_version_name");
+    VersionName("pref_version_name"),
+
+    // MARK: Private
+
+    AppVersion("pref_version"),
+
+    FirstLaunch("is_first_launch");
 
     // MARK: Defaults
 
@@ -135,6 +141,8 @@ enum class Settings(val prefName: String) {
                 ShowMatchResults -> true
                 HighlightMatchResults -> true
                 AccumulateStatistics -> false
+                AppVersion -> -1
+                FirstLaunch -> false
                 else -> null
             }
         }
