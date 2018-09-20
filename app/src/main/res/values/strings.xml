@@ -18,6 +18,12 @@
     <string name="bowl">Bowl</string>
     <string name="begin">Begin</string>
 
+    <!-- App rating -->
+    <string name="rate_prompt">If you like this app, please consider rating\u00A0it.</string>
+    <string name="rate_app">Rate</string>
+    <string name="rate_remind_me">Remind me later</string>
+    <string name="rate_no">Don\'t ask again</string>
+
     <!-- Errors -->
     <string name="error_unknown_title">An unknown error occurred!</string>
     <string name="error_unknown_message">Please try again later.</string>

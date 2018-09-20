@@ -338,6 +338,28 @@ class Analytics private constructor() {
             instance.mixpanel.track("Settings - View Privacy Policy")
         }
 
+        // MARK: App Rate events
+
+        fun trackViewAppRateDialog() {
+            if (instance.disableTracking) return
+            instance.mixpanel.track("App Rater - View")
+        }
+
+        fun trackAppRateDialogRate() {
+            if (instance.disableTracking) return
+            instance.mixpanel.track("App Rater - Rate")
+        }
+
+        fun trackAppRateDialogIgnore() {
+            if (instance.disableTracking) return
+            instance.mixpanel.track("App Rater - Ignore")
+        }
+
+        fun trackAppRateDialogDisable() {
+            if (instance.disableTracking) return
+            instance.mixpanel.track("App Rater - Disable")
+        }
+
         /**
          * Flush events which have not been recorded yet to the server.
          */

@@ -14,6 +14,22 @@ object StartupManager {
     private const val APP_VERSION = "pref_version"
     private const val IS_FIRST_LAUNCH = "is_first_launch"
 
+    // MARK: StartupManager
+
+    fun start(context: Context) {
+        val appVersion = getAppVersion(context)
+        val isNewVersion = BuildConfig.VERSION_CODE != appVersion
+        setIsFirstLaunch(context, appVersion != -1)
+        setAppVersion(context, BuildConfig.VERSION_CODE)
+        val isFirstLaunch = isFirstLaunch(context)
+
+        if (isNewVersion && !isFirstLaunch) {
+            Changelog.show(context)
+        }
+
+        AppRater.prepare(context)
+    }
+
     fun isFirstLaunch(context: Context): Boolean {
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
         return preferences.getBoolean(IS_FIRST_LAUNCH, false)
@@ -30,6 +46,8 @@ object StartupManager {
         }
     }
 
+    // MARK: Private functions
+
     private fun setIsFirstLaunch(context: Context, isFirstLaunch: Boolean) {
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
         preferences.edit().putBoolean(IS_FIRST_LAUNCH, isFirstLaunch).apply()
@@ -38,21 +56,5 @@ object StartupManager {
     private fun setAppVersion(context: Context, appVersion: Int) {
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
         preferences.edit().putInt(APP_VERSION, appVersion).apply()
-    }
-
-    // MARK: StartupManager
-
-    fun start(context: Context) {
-        val appVersion = getAppVersion(context)
-        val isNewVersion = BuildConfig.VERSION_CODE != appVersion
-        setIsFirstLaunch(context, appVersion != -1)
-        setAppVersion(context, BuildConfig.VERSION_CODE)
-        val isFirstLaunch = isFirstLaunch(context)
-
-        if (isNewVersion && !isFirstLaunch) {
-            Changelog.show(context)
-        }
-
-        AppRater.prepare(context)
     }
 }

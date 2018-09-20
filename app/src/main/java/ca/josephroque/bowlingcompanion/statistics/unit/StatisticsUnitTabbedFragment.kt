@@ -12,6 +12,7 @@ import ca.josephroque.bowlingcompanion.common.adapters.BaseFragmentPagerAdapter
 import ca.josephroque.bowlingcompanion.common.fragments.TabbedFragment
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProvider
 import ca.josephroque.bowlingcompanion.utils.Analytics
+import ca.josephroque.bowlingcompanion.utils.AppRater
 import kotlinx.android.synthetic.main.fragment_common_tabs.tabbed_fragment_tabs as fragmentTabs
 
 /**
@@ -63,6 +64,8 @@ class StatisticsUnitTabbedFragment : TabbedFragment() {
             fragmentTabs.visibility = View.VISIBLE
             navigationActivity?.supportActionBar?.elevation = 0F
         }
+
+        context?.let { AppRater.show(it) }
     }
 
     // MARK: BaseFragment
