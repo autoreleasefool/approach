@@ -42,10 +42,12 @@ abstract class BaseFragment : Fragment() {
 
     override fun onAttach(context: Context?) {
         super.onAttach(context)
-        context as? FragmentNavigation ?: throw RuntimeException("Parent activity must implement FragmentNavigation")
-        fragmentNavigation = context
-        context as? FabProvider ?: throw RuntimeException("Parent activity must implement FabProvider")
-        fabProvider = context
+        if (context is FragmentNavigation) {
+            fragmentNavigation = context
+        }
+        if (context is FabProvider) {
+            fabProvider = context
+        }
     }
 
     override fun onDetach() {

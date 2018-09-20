@@ -413,6 +413,16 @@
     <string name="empty_view_events">Use the \'+\' to add a new event.</string>
     <string name="empty_view_series">Use the \'+\' to add a new series.</string>
 
+    <!-- Onboarding -->
+    <string name="prev">Prev</string>
+    <string name="next">Next</string>
+    <string name="skip">Skip</string>
+    <string name="done">Done</string>
+    <string name="tutorial_welcome">Welcome to your 5\u00A0Pin Bowling\u00A0Companion</string>
+    <string name="tutorial_bowlers">Add you and your family as bowlers then record everybody’s games</string>
+    <string name="tutorial_recording">Track every strike, spare, and missed headpin to see where you need to improve</string>
+    <string name="tutorial_statistics">View your statistics and watch your average grow over the season!</string>
+
     <!-- Content descriptions -->
     <string name="iv_name_average">Type indicator</string>
     <string name="iv_delete_item">Delete Item</string>

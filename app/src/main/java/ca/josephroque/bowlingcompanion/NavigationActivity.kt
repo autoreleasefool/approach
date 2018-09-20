@@ -40,6 +40,8 @@ import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 
 /**
+ * Copyright (C) 2018 Joseph Roque
+ *
  * Activity to handle navigation across the app and through sub-fragments.
  */
 class NavigationActivity : BaseActivity(),
