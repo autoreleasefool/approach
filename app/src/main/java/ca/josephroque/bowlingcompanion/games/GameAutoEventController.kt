@@ -49,7 +49,6 @@ class GameAutoEventController(
             AutoEvent.AdvanceFrame.isEnabled = false
         }
 
-
         // Set auto advance delay time
         val strDelay = preferences.getString(Settings.AutoAdvanceTime.prefName, Settings.AutoAdvanceTime.stringDefault)
         autoAdvanceTotalDelay = Integer.valueOf(strDelay)

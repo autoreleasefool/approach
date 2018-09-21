@@ -79,6 +79,7 @@ class GameFragment : BaseFragment(),
             field = value
             gameHeader.currentGame = gameNumber
             gameState.currentGameIdx = gameNumber
+            gameState.currentFrame.isAccessed = true
             render(ballChanged = true, isGameFirstRender = true)
 
             if (gameState.currentGame.isLocked) {

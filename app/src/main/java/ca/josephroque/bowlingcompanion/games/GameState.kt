@@ -23,29 +23,21 @@ import java.lang.ref.WeakReference
 class GameState(private val series: Series, private val delegate: GameStateDelegate) {
 
     companion object {
-        /** Logging identifier. */
         @Suppress("unused")
         private const val TAG = "GameState"
     }
 
-    /** Indicates if the games for the series have been loaded. */
     var gamesLoaded: Boolean = false
 
-    /** The list of games to edit. */
     private val games: MutableList<Game> = ArrayList()
         get() {
             check(gamesLoaded) { "The games have not been loaded before accessing." }
             return field
         }
 
-    /** The current game. */
     val currentGame: Game
         get() = games[currentGameIdx]
 
-    /**
-     * Index of the current game being edited.
-     * When changed, updates currentFrame and currentBall.
-     */
     var currentGameIdx: Int = 0
         set(newGame) {
             if (newGame >= 0 && newGame < series.numberOfGames) {
@@ -55,11 +47,9 @@ class GameState(private val series: Series, private val delegate: GameStateDeleg
             }
         }
 
-    /** The current frame. */
     val currentFrame: Frame
         get() = currentGame.frames[currentFrameIdx]
 
-    /** The index of the current frame being edited. When changed, sets currentBall to 0. */
     var currentFrameIdx: Int = 0
         set(newFrame) {
             if (newFrame >= 0 && newFrame < Game.NUMBER_OF_FRAMES) {
@@ -76,7 +66,6 @@ class GameState(private val series: Series, private val delegate: GameStateDeleg
             }
         }
 
-    /** The current ball being edited. */
     var currentBallIdx: Int = 0
         set(newBall) {
             if (newBall >= 0 && newBall < Frame.NUMBER_OF_BALLS) {
@@ -85,38 +74,29 @@ class GameState(private val series: Series, private val delegate: GameStateDeleg
             }
         }
 
-    /** When true, do not update the current ball when the frame is changed. */
     private var skipBallListenerUpdate: Boolean = false
 
-    /** Checks if the current game can be edited or not. */
     private val isGameEditable: Boolean
         get() = !currentGame.isLocked && !currentGame.isManual
 
-    /** Indicates if the current ball for the current game/frame has a foul. */
     val currentBallFouled: Boolean
         get() = currentFrame.ballFouled[currentBallIdx]
 
-    /** The state of the pins in the current frame and ball. */
     val currentPinState: Deck
         get() = currentFrame.pinState[currentBallIdx]
 
-    /** Returns true if the user is currently on the first ball of the game. */
     val isFirstBall: Boolean
         get() = currentFrameIdx == 0 && currentBallIdx == 0
 
-    /** Returns true if the user is currently on the last ball of the game. */
     val isLastBall: Boolean
         get() = isLastFrame && currentBallIdx == Frame.LAST_BALL
 
-    /** Returns true if the user is currently on the last frame of the game. */
     val isLastFrame: Boolean
         get() = currentFrameIdx == Game.LAST_FRAME
 
-    /** Returns true if the current frame has a next ball. */
     val frameHasNextBall: Boolean
         get() = currentBallIdx != Frame.LAST_BALL && (isLastFrame || !currentPinState.arePinsCleared)
 
-    /** Get an array of pin indices indicating which pins are enabled for the current frame. */
     val enabledPins: IntArray
         get() {
             return (0 until Game.NUMBER_OF_PINS).filter {
@@ -128,25 +108,20 @@ class GameState(private val series: Series, private val delegate: GameStateDeleg
             }.toIntArray()
         }
 
-    /** Get an array of pin indices indicating which pins are disabled for the current frame. */
     val disabledPins: IntArray
         get() {
             val enabled = enabledPins
             return (0 until Game.NUMBER_OF_PINS).filter { it !in enabled }.toIntArray()
         }
 
-    /**
-     * Toggle the foul on or off for the current ball.
-     */
+    // MARK: GameState
+
     fun toggleFoul() {
         if (!isGameEditable) { return }
         currentFrame.ballFouled[currentBallIdx] = !currentFrame.ballFouled[currentBallIdx]
         currentGame.markDirty()
     }
 
-    /**
-     * Toggle the lock for the current game on or off.
-     */
     fun toggleLock() {
         if (currentGame.isManual) { return }
         currentGame.isLocked = !currentGame.isLocked
@@ -156,20 +131,11 @@ class GameState(private val series: Series, private val delegate: GameStateDeleg
         }
     }
 
-    /**
-     * Lock the current game.
-     */
     fun lockGame() {
         if (currentGame.isManual) { return }
         currentGame.isLocked = true
     }
 
-    /**
-     * Set a manual score for the game and save the game.
-     *
-     * @param context to save the game
-     * @param score new manual score
-     */
     fun setManualScore(context: WeakReference<Context>, score: Int) {
         resetGame(context)
         currentGame.isLocked = true
@@ -180,11 +146,6 @@ class GameState(private val series: Series, private val delegate: GameStateDeleg
         delegate.onManualScoreSet()
     }
 
-    /**
-     * Clear the manual score for the current game and save.
-     *
-     * @param context to save the game
-     */
     fun clearManualScore(context: WeakReference<Context>) {
         currentGame.isLocked = false
         currentGame.isManual = false
@@ -193,13 +154,6 @@ class GameState(private val series: Series, private val delegate: GameStateDeleg
         delegate.onManualScoreCleared()
     }
 
-    /**
-     * Set the game match play results.
-     *
-     * @param opponentName name of the opponent for match play
-     * @param opponentScore score of the opponent for match play
-     * @param result result of the match play
-     */
     fun setMatchPlay(opponentName: String, opponentScore: Int, result: MatchPlayResult) {
         currentGame.matchPlay.apply {
             this.opponentName = opponentName
@@ -209,9 +163,6 @@ class GameState(private val series: Series, private val delegate: GameStateDeleg
         currentGame.markDirty()
     }
 
-    /**
-     * Go to the next ball. Increment the frame if necessary.
-     */
     fun nextBall() {
         if (frameHasNextBall) {
             attemptToSetFrameAndBall(currentFrameIdx, currentBallIdx + 1)
@@ -220,9 +171,6 @@ class GameState(private val series: Series, private val delegate: GameStateDeleg
         }
     }
 
-    /**
-     * Go to the previous ball. Decrement the frame if necessary.
-     */
     fun prevBall() {
         if (currentBallIdx == 0 && currentFrameIdx > 0) {
             attemptToSetFrameAndBall(currentFrameIdx - 1, Frame.LAST_BALL)
@@ -231,12 +179,6 @@ class GameState(private val series: Series, private val delegate: GameStateDeleg
         }
     }
 
-    /**
-     * Set the frame and ball, if possible according to the current game state, or ignored.
-     *
-     * @param frame the new frame
-     * @param ball the new ball
-     */
     fun attemptToSetFrameAndBall(frame: Int, ball: Int) {
         skipBallListenerUpdate = true
         currentFrameIdx = frame
@@ -258,9 +200,6 @@ class GameState(private val series: Series, private val delegate: GameStateDeleg
         }
     }
 
-    /**
-     * Move the frame of the current game which was last saved.
-     */
     fun moveToLastSavedFrame() {
         var lastSavedFrame = Game.LAST_FRAME
         while (!currentGame.frames[lastSavedFrame].isAccessed && lastSavedFrame > 0) {
@@ -269,12 +208,6 @@ class GameState(private val series: Series, private val delegate: GameStateDeleg
         attemptToSetFrameAndBall(lastSavedFrame, 0)
     }
 
-    /**
-     * Set the state of the pins for the current ball.
-     *
-     * @param pins the pin indices to update
-     * @param isDown new state for the pins
-     */
     fun setPins(pins: IntArray, isDown: Boolean) {
         if (!isGameEditable) { return }
 
@@ -317,11 +250,6 @@ class GameState(private val series: Series, private val delegate: GameStateDeleg
         currentGame.markDirty()
     }
 
-    /**
-     * Reset the current game.
-     *
-     * @param context to save newly reset game
-     */
     fun resetGame(context: WeakReference<Context>) {
         currentGame.isManual = false
         currentGame.isLocked = false
@@ -339,12 +267,6 @@ class GameState(private val series: Series, private val delegate: GameStateDeleg
         saveGame(context, true)
     }
 
-    /**
-     * Load the games for the series and cache them for editing.
-     *
-     * @param context to get database instance
-     * @return true if the games are successfully loaded, false otherwise
-     */
     fun loadGames(context: Context): Deferred<Boolean> {
         return async(CommonPool) {
             val games = series.fetchGames(context).await()
@@ -365,62 +287,29 @@ class GameState(private val series: Series, private val delegate: GameStateDeleg
         }
     }
 
-    /**
-     * Save the current frame/game state to the database.
-     *
-     * @param context to access database
-     * @param ignoreManualScore ignore any manual score set and save the frame
-     */
     fun saveFrame(context: WeakReference<Context>, ignoreManualScore: Boolean) {
         if (!ignoreManualScore && currentGame.isManual) { return }
         val copy = currentFrame.deepCopy()
         Saviour.instance.saveFrame(context, currentGame.score, copy)
     }
 
-    /**
-     * Save the current game state to the database.
-     *
-     * @param context to access database
-     * @param ignoreManualScore ignore any manual score set and save the game
-     */
     fun saveGame(context: WeakReference<Context>, ignoreManualScore: Boolean) {
         if (!ignoreManualScore && currentGame.isManual) { return }
         val copy = currentGame.deepCopy()
         Saviour.instance.saveGame(context, copy)
     }
 
-    /**
-     * Save the current match play results to the database.
-     *
-     * @param context to access database
-     */
     fun saveMatchPlay(context: WeakReference<Context>) {
         val copy = currentGame.matchPlay.deepCopy()
         Saviour.instance.saveMatchPlay(context, copy)
     }
 
-    /**
-     * Handle events from game state changes.
-     */
+    // MARK: GameStateDelegate
+
     interface GameStateDelegate {
-        /**
-         * Called when the current ball is updated.
-         */
         fun onBallChanged()
-
-        /**
-         * Called when the games finish loading.
-         */
         fun onGamesLoaded()
-
-        /**
-         * Called when the manual score of the game is set.
-         */
         fun onManualScoreSet()
-
-        /**
-         * Called when the manual score of the game is cleared.
-         */
         fun onManualScoreCleared()
     }
 }

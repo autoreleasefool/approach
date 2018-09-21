@@ -26,9 +26,6 @@ import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
-import android.content.DialogInterface
-import android.support.v7.app.AlertDialog
-import android.widget.NumberPicker
 
 /**
  * Copyright (C) 2018 Joseph Roque
