@@ -89,6 +89,7 @@
     </style>
 
     <!-- Dialog -->
+
     <style name="Dialog">
         <item name="android:theme">@style/AppTheme.NoBackground</item>
         <item name="android:layout_width">match_parent</item>
@@ -97,6 +98,12 @@
         <item name="android:clickable">true</item>
         <item name="android:focusable">true</item>
         <item name="android:background">@color/colorBackground</item>
+    </style>
+
+    <style name="BottomSheetDialogStyle" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
     </style>
 
     <!-- Buttons -->
