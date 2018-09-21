@@ -247,26 +247,7 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
 
     private fun promptPracticeSeriesNumberOfGames() {
         val context = context ?: return
-
-        val numberPicker = NumberPicker(context)
-        numberPicker.maxValue = League.MAX_NUMBER_OF_GAMES
-        numberPicker.minValue = 1
-        numberPicker.wrapSelectorWheel = false
-
-        val listener = DialogInterface.OnClickListener { dialog, which ->
-            if (which == DialogInterface.BUTTON_POSITIVE) {
-                createNewSeries(numberPicker.value)
-            }
-            dialog.dismiss()
-        }
-
-        AlertDialog.Builder(context)
-                .setTitle("How many games?")
-                .setView(numberPicker)
-                .setPositiveButton(R.string.bowl, listener)
-                .setNegativeButton(R.string.cancel, listener)
-                .create()
-                .show()
+        League.showPracticeGamesPicker(context, ::createNewSeries)
     }
 
     private fun createNewSeries(numberOfGames: Int) {

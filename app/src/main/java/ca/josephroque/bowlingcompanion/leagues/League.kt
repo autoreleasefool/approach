@@ -2,9 +2,12 @@ package ca.josephroque.bowlingcompanion.leagues
 
 import android.content.ContentValues
 import android.content.Context
+import android.content.DialogInterface
 import android.database.Cursor
 import android.os.Parcel
+import android.support.v7.app.AlertDialog
 import android.util.Log
+import android.widget.NumberPicker
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.bowlers.Bowler
 import ca.josephroque.bowlingcompanion.common.interfaces.INameAverage
@@ -185,6 +188,28 @@ data class League(
                 private val map = Sort.values().associateBy(Sort::ordinal)
                 fun fromInt(type: Int) = map[type]
             }
+        }
+
+        fun showPracticeGamesPicker(context: Context, completionHandler: (Int) -> Unit) {
+            val numberPicker = NumberPicker(context)
+            numberPicker.maxValue = League.MAX_NUMBER_OF_GAMES
+            numberPicker.minValue = 1
+            numberPicker.wrapSelectorWheel = false
+
+            val listener = DialogInterface.OnClickListener { dialog, which ->
+                if (which == DialogInterface.BUTTON_POSITIVE) {
+                    completionHandler(numberPicker.value)
+                }
+                dialog.dismiss()
+            }
+
+            AlertDialog.Builder(context)
+                    .setTitle(R.string.how_many_practice_games)
+                    .setView(numberPicker)
+                    .setPositiveButton(R.string.bowl, listener)
+                    .setNegativeButton(R.string.cancel, listener)
+                    .create()
+                    .show()
         }
 
         private fun isLeagueNameValid(name: String): Boolean = REGEX_NAME.matches(name)

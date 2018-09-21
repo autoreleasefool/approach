@@ -190,6 +190,7 @@
     <string name="delete_series">Delete series</string>
     <string name="series_current_date">Current date</string>
     <string name="change_date">Change date</string>
+    <string name="how_many_practice_games">How many games for practice series?</string>
 
     <string name="error_saving_series">Error saving series!</string>
     <string name="issue_saving_series">Issue saving series!</string>

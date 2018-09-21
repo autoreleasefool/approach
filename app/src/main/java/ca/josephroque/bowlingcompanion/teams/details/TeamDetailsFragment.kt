@@ -13,6 +13,7 @@ import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
 import ca.josephroque.bowlingcompanion.database.Saviour
 import ca.josephroque.bowlingcompanion.games.GameControllerFragment
 import ca.josephroque.bowlingcompanion.games.SeriesProvider
+import ca.josephroque.bowlingcompanion.leagues.League
 import ca.josephroque.bowlingcompanion.series.Series
 import ca.josephroque.bowlingcompanion.statistics.interfaces.IStatisticsContext
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProvider
@@ -110,15 +111,11 @@ class TeamDetailsFragment : BaseFragment(),
 
     override fun onFabClick() {
         safeLet(context, team) { context, team ->
-            launch(Android) {
-                val error = attemptToBowl().await()
-                if (error != null) {
-                    error.show(context)
-                    return@launch
-                }
-
-                val fragment = GameControllerFragment.newInstance(SeriesProvider.TeamSeries(team))
-                fragmentNavigation?.pushFragment(fragment)
+            val hasPracticeSeries = team.members.any { it.league?.isPractice ?: false }
+            if (hasPracticeSeries) {
+                League.showPracticeGamesPicker(context, ::launchAttemptToBowl)
+            } else {
+                launchAttemptToBowl()
             }
         }
     }
@@ -161,6 +158,21 @@ class TeamDetailsFragment : BaseFragment(),
     private fun setupHeader(rootView: View) {
         rootView.tv_header_title.setText(R.string.team_members)
         rootView.tv_header_caption.setText(R.string.team_members_select_league)
+    }
+
+    private fun launchAttemptToBowl(practiceNumberOfGames: Int = 1) {
+        safeLet(context, team) { context, team ->
+            launch(Android) {
+                val error = attemptToBowl().await()
+                if (error != null) {
+                    error.show(context)
+                    return@launch
+                }
+
+                val fragment = GameControllerFragment.newInstance(SeriesProvider.TeamSeries(team))
+                fragmentNavigation?.pushFragment(fragment)
+            }
+        }
     }
 
     private fun attemptToBowl(): Deferred<BCError?> {
