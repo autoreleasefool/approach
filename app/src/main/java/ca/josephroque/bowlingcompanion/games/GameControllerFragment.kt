@@ -13,6 +13,8 @@ import ca.josephroque.bowlingcompanion.common.NavigationDrawerController
 import ca.josephroque.bowlingcompanion.common.adapters.BaseFragmentPagerAdapter
 import ca.josephroque.bowlingcompanion.common.fragments.TabbedFragment
 import ca.josephroque.bowlingcompanion.common.interfaces.INavigationDrawerHandler
+import ca.josephroque.bowlingcompanion.matchplay.MatchPlayResult
+import ca.josephroque.bowlingcompanion.matchplay.MatchPlaySheet
 import ca.josephroque.bowlingcompanion.series.Series
 import ca.josephroque.bowlingcompanion.statistics.interfaces.IStatisticsContext
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProvider
@@ -28,6 +30,7 @@ import kotlinx.android.synthetic.main.fragment_common_tabs.tabbed_fragment_tabs 
 class GameControllerFragment : TabbedFragment(),
         INavigationDrawerHandler,
         GameFragment.GameFragmentDelegate,
+        MatchPlaySheet.MatchPlaySheetDelegate,
         IStatisticsContext {
 
     companion object {
@@ -79,13 +82,16 @@ class GameControllerFragment : TabbedFragment(),
         set(value) {
             field = value
 
-            val adapter = fragmentPager.adapter as? GameControllerPagerAdapter
-            val gameFragment = adapter?.getFragment(currentTab) as? GameFragment
-            gameFragment?.gameNumber = currentGame
-
+            currentGameFragment?.gameNumber = currentGame
             navigationDrawerController.gameNumber = currentGame
 
             Analytics.trackChangedGame()
+        }
+
+    private val currentGameFragment: GameFragment?
+        get() {
+            val adapter = fragmentPager?.adapter as? GameControllerPagerAdapter
+            return adapter?.getFragment(currentTab) as? GameFragment
         }
 
     // MARK: Lifecycle functions
@@ -161,9 +167,7 @@ class GameControllerFragment : TabbedFragment(),
             return
         }
 
-        val adapter = fragmentPager?.adapter as? GameControllerPagerAdapter
-        val gameFragment = adapter?.getFragment(currentTab) as? GameFragment
-        gameFragment?.onFabClick()
+        currentGameFragment?.onFabClick()
     }
 
     // MARK: INavigationDrawerHandler
@@ -243,6 +247,12 @@ class GameControllerFragment : TabbedFragment(),
 
     override fun toggleFullscreen() {
         navigationActivity?.toggleFullscreen()
+    }
+
+    // MARK: MatchPlaySheetDelegate
+
+    override fun onFinishedSettingMatchPlayResults(opponentName: String, opponentScore: Int, matchPlayResult: MatchPlayResult, inputValid: Boolean) {
+        currentGameFragment?.onFinishedSettingMatchPlayResults(opponentName, opponentScore, matchPlayResult, inputValid)
     }
 
     // MARK: GameControllerPagerAdapter

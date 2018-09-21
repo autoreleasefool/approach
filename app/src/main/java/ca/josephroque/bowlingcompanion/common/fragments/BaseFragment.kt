@@ -1,7 +1,6 @@
 package ca.josephroque.bowlingcompanion.common.fragments
 
 import android.content.Context
-import android.support.design.widget.BottomSheetDialogFragment
 import android.support.v4.app.Fragment
 import ca.josephroque.bowlingcompanion.NavigationActivity
 
@@ -65,7 +64,7 @@ abstract class BaseFragment : Fragment() {
 
         fun pushFragment(fragment: BaseFragment)
         fun pushDialogFragment(fragment: BaseDialogFragment)
-        fun showBottomSheet(fragment: BottomSheetDialogFragment, tag: String)
+        fun showBottomSheet(fragment: BaseBottomSheetDialogFragment, tag: String)
     }
 
     // MARK: FabProvider

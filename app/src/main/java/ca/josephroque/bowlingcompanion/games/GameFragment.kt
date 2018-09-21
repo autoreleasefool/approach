@@ -411,7 +411,7 @@ class GameFragment : BaseFragment(),
     }
 
     override fun onMatchPlaySettings() {
-        val fragment = MatchPlaySheet.newInstance()
+        val fragment = MatchPlaySheet.newInstance(gameState.currentGame.matchPlay)
         fragmentNavigation?.showBottomSheet(fragment, MatchPlaySheet.FRAGMENT_TAG)
         autoEventController.pause(GameAutoEventController.AutoEvent.AdvanceFrame)
     }

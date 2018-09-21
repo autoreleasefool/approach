@@ -2,7 +2,6 @@ package ca.josephroque.bowlingcompanion
 
 import android.os.Bundle
 import android.support.annotation.IdRes
-import android.support.design.widget.BottomSheetDialogFragment
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentTransaction
 import android.support.v4.view.GravityCompat
@@ -15,6 +14,7 @@ import ca.josephroque.bowlingcompanion.common.FabController
 import ca.josephroque.bowlingcompanion.common.NavigationDrawerController
 import ca.josephroque.bowlingcompanion.common.interfaces.IFloatingActionButtonHandler
 import ca.josephroque.bowlingcompanion.common.activities.BaseActivity
+import ca.josephroque.bowlingcompanion.common.fragments.BaseBottomSheetDialogFragment
 import ca.josephroque.bowlingcompanion.common.fragments.BaseDialogFragment
 import ca.josephroque.bowlingcompanion.common.fragments.BaseFragment
 import ca.josephroque.bowlingcompanion.common.fragments.TabbedFragment
@@ -51,7 +51,8 @@ class NavigationActivity : BaseActivity(),
         BaseFragment.FragmentNavigation,
         BaseFragment.FabProvider,
         TabbedFragment.TabbedFragmentDelegate,
-        BaseDialogFragment.OnDismissListener {
+        BaseDialogFragment.OnDismissListener,
+        BaseBottomSheetDialogFragment.BaseBottomSheetDialogFragmentDelegate {
 
     companion object {
         @Suppress("unused")
@@ -117,6 +118,8 @@ class NavigationActivity : BaseActivity(),
 
     val isFullscreen: Boolean
         get() = !bottomNavigation.isVisible
+
+    var currentBottomSheet: BaseBottomSheetDialogFragment.Companion.BottomSheetType? = null
 
     // MARK: Lifecycle functions
 
@@ -218,8 +221,23 @@ class NavigationActivity : BaseActivity(),
         fragNavController?.showDialogFragment(fragment)
     }
 
-    override fun showBottomSheet(fragment: BottomSheetDialogFragment, tag: String) {
+    override fun showBottomSheet(fragment: BaseBottomSheetDialogFragment, tag: String) {
+        currentBottomSheet = BaseBottomSheetDialogFragment.getBottomSheetType(fragment)
         fragment.show(supportFragmentManager, tag)
+    }
+
+    // MARK: BaseBottomSheetDialogFragmentDelegate
+
+    @Suppress("UNCHECKED_CAST")
+    override fun <Delegate> getBottomSheetDelegate(): Delegate? {
+        return when (currentBottomSheet) {
+            BaseBottomSheetDialogFragment.Companion.BottomSheetType.MatchPlay -> currentFragment as? Delegate
+            else -> null
+        }
+    }
+
+    override fun bottomSheetDetached() {
+        currentBottomSheet = null
     }
 
     // MARK: FabProvider
