@@ -8,6 +8,7 @@ import android.support.v4.app.FragmentManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.NavigationDrawerController
 import ca.josephroque.bowlingcompanion.common.adapters.BaseFragmentPagerAdapter
@@ -117,6 +118,14 @@ class GameControllerFragment : TabbedFragment(),
         onSeriesChanged()
         activity?.invalidateOptionsMenu()
         navigationDrawerController.isTeamMember = seriesProvider is SeriesProvider.TeamSeries
+
+        activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        // 0 is the default, as per https://developer.android.com/reference/android/R.attr#windowSoftInputMode
+        activity?.window?.setSoftInputMode(0)
     }
 
     // MARK: TabbedFragment
