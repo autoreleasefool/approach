@@ -111,8 +111,8 @@ class TeamDetailsFragment : BaseFragment(),
 
     override fun onFabClick() {
         safeLet(context, team) { context, team ->
-            val hasPracticeSeries = team.members.any { it.league?.isPractice ?: false }
-            if (hasPracticeSeries) {
+            val needsNewPracticeSeries = team.members.any { it.league?.isPractice == true && it.series == null }
+            if (needsNewPracticeSeries) {
                 League.showPracticeGamesPicker(context, ::launchAttemptToBowl)
             } else {
                 launchAttemptToBowl()
