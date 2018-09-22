@@ -185,7 +185,6 @@ class TeamDetailsFragment : BaseFragment(),
                 val teamMemberSeries: MutableMap<TeamMember, Series> = HashMap()
 
                 val database = Saviour.instance.getWritableDatabase(context).await()
-                var transactionBegun = false
 
                 // Create series in the database for each team member, if one does not exist,
                 // or retrieve the existing series if it does.
@@ -200,12 +199,10 @@ class TeamDetailsFragment : BaseFragment(),
                                 teamMemberSeries[it] = eventSeries.first()
                             }
                             it.series == null -> {
-                                if (!transactionBegun) {
-                                    transactionBegun = true
+                                if (!database.inTransaction()) {
                                     database.beginTransaction()
                                 }
 
-                                // TODO: override for practice league
                                 val (newSeries, seriesError) = league.createNewSeries(
                                         context = context,
                                         inTransaction = true
@@ -223,11 +220,11 @@ class TeamDetailsFragment : BaseFragment(),
                         }
                     }
 
-                    if (transactionBegun) {
+                    if (database.inTransaction()) {
                         database.setTransactionSuccessful()
                     }
                 } finally {
-                    if (transactionBegun) {
+                    if (database.inTransaction()) {
                         database.endTransaction()
                     }
                 }
