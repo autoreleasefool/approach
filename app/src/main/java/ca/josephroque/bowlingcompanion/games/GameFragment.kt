@@ -185,8 +185,8 @@ class GameFragment : BaseFragment(),
     }
 
     override fun onPause() {
+        prepareToPause()
         super.onPause()
-        context?.let { gameState.saveGame(WeakReference(it), true) }
     }
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
@@ -210,6 +210,12 @@ class GameFragment : BaseFragment(),
             }
             else -> return super.onOptionsItemSelected(item)
         }
+    }
+
+    // MARK: GameFragment
+
+    fun prepareToPause() {
+        context?.let { gameState.saveGame(WeakReference(it), true) }
     }
 
     // MARK: BaseFragment

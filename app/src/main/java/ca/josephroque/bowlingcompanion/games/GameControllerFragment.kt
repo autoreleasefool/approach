@@ -185,6 +185,12 @@ class GameControllerFragment : TabbedFragment(),
         }
     }
 
+    // MARK: GameControllerFragment
+
+    fun prepareToPop() {
+        currentGameFragment?.prepareToPause()
+    }
+
     // MARK: GameFragmentDelegate
 
     override val isFabEnabled: Boolean

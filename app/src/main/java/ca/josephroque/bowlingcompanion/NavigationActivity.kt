@@ -20,6 +20,7 @@ import ca.josephroque.bowlingcompanion.common.fragments.BaseFragment
 import ca.josephroque.bowlingcompanion.common.fragments.TabbedFragment
 import ca.josephroque.bowlingcompanion.common.interfaces.INavigationDrawerHandler
 import ca.josephroque.bowlingcompanion.common.interfaces.IRefreshable
+import ca.josephroque.bowlingcompanion.games.GameControllerFragment
 import ca.josephroque.bowlingcompanion.series.SeriesListFragment
 import ca.josephroque.bowlingcompanion.statistics.interfaces.IStatisticsContext
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProviderListFragment
@@ -455,6 +456,10 @@ class NavigationActivity : BaseActivity(),
 
         popTarget?.let {
             poppedBack = true
+            val currentFragment = this@NavigationActivity.currentFragment
+            if (currentFragment is GameControllerFragment) {
+                currentFragment.prepareToPop()
+            }
             fragNavController?.popFragments(it)
         }
     }
