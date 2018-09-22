@@ -12,7 +12,8 @@ import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.delay
 import kotlinx.coroutines.experimental.launch
 import java.lang.ref.WeakReference
-import java.util.*
+import java.util.LinkedList
+import java.util.Queue
 import java.util.concurrent.atomic.AtomicBoolean
 
 /**
@@ -94,5 +95,4 @@ class Annihilator private constructor() {
             annihilatorIsRunning.set(false)
         }
     }
-
 }

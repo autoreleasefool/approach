@@ -4,6 +4,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.DialogInterface
 import android.database.Cursor
+import android.database.sqlite.SQLiteDatabase
 import android.os.Parcel
 import android.support.v7.app.AlertDialog
 import android.util.Log
@@ -106,7 +107,7 @@ data class League(
         return Series.fetchAll(context, this)
     }
 
-    fun createNewSeries(context: Context, inTransaction: Boolean = false, numberOfPracticeGamesOverride: Int? = null): Deferred<Pair<Series?, BCError?>> {
+    fun createNewSeries(context: Context, openDatabase: SQLiteDatabase? = null, numberOfPracticeGamesOverride: Int? = null): Deferred<Pair<Series?, BCError?>> {
         val numberOfGames = if (isPractice) {
             numberOfPracticeGamesOverride ?: gamesPerSeries
         } else {
@@ -122,7 +123,7 @@ data class League(
                     numberOfGames = numberOfGames,
                     scores = IntArray(numberOfGames).toList(),
                     matchPlay = ByteArray(numberOfGames).toList(),
-                    inTransaction = inTransaction
+                    openDatabase = openDatabase
             ).await()
         }
     }

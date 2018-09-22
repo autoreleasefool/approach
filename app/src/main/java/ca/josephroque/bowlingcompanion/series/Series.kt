@@ -3,8 +3,8 @@ package ca.josephroque.bowlingcompanion.series
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
+import android.database.sqlite.SQLiteDatabase
 import android.os.Parcel
-import android.os.Parcelable
 import android.util.Log
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
@@ -42,23 +42,18 @@ class Series(
     val matchPlay: List<Byte>
 ) : IIdentifiable, IDeletable, KParcelable {
 
-    /** Private field to indicate if the item is deleted. */
     private var _isDeleted: Boolean = false
-    /** @Override */
     override val isDeleted: Boolean
         get() = _isDeleted
 
-    /** Beautifies the date to be displayed. */
     val prettyDate: String
         get() = DateUtils.dateToPretty(date)
 
-    /** Series total. */
     val total: Int
         get() = scores.sum()
 
-    /**
-     * Construct [Series] from a [Parcel]
-     */
+    // MARK: Constructors
+
     private constructor(p: Parcel): this(
             league = p.readParcelable<League>(League::class.java.classLoader),
             id = p.readLong(),
@@ -78,9 +73,6 @@ class Series(
             }
     )
 
-    /**
-     * Construct [Series] from a [Series].
-     */
     constructor(series: Series): this(
             league = series.league,
             id = series.id,
@@ -90,7 +82,8 @@ class Series(
             matchPlay = series.matchPlay
     )
 
-    /** @Override */
+    // MARK: Parcelable
+
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeParcelable(league, 0)
         writeLong(id)
@@ -102,21 +95,20 @@ class Series(
         writeByteArray(matchPlay.toByteArray())
     }
 
-    /** @Override */
+    // MARK: IDeletable
+
     override fun markForDeletion(): Series {
         val newInstance = Series(this)
         newInstance._isDeleted = true
         return newInstance
     }
 
-    /** @Override */
     override fun cleanDeletion(): Series {
         val newInstance = Series(this)
         newInstance._isDeleted = false
         return newInstance
     }
 
-    /** @Override */
     override fun delete(context: Context): Deferred<Unit> {
         return async(CommonPool) {
             if (id < 0) {
@@ -132,31 +124,21 @@ class Series(
         }
     }
 
-    /**
-     * Load the list of games for this series.
-     *
-     * @param context to get database instance
-     * @return the list of games for the series
-     */
+    // MARK: Series
+
     fun fetchGames(context: Context): Deferred<MutableList<Game>> {
         return Game.fetchSeriesGames(context, this)
     }
 
     companion object {
-        /** Logging identifier. */
         @Suppress("unused")
         private const val TAG = "Series"
 
-        /** Creator, required by [Parcelable]. */
         @Suppress("unused")
         @JvmField val CREATOR = parcelableCreator(::Series)
 
-        /** Argument identifier for showing condensed or expanded view of series. */
         const val PREFERRED_VIEW = "series_preferred_view"
 
-        /**
-         * View to display series as.
-         */
         enum class View {
             Expanded, Condensed;
 
@@ -166,20 +148,6 @@ class Series(
             }
         }
 
-        /**
-         * Save this series to the database.
-         *
-         * @param context to get database instance
-         * @param id -1 to create a new series, or id of the series to update
-         * @param league league that owns the series
-         * @param date date of the series
-         * @param numberOfGames number of games in the series
-         * @param scores scores of the games in the series
-         * @param matchPlay match play results of the games in the series
-         * @param inTransaction if true, the method should not handle the database transaction as one
-         *                      has already been created in another context
-         * @return [BCError] only if an error occurred
-         */
         fun save(
             context: Context,
             league: League,
@@ -188,28 +156,15 @@ class Series(
             numberOfGames: Int,
             scores: List<Int>,
             matchPlay: List<Byte>,
-            inTransaction: Boolean = false
+            openDatabase: SQLiteDatabase? = null
         ): Deferred<Pair<Series?, BCError?>> {
             return if (id < 0) {
-                createNewAndSave(context, league, date, numberOfGames, scores, matchPlay, inTransaction)
+                createNewAndSave(context, league, date, numberOfGames, scores, matchPlay, openDatabase)
             } else {
-                update(context, id, league, date, numberOfGames, scores, matchPlay, inTransaction)
+                update(context, id, league, date, numberOfGames, scores, matchPlay, openDatabase)
             }
         }
 
-        /**
-         * Create a new [SeriesEntry] in the database.
-         *
-         * @param context to get database instance
-         * @param league league that owns the series
-         * @param date date of the series
-         * @param numberOfGames number of games in the series
-         * @param scores scores of the games in the series
-         * @param matchPlay match play results of the games in the series
-         * @param inTransaction if true, the method should not handle the database transaction as one
-         *                      has already been created in another context
-         * @return [BCError] only if an error occurred
-         */
         private fun createNewAndSave(
             context: Context,
             league: League,
@@ -217,10 +172,11 @@ class Series(
             numberOfGames: Int,
             scores: List<Int>,
             matchPlay: List<Byte>,
-            inTransaction: Boolean = false
+            openDatabase: SQLiteDatabase? = null
         ): Deferred<Pair<Series?, BCError?>> {
             return async(CommonPool) {
-                val database = DatabaseManager.getWritableDatabase(context).await()
+                val database = openDatabase ?: DatabaseManager.getWritableDatabase(context).await()
+                val inTransaction = openDatabase != null && openDatabase.inTransaction()
                 var values = ContentValues().apply {
                     put(SeriesEntry.COLUMN_SERIES_DATE, DateUtils.dateToSeriesDate(date))
                     put(SeriesEntry.COLUMN_LEAGUE_ID, league.id)
@@ -282,20 +238,6 @@ class Series(
             }
         }
 
-        /**
-         * Update the [SeriesEntry] in the database.
-         *
-         * @param context to get database instance
-         * @param id id of the series to update
-         * @param league league that owns the series
-         * @param date date of the series
-         * @param numberOfGames number of games in the series
-         * @param scores scores of the games in the series
-         * @param matchPlay match play results of the games in the series
-         * @param inTransaction if true, the method should not handle the database transaction as one
-         *                      has already been created in another context
-         * @return [BCError] only if an error occurred
-         */
         private fun update(
             context: Context,
             id: Long,
@@ -304,11 +246,11 @@ class Series(
             numberOfGames: Int,
             scores: List<Int>,
             matchPlay: List<Byte>,
-            inTransaction: Boolean = false
-//            database: SQLiteDatabase? = null TODO: use this
+            openDatabase: SQLiteDatabase? = null
         ): Deferred<Pair<Series?, BCError?>> {
             return async(CommonPool) {
-                val database = DatabaseManager.getWritableDatabase(context).await()
+                val database = openDatabase ?: DatabaseManager.getWritableDatabase(context).await()
+                val inTransaction = openDatabase != null && openDatabase.inTransaction()
                 val values = ContentValues().apply {
                     put(SeriesEntry.COLUMN_SERIES_DATE, DateUtils.dateToSeriesDate(date))
                 }
@@ -333,13 +275,6 @@ class Series(
             }
         }
 
-        /**
-         * Get all of the series belonging to the [League].
-         *
-         * @param context to get database instance
-         * @param league the league whose series to retrieve
-         * @return a [MutableList] of [Series] instances from the database
-         */
         fun fetchAll(context: Context, league: League): Deferred<MutableList<Series>> {
             return async(CommonPool) {
                 val seriesList: MutableList<Series> = ArrayList()
@@ -361,12 +296,6 @@ class Series(
                 var scores: MutableList<Int> = ArrayList()
                 var matchPlay: MutableList<Byte> = ArrayList()
 
-                /**
-                 * Build a new [Series] instance from a cursor to the database.
-                 *
-                 * @param cursor database accessor
-                 * @return a new series
-                 */
                 fun buildSeriesFromCursor(cursor: Cursor): Series {
                     val id = cursor.getLong(cursor.getColumnIndex("sid"))
                     val seriesDate = DateUtils.seriesDateToDate(cursor.getString(cursor.getColumnIndex(SeriesEntry.COLUMN_SERIES_DATE)))

@@ -209,7 +209,7 @@ class TeamDetailsFragment : BaseFragment(),
 
                                 val (newSeries, seriesError) = league.createNewSeries(
                                         context = context,
-                                        inTransaction = true,
+                                        openDatabase = database,
                                         numberOfPracticeGamesOverride = practiceNumberOfGames
                                 ).await()
 
