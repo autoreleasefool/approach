@@ -165,16 +165,20 @@ class TeamDetailsFragment : BaseFragment(),
     }
 
     private fun launchAttemptToBowl(practiceNumberOfGames: Int = 1) {
-        safeLet(context, team) { context, team ->
-            launch(Android) {
-                val error = attemptToBowl(practiceNumberOfGames).await()
-                if (error != null) {
-                    error.show(context)
-                    return@launch
-                }
+        val context = context ?: return
+        launch(Android) {
+            val error = attemptToBowl(practiceNumberOfGames).await()
+            if (error != null) {
+                error.show(context)
+                return@launch
+            }
 
+            val team = this@TeamDetailsFragment.team
+            if (team != null) {
                 val fragment = GameControllerFragment.newInstance(SeriesProvider.TeamSeries(team))
                 fragmentNavigation?.pushFragment(fragment)
+            } else {
+                BCError().show(context)
             }
         }
     }
