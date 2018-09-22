@@ -13,10 +13,11 @@ import ca.josephroque.bowlingcompanion.common.interfaces.KParcelable
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
 import ca.josephroque.bowlingcompanion.common.interfaces.readDate
 import ca.josephroque.bowlingcompanion.common.interfaces.writeDate
+import ca.josephroque.bowlingcompanion.database.Annihilator
 import ca.josephroque.bowlingcompanion.database.Contract.FrameEntry
 import ca.josephroque.bowlingcompanion.database.Contract.GameEntry
 import ca.josephroque.bowlingcompanion.database.Contract.SeriesEntry
-import ca.josephroque.bowlingcompanion.database.Saviour
+import ca.josephroque.bowlingcompanion.database.DatabaseManager
 import ca.josephroque.bowlingcompanion.games.Game
 import ca.josephroque.bowlingcompanion.leagues.League
 import ca.josephroque.bowlingcompanion.utils.BCError
@@ -24,6 +25,7 @@ import ca.josephroque.bowlingcompanion.utils.DateUtils
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async
+import java.lang.ref.WeakReference
 import java.util.Date
 
 /**
@@ -121,20 +123,12 @@ class Series(
                 return@async
             }
 
-            val database = Saviour.instance.getWritableDatabase(context).await()
-            database.beginTransaction()
-            try {
-                database.delete(SeriesEntry.TABLE_NAME,
-                    "${SeriesEntry._ID}=?",
-                    arrayOf(id.toString()))
-                database.setTransactionSuccessful()
-            } catch (e: Exception) {
-                // Does nothing
-                // If there's an error deleting this series, then it just remains in the
-                // user's data and no harm is done.
-            } finally {
-                database.endTransaction()
-            }
+            Annihilator.instance.delete(
+                    weakContext = WeakReference(context),
+                    tableName = SeriesEntry.TABLE_NAME,
+                    whereClause = "${SeriesEntry._ID}=?",
+                    whereArgs = arrayOf(id.toString())
+            )
         }
     }
 
@@ -226,7 +220,7 @@ class Series(
             inTransaction: Boolean = false
         ): Deferred<Pair<Series?, BCError?>> {
             return async(CommonPool) {
-                val database = Saviour.instance.getWritableDatabase(context).await()
+                val database = DatabaseManager.getWritableDatabase(context).await()
                 var values = ContentValues().apply {
                     put(SeriesEntry.COLUMN_SERIES_DATE, DateUtils.dateToSeriesDate(date))
                     put(SeriesEntry.COLUMN_LEAGUE_ID, league.id)
@@ -311,9 +305,10 @@ class Series(
             scores: List<Int>,
             matchPlay: List<Byte>,
             inTransaction: Boolean = false
+//            database: SQLiteDatabase? = null TODO: use this
         ): Deferred<Pair<Series?, BCError?>> {
             return async(CommonPool) {
-                val database = Saviour.instance.getWritableDatabase(context).await()
+                val database = DatabaseManager.getWritableDatabase(context).await()
                 val values = ContentValues().apply {
                     put(SeriesEntry.COLUMN_SERIES_DATE, DateUtils.dateToSeriesDate(date))
                 }
@@ -348,7 +343,7 @@ class Series(
         fun fetchAll(context: Context, league: League): Deferred<MutableList<Series>> {
             return async(CommonPool) {
                 val seriesList: MutableList<Series> = ArrayList()
-                val database = Saviour.instance.getReadableDatabase(context).await()
+                val database = DatabaseManager.getReadableDatabase(context).await()
 
                 val rawSeriesQuery = ("SELECT " +
                         "series.${SeriesEntry._ID} AS sid, " +

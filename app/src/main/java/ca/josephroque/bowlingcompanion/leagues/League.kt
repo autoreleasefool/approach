@@ -15,10 +15,11 @@ import ca.josephroque.bowlingcompanion.common.interfaces.KParcelable
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
 import ca.josephroque.bowlingcompanion.common.interfaces.readBoolean
 import ca.josephroque.bowlingcompanion.common.interfaces.writeBoolean
+import ca.josephroque.bowlingcompanion.database.Annihilator
 import ca.josephroque.bowlingcompanion.database.Contract.GameEntry
 import ca.josephroque.bowlingcompanion.database.Contract.LeagueEntry
 import ca.josephroque.bowlingcompanion.database.Contract.SeriesEntry
-import ca.josephroque.bowlingcompanion.database.Saviour
+import ca.josephroque.bowlingcompanion.database.DatabaseManager
 import ca.josephroque.bowlingcompanion.games.Game
 import ca.josephroque.bowlingcompanion.scoring.Average
 import ca.josephroque.bowlingcompanion.series.Series
@@ -26,6 +27,7 @@ import ca.josephroque.bowlingcompanion.utils.BCError
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async
+import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -145,18 +147,12 @@ data class League(
                 return@async
             }
 
-            val database = Saviour.instance.getWritableDatabase(context).await()
-            database.beginTransaction()
-            try {
-                database.delete(LeagueEntry.TABLE_NAME, LeagueEntry._ID + "=?", arrayOf(id.toString()))
-                database.setTransactionSuccessful()
-            } catch (e: Exception) {
-                // Does nothing
-                // If there's an error deleting this league, then they just remain in the
-                // user's data and no harm is done.
-            } finally {
-                database.endTransaction()
-            }
+            Annihilator.instance.delete(
+                    weakContext = WeakReference(context),
+                    tableName = LeagueEntry.TABLE_NAME,
+                    whereClause = "${LeagueEntry._ID}=?",
+                    whereArgs = arrayOf(id.toString())
+            )
         }
     }
 
@@ -216,7 +212,7 @@ data class League(
 
         private fun isLeagueNameUnique(context: Context, name: String, id: Long = -1): Deferred<Boolean> {
             return async(CommonPool) {
-                val database = Saviour.instance.getReadableDatabase(context).await()
+                val database = DatabaseManager.getReadableDatabase(context).await()
 
                 var cursor: Cursor? = null
                 try {
@@ -337,7 +333,7 @@ data class League(
                     return@async Pair(null, error)
                 }
 
-                val database = Saviour.instance.getWritableDatabase(context).await()
+                val database = DatabaseManager.getWritableDatabase(context).await()
                 val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA)
                 val currentDate = dateFormat.format(Date())
 
@@ -426,7 +422,7 @@ data class League(
                     return@async Pair(null, error)
                 }
 
-                val database = Saviour.instance.getWritableDatabase(context).await()
+                val database = DatabaseManager.getWritableDatabase(context).await()
                 val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA)
                 val currentDate = dateFormat.format(Date())
 
@@ -472,7 +468,7 @@ data class League(
         ): Deferred<MutableList<League>> {
             return async(CommonPool) {
                 val leagues: MutableList<League> = ArrayList()
-                val database = Saviour.instance.getReadableDatabase(context).await()
+                val database = DatabaseManager.getReadableDatabase(context).await()
 
                 val rawLeagueEventQuery = ("SELECT " +
                         "league.${LeagueEntry._ID} AS lid, " +

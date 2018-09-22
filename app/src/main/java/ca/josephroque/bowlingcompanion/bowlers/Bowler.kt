@@ -10,6 +10,7 @@ import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.interfaces.INameAverage
 import ca.josephroque.bowlingcompanion.common.interfaces.KParcelable
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
+import ca.josephroque.bowlingcompanion.database.Annihilator
 import ca.josephroque.bowlingcompanion.database.Contract.GameEntry
 import ca.josephroque.bowlingcompanion.database.Contract.LeagueEntry
 import ca.josephroque.bowlingcompanion.database.Contract.SeriesEntry
@@ -22,10 +23,11 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import ca.josephroque.bowlingcompanion.database.Contract.BowlerEntry
-import ca.josephroque.bowlingcompanion.database.Saviour
+import ca.josephroque.bowlingcompanion.database.DatabaseManager
 import ca.josephroque.bowlingcompanion.scoring.Average
 import ca.josephroque.bowlingcompanion.utils.BCError
 import ca.josephroque.bowlingcompanion.utils.Preferences
+import java.lang.ref.WeakReference
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -98,20 +100,12 @@ class Bowler(
                 return@async
             }
 
-            val database = Saviour.instance.getWritableDatabase(context).await()
-            database.beginTransaction()
-            try {
-                database.delete(BowlerEntry.TABLE_NAME,
-                        BowlerEntry._ID + "=?",
-                        arrayOf(id.toString()))
-                database.setTransactionSuccessful()
-            } catch (e: Exception) {
-                // Does nothing
-                // If there's an error deleting this bowler, then they just remain in the
-                // user's data and no harm is done.
-            } finally {
-                database.endTransaction()
-            }
+            Annihilator.instance.delete(
+                    weakContext = WeakReference(context),
+                    tableName = BowlerEntry.TABLE_NAME,
+                    whereClause = "${BowlerEntry._ID}=?",
+                    whereArgs = arrayOf(id.toString())
+            )
         }
     }
 
@@ -138,7 +132,7 @@ class Bowler(
 
         private fun isBowlerNameUnique(context: Context, name: String, id: Long = -1): Deferred<Boolean> {
             return async(CommonPool) {
-                val database = Saviour.instance.getReadableDatabase(context).await()
+                val database = DatabaseManager.getReadableDatabase(context).await()
 
                 var cursor: Cursor? = null
                 try {
@@ -199,7 +193,7 @@ class Bowler(
                     return@async Pair(null, error)
                 }
 
-                val database = Saviour.instance.getWritableDatabase(context).await()
+                val database = DatabaseManager.getWritableDatabase(context).await()
                 val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA)
                 val currentDate = dateFormat.format(Date())
 
@@ -246,7 +240,7 @@ class Bowler(
                     return@async Pair(null, error)
                 }
 
-                val database = Saviour.instance.getWritableDatabase(context).await()
+                val database = DatabaseManager.getWritableDatabase(context).await()
                 val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA)
                 val currentDate = dateFormat.format(Date())
 
@@ -292,7 +286,7 @@ class Bowler(
         fun fetchAll(context: Context, filterId: Long = -1): Deferred<MutableList<Bowler>> {
             return async(CommonPool) {
                 val bowlers: MutableList<Bowler> = ArrayList()
-                val database = Saviour.instance.getReadableDatabase(context).await()
+                val database = DatabaseManager.getReadableDatabase(context).await()
 
                 val preferences = PreferenceManager.getDefaultSharedPreferences(context)
                 val includeEvents = preferences.getBoolean(Settings.IncludeEvents.prefName, Settings.IncludeEvents.booleanDefault)

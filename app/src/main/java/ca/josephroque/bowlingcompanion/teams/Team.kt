@@ -12,10 +12,11 @@ import ca.josephroque.bowlingcompanion.common.interfaces.IDeletable
 import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
 import ca.josephroque.bowlingcompanion.common.interfaces.KParcelable
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
+import ca.josephroque.bowlingcompanion.database.Annihilator
 import ca.josephroque.bowlingcompanion.database.Contract.BowlerEntry
 import ca.josephroque.bowlingcompanion.database.Contract.TeamBowlerEntry
 import ca.josephroque.bowlingcompanion.database.Contract.TeamEntry
-import ca.josephroque.bowlingcompanion.database.Saviour
+import ca.josephroque.bowlingcompanion.database.DatabaseManager
 import ca.josephroque.bowlingcompanion.series.Series
 import ca.josephroque.bowlingcompanion.teams.teammember.TeamMember
 import ca.josephroque.bowlingcompanion.utils.BCError
@@ -23,6 +24,7 @@ import ca.josephroque.bowlingcompanion.utils.Preferences
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async
+import java.lang.ref.WeakReference
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -108,20 +110,12 @@ class Team(
                 return@async
             }
 
-            val database = Saviour.instance.getWritableDatabase(context).await()
-            database.beginTransaction()
-            try {
-                database.delete(TeamEntry.TABLE_NAME,
-                        TeamEntry._ID + "=?",
-                        arrayOf(id.toString()))
-                database.setTransactionSuccessful()
-            } catch (e: Exception) {
-                // Does nothing
-                // If there's an error deleting this team, then they just remain in the
-                // user's data and no harm is done.
-            } finally {
-                database.endTransaction()
-            }
+            Annihilator.instance.delete(
+                    weakContext = WeakReference(context),
+                    tableName = TeamEntry.TABLE_NAME,
+                    whereClause = "${TeamEntry._ID}=?",
+                    whereArgs = arrayOf(id.toString())
+            )
         }
     }
 
@@ -163,7 +157,7 @@ class Team(
 
         private fun isTeamNameUnique(context: Context, name: String, id: Long = -1): Deferred<Boolean> {
             return async(CommonPool) {
-                val database = Saviour.instance.getReadableDatabase(context).await()
+                val database = DatabaseManager.getReadableDatabase(context).await()
 
                 var cursor: Cursor? = null
                 try {
@@ -226,7 +220,7 @@ class Team(
                     return@async Pair(null, error)
                 }
 
-                val database = Saviour.instance.getWritableDatabase(context).await()
+                val database = DatabaseManager.getWritableDatabase(context).await()
                 val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA)
                 val currentDate = dateFormat.format(Date())
 
@@ -271,7 +265,7 @@ class Team(
                     return@async Pair(null, error)
                 }
 
-                val database = Saviour.instance.getWritableDatabase(context).await()
+                val database = DatabaseManager.getWritableDatabase(context).await()
                 val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA)
                 val currentDate = dateFormat.format(Date())
 
@@ -325,7 +319,7 @@ class Team(
 
                 val preferences = PreferenceManager.getDefaultSharedPreferences(context)
                 val sortBy = Sort.fromInt(preferences.getInt(Preferences.TEAM_SORT_ORDER, Sort.Alphabetically.ordinal))
-                val database = Saviour.instance.getReadableDatabase(context).await()
+                val database = DatabaseManager.getReadableDatabase(context).await()
 
                 val orderQueryBy = if (sortBy == Sort.Alphabetically) {
                     " ORDER BY team." + TeamEntry.COLUMN_TEAM_NAME

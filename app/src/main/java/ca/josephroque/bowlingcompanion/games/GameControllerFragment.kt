@@ -172,10 +172,7 @@ class GameControllerFragment : TabbedFragment(),
     }
 
     override fun onFabClick() {
-        if (!fabEnabled) {
-            return
-        }
-
+        if (!fabEnabled) { return }
         currentGameFragment?.onFabClick()
     }
 

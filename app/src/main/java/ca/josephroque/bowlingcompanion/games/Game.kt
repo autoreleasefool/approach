@@ -12,7 +12,7 @@ import ca.josephroque.bowlingcompanion.common.interfaces.writeBoolean
 import ca.josephroque.bowlingcompanion.database.Contract.FrameEntry
 import ca.josephroque.bowlingcompanion.database.Contract.GameEntry
 import ca.josephroque.bowlingcompanion.database.Contract.MatchPlayEntry
-import ca.josephroque.bowlingcompanion.database.Saviour
+import ca.josephroque.bowlingcompanion.database.DatabaseManager
 import ca.josephroque.bowlingcompanion.games.lane.arePinsCleared
 import ca.josephroque.bowlingcompanion.games.lane.Ball
 import ca.josephroque.bowlingcompanion.games.lane.ballValue
@@ -354,7 +354,7 @@ class Game(
         fun fetchSeriesGames(context: Context, series: Series): Deferred<MutableList<Game>> {
             return async(CommonPool) {
                 val gameList: MutableList<Game> = ArrayList(series.numberOfGames)
-                val database = Saviour.instance.getReadableDatabase(context).await()
+                val database = DatabaseManager.getReadableDatabase(context).await()
 
                 val query = ("SELECT " +
                         "game.${GameEntry._ID} AS gid, " +
