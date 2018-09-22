@@ -33,14 +33,11 @@ class LeagueEventTabbedFragment : TabbedFragment(),
         IStatisticsContext {
 
     companion object {
-        /** Logging identifier */
         @Suppress("unused")
         private const val TAG = "LeagueEventTabFragment"
 
-        /** Argument identifier for passing a [Bowler] to this fragment. */
         private const val ARG_BOWLER = "${TAG}_bowler"
 
-        /** Tabs available in the fragment. */
         enum class Tab {
             Leagues, Events;
 
@@ -49,9 +46,6 @@ class LeagueEventTabbedFragment : TabbedFragment(),
                 fun fromInt(type: Int) = map[type]
             }
 
-            /**
-             * Get the title for the tab.
-             */
             fun getTitle(): Int {
                 return when (this) {
                     Leagues -> R.string.leagues
@@ -60,12 +54,6 @@ class LeagueEventTabbedFragment : TabbedFragment(),
             }
         }
 
-        /**
-         * Create a new instance.
-         *
-         * @param bowler the bowler whose leagues and events will be shown.
-         * @return the new instance
-         */
         fun newInstance(bowler: Bowler): LeagueEventTabbedFragment {
             val fragment = LeagueEventTabbedFragment()
             fragment.arguments = Bundle().apply { putParcelable(ARG_BOWLER, bowler) }
@@ -73,7 +61,6 @@ class LeagueEventTabbedFragment : TabbedFragment(),
         }
     }
 
-    /** @Override */
     override val statisticsProviders: List<StatisticsProvider> by lazy {
         val bowler = bowler
         return@lazy if (bowler != null) {
@@ -83,41 +70,41 @@ class LeagueEventTabbedFragment : TabbedFragment(),
         }
     }
 
-    /** The user's selected bowler. */
     private var bowler: Bowler? = null
 
-    /** @Override */
+    // MARK: LeagueEventTabbedFragment
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         bowler = arguments?.getParcelable(ARG_BOWLER)
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    /** @Override */
+    // MARK: BaseFragment
+
     override fun updateToolbarTitle() {
         bowler?.let { navigationActivity?.setToolbarTitle(it.name) }
     }
 
-    /** @Override */
+    // MARK: TabbedFragment
+
     override fun buildPagerAdapter(tabCount: Int): BaseFragmentPagerAdapter {
         return LeagueEventPagerAdapter(childFragmentManager, tabCount, bowler)
     }
 
-    /** @Override */
     override fun addTabs(tabLayout: TabLayout) {
         for (tab in Tab.values()) {
             tabLayout.addTab(tabLayout.newTab().setText(tab.getTitle()))
         }
     }
 
-    /** @Override */
     override fun handleTabSwitch(newTab: Int) {}
 
-    /** @Override */
+    // MARK: IFloatingActionButtonHandler
+
     override fun getFabImage(): Int? {
         return R.drawable.ic_add
     }
 
-    /** @Override */
     override fun onFabClick() {
         when (Tab.fromInt(currentTab)) {
             Tab.Leagues -> promptAddOrEditLeague(false)
@@ -126,7 +113,8 @@ class LeagueEventTabbedFragment : TabbedFragment(),
         }
     }
 
-    /** @Override */
+    // MARK: ListFragmentDelegate
+
     override fun onItemSelected(item: IIdentifiable, longPress: Boolean) {
         if (item is League) {
             if (longPress) {
@@ -140,7 +128,8 @@ class LeagueEventTabbedFragment : TabbedFragment(),
         }
     }
 
-    /** @Override */
+    // MARK: LeagueDialogDelegate
+
     override fun onFinishLeague(league: League) {
         val adapter = fragmentPager.adapter as? LeagueEventPagerAdapter
         val leagueFragment = if (league.isEvent) {
@@ -151,7 +140,6 @@ class LeagueEventTabbedFragment : TabbedFragment(),
         leagueFragment?.refreshList(league)
     }
 
-    /** @Override */
     override fun onDeleteLeague(league: League) {
         val adapter = fragmentPager.adapter as? LeagueEventPagerAdapter
         val leagueFragment = if (league.isEvent) {
@@ -162,38 +150,26 @@ class LeagueEventTabbedFragment : TabbedFragment(),
         leagueFragment?.onItemDelete(league)
     }
 
-    /**
-     * Display a prompt to add or edit a league.
-     *
-     * @param isEvent true to add an event, false to add a league
-     * @param league the league to edit, or null if a new league should be added
-     */
+    // MARK: Private functions
+
     private fun promptAddOrEditLeague(isEvent: Boolean, league: League? = null) {
         val bowler = bowler ?: return
         val newFragment = LeagueDialog.newInstance(bowler, league, isEvent)
         fragmentNavigation?.pushDialogFragment(newFragment)
     }
 
-    /**
-     * Show list of series for the league.
-     *
-     * @param league league to show series for
-     */
     private fun showSeries(league: League) {
         val newFragment = SeriesListFragment.newInstance(league)
         fragmentNavigation?.pushFragment(newFragment)
     }
 
-    /**
-     * Pager adapter for league and event fragments.
-     */
+    // MARK: LeagueEventPagerAdapter
+
     class LeagueEventPagerAdapter(
         fragmentManager: FragmentManager,
         tabCount: Int,
         private val bowler: Bowler?
     ) : BaseFragmentPagerAdapter(fragmentManager, tabCount) {
-
-        /** @Override */
         override fun buildFragment(position: Int): Fragment? {
             bowler?.let {
                 return when (Tab.fromInt(position)) {
