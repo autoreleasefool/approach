@@ -21,7 +21,6 @@ import kotlinx.android.synthetic.main.sheet_match_play.input_opponent_score as o
 import kotlinx.android.synthetic.main.sheet_match_play.radio_match_play_lost as matchPlayLost
 import kotlinx.android.synthetic.main.sheet_match_play.radio_match_play_won as matchPlayWon
 import kotlinx.android.synthetic.main.sheet_match_play.radio_match_play_tied as matchPlayTied
-import kotlinx.android.synthetic.main.sheet_match_play.radio_match_play_none as matchPlayNone
 
 /**
  * Copyright (C) 2018 Joseph Roque
