@@ -163,7 +163,7 @@ class TeamDetailsFragment : BaseFragment(),
     private fun launchAttemptToBowl(practiceNumberOfGames: Int = 1) {
         safeLet(context, team) { context, team ->
             launch(Android) {
-                val error = attemptToBowl().await()
+                val error = attemptToBowl(practiceNumberOfGames).await()
                 if (error != null) {
                     error.show(context)
                     return@launch
@@ -175,7 +175,7 @@ class TeamDetailsFragment : BaseFragment(),
         }
     }
 
-    private fun attemptToBowl(): Deferred<BCError?> {
+    private fun attemptToBowl(practiceNumberOfGames: Int): Deferred<BCError?> {
         return async(CommonPool) {
             val context = this@TeamDetailsFragment.context ?: return@async BCError()
             val team = this@TeamDetailsFragment.team ?: return@async BCError()
@@ -205,7 +205,8 @@ class TeamDetailsFragment : BaseFragment(),
 
                                 val (newSeries, seriesError) = league.createNewSeries(
                                         context = context,
-                                        inTransaction = true
+                                        inTransaction = true,
+                                        numberOfPracticeGamesOverride = practiceNumberOfGames
                                 ).await()
 
                                 if (newSeries != null) {
