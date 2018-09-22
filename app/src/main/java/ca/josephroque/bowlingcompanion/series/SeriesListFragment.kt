@@ -226,6 +226,10 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
         }
     }
 
+    override fun onItemDeleted(item: IIdentifiable) {
+        // Intentionally left blank
+    }
+
     // MARK: Private functions
 
     private fun promptAddOrEditSeries(series: Series? = null) {

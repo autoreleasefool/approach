@@ -129,6 +129,10 @@ class TeamDetailsFragment : BaseFragment(),
         }
     }
 
+    override fun onItemDeleted(item: IIdentifiable) {
+        // Intentionally left blank
+    }
+
     // MARK: TeamMemberDialogDelegate
 
     override fun onFinishTeamMember(teamMember: TeamMember) {

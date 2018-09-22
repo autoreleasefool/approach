@@ -129,6 +129,10 @@ class TeamMemberDialog : BaseDialogFragment(),
         }
     }
 
+    override fun onItemDeleted(item: IIdentifiable) {
+        // Intentionally left blank
+    }
+
     // MARK: OnBackStackChangedListener
 
     override fun onBackStackChanged() {

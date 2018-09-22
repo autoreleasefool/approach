@@ -56,6 +56,18 @@ class BowlerTeamTabbedFragment : TabbedFragment(),
         }
     }
 
+    private val teamFragment: TeamListFragment?
+        get() {
+            val adapter = fragmentPager.adapter as? BowlerTeamPagerAdapter
+            return adapter?.getFragment(Tab.Teams.ordinal) as? TeamListFragment
+        }
+
+    private val bowlerFragment: BowlerListFragment?
+        get() {
+            val adapter = fragmentPager.adapter as? BowlerTeamPagerAdapter
+            return adapter?.getFragment(Tab.Bowlers.ordinal) as? BowlerListFragment
+        }
+
     // MARK: Lifecycle functions
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -139,6 +151,14 @@ class BowlerTeamTabbedFragment : TabbedFragment(),
         }
     }
 
+    override fun onItemDeleted(item: IIdentifiable) {
+        when (item) {
+            is Bowler -> teamFragment?.refresh()
+            is Team -> bowlerFragment?.refresh()
+            else -> throw RuntimeException("BowlerTeamTabbedFragment can only handle Bowler or Team and item is $item")
+        }
+    }
+
     // MARK: Private functions
 
     private fun showTransferFragment() {
@@ -173,34 +193,22 @@ class BowlerTeamTabbedFragment : TabbedFragment(),
     // MARK: BowlerDialogDelegate
 
     override fun onFinishBowler(bowler: Bowler) {
-        val adapter = fragmentPager.adapter as? BowlerTeamPagerAdapter
-        val bowlerFragment = adapter?.getFragment(Tab.Bowlers.ordinal) as? BowlerListFragment
         bowlerFragment?.refreshList(bowler)
-
-        val teamFragment = adapter?.getFragment(Tab.Teams.ordinal) as? TeamListFragment
         teamFragment?.refreshList()
     }
 
     override fun onDeleteBowler(bowler: Bowler) {
-        val adapter = fragmentPager.adapter as? BowlerTeamPagerAdapter
-        val bowlerFragment = adapter?.getFragment(Tab.Bowlers.ordinal) as? BowlerListFragment
         bowlerFragment?.onItemDelete(bowler)
-
-        val teamFragment = adapter?.getFragment(Tab.Teams.ordinal) as? TeamListFragment
         teamFragment?.refreshList()
     }
 
     // MARK: TeamDialogDelegate
 
     override fun onFinishTeam(team: Team) {
-        val adapter = fragmentPager.adapter as? BowlerTeamPagerAdapter
-        val teamFragment = adapter?.getFragment(Tab.Teams.ordinal) as? TeamListFragment
         teamFragment?.refreshList(team)
     }
 
     override fun onDeleteTeam(team: Team) {
-        val adapter = fragmentPager.adapter as? BowlerTeamPagerAdapter
-        val teamFragment = adapter?.getFragment(Tab.Teams.ordinal) as? TeamListFragment
         teamFragment?.onItemDelete(team)
     }
 

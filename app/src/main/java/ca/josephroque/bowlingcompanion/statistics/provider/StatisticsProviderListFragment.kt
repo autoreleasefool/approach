@@ -94,6 +94,10 @@ class StatisticsProviderListFragment : ListFragment<StatisticsProvider,
         }
     }
 
+    override fun onItemDeleted(item: IIdentifiable) {
+        // Intentionally left blank
+    }
+
     // MARK: Private functions
 
     private fun initStatisticsProviders() {

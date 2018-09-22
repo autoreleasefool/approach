@@ -128,6 +128,10 @@ class LeagueEventTabbedFragment : TabbedFragment(),
         }
     }
 
+    override fun onItemDeleted(item: IIdentifiable) {
+        // Intentionally left blank
+    }
+
     // MARK: LeagueDialogDelegate
 
     override fun onFinishLeague(league: League) {

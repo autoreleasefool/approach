@@ -101,6 +101,10 @@ class StatisticsUnitDetailsFragment : BaseFragment(),
         }
     }
 
+    override fun onItemDeleted(item: IIdentifiable) {
+        // Intentionally left blank
+    }
+
     // MARK: Private functions
 
     private fun showStatisticGraph(graphFragment: StatisticGraphFragment) {

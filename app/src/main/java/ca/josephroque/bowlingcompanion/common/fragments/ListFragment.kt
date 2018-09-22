@@ -88,6 +88,7 @@ abstract class ListFragment<Item : IIdentifiable, Adapter : BaseRecyclerViewAdap
             items.removeAt(index)
             adapter?.notifyItemRemoved(index)
             item.delete(context)
+            delegate?.onItemDeleted(item)
         }
     }
 
@@ -164,5 +165,6 @@ abstract class ListFragment<Item : IIdentifiable, Adapter : BaseRecyclerViewAdap
 
     interface ListFragmentDelegate {
         fun onItemSelected(item: IIdentifiable, longPress: Boolean)
+        fun onItemDeleted(item: IIdentifiable)
     }
 }
