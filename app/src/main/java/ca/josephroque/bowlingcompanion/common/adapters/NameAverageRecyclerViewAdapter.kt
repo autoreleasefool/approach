@@ -22,11 +22,9 @@ class NameAverageRecyclerViewAdapter<T : INameAverage>(
 ) : BaseRecyclerViewAdapter<T>(items, delegate) {
 
     companion object {
-        /** Logging identifier. */
         @Suppress("unused")
         private const val TAG = "NARecyclerViewAdapter"
 
-        /** Views can be active and accessible, or deleted. */
         private enum class ViewType {
             Active,
             Selectable,
@@ -45,13 +43,13 @@ class NameAverageRecyclerViewAdapter<T : INameAverage>(
      */
     var buildImageResource: ((item: T, position: Int) -> Pair<Int, Int>)? = null
 
-    /** @Override */
+    // MARK: BaseRecyclerViewAdapter
+
     override fun onDetachedFromRecyclerView(recyclerView: RecyclerView) {
         super.onDetachedFromRecyclerView(recyclerView)
         buildImageResource = null
     }
 
-    /** @Override */
     override fun getItemViewType(position: Int): Int {
         return when {
             swipeable && getItemAt(position).isDeleted -> ViewType.Deleted.ordinal
@@ -60,7 +58,6 @@ class NameAverageRecyclerViewAdapter<T : INameAverage>(
         }
     }
 
-    /** @Override */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseRecyclerViewAdapter<T>.ViewHolder {
         return when (ViewType.fromInt(viewType)) {
             ViewType.Active, ViewType.Selectable -> ViewHolderActive(
@@ -76,27 +73,23 @@ class NameAverageRecyclerViewAdapter<T : INameAverage>(
         }
     }
 
-    /** @Override */
     override fun onBindViewHolder(holder: BaseRecyclerViewAdapter<T>.ViewHolder, position: Int) {
         holder.bind(getItemAt(position), position)
     }
 
-    /**
-     * Build and render an active or selectable item in the list.
-     */
+    // MARK: ViewHolderActive
+
     inner class ViewHolderActive(view: View, private val selectable: Boolean) : BaseRecyclerViewAdapter<T>.ViewHolder(view) {
-        /** Render name of the item. */
         private val tvName: TextView? = view.findViewById(R.id.tv_name)
-        /** Render average of the item. */
         private val tvAverage: TextView? = view.findViewById(R.id.tv_average)
-        /** Render type indicator of the item. */
         private val ivIcon: ImageView? = view.findViewById(R.id.iv_name_average)
-        /** Render a checkbox indicating if the item is selected or not. Invisible by default. */
         private val checkBox: CheckBox? = view.findViewById(R.id.check_name_average)
 
         override fun bind(item: T, position: Int) {
+            val context = itemView.context
+
             tvName?.text = item.name
-            tvAverage?.text = item.getRoundedAverage(1)
+            tvAverage?.text = item.getDisplayAverage(context)
             checkBox?.isChecked = selectable && selectedItems.contains(item)
 
             if (selectable) {
@@ -119,13 +112,10 @@ class NameAverageRecyclerViewAdapter<T : INameAverage>(
         }
     }
 
-    /**
-     * Build and render a deleted item in the list.
-     */
+    // MARK: ViewHolderDeleted
+
     inner class ViewHolderDeleted(view: View) : BaseRecyclerViewAdapter<T>.ViewHolder(view) {
-        /** Render name of the deleted item. */
         private val tvDeleted: TextView? = view.findViewById(R.id.tv_deleted)
-        /** Button to undo deletion of an item. */
         private val tvUndo: TextView? = view.findViewById(R.id.tv_undo)
 
         override fun bind(item: T, position: Int) {

@@ -23,7 +23,6 @@ enum class Settings(val prefName: String) {
     HighlightSeriesEnabled("pref_highlight_series_enabled"),
 
     /** Identifier for preference to show averages with up to 1 decimal place of accuracy.  */
-    // TODO: setting unused
     AverageAsDecimal("pref_average_as_decimal"),
 
     /** Identifier for preference for if app should ask user to combine similar series.  */

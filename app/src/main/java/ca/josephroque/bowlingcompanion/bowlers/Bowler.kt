@@ -4,7 +4,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
 import android.os.Parcel
-import android.preference.PreferenceManager
+import android.support.v7.preference.PreferenceManager
 import android.util.Log
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.interfaces.INameAverage

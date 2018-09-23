@@ -1,6 +1,10 @@
 package ca.josephroque.bowlingcompanion.common.interfaces
 
+import android.content.Context
+import android.support.v7.preference.PreferenceManager
+import ca.josephroque.bowlingcompanion.settings.Settings
 import java.text.DecimalFormat
+import kotlin.math.roundToInt
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -9,24 +13,22 @@ import java.text.DecimalFormat
  */
 interface INameAverage : IDeletable, IIdentifiable {
 
-    /** Name of the object. */
-    val name: String
+    companion object {
+        @Suppress("unused")
+        private const val TAG = "INameAverage"
 
-    /** Average of the object. */
+        private val decimalFormatter = DecimalFormat("0.#")
+    }
+
+    val name: String
     val average: Double
 
-    /**
-     * Round the average to a number of decimal places and return as a [String] for display
-     *
-     * @param count number of significant digits after the decimal place
-     * @return the average, rounded
-     */
-    fun getRoundedAverage(count: Int): String {
-        if (count < 0) {
-            throw IllegalArgumentException("Cannot be negative.")
+    fun getDisplayAverage(context: Context): String {
+        val averageAsDecimal = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(Settings.AverageAsDecimal.prefName, Settings.AverageAsDecimal.booleanDefault)
+        return if (averageAsDecimal) {
+            decimalFormatter.format(average)
+        } else {
+            average.roundToInt().toString()
         }
-
-        val df = DecimalFormat("#." + "#".repeat(count))
-        return df.format(average)
     }
 }
