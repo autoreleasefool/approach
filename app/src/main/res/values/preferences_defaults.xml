@@ -8,7 +8,6 @@
     <bool name="pref_highlight_score_enabled_default">true</bool>
     <bool name="pref_highlight_series_enabled_default">true</bool>
     <bool name="pref_average_as_decimal_default">true</bool>
-    <bool name="pref_ask_combine_default">true</bool>
 
     <!-- Scoring -->
 

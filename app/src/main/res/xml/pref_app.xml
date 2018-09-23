@@ -26,13 +26,6 @@
             android:summaryOff="@string/pref_average_as_decimal_summary_off"
             android:defaultValue="@bool/pref_average_as_decimal_default" />
 
-        <android.support.v7.preference.CheckBoxPreference
-            android:key="pref_ask_combine"
-            android:title="@string/pref_ask_combine_title"
-            android:summaryOn="@string/pref_ask_combine_summary_on"
-            android:summaryOff="@string/pref_ask_combine_summary_off"
-            android:defaultValue="@bool/pref_ask_combine_default" />
-
     </android.support.v7.preference.PreferenceCategory>
 
     <android.support.v7.preference.PreferenceCategory

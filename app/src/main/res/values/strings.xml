@@ -477,9 +477,6 @@
     <string name="pref_average_as_decimal_title">Show average as decimal?</string>
     <string name="pref_average_as_decimal_summary_on">Up to 1 decimal</string>
     <string name="pref_average_as_decimal_summary_off">No decimals</string>
-    <string name="pref_ask_combine_title">Combine similar series?</string>
-    <string name="pref_ask_combine_summary_on">Yes, ask me to combine series</string>
-    <string name="pref_ask_combine_summary_off">No, don\'t combine series</string>
 
     <!-- Scoring preferences -->
     <string name="pref_category_scoring">Scoring</string>
