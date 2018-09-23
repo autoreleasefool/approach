@@ -5,6 +5,7 @@ import android.support.annotation.IdRes
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
+import android.support.v7.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,7 @@ import ca.josephroque.bowlingcompanion.common.interfaces.INavigationDrawerHandle
 import ca.josephroque.bowlingcompanion.matchplay.MatchPlayResult
 import ca.josephroque.bowlingcompanion.matchplay.MatchPlaySheet
 import ca.josephroque.bowlingcompanion.series.Series
+import ca.josephroque.bowlingcompanion.settings.Settings
 import ca.josephroque.bowlingcompanion.statistics.interfaces.IStatisticsContext
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProvider
 import ca.josephroque.bowlingcompanion.utils.Analytics
@@ -168,7 +170,9 @@ class GameControllerFragment : TabbedFragment(),
     // MARK: IFloatingActionButtonHandler
 
     override fun getFabImage(): Int? {
-        return if (fabEnabled) R.drawable.ic_arrow_forward else null
+        val context = context ?: return null
+        val userPrefFabEnabled = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(Settings.EnableFab.prefName, Settings.EnableFab.booleanDefault)
+        return if (userPrefFabEnabled && fabEnabled) R.drawable.ic_arrow_forward else null
     }
 
     override fun onFabClick() {

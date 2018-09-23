@@ -172,6 +172,8 @@ class GameFragment : BaseFragment(),
         if (gameState.gamesLoaded) {
             gameState.moveToLastSavedFrame()
         }
+
+        fabProvider?.invalidateFab()
     }
 
     override fun onStop() {
@@ -362,7 +364,7 @@ class GameFragment : BaseFragment(),
     // MARK: IFloatingActionButtonHandler
 
     override fun getFabImage(): Int? {
-        return R.drawable.ic_arrow_forward
+        return null
     }
 
     override fun onFabClick() {

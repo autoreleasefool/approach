@@ -26,7 +26,7 @@ enum class Settings(val prefName: String) {
     AverageAsDecimal("pref_average_as_decimal"),
 
     /** Identifier for preference for if app should ask user to combine similar series.  */
-    // TODO: setting unused
+    // FIXME: setting unused
     AskCombine("pref_ask_combine"),
 
     // MARK: Scoring
@@ -41,7 +41,6 @@ enum class Settings(val prefName: String) {
     EnableAutoLock("pref_enable_auto_lock"),
 
     /** Identifier for preference for if floating buttons should be shown when editing a game.  */
-    // TODO: setting unused
     EnableFab("pref_enable_fab"),
 
     /** Identifier for preference if pins should be displayed behind or above floating action buttons.  */
