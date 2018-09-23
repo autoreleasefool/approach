@@ -7,12 +7,12 @@ package ca.josephroque.bowlingcompanion.scoring
  */
 object Fouls {
 
-    /** Logging identifier. */
     @Suppress("unused")
     private const val TAG = "Fouls"
 
     /**
      * Gets the String representation of a number of fouls.
+     * Historic implementation from pre-3.0.0, required for database format
      *
      * @param i integer representation of the number of fouls
      * @return string representation of the number of fouls
@@ -32,6 +32,7 @@ object Fouls {
 
     /**
      * Gets the int representation of a String of fouls in a frame.
+     * Historic implementation from pre-3.0.0, required for database format
      *
      * @param s string representation of the number of fouls
      * @return integer representation of the number of fouls
