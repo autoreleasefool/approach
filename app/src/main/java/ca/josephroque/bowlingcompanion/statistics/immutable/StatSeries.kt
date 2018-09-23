@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion.statistics.immutable
 import android.content.Context
 import android.database.Cursor
 import android.os.Parcel
+import android.support.v7.preference.PreferenceManager
 import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
 import ca.josephroque.bowlingcompanion.common.interfaces.KParcelable
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
@@ -21,6 +22,7 @@ import ca.josephroque.bowlingcompanion.games.lane.Pin
 import ca.josephroque.bowlingcompanion.leagues.League
 import ca.josephroque.bowlingcompanion.matchplay.MatchPlayResult
 import ca.josephroque.bowlingcompanion.scoring.Fouls
+import ca.josephroque.bowlingcompanion.settings.Settings
 import ca.josephroque.bowlingcompanion.utils.DateUtils
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
@@ -69,6 +71,14 @@ class StatSeries(
         @Suppress("unused")
         @JvmField val CREATOR = parcelableCreator(::StatSeries)
 
+        private fun shouldIncludeEvents(context: Context): Boolean {
+            return PreferenceManager.getDefaultSharedPreferences(context).getBoolean(Settings.IncludeEvents.prefName, Settings.IncludeEvents.booleanDefault)
+        }
+
+        private fun shouldIncludeOpen(context: Context): Boolean {
+            return PreferenceManager.getDefaultSharedPreferences(context).getBoolean(Settings.IncludeOpen.prefName, Settings.IncludeOpen.booleanDefault)
+        }
+
         private val queryFields = (
                 "series.${SeriesEntry._ID} as sid, " +
                 "series.${SeriesEntry.COLUMN_SERIES_DATE}, " +
@@ -76,6 +86,9 @@ class StatSeries(
                 "${StatFrame.QUERY_FIELDS.joinToString(separator = ", ")} ")
 
         fun loadSeriesForTeam(context: Context, teamId: Long): Deferred<List<StatSeries>> {
+            val includeOpen = shouldIncludeOpen(context)
+            val includeEvents = shouldIncludeEvents(context)
+
             val query = ("SELECT " +
                     queryFields +
                     "FROM ${TeamBowlerEntry.TABLE_NAME} as teamBowlers " +
@@ -90,16 +103,25 @@ class StatSeries(
                     "INNER JOIN ${FrameEntry.TABLE_NAME} as frame " +
                     "ON game.${GameEntry._ID}=frame.${FrameEntry.COLUMN_GAME_ID} " +
                     "WHERE teamBowlers.${TeamBowlerEntry.COLUMN_TEAM_ID}=? " +
+                    (if (!includeOpen) "AND league.${LeagueEntry.COLUMN_LEAGUE_NAME}!=? " else "") +
+                    (if (!includeEvents) "AND league.${LeagueEntry.COLUMN_IS_EVENT}!=? " else "") +
                     "ORDER BY " +
                     "series.${SeriesEntry.COLUMN_SERIES_DATE}, " +
                     "series.${SeriesEntry._ID}, " +
                     "game.${GameEntry.COLUMN_GAME_NUMBER}, " +
                     "frame.${FrameEntry.COLUMN_FRAME_NUMBER}")
-            val args = arrayOf(teamId.toString())
+            val args = listOfNotNull(
+                    teamId.toString(),
+                    if (!includeOpen) League.PRACTICE_LEAGUE_NAME else null,
+                    if (!includeEvents) "1" else null
+            ).toTypedArray()
             return loadSeries(context, query, args)
         }
 
         fun loadSeriesForBowler(context: Context, bowlerId: Long): Deferred<List<StatSeries>> {
+            val includeOpen = shouldIncludeOpen(context)
+            val includeEvents = shouldIncludeEvents(context)
+
             val query = ("SELECT " +
                     queryFields +
                     "FROM ${LeagueEntry.TABLE_NAME} as league " +
@@ -110,12 +132,18 @@ class StatSeries(
                     "INNER JOIN ${FrameEntry.TABLE_NAME} as frame " +
                     "ON game.${GameEntry._ID}=frame.${FrameEntry.COLUMN_GAME_ID} " +
                     "WHERE league.${LeagueEntry.COLUMN_BOWLER_ID}=? " +
+                    (if (!includeOpen) "AND league.${LeagueEntry.COLUMN_LEAGUE_NAME}!=? " else "") +
+                    (if (!includeEvents) "AND league.${LeagueEntry.COLUMN_IS_EVENT}!=? " else "") +
                     "ORDER BY " +
                     "series.${SeriesEntry.COLUMN_SERIES_DATE}, " +
                     "series.${SeriesEntry._ID}, " +
                     "game.${GameEntry.COLUMN_GAME_NUMBER}, " +
                     "frame.${FrameEntry.COLUMN_FRAME_NUMBER}")
-            val args = arrayOf(bowlerId.toString())
+            val args = listOfNotNull(
+                    bowlerId.toString(),
+                    if (!includeOpen) League.PRACTICE_LEAGUE_NAME else null,
+                    if (!includeEvents) "1" else null
+            ).toTypedArray()
             return loadSeries(context, query, args)
         }
 

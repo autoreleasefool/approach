@@ -54,11 +54,9 @@ enum class Settings(val prefName: String) {
     // MARK: Stats
 
     /** Identifier for preference which indicates if events should be included in stats.  */
-    // TODO: setting unused
     IncludeEvents("pref_include_events"),
 
     /** Identifier for preference which indicates if open games should be included in stats.  */
-    // TODO: setting unused
     IncludeOpen("pref_include_open"),
 
     /** Identifier for preference to count Headpin + 2 as a Headpin in statistics.  */

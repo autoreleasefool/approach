@@ -72,6 +72,11 @@ abstract class StatisticsUnit(initialSeries: List<StatSeries>? = null, initialSt
 
     protected abstract fun getSeriesForStatistics(context: Context): Deferred<List<StatSeries>>
 
+    fun clearCache() {
+        cachedSeries = null
+        cachedStatistics = null
+    }
+
     fun getStatistics(context: Context): Deferred<MutableList<StatisticListItem>> {
         return async(CommonPool) {
             if (cachedStatistics == null) {

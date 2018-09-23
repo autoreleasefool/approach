@@ -44,6 +44,11 @@ class StatisticsListFragment : ListFragment<StatisticListItem, StatisticsRecycle
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
+    override fun onStop() {
+        super.onStop()
+        unit.clearCache()
+    }
+
     // MARK: BaseFragment
 
     override fun updateToolbarTitle() {
