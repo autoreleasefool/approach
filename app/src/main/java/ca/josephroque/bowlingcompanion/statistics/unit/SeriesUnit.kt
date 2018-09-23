@@ -49,7 +49,7 @@ class SeriesUnit(
         return StatSeries.loadSeriesForSeries(context, seriesId)
     }
 
-    // MARK: KParcelable
+    // MARK: Parcelable
 
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeString(bowlerName)

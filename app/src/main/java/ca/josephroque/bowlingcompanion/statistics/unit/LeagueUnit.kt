@@ -38,7 +38,7 @@ class LeagueUnit(val bowlerName: String, val leagueId: Long, leagueName: String,
         return StatSeries.loadSeriesForLeague(context, leagueId)
     }
 
-    // MARK: KParcelable
+    // MARK: Parcelable
 
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeString(bowlerName)

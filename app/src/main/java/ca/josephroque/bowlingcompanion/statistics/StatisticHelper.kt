@@ -89,14 +89,11 @@ import ca.josephroque.bowlingcompanion.statistics.impl.series.HighSeriesOf9Stati
 
 /**
  * Copyright (C) 2018 Joseph Roque
+ *
+ * Helper methods for statistics.
  */
 object StatisticHelper {
 
-    /**
-     * Get a full list of new instances of [Statistic]s.
-     *
-     * @return a list with a new instance of each [Statistic]
-     */
     fun getFreshStatistics(): MutableList<Statistic> = mutableListOf(
         // General
         BowlerNameStatistic(),
@@ -193,13 +190,6 @@ object StatisticHelper {
         GamesTiedStatistic()
     )
 
-    /**
-     * Read a [Statistic] from a [Parcel] and cast to the proper type based on the given ID.
-     *
-     * @param p parcel to read from
-     * @param id id of the statistic
-     * @return the [Statistic] read from the [Parcel]
-     */
     fun readParcelable(p: Parcel, id: Int): Statistic {
         return when (id) {
             BowlerNameStatistic.Id -> p.readParcelable<BowlerNameStatistic>(BowlerNameStatistic::class.java.classLoader)
@@ -382,13 +372,6 @@ object StatisticHelper {
         }
     }
 
-    /**
-     * Get instances of the statistics adjacent to the given id.
-     *
-     * @param id the id of the middle statistic
-     * @param canBeGraphed true to only return from statistics that can be graphed
-     * @return the previous statistic, if available, and the next statistic, if available
-     */
     fun getAdjacentStatistics(id: Long, canBeGraphed: Boolean = true): Pair<Statistic?, Statistic?> {
         // FIXME: Find a better way to get the title of multiple statistics than creating the entire list
         val statistics = getFreshStatistics()

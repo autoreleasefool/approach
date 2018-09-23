@@ -41,7 +41,7 @@ class StatSeries(
     val total: Int
         get() = games.sumBy { it.score }
 
-    // MARK: KParcelable
+    // MARK: Constructor
 
     private constructor(p: Parcel): this(
         id = p.readLong(),
@@ -53,6 +53,8 @@ class StatSeries(
         },
         date = p.readDate()!!
     )
+
+    // MARK: Parcelable
 
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeLong(id)

@@ -1,7 +1,6 @@
 package ca.josephroque.bowlingcompanion.statistics.immutable
 
 import android.os.Parcel
-import android.os.Parcelable
 import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
 import ca.josephroque.bowlingcompanion.common.interfaces.KParcelable
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
@@ -27,19 +26,14 @@ class StatFrame(
     val ballFouled: BooleanArray
 ) : IIdentifiable, KParcelable {
 
-    /** Number of pins left on deck at the end of the frame. */
     val pinsLeftOnDeck: Int
         get() = pinState[Frame.LAST_BALL].sumBy { if (it.onDeck) it.value else 0 }
 
-    /** Ordinal of the frame, zero based. Frames are numbered 0 to 9 this way. */
     val zeroBasedOrdinal: Int
         get() = ordinal - 1
 
-    // MARK: KParcelable
+    // MARK: Constructor
 
-    /**
-     * Construct a [StatFrame] from a [Parcel].
-     */
     private constructor(p: Parcel): this(
             id = p.readLong(),
             ordinal = p.readInt(),
@@ -54,7 +48,8 @@ class StatFrame(
             }
     )
 
-    /** @Override */
+    // MARK: Parcelable
+
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeLong(id)
         writeInt(ordinal)
@@ -66,15 +61,12 @@ class StatFrame(
     }
 
     companion object {
-        /** Logging identifier. */
         @Suppress("unused")
         private const val TAG = "StatFrame"
 
-        /** Creator, required by [Parcelable]. */
         @Suppress("unused")
         @JvmField val CREATOR = parcelableCreator(::StatFrame)
 
-        /** Fields to query to create a [StatFrame]. */
         val QUERY_FIELDS = arrayOf(
             "frame.${FrameEntry._ID} as fid",
             "frame.${FrameEntry.COLUMN_FRAME_NUMBER}",

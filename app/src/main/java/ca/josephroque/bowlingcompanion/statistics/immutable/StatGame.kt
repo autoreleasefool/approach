@@ -1,7 +1,6 @@
 package ca.josephroque.bowlingcompanion.statistics.immutable
 
 import android.os.Parcel
-import android.os.Parcelable
 import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
 import ca.josephroque.bowlingcompanion.common.interfaces.KParcelable
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
@@ -24,11 +23,8 @@ class StatGame(
     val matchPlay: MatchPlayResult
 ) : IIdentifiable, KParcelable {
 
-    // MARK: KParcelable
+    // MARK: Constructor
 
-    /**
-     * Construct a [StatGame] from a [Parcel].
-     */
     private constructor(p: Parcel): this(
             id = p.readLong(),
             ordinal = p.readInt(),
@@ -43,7 +39,8 @@ class StatGame(
             matchPlay = MatchPlayResult.fromInt(p.readInt())!!
     )
 
-    /** @Override */
+    // MARK: Parcelable
+
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeLong(id)
         writeInt(ordinal)
@@ -54,15 +51,12 @@ class StatGame(
     }
 
     companion object {
-        /** Logging identifier. */
         @Suppress("unused")
         private const val TAG = "StatGame"
 
-        /** Creator, required by [Parcelable]. */
         @Suppress("unused")
         @JvmField val CREATOR = parcelableCreator(::StatGame)
 
-        /** Fields to query to create a [StatGame]. */
         val QUERY_FIELDS = arrayOf(
             "game.${GameEntry._ID} as gid",
             "game.${GameEntry.COLUMN_GAME_NUMBER}",

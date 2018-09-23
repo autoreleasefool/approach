@@ -2,7 +2,6 @@ package ca.josephroque.bowlingcompanion.statistics.provider
 
 import android.os.Bundle
 import android.os.Parcel
-import android.os.Parcelable
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.bowlers.Bowler
 import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
@@ -26,23 +25,17 @@ import ca.josephroque.bowlingcompanion.teams.Team
  */
 sealed class StatisticsProvider : IIdentifiable, KParcelable {
 
-    /** Name of the collection the instance provides. */
     abstract val name: String
-
-    /** Display name of the provider type. */
     abstract val typeName: Int
 
-    /** Provide a team's statistics. */
+    // MARK: TeamStatistics
+
     data class TeamStatistics(val team: Team) : StatisticsProvider() {
         companion object {
-            /** Creator, required by [Parcelable]. */
             @Suppress("unused")
             @JvmField val CREATOR = parcelableCreator(StatisticsProvider::TeamStatistics)
         }
 
-        /**
-         * Construct [TeamStatistics] from a [Parcel].
-         */
         private constructor(p: Parcel): this(p.readParcelable<Team>(Team::class.java.classLoader))
 
         override val id = team.id.and(0xF00000000000000L)
@@ -50,17 +43,14 @@ sealed class StatisticsProvider : IIdentifiable, KParcelable {
         override val typeName = R.string.team
     }
 
-    /** Provide a bowler's statistics. */
+    // MARK: BowlerStatistics
+
     data class BowlerStatistics(val bowler: Bowler) : StatisticsProvider() {
         companion object {
-            /** Creator, required by [Parcelable]. */
             @Suppress("unused")
             @JvmField val CREATOR = parcelableCreator(StatisticsProvider::BowlerStatistics)
         }
 
-        /**
-         * Construct [BowlerStatistics] from a [Parcel].
-         */
         private constructor(p: Parcel): this(p.readParcelable<Bowler>(Bowler::class.java.classLoader))
 
         override val id = bowler.id.and(0xE00000000000000L)
@@ -68,17 +58,14 @@ sealed class StatisticsProvider : IIdentifiable, KParcelable {
         override val typeName = R.string.bowler
     }
 
-    /** Provide a league's statistics. */
+    // MARK: LeagueStatistics
+
     data class LeagueStatistics(val league: League) : StatisticsProvider() {
         companion object {
-            /** Creator, required by [Parcelable]. */
             @Suppress("unused")
             @JvmField val CREATOR = parcelableCreator(StatisticsProvider::LeagueStatistics)
         }
 
-        /**
-         * Construct [LeagueStatistics] from a [Parcel].
-         */
         private constructor(p: Parcel): this(p.readParcelable<League>(League::class.java.classLoader))
 
         override val id = league.id.and(0xD00000000000000L)
@@ -86,17 +73,14 @@ sealed class StatisticsProvider : IIdentifiable, KParcelable {
         override val typeName = R.string.league
     }
 
-    /** Provide a series's statistics. */
+    // MARK: SeriesStatistics
+
     data class SeriesStatistics(val series: Series) : StatisticsProvider() {
         companion object {
-            /** Creator, required by [Parcelable]. */
             @Suppress("unused")
             @JvmField val CREATOR = parcelableCreator(StatisticsProvider::SeriesStatistics)
         }
 
-        /**
-         * Construct [SeriesStatistics] from a [Parcel].
-         */
         private constructor(p: Parcel): this(p.readParcelable<Series>(Series::class.java.classLoader))
 
         override val id = series.id.and(0xC00000000000000L)
@@ -104,17 +88,14 @@ sealed class StatisticsProvider : IIdentifiable, KParcelable {
         override val typeName = R.string.series
     }
 
-    /** Provide a game's statistics. */
+    // MARK: GameStatistics
+
     data class GameStatistics(val game: Game) : StatisticsProvider() {
         companion object {
-            /** Creator, required by [Parcelable]. */
             @Suppress("unused")
             @JvmField val CREATOR = parcelableCreator(StatisticsProvider::GameStatistics)
         }
 
-        /**
-         * Construct [GameStatistics] from a [Parcel].
-         */
         private constructor(p: Parcel): this(p.readParcelable<Game>(Game::class.java.classLoader))
 
         override val id = game.id.and(0xB00000000000000L)
@@ -122,7 +103,6 @@ sealed class StatisticsProvider : IIdentifiable, KParcelable {
         override val typeName = R.string.game
     }
 
-    /** The statistics to be displayed. */
     val units: List<StatisticsUnit> by lazy {
         return@lazy when (this) {
             is TeamStatistics -> {
@@ -138,7 +118,8 @@ sealed class StatisticsProvider : IIdentifiable, KParcelable {
         }
     }
 
-    /** @Override */
+    // MARK: Parcelable
+
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         when (this@StatisticsProvider) {
             is TeamStatistics -> writeParcelable(team, 0)
@@ -149,7 +130,6 @@ sealed class StatisticsProvider : IIdentifiable, KParcelable {
         }
     }
 
-    /** @Override */
     override fun describeContents(): Int {
         return when (this) {
             // When changing, update `StatisticsProvider.getParcelable`
@@ -162,14 +142,6 @@ sealed class StatisticsProvider : IIdentifiable, KParcelable {
     }
 
     companion object {
-        /**
-         * Get the [StatisticsProvider] from the [Bundle] depending on the given [type].
-         *
-         * @param arguments bundle to get provider from
-         * @param key the key identifying the [Parcel] in the [Bundle]
-         * @param type the type of provider to get
-         * @return the [StatisticsProvider]
-         */
         fun getParcelable(arguments: Bundle?, key: String, type: Int): StatisticsProvider? {
             return when (type) {
                 // When changing, update `StatisticsProvider::describeContents`

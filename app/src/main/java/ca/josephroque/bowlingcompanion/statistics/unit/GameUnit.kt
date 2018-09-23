@@ -54,7 +54,6 @@ class GameUnit(
 
     // MARK: StatisticsUnit
 
-    /** @Override */
     override fun getSeriesForStatistics(context: Context): Deferred<List<StatSeries>> {
         return async(CommonPool) {
             val seriesList = StatSeries.loadSeriesForSeries(context, seriesId).await()
@@ -70,7 +69,7 @@ class GameUnit(
         }
     }
 
-    // MARK: KParcelable
+    // MARK: Parcelable
 
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeString(bowlerName)

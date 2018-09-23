@@ -20,11 +20,9 @@ class StatisticsProviderRecyclerViewAdapter(
 ) : BaseRecyclerViewAdapter<StatisticsProvider>(items, delegate) {
 
     companion object {
-        /** Logging identifier. */
         @Suppress("unused")
         private const val TAG = "SPRecyclerViewAdapter"
 
-        /** Views can be active and accessible, or deleted. */
         private enum class ViewType {
             Team,
             Bowler,
@@ -39,7 +37,8 @@ class StatisticsProviderRecyclerViewAdapter(
         }
     }
 
-    /** @Override */
+    // MARK: BaseRecyclerViewAdapter
+
     override fun getItemViewType(position: Int): Int {
         val item = getItemAt(position)
         val type: ViewType = when (item) {
@@ -53,7 +52,6 @@ class StatisticsProviderRecyclerViewAdapter(
         return type.ordinal
     }
 
-    /** @Override */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseRecyclerViewAdapter<StatisticsProvider>.ViewHolder {
         return ViewHolderName(
             LayoutInflater
@@ -62,18 +60,14 @@ class StatisticsProviderRecyclerViewAdapter(
         )
     }
 
-    /** @Override */
     override fun onBindViewHolder(holder: BaseRecyclerViewAdapter<StatisticsProvider>.ViewHolder, position: Int) {
         holder.bind(getItemAt(position), position)
     }
 
-    /**
-     * Build and render a [StatisticsProvider].
-     */
+    // MARK: ViewHolderName
+
     inner class ViewHolderName(view: View) : BaseRecyclerViewAdapter<StatisticsProvider>.ViewHolder(view) {
-        /** Render name of the item. */
         private val tvName: TextView? = view.findViewById(R.id.tv_name)
-        /** Render type of the item. */
         private val tvType: TextView? = view.findViewById(R.id.tv_type)
 
         override fun bind(item: StatisticsProvider, position: Int) {

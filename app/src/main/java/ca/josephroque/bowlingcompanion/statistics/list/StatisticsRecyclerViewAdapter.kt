@@ -22,13 +22,9 @@ class StatisticsRecyclerViewAdapter(
 ) : BaseRecyclerViewAdapter<StatisticListItem>(values, delegate) {
 
     companion object {
-        /** Logging identifier. */
         @Suppress("unused")
         private const val TAG = "StatisticsRVAdapter"
 
-        /**
-         * Types of items to display in the list.
-         */
         private enum class ViewType {
             Header,
             Item;
@@ -40,7 +36,8 @@ class StatisticsRecyclerViewAdapter(
         }
     }
 
-    /** @override */
+    // MARK: BaseRecyclerViewAdapter
+
     override fun getItemViewType(position: Int): Int {
         return when (getItemAt(position)) {
             is StatisticsCategory -> ViewType.Header.ordinal
@@ -49,7 +46,6 @@ class StatisticsRecyclerViewAdapter(
         }
     }
 
-    /** @Override */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return when (ViewType.fromInt(viewType)) {
             ViewType.Header -> HeaderViewHolder(LayoutInflater
@@ -62,19 +58,15 @@ class StatisticsRecyclerViewAdapter(
         }
     }
 
-    /** @Override */
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(getItemAt(position), position)
     }
 
-    /**
-     * Build and render a statistics category header.
-     */
+    // MARK: HeaderViewHolder
+
     inner class HeaderViewHolder(view: View) : BaseRecyclerViewAdapter<StatisticListItem>.ViewHolder(view) {
-        /** Render title of the category. */
         private val tvTitle: TextView? = view.findViewById(R.id.tv_title)
 
-        /** @Override */
         override fun bind(item: StatisticListItem, position: Int) {
             val context = itemView.context
             val header = item as StatisticsCategory
@@ -83,18 +75,13 @@ class StatisticsRecyclerViewAdapter(
         }
     }
 
-    /**
-     * Build and render a statistic.
-     */
+    // MARKL ItemViewHolder
+
     inner class ItemViewHolder(view: View) : BaseRecyclerViewAdapter<StatisticListItem>.ViewHolder(view) {
-        /** Render title of the statistic. */
         private val tvTitle: TextView? = view.findViewById(R.id.tv_title)
-        /** Render value of the statistic. */
         private val tvValue: TextView? = view.findViewById(R.id.tv_value)
-        /** Render subtitle of the statistic. */
         private val tvSubtitle: TextView? = view.findViewById(R.id.tv_subtitle)
 
-        /** @Override */
         override fun bind(item: StatisticListItem, position: Int) {
             val context = itemView.context
             val statistic = item as Statistic

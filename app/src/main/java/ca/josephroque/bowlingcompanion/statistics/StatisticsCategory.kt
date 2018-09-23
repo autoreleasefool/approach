@@ -20,12 +20,6 @@ enum class StatisticsCategory : StatisticListItem {
     Average,
     Series;
 
-    /**
-     * Get the title of the category.
-     *
-     * @param resources to get string
-     * @return the title from the app resources
-     */
     fun getTitle(resources: Resources): String {
         return when (this) {
             General -> resources.getString(R.string.statistics_category_general)
@@ -39,6 +33,5 @@ enum class StatisticsCategory : StatisticListItem {
         }
     }
 
-    /** @Override */
     override val id: Long = this.ordinal.toLong()
 }
