@@ -1,6 +1,7 @@
 package ca.josephroque.bowlingcompanion.series
 
 import android.support.v4.content.ContextCompat
+import android.support.v7.preference.PreferenceManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.adapters.BaseRecyclerViewAdapter
 import ca.josephroque.bowlingcompanion.matchplay.MatchPlayResult
 import ca.josephroque.bowlingcompanion.leagues.League
+import ca.josephroque.bowlingcompanion.settings.Settings
 import com.nex3z.flowlayout.FlowLayout
 
 /**
@@ -24,13 +26,9 @@ class SeriesRecyclerViewAdapter(
 ) : BaseRecyclerViewAdapter<Series>(values, delegate) {
 
     companion object {
-        /** Logging identifier. */
         @Suppress("unused")
         private const val TAG = "SeriesRVAdapter"
 
-        /**
-         * Possible types of series views to be displayed.
-         */
         private enum class ViewType {
             Condensed,
             Expanded,
@@ -43,42 +41,38 @@ class SeriesRecyclerViewAdapter(
         }
     }
 
-    /** If true, a condensed view of series is shown. */
     var seriesView: Series.Companion.View = Series.Companion.View.Expanded
         set(value) {
             notifyDataSetChanged()
             field = value
         }
 
-    /** Minimum color to highlight a series. */
     var seriesHighlightMin: Int = 0
         set(value) {
             notifyDataSetChanged()
             field = value
         }
 
-    /** Minimum color to highlight a game. */
     var gameHighlightMin: Int = 0
         set(value) {
             notifyDataSetChanged()
             field = value
         }
 
-    /** Indicates if series should be highlighted. */
     var shouldHighlightSeries: Boolean = true
         set(value) {
             notifyDataSetChanged()
             field = value
         }
 
-    /** Indicates if scores should be highlighted. */
     var shouldHighlightScores: Boolean = true
         set(value) {
             notifyDataSetChanged()
             field = value
         }
 
-    /** @Override */
+    // MARK: BaseRecyclerViewAdapter
+
     override fun getItemViewType(position: Int): Int {
         return when {
             getItemAt(position).isDeleted -> ViewType.Deleted.ordinal
@@ -88,7 +82,6 @@ class SeriesRecyclerViewAdapter(
         }
     }
 
-    /** @Override */
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseRecyclerViewAdapter<Series>.ViewHolder {
         return when (ViewType.fromInt(viewType)) {
             ViewType.Condensed -> ViewHolderCondensed(LayoutInflater
@@ -104,19 +97,12 @@ class SeriesRecyclerViewAdapter(
         }
     }
 
-    /** @Override */
     override fun onBindViewHolder(holder: BaseRecyclerViewAdapter<Series>.ViewHolder, position: Int) {
         holder.bind(getItemAt(position), position)
     }
 
-    /**
-     * Check if a series should be highlighted.
-     *
-     * @param seriesTotal the series total
-     * @param numberOfGames number of games in the series
-     * @return true if the series total is high enough to highlight, and highlighting is active,
-     *         false otherwise
-     */
+    // MARK: SeriesRecyclerViewAdapter
+
     private fun shouldHighlightSeries(seriesTotal: Int, numberOfGames: Int): Boolean {
         return when {
             seriesHighlightMin > 0 -> shouldHighlightSeries && seriesTotal > seriesHighlightMin
@@ -125,12 +111,6 @@ class SeriesRecyclerViewAdapter(
         }
     }
 
-    /**
-     * Check if a game should be highlighted.
-     *
-     * @param score the score of the game
-     * @return true if the score is high enough to highlight, and highlighting is active false otherwise
-     */
     private fun shouldHighlightGame(score: Int): Boolean {
         return when {
             gameHighlightMin > 0 -> shouldHighlightScores && score > gameHighlightMin
@@ -139,16 +119,12 @@ class SeriesRecyclerViewAdapter(
         }
     }
 
-    /**
-     * Build and render a condensed series.
-     */
+    // MARK: ViewHolderCondensed
+
     inner class ViewHolderCondensed(view: View) : BaseRecyclerViewAdapter<Series>.ViewHolder(view) {
-        /** Render date of the series. */
         private val tvDate: TextView? = view.findViewById(R.id.tv_date)
-        /** Render total of the series. */
         private val tvTotal: TextView? = view.findViewById(R.id.tv_total)
 
-        /** @Override */
         override fun bind(item: Series, position: Int) {
             val context = itemView.context
             val seriesTotal = item.scores.sum()
@@ -167,19 +143,14 @@ class SeriesRecyclerViewAdapter(
         }
     }
 
-    /**
-     * Build and render an expanded series.
-     */
+    // MARK: ViewHolderExpanded
+
     inner class ViewHolderExpanded(view: View) : BaseRecyclerViewAdapter<Series>.ViewHolder(view) {
-        /** Render date of the series. */
         private val tvDate: TextView? = view.findViewById(R.id.tv_date)
-        /** Render total of the series. */
         private val tvTotal: TextView? = view.findViewById(R.id.tv_total)
 
-        /** Render set of scores in the series. */
         private val flowScores: FlowLayout? = view.findViewById(R.id.flow_scores)
 
-        /** @Override */
         override fun bind(item: Series, position: Int) {
             val context = itemView.context
             val seriesTotal = item.scores.sum()
@@ -193,31 +164,37 @@ class SeriesRecyclerViewAdapter(
                 tvTotal?.setTextColor(ContextCompat.getColor(context, R.color.primaryBlackText))
             }
 
+            val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+            val shouldShowMatchPlayResult = preferences.getBoolean(Settings.ShowMatchResults.prefName, Settings.ShowMatchResults.booleanDefault)
+            val shouldHighlightMatchPlayResult = preferences.getBoolean(Settings.HighlightMatchResults.prefName, Settings.HighlightMatchResults.booleanDefault)
+
             flowScores?.removeAllViews()
-            for (i in 0 until item.scores.size) {
-                val id = View.generateViewId()
-                val scoreView = SeriesScoreView(context)
-                val matchPlayResult = MatchPlayResult.fromInt(item.matchPlay[i].toInt())!!
-                scoreView.id = id
-                scoreView.isFocusable = false
-                scoreView.isClickable = false
-                scoreView.score = item.scores[i]
-                scoreView.matchPlay = matchPlayResult
+            if (shouldShowMatchPlayResult) {
+                for (i in 0 until item.scores.size) {
+                    val id = View.generateViewId()
+                    val scoreView = SeriesScoreView(context)
+                    val matchPlayResult = MatchPlayResult.fromInt(item.matchPlay[i].toInt())!!
+                    scoreView.id = id
+                    scoreView.isFocusable = false
+                    scoreView.isClickable = false
+                    scoreView.score = item.scores[i]
+                    scoreView.matchPlay = matchPlayResult
 
-                scoreView.scoreTextColor = if (shouldHighlightGame(item.scores[i])) {
-                    ContextCompat.getColor(context, R.color.gameHighlight)
-                } else {
-                    ContextCompat.getColor(context, R.color.primaryBlackText)
+                    scoreView.scoreTextColor = if (shouldHighlightGame(item.scores[i])) {
+                        ContextCompat.getColor(context, R.color.gameHighlight)
+                    } else {
+                        ContextCompat.getColor(context, R.color.primaryBlackText)
+                    }
+
+                    when {
+                        !shouldHighlightMatchPlayResult || matchPlayResult == MatchPlayResult.NONE -> scoreView.matchPlayTextColor = ContextCompat.getColor(context, R.color.primaryBlackText)
+                        matchPlayResult == MatchPlayResult.WON -> scoreView.matchPlayTextColor = ContextCompat.getColor(context, R.color.matchPlayWin)
+                        matchPlayResult == MatchPlayResult.LOST -> scoreView.matchPlayTextColor = ContextCompat.getColor(context, R.color.matchPlayLoss)
+                        matchPlayResult == MatchPlayResult.TIED -> scoreView.matchPlayTextColor = ContextCompat.getColor(context, R.color.matchPlayTie)
+                    }
+
+                    flowScores?.addView(scoreView)
                 }
-
-                when (matchPlayResult) {
-                    MatchPlayResult.NONE -> scoreView.matchPlayTextColor = ContextCompat.getColor(context, R.color.primaryBlackText)
-                    MatchPlayResult.WON -> scoreView.matchPlayTextColor = ContextCompat.getColor(context, R.color.matchPlayWin)
-                    MatchPlayResult.LOST -> scoreView.matchPlayTextColor = ContextCompat.getColor(context, R.color.matchPlayLoss)
-                    MatchPlayResult.TIED -> scoreView.matchPlayTextColor = ContextCompat.getColor(context, R.color.matchPlayTie)
-                }
-
-                flowScores?.addView(scoreView)
             }
 
             itemView.setOnClickListener(this@SeriesRecyclerViewAdapter)
@@ -225,16 +202,12 @@ class SeriesRecyclerViewAdapter(
         }
     }
 
-    /**
-     * Build and render a deleted item in the list.
-     */
+    // MARK: ViewHolderDeleted
+
     inner class ViewHolderDeleted(view: View) : BaseRecyclerViewAdapter<Series>.ViewHolder(view) {
-        /** Render name of the deleted item. */
         private val tvDeleted: TextView? = view.findViewById(R.id.tv_deleted)
-        /** Button to undo deletion of an item. */
         private val tvUndo: TextView? = view.findViewById(R.id.tv_undo)
 
-        /** @Override */
         override fun bind(item: Series, position: Int) {
             val context = itemView.context
 

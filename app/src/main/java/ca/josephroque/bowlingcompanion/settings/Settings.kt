@@ -66,11 +66,9 @@ enum class Settings(val prefName: String) {
     // MARK: Match play
 
     /** Identifier for preference to show or hide match play results in series view.  */
-    // TODO: setting unused
     ShowMatchResults("pref_show_match_results"),
 
     /** Identifier for preference to highlight match play results in series view.  */
-    // TODO: setting unused
     HighlightMatchResults("pref_highlight_match_results"),
 
     // MARK: Feedback
