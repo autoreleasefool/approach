@@ -26,6 +26,7 @@ import ca.josephroque.bowlingcompanion.games.views.PinLayout
 import ca.josephroque.bowlingcompanion.matchplay.MatchPlayResult
 import ca.josephroque.bowlingcompanion.matchplay.MatchPlaySheet
 import ca.josephroque.bowlingcompanion.series.Series
+import ca.josephroque.bowlingcompanion.settings.Settings
 import ca.josephroque.bowlingcompanion.utils.Analytics
 import ca.josephroque.bowlingcompanion.utils.BCError
 import kotlinx.android.synthetic.main.fragment_game.game_footer as gameFooter
@@ -162,8 +163,10 @@ class GameFragment : BaseFragment(),
         autoEventController.init(preferences)
         autoEventController.pauseAll()
 
-        // Set delegates
-        frameViews.forEach { it?.delegate = this }
+        frameViews.forEach {
+            it?.delegate = this
+            it?.shouldHighlightMarks = preferences.getBoolean(Settings.EnableStrikeHighlights.prefName, Settings.EnableStrikeHighlights.booleanDefault)
+        }
         pinLayout.delegate = this
         gameFooter.delegate = this
         gameHeader.delegate = this

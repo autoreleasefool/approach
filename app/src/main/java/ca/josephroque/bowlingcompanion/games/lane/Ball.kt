@@ -8,7 +8,6 @@ package ca.josephroque.bowlingcompanion.games.lane
 enum class Ball {
     Strike, Spare, Left, Right, Ace, ChopOff, Split, HeadPin, HeadPin2, None;
 
-    /** @Override */
     override fun toString(): String {
         return when (this) {
             Strike -> "X"

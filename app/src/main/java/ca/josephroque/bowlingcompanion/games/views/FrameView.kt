@@ -4,12 +4,15 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
 import android.support.v4.content.ContextCompat
+import android.support.v7.preference.PreferenceManager
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import ca.josephroque.bowlingcompanion.R
+import ca.josephroque.bowlingcompanion.games.lane.Ball
+import ca.josephroque.bowlingcompanion.settings.Settings
 import kotlinx.android.synthetic.main.view_frame.view.frame as frame
 import kotlinx.android.synthetic.main.view_frame.view.tv_frame_number as tvFrameNumber
 import kotlinx.android.synthetic.main.view_frame.view.tv_score as tvScore
@@ -22,58 +25,57 @@ import kotlinx.android.synthetic.main.view_frame.view.tv_score as tvScore
 class FrameView : LinearLayout, View.OnClickListener {
 
     companion object {
-        /** Logging identifier. */
         @Suppress("unused")
         private const val TAG = "FrameView"
 
-        /** Tag to save super state. */
         private const val SUPER_STATE = "${TAG}_super_state"
-        /** Tag to save state of the frame this view represents. */
         private const val STATE_FRAME_NUMBER = "${TAG}_frame_number"
-        /** Tag to save state of current ball. */
         private const val STATE_CURRENT_BALL = "${TAG}_current_ball"
-        /** Tag to save state of score. */
         private const val STATE_SCORE = "${TAG}_score"
-        /** Tag to save state of current frame. */
         private const val STATE_CURRENT_FRAME = "${TAG}_current_frame"
     }
 
-    /** IDs for ball views. */
     private val ballViewIds = intArrayOf(R.id.tv_ball_1, R.id.tv_ball_2, R.id.tv_ball_3)
-    /** IDs for foul views. */
     private val foulViewIds = intArrayOf(R.id.tv_foul_1, R.id.tv_foul_2, R.id.tv_foul_3)
-    /** Listener for events. */
+
     var delegate: FrameInteractionDelegate? = null
 
-    /** Frame number to display beneath the score. */
     var frameNumber: Int = 0
         set(value) {
             field = value
             tvFrameNumber.text = (value + 1).toString()
         }
 
-    /** Score of the frame. */
     var score: Int = 0
         set(value) {
             field = value
             tvScore.text = value.toString()
         }
 
-    /** Current active ball in the frame. */
     var currentBall: Int = 0
         set(value) {
             field = value
             updateCurrentFrame()
         }
 
-    /** True if this is the current active frame, false otherwise. */
     var isCurrentFrame: Boolean = false
         set(value) {
             field = value
             updateCurrentFrame()
         }
 
-    /** Required constructors */
+    var shouldHighlightMarks: Boolean = Settings.EnableStrikeHighlights.booleanDefault
+        set(value) {
+            field = value
+            for (i in 0..ballViewIds.size) {
+                val ballView = findViewById<TextView>(ballViewIds[i])
+                setBallText(i, ballView.text.toString())
+            }
+        }
+
+
+    // MARK: Constructors
+
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
@@ -97,7 +99,8 @@ class FrameView : LinearLayout, View.OnClickListener {
         frame.setOnClickListener(this)
     }
 
-    /** @Override */
+    // MARK: Lifecycle functions
+
     override fun onSaveInstanceState(): Parcelable {
         return Bundle().apply {
             putParcelable(SUPER_STATE, super.onSaveInstanceState())
@@ -108,7 +111,6 @@ class FrameView : LinearLayout, View.OnClickListener {
         }
     }
 
-    /** @Override */
     override fun onRestoreInstanceState(state: Parcelable?) {
         var superState: Parcelable? = null
         if (state is Bundle) {
@@ -122,38 +124,27 @@ class FrameView : LinearLayout, View.OnClickListener {
         super.onRestoreInstanceState(superState)
     }
 
-    /** @Override */
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         delegate = null
     }
 
-    /**
-     * Set the text for the given ball.
-     *
-     * @param ball ball to set text for
-     * @param text text to set
-     */
+    // MARK: FrameView
+
     fun setBallText(ball: Int, text: String) {
-        // TODO: should highlight strikes and spares
-        findViewById<TextView>(ballViewIds[ball]).text = text
+        val ballView = findViewById<TextView>(ballViewIds[ball])
+        ballView.text = text
+        if (shouldHighlightMarks && (text == Ball.Strike.toString() || text == Ball.Spare.toString())) {
+            ballView.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary))
+        } else {
+            ballView.setTextColor(ContextCompat.getColor(context, R.color.primaryBlackText))
+        }
     }
 
-    /**
-     * Set the score for the frame.
-     *
-     * @param text the score to set
-     */
     fun setFrameText(text: String) {
         tvScore.text = text
     }
 
-    /**
-     * Enable or disable the foul indicator for a given ball.
-     *
-     * @param ball ball to enable or disable foul for
-     * @param enabled true to enable, false to disable
-     */
     fun setFoulEnabled(ball: Int, enabled: Boolean) {
         findViewById<TextView>(foulViewIds[ball]).visibility = if (enabled) {
             View.VISIBLE
@@ -162,22 +153,8 @@ class FrameView : LinearLayout, View.OnClickListener {
         }
     }
 
-    /**
-     * Update background colors of the views depending on if this is the current frame or not.
-     */
-    private fun updateCurrentFrame() {
-        ballViewIds.forEachIndexed { index, i ->
-            val backgroundDrawable = ContextCompat.getDrawable(context,
-                    if (currentBall == index && isCurrentFrame) R.drawable.frame_background_active else R.drawable.frame_background_inactive)
-            findViewById<TextView>(i).background = backgroundDrawable
-        }
+    // MARK: OnClickListener
 
-        val backgroundDrawable = ContextCompat.getDrawable(context,
-                if (isCurrentFrame) R.drawable.frame_background_active else R.drawable.frame_background_inactive)
-        frame.background = backgroundDrawable
-    }
-
-    /** @Override */
     override fun onClick(v: View?) {
         val view = v ?: return
 
@@ -193,24 +170,24 @@ class FrameView : LinearLayout, View.OnClickListener {
         }
     }
 
-    /**
-     * Handle interactions with the view.
-     */
+    // MARK: Private functions
+
+    private fun updateCurrentFrame() {
+        ballViewIds.forEachIndexed { index, i ->
+            val backgroundDrawable = ContextCompat.getDrawable(context,
+                    if (currentBall == index && isCurrentFrame) R.drawable.frame_background_active else R.drawable.frame_background_inactive)
+            findViewById<TextView>(i).background = backgroundDrawable
+        }
+
+        val backgroundDrawable = ContextCompat.getDrawable(context,
+                if (isCurrentFrame) R.drawable.frame_background_active else R.drawable.frame_background_inactive)
+        frame.background = backgroundDrawable
+    }
+
+    // MARK: FrameInteractionDelegate
+
     interface FrameInteractionDelegate {
-
-        /**
-         * Invoked when a ball view is touched by the user.
-         *
-         * @param ball the ball selected (zero-based)
-         * @param frame the frame number (zero-based)
-         */
         fun onBallSelected(ball: Int, frame: Int)
-
-        /**
-         * Invoked when a frame view is touched by the user.
-         *
-         * @param frame the frame number (zero-based)
-         */
         fun onFrameSelected(frame: Int)
     }
 }
