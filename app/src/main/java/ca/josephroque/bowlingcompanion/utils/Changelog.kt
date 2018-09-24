@@ -1,12 +1,10 @@
 package ca.josephroque.bowlingcompanion.utils
 
 import android.content.Context
-import android.os.Build
 import android.support.v7.app.AlertDialog
 import android.support.v7.widget.Toolbar
 import ca.josephroque.bowlingcompanion.R
 import android.widget.TextView
-import android.text.Html
 import android.view.View
 
 /**
@@ -27,12 +25,7 @@ object Changelog {
         dialog.setView(rootView)
         val alertDialog = dialog.create()
 
-        // Setting text of changelog based on Android SDK version
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            rootView.findViewById<TextView>(R.id.tv_scrollable).text = Html.fromHtml(changelogText.replace("\n", "<br />"), 0)
-        } else {
-            rootView.findViewById<TextView>(R.id.tv_scrollable).text = Html.fromHtml(changelogText.replace("\n", "<br />"))
-        }
+        rootView.findViewById<TextView>(R.id.tv_scrollable).text = changelogText.replace("\n", "<br />").toSpanned()
 
         rootView.findViewById<Toolbar>(R.id.toolbar_scrollable).apply {
             setTitle(R.string.changelog)
