@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.statistics
 
+import android.content.SharedPreferences
 import android.content.res.Resources
 import android.os.Parcel
 import ca.josephroque.bowlingcompanion.common.interfaces.KParcelable
@@ -32,6 +33,8 @@ interface Statistic : StatisticListItem, KParcelable {
         get() = titleId
 
     val secondaryGraphDataLabelId: Int?
+
+    fun updatePreferences(preferences: SharedPreferences) {}
 
     fun getSubtitle(): String? { return null }
 

@@ -27,6 +27,10 @@ val Deck.right2Pin: Pin
 
 // MARK: First Ball
 
+fun Deck.isHeadPin(countH2asH: Boolean): Boolean {
+    return this.isHeadPin || (countH2asH && this.value(false) == 7 && this.headPin.isDown)
+}
+
 val Deck.isHeadPin: Boolean
     get() = this.value(false) == 5 && this.headPin.isDown
 
@@ -48,14 +52,23 @@ val Deck.isRightChopOff: Boolean
 val Deck.isChopOff: Boolean
     get() = this.isLeftChopOff || this.isRightChopOff
 
-val Deck.isLeftSplit: Boolean
+fun Deck.isLeftSplit(countS2asS: Boolean): Boolean {
+    return this.isLeftSplit || (countS2asS && this.value(false) == 10 && this.headPin.isDown && this.left3Pin.isDown && this.right2Pin.isDown)
+}
+
+private val Deck.isLeftSplit: Boolean
     get() = this.value(false) == 8 && this.headPin.isDown && this.left3Pin.isDown
 
-val Deck.isRightSplit: Boolean
+fun Deck.isRightSplit(countS2asS: Boolean): Boolean {
+    return this.isRightSplit || (countS2asS && this.value(false) == 10 && this.headPin.isDown && this.left2Pin.isDown && this.right3Pin.isDown)
+}
+
+private val Deck.isRightSplit: Boolean
     get() = this.value(false) == 8 && this.headPin.isDown && this.right3Pin.isDown
 
-val Deck.isSplit: Boolean
-    get() = this.isLeftSplit || this.isRightSplit
+fun Deck.isSplit(countS2asS: Boolean): Boolean {
+    return isLeftSplit(countS2asS) || isRightSplit(countS2asS)
+}
 
 val Deck.isHitLeftOfMiddle: Boolean
     get() = this.headPin.onDeck && (this.left2Pin.isDown || this.left3Pin.isDown)

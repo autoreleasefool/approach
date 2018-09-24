@@ -1,12 +1,13 @@
 package ca.josephroque.bowlingcompanion.statistics.impl.firstball
 
+import android.content.SharedPreferences
 import android.os.Parcel
-import android.os.Parcelable
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
 import ca.josephroque.bowlingcompanion.games.lane.Deck
 import ca.josephroque.bowlingcompanion.games.lane.arePinsCleared
 import ca.josephroque.bowlingcompanion.games.lane.isRightSplit
+import ca.josephroque.bowlingcompanion.settings.Settings
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -15,33 +16,30 @@ import ca.josephroque.bowlingcompanion.games.lane.isRightSplit
  */
 class RightSplitsSparedStatistic(numerator: Int = 0, denominator: Int = 0) : SecondBallStatistic(numerator, denominator) {
 
-    // MARK: Modifiers
+    companion object {
+        @Suppress("unused")
+        @JvmField val CREATOR = parcelableCreator(::RightSplitsSparedStatistic)
 
-    /** @Override */
-    override fun isModifiedByFirstBall(deck: Deck) = deck.isRightSplit
-
-    /** @Override */
-    override fun isModifiedBySecondBall(deck: Deck) = deck.arePinsCleared
-
-    // MARK: Overrides
+        const val Id = R.string.statistic_right_splits_spared
+    }
 
     override val titleId = Id
     override val id = Id.toLong()
     override val secondaryGraphDataLabelId = R.string.statistic_total_right_splits
 
-    // MARK: Parcelable
+    private var countS2asS: Boolean = Settings.CountS2AsS.booleanDefault
 
-    companion object {
-        /** Creator, required by [Parcelable]. */
-        @Suppress("unused")
-        @JvmField val CREATOR = parcelableCreator(::RightSplitsSparedStatistic)
+    // MARK: Statistic
 
-        /** Unique ID for the statistic. */
-        const val Id = R.string.statistic_right_splits_spared
+    override fun isModifiedByFirstBall(deck: Deck) = deck.isRightSplit(countS2asS)
+
+    override fun isModifiedBySecondBall(deck: Deck) = deck.arePinsCleared
+
+    override fun updatePreferences(preferences: SharedPreferences) {
+        countS2asS = preferences.getBoolean(Settings.CountS2AsS.prefName, Settings.CountS2AsS.booleanDefault)
     }
 
-    /**
-     * Construct this statistic from a [Parcel].
-     */
+    // MARK: Constructors
+
     private constructor(p: Parcel): this(numerator = p.readInt(), denominator = p.readInt())
 }

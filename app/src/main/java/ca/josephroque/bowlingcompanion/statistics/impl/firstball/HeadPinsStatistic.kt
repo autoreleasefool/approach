@@ -1,11 +1,12 @@
 package ca.josephroque.bowlingcompanion.statistics.impl.firstball
 
+import android.content.SharedPreferences
 import android.os.Parcel
-import android.os.Parcelable
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
 import ca.josephroque.bowlingcompanion.games.lane.Deck
 import ca.josephroque.bowlingcompanion.games.lane.isHeadPin
+import ca.josephroque.bowlingcompanion.settings.Settings
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -14,29 +15,27 @@ import ca.josephroque.bowlingcompanion.games.lane.isHeadPin
  */
 class HeadPinsStatistic(numerator: Int = 0, denominator: Int = 0) : FirstBallStatistic(numerator, denominator) {
 
-    // MARK: Modifiers
+    companion object {
+        @Suppress("unused")
+        @JvmField val CREATOR = parcelableCreator(::HeadPinsStatistic)
 
-    /** @Override */
-    override fun isModifiedBy(deck: Deck) = deck.isHeadPin
+        const val Id = R.string.statistic_head_pins
+    }
 
-    // MARK: Overrides
+    private var countH2asH: Boolean = Settings.CountH2AsH.booleanDefault
 
     override val titleId = Id
     override val id = Id.toLong()
 
-    // MARK: Parcelable
+    // MARK: Statistic
 
-    companion object {
-        /** Creator, required by [Parcelable]. */
-        @Suppress("unused")
-        @JvmField val CREATOR = parcelableCreator(::HeadPinsStatistic)
+    override fun isModifiedBy(deck: Deck) = deck.isHeadPin(countH2asH)
 
-        /** Unique ID for the statistic. */
-        const val Id = R.string.statistic_head_pins
+    override fun updatePreferences(preferences: SharedPreferences) {
+        countH2asH = preferences.getBoolean(Settings.CountH2AsH.prefName, Settings.CountH2AsH.booleanDefault)
     }
 
-    /**
-     * Construct this statistic from a [Parcel].
-     */
-    private constructor(p: Parcel): this(numerator = p.readInt(), denominator = p.readInt())
+    // MARK: Constructors
+
+    private constructor(p: Parcel) : this(numerator = p.readInt(), denominator = p.readInt())
 }

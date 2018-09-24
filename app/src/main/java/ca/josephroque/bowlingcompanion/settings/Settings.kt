@@ -56,11 +56,9 @@ enum class Settings(val prefName: String) {
     IncludeOpen("pref_include_open"),
 
     /** Identifier for preference to count Headpin + 2 as a Headpin in statistics.  */
-    // TODO: setting unused
     CountH2AsH("pref_count_h2_as_h"),
 
     /** Identifier for preference to count Split + 2 as a Split in statistics.  */
-    // TODO: setting unused
     CountS2AsS("pref_count_s2_as_s"),
 
     // MARK: Match play

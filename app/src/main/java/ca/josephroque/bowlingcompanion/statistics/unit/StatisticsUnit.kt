@@ -2,6 +2,7 @@ package ca.josephroque.bowlingcompanion.statistics.unit
 
 import android.content.Context
 import android.os.Parcel
+import android.support.v7.preference.PreferenceManager
 import ca.josephroque.bowlingcompanion.common.interfaces.KParcelable
 import ca.josephroque.bowlingcompanion.common.interfaces.readBoolean
 import ca.josephroque.bowlingcompanion.common.interfaces.writeBoolean
@@ -168,8 +169,13 @@ abstract class StatisticsUnit(initialSeries: List<StatSeries>? = null, initialSt
                 statistics.removeAll { it.titleId == statisticId }
             }
 
-            // Only allow the [StatisticsUnit] to modify each stat once
+            val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+
             for (statistic in statistics) {
+                // Update preferences for statistics
+                statistic.updatePreferences(preferences)
+
+                // Only allow the [StatisticsUnit] to modify each stat once
                 if (statistic.isModifiedBy(this@StatisticsUnit)) {
                     statistic.modify(this@StatisticsUnit)
                 }
