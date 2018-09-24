@@ -42,16 +42,16 @@ class SettingsFragment : PreferenceFragmentCompat(),
     /** Handle preference changes. */
     private val onPreferenceChangedListener = SharedPreferences.OnSharedPreferenceChangeListener { preferences, key ->
         when (key) {
-            Settings.EnableAutoAdvance.prefName -> {
-                val enabled = preferences.getBoolean(Settings.EnableAutoAdvance.prefName, Settings.EnableAutoAdvance.booleanDefault)
+            Settings.BooleanSetting.EnableAutoAdvance.prefName -> {
+                val enabled = Settings.BooleanSetting.EnableAutoAdvance.getValue(preferences)
                 if (enabled) {
                     Analytics.trackEnableAutoAdvance()
                 } else {
                     Analytics.trackDisableAutoAdvance()
                 }
             }
-            Settings.EnableAutoLock.prefName -> {
-                val enabled = preferences.getBoolean(Settings.EnableAutoLock.prefName, Settings.EnableAutoLock.booleanDefault)
+            Settings.BooleanSetting.EnableAutoLock.prefName -> {
+                val enabled = Settings.BooleanSetting.EnableAutoLock.getValue(preferences)
                 if (enabled) {
                     Analytics.trackEnableAutoLock()
                 } else {
@@ -65,35 +65,35 @@ class SettingsFragment : PreferenceFragmentCompat(),
     /** Handle special cases for preferences interactions. */
     private val onPreferenceClickListener = Preference.OnPreferenceClickListener {
         when (it.key) {
-            Settings.ReportBug.prefName -> {
+            Settings.StaticSetting.ReportBug.prefName -> {
                 sendBugReportEmail()
                 true
             }
-            Settings.SendFeedback.prefName -> {
+            Settings.StaticSetting.SendFeedback.prefName -> {
                 sendFeedbackEmail()
                 true
             }
-            Settings.Rate.prefName -> {
+            Settings.StaticSetting.Rate.prefName -> {
                 displayPlayStoreListing()
                 true
             }
-            Settings.Attributions.prefName -> {
+            Settings.StaticSetting.Attributions.prefName -> {
                 displayAttributions()
                 true
             }
-            Settings.Facebook.prefName -> {
+            Settings.StaticSetting.Facebook.prefName -> {
                 displayFacebookPage()
                 true
             }
-            Settings.DeveloperWebsite.prefName -> {
+            Settings.StaticSetting.DeveloperWebsite.prefName -> {
                 Analytics.trackViewWebsite()
                 true
             }
-            Settings.ViewSource.prefName -> {
+            Settings.StaticSetting.ViewSource.prefName -> {
                 Analytics.trackViewSource()
                 true
             }
-            Settings.PrivacyPolicy.prefName -> {
+            Settings.StaticSetting.PrivacyPolicy.prefName -> {
                 Analytics.trackViewPrivacyPolicy()
                 true
             }
@@ -117,13 +117,13 @@ class SettingsFragment : PreferenceFragmentCompat(),
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.pref_app)
 
-        findPreference(Settings.ReportBug.prefName).onPreferenceClickListener = onPreferenceClickListener
-        findPreference(Settings.SendFeedback.prefName).onPreferenceClickListener = onPreferenceClickListener
-        findPreference(Settings.Rate.prefName).onPreferenceClickListener = onPreferenceClickListener
-        findPreference(Settings.Attributions.prefName).onPreferenceClickListener = onPreferenceClickListener
-        findPreference(Settings.Facebook.prefName).onPreferenceClickListener = onPreferenceClickListener
-        findPreference(Settings.DeveloperWebsite.prefName).onPreferenceClickListener = onPreferenceClickListener
-        findPreference(Settings.ViewSource.prefName).onPreferenceClickListener = onPreferenceClickListener
+        findPreference(Settings.StaticSetting.ReportBug.prefName).onPreferenceClickListener = onPreferenceClickListener
+        findPreference(Settings.StaticSetting.SendFeedback.prefName).onPreferenceClickListener = onPreferenceClickListener
+        findPreference(Settings.StaticSetting.Rate.prefName).onPreferenceClickListener = onPreferenceClickListener
+        findPreference(Settings.StaticSetting.Attributions.prefName).onPreferenceClickListener = onPreferenceClickListener
+        findPreference(Settings.StaticSetting.Facebook.prefName).onPreferenceClickListener = onPreferenceClickListener
+        findPreference(Settings.StaticSetting.DeveloperWebsite.prefName).onPreferenceClickListener = onPreferenceClickListener
+        findPreference(Settings.StaticSetting.ViewSource.prefName).onPreferenceClickListener = onPreferenceClickListener
     }
 
     override fun onStart() {
@@ -234,9 +234,9 @@ class SettingsFragment : PreferenceFragmentCompat(),
      */
     private fun updatePreferenceSummaries() {
         val prefs = preferenceScreen.sharedPreferences
-        findPreference(Settings.VersionName.prefName).summary = BuildConfig.VERSION_NAME
+        findPreference(Settings.StaticSetting.VersionName.prefName).summary = BuildConfig.VERSION_NAME
 
-        val autoAdvanceTime = prefs.getString(Settings.AutoAdvanceTime.prefName, Settings.AutoAdvanceTime.stringDefault)
-        findPreference(Settings.AutoAdvanceTime.prefName).summary = resources.getString(R.string.pref_auto_advance_time_summary_seconds, autoAdvanceTime)
+        val autoAdvanceTime = Settings.StringSetting.AutoAdvanceTime.getValue(prefs)
+        findPreference(Settings.StringSetting.AutoAdvanceTime.prefName).summary = resources.getString(R.string.pref_auto_advance_time_summary_seconds, autoAdvanceTime)
     }
 }

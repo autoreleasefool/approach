@@ -27,7 +27,7 @@ class LeftSplitsSparedStatistic(numerator: Int = 0, denominator: Int = 0) : Seco
     override val id = Id.toLong()
     override val secondaryGraphDataLabelId = R.string.statistic_total_left_splits
 
-    private var countS2asS: Boolean = Settings.CountS2AsS.booleanDefault
+    private var countS2asS: Boolean = Settings.BooleanSetting.CountS2AsS.default
 
     // MARK: Statistic
 
@@ -36,7 +36,7 @@ class LeftSplitsSparedStatistic(numerator: Int = 0, denominator: Int = 0) : Seco
     override fun isModifiedBySecondBall(deck: Deck) = deck.arePinsCleared
 
     override fun updatePreferences(preferences: SharedPreferences) {
-        countS2asS = preferences.getBoolean(Settings.CountS2AsS.prefName, Settings.CountS2AsS.booleanDefault)
+        countS2asS = Settings.BooleanSetting.CountS2AsS.getValue(preferences)
     }
 
     // MARK: Constructors

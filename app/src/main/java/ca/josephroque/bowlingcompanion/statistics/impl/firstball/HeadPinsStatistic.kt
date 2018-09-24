@@ -22,7 +22,7 @@ class HeadPinsStatistic(numerator: Int = 0, denominator: Int = 0) : FirstBallSta
         const val Id = R.string.statistic_head_pins
     }
 
-    private var countH2asH: Boolean = Settings.CountH2AsH.booleanDefault
+    private var countH2asH: Boolean = Settings.BooleanSetting.CountH2AsH.default
 
     override val titleId = Id
     override val id = Id.toLong()
@@ -32,7 +32,7 @@ class HeadPinsStatistic(numerator: Int = 0, denominator: Int = 0) : FirstBallSta
     override fun isModifiedBy(deck: Deck) = deck.isHeadPin(countH2asH)
 
     override fun updatePreferences(preferences: SharedPreferences) {
-        countH2asH = preferences.getBoolean(Settings.CountH2AsH.prefName, Settings.CountH2AsH.booleanDefault)
+        countH2asH = Settings.BooleanSetting.CountH2AsH.getValue(preferences)
     }
 
     // MARK: Constructors

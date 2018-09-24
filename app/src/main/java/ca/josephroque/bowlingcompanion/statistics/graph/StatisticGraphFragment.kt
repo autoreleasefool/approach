@@ -72,7 +72,7 @@ class StatisticGraphFragment : BaseFragment(),
         view.switch_accumulate.setOnCheckedChangeListener { _, isChecked ->
             PreferenceManager.getDefaultSharedPreferences(context)
                     .edit()
-                    .putBoolean(Settings.AccumulateStatistics.prefName, isChecked)
+                    .putBoolean(Settings.BooleanSetting.AccumulateStatistics.prefName, isChecked)
                     .apply()
             updateAccumulateText()
             buildChart()
@@ -127,8 +127,8 @@ class StatisticGraphFragment : BaseFragment(),
     }
 
     private fun updateAccumulateText() {
-        val accumulateOverTime = PreferenceManager.getDefaultSharedPreferences(context)
-                .getBoolean(Settings.AccumulateStatistics.prefName, Settings.AccumulateStatistics.booleanDefault)
+        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+        val accumulateOverTime = Settings.BooleanSetting.AccumulateStatistics.getValue(preferences)
         switchAccumulate.isChecked = accumulateOverTime
 
         if (accumulateOverTime) {

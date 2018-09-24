@@ -165,8 +165,8 @@ class SeriesRecyclerViewAdapter(
             }
 
             val preferences = PreferenceManager.getDefaultSharedPreferences(context)
-            val shouldShowMatchPlayResult = preferences.getBoolean(Settings.ShowMatchResults.prefName, Settings.ShowMatchResults.booleanDefault)
-            val shouldHighlightMatchPlayResult = preferences.getBoolean(Settings.HighlightMatchResults.prefName, Settings.HighlightMatchResults.booleanDefault)
+            val shouldShowMatchPlayResult = Settings.BooleanSetting.ShowMatchResults.getValue(preferences)
+            val shouldHighlightMatchPlayResult = Settings.BooleanSetting.HighlightMatchResults.getValue(preferences)
 
             flowScores?.removeAllViews()
             if (shouldShowMatchPlayResult) {

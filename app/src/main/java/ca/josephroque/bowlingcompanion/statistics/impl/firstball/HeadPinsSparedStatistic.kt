@@ -27,7 +27,7 @@ class HeadPinsSparedStatistic(numerator: Int = 0, denominator: Int = 0) : Second
     override val id = Id.toLong()
     override val secondaryGraphDataLabelId = R.string.statistic_total_head_pins
 
-    private var countH2asH: Boolean = Settings.CountH2AsH.booleanDefault
+    private var countH2asH: Boolean = Settings.BooleanSetting.CountH2AsH.default
 
     // MARK: Statistic
 
@@ -36,7 +36,7 @@ class HeadPinsSparedStatistic(numerator: Int = 0, denominator: Int = 0) : Second
     override fun isModifiedBySecondBall(deck: Deck) = deck.arePinsCleared
 
     override fun updatePreferences(preferences: SharedPreferences) {
-        countH2asH = preferences.getBoolean(Settings.CountH2AsH.prefName, Settings.CountH2AsH.booleanDefault)
+        countH2asH = Settings.BooleanSetting.CountH2AsH.getValue(preferences)
     }
 
     // MARK: Constructors

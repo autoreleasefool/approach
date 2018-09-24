@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import android.os.Parcelable
 import android.support.v4.content.ContextCompat
-import android.support.v7.preference.PreferenceManager
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -64,7 +63,7 @@ class FrameView : LinearLayout, View.OnClickListener {
             updateCurrentFrame()
         }
 
-    var shouldHighlightMarks: Boolean = Settings.EnableStrikeHighlights.booleanDefault
+    var shouldHighlightMarks: Boolean = Settings.BooleanSetting.EnableStrikeHighlights.default
         set(value) {
             field = value
             for (i in 0..ballViewIds.size) {
@@ -72,7 +71,6 @@ class FrameView : LinearLayout, View.OnClickListener {
                 setBallText(i, ballView.text.toString())
             }
         }
-
 
     // MARK: Constructors
 

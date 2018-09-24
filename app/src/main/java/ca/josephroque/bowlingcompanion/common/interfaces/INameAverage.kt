@@ -24,7 +24,8 @@ interface INameAverage : IDeletable, IIdentifiable {
     val average: Double
 
     fun getDisplayAverage(context: Context): String {
-        val averageAsDecimal = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(Settings.AverageAsDecimal.prefName, Settings.AverageAsDecimal.booleanDefault)
+        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+        val averageAsDecimal = Settings.BooleanSetting.AverageAsDecimal.getValue(preferences)
         return if (averageAsDecimal) {
             decimalFormatter.format(average)
         } else {

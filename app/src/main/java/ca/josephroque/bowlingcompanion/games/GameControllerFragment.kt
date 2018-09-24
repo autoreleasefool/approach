@@ -171,7 +171,8 @@ class GameControllerFragment : TabbedFragment(),
 
     override fun getFabImage(): Int? {
         val context = context ?: return null
-        val userPrefFabEnabled = PreferenceManager.getDefaultSharedPreferences(context).getBoolean(Settings.EnableFab.prefName, Settings.EnableFab.booleanDefault)
+        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+        val userPrefFabEnabled = Settings.BooleanSetting.EnableFab.getValue(preferences)
         return if (userPrefFabEnabled && fabEnabled) R.drawable.ic_arrow_forward else null
     }
 

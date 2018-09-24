@@ -289,8 +289,8 @@ class Bowler(
                 val database = DatabaseManager.getReadableDatabase(context).await()
 
                 val preferences = PreferenceManager.getDefaultSharedPreferences(context)
-                val includeEvents = preferences.getBoolean(Settings.IncludeEvents.prefName, Settings.IncludeEvents.booleanDefault)
-                val includeOpen = preferences.getBoolean(Settings.IncludeOpen.prefName, Settings.IncludeOpen.booleanDefault)
+                val includeEvents = Settings.BooleanSetting.IncludeEvents.getValue(preferences)
+                val includeOpen = Settings.BooleanSetting.IncludeOpen.getValue(preferences)
                 val sortBy = Sort.fromInt(preferences.getInt(Preferences.BOWLER_SORT_ORDER, Sort.Alphabetically.ordinal))
 
                 val gameSumAndCountQuery = ("SELECT " +

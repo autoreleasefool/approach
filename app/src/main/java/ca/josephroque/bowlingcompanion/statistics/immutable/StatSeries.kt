@@ -71,14 +71,6 @@ class StatSeries(
         @Suppress("unused")
         @JvmField val CREATOR = parcelableCreator(::StatSeries)
 
-        private fun shouldIncludeEvents(context: Context): Boolean {
-            return PreferenceManager.getDefaultSharedPreferences(context).getBoolean(Settings.IncludeEvents.prefName, Settings.IncludeEvents.booleanDefault)
-        }
-
-        private fun shouldIncludeOpen(context: Context): Boolean {
-            return PreferenceManager.getDefaultSharedPreferences(context).getBoolean(Settings.IncludeOpen.prefName, Settings.IncludeOpen.booleanDefault)
-        }
-
         private val queryFields = (
                 "series.${SeriesEntry._ID} as sid, " +
                 "series.${SeriesEntry.COLUMN_SERIES_DATE}, " +
@@ -86,8 +78,9 @@ class StatSeries(
                 "${StatFrame.QUERY_FIELDS.joinToString(separator = ", ")} ")
 
         fun loadSeriesForTeam(context: Context, teamId: Long): Deferred<List<StatSeries>> {
-            val includeOpen = shouldIncludeOpen(context)
-            val includeEvents = shouldIncludeEvents(context)
+            val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+            val includeOpen = Settings.BooleanSetting.IncludeOpen.getValue(preferences)
+            val includeEvents = Settings.BooleanSetting.IncludeEvents.getValue(preferences)
 
             val query = ("SELECT " +
                     queryFields +
@@ -119,8 +112,9 @@ class StatSeries(
         }
 
         fun loadSeriesForBowler(context: Context, bowlerId: Long): Deferred<List<StatSeries>> {
-            val includeOpen = shouldIncludeOpen(context)
-            val includeEvents = shouldIncludeEvents(context)
+            val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+            val includeOpen = Settings.BooleanSetting.IncludeOpen.getValue(preferences)
+            val includeEvents = Settings.BooleanSetting.IncludeEvents.getValue(preferences)
 
             val query = ("SELECT " +
                     queryFields +

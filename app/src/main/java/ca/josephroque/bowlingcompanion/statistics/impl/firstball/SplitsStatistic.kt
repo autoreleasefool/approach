@@ -25,14 +25,14 @@ class SplitsStatistic(numerator: Int = 0, denominator: Int = 0) : FirstBallStati
     override val titleId = Id
     override val id = Id.toLong()
 
-    private var countS2asS: Boolean = Settings.CountS2AsS.booleanDefault
+    private var countS2asS: Boolean = Settings.BooleanSetting.CountS2AsS.default
 
     // MARK: Statistic
 
     override fun isModifiedBy(deck: Deck) = deck.isSplit(countS2asS)
 
     override fun updatePreferences(preferences: SharedPreferences) {
-        countS2asS = preferences.getBoolean(Settings.CountS2AsS.prefName, Settings.CountS2AsS.booleanDefault)
+        countS2asS = Settings.BooleanSetting.CountS2AsS.getValue(preferences)
     }
 
     // MARK: Constructors

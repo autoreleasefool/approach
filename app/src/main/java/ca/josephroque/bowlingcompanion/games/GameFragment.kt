@@ -165,7 +165,7 @@ class GameFragment : BaseFragment(),
 
         frameViews.forEach {
             it?.delegate = this
-            it?.shouldHighlightMarks = preferences.getBoolean(Settings.EnableStrikeHighlights.prefName, Settings.EnableStrikeHighlights.booleanDefault)
+            it?.shouldHighlightMarks = Settings.BooleanSetting.EnableStrikeHighlights.getValue(preferences)
         }
         pinLayout.delegate = this
         gameFooter.delegate = this
