@@ -43,10 +43,6 @@ enum class Settings(val prefName: String) {
     /** Identifier for preference for if floating buttons should be shown when editing a game.  */
     EnableFab("pref_enable_fab"),
 
-    /** Identifier for preference if pins should be displayed behind or above floating action buttons.  */
-    // TODO: setting unused
-    PinsBehindFabs("pref_pins_behind_fabs"),
-
     /** Identifier for preference for strikes and spares should be highlighted while editing a game.  */
     // TODO: setting unused
     EnableStrikeHighlights("pref_enable_strike_highlights"),
@@ -122,7 +118,6 @@ enum class Settings(val prefName: String) {
                 AutoAdvanceTime -> 10
                 EnableAutoLock -> false
                 EnableFab -> true
-                PinsBehindFabs -> true
                 EnableStrikeHighlights -> true
                 IncludeEvents -> true
                 IncludeOpen -> true
