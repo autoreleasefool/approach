@@ -19,7 +19,7 @@
             android:summaryOff="@string/pref_highlight_series_enabled_summary_off"
             android:defaultValue="@bool/pref_highlight_series_enabled_default" />
 
-        <android.support.v7.preference.CheckBoxPreference
+        <android.support.v7.preference.SwitchPreferenceCompat
             android:key="pref_average_as_decimal"
             android:title="@string/pref_average_as_decimal_title"
             android:summaryOn="@string/pref_average_as_decimal_summary_on"
@@ -48,28 +48,28 @@
             android:entryValues="@array/pref_auto_advance_time_values"
             android:defaultValue="@string/pref_auto_advance_default" />
 
-        <android.support.v7.preference.CheckBoxPreference
+        <android.support.v7.preference.SwitchPreferenceCompat
             android:key="pref_enable_fab"
             android:title="@string/pref_enable_fab_title"
             android:summaryOn="@string/pref_enable_fab_summary_on"
             android:summaryOff="@string/pref_enable_fab_summary_off"
             android:defaultValue="@bool/pref_enable_fab_default" />
 
-        <android.support.v7.preference.CheckBoxPreference
+        <android.support.v7.preference.SwitchPreferenceCompat
             android:key="pref_pins_behind_fab"
             android:title="@string/pref_pins_behind_fab_title"
             android:summaryOn="@string/pref_pins_behind_fab_summary_on"
             android:summaryOff="@string/pref_pins_behind_fab_summary_off"
             android:defaultValue="@bool/pref_pins_behind_fab_default"/>
 
-        <android.support.v7.preference.CheckBoxPreference
+        <android.support.v7.preference.SwitchPreferenceCompat
             android:key="pref_enable_strike_highlights"
             android:title="@string/pref_enable_strike_highlights_title"
             android:summaryOn="@string/pref_enable_strike_highlights_summary_on"
             android:summaryOff="@string/pref_enable_strike_highlights_summary_off"
             android:defaultValue="@bool/pref_enable_strike_highlights_default"/>
 
-        <android.support.v7.preference.CheckBoxPreference
+        <android.support.v7.preference.SwitchPreferenceCompat
             android:key="pref_enable_auto_lock"
             android:title="@string/pref_enable_auto_lock_title"
             android:summaryOn="@string/pref_enable_auto_lock_summary_on"
@@ -81,28 +81,28 @@
     <android.support.v7.preference.PreferenceCategory
         android:title="@string/pref_category_stats">
 
-        <android.support.v7.preference.CheckBoxPreference
+        <android.support.v7.preference.SwitchPreferenceCompat
             android:key="pref_include_events"
             android:title="@string/pref_include_events_title"
             android:summaryOn="@string/pref_include_events_summary_on"
             android:summaryOff="@string/pref_include_events_summary_off"
             android:defaultValue="@bool/pref_include_events_default" />
 
-        <android.support.v7.preference.CheckBoxPreference
+        <android.support.v7.preference.SwitchPreferenceCompat
             android:key="pref_include_open"
             android:title="@string/pref_include_open_title"
             android:summaryOn="@string/pref_include_open_summary_on"
             android:summaryOff="@string/pref_include_open_summary_off"
             android:defaultValue="@bool/pref_include_open_default" />
 
-        <android.support.v7.preference.CheckBoxPreference
+        <android.support.v7.preference.SwitchPreferenceCompat
             android:key="pref_count_h2_as_h"
             android:title="@string/pref_count_h2_as_h_title"
             android:summaryOn="@string/pref_count_h2_as_h_summary_on"
             android:summaryOff="@string/pref_count_h2_as_h_summary_off"
             android:defaultValue="@bool/pref_count_h2_as_h_default" />
 
-        <android.support.v7.preference.CheckBoxPreference
+        <android.support.v7.preference.SwitchPreferenceCompat
             android:key="pref_count_s2_as_s"
             android:title="@string/pref_count_s2_as_s_title"
             android:summaryOn="@string/pref_count_s2_as_s_summary_on"
@@ -114,14 +114,14 @@
     <android.support.v7.preference.PreferenceCategory
         android:title="@string/pref_category_match_play">
 
-        <android.support.v7.preference.CheckBoxPreference
+        <android.support.v7.preference.SwitchPreferenceCompat
             android:key="pref_show_match_results"
             android:title="@string/pref_show_match_results_title"
             android:summaryOn="@string/pref_show_match_results_summary_on"
             android:summaryOff="@string/pref_show_match_results_summary_off"
             android:defaultValue="@bool/pref_show_match_results_default" />
 
-        <android.support.v7.preference.CheckBoxPreference
+        <android.support.v7.preference.SwitchPreferenceCompat
             android:key="pref_highlight_match_results"
             android:title="@string/pref_highlight_match_results_title"
             android:summaryOn="@string/pref_highlight_match_results_summary_on"
