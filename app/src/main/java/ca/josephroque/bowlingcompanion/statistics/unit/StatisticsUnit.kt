@@ -216,12 +216,17 @@ abstract class StatisticsUnit(initialSeries: List<StatSeries>? = null, initialSt
         }
 
         for (game in series.games) {
+            // Don't process games with scores of 0
+            if (game.score == 0) {
+                continue
+            }
+
             if (statistic.isModifiedBy(game)) {
                 statistic.modify(game)
             }
 
-            // Don't process frames for games with score 0 or manual games
-            if (game.isManual || game.score == 0) {
+            // Don't process frames for manual games
+            if (game.isManual) {
                 continue
             }
 
