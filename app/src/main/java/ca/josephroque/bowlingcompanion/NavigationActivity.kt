@@ -318,6 +318,13 @@ class NavigationActivity : BaseActivity(),
             supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_menu)
             drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
         } else {
+            navDrawerController.apply {
+                isTeamMember = false
+                gameNumber = 0
+                numberOfGames = 0
+                bowlerName = null
+                leagueName = null
+            }
             supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back)
             drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
         }
