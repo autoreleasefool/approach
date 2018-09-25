@@ -159,6 +159,7 @@ class GameControllerFragment : TabbedFragment(),
         }
 
         updateToolbarTitle()
+        currentGameFragment?.invalidateFab()
     }
 
     // MARK: BaseFragment

@@ -223,6 +223,18 @@ class GameFragment : BaseFragment(),
         context?.let { gameState.saveGame(WeakReference(it), true) }
     }
 
+    fun invalidateFab() {
+        val hasNextBowlerOrGame = delegate?.hasNextBowlerOrGame == true
+        val isManual = gameState.gamesLoaded && gameState.currentGame.isManual
+        if (hasNextBowlerOrGame || !gameState.isLastBall) {
+            if (delegate?.isFabEnabled == false) {
+                delegate?.enableFab(true)
+            }
+        } else if (isManual || gameState.isLastBall) {
+            delegate?.enableFab(false)
+        }
+    }
+
     // MARK: BaseFragment
 
     override fun updateToolbarTitle() {
@@ -350,18 +362,6 @@ class GameFragment : BaseFragment(),
 
     private fun resetGame() {
         context?.let { gameState.resetGame(WeakReference(it)) }
-    }
-
-    private fun invalidateFab() {
-        val hasNextBowlerOrGame = delegate?.hasNextBowlerOrGame == true
-        val isManual = gameState.gamesLoaded && gameState.currentGame.isManual
-        if (hasNextBowlerOrGame || !gameState.isLastBall) {
-            if (delegate?.isFabEnabled == false) {
-                delegate?.enableFab(true)
-            }
-        } else if (isManual || gameState.isLastBall) {
-            delegate?.enableFab(false)
-        }
     }
 
     // MARK: IFloatingActionButtonHandler
