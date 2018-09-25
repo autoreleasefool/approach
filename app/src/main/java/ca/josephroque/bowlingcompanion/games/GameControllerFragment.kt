@@ -214,7 +214,6 @@ class GameControllerFragment : TabbedFragment(),
 
     override fun nextBowlerOrGame(isEndOfGame: Boolean): GameFragment.NextBowlerResult {
         val seriesList = seriesProvider?.seriesList ?: return GameFragment.NextBowlerResult.None
-        if (!hasNextBowlerOrGame) return GameFragment.NextBowlerResult.None
 
         // Find the next bowler in the remaining list to switch to with games to still play
         var nextSeries = currentTab + 1
@@ -239,6 +238,7 @@ class GameControllerFragment : TabbedFragment(),
 
         // If there's a bowler found, switch to them, update the game, and exit
         var switchedBowler = false
+        var switchedGame = false
         if (nextSeries <= seriesList.lastIndex) {
             if (currentTab == nextSeries && currentGame == nextGame) {
                 // There's no switch happening
@@ -250,9 +250,15 @@ class GameControllerFragment : TabbedFragment(),
             }
             if (currentGame != nextGame) {
                 currentGame = nextGame
+                switchedGame = true
             }
 
-            return if (switchedBowler) GameFragment.NextBowlerResult.NextBowlerGame else GameFragment.NextBowlerResult.NextGame
+            return when {
+                switchedBowler && switchedGame -> GameFragment.NextBowlerResult.NextBowlerGame
+                switchedBowler -> GameFragment.NextBowlerResult.NextBowler
+                switchedGame -> GameFragment.NextBowlerResult.NextGame
+                else -> GameFragment.NextBowlerResult.None
+            }
         }
 
         // No next bowler found
