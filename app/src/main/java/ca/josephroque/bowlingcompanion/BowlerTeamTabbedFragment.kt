@@ -153,8 +153,14 @@ class BowlerTeamTabbedFragment : TabbedFragment(),
 
     override fun onItemDeleted(item: IIdentifiable) {
         when (item) {
-            is Bowler -> teamFragment?.refresh()
-            is Team -> bowlerFragment?.refresh()
+            is Bowler -> {
+                teamFragment?.refresh()
+                Analytics.trackDeleteBowler()
+            }
+            is Team -> {
+                bowlerFragment?.refresh()
+                Analytics.trackDeleteTeam()
+            }
             else -> throw RuntimeException("BowlerTeamTabbedFragment can only handle Bowler or Team and item is $item")
         }
     }

@@ -81,8 +81,6 @@ class SeriesDialog : BaseDialogFragment(), DatePickerDialog.OnDateSetListener {
                             .setPositiveButton(R.string.delete) { _, _ ->
                                 delegate?.onDeleteSeries(series)
                                 dismiss()
-
-                                Analytics.trackDeleteSeries()
                             }
                             .setNegativeButton(R.string.cancel, null)
                             .show()

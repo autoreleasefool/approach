@@ -55,8 +55,6 @@ class BowlerDialog : BaseDialogFragment() {
                     .setPositiveButton(R.string.delete) { _, _ ->
                         delegate?.onDeleteBowler(bowler)
                         dismiss()
-
-                        Analytics.trackDeleteBowler()
                     }
                     .setNegativeButton(R.string.cancel, null)
                     .show()

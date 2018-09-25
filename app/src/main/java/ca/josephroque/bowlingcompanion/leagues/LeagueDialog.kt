@@ -92,8 +92,6 @@ class LeagueDialog : BaseDialogFragment() {
                             .setPositiveButton(R.string.delete) { _, _ ->
                                 delegate?.onDeleteLeague(league)
                                 dismiss()
-
-                                Analytics.trackDeleteLeague()
                             }
                             .setNegativeButton(R.string.cancel, null)
                             .show()

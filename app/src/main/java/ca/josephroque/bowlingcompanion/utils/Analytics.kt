@@ -18,31 +18,21 @@ class Analytics private constructor() {
     private object HOLDER { val INSTANCE = Analytics() }
 
     companion object {
-        /** Singleton instance */
         private val instance: Analytics by lazy {
             assert(HOLDER.INSTANCE.initialized) { "The Mixpanel instance was accessed before being initialized." }
             HOLDER.INSTANCE
         }
 
-        /** Singleton instance without accessor assertion. */
         private val dangerousInstance: Analytics by lazy {
             HOLDER.INSTANCE
         }
 
-        /**
-         * Initialize the analytics engine.
-         *
-         * @param context for analytics
-         */
         fun initialize(context: Context) {
             assert(!dangerousInstance.disableTracking) { "You cannot initialize analytics once tracking has been disabled." }
             dangerousInstance.mixpanel = MixpanelAPI.getInstance(context, BuildConfig.MIXPANEL_TOKEN)
             dangerousInstance.initialized = true
         }
 
-        /**
-         * Disable tracking in DEBUG mode.
-         */
         @Suppress("unused")
         fun disableTracking() {
             if (BuildConfig.DEBUG) {
@@ -360,21 +350,15 @@ class Analytics private constructor() {
             instance.mixpanel.track("App Rater - Disable")
         }
 
-        /**
-         * Flush events which have not been recorded yet to the server.
-         */
         fun flush() {
             if (instance.disableTracking) return
             instance.mixpanel.flush()
         }
     }
 
-    /** Indicates if the analytics instance has been initialized yet or not. */
     private var initialized: Boolean = false
 
-    /** Disable tracking in debug when `disableTracking()` is invoked so mixpanel token is not required. */
     private var disableTracking: Boolean = false
 
-    /** Instance of Mixpanel to record events. */
     private lateinit var mixpanel: MixpanelAPI
 }

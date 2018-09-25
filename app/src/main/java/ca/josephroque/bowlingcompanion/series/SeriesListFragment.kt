@@ -227,7 +227,9 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
     }
 
     override fun onItemDeleted(item: IIdentifiable) {
-        // Intentionally left blank
+        if (item is Series) {
+            Analytics.trackDeleteSeries()
+        }
     }
 
     // MARK: Private functions

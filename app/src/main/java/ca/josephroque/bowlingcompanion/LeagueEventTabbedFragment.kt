@@ -129,7 +129,7 @@ class LeagueEventTabbedFragment : TabbedFragment(),
     }
 
     override fun onItemDeleted(item: IIdentifiable) {
-        // Intentionally left blank
+        Analytics.trackDeleteLeague()
     }
 
     // MARK: LeagueDialogDelegate
