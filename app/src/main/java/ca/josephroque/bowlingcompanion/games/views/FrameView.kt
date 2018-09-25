@@ -66,7 +66,7 @@ class FrameView : LinearLayout, View.OnClickListener {
     var shouldHighlightMarks: Boolean = Settings.BooleanSetting.EnableStrikeHighlights.default
         set(value) {
             field = value
-            for (i in 0..ballViewIds.size) {
+            for (i in 0..ballViewIds.lastIndex) {
                 val ballView = findViewById<TextView>(ballViewIds[i])
                 setBallText(i, ballView.text.toString())
             }
