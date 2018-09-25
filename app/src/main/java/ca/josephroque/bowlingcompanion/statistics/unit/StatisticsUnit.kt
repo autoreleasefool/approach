@@ -27,7 +27,7 @@ import java.util.Calendar
  *
  * A single unit which provides a list of statistics to be displayed.
  */
-abstract class StatisticsUnit(initialSeries: List<StatSeries>? = null, initialStatistics: MutableList<StatisticListItem>? = null) : KParcelable {
+abstract class StatisticsUnit(initialSeries: List<StatSeries>? = null, initialStatistics: MutableList<Statistic>? = null) : KParcelable {
 
     companion object {
         @Suppress("unused")
@@ -39,7 +39,25 @@ abstract class StatisticsUnit(initialSeries: List<StatSeries>? = null, initialSt
     abstract val excludedStatisticIds: Set<Int>
 
     private var cachedSeries: List<StatSeries>? = initialSeries
-    private var cachedStatistics: MutableList<StatisticListItem>? = initialStatistics
+    private var cachedStatistics: MutableList<Statistic>? = initialStatistics
+
+    private val statisticListItems: MutableList<StatisticListItem>?
+        get() {
+            val statistics = cachedStatistics?.toMutableList() ?: return null
+            val statisticListItems: MutableList<StatisticListItem> = ArrayList(statistics.size + StatisticsCategory.values().size)
+
+            // Add categories in place in the list
+            var lastCategory: StatisticsCategory? = null
+            for (statistic in statistics) {
+                if (statistic.category != lastCategory) {
+                    statisticListItems.add(statistic.category)
+                    lastCategory = statistic.category
+                }
+                statisticListItems.add(statistic)
+            }
+
+            return statisticListItems
+        }
 
     // MARK: Constructors
 
@@ -55,7 +73,7 @@ abstract class StatisticsUnit(initialSeries: List<StatSeries>? = null, initialSt
                 null
             },
             initialStatistics = if (p != null && p.readBoolean()) {
-                ArrayList<StatisticListItem>().apply {
+                ArrayList<Statistic>().apply {
                     val statisticsSize = p.readInt()
                     val statisticTypes = IntArray(statisticsSize)
                     p.readIntArray(statisticTypes)
@@ -84,7 +102,7 @@ abstract class StatisticsUnit(initialSeries: List<StatSeries>? = null, initialSt
                 cachedStatistics = buildStatistics(context).await()
             }
 
-            return@async cachedStatistics!!
+            return@async statisticListItems!!
         }
     }
 
@@ -151,13 +169,12 @@ abstract class StatisticsUnit(initialSeries: List<StatSeries>? = null, initialSt
 
     // MARK: Private functions
 
-    private fun buildStatistics(context: Context): Deferred<MutableList<StatisticListItem>> {
+    private fun buildStatistics(context: Context): Deferred<MutableList<Statistic>> {
         return async(CommonPool) {
             Analytics.trackStatisticsLoaded(Analytics.Companion.EventTime.Begin)
 
             val seriesList = this@StatisticsUnit.cachedSeries ?: getSeriesForStatistics(context).await()
             val statistics = StatisticHelper.getFreshStatistics()
-            val statisticListItems: MutableList<StatisticListItem> = ArrayList(statistics.size + StatisticsCategory.values().size)
 
             // Filter out categories which the unit does not accept
             for (category in excludedCategories) {
@@ -194,19 +211,9 @@ abstract class StatisticsUnit(initialSeries: List<StatSeries>? = null, initialSt
                 (it is PerGameAverageStatistic && it.total == 0)
             }
 
-            // Add categories in place in the list
-            var lastCategory: StatisticsCategory? = null
-            for (statistic in statistics) {
-                if (statistic.category != lastCategory) {
-                    statisticListItems.add(statistic.category)
-                    lastCategory = statistic.category
-                }
-                statisticListItems.add(statistic)
-            }
-
             Analytics.trackStatisticsLoaded(Analytics.Companion.EventTime.End)
 
-            return@async statisticListItems
+            return@async statistics
         }
     }
 
@@ -263,10 +270,9 @@ abstract class StatisticsUnit(initialSeries: List<StatSeries>? = null, initialSt
         if (statistics != null) {
             writeBoolean(true)
             writeInt(statistics.size)
-            // TODO: java.lang.ClassCastException: ca.josephroque.bowlingcompanion.statistics.StatisticsCategory cannot be cast to ca.josephroque.bowlingcompanion.statistics.Statistic
-            writeIntArray(statistics.map { (it as Statistic).titleId }.toIntArray())
+            writeIntArray(statistics.map { it.titleId }.toIntArray())
             for (statistic in statistics) {
-                writeParcelable((statistic as Statistic), 0)
+                writeParcelable(statistic, 0)
             }
         } else {
             writeBoolean(false)
