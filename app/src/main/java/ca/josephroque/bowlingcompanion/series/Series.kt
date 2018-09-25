@@ -190,19 +190,20 @@ class Series(
                     seriesId = database.insert(SeriesEntry.TABLE_NAME, null, values)
 
                     if (seriesId != -1L) {
-                        for (i in 0 until numberOfGames) {
+                        for (gameIdx in 0 until numberOfGames) {
                             values = ContentValues().apply {
-                                put(GameEntry.COLUMN_GAME_NUMBER, i + 1)
+                                put(GameEntry.COLUMN_GAME_NUMBER, gameIdx + 1)
                                 put(GameEntry.COLUMN_SCORE, 0)
                                 put(GameEntry.COLUMN_SERIES_ID, seriesId)
                             }
                             val gameId = database.insert(GameEntry.TABLE_NAME, null, values)
 
                             if (gameId != -1L) {
-                                for (j in 0 until Game.NUMBER_OF_FRAMES) {
+                                for (frameIdx in 0 until Game.NUMBER_OF_FRAMES) {
                                     values = ContentValues().apply {
-                                        put(FrameEntry.COLUMN_FRAME_NUMBER, j + 1)
+                                        put(FrameEntry.COLUMN_FRAME_NUMBER, frameIdx + 1)
                                         put(FrameEntry.COLUMN_GAME_ID, gameId)
+                                        put(FrameEntry.COLUMN_IS_ACCESSED, gameIdx == 0 && frameIdx == 0)
                                     }
                                     database.insert(FrameEntry.TABLE_NAME, null, values)
                                 }
