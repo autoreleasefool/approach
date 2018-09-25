@@ -88,7 +88,7 @@ class StatisticsUnitTabbedFragment : TabbedFragment() {
     }
 
     override fun handleTabSwitch(newTab: Int) {
-        // TODO: set the tabs to the same scroll point
+        // FIXME: set the tabs to the same scroll point
     }
 
     // MARK: IFloatingActionButtonHandler
