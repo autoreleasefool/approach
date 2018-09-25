@@ -19,21 +19,13 @@ class BCError(
     private val severity: Severity = Severity.Error
 ) {
 
-    /**
-     * Severity of the error.
-     */
     enum class Severity {
         Error,
         Warning,
         Info,
     }
 
-    /**
-     * Show the error in a dialog with an appropriate icon.
-     *
-     * @param context parent context
-     */
-    fun show(context: Context) {
+    fun show(context: Context, onDismiss: (() -> Unit)? = null) {
         var icon: Drawable?
         val color: Int
 
@@ -60,6 +52,9 @@ class BCError(
                 .setTitle(title)
                 .setMessage(message)
                 .setPositiveButton(R.string.okay, null)
+                .setOnDismissListener {
+                    onDismiss?.invoke()
+                }
                 .create()
                 .show()
     }

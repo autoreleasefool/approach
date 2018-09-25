@@ -268,6 +268,8 @@
     <string name="statistics_category_match_play">Match play</string>
     <string name="statistics_category_average">Average</string>
     <string name="statistics_category_series">Series</string>
+    <string name="did_you_know">Did you know?</string>
+    <string name="tap_to_show_statistics_graph">You can tap a statistic to show a graph of your performance over time.</string>
 
     <!-- Statistics Graph -->
     <string name="statistic_graph_accumulate">Accumulate values over time</string>
