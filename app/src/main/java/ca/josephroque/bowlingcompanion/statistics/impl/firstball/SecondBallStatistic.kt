@@ -13,7 +13,7 @@ import ca.josephroque.bowlingcompanion.statistics.immutable.StatFrame
  * Parent class for statistics which are calculated based on the user throwing a second ball
  * at a deck of pins.
  */
-abstract class SecondBallStatistic(override var numerator: Int = 0, override var denominator: Int = 0, var incompatible: Int = 0) : PercentageStatistic {
+abstract class SecondBallStatistic(override var numerator: Int = 0, override var denominator: Int = 0, private var incompatible: Int = 0) : PercentageStatistic {
 
     // MARK: Modifiers
 

@@ -120,7 +120,7 @@ class NavigationActivity : BaseActivity(),
     val isFullscreen: Boolean
         get() = !bottomNavigation.isVisible
 
-    var currentBottomSheet: BaseBottomSheetDialogFragment.Companion.BottomSheetType? = null
+    private var currentBottomSheet: BaseBottomSheetDialogFragment.Companion.BottomSheetType? = null
 
     // MARK: Lifecycle functions
 

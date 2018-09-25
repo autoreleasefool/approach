@@ -14,12 +14,6 @@ object Preferences {
     const val FACEBOOK_CLOSED = "fb_closed"
 
     /**
-     * Identifier for preference containing the version of the application. If the value is not equivalent to the
-     * current version, then the app has been updated.
-     */
-    const val VERSION = "pref_version"
-
-    /**
      * Identifier for preference indicating sort order which user prefers for bowlers.
      */
     const val BOWLER_SORT_ORDER = "pref_bowler_sort_order"

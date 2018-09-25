@@ -155,15 +155,6 @@
         <item name="android:layout_marginBottom">@dimen/base_margin</item>
     </style>
 
-    <style name="NumberPicker">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginLeft">@dimen/base_margin_large</item>
-        <item name="android:layout_marginRight">@dimen/base_margin_large</item>
-        <item name="android:layout_marginTop">@dimen/base_margin</item>
-        <item name="android:layout_marginBottom">@dimen/base_margin</item>
-    </style>
-
     <!-- Progress Bar -->
     <style name="ProgressBar" parent="Widget.AppCompat.ProgressBar.Horizontal">
         <item name="android:layout_width">match_parent</item>
@@ -212,10 +203,6 @@
         <item name="android:layout_marginRight">@dimen/text_margin_horizontal</item>
         <item name="android:layout_marginTop">@dimen/text_margin_vertical</item>
         <item name="android:layout_marginBottom">@dimen/text_margin_vertical</item>
-    </style>
-
-    <style name="TitleText" parent="HeaderText">
-        <item name="android:textSize">@dimen/text_title</item>
     </style>
 
     <style name="SubHeaderText" parent="HeaderText">
@@ -323,10 +310,6 @@
 
     <style name="Separator.Inset.Left" parent="Separator">
         <item name="android:layout_marginLeft">@dimen/base_margin_large</item>
-    </style>
-
-    <style name="Separator.Inset.Right" parent="Separator">
-        <item name="android:layout_marginRight">@dimen/base_margin_large</item>
     </style>
 
     <style name="Separator.Inset.Both" parent="Separator">

@@ -14,7 +14,6 @@
     <string name="query_delete_item">Delete %s?</string>
     <string name="dialog_delete_item_message">You can\'t recover this data once it\'s gone!</string>
     <string name="sort_items">Sort items</string>
-    <string name="start">Start</string>
     <string name="bowl">Bowl</string>
     <string name="begin">Begin</string>
 
@@ -45,11 +44,8 @@
     <string name="action_transfer">Transfer data</string>
     <string name="action_save">Save</string>
     <string name="action_sort_by">Sort by</string>
-    <string name="action_bowler_stats">Bowler stats</string>
-    <string name="action_league_stats">League stats</string>
     <string name="action_condensed_series">Condensed view</string>
     <string name="action_expanded_series">Expanded view</string>
-    <string name="action_create_new">Create new</string>
 
     <!-- Transfer -->
     <string name="transfer_data">Transfer data</string>
@@ -174,15 +170,10 @@
 
     <!-- Events -->
     <string name="event">Event</string>
-    <string name="new_event">New event</string>
-    <string name="edit_event">Edit event</string>
-    <string name="delete_event">Delete event</string>
 
     <string name="issue_saving_event">Issue saving event!</string>
-    <string name="error_saving_event">Error saving event!</string>
     <string name="error_event_name_invalid">You can only use letters, spaces, and the following characters: \'!@#$%^&amp;*()_+:"?/~-.</string>
     <string name="error_event_name_in_use">That name has already been used. You must choose another.</string>
-    <string name="error_event_not_saved">An error occurred and the event could not be saved.</string>
 
     <!-- Series -->
     <string name="series">Series</string>
@@ -193,7 +184,6 @@
     <string name="how_many_practice_games">How many games for practice series?</string>
 
     <string name="error_saving_series">Error saving series!</string>
-    <string name="issue_saving_series">Issue saving series!</string>
     <string name="error_series_not_saved">An error occurred and the series could not be saved.</string>
 
     <!-- Games -->
@@ -223,7 +213,6 @@
     <string name="dialog_reset_game_title">Reset game?</string>
     <string name="dialog_reset_game_message">Are you sure you want to reset this game? The data cannot be recovered.</string>
 
-    <string name="action_share">Share</string>
     <string name="action_best_possible">What if I strikeout?</string>
 
     <string name="action_set_score">Set manual score</string>
@@ -290,14 +279,12 @@
     <string name="statistic_total_spare_chances">Total spare chances</string>
 
     <!-- General statistics -->
-    <string name="statistic_team">Team</string>
     <string name="statistic_bowler">Bowler</string>
     <string name="statistic_league">League/Event</string>
     <string name="statistic_series">Date</string>
     <string name="statistic_game">Game #</string>
     <string name="statistic_average">Average</string>
     <string name="statistic_high_single">High single</string>
-    <string name="statistic_high_series">High series</string>
     <string name="statistic_total_pinfall">Total pinfall</string>
     <string name="statistic_number_of_games"># of games</string>
     <!-- Overall statistics -->
@@ -410,7 +397,6 @@
     <string name="nav_game_19">Game 19</string>
     <string name="nav_game_20">Game 20</string>
     <string name="nav_feedback">Feedback</string>
-    <string name="nav_help">Help</string>
     <string name="nav_settings">Settings</string>
 
     <!-- Empty view -->
@@ -469,13 +455,9 @@
     <string name="pref_highlight_score_enabled_title">Highlight high games</string>
     <string name="pref_highlight_score_enabled_summary_on">High games will be highlighted</string>
     <string name="pref_highlight_score_enabled_summary_off">No games highlighted</string>
-    <string name="pref_highlight_score_title">Minimum score to highlight</string>
-    <string name="pref_highlight_score_summary">Highlight games above a certain score</string>
     <string name="pref_highlight_series_enabled_title">Highlight high series</string>
     <string name="pref_highlight_series_enabled_summary_on">High series will be highlighted</string>
     <string name="pref_highlight_series_enabled_summary_off">No series highlighted</string>
-    <string name="pref_highlight_series_title">Minimum series total to highlight</string>
-    <string name="pref_highlight_series_summary">Highlight series above a certain score</string>
     <string name="pref_average_as_decimal_title">Show average as decimal?</string>
     <string name="pref_average_as_decimal_summary_on">Up to 1 decimal</string>
     <string name="pref_average_as_decimal_summary_off">No decimals</string>

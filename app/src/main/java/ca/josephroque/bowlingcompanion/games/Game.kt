@@ -122,7 +122,7 @@ class Game(
 
     /** Number of fouls in the game. */
     val fouls: Int
-        get() = frames.map { frame -> frame.ballFouled.count { it } }.sum()
+        get() = frames.asSequence().map { frame -> frame.ballFouled.count { it } }.sum()
 
     /** Backing field for [frameScores]. */
     private var _frameScores: IntArray = IntArray(frames.size)

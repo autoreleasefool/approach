@@ -22,34 +22,12 @@ class StatisticsProviderRecyclerViewAdapter(
     companion object {
         @Suppress("unused")
         private const val TAG = "SPRecyclerViewAdapter"
-
-        private enum class ViewType {
-            Team,
-            Bowler,
-            League,
-            Series,
-            Game;
-
-            companion object {
-                private val map = ViewType.values().associateBy(ViewType::ordinal)
-                fun fromInt(type: Int) = map[type]
-            }
-        }
     }
 
     // MARK: BaseRecyclerViewAdapter
 
     override fun getItemViewType(position: Int): Int {
-        val item = getItemAt(position)
-        val type: ViewType = when (item) {
-            is StatisticsProvider.TeamStatistics -> ViewType.Team
-            is StatisticsProvider.BowlerStatistics -> ViewType.Bowler
-            is StatisticsProvider.LeagueStatistics -> ViewType.League
-            is StatisticsProvider.SeriesStatistics -> ViewType.Series
-            is StatisticsProvider.GameStatistics -> ViewType.Game
-        }
-
-        return type.ordinal
+        return 0
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseRecyclerViewAdapter<StatisticsProvider>.ViewHolder {

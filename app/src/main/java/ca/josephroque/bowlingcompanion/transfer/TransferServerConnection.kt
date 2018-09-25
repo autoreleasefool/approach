@@ -552,7 +552,7 @@ class TransferServerConnection private constructor(context: Context) {
         }
     }
 
-    fun internalDownloadUserData(key: String, parentJob: Job?, exceptionHandler: CoroutineExceptionHandler): Deferred<ServerError?> {
+    private fun internalDownloadUserData(key: String, parentJob: Job?, exceptionHandler: CoroutineExceptionHandler): Deferred<ServerError?> {
         return async(CommonPool + exceptionHandler, parent = parentJob) {
             assert(_state == State.Connected) { "Ensure the server is connected before you contact it." }
             _state = State.Loading

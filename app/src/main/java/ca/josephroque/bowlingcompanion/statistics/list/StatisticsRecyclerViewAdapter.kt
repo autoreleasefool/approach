@@ -75,7 +75,7 @@ class StatisticsRecyclerViewAdapter(
         }
     }
 
-    // MARKL ItemViewHolder
+    // MARK: ItemViewHolder
 
     inner class ItemViewHolder(view: View) : BaseRecyclerViewAdapter<StatisticListItem>.ViewHolder(view) {
         private val tvTitle: TextView? = view.findViewById(R.id.tv_title)
