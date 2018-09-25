@@ -16,42 +16,30 @@ abstract class BaseFragmentPagerAdapter(
     private val tabCount: Int
 ) : FragmentPagerAdapter(fragmentManager) {
 
-    /** Weak references to the fragments in the pager. */
     private val fragmentReferenceMap: MutableMap<Int, WeakReference<Fragment>> = HashMap(tabCount)
 
-    /** @Override */
+    // MARK: FragmentPagerAdapter
+
     final override fun getItem(position: Int): Fragment? {
         val fragment = buildFragment(position) ?: return null
         fragmentReferenceMap[position] = WeakReference(fragment)
         return fragment
     }
 
-    /** @Override. */
     final override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
         super.destroyItem(container, position, `object`)
         fragmentReferenceMap.remove(position)
     }
 
-    /** @Override. */
     override fun getCount(): Int {
         return tabCount
     }
 
-    /**
-     * Get a reference to a fragment in the pager.
-     *
-     * @param position the fragment to get
-     * @return the fragment at [position]
-     */
+    // MARK: BaseFragmentPagerAdapter
+
     fun getFragment(position: Int): Fragment? {
         return fragmentReferenceMap[position]?.get()
     }
 
-    /**
-     * Build the fragment for the position in the pager.
-     *
-     * @param position position of fragment
-     * @return the fragment, or null if the position is invalid
-     */
     abstract fun buildFragment(position: Int): Fragment?
 }
