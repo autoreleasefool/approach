@@ -105,7 +105,7 @@ class StatisticsUnitTabbedFragment : TabbedFragment() {
 
     class StatisticsUnitPagerAdapter(
         fragmentManager: FragmentManager,
-        private  val tabCount: Int,
+        private val tabCount: Int,
         private val statisticsUnits: List<StatisticsUnit>
     ) : FragmentPagerAdapter(fragmentManager) {
         override fun getCount() = tabCount

@@ -19,7 +19,6 @@ import ca.josephroque.bowlingcompanion.series.SeriesListFragment
 import ca.josephroque.bowlingcompanion.statistics.interfaces.IStatisticsContext
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProvider
 import ca.josephroque.bowlingcompanion.utils.Analytics
-import kotlinx.android.synthetic.main.fragment_common_tabs.tabbed_fragment_pager as fragmentPager
 
 /**
  * Copyright (C) 2018 Joseph Roque

@@ -20,7 +20,6 @@ import ca.josephroque.bowlingcompanion.teams.list.TeamDialog
 import ca.josephroque.bowlingcompanion.teams.list.TeamListFragment
 import ca.josephroque.bowlingcompanion.transfer.BaseTransferDialogFragment
 import ca.josephroque.bowlingcompanion.utils.Analytics
-import kotlinx.android.synthetic.main.fragment_common_tabs.tabbed_fragment_pager as fragmentPager
 
 /**
  * Copyright (C) 2018 Joseph Roque
