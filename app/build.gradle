@@ -9,13 +9,13 @@ def versionMinor = 0
 def versionPatch = 0
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion "27.0.3"
+    compileSdkVersion 28
+    buildToolsVersion '28.0.2'
 
     defaultConfig {
         applicationId "ca.josephroque.bowlingcompanion"
         minSdkVersion 21
-        targetSdkVersion 27
+        targetSdkVersion 28
         versionCode versionMajor * 100 + versionMinor * 10 + versionPatch
         versionName "${versionMajor}.${versionMinor}.${versionPatch}"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -61,14 +61,15 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support:design:28.0.0'
+    implementation 'com.android.support:recyclerview-v7:28.0.0'
+    implementation 'com.android.support:preference-v7:28.0.0'
+    implementation 'com.android.support:preference-v14:28.0.0'
+    implementation 'com.android.support:support-v4:28.0.0'
+    implementation 'com.android.support:support-vector-drawable:28.0.0'
+    implementation "com.android.support:customtabs:28.0.0"
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
-    implementation 'com.android.support:design:27.1.1'
-    implementation 'com.android.support:recyclerview-v7:27.1.1'
-    implementation 'com.android.support:preference-v7:27.1.1'
-    implementation 'com.android.support:preference-v14:27.1.1'
-    implementation 'com.android.support:support-v4:27.1.1'
-    implementation 'com.android.support:support-vector-drawable:27.1.1'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.22.2'
     implementation "android.arch.lifecycle:extensions:1.1.1"
 
@@ -76,8 +77,8 @@ dependencies {
     implementation 'com.robertlevonyan.view:MaterialChipView:1.2.1'
     implementation 'com.ncapdevi:frag-nav:2.4.0'
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
-
     implementation "com.mixpanel.android:mixpanel-android:5.4.1"
+
     implementation "com.google.android.gms:play-services-gcm:15.0.1"
     implementation 'com.google.android.gms:play-services-ads:15.0.1'
 
