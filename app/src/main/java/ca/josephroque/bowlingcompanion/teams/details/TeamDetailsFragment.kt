@@ -70,7 +70,9 @@ class TeamDetailsFragment : BaseFragment(),
         set(value) {
             if (field != value) {
                 field = value
-                fabProvider?.invalidateFab()
+                launch(Android) {
+                    fabProvider?.invalidateFab()
+                }
             }
         }
 
