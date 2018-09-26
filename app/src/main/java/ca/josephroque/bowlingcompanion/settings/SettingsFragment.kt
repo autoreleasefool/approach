@@ -25,21 +25,14 @@ class SettingsFragment : PreferenceFragmentCompat(),
         SharedPreferences.OnSharedPreferenceChangeListener {
 
     companion object {
-        /** Logging identifier. */
         @Suppress("unused")
         private const val TAG = "SettingsFragment"
 
-        /**
-         * Create a new instance of the fragment.
-         *
-         * @return the new instance
-         */
         fun newInstance(): SettingsFragment {
             return SettingsFragment()
         }
     }
 
-    /** Handle preference changes. */
     private val onPreferenceChangedListener = SharedPreferences.OnSharedPreferenceChangeListener { preferences, key ->
         when (key) {
             Settings.BooleanSetting.EnableAutoAdvance.prefName -> {
@@ -62,7 +55,6 @@ class SettingsFragment : PreferenceFragmentCompat(),
         }
     }
 
-    /** Handle special cases for preferences interactions. */
     private val onPreferenceClickListener = Preference.OnPreferenceClickListener {
         when (it.key) {
             Settings.StaticSetting.ReportBug.prefName -> {
@@ -101,19 +93,18 @@ class SettingsFragment : PreferenceFragmentCompat(),
         }
     }
 
-    /** @Override */
+    // MARK: Lifecycle functions
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         preferenceManager.sharedPreferences.registerOnSharedPreferenceChangeListener(onPreferenceChangedListener)
     }
 
-    /** @Override */
     override fun onDestroy() {
         super.onDestroy()
         preferenceManager.sharedPreferences.unregisterOnSharedPreferenceChangeListener(onPreferenceChangedListener)
     }
 
-    /** @Override */
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         addPreferencesFromResource(R.xml.pref_app)
 
@@ -132,20 +123,17 @@ class SettingsFragment : PreferenceFragmentCompat(),
         updatePreferenceSummaries()
     }
 
-    /** @Override */
     override fun onStop() {
         super.onStop()
         preferenceScreen.sharedPreferences.unregisterOnSharedPreferenceChangeListener(this)
     }
 
-    /** @Override */
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
         updatePreferenceSummaries()
     }
 
-    /**
-     * Prompts the user to send a bug report email.
-     */
+    // MARK: Private function
+
     private fun sendBugReportEmail() {
         activity?.let {
             Email.sendEmail(
@@ -159,9 +147,6 @@ class SettingsFragment : PreferenceFragmentCompat(),
         Analytics.trackReportBug()
     }
 
-    /**
-     * Prompts the user to send a feedback email.
-     */
     private fun sendFeedbackEmail() {
         activity?.let {
             Email.sendEmail(
@@ -175,9 +160,6 @@ class SettingsFragment : PreferenceFragmentCompat(),
         Analytics.trackSendFeedback()
     }
 
-    /**
-     * Displays the app's Play Store listing, in either the Google Play app, or the web browser.
-     */
     private fun displayPlayStoreListing() {
         activity?.let {
             val appPackageName = it.packageName
@@ -193,9 +175,6 @@ class SettingsFragment : PreferenceFragmentCompat(),
         Analytics.trackRate()
     }
 
-    /**
-     * Displays the open source library attributions for the app.
-     */
     private fun displayAttributions() {
         activity?.let { activity ->
             val licenseText = Files.retrieveTextFileAsset(activity, "licenses.txt")
@@ -218,9 +197,6 @@ class SettingsFragment : PreferenceFragmentCompat(),
         Analytics.trackViewAttributions()
     }
 
-    /**
-     * Opens the Bowling Companion Facebook page.
-     */
     private fun displayFacebookPage() {
         activity?.let {
             it.startActivity(Facebook.getFacebookPageIntent(it))
@@ -229,9 +205,6 @@ class SettingsFragment : PreferenceFragmentCompat(),
         Analytics.trackViewFacebook()
     }
 
-    /**
-     * Update summaries of user preferences.
-     */
     private fun updatePreferenceSummaries() {
         val prefs = preferenceScreen.sharedPreferences
         findPreference(Settings.StaticSetting.VersionName.prefName).summary = BuildConfig.VERSION_NAME

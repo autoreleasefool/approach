@@ -26,7 +26,7 @@ class BowlerUnit(val bowlerId: Long, bowlerName: String, parcel: Parcel? = null)
 
     private constructor(p: Parcel): this(
             bowlerId = p.readLong(),
-            bowlerName = p.readString(),
+            bowlerName = p.readString()!!,
             parcel = p
     )
 

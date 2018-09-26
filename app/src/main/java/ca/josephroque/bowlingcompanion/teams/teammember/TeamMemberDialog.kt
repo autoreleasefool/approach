@@ -88,7 +88,7 @@ class TeamMemberDialog : BaseDialogFragment(),
 
     override fun onStart() {
         super.onStart()
-        dialog.window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
         view?.let { prepareActions(it, selectedLeague == null) }
     }
 

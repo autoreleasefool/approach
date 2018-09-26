@@ -11,13 +11,6 @@ import java.lang.ref.WeakReference
  * A dialog which prompts the user to reset their game.
  */
 object ResetGameDialog {
-
-    /**
-     * Prompt the user to reset their game
-     *
-     * @param context to build the dialog
-     * @param onResetGame weak reference to callback if user says yes
-     */
     fun show(context: Context, onResetGame: WeakReference<() -> Unit>) {
         AlertDialog.Builder(context)
                 .setTitle(R.string.dialog_reset_game_title)

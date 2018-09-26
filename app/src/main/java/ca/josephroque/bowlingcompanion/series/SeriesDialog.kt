@@ -35,21 +35,12 @@ import java.util.Date
 class SeriesDialog : BaseDialogFragment(), DatePickerDialog.OnDateSetListener {
 
     companion object {
-        /** Logging identifier. */
         @Suppress("unused")
         private const val TAG = "SeriesDialog"
 
-        /** Identifier for the [Series] to be edited. */
         private const val ARG_SERIES = "${TAG}_series"
-
-        /** Identifier for the new date of the series. */
         private const val ARG_DATE = "${TAG}_date"
 
-        /**
-         * Create a new instance of the [SeriesDialog].
-         *
-         * @param series the series to edit
-         */
         fun newInstance(series: Series): SeriesDialog {
             val dialog = SeriesDialog()
             dialog.arguments = Bundle().apply { putParcelable(ARG_SERIES, series) }
@@ -57,16 +48,12 @@ class SeriesDialog : BaseDialogFragment(), DatePickerDialog.OnDateSetListener {
         }
     }
 
-    /** Series to edit. */
     private var series: Series? = null
 
-    /** Updated date for series. */
     private var currentDate: Date? = null
 
-    /** Interaction handler. */
     private var delegate: SeriesDialogDelegate? = null
 
-    /** View OnClickListener. */
     private var onClickListener: View.OnClickListener? = View.OnClickListener {
         val clicked = it ?: return@OnClickListener
         when (clicked.id) {
@@ -89,13 +76,13 @@ class SeriesDialog : BaseDialogFragment(), DatePickerDialog.OnDateSetListener {
         }
     }
 
-    /** @Override */
+    // MARK: Lifecycle functions
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(DialogFragment.STYLE_NORMAL, R.style.Dialog)
     }
 
-    /** @Override */
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         series = arguments?.getParcelable(ARG_SERIES)
         currentDate = Date(savedInstanceState?.getLong(ARG_DATE) ?: series?.date?.time ?: 0)
@@ -107,11 +94,47 @@ class SeriesDialog : BaseDialogFragment(), DatePickerDialog.OnDateSetListener {
         return rootView
     }
 
-    /**
-     * Set up title, style, and listeners for toolbar.
-     *
-     * @param rootView the root view
-     */
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        val parentFragment = parentFragment as? SeriesDialogDelegate ?: throw RuntimeException("${parentFragment!!} must implement SeriesDialogDelegate")
+        delegate = parentFragment
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        delegate = null
+        onClickListener = null
+    }
+
+    override fun onStart() {
+        super.onStart()
+        dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+
+        currentDate?.let { dateText.text = DateUtils.dateToPretty(it) }
+        updateSaveButton()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        currentDate?.let {
+            outState.putLong(ARG_DATE, it.time)
+        }
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = super.onCreateDialog(savedInstanceState)
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+        return dialog
+    }
+
+    override fun dismiss() {
+        App.hideSoftKeyBoard(activity!!)
+        activity?.supportFragmentManager?.popBackStack()
+        super.dismiss()
+    }
+
+    // MARK: Private functions
+
     private fun setupToolbar(rootView: View) {
         rootView.toolbar_series.apply {
             setTitle(R.string.edit_series)
@@ -132,65 +155,12 @@ class SeriesDialog : BaseDialogFragment(), DatePickerDialog.OnDateSetListener {
         }
     }
 
-    /** @Override */
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-        val parentFragment = parentFragment as? SeriesDialogDelegate ?: throw RuntimeException("${parentFragment!!} must implement SeriesDialogDelegate")
-        delegate = parentFragment
-    }
-
-    /** @Override */
-    override fun onDetach() {
-        super.onDetach()
-        delegate = null
-        onClickListener = null
-    }
-
-    /** @Override */
-    override fun onStart() {
-        super.onStart()
-        dialog.window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
-
-        currentDate?.let { dateText.text = DateUtils.dateToPretty(it) }
-        updateSaveButton()
-    }
-
-    /** @Override */
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        currentDate?.let {
-            outState.putLong(ARG_DATE, it.time)
-        }
-    }
-
-    /** @Override */
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = super.onCreateDialog(savedInstanceState)
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-        return dialog
-    }
-
-    /**
-     * Clean up dialog before calling super.
-     */
-    override fun dismiss() {
-        App.hideSoftKeyBoard(activity!!)
-        activity?.supportFragmentManager?.popBackStack()
-        super.dismiss()
-    }
-
-    /**
-     * Update save button state based on if the series can be saved or not.
-     */
     private fun updateSaveButton() {
         val saveButton = seriesToolbar?.menu?.findItem(R.id.action_save)
         saveButton?.isEnabled = true
         saveButton?.icon?.alpha = Color.ALPHA_ENABLED
     }
 
-    /**
-     * Save the current series. Show errors if there are any.
-     */
     private fun saveSeries() {
         launch(Android) {
             val context = this@SeriesDialog.context ?: return@launch
@@ -219,9 +189,6 @@ class SeriesDialog : BaseDialogFragment(), DatePickerDialog.OnDateSetListener {
         }
     }
 
-    /**
-     * Show dialog to let user change series date.
-     */
     private fun showChangeDateDialog() {
         val supportFragmentManager = activity?.supportFragmentManager ?: return
 
@@ -233,7 +200,8 @@ class SeriesDialog : BaseDialogFragment(), DatePickerDialog.OnDateSetListener {
         dialog.show(supportFragmentManager, "DatePickerFragment")
     }
 
-    /** @Override */
+    // MARK: OnDateSetListener
+
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
         val calendar = Calendar.getInstance()
         calendar.set(Calendar.YEAR, year)
@@ -243,23 +211,10 @@ class SeriesDialog : BaseDialogFragment(), DatePickerDialog.OnDateSetListener {
         dateText.text = DateUtils.dateToPretty(currentDate!!)
     }
 
-    /**
-     * Handles interaction with the dialog.
-     */
+    // MARK: SeriesDialogDelegate
+
     interface SeriesDialogDelegate {
-
-        /**
-         * Indicates when the user has finished editing the [Series].
-         *
-         * @param series the finished [Series]
-         */
         fun onFinishSeries(series: Series)
-
-        /**
-         * Indicates the user wishes to delete the [Series].
-         *
-         * @param series the deleted [Series]
-         */
         fun onDeleteSeries(series: Series)
     }
 }

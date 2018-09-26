@@ -1,6 +1,5 @@
 package ca.josephroque.bowlingcompanion.games
 
-import android.os.Parcelable
 import android.os.Parcel
 import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
 import ca.josephroque.bowlingcompanion.common.interfaces.KParcelable
@@ -26,60 +25,18 @@ class Frame(
     var ballFouled: BooleanArray
 ) : IIdentifiable, KParcelable {
 
-    /**
-     * Construct a [Frame] from a [Parcel].
-     */
-    private constructor(p: Parcel): this(
-            gameId = p.readLong(),
-            id = p.readLong(),
-            ordinal = p.readInt(),
-            isAccessed = p.readBoolean(),
-            pinState = Array(NUMBER_OF_BALLS) {
-                val pins = BooleanArray(Game.NUMBER_OF_PINS)
-                p.readBooleanArray(pins)
-                return@Array Pin.deckFromBooleanArray(pins)
-            },
-            ballFouled = BooleanArray(NUMBER_OF_BALLS).apply {
-                p.readBooleanArray(this)
-            }
-    )
+    companion object {
+        @Suppress("unused")
+        private const val TAG = "Frame"
 
-    /**
-     * Construct a [Frame] from a [Frame].
-     */
-    private constructor(other: Frame): this(
-            gameId = other.gameId,
-            id = other.id,
-            ordinal = other.ordinal,
-            isAccessed = other.isAccessed,
-            pinState = Array(NUMBER_OF_BALLS) {
-                return@Array other.pinState[it].map { pin -> pin.deepCopy() }.toTypedArray()
-            },
-            ballFouled = other.ballFouled.clone()
-    )
+        @Suppress("unused")
+        @JvmField val CREATOR = parcelableCreator(::Frame)
 
-    /**
-     * Create a deep copy of this frame.
-     *
-     * @return a new instance of [Frame]
-     */
-    fun deepCopy(): Frame {
-        return Frame(this)
+        const val NUMBER_OF_BALLS = 3
+        const val LAST_BALL = NUMBER_OF_BALLS - 1
+        const val MAX_VALUE = 15
     }
 
-    /** @Override */
-    override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
-        writeLong(gameId)
-        writeLong(id)
-        writeInt(ordinal)
-        writeBoolean(isAccessed)
-        for (i in 0 until NUMBER_OF_BALLS) {
-            writeBooleanArray(pinState[i].toBooleanArray())
-        }
-        writeBooleanArray(ballFouled)
-    }
-
-    /** Ordinal of the frame, zero based. Frames are numbered 0 to 9 this way. */
     val zeroBasedOrdinal: Int
         get() = ordinal - 1
 
@@ -96,26 +53,53 @@ class Frame(
     val dbFouls: Int
         get() = Fouls.foulStringToInt(dbFoulString)
 
-    /** Number of pins left on deck at the end of the frame. */
     val pinsLeftOnDeck: Int
         get() = pinState[Frame.NUMBER_OF_BALLS].sumBy { if (it.onDeck) it.value else 0 }
 
-    companion object {
-        /** Logging identifier. */
-        @Suppress("unused")
-        private const val TAG = "Frame"
+    // MARK: Constructors
 
-        /** Creator, required by [Parcelable]. */
-        @Suppress("unused")
-        @JvmField val CREATOR = parcelableCreator(::Frame)
+    private constructor(p: Parcel): this(
+            gameId = p.readLong(),
+            id = p.readLong(),
+            ordinal = p.readInt(),
+            isAccessed = p.readBoolean(),
+            pinState = Array(NUMBER_OF_BALLS) {
+                val pins = BooleanArray(Game.NUMBER_OF_PINS)
+                p.readBooleanArray(pins)
+                return@Array Pin.deckFromBooleanArray(pins)
+            },
+            ballFouled = BooleanArray(NUMBER_OF_BALLS).apply {
+                p.readBooleanArray(this)
+            }
+    )
 
-        /** Number of balls in a frame. */
-        const val NUMBER_OF_BALLS = 3
+    private constructor(other: Frame): this(
+            gameId = other.gameId,
+            id = other.id,
+            ordinal = other.ordinal,
+            isAccessed = other.isAccessed,
+            pinState = Array(NUMBER_OF_BALLS) {
+                return@Array other.pinState[it].map { pin -> pin.deepCopy() }.toTypedArray()
+            },
+            ballFouled = other.ballFouled.clone()
+    )
 
-        /** Index of the last ball in a frame. */
-        const val LAST_BALL = NUMBER_OF_BALLS - 1
+    // MARK: Frame
 
-        /** Max value of a single frame. */
-        const val MAX_VALUE = 15
+    fun deepCopy(): Frame {
+        return Frame(this)
+    }
+
+    // MARK: Parcelable
+
+    override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
+        writeLong(gameId)
+        writeLong(id)
+        writeInt(ordinal)
+        writeBoolean(isAccessed)
+        for (i in 0 until NUMBER_OF_BALLS) {
+            writeBooleanArray(pinState[i].toBooleanArray())
+        }
+        writeBooleanArray(ballFouled)
     }
 }

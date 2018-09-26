@@ -9,11 +9,9 @@ import java.util.Locale
  */
 class Pin(val type: Type) {
 
-    /** Type of the  pin. */
     enum class Type {
         Two, Three, Five;
 
-        /** Value of the pin. */
         val value: Int
             get() {
                 return when (this) {
@@ -24,22 +22,14 @@ class Pin(val type: Type) {
             }
     }
 
-    /** Indicates if the pin is down or not. */
     var isDown: Boolean = false
 
-    /** Indicates if the pin is up or not. */
     val onDeck: Boolean
         get() = !isDown
 
-    /** Value of the pin. */
     val value: Int
         get() = type.value
 
-    /**
-     * Create a deep copy of this pin.
-     *
-     * @return a new instance of [Pin]
-     */
     fun deepCopy(): Pin {
         val pin = when (type) {
             Type.Two -> Pin(Type.Two)
@@ -51,21 +41,10 @@ class Pin(val type: Type) {
     }
 
     companion object {
-        /**
-         * Gets a new instance of a clean deck.
-         *
-         * @return a set of five pins, all standing
-         */
         private fun buildDeck(): Deck {
             return arrayOf(Pin(Type.Two), Pin(Type.Three), Pin(Type.Five), Pin(Type.Three), Pin(Type.Two))
         }
 
-        /**
-         * Build a Deck from a BooleanArray
-         *
-         * @param array the source array
-         * @return a new deck
-         */
         fun deckFromBooleanArray(array: BooleanArray): Deck {
             return buildDeck().apply {
                 forEachIndexed { index, pin ->
@@ -74,12 +53,6 @@ class Pin(val type: Type) {
             }
         }
 
-        /**
-         * Converts an int from the database to a deck.
-         *
-         * @param ball int from 0-31
-         * @return deck representation of `ball`
-         */
         fun deckFromInt(ball: Int): Deck {
             if (ball < 0 || ball > 31) {
                 throw IllegalArgumentException("cannot convert value: $ball")

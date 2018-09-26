@@ -16,20 +16,13 @@ class CustomScrollingViewPager : ViewPager {
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?): super(context, attrs)
 
-    /** Enable or disable scrolling on the view. */
     var scrollingEnabled = true
 
-    /**
-     * Interrupt if scrolling is disabled.
-     */
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(ev: MotionEvent?): Boolean {
         return scrollingEnabled && super.onTouchEvent(ev)
     }
 
-    /**
-     * Interrupt if scrolling is disabled.
-     */
     override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
         return scrollingEnabled && super.onInterceptTouchEvent(ev)
     }

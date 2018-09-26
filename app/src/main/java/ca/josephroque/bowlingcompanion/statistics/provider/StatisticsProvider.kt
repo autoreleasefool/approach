@@ -36,7 +36,7 @@ sealed class StatisticsProvider : IIdentifiable, KParcelable {
             @JvmField val CREATOR = parcelableCreator(StatisticsProvider::TeamStatistics)
         }
 
-        private constructor(p: Parcel): this(p.readParcelable<Team>(Team::class.java.classLoader))
+        private constructor(p: Parcel): this(p.readParcelable<Team>(Team::class.java.classLoader)!!)
 
         override val id = team.id.and(0xF00000000000000L)
         override val name = team.name
@@ -51,7 +51,7 @@ sealed class StatisticsProvider : IIdentifiable, KParcelable {
             @JvmField val CREATOR = parcelableCreator(StatisticsProvider::BowlerStatistics)
         }
 
-        private constructor(p: Parcel): this(p.readParcelable<Bowler>(Bowler::class.java.classLoader))
+        private constructor(p: Parcel): this(p.readParcelable<Bowler>(Bowler::class.java.classLoader)!!)
 
         override val id = bowler.id.and(0xE00000000000000L)
         override val name = bowler.name
@@ -66,7 +66,7 @@ sealed class StatisticsProvider : IIdentifiable, KParcelable {
             @JvmField val CREATOR = parcelableCreator(StatisticsProvider::LeagueStatistics)
         }
 
-        private constructor(p: Parcel): this(p.readParcelable<League>(League::class.java.classLoader))
+        private constructor(p: Parcel): this(p.readParcelable<League>(League::class.java.classLoader)!!)
 
         override val id = league.id.and(0xD00000000000000L)
         override val name = league.name
@@ -81,7 +81,7 @@ sealed class StatisticsProvider : IIdentifiable, KParcelable {
             @JvmField val CREATOR = parcelableCreator(StatisticsProvider::SeriesStatistics)
         }
 
-        private constructor(p: Parcel): this(p.readParcelable<Series>(Series::class.java.classLoader))
+        private constructor(p: Parcel): this(p.readParcelable<Series>(Series::class.java.classLoader)!!)
 
         override val id = series.id.and(0xC00000000000000L)
         override val name = series.prettyDate
@@ -96,7 +96,7 @@ sealed class StatisticsProvider : IIdentifiable, KParcelable {
             @JvmField val CREATOR = parcelableCreator(StatisticsProvider::GameStatistics)
         }
 
-        private constructor(p: Parcel): this(p.readParcelable<Game>(Game::class.java.classLoader))
+        private constructor(p: Parcel): this(p.readParcelable<Game>(Game::class.java.classLoader)!!)
 
         override val id = game.id.and(0xB00000000000000L)
         override val name = "Game ${game.ordinal}"

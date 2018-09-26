@@ -11,14 +11,11 @@ import java.util.Locale
  */
 object DateUtils {
 
-    /** Date formatter for series dates. */
     private val seriesDateFormatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA)
-
-    /** Date formatter for pretty dates. */
     private val prettyDateFormatter = SimpleDateFormat("MMMM dd, yyyy", Locale.CANADA)
-
-    /** Date formatter for short dates. */
     private val shortDateFormatter = SimpleDateFormat("MM/dd", Locale.CANADA)
+
+    // MARK: DateUtils
 
     /**
      * Convert a series date [String] to a [Date].

@@ -3,7 +3,6 @@ package ca.josephroque.bowlingcompanion.games
 import android.content.Context
 import android.database.Cursor
 import android.os.Parcel
-import android.os.Parcelable
 import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
 import ca.josephroque.bowlingcompanion.common.interfaces.KParcelable
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
@@ -45,28 +44,24 @@ class Game(
     val matchPlay: MatchPlay
 ) : IIdentifiable, KParcelable {
 
-    /**
-     * Construct a [Game] from a [Parcel].
-     */
+    // MARK: Constructors
+
     private constructor(p: Parcel): this(
-            series = p.readParcelable<Series>(Series::class.java.classLoader),
+            series = p.readParcelable<Series>(Series::class.java.classLoader)!!,
             id = p.readLong(),
             ordinal = p.readInt(),
             initialScore = p.readInt(),
             isLocked = p.readBoolean(),
             isManual = p.readBoolean(),
             frames = arrayListOf<Frame>().apply {
-                val parcelableArray = p.readParcelableArray(Frame::class.java.classLoader)
+                val parcelableArray = p.readParcelableArray(Frame::class.java.classLoader)!!
                 this.addAll(parcelableArray.map {
                     return@map it as Frame
                 })
             },
-            matchPlay = p.readParcelable<MatchPlay>(MatchPlay::class.java.classLoader)
+            matchPlay = p.readParcelable<MatchPlay>(MatchPlay::class.java.classLoader)!!
     )
 
-    /**
-     * Construct a [Game] from a [Game].
-     */
     private constructor(other: Game): this(
             series = other.series,
             id = other.id,
@@ -78,7 +73,8 @@ class Game(
             matchPlay = other.matchPlay.deepCopy()
     )
 
-    /** @Override */
+    // MARK: Parcelable
+
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeParcelable(series, 0)
         writeLong(id)
@@ -90,29 +86,18 @@ class Game(
         writeParcelable(matchPlay, 0)
     }
 
-    /**
-     * Create a deep copy of this game.
-     *
-     * @return a new instance of [Game]
-     */
     fun deepCopy(): Game {
         return Game(this)
     }
 
-    /**
-     * Get the first frame which hasn't been accessed in a game, or the last frame if all frames
-     * have been accessed.
-     */
     val firstNewFrame: Int
         get() {
             val firstFrameNotAccessed = frames.indexOfFirst { frame -> !frame.isAccessed }
             return if (firstFrameNotAccessed > -1) firstFrameNotAccessed else Game.LAST_FRAME
         }
 
-    /** Marks the score as dirty and needing recalculation. */
     private var dirty: Boolean = true
 
-    /** The score of the game. */
     var score: Int = initialScore
         get() {
             if (isManual) { return field }
@@ -120,11 +105,9 @@ class Game(
             return field
         }
 
-    /** Number of fouls in the game. */
     val fouls: Int
         get() = frames.asSequence().map { frame -> frame.ballFouled.count { it } }.sum()
 
-    /** Backing field for [frameScores]. */
     private var _frameScores: IntArray = IntArray(frames.size)
         get() {
             if (!dirty) { return field }
@@ -195,15 +178,11 @@ class Game(
             return frameScores
         }
 
-    /** Scores for each frame. */
     val frameScores: IntArray
         get() = _frameScores.copyOf()
 
-    /**
-     * Gets the text for each ball of each frame from this game.
-     *
-     * @return the text for each ball, as a list of arrays
-     */
+    // MARK: Game
+
     fun getBallTextForFrames(): Deferred<List<Array<String>>> {
         return async(CommonPool) {
             return@async frames.mapIndexed { index, frame ->
@@ -285,12 +264,6 @@ class Game(
         }
     }
 
-    /**
-     * Gets the cumulative score of each frame of this game. The final entry in the returned array
-     * is the score of the game with fouls accounted for.
-     *
-     * @return the cumulative scores of each frame, as strings.
-     */
     fun getScoreTextForFrames(): Deferred<List<String>> {
         return async(CommonPool) {
             return@async frameScores.mapIndexed { index, score ->
@@ -303,54 +276,31 @@ class Game(
         }
     }
 
-    /**
-     * Mark the game as dirty after a field is updated.
-     */
     fun markDirty() {
         dirty = true
     }
 
     companion object {
-        /** Logging identifier. */
         @Suppress("unused")
         private const val TAG = "Game"
 
-        /** Creator, required by [Parcelable]. */
         @Suppress("unused")
         @JvmField val CREATOR = parcelableCreator(::Game)
 
-        /** Number of frames in a single game. */
         const val NUMBER_OF_FRAMES = 10
 
-        /** Index of the last frame in a game. */
         const val LAST_FRAME = NUMBER_OF_FRAMES - 1
 
-        /** Number of pins used in the game. */
         const val NUMBER_OF_PINS = 5
 
-        /** Maximum possible score. */
         const val MAX_SCORE = 450
 
-        /** Number of points lost for a foul. */
         const val FOUL_PENALTY = 15
 
-        /**
-         * Returns true if [score] is a valid score in the game.
-         *
-         * @param score the score to check
-         * @return true if the score is greater than or equal to 0 and less than or equal to the max score
-         */
         fun isValidScore(score: Int): Boolean {
             return score in 0..MAX_SCORE
         }
 
-        /**
-         * Load a list of games for a series
-         *
-         * @param context to get database instance
-         * @param series series to load games for
-         * @return the list of games for the series
-         */
         fun fetchSeriesGames(context: Context, series: Series): Deferred<MutableList<Game>> {
             return async(CommonPool) {
                 val gameList: MutableList<Game> = ArrayList(series.numberOfGames)

@@ -143,7 +143,7 @@ class LeagueDialog : BaseDialogFragment() {
 
     override fun onStart() {
         super.onStart()
-        dialog.window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
 
         // Requesting input focus and showing keyboard
         nameInput.requestFocus()
@@ -174,7 +174,7 @@ class LeagueDialog : BaseDialogFragment() {
             }
         }
 
-        nameInput.setSelection(nameInput.text.length)
+        nameInput.text?.let { nameInput.setSelection(it.length) }
         setImeOptions()
         setLeagueOptionsVisible()
         updateSaveButton()

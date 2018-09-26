@@ -26,9 +26,9 @@ class LeagueUnit(val bowlerName: String, val leagueId: Long, leagueName: String,
     // MARK: Constructors
 
     private constructor(p: Parcel): this(
-            bowlerName = p.readString(),
+            bowlerName = p.readString()!!,
             leagueId = p.readLong(),
-            leagueName = p.readString(),
+            leagueName = p.readString()!!,
             parcel = p
     )
 

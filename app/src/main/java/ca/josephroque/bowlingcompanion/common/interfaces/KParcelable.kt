@@ -34,7 +34,7 @@ inline fun <reified T> parcelableClassLoaderCreator(
                     create(source, loader)
 
             override fun createFromParcel(source: Parcel) =
-                    createFromParcel(source, T::class.java.classLoader)
+                    createFromParcel(source, T::class.java.classLoader!!)
 
             override fun newArray(size: Int) = arrayOfNulls<T>(size)
         }

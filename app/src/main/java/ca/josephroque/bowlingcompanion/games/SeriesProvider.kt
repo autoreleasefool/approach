@@ -22,7 +22,7 @@ sealed class SeriesProvider : KParcelable {
             @JvmField val CREATOR = parcelableCreator(::TeamSeries)
         }
 
-        private constructor(p: Parcel): this(p.readParcelable<Team>(Team::class.java.classLoader))
+        private constructor(p: Parcel): this(p.readParcelable<Team>(Team::class.java.classLoader)!!)
     }
 
     // MARK: BowlerSeries
@@ -33,7 +33,7 @@ sealed class SeriesProvider : KParcelable {
             @JvmField val CREATOR = parcelableCreator(::BowlerSeries)
         }
 
-        private constructor(p: Parcel): this(p.readParcelable<Series>(Series::class.java.classLoader))
+        private constructor(p: Parcel): this(p.readParcelable<Series>(Series::class.java.classLoader)!!)
     }
 
     val seriesList: List<Series>

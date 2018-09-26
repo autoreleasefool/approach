@@ -61,9 +61,9 @@ data class League(
     // MARK: Constructors
 
     private constructor(p: Parcel): this(
-            bowler = p.readParcelable<Bowler>(Bowler::class.java.classLoader),
+            bowler = p.readParcelable<Bowler>(Bowler::class.java.classLoader)!!,
             id = p.readLong(),
-            name = p.readString(),
+            name = p.readString()!!,
             average = p.readDouble(),
             isEvent = p.readBoolean(),
             gamesPerSeries = p.readInt(),

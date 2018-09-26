@@ -97,7 +97,7 @@ class BowlerDialog : BaseDialogFragment() {
 
     override fun onStart() {
         super.onStart()
-        dialog.window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
 
         // Requesting input focus and showing keyboard
         nameInput.requestFocus()
@@ -105,7 +105,7 @@ class BowlerDialog : BaseDialogFragment() {
         imm.showSoftInput(nameInput, InputMethodManager.SHOW_IMPLICIT)
 
         bowler?.let { deleteButton.visibility = View.VISIBLE }
-        nameInput.setSelection(nameInput.text.length)
+        nameInput.text?.let { nameInput.setSelection(it.length) }
         updateSaveButton()
     }
 
@@ -154,7 +154,7 @@ class BowlerDialog : BaseDialogFragment() {
         })
     }
 
-    private fun canSave() = nameInput.text.isNotEmpty()
+    private fun canSave() = nameInput.text?.isNotEmpty() ?: false
 
     private fun updateSaveButton() {
         val saveButton = view?.toolbar_bowler?.menu?.findItem(R.id.action_save)

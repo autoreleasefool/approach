@@ -17,21 +17,14 @@ class GameAutoEventController(
 ) {
 
     companion object {
-        /** Logging identifier. */
         @Suppress("unused")
         private const val TAG = "GameAutoEventController"
 
-        /** Total seconds to delay before auto advance. */
         private var autoAdvanceTotalDelay: Int = 0
     }
 
     init { init(preferences) }
 
-    /**
-     * Initialize the events from preferences.
-     *
-     * @param preferences the user's preferences
-     */
     fun init(preferences: SharedPreferences) {
         // Enable auto lock
         val autoLockEnabled = Settings.BooleanSetting.EnableAutoLock.getValue(preferences)
@@ -54,14 +47,12 @@ class GameAutoEventController(
         autoAdvanceTotalDelay = Integer.valueOf(strDelay)
     }
 
-    /** Handlers to perform events. */
     private val autoEventHandler: HashMap<AutoEvent, Handler> by lazy {
         val map = HashMap<AutoEvent, Handler>()
         AutoEvent.values().forEach { map[it] = Handler() }
         return@lazy map
     }
 
-    /** Runnable to execute the automatic events. */
     private val autoEventRunnable: HashMap<AutoEvent, Runnable> by lazy {
         val map = HashMap<AutoEvent, Runnable>()
         map[AutoEvent.AdvanceFrame] = Runnable {
@@ -86,53 +77,25 @@ class GameAutoEventController(
         return@lazy map
     }
 
-    /** Number of seconds remaining before the next auto advance event. */
     private var autoAdvanceSecondsRemaining: Int = 0
 
-    /**
-     * Enable the specified event.
-     *
-     * @param event the event to enable
-     */
-    private fun enable(event: AutoEvent) {
-        event.isEnabled = true
-    }
+    // MARK: GameAutoEventController
 
-    /**
-     * Disable the specified event.
-     *
-     * @param event the event to disable
-     */
     fun disable(event: AutoEvent) {
         autoEventHandler[event]?.removeCallbacks(autoEventRunnable[event])
         event.isEnabled = false
     }
 
-    /**
-     * Pause the specified event.
-     *
-     * @param event the event to pause
-     */
     fun pause(event: AutoEvent) {
         autoEventHandler[event]?.removeCallbacks(autoEventRunnable[event])
         delegate.autoEventPaused(event)
     }
 
-    /**
-     * Start the specified event.
-     *
-     * @param event the event to pause
-     */
     fun start(event: AutoEvent) {
         if (!event.isEnabled) { return }
         autoEventHandler[event]?.postDelayed(autoEventRunnable[event], event.delay)
     }
 
-    /**
-     * Delay the specified event.
-     *
-     * @param event the event to delay
-     */
     fun delay(event: AutoEvent) {
         pause(event)
         when (event) {
@@ -143,20 +106,21 @@ class GameAutoEventController(
         delegate.autoEventDelayed(event)
     }
 
-    /**
-     * Pause all events.
-     */
     fun pauseAll() {
         AutoEvent.values().forEach { pause(it) }
     }
 
-    /**
-     * Automatic events.
-     */
+    // MARK: Private functions
+
+    private fun enable(event: AutoEvent) {
+        event.isEnabled = true
+    }
+
+    // MARK: AutoEvent
+
     enum class AutoEvent {
         AdvanceFrame, Lock;
 
-        /** Delay before the event occurs, in milliseconds. */
         val delay: Long
             get() {
                 return when (this) {
@@ -165,48 +129,20 @@ class GameAutoEventController(
                 }
             }
 
-        /** Indicates if the event is currently enabled or not. */
         var isEnabled: Boolean = false
 
         companion object {
-            /** Current delay for frame auto advance. */
             var ADVANCE_FRAME_DELAY = 1000L
-
-            /** Current delay for auto lock. */
             var LOCK_DELAY = 5000L
         }
     }
 
-    /**
-     * Callbacks for automatic events.
-     */
+    // MARK: GameAutoEventDelegate
+
     interface GameAutoEventDelegate {
-        /**
-         * Called when an auto event is fired.
-         *
-         * @param event the event fired
-         */
         fun autoEventFired(event: AutoEvent)
-
-        /**
-         * Called when an auto event is delayed.
-         *
-         * @param event the event delayed
-         */
         fun autoEventDelayed(event: AutoEvent)
-
-        /**
-         * Called when an auto event is paused.
-         *
-         * @param event the event paused
-         */
         fun autoEventPaused(event: AutoEvent)
-
-        /**
-         * Count down the auto advance timer.
-         *
-         * @param secondsRemaining seconds remaining until frame should auto advance
-         */
         fun autoAdvanceCountDown(secondsRemaining: Int)
     }
 }

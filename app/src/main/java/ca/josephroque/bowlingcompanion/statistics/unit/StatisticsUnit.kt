@@ -64,7 +64,7 @@ abstract class StatisticsUnit(initialSeries: List<StatSeries>? = null, initialSt
     protected constructor(p: Parcel? = null): this(
             initialSeries = if (p != null && p.readBoolean()) {
                 ArrayList<StatSeries>().apply {
-                    val array = p.readParcelableArray(StatSeries::class.java.classLoader)
+                    val array = p.readParcelableArray(StatSeries::class.java.classLoader)!!
                     for (i in 0 until array.size) {
                         add(array[i] as StatSeries)
                     }

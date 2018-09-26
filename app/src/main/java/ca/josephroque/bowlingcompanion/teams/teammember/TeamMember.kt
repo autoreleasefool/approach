@@ -27,9 +27,7 @@ class TeamMember(
         @Suppress("unused")
         @JvmField val CREATOR = parcelableCreator(::TeamMember)
 
-        /** Bit count to shift team id for team member id. */
         private const val TEAM_ID_SHIFT = 32
-        /** Number of bits to use from beginning of bowler id for team member id. */
         private const val BOWLER_ID_TRIM = 0xFFFFFFFF
     }
 
@@ -44,7 +42,7 @@ class TeamMember(
 
     private constructor(p: Parcel): this(
             teamId = p.readLong(),
-            bowlerName = p.readString(),
+            bowlerName = p.readString()!!,
             bowlerId = p.readLong(),
             league = p.readParcelable<League>(League::class.java.classLoader),
             series = p.readParcelable<Series>(Series::class.java.classLoader)

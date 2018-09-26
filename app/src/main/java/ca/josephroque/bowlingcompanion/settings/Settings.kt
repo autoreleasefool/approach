@@ -108,7 +108,7 @@ object Settings {
             }
 
         fun getValue(preferences: SharedPreferences): String {
-            return preferences.getString(this.prefName, this.default)
+            return preferences.getString(this.prefName, this.default)!!
         }
     }
 

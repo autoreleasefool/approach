@@ -27,7 +27,7 @@ class TeamUnit(val teamId: Long, teamName: String, parcel: Parcel? = null) : Sta
 
     private constructor(p: Parcel): this(
             teamId = p.readLong(),
-            teamName = p.readString(),
+            teamName = p.readString()!!,
             parcel = p
     )
 

@@ -55,7 +55,7 @@ class Series(
     // MARK: Constructors
 
     private constructor(p: Parcel): this(
-            league = p.readParcelable<League>(League::class.java.classLoader),
+            league = p.readParcelable<League>(League::class.java.classLoader)!!,
             id = p.readLong(),
             date = p.readDate()!!,
             numberOfGames = p.readInt(),

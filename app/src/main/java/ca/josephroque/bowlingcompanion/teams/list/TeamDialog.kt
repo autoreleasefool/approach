@@ -117,7 +117,7 @@ class TeamDialog : BaseDialogFragment(),
 
     override fun onStart() {
         super.onStart()
-        dialog.window.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+        dialog.window?.setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
 
         activity?.let {
             nameInput.clearFocus()
@@ -125,7 +125,7 @@ class TeamDialog : BaseDialogFragment(),
         }
 
         team?.let { deleteButton.visibility = View.VISIBLE }
-        nameInput.setSelection(nameInput.text.length)
+        nameInput.text?.let { nameInput.setSelection(it.length) }
         refreshBowlerList()
     }
 

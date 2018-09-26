@@ -43,8 +43,8 @@ class GameUnit(
     // MARK: Constructors
 
     private constructor(p: Parcel): this(
-            bowlerName = p.readString(),
-            leagueName = p.readString(),
+            bowlerName = p.readString()!!,
+            leagueName = p.readString()!!,
             seriesDate = p.readDate()!!,
             seriesId = p.readLong(),
             gameId = p.readLong(),

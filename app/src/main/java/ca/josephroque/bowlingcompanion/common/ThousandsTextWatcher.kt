@@ -14,14 +14,8 @@ open class ThousandsTextWatcher(
     private val decimalSeparator: String
 ) : TextWatcher {
 
-    /** Indicates if the watcher is busy performing a previous action. */
     private var isBusy = false
 
-    /**
-     * Parse the new text value and add commas where appropriate for numerical values.
-     *
-     * @param s the new text
-     */
     override fun afterTextChanged(s: Editable?) {
         if (s != null && !isBusy) {
             isBusy = true
@@ -53,9 +47,6 @@ open class ThousandsTextWatcher(
         }
     }
 
-    /** @Override */
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-    /** @Override */
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
 }

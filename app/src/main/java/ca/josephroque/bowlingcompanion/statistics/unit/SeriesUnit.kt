@@ -36,8 +36,8 @@ class SeriesUnit(
     // MARK: Constructors
 
     private constructor(p: Parcel): this(
-            bowlerName = p.readString(),
-            leagueName = p.readString(),
+            bowlerName = p.readString()!!,
+            leagueName = p.readString()!!,
             seriesId = p.readLong(),
             seriesDate = p.readDate()!!,
             parcel = p

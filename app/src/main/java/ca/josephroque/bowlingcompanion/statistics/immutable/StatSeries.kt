@@ -48,7 +48,7 @@ class StatSeries(
     private constructor(p: Parcel): this(
         id = p.readLong(),
         games = arrayListOf<StatGame>().apply {
-            val parcelableArray = p.readParcelableArray(StatGame::class.java.classLoader)
+            val parcelableArray = p.readParcelableArray(StatGame::class.java.classLoader)!!
             this.addAll(parcelableArray.map {
                 return@map it as StatGame
             })

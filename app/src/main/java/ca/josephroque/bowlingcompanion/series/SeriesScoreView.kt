@@ -21,23 +21,18 @@ import kotlinx.android.synthetic.main.view_series_score.view.tv_match_play as tv
 class SeriesScoreView : LinearLayout {
 
     companion object {
-        /** Logging identifier. */
         @Suppress("unused")
         private const val TAG = "SeriesScoreView"
 
-        /** Tag to save super state. */
         private const val SUPER_STATE = "${TAG}_super_state"
-        /** Tag to save state of score. */
         private const val SCORE = "${TAG}_score"
-        /** Tag to save state of match play. */
         private const val MATCH_PLAY = "${TAG}_match_play"
-        /** Tag to save state of score text color. */
         private const val SCORE_TEXT_COLOR = "${TAG}_score_text_color"
-        /** Tag to save state of match play text color. */
         private const val MATCH_PLAY_TEXT_COLOR = "${TAG}_match_play_text_color"
     }
 
-    /** Required constructors */
+    // MARK: Constructors
+
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
@@ -45,7 +40,8 @@ class SeriesScoreView : LinearLayout {
         LayoutInflater.from(context).inflate(R.layout.view_series_score, this, true)
     }
 
-    /** @Override */
+    // MARK: Lifecycle functions
+
     override fun onSaveInstanceState(): Parcelable {
         return Bundle().apply {
             putParcelable(SUPER_STATE, super.onSaveInstanceState())
@@ -56,7 +52,6 @@ class SeriesScoreView : LinearLayout {
         }
     }
 
-    /** @Override */
     override fun onRestoreInstanceState(state: Parcelable?) {
         var superState: Parcelable? = null
         if (state is Bundle) {
@@ -70,14 +65,12 @@ class SeriesScoreView : LinearLayout {
         super.onRestoreInstanceState(superState)
     }
 
-    /** Score to display in the view. */
     var score: Int = 0
         set(value) {
             tvScore.text = value.toString()
             field = value
         }
 
-    /** Match play result to display in the view */
     var matchPlay: MatchPlayResult = MatchPlayResult.NONE
         set(value) {
             when (value) {
@@ -90,14 +83,12 @@ class SeriesScoreView : LinearLayout {
             field = value
         }
 
-    /** Text color of the score text field. */
     var scoreTextColor: Int = Color.BLACK
         set(value) {
             tvScore.setTextColor(value)
             field = value
         }
 
-    /** Text color of the match play result text field. */
     var matchPlayTextColor: Int = Color.BLACK
         set(value) {
             tvMatchPlay.setTextColor(value)

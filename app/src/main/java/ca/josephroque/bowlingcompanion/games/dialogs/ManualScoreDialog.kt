@@ -14,12 +14,6 @@ import android.widget.EditText
  */
 object ManualScoreDialog {
 
-    /**
-     * Prompt the user to set a manual score for the current game.
-     *
-     * @param context to show dialog
-     * @param onSetScore callback if the user opts to set the score.
-     */
     @SuppressLint("InflateParams")
     fun showSetScoreDialog(context: Context, onSetScore: (score: Int) -> Unit) {
         val view = LayoutInflater.from(context).inflate(R.layout.dialog_set_score, null, false)
@@ -45,12 +39,6 @@ object ManualScoreDialog {
                 .show()
     }
 
-    /**
-     * Prompt the user to clear the current manual score for the game.
-     *
-     * @param context to show dialog
-     * @param onClearScore callback if the user opts to clear the score
-     */
     fun showClearScoreDialog(context: Context, onClearScore: () -> Unit) {
         AlertDialog.Builder(context)
                 .setTitle(R.string.dialog_clear_score_title)

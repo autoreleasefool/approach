@@ -1,7 +1,6 @@
 package ca.josephroque.bowlingcompanion.matchplay
 
 import android.os.Parcel
-import android.os.Parcelable
 import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
 import ca.josephroque.bowlingcompanion.common.interfaces.KParcelable
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
@@ -19,20 +18,16 @@ class MatchPlay(
     var result: MatchPlayResult
 ) : IIdentifiable, KParcelable {
 
-    /**
-     * Construct a [MatchPlay] from a [Parcel].
-     */
+    // MARK: Constructors
+
     private constructor(p: Parcel): this(
             gameId = p.readLong(),
             id = p.readLong(),
-            opponentName = p.readString(),
+            opponentName = p.readString()!!,
             opponentScore = p.readInt(),
             result = MatchPlayResult.fromInt(p.readInt())!!
     )
 
-    /**
-     * Construct a [MatchPlay] from a [MatchPlay].
-     */
     private constructor(other: MatchPlay): this(
             gameId = other.gameId,
             id = other.id,
@@ -41,7 +36,8 @@ class MatchPlay(
             result = other.result
     )
 
-    /** @Override */
+    // MARK: Parcelable
+
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeLong(gameId)
         writeLong(id)
@@ -50,21 +46,14 @@ class MatchPlay(
         writeInt(result.ordinal)
     }
 
-    /**
-     * Create a deep copy of this match play.
-     *
-     * @return a new instance of [MatchPlay]
-     */
     fun deepCopy(): MatchPlay {
         return MatchPlay(this)
     }
 
     companion object {
-        /** Logging identifier. */
         @Suppress("unused")
         private const val TAG = "MatchPlay"
 
-        /** Creator, required by [Parcelable]. */
         @Suppress("unused")
         @JvmField val CREATOR = parcelableCreator(::MatchPlay)
     }

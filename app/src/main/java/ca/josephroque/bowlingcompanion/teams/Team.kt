@@ -58,9 +58,9 @@ class Team(
 
     private constructor(p: Parcel): this(
             id = p.readLong(),
-            name = p.readString(),
+            name = p.readString()!!,
             members = arrayListOf<TeamMember>().apply {
-                val parcelableArray = p.readParcelableArray(TeamMember::class.java.classLoader)
+                val parcelableArray = p.readParcelableArray(TeamMember::class.java.classLoader)!!
                 this.addAll(parcelableArray.map {
                     return@map it as TeamMember
                 })

@@ -11,7 +11,8 @@ import kotlinx.android.synthetic.main.activity_navigation.toolbar as toolbar
  */
 class SettingsActivity : AppCompatActivity() {
 
-    /** @Override */
+    // MARK: Lifecycle functions
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setTheme(R.style.SettingTheme)
@@ -26,7 +27,6 @@ class SettingsActivity : AppCompatActivity() {
         }
     }
 
-    /** @Override */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == android.R.id.home) {
             onBackPressed()
@@ -36,9 +36,8 @@ class SettingsActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    /**
-     * Set up the toolbar for title and back navigation.
-     */
+    // MARK: Private functions
+
     private fun setupToolbar() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)

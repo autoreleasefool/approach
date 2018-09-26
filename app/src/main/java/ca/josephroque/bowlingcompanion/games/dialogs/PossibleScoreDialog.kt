@@ -14,12 +14,6 @@ import ca.josephroque.bowlingcompanion.utils.Analytics
  * Calculate the best score the user could possibly get and display it.
  */
 object PossibleScoreDialog {
-
-    /**
-     * Show a prompt with the user's best score.
-     *
-     * @param context to show the prompt
-     */
     fun show(context: Context, currentGame: Game, currentFrame: Int, currentBall: Int) {
         // Get the best ball the user could throw for this frame
         val ball = if (currentFrame == Game.LAST_FRAME) {

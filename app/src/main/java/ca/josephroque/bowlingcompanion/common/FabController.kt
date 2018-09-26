@@ -10,16 +10,11 @@ import ca.josephroque.bowlingcompanion.utils.isVisible
  *
  * Control the floating action button with common actions.
  */
-class FabController(
-    private val floatingActionButton: FloatingActionButton,
-    listener: View.OnClickListener
-) {
-
+class FabController(private val floatingActionButton: FloatingActionButton, listener: View.OnClickListener) {
     init {
         floatingActionButton.setOnClickListener(listener)
     }
 
-    /** Drawable to display in the floating action button. */
     var image: Int? = null
         set(value) {
             field = value
@@ -30,7 +25,6 @@ class FabController(
             }
         }
 
-    /** Handle visibility changes in the fab. */
     private val fabVisibilityChangeListener = object : FloatingActionButton.OnVisibilityChangedListener() {
         override fun onHidden(fab: FloatingActionButton?) {
             fab?.let {

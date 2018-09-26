@@ -31,7 +31,7 @@ class StatGame(
             score = p.readInt(),
             isManual = p.readBoolean(),
             frames = arrayListOf<StatFrame>().apply {
-                val parcelableArray = p.readParcelableArray(StatFrame::class.java.classLoader)
+                val parcelableArray = p.readParcelableArray(StatFrame::class.java.classLoader)!!
                 this.addAll(parcelableArray.map {
                     return@map it as StatFrame
                 })

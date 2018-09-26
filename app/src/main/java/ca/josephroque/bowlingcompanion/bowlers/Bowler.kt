@@ -48,7 +48,7 @@ class Bowler(
 
     private constructor(p: Parcel): this(
             id = p.readLong(),
-            name = p.readString(),
+            name = p.readString()!!,
             average = p.readDouble()
     )
 

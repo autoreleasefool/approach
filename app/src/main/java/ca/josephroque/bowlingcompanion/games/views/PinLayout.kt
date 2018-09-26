@@ -18,48 +18,30 @@ import ca.josephroque.bowlingcompanion.games.Game
 class PinLayout : ConstraintLayout {
 
     companion object {
-        /** Logging identifier. */
         @Suppress("unused")
         private const val TAG = "PinLayout"
     }
 
-    /** IDs of the pin views. */
     private val pinViewIds = intArrayOf(R.id.iv_pin_1, R.id.iv_pin_2, R.id.iv_pin_3, R.id.iv_pin_4, R.id.iv_pin_5)
-    /** Pins as instances of [ImageView]. */
     private var pinViews: Array<ImageView?>
 
-    /** Delegate for interactions. */
     var delegate: PinLayoutInteractionDelegate? = null
 
-    /** Indicates which pins were altered in the event. */
     private val pinAltered = BooleanArray(Game.NUMBER_OF_PINS)
 
-    /** Indicates if the pin touched was enabled and if touch events should proceed. */
     private var initialStateSet: Boolean = false
 
-    /** Initial state of the first pin touched. */
     private var initialPinDown: Boolean = false
 
-    /** True when the user is dragging, false otherwise. */
     private var isDragging: Boolean = false
 
-    /** Amount of left edge to ignore touches on. */
     private val leftEdgeIgnoreWidth: Float = 20F
         get() {
             return field.times(resources.displayMetrics.density)
         }
 
-    /**
-     * Determine if a touch event is within a valid field to continue.
-     *
-     * @param event the touch event
-     * @return true if the event is valid, false otherwise
-     */
-    private fun isTouchEventValid(event: MotionEvent): Boolean {
-        return event.x >= 0 && event.x <= width
-    }
+    // MARK: Constructors
 
-    /** Required constructors */
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
@@ -71,13 +53,13 @@ class PinLayout : ConstraintLayout {
         }
     }
 
-    /** @Override */
+    // MARK: Lifecycle functions
+
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         delegate = null
     }
 
-    /** @Override */
     override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
         return true
     }
@@ -120,12 +102,22 @@ class PinLayout : ConstraintLayout {
         return true
     }
 
-    /**
-     * Set properties to indicate the a pin touched in the event.
-     *
-     * @param event the touch event from the user
-     * @param firstPin true if this is the first pin touched in the event
-     */
+    // MARK: PinLayout
+
+    fun setPinEnabled(pin: Int, enabled: Boolean) {
+        pinViews[pin]?.isEnabled = enabled
+    }
+
+    fun updatePinImage(pin: Int, isDown: Boolean) {
+        pinViews[pin]?.post { pinViews[pin]?.setImageResource(if (isDown) R.drawable.pin_disabled else R.drawable.pin_enabled) }
+    }
+
+    // MARK: Private functions
+
+    private fun isTouchEventValid(event: MotionEvent): Boolean {
+        return event.x >= 0 && event.x <= width
+    }
+
     private fun setPinTouched(event: MotionEvent, firstPin: Boolean) {
         val pinTouched = ((event.x / width) * 5).toInt()
         val pinView = pinViews[pinTouched] ?: return
@@ -159,9 +151,6 @@ class PinLayout : ConstraintLayout {
         updatePinImage(pinTouched, !pinDown)
     }
 
-    /**
-     * Confirm which pins have been touched or not, and relay to the delegate.
-     */
     private fun finalizePins() {
         isDragging = false
         initialStateSet = false
@@ -176,45 +165,10 @@ class PinLayout : ConstraintLayout {
         delegate?.setPins(pins.toIntArray(), !initialPinDown)
     }
 
-    /**
-     * Enable or disable a pin for touch events.
-     *
-     * @param pin the pin to enable or disable
-     * @param enabled true to enable, false to disable
-     */
-    fun setPinEnabled(pin: Int, enabled: Boolean) {
-        pinViews[pin]?.isEnabled = enabled
-    }
+    // MARK: PinLayoutInteractionDelegate
 
-    /**
-     * Set the pin image to the up or down stat.e
-     *
-     * @param pin the pin to update the image for
-     * @param isDown true to enabled, false to disable
-     */
-    fun updatePinImage(pin: Int, isDown: Boolean) {
-        pinViews[pin]?.post { pinViews[pin]?.setImageResource(if (isDown) R.drawable.pin_disabled else R.drawable.pin_enabled) }
-    }
-
-    /**
-     * Handle interactions with the [PinLayout]
-     */
     interface PinLayoutInteractionDelegate {
-
-        /**
-         * Handle when a touch event has completed and some pins have changed state.
-         *
-         * @param pins array of indices to update
-         * @param isDown new state for the pins
-         */
         fun setPins(pins: IntArray, isDown: Boolean)
-
-        /**
-         * Get the up or down state of a pin.
-         *
-         * @param pin the pin to get the state of
-         * @return true if the pin is knocked down, false if it is up
-         */
         fun isPinDown(pin: Int): Boolean
     }
 }
