@@ -4,11 +4,11 @@ import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
+import android.support.v4.app.FragmentPagerAdapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import ca.josephroque.bowlingcompanion.R
-import ca.josephroque.bowlingcompanion.common.adapters.BaseFragmentPagerAdapter
 import ca.josephroque.bowlingcompanion.common.fragments.TabbedFragment
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProvider
 import ca.josephroque.bowlingcompanion.utils.Analytics
@@ -76,7 +76,7 @@ class StatisticsUnitTabbedFragment : TabbedFragment() {
 
     // MARK: TabbedFragment
 
-    override fun buildPagerAdapter(tabCount: Int): BaseFragmentPagerAdapter {
+    override fun buildPagerAdapter(tabCount: Int): FragmentPagerAdapter {
         return StatisticsUnitPagerAdapter(childFragmentManager, tabCount, statisticsProvider.units)
     }
 
@@ -105,11 +105,12 @@ class StatisticsUnitTabbedFragment : TabbedFragment() {
 
     class StatisticsUnitPagerAdapter(
         fragmentManager: FragmentManager,
-        tabCount: Int,
+        private  val tabCount: Int,
         private val statisticsUnits: List<StatisticsUnit>
-    ) : BaseFragmentPagerAdapter(fragmentManager, tabCount) {
+    ) : FragmentPagerAdapter(fragmentManager) {
+        override fun getCount() = tabCount
 
-        override fun buildFragment(position: Int): Fragment? {
+        override fun getItem(position: Int): Fragment {
             return StatisticsUnitDetailsFragment.newInstance(statisticsUnits[position])
         }
     }

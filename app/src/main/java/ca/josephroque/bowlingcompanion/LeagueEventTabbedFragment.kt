@@ -2,13 +2,13 @@ package ca.josephroque.bowlingcompanion
 
 import android.os.Bundle
 import android.support.design.widget.TabLayout
-import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
+import android.support.v4.app.FragmentPagerAdapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import ca.josephroque.bowlingcompanion.bowlers.Bowler
-import ca.josephroque.bowlingcompanion.common.adapters.BaseFragmentPagerAdapter
+import ca.josephroque.bowlingcompanion.common.fragments.BaseFragment
 import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
 import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
 import ca.josephroque.bowlingcompanion.common.fragments.TabbedFragment
@@ -72,6 +72,12 @@ class LeagueEventTabbedFragment : TabbedFragment(),
 
     private var bowler: Bowler? = null
 
+    private val leagueFragment: LeagueListFragment?
+        get() = findFragmentByPosition(Tab.Leagues.ordinal) as? LeagueListFragment
+
+    private val eventFragment: LeagueListFragment?
+        get() = findFragmentByPosition(Tab.Events.ordinal) as? LeagueListFragment
+
     // MARK: LeagueEventTabbedFragment
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -87,7 +93,7 @@ class LeagueEventTabbedFragment : TabbedFragment(),
 
     // MARK: TabbedFragment
 
-    override fun buildPagerAdapter(tabCount: Int): BaseFragmentPagerAdapter {
+    override fun buildPagerAdapter(tabCount: Int): FragmentPagerAdapter {
         return LeagueEventPagerAdapter(childFragmentManager, tabCount, bowler)
     }
 
@@ -135,23 +141,21 @@ class LeagueEventTabbedFragment : TabbedFragment(),
     // MARK: LeagueDialogDelegate
 
     override fun onFinishLeague(league: League) {
-        val adapter = fragmentPager.adapter as? LeagueEventPagerAdapter
-        val leagueFragment = if (league.isEvent) {
-            adapter?.getFragment(Tab.Events.ordinal) as? LeagueListFragment
+        val fragment = if (league.isEvent) {
+            eventFragment
         } else {
-            adapter?.getFragment(Tab.Leagues.ordinal) as? LeagueListFragment
+            leagueFragment
         }
-        leagueFragment?.refreshList(league)
+        fragment?.refreshList(league)
     }
 
     override fun onDeleteLeague(league: League) {
-        val adapter = fragmentPager.adapter as? LeagueEventPagerAdapter
-        val leagueFragment = if (league.isEvent) {
-            adapter?.getFragment(Tab.Events.ordinal) as? LeagueListFragment
+        val fragment = if (league.isEvent) {
+            eventFragment
         } else {
-            adapter?.getFragment(Tab.Leagues.ordinal) as? LeagueListFragment
+            leagueFragment
         }
-        leagueFragment?.onItemDelete(league)
+        fragment?.refreshList(league)
     }
 
     // MARK: Private functions
@@ -171,10 +175,13 @@ class LeagueEventTabbedFragment : TabbedFragment(),
 
     class LeagueEventPagerAdapter(
         fragmentManager: FragmentManager,
-        tabCount: Int,
+        private val tabCount: Int,
         private val bowler: Bowler?
-    ) : BaseFragmentPagerAdapter(fragmentManager, tabCount) {
-        override fun buildFragment(position: Int): Fragment? {
+    ) : FragmentPagerAdapter(fragmentManager) {
+
+        override fun getCount() = tabCount
+
+        override fun getItem(position: Int): BaseFragment? {
             bowler?.let {
                 return when (Tab.fromInt(position)) {
                     Tab.Leagues -> LeagueListFragment.newInstance(bowler, LeagueListFragment.Companion.Show.Leagues)

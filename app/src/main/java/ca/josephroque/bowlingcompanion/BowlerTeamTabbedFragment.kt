@@ -4,13 +4,13 @@ import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
+import android.support.v4.app.FragmentPagerAdapter
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import ca.josephroque.bowlingcompanion.bowlers.Bowler
 import ca.josephroque.bowlingcompanion.bowlers.BowlerDialog
 import ca.josephroque.bowlingcompanion.bowlers.BowlerListFragment
-import ca.josephroque.bowlingcompanion.common.adapters.BaseFragmentPagerAdapter
 import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
 import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
 import ca.josephroque.bowlingcompanion.common.fragments.TabbedFragment
@@ -57,16 +57,10 @@ class BowlerTeamTabbedFragment : TabbedFragment(),
     }
 
     private val teamFragment: TeamListFragment?
-        get() {
-            val adapter = fragmentPager.adapter as? BowlerTeamPagerAdapter
-            return adapter?.getFragment(Tab.Teams.ordinal) as? TeamListFragment
-        }
+        get() = findFragmentByPosition(Tab.Teams.ordinal) as? TeamListFragment
 
     private val bowlerFragment: BowlerListFragment?
-        get() {
-            val adapter = fragmentPager.adapter as? BowlerTeamPagerAdapter
-            return adapter?.getFragment(Tab.Bowlers.ordinal) as? BowlerListFragment
-        }
+        get() = findFragmentByPosition(Tab.Bowlers.ordinal) as? BowlerListFragment
 
     // MARK: Lifecycle functions
 
@@ -99,7 +93,7 @@ class BowlerTeamTabbedFragment : TabbedFragment(),
 
     // MARK: TabbedFragment
 
-    override fun buildPagerAdapter(tabCount: Int): BaseFragmentPagerAdapter {
+    override fun buildPagerAdapter(tabCount: Int): FragmentPagerAdapter {
         return BowlerTeamPagerAdapter(childFragmentManager, tabCount)
     }
 
@@ -199,6 +193,7 @@ class BowlerTeamTabbedFragment : TabbedFragment(),
     // MARK: BowlerDialogDelegate
 
     override fun onFinishBowler(bowler: Bowler) {
+        val bowlerFragment = bowlerFragment
         bowlerFragment?.refreshList(bowler)
         teamFragment?.refreshList()
     }
@@ -222,9 +217,11 @@ class BowlerTeamTabbedFragment : TabbedFragment(),
 
     class BowlerTeamPagerAdapter(
         fragmentManager: FragmentManager,
-        tabCount: Int
-    ) : BaseFragmentPagerAdapter(fragmentManager, tabCount) {
-        override fun buildFragment(position: Int): Fragment? {
+        private val tabCount: Int
+    ) : FragmentPagerAdapter(fragmentManager) {
+        override fun getCount() = tabCount
+
+        override fun getItem(position: Int): Fragment? {
             return when (Tab.fromInt(position)) {
                 Tab.Bowlers -> BowlerListFragment.newInstance()
                 Tab.Teams -> TeamListFragment.newInstance()

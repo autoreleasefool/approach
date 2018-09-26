@@ -5,6 +5,7 @@ import android.support.annotation.IdRes
 import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
+import android.support.v4.app.FragmentPagerAdapter
 import android.support.v7.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
@@ -12,7 +13,6 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.NavigationDrawerController
-import ca.josephroque.bowlingcompanion.common.adapters.BaseFragmentPagerAdapter
 import ca.josephroque.bowlingcompanion.common.fragments.TabbedFragment
 import ca.josephroque.bowlingcompanion.common.interfaces.INavigationDrawerHandler
 import ca.josephroque.bowlingcompanion.matchplay.MatchPlayResult
@@ -56,8 +56,7 @@ class GameControllerFragment : TabbedFragment(),
     override val statisticsProviders: List<StatisticsProvider> by lazy {
         val seriesProvider = seriesProvider
         val seriesList = seriesProvider?.seriesList
-        val adapter = fragmentPager.adapter as? GameControllerPagerAdapter
-        val gameFragment = adapter?.getFragment(currentTab) as? GameFragment
+        val gameFragment = currentGameFragment
 
         return@lazy if (seriesList != null && gameFragment != null) {
             val providers: MutableList<StatisticsProvider> = arrayListOf(
@@ -92,10 +91,7 @@ class GameControllerFragment : TabbedFragment(),
         }
 
     private val currentGameFragment: GameFragment?
-        get() {
-            val adapter = fragmentPager?.adapter as? GameControllerPagerAdapter
-            return adapter?.getFragment(currentTab) as? GameFragment
-        }
+        get() = findFragmentByPosition(currentTab) as? GameFragment
 
     // MARK: Lifecycle functions
 
@@ -132,7 +128,7 @@ class GameControllerFragment : TabbedFragment(),
 
     // MARK: TabbedFragment
 
-    override fun buildPagerAdapter(tabCount: Int): BaseFragmentPagerAdapter {
+    override fun buildPagerAdapter(tabCount: Int): FragmentPagerAdapter {
         return GameControllerPagerAdapter(childFragmentManager, tabCount, seriesProvider?.seriesList)
     }
 
@@ -283,11 +279,12 @@ class GameControllerFragment : TabbedFragment(),
 
     class GameControllerPagerAdapter(
         fragmentManager: FragmentManager,
-        tabCount: Int,
+        private val tabCount: Int,
         private val seriesList: List<Series>?
-    ) : BaseFragmentPagerAdapter(fragmentManager, tabCount) {
+    ) : FragmentPagerAdapter(fragmentManager) {
+        override fun getCount() = tabCount
 
-        override fun buildFragment(position: Int): Fragment? {
+        override fun getItem(position: Int): Fragment? {
             seriesList?.let {
                 return GameFragment.newInstance(seriesList[position])
             }

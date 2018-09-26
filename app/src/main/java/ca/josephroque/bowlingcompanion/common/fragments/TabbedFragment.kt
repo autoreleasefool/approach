@@ -3,11 +3,11 @@ package ca.josephroque.bowlingcompanion.common.fragments
 import android.content.Context
 import android.os.Bundle
 import android.support.design.widget.TabLayout
+import android.support.v4.app.FragmentPagerAdapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import ca.josephroque.bowlingcompanion.R
-import ca.josephroque.bowlingcompanion.common.adapters.BaseFragmentPagerAdapter
 import ca.josephroque.bowlingcompanion.common.interfaces.IFloatingActionButtonHandler
 import ca.josephroque.bowlingcompanion.common.interfaces.IRefreshable
 import kotlinx.android.synthetic.main.fragment_common_tabs.tabbed_fragment_pager as fragmentPager
@@ -59,14 +59,14 @@ abstract class TabbedFragment : BaseFragment(),
     }
 
     fun refreshTabs(ignored: Set<Int> = HashSet()) {
-        val adapter = fragmentPager.adapter as? BaseFragmentPagerAdapter
+        val adapter = fragmentPager.adapter as? FragmentPagerAdapter
         adapter?.let {
             for (i in 0 until it.count) {
                 if (ignored.contains(i)) {
                     continue
                 }
 
-                val fragment = it.getFragment(i) as? IRefreshable
+                val fragment = findFragmentByPosition(i) as? IRefreshable
                 fragment?.refresh()
             }
         }
@@ -74,9 +74,15 @@ abstract class TabbedFragment : BaseFragment(),
 
     abstract fun addTabs(tabLayout: TabLayout)
 
-    abstract fun buildPagerAdapter(tabCount: Int): BaseFragmentPagerAdapter
+    abstract fun buildPagerAdapter(tabCount: Int): FragmentPagerAdapter
 
     abstract fun handleTabSwitch(newTab: Int)
+
+    fun findFragmentByPosition(position: Int): BaseFragment? {
+        val fragmentPagerAdapter = fragmentPager.adapter as? FragmentPagerAdapter ?: return null
+        val tag = "android:switcher:${fragmentPager.id}:${fragmentPagerAdapter.getItemId(position)}"
+        return childFragmentManager.findFragmentByTag(tag) as BaseFragment
+}
 
     // MARK: Private functions
 
@@ -110,8 +116,7 @@ abstract class TabbedFragment : BaseFragment(),
     // MARK: BaseFragment
 
     override fun popChildFragment(): Boolean {
-        val adapter = fragmentPager.adapter as? BaseFragmentPagerAdapter
-        val fragment = adapter?.getFragment(currentTab) as? BaseFragment
+        val fragment = findFragmentByPosition(currentTab)
         return fragment?.popChildFragment() ?: super.popChildFragment()
     }
 
