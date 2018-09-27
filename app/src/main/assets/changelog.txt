@@ -1,3 +1,14 @@
+<b>v3.0.0</b>
+Welcome to the new 5 Pin Bowling Companion. We completely rebuilt the app from scratch with all your favourite features and plenty of new ones.
+
+- Teams
+    - Create a team of bowlers to track together
+    - Pick your team and select a league for each bowler
+    - Change their order
+    - Pressing the next ball button will take you to the next bowler! Keep an eye on whose name is at the top of the screen
+- Highlight settings are now per league — long press to edit
+- New statistics
+
 <b>v2.1.9</b>
 A long awaited update.
 
