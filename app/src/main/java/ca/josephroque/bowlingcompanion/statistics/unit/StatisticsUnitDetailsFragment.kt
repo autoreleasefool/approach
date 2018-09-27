@@ -113,9 +113,9 @@ class StatisticsUnitDetailsFragment : BaseFragment(),
 
     private fun showStatisticGraph(graphFragment: StatisticGraphFragment) {
         childFragmentManager.beginTransaction().apply {
-            add(R.id.fragment_container, graphFragment)
+            replace(R.id.fragment_container, graphFragment)
 
-            if (childFragmentManager.fragments.size == 1) {
+            if (childFragmentManager.backStackEntryCount == 0) {
                 addToBackStack("StatisticsList")
             }
 
