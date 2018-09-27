@@ -25,10 +25,10 @@ abstract class SecondBallStatistic(override var numerator: Int = 0, override var
             if (!frame.pinState[0].arePinsCleared && isModifiedByFirstBall(frame.pinState[0], frame.pinState[1])) {
                 denominator++
                 numerator += if (isModifiedBySecondBall(frame.pinState[1])) 1 else 0
-            } else if (!frame.pinState[1].arePinsCleared && isModifiedByFirstBall(frame.pinState[1], frame.pinState[2])) {
+            } else if (frame.pinState[0].arePinsCleared && !frame.pinState[1].arePinsCleared && isModifiedByFirstBall(frame.pinState[1], frame.pinState[2])) {
                 denominator++
                 numerator += if (isModifiedBySecondBall(frame.pinState[2])) 1 else 0
-            } else if (!frame.pinState[2].arePinsCleared && isModifiedByFirstBall(frame.pinState[2])) {
+            } else if (frame.pinState[1].arePinsCleared && !frame.pinState[2].arePinsCleared && isModifiedByFirstBall(frame.pinState[2])) {
                 incompatible++
             }
         } else {

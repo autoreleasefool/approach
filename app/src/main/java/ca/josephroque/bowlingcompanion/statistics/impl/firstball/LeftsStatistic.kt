@@ -14,18 +14,6 @@ import ca.josephroque.bowlingcompanion.games.lane.isLeft
  */
 class LeftsStatistic(numerator: Int = 0, denominator: Int = 0) : FirstBallStatistic(numerator, denominator) {
 
-    // MARK: Modifiers
-
-    /** @Override */
-    override fun isModifiedBy(deck: Deck) = deck.isLeft
-
-    // MARK: Overrides
-
-    override val titleId = Id
-    override val id = Id.toLong()
-
-    // MARK: Parcelable
-
     companion object {
         /** Creator, required by [Parcelable]. */
         @Suppress("unused")
@@ -35,8 +23,14 @@ class LeftsStatistic(numerator: Int = 0, denominator: Int = 0) : FirstBallStatis
         const val Id = R.string.statistic_lefts
     }
 
-    /**
-     * Construct this statistic from a [Parcel].
-     */
+    override val titleId = Id
+    override val id = Id.toLong()
+
+    // MARK: Statistic
+
+    override fun isModifiedBy(deck: Deck) = deck.isLeft
+
+    // MARK: Constructors
+
     private constructor(p: Parcel): this(numerator = p.readInt(), denominator = p.readInt())
 }
