@@ -169,6 +169,10 @@ class StatisticGraphFragment : BaseFragment(),
         val context = context ?: return
         launch(Android) {
             val (graphLines, graphLabels) = unit.getStatisticGraphData(context, statisticId, switchAccumulate.isChecked).await()
+            if (graphLines[0].entries.size <= 1 || graphLabels.size <= 1) {
+                return@launch
+            }
+
             chart.data = buildChartData(context, graphLines).await()
             chart.xAxis.valueFormatter = buildChartXAxisFormatter(graphLabels)
             chart.xAxis.labelCount = graphLabels.size
