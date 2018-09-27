@@ -139,14 +139,10 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
             Series.Companion.View.Expanded -> {
                 menu.findItem(R.id.action_series_expanded_view).isVisible = false
                 menu.findItem(R.id.action_series_condensed_view).isVisible = true
-
-                Analytics.trackToggledSeriesView(Series.Companion.View.Expanded)
             }
             Series.Companion.View.Condensed -> {
                 menu.findItem(R.id.action_series_expanded_view).isVisible = true
                 menu.findItem(R.id.action_series_condensed_view).isVisible = false
-
-                Analytics.trackToggledSeriesView(Series.Companion.View.Condensed)
             }
         }
     }
@@ -156,6 +152,8 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
             R.id.action_series_condensed_view, R.id.action_series_expanded_view -> {
                 val view = if (item.itemId == R.id.action_series_expanded_view) Series.Companion.View.Expanded else Series.Companion.View.Condensed
                 seriesView = view
+
+                Analytics.trackToggledSeriesView(view)
                 return true
             }
             else -> super.onOptionsItemSelected(item)
