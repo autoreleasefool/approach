@@ -148,6 +148,8 @@ abstract class ListFragment<Item : IIdentifiable, Adapter : BaseRecyclerViewAdap
     }
 
     private fun updateEmptyView() {
+        if (view == null) { return }
+
         if (items.isEmpty()) {
             list.visibility = View.GONE
             emptyView.apply {

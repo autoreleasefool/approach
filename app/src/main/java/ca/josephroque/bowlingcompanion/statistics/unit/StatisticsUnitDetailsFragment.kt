@@ -48,7 +48,7 @@ class StatisticsUnitDetailsFragment : BaseFragment(),
         if (savedInstanceState == null) {
             val fragment = StatisticsListFragment.newInstance(unit)
             childFragmentManager.beginTransaction().apply {
-                add(R.id.fragment_container, fragment)
+                replace(R.id.fragment_container, fragment)
                 commit()
             }
         }
