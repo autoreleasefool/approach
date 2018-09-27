@@ -7,6 +7,7 @@ import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.os.Parcel
 import android.support.v7.app.AlertDialog
+import android.support.v7.preference.PreferenceManager
 import android.util.Log
 import android.widget.NumberPicker
 import ca.josephroque.bowlingcompanion.R
@@ -25,6 +26,7 @@ import ca.josephroque.bowlingcompanion.games.Game
 import ca.josephroque.bowlingcompanion.scoring.Average
 import ca.josephroque.bowlingcompanion.series.Series
 import ca.josephroque.bowlingcompanion.utils.BCError
+import ca.josephroque.bowlingcompanion.utils.Preferences
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async
@@ -471,6 +473,15 @@ data class League(
                 val leagues: MutableList<League> = ArrayList()
                 val database = DatabaseManager.getReadableDatabase(context).await()
 
+                val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+                val sortBy = Sort.fromInt(preferences.getInt(Preferences.LEAGUE_SORT_ORDER, Sort.Alphabetically.ordinal))
+
+                val orderQueryBy = if (sortBy == Sort.Alphabetically) {
+                    "ORDER BY league.${LeagueEntry.COLUMN_LEAGUE_NAME} "
+                } else {
+                    "ORDER BY league.${LeagueEntry.COLUMN_DATE_MODIFIED} DESC "
+                }
+
                 val rawLeagueEventQuery = ("SELECT " +
                         "league.${LeagueEntry._ID} AS lid, " +
                         "${LeagueEntry.COLUMN_LEAGUE_NAME}, " +
@@ -487,7 +498,7 @@ data class League(
                         "LEFT JOIN ${GameEntry.TABLE_NAME} AS game " +
                         "ON series.${SeriesEntry._ID}=game.${GameEntry.COLUMN_SERIES_ID} " +
                         "WHERE ${LeagueEntry.COLUMN_BOWLER_ID}=? " +
-                        "ORDER BY ${LeagueEntry.COLUMN_DATE_MODIFIED} DESC ")
+                        orderQueryBy)
 
                 val cursor = database.rawQuery(rawLeagueEventQuery, arrayOf(bowler.id.toString()))
                 var lastId: Long = -1
