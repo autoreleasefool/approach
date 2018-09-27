@@ -29,7 +29,15 @@ class NavigationDrawerController(private val navigationView: WeakReference<Navig
         set(value) {
             field = value
             navigationView.get()?.post {
-                navigationView.get()?.menu?.findItem(R.id.nav_series)?.isVisible = !value
+                navigationView.get()?.menu?.findItem(R.id.nav_series)?.isVisible = !value && !isEvent
+            }
+        }
+
+    var isEvent: Boolean = false
+        set(value) {
+            field = value
+            navigationView.get()?.post {
+                navigationView.get()?.menu?.findItem(R.id.nav_series)?.isVisible = !value && !isTeamMember
             }
         }
 

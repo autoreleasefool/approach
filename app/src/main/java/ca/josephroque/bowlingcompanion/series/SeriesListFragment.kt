@@ -269,7 +269,7 @@ class SeriesListFragment : ListFragment<Series, SeriesRecyclerViewAdapter>(),
     }
 
     private fun showGameDetails(series: Series) {
-        val newFragment = GameControllerFragment.newInstance(SeriesProvider.BowlerSeries(series))
+        val newFragment = GameControllerFragment.newInstance(SeriesProvider.BowlerSeries(series, false))
         fragmentNavigation?.pushFragment(newFragment)
 
         Analytics.trackSelectSeries()

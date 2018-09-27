@@ -8,17 +8,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import ca.josephroque.bowlingcompanion.bowlers.Bowler
+import ca.josephroque.bowlingcompanion.common.Android
 import ca.josephroque.bowlingcompanion.common.fragments.BaseFragment
 import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
 import ca.josephroque.bowlingcompanion.common.fragments.ListFragment
 import ca.josephroque.bowlingcompanion.common.fragments.TabbedFragment
+import ca.josephroque.bowlingcompanion.games.GameControllerFragment
+import ca.josephroque.bowlingcompanion.games.SeriesProvider
 import ca.josephroque.bowlingcompanion.leagues.League
 import ca.josephroque.bowlingcompanion.leagues.LeagueDialog
 import ca.josephroque.bowlingcompanion.leagues.LeagueListFragment
+import ca.josephroque.bowlingcompanion.series.Series
 import ca.josephroque.bowlingcompanion.series.SeriesListFragment
 import ca.josephroque.bowlingcompanion.statistics.interfaces.IStatisticsContext
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProvider
 import ca.josephroque.bowlingcompanion.utils.Analytics
+import kotlinx.coroutines.experimental.launch
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -166,8 +171,22 @@ class LeagueEventTabbedFragment : TabbedFragment(),
     }
 
     private fun showSeries(league: League) {
-        val newFragment = SeriesListFragment.newInstance(league)
-        fragmentNavigation?.pushFragment(newFragment)
+        if (league.isEvent) {
+            launchEvent(league)
+        } else {
+            val newFragment = SeriesListFragment.newInstance(league)
+            fragmentNavigation?.pushFragment(newFragment)
+        }
+    }
+
+    private fun launchEvent(league: League) {
+        assert(league.isEvent) { "You can only call launchEvent with... events." }
+        val context = context ?: return
+        launch(Android) {
+            val eventSeries = Series.fetchAll(context, league).await().first()
+            val newFragment = GameControllerFragment.newInstance(SeriesProvider.BowlerSeries(eventSeries, true))
+            fragmentNavigation?.pushFragment(newFragment)
+        }
     }
 
     // MARK: LeagueEventPagerAdapter

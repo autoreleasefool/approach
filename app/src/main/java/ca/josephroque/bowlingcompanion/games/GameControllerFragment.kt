@@ -115,6 +115,7 @@ class GameControllerFragment : TabbedFragment(),
         onSeriesChanged()
         activity?.invalidateOptionsMenu()
         navigationDrawerController.isTeamMember = seriesProvider is SeriesProvider.TeamSeries
+        navigationDrawerController.isEvent = seriesProvider?.isEvent ?: false
 
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
     }

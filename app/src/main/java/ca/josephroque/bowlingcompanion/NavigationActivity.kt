@@ -320,6 +320,7 @@ class NavigationActivity : BaseActivity(),
         } else {
             navDrawerController.apply {
                 isTeamMember = false
+                isEvent = false
                 gameNumber = 0
                 numberOfGames = 0
                 bowlerName = null

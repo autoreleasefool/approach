@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.os.Parcel
 import ca.josephroque.bowlingcompanion.common.interfaces.KParcelable
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
+import ca.josephroque.bowlingcompanion.common.interfaces.readBoolean
+import ca.josephroque.bowlingcompanion.common.interfaces.writeBoolean
 import ca.josephroque.bowlingcompanion.series.Series
 import ca.josephroque.bowlingcompanion.teams.Team
 
@@ -14,6 +16,8 @@ import ca.josephroque.bowlingcompanion.teams.Team
  */
 sealed class SeriesProvider : KParcelable {
 
+    abstract val isEvent: Boolean
+
     // MARK: TeamSeries
 
     data class TeamSeries(val team: Team) : SeriesProvider() {
@@ -22,18 +26,27 @@ sealed class SeriesProvider : KParcelable {
             @JvmField val CREATOR = parcelableCreator(::TeamSeries)
         }
 
+        override val isEvent: Boolean = false
         private constructor(p: Parcel): this(p.readParcelable<Team>(Team::class.java.classLoader)!!)
     }
 
     // MARK: BowlerSeries
 
-    data class BowlerSeries(val series: Series) : SeriesProvider() {
+    data class BowlerSeries(val series: Series, override val isEvent: Boolean) : SeriesProvider() {
         companion object {
             @Suppress("unused")
             @JvmField val CREATOR = parcelableCreator(::BowlerSeries)
         }
 
-        private constructor(p: Parcel): this(p.readParcelable<Series>(Series::class.java.classLoader)!!)
+        private constructor(p: Parcel): this(
+                series = p.readParcelable<Series>(Series::class.java.classLoader)!!,
+                isEvent = p.readBoolean()
+        )
+
+        override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
+            super.writeToParcel(dest, flags)
+            writeBoolean(isEvent)
+        }
     }
 
     val seriesList: List<Series>
