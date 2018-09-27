@@ -11,8 +11,8 @@ cache:
         - $HOME/.android/build-cache
 env:
     global:
-        - ANDROID_API=27
-        - ANDROID_BUILD_TOOLS=27.0.3
+        - ANDROID_API=28
+        - ANDROID_BUILD_TOOLS=28.0.2
 android:
     components:
         - tools
@@ -24,7 +24,7 @@ android:
         - 'android-sdk-license-.+'
         - 'google-gdk-license-.+'
 before_install:
-    - yes | sdkmanager "platforms;android-27"
+    - yes | sdkmanager "platforms;android-28"
 script:
     - ./gradlew ktlint
     - ./gradlew clean assembleDebug
