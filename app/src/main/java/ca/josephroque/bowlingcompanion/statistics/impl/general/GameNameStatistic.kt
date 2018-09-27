@@ -46,5 +46,5 @@ class GameNameStatistic(override var value: String = "") : StringStatistic {
     /**
      * Construct this statistic from a [Parcel].
      */
-    private constructor(p: Parcel): this(value = p.readString())
+    private constructor(p: Parcel): this(value = p.readString()!!)
 }
