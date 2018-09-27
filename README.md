@@ -1,6 +1,6 @@
 # Bowling Companion (5 Pin Bowling Statistics)
 
-[![Build status](https://travis-ci.org/josephroque/bowling-companion.svg?branch=kotlin)](https://travis-ci.org/josephroque/bowling-companion)
+[![Build status](https://travis-ci.org/josephroque/bowling-companion.svg?branch=master)](https://travis-ci.org/josephroqueca/bowling-companion)
 
 An Android app to track 5-pin bowling statistics. Allows users to track multiple bowlers and leagues, and provides in-depth statistics on their game. Useful for determining areas in which the user's performance can be improved.
 
@@ -19,8 +19,6 @@ This app is also open source. Feel free to check out the repository at https://g
 
 **Permissions**
 
-Writing to external storage - When you create an image of a series, this image must be saved somewhere on the device in order to allow you to share it.
-
 Internet access - Allows the app to display ads. We do not ask for or store any information.
 
 ## How to Run
@@ -29,6 +27,14 @@ Internet access - Allows the app to display ads. We do not ask for or store any 
 3. Either provide a [Mixpanel](https://mixpanel.com) token in `app/src/debug/res/values/secrets/xml` or change `NavigationActivity.onCreate` to call `Analytics.disableTracking()` instead of `Analytics.initialize()`
 
 ## Screenshots
+
+### Screenshots from Version 3.0
+![Version 3.0 - Select a bowler](/screenshots/v3.0_bowlers.png)
+![Version 3.0 - Select a series](/screenshots/v3.0_series.png)
+![Version 3.0 - Navigation](/screenshots/v3.0_nav.png)
+![Version 3.0 - Editing a game](/screenshots/v3.0_editing.png)
+![Version 3.0 - Statistics](/screenshots/v3.0_statistics.png)
+![Version 3.0 - Graphs](/screenshots/v3.0_graphs.png)
 
 #### Screenshots from Version 2.0
 ![Version 2.0 - Select a bowler](/screenshots/v2.0_bowlers.png)
