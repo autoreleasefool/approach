@@ -630,9 +630,31 @@ public final class DatabaseHelper
 
         try {
             db.beginTransaction();
+
+            // Replace existing `Practice` leagues from user with `Practice league`
             ContentValues values = new ContentValues();
+            values.put(LeagueEntry.COLUMN_LEAGUE_NAME, League.PRACTICE_LEAGUE_NAME + " league");
+            db.update(
+                LeagueEntry.TABLE_NAME,
+                values,
+                LeagueEntry.COLUMN_LEAGUE_NAME + "=? AND " + LeagueEntry.COLUMN_IS_EVENT + "=?",
+                new String[]{League.PRACTICE_LEAGUE_NAME, "0"}
+            );
+
+            // Replace existing `Practice` events from user with `Practice event`
+            values = new ContentValues();
+            values.put(LeagueEntry.COLUMN_LEAGUE_NAME, League.PRACTICE_LEAGUE_NAME + " event");
+            db.update(
+                LeagueEntry.TABLE_NAME,
+                values,
+                LeagueEntry.COLUMN_LEAGUE_NAME + "=? AND " + LeagueEntry.COLUMN_IS_EVENT + "=?",
+                new String[]{League.PRACTICE_LEAGUE_NAME, "1"}
+            );
+
+            // Replace `Open` league with `Practice` league
+            values = new ContentValues();
             values.put(LeagueEntry.COLUMN_LEAGUE_NAME, League.PRACTICE_LEAGUE_NAME);
-            //noinspection deprecation
+            // noinspection deprecation
             db.update(LeagueEntry.TABLE_NAME,
                     values,
                     LeagueEntry.COLUMN_LEAGUE_NAME + "=?",
