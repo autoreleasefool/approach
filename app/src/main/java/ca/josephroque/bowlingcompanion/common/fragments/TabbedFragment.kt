@@ -81,7 +81,7 @@ abstract class TabbedFragment : BaseFragment(),
     fun findFragmentByPosition(position: Int): BaseFragment? {
         val fragmentPagerAdapter = fragmentPager.adapter as? FragmentPagerAdapter ?: return null
         val tag = "android:switcher:${fragmentPager.id}:${fragmentPagerAdapter.getItemId(position)}"
-        return childFragmentManager.findFragmentByTag(tag) as BaseFragment
+        return childFragmentManager.findFragmentByTag(tag) as? BaseFragment
 }
 
     // MARK: Private functions
