@@ -130,7 +130,8 @@ class Team(
         return Team(
                 id = this.id,
                 name = this.name,
-                members = oldMembers
+                members = oldMembers,
+                initialOrder = this.order
         )
     }
 
