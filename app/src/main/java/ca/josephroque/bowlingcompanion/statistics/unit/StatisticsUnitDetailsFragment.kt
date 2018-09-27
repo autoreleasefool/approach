@@ -91,6 +91,10 @@ class StatisticsUnitDetailsFragment : BaseFragment(),
     // MARK: ListFragmentDelegate
 
     override fun onItemSelected(item: IIdentifiable, longPress: Boolean) {
+        if (!unit.canShowGraphs) {
+            return
+        }
+
         if (item is Statistic) {
             if (item.canBeGraphed) {
                 val graphFragment = StatisticGraphFragment.newInstance(unit, item.id)

@@ -41,6 +41,8 @@ abstract class StatisticsUnit(initialSeries: List<StatSeries>? = null, initialSt
     private var cachedSeries: List<StatSeries>? = initialSeries
     private var cachedStatistics: MutableList<Statistic>? = initialStatistics
 
+    abstract val canShowGraphs: Boolean
+
     private val statisticListItems: MutableList<StatisticListItem>?
         get() {
             val statistics = cachedStatistics?.toMutableList() ?: return null

@@ -21,6 +21,7 @@ class BowlerUnit(val bowlerId: Long, bowlerName: String, parcel: Parcel? = null)
     override val name: String = bowlerName
     override val excludedCategories: Set<StatisticsCategory> = emptySet()
     override val excludedStatisticIds: Set<Int> = setOf(LeagueNameStatistic.Id, SeriesNameStatistic.Id, GameNameStatistic.Id)
+    override val canShowGraphs = true
 
     // MARK: Constructors
 

@@ -39,6 +39,7 @@ class GameUnit(
     override val name = "Game $gameOrdinal"
     override val excludedCategories = setOf(StatisticsCategory.Average, StatisticsCategory.MatchPlay, StatisticsCategory.Series)
     override val excludedStatisticIds = setOf(AveragePinsLeftStatistic.Id, GameAverageStatistic.Id, HighSingleStatistic.Id, TotalPinfallStatistic.Id, NumberOfGamesStatistic.Id)
+    override val canShowGraphs = false
 
     // MARK: Constructors
 

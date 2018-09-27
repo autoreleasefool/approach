@@ -22,6 +22,7 @@ class TeamUnit(val teamId: Long, teamName: String, parcel: Parcel? = null) : Sta
     override val name: String = teamName
     override val excludedCategories: Set<StatisticsCategory> = emptySet()
     override val excludedStatisticIds: Set<Int> = setOf(BowlerNameStatistic.Id, LeagueNameStatistic.Id, SeriesNameStatistic.Id, GameNameStatistic.Id)
+    override val canShowGraphs = true
 
     // MARK: Constructors
 

@@ -22,6 +22,7 @@ class LeagueUnit(val bowlerName: String, val leagueId: Long, leagueName: String,
     override val name: String = leagueName
     override val excludedCategories: Set<StatisticsCategory> = emptySet()
     override val excludedStatisticIds: Set<Int> = setOf(SeriesNameStatistic.Id, GameNameStatistic.Id)
+    override val canShowGraphs = true
 
     // MARK: Constructors
 

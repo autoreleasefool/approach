@@ -32,6 +32,7 @@ class SeriesUnit(
         get() = DateUtils.dateToPretty(seriesDate)
     override val excludedCategories: Set<StatisticsCategory> = setOf(StatisticsCategory.Average, StatisticsCategory.Series)
     override val excludedStatisticIds: Set<Int> = setOf(GameNameStatistic.Id)
+    override val canShowGraphs = false
 
     // MARK: Constructors
 

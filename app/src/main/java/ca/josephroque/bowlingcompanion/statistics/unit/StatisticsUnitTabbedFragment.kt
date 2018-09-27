@@ -5,6 +5,7 @@ import android.support.design.widget.TabLayout
 import android.support.v4.app.Fragment
 import android.support.v4.app.FragmentManager
 import android.support.v4.app.FragmentPagerAdapter
+import android.support.v7.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ import ca.josephroque.bowlingcompanion.common.fragments.TabbedFragment
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProvider
 import ca.josephroque.bowlingcompanion.utils.Analytics
 import ca.josephroque.bowlingcompanion.utils.AppRater
+import ca.josephroque.bowlingcompanion.utils.BCError
 import kotlinx.android.synthetic.main.fragment_common_tabs.tabbed_fragment_tabs as fragmentTabs
 
 /**
@@ -28,6 +30,7 @@ class StatisticsUnitTabbedFragment : TabbedFragment() {
 
         private const val ARG_STATISTICS_PROVIDER_TYPE = "${TAG}_type"
         private const val ARG_STATISTICS_PROVIDER = "${TAG}_stats"
+        private const val TAP_FOR_GRAPH_SHOWN = "${TAG}_tap_for_graph_shown"
 
         fun newInstance(statisticsProvider: StatisticsProvider): StatisticsUnitTabbedFragment {
             val newInstance = StatisticsUnitTabbedFragment()
@@ -65,7 +68,21 @@ class StatisticsUnitTabbedFragment : TabbedFragment() {
             navigationActivity?.supportActionBar?.elevation = 0F
         }
 
-        context?.let { AppRater.show(it) }
+        context?.let {
+            val preferences = PreferenceManager.getDefaultSharedPreferences(it)
+            if (statisticsProvider.canShowGraphs && !preferences.getBoolean(TAP_FOR_GRAPH_SHOWN, false)) {
+                BCError(
+                        title = R.string.did_you_know,
+                        message = R.string.tap_to_show_statistics_graph,
+                        severity = BCError.Severity.Info
+                ).show(it) {
+                    preferences.edit().putBoolean(TAP_FOR_GRAPH_SHOWN, true).apply()
+                }
+            } else {
+                // Show App Rate dialog if conditions met and tap dialog was not shown
+                AppRater.show(it)
+            }
+        }
     }
 
     // MARK: BaseFragment

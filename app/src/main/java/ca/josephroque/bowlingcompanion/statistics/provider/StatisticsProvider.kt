@@ -27,6 +27,7 @@ sealed class StatisticsProvider : IIdentifiable, KParcelable {
 
     abstract val name: String
     abstract val typeName: Int
+    abstract val canShowGraphs: Boolean
 
     // MARK: TeamStatistics
 
@@ -41,6 +42,7 @@ sealed class StatisticsProvider : IIdentifiable, KParcelable {
         override val id = team.id.and(0xF00000000000000L)
         override val name = team.name
         override val typeName = R.string.team
+        override val canShowGraphs = true
     }
 
     // MARK: BowlerStatistics
@@ -56,6 +58,7 @@ sealed class StatisticsProvider : IIdentifiable, KParcelable {
         override val id = bowler.id.and(0xE00000000000000L)
         override val name = bowler.name
         override val typeName = R.string.bowler
+        override val canShowGraphs = true
     }
 
     // MARK: LeagueStatistics
@@ -71,6 +74,7 @@ sealed class StatisticsProvider : IIdentifiable, KParcelable {
         override val id = league.id.and(0xD00000000000000L)
         override val name = league.name
         override val typeName = R.string.league
+        override val canShowGraphs = true
     }
 
     // MARK: SeriesStatistics
@@ -86,6 +90,7 @@ sealed class StatisticsProvider : IIdentifiable, KParcelable {
         override val id = series.id.and(0xC00000000000000L)
         override val name = series.prettyDate
         override val typeName = R.string.series
+        override val canShowGraphs = false
     }
 
     // MARK: GameStatistics
@@ -101,6 +106,7 @@ sealed class StatisticsProvider : IIdentifiable, KParcelable {
         override val id = game.id.and(0xB00000000000000L)
         override val name = "Game ${game.ordinal}"
         override val typeName = R.string.game
+        override val canShowGraphs = false
     }
 
     val units: List<StatisticsUnit> by lazy {
