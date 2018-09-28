@@ -18,7 +18,6 @@ import ca.josephroque.bowlingcompanion.common.fragments.BaseBottomSheetDialogFra
 import ca.josephroque.bowlingcompanion.common.fragments.BaseDialogFragment
 import ca.josephroque.bowlingcompanion.common.fragments.BaseFragment
 import ca.josephroque.bowlingcompanion.common.fragments.TabbedFragment
-import ca.josephroque.bowlingcompanion.common.interfaces.INavigationDrawerHandler
 import ca.josephroque.bowlingcompanion.common.interfaces.IRefreshable
 import ca.josephroque.bowlingcompanion.games.GameControllerFragment
 import ca.josephroque.bowlingcompanion.series.SeriesListFragment
@@ -51,6 +50,7 @@ class NavigationActivity : BaseActivity(),
         FragNavController.RootFragmentListener,
         BaseFragment.FragmentNavigation,
         BaseFragment.FabProvider,
+        NavigationDrawerController.NavigationDrawerProvider,
         TabbedFragment.TabbedFragmentDelegate,
         BaseDialogFragment.OnDismissListener,
         BaseBottomSheetDialogFragment.BaseBottomSheetDialogFragmentDelegate {
@@ -99,7 +99,7 @@ class NavigationActivity : BaseActivity(),
     }
 
     private var fragNavController: FragNavController? = null
-    private lateinit var navDrawerController: NavigationDrawerController
+    override lateinit var navigationDrawerController: NavigationDrawerController
     private lateinit var fabController: FabController
 
     private var poppedBack = false
@@ -135,7 +135,7 @@ class NavigationActivity : BaseActivity(),
         // Analytics.disableTracking()
 
         setupToolbar()
-        setupNavigationDrawer()
+        setupNavigationDrawer() // Must be called after setupToolbar so that `handleNavigationDrawer` can set home indicator properly
         setupBottomNavigation()
         setupFab()
         setupFragNavController(savedInstanceState)
@@ -194,7 +194,7 @@ class NavigationActivity : BaseActivity(),
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         currentFragment?.let {
-            if (item.itemId == android.R.id.home && currentFragment is INavigationDrawerHandler) {
+            if (item.itemId == android.R.id.home && currentFragment is NavigationDrawerController.NavigationDrawerHandler) {
                 drawerLayout.openDrawer(GravityCompat.START)
                 return true
             }
@@ -313,22 +313,7 @@ class NavigationActivity : BaseActivity(),
             null
         }
 
-        if (fragment is INavigationDrawerHandler) {
-            fragment.navigationDrawerController = navDrawerController
-            supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_menu)
-            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-        } else {
-            navDrawerController.apply {
-                isTeamMember = false
-                isEvent = false
-                gameNumber = 0
-                numberOfGames = 0
-                bowlerName = null
-                leagueName = null
-            }
-            supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back)
-            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-        }
+        handleNavigationDrawer(fragment)
 
         toolbar.elevation = if (fragment is TabbedFragment) {
             0F
@@ -348,6 +333,24 @@ class NavigationActivity : BaseActivity(),
         if (fragment is StatisticsProviderListFragment) {
             val statisticsContext = fragNavController?.getStack(BottomTab.toInt(BottomTab.Record))?.peek() as? IStatisticsContext
             fragment.arguments = StatisticsProviderListFragment.buildArguments(statisticsContext?.statisticsProviders ?: emptyList())
+        }
+    }
+
+    private fun handleNavigationDrawer(fragment: Fragment?) {
+        if (fragment is NavigationDrawerController.NavigationDrawerHandler) {
+            supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_menu)
+            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+        } else {
+            navigationDrawerController.apply {
+                isTeamMember = false
+                isEvent = false
+                gameNumber = 0
+                numberOfGames = 0
+                bowlerName = null
+                leagueName = null
+            }
+            supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_arrow_back)
+            drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
         }
     }
 
@@ -379,7 +382,7 @@ class NavigationActivity : BaseActivity(),
     }
 
     private fun setupNavigationDrawer() {
-        navDrawerController = NavigationDrawerController(WeakReference(navDrawer))
+        navigationDrawerController = NavigationDrawerController(WeakReference(navDrawer))
         navDrawer.setNavigationItemSelectedListener { menuItem ->
             if (menuItem.isCheckable) {
                 menuItem.isChecked = true
@@ -397,7 +400,7 @@ class NavigationActivity : BaseActivity(),
                 R.id.nav_settings -> openSettings()
                 else -> {
                     currentFragment?.let {
-                        if (it is INavigationDrawerHandler) {
+                        if (it is NavigationDrawerController.NavigationDrawerHandler) {
                             it.onNavDrawerItemSelected(menuItem.itemId)
                         }
                     }
@@ -405,6 +408,12 @@ class NavigationActivity : BaseActivity(),
             }
 
             return@setNavigationItemSelectedListener true
+        }
+
+        supportFragmentManager.fragments.forEach {
+            if (it is NavigationDrawerController.NavigationDrawerHandler) {
+                handleNavigationDrawer(it)
+            }
         }
     }
 

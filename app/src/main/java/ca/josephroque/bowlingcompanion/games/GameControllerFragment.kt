@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.games
 
+import android.content.Context
 import android.os.Bundle
 import android.support.annotation.IdRes
 import android.support.design.widget.TabLayout
@@ -14,7 +15,6 @@ import android.view.WindowManager
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.NavigationDrawerController
 import ca.josephroque.bowlingcompanion.common.fragments.TabbedFragment
-import ca.josephroque.bowlingcompanion.common.interfaces.INavigationDrawerHandler
 import ca.josephroque.bowlingcompanion.matchplay.MatchPlayResult
 import ca.josephroque.bowlingcompanion.matchplay.MatchPlaySheet
 import ca.josephroque.bowlingcompanion.series.Series
@@ -30,7 +30,7 @@ import kotlinx.android.synthetic.main.fragment_common_tabs.tabbed_fragment_tabs 
  * Manage tabs to show games for the team of bowlers.
  */
 class GameControllerFragment : TabbedFragment(),
-        INavigationDrawerHandler,
+        NavigationDrawerController.NavigationDrawerHandler,
         GameFragment.GameFragmentDelegate,
         MatchPlaySheet.MatchPlaySheetDelegate,
         IStatisticsContext {
@@ -75,7 +75,7 @@ class GameControllerFragment : TabbedFragment(),
         }
     }
 
-    override lateinit var navigationDrawerController: NavigationDrawerController
+    override var navigationDrawerProvider: NavigationDrawerController.NavigationDrawerProvider? = null
     private var seriesProvider: SeriesProvider? = null
     private var fabEnabled: Boolean = true
 
@@ -84,7 +84,7 @@ class GameControllerFragment : TabbedFragment(),
             field = value
 
             currentGameFragment?.gameNumber = currentGame
-            navigationDrawerController.gameNumber = currentGame
+            navigationDrawerProvider?.navigationDrawerController?.gameNumber = currentGame
 
             Analytics.trackChangedGame()
         }
@@ -114,8 +114,8 @@ class GameControllerFragment : TabbedFragment(),
 
         onSeriesChanged()
         activity?.invalidateOptionsMenu()
-        navigationDrawerController.isTeamMember = seriesProvider is SeriesProvider.TeamSeries
-        navigationDrawerController.isEvent = seriesProvider?.isEvent ?: false
+        navigationDrawerProvider?.navigationDrawerController?.isTeamMember = seriesProvider is SeriesProvider.TeamSeries
+        navigationDrawerProvider?.navigationDrawerController?.isEvent = seriesProvider?.isEvent ?: false
 
         activity?.window?.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING)
     }
@@ -124,6 +124,16 @@ class GameControllerFragment : TabbedFragment(),
         super.onStop()
         // 0 is the default, as per https://developer.android.com/reference/android/R.attr#windowSoftInputMode
         activity?.window?.setSoftInputMode(0)
+    }
+
+    override fun onAttach(context: Context?) {
+        super.onAttach(context)
+        navigationDrawerProvider = context as? NavigationDrawerController.NavigationDrawerProvider
+    }
+
+    override fun onDetach() {
+        super.onDetach()
+        navigationDrawerProvider = null
     }
 
     // MARK: TabbedFragment
@@ -149,9 +159,9 @@ class GameControllerFragment : TabbedFragment(),
 
     private fun onSeriesChanged() {
         seriesProvider?.seriesList?.let {
-            navigationDrawerController.numberOfGames = it[currentTab].numberOfGames
-            navigationDrawerController.bowlerName = it[currentTab].league.bowler.name
-            navigationDrawerController.leagueName = it[currentTab].league.name
+            navigationDrawerProvider?.navigationDrawerController?.numberOfGames = it[currentTab].numberOfGames
+            navigationDrawerProvider?.navigationDrawerController?.bowlerName = it[currentTab].league.bowler.name
+            navigationDrawerProvider?.navigationDrawerController?.leagueName = it[currentTab].league.name
         }
 
         updateToolbarTitle()

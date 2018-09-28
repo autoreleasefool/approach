@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion.common
 
+import android.support.annotation.IdRes
 import android.support.design.widget.NavigationView
 import android.widget.TextView
 import ca.josephroque.bowlingcompanion.R
@@ -76,4 +77,17 @@ class NavigationDrawerController(private val navigationView: WeakReference<Navig
                 }
             }
         }
+
+    // MARK: NavigationDrawerProvider
+
+    interface NavigationDrawerProvider {
+        var navigationDrawerController: NavigationDrawerController
+    }
+
+    // MARK: NavigationDrawerHandler
+
+    interface NavigationDrawerHandler {
+        var navigationDrawerProvider: NavigationDrawerProvider?
+        fun onNavDrawerItemSelected(@IdRes itemId: Int)
+    }
 }
