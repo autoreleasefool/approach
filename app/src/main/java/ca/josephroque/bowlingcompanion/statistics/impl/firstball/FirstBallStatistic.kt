@@ -16,10 +16,16 @@ import ca.josephroque.bowlingcompanion.statistics.immutable.StatFrame
  */
 abstract class FirstBallStatistic(override var numerator: Int = 0, override var denominator: Int = 0) : PercentageStatistic {
 
-    // MARK: Modifiers
+    override fun isModifiedBy(frame: StatFrame) = true
+    override val category = StatisticsCategory.FirstBall
+    override val secondaryGraphDataLabelId = R.string.statistic_total_shots_at_middle
 
-    /** @Override */
+    // MARK: Statistic
+
     override fun modify(frame: StatFrame) {
+        // This function has a similar construction to `StrikeMiddleHitsStatistic.modify(StatFrame)
+        // and the two should remain aligned
+
         // Every frame adds 1 possible hit
         denominator++
         numerator += if (isModifiedBy(frame.pinState[0])) 1 else 0
@@ -38,14 +44,7 @@ abstract class FirstBallStatistic(override var numerator: Int = 0, override var 
         }
     }
 
-    // MARK: Overrides
-
-    override fun isModifiedBy(frame: StatFrame) = true
-    override val category = StatisticsCategory.FirstBall
-    override val secondaryGraphDataLabelId = R.string.statistic_total_shots_at_middle
-
     // MARK: FirstBallStatistic
 
-    /** Indicates if this statistic will be modified by a given [Deck]. */
     abstract fun isModifiedBy(deck: Deck): Boolean
 }

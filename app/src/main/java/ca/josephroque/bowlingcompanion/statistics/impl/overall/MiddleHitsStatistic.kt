@@ -1,7 +1,6 @@
 package ca.josephroque.bowlingcompanion.statistics.impl.overall
 
 import android.os.Parcel
-import android.os.Parcelable
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
 import ca.josephroque.bowlingcompanion.games.lane.Deck
@@ -16,30 +15,22 @@ import ca.josephroque.bowlingcompanion.statistics.impl.firstball.FirstBallStatis
  */
 class MiddleHitsStatistic(numerator: Int = 0, denominator: Int = 0) : FirstBallStatistic(numerator, denominator) {
 
-    // MARK: Modifiers
+    companion object {
+        @Suppress("unused")
+        @JvmField val CREATOR = parcelableCreator(::MiddleHitsStatistic)
 
-    /** @Override */
-    override fun isModifiedBy(deck: Deck) = deck.isMiddleHit
-
-    // MARK: Overrides
+        const val Id = R.string.statistic_middle_hits
+    }
 
     override val titleId = Id
     override val id = Id.toLong()
     override val category = StatisticsCategory.Overall
 
-    // MARK: Parcelable
+    // MARK: Statistic
 
-    companion object {
-        /** Creator, required by [Parcelable]. */
-        @Suppress("unused")
-        @JvmField val CREATOR = parcelableCreator(::MiddleHitsStatistic)
+    override fun isModifiedBy(deck: Deck) = deck.isMiddleHit
 
-        /** Unique ID for the statistic. */
-        const val Id = R.string.statistic_middle_hits
-    }
+    // MARK: Constructors
 
-    /**
-     * Construct this statistic from a [Parcel].
-     */
     private constructor(p: Parcel): this(numerator = p.readInt(), denominator = p.readInt())
 }
