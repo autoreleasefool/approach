@@ -46,6 +46,8 @@ class StatisticGraphFragment : BaseFragment(),
         private const val ARG_STATISTIC_UNIT = "${TAG}_unit"
         private const val ARG_STATISTIC = "${TAG}_statistic"
 
+        private const val MAX_GRAPH_LABELS = 10
+
         fun newInstance(unit: StatisticsUnit, statisticId: Long): StatisticGraphFragment {
             return StatisticGraphFragment().apply {
                 arguments = Bundle().apply {
@@ -175,7 +177,7 @@ class StatisticGraphFragment : BaseFragment(),
 
             chart.data = buildChartData(context, graphLines).await()
             chart.xAxis.valueFormatter = buildChartXAxisFormatter(graphLabels)
-            chart.xAxis.labelCount = graphLabels.size
+            chart.xAxis.labelCount = Math.min(graphLabels.size, MAX_GRAPH_LABELS)
             fixChartProperties()
             chart.invalidate()
         }
