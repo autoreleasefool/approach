@@ -62,6 +62,19 @@ class StatisticGraphFragment : BaseFragment(),
     private lateinit var unit: StatisticsUnit
     private var statisticId: Long = 0
 
+    private var inputsEnabled: Boolean = false
+        set(value) {
+            field = value
+            launch(Android) {
+                val context = this@StatisticGraphFragment.context ?: return@launch
+                switchAccumulate.isEnabled = value
+                val textColorId = if (value) R.color.primaryWhiteText else R.color.secondaryWhiteText
+                val textColor = ContextCompat.getColor(context, textColorId)
+                textPrevStatistic.setTextColor(textColor)
+                textNextStatistic.setTextColor(textColor)
+            }
+        }
+
     // MARK: Lifecycle functions
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -100,6 +113,7 @@ class StatisticGraphFragment : BaseFragment(),
         updateAccumulateText()
         updateStatisticTitles()
         buildChart()
+        inputsEnabled = false
     }
 
     // MARK: BaseFragment
@@ -180,6 +194,7 @@ class StatisticGraphFragment : BaseFragment(),
             chart.xAxis.labelCount = Math.min(graphLabels.size, MAX_GRAPH_LABELS)
             fixChartProperties()
             chart.invalidate()
+            inputsEnabled = true
         }
     }
 
@@ -197,6 +212,7 @@ class StatisticGraphFragment : BaseFragment(),
     // MARK: OnClickListener
 
     override fun onClick(v: View?) {
+        if (!inputsEnabled) { return }
         when (v?.id) {
             R.id.tv_prev_statistic -> delegate?.prevStatistic(statisticId)
             R.id.tv_next_statistic -> delegate?.nextStatistic(statisticId)
