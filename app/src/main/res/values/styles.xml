@@ -278,10 +278,9 @@
     </style>
 
     <style name="PinButton">
-        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">match_parent</item>
-        <item name="layout_constraintTop_toTopOf">parent</item>
-        <item name="layout_constraintBottom_toBottomOf">parent</item>
+        <item name="android:layout_weight">1</item>
         <item name="android:background">@drawable/pin_background</item>
         <item name="android:paddingLeft">@dimen/base_margin_small</item>
         <item name="android:paddingRight">@dimen/base_margin_small</item>

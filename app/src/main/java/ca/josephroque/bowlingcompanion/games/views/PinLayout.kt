@@ -2,11 +2,11 @@ package ca.josephroque.bowlingcompanion.games.views
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.support.constraint.ConstraintLayout
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.widget.ImageView
+import android.widget.LinearLayout
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.games.Game
 
@@ -15,7 +15,7 @@ import ca.josephroque.bowlingcompanion.games.Game
  *
  * Display pins and handle touch events for the pins.
  */
-class PinLayout : ConstraintLayout {
+class PinLayout : LinearLayout {
 
     companion object {
         @Suppress("unused")
