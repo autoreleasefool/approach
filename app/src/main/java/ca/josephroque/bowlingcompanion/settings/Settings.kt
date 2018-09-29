@@ -103,7 +103,7 @@ object Settings {
         val default: String
             get() {
                 return when (this) {
-                    AutoAdvanceTime -> "10"
+                    AutoAdvanceTime -> "10 seconds"
                 }
             }
 

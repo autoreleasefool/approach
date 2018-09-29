@@ -44,7 +44,8 @@ class GameAutoEventController(
 
         // Set auto advance delay time
         val strDelay = Settings.StringSetting.AutoAdvanceTime.getValue(preferences)
-        autoAdvanceTotalDelay = Integer.valueOf(strDelay)
+        val strDelayComponents = strDelay.split(" ")
+        autoAdvanceTotalDelay = Integer.valueOf(strDelayComponents[0])
     }
 
     private val autoEventHandler: HashMap<AutoEvent, Handler> by lazy {

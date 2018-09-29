@@ -210,6 +210,7 @@ class SettingsFragment : PreferenceFragmentCompat(),
         findPreference(Settings.StaticSetting.VersionName.prefName).summary = BuildConfig.VERSION_NAME
 
         val autoAdvanceTime = Settings.StringSetting.AutoAdvanceTime.getValue(prefs)
-        findPreference(Settings.StringSetting.AutoAdvanceTime.prefName).summary = resources.getString(R.string.pref_auto_advance_time_summary_seconds, autoAdvanceTime)
+        val timeComponents = autoAdvanceTime.split(" ")
+        findPreference(Settings.StringSetting.AutoAdvanceTime.prefName).summary = resources.getString(R.string.pref_auto_advance_time_summary_seconds, timeComponents[0])
     }
 }
