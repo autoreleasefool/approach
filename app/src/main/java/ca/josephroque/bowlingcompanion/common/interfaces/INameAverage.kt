@@ -16,18 +16,17 @@ interface INameAverage : IDeletable, IIdentifiable {
     companion object {
         @Suppress("unused")
         private const val TAG = "INameAverage"
-
-        private val decimalFormatter = DecimalFormat("0.#")
     }
 
     val name: String
     val average: Double
 
     fun getDisplayAverage(context: Context): String {
+        val formatter = DecimalFormat("0.#")
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
         val averageAsDecimal = Settings.BooleanSetting.AverageAsDecimal.getValue(preferences)
         return if (averageAsDecimal) {
-            decimalFormatter.format(average)
+            formatter.format(average)
         } else {
             average.roundToInt().toString()
         }

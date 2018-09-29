@@ -67,10 +67,6 @@ interface Statistic : StatisticListItem, KParcelable {
 
 interface PercentageStatistic : Statistic {
 
-    companion object {
-        private val formatter = DecimalFormat("#.##")
-    }
-
     var numerator: Int
     var denominator: Int
 
@@ -94,6 +90,7 @@ interface PercentageStatistic : Statistic {
 
     override val displayValue: String
         get() = if (denominator > 0) {
+            val formatter = DecimalFormat("#.##")
             "${formatter.format(percentage)}% [$numerator/$denominator]"
         } else {
             Statistic.EMPTY_STATISTIC
@@ -112,10 +109,6 @@ interface PercentageStatistic : Statistic {
 
 interface AverageStatistic : Statistic {
 
-    companion object {
-        private val formatter = DecimalFormat("#.##")
-    }
-
     var total: Int
     var divisor: Int
 
@@ -133,6 +126,7 @@ interface AverageStatistic : Statistic {
 
     override val displayValue: String
         get() {
+            val formatter = DecimalFormat("#.##")
             return if (average > 0) formatter.format(average) else Statistic.EMPTY_STATISTIC
         }
 

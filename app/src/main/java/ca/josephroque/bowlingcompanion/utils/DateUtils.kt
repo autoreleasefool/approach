@@ -11,10 +11,6 @@ import java.util.Locale
  */
 object DateUtils {
 
-    private val seriesDateFormatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA)
-    private val prettyDateFormatter = SimpleDateFormat("MMMM dd, yyyy", Locale.CANADA)
-    private val shortDateFormatter = SimpleDateFormat("MM/dd", Locale.CANADA)
-
     // MARK: DateUtils
 
     /**
@@ -24,7 +20,8 @@ object DateUtils {
      * @return a date object
      */
     fun seriesDateToDate(seriesDate: String): Date {
-        return seriesDateFormatter.parse(seriesDate)
+        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA)
+        return formatter.parse(seriesDate)
     }
 
     /**
@@ -34,7 +31,8 @@ object DateUtils {
      * @return a string suitable for a series
      */
     fun dateToSeriesDate(date: Date): String {
-        return seriesDateFormatter.format(date)
+        val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA)
+        return formatter.format(date)
     }
 
     /**
@@ -44,7 +42,8 @@ object DateUtils {
      * @return prettier format of string with full month name
      */
     fun dateToPretty(date: Date): String {
-        return prettyDateFormatter.format(date)
+        val formatter = SimpleDateFormat("MMMM dd, yyyy", Locale.CANADA)
+        return formatter.format(date)
     }
 
     /**
@@ -54,6 +53,7 @@ object DateUtils {
      * @return shorter format of string with month and day
      */
     fun dateToShort(date: Date): String {
-        return shortDateFormatter.format(date)
+        val formatter = SimpleDateFormat("MM/dd", Locale.CANADA)
+        return formatter.format(date)
     }
 }
