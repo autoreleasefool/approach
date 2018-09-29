@@ -1,3 +1,11 @@
+<b>v3.0.2</b>
+This update contains a tonne of stability fixes for the new version.
+
+- Fix pins not appearing for some users
+- Fix crash when rotating the device
+- "Middle hits which were strikes" now counts denominator accurately
+- Some other stability bug fixes
+
 <b>v3.0.0</b>
 Welcome to the new 5 Pin Bowling Companion. We completely rebuilt the app from scratch with all your favourite features and plenty of new ones.
 

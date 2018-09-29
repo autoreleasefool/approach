@@ -1,5 +1,18 @@
 # Most recent version
 
+## v3.0.2
+
+```
+This update contains a tonne of stability fixes for the new version.
+
+- Fix pins not appearing for some users
+- Fix crash when rotating the device
+- "Middle hits which were strikes" now counts denominator accurately
+- Some other stability bug fixes
+```
+
+# Legacy versions
+
 ## v3.0.0
 ```
 Welcome to the new 5 Pin Bowling Companion. We completely rebuilt the app from scratch with all your favourite features and plenty of new ones.
@@ -12,8 +25,6 @@ Welcome to the new 5 Pin Bowling Companion. We completely rebuilt the app from s
 - Highlight settings are now per league — long press to edit
 - New statistics
 ```
-
-# Legacy versions
 
 ## v2.1.9
 ```
