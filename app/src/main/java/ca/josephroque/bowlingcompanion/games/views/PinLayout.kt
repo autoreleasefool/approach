@@ -119,7 +119,7 @@ class PinLayout : LinearLayout {
     }
 
     private fun setPinTouched(event: MotionEvent, firstPin: Boolean) {
-        val pinTouched = ((event.x / width) * 5).toInt()
+        val pinTouched = Math.max(0, Math.min(((event.x / width) * pinViews.size).toInt(), pinViews.lastIndex))
         val pinView = pinViews[pinTouched] ?: return
         val delegate = delegate ?: return
 
