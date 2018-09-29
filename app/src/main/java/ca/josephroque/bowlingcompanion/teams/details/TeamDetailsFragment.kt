@@ -194,10 +194,10 @@ class TeamDetailsFragment : BaseFragment(),
                 allTeamMembersReady = false
                 val teamMemberSeries: MutableMap<TeamMember, Series> = HashMap()
 
-                val database = DatabaseManager.getWritableDatabase(context).await()
 
                 // Create series in the database for each team member, if one does not exist,
                 // or retrieve the existing series if it does.
+                val database = DatabaseManager.getWritableDatabase(context).await()
                 try {
                     team.members.forEach {
                         val league = it.league!!

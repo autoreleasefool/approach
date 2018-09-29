@@ -193,7 +193,6 @@ class Bowler(
                     return@async Pair(null, error)
                 }
 
-                val database = DatabaseManager.getWritableDatabase(context).await()
                 val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA)
                 val currentDate = dateFormat.format(Date())
 
@@ -203,7 +202,7 @@ class Bowler(
                 }
 
                 val bowlerId: Long
-
+                val database = DatabaseManager.getWritableDatabase(context).await()
                 database.beginTransaction()
                 try {
                     bowlerId = database.insert(BowlerEntry.TABLE_NAME, null, values)
@@ -240,7 +239,6 @@ class Bowler(
                     return@async Pair(null, error)
                 }
 
-                val database = DatabaseManager.getWritableDatabase(context).await()
                 val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA)
                 val currentDate = dateFormat.format(Date())
 
@@ -249,14 +247,10 @@ class Bowler(
                     put(BowlerEntry.COLUMN_DATE_MODIFIED, currentDate)
                 }
 
+                val database = DatabaseManager.getWritableDatabase(context).await()
                 database.beginTransaction()
                 try {
-                    database.update(
-                            BowlerEntry.TABLE_NAME,
-                            values,
-                            "${BowlerEntry._ID}=?",
-                            arrayOf(id.toString()))
-
+                    database.update(BowlerEntry.TABLE_NAME, values, "${BowlerEntry._ID}=?", arrayOf(id.toString()))
                     database.setTransactionSuccessful()
                 } catch (ex: Exception) {
                     Log.e(TAG, "Could not update bowler")

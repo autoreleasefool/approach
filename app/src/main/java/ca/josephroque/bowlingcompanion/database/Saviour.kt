@@ -65,7 +65,6 @@ class Saviour private constructor() {
         val job = launch(context = Android, start = CoroutineStart.LAZY) {
             val strongContext = weakContext.get() ?: return@launch
             val database = DatabaseHelper.getInstance(strongContext).writableDatabase
-
             database.beginTransaction()
             try {
                 // Save the score
@@ -96,7 +95,6 @@ class Saviour private constructor() {
         val job = launch(context = Android, start = CoroutineStart.LAZY) {
             val strongContext = weakContext.get() ?: return@launch
             val database = DatabaseHelper.getInstance(strongContext).writableDatabase
-
             database.beginTransaction()
             try {
                 writeMatchPlayToDatabase(database, matchPlay)
@@ -117,7 +115,6 @@ class Saviour private constructor() {
         val job = launch(context = Android, start = CoroutineStart.LAZY) {
             val strongContext = weakContext.get() ?: return@launch
             val database = DatabaseHelper.getInstance(strongContext).writableDatabase
-
             database.beginTransaction()
             try {
                 val values = ContentValues().apply {

@@ -221,7 +221,6 @@ class Team(
                     return@async Pair(null, error)
                 }
 
-                val database = DatabaseManager.getWritableDatabase(context).await()
                 val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA)
                 val currentDate = dateFormat.format(Date())
 
@@ -232,6 +231,7 @@ class Team(
 
                 val teamId: Long
 
+                val database = DatabaseManager.getWritableDatabase(context).await()
                 database.beginTransaction()
                 try {
                     teamId = database.insert(TeamEntry.TABLE_NAME, null, values)
@@ -266,7 +266,6 @@ class Team(
                     return@async Pair(null, error)
                 }
 
-                val database = DatabaseManager.getWritableDatabase(context).await()
                 val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA)
                 val currentDate = dateFormat.format(Date())
 
@@ -275,6 +274,7 @@ class Team(
                     put(TeamEntry.COLUMN_DATE_MODIFIED, currentDate)
                 }
 
+                val database = DatabaseManager.getWritableDatabase(context).await()
                 database.beginTransaction()
                 try {
                     database.update(

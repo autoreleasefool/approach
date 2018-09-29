@@ -56,7 +56,6 @@ class Annihilator private constructor() {
         val job = launch(context = Android, start = CoroutineStart.LAZY) {
             val strongContext = weakContext.get() ?: return@launch
             val database = DatabaseHelper.getInstance(strongContext).writableDatabase
-
             database.beginTransaction()
             try {
                 database.delete(tableName, whereClause, whereArgs)

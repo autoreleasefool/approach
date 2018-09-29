@@ -336,7 +336,6 @@ data class League(
                     return@async Pair(null, error)
                 }
 
-                val database = DatabaseManager.getWritableDatabase(context).await()
                 val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA)
                 val currentDate = dateFormat.format(Date())
 
@@ -353,6 +352,7 @@ data class League(
                 }
 
                 val league: League
+                val database = DatabaseManager.getWritableDatabase(context).await()
                 database.beginTransaction()
                 try {
                     val leagueId = database.insert(LeagueEntry.TABLE_NAME, null, values)
@@ -425,7 +425,6 @@ data class League(
                     return@async Pair(null, error)
                 }
 
-                val database = DatabaseManager.getWritableDatabase(context).await()
                 val dateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.CANADA)
                 val currentDate = dateFormat.format(Date())
 
@@ -438,6 +437,7 @@ data class League(
                     put(LeagueEntry.COLUMN_DATE_MODIFIED, currentDate)
                 }
 
+                val database = DatabaseManager.getWritableDatabase(context).await()
                 database.beginTransaction()
                 try {
                     database.update(LeagueEntry.TABLE_NAME, values, LeagueEntry._ID + "=?", arrayOf(id.toString()))
