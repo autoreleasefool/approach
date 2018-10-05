@@ -6,6 +6,7 @@ import android.view.Menu
 import android.view.MenuItem
 import ca.josephroque.bowlingcompanion.BuildConfig
 import ca.josephroque.bowlingcompanion.R
+import ca.josephroque.bowlingcompanion.common.FragmentBreadcrumbLogger
 import ca.josephroque.bowlingcompanion.settings.SettingsActivity
 import ca.josephroque.bowlingcompanion.utils.Analytics
 import ca.josephroque.bowlingcompanion.utils.Email
@@ -18,18 +19,29 @@ import ca.josephroque.bowlingcompanion.utils.Email
 abstract class BaseActivity : AppCompatActivity() {
 
     companion object {
-        /** Logging identifier. */
         @Suppress("unused")
         private const val TAG = "BaseActivity"
     }
 
-    /** @Override */
+    private val fragmentBreadcrumbLogger = FragmentBreadcrumbLogger()
+
+    // MARK: Lifecycle functions
+
+    override fun onStart() {
+        super.onStart()
+        supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentBreadcrumbLogger, true)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        supportFragmentManager.unregisterFragmentLifecycleCallbacks(fragmentBreadcrumbLogger)
+    }
+
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.base_activity, menu)
         return true
     }
 
-    /** @Override */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.home, R.id.homeAsUp -> {
@@ -48,9 +60,8 @@ abstract class BaseActivity : AppCompatActivity() {
         }
     }
 
-    /**
-     * Prepare an email with the subject and recipient pre-filled.
-     */
+    // MARK: BaseActivity
+
     fun prepareFeedbackEmail() {
         Email.sendEmail(
                 this,
@@ -62,9 +73,6 @@ abstract class BaseActivity : AppCompatActivity() {
         Analytics.trackSendFeedback()
     }
 
-    /**
-     * Opens the settings activity.
-     */
     fun openSettings() {
         val settingsIntent = Intent(this, SettingsActivity::class.java)
         startActivity(settingsIntent)
