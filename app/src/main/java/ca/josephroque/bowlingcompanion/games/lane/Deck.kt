@@ -35,10 +35,10 @@ val Deck.isHeadPin: Boolean
     get() = this.value(false) == 5 && this.headPin.isDown
 
 val Deck.isLeft: Boolean
-    get() = this.value(false) == 13 && this.right2Pin.onDeck
+    get() = this.value(false) == 13 && this.left2Pin.onDeck
 
 val Deck.isRight: Boolean
-    get() = this.value(false) == 13 && this.left2Pin.onDeck
+    get() = this.value(false) == 13 && this.right2Pin.onDeck
 
 val Deck.isAce: Boolean
     get() = this.value(false) == 11
