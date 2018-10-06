@@ -120,26 +120,34 @@ fun Deck.value(onDeck: Boolean): Int {
 }
 
 fun Deck.ballValue(ballIdx: Int, returnSymbol: Boolean, afterStrike: Boolean): String {
-    val value = this.value(false)
-    return when (value) {
-        0 -> Ball.None.toString()
-        2, 3, 4, 6, 9, 12 -> value.toString()
-        5 -> return if ((ballIdx == 0 || returnSymbol) && this[2].isDown) Ball.HeadPin.toString() else "5"
-        7 -> return if ((ballIdx == 0 || returnSymbol) && this[2].isDown) Ball.HeadPin2.toString() else "7"
-        8 -> return if ((ballIdx == 0 || returnSymbol) && this[2].isDown) Ball.Split.toString() else "8"
-        10 -> return if ((ballIdx == 0 || returnSymbol) && this[2].isDown && ((this[0].isDown && this[1].isDown) || (this[3].isDown && this[4].isDown))) Ball.ChopOff.toString() else "10"
-        11 -> return if ((ballIdx == 0 || returnSymbol) && this[2].isDown) Ball.Ace.toString() else "11"
-        13 -> return when {
-            (ballIdx == 0 || returnSymbol) && !this[0].isDown -> Ball.Left.toString()
-            (ballIdx == 0 || returnSymbol) && !this[4].isDown -> Ball.Right.toString()
-            else -> "13"
+    val ball = when {
+        isHeadPin(false) -> Ball.HeadPin
+        isHeadPin(true) -> Ball.HeadPin2
+        isSplit(false) -> Ball.Split
+        isSplit(true) -> Ball.Split2
+        isChopOff -> Ball.ChopOff
+        isAce -> Ball.Ace
+        isLeft -> Ball.Left
+        isRight -> Ball.Right
+        arePinsCleared -> {
+            when {
+                ballIdx == 0 -> Ball.Strike
+                ballIdx == 1 && !afterStrike -> Ball.Spare
+                else -> Ball.Cleared
+            }
         }
-        15 -> return when {
-            ballIdx == 0 || returnSymbol -> Ball.Strike.toString()
-            ballIdx == 1 && !afterStrike -> Ball.Spare.toString()
-            else -> "15"
+        else -> Ball.None
+    }
+
+    return if (ball == Ball.None) {
+        val value = this.value(false)
+        return if (value == 0) {
+            ball.toString()
+        } else {
+            value.toString()
         }
-        else -> throw IllegalStateException("Invalid value for ball: $value")
+    } else {
+        if (ballIdx == 0 || returnSymbol) ball.toString() else ball.numeral
     }
 }
 
