@@ -34,9 +34,9 @@
     <dimen name="list_default_icon_size">40dp</dimen>
 
     <!-- Frame -->
-    <dimen name="frame_width">120dp</dimen>
+    <dimen name="frame_width">132dp</dimen>
     <dimen name="frame_score_height">60dp</dimen>
-    <dimen name="frame_ball_size">40dp</dimen>
+    <dimen name="frame_ball_size">44dp</dimen>
     <dimen name="frame_foul_size">@dimen/frame_ball_size</dimen>
     <dimen name="frame_number_height">20dp</dimen>
 
