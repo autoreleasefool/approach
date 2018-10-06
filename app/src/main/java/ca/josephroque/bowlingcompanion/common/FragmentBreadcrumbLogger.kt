@@ -25,6 +25,10 @@ class FragmentBreadcrumbLogger : FragmentManager.FragmentLifecycleCallbacks() {
         leaveLifecycleBreadcrumb(f, "onFragmentCreated()")
     }
 
+    override fun onFragmentDestroyed(fm: FragmentManager, f: Fragment) {
+        leaveLifecycleBreadcrumb(f, "onFragmentDestroyed()")
+    }
+
     override fun onFragmentResumed(fm: FragmentManager, f: Fragment) {
         leaveLifecycleBreadcrumb(f, "onFragmentResumed()")
     }
