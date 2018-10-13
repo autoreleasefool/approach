@@ -78,6 +78,16 @@ class NavigationDrawerController(private val navigationView: WeakReference<Navig
             }
         }
 
+    fun updateGameScore(gameIdx: Int, score: Int) {
+        navigationView.get()?.let {
+            it.menu.findItem(navGameItemIds[gameIdx]).title = if (score > 0) {
+                it.resources.getString(R.string.game_with_score).format(gameIdx + 1, score)
+            } else {
+                it.resources.getString(R.string.game_without_score).format(gameIdx + 1)
+            }
+        }
+    }
+
     // MARK: NavigationDrawerProvider
 
     interface NavigationDrawerProvider {

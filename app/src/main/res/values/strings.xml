@@ -398,6 +398,8 @@
     <string name="nav_game_20">Game 20</string>
     <string name="nav_feedback">Feedback</string>
     <string name="nav_settings">Settings</string>
+    <string name="game_with_score">Game %d (%d)</string>
+    <string name="game_without_score">Game %d</string>
 
     <!-- Empty view -->
     <string name="empty_view_statistics_providers">You\'ll have to go back and select a team or bowler to see statistics.</string>

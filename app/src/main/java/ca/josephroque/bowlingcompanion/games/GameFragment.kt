@@ -331,6 +331,9 @@ class GameFragment : BaseFragment(),
                 isManualScoreSet = gameState.currentGame.isManual
             }
 
+            // Update the score of this game in the navigation drawer
+            delegate?.updateGameScore(gameNumber, gameState.currentGame.score)
+
             if (ballChanged || isGameFirstRender) {
                 focusOnFrame(isGameFirstRender)
             }
@@ -617,6 +620,7 @@ class GameFragment : BaseFragment(),
         fun enableFab(enabled: Boolean)
         fun nextBowlerOrGame(isEndOfGame: Boolean): NextBowlerResult
         fun toggleFullscreen()
+        fun updateGameScore(gameIdx: Int, score: Int)
     }
 
     enum class NextBowlerResult {

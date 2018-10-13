@@ -159,9 +159,12 @@ class GameControllerFragment : TabbedFragment(),
 
     private fun onSeriesChanged() {
         seriesProvider?.seriesList?.let {
-            navigationDrawerProvider?.navigationDrawerController?.numberOfGames = it[currentTab].numberOfGames
-            navigationDrawerProvider?.navigationDrawerController?.bowlerName = it[currentTab].league.bowler.name
-            navigationDrawerProvider?.navigationDrawerController?.leagueName = it[currentTab].league.name
+            navigationDrawerProvider?.navigationDrawerController?.apply {
+                numberOfGames = it[currentTab].numberOfGames
+                bowlerName = it[currentTab].league.bowler.name
+                leagueName = it[currentTab].league.name
+                it[currentTab].scores.forEachIndexed { index, score -> updateGameScore(index, score) }
+            }
         }
 
         updateToolbarTitle()
@@ -277,6 +280,10 @@ class GameControllerFragment : TabbedFragment(),
 
     override fun toggleFullscreen() {
         navigationActivity?.toggleFullscreen()
+    }
+
+    override fun updateGameScore(gameIdx: Int, score: Int) {
+        navigationDrawerProvider?.navigationDrawerController?.updateGameScore(gameIdx, score)
     }
 
     // MARK: MatchPlaySheetDelegate
