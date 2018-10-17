@@ -197,6 +197,10 @@ class GameFragment : BaseFragment(),
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         autoEventController.pauseAll()
         return when (item?.itemId) {
+            R.id.action_share -> {
+                showShareDialog()
+                true
+            }
             R.id.action_set_score -> {
                 showManualScoreDialog()
                 true
@@ -562,6 +566,10 @@ class GameFragment : BaseFragment(),
     }
 
     // MARK: Dialogs
+
+    private fun showShareDialog() {
+        TODO("not implemented")
+    }
 
     private fun showBestScorePossible() {
         context?.let { PossibleScoreDialog.show(it, gameState.currentGame.deepCopy(), gameState.currentFrameIdx, gameState.currentBallIdx) }

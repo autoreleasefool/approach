@@ -46,6 +46,7 @@
     <string name="action_sort_by">Sort by</string>
     <string name="action_condensed_series">Condensed view</string>
     <string name="action_expanded_series">Expanded view</string>
+    <string name="action_share">Share</string>
 
     <!-- Transfer -->
     <string name="transfer_data">Transfer data</string>
