@@ -46,7 +46,7 @@ class App : Application(), LifecycleObserver {
     override fun onCreate() {
         super.onCreate()
         PreferenceManager.setDefaultValues(this, R.xml.pref_app, false)
-        MobileAds.initialize(this, BuildConfig.BANNER_AD_UNIT_ID)
+        MobileAds.initialize(this, BuildConfig.ADMOB_APP_ID)
         Bugsnag.init(this)
     }
 

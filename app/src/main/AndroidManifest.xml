@@ -22,7 +22,7 @@
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="@string/BANNER_AD_UNIT_ID"/>
+            android:value="@string/ADMOB_APP_ID"/>
 
         <meta-data
             android:name="com.bugsnag.android.API_KEY"
