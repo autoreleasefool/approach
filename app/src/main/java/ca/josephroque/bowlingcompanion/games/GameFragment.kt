@@ -252,6 +252,8 @@ class GameFragment : BaseFragment(),
     private fun render(ballChanged: Boolean = false, isGameFirstRender: Boolean = false) {
         if (!gameState.gamesLoaded) { return }
         launch(Android) {
+            if (view == null) { return@launch }
+
             val scoreText = gameState.currentGame.getScoreTextForFrames().await()
             val ballText = gameState.currentGame.getBallTextForFrames().await()
 
