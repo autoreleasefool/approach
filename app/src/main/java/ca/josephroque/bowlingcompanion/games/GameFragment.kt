@@ -31,10 +31,9 @@ import ca.josephroque.bowlingcompanion.utils.Analytics
 import ca.josephroque.bowlingcompanion.utils.BCError
 import kotlinx.android.synthetic.main.fragment_game.game_footer as gameFooter
 import kotlinx.android.synthetic.main.fragment_game.game_header as gameHeader
-import kotlinx.android.synthetic.main.fragment_game.hsv_frames as hsvFrames
+import kotlinx.android.synthetic.main.fragment_game.score_sheet as scoreSheet
 import kotlinx.android.synthetic.main.fragment_game.manual_score as manualScore
 import kotlinx.android.synthetic.main.fragment_game.pin_layout as pinLayout
-import kotlinx.android.synthetic.main.fragment_game.tv_final_score as finalScore
 import kotlinx.android.synthetic.main.fragment_game.tv_auto_advance as autoAdvance
 import kotlinx.android.synthetic.main.sheet_match_play.sheet_match_play as matchPlaySheet
 import kotlinx.android.synthetic.main.sheet_match_play.view.*
@@ -69,11 +68,6 @@ class GameFragment : BaseFragment(),
 
     private var delegate: GameFragmentDelegate? = null
 
-    private val frameViewIds = intArrayOf(R.id.frame_0, R.id.frame_1, R.id.frame_2, R.id.frame_3,
-            R.id.frame_4, R.id.frame_5, R.id.frame_6, R.id.frame_7, R.id.frame_8, R.id.frame_9)
-
-    private lateinit var frameViews: Array<FrameView?>
-
     var gameNumber: Int = 0
         set(value) {
             saveCurrentGame(false)
@@ -105,11 +99,6 @@ class GameFragment : BaseFragment(),
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         setHasOptionsMenu(true)
         val view = inflater.inflate(R.layout.fragment_game, container, false)
-
-        frameViews = arrayOfNulls(frameViewIds.size)
-        frameViewIds.forEachIndexed { index, it ->
-            frameViews[index] = view.findViewById(it)
-        }
 
         setupBottomSheet(view)
 
@@ -163,10 +152,9 @@ class GameFragment : BaseFragment(),
         autoEventController.init(preferences)
         autoEventController.pauseAll()
 
-        frameViews.forEach {
-            it?.delegate = this
-            it?.shouldHighlightMarks = Settings.BooleanSetting.EnableStrikeHighlights.getValue(preferences)
-        }
+        scoreSheet.frameViewDelegate = this
+        scoreSheet.shouldHighlightMarks = Settings.BooleanSetting.EnableStrikeHighlights.getValue(preferences)
+
         pinLayout.delegate = this
         gameFooter.delegate = this
         gameHeader.delegate = this
@@ -261,29 +249,19 @@ class GameFragment : BaseFragment(),
             val scoreText = gameState.currentGame.getScoreTextForFrames()
             val ballText = gameState.currentGame.getBallTextForFrames()
 
-            // Update active frames
-            frameViews.forEachIndexed { index, it ->
-                it?.isCurrentFrame = (index == gameState.currentFrameIdx)
-                it?.currentBall = gameState.currentBallIdx
-            }
+            // Update frames
+            scoreSheet.finalScore = gameState.currentGame.score
+            scoreSheet.updateFrames(
+                    gameState.currentFrameIdx,
+                    gameState.currentBallIdx,
+                    scoreText,
+                    ballText
+            )
 
-            // Update scores of the frames
-            scoreText.forEachIndexed { index, score ->
-                frameViews[index]?.setFrameText(score)
-            }
-            finalScore.text = gameState.currentGame.score.toString()
-
-            // Update balls of the frames
-            ballText.forEachIndexed { index, balls ->
-                balls.forEachIndexed { ballIdx, ball ->
-                    frameViews[index]?.setBallText(ballIdx, ball)
-                }
-            }
-
-            // Update fouls of the frames
-            gameState.currentGame.frames.forEachIndexed { index, frame ->
+            // Update fouls
+            gameState.currentGame.frames.forEachIndexed { frameIdx, frame ->
                 frame.ballFouled.forEachIndexed { ballIdx, foul ->
-                    frameViews[index]?.setFoulEnabled(ballIdx, foul)
+                    scoreSheet.setFoulEnabled(frameIdx, ballIdx, foul)
                 }
             }
 
@@ -304,13 +282,13 @@ class GameFragment : BaseFragment(),
             gameHeader.isManualScoreSet = gameState.currentGame.isManual
             if (gameState.currentGame.isManual) {
                 pinLayout.visibility = View.GONE
-                hsvFrames.visibility = View.GONE
+                scoreSheet.visibility = View.GONE
 
                 manualScore.text = gameState.currentGame.score.toString()
                 manualScore.visibility = View.VISIBLE
             } else {
                 pinLayout.visibility = View.VISIBLE
-                hsvFrames.visibility = View.VISIBLE
+                scoreSheet.visibility = View.VISIBLE
 
                 manualScore.text = null
                 manualScore.visibility = View.GONE
@@ -359,14 +337,7 @@ class GameFragment : BaseFragment(),
     }
 
     private fun focusOnFrame(isGameFirstRender: Boolean) {
-        val left = if (gameState.currentFrameIdx >= 1 && !(isGameFirstRender && gameState.isLastFrame)) {
-            val prevFrame = frameViews[gameState.currentFrameIdx - 1] ?: return
-            prevFrame.left
-        } else {
-            val frame = frameViews[gameState.currentFrameIdx] ?: return
-            frame.left
-        }
-        hsvFrames.post { hsvFrames.smoothScrollTo(left, 0) }
+        scoreSheet.focusOnFrame(isGameFirstRender, gameState.isLastFrame, gameState.currentFrameIdx)
     }
 
     private fun resetGame() {
@@ -414,9 +385,8 @@ class GameFragment : BaseFragment(),
     }
 
     override fun onFoulToggle() {
-        val frameView = frameViews[gameState.currentFrameIdx] ?: return
         gameState.toggleFoul()
-        frameView.setFoulEnabled(gameState.currentBallIdx, gameState.currentBallFouled)
+        scoreSheet.setFoulEnabled(gameState.currentFrameIdx, gameState.currentBallIdx, gameState.currentBallFouled)
         if (!gameState.currentGame.isLocked && gameState.isLastBall) { autoEventController.delay(GameAutoEventController.AutoEvent.Lock) }
         if (!gameState.currentGame.isLocked && !gameState.isLastBall) { autoEventController.delay(GameAutoEventController.AutoEvent.AdvanceFrame) }
         render()
