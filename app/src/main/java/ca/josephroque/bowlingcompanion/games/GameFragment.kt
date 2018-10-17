@@ -258,8 +258,8 @@ class GameFragment : BaseFragment(),
         launch(Android) {
             if (view == null) { return@launch }
 
-            val scoreText = gameState.currentGame.getScoreTextForFrames().await()
-            val ballText = gameState.currentGame.getBallTextForFrames().await()
+            val scoreText = gameState.currentGame.getScoreTextForFrames()
+            val ballText = gameState.currentGame.getBallTextForFrames()
 
             // Update active frames
             frameViews.forEachIndexed { index, it ->
