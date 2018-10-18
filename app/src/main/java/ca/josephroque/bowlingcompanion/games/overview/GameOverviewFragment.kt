@@ -83,6 +83,7 @@ class GameOverviewFragment : ListFragment<Game, GameOverviewRecyclerViewAdapter>
     override fun buildAdapter(): GameOverviewRecyclerViewAdapter {
         val adapter = GameOverviewRecyclerViewAdapter(emptyList(), this)
         adapter.swipeable = false
+        adapter.multiSelect = true
         adapter.longPressable = true
         return adapter
     }
@@ -91,6 +92,11 @@ class GameOverviewFragment : ListFragment<Game, GameOverviewRecyclerViewAdapter>
         return async(CommonPool) {
             return@async this@GameOverviewFragment.games.toMutableList()
         }
+    }
+
+    override fun listWasRefreshed() {
+        // Select all games when the list is refreshed
+        adapter?.setSelectedElementsWithIds(HashSet(games.map { it.id }))
     }
 
     // MARK: AdapterDelegate

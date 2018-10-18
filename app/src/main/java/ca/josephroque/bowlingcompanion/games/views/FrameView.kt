@@ -49,7 +49,7 @@ class FrameView : LinearLayout, View.OnClickListener {
     var frameNumberVisible: Boolean = true
         set(value) {
             field = value
-            tvFrameNumber.isVisible = value
+            tvFrameNumber.visibility = if (value) View.VISIBLE else View.GONE
         }
 
     var score: Int = 0

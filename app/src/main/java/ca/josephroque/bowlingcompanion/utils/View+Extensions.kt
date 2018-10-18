@@ -7,6 +7,5 @@ import android.view.View
  *
  * View utilities
  */
-var View.isVisible: Boolean
+val View.isVisible: Boolean
     get() = visibility == View.VISIBLE
-    set(value) { visibility = if (value) View.VISIBLE else View.GONE }

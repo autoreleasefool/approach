@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CheckBox
 import android.widget.TextView
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.adapters.BaseRecyclerViewAdapter
@@ -45,11 +46,13 @@ class GameOverviewRecyclerViewAdapter(
     inner class ViewHolder(view: View) : BaseRecyclerViewAdapter<Game>.ViewHolder(view) {
         private val tvGameNumber: TextView? = view.findViewById(R.id.tv_game_number)
         private val scoreSheet: ScoreSheet? = view.findViewById(R.id.score_sheet)
+        private val checkBox: CheckBox? = view.findViewById(R.id.checkbox_share)
 
         override fun bind(item: Game, position: Int) {
             val context = itemView.context
 
             tvGameNumber?.text = context.resources.getString(R.string.game_number).format(item.ordinal)
+            checkBox?.isChecked = selectedItems.contains(item)
 
             val scoreText = item.getScoreTextForFrames()
             val ballText = item.getBallTextForFrames()
@@ -74,6 +77,7 @@ class GameOverviewRecyclerViewAdapter(
                 }
             }
 
+            itemView.setOnClickListener(this@GameOverviewRecyclerViewAdapter)
             itemView.setOnLongClickListener(this@GameOverviewRecyclerViewAdapter)
         }
     }
