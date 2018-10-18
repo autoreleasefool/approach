@@ -114,6 +114,11 @@ class GameState(private val series: Series, private val delegate: GameStateDeleg
             return (0 until Game.NUMBER_OF_PINS).filter { it !in enabled }.toIntArray()
         }
 
+    val shareableGames: List<Game>
+        get() {
+            return games.map { it.deepCopy() }
+        }
+
     // MARK: GameState
 
     fun toggleFoul() {

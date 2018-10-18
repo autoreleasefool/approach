@@ -19,6 +19,7 @@ import ca.josephroque.bowlingcompanion.games.dialogs.ManualScoreDialog
 import ca.josephroque.bowlingcompanion.games.dialogs.PossibleScoreDialog
 import ca.josephroque.bowlingcompanion.games.dialogs.ResetGameDialog
 import ca.josephroque.bowlingcompanion.games.lane.arePinsCleared
+import ca.josephroque.bowlingcompanion.games.overview.GameOverviewFragment
 import ca.josephroque.bowlingcompanion.games.views.FrameView
 import ca.josephroque.bowlingcompanion.games.views.GameFooterView
 import ca.josephroque.bowlingcompanion.games.views.GameHeaderView
@@ -185,8 +186,8 @@ class GameFragment : BaseFragment(),
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         autoEventController.pauseAll()
         return when (item?.itemId) {
-            R.id.action_share -> {
-                showShareDialog()
+            R.id.action_overview -> {
+                showOverview()
                 true
             }
             R.id.action_set_score -> {
@@ -251,12 +252,7 @@ class GameFragment : BaseFragment(),
 
             // Update frames
             scoreSheet.finalScore = gameState.currentGame.score
-            scoreSheet.updateFrames(
-                    gameState.currentFrameIdx,
-                    gameState.currentBallIdx,
-                    scoreText,
-                    ballText
-            )
+            scoreSheet.updateFrames(gameState.currentFrameIdx, gameState.currentBallIdx, scoreText, ballText)
 
             // Update fouls
             gameState.currentGame.frames.forEachIndexed { frameIdx, frame ->
@@ -342,6 +338,11 @@ class GameFragment : BaseFragment(),
 
     private fun resetGame() {
         context?.let { gameState.resetGame(WeakReference(it)) }
+    }
+
+    private fun showOverview() {
+        val newFragment = GameOverviewFragment.newInstance(gameState.shareableGames)
+        fragmentNavigation?.pushFragment(newFragment)
     }
 
     // MARK: IFloatingActionButtonHandler
@@ -536,10 +537,6 @@ class GameFragment : BaseFragment(),
     }
 
     // MARK: Dialogs
-
-    private fun showShareDialog() {
-        TODO("not implemented")
-    }
 
     private fun showBestScorePossible() {
         context?.let { PossibleScoreDialog.show(it, gameState.currentGame.deepCopy(), gameState.currentFrameIdx, gameState.currentBallIdx) }

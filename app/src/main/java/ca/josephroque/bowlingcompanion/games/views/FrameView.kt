@@ -12,6 +12,7 @@ import android.widget.TextView
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.games.lane.Ball
 import ca.josephroque.bowlingcompanion.settings.Settings
+import ca.josephroque.bowlingcompanion.utils.isVisible
 import kotlinx.android.synthetic.main.view_frame.view.frame as frame
 import kotlinx.android.synthetic.main.view_frame.view.tv_frame_number as tvFrameNumber
 import kotlinx.android.synthetic.main.view_frame.view.tv_score as tvScore
@@ -43,6 +44,12 @@ class FrameView : LinearLayout, View.OnClickListener {
         set(value) {
             field = value
             tvFrameNumber.text = (value + 1).toString()
+        }
+
+    var frameNumberVisible: Boolean = true
+        set(value) {
+            field = value
+            tvFrameNumber.isVisible = value
         }
 
     var score: Int = 0

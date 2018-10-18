@@ -4,12 +4,15 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.HorizontalScrollView
+import android.widget.LinearLayout
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.settings.Settings
 import kotlinx.android.synthetic.main.view_score_sheet.view.tv_final_score as tvFinalScore
 
 /**
  * Copyright (C) 2018 Joseph Roque
+ *
+ * Display a detailed view of the score of a game.
  */
 class ScoreSheet : HorizontalScrollView {
 
@@ -22,6 +25,8 @@ class ScoreSheet : HorizontalScrollView {
             R.id.frame_4, R.id.frame_5, R.id.frame_6, R.id.frame_7, R.id.frame_8, R.id.frame_9)
 
     private var frameViews: Array<FrameView?>
+
+    var delegate: SheetScrollListener? = null
 
     var frameViewDelegate: FrameView.FrameInteractionDelegate? = null
         set(value) {
@@ -39,11 +44,27 @@ class ScoreSheet : HorizontalScrollView {
             }
         }
 
+    var frameNumbersEnabled: Boolean = true
+        set(value) {
+            field = value
+            frameViews.forEach { it?.frameNumberVisible = value }
+
+            val layoutParams = tvFinalScore.layoutParams as? LinearLayout.LayoutParams ?: return
+            layoutParams.bottomMargin = if (value) {
+                context.resources.getDimensionPixelSize(R.dimen.frame_number_height)
+            } else {
+                0
+            }
+            tvFinalScore.layoutParams = layoutParams
+        }
+
     var finalScore: Int = 0
         set(value) {
             field = value
             tvFinalScore.text = value.toString()
         }
+
+    // MARK: Constructors
 
     constructor(context: Context) : this(context, null)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
@@ -56,10 +77,21 @@ class ScoreSheet : HorizontalScrollView {
         }
     }
 
+    // MARK: Lifecycle functions
+
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         frameViewDelegate = null
+        delegate = null
     }
+
+    override fun onScrollChanged(l: Int, t: Int, oldl: Int, oldt: Int) {
+        super.onScrollChanged(l, t, oldl, oldt)
+        delegate?.didScroll(l, t)
+
+    }
+
+    // MARK: ScoreSheet
 
     fun updateFrames(currentFrameIdx: Int, currentBallIdx: Int, scores: List<String>, balls: List<Array<String>>) {
         frameViews.forEachIndexed { frameIdx, it ->
@@ -86,5 +118,9 @@ class ScoreSheet : HorizontalScrollView {
         }
 
         post { smoothScrollTo(left, 0) }
+    }
+
+    interface SheetScrollListener {
+        fun didScroll(x: Int, y: Int)
     }
 }

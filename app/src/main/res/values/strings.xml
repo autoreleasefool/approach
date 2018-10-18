@@ -47,6 +47,7 @@
     <string name="action_condensed_series">Condensed view</string>
     <string name="action_expanded_series">Expanded view</string>
     <string name="action_share">Share</string>
+    <string name="action_overview">Overview</string>
 
     <!-- Transfer -->
     <string name="transfer_data">Transfer data</string>
@@ -236,6 +237,9 @@
     <string name="best_possible_spare">a spare</string>
     <string name="best_possible_fifteen">fifteen</string>
 
+    <!-- Game overview -->
+    <string name="overview">Overview</string>
+
     <!-- Match play -->
     <string name="issue_setting_match_play">Issue setting match play!</string>
     <string name="error_match_play_score_invalid">Opponent\'s score must be between 0 and 450.</string>
@@ -411,6 +415,7 @@
     <string name="empty_view_leagues">Use the \'+\' to add a new league.</string>
     <string name="empty_view_events">Use the \'+\' to add a new event.</string>
     <string name="empty_view_series">Use the \'+\' to add a new series.</string>
+    <string name="empty_view_game_overview">An error occurred while loading the games. Try again.</string>
 
     <!-- Onboarding -->
     <string name="prev">Prev</string>
