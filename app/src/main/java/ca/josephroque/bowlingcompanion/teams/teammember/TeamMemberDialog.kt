@@ -21,7 +21,7 @@ import ca.josephroque.bowlingcompanion.series.Series
 import ca.josephroque.bowlingcompanion.series.SeriesListFragment
 import ca.josephroque.bowlingcompanion.utils.safeLet
 import kotlinx.android.synthetic.main.dialog_team_member.view.*
-import kotlinx.android.synthetic.main.view_team_member_header.view.*
+import kotlinx.android.synthetic.main.view_screen_header.view.*
 import kotlinx.coroutines.experimental.launch
 
 /**

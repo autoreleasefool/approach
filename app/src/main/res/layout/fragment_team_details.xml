@@ -10,7 +10,7 @@
     app:layout_constraintBottom_toBottomOf="parent">
 
     <include
-        layout="@layout/view_team_member_header"
+        layout="@layout/view_screen_header"
         android:id="@+id/header_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

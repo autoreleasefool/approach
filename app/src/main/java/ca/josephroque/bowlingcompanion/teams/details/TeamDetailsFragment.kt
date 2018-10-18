@@ -24,7 +24,7 @@ import ca.josephroque.bowlingcompanion.teams.teammember.TeamMembersListFragment
 import ca.josephroque.bowlingcompanion.utils.Analytics
 import ca.josephroque.bowlingcompanion.utils.BCError
 import ca.josephroque.bowlingcompanion.utils.safeLet
-import kotlinx.android.synthetic.main.view_team_member_header.view.*
+import kotlinx.android.synthetic.main.view_screen_header.view.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async

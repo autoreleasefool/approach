@@ -9,7 +9,7 @@
         android:id="@+id/toolbar_team_member" />
 
     <include
-        layout="@layout/view_team_member_header"
+        layout="@layout/view_screen_header"
         android:id="@+id/header"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
