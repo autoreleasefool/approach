@@ -9,4 +9,10 @@
         android:icon="@drawable/ic_share"
         app:showAsAction="ifRoom" />
 
+    <item android:id="@+id/action_stop_sharing"
+        android:orderInCategory="2"
+        android:title="@string/action_stop_sharing"
+        android:icon="@drawable/ic_dismiss"
+        app:showAsAction="ifRoom" />
+
 </menu>

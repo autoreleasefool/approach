@@ -52,7 +52,13 @@ class GameOverviewRecyclerViewAdapter(
             val context = itemView.context
 
             tvGameNumber?.text = context.resources.getString(R.string.game_number).format(item.ordinal)
-            checkBox?.isChecked = selectedItems.contains(item)
+
+            if (multiSelect) {
+                checkBox?.visibility = View.VISIBLE
+                checkBox?.isChecked = selectedItems.contains(item)
+            } else {
+                checkBox?.visibility = View.GONE
+            }
 
             val scoreText = item.getScoreTextForFrames()
             val ballText = item.getBallTextForFrames()

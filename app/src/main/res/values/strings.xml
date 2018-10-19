@@ -47,6 +47,7 @@
     <string name="action_condensed_series">Condensed view</string>
     <string name="action_expanded_series">Expanded view</string>
     <string name="action_share">Share</string>
+    <string name="action_stop_sharing">Stop sharing</string>
     <string name="action_overview">Overview</string>
 
     <!-- Transfer -->
@@ -239,6 +240,8 @@
 
     <!-- Game overview -->
     <string name="overview">Overview</string>
+    <string name="sharing_instructions_title">Pick games to share</string>
+    <string name="sharing_instructions_body">Games below with a checkmark will be combined and made available for sharing, or you can press and hold one game to share it alone.</string>
 
     <!-- Match play -->
     <string name="issue_setting_match_play">Issue setting match play!</string>
