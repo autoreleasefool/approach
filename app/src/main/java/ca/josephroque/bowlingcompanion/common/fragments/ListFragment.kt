@@ -14,7 +14,10 @@ import ca.josephroque.bowlingcompanion.common.interfaces.IIdentifiable
 import ca.josephroque.bowlingcompanion.common.interfaces.IRefreshable
 import ca.josephroque.bowlingcompanion.common.adapters.BaseRecyclerViewAdapter
 import kotlinx.android.synthetic.main.fragment_common_list.view.*
+import kotlinx.android.synthetic.main.view_screen_header.tv_header_caption as tvHeaderSubtitle
+import kotlinx.android.synthetic.main.view_screen_header.tv_header_title as tvHeaderTitle
 import kotlinx.android.synthetic.main.fragment_common_list.list as list
+import kotlinx.android.synthetic.main.fragment_common_list.list_header as listHeader
 import kotlinx.android.synthetic.main.fragment_common_list.list_empty_view as emptyView
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.launch
@@ -42,6 +45,31 @@ abstract class ListFragment<Item : IIdentifiable, Adapter : BaseRecyclerViewAdap
 
     abstract val emptyViewImage: Int?
     abstract val emptyViewText: Int?
+
+    protected var headerTitle: Int? = null
+        set(value) {
+            field = value
+            if (value == null) {
+                tvHeaderTitle.text = ""
+            } else {
+                tvHeaderTitle.setText(value)
+            }
+            listHeader.visibility = if (hasTitleOrSubtitle) View.VISIBLE else View.GONE
+        }
+
+    protected var headerSubtitle: Int? = null
+        set(value) {
+            field = value
+            if (value == null) {
+                tvHeaderSubtitle.text = ""
+            } else {
+                tvHeaderSubtitle.setText(value)
+            }
+            listHeader.visibility = if (hasTitleOrSubtitle) View.VISIBLE else View.GONE
+        }
+
+    private val hasTitleOrSubtitle: Boolean
+        get() = headerTitle != null || headerSubtitle != null
 
     // MARK: Lifecycle functions
 
