@@ -243,6 +243,10 @@
     <string name="sharing_instructions_title">Pick games to share</string>
     <string name="sharing_instructions_body">Games below with a checkmark will be combined and made available for sharing, or you can press and hold one game to share it alone.</string>
 
+    <!-- Permission -->
+    <string name="write_external_storage_permission_title">External storage</string>
+    <string name="write_external_storage_permission_message">In order to save an image, the app needs to be able to access your device\'s storage.</string>
+
     <!-- Match play -->
     <string name="issue_setting_match_play">Issue setting match play!</string>
     <string name="error_match_play_score_invalid">Opponent\'s score must be between 0 and 450.</string>

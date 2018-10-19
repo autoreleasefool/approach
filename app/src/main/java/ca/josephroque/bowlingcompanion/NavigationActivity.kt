@@ -1,5 +1,6 @@
 package ca.josephroque.bowlingcompanion
 
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.annotation.IdRes
 import android.support.v4.app.Fragment
@@ -25,6 +26,7 @@ import ca.josephroque.bowlingcompanion.statistics.interfaces.IStatisticsContext
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProviderListFragment
 import ca.josephroque.bowlingcompanion.teams.details.TeamDetailsFragment
 import ca.josephroque.bowlingcompanion.utils.Analytics
+import ca.josephroque.bowlingcompanion.utils.Permission
 import ca.josephroque.bowlingcompanion.utils.StartupManager
 import ca.josephroque.bowlingcompanion.utils.isVisible
 import com.ncapdevi.fragnav.FragNavController
@@ -206,6 +208,14 @@ class NavigationActivity : BaseActivity(),
     override fun onSaveInstanceState(outState: Bundle?) {
         super.onSaveInstanceState(outState)
         fragNavController?.onSaveInstanceState(outState!!)
+    }
+
+    // MARK: ActivityCompat
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            currentFragment?.permissionGranted(Permission.fromRequestCode(requestCode))
+        }
     }
 
     // MARK: FragmentNavigation

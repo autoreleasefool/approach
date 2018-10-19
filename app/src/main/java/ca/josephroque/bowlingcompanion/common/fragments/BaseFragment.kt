@@ -3,6 +3,7 @@ package ca.josephroque.bowlingcompanion.common.fragments
 import android.content.Context
 import android.support.v4.app.Fragment
 import ca.josephroque.bowlingcompanion.NavigationActivity
+import ca.josephroque.bowlingcompanion.utils.Permission
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -36,6 +37,8 @@ abstract class BaseFragment : Fragment() {
     abstract fun updateToolbarTitle()
 
     open fun popChildFragment(): Boolean = false
+
+    open fun permissionGranted(permission: Permission) {}
 
     // MARK: Lifecycle functions
 
