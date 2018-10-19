@@ -141,10 +141,6 @@ abstract class BaseRecyclerViewAdapter<Item : IIdentifiable>(
         }
 
         recyclerView?.let {
-            if (multiSelect) {
-                return false
-            }
-
             delegate?.onItemLongClick(getItemAt(it.getChildAdapterPosition(v)))
             return true
         }
