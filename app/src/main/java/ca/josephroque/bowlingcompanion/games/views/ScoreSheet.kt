@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
 import ca.josephroque.bowlingcompanion.R
+import ca.josephroque.bowlingcompanion.games.Game
 import ca.josephroque.bowlingcompanion.settings.Settings
 import kotlinx.android.synthetic.main.view_score_sheet.view.tv_final_score as tvFinalScore
 
@@ -92,6 +93,23 @@ class ScoreSheet : HorizontalScrollView {
     }
 
     // MARK: ScoreSheet
+
+    fun apply(currentFrameIdx: Int, currentBallIdx: Int, game: Game) {
+        // Set final score of the game
+        finalScore = game.score
+
+        // Update frames with marks and pins
+        val scores = game.getScoreTextForFrames()
+        val balls = game.getBallTextForFrames()
+        updateFrames(currentFrameIdx, currentBallIdx, scores, balls)
+
+        // Update fouls
+        game.frames.forEachIndexed { frameIdx, frame ->
+            frame.ballFouled.forEachIndexed { ballIdx, foul ->
+                setFoulEnabled(frameIdx, ballIdx, foul)
+            }
+        }
+    }
 
     fun updateFrames(currentFrameIdx: Int, currentBallIdx: Int, scores: List<String>, balls: List<Array<String>>) {
         frameViews.forEachIndexed { frameIdx, it ->

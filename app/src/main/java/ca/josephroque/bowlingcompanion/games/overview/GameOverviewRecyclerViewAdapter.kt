@@ -60,17 +60,9 @@ class GameOverviewRecyclerViewAdapter(
                 checkBox?.visibility = View.GONE
             }
 
-            val scoreText = item.getScoreTextForFrames()
-            val ballText = item.getBallTextForFrames()
             scoreSheet?.let {
                 it.frameNumbersEnabled = false
-                it.finalScore = item.score
-                it.updateFrames(-1, -1, scoreText, ballText)
-                item.frames.forEachIndexed { frameIdx, frame ->
-                    frame.ballFouled.forEachIndexed { ballIdx, foul ->
-                        it.setFoulEnabled(frameIdx, ballIdx, foul)
-                    }
-                }
+                it.apply(-1, -1, item)
 
                 // Remember scroll position
                 val (x, y) = scrollOffsets[position] ?: Pair(0, 0)

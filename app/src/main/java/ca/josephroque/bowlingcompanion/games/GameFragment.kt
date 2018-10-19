@@ -247,19 +247,7 @@ class GameFragment : BaseFragment(),
         launch(Android) {
             if (view == null) { return@launch }
 
-            val scoreText = gameState.currentGame.getScoreTextForFrames()
-            val ballText = gameState.currentGame.getBallTextForFrames()
-
-            // Update frames
-            scoreSheet.finalScore = gameState.currentGame.score
-            scoreSheet.updateFrames(gameState.currentFrameIdx, gameState.currentBallIdx, scoreText, ballText)
-
-            // Update fouls
-            gameState.currentGame.frames.forEachIndexed { frameIdx, frame ->
-                frame.ballFouled.forEachIndexed { ballIdx, foul ->
-                    scoreSheet.setFoulEnabled(frameIdx, ballIdx, foul)
-                }
-            }
+            scoreSheet.apply(gameState.currentFrameIdx, gameState.currentBallIdx, gameState.currentGame)
 
             // Update up/down pins
             gameState.currentPinState.forEachIndexed { index, pin ->
