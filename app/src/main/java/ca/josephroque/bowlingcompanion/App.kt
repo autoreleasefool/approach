@@ -47,7 +47,10 @@ class App : Application(), LifecycleObserver {
         super.onCreate()
         PreferenceManager.setDefaultValues(this, R.xml.pref_app, false)
         MobileAds.initialize(this, BuildConfig.ADMOB_APP_ID)
-        Bugsnag.init(this)
+
+        if (!BuildConfig.DEBUG) {
+            Bugsnag.init(this)
+        }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
