@@ -20,6 +20,8 @@ import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async
 import android.support.v7.app.AlertDialog
 import ca.josephroque.bowlingcompanion.games.views.ScoreSheet
+import ca.josephroque.bowlingcompanion.statistics.interfaces.IStatisticsContext
+import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProvider
 import ca.josephroque.bowlingcompanion.utils.Permission
 import ca.josephroque.bowlingcompanion.utils.ShareUtils
 import ca.josephroque.bowlingcompanion.utils.toBitmap
@@ -31,7 +33,8 @@ import ca.josephroque.bowlingcompanion.utils.toBitmap
  */
 class GameOverviewFragment : ListFragment<Game, GameOverviewRecyclerViewAdapter>(),
         ListFragment.ListFragmentDelegate,
-        IFloatingActionButtonHandler {
+        IFloatingActionButtonHandler,
+        IStatisticsContext {
 
     companion object {
         @Suppress("unused")
@@ -87,6 +90,17 @@ class GameOverviewFragment : ListFragment<Game, GameOverviewRecyclerViewAdapter>
             }
             fabProvider?.invalidateFab()
         }
+
+    override val statisticsProviders: List<StatisticsProvider> by lazy {
+        val providers: MutableList<StatisticsProvider> = arrayListOf(
+                StatisticsProvider.BowlerStatistics(games[0].series.league.bowler),
+                StatisticsProvider.LeagueStatistics(games[0].series.league),
+                StatisticsProvider.SeriesStatistics(games[0].series)
+        )
+
+        providers.addAll(games.map { StatisticsProvider.GameStatistics(it) })
+        return@lazy providers
+    }
 
     // MARK: Lifecycle functions
 
