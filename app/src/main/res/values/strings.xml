@@ -243,6 +243,15 @@
     <string name="sharing_instructions_title">Pick games to share</string>
     <string name="sharing_instructions_body">Games below with a checkmark will be combined and made available for sharing, or you can press and hold one game to share it alone.</string>
 
+    <!-- Sharing -->
+    <string name="share">Share</string>
+    <string name="save_to_device">Save</string>
+    <string name="share_or_save">Share or save to device?</string>
+    <string name="error_failed_image_export_title">Error saving image</string>
+    <string name="error_failed_image_export_message">The image could not be saved to the device. The app may not have permission, or there may be a problem with your SD card.</string>
+    <string name="image_export_success">Image saved!</string>
+    <string name="share_image">Share image</string>
+
     <!-- Permission -->
     <string name="write_external_storage_permission_title">External storage</string>
     <string name="write_external_storage_permission_message">In order to save an image, the app needs to be able to access your device\'s storage.</string>

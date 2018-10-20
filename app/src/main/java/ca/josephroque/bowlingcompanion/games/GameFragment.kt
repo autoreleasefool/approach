@@ -331,6 +331,8 @@ class GameFragment : BaseFragment(),
     private fun showOverview() {
         val newFragment = GameOverviewFragment.newInstance(gameState.shareableGames)
         fragmentNavigation?.pushFragment(newFragment)
+
+        Analytics.trackViewOverview()
     }
 
     // MARK: IFloatingActionButtonHandler

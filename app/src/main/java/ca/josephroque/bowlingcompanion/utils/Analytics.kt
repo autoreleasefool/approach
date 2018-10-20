@@ -350,6 +350,33 @@ class Analytics private constructor() {
             instance.mixpanel.track("App Rater - Disable")
         }
 
+        // MARK: Sharing
+
+        fun trackViewOverview() {
+            if (instance.disableTracking) return
+            instance.mixpanel.track("Overview - View")
+        }
+
+        fun trackShareImage(numberOfGames: Int) {
+            if (instance.disableTracking) return
+            val properties: MutableMap<String, Any> = hashMapOf("Number of games" to numberOfGames)
+            instance.mixpanel.trackMap("Share - Share Game", properties)
+        }
+
+        fun trackSaveImage(numberOfGames: Int) {
+            if (instance.disableTracking) return
+            val properties: MutableMap<String, Any> = hashMapOf("Number of games" to numberOfGames)
+            instance.mixpanel.trackMap("Share - Save Game", properties)
+        }
+
+        fun trackSaveImageFailed(numberOfGames: Int) {
+            if (instance.disableTracking) return
+            val properties: MutableMap<String, Any> = hashMapOf("Number of games" to numberOfGames)
+            instance.mixpanel.trackMap("Share - Save Game Failed", properties)
+        }
+
+        // MARK: Other
+
         fun flush() {
             if (instance.disableTracking) return
             instance.mixpanel.flush()
