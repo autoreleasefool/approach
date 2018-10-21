@@ -12,7 +12,6 @@ import android.widget.TextView
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.games.lane.Ball
 import ca.josephroque.bowlingcompanion.settings.Settings
-import ca.josephroque.bowlingcompanion.utils.isVisible
 import kotlinx.android.synthetic.main.view_frame.view.frame as frame
 import kotlinx.android.synthetic.main.view_frame.view.tv_frame_number as tvFrameNumber
 import kotlinx.android.synthetic.main.view_frame.view.tv_score as tvScore

@@ -89,7 +89,6 @@ class ScoreSheet : HorizontalScrollView {
     override fun onScrollChanged(l: Int, t: Int, oldl: Int, oldt: Int) {
         super.onScrollChanged(l, t, oldl, oldt)
         delegate?.didScroll(l, t)
-
     }
 
     // MARK: ScoreSheet

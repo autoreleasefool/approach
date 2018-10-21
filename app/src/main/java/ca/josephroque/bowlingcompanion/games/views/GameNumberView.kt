@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import ca.josephroque.bowlingcompanion.R
 import kotlinx.android.synthetic.main.view_game_number.view.tv_game_number as tvGameNumber
 
-
 /**
  * Copyright (C) 2018 Joseph Roque
  *
