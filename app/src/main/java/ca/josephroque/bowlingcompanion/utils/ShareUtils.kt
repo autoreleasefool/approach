@@ -20,6 +20,7 @@ import android.util.Log
 import android.view.View
 import ca.josephroque.bowlingcompanion.common.Android
 import ca.josephroque.bowlingcompanion.games.Game
+import ca.josephroque.bowlingcompanion.games.views.GameNumberView
 import ca.josephroque.bowlingcompanion.games.views.ScoreSheet
 
 /**
@@ -74,12 +75,18 @@ object ShareUtils {
     }
 
     private fun buildBitmap(activity: Activity, games: List<Game>): Bitmap {
+        // Create view to render game details
         val scoreSheet = ScoreSheet(activity)
         scoreSheet.frameNumbersEnabled = false
         scoreSheet.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
         val scoreSheetHeight = scoreSheet.measuredHeight
 
-        val bitmapWidth = scoreSheet.measuredWidth
+        // Create view to render game number
+        val gameNumberView = GameNumberView(activity)
+        gameNumberView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+
+        // Create bitmap to export
+        val bitmapWidth = scoreSheet.measuredWidth + gameNumberView.measuredWidth
         val bitmapHeight = (scoreSheetHeight * games.size) + (interGameBorderWidth * games.size - 1)
         val bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
@@ -90,12 +97,18 @@ object ShareUtils {
         games.forEachIndexed { index, game ->
             scoreSheet.apply(-1, -1, game)
             val scoreSheetBitmap = scoreSheet.toBitmap()
-            canvas.drawBitmap(scoreSheetBitmap, 0F, (index * (scoreSheetHeight + interGameBorderWidth)).toFloat(), null)
+            canvas.drawBitmap(scoreSheetBitmap, gameNumberView.measuredWidth.toFloat(), (index * (scoreSheetHeight + interGameBorderWidth)).toFloat(), null)
+            scoreSheetBitmap.recycle()
+
+            gameNumberView.gameNumber = game.ordinal
+            val gameNumberBitmap = gameNumberView.toBitmap()
+            canvas.drawBitmap(gameNumberBitmap, 0F, (index * (scoreSheetHeight + interGameBorderWidth)).toFloat(), null)
+            gameNumberBitmap.recycle()
+
             for (i in 1..interGameBorderWidth) {
                 val y = (index * (scoreSheetHeight + interGameBorderWidth) - i).toFloat()
                 canvas.drawLine(0F, y, bitmapWidth.toFloat(), y, paintBlackLine)
             }
-            scoreSheetBitmap.recycle()
         }
 
         return bitmap

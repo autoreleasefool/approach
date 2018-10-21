@@ -39,5 +39,6 @@
     <dimen name="frame_ball_size">44dp</dimen>
     <dimen name="frame_foul_size">@dimen/frame_ball_size</dimen>
     <dimen name="frame_number_height">20dp</dimen>
+    <dimen name="frame_expected_height">104dp</dimen>
 
 </resources>

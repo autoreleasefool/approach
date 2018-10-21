@@ -5,4 +5,8 @@
         <attr name="frameNumber" format="integer" />
     </declare-styleable>
 
+    <declare-styleable name="Game">
+        <attr name="gameNumber" format="integer" />
+    </declare-styleable>
+
 </resources>
