@@ -13,9 +13,13 @@ import ca.josephroque.bowlingcompanion.R
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.launch
 import android.content.Intent
+import android.graphics.Canvas
 import android.net.Uri
 import android.util.Log
+import android.view.View
 import ca.josephroque.bowlingcompanion.common.Android
+import ca.josephroque.bowlingcompanion.games.Game
+import ca.josephroque.bowlingcompanion.games.views.ScoreSheet
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -28,10 +32,10 @@ object ShareUtils {
 
     private const val exportFileType = "png"
 
-    fun shareGames(activity: Activity, numberOfGames: Int, bitmapBuilder: () -> Bitmap?) {
+    fun shareGames(activity: Activity, games: List<Game>) {
         launch(CommonPool) {
-            val bitmap = bitmapBuilder() ?: return@launch
-            val destination = saveBitmap(activity, numberOfGames, bitmap)
+            val bitmap = buildBitmap(activity, games)
+            val destination = saveBitmap(activity, games.size, bitmap)
             bitmap.recycle()
 
             if (destination == null) { return@launch }
@@ -43,16 +47,16 @@ object ShareUtils {
             launch(Android) {
                 activity.startActivity(Intent.createChooser(shareIntent, activity.resources.getString(R.string.share_image)))
 
-                Analytics.trackShareImage(numberOfGames)
+                Analytics.trackShareImage(games.size)
             }
         }
     }
 
-    fun saveGames(activity: Activity, numberOfGames: Int, bitmapBuilder: () -> Bitmap?) {
+    fun saveGames(activity: Activity, games: List<Game>) {
         if (Permission.WriteExternalStorage.requestPermission(activity)) {
             launch(CommonPool) {
-                val bitmap = bitmapBuilder() ?: return@launch
-                val destination = saveBitmap(activity, numberOfGames, bitmap)
+                val bitmap = buildBitmap(activity, games)
+                val destination = saveBitmap(activity, games.size, bitmap)
                 bitmap.recycle()
 
                 if (destination == null) { return@launch }
@@ -60,10 +64,31 @@ object ShareUtils {
                 launch(Android) {
                     Toast.makeText(activity, activity.resources.getString(R.string.image_export_success), Toast.LENGTH_SHORT).show()
 
-                    Analytics.trackSaveImage(numberOfGames)
+                    Analytics.trackSaveImage(games.size)
                 }
             }
         }
+    }
+
+    private fun buildBitmap(activity: Activity, games: List<Game>): Bitmap {
+        val scoreSheet = ScoreSheet(activity)
+        scoreSheet.frameNumbersEnabled = false
+        scoreSheet.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
+        val scoreSheetHeight = scoreSheet.measuredHeight
+
+        val bitmapWidth = scoreSheet.measuredWidth
+        val bitmapHeight = scoreSheetHeight * games.size
+        val bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+
+        games.forEachIndexed { index, game ->
+            scoreSheet.apply(-1, -1, game)
+            val scoreSheetBitmap = scoreSheet.toBitmap()
+            canvas.drawBitmap(scoreSheetBitmap, 0F, (index * scoreSheetHeight).toFloat(), null)
+            scoreSheetBitmap.recycle()
+        }
+
+        return bitmap
     }
 
     private fun saveBitmap(activity: Activity, numberOfGames: Int, bitmap: Bitmap): File? {

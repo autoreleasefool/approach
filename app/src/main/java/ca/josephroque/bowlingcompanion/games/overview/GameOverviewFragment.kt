@@ -1,8 +1,6 @@
 package ca.josephroque.bowlingcompanion.games.overview
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.Canvas
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -19,12 +17,10 @@ import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.Deferred
 import kotlinx.coroutines.experimental.async
 import android.support.v7.app.AlertDialog
-import ca.josephroque.bowlingcompanion.games.views.ScoreSheet
 import ca.josephroque.bowlingcompanion.statistics.interfaces.IStatisticsContext
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProvider
 import ca.josephroque.bowlingcompanion.utils.Permission
 import ca.josephroque.bowlingcompanion.utils.ShareUtils
-import ca.josephroque.bowlingcompanion.utils.toBitmap
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -193,31 +189,6 @@ class GameOverviewFragment : ListFragment<Game, GameOverviewRecyclerViewAdapter>
         }
     }
 
-    // MARK: GameOverviewFragment
-
-    private fun buildShareableBitmap(): Bitmap? {
-        val activity = activity ?: return null
-        val games = adapter?.selectedItems ?: return null
-
-        val scoreSheet = ScoreSheet(activity)
-        scoreSheet.frameNumbersEnabled = false
-        scoreSheet.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED)
-        val scoreSheetHeight = scoreSheet.measuredHeight
-
-        val (bitmapWidth, bitmapHeight) = Pair(scoreSheet.measuredWidth, scoreSheetHeight)
-        val bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
-
-        games.forEachIndexed { index, game ->
-            scoreSheet.apply(-1, -1, game)
-            val scoreSheetBitmap = scoreSheet.toBitmap()
-            canvas.drawBitmap(scoreSheetBitmap, 0F, (index * scoreSheetHeight).toFloat(), null)
-            scoreSheetBitmap.recycle()
-        }
-
-        return bitmap
-    }
-
     override fun permissionGranted(permission: Permission) {
         when (permission) {
             Permission.WriteExternalStorage -> externalPermissionsGrantedCallback?.invoke()
@@ -228,7 +199,7 @@ class GameOverviewFragment : ListFragment<Game, GameOverviewRecyclerViewAdapter>
 
     private fun promptShareGames() {
         val activity = activity ?: return
-        val numberOfGames = adapter?.selectedItems?.size ?: return
+        val games = adapter?.selectedItems?.toList() ?: return
         val options = ShareOption.values().map { activity.resources.getString(it.title) }
 
         val shareBuilder = AlertDialog.Builder(activity)
@@ -238,13 +209,13 @@ class GameOverviewFragment : ListFragment<Game, GameOverviewRecyclerViewAdapter>
                     if (dialog is AlertDialog) {
                         val selectedItem = ShareOption.fromInt(dialog.listView.checkedItemPosition)!!
                         when (selectedItem) {
-                            ShareOption.Share -> ShareUtils.shareGames(activity, numberOfGames, this::buildShareableBitmap)
+                            ShareOption.Share -> ShareUtils.shareGames(activity, games)
                             ShareOption.Save -> {
                                 externalPermissionsGrantedCallback = {
-                                    ShareUtils.saveGames(activity, numberOfGames, this::buildShareableBitmap)
+                                    ShareUtils.saveGames(activity, games)
                                     externalPermissionsGrantedCallback = null
                                 }
-                                ShareUtils.saveGames(activity, numberOfGames, this::buildShareableBitmap)
+                                ShareUtils.saveGames(activity, games)
                             }
                         }
                     }
