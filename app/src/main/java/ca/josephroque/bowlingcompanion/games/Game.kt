@@ -197,7 +197,11 @@ class Game(
                     if (frame.pinState[1].arePinsCleared) {
                         // If the second ball is a strike
                         balls[1] = Ball.Strike.toString()
-                        balls[2] = frame.pinState[2].ballValue(2, true, false)
+                        if (frame.pinState[2].arePinsCleared) {
+                            balls[2] = Ball.Strike.toString()
+                        } else {
+                            balls[2] = frame.pinState[2].ballValue(2, true, false)
+                        }
                     } else {
                         // Second ball is not a strike
                         balls[1] = frame.pinState[1].ballValue(1, true, false)
