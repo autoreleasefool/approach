@@ -14,6 +14,7 @@ import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.launch
 import android.content.Intent
 import android.graphics.Canvas
+import android.graphics.Paint
 import android.net.Uri
 import android.util.Log
 import android.view.View
@@ -31,6 +32,8 @@ object ShareUtils {
     private const val TAG = "ShareUtils"
 
     private const val exportFileType = "png"
+
+    private const val interGameBorderWidth = 4
 
     fun shareGames(activity: Activity, games: List<Game>) {
         launch(CommonPool) {
@@ -77,14 +80,21 @@ object ShareUtils {
         val scoreSheetHeight = scoreSheet.measuredHeight
 
         val bitmapWidth = scoreSheet.measuredWidth
-        val bitmapHeight = scoreSheetHeight * games.size
+        val bitmapHeight = (scoreSheetHeight * games.size) + (interGameBorderWidth * games.size - 1)
         val bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
+
+        val paintBlackLine = Paint()
+        paintBlackLine.color = android.graphics.Color.BLACK
 
         games.forEachIndexed { index, game ->
             scoreSheet.apply(-1, -1, game)
             val scoreSheetBitmap = scoreSheet.toBitmap()
-            canvas.drawBitmap(scoreSheetBitmap, 0F, (index * scoreSheetHeight).toFloat(), null)
+            canvas.drawBitmap(scoreSheetBitmap, 0F, (index * (scoreSheetHeight + interGameBorderWidth)).toFloat(), null)
+            for (i in 1..interGameBorderWidth) {
+                val y = (index * (scoreSheetHeight + interGameBorderWidth) - i).toFloat()
+                canvas.drawLine(0F, y, bitmapWidth.toFloat(), y, paintBlackLine)
+            }
             scoreSheetBitmap.recycle()
         }
 
