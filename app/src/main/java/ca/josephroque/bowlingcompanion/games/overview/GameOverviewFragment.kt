@@ -199,7 +199,7 @@ class GameOverviewFragment : ListFragment<Game, GameOverviewRecyclerViewAdapter>
 
     private fun promptShareGames() {
         val activity = activity ?: return
-        val games = adapter?.selectedItems?.toList() ?: return
+        val sortedGames = adapter?.selectedItemsInOrder ?: return
         val options = ShareOption.values().map { activity.resources.getString(it.title) }
 
         val shareBuilder = AlertDialog.Builder(activity)
@@ -209,13 +209,13 @@ class GameOverviewFragment : ListFragment<Game, GameOverviewRecyclerViewAdapter>
                     if (dialog is AlertDialog) {
                         val selectedItem = ShareOption.fromInt(dialog.listView.checkedItemPosition)!!
                         when (selectedItem) {
-                            ShareOption.Share -> ShareUtils.shareGames(activity, games)
+                            ShareOption.Share -> ShareUtils.shareGames(activity, sortedGames)
                             ShareOption.Save -> {
                                 externalPermissionsGrantedCallback = {
-                                    ShareUtils.saveGames(activity, games)
+                                    ShareUtils.saveGames(activity, sortedGames)
                                     externalPermissionsGrantedCallback = null
                                 }
-                                ShareUtils.saveGames(activity, games)
+                                ShareUtils.saveGames(activity, sortedGames)
                             }
                         }
                     }

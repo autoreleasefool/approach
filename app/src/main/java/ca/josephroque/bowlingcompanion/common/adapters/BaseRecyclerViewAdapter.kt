@@ -78,6 +78,9 @@ abstract class BaseRecyclerViewAdapter<Item : IIdentifiable>(
     val selectedItems: Set<Item>
         get() = _selectedItems
 
+    val selectedItemsInOrder: List<Item>
+        get() = items.filter { _selectedItems.contains(it) }
+
     // MARK: Lifecycle functions
 
     override fun onAttachedToRecyclerView(recyclerView: RecyclerView) {
