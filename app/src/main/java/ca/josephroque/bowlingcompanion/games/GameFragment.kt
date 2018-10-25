@@ -89,8 +89,8 @@ class GameFragment : BaseFragment(),
 
     private var series: Series? = null
 
-    val currentGameForStatistics: Game
-        get() = gameState.currentGame.deepCopy()
+    val gamesForStatistics: List<Game>
+        get() = gameState.shareableGames
 
     private lateinit var gameState: GameState
     private lateinit var autoEventController: GameAutoEventController

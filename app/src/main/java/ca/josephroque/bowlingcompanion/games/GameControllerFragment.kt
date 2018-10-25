@@ -61,9 +61,12 @@ class GameControllerFragment : TabbedFragment(),
             val providers: MutableList<StatisticsProvider> = arrayListOf(
                 StatisticsProvider.BowlerStatistics(seriesList[currentTab].league.bowler),
                 StatisticsProvider.LeagueStatistics(seriesList[currentTab].league),
-                StatisticsProvider.SeriesStatistics(seriesList[currentTab]),
-                StatisticsProvider.GameStatistics(gameFragment.currentGameForStatistics)
+                StatisticsProvider.SeriesStatistics(seriesList[currentTab])
             )
+
+            gameFragment.gamesForStatistics.forEach {
+                providers.add(StatisticsProvider.GameStatistics(it))
+            }
 
             if (seriesProvider is SeriesProvider.TeamSeries) {
                 providers.add(0, StatisticsProvider.TeamStatistics(seriesProvider.team))
