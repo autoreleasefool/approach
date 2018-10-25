@@ -300,7 +300,7 @@ class GameFragment : BaseFragment(),
             }
 
             // Update the score of this game in the navigation drawer
-            delegate?.updateGameScore(gameNumber, gameState.currentGame.score)
+            gameState.scores.forEachIndexed { index, score -> delegate?.updateGameScore(index, score) }
 
             if (ballChanged || isGameFirstRender) {
                 focusOnFrame(isGameFirstRender)
@@ -451,6 +451,9 @@ class GameFragment : BaseFragment(),
                 autoEventController.disable(GameAutoEventController.AutoEvent.AdvanceFrame)
             }
             gameState.currentFrame.isAccessed = true
+            gameNumber = gameState.currentGameIdx
+
+            delegate?.onGamesLoaded(gameState.currentGameIdx, this@GameFragment)
             activity?.invalidateOptionsMenu()
             render(ballChanged = true, isGameFirstRender = true)
         }
@@ -588,6 +591,7 @@ class GameFragment : BaseFragment(),
         fun nextBowlerOrGame(isEndOfGame: Boolean): NextBowlerResult
         fun toggleFullscreen()
         fun updateGameScore(gameIdx: Int, score: Int)
+        fun onGamesLoaded(currentGame: Int, srcFragment: GameFragment)
     }
 
     enum class NextBowlerResult {

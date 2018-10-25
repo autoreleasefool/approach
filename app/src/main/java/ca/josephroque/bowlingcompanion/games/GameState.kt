@@ -79,6 +79,9 @@ class GameState(private val series: Series, private val delegate: GameStateDeleg
     private val isGameEditable: Boolean
         get() = !currentGame.isLocked && !currentGame.isManual
 
+    val scores: List<Int>
+        get() = games.map { it.score }
+
     val currentBallFouled: Boolean
         get() = currentFrame.ballFouled[currentBallIdx]
 
@@ -282,7 +285,11 @@ class GameState(private val series: Series, private val delegate: GameStateDeleg
             gamesLoaded = true
             this@GameState.games.clear()
             this@GameState.games.addAll(games)
+
             moveToLastSavedFrame()
+            while (currentFrameIdx == Game.LAST_FRAME && currentGameIdx < games.lastIndex) {
+                currentGameIdx += 1
+            }
 
             launch(Android) {
                 delegate.onGamesLoaded()

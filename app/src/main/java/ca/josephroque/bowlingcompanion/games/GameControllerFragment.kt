@@ -79,11 +79,14 @@ class GameControllerFragment : TabbedFragment(),
     private var seriesProvider: SeriesProvider? = null
     private var fabEnabled: Boolean = true
 
+    private var ignoreGameChange: Boolean = false
     private var currentGame: Int = 0
         set(value) {
             field = value
 
-            currentGameFragment?.gameNumber = currentGame
+            if (!ignoreGameChange) {
+                currentGameFragment?.gameNumber = currentGame
+            }
             navigationDrawerProvider?.navigationDrawerController?.gameNumber = currentGame
 
             Analytics.trackChangedGame()
@@ -284,6 +287,13 @@ class GameControllerFragment : TabbedFragment(),
 
     override fun updateGameScore(gameIdx: Int, score: Int) {
         navigationDrawerProvider?.navigationDrawerController?.updateGameScore(gameIdx, score)
+    }
+
+    override fun onGamesLoaded(currentGame: Int, srcFragment: GameFragment) {
+        if (srcFragment != currentGameFragment) { return }
+        ignoreGameChange = true
+        this.currentGame = currentGame
+        ignoreGameChange = false
     }
 
     // MARK: MatchPlaySheetDelegate
