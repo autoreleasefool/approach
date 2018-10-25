@@ -240,6 +240,7 @@ class GameControllerFragment : TabbedFragment(),
         // If there's a bowler found, switch to them and exit
         if (nextSeries <= seriesList.lastIndex) {
             currentTab = nextSeries
+            currentGameFragment?.gameNumber = currentGame
             return GameFragment.NextBowlerResult.NextBowler
         }
 
