@@ -168,11 +168,6 @@ class GameFragment : BaseFragment(),
         gameFooter.delegate = this
         gameHeader.delegate = this
 
-        // Advance to the last edited frame of the game
-        if (gameState.gamesLoaded) {
-            gameState.moveToLastSavedFrame()
-        }
-
         fabProvider?.invalidateFab()
     }
 

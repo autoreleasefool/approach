@@ -75,7 +75,6 @@ class GameState(
         set(newGame) {
             if (newGame >= 0 && newGame < series.numberOfGames) {
                 field = newGame
-                currentFrameIdx = games[currentGameIdx].firstNewFrame
                 moveToLastSavedFrame()
             }
         }
@@ -244,7 +243,7 @@ class GameState(
         }
     }
 
-    fun moveToLastSavedFrame() {
+    private fun moveToLastSavedFrame() {
         var lastSavedFrame = Game.LAST_FRAME
         while (!currentGame.frames[lastSavedFrame].isAccessed && lastSavedFrame > 0) {
             lastSavedFrame--
