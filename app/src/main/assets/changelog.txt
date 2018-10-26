@@ -1,9 +1,7 @@
 <b>v3.1.0</b>
-Thank you for continuing to use the app while some of the kinks in the new version are worked out.
-
-What's new
+Thank you for using the app while some of the kinks in the new version are worked out!
 - See an overview of your games by tapping the list icon in the top right, or the overview menu item
-- Share games and series from the game overview
+- Share games and series from the game overview (saving to external storage required)
 
 Bug fixes
 - Lefts and rights are now reported correctly
