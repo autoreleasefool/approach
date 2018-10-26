@@ -59,6 +59,7 @@ class GameFragment : BaseFragment(),
         private const val TAG = "GameFragment"
 
         private const val ARG_SERIES = "${TAG}_series"
+        private const val ARG_GAME_STATE = "${TAG}_game_state"
 
         fun newInstance(series: Series): GameFragment {
             val fragment = GameFragment()
@@ -87,11 +88,10 @@ class GameFragment : BaseFragment(),
             }
         }
 
-    private var series: Series? = null
-
     val gamesForStatistics: List<Game>
         get() = gameState.shareableGames
 
+    private lateinit var series: Series
     private lateinit var gameState: GameState
     private lateinit var autoEventController: GameAutoEventController
 
@@ -108,17 +108,20 @@ class GameFragment : BaseFragment(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        series = arguments?.getParcelable(ARG_SERIES)
+        series = arguments!!.getParcelable(ARG_SERIES)!!
 
         // Enable automatic events
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
         autoEventController = GameAutoEventController(preferences, autoEventDelegate)
 
         val context = context ?: return
-        series?.let {
-            gameState = GameState(it, gameStateDelegate)
-            gameState.loadGames(context)
+        gameState = if (savedInstanceState == null) {
+            GameState(series)
+        } else {
+            savedInstanceState.getParcelable(ARG_GAME_STATE)!!
         }
+        gameState.delegate = gameStateDelegate
+        gameState.loadGames(context)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -143,6 +146,11 @@ class GameFragment : BaseFragment(),
     override fun onDetach() {
         super.onDetach()
         delegate = null
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelable(ARG_GAME_STATE, gameState)
     }
 
     override fun onStart() {

@@ -1,7 +1,10 @@
 package ca.josephroque.bowlingcompanion.games
 
 import android.content.Context
+import android.os.Parcel
 import ca.josephroque.bowlingcompanion.common.Android
+import ca.josephroque.bowlingcompanion.common.interfaces.KParcelable
+import ca.josephroque.bowlingcompanion.common.interfaces.parcelableCreator
 import ca.josephroque.bowlingcompanion.database.Saviour
 import ca.josephroque.bowlingcompanion.games.lane.Deck
 import ca.josephroque.bowlingcompanion.games.lane.arePinsCleared
@@ -20,25 +23,55 @@ import java.lang.ref.WeakReference
  *
  * Manages the loading, saving, and updating of the state of a game.
  */
-class GameState(private val series: Series, private val delegate: GameStateDelegate) {
+class GameState(
+        private val series: Series,
+        initialGames: MutableList<Game> = ArrayList(),
+        initialGameIdx: Int = 0,
+        initialFrameIdx: Int = 0,
+        initialBallIdx: Int = 0): KParcelable {
 
     companion object {
         @Suppress("unused")
         private const val TAG = "GameState"
+
+        @Suppress("unused")
+        @JvmField val CREATOR = parcelableCreator(::GameState)
     }
 
-    var gamesLoaded: Boolean = false
+    // MARK: Parcelable
 
-    private val games: MutableList<Game> = ArrayList()
+    constructor(p: Parcel): this(
+            series = p.readParcelable<Series>(Series::class.java.classLoader)!!,
+            initialGames = arrayListOf<Game>().apply {
+                val parcelableArray = p.readParcelableArray(Game::class.java.classLoader)!!
+                this.addAll(parcelableArray.map { return@map it as Game })
+            },
+            initialGameIdx = p.readInt(),
+            initialFrameIdx = p.readInt(),
+            initialBallIdx = p.readInt()
+    )
+
+    override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
+        writeParcelable(series, 0)
+        writeParcelableArray(games.toTypedArray(), 0)
+        writeInt(currentGameIdx)
+        writeInt(currentFrameIdx)
+        writeInt(currentBallIdx)
+    }
+
+    // MARK: Properties
+
+    var delegate: GameStateDelegate? = null
+
+    var gamesLoaded: Boolean = initialGames.size > 0
+
+    private val games: MutableList<Game> = initialGames
         get() {
             check(gamesLoaded) { "The games have not been loaded before accessing." }
             return field
         }
 
-    val currentGame: Game
-        get() = games[currentGameIdx]
-
-    var currentGameIdx: Int = 0
+    var currentGameIdx: Int = initialGameIdx
         set(newGame) {
             if (newGame >= 0 && newGame < series.numberOfGames) {
                 field = newGame
@@ -47,10 +80,7 @@ class GameState(private val series: Series, private val delegate: GameStateDeleg
             }
         }
 
-    val currentFrame: Frame
-        get() = currentGame.frames[currentFrameIdx]
-
-    var currentFrameIdx: Int = 0
+    var currentFrameIdx: Int = initialFrameIdx
         set(newFrame) {
             if (newFrame >= 0 && newFrame < Game.NUMBER_OF_FRAMES) {
                 if (newFrame > field) {
@@ -66,15 +96,23 @@ class GameState(private val series: Series, private val delegate: GameStateDeleg
             }
         }
 
-    var currentBallIdx: Int = 0
+    var currentBallIdx: Int = initialBallIdx
         set(newBall) {
             if (newBall >= 0 && newBall < Frame.NUMBER_OF_BALLS) {
                 field = newBall
-                delegate.onBallChanged()
+                delegate?.onBallChanged()
             }
         }
 
     private var skipBallListenerUpdate: Boolean = false
+
+    // MARK: Calculated properties
+
+    val currentGame: Game
+        get() = games[currentGameIdx]
+
+    val currentFrame: Frame
+        get() = currentGame.frames[currentFrameIdx]
 
     private val isGameEditable: Boolean
         get() = !currentGame.isLocked && !currentGame.isManual
@@ -118,9 +156,7 @@ class GameState(private val series: Series, private val delegate: GameStateDeleg
         }
 
     val shareableGames: List<Game>
-        get() {
-            return games.map { it.deepCopy() }
-        }
+        get() = games.map { it.deepCopy() }
 
     // MARK: GameState
 
@@ -151,7 +187,7 @@ class GameState(private val series: Series, private val delegate: GameStateDeleg
         currentGame.score = score
         saveGame(context, true)
         attemptToSetFrameAndBall(0, 0)
-        delegate.onManualScoreSet()
+        delegate?.onManualScoreSet()
     }
 
     fun clearManualScore(context: WeakReference<Context>) {
@@ -159,7 +195,7 @@ class GameState(private val series: Series, private val delegate: GameStateDeleg
         currentGame.isManual = false
         saveGame(context, false)
         attemptToSetFrameAndBall(0, 0)
-        delegate.onManualScoreCleared()
+        delegate?.onManualScoreCleared()
     }
 
     fun setMatchPlay(opponentName: String, opponentScore: Int, result: MatchPlayResult) {
@@ -277,22 +313,24 @@ class GameState(private val series: Series, private val delegate: GameStateDeleg
 
     fun loadGames(context: Context): Deferred<Boolean> {
         return async(CommonPool) {
-            val games = series.fetchGames(context).await()
-            if (games.size != series.numberOfGames) {
-                return@async false
-            }
+            if (!gamesLoaded) {
+                val games = series.fetchGames(context).await()
+                if (games.size != series.numberOfGames) {
+                    return@async false
+                }
 
-            gamesLoaded = true
-            this@GameState.games.clear()
-            this@GameState.games.addAll(games)
+                gamesLoaded = true
+                this@GameState.games.clear()
+                this@GameState.games.addAll(games)
 
-            moveToLastSavedFrame()
-            while (currentFrameIdx == Game.LAST_FRAME && currentGameIdx < games.lastIndex) {
-                currentGameIdx += 1
+                moveToLastSavedFrame()
+                while (currentFrameIdx == Game.LAST_FRAME && currentGameIdx < games.lastIndex) {
+                    currentGameIdx += 1
+                }
             }
 
             launch(Android) {
-                delegate.onGamesLoaded()
+                delegate?.onGamesLoaded()
             }
 
             return@async true
