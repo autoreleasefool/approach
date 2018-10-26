@@ -24,11 +24,12 @@ import java.lang.ref.WeakReference
  * Manages the loading, saving, and updating of the state of a game.
  */
 class GameState(
-        private val series: Series,
-        initialGames: MutableList<Game> = ArrayList(),
-        initialGameIdx: Int = 0,
-        initialFrameIdx: Int = 0,
-        initialBallIdx: Int = 0): KParcelable {
+    private val series: Series,
+    initialGames: MutableList<Game> = ArrayList(),
+    initialGameIdx: Int = 0,
+    initialFrameIdx: Int = 0,
+    initialBallIdx: Int = 0
+) : KParcelable {
 
     companion object {
         @Suppress("unused")
