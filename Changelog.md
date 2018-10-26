@@ -1,5 +1,21 @@
 # Most recent version
 
+## v3.1.0
+```
+Thank you for continuing to use the app while some of the kinks in the new version are worked out.
+
+What's new
+- See an overview of your games by tapping the list icon in the top right, or the overview menu item
+- Share games and series from the game overview
+
+Bug fixes
+- Lefts and rights are now reported correctly
+- Return to the first incomplete game when editing a series (not just the first game)
+- Fix some more rotation crashes and returning to the app from the background
+```
+
+# Legacy versions
+
 ## v3.0.2
 
 ```
@@ -10,8 +26,6 @@ This update contains a tonne of stability fixes for the new version.
 - "Middle hits which were strikes" now counts denominator accurately
 - Some other stability bug fixes
 ```
-
-# Legacy versions
 
 ## v3.0.0
 ```
