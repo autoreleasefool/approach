@@ -32,8 +32,7 @@ android {
                     ["BANNER_AD_UNIT_ID", "ca-app-pub-3940256099942544/6300978111"],
                     ["ADMOB_APP_ID", "ca-app-pub-3940256099942544~3347511713"],
                     ["TRANSFER_API_KEY", "API_KEY_GOES_HERE"],
-                    ["MIXPANEL_TOKEN", "API_KEY_GOES_HERE"],
-                    ["BUGSNAG_TOKEN", "API_KEY_GOES_HERE"]
+                    ["MIXPANEL_TOKEN", "API_KEY_GOES_HERE"]
             ]
 
             apiKeys.each { key, value ->
@@ -49,8 +48,7 @@ android {
                     ["TRANSFER_SERVER_URL", "API_KEY_GOES_HERE"],
                     ["BANNER_AD_UNIT_ID", "API_KEY_GOES_HERE"],
                     ["TRANSFER_API_KEY", "API_KEY_GOES_HERE"],
-                    ["MIXPANEL_TOKEN", "API_KEY_GOES_HERE"],
-                    ["BUGSNAG_TOKEN", "API_KEY_GOES_HERE"]
+                    ["MIXPANEL_TOKEN", "API_KEY_GOES_HERE"]
             ]
 
             apiKeys.each { key, value ->
@@ -82,7 +80,6 @@ dependencies {
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3' // https://github.com/PhilJay/MPAndroidChart
 
     implementation 'com.mixpanel.android:mixpanel-android:5.4.2' // https://github.com/mixpanel/mixpanel-android
-    implementation 'com.bugsnag:bugsnag-android:4.8.2' // https://github.com/bugsnag/bugsnag-android
 
     implementation 'com.google.android.gms:play-services-gcm:16.0.0'
     implementation 'com.google.android.gms:play-services-ads:17.0.0'
