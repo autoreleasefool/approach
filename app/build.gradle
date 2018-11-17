@@ -82,7 +82,7 @@ dependencies {
     implementation 'com.mixpanel.android:mixpanel-android:5.4.2' // https://github.com/mixpanel/mixpanel-android
 
     implementation 'com.google.android.gms:play-services-gcm:16.0.0'
-    implementation 'com.google.android.gms:play-services-ads:17.0.0'
+    implementation 'com.google.android.gms:play-services-ads:17.1.1'
 
     testImplementation 'junit:junit:4.12'
 
