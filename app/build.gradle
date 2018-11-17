@@ -47,6 +47,7 @@ android {
             def apiKeys = [
                     ["TRANSFER_SERVER_URL", "API_KEY_GOES_HERE"],
                     ["BANNER_AD_UNIT_ID", "API_KEY_GOES_HERE"],
+                    ["ADMOB_APP_ID", "ca-app-pub-3940256099942544~3347511713"],
                     ["TRANSFER_API_KEY", "API_KEY_GOES_HERE"],
                     ["MIXPANEL_TOKEN", "API_KEY_GOES_HERE"]
             ]
