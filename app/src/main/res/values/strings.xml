@@ -169,6 +169,7 @@
     <string name="error_league_additional_info_unbalanced">Your additional pinfall and games cannot equal an average greater than 450.</string>
     <string name="error_league_highlight_invalid">Your game highlight must be between 0 and 450, and series highlight cannot be greater than the maximum total series.</string>
     <string name="error_league_number_of_games_invalid">Leagues and events can be between 1 and 20 games.</string>
+    <string name="error_league_name_is_practice">You can\'t use the name \'Practice\'. Choose another name or try using the practice league to record your games.</string>
     <string name="error_league_not_saved">An error occurred and the league could not be saved.</string>
 
     <!-- Events -->
