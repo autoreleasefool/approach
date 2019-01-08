@@ -6,7 +6,6 @@ import android.view.Menu
 import android.view.MenuItem
 import ca.josephroque.bowlingcompanion.BuildConfig
 import ca.josephroque.bowlingcompanion.R
-import ca.josephroque.bowlingcompanion.common.FragmentBreadcrumbLogger
 import ca.josephroque.bowlingcompanion.settings.SettingsActivity
 import ca.josephroque.bowlingcompanion.utils.Analytics
 import ca.josephroque.bowlingcompanion.utils.Email
@@ -23,19 +22,7 @@ abstract class BaseActivity : AppCompatActivity() {
         private const val TAG = "BaseActivity"
     }
 
-    private val fragmentBreadcrumbLogger = FragmentBreadcrumbLogger()
-
     // MARK: Lifecycle functions
-
-    override fun onStart() {
-        super.onStart()
-        supportFragmentManager.registerFragmentLifecycleCallbacks(fragmentBreadcrumbLogger, true)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        supportFragmentManager.unregisterFragmentLifecycleCallbacks(fragmentBreadcrumbLogger)
-    }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.base_activity, menu)
