@@ -263,7 +263,7 @@ data class League(
                 } else if (!isLeagueNameValid(name)) {
                     errorMessage = if (isEvent) R.string.error_event_name_invalid else R.string.error_league_name_invalid
                 } else if (!isLeagueNameUnique(context, name, id).await()) {
-                    errorMessage = if (isEvent) R.string.error_event_name_in_use else R.string.error_league_name_in_use
+                    errorMessage = R.string.error_league_name_in_use
                 } else if (name == PRACTICE_LEAGUE_NAME) {
                     errorMessage = R.string.error_cannot_edit_practice_league
                 } else if (
