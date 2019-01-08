@@ -374,7 +374,7 @@ data class League(
                          * If the new entry is an event, its series is also created at this time
                          * since there is only a single series to an event
                          */
-                        val (series, seriesError) = league.createNewSeries(context).await()
+                        val (series, seriesError) = league.createNewSeries(context, database).await()
                         if (seriesError != null || (series?.id ?: -1L) == -1L) {
                             throw IllegalStateException("Series was not saved.")
                         }
