@@ -74,7 +74,6 @@ class GameFragment : BaseFragment(),
         set(value) {
             saveCurrentGame(false)
             field = value
-            gameHeader.currentGame = gameNumber
             gameState.currentGameIdx = gameNumber
             gameState.currentFrame.isAccessed = true
             render(ballChanged = true, isGameFirstRender = true)
@@ -250,6 +249,8 @@ class GameFragment : BaseFragment(),
         launch(Android) {
             if (view == null) { return@launch }
 
+            // Update current game / frame / ball
+            gameHeader.currentGame = gameNumber
             scoreSheet.apply(gameState.currentFrameIdx, gameState.currentBallIdx, gameState.currentGame)
 
             // Update up/down pins
