@@ -279,7 +279,7 @@ class NavigationActivity : BaseActivity(),
     // MARK: TransactionListener
 
     override fun onFragmentTransaction(fragment: Fragment?, transactionType: FragNavController.TransactionType?) {
-        handleFragmentChange(fragment)
+        handleFragmentChange(fragment, transactionType)
     }
 
     override fun onTabTransaction(fragment: Fragment?, index: Int) {
@@ -311,7 +311,7 @@ class NavigationActivity : BaseActivity(),
 
     // MARK: Private functions
 
-    private fun handleFragmentChange(fragment: Fragment?) {
+    private fun handleFragmentChange(fragment: Fragment?, transactionType: FragNavController.TransactionType? = null) {
         fragNavController?.let {
             val showBackButton = it.isRootFragment.not() || BottomTab.fromInt(it.currentStackIndex) == BottomTab.Statistics
             supportActionBar?.setDisplayHomeAsUpEnabled(showBackButton)
@@ -340,7 +340,7 @@ class NavigationActivity : BaseActivity(),
             refreshCurrentFragment()
         }
 
-        if (fragment is StatisticsProviderListFragment) {
+        if (fragment is StatisticsProviderListFragment && transactionType != FragNavController.TransactionType.POP) {
             val statisticsContext = fragNavController?.getStack(BottomTab.toInt(BottomTab.Record))?.peek() as? IStatisticsContext
             fragment.arguments = StatisticsProviderListFragment.buildArguments(statisticsContext?.statisticsProviders ?: emptyList())
         }
