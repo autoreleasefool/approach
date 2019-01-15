@@ -384,11 +384,6 @@ class NavigationActivity : BaseActivity(),
 
             return@setOnNavigationItemSelectedListener true
         }
-
-        bottomNavigation.setOnNavigationItemReselectedListener {
-            // FIXME: probably refresh the current fragment, not reset the stack
-//            fragNavController?.clearStack()
-        }
     }
 
     private fun setupNavigationDrawer() {
