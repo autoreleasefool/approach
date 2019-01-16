@@ -9,7 +9,6 @@ import android.support.v4.app.DialogFragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.fragments.BaseBottomSheetDialogFragment
 import ca.josephroque.bowlingcompanion.games.Game
@@ -65,7 +64,7 @@ class MatchPlaySheet : BaseBottomSheetDialogFragment() {
         val dialog = super.onCreateDialog(savedInstanceState)
         dialog.setOnShowListener {
             if (it is BottomSheetDialog) {
-                val bottomSheet = it.findViewById<FrameLayout>(R.id.design_bottom_sheet)
+                val bottomSheet = it.findViewById<View>(android.support.design.R.id.design_bottom_sheet)
                 val bottomSheetBehavior = BottomSheetBehavior.from(bottomSheet)
                 bottomSheetBehavior.setBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
 
