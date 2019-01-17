@@ -74,7 +74,7 @@ class NameAverageRecyclerViewAdapter<T : INameAverage>(
     }
 
     override fun onBindViewHolder(holder: BaseRecyclerViewAdapter<T>.ViewHolder, position: Int) {
-        holder.bind(getItemAt(position), position)
+        holder.bind(getItemAt(position))
     }
 
     // MARK: ViewHolderActive
@@ -85,7 +85,7 @@ class NameAverageRecyclerViewAdapter<T : INameAverage>(
         private val ivIcon: ImageView? = view.findViewById(R.id.iv_name_average)
         private val checkBox: CheckBox? = view.findViewById(R.id.check_name_average)
 
-        override fun bind(item: T, position: Int) {
+        override fun bind(item: T) {
             val context = itemView.context
 
             tvName?.text = item.name
@@ -100,7 +100,7 @@ class NameAverageRecyclerViewAdapter<T : INameAverage>(
                 ivIcon?.visibility = View.VISIBLE
                 checkBox?.visibility = View.GONE
 
-                val imageResource = buildImageResource?.invoke(item, position)
+                val imageResource = buildImageResource?.invoke(item, adapterPosition)
                 imageResource?.let {
                     ivIcon?.setImageResource(it.first)
                     ivIcon?.setColorFilter(it.second)
@@ -118,19 +118,19 @@ class NameAverageRecyclerViewAdapter<T : INameAverage>(
         private val tvDeleted: TextView? = view.findViewById(R.id.tv_deleted)
         private val tvUndo: TextView? = view.findViewById(R.id.tv_undo)
 
-        override fun bind(item: T, position: Int) {
+        override fun bind(item: T) {
             val context = itemView.context
 
             tvDeleted?.text = String.format(
                     context.resources.getString(R.string.query_delete_item),
-                    getItemAt(position).name
+                    getItemAt(adapterPosition).name
             )
 
             val deletedItemListener = View.OnClickListener {
                 if (it.id == R.id.tv_undo) {
-                    delegate?.onItemSwipe(getItemAt(position))
+                    delegate?.onItemSwipe(getItemAt(adapterPosition))
                 } else {
-                    delegate?.onItemDelete(getItemAt(position))
+                    delegate?.onItemDelete(getItemAt(adapterPosition))
                 }
             }
             itemView.setOnClickListener(deletedItemListener)

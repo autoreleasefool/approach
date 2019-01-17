@@ -59,7 +59,7 @@ class StatisticsRecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(getItemAt(position), position)
+        holder.bind(getItemAt(position))
     }
 
     // MARK: HeaderViewHolder
@@ -67,7 +67,7 @@ class StatisticsRecyclerViewAdapter(
     inner class HeaderViewHolder(view: View) : BaseRecyclerViewAdapter<StatisticListItem>.ViewHolder(view) {
         private val tvTitle: TextView? = view.findViewById(R.id.tv_title)
 
-        override fun bind(item: StatisticListItem, position: Int) {
+        override fun bind(item: StatisticListItem) {
             val context = itemView.context
             val header = item as StatisticsCategory
 
@@ -82,7 +82,7 @@ class StatisticsRecyclerViewAdapter(
         private val tvValue: TextView? = view.findViewById(R.id.tv_value)
         private val tvSubtitle: TextView? = view.findViewById(R.id.tv_subtitle)
 
-        override fun bind(item: StatisticListItem, position: Int) {
+        override fun bind(item: StatisticListItem) {
             val context = itemView.context
             val statistic = item as Statistic
 

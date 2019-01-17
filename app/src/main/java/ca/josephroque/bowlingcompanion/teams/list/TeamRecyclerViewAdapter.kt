@@ -61,7 +61,7 @@ class TeamRecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: BaseRecyclerViewAdapter<Team>.ViewHolder, position: Int) {
-        holder.bind(getItemAt(position), position)
+        holder.bind(getItemAt(position))
     }
 
     // MARK: ViewHolderActive
@@ -70,7 +70,7 @@ class TeamRecyclerViewAdapter(
         private val tvName: TextView? = view.findViewById(R.id.tv_name)
         private val flowMembers: FlowLayout? = view.findViewById(R.id.flow_members)
 
-        override fun bind(item: Team, position: Int) {
+        override fun bind(item: Team) {
             val context = itemView.context
             tvName?.text = item.name
 
@@ -99,19 +99,19 @@ class TeamRecyclerViewAdapter(
         private val tvDeleted: TextView? = view.findViewById(R.id.tv_deleted)
         private val tvUndo: TextView? = view.findViewById(R.id.tv_undo)
 
-        override fun bind(item: Team, position: Int) {
+        override fun bind(item: Team) {
             val context = itemView.context
 
             tvDeleted?.text = String.format(
                     context.resources.getString(R.string.query_delete_item),
-                    getItemAt(position).name
+                    getItemAt(adapterPosition).name
             )
 
             val deletedItemListener = View.OnClickListener {
                 if (it.id == R.id.tv_undo) {
-                    delegate?.onItemSwipe(getItemAt(position))
+                    delegate?.onItemSwipe(getItemAt(adapterPosition))
                 } else {
-                    delegate?.onItemDelete(getItemAt(position))
+                    delegate?.onItemDelete(getItemAt(adapterPosition))
                 }
             }
             itemView.setOnClickListener(deletedItemListener)

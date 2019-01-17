@@ -98,7 +98,7 @@ class SeriesRecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: BaseRecyclerViewAdapter<Series>.ViewHolder, position: Int) {
-        holder.bind(getItemAt(position), position)
+        holder.bind(getItemAt(position))
     }
 
     // MARK: SeriesRecyclerViewAdapter
@@ -125,7 +125,7 @@ class SeriesRecyclerViewAdapter(
         private val tvDate: TextView? = view.findViewById(R.id.tv_date)
         private val tvTotal: TextView? = view.findViewById(R.id.tv_total)
 
-        override fun bind(item: Series, position: Int) {
+        override fun bind(item: Series) {
             val context = itemView.context
             val seriesTotal = item.scores.sum()
 
@@ -151,7 +151,7 @@ class SeriesRecyclerViewAdapter(
 
         private val flowScores: FlowLayout? = view.findViewById(R.id.flow_scores)
 
-        override fun bind(item: Series, position: Int) {
+        override fun bind(item: Series) {
             val context = itemView.context
             val seriesTotal = item.scores.sum()
 
@@ -208,19 +208,19 @@ class SeriesRecyclerViewAdapter(
         private val tvDeleted: TextView? = view.findViewById(R.id.tv_deleted)
         private val tvUndo: TextView? = view.findViewById(R.id.tv_undo)
 
-        override fun bind(item: Series, position: Int) {
+        override fun bind(item: Series) {
             val context = itemView.context
 
             tvDeleted?.text = String.format(
                     context.resources.getString(R.string.query_delete_item),
-                    getItemAt(position).prettyDate
+                    getItemAt(adapterPosition).prettyDate
             )
 
             val deletedItemListener = View.OnClickListener {
                 if (it.id == R.id.tv_undo) {
-                    delegate?.onItemSwipe(getItemAt(position))
+                    delegate?.onItemSwipe(getItemAt(adapterPosition))
                 } else {
-                    delegate?.onItemDelete(getItemAt(position))
+                    delegate?.onItemDelete(getItemAt(adapterPosition))
                 }
             }
             itemView.setOnClickListener(deletedItemListener)
