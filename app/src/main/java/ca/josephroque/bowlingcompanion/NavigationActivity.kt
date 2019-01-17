@@ -378,10 +378,7 @@ class NavigationActivity : BaseActivity(),
         }
 
         bottomNavigation.setOnNavigationItemSelectedListener {
-            launch(Android) {
-                fragNavController?.switchTab(BottomTab.fromId(it.itemId).ordinal)
-            }
-
+            fragNavController?.switchTab(BottomTab.fromId(it.itemId).ordinal)
             return@setOnNavigationItemSelectedListener true
         }
     }
