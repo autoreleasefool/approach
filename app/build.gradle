@@ -75,8 +75,6 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.22.2'
     implementation 'android.arch.lifecycle:extensions:1.1.1'
 
-    implementation 'com.nex3z:flow-layout:1.2.2' // https://github.com/nex3z/FlowLayout
-    implementation 'com.robertlevonyan.view:MaterialChipView:1.2.5' // https://github.com/robertlevonyan/materialChipView
     implementation 'com.ncapdevi:frag-nav:2.4.0' // https://github.com/ncapdevi/FragNav
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3' // https://github.com/PhilJay/MPAndroidChart
 
