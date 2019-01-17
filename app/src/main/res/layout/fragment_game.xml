@@ -42,6 +42,7 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:gravity="center"
+            android:textAlignment="center"
             android:textColor="@color/primaryWhiteText"
             app:layout_constraintTop_toBottomOf="@id/game_header"
             app:layout_constraintBottom_toTopOf="@id/game_footer"
