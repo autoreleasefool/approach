@@ -6,13 +6,13 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.GridLayout
 import android.widget.TextView
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.adapters.BaseRecyclerViewAdapter
 import ca.josephroque.bowlingcompanion.matchplay.MatchPlayResult
 import ca.josephroque.bowlingcompanion.leagues.League
 import ca.josephroque.bowlingcompanion.settings.Settings
-import com.nex3z.flowlayout.FlowLayout
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -149,7 +149,7 @@ class SeriesRecyclerViewAdapter(
         private val tvDate: TextView? = view.findViewById(R.id.tv_date)
         private val tvTotal: TextView? = view.findViewById(R.id.tv_total)
 
-        private val flowScores: FlowLayout? = view.findViewById(R.id.flow_scores)
+        private val gridLayoutScores: GridLayout? = view.findViewById(R.id.gl_scores)
 
         override fun bind(item: Series) {
             val context = itemView.context
@@ -168,7 +168,7 @@ class SeriesRecyclerViewAdapter(
             val shouldShowMatchPlayResult = Settings.BooleanSetting.ShowMatchResults.getValue(preferences)
             val shouldHighlightMatchPlayResult = Settings.BooleanSetting.HighlightMatchResults.getValue(preferences)
 
-            flowScores?.removeAllViews()
+            gridLayoutScores?.removeAllViews()
             if (shouldShowMatchPlayResult) {
                 for (i in 0 until item.scores.size) {
                     val id = View.generateViewId()
@@ -193,7 +193,7 @@ class SeriesRecyclerViewAdapter(
                         matchPlayResult == MatchPlayResult.TIED -> scoreView.matchPlayTextColor = ContextCompat.getColor(context, R.color.matchPlayTie)
                     }
 
-                    flowScores?.addView(scoreView)
+                    gridLayoutScores?.addView(scoreView)
                 }
             }
 
