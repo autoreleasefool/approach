@@ -30,6 +30,7 @@
 
     <!-- List -->
     <dimen name="list_item_margin">16dp</dimen>
+    <dimen name="list_item_margin_small">8dp</dimen>
     <dimen name="list_item_min_height">48dp</dimen>
     <dimen name="list_default_icon_size">40dp</dimen>
 
