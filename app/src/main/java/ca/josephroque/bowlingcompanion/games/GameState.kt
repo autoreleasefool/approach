@@ -338,18 +338,21 @@ class GameState(
     }
 
     fun saveFrame(context: WeakReference<Context>, ignoreManualScore: Boolean) {
+        if (!gamesLoaded) { return }
         if (!ignoreManualScore && currentGame.isManual) { return }
         val copy = currentFrame.deepCopy()
         Saviour.instance.saveFrame(context, currentGame.score, copy)
     }
 
     fun saveGame(context: WeakReference<Context>, ignoreManualScore: Boolean) {
+        if (!gamesLoaded) { return }
         if (!ignoreManualScore && currentGame.isManual) { return }
         val copy = currentGame.deepCopy()
         Saviour.instance.saveGame(context, copy)
     }
 
     fun saveMatchPlay(context: WeakReference<Context>) {
+        if (!gamesLoaded) { return }
         val copy = currentGame.matchPlay.deepCopy()
         Saviour.instance.saveMatchPlay(context, copy)
     }
