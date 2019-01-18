@@ -20,7 +20,7 @@ import android.support.v7.app.AlertDialog
 import ca.josephroque.bowlingcompanion.statistics.interfaces.IStatisticsContext
 import ca.josephroque.bowlingcompanion.statistics.provider.StatisticsProvider
 import ca.josephroque.bowlingcompanion.utils.Permission
-import ca.josephroque.bowlingcompanion.utils.ShareUtils
+import ca.josephroque.bowlingcompanion.utils.sharing.ShareUtils
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -208,15 +208,16 @@ class GameOverviewFragment : ListFragment<Game, GameOverviewRecyclerViewAdapter>
                 .setPositiveButton(R.string.okay) { dialog, _ ->
                     if (dialog is AlertDialog) {
                         val selectedItem = ShareOption.fromInt(dialog.listView.checkedItemPosition)!!
+                        externalPermissionsGrantedCallback = {
+                            when (selectedItem) {
+                                ShareOption.Share -> ShareUtils.shareGames(activity, sortedGames)
+                                ShareOption.Save -> ShareUtils.saveGames(activity, sortedGames)
+                            }
+                            externalPermissionsGrantedCallback = null
+                        }
                         when (selectedItem) {
                             ShareOption.Share -> ShareUtils.shareGames(activity, sortedGames)
-                            ShareOption.Save -> {
-                                externalPermissionsGrantedCallback = {
-                                    ShareUtils.saveGames(activity, sortedGames)
-                                    externalPermissionsGrantedCallback = null
-                                }
-                                ShareUtils.saveGames(activity, sortedGames)
-                            }
+                            ShareOption.Save -> ShareUtils.saveGames(activity, sortedGames)
                         }
                     }
                     dialog.dismiss()

@@ -42,6 +42,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
+        <provider
+            android:name=".utils.sharing.GameOverviewBitmapFileProvider"
+            android:authorities="${applicationId}.utils.sharing.GameOverviewBitmapFileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_path_game_overview" />
+        </provider>
 
     </application>
 
