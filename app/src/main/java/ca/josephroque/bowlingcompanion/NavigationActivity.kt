@@ -169,6 +169,11 @@ class NavigationActivity : BaseActivity(),
     }
 
     override fun onBackPressed() {
+        if (fragNavController?.isStateSaved == true) {
+            super.onBackPressed()
+            return
+        }
+
         val fragNavController = fragNavController
         if (fragNavController != null) {
             if (currentFragment?.popChildFragment() == true) {
