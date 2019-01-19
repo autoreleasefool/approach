@@ -38,7 +38,7 @@ class GameOverviewRecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: BaseRecyclerViewAdapter<Game>.ViewHolder, position: Int) {
-        holder.bind(getItemAt(position), position)
+        holder.bind(getItemAt(position))
     }
 
     // MARK: ViewHolder
@@ -48,7 +48,7 @@ class GameOverviewRecyclerViewAdapter(
         private val scoreSheet: ScoreSheet? = view.findViewById(R.id.score_sheet)
         private val checkBox: CheckBox? = view.findViewById(R.id.checkbox_share)
 
-        override fun bind(item: Game, position: Int) {
+        override fun bind(item: Game) {
             val context = itemView.context
 
             tvGameNumber?.text = context.resources.getString(R.string.game_number).format(item.ordinal)
@@ -65,12 +65,12 @@ class GameOverviewRecyclerViewAdapter(
                 it.apply(-1, -1, item)
 
                 // Remember scroll position
-                val (x, y) = scrollOffsets[position] ?: Pair(0, 0)
+                val (x, y) = scrollOffsets[adapterPosition] ?: Pair(0, 0)
                 it.scrollTo(x, y)
 
                 it.delegate = object : ScoreSheet.SheetScrollListener {
                     override fun didScroll(x: Int, y: Int) {
-                        scrollOffsets[position] = Pair(x, y)
+                        scrollOffsets[adapterPosition] = Pair(x, y)
                     }
                 }
             }

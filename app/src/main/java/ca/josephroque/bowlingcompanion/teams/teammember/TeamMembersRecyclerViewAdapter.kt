@@ -56,7 +56,7 @@ class TeamMembersRecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: BaseRecyclerViewAdapter<TeamMember>.ViewHolder, position: Int) {
-        holder.bind(getItemAt(position), position)
+        holder.bind(getItemAt(position))
     }
 
     override fun buildItemTouchHelper(): ItemTouchHelper.Callback {
@@ -71,7 +71,7 @@ class TeamMembersRecyclerViewAdapter(
         private val tvSeriesName: TextView = view.findViewById(R.id.tv_team_member_series)
         private val ivIcon: ImageView = view.findViewById(R.id.iv_team_member_icon)
 
-        override fun bind(item: TeamMember, position: Int) {
+        override fun bind(item: TeamMember) {
             val context = itemView.context
             ivIcon.setImageResource(R.drawable.ic_menu)
             ivIcon.setColorFilter(ContextCompat.getColor(context, R.color.primaryBlackIcon))

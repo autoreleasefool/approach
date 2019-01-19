@@ -12,6 +12,7 @@
 
     <color name="colorListPrimary">#F5F5F5</color>
     <color name="colorListAlternate">#EBEBEB</color>
+    <color name="colorListContrast">#E1E1E1</color>
     <color name="colorDivider">#33000000</color>
 
     <color name="dangerRed">#EE5253</color>

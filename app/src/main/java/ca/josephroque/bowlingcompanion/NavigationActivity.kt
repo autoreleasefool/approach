@@ -10,7 +10,6 @@ import android.support.v4.widget.DrawerLayout
 import android.view.MenuItem
 import android.view.View
 import ca.josephroque.bowlingcompanion.bowlers.BowlerListFragment
-import ca.josephroque.bowlingcompanion.common.Android
 import ca.josephroque.bowlingcompanion.common.FabController
 import ca.josephroque.bowlingcompanion.common.NavigationDrawerController
 import ca.josephroque.bowlingcompanion.common.interfaces.IFloatingActionButtonHandler
@@ -31,7 +30,6 @@ import ca.josephroque.bowlingcompanion.utils.StartupManager
 import ca.josephroque.bowlingcompanion.utils.isVisible
 import com.ncapdevi.fragnav.FragNavController
 import com.ncapdevi.fragnav.FragNavTransactionOptions
-import kotlinx.coroutines.experimental.launch
 import kotlinx.android.synthetic.main.activity_navigation.ad_view as adView
 import kotlinx.android.synthetic.main.activity_navigation.bottom_navigation as bottomNavigation
 import kotlinx.android.synthetic.main.activity_navigation.drawer_layout as drawerLayout
@@ -169,6 +167,11 @@ class NavigationActivity : BaseActivity(),
     }
 
     override fun onBackPressed() {
+        if (fragNavController?.isStateSaved == true) {
+            super.onBackPressed()
+            return
+        }
+
         val fragNavController = fragNavController
         if (fragNavController != null) {
             if (currentFragment?.popChildFragment() == true) {
@@ -279,7 +282,7 @@ class NavigationActivity : BaseActivity(),
     // MARK: TransactionListener
 
     override fun onFragmentTransaction(fragment: Fragment?, transactionType: FragNavController.TransactionType?) {
-        handleFragmentChange(fragment)
+        handleFragmentChange(fragment, transactionType)
     }
 
     override fun onTabTransaction(fragment: Fragment?, index: Int) {
@@ -311,7 +314,7 @@ class NavigationActivity : BaseActivity(),
 
     // MARK: Private functions
 
-    private fun handleFragmentChange(fragment: Fragment?) {
+    private fun handleFragmentChange(fragment: Fragment?, transactionType: FragNavController.TransactionType? = null) {
         fragNavController?.let {
             val showBackButton = it.isRootFragment.not() || BottomTab.fromInt(it.currentStackIndex) == BottomTab.Statistics
             supportActionBar?.setDisplayHomeAsUpEnabled(showBackButton)
@@ -340,7 +343,7 @@ class NavigationActivity : BaseActivity(),
             refreshCurrentFragment()
         }
 
-        if (fragment is StatisticsProviderListFragment) {
+        if (fragment is StatisticsProviderListFragment && transactionType != FragNavController.TransactionType.POP) {
             val statisticsContext = fragNavController?.getStack(BottomTab.toInt(BottomTab.Record))?.peek() as? IStatisticsContext
             fragment.arguments = StatisticsProviderListFragment.buildArguments(statisticsContext?.statisticsProviders ?: emptyList())
         }
@@ -378,16 +381,8 @@ class NavigationActivity : BaseActivity(),
         }
 
         bottomNavigation.setOnNavigationItemSelectedListener {
-            launch(Android) {
-                fragNavController?.switchTab(BottomTab.fromId(it.itemId).ordinal)
-            }
-
+            fragNavController?.switchTab(BottomTab.fromId(it.itemId).ordinal)
             return@setOnNavigationItemSelectedListener true
-        }
-
-        bottomNavigation.setOnNavigationItemReselectedListener {
-            // FIXME: probably refresh the current fragment, not reset the stack
-//            fragNavController?.clearStack()
         }
     }
 

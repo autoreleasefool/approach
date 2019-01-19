@@ -19,15 +19,13 @@
         android:networkSecurityConfig="@xml/network_security_config"
         tools:ignore="GoogleAppIndexingWarning,UnusedAttribute">
 
+        <uses-library android:name="org.apache.http.legacy" android:required="false" />
+
         <meta-data android:name="com.mixpanel.android.MPConfig.DisableViewCrawler" android:value="true" />
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="@string/ADMOB_APP_ID"/>
-
-        <meta-data
-            android:name="com.bugsnag.android.API_KEY"
-            android:value="@string/BUGSNAG_TOKEN"/>
 
         <activity
             android:name=".NavigationActivity"
@@ -44,6 +42,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
+        <provider
+            android:name=".utils.sharing.GameOverviewBitmapFileProvider"
+            android:authorities="${applicationId}.utils.sharing.GameOverviewBitmapFileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_path_game_overview" />
+        </provider>
 
     </application>
 

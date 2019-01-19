@@ -1,5 +1,7 @@
 package ca.josephroque.bowlingcompanion.teams.list
 
+import android.support.design.chip.Chip
+import android.support.design.chip.ChipGroup
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -9,8 +11,6 @@ import android.widget.TextView
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.adapters.BaseRecyclerViewAdapter
 import ca.josephroque.bowlingcompanion.teams.Team
-import com.nex3z.flowlayout.FlowLayout
-import com.robertlevonyan.views.chip.Chip
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -61,30 +61,30 @@ class TeamRecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: BaseRecyclerViewAdapter<Team>.ViewHolder, position: Int) {
-        holder.bind(getItemAt(position), position)
+        holder.bind(getItemAt(position))
     }
 
     // MARK: ViewHolderActive
 
     inner class ViewHolderActive(view: View) : BaseRecyclerViewAdapter<Team>.ViewHolder(view) {
         private val tvName: TextView? = view.findViewById(R.id.tv_name)
-        private val flowMembers: FlowLayout? = view.findViewById(R.id.flow_members)
+        private val chipGroupMembers: ChipGroup? = view.findViewById(R.id.cg_members)
 
-        override fun bind(item: Team, position: Int) {
+        override fun bind(item: Team) {
             val context = itemView.context
             tvName?.text = item.name
 
-            flowMembers?.removeAllViews()
+            chipGroupMembers?.removeAllViews()
             item.members.forEach {
                 val viewId = View.generateViewId()
                 Chip(context).apply {
                     id = viewId
                     isFocusable = false
                     isClickable = false
-                    chipText = it.bowlerName
-                    changeBackgroundColor(ContextCompat.getColor(context, R.color.colorPrimary))
-                    textColor = ContextCompat.getColor(context, R.color.primaryWhiteText)
-                    flowMembers?.addView(this)
+                    text = it.bowlerName
+                    setChipBackgroundColorResource(R.color.colorPrimary)
+                    setTextColor(ContextCompat.getColor(context, R.color.primaryWhiteText))
+                    chipGroupMembers?.addView(this)
                 }
             }
 
@@ -99,19 +99,19 @@ class TeamRecyclerViewAdapter(
         private val tvDeleted: TextView? = view.findViewById(R.id.tv_deleted)
         private val tvUndo: TextView? = view.findViewById(R.id.tv_undo)
 
-        override fun bind(item: Team, position: Int) {
+        override fun bind(item: Team) {
             val context = itemView.context
 
             tvDeleted?.text = String.format(
                     context.resources.getString(R.string.query_delete_item),
-                    getItemAt(position).name
+                    getItemAt(adapterPosition).name
             )
 
             val deletedItemListener = View.OnClickListener {
                 if (it.id == R.id.tv_undo) {
-                    delegate?.onItemSwipe(getItemAt(position))
+                    delegate?.onItemSwipe(getItemAt(adapterPosition))
                 } else {
-                    delegate?.onItemDelete(getItemAt(position))
+                    delegate?.onItemDelete(getItemAt(adapterPosition))
                 }
             }
             itemView.setOnClickListener(deletedItemListener)

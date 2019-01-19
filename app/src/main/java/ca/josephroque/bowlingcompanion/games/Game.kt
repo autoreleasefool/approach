@@ -170,7 +170,7 @@ class Game(
 
             // Calculate the final score of the game
             if (!isManual) {
-                score = totalScore - fouls * Game.FOUL_PENALTY
+                score = maxOf(totalScore - fouls * Game.FOUL_PENALTY, 0)
                 dirty = false
             }
 

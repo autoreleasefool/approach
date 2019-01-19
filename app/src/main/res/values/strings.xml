@@ -164,11 +164,12 @@
     <string name="issue_saving_league">Issue saving league!</string>
     <string name="error_deleting_league">Unable to delete league!</string>
     <string name="error_league_name_invalid">You can only use letters, spaces, and the following characters: \'!@#$%^&amp;*()_+:"?/~-.</string>
-    <string name="error_league_name_in_use">That name has already been used. You must choose another.</string>
+    <string name="error_league_name_in_use">That name has already been used for a league or event. You must choose another.</string>
     <string name="error_league_additional_info_invalid">You can only use numbers in your additional games and pinfall!</string>
     <string name="error_league_additional_info_unbalanced">Your additional pinfall and games cannot equal an average greater than 450.</string>
     <string name="error_league_highlight_invalid">Your game highlight must be between 0 and 450, and series highlight cannot be greater than the maximum total series.</string>
     <string name="error_league_number_of_games_invalid">Leagues and events can be between 1 and 20 games.</string>
+    <string name="error_league_name_is_practice">You can\'t use the name \'Practice\'. Choose another name or try using the practice league to record your games.</string>
     <string name="error_league_not_saved">An error occurred and the league could not be saved.</string>
 
     <!-- Events -->
@@ -176,7 +177,6 @@
 
     <string name="issue_saving_event">Issue saving event!</string>
     <string name="error_event_name_invalid">You can only use letters, spaces, and the following characters: \'!@#$%^&amp;*()_+:"?/~-.</string>
-    <string name="error_event_name_in_use">That name has already been used. You must choose another.</string>
 
     <!-- Series -->
     <string name="series">Series</string>

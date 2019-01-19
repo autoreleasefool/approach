@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -31,15 +30,14 @@
 
     <View style="@style/Separator.Inset.Both" />
 
-    <com.nex3z.flowlayout.FlowLayout
-        android:id="@+id/flow_scores"
+    <android.support.design.chip.ChipGroup
+        android:id="@+id/cg_scores"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/list_item_margin"
         android:layout_marginRight="@dimen/list_item_margin"
         android:layout_marginTop="@dimen/base_margin"
         android:layout_marginBottom="@dimen/base_margin"
-        app:flChildSpacing="@dimen/list_item_margin"
-        app:flRowSpacing="@dimen/list_item_margin" />
+        app:chipSpacing="@dimen/list_item_margin_small" />
 
 </LinearLayout>

@@ -6,7 +6,7 @@ apply plugin: 'kotlin-android-extensions'
 
 def versionMajor = 3
 def versionMinor = 1
-def versionPatch = 0
+def versionPatch = 1
 
 android {
     compileSdkVersion 28
@@ -32,8 +32,7 @@ android {
                     ["BANNER_AD_UNIT_ID", "ca-app-pub-3940256099942544/6300978111"],
                     ["ADMOB_APP_ID", "ca-app-pub-3940256099942544~3347511713"],
                     ["TRANSFER_API_KEY", "API_KEY_GOES_HERE"],
-                    ["MIXPANEL_TOKEN", "API_KEY_GOES_HERE"],
-                    ["BUGSNAG_TOKEN", "API_KEY_GOES_HERE"]
+                    ["MIXPANEL_TOKEN", "API_KEY_GOES_HERE"]
             ]
 
             apiKeys.each { key, value ->
@@ -48,9 +47,9 @@ android {
             def apiKeys = [
                     ["TRANSFER_SERVER_URL", "API_KEY_GOES_HERE"],
                     ["BANNER_AD_UNIT_ID", "API_KEY_GOES_HERE"],
+                    ["ADMOB_APP_ID", "ca-app-pub-3940256099942544~3347511713"],
                     ["TRANSFER_API_KEY", "API_KEY_GOES_HERE"],
-                    ["MIXPANEL_TOKEN", "API_KEY_GOES_HERE"],
-                    ["BUGSNAG_TOKEN", "API_KEY_GOES_HERE"]
+                    ["MIXPANEL_TOKEN", "API_KEY_GOES_HERE"]
             ]
 
             apiKeys.each { key, value ->
@@ -76,16 +75,13 @@ dependencies {
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.22.2'
     implementation 'android.arch.lifecycle:extensions:1.1.1'
 
-    implementation 'com.nex3z:flow-layout:1.2.2' // https://github.com/nex3z/FlowLayout
-    implementation 'com.robertlevonyan.view:MaterialChipView:1.2.4' // https://github.com/robertlevonyan/materialChipView
     implementation 'com.ncapdevi:frag-nav:2.4.0' // https://github.com/ncapdevi/FragNav
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3' // https://github.com/PhilJay/MPAndroidChart
 
-    implementation 'com.mixpanel.android:mixpanel-android:5.4.2' // https://github.com/mixpanel/mixpanel-android
-    implementation 'com.bugsnag:bugsnag-android:4.8.2' // https://github.com/bugsnag/bugsnag-android
+    implementation 'com.mixpanel.android:mixpanel-android:5.4.4' // https://github.com/mixpanel/mixpanel-android
 
     implementation 'com.google.android.gms:play-services-gcm:16.0.0'
-    implementation 'com.google.android.gms:play-services-ads:17.0.0'
+    implementation 'com.google.android.gms:play-services-ads:17.1.2'
 
     testImplementation 'junit:junit:4.12'
 

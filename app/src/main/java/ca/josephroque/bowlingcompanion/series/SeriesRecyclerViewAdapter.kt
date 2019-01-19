@@ -1,5 +1,7 @@
 package ca.josephroque.bowlingcompanion.series
 
+import android.support.design.chip.Chip
+import android.support.design.chip.ChipGroup
 import android.support.v4.content.ContextCompat
 import android.support.v7.preference.PreferenceManager
 import android.support.v7.widget.RecyclerView
@@ -12,7 +14,6 @@ import ca.josephroque.bowlingcompanion.common.adapters.BaseRecyclerViewAdapter
 import ca.josephroque.bowlingcompanion.matchplay.MatchPlayResult
 import ca.josephroque.bowlingcompanion.leagues.League
 import ca.josephroque.bowlingcompanion.settings.Settings
-import com.nex3z.flowlayout.FlowLayout
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -98,7 +99,7 @@ class SeriesRecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: BaseRecyclerViewAdapter<Series>.ViewHolder, position: Int) {
-        holder.bind(getItemAt(position), position)
+        holder.bind(getItemAt(position))
     }
 
     // MARK: SeriesRecyclerViewAdapter
@@ -125,7 +126,7 @@ class SeriesRecyclerViewAdapter(
         private val tvDate: TextView? = view.findViewById(R.id.tv_date)
         private val tvTotal: TextView? = view.findViewById(R.id.tv_total)
 
-        override fun bind(item: Series, position: Int) {
+        override fun bind(item: Series) {
             val context = itemView.context
             val seriesTotal = item.scores.sum()
 
@@ -149,9 +150,9 @@ class SeriesRecyclerViewAdapter(
         private val tvDate: TextView? = view.findViewById(R.id.tv_date)
         private val tvTotal: TextView? = view.findViewById(R.id.tv_total)
 
-        private val flowScores: FlowLayout? = view.findViewById(R.id.flow_scores)
+        private val chipGroupScores: ChipGroup? = view.findViewById(R.id.cg_scores)
 
-        override fun bind(item: Series, position: Int) {
+        override fun bind(item: Series) {
             val context = itemView.context
             val seriesTotal = item.scores.sum()
 
@@ -168,32 +169,47 @@ class SeriesRecyclerViewAdapter(
             val shouldShowMatchPlayResult = Settings.BooleanSetting.ShowMatchResults.getValue(preferences)
             val shouldHighlightMatchPlayResult = Settings.BooleanSetting.HighlightMatchResults.getValue(preferences)
 
-            flowScores?.removeAllViews()
+            chipGroupScores?.removeAllViews()
             if (shouldShowMatchPlayResult) {
                 for (i in 0 until item.scores.size) {
-                    val id = View.generateViewId()
-                    val scoreView = SeriesScoreView(context)
+                    val viewId = View.generateViewId()
+                    val score = item.scores[i]
                     val matchPlayResult = MatchPlayResult.fromInt(item.matchPlay[i].toInt())!!
-                    scoreView.id = id
-                    scoreView.isFocusable = false
-                    scoreView.isClickable = false
-                    scoreView.score = item.scores[i]
-                    scoreView.matchPlay = matchPlayResult
 
-                    scoreView.scoreTextColor = if (shouldHighlightGame(item.scores[i])) {
-                        ContextCompat.getColor(context, R.color.gameHighlight)
-                    } else {
-                        ContextCompat.getColor(context, R.color.primaryBlackText)
+                    val chipIconResource: Int?
+                    val chipIconTintResource: Int?
+                    when (matchPlayResult) {
+                        MatchPlayResult.WON -> {
+                            chipIconResource = R.drawable.ic_match_play_won_chip
+                            chipIconTintResource = if (shouldHighlightMatchPlayResult) R.color.matchPlayWin else R.color.primaryBlackText
+                        }
+                        MatchPlayResult.LOST -> {
+                            chipIconResource = R.drawable.ic_match_play_lost_chip
+                            chipIconTintResource = if (shouldHighlightMatchPlayResult) R.color.matchPlayLoss else R.color.primaryBlackText
+                        }
+                        MatchPlayResult.TIED -> {
+                            chipIconResource = R.drawable.ic_match_play_tied_chip
+                            chipIconTintResource = if (shouldHighlightMatchPlayResult) R.color.matchPlayTie else R.color.primaryBlackText
+                        }
+                        MatchPlayResult.NONE -> {
+                            chipIconResource = null
+                            chipIconTintResource = null
+                        }
+                    }
+                    val chipTextColorResource = if (shouldHighlightGame(score)) R.color.gameHighlight else R.color.primaryBlackText
+
+                    val chip = Chip(context).apply {
+                        id = viewId
+                        isFocusable = false
+                        isClickable = false
+                        text = score.toString()
+                        setTextColor(ContextCompat.getColor(context, chipTextColorResource))
+                        chipIconResource?.let { setChipIconResource(it) }
+                        chipIconTintResource?.let { setChipIconTintResource(it) }
+                        setChipBackgroundColorResource(R.color.colorListContrast)
                     }
 
-                    when {
-                        !shouldHighlightMatchPlayResult || matchPlayResult == MatchPlayResult.NONE -> scoreView.matchPlayTextColor = ContextCompat.getColor(context, R.color.primaryBlackText)
-                        matchPlayResult == MatchPlayResult.WON -> scoreView.matchPlayTextColor = ContextCompat.getColor(context, R.color.matchPlayWin)
-                        matchPlayResult == MatchPlayResult.LOST -> scoreView.matchPlayTextColor = ContextCompat.getColor(context, R.color.matchPlayLoss)
-                        matchPlayResult == MatchPlayResult.TIED -> scoreView.matchPlayTextColor = ContextCompat.getColor(context, R.color.matchPlayTie)
-                    }
-
-                    flowScores?.addView(scoreView)
+                    chipGroupScores?.addView(chip)
                 }
             }
 
@@ -208,19 +224,19 @@ class SeriesRecyclerViewAdapter(
         private val tvDeleted: TextView? = view.findViewById(R.id.tv_deleted)
         private val tvUndo: TextView? = view.findViewById(R.id.tv_undo)
 
-        override fun bind(item: Series, position: Int) {
+        override fun bind(item: Series) {
             val context = itemView.context
 
             tvDeleted?.text = String.format(
                     context.resources.getString(R.string.query_delete_item),
-                    getItemAt(position).prettyDate
+                    getItemAt(adapterPosition).prettyDate
             )
 
             val deletedItemListener = View.OnClickListener {
                 if (it.id == R.id.tv_undo) {
-                    delegate?.onItemSwipe(getItemAt(position))
+                    delegate?.onItemSwipe(getItemAt(adapterPosition))
                 } else {
-                    delegate?.onItemDelete(getItemAt(position))
+                    delegate?.onItemDelete(getItemAt(adapterPosition))
                 }
             }
             itemView.setOnClickListener(deletedItemListener)

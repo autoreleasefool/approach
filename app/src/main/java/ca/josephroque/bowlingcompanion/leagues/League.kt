@@ -213,6 +213,8 @@ data class League(
 
         private fun isLeagueNameValid(name: String): Boolean = REGEX_NAME.matches(name)
 
+        private fun nameMatchesPracticeLeague(name: String): Boolean = PRACTICE_LEAGUE_NAME.toLowerCase().equals(name.toLowerCase())
+
         private fun isLeagueNameUnique(context: Context, name: String, id: Long = -1): Deferred<Boolean> {
             return async(CommonPool) {
                 val database = DatabaseManager.getReadableDatabase(context).await()
@@ -256,10 +258,12 @@ data class League(
             return async(CommonPool) {
                 val errorTitle = if (isEvent) R.string.issue_saving_event else R.string.issue_saving_league
                 val errorMessage: Int?
-                if (!isLeagueNameValid(name)) {
+                if (nameMatchesPracticeLeague(name)) {
+                    errorMessage = R.string.error_league_name_is_practice
+                } else if (!isLeagueNameValid(name)) {
                     errorMessage = if (isEvent) R.string.error_event_name_invalid else R.string.error_league_name_invalid
                 } else if (!isLeagueNameUnique(context, name, id).await()) {
-                    errorMessage = if (isEvent) R.string.error_event_name_in_use else R.string.error_league_name_in_use
+                    errorMessage = R.string.error_league_name_in_use
                 } else if (name == PRACTICE_LEAGUE_NAME) {
                     errorMessage = R.string.error_cannot_edit_practice_league
                 } else if (
@@ -374,7 +378,7 @@ data class League(
                          * If the new entry is an event, its series is also created at this time
                          * since there is only a single series to an event
                          */
-                        val (series, seriesError) = league.createNewSeries(context).await()
+                        val (series, seriesError) = league.createNewSeries(context, database).await()
                         if (seriesError != null || (series?.id ?: -1L) == -1L) {
                             throw IllegalStateException("Series was not saved.")
                         }

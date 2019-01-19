@@ -1,3 +1,9 @@
+<b>v3.1.1</b>
+This version contains a bunch of bug fixes! Here's just a few:
+- Creating or opening an event should no longer crash the app
+- Fixed sharing games through the game overview
+- Prevented scores from dropping below zero when there are too many fouls
+
 <b>v3.1.0</b>
 Thank you for using the app while some of the kinks in the new version are worked out!
 - See an overview of your games by tapping the list icon in the top right, or the overview menu item

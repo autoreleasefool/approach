@@ -19,7 +19,7 @@ object StartupManager {
     fun start(context: Context) {
         val appVersion = getAppVersion(context)
         val isNewVersion = BuildConfig.VERSION_CODE != appVersion
-        setIsFirstLaunch(context, appVersion != -1)
+        setIsFirstLaunch(context, appVersion == -1)
         setAppVersion(context, BuildConfig.VERSION_CODE)
         val isFirstLaunch = isFirstLaunch(context)
 
@@ -31,8 +31,7 @@ object StartupManager {
     }
 
     fun isFirstLaunch(context: Context): Boolean {
-        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
-        return preferences.getBoolean(IS_FIRST_LAUNCH, false)
+        return PreferenceManager.getDefaultSharedPreferences(context).getBoolean(IS_FIRST_LAUNCH, false)
     }
 
     fun getAppVersion(context: Context): Int {

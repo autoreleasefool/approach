@@ -1,4 +1,4 @@
-package ca.josephroque.bowlingcompanion.utils
+package ca.josephroque.bowlingcompanion.utils.sharing
 
 import android.app.Activity
 import android.graphics.Bitmap
@@ -15,13 +15,18 @@ import kotlinx.coroutines.experimental.launch
 import android.content.Intent
 import android.graphics.Canvas
 import android.graphics.Paint
-import android.net.Uri
 import android.util.Log
 import android.view.View
 import ca.josephroque.bowlingcompanion.common.Android
 import ca.josephroque.bowlingcompanion.games.Game
 import ca.josephroque.bowlingcompanion.games.views.GameNumberView
 import ca.josephroque.bowlingcompanion.games.views.ScoreSheet
+import ca.josephroque.bowlingcompanion.utils.Analytics
+import ca.josephroque.bowlingcompanion.utils.BCError
+import ca.josephroque.bowlingcompanion.utils.Permission
+import ca.josephroque.bowlingcompanion.utils.toBitmap
+import android.support.v4.content.FileProvider
+import ca.josephroque.bowlingcompanion.BuildConfig
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -37,21 +42,30 @@ object ShareUtils {
     private const val interGameBorderWidth = 4
 
     fun shareGames(activity: Activity, games: List<Game>) {
-        launch(CommonPool) {
-            val bitmap = buildBitmap(activity, games)
-            val destination = saveBitmap(activity, games.size, bitmap)
-            bitmap.recycle()
+        if (Permission.WriteExternalStorage.requestPermission(activity)) {
+            launch(CommonPool) {
+                val bitmap = buildBitmap(activity, games)
+                val destination = saveBitmap(activity, games.size, bitmap)
+                bitmap.recycle()
 
-            if (destination == null) { return@launch }
+                if (destination == null) {
+                    return@launch
+                }
 
-            val shareIntent = Intent(Intent.ACTION_SEND)
-            shareIntent.type = "image/$exportFileType"
-            shareIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(destination))
+                val providedImage = FileProvider.getUriForFile(activity,
+                        "${BuildConfig.APPLICATION_ID}.utils.sharing.GameOverviewBitmapFileProvider",
+                        destination)
 
-            launch(Android) {
-                activity.startActivity(Intent.createChooser(shareIntent, activity.resources.getString(R.string.share_image)))
+                val shareIntent = Intent(Intent.ACTION_SEND)
+                shareIntent.type = "image/$exportFileType"
+                shareIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                shareIntent.putExtra(Intent.EXTRA_STREAM, providedImage)
 
-                Analytics.trackShareImage(games.size)
+                launch(Android) {
+                    activity.startActivity(Intent.createChooser(shareIntent, activity.resources.getString(R.string.share_image)))
+
+                    Analytics.trackShareImage(games.size)
+                }
             }
         }
     }

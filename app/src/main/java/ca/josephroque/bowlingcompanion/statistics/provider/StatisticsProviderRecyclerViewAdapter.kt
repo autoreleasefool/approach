@@ -26,9 +26,7 @@ class StatisticsProviderRecyclerViewAdapter(
 
     // MARK: BaseRecyclerViewAdapter
 
-    override fun getItemViewType(position: Int): Int {
-        return 0
-    }
+    override fun getItemViewType(position: Int) = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseRecyclerViewAdapter<StatisticsProvider>.ViewHolder {
         return ViewHolderName(
@@ -39,7 +37,7 @@ class StatisticsProviderRecyclerViewAdapter(
     }
 
     override fun onBindViewHolder(holder: BaseRecyclerViewAdapter<StatisticsProvider>.ViewHolder, position: Int) {
-        holder.bind(getItemAt(position), position)
+        holder.bind(getItemAt(position))
     }
 
     // MARK: ViewHolderName
@@ -48,7 +46,7 @@ class StatisticsProviderRecyclerViewAdapter(
         private val tvName: TextView? = view.findViewById(R.id.tv_name)
         private val tvType: TextView? = view.findViewById(R.id.tv_type)
 
-        override fun bind(item: StatisticsProvider, position: Int) {
+        override fun bind(item: StatisticsProvider) {
             tvName?.text = item.name
             tvType?.setText(item.typeName)
             itemView.setOnClickListener(this@StatisticsProviderRecyclerViewAdapter)

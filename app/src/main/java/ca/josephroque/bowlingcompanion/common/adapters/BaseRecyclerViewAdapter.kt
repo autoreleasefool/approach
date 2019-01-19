@@ -158,7 +158,7 @@ abstract class BaseRecyclerViewAdapter<Item : IIdentifiable>(
     // MARK:: ViewHolder
 
     abstract inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        abstract fun bind(item: Item, position: Int)
+        abstract fun bind(item: Item)
     }
 
     // MARK: SwipeCallback
@@ -174,8 +174,7 @@ abstract class BaseRecyclerViewAdapter<Item : IIdentifiable>(
 
         override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
             if (swipeable) {
-                val position = viewHolder.adapterPosition
-                delegate?.onItemSwipe(getItemAt(position))
+                delegate?.onItemSwipe(getItemAt(viewHolder.adapterPosition))
             }
         }
 

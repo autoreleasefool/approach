@@ -1,5 +1,15 @@
 # Most recent version
 
+## v3.1.1
+```
+This version contains a bunch of bug fixes! Here's just a few:
+- Creating or opening an event should no longer crash the app
+- Fixed sharing games through the game overview
+- Prevented scores from dropping below zero when there are too many fouls
+```
+
+# Legacy versions
+
 ## v3.1.0
 ```
 Thank you for using the app while some of the kinks in the new version are worked out!
@@ -11,8 +21,6 @@ Bug fixes
 - Return to the first incomplete game when editing a series (not just the first game)
 - Fix some more rotation crashes and returning to the app from the background
 ```
-
-# Legacy versions
 
 ## v3.0.2
 
