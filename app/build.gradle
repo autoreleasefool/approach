@@ -6,7 +6,7 @@ apply plugin: 'kotlin-android-extensions'
 
 def versionMajor = 3
 def versionMinor = 1
-def versionPatch = 0
+def versionPatch = 1
 
 android {
     compileSdkVersion 28
