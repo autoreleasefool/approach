@@ -28,7 +28,6 @@ import ca.josephroque.bowlingcompanion.utils.toBitmap
 import android.support.v4.content.FileProvider
 import ca.josephroque.bowlingcompanion.BuildConfig
 
-
 /**
  * Copyright (C) 2018 Joseph Roque
  *

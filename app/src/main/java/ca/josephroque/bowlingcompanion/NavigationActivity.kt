@@ -10,7 +10,6 @@ import android.support.v4.widget.DrawerLayout
 import android.view.MenuItem
 import android.view.View
 import ca.josephroque.bowlingcompanion.bowlers.BowlerListFragment
-import ca.josephroque.bowlingcompanion.common.Android
 import ca.josephroque.bowlingcompanion.common.FabController
 import ca.josephroque.bowlingcompanion.common.NavigationDrawerController
 import ca.josephroque.bowlingcompanion.common.interfaces.IFloatingActionButtonHandler
@@ -31,7 +30,6 @@ import ca.josephroque.bowlingcompanion.utils.StartupManager
 import ca.josephroque.bowlingcompanion.utils.isVisible
 import com.ncapdevi.fragnav.FragNavController
 import com.ncapdevi.fragnav.FragNavTransactionOptions
-import kotlinx.coroutines.experimental.launch
 import kotlinx.android.synthetic.main.activity_navigation.ad_view as adView
 import kotlinx.android.synthetic.main.activity_navigation.bottom_navigation as bottomNavigation
 import kotlinx.android.synthetic.main.activity_navigation.drawer_layout as drawerLayout
