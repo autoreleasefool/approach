@@ -258,6 +258,10 @@ class GameFragment : BaseFragment(),
                 pinLayout.updatePinImage(index, pin.isDown)
             }
 
+            // Update next/prev frame buttons
+            gameHeader.hasPreviousFrame = !gameState.isFirstBall && !gameState.currentGame.isManual
+            gameHeader.hasNextFrame = delegate?.isFabEnabled == true
+
             // Set which pins are enabled/disabled
             if (gameState.currentGame.isLocked) {
                 for (i in 0 until Game.NUMBER_OF_PINS) { pinLayout.setPinEnabled(i, false) }
@@ -466,8 +470,6 @@ class GameFragment : BaseFragment(),
             render(ballChanged = true)
             invalidateFab()
 
-            gameHeader.hasPreviousFrame = !gameState.isFirstBall && !gameState.currentGame.isManual
-            gameHeader.hasNextFrame = delegate?.isFabEnabled == true
             if (gameState.isLastBall) {
                 autoEventController.delay(GameAutoEventController.AutoEvent.Lock)
             } else {
