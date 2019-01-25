@@ -1,5 +1,12 @@
 # Most recent version
 
+## v3.1.2
+```
+- Fixed a crash some users experienced when trying to open a game
+```
+
+# Legacy versions
+
 ## v3.1.1
 ```
 This version contains a bunch of bug fixes! Here's just a few:
@@ -7,8 +14,6 @@ This version contains a bunch of bug fixes! Here's just a few:
 - Fixed sharing games through the game overview
 - Prevented scores from dropping below zero when there are too many fouls
 ```
-
-# Legacy versions
 
 ## v3.1.0
 ```
