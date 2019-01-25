@@ -1,3 +1,6 @@
+<b>v3.1.2</b>
+- Fixed a crash some users experienced when trying to open a game
+
 <b>v3.1.1</b>
 This version contains a bunch of bug fixes! Here's just a few:
 - Creating or opening an event should no longer crash the app

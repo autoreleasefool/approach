@@ -185,7 +185,7 @@ class StatisticGraphFragment : BaseFragment(),
         val context = context ?: return
         launch(Android) {
             val (graphLines, graphLabels) = unit.getStatisticGraphData(context, statisticId, switchAccumulate.isChecked).await()
-            if (graphLines[0].entries.size <= 1 || graphLabels.size <= 1) {
+            if (graphLines.isEmpty() || graphLines[0].entries.size <= 1 || graphLabels.size <= 1) {
                 return@launch
             }
 
