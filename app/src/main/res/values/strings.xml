@@ -471,7 +471,7 @@
     <string name="facebook_page">https://www.facebook.com/BowlingCompanion/</string>
     <string name="play_store_link">https://play.google.com/store/apps/details?id=ca.josephroque.bowlingcompanion</string>
     <string name="developer_website">http://josephroque.ca</string>
-    <string name="open_source_repository">https://github.com/josephroqueca/bowling-companion</string>
+    <string name="open_source_repository">https://github.com/josephroquedev/bowling-companion</string>
     <string name="privacy_policy">https://www.iubenda.com/privacy-policy/78686355</string>
 
     <!-- General preferences -->
