@@ -461,16 +461,17 @@
 
     <!-- Email -->
     <string name="send_email">Send email&#8230;</string>
-    <string name="feedback_email_recipient">contact@josephroque.ca</string>
+    <string name="feedback_email_recipient_name">contact</string>
+    <string name="feedback_email_recipient_domain">josephroque</string>
+    <string name="feedback_email_recipient_tld">dev</string>
     <string name="feedback_email_subject">Comm/Sug: Bowling Companion (%d)</string>
-    <string name="bug_email_recipient">contact@josephroque.ca</string>
     <string name="bug_email_subject">Bug: Bowling Companion (%d)</string>
     <string name="bug_email_body">Please try to include as much of the following information as possible:\nWhere in the application the bug occurred,\nWhat you were doing when the bug occurred,\nThe nature of the bug - fatal, minor, cosmetic (the way the app looks)</string>
 
     <!-- Websites -->
     <string name="facebook_page">https://www.facebook.com/BowlingCompanion/</string>
     <string name="play_store_link">https://play.google.com/store/apps/details?id=ca.josephroque.bowlingcompanion</string>
-    <string name="developer_website">http://josephroque.ca</string>
+    <string name="developer_website">https://josephroque.dev</string>
     <string name="open_source_repository">https://github.com/josephroquedev/bowling-companion</string>
     <string name="privacy_policy">https://www.iubenda.com/privacy-policy/78686355</string>
 

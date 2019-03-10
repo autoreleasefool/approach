@@ -50,9 +50,13 @@ abstract class BaseActivity : AppCompatActivity() {
     // MARK: BaseActivity
 
     fun prepareFeedbackEmail() {
+        val emailName = resources.getString(R.string.feedback_email_recipient_name);
+        val emailDomain = resources.getString(R.string.feedback_email_recipient_domain);
+        val emailTld = resources.getString(R.string.feedback_email_recipient_tld);
+
         Email.sendEmail(
                 this,
-                resources.getString(R.string.feedback_email_recipient),
+                "$emailName@$emailDomain.$emailTld",
                 String.format(resources.getString(R.string.feedback_email_subject), BuildConfig.VERSION_CODE),
                 null
         )

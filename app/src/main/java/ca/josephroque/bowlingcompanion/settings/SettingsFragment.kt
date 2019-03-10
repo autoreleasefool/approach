@@ -135,10 +135,14 @@ class SettingsFragment : PreferenceFragmentCompat(),
     // MARK: Private function
 
     private fun sendBugReportEmail() {
+        val emailName = resources.getString(R.string.feedback_email_recipient_name);
+        val emailDomain = resources.getString(R.string.feedback_email_recipient_domain);
+        val emailTld = resources.getString(R.string.feedback_email_recipient_tld);
+
         activity?.let {
             Email.sendEmail(
                     it,
-                    resources.getString(R.string.bug_email_recipient),
+                    "$emailName@$emailDomain.$emailTld",
                     resources.getString(R.string.bug_email_subject),
                     resources.getString(R.string.bug_email_body)
             )
@@ -148,10 +152,14 @@ class SettingsFragment : PreferenceFragmentCompat(),
     }
 
     private fun sendFeedbackEmail() {
+        val emailName = resources.getString(R.string.feedback_email_recipient_name);
+        val emailDomain = resources.getString(R.string.feedback_email_recipient_domain);
+        val emailTld = resources.getString(R.string.feedback_email_recipient_tld);
+
         activity?.let {
             Email.sendEmail(
                     it,
-                    resources.getString(R.string.feedback_email_recipient),
+                    "$emailName@$emailDomain.$emailTld",
                     resources.getString(R.string.feedback_email_subject),
                     null
             )
