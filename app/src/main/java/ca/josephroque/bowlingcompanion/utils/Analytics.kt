@@ -1,3 +1,5 @@
+@file:Suppress("UNUSED_PARAMETER")
+
 package ca.josephroque.bowlingcompanion.utils
 
 import android.content.Context
@@ -5,7 +7,6 @@ import ca.josephroque.bowlingcompanion.BuildConfig
 import ca.josephroque.bowlingcompanion.bowlers.Bowler
 import ca.josephroque.bowlingcompanion.leagues.League
 import ca.josephroque.bowlingcompanion.series.Series
-import com.mixpanel.android.mpmetrics.MixpanelAPI
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -29,7 +30,6 @@ class Analytics private constructor() {
 
         fun initialize(context: Context) {
             assert(!dangerousInstance.disableTracking) { "You cannot initialize analytics once tracking has been disabled." }
-            dangerousInstance.mixpanel = MixpanelAPI.getInstance(context, BuildConfig.MIXPANEL_TOKEN)
             dangerousInstance.initialized = true
         }
 
@@ -47,345 +47,142 @@ class Analytics private constructor() {
 
         // MARK: Team events
 
-        fun trackSelectTeam() {
-            if (instance.disableTracking) return
-            instance.mixpanel.track("Teams - Selected")
-        }
+        fun trackSelectTeam() {}
 
-        fun trackCreateTeam(numberOfMembers: Int) {
-            if (instance.disableTracking) return
-            val properties: MutableMap<String, Any> = hashMapOf("Members" to numberOfMembers.toString())
-            instance.mixpanel.trackMap("Teams - Create", properties)
-        }
+        fun trackCreateTeam(numberOfMembers: Int) {}
 
-        fun trackDeleteTeam() {
-            if (instance.disableTracking) return
-            instance.mixpanel.track("Teams - Deleted")
-        }
+        fun trackDeleteTeam() {}
 
-        fun trackEditTeam() {
-            if (instance.disableTracking) return
-            instance.mixpanel.track("Teams - Edited")
-        }
+        fun trackEditTeam() {}
 
-        fun trackReorderTeamMembers() {
-            if (instance.disableTracking) return
-            instance.mixpanel.track("Teams - Reorder")
-        }
+        fun trackReorderTeamMembers() {}
 
         // MARK: Bowler events
 
-        fun trackSelectBowler() {
-            if (instance.disableTracking) return
-            instance.mixpanel.track("Bowlers - Select")
-        }
+        fun trackSelectBowler() {}
 
-        fun trackCreateBowler() {
-            if (instance.disableTracking) return
-            instance.mixpanel.track("Bowlers - Create")
-        }
+        fun trackCreateBowler() {}
 
-        fun trackDeleteBowler() {
-            if (instance.disableTracking) return
-            instance.mixpanel.track("Bowlers - Delete")
-        }
+        fun trackDeleteBowler() {}
 
-        fun trackEditBowler() {
-            if (instance.disableTracking) return
-            instance.mixpanel.track("Bowlers - Edit")
-        }
+        fun trackEditBowler() {}
 
-        fun trackSortedBowlers(order: Bowler.Companion.Sort) {
-            if (instance.disableTracking) return
-            val properties: MutableMap<String, Any> = hashMapOf("Sort" to order.name)
-            instance.mixpanel.trackMap("Bowlers - Sorted", properties)
-        }
+        fun trackSortedBowlers(order: Bowler.Companion.Sort) {}
 
         // MARK: League events
 
-        fun trackSelectLeague(isPractice: Boolean, isEvent: Boolean) {
-            if (instance.disableTracking) return
-            val properties: MutableMap<String, Any> = hashMapOf(
-                    "Practice" to isPractice.toString(),
-                    "Event" to isEvent.toString()
-            )
-            instance.mixpanel.trackMap("Leagues - Select", properties)
-        }
+        fun trackSelectLeague(isPractice: Boolean, isEvent: Boolean) {}
 
-        fun trackCreateLeague(isEvent: Boolean, numberOfGames: Int, hasAdditionalInfo: Boolean) {
-            if (instance.disableTracking) return
-            val properties: MutableMap<String, Any> = hashMapOf(
-                    "Event" to isEvent.toString(),
-                    "Games" to numberOfGames.toString(),
-                    "Additional Info" to hasAdditionalInfo.toString()
-            )
-            instance.mixpanel.trackMap("Leagues - Create", properties)
-        }
+        fun trackCreateLeague(isEvent: Boolean, numberOfGames: Int, hasAdditionalInfo: Boolean) {}
 
-        fun trackDeleteLeague() {
-            if (instance.disableTracking) return
-            instance.mixpanel.track("Leagues - Delete")
-        }
+        fun trackDeleteLeague() {}
 
-        fun trackEditLeague() {
-            if (instance.disableTracking) return
-            instance.mixpanel.track("Leagues - Edit")
-        }
+        fun trackEditLeague() {}
 
-        fun trackSortedLeagues(order: League.Companion.Sort) {
-            if (instance.disableTracking) return
-            val properties: MutableMap<String, Any> = hashMapOf("Sort" to order.name)
-            instance.mixpanel.trackMap("Leagues - Sorted", properties)
-        }
+        fun trackSortedLeagues(order: League.Companion.Sort) {}
 
         // MARK: Series events
 
-        fun trackSelectSeries() {
-            if (instance.disableTracking) return
-            instance.mixpanel.track("Series - Select")
-        }
+        fun trackSelectSeries() {}
 
-        fun trackCreateSeries() {
-            if (instance.disableTracking) return
-            instance.mixpanel.track("Series - Create")
-        }
+        fun trackCreateSeries() {}
 
-        fun trackDeleteSeries() {
-            if (instance.disableTracking) return
-            instance.mixpanel.track("Series - Delete")
-        }
+        fun trackDeleteSeries() {}
 
-        fun trackEditSeries() {
-            if (instance.disableTracking) return
-            instance.mixpanel.track("Series - Edit")
-        }
+        fun trackEditSeries() {}
 
-        fun trackToggledSeriesView(view: Series.Companion.View) {
-            if (instance.disableTracking) return
-            val properties: MutableMap<String, Any> = hashMapOf("View" to view.name)
-            instance.mixpanel.trackMap("Series - Toggled View", properties)
-        }
+        fun trackToggledSeriesView(view: Series.Companion.View) {}
 
         // MARK: Game events
 
-        fun trackChangedGame() {
-            if (instance.disableTracking) return
-            instance.mixpanel.track("Game - Select")
-        }
+        fun trackChangedGame() {}
 
-        fun trackSetGameManualScore() {
-            if (instance.disableTracking) return
-            instance.mixpanel.track("Games - Manual Score")
-        }
+        fun trackSetGameManualScore() {}
 
-        fun trackLockGame() {
-            if (instance.disableTracking) return
-            instance.mixpanel.track("Games - Locked")
-        }
+        fun trackLockGame() {}
 
-        fun trackViewPossibleScore(possibleScore: Int, frame: Int) {
-            if (instance.disableTracking) return
-            val properties: MutableMap<String, Any> = hashMapOf(
-                    "Score" to possibleScore.toString(),
-                    "Frame" to frame.toString()
-            )
-            instance.mixpanel.trackMap("Games - View Possible Score", properties)
-        }
+        fun trackViewPossibleScore(possibleScore: Int, frame: Int) {}
 
-        fun trackResetGame() {
-            if (instance.disableTracking) return
-            instance.mixpanel.track("Games - Reset")
-        }
+        fun trackResetGame() {}
 
         // MARK: Match Play events
 
-        fun trackRecordMatchPlay() {
-            if (instance.disableTracking) return
-            instance.mixpanel.track("Match Play - Record")
-        }
+        fun trackRecordMatchPlay() {}
 
         // MARK: Statistics events
 
-        fun trackViewStatisticsList() {
-            if (instance.disableTracking) return
-            instance.mixpanel.track("Statistics - View List")
-        }
+        fun trackViewStatisticsList() {}
 
-        fun trackStatisticsLoaded(time: EventTime) {
-            if (instance.disableTracking) return
-            val eventName = "Statistics - Load"
-            when (time) {
-                EventTime.Begin -> instance.mixpanel.timeEvent(eventName)
-                EventTime.End -> instance.mixpanel.track(eventName)
-            }
-        }
+        fun trackStatisticsLoaded(time: EventTime) {}
 
-        fun trackViewStatisticsGraph(statisticName: String) {
-            if (instance.disableTracking) return
-            val properties: MutableMap<String, Any> = hashMapOf("Statistic" to statisticName)
-            instance.mixpanel.trackMap("Statistics - View Graph", properties)
-        }
+        fun trackViewStatisticsGraph(statisticName: String) {}
 
         // MARK: Transfer events
 
-        fun trackViewTransferMenu() {
-            if (instance.disableTracking) return
-            instance.mixpanel.track("Transfer - View")
-        }
+        fun trackViewTransferMenu() {}
 
-        fun trackTransferExport(time: EventTime) {
-            if (instance.disableTracking) return
-            val eventName = "Transfer - Export"
-            when (time) {
-                EventTime.Begin -> instance.mixpanel.timeEvent(eventName)
-                EventTime.End -> instance.mixpanel.track(eventName)
-            }
-        }
+        fun trackTransferExport(time: EventTime) {}
 
-        fun trackTransferImport(time: EventTime) {
-            if (instance.disableTracking) return
-            val eventName = "Transfer - Import"
-            when (time) {
-                EventTime.Begin -> instance.mixpanel.timeEvent(eventName)
-                EventTime.End -> instance.mixpanel.track(eventName)
-            }
-        }
+        fun trackTransferImport(time: EventTime) {}
 
-        fun trackTransferRestoreBackup() {
-            if (instance.disableTracking) return
-            instance.mixpanel.track("Transfer - Restore Backup")
-        }
+        fun trackTransferRestoreBackup() {}
 
-        fun trackTransferDeleteBackup() {
-            if (instance.disableTracking) return
-            instance.mixpanel.track("Transfer - Delete Backup")
-        }
+        fun trackTransferDeleteBackup() {}
 
         // MARK: Settings
 
-        fun trackViewSettings() {
-            if (instance.disableTracking) return
-            instance.mixpanel.track("Settings - View")
-        }
+        fun trackViewSettings() {}
 
-        fun trackEnableAutoAdvance() {
-            if (instance.disableTracking) return
-            instance.mixpanel.track("Auto Advance - Enable")
-        }
+        fun trackEnableAutoAdvance() {}
 
-        fun trackDisableAutoAdvance() {
-            if (instance.disableTracking) return
-            instance.mixpanel.track("Auto Advance - Disable")
-        }
+        fun trackDisableAutoAdvance() {}
 
-        fun trackEnableAutoLock() {
-            if (instance.disableTracking) return
-            instance.mixpanel.track("Auto Lock - Enable")
-        }
+        fun trackEnableAutoLock() {}
 
-        fun trackDisableAutoLock() {
-            if (instance.disableTracking) return
-            instance.mixpanel.track("Auto Lock - Disable")
-        }
+        fun trackDisableAutoLock() {}
 
-        fun trackRate() {
-            if (instance.disableTracking) return
-            instance.mixpanel.track("Settings - Rate")
-        }
+        fun trackRate() {}
 
-        fun trackReportBug() {
-            if (instance.disableTracking) return
-            instance.mixpanel.track("Settings - Report Bug")
-        }
+        fun trackReportBug() {}
 
-        fun trackSendFeedback() {
-            if (instance.disableTracking) return
-            instance.mixpanel.track("Settings - Send Feedback")
-        }
+        fun trackSendFeedback() {}
 
-        fun trackViewFacebook() {
-            if (instance.disableTracking) return
-            instance.mixpanel.track("Settings - View Facebook")
-        }
+        fun trackViewFacebook() {}
 
-        fun trackViewWebsite() {
-            if (instance.disableTracking) return
-            instance.mixpanel.track("Settings - View Website")
-        }
+        fun trackViewWebsite() {}
 
-        fun trackViewSource() {
-            if (instance.disableTracking) return
-            instance.mixpanel.track("Settings - View Source")
-        }
+        fun trackViewSource() {}
 
-        fun trackViewAttributions() {
-            if (instance.disableTracking) return
-            instance.mixpanel.track("Settings - View Attributions")
-        }
+        fun trackViewAttributions() {}
 
-        fun trackViewPrivacyPolicy() {
-            if (instance.disableTracking) return
-            instance.mixpanel.track("Settings - View Privacy Policy")
-        }
+        fun trackViewPrivacyPolicy() {}
 
         // MARK: App Rate events
 
-        fun trackViewAppRateDialog() {
-            if (instance.disableTracking) return
-            instance.mixpanel.track("App Rater - View")
-        }
+        fun trackViewAppRateDialog() {}
 
-        fun trackAppRateDialogRate() {
-            if (instance.disableTracking) return
-            instance.mixpanel.track("App Rater - Rate")
-        }
+        fun trackAppRateDialogRate() {}
 
-        fun trackAppRateDialogIgnore() {
-            if (instance.disableTracking) return
-            instance.mixpanel.track("App Rater - Ignore")
-        }
+        fun trackAppRateDialogIgnore() {}
 
-        fun trackAppRateDialogDisable() {
-            if (instance.disableTracking) return
-            instance.mixpanel.track("App Rater - Disable")
-        }
+        fun trackAppRateDialogDisable() {}
 
         // MARK: Sharing
 
-        fun trackViewOverview() {
-            if (instance.disableTracking) return
-            instance.mixpanel.track("Overview - View")
-        }
+        fun trackViewOverview() {}
 
-        fun trackShareImage(numberOfGames: Int) {
-            if (instance.disableTracking) return
-            val properties: MutableMap<String, Any> = hashMapOf("Number of games" to numberOfGames)
-            instance.mixpanel.trackMap("Share - Share Game", properties)
-        }
+        fun trackShareImage(numberOfGames: Int) {}
 
-        fun trackSaveImage(numberOfGames: Int) {
-            if (instance.disableTracking) return
-            val properties: MutableMap<String, Any> = hashMapOf("Number of games" to numberOfGames)
-            instance.mixpanel.trackMap("Share - Save Game", properties)
-        }
+        fun trackSaveImage(numberOfGames: Int) {}
 
-        fun trackSaveImageFailed(numberOfGames: Int) {
-            if (instance.disableTracking) return
-            val properties: MutableMap<String, Any> = hashMapOf("Number of games" to numberOfGames)
-            instance.mixpanel.trackMap("Share - Save Game Failed", properties)
-        }
+        fun trackSaveImageFailed(numberOfGames: Int) {}
 
         // MARK: Other
 
-        fun flush() {
-            if (instance.disableTracking) return
-            instance.mixpanel.flush()
-        }
+        fun flush() {}
     }
 
     private var initialized: Boolean = false
 
     private var disableTracking: Boolean = false
-
-    private lateinit var mixpanel: MixpanelAPI
 }

@@ -74,8 +74,6 @@ dependencies {
     implementation 'com.ncapdevi:frag-nav:2.4.0' // https://github.com/ncapdevi/FragNav
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3' // https://github.com/PhilJay/MPAndroidChart
 
-    implementation 'com.mixpanel.android:mixpanel-android:5.4.4' // https://github.com/mixpanel/mixpanel-android
-
     testImplementation 'junit:junit:4.12'
 
     androidTestImplementation 'com.android.support.test:runner:1.0.2'

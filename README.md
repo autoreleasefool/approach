@@ -24,7 +24,6 @@ Internet access - Allows the app to display ads. We do not ask for or store any 
 ## How to Run
 1. Clone project ```git clone https://github.com/josephroquedev/bowling-companion.git```
 2. Import the project into Android Studio.
-3. Either provide a [Mixpanel](https://mixpanel.com) token in `app/src/debug/res/values/secrets/xml` or change `NavigationActivity.onCreate` to call `Analytics.disableTracking()` instead of `Analytics.initialize()`
 
 ## Screenshots
 
