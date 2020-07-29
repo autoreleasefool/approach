@@ -55,7 +55,7 @@ Internet access - Allows the app to display ads. We do not ask for or store any 
 ## License
 
 ```
-Copyright 2015-2019 Joseph Roque
+Copyright 2015 Joseph Roque
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
