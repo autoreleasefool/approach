@@ -22,20 +22,9 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintTop_toBottomOf="@id/toolbar"
-            app:layout_constraintBottom_toTopOf="@id/ad_view"
+            app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintLeft_toLeftOf="parent" />
-
-        <com.google.android.gms.ads.AdView
-            xmlns:ads="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/ad_view"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            ads:layout_constraintBottom_toTopOf="@id/bottom_navigation"
-            ads:adSize="BANNER"
-            ads:adUnitId="@string/BANNER_AD_UNIT_ID" />
 
         <android.support.design.widget.BottomNavigationView
             android:id="@+id/bottom_navigation"
@@ -53,7 +42,8 @@
         <android.support.design.widget.FloatingActionButton
             style="@style/FloatingActionButton"
             android:id="@+id/fab"
-            app:layout_constraintBottom_toTopOf="@id/ad_view" />
+            app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
+            app:layout_constraintRight_toRightOf="parent" />
 
     </android.support.constraint.ConstraintLayout>
     

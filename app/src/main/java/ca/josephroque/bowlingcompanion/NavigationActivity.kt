@@ -30,15 +30,12 @@ import ca.josephroque.bowlingcompanion.utils.StartupManager
 import ca.josephroque.bowlingcompanion.utils.isVisible
 import com.ncapdevi.fragnav.FragNavController
 import com.ncapdevi.fragnav.FragNavTransactionOptions
-import kotlinx.android.synthetic.main.activity_navigation.ad_view as adView
 import kotlinx.android.synthetic.main.activity_navigation.bottom_navigation as bottomNavigation
 import kotlinx.android.synthetic.main.activity_navigation.drawer_layout as drawerLayout
 import kotlinx.android.synthetic.main.activity_navigation.fab as fab
 import kotlinx.android.synthetic.main.activity_navigation.nav_drawer as navDrawer
 import kotlinx.android.synthetic.main.activity_navigation.toolbar as toolbar
 import java.lang.ref.WeakReference
-import com.google.android.gms.ads.AdListener
-import com.google.android.gms.ads.AdRequest
 
 /**
  * Copyright (C) 2018 Joseph Roque
@@ -139,18 +136,7 @@ class NavigationActivity : BaseActivity(),
         setupBottomNavigation()
         setupFab()
         setupFragNavController(savedInstanceState)
-        setupAdView()
         StartupManager.start(this)
-    }
-
-    override fun onResume() {
-        super.onResume()
-        adView.resume()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        adView.pause()
     }
 
     override fun onStop() {
@@ -163,7 +149,6 @@ class NavigationActivity : BaseActivity(),
     override fun onDestroy() {
         super.onDestroy()
         Analytics.flush()
-        adView.destroy()
     }
 
     override fun onBackPressed() {
@@ -437,32 +422,6 @@ class NavigationActivity : BaseActivity(),
                 .transactionListener(this@NavigationActivity)
         // FIXME: look into .fragmentHideStrategy(FragNavController.HIDE), .eager(true)
         fragNavController = builder.build()
-    }
-
-    private fun setupAdView() {
-        adView.adListener = object : AdListener() {
-            override fun onAdFailedToLoad(errorCode: Int) {
-                runOnUiThread {
-                    adView.destroy()
-                    adView.visibility = View.GONE
-                }
-            }
-
-            override fun onAdLoaded() {
-                runOnUiThread {
-                    adView.visibility = View.VISIBLE
-                }
-            }
-        }
-
-        val builder = AdRequest.Builder()
-                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
-                .addTestDevice("B3EEABB8EE11C2BE770B684D95219ECB")
-                .addTestDevice("F2B8E706AC77AA09B97D016DB70BF723")
-                .addTestDevice("7387C5A63BE83E951937A7F2842F6C28")
-                .addTestDevice("699FFDF176FEE8F8B6AD7E3D322A43AB")
-
-        adView.loadAd(builder.build())
     }
 
     private fun popBackTo(fragmentName: String) {
