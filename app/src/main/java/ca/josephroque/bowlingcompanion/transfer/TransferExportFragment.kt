@@ -1,19 +1,18 @@
 package ca.josephroque.bowlingcompanion.transfer
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.support.v4.content.FileProvider
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import ca.josephroque.bowlingcompanion.BuildConfig
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.Android
-import ca.josephroque.bowlingcompanion.utils.Analytics
-import kotlinx.android.synthetic.main.dialog_transfer_export.export_status as exportStatus
-import kotlinx.android.synthetic.main.dialog_transfer_export.export_next_step as exportNextStep
-import kotlinx.android.synthetic.main.dialog_transfer_export.btn_cancel as cancelButton
-import kotlinx.android.synthetic.main.dialog_transfer_export.btn_export as exportButton
-import kotlinx.android.synthetic.main.dialog_transfer_export.progress as progressView
-import kotlinx.android.synthetic.main.dialog_transfer_export.view.*
-import kotlinx.coroutines.experimental.Job
+import ca.josephroque.bowlingcompanion.utils.BCError
+import kotlinx.android.synthetic.main.dialog_transfer_export.view.btn_export
+import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.launch
 
 /**
@@ -32,16 +31,10 @@ class TransferExportFragment : BaseTransferFragment() {
         }
     }
 
-    private var exportJob: Job? = null
-
     private val onClickListener = View.OnClickListener {
         when (it.id) {
             R.id.btn_export -> {
                 exportUserData()
-            }
-            R.id.btn_cancel -> {
-                exportJob?.cancel()
-                exportJob = null
             }
         }
     }
@@ -49,7 +42,7 @@ class TransferExportFragment : BaseTransferFragment() {
     // MARK: BaseTransferFragment
 
     override val toolbarTitle = R.string.export
-    override val isBackEnabled = exportJob == null
+    override val isBackEnabled = true
 
     // MARK: Lifecycle functions
 
@@ -57,72 +50,36 @@ class TransferExportFragment : BaseTransferFragment() {
         val view = inflater.inflate(R.layout.dialog_transfer_export, container, false)
 
         view.btn_export.setOnClickListener(onClickListener)
-        view.btn_cancel.setOnClickListener(onClickListener)
 
         return view
     }
 
     // MARK: Private functions
 
-    private fun getServerConnection(): TransferServerConnection? {
-        val context = this@TransferExportFragment.context ?: return null
-        return TransferServerConnection.openConnection(context).apply {
-            this.progressView = this@TransferExportFragment.progressView
-            this.cancelButton = this@TransferExportFragment.cancelButton
-        }
-    }
-
-    private fun exportFailed() {
-        exportButton.visibility = View.VISIBLE
-        exportNextStep.visibility = View.GONE
-        exportStatus.apply {
-            text = resources.getString(R.string.export_upload_failed)
-            visibility = View.VISIBLE
-        }
-    }
-
-    private fun exportSucceeded(serverResponse: String) {
-        val requestIdRegex = "requestId:(.*)".toRegex()
-        val key = requestIdRegex.matchEntire(serverResponse)?.groups?.get(1)?.value
-        if (key == null) {
-            exportFailed()
-            return
-        }
-
-        exportNextStep.visibility = View.VISIBLE
-        exportStatus.apply {
-            text = resources.getString(R.string.export_upload_complete, key)
-            visibility = View.VISIBLE
-        }
-    }
-
     private fun exportUserData() {
-        exportJob = Job()
+        launch(CommonPool) {
+            val context = this@TransferExportFragment.context ?: return@launch
+            val userData = UserData(context)
 
-        launch(Android) {
-            Analytics.trackTransferExport(Analytics.Companion.EventTime.Begin)
-            try {
-                val parentJob = exportJob ?: return@launch
-                val connection = getServerConnection() ?: return@launch
-
-                exportButton.visibility = View.GONE
-                exportStatus.visibility = View.GONE
-
-                if (!connection.prepareConnection(parentJob).await()) {
-                    exportFailed()
+            if (!userData.exportData().await()) {
+                launch(Android) {
+                    BCError(R.string.export_error, R.string.error_data_export_failed, BCError.Severity.Error).show(context)
                 }
+                return@launch
+            }
 
-                val serverResponse = connection.uploadUserData(parentJob).await()
-                exportJob = null
-                if (serverResponse.isNullOrEmpty()) {
-                    exportFailed()
-                } else {
-                    exportSucceeded(serverResponse!!)
-                }
-            } catch (ex: Exception) {
-                exportFailed()
-            } finally {
-                Analytics.trackTransferExport(Analytics.Companion.EventTime.End)
+            val contentUri = FileProvider.getUriForFile(
+                context,
+                "${BuildConfig.APPLICATION_ID}.transfer.TransferExportFileProvider",
+                userData.exportFile)
+
+            val intent = Intent(Intent.ACTION_SEND)
+            intent.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+            intent.type = "application/octet-stream"
+            intent.putExtra(Intent.EXTRA_STREAM, contentUri)
+
+            launch(Android) {
+                startActivity(intent)
             }
         }
     }

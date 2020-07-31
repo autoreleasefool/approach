@@ -47,6 +47,16 @@
                 android:resource="@xml/provider_path_game_overview" />
         </provider>
 
+        <provider
+            android:name=".transfer.TransferExportFileProvider"
+            android:authorities="${applicationId}.transfer.TransferExportFileProvider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_path_data_export" />
+        </provider>
+
     </application>
 
 </manifest>

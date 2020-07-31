@@ -41,6 +41,8 @@ object Files {
                 dest.delete()
             }
 
+            dest.parentFile.mkdirs()
+
             var inputStream: InputStream? = null
             var outputStream: OutputStream? = null
 

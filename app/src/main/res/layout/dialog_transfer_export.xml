@@ -11,12 +11,6 @@
             style="@style/BodyText"
             android:text="@string/transfer_export_instructions" />
 
-        <ca.josephroque.bowlingcompanion.transfer.view.ProgressView
-            android:id="@+id/progress"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone" />
-
         <TextView
             style="@style/BodyText"
             android:id="@+id/export_status"
@@ -33,14 +27,7 @@
         <Button
             style="@style/PrimaryButton"
             android:id="@+id/btn_export"
-            android:text="@string/begin" />
-
-        <Button
-            style="@style/DeleteButton"
-            android:id="@+id/btn_cancel"
-            android:text="@string/cancel"
-            android:visibility="gone"
-            tools:ignore="ButtonOrder" />
+            android:text="@string/export" />
 
     </LinearLayout>
 

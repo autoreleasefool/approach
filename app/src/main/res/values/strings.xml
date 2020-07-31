@@ -53,7 +53,7 @@
     <!-- Transfer -->
     <string name="transfer_data">Transfer data</string>
     <string name="restore_or_delete">Restore or Delete</string>
-    <string name="transfer_instructions_p1">This tool allows you to transfer your bowling data to a new device. Your data will be uploaded anonymously, and you can later download it onto a new device. Your data will be available to download for 1 hour to give you ample time to transfer to a new device.</string>
+    <string name="transfer_instructions_p1">This tool allows you to transfer your bowling data to a new device. Follow the first step on your old device, and the second and third steps on your new device.</string>
     <string name="transfer_instructions_p2">After you have imported the data on your new device, be sure to delete the backup.</string>
     <string name="transfer_step_1">1.\u00A0Export</string>
     <string name="transfer_step_2">2.\u00A0Import</string>
@@ -63,11 +63,9 @@
 
     <!-- Transfer: exports -->
     <string name="export">Export</string>
-    <string name="transfer_export_instructions">Press \'Begin\' to upload your bowling data. When the upload finishes, you will receive a unique code that will allow you to download the data on a different device.</string>
+    <string name="send_to">Send to</string>
+    <string name="transfer_export_instructions">Press \'Begin\' to generate a file containing your bowling data. Save this file somewhere that you can access on your new device, such as in Google Drive, Dropbox, or some other cloud storage application.</string>
     <string name="export_next_step">On your other device, open this menu and select option "2.\u00A0Import"</string>
-    <string name="export_upload_complete">Upload complete! Your code:\n%s</string>
-    <string name="export_upload_failed">Upload failed! Please try again.</string>
-    <string name="uploading">Uploading…</string>
 
     <!-- Transfer: imports -->
     <string name="data_import">Import</string>
@@ -90,17 +88,15 @@
     <string name="no_backup_exists">There is no backup file to restore or delete. Have you imported your data yet? Did you already delete your backup?</string>
 
     <!-- Transfer errors -->
-    <string name="error_no_internet">Could not connect to the Internet</string>
-    <string name="error_invalid_key">This key is invalid.</string>
-    <string name="error_server_unavailable">The server is unavailable, please try again later</string>
-    <string name="error_timeout">Took too long to reach the server, please try again later</string>
     <string name="error_cancelled">Transfer cancelled</string>
     <string name="error_file_not_found">Your data could not be found</string>
     <string name="error_out_of_memory">The application ran out of memory while transferring</string>
     <string name="error_unknown">An unknown error occurred</string>
     <string name="import_error">Import error</string>
-    <string name="error_data_backup_failed">Your data could not be backed up before being overwritten, so the process has been cancelled. You can try downloading your data again, or reset the app if it still isn\'t working.</string>
-    <string name="error_overwrite_data_failed">You data could not be overwritten, so the process has been cancelled. You can try downloading you data again, or reset the app if it still isn\'t working.</string>
+    <string name="export_error">Export error</string>
+    <string name="error_data_export_failed">Your data could not be exported. You can try exporting your data again, or restart the app if it still isn\t working.</string>
+    <string name="error_data_backup_failed">Your data could not be backed up before being overwritten, so the process has been cancelled. You can try importing your data again, or restart the app if it still isn\'t working.</string>
+    <string name="error_overwrite_data_failed">You data could not be overwritten, so the process has been cancelled. You can try importing your data again, or restart the app if it still isn\'t working.</string>
     <string name="error_delete_backup_failed_title">Deleting backup failed</string>
     <string name="error_delete_backup_failed_message">The data backup could not be deleted. This might be because it no longer exists.</string>
     <string name="error_restore_backup_failed_title">Restoring backup failed</string>
