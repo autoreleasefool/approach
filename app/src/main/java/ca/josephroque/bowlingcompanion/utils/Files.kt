@@ -34,7 +34,7 @@ object Files {
         return null
     }
 
-    fun copyFile(source: File, dest: File): Deferred<Boolean> {
+    fun copyFile(source: InputStream, dest: File): Deferred<Boolean> {
         val bufferSize = 1024
         return async(CommonPool) {
             if (dest.exists()) {
@@ -47,7 +47,7 @@ object Files {
             var outputStream: OutputStream? = null
 
             try {
-                inputStream = FileInputStream(source)
+                inputStream = source
                 outputStream = FileOutputStream(dest)
 
                 val buffer = ByteArray(bufferSize)
@@ -62,10 +62,30 @@ object Files {
                 Log.e(TAG, "Failed to backup file.", ex)
             } finally {
                 try {
-                    inputStream?.close()
                     outputStream?.close()
                 } catch (ex: IOException) {
-                    Log.e(TAG, "Failed to close backup streams.", ex)
+                    Log.e(TAG, "Failed to close output stream.", ex)
+                }
+            }
+
+            return@async false
+        }
+    }
+
+    fun copyFile(source: File, dest: File): Deferred<Boolean> {
+        return async(CommonPool) {
+            var inputStream: InputStream? = null
+
+            try {
+                inputStream = FileInputStream(source)
+                return@async copyFile(inputStream, dest).await()
+            } catch (ex: IOException) {
+                Log.e(TAG, "Failed to open input stream", ex)
+            } finally {
+                try {
+                    inputStream?.close()
+                } catch (ex: IOException) {
+                    Log.e(TAG, "Failed to close input stream", ex)
                 }
             }
 

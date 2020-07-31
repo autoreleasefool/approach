@@ -16,6 +16,7 @@
     <string name="sort_items">Sort items</string>
     <string name="bowl">Bowl</string>
     <string name="begin">Begin</string>
+    <string name="choose_file">Choose file</string>
 
     <!-- App rating -->
     <string name="rate_prompt">If you like this app, please consider rating\u00A0it.</string>
@@ -69,22 +70,20 @@
 
     <!-- Transfer: imports -->
     <string name="data_import">Import</string>
-    <string name="transfer_import_instructions">Enter your code below and press \'Begin\' to download your bowling data. When the download has finished, you will be prompted to load the new data, which will overwrite any other data on this device.</string>
+    <string name="import_from">Import from</string>
+    <string name="transfer_import_instructions">Open the file you created in the previous step by tapping the button below and finding it in the location you saved it. You\'ll have to make sure you\'ve saved it somewhere that this device can access.</string>
     <string name="import_next_step">After you have confirmed that the data was successfully imported, you should return to this screen and proceed with option "3.\u00A0Restore\u00A0or\u00A0delete"</string>
-    <string name="hint_code">Code</string>
-    <string name="import_download_failed">Download failed! Please try again.</string>
-    <string name="downloading">Downloading…</string>
     <string name="overwrite_data_title">Overwrite data?</string>
-    <string name="overwrite_data_message">You have downloaded a set of bowler data from another device. You can overwrite your current data, confirm it\'s correct, then return to this menu to either delete the backup or reload your old data. Are you sure you want to continue?</string>
+    <string name="overwrite_data_message">You have imported a set of bowler data from another device. You can overwrite your current data, confirm it\'s correct, then return to this menu to either delete the backup or reload your old data. Are you sure you want to continue?</string>
     <string name="overwrite">Overwrite</string>
 
     <!-- Transfer: restore or delete -->
     <string name="transfer_restore_delete_instructions">Below, you can either restore your data from the last backup, or delete your backup to ensure it won\'t take up any space on your device.</string>
     <string name="restore">Restore</string>
     <string name="restore_backup_title">Restore backup?</string>
-    <string name="restore_backup_message">Restoring your backup will overwrite the data you have downloaded, and you will need to download it again if you want to use it. Are you sure you want to restore your backup?</string>
+    <string name="restore_backup_message">Restoring your backup will overwrite the data you have imported, and you will need to import it again if you want to use it. Are you sure you want to restore your backup?</string>
     <string name="delete_backup_title">Delete backup?</string>
-    <string name="delete_backup_message">Deleting your backup will permanently erase your old data and you will not be able to recover it. Are you sure you want to continue?</string>
+    <string name="delete_backup_message">Deleting your backup will permanently erase your old data and you will not be able to recover it. If this is your new device and you have imported your old data, then this is okay! Are you sure you want to continue?</string>
     <string name="no_backup_exists">There is no backup file to restore or delete. Have you imported your data yet? Did you already delete your backup?</string>
 
     <!-- Transfer errors -->
@@ -94,6 +93,8 @@
     <string name="error_unknown">An unknown error occurred</string>
     <string name="import_error">Import error</string>
     <string name="export_error">Export error</string>
+    <string name="error_data_import_invalid">The selected file does not appear to be valid data for the Bowling Companion. Please select another file, or try exporting your data from your old device again.</string>
+    <string name="error_data_import_failed">Your data could not be imported. Please select another file, or try exporting your data from your old device again.</string>
     <string name="error_data_export_failed">Your data could not be exported. You can try exporting your data again, or restart the app if it still isn\t working.</string>
     <string name="error_data_backup_failed">Your data could not be backed up before being overwritten, so the process has been cancelled. You can try importing your data again, or restart the app if it still isn\'t working.</string>
     <string name="error_overwrite_data_failed">You data could not be overwritten, so the process has been cancelled. You can try importing your data again, or restart the app if it still isn\'t working.</string>

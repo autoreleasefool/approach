@@ -18,43 +18,60 @@ class UserData(context: Context) {
 
     private val context: WeakReference<Context> = WeakReference(context)
 
-    val dataFile by lazy { File(dataPath) }
-    private val dataPath by lazy {
+    val sourceFile by lazy { File(sourcePath) }
+    private val sourcePath by lazy {
         this@UserData.context.get()?.getDatabasePath(DatabaseHelper.DATABASE_NAME)?.absolutePath
     }
 
-    val downloadFile by lazy { File(downloadPath) }
-    private val downloadPath by lazy {
-        val dbPath = this@UserData.context.get()?.filesDir?.absolutePath
-        dbPath?.let { return@lazy "${dbPath}_dl" }
+    val importFile by lazy { File(importPath) }
+    private val importPath by lazy {
+        val cacheDir = this@UserData.context.get()?.cacheDir?.absolutePath
+        cacheDir?.let { return@lazy "${it}/imports/bowling_db_import.db" }
+        return@lazy null
+    }
+
+    val exportFile by lazy { File(exportPath) }
+    private val exportPath by lazy {
+        val cacheDir = this@UserData.context.get()?.cacheDir?.absolutePath
+        cacheDir?.let { return@lazy "${it}/exports/bowling_db_export.db" }
         return@lazy null
     }
 
     val backupFile by lazy { File(backupPath) }
     private val backupPath by lazy {
-        val dbPath = this@UserData.context.get()?.filesDir?.absolutePath
-        dbPath?.let { return@lazy "${dbPath}_backup" }
+        val filesDir = this@UserData.context.get()?.filesDir?.absolutePath
+        filesDir?.let { return@lazy "${it}/bowling_db_backup.db" }
         return@lazy null
     }
 
-    fun backup(): Deferred<Boolean> {
-        return Files.copyFile(dataFile, backupFile)
+    fun exportData(): Deferred<Boolean> {
+        return Files.copyFile(sourceFile, exportFile)
     }
 
-    fun overwriteData(): Deferred<Boolean> {
+    fun overwriteDataWithImport(): Deferred<Boolean> {
         return async(CommonPool) {
-            if (downloadFile.exists()) {
-                return@async Files.copyFile(downloadFile, dataFile).await()
+            if (importFile.exists()) {
+                return@async Files.copyFile(importFile, sourceFile).await()
             }
 
             return@async false
         }
     }
 
+    fun deleteImport(): Deferred<Boolean> {
+        return async(CommonPool) {
+            return@async importFile.delete()
+        }
+    }
+
+    fun backupData(): Deferred<Boolean> {
+        return Files.copyFile(sourceFile, backupFile)
+    }
+
     fun restoreBackup(): Deferred<Boolean> {
         return async(CommonPool) {
             if (backupFile.exists()) {
-                return@async Files.copyFile(backupFile, dataFile).await()
+                return@async Files.copyFile(backupFile, sourceFile).await()
             }
 
             return@async false
@@ -64,12 +81,6 @@ class UserData(context: Context) {
     fun deleteBackup(): Deferred<Boolean> {
         return async(CommonPool) {
             return@async backupFile.delete()
-        }
-    }
-
-    fun deleteDownload(): Deferred<Boolean> {
-        return async(CommonPool) {
-            return@async downloadFile.delete()
         }
     }
 }
