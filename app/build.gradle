@@ -26,32 +26,10 @@ android {
             debuggable true
             minifyEnabled false
             applicationIdSuffix ".debug"
-
-            def apiKeys = [
-                    ["TRANSFER_SERVER_URL", "http://10.0.2.2:8080"],
-                    ["TRANSFER_API_KEY", "API_KEY_GOES_HERE"],
-                    ["MIXPANEL_TOKEN", "API_KEY_GOES_HERE"]
-            ]
-
-            apiKeys.each { key, value ->
-                buildConfigField "String", key, "\"${value}\""
-                resValue "string", key, value
-            }
         }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-
-            def apiKeys = [
-                    ["TRANSFER_SERVER_URL", "API_KEY_GOES_HERE"],
-                    ["TRANSFER_API_KEY", "API_KEY_GOES_HERE"],
-                    ["MIXPANEL_TOKEN", "API_KEY_GOES_HERE"]
-            ]
-
-            apiKeys.each { key, value ->
-                buildConfigField "String", key, "\"${value}\""
-                resValue "string", key, value
-            }
         }
     }
 }
