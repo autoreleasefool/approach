@@ -153,8 +153,6 @@ class Analytics private constructor() {
 
         fun trackViewAttributions() {}
 
-        fun trackViewPrivacyPolicy() {}
-
         // MARK: App Rate events
 
         fun trackViewAppRateDialog() {}

@@ -135,9 +135,6 @@ object Settings {
         /** Identifier for preference to display legal attribution from Open Source Software.  */
         Attributions("pref_attributions"),
 
-        /** Identifier for preference to view the app privacy policy. */
-        PrivacyPolicy("pref_view_privacy_policy"),
-
         /** Identifier for preference to show current app version.  */
         VersionName("pref_version_name");
     }

@@ -80,10 +80,6 @@ class SettingsFragment : PreferenceFragmentCompat(),
                 Analytics.trackViewSource()
                 true
             }
-            Settings.StaticSetting.PrivacyPolicy.prefName -> {
-                Analytics.trackViewPrivacyPolicy()
-                true
-            }
             else -> false // Does nothing
         }
     }

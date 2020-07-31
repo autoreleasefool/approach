@@ -469,7 +469,6 @@
     <string name="play_store_link">https://play.google.com/store/apps/details?id=ca.josephroque.bowlingcompanion</string>
     <string name="developer_website">https://josephroque.dev</string>
     <string name="open_source_repository">https://github.com/josephroquedev/bowling-companion</string>
-    <string name="privacy_policy">https://www.iubenda.com/privacy-policy/78686355</string>
 
     <!-- General preferences -->
     <string name="pref_category_general">General</string>
@@ -546,8 +545,6 @@
     <string name="pref_view_source_summary">Check out the open source repository</string>
     <string name="pref_attributions_title">Open Source Libraries</string>
     <string name="pref_attributions_summary">Libraries we depend on</string>
-    <string name="pref_view_privacy_policy_title">Privacy policy</string>
-    <string name="pref_view_privacy_policy_summary">View our policy on anonymous data collection</string>
     <string name="pref_version_title">App version</string>
     <string name="pref_version_summary">Version unknown</string>
 
