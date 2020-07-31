@@ -12,7 +12,6 @@ import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.ScrollableTextDialog
 import ca.josephroque.bowlingcompanion.utils.Analytics
 import ca.josephroque.bowlingcompanion.utils.Email
-import ca.josephroque.bowlingcompanion.utils.Facebook
 import ca.josephroque.bowlingcompanion.utils.Files
 import ca.josephroque.bowlingcompanion.utils.toSpanned
 
@@ -73,10 +72,6 @@ class SettingsFragment : PreferenceFragmentCompat(),
                 displayAttributions()
                 true
             }
-            Settings.StaticSetting.Facebook.prefName -> {
-                displayFacebookPage()
-                true
-            }
             Settings.StaticSetting.DeveloperWebsite.prefName -> {
                 Analytics.trackViewWebsite()
                 true
@@ -112,7 +107,6 @@ class SettingsFragment : PreferenceFragmentCompat(),
         findPreference(Settings.StaticSetting.SendFeedback.prefName).onPreferenceClickListener = onPreferenceClickListener
         findPreference(Settings.StaticSetting.Rate.prefName).onPreferenceClickListener = onPreferenceClickListener
         findPreference(Settings.StaticSetting.Attributions.prefName).onPreferenceClickListener = onPreferenceClickListener
-        findPreference(Settings.StaticSetting.Facebook.prefName).onPreferenceClickListener = onPreferenceClickListener
         findPreference(Settings.StaticSetting.DeveloperWebsite.prefName).onPreferenceClickListener = onPreferenceClickListener
         findPreference(Settings.StaticSetting.ViewSource.prefName).onPreferenceClickListener = onPreferenceClickListener
     }
@@ -203,14 +197,6 @@ class SettingsFragment : PreferenceFragmentCompat(),
         }
 
         Analytics.trackViewAttributions()
-    }
-
-    private fun displayFacebookPage() {
-        activity?.let {
-            it.startActivity(Facebook.getFacebookPageIntent(it))
-        }
-
-        Analytics.trackViewFacebook()
     }
 
     private fun updatePreferenceSummaries() {

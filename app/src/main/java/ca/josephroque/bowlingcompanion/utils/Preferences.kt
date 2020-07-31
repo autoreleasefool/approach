@@ -7,12 +7,6 @@ package ca.josephroque.bowlingcompanion.utils
  */
 object Preferences {
 
-    /** Identifier for if user has opened the facebook page in the past.  */
-    const val FACEBOOK_PAGE_OPENED = "fb_page_opened"
-
-    /** Identifier for if user has closed the facebook promotional content since opening the app.  */
-    const val FACEBOOK_CLOSED = "fb_closed"
-
     /**
      * Identifier for preference indicating sort order which user prefers for bowlers.
      */

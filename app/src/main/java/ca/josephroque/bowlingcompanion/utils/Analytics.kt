@@ -147,8 +147,6 @@ class Analytics private constructor() {
 
         fun trackSendFeedback() {}
 
-        fun trackViewFacebook() {}
-
         fun trackViewWebsite() {}
 
         fun trackViewSource() {}

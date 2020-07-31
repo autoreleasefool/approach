@@ -466,7 +466,6 @@
     <string name="bug_email_body">Please try to include as much of the following information as possible:\nWhere in the application the bug occurred,\nWhat you were doing when the bug occurred,\nThe nature of the bug - fatal, minor, cosmetic (the way the app looks)</string>
 
     <!-- Websites -->
-    <string name="facebook_page">https://www.facebook.com/BowlingCompanion/</string>
     <string name="play_store_link">https://play.google.com/store/apps/details?id=ca.josephroque.bowlingcompanion</string>
     <string name="developer_website">https://josephroque.dev</string>
     <string name="open_source_repository">https://github.com/josephroquedev/bowling-companion</string>
@@ -541,8 +540,6 @@
 
     <!-- Other preferences -->
     <string name="pref_category_other">Other</string>
-    <string name="pref_facebook_title">Visit us on Facebook</string>
-    <string name="pref_facebook_summary">For news and updates</string>
     <string name="pref_developer_website_title">Visit the developer website</string>
     <string name="pref_developer_website_summary">To learn more about the developer</string>
     <string name="pref_view_source_title">View source on GitHub</string>

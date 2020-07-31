@@ -126,9 +126,6 @@ object Settings {
 
         // MARK: Other
 
-        /** Identifier for preference for opening the app's Facebook page.  */
-        Facebook("pref_facebook"),
-
         /** Identifier for preference to view developer's website. */
         DeveloperWebsite("pref_developer_website"),
 
