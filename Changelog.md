@@ -1,11 +1,20 @@
 # Most recent version
 
+## v3.2.0
+```
+A lot of users have been having issues with the current transfer functionality, so I've created a new process which will let you export and save the data wherever you'd like, and then import it on a new device. Hopefully this helps those with longstanding issues of being unable to move to new devices.
+
+This update also comes with some quality of life fixes:
+- No more ads
+- No more analytics
+```
+
+# Legacy versions
+
 ## v3.1.2
 ```
 - Fixed a crash some users experienced when trying to open a game
 ```
-
-# Legacy versions
 
 ## v3.1.1
 ```
