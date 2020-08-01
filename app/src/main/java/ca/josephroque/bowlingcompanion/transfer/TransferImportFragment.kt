@@ -16,7 +16,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.support.v7.app.AlertDialog
 import android.util.Log
-import ca.josephroque.bowlingcompanion.App
+import ca.josephroque.bowlingcompanion.database.DatabaseHelper
 import ca.josephroque.bowlingcompanion.utils.Analytics
 import ca.josephroque.bowlingcompanion.utils.BCError
 import ca.josephroque.bowlingcompanion.utils.Files
@@ -57,7 +57,7 @@ class TransferImportFragment : BaseTransferFragment() {
     private val onClickListener = View.OnClickListener { view ->
         when (view.id) {
             R.id.btn_import -> {
-                activity?.let { App.hideSoftKeyBoard(it) }
+                importStatus.visibility = View.GONE
                 importUserData()
             }
         }
@@ -90,7 +90,6 @@ class TransferImportFragment : BaseTransferFragment() {
     private fun importSucceeded() {
         importNextStep.visibility = View.VISIBLE
         importStatus.visibility = View.GONE
-        promptUserToOverrideData()
     }
 
     private fun importFailed(error: String) {
@@ -140,7 +139,7 @@ class TransferImportFragment : BaseTransferFragment() {
                 if (error != null) {
                     importFailed(error)
                 } else {
-                    importSucceeded()
+                    promptUserToOverrideData()
                 }
             }
         }
@@ -158,11 +157,13 @@ class TransferImportFragment : BaseTransferFragment() {
     }
 
     private fun overwriteDataWithImport() {
-        launch(Android) {
+        launch(CommonPool) {
             val context = this@TransferImportFragment.context ?: return@launch
             val userData = UserData(context)
 
             fileTask = async(CommonPool) {
+                DatabaseHelper.closeInstance()
+
                 if (!userData.backupData().await()) {
                     return@async R.string.error_data_backup_failed
                 }
@@ -180,8 +181,12 @@ class TransferImportFragment : BaseTransferFragment() {
             val error = fileTask?.await()
             fileTask = null
 
-            if (error != null) {
-                BCError(R.string.import_error, error, BCError.Severity.Error).show(context)
+            launch(Android) {
+                if (error == null) {
+                    importSucceeded()
+                } else {
+                    BCError(R.string.import_error, error, BCError.Severity.Error).show(context)
+                }
             }
         }
     }
@@ -205,6 +210,7 @@ class TransferImportFragment : BaseTransferFragment() {
             if (which == DialogInterface.BUTTON_POSITIVE) {
                 overwriteDataWithImport()
             } else {
+                importFailed(resources.getString(R.string.error_data_import_cancelled))
                 deleteImport()
             }
 

@@ -10,7 +10,6 @@ import ca.josephroque.bowlingcompanion.App
 import ca.josephroque.bowlingcompanion.R
 import ca.josephroque.bowlingcompanion.common.fragments.BaseDialogFragment
 import ca.josephroque.bowlingcompanion.common.fragments.BaseFragment
-import ca.josephroque.bowlingcompanion.database.DatabaseHelper
 import kotlinx.android.synthetic.main.dialog_base_transfer.toolbar_transfer as toolbar
 import kotlinx.android.synthetic.main.dialog_base_transfer.view.*
 
@@ -67,7 +66,6 @@ class BaseTransferDialogFragment : BaseDialogFragment(), TransferMenuFragment.Tr
 
     override fun onStart() {
         super.onStart()
-        DatabaseHelper.closeInstance()
         childFragmentManager.addOnBackStackChangedListener(onBackStackChangedListener)
     }
 

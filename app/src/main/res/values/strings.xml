@@ -95,6 +95,7 @@
     <string name="export_error">Export error</string>
     <string name="error_data_import_invalid">The selected file does not appear to be valid data for the Bowling Companion. Please select another file, or try exporting your data from your old device again.</string>
     <string name="error_data_import_failed">Your data could not be imported. Please select another file, or try exporting your data from your old device again.</string>
+    <string name="error_data_import_cancelled">Import process cancelled. Please try again.</string>
     <string name="error_data_export_failed">Your data could not be exported. You can try exporting your data again, or restart the app if it still isn\t working.</string>
     <string name="error_data_backup_failed">Your data could not be backed up before being overwritten, so the process has been cancelled. You can try importing your data again, or restart the app if it still isn\'t working.</string>
     <string name="error_overwrite_data_failed">You data could not be overwritten, so the process has been cancelled. You can try importing your data again, or restart the app if it still isn\'t working.</string>
