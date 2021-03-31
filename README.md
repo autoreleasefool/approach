@@ -1,6 +1,6 @@
 # Bowling Companion (5 Pin Bowling Statistics)
 
-![Android build](https://github.com/josephroquedev/bowling-companion/workflows/Android%20build/badge.svg)
+![Android build](https://github.com/autoreleasefool/bowling-companion/workflows/Android%20build/badge.svg)
 
 An Android app to track 5-pin bowling statistics. Allows users to track multiple bowlers and leagues, and provides in-depth statistics on their game. Useful for determining areas in which the user's performance can be improved.
 
@@ -16,7 +16,7 @@ With a variety of themes and options to customize the statistics you see, you'll
 
 And the best part? Never pay a cent. This app will never offer you in-app purchases or become a paid service.
 
-This app is also open source. Feel free to check out the repository at https://github.com/josephroquedev/bowling-companion to see the source and even contribute. In addition, as you request and I plan new features, you'll be able to view their progress any time, so long as you understand what you're doing over at GitHub.
+This app is also open source. Feel free to check out the repository at https://github.com/autoreleasefool/bowling-companion to see the source and even contribute. In addition, as you request and I plan new features, you'll be able to view their progress any time, so long as you understand what you're doing over at GitHub.
 
 =================================
 
@@ -26,7 +26,7 @@ This app is also open source. Feel free to check out the repository at https://g
 
 ## How to Run
 
-1. Clone project `git clone https://github.com/josephroquedev/bowling-companion.git`
+1. Clone project `git clone https://github.com/autoreleasefool/bowling-companion.git`
 2. Import the project into Android Studio.
 
 ## Screenshots

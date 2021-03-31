@@ -469,7 +469,7 @@
     <!-- Websites -->
     <string name="play_store_link">https://play.google.com/store/apps/details?id=ca.josephroque.bowlingcompanion</string>
     <string name="developer_website">https://josephroque.dev</string>
-    <string name="open_source_repository">https://github.com/josephroquedev/bowling-companion</string>
+    <string name="open_source_repository">https://github.com/autoreleasefool/bowling-companion</string>
 
     <!-- General preferences -->
     <string name="pref_category_general">General</string>
