@@ -44,6 +44,7 @@ let package = Package(
 				.product(name: "RealmSwift", package: "realm-swift"),
 			]
 		),
+		.testTarget(name: "PersistenceServiceTests", dependencies: ["PersistenceService"]),
 		.target(name: "SharedModelsLibrary", dependencies: []),
 	]
 )

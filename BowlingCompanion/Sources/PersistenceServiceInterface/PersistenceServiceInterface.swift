@@ -12,3 +12,14 @@ public struct PersistenceService: Sendable {
 		self.write = write
 	}
 }
+
+#if DEBUG
+extension PersistenceService {
+	public static func mock() -> Self {
+		.init(
+			read: { _ in fatalError("\(Self.self).read") },
+			write: { _, _ in fatalError("\(Self.self).write") }
+		)
+	}
+}
+#endif
