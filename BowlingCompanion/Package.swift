@@ -9,6 +9,8 @@ let package = Package(
 	],
 	products: [
 		.library(name: "AppFeature", targets: ["AppFeature"]),
+		.library(name: "BowlersDataProvider", targets: ["BowlersDataProvider"]),
+		.library(name: "BowlersDataProviderInterface", targets: ["BowlersDataProviderInterface"]),
 		.library(name: "PersistenceModelsLibrary", targets: ["PersistenceModelsLibrary"]),
 		.library(name: "PersistenceService", targets: ["PersistenceService"]),
 		.library(name: "PersistenceServiceInterface", targets: ["PersistenceServiceInterface"]),
@@ -25,10 +27,17 @@ let package = Package(
 				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 			]
 		),
-		.testTarget(
-			name: "AppFeatureTests",
-			dependencies: ["AppFeature"]
+		.testTarget(name: "AppFeatureTests", dependencies: ["AppFeature"]),
+		.target(
+			name: "BowlersDataProvider",
+			dependencies: [
+				"BowlersDataProviderInterface",
+				"PersistenceModelsLibrary",
+				"PersistenceServiceInterface",
+			]
 		),
+		.target(name: "BowlersDataProviderInterface", dependencies: ["SharedModelsLibrary"]),
+		.testTarget(name: "BowlersDataProviderTests", dependencies: ["BowlersDataProvider"]),
 		.target(
 			name: "PersistenceModelsLibrary",
 			dependencies: [
