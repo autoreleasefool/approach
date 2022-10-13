@@ -9,9 +9,14 @@ let package = Package(
 	],
 	products: [
 		.library(name: "AppFeature", targets: ["AppFeature"]),
+		.library(name: "PersistenceModelsLibrary", targets: ["PersistenceModelsLibrary"]),
+		.library(name: "PersistenceService", targets: ["PersistenceService"]),
+		.library(name: "PersistenceServiceInterface", targets: ["PersistenceServiceInterface"]),
+		.library(name: "SharedModelsLibrary", targets: ["SharedModelsLibrary"]),
 	],
 	dependencies: [
 		.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "0.42.0"),
+		.package(url: "https://github.com/realm/realm-swift.git", from: "10.32.0"),
 	],
 	targets: [
 		.target(
@@ -24,5 +29,21 @@ let package = Package(
 			name: "AppFeatureTests",
 			dependencies: ["AppFeature"]
 		),
+		.target(
+			name: "PersistenceModelsLibrary",
+			dependencies: [
+				"SharedModelsLibrary",
+				.product(name: "RealmSwift", package: "realm-swift"),
+			]
+		),
+		.testTarget(name: "PersistenceModelsLibraryTests", dependencies: ["PersistenceModelsLibrary"]),
+		.target(name: "PersistenceService", dependencies: ["PersistenceServiceInterface"]),
+		.target(
+			name: "PersistenceServiceInterface",
+			dependencies: [
+				.product(name: "RealmSwift", package: "realm-swift"),
+			]
+		),
+		.target(name: "SharedModelsLibrary", dependencies: []),
 	]
 )
