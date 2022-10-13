@@ -17,7 +17,7 @@ public struct AppView: View {
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: App.Action.init) { viewStore in
+		WithViewStore(store, observe: ViewState.init, send: App.Action.init) { _ in
 			Form {
 				Text("5 Pin Bowling Companion for iOS")
 			}

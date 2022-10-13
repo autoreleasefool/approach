@@ -1,2 +1,8 @@
+excluded:
+  - .build
+
 trailing_comma:
   mandatory_comma: true
+
+disabled_rules:
+  - identifier_name
