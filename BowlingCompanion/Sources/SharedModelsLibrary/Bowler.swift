@@ -1,6 +1,6 @@
 import Foundation
 
-public struct Bowler: Equatable, Identifiable {
+public struct Bowler: Sendable, Identifiable, Hashable {
 	public let id: UUID
 	public let name: String
 

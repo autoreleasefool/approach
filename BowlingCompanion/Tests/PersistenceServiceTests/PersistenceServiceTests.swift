@@ -10,8 +10,7 @@ final class PersistenceServiceTests: XCTestCase {
 	}
 
 	func testWrites() {
-		let queue = DispatchQueue(label: "test")
-		let persistenceService = PersistenceService.live(queue: queue)
+		let persistenceService = PersistenceService.liveValue
 
 		let mockObject = MockObject()
 		mockObject.name = "Test"
@@ -28,8 +27,7 @@ final class PersistenceServiceTests: XCTestCase {
 	}
 
 	func testReads() {
-		let queue = DispatchQueue(label: "test")
-		let persistenceService = PersistenceService.live(queue: queue)
+		let persistenceService = PersistenceService.liveValue
 
 		let expectation = self.expectation(description: "read")
 		persistenceService.read { _ in

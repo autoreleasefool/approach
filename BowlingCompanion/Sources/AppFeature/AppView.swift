@@ -1,3 +1,4 @@
+import BowlersListFeature
 import ComposableArchitecture
 import SwiftUI
 
@@ -18,9 +19,7 @@ public struct AppView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: App.Action.init) { _ in
-			Form {
-				Text("5 Pin Bowling Companion for iOS")
-			}
+			BowlersListView(store: store.scope(state: \.bowlersList, action: App.Action.bowlersList))
 		}
 	}
 }

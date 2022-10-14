@@ -11,6 +11,7 @@ let package = Package(
 		.library(name: "AppFeature", targets: ["AppFeature"]),
 		.library(name: "BowlersDataProvider", targets: ["BowlersDataProvider"]),
 		.library(name: "BowlersDataProviderInterface", targets: ["BowlersDataProviderInterface"]),
+		.library(name: "BowlersListFeature", targets: ["BowlersListFeature"]),
 		.library(name: "PersistenceModelsLibrary", targets: ["PersistenceModelsLibrary"]),
 		.library(name: "PersistenceService", targets: ["PersistenceService"]),
 		.library(name: "PersistenceServiceInterface", targets: ["PersistenceServiceInterface"]),
@@ -23,9 +24,7 @@ let package = Package(
 	targets: [
 		.target(
 			name: "AppFeature",
-			dependencies: [
-				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
-			]
+			dependencies: ["BowlersListFeature"]
 		),
 		.testTarget(name: "AppFeatureTests", dependencies: ["AppFeature"]),
 		.target(
@@ -39,6 +38,14 @@ let package = Package(
 		.target(name: "BowlersDataProviderInterface", dependencies: ["SharedModelsLibrary"]),
 		.testTarget(name: "BowlersDataProviderTests", dependencies: ["BowlersDataProvider"]),
 		.target(
+			name: "BowlersListFeature",
+			dependencies: [
+				"BowlersDataProviderInterface",
+				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+			]
+		),
+		.testTarget(name: "BowlersListFeatureTests", dependencies: ["BowlersListFeature"]),
+		.target(
 			name: "PersistenceModelsLibrary",
 			dependencies: [
 				"SharedModelsLibrary",
@@ -50,6 +57,7 @@ let package = Package(
 		.target(
 			name: "PersistenceServiceInterface",
 			dependencies: [
+				.product(name: "Dependencies", package: "swift-composable-architecture"),
 				.product(name: "RealmSwift", package: "realm-swift"),
 			]
 		),

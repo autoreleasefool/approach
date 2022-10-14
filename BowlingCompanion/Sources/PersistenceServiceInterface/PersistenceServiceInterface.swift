@@ -1,3 +1,4 @@
+import Dependencies
 import RealmSwift
 
 public struct PersistenceService: Sendable {
@@ -13,13 +14,16 @@ public struct PersistenceService: Sendable {
 	}
 }
 
-#if DEBUG
-extension PersistenceService {
-	public static func mock() -> Self {
-		.init(
-			read: { _ in fatalError("\(Self.self).read") },
-			write: { _, _ in fatalError("\(Self.self).write") }
-		)
+extension PersistenceService: TestDependencyKey {
+	public static var testValue = Self(
+		read: { _ in fatalError("\(Self.self).read") },
+		write: { _, _ in fatalError("\(Self.self).write") }
+	)
+}
+
+extension DependencyValues {
+	public var persistenceService: PersistenceService {
+		get { self[PersistenceService.self] }
+		set { self[PersistenceService.self] = newValue }
 	}
 }
-#endif

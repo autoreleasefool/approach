@@ -1,3 +1,4 @@
+import Dependencies
 import SharedModelsLibrary
 
 public struct BowlersDataProvider: Sendable {
@@ -16,14 +17,17 @@ public struct BowlersDataProvider: Sendable {
 	}
 }
 
-#if DEBUG
-extension BowlersDataProvider {
-	public static func mock() -> Self {
-		.init(
-			save: { _ in fatalError("\(Self.self).save") },
-			delete: { _ in fatalError("\(Self.self).delete") },
-			fetchAll: { fatalError("\(Self.self).fetchAll") }
-		)
+extension BowlersDataProvider: TestDependencyKey {
+	public static var testValue = Self(
+		save: { _ in fatalError("\(Self.self).save") },
+		delete: { _ in fatalError("\(Self.self).delete") },
+		fetchAll: { fatalError("\(Self.self).fetchAll") }
+	)
+}
+
+extension DependencyValues {
+	public var bowlersDataProvider: BowlersDataProvider {
+		get { self[BowlersDataProvider.self] }
+		set { self[BowlersDataProvider.self] = newValue }
 	}
 }
-#endif

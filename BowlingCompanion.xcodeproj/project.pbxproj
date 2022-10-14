@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		CA2890DE28F87FF2003C1EE9 /* AppFeature in Frameworks */ = {isa = PBXBuildFile; productRef = CA2890DD28F87FF2003C1EE9 /* AppFeature */; };
+		CA2890E128F8DA53003C1EE9 /* BowlersDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CA2890E028F8DA53003C1EE9 /* BowlersDataProvider */; };
+		CA2890E328F8DA53003C1EE9 /* PersistenceService in Frameworks */ = {isa = PBXBuildFile; productRef = CA2890E228F8DA53003C1EE9 /* PersistenceService */; };
 		CA8BBC5928D59B8B00653A1E /* BowlingCompanionApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA8BBC5828D59B8B00653A1E /* BowlingCompanionApp.swift */; };
 		CA8BBC5B28D59B8B00653A1E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA8BBC5A28D59B8B00653A1E /* ContentView.swift */; };
 		CA8BBC5D28D59B8C00653A1E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CA8BBC5C28D59B8C00653A1E /* Assets.xcassets */; };
@@ -28,7 +30,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CA2890E128F8DA53003C1EE9 /* BowlersDataProvider in Frameworks */,
 				CA2890DE28F87FF2003C1EE9 /* AppFeature in Frameworks */,
+				CA2890E328F8DA53003C1EE9 /* PersistenceService in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -106,6 +110,8 @@
 			name = BowlingCompanion;
 			packageProductDependencies = (
 				CA2890DD28F87FF2003C1EE9 /* AppFeature */,
+				CA2890E028F8DA53003C1EE9 /* BowlersDataProvider */,
+				CA2890E228F8DA53003C1EE9 /* PersistenceService */,
 			);
 			productName = BowlingCompanion;
 			productReference = CA8BBC5528D59B8B00653A1E /* BowlingCompanion.app */;
@@ -390,6 +396,14 @@
 		CA2890DD28F87FF2003C1EE9 /* AppFeature */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AppFeature;
+		};
+		CA2890E028F8DA53003C1EE9 /* BowlersDataProvider */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = BowlersDataProvider;
+		};
+		CA2890E228F8DA53003C1EE9 /* PersistenceService */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = PersistenceService;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

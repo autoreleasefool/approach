@@ -12,14 +12,13 @@ final class BowlersDataProviderTests: XCTestCase {
 	}
 
 	func testSaveBowler() async throws {
-		var mockPersistence = PersistenceService.mock()
 		let expectation = self.expectation(description: "written")
-		mockPersistence.write = { _, onComplete in
+		PersistenceService.testValue.write = { _, onComplete in
 			expectation.fulfill()
 			onComplete?(nil)
 		}
 
-		let dataProvider = BowlersDataProvider.live(mockPersistence)
+		let dataProvider = BowlersDataProvider.liveValue
 
 		try await dataProvider.save(Bowler(id: UUID(), name: "Bowler"))
 

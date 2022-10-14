@@ -1,43 +1,41 @@
+import Dependencies
 import Foundation
 import PersistenceServiceInterface
 import RealmSwift
 
-extension PersistenceService {
-	public static func live(queue: DispatchQueue = .init(label: "PersistenceService")) -> Self {
-		let live = Live(queue: queue)
-		return .init(
-			read: live.read,
-			write: live.write
-		)
-	}
-}
+extension PersistenceService: DependencyKey {
+	public static let liveValue: Self = {
+		class Wrapper {
+			var realm: Realm!
+			let queue: DispatchQueue
 
-class Live {
-	private var realm: Realm!
-	private let queue: DispatchQueue
-
-	init(queue: DispatchQueue) {
-		self.queue = queue
-		queue.sync {
-			do {
-				self.realm = try Realm(queue: queue)
-			} catch {
-				fatalError("Failed to open Realm")
+			init() {
+				queue = DispatchQueue(label: "PersistenceService")
+				queue.sync {
+					do {
+						realm = try Realm(queue: queue)
+					} catch {
+						fatalError("Failed to open Realm")
+					}
+				}
 			}
 		}
-	}
 
-	@Sendable func read(_ block: (Realm) -> Void) {
-		queue.sync {
-			block(self.realm)
-		}
-	}
+		let wrapper = Wrapper()
 
-	@Sendable func write(_ block: @escaping (Realm) -> Void, _ onComplete: ((Error?) -> Void)?) {
-		queue.async {
-			self.realm.writeAsync({
-				block(self.realm)
-			}, onComplete: onComplete)
-		}
-	}
+		return Self(
+			read: { block in
+				wrapper.queue.sync {
+					block(wrapper.realm)
+				}
+			},
+			write: { block, onComplete in
+				wrapper.queue.async {
+					wrapper.realm.writeAsync({
+						block(wrapper.realm)
+					}, onComplete: onComplete)
+				}
+			}
+		)
+	}()
 }
