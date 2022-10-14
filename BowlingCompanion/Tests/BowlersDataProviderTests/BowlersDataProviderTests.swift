@@ -1,16 +1,10 @@
 import BowlersDataProvider
 import BowlersDataProviderInterface
 import PersistenceServiceInterface
-import RealmSwift
 import SharedModelsLibrary
 import XCTest
 
 final class BowlersDataProviderTests: XCTestCase {
-	override func setUp() {
-		super.setUp()
-		Realm.Configuration.defaultConfiguration.inMemoryIdentifier = self.name
-	}
-
 	func testSaveBowler() async throws {
 		let expectation = self.expectation(description: "written")
 		PersistenceService.testValue.write = { _, onComplete in

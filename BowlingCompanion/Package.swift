@@ -13,6 +13,9 @@ let package = Package(
 		.library(name: "BowlersDataProviderInterface", targets: ["BowlersDataProviderInterface"]),
 		.library(name: "BowlerFormFeature", targets: ["BowlerFormFeature"]),
 		.library(name: "BowlersListFeature", targets: ["BowlersListFeature"]),
+		.library(name: "LeaguesDataProvider", targets: ["LeaguesDataProvider"]),
+		.library(name: "LeaguesDataProviderInterface", targets: ["LeaguesDataProviderInterface"]),
+		.library(name: "LeaguesListFeature", targets: ["LeaguesListFeature"]),
 		.library(name: "PersistenceModelsLibrary", targets: ["PersistenceModelsLibrary"]),
 		.library(name: "PersistenceService", targets: ["PersistenceService"]),
 		.library(name: "PersistenceServiceInterface", targets: ["PersistenceServiceInterface"]),
@@ -51,6 +54,7 @@ let package = Package(
 			dependencies: [
 				"BowlersDataProviderInterface",
 				"BowlerFormFeature",
+				"LeaguesListFeature",
 			]
 		),
 		.testTarget(name: "BowlersListFeatureTests", dependencies: ["BowlersListFeature"]),
@@ -61,6 +65,24 @@ let package = Package(
 				.product(name: "RealmSwift", package: "realm-swift"),
 			]
 		),
+		.target(
+			name: "LeaguesDataProvider",
+			dependencies: [
+				"LeaguesDataProviderInterface",
+				"PersistenceModelsLibrary",
+				"PersistenceServiceInterface",
+			]
+		),
+		.target(name: "LeaguesDataProviderInterface", dependencies: ["SharedModelsLibrary"]),
+		.testTarget(name: "LeaguesDataProviderTests", dependencies: ["LeaguesDataProvider"]),
+		.target(
+			name: "LeaguesListFeature",
+			dependencies: [
+				"LeaguesDataProviderInterface",
+				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+			]
+		),
+		.testTarget(name: "LeaguesListFeatureTests", dependencies: ["LeaguesListFeature"]),
 		.testTarget(name: "PersistenceModelsLibraryTests", dependencies: ["PersistenceModelsLibrary"]),
 		.target(name: "PersistenceService", dependencies: ["PersistenceServiceInterface"]),
 		.target(

@@ -10,12 +10,16 @@ extension PersistenceService: DependencyKey {
 			let queue: DispatchQueue
 
 			init() {
+				#if DEBUG
+				Realm.Configuration.defaultConfiguration.deleteRealmIfMigrationNeeded = true
+				#endif
+
 				queue = DispatchQueue(label: "PersistenceService")
 				queue.sync {
 					do {
 						realm = try Realm(queue: queue)
 					} catch {
-						fatalError("Failed to open Realm")
+						fatalError("Failed to open Realm: \(error)")
 					}
 				}
 			}

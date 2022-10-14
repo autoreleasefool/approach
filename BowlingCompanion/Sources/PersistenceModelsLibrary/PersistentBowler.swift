@@ -5,6 +5,8 @@ import SharedModelsLibrary
 public class PersistentBowler: Object, ObjectKeyIdentifiable {
 	@Persisted(primaryKey: true) public var _id: UUID
 	@Persisted public var name = ""
+
+	@Persisted public var leagues: List<PersistentLeague>
 }
 
 // MARK: - Model
