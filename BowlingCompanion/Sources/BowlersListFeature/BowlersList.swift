@@ -1,6 +1,7 @@
 import BowlersDataProviderInterface
 import BowlerFormFeature
 import ComposableArchitecture
+import LeaguesListFeature
 import SharedModelsLibrary
 
 public struct BowlersList: ReducerProtocol {
@@ -8,6 +9,7 @@ public struct BowlersList: ReducerProtocol {
 
 	public struct State: Equatable {
 		public var bowlers: IdentifiedArrayOf<Bowler> = []
+		public var selection: Identified<Bowler.ID, LeaguesList.State>?
 		public var bowlerForm: BowlerForm.State?
 
 		public init() {}
@@ -16,9 +18,11 @@ public struct BowlersList: ReducerProtocol {
 	public enum Action: Equatable, Sendable {
 		case onAppear
 		case onDisappear
+		case setNavigation(selection: Bowler.ID?)
 		case setFormSheet(isPresented: Bool)
 		case bowlersResponse(TaskResult<[Bowler]>)
 		case bowlerForm(BowlerForm.Action)
+		case leagues(LeaguesList.Action)
 	}
 
 	public init() {}
@@ -38,6 +42,16 @@ public struct BowlersList: ReducerProtocol {
 
 			case .onDisappear:
 				return .cancel(id: ListObservable.self)
+
+			case let .setNavigation(selection: .some(id)):
+				if let selection = state.bowlers[id: id] {
+					state.selection = Identified(.init(bowler: selection), id: selection.id)
+				}
+				return .none
+
+			case .setNavigation(selection: .none):
+				state.selection = nil
+				return .none
 
 			case let .bowlersResponse(.success(bowlers)):
 				state.bowlers = .init(uniqueElements: bowlers)
@@ -61,10 +75,18 @@ public struct BowlersList: ReducerProtocol {
 
 			case .bowlerForm:
 				return .none
+
+			case .leagues:
+				return .none
 			}
 		}
 		.ifLet(\.bowlerForm, action: /BowlersList.Action.bowlerForm) {
 			BowlerForm()
+		}
+		.ifLet(\.selection, action: /BowlersList.Action.leagues) {
+			Scope(state: \Identified<Bowler.ID, LeaguesList.State>.value, action: /.self) {
+				LeaguesList()
+			}
 		}
 	}
 }
