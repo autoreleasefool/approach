@@ -1,4 +1,5 @@
 import BowlersDataProviderInterface
+import BowlerFormFeature
 import ComposableArchitecture
 import SharedModelsLibrary
 
@@ -7,6 +8,7 @@ public struct BowlersList: ReducerProtocol {
 
 	public struct State: Equatable {
 		public var bowlers: IdentifiedArrayOf<Bowler> = []
+		public var bowlerForm: BowlerForm.State?
 
 		public init() {}
 	}
@@ -14,7 +16,9 @@ public struct BowlersList: ReducerProtocol {
 	public enum Action: Equatable, Sendable {
 		case onAppear
 		case onDisappear
+		case setFormSheet(isPresented: Bool)
 		case bowlersResponse(TaskResult<[Bowler]>)
+		case bowlerForm(BowlerForm.Action)
 	}
 
 	public init() {}
@@ -42,7 +46,25 @@ public struct BowlersList: ReducerProtocol {
 			case .bowlersResponse(.failure):
 				// TODO: handle failed bowler response
 				return .none
+
+			case .setFormSheet(isPresented: true):
+				state.bowlerForm = .init(mode: .create)
+				return .none
+
+			case .setFormSheet(isPresented: false):
+				state.bowlerForm = nil
+				return .none
+
+			case .bowlerForm(.saveBowlerResult(.success)):
+				state.bowlerForm = nil
+				return .none
+
+			case .bowlerForm:
+				return .none
 			}
+		}
+		.ifLet(\.bowlerForm, action: /BowlersList.Action.bowlerForm) {
+			BowlerForm()
 		}
 	}
 }

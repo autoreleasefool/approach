@@ -1,3 +1,4 @@
+import BowlerFormFeature
 import ComposableArchitecture
 import SharedModelsLibrary
 import SwiftUI
@@ -7,15 +8,18 @@ public struct BowlersListView: View {
 
 	struct ViewState: Equatable {
 		let bowlers: IdentifiedArrayOf<Bowler>
+		let isSheetPresented: Bool
 
 		init(state: BowlersList.State) {
 			self.bowlers = state.bowlers
+			self.isSheetPresented = state.bowlerForm != nil
 		}
 	}
 
 	enum ViewAction {
 		case onAppear
 		case onDisappear
+		case setFormSheet(isPresented: Bool)
 	}
 
 	public init(store: StoreOf<BowlersList>) {
@@ -28,6 +32,25 @@ public struct BowlersListView: View {
 				Text(bowler.name)
 			}
 			.navigationTitle("Bowlers")
+			.toolbar {
+				ToolbarItem(placement: .navigationBarTrailing) {
+					Button {
+						viewStore.send(.setFormSheet(isPresented: true))
+					} label: {
+						Image(systemName: "plus")
+					}
+				}
+			}
+			.sheet(isPresented: viewStore.binding(
+				get: \.isSheetPresented,
+				send: ViewAction.setFormSheet(isPresented:)
+			)) {
+				IfLetStore(store.scope(state: \.bowlerForm, action: BowlersList.Action.bowlerForm)) { scopedStore in
+					NavigationStack {
+						BowlerFormView(store: scopedStore)
+					}
+				}
+			}
 			.onAppear { viewStore.send(.onAppear) }
 			.onDisappear { viewStore.send(.onDisappear) }
 		}
@@ -41,6 +64,8 @@ extension BowlersList.Action {
 			self = .onAppear
 		case .onDisappear:
 			self = .onDisappear
+		case let .setFormSheet(isPresented):
+			self = .setFormSheet(isPresented: isPresented)
 		}
 	}
 }

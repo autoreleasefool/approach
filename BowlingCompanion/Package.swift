@@ -11,6 +11,7 @@ let package = Package(
 		.library(name: "AppFeature", targets: ["AppFeature"]),
 		.library(name: "BowlersDataProvider", targets: ["BowlersDataProvider"]),
 		.library(name: "BowlersDataProviderInterface", targets: ["BowlersDataProviderInterface"]),
+		.library(name: "BowlerFormFeature", targets: ["BowlerFormFeature"]),
 		.library(name: "BowlersListFeature", targets: ["BowlersListFeature"]),
 		.library(name: "PersistenceModelsLibrary", targets: ["PersistenceModelsLibrary"]),
 		.library(name: "PersistenceService", targets: ["PersistenceService"]),
@@ -38,10 +39,18 @@ let package = Package(
 		.target(name: "BowlersDataProviderInterface", dependencies: ["SharedModelsLibrary"]),
 		.testTarget(name: "BowlersDataProviderTests", dependencies: ["BowlersDataProvider"]),
 		.target(
-			name: "BowlersListFeature",
+			name: "BowlerFormFeature",
 			dependencies: [
 				"BowlersDataProviderInterface",
 				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+			]
+		),
+		.testTarget(name: "BowlerFormFeatureTests", dependencies: ["BowlerFormFeature"]),
+		.target(
+			name: "BowlersListFeature",
+			dependencies: [
+				"BowlersDataProviderInterface",
+				"BowlerFormFeature",
 			]
 		),
 		.testTarget(name: "BowlersListFeatureTests", dependencies: ["BowlersListFeature"]),
