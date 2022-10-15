@@ -10,6 +10,7 @@ public class PersistentLeague: Object, ObjectKeyIdentifiable {
 	@Persisted public var additionalPinfall: Int = 0
 	@Persisted public var additionalGames: Int = 0
 
+	@Persisted public var series: List<PersistentSeries>
 	@Persisted(originProperty: "leagues") public var bowler: LinkingObjects<PersistentBowler>
 }
 

@@ -20,6 +20,8 @@ let package = Package(
 		.library(name: "PersistenceModelsLibrary", targets: ["PersistenceModelsLibrary"]),
 		.library(name: "PersistenceService", targets: ["PersistenceService"]),
 		.library(name: "PersistenceServiceInterface", targets: ["PersistenceServiceInterface"]),
+		.library(name: "SeriesDataProvider", targets: ["SeriesDataProvider"]),
+		.library(name: "SeriesDataProviderInterface", targets: ["SeriesDataProviderInterface"]),
 		.library(name: "SharedModelsLibrary", targets: ["SharedModelsLibrary"]),
 	],
 	dependencies: [
@@ -102,6 +104,16 @@ let package = Package(
 			]
 		),
 		.testTarget(name: "PersistenceServiceTests", dependencies: ["PersistenceService"]),
+		.target(
+			name: "SeriesDataProvider",
+			dependencies: [
+				"PersistenceModelsLibrary",
+				"PersistenceServiceInterface",
+				"SeriesDataProviderInterface",
+			]
+		),
+		.target(name: "SeriesDataProviderInterface", dependencies: ["SharedModelsLibrary"]),
+		.testTarget(name: "SeriesDataProviderTests", dependencies: ["SeriesDataProvider"]),
 		.target(name: "SharedModelsLibrary", dependencies: []),
 	]
 )
