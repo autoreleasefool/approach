@@ -1,6 +1,8 @@
 import Foundation
 
 public struct League: Sendable, Identifiable, Hashable {
+	public static let DEFAULT_NUMBER_OF_GAMES = 4
+
 	public let id: UUID
 	public let name: String
 	public let recurrence: Recurrence
@@ -26,8 +28,21 @@ public struct League: Sendable, Identifiable, Hashable {
 }
 
 extension League {
-	public enum Recurrence: Sendable {
+	public enum Recurrence: Sendable, Identifiable, CaseIterable, CustomStringConvertible {
 		case repeating
 		case oneTimeEvent
+
+		public var id: String {
+			self.description
+		}
+
+		public var description: String {
+			switch self {
+			case .repeating:
+				return "Repeats"
+			case .oneTimeEvent:
+				return "Never"
+			}
+		}
 	}
 }

@@ -1,4 +1,5 @@
 import ComposableArchitecture
+import LeagueFormFeature
 import LeaguesDataProviderInterface
 import SharedModelsLibrary
 
@@ -8,6 +9,7 @@ public struct LeaguesList: ReducerProtocol {
 	public struct State: Sendable, Equatable {
 		public var bowler: Bowler
 		public var leagues: IdentifiedArrayOf<League> = []
+		public var leagueForm: LeagueForm.State?
 
 		public init(bowler: Bowler) {
 			self.bowler = bowler
@@ -19,6 +21,7 @@ public struct LeaguesList: ReducerProtocol {
 		case onDisappear
 		case leaguesResponse(TaskResult<[League]>)
 		case setFormSheet(isPresented: Bool)
+		case leagueForm(LeagueForm.Action)
 	}
 
 	public init() {}
@@ -37,6 +40,7 @@ public struct LeaguesList: ReducerProtocol {
 				.cancellable(id: ListObservable.self)
 
 			case .onDisappear:
+				// TODO: list observation doesn't cancel and leaks because store becomes nil before `onDisappear`
 				return .cancel(id: ListObservable.self)
 
 			case let .leaguesResponse(.success(leagues)):
@@ -47,13 +51,23 @@ public struct LeaguesList: ReducerProtocol {
 				return .none
 
 			case .setFormSheet(isPresented: true):
-				// TODO: show create league form
+				state.leagueForm = .init(bowler: state.bowler, mode: .create)
 				return .none
 
 			case .setFormSheet(isPresented: false):
-				// TODO: hide create league form
+				state.leagueForm = nil
+				return .none
+
+			case .leagueForm(.saveLeagueResult(.success)):
+				state.leagueForm = nil
+				return .none
+
+			case .leagueForm:
 				return .none
 			}
+		}
+		.ifLet(\.leagueForm, action: /LeaguesList.Action.leagueForm) {
+			LeagueForm()
 		}
 	}
 }

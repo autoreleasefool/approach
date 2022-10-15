@@ -10,12 +10,12 @@ public struct BowlersListView: View {
 	struct ViewState: Equatable {
 		let bowlers: IdentifiedArrayOf<Bowler>
 		let selection: Identified<Bowler.ID, LeaguesList.State>?
-		let isSheetPresented: Bool
+		let isBowlerFormPresented: Bool
 
 		init(state: BowlersList.State) {
 			self.bowlers = state.bowlers
 			self.selection = state.selection
-			self.isSheetPresented = state.bowlerForm != nil
+			self.isBowlerFormPresented = state.bowlerForm != nil
 		}
 	}
 
@@ -62,7 +62,7 @@ public struct BowlersListView: View {
 				}
 			}
 			.sheet(isPresented: viewStore.binding(
-				get: \.isSheetPresented,
+				get: \.isBowlerFormPresented,
 				send: ViewAction.setFormSheet(isPresented:)
 			)) {
 				IfLetStore(store.scope(state: \.bowlerForm, action: BowlersList.Action.bowlerForm)) { scopedStore in

@@ -1,4 +1,5 @@
 import ComposableArchitecture
+import LeagueFormFeature
 import SharedModelsLibrary
 import SwiftUI
 
@@ -8,10 +9,12 @@ public struct LeaguesListView: View {
 	struct ViewState: Equatable {
 		let bowlerName: String
 		let leagues: IdentifiedArrayOf<League>
+		let isLeagueFormPresented: Bool
 
 		init(state: LeaguesList.State) {
 			self.leagues = state.leagues
 			self.bowlerName = state.bowler.name
+			self.isLeagueFormPresented = state.leagueForm != nil
 		}
 	}
 
@@ -37,6 +40,16 @@ public struct LeaguesListView: View {
 						viewStore.send(.setFormSheet(isPresented: true))
 					} label: {
 						Image(systemName: "plus")
+					}
+				}
+			}
+			.sheet(isPresented: viewStore.binding(
+				get: \.isLeagueFormPresented,
+				send: ViewAction.setFormSheet(isPresented:)
+			)) {
+				IfLetStore(store.scope(state: \.leagueForm, action: LeaguesList.Action.leagueForm)) { scopedStore in
+					NavigationView {
+						LeagueFormView(store: scopedStore)
 					}
 				}
 			}

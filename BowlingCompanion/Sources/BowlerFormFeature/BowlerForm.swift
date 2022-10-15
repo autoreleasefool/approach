@@ -10,10 +10,7 @@ public struct BowlerForm: ReducerProtocol {
 
 		public init(mode: Mode) {
 			self.mode = mode
-			switch mode {
-			case .create:
-				self.name = ""
-			case .edit(let bowler):
+			if case let .edit(bowler) = mode {
 				self.name = bowler.name
 			}
 		}
@@ -44,8 +41,8 @@ public struct BowlerForm: ReducerProtocol {
 
 			case .saveButtonTapped:
 				state.isSaving = true
-				return .task { [name = state.name] in
-					let bowler = Bowler(id: uuid(), name: name)
+				let bowler = Bowler(id: uuid(), name: state.name)
+				return .task {
 					return await .saveBowlerResult(TaskResult {
 						try await bowlersDataProvider.save(bowler)
 						return bowler
@@ -57,6 +54,7 @@ public struct BowlerForm: ReducerProtocol {
 				return .none
 
 			case .saveBowlerResult(.failure):
+				// TODO: show error to user for failed save to db
 				state.isSaving = false
 				return .none
 			}

@@ -41,6 +41,7 @@ public struct BowlersList: ReducerProtocol {
 				.cancellable(id: ListObservable.self)
 
 			case .onDisappear:
+				// TODO: list observation doesn't cancel and leaks because store becomes nil before `onDisappear`
 				return .cancel(id: ListObservable.self)
 
 			case let .setNavigation(selection: .some(id)):
