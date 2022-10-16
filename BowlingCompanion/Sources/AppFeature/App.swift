@@ -2,13 +2,13 @@ import BowlersListFeature
 import ComposableArchitecture
 
 public struct App: ReducerProtocol {
-	public struct State: Sendable, Equatable {
+	public struct State: Equatable {
 		public var bowlersList = BowlersList.State()
 
 		public init() {}
 	}
 
-	public enum Action: Equatable, Sendable {
+	public enum Action: Equatable {
 		case onAppear
 		case bowlersList(BowlersList.Action)
 	}

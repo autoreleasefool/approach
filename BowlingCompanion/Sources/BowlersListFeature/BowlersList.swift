@@ -7,7 +7,7 @@ import SharedModelsLibrary
 public struct BowlersList: ReducerProtocol {
 	enum ListObservable {}
 
-	public struct State: Sendable, Equatable {
+	public struct State: Equatable {
 		public var bowlers: IdentifiedArrayOf<Bowler> = []
 		public var selection: Identified<Bowler.ID, LeaguesList.State>?
 		public var bowlerForm: BowlerForm.State?
@@ -15,7 +15,7 @@ public struct BowlersList: ReducerProtocol {
 		public init() {}
 	}
 
-	public enum Action: Sendable, Equatable {
+	public enum Action: Equatable {
 		case onAppear
 		case onDisappear
 		case setNavigation(selection: Bowler.ID?)

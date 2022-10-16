@@ -5,7 +5,7 @@ import RegexBuilder
 import SharedModelsLibrary
 
 public struct LeagueForm: ReducerProtocol {
-	public struct State: Sendable, Equatable {
+	public struct State: Equatable {
 		public var bowler: Bowler
 		public var mode: Mode
 		public var name = ""
@@ -30,12 +30,12 @@ public struct LeagueForm: ReducerProtocol {
 		}
 	}
 
-	public enum Mode: Sendable, Equatable {
+	public enum Mode: Equatable {
 		case create
 		case edit(League)
 	}
 
-	public enum Action: Sendable, Equatable {
+	public enum Action: Equatable {
 		case nameChange(String)
 		case recurrenceChange(League.Recurrence)
 		case numberOfGamesChange(Int)

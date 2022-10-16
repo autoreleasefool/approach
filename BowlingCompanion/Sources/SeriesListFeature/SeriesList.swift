@@ -5,7 +5,7 @@ import SharedModelsLibrary
 public struct SeriesList: ReducerProtocol {
 	enum ListObservable {}
 
-	public struct State: Sendable, Equatable {
+	public struct State: Equatable {
 		public var league: League
 		public var series: IdentifiedArrayOf<Series> = []
 
@@ -14,7 +14,7 @@ public struct SeriesList: ReducerProtocol {
 		}
 	}
 
-	public enum Action: Sendable, Equatable {
+	public enum Action: Equatable {
 		case onAppear
 		case onDisappear
 		case seriesResponse(TaskResult<[Series]>)
