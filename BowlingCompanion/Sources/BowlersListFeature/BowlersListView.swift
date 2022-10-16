@@ -9,12 +9,12 @@ public struct BowlersListView: View {
 
 	struct ViewState: Equatable {
 		let bowlers: IdentifiedArrayOf<Bowler>
-		let selection: Identified<Bowler.ID, LeaguesList.State>?
+		let selection: Bowler.ID?
 		let isBowlerFormPresented: Bool
 
 		init(state: BowlersList.State) {
 			self.bowlers = state.bowlers
-			self.selection = state.selection
+			self.selection = state.selection?.id
 			self.isBowlerFormPresented = state.bowlerForm != nil
 		}
 	}
@@ -44,7 +44,7 @@ public struct BowlersListView: View {
 					},
 					tag: bowler.id,
 					selection: viewStore.binding(
-						get: \.selection?.id,
+						get: \.selection,
 						send: BowlersListView.ViewAction.setNavigation(selection:)
 					)
 				) {

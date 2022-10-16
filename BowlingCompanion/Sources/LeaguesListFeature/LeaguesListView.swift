@@ -10,12 +10,12 @@ public struct LeaguesListView: View {
 	struct ViewState: Equatable {
 		let bowlerName: String
 		let leagues: IdentifiedArrayOf<League>
-		let selection: Identified<League.ID, SeriesList.State>?
+		let selection: League.ID?
 		let isLeagueFormPresented: Bool
 
 		init(state: LeaguesList.State) {
 			self.leagues = state.leagues
-			self.selection = state.selection
+			self.selection = state.selection?.id
 			self.bowlerName = state.bowler.name
 			self.isLeagueFormPresented = state.leagueForm != nil
 		}
@@ -46,7 +46,7 @@ public struct LeaguesListView: View {
 					},
 					tag: league.id,
 					selection: viewStore.binding(
-						get: \.selection?.id,
+						get: \.selection,
 						send: LeaguesListView.ViewAction.setNavigation(selection:)
 					)
 				) {
