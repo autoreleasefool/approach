@@ -2,7 +2,7 @@ import BowlersListFeature
 import ComposableArchitecture
 
 public struct App: ReducerProtocol {
-	public struct State: Equatable {
+	public struct State: Sendable, Equatable {
 		public var bowlersList = BowlersList.State()
 
 		public init() {}

@@ -1,4 +1,4 @@
-import ComposableArchitecture
+import Dependencies
 import LeaguesDataProviderInterface
 import PersistenceModelsLibrary
 import PersistenceServiceInterface
@@ -56,7 +56,6 @@ extension LeaguesDataProvider: DependencyKey {
 
 						continuation.onTermination = { [token = token] _ in
 							token?.invalidate()
-							print("Terminating")
 						}
 					}
 				}

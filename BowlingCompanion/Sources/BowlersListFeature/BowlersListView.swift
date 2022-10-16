@@ -35,7 +35,7 @@ public struct BowlersListView: View {
 			List(viewStore.bowlers) { bowler in
 				NavigationLink(
 					destination: IfLetStore(
-						self.store.scope(
+						store.scope(
 							state: \.selection?.value,
 							action: BowlersList.Action.leagues
 						)

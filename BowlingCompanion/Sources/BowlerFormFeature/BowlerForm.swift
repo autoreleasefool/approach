@@ -3,7 +3,7 @@ import ComposableArchitecture
 import SharedModelsLibrary
 
 public struct BowlerForm: ReducerProtocol {
-	public struct State: Equatable, Sendable {
+	public struct State: Sendable, Equatable {
 		public var mode: Mode
 		public var name = ""
 		public var isSaving = false
@@ -16,12 +16,12 @@ public struct BowlerForm: ReducerProtocol {
 		}
 	}
 
-	public enum Mode: Equatable, Sendable {
+	public enum Mode: Sendable, Equatable {
 		case edit(Bowler)
 		case create
 	}
 
-	public enum Action: Equatable, Sendable {
+	public enum Action: Sendable, Equatable {
 		case nameChange(String)
 		case saveButtonTapped
 		case saveBowlerResult(TaskResult<Bowler>)

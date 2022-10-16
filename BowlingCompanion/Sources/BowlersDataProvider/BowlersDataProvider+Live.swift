@@ -1,4 +1,4 @@
-import ComposableArchitecture
+import Dependencies
 import BowlersDataProviderInterface
 import PersistenceModelsLibrary
 import PersistenceServiceInterface

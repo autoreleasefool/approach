@@ -1,4 +1,4 @@
-import ComposableArchitecture
+import Dependencies
 import SeriesDataProviderInterface
 import PersistenceModelsLibrary
 import PersistenceServiceInterface
@@ -56,7 +56,6 @@ extension SeriesDataProvider: DependencyKey {
 
 						continuation.onTermination = { [token = token] _ in
 							token?.invalidate()
-							print("Terminating")
 						}
 					}
 				}

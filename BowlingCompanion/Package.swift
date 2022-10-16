@@ -43,7 +43,13 @@ let package = Package(
 				"PersistenceServiceInterface",
 			]
 		),
-		.target(name: "BowlersDataProviderInterface", dependencies: ["SharedModelsLibrary"]),
+		.target(
+			name: "BowlersDataProviderInterface",
+			dependencies: [
+				"SharedModelsLibrary",
+				.product(name: "Dependencies", package: "swift-composable-architecture"),
+			]
+		),
 		.testTarget(name: "BowlersDataProviderTests", dependencies: ["BowlersDataProvider"]),
 		.target(
 			name: "BowlerFormFeature",
@@ -56,7 +62,6 @@ let package = Package(
 		.target(
 			name: "BowlersListFeature",
 			dependencies: [
-				"BowlersDataProviderInterface",
 				"BowlerFormFeature",
 				"LeaguesListFeature",
 			]
@@ -79,7 +84,13 @@ let package = Package(
 				"PersistenceServiceInterface",
 			]
 		),
-		.target(name: "LeaguesDataProviderInterface", dependencies: ["SharedModelsLibrary"]),
+		.target(
+			name: "LeaguesDataProviderInterface",
+			dependencies: [
+				"SharedModelsLibrary",
+				.product(name: "Dependencies", package: "swift-composable-architecture"),
+			]
+		),
 		.testTarget(name: "LeaguesDataProviderTests", dependencies: ["LeaguesDataProvider"]),
 		.target(
 			name: "LeagueFormFeature",
@@ -115,7 +126,13 @@ let package = Package(
 				"SeriesDataProviderInterface",
 			]
 		),
-		.target(name: "SeriesDataProviderInterface", dependencies: ["SharedModelsLibrary"]),
+		.target(
+			name: "SeriesDataProviderInterface",
+			dependencies: [
+				"SharedModelsLibrary",
+				.product(name: "Dependencies", package: "swift-composable-architecture"),
+			]
+		),
 		.testTarget(name: "SeriesDataProviderTests", dependencies: ["SeriesDataProvider"]),
 		.target(name: "SharedModelsLibrary", dependencies: []),
 	]
