@@ -15,6 +15,8 @@ let package = Package(
 		.library(name: "BowlersListFeature", targets: ["BowlersListFeature"]),
 		.library(name: "DateTimeLibrary", targets: ["DateTimeLibrary"]),
 		.library(name: "ExtensionsLibrary", targets: ["ExtensionsLibrary"]),
+		.library(name: "GamesDataProvider", targets: ["GamesDataProvider"]),
+		.library(name: "GamesDataProviderInterface", targets: ["GamesDataProviderInterface"]),
 		.library(name: "LeaguesDataProvider", targets: ["LeaguesDataProvider"]),
 		.library(name: "LeaguesDataProviderInterface", targets: ["LeaguesDataProviderInterface"]),
 		.library(name: "LeagueFormFeature", targets: ["LeagueFormFeature"]),
@@ -81,6 +83,23 @@ let package = Package(
 		.testTarget(name: "DateTimeLibraryTests", dependencies: ["DateTimeLibrary"]),
 		.target(name: "ExtensionsLibrary", dependencies: []),
 		.testTarget(name: "ExtensionsLibraryTests", dependencies: ["ExtensionsLibrary"]),
+		.target(
+			name: "GamesDataProvider",
+			dependencies: [
+				"GamesDataProviderInterface",
+				"ExtensionsLibrary",
+				"PersistenceModelsLibrary",
+				"PersistenceServiceInterface",
+			]
+		),
+		.target(
+			name: "GamesDataProviderInterface",
+			dependencies: [
+				"SharedModelsLibrary",
+				.product(name: "Dependencies", package: "swift-composable-architecture"),
+			]
+		),
+		.testTarget(name: "GamesDataProviderTests", dependencies: ["GamesDataProvider"]),
 		.target(
 			name: "LeaguesDataProvider",
 			dependencies: [

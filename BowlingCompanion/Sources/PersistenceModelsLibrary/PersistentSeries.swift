@@ -6,6 +6,7 @@ public class PersistentSeries: Object, ObjectKeyIdentifiable {
 	@Persisted(primaryKey: true) public var _id: UUID
 	@Persisted public var date: Date
 
+	@Persisted public var games: List<PersistentGame>
 	@Persisted(originProperty: "series") public var league: LinkingObjects<PersistentLeague>
 }
 
