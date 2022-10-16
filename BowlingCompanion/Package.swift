@@ -17,6 +17,7 @@ let package = Package(
 		.library(name: "ExtensionsLibrary", targets: ["ExtensionsLibrary"]),
 		.library(name: "GamesDataProvider", targets: ["GamesDataProvider"]),
 		.library(name: "GamesDataProviderInterface", targets: ["GamesDataProviderInterface"]),
+		.library(name: "GamesListFeature", targets: ["GamesListFeature"]),
 		.library(name: "LeaguesDataProvider", targets: ["LeaguesDataProvider"]),
 		.library(name: "LeaguesDataProviderInterface", targets: ["LeaguesDataProviderInterface"]),
 		.library(name: "LeagueFormFeature", targets: ["LeagueFormFeature"]),
@@ -101,6 +102,15 @@ let package = Package(
 		),
 		.testTarget(name: "GamesDataProviderTests", dependencies: ["GamesDataProvider"]),
 		.target(
+			name: "GamesListFeature",
+			dependencies: [
+				"DateTimeLibrary",
+				"GamesDataProviderInterface",
+				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+			]
+		),
+		.testTarget(name: "GamesListFeatureTests", dependencies: ["GamesListFeature"]),
+		.target(
 			name: "LeaguesDataProvider",
 			dependencies: [
 				"LeaguesDataProviderInterface",
@@ -163,9 +173,8 @@ let package = Package(
 		.target(
 			name: "SeriesListFeature",
 			dependencies: [
-				"DateTimeLibrary",
+				"GamesListFeature",
 				"SeriesDataProviderInterface",
-				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 			]
 		),
 		.testTarget(name: "SeriesListFeatureTests", dependencies: ["SeriesListFeature"]),
