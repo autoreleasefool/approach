@@ -13,6 +13,7 @@ let package = Package(
 		.library(name: "BowlersDataProviderInterface", targets: ["BowlersDataProviderInterface"]),
 		.library(name: "BowlerFormFeature", targets: ["BowlerFormFeature"]),
 		.library(name: "BowlersListFeature", targets: ["BowlersListFeature"]),
+		.library(name: "DateTimeLibrary", targets: ["DateTimeLibrary"]),
 		.library(name: "LeaguesDataProvider", targets: ["LeaguesDataProvider"]),
 		.library(name: "LeaguesDataProviderInterface", targets: ["LeaguesDataProviderInterface"]),
 		.library(name: "LeagueFormFeature", targets: ["LeagueFormFeature"]),
@@ -68,6 +69,8 @@ let package = Package(
 				.product(name: "RealmSwift", package: "realm-swift"),
 			]
 		),
+		.target(name: "DateTimeLibrary", dependencies: []),
+		.testTarget(name: "DateTimeLibraryTests", dependencies: ["DateTimeLibrary"]),
 		.target(
 			name: "LeaguesDataProvider",
 			dependencies: [
