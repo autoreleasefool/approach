@@ -14,6 +14,7 @@ let package = Package(
 		.library(name: "BowlerFormFeature", targets: ["BowlerFormFeature"]),
 		.library(name: "BowlersListFeature", targets: ["BowlersListFeature"]),
 		.library(name: "DateTimeLibrary", targets: ["DateTimeLibrary"]),
+		.library(name: "ExtensionsLibrary", targets: ["ExtensionsLibrary"]),
 		.library(name: "LeaguesDataProvider", targets: ["LeaguesDataProvider"]),
 		.library(name: "LeaguesDataProviderInterface", targets: ["LeaguesDataProviderInterface"]),
 		.library(name: "LeagueFormFeature", targets: ["LeagueFormFeature"]),
@@ -40,6 +41,7 @@ let package = Package(
 			name: "BowlersDataProvider",
 			dependencies: [
 				"BowlersDataProviderInterface",
+				"ExtensionsLibrary",
 				"PersistenceModelsLibrary",
 				"PersistenceServiceInterface",
 			]
@@ -77,10 +79,13 @@ let package = Package(
 		),
 		.target(name: "DateTimeLibrary", dependencies: []),
 		.testTarget(name: "DateTimeLibraryTests", dependencies: ["DateTimeLibrary"]),
+		.target(name: "ExtensionsLibrary", dependencies: []),
+		.testTarget(name: "ExtensionsLibraryTests", dependencies: ["ExtensionsLibrary"]),
 		.target(
 			name: "LeaguesDataProvider",
 			dependencies: [
 				"LeaguesDataProviderInterface",
+				"ExtensionsLibrary",
 				"PersistenceModelsLibrary",
 				"PersistenceServiceInterface",
 			]
@@ -122,6 +127,7 @@ let package = Package(
 		.target(
 			name: "SeriesDataProvider",
 			dependencies: [
+				"ExtensionsLibrary",
 				"PersistenceModelsLibrary",
 				"PersistenceServiceInterface",
 				"SeriesDataProviderInterface",

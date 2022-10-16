@@ -1,4 +1,5 @@
 import Dependencies
+import ExtensionsLibrary
 import LeaguesDataProviderInterface
 import PersistenceModelsLibrary
 import PersistenceServiceInterface
@@ -7,14 +8,6 @@ import SharedModelsLibrary
 
 extension LeaguesDataProvider: DependencyKey {
 	public static let liveValue: Self = {
-		@Sendable func resumeOrThrow(_ error: Error?, continuation: CheckedContinuation<Void, Error>) {
-			if let error {
-				continuation.resume(throwing: error)
-			} else {
-				continuation.resume(returning: ())
-			}
-		}
-
 		@Dependency(\.persistenceService) var persistenceService: PersistenceService
 
 		return Self(
@@ -23,9 +16,7 @@ extension LeaguesDataProvider: DependencyKey {
 					persistenceService.write({
 						$0.object(ofType: PersistentBowler.self, forPrimaryKey: bowler.id)?
 							.leagues.append(PersistentLeague(from: league))
-					}, {
-						resumeOrThrow($0, continuation: continuation)
-					})
+					}, continuation.resumeOrThrow(_:))
 				}
 			},
 			delete: { league in
@@ -34,9 +25,7 @@ extension LeaguesDataProvider: DependencyKey {
 						if let persistent = $0.object(ofType: PersistentLeague.self, forPrimaryKey: league.id) {
 							$0.delete(persistent)
 						}
-					}, {
-						resumeOrThrow($0, continuation: continuation)
-					})
+					}, continuation.resumeOrThrow(_:))
 				}
 			},
 			fetchAll: { bowler in

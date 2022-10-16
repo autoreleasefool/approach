@@ -1,19 +1,12 @@
-import Dependencies
 import BowlersDataProviderInterface
+import Dependencies
+import ExtensionsLibrary
 import PersistenceModelsLibrary
 import PersistenceServiceInterface
 import SharedModelsLibrary
 
 extension BowlersDataProvider: DependencyKey {
 	public static let liveValue: Self = {
-		@Sendable func resumeOrThrow(_ error: Error?, continuation: CheckedContinuation<Void, Error>) {
-			if let error {
-				continuation.resume(throwing: error)
-			} else {
-				continuation.resume(returning: ())
-			}
-		}
-
 		@Dependency(\.persistenceService) var persistenceService: PersistenceService
 
 		return Self(
@@ -21,9 +14,7 @@ extension BowlersDataProvider: DependencyKey {
 				try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
 					persistenceService.write({ realm in
 						realm.add(PersistentBowler(from: bowler))
-					}, {
-						resumeOrThrow($0, continuation: continuation)
-					})
+					}, continuation.resumeOrThrow(_:))
 				}
 			},
 			delete: { bowler in
@@ -32,9 +23,7 @@ extension BowlersDataProvider: DependencyKey {
 						if let persistent = realm.object(ofType: PersistentBowler.self, forPrimaryKey: bowler.id) {
 							realm.delete(persistent)
 						}
-					}, {
-						resumeOrThrow($0, continuation: continuation)
-					})
+					}, continuation.resumeOrThrow(_:))
 				}
 			},
 			fetchAll: {
