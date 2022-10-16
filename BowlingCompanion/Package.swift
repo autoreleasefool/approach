@@ -23,6 +23,7 @@ let package = Package(
 		.library(name: "PersistenceServiceInterface", targets: ["PersistenceServiceInterface"]),
 		.library(name: "SeriesDataProvider", targets: ["SeriesDataProvider"]),
 		.library(name: "SeriesDataProviderInterface", targets: ["SeriesDataProviderInterface"]),
+		.library(name: "SeriesListFeature", targets: ["SeriesListFeature"]),
 		.library(name: "SharedModelsLibrary", targets: ["SharedModelsLibrary"]),
 	],
 	dependencies: [
@@ -104,7 +105,7 @@ let package = Package(
 			name: "LeaguesListFeature",
 			dependencies: [
 				"LeagueFormFeature",
-				"LeaguesDataProviderInterface",
+				"SeriesListFeature",
 			]
 		),
 		.testTarget(name: "LeaguesListFeatureTests", dependencies: ["LeaguesListFeature"]),
@@ -134,6 +135,15 @@ let package = Package(
 			]
 		),
 		.testTarget(name: "SeriesDataProviderTests", dependencies: ["SeriesDataProvider"]),
+		.target(
+			name: "SeriesListFeature",
+			dependencies: [
+				"DateTimeLibrary",
+				"SeriesDataProviderInterface",
+				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+			]
+		),
+		.testTarget(name: "SeriesListFeatureTests", dependencies: ["SeriesListFeature"]),
 		.target(name: "SharedModelsLibrary", dependencies: []),
 	]
 )

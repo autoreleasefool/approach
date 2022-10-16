@@ -1,5 +1,6 @@
 import ComposableArchitecture
 import LeagueFormFeature
+import SeriesListFeature
 import SharedModelsLibrary
 import SwiftUI
 
@@ -9,10 +10,12 @@ public struct LeaguesListView: View {
 	struct ViewState: Equatable {
 		let bowlerName: String
 		let leagues: IdentifiedArrayOf<League>
+		let selection: Identified<League.ID, SeriesList.State>?
 		let isLeagueFormPresented: Bool
 
 		init(state: LeaguesList.State) {
 			self.leagues = state.leagues
+			self.selection = state.selection
 			self.bowlerName = state.bowler.name
 			self.isLeagueFormPresented = state.leagueForm != nil
 		}
@@ -22,6 +25,7 @@ public struct LeaguesListView: View {
 		case onAppear
 		case onDisappear
 		case setFormSheet(isPresented: Bool)
+		case setNavigation(selection: League.ID?)
 	}
 
 	public init(store: StoreOf<LeaguesList>) {
@@ -31,7 +35,23 @@ public struct LeaguesListView: View {
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: LeaguesList.Action.init) { viewStore in
 			List(viewStore.leagues) { league in
-				Text(league.name)
+				NavigationLink(
+					destination: IfLetStore(
+						store.scope(
+							state: \.selection?.value,
+							action: LeaguesList.Action.series
+						)
+					) {
+						SeriesListView(store: $0)
+					},
+					tag: league.id,
+					selection: viewStore.binding(
+						get: \.selection?.id,
+						send: LeaguesListView.ViewAction.setNavigation(selection:)
+					)
+				) {
+					Text(league.name)
+				}
 			}
 			.navigationTitle(viewStore.bowlerName)
 			.toolbar {
@@ -68,6 +88,8 @@ extension LeaguesList.Action {
 			self = .onDisappear
 		case let .setFormSheet(isPresented):
 			self = .setFormSheet(isPresented: isPresented)
+		case let .setNavigation(selection):
+			self = .setNavigation(selection: selection)
 		}
 	}
 }
