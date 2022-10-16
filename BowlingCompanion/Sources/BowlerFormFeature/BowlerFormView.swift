@@ -8,15 +8,13 @@ public struct BowlerFormView: View {
 		let name: String
 		let isSaving: Bool
 		let navigationTitle: String
-
-		var saveButtonDisabled: Bool {
-			name.isEmpty
-		}
+		let saveButtonDisabled: Bool
 
 		init(state: BowlerForm.State) {
 			self.name = state.name
 			self.isSaving = state.isSaving
 			self.navigationTitle = state.mode == .create ? "Create Bowler" : "Edit Bowler"
+			self.saveButtonDisabled = !state.canSave
 		}
 	}
 

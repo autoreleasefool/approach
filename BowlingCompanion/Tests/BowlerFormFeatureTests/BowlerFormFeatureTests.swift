@@ -65,4 +65,108 @@ final class BowlerFormFeatureTests: XCTestCase {
 
 		wait(for: [expectation], timeout: 1)
 	}
+
+	func testEmptyNameDoesNotSave() async {
+		let store = TestStore(
+			initialState: BowlerForm.State(mode: .create),
+			reducer: BowlerForm()
+		)
+
+		await store.send(.nameChange("")).finish()
+
+		await store.send(.saveButtonTapped).finish()
+	}
+
+	func testErrorSavingUpdatesState() async {
+		let store = TestStore(
+			initialState: BowlerForm.State(mode: .create),
+			reducer: BowlerForm()
+		)
+
+		store.dependencies.uuid = .incrementing
+
+		store.dependencies.bowlersDataProvider.save = { _ in
+			throw MockError.mock
+		}
+
+		await store.send(.nameChange("Joe")) {
+			$0.name = "Joe"
+		}.finish()
+
+		_ = await store.send(.saveButtonTapped) {
+			$0.isSaving = true
+		}
+
+		await store.receive(.saveBowlerResult(.failure(MockError.mock))) {
+			$0.isSaving = false
+		}
+	}
+
+	func testCreateHasChanges() async {
+		let store = TestStore(
+			initialState: BowlerForm.State(mode: .create),
+			reducer: BowlerForm()
+		)
+
+		XCTAssertFalse(store.state.hasChanges)
+
+		await store.send(.nameChange("Joe")) {
+			$0.name = "Joe"
+		}.finish()
+
+		XCTAssertTrue(store.state.hasChanges)
+	}
+
+	func testCreateCanSave() async {
+		let store = TestStore(
+			initialState: BowlerForm.State(mode: .create),
+			reducer: BowlerForm()
+		)
+
+		XCTAssertFalse(store.state.canSave)
+
+		await store.send(.nameChange("Joe")) {
+			$0.name = "Joe"
+		}.finish()
+
+		XCTAssertTrue(store.state.canSave)
+	}
+
+	func testEditHasChanges() async {
+		let mockBowler = Bowler(id: UUID(), name: "Joseph")
+		let store = TestStore(
+			initialState: BowlerForm.State(mode: .edit(mockBowler)),
+			reducer: BowlerForm()
+		)
+
+		XCTAssertFalse(store.state.name.isEmpty)
+		XCTAssertFalse(store.state.hasChanges)
+
+		await store.send(.nameChange("Joe")) {
+			$0.name = "Joe"
+		}.finish()
+
+		XCTAssertTrue(store.state.hasChanges)
+	}
+
+	func testEditCanSave() async {
+		let mockBowler = Bowler(id: UUID(), name: "Joseph")
+		let store = TestStore(
+			initialState: BowlerForm.State(mode: .edit(mockBowler)),
+			reducer: BowlerForm()
+		)
+
+		XCTAssertFalse(store.state.name.isEmpty)
+		XCTAssertFalse(store.state.canSave)
+
+		await store.send(.nameChange("Joe")) {
+			$0.name = "Joe"
+		}.finish()
+
+		XCTAssertTrue(store.state.canSave)
+	}
+}
+
+private enum MockError: Error {
+	case mock
 }

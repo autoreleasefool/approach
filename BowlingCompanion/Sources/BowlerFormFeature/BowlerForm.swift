@@ -8,6 +8,24 @@ public struct BowlerForm: ReducerProtocol {
 		public var name = ""
 		public var isSaving = false
 
+		public var hasChanges: Bool {
+			switch mode {
+			case .create:
+				return !name.isEmpty
+			case let .edit(bowler):
+				return name != bowler.name
+			}
+		}
+
+		public var canSave: Bool {
+			switch mode {
+			case .create:
+				return !name.isEmpty
+			case .edit:
+				return hasChanges && !name.isEmpty
+			}
+		}
+
 		public init(mode: Mode) {
 			self.mode = mode
 			if case let .edit(bowler) = mode {
@@ -40,6 +58,10 @@ public struct BowlerForm: ReducerProtocol {
 				return .none
 
 			case .saveButtonTapped:
+				guard state.canSave else {
+					return .none
+				}
+
 				state.isSaving = true
 				let bowler = Bowler(id: uuid(), name: state.name)
 				return .task {
