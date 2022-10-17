@@ -86,6 +86,10 @@ public struct BowlersListView: View {
 					}
 				}
 			}
+			.alert(
+				self.store.scope(state: \.alert, action: BowlersList.Action.alert),
+				dismiss: .dismissed
+			)
 			.onAppear { viewStore.send(.onAppear) }
 			.onDisappear { viewStore.send(.onDisappear) }
 		}

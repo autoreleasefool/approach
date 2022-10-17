@@ -11,6 +11,7 @@ public struct BowlersList: ReducerProtocol {
 		public var bowlers: IdentifiedArrayOf<Bowler> = []
 		public var selection: Identified<Bowler.ID, LeaguesList.State>?
 		public var bowlerForm: BowlerForm.State?
+		public var alert: AlertState<AlertAction>?
 
 		public init() {}
 	}
@@ -20,6 +21,7 @@ public struct BowlersList: ReducerProtocol {
 		case onDisappear
 		case delete(Bowler)
 		case edit(Bowler)
+		case alert(AlertAction)
 		case setNavigation(selection: Bowler.ID?)
 		case setFormSheet(isPresented: Bool)
 		case bowlersResponse(TaskResult<[Bowler]>)
@@ -70,6 +72,14 @@ public struct BowlersList: ReducerProtocol {
 				return .none
 
 			case let .delete(bowler):
+				state.alert = self.alert(toDelete: bowler)
+				return .none
+
+			case .alert(.dismissed):
+				state.alert = nil
+				return .none
+
+			case let .alert(.deleteButtonTapped(bowler)):
 				return .task {
 					return await .deleteBowlerResponse(TaskResult {
 						try await bowlersDataProvider.delete(bowler)
