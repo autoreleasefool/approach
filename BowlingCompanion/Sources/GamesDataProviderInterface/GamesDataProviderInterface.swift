@@ -2,16 +2,16 @@ import Dependencies
 import SharedModelsLibrary
 
 public struct GamesDataProvider: Sendable {
-	public var save: @Sendable (Series, Game) async throws -> Void
+	public var create: @Sendable (Series, Game) async throws -> Void
 	public var delete: @Sendable (Game) async throws -> Void
 	public var fetchAll: @Sendable (Series) -> AsyncStream<[Game]>
 
 	public init(
-		save: @escaping @Sendable (Series, Game) async throws -> Void,
+		create: @escaping @Sendable (Series, Game) async throws -> Void,
 		delete: @escaping @Sendable (Game) async throws -> Void,
 		fetchAll: @escaping @Sendable (Series) -> AsyncStream<[Game]>
 	) {
-		self.save = save
+		self.create = create
 		self.delete = delete
 		self.fetchAll = fetchAll
 	}
@@ -19,7 +19,7 @@ public struct GamesDataProvider: Sendable {
 
 extension GamesDataProvider: TestDependencyKey {
 	public static var testValue = Self(
-		save: { _, _ in fatalError("\(Self.self).save") },
+		create: { _, _ in fatalError("\(Self.self).save") },
 		delete: { _ in fatalError("\(Self.self).delete") },
 		fetchAll: { _ in fatalError("\(Self.self).fetchAll") }
 	)

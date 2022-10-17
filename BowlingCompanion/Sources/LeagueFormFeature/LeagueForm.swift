@@ -83,7 +83,7 @@ public struct LeagueForm: ReducerProtocol {
 				let league = state.league(id: uuid())
 				return .task { [bowler = state.bowler] in
 					return await .saveLeagueResult(TaskResult {
-						try await leaguesDataProvider.save(bowler, league)
+						try await leaguesDataProvider.create(bowler, league)
 						return league
 					})
 				}

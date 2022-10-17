@@ -11,11 +11,13 @@ extension LeaguesDataProvider: DependencyKey {
 		@Dependency(\.persistenceService) var persistenceService: PersistenceService
 
 		return Self(
-			save: { bowler, league in
+			create: { bowler, league in
 				try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
 					persistenceService.write({
-						$0.object(ofType: PersistentBowler.self, forPrimaryKey: bowler.id)?
-							.leagues.append(PersistentLeague(from: league))
+						let persistent = PersistentLeague(from: league)
+						$0.add(persistent, update: .error)
+						$0.object(ofType: PersistentBowler.self, forPrimaryKey: bowler.id)?.leagues
+							.append(persistent)
 					}, continuation.resumeOrThrow(_:))
 				}
 			},

@@ -62,7 +62,7 @@ public struct SeriesList: ReducerProtocol {
 				return .task { [league = state.league] in
 					let series = Series(id: uuid(), date: Date())
 					return await .seriesCreateResponse(TaskResult {
-						try await seriesDataProvider.save(league, series)
+						try await seriesDataProvider.create(league, series)
 						return series
 					})
 				}

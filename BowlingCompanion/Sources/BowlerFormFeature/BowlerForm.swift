@@ -81,7 +81,7 @@ public struct BowlerForm: ReducerProtocol {
 					let bowler = Bowler(id: uuid(), name: state.name)
 					return .task {
 						return await .saveBowlerResult(.init {
-							try await bowlersDataProvider.save(bowler)
+							try await bowlersDataProvider.create(bowler)
 							return bowler
 						})
 					}

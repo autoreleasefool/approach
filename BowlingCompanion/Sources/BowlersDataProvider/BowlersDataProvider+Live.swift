@@ -10,25 +10,25 @@ extension BowlersDataProvider: DependencyKey {
 		@Dependency(\.persistenceService) var persistenceService: PersistenceService
 
 		return Self(
-			save: { bowler in
+			create: { bowler in
 				try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-					persistenceService.write({ realm in
-						realm.add(PersistentBowler(from: bowler), update: .error)
+					persistenceService.write({
+						$0.add(PersistentBowler(from: bowler), update: .error)
 					}, continuation.resumeOrThrow(_:))
 				}
 			},
 			update: { bowler in
 				try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-					persistenceService.write({ realm in
-						realm.add(PersistentBowler(from: bowler), update: .modified)
+					persistenceService.write({
+						$0.add(PersistentBowler(from: bowler), update: .modified)
 					}, continuation.resumeOrThrow(_:))
 				}
 			},
 			delete: { bowler in
 				try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-					persistenceService.write({ realm in
-						if let persistent = realm.object(ofType: PersistentBowler.self, forPrimaryKey: bowler.id) {
-							realm.delete(persistent)
+					persistenceService.write({
+						if let persistent = $0.object(ofType: PersistentBowler.self, forPrimaryKey: bowler.id) {
+							$0.delete(persistent)
 						}
 					}, continuation.resumeOrThrow(_:))
 				}
