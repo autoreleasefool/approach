@@ -68,12 +68,23 @@ public struct BowlerForm: ReducerProtocol {
 				}
 
 				state.isLoading = true
-				let bowler = Bowler(id: uuid(), name: state.name)
-				return .task {
-					return await .saveBowlerResult(TaskResult {
-						try await bowlersDataProvider.save(bowler)
-						return bowler
-					})
+				switch state.mode {
+				case let .edit(originalBowler):
+					let bowler = Bowler(id: originalBowler.id, name: state.name)
+					return .task {
+						return await .saveBowlerResult(.init {
+							try await bowlersDataProvider.update(bowler)
+							return bowler
+						})
+					}
+				case .create:
+					let bowler = Bowler(id: uuid(), name: state.name)
+					return .task {
+						return await .saveBowlerResult(.init {
+							try await bowlersDataProvider.save(bowler)
+							return bowler
+						})
+					}
 				}
 
 			case .saveBowlerResult(.success):

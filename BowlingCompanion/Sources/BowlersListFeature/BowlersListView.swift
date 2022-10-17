@@ -52,17 +52,18 @@ public struct BowlersListView: View {
 				) {
 					Text(bowler.name)
 						.swipeActions(allowsFullSwipe: true) {
-							Button(role: .destructive) {
-								viewStore.send(.delete(bowler))
-							} label: {
-								Label("Delete", systemImage: "trash")
-							}
 							Button {
 								viewStore.send(.edit(bowler))
 							} label: {
 								Label("Edit", systemImage: "pencil")
 							}
 							.tint(.blue)
+
+							Button(role: .destructive) {
+								viewStore.send(.delete(bowler))
+							} label: {
+								Label("Delete", systemImage: "trash")
+							}
 						}
 				}
 			}

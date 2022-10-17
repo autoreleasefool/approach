@@ -16,11 +16,18 @@ public struct BowlerFormView: View {
 		init(state: BowlerForm.State) {
 			self.name = state.name
 			self.isLoading = state.isLoading
-			self.navigationTitle = state.mode == .create ? "Create Bowler" : "Edit Bowler"
 			self.saveButtonDisabled = !state.canSave
-			self.showDeleteButton = state.mode == .create ? false : true
 			self.dismissDisabled = state.hasChanges || state.isLoading
 			self.discardButtonEnabled = state.hasChanges && !state.isLoading
+
+			switch state.mode {
+			case let .edit(bowler):
+				self.navigationTitle = "Edit \(bowler.name)"
+				self.showDeleteButton = true
+			case .create:
+				self.navigationTitle = "Create Bowler"
+				self.showDeleteButton = false
+			}
 		}
 	}
 
@@ -42,7 +49,7 @@ public struct BowlerFormView: View {
 					ProgressView()
 				}
 
-				Section("Details") {
+				Section {
 					TextField("Name", text: viewStore.binding(get: \.name, send: ViewAction.nameChange))
 						.disabled(viewStore.isLoading)
 				}

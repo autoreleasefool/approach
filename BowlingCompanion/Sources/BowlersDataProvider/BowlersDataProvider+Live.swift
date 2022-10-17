@@ -13,7 +13,14 @@ extension BowlersDataProvider: DependencyKey {
 			save: { bowler in
 				try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
 					persistenceService.write({ realm in
-						realm.add(PersistentBowler(from: bowler))
+						realm.add(PersistentBowler(from: bowler), update: .error)
+					}, continuation.resumeOrThrow(_:))
+				}
+			},
+			update: { bowler in
+				try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+					persistenceService.write({ realm in
+						realm.add(PersistentBowler(from: bowler), update: .modified)
 					}, continuation.resumeOrThrow(_:))
 				}
 			},
