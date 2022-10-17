@@ -14,7 +14,7 @@ final class GamesDataProviderTests: XCTestCase {
 
 		let dataProvider = GamesDataProvider.liveValue
 
-		try await dataProvider.save(
+		try await dataProvider.create(
 			Series(id: UUID(), date: Date()),
 			Game(id: UUID(), ordinal: 1, locked: .locked, manualScore: nil)
 		)

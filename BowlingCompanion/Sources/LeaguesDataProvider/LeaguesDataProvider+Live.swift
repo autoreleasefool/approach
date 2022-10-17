@@ -8,16 +8,31 @@ import SharedModelsLibrary
 
 extension LeaguesDataProvider: DependencyKey {
 	public static let liveValue: Self = {
+		@Dependency(\.uuid) var uuid
+		@Dependency(\.date) var date
 		@Dependency(\.persistenceService) var persistenceService: PersistenceService
 
 		return Self(
 			create: { bowler, league in
 				try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
 					persistenceService.write({
-						let persistent = PersistentLeague(from: league)
-						$0.add(persistent, update: .error)
+						let persistentLeague = PersistentLeague(from: league)
+						$0.add(persistentLeague, update: .error)
 						$0.object(ofType: PersistentBowler.self, forPrimaryKey: bowler.id)?.leagues
-							.append(persistent)
+							.append(persistentLeague)
+
+						if league.recurrence == .oneTimeEvent {
+							let series = PersistentSeries(from: .init(id: uuid(), date: date()))
+							$0.add(series, update: .error)
+							persistentLeague.series.append(series)
+							for ordinal in 1...league.numberOfGames {
+								let game = PersistentGame(
+									from: .init(id: uuid(), ordinal: ordinal, locked: .unlocked, manualScore: nil)
+								)
+								$0.add(game, update: .error)
+								series.games.append(game)
+							}
+						}
 					}, continuation.resumeOrThrow(_:))
 				}
 			},

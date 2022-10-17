@@ -14,7 +14,7 @@ final class SeriesDataProviderTests: XCTestCase {
 
 		let dataProvider = SeriesDataProvider.liveValue
 
-		try await dataProvider.save(
+		try await dataProvider.create(
 			League(id: UUID(), name: "League", recurrence: .oneTimeEvent, numberOfGames: 3, additionalPinfall: 0, additionalGames: 0),
 			Series(id: UUID(), date: Date())
 		)

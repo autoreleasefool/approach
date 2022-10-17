@@ -14,7 +14,7 @@ final class BowlersDataProviderTests: XCTestCase {
 
 		let dataProvider = BowlersDataProvider.liveValue
 
-		try await dataProvider.save(Bowler(id: UUID(), name: "Bowler"))
+		try await dataProvider.create(Bowler(id: UUID(), name: "Bowler"))
 
 		wait(for: [expectation], timeout: 1)
 	}

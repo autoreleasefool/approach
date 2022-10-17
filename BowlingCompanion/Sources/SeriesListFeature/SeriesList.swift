@@ -1,5 +1,4 @@
 import ComposableArchitecture
-import Foundation
 import GamesListFeature
 import SeriesDataProviderInterface
 import SharedModelsLibrary
@@ -33,6 +32,7 @@ public struct SeriesList: ReducerProtocol {
 	public init() {}
 
 	@Dependency(\.uuid) var uuid
+	@Dependency(\.date) var date
 	@Dependency(\.seriesDataProvider) var seriesDataProvider
 
 	public var body: some ReducerProtocol<State, Action> {
@@ -60,7 +60,7 @@ public struct SeriesList: ReducerProtocol {
 
 			case .addSeriesButtonTapped:
 				return .task { [league = state.league] in
-					let series = Series(id: uuid(), date: Date())
+					let series = Series(id: uuid(), date: date())
 					return await .seriesCreateResponse(TaskResult {
 						try await seriesDataProvider.create(league, series)
 						return series
