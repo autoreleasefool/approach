@@ -27,8 +27,17 @@ extension BowlersDataProvider: DependencyKey {
 			delete: { bowler in
 				try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
 					persistenceService.write({
-						if let persistent = $0.object(ofType: PersistentBowler.self, forPrimaryKey: bowler.id) {
-							$0.delete(persistent)
+						if let deletedBowler = $0.object(ofType: PersistentBowler.self, forPrimaryKey: bowler.id) {
+							for league in deletedBowler.leagues {
+								for series in league.series {
+									for game in series.games {
+										$0.delete(game)
+									}
+									$0.delete(series)
+								}
+								$0.delete(league)
+							}
+							$0.delete(deletedBowler)
 						}
 					}, continuation.resumeOrThrow(_:))
 				}

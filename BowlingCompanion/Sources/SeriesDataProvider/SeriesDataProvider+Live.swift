@@ -15,16 +15,17 @@ extension SeriesDataProvider: DependencyKey {
 			create: { league, series in
 				try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
 					persistenceService.write({
-						let persistentSeries = PersistentSeries(from: series)
-						$0.add(persistentSeries, update: .error)
+						let createdSeries = PersistentSeries(from: series)
+						$0.add(createdSeries, update: .error)
 						$0.object(ofType: PersistentLeague.self, forPrimaryKey: league.id)?.series
-							.append(persistentSeries)
+							.append(createdSeries)
 
-						// TODO: try to consolidate with LeaguesDataProvider.create
 						for ordinal in 1...league.numberOfGames {
-							let game = PersistentGame(from: .init(id: uuid(), ordinal: ordinal, locked: .unlocked, manualScore: nil))
-							$0.add(game, update: .error)
-							persistentSeries.games.append(game)
+							let createdGame = PersistentGame(
+								from: .init(id: uuid(), ordinal: ordinal, locked: .unlocked, manualScore: nil)
+							)
+							$0.add(createdGame, update: .error)
+							createdSeries.games.append(createdGame)
 						}
 					}, continuation.resumeOrThrow(_:))
 				}
@@ -32,8 +33,12 @@ extension SeriesDataProvider: DependencyKey {
 			delete: { series in
 				try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
 					persistenceService.write({
-						if let persistent = $0.object(ofType: PersistentSeries.self, forPrimaryKey: series.id) {
-							$0.delete(persistent)
+						if let deletedSeries = $0.object(ofType: PersistentSeries.self, forPrimaryKey: series.id) {
+							for game in deletedSeries.games {
+								$0.delete(game)
+							}
+
+							$0.delete(deletedSeries)
 						}
 					}, continuation.resumeOrThrow(_:))
 				}

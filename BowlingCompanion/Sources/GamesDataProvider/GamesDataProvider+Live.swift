@@ -8,16 +8,16 @@ import SharedModelsLibrary
 
 extension GamesDataProvider: DependencyKey {
 	public static let liveValue: Self = {
-		@Dependency(\.persistenceService) var persistenceService: PersistenceService
+		@Dependency(\.persistenceService) var persistenceService
 
 		return Self(
 			create: { series, game in
 				try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
 					persistenceService.write({
-						let persistent = PersistentGame(from: game)
-						$0.add(persistent, update: .error)
+						let createdGame = PersistentGame(from: game)
+						$0.add(createdGame, update: .error)
 						$0.object(ofType: PersistentSeries.self, forPrimaryKey: series.id)?.games
-							.append(persistent)
+							.append(createdGame)
 					}, continuation.resumeOrThrow(_:))
 				}
 			},

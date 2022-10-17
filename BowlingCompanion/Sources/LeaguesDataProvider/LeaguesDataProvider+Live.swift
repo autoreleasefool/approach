@@ -16,21 +16,22 @@ extension LeaguesDataProvider: DependencyKey {
 			create: { bowler, league in
 				try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
 					persistenceService.write({
-						let persistentLeague = PersistentLeague(from: league)
-						$0.add(persistentLeague, update: .error)
+						let createdLeague = PersistentLeague(from: league)
+						$0.add(createdLeague, update: .error)
 						$0.object(ofType: PersistentBowler.self, forPrimaryKey: bowler.id)?.leagues
-							.append(persistentLeague)
+							.append(createdLeague)
 
 						if league.recurrence == .oneTimeEvent {
-							let series = PersistentSeries(from: .init(id: uuid(), date: date()))
-							$0.add(series, update: .error)
-							persistentLeague.series.append(series)
+							let createdSeries = PersistentSeries(from: .init(id: uuid(), date: date()))
+							$0.add(createdSeries, update: .error)
+							createdLeague.series.append(createdSeries)
+
 							for ordinal in 1...league.numberOfGames {
-								let game = PersistentGame(
+								let createdGame = PersistentGame(
 									from: .init(id: uuid(), ordinal: ordinal, locked: .unlocked, manualScore: nil)
 								)
-								$0.add(game, update: .error)
-								series.games.append(game)
+								$0.add(createdGame, update: .error)
+								createdSeries.games.append(createdGame)
 							}
 						}
 					}, continuation.resumeOrThrow(_:))
@@ -39,8 +40,16 @@ extension LeaguesDataProvider: DependencyKey {
 			delete: { league in
 				try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
 					persistenceService.write({
-						if let persistent = $0.object(ofType: PersistentLeague.self, forPrimaryKey: league.id) {
-							$0.delete(persistent)
+						if let deletedLeague = $0.object(ofType: PersistentLeague.self, forPrimaryKey: league.id) {
+							for series in deletedLeague.series {
+								for game in series.games {
+									$0.delete(game)
+								}
+
+								$0.delete(series)
+							}
+
+							$0.delete(deletedLeague)
 						}
 					}, continuation.resumeOrThrow(_:))
 				}
