@@ -17,8 +17,7 @@ public struct GamesListView: View {
 	}
 
 	enum ViewAction {
-		case onAppear
-		case onDisappear
+		case subscribeToGames
 	}
 
 	public init(store: StoreOf<GamesList>) {
@@ -31,8 +30,7 @@ public struct GamesListView: View {
 				Text("Game \($0.ordinal)")
 			}
 			.navigationTitle(viewStore.seriesDate.regularDateFormat)
-			.onAppear { viewStore.send(.onAppear) }
-			.onDisappear { viewStore.send(.onDisappear) }
+			.task { await viewStore.send(.subscribeToGames).finish() }
 		}
 	}
 }
@@ -40,10 +38,8 @@ public struct GamesListView: View {
 extension GamesList.Action {
 	init(action: GamesListView.ViewAction) {
 		switch action {
-		case .onAppear:
-			self = .onAppear
-		case .onDisappear:
-			self = .onDisappear
+		case .subscribeToGames:
+			self = .subscribeToGames
 		}
 	}
 }

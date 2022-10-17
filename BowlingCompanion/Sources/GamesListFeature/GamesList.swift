@@ -3,8 +3,6 @@ import GamesDataProviderInterface
 import SharedModelsLibrary
 
 public struct GamesList: ReducerProtocol {
-	enum ListObservable {}
-
 	public struct State: Equatable {
 		public var series: Series
 		public var games: IdentifiedArrayOf<Game> = []
@@ -15,8 +13,7 @@ public struct GamesList: ReducerProtocol {
 	}
 
 	public enum Action: Equatable {
-		case onAppear
-		case onDisappear
+		case subscribeToGames
 		case gamesResponse(TaskResult<[Game]>)
 	}
 
@@ -27,17 +24,12 @@ public struct GamesList: ReducerProtocol {
 	public var body: some ReducerProtocol<State, Action> {
 		Reduce { state, action in
 			switch action {
-			case .onAppear:
+			case .subscribeToGames:
 				return .run { [series = state.series] send in
 					for await games in gamesDataProvider.fetchAll(series) {
 						await send(.gamesResponse(.success(games)))
 					}
 				}
-				.cancellable(id: ListObservable.self)
-
-			case .onDisappear:
-				// TODO: list observation doesn't cancel and leaks because store becomes nil before `onDisappear`
-				return .cancel(id: ListObservable.self)
 
 			case let .gamesResponse(.success(games)):
 				state.games = .init(uniqueElements: games)

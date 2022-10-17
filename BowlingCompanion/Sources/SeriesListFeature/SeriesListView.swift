@@ -22,8 +22,7 @@ public struct SeriesListView: View {
 	}
 
 	enum ViewAction {
-		case onAppear
-		case onDisappear
+		case subscribeToSeries
 		case setNavigation(selection: Series.ID?)
 		case setFormSheet(isPresented: Bool)
 		case addSeriesButtonTapped
@@ -78,8 +77,7 @@ public struct SeriesListView: View {
 					}
 				}
 			}
-			.onAppear { viewStore.send(.onAppear) }
-			.onDisappear { viewStore.send(.onDisappear) }
+			.task { await viewStore.send(.subscribeToSeries).finish() }
 		}
 	}
 }
@@ -87,10 +85,8 @@ public struct SeriesListView: View {
 extension SeriesList.Action {
 	init(action: SeriesListView.ViewAction) {
 		switch action {
-		case .onAppear:
-			self = .onAppear
-		case .onDisappear:
-			self = .onDisappear
+		case.subscribeToSeries:
+			self = .subscribeToSeries
 		case let .setFormSheet(isPresented):
 			self = .setFormSheet(isPresented: isPresented)
 		case .addSeriesButtonTapped:

@@ -5,8 +5,6 @@ import SeriesListFeature
 import SharedModelsLibrary
 
 public struct LeaguesList: ReducerProtocol {
-	enum ListObservable {}
-
 	public struct State: Equatable {
 		public var bowler: Bowler
 		public var leagues: IdentifiedArrayOf<League> = []
@@ -19,8 +17,7 @@ public struct LeaguesList: ReducerProtocol {
 	}
 
 	public enum Action: Equatable {
-		case onAppear
-		case onDisappear
+		case subscribeToLeagues
 		case leaguesResponse(TaskResult<[League]>)
 		case setNavigation(selection: League.ID?)
 		case setFormSheet(isPresented: Bool)
@@ -35,17 +32,12 @@ public struct LeaguesList: ReducerProtocol {
 	public var body: some ReducerProtocol<State, Action> {
 		Reduce { state, action in
 			switch action {
-			case .onAppear:
+			case .subscribeToLeagues:
 				return .run { [bowler = state.bowler] send in
 					for await leagues in leaguesDataProvider.fetchAll(bowler) {
 						await send(.leaguesResponse(.success(leagues)))
 					}
 				}
-				.cancellable(id: ListObservable.self)
-
-			case .onDisappear:
-				// TODO: list observation doesn't cancel and leaks because store becomes nil before `onDisappear`
-				return .cancel(id: ListObservable.self)
 
 			case let .leaguesResponse(.success(leagues)):
 				state.leagues = .init(uniqueElements: leagues)

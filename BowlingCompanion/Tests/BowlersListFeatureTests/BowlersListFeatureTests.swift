@@ -15,7 +15,7 @@ final class BowlersListFeatureTests: XCTestCase {
 		let (bowlers, continuation) = AsyncStream<[Bowler]>.streamWithContinuation()
 		store.dependencies.bowlersDataProvider.fetchAll = { bowlers }
 
-		await _ = store.send(.onAppear)
+		await _ = store.send(.subscribeToBowlers)
 
 		continuation.yield([mockBowler])
 
@@ -23,7 +23,7 @@ final class BowlersListFeatureTests: XCTestCase {
 			$0.bowlers = [mockBowler]
 		}
 
-		await store.send(.onDisappear).finish()
+		await store.finish()
 	}
 
 	func testNavigatesToLeague() async {

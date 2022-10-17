@@ -5,8 +5,6 @@ import LeaguesListFeature
 import SharedModelsLibrary
 
 public struct BowlersList: ReducerProtocol {
-	enum ListObservable {}
-
 	public struct State: Equatable {
 		public var bowlers: IdentifiedArrayOf<Bowler> = []
 		public var selection: Identified<Bowler.ID, LeaguesList.State>?
@@ -17,8 +15,7 @@ public struct BowlersList: ReducerProtocol {
 	}
 
 	public enum Action: Equatable {
-		case onAppear
-		case onDisappear
+		case subscribeToBowlers
 		case delete(Bowler)
 		case edit(Bowler)
 		case alert(AlertAction)
@@ -37,17 +34,12 @@ public struct BowlersList: ReducerProtocol {
 	public var body: some ReducerProtocol<State, Action> {
 		Reduce { state, action in
 			switch action {
-			case .onAppear:
+			case .subscribeToBowlers:
 				return .run { send in
 					for await bowlers in bowlersDataProvider.fetchAll() {
 						await send(.bowlersResponse(.success(bowlers)))
 					}
 				}
-				.cancellable(id: ListObservable.self)
-
-			case .onDisappear:
-				// TODO: list observation doesn't cancel and leaks because store becomes nil before `onDisappear`
-				return .cancel(id: ListObservable.self)
 
 			case let .setNavigation(selection: .some(id)):
 				if let selection = state.bowlers[id: id] {

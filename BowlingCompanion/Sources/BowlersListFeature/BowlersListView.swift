@@ -20,8 +20,7 @@ public struct BowlersListView: View {
 	}
 
 	enum ViewAction {
-		case onAppear
-		case onDisappear
+		case subscribeToBowlers
 		case setFormSheet(isPresented: Bool)
 		case setNavigation(selection: Bowler.ID?)
 		case delete(Bowler)
@@ -91,8 +90,7 @@ public struct BowlersListView: View {
 				self.store.scope(state: \.alert, action: BowlersList.Action.alert),
 				dismiss: .dismissed
 			)
-			.onAppear { viewStore.send(.onAppear) }
-			.onDisappear { viewStore.send(.onDisappear) }
+			.task { await viewStore.send(.subscribeToBowlers).finish() }
 		}
 	}
 }
@@ -100,10 +98,8 @@ public struct BowlersListView: View {
 extension BowlersList.Action {
 	init(action: BowlersListView.ViewAction) {
 		switch action {
-		case .onAppear:
-			self = .onAppear
-		case .onDisappear:
-			self = .onDisappear
+		case .subscribeToBowlers:
+			self = .subscribeToBowlers
 		case let .setFormSheet(isPresented):
 			self = .setFormSheet(isPresented: isPresented)
 		case let .setNavigation(selection):

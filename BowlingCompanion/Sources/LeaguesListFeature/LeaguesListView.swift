@@ -22,8 +22,7 @@ public struct LeaguesListView: View {
 	}
 
 	enum ViewAction {
-		case onAppear
-		case onDisappear
+		case subscribeToLeagues
 		case setFormSheet(isPresented: Bool)
 		case setNavigation(selection: League.ID?)
 	}
@@ -73,8 +72,7 @@ public struct LeaguesListView: View {
 					}
 				}
 			}
-			.onAppear { viewStore.send(.onAppear) }
-			.onDisappear { viewStore.send(.onDisappear) }
+			.task { await viewStore.send(.subscribeToLeagues).finish() }
 		}
 	}
 }
@@ -82,10 +80,8 @@ public struct LeaguesListView: View {
 extension LeaguesList.Action {
 	init(action: LeaguesListView.ViewAction) {
 		switch action {
-		case .onAppear:
-			self = .onAppear
-		case .onDisappear:
-			self = .onDisappear
+		case .subscribeToLeagues:
+			self = .subscribeToLeagues
 		case let .setFormSheet(isPresented):
 			self = .setFormSheet(isPresented: isPresented)
 		case let .setNavigation(selection):
