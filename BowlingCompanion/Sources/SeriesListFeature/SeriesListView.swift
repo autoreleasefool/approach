@@ -27,6 +27,7 @@ public struct SeriesListView: View {
 		case setNavigation(selection: Series.ID?)
 		case setFormSheet(isPresented: Bool)
 		case addSeriesButtonTapped
+		case dismissNewSeries
 	}
 
 	public init(store: StoreOf<SeriesList>) {
@@ -37,7 +38,6 @@ public struct SeriesListView: View {
 		WithViewStore(store, observe: ViewState.init, send: SeriesList.Action.init) { viewStore in
 			Group {
 				List(viewStore.series) { series in
-//					Text(series.date.regularDateFormat)
 					NavigationLink(
 						destination: IfLetStore(
 							store.scope(
@@ -71,7 +71,7 @@ public struct SeriesListView: View {
 						},
 						isActive: viewStore.binding(
 							get: \.isNewSeriesCreated,
-							send: { $0 ? .addSeriesButtonTapped : .setNavigation(selection: nil) }
+							send: { $0 ? .addSeriesButtonTapped : .dismissNewSeries }
 						)
 					) {
 						Image(systemName: "plus")
@@ -97,6 +97,8 @@ extension SeriesList.Action {
 			self = .addSeriesButtonTapped
 		case let .setNavigation(selection):
 			self = .setNavigation(selection: selection)
+		case .dismissNewSeries:
+			self = .dismissNewSeries
 		}
 	}
 }

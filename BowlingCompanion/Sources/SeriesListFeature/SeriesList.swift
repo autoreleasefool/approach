@@ -25,6 +25,7 @@ public struct SeriesList: ReducerProtocol {
 		case setNavigation(selection: Series.ID?)
 		case seriesCreateResponse(TaskResult<Series>)
 		case addSeriesButtonTapped
+		case dismissNewSeries
 		case setFormSheet(isPresented: Bool)
 		case games(GamesList.Action)
 	}
@@ -72,6 +73,10 @@ public struct SeriesList: ReducerProtocol {
 
 			case .seriesCreateResponse(.failure):
 				// TODO: show error creating series
+				return .none
+
+			case .dismissNewSeries:
+				state.newSeries = nil
 				return .none
 
 			case let .setNavigation(selection: .some(id)):
