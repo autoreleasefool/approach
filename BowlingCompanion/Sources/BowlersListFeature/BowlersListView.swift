@@ -24,6 +24,8 @@ public struct BowlersListView: View {
 		case onDisappear
 		case setFormSheet(isPresented: Bool)
 		case setNavigation(selection: Bowler.ID?)
+		case delete(Bowler)
+		case edit(Bowler)
 	}
 
 	public init(store: StoreOf<BowlersList>) {
@@ -49,6 +51,19 @@ public struct BowlersListView: View {
 					)
 				) {
 					Text(bowler.name)
+						.swipeActions(allowsFullSwipe: true) {
+							Button(role: .destructive) {
+								viewStore.send(.delete(bowler))
+							} label: {
+								Label("Delete", systemImage: "trash")
+							}
+							Button {
+								viewStore.send(.edit(bowler))
+							} label: {
+								Label("Edit", systemImage: "pencil")
+							}
+							.tint(.blue)
+						}
 				}
 			}
 			.navigationTitle("Bowlers")
@@ -88,6 +103,10 @@ extension BowlersList.Action {
 			self = .setFormSheet(isPresented: isPresented)
 		case let .setNavigation(selection):
 			self = .setNavigation(selection: selection)
+		case let .edit(bowler):
+			self = .edit(bowler)
+		case let .delete(bowler):
+			self = .delete(bowler)
 		}
 	}
 }

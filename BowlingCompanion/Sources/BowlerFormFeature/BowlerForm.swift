@@ -6,7 +6,8 @@ public struct BowlerForm: ReducerProtocol {
 	public struct State: Equatable {
 		public var mode: Mode
 		public var name = ""
-		public var isSaving = false
+		public var isLoading = false
+		public var alert: AlertState<AlertAction>?
 
 		public var hasChanges: Bool {
 			switch mode {
@@ -43,6 +44,10 @@ public struct BowlerForm: ReducerProtocol {
 		case nameChange(String)
 		case saveButtonTapped
 		case saveBowlerResult(TaskResult<Bowler>)
+		case deleteBowlerResult(TaskResult<Bool>)
+		case discardButtonTapped
+		case deleteButtonTapped
+		case alert(AlertAction)
 	}
 
 	public init() {}
@@ -62,7 +67,7 @@ public struct BowlerForm: ReducerProtocol {
 					return .none
 				}
 
-				state.isSaving = true
+				state.isLoading = true
 				let bowler = Bowler(id: uuid(), name: state.name)
 				return .task {
 					return await .saveBowlerResult(TaskResult {
@@ -72,12 +77,45 @@ public struct BowlerForm: ReducerProtocol {
 				}
 
 			case .saveBowlerResult(.success):
-				state.isSaving = false
+				state.isLoading = false
 				return .none
 
 			case .saveBowlerResult(.failure):
 				// TODO: show error to user for failed save to db
-				state.isSaving = false
+				state.isLoading = false
+				return .none
+
+			case .deleteButtonTapped:
+				state.alert = self.buildDeleteAlert(state: state)
+				return .none
+
+			case .alert(.deleteButtonTapped):
+				guard case let .edit(bowler) = state.mode else { return .none }
+				state.isLoading = true
+				return .task {
+					await .deleteBowlerResult(TaskResult {
+						try await bowlersDataProvider.delete(bowler)
+						return true
+					})
+				}
+
+			case .deleteBowlerResult(.success):
+				return .none
+
+			case .deleteBowlerResult(.failure):
+				// TODO: show error to user for failed delete
+				return .none
+
+			case .discardButtonTapped:
+				state.alert = self.discardAlert
+				return .none
+
+			case .alert(.discardButtonTapped):
+				state = .init(mode: state.mode)
+				return .none
+
+			case .alert(.dismissed):
+				state.alert = nil
 				return .none
 			}
 		}
