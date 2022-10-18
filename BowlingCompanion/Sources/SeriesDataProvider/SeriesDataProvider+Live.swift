@@ -22,7 +22,7 @@ extension SeriesDataProvider: DependencyKey {
 
 						for ordinal in 1...league.numberOfGames {
 							let createdGame = PersistentGame(
-								from: .init(id: uuid(), ordinal: ordinal, locked: .unlocked, manualScore: nil)
+								from: .init(id: uuid(), ordinal: ordinal)
 							)
 							$0.add(createdGame, update: .error)
 							createdSeries.games.append(createdGame)

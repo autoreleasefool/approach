@@ -7,6 +7,7 @@ public class PersistentGame: Object, ObjectKeyIdentifiable {
 	@Persisted public var ordinal: Int = 0
 	@Persisted public var locked: PersistentLockedState = .unlocked
 	@Persisted public var manualScore: Int?
+	@Persisted public var frames: List<PersistentFrame>
 
 	@Persisted(originProperty: "games") public var series: LinkingObjects<PersistentSeries>
 }
@@ -27,6 +28,7 @@ extension PersistentGame {
 		self.ordinal = game.ordinal
 		self.locked = PersistentLockedState(from: game.locked)
 		self.manualScore = game.manualScore
+		self.frames.append(objectsIn: game.frames.map { .init(from: $0) })
 	}
 
 	public var game: Game {
@@ -34,7 +36,8 @@ extension PersistentGame {
 			id: _id,
 			ordinal: ordinal,
 			locked: locked.locked,
-			manualScore: manualScore
+			manualScore: manualScore,
+			frames: frames.map { $0.frame }
 		)
 	}
 }
