@@ -32,7 +32,6 @@ let package = Package(
 	],
 	dependencies: [
 		.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "0.42.0"),
-		.package(url: "https://github.com/realm/realm-swift.git", from: "10.32.0"),
 	],
 	targets: [
 		.target(
@@ -77,7 +76,6 @@ let package = Package(
 			name: "PersistenceModelsLibrary",
 			dependencies: [
 				"SharedModelsLibrary",
-				.product(name: "RealmSwift", package: "realm-swift"),
 			]
 		),
 		.target(name: "DateTimeLibrary", dependencies: []),
@@ -149,7 +147,6 @@ let package = Package(
 			name: "PersistenceServiceInterface",
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-composable-architecture"),
-				.product(name: "RealmSwift", package: "realm-swift"),
 			]
 		),
 		.testTarget(name: "PersistenceServiceTests", dependencies: ["PersistenceService"]),
