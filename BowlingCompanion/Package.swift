@@ -15,6 +15,8 @@ let package = Package(
 		.library(name: "BowlersListFeature", targets: ["BowlersListFeature"]),
 		.library(name: "DateTimeLibrary", targets: ["DateTimeLibrary"]),
 		.library(name: "ExtensionsLibrary", targets: ["ExtensionsLibrary"]),
+		.library(name: "FileManagerService", targets: ["FileManagerService"]),
+		.library(name: "FileManagerServiceInterface", targets: ["FileManagerServiceInterface"]),
 		.library(name: "GamesDataProvider", targets: ["GamesDataProvider"]),
 		.library(name: "GamesDataProviderInterface", targets: ["GamesDataProviderInterface"]),
 		.library(name: "GamesListFeature", targets: ["GamesListFeature"]),
@@ -82,6 +84,14 @@ let package = Package(
 		.testTarget(name: "DateTimeLibraryTests", dependencies: ["DateTimeLibrary"]),
 		.target(name: "ExtensionsLibrary", dependencies: []),
 		.testTarget(name: "ExtensionsLibraryTests", dependencies: ["ExtensionsLibrary"]),
+		.target(name: "FileManagerService", dependencies: ["FileManagerServiceInterface"]),
+		.target(
+			name: "FileManagerServiceInterface",
+			dependencies: [
+				.product(name: "Dependencies", package: "swift-composable-architecture"),
+			]
+		),
+		.testTarget(name: "FileManagerServiceTests", dependencies: ["FileManagerService"]),
 		.target(
 			name: "GamesDataProvider",
 			dependencies: [
