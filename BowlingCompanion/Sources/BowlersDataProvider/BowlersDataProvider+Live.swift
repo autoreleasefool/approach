@@ -1,21 +1,60 @@
 import BowlersDataProviderInterface
+import BowlersPersistenceServiceInterface
 import Dependencies
-import ExtensionsLibrary
-import PersistenceModelsLibrary
+import GRDB
 import PersistenceServiceInterface
 import SharedModelsLibrary
 
 extension BowlersDataProvider: DependencyKey {
 	public static let liveValue: Self = {
-		@Dependency(\.persistenceService) var persistenceService: PersistenceService
-
 		return Self(
-			create: { bowler in },
-			update: { bowler in },
-			delete: { bowler in },
-			fetchAll: {
-				.init { continuation in
-					continuation.finish()
+			create: { bowler in
+				@Dependency(\.persistenceService) var persistenceService: PersistenceService
+				@Dependency(\.bowlersPersistenceService) var bowlersPersistenceService: BowlersPersistenceService
+				
+				try await persistenceService.write {
+					try await $0.write { db in
+						try bowlersPersistenceService.create(bowler, db)
+					}
+				}
+			},
+			update: { bowler in
+				@Dependency(\.persistenceService) var persistenceService: PersistenceService
+				@Dependency(\.bowlersPersistenceService) var bowlersPersistenceService: BowlersPersistenceService
+
+				try await persistenceService.write {
+					try await $0.write { db in
+						try bowlersPersistenceService.update(bowler, db)
+					}
+				}
+			},
+			delete: { bowler in
+				@Dependency(\.persistenceService) var persistenceService: PersistenceService
+				@Dependency(\.bowlersPersistenceService) var bowlersPersistenceService: BowlersPersistenceService
+
+				try await persistenceService.write {
+					try await $0.write { db in
+						try bowlersPersistenceService.delete(bowler, db)
+					}
+				}
+			},
+			fetchAll: { request in
+				@Dependency(\.persistenceService) var persistenceService: PersistenceService
+				return .init { continuation in
+					Task {
+						do {
+							let db = persistenceService.reader()
+							let observation = ValueObservation.tracking(request.fetchValue(_:))
+
+							for try await bowlers in observation.values(in: db) {
+								continuation.yield(bowlers)
+							}
+
+							continuation.finish()
+						} catch {
+							continuation.finish(throwing: error)
+						}
+					}
 				}
 			}
 		)

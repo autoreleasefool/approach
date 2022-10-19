@@ -1,7 +1,5 @@
 import Dependencies
-import ExtensionsLibrary
 import SeriesDataProviderInterface
-import PersistenceModelsLibrary
 import PersistenceServiceInterface
 import SharedModelsLibrary
 

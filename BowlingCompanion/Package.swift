@@ -13,6 +13,8 @@ let package = Package(
 		.library(name: "BowlersDataProviderInterface", targets: ["BowlersDataProviderInterface"]),
 		.library(name: "BowlerFormFeature", targets: ["BowlerFormFeature"]),
 		.library(name: "BowlersListFeature", targets: ["BowlersListFeature"]),
+		.library(name: "BowlersPersistenceService", targets: ["BowlersPersistenceService"]),
+		.library(name: "BowlersPersistenceServiceInterface", targets: ["BowlersPersistenceServiceInterface"]),
 		.library(name: "DateTimeLibrary", targets: ["DateTimeLibrary"]),
 		.library(name: "FileManagerService", targets: ["FileManagerService"]),
 		.library(name: "FileManagerServiceInterface", targets: ["FileManagerServiceInterface"]),
@@ -45,8 +47,8 @@ let package = Package(
 			name: "BowlersDataProvider",
 			dependencies: [
 				"BowlersDataProviderInterface",
+				"BowlersPersistenceServiceInterface",
 				"PersistenceModelsLibrary",
-				"PersistenceServiceInterface",
 			]
 		),
 		.target(
@@ -74,11 +76,20 @@ let package = Package(
 		),
 		.testTarget(name: "BowlersListFeatureTests", dependencies: ["BowlersListFeature"]),
 		.target(
-			name: "PersistenceModelsLibrary",
+			name: "BowlersPersistenceService",
 			dependencies: [
+				"BowlersPersistenceServiceInterface",
+			]
+		),
+		.target(
+			name: "BowlersPersistenceServiceInterface",
+			dependencies: [
+				"PersistenceModelsLibrary",
+				"PersistenceServiceInterface",
 				"SharedModelsLibrary",
 			]
 		),
+		.testTarget(name: "BowlersPersistenceServiceTests", dependencies: ["BowlersPersistenceService"]),
 		.target(name: "DateTimeLibrary", dependencies: []),
 		.testTarget(name: "DateTimeLibraryTests", dependencies: ["DateTimeLibrary"]),
 		.target(name: "FileManagerService", dependencies: ["FileManagerServiceInterface"]),
@@ -93,7 +104,6 @@ let package = Package(
 			name: "GamesDataProvider",
 			dependencies: [
 				"GamesDataProviderInterface",
-				"PersistenceModelsLibrary",
 				"PersistenceServiceInterface",
 			]
 		),
@@ -118,7 +128,6 @@ let package = Package(
 			name: "LeaguesDataProvider",
 			dependencies: [
 				"LeaguesDataProviderInterface",
-				"PersistenceModelsLibrary",
 				"PersistenceServiceInterface",
 			]
 		),
@@ -154,18 +163,24 @@ let package = Package(
 			]
 		),
 		.testTarget(name: "PersistenceModelsLibraryTests", dependencies: ["PersistenceModelsLibrary"]),
-		.target(name: "PersistenceService", dependencies: ["PersistenceServiceInterface"]),
+		.target(
+			name: "PersistenceService",
+			dependencies: [
+				"FileManagerServiceInterface",
+				"PersistenceServiceInterface",
+			]
+		),
 		.target(
 			name: "PersistenceServiceInterface",
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-composable-architecture"),
+				.product(name: "GRDB", package: "grdb.swift"),
 			]
 		),
 		.testTarget(name: "PersistenceServiceTests", dependencies: ["PersistenceService"]),
 		.target(
 			name: "SeriesDataProvider",
 			dependencies: [
-				"PersistenceModelsLibrary",
 				"PersistenceServiceInterface",
 				"SeriesDataProviderInterface",
 			]

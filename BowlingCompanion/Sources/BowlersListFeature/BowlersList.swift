@@ -36,7 +36,7 @@ public struct BowlersList: ReducerProtocol {
 			switch action {
 			case .subscribeToBowlers:
 				return .run { send in
-					for await bowlers in bowlersDataProvider.fetchAll() {
+					for try await bowlers in bowlersDataProvider.fetchAll(.init(ordering: .byLastModified)) {
 						await send(.bowlersResponse(.success(bowlers)))
 					}
 				}

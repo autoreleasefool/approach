@@ -18,7 +18,7 @@ public struct SeriesDataProvider {
 
 extension SeriesDataProvider: TestDependencyKey {
 	public static var testValue = Self(
-		create: { _, _ in fatalError("\(Self.self).save") },
+		create: { _, _ in fatalError("\(Self.self).create") },
 		delete: { _ in fatalError("\(Self.self).delete") },
 		fetchAll: { _ in fatalError("\(Self.self).fetchAll") }
 	)
