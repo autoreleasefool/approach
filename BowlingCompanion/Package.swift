@@ -14,7 +14,6 @@ let package = Package(
 		.library(name: "BowlerFormFeature", targets: ["BowlerFormFeature"]),
 		.library(name: "BowlersListFeature", targets: ["BowlersListFeature"]),
 		.library(name: "DateTimeLibrary", targets: ["DateTimeLibrary"]),
-		.library(name: "ExtensionsLibrary", targets: ["ExtensionsLibrary"]),
 		.library(name: "FileManagerService", targets: ["FileManagerService"]),
 		.library(name: "FileManagerServiceInterface", targets: ["FileManagerServiceInterface"]),
 		.library(name: "GamesDataProvider", targets: ["GamesDataProvider"]),
@@ -34,6 +33,7 @@ let package = Package(
 	],
 	dependencies: [
 		.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "0.42.0"),
+		.package(url: "https://github.com/groue/GRDB.swift.git", from: "6.0.0")
 	],
 	targets: [
 		.target(
@@ -45,7 +45,6 @@ let package = Package(
 			name: "BowlersDataProvider",
 			dependencies: [
 				"BowlersDataProviderInterface",
-				"ExtensionsLibrary",
 				"PersistenceModelsLibrary",
 				"PersistenceServiceInterface",
 			]
@@ -82,8 +81,6 @@ let package = Package(
 		),
 		.target(name: "DateTimeLibrary", dependencies: []),
 		.testTarget(name: "DateTimeLibraryTests", dependencies: ["DateTimeLibrary"]),
-		.target(name: "ExtensionsLibrary", dependencies: []),
-		.testTarget(name: "ExtensionsLibraryTests", dependencies: ["ExtensionsLibrary"]),
 		.target(name: "FileManagerService", dependencies: ["FileManagerServiceInterface"]),
 		.target(
 			name: "FileManagerServiceInterface",
@@ -96,7 +93,6 @@ let package = Package(
 			name: "GamesDataProvider",
 			dependencies: [
 				"GamesDataProviderInterface",
-				"ExtensionsLibrary",
 				"PersistenceModelsLibrary",
 				"PersistenceServiceInterface",
 			]
@@ -122,7 +118,6 @@ let package = Package(
 			name: "LeaguesDataProvider",
 			dependencies: [
 				"LeaguesDataProviderInterface",
-				"ExtensionsLibrary",
 				"PersistenceModelsLibrary",
 				"PersistenceServiceInterface",
 			]
@@ -151,6 +146,13 @@ let package = Package(
 			]
 		),
 		.testTarget(name: "LeaguesListFeatureTests", dependencies: ["LeaguesListFeature"]),
+		.target(
+			name: "PersistenceModelsLibrary",
+			dependencies: [
+				"SharedModelsLibrary",
+				.product(name: "GRDB", package: "grdb.swift"),
+			]
+		),
 		.testTarget(name: "PersistenceModelsLibraryTests", dependencies: ["PersistenceModelsLibrary"]),
 		.target(name: "PersistenceService", dependencies: ["PersistenceServiceInterface"]),
 		.target(
@@ -163,7 +165,6 @@ let package = Package(
 		.target(
 			name: "SeriesDataProvider",
 			dependencies: [
-				"ExtensionsLibrary",
 				"PersistenceModelsLibrary",
 				"PersistenceServiceInterface",
 				"SeriesDataProviderInterface",
