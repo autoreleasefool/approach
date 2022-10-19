@@ -1,22 +1,23 @@
 import Dependencies
+import GRDB
 
 public struct PersistenceService: Sendable {
-	public var read: @Sendable (() -> Void) -> Void
-	public var write: @Sendable (@escaping () -> Void, ((Error?) -> Void)?) -> Void
+	public var reader: @Sendable () -> DatabaseReader
+	public var write: @Sendable (@escaping (any DatabaseWriter) async throws -> Void) async throws -> Void
 
 	public init(
-		read: @escaping @Sendable (() -> Void) -> Void,
-		write: @escaping @Sendable (@escaping () -> Void, ((Error?) -> Void)?) -> Void
+		reader: @escaping @Sendable () -> DatabaseReader,
+		write: @escaping @Sendable (@escaping (any DatabaseWriter) async throws -> Void) async throws -> Void
 	) {
-		self.read = read
+		self.reader = reader
 		self.write = write
 	}
 }
 
 extension PersistenceService: TestDependencyKey {
 	public static var testValue = Self(
-		read: { _ in fatalError("\(Self.self).read") },
-		write: { _, _ in fatalError("\(Self.self).write") }
+		reader: { fatalError("\(Self.self).reader") },
+		write: { _ in fatalError("\(Self.self).write") }
 	)
 }
 
