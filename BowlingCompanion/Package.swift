@@ -20,13 +20,9 @@ let package = Package(
 		.library(name: "FileManagerServiceInterface", targets: ["FileManagerServiceInterface"]),
 		.library(name: "FramesDataProvider", targets: ["FramesDataProvider"]),
 		.library(name: "FramesDataProvider", targets: ["FramesDataProviderInterface"]),
-		.library(name: "FramesPersistenceService", targets: ["FramesPersistenceService"]),
-		.library(name: "FramesPersistenceServiceInterface", targets: ["FramesPersistenceServiceInterface"]),
 		.library(name: "GamesDataProvider", targets: ["GamesDataProvider"]),
 		.library(name: "GamesDataProviderInterface", targets: ["GamesDataProviderInterface"]),
 		.library(name: "GamesListFeature", targets: ["GamesListFeature"]),
-		.library(name: "GamesPersistenceService", targets: ["GamesPersistenceService"]),
-		.library(name: "GamesPersistenceServiceInterface", targets: ["GamesPersistenceServiceInterface"]),
 		.library(name: "LeagueFormFeature", targets: ["LeagueFormFeature"]),
 		.library(name: "LeaguesDataProvider", targets: ["LeaguesDataProvider"]),
 		.library(name: "LeaguesDataProviderInterface", targets: ["LeaguesDataProviderInterface"]),
@@ -116,21 +112,11 @@ let package = Package(
 			]
 		),
 		.testTarget(name: "FramesDataProviderTests", dependencies: ["FramesDataProvider"]),
-		.target(name: "FramesPersistenceService", dependencies: ["FramesPersistenceServiceInterface"]),
-		.target(
-			name: "FramesPersistenceServiceInterface",
-			dependencies: [
-				"PersistenceModelsLibrary",
-				"PersistenceServiceInterface",
-				"SharedModelsLibrary",
-			]
-		),
-		.testTarget(name: "FramesPersistenceServiceTests", dependencies: ["FramesPersistenceService"]),
 		.target(
 			name: "GamesDataProvider",
 			dependencies: [
 				"GamesDataProviderInterface",
-				"GamesPersistenceServiceInterface",
+				"PersistenceServiceInterface",
 			]
 		),
 		.target(
@@ -150,14 +136,6 @@ let package = Package(
 			]
 		),
 		.testTarget(name: "GamesListFeatureTests", dependencies: ["GamesListFeature"]),
-		.target(name: "GamesPersistenceService", dependencies: ["GamesPersistenceServiceInterface"]),
-		.target(
-			name: "GamesPersistenceServiceInterface",
-			dependencies: [
-				"FramesPersistenceServiceInterface",
-			]
-		),
-		.testTarget(name: "GamesPersistenceServiceTests", dependencies: ["GamesPersistenceService"]),
 		.target(
 			name: "LeaguesDataProvider",
 			dependencies: [

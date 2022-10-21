@@ -1,5 +1,4 @@
 import Dependencies
-import FramesPersistenceServiceInterface
 import GRDB
 import PersistenceModelsLibrary
 import PersistenceServiceInterface

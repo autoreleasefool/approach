@@ -1,5 +1,4 @@
 import GamesDataProviderInterface
-import GamesPersistenceServiceInterface
 import Dependencies
 import GRDB
 import PersistenceServiceInterface
