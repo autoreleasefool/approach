@@ -1,19 +1,49 @@
 import Dependencies
-import SeriesDataProviderInterface
+import GRDB
 import PersistenceServiceInterface
+import SeriesDataProviderInterface
 import SharedModelsLibrary
 
 extension SeriesDataProvider: DependencyKey {
 	public static let liveValue: Self = {
-		@Dependency(\.uuid) var uuid
-		@Dependency(\.persistenceService) var persistenceService
-
 		return Self(
-			create: { league, series in },
-			delete: { series in },
-			fetchAll: { league in
-				.init { continuation in
-					continuation.finish()
+			create: { series in
+				@Dependency(\.persistenceService) var persistenceService: PersistenceService
+				@Dependency(\.seriesPersistenceService) var seriesPersistenceService: SeriesPersistenceService
+
+				try await persistenceService.write {
+					try await $0.write { db in
+						try seriesPersistenceService.create(series, db)
+					}
+				}
+			},
+			delete: { series in
+				@Dependency(\.persistenceService) var persistenceService: PersistenceService
+				@Dependency(\.seriesPersistenceService) var seriesPersistenceService: SeriesPersistenceService
+
+				try await persistenceService.write {
+					try await $0.write { db in
+						try seriesPersistenceService.delete(series, db)
+					}
+				}
+			},
+			fetchAll: { request in
+				@Dependency(\.persistenceService) var persistenceService: PersistenceService
+				return .init { continuation in
+					Task {
+						do {
+							let db = persistenceService.reader()
+							let observation = ValueObservation.tracking(request.fetchValue(_:))
+
+							for try await series in observation.values(in: db) {
+								continuation.yield(series)
+							}
+
+							continuation.finish()
+						} catch {
+							continuation.finish(throwing: error)
+						}
+					}
 				}
 			}
 		)
