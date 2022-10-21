@@ -1,5 +1,4 @@
 import BowlersDataProviderInterface
-import BowlersPersistenceServiceInterface
 import Dependencies
 import GRDB
 import PersistenceServiceInterface
@@ -11,7 +10,7 @@ extension BowlersDataProvider: DependencyKey {
 			create: { bowler in
 				@Dependency(\.persistenceService) var persistenceService: PersistenceService
 				@Dependency(\.bowlersPersistenceService) var bowlersPersistenceService: BowlersPersistenceService
-				
+
 				try await persistenceService.write {
 					try await $0.write { db in
 						try bowlersPersistenceService.create(bowler, db)

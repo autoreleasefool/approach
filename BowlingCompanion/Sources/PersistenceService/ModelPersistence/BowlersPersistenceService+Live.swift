@@ -1,4 +1,3 @@
-import BowlersPersistenceServiceInterface
 import Dependencies
 import GRDB
 import PersistenceModelsLibrary

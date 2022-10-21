@@ -13,8 +13,6 @@ let package = Package(
 		.library(name: "BowlersDataProvider", targets: ["BowlersDataProvider"]),
 		.library(name: "BowlersDataProviderInterface", targets: ["BowlersDataProviderInterface"]),
 		.library(name: "BowlersListFeature", targets: ["BowlersListFeature"]),
-		.library(name: "BowlersPersistenceService", targets: ["BowlersPersistenceService"]),
-		.library(name: "BowlersPersistenceServiceInterface", targets: ["BowlersPersistenceServiceInterface"]),
 		.library(name: "DateTimeLibrary", targets: ["DateTimeLibrary"]),
 		.library(name: "FileManagerService", targets: ["FileManagerService"]),
 		.library(name: "FileManagerServiceInterface", targets: ["FileManagerServiceInterface"]),
@@ -57,7 +55,7 @@ let package = Package(
 			name: "BowlersDataProvider",
 			dependencies: [
 				"BowlersDataProviderInterface",
-				"BowlersPersistenceServiceInterface",
+				"PersistenceServiceInterface",
 				"PersistenceModelsLibrary",
 			]
 		),
@@ -77,16 +75,6 @@ let package = Package(
 			]
 		),
 		.testTarget(name: "BowlersListFeatureTests", dependencies: ["BowlersListFeature"]),
-		.target(name: "BowlersPersistenceService", dependencies: ["BowlersPersistenceServiceInterface"]),
-		.target(
-			name: "BowlersPersistenceServiceInterface",
-			dependencies: [
-				"PersistenceModelsLibrary",
-				"PersistenceServiceInterface",
-				"SharedModelsLibrary",
-			]
-		),
-		.testTarget(name: "BowlersPersistenceServiceTests", dependencies: ["BowlersPersistenceService"]),
 		.target(name: "DateTimeLibrary", dependencies: []),
 		.testTarget(name: "DateTimeLibraryTests", dependencies: ["DateTimeLibrary"]),
 		.target(name: "FileManagerService", dependencies: ["FileManagerServiceInterface"]),
