@@ -9,8 +9,8 @@ public struct Bowler: Sendable, Identifiable, Hashable, Codable {
 	public init(
 		id: UUID,
 		name: String,
-		createdAt: Date = Date(),
-		lastModifiedAt: Date = Date()
+		createdAt: Date,
+		lastModifiedAt: Date
 	) {
 		self.id = id
 		self.name = name

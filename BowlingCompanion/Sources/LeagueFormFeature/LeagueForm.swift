@@ -23,9 +23,9 @@ public struct LeagueForm: ReducerProtocol {
 				self.name = league.name
 				self.recurrence = league.recurrence
 				self.numberOfGames = league.numberOfGames
-				self.additionalGames = "\(league.additionalGames)"
-				self.additionalPinfall = "\(league.additionalPinfall)"
-				self.hasAdditionalPinfall = league.additionalGames > 0
+				self.additionalGames = "\(league.additionalGames ?? 0)"
+				self.additionalPinfall = "\(league.additionalPinfall ?? 0)"
+				self.hasAdditionalPinfall = (league.additionalGames ?? 0) > 0
 			}
 		}
 	}
@@ -49,6 +49,7 @@ public struct LeagueForm: ReducerProtocol {
 	public init() {}
 
 	@Dependency(\.uuid) var uuid
+	@Dependency(\.date) var date
 	@Dependency(\.leaguesDataProvider) var leaguesDataProvider
 
 	public var body: some ReducerProtocol<State, Action> {
@@ -80,7 +81,7 @@ public struct LeagueForm: ReducerProtocol {
 
 			case .saveButtonTapped:
 				state.isSaving = true
-				let league = state.league(id: uuid())
+				let league = state.league(id: uuid(), date: date())
 				return .task {
 					return await .saveLeagueResult(TaskResult {
 						try await leaguesDataProvider.create(league)
@@ -102,9 +103,14 @@ public struct LeagueForm: ReducerProtocol {
 }
 
 extension LeagueForm.State {
-	func league(id: UUID) -> League {
-		let additionalGames = hasAdditionalPinfall ? Int(additionalGames) ?? 0 : 0
-		let additionalPinfall = hasAdditionalPinfall && additionalGames > 0 ? Int(additionalPinfall) ?? 0 : 0
+	func league(id: UUID, date: Date) -> League {
+		let additionalGames = hasAdditionalPinfall ? Int(additionalGames) : nil
+		let additionalPinfall: Int?
+		if let additionalGames {
+			additionalPinfall = hasAdditionalPinfall && additionalGames > 0 ? Int(self.additionalPinfall) : nil
+		} else {
+			additionalPinfall = nil
+		}
 		return .init(
 			bowlerId: bowler.id,
 			id: id,
@@ -112,7 +118,9 @@ extension LeagueForm.State {
 			recurrence: recurrence,
 			numberOfGames: numberOfGames,
 			additionalPinfall: additionalPinfall,
-			additionalGames: additionalGames
+			additionalGames: additionalGames,
+			createdAt: date,
+			lastModifiedAt: date
 		)
 	}
 }
