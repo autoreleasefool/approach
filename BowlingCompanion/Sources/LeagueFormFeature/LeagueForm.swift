@@ -81,9 +81,9 @@ public struct LeagueForm: ReducerProtocol {
 			case .saveButtonTapped:
 				state.isSaving = true
 				let league = state.league(id: uuid())
-				return .task { [bowler = state.bowler] in
+				return .task {
 					return await .saveLeagueResult(TaskResult {
-						try await leaguesDataProvider.create(bowler, league)
+						try await leaguesDataProvider.create(league)
 						return league
 					})
 				}
@@ -106,6 +106,7 @@ extension LeagueForm.State {
 		let additionalGames = hasAdditionalPinfall ? Int(additionalGames) ?? 0 : 0
 		let additionalPinfall = hasAdditionalPinfall && additionalGames > 0 ? Int(additionalPinfall) ?? 0 : 0
 		return .init(
+			bowlerId: bowler.id,
 			id: id,
 			name: name,
 			recurrence: recurrence,

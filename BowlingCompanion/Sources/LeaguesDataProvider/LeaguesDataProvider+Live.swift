@@ -1,20 +1,49 @@
 import Dependencies
 import LeaguesDataProviderInterface
+import GRDB
 import PersistenceServiceInterface
 import SharedModelsLibrary
 
 extension LeaguesDataProvider: DependencyKey {
 	public static let liveValue: Self = {
-		@Dependency(\.uuid) var uuid
-		@Dependency(\.date) var date
-		@Dependency(\.persistenceService) var persistenceService: PersistenceService
-
 		return Self(
-			create: { bowler, league in },
-			delete: { league in },
-			fetchAll: { bowler in
-				.init { continuation in
-					continuation.finish()
+			create: { league in
+				@Dependency(\.persistenceService) var persistenceService: PersistenceService
+				@Dependency(\.leaguesPersistenceService) var leaguesPersistenceService: LeaguesPersistenceService
+
+				try await persistenceService.write {
+					try await $0.write { db in
+						try leaguesPersistenceService.create(league, db)
+					}
+				}
+			},
+			delete: { league in
+				@Dependency(\.persistenceService) var persistenceService: PersistenceService
+				@Dependency(\.leaguesPersistenceService) var leaguesPersistenceService: LeaguesPersistenceService
+
+				try await persistenceService.write {
+					try await $0.write { db in
+						try leaguesPersistenceService.delete(league, db)
+					}
+				}
+			},
+			fetchAll: { request in
+				@Dependency(\.persistenceService) var persistenceService: PersistenceService
+				return .init { continuation in
+					Task {
+						do {
+							let db = persistenceService.reader()
+							let observation = ValueObservation.tracking(request.fetchValue(_:))
+
+							for try await leagues in observation.values(in: db) {
+								continuation.yield(leagues)
+							}
+
+							continuation.finish()
+						} catch {
+							continuation.finish(throwing: error)
+						}
+					}
 				}
 			}
 		)

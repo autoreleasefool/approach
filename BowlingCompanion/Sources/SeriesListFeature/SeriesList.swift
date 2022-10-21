@@ -36,9 +36,9 @@ public struct SeriesList: ReducerProtocol {
 		Reduce { state, action in
 			switch action {
 			case .subscribeToSeries:
-				return .run { [league = state.league] send in
+				return .run { [leagueId = state.league.id] send in
 					do {
-						for try await series in seriesDataProvider.fetchAll(.init(league: league.id, ordering: .byDate)) {
+						for try await series in seriesDataProvider.fetchAll(.init(league: leagueId, ordering: .byDate)) {
 							await send(.seriesResponse(.success(series)))
 						}
 					} catch {
@@ -55,8 +55,8 @@ public struct SeriesList: ReducerProtocol {
 				return .none
 
 			case .addSeriesButtonTapped:
-				return .task { [league = state.league] in
-					let series = Series(leagueId: league.id, id: uuid(), date: date(), numberOfGames: league.numberOfGames)
+				return .task { [leagueId = state.league.id, numberOfGames = state.league.numberOfGames] in
+					let series = Series(leagueId: leagueId, id: uuid(), date: date(), numberOfGames: numberOfGames)
 					return await .seriesCreateResponse(TaskResult {
 						try await seriesDataProvider.create(series)
 						return series

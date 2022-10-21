@@ -2,14 +2,14 @@ import Dependencies
 import SharedModelsLibrary
 
 public struct LeaguesDataProvider {
-	public var create: @Sendable (Bowler, League) async throws -> Void
+	public var create: @Sendable (League) async throws -> Void
 	public var delete: @Sendable (League) async throws -> Void
-	public var fetchAll: @Sendable (Bowler) -> AsyncStream<[League]>
+	public var fetchAll: @Sendable (League.FetchRequest) -> AsyncThrowingStream<[League], Error>
 
 	public init(
-		create: @escaping @Sendable (Bowler, League) async throws -> Void,
+		create: @escaping @Sendable (League) async throws -> Void,
 		delete: @escaping @Sendable (League) async throws -> Void,
-		fetchAll: @escaping @Sendable (Bowler) -> AsyncStream<[League]>
+		fetchAll: @escaping @Sendable (League.FetchRequest) -> AsyncThrowingStream<[League], Error>
 	) {
 		self.create = create
 		self.delete = delete
@@ -19,7 +19,7 @@ public struct LeaguesDataProvider {
 
 extension LeaguesDataProvider: TestDependencyKey {
 	public static var testValue = Self(
-		create: { _, _ in fatalError("\(Self.self).create") },
+		create: { _ in fatalError("\(Self.self).create") },
 		delete: { _ in fatalError("\(Self.self).delete") },
 		fetchAll: { _ in fatalError("\(Self.self).fetchAll") }
 	)

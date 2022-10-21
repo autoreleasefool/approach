@@ -25,9 +25,9 @@ public struct GamesList: ReducerProtocol {
 		Reduce { state, action in
 			switch action {
 			case .subscribeToGames:
-				return .run { [series = state.series] send in
+				return .run { [seriesId = state.series.id] send in
 					do {
-						for try await games in gamesDataProvider.fetchAll(.init(series: series.id, ordering: .byOrdinal)) {
+						for try await games in gamesDataProvider.fetchAll(.init(series: seriesId, ordering: .byOrdinal)) {
 							await send(.gamesResponse(.success(games)))
 						}
 					} catch {
