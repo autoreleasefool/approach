@@ -9,21 +9,27 @@ let package = Package(
 	],
 	products: [
 		.library(name: "AppFeature", targets: ["AppFeature"]),
+		.library(name: "BowlerFormFeature", targets: ["BowlerFormFeature"]),
 		.library(name: "BowlersDataProvider", targets: ["BowlersDataProvider"]),
 		.library(name: "BowlersDataProviderInterface", targets: ["BowlersDataProviderInterface"]),
-		.library(name: "BowlerFormFeature", targets: ["BowlerFormFeature"]),
 		.library(name: "BowlersListFeature", targets: ["BowlersListFeature"]),
 		.library(name: "BowlersPersistenceService", targets: ["BowlersPersistenceService"]),
 		.library(name: "BowlersPersistenceServiceInterface", targets: ["BowlersPersistenceServiceInterface"]),
 		.library(name: "DateTimeLibrary", targets: ["DateTimeLibrary"]),
 		.library(name: "FileManagerService", targets: ["FileManagerService"]),
 		.library(name: "FileManagerServiceInterface", targets: ["FileManagerServiceInterface"]),
+		.library(name: "FramesDataProvider", targets: ["FramesDataProvider"]),
+		.library(name: "FramesDataProvider", targets: ["FramesDataProviderInterface"]),
+		.library(name: "FramesPersistenceService", targets: ["FramesPersistenceService"]),
+		.library(name: "FramesPersistenceServiceInterface", targets: ["FramesPersistenceServiceInterface"]),
 		.library(name: "GamesDataProvider", targets: ["GamesDataProvider"]),
 		.library(name: "GamesDataProviderInterface", targets: ["GamesDataProviderInterface"]),
 		.library(name: "GamesListFeature", targets: ["GamesListFeature"]),
+		.library(name: "GamesPersistenceService", targets: ["GamesPersistenceService"]),
+		.library(name: "GamesPersistenceServiceInterface", targets: ["GamesPersistenceServiceInterface"]),
+		.library(name: "LeagueFormFeature", targets: ["LeagueFormFeature"]),
 		.library(name: "LeaguesDataProvider", targets: ["LeaguesDataProvider"]),
 		.library(name: "LeaguesDataProviderInterface", targets: ["LeaguesDataProviderInterface"]),
-		.library(name: "LeagueFormFeature", targets: ["LeagueFormFeature"]),
 		.library(name: "LeaguesListFeature", targets: ["LeaguesListFeature"]),
 		.library(name: "PersistenceModelsLibrary", targets: ["PersistenceModelsLibrary"]),
 		.library(name: "PersistenceService", targets: ["PersistenceService"]),
@@ -35,7 +41,7 @@ let package = Package(
 	],
 	dependencies: [
 		.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "0.42.0"),
-		.package(url: "https://github.com/groue/GRDB.swift.git", from: "6.0.0")
+		.package(url: "https://github.com/groue/GRDB.swift.git", from: "6.0.0"),
 	],
 	targets: [
 		.target(
@@ -43,6 +49,14 @@ let package = Package(
 			dependencies: ["BowlersListFeature"]
 		),
 		.testTarget(name: "AppFeatureTests", dependencies: ["AppFeature"]),
+		.target(
+			name: "BowlerFormFeature",
+			dependencies: [
+				"BowlersDataProviderInterface",
+				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+			]
+		),
+		.testTarget(name: "BowlerFormFeatureTests", dependencies: ["BowlerFormFeature"]),
 		.target(
 			name: "BowlersDataProvider",
 			dependencies: [
@@ -60,14 +74,6 @@ let package = Package(
 		),
 		.testTarget(name: "BowlersDataProviderTests", dependencies: ["BowlersDataProvider"]),
 		.target(
-			name: "BowlerFormFeature",
-			dependencies: [
-				"BowlersDataProviderInterface",
-				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
-			]
-		),
-		.testTarget(name: "BowlerFormFeatureTests", dependencies: ["BowlerFormFeature"]),
-		.target(
 			name: "BowlersListFeature",
 			dependencies: [
 				"BowlerFormFeature",
@@ -75,12 +81,7 @@ let package = Package(
 			]
 		),
 		.testTarget(name: "BowlersListFeatureTests", dependencies: ["BowlersListFeature"]),
-		.target(
-			name: "BowlersPersistenceService",
-			dependencies: [
-				"BowlersPersistenceServiceInterface",
-			]
-		),
+		.target(name: "BowlersPersistenceService", dependencies: ["BowlersPersistenceServiceInterface"]),
 		.target(
 			name: "BowlersPersistenceServiceInterface",
 			dependencies: [
@@ -101,10 +102,35 @@ let package = Package(
 		),
 		.testTarget(name: "FileManagerServiceTests", dependencies: ["FileManagerService"]),
 		.target(
+			name: "FramesDataProvider",
+			dependencies: [
+				"FramesDataProviderInterface",
+				"PersistenceServiceInterface",
+			]
+		),
+		.target(
+			name: "FramesDataProviderInterface",
+			dependencies: [
+				"SharedModelsLibrary",
+				.product(name: "Dependencies", package: "swift-composable-architecture"),
+			]
+		),
+		.testTarget(name: "FramesDataProviderTests", dependencies: ["FramesDataProvider"]),
+		.target(name: "FramesPersistenceService", dependencies: ["FramesPersistenceServiceInterface"]),
+		.target(
+			name: "FramesPersistenceServiceInterface",
+			dependencies: [
+				"PersistenceModelsLibrary",
+				"PersistenceServiceInterface",
+				"SharedModelsLibrary",
+			]
+		),
+		.testTarget(name: "FramesPersistenceServiceTests", dependencies: ["FramesPersistenceService"]),
+		.target(
 			name: "GamesDataProvider",
 			dependencies: [
 				"GamesDataProviderInterface",
-				"PersistenceServiceInterface",
+				"GamesPersistenceServiceInterface",
 			]
 		),
 		.target(
@@ -124,6 +150,14 @@ let package = Package(
 			]
 		),
 		.testTarget(name: "GamesListFeatureTests", dependencies: ["GamesListFeature"]),
+		.target(name: "GamesPersistenceService", dependencies: ["GamesPersistenceServiceInterface"]),
+		.target(
+			name: "GamesPersistenceServiceInterface",
+			dependencies: [
+				"FramesPersistenceServiceInterface",
+			]
+		),
+		.testTarget(name: "GamesPersistenceServiceTests", dependencies: ["GamesPersistenceService"]),
 		.target(
 			name: "LeaguesDataProvider",
 			dependencies: [
