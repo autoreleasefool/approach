@@ -1,3 +1,4 @@
+import BowlersDataProviderInterface
 import GRDB
 import PersistenceModelsLibrary
 import SharedModelsLibrary

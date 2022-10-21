@@ -1,27 +1,22 @@
 import Foundation
 
-public struct Frame: Sendable, Hashable {
+public struct Frame: Sendable, Hashable, Codable {
+	public let gameId: Game.ID
 	public let ordinal: Int
 	public let isAccessed: Bool
 	public let firstBall: Ball?
 	public let secondBall: Ball?
 	public let thirdBall: Ball?
 
-	public init(ordinal: Int) {
-		self.ordinal = ordinal
-		self.isAccessed = false
-		self.firstBall = nil
-		self.secondBall = nil
-		self.thirdBall = nil
-	}
-
 	public init(
+		gameId: Game.ID,
 		ordinal: Int,
 		isAccessed: Bool,
 		firstBall: Ball?,
 		secondBall: Ball?,
 		thirdBall: Ball?
 	) {
+		self.gameId = gameId
 		self.ordinal = ordinal
 		self.isAccessed = isAccessed
 		self.firstBall = firstBall
@@ -32,7 +27,7 @@ public struct Frame: Sendable, Hashable {
 
 // MARK: - Ball
 extension Frame {
-	public struct Ball: Sendable, Hashable {
+	public struct Ball: Sendable, Hashable, Codable {
 		public let deck: Deck
 		public let isFoul: Bool
 
@@ -46,7 +41,7 @@ extension Frame {
 // MARK: - Deck
 
 extension Frame {
-	public struct Deck: Sendable, Hashable {
+	public struct Deck: Sendable, Hashable, Codable {
 		public static let fullDeck: Deck = .init(
 			leftTwoPinKnocked: false,
 			leftThreePinKnocked: false,

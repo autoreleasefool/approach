@@ -17,6 +17,7 @@
 		CA94DD2028FC83B600B81A87 /* GamesDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CA94DD1F28FC83B600B81A87 /* GamesDataProvider */; };
 		CA94DD622900B3AC00B81A87 /* BowlersPersistenceService in Frameworks */ = {isa = PBXBuildFile; productRef = CA94DD612900B3AC00B81A87 /* BowlersPersistenceService */; };
 		CA94DD642900B3AC00B81A87 /* FileManagerService in Frameworks */ = {isa = PBXBuildFile; productRef = CA94DD632900B3AC00B81A87 /* FileManagerService */; };
+		CA94DD662902E63600B81A87 /* FramesPersistenceService in Frameworks */ = {isa = PBXBuildFile; productRef = CA94DD652902E63600B81A87 /* FramesPersistenceService */; };
 		CAAC064228F9D75000853178 /* LeaguesDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CAAC064128F9D75000853178 /* LeaguesDataProvider */; };
 		CAAC064428FB3D6E00853178 /* SeriesDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CAAC064328FB3D6E00853178 /* SeriesDataProvider */; };
 /* End PBXBuildFile section */
@@ -41,6 +42,7 @@
 				CA2890DE28F87FF2003C1EE9 /* AppFeature in Frameworks */,
 				CAAC064228F9D75000853178 /* LeaguesDataProvider in Frameworks */,
 				CAAC064428FB3D6E00853178 /* SeriesDataProvider in Frameworks */,
+				CA94DD662902E63600B81A87 /* FramesPersistenceService in Frameworks */,
 				CA94DD642900B3AC00B81A87 /* FileManagerService in Frameworks */,
 				CA2890E328F8DA53003C1EE9 /* PersistenceService in Frameworks */,
 			);
@@ -127,6 +129,7 @@
 				CA94DD1F28FC83B600B81A87 /* GamesDataProvider */,
 				CA94DD612900B3AC00B81A87 /* BowlersPersistenceService */,
 				CA94DD632900B3AC00B81A87 /* FileManagerService */,
+				CA94DD652902E63600B81A87 /* FramesPersistenceService */,
 			);
 			productName = BowlingCompanion;
 			productReference = CA8BBC5528D59B8B00653A1E /* BowlingCompanion.app */;
@@ -431,6 +434,10 @@
 		CA94DD632900B3AC00B81A87 /* FileManagerService */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = FileManagerService;
+		};
+		CA94DD652902E63600B81A87 /* FramesPersistenceService */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FramesPersistenceService;
 		};
 		CAAC064128F9D75000853178 /* LeaguesDataProvider */ = {
 			isa = XCSwiftPackageProductDependency;
