@@ -56,6 +56,8 @@ struct AppDatabase {
 
 		migrator.registerMigration(Migration20221018CreateBowler.self)
 		migrator.registerMigration(Migration20221021CreateLeague.self)
+		migrator.registerMigration(Migration20221021CreateSeries.self)
+		migrator.registerMigration(Migration20221021CreateGame.self)
 
 		return migrator
 	}
