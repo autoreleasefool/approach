@@ -18,6 +18,7 @@
 		CA94DD622900B3AC00B81A87 /* BowlersPersistenceService in Frameworks */ = {isa = PBXBuildFile; productRef = CA94DD612900B3AC00B81A87 /* BowlersPersistenceService */; };
 		CA94DD642900B3AC00B81A87 /* FileManagerService in Frameworks */ = {isa = PBXBuildFile; productRef = CA94DD632900B3AC00B81A87 /* FileManagerService */; };
 		CA94DD662902E63600B81A87 /* FramesPersistenceService in Frameworks */ = {isa = PBXBuildFile; productRef = CA94DD652902E63600B81A87 /* FramesPersistenceService */; };
+		CA94DD6A2902EA0E00B81A87 /* FramesDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CA94DD692902EA0E00B81A87 /* FramesDataProvider */; };
 		CAAC064228F9D75000853178 /* LeaguesDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CAAC064128F9D75000853178 /* LeaguesDataProvider */; };
 		CAAC064428FB3D6E00853178 /* SeriesDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CAAC064328FB3D6E00853178 /* SeriesDataProvider */; };
 /* End PBXBuildFile section */
@@ -36,6 +37,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CA94DD6A2902EA0E00B81A87 /* FramesDataProvider in Frameworks */,
 				CA94DD622900B3AC00B81A87 /* BowlersPersistenceService in Frameworks */,
 				CA2890E128F8DA53003C1EE9 /* BowlersDataProvider in Frameworks */,
 				CA94DD2028FC83B600B81A87 /* GamesDataProvider in Frameworks */,
@@ -130,6 +132,7 @@
 				CA94DD612900B3AC00B81A87 /* BowlersPersistenceService */,
 				CA94DD632900B3AC00B81A87 /* FileManagerService */,
 				CA94DD652902E63600B81A87 /* FramesPersistenceService */,
+				CA94DD692902EA0E00B81A87 /* FramesDataProvider */,
 			);
 			productName = BowlingCompanion;
 			productReference = CA8BBC5528D59B8B00653A1E /* BowlingCompanion.app */;
@@ -438,6 +441,10 @@
 		CA94DD652902E63600B81A87 /* FramesPersistenceService */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = FramesPersistenceService;
+		};
+		CA94DD692902EA0E00B81A87 /* FramesDataProvider */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FramesDataProvider;
 		};
 		CAAC064128F9D75000853178 /* LeaguesDataProvider */ = {
 			isa = XCSwiftPackageProductDependency;
