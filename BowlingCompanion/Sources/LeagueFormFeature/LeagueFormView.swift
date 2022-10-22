@@ -12,9 +12,12 @@ public struct LeagueFormView: View {
 		let additionalPinfall: String
 		let additionalGames: String
 		let hasAdditionalPinfall: Bool
-		let isSaving: Bool
+		let isLoading: Bool
 		let navigationTitle: String
 		let saveButtonDisabled: Bool
+		let dismissDisabled: Bool
+		let discardButtonEnabled: Bool
+		let showDeleteButton: Bool
 
 		init(state: LeagueForm.State) {
 			self.name = state.name
@@ -23,9 +26,19 @@ public struct LeagueFormView: View {
 			self.additionalGames = state.additionalGames
 			self.additionalPinfall = state.additionalPinfall
 			self.hasAdditionalPinfall = state.hasAdditionalPinfall
-			self.isSaving = state.isSaving
-			self.navigationTitle = state.mode == .create ? "Create League" : "Edit League"
-			self.saveButtonDisabled = state.isSaving || state.name.isEmpty
+			self.isLoading = state.isLoading
+			self.saveButtonDisabled = !state.canSave
+			self.dismissDisabled = state.hasChanges || state.isLoading
+			self.discardButtonEnabled = state.hasChanges && !state.isLoading
+
+			switch state.mode {
+			case .create:
+				self.navigationTitle = "Create League"
+				self.showDeleteButton = false
+			case let .edit(league):
+				self.navigationTitle = "Edit \(league.name)"
+				self.showDeleteButton = true
+			}
 		}
 	}
 
@@ -37,6 +50,8 @@ public struct LeagueFormView: View {
 		case additionalPinfallChange(String)
 		case setHasAdditionalPinfall(enabled: Bool)
 		case saveButtonTapped
+		case deleteButtonTapped
+		case discardButtonTapped
 	}
 
 	public init(store: StoreOf<LeagueForm>) {
@@ -46,7 +61,7 @@ public struct LeagueFormView: View {
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: LeagueForm.Action.init) { viewStore in
 			Form {
-				if viewStore.isSaving {
+				if viewStore.isLoading {
 					ProgressView()
 				}
 
@@ -58,7 +73,7 @@ public struct LeagueFormView: View {
 						in: 1...40
 					)
 				}
-				.disabled(viewStore.isSaving)
+				.disabled(viewStore.isLoading)
 
 				Section {
 					Picker(
@@ -70,9 +85,12 @@ public struct LeagueFormView: View {
 						}
 					}
 				} footer: {
-					Text("Choose 'Repeats' for leagues that happen semi-frequently, such as once a week. Choose 'Once' for tournaments and one-off events that will only be 1 series.")
+					Text(
+						"Choose 'Repeats' for leagues that happen semi-frequently, such as once a week. " +
+						"Choose 'Once' for tournaments and one-off events that will only be 1 series."
+					)
 				}
-				.disabled(viewStore.isSaving)
+				.disabled(viewStore.isLoading)
 
 				Section {
 					Toggle(
@@ -93,7 +111,10 @@ public struct LeagueFormView: View {
 				} header: {
 					Text("Additional Games")
 				} footer: {
-					Text("If you're starting recording partway through the season, you can add missing pinfall here to ensure your average in the app matches the average provided by your league.")
+					Text(
+						"If you're starting recording partway through the season, you can add missing pinfall " +
+						"here to ensure your average in the app matches the average provided by your league."
+					)
 				}
 			}
 			.navigationTitle(viewStore.navigationTitle)
@@ -102,7 +123,18 @@ public struct LeagueFormView: View {
 					Button("Save") { viewStore.send(.saveButtonTapped) }
 						.disabled(viewStore.saveButtonDisabled)
 				}
+
+				if viewStore.discardButtonEnabled {
+					ToolbarItem(placement: .navigationBarLeading) {
+						Button("Discard") { viewStore.send(.discardButtonTapped) }
+					}
+				}
 			}
+			.alert(
+				self.store.scope(state: \.alert, action: LeagueForm.Action.alert),
+				dismiss: .dismissed
+			)
+			.interactiveDismissDisabled(viewStore.dismissDisabled)
 		}
 	}
 }
@@ -124,6 +156,10 @@ extension LeagueForm.Action {
 			self = .setHasAdditionalPinfall(enabled: enabled)
 		case .saveButtonTapped:
 			self = .saveButtonTapped
+		case .deleteButtonTapped:
+			self = .deleteButtonTapped
+		case .discardButtonTapped:
+			self = .discardButtonTapped
 		}
 	}
 }

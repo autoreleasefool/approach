@@ -14,7 +14,16 @@ public struct LeagueForm: ReducerProtocol {
 		public var additionalPinfall = ""
 		public var additionalGames = ""
 		public var hasAdditionalPinfall = false
-		public var isSaving = false
+		public var isLoading = false
+		public var alert: AlertState<AlertAction>?
+
+		public var hasChanges: Bool {
+			self != .init(bowler: bowler, mode: mode)
+		}
+
+		public var canSave: Bool {
+			!isLoading && hasChanges && !name.isEmpty
+		}
 
 		public init(bowler: Bowler, mode: Mode) {
 			self.bowler = bowler
@@ -44,6 +53,10 @@ public struct LeagueForm: ReducerProtocol {
 		case setHasAdditionalPinfall(enabled: Bool)
 		case saveButtonTapped
 		case saveLeagueResult(TaskResult<League>)
+		case deleteLeagueResult(TaskResult<Bool>)
+		case discardButtonTapped
+		case deleteButtonTapped
+		case alert(AlertAction)
 	}
 
 	public init() {}
@@ -80,22 +93,68 @@ public struct LeagueForm: ReducerProtocol {
 				return .none
 
 			case .saveButtonTapped:
-				state.isSaving = true
-				let league = state.league(id: uuid(), createdAt: date(), lastModifiedAt: date())
-				return .task {
-					return await .saveLeagueResult(TaskResult {
-						try await leaguesDataProvider.create(league)
-						return league
-					})
+				guard state.canSave else { return .none }
+				state.isLoading = true
+
+				switch state.mode {
+				case .create:
+					let league = state.league(id: uuid(), createdAt: date(), lastModifiedAt: date())
+					return .task {
+						return await .saveLeagueResult(TaskResult {
+							try await leaguesDataProvider.create(league)
+							return league
+						})
+					}
+				case let .edit(original):
+					let league = state.league(id: original.id, createdAt: original.createdAt, lastModifiedAt: date())
+					return .task {
+						return await .saveLeagueResult(.init {
+							try await leaguesDataProvider.update(league)
+							return league
+						})
+					}
 				}
 
+
 			case .saveLeagueResult(.success):
-				state.isSaving = false
 				return .none
 
 			case .saveLeagueResult(.failure):
 				// TODO: show error to user for failed save to db
-				state.isSaving = false
+				state.isLoading = false
+				return .none
+
+			case .deleteButtonTapped:
+				state.alert = self.buildDeleteAlert(state: state)
+				return .none
+
+			case .alert(.deleteButtonTapped):
+				guard case let .edit(league) = state.mode else { return .none }
+				state.isLoading = true
+				return .task {
+					await .deleteLeagueResult(TaskResult {
+						try await leaguesDataProvider.delete(league)
+						return true
+					})
+				}
+
+			case .deleteLeagueResult(.success):
+				return .none
+
+			case .deleteLeagueResult(.failure):
+				// TODO: show error to user for failed delete
+				return .none
+
+			case .discardButtonTapped:
+				state.alert = self.discardAlert
+				return .none
+
+			case .alert(.discardButtonTapped):
+				state = .init(bowler: state.bowler, mode: state.mode)
+				return .none
+
+			case .alert(.dismissed):
+				state.alert = nil
 				return .none
 			}
 		}

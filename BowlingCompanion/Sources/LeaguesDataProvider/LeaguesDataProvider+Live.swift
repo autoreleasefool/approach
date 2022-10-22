@@ -17,6 +17,16 @@ extension LeaguesDataProvider: DependencyKey {
 					}
 				}
 			},
+			update: { league in
+				@Dependency(\.persistenceService) var persistenceService: PersistenceService
+				@Dependency(\.leaguesPersistenceService) var leaguesPersistenceService: LeaguesPersistenceService
+
+				try await persistenceService.write {
+					try await $0.write { db in
+						try leaguesPersistenceService.update(league, db)
+					}
+				}
+			},
 			delete: { league in
 				@Dependency(\.persistenceService) var persistenceService: PersistenceService
 				@Dependency(\.leaguesPersistenceService) var leaguesPersistenceService: LeaguesPersistenceService

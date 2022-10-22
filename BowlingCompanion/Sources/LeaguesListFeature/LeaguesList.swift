@@ -10,6 +10,7 @@ public struct LeaguesList: ReducerProtocol {
 		public var leagues: IdentifiedArrayOf<League> = []
 		public var selection: Identified<League.ID, SeriesList.State>?
 		public var leagueForm: LeagueForm.State?
+		public var alert: AlertState<AlertAction>?
 
 		public init(bowler: Bowler) {
 			self.bowler = bowler
@@ -21,6 +22,10 @@ public struct LeaguesList: ReducerProtocol {
 		case leaguesResponse(TaskResult<[League]>)
 		case setNavigation(selection: League.ID?)
 		case setFormSheet(isPresented: Bool)
+		case alert(AlertAction)
+		case delete(League)
+		case edit(League)
+		case deleteLeagueResponse(TaskResult<Bool>)
 		case leagueForm(LeagueForm.Action)
 		case series(SeriesList.Action)
 	}
@@ -71,6 +76,37 @@ public struct LeaguesList: ReducerProtocol {
 
 			case .leagueForm(.saveLeagueResult(.success)):
 				state.leagueForm = nil
+				return .none
+
+			case .leagueForm(.deleteLeagueResult(.success)):
+				state.leagueForm = nil
+				return .none
+
+			case let .edit(league):
+				state.leagueForm = .init(bowler: state.bowler, mode: .edit(league))
+				return .none
+
+			case let .delete(league):
+				state.alert = self.alert(toDelete: league)
+				return .none
+
+			case .alert(.dismissed):
+				state.alert = nil
+				return .none
+
+			case let .alert(.deleteButtonTapped(league)):
+				return .task {
+					return await .deleteLeagueResponse(TaskResult {
+						try await leaguesDataProvider.delete(league)
+						return true
+					})
+				}
+
+			case .deleteLeagueResponse(.success):
+				return .none
+
+			case .deleteLeagueResponse(.failure):
+				// TODO: handle failed delete league response
 				return .none
 
 			case .leagueForm:

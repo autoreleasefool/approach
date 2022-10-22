@@ -11,21 +11,11 @@ public struct BowlerForm: ReducerProtocol {
 		public var alert: AlertState<AlertAction>?
 
 		public var hasChanges: Bool {
-			switch mode {
-			case .create:
-				return !name.isEmpty
-			case let .edit(bowler):
-				return name != bowler.name
-			}
+			self != .init(mode: mode)
 		}
 
 		public var canSave: Bool {
-			switch mode {
-			case .create:
-				return !name.isEmpty
-			case .edit:
-				return hasChanges && !name.isEmpty
-			}
+			!isLoading && hasChanges && !name.isEmpty
 		}
 
 		public init(mode: Mode) {
@@ -65,11 +55,9 @@ public struct BowlerForm: ReducerProtocol {
 				return .none
 
 			case .saveButtonTapped:
-				guard state.canSave else {
-					return .none
-				}
-
+				guard state.canSave else { return .none }
 				state.isLoading = true
+
 				switch state.mode {
 				case let .edit(original):
 					let bowler = state.bowler(id: original.id, createdAt: original.createdAt, lastModifiedAt: date())
