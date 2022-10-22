@@ -81,7 +81,7 @@ public struct LeagueForm: ReducerProtocol {
 
 			case .saveButtonTapped:
 				state.isSaving = true
-				let league = state.league(id: uuid(), date: date())
+				let league = state.league(id: uuid(), createdAt: date(), lastModifiedAt: date())
 				return .task {
 					return await .saveLeagueResult(TaskResult {
 						try await leaguesDataProvider.create(league)
@@ -103,7 +103,7 @@ public struct LeagueForm: ReducerProtocol {
 }
 
 extension LeagueForm.State {
-	func league(id: UUID, date: Date) -> League {
+	func league(id: UUID, createdAt: Date, lastModifiedAt: Date) -> League {
 		let additionalGames = hasAdditionalPinfall ? Int(additionalGames) : nil
 		let additionalPinfall: Int?
 		if let additionalGames {
@@ -119,8 +119,8 @@ extension LeagueForm.State {
 			numberOfGames: numberOfGames,
 			additionalPinfall: additionalPinfall,
 			additionalGames: additionalGames,
-			createdAt: date,
-			lastModifiedAt: date
+			createdAt: createdAt,
+			lastModifiedAt: lastModifiedAt
 		)
 	}
 }

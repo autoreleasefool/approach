@@ -1,5 +1,6 @@
 import BowlersDataProviderInterface
 import ComposableArchitecture
+import Foundation
 import SharedModelsLibrary
 
 public struct BowlerForm: ReducerProtocol {
@@ -53,6 +54,7 @@ public struct BowlerForm: ReducerProtocol {
 	public init() {}
 
 	@Dependency(\.uuid) var uuid
+	@Dependency(\.date) var date
 	@Dependency(\.bowlersDataProvider) var bowlersDataProvider
 
 	public var body: some ReducerProtocol<State, Action> {
@@ -69,8 +71,8 @@ public struct BowlerForm: ReducerProtocol {
 
 				state.isLoading = true
 				switch state.mode {
-				case let .edit(originalBowler):
-					let bowler = Bowler(id: originalBowler.id, name: state.name)
+				case let .edit(original):
+					let bowler = state.bowler(id: original.id, createdAt: original.createdAt, lastModifiedAt: date())
 					return .task {
 						return await .saveBowlerResult(.init {
 							try await bowlersDataProvider.update(bowler)
@@ -78,7 +80,7 @@ public struct BowlerForm: ReducerProtocol {
 						})
 					}
 				case .create:
-					let bowler = Bowler(id: uuid(), name: state.name)
+					let bowler = state.bowler(id: uuid(), createdAt: date(), lastModifiedAt: date())
 					return .task {
 						return await .saveBowlerResult(.init {
 							try await bowlersDataProvider.create(bowler)
@@ -130,5 +132,16 @@ public struct BowlerForm: ReducerProtocol {
 				return .none
 			}
 		}
+	}
+}
+
+extension BowlerForm.State {
+	func bowler(id: UUID, createdAt: Date, lastModifiedAt: Date) -> Bowler {
+		.init(
+			id: id,
+			name: name,
+			createdAt: createdAt,
+			lastModifiedAt: lastModifiedAt
+		)
 	}
 }
