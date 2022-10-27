@@ -10,6 +10,7 @@ public struct LeagueForm: ReducerProtocol {
 		public var mode: Mode
 		public var name = ""
 		public var recurrence: League.Recurrence = .repeating
+		public var gamesPerSeries: GamesPerSeries = .static
 		public var numberOfGames = League.DEFAULT_NUMBER_OF_GAMES
 		public var additionalPinfall = ""
 		public var additionalGames = ""
@@ -31,12 +32,20 @@ public struct LeagueForm: ReducerProtocol {
 			if case let .edit(league) = mode {
 				self.name = league.name
 				self.recurrence = league.recurrence
-				self.numberOfGames = league.numberOfGames
+				self.numberOfGames = league.numberOfGames ?? League.DEFAULT_NUMBER_OF_GAMES
+				self.gamesPerSeries = league.numberOfGames == nil ? .dynamic : .static
 				self.additionalGames = "\(league.additionalGames ?? 0)"
 				self.additionalPinfall = "\(league.additionalPinfall ?? 0)"
 				self.hasAdditionalPinfall = (league.additionalGames ?? 0) > 0
 			}
 		}
+	}
+
+	public enum GamesPerSeries: String, Equatable, Identifiable, CaseIterable, Codable {
+		case `static` = "Constant"
+		case dynamic = "Always ask me"
+
+		public var id: String { rawValue }
 	}
 
 	public enum Mode: Equatable {
@@ -47,6 +56,7 @@ public struct LeagueForm: ReducerProtocol {
 	public enum Action: Equatable {
 		case nameChange(String)
 		case recurrenceChange(League.Recurrence)
+		case gamesPerSeriesChange(GamesPerSeries)
 		case numberOfGamesChange(Int)
 		case additionalPinfallChange(String)
 		case additionalGamesChange(String)
@@ -74,6 +84,13 @@ public struct LeagueForm: ReducerProtocol {
 
 			case let .recurrenceChange(recurrence):
 				state.recurrence = recurrence
+				if state.recurrence == .oneTimeEvent {
+					state.gamesPerSeries = .static
+				}
+				return .none
+
+			case let .gamesPerSeriesChange(gamesPerSeries):
+				state.gamesPerSeries = gamesPerSeries
 				return .none
 
 			case let .numberOfGamesChange(numberOfGames):
@@ -163,6 +180,7 @@ public struct LeagueForm: ReducerProtocol {
 
 extension LeagueForm.State {
 	func league(id: UUID, createdAt: Date, lastModifiedAt: Date) -> League {
+		let numberOfGames = self.gamesPerSeries == .static ? self.numberOfGames : nil
 		let additionalGames = hasAdditionalPinfall ? Int(additionalGames) : nil
 		let additionalPinfall: Int?
 		if let additionalGames {

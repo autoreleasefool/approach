@@ -8,6 +8,7 @@ public struct LeagueFormView: View {
 	struct ViewState: Equatable {
 		let name: String
 		let recurrence: League.Recurrence
+		let gamesPerSeries: LeagueForm.GamesPerSeries
 		let numberOfGames: Int
 		let additionalPinfall: String
 		let additionalGames: String
@@ -22,6 +23,7 @@ public struct LeagueFormView: View {
 		init(state: LeagueForm.State) {
 			self.name = state.name
 			self.recurrence = state.recurrence
+			self.gamesPerSeries = state.gamesPerSeries
 			self.numberOfGames = state.numberOfGames
 			self.additionalGames = state.additionalGames
 			self.additionalPinfall = state.additionalPinfall
@@ -45,6 +47,7 @@ public struct LeagueFormView: View {
 	enum ViewAction {
 		case nameChange(String)
 		case recurrenceChange(League.Recurrence)
+		case gamesPerSeriesChange(LeagueForm.GamesPerSeries)
 		case numberOfGamesChange(Int)
 		case additionalGamesChange(String)
 		case additionalPinfallChange(String)
@@ -65,57 +68,10 @@ public struct LeagueFormView: View {
 					ProgressView()
 				}
 
-				Section("Details") {
-					TextField("Name", text: viewStore.binding(get: \.name, send: ViewAction.nameChange))
-					Stepper(
-						"\(viewStore.numberOfGames)",
-						value: viewStore.binding(get: \.numberOfGames, send: ViewAction.numberOfGamesChange),
-						in: 1...40
-					)
-				}
-				.disabled(viewStore.isLoading)
-
-				Section {
-					Picker(
-						"Repeat?",
-						selection: viewStore.binding(get: \.recurrence, send: ViewAction.recurrenceChange)
-					) {
-						ForEach(League.Recurrence.allCases) {
-							Text($0.description).tag($0)
-						}
-					}
-				} footer: {
-					Text(
-						"Choose 'Repeats' for leagues that happen semi-frequently, such as once a week. " +
-						"Choose 'Once' for tournaments and one-off events that will only be 1 series."
-					)
-				}
-				.disabled(viewStore.isLoading)
-
-				Section {
-					Toggle(
-						"Include additional pinfall?",
-						isOn: viewStore.binding(get: \.hasAdditionalPinfall, send: ViewAction.setHasAdditionalPinfall(enabled:)))
-						.toggleStyle(SwitchToggleStyle())
-
-					if viewStore.hasAdditionalPinfall {
-						TextField(
-							"Additional Pinfall",
-							text: viewStore.binding(get: \.additionalPinfall, send: ViewAction.additionalPinfallChange)
-						)
-						TextField(
-							"Additional Games",
-							text: viewStore.binding(get: \.additionalGames, send: ViewAction.additionalGamesChange)
-						)
-					}
-				} header: {
-					Text("Additional Games")
-				} footer: {
-					Text(
-						"If you're starting recording partway through the season, you can add missing pinfall " +
-						"here to ensure your average in the app matches the average provided by your league."
-					)
-				}
+				detailsSection(viewStore)
+				recurrenceSection(viewStore)
+				gamesSection(viewStore)
+				additionalPinfallSection(viewStore)
 			}
 			.navigationTitle(viewStore.navigationTitle)
 			.toolbar {
@@ -137,6 +93,89 @@ public struct LeagueFormView: View {
 			.interactiveDismissDisabled(viewStore.dismissDisabled)
 		}
 	}
+
+	private func detailsSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
+		Section {
+			TextField("Name", text: viewStore.binding(get: \.name, send: ViewAction.nameChange))
+		}
+		.disabled(viewStore.isLoading)
+	}
+
+	private func recurrenceSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
+		Section {
+			Picker(
+				"Repeat?",
+				selection: viewStore.binding(get: \.recurrence, send: ViewAction.recurrenceChange)
+			) {
+				ForEach(League.Recurrence.allCases) {
+					Text($0.rawValue).tag($0)
+				}
+			}
+		} footer: {
+			Text(
+				"Choose '\(League.Recurrence.repeating)' for leagues that happen semi-frequently, such as once a week, or " +
+				"choose '\(League.Recurrence.oneTimeEvent)' for tournaments and one-off events."
+			)
+		}
+		.disabled(viewStore.isLoading)
+	}
+
+	private func gamesSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
+		Section {
+			Picker(
+				"Number of games",
+				selection: viewStore.binding(get: \.gamesPerSeries, send: ViewAction.gamesPerSeriesChange)
+			) {
+				ForEach(LeagueForm.GamesPerSeries.allCases) {
+					Text($0.rawValue).tag($0)
+				}
+			}
+			.disabled(viewStore.recurrence == .oneTimeEvent)
+
+			if viewStore.gamesPerSeries == .static {
+				Stepper(
+					"\(viewStore.numberOfGames)",
+					value: viewStore.binding(get: \.numberOfGames, send: ViewAction.numberOfGamesChange),
+					in: 1...40
+				)
+			}
+		} footer: {
+			Text(
+				"Choose '\(LeagueForm.GamesPerSeries.static)' if you always play the same number of games each series, " +
+				"or '\(LeagueForm.GamesPerSeries.dynamic)' to choose the number of games each time you bowl."
+			)
+		}
+		.disabled(viewStore.isLoading)
+	}
+
+	private func additionalPinfallSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
+		Section {
+			Toggle(
+				"Include additional pinfall?",
+				isOn: viewStore.binding(get: \.hasAdditionalPinfall, send: ViewAction.setHasAdditionalPinfall(enabled:))
+			)
+			.toggleStyle(SwitchToggleStyle())
+
+			if viewStore.hasAdditionalPinfall {
+				TextField(
+					"Additional Pinfall",
+					text: viewStore.binding(get: \.additionalPinfall, send: ViewAction.additionalPinfallChange)
+				)
+				TextField(
+					"Additional Games",
+					text: viewStore.binding(get: \.additionalGames, send: ViewAction.additionalGamesChange)
+				)
+			}
+		} header: {
+			Text("Additional Games")
+		} footer: {
+			Text(
+				"If you're starting recording partway through the season, you can add missing pinfall " +
+				"here to ensure your average in the app matches the average provided by your league."
+			)
+		}
+		.disabled(viewStore.isLoading)
+	}
 }
 
 extension LeagueForm.Action {
@@ -146,6 +185,8 @@ extension LeagueForm.Action {
 			self = .nameChange(string)
 		case .recurrenceChange(let recurrence):
 			self = .recurrenceChange(recurrence)
+		case let .gamesPerSeriesChange(gamesPerSeries):
+			self = .gamesPerSeriesChange(gamesPerSeries)
 		case .numberOfGamesChange(let int):
 			self = .numberOfGamesChange(int)
 		case .additionalGamesChange(let int):
@@ -163,3 +204,19 @@ extension LeagueForm.Action {
 		}
 	}
 }
+
+#if DEBUG
+struct LeagueFormViewPreviews: PreviewProvider {
+	static var previews: some View {
+		LeagueFormView(
+			store: .init(
+				initialState: .init(
+					bowler: .init(id: UUID(), name: "Joseph", createdAt: Date(), lastModifiedAt: Date()),
+					mode: .create
+				),
+				reducer: LeagueForm()
+			)
+		)
+	}
+}
+#endif

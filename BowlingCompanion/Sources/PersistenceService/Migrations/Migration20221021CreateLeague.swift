@@ -7,7 +7,7 @@ struct Migration20221021CreateLeague: Migration {
 			t.column("bowlerId", .text).references("bowler", onDelete: .cascade)
 			t.column("name", .text).notNull()
 			t.column("recurrence", .text).notNull()
-			t.column("numberOfGames", .integer).notNull()
+			t.column("numberOfGames", .integer)
 			t.column("additionalPinfall", .integer)
 			t.column("additionalGames", .integer)
 			t.column("createdAt", .datetime).notNull()

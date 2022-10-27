@@ -7,7 +7,7 @@ public struct League: Sendable, Identifiable, Hashable, Codable {
 	public let id: UUID
 	public let name: String
 	public let recurrence: Recurrence
-	public let numberOfGames: Int
+	public let numberOfGames: Int?
 	public let additionalPinfall: Int?
 	public let additionalGames: Int?
 	public let createdAt: Date
@@ -18,7 +18,7 @@ public struct League: Sendable, Identifiable, Hashable, Codable {
 		id: UUID,
 		name: String,
 		recurrence: Recurrence,
-		numberOfGames: Int,
+		numberOfGames: Int?,
 		additionalPinfall: Int?,
 		additionalGames: Int?,
 		createdAt: Date,
@@ -37,21 +37,10 @@ public struct League: Sendable, Identifiable, Hashable, Codable {
 }
 
 extension League {
-	public enum Recurrence: Sendable, Identifiable, CaseIterable, CustomStringConvertible, Codable {
-		case repeating
-		case oneTimeEvent
+	public enum Recurrence: String, Sendable, Identifiable, CaseIterable, Codable {
+		case repeating = "Repeats"
+		case oneTimeEvent = "Never"
 
-		public var id: String {
-			self.description
-		}
-
-		public var description: String {
-			switch self {
-			case .repeating:
-				return "Repeats"
-			case .oneTimeEvent:
-				return "Never"
-			}
-		}
+		public var id: String { rawValue }
 	}
 }

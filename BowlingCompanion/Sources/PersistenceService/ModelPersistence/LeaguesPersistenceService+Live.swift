@@ -13,8 +13,8 @@ extension LeaguesPersistenceService: DependencyKey {
 			@Dependency(\.seriesPersistenceService) var seriesPersistenceService: SeriesPersistenceService
 
 			try league.insert(db)
-			if league.recurrence == .oneTimeEvent {
-				let series = Series(leagueId: league.id, id: uuid(), date: date(), numberOfGames: league.numberOfGames)
+			if league.recurrence == .oneTimeEvent, let numberOfGames = league.numberOfGames {
+				let series = Series(leagueId: league.id, id: uuid(), date: date(), numberOfGames: numberOfGames)
 				try seriesPersistenceService.create(series, db)
 			}
 		},

@@ -53,12 +53,18 @@ public struct SeriesList: ReducerProtocol {
 				return .none
 
 			case .addSeriesButtonTapped:
-				return .task { [leagueId = state.league.id, numberOfGames = state.league.numberOfGames] in
-					let series = Series(leagueId: leagueId, id: uuid(), date: date(), numberOfGames: numberOfGames)
-					return await .seriesCreateResponse(TaskResult {
-						try await seriesDataProvider.create(series)
-						return series
-					})
+				if let numberOfGames = state.league.numberOfGames {
+					return .task { [leagueId = state.league.id] in
+						let series = Series(leagueId: leagueId, id: uuid(), date: date(), numberOfGames: numberOfGames)
+						return await .seriesCreateResponse(TaskResult {
+							try await seriesDataProvider.create(series)
+							return series
+						})
+					}
+				} else {
+					// TOD: add series
+//					state.addSeries = .init()
+					return .none
 				}
 
 			case let .seriesCreateResponse(.success(series)):
