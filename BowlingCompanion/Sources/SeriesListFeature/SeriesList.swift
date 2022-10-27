@@ -37,13 +37,11 @@ public struct SeriesList: ReducerProtocol {
 			switch action {
 			case .subscribeToSeries:
 				return .run { [leagueId = state.league.id] send in
-					do {
-						for try await series in seriesDataProvider.fetchAll(.init(league: leagueId, ordering: .byDate)) {
-							await send(.seriesResponse(.success(series)))
-						}
-					} catch {
-						await send(.seriesResponse(.failure(error)))
+					for try await series in seriesDataProvider.fetchAll(.init(league: leagueId, ordering: .byDate)) {
+						await send(.seriesResponse(.success(series)))
 					}
+				} catch: { error, send in
+					await send(.seriesResponse(.failure(error)))
 				}
 
 			case let .seriesResponse(.success(series)):
