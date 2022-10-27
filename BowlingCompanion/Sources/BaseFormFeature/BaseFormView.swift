@@ -1,7 +1,11 @@
 import ComposableArchitecture
 import SwiftUI
 
-public struct BaseFormView<Model: BaseFormModel, FormState: BaseFormState, Content: View>: View where Model == FormState.Model {
+public struct BaseFormView<
+	Model: BaseFormModel,
+	FormState: BaseFormState,
+	Content: View
+>: View where Model == FormState.Model {
 	let store: StoreOf<BaseForm<Model, FormState>>
 	let content: () -> Content
 

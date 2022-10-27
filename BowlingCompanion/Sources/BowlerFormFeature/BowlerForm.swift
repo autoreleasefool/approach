@@ -12,7 +12,7 @@ public struct BowlerForm: ReducerProtocol {
 	public typealias Form = BaseForm<Bowler, Fields>
 
 	public struct Fields: BaseFormState, Equatable {
-		public var name = ""
+		@BindableState public var name = ""
 
 		public let isDeleteable: Bool = true
 		public var isSaveable: Bool {
@@ -33,8 +33,8 @@ public struct BowlerForm: ReducerProtocol {
 		}
 	}
 
-	public enum Action: Equatable {
-		case nameChange(String)
+	public enum Action: BindableAction, Equatable {
+		case binding(BindingAction<State>)
 		case form(Form.Action)
 	}
 
@@ -62,18 +62,16 @@ public struct BowlerForm: ReducerProtocol {
 	}
 
 	public var body: some ReducerProtocol<State, Action> {
+		BindingReducer()
+
 		Scope(state: \.base, action: /Action.form) {
 			BaseForm()
-				.dependency(\.formModelService, bowlerFormService)
+//				.dependency(\.formModelService, bowlerFormService)
 		}
 
-		Reduce { state, action in
+		Reduce { _, action in
 			switch action {
-			case let .nameChange(name):
-				state.base.form.name = name
-				return .none
-
-			case .form:
+			case .binding, .form:
 				return .none
 			}
 		}
