@@ -10,6 +10,7 @@ let package = Package(
 	products: [
 		// MARK: - Features
 		.library(name: "AppFeature", targets: ["AppFeature"]),
+		.library(name: "BaseFormFeature", targets: ["BaseFormFeature"]),
 		.library(name: "BowlerFormFeature", targets: ["BowlerFormFeature"]),
 		.library(name: "BowlersListFeature", targets: ["BowlersListFeature"]),
 		.library(name: "GamesListFeature", targets: ["GamesListFeature"]),
@@ -51,8 +52,8 @@ let package = Package(
 		.target(
 			name: "BowlerFormFeature",
 			dependencies: [
+				"BaseFormFeature",
 				"BowlersDataProviderInterface",
-				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 			]
 		),
 		.testTarget(name: "BowlerFormFeatureTests", dependencies: ["BowlerFormFeature"]),
@@ -97,6 +98,13 @@ let package = Package(
 			]
 		),
 		.testTarget(name: "SeriesListFeatureTests", dependencies: ["SeriesListFeature"]),
+		.target(
+			name: "BaseFormFeature",
+			dependencies: [
+				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+			]
+		),
+		.testTarget(name: "BaseFormFeatureTests", dependencies: ["BaseFormFeature"]),
 
 		// MARK: - Data Providers
 		.target(

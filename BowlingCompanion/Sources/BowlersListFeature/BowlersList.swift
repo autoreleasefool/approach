@@ -96,11 +96,11 @@ public struct BowlersList: ReducerProtocol {
 				state.bowlerForm = nil
 				return .none
 
-			case .bowlerForm(.saveBowlerResult(.success)):
+			case .bowlerForm(.form(.saveResult(.success))):
 				state.bowlerForm = nil
 				return .none
 
-			case .bowlerForm(.deleteBowlerResult(.success)):
+			case .bowlerForm(.form(.deleteResult(.success))):
 				state.bowlerForm = nil
 				return .none
 

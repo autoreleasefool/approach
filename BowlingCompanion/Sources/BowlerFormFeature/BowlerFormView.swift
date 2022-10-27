@@ -1,4 +1,5 @@
 import ComposableArchitecture
+import BaseFormFeature
 import SwiftUI
 
 public struct BowlerFormView: View {
@@ -6,36 +7,14 @@ public struct BowlerFormView: View {
 
 	struct ViewState: Equatable {
 		let name: String
-		let isLoading: Bool
-		let navigationTitle: String
-		let showDeleteButton: Bool
-		let saveButtonDisabled: Bool
-		let dismissDisabled: Bool
-		let discardButtonEnabled: Bool
 
 		init(state: BowlerForm.State) {
-			self.name = state.name
-			self.isLoading = state.isLoading
-			self.saveButtonDisabled = !state.canSave
-			self.dismissDisabled = state.hasChanges || state.isLoading
-			self.discardButtonEnabled = state.hasChanges && !state.isLoading
-
-			switch state.mode {
-			case let .edit(bowler):
-				self.navigationTitle = "Edit \(bowler.name)"
-				self.showDeleteButton = true
-			case .create:
-				self.navigationTitle = "Create Bowler"
-				self.showDeleteButton = false
-			}
+			self.name = state.base.form.name
 		}
 	}
 
 	enum ViewAction {
 		case nameChange(String)
-		case saveButtonTapped
-		case deleteButtonTapped
-		case discardButtonTapped
 	}
 
 	public init(store: StoreOf<BowlerForm>) {
@@ -44,42 +23,11 @@ public struct BowlerFormView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: BowlerForm.Action.init) { viewStore in
-			Form {
-				if viewStore.isLoading {
-					ProgressView()
-				}
-
+			BaseFormView(store: store.scope(state: \.base, action: BowlerForm.Action.form)) {
 				Section {
 					TextField("Name", text: viewStore.binding(get: \.name, send: ViewAction.nameChange))
-						.disabled(viewStore.isLoading)
-				}
-
-				if viewStore.showDeleteButton {
-					Button(role: .destructive) {
-						viewStore.send(.deleteButtonTapped)
-					} label: {
-						Text("Delete")
-					}
 				}
 			}
-			.navigationTitle(viewStore.navigationTitle)
-			.toolbar {
-				ToolbarItem(placement: .navigationBarTrailing) {
-					Button("Save") { viewStore.send(.saveButtonTapped) }
-						.disabled(viewStore.saveButtonDisabled)
-				}
-
-				if viewStore.discardButtonEnabled {
-					ToolbarItem(placement: .navigationBarLeading) {
-						Button("Discard") { viewStore.send(.discardButtonTapped) }
-					}
-				}
-			}
-			.alert(
-				self.store.scope(state: \.alert, action: BowlerForm.Action.alert),
-				dismiss: .dismissed
-			)
-			.interactiveDismissDisabled(viewStore.dismissDisabled)
 		}
 	}
 }
@@ -89,12 +37,6 @@ extension BowlerForm.Action {
 		switch action {
 		case let .nameChange(name):
 			self = .nameChange(name)
-		case .saveButtonTapped:
-			self = .saveButtonTapped
-		case .discardButtonTapped:
-			self = .discardButtonTapped
-		case .deleteButtonTapped:
-			self = .deleteButtonTapped
 		}
 	}
 }

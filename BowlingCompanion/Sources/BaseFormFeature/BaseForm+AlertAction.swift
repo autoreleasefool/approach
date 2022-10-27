@@ -1,17 +1,19 @@
 import ComposableArchitecture
 
-extension BowlerForm {
-
+extension BaseForm {
 	public enum AlertAction: Equatable {
-		case deleteButtonTapped
-		case discardButtonTapped
 		case dismissed
+		case discardButtonTapped
+		case deleteButtonTapped
 	}
+}
 
-	func buildDeleteAlert(state: State) -> AlertState<AlertAction>? {
-		guard case let .edit(bowler) = state.mode else { return nil }
+extension BaseForm.State {
+	var deleteAlert: AlertState<BaseForm<Model, FormState>.AlertAction>? {
+		guard case let .edit(model) = self.mode else { return nil }
+
 		return .init(
-			title: TextState("Are you sure you want to delete \(bowler.name)"),
+			title: TextState("Are you sure you want to delete \(model.name)"),
 			primaryButton: .destructive(
 				TextState("Delete"),
 				action: .send(.deleteButtonTapped)
@@ -20,7 +22,7 @@ extension BowlerForm {
 		)
 	}
 
-	var discardAlert: AlertState<AlertAction> {
+	var discardAlert: AlertState<BaseForm<Model, FormState>.AlertAction> {
 		.init(
 			title: TextState("Discard your changes?"),
 			primaryButton: .destructive(
@@ -31,7 +33,7 @@ extension BowlerForm {
 		)
 	}
 
-	private var dismissButton: AlertState<AlertAction>.Button {
+	private var dismissButton: AlertState<BaseForm<Model, FormState>.AlertAction>.Button {
 		.cancel(TextState("Cancel"), action: .send(.dismissed))
 	}
 }
