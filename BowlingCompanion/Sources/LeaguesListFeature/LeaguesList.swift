@@ -72,11 +72,11 @@ public struct LeaguesList: ReducerProtocol {
 				state.leagueForm = nil
 				return .none
 
-			case .leagueForm(.saveLeagueResult(.success)):
+			case .leagueForm(.form(.saveResult(.success))):
 				state.leagueForm = nil
 				return .none
 
-			case .leagueForm(.deleteLeagueResult(.success)):
+			case .leagueForm(.form(.deleteResult(.success))):
 				state.leagueForm = nil
 				return .none
 

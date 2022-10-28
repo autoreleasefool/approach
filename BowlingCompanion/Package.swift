@@ -77,8 +77,8 @@ let package = Package(
 		.target(
 			name: "LeagueFormFeature",
 			dependencies: [
+				"BaseFormFeature",
 				"LeaguesDataProviderInterface",
-				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 			]
 		),
 		.testTarget(name: "LeagueFormFeatureTests", dependencies: ["LeagueFormFeature"]),

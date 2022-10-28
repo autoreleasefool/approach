@@ -42,7 +42,7 @@ public struct BaseFormView<
 
 	public init(
 		store: StoreOf<BaseForm<Model, FormState>>,
-		content: @escaping () -> Content
+		@ViewBuilder content: @escaping () -> Content
 	) {
 		self.store = store
 		self.content = content

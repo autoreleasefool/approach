@@ -1,7 +1,7 @@
+import BaseFormFeature
 import BowlersDataProviderInterface
 import ComposableArchitecture
 import Foundation
-import BaseFormFeature
 import SharedModelsLibrary
 
 extension Bowler: BaseFormModel {
@@ -14,7 +14,7 @@ public struct BowlerForm: ReducerProtocol {
 	public struct Fields: BaseFormState, Equatable {
 		@BindableState public var name = ""
 
-		public let isDeleteable: Bool = true
+		public let isDeleteable = true
 		public var isSaveable: Bool {
 			!name.isEmpty
 		}
@@ -66,7 +66,7 @@ public struct BowlerForm: ReducerProtocol {
 
 		Scope(state: \.base, action: /Action.form) {
 			BaseForm()
-//				.dependency(\.formModelService, bowlerFormService)
+				.dependency(\.formModelService, bowlerFormService)
 		}
 
 		Reduce { _, action in
