@@ -1,8 +1,6 @@
 import BaseFormFeature
 import ComposableArchitecture
-import Foundation
 import LeaguesDataProviderInterface
-import RegexBuilder
 import SharedModelsLibrary
 
 extension League: BaseFormModel {
@@ -96,7 +94,7 @@ public struct LeagueForm: ReducerProtocol {
 			switch action {
 			case .binding(\.base.form.$recurrence):
 				if state.base.form.recurrence == .oneTimeEvent {
-					state.base.form.gamesPerSeries = .static
+					return .task { .set(\.base.form.$gamesPerSeries, .static) }
 				}
 				return .none
 

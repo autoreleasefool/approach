@@ -23,11 +23,15 @@ public struct LeaguesList: ReducerProtocol {
 		case setNavigation(selection: League.ID?)
 		case setFormSheet(isPresented: Bool)
 		case alert(AlertAction)
-		case delete(League)
-		case edit(League)
+		case swipeAction(League, SwipeAction)
 		case deleteLeagueResponse(TaskResult<Bool>)
 		case leagueForm(LeagueForm.Action)
 		case series(SeriesList.Action)
+	}
+
+	public enum SwipeAction: Equatable {
+		case edit
+		case delete
 	}
 
 	public init() {}
@@ -80,11 +84,11 @@ public struct LeaguesList: ReducerProtocol {
 				state.leagueForm = nil
 				return .none
 
-			case let .edit(league):
+			case let .swipeAction(league, .edit):
 				state.leagueForm = .init(bowler: state.bowler, mode: .edit(league))
 				return .none
 
-			case let .delete(league):
+			case let .swipeAction(league, .delete):
 				state.alert = self.alert(toDelete: league)
 				return .none
 

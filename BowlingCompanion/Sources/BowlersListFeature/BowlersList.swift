@@ -16,8 +16,7 @@ public struct BowlersList: ReducerProtocol {
 
 	public enum Action: Equatable {
 		case subscribeToBowlers
-		case delete(Bowler)
-		case edit(Bowler)
+		case swipeAction(Bowler, SwipeAction)
 		case alert(AlertAction)
 		case setNavigation(selection: Bowler.ID?)
 		case setFormSheet(isPresented: Bool)
@@ -25,6 +24,11 @@ public struct BowlersList: ReducerProtocol {
 		case deleteBowlerResponse(TaskResult<Bool>)
 		case bowlerForm(BowlerForm.Action)
 		case leagues(LeaguesList.Action)
+	}
+
+	public enum SwipeAction: Equatable {
+		case delete
+		case edit
 	}
 
 	public init() {}
@@ -61,11 +65,11 @@ public struct BowlersList: ReducerProtocol {
 				// TODO: handle failed bowler response
 				return .none
 
-			case let .edit(bowler):
+			case let .swipeAction(bowler, .edit):
 				state.bowlerForm = .init(mode: .edit(bowler))
 				return .none
 
-			case let .delete(bowler):
+			case let .swipeAction(bowler, .delete):
 				state.alert = self.alert(toDelete: bowler)
 				return .none
 

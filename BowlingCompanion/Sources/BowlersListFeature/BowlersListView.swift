@@ -23,8 +23,7 @@ public struct BowlersListView: View {
 		case subscribeToBowlers
 		case setFormSheet(isPresented: Bool)
 		case setNavigation(selection: Bowler.ID?)
-		case delete(Bowler)
-		case edit(Bowler)
+		case swipeAction(Bowler, BowlersList.SwipeAction)
 	}
 
 	public init(store: StoreOf<BowlersList>) {
@@ -52,14 +51,14 @@ public struct BowlersListView: View {
 					Text(bowler.name)
 						.swipeActions(allowsFullSwipe: true) {
 							Button {
-								viewStore.send(.edit(bowler))
+								viewStore.send(.swipeAction(bowler, .edit))
 							} label: {
 								Label("Edit", systemImage: "pencil")
 							}
 							.tint(.blue)
 
 							Button(role: .destructive) {
-								viewStore.send(.delete(bowler))
+								viewStore.send(.swipeAction(bowler, .delete))
 							} label: {
 								Label("Delete", systemImage: "trash")
 							}
@@ -104,10 +103,8 @@ extension BowlersList.Action {
 			self = .setFormSheet(isPresented: isPresented)
 		case let .setNavigation(selection):
 			self = .setNavigation(selection: selection)
-		case let .edit(bowler):
-			self = .edit(bowler)
-		case let .delete(bowler):
-			self = .delete(bowler)
+		case let .swipeAction(bowler, swipeAction):
+			self = .swipeAction(bowler, swipeAction)
 		}
 	}
 }
