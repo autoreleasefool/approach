@@ -1,6 +1,7 @@
 import ComposableArchitecture
 import DateTimeLibrary
 import GamesListFeature
+import SeriesFormFeature
 import SharedModelsLibrary
 import SwiftUI
 
@@ -12,21 +13,24 @@ public struct SeriesListView: View {
 		let selection: Series.ID?
 		let leagueName: String
 		let isNewSeriesCreated: Bool
+		let isSeriesEditorPresented: Bool
 
 		init(state: SeriesList.State) {
 			self.series = state.series
 			self.leagueName = state.league.name
 			self.selection = state.selection?.id
 			self.isNewSeriesCreated = state.newSeries != nil
+			self.isSeriesEditorPresented = state.seriesEditor != nil
 		}
 	}
 
 	enum ViewAction {
 		case subscribeToSeries
 		case setNavigation(selection: Series.ID?)
-		case setFormSheet(isPresented: Bool)
+		case setEditorSheet(isPresented: Bool)
 		case addSeriesButtonTapped
 		case dismissNewSeries
+		case swipeAction(Series, SeriesList.SwipeAction)
 	}
 
 	public init(store: StoreOf<SeriesList>) {
@@ -53,6 +57,20 @@ public struct SeriesListView: View {
 						)
 					) {
 						Text(series.date.regularDateFormat)
+							.swipeActions(allowsFullSwipe: true) {
+								Button {
+									viewStore.send(.swipeAction(series, .edit))
+								} label: {
+									Label("Edit", systemImage: "pencil")
+								}
+								.tint(.blue)
+
+								Button(role: .destructive) {
+									viewStore.send(.swipeAction(series, .delete))
+								} label: {
+									Label("Delete", systemImage: "trash")
+								}
+							}
 					}
 				}
 			}
@@ -77,6 +95,16 @@ public struct SeriesListView: View {
 					}
 				}
 			}
+			.sheet(isPresented: viewStore.binding(
+				get: \.isSeriesEditorPresented,
+				send: ViewAction.setEditorSheet(isPresented: false)
+			)) {
+				IfLetStore(store.scope(state: \.seriesEditor, action: SeriesList.Action.seriesEditor)) { scopedStore in
+					NavigationView {
+						SeriesEditorView(store: scopedStore)
+					}
+				}
+			}
 			.task { await viewStore.send(.subscribeToSeries).finish() }
 		}
 	}
@@ -87,14 +115,16 @@ extension SeriesList.Action {
 		switch action {
 		case.subscribeToSeries:
 			self = .subscribeToSeries
-		case let .setFormSheet(isPresented):
-			self = .setFormSheet(isPresented: isPresented)
+		case let .setEditorSheet(isPresented):
+			self = .setEditorSheet(isPresented: isPresented)
 		case .addSeriesButtonTapped:
 			self = .addSeriesButtonTapped
 		case let .setNavigation(selection):
 			self = .setNavigation(selection: selection)
 		case .dismissNewSeries:
 			self = .dismissNewSeries
+		case let .swipeAction(series, swipeAction):
+			self = .swipeAction(series, swipeAction)
 		}
 	}
 }

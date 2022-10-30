@@ -1,6 +1,7 @@
 import ComposableArchitecture
 import GamesListFeature
 import SeriesDataProviderInterface
+import SeriesFormFeature
 import SharedModelsLibrary
 
 public struct SeriesList: ReducerProtocol {
@@ -9,6 +10,7 @@ public struct SeriesList: ReducerProtocol {
 		public var series: IdentifiedArrayOf<Series> = []
 		public var selection: Identified<Series.ID, GamesList.State>?
 		public var newSeries: GamesList.State?
+		public var seriesEditor: SeriesEditor.State?
 
 		public init(league: League) {
 			self.league = league
@@ -22,8 +24,15 @@ public struct SeriesList: ReducerProtocol {
 		case seriesCreateResponse(TaskResult<Series>)
 		case addSeriesButtonTapped
 		case dismissNewSeries
-		case setFormSheet(isPresented: Bool)
+		case swipeAction(Series, SwipeAction)
+		case setEditorSheet(isPresented: Bool)
 		case games(GamesList.Action)
+		case seriesEditor(SeriesEditor.Action)
+	}
+
+	public enum SwipeAction: Equatable {
+		case edit
+		case delete
 	}
 
 	public init() {}
@@ -89,15 +98,31 @@ public struct SeriesList: ReducerProtocol {
 				state.selection = nil
 				return .none
 
-			case .setFormSheet(isPresented: true):
+			case .setEditorSheet(isPresented: true):
 				// TODO: show series sheet
 				return .none
 
-			case .setFormSheet(isPresented: false):
-				// TODO: hide series sheet
+			case .setEditorSheet(isPresented: false):
+				state.seriesEditor = nil
 				return .none
 
-			case .games:
+			case .seriesEditor(.form(.saveResult(.success))):
+				state.seriesEditor = nil
+				return .none
+
+			case .seriesEditor(.form(.deleteResult(.success))):
+				state.seriesEditor = nil
+				return .none
+
+			case let .swipeAction(series, .edit):
+				state.seriesEditor = .init(league: state.league, mode: .edit(series))
+				return .none
+
+			case let .swipeAction(series, .delete):
+				// TODO: show delete alert
+				return .none
+
+			case .games, .seriesEditor:
 				return .none
 			}
 		}
@@ -108,6 +133,9 @@ public struct SeriesList: ReducerProtocol {
 		}
 		.ifLet(\.newSeries, action: /SeriesList.Action.games) {
 			GamesList()
+		}
+		.ifLet(\.seriesEditor, action: /SeriesList.Action.seriesEditor) {
+			SeriesEditor()
 		}
 	}
 }

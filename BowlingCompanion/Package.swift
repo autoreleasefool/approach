@@ -16,6 +16,7 @@ let package = Package(
 		.library(name: "GamesListFeature", targets: ["GamesListFeature"]),
 		.library(name: "LeagueFormFeature", targets: ["LeagueFormFeature"]),
 		.library(name: "LeaguesListFeature", targets: ["LeaguesListFeature"]),
+		.library(name: "SeriesFormFeature", targets: ["SeriesFormFeature"]),
 		.library(name: "SeriesListFeature", targets: ["SeriesListFeature"]),
 
 		// MARK: - Data Providers
@@ -91,10 +92,18 @@ let package = Package(
 		),
 		.testTarget(name: "LeaguesListFeatureTests", dependencies: ["LeaguesListFeature"]),
 		.target(
+			name: "SeriesFormFeature",
+			dependencies: [
+				"BaseFormFeature",
+				"SeriesDataProviderInterface",
+			]
+		),
+		.testTarget(name: "SeriesFormFeatureTests", dependencies: ["SeriesFormFeature"]),
+		.target(
 			name: "SeriesListFeature",
 			dependencies: [
 				"GamesListFeature",
-				"SeriesDataProviderInterface",
+				"SeriesFormFeature",
 			]
 		),
 		.testTarget(name: "SeriesListFeatureTests", dependencies: ["SeriesListFeature"]),

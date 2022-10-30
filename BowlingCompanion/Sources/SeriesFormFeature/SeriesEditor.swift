@@ -1,0 +1,100 @@
+import BaseFormFeature
+import ComposableArchitecture
+import DateTimeLibrary
+import Foundation
+import SeriesDataProviderInterface
+import SharedModelsLibrary
+
+extension Series: BaseFormModel {
+	static public var modelName = "Series"
+	public var name: String { date.regularDateFormat }
+}
+
+public struct SeriesEditor: ReducerProtocol {
+	public typealias Form = BaseForm<Series, Fields>
+
+	public struct Fields: BaseFormState, Equatable {
+		public var leagueId: League.ID
+		@BindableState public var date = Date()
+
+		public let isDeleteable = true
+		public var isSaveable = true
+	}
+
+	public struct State: Equatable {
+		public var league: League
+		public var base: Form.State
+
+		public init(league: League, mode: Form.Mode) {
+			self.league = league
+			var fields = Fields(leagueId: league.id)
+			if case let .edit(series) = mode {
+				fields.date = series.date
+			}
+
+			self.base = .init(mode: mode, form: fields)
+		}
+	}
+
+	public enum Action: BindableAction, Equatable {
+		case binding(BindingAction<State>)
+		case form(Form.Action)
+	}
+
+	public init() {}
+
+	@Dependency(\.uuid) var uuid
+	@Dependency(\.date) var date
+	@Dependency(\.seriesDataProvider) var seriesDataProvider
+
+	var seriesFormService: FormModelService {
+		.init(
+			create: { model in
+				guard let series = model as? Series else { return }
+				try await seriesDataProvider.create(series)
+			},
+			update: { model in
+				guard let series = model as? Series else { return }
+				try await seriesDataProvider.update(series)
+			},
+			delete: { model in
+				guard let series = model as? Series else { return }
+				try await seriesDataProvider.delete(series)
+			}
+		)
+	}
+
+	public var body: some ReducerProtocol<State, Action> {
+		BindingReducer()
+
+		Scope(state: \.base, action: /Action.form) {
+			BaseForm()
+				.dependency(\.formModelService, seriesFormService)
+		}
+
+		Reduce { state, action in
+			switch action {
+			case .binding:
+				return .none
+
+			case .form:
+				return .none
+			}
+		}
+	}
+}
+
+extension SeriesEditor.Fields {
+	public func model(fromExisting existing: Series?) -> Series {
+		@Dependency(\.uuid) var uuid: UUIDGenerator
+		@Dependency(\.date) var date: DateGenerator
+
+		return .init(
+			leagueId: leagueId,
+			id: existing?.id ?? uuid(),
+			date: date(),
+			// TODO: determine if there's a way to guarantee we have a league here for the # of games
+			numberOfGames: existing?.numberOfGames ?? League.DEFAULT_NUMBER_OF_GAMES
+		)
+	}
+}
