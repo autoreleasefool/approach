@@ -74,12 +74,11 @@ public struct SeriesEditor: ReducerProtocol {
 extension SeriesEditor.Fields {
 	public func model(fromExisting existing: Series?) -> Series {
 		@Dependency(\.uuid) var uuid: UUIDGenerator
-		@Dependency(\.date) var date: DateGenerator
 
 		return .init(
 			leagueId: leagueId,
 			id: existing?.id ?? uuid(),
-			date: date(),
+			date: date,
 			// TODO: determine if there's a way to guarantee we have a league here for the # of games
 			numberOfGames: existing?.numberOfGames ?? League.DEFAULT_NUMBER_OF_GAMES
 		)
