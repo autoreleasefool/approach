@@ -1,7 +1,7 @@
 import ComposableArchitecture
 import GamesListFeature
 import SeriesDataProviderInterface
-import SeriesFormFeature
+import SeriesEditorFeature
 import SharedModelsLibrary
 
 public struct SeriesList: ReducerProtocol {

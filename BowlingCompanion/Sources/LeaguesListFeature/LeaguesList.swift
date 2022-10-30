@@ -1,5 +1,5 @@
 import ComposableArchitecture
-import LeagueFormFeature
+import LeagueEditorFeature
 import LeaguesDataProviderInterface
 import SeriesListFeature
 import SharedModelsLibrary
@@ -9,7 +9,7 @@ public struct LeaguesList: ReducerProtocol {
 		public var bowler: Bowler
 		public var leagues: IdentifiedArrayOf<League> = []
 		public var selection: Identified<League.ID, SeriesList.State>?
-		public var leagueForm: LeagueForm.State?
+		public var leagueEditor: LeagueEditor.State?
 		public var alert: AlertState<AlertAction>?
 
 		public init(bowler: Bowler) {
@@ -25,7 +25,7 @@ public struct LeaguesList: ReducerProtocol {
 		case alert(AlertAction)
 		case swipeAction(League, SwipeAction)
 		case deleteLeagueResponse(TaskResult<Bool>)
-		case leagueForm(LeagueForm.Action)
+		case leagueEditor(LeagueEditor.Action)
 		case series(SeriesList.Action)
 	}
 
@@ -69,23 +69,23 @@ public struct LeaguesList: ReducerProtocol {
 				return .none
 
 			case .setFormSheet(isPresented: true):
-				state.leagueForm = .init(bowler: state.bowler, mode: .create)
+				state.leagueEditor = .init(bowler: state.bowler, mode: .create)
 				return .none
 
 			case .setFormSheet(isPresented: false):
-				state.leagueForm = nil
+				state.leagueEditor = nil
 				return .none
 
-			case .leagueForm(.form(.saveResult(.success))):
-				state.leagueForm = nil
+			case .leagueEditor(.form(.saveResult(.success))):
+				state.leagueEditor = nil
 				return .none
 
-			case .leagueForm(.form(.deleteResult(.success))):
-				state.leagueForm = nil
+			case .leagueEditor(.form(.deleteResult(.success))):
+				state.leagueEditor = nil
 				return .none
 
 			case let .swipeAction(league, .edit):
-				state.leagueForm = .init(bowler: state.bowler, mode: .edit(league))
+				state.leagueEditor = .init(bowler: state.bowler, mode: .edit(league))
 				return .none
 
 			case let .swipeAction(league, .delete):
@@ -111,15 +111,15 @@ public struct LeaguesList: ReducerProtocol {
 				// TODO: handle failed delete league response
 				return .none
 
-			case .leagueForm:
+			case .leagueEditor:
 				return .none
 
 			case .series:
 				return .none
 			}
 		}
-		.ifLet(\.leagueForm, action: /LeaguesList.Action.leagueForm) {
-			LeagueForm()
+		.ifLet(\.leagueEditor, action: /LeaguesList.Action.leagueEditor) {
+			LeagueEditor()
 		}
 		.ifLet(\.selection, action: /LeaguesList.Action.series) {
 			Scope(state: \Identified<League.ID, SeriesList.State>.value, action: /.self) {

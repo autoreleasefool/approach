@@ -1,4 +1,4 @@
-import BowlerFormFeature
+import BowlerEditorFeature
 import ComposableArchitecture
 import LeaguesListFeature
 import SharedModelsLibrary
@@ -10,12 +10,12 @@ public struct BowlersListView: View {
 	struct ViewState: Equatable {
 		let bowlers: IdentifiedArrayOf<Bowler>
 		let selection: Bowler.ID?
-		let isBowlerFormPresented: Bool
+		let isBowlerEditorPresented: Bool
 
 		init(state: BowlersList.State) {
 			self.bowlers = state.bowlers
 			self.selection = state.selection?.id
-			self.isBowlerFormPresented = state.bowlerForm != nil
+			self.isBowlerEditorPresented = state.bowlerEditor != nil
 		}
 	}
 
@@ -76,12 +76,12 @@ public struct BowlersListView: View {
 				}
 			}
 			.sheet(isPresented: viewStore.binding(
-				get: \.isBowlerFormPresented,
+				get: \.isBowlerEditorPresented,
 				send: ViewAction.setFormSheet(isPresented:)
 			)) {
-				IfLetStore(store.scope(state: \.bowlerForm, action: BowlersList.Action.bowlerForm)) { scopedStore in
+				IfLetStore(store.scope(state: \.bowlerEditor, action: BowlersList.Action.bowlerEditor)) { scopedStore in
 					NavigationView {
-						BowlerFormView(store: scopedStore)
+						BowlerEditorView(store: scopedStore)
 					}
 				}
 			}

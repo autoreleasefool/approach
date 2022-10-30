@@ -11,12 +11,12 @@ let package = Package(
 		// MARK: - Features
 		.library(name: "AppFeature", targets: ["AppFeature"]),
 		.library(name: "BaseFormFeature", targets: ["BaseFormFeature"]),
-		.library(name: "BowlerFormFeature", targets: ["BowlerFormFeature"]),
+		.library(name: "BowlerEditorFeature", targets: ["BowlerEditorFeature"]),
 		.library(name: "BowlersListFeature", targets: ["BowlersListFeature"]),
 		.library(name: "GamesListFeature", targets: ["GamesListFeature"]),
-		.library(name: "LeagueFormFeature", targets: ["LeagueFormFeature"]),
+		.library(name: "LeagueEditorFeature", targets: ["LeagueEditorFeature"]),
 		.library(name: "LeaguesListFeature", targets: ["LeaguesListFeature"]),
-		.library(name: "SeriesFormFeature", targets: ["SeriesFormFeature"]),
+		.library(name: "SeriesEditorFeature", targets: ["SeriesEditorFeature"]),
 		.library(name: "SeriesListFeature", targets: ["SeriesListFeature"]),
 
 		// MARK: - Data Providers
@@ -51,17 +51,17 @@ let package = Package(
 		.target(name: "AppFeature", dependencies: ["BowlersListFeature"]),
 		.testTarget(name: "AppFeatureTests", dependencies: ["AppFeature"]),
 		.target(
-			name: "BowlerFormFeature",
+			name: "BowlerEditorFeature",
 			dependencies: [
 				"BaseFormFeature",
 				"BowlersDataProviderInterface",
 			]
 		),
-		.testTarget(name: "BowlerFormFeatureTests", dependencies: ["BowlerFormFeature"]),
+		.testTarget(name: "BowlerEditorFeatureTests", dependencies: ["BowlerEditorFeature"]),
 		.target(
 			name: "BowlersListFeature",
 			dependencies: [
-				"BowlerFormFeature",
+				"BowlerEditorFeature",
 				"LeaguesListFeature",
 			]
 		),
@@ -76,34 +76,34 @@ let package = Package(
 		),
 		.testTarget(name: "GamesListFeatureTests", dependencies: ["GamesListFeature"]),
 		.target(
-			name: "LeagueFormFeature",
+			name: "LeagueEditorFeature",
 			dependencies: [
 				"BaseFormFeature",
 				"LeaguesDataProviderInterface",
 			]
 		),
-		.testTarget(name: "LeagueFormFeatureTests", dependencies: ["LeagueFormFeature"]),
+		.testTarget(name: "LeagueEditorFeatureTests", dependencies: ["LeagueEditorFeature"]),
 		.target(
 			name: "LeaguesListFeature",
 			dependencies: [
-				"LeagueFormFeature",
+				"LeagueEditorFeature",
 				"SeriesListFeature",
 			]
 		),
 		.testTarget(name: "LeaguesListFeatureTests", dependencies: ["LeaguesListFeature"]),
 		.target(
-			name: "SeriesFormFeature",
+			name: "SeriesEditorFeature",
 			dependencies: [
 				"BaseFormFeature",
 				"SeriesDataProviderInterface",
 			]
 		),
-		.testTarget(name: "SeriesFormFeatureTests", dependencies: ["SeriesFormFeature"]),
+		.testTarget(name: "SeriesEditorFeatureTests", dependencies: ["SeriesEditorFeature"]),
 		.target(
 			name: "SeriesListFeature",
 			dependencies: [
 				"GamesListFeature",
-				"SeriesFormFeature",
+				"SeriesEditorFeature",
 			]
 		),
 		.testTarget(name: "SeriesListFeatureTests", dependencies: ["SeriesListFeature"]),

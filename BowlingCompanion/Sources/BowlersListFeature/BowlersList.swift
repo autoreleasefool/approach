@@ -1,5 +1,5 @@
 import BowlersDataProviderInterface
-import BowlerFormFeature
+import BowlerEditorFeature
 import ComposableArchitecture
 import LeaguesListFeature
 import SharedModelsLibrary
@@ -8,7 +8,7 @@ public struct BowlersList: ReducerProtocol {
 	public struct State: Equatable {
 		public var bowlers: IdentifiedArrayOf<Bowler> = []
 		public var selection: Identified<Bowler.ID, LeaguesList.State>?
-		public var bowlerForm: BowlerForm.State?
+		public var bowlerEditor: BowlerEditor.State?
 		public var alert: AlertState<AlertAction>?
 
 		public init() {}
@@ -22,7 +22,7 @@ public struct BowlersList: ReducerProtocol {
 		case setFormSheet(isPresented: Bool)
 		case bowlersResponse(TaskResult<[Bowler]>)
 		case deleteBowlerResponse(TaskResult<Bool>)
-		case bowlerForm(BowlerForm.Action)
+		case bowlerEditor(BowlerEditor.Action)
 		case leagues(LeaguesList.Action)
 	}
 
@@ -66,7 +66,7 @@ public struct BowlersList: ReducerProtocol {
 				return .none
 
 			case let .swipeAction(bowler, .edit):
-				state.bowlerForm = .init(mode: .edit(bowler))
+				state.bowlerEditor = .init(mode: .edit(bowler))
 				return .none
 
 			case let .swipeAction(bowler, .delete):
@@ -93,30 +93,30 @@ public struct BowlersList: ReducerProtocol {
 				return .none
 
 			case .setFormSheet(isPresented: true):
-				state.bowlerForm = .init(mode: .create)
+				state.bowlerEditor = .init(mode: .create)
 				return .none
 
 			case .setFormSheet(isPresented: false):
-				state.bowlerForm = nil
+				state.bowlerEditor = nil
 				return .none
 
-			case .bowlerForm(.form(.saveResult(.success))):
-				state.bowlerForm = nil
+			case .bowlerEditor(.form(.saveResult(.success))):
+				state.bowlerEditor = nil
 				return .none
 
-			case .bowlerForm(.form(.deleteResult(.success))):
-				state.bowlerForm = nil
+			case .bowlerEditor(.form(.deleteResult(.success))):
+				state.bowlerEditor = nil
 				return .none
 
-			case .bowlerForm:
+			case .bowlerEditor:
 				return .none
 
 			case .leagues:
 				return .none
 			}
 		}
-		.ifLet(\.bowlerForm, action: /BowlersList.Action.bowlerForm) {
-			BowlerForm()
+		.ifLet(\.bowlerEditor, action: /BowlersList.Action.bowlerEditor) {
+			BowlerEditor()
 		}
 		.ifLet(\.selection, action: /BowlersList.Action.leagues) {
 			Scope(state: \Identified<Bowler.ID, LeaguesList.State>.value, action: /.self) {

@@ -7,7 +7,7 @@ extension League: BaseFormModel {
 	static public var modelName = "League"
 }
 
-public struct LeagueForm: ReducerProtocol {
+public struct LeagueEditor: ReducerProtocol {
 	public typealias Form = BaseForm<League, Fields>
 
 	public struct Fields: BaseFormState, Equatable {
@@ -105,7 +105,7 @@ public struct LeagueForm: ReducerProtocol {
 	}
 }
 
-extension LeagueForm.Fields {
+extension LeagueEditor.Fields {
 	public func model(fromExisting existing: League?) -> League {
 		@Dependency(\.uuid) var uuid: UUIDGenerator
 		@Dependency(\.date) var date: DateGenerator

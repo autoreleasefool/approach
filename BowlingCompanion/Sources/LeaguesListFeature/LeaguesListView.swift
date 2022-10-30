@@ -1,5 +1,5 @@
 import ComposableArchitecture
-import LeagueFormFeature
+import LeagueEditorFeature
 import SeriesListFeature
 import SharedModelsLibrary
 import SwiftUI
@@ -11,13 +11,13 @@ public struct LeaguesListView: View {
 		let bowlerName: String
 		let leagues: IdentifiedArrayOf<League>
 		let selection: League.ID?
-		let isLeagueFormPresented: Bool
+		let isLeagueEditorPresented: Bool
 
 		init(state: LeaguesList.State) {
 			self.leagues = state.leagues
 			self.selection = state.selection?.id
 			self.bowlerName = state.bowler.name
-			self.isLeagueFormPresented = state.leagueForm != nil
+			self.isLeagueEditorPresented = state.leagueEditor != nil
 		}
 	}
 
@@ -78,12 +78,12 @@ public struct LeaguesListView: View {
 				}
 			}
 			.sheet(isPresented: viewStore.binding(
-				get: \.isLeagueFormPresented,
+				get: \.isLeagueEditorPresented,
 				send: ViewAction.setFormSheet(isPresented:)
 			)) {
-				IfLetStore(store.scope(state: \.leagueForm, action: LeaguesList.Action.leagueForm)) { scopedStore in
+				IfLetStore(store.scope(state: \.leagueEditor, action: LeaguesList.Action.leagueEditor)) { scopedStore in
 					NavigationView {
-						LeagueFormView(store: scopedStore)
+						LeagueEditorView(store: scopedStore)
 					}
 				}
 			}

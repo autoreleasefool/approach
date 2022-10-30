@@ -8,7 +8,7 @@ extension Bowler: BaseFormModel {
 	static public var modelName = "Bowler"
 }
 
-public struct BowlerForm: ReducerProtocol {
+public struct BowlerEditor: ReducerProtocol {
 	public typealias Form = BaseForm<Bowler, Fields>
 
 	public struct Fields: BaseFormState, Equatable {
@@ -78,7 +78,7 @@ public struct BowlerForm: ReducerProtocol {
 	}
 }
 
-extension BowlerForm.Fields {
+extension BowlerEditor.Fields {
 	public func model(fromExisting existing: Bowler?) -> Bowler {
 		@Dependency(\.uuid) var uuid: UUIDGenerator
 		@Dependency(\.date) var date: DateGenerator

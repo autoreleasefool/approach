@@ -64,29 +64,29 @@ final class BowlersListFeatureTests: XCTestCase {
 		}.finish()
 	}
 
-	func testShowsBowlerForm() async {
+	func testShowsBowlerEditor() async {
 		let store = TestStore(
 			initialState: BowlersList.State(),
 			reducer: BowlersList()
 		)
 
 		await store.send(.setFormSheet(isPresented: true)) {
-			$0.bowlerForm = .init(mode: .create)
+			$0.bowlerEditor = .init(mode: .create)
 		}.finish()
 	}
 
-	func testDismissesBowlerForm() async {
+	func testDismissesBowlerEditor() async {
 		let store = TestStore(
 			initialState: BowlersList.State(),
 			reducer: BowlersList()
 		)
 
 		await store.send(.setFormSheet(isPresented: true)) {
-			$0.bowlerForm = .init(mode: .create)
+			$0.bowlerEditor = .init(mode: .create)
 		}.finish()
 
 		await store.send(.setFormSheet(isPresented: false)) {
-			$0.bowlerForm = nil
+			$0.bowlerEditor = nil
 		}.finish()
 	}
 }

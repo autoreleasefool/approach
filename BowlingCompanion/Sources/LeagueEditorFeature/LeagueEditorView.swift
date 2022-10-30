@@ -3,19 +3,19 @@ import ComposableArchitecture
 import SharedModelsLibrary
 import SwiftUI
 
-public struct LeagueFormView: View {
-	let store: StoreOf<LeagueForm>
+public struct LeagueEditorView: View {
+	let store: StoreOf<LeagueEditor>
 
 	struct ViewState: Equatable {
 		@BindableState var name: String
 		@BindableState var recurrence: League.Recurrence
-		@BindableState var gamesPerSeries: LeagueForm.GamesPerSeries
+		@BindableState var gamesPerSeries: LeagueEditor.GamesPerSeries
 		@BindableState var numberOfGames: Int
 		@BindableState var additionalPinfall: String
 		@BindableState var additionalGames: String
 		@BindableState var hasAdditionalPinfall: Bool
 
-		init(state: LeagueForm.State) {
+		init(state: LeagueEditor.State) {
 			self.name = state.base.form.name
 			self.recurrence = state.base.form.recurrence
 			self.gamesPerSeries = state.base.form.gamesPerSeries
@@ -30,13 +30,13 @@ public struct LeagueFormView: View {
 		case binding(BindingAction<ViewState>)
 	}
 
-	public init(store: StoreOf<LeagueForm>) {
+	public init(store: StoreOf<LeagueEditor>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: LeagueForm.Action.init) { viewStore in
-			BaseFormView(store: store.scope(state: \.base, action: LeagueForm.Action.form)) {
+		WithViewStore(store, observe: ViewState.init, send: LeagueEditor.Action.init) { viewStore in
+			BaseFormView(store: store.scope(state: \.base, action: LeagueEditor.Action.form)) {
 				detailsSection(viewStore)
 				recurrenceSection(viewStore)
 				gamesSection(viewStore)
@@ -75,7 +75,7 @@ public struct LeagueFormView: View {
 				"Number of games",
 				selection: viewStore.binding(\.$gamesPerSeries)
 			) {
-				ForEach(LeagueForm.GamesPerSeries.allCases) {
+				ForEach(LeagueEditor.GamesPerSeries.allCases) {
 					Text($0.rawValue).tag($0)
 				}
 			}
@@ -90,8 +90,8 @@ public struct LeagueFormView: View {
 			}
 		} footer: {
 			Text(
-				"Choose '\(LeagueForm.GamesPerSeries.static)' if you always play the same number of games each series, " +
-				"or '\(LeagueForm.GamesPerSeries.dynamic)' to choose the number of games each time you bowl."
+				"Choose '\(LeagueEditor.GamesPerSeries.static)' if you always play the same number of games each series, " +
+				"or '\(LeagueEditor.GamesPerSeries.dynamic)' to choose the number of games each time you bowl."
 			)
 		}
 	}
@@ -125,8 +125,8 @@ public struct LeagueFormView: View {
 	}
 }
 
-extension LeagueForm.State {
-	var view: LeagueFormView.ViewState {
+extension LeagueEditor.State {
+	var view: LeagueEditorView.ViewState {
 		get { .init(state: self) }
 		set {
 			self.base.form.name = newValue.name
@@ -140,25 +140,25 @@ extension LeagueForm.State {
 	}
 }
 
-extension LeagueForm.Action {
-	init(action: LeagueFormView.ViewAction) {
+extension LeagueEditor.Action {
+	init(action: LeagueEditorView.ViewAction) {
 		switch action {
 		case let.binding(action):
-			self = .binding(action.pullback(\LeagueForm.State.view))
+			self = .binding(action.pullback(\LeagueEditor.State.view))
 		}
 	}
 }
 
 #if DEBUG
-struct LeagueFormViewPreviews: PreviewProvider {
+struct LeagueEditorViewPreviews: PreviewProvider {
 	static var previews: some View {
-		LeagueFormView(
+		LeagueEditorView(
 			store: .init(
 				initialState: .init(
 					bowler: .init(id: UUID(), name: "Joseph", createdAt: Date(), lastModifiedAt: Date()),
 					mode: .create
 				),
-				reducer: LeagueForm()
+				reducer: LeagueEditor()
 			)
 		)
 	}

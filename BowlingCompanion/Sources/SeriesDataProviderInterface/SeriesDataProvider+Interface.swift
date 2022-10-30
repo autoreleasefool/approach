@@ -13,7 +13,7 @@ public struct SeriesDataProvider {
 		delete: @escaping @Sendable (Series) async throws -> Void,
 		fetchAll: @escaping @Sendable (Series.FetchRequest) -> AsyncThrowingStream<[Series], Error>) {
 		self.create = create
-			BowlingCompanion/Sources/SeriesDataProvider/SeriesDataProvider+Live.swiftself.update = update
+		self.update = update
 		self.delete = delete
 		self.fetchAll = fetchAll
 	}

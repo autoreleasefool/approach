@@ -1,7 +1,7 @@
 import ComposableArchitecture
 import DateTimeLibrary
 import GamesListFeature
-import SeriesFormFeature
+import SeriesEditorFeature
 import SharedModelsLibrary
 import SwiftUI
 

@@ -2,13 +2,13 @@ import BaseFormFeature
 import ComposableArchitecture
 import SwiftUI
 
-public struct BowlerFormView: View {
-	let store: StoreOf<BowlerForm>
+public struct BowlerEditorView: View {
+	let store: StoreOf<BowlerEditor>
 
 	struct ViewState: Equatable {
 		@BindableState var name: String
 
-		init(state: BowlerForm.State) {
+		init(state: BowlerEditor.State) {
 			self.name = state.base.form.name
 		}
 	}
@@ -17,13 +17,13 @@ public struct BowlerFormView: View {
 		case binding(BindingAction<ViewState>)
 	}
 
-	public init(store: StoreOf<BowlerForm>) {
+	public init(store: StoreOf<BowlerEditor>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: BowlerForm.Action.init) { viewStore in
-			BaseFormView(store: store.scope(state: \.base, action: BowlerForm.Action.form)) {
+		WithViewStore(store, observe: ViewState.init, send: BowlerEditor.Action.init) { viewStore in
+			BaseFormView(store: store.scope(state: \.base, action: BowlerEditor.Action.form)) {
 				Section {
 					TextField("Name", text: viewStore.binding(\.$name))
 				}
@@ -32,8 +32,8 @@ public struct BowlerFormView: View {
 	}
 }
 
-extension BowlerForm.State {
-	var view: BowlerFormView.ViewState {
+extension BowlerEditor.State {
+	var view: BowlerEditorView.ViewState {
 		get { .init(state: self) }
 		set {
 			self.base.form.name = newValue.name
@@ -41,11 +41,11 @@ extension BowlerForm.State {
 	}
 }
 
-extension BowlerForm.Action {
-	init(action: BowlerFormView.ViewAction) {
+extension BowlerEditor.Action {
+	init(action: BowlerEditorView.ViewAction) {
 		switch action {
 		case let .binding(action):
-			self = .binding(action.pullback(\BowlerForm.State.view))
+			self = .binding(action.pullback(\BowlerEditor.State.view))
 		}
 	}
 }

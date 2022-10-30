@@ -1,14 +1,14 @@
-import BowlerFormFeature
+import BowlerEditorFeature
 import ComposableArchitecture
 import SharedModelsLibrary
 import XCTest
 
 @MainActor
-final class BowlerFormFeatureTests: XCTestCase {
+final class BowlerEditorFeatureTests: XCTestCase {
 	func testChangesName() async {
 		let store = TestStore(
-			initialState: BowlerForm.State(mode: .create),
-			reducer: BowlerForm()
+			initialState: BowlerEditor.State(mode: .create),
+			reducer: BowlerEditor()
 		)
 
 		XCTAssertEqual(store.state.name, "")
@@ -29,8 +29,8 @@ final class BowlerFormFeatureTests: XCTestCase {
 	func testEditBowlerSetsName() async {
 		let mockBowler = Bowler(id: UUID(), name: "Joseph")
 		let store = TestStore(
-			initialState: BowlerForm.State(mode: .edit(mockBowler)),
-			reducer: BowlerForm()
+			initialState: BowlerEditor.State(mode: .edit(mockBowler)),
+			reducer: BowlerEditor()
 		)
 
 		XCTAssertEqual(store.state.name, "Joseph")
@@ -38,8 +38,8 @@ final class BowlerFormFeatureTests: XCTestCase {
 
 	func testSaveButtonStartsTask() async {
 		let store = TestStore(
-			initialState: BowlerForm.State(mode: .create),
-			reducer: BowlerForm()
+			initialState: BowlerEditor.State(mode: .create),
+			reducer: BowlerEditor()
 		)
 
 		store.dependencies.uuid = .incrementing
@@ -68,8 +68,8 @@ final class BowlerFormFeatureTests: XCTestCase {
 
 	func testEmptyNameDoesNotSave() async {
 		let store = TestStore(
-			initialState: BowlerForm.State(mode: .create),
-			reducer: BowlerForm()
+			initialState: BowlerEditor.State(mode: .create),
+			reducer: BowlerEditor()
 		)
 
 		await store.send(.nameChange("")).finish()
@@ -79,8 +79,8 @@ final class BowlerFormFeatureTests: XCTestCase {
 
 	func testErrorSavingUpdatesState() async {
 		let store = TestStore(
-			initialState: BowlerForm.State(mode: .create),
-			reducer: BowlerForm()
+			initialState: BowlerEditor.State(mode: .create),
+			reducer: BowlerEditor()
 		)
 
 		store.dependencies.uuid = .incrementing
@@ -104,8 +104,8 @@ final class BowlerFormFeatureTests: XCTestCase {
 
 	func testCreateHasChanges() async {
 		let store = TestStore(
-			initialState: BowlerForm.State(mode: .create),
-			reducer: BowlerForm()
+			initialState: BowlerEditor.State(mode: .create),
+			reducer: BowlerEditor()
 		)
 
 		XCTAssertFalse(store.state.hasChanges)
@@ -119,8 +119,8 @@ final class BowlerFormFeatureTests: XCTestCase {
 
 	func testCreateCanSave() async {
 		let store = TestStore(
-			initialState: BowlerForm.State(mode: .create),
-			reducer: BowlerForm()
+			initialState: BowlerEditor.State(mode: .create),
+			reducer: BowlerEditor()
 		)
 
 		XCTAssertFalse(store.state.canSave)
@@ -135,8 +135,8 @@ final class BowlerFormFeatureTests: XCTestCase {
 	func testEditHasChanges() async {
 		let mockBowler = Bowler(id: UUID(), name: "Joseph")
 		let store = TestStore(
-			initialState: BowlerForm.State(mode: .edit(mockBowler)),
-			reducer: BowlerForm()
+			initialState: BowlerEditor.State(mode: .edit(mockBowler)),
+			reducer: BowlerEditor()
 		)
 
 		XCTAssertFalse(store.state.name.isEmpty)
@@ -152,8 +152,8 @@ final class BowlerFormFeatureTests: XCTestCase {
 	func testEditCanSave() async {
 		let mockBowler = Bowler(id: UUID(), name: "Joseph")
 		let store = TestStore(
-			initialState: BowlerForm.State(mode: .edit(mockBowler)),
-			reducer: BowlerForm()
+			initialState: BowlerEditor.State(mode: .edit(mockBowler)),
+			reducer: BowlerEditor()
 		)
 
 		XCTAssertFalse(store.state.name.isEmpty)
