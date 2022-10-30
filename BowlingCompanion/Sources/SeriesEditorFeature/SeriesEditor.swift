@@ -47,29 +47,16 @@ public struct SeriesEditor: ReducerProtocol {
 	@Dependency(\.date) var date
 	@Dependency(\.seriesDataProvider) var seriesDataProvider
 
-	var seriesFormService: FormModelService {
-		.init(
-			create: { model in
-				guard let series = model as? Series else { return }
-				try await seriesDataProvider.create(series)
-			},
-			update: { model in
-				guard let series = model as? Series else { return }
-				try await seriesDataProvider.update(series)
-			},
-			delete: { model in
-				guard let series = model as? Series else { return }
-				try await seriesDataProvider.delete(series)
-			}
-		)
-	}
-
 	public var body: some ReducerProtocol<State, Action> {
 		BindingReducer()
 
 		Scope(state: \.base, action: /Action.form) {
 			BaseForm()
-				.dependency(\.formModelService, seriesFormService)
+				.dependency(\.formModelService, .init(
+					create: seriesDataProvider.create,
+					update: seriesDataProvider.update,
+					delete: seriesDataProvider.delete
+				))
 		}
 
 		Reduce { state, action in

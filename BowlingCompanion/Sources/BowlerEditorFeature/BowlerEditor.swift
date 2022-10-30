@@ -44,29 +44,16 @@ public struct BowlerEditor: ReducerProtocol {
 	@Dependency(\.date) var date
 	@Dependency(\.bowlersDataProvider) var bowlersDataProvider
 
-	var bowlerFormService: FormModelService {
-		.init(
-			create: { model in
-				guard let bowler = model as? Bowler else { return }
-				try await bowlersDataProvider.create(bowler)
-			},
-			update: { model in
-				guard let bowler = model as? Bowler else { return }
-				try await bowlersDataProvider.update(bowler)
-			},
-			delete: { model in
-				guard let bowler = model as? Bowler else { return }
-				try await bowlersDataProvider.delete(bowler)
-			}
-		)
-	}
-
 	public var body: some ReducerProtocol<State, Action> {
 		BindingReducer()
 
 		Scope(state: \.base, action: /Action.form) {
 			BaseForm()
-				.dependency(\.formModelService, bowlerFormService)
+				.dependency(\.formModelService, .init(
+					create: bowlersDataProvider.create,
+					update: bowlersDataProvider.update,
+					delete: bowlersDataProvider.delete
+				))
 		}
 
 		Reduce { _, action in

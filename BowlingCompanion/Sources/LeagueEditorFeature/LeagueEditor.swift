@@ -65,29 +65,16 @@ public struct LeagueEditor: ReducerProtocol {
 	@Dependency(\.date) var date
 	@Dependency(\.leaguesDataProvider) var leaguesDataProvider
 
-	var leagueFormService: FormModelService {
-		.init(
-			create: { model in
-				guard let league = model as? League else { return }
-				try await leaguesDataProvider.create(league)
-			},
-			update: { model in
-				guard let league = model as? League else { return }
-				try await leaguesDataProvider.update(league)
-			},
-			delete: { model in
-				guard let league = model as? League else { return }
-				try await leaguesDataProvider.delete(league)
-			}
-		)
-	}
-
 	public var body: some ReducerProtocol<State, Action> {
 		BindingReducer()
 
 		Scope(state: \.base, action: /Action.form) {
 			BaseForm()
-				.dependency(\.formModelService, leagueFormService)
+				.dependency(\.formModelService, .init(
+					create: leaguesDataProvider.create,
+					update: leaguesDataProvider.update,
+					delete: leaguesDataProvider.delete
+				))
 		}
 
 		Reduce { state, action in
