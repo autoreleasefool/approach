@@ -23,7 +23,7 @@ extension SeriesDataProvider: DependencyKey {
 
 				try await persistenceService.write {
 					try await $0.write { db in
-						try seriesPersistenceService.update -(series, db)
+						try seriesPersistenceService.update(series, db)
 					}
 				}
 			},
