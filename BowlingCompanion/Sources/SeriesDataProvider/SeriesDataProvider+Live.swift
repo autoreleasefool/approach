@@ -17,6 +17,16 @@ extension SeriesDataProvider: DependencyKey {
 					}
 				}
 			},
+			update: { series in
+				@Dependency(\.persistenceService) var persistenceService: PersistenceService
+				@Dependency(\.seriesPersistenceService) var seriesPersistenceService: SeriesPersistenceService
+
+				try await persistenceService.write {
+					try await $0.write { db in
+						try seriesPersistenceService.update -(series, db)
+					}
+				}
+			},
 			delete: { series in
 				@Dependency(\.persistenceService) var persistenceService: PersistenceService
 				@Dependency(\.seriesPersistenceService) var seriesPersistenceService: SeriesPersistenceService
