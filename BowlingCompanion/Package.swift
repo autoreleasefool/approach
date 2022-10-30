@@ -41,6 +41,7 @@ let package = Package(
 		.library(name: "DateTimeLibrary", targets: ["DateTimeLibrary"]),
 		.library(name: "PersistenceModelsLibrary", targets: ["PersistenceModelsLibrary"]),
 		.library(name: "SharedModelsLibrary", targets: ["SharedModelsLibrary"]),
+		.library(name: "SharedModelsLibraryMocks", targets: ["SharedModelsLibraryMocks"]),
 	],
 	dependencies: [
 		.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "0.42.0"),
@@ -65,7 +66,13 @@ let package = Package(
 				"LeaguesListFeature",
 			]
 		),
-		.testTarget(name: "BowlersListFeatureTests", dependencies: ["BowlersListFeature"]),
+		.testTarget(
+			name: "BowlersListFeatureTests",
+			dependencies: [
+				"BowlersListFeature",
+				"SharedModelsLibraryMocks",
+			]
+		),
 		.target(
 			name: "GamesListFeature",
 			dependencies: [
@@ -229,5 +236,12 @@ let package = Package(
 			]
 		),
 		.target(name: "SharedModelsLibrary", dependencies: []),
+		.target(
+			name: "SharedModelsLibraryMocks",
+			dependencies: [
+				"SharedModelsLibrary",
+				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+			]
+		),
 	]
 )

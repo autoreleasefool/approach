@@ -7,7 +7,7 @@ extension BowlersList {
 		case dismissed
 	}
 
-	func alert(toDelete bowler: Bowler) -> AlertState<AlertAction> {
+	static func alert(toDelete bowler: Bowler) -> AlertState<AlertAction> {
 		.init(
 			title: TextState("Are you sure you want to delete \(bowler.name)"),
 			primaryButton: .destructive(

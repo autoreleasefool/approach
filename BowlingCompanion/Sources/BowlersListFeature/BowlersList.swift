@@ -70,7 +70,7 @@ public struct BowlersList: ReducerProtocol {
 				return .none
 
 			case let .swipeAction(bowler, .delete):
-				state.alert = self.alert(toDelete: bowler)
+				state.alert = BowlersList.alert(toDelete: bowler)
 				return .none
 
 			case .alert(.dismissed):
