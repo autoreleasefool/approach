@@ -2,6 +2,7 @@ import Foundation
 
 public struct League: Sendable, Identifiable, Hashable, Codable {
 	public static let DEFAULT_NUMBER_OF_GAMES = 4
+	public static let NUMBER_OF_GAMES_RANGE = 1...40
 
 	public let bowlerId: Bowler.ID
 	public let id: UUID

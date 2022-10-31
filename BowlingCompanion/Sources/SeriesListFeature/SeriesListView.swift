@@ -12,6 +12,8 @@ public struct SeriesListView: View {
 		let series: IdentifiedArrayOf<Series>
 		let selection: Series.ID?
 		let leagueName: String
+		let numberOfGames: Int?
+		let isCreateSeriesFormPresented: Bool
 		let isNewSeriesCreated: Bool
 		let isSeriesEditorPresented: Bool
 
@@ -19,6 +21,8 @@ public struct SeriesListView: View {
 			self.series = state.series
 			self.leagueName = state.league.name
 			self.selection = state.selection?.id
+			self.numberOfGames = state.league.numberOfGames
+			self.isCreateSeriesFormPresented = state.createSeriesForm != nil
 			self.isNewSeriesCreated = state.newSeries != nil
 			self.isSeriesEditorPresented = state.seriesEditor != nil
 		}
@@ -77,22 +81,41 @@ public struct SeriesListView: View {
 			.navigationTitle(viewStore.leagueName)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
-					NavigationLink(
-						destination: IfLetStore(
-							store.scope(
-								state: \.newSeries,
-								action: SeriesList.Action.games
+					if let numberOfGames = viewStore.numberOfGames {
+						NavigationLink(
+							destination: IfLetStore(
+								store.scope(
+									state: \.newSeries,
+									action: SeriesList.Action.games
+								)
+							) {
+								GamesListView(store: $0)
+							},
+							isActive: viewStore.binding(
+								get: \.isNewSeriesCreated,
+								send: { $0 ? .addSeriesButtonTapped : .dismissNewSeries }
 							)
 						) {
-							GamesListView(store: $0)
-						},
-						isActive: viewStore.binding(
-							get: \.isNewSeriesCreated,
-							send: { $0 ? .addSeriesButtonTapped : .dismissNewSeries }
-						)
-					) {
-						Image(systemName: "plus")
+							Image(systemName: "plus")
+						}
+					} else {
+						Button {
+							viewStore.send(.addSeriesButtonTapped)
+						} label: {
+							Image(systemName: "plus")
+						}
 					}
+				}
+			}
+			.sheet(isPresented: viewStore.binding(
+				get: \.isCreateSeriesFormPresented,
+				send: ViewAction.dismissNewSeries
+			)) {
+				IfLetStore(store.scope(state: \.createSeriesForm, action: SeriesList.Action.createSeries)) { scopedStore in
+					NavigationView {
+						CreateSeriesFormView(store: scopedStore)
+					}
+					.presentationDetents([.medium])
 				}
 			}
 			.sheet(isPresented: viewStore.binding(

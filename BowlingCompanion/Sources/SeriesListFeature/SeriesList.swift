@@ -9,8 +9,10 @@ public struct SeriesList: ReducerProtocol {
 		public var league: League
 		public var series: IdentifiedArrayOf<Series> = []
 		public var selection: Identified<Series.ID, GamesList.State>?
-		public var newSeries: GamesList.State?
 		public var seriesEditor: SeriesEditor.State?
+		public var createSeriesForm: CreateSeriesForm.State?
+		public var newSeries: GamesList.State?
+		public var alert: AlertState<AlertAction>?
 
 		public init(league: League) {
 			self.league = league
@@ -21,13 +23,17 @@ public struct SeriesList: ReducerProtocol {
 		case subscribeToSeries
 		case seriesResponse(TaskResult<[Series]>)
 		case setNavigation(selection: Series.ID?)
+		case setEditorSheet(isPresented: Bool)
 		case seriesCreateResponse(TaskResult<Series>)
+		case seriesDeleteResponse(TaskResult<Series>)
 		case addSeriesButtonTapped
 		case dismissNewSeries
 		case swipeAction(Series, SwipeAction)
-		case setEditorSheet(isPresented: Bool)
+		case alert(AlertAction)
+
 		case games(GamesList.Action)
 		case seriesEditor(SeriesEditor.Action)
+		case createSeries(CreateSeriesForm.Action)
 	}
 
 	public enum SwipeAction: Equatable {
@@ -71,8 +77,7 @@ public struct SeriesList: ReducerProtocol {
 						})
 					}
 				} else {
-					// TOD: add series
-//					state.addSeries = .init()
+					state.createSeriesForm = .init()
 					return .none
 				}
 
@@ -85,6 +90,7 @@ public struct SeriesList: ReducerProtocol {
 				return .none
 
 			case .dismissNewSeries:
+				state.createSeriesForm = nil
 				state.newSeries = nil
 				return .none
 
@@ -99,7 +105,7 @@ public struct SeriesList: ReducerProtocol {
 				return .none
 
 			case .setEditorSheet(isPresented: true):
-				// TODO: show series sheet
+				state.seriesEditor = .init(league: state.league, mode: .create)
 				return .none
 
 			case .setEditorSheet(isPresented: false):
@@ -119,10 +125,41 @@ public struct SeriesList: ReducerProtocol {
 				return .none
 
 			case let .swipeAction(series, .delete):
-				// TODO: show delete alert
+				state.alert = SeriesList.alert(toDelete: series)
 				return .none
 
-			case .games, .seriesEditor:
+			case .createSeries(.createButtonTapped):
+				guard let numberOfGames = state.createSeriesForm?.numberOfGames else { return .none }
+				state.createSeriesForm = nil
+				return .task { [leagueId = state.league.id] in
+					let series = Series(leagueId: leagueId, id: uuid(), date: date(), numberOfGames: numberOfGames)
+					return await .seriesCreateResponse(TaskResult {
+						try await seriesDataProvider.create(series)
+						return series
+					})
+				}
+
+			case .createSeries(.cancelButtonTapped):
+				state.createSeriesForm = nil
+				return .none
+
+			case .alert(.dismissed):
+				state.alert = nil
+				return .none
+
+			case let .alert(.deleteButtonTapped(series)):
+				return .task {
+					return await .seriesDeleteResponse(TaskResult {
+						try await seriesDataProvider.delete(series)
+						return series
+					})
+				}
+
+			case .seriesDeleteResponse(.failure):
+				// TODO: show delete error
+				return .none
+
+			case .games, .seriesEditor, .createSeries, .seriesDeleteResponse(.success):
 				return .none
 			}
 		}
@@ -136,6 +173,9 @@ public struct SeriesList: ReducerProtocol {
 		}
 		.ifLet(\.seriesEditor, action: /SeriesList.Action.seriesEditor) {
 			SeriesEditor()
+		}
+		.ifLet(\.createSeriesForm, action: /SeriesList.Action.createSeries) {
+			CreateSeriesForm()
 		}
 	}
 }

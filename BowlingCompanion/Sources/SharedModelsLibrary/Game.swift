@@ -1,6 +1,8 @@
 import Foundation
 
 public struct Game: Sendable, Identifiable, Hashable, Codable {
+	public static let NUMBER_OF_FRAMES = 10
+
 	public let seriesId: Series.ID
 	public let id: UUID
 	public let ordinal: Int

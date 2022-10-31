@@ -9,7 +9,7 @@ extension GamesPersistenceService: DependencyKey {
 		create: { game, db in
 			@Dependency(\.framesPersistenceService) var framesPersistenceService: FramesPersistenceService
 			try game.insert(db)
-			for ordinal in (1...10) {
+			for ordinal in (1...Game.NUMBER_OF_FRAMES) {
 				let frame = Frame(
 					gameId: game.id,
 					ordinal: ordinal,

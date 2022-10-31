@@ -85,7 +85,7 @@ public struct LeagueEditorView: View {
 				Stepper(
 					"\(viewStore.numberOfGames)",
 					value: viewStore.binding(\.$numberOfGames),
-					in: 1...40
+					in: League.NUMBER_OF_GAMES_RANGE
 				)
 			}
 		} footer: {
