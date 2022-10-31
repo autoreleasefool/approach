@@ -1,17 +1,17 @@
 import ComposableArchitecture
-import GamesListFeature
 import SeriesDataProviderInterface
 import SeriesEditorFeature
+import SeriesSidebarFeature
 import SharedModelsLibrary
 
 public struct SeriesList: ReducerProtocol {
 	public struct State: Equatable {
 		public var league: League
 		public var series: IdentifiedArrayOf<Series> = []
-		public var selection: Identified<Series.ID, GamesList.State>?
+		public var selection: Identified<Series.ID, SeriesSidebar.State>?
 		public var seriesEditor: SeriesEditor.State?
 		public var createSeriesForm: CreateSeriesForm.State?
-		public var newSeries: GamesList.State?
+		public var newSeries: SeriesSidebar.State?
 		public var alert: AlertState<AlertAction>?
 
 		public init(league: League) {
@@ -31,7 +31,7 @@ public struct SeriesList: ReducerProtocol {
 		case swipeAction(Series, SwipeAction)
 		case alert(AlertAction)
 
-		case games(GamesList.Action)
+		case seriesSidebar(SeriesSidebar.Action)
 		case seriesEditor(SeriesEditor.Action)
 		case createSeries(CreateSeriesForm.Action)
 	}
@@ -159,17 +159,17 @@ public struct SeriesList: ReducerProtocol {
 				// TODO: show delete error
 				return .none
 
-			case .games, .seriesEditor, .createSeries, .seriesDeleteResponse(.success):
+			case .seriesSidebar, .seriesEditor, .createSeries, .seriesDeleteResponse(.success):
 				return .none
 			}
 		}
-		.ifLet(\.selection, action: /SeriesList.Action.games) {
-			Scope(state: \Identified<Series.ID, GamesList.State>.value, action: /.self) {
-				GamesList()
+		.ifLet(\.selection, action: /SeriesList.Action.seriesSidebar) {
+			Scope(state: \Identified<Series.ID, SeriesSidebar.State>.value, action: /.self) {
+				SeriesSidebar()
 			}
 		}
-		.ifLet(\.newSeries, action: /SeriesList.Action.games) {
-			GamesList()
+		.ifLet(\.newSeries, action: /SeriesList.Action.seriesSidebar) {
+			SeriesSidebar()
 		}
 		.ifLet(\.seriesEditor, action: /SeriesList.Action.seriesEditor) {
 			SeriesEditor()

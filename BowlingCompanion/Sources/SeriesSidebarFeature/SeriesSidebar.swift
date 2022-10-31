@@ -1,12 +1,13 @@
 import ComposableArchitecture
+import GameEditorFeature
 import GamesDataProviderInterface
 import SharedModelsLibrary
 
-// TODO: GamesList might be able to be deleted, replaced by SeriesSidebar
-public struct GamesList: ReducerProtocol {
+public struct SeriesSidebar: ReducerProtocol {
 	public struct State: Equatable {
 		public var series: Series
 		public var games: IdentifiedArrayOf<Game> = []
+		public var selection: Identified<Game.ID, GameEditor.State>?
 
 		public init(series: Series) {
 			self.series = series
@@ -16,6 +17,8 @@ public struct GamesList: ReducerProtocol {
 	public enum Action: Equatable {
 		case subscribeToGames
 		case gamesResponse(TaskResult<[Game]>)
+		case setNavigation(selection: Game.ID?)
+		case gameEditor(GameEditor.Action)
 	}
 
 	public init() {}
@@ -36,12 +39,34 @@ public struct GamesList: ReducerProtocol {
 
 			case let .gamesResponse(.success(games)):
 				state.games = .init(uniqueElements: games)
+				if state.selection == nil, let firstGame = state.games.first {
+					state.selection = Identified(.init(game: firstGame), id: firstGame.id)
+				}
+				return .none
+				
+			case .gamesResponse(.failure):
+				// TODO: show games error
 				return .none
 
-			case .gamesResponse(.failure):
-				// TODO: show error when games fail to load
+			case let .setNavigation(selection: .some(id)):
+				if let selection = state.games[id: id] {
+					state.selection = Identified(.init(game: selection), id: id)
+				}
 				return .none
+
+			case .setNavigation(selection: .none):
+				state.selection = nil
+				return .none
+
+			case .gameEditor:
+				return .none
+			}
+		}
+		.ifLet(\.selection, action: /SeriesSidebar.Action.gameEditor) {
+			Scope(state: \Identified<Game.ID, GameEditor.State>.value, action: /.self) {
+				GameEditor()
 			}
 		}
 	}
 }
+

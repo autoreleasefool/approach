@@ -64,6 +64,7 @@ public struct BowlersListView: View {
 							}
 						}
 				}
+				.isDetailLink(false)
 			}
 			.navigationTitle("Bowlers")
 			.toolbar {

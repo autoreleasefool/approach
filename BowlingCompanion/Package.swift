@@ -13,11 +13,13 @@ let package = Package(
 		.library(name: "BaseFormFeature", targets: ["BaseFormFeature"]),
 		.library(name: "BowlerEditorFeature", targets: ["BowlerEditorFeature"]),
 		.library(name: "BowlersListFeature", targets: ["BowlersListFeature"]),
+		.library(name: "GameEditorFeature", targets: ["GameEditorFeature"]),
 		.library(name: "GamesListFeature", targets: ["GamesListFeature"]),
 		.library(name: "LeagueEditorFeature", targets: ["LeagueEditorFeature"]),
 		.library(name: "LeaguesListFeature", targets: ["LeaguesListFeature"]),
 		.library(name: "SeriesEditorFeature", targets: ["SeriesEditorFeature"]),
 		.library(name: "SeriesListFeature", targets: ["SeriesListFeature"]),
+		.library(name: "SeriesSidebarFeature", targets: ["SeriesSidebarFeature"]),
 
 		// MARK: - Data Providers
 		.library(name: "BowlersDataProvider", targets: ["BowlersDataProvider"]),
@@ -58,6 +60,13 @@ let package = Package(
 				"BowlersDataProviderInterface",
 			]
 		),
+		.target(
+			name: "BaseFormFeature",
+			dependencies: [
+				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+			]
+		),
+		.testTarget(name: "BaseFormFeatureTests", dependencies: ["BaseFormFeature"]),
 		.testTarget(name: "BowlerEditorFeatureTests", dependencies: ["BowlerEditorFeature"]),
 		.target(
 			name: "BowlersListFeature",
@@ -73,6 +82,14 @@ let package = Package(
 				"SharedModelsLibraryMocks",
 			]
 		),
+		.target(
+			name: "GameEditorFeature",
+			dependencies: [
+				"SharedModelsLibrary",
+				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+			]
+		),
+		.testTarget(name: "GameEditorFeatureTests", dependencies: ["GameEditorFeature"]),
 		.target(
 			name: "GamesListFeature",
 			dependencies: [
@@ -109,18 +126,20 @@ let package = Package(
 		.target(
 			name: "SeriesListFeature",
 			dependencies: [
-				"GamesListFeature",
+				"DateTimeLibrary",
 				"SeriesEditorFeature",
+				"SeriesSidebarFeature",
 			]
 		),
 		.testTarget(name: "SeriesListFeatureTests", dependencies: ["SeriesListFeature"]),
 		.target(
-			name: "BaseFormFeature",
+			name: "SeriesSidebarFeature",
 			dependencies: [
-				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+				"GameEditorFeature",
+				"GamesDataProviderInterface",
 			]
 		),
-		.testTarget(name: "BaseFormFeatureTests", dependencies: ["BaseFormFeature"]),
+		.testTarget(name: "SeriesSidebarFeatureTests", dependencies: ["SeriesSidebarFeature"]),
 
 		// MARK: - Data Providers
 		.target(

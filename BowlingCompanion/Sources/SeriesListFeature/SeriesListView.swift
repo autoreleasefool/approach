@@ -1,7 +1,7 @@
 import ComposableArchitecture
 import DateTimeLibrary
-import GamesListFeature
 import SeriesEditorFeature
+import SeriesSidebarFeature
 import SharedModelsLibrary
 import SwiftUI
 
@@ -49,10 +49,10 @@ public struct SeriesListView: View {
 						destination: IfLetStore(
 							store.scope(
 								state: \.selection?.value,
-								action: SeriesList.Action.games
+								action: SeriesList.Action.seriesSidebar
 							)
 						) {
-							GamesListView(store: $0)
+							SeriesSidebarView(store: $0)
 						},
 						tag: series.id,
 						selection: viewStore.binding(
@@ -76,35 +76,29 @@ public struct SeriesListView: View {
 								}
 							}
 					}
+					.isDetailLink(false)
 				}
 			}
 			.navigationTitle(viewStore.leagueName)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
-					if let numberOfGames = viewStore.numberOfGames {
-						NavigationLink(
-							destination: IfLetStore(
-								store.scope(
-									state: \.newSeries,
-									action: SeriesList.Action.games
-								)
-							) {
-								GamesListView(store: $0)
-							},
-							isActive: viewStore.binding(
-								get: \.isNewSeriesCreated,
-								send: { $0 ? .addSeriesButtonTapped : .dismissNewSeries }
+					NavigationLink(
+						destination: IfLetStore(
+							store.scope(
+								state: \.newSeries,
+								action: SeriesList.Action.seriesSidebar
 							)
 						) {
-							Image(systemName: "plus")
-						}
-					} else {
-						Button {
-							viewStore.send(.addSeriesButtonTapped)
-						} label: {
-							Image(systemName: "plus")
-						}
+							SeriesSidebarView(store: $0)
+						},
+						isActive: viewStore.binding(
+							get: \.isNewSeriesCreated,
+							send: { $0 ? .addSeriesButtonTapped : .dismissNewSeries }
+						)
+					) {
+						Image(systemName: "plus")
 					}
+					.isDetailLink(false)
 				}
 			}
 			.sheet(isPresented: viewStore.binding(
