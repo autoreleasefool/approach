@@ -87,6 +87,7 @@ public struct BaseForm<Model: BaseFormModel, FormState: BaseFormState>: ReducerP
 				return .none
 
 			case .deleteButtonTapped:
+				guard case .edit = state.mode else { return .none }
 				state.alert = state.deleteAlert
 				return .none
 
