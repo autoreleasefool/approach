@@ -1,4 +1,5 @@
 import ComposableArchitecture
+import DateTimeLibrary
 import GameEditorFeature
 import SharedModelsLibrary
 import SwiftUI
@@ -7,10 +8,12 @@ public struct SeriesSidebarView: View {
 	let store: StoreOf<SeriesSidebar>
 
 	struct ViewState: Equatable {
+		let title: String
 		let games: IdentifiedArrayOf<Game>
 		let selection: Game.ID?
 
 		init(state: SeriesSidebar.State) {
+			self.title = state.series.date.longFormat
 			self.games = state.games
 			self.selection = state.selection?.id
 		}
@@ -47,7 +50,7 @@ public struct SeriesSidebarView: View {
 						.font(.headline)
 				}
 			}
-			.listStyle(.sidebar)
+			.navigationTitle(viewStore.title)
 			.task { await viewStore.send(.subscribeToGames).finish() }
 		}
 	}

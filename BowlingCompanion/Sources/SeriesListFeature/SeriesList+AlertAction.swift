@@ -10,7 +10,7 @@ extension SeriesList {
 
 	static func alert(toDelete series: Series) -> AlertState<AlertAction> {
 		.init(
-			title: TextState("Are you sure you want to delete \(series.date.regularDateFormat)"),
+			title: TextState("Are you sure you want to delete \(series.date.longFormat)"),
 			primaryButton: .destructive(
 				TextState("Delete"),
 				action: .send(.deleteButtonTapped(series))

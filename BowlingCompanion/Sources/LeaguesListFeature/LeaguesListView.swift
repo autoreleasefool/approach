@@ -66,7 +66,6 @@ public struct LeaguesListView: View {
 							}
 						}
 				}
-				.isDetailLink(false)
 			}
 			.navigationTitle(viewStore.bowlerName)
 			.toolbar {

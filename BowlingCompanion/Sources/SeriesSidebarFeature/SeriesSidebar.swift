@@ -39,9 +39,6 @@ public struct SeriesSidebar: ReducerProtocol {
 
 			case let .gamesResponse(.success(games)):
 				state.games = .init(uniqueElements: games)
-				if state.selection == nil, let firstGame = state.games.first {
-					state.selection = Identified(.init(game: firstGame), id: firstGame.id)
-				}
 				return .none
 				
 			case .gamesResponse(.failure):

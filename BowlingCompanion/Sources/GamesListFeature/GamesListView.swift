@@ -29,7 +29,7 @@ public struct GamesListView: View {
 			List(viewStore.games) {
 				Text("Game \($0.ordinal)")
 			}
-			.navigationTitle(viewStore.seriesDate.regularDateFormat)
+			.navigationTitle(viewStore.seriesDate.longFormat)
 			.task { await viewStore.send(.subscribeToGames).finish() }
 		}
 	}

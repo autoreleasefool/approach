@@ -60,7 +60,7 @@ public struct SeriesListView: View {
 							send: SeriesListView.ViewAction.setNavigation(selection:)
 						)
 					) {
-						Text(series.date.regularDateFormat)
+						Text(series.date.longFormat)
 							.swipeActions(allowsFullSwipe: true) {
 								Button {
 									viewStore.send(.swipeAction(series, .edit))
@@ -76,7 +76,6 @@ public struct SeriesListView: View {
 								}
 							}
 					}
-					.isDetailLink(false)
 				}
 			}
 			.navigationTitle(viewStore.leagueName)
@@ -98,7 +97,6 @@ public struct SeriesListView: View {
 					) {
 						Image(systemName: "plus")
 					}
-					.isDetailLink(false)
 				}
 			}
 			.sheet(isPresented: viewStore.binding(

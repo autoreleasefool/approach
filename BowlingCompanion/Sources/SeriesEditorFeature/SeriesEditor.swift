@@ -7,7 +7,7 @@ import SharedModelsLibrary
 
 extension Series: BaseFormModel {
 	static public var modelName = "Series"
-	public var name: String { date.regularDateFormat }
+	public var name: String { date.longFormat }
 }
 
 public struct SeriesEditor: ReducerProtocol {
