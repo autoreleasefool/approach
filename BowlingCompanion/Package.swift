@@ -17,6 +17,7 @@ let package = Package(
 		.library(name: "GamesListFeature", targets: ["GamesListFeature"]),
 		.library(name: "LeagueEditorFeature", targets: ["LeagueEditorFeature"]),
 		.library(name: "LeaguesListFeature", targets: ["LeaguesListFeature"]),
+		.library(name: "ScoreSheetFeature", targets: ["ScoreSheetFeature"]),
 		.library(name: "SeriesEditorFeature", targets: ["SeriesEditorFeature"]),
 		.library(name: "SeriesListFeature", targets: ["SeriesListFeature"]),
 		.library(name: "SeriesSidebarFeature", targets: ["SeriesSidebarFeature"]),
@@ -122,6 +123,14 @@ let package = Package(
 				"SeriesDataProviderInterface",
 			]
 		),
+		.target(
+			name: "ScoreSheetFeature",
+			dependencies: [
+				"SharedModelsLibrary",
+				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+			]
+		),
+		.testTarget(name: "ScoreSheetFeatureTests", dependencies: ["ScoreSheetFeature"]),
 		.testTarget(name: "SeriesEditorFeatureTests", dependencies: ["SeriesEditorFeature"]),
 		.target(
 			name: "SeriesListFeature",

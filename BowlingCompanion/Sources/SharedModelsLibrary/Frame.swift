@@ -1,12 +1,16 @@
 import Foundation
 
-public struct Frame: Sendable, Hashable, Codable {
+public struct Frame: Sendable, Identifiable, Hashable, Codable {
 	public let gameId: Game.ID
 	public let ordinal: Int
 	public let isAccessed: Bool
 	public let firstBall: Ball?
 	public let secondBall: Ball?
 	public let thirdBall: Ball?
+
+	public var id: String {
+		"\(gameId)-\(ordinal)"
+	}
 
 	public init(
 		gameId: Game.ID,
@@ -68,6 +72,10 @@ extension Frame {
 			self.rightTwoPinKnocked = rightTwoPinKnocked
 			self.rightThreePinKnocked = rightThreePinKnocked
 			self.headPinKnocked = headPinKnocked
+		}
+
+		public var displayValue: String {
+			"5"
 		}
 	}
 }
