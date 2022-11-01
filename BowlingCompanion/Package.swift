@@ -21,6 +21,7 @@ let package = Package(
 		.library(name: "SeriesEditorFeature", targets: ["SeriesEditorFeature"]),
 		.library(name: "SeriesListFeature", targets: ["SeriesListFeature"]),
 		.library(name: "SeriesSidebarFeature", targets: ["SeriesSidebarFeature"]),
+		.library(name: "SettingsFeature", targets: ["SettingsFeature"]),
 
 		// MARK: - Data Providers
 		.library(name: "BowlersDataProvider", targets: ["BowlersDataProvider"]),
@@ -52,7 +53,13 @@ let package = Package(
 	],
 	targets: [
 		// MARK: - Features
-		.target(name: "AppFeature", dependencies: ["BowlersListFeature"]),
+		.target(
+			name: "AppFeature",
+			dependencies: [
+				"BowlersListFeature",
+				"SettingsFeature",
+			]
+		),
 		.testTarget(name: "AppFeatureTests", dependencies: ["AppFeature"]),
 		.target(
 			name: "BowlerEditorFeature",
@@ -149,6 +156,13 @@ let package = Package(
 			]
 		),
 		.testTarget(name: "SeriesSidebarFeatureTests", dependencies: ["SeriesSidebarFeature"]),
+		.target(
+			name: "SettingsFeature",
+			dependencies: [
+				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+			]
+		),
+		.testTarget(name: "SettingsFeatureTests", dependencies: ["SettingsFeature"]),
 
 		// MARK: - Data Providers
 		.target(

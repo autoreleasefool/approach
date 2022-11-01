@@ -1,16 +1,27 @@
 import BowlersListFeature
 import ComposableArchitecture
+import SettingsFeature
 
 public struct App: ReducerProtocol {
 	public struct State: Equatable {
+		public var selectedTab: Tab = .bowlers
 		public var bowlersList = BowlersList.State()
+		public var settings = Settings.State()
 
 		public init() {}
 	}
 
 	public enum Action: Equatable {
-		case onAppear
+		case selectedTab(Tab)
 		case bowlersList(BowlersList.Action)
+		case settings(Settings.Action)
+	}
+
+	public enum Tab: String, Identifiable, CaseIterable {
+		case bowlers
+		case settings
+
+		public var id: String { rawValue }
 	}
 
 	public init() {}
@@ -19,13 +30,17 @@ public struct App: ReducerProtocol {
 		Scope(state: \.bowlersList, action: /Action.bowlersList) {
 			BowlersList()
 		}
+		Scope(state: \.settings, action: /Action.settings) {
+			Settings()
+		}
 
-		Reduce { _, action in
+		Reduce { state, action in
 			switch action {
-			case .onAppear:
+			case let .selectedTab(tab):
+				state.selectedTab = tab
 				return .none
 
-			case .bowlersList:
+			case .bowlersList, .settings:
 				return .none
 			}
 		}
