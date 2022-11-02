@@ -70,7 +70,7 @@ public struct LeagueEditor: ReducerProtocol {
 
 		Scope(state: \.base, action: /Action.form) {
 			BaseForm()
-				.dependency(\.formModelService, .init(
+				.dependency(\.baseDataProvider, .init(
 					create: leaguesDataProvider.create,
 					update: leaguesDataProvider.update,
 					delete: leaguesDataProvider.delete

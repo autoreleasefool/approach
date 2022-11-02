@@ -24,6 +24,9 @@ let package = Package(
 		.library(name: "SettingsFeature", targets: ["SettingsFeature"]),
 
 		// MARK: - Data Providers
+		.library(name: "AlleysDataProvider", targets: ["AlleysDataProvider"]),
+		.library(name: "AlleysDataProviderInterface", targets: ["AlleysDataProviderInterface"]),
+		.library(name: "BaseDataProvider", targets: ["BaseDataProvider"]),
 		.library(name: "BowlersDataProvider", targets: ["BowlersDataProvider"]),
 		.library(name: "BowlersDataProviderInterface", targets: ["BowlersDataProviderInterface"]),
 		.library(name: "FramesDataProvider", targets: ["FramesDataProvider"]),
@@ -71,6 +74,7 @@ let package = Package(
 		.target(
 			name: "BaseFormFeature",
 			dependencies: [
+				"BaseDataProvider",
 				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 			]
 		),
@@ -165,6 +169,22 @@ let package = Package(
 		.testTarget(name: "SettingsFeatureTests", dependencies: ["SettingsFeature"]),
 
 		// MARK: - Data Providers
+		.target(
+			name: "AlleysDataProvider",
+			dependencies: [
+				"AlleysDataProviderInterface",
+				"PersistenceServiceInterface",
+			]
+		),
+		.target(
+			name: "AlleysDataProviderInterface",
+			dependencies: [
+				"SharedModelsLibrary",
+				.product(name: "Dependencies", package: "swift-composable-architecture"),
+			]
+		),
+		.testTarget(name: "AlleysDataProviderTests", dependencies: ["AlleysDataProvider"]),
+		.target(name: "BaseDataProvider", dependencies: ["PersistenceServiceInterface"]),
 		.target(
 			name: "BowlersDataProvider",
 			dependencies: [

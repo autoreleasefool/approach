@@ -49,7 +49,7 @@ public struct BowlerEditor: ReducerProtocol {
 
 		Scope(state: \.base, action: /Action.form) {
 			BaseForm()
-				.dependency(\.formModelService, .init(
+				.dependency(\.baseDataProvider, .init(
 					create: bowlersDataProvider.create,
 					update: bowlersDataProvider.update,
 					delete: bowlersDataProvider.delete

@@ -52,7 +52,7 @@ public struct SeriesEditor: ReducerProtocol {
 
 		Scope(state: \.base, action: /Action.form) {
 			BaseForm()
-				.dependency(\.formModelService, .init(
+				.dependency(\.baseDataProvider, .init(
 					create: seriesDataProvider.create,
 					update: seriesDataProvider.update,
 					delete: seriesDataProvider.delete

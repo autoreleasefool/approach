@@ -1,11 +1,11 @@
-import BowlersDataProviderInterface
+import AlleysDataProviderInterface
 import GRDB
 import PersistenceModelsLibrary
 import SharedModelsLibrary
 
-extension Bowler.FetchRequest {
-	func fetchValue(_ db: Database) throws -> [Bowler] {
-		var query = Bowler.all()
+extension Alley.FetchRequest {
+	func fetchValue(_ db: Database) throws -> [Alley] {
+		var query = Alley.all()
 
 		switch ordering {
 		case .byLastModified:
