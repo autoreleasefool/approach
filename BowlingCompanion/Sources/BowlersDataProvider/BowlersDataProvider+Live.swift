@@ -12,9 +12,7 @@ extension BowlersDataProvider: DependencyKey {
 				@Dependency(\.bowlersPersistenceService) var bowlersPersistenceService: BowlersPersistenceService
 
 				try await persistenceService.write {
-					try await $0.write { db in
-						try bowlersPersistenceService.create(bowler, db)
-					}
+					try bowlersPersistenceService.create(bowler, $0)
 				}
 			},
 			update: { bowler in
@@ -22,9 +20,7 @@ extension BowlersDataProvider: DependencyKey {
 				@Dependency(\.bowlersPersistenceService) var bowlersPersistenceService: BowlersPersistenceService
 
 				try await persistenceService.write {
-					try await $0.write { db in
-						try bowlersPersistenceService.update(bowler, db)
-					}
+					try bowlersPersistenceService.update(bowler, $0)
 				}
 			},
 			delete: { bowler in
@@ -32,9 +28,7 @@ extension BowlersDataProvider: DependencyKey {
 				@Dependency(\.bowlersPersistenceService) var bowlersPersistenceService: BowlersPersistenceService
 
 				try await persistenceService.write {
-					try await $0.write { db in
-						try bowlersPersistenceService.delete(bowler, db)
-					}
+					try bowlersPersistenceService.delete(bowler, $0)
 				}
 			},
 			fetchAll: { request in

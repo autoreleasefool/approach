@@ -12,9 +12,7 @@ extension SeriesDataProvider: DependencyKey {
 				@Dependency(\.seriesPersistenceService) var seriesPersistenceService: SeriesPersistenceService
 
 				try await persistenceService.write {
-					try await $0.write { db in
-						try seriesPersistenceService.create(series, db)
-					}
+					try seriesPersistenceService.create(series, $0)
 				}
 			},
 			update: { series in
@@ -22,9 +20,7 @@ extension SeriesDataProvider: DependencyKey {
 				@Dependency(\.seriesPersistenceService) var seriesPersistenceService: SeriesPersistenceService
 
 				try await persistenceService.write {
-					try await $0.write { db in
-						try seriesPersistenceService.update(series, db)
-					}
+					try seriesPersistenceService.update(series, $0)
 				}
 			},
 			delete: { series in
@@ -32,9 +28,7 @@ extension SeriesDataProvider: DependencyKey {
 				@Dependency(\.seriesPersistenceService) var seriesPersistenceService: SeriesPersistenceService
 
 				try await persistenceService.write {
-					try await $0.write { db in
-						try seriesPersistenceService.delete(series, db)
-					}
+					try seriesPersistenceService.delete(series, $0)
 				}
 			},
 			fetchAll: { request in

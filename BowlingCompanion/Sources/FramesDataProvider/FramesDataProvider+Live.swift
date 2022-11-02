@@ -12,9 +12,7 @@ extension FramesDataProvider: DependencyKey {
 				@Dependency(\.framesPersistenceService) var framesPersistenceService: FramesPersistenceService
 
 				try await persistenceService.write {
-					try await $0.write { db in
-						try framesPersistenceService.create(frame, db)
-					}
+					try framesPersistenceService.create(frame, $0)
 				}
 			},
 			delete: { frame in
@@ -22,9 +20,7 @@ extension FramesDataProvider: DependencyKey {
 				@Dependency(\.framesPersistenceService) var framesPersistenceService: FramesPersistenceService
 
 				try await persistenceService.write {
-					try await $0.write { db in
-						try framesPersistenceService.delete(frame, db)
-					}
+					try framesPersistenceService.delete(frame, $0)
 				}
 			},
 			fetchAll: { request in

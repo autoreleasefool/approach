@@ -12,9 +12,7 @@ extension LeaguesDataProvider: DependencyKey {
 				@Dependency(\.leaguesPersistenceService) var leaguesPersistenceService: LeaguesPersistenceService
 
 				try await persistenceService.write {
-					try await $0.write { db in
-						try leaguesPersistenceService.create(league, db)
-					}
+					try leaguesPersistenceService.create(league, $0)
 				}
 			},
 			update: { league in
@@ -22,9 +20,7 @@ extension LeaguesDataProvider: DependencyKey {
 				@Dependency(\.leaguesPersistenceService) var leaguesPersistenceService: LeaguesPersistenceService
 
 				try await persistenceService.write {
-					try await $0.write { db in
-						try leaguesPersistenceService.update(league, db)
-					}
+					try leaguesPersistenceService.update(league, $0)
 				}
 			},
 			delete: { league in
@@ -32,9 +28,7 @@ extension LeaguesDataProvider: DependencyKey {
 				@Dependency(\.leaguesPersistenceService) var leaguesPersistenceService: LeaguesPersistenceService
 
 				try await persistenceService.write {
-					try await $0.write { db in
-						try leaguesPersistenceService.delete(league, db)
-					}
+					try leaguesPersistenceService.delete(league, $0)
 				}
 			},
 			fetchAll: { request in

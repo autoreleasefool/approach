@@ -29,7 +29,9 @@ extension PersistenceService: DependencyKey {
 				appDb.dbReader
 			},
 			write: { block in
-				try await block(appDb.dbWriter)
+				try await appDb.dbWriter.write {
+					try block($0)
+				}
 			}
 		)
 	}()

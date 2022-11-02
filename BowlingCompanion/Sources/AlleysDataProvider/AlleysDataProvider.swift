@@ -12,9 +12,7 @@ extension AlleysDataProvider: DependencyKey {
 				@Dependency(\.alleysPersistenceService) var alleysPersistenceService: AlleysPersistenceService
 
 				try await persistenceService.write {
-					try await $0.write { db in
-						try alleysPersistenceService.create(alley, db)
-					}
+					try alleysPersistenceService.create(alley, $0)
 				}
 			},
 			update: { alley in
@@ -22,9 +20,7 @@ extension AlleysDataProvider: DependencyKey {
 				@Dependency(\.alleysPersistenceService) var alleysPersistenceService: AlleysPersistenceService
 
 				try await persistenceService.write {
-					try await $0.write { db in
-						try alleysPersistenceService.update(alley, db)
-					}
+					try alleysPersistenceService.update(alley, $0)
 				}
 			},
 			delete: { alley in
@@ -32,9 +28,7 @@ extension AlleysDataProvider: DependencyKey {
 				@Dependency(\.alleysPersistenceService) var alleysPersistenceService: AlleysPersistenceService
 
 				try await persistenceService.write {
-					try await $0.write { db in
-						try alleysPersistenceService.delete(alley, db)
-					}
+					try alleysPersistenceService.delete(alley, $0)
 				}
 			},
 			fetchAll: { request in

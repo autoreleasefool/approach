@@ -12,9 +12,7 @@ extension GamesDataProvider: DependencyKey {
 				@Dependency(\.gamesPersistenceService) var gamesPersistenceService: GamesPersistenceService
 
 				try await persistenceService.write {
-					try await $0.write { db in
-						try gamesPersistenceService.create(game, db)
-					}
+					try gamesPersistenceService.create(game, $0)
 				}
 			},
 			delete: { game in
@@ -22,9 +20,7 @@ extension GamesDataProvider: DependencyKey {
 				@Dependency(\.gamesPersistenceService) var gamesPersistenceService: GamesPersistenceService
 
 				try await persistenceService.write {
-					try await $0.write { db in
-						try gamesPersistenceService.delete(game, db)
-					}
+					try gamesPersistenceService.delete(game, $0)
 				}
 			},
 			fetchAll: { request in
