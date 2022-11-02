@@ -1,3 +1,4 @@
+import AlleysListFeature
 import BowlersListFeature
 import ComposableArchitecture
 import SettingsFeature
@@ -50,6 +51,8 @@ public struct AppView: View {
 extension App.Tab {
 	var name: String {
 		switch self {
+		case .alleys:
+			return "Alleys"
 		case .settings:
 			return "Settings"
 		case .bowlers:
@@ -59,6 +62,8 @@ extension App.Tab {
 
 	var image: String {
 		switch self {
+		case .alleys:
+			return "building.columns"
 		case .settings:
 			return "gear"
 		case .bowlers:
@@ -69,6 +74,8 @@ extension App.Tab {
 	func tabView(store: StoreOf<App>) -> some View {
 		NavigationView {
 			switch self {
+			case .alleys:
+				AlleysListView(store: store.scope(state: \.alleysList, action: App.Action.alleysList))
 			case .bowlers:
 				BowlersListView(store: store.scope(state: \.bowlersList, action: App.Action.bowlersList))
 			case .settings:

@@ -19,6 +19,7 @@
 		CA94DD6A2902EA0E00B81A87 /* FramesDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CA94DD692902EA0E00B81A87 /* FramesDataProvider */; };
 		CAAC064228F9D75000853178 /* LeaguesDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CAAC064128F9D75000853178 /* LeaguesDataProvider */; };
 		CAAC064428FB3D6E00853178 /* SeriesDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CAAC064328FB3D6E00853178 /* SeriesDataProvider */; };
+		CAEB94C8291257E10000D075 /* AlleysDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CAEB94C7291257E10000D075 /* AlleysDataProvider */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -39,6 +40,7 @@
 				CA2890E128F8DA53003C1EE9 /* BowlersDataProvider in Frameworks */,
 				CA94DD2028FC83B600B81A87 /* GamesDataProvider in Frameworks */,
 				CA2890DE28F87FF2003C1EE9 /* AppFeature in Frameworks */,
+				CAEB94C8291257E10000D075 /* AlleysDataProvider in Frameworks */,
 				CAAC064228F9D75000853178 /* LeaguesDataProvider in Frameworks */,
 				CAAC064428FB3D6E00853178 /* SeriesDataProvider in Frameworks */,
 				CA94DD642900B3AC00B81A87 /* FileManagerService in Frameworks */,
@@ -127,6 +129,7 @@
 				CA94DD1F28FC83B600B81A87 /* GamesDataProvider */,
 				CA94DD632900B3AC00B81A87 /* FileManagerService */,
 				CA94DD692902EA0E00B81A87 /* FramesDataProvider */,
+				CAEB94C7291257E10000D075 /* AlleysDataProvider */,
 			);
 			productName = BowlingCompanion;
 			productReference = CA8BBC5528D59B8B00653A1E /* BowlingCompanion.app */;
@@ -441,6 +444,10 @@
 		CAAC064328FB3D6E00853178 /* SeriesDataProvider */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = SeriesDataProvider;
+		};
+		CAEB94C7291257E10000D075 /* AlleysDataProvider */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AlleysDataProvider;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

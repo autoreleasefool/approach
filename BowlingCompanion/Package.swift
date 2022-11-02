@@ -9,6 +9,7 @@ let package = Package(
 	],
 	products: [
 		// MARK: - Features
+		.library(name: "AlleysListFeature", targets: ["AlleysListFeature"]),
 		.library(name: "AppFeature", targets: ["AppFeature"]),
 		.library(name: "BaseFormFeature", targets: ["BaseFormFeature"]),
 		.library(name: "BowlerEditorFeature", targets: ["BowlerEditorFeature"]),
@@ -57,8 +58,18 @@ let package = Package(
 	targets: [
 		// MARK: - Features
 		.target(
+			name: "AlleysListFeature",
+			dependencies: [
+				"AlleysDataProviderInterface",
+				"SharedModelsLibrary",
+				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+			]
+		),
+		.testTarget(name: "AlleysListFeatureTests", dependencies: ["AlleysListFeature"]),
+		.target(
 			name: "AppFeature",
 			dependencies: [
+				"AlleysListFeature",
 				"BowlersListFeature",
 				"SettingsFeature",
 			]
