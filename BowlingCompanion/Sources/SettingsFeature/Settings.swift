@@ -12,7 +12,7 @@ public struct Settings: ReducerProtocol {
 	public init() {}
 
 	public var body: some ReducerProtocol<State, Action> {
-		Reduce { state, action in
+		Reduce { _, action in
 			switch action {
 			case .placeholder:
 				return .none

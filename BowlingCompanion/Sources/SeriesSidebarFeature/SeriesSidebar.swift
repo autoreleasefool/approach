@@ -40,7 +40,7 @@ public struct SeriesSidebar: ReducerProtocol {
 			case let .gamesResponse(.success(games)):
 				state.games = .init(uniqueElements: games)
 				return .none
-				
+
 			case .gamesResponse(.failure):
 				// TODO: show games error
 				return .none
@@ -66,4 +66,3 @@ public struct SeriesSidebar: ReducerProtocol {
 		}
 	}
 }
-
