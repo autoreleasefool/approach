@@ -1,7 +1,7 @@
 import BaseFormFeature
-import BowlersDataProviderInterface
 import ComposableArchitecture
 import Foundation
+import PersistenceServiceInterface
 import SharedModelsLibrary
 
 extension Bowler: BaseFormModel {
@@ -42,17 +42,17 @@ public struct BowlerEditor: ReducerProtocol {
 
 	@Dependency(\.uuid) var uuid
 	@Dependency(\.date) var date
-	@Dependency(\.bowlersDataProvider) var bowlersDataProvider
+	@Dependency(\.persistenceService) var persistenceService
 
 	public var body: some ReducerProtocol<State, Action> {
 		BindingReducer()
 
 		Scope(state: \.base, action: /Action.form) {
 			BaseForm()
-				.dependency(\.baseDataProvider, .init(
-					create: bowlersDataProvider.create,
-					update: bowlersDataProvider.update,
-					delete: bowlersDataProvider.delete
+				.dependency(\.modelPersistence, .init(
+					create: persistenceService.createBowler,
+					update: persistenceService.updateBowler,
+					delete: persistenceService.deleteBowler
 				))
 		}
 

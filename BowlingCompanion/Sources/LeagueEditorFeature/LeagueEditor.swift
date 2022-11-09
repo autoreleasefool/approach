@@ -1,6 +1,6 @@
 import BaseFormFeature
 import ComposableArchitecture
-import LeaguesDataProviderInterface
+import PersistenceServiceInterface
 import SharedModelsLibrary
 
 extension League: BaseFormModel {
@@ -63,17 +63,17 @@ public struct LeagueEditor: ReducerProtocol {
 
 	@Dependency(\.uuid) var uuid
 	@Dependency(\.date) var date
-	@Dependency(\.leaguesDataProvider) var leaguesDataProvider
+	@Dependency(\.persistenceService) var persistenceService
 
 	public var body: some ReducerProtocol<State, Action> {
 		BindingReducer()
 
 		Scope(state: \.base, action: /Action.form) {
 			BaseForm()
-				.dependency(\.baseDataProvider, .init(
-					create: leaguesDataProvider.create,
-					update: leaguesDataProvider.update,
-					delete: leaguesDataProvider.delete
+				.dependency(\.modelPersistence, .init(
+					create: persistenceService.createLeague,
+					update: persistenceService.updateLeague,
+					delete: persistenceService.deleteLeague
 				))
 		}
 

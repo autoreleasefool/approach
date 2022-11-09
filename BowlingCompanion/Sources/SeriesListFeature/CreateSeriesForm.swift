@@ -1,5 +1,4 @@
 import ComposableArchitecture
-import SeriesDataProviderInterface
 import SharedModelsLibrary
 import SwiftUI
 

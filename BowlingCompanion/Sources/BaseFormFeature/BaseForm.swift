@@ -1,7 +1,6 @@
-import BaseDataProvider
 import ComposableArchitecture
 
-public protocol BaseFormModel: BaseDataModel, Equatable {
+public protocol BaseFormModel: Equatable {
 	static var modelName: String { get }
 	var name: String { get }
 }
@@ -54,7 +53,7 @@ public struct BaseForm<Model: BaseFormModel, FormState: BaseFormState>: ReducerP
 
 	public init() {}
 
-	@Dependency(\.baseDataProvider) var dataProvider
+	@Dependency(\.modelPersistence) var modelPersistence
 
 	public var body: some ReducerProtocol<State, Action> {
 		Reduce { state, action in
@@ -68,7 +67,7 @@ public struct BaseForm<Model: BaseFormModel, FormState: BaseFormState>: ReducerP
 					let model = state.form.model(fromExisting: original)
 					return .task {
 						await .saveResult(TaskResult {
-							try await dataProvider.update(model)
+							try await modelPersistence.update(model)
 							return model
 						})
 					}
@@ -76,7 +75,7 @@ public struct BaseForm<Model: BaseFormModel, FormState: BaseFormState>: ReducerP
 					let model = state.form.model(fromExisting: nil)
 					return .task {
 						await .saveResult(TaskResult {
-							try await dataProvider.create(model)
+							try await modelPersistence.create(model)
 							return model
 						})
 					}
@@ -98,7 +97,7 @@ public struct BaseForm<Model: BaseFormModel, FormState: BaseFormState>: ReducerP
 				state.isLoading = true
 				return .task {
 					await .deleteResult(TaskResult {
-						try await dataProvider.delete(model)
+						try await modelPersistence.delete(model)
 						return model
 					})
 				}

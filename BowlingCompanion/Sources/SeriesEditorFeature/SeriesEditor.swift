@@ -2,7 +2,7 @@ import BaseFormFeature
 import ComposableArchitecture
 import DateTimeLibrary
 import Foundation
-import SeriesDataProviderInterface
+import PersistenceServiceInterface
 import SharedModelsLibrary
 
 extension Series: BaseFormModel {
@@ -45,17 +45,17 @@ public struct SeriesEditor: ReducerProtocol {
 
 	@Dependency(\.uuid) var uuid
 	@Dependency(\.date) var date
-	@Dependency(\.seriesDataProvider) var seriesDataProvider
+	@Dependency(\.persistenceService) var persistenceService
 
 	public var body: some ReducerProtocol<State, Action> {
 		BindingReducer()
 
 		Scope(state: \.base, action: /Action.form) {
 			BaseForm()
-				.dependency(\.baseDataProvider, .init(
-					create: seriesDataProvider.create,
-					update: seriesDataProvider.update,
-					delete: seriesDataProvider.delete
+				.dependency(\.modelPersistence, .init(
+					create: persistenceService.createSeries,
+					update: persistenceService.updateSeries,
+					delete: persistenceService.deleteSeries
 				))
 		}
 

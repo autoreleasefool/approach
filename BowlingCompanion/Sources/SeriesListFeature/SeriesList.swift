@@ -1,5 +1,5 @@
 import ComposableArchitecture
-import SeriesDataProviderInterface
+import PersistenceServiceInterface
 import SeriesEditorFeature
 import SeriesSidebarFeature
 import SharedModelsLibrary
@@ -45,14 +45,14 @@ public struct SeriesList: ReducerProtocol {
 
 	@Dependency(\.uuid) var uuid
 	@Dependency(\.date) var date
-	@Dependency(\.seriesDataProvider) var seriesDataProvider
+	@Dependency(\.persistenceService) var persistenceService
 
 	public var body: some ReducerProtocol<State, Action> {
 		Reduce { state, action in
 			switch action {
 			case .subscribeToSeries:
 				return .run { [leagueId = state.league.id] send in
-					for try await series in seriesDataProvider.fetchAll(.init(league: leagueId, ordering: .byDate)) {
+					for try await series in persistenceService.fetchSeries(.init(league: leagueId, ordering: .byDate)) {
 						await send(.seriesResponse(.success(series)))
 					}
 				} catch: { error, send in
@@ -72,7 +72,7 @@ public struct SeriesList: ReducerProtocol {
 					return .task { [leagueId = state.league.id] in
 						let series = Series(leagueId: leagueId, id: uuid(), date: date(), numberOfGames: numberOfGames)
 						return await .seriesCreateResponse(TaskResult {
-							try await seriesDataProvider.create(series)
+							try await persistenceService.createSeries(series)
 							return series
 						})
 					}
@@ -134,7 +134,7 @@ public struct SeriesList: ReducerProtocol {
 				return .task { [leagueId = state.league.id] in
 					let series = Series(leagueId: leagueId, id: uuid(), date: date(), numberOfGames: numberOfGames)
 					return await .seriesCreateResponse(TaskResult {
-						try await seriesDataProvider.create(series)
+						try await persistenceService.createSeries(series)
 						return series
 					})
 				}
@@ -150,7 +150,7 @@ public struct SeriesList: ReducerProtocol {
 			case let .alert(.deleteButtonTapped(series)):
 				return .task {
 					return await .seriesDeleteResponse(TaskResult {
-						try await seriesDataProvider.delete(series)
+						try await persistenceService.deleteSeries(series)
 						return series
 					})
 				}

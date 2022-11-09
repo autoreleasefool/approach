@@ -1,5 +1,5 @@
-import AlleysDataProviderInterface
 import ComposableArchitecture
+import PersistenceServiceInterface
 import SharedModelsLibrary
 
 public struct AlleysList: ReducerProtocol {
@@ -21,14 +21,14 @@ public struct AlleysList: ReducerProtocol {
 
 	public init() {}
 
-	@Dependency(\.alleysDataProvider) var alleysDataProvider
+	@Dependency(\.persistenceService) var persistenceService
 
 	public var body: some ReducerProtocol<State, Action> {
 		Reduce { state, action in
 			switch action {
 			case .subscribeToAlleys:
 				return .run { send in
-					for try await alleys in alleysDataProvider.fetchAll(.init(ordering: .byLastModified)) {
+					for try await alleys in persistenceService.fetchAlleys(.init(ordering: .byLastModified)) {
 						await send(.alleysResponse(.success(alleys)))
 					}
 				} catch: { error, send in

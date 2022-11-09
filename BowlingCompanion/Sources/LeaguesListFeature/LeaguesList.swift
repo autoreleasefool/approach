@@ -1,6 +1,6 @@
 import ComposableArchitecture
 import LeagueEditorFeature
-import LeaguesDataProviderInterface
+import PersistenceServiceInterface
 import SeriesListFeature
 import SharedModelsLibrary
 
@@ -36,14 +36,14 @@ public struct LeaguesList: ReducerProtocol {
 
 	public init() {}
 
-	@Dependency(\.leaguesDataProvider) var leaguesDataProvider
+	@Dependency(\.persistenceService) var persistenceService
 
 	public var body: some ReducerProtocol<State, Action> {
 		Reduce { state, action in
 			switch action {
 			case .subscribeToLeagues:
 				return .run { [bowlerId = state.bowler.id] send in
-					for try await leagues in leaguesDataProvider.fetchAll(.init(bowler: bowlerId, ordering: .byLastModified)) {
+					for try await leagues in persistenceService.fetchLeagues(.init(bowler: bowlerId, ordering: .byLastModified)) {
 						await send(.leaguesResponse(.success(leagues)))
 					}
 				} catch: { error, send in
@@ -99,7 +99,7 @@ public struct LeaguesList: ReducerProtocol {
 			case let .alert(.deleteButtonTapped(league)):
 				return .task {
 					return await .deleteLeagueResponse(TaskResult {
-						try await leaguesDataProvider.delete(league)
+						try await persistenceService.deleteLeague(league)
 						return true
 					})
 				}

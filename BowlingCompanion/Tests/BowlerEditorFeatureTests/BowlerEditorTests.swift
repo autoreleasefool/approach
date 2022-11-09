@@ -53,7 +53,7 @@ final class BowlerEditorTests: XCTestCase {
 		)
 
 		let expectation = self.expectation(description: "deleted")
-		store.dependencies.bowlersDataProvider.delete = { deleted in
+		store.dependencies.persistenceService.deleteBowler = { deleted in
 			XCTAssertEqual(deleted, bowler)
 			expectation.fulfill()
 		}
@@ -80,7 +80,7 @@ final class BowlerEditorTests: XCTestCase {
 			reducer: BowlerEditor()
 		)
 
-		store.dependencies.bowlersDataProvider.create = { _ in
+		store.dependencies.persistenceService.createBowler = { _ in
 			XCTFail("Should not save")
 		}
 
@@ -105,7 +105,7 @@ final class BowlerEditorTests: XCTestCase {
 		}
 
 		let expectation = self.expectation(description: "created")
-		store.dependencies.bowlersDataProvider.create = { created in
+		store.dependencies.persistenceService.createBowler = { created in
 			XCTAssertEqual(created, bowler)
 			expectation.fulfill()
 		}
@@ -138,7 +138,7 @@ final class BowlerEditorTests: XCTestCase {
 		}
 
 		let expectation = self.expectation(description: "created")
-		store.dependencies.bowlersDataProvider.update = { updated in
+		store.dependencies.persistenceService.updateBowler = { updated in
 			XCTAssertEqual(updated, bowler2)
 			expectation.fulfill()
 		}
@@ -171,7 +171,7 @@ final class BowlerEditorTests: XCTestCase {
 
 		store.dependencies.date = .constant(date)
 		store.dependencies.uuid = .incrementing
-		store.dependencies.bowlersDataProvider.create = { _ in
+		store.dependencies.persistenceService.createBowler = { _ in
 			throw MockError.mock
 		}
 

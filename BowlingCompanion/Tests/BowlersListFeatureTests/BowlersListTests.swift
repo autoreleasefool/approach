@@ -17,7 +17,7 @@ final class BowlersListTests: XCTestCase {
 		let bowler = Bowler(id: id0, name: "Joseph", createdAt: date, lastModifiedAt: date)
 
 		let (bowlers, continuation) = AsyncThrowingStream<[Bowler], Error>.streamWithContinuation()
-		store.dependencies.bowlersDataProvider.fetchAll = { _ in bowlers }
+		store.dependencies.persistenceService.fetchBowlers = { _ in bowlers }
 
 		let task = await store.send(.subscribeToBowlers)
 
@@ -120,7 +120,7 @@ final class BowlersListTests: XCTestCase {
 		let bowler = Bowler(id: id0, name: "Joseph", createdAt: date, lastModifiedAt: date)
 
 		let expectation = self.expectation(description: "deleted")
-		store.dependencies.bowlersDataProvider.delete = { deleted in
+		store.dependencies.persistenceService.deleteBowler = { deleted in
 			XCTAssertEqual(deleted, bowler)
 			expectation.fulfill()
 		}

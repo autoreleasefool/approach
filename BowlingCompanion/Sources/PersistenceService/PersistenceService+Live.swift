@@ -1,68 +1,48 @@
 import Dependencies
 import FileManagerServiceInterface
-import Foundation
 import GRDB
 import PersistenceServiceInterface
 
 extension PersistenceService: DependencyKey {
 	public static let liveValue: Self = {
-		@Dependency(\.fileManagerService) var fileManagerService
-
-		let appDb: AppDatabase
+		let dbManager: DatabaseManager
 		do {
-			let folderUrl = try fileManagerService.getUserDirectory()
-				.appending(path: "database", directoryHint: .isDirectory)
-
-			try fileManagerService.createDirectory(folderUrl)
-
-			let dbUrl = folderUrl.appending(path: "db.sqlite")
-			let dbPool = try DatabasePool(path: dbUrl.path())
-
-			appDb = try AppDatabase(dbPool)
+			try dbManager = DatabaseManager()
 		} catch {
 			// TODO: should notify user of failure to open DB
 			fatalError("Unable to access persistence service, \(error)")
 		}
 
+		let modelPersistence = ModelPersistence(writer: dbManager.writer)
+		let modelFetching = ModelFetching(reader: dbManager.reader)
+
 		return Self(
-			reader: {
-				appDb.dbReader
-			},
-			write: { block in
-				try await appDb.dbWriter.write {
-					try block($0)
-				}
-			}
+			createBowler: modelPersistence.create(model:),
+			updateBowler: modelPersistence.update(model:),
+			deleteBowler: modelPersistence.delete(model:),
+			fetchBowlers: modelFetching.fetchAll(request:),
+			createLeague: modelPersistence.create(model:),
+			updateLeague: modelPersistence.update(model:),
+			deleteLeague: modelPersistence.delete(model:),
+			fetchLeagues: modelFetching.fetchAll(request:),
+			createSeries: modelPersistence.create(model:),
+			updateSeries: modelPersistence.update(model:),
+			deleteSeries: modelPersistence.delete(model:),
+			fetchSeries: modelFetching.fetchAll(request:),
+			createGame: modelPersistence.create(model:),
+			updateGame: modelPersistence.update(model:),
+			deleteGame: modelPersistence.delete(model:),
+			fetchGames: modelFetching.fetchAll(request:),
+			updateFrame: modelPersistence.update(model:),
+			fetchFrames: modelFetching.fetchAll(request:),
+			createAlley: modelPersistence.create(model:),
+			updateAlley: modelPersistence.update(model:),
+			deleteAlley: modelPersistence.delete(model:),
+			fetchAlleys: modelFetching.fetchAll(request:)
 		)
 	}()
 }
 
-struct AppDatabase {
-	let dbWriter: any DatabaseWriter
 
-	var dbReader: DatabaseReader {
-		dbWriter
-	}
 
-	init(_ dbWriter: any DatabaseWriter) throws {
-		self.dbWriter = dbWriter
-		try migrator.migrate(dbWriter)
-	}
 
-	private var migrator: DatabaseMigrator {
-		var migrator = DatabaseMigrator()
-
-		#if DEBUG
-		migrator.eraseDatabaseOnSchemaChange = true
-		#endif
-
-		migrator.registerMigration(Migration20221018CreateBowler.self)
-		migrator.registerMigration(Migration20221021CreateLeague.self)
-		migrator.registerMigration(Migration20221021CreateSeries.self)
-		migrator.registerMigration(Migration20221021CreateGame.self)
-		migrator.registerMigration(Migration20221021CreateFrame.self)
-		migrator.registerMigration(Migration20221101CreateAlley.self)
-
-		return migrator
-	}
-}

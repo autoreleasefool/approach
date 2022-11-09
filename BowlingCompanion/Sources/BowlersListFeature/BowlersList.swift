@@ -1,7 +1,7 @@
-import BowlersDataProviderInterface
 import BowlerEditorFeature
 import ComposableArchitecture
 import LeaguesListFeature
+import PersistenceServiceInterface
 import SharedModelsLibrary
 
 public struct BowlersList: ReducerProtocol {
@@ -33,14 +33,14 @@ public struct BowlersList: ReducerProtocol {
 
 	public init() {}
 
-	@Dependency(\.bowlersDataProvider) var bowlersDataProvider
+	@Dependency(\.persistenceService) var persistenceService
 
 	public var body: some ReducerProtocol<State, Action> {
 		Reduce { state, action in
 			switch action {
 			case .subscribeToBowlers:
 				return .run { send in
-					for try await bowlers in bowlersDataProvider.fetchAll(.init(ordering: .byLastModified)) {
+					for try await bowlers in persistenceService.fetchBowlers(.init(ordering: .byLastModified)) {
 						await send(.bowlersResponse(.success(bowlers)))
 					}
 				} catch: { error, send in
@@ -80,7 +80,7 @@ public struct BowlersList: ReducerProtocol {
 			case let .alert(.deleteButtonTapped(bowler)):
 				return .task {
 					return await .deleteBowlerResponse(TaskResult {
-						try await bowlersDataProvider.delete(bowler)
+						try await persistenceService.deleteBowler(bowler)
 						return true
 					})
 				}

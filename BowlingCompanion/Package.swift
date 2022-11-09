@@ -24,21 +24,6 @@ let package = Package(
 		.library(name: "SeriesSidebarFeature", targets: ["SeriesSidebarFeature"]),
 		.library(name: "SettingsFeature", targets: ["SettingsFeature"]),
 
-		// MARK: - Data Providers
-		.library(name: "AlleysDataProvider", targets: ["AlleysDataProvider"]),
-		.library(name: "AlleysDataProviderInterface", targets: ["AlleysDataProviderInterface"]),
-		.library(name: "BaseDataProvider", targets: ["BaseDataProvider"]),
-		.library(name: "BowlersDataProvider", targets: ["BowlersDataProvider"]),
-		.library(name: "BowlersDataProviderInterface", targets: ["BowlersDataProviderInterface"]),
-		.library(name: "FramesDataProvider", targets: ["FramesDataProvider"]),
-		.library(name: "FramesDataProviderInterface", targets: ["FramesDataProviderInterface"]),
-		.library(name: "GamesDataProvider", targets: ["GamesDataProvider"]),
-		.library(name: "GamesDataProviderInterface", targets: ["GamesDataProviderInterface"]),
-		.library(name: "LeaguesDataProvider", targets: ["LeaguesDataProvider"]),
-		.library(name: "LeaguesDataProviderInterface", targets: ["LeaguesDataProviderInterface"]),
-		.library(name: "SeriesDataProvider", targets: ["SeriesDataProvider"]),
-		.library(name: "SeriesDataProviderInterface", targets: ["SeriesDataProviderInterface"]),
-
 		// MARK: - Services
 		.library(name: "FileManagerService", targets: ["FileManagerService"]),
 		.library(name: "FileManagerServiceInterface", targets: ["FileManagerServiceInterface"]),
@@ -47,9 +32,9 @@ let package = Package(
 
 		// MARK: - Libraries
 		.library(name: "DateTimeLibrary", targets: ["DateTimeLibrary"]),
-		.library(name: "PersistenceModelsLibrary", targets: ["PersistenceModelsLibrary"]),
 		.library(name: "SharedModelsLibrary", targets: ["SharedModelsLibrary"]),
 		.library(name: "SharedModelsLibraryMocks", targets: ["SharedModelsLibraryMocks"]),
+		.library(name: "SharedPersistenceModelsLibrary", targets: ["SharedPersistenceModelsLibrary"]),
 	],
 	dependencies: [
 		.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "0.42.0"),
@@ -60,7 +45,7 @@ let package = Package(
 		.target(
 			name: "AlleysListFeature",
 			dependencies: [
-				"AlleysDataProviderInterface",
+				"PersistenceServiceInterface",
 				"SharedModelsLibrary",
 				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 			]
@@ -79,13 +64,13 @@ let package = Package(
 			name: "BowlerEditorFeature",
 			dependencies: [
 				"BaseFormFeature",
-				"BowlersDataProviderInterface",
+				"PersistenceServiceInterface",
+				"SharedModelsLibrary",
 			]
 		),
 		.target(
 			name: "BaseFormFeature",
 			dependencies: [
-				"BaseDataProvider",
 				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 			]
 		),
@@ -117,7 +102,7 @@ let package = Package(
 			name: "GamesListFeature",
 			dependencies: [
 				"DateTimeLibrary",
-				"GamesDataProviderInterface",
+				"PersistenceServiceInterface",
 				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 			]
 		),
@@ -126,7 +111,7 @@ let package = Package(
 			name: "LeagueEditorFeature",
 			dependencies: [
 				"BaseFormFeature",
-				"LeaguesDataProviderInterface",
+				"PersistenceServiceInterface",
 			]
 		),
 		.testTarget(name: "LeagueEditorFeatureTests", dependencies: ["LeagueEditorFeature"]),
@@ -142,7 +127,7 @@ let package = Package(
 			name: "SeriesEditorFeature",
 			dependencies: [
 				"BaseFormFeature",
-				"SeriesDataProviderInterface",
+				"PersistenceServiceInterface",
 			]
 		),
 		.target(
@@ -167,7 +152,7 @@ let package = Package(
 			name: "SeriesSidebarFeature",
 			dependencies: [
 				"GameEditorFeature",
-				"GamesDataProviderInterface",
+				"PersistenceServiceInterface",
 			]
 		),
 		.testTarget(name: "SeriesSidebarFeatureTests", dependencies: ["SeriesSidebarFeature"]),
@@ -178,99 +163,6 @@ let package = Package(
 			]
 		),
 		.testTarget(name: "SettingsFeatureTests", dependencies: ["SettingsFeature"]),
-
-		// MARK: - Data Providers
-		.target(
-			name: "AlleysDataProvider",
-			dependencies: [
-				"AlleysDataProviderInterface",
-				"PersistenceServiceInterface",
-			]
-		),
-		.target(
-			name: "AlleysDataProviderInterface",
-			dependencies: [
-				"SharedModelsLibrary",
-				.product(name: "Dependencies", package: "swift-composable-architecture"),
-			]
-		),
-		.testTarget(name: "AlleysDataProviderTests", dependencies: ["AlleysDataProvider"]),
-		.target(name: "BaseDataProvider", dependencies: ["PersistenceServiceInterface"]),
-		.target(
-			name: "BowlersDataProvider",
-			dependencies: [
-				"BowlersDataProviderInterface",
-				"PersistenceServiceInterface",
-			]
-		),
-		.target(
-			name: "BowlersDataProviderInterface",
-			dependencies: [
-				"SharedModelsLibrary",
-				.product(name: "Dependencies", package: "swift-composable-architecture"),
-			]
-		),
-		.testTarget(name: "BowlersDataProviderTests", dependencies: ["BowlersDataProvider"]),
-		.target(
-			name: "FramesDataProvider",
-			dependencies: [
-				"FramesDataProviderInterface",
-				"PersistenceServiceInterface",
-			]
-		),
-		.target(
-			name: "FramesDataProviderInterface",
-			dependencies: [
-				"SharedModelsLibrary",
-				.product(name: "Dependencies", package: "swift-composable-architecture"),
-			]
-		),
-		.testTarget(name: "FramesDataProviderTests", dependencies: ["FramesDataProvider"]),
-		.target(
-			name: "GamesDataProvider",
-			dependencies: [
-				"GamesDataProviderInterface",
-				"PersistenceServiceInterface",
-			]
-		),
-		.target(
-			name: "GamesDataProviderInterface",
-			dependencies: [
-				"SharedModelsLibrary",
-				.product(name: "Dependencies", package: "swift-composable-architecture"),
-			]
-		),
-		.testTarget(name: "GamesDataProviderTests", dependencies: ["GamesDataProvider"]),
-		.target(
-			name: "LeaguesDataProvider",
-			dependencies: [
-				"LeaguesDataProviderInterface",
-				"PersistenceServiceInterface",
-			]
-		),
-		.target(
-			name: "LeaguesDataProviderInterface",
-			dependencies: [
-				"SharedModelsLibrary",
-				.product(name: "Dependencies", package: "swift-composable-architecture"),
-			]
-		),
-		.testTarget(name: "LeaguesDataProviderTests", dependencies: ["LeaguesDataProvider"]),
-		.target(
-			name: "SeriesDataProvider",
-			dependencies: [
-				"PersistenceServiceInterface",
-				"SeriesDataProviderInterface",
-			]
-		),
-		.target(
-			name: "SeriesDataProviderInterface",
-			dependencies: [
-				"SharedModelsLibrary",
-				.product(name: "Dependencies", package: "swift-composable-architecture"),
-			]
-		),
-		.testTarget(name: "SeriesDataProviderTests", dependencies: ["SeriesDataProvider"]),
 
 		// MARK: - Services
 		.target(name: "FileManagerService", dependencies: ["FileManagerServiceInterface"]),
@@ -285,15 +177,14 @@ let package = Package(
 			name: "PersistenceService",
 			dependencies: [
 				"FileManagerServiceInterface",
-				"PersistenceModelsLibrary",
 				"PersistenceServiceInterface",
+				"SharedPersistenceModelsLibrary",
 			]
 		),
 		.target(
 			name: "PersistenceServiceInterface",
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-composable-architecture"),
-				.product(name: "GRDB", package: "grdb.swift"),
 			]
 		),
 		.testTarget(name: "PersistenceServiceTests", dependencies: ["PersistenceService"]),
@@ -301,19 +192,20 @@ let package = Package(
 		// MARK: - Libraries
 		.target(name: "DateTimeLibrary", dependencies: []),
 		.testTarget(name: "DateTimeLibraryTests", dependencies: ["DateTimeLibrary"]),
-		.target(
-			name: "PersistenceModelsLibrary",
-			dependencies: [
-				"SharedModelsLibrary",
-				.product(name: "GRDB", package: "grdb.swift"),
-			]
-		),
 		.target(name: "SharedModelsLibrary", dependencies: []),
 		.target(
 			name: "SharedModelsLibraryMocks",
 			dependencies: [
 				"SharedModelsLibrary",
 				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+			]
+		),
+		.target(
+			name: "SharedPersistenceModelsLibrary",
+			dependencies: [
+				"SharedModelsLibrary",
+				.product(name: "Dependencies", package: "swift-composable-architecture"),
+				.product(name: "GRDB", package: "grdb.swift"),
 			]
 		),
 	]
