@@ -14,8 +14,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/groue/GRDB.swift.git",
       "state" : {
-        "revision" : "13e1f4d7c2896a6a9293102f664e5311e017ffb2",
-        "version" : "6.1.0"
+        "revision" : "5ff2ad9e71693477547f311cd72aea2f87f0a2ff",
+        "version" : "6.3.0"
       }
     },
     {
