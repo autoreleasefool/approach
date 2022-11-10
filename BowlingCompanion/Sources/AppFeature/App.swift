@@ -1,10 +1,13 @@
 import AlleysListFeature
 import BowlersListFeature
 import ComposableArchitecture
+import FeatureFlagLibrary
+import FeatureFlagServiceInterface
 import SettingsFeature
 
 public struct App: ReducerProtocol {
 	public struct State: Equatable {
+		public var tabs: [Tab] = []
 		public var selectedTab: Tab = .bowlers
 		public var bowlersList = BowlersList.State()
 		public var alleysList = AlleysList.State()
@@ -14,6 +17,8 @@ public struct App: ReducerProtocol {
 	}
 
 	public enum Action: Equatable {
+		case subscribeToTabs
+		case tabsResponse([Tab])
 		case selectedTab(Tab)
 		case alleysList(AlleysList.Action)
 		case bowlersList(BowlersList.Action)
@@ -26,9 +31,18 @@ public struct App: ReducerProtocol {
 		case settings
 
 		public var id: String { rawValue }
+		public var featureFlag: FeatureFlag {
+			switch self {
+			case .alleys: return .alleysTab
+			case .bowlers: return .scoreSheetTab
+			case .settings: return .settingsTab
+			}
+		}
 	}
 
 	public init() {}
+
+	@Dependency(\.featureFlags) var featureFlags
 
 	public var body: some ReducerProtocol<State, Action> {
 		Scope(state: \.bowlersList, action: /Action.bowlersList) {
@@ -43,6 +57,18 @@ public struct App: ReducerProtocol {
 
 		Reduce { state, action in
 			switch action {
+			case .subscribeToTabs:
+				return .run { send in
+					let expectedFlags = App.Tab.allCases.map { $0.featureFlag }
+					for await flags in featureFlags.observeAll(expectedFlags) {
+						await send(.tabsResponse(zip(App.Tab.allCases, flags).filter(\.1).map(\.0)))
+					}
+				}
+
+			case let .tabsResponse(tabs):
+				state.tabs = tabs
+				return .none
+
 			case let .selectedTab(tab):
 				state.selectedTab = tab
 				return .none

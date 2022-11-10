@@ -10,14 +10,17 @@ public struct AppView: View {
 	@Environment(\.horizontalSizeClass) var horizontalSizeClass
 
 	struct ViewState: Equatable {
+		let tabs: [App.Tab]
 		let selectedTab: App.Tab
 
 		init(state: App.State) {
+			self.tabs = state.tabs
 			self.selectedTab = state.selectedTab
 		}
 	}
 
 	enum ViewAction {
+		case subscribeToTabs
 		case selectedTab(App.Tab)
 	}
 
@@ -31,7 +34,7 @@ public struct AppView: View {
 				TabView(
 					selection: viewStore.binding(get: \.selectedTab, send: ViewAction.selectedTab)
 				) {
-					ForEach(App.Tab.allCases) { tab in
+					ForEach(viewStore.tabs) { tab in
 						tab.tabView(store: store)
 							.tag(tab)
 							.tabItem {
@@ -40,6 +43,7 @@ public struct AppView: View {
 							}
 					}
 				}
+				.task { await viewStore.send(.subscribeToTabs).finish() }
 			} else {
 				// TODO: create sidebar for ipad size devices
 				EmptyView()
@@ -88,6 +92,8 @@ extension App.Tab {
 extension App.Action {
 	init(action: AppView.ViewAction) {
 		switch action {
+		case .subscribeToTabs:
+			self = .subscribeToTabs
 		case let .selectedTab(tab):
 			self = .selectedTab(tab)
 		}

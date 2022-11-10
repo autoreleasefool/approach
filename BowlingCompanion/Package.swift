@@ -25,6 +25,7 @@ let package = Package(
 		.library(name: "SettingsFeature", targets: ["SettingsFeature"]),
 
 		// MARK: - Services
+		.library(name: "FeatureFlagService", targets: ["FeatureFlagService"]),
 		.library(name: "FileManagerService", targets: ["FileManagerService"]),
 		.library(name: "FileManagerServiceInterface", targets: ["FileManagerServiceInterface"]),
 		.library(name: "PersistenceService", targets: ["PersistenceService"]),
@@ -32,6 +33,7 @@ let package = Package(
 
 		// MARK: - Libraries
 		.library(name: "DateTimeLibrary", targets: ["DateTimeLibrary"]),
+		.library(name: "FeatureFlagLibrary", targets: ["FeatureFlagLibrary"]),
 		.library(name: "SharedModelsLibrary", targets: ["SharedModelsLibrary"]),
 		.library(name: "SharedModelsLibraryMocks", targets: ["SharedModelsLibraryMocks"]),
 		.library(name: "SharedPersistenceModelsLibrary", targets: ["SharedPersistenceModelsLibrary"]),
@@ -56,6 +58,7 @@ let package = Package(
 			dependencies: [
 				"AlleysListFeature",
 				"BowlersListFeature",
+				"FeatureFlagServiceInterface",
 				"SettingsFeature",
 			]
 		),
@@ -165,6 +168,15 @@ let package = Package(
 		.testTarget(name: "SettingsFeatureTests", dependencies: ["SettingsFeature"]),
 
 		// MARK: - Services
+		.target(name: "FeatureFlagService", dependencies: ["FeatureFlagServiceInterface"]),
+		.target(
+			name: "FeatureFlagServiceInterface",
+			dependencies: [
+				"FeatureFlagLibrary",
+				.product(name: "Dependencies", package: "swift-composable-architecture"),
+			]
+		),
+		.testTarget(name: "FeatureFlagServiceTests", dependencies: ["FeatureFlagService"]),
 		.target(name: "FileManagerService", dependencies: ["FileManagerServiceInterface"]),
 		.target(
 			name: "FileManagerServiceInterface",
@@ -192,6 +204,8 @@ let package = Package(
 		// MARK: - Libraries
 		.target(name: "DateTimeLibrary", dependencies: []),
 		.testTarget(name: "DateTimeLibraryTests", dependencies: ["DateTimeLibrary"]),
+		.target(name: "FeatureFlagLibrary", dependencies: []),
+		.testTarget(name: "FeatureFlagLibraryTests", dependencies: ["FeatureFlagLibrary"]),
 		.target(name: "SharedModelsLibrary", dependencies: []),
 		.target(
 			name: "SharedModelsLibraryMocks",
