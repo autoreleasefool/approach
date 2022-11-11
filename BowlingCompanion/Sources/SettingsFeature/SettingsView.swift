@@ -1,11 +1,16 @@
 import ComposableArchitecture
+import FeatureFlagListFeature
 import SwiftUI
 
 public struct SettingsView: View {
 	let store: StoreOf<Settings>
 
 	struct ViewState: Equatable {
-		init(state: Settings.State) {}
+		let showsFeatures: Bool
+
+		init(state: Settings.State) {
+			self.showsFeatures = state.showsFeatures
+		}
 	}
 
 	enum ViewAction {
@@ -17,11 +22,20 @@ public struct SettingsView: View {
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: Settings.Action.init) { _ in
+		WithViewStore(store, observe: ViewState.init, send: Settings.Action.init) { viewStore in
 			List {
-				Text("Settings")
-					.navigationTitle("Settings")
+				Section {
+					if viewStore.showsFeatures {
+						NavigationLink(
+							"Features",
+							destination: FeatureFlagListView(
+								store: store.scope(state: \.featureFlagList, action: Settings.Action.featureFlagList)
+							)
+						)
+					}
+				}
 			}
+			.navigationTitle("Settings")
 		}
 	}
 }

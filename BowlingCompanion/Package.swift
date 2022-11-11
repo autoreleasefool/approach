@@ -14,6 +14,7 @@ let package = Package(
 		.library(name: "BaseFormFeature", targets: ["BaseFormFeature"]),
 		.library(name: "BowlerEditorFeature", targets: ["BowlerEditorFeature"]),
 		.library(name: "BowlersListFeature", targets: ["BowlersListFeature"]),
+		.library(name: "FeatureFlagListFeature", targets: ["FeatureFlagListFeature"]),
 		.library(name: "GameEditorFeature", targets: ["GameEditorFeature"]),
 		.library(name: "GamesListFeature", targets: ["GamesListFeature"]),
 		.library(name: "LeagueEditorFeature", targets: ["LeagueEditorFeature"]),
@@ -94,6 +95,14 @@ let package = Package(
 			]
 		),
 		.target(
+			name: "FeatureFlagListFeature",
+			dependencies: [
+				"FeatureFlagServiceInterface",
+				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+			]
+		),
+		.testTarget(name: "FeatureFlagListFeatureTests", dependencies: ["FeatureFlagListFeature"]),
+		.target(
 			name: "GameEditorFeature",
 			dependencies: [
 				"SharedModelsLibrary",
@@ -162,7 +171,8 @@ let package = Package(
 		.target(
 			name: "SettingsFeature",
 			dependencies: [
-				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+				"FeatureFlagListFeature",
+				"FeatureFlagServiceInterface",
 			]
 		),
 		.testTarget(name: "SettingsFeatureTests", dependencies: ["SettingsFeature"]),

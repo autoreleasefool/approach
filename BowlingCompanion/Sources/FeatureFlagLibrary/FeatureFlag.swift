@@ -1,8 +1,10 @@
-public struct FeatureFlag: Hashable {
+public struct FeatureFlag: Identifiable, Hashable {
 	public let name: String
 	public let introduced: String
 	public let stage: RolloutStage
 	public let isOverridable: Bool
+
+	public var id: String { name }
 
 	init(name: String, introduced: String, stage: RolloutStage, isOverridable: Bool = true) {
 		self.name = name
