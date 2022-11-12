@@ -12,9 +12,8 @@ final class BowlersListTests: XCTestCase {
 			reducer: BowlersList()
 		)
 
-		let date = Date(timeIntervalSinceReferenceDate: 1234567890)
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
-		let bowler = Bowler(id: id0, name: "Joseph", createdAt: date, lastModifiedAt: date)
+		let bowler = Bowler(id: id0, name: "Joseph")
 
 		let (bowlers, continuation) = AsyncThrowingStream<[Bowler], Error>.streamWithContinuation()
 		store.dependencies.persistenceService.fetchBowlers = { _ in bowlers }
@@ -36,9 +35,8 @@ final class BowlersListTests: XCTestCase {
 			reducer: BowlersList()
 		)
 
-		let date = Date(timeIntervalSinceReferenceDate: 1234567890)
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
-		let bowler = Bowler(id: id0, name: "Joseph", createdAt: date, lastModifiedAt: date)
+		let bowler = Bowler(id: id0, name: "Joseph")
 
 		await store.send(.swipeAction(bowler, .edit)) {
 			$0.bowlerEditor = .init(mode: .edit(bowler))
@@ -51,9 +49,8 @@ final class BowlersListTests: XCTestCase {
 			reducer: BowlersList()
 		)
 
-		let date = Date(timeIntervalSinceReferenceDate: 1234567890)
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
-		let bowler = Bowler(id: id0, name: "Joseph", createdAt: date, lastModifiedAt: date)
+		let bowler = Bowler(id: id0, name: "Joseph")
 
 		await store.send(.swipeAction(bowler, .delete)) {
 			$0.alert = BowlersList.alert(toDelete: bowler)
@@ -81,9 +78,8 @@ final class BowlersListTests: XCTestCase {
 			reducer: BowlersList()
 		)
 
-		let date = Date(timeIntervalSinceReferenceDate: 1234567890)
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
-		let bowler = Bowler(id: id0, name: "Joseph", createdAt: date, lastModifiedAt: date)
+		let bowler = Bowler(id: id0, name: "Joseph")
 
 		await store.send(.bowlersResponse(.success([bowler]))) {
 			$0.bowlers = .init(uniqueElements: [bowler])
@@ -115,9 +111,8 @@ final class BowlersListTests: XCTestCase {
 			reducer: BowlersList()
 		)
 
-		let date = Date(timeIntervalSinceReferenceDate: 1234567890)
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
-		let bowler = Bowler(id: id0, name: "Joseph", createdAt: date, lastModifiedAt: date)
+		let bowler = Bowler(id: id0, name: "Joseph")
 
 		let expectation = self.expectation(description: "deleted")
 		store.dependencies.persistenceService.deleteBowler = { deleted in
@@ -138,9 +133,8 @@ final class BowlersListTests: XCTestCase {
 			reducer: BowlersList()
 		)
 
-		let date = Date(timeIntervalSinceReferenceDate: 1234567890)
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
-		let bowler = Bowler(id: id0, name: "Joseph", createdAt: date, lastModifiedAt: date)
+		let bowler = Bowler(id: id0, name: "Joseph")
 
 		await store.send(.swipeAction(bowler, .edit)) {
 			$0.bowlerEditor = .init(mode: .edit(bowler))

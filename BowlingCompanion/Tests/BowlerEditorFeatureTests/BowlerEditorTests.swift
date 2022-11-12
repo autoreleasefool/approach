@@ -43,9 +43,8 @@ final class BowlerEditorTests: XCTestCase {
 	}
 
 	func testDeleteBowler() async {
-		let date = Date(timeIntervalSinceReferenceDate: 1234567890)
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
-		let bowler = Bowler(id: id0, name: "Joseph", createdAt: date, lastModifiedAt: date)
+		let bowler = Bowler(id: id0, name: "Joseph")
 
 		let store = TestStore(
 			initialState: BowlerEditor.State(mode: .edit(bowler)),
@@ -93,11 +92,9 @@ final class BowlerEditorTests: XCTestCase {
 			reducer: BowlerEditor()
 		)
 
-		let date = Date(timeIntervalSinceReferenceDate: 1234567890)
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
-		let bowler = Bowler(id: id0, name: "Joe", createdAt: date, lastModifiedAt: date)
+		let bowler = Bowler(id: id0, name: "Joe")
 
-		store.dependencies.date = .constant(date)
 		store.dependencies.uuid = .incrementing
 
 		await store.send(.set(\.base.form.$name, "Joe")) {
@@ -120,18 +117,14 @@ final class BowlerEditorTests: XCTestCase {
 	}
 
 	func testExistingBowlerIsUpdated() async {
-		let createdAt = Date(timeIntervalSinceReferenceDate: 0)
-		let modifiedAt = Date(timeIntervalSinceReferenceDate: 1234567890)
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
-		let bowler = Bowler(id: id0, name: "Joe", createdAt: createdAt, lastModifiedAt: createdAt)
-		let bowler2 = Bowler(id: id0, name: "Joseph", createdAt: createdAt, lastModifiedAt: modifiedAt)
+		let bowler = Bowler(id: id0, name: "Joe")
+		let bowler2 = Bowler(id: id0, name: "Joseph")
 
 		let store = TestStore(
 			initialState: BowlerEditor.State(mode: .edit(bowler)),
 			reducer: BowlerEditor()
 		)
-
-		store.dependencies.date = .constant(modifiedAt)
 
 		await store.send(.set(\.base.form.$name, "Joseph")) {
 			$0.base.form.name = "Joseph"
@@ -163,13 +156,11 @@ final class BowlerEditorTests: XCTestCase {
 	}
 
 	func testErrorSavingUpdatesStates() async {
-		let date = Date(timeIntervalSinceReferenceDate: 1234567890)
 		let store = TestStore(
 			initialState: BowlerEditor.State(mode: .create),
 			reducer: BowlerEditor()
 		)
 
-		store.dependencies.date = .constant(date)
 		store.dependencies.uuid = .incrementing
 		store.dependencies.persistenceService.createBowler = { _ in
 			throw MockError.mock
@@ -218,9 +209,8 @@ final class BowlerEditorTests: XCTestCase {
 	}
 
 	func testEditHasChanges() async {
-		let date = Date(timeIntervalSinceReferenceDate: 1234567890)
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
-		let bowler = Bowler(id: id0, name: "Joseph", createdAt: date, lastModifiedAt: date)
+		let bowler = Bowler(id: id0, name: "Joseph")
 
 		let store = TestStore(
 			initialState: BowlerEditor.State(mode: .edit(bowler)),
@@ -237,9 +227,8 @@ final class BowlerEditorTests: XCTestCase {
 	}
 
 	func testEditIsSaveable() async {
-		let date = Date(timeIntervalSinceReferenceDate: 1234567890)
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
-		let bowler = Bowler(id: id0, name: "Joseph", createdAt: date, lastModifiedAt: date)
+		let bowler = Bowler(id: id0, name: "Joseph")
 
 		let store = TestStore(
 			initialState: BowlerEditor.State(mode: .edit(bowler)),

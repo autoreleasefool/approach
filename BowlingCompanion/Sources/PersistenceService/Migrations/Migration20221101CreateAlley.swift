@@ -5,8 +5,6 @@ struct Migration20221101CreateAlley: Migration {
 		try db.create(table: "alley") { t in
 			t.column("id", .text).primaryKey()
 			t.column("name", .text).notNull()
-			t.column("createdAt", .datetime).notNull()
-			t.column("lastModifiedAt", .datetime).notNull()
 		}
 	}
 }

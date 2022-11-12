@@ -62,7 +62,6 @@ public struct LeagueEditor: ReducerProtocol {
 	public init() {}
 
 	@Dependency(\.uuid) var uuid
-	@Dependency(\.date) var date
 	@Dependency(\.persistenceService) var persistenceService
 
 	public var body: some ReducerProtocol<State, Action> {
@@ -95,7 +94,6 @@ public struct LeagueEditor: ReducerProtocol {
 extension LeagueEditor.Fields {
 	public func model(fromExisting existing: League?) -> League {
 		@Dependency(\.uuid) var uuid: UUIDGenerator
-		@Dependency(\.date) var date: DateGenerator
 
 		let numberOfGames = gamesPerSeries == .static ? self.numberOfGames : nil
 		let additionalGames = hasAdditionalPinfall ? Int(additionalGames) : nil
@@ -113,9 +111,7 @@ extension LeagueEditor.Fields {
 			recurrence: recurrence,
 			numberOfGames: numberOfGames,
 			additionalPinfall: additionalPinfall,
-			additionalGames: additionalGames,
-			createdAt: existing?.createdAt ?? date(),
-			lastModifiedAt: date()
+			additionalGames: additionalGames
 		)
 	}
 }

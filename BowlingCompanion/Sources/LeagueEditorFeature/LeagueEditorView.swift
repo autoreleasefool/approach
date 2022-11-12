@@ -155,7 +155,7 @@ struct LeagueEditorViewPreviews: PreviewProvider {
 		LeagueEditorView(
 			store: .init(
 				initialState: .init(
-					bowler: .init(id: UUID(), name: "Joseph", createdAt: Date(), lastModifiedAt: Date()),
+					bowler: .init(id: UUID(), name: "Joseph"),
 					mode: .create
 				),
 				reducer: LeagueEditor()

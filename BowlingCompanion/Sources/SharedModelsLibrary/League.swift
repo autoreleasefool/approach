@@ -11,8 +11,6 @@ public struct League: Sendable, Identifiable, Hashable, Codable {
 	public let numberOfGames: Int?
 	public let additionalPinfall: Int?
 	public let additionalGames: Int?
-	public let createdAt: Date
-	public let lastModifiedAt: Date
 
 	public init(
 		bowlerId: Bowler.ID,
@@ -21,9 +19,7 @@ public struct League: Sendable, Identifiable, Hashable, Codable {
 		recurrence: Recurrence,
 		numberOfGames: Int?,
 		additionalPinfall: Int?,
-		additionalGames: Int?,
-		createdAt: Date,
-		lastModifiedAt: Date
+		additionalGames: Int?
 	) {
 		self.bowlerId = bowlerId
 		self.id = id
@@ -32,8 +28,6 @@ public struct League: Sendable, Identifiable, Hashable, Codable {
 		self.numberOfGames = numberOfGames
 		self.additionalGames = additionalGames
 		self.additionalPinfall = additionalPinfall
-		self.createdAt = createdAt
-		self.lastModifiedAt = lastModifiedAt
 	}
 }
 

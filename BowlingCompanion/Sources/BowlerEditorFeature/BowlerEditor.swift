@@ -41,7 +41,6 @@ public struct BowlerEditor: ReducerProtocol {
 	public init() {}
 
 	@Dependency(\.uuid) var uuid
-	@Dependency(\.date) var date
 	@Dependency(\.persistenceService) var persistenceService
 
 	public var body: some ReducerProtocol<State, Action> {
@@ -68,13 +67,10 @@ public struct BowlerEditor: ReducerProtocol {
 extension BowlerEditor.Fields {
 	public func model(fromExisting existing: Bowler?) -> Bowler {
 		@Dependency(\.uuid) var uuid: UUIDGenerator
-		@Dependency(\.date) var date: DateGenerator
 
 		return .init(
 			id: existing?.id ?? uuid(),
-			name: name,
-			createdAt: existing?.createdAt ?? date(),
-			lastModifiedAt: date()
+			name: name
 		)
 	}
 }
