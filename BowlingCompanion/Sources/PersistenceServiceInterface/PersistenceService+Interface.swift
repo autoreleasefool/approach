@@ -10,7 +10,7 @@ public struct PersistenceService: Sendable {
 	public var createLeague: @Sendable (League) async throws -> Void
 	public var updateLeague: @Sendable (League) async throws -> Void
 	public var deleteLeague: @Sendable (League) async throws -> Void
-	public var fetchLeagues: @Sendable (League.FetchRequest) -> AsyncThrowingStream<[League], Error>
+	public var fetchLeagues: @Sendable (League.Query) -> AsyncThrowingStream<[League], Error>
 
 	public var createSeries: @Sendable (Series) async throws -> Void
 	public var updateSeries: @Sendable (Series) async throws -> Void
@@ -38,7 +38,7 @@ public struct PersistenceService: Sendable {
 		createLeague: @escaping @Sendable (League) async throws -> Void,
 		updateLeague: @escaping @Sendable (League) async throws -> Void,
 		deleteLeague: @escaping @Sendable (League) async throws -> Void,
-		fetchLeagues: @escaping @Sendable (League.FetchRequest) -> AsyncThrowingStream<[League], Error>,
+		fetchLeagues: @escaping @Sendable (League.Query) -> AsyncThrowingStream<[League], Error>,
 		createSeries: @escaping @Sendable (Series) async throws -> Void,
 		updateSeries: @escaping @Sendable (Series) async throws -> Void,
 		deleteSeries: @escaping @Sendable (Series) async throws -> Void,

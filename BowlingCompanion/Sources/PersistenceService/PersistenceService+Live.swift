@@ -25,7 +25,7 @@ extension PersistenceService: DependencyKey {
 			createLeague: modelPersistence.create(model:),
 			updateLeague: modelPersistence.update(model:),
 			deleteLeague: modelPersistence.delete(model:),
-			fetchLeagues: modelFetching.fetchAll(request:),
+			fetchLeagues: modelQuerying.fetchAll(request:),
 			createSeries: modelPersistence.create(model:),
 			updateSeries: modelPersistence.update(model:),
 			deleteSeries: modelPersistence.delete(model:),

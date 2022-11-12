@@ -3,13 +3,16 @@ import PersistenceServiceInterface
 import SharedPersistenceModelsLibrary
 import SharedModelsLibrary
 
-extension League.FetchRequest: Fetchable {
+extension League.Query: Queryable {
 	func fetchValues(_ db: Database) throws -> [League] {
+		var query = League.all()
+			.filter(Column("bowlerId") == bowler)
+
 		switch ordering {
-		case .byLastModified:
-			return try League.all()
-				.order(Column("lastModifiedAt").desc)
-				.fetchAll(db)
+		case .byName:
+			query = query.order(Column("name").asc)
 		}
+
+		return try query.fetchAll(db)
 	}
 }

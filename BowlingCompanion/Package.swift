@@ -34,6 +34,8 @@ let package = Package(
 		.library(name: "FramesDataProviderInterface", targets: ["FramesDataProviderInterface"]),
 		.library(name: "GamesDataProvider", targets: ["GamesDataProvider"]),
 		.library(name: "GamesDataProviderInterface", targets: ["GamesDataProviderInterface"]),
+		.library(name: "LeaguesDataProvider", targets: ["LeaguesDataProvider"]),
+		.library(name: "LeaguesDataProviderInterface", targets: ["LeaguesDataProviderInterface"]),
 
 		// MARK: - Services
 		.library(name: "FeatureFlagService", targets: ["FeatureFlagService"]),
@@ -132,7 +134,7 @@ let package = Package(
 			name: "GamesListFeature",
 			dependencies: [
 				"DateTimeLibrary",
-				"PersistenceServiceInterface",
+				"GamesDataProviderInterface",
 				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 			]
 		),
@@ -148,6 +150,7 @@ let package = Package(
 		.target(
 			name: "LeaguesListFeature",
 			dependencies: [
+				"LeaguesDataProviderInterface",
 				"LeagueEditorFeature",
 				"SeriesListFeature",
 			]
@@ -181,8 +184,8 @@ let package = Package(
 		.target(
 			name: "SeriesSidebarFeature",
 			dependencies: [
+				"GamesDataProviderInterface",
 				"GameEditorFeature",
-				"PersistenceServiceInterface",
 			]
 		),
 		.testTarget(name: "SeriesSidebarFeatureTests", dependencies: ["SeriesSidebarFeature"]),
@@ -283,6 +286,30 @@ let package = Package(
 			name: "GamesDataProviderTests",
 			dependencies: [
 				"GamesDataProvider",
+				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+			]
+		),
+		.target(
+			name: "LeaguesDataProvider",
+			dependencies: [
+				"LeaguesDataProviderInterface",
+				"PersistenceServiceInterface",
+				"RecentlyUsedServiceInterface",
+				"SortingLibrary",
+				.product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
+			]
+		),
+		.target(
+			name: "LeaguesDataProviderInterface",
+			dependencies: [
+				"SharedModelsLibrary",
+				.product(name: "Dependencies", package: "swift-composable-architecture"),
+			]
+		),
+		.testTarget(
+			name: "LeaguesDataProviderTests",
+			dependencies: [
+				"LeaguesDataProvider",
 				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 			]
 		),

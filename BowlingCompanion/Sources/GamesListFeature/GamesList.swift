@@ -1,5 +1,5 @@
 import ComposableArchitecture
-import PersistenceServiceInterface
+import GamesDataProviderInterface
 import SharedModelsLibrary
 
 // TODO: GamesList might be able to be deleted, replaced by SeriesSidebar
@@ -20,14 +20,14 @@ public struct GamesList: ReducerProtocol {
 
 	public init() {}
 
-	@Dependency(\.persistenceService) var persistenceService
+	@Dependency(\.gamesDataProvider) var gamesDataProvider
 
 	public var body: some ReducerProtocol<State, Action> {
 		Reduce { state, action in
 			switch action {
 			case .subscribeToGames:
 				return .run { [seriesId = state.series.id] send in
-					for try await games in persistenceService.fetchGames(.init(series: seriesId, ordering: .byOrdinal)) {
+					for try await games in gamesDataProvider.fetchGames(.init(series: seriesId)) {
 						await send(.gamesResponse(.success(games)))
 					}
 				} catch: { error, send in

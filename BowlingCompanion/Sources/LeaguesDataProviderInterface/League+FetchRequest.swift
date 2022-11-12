@@ -14,6 +14,7 @@ extension League {
 
 extension League.FetchRequest {
 	public enum Ordering {
-		case byLastModified
+		case byName
+		case byRecentlyUsed
 	}
 }
