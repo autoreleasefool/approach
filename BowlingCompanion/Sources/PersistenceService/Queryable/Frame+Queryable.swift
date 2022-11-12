@@ -3,7 +3,7 @@ import PersistenceServiceInterface
 import SharedPersistenceModelsLibrary
 import SharedModelsLibrary
 
-extension Frame.FetchRequest: Fetchable {
+extension Frame.Query: Queryable {
 	func fetchValues(_ db: Database) throws -> [Frame] {
 		switch ordering {
 		case .byOrdinal:

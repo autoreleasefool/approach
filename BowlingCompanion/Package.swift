@@ -30,6 +30,8 @@ let package = Package(
 		.library(name: "AlleysDataProviderInterface", targets: ["AlleysDataProviderInterface"]),
 		.library(name: "BowlersDataProvider", targets: ["BowlersDataProvider"]),
 		.library(name: "BowlersDataProviderInterface", targets: ["BowlersDataProviderInterface"]),
+		.library(name: "FramesDataProvider", targets: ["FramesDataProvider"]),
+		.library(name: "FramesDataProviderInterface", targets: ["FramesDataProviderInterface"]),
 
 		// MARK: - Services
 		.library(name: "FeatureFlagService", targets: ["FeatureFlagService"]),
@@ -237,6 +239,27 @@ let package = Package(
 			name: "BowlersDataProviderTests",
 			dependencies: [
 				"BowlersDataProvider",
+				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+			]
+		),
+		.target(
+			name: "FramesDataProvider",
+			dependencies: [
+				"FramesDataProviderInterface",
+				"PersistenceServiceInterface",
+			]
+		),
+		.target(
+			name: "FramesDataProviderInterface",
+			dependencies: [
+				"SharedModelsLibrary",
+				.product(name: "Dependencies", package: "swift-composable-architecture"),
+			]
+		),
+		.testTarget(
+			name: "FramesDataProviderTests",
+			dependencies: [
+				"FramesDataProvider",
 				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 			]
 		),

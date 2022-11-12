@@ -3,7 +3,6 @@ import Foundation
 public struct Frame: Sendable, Identifiable, Hashable, Codable {
 	public let gameId: Game.ID
 	public let ordinal: Int
-	public let isAccessed: Bool
 	public let firstBall: Ball?
 	public let secondBall: Ball?
 	public let thirdBall: Ball?
@@ -15,14 +14,12 @@ public struct Frame: Sendable, Identifiable, Hashable, Codable {
 	public init(
 		gameId: Game.ID,
 		ordinal: Int,
-		isAccessed: Bool,
 		firstBall: Ball?,
 		secondBall: Ball?,
 		thirdBall: Ball?
 	) {
 		self.gameId = gameId
 		self.ordinal = ordinal
-		self.isAccessed = isAccessed
 		self.firstBall = firstBall
 		self.secondBall = secondBall
 		self.thirdBall = thirdBall

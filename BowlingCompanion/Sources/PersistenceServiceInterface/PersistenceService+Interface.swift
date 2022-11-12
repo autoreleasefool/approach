@@ -23,7 +23,7 @@ public struct PersistenceService: Sendable {
 	public var fetchGames: @Sendable (Game.FetchRequest) -> AsyncThrowingStream<[Game], Error>
 
 	public var updateFrame: @Sendable (Frame) async throws -> Void
-	public var fetchFrames: @Sendable (Frame.FetchRequest) -> AsyncThrowingStream<[Frame], Error>
+	public var fetchFrames: @Sendable (Frame.Query) -> AsyncThrowingStream<[Frame], Error>
 
 	public var createAlley: @Sendable (Alley) async throws -> Void
 	public var updateAlley: @Sendable (Alley) async throws -> Void
@@ -48,7 +48,7 @@ public struct PersistenceService: Sendable {
 		deleteGame: @escaping @Sendable (Game) async throws -> Void,
 		fetchGames: @escaping @Sendable (Game.FetchRequest) -> AsyncThrowingStream<[Game], Error>,
 		updateFrame: @escaping @Sendable (Frame) async throws -> Void,
-		fetchFrames: @escaping @Sendable (Frame.FetchRequest) -> AsyncThrowingStream<[Frame], Error>,
+		fetchFrames: @escaping @Sendable (Frame.Query) -> AsyncThrowingStream<[Frame], Error>,
 		createAlley: @escaping @Sendable (Alley) async throws -> Void,
 		updateAlley: @escaping @Sendable (Alley) async throws -> Void,
 		deleteAlley: @escaping @Sendable (Alley) async throws -> Void,

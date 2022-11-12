@@ -7,7 +7,6 @@ extension Game: FetchableRecord, PersistableRecord {
 			let frame = Frame(
 				gameId: id,
 				ordinal: ordinal,
-				isAccessed: false,
 				firstBall: nil,
 				secondBall: nil,
 				thirdBall: nil
