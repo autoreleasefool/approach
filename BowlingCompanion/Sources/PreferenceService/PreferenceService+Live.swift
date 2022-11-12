@@ -21,6 +21,8 @@ extension PreferenceService: DependencyKey {
 			setInt: { key, value in userDefaults.value.set(value, forKey: key) },
 			getString: { key in contains(key) ? userDefaults.value.string(forKey: key) : nil },
 			setString: { key, value in userDefaults.value.set(value, forKey: key) },
+			getStringArray: { key in contains(key) ? userDefaults.value.stringArray(forKey: key) : nil },
+			setStringArray: { key, value in userDefaults.value.set(value, forKey: key) },
 			contains: contains(_:),
 			removeKey: { key in userDefaults.value.removeObject(forKey: key) }
 		)

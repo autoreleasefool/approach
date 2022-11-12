@@ -11,6 +11,8 @@ public struct PreferenceService: Sendable {
 	public var setInt: @Sendable (String, Int) -> Void
 	public var getString: @Sendable (String) -> String?
 	public var setString: @Sendable (String, String) -> Void
+	public var getStringArray: @Sendable (String) -> [String]?
+	public var setStringArray: @Sendable (String, [String]) -> Void
 	public var contains: @Sendable (String) -> Bool
 	public var removeKey: @Sendable (String) -> Void
 
@@ -25,6 +27,8 @@ public struct PreferenceService: Sendable {
 		setInt: @escaping @Sendable (String, Int) -> Void,
 		getString: @escaping @Sendable (String) -> String?,
 		setString: @escaping @Sendable (String, String) -> Void,
+		getStringArray: @escaping @Sendable (String) -> [String]?,
+		setStringArray: @escaping @Sendable (String, [String]) -> Void,
 		contains: @escaping @Sendable (String) -> Bool,
 		removeKey: @escaping @Sendable (String) -> Void
 	) {
@@ -38,6 +42,8 @@ public struct PreferenceService: Sendable {
 		self.setInt = setInt
 		self.getString = getString
 		self.setString = setString
+		self.getStringArray = getStringArray
+		self.setStringArray = setStringArray
 		self.contains = contains
 		self.removeKey = removeKey
 	}
@@ -55,6 +61,8 @@ extension PreferenceService: TestDependencyKey {
 		setInt: { _, _ in fatalError("\(Self.self).setInt") },
 		getString: { _ in fatalError("\(Self.self).getString") },
 		setString: { _, _ in fatalError("\(Self.self).setString") },
+		getStringArray: { _ in fatalError("\(Self.self).getStringArray") },
+		setStringArray: { _, _ in fatalError("\(Self.self).setStringArray") },
 		contains: { _ in fatalError("\(Self.self).contains") },
 		removeKey: { _ in fatalError("\(Self.self).removeKey") }
 	)

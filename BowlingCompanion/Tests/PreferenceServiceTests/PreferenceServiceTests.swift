@@ -91,4 +91,18 @@ final class PreferenceServiceTests: XCTestCase {
 
 		preferenceService.removeKey(key)
 	}
+
+	func testStoreAndRetrievesStringArray() {
+		let key = "stringArray"
+		let preferenceService: PreferenceService = .liveValue
+		XCTAssertFalse(preferenceService.contains(key))
+		XCTAssertNil(preferenceService.getStringArray(key))
+
+		preferenceService.setStringArray(key, ["test value", "another test"])
+
+		XCTAssertTrue(preferenceService.contains(key))
+		XCTAssertEqual(["test value", "another test"], preferenceService.getStringArray(key))
+
+		preferenceService.removeKey(key)
+	}
 }

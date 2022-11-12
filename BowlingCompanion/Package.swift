@@ -33,6 +33,8 @@ let package = Package(
 		.library(name: "PersistenceServiceInterface", targets: ["PersistenceServiceInterface"]),
 		.library(name: "PreferenceService", targets: ["PreferenceService"]),
 		.library(name: "PreferenceServiceInterface", targets: ["PreferenceServiceInterface"]),
+		.library(name: "RecentlyUsedService", targets: ["RecentlyUsedService"]),
+		.library(name: "RecentlyUsedServiceInterface", targets: ["RecentlyUsedServiceInterface"]),
 
 		// MARK: - Libraries
 		.library(name: "DateTimeLibrary", targets: ["DateTimeLibrary"]),
@@ -226,6 +228,20 @@ let package = Package(
 			]
 		),
 		.testTarget(name: "PreferenceServiceTests", dependencies: ["PreferenceService"]),
+		.target(
+			name: "RecentlyUsedService",
+			dependencies: [
+				"PreferenceServiceInterface",
+				"RecentlyUsedServiceInterface",
+			]
+		),
+		.target(
+			name: "RecentlyUsedServiceInterface",
+			dependencies: [
+				.product(name: "Dependencies", package: "swift-composable-architecture"),
+			]
+		),
+		.testTarget(name: "RecentlyUsedServiceTests", dependencies: ["RecentlyUsedService"]),
 
 		// MARK: - Libraries
 		.target(name: "DateTimeLibrary", dependencies: []),
