@@ -21,7 +21,7 @@ extension PersistenceService: DependencyKey {
 			createBowler: modelPersistence.create(model:),
 			updateBowler: modelPersistence.update(model:),
 			deleteBowler: modelPersistence.delete(model:),
-			fetchBowlers: modelFetching.fetchAll(request:),
+			fetchBowlers: modelQuerying.fetchAll(request:),
 			createLeague: modelPersistence.create(model:),
 			updateLeague: modelPersistence.update(model:),
 			deleteLeague: modelPersistence.delete(model:),

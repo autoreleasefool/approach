@@ -5,7 +5,7 @@ public struct PersistenceService: Sendable {
 	public var createBowler: @Sendable (Bowler) async throws -> Void
 	public var updateBowler: @Sendable (Bowler) async throws -> Void
 	public var deleteBowler: @Sendable (Bowler) async throws -> Void
-	public var fetchBowlers: @Sendable (Bowler.FetchRequest) -> AsyncThrowingStream<[Bowler], Error>
+	public var fetchBowlers: @Sendable (Bowler.Query) -> AsyncThrowingStream<[Bowler], Error>
 
 	public var createLeague: @Sendable (League) async throws -> Void
 	public var updateLeague: @Sendable (League) async throws -> Void
@@ -34,7 +34,7 @@ public struct PersistenceService: Sendable {
 		createBowler: @escaping @Sendable (Bowler) async throws -> Void,
 		updateBowler: @escaping @Sendable (Bowler) async throws -> Void,
 		deleteBowler: @escaping @Sendable (Bowler) async throws -> Void,
-		fetchBowlers: @escaping @Sendable (Bowler.FetchRequest) -> AsyncThrowingStream<[Bowler], Error>,
+		fetchBowlers: @escaping @Sendable (Bowler.Query) -> AsyncThrowingStream<[Bowler], Error>,
 		createLeague: @escaping @Sendable (League) async throws -> Void,
 		updateLeague: @escaping @Sendable (League) async throws -> Void,
 		deleteLeague: @escaping @Sendable (League) async throws -> Void,

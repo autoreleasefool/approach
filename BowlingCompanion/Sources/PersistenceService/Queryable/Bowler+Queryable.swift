@@ -3,13 +3,11 @@ import PersistenceServiceInterface
 import SharedPersistenceModelsLibrary
 import SharedModelsLibrary
 
-extension Bowler.FetchRequest: Fetchable {
+extension Bowler.Query: Queryable {
 	func fetchValues(_ db: Database) throws -> [Bowler] {
 		var query = Bowler.all()
 
 		switch ordering {
-		case .byLastModified:
-			query = query.order(Column("lastModifiedAt").desc)
 		case .byName:
 			query = query.order(Column("name").asc)
 		}

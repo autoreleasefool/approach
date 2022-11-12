@@ -1,3 +1,4 @@
+import BowlersDataProviderInterface
 import BowlerEditorFeature
 import ComposableArchitecture
 import LeaguesListFeature
@@ -34,13 +35,14 @@ public struct BowlersList: ReducerProtocol {
 	public init() {}
 
 	@Dependency(\.persistenceService) var persistenceService
+	@Dependency(\.bowlersDataProvider) var bowlersDataProvider
 
 	public var body: some ReducerProtocol<State, Action> {
 		Reduce { state, action in
 			switch action {
 			case .subscribeToBowlers:
 				return .run { send in
-					for try await bowlers in persistenceService.fetchBowlers(.init(ordering: .byLastModified)) {
+					for try await bowlers in bowlersDataProvider.fetchBowlers(.init(ordering: .byRecentlyUsed)) {
 						await send(.bowlersResponse(.success(bowlers)))
 					}
 				} catch: { error, send in
