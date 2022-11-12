@@ -15,13 +15,13 @@ extension AlleysDataProvider: DependencyKey {
 
 			switch request.ordering {
 			case .byName:
-				return persistenceService.fetchAlleys(.init(ordering: .byName))
+				return persistenceService.fetchAlleys(.init(request))
 			case .byRecentlyUsed:
 				return .init { continuation in
 					let task = Task {
 						for try await (recentlyUsed, alleys) in combineLatest(
 							recentlyUsedService.observeRecentlyUsed(.alleys),
-							persistenceService.fetchAlleys(.init(ordering: .byName))
+							persistenceService.fetchAlleys(.init(request))
 						) {
 							continuation.yield(alleys.sortBy(ids: recentlyUsed))
 						}
@@ -32,4 +32,18 @@ extension AlleysDataProvider: DependencyKey {
 			}
 		}
 	)
+}
+
+extension Alley.Query {
+	init(_ request: Alley.FetchRequest) {
+		let ordering: Alley.Query.Ordering
+		switch request.ordering {
+		case .byRecentlyUsed:
+			ordering = .byName
+		case .byName:
+			ordering = .byName
+		}
+
+		self.init(ordering: ordering)
+	}
 }
