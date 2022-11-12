@@ -33,7 +33,7 @@ extension PersistenceService: DependencyKey {
 			createGame: modelPersistence.create(model:),
 			updateGame: modelPersistence.update(model:),
 			deleteGame: modelPersistence.delete(model:),
-			fetchGames: modelFetching.fetchAll(request:),
+			fetchGames: modelQuerying.fetchAll(request:),
 			updateFrame: modelPersistence.update(model:),
 			fetchFrames: modelQuerying.fetchAll(request:),
 			createAlley: modelPersistence.create(model:),

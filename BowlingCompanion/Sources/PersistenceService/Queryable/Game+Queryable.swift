@@ -3,7 +3,7 @@ import PersistenceServiceInterface
 import SharedPersistenceModelsLibrary
 import SharedModelsLibrary
 
-extension Game.FetchRequest: Fetchable {
+extension Game.Query: Queryable {
 	func fetchValues(_ db: Database) throws -> [Game] {
 		switch ordering {
 		case .byOrdinal:
