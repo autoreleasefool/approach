@@ -28,7 +28,7 @@ public struct PersistenceService: Sendable {
 	public var createAlley: @Sendable (Alley) async throws -> Void
 	public var updateAlley: @Sendable (Alley) async throws -> Void
 	public var deleteAlley: @Sendable (Alley) async throws -> Void
-	public var fetchAlleys: @Sendable (Alley.FetchRequest) -> AsyncThrowingStream<[Alley], Error>
+	public var fetchAlleys: @Sendable (Alley.Query) -> AsyncThrowingStream<[Alley], Error>
 
 	public init(
 		createBowler: @escaping @Sendable (Bowler) async throws -> Void,
@@ -52,7 +52,7 @@ public struct PersistenceService: Sendable {
 		createAlley: @escaping @Sendable (Alley) async throws -> Void,
 		updateAlley: @escaping @Sendable (Alley) async throws -> Void,
 		deleteAlley: @escaping @Sendable (Alley) async throws -> Void,
-		fetchAlleys: @escaping @Sendable (Alley.FetchRequest) -> AsyncThrowingStream<[Alley], Error>
+		fetchAlleys: @escaping @Sendable (Alley.Query) -> AsyncThrowingStream<[Alley], Error>
 	) {
 		self.createBowler = createBowler
 		self.updateBowler = updateBowler

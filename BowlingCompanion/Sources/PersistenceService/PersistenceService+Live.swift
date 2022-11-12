@@ -15,6 +15,7 @@ extension PersistenceService: DependencyKey {
 
 		let modelPersistence = ModelPersistence(writer: dbManager.writer)
 		let modelFetching = ModelFetching(reader: dbManager.reader)
+		let modelQuerying = ModelQuerying(reader: dbManager.reader)
 
 		return Self(
 			createBowler: modelPersistence.create(model:),
@@ -38,7 +39,7 @@ extension PersistenceService: DependencyKey {
 			createAlley: modelPersistence.create(model:),
 			updateAlley: modelPersistence.update(model:),
 			deleteAlley: modelPersistence.delete(model:),
-			fetchAlleys: modelFetching.fetchAll(request:)
+			fetchAlleys: modelQuerying.fetchAll(request:)
 		)
 	}()
 }

@@ -15,6 +15,7 @@
 		CA8BBC6028D59B8C00653A1E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CA8BBC5F28D59B8C00653A1E /* Preview Assets.xcassets */; };
 		CA94DD642900B3AC00B81A87 /* FileManagerService in Frameworks */ = {isa = PBXBuildFile; productRef = CA94DD632900B3AC00B81A87 /* FileManagerService */; };
 		CAC11D32291CDD1B00D03B2E /* FeatureFlagService in Frameworks */ = {isa = PBXBuildFile; productRef = CAC11D31291CDD1B00D03B2E /* FeatureFlagService */; };
+		CAC13AA929203D6600DD36A5 /* AlleysDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CAC13AA829203D6600DD36A5 /* AlleysDataProvider */; };
 		CAC56851291F54A100192D12 /* PreferenceService in Frameworks */ = {isa = PBXBuildFile; productRef = CAC56850291F54A100192D12 /* PreferenceService */; };
 		CAC56853291F54A100192D12 /* RecentlyUsedService in Frameworks */ = {isa = PBXBuildFile; productRef = CAC56852291F54A100192D12 /* RecentlyUsedService */; };
 /* End PBXBuildFile section */
@@ -38,6 +39,7 @@
 				CA94DD642900B3AC00B81A87 /* FileManagerService in Frameworks */,
 				CAC56851291F54A100192D12 /* PreferenceService in Frameworks */,
 				CA2890E328F8DA53003C1EE9 /* PersistenceService in Frameworks */,
+				CAC13AA929203D6600DD36A5 /* AlleysDataProvider in Frameworks */,
 				CAC56853291F54A100192D12 /* RecentlyUsedService in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -121,6 +123,7 @@
 				CAC11D31291CDD1B00D03B2E /* FeatureFlagService */,
 				CAC56850291F54A100192D12 /* PreferenceService */,
 				CAC56852291F54A100192D12 /* RecentlyUsedService */,
+				CAC13AA829203D6600DD36A5 /* AlleysDataProvider */,
 			);
 			productName = BowlingCompanion;
 			productReference = CA8BBC5528D59B8B00653A1E /* BowlingCompanion.app */;
@@ -419,6 +422,10 @@
 		CAC11D31291CDD1B00D03B2E /* FeatureFlagService */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = FeatureFlagService;
+		};
+		CAC13AA829203D6600DD36A5 /* AlleysDataProvider */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AlleysDataProvider;
 		};
 		CAC56850291F54A100192D12 /* PreferenceService */ = {
 			isa = XCSwiftPackageProductDependency;

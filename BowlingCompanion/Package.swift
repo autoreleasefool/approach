@@ -25,6 +25,10 @@ let package = Package(
 		.library(name: "SeriesSidebarFeature", targets: ["SeriesSidebarFeature"]),
 		.library(name: "SettingsFeature", targets: ["SettingsFeature"]),
 
+		// MARK: - DataProviders
+		.library(name: "AlleysDataProvider", targets: ["AlleysDataProvider"]),
+		.library(name: "AlleysDataProviderInterface", targets: ["AlleysDataProviderInterface"]),
+
 		// MARK: - Services
 		.library(name: "FeatureFlagService", targets: ["FeatureFlagService"]),
 		.library(name: "FileManagerService", targets: ["FileManagerService"]),
@@ -42,8 +46,10 @@ let package = Package(
 		.library(name: "SharedModelsLibrary", targets: ["SharedModelsLibrary"]),
 		.library(name: "SharedModelsLibraryMocks", targets: ["SharedModelsLibraryMocks"]),
 		.library(name: "SharedPersistenceModelsLibrary", targets: ["SharedPersistenceModelsLibrary"]),
+		.library(name: "SortingLibrary", targets: ["SortingLibrary"]),
 	],
 	dependencies: [
+		.package(url: "https://github.com/apple/swift-async-algorithms", from: "0.0.3"),
 		.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "0.42.0"),
 		.package(url: "https://github.com/groue/GRDB.swift.git", from: "6.0.0"),
 	],
@@ -52,6 +58,7 @@ let package = Package(
 		.target(
 			name: "AlleysListFeature",
 			dependencies: [
+				"AlleysDataProviderInterface",
 				"PersistenceServiceInterface",
 				"SharedModelsLibrary",
 				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
@@ -181,6 +188,31 @@ let package = Package(
 		),
 		.testTarget(name: "SettingsFeatureTests", dependencies: ["SettingsFeature"]),
 
+		// MARK: - DataProviders
+		.target(
+			name: "AlleysDataProvider",
+			dependencies: [
+				"AlleysDataProviderInterface",
+				"PersistenceServiceInterface",
+				"RecentlyUsedServiceInterface",
+				"SortingLibrary",
+				.product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
+			]
+		),
+		.target(
+			name: "AlleysDataProviderInterface",
+			dependencies: [
+				"SharedModelsLibrary",
+				.product(name: "Dependencies", package: "swift-composable-architecture"),
+			]
+		),
+		.testTarget(
+			name: "AlleysDataProviderTests",
+			dependencies: [
+				"AlleysDataProvider",
+				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+			]),
+
 		// MARK: - Services
 		.target(name: "FeatureFlagService", dependencies: ["FeatureFlagServiceInterface"]),
 		.target(
@@ -210,6 +242,7 @@ let package = Package(
 		.target(
 			name: "PersistenceServiceInterface",
 			dependencies: [
+				"SharedModelsLibrary",
 				.product(name: "Dependencies", package: "swift-composable-architecture"),
 			]
 		),
@@ -264,5 +297,7 @@ let package = Package(
 				.product(name: "GRDB", package: "grdb.swift"),
 			]
 		),
+		.target(name: "SortingLibrary", dependencies: []),
+		.testTarget(name: "SortingLibraryTests", dependencies: ["SortingLibrary"]),
 	]
 )

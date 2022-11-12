@@ -13,6 +13,6 @@ extension Alley {
 extension Alley.FetchRequest {
 	public enum Ordering {
 		case byName
-		case byLastModified
+		case byRecentlyUsed
 	}
 }
