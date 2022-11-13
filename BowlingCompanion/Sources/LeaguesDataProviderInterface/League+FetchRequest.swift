@@ -2,8 +2,8 @@ import SharedModelsLibrary
 
 extension League {
 	public struct FetchRequest {
-		public var bowler: Bowler.ID
-		public var ordering: Ordering
+		public let bowler: Bowler.ID
+		public let ordering: Ordering
 
 		public init(bowler: Bowler.ID, ordering: Ordering) {
 			self.bowler = bowler

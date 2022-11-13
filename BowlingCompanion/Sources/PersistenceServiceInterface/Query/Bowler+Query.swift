@@ -2,7 +2,7 @@ import SharedModelsLibrary
 
 extension Bowler {
 	public struct Query {
-		public var ordering: Ordering
+		public let ordering: Ordering
 
 		public init(ordering: Ordering) {
 			self.ordering = ordering

@@ -1,7 +1,7 @@
 import Dependencies
 import Foundation
 
-public enum ResourceCategory: String {
+public enum RecentlyUsedResource: String {
 	case bowlers
 	case leagues
 	case frames
@@ -9,14 +9,14 @@ public enum ResourceCategory: String {
 }
 
 public struct RecentlyUsedService: Sendable {
-	public var didRecentlyUseResource: @Sendable (ResourceCategory, UUID) -> Void
-	public var observeRecentlyUsed: @Sendable (ResourceCategory) -> AsyncStream<[UUID]>
-	public var resetRecentlyUsed: @Sendable (ResourceCategory) -> Void
+	public var didRecentlyUseResource: @Sendable (RecentlyUsedResource, UUID) -> Void
+	public var observeRecentlyUsed: @Sendable (RecentlyUsedResource) -> AsyncStream<[UUID]>
+	public var resetRecentlyUsed: @Sendable (RecentlyUsedResource) -> Void
 
 	public init(
-		didRecentlyUseResource: @escaping @Sendable (ResourceCategory, UUID) -> Void,
-		observeRecentlyUsed: @escaping @Sendable (ResourceCategory) -> AsyncStream<[UUID]>,
-		resetRecentlyUsed: @escaping @Sendable (ResourceCategory) -> Void
+		didRecentlyUseResource: @escaping @Sendable (RecentlyUsedResource, UUID) -> Void,
+		observeRecentlyUsed: @escaping @Sendable (RecentlyUsedResource) -> AsyncStream<[UUID]>,
+		resetRecentlyUsed: @escaping @Sendable (RecentlyUsedResource) -> Void
 	) {
 		self.didRecentlyUseResource = didRecentlyUseResource
 		self.observeRecentlyUsed = observeRecentlyUsed

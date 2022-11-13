@@ -11,7 +11,7 @@ extension Notification.Name {
 
 extension RecentlyUsedService: DependencyKey {
 	public static let liveValue: Self = {
-		@Sendable func key(forCategory category: ResourceCategory) -> String {
+		@Sendable func key(forCategory category: RecentlyUsedResource) -> String {
 			"RecentlyUsed.\(category.rawValue)"
 		}
 
