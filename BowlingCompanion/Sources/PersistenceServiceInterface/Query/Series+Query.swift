@@ -1,9 +1,9 @@
 import SharedModelsLibrary
 
 extension Series {
-	public struct FetchRequest {
-		public var league: League.ID
-		public var ordering: Ordering
+	public struct Query {
+		public let league: League.ID
+		public let ordering: Ordering
 
 		public init(league: League.ID, ordering: Ordering) {
 			self.league = league
@@ -12,7 +12,7 @@ extension Series {
 	}
 }
 
-extension Series.FetchRequest {
+extension Series.Query {
 	public enum Ordering {
 		case byDate
 	}

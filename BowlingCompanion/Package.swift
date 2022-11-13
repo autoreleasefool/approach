@@ -36,6 +36,8 @@ let package = Package(
 		.library(name: "GamesDataProviderInterface", targets: ["GamesDataProviderInterface"]),
 		.library(name: "LeaguesDataProvider", targets: ["LeaguesDataProvider"]),
 		.library(name: "LeaguesDataProviderInterface", targets: ["LeaguesDataProviderInterface"]),
+		.library(name: "SeriesDataProvider", targets: ["SeriesDataProvider"]),
+		.library(name: "SeriesDataProviderInterface", targets: ["SeriesDataProviderInterface"]),
 
 		// MARK: - Services
 		.library(name: "FeatureFlagService", targets: ["FeatureFlagService"]),
@@ -310,6 +312,27 @@ let package = Package(
 			name: "LeaguesDataProviderTests",
 			dependencies: [
 				"LeaguesDataProvider",
+				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+			]
+		),
+		.target(
+			name: "SeriesDataProvider",
+			dependencies: [
+				"SeriesDataProviderInterface",
+				"PersistenceServiceInterface",
+			]
+		),
+		.target(
+			name: "SeriesDataProviderInterface",
+			dependencies: [
+				"SharedModelsLibrary",
+				.product(name: "Dependencies", package: "swift-composable-architecture"),
+			]
+		),
+		.testTarget(
+			name: "SeriesDataProviderTests",
+			dependencies: [
+				"SeriesDataProvider",
 				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 			]
 		),

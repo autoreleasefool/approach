@@ -27,7 +27,7 @@ final class GamesDataProviderTests: XCTestCase {
 		} operation: {
 			let dataProvider: GamesDataProvider = .liveValue
 
-			var iterator = dataProvider.fetchGames(.init(series: id0)).makeAsyncIterator()
+			var iterator = dataProvider.fetchGames(.init(series: id0, ordering: .byOrdinal)).makeAsyncIterator()
 
 			gamesContinuation.yield([firstGame, secondGame, thirdGame])
 

@@ -15,7 +15,7 @@ public struct PersistenceService: Sendable {
 	public var createSeries: @Sendable (Series) async throws -> Void
 	public var updateSeries: @Sendable (Series) async throws -> Void
 	public var deleteSeries: @Sendable (Series) async throws -> Void
-	public var fetchSeries: @Sendable (Series.FetchRequest) -> AsyncThrowingStream<[Series], Error>
+	public var fetchSeries: @Sendable (Series.Query) -> AsyncThrowingStream<[Series], Error>
 
 	public var createGame: @Sendable (Game) async throws -> Void
 	public var updateGame: @Sendable (Game) async throws -> Void
@@ -42,7 +42,7 @@ public struct PersistenceService: Sendable {
 		createSeries: @escaping @Sendable (Series) async throws -> Void,
 		updateSeries: @escaping @Sendable (Series) async throws -> Void,
 		deleteSeries: @escaping @Sendable (Series) async throws -> Void,
-		fetchSeries: @escaping @Sendable (Series.FetchRequest) -> AsyncThrowingStream<[Series], Error>,
+		fetchSeries: @escaping @Sendable (Series.Query) -> AsyncThrowingStream<[Series], Error>,
 		createGame: @escaping @Sendable (Game) async throws -> Void,
 		updateGame: @escaping @Sendable (Game) async throws -> Void,
 		deleteGame: @escaping @Sendable (Game) async throws -> Void,

@@ -24,7 +24,7 @@ final class FramesDataProviderTests: XCTestCase {
 		} operation: {
 			let dataProvider: FramesDataProvider = .liveValue
 
-			var iterator = dataProvider.fetchFrames(.init(game: id0)).makeAsyncIterator()
+			var iterator = dataProvider.fetchFrames(.init(game: id0, ordering: .byOrdinal)).makeAsyncIterator()
 
 			framesContinuation.yield([firstFrame, secondFrame, thirdFrame])
 

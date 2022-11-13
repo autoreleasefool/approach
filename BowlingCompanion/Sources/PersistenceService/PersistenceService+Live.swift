@@ -14,7 +14,6 @@ extension PersistenceService: DependencyKey {
 		}
 
 		let modelPersistence = ModelPersistence(writer: dbManager.writer)
-		let modelFetching = ModelFetching(reader: dbManager.reader)
 		let modelQuerying = ModelQuerying(reader: dbManager.reader)
 
 		return Self(
@@ -29,7 +28,7 @@ extension PersistenceService: DependencyKey {
 			createSeries: modelPersistence.create(model:),
 			updateSeries: modelPersistence.update(model:),
 			deleteSeries: modelPersistence.delete(model:),
-			fetchSeries: modelFetching.fetchAll(request:),
+			fetchSeries: modelQuerying.fetchAll(request:),
 			createGame: modelPersistence.create(model:),
 			updateGame: modelPersistence.update(model:),
 			deleteGame: modelPersistence.delete(model:),

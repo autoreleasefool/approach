@@ -3,14 +3,16 @@ import PersistenceServiceInterface
 import SharedPersistenceModelsLibrary
 import SharedModelsLibrary
 
-extension Series.FetchRequest: Fetchable {
+extension Series.Query: Queryable {
 	func fetchValues(_ db: Database) throws -> [Series] {
+		var query = Series.all()
+			.filter(Column("leagueId") == league)
+
 		switch ordering {
 		case .byDate:
-			return try Series.all()
-				.filter(Column("leagueId") == league)
-				.order(Column("date").desc)
-				.fetchAll(db)
+			query = query.order(Column("date").desc)
 		}
+
+		return try query.fetchAll(db)
 	}
 }
