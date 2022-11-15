@@ -25,7 +25,7 @@ let package = Package(
 		.library(name: "SeriesSidebarFeature", targets: ["SeriesSidebarFeature"]),
 		.library(name: "SettingsFeature", targets: ["SettingsFeature"]),
 
-		// MARK: - DataProviders
+		// MARK: - Data Providers
 		.library(name: "AlleysDataProvider", targets: ["AlleysDataProvider"]),
 		.library(name: "AlleysDataProviderInterface", targets: ["AlleysDataProviderInterface"]),
 		.library(name: "BowlersDataProvider", targets: ["BowlersDataProvider"]),
@@ -41,6 +41,7 @@ let package = Package(
 
 		// MARK: - Services
 		.library(name: "FeatureFlagService", targets: ["FeatureFlagService"]),
+		.library(name: "FeatureFlagServiceInterface", targets: ["FeatureFlagServiceInterface"]),
 		.library(name: "FileManagerService", targets: ["FileManagerService"]),
 		.library(name: "FileManagerServiceInterface", targets: ["FileManagerServiceInterface"]),
 		.library(name: "PersistenceService", targets: ["PersistenceService"]),
@@ -54,12 +55,12 @@ let package = Package(
 		.library(name: "DateTimeLibrary", targets: ["DateTimeLibrary"]),
 		.library(name: "FeatureFlagLibrary", targets: ["FeatureFlagLibrary"]),
 		.library(name: "SharedModelsLibrary", targets: ["SharedModelsLibrary"]),
-		.library(name: "SharedModelsLibraryMocks", targets: ["SharedModelsLibraryMocks"]),
 		.library(name: "SharedPersistenceModelsLibrary", targets: ["SharedPersistenceModelsLibrary"]),
 		.library(name: "SortingLibrary", targets: ["SortingLibrary"]),
+
 	],
 	dependencies: [
-		.package(url: "https://github.com/apple/swift-async-algorithms", from: "0.0.3"),
+		.package(url: "https://github.com/apple/swift-async-algorithms.git", from: "0.0.3"),
 		.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "0.42.0"),
 		.package(url: "https://github.com/groue/GRDB.swift.git", from: "6.0.0"),
 	],
@@ -68,29 +69,29 @@ let package = Package(
 		.target(
 			name: "AlleysListFeature",
 			dependencies: [
+				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 				"AlleysDataProviderInterface",
 				"PersistenceServiceInterface",
-				"SharedModelsLibrary",
-				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 			]
 		),
-		.testTarget(name: "AlleysListFeatureTests", dependencies: ["AlleysListFeature"]),
+		.testTarget(
+			name: "AlleysListFeatureTests",
+			dependencies: [
+				"AlleysListFeature",
+			]
+		),
 		.target(
 			name: "AppFeature",
 			dependencies: [
 				"AlleysListFeature",
 				"BowlersListFeature",
-				"FeatureFlagServiceInterface",
 				"SettingsFeature",
 			]
 		),
-		.testTarget(name: "AppFeatureTests", dependencies: ["AppFeature"]),
-		.target(
-			name: "BowlerEditorFeature",
+		.testTarget(
+			name: "AppFeatureTests",
 			dependencies: [
-				"BaseFormFeature",
-				"PersistenceServiceInterface",
-				"SharedModelsLibrary",
+				"AppFeature",
 			]
 		),
 		.target(
@@ -99,13 +100,30 @@ let package = Package(
 				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 			]
 		),
-		.testTarget(name: "BaseFormFeatureTests", dependencies: ["BaseFormFeature"]),
-		.testTarget(name: "BowlerEditorFeatureTests", dependencies: ["BowlerEditorFeature"]),
+		.testTarget(
+			name: "BaseFormFeatureTests",
+			dependencies: [
+				"BaseFormFeature",
+			]
+		),
+		.target(
+			name: "BowlerEditorFeature",
+			dependencies: [
+				"BaseFormFeature",
+				"PersistenceServiceInterface",
+			]
+		),
+		.testTarget(
+			name: "BowlerEditorFeatureTests",
+			dependencies: [
+				"BowlerEditorFeature",
+			]
+		),
 		.target(
 			name: "BowlersListFeature",
 			dependencies: [
-				"BowlersDataProviderInterface",
 				"BowlerEditorFeature",
+				"BowlersDataProviderInterface",
 				"LeaguesListFeature",
 			]
 		),
@@ -113,34 +131,48 @@ let package = Package(
 			name: "BowlersListFeatureTests",
 			dependencies: [
 				"BowlersListFeature",
-				"SharedModelsLibraryMocks",
 			]
 		),
 		.target(
 			name: "FeatureFlagListFeature",
 			dependencies: [
-				"FeatureFlagServiceInterface",
 				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+				"FeatureFlagServiceInterface",
 			]
 		),
-		.testTarget(name: "FeatureFlagListFeatureTests", dependencies: ["FeatureFlagListFeature"]),
+		.testTarget(
+			name: "FeatureFlagListFeatureTests",
+			dependencies: [
+				"FeatureFlagListFeature",
+			]
+		),
 		.target(
 			name: "GameEditorFeature",
 			dependencies: [
-				"SharedModelsLibrary",
 				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+				"SharedModelsLibrary",
 			]
 		),
-		.testTarget(name: "GameEditorFeatureTests", dependencies: ["GameEditorFeature"]),
+		.testTarget(
+			name: "GameEditorFeatureTests",
+			dependencies: [
+				"GameEditorFeature",
+			]
+		),
 		.target(
 			name: "GamesListFeature",
 			dependencies: [
+				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 				"DateTimeLibrary",
 				"GamesDataProviderInterface",
-				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 			]
 		),
-		.testTarget(name: "GamesListFeatureTests", dependencies: ["GamesListFeature"]),
+		.testTarget(
+			name: "GamesListFeatureTests",
+			dependencies: [
+				"GamesListFeature",
+			]
+		),
 		.target(
 			name: "LeagueEditorFeature",
 			dependencies: [
@@ -148,16 +180,39 @@ let package = Package(
 				"PersistenceServiceInterface",
 			]
 		),
-		.testTarget(name: "LeagueEditorFeatureTests", dependencies: ["LeagueEditorFeature"]),
+		.testTarget(
+			name: "LeagueEditorFeatureTests",
+			dependencies: [
+				"LeagueEditorFeature",
+			]
+		),
 		.target(
 			name: "LeaguesListFeature",
 			dependencies: [
-				"LeaguesDataProviderInterface",
 				"LeagueEditorFeature",
+				"LeaguesDataProviderInterface",
 				"SeriesListFeature",
 			]
 		),
-		.testTarget(name: "LeaguesListFeatureTests", dependencies: ["LeaguesListFeature"]),
+		.testTarget(
+			name: "LeaguesListFeatureTests",
+			dependencies: [
+				"LeaguesListFeature",
+			]
+		),
+		.target(
+			name: "ScoreSheetFeature",
+			dependencies: [
+				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+				"SharedModelsLibrary",
+			]
+		),
+		.testTarget(
+			name: "ScoreSheetFeatureTests",
+			dependencies: [
+				"ScoreSheetFeature",
+			]
+		),
 		.target(
 			name: "SeriesEditorFeature",
 			dependencies: [
@@ -165,15 +220,12 @@ let package = Package(
 				"PersistenceServiceInterface",
 			]
 		),
-		.target(
-			name: "ScoreSheetFeature",
+		.testTarget(
+			name: "SeriesEditorFeatureTests",
 			dependencies: [
-				"SharedModelsLibrary",
-				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+				"SeriesEditorFeature",
 			]
 		),
-		.testTarget(name: "ScoreSheetFeatureTests", dependencies: ["ScoreSheetFeature"]),
-		.testTarget(name: "SeriesEditorFeatureTests", dependencies: ["SeriesEditorFeature"]),
 		.target(
 			name: "SeriesListFeature",
 			dependencies: [
@@ -182,71 +234,83 @@ let package = Package(
 				"SeriesSidebarFeature",
 			]
 		),
-		.testTarget(name: "SeriesListFeatureTests", dependencies: ["SeriesListFeature"]),
+		.testTarget(
+			name: "SeriesListFeatureTests",
+			dependencies: [
+				"SeriesListFeature",
+			]
+		),
 		.target(
 			name: "SeriesSidebarFeature",
 			dependencies: [
-				"GamesDataProviderInterface",
 				"GameEditorFeature",
+				"GamesDataProviderInterface",
 			]
 		),
-		.testTarget(name: "SeriesSidebarFeatureTests", dependencies: ["SeriesSidebarFeature"]),
+		.testTarget(
+			name: "SeriesSidebarFeatureTests",
+			dependencies: [
+				"SeriesSidebarFeature",
+			]
+		),
 		.target(
 			name: "SettingsFeature",
 			dependencies: [
 				"FeatureFlagListFeature",
-				"FeatureFlagServiceInterface",
 			]
 		),
-		.testTarget(name: "SettingsFeatureTests", dependencies: ["SettingsFeature"]),
+		.testTarget(
+			name: "SettingsFeatureTests",
+			dependencies: [
+				"SettingsFeature",
+			]
+		),
 
-		// MARK: - DataProviders
+		// MARK: - Data Providers
 		.target(
 			name: "AlleysDataProvider",
 			dependencies: [
+				.product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
 				"AlleysDataProviderInterface",
 				"PersistenceServiceInterface",
 				"RecentlyUsedServiceInterface",
 				"SortingLibrary",
-				.product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
 			]
 		),
 		.target(
 			name: "AlleysDataProviderInterface",
 			dependencies: [
-				"SharedModelsLibrary",
 				.product(name: "Dependencies", package: "swift-composable-architecture"),
+				"SharedModelsLibrary",
 			]
 		),
 		.testTarget(
 			name: "AlleysDataProviderTests",
 			dependencies: [
 				"AlleysDataProvider",
-				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 			]
 		),
 		.target(
 			name: "BowlersDataProvider",
 			dependencies: [
+				.product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
 				"BowlersDataProviderInterface",
 				"PersistenceServiceInterface",
 				"RecentlyUsedServiceInterface",
 				"SortingLibrary",
-				.product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
 			]
 		),
 		.target(
 			name: "BowlersDataProviderInterface",
 			dependencies: [
-				"SharedModelsLibrary",
 				.product(name: "Dependencies", package: "swift-composable-architecture"),
+				"SharedModelsLibrary",
 			]
 		),
 		.testTarget(
 			name: "BowlersDataProviderTests",
 			dependencies: [
 				"BowlersDataProvider",
-				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 			]
 		),
 		.target(
@@ -259,15 +323,14 @@ let package = Package(
 		.target(
 			name: "FramesDataProviderInterface",
 			dependencies: [
-				"SharedModelsLibrary",
 				.product(name: "Dependencies", package: "swift-composable-architecture"),
+				"SharedModelsLibrary",
 			]
 		),
 		.testTarget(
 			name: "FramesDataProviderTests",
 			dependencies: [
 				"FramesDataProvider",
-				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 			]
 		),
 		.target(
@@ -280,81 +343,98 @@ let package = Package(
 		.target(
 			name: "GamesDataProviderInterface",
 			dependencies: [
-				"SharedModelsLibrary",
 				.product(name: "Dependencies", package: "swift-composable-architecture"),
+				"SharedModelsLibrary",
 			]
 		),
 		.testTarget(
 			name: "GamesDataProviderTests",
 			dependencies: [
 				"GamesDataProvider",
-				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 			]
 		),
 		.target(
 			name: "LeaguesDataProvider",
 			dependencies: [
+				.product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
 				"LeaguesDataProviderInterface",
 				"PersistenceServiceInterface",
 				"RecentlyUsedServiceInterface",
 				"SortingLibrary",
-				.product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
 			]
 		),
 		.target(
 			name: "LeaguesDataProviderInterface",
 			dependencies: [
-				"SharedModelsLibrary",
 				.product(name: "Dependencies", package: "swift-composable-architecture"),
+				"SharedModelsLibrary",
 			]
 		),
 		.testTarget(
 			name: "LeaguesDataProviderTests",
 			dependencies: [
 				"LeaguesDataProvider",
-				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 			]
 		),
 		.target(
 			name: "SeriesDataProvider",
 			dependencies: [
-				"SeriesDataProviderInterface",
 				"PersistenceServiceInterface",
+				"SeriesDataProviderInterface",
 			]
 		),
 		.target(
 			name: "SeriesDataProviderInterface",
 			dependencies: [
-				"SharedModelsLibrary",
 				.product(name: "Dependencies", package: "swift-composable-architecture"),
+				"SharedModelsLibrary",
 			]
 		),
 		.testTarget(
 			name: "SeriesDataProviderTests",
 			dependencies: [
 				"SeriesDataProvider",
-				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 			]
 		),
 
 		// MARK: - Services
-		.target(name: "FeatureFlagService", dependencies: ["FeatureFlagServiceInterface"]),
+		.target(
+			name: "FeatureFlagService",
+			dependencies: [
+				"FeatureFlagServiceInterface",
+			]
+		),
 		.target(
 			name: "FeatureFlagServiceInterface",
 			dependencies: [
-				"FeatureFlagLibrary",
 				.product(name: "Dependencies", package: "swift-composable-architecture"),
+				"FeatureFlagLibrary",
 			]
 		),
-		.testTarget(name: "FeatureFlagServiceTests", dependencies: ["FeatureFlagService"]),
-		.target(name: "FileManagerService", dependencies: ["FileManagerServiceInterface"]),
+		.testTarget(
+			name: "FeatureFlagServiceTests",
+			dependencies: [
+				"FeatureFlagService",
+			]
+		),
+		.target(
+			name: "FileManagerService",
+			dependencies: [
+				"FileManagerServiceInterface",
+			]
+		),
 		.target(
 			name: "FileManagerServiceInterface",
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-composable-architecture"),
 			]
 		),
-		.testTarget(name: "FileManagerServiceTests", dependencies: ["FileManagerService"]),
+		.testTarget(
+			name: "FileManagerServiceTests",
+			dependencies: [
+				"FileManagerService",
+			]
+		),
 		.target(
 			name: "PersistenceService",
 			dependencies: [
@@ -366,16 +446,21 @@ let package = Package(
 		.target(
 			name: "PersistenceServiceInterface",
 			dependencies: [
-				"SharedModelsLibrary",
 				.product(name: "Dependencies", package: "swift-composable-architecture"),
+				"SharedModelsLibrary",
 			]
 		),
-		.testTarget(name: "PersistenceServiceTests", dependencies: ["PersistenceService"]),
+		.testTarget(
+			name: "PersistenceServiceTests",
+			dependencies: [
+				"PersistenceService",
+			]
+		),
 		.target(
 			name: "PreferenceService",
 			dependencies: [
-				"PreferenceServiceInterface",
 				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+				"PreferenceServiceInterface",
 			]
 		),
 		.target(
@@ -384,7 +469,12 @@ let package = Package(
 				.product(name: "Dependencies", package: "swift-composable-architecture"),
 			]
 		),
-		.testTarget(name: "PreferenceServiceTests", dependencies: ["PreferenceService"]),
+		.testTarget(
+			name: "PreferenceServiceTests",
+			dependencies: [
+				"PreferenceService",
+			]
+		),
 		.target(
 			name: "RecentlyUsedService",
 			dependencies: [
@@ -398,30 +488,50 @@ let package = Package(
 				.product(name: "Dependencies", package: "swift-composable-architecture"),
 			]
 		),
-		.testTarget(name: "RecentlyUsedServiceTests", dependencies: ["RecentlyUsedService"]),
+		.testTarget(
+			name: "RecentlyUsedServiceTests",
+			dependencies: [
+				"RecentlyUsedService",
+			]
+		),
 
 		// MARK: - Libraries
-		.target(name: "DateTimeLibrary", dependencies: []),
-		.testTarget(name: "DateTimeLibraryTests", dependencies: ["DateTimeLibrary"]),
-		.target(name: "FeatureFlagLibrary", dependencies: []),
-		.testTarget(name: "FeatureFlagLibraryTests", dependencies: ["FeatureFlagLibrary"]),
-		.target(name: "SharedModelsLibrary", dependencies: []),
 		.target(
-			name: "SharedModelsLibraryMocks",
+			name: "DateTimeLibrary",
+			dependencies: []
+		),
+		.testTarget(
+			name: "DateTimeLibraryTests",
 			dependencies: [
-				"SharedModelsLibrary",
-				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+				"DateTimeLibrary",
 			]
+		),
+		.target(
+			name: "FeatureFlagLibrary",
+			dependencies: []
+		),
+		.testTarget(
+			name: "FeatureFlagLibraryTests",
+			dependencies: [
+				"FeatureFlagLibrary",
+			]
+		),
+		.target(
+			name: "SharedModelsLibrary",
+			dependencies: []
 		),
 		.target(
 			name: "SharedPersistenceModelsLibrary",
 			dependencies: [
-				"SharedModelsLibrary",
 				.product(name: "Dependencies", package: "swift-composable-architecture"),
-				.product(name: "GRDB", package: "grdb.swift"),
+				.product(name: "GRDB", package: "GRDB.swift"),
+				"SharedModelsLibrary",
 			]
 		),
-		.target(name: "SortingLibrary", dependencies: []),
-		.testTarget(name: "SortingLibraryTests", dependencies: ["SortingLibrary"]),
+		.target(
+			name: "SortingLibrary",
+			dependencies: []
+		),
+
 	]
 )

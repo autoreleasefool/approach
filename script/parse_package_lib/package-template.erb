@@ -1,0 +1,28 @@
+// swift-tools-version: <%= @package.tools_version %>
+
+import PackageDescription
+
+let package = Package(
+	name: "<%= @package.name %>",
+	platforms: [<% @package.platforms.each do |platform, values| %>
+		.<%= platform %>(<% values.each do |value| %><%= value %><% end %>),<% end %>
+	],
+	products: [<% @collections.each do |collection| %>
+		// MARK: - <%= collection[:name] %><% collection[:targets].select { |_, t| t.product? }.sort_by { |t, _| t }.each do |name, _| %>
+		.library(name: "<%= name %>", targets: ["<%= name %>"]),<% end %>
+<% end %>
+	],
+	dependencies: [<% @packages.each do |_, package| %>
+		.package(url: "<%= package.url %>", from: "<%= package.from %>"),<% end %>
+	],
+	targets: [<% @collections.each do |collection| %>
+		// MARK: - <%= collection[:name] %><% collection[:targets].sort_by { |t, _| t }.each do |_, target| %>
+		<% if target.type == 'test' %>.testTarget(<% else %>.target(<% end %>
+			name: "<%= target.name %>",
+			dependencies: [<% if target.dependencies.empty? %>]<% else %><% target.dependencies.sort.each do |dep| %>
+				<% if dep.start_with?('.') %><%= dep %><% else %>"<%= dep %>"<% end %>,<% end %>
+			]<% end %>
+		),<% end %>
+<% end %>
+	]
+)
