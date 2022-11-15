@@ -6,6 +6,7 @@ public enum RecentlyUsedResource: String {
 	case leagues
 	case frames
 	case alleys
+	case gear
 }
 
 public struct RecentlyUsedService: Sendable {

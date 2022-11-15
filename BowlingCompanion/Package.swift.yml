@@ -104,6 +104,13 @@ package:
       dependencies:
         implementation:
           - PersistenceService
+    - name: GearDataProvider
+      dependencies:
+        implementation:
+          - PersistenceService
+          - RecentlyUsedService
+          - SortingLibrary
+          - AsyncAlgorithms
     - name: LeaguesDataProvider
       dependencies:
         implementation:

@@ -34,6 +34,8 @@ let package = Package(
 		.library(name: "FramesDataProviderInterface", targets: ["FramesDataProviderInterface"]),
 		.library(name: "GamesDataProvider", targets: ["GamesDataProvider"]),
 		.library(name: "GamesDataProviderInterface", targets: ["GamesDataProviderInterface"]),
+		.library(name: "GearDataProvider", targets: ["GearDataProvider"]),
+		.library(name: "GearDataProviderInterface", targets: ["GearDataProviderInterface"]),
 		.library(name: "LeaguesDataProvider", targets: ["LeaguesDataProvider"]),
 		.library(name: "LeaguesDataProviderInterface", targets: ["LeaguesDataProviderInterface"]),
 		.library(name: "SeriesDataProvider", targets: ["SeriesDataProvider"]),
@@ -287,6 +289,7 @@ let package = Package(
 		.testTarget(
 			name: "AlleysDataProviderTests",
 			dependencies: [
+				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 				"AlleysDataProvider",
 			]
 		),
@@ -310,6 +313,7 @@ let package = Package(
 		.testTarget(
 			name: "BowlersDataProviderTests",
 			dependencies: [
+				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 				"BowlersDataProvider",
 			]
 		),
@@ -330,6 +334,7 @@ let package = Package(
 		.testTarget(
 			name: "FramesDataProviderTests",
 			dependencies: [
+				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 				"FramesDataProvider",
 			]
 		),
@@ -350,7 +355,32 @@ let package = Package(
 		.testTarget(
 			name: "GamesDataProviderTests",
 			dependencies: [
+				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 				"GamesDataProvider",
+			]
+		),
+		.target(
+			name: "GearDataProvider",
+			dependencies: [
+				.product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
+				"GearDataProviderInterface",
+				"PersistenceServiceInterface",
+				"RecentlyUsedServiceInterface",
+				"SortingLibrary",
+			]
+		),
+		.target(
+			name: "GearDataProviderInterface",
+			dependencies: [
+				.product(name: "Dependencies", package: "swift-composable-architecture"),
+				"SharedModelsLibrary",
+			]
+		),
+		.testTarget(
+			name: "GearDataProviderTests",
+			dependencies: [
+				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+				"GearDataProvider",
 			]
 		),
 		.target(
@@ -373,6 +403,7 @@ let package = Package(
 		.testTarget(
 			name: "LeaguesDataProviderTests",
 			dependencies: [
+				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 				"LeaguesDataProvider",
 			]
 		),
@@ -393,6 +424,7 @@ let package = Package(
 		.testTarget(
 			name: "SeriesDataProviderTests",
 			dependencies: [
+				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 				"SeriesDataProvider",
 			]
 		),

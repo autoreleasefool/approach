@@ -23,6 +23,11 @@ package_yaml = YAML.safe_load(File.read(package_file))
   case target.type
   when 'feature'
     target.add_dependency(@external['ComposableArchitecture'])
+  when 'test'
+    case target.base
+    when 'data_provider'
+      target.add_dependency(@external['ComposableArchitecture'])
+    end
   when 'data_provider_interface'
     target.add_dependency(@targets['SharedModelsLibrary'])
     target.add_dependency(@external['Dependencies'])

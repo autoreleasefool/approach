@@ -38,7 +38,11 @@ extension PersistenceService: DependencyKey {
 			createAlley: modelPersistence.create(model:),
 			updateAlley: modelPersistence.update(model:),
 			deleteAlley: modelPersistence.delete(model:),
-			fetchAlleys: modelQuerying.fetchAll(request:)
+			fetchAlleys: modelQuerying.fetchAll(request:),
+			createGear: modelPersistence.create(model:),
+			updateGear: modelPersistence.update(model:),
+			deleteGear: modelPersistence.delete(model:),
+			fetchGear: modelQuerying.fetchAll(request:)
 		)
 	}()
 }

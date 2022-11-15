@@ -30,6 +30,11 @@ public struct PersistenceService: Sendable {
 	public var deleteAlley: @Sendable (Alley) async throws -> Void
 	public var fetchAlleys: @Sendable (Alley.Query) -> AsyncThrowingStream<[Alley], Error>
 
+	public var createGear: @Sendable (Gear) async throws -> Void
+	public var updateGear: @Sendable (Gear) async throws -> Void
+	public var deleteGear: @Sendable (Gear) async throws -> Void
+	public var fetchGear: @Sendable (Gear.Query) -> AsyncThrowingStream<[Gear], Error>
+
 	public init(
 		createBowler: @escaping @Sendable (Bowler) async throws -> Void,
 		updateBowler: @escaping @Sendable (Bowler) async throws -> Void,
@@ -52,7 +57,11 @@ public struct PersistenceService: Sendable {
 		createAlley: @escaping @Sendable (Alley) async throws -> Void,
 		updateAlley: @escaping @Sendable (Alley) async throws -> Void,
 		deleteAlley: @escaping @Sendable (Alley) async throws -> Void,
-		fetchAlleys: @escaping @Sendable (Alley.Query) -> AsyncThrowingStream<[Alley], Error>
+		fetchAlleys: @escaping @Sendable (Alley.Query) -> AsyncThrowingStream<[Alley], Error>,
+		createGear: @escaping @Sendable (Gear) async throws -> Void,
+		updateGear: @escaping @Sendable (Gear) async throws -> Void,
+		deleteGear: @escaping @Sendable (Gear) async throws -> Void,
+		fetchGear: @escaping @Sendable (Gear.Query) -> AsyncThrowingStream<[Gear], Error>
 	) {
 		self.createBowler = createBowler
 		self.updateBowler = updateBowler
@@ -76,6 +85,10 @@ public struct PersistenceService: Sendable {
 		self.updateAlley = updateAlley
 		self.deleteAlley = deleteAlley
 		self.fetchAlleys = fetchAlleys
+		self.createGear = createGear
+		self.updateGear = updateGear
+		self.deleteGear = deleteGear
+		self.fetchGear = fetchGear
 	}
 }
 
@@ -102,7 +115,11 @@ extension PersistenceService: TestDependencyKey {
 		createAlley: { _ in fatalError("\(Self.self).createAlley") },
 		updateAlley: { _ in fatalError("\(Self.self).updateAlley") },
 		deleteAlley: { _ in fatalError("\(Self.self).deleteAlley") },
-		fetchAlleys: { _ in fatalError("\(Self.self).fetchAlleys") }
+		fetchAlleys: { _ in fatalError("\(Self.self).fetchAlleys") },
+		createGear: { _ in fatalError("\(Self.self).createGear") },
+		updateGear: { _ in fatalError("\(Self.self).updateGear") },
+		deleteGear: { _ in fatalError("\(Self.self).deleteGear") },
+		fetchGear: { _ in fatalError("\(Self.self).fetchGear") }
 	)
 }
 

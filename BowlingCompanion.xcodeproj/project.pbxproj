@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CA1442322924582D00D39B86 /* GearDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CA1442312924582D00D39B86 /* GearDataProvider */; };
 		CA2890DE28F87FF2003C1EE9 /* AppFeature in Frameworks */ = {isa = PBXBuildFile; productRef = CA2890DD28F87FF2003C1EE9 /* AppFeature */; };
 		CA2890E328F8DA53003C1EE9 /* PersistenceService in Frameworks */ = {isa = PBXBuildFile; productRef = CA2890E228F8DA53003C1EE9 /* PersistenceService */; };
 		CA8BBC5928D59B8B00653A1E /* BowlingCompanionApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA8BBC5828D59B8B00653A1E /* BowlingCompanionApp.swift */; };
@@ -50,6 +51,7 @@
 				CAC13AAD29204EA000DD36A5 /* FramesDataProvider in Frameworks */,
 				CAC13AAB292045B700DD36A5 /* BowlersDataProvider in Frameworks */,
 				CAC56853291F54A100192D12 /* RecentlyUsedService in Frameworks */,
+				CA1442322924582D00D39B86 /* GearDataProvider in Frameworks */,
 				CAC13AAF29205E4E00DD36A5 /* GamesDataProvider in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -139,6 +141,7 @@
 				CAC13AAE29205E4E00DD36A5 /* GamesDataProvider */,
 				CAC13AB029205E5100DD36A5 /* LeaguesDataProvider */,
 				CAC13AB229205E5600DD36A5 /* SeriesDataProvider */,
+				CA1442312924582D00D39B86 /* GearDataProvider */,
 			);
 			productName = BowlingCompanion;
 			productReference = CA8BBC5528D59B8B00653A1E /* BowlingCompanion.app */;
@@ -422,6 +425,10 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		CA1442312924582D00D39B86 /* GearDataProvider */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = GearDataProvider;
+		};
 		CA2890DD28F87FF2003C1EE9 /* AppFeature */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AppFeature;
