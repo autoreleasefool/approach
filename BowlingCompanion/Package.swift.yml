@@ -31,6 +31,7 @@ package:
       dependencies:
         - AlleysListFeature
         - BowlersListFeature
+        - GearListFeature
         - SettingsFeature
     - name: BowlerEditorFeature
       dependencies:
@@ -52,6 +53,10 @@ package:
       dependencies:
         - DateTimeLibrary
         - GamesDataProvider
+    - name: GearListFeature
+      dependencies:
+        - GearDataProvider
+        - PersistenceService
     - name: LeagueEditorFeature
       dependencies:
         - BaseFormFeature

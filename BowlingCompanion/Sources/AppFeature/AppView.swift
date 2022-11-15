@@ -1,6 +1,7 @@
 import AlleysListFeature
 import BowlersListFeature
 import ComposableArchitecture
+import GearListFeature
 import SettingsFeature
 import SwiftUI
 
@@ -61,6 +62,8 @@ extension App.Tab {
 			return "Settings"
 		case .bowlers:
 			return "Scoresheet"
+		case .gear:
+			return "Gear"
 		}
 	}
 
@@ -72,6 +75,8 @@ extension App.Tab {
 			return "gear"
 		case .bowlers:
 			return "figure.bowling"
+		case .gear:
+			return "bag"
 		}
 	}
 
@@ -84,6 +89,8 @@ extension App.Tab {
 				BowlersListView(store: store.scope(state: \.bowlersList, action: App.Action.bowlersList))
 			case .settings:
 				SettingsView(store: store.scope(state: \.settings, action: App.Action.settings))
+			case .gear:
+				GearListView(store: store.scope(state: \.gearList, action: App.Action.gearList))
 			}
 		}
 	}

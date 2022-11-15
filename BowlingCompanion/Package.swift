@@ -17,6 +17,7 @@ let package = Package(
 		.library(name: "FeatureFlagListFeature", targets: ["FeatureFlagListFeature"]),
 		.library(name: "GameEditorFeature", targets: ["GameEditorFeature"]),
 		.library(name: "GamesListFeature", targets: ["GamesListFeature"]),
+		.library(name: "GearListFeature", targets: ["GearListFeature"]),
 		.library(name: "LeagueEditorFeature", targets: ["LeagueEditorFeature"]),
 		.library(name: "LeaguesListFeature", targets: ["LeaguesListFeature"]),
 		.library(name: "ScoreSheetFeature", targets: ["ScoreSheetFeature"]),
@@ -87,6 +88,7 @@ let package = Package(
 			dependencies: [
 				"AlleysListFeature",
 				"BowlersListFeature",
+				"GearListFeature",
 				"SettingsFeature",
 			]
 		),
@@ -173,6 +175,20 @@ let package = Package(
 			name: "GamesListFeatureTests",
 			dependencies: [
 				"GamesListFeature",
+			]
+		),
+		.target(
+			name: "GearListFeature",
+			dependencies: [
+				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+				"GearDataProviderInterface",
+				"PersistenceServiceInterface",
+			]
+		),
+		.testTarget(
+			name: "GearListFeatureTests",
+			dependencies: [
+				"GearListFeature",
 			]
 		),
 		.target(
