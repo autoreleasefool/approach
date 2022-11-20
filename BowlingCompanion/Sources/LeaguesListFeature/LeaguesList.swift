@@ -2,6 +2,7 @@ import ComposableArchitecture
 import LeaguesDataProviderInterface
 import LeagueEditorFeature
 import PersistenceServiceInterface
+import RecentlyUsedServiceInterface
 import SeriesListFeature
 import SharedModelsLibrary
 
@@ -37,8 +38,10 @@ public struct LeaguesList: ReducerProtocol {
 
 	public init() {}
 
+	@Dependency(\.continuousClock) var clock
 	@Dependency(\.persistenceService) var persistenceService
 	@Dependency(\.leaguesDataProvider) var leaguesDataProvider
+	@Dependency(\.recentlyUsedService) var recentlyUsedService
 
 	public var body: some ReducerProtocol<State, Action> {
 		Reduce { state, action in
@@ -63,6 +66,10 @@ public struct LeaguesList: ReducerProtocol {
 			case let .setNavigation(selection: .some(id)):
 				if let selection = state.leagues[id: id] {
 					state.selection = Identified(.init(league: selection), id: selection.id)
+					return .fireAndForget {
+						try await clock.sleep(for: .seconds(1))
+						recentlyUsedService.didRecentlyUseResource(.leagues, selection.id)
+					}
 				}
 				return .none
 

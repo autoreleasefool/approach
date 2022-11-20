@@ -27,6 +27,7 @@ extension RecentlyUsedService: DependencyKey {
 					recentlyUsed.remove(at: index)
 				}
 
+				// TODO: eject outdated ids / at limit
 				recentlyUsed.insert(uuidString, at: 0)
 				preferenceService.setStringArray(categoryKey, recentlyUsed)
 				NotificationCenter.default.post(name: .RecentlyUsed.didChange, object: categoryKey)

@@ -3,6 +3,7 @@ import BowlerEditorFeature
 import ComposableArchitecture
 import LeaguesListFeature
 import PersistenceServiceInterface
+import RecentlyUsedServiceInterface
 import SharedModelsLibrary
 
 public struct BowlersList: ReducerProtocol {
@@ -34,8 +35,10 @@ public struct BowlersList: ReducerProtocol {
 
 	public init() {}
 
+	@Dependency(\.continuousClock) var clock
 	@Dependency(\.persistenceService) var persistenceService
 	@Dependency(\.bowlersDataProvider) var bowlersDataProvider
+	@Dependency(\.recentlyUsedService) var recentlyUsedService
 
 	public var body: some ReducerProtocol<State, Action> {
 		Reduce { state, action in
@@ -52,8 +55,13 @@ public struct BowlersList: ReducerProtocol {
 			case let .setNavigation(selection: .some(id)):
 				if let selection = state.bowlers[id: id] {
 					state.selection = Identified(.init(bowler: selection), id: selection.id)
+					return .fireAndForget {
+						try await clock.sleep(for: .seconds(1))
+						recentlyUsedService.didRecentlyUseResource(.bowlers, selection.id)
+					}
 				}
 				return .none
+
 
 			case .setNavigation(selection: .none):
 				state.selection = nil

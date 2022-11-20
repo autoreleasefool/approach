@@ -69,6 +69,7 @@ package:
       dependencies:
         - LeaguesDataProvider
         - LeagueEditorFeature
+        - RecentlyUsedService
         - SeriesListFeature
     - name: ScoreSheetFeature
       dependencies:

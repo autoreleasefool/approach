@@ -222,6 +222,7 @@ let package = Package(
 			dependencies: [
 				"LeagueEditorFeature",
 				"LeaguesDataProviderInterface",
+				"RecentlyUsedServiceInterface",
 				"SeriesListFeature",
 			]
 		),
