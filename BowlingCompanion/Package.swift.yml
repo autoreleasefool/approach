@@ -89,6 +89,7 @@ package:
         - GameEditorFeature
     - name: SettingsFeature
       dependencies:
+        - ConstantsLibrary
         - FeatureFlagListFeature
 
   data_provider:
@@ -156,6 +157,7 @@ package:
           - PreferenceService
 
   library:
+    - name: ConstantsLibrary
     - name: DateTimeLibrary
       requires_tests: true
     - name: FeatureFlagLibrary

@@ -56,6 +56,7 @@ let package = Package(
 		.library(name: "RecentlyUsedServiceInterface", targets: ["RecentlyUsedServiceInterface"]),
 
 		// MARK: - Libraries
+		.library(name: "ConstantsLibrary", targets: ["ConstantsLibrary"]),
 		.library(name: "DateTimeLibrary", targets: ["DateTimeLibrary"]),
 		.library(name: "FeatureFlagLibrary", targets: ["FeatureFlagLibrary"]),
 		.library(name: "SharedModelsLibrary", targets: ["SharedModelsLibrary"]),
@@ -288,6 +289,7 @@ let package = Package(
 		.target(
 			name: "SettingsFeature",
 			dependencies: [
+				"ConstantsLibrary",
 				"FeatureFlagListFeature",
 			]
 		),
@@ -558,6 +560,10 @@ let package = Package(
 		),
 
 		// MARK: - Libraries
+		.target(
+			name: "ConstantsLibrary",
+			dependencies: []
+		),
 		.target(
 			name: "DateTimeLibrary",
 			dependencies: []

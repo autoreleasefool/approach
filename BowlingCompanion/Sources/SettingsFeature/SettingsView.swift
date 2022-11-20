@@ -34,6 +34,8 @@ public struct SettingsView: View {
 						)
 					}
 				}
+
+				HelpSettingsView(store: store.scope(state: \.helpSettings, action: Settings.Action.helpSettings))
 			}
 			.navigationTitle("Settings")
 		}
