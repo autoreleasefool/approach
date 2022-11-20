@@ -23,10 +23,14 @@ package:
         - GRDB
 
   feature:
+    - name: AlleyEditorFeature
+      dependencies:
+        - BaseFormFeature
+        - PersistenceService
     - name: AlleysListFeature
       dependencies:
+        - AlleyEditorFeature
         - AlleysDataProvider
-        - PersistenceService
     - name: AppFeature
       dependencies:
         - AlleysListFeature
