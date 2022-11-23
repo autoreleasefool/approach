@@ -62,6 +62,8 @@ let package = Package(
 		.library(name: "SharedModelsLibrary", targets: ["SharedModelsLibrary"]),
 		.library(name: "SharedPersistenceModelsLibrary", targets: ["SharedPersistenceModelsLibrary"]),
 		.library(name: "SortingLibrary", targets: ["SortingLibrary"]),
+		.library(name: "ThemesLibrary", targets: ["ThemesLibrary"]),
+		.library(name: "ViewsLibrary", targets: ["ViewsLibrary"]),
 
 	],
 	dependencies: [
@@ -598,6 +600,14 @@ let package = Package(
 		),
 		.target(
 			name: "SortingLibrary",
+			dependencies: []
+		),
+		.target(
+			name: "ThemesLibrary",
+			dependencies: []
+		),
+		.target(
+			name: "ViewsLibrary",
 			dependencies: []
 		),
 

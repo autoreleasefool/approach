@@ -169,3 +169,5 @@ package:
         - Dependencies
         - GRDB
     - name: SortingLibrary
+    - name: ThemesLibrary
+    - name: ViewsLibrary
