@@ -1,3 +1,5 @@
+// swiftlint:disable line_length
+
 public struct Acknowledgement {
 	public let name: String
 	public let license: License
