@@ -17,4 +17,8 @@ extension Theme.Images {
 	public enum Error {
 		public static let notFound = UIImage(named: "Images/Error/NotFound")!
 	}
+
+	public enum Icons {
+		public static let analytics = UIImage(named: "Images/Icons/Analytics")!
+	}
 }

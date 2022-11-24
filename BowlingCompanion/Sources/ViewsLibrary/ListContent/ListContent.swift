@@ -40,6 +40,7 @@ public struct ListContent<
 				List {
 					content(elements)
 				}
+				.listStyle(.plain)
 			}
 		case let .error(errorContent):
 			errorView(errorContent)

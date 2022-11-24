@@ -5,6 +5,8 @@ extension Theme {
 		public static let primary = Color("Colors/Primary/Default")
 		public static let primaryLight = Color("Colors/Primary/Light")
 
+		public static let secondary = Color("Colors/Secondary/Default")
+
 		public static let background = Color("Colors/Background/Default")
 		public static let backgroundSecondary = Color("Colors/Background/Secondary")
 

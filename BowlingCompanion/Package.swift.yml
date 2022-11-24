@@ -47,7 +47,7 @@ package:
         - BowlersDataProvider
         - BowlerEditorFeature
         - LeaguesListFeature
-        - ThemesLibrary
+        - StatisticsWidgetsFeature
     - name: FeatureFlagListFeature
       dependencies:
         - FeatureFlagService
@@ -94,6 +94,10 @@ package:
       dependencies:
         - ConstantsLibrary
         - FeatureFlagListFeature
+    - name: StatisticsWidgetsFeature
+      dependencies:
+        - ThemesLibrary
+        - ViewsLibrary
 
   data_provider:
     - name: AlleysDataProvider

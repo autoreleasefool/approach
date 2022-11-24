@@ -26,6 +26,7 @@ let package = Package(
 		.library(name: "SeriesListFeature", targets: ["SeriesListFeature"]),
 		.library(name: "SeriesSidebarFeature", targets: ["SeriesSidebarFeature"]),
 		.library(name: "SettingsFeature", targets: ["SettingsFeature"]),
+		.library(name: "StatisticsWidgetsFeature", targets: ["StatisticsWidgetsFeature"]),
 
 		// MARK: - Data Providers
 		.library(name: "AlleysDataProvider", targets: ["AlleysDataProvider"]),
@@ -145,6 +146,7 @@ let package = Package(
 				"BowlerEditorFeature",
 				"BowlersDataProviderInterface",
 				"LeaguesListFeature",
+				"StatisticsWidgetsFeature",
 			]
 		),
 		.testTarget(
@@ -299,6 +301,18 @@ let package = Package(
 			name: "SettingsFeatureTests",
 			dependencies: [
 				"SettingsFeature",
+			]
+		),
+		.target(
+			name: "StatisticsWidgetsFeature",
+			dependencies: [
+				"ViewsLibrary",
+			]
+		),
+		.testTarget(
+			name: "StatisticsWidgetsFeatureTests",
+			dependencies: [
+				"StatisticsWidgetsFeature",
 			]
 		),
 

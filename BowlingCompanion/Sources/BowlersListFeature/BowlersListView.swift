@@ -2,6 +2,7 @@ import BowlerEditorFeature
 import ComposableArchitecture
 import LeaguesListFeature
 import SharedModelsLibrary
+import StatisticsWidgetsFeature
 import SwiftUI
 import ThemesLibrary
 import ViewsLibrary
@@ -43,6 +44,12 @@ public struct BowlersListView: View {
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: BowlersList.Action.init) { viewStore in
 			ListContent(viewStore.listState) { bowlers in
+				Button { viewStore.send(.addBowlerButtonTapped) } label: {
+					PlaceholderWidget(size: .medium)
+				}
+				.buttonStyle(TappableElement())
+				.listRowSeparator(.hidden)
+
 				ForEach(bowlers) { bowler in
 					Section("All Bowlers") {
 						BowlersListRow(
@@ -52,6 +59,7 @@ public struct BowlersListView: View {
 						)
 					}
 				}
+				.listRowSeparator(.hidden)
 			} empty: {
 				ListEmptyContent(
 					Theme.Images.EmptyState.bowlers,
