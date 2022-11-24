@@ -3,7 +3,9 @@ import GRDB
 import SharedModelsLibrary
 
 extension League: FetchableRecord, PersistableRecord {
-	public func willInsert(_ db: Database) throws {
+	public func aroundInsert(_ db: Database, insert: () throws -> InsertionSuccess) throws {
+		_ = try insert()
+
 		if recurrence == .oneTimeEvent, let numberOfGames {
 			@Dependency(\.uuid) var uuid: UUIDGenerator
 			@Dependency(\.date) var date: DateGenerator
