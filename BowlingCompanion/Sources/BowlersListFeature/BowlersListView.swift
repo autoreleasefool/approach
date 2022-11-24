@@ -3,17 +3,25 @@ import ComposableArchitecture
 import LeaguesListFeature
 import SharedModelsLibrary
 import SwiftUI
+import ThemesLibrary
+import ViewsLibrary
 
 public struct BowlersListView: View {
 	let store: StoreOf<BowlersList>
 
 	struct ViewState: Equatable {
-		let bowlers: IdentifiedArrayOf<Bowler>
+		let listState: ListContentState<Bowler, BowlersList.ErrorContent>
 		let selection: Bowler.ID?
 		let isBowlerEditorPresented: Bool
 
 		init(state: BowlersList.State) {
-			self.bowlers = state.bowlers
+			if let error = state.bowlerError {
+				self.listState = .error(error)
+			} else if let bowlers = state.bowlers {
+				self.listState = .loaded(bowlers)
+			} else {
+				self.listState = .loading
+			}
 			self.selection = state.selection?.id
 			self.isBowlerEditorPresented = state.bowlerEditor != nil
 		}
@@ -21,6 +29,8 @@ public struct BowlersListView: View {
 
 	enum ViewAction {
 		case subscribeToBowlers
+		case addBowlerButtonTapped
+		case errorButtonTapped
 		case setFormSheet(isPresented: Bool)
 		case setNavigation(selection: Bowler.ID?)
 		case swipeAction(Bowler, BowlersList.SwipeAction)
@@ -32,44 +42,40 @@ public struct BowlersListView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: BowlersList.Action.init) { viewStore in
-			List(viewStore.bowlers) { bowler in
-				NavigationLink(
-					destination: IfLetStore(
-						store.scope(
-							state: \.selection?.value,
-							action: BowlersList.Action.leagues
+			ListContent(viewStore.listState) { bowlers in
+				ForEach(bowlers) { bowler in
+					Section("All Bowlers") {
+						BowlersListRow(
+							viewStore: viewStore,
+							destination: store.scope(state: \.selection?.value, action: BowlersList.Action.leagues),
+							bowler: bowler
 						)
-					) {
-						LeaguesListView(store: $0)
-					},
-					tag: bowler.id,
-					selection: viewStore.binding(
-						get: \.selection,
-						send: BowlersListView.ViewAction.setNavigation(selection:)
-					)
+					}
+				}
+			} empty: {
+				ListEmptyContent(
+					Theme.Images.EmptyState.bowlers,
+					title: "No bowlers found",
+					message: "You haven't added any bowlers yet. Try adding yourself to get started."
 				) {
-					Text(bowler.name)
-						.swipeActions(allowsFullSwipe: true) {
-							Button {
-								viewStore.send(.swipeAction(bowler, .edit))
-							} label: {
-								Label("Edit", systemImage: "pencil")
-							}
-							.tint(.blue)
-
-							Button(role: .destructive) {
-								viewStore.send(.swipeAction(bowler, .delete))
-							} label: {
-								Label("Delete", systemImage: "trash")
-							}
-						}
+					EmptyContentAction(title: "Add Bowler") { viewStore.send(.addBowlerButtonTapped) }
+				}
+			} error: { error in
+				ListEmptyContent(
+					Theme.Images.Error.notFound,
+					title: error.title,
+					message: error.message,
+					style: .error
+				) {
+					EmptyContentAction(title: error.action) { viewStore.send(.addBowlerButtonTapped) }
 				}
 			}
+			.scrollContentBackground(.hidden)
 			.navigationTitle("Bowlers")
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
 					Button {
-						viewStore.send(.setFormSheet(isPresented: true))
+						viewStore.send(.addBowlerButtonTapped)
 					} label: {
 						Image(systemName: "plus")
 					}
@@ -99,6 +105,10 @@ extension BowlersList.Action {
 		switch action {
 		case .subscribeToBowlers:
 			self = .subscribeToBowlers
+		case .addBowlerButtonTapped:
+			self = .setFormSheet(isPresented: true)
+		case .errorButtonTapped:
+			self = .errorButtonTapped
 		case let .setFormSheet(isPresented):
 			self = .setFormSheet(isPresented: isPresented)
 		case let .setNavigation(selection):

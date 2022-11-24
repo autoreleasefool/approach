@@ -4,6 +4,7 @@ import ComposableArchitecture
 import GearListFeature
 import SettingsFeature
 import SwiftUI
+import ThemesLibrary
 
 public struct AppView: View {
 	let store: StoreOf<App>
@@ -44,6 +45,7 @@ public struct AppView: View {
 							}
 					}
 				}
+				.tint(Theme.Colors.action)
 				.task { await viewStore.send(.subscribeToTabs).finish() }
 			} else {
 				// TODO: create sidebar for ipad size devices

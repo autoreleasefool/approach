@@ -169,8 +169,8 @@ let package = Package(
 		.target(
 			name: "GameEditorFeature",
 			dependencies: [
-				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 				"SharedModelsLibrary",
+				"ViewsLibrary",
 			]
 		),
 		.testTarget(
@@ -608,7 +608,10 @@ let package = Package(
 		),
 		.target(
 			name: "ViewsLibrary",
-			dependencies: []
+			dependencies: [
+				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+				"ThemesLibrary",
+			]
 		),
 
 	]

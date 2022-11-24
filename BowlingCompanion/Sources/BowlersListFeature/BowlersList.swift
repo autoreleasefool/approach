@@ -8,7 +8,8 @@ import SharedModelsLibrary
 
 public struct BowlersList: ReducerProtocol {
 	public struct State: Equatable {
-		public var bowlers: IdentifiedArrayOf<Bowler> = []
+		public var bowlers: IdentifiedArrayOf<Bowler>?
+		public var bowlerError: ErrorContent?
 		public var selection: Identified<Bowler.ID, LeaguesList.State>?
 		public var bowlerEditor: BowlerEditor.State?
 		public var alert: AlertState<AlertAction>?
@@ -18,6 +19,7 @@ public struct BowlersList: ReducerProtocol {
 
 	public enum Action: Equatable {
 		case subscribeToBowlers
+		case errorButtonTapped
 		case swipeAction(Bowler, SwipeAction)
 		case alert(AlertAction)
 		case setNavigation(selection: Bowler.ID?)
@@ -31,6 +33,18 @@ public struct BowlersList: ReducerProtocol {
 	public enum SwipeAction: Equatable {
 		case delete
 		case edit
+	}
+
+	public struct ErrorContent: Equatable {
+		let title: String
+		let message: String?
+		let action: String
+
+		init(title: String, message: String? = nil, action: String) {
+			self.title = title
+			self.message = message
+			self.action = action
+		}
 	}
 
 	public init() {}
@@ -52,8 +66,11 @@ public struct BowlersList: ReducerProtocol {
 					await send(.bowlersResponse(.failure(error)))
 				}
 
+			case .errorButtonTapped:
+				return .none
+
 			case let .setNavigation(selection: .some(id)):
-				if let selection = state.bowlers[id: id] {
+				if let selection = state.bowlers?[id: id] {
 					state.selection = Identified(.init(bowler: selection), id: selection.id)
 					return .fireAndForget {
 						try await clock.sleep(for: .seconds(1))
@@ -62,17 +79,21 @@ public struct BowlersList: ReducerProtocol {
 				}
 				return .none
 
-
 			case .setNavigation(selection: .none):
 				state.selection = nil
 				return .none
 
 			case let .bowlersResponse(.success(bowlers)):
 				state.bowlers = .init(uniqueElements: bowlers)
+				state.bowlerError = nil
 				return .none
 
 			case .bowlersResponse(.failure):
-				// TODO: handle failed bowler response
+				state.bowlerError = .init(
+					title: "Something went wrong!",
+					message: "We couldn't load your data",
+					action: "Try again"
+				)
 				return .none
 
 			case let .swipeAction(bowler, .edit):
@@ -99,7 +120,10 @@ public struct BowlersList: ReducerProtocol {
 				return .none
 
 			case .deleteBowlerResponse(.failure):
-				// TODO: handle failed delete bowler response
+				state.bowlerError = .init(
+					title: "Something went wrong!",
+					action: "Reload"
+				)
 				return .none
 
 			case .setFormSheet(isPresented: true):

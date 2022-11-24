@@ -47,12 +47,15 @@ package:
         - BowlersDataProvider
         - BowlerEditorFeature
         - LeaguesListFeature
+        - ThemesLibrary
     - name: FeatureFlagListFeature
       dependencies:
         - FeatureFlagService
     - name: GameEditorFeature
       dependencies:
         - SharedModelsLibrary
+        - ThemesLibrary
+        - ViewsLibrary
     - name: GamesListFeature
       dependencies:
         - DateTimeLibrary
@@ -171,3 +174,6 @@ package:
     - name: SortingLibrary
     - name: ThemesLibrary
     - name: ViewsLibrary
+      dependencies:
+        - ThemesLibrary
+        - ComposableArchitecture
