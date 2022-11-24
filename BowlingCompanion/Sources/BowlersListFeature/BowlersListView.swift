@@ -32,6 +32,7 @@ public struct BowlersListView: View {
 		case subscribeToBowlers
 		case addBowlerButtonTapped
 		case errorButtonTapped
+		case configureStatisticsButtonTapped
 		case setFormSheet(isPresented: Bool)
 		case setNavigation(selection: Bowler.ID?)
 		case swipeAction(Bowler, BowlersList.SwipeAction)
@@ -44,7 +45,7 @@ public struct BowlersListView: View {
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: BowlersList.Action.init) { viewStore in
 			ListContent(viewStore.listState) { bowlers in
-				Button { viewStore.send(.addBowlerButtonTapped) } label: {
+				Button { viewStore.send(.configureStatisticsButtonTapped) } label: {
 					PlaceholderWidget(size: .medium)
 				}
 				.buttonStyle(TappableElement())
@@ -117,6 +118,8 @@ extension BowlersList.Action {
 			self = .setFormSheet(isPresented: true)
 		case .errorButtonTapped:
 			self = .errorButtonTapped
+		case .configureStatisticsButtonTapped:
+			self = .configureStatisticsButtonTapped
 		case let .setFormSheet(isPresented):
 			self = .setFormSheet(isPresented: isPresented)
 		case let .setNavigation(selection):

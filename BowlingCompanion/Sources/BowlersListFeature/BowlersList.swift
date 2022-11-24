@@ -20,6 +20,7 @@ public struct BowlersList: ReducerProtocol {
 	public enum Action: Equatable {
 		case subscribeToBowlers
 		case errorButtonTapped
+		case configureStatisticsButtonTapped
 		case swipeAction(Bowler, SwipeAction)
 		case alert(AlertAction)
 		case setNavigation(selection: Bowler.ID?)
@@ -67,6 +68,11 @@ public struct BowlersList: ReducerProtocol {
 				}
 
 			case .errorButtonTapped:
+				// TODO: handle error button press
+				return .none
+
+			case .configureStatisticsButtonTapped:
+				// TODO: handle configure statistics button press
 				return .none
 
 			case let .setNavigation(selection: .some(id)):
