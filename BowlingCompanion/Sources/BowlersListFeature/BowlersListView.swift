@@ -30,7 +30,7 @@ public struct BowlersListView: View {
 
 	enum ViewAction {
 		case subscribeToBowlers
-		case addBowlerButtonTapped
+		case addButtonTapped
 		case errorButtonTapped
 		case configureStatisticsButtonTapped
 		case setEditorFormSheet(isPresented: Bool)
@@ -70,7 +70,7 @@ public struct BowlersListView: View {
 					title: "No bowlers found",
 					message: "You haven't added any bowlers yet. Try adding yourself to get started."
 				) {
-					EmptyContentAction(title: "Add Bowler") { viewStore.send(.addBowlerButtonTapped) }
+					EmptyContentAction(title: "Add Bowler") { viewStore.send(.addButtonTapped) }
 				}
 			} error: { error in
 				ListEmptyContent(
@@ -86,7 +86,7 @@ public struct BowlersListView: View {
 			.navigationTitle("Bowlers")
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
-					AddButton { viewStore.send(.addBowlerButtonTapped) }
+					AddButton { viewStore.send(.addButtonTapped) }
 				}
 			}
 			.sheet(isPresented: viewStore.binding(
@@ -113,7 +113,7 @@ extension BowlersList.Action {
 		switch action {
 		case .subscribeToBowlers:
 			self = .subscribeToBowlers
-		case .addBowlerButtonTapped:
+		case .addButtonTapped:
 			self = .setEditorFormSheet(isPresented: true)
 		case .errorButtonTapped:
 			self = .errorButtonTapped

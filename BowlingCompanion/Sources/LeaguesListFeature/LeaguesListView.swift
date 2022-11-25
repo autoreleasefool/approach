@@ -31,7 +31,7 @@ public struct LeaguesListView: View {
 
 	enum ViewAction {
 		case subscribeToLeagues
-		case addLeagueButtonTapped
+		case addButtonTapped
 		case errorButtonTapped
 		case setEditorFormSheet(isPresented: Bool)
 		case setNavigation(selection: League.ID?)
@@ -61,7 +61,7 @@ public struct LeaguesListView: View {
 					title: "No leagues found",
 					message: "You haven't added any leagues or events yet. Track your progress week over week for each league you're in. See how you measure up in tournaments with events."
 				) {
-					EmptyContentAction(title: "Add League") { viewStore.send(.addLeagueButtonTapped) }
+					EmptyContentAction(title: "Add League") { viewStore.send(.addButtonTapped) }
 				}
 			} error: { error in
 				ListEmptyContent(
@@ -77,7 +77,7 @@ public struct LeaguesListView: View {
 			.navigationTitle(viewStore.bowlerName)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
-					AddButton { viewStore.send(.addLeagueButtonTapped) }
+					AddButton { viewStore.send(.addButtonTapped) }
 				}
 			}
 			.sheet(isPresented: viewStore.binding(
@@ -104,7 +104,7 @@ extension LeaguesList.Action {
 		switch action {
 		case .subscribeToLeagues:
 			self = .subscribeToLeagues
-		case .addLeagueButtonTapped:
+		case .addButtonTapped:
 			self = .setEditorFormSheet(isPresented: true)
 		case .errorButtonTapped:
 			self = .errorButtonTapped
