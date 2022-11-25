@@ -5,11 +5,12 @@ import LeaguesListFeature
 import PersistenceServiceInterface
 import RecentlyUsedServiceInterface
 import SharedModelsLibrary
+import ViewsLibrary
 
 public struct BowlersList: ReducerProtocol {
 	public struct State: Equatable {
 		public var bowlers: IdentifiedArrayOf<Bowler>?
-		public var error: ErrorContent?
+		public var error: ListErrorContent?
 		public var selection: Identified<Bowler.ID, LeaguesList.State>?
 		public var bowlerEditor: BowlerEditor.State?
 		public var alert: AlertState<AlertAction>?
@@ -163,4 +164,17 @@ public struct BowlersList: ReducerProtocol {
 			}
 		}
 	}
+}
+
+extension ListErrorContent {
+	static let loadError = Self(
+		title: "Something went wrong!",
+		message: "We couldn't load your data",
+		action: "Try again"
+	)
+
+	static let deleteError = Self(
+		title: "Something went wrong!",
+		action: "Reload"
+	)
 }

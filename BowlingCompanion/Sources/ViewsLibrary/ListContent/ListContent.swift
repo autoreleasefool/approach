@@ -40,7 +40,6 @@ public struct ListContent<
 				List {
 					content(elements)
 				}
-				.listStyle(.plain)
 			}
 		case let .error(errorContent):
 			errorView(errorContent)
@@ -53,4 +52,16 @@ public enum ListContentState<Element: Identifiable & Equatable, ErrorContent: Eq
 	case loading
 	case loaded(IdentifiedArrayOf<Element>)
 	case error(ErrorContent)
+}
+
+public struct ListErrorContent: Equatable {
+	public let title: String
+	public let message: String?
+	public let action: String
+
+	public init(title: String, message: String? = nil, action: String) {
+		self.title = title
+		self.message = message
+		self.action = action
+	}
 }

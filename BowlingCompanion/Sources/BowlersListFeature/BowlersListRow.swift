@@ -3,15 +3,17 @@ import LeaguesListFeature
 import SharedModelsLibrary
 import SwiftUI
 import ThemesLibrary
+import ViewsLibrary
 
 struct BowlersListRow: View {
 	typealias ViewStore = ComposableArchitecture.ViewStore<BowlersListView.ViewState, BowlersListView.ViewAction>
+	typealias Store = ComposableArchitecture.Store<LeaguesList.State?, LeaguesList.Action>
 
 	let viewStore: ViewStore
-	let destination: Store<LeaguesList.State?, LeaguesList.Action>
+	let destination: Store
 	let bowler: Bowler
 
-	init(viewStore: ViewStore, destination: Store<LeaguesList.State?, LeaguesList.Action>, bowler: Bowler) {
+	init(viewStore: ViewStore, destination: Store, bowler: Bowler) {
 		self.viewStore = viewStore
 		self.destination = destination
 		self.bowler = bowler
@@ -30,19 +32,8 @@ struct BowlersListRow: View {
 		) {
 			Text(bowler.name)
 				.swipeActions(allowsFullSwipe: true) {
-					Button {
-						viewStore.send(.swipeAction(bowler, .edit))
-					} label: {
-						Label("Edit", systemImage: "pencil")
-					}
-					.tint(.blue)
-
-					Button(role: .destructive) {
-						viewStore.send(.swipeAction(bowler, .delete))
-					} label: {
-						Label("Delete", systemImage: "trash")
-					}
-					.tint(Theme.Colors.destructive)
+					EditButton { viewStore.send(.swipeAction(bowler, .edit)) }
+					DeleteButton { viewStore.send(.swipeAction(bowler, .delete)) }
 				}
 		}
 	}

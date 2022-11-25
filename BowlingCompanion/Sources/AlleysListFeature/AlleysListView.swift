@@ -39,21 +39,7 @@ public struct AlleysListView: View {
 		WithViewStore(store, observe: ViewState.init, send: AlleysList.Action.init) { viewStore in
 			ListContent(viewStore.listState) { alleys in
 				ForEach(alleys) { alley in
-					Text(alley.name)
-						.swipeActions(allowsFullSwipe: true) {
-							Button {
-								viewStore.send(.swipeAction(alley, .edit))
-							} label: {
-								Label("Edit", systemImage: "pencil")
-							}
-							.tint(.blue)
-
-							Button(role: .destructive) {
-								viewStore.send(.swipeAction(alley, .delete))
-							} label: {
-								Label("Delete", systemImage: "trash")
-							}
-						}
+					AlleysListRow(viewStore: viewStore, alley: alley)
 				}
 				.listRowSeparator(.hidden)
 			} empty: {

@@ -23,7 +23,7 @@ struct WidgetContainer<Content: View>: View {
 				.padding(.vertical)
 				.frame(maxWidth: .infinity)
 				.background(Theme.Colors.primary)
-				.cornerRadius(Theme.Spacing.standard)
+//				.cornerRadius(Theme.Spacing.standard)
 		}
 	}
 }

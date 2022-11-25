@@ -5,11 +5,13 @@ import PersistenceServiceInterface
 import RecentlyUsedServiceInterface
 import SeriesListFeature
 import SharedModelsLibrary
+import ViewsLibrary
 
 public struct LeaguesList: ReducerProtocol {
 	public struct State: Equatable {
 		public var bowler: Bowler
-		public var leagues: IdentifiedArrayOf<League> = []
+		public var leagues: IdentifiedArrayOf<League>?
+		public var error: ListErrorContent?
 		public var selection: Identified<League.ID, SeriesList.State>?
 		public var leagueEditor: LeagueEditor.State?
 		public var alert: AlertState<AlertAction>?
@@ -21,6 +23,7 @@ public struct LeaguesList: ReducerProtocol {
 
 	public enum Action: Equatable {
 		case subscribeToLeagues
+		case errorButtonTapped
 		case leaguesResponse(TaskResult<[League]>)
 		case setNavigation(selection: League.ID?)
 		case setFormSheet(isPresented: Bool)
@@ -47,6 +50,7 @@ public struct LeaguesList: ReducerProtocol {
 		Reduce { state, action in
 			switch action {
 			case .subscribeToLeagues:
+				state.error = nil
 				return .run { [bowlerId = state.bowler.id] send in
 					for try await leagues in leaguesDataProvider.fetchLeagues(.init(bowler: bowlerId, ordering: .byRecentlyUsed)) {
 						await send(.leaguesResponse(.success(leagues)))
@@ -55,16 +59,20 @@ public struct LeaguesList: ReducerProtocol {
 					await send(.leaguesResponse(.failure(error)))
 				}
 
+			case .errorButtonTapped:
+				// TODO: handle error button tapped
+				return .none
+
 			case let .leaguesResponse(.success(leagues)):
 				state.leagues = .init(uniqueElements: leagues)
 				return .none
 
 			case .leaguesResponse(.failure):
-				// TODO: show error when leagues fail to load
+				state.error = .loadError
 				return .none
 
 			case let .setNavigation(selection: .some(id)):
-				if let selection = state.leagues[id: id] {
+				if let selection = state.leagues?[id: id] {
 					state.selection = Identified(.init(league: selection), id: selection.id)
 					return .fireAndForget {
 						try await clock.sleep(for: .seconds(1))
@@ -117,7 +125,7 @@ public struct LeaguesList: ReducerProtocol {
 				return .none
 
 			case .deleteLeagueResponse(.failure):
-				// TODO: handle failed delete league response
+				state.error = .deleteError
 				return .none
 
 			case .leagueEditor:
@@ -136,4 +144,17 @@ public struct LeaguesList: ReducerProtocol {
 			}
 		}
 	}
+}
+
+extension ListErrorContent {
+	static let loadError = Self(
+		title: "Something went wrong!",
+		message: "We couldn't load your data",
+		action: "Try again"
+	)
+
+	static let deleteError = Self(
+		title: "Something went wrong!",
+		action: "Reload"
+	)
 }

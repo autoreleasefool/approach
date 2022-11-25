@@ -3,18 +3,26 @@ import LeagueEditorFeature
 import SeriesListFeature
 import SharedModelsLibrary
 import SwiftUI
+import ThemesLibrary
+import ViewsLibrary
 
 public struct LeaguesListView: View {
 	let store: StoreOf<LeaguesList>
 
 	struct ViewState: Equatable {
 		let bowlerName: String
-		let leagues: IdentifiedArrayOf<League>
+		let listState: ListContentState<League, ListErrorContent>
 		let selection: League.ID?
 		let isLeagueEditorPresented: Bool
 
 		init(state: LeaguesList.State) {
-			self.leagues = state.leagues
+			if let error = state.error {
+				self.listState = .error(error)
+			} else if let leagues = state.leagues {
+				self.listState = .loaded(leagues)
+			} else {
+				self.listState = .loading
+			}
 			self.selection = state.selection?.id
 			self.bowlerName = state.bowler.name
 			self.isLeagueEditorPresented = state.leagueEditor != nil
@@ -23,6 +31,8 @@ public struct LeaguesListView: View {
 
 	enum ViewAction {
 		case subscribeToLeagues
+		case addLeagueButtonTapped
+		case errorButtonTapped
 		case setFormSheet(isPresented: Bool)
 		case setNavigation(selection: League.ID?)
 		case swipeAction(League, LeaguesList.SwipeAction)
@@ -34,44 +44,41 @@ public struct LeaguesListView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: LeaguesList.Action.init) { viewStore in
-			List(viewStore.leagues) { league in
-				NavigationLink(
-					destination: IfLetStore(
-						store.scope(
-							state: \.selection?.value,
-							action: LeaguesList.Action.series
+			ListContent(viewStore.listState) { leagues in
+				Section("All Leagues") {
+					ForEach(leagues) { league in
+						LeaguesListRow(
+							viewStore: viewStore,
+							destination: store.scope(state: \.selection?.value, action: LeaguesList.Action.series),
+							league: league
 						)
-					) {
-						SeriesListView(store: $0)
-					},
-					tag: league.id,
-					selection: viewStore.binding(
-						get: \.selection,
-						send: LeaguesListView.ViewAction.setNavigation(selection:)
-					)
+					}
+				}
+				.listRowSeparator(.hidden)
+			} empty: {
+				ListEmptyContent(
+					Theme.Images.EmptyState.leagues,
+					title: "No leagues found",
+					message: "You haven't added any leagues or events yet. Track your progress week over week for each league you're in. See how you measure up in tournaments with events."
 				) {
-					Text(league.name)
-						.swipeActions(allowsFullSwipe: true) {
-							Button {
-								viewStore.send(.swipeAction(league, .edit))
-							} label: {
-								Label("Edit", systemImage: "pencil")
-							}
-							.tint(.blue)
-
-							Button(role: .destructive) {
-								viewStore.send(.swipeAction(league, .delete))
-							} label: {
-								Label("Delete", systemImage: "trash")
-							}
-						}
+					EmptyContentAction(title: "Add League") { viewStore.send(.addLeagueButtonTapped) }
+				}
+			} error: { error in
+				ListEmptyContent(
+					Theme.Images.Error.notFound,
+					title: error.title,
+					message: error.message,
+					style: .error
+				) {
+					EmptyContentAction(title: error.action) { viewStore.send(.errorButtonTapped) }
 				}
 			}
+			.scrollContentBackground(.hidden)
 			.navigationTitle(viewStore.bowlerName)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
 					Button {
-						viewStore.send(.setFormSheet(isPresented: true))
+						viewStore.send(.addLeagueButtonTapped)
 					} label: {
 						Image(systemName: "plus")
 					}
@@ -101,6 +108,10 @@ extension LeaguesList.Action {
 		switch action {
 		case .subscribeToLeagues:
 			self = .subscribeToLeagues
+		case .addLeagueButtonTapped:
+			self = .setFormSheet(isPresented: true)
+		case .errorButtonTapped:
+			self = .errorButtonTapped
 		case let .setFormSheet(isPresented):
 			self = .setFormSheet(isPresented: isPresented)
 		case let .setNavigation(selection):

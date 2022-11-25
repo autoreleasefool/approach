@@ -35,21 +35,7 @@ public struct GearListView: View {
 		WithViewStore(store, observe: ViewState.init, send: GearList.Action.init) { viewStore in
 			ListContent(viewStore.listState) { gear in
 				ForEach(gear) { gear in
-					Text(gear.name)
-						.swipeActions(allowsFullSwipe: true) {
-							Button {
-								viewStore.send(.swipeAction(gear, .edit))
-							} label: {
-								Label("Edit", systemImage: "pencil")
-							}
-							.tint(.blue)
-
-							Button(role: .destructive) {
-								viewStore.send(.swipeAction(gear, .delete))
-							} label: {
-								Label("Delete", systemImage: "trash")
-							}
-						}
+					GearListRow(viewStore: viewStore, gear: gear)
 				}
 			} empty: {
 				ListEmptyContent(

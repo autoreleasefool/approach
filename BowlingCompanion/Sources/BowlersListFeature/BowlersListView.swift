@@ -11,7 +11,7 @@ public struct BowlersListView: View {
 	let store: StoreOf<BowlersList>
 
 	struct ViewState: Equatable {
-		let listState: ListContentState<Bowler, BowlersList.ErrorContent>
+		let listState: ListContentState<Bowler, ListErrorContent>
 		let selection: Bowler.ID?
 		let isBowlerEditorPresented: Bool
 
@@ -45,14 +45,17 @@ public struct BowlersListView: View {
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: BowlersList.Action.init) { viewStore in
 			ListContent(viewStore.listState) { bowlers in
-				Button { viewStore.send(.configureStatisticsButtonTapped) } label: {
-					PlaceholderWidget(size: .medium)
+				Section {
+					Button { viewStore.send(.configureStatisticsButtonTapped) } label: {
+						PlaceholderWidget(size: .medium)
+					}
+					.buttonStyle(TappableElement())
 				}
-				.buttonStyle(TappableElement())
 				.listRowSeparator(.hidden)
+				.listRowInsets(EdgeInsets())
 
-				ForEach(bowlers) { bowler in
-					Section("All Bowlers") {
+				Section("All Bowlers") {
+					ForEach(bowlers) { bowler in
 						BowlersListRow(
 							viewStore: viewStore,
 							destination: store.scope(state: \.selection?.value, action: BowlersList.Action.leagues),
