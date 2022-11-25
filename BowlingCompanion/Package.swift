@@ -63,6 +63,7 @@ let package = Package(
 		.library(name: "SharedModelsLibrary", targets: ["SharedModelsLibrary"]),
 		.library(name: "SharedPersistenceModelsLibrary", targets: ["SharedPersistenceModelsLibrary"]),
 		.library(name: "SortingLibrary", targets: ["SortingLibrary"]),
+		.library(name: "SwiftUIExtensionsLibrary", targets: ["SwiftUIExtensionsLibrary"]),
 		.library(name: "ThemesLibrary", targets: ["ThemesLibrary"]),
 		.library(name: "ViewsLibrary", targets: ["ViewsLibrary"]),
 
@@ -173,6 +174,7 @@ let package = Package(
 			name: "GameEditorFeature",
 			dependencies: [
 				"SharedModelsLibrary",
+				"SwiftUIExtensionsLibrary",
 				"ViewsLibrary",
 			]
 		),
@@ -615,6 +617,10 @@ let package = Package(
 		),
 		.target(
 			name: "SortingLibrary",
+			dependencies: []
+		),
+		.target(
+			name: "SwiftUIExtensionsLibrary",
 			dependencies: []
 		),
 		.target(

@@ -55,6 +55,7 @@ package:
         - FeatureFlagService
     - name: GameEditorFeature
       dependencies:
+        - SwiftUIExtensionsLibrary
         - SharedModelsLibrary
         - ThemesLibrary
         - ViewsLibrary
@@ -178,6 +179,7 @@ package:
         - Dependencies
         - GRDB
     - name: SortingLibrary
+    - name: SwiftUIExtensionsLibrary
     - name: ThemesLibrary
     - name: ViewsLibrary
       dependencies:
