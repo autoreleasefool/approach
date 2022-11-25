@@ -6,7 +6,8 @@ import SharedModelsLibrary
 
 public struct AlleysList: ReducerProtocol {
 	public struct State: Equatable {
-		public var alleys: IdentifiedArrayOf<Alley> = []
+		public var alleys: IdentifiedArrayOf<Alley>?
+		public var error: ErrorContent?
 		public var alleyEditor: AlleyEditor.State?
 		public var alert: AlertState<AlertAction>?
 
@@ -28,6 +29,24 @@ public struct AlleysList: ReducerProtocol {
 		case edit
 	}
 
+	public struct ErrorContent: Equatable {
+		let title: String
+		let message: String?
+		let action: String
+
+		static let loadError = Self(
+			title: "Something went wrong!",
+			message: "We couldn't load your data",
+			action: "Try again"
+		)
+
+		static let deleteError = Self(
+			title: "Something went wrong!",
+			message: nil,
+			action: "Reload"
+		)
+	}
+
 	public init() {}
 
 	@Dependency(\.persistenceService) var persistenceService
@@ -37,6 +56,8 @@ public struct AlleysList: ReducerProtocol {
 		Reduce { state, action in
 			switch action {
 			case .subscribeToAlleys:
+				state.error = nil
+
 				return .run { send in
 					for try await alleys in alleysDataProvider.fetchAlleys(.init(ordering: .byRecentlyUsed)) {
 						await send(.alleysResponse(.success(alleys)))
@@ -50,7 +71,7 @@ public struct AlleysList: ReducerProtocol {
 				return .none
 
 			case .alleysResponse(.failure):
-				// TODO: handle failed alley response
+				state.error = .loadError
 				return .none
 
 			case let .swipeAction(alley, .edit):
@@ -74,7 +95,7 @@ public struct AlleysList: ReducerProtocol {
 				}
 
 			case .deleteAlleyResponse(.failure):
-				// TODO: handle failed delete bowler response
+				state.error = .deleteError
 				return .none
 
 			case .setFormSheet(isPresented: true):

@@ -31,6 +31,8 @@ package:
       dependencies:
         - AlleyEditorFeature
         - AlleysDataProvider
+        - ThemesLibrary
+        - ViewsLibrary
     - name: AppFeature
       dependencies:
         - AlleysListFeature

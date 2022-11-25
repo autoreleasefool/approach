@@ -92,6 +92,7 @@ let package = Package(
 			dependencies: [
 				"AlleyEditorFeature",
 				"AlleysDataProviderInterface",
+				"ViewsLibrary",
 			]
 		),
 		.testTarget(

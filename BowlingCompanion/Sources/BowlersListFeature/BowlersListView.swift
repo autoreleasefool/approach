@@ -16,7 +16,7 @@ public struct BowlersListView: View {
 		let isBowlerEditorPresented: Bool
 
 		init(state: BowlersList.State) {
-			if let error = state.bowlerError {
+			if let error = state.error {
 				self.listState = .error(error)
 			} else if let bowlers = state.bowlers {
 				self.listState = .loaded(bowlers)

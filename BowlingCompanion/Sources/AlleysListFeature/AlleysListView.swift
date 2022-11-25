@@ -2,16 +2,25 @@ import AlleyEditorFeature
 import ComposableArchitecture
 import SharedModelsLibrary
 import SwiftUI
+import StatisticsWidgetsFeature
+import ThemesLibrary
+import ViewsLibrary
 
 public struct AlleysListView: View {
 	let store: StoreOf<AlleysList>
 
 	struct ViewState: Equatable {
-		let alleys: IdentifiedArrayOf<Alley>
+		let listState: ListContentState<Alley, AlleysList.ErrorContent>
 		let isAlleyEditorPresented: Bool
 
 		init(state: AlleysList.State) {
-			self.alleys = state.alleys
+			if let error = state.error {
+				self.listState = .error(error)
+			} else if let alleys = state.alleys {
+				self.listState = .loaded(alleys)
+			} else {
+				self.listState = .loading
+			}
 			self.isAlleyEditorPresented = state.alleyEditor != nil
 		}
 	}
@@ -28,23 +37,44 @@ public struct AlleysListView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: AlleysList.Action.init) { viewStore in
-			List(viewStore.alleys) { alley in
-				Text(alley.name)
-					.swipeActions(allowsFullSwipe: true) {
-						Button {
-							viewStore.send(.swipeAction(alley, .edit))
-						} label: {
-							Label("Edit", systemImage: "pencil")
-						}
-						.tint(.blue)
+			ListContent(viewStore.listState) { alleys in
+				ForEach(alleys) { alley in
+					Text(alley.name)
+						.swipeActions(allowsFullSwipe: true) {
+							Button {
+								viewStore.send(.swipeAction(alley, .edit))
+							} label: {
+								Label("Edit", systemImage: "pencil")
+							}
+							.tint(.blue)
 
-						Button(role: .destructive) {
-							viewStore.send(.swipeAction(alley, .delete))
-						} label: {
-							Label("Delete", systemImage: "trash")
+							Button(role: .destructive) {
+								viewStore.send(.swipeAction(alley, .delete))
+							} label: {
+								Label("Delete", systemImage: "trash")
+							}
 						}
-					}
+				}
+				.listRowSeparator(.hidden)
+			} empty: {
+				ListEmptyContent(
+					Theme.Images.EmptyState.alleys,
+					title: "No alleys found",
+					message: "You haven't added any alleys yet."
+				) {
+					EmptyContentAction(title: "Add Alley") { viewStore.send(.subscribeToAlleys) }
+				}
+			} error: { error in
+				ListEmptyContent(
+					Theme.Images.Error.notFound,
+					title: error.title,
+					message: error.message,
+					style: .error
+				) {
+					EmptyContentAction(title: error.action) { viewStore.send(.subscribeToAlleys) }
+				}
 			}
+			.scrollContentBackground(.hidden)
 			.navigationTitle("Alleys")
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {

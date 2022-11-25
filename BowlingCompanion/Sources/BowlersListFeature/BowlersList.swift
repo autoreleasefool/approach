@@ -9,7 +9,7 @@ import SharedModelsLibrary
 public struct BowlersList: ReducerProtocol {
 	public struct State: Equatable {
 		public var bowlers: IdentifiedArrayOf<Bowler>?
-		public var bowlerError: ErrorContent?
+		public var error: ErrorContent?
 		public var selection: Identified<Bowler.ID, LeaguesList.State>?
 		public var bowlerEditor: BowlerEditor.State?
 		public var alert: AlertState<AlertAction>?
@@ -41,11 +41,17 @@ public struct BowlersList: ReducerProtocol {
 		let message: String?
 		let action: String
 
-		init(title: String, message: String? = nil, action: String) {
-			self.title = title
-			self.message = message
-			self.action = action
-		}
+		static let loadError = Self(
+			title: "Something went wrong!",
+			message: "We couldn't load your data",
+			action: "Try again"
+		)
+
+		static let deleteError = Self(
+			title: "Something went wrong!",
+			message: nil,
+			action: "Reload"
+		)
 	}
 
 	public init() {}
@@ -59,6 +65,7 @@ public struct BowlersList: ReducerProtocol {
 		Reduce { state, action in
 			switch action {
 			case .subscribeToBowlers:
+				state.error = nil
 				return .run { send in
 					for try await bowlers in bowlersDataProvider.fetchBowlers(.init(ordering: .byRecentlyUsed)) {
 						await send(.bowlersResponse(.success(bowlers)))
@@ -91,15 +98,10 @@ public struct BowlersList: ReducerProtocol {
 
 			case let .bowlersResponse(.success(bowlers)):
 				state.bowlers = .init(uniqueElements: bowlers)
-				state.bowlerError = nil
 				return .none
 
 			case .bowlersResponse(.failure):
-				state.bowlerError = .init(
-					title: "Something went wrong!",
-					message: "We couldn't load your data",
-					action: "Try again"
-				)
+				state.error = .loadError
 				return .none
 
 			case let .swipeAction(bowler, .edit):
@@ -126,10 +128,7 @@ public struct BowlersList: ReducerProtocol {
 				return .none
 
 			case .deleteBowlerResponse(.failure):
-				state.bowlerError = .init(
-					title: "Something went wrong!",
-					action: "Reload"
-				)
+				state.error = .deleteError
 				return .none
 
 			case .setFormSheet(isPresented: true):
