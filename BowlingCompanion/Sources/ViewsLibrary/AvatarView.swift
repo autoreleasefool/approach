@@ -1,4 +1,5 @@
 import SwiftUI
+import ThemesLibrary
 
 public struct AvatarView: View {
 	let image: UIImage?
@@ -30,10 +31,12 @@ public struct AvatarView: View {
 				VStack(alignment: .leading, spacing: 0) {
 					if let title {
 						Text(title)
+							.foregroundColor(Theme.Colors.text)
 					}
 
 					if let subtitle {
 						Text(subtitle)
+							.foregroundColor(Theme.Colors.textSecondary)
 							.font(.caption)
 					}
 				}

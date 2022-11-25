@@ -47,7 +47,6 @@ public struct SeriesSidebarView: View {
 					)
 				) {
 					Text("Game \(game.ordinal)")
-						.font(.headline)
 				}
 			}
 			.navigationTitle(viewStore.title)

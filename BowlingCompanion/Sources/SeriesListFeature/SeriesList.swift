@@ -3,11 +3,13 @@ import PersistenceServiceInterface
 import SeriesEditorFeature
 import SeriesSidebarFeature
 import SharedModelsLibrary
+import ViewsLibrary
 
 public struct SeriesList: ReducerProtocol {
 	public struct State: Equatable {
 		public var league: League
-		public var series: IdentifiedArrayOf<Series> = []
+		public var series: IdentifiedArrayOf<Series>?
+		public var error: ListErrorContent?
 		public var selection: Identified<Series.ID, SeriesSidebar.State>?
 		public var seriesEditor: SeriesEditor.State?
 		public var createSeriesForm: CreateSeriesForm.State?
@@ -23,10 +25,11 @@ public struct SeriesList: ReducerProtocol {
 		case subscribeToSeries
 		case seriesResponse(TaskResult<[Series]>)
 		case setNavigation(selection: Series.ID?)
-		case setEditorSheet(isPresented: Bool)
+		case setEditorFormSheet(isPresented: Bool)
 		case seriesCreateResponse(TaskResult<Series>)
 		case seriesDeleteResponse(TaskResult<Series>)
-		case addSeriesButtonTapped
+		case addButtonTapped
+		case errorButtonTapped
 		case dismissNewSeries
 		case swipeAction(Series, SwipeAction)
 		case alert(AlertAction)
@@ -51,6 +54,7 @@ public struct SeriesList: ReducerProtocol {
 		Reduce { state, action in
 			switch action {
 			case .subscribeToSeries:
+				state.error = nil
 				return .run { [leagueId = state.league.id] send in
 					for try await series in persistenceService.fetchSeries(.init(league: leagueId, ordering: .byDate)) {
 						await send(.seriesResponse(.success(series)))
@@ -59,15 +63,19 @@ public struct SeriesList: ReducerProtocol {
 					await send(.seriesResponse(.failure(error)))
 				}
 
+			case .errorButtonTapped:
+				// TODO: handle error button tapped
+				return .none
+
 			case let .seriesResponse(.success(series)):
 				state.series = .init(uniqueElements: series)
 				return .none
 
 			case .seriesResponse(.failure):
-				// TODO: show error when series fail to load
+				state.error = .loadError
 				return .none
 
-			case .addSeriesButtonTapped:
+			case .addButtonTapped:
 				if let numberOfGames = state.league.numberOfGames {
 					return .task { [leagueId = state.league.id] in
 						let series = Series(leagueId: leagueId, id: uuid(), date: date(), numberOfGames: numberOfGames)
@@ -86,7 +94,7 @@ public struct SeriesList: ReducerProtocol {
 				return .none
 
 			case .seriesCreateResponse(.failure):
-				// TODO: show error creating series
+				state.error = .createError
 				return .none
 
 			case .dismissNewSeries:
@@ -95,7 +103,7 @@ public struct SeriesList: ReducerProtocol {
 				return .none
 
 			case let .setNavigation(selection: .some(id)):
-				if let selection = state.series[id: id] {
+				if let selection = state.series?[id: id] {
 					state.selection = Identified(.init(series: selection), id: selection.id)
 				}
 				return .none
@@ -104,11 +112,11 @@ public struct SeriesList: ReducerProtocol {
 				state.selection = nil
 				return .none
 
-			case .setEditorSheet(isPresented: true):
+			case .setEditorFormSheet(isPresented: true):
 				state.seriesEditor = .init(league: state.league, mode: .create)
 				return .none
 
-			case .setEditorSheet(isPresented: false):
+			case .setEditorFormSheet(isPresented: false):
 				state.seriesEditor = nil
 				return .none
 
@@ -156,7 +164,7 @@ public struct SeriesList: ReducerProtocol {
 				}
 
 			case .seriesDeleteResponse(.failure):
-				// TODO: show delete error
+				state.error = .deleteError
 				return .none
 
 			case .seriesSidebar, .seriesEditor, .createSeries, .seriesDeleteResponse(.success):
@@ -178,4 +186,23 @@ public struct SeriesList: ReducerProtocol {
 			CreateSeriesForm()
 		}
 	}
+}
+
+extension ListErrorContent {
+	static let loadError = Self(
+		title: "Something went wrong!",
+		message: "We couldn't load your data",
+		action: "Try again"
+	)
+
+	static let deleteError = Self(
+		title: "Something went wrong!",
+		action: "Reload"
+	)
+
+	static let createError = Self(
+		title: "Something went wrong!",
+		message: "We couldn't create a new series",
+		action: "Try again"
+	)
 }
