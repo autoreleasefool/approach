@@ -19,11 +19,15 @@ extension AlleysDataProvider: DependencyKey {
 			case .byRecentlyUsed:
 				return .init { continuation in
 					let task = Task {
-						for try await (recentlyUsed, alleys) in combineLatest(
-							recentlyUsedService.observeRecentlyUsed(.alleys),
-							persistenceService.fetchAlleys(.init(request))
-						) {
-							continuation.yield(alleys.sortBy(ids: recentlyUsed))
+						do {
+							for try await (recentlyUsed, alleys) in combineLatest(
+								recentlyUsedService.observeRecentlyUsed(.alleys),
+								persistenceService.fetchAlleys(.init(request))
+							) {
+								continuation.yield(alleys.sortBy(ids: recentlyUsed))
+							}
+						} catch {
+							continuation.finish(throwing: error)
 						}
 					}
 

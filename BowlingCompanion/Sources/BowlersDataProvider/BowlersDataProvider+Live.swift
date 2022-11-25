@@ -19,11 +19,15 @@ extension BowlersDataProvider: DependencyKey {
 			case .byRecentlyUsed:
 				return .init { continuation in
 					let task = Task {
-						for try await (recentlyUsed, bowlers) in combineLatest(
-							recentlyUsedService.observeRecentlyUsed(.bowlers),
-							persistenceService.fetchBowlers(.init(request))
-						) {
-							continuation.yield(bowlers.sortBy(ids: recentlyUsed))
+						do {
+							for try await (recentlyUsed, bowlers) in combineLatest(
+								recentlyUsedService.observeRecentlyUsed(.bowlers),
+								persistenceService.fetchBowlers(.init(request))
+							) {
+								continuation.yield(bowlers.sortBy(ids: recentlyUsed))
+							}
+						} catch {
+							continuation.finish(throwing: error)
 						}
 					}
 

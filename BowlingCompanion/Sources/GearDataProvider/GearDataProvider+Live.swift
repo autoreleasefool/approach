@@ -19,11 +19,15 @@ extension GearDataProvider: DependencyKey {
 			case .byRecentlyUsed:
 				return .init { continuation in
 					let task = Task {
-						for try await (recentlyUsed, gear) in combineLatest(
-							recentlyUsedService.observeRecentlyUsed(.gear),
-							persistenceService.fetchGear(.init(request))
-						) {
-							continuation.yield(gear.sortBy(ids: recentlyUsed))
+						do {
+							for try await (recentlyUsed, gear) in combineLatest(
+								recentlyUsedService.observeRecentlyUsed(.gear),
+								persistenceService.fetchGear(.init(request))
+							) {
+								continuation.yield(gear.sortBy(ids: recentlyUsed))
+							}
+						} catch {
+							continuation.finish(throwing: error)
 						}
 					}
 
