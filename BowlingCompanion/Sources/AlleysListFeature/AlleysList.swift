@@ -16,11 +16,12 @@ public struct AlleysList: ReducerProtocol {
 
 	public enum Action: Equatable {
 		case subscribeToAlleys
+		case errorButtonTapped
 		case swipeAction(Alley, SwipeAction)
-		case alert(AlertAction)
-		case setFormSheet(isPresented: Bool)
 		case alleysResponse(TaskResult<[Alley]>)
 		case deleteAlleyResponse(TaskResult<Bool>)
+		case alert(AlertAction)
+		case setEditorFormSheet(isPresented: Bool)
 		case alleyEditor(AlleyEditor.Action)
 	}
 
@@ -66,6 +67,10 @@ public struct AlleysList: ReducerProtocol {
 					await send(.alleysResponse(.failure(error)))
 				}
 
+			case .errorButtonTapped:
+				// TODO: handle error button tapped
+				return .none
+
 			case let .alleysResponse(.success(alleys)):
 				state.alleys = .init(uniqueElements: alleys)
 				return .none
@@ -98,11 +103,11 @@ public struct AlleysList: ReducerProtocol {
 				state.error = .deleteError
 				return .none
 
-			case .setFormSheet(isPresented: true):
+			case .setEditorFormSheet(isPresented: true):
 				state.alleyEditor = .init(mode: .create)
 				return .none
 
-			case .setFormSheet(isPresented: false),
+			case .setEditorFormSheet(isPresented: false),
 					.alleyEditor(.form(.saveResult(.success))),
 					.alleyEditor(.form(.deleteResult(.success))):
 				state.alleyEditor = nil

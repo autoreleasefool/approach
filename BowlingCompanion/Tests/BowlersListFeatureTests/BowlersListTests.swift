@@ -63,11 +63,11 @@ final class BowlersListTests: XCTestCase {
 			reducer: BowlersList()
 		)
 
-		await store.send(.setFormSheet(isPresented: true)) {
+		await store.send(.setEditorFormSheet(isPresented: true)) {
 			$0.bowlerEditor = .init(mode: .create)
 		}
 
-		await store.send(.setFormSheet(isPresented: false)) {
+		await store.send(.setEditorFormSheet(isPresented: false)) {
 			$0.bowlerEditor = nil
 		}
 	}

@@ -23,8 +23,10 @@ public struct GearListView: View {
 
 	enum ViewAction {
 		case subscribeToGear
+		case addButtonTapped
 		case errorButtonTapped
 		case swipeAction(Gear, GearList.SwipeAction)
+		case setEditorFormSheet(isPresented: Bool)
 	}
 
 	public init(store: StoreOf<GearList>) {
@@ -43,7 +45,7 @@ public struct GearListView: View {
 					title: "No gear found",
 					message: "You haven't added any gear yet. Track usage stats for your shoes, balls, or more."
 				) {
-					EmptyContentAction(title: "Add Gear") { viewStore.send(.subscribeToGear) }
+					EmptyContentAction(title: "Add Gear") { viewStore.send(.addButtonTapped) }
 				}
 			} error: { error in
 				ListEmptyContent(
@@ -52,7 +54,7 @@ public struct GearListView: View {
 					message: error.message,
 					style: .error
 				) {
-					EmptyContentAction(title: error.action) { viewStore.send(.subscribeToGear) }
+					EmptyContentAction(title: error.action) { viewStore.send(.errorButtonTapped) }
 				}
 			}
 			.scrollContentBackground(.hidden)
@@ -69,8 +71,12 @@ extension GearList.Action {
 			self = .subscribeToGear
 		case .errorButtonTapped:
 			self = .errorButtonTapped
+		case .addButtonTapped:
+			self = .setEditorFormSheet(isPresented: true)
 		case let .swipeAction(gear, swipeAction):
 			self = .swipeAction(gear, swipeAction)
+		case let .setEditorFormSheet(isPresented):
+			self = .setEditorFormSheet(isPresented: isPresented)
 		}
 	}
 }

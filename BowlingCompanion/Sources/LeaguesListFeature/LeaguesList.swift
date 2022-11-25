@@ -26,7 +26,7 @@ public struct LeaguesList: ReducerProtocol {
 		case errorButtonTapped
 		case leaguesResponse(TaskResult<[League]>)
 		case setNavigation(selection: League.ID?)
-		case setFormSheet(isPresented: Bool)
+		case setEditorFormSheet(isPresented: Bool)
 		case alert(AlertAction)
 		case swipeAction(League, SwipeAction)
 		case deleteLeagueResponse(TaskResult<Bool>)
@@ -85,11 +85,11 @@ public struct LeaguesList: ReducerProtocol {
 				state.selection = nil
 				return .none
 
-			case .setFormSheet(isPresented: true):
+			case .setEditorFormSheet(isPresented: true):
 				state.leagueEditor = .init(bowler: state.bowler, mode: .create)
 				return .none
 
-			case .setFormSheet(isPresented: false):
+			case .setEditorFormSheet(isPresented: false):
 				state.leagueEditor = nil
 				return .none
 

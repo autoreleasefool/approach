@@ -15,6 +15,7 @@ public struct GearList: ReducerProtocol {
 		case errorButtonTapped
 		case gearResponse(TaskResult<[Gear]>)
 		case swipeAction(Gear, SwipeAction)
+		case setEditorFormSheet(isPresented: Bool)
 	}
 
 	public enum SwipeAction: Equatable {
@@ -56,6 +57,14 @@ public struct GearList: ReducerProtocol {
 				} catch: { error, send in
 					await send(.gearResponse(.failure(error)))
 				}
+
+			case .setEditorFormSheet(isPresented: true):
+				// TODO: show editor
+				return .none
+
+			case .setEditorFormSheet(isPresented: false):
+				// TODO: hide editor
+				return .none
 
 			case .errorButtonTapped:
 				// TODO: handle error button tapped

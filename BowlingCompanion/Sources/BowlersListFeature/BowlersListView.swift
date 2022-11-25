@@ -33,7 +33,7 @@ public struct BowlersListView: View {
 		case addBowlerButtonTapped
 		case errorButtonTapped
 		case configureStatisticsButtonTapped
-		case setFormSheet(isPresented: Bool)
+		case setEditorFormSheet(isPresented: Bool)
 		case setNavigation(selection: Bowler.ID?)
 		case swipeAction(Bowler, BowlersList.SwipeAction)
 	}
@@ -79,23 +79,19 @@ public struct BowlersListView: View {
 					message: error.message,
 					style: .error
 				) {
-					EmptyContentAction(title: error.action) { viewStore.send(.addBowlerButtonTapped) }
+					EmptyContentAction(title: error.action) { viewStore.send(.errorButtonTapped) }
 				}
 			}
 			.scrollContentBackground(.hidden)
 			.navigationTitle("Bowlers")
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
-					Button {
-						viewStore.send(.addBowlerButtonTapped)
-					} label: {
-						Image(systemName: "plus")
-					}
+					AddButton { viewStore.send(.addBowlerButtonTapped) }
 				}
 			}
 			.sheet(isPresented: viewStore.binding(
 				get: \.isBowlerEditorPresented,
-				send: ViewAction.setFormSheet(isPresented:)
+				send: ViewAction.setEditorFormSheet(isPresented:)
 			)) {
 				IfLetStore(store.scope(state: \.bowlerEditor, action: BowlersList.Action.bowlerEditor)) { scopedStore in
 					NavigationView {
@@ -118,13 +114,13 @@ extension BowlersList.Action {
 		case .subscribeToBowlers:
 			self = .subscribeToBowlers
 		case .addBowlerButtonTapped:
-			self = .setFormSheet(isPresented: true)
+			self = .setEditorFormSheet(isPresented: true)
 		case .errorButtonTapped:
 			self = .errorButtonTapped
 		case .configureStatisticsButtonTapped:
 			self = .configureStatisticsButtonTapped
-		case let .setFormSheet(isPresented):
-			self = .setFormSheet(isPresented: isPresented)
+		case let .setEditorFormSheet(isPresented):
+			self = .setEditorFormSheet(isPresented: isPresented)
 		case let .setNavigation(selection):
 			self = .setNavigation(selection: selection)
 		case let .swipeAction(bowler, swipeAction):

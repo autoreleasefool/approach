@@ -25,7 +25,7 @@ public struct BowlersList: ReducerProtocol {
 		case swipeAction(Bowler, SwipeAction)
 		case alert(AlertAction)
 		case setNavigation(selection: Bowler.ID?)
-		case setFormSheet(isPresented: Bool)
+		case setEditorFormSheet(isPresented: Bool)
 		case bowlersResponse(TaskResult<[Bowler]>)
 		case deleteBowlerResponse(TaskResult<Bool>)
 		case bowlerEditor(BowlerEditor.Action)
@@ -132,11 +132,11 @@ public struct BowlersList: ReducerProtocol {
 				state.error = .deleteError
 				return .none
 
-			case .setFormSheet(isPresented: true):
+			case .setEditorFormSheet(isPresented: true):
 				state.bowlerEditor = .init(mode: .create)
 				return .none
 
-			case .setFormSheet(isPresented: false):
+			case .setEditorFormSheet(isPresented: false):
 				state.bowlerEditor = nil
 				return .none
 

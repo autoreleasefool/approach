@@ -33,7 +33,7 @@ public struct LeaguesListView: View {
 		case subscribeToLeagues
 		case addLeagueButtonTapped
 		case errorButtonTapped
-		case setFormSheet(isPresented: Bool)
+		case setEditorFormSheet(isPresented: Bool)
 		case setNavigation(selection: League.ID?)
 		case swipeAction(League, LeaguesList.SwipeAction)
 	}
@@ -77,16 +77,12 @@ public struct LeaguesListView: View {
 			.navigationTitle(viewStore.bowlerName)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
-					Button {
-						viewStore.send(.addLeagueButtonTapped)
-					} label: {
-						Image(systemName: "plus")
-					}
+					AddButton { viewStore.send(.addLeagueButtonTapped) }
 				}
 			}
 			.sheet(isPresented: viewStore.binding(
 				get: \.isLeagueEditorPresented,
-				send: ViewAction.setFormSheet(isPresented:)
+				send: ViewAction.setEditorFormSheet(isPresented:)
 			)) {
 				IfLetStore(store.scope(state: \.leagueEditor, action: LeaguesList.Action.leagueEditor)) { scopedStore in
 					NavigationView {
@@ -109,11 +105,11 @@ extension LeaguesList.Action {
 		case .subscribeToLeagues:
 			self = .subscribeToLeagues
 		case .addLeagueButtonTapped:
-			self = .setFormSheet(isPresented: true)
+			self = .setEditorFormSheet(isPresented: true)
 		case .errorButtonTapped:
 			self = .errorButtonTapped
-		case let .setFormSheet(isPresented):
-			self = .setFormSheet(isPresented: isPresented)
+		case let .setEditorFormSheet(isPresented):
+			self = .setEditorFormSheet(isPresented: isPresented)
 		case let .setNavigation(selection):
 			self = .setNavigation(selection: selection)
 		case let .swipeAction(league, swipeAction):

@@ -27,7 +27,9 @@ public struct AlleysListView: View {
 
 	enum ViewAction {
 		case subscribeToAlleys
-		case setFormSheet(isPresented: Bool)
+		case addButtonTapped
+		case errorButtonTapped
+		case setEditorFormSheet(isPresented: Bool)
 		case swipeAction(Alley, AlleysList.SwipeAction)
 	}
 
@@ -48,7 +50,7 @@ public struct AlleysListView: View {
 					title: "No alleys found",
 					message: "You haven't added any alleys yet."
 				) {
-					EmptyContentAction(title: "Add Alley") { viewStore.send(.subscribeToAlleys) }
+					EmptyContentAction(title: "Add Alley") { viewStore.send(.addButtonTapped) }
 				}
 			} error: { error in
 				ListEmptyContent(
@@ -57,23 +59,19 @@ public struct AlleysListView: View {
 					message: error.message,
 					style: .error
 				) {
-					EmptyContentAction(title: error.action) { viewStore.send(.subscribeToAlleys) }
+					EmptyContentAction(title: error.action) { viewStore.send(.errorButtonTapped) }
 				}
 			}
 			.scrollContentBackground(.hidden)
 			.navigationTitle("Alleys")
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
-					Button {
-						viewStore.send(.setFormSheet(isPresented: true))
-					} label: {
-						Image(systemName: "plus")
-					}
+					AddButton { viewStore.send(.addButtonTapped) }
 				}
 			}
 			.sheet(isPresented: viewStore.binding(
 				get: \.isAlleyEditorPresented,
-				send: ViewAction.setFormSheet(isPresented:)
+				send: ViewAction.setEditorFormSheet(isPresented:)
 			)) {
 				IfLetStore(store.scope(state: \.alleyEditor, action: AlleysList.Action.alleyEditor)) { scopedStore in
 					NavigationView {
@@ -95,8 +93,12 @@ extension AlleysList.Action {
 		switch action {
 		case .subscribeToAlleys:
 			self = .subscribeToAlleys
-		case let .setFormSheet(isPresented):
-			self = .setFormSheet(isPresented: isPresented)
+		case .addButtonTapped:
+			self = .setEditorFormSheet(isPresented: true)
+		case .errorButtonTapped:
+			self = .errorButtonTapped
+		case let .setEditorFormSheet(isPresented):
+			self = .setEditorFormSheet(isPresented: isPresented)
 		case let .swipeAction(alley, swipeAction):
 			self = .swipeAction(alley, swipeAction)
 		}
