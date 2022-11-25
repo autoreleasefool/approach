@@ -23,35 +23,36 @@ public struct ListEmptyContent: View {
 	}
 
 	public var body: some View {
-		ScrollView {
-			VStack {
-				Image(uiImage: image)
-					.resizable()
-					.scaledToFit()
-//					.cornerRadius(Theme.Spacing.standard)
-					.padding(.bottom, Theme.Spacing.small)
+		VStack {
+			Spacer()
 
-				VStack(spacing: Theme.Spacing.small) {
-					Text(title)
-						.font(.headline)
-						.foregroundColor(style == .error ? Theme.Colors.error : Theme.Colors.text)
-
-					if let message {
-						Text(message)
-							.font(.body)
-							.foregroundColor(Theme.Colors.text)
-							.multilineTextAlignment(.center)
-					}
-				}
-				.padding()
-				.frame(maxWidth: .infinity)
-				.background(style == .error ? Theme.Colors.errorLight : Theme.Colors.primaryLight)
-				.cornerRadius(Theme.Spacing.small)
+			Image(uiImage: image)
+				.resizable()
+				.scaledToFit()
 				.padding(.bottom, Theme.Spacing.small)
 
-				action
-			}.padding()
-		}
+			Spacer()
+
+			VStack(spacing: Theme.Spacing.small) {
+				Text(title)
+					.font(.headline)
+					.foregroundColor(style == .error ? Theme.Colors.error : Theme.Colors.text)
+
+				if let message {
+					Text(message)
+						.font(.body)
+						.foregroundColor(Theme.Colors.text)
+						.multilineTextAlignment(.center)
+				}
+			}
+			.padding()
+			.frame(maxWidth: .infinity)
+			.background(style == .error ? Theme.Colors.errorLight : Theme.Colors.primaryLight)
+			.cornerRadius(Theme.Spacing.small)
+			.padding(.bottom, Theme.Spacing.small)
+
+			action
+		}.padding()
 	}
 }
 
