@@ -30,7 +30,7 @@ struct BowlersListRow: View {
 				send: BowlersListView.ViewAction.setNavigation(selection:)
 			)
 		) {
-			Text(bowler.name)
+			AvatarView(size: .medium, title: bowler.name)
 				.swipeActions(allowsFullSwipe: true) {
 					EditButton { viewStore.send(.swipeAction(bowler, .edit)) }
 					DeleteButton { viewStore.send(.swipeAction(bowler, .delete)) }
