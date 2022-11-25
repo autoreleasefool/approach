@@ -34,6 +34,7 @@ struct DatabaseManager {
 		migrator.registerMigration(Migration20221021CreateGame.self)
 		migrator.registerMigration(Migration20221021CreateFrame.self)
 		migrator.registerMigration(Migration20221101CreateAlley.self)
+		migrator.registerMigration(Migration20221115CreateGear.self)
 
 		return migrator
 	}
