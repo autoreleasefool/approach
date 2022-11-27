@@ -92,7 +92,6 @@ let package = Package(
 			dependencies: [
 				"AlleyEditorFeature",
 				"AlleysDataProviderInterface",
-				"ViewsLibrary",
 			]
 		),
 		.testTarget(
@@ -119,7 +118,7 @@ let package = Package(
 		.target(
 			name: "BaseFormFeature",
 			dependencies: [
-				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+				"ViewsLibrary",
 			]
 		),
 		.testTarget(
@@ -242,6 +241,7 @@ let package = Package(
 			name: "SeriesEditorFeature",
 			dependencies: [
 				"BaseFormFeature",
+				"DateTimeLibrary",
 				"PersistenceServiceInterface",
 			]
 		),
@@ -254,7 +254,6 @@ let package = Package(
 		.target(
 			name: "SeriesListFeature",
 			dependencies: [
-				"DateTimeLibrary",
 				"SeriesEditorFeature",
 				"SeriesSidebarFeature",
 			]

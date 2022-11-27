@@ -26,7 +26,7 @@ public struct BaseFormView<
 
 			switch state.mode {
 			case .create:
-				self.navigationTitle = "Create \(Model.modelName)"
+				self.navigationTitle = "Add \(Model.modelName)"
 				self.isDeleteable = false
 			case let .edit(model):
 				self.navigationTitle = "Edit \(model.name)"
@@ -60,9 +60,13 @@ public struct BaseFormView<
 					.disabled(viewStore.isLoading)
 
 				if viewStore.isDeleteable {
-					DeleteButton { viewStore.send(.deleteButtonTapped) }
+					Section("Options") {
+						DeleteButton { viewStore.send(.deleteButtonTapped) }
+					}
+					.listRowBackground(Color(uiColor: .secondarySystemBackground))
 				}
 			}
+			.scrollContentBackground(.hidden)
 			.navigationTitle(viewStore.navigationTitle)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {

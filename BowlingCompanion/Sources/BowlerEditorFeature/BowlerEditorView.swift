@@ -24,9 +24,11 @@ public struct BowlerEditorView: View {
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: BowlerEditor.Action.init) { viewStore in
 			BaseFormView(store: store.scope(state: \.base, action: BowlerEditor.Action.form)) {
-				Section {
+				Section("Details") {
 					TextField("Name", text: viewStore.binding(\.$name))
+						.textContentType(.name)
 				}
+				.listRowBackground(Color(uiColor: .secondarySystemBackground))
 			}
 		}
 	}
@@ -49,3 +51,18 @@ extension BowlerEditor.Action {
 		}
 	}
 }
+
+#if DEBUG
+struct BowlerEditorViewPreviews: PreviewProvider {
+	static var previews: some View {
+		NavigationView {
+			BowlerEditorView(store:
+				.init(
+					initialState: .init(mode: .edit(.init(id: UUID(), name: "Joseph"))),
+					reducer: BowlerEditor()
+				)
+			)
+		}
+	}
+}
+#endif

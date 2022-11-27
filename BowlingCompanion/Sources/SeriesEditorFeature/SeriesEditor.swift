@@ -24,8 +24,9 @@ public struct SeriesEditor: ReducerProtocol {
 	public struct State: Equatable {
 		public var league: League
 		public var base: Form.State
+		public let hasAlleysFeature: Bool
 
-		public init(league: League, mode: Form.Mode) {
+		public init(league: League, mode: Form.Mode, hasAlleysFeature: Bool) {
 			self.league = league
 			var fields = Fields(leagueId: league.id)
 			if case let .edit(series) = mode {
@@ -33,6 +34,7 @@ public struct SeriesEditor: ReducerProtocol {
 			}
 
 			self.base = .init(mode: mode, form: fields)
+			self.hasAlleysFeature = hasAlleysFeature
 		}
 	}
 

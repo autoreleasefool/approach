@@ -46,9 +46,11 @@ public struct LeagueEditorView: View {
 	}
 
 	private func detailsSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
-		Section {
+		Section("Details") {
 			TextField("Name", text: viewStore.binding(\.$name))
+				.textContentType(.name)
 		}
+		.listRowBackground(Color(uiColor: .secondarySystemBackground))
 	}
 
 	private func recurrenceSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
@@ -63,10 +65,11 @@ public struct LeagueEditorView: View {
 			}
 		} footer: {
 			Text(
-				"Choose '\(League.Recurrence.repeating)' for leagues that happen semi-frequently, such as once a week, or " +
-				"choose '\(League.Recurrence.oneTimeEvent)' for tournaments and one-off events."
+				"Choose '\(League.Recurrence.repeating.rawValue)' for leagues that happen semi-frequently, such as once a week, or " +
+				"choose '\(League.Recurrence.oneTimeEvent.rawValue)' for tournaments and one-off events."
 			)
 		}
+		.listRowBackground(Color(uiColor: .secondarySystemBackground))
 	}
 
 	private func gamesSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
@@ -90,10 +93,11 @@ public struct LeagueEditorView: View {
 			}
 		} footer: {
 			Text(
-				"Choose '\(LeagueEditor.GamesPerSeries.static)' if you always play the same number of games each series, " +
-				"or '\(LeagueEditor.GamesPerSeries.dynamic)' to choose the number of games each time you bowl."
+				"Choose '\(LeagueEditor.GamesPerSeries.static.rawValue)' if you always play the same number of games each series, " +
+				"or '\(LeagueEditor.GamesPerSeries.dynamic.rawValue)' to choose the number of games each time you bowl."
 			)
 		}
+		.listRowBackground(Color(uiColor: .secondarySystemBackground))
 	}
 
 	private func additionalPinfallSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
@@ -109,10 +113,12 @@ public struct LeagueEditorView: View {
 					"Additional Pinfall",
 					text: viewStore.binding(\.$additionalPinfall)
 				)
+				.keyboardType(.numberPad)
 				TextField(
 					"Additional Games",
 					text: viewStore.binding(\.$additionalGames)
 				)
+				.keyboardType(.numberPad)
 			}
 		} header: {
 			Text("Additional Games")
@@ -122,6 +128,7 @@ public struct LeagueEditorView: View {
 				"here to ensure your average in the app matches the average provided by your league."
 			)
 		}
+		.listRowBackground(Color(uiColor: .secondarySystemBackground))
 	}
 }
 
@@ -152,15 +159,17 @@ extension LeagueEditor.Action {
 #if DEBUG
 struct LeagueEditorViewPreviews: PreviewProvider {
 	static var previews: some View {
-		LeagueEditorView(
-			store: .init(
-				initialState: .init(
-					bowler: .init(id: UUID(), name: "Joseph"),
-					mode: .create
-				),
-				reducer: LeagueEditor()
+		NavigationView {
+			LeagueEditorView(
+				store: .init(
+					initialState: .init(
+						bowler: .init(id: UUID(), name: "Joseph"),
+						mode: .create
+					),
+					reducer: LeagueEditor()
+				)
 			)
-		)
+		}
 	}
 }
 #endif

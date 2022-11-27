@@ -44,6 +44,9 @@ package:
         - BaseFormFeature
         - PersistenceService
     - name: BaseFormFeature
+      dependencies:
+        - ThemesLibrary
+        - ViewsLibrary
     - name: BowlersListFeature
       dependencies:
         - BowlersDataProvider
@@ -79,6 +82,7 @@ package:
     - name: SeriesEditorFeature
       dependencies:
         - BaseFormFeature
+        - DateTimeLibrary
         - PersistenceService
     - name: SeriesListFeature
       dependencies:
