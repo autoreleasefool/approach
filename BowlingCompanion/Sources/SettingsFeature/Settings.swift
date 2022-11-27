@@ -8,9 +8,8 @@ public struct Settings: ReducerProtocol {
 		public var helpSettings = HelpSettings.State()
 		public var featureFlagList = FeatureFlagList.State()
 
-		public init() {
-			@Dependency(\.featureFlags) var featureFlags: FeatureFlagService
-			self.showsFeatures = featureFlags.isEnabled(.developerOptions)
+		public init(hasDeveloperFeature: Bool) {
+			self.showsFeatures = hasDeveloperFeature
 		}
 	}
 

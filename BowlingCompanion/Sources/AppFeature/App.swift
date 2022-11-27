@@ -13,9 +13,11 @@ public struct App: ReducerProtocol {
 		public var bowlersList = BowlersList.State()
 		public var alleysList = AlleysList.State()
 		public var gearList = GearList.State()
-		public var settings = Settings.State()
+		public var settings: Settings.State
 
-		public init() {}
+		public init(hasDeveloperFeature: Bool) {
+			self.settings = .init(hasDeveloperFeature: hasDeveloperFeature)
+		}
 	}
 
 	public enum Action: Equatable {
@@ -37,9 +39,9 @@ public struct App: ReducerProtocol {
 		public var id: String { rawValue }
 		public var featureFlag: FeatureFlag {
 			switch self {
-			case .alleys: return .alleysTab
+			case .alleys: return .alleyTracking
 			case .bowlers: return .scoreSheetTab
-			case .gear: return .gearTab
+			case .gear: return .gearTracking
 			case .settings: return .settingsTab
 			}
 		}

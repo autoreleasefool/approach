@@ -1,12 +1,18 @@
 import AppFeature
 import ComposableArchitecture
+import FeatureFlagServiceInterface
 import SwiftUI
 
 struct ContentView: View {
-	let store = Store(
-		initialState: App.State(),
-		reducer: App()._printChanges()
-	)
+	let store: Store = {
+		@Dependency(\.featureFlags) var featureFlags: FeatureFlagService
+		return .init(
+			initialState: App.State(
+				hasDeveloperFeature: featureFlags.isEnabled(.developerOptions)
+			),
+			reducer: App()._printChanges()
+		)
+	}()
 
 	var body: some View {
 		NavigationView {
