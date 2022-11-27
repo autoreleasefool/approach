@@ -45,7 +45,7 @@ public struct AppView: View {
 							}
 					}
 				}
-				.tint(Theme.Colors.action)
+				.tint(.appAction)
 				.task { await viewStore.send(.subscribeToTabs).finish() }
 			} else {
 				// TODO: create sidebar for ipad size devices

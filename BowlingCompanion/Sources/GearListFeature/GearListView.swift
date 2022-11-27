@@ -41,7 +41,7 @@ public struct GearListView: View {
 				}
 			} empty: {
 				ListEmptyContent(
-					Theme.Images.EmptyState.gear,
+					.emptyGear,
 					title: "No gear found",
 					message: "You haven't added any gear yet. Track usage stats for your shoes, balls, or more."
 				) {
@@ -49,7 +49,7 @@ public struct GearListView: View {
 				}
 			} error: { error in
 				ListEmptyContent(
-					Theme.Images.Error.notFound,
+					.errorNotFound,
 					title: error.title,
 					message: error.message,
 					style: .error

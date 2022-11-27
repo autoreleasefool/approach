@@ -1,24 +1,14 @@
 import SwiftUI
 
-extension Theme {
-	public enum Images {}
-}
+extension UIImage {
+	public static let emptyAlleys = UIImage(named: "Images/EmptyState/Alleys")!
+	public static let emptyBowlers = UIImage(named: "Images/EmptyState/Bowlers")!
+	public static let emptyGames = UIImage(named: "Images/EmptyState/Games")!
+	public static let emptyGear = UIImage(named: "Images/EmptyState/Gear")!
+	public static let emptyLeagues = UIImage(named: "Images/EmptyState/Leagues")!
+	public static let emptySeries = UIImage(named: "Images/EmptyState/Series")!
 
-extension Theme.Images {
-	public enum EmptyState {
-		public static let alleys = UIImage(named: "Images/EmptyState/Alleys")!
-		public static let bowlers = UIImage(named: "Images/EmptyState/Bowlers")!
-		public static let games = UIImage(named: "Images/EmptyState/Games")!
-		public static let gear = UIImage(named: "Images/EmptyState/Gear")!
-		public static let leagues = UIImage(named: "Images/EmptyState/Leagues")!
-		public static let series = UIImage(named: "Images/EmptyState/Series")!
-	}
+	public static let errorNotFound = UIImage(named: "Images/Error/NotFound")!
 
-	public enum Error {
-		public static let notFound = UIImage(named: "Images/Error/NotFound")!
-	}
-
-	public enum Icons {
-		public static let analytics = UIImage(named: "Images/Icons/Analytics")!
-	}
+	public static let iconAnalytics = UIImage(named: "Images/Icons/Analytics")!
 }

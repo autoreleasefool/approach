@@ -1,5 +1,6 @@
 import ComposableArchitecture
 import SwiftUI
+import ViewsLibrary
 
 public struct BaseFormView<
 	Model: BaseFormModel,
@@ -59,11 +60,7 @@ public struct BaseFormView<
 					.disabled(viewStore.isLoading)
 
 				if viewStore.isDeleteable {
-					Button(role: .destructive) {
-						viewStore.send(.deleteButtonTapped)
-					} label: {
-						Text("Delete")
-					}
+					DeleteButton { viewStore.send(.deleteButtonTapped) }
 				}
 			}
 			.navigationTitle(viewStore.navigationTitle)

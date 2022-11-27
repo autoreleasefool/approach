@@ -66,7 +66,7 @@ public struct BowlersListView: View {
 				.listRowSeparator(.hidden)
 			} empty: {
 				ListEmptyContent(
-					Theme.Images.EmptyState.bowlers,
+					.emptyBowlers,
 					title: "No bowlers found",
 					message: "You haven't added any bowlers yet. Try adding yourself to get started."
 				) {
@@ -74,7 +74,7 @@ public struct BowlersListView: View {
 				}
 			} error: { error in
 				ListEmptyContent(
-					Theme.Images.Error.notFound,
+					.errorNotFound,
 					title: error.title,
 					message: error.message,
 					style: .error

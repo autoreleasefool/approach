@@ -12,6 +12,6 @@ public struct DeleteButton: View {
 		Button(role: .destructive, action: perform) {
 			Label("Delete", systemImage: "trash")
 		}
-		.tint(Theme.Colors.destructive)
+		.tint(.appDestructive)
 	}
 }

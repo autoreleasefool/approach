@@ -29,27 +29,24 @@ public struct ListEmptyContent: View {
 			Image(uiImage: image)
 				.resizable()
 				.scaledToFit()
-				.padding(.bottom, Theme.Spacing.small)
+				.padding(.bottom, .smallSpacing)
 
 			Spacer()
 
-			VStack(spacing: Theme.Spacing.small) {
+			VStack(spacing: .smallSpacing) {
 				Text(title)
 					.font(.headline)
-					.foregroundColor(style == .error ? Theme.Colors.error : Theme.Colors.text)
 
 				if let message {
 					Text(message)
-						.font(.body)
-						.foregroundColor(Theme.Colors.text)
 						.multilineTextAlignment(.center)
 				}
 			}
 			.padding()
 			.frame(maxWidth: .infinity)
-			.background(style == .error ? Theme.Colors.errorLight : Theme.Colors.primaryLight)
-			.cornerRadius(Theme.Spacing.small)
-			.padding(.bottom, Theme.Spacing.small)
+			.background(style == .error ? Color.appErrorLight : Color.appPrimaryLight)
+			.cornerRadius(.standardRadius)
+			.padding(.bottom, .smallSpacing)
 
 			action
 		}.padding()
@@ -79,7 +76,7 @@ public struct EmptyContentAction: View {
 		}
 		.buttonStyle(.borderedProminent)
 		.controlSize(.large)
-		.foregroundColor(Theme.Colors.textOnAction)
-		.tint(Theme.Colors.action)
+		.foregroundColor(.white)
+		.tint(.appAction)
 	}
 }

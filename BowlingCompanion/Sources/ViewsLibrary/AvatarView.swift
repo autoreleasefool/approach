@@ -15,7 +15,7 @@ public struct AvatarView: View {
 	}
 
 	public var body: some View {
-		HStack(alignment: .center, spacing: 8) {
+		HStack(alignment: .center, spacing: .standardSpacing) {
 			if let image {
 				Image(uiImage: image)
 					.resizable()
@@ -31,12 +31,10 @@ public struct AvatarView: View {
 				VStack(alignment: .leading, spacing: 0) {
 					if let title {
 						Text(title)
-							.foregroundColor(Theme.Colors.text)
 					}
 
 					if let subtitle {
 						Text(subtitle)
-							.foregroundColor(Theme.Colors.textSecondary)
 							.font(.caption)
 					}
 				}
@@ -54,9 +52,9 @@ extension AvatarView {
 
 		var value: CGFloat {
 			switch self {
-			case .small: return 20
-			case .medium: return 32
-			case .large: return 48
+			case .small: return .smallIcon
+			case .medium: return .standardIcon
+			case .large: return .largeIcon
 			case let .custom(value): return value
 			}
 		}

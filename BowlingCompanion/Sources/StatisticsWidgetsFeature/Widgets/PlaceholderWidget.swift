@@ -10,17 +10,16 @@ public struct PlaceholderWidget: View {
 
 	public var body: some View {
 		WidgetContainer(size: size) {
-			VStack(alignment: .leading, spacing: Theme.Spacing.small) {
+			VStack(alignment: .leading, spacing: .smallSpacing) {
 				Text("Statistics at a glance")
 					.font(.title)
-					.foregroundColor(Theme.Colors.textOnPrimary)
+					.foregroundColor(.white)
 
 				Text("Tap here to configure the stats you want to see")
-					.font(.body)
-					.foregroundColor(Theme.Colors.textOnPrimary)
+					.foregroundColor(.white)
 			}
 			.background(alignment: .bottomTrailing) {
-				Image(uiImage: Theme.Images.Icons.analytics)
+				Image(uiImage: .iconAnalytics)
 					.resizable()
 					.scaledToFit()
 					.opacity(0.4)

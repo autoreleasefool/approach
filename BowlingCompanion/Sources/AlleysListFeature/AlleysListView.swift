@@ -46,7 +46,7 @@ public struct AlleysListView: View {
 				.listRowSeparator(.hidden)
 			} empty: {
 				ListEmptyContent(
-					Theme.Images.EmptyState.alleys,
+					.emptyAlleys,
 					title: "No alleys found",
 					message: "You haven't added any alleys yet."
 				) {
@@ -54,7 +54,7 @@ public struct AlleysListView: View {
 				}
 			} error: { error in
 				ListEmptyContent(
-					Theme.Images.Error.notFound,
+					.errorNotFound,
 					title: error.title,
 					message: error.message,
 					style: .error

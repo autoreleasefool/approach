@@ -65,7 +65,7 @@ public struct SeriesListView: View {
 				.listRowSeparator(.hidden)
 			} empty: {
 				ListEmptyContent(
-					Theme.Images.EmptyState.series,
+					.emptySeries,
 					title: "No series found",
 					message: "You haven't added a series yet. Create a new series every time you bowl to see your stats mapped accurately over time."
 				) {
@@ -73,7 +73,7 @@ public struct SeriesListView: View {
 				}
 			} error: { error in
 				ListEmptyContent(
-					Theme.Images.Error.notFound,
+					.errorNotFound,
 					title: error.title,
 					message: error.message,
 					style: .error

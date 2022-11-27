@@ -13,7 +13,7 @@ struct WidgetContainer<Content: View>: View {
 	}
 
 	var body: some View {
-		VStack(alignment: .leading, spacing: Theme.Spacing.unit) {
+		VStack(alignment: .leading, spacing: .unitSpacing) {
 			if let title {
 				Text(title)
 					.font(.subheadline)
@@ -22,8 +22,7 @@ struct WidgetContainer<Content: View>: View {
 			content
 				.padding(.vertical)
 				.frame(maxWidth: .infinity)
-				.background(Theme.Colors.primary)
-//				.cornerRadius(Theme.Spacing.standard)
+				.background(Color.appPrimary)
 		}
 	}
 }

@@ -1,4 +1,5 @@
 import SwiftUI
+import ThemesLibrary
 
 public struct EditButton: View {
 	let perform: () -> Void
@@ -11,6 +12,6 @@ public struct EditButton: View {
 		Button(action: perform) {
 			Label("Edit", systemImage: "pencil")
 		}
-		.tint(.blue)
+		.tint(.appAction)
 	}
 }

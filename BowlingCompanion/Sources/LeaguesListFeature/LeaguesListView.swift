@@ -57,7 +57,7 @@ public struct LeaguesListView: View {
 				.listRowSeparator(.hidden)
 			} empty: {
 				ListEmptyContent(
-					Theme.Images.EmptyState.leagues,
+					.emptyLeagues,
 					title: "No leagues found",
 					message: "You haven't added any leagues or events yet. Track your progress week over week for each league you're in. See how you measure up in tournaments with events."
 				) {
@@ -65,7 +65,7 @@ public struct LeaguesListView: View {
 				}
 			} error: { error in
 				ListEmptyContent(
-					Theme.Images.Error.notFound,
+					.errorNotFound,
 					title: error.title,
 					message: error.message,
 					style: .error
