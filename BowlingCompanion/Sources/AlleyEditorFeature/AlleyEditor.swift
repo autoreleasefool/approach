@@ -13,6 +13,10 @@ public struct AlleyEditor: ReducerProtocol {
 
 	public struct Fields: BaseFormState, Equatable {
 		@BindableState public var name = ""
+		@BindableState public var address = ""
+		@BindableState public var material: Alley.Material = .unknown
+		@BindableState public var pinFall: Alley.PinFall = .unknown
+		@BindableState public var mechanism: Alley.Mechanism = .unknown
 
 		public let isDeleteable = true
 		public var isSaveable: Bool {
@@ -27,6 +31,10 @@ public struct AlleyEditor: ReducerProtocol {
 			var fields = Fields()
 			if case let .edit(alley) = mode {
 				fields.name = alley.name
+				fields.address = alley.address ?? ""
+				fields.material = alley.material
+				fields.pinFall = alley.pinFall
+				fields.mechanism = alley.mechanism
 			}
 
 			self.base = .init(mode: mode, form: fields)
@@ -70,7 +78,11 @@ extension AlleyEditor.Fields {
 
 		return .init(
 			id: existing?.id ?? uuid(),
-			name: name
+			name: name,
+			address: address.isEmpty ? nil : address,
+			material: material,
+			pinFall: pinFall,
+			mechanism: mechanism
 		)
 	}
 }
