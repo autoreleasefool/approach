@@ -12,6 +12,7 @@ public struct AlleyEditorView: View {
 		@BindableState var material: Alley.Material
 		@BindableState var pinFall: Alley.PinFall
 		@BindableState var mechanism: Alley.Mechanism
+		@BindableState var pinBase: Alley.PinBase
 
 		init(state: AlleyEditor.State) {
 			self.name = state.base.form.name
@@ -19,6 +20,7 @@ public struct AlleyEditorView: View {
 			self.material = state.base.form.material
 			self.pinFall = state.base.form.pinFall
 			self.mechanism = state.base.form.mechanism
+			self.pinBase = state.base.form.pinBase
 		}
 	}
 
@@ -35,8 +37,13 @@ public struct AlleyEditorView: View {
 			BaseFormView(store: store.scope(state: \.base, action: AlleyEditor.Action.form)) {
 				detailsSection(viewStore)
 				materialSection(viewStore)
-				pinFallSection(viewStore)
 				mechanismSection(viewStore)
+				pinFallSection(viewStore)
+				pinBaseSection(viewStore)
+				Section {
+					Text("Not sure about any of the settings? Ask a staff member! They'll probably be happy to help")
+						.font(.caption)
+				}
 			}
 		}
 	}
@@ -93,7 +100,23 @@ public struct AlleyEditorView: View {
 				}
 			}
 		} footer: {
-			Text("Are the lanes interchangeable between multiple types of bowling (5-Pin and 10-Pin), or do they only support one kind? If it's hard to tell, ask a staff member!")
+			Text("Are the lanes interchangeable between multiple types of bowling (5-Pin and 10-Pin), or do they only support one kind?")
+		}
+		.listRowBackground(Color(uiColor: .secondarySystemBackground))
+	}
+
+	private func pinBaseSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
+		Section {
+			Picker(
+				"Pin Base",
+				selection: viewStore.binding(\.$pinBase)
+			) {
+				ForEach(Alley.PinBase.allCases) {
+					Text($0.description).tag($0.rawValue)
+				}
+			}
+		} footer: {
+			Text("What kind of base do the pins have?")
 		}
 		.listRowBackground(Color(uiColor: .secondarySystemBackground))
 	}
@@ -108,6 +131,7 @@ extension AlleyEditor.State {
 			self.base.form.material = newValue.material
 			self.base.form.pinFall = newValue.pinFall
 			self.base.form.mechanism = newValue.mechanism
+			self.base.form.pinBase = newValue.pinBase
 		}
 	}
 }

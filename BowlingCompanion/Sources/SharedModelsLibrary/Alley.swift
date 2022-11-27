@@ -7,6 +7,7 @@ public struct Alley: Sendable, Identifiable, Hashable, Codable {
 	public let material: Material
 	public let pinFall: PinFall
 	public let mechanism: Mechanism
+	public let pinBase: PinBase
 
 	public init(
 		id: UUID,
@@ -14,7 +15,8 @@ public struct Alley: Sendable, Identifiable, Hashable, Codable {
 		address: String?,
 		material: Material,
 		pinFall: PinFall,
-		mechanism: Mechanism
+		mechanism: Mechanism,
+		pinBase: PinBase
 	) {
 		self.id = id
 		self.name = name
@@ -22,6 +24,7 @@ public struct Alley: Sendable, Identifiable, Hashable, Codable {
 		self.material = material
 		self.pinFall = pinFall
 		self.mechanism = mechanism
+		self.pinBase = pinBase
 	}
 }
 
@@ -70,6 +73,25 @@ extension Alley {
 			switch self {
 			case .dedicated: return "Dedicated"
 			case .interchangeable: return "Interchangeable"
+			case .unknown: return "Unknown"
+			}
+		}
+	}
+}
+
+extension Alley {
+	public enum PinBase: Int, Sendable, Identifiable, CaseIterable, Codable, CustomStringConvertible {
+		case black = 0
+		case white = 1
+		case other = 2
+		case unknown = -1
+
+		public var id: Int { rawValue }
+		public var description: String {
+			switch self {
+			case .black: return "Black"
+			case .white: return "White"
+			case .other: return "Other"
 			case .unknown: return "Unknown"
 			}
 		}

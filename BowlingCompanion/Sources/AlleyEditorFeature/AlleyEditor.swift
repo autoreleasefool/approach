@@ -17,6 +17,7 @@ public struct AlleyEditor: ReducerProtocol {
 		@BindableState public var material: Alley.Material = .unknown
 		@BindableState public var pinFall: Alley.PinFall = .unknown
 		@BindableState public var mechanism: Alley.Mechanism = .unknown
+		@BindableState public var pinBase: Alley.PinBase = .unknown
 
 		public let isDeleteable = true
 		public var isSaveable: Bool {
@@ -35,6 +36,7 @@ public struct AlleyEditor: ReducerProtocol {
 				fields.material = alley.material
 				fields.pinFall = alley.pinFall
 				fields.mechanism = alley.mechanism
+				fields.pinBase = alley.pinBase
 			}
 
 			self.base = .init(mode: mode, form: fields)
@@ -82,7 +84,8 @@ extension AlleyEditor.Fields {
 			address: address.isEmpty ? nil : address,
 			material: material,
 			pinFall: pinFall,
-			mechanism: mechanism
+			mechanism: mechanism,
+			pinBase: pinBase
 		)
 	}
 }

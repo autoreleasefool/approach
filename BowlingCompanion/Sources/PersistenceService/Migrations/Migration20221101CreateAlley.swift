@@ -9,6 +9,7 @@ struct Migration20221101CreateAlley: Migration {
 			t.column("material", .integer).notNull()
 			t.column("pinFall", .integer).notNull()
 			t.column("mechanism", .integer).notNull()
+			t.column("pinBase", .integer).notNull()
 		}
 	}
 }
