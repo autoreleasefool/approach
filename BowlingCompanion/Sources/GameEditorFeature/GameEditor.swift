@@ -12,16 +12,33 @@ public struct GameEditor: ReducerProtocol {
 
 	public enum Action: Equatable {
 		case subcribeToFrames
+		case ballDetails(BallDetails.Action)
 	}
 
 	public init() {}
 
 	public var body: some ReducerProtocol<State, Action> {
+		Scope(state: \.ballDetails, action: /Action.ballDetails) {
+			BallDetails()
+		}
+
 		Reduce { _, action in
 			switch action {
-			case .subcribeToFrames:
+			case .subcribeToFrames, .ballDetails:
 				return .none
 			}
 		}
+	}
+}
+
+extension GameEditor.State {
+	var ballDetails: BallDetails.State {
+		get {
+			.init(
+				frame: 1,
+				ball: 1
+			)
+		}
+		set {}
 	}
 }
