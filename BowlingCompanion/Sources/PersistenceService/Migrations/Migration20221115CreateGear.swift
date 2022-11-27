@@ -6,7 +6,7 @@ struct Migration20221115CreateGear: Migration {
 			t.column("id", .text).primaryKey()
 			t.column("bowlerId", .text).references("bowler", onDelete: .cascade)
 			t.column("name", .text).notNull()
-			t.column("kind", .text).notNull()
+			t.column("kind", .integer).notNull()
 		}
 	}
 }

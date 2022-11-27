@@ -60,13 +60,13 @@ public struct LeagueEditorView: View {
 				selection: viewStore.binding(\.$recurrence)
 			) {
 				ForEach(League.Recurrence.allCases) {
-					Text($0.rawValue).tag($0)
+					Text($0.description).tag($0.rawValue)
 				}
 			}
 		} footer: {
 			Text(
-				"Choose '\(League.Recurrence.repeating.rawValue)' for leagues that happen semi-frequently, such as once a week, or " +
-				"choose '\(League.Recurrence.oneTimeEvent.rawValue)' for tournaments and one-off events."
+				"Choose '\(League.Recurrence.repeating)' for leagues that happen semi-frequently, such as once a week, or " +
+				"choose '\(League.Recurrence.oneTimeEvent)' for tournaments and one-off events."
 			)
 		}
 		.listRowBackground(Color(uiColor: .secondarySystemBackground))
@@ -79,7 +79,7 @@ public struct LeagueEditorView: View {
 				selection: viewStore.binding(\.$gamesPerSeries)
 			) {
 				ForEach(LeagueEditor.GamesPerSeries.allCases) {
-					Text($0.rawValue).tag($0)
+					Text($0.description).tag($0.rawValue)
 				}
 			}
 			.disabled(viewStore.recurrence == .oneTimeEvent)
@@ -93,8 +93,8 @@ public struct LeagueEditorView: View {
 			}
 		} footer: {
 			Text(
-				"Choose '\(LeagueEditor.GamesPerSeries.static.rawValue)' if you always play the same number of games each series, " +
-				"or '\(LeagueEditor.GamesPerSeries.dynamic.rawValue)' to choose the number of games each time you bowl."
+				"Choose '\(LeagueEditor.GamesPerSeries.static)' if you always play the same number of games each series, " +
+				"or '\(LeagueEditor.GamesPerSeries.dynamic)' to choose the number of games each time you bowl."
 			)
 		}
 		.listRowBackground(Color(uiColor: .secondarySystemBackground))

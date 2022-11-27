@@ -47,11 +47,17 @@ public struct LeagueEditor: ReducerProtocol {
 		}
 	}
 
-	public enum GamesPerSeries: String, Equatable, Identifiable, CaseIterable, Codable {
-		case `static` = "Constant"
-		case dynamic = "Always ask me"
+	public enum GamesPerSeries: Int, Equatable, Identifiable, CaseIterable, CustomStringConvertible {
+		case `static`
+		case dynamic
 
-		public var id: String { rawValue }
+		public var id: Int { rawValue }
+		public var description: String {
+			switch self {
+			case .static: return "Constant"
+			case .dynamic: return "Always ask me"
+			}
+		}
 	}
 
 	public enum Action: BindableAction, Equatable {

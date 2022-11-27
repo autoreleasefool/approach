@@ -32,10 +32,16 @@ public struct League: Sendable, Identifiable, Hashable, Codable {
 }
 
 extension League {
-	public enum Recurrence: String, Sendable, Identifiable, CaseIterable, Codable {
-		case repeating = "Repeats"
-		case oneTimeEvent = "Never"
+	public enum Recurrence: Int, Sendable, Identifiable, CaseIterable, Codable, CustomStringConvertible {
+		case repeating = 0
+		case oneTimeEvent = 1
 
-		public var id: String { rawValue }
+		public var id: Int { rawValue }
+		public var description: String {
+			switch self {
+			case .repeating: return "Repeats"
+			case .oneTimeEvent: return "Never"
+			}
+		}
 	}
 }
