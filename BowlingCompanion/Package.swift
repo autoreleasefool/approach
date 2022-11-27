@@ -185,9 +185,9 @@ let package = Package(
 		.target(
 			name: "GearListFeature",
 			dependencies: [
-				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 				"GearDataProviderInterface",
 				"PersistenceServiceInterface",
+				"ViewsLibrary",
 			]
 		),
 		.testTarget(
