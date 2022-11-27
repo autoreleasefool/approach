@@ -59,10 +59,6 @@ package:
         - SharedModelsLibrary
         - ThemesLibrary
         - ViewsLibrary
-    - name: GamesListFeature
-      dependencies:
-        - DateTimeLibrary
-        - GamesDataProvider
     - name: GearListFeature
       dependencies:
         - GearDataProvider
