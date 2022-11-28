@@ -31,8 +31,9 @@ public struct LeagueEditor: ReducerProtocol {
 	public struct State: Equatable {
 		public var bowler: Bowler
 		public var base: Form.State
+		public let hasAlleysEnabled: Bool
 
-		public init(bowler: Bowler, mode: Form.Mode) {
+		public init(bowler: Bowler, mode: Form.Mode, hasAlleysEnabled: Bool) {
 			self.bowler = bowler
 			var fields = Fields(bowlerId: bowler.id)
 			if case let .edit(league) = mode {
@@ -48,6 +49,7 @@ public struct LeagueEditor: ReducerProtocol {
 				fields.alleyPicker = .init(selected: [], limit: 1)
 			}
 
+			self.hasAlleysEnabled = hasAlleysEnabled
 			self.base = .init(mode: mode, form: fields)
 		}
 	}

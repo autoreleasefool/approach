@@ -8,7 +8,7 @@ public struct GearListView: View {
 	let store: StoreOf<GearList>
 
 	struct ViewState: Equatable {
-		let listState: ListContentState<Gear, GearList.ErrorContent>
+		let listState: ListContentState<Gear, ListErrorContent>
 
 		init(state: GearList.State) {
 			if let error = state.error {

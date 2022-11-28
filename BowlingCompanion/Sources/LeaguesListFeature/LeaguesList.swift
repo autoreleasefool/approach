@@ -1,4 +1,5 @@
 import ComposableArchitecture
+import FeatureFlagServiceInterface
 import LeaguesDataProviderInterface
 import LeagueEditorFeature
 import PersistenceServiceInterface
@@ -45,6 +46,7 @@ public struct LeaguesList: ReducerProtocol {
 	@Dependency(\.persistenceService) var persistenceService
 	@Dependency(\.leaguesDataProvider) var leaguesDataProvider
 	@Dependency(\.recentlyUsedService) var recentlyUsedService
+	@Dependency(\.featureFlags) var featureFlags
 
 	public var body: some ReducerProtocol<State, Action> {
 		Reduce { state, action in
@@ -86,7 +88,11 @@ public struct LeaguesList: ReducerProtocol {
 				return .none
 
 			case .setEditorFormSheet(isPresented: true):
-				state.leagueEditor = .init(bowler: state.bowler, mode: .create)
+				state.leagueEditor = .init(
+					bowler: state.bowler,
+					mode: .create,
+					hasAlleysEnabled: featureFlags.isEnabled(.alleyTracking)
+				)
 				return .none
 
 			case .setEditorFormSheet(isPresented: false):
@@ -102,7 +108,11 @@ public struct LeaguesList: ReducerProtocol {
 				return .none
 
 			case let .swipeAction(league, .edit):
-				state.leagueEditor = .init(bowler: state.bowler, mode: .edit(league))
+				state.leagueEditor = .init(
+					bowler: state.bowler,
+					mode: .edit(league),
+					hasAlleysEnabled: featureFlags.isEnabled(.alleyTracking)
+				)
 				return .none
 
 			case let .swipeAction(league, .delete):

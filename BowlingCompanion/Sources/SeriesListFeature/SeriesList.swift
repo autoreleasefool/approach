@@ -87,7 +87,7 @@ public struct SeriesList: ReducerProtocol {
 						})
 					}
 				} else {
-					state.createSeriesForm = .init()
+					state.createSeriesForm = .init(league: state.league)
 					return .none
 				}
 
@@ -118,7 +118,7 @@ public struct SeriesList: ReducerProtocol {
 				state.seriesEditor = .init(
 					league: state.league,
 					mode: .create,
-					hasAlleysFeature: featureFlags.isEnabled(.alleyTracking)
+					hasAlleysEnabled: featureFlags.isEnabled(.alleyTracking)
 				)
 				return .none
 
@@ -138,7 +138,7 @@ public struct SeriesList: ReducerProtocol {
 				state.seriesEditor = .init(
 					league: state.league,
 					mode: .edit(series),
-					hasAlleysFeature: featureFlags.isEnabled(.alleyTracking)
+					hasAlleysEnabled: featureFlags.isEnabled(.alleyTracking)
 				)
 				return .none
 

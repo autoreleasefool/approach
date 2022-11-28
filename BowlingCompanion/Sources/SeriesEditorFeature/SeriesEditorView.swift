@@ -7,11 +7,11 @@ public struct SeriesEditorView: View {
 
 	struct ViewState: Equatable {
 		@BindableState var date: Date
-		let hasAlleysFeature: Bool
+		let hasAlleysEnabled: Bool
 
 		init(state: SeriesEditor.State) {
 			self.date = state.base.form.date
-			self.hasAlleysFeature = state.hasAlleysFeature
+			self.hasAlleysEnabled = state.hasAlleysEnabled
 		}
 	}
 
@@ -35,7 +35,7 @@ public struct SeriesEditorView: View {
 				}
 				.listRowBackground(Color(uiColor: .secondarySystemBackground))
 
-				if viewStore.hasAlleysFeature {
+				if viewStore.hasAlleysEnabled {
 					Section("Alley") {
 						NavigationLink(destination: EmptyView()) {
 							LabeledContent("Bowling Alley", value: "None")
@@ -79,9 +79,18 @@ struct SeriesEditorViewPreview: PreviewProvider {
 			SeriesEditorView(store:
 				.init(
 					initialState: .init(
-						league: .init(bowlerId: UUID(), id: UUID(), name: "Majors, 2022", recurrence: .repeating, numberOfGames: 4, additionalPinfall: nil, additionalGames: nil),
+						league: .init(
+							bowlerId: UUID(),
+							id: UUID(),
+							name: "Majors, 2022",
+							recurrence: .repeating,
+							numberOfGames: 4,
+							additionalPinfall: nil,
+							additionalGames: nil,
+							alley: nil
+						),
 						mode: .create,
-						hasAlleysFeature: true
+						hasAlleysEnabled: true
 					),
 					reducer: SeriesEditor()
 				)
