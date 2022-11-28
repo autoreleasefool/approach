@@ -37,24 +37,6 @@ public struct BowlersList: ReducerProtocol {
 		case edit
 	}
 
-	public struct ErrorContent: Equatable {
-		let title: String
-		let message: String?
-		let action: String
-
-		static let loadError = Self(
-			title: "Something went wrong!",
-			message: "We couldn't load your data",
-			action: "Try again"
-		)
-
-		static let deleteError = Self(
-			title: "Something went wrong!",
-			message: nil,
-			action: "Reload"
-		)
-	}
-
 	public init() {}
 
 	@Dependency(\.continuousClock) var clock

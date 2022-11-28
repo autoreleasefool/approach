@@ -3,11 +3,12 @@ import AlleyEditorFeature
 import ComposableArchitecture
 import PersistenceServiceInterface
 import SharedModelsLibrary
+import ViewsLibrary
 
 public struct AlleysList: ReducerProtocol {
 	public struct State: Equatable {
 		public var alleys: IdentifiedArrayOf<Alley>?
-		public var error: ErrorContent?
+		public var error: ListErrorContent?
 		public var alleyEditor: AlleyEditor.State?
 		public var alert: AlertState<AlertAction>?
 
@@ -28,24 +29,6 @@ public struct AlleysList: ReducerProtocol {
 	public enum SwipeAction: Equatable {
 		case delete
 		case edit
-	}
-
-	public struct ErrorContent: Equatable {
-		let title: String
-		let message: String?
-		let action: String
-
-		static let loadError = Self(
-			title: "Something went wrong!",
-			message: "We couldn't load your data",
-			action: "Try again"
-		)
-
-		static let deleteError = Self(
-			title: "Something went wrong!",
-			message: nil,
-			action: "Reload"
-		)
 	}
 
 	public init() {}
@@ -121,4 +104,17 @@ public struct AlleysList: ReducerProtocol {
 			AlleyEditor()
 		}
 	}
+}
+
+extension ListErrorContent {
+	static let loadError = Self(
+		title: "Something went wrong!",
+		message: "We couldn't load your data",
+		action: "Try again"
+	)
+
+	static let deleteError = Self(
+		title: "Something went wrong!",
+		action: "Reload"
+	)
 }

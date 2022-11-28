@@ -10,7 +10,7 @@ public struct AlleysListView: View {
 	let store: StoreOf<AlleysList>
 
 	struct ViewState: Equatable {
-		let listState: ListContentState<Alley, AlleysList.ErrorContent>
+		let listState: ListContentState<Alley, ListErrorContent>
 		let isAlleyEditorPresented: Bool
 
 		init(state: AlleysList.State) {
