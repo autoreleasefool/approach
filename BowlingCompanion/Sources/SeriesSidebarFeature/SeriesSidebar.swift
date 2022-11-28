@@ -29,8 +29,8 @@ public struct SeriesSidebar: ReducerProtocol {
 		Reduce { state, action in
 			switch action {
 			case .subscribeToGames:
-				return .run { [seriesId = state.series.id] send in
-					for try await games in gamesDataProvider.fetchGames(.init(series: seriesId, ordering: .byOrdinal)) {
+				return .run { [series = state.series.id] send in
+					for try await games in gamesDataProvider.fetchGames(.init(series: series, ordering: .byOrdinal)) {
 						await send(.gamesResponse(.success(games)))
 					}
 				} catch: { error, send in

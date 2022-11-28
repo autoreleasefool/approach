@@ -3,20 +3,20 @@ import Foundation
 public struct Game: Sendable, Identifiable, Hashable, Codable {
 	public static let NUMBER_OF_FRAMES = 10
 
-	public let seriesId: Series.ID
+	public let series: Series.ID
 	public let id: UUID
 	public let ordinal: Int
 	public let locked: LockedState
 	public let manualScore: Int?
 
 	public init(
-		seriesId: Series.ID,
+		series: Series.ID,
 		id: UUID,
 		ordinal: Int,
 		locked: LockedState,
 		manualScore: Int?
 	) {
-		self.seriesId = seriesId
+		self.series = series
 		self.id = id
 		self.ordinal = ordinal
 		self.locked = locked

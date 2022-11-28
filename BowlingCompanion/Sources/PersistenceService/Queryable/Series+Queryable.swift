@@ -6,7 +6,7 @@ import SharedModelsLibrary
 extension Series.Query: Queryable {
 	func fetchValues(_ db: Database) throws -> [Series] {
 		var query = Series.all()
-			.filter(Column("leagueId") == league)
+			.filter(Column("league") == league)
 
 		switch ordering {
 		case .byDate:

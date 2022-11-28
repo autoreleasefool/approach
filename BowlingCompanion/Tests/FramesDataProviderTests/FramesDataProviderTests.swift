@@ -10,9 +10,9 @@ final class FramesDataProviderTests: XCTestCase {
 	func testFetchFrames() async throws {
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
 
-		let firstFrame = Frame(gameId: id0, ordinal: 0, firstBall: nil, secondBall: nil, thirdBall: nil)
-		let secondFrame = Frame(gameId: id0, ordinal: 1, firstBall: nil, secondBall: nil, thirdBall: nil)
-		let thirdFrame = Frame(gameId: id0, ordinal: 2, firstBall: nil, secondBall: nil, thirdBall: nil)
+		let firstFrame = Frame(game: id0, ordinal: 0, firstBall: nil, secondBall: nil, thirdBall: nil)
+		let secondFrame = Frame(game: id0, ordinal: 1, firstBall: nil, secondBall: nil, thirdBall: nil)
+		let thirdFrame = Frame(game: id0, ordinal: 2, firstBall: nil, secondBall: nil, thirdBall: nil)
 
 		let (frames, framesContinuation) = AsyncThrowingStream<[Frame], Error>.streamWithContinuation()
 

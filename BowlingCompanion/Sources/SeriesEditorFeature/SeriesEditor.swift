@@ -15,7 +15,8 @@ public struct SeriesEditor: ReducerProtocol {
 	public typealias Form = BaseForm<Series, Fields>
 
 	public struct Fields: BaseFormState, Equatable {
-		public var leagueId: League.ID
+		public var league: League
+		@BindableState public var numberOfGames: Int
 		@BindableState public var date = Date()
 
 		public let isDeleteable = true
@@ -23,15 +24,19 @@ public struct SeriesEditor: ReducerProtocol {
 	}
 
 	public struct State: Equatable {
-		public var league: League
 		public var base: Form.State
 		public let hasAlleysEnabled: Bool
 
-		public init(league: League, mode: Form.Mode, hasAlleysEnabled: Bool) {
-			self.league = league
-			var fields = Fields(leagueId: league.id)
+		public init(
+			league: League,
+			mode: Form.Mode,
+			date: Date,
+			hasAlleysEnabled: Bool
+		) {
+			var fields = Fields(league: league, date: date)
 			if case let .edit(series) = mode {
 				fields.date = series.date
+				fields.numberOfGames = series.numberOfGames
 			}
 
 			self.base = .init(mode: mode, form: fields)
@@ -79,11 +84,11 @@ extension SeriesEditor.Fields {
 		@Dependency(\.uuid) var uuid: UUIDGenerator
 
 		return .init(
-			leagueId: leagueId,
+			league: league.id,
 			id: existing?.id ?? uuid(),
 			date: date,
-			// TODO: determine if there's a way to guarantee we have a league here for the # of games
-			numberOfGames: existing?.numberOfGames ?? League.DEFAULT_NUMBER_OF_GAMES
+			numberOfGames: existing?.numberOfGames ?? league.numberOfGames ?? League.DEFAULT_NUMBER_OF_GAMES,
+			alley: alleyPicker.selected.first
 		)
 	}
 }

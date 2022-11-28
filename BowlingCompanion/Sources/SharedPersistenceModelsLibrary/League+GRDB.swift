@@ -10,7 +10,13 @@ extension League: FetchableRecord, PersistableRecord {
 			@Dependency(\.uuid) var uuid: UUIDGenerator
 			@Dependency(\.date) var date: DateGenerator
 
-			let series = Series(leagueId: id, id: uuid(), date: date(), numberOfGames: numberOfGames)
+			let series = Series(
+				league: id,
+				id: uuid(),
+				date: date(),
+				numberOfGames: numberOfGames,
+				alley: alley
+			)
 			try series.insert(db)
 		}
 	}

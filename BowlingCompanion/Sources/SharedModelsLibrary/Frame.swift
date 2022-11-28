@@ -1,24 +1,24 @@
 import Foundation
 
 public struct Frame: Sendable, Identifiable, Hashable, Codable {
-	public let gameId: Game.ID
+	public let game: Game.ID
 	public let ordinal: Int
 	public let firstBall: Ball?
 	public let secondBall: Ball?
 	public let thirdBall: Ball?
 
 	public var id: String {
-		"\(gameId)-\(ordinal)"
+		"\(game)-\(ordinal)"
 	}
 
 	public init(
-		gameId: Game.ID,
+		game: Game.ID,
 		ordinal: Int,
 		firstBall: Ball?,
 		secondBall: Ball?,
 		thirdBall: Ball?
 	) {
-		self.gameId = gameId
+		self.game = game
 		self.ordinal = ordinal
 		self.firstBall = firstBall
 		self.secondBall = secondBall

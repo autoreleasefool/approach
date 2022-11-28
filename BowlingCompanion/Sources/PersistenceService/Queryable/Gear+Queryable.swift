@@ -8,7 +8,7 @@ extension Gear.Query: Queryable {
 		var query = Gear.all()
 
 		if let bowler {
-			query = query.filter(Column("bowlerId") == bowler)
+			query = query.filter(Column("bowler") == bowler)
 		}
 
 		if let kind {

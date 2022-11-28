@@ -58,8 +58,8 @@ public struct SeriesList: ReducerProtocol {
 			switch action {
 			case .subscribeToSeries:
 				state.error = nil
-				return .run { [leagueId = state.league.id] send in
-					for try await series in persistenceService.fetchSeries(.init(league: leagueId, ordering: .byDate)) {
+				return .run { [league = state.league.id] send in
+					for try await series in persistenceService.fetchSeries(.init(league: league, ordering: .byDate)) {
 						await send(.seriesResponse(.success(series)))
 					}
 				} catch: { error, send in

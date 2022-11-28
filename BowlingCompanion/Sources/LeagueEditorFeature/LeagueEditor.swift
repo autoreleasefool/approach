@@ -20,7 +20,7 @@ public struct LeagueEditor: ReducerProtocol {
 	public typealias Form = BaseForm<League, Fields>
 
 	public struct Fields: BaseFormState, Equatable {
-		public var bowlerId: Bowler.ID
+		public var bowler: Bowler.ID
 		@BindableState public var name = ""
 		@BindableState public var recurrence: League.Recurrence = .repeating
 		@BindableState public var gamesPerSeries: GamesPerSeries = .static
@@ -44,7 +44,7 @@ public struct LeagueEditor: ReducerProtocol {
 
 		public init(bowler: Bowler, mode: Form.Mode, hasAlleysEnabled: Bool) {
 			self.bowler = bowler
-			var fields = Fields(bowlerId: bowler.id)
+			var fields = Fields(bowler: bowler.id)
 			if case let .edit(league) = mode {
 				fields.name = league.name
 				fields.recurrence = league.recurrence
@@ -141,7 +141,7 @@ extension LeagueEditor.Fields {
 		}
 
 		return .init(
-			bowlerId: bowlerId,
+			bowler: bowler,
 			id: existing?.id ?? uuid(),
 			name: name,
 			recurrence: recurrence,

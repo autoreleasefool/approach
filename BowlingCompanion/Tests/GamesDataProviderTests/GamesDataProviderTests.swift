@@ -13,9 +13,9 @@ final class GamesDataProviderTests: XCTestCase {
 		let id2 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
 		let id3 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
 
-		let firstGame = Game(seriesId: id0, id: id1, ordinal: 1, locked: .locked, manualScore: nil)
-		let secondGame = Game(seriesId: id0, id: id2, ordinal: 2, locked: .locked, manualScore: nil)
-		let thirdGame = Game(seriesId: id0, id: id3, ordinal: 3, locked: .locked, manualScore: nil)
+		let firstGame = Game(series: id0, id: id1, ordinal: 1, locked: .locked, manualScore: nil)
+		let secondGame = Game(series: id0, id: id2, ordinal: 2, locked: .locked, manualScore: nil)
+		let thirdGame = Game(series: id0, id: id3, ordinal: 3, locked: .locked, manualScore: nil)
 
 		let (games, gamesContinuation) = AsyncThrowingStream<[Game], Error>.streamWithContinuation()
 

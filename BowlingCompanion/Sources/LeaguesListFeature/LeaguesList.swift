@@ -53,8 +53,8 @@ public struct LeaguesList: ReducerProtocol {
 			switch action {
 			case .subscribeToLeagues:
 				state.error = nil
-				return .run { [bowlerId = state.bowler.id] send in
-					for try await leagues in leaguesDataProvider.fetchLeagues(.init(bowler: bowlerId, ordering: .byRecentlyUsed)) {
+				return .run { [bowler = state.bowler.id] send in
+					for try await leagues in leaguesDataProvider.fetchLeagues(.init(bowler: bowler, ordering: .byRecentlyUsed)) {
 						await send(.leaguesResponse(.success(leagues)))
 					}
 				} catch: { error, send in

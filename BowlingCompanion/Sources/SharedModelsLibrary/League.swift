@@ -5,7 +5,7 @@ public struct League: Sendable, Identifiable, Hashable, Codable {
 	public static let DEFAULT_NUMBER_OF_GAMES = 4
 	public static let NUMBER_OF_GAMES_RANGE = 1...40
 
-	public let bowlerId: Bowler.ID
+	public let bowler: Bowler.ID
 	public let id: UUID
 	public let name: String
 	public let recurrence: Recurrence
@@ -15,7 +15,7 @@ public struct League: Sendable, Identifiable, Hashable, Codable {
 	public let alley: Alley.ID?
 
 	public init(
-		bowlerId: Bowler.ID,
+		bowler: Bowler.ID,
 		id: UUID,
 		name: String,
 		recurrence: Recurrence,
@@ -24,7 +24,7 @@ public struct League: Sendable, Identifiable, Hashable, Codable {
 		additionalGames: Int?,
 		alley: Alley.ID?
 	) {
-		self.bowlerId = bowlerId
+		self.bowler = bowler
 		self.id = id
 		self.name = name
 		self.recurrence = recurrence

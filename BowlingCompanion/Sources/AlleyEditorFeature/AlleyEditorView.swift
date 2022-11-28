@@ -71,7 +71,7 @@ public struct AlleyEditorView: View {
 				selection: viewStore.binding(\.$material)
 			) {
 				ForEach(Alley.Material.allCases) {
-					Text($0.description).tag($0.rawValue)
+					Text(String(describing: $0)).tag($0)
 				}
 			}
 		} footer: {
@@ -87,7 +87,7 @@ public struct AlleyEditorView: View {
 				selection: viewStore.binding(\.$pinFall)
 			) {
 				ForEach(Alley.PinFall.allCases) {
-					Text($0.description).tag($0.rawValue)
+					Text(String(describing: $0)).tag($0)
 				}
 			}
 		} footer: {
@@ -103,7 +103,7 @@ public struct AlleyEditorView: View {
 				selection: viewStore.binding(\.$mechanism)
 			) {
 				ForEach(Alley.Mechanism.allCases) {
-					Text($0.description).tag($0.rawValue)
+					Text(String(describing: $0)).tag($0)
 				}
 			}
 		} footer: {
@@ -119,7 +119,7 @@ public struct AlleyEditorView: View {
 				selection: viewStore.binding(\.$pinBase)
 			) {
 				ForEach(Alley.PinBase.allCases) {
-					Text($0.description).tag($0.rawValue)
+					Text(String(describing: $0)).tag($0)
 				}
 			}
 		} footer: {

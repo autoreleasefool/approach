@@ -15,7 +15,7 @@ final class LeaguesDataProviderTests: XCTestCase {
 		let id3 = UUID(uuidString: "00000000-0000-0000-0000-000000000003")!
 
 		let firstLeague = League(
-			bowlerId: id0,
+			bowler: id0,
 			id: id1,
 			name: "first",
 			recurrence: .repeating,
@@ -24,7 +24,7 @@ final class LeaguesDataProviderTests: XCTestCase {
 			additionalGames: nil
 		)
 		let secondLeague = League(
-			bowlerId: id0,
+			bowler: id0,
 			id: id2,
 			name: "second",
 			recurrence: .repeating,
@@ -33,7 +33,7 @@ final class LeaguesDataProviderTests: XCTestCase {
 			additionalGames: nil
 		)
 		let thirdLeague = League(
-			bowlerId: id0,
+			bowler: id0,
 			id: id3,
 			name: "third",
 			recurrence: .repeating,
@@ -72,7 +72,7 @@ final class LeaguesDataProviderTests: XCTestCase {
 		let id3 = UUID(uuidString: "00000000-0000-0000-0000-000000000003")!
 
 		let firstLeague = League(
-			bowlerId: id0,
+			bowler: id0,
 			id: id1,
 			name: "first",
 			recurrence: .repeating,
@@ -81,7 +81,7 @@ final class LeaguesDataProviderTests: XCTestCase {
 			additionalGames: nil
 		)
 		let secondLeague = League(
-			bowlerId: id0,
+			bowler: id0,
 			id: id2,
 			name: "second",
 			recurrence: .repeating,
@@ -90,7 +90,7 @@ final class LeaguesDataProviderTests: XCTestCase {
 			additionalGames: nil
 		)
 		let thirdLeague = League(
-			bowlerId: id0,
+			bowler: id0,
 			id: id3,
 			name: "third",
 			recurrence: .repeating,
@@ -129,7 +129,7 @@ final class LeaguesDataProviderTests: XCTestCase {
 		let id3 = UUID(uuidString: "00000000-0000-0000-0000-000000000003")!
 
 		let firstLeague = League(
-			bowlerId: id0,
+			bowler: id0,
 			id: id1,
 			name: "first",
 			recurrence: .repeating,
@@ -138,7 +138,7 @@ final class LeaguesDataProviderTests: XCTestCase {
 			additionalGames: nil
 		)
 		let secondLeague = League(
-			bowlerId: id0,
+			bowler: id0,
 			id: id2,
 			name: "second",
 			recurrence: .repeating,
@@ -147,7 +147,7 @@ final class LeaguesDataProviderTests: XCTestCase {
 			additionalGames: nil
 		)
 		let thirdLeague = League(
-			bowlerId: id0,
+			bowler: id0,
 			id: id3,
 			name: "third",
 			recurrence: .repeating,

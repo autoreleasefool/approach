@@ -11,7 +11,7 @@ extension Series: FetchableRecord, PersistableRecord {
 
 		for ordinal in (1...numberOfGames) {
 			let game = Game(
-				seriesId: id,
+				series: id,
 				id: uuid(),
 				ordinal: ordinal,
 				locked: .unlocked,

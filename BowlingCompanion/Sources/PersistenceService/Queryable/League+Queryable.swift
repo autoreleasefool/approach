@@ -6,7 +6,7 @@ import SharedModelsLibrary
 extension League.Query: Queryable {
 	func fetchValues(_ db: Database) throws -> [League] {
 		var query = League.all()
-			.filter(Column("bowlerId") == bowler)
+			.filter(Column("bowler") == bowler)
 
 		switch ordering {
 		case .byName:

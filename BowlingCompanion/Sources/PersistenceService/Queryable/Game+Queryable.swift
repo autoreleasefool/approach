@@ -6,7 +6,7 @@ import SharedModelsLibrary
 extension Game.Query: Queryable {
 	func fetchValues(_ db: Database) throws -> [Game] {
 		try Game.all()
-			.filter(Column("seriesId") == series)
+			.filter(Column("series") == series)
 			.order(Column("ordinal").asc)
 			.fetchAll(db)
 	}

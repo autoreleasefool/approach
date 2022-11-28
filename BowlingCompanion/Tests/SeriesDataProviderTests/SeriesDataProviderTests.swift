@@ -12,8 +12,8 @@ final class SeriesDataProviderTests: XCTestCase {
 		let id1 = UUID(uuidString: "00000000-0000-0000-0000-000000000001")!
 		let id2 = UUID(uuidString: "00000000-0000-0000-0000-000000000002")!
 
-		let firstSeries = Series(leagueId: id0, id: id1, date: Date(), numberOfGames: 4)
-		let secondSeries = Series(leagueId: id0, id: id2, date: Date(), numberOfGames: 4)
+		let firstSeries = Series(league: id0, id: id1, date: Date(), numberOfGames: 4)
+		let secondSeries = Series(league: id0, id: id2, date: Date(), numberOfGames: 4)
 
 		let (series, seriesContinuation) = AsyncThrowingStream<[Series], Error>.streamWithContinuation()
 
