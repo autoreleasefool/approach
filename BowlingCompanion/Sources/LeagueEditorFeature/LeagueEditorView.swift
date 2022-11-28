@@ -1,9 +1,10 @@
-import AlleyPickerFeature
 import BaseFormFeature
 import ComposableArchitecture
+import ResourcePickerFeature
 import SharedModelsLibrary
 import StringsLibrary
 import SwiftUI
+import ViewsLibrary
 
 public struct LeagueEditorView: View {
 	let store: StoreOf<LeagueEditor>
@@ -18,6 +19,7 @@ public struct LeagueEditorView: View {
 		@BindableState var hasAdditionalPinfall: Bool
 		let selectedAlley: Alley?
 		let hasAlleysEnabled: Bool
+		let isAlleyPickerPresented: Bool
 
 		init(state: LeagueEditor.State) {
 			self.name = state.base.form.name
@@ -28,8 +30,9 @@ public struct LeagueEditorView: View {
 			self.additionalPinfall = state.base.form.additionalPinfall
 			self.hasAdditionalPinfall = state.base.form.hasAdditionalPinfall
 			self.hasAlleysEnabled = state.hasAlleysEnabled
+			self.isAlleyPickerPresented = state.isAlleyPickerPresented
 			if let id = state.base.form.alleyPicker.selected.first {
-				self.selectedAlley = state.base.form.alleyPicker.alleys?[id: id]
+				self.selectedAlley = state.base.form.alleyPicker.resources?[id: id]
 			} else {
 				self.selectedAlley = nil
 			}
@@ -37,6 +40,7 @@ public struct LeagueEditorView: View {
 	}
 
 	enum ViewAction: BindableAction {
+		case setAlleyPickerSheet(isPresented: Bool)
 		case binding(BindingAction<ViewState>)
 	}
 
@@ -52,6 +56,19 @@ public struct LeagueEditorView: View {
 				gamesSection(viewStore)
 				additionalPinfallSection(viewStore)
 			}
+			.sheet(isPresented: viewStore.binding(
+				get: \.isAlleyPickerPresented,
+				send: ViewAction.setAlleyPickerSheet(isPresented:)
+			)) {
+				NavigationView {
+					ResourcePickerView<Alley>(
+						store: store.scope(
+							state: \.base.form.alleyPicker,
+							action: LeagueEditor.Action.alleyPicker
+						)
+					)
+				}
+			}
 		}
 	}
 
@@ -60,19 +77,16 @@ public struct LeagueEditorView: View {
 			TextField(Strings.Leagues.Editor.Fields.Details.name, text: viewStore.binding(\.$name))
 				.textContentType(.name)
 			if viewStore.hasAlleysEnabled {
-				NavigationLink(
-					destination: AlleyPickerView(
-						store: store.scope(
-							state: \.base.form.alleyPicker,
-							action: LeagueEditor.Action.alleyPicker
-						)
-					)
-				) {
+				Button {
+					viewStore.send(.setAlleyPickerSheet(isPresented: true))
+				} label: {
 					LabeledContent(
 						Strings.Leagues.Editor.Fields.Details.BowlingAlley.title,
 						value: viewStore.selectedAlley?.name ?? Strings.Leagues.Editor.Fields.Details.BowlingAlley.none
 					)
+					.contentShape(Rectangle())
 				}
+				.buttonStyle(TappableElement())
 			}
 		} header: {
 			Text(Strings.Leagues.Editor.Fields.Details.title)
@@ -177,6 +191,8 @@ extension LeagueEditor.State {
 extension LeagueEditor.Action {
 	init(action: LeagueEditorView.ViewAction) {
 		switch action {
+		case let .setAlleyPickerSheet(isPresented):
+			self = .setAlleyPickerSheet(isPresented: isPresented)
 		case let.binding(action):
 			self = .binding(action.pullback(\LeagueEditor.State.view))
 		}

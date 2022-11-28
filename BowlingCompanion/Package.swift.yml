@@ -34,7 +34,6 @@ package:
         - AlleysDataProvider
         - ThemesLibrary
         - ViewsLibrary
-    - name: AlleyPickerFeature
       dependencies:
         - AlleysDataProvider
         - ThemesLibrary
@@ -75,21 +74,25 @@ package:
         - ViewsLibrary
     - name: LeagueEditorFeature
       dependencies:
-        - AlleyPickerFeature
         - BaseFormFeature
         - PersistenceService
+        - ResourcePickerFeature
     - name: LeaguesListFeature
       dependencies:
         - LeaguesDataProvider
         - LeagueEditorFeature
         - RecentlyUsedService
         - SeriesListFeature
+    - name: ResourcePickerFeature
+      dependencies:
+        - StringsLibrary
+        - ThemesLibrary
+        - ViewsLibrary
     - name: ScoreSheetFeature
       dependencies:
         - SharedModelsLibrary
     - name: SeriesEditorFeature
       dependencies:
-        - AlleyPickerFeature
         - BaseFormFeature
         - DateTimeLibrary
         - PersistenceService

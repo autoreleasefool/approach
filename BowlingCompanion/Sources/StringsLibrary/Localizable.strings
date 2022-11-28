@@ -102,6 +102,9 @@
 "leagues.errors.empty.message" = "You haven't added any leagues or events yet. Track your progress week over week for each league you're in. See how you measure up in tournaments with events.";
 "leagues.recurrence.repeats" = "Repeats";
 "leagues.recurrence.never" = "Never";
+"picker.title" = "Picking %@";
+"picker.empty.title" = "No items found";
+"picker.empty.cancel" = "Cancel";
 "series.model.name" = "Series";
 "series.editor.fields.numberOfGames.title" = "Number of Games";
 "series.editor.fields.alley.title" = "Alley";

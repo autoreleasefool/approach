@@ -2,11 +2,18 @@ import AlleyPickerFeature
 import BaseFormFeature
 import ComposableArchitecture
 import PersistenceServiceInterface
+import ResourcePickerFeature
 import SharedModelsLibrary
 import StringsLibrary
 
 extension League: BaseFormModel {
 	static public var modelName = Strings.Leagues.Model.name
+}
+
+extension Alley: PickableResource {
+	static public var pickableModelName = Strings.Alleys.Model.name
+	public var pickableTitle: String { name }
+	public var pickableSubtitle: String? { address }
 }
 
 public struct LeagueEditor: ReducerProtocol {
@@ -21,7 +28,7 @@ public struct LeagueEditor: ReducerProtocol {
 		@BindableState public var hasAdditionalPinfall = false
 		@BindableState public var additionalPinfall = ""
 		@BindableState public var additionalGames = ""
-		public var alleyPicker: AlleyPicker.State = .init(selected: [], limit: 1)
+		public var alleyPicker: ResourcePicker<Alley>.State = .init(selected: [], limit: 1)
 
 		public let isDeleteable = true
 		public var isSaveable: Bool {
@@ -32,6 +39,7 @@ public struct LeagueEditor: ReducerProtocol {
 	public struct State: Equatable {
 		public var bowler: Bowler
 		public var base: Form.State
+		public var isAlleyPickerPresented = false
 		public let hasAlleysEnabled: Bool
 
 		public init(bowler: Bowler, mode: Form.Mode, hasAlleysEnabled: Bool) {
@@ -71,7 +79,8 @@ public struct LeagueEditor: ReducerProtocol {
 	public enum Action: BindableAction, Equatable {
 		case binding(BindingAction<State>)
 		case form(Form.Action)
-		case alleyPicker(AlleyPicker.Action)
+		case alleyPicker(ResourcePicker<Alley>.Action)
+		case setAlleyPickerSheet(isPresented: Bool)
 	}
 
 	public init() {}
@@ -91,8 +100,20 @@ public struct LeagueEditor: ReducerProtocol {
 				))
 		}
 
+		Scope(state: \.base.form.alleyPicker, action: /Action.alleyPicker) {
+			ResourcePicker { persistenceService.fetchAlleys(.init(ordering: .byName)) }
+		}
+
 		Reduce { state, action in
 			switch action {
+			case let .setAlleyPickerSheet(isPresented):
+				state.isAlleyPickerPresented = isPresented
+				return .none
+
+			case .alleyPicker(.saveButtonTapped), .alleyPicker(.cancelButtonTapped):
+				state.isAlleyPickerPresented = false
+				return .none
+
 			case .binding(\.base.form.$recurrence):
 				if state.base.form.recurrence == .oneTimeEvent {
 					return .task { .set(\.base.form.$gamesPerSeries, .static) }

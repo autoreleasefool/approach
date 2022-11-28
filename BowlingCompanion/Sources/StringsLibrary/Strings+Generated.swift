@@ -378,6 +378,18 @@ public enum Strings {
       public static let repeats = Strings.tr("Localizable", "leagues.recurrence.repeats", fallback: "Repeats")
     }
   }
+  public enum Picker {
+    /// Picking %@
+    public static func title(_ p1: Any) -> String {
+      return Strings.tr("Localizable", "picker.title", String(describing: p1), fallback: "Picking %@")
+    }
+    public enum Empty {
+      /// Cancel
+      public static let cancel = Strings.tr("Localizable", "picker.empty.cancel", fallback: "Cancel")
+      /// No items found
+      public static let title = Strings.tr("Localizable", "picker.empty.title", fallback: "No items found")
+    }
+  }
   public enum Series {
     public enum Editor {
       /// Cancel
