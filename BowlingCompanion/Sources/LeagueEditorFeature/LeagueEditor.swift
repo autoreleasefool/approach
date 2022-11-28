@@ -1,3 +1,4 @@
+import AlleyPickerFeature
 import BaseFormFeature
 import ComposableArchitecture
 import PersistenceServiceInterface
@@ -19,6 +20,7 @@ public struct LeagueEditor: ReducerProtocol {
 		@BindableState public var hasAdditionalPinfall = false
 		@BindableState public var additionalPinfall = ""
 		@BindableState public var additionalGames = ""
+		public var alleyPicker: AlleyPicker.State = .init(selected: [], limit: 1)
 
 		public let isDeleteable = true
 		public var isSaveable: Bool {
@@ -41,6 +43,9 @@ public struct LeagueEditor: ReducerProtocol {
 				fields.additionalGames = "\(league.additionalGames ?? 0)"
 				fields.additionalPinfall = "\(league.additionalPinfall ?? 0)"
 				fields.hasAdditionalPinfall = (league.additionalGames ?? 0) > 0
+				fields.alleyPicker = .init(selected: Set([league.alley].compactMap( { $0 })), limit: 1)
+			} else {
+				fields.alleyPicker = .init(selected: [], limit: 1)
 			}
 
 			self.base = .init(mode: mode, form: fields)
@@ -63,6 +68,7 @@ public struct LeagueEditor: ReducerProtocol {
 	public enum Action: BindableAction, Equatable {
 		case binding(BindingAction<State>)
 		case form(Form.Action)
+		case alleyPicker(AlleyPicker.Action)
 	}
 
 	public init() {}
@@ -90,7 +96,7 @@ public struct LeagueEditor: ReducerProtocol {
 				}
 				return .none
 
-			case .binding, .form:
+			case .binding, .form, .alleyPicker:
 				return .none
 			}
 		}
@@ -117,7 +123,8 @@ extension LeagueEditor.Fields {
 			recurrence: recurrence,
 			numberOfGames: numberOfGames,
 			additionalPinfall: additionalPinfall,
-			additionalGames: additionalGames
+			additionalGames: additionalGames,
+			alley: alleyPicker.selected.first
 		)
 	}
 }

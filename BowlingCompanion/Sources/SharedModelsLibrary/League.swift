@@ -11,6 +11,7 @@ public struct League: Sendable, Identifiable, Hashable, Codable {
 	public let numberOfGames: Int?
 	public let additionalPinfall: Int?
 	public let additionalGames: Int?
+	public let alley: Alley.ID?
 
 	public init(
 		bowlerId: Bowler.ID,
@@ -19,7 +20,8 @@ public struct League: Sendable, Identifiable, Hashable, Codable {
 		recurrence: Recurrence,
 		numberOfGames: Int?,
 		additionalPinfall: Int?,
-		additionalGames: Int?
+		additionalGames: Int?,
+		alley: Alley.ID?
 	) {
 		self.bowlerId = bowlerId
 		self.id = id
@@ -28,6 +30,7 @@ public struct League: Sendable, Identifiable, Hashable, Codable {
 		self.numberOfGames = numberOfGames
 		self.additionalGames = additionalGames
 		self.additionalPinfall = additionalPinfall
+		self.alley = alley
 	}
 }
 

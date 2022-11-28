@@ -1,3 +1,4 @@
+import AlleyPickerFeature
 import BaseFormFeature
 import ComposableArchitecture
 import SharedModelsLibrary
@@ -14,6 +15,7 @@ public struct LeagueEditorView: View {
 		@BindableState var additionalPinfall: String
 		@BindableState var additionalGames: String
 		@BindableState var hasAdditionalPinfall: Bool
+		var selectedAlley: Alley?
 
 		init(state: LeagueEditor.State) {
 			self.name = state.base.form.name
@@ -23,6 +25,11 @@ public struct LeagueEditorView: View {
 			self.additionalGames = state.base.form.additionalGames
 			self.additionalPinfall = state.base.form.additionalPinfall
 			self.hasAdditionalPinfall = state.base.form.hasAdditionalPinfall
+			if let id = state.base.form.alleyPicker.selected.first {
+				self.selectedAlley = state.base.form.alleyPicker.alleys?[id: id]
+			} else {
+				self.selectedAlley = nil
+			}
 		}
 	}
 
@@ -46,9 +53,23 @@ public struct LeagueEditorView: View {
 	}
 
 	private func detailsSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
-		Section("Details") {
+		Section {
 			TextField("Name", text: viewStore.binding(\.$name))
 				.textContentType(.name)
+			NavigationLink(
+				destination: AlleyPickerView(
+					store: store.scope(
+						state: \.base.form.alleyPicker,
+						action: LeagueEditor.Action.alleyPicker
+					)
+				)
+			) {
+				LabeledContent("Bowling Alley", value: viewStore.selectedAlley?.name ?? "None")
+			}
+		} header: {
+			Text("Details")
+		} footer: {
+			Text("This is where you'll usually bowl this league. You can always change it for specific series later.")
 		}
 		.listRowBackground(Color(uiColor: .secondarySystemBackground))
 	}
