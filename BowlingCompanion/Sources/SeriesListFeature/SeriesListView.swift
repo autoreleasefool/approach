@@ -16,7 +16,6 @@ public struct SeriesListView: View {
 		let listState: ListContentState<Series, ListErrorContent>
 		let selection: Series.ID?
 		let numberOfGames: Int?
-		let isCreateSeriesFormPresented: Bool
 		let isNewSeriesCreated: Bool
 		let isSeriesEditorPresented: Bool
 
@@ -31,7 +30,6 @@ public struct SeriesListView: View {
 			self.leagueName = state.league.name
 			self.selection = state.selection?.id
 			self.numberOfGames = state.league.numberOfGames
-			self.isCreateSeriesFormPresented = state.createSeriesForm != nil
 			self.isNewSeriesCreated = state.newSeries != nil
 			self.isSeriesEditorPresented = state.seriesEditor != nil
 		}
@@ -105,17 +103,6 @@ public struct SeriesListView: View {
 				}
 			}
 			.sheet(isPresented: viewStore.binding(
-				get: \.isCreateSeriesFormPresented,
-				send: ViewAction.dismissNewSeries
-			)) {
-				IfLetStore(store.scope(state: \.createSeriesForm, action: SeriesList.Action.createSeries)) { scopedStore in
-					NavigationView {
-						CreateSeriesFormView(store: scopedStore)
-					}
-					.presentationDetents([.medium])
-				}
-			}
-			.sheet(isPresented: viewStore.binding(
 				get: \.isSeriesEditorPresented,
 				send: ViewAction.setEditorFormSheet(isPresented: false)
 			)) {
@@ -140,7 +127,7 @@ extension SeriesList.Action {
 		case let .setEditorFormSheet(isPresented):
 			self = .setEditorFormSheet(isPresented: isPresented)
 		case .addButtonTapped:
-			self = .addButtonTapped
+			self = .setEditorFormSheet(isPresented: true)
 		case let .setNavigation(selection):
 			self = .setNavigation(selection: selection)
 		case .dismissNewSeries:

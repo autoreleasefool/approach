@@ -14,7 +14,6 @@ public struct SeriesList: ReducerProtocol {
 		public var error: ListErrorContent?
 		public var selection: Identified<Series.ID, SeriesSidebar.State>?
 		public var seriesEditor: SeriesEditor.State?
-		public var createSeriesForm: CreateSeriesForm.State?
 		public var newSeries: SeriesSidebar.State?
 		public var alert: AlertState<AlertAction>?
 
@@ -30,7 +29,6 @@ public struct SeriesList: ReducerProtocol {
 		case setEditorFormSheet(isPresented: Bool)
 		case seriesCreateResponse(TaskResult<Series>)
 		case seriesDeleteResponse(TaskResult<Series>)
-		case addButtonTapped
 		case errorButtonTapped
 		case dismissNewSeries
 		case swipeAction(Series, SwipeAction)
@@ -38,7 +36,6 @@ public struct SeriesList: ReducerProtocol {
 
 		case seriesSidebar(SeriesSidebar.Action)
 		case seriesEditor(SeriesEditor.Action)
-		case createSeries(CreateSeriesForm.Action)
 	}
 
 	public enum SwipeAction: Equatable {
@@ -78,20 +75,6 @@ public struct SeriesList: ReducerProtocol {
 				state.error = .loadError
 				return .none
 
-			case .addButtonTapped:
-				if let numberOfGames = state.league.numberOfGames {
-					return .task { [leagueId = state.league.id] in
-						let series = Series(leagueId: leagueId, id: uuid(), date: date(), numberOfGames: numberOfGames)
-						return await .seriesCreateResponse(TaskResult {
-							try await persistenceService.createSeries(series)
-							return series
-						})
-					}
-				} else {
-					state.createSeriesForm = .init(league: state.league)
-					return .none
-				}
-
 			case let .seriesCreateResponse(.success(series)):
 				state.newSeries = .init(series: series)
 				return .none
@@ -101,7 +84,6 @@ public struct SeriesList: ReducerProtocol {
 				return .none
 
 			case .dismissNewSeries:
-				state.createSeriesForm = nil
 				state.newSeries = nil
 				return .none
 
@@ -119,6 +101,7 @@ public struct SeriesList: ReducerProtocol {
 				state.seriesEditor = .init(
 					league: state.league,
 					mode: .create,
+					date: date(),
 					hasAlleysEnabled: featureFlags.isEnabled(.alleyTracking)
 				)
 				return .none
@@ -139,27 +122,13 @@ public struct SeriesList: ReducerProtocol {
 				state.seriesEditor = .init(
 					league: state.league,
 					mode: .edit(series),
+					date: date(),
 					hasAlleysEnabled: featureFlags.isEnabled(.alleyTracking)
 				)
 				return .none
 
 			case let .swipeAction(series, .delete):
 				state.alert = SeriesList.alert(toDelete: series)
-				return .none
-
-			case .createSeries(.createButtonTapped):
-				guard let numberOfGames = state.createSeriesForm?.numberOfGames else { return .none }
-				state.createSeriesForm = nil
-				return .task { [leagueId = state.league.id] in
-					let series = Series(leagueId: leagueId, id: uuid(), date: date(), numberOfGames: numberOfGames)
-					return await .seriesCreateResponse(TaskResult {
-						try await persistenceService.createSeries(series)
-						return series
-					})
-				}
-
-			case .createSeries(.cancelButtonTapped):
-				state.createSeriesForm = nil
 				return .none
 
 			case .alert(.dismissed):
@@ -178,7 +147,7 @@ public struct SeriesList: ReducerProtocol {
 				state.error = .deleteError
 				return .none
 
-			case .seriesSidebar, .seriesEditor, .createSeries, .seriesDeleteResponse(.success):
+			case .seriesSidebar, .seriesEditor, .seriesDeleteResponse(.success):
 				return .none
 			}
 		}
@@ -192,9 +161,6 @@ public struct SeriesList: ReducerProtocol {
 		}
 		.ifLet(\.seriesEditor, action: /SeriesList.Action.seriesEditor) {
 			SeriesEditor()
-		}
-		.ifLet(\.createSeriesForm, action: /SeriesList.Action.createSeries) {
-			CreateSeriesForm()
 		}
 	}
 }

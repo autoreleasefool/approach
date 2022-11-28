@@ -38,6 +38,7 @@ public struct LeagueEditor: ReducerProtocol {
 	public struct State: Equatable {
 		public var bowler: Bowler
 		public var base: Form.State
+		public var initialAlley: Alley?
 		public var isAlleyPickerPresented = false
 		public let hasAlleysEnabled: Bool
 
@@ -76,6 +77,8 @@ public struct LeagueEditor: ReducerProtocol {
 	}
 
 	public enum Action: BindableAction, Equatable {
+		case loadInitialData
+		case leagueAlleyResponse(TaskResult<Alley?>)
 		case binding(BindingAction<State>)
 		case form(Form.Action)
 		case alleyPicker(ResourcePicker<Alley>.Action)
@@ -105,6 +108,26 @@ public struct LeagueEditor: ReducerProtocol {
 
 		Reduce { state, action in
 			switch action {
+			case .loadInitialData:
+				if case let .edit(league) = state.base.mode, let alleyId = league.alley {
+					return .run { send in
+						for try await alleys in persistenceService.fetchAlleys(.init(filter: .id(alleyId), ordering: .byName)) {
+							await send(.leagueAlleyResponse(.success(alleys.first)))
+						}
+					} catch: { error, send in
+						await send(.leagueAlleyResponse(.failure(error)))
+					}
+				}
+				return .none
+
+			case let .leagueAlleyResponse(.success(alley)):
+				state.initialAlley = alley
+				return .none
+
+			case .leagueAlleyResponse(.failure):
+				// TODO: handle error failing to load alley
+				return .none
+
 			case let .setAlleyPickerSheet(isPresented):
 				state.isAlleyPickerPresented = isPresented
 				return .none

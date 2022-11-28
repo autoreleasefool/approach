@@ -61,6 +61,10 @@ public struct ResourcePicker<Resource: PickableResource>: ReducerProtocol {
 			case let .resourceTapped(resource):
 				if state.selected.contains(resource.id) {
 					state.selected.remove(resource.id)
+				} else if state.limit == 1 {
+					state.selected.removeAll()
+					state.selected.insert(resource.id)
+					return .task { .saveButtonTapped }
 				} else if state.selected.count < state.limit || state.limit <= 0 {
 					state.selected.insert(resource.id)
 				}

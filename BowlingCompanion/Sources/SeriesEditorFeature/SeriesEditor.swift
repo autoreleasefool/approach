@@ -3,12 +3,19 @@ import ComposableArchitecture
 import DateTimeLibrary
 import Foundation
 import PersistenceServiceInterface
+import ResourcePickerFeature
 import SharedModelsLibrary
 import StringsLibrary
 
 extension Series: BaseFormModel {
 	static public var modelName = Strings.Series.Model.name
 	public var name: String { date.longFormat }
+}
+
+extension Alley: PickableResource {
+	static public var pickableModelName = Strings.Alleys.Model.name
+	public var pickableTitle: String { name }
+	public var pickableSubtitle: String? { address }
 }
 
 public struct SeriesEditor: ReducerProtocol {
@@ -18,6 +25,14 @@ public struct SeriesEditor: ReducerProtocol {
 		public var league: League
 		@BindableState public var numberOfGames: Int
 		@BindableState public var date = Date()
+		public var alleyPicker: ResourcePicker<Alley>.State
+
+		init(league: League, date: Date) {
+			self.league = league
+			self.numberOfGames = league.numberOfGames ?? League.DEFAULT_NUMBER_OF_GAMES
+			self.date = date
+			self.alleyPicker = .init(selected: Set([league.alley].compactMap { $0 }), limit: 1)
+		}
 
 		public let isDeleteable = true
 		public var isSaveable = true
@@ -25,6 +40,8 @@ public struct SeriesEditor: ReducerProtocol {
 
 	public struct State: Equatable {
 		public var base: Form.State
+		public var initialAlley: Alley?
+		public var isAlleyPickerPresented = false
 		public let hasAlleysEnabled: Bool
 
 		public init(
@@ -45,8 +62,12 @@ public struct SeriesEditor: ReducerProtocol {
 	}
 
 	public enum Action: BindableAction, Equatable {
+		case loadInitialData
+		case leagueAlleyResponse(TaskResult<Alley?>)
+		case setAlleyPickerSheet(isPresented: Bool)
 		case binding(BindingAction<State>)
 		case form(Form.Action)
+		case alleyPicker(ResourcePicker<Alley>.Action)
 	}
 
 	public init() {}
@@ -67,12 +88,42 @@ public struct SeriesEditor: ReducerProtocol {
 				))
 		}
 
-		Reduce { _, action in
+		Scope(state: \.base.form.alleyPicker, action: /Action.alleyPicker) {
+			ResourcePicker { persistenceService.fetchAlleys(.init(ordering: .byName)) }
+		}
+
+		Reduce { state, action in
 			switch action {
-			case .binding:
+			case .loadInitialData:
+				if let leagueAlley = state.base.form.league.alley {
+					return .run { send in
+						for try await alleys in persistenceService.fetchAlleys(.init(filter: .id(leagueAlley), ordering: .byName)) {
+							await send(.leagueAlleyResponse(.success(alleys.first)))
+						}
+					} catch: { error, send in
+						await send(.leagueAlleyResponse(.failure(error)))
+					}
+				} else {
+					return .none
+				}
+
+			case let .leagueAlleyResponse(.success(alley)):
+				state.initialAlley = alley
 				return .none
 
-			case .form:
+			case .leagueAlleyResponse(.failure):
+				// TODO: handle error failing to load alley
+				return .none
+
+			case let .setAlleyPickerSheet(isPresented):
+				state.isAlleyPickerPresented = isPresented
+				return .none
+
+			case .alleyPicker(.saveButtonTapped), .alleyPicker(.cancelButtonTapped):
+				state.isAlleyPickerPresented = false
+				return .none
+
+			case .binding, .form, .alleyPicker:
 				return .none
 			}
 		}

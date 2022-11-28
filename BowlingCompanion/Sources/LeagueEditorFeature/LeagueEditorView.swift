@@ -32,7 +32,13 @@ public struct LeagueEditorView: View {
 			self.hasAlleysEnabled = state.hasAlleysEnabled
 			self.isAlleyPickerPresented = state.isAlleyPickerPresented
 			if let id = state.base.form.alleyPicker.selected.first {
-				self.selectedAlley = state.base.form.alleyPicker.resources?[id: id]
+				if let alley = state.base.form.alleyPicker.resources?[id: id] {
+					self.selectedAlley = alley
+				} else if let alley = state.initialAlley, alley.id == id {
+					self.selectedAlley = alley
+				} else {
+					self.selectedAlley = nil
+				}
 			} else {
 				self.selectedAlley = nil
 			}
@@ -40,6 +46,7 @@ public struct LeagueEditorView: View {
 	}
 
 	enum ViewAction: BindableAction {
+		case loadInitialData
 		case setAlleyPickerSheet(isPresented: Bool)
 		case binding(BindingAction<ViewState>)
 	}
@@ -69,6 +76,7 @@ public struct LeagueEditorView: View {
 					)
 				}
 			}
+			.task { await viewStore.send(.loadInitialData).finish() }
 		}
 	}
 
@@ -105,7 +113,7 @@ public struct LeagueEditorView: View {
 				selection: viewStore.binding(\.$recurrence)
 			) {
 				ForEach(League.Recurrence.allCases) {
-					Text($0.description).tag($0.rawValue)
+					Text(String(describing: $0)).tag($0)
 				}
 			}
 		} footer: {
@@ -121,7 +129,7 @@ public struct LeagueEditorView: View {
 				selection: viewStore.binding(\.$gamesPerSeries)
 			) {
 				ForEach(LeagueEditor.GamesPerSeries.allCases) {
-					Text($0.description).tag($0.rawValue)
+					Text(String(describing: $0)).tag($0)
 				}
 			}
 			.disabled(viewStore.recurrence == .oneTimeEvent)
@@ -191,6 +199,8 @@ extension LeagueEditor.State {
 extension LeagueEditor.Action {
 	init(action: LeagueEditorView.ViewAction) {
 		switch action {
+		case .loadInitialData:
+			self = .loadInitialData
 		case let .setAlleyPickerSheet(isPresented):
 			self = .setAlleyPickerSheet(isPresented: isPresented)
 		case let.binding(action):

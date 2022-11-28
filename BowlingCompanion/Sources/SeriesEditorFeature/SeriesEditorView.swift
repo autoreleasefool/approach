@@ -1,5 +1,6 @@
 import BaseFormFeature
 import ComposableArchitecture
+import SharedModelsLibrary
 import StringsLibrary
 import SwiftUI
 
@@ -8,15 +9,30 @@ public struct SeriesEditorView: View {
 
 	struct ViewState: Equatable {
 		@BindableState var date: Date
+		@BindableState var numberOfGames: Int
+		let selectedAlley: Alley?
 		let hasAlleysEnabled: Bool
 
 		init(state: SeriesEditor.State) {
 			self.date = state.base.form.date
+			self.numberOfGames = state.base.form.numberOfGames
 			self.hasAlleysEnabled = state.hasAlleysEnabled
+			if let id = state.base.form.alleyPicker.selected.first {
+				if let alley = state.base.form.alleyPicker.resources?[id: id] {
+					self.selectedAlley = alley
+				} else if let alley = state.initialAlley, alley.id == id {
+					self.selectedAlley = alley
+				} else {
+					self.selectedAlley = nil
+				}
+			} else {
+				self.selectedAlley = nil
+			}
 		}
 	}
 
 	enum ViewAction: BindableAction {
+		case loadInitialData
 		case binding(BindingAction<ViewState>)
 	}
 
@@ -54,6 +70,7 @@ public struct SeriesEditorView: View {
 					.listRowBackground(Color(uiColor: .secondarySystemBackground))
 				}
 			}
+			.task { await viewStore.send(.loadInitialData).finish() }
 		}
 	}
 }
@@ -63,6 +80,7 @@ extension SeriesEditor.State {
 		get { .init(state: self) }
 		set {
 			self.base.form.date = newValue.date
+			self.base.form.numberOfGames = newValue.numberOfGames
 		}
 	}
 }
@@ -70,6 +88,8 @@ extension SeriesEditor.State {
 extension SeriesEditor.Action {
 	init(action: SeriesEditorView.ViewAction) {
 		switch action {
+		case .loadInitialData:
+			self = .loadInitialData
 		case .binding(let action):
 			self = .binding(action.pullback(\SeriesEditor.State.view))
 		}
@@ -84,7 +104,7 @@ struct SeriesEditorViewPreview: PreviewProvider {
 				.init(
 					initialState: .init(
 						league: .init(
-							bowlerId: UUID(),
+							bowler: UUID(),
 							id: UUID(),
 							name: "Majors, 2022",
 							recurrence: .repeating,
@@ -94,6 +114,7 @@ struct SeriesEditorViewPreview: PreviewProvider {
 							alley: nil
 						),
 						mode: .create,
+						date: Date(),
 						hasAlleysEnabled: true
 					),
 					reducer: SeriesEditor()
