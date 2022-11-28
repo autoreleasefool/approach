@@ -1,16 +1,24 @@
+import AlleyPickerFeature
 import ComposableArchitecture
 import SharedModelsLibrary
 import SwiftUI
 
 public struct CreateSeriesForm: ReducerProtocol {
 	public struct State: Equatable {
-		@BindableState var numberOfGames = League.DEFAULT_NUMBER_OF_GAMES
+		@BindableState public var numberOfGames = League.DEFAULT_NUMBER_OF_GAMES
+		public var alleyPicker: AlleyPicker.State
+
+		public init(league: League) {
+			self.numberOfGames = league.numberOfGames ?? League.DEFAULT_NUMBER_OF_GAMES
+			self.alleyPicker = .init(selected: Set([league.alley].compactMap { $0 }), limit: 1)
+		}
 	}
 
 	public enum Action: BindableAction, Equatable {
 		case binding(BindingAction<State>)
 		case createButtonTapped
 		case cancelButtonTapped
+		case alleyPicker(AlleyPicker.Action)
 	}
 
 	public init() {}
@@ -18,12 +26,19 @@ public struct CreateSeriesForm: ReducerProtocol {
 	public var body: some ReducerProtocol<State, Action> {
 		BindingReducer()
 
-		Reduce { _, action in
+		Scope(state: \.alleyPicker, action: /CreateSeriesForm.Action.alleyPicker) {
+			AlleyPicker()
+		}
+
+		Reduce { state, action in
 			switch action {
 			case .createButtonTapped:
 				return .none
 
 			case .cancelButtonTapped:
+				return .none
+
+			case .alleyPicker:
 				return .none
 
 			case .binding:
@@ -38,9 +53,15 @@ public struct CreateSeriesFormView: View {
 
 	struct ViewState: Equatable {
 		@BindableState var numberOfGames: Int
+		let selectedAlley: Alley?
 
 		init(state: CreateSeriesForm.State) {
 			self.numberOfGames = state.numberOfGames
+			if let id = state.alleyPicker.selected.first {
+				self.selectedAlley = state.alleyPicker.alleys?[id: id]
+			} else {
+				self.selectedAlley = nil
+			}
 		}
 	}
 
@@ -63,6 +84,19 @@ public struct CreateSeriesFormView: View {
 						value: viewStore.binding(\.$numberOfGames),
 						in: League.NUMBER_OF_GAMES_RANGE
 					)
+				}
+
+				Section("Alley") {
+					NavigationLink(
+						destination: AlleyPickerView(
+							store: store.scope(
+								state: \.alleyPicker,
+								action: CreateSeriesForm.Action.alleyPicker
+							)
+						)
+					) {
+						LabeledContent("Bowling Alley", value: viewStore.selectedAlley?.name ?? "None")
+					}
 				}
 			}
 			.navigationTitle("New Series")

@@ -10,6 +10,7 @@ let package = Package(
 	products: [
 		// MARK: - Features
 		.library(name: "AlleyEditorFeature", targets: ["AlleyEditorFeature"]),
+		.library(name: "AlleyPickerFeature", targets: ["AlleyPickerFeature"]),
 		.library(name: "AlleysListFeature", targets: ["AlleysListFeature"]),
 		.library(name: "AppFeature", targets: ["AppFeature"]),
 		.library(name: "BaseFormFeature", targets: ["BaseFormFeature"]),
@@ -85,6 +86,19 @@ let package = Package(
 			name: "AlleyEditorFeatureTests",
 			dependencies: [
 				"AlleyEditorFeature",
+			]
+		),
+		.target(
+			name: "AlleyPickerFeature",
+			dependencies: [
+				"AlleysDataProviderInterface",
+				"ViewsLibrary",
+			]
+		),
+		.testTarget(
+			name: "AlleyPickerFeatureTests",
+			dependencies: [
+				"AlleyPickerFeature",
 			]
 		),
 		.target(
@@ -199,6 +213,7 @@ let package = Package(
 		.target(
 			name: "LeagueEditorFeature",
 			dependencies: [
+				"AlleyPickerFeature",
 				"BaseFormFeature",
 				"PersistenceServiceInterface",
 			]
@@ -240,6 +255,7 @@ let package = Package(
 		.target(
 			name: "SeriesEditorFeature",
 			dependencies: [
+				"AlleyPickerFeature",
 				"BaseFormFeature",
 				"DateTimeLibrary",
 				"PersistenceServiceInterface",

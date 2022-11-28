@@ -33,6 +33,11 @@ package:
         - AlleysDataProvider
         - ThemesLibrary
         - ViewsLibrary
+    - name: AlleyPickerFeature
+      dependencies:
+        - AlleysDataProvider
+        - ThemesLibrary
+        - ViewsLibrary
     - name: AppFeature
       dependencies:
         - AlleysListFeature
@@ -69,6 +74,7 @@ package:
         - ViewsLibrary
     - name: LeagueEditorFeature
       dependencies:
+        - AlleyPickerFeature
         - BaseFormFeature
         - PersistenceService
     - name: LeaguesListFeature
@@ -82,6 +88,7 @@ package:
         - SharedModelsLibrary
     - name: SeriesEditorFeature
       dependencies:
+        - AlleyPickerFeature
         - BaseFormFeature
         - DateTimeLibrary
         - PersistenceService
