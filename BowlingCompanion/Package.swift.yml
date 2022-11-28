@@ -34,10 +34,6 @@ package:
         - AlleysDataProvider
         - ThemesLibrary
         - ViewsLibrary
-      dependencies:
-        - AlleysDataProvider
-        - ThemesLibrary
-        - ViewsLibrary
     - name: AppFeature
       dependencies:
         - AlleysListFeature

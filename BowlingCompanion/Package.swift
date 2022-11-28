@@ -92,8 +92,8 @@ let package = Package(
 		.target(
 			name: "AlleysListFeature",
 			dependencies: [
+				"AlleyEditorFeature",
 				"AlleysDataProviderInterface",
-				"ViewsLibrary",
 			]
 		),
 		.testTarget(
