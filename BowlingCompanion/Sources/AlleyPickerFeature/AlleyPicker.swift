@@ -64,11 +64,3 @@ public struct AlleyPicker: ReducerProtocol {
 		}
 	}
 }
-
-extension ListErrorContent {
-	static let loadError = Self(
-		title: "Something went wrong!",
-		message: "We couldn't load your data",
-		action: "Try again"
-	)
-}

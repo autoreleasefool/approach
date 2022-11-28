@@ -1,3 +1,4 @@
+import StringsLibrary
 import SwiftUI
 import ThemesLibrary
 
@@ -11,11 +12,11 @@ public struct PlaceholderWidget: View {
 	public var body: some View {
 		WidgetContainer(size: size) {
 			VStack(alignment: .leading, spacing: .smallSpacing) {
-				Text("Statistics at a glance")
+				Text(Strings.Statistics.Placeholder.title)
 					.font(.title)
 					.foregroundColor(.white)
 
-				Text("Tap here to configure the stats you want to see")
+				Text(Strings.Statistics.Placeholder.message)
 					.foregroundColor(.white)
 			}
 			.background(alignment: .bottomTrailing) {

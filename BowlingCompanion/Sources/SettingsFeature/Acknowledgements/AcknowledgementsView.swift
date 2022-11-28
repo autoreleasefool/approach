@@ -1,4 +1,5 @@
 import ConstantsLibrary
+import StringsLibrary
 import SwiftUI
 
 struct AcknowledgementsView: View {
@@ -8,6 +9,6 @@ struct AcknowledgementsView: View {
 				NavigationLink(acknowledgement.name, destination: AcknowledgementDetailsView(acknowledgement: acknowledgement))
 			}
 		}
-		.navigationTitle("Acknowledgements")
+		.navigationTitle(Strings.Settings.Acknowledgements.title)
 	}
 }

@@ -1,4 +1,5 @@
 import Foundation
+import StringsLibrary
 
 public struct Gear: Sendable, Identifiable, Hashable, Codable {
 	public let bowler: Bowler.ID?
@@ -29,10 +30,10 @@ extension Gear {
 		public var id: Int { rawValue }
 		public var description: String {
 			switch self {
-			case .shoes: return "Shoes"
-			case .bowlingBall: return "Ball"
-			case .towel: return "Towel"
-			case .other: return "Other"
+			case .shoes: return Strings.Gear.Kind.shoes
+			case .bowlingBall: return Strings.Gear.Kind.bowlingBall
+			case .towel: return Strings.Gear.Kind.towel
+			case .other: return Strings.Gear.Kind.other
 			}
 		}
 	}

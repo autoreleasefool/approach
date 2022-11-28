@@ -3,6 +3,7 @@ import BowlersListFeature
 import ComposableArchitecture
 import GearListFeature
 import SettingsFeature
+import StringsLibrary
 import SwiftUI
 import ThemesLibrary
 
@@ -59,13 +60,13 @@ extension App.Tab {
 	var name: String {
 		switch self {
 		case .alleys:
-			return "Alleys"
+			return Strings.App.Tabs.alley
 		case .settings:
-			return "Settings"
+			return Strings.App.Tabs.settings
 		case .bowlers:
-			return "Scoresheet"
+			return Strings.App.Tabs.scoresheet
 		case .gear:
-			return "Gear"
+			return Strings.App.Tabs.gear
 		}
 	}
 

@@ -99,4 +99,3 @@ extension View {
 			.presentationDetents(detents.swiftUISet, selection: selection)
 	}
 }
-

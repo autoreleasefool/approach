@@ -72,16 +72,3 @@ public struct GearList: ReducerProtocol {
 		}
 	}
 }
-
-extension ListErrorContent {
-	static let loadError = Self(
-		title: "Something went wrong!",
-		message: "We couldn't load your data",
-		action: "Try again"
-	)
-
-	static let deleteError = Self(
-		title: "Something went wrong!",
-		action: "Reload"
-	)
-}

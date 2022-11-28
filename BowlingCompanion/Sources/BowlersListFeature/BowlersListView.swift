@@ -3,6 +3,7 @@ import ComposableArchitecture
 import LeaguesListFeature
 import SharedModelsLibrary
 import StatisticsWidgetsFeature
+import StringsLibrary
 import SwiftUI
 import ThemesLibrary
 import ViewsLibrary
@@ -54,7 +55,7 @@ public struct BowlersListView: View {
 				.listRowSeparator(.hidden)
 				.listRowInsets(EdgeInsets())
 
-				Section("All Bowlers") {
+				Section(Strings.Bowlers.List.sectionTitle) {
 					ForEach(bowlers) { bowler in
 						BowlersListRow(
 							viewStore: viewStore,
@@ -67,10 +68,10 @@ public struct BowlersListView: View {
 			} empty: {
 				ListEmptyContent(
 					.emptyBowlers,
-					title: "No bowlers found",
-					message: "You haven't added any bowlers yet. Try adding yourself to get started."
+					title: Strings.Bowlers.Errors.Empty.title,
+					message: Strings.Bowlers.Errors.Empty.message
 				) {
-					EmptyContentAction(title: "Add Bowler") { viewStore.send(.addButtonTapped) }
+					EmptyContentAction(title: Strings.Bowlers.List.add) { viewStore.send(.addButtonTapped) }
 				}
 			} error: { error in
 				ListEmptyContent(
@@ -83,7 +84,7 @@ public struct BowlersListView: View {
 				}
 			}
 			.scrollContentBackground(.hidden)
-			.navigationTitle("Bowlers")
+			.navigationTitle(Strings.Bowlers.List.title)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
 					AddButton { viewStore.send(.addButtonTapped) }

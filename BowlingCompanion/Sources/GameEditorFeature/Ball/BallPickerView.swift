@@ -1,4 +1,5 @@
 import SharedModelsLibrary
+import StringsLibrary
 import SwiftUI
 import ThemesLibrary
 import ViewsLibrary
@@ -14,8 +15,8 @@ struct BallPickerView: View {
 					.cornerRadius(.standardIcon)
 
 				VStack(alignment: .leading, spacing: .unitSpacing) {
-					Text("Ball Rolled")
-					Text(ballRolled?.name ?? "None")
+					Text(Strings.Game.Editor.BallDetails.BallRolled.title)
+					Text(ballRolled?.name ?? Strings.Game.Editor.BallDetails.BallRolled.none)
 						.font(.caption)
 				}
 

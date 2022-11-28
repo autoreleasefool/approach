@@ -1,6 +1,7 @@
 import AlleyPickerFeature
 import ComposableArchitecture
 import SharedModelsLibrary
+import StringsLibrary
 import SwiftUI
 
 public struct CreateSeriesForm: ReducerProtocol {
@@ -30,7 +31,7 @@ public struct CreateSeriesForm: ReducerProtocol {
 			AlleyPicker()
 		}
 
-		Reduce { state, action in
+		Reduce { _, action in
 			switch action {
 			case .createButtonTapped:
 				return .none
@@ -78,7 +79,7 @@ public struct CreateSeriesFormView: View {
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: CreateSeriesForm.Action.init) { viewStore in
 			Form {
-				Section("Number of Games") {
+				Section(Strings.Series.Editor.Fields.NumberOfGames.title) {
 					Stepper(
 						"\(viewStore.numberOfGames)",
 						value: viewStore.binding(\.$numberOfGames),
@@ -86,7 +87,7 @@ public struct CreateSeriesFormView: View {
 					)
 				}
 
-				Section("Alley") {
+				Section(Strings.Series.Editor.Fields.Alley.title) {
 					NavigationLink(
 						destination: AlleyPickerView(
 							store: store.scope(
@@ -95,20 +96,23 @@ public struct CreateSeriesFormView: View {
 							)
 						)
 					) {
-						LabeledContent("Bowling Alley", value: viewStore.selectedAlley?.name ?? "None")
+						LabeledContent(
+							Strings.Series.Editor.Fields.Alley.BowlingAlley.title,
+							value: viewStore.selectedAlley?.name ?? Strings.Series.Editor.Fields.Alley.BowlingAlley.none
+						)
 					}
 				}
 			}
-			.navigationTitle("New Series")
+			.navigationTitle(Strings.Series.Editor.new)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarLeading) {
-					Button("Cancel") {
+					Button(Strings.Series.Editor.cancel) {
 						viewStore.send(.cancelButtonTapped)
 					}
 				}
 
 				ToolbarItem(placement: .navigationBarTrailing) {
-					Button("Start") {
+					Button(Strings.Series.Editor.start) {
 						viewStore.send(.createButtonTapped)
 					}
 				}

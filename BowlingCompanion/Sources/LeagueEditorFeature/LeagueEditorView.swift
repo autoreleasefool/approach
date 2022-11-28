@@ -2,6 +2,7 @@ import AlleyPickerFeature
 import BaseFormFeature
 import ComposableArchitecture
 import SharedModelsLibrary
+import StringsLibrary
 import SwiftUI
 
 public struct LeagueEditorView: View {
@@ -56,7 +57,7 @@ public struct LeagueEditorView: View {
 
 	private func detailsSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
 		Section {
-			TextField("Name", text: viewStore.binding(\.$name))
+			TextField(Strings.Leagues.Editor.Fields.Details.name, text: viewStore.binding(\.$name))
 				.textContentType(.name)
 			if viewStore.hasAlleysEnabled {
 				NavigationLink(
@@ -67,14 +68,17 @@ public struct LeagueEditorView: View {
 						)
 					)
 				) {
-					LabeledContent("Bowling Alley", value: viewStore.selectedAlley?.name ?? "None")
+					LabeledContent(
+						Strings.Leagues.Editor.Fields.Details.BowlingAlley.title,
+						value: viewStore.selectedAlley?.name ?? Strings.Leagues.Editor.Fields.Details.BowlingAlley.none
+					)
 				}
 			}
 		} header: {
-			Text("Details")
+			Text(Strings.Leagues.Editor.Fields.Details.title)
 		} footer: {
 			if viewStore.hasAlleysEnabled {
-				Text("This is where you'll usually bowl this league. You can always change it for specific series later.")
+				Text(Strings.Leagues.Editor.Fields.Details.BowlingAlley.help)
 			}
 		}
 		.listRowBackground(Color(uiColor: .secondarySystemBackground))
@@ -83,7 +87,7 @@ public struct LeagueEditorView: View {
 	private func recurrenceSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
 		Section {
 			Picker(
-				"Repeat?",
+				Strings.Leagues.Editor.Fields.Recurrence.title,
 				selection: viewStore.binding(\.$recurrence)
 			) {
 				ForEach(League.Recurrence.allCases) {
@@ -91,10 +95,7 @@ public struct LeagueEditorView: View {
 				}
 			}
 		} footer: {
-			Text(
-				"Choose '\(League.Recurrence.repeating)' for leagues that happen semi-frequently, such as once a week, or " +
-				"choose '\(League.Recurrence.oneTimeEvent)' for tournaments and one-off events."
-			)
+			Text(Strings.Leagues.Editor.Fields.Recurrence.help(League.Recurrence.repeating, League.Recurrence.oneTimeEvent))
 		}
 		.listRowBackground(Color(uiColor: .secondarySystemBackground))
 	}
@@ -102,7 +103,7 @@ public struct LeagueEditorView: View {
 	private func gamesSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
 		Section {
 			Picker(
-				"Number of games",
+				Strings.Leagues.Editor.Fields.NumberOfGames.title,
 				selection: viewStore.binding(\.$gamesPerSeries)
 			) {
 				ForEach(LeagueEditor.GamesPerSeries.allCases) {
@@ -120,8 +121,10 @@ public struct LeagueEditorView: View {
 			}
 		} footer: {
 			Text(
-				"Choose '\(LeagueEditor.GamesPerSeries.static)' if you always play the same number of games each series, " +
-				"or '\(LeagueEditor.GamesPerSeries.dynamic)' to choose the number of games each time you bowl."
+				Strings.Leagues.Editor.Fields.NumberOfGames.help(
+					LeagueEditor.GamesPerSeries.static,
+					LeagueEditor.GamesPerSeries.dynamic
+				)
 			)
 		}
 		.listRowBackground(Color(uiColor: .secondarySystemBackground))
@@ -130,30 +133,27 @@ public struct LeagueEditorView: View {
 	private func additionalPinfallSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
 		Section {
 			Toggle(
-				"Include additional pinfall?",
+				Strings.Leagues.Editor.Fields.AdditionalPinfall.title,
 				isOn: viewStore.binding(\.$hasAdditionalPinfall)
 			)
 			.toggleStyle(SwitchToggleStyle())
 
 			if viewStore.hasAdditionalPinfall {
 				TextField(
-					"Additional Pinfall",
+					Strings.Leagues.Editor.Fields.AdditionalPinfall.pinfall,
 					text: viewStore.binding(\.$additionalPinfall)
 				)
 				.keyboardType(.numberPad)
 				TextField(
-					"Additional Games",
+					Strings.Leagues.Editor.Fields.AdditionalPinfall.games,
 					text: viewStore.binding(\.$additionalGames)
 				)
 				.keyboardType(.numberPad)
 			}
 		} header: {
-			Text("Additional Games")
+			Text(Strings.Leagues.Editor.Fields.AdditionalPinfall.games)
 		} footer: {
-			Text(
-				"If you're starting recording partway through the season, you can add missing pinfall " +
-				"here to ensure your average in the app matches the average provided by your league."
-			)
+			Text(Strings.Leagues.Editor.Fields.AdditionalPinfall.help)
 		}
 		.listRowBackground(Color(uiColor: .secondarySystemBackground))
 	}

@@ -3,9 +3,10 @@ import ComposableArchitecture
 import Foundation
 import PersistenceServiceInterface
 import SharedModelsLibrary
+import StringsLibrary
 
 extension Bowler: BaseFormModel {
-	static public var modelName = "Bowler"
+	static public var modelName = Strings.Bowlers.Model.name
 }
 
 public struct BowlerEditor: ReducerProtocol {

@@ -1,5 +1,6 @@
 import BaseFormFeature
 import ComposableArchitecture
+import StringsLibrary
 import SwiftUI
 
 public struct BowlerEditorView: View {
@@ -24,9 +25,12 @@ public struct BowlerEditorView: View {
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: BowlerEditor.Action.init) { viewStore in
 			BaseFormView(store: store.scope(state: \.base, action: BowlerEditor.Action.form)) {
-				Section("Details") {
-					TextField("Name", text: viewStore.binding(\.$name))
-						.textContentType(.name)
+				Section(Strings.Bowlers.Editor.Fields.Details.title) {
+					TextField(
+						Strings.Bowlers.Editor.Fields.Details.name,
+						text: viewStore.binding(\.$name)
+					)
+					.textContentType(.name)
 				}
 				.listRowBackground(Color(uiColor: .secondarySystemBackground))
 			}

@@ -4,9 +4,10 @@ import DateTimeLibrary
 import Foundation
 import PersistenceServiceInterface
 import SharedModelsLibrary
+import StringsLibrary
 
 extension Series: BaseFormModel {
-	static public var modelName = "Series"
+	static public var modelName = Strings.Series.Model.name
 	public var name: String { date.longFormat }
 }
 

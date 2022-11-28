@@ -2,6 +2,7 @@ import ComposableArchitecture
 import LeagueEditorFeature
 import SeriesListFeature
 import SharedModelsLibrary
+import StringsLibrary
 import SwiftUI
 import ThemesLibrary
 import ViewsLibrary
@@ -45,7 +46,7 @@ public struct LeaguesListView: View {
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: LeaguesList.Action.init) { viewStore in
 			ListContent(viewStore.listState) { leagues in
-				Section("All Leagues") {
+				Section(Strings.Leagues.List.sectionTitle) {
 					ForEach(leagues) { league in
 						LeaguesListRow(
 							viewStore: viewStore,
@@ -58,10 +59,10 @@ public struct LeaguesListView: View {
 			} empty: {
 				ListEmptyContent(
 					.emptyLeagues,
-					title: "No leagues found",
-					message: "You haven't added any leagues or events yet. Track your progress week over week for each league you're in. See how you measure up in tournaments with events."
+					title: Strings.Leagues.Errors.Empty.title,
+					message: Strings.Leagues.Errors.Empty.message
 				) {
-					EmptyContentAction(title: "Add League") { viewStore.send(.addButtonTapped) }
+					EmptyContentAction(title: Strings.Leagues.List.add) { viewStore.send(.addButtonTapped) }
 				}
 			} error: { error in
 				ListEmptyContent(

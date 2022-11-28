@@ -3,6 +3,7 @@ import DateTimeLibrary
 import SeriesEditorFeature
 import SeriesSidebarFeature
 import SharedModelsLibrary
+import StringsLibrary
 import SwiftUI
 import ThemesLibrary
 import ViewsLibrary
@@ -53,7 +54,7 @@ public struct SeriesListView: View {
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: SeriesList.Action.init) { viewStore in
 			ListContent(viewStore.listState) { series in
-				Section("All Series") {
+				Section(Strings.Series.List.sectionTitle) {
 					ForEach(series) { series in
 						SeriesListRow(
 							viewStore: viewStore,
@@ -66,10 +67,10 @@ public struct SeriesListView: View {
 			} empty: {
 				ListEmptyContent(
 					.emptySeries,
-					title: "No series found",
-					message: "You haven't added a series yet. Create a new series every time you bowl to see your stats mapped accurately over time."
+					title: Strings.Series.Errors.Empty.title,
+					message: Strings.Series.Errors.Empty.message
 				) {
-					EmptyContentAction(title: "Add Series") { viewStore.send(.addButtonTapped) }
+					EmptyContentAction(title: Strings.Series.List.add) { viewStore.send(.addButtonTapped) }
 				}
 			} error: { error in
 				ListEmptyContent(

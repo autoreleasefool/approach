@@ -1,5 +1,6 @@
 import BaseFormFeature
 import ComposableArchitecture
+import StringsLibrary
 import SwiftUI
 
 public struct SeriesEditorView: View {
@@ -26,9 +27,9 @@ public struct SeriesEditorView: View {
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: SeriesEditor.Action.init) { viewStore in
 			BaseFormView(store: store.scope(state: \.base, action: SeriesEditor.Action.form)) {
-				Section("Details") {
+				Section(Strings.Series.Editor.Fields.Details.title) {
 					DatePicker(
-						"Date",
+						Strings.Series.Editor.Fields.Details.date,
 						selection: viewStore.binding(\.$date),
 						displayedComponents: [.date]
 					)
@@ -36,15 +37,18 @@ public struct SeriesEditorView: View {
 				.listRowBackground(Color(uiColor: .secondarySystemBackground))
 
 				if viewStore.hasAlleysEnabled {
-					Section("Alley") {
+					Section(Strings.Series.Editor.Fields.Alley.title) {
 						NavigationLink(destination: EmptyView()) {
-							LabeledContent("Bowling Alley", value: "None")
+							LabeledContent(
+								Strings.Series.Editor.Fields.Alley.BowlingAlley.title,
+								value: Strings.Series.Editor.Fields.Alley.BowlingAlley.none
+							)
 						}
 						NavigationLink(destination: EmptyView()) {
-							LabeledContent("Lanes", value: "1, 2")
+							LabeledContent(Strings.Series.Editor.Fields.Alley.lanes, value: "1, 2")
 						}
 						NavigationLink(destination: EmptyView()) {
-							LabeledContent("Starting Lane", value: "1")
+							LabeledContent(Strings.Series.Editor.Fields.Alley.startingLane, value: "1")
 						}
 					}
 					.listRowBackground(Color(uiColor: .secondarySystemBackground))

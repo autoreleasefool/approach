@@ -1,5 +1,6 @@
 import ComposableArchitecture
 import ConstantsLibrary
+import StringsLibrary
 import SwiftUI
 
 public struct HelpSettingsView: View {
@@ -16,20 +17,21 @@ public struct HelpSettingsView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: HelpSettings.Action.init) { viewStore in
-			Section("Help") {
-				Button("Report Bug") { viewStore.send(.reportBugButtonTapped) }
-				Button("Send Feedback") { viewStore.send(.sendFeedbackButtonTapped) }
-				NavigationLink("Acknowledgements", destination: AcknowledgementsView())
+			Section(Strings.Settings.Help.title) {
+				Button(Strings.Settings.Help.reportBug) { viewStore.send(.reportBugButtonTapped) }
+				Button(Strings.Settings.Help.sendFeedback) { viewStore.send(.sendFeedbackButtonTapped) }
+				NavigationLink(Strings.Settings.Help.acknowledgements, destination: AcknowledgementsView())
 			}
 
 			Section {
-				NavigationLink("Developer", destination: DeveloperDetailsView())
-				Link("View Source", destination: AppConstants.openSourceRepositoryUrl)
+				NavigationLink(Strings.Settings.Help.developer, destination: DeveloperDetailsView())
+				Link(Strings.Settings.Help.viewSource, destination: AppConstants.openSourceRepositoryUrl)
+				// TODO: enable tip jar
 //				NavigationLink("Tip Jar", destination: TipJarView())
 			} header: {
-				Text("Development")
+				Text(Strings.Settings.Help.Development.title)
 			} footer: {
-				Text("\(AppConstants.appName) is an open source project you can aid in the development of by using the links above")
+				Text(Strings.Settings.Help.Development.help(AppConstants.appName))
 			}
 		}
 	}

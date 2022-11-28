@@ -1,3 +1,4 @@
+import StringsLibrary
 import SwiftUI
 import ThemesLibrary
 
@@ -10,7 +11,7 @@ public struct DeleteButton: View {
 
 	public var body: some View {
 		Button(role: .destructive, action: perform) {
-			Label("Delete", systemImage: "trash")
+			Label(Strings.Actions.delete, systemImage: "trash")
 		}
 		.tint(.appDestructive)
 	}

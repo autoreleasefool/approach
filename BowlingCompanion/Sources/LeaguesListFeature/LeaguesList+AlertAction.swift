@@ -1,5 +1,6 @@
 import ComposableArchitecture
 import SharedModelsLibrary
+import StringsLibrary
 
 extension LeaguesList {
 	public enum AlertAction: Equatable {
@@ -9,13 +10,13 @@ extension LeaguesList {
 
 	func alert(toDelete league: League) -> AlertState<AlertAction> {
 		.init(
-			title: TextState("Are you sure you want to delete \(league.name)"),
+			title: TextState(Strings.Leagues.List.Delete.title(league.name)),
 			primaryButton: .destructive(
-				TextState("Delete"),
+				TextState(Strings.Leagues.List.Delete.action),
 				action: .send(.deleteButtonTapped(league))
 			),
 			secondaryButton: .cancel(
-				TextState("Cancel"),
+				TextState(Strings.Leagues.List.Delete.cancel),
 				action: .send(.dismissed)
 			)
 		)

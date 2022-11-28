@@ -3,9 +3,10 @@ import BaseFormFeature
 import ComposableArchitecture
 import PersistenceServiceInterface
 import SharedModelsLibrary
+import StringsLibrary
 
 extension League: BaseFormModel {
-	static public var modelName = "League"
+	static public var modelName = Strings.Leagues.Model.name
 }
 
 public struct LeagueEditor: ReducerProtocol {
@@ -44,7 +45,7 @@ public struct LeagueEditor: ReducerProtocol {
 				fields.additionalGames = "\(league.additionalGames ?? 0)"
 				fields.additionalPinfall = "\(league.additionalPinfall ?? 0)"
 				fields.hasAdditionalPinfall = (league.additionalGames ?? 0) > 0
-				fields.alleyPicker = .init(selected: Set([league.alley].compactMap( { $0 })), limit: 1)
+				fields.alleyPicker = .init(selected: Set([league.alley].compactMap({ $0 })), limit: 1)
 			} else {
 				fields.alleyPicker = .init(selected: [], limit: 1)
 			}
@@ -61,8 +62,8 @@ public struct LeagueEditor: ReducerProtocol {
 		public var id: Int { rawValue }
 		public var description: String {
 			switch self {
-			case .static: return "Constant"
-			case .dynamic: return "Always ask me"
+			case .static: return Strings.Leagues.Editor.Fields.GamesPerSeries.constant
+			case .dynamic: return Strings.Leagues.Editor.Fields.GamesPerSeries.alwaysAskMe
 			}
 		}
 	}

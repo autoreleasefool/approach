@@ -1,5 +1,6 @@
 import ComposableArchitecture
 import DateTimeLibrary
+import StringsLibrary
 import SharedModelsLibrary
 
 extension SeriesList {
@@ -10,13 +11,13 @@ extension SeriesList {
 
 	static func alert(toDelete series: Series) -> AlertState<AlertAction> {
 		.init(
-			title: TextState("Are you sure you want to delete \(series.date.longFormat)"),
+			title: TextState(Strings.Series.List.Delete.title(series.date.longFormat)),
 			primaryButton: .destructive(
-				TextState("Delete"),
+				TextState(Strings.Series.List.Delete.action),
 				action: .send(.deleteButtonTapped(series))
 			),
 			secondaryButton: .cancel(
-				TextState("Cancel"),
+				TextState(Strings.Series.List.Delete.cancel),
 				action: .send(.dismissed)
 			)
 		)

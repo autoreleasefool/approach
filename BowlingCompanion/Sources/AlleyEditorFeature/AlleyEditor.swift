@@ -3,9 +3,10 @@ import ComposableArchitecture
 import Foundation
 import PersistenceServiceInterface
 import SharedModelsLibrary
+import StringsLibrary
 
 extension Alley: BaseFormModel {
-	static public var modelName = "Alley"
+	static public var modelName = Strings.Alleys.Model.name
 }
 
 public struct AlleyEditor: ReducerProtocol {

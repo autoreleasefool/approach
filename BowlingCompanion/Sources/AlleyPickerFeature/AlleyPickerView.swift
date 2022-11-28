@@ -1,5 +1,6 @@
 import ComposableArchitecture
 import SharedModelsLibrary
+import StringsLibrary
 import SwiftUI
 import ThemesLibrary
 import ViewsLibrary
@@ -48,9 +49,9 @@ public struct AlleyPickerView: View {
 			} empty: {
 				ListEmptyContent(
 					.emptyAlleys,
-					title: "No alleys found"
+					title: Strings.Alleys.Errors.Empty.title
 				) {
-					EmptyContentAction(title: "Dismiss") {
+					EmptyContentAction(title: Strings.Alleys.Picker.Errors.dismiss) {
 						viewStore.send(.dismissButtonTapped)
 					}
 				}
@@ -61,7 +62,7 @@ public struct AlleyPickerView: View {
 					message: error.message,
 					style: .error
 				) {
-					EmptyContentAction(title: "Dismiss") {
+					EmptyContentAction(title: error.action) {
 						viewStore.send(.errorButtonTapped)
 					}
 				}

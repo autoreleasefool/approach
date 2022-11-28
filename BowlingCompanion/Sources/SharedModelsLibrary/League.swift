@@ -1,4 +1,5 @@
 import Foundation
+import StringsLibrary
 
 public struct League: Sendable, Identifiable, Hashable, Codable {
 	public static let DEFAULT_NUMBER_OF_GAMES = 4
@@ -42,8 +43,8 @@ extension League {
 		public var id: Int { rawValue }
 		public var description: String {
 			switch self {
-			case .repeating: return "Repeats"
-			case .oneTimeEvent: return "Never"
+			case .repeating: return Strings.Leagues.Recurrence.repeats
+			case .oneTimeEvent: return Strings.Leagues.Recurrence.never
 			}
 		}
 	}

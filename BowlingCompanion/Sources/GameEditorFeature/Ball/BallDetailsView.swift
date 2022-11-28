@@ -1,5 +1,6 @@
 import ComposableArchitecture
 import SharedModelsLibrary
+import StringsLibrary
 import SwiftUI
 import ThemesLibrary
 import ViewsLibrary
@@ -34,8 +35,8 @@ struct BallDetailsView: View {
 		WithViewStore(store, observe: ViewState.init, send: BallDetails.Action.init) { viewStore in
 			VStack(alignment: .leading, spacing: .unitSpacing) {
 				HStack(alignment: .firstTextBaseline, spacing: .smallSpacing) {
-					Text("Frame \(viewStore.frame)")
-					Text("Ball \(viewStore.ball)")
+					Text(Strings.Game.Editor.BallDetails.frame(viewStore.frame))
+					Text(Strings.Game.Editor.BallDetails.ball(viewStore.ball))
 						.font(.caption)
 				}
 				.frame(maxWidth: .infinity, alignment: .leading)

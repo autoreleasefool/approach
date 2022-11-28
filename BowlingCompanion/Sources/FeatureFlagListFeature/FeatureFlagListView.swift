@@ -1,5 +1,6 @@
 import ComposableArchitecture
 import FeatureFlagLibrary
+import StringsLibrary
 import SwiftUI
 
 public struct FeatureFlagListView: View {
@@ -27,10 +28,10 @@ public struct FeatureFlagListView: View {
 		WithViewStore(store, observe: ViewState.init, send: FeatureFlagList.Action.init) { viewStore in
 			List {
 				Section {
-					Button("Reset") { viewStore.send(.resetOverridesButtonTapped) }
+					Button(Strings.Settings.FeatureFlags.reset) { viewStore.send(.resetOverridesButtonTapped) }
 				}
 
-				Section("Features") {
+				Section(Strings.Settings.FeatureFlags.title) {
 					ForEach(viewStore.featureFlags, id: \.flag.id) { item in
 						Toggle(
 							item.flag.name,

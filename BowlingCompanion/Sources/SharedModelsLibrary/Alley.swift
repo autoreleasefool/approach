@@ -1,4 +1,5 @@
 import Foundation
+import StringsLibrary
 
 public struct Alley: Sendable, Identifiable, Hashable, Codable {
 	public let id: UUID
@@ -37,9 +38,9 @@ extension Alley {
 		public var id: Int { rawValue }
 		public var description: String {
 			switch self {
-			case .synthetic: return "Synthetic"
-			case .wood: return "Wood"
-			case .unknown: return "Unknown"
+			case .synthetic: return Strings.Alleys.Material.synthetic
+			case .wood: return Strings.Alleys.Material.wood
+			case .unknown: return Strings.Alleys.Material.unknown
 			}
 		}
 	}
@@ -54,9 +55,9 @@ extension Alley {
 		public var id: Int { rawValue }
 		public var description: String {
 			switch self {
-			case .freefall: return "Freefall"
-			case .strings: return "Strings"
-			case .unknown: return "Unknown"
+			case .freefall: return Strings.Alleys.PinFall.freefall
+			case .strings: return Strings.Alleys.PinFall.strings
+			case .unknown: return Strings.Alleys.PinFall.unknown
 			}
 		}
 	}
@@ -71,9 +72,9 @@ extension Alley {
 		public var id: Int { rawValue }
 		public var description: String {
 			switch self {
-			case .dedicated: return "Dedicated"
-			case .interchangeable: return "Interchangeable"
-			case .unknown: return "Unknown"
+			case .dedicated: return Strings.Alleys.Mechanism.dedicated
+			case .interchangeable: return Strings.Alleys.Mechanism.interchangeable
+			case .unknown: return Strings.Alleys.Mechanism.unknown
 			}
 		}
 	}
@@ -89,10 +90,10 @@ extension Alley {
 		public var id: Int { rawValue }
 		public var description: String {
 			switch self {
-			case .black: return "Black"
-			case .white: return "White"
-			case .other: return "Other"
-			case .unknown: return "Unknown"
+			case .black: return Strings.Alleys.PinBase.black
+			case .white: return Strings.Alleys.PinBase.white
+			case .other: return Strings.Alleys.PinBase.other
+			case .unknown: return Strings.Alleys.PinBase.unknown
 			}
 		}
 	}

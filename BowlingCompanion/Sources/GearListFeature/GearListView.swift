@@ -1,5 +1,6 @@
 import ComposableArchitecture
 import SharedModelsLibrary
+import StringsLibrary
 import SwiftUI
 import ThemesLibrary
 import ViewsLibrary
@@ -42,10 +43,10 @@ public struct GearListView: View {
 			} empty: {
 				ListEmptyContent(
 					.emptyGear,
-					title: "No gear found",
-					message: "You haven't added any gear yet. Track usage stats for your shoes, balls, or more."
+					title: Strings.Gear.Errors.Empty.title,
+					message: Strings.Gear.Errors.Empty.message
 				) {
-					EmptyContentAction(title: "Add Gear") { viewStore.send(.addButtonTapped) }
+					EmptyContentAction(title: Strings.Gear.List.add) { viewStore.send(.addButtonTapped) }
 				}
 			} error: { error in
 				ListEmptyContent(
@@ -58,7 +59,7 @@ public struct GearListView: View {
 				}
 			}
 			.scrollContentBackground(.hidden)
-			.navigationTitle("Gear")
+			.navigationTitle(Strings.Gear.List.title)
 			.task { await viewStore.send(.subscribeToGear).finish() }
 		}
 	}

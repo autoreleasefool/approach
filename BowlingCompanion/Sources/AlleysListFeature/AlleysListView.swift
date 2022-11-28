@@ -1,8 +1,9 @@
 import AlleyEditorFeature
 import ComposableArchitecture
 import SharedModelsLibrary
-import SwiftUI
 import StatisticsWidgetsFeature
+import StringsLibrary
+import SwiftUI
 import ThemesLibrary
 import ViewsLibrary
 
@@ -47,10 +48,10 @@ public struct AlleysListView: View {
 			} empty: {
 				ListEmptyContent(
 					.emptyAlleys,
-					title: "No alleys found",
-					message: "You haven't added any alleys yet."
+					title: Strings.Alleys.Errors.Empty.title,
+					message: Strings.Alleys.Errors.Empty.message
 				) {
-					EmptyContentAction(title: "Add Alley") { viewStore.send(.addButtonTapped) }
+					EmptyContentAction(title: Strings.Alleys.List.add) { viewStore.send(.addButtonTapped) }
 				}
 			} error: { error in
 				ListEmptyContent(
@@ -63,7 +64,7 @@ public struct AlleysListView: View {
 				}
 			}
 			.scrollContentBackground(.hidden)
-			.navigationTitle("Alleys")
+			.navigationTitle(Strings.Alleys.List.title)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
 					AddButton { viewStore.send(.addButtonTapped) }

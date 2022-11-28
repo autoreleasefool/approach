@@ -1,3 +1,4 @@
+import StringsLibrary
 import SwiftUI
 import ThemesLibrary
 
@@ -10,7 +11,7 @@ public struct EditButton: View {
 
 	public var body: some View {
 		Button(action: perform) {
-			Label("Edit", systemImage: "pencil")
+			Label(Strings.Actions.edit, systemImage: "pencil")
 		}
 		.tint(.appAction)
 	}

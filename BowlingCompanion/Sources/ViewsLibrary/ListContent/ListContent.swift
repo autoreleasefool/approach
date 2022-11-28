@@ -1,4 +1,5 @@
 import ComposableArchitecture
+import StringsLibrary
 import SwiftUI
 
 public struct ListContent<
@@ -64,4 +65,15 @@ public struct ListErrorContent: Equatable {
 		self.message = message
 		self.action = action
 	}
+
+	public static let loadError = Self(
+		title: Strings.Errors.Generic.title,
+		message: Strings.Errors.LoadingFailed.message,
+		action: Strings.Errors.Generic.tryAgain
+	)
+
+	public static let deleteError = Self(
+		title: Strings.Errors.DeleteFailed.title,
+		action: Strings.Errors.DeleteFailed.action
+	)
 }

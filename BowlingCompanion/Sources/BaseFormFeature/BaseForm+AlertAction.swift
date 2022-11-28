@@ -1,4 +1,5 @@
 import ComposableArchitecture
+import StringsLibrary
 
 extension BaseForm {
 	public enum AlertAction: Equatable {
@@ -13,9 +14,9 @@ extension BaseForm.State {
 		guard case let .edit(model) = self.mode else { return nil }
 
 		return .init(
-			title: TextState("Are you sure you want to delete \(model.name)"),
+			title: TextState(Strings.Form.Delete.title(model.name)),
 			primaryButton: .destructive(
-				TextState("Delete"),
+				TextState(Strings.Form.Delete.action),
 				action: .send(.deleteButtonTapped)
 			),
 			secondaryButton: self.dismissButton
@@ -24,9 +25,9 @@ extension BaseForm.State {
 
 	var discardAlert: AlertState<BaseForm<Model, FormState>.AlertAction> {
 		.init(
-			title: TextState("Discard your changes?"),
+			title: TextState(Strings.Form.Discard.title),
 			primaryButton: .destructive(
-				TextState("Discard"),
+				TextState(Strings.Form.Discard.action),
 				action: .send(.discardButtonTapped)
 			),
 			secondaryButton: self.dismissButton
@@ -34,6 +35,6 @@ extension BaseForm.State {
 	}
 
 	private var dismissButton: AlertState<BaseForm<Model, FormState>.AlertAction>.Button {
-		.cancel(TextState("Cancel"), action: .send(.dismissed))
+		.cancel(TextState(Strings.Form.cancel), action: .send(.dismissed))
 	}
 }

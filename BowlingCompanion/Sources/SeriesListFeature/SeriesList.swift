@@ -4,6 +4,7 @@ import PersistenceServiceInterface
 import SeriesEditorFeature
 import SeriesSidebarFeature
 import SharedModelsLibrary
+import StringsLibrary
 import ViewsLibrary
 
 public struct SeriesList: ReducerProtocol {
@@ -199,20 +200,9 @@ public struct SeriesList: ReducerProtocol {
 }
 
 extension ListErrorContent {
-	static let loadError = Self(
-		title: "Something went wrong!",
-		message: "We couldn't load your data",
-		action: "Try again"
-	)
-
-	static let deleteError = Self(
-		title: "Something went wrong!",
-		action: "Reload"
-	)
-
 	static let createError = Self(
-		title: "Something went wrong!",
-		message: "We couldn't create a new series",
-		action: "Try again"
+		title: Strings.Series.Errors.Create.title,
+		message: Strings.Series.Errors.Create.message,
+		action: Strings.Series.Errors.Create.tryAgain
 	)
 }

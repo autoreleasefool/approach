@@ -27,6 +27,7 @@ package:
       dependencies:
         - BaseFormFeature
         - PersistenceService
+        - StringsLibrary
     - name: AlleysListFeature
       dependencies:
         - AlleyEditorFeature
@@ -176,20 +177,26 @@ package:
 
   library:
     - name: ConstantsLibrary
+      dependencies:
+        - StringsLibrary
     - name: DateTimeLibrary
       requires_tests: true
     - name: FeatureFlagLibrary
       requires_tests: true
     - name: SharedModelsLibrary
+      dependencies:
+        - StringsLibrary
     - name: SharedPersistenceModelsLibrary
       dependencies:
         - SharedModelsLibrary
         - Dependencies
         - GRDB
     - name: SortingLibrary
+    - name: StringsLibrary
     - name: SwiftUIExtensionsLibrary
     - name: ThemesLibrary
     - name: ViewsLibrary
       dependencies:
+        - StringsLibrary
         - ThemesLibrary
         - ComposableArchitecture

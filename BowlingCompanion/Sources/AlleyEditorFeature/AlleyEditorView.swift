@@ -1,6 +1,7 @@
 import BaseFormFeature
 import ComposableArchitecture
 import SharedModelsLibrary
+import StringsLibrary
 import SwiftUI
 
 public struct AlleyEditorView: View {
@@ -41,7 +42,7 @@ public struct AlleyEditorView: View {
 				pinFallSection(viewStore)
 				pinBaseSection(viewStore)
 				Section {
-					Text("Not sure about any of the settings? Ask a staff member! They'll probably be happy to help")
+					Text(Strings.Alleys.Editor.Help.askAStaffMember)
 						.font(.caption)
 				}
 			}
@@ -49,10 +50,16 @@ public struct AlleyEditorView: View {
 	}
 
 	private func detailsSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
-		Section("Details") {
-			TextField("Name", text: viewStore.binding(\.$name))
-			TextField("Address", text: viewStore.binding(\.$address))
-				.textContentType(.fullStreetAddress)
+		Section(Strings.Alleys.Editor.Fields.Details.title) {
+			TextField(
+				Strings.Alleys.Editor.Fields.Details.name,
+				text: viewStore.binding(\.$name)
+			)
+			TextField(
+				Strings.Alleys.Editor.Fields.Details.address,
+				text: viewStore.binding(\.$address)
+			)
+			.textContentType(.fullStreetAddress)
 		}
 		.listRowBackground(Color(uiColor: .secondarySystemBackground))
 	}
@@ -60,7 +67,7 @@ public struct AlleyEditorView: View {
 	private func materialSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
 		Section {
 			Picker(
-				"Material",
+				Strings.Alleys.Editor.Fields.Material.title,
 				selection: viewStore.binding(\.$material)
 			) {
 				ForEach(Alley.Material.allCases) {
@@ -68,7 +75,7 @@ public struct AlleyEditorView: View {
 				}
 			}
 		} footer: {
-			Text("To help tell the difference, wooden lanes tend to show some wear, while synthetic lanes are usually harder and smoother.")
+			Text(Strings.Alleys.Editor.Fields.Material.footer)
 		}
 		.listRowBackground(Color(uiColor: .secondarySystemBackground))
 	}
@@ -76,7 +83,7 @@ public struct AlleyEditorView: View {
 	private func pinFallSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
 		Section {
 			Picker(
-				"Pin Fall",
+				Strings.Alleys.Editor.Fields.PinFall.title,
 				selection: viewStore.binding(\.$pinFall)
 			) {
 				ForEach(Alley.PinFall.allCases) {
@@ -84,7 +91,7 @@ public struct AlleyEditorView: View {
 				}
 			}
 		} footer: {
-			Text("Look at how the pins are set up. Do you notice the pins are pushed off the lane after each ball, or are they attached to strings and pulled up?")
+			Text(Strings.Alleys.Editor.Fields.PinFall.footer)
 		}
 		.listRowBackground(Color(uiColor: .secondarySystemBackground))
 	}
@@ -92,7 +99,7 @@ public struct AlleyEditorView: View {
 	private func mechanismSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
 		Section {
 			Picker(
-				"Mechanism",
+				Strings.Alleys.Editor.Fields.Mechanism.title,
 				selection: viewStore.binding(\.$mechanism)
 			) {
 				ForEach(Alley.Mechanism.allCases) {
@@ -100,7 +107,7 @@ public struct AlleyEditorView: View {
 				}
 			}
 		} footer: {
-			Text("Are the lanes interchangeable between multiple types of bowling (5-Pin and 10-Pin), or do they only support one kind?")
+			Text(Strings.Alleys.Editor.Fields.Mechanism.footer)
 		}
 		.listRowBackground(Color(uiColor: .secondarySystemBackground))
 	}
@@ -108,7 +115,7 @@ public struct AlleyEditorView: View {
 	private func pinBaseSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
 		Section {
 			Picker(
-				"Pin Base",
+				Strings.Alleys.Editor.Fields.PinBase.title,
 				selection: viewStore.binding(\.$pinBase)
 			) {
 				ForEach(Alley.PinBase.allCases) {
@@ -116,7 +123,7 @@ public struct AlleyEditorView: View {
 				}
 			}
 		} footer: {
-			Text("What kind of base do the pins have?")
+			Text(Strings.Alleys.Editor.Fields.PinBase.footer)
 		}
 		.listRowBackground(Color(uiColor: .secondarySystemBackground))
 	}

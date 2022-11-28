@@ -63,6 +63,7 @@ let package = Package(
 		.library(name: "SharedModelsLibrary", targets: ["SharedModelsLibrary"]),
 		.library(name: "SharedPersistenceModelsLibrary", targets: ["SharedPersistenceModelsLibrary"]),
 		.library(name: "SortingLibrary", targets: ["SortingLibrary"]),
+		.library(name: "StringsLibrary", targets: ["StringsLibrary"]),
 		.library(name: "SwiftUIExtensionsLibrary", targets: ["SwiftUIExtensionsLibrary"]),
 		.library(name: "ThemesLibrary", targets: ["ThemesLibrary"]),
 		.library(name: "ViewsLibrary", targets: ["ViewsLibrary"]),
@@ -581,7 +582,9 @@ let package = Package(
 		// MARK: - Libraries
 		.target(
 			name: "ConstantsLibrary",
-			dependencies: []
+			dependencies: [
+				"StringsLibrary",
+			]
 		),
 		.target(
 			name: "DateTimeLibrary",
@@ -605,7 +608,9 @@ let package = Package(
 		),
 		.target(
 			name: "SharedModelsLibrary",
-			dependencies: []
+			dependencies: [
+				"StringsLibrary",
+			]
 		),
 		.target(
 			name: "SharedPersistenceModelsLibrary",
@@ -620,6 +625,10 @@ let package = Package(
 			dependencies: []
 		),
 		.target(
+			name: "StringsLibrary",
+			dependencies: []
+		),
+		.target(
 			name: "SwiftUIExtensionsLibrary",
 			dependencies: []
 		),
@@ -631,6 +640,7 @@ let package = Package(
 			name: "ViewsLibrary",
 			dependencies: [
 				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+				"StringsLibrary",
 				"ThemesLibrary",
 			]
 		),

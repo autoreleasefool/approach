@@ -1,4 +1,5 @@
 import ComposableArchitecture
+import StringsLibrary
 import SwiftUI
 import ViewsLibrary
 
@@ -26,10 +27,10 @@ public struct BaseFormView<
 
 			switch state.mode {
 			case .create:
-				self.navigationTitle = "Add \(Model.modelName)"
+				self.navigationTitle = Strings.Form.Add.title(Model.modelName)
 				self.isDeleteable = false
 			case let .edit(model):
-				self.navigationTitle = "Edit \(model.name)"
+				self.navigationTitle = Strings.Form.Edit.title(model.name)
 				self.isDeleteable = state.form.isDeleteable
 			}
 		}
@@ -60,7 +61,7 @@ public struct BaseFormView<
 					.disabled(viewStore.isLoading)
 
 				if viewStore.isDeleteable {
-					Section("Options") {
+					Section(Strings.Form.options) {
 						DeleteButton { viewStore.send(.deleteButtonTapped) }
 					}
 					.listRowBackground(Color(uiColor: .secondarySystemBackground))
@@ -70,13 +71,13 @@ public struct BaseFormView<
 			.navigationTitle(viewStore.navigationTitle)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
-					Button("Save") { viewStore.send(.saveButtonTapped) }
+					Button(Strings.Form.save) { viewStore.send(.saveButtonTapped) }
 						.disabled(!viewStore.isSaveable)
 				}
 
 				if viewStore.isDiscardable {
 					ToolbarItem(placement: .navigationBarLeading) {
-						Button("Discard") { viewStore.send(.discardButtonTapped) }
+						Button(Strings.Form.Discard.action) { viewStore.send(.discardButtonTapped) }
 					}
 				}
 			}

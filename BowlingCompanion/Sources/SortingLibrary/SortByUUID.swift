@@ -1,7 +1,7 @@
 import Foundation
 
 public extension Array where Element: Identifiable, Element.ID == UUID {
-	func sortBy(ids: [UUID]) -> Array<Element> {
+	func sortBy(ids: [UUID]) -> [Element] {
 		let idIndices: [UUID: Int] = ids.enumerated().reduce(into: [:], { indices, element in
 			indices[element.element] = element.offset
 		})

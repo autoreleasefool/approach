@@ -44,7 +44,15 @@ final class AlleyEditorTests: XCTestCase {
 
 	func testDeleteAlley() async {
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
-		let alley = Alley(id: id0, name: "Skyview", address: nil, material: .wood, pinFall: .freefall, mechanism: .dedicated)
+		let alley = Alley(
+			id: id0,
+			name: "Skyview",
+			address: nil,
+			material: .wood,
+			pinFall: .freefall,
+			mechanism: .dedicated,
+			pinBase: .white
+		)
 
 		let store = TestStore(
 			initialState: AlleyEditor.State(mode: .edit(alley)),
@@ -93,7 +101,15 @@ final class AlleyEditorTests: XCTestCase {
 		)
 
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
-		let alley = Alley(id: id0, name: "Skyview", address: nil, material: .wood, pinFall: .freefall, mechanism: .dedicated)
+		let alley = Alley(
+			id: id0,
+			name: "Skyview",
+			address: nil,
+			material: .wood,
+			pinFall: .freefall,
+			mechanism: .dedicated,
+			pinBase: .white
+		)
 
 		store.dependencies.uuid = .incrementing
 
@@ -118,8 +134,24 @@ final class AlleyEditorTests: XCTestCase {
 
 	func testExistingAlleyIsUpdated() async {
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
-		let alley = Alley(id: id0, name: "Skyview", address: nil, material: .wood, pinFall: .freefall, mechanism: .dedicated)
-		let alley2 = Alley(id: id0, name: "Sky", address: nil, material: .wood, pinFall: .freefall, mechanism: .dedicated)
+		let alley = Alley(
+			id: id0,
+			name: "Skyview",
+			address: nil,
+			material: .wood,
+			pinFall: .freefall,
+			mechanism: .dedicated,
+			pinBase: .white
+		)
+		let alley2 = Alley(
+			id: id0,
+			name: "Sky",
+			address: nil,
+			material: .wood,
+			pinFall: .freefall,
+			mechanism: .dedicated,
+			pinBase: .white
+		)
 
 		let store = TestStore(
 			initialState: AlleyEditor.State(mode: .edit(alley)),
@@ -210,7 +242,15 @@ final class AlleyEditorTests: XCTestCase {
 
 	func testEditHasChanges() async {
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
-		let alley = Alley(id: id0, name: "Skyview", address: nil, material: .wood, pinFall: .freefall, mechanism: .dedicated)
+		let alley = Alley(
+			id: id0,
+			name: "Skyview",
+			address: nil,
+			material: .wood,
+			pinFall: .freefall,
+			mechanism: .dedicated,
+			pinBase: .white
+		)
 
 		let store = TestStore(
 			initialState: AlleyEditor.State(mode: .edit(alley)),
@@ -228,7 +268,15 @@ final class AlleyEditorTests: XCTestCase {
 
 	func testEditIsSaveable() async {
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
-		let alley = Alley(id: id0, name: "Skyview", address: nil, material: .wood, pinFall: .freefall, mechanism: .dedicated)
+		let alley = Alley(
+			id: id0,
+			name: "Skyview",
+			address: nil,
+			material: .wood,
+			pinFall: .freefall,
+			mechanism: .dedicated,
+			pinBase: .white
+		)
 
 		let store = TestStore(
 			initialState: AlleyEditor.State(mode: .edit(alley)),

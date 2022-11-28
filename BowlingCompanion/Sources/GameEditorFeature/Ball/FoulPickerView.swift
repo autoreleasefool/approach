@@ -1,3 +1,4 @@
+import StringsLibrary
 import SwiftUI
 import ThemesLibrary
 import ViewsLibrary
@@ -9,8 +10,8 @@ struct FoulPickerView: View {
 		Button { } label: {
 			HStack(alignment: .center, spacing: .standardSpacing) {
 				VStack(alignment: .trailing, spacing: .unitSpacing) {
-					Text("Fouled?")
-					Text(fouled ? "Yes" : "No")
+					Text(Strings.Game.Editor.BallDetails.Fouled.title)
+					Text(fouled ? Strings.Game.Editor.BallDetails.Fouled.yes : Strings.Game.Editor.BallDetails.Fouled.no)
 						.font(.caption)
 				}
 

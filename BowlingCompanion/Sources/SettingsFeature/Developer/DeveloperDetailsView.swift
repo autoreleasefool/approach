@@ -1,20 +1,21 @@
 import ConstantsLibrary
+import StringsLibrary
 import SwiftUI
 
 struct DeveloperDetailsView: View {
 	var body: some View {
 		List {
-			Section("Contact") {
+			Section(Strings.Settings.Developer.contact) {
 				Text(DeveloperConstants.name)
 				Link(DeveloperConstants.twitterHandle, destination: DeveloperConstants.twitterUrl)
 				Link(DeveloperConstants.mastodonHandle, destination: DeveloperConstants.mastodonUrl)
 			}
 
 			Section {
-				Link("Personal Website", destination: DeveloperConstants.website)
-				Link("Personal Blog", destination: DeveloperConstants.blog)
+				Link(Strings.Settings.Developer.websiteTitle, destination: DeveloperConstants.website)
+				Link(Strings.Settings.Developer.blogTitle, destination: DeveloperConstants.blog)
 			}
 		}
-		.navigationTitle("Developer")
+		.navigationTitle(Strings.Settings.Developer.title)
 	}
 }

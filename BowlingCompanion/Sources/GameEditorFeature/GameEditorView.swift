@@ -1,4 +1,5 @@
 import ComposableArchitecture
+import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsLibrary
 import ThemesLibrary
@@ -32,7 +33,7 @@ public struct GameEditorView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: GameEditor.Action.init) { viewStore in
-			Text("Game \(viewStore.ordinal)")
+			Text(Strings.Game.Editor.title(viewStore.ordinal))
 				.sheet(isPresented: .constant(true)) {
 					ScrollView {
 						BallDetailsView(store: store.scope(state: \.ballDetails, action: GameEditor.Action.ballDetails))

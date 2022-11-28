@@ -1,5 +1,6 @@
 import ComposableArchitecture
 import FeatureFlagListFeature
+import StringsLibrary
 import SwiftUI
 
 public struct SettingsView: View {
@@ -27,7 +28,7 @@ public struct SettingsView: View {
 				Section {
 					if viewStore.showsFeatures {
 						NavigationLink(
-							"Features",
+							Strings.Settings.FeatureFlags.title,
 							destination: FeatureFlagListView(
 								store: store.scope(state: \.featureFlagList, action: Settings.Action.featureFlagList)
 							)
@@ -37,7 +38,7 @@ public struct SettingsView: View {
 
 				HelpSettingsView(store: store.scope(state: \.helpSettings, action: Settings.Action.helpSettings))
 			}
-			.navigationTitle("Settings")
+			.navigationTitle(Strings.Settings.title)
 		}
 	}
 }
