@@ -5,6 +5,7 @@ import Dependencies
 import PersistenceServiceInterface
 import RecentlyUsedServiceInterface
 import SharedModelsLibrary
+import SharedModelsMocksLibrary
 import XCTest
 
 final class AlleysDataProviderTests: XCTestCase {
@@ -13,30 +14,25 @@ final class AlleysDataProviderTests: XCTestCase {
 		let id1 = UUID(uuidString: "00000000-0000-0000-0000-000000000001")!
 		let id2 = UUID(uuidString: "00000000-0000-0000-0000-000000000002")!
 
-		let firstAlley = Alley(id: id0, name: "first")
-		let secondAlley = Alley(id: id1, name: "second")
-		let thirdAlley = Alley(id: id2, name: "third")
-
-		let (alleys, alleysContinuation) = AsyncThrowingStream<[Alley], Error>.streamWithContinuation()
-		let (ids, idsContinuation) = AsyncStream<[UUID]>.streamWithContinuation()
+		let alley1: Alley = .mock(id: id0, name: "first")
+		let alley2: Alley = .mock(id: id1, name: "second")
+		let alley3: Alley = .mock(id: id2, name: "third")
 
 		try await DependencyValues.withValues {
 			$0.persistenceService.fetchAlleys = { request in
 				XCTAssertEqual(request.ordering, .byName)
-				return alleys
+				return [alley1, alley2, alley3]
 			}
-			$0.recentlyUsedService.observeRecentlyUsed = { _ in ids }
+			$0.recentlyUsedService.getRecentlyUsed = { category in
+				XCTAssertEqual(category, .alleys)
+				return []
+			}
 		} operation: {
 			let dataProvider: AlleysDataProvider = .liveValue
 
-			var iterator = dataProvider.fetchAlleys(.init(ordering: .byRecentlyUsed)).makeAsyncIterator()
+			let result = try await dataProvider.fetchAlleys(.init(ordering: .byRecentlyUsed))
 
-			alleysContinuation.yield([firstAlley, secondAlley, thirdAlley])
-			idsContinuation.yield([])
-
-			let result = try await iterator.next()
-
-			XCTAssertEqual(result, [firstAlley, secondAlley, thirdAlley])
+			XCTAssertEqual(result, [alley1, alley2, alley3])
 		}
 	}
 
@@ -45,30 +41,25 @@ final class AlleysDataProviderTests: XCTestCase {
 		let id1 = UUID(uuidString: "00000000-0000-0000-0000-000000000001")!
 		let id2 = UUID(uuidString: "00000000-0000-0000-0000-000000000002")!
 
-		let firstAlley = Alley(id: id0, name: "first")
-		let secondAlley = Alley(id: id1, name: "second")
-		let thirdAlley = Alley(id: id2, name: "third")
-
-		let (alleys, alleysContinuation) = AsyncThrowingStream<[Alley], Error>.streamWithContinuation()
-		let (ids, idsContinuation) = AsyncStream<[UUID]>.streamWithContinuation()
+		let alley1: Alley = .mock(id: id0, name: "first")
+		let alley2: Alley = .mock(id: id1, name: "second")
+		let alley3: Alley = .mock(id: id2, name: "third")
 
 		try await DependencyValues.withValues {
 			$0.persistenceService.fetchAlleys = { request in
 				XCTAssertEqual(request.ordering, .byName)
-				return alleys
+				return [alley1, alley2, alley3]
 			}
-			$0.recentlyUsedService.observeRecentlyUsed = { _ in ids }
+			$0.recentlyUsedService.getRecentlyUsed = { category in
+				XCTAssertEqual(category, .alleys)
+				return [id2, id1]
+			}
 		} operation: {
 			let dataProvider: AlleysDataProvider = .liveValue
 
-			var iterator = dataProvider.fetchAlleys(.init(ordering: .byRecentlyUsed)).makeAsyncIterator()
+			let result = try await dataProvider.fetchAlleys(.init(ordering: .byRecentlyUsed))
 
-			alleysContinuation.yield([firstAlley, secondAlley, thirdAlley])
-			idsContinuation.yield([id2, id1])
-
-			let result = try await iterator.next()
-
-			XCTAssertEqual(result, [thirdAlley, secondAlley, firstAlley])
+			XCTAssertEqual(result, [alley3, alley2, alley1])
 		}
 	}
 
@@ -77,30 +68,25 @@ final class AlleysDataProviderTests: XCTestCase {
 		let id1 = UUID(uuidString: "00000000-0000-0000-0000-000000000001")!
 		let id2 = UUID(uuidString: "00000000-0000-0000-0000-000000000002")!
 
-		let firstAlley = Alley(id: id0, name: "first")
-		let secondAlley = Alley(id: id1, name: "second")
-		let thirdAlley = Alley(id: id2, name: "third")
-
-		let (alleys, alleysContinuation) = AsyncThrowingStream<[Alley], Error>.streamWithContinuation()
-		let (ids, idsContinuation) = AsyncStream<[UUID]>.streamWithContinuation()
+		let alley1: Alley = .mock(id: id0, name: "first")
+		let alley2: Alley = .mock(id: id1, name: "second")
+		let alley3: Alley = .mock(id: id2, name: "third")
 
 		try await DependencyValues.withValues {
 			$0.persistenceService.fetchAlleys = { request in
 				XCTAssertEqual(request.ordering, .byName)
-				return alleys
+				return [alley1, alley2, alley3]
 			}
-			$0.recentlyUsedService.observeRecentlyUsed = { _ in ids }
+			$0.recentlyUsedService.getRecentlyUsed = { category in
+				XCTAssertEqual(category, .alleys)
+				return [id2, id1]
+			}
 		} operation: {
 			let dataProvider: AlleysDataProvider = .liveValue
 
-			var iterator = dataProvider.fetchAlleys(.init(ordering: .byName)).makeAsyncIterator()
+			let result = try await dataProvider.fetchAlleys(.init(ordering: .byName))
 
-			alleysContinuation.yield([firstAlley, secondAlley, thirdAlley])
-			idsContinuation.yield([id2, id1])
-
-			let result = try await iterator.next()
-
-			XCTAssertEqual(result, [firstAlley, secondAlley, thirdAlley])
+			XCTAssertEqual(result, [alley1, alley2, alley3])
 		}
 	}
 }

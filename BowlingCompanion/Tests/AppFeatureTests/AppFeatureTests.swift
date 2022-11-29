@@ -6,7 +6,7 @@ import XCTest
 final class AppFeatureTests: XCTestCase {
 	func testSelectsTab() async {
 		let store = TestStore(
-			initialState: App.State(),
+			initialState: App.State(hasDeveloperFeature: false),
 			reducer: App()
 		)
 

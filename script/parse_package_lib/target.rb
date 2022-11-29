@@ -44,7 +44,7 @@ module Target
       library
     ]
 
-    def initialize(name:, type:, base: nil, is_product:, requires_tests:)
+    def initialize(name:, type:, is_product:, requires_tests:, base: nil)
       @name = name
       @dependencies = Set.new
       @type = type
@@ -86,7 +86,7 @@ module Target
     def test
       return unless test_name
 
-      Target.new(name: test_name, type: 'test', base: @type, is_product:false, requires_tests: false)
+      Target.new(name: test_name, type: 'test', base: @type, is_product: false, requires_tests: false)
     end
 
     def interface?
@@ -109,7 +109,7 @@ module Target
       when 'data_provider', 'data_provider_interface' then %w[data_provider_interface service_interface library]
       when 'service', 'service_interface' then %w[service_interface library]
       when 'library' then ['library']
-      when 'test' then base
+      when 'test' then [base, 'library']
       end
     end
 

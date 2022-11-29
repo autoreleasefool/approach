@@ -4,36 +4,31 @@ import ComposableArchitecture
 import Dependencies
 import PersistenceServiceInterface
 import SharedModelsLibrary
+import SharedModelsMocksLibrary
 import XCTest
 
 final class GamesDataProviderTests: XCTestCase {
 	func testFetchGames() async throws {
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
-		let id1 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
-		let id2 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
-		let id3 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
+		let id1 = UUID(uuidString: "00000000-0000-0000-0000-000000000001")!
+		let id2 = UUID(uuidString: "00000000-0000-0000-0000-000000000002")!
+		let id3 = UUID(uuidString: "00000000-0000-0000-0000-000000000003")!
 
-		let firstGame = Game(series: id0, id: id1, ordinal: 1, locked: .locked, manualScore: nil)
-		let secondGame = Game(series: id0, id: id2, ordinal: 2, locked: .locked, manualScore: nil)
-		let thirdGame = Game(series: id0, id: id3, ordinal: 3, locked: .locked, manualScore: nil)
-
-		let (games, gamesContinuation) = AsyncThrowingStream<[Game], Error>.streamWithContinuation()
+		let game1: Game = .mock(series: id0, id: id1, ordinal: 1)
+		let game2: Game = .mock(series: id0, id: id2, ordinal: 2)
+		let game3: Game = .mock(series: id0, id: id3, ordinal: 3)
 
 		try await DependencyValues.withValues {
 			$0.persistenceService.fetchGames = { request in
 				XCTAssertEqual(request.series, id0)
-				return games
+				return [game1, game2, game3]
 			}
 		} operation: {
 			let dataProvider: GamesDataProvider = .liveValue
 
-			var iterator = dataProvider.fetchGames(.init(series: id0, ordering: .byOrdinal)).makeAsyncIterator()
+			let result = try await dataProvider.fetchGames(.init(series: id0, ordering: .byOrdinal))
 
-			gamesContinuation.yield([firstGame, secondGame, thirdGame])
-
-			let result = try await iterator.next()
-
-			XCTAssertEqual(result, [firstGame, secondGame, thirdGame])
+			XCTAssertEqual(result, [game1, game2, game3])
 		}
 	}
 }

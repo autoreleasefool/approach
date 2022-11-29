@@ -1,5 +1,6 @@
 import ComposableArchitecture
 import SharedModelsLibrary
+import SharedModelsMocksLibrary
 import XCTest
 @testable import BowlersListFeature
 
@@ -13,14 +14,12 @@ final class BowlersListTests: XCTestCase {
 		)
 
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
-		let bowler = Bowler(id: id0, name: "Joseph")
+		let bowler: Bowler = .mock(id: id0)
 
-		let (bowlers, continuation) = AsyncThrowingStream<[Bowler], Error>.streamWithContinuation()
-		store.dependencies.persistenceService.fetchBowlers = { _ in bowlers }
+		store.dependencies.persistenceService.fetchBowlers = { _ in [bowler] }
+		store.dependencies.recentlyUsedService.didRecentlyUseResource = { _, _ in }
 
 		let task = await store.send(.refreshList)
-
-		continuation.yield([bowler])
 
 		await store.receive(.bowlersResponse(.success([bowler]))) {
 			$0.bowlers = [bowler]
@@ -36,7 +35,7 @@ final class BowlersListTests: XCTestCase {
 		)
 
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
-		let bowler = Bowler(id: id0, name: "Joseph")
+		let bowler: Bowler = .mock(id: id0)
 
 		await store.send(.swipeAction(bowler, .edit)) {
 			$0.bowlerEditor = .init(mode: .edit(bowler))
@@ -50,7 +49,7 @@ final class BowlersListTests: XCTestCase {
 		)
 
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
-		let bowler = Bowler(id: id0, name: "Joseph")
+		let bowler: Bowler = .mock(id: id0)
 
 		await store.send(.swipeAction(bowler, .delete)) {
 			$0.alert = BowlersList.alert(toDelete: bowler)
@@ -79,7 +78,7 @@ final class BowlersListTests: XCTestCase {
 		)
 
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
-		let bowler = Bowler(id: id0, name: "Joseph")
+		let bowler: Bowler = .mock(id: id0)
 
 		await store.send(.bowlersResponse(.success([bowler]))) {
 			$0.bowlers = .init(uniqueElements: [bowler])
@@ -112,7 +111,7 @@ final class BowlersListTests: XCTestCase {
 		)
 
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
-		let bowler = Bowler(id: id0, name: "Joseph")
+		let bowler: Bowler = .mock(id: id0)
 
 		let expectation = self.expectation(description: "deleted")
 		store.dependencies.persistenceService.deleteBowler = { deleted in
@@ -134,7 +133,7 @@ final class BowlersListTests: XCTestCase {
 		)
 
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
-		let bowler = Bowler(id: id0, name: "Joseph")
+		let bowler: Bowler = .mock(id: id0)
 
 		await store.send(.swipeAction(bowler, .edit)) {
 			$0.bowlerEditor = .init(mode: .edit(bowler))

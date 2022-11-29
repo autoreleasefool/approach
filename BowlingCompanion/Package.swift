@@ -61,6 +61,7 @@ let package = Package(
 		.library(name: "DateTimeLibrary", targets: ["DateTimeLibrary"]),
 		.library(name: "FeatureFlagLibrary", targets: ["FeatureFlagLibrary"]),
 		.library(name: "SharedModelsLibrary", targets: ["SharedModelsLibrary"]),
+		.library(name: "SharedModelsMocksLibrary", targets: ["SharedModelsMocksLibrary"]),
 		.library(name: "SharedPersistenceModelsLibrary", targets: ["SharedPersistenceModelsLibrary"]),
 		.library(name: "SortingLibrary", targets: ["SortingLibrary"]),
 		.library(name: "StringsLibrary", targets: ["StringsLibrary"]),
@@ -87,6 +88,7 @@ let package = Package(
 			name: "AlleyEditorFeatureTests",
 			dependencies: [
 				"AlleyEditorFeature",
+				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -100,6 +102,7 @@ let package = Package(
 			name: "AlleysListFeatureTests",
 			dependencies: [
 				"AlleysListFeature",
+				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -115,6 +118,7 @@ let package = Package(
 			name: "AppFeatureTests",
 			dependencies: [
 				"AppFeature",
+				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -127,6 +131,7 @@ let package = Package(
 			name: "BaseFormFeatureTests",
 			dependencies: [
 				"BaseFormFeature",
+				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -140,6 +145,7 @@ let package = Package(
 			name: "BowlerEditorFeatureTests",
 			dependencies: [
 				"BowlerEditorFeature",
+				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -147,6 +153,7 @@ let package = Package(
 			dependencies: [
 				"BowlerEditorFeature",
 				"BowlersDataProviderInterface",
+				"FeatureFlagServiceInterface",
 				"LeaguesListFeature",
 				"StatisticsWidgetsFeature",
 			]
@@ -155,6 +162,7 @@ let package = Package(
 			name: "BowlersListFeatureTests",
 			dependencies: [
 				"BowlersListFeature",
+				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -168,6 +176,7 @@ let package = Package(
 			name: "FeatureFlagListFeatureTests",
 			dependencies: [
 				"FeatureFlagListFeature",
+				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -182,6 +191,7 @@ let package = Package(
 			name: "GameEditorFeatureTests",
 			dependencies: [
 				"GameEditorFeature",
+				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -196,6 +206,7 @@ let package = Package(
 			name: "GearListFeatureTests",
 			dependencies: [
 				"GearListFeature",
+				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -210,6 +221,7 @@ let package = Package(
 			name: "LeagueEditorFeatureTests",
 			dependencies: [
 				"LeagueEditorFeature",
+				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -225,6 +237,7 @@ let package = Package(
 			name: "LeaguesListFeatureTests",
 			dependencies: [
 				"LeaguesListFeature",
+				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -237,6 +250,7 @@ let package = Package(
 			name: "ResourcePickerFeatureTests",
 			dependencies: [
 				"ResourcePickerFeature",
+				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -250,6 +264,7 @@ let package = Package(
 			name: "ScoreSheetFeatureTests",
 			dependencies: [
 				"ScoreSheetFeature",
+				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -264,6 +279,7 @@ let package = Package(
 			name: "SeriesEditorFeatureTests",
 			dependencies: [
 				"SeriesEditorFeature",
+				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -277,6 +293,7 @@ let package = Package(
 			name: "SeriesListFeatureTests",
 			dependencies: [
 				"SeriesListFeature",
+				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -290,6 +307,7 @@ let package = Package(
 			name: "SeriesSidebarFeatureTests",
 			dependencies: [
 				"SeriesSidebarFeature",
+				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -303,6 +321,7 @@ let package = Package(
 			name: "SettingsFeatureTests",
 			dependencies: [
 				"SettingsFeature",
+				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -314,6 +333,7 @@ let package = Package(
 		.testTarget(
 			name: "StatisticsWidgetsFeatureTests",
 			dependencies: [
+				"SharedModelsMocksLibrary",
 				"StatisticsWidgetsFeature",
 			]
 		),
@@ -341,6 +361,7 @@ let package = Package(
 			dependencies: [
 				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 				"AlleysDataProvider",
+				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -365,6 +386,7 @@ let package = Package(
 			dependencies: [
 				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 				"BowlersDataProvider",
+				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -386,6 +408,7 @@ let package = Package(
 			dependencies: [
 				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 				"FramesDataProvider",
+				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -407,6 +430,7 @@ let package = Package(
 			dependencies: [
 				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 				"GamesDataProvider",
+				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -431,6 +455,7 @@ let package = Package(
 			dependencies: [
 				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 				"GearDataProvider",
+				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -455,6 +480,7 @@ let package = Package(
 			dependencies: [
 				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 				"LeaguesDataProvider",
+				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -476,6 +502,7 @@ let package = Package(
 			dependencies: [
 				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 				"SeriesDataProvider",
+				"SharedModelsMocksLibrary",
 			]
 		),
 
@@ -497,6 +524,7 @@ let package = Package(
 			name: "FeatureFlagServiceTests",
 			dependencies: [
 				"FeatureFlagService",
+				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -515,6 +543,7 @@ let package = Package(
 			name: "FileManagerServiceTests",
 			dependencies: [
 				"FileManagerService",
+				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -536,6 +565,7 @@ let package = Package(
 			name: "PersistenceServiceTests",
 			dependencies: [
 				"PersistenceService",
+				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -555,6 +585,7 @@ let package = Package(
 			name: "PreferenceServiceTests",
 			dependencies: [
 				"PreferenceService",
+				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -574,6 +605,7 @@ let package = Package(
 			name: "RecentlyUsedServiceTests",
 			dependencies: [
 				"RecentlyUsedService",
+				"SharedModelsMocksLibrary",
 			]
 		),
 
@@ -592,6 +624,7 @@ let package = Package(
 			name: "DateTimeLibraryTests",
 			dependencies: [
 				"DateTimeLibrary",
+				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -602,12 +635,19 @@ let package = Package(
 			name: "FeatureFlagLibraryTests",
 			dependencies: [
 				"FeatureFlagLibrary",
+				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
 			name: "SharedModelsLibrary",
 			dependencies: [
 				"StringsLibrary",
+			]
+		),
+		.target(
+			name: "SharedModelsMocksLibrary",
+			dependencies: [
+				"SharedModelsLibrary",
 			]
 		),
 		.target(

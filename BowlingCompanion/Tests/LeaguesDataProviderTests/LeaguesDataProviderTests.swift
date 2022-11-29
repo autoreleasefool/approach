@@ -5,6 +5,7 @@ import LeaguesDataProviderInterface
 import PersistenceServiceInterface
 import RecentlyUsedServiceInterface
 import SharedModelsLibrary
+import SharedModelsMocksLibrary
 import XCTest
 
 final class LeaguesDataProviderTests: XCTestCase {
@@ -14,54 +15,25 @@ final class LeaguesDataProviderTests: XCTestCase {
 		let id2 = UUID(uuidString: "00000000-0000-0000-0000-000000000002")!
 		let id3 = UUID(uuidString: "00000000-0000-0000-0000-000000000003")!
 
-		let firstLeague = League(
-			bowler: id0,
-			id: id1,
-			name: "first",
-			recurrence: .repeating,
-			numberOfGames: 4,
-			additionalPinfall: nil,
-			additionalGames: nil
-		)
-		let secondLeague = League(
-			bowler: id0,
-			id: id2,
-			name: "second",
-			recurrence: .repeating,
-			numberOfGames: 4,
-			additionalPinfall: nil,
-			additionalGames: nil
-		)
-		let thirdLeague = League(
-			bowler: id0,
-			id: id3,
-			name: "third",
-			recurrence: .repeating,
-			numberOfGames: 4,
-			additionalPinfall: nil,
-			additionalGames: nil
-		)
-
-		let (leagues, leaguesContinuation) = AsyncThrowingStream<[League], Error>.streamWithContinuation()
-		let (ids, idsContinuation) = AsyncStream<[UUID]>.streamWithContinuation()
+		let league1: League = .mock(bowler: id0, id: id1, name: "first")
+		let league2: League = .mock(bowler: id0, id: id2, name: "second")
+		let league3: League = .mock(bowler: id0, id: id3, name: "third")
 
 		try await DependencyValues.withValues {
 			$0.persistenceService.fetchLeagues = { request in
 				XCTAssertEqual(request.ordering, .byName)
-				return leagues
+				return [league1, league2, league3]
 			}
-			$0.recentlyUsedService.observeRecentlyUsed = { _ in ids }
+			$0.recentlyUsedService.getRecentlyUsed = { category in
+				XCTAssertEqual(category, .leagues)
+				return []
+			}
 		} operation: {
 			let dataProvider: LeaguesDataProvider = .liveValue
 
-			var iterator = dataProvider.fetchLeagues(.init(bowler: id0, ordering: .byRecentlyUsed)).makeAsyncIterator()
+			let result = try await dataProvider.fetchLeagues(.init(bowler: id0, ordering: .byRecentlyUsed))
 
-			leaguesContinuation.yield([firstLeague, secondLeague, thirdLeague])
-			idsContinuation.yield([])
-
-			let result = try await iterator.next()
-
-			XCTAssertEqual(result, [firstLeague, secondLeague, thirdLeague])
+			XCTAssertEqual(result, [league1, league2, league3])
 		}
 	}
 
@@ -71,54 +43,25 @@ final class LeaguesDataProviderTests: XCTestCase {
 		let id2 = UUID(uuidString: "00000000-0000-0000-0000-000000000002")!
 		let id3 = UUID(uuidString: "00000000-0000-0000-0000-000000000003")!
 
-		let firstLeague = League(
-			bowler: id0,
-			id: id1,
-			name: "first",
-			recurrence: .repeating,
-			numberOfGames: 4,
-			additionalPinfall: nil,
-			additionalGames: nil
-		)
-		let secondLeague = League(
-			bowler: id0,
-			id: id2,
-			name: "second",
-			recurrence: .repeating,
-			numberOfGames: 4,
-			additionalPinfall: nil,
-			additionalGames: nil
-		)
-		let thirdLeague = League(
-			bowler: id0,
-			id: id3,
-			name: "third",
-			recurrence: .repeating,
-			numberOfGames: 4,
-			additionalPinfall: nil,
-			additionalGames: nil
-		)
-
-		let (leagues, leaguesContinuation) = AsyncThrowingStream<[League], Error>.streamWithContinuation()
-		let (ids, idsContinuation) = AsyncStream<[UUID]>.streamWithContinuation()
+		let league1: League = .mock(bowler: id0, id: id1, name: "first")
+		let league2: League = .mock(bowler: id0, id: id2, name: "second")
+		let league3: League = .mock(bowler: id0, id: id3, name: "third")
 
 		try await DependencyValues.withValues {
 			$0.persistenceService.fetchLeagues = { request in
 				XCTAssertEqual(request.ordering, .byName)
-				return leagues
+				return [league1, league2, league3]
 			}
-			$0.recentlyUsedService.observeRecentlyUsed = { _ in ids }
+			$0.recentlyUsedService.getRecentlyUsed = { category in
+				XCTAssertEqual(category, .leagues)
+				return [id3, id2]
+			}
 		} operation: {
 			let dataProvider: LeaguesDataProvider = .liveValue
 
-			var iterator = dataProvider.fetchLeagues(.init(bowler: id0, ordering: .byRecentlyUsed)).makeAsyncIterator()
+			let result = try await dataProvider.fetchLeagues(.init(bowler: id0, ordering: .byRecentlyUsed))
 
-			leaguesContinuation.yield([firstLeague, secondLeague, thirdLeague])
-			idsContinuation.yield([id3, id2])
-
-			let result = try await iterator.next()
-
-			XCTAssertEqual(result, [thirdLeague, secondLeague, firstLeague])
+			XCTAssertEqual(result, [league3, league2, league1])
 		}
 	}
 
@@ -128,54 +71,25 @@ final class LeaguesDataProviderTests: XCTestCase {
 		let id2 = UUID(uuidString: "00000000-0000-0000-0000-000000000002")!
 		let id3 = UUID(uuidString: "00000000-0000-0000-0000-000000000003")!
 
-		let firstLeague = League(
-			bowler: id0,
-			id: id1,
-			name: "first",
-			recurrence: .repeating,
-			numberOfGames: 4,
-			additionalPinfall: nil,
-			additionalGames: nil
-		)
-		let secondLeague = League(
-			bowler: id0,
-			id: id2,
-			name: "second",
-			recurrence: .repeating,
-			numberOfGames: 4,
-			additionalPinfall: nil,
-			additionalGames: nil
-		)
-		let thirdLeague = League(
-			bowler: id0,
-			id: id3,
-			name: "third",
-			recurrence: .repeating,
-			numberOfGames: 4,
-			additionalPinfall: nil,
-			additionalGames: nil
-		)
-
-		let (leagues, leaguesContinuation) = AsyncThrowingStream<[League], Error>.streamWithContinuation()
-		let (ids, idsContinuation) = AsyncStream<[UUID]>.streamWithContinuation()
+		let league1: League = .mock(bowler: id0, id: id1, name: "first")
+		let league2: League = .mock(bowler: id0, id: id2, name: "second")
+		let league3: League = .mock(bowler: id0, id: id3, name: "third")
 
 		try await DependencyValues.withValues {
 			$0.persistenceService.fetchLeagues = { request in
 				XCTAssertEqual(request.ordering, .byName)
-				return leagues
+				return [league1, league2, league3]
 			}
-			$0.recentlyUsedService.observeRecentlyUsed = { _ in ids }
+			$0.recentlyUsedService.getRecentlyUsed = { category in
+				XCTAssertEqual(category, .leagues)
+				return [id2, id1]
+			}
 		} operation: {
 			let dataProvider: LeaguesDataProvider = .liveValue
 
-			var iterator = dataProvider.fetchLeagues(.init(bowler: id0, ordering: .byName)).makeAsyncIterator()
+			let result = try await dataProvider.fetchLeagues(.init(bowler: id0, ordering: .byName))
 
-			leaguesContinuation.yield([firstLeague, secondLeague, thirdLeague])
-			idsContinuation.yield([id2, id1])
-
-			let result = try await iterator.next()
-
-			XCTAssertEqual(result, [firstLeague, secondLeague, thirdLeague])
+			XCTAssertEqual(result, [league1, league2, league3])
 		}
 	}
 }

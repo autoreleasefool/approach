@@ -1,5 +1,6 @@
 import ComposableArchitecture
 import SharedModelsLibrary
+import SharedModelsMocksLibrary
 import XCTest
 @testable import BaseFormFeature
 @testable import BowlerEditorFeature
@@ -44,7 +45,7 @@ final class BowlerEditorTests: XCTestCase {
 
 	func testDeleteBowler() async {
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
-		let bowler = Bowler(id: id0, name: "Joseph")
+		let bowler: Bowler = .mock(id: id0)
 
 		let store = TestStore(
 			initialState: BowlerEditor.State(mode: .edit(bowler)),
@@ -93,7 +94,7 @@ final class BowlerEditorTests: XCTestCase {
 		)
 
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
-		let bowler = Bowler(id: id0, name: "Joe")
+		let bowler: Bowler = .mock(id: id0, name: "Joe")
 
 		store.dependencies.uuid = .incrementing
 
@@ -118,8 +119,8 @@ final class BowlerEditorTests: XCTestCase {
 
 	func testExistingBowlerIsUpdated() async {
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
-		let bowler = Bowler(id: id0, name: "Joe")
-		let bowler2 = Bowler(id: id0, name: "Joseph")
+		let bowler: Bowler = .mock(id: id0, name: "Joe")
+		let bowler2: Bowler = .mock(id: id0, name: "Joseph")
 
 		let store = TestStore(
 			initialState: BowlerEditor.State(mode: .edit(bowler)),
@@ -210,7 +211,7 @@ final class BowlerEditorTests: XCTestCase {
 
 	func testEditHasChanges() async {
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
-		let bowler = Bowler(id: id0, name: "Joseph")
+		let bowler: Bowler = .mock(id: id0)
 
 		let store = TestStore(
 			initialState: BowlerEditor.State(mode: .edit(bowler)),
@@ -228,7 +229,7 @@ final class BowlerEditorTests: XCTestCase {
 
 	func testEditIsSaveable() async {
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
-		let bowler = Bowler(id: id0, name: "Joseph")
+		let bowler: Bowler = .mock(id: id0)
 
 		let store = TestStore(
 			initialState: BowlerEditor.State(mode: .edit(bowler)),

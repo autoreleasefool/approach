@@ -5,6 +5,7 @@ import Dependencies
 import PersistenceServiceInterface
 import RecentlyUsedServiceInterface
 import SharedModelsLibrary
+import SharedModelsMocksLibrary
 import XCTest
 
 final class BowlersDataProviderTests: XCTestCase {
@@ -13,30 +14,25 @@ final class BowlersDataProviderTests: XCTestCase {
 		let id1 = UUID(uuidString: "00000000-0000-0000-0000-000000000001")!
 		let id2 = UUID(uuidString: "00000000-0000-0000-0000-000000000002")!
 
-		let firstBowler = Bowler(id: id0, name: "first")
-		let secondBowler = Bowler(id: id1, name: "second")
-		let thirdBowler = Bowler(id: id2, name: "third")
-
-		let (bowlers, bowlersContinuation) = AsyncThrowingStream<[Bowler], Error>.streamWithContinuation()
-		let (ids, idsContinuation) = AsyncStream<[UUID]>.streamWithContinuation()
+		let bowler1: Bowler = .mock(id: id0, name: "first")
+		let bowler2: Bowler = .mock(id: id1, name: "second")
+		let bowler3: Bowler = .mock(id: id2, name: "third")
 
 		try await DependencyValues.withValues {
 			$0.persistenceService.fetchBowlers = { request in
 				XCTAssertEqual(request.ordering, .byName)
-				return bowlers
+				return [bowler1, bowler2, bowler3]
 			}
-			$0.recentlyUsedService.observeRecentlyUsed = { _ in ids }
+			$0.recentlyUsedService.getRecentlyUsed = { category in
+				XCTAssertEqual(category, .bowlers)
+				return []
+			}
 		} operation: {
 			let dataProvider: BowlersDataProvider = .liveValue
 
-			var iterator = dataProvider.fetchBowlers(.init(ordering: .byRecentlyUsed)).makeAsyncIterator()
+			let result = try await dataProvider.fetchBowlers(.init(ordering: .byRecentlyUsed))
 
-			bowlersContinuation.yield([firstBowler, secondBowler, thirdBowler])
-			idsContinuation.yield([])
-
-			let result = try await iterator.next()
-
-			XCTAssertEqual(result, [firstBowler, secondBowler, thirdBowler])
+			XCTAssertEqual(result, [bowler1, bowler2, bowler3])
 		}
 	}
 
@@ -45,30 +41,25 @@ final class BowlersDataProviderTests: XCTestCase {
 		let id1 = UUID(uuidString: "00000000-0000-0000-0000-000000000001")!
 		let id2 = UUID(uuidString: "00000000-0000-0000-0000-000000000002")!
 
-		let firstBowler = Bowler(id: id0, name: "first")
-		let secondBowler = Bowler(id: id1, name: "second")
-		let thirdBowler = Bowler(id: id2, name: "third")
-
-		let (bowlers, bowlersContinuation) = AsyncThrowingStream<[Bowler], Error>.streamWithContinuation()
-		let (ids, idsContinuation) = AsyncStream<[UUID]>.streamWithContinuation()
+		let bowler1: Bowler = .mock(id: id0, name: "first")
+		let bowler2: Bowler = .mock(id: id1, name: "second")
+		let bowler3: Bowler = .mock(id: id2, name: "third")
 
 		try await DependencyValues.withValues {
 			$0.persistenceService.fetchBowlers = { request in
 				XCTAssertEqual(request.ordering, .byName)
-				return bowlers
+				return [bowler1, bowler2, bowler3]
 			}
-			$0.recentlyUsedService.observeRecentlyUsed = { _ in ids }
+			$0.recentlyUsedService.getRecentlyUsed = { category in
+				XCTAssertEqual(category, .bowlers)
+				return [id2, id1]
+			}
 		} operation: {
 			let dataProvider: BowlersDataProvider = .liveValue
 
-			var iterator = dataProvider.fetchBowlers(.init(ordering: .byRecentlyUsed)).makeAsyncIterator()
+			let result = try await dataProvider.fetchBowlers(.init(ordering: .byRecentlyUsed))
 
-			bowlersContinuation.yield([firstBowler, secondBowler, thirdBowler])
-			idsContinuation.yield([id2, id1])
-
-			let result = try await iterator.next()
-
-			XCTAssertEqual(result, [thirdBowler, secondBowler, firstBowler])
+			XCTAssertEqual(result, [bowler3, bowler2, bowler1])
 		}
 	}
 
@@ -77,30 +68,25 @@ final class BowlersDataProviderTests: XCTestCase {
 		let id1 = UUID(uuidString: "00000000-0000-0000-0000-000000000001")!
 		let id2 = UUID(uuidString: "00000000-0000-0000-0000-000000000002")!
 
-		let firstBowler = Bowler(id: id0, name: "first")
-		let secondBowler = Bowler(id: id1, name: "second")
-		let thirdBowler = Bowler(id: id2, name: "third")
-
-		let (bowlers, bowlersContinuation) = AsyncThrowingStream<[Bowler], Error>.streamWithContinuation()
-		let (ids, idsContinuation) = AsyncStream<[UUID]>.streamWithContinuation()
+		let bowler1: Bowler = .mock(id: id0, name: "first")
+		let bowler2: Bowler = .mock(id: id1, name: "second")
+		let bowler3: Bowler = .mock(id: id2, name: "third")
 
 		try await DependencyValues.withValues {
 			$0.persistenceService.fetchBowlers = { request in
 				XCTAssertEqual(request.ordering, .byName)
-				return bowlers
+				return [bowler1, bowler2, bowler3]
 			}
-			$0.recentlyUsedService.observeRecentlyUsed = { _ in ids }
+			$0.recentlyUsedService.getRecentlyUsed = { category in
+				XCTAssertEqual(category, .bowlers)
+				return [id2, id1]
+			}
 		} operation: {
 			let dataProvider: BowlersDataProvider = .liveValue
 
-			var iterator = dataProvider.fetchBowlers(.init(ordering: .byName)).makeAsyncIterator()
+			let result = try await dataProvider.fetchBowlers(.init(ordering: .byName))
 
-			bowlersContinuation.yield([firstBowler, secondBowler, thirdBowler])
-			idsContinuation.yield([id2, id1])
-
-			let result = try await iterator.next()
-
-			XCTAssertEqual(result, [firstBowler, secondBowler, thirdBowler])
+			XCTAssertEqual(result, [bowler1, bowler2, bowler3])
 		}
 	}
 }

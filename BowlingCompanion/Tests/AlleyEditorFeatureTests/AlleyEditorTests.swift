@@ -1,5 +1,6 @@
 import ComposableArchitecture
 import SharedModelsLibrary
+import SharedModelsMocksLibrary
 import XCTest
 @testable import BaseFormFeature
 @testable import AlleyEditorFeature
@@ -44,15 +45,7 @@ final class AlleyEditorTests: XCTestCase {
 
 	func testDeleteAlley() async {
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
-		let alley = Alley(
-			id: id0,
-			name: "Skyview",
-			address: nil,
-			material: .wood,
-			pinFall: .freefall,
-			mechanism: .dedicated,
-			pinBase: .white
-		)
+		let alley: Alley = .mock(id: id0)
 
 		let store = TestStore(
 			initialState: AlleyEditor.State(mode: .edit(alley)),
@@ -101,15 +94,7 @@ final class AlleyEditorTests: XCTestCase {
 		)
 
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
-		let alley = Alley(
-			id: id0,
-			name: "Skyview",
-			address: nil,
-			material: .wood,
-			pinFall: .freefall,
-			mechanism: .dedicated,
-			pinBase: .white
-		)
+		let alley: Alley = .mock(id: id0)
 
 		store.dependencies.uuid = .incrementing
 
@@ -134,24 +119,8 @@ final class AlleyEditorTests: XCTestCase {
 
 	func testExistingAlleyIsUpdated() async {
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
-		let alley = Alley(
-			id: id0,
-			name: "Skyview",
-			address: nil,
-			material: .wood,
-			pinFall: .freefall,
-			mechanism: .dedicated,
-			pinBase: .white
-		)
-		let alley2 = Alley(
-			id: id0,
-			name: "Sky",
-			address: nil,
-			material: .wood,
-			pinFall: .freefall,
-			mechanism: .dedicated,
-			pinBase: .white
-		)
+		let alley: Alley = .mock(id: id0)
+		let alley2: Alley = .mock(id: id0, name: "Sky")
 
 		let store = TestStore(
 			initialState: AlleyEditor.State(mode: .edit(alley)),
@@ -242,15 +211,7 @@ final class AlleyEditorTests: XCTestCase {
 
 	func testEditHasChanges() async {
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
-		let alley = Alley(
-			id: id0,
-			name: "Skyview",
-			address: nil,
-			material: .wood,
-			pinFall: .freefall,
-			mechanism: .dedicated,
-			pinBase: .white
-		)
+		let alley: Alley = .mock(id: id0)
 
 		let store = TestStore(
 			initialState: AlleyEditor.State(mode: .edit(alley)),
@@ -268,15 +229,7 @@ final class AlleyEditorTests: XCTestCase {
 
 	func testEditIsSaveable() async {
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
-		let alley = Alley(
-			id: id0,
-			name: "Skyview",
-			address: nil,
-			material: .wood,
-			pinFall: .freefall,
-			mechanism: .dedicated,
-			pinBase: .white
-		)
+		let alley: Alley = .mock(id: id0)
 
 		let store = TestStore(
 			initialState: AlleyEditor.State(mode: .edit(alley)),

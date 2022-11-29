@@ -10,7 +10,7 @@ final class SettingsTests: XCTestCase {
 			$0.featureFlags.isEnabled = { _ in true }
 		} operation: {
 			let store = TestStore(
-				initialState: Settings.State(),
+				initialState: Settings.State(hasDeveloperFeature: true),
 				reducer: Settings()
 			)
 

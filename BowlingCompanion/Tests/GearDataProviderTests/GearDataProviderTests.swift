@@ -5,6 +5,7 @@ import GearDataProviderInterface
 import PersistenceServiceInterface
 import RecentlyUsedServiceInterface
 import SharedModelsLibrary
+import SharedModelsMocksLibrary
 import XCTest
 
 final class GearDataProviderTests: XCTestCase {
@@ -13,30 +14,25 @@ final class GearDataProviderTests: XCTestCase {
 		let id1 = UUID(uuidString: "00000000-0000-0000-0000-000000000001")!
 		let id2 = UUID(uuidString: "00000000-0000-0000-0000-000000000002")!
 
-		let firstGear = Gear(bowler: nil, id: id0, name: "first", kind: .bowlingBall)
-		let secondGear = Gear(bowler: nil, id: id1, name: "second", kind: .bowlingBall)
-		let thirdGear = Gear(bowler: nil, id: id2, name: "third", kind: .bowlingBall)
-
-		let (gear, gearContinuation) = AsyncThrowingStream<[Gear], Error>.streamWithContinuation()
-		let (ids, idsContinuation) = AsyncStream<[UUID]>.streamWithContinuation()
+		let gear1: Gear = .mock(id: id0, name: "first")
+		let gear2: Gear = .mock(id: id1, name: "second")
+		let gear3: Gear = .mock(id: id2, name: "third")
 
 		try await DependencyValues.withValues {
 			$0.persistenceService.fetchGear = { request in
 				XCTAssertEqual(request.ordering, .byName)
-				return gear
+				return [gear1, gear2, gear3]
 			}
-			$0.recentlyUsedService.observeRecentlyUsed = { _ in ids }
+			$0.recentlyUsedService.getRecentlyUsed = { category in
+				XCTAssertEqual(category, .gear)
+				return []
+			}
 		} operation: {
 			let dataProvider: GearDataProvider = .liveValue
 
-			var iterator = dataProvider.fetchGear(.init(ordering: .byRecentlyUsed)).makeAsyncIterator()
+			let result = try await dataProvider.fetchGear(.init(ordering: .byRecentlyUsed))
 
-			gearContinuation.yield([firstGear, secondGear, thirdGear])
-			idsContinuation.yield([])
-
-			let result = try await iterator.next()
-
-			XCTAssertEqual(result, [firstGear, secondGear, thirdGear])
+			XCTAssertEqual(result, [gear1, gear2, gear3])
 		}
 	}
 
@@ -45,30 +41,25 @@ final class GearDataProviderTests: XCTestCase {
 		let id1 = UUID(uuidString: "00000000-0000-0000-0000-000000000001")!
 		let id2 = UUID(uuidString: "00000000-0000-0000-0000-000000000002")!
 
-		let firstGear = Gear(bowler: nil, id: id0, name: "first", kind: .bowlingBall)
-		let secondGear = Gear(bowler: nil, id: id1, name: "second", kind: .bowlingBall)
-		let thirdGear = Gear(bowler: nil, id: id2, name: "third", kind: .bowlingBall)
-
-		let (gear, gearContinuation) = AsyncThrowingStream<[Gear], Error>.streamWithContinuation()
-		let (ids, idsContinuation) = AsyncStream<[UUID]>.streamWithContinuation()
+		let gear1: Gear = .mock(id: id0, name: "first")
+		let gear2: Gear = .mock(id: id1, name: "second")
+		let gear3: Gear = .mock(id: id2, name: "third")
 
 		try await DependencyValues.withValues {
 			$0.persistenceService.fetchGear = { request in
 				XCTAssertEqual(request.ordering, .byName)
-				return gear
+				return [gear1, gear2, gear3]
 			}
-			$0.recentlyUsedService.observeRecentlyUsed = { _ in ids }
+			$0.recentlyUsedService.getRecentlyUsed = { category in
+				XCTAssertEqual(category, .gear)
+				return [id2, id1]
+			}
 		} operation: {
 			let dataProvider: GearDataProvider = .liveValue
 
-			var iterator = dataProvider.fetchGear(.init(ordering: .byRecentlyUsed)).makeAsyncIterator()
+			let result = try await dataProvider.fetchGear(.init(ordering: .byRecentlyUsed))
 
-			gearContinuation.yield([firstGear, secondGear, thirdGear])
-			idsContinuation.yield([id2, id1])
-
-			let result = try await iterator.next()
-
-			XCTAssertEqual(result, [thirdGear, secondGear, firstGear])
+			XCTAssertEqual(result, [gear3, gear2, gear1])
 		}
 	}
 
@@ -77,30 +68,25 @@ final class GearDataProviderTests: XCTestCase {
 		let id1 = UUID(uuidString: "00000000-0000-0000-0000-000000000001")!
 		let id2 = UUID(uuidString: "00000000-0000-0000-0000-000000000002")!
 
-		let firstGear = Gear(bowler: nil, id: id0, name: "first", kind: .bowlingBall)
-		let secondGear = Gear(bowler: nil, id: id1, name: "second", kind: .bowlingBall)
-		let thirdGear = Gear(bowler: nil, id: id2, name: "third", kind: .bowlingBall)
-
-		let (gear, gearContinuation) = AsyncThrowingStream<[Gear], Error>.streamWithContinuation()
-		let (ids, idsContinuation) = AsyncStream<[UUID]>.streamWithContinuation()
+		let gear1: Gear = .mock(id: id0, name: "first")
+		let gear2: Gear = .mock(id: id1, name: "second")
+		let gear3: Gear = .mock(id: id2, name: "third")
 
 		try await DependencyValues.withValues {
 			$0.persistenceService.fetchGear = { request in
 				XCTAssertEqual(request.ordering, .byName)
-				return gear
+				return [gear1, gear2, gear3]
 			}
-			$0.recentlyUsedService.observeRecentlyUsed = { _ in ids }
+			$0.recentlyUsedService.getRecentlyUsed = { category in
+				XCTAssertEqual(category, .gear)
+				return [id2, id1]
+			}
 		} operation: {
 			let dataProvider: GearDataProvider = .liveValue
 
-			var iterator = dataProvider.fetchGear(.init(ordering: .byName)).makeAsyncIterator()
+			let result = try await dataProvider.fetchGear(.init(ordering: .byName))
 
-			gearContinuation.yield([firstGear, secondGear, thirdGear])
-			idsContinuation.yield([id2, id1])
-
-			let result = try await iterator.next()
-
-			XCTAssertEqual(result, [firstGear, secondGear, thirdGear])
+			XCTAssertEqual(result, [gear1, gear2, gear3])
 		}
 	}
 }

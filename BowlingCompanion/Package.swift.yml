@@ -52,6 +52,7 @@ package:
       dependencies:
         - BowlersDataProvider
         - BowlerEditorFeature
+        - FeatureFlagService
         - LeaguesListFeature
         - StatisticsWidgetsFeature
     - name: FeatureFlagListFeature
@@ -185,6 +186,9 @@ package:
     - name: SharedModelsLibrary
       dependencies:
         - StringsLibrary
+    - name: SharedModelsMocksLibrary
+      dependencies:
+        - SharedModelsLibrary
     - name: SharedPersistenceModelsLibrary
       dependencies:
         - SharedModelsLibrary
