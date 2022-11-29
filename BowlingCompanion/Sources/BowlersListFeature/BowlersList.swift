@@ -115,15 +115,10 @@ public struct BowlersList: ReducerProtocol {
 				state.bowlerEditor = .init(mode: .create)
 				return .none
 
-			case .setEditorFormSheet(isPresented: false):
-				state.bowlerEditor = nil
-				return .none
-
-			case .bowlerEditor(.form(.saveResult(.success))):
-				state.bowlerEditor = nil
-				return .none
-
-			case .bowlerEditor(.form(.deleteResult(.success))):
+			case .setEditorFormSheet(isPresented: false),
+					.bowlerEditor(.form(.saveResult(.success))),
+					.bowlerEditor(.form(.deleteResult(.success))),
+					.bowlerEditor(.form(.alert(.discardButtonTapped))):
 				state.bowlerEditor = nil
 				return .none
 

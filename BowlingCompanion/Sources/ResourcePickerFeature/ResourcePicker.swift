@@ -20,6 +20,10 @@ public struct ResourcePicker<Resource: PickableResource>: ReducerProtocol {
 			self.initialSelection = selected
 			self.limit = limit
 		}
+
+		public mutating func updateInitialSelection() {
+			self.initialSelection = selected
+		}
 	}
 
 	public enum Action: Equatable {
@@ -70,6 +74,7 @@ public struct ResourcePicker<Resource: PickableResource>: ReducerProtocol {
 				return .none
 
 			case .saveButtonTapped:
+				state.updateInitialSelection()
 				return .none
 			}
 		}

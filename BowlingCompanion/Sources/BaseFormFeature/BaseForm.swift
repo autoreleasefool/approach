@@ -40,6 +40,13 @@ public struct BaseForm<Model: BaseFormModel, FormState: BaseFormState>: ReducerP
 	public enum Mode: Equatable {
 		case create
 		case edit(Model)
+
+		public var model: Model? {
+			switch self {
+			case .create: return nil
+			case let .edit(model): return model
+			}
+		}
 	}
 
 	public enum Action: Equatable {

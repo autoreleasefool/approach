@@ -53,11 +53,9 @@ public struct LeagueEditor: ReducerProtocol {
 				fields.additionalGames = "\(league.additionalGames ?? 0)"
 				fields.additionalPinfall = "\(league.additionalPinfall ?? 0)"
 				fields.hasAdditionalPinfall = (league.additionalGames ?? 0) > 0
-				fields.alleyPicker = .init(selected: Set([league.alley].compactMap({ $0 })), limit: 1)
-			} else {
-				fields.alleyPicker = .init(selected: [], limit: 1)
 			}
 
+			fields.alleyPicker = .init(selected: Set([mode.model?.alley].compactMap({ $0 })), limit: 1)
 			self.hasAlleysEnabled = hasAlleysEnabled
 			self.base = .init(mode: mode, form: fields)
 		}
