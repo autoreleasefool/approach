@@ -2,10 +2,10 @@ import Dependencies
 import SharedModelsLibrary
 
 public struct LeaguesDataProvider: Sendable {
-	public var fetchLeagues: @Sendable (League.FetchRequest) -> AsyncThrowingStream<[League], Error>
+	public var fetchLeagues: @Sendable (League.FetchRequest) async throws -> [League]
 
 	public init(
-		fetchLeagues: @escaping @Sendable (League.FetchRequest) -> AsyncThrowingStream<[League], Error>
+		fetchLeagues: @escaping @Sendable (League.FetchRequest) async throws -> [League]
 	) {
 		self.fetchLeagues = fetchLeagues
 	}

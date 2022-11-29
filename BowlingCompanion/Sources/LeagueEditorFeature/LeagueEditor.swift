@@ -103,19 +103,18 @@ public struct LeagueEditor: ReducerProtocol {
 		}
 
 		Scope(state: \.base.form.alleyPicker, action: /Action.alleyPicker) {
-			ResourcePicker { persistenceService.fetchAlleys(.init(ordering: .byName)) }
+			ResourcePicker { try await persistenceService.fetchAlleys(.init(ordering: .byName)) }
 		}
 
 		Reduce { state, action in
 			switch action {
 			case .loadInitialData:
 				if case let .edit(league) = state.base.mode, let alleyId = league.alley {
-					return .run { send in
-						for try await alleys in persistenceService.fetchAlleys(.init(filter: .id(alleyId), ordering: .byName)) {
-							await send(.leagueAlleyResponse(.success(alleys.first)))
-						}
-					} catch: { error, send in
-						await send(.leagueAlleyResponse(.failure(error)))
+					return .task {
+						await .leagueAlleyResponse(TaskResult {
+							let alleys = try await persistenceService.fetchAlleys(.init(filter: .id(alleyId), ordering: .byName))
+							return alleys.first
+						})
 					}
 				}
 				return .none

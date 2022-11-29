@@ -4,7 +4,7 @@ import SharedPersistenceModelsLibrary
 import SharedModelsLibrary
 
 extension League.Query: Queryable {
-	func fetchValues(_ db: Database) throws -> [League] {
+	@Sendable func fetchValues(_ db: Database) throws -> [League] {
 		var query = League.all()
 			.filter(Column("bowler") == bowler)
 

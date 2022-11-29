@@ -4,7 +4,7 @@ import SharedPersistenceModelsLibrary
 import SharedModelsLibrary
 
 extension Frame.Query: Queryable {
-	func fetchValues(_ db: Database) throws -> [Frame] {
+	@Sendable func fetchValues(_ db: Database) throws -> [Frame] {
 		try Frame.all()
 			.filter(Column("game") == game)
 			.order(Column("ordinal").asc)

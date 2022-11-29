@@ -4,7 +4,7 @@ import SharedPersistenceModelsLibrary
 import SharedModelsLibrary
 
 extension Alley.Query: Queryable {
-	func fetchValues(_ db: Database) throws -> [Alley] {
+	@Sendable func fetchValues(_ db: Database) throws -> [Alley] {
 		var query = Alley.all()
 
 		switch filter {

@@ -4,7 +4,7 @@ import SharedPersistenceModelsLibrary
 import SharedModelsLibrary
 
 extension Game.Query: Queryable {
-	func fetchValues(_ db: Database) throws -> [Game] {
+	@Sendable func fetchValues(_ db: Database) throws -> [Game] {
 		try Game.all()
 			.filter(Column("series") == series)
 			.order(Column("ordinal").asc)

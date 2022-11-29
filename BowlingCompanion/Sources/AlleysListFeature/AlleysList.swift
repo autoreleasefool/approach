@@ -16,7 +16,7 @@ public struct AlleysList: ReducerProtocol {
 	}
 
 	public enum Action: Equatable {
-		case subscribeToAlleys
+		case refreshList
 		case errorButtonTapped
 		case swipeAction(Alley, SwipeAction)
 		case alleysResponse(TaskResult<[Alley]>)
@@ -39,20 +39,14 @@ public struct AlleysList: ReducerProtocol {
 	public var body: some ReducerProtocol<State, Action> {
 		Reduce { state, action in
 			switch action {
-			case .subscribeToAlleys:
+			case .refreshList:
 				state.error = nil
-
-				return .run { send in
-					for try await alleys in alleysDataProvider.fetchAlleys(.init(ordering: .byRecentlyUsed)) {
-						await send(.alleysResponse(.success(alleys)))
-					}
-				} catch: { error, send in
-					await send(.alleysResponse(.failure(error)))
+				return .task {
+					await .alleysResponse(TaskResult { try await alleysDataProvider.fetchAlleys(.init(ordering: .byRecentlyUsed)) })
 				}
 
 			case .errorButtonTapped:
-				// TODO: handle error button tapped
-				return .none
+				return .task { .refreshList }
 
 			case let .alleysResponse(.success(alleys)):
 				state.alleys = .init(uniqueElements: alleys)

@@ -11,7 +11,7 @@ extension SeriesDataProvider: DependencyKey {
 
 			switch request.ordering {
 			case .byDate:
-				return persistenceService.fetchSeries(.init(request))
+				return try await persistenceService.fetchSeries(.init(request))
 			}
 		}
 	)

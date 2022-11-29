@@ -18,7 +18,7 @@ final class BowlersListTests: XCTestCase {
 		let (bowlers, continuation) = AsyncThrowingStream<[Bowler], Error>.streamWithContinuation()
 		store.dependencies.persistenceService.fetchBowlers = { _ in bowlers }
 
-		let task = await store.send(.subscribeToBowlers)
+		let task = await store.send(.refreshList)
 
 		continuation.yield([bowler])
 

@@ -32,6 +32,11 @@ extension RecentlyUsedService: DependencyKey {
 				preferenceService.setStringArray(categoryKey, recentlyUsed)
 				NotificationCenter.default.post(name: .RecentlyUsed.didChange, object: categoryKey)
 			},
+			getRecentlyUsed: { category in
+				@Dependency(\.preferenceService) var preferenceService: PreferenceService
+				let categoryKey = key(forCategory: category)
+				return (preferenceService.getStringArray(categoryKey) ?? []).compactMap { UUID(uuidString: $0) }
+			},
 			observeRecentlyUsed: { category in
 				.init { continuation in
 					@Dependency(\.preferenceService) var preferenceService: PreferenceService

@@ -12,7 +12,7 @@ public struct GearList: ReducerProtocol {
 	}
 
 	public enum Action: Equatable {
-		case subscribeToGear
+		case refreshList
 		case errorButtonTapped
 		case gearResponse(TaskResult<[Gear]>)
 		case swipeAction(Gear, SwipeAction)
@@ -31,14 +31,12 @@ public struct GearList: ReducerProtocol {
 	public var body: some ReducerProtocol<State, Action> {
 		Reduce { state, action in
 			switch action {
-			case .subscribeToGear:
+			case .refreshList:
 				state.error = nil
-				return .run { send in
-					for try await gear in gearDataProvider.fetchGear(.init(ordering: .byRecentlyUsed)) {
-						await send(.gearResponse(.success(gear)))
-					}
-				} catch: { error, send in
-					await send(.gearResponse(.failure(error)))
+				return .task {
+					await .gearResponse(TaskResult {
+						try await gearDataProvider.fetchGear(.init(ordering: .byRecentlyUsed))
+					})
 				}
 
 			case .setEditorFormSheet(isPresented: true):
@@ -50,8 +48,7 @@ public struct GearList: ReducerProtocol {
 				return .none
 
 			case .errorButtonTapped:
-				// TODO: handle error button tapped
-				return .none
+				return .task { .refreshList }
 
 			case let .gearResponse(.success(gear)):
 				state.gear = .init(uniqueElements: gear)

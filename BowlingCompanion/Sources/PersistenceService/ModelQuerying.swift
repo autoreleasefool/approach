@@ -5,6 +5,12 @@ struct ModelQuerying {
 
 	@Sendable func fetchAll<Model: FetchableRecord, Request: Queryable>(
 		request: Request
+	) async throws -> [Model] where Request.Model == Model {
+		try await reader.read(request.fetchValues(_:))
+	}
+
+	@Sendable func observeAll<Model: FetchableRecord, Request: Queryable>(
+		request: Request
 	) -> AsyncThrowingStream<[Model], Error> where Request.Model == Model {
 		return .init { continuation in
 			Task {

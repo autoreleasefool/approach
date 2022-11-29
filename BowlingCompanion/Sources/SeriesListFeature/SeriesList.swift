@@ -23,7 +23,7 @@ public struct SeriesList: ReducerProtocol {
 	}
 
 	public enum Action: Equatable {
-		case subscribeToSeries
+		case refreshList
 		case seriesResponse(TaskResult<[Series]>)
 		case setNavigation(selection: Series.ID?)
 		case setEditorFormSheet(isPresented: Bool)
@@ -53,19 +53,16 @@ public struct SeriesList: ReducerProtocol {
 	public var body: some ReducerProtocol<State, Action> {
 		Reduce { state, action in
 			switch action {
-			case .subscribeToSeries:
+			case .refreshList:
 				state.error = nil
-				return .run { [league = state.league.id] send in
-					for try await series in persistenceService.fetchSeries(.init(league: league, ordering: .byDate)) {
-						await send(.seriesResponse(.success(series)))
-					}
-				} catch: { error, send in
-					await send(.seriesResponse(.failure(error)))
+				return .task { [league = state.league.id] in
+					await .seriesResponse(TaskResult {
+						try await persistenceService.fetchSeries(.init(league: league, ordering: .byDate))
+					})
 				}
 
 			case .errorButtonTapped:
-				// TODO: handle error button tapped
-				return .none
+				return .task { .refreshList }
 
 			case let .seriesResponse(.success(series)):
 				state.series = .init(uniqueElements: series)

@@ -23,31 +23,26 @@ public struct ResourcePicker<Resource: PickableResource>: ReducerProtocol {
 	}
 
 	public enum Action: Equatable {
-		case subscribeToResources
+		case refreshData
 		case cancelButtonTapped
 		case saveButtonTapped
 		case resourceTapped(Resource)
 		case resources(TaskResult<[Resource]>)
 	}
 
-	public init(fetchResources: @escaping () -> AsyncThrowingStream<[Resource], Error>) {
+	public init(fetchResources: @escaping () async throws -> [Resource]) {
 		self.fetchResources = fetchResources
 	}
 
-	let fetchResources: () -> AsyncThrowingStream<[Resource], Error>
+	let fetchResources: () async throws -> [Resource]
 
 	public var body: some ReducerProtocol<State, Action> {
 		Reduce { state, action in
 			switch action {
-			case .subscribeToResources:
-				state.initialSelection = state.selected
+			case .refreshData:
 				state.error = nil
-				return .run { send in
-					for try await resources in fetchResources() {
-						await send(.resources(.success(resources)))
-					}
-				} catch: { error, send in
-					await send(.resources(.failure(error)))
+				return .task {
+					await .resources(TaskResult { try await fetchResources() })
 				}
 
 			case let .resources(.success(resources)):

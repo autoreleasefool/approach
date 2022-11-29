@@ -23,7 +23,7 @@ public struct LeaguesList: ReducerProtocol {
 	}
 
 	public enum Action: Equatable {
-		case subscribeToLeagues
+		case refreshList
 		case errorButtonTapped
 		case leaguesResponse(TaskResult<[League]>)
 		case setNavigation(selection: League.ID?)
@@ -51,19 +51,16 @@ public struct LeaguesList: ReducerProtocol {
 	public var body: some ReducerProtocol<State, Action> {
 		Reduce { state, action in
 			switch action {
-			case .subscribeToLeagues:
+			case .refreshList:
 				state.error = nil
-				return .run { [bowler = state.bowler.id] send in
-					for try await leagues in leaguesDataProvider.fetchLeagues(.init(bowler: bowler, ordering: .byRecentlyUsed)) {
-						await send(.leaguesResponse(.success(leagues)))
-					}
-				} catch: { error, send in
-					await send(.leaguesResponse(.failure(error)))
+				return .task { [bowler = state.bowler.id] in
+					await .leaguesResponse(TaskResult {
+						try await leaguesDataProvider.fetchLeagues(.init(bowler: bowler, ordering: .byRecentlyUsed))
+					})
 				}
 
 			case .errorButtonTapped:
-				// TODO: handle error button tapped
-				return .none
+				return .task { .refreshList }
 
 			case let .leaguesResponse(.success(leagues)):
 				state.leagues = .init(uniqueElements: leagues)

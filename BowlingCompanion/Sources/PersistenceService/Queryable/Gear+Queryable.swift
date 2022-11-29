@@ -4,7 +4,7 @@ import SharedPersistenceModelsLibrary
 import SharedModelsLibrary
 
 extension Gear.Query: Queryable {
-	func fetchValues(_ db: Database) throws -> [Gear] {
+	@Sendable func fetchValues(_ db: Database) throws -> [Gear] {
 		var query = Gear.all()
 
 		if let bowler {

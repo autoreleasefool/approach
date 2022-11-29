@@ -26,7 +26,7 @@ public struct ResourcePickerView<Resource: PickableResource>: View {
 	}
 
 	enum ViewAction {
-		case subscribeToResources
+		case refreshData
 		case saveButtonTapped
 		case cancelButtonTapped
 		case resourceTapped(Resource)
@@ -103,7 +103,7 @@ public struct ResourcePickerView<Resource: PickableResource>: View {
 					}
 				}
 			}
-			.task { await viewStore.send(.subscribeToResources).finish() }
+			.onAppear { viewStore.send(.refreshData) }
 		}
 	}
 
@@ -113,8 +113,8 @@ public struct ResourcePickerView<Resource: PickableResource>: View {
 			return .saveButtonTapped
 		case .cancelButtonTapped:
 			return .cancelButtonTapped
-		case .subscribeToResources:
-			return .subscribeToResources
+		case .refreshData:
+			return .refreshData
 		case let .resourceTapped(resource):
 			return .resourceTapped(resource)
 		}

@@ -89,23 +89,21 @@ public struct SeriesEditor: ReducerProtocol {
 		}
 
 		Scope(state: \.base.form.alleyPicker, action: /Action.alleyPicker) {
-			ResourcePicker { persistenceService.fetchAlleys(.init(ordering: .byName)) }
+			ResourcePicker { try await persistenceService.fetchAlleys(.init(ordering: .byName)) }
 		}
 
 		Reduce { state, action in
 			switch action {
 			case .loadInitialData:
 				if let leagueAlley = state.base.form.league.alley {
-					return .run { send in
-						for try await alleys in persistenceService.fetchAlleys(.init(filter: .id(leagueAlley), ordering: .byName)) {
-							await send(.leagueAlleyResponse(.success(alleys.first)))
-						}
-					} catch: { error, send in
-						await send(.leagueAlleyResponse(.failure(error)))
+					return .task {
+						await .leagueAlleyResponse(TaskResult {
+							let alleys = try await persistenceService.fetchAlleys(.init(filter: .id(leagueAlley), ordering: .byName))
+							return alleys.first
+						})
 					}
-				} else {
-					return .none
 				}
+				return .none
 
 			case let .leagueAlleyResponse(.success(alley)):
 				state.initialAlley = alley

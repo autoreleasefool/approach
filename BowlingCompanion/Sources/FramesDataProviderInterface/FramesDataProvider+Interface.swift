@@ -2,10 +2,10 @@ import Dependencies
 import SharedModelsLibrary
 
 public struct FramesDataProvider: Sendable {
-	public var fetchFrames: @Sendable (Frame.FetchRequest) -> AsyncThrowingStream<[Frame], Error>
+	public var fetchFrames: @Sendable (Frame.FetchRequest) async throws -> [Frame]
 
 	public init(
-		fetchFrames: @escaping @Sendable (Frame.FetchRequest) -> AsyncThrowingStream<[Frame], Error>
+		fetchFrames: @escaping @Sendable (Frame.FetchRequest) async throws -> [Frame]
 	) {
 		self.fetchFrames = fetchFrames
 	}

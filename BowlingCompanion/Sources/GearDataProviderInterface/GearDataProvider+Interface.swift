@@ -2,10 +2,10 @@ import Dependencies
 import SharedModelsLibrary
 
 public struct GearDataProvider: Sendable {
-	public var fetchGear: @Sendable (Gear.FetchRequest) -> AsyncThrowingStream<[Gear], Error>
+	public var fetchGear: @Sendable (Gear.FetchRequest) async throws -> [Gear]
 
 	public init(
-		fetchGear: @escaping @Sendable (Gear.FetchRequest) -> AsyncThrowingStream<[Gear], Error>
+		fetchGear: @escaping @Sendable (Gear.FetchRequest) async throws -> [Gear]
 	) {
 		self.fetchGear = fetchGear
 	}

@@ -2,10 +2,10 @@ import Dependencies
 import SharedModelsLibrary
 
 public struct AlleysDataProvider: Sendable {
-	public var fetchAlleys: @Sendable (Alley.FetchRequest) -> AsyncThrowingStream<[Alley], Error>
+	public var fetchAlleys: @Sendable (Alley.FetchRequest) async throws -> [Alley]
 
 	public init(
-		fetchAlleys: @escaping @Sendable (Alley.FetchRequest) -> AsyncThrowingStream<[Alley], Error>
+		fetchAlleys: @escaping @Sendable (Alley.FetchRequest) async throws -> [Alley]
 	) {
 		self.fetchAlleys = fetchAlleys
 	}

@@ -2,10 +2,10 @@ import Dependencies
 import SharedModelsLibrary
 
 public struct BowlersDataProvider: Sendable {
-	public var fetchBowlers: @Sendable (Bowler.FetchRequest) -> AsyncThrowingStream<[Bowler], Error>
+	public var fetchBowlers: @Sendable (Bowler.FetchRequest) async throws -> [Bowler]
 
 	public init(
-		fetchBowlers: @escaping @Sendable (Bowler.FetchRequest) -> AsyncThrowingStream<[Bowler], Error>
+		fetchBowlers: @escaping @Sendable (Bowler.FetchRequest) async throws -> [Bowler]
 	) {
 		self.fetchBowlers = fetchBowlers
 	}

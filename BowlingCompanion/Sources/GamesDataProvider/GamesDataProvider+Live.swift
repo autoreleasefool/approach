@@ -7,7 +7,7 @@ extension GamesDataProvider: DependencyKey {
 	public static let liveValue = Self(
 		fetchGames: { request in
 			@Dependency(\.persistenceService) var persistenceService: PersistenceService
-			return persistenceService.fetchGames(.init(request))
+			return try await persistenceService.fetchGames(.init(request))
 		}
 	)
 }

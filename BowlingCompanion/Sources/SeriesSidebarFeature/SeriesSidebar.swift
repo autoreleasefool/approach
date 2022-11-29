@@ -15,7 +15,7 @@ public struct SeriesSidebar: ReducerProtocol {
 	}
 
 	public enum Action: Equatable {
-		case subscribeToGames
+		case refreshList
 		case gamesResponse(TaskResult<[Game]>)
 		case setNavigation(selection: Game.ID?)
 		case gameEditor(GameEditor.Action)
@@ -28,13 +28,11 @@ public struct SeriesSidebar: ReducerProtocol {
 	public var body: some ReducerProtocol<State, Action> {
 		Reduce { state, action in
 			switch action {
-			case .subscribeToGames:
-				return .run { [series = state.series.id] send in
-					for try await games in gamesDataProvider.fetchGames(.init(series: series, ordering: .byOrdinal)) {
-						await send(.gamesResponse(.success(games)))
-					}
-				} catch: { error, send in
-					await send(.gamesResponse(.failure(error)))
+			case .refreshList:
+				return .task { [series = state.series.id] in
+					await .gamesResponse(TaskResult {
+						try await gamesDataProvider.fetchGames(.init(series: series, ordering: .byOrdinal))
+					})
 				}
 
 			case let .gamesResponse(.success(games)):

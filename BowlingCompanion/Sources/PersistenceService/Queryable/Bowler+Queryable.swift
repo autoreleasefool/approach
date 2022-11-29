@@ -4,7 +4,7 @@ import SharedPersistenceModelsLibrary
 import SharedModelsLibrary
 
 extension Bowler.Query: Queryable {
-	func fetchValues(_ db: Database) throws -> [Bowler] {
+	@Sendable func fetchValues(_ db: Database) throws -> [Bowler] {
 		var query = Bowler.all()
 
 		switch ordering {

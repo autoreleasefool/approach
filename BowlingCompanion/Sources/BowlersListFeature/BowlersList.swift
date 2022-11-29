@@ -19,7 +19,7 @@ public struct BowlersList: ReducerProtocol {
 	}
 
 	public enum Action: Equatable {
-		case subscribeToBowlers
+		case refreshList
 		case errorButtonTapped
 		case configureStatisticsButtonTapped
 		case swipeAction(Bowler, SwipeAction)
@@ -47,19 +47,16 @@ public struct BowlersList: ReducerProtocol {
 	public var body: some ReducerProtocol<State, Action> {
 		Reduce { state, action in
 			switch action {
-			case .subscribeToBowlers:
+			case .refreshList:
 				state.error = nil
-				return .run { send in
-					for try await bowlers in bowlersDataProvider.fetchBowlers(.init(ordering: .byRecentlyUsed)) {
-						await send(.bowlersResponse(.success(bowlers)))
-					}
-				} catch: { error, send in
-					await send(.bowlersResponse(.failure(error)))
+				return .task {
+					await .bowlersResponse(TaskResult {
+						try await bowlersDataProvider.fetchBowlers(.init(ordering: .byRecentlyUsed))
+					})
 				}
 
 			case .errorButtonTapped:
-				// TODO: handle error button press
-				return .none
+				return .task { .refreshList }
 
 			case .configureStatisticsButtonTapped:
 				// TODO: handle configure statistics button press
