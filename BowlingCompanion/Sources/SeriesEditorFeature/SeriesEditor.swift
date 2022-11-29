@@ -89,7 +89,7 @@ public struct SeriesEditor: ReducerProtocol {
 		}
 
 		Scope(state: \.base.form.alleyPicker, action: /Action.alleyPicker) {
-			ResourcePicker { try await persistenceService.fetchAlleys(.init(ordering: .byName)) }
+			ResourcePicker { try await persistenceService.fetchAlleys(.init(filter: [], ordering: .byName)) }
 		}
 
 		Reduce { state, action in
@@ -98,7 +98,7 @@ public struct SeriesEditor: ReducerProtocol {
 				if let leagueAlley = state.base.form.league.alley {
 					return .task {
 						await .leagueAlleyResponse(TaskResult {
-							let alleys = try await persistenceService.fetchAlleys(.init(filter: .id(leagueAlley), ordering: .byName))
+							let alleys = try await persistenceService.fetchAlleys(.init(filter: [.id(leagueAlley)], ordering: .byName))
 							return alleys.first
 						})
 					}

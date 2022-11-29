@@ -65,7 +65,21 @@ public enum Strings {
         public static let message = Strings.tr("Localizable", "alleys.errors.empty.message", fallback: "You haven't added any alleys yet.")
         /// No alleys found
         public static let title = Strings.tr("Localizable", "alleys.errors.empty.title", fallback: "No alleys found")
+        public enum Filter {
+          /// Try changing your filters or adding a new alley.
+          public static let message = Strings.tr("Localizable", "alleys.errors.empty.filter.message", fallback: "Try changing your filters or adding a new alley.")
+        }
       }
+    }
+    public enum Filter {
+      /// Material
+      public static let material = Strings.tr("Localizable", "alleys.filter.material", fallback: "Material")
+      /// Mechanism
+      public static let mechanism = Strings.tr("Localizable", "alleys.filter.mechanism", fallback: "Mechanism")
+      /// Pin Base
+      public static let pinBase = Strings.tr("Localizable", "alleys.filter.pinBase", fallback: "Pin Base")
+      /// Pin Fall
+      public static let pinFall = Strings.tr("Localizable", "alleys.filter.pinFall", fallback: "Pin Fall")
     }
     public enum List {
       /// Add Alley

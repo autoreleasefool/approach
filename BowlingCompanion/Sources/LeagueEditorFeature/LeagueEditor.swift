@@ -1,3 +1,4 @@
+import AlleysDataProviderInterface
 import BaseFormFeature
 import ComposableArchitecture
 import PersistenceServiceInterface
@@ -86,6 +87,7 @@ public struct LeagueEditor: ReducerProtocol {
 	public init() {}
 
 	@Dependency(\.uuid) var uuid
+	@Dependency(\.alleysDataProvider) var alleysDataProvider
 	@Dependency(\.persistenceService) var persistenceService
 
 	public var body: some ReducerProtocol<State, Action> {
@@ -101,7 +103,7 @@ public struct LeagueEditor: ReducerProtocol {
 		}
 
 		Scope(state: \.base.form.alleyPicker, action: /Action.alleyPicker) {
-			ResourcePicker { try await persistenceService.fetchAlleys(.init(ordering: .byName)) }
+			ResourcePicker { try await alleysDataProvider.fetchAlleys(.init(ordering: .byName)) }
 		}
 
 		Reduce { state, action in
@@ -110,7 +112,7 @@ public struct LeagueEditor: ReducerProtocol {
 				if case let .edit(league) = state.base.mode, let alleyId = league.alley {
 					return .task {
 						await .leagueAlleyResponse(TaskResult {
-							let alleys = try await persistenceService.fetchAlleys(.init(filter: .id(alleyId), ordering: .byName))
+							let alleys = try await persistenceService.fetchAlleys(.init(filter: [.id(alleyId)], ordering: .byName))
 							return alleys.first
 						})
 					}

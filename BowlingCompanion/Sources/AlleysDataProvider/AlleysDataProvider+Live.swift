@@ -35,6 +35,17 @@ extension Alley.Query {
 			ordering = .byName
 		}
 
-		self.init(ordering: ordering)
+		let filter: [Alley.Query.Filter] = request.filter.map {
+			switch $0 {
+			case let .id(id): return .id(id)
+			case let .material(material): return .material(material)
+			case let .mechanism(mechanism): return .mechanism(mechanism)
+			case let .pinBase(pinBase): return .pinBase(pinBase)
+			case let .pinFall(pinFall): return .pinFall(pinFall)
+			case let .name(name): return .name(name)
+			}
+		}
+
+		self.init(filter: filter, ordering: ordering)
 	}
 }

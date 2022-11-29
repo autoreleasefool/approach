@@ -92,15 +92,10 @@ public struct LeaguesList: ReducerProtocol {
 				)
 				return .none
 
-			case .setEditorFormSheet(isPresented: false):
-				state.leagueEditor = nil
-				return .none
-
-			case .leagueEditor(.form(.saveResult(.success))):
-				state.leagueEditor = nil
-				return .none
-
-			case .leagueEditor(.form(.deleteResult(.success))):
+			case .setEditorFormSheet(isPresented: false),
+					.leagueEditor(.form(.saveResult(.success))),
+					.leagueEditor(.form(.deleteResult(.success))),
+					.leagueEditor(.form(.alert(.discardButtonTapped))):
 				state.leagueEditor = nil
 				return .none
 

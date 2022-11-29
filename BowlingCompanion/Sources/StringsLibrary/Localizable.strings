@@ -11,6 +11,10 @@
 "alleys.editor.fields.mechanism.footer" = "Are the lanes interchangeable between multiple types of bowling (5-Pin and 10-Pin), or do they only support one kind?";
 "alleys.editor.fields.pinBase.title" = "Pin Base";
 "alleys.editor.fields.pinBase.footer" = "What kind of base do the pins have?";
+"alleys.filter.material" = "Material";
+"alleys.filter.mechanism" = "Mechanism";
+"alleys.filter.pinFall" = "Pin Fall";
+"alleys.filter.pinBase" = "Pin Base";
 "alleys.list.add" = "Add Alley";
 "alleys.list.delete.title" = "Are you sure you want to delete %@?";
 "alleys.list.delete.action" = "Delete";
@@ -18,6 +22,7 @@
 "alleys.list.title" = "Alleys";
 "alleys.errors.empty.title" = "No alleys found";
 "alleys.errors.empty.message" = "You haven't added any alleys yet.";
+"alleys.errors.empty.filter.message" = "Try changing your filters or adding a new alley.";
 "alleys.picker.errors.dismiss" = "Dismiss";
 "alleys.material.synthetic" = "Synthetic";
 "alleys.material.wood" = "Wood";
