@@ -13,7 +13,7 @@ let package = Package(
 <% end %>
 	],
 	dependencies: [<% @packages.each do |_, package| %>
-		.package(url: "<%= package.url %>", from: "<%= package.from %>"),<% end %>
+		.package(url: "<%= package.url %>", <% if package.from %>from: "<%= package.from %>"<% elsif package.branch %>branch: "<%= package.branch %>"<% end %>),<% end %>
 	],
 	targets: [<% @collections.each do |collection| %>
 		// MARK: - <%= collection[:name] %><% collection[:targets].sort_by { |t, _| t }.each do |_, target| %>

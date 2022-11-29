@@ -18,18 +18,23 @@ module External
     packages = {}
     package_yaml['package']['dependencies'].each do |d|
       name = d['url'][%r{https://github\.com/.*?/(.*)\.git}, 1]
-      packages[name] = Package.new(url: d['url'], from: d['from'])
+      if d.include?('from')
+        packages[name] = Package.new(url: d['url'], from: d['from'])
+      elsif d.include?('branch')
+        packages[name] = Package.new(url: d['url'], branch: d['branch'])
+      end
     end
 
     packages
   end
 
   class Package
-    attr_reader :url, :from
+    attr_reader :url, :from, :branch
 
-    def initialize(url:, from:)
+    def initialize(url:, from: nil, branch: nil)
       @url = url
       @from = from
+      @branch = branch
     end
   end
 
