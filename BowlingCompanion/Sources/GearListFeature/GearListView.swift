@@ -1,6 +1,7 @@
 import ComposableArchitecture
 import GearEditorFeature
 import SharedModelsLibrary
+import SharedModelsViewsLibrary
 import StringsLibrary
 import SwiftUI
 import ThemesLibrary
@@ -41,7 +42,11 @@ public struct GearListView: View {
 		WithViewStore(store, observe: ViewState.init, send: GearList.Action.init) { viewStore in
 			ListContent(viewStore.listState) { gear in
 				ForEach(gear) { gear in
-					GearListRow(viewStore: viewStore, gear: gear)
+					GearRow(
+						gear: gear,
+						onEdit: { viewStore.send(.swipeAction(gear, .edit)) },
+						onDelete: { viewStore.send(.swipeAction(gear, .delete)) }
+					)
 				}
 			} empty: {
 				ListEmptyContent(

@@ -13,8 +13,6 @@ extension Gear: BaseFormModel {
 
 extension Bowler: PickableResource {
 	static public var pickableModelName = Strings.Bowlers.Model.name
-	public var pickableTitle: String { name }
-	public var pickableSubtitle: String? { nil }
 }
 
 public struct GearEditor: ReducerProtocol {

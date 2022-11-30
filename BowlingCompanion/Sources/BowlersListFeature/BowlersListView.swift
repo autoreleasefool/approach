@@ -2,6 +2,7 @@ import BowlerEditorFeature
 import ComposableArchitecture
 import LeaguesListFeature
 import SharedModelsLibrary
+import SharedModelsViewsLibrary
 import StatisticsWidgetsFeature
 import StringsLibrary
 import SwiftUI
@@ -57,11 +58,22 @@ public struct BowlersListView: View {
 
 				Section(Strings.Bowlers.List.sectionTitle) {
 					ForEach(bowlers) { bowler in
-						BowlersListRow(
-							viewStore: viewStore,
-							destination: store.scope(state: \.selection?.value, action: BowlersList.Action.leagues),
-							bowler: bowler
-						)
+						NavigationLink(
+							destination: IfLetStore(store.scope(state: \.selection?.value, action: BowlersList.Action.leagues)) {
+								LeaguesListView(store: $0)
+							},
+							tag: bowler.id,
+							selection: viewStore.binding(
+								get: \.selection,
+								send: BowlersListView.ViewAction.setNavigation(selection:)
+							)
+						) {
+							BowlerRow(
+								bowler: bowler,
+								onEdit: { viewStore.send(.swipeAction(bowler, .edit)) },
+								onDelete: { viewStore.send(.swipeAction(bowler, .delete)) }
+							)
+						}
 					}
 				}
 				.listRowSeparator(.hidden)

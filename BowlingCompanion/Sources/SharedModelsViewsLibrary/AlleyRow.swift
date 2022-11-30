@@ -1,23 +1,23 @@
-import ComposableArchitecture
 import SharedModelsLibrary
 import SwiftUI
 import ThemesLibrary
 import ViewsLibrary
 
-struct AlleysListRow: View {
-	typealias ViewStore = ComposableArchitecture.ViewStore<AlleysListView.ViewState, AlleysListView.ViewAction>
-
-	let viewStore: ViewStore
+public struct AlleyRow: View {
 	let alley: Alley
+	let onEdit: (() -> Void)?
+	let onDelete: (() -> Void)?
 
-	init(viewStore: ViewStore, alley: Alley) {
-		self.viewStore = viewStore
+	public init(alley: Alley, onEdit: (() -> Void)? = nil, onDelete: (() -> Void)? = nil) {
 		self.alley = alley
+		self.onEdit = onEdit
+		self.onDelete = onDelete
 	}
 
-	var body: some View {
+	public var body: some View {
 		VStack(alignment: .leading, spacing: .smallSpacing) {
 			Text(alley.name)
+				.frame(maxWidth: .infinity, alignment: .leading)
 			HStack {
 				if alley.material != .unknown {
 					BadgeView(
@@ -46,37 +46,32 @@ struct AlleysListRow: View {
 			}
 		}
 		.swipeActions(allowsFullSwipe: true) {
-			EditButton { viewStore.send(.swipeAction(alley, .edit)) }
-			DeleteButton { viewStore.send(.swipeAction(alley, .delete)) }
+			if let onEdit {
+				EditButton(perform: onEdit)
+			}
+
+			if let onDelete {
+				DeleteButton(perform: onDelete)
+			}
 		}
 	}
 }
 
 #if DEBUG
-struct AlleysListRowPreview: PreviewProvider {
+struct AlleyRowPreview: PreviewProvider {
 	static var previews: some View {
-		WithViewStore(
-			.init(
-				initialState: .init(),
-				reducer: AlleysList()
-			),
-			observe: AlleysListView.ViewState.init,
-			send: AlleysList.Action.init
-		) { viewStore in
-			List {
-				AlleysListRow(
-					viewStore: viewStore,
-					alley: .init(
-						id: UUID(),
-						name: "Skyview Lanes",
-						address: nil,
-						material: .wood,
-						pinFall: .freefall,
-						mechanism: .dedicated,
-						pinBase: .black
-					)
+		List {
+			AlleyRow(
+				alley: .init(
+					id: UUID(),
+					name: "Skyview Lanes",
+					address: nil,
+					material: .wood,
+					pinFall: .freefall,
+					mechanism: .dedicated,
+					pinBase: .black
 				)
-			}
+			)
 		}
 	}
 }

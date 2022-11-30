@@ -3,6 +3,7 @@ import DateTimeLibrary
 import SeriesEditorFeature
 import SeriesSidebarFeature
 import SharedModelsLibrary
+import SharedModelsViewsLibrary
 import StringsLibrary
 import SwiftUI
 import ThemesLibrary
@@ -54,11 +55,22 @@ public struct SeriesListView: View {
 			ListContent(viewStore.listState) { series in
 				Section(Strings.Series.List.sectionTitle) {
 					ForEach(series) { series in
-						SeriesListRow(
-							viewStore: viewStore,
-							destination: store.scope(state: \.selection?.value, action: SeriesList.Action.seriesSidebar),
-							series: series
-						)
+						NavigationLink(
+							destination: IfLetStore(store.scope(state: \.selection?.value, action: SeriesList.Action.seriesSidebar)) {
+								SeriesSidebarView(store: $0)
+							},
+							tag: series.id,
+							selection: viewStore.binding(
+								get: \.selection,
+								send: SeriesListView.ViewAction.setNavigation(selection:)
+							)
+						) {
+							SeriesRow(
+								series: series,
+								onEdit: { viewStore.send(.swipeAction(series, .edit)) },
+								onDelete: { viewStore.send(.swipeAction(series, .delete)) }
+							)
+						}
 					}
 				}
 				.listRowSeparator(.hidden)

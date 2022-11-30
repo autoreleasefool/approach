@@ -32,8 +32,7 @@ package:
       dependencies:
         - AlleyEditorFeature
         - AlleysDataProvider
-        - ThemesLibrary
-        - ViewsLibrary
+        - SharedModelsViewsLibrary
     - name: AppFeature
       dependencies:
         - AlleysListFeature
@@ -75,6 +74,7 @@ package:
       dependencies:
         - GearEditorFeature
         - GearDataProvider
+        - SharedModelsViewsLibrary
     - name: LeagueEditorFeature
       dependencies:
         - AlleysDataProvider
@@ -87,6 +87,7 @@ package:
         - LeagueEditorFeature
         - RecentlyUsedService
         - SeriesListFeature
+        - SharedModelsViewsLibrary
     - name: ResourcePickerFeature
       dependencies:
         - StringsLibrary
@@ -97,6 +98,7 @@ package:
         - SharedModelsLibrary
     - name: SeriesEditorFeature
       dependencies:
+        - AlleysDataProvider
         - BaseFormFeature
         - DateTimeLibrary
         - PersistenceService
@@ -197,6 +199,12 @@ package:
     - name: SharedModelsMocksLibrary
       dependencies:
         - SharedModelsLibrary
+    - name: SharedModelsViewsLibrary
+      dependencies:
+        - DateTimeLibrary
+        - SharedModelsLibrary
+        - ThemesLibrary
+        - ViewsLibrary
     - name: SharedPersistenceModelsLibrary
       dependencies:
         - SharedModelsLibrary
@@ -208,6 +216,6 @@ package:
     - name: ThemesLibrary
     - name: ViewsLibrary
       dependencies:
+        - ComposableArchitecture
         - StringsLibrary
         - ThemesLibrary
-        - ComposableArchitecture

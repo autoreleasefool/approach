@@ -1,6 +1,7 @@
 import AlleyEditorFeature
 import ComposableArchitecture
 import SharedModelsLibrary
+import SharedModelsViewsLibrary
 import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsLibrary
@@ -48,7 +49,11 @@ public struct AlleysListView: View {
 		WithViewStore(store, observe: ViewState.init, send: AlleysList.Action.init) { viewStore in
 			ListContent(viewStore.listState) { alleys in
 				ForEach(alleys) { alley in
-					AlleysListRow(viewStore: viewStore, alley: alley)
+					AlleyRow(
+						alley: alley,
+						onEdit: { viewStore.send(.swipeAction(alley, .edit)) },
+						onDelete: { viewStore.send(.swipeAction(alley, .delete)) }
+					)
 				}
 				.listRowSeparator(.hidden)
 			} empty: {

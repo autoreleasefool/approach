@@ -2,6 +2,7 @@ import ComposableArchitecture
 import LeagueEditorFeature
 import SeriesListFeature
 import SharedModelsLibrary
+import SharedModelsViewsLibrary
 import StringsLibrary
 import SwiftUI
 import ThemesLibrary
@@ -48,11 +49,22 @@ public struct LeaguesListView: View {
 			ListContent(viewStore.listState) { leagues in
 				Section(Strings.Leagues.List.sectionTitle) {
 					ForEach(leagues) { league in
-						LeaguesListRow(
-							viewStore: viewStore,
-							destination: store.scope(state: \.selection?.value, action: LeaguesList.Action.series),
-							league: league
-						)
+						NavigationLink(
+							destination: IfLetStore(store.scope(state: \.selection?.value, action: LeaguesList.Action.series)) {
+								SeriesListView(store: $0)
+							},
+							tag: league.id,
+							selection: viewStore.binding(
+								get: \.selection,
+								send: LeaguesListView.ViewAction.setNavigation(selection:)
+							)
+						) {
+							LeagueRow(
+								league: league,
+								onEdit: { viewStore.send(.swipeAction(league, .edit)) },
+								onDelete: { viewStore.send(.swipeAction(league, .delete)) }
+							)
+						}
 					}
 				}
 				.listRowSeparator(.hidden)

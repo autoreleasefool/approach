@@ -4,8 +4,9 @@ import SwiftUI
 import ThemesLibrary
 import ViewsLibrary
 
-public struct ResourcePickerView<Resource: PickableResource>: View {
+public struct ResourcePickerView<Resource: PickableResource, Row: View>: View {
 	let store: StoreOf<ResourcePicker<Resource>>
+	let row: (Resource) -> Row
 
 	struct ViewState: Equatable {
 		let listState: ListContentState<Resource, ListErrorContent>
@@ -32,8 +33,9 @@ public struct ResourcePickerView<Resource: PickableResource>: View {
 		case resourceTapped(Resource)
 	}
 
-	public init(store: StoreOf<ResourcePicker<Resource>>) {
+	public init(store: StoreOf<ResourcePicker<Resource>>, @ViewBuilder row: @escaping (Resource) -> Row) {
 		self.store = store
+		self.row = row
 	}
 
 	public var body: some View {
@@ -48,16 +50,8 @@ public struct ResourcePickerView<Resource: PickableResource>: View {
 								.resizable()
 								.frame(width: .smallIcon, height: .smallIcon)
 								.foregroundColor(.appAction)
-
-							VStack(alignment: .leading, spacing: .smallSpacing) {
-								Text(resource.pickableTitle)
-									.frame(maxWidth: .infinity, alignment: .leading)
-								if let subtitle = resource.pickableSubtitle {
-									Text(subtitle)
-										.frame(maxWidth: .infinity, alignment: .leading)
-										.font(.caption)
-								}
-							}
+							row(resource)
+								.frame(maxWidth: .infinity)
 						}
 						.frame(maxWidth: .infinity)
 						.contentShape(Rectangle())

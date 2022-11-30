@@ -2,6 +2,7 @@ import BaseFormFeature
 import ComposableArchitecture
 import ResourcePickerFeature
 import SharedModelsLibrary
+import SharedModelsViewsLibrary
 import StringsLibrary
 import SwiftUI
 import ViewsLibrary
@@ -68,12 +69,14 @@ public struct LeagueEditorView: View {
 				send: ViewAction.setAlleyPickerSheet(isPresented:)
 			)) {
 				NavigationView {
-					ResourcePickerView<Alley>(
+					ResourcePickerView<Alley, AlleyRow>(
 						store: store.scope(
 							state: \.base.form.alleyPicker,
 							action: LeagueEditor.Action.alleyPicker
 						)
-					)
+					) { alley in
+						AlleyRow(alley: alley)
+					}
 				}
 			}
 			.task { await viewStore.send(.loadInitialData).finish() }

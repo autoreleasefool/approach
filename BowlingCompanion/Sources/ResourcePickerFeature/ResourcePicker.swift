@@ -3,8 +3,6 @@ import ViewsLibrary
 
 public protocol PickableResource: Equatable, Identifiable {
 	static var pickableModelName: String { get }
-	var pickableTitle: String { get }
-	var pickableSubtitle: String? { get }
 }
 
 public struct ResourcePicker<Resource: PickableResource>: ReducerProtocol {

@@ -15,8 +15,6 @@ extension Series: BaseFormModel {
 
 extension Alley: PickableResource {
 	static public var pickableModelName = Strings.Alleys.Model.name
-	public var pickableTitle: String { name }
-	public var pickableSubtitle: String? { address }
 }
 
 public struct SeriesEditor: ReducerProtocol {

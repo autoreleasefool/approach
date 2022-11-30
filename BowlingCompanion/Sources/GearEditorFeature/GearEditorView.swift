@@ -2,6 +2,7 @@ import BaseFormFeature
 import ComposableArchitecture
 import ResourcePickerFeature
 import SharedModelsLibrary
+import SharedModelsViewsLibrary
 import StringsLibrary
 import SwiftUI
 import ViewsLibrary
@@ -83,12 +84,14 @@ public struct GearEditorView: View {
 				send: ViewAction.setBowlerPickerSheet(isPresented:)
 			)) {
 				NavigationView {
-					ResourcePickerView<Bowler>(
+					ResourcePickerView<Bowler, BowlerRow>(
 						store: store.scope(
 							state: \.base.form.bowlerPicker,
 							action: GearEditor.Action.bowlerPicker
 						)
-					)
+					) { bowler in
+						BowlerRow(bowler: bowler)
+					}
 				}
 			}
 			.task { await viewStore.send(.loadInitialData).finish() }
