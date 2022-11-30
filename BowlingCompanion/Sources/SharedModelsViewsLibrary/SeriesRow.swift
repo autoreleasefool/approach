@@ -17,6 +17,7 @@ public struct SeriesRow: View {
 
 	public var body: some View {
 		Text(series.date.longFormat)
+			.frame(maxWidth: .infinity, alignment: .leading)
 			.swipeActions(allowsFullSwipe: true) {
 				if let onEdit {
 					EditButton(perform: onEdit)

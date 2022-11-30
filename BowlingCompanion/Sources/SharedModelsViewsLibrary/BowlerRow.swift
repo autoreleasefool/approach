@@ -16,6 +16,7 @@ public struct BowlerRow: View {
 
 	public var body: some View {
 		AvatarView(size: .medium, title: bowler.name)
+			.frame(maxWidth: .infinity, alignment: .leading)
 			.swipeActions(allowsFullSwipe: true) {
 				if let onEdit {
 					EditButton(perform: onEdit)

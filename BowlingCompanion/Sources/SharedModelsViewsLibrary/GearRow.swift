@@ -16,6 +16,7 @@ public struct GearRow: View {
 
 	public var body: some View {
 		Text(gear.name)
+			.frame(maxWidth: .infinity, alignment: .leading)
 			.swipeActions(allowsFullSwipe: true) {
 				if let onEdit {
 					EditButton(perform: onEdit)
