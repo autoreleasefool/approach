@@ -1,6 +1,7 @@
 import ComposableArchitecture
 import FeatureFlagServiceInterface
 import PersistenceServiceInterface
+import SeriesDataProviderInterface
 import SeriesEditorFeature
 import SeriesSidebarFeature
 import SharedModelsLibrary
@@ -47,6 +48,7 @@ public struct SeriesList: ReducerProtocol {
 
 	@Dependency(\.uuid) var uuid
 	@Dependency(\.date) var date
+	@Dependency(\.seriesDataProvider) var seriesDataProvider
 	@Dependency(\.persistenceService) var persistenceService
 	@Dependency(\.featureFlags) var featureFlags: FeatureFlagService
 
@@ -57,7 +59,7 @@ public struct SeriesList: ReducerProtocol {
 				state.error = nil
 				return .task { [league = state.league.id] in
 					await .seriesResponse(TaskResult {
-						try await persistenceService.fetchSeries(.init(league: league, ordering: .byDate))
+						try await seriesDataProvider.fetchSeries(.init(league: league, ordering: .byDate))
 					})
 				}
 

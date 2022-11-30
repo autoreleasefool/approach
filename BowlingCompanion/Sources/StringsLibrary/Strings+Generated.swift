@@ -281,6 +281,28 @@ public enum Strings {
     }
   }
   public enum Gear {
+    public enum Editor {
+      public enum Fields {
+        public enum Details {
+          /// Kind
+          public static let kind = Strings.tr("Localizable", "gear.editor.fields.details.kind", fallback: "Kind")
+          /// Name
+          public static let name = Strings.tr("Localizable", "gear.editor.fields.details.name", fallback: "Name")
+          /// Details
+          public static let title = Strings.tr("Localizable", "gear.editor.fields.details.title", fallback: "Details")
+        }
+        public enum Owner {
+          /// Owner
+          public static let title = Strings.tr("Localizable", "gear.editor.fields.owner.title", fallback: "Owner")
+          public enum Bowler {
+            /// None
+            public static let `none` = Strings.tr("Localizable", "gear.editor.fields.owner.bowler.none", fallback: "None")
+            /// Bowler
+            public static let title = Strings.tr("Localizable", "gear.editor.fields.owner.bowler.title", fallback: "Bowler")
+          }
+        }
+      }
+    }
     public enum Errors {
       public enum Empty {
         /// You haven't added any gear yet. Track usage stats for your shoes, balls, or more.
@@ -304,6 +326,10 @@ public enum Strings {
       public static let add = Strings.tr("Localizable", "gear.list.add", fallback: "Add Gear")
       /// Gear
       public static let title = Strings.tr("Localizable", "gear.list.title", fallback: "Gear")
+    }
+    public enum Model {
+      /// Gear
+      public static let name = Strings.tr("Localizable", "gear.model.name", fallback: "Gear")
     }
   }
   public enum Leagues {

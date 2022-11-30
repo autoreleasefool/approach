@@ -27,6 +27,13 @@ extension BowlersDataProvider: DependencyKey {
 
 extension Bowler.Query {
 	init(_ request: Bowler.FetchRequest) {
+		let filter: [Bowler.Query.Filter] = request.filter.map {
+			switch $0 {
+			case let .id(id): return .id(id)
+			case let .name(name): return .name(name)
+			}
+		}
+
 		let ordering: Bowler.Query.Ordering
 		switch request.ordering {
 		case .byRecentlyUsed:
@@ -35,6 +42,6 @@ extension Bowler.Query {
 			ordering = .byName
 		}
 
-		self.init(ordering: ordering)
+		self.init(filter: filter, ordering: ordering)
 	}
 }

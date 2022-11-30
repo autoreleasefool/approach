@@ -1,3 +1,4 @@
+import AlleysDataProviderInterface
 import BaseFormFeature
 import ComposableArchitecture
 import DateTimeLibrary
@@ -75,6 +76,7 @@ public struct SeriesEditor: ReducerProtocol {
 	@Dependency(\.uuid) var uuid
 	@Dependency(\.date) var date
 	@Dependency(\.persistenceService) var persistenceService
+	@Dependency(\.alleysDataProvider) var alleysDataProvider
 
 	public var body: some ReducerProtocol<State, Action> {
 		BindingReducer()
@@ -89,7 +91,7 @@ public struct SeriesEditor: ReducerProtocol {
 		}
 
 		Scope(state: \.base.form.alleyPicker, action: /Action.alleyPicker) {
-			ResourcePicker { try await persistenceService.fetchAlleys(.init(filter: [], ordering: .byName)) }
+			ResourcePicker { try await alleysDataProvider.fetchAlleys(.init(filter: [], ordering: .byName)) }
 		}
 
 		Reduce { state, action in
@@ -98,7 +100,7 @@ public struct SeriesEditor: ReducerProtocol {
 				if let leagueAlley = state.base.form.league.alley {
 					return .task {
 						await .leagueAlleyResponse(TaskResult {
-							let alleys = try await persistenceService.fetchAlleys(.init(filter: [.id(leagueAlley)], ordering: .byName))
+							let alleys = try await alleysDataProvider.fetchAlleys(.init(filter: [.id(leagueAlley)], ordering: .byName))
 							return alleys.first
 						})
 					}

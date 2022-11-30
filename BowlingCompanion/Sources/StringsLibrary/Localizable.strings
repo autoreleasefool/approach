@@ -74,6 +74,13 @@
 "game.editor.ballDetails.fouled.title" = "Fouled?";
 "game.editor.ballDetails.fouled.yes" = "Yes";
 "game.editor.ballDetails.fouled.no" = "No";
+"gear.model.name" = "Gear";
+"gear.editor.fields.details.title" = "Details";
+"gear.editor.fields.details.name" = "Name";
+"gear.editor.fields.details.kind" = "Kind";
+"gear.editor.fields.owner.title" = "Owner";
+"gear.editor.fields.owner.bowler.title" = "Bowler";
+"gear.editor.fields.owner.bowler.none" = "None";
 "gear.list.add" = "Add Gear";
 "gear.list.title" = "Gear";
 "gear.errors.empty.title" = "No gear found";

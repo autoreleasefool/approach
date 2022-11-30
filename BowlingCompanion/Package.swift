@@ -17,6 +17,7 @@ let package = Package(
 		.library(name: "BowlersListFeature", targets: ["BowlersListFeature"]),
 		.library(name: "FeatureFlagListFeature", targets: ["FeatureFlagListFeature"]),
 		.library(name: "GameEditorFeature", targets: ["GameEditorFeature"]),
+		.library(name: "GearEditorFeature", targets: ["GearEditorFeature"]),
 		.library(name: "GearListFeature", targets: ["GearListFeature"]),
 		.library(name: "LeagueEditorFeature", targets: ["LeagueEditorFeature"]),
 		.library(name: "LeaguesListFeature", targets: ["LeaguesListFeature"]),
@@ -195,11 +196,26 @@ let package = Package(
 			]
 		),
 		.target(
+			name: "GearEditorFeature",
+			dependencies: [
+				"BaseFormFeature",
+				"BowlersDataProviderInterface",
+				"PersistenceServiceInterface",
+				"ResourcePickerFeature",
+			]
+		),
+		.testTarget(
+			name: "GearEditorFeatureTests",
+			dependencies: [
+				"GearEditorFeature",
+				"SharedModelsMocksLibrary",
+			]
+		),
+		.target(
 			name: "GearListFeature",
 			dependencies: [
 				"GearDataProviderInterface",
-				"PersistenceServiceInterface",
-				"ViewsLibrary",
+				"GearEditorFeature",
 			]
 		),
 		.testTarget(
@@ -212,6 +228,7 @@ let package = Package(
 		.target(
 			name: "LeagueEditorFeature",
 			dependencies: [
+				"AlleysDataProviderInterface",
 				"BaseFormFeature",
 				"PersistenceServiceInterface",
 				"ResourcePickerFeature",
@@ -285,6 +302,7 @@ let package = Package(
 		.target(
 			name: "SeriesListFeature",
 			dependencies: [
+				"SeriesDataProviderInterface",
 				"SeriesEditorFeature",
 				"SeriesSidebarFeature",
 			]

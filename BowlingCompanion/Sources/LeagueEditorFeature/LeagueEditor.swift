@@ -112,7 +112,7 @@ public struct LeagueEditor: ReducerProtocol {
 				if case let .edit(league) = state.base.mode, let alleyId = league.alley {
 					return .task {
 						await .leagueAlleyResponse(TaskResult {
-							let alleys = try await persistenceService.fetchAlleys(.init(filter: [.id(alleyId)], ordering: .byName))
+							let alleys = try await alleysDataProvider.fetchAlleys(.init(filter: [.id(alleyId)], ordering: .byName))
 							return alleys.first
 						})
 					}

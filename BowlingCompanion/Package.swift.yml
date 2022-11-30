@@ -64,13 +64,20 @@ package:
         - SharedModelsLibrary
         - ThemesLibrary
         - ViewsLibrary
+    - name: GearEditorFeature
+      dependencies:
+        - BaseFormFeature
+        - BowlersDataProvider
+        - PersistenceService
+        - ResourcePickerFeature
+        - StringsLibrary
     - name: GearListFeature
       dependencies:
+        - GearEditorFeature
         - GearDataProvider
-        - PersistenceService
-        - ViewsLibrary
     - name: LeagueEditorFeature
       dependencies:
+        - AlleysDataProvider
         - BaseFormFeature
         - PersistenceService
         - ResourcePickerFeature
@@ -96,6 +103,7 @@ package:
     - name: SeriesListFeature
       dependencies:
         - DateTimeLibrary
+        - SeriesDataProvider
         - SeriesEditorFeature
         - SeriesSidebarFeature
     - name: SeriesSidebarFeature

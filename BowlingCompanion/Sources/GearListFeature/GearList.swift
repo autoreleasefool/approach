@@ -1,4 +1,5 @@
 import GearDataProviderInterface
+import GearEditorFeature
 import ComposableArchitecture
 import SharedModelsLibrary
 import ViewsLibrary
@@ -7,6 +8,7 @@ public struct GearList: ReducerProtocol {
 	public struct State: Equatable {
 		public var gear: IdentifiedArrayOf<Gear>?
 		public var error: ListErrorContent?
+		public var gearEditor: GearEditor.State?
 
 		public init() {}
 	}
@@ -17,6 +19,7 @@ public struct GearList: ReducerProtocol {
 		case gearResponse(TaskResult<[Gear]>)
 		case swipeAction(Gear, SwipeAction)
 		case setEditorFormSheet(isPresented: Bool)
+		case gearEditor(GearEditor.Action)
 	}
 
 	public enum SwipeAction: Equatable {
@@ -40,12 +43,15 @@ public struct GearList: ReducerProtocol {
 				}
 
 			case .setEditorFormSheet(isPresented: true):
-				// TODO: show editor
+				state.gearEditor = .init(mode: .create)
 				return .none
 
-			case .setEditorFormSheet(isPresented: false):
-				// TODO: hide editor
-				return .none
+			case .setEditorFormSheet(isPresented: false),
+					.gearEditor(.form(.saveResult(.success))),
+					.gearEditor(.form(.deleteResult(.success))),
+					.gearEditor(.form(.alert(.discardButtonTapped))):
+				state.gearEditor = nil
+				return .task { .refreshList }
 
 			case .errorButtonTapped:
 				return .task { .refreshList }
@@ -58,14 +64,20 @@ public struct GearList: ReducerProtocol {
 				state.error = .loadError
 				return .none
 
-			case .swipeAction(_, .edit):
-				// TODO: present gear editor
+			case let .swipeAction(gear, .edit):
+				state.gearEditor = .init(mode: .edit(gear))
 				return .none
 
 			case .swipeAction(_, .delete):
 				// TODO: present gear delete form
 				return .none
+
+			case .gearEditor:
+				return .none
 			}
+		}
+		.ifLet(\.gearEditor, action: /GearList.Action.gearEditor) {
+			GearEditor()
 		}
 	}
 }

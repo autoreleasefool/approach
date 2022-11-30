@@ -1,4 +1,5 @@
 import ComposableArchitecture
+import GearEditorFeature
 import SharedModelsLibrary
 import StringsLibrary
 import SwiftUI
@@ -10,6 +11,7 @@ public struct GearListView: View {
 
 	struct ViewState: Equatable {
 		let listState: ListContentState<Gear, ListErrorContent>
+		let isGearEditorPresented: Bool
 
 		init(state: GearList.State) {
 			if let error = state.error {
@@ -19,6 +21,7 @@ public struct GearListView: View {
 			} else {
 				self.listState = .loading
 			}
+			self.isGearEditorPresented = state.gearEditor != nil
 		}
 	}
 
@@ -60,6 +63,21 @@ public struct GearListView: View {
 			}
 			.scrollContentBackground(.hidden)
 			.navigationTitle(Strings.Gear.List.title)
+			.toolbar {
+				ToolbarItem(placement: .navigationBarTrailing) {
+					AddButton { viewStore.send(.addButtonTapped) }
+				}
+			}
+			.sheet(isPresented: viewStore.binding(
+				get: \.isGearEditorPresented,
+				send: ViewAction.setEditorFormSheet(isPresented:)
+			)) {
+				IfLetStore(store.scope(state: \.gearEditor, action: GearList.Action.gearEditor)) { scopedStore in
+					NavigationView {
+						GearEditorView(store: scopedStore)
+					}
+				}
+			}
 			.onAppear { viewStore.send(.refreshList) }
 		}
 	}
