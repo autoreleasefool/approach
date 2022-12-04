@@ -235,6 +235,7 @@ let package = Package(
 				"BaseFormFeature",
 				"PersistenceServiceInterface",
 				"ResourcePickerFeature",
+				"SharedModelsViewsLibrary",
 			]
 		),
 		.testTarget(
@@ -251,7 +252,6 @@ let package = Package(
 				"LeaguesDataProviderInterface",
 				"RecentlyUsedServiceInterface",
 				"SeriesListFeature",
-				"SharedModelsViewsLibrary",
 			]
 		),
 		.testTarget(

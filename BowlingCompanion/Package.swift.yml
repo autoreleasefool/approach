@@ -81,6 +81,7 @@ package:
         - BaseFormFeature
         - PersistenceService
         - ResourcePickerFeature
+        - SharedModelsViewsLibrary
     - name: LeaguesListFeature
       dependencies:
         - LeaguesDataProvider
