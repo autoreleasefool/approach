@@ -36,6 +36,11 @@ public struct PersistenceService: Sendable {
 	public var fetchAlleys: @Sendable (Alley.Query) async throws -> [Alley]
 	public var observeAlleys: @Sendable (Alley.Query) -> AsyncThrowingStream<[Alley], Error>
 
+	public var createLane: @Sendable (Lane) async throws -> Void
+	public var updateLane: @Sendable (Lane) async throws -> Void
+	public var deleteLane: @Sendable (Lane) async throws -> Void
+	public var fetchLanes: @Sendable (Lane.Query) async throws -> [Lane]
+
 	public var createGear: @Sendable (Gear) async throws -> Void
 	public var updateGear: @Sendable (Gear) async throws -> Void
 	public var deleteGear: @Sendable (Gear) async throws -> Void
@@ -71,6 +76,10 @@ public struct PersistenceService: Sendable {
 		deleteAlley: @escaping @Sendable (Alley) async throws -> Void,
 		fetchAlleys: @escaping @Sendable (Alley.Query) async throws -> [Alley],
 		observeAlleys: @escaping @Sendable (Alley.Query) -> AsyncThrowingStream<[Alley], Error>,
+		createLane: @escaping @Sendable (Lane) async throws -> Void,
+		updateLane: @escaping @Sendable (Lane) async throws -> Void,
+		deleteLane: @escaping @Sendable (Lane) async throws -> Void,
+		fetchLanes: @escaping @Sendable (Lane.Query) async throws -> [Lane],
 		createGear: @escaping @Sendable (Gear) async throws -> Void,
 		updateGear: @escaping @Sendable (Gear) async throws -> Void,
 		deleteGear: @escaping @Sendable (Gear) async throws -> Void,
@@ -105,6 +114,10 @@ public struct PersistenceService: Sendable {
 		self.deleteAlley = deleteAlley
 		self.fetchAlleys = fetchAlleys
 		self.observeAlleys = observeAlleys
+		self.createLane = createLane
+		self.updateLane = updateLane
+		self.deleteLane = deleteLane
+		self.fetchLanes = fetchLanes
 		self.createGear = createGear
 		self.updateGear = updateGear
 		self.deleteGear = deleteGear
@@ -143,6 +156,10 @@ extension PersistenceService: TestDependencyKey {
 		deleteAlley: { _ in fatalError("\(Self.self).deleteAlley") },
 		fetchAlleys: { _ in fatalError("\(Self.self).fetchAlleys") },
 		observeAlleys: { _ in fatalError("\(Self.self).observeAlleys") },
+		createLane: { _ in fatalError("\(Self.self).createLane") },
+		updateLane: { _ in fatalError("\(Self.self).updateLane") },
+		deleteLane: { _ in fatalError("\(Self.self).deleteLane") },
+		fetchLanes: { _ in fatalError("\(Self.self).fetchLanes") },
 		createGear: { _ in fatalError("\(Self.self).createGear") },
 		updateGear: { _ in fatalError("\(Self.self).updateGear") },
 		deleteGear: { _ in fatalError("\(Self.self).deleteGear") },

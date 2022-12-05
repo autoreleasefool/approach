@@ -35,6 +35,8 @@ struct DatabaseManager {
 		migrator.registerMigration(Migration20221021CreateSeries.self)
 		migrator.registerMigration(Migration20221021CreateGame.self)
 		migrator.registerMigration(Migration20221021CreateFrame.self)
+		migrator.registerMigration(Migration20221204CreateLane.self)
+		migrator.registerMigration(Migration20221204CreateGameLanePivot.self)
 
 		return migrator
 	}
