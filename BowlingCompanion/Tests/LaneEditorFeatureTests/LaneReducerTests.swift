@@ -8,7 +8,7 @@ final class LaneReducerTests: XCTestCase {
 	func testEmptyLaneIsValid() async {
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
 		let store = TestStore(
-			initialState: Lane.State(id: id0),
+			initialState: Lane.State(id: id0, isShowingAgainstWallNotice: true),
 			reducer: Lane()
 		)
 
@@ -21,7 +21,7 @@ final class LaneReducerTests: XCTestCase {
 	func testNonNumericLaneIsNotValid() async {
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
 		let store = TestStore(
-			initialState: Lane.State(id: id0),
+			initialState: Lane.State(id: id0, isShowingAgainstWallNotice: true),
 			reducer: Lane()
 		)
 
@@ -36,7 +36,7 @@ final class LaneReducerTests: XCTestCase {
 	func testNumericLaneIsValid() async {
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
 		let store = TestStore(
-			initialState: Lane.State(id: id0),
+			initialState: Lane.State(id: id0, isShowingAgainstWallNotice: true),
 			reducer: Lane()
 		)
 
@@ -46,5 +46,19 @@ final class LaneReducerTests: XCTestCase {
 
 		XCTAssertTrue(store.state.isValid)
 		XCTAssertEqual(store.state.laneLabel, 1)
+	}
+
+	func testTogglesAgainstWall() async {
+		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
+		let store = TestStore(
+			initialState: Lane.State(id: id0, isShowingAgainstWallNotice: true),
+			reducer: Lane()
+		)
+
+		XCTAssertFalse(store.state.isAgainstWall)
+
+		await store.send(.set(\.$isAgainstWall, true)) {
+			$0.isAgainstWall = true
+		}
 	}
 }

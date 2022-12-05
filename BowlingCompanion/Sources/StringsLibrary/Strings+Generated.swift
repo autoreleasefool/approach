@@ -334,8 +334,16 @@ public enum Strings {
   }
   public enum Lanes {
     public enum Editor {
-      /// Lane
-      public static let placeholder = Strings.tr("Localizable", "lanes.editor.placeholder", fallback: "Lane")
+      public enum Fields {
+        /// Lane
+        public static let label = Strings.tr("Localizable", "lanes.editor.fields.label", fallback: "Lane")
+        public enum IsAgainstWall {
+          /// Generally, only the first and last lanes in an alley should be marked as 'against the wall'. For example, the first lane, but not the second lane, even if you usually bowl on both of them in one game.
+          public static let help = Strings.tr("Localizable", "lanes.editor.fields.isAgainstWall.help", fallback: "Generally, only the first and last lanes in an alley should be marked as 'against the wall'. For example, the first lane, but not the second lane, even if you usually bowl on both of them in one game.")
+          /// Against Wall?
+          public static let title = Strings.tr("Localizable", "lanes.editor.fields.isAgainstWall.title", fallback: "Against Wall?")
+        }
+      }
     }
   }
   public enum Leagues {

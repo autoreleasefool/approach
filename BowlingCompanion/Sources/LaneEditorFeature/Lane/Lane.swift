@@ -4,10 +4,13 @@ import Foundation
 public struct Lane: ReducerProtocol {
 	public struct State: Equatable {
 		public let id: UUID
+		public let isShowingAgainstWallNotice: Bool
 		@BindableState public var label = ""
+		@BindableState public var isAgainstWall = false
 
-		public init(id: UUID) {
+		public init(id: UUID, isShowingAgainstWallNotice: Bool) {
 			self.id = id
+			self.isShowingAgainstWallNotice = isShowingAgainstWallNotice
 		}
 
 		public var laneLabel: Int? {

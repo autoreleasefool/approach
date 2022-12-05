@@ -89,7 +89,9 @@
 "gear.kind.bowlingBall" = "Ball";
 "gear.kind.towel" = "Towel";
 "gear.kind.other" = "Other";
-"lanes.editor.placeholder" = "Lane";
+"lanes.editor.fields.label" = "Lane";
+"lanes.editor.fields.isAgainstWall.title" = "Against Wall?";
+"lanes.editor.fields.isAgainstWall.help" = "Generally, only the first and last lanes in an alley should be marked as 'against the wall'. For example, the first lane, but not the second lane, even if you usually bowl on both of them in one game.";
 "leagues.model.name" = "League";
 "leagues.editor.fields.gamesPerSeries.constant" = "Constant";
 "leagues.editor.fields.gamesPerSeries.alwaysAskMe" = "Always ask me";
