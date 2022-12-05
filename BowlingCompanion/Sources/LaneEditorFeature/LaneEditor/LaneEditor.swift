@@ -1,7 +1,7 @@
 import ComposableArchitecture
 import Foundation
 
-public struct Lane: ReducerProtocol {
+public struct LaneEditor: ReducerProtocol {
 	public struct State: Equatable {
 		public let id: UUID
 		public let isShowingAgainstWallNotice: Bool

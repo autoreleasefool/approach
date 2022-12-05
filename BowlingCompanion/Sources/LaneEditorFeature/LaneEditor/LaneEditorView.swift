@@ -4,8 +4,8 @@ import SwiftUI
 import SwiftUIExtensionsLibrary
 import ThemesLibrary
 
-public struct LaneView: View {
-	let store: StoreOf<Lane>
+public struct LaneEditorView: View {
+	let store: StoreOf<LaneEditor>
 
 	struct ViewState: Equatable {
 		@BindableState var label: String
@@ -13,7 +13,7 @@ public struct LaneView: View {
 		let isShowingAgainstWallNotice: Bool
 		let isValid: Bool
 
-		init(state: Lane.State) {
+		init(state: LaneEditor.State) {
 			self.label = state.label
 			self.isAgainstWall = state.isAgainstWall
 			self.isValid = state.isValid
@@ -25,12 +25,12 @@ public struct LaneView: View {
 		case binding(BindingAction<ViewState>)
 	}
 
-	public init(store: StoreOf<Lane>) {
+	public init(store: StoreOf<LaneEditor>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: Lane.Action.init) { viewStore in
+		WithViewStore(store, observe: ViewState.init, send: LaneEditor.Action.init) { viewStore in
 			Section {
 				VStack {
 					HStack {
@@ -67,8 +67,8 @@ public struct LaneView: View {
 	}
 }
 
-extension Lane.State {
-	var view: LaneView.ViewState {
+extension LaneEditor.State {
+	var view: LaneEditorView.ViewState {
 		get { .init(state: self) }
 		set {
 			self.label = newValue.label
@@ -77,30 +77,30 @@ extension Lane.State {
 	}
 }
 
-extension Lane.Action {
-	init(action: LaneView.ViewAction) {
+extension LaneEditor.Action {
+	init(action: LaneEditorView.ViewAction) {
 		switch action {
 		case let .binding(action):
-			self = .binding(action.pullback(\Lane.State.view))
+			self = .binding(action.pullback(\LaneEditor.State.view))
 		}
 	}
 }
 
 #if DEBUG
-struct LaneViewPreview: PreviewProvider {
+struct LaneEditorViewPreview: PreviewProvider {
 	static var previews: some View {
 		List {
-			LaneView(
+			LaneEditorView(
 				store: .init(
 					initialState: .init(id: UUID(), isShowingAgainstWallNotice: true),
-					reducer: Lane()
+					reducer: LaneEditor()
 				)
 			)
 
-			LaneView(
+			LaneEditorView(
 				store: .init(
 					initialState: .init(id: UUID(), isShowingAgainstWallNotice: false),
-					reducer: Lane()
+					reducer: LaneEditor()
 				)
 			)
 		}

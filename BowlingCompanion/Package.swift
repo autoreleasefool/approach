@@ -233,7 +233,7 @@ let package = Package(
 			name: "LaneEditorFeature",
 			dependencies: [
 				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
-				"StringsLibrary",
+				"PersistenceServiceInterface",
 				"SwiftUIExtensionsLibrary",
 				"ThemesLibrary",
 			]

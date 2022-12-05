@@ -4,12 +4,12 @@ import XCTest
 @testable import LaneEditorFeature
 
 @MainActor
-final class LaneReducerTests: XCTestCase {
+final class LaneEditorTests: XCTestCase {
 	func testEmptyLaneIsValid() async {
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
 		let store = TestStore(
-			initialState: Lane.State(id: id0, isShowingAgainstWallNotice: true),
-			reducer: Lane()
+			initialState: LaneEditor.State(id: id0, isShowingAgainstWallNotice: true),
+			reducer: LaneEditor()
 		)
 
 		await store.send(.set(\.$label, ""))
@@ -21,8 +21,8 @@ final class LaneReducerTests: XCTestCase {
 	func testNonNumericLaneIsNotValid() async {
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
 		let store = TestStore(
-			initialState: Lane.State(id: id0, isShowingAgainstWallNotice: true),
-			reducer: Lane()
+			initialState: LaneEditor.State(id: id0, isShowingAgainstWallNotice: true),
+			reducer: LaneEditor()
 		)
 
 		await store.send(.set(\.$label, "test")) {
@@ -36,8 +36,8 @@ final class LaneReducerTests: XCTestCase {
 	func testNumericLaneIsValid() async {
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
 		let store = TestStore(
-			initialState: Lane.State(id: id0, isShowingAgainstWallNotice: true),
-			reducer: Lane()
+			initialState: LaneEditor.State(id: id0, isShowingAgainstWallNotice: true),
+			reducer: LaneEditor()
 		)
 
 		await store.send(.set(\.$label, "1")) {
@@ -51,8 +51,8 @@ final class LaneReducerTests: XCTestCase {
 	func testTogglesAgainstWall() async {
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
 		let store = TestStore(
-			initialState: Lane.State(id: id0, isShowingAgainstWallNotice: true),
-			reducer: Lane()
+			initialState: LaneEditor.State(id: id0, isShowingAgainstWallNotice: true),
+			reducer: LaneEditor()
 		)
 
 		XCTAssertFalse(store.state.isAgainstWall)
