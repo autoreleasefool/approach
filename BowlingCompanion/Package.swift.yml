@@ -77,6 +77,7 @@ package:
         - SharedModelsViewsLibrary
     - name: LaneEditorFeature
       dependencies:
+        - LanesDataProvider
         - PersistenceService
         - StringsLibrary
         - SwiftUIExtensionsLibrary
@@ -158,6 +159,10 @@ package:
           - RecentlyUsedService
           - SortingLibrary
           - AsyncAlgorithms
+    - name: LanesDataProvider
+      dependencies:
+        implementation:
+          - PersistenceService
     - name: LeaguesDataProvider
       dependencies:
         implementation:

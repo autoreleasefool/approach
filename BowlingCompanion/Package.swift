@@ -41,6 +41,8 @@ let package = Package(
 		.library(name: "GamesDataProviderInterface", targets: ["GamesDataProviderInterface"]),
 		.library(name: "GearDataProvider", targets: ["GearDataProvider"]),
 		.library(name: "GearDataProviderInterface", targets: ["GearDataProviderInterface"]),
+		.library(name: "LanesDataProvider", targets: ["LanesDataProvider"]),
+		.library(name: "LanesDataProviderInterface", targets: ["LanesDataProviderInterface"]),
 		.library(name: "LeaguesDataProvider", targets: ["LeaguesDataProvider"]),
 		.library(name: "LeaguesDataProviderInterface", targets: ["LeaguesDataProviderInterface"]),
 		.library(name: "SeriesDataProvider", targets: ["SeriesDataProvider"]),
@@ -233,6 +235,7 @@ let package = Package(
 			name: "LaneEditorFeature",
 			dependencies: [
 				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+				"LanesDataProviderInterface",
 				"PersistenceServiceInterface",
 				"SwiftUIExtensionsLibrary",
 				"ThemesLibrary",
@@ -495,6 +498,28 @@ let package = Package(
 			dependencies: [
 				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 				"GearDataProvider",
+				"SharedModelsMocksLibrary",
+			]
+		),
+		.target(
+			name: "LanesDataProvider",
+			dependencies: [
+				"LanesDataProviderInterface",
+				"PersistenceServiceInterface",
+			]
+		),
+		.target(
+			name: "LanesDataProviderInterface",
+			dependencies: [
+				.product(name: "Dependencies", package: "swift-composable-architecture"),
+				"SharedModelsLibrary",
+			]
+		),
+		.testTarget(
+			name: "LanesDataProviderTests",
+			dependencies: [
+				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+				"LanesDataProvider",
 				"SharedModelsMocksLibrary",
 			]
 		),
