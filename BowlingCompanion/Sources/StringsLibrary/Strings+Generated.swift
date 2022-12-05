@@ -334,6 +334,8 @@ public enum Strings {
   }
   public enum Lanes {
     public enum Editor {
+      /// Alley Lanes
+      public static let title = Strings.tr("Localizable", "lanes.editor.title", fallback: "Alley Lanes")
       public enum Fields {
         /// Lane
         public static let label = Strings.tr("Localizable", "lanes.editor.fields.label", fallback: "Lane")

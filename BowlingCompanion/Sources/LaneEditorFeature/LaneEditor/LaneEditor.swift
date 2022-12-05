@@ -2,14 +2,16 @@ import ComposableArchitecture
 import Foundation
 
 public struct LaneEditor: ReducerProtocol {
-	public struct State: Equatable {
+	public struct State: Identifiable, Equatable {
 		public let id: UUID
 		public let isShowingAgainstWallNotice: Bool
-		@BindableState public var label = ""
-		@BindableState public var isAgainstWall = false
+		@BindableState public var label: String
+		@BindableState public var isAgainstWall: Bool
 
-		public init(id: UUID, isShowingAgainstWallNotice: Bool) {
+		public init(id: UUID, label: String = "", isAgainstWall: Bool = false, isShowingAgainstWallNotice: Bool) {
 			self.id = id
+			self.label = label
+			self.isAgainstWall = isAgainstWall
 			self.isShowingAgainstWallNotice = isShowingAgainstWallNotice
 		}
 
