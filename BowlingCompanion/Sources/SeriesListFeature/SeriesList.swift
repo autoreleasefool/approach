@@ -161,8 +161,8 @@ public struct SeriesList: ReducerProtocol {
 
 extension ListErrorContent {
 	static let createError = Self(
-		title: Strings.Series.Errors.Create.title,
-		message: Strings.Series.Errors.Create.message,
-		action: Strings.Series.Errors.Create.tryAgain
+		title: Strings.Series.Error.FailedToCreate.title,
+		message: Strings.Series.Error.FailedToCreate.message,
+		action: Strings.Action.tryAgain
 	)
 }

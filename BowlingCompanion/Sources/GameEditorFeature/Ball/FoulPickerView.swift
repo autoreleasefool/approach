@@ -10,8 +10,8 @@ struct FoulPickerView: View {
 		Button { } label: {
 			HStack(alignment: .center, spacing: .standardSpacing) {
 				VStack(alignment: .trailing, spacing: .unitSpacing) {
-					Text(Strings.Game.Editor.BallDetails.Fouled.title)
-					Text(fouled ? Strings.Game.Editor.BallDetails.Fouled.yes : Strings.Game.Editor.BallDetails.Fouled.no)
+					Text(Strings.Ball.Properties.fouled)
+					Text(fouled ? Strings.yes : Strings.no)
 						.font(.caption)
 				}
 

@@ -10,13 +10,13 @@ extension AlleysList {
 
 	static func alert(toDelete alley: Alley) -> AlertState<AlertAction> {
 		.init(
-			title: TextState(Strings.Alleys.List.Delete.title(alley.name)),
+			title: TextState(Strings.Form.Prompt.delete(alley.name)),
 			primaryButton: .destructive(
-				TextState(Strings.Alleys.List.Delete.action),
+				TextState(Strings.Action.delete),
 				action: .send(.deleteButtonTapped(alley))
 			),
 			secondaryButton: .cancel(
-				TextState(Strings.Alleys.List.Delete.cancel),
+				TextState(Strings.Action.cancel),
 				action: .send(.dismissed)
 			)
 		)

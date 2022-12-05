@@ -15,8 +15,8 @@ struct BallPickerView: View {
 					.cornerRadius(.standardIcon)
 
 				VStack(alignment: .leading, spacing: .unitSpacing) {
-					Text(Strings.Game.Editor.BallDetails.BallRolled.title)
-					Text(ballRolled?.name ?? Strings.Game.Editor.BallDetails.BallRolled.none)
+					Text(Strings.Ball.Properties.ballRolled)
+					Text(ballRolled?.name ?? Strings.none)
 						.font(.caption)
 				}
 

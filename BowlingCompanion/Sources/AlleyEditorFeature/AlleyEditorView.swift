@@ -42,7 +42,7 @@ public struct AlleyEditorView: View {
 				pinFallSection(viewStore)
 				pinBaseSection(viewStore)
 				Section {
-					Text(Strings.Alleys.Editor.Help.askAStaffMember)
+					Text(Strings.Alley.Editor.Help.askAStaffMember)
 						.font(.caption)
 				}
 			}
@@ -50,13 +50,13 @@ public struct AlleyEditorView: View {
 	}
 
 	private func detailsSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
-		Section(Strings.Alleys.Editor.Fields.Details.title) {
+		Section(Strings.Editor.Fields.Details.title) {
 			TextField(
-				Strings.Alleys.Editor.Fields.Details.name,
+				Strings.Editor.Fields.Details.name,
 				text: viewStore.binding(\.$name)
 			)
 			TextField(
-				Strings.Alleys.Editor.Fields.Details.address,
+				Strings.Editor.Fields.Details.address,
 				text: viewStore.binding(\.$address)
 			)
 			.textContentType(.fullStreetAddress)
@@ -67,7 +67,7 @@ public struct AlleyEditorView: View {
 	private func materialSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
 		Section {
 			Picker(
-				Strings.Alleys.Editor.Fields.Material.title,
+				Strings.Alley.Properties.material,
 				selection: viewStore.binding(\.$material)
 			) {
 				ForEach(Alley.Material.allCases) {
@@ -75,7 +75,7 @@ public struct AlleyEditorView: View {
 				}
 			}
 		} footer: {
-			Text(Strings.Alleys.Editor.Fields.Material.footer)
+			Text(Strings.Alley.Editor.Fields.Material.help)
 		}
 		.listRowBackground(Color(uiColor: .secondarySystemBackground))
 	}
@@ -83,7 +83,7 @@ public struct AlleyEditorView: View {
 	private func pinFallSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
 		Section {
 			Picker(
-				Strings.Alleys.Editor.Fields.PinFall.title,
+				Strings.Alley.Properties.pinFall,
 				selection: viewStore.binding(\.$pinFall)
 			) {
 				ForEach(Alley.PinFall.allCases) {
@@ -91,7 +91,7 @@ public struct AlleyEditorView: View {
 				}
 			}
 		} footer: {
-			Text(Strings.Alleys.Editor.Fields.PinFall.footer)
+			Text(Strings.Alley.Editor.Fields.PinFall.help)
 		}
 		.listRowBackground(Color(uiColor: .secondarySystemBackground))
 	}
@@ -99,7 +99,7 @@ public struct AlleyEditorView: View {
 	private func mechanismSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
 		Section {
 			Picker(
-				Strings.Alleys.Editor.Fields.Mechanism.title,
+				Strings.Alley.Properties.mechanism,
 				selection: viewStore.binding(\.$mechanism)
 			) {
 				ForEach(Alley.Mechanism.allCases) {
@@ -107,7 +107,7 @@ public struct AlleyEditorView: View {
 				}
 			}
 		} footer: {
-			Text(Strings.Alleys.Editor.Fields.Mechanism.footer)
+			Text(Strings.Alley.Editor.Fields.Mechanism.help)
 		}
 		.listRowBackground(Color(uiColor: .secondarySystemBackground))
 	}
@@ -115,7 +115,7 @@ public struct AlleyEditorView: View {
 	private func pinBaseSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
 		Section {
 			Picker(
-				Strings.Alleys.Editor.Fields.PinBase.title,
+				Strings.Alley.Properties.pinBase,
 				selection: viewStore.binding(\.$pinBase)
 			) {
 				ForEach(Alley.PinBase.allCases) {
@@ -123,7 +123,7 @@ public struct AlleyEditorView: View {
 				}
 			}
 		} footer: {
-			Text(Strings.Alleys.Editor.Fields.PinBase.footer)
+			Text(Strings.Alley.Editor.Fields.PinBase.help)
 		}
 		.listRowBackground(Color(uiColor: .secondarySystemBackground))
 	}

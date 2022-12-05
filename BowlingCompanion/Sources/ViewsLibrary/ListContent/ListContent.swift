@@ -67,13 +67,13 @@ public struct ListErrorContent: Equatable {
 	}
 
 	public static let loadError = Self(
-		title: Strings.Errors.Generic.title,
-		message: Strings.Errors.LoadingFailed.message,
-		action: Strings.Errors.Generic.tryAgain
+		title: Strings.Error.Generic.title,
+		message: Strings.Error.loadingFailed,
+		action: Strings.Action.tryAgain
 	)
 
 	public static let deleteError = Self(
-		title: Strings.Errors.DeleteFailed.title,
-		action: Strings.Errors.DeleteFailed.action
+		title: Strings.Error.Generic.title,
+		action: Strings.Action.reload
 	)
 }

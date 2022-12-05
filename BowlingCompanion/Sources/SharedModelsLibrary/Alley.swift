@@ -38,9 +38,9 @@ extension Alley {
 		public var id: Int { rawValue }
 		public var description: String {
 			switch self {
-			case .synthetic: return Strings.Alleys.Material.synthetic
-			case .wood: return Strings.Alleys.Material.wood
-			case .unknown: return Strings.Alleys.Material.unknown
+			case .synthetic: return Strings.Alley.Properties.Material.synthetic
+			case .wood: return Strings.Alley.Properties.Material.wood
+			case .unknown: return Strings.unknown
 			}
 		}
 	}
@@ -55,9 +55,9 @@ extension Alley {
 		public var id: Int { rawValue }
 		public var description: String {
 			switch self {
-			case .freefall: return Strings.Alleys.PinFall.freefall
-			case .strings: return Strings.Alleys.PinFall.strings
-			case .unknown: return Strings.Alleys.PinFall.unknown
+			case .freefall: return Strings.Alley.Properties.PinFall.freefall
+			case .strings: return Strings.Alley.Properties.PinFall.strings
+			case .unknown: return Strings.unknown
 			}
 		}
 	}
@@ -72,9 +72,9 @@ extension Alley {
 		public var id: Int { rawValue }
 		public var description: String {
 			switch self {
-			case .dedicated: return Strings.Alleys.Mechanism.dedicated
-			case .interchangeable: return Strings.Alleys.Mechanism.interchangeable
-			case .unknown: return Strings.Alleys.Mechanism.unknown
+			case .dedicated: return Strings.Alley.Properties.Mechanism.dedicated
+			case .interchangeable: return Strings.Alley.Properties.Mechanism.interchangeable
+			case .unknown: return Strings.unknown
 			}
 		}
 	}
@@ -90,10 +90,10 @@ extension Alley {
 		public var id: Int { rawValue }
 		public var description: String {
 			switch self {
-			case .black: return Strings.Alleys.PinBase.black
-			case .white: return Strings.Alleys.PinBase.white
-			case .other: return Strings.Alleys.PinBase.other
-			case .unknown: return Strings.Alleys.PinBase.unknown
+			case .black: return Strings.Alley.Properties.PinBase.black
+			case .white: return Strings.Alley.Properties.PinBase.white
+			case .other: return Strings.other
+			case .unknown: return Strings.unknown
 			}
 		}
 	}

@@ -6,7 +6,7 @@ import SharedModelsLibrary
 import StringsLibrary
 
 extension Bowler: BaseFormModel {
-	static public var modelName = Strings.Bowlers.Model.name
+	static public var modelName = Strings.Bowler.title
 }
 
 public struct BowlerEditor: ReducerProtocol {

@@ -11,13 +11,13 @@ extension SeriesList {
 
 	static func alert(toDelete series: Series) -> AlertState<AlertAction> {
 		.init(
-			title: TextState(Strings.Series.List.Delete.title(series.date.longFormat)),
+			title: TextState(Strings.Form.Prompt.delete(series.date.longFormat)),
 			primaryButton: .destructive(
-				TextState(Strings.Series.List.Delete.action),
+				TextState(Strings.Action.delete),
 				action: .send(.deleteButtonTapped(series))
 			),
 			secondaryButton: .cancel(
-				TextState(Strings.Series.List.Delete.cancel),
+				TextState(Strings.Action.cancel),
 				action: .send(.dismissed)
 			)
 		)

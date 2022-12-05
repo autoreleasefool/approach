@@ -27,10 +27,10 @@ public struct BaseFormView<
 
 			switch state.mode {
 			case .create:
-				self.navigationTitle = Strings.Form.Add.title(Model.modelName)
+				self.navigationTitle = Strings.Form.Prompt.add(Model.modelName)
 				self.isDeleteable = false
 			case let .edit(model):
-				self.navigationTitle = Strings.Form.Edit.title(model.name)
+				self.navigationTitle = Strings.Form.Prompt.edit(model.name)
 				self.isDeleteable = state.form.isDeleteable
 			}
 		}
@@ -61,7 +61,7 @@ public struct BaseFormView<
 					.disabled(viewStore.isLoading)
 
 				if viewStore.isDeleteable {
-					Section(Strings.Form.options) {
+					Section {
 						DeleteButton { viewStore.send(.deleteButtonTapped) }
 					}
 					.listRowBackground(Color(uiColor: .secondarySystemBackground))
@@ -71,13 +71,13 @@ public struct BaseFormView<
 			.navigationTitle(viewStore.navigationTitle)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
-					Button(Strings.Form.save) { viewStore.send(.saveButtonTapped) }
+					Button(Strings.Action.save) { viewStore.send(.saveButtonTapped) }
 						.disabled(!viewStore.isSaveable)
 				}
 
 				if viewStore.isDiscardable {
 					ToolbarItem(placement: .navigationBarLeading) {
-						Button(Strings.Form.Discard.action) { viewStore.send(.discardButtonTapped) }
+						Button(Strings.Action.discard) { viewStore.send(.discardButtonTapped) }
 					}
 				}
 			}

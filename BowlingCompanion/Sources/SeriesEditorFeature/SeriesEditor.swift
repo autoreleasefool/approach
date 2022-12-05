@@ -9,12 +9,12 @@ import SharedModelsLibrary
 import StringsLibrary
 
 extension Series: BaseFormModel {
-	static public var modelName = Strings.Series.Model.name
+	static public var modelName = Strings.Series.title
 	public var name: String { date.longFormat }
 }
 
 extension Alley: PickableResource {
-	static public var pickableModelName = Strings.Alleys.Model.name
+	static public var pickableModelName = Strings.Alley.title
 }
 
 public struct SeriesEditor: ReducerProtocol {

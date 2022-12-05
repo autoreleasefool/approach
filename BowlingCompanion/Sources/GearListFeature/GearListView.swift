@@ -51,8 +51,8 @@ public struct GearListView: View {
 			} empty: {
 				ListEmptyContent(
 					.emptyGear,
-					title: Strings.Gear.Errors.Empty.title,
-					message: Strings.Gear.Errors.Empty.message
+					title: Strings.Gear.Error.Empty.title,
+					message: Strings.Gear.Error.Empty.message
 				) {
 					EmptyContentAction(title: Strings.Gear.List.add) { viewStore.send(.addButtonTapped) }
 				}
@@ -67,7 +67,7 @@ public struct GearListView: View {
 				}
 			}
 			.scrollContentBackground(.hidden)
-			.navigationTitle(Strings.Gear.List.title)
+			.navigationTitle(Strings.Gear.title)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
 					AddButton { viewStore.send(.addButtonTapped) }

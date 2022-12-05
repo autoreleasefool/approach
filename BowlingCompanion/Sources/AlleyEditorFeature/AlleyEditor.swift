@@ -6,7 +6,7 @@ import SharedModelsLibrary
 import StringsLibrary
 
 extension Alley: BaseFormModel {
-	static public var modelName = Strings.Alleys.Model.name
+	static public var modelName = Strings.Alley.title
 }
 
 public struct AlleyEditor: ReducerProtocol {

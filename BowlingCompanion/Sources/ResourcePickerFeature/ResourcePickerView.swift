@@ -64,7 +64,7 @@ public struct ResourcePickerView<Resource: PickableResource, Row: View>: View {
 					.emptyAlleys, // TODO: empty picker image
 					title: Strings.Picker.Empty.title
 				) {
-					EmptyContentAction(title: Strings.Picker.Empty.cancel) {
+					EmptyContentAction(title: Strings.Action.cancel) {
 						viewStore.send(.cancelButtonTapped)
 					}
 				}
@@ -85,14 +85,14 @@ public struct ResourcePickerView<Resource: PickableResource, Row: View>: View {
 			.toolbar {
 				if viewStore.isCancellable {
 					ToolbarItem(placement: .navigationBarLeading) {
-						Button("Cancel") {
+						Button(Strings.Action.cancel) {
 							viewStore.send(.cancelButtonTapped)
 						}
 					}
 				}
 
 				ToolbarItem(placement: .navigationBarTrailing) {
-					Button("Save") {
+					Button(Strings.Action.save) {
 						viewStore.send(.saveButtonTapped)
 					}
 				}

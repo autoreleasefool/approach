@@ -37,7 +37,7 @@ struct AlleysFilterView: View {
 			List {
 				Section {
 					Picker(
-						Strings.Alleys.Filter.material,
+						Strings.Alley.Properties.material,
 						selection: viewStore.binding(\.$material)
 					) {
 						Text("").tag(nil as Alley.Material?)
@@ -47,7 +47,7 @@ struct AlleysFilterView: View {
 					}
 
 					Picker(
-						Strings.Alleys.Filter.mechanism,
+						Strings.Alley.Properties.mechanism,
 						selection: viewStore.binding(\.$mechanism)
 					) {
 						Text("").tag(nil as Alley.Mechanism?)
@@ -57,7 +57,7 @@ struct AlleysFilterView: View {
 					}
 
 					Picker(
-						Strings.Alleys.Filter.pinFall,
+						Strings.Alley.Properties.pinFall,
 						selection: viewStore.binding(\.$pinFall)
 					) {
 						Text("").tag(nil as Alley.PinFall?)
@@ -67,7 +67,7 @@ struct AlleysFilterView: View {
 					}
 
 					Picker(
-						Strings.Alleys.Filter.pinBase,
+						Strings.Alley.Properties.pinBase,
 						selection: viewStore.binding(\.$pinBase)
 					) {
 						Text("").tag(nil as Alley.PinBase?)

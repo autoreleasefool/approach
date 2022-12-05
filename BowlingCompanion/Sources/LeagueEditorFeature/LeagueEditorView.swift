@@ -85,25 +85,25 @@ public struct LeagueEditorView: View {
 
 	private func detailsSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
 		Section {
-			TextField(Strings.Leagues.Editor.Fields.Details.name, text: viewStore.binding(\.$name))
+			TextField(Strings.Editor.Fields.Details.name, text: viewStore.binding(\.$name))
 				.textContentType(.name)
 			if viewStore.hasAlleysEnabled {
 				Button {
 					viewStore.send(.setAlleyPickerSheet(isPresented: true))
 				} label: {
 					LabeledContent(
-						Strings.Leagues.Editor.Fields.Details.BowlingAlley.title,
-						value: viewStore.selectedAlley?.name ?? Strings.Leagues.Editor.Fields.Details.BowlingAlley.none
+						Strings.League.Properties.alley,
+						value: viewStore.selectedAlley?.name ?? Strings.none
 					)
 					.contentShape(Rectangle())
 				}
 				.buttonStyle(TappableElement())
 			}
 		} header: {
-			Text(Strings.Leagues.Editor.Fields.Details.title)
+			Text(Strings.Editor.Fields.Details.title)
 		} footer: {
 			if viewStore.hasAlleysEnabled {
-				Text(Strings.Leagues.Editor.Fields.Details.BowlingAlley.help)
+				Text(Strings.League.Editor.Fields.Alley.help)
 			}
 		}
 		.listRowBackground(Color(uiColor: .secondarySystemBackground))
@@ -112,7 +112,7 @@ public struct LeagueEditorView: View {
 	private func recurrenceSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
 		Section {
 			Picker(
-				Strings.Leagues.Editor.Fields.Recurrence.title,
+				Strings.League.Properties.recurrence,
 				selection: viewStore.binding(\.$recurrence)
 			) {
 				ForEach(League.Recurrence.allCases) {
@@ -120,7 +120,7 @@ public struct LeagueEditorView: View {
 				}
 			}
 		} footer: {
-			Text(Strings.Leagues.Editor.Fields.Recurrence.help(League.Recurrence.repeating, League.Recurrence.oneTimeEvent))
+			Text(Strings.League.Editor.Fields.Recurrence.help(League.Recurrence.repeating, League.Recurrence.oneTimeEvent))
 		}
 		.listRowBackground(Color(uiColor: .secondarySystemBackground))
 	}
@@ -128,7 +128,7 @@ public struct LeagueEditorView: View {
 	private func gamesSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
 		Section {
 			Picker(
-				Strings.Leagues.Editor.Fields.NumberOfGames.title,
+				Strings.League.Properties.numberOfGames,
 				selection: viewStore.binding(\.$gamesPerSeries)
 			) {
 				ForEach(LeagueEditor.GamesPerSeries.allCases) {
@@ -146,7 +146,7 @@ public struct LeagueEditorView: View {
 			}
 		} footer: {
 			Text(
-				Strings.Leagues.Editor.Fields.NumberOfGames.help(
+				Strings.League.Editor.Fields.NumberOfGames.help(
 					LeagueEditor.GamesPerSeries.static,
 					LeagueEditor.GamesPerSeries.dynamic
 				)
@@ -158,27 +158,25 @@ public struct LeagueEditorView: View {
 	private func additionalPinfallSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
 		Section {
 			Toggle(
-				Strings.Leagues.Editor.Fields.AdditionalPinfall.title,
+				Strings.League.Editor.Fields.AdditionalPinfall.title,
 				isOn: viewStore.binding(\.$hasAdditionalPinfall)
 			)
 			.toggleStyle(SwitchToggleStyle())
 
 			if viewStore.hasAdditionalPinfall {
 				TextField(
-					Strings.Leagues.Editor.Fields.AdditionalPinfall.pinfall,
+					Strings.League.Properties.additionalPinfall,
 					text: viewStore.binding(\.$additionalPinfall)
 				)
 				.keyboardType(.numberPad)
 				TextField(
-					Strings.Leagues.Editor.Fields.AdditionalPinfall.games,
+					Strings.League.Properties.additionalGames,
 					text: viewStore.binding(\.$additionalGames)
 				)
 				.keyboardType(.numberPad)
 			}
-		} header: {
-			Text(Strings.Leagues.Editor.Fields.AdditionalPinfall.games)
 		} footer: {
-			Text(Strings.Leagues.Editor.Fields.AdditionalPinfall.help)
+			Text(Strings.League.Editor.Fields.AdditionalPinfall.help)
 		}
 		.listRowBackground(Color(uiColor: .secondarySystemBackground))
 	}

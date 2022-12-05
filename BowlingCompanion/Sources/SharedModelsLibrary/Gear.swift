@@ -30,10 +30,10 @@ extension Gear {
 		public var id: Int { rawValue }
 		public var description: String {
 			switch self {
-			case .shoes: return Strings.Gear.Kind.shoes
-			case .bowlingBall: return Strings.Gear.Kind.bowlingBall
-			case .towel: return Strings.Gear.Kind.towel
-			case .other: return Strings.Gear.Kind.other
+			case .shoes: return Strings.Gear.Properties.Kind.shoes
+			case .bowlingBall: return Strings.Gear.Properties.Kind.bowlingBall
+			case .towel: return Strings.Gear.Properties.Kind.towel
+			case .other: return Strings.other
 			}
 		}
 	}

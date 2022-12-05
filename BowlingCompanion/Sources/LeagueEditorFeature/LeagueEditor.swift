@@ -7,11 +7,11 @@ import SharedModelsLibrary
 import StringsLibrary
 
 extension League: BaseFormModel {
-	static public var modelName = Strings.Leagues.Model.name
+	static public var modelName = Strings.League.title
 }
 
 extension Alley: PickableResource {
-	static public var pickableModelName = Strings.Alleys.Model.name
+	static public var pickableModelName = Strings.Alley.title
 }
 
 public struct LeagueEditor: ReducerProtocol {
@@ -67,8 +67,8 @@ public struct LeagueEditor: ReducerProtocol {
 		public var id: Int { rawValue }
 		public var description: String {
 			switch self {
-			case .static: return Strings.Leagues.Editor.Fields.GamesPerSeries.constant
-			case .dynamic: return Strings.Leagues.Editor.Fields.GamesPerSeries.alwaysAskMe
+			case .static: return Strings.League.Editor.Fields.GamesPerSeries.constant
+			case .dynamic: return Strings.League.Editor.Fields.GamesPerSeries.alwaysAskMe
 			}
 		}
 	}

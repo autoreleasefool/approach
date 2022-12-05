@@ -14,9 +14,9 @@ extension BaseForm.State {
 		guard case let .edit(model) = self.mode else { return nil }
 
 		return .init(
-			title: TextState(Strings.Form.Delete.title(model.name)),
+			title: TextState(Strings.Form.Prompt.delete(model.name)),
 			primaryButton: .destructive(
-				TextState(Strings.Form.Delete.action),
+				TextState(Strings.Action.delete),
 				action: .send(.deleteButtonTapped)
 			),
 			secondaryButton: self.dismissButton
@@ -25,9 +25,9 @@ extension BaseForm.State {
 
 	var discardAlert: AlertState<BaseForm<Model, FormState>.AlertAction> {
 		.init(
-			title: TextState(Strings.Form.Discard.title),
+			title: TextState(Strings.Form.Prompt.discardChanges),
 			primaryButton: .destructive(
-				TextState(Strings.Form.Discard.action),
+				TextState(Strings.Action.discard),
 				action: .send(.discardButtonTapped)
 			),
 			secondaryButton: self.dismissButton
@@ -35,6 +35,6 @@ extension BaseForm.State {
 	}
 
 	private var dismissButton: AlertState<BaseForm<Model, FormState>.AlertAction>.Button {
-		.cancel(TextState(Strings.Form.cancel), action: .send(.dismissed))
+		.cancel(TextState(Strings.Action.cancel), action: .send(.dismissed))
 	}
 }

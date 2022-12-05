@@ -47,7 +47,7 @@ public struct LeaguesListView: View {
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: LeaguesList.Action.init) { viewStore in
 			ListContent(viewStore.listState) { leagues in
-				Section(Strings.Leagues.List.sectionTitle) {
+				Section(Strings.League.List.Title.all) {
 					ForEach(leagues) { league in
 						NavigationLink(
 							destination: IfLetStore(store.scope(state: \.selection?.value, action: LeaguesList.Action.series)) {
@@ -71,10 +71,10 @@ public struct LeaguesListView: View {
 			} empty: {
 				ListEmptyContent(
 					.emptyLeagues,
-					title: Strings.Leagues.Errors.Empty.title,
-					message: Strings.Leagues.Errors.Empty.message
+					title: Strings.League.Error.Empty.title,
+					message: Strings.League.Error.Empty.message
 				) {
-					EmptyContentAction(title: Strings.Leagues.List.add) { viewStore.send(.addButtonTapped) }
+					EmptyContentAction(title: Strings.League.List.add) { viewStore.send(.addButtonTapped) }
 				}
 			} error: { error in
 				ListEmptyContent(

@@ -43,9 +43,9 @@ public struct SeriesEditorView: View {
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: SeriesEditor.Action.init) { viewStore in
 			BaseFormView(store: store.scope(state: \.base, action: SeriesEditor.Action.form)) {
-				Section(Strings.Series.Editor.Fields.Details.title) {
+				Section(Strings.Editor.Fields.Details.title) {
 					DatePicker(
-						Strings.Series.Editor.Fields.Details.date,
+						Strings.Series.Properties.date,
 						selection: viewStore.binding(\.$date),
 						displayedComponents: [.date]
 					)
@@ -53,19 +53,20 @@ public struct SeriesEditorView: View {
 				.listRowBackground(Color(uiColor: .secondarySystemBackground))
 
 				if viewStore.hasAlleysEnabled {
-					Section(Strings.Series.Editor.Fields.Alley.title) {
+					Section(Strings.Series.Properties.alley) {
 						NavigationLink(destination: EmptyView()) {
 							LabeledContent(
-								Strings.Series.Editor.Fields.Alley.BowlingAlley.title,
-								value: Strings.Series.Editor.Fields.Alley.BowlingAlley.none
+								Strings.Series.Properties.alley,
+								value: Strings.none
 							)
 						}
-						NavigationLink(destination: EmptyView()) {
-							LabeledContent(Strings.Series.Editor.Fields.Alley.lanes, value: "1, 2")
-						}
-						NavigationLink(destination: EmptyView()) {
-							LabeledContent(Strings.Series.Editor.Fields.Alley.startingLane, value: "1")
-						}
+						// TODO: if lanes are enabled
+//						NavigationLink(destination: EmptyView()) {
+//							LabeledContent(Strings.Series.Editor.Fields.Alley.lanes, value: "1, 2")
+//						}
+//						NavigationLink(destination: EmptyView()) {
+//							LabeledContent(Strings.Series.Editor.Fields.Alley.startingLane, value: "1")
+//						}
 					}
 					.listRowBackground(Color(uiColor: .secondarySystemBackground))
 				}

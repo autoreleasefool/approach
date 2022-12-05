@@ -11,7 +11,7 @@ public struct DeleteButton: View {
 
 	public var body: some View {
 		Button(role: .destructive, action: perform) {
-			Label(Strings.Actions.delete, systemImage: "trash")
+			Label(Strings.Action.delete, systemImage: "trash")
 		}
 		.tint(.appDestructive)
 	}

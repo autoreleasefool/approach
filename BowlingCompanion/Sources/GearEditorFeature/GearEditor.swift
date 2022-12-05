@@ -8,11 +8,11 @@ import SharedModelsLibrary
 import StringsLibrary
 
 extension Gear: BaseFormModel {
-	static public var modelName = Strings.Gear.Model.name
+	static public var modelName = Strings.Gear.title
 }
 
 extension Bowler: PickableResource {
-	static public var pickableModelName = Strings.Bowlers.Model.name
+	static public var pickableModelName = Strings.Bowler.title
 }
 
 public struct GearEditor: ReducerProtocol {

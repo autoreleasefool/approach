@@ -47,15 +47,15 @@ public struct GearEditorView: View {
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: GearEditor.Action.init) { viewStore in
 			BaseFormView(store: store.scope(state: \.base, action: GearEditor.Action.form)) {
-				Section(Strings.Gear.Editor.Fields.Details.title) {
+				Section(Strings.Editor.Fields.Details.title) {
 					TextField(
-						Strings.Bowlers.Editor.Fields.Details.name,
+						Strings.Editor.Fields.Details.name,
 						text: viewStore.binding(\.$name)
 					)
 					.textContentType(.name)
 
 					Picker(
-						Strings.Gear.Editor.Fields.Details.kind,
+						Strings.Gear.Properties.kind,
 						selection: viewStore.binding(\.$kind)
 					) {
 						ForEach(Gear.Kind.allCases) {
@@ -65,13 +65,13 @@ public struct GearEditorView: View {
 				}
 				.listRowBackground(Color(uiColor: .secondarySystemBackground))
 
-				Section(Strings.Gear.Editor.Fields.Owner.title) {
+				Section(Strings.Gear.Properties.owner) {
 					Button {
 						viewStore.send(.setBowlerPickerSheet(isPresented: true))
 					} label: {
 						LabeledContent(
-							Strings.Gear.Editor.Fields.Owner.Bowler.title,
-							value: viewStore.selectedBowler?.name ?? Strings.Gear.Editor.Fields.Owner.Bowler.none
+							Strings.Bowler.title,
+							value: viewStore.selectedBowler?.name ?? Strings.none
 						)
 						.contentShape(Rectangle())
 					}

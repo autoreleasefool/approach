@@ -10,13 +10,13 @@ extension LeaguesList {
 
 	func alert(toDelete league: League) -> AlertState<AlertAction> {
 		.init(
-			title: TextState(Strings.Leagues.List.Delete.title(league.name)),
+			title: TextState(Strings.Form.Prompt.delete(league.name)),
 			primaryButton: .destructive(
-				TextState(Strings.Leagues.List.Delete.action),
+				TextState(Strings.Action.delete),
 				action: .send(.deleteButtonTapped(league))
 			),
 			secondaryButton: .cancel(
-				TextState(Strings.Leagues.List.Delete.cancel),
+				TextState(Strings.Action.cancel),
 				action: .send(.dismissed)
 			)
 		)

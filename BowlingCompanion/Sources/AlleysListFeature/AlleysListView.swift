@@ -59,12 +59,12 @@ public struct AlleysListView: View {
 			} empty: {
 				ListEmptyContent(
 					.emptyAlleys,
-					title: Strings.Alleys.Errors.Empty.title,
+					title: Strings.Alley.Error.Empty.title,
 					message: viewStore.isAlleyFilterActive
-						? Strings.Alleys.Errors.Empty.Filter.message
-						: Strings.Alleys.Errors.Empty.message
+						? Strings.Alley.Error.Empty.Filter.message
+						: Strings.Alley.Error.Empty.message
 				) {
-					EmptyContentAction(title: Strings.Alleys.List.add) { viewStore.send(.addButtonTapped) }
+					EmptyContentAction(title: Strings.Alley.List.add) { viewStore.send(.addButtonTapped) }
 				}
 			} error: { error in
 				ListEmptyContent(
@@ -77,7 +77,7 @@ public struct AlleysListView: View {
 				}
 			}
 			.scrollContentBackground(.hidden)
-			.navigationTitle(Strings.Alleys.List.title)
+			.navigationTitle(Strings.Alley.List.title)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
 					FilterButton(isActive: viewStore.isAlleyFilterActive) {

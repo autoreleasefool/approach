@@ -28,7 +28,7 @@ public struct FeatureFlagListView: View {
 		WithViewStore(store, observe: ViewState.init, send: FeatureFlagList.Action.init) { viewStore in
 			List {
 				Section {
-					Button(Strings.Settings.FeatureFlags.reset) { viewStore.send(.resetOverridesButtonTapped) }
+					Button(Strings.Action.reset) { viewStore.send(.resetOverridesButtonTapped) }
 				}
 
 				Section(Strings.Settings.FeatureFlags.title) {

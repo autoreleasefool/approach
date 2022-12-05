@@ -10,13 +10,13 @@ extension BowlersList {
 
 	static func alert(toDelete bowler: Bowler) -> AlertState<AlertAction> {
 		.init(
-			title: TextState(Strings.Bowlers.List.Delete.title(bowler.name)),
+			title: TextState(Strings.Form.Prompt.delete(bowler.name)),
 			primaryButton: .destructive(
-				TextState(Strings.Bowlers.List.Delete.action),
+				TextState(Strings.Action.delete),
 				action: .send(.deleteButtonTapped(bowler))
 			),
 			secondaryButton: .cancel(
-				TextState(Strings.Bowlers.List.Delete.cancel),
+				TextState(Strings.Action.discard),
 				action: .send(.dismissed)
 			)
 		)

@@ -43,8 +43,8 @@ extension League {
 		public var id: Int { rawValue }
 		public var description: String {
 			switch self {
-			case .repeating: return Strings.Leagues.Recurrence.repeats
-			case .oneTimeEvent: return Strings.Leagues.Recurrence.never
+			case .repeating: return Strings.League.Properties.Recurrence.repeats
+			case .oneTimeEvent: return Strings.League.Properties.Recurrence.never
 			}
 		}
 	}

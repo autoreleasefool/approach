@@ -35,8 +35,8 @@ struct BallDetailsView: View {
 		WithViewStore(store, observe: ViewState.init, send: BallDetails.Action.init) { viewStore in
 			VStack(alignment: .leading, spacing: .unitSpacing) {
 				HStack(alignment: .firstTextBaseline, spacing: .smallSpacing) {
-					Text(Strings.Game.Editor.BallDetails.frame(viewStore.frame))
-					Text(Strings.Game.Editor.BallDetails.ball(viewStore.ball))
+					Text(Strings.Frame.title(viewStore.frame))
+					Text(Strings.Ball.title(viewStore.ball))
 						.font(.caption)
 				}
 				.frame(maxWidth: .infinity, alignment: .leading)

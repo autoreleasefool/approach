@@ -53,7 +53,7 @@ public struct SeriesListView: View {
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: SeriesList.Action.init) { viewStore in
 			ListContent(viewStore.listState) { series in
-				Section(Strings.Series.List.sectionTitle) {
+				Section(Strings.Series.List.Title.all) {
 					ForEach(series) { series in
 						NavigationLink(
 							destination: IfLetStore(store.scope(state: \.selection?.value, action: SeriesList.Action.seriesSidebar)) {
@@ -77,8 +77,8 @@ public struct SeriesListView: View {
 			} empty: {
 				ListEmptyContent(
 					.emptySeries,
-					title: Strings.Series.Errors.Empty.title,
-					message: Strings.Series.Errors.Empty.message
+					title: Strings.Series.Error.Empty.title,
+					message: Strings.Series.Error.Empty.message
 				) {
 					EmptyContentAction(title: Strings.Series.List.add) { viewStore.send(.addButtonTapped) }
 				}

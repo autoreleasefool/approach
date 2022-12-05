@@ -56,7 +56,7 @@ public struct BowlersListView: View {
 				.listRowSeparator(.hidden)
 				.listRowInsets(EdgeInsets())
 
-				Section(Strings.Bowlers.List.sectionTitle) {
+				Section(Strings.Bowler.List.Title.all) {
 					ForEach(bowlers) { bowler in
 						NavigationLink(
 							destination: IfLetStore(store.scope(state: \.selection?.value, action: BowlersList.Action.leagues)) {
@@ -80,10 +80,10 @@ public struct BowlersListView: View {
 			} empty: {
 				ListEmptyContent(
 					.emptyBowlers,
-					title: Strings.Bowlers.Errors.Empty.title,
-					message: Strings.Bowlers.Errors.Empty.message
+					title: Strings.Bowler.Error.Empty.title,
+					message: Strings.Bowler.Error.Empty.message
 				) {
-					EmptyContentAction(title: Strings.Bowlers.List.add) { viewStore.send(.addButtonTapped) }
+					EmptyContentAction(title: Strings.Bowler.List.add) { viewStore.send(.addButtonTapped) }
 				}
 			} error: { error in
 				ListEmptyContent(
@@ -96,7 +96,7 @@ public struct BowlersListView: View {
 				}
 			}
 			.scrollContentBackground(.hidden)
-			.navigationTitle(Strings.Bowlers.List.title)
+			.navigationTitle(Strings.Bowler.List.title)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
 					AddButton { viewStore.send(.addButtonTapped) }

@@ -25,9 +25,9 @@ public struct BowlerEditorView: View {
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: BowlerEditor.Action.init) { viewStore in
 			BaseFormView(store: store.scope(state: \.base, action: BowlerEditor.Action.form)) {
-				Section(Strings.Bowlers.Editor.Fields.Details.title) {
+				Section(Strings.Editor.Fields.Details.title) {
 					TextField(
-						Strings.Bowlers.Editor.Fields.Details.name,
+						Strings.Editor.Fields.Details.name,
 						text: viewStore.binding(\.$name)
 					)
 					.textContentType(.name)
