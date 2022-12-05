@@ -3,6 +3,7 @@ import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsLibrary
 import ThemesLibrary
+import ViewsLibrary
 
 public struct LaneEditorView: View {
 	let store: StoreOf<LaneEditor>
@@ -22,6 +23,7 @@ public struct LaneEditorView: View {
 	}
 
 	enum ViewAction: BindableAction {
+		case swipeAction(LaneEditor.SwipeAction)
 		case binding(BindingAction<ViewState>)
 	}
 
@@ -58,6 +60,9 @@ public struct LaneEditorView: View {
 					)
 					.toggleStyle(SwitchToggleStyle())
 				}
+				.swipeActions(allowsFullSwipe: true) {
+					DeleteButton { viewStore.send(.swipeAction(.delete)) }
+				}
 			} footer: {
 				if (viewStore.isShowingAgainstWallNotice) {
 					Text(Strings.Lanes.Editor.Fields.IsAgainstWall.help)
@@ -80,6 +85,8 @@ extension LaneEditor.State {
 extension LaneEditor.Action {
 	init(action: LaneEditorView.ViewAction) {
 		switch action {
+		case let .swipeAction(swipeAction):
+			self = .swipeAction(swipeAction)
 		case let .binding(action):
 			self = .binding(action.pullback(\LaneEditor.State.view))
 		}

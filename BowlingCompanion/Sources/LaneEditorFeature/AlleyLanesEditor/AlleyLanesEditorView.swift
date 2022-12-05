@@ -33,6 +33,12 @@ public struct AlleyLanesEditorView: View {
 				) {
 					LaneEditorView(store: $0)
 				}
+
+				Section {
+					Button { viewStore.send(.addLaneButtonTapped) } label: {
+						Label("Add Lane", systemImage: "plus.circle")
+					}
+				}
 			}
 			.navigationTitle(Strings.Lanes.Editor.title)
 			.onAppear { viewStore.send(.onAppear) }

@@ -82,6 +82,7 @@ package:
         - StringsLibrary
         - SwiftUIExtensionsLibrary
         - ThemesLibrary
+        - ViewsLibrary
     - name: LeagueEditorFeature
       dependencies:
         - AlleysDataProvider

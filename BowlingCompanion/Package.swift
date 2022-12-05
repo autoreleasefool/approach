@@ -234,11 +234,10 @@ let package = Package(
 		.target(
 			name: "LaneEditorFeature",
 			dependencies: [
-				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 				"LanesDataProviderInterface",
 				"PersistenceServiceInterface",
 				"SwiftUIExtensionsLibrary",
-				"ThemesLibrary",
+				"ViewsLibrary",
 			]
 		),
 		.testTarget(

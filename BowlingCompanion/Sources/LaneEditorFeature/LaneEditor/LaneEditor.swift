@@ -25,7 +25,12 @@ public struct LaneEditor: ReducerProtocol {
 	}
 
 	public enum Action: BindableAction, Equatable {
+		case swipeAction(SwipeAction)
 		case binding(BindingAction<State>)
+	}
+
+	public enum SwipeAction: Equatable {
+		case delete
 	}
 
 	public var body: some ReducerProtocol<State, Action> {
@@ -33,7 +38,7 @@ public struct LaneEditor: ReducerProtocol {
 
 		Reduce { _, action in
 			switch action {
-			case .binding:
+			case .binding, .swipeAction:
 				return .none
 			}
 		}

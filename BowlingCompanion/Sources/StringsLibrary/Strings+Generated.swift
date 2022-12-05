@@ -336,6 +336,16 @@ public enum Strings {
     public enum Editor {
       /// Alley Lanes
       public static let title = Strings.tr("Localizable", "lanes.editor.title", fallback: "Alley Lanes")
+      public enum Delete {
+        /// Delete
+        public static let action = Strings.tr("Localizable", "lanes.editor.delete.action", fallback: "Delete")
+        /// Cancel
+        public static let cancel = Strings.tr("Localizable", "lanes.editor.delete.cancel", fallback: "Cancel")
+        /// Are you sure you want to delete %@?
+        public static func title(_ p1: Any) -> String {
+          return Strings.tr("Localizable", "lanes.editor.delete.title", String(describing: p1), fallback: "Are you sure you want to delete %@?")
+        }
+      }
       public enum Fields {
         /// Lane
         public static let label = Strings.tr("Localizable", "lanes.editor.fields.label", fallback: "Lane")
