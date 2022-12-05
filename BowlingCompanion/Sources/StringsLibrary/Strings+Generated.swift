@@ -332,6 +332,12 @@ public enum Strings {
       public static let name = Strings.tr("Localizable", "gear.model.name", fallback: "Gear")
     }
   }
+  public enum Lanes {
+    public enum Editor {
+      /// Lane
+      public static let placeholder = Strings.tr("Localizable", "lanes.editor.placeholder", fallback: "Lane")
+    }
+  }
   public enum Leagues {
     public enum Editor {
       public enum Fields {

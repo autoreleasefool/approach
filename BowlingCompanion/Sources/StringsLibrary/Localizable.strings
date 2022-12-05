@@ -89,6 +89,7 @@
 "gear.kind.bowlingBall" = "Ball";
 "gear.kind.towel" = "Towel";
 "gear.kind.other" = "Other";
+"lanes.editor.placeholder" = "Lane";
 "leagues.model.name" = "League";
 "leagues.editor.fields.gamesPerSeries.constant" = "Constant";
 "leagues.editor.fields.gamesPerSeries.alwaysAskMe" = "Always ask me";

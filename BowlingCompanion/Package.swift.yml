@@ -75,6 +75,11 @@ package:
         - GearEditorFeature
         - GearDataProvider
         - SharedModelsViewsLibrary
+    - name: LaneEditorFeature
+      dependencies:
+        - StringsLibrary
+        - SwiftUIExtensionsLibrary
+        - ThemesLibrary
     - name: LeagueEditorFeature
       dependencies:
         - AlleysDataProvider

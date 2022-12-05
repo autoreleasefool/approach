@@ -19,6 +19,7 @@ let package = Package(
 		.library(name: "GameEditorFeature", targets: ["GameEditorFeature"]),
 		.library(name: "GearEditorFeature", targets: ["GearEditorFeature"]),
 		.library(name: "GearListFeature", targets: ["GearListFeature"]),
+		.library(name: "LaneEditorFeature", targets: ["LaneEditorFeature"]),
 		.library(name: "LeagueEditorFeature", targets: ["LeagueEditorFeature"]),
 		.library(name: "LeaguesListFeature", targets: ["LeaguesListFeature"]),
 		.library(name: "ResourcePickerFeature", targets: ["ResourcePickerFeature"]),
@@ -225,6 +226,22 @@ let package = Package(
 			name: "GearListFeatureTests",
 			dependencies: [
 				"GearListFeature",
+				"SharedModelsMocksLibrary",
+			]
+		),
+		.target(
+			name: "LaneEditorFeature",
+			dependencies: [
+				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+				"StringsLibrary",
+				"SwiftUIExtensionsLibrary",
+				"ThemesLibrary",
+			]
+		),
+		.testTarget(
+			name: "LaneEditorFeatureTests",
+			dependencies: [
+				"LaneEditorFeature",
 				"SharedModelsMocksLibrary",
 			]
 		),
