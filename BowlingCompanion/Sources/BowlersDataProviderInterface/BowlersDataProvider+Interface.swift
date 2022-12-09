@@ -1,5 +1,6 @@
 import Dependencies
 import SharedModelsLibrary
+import SharedModelsFetchableLibrary
 
 public struct BowlersDataProvider: Sendable {
 	public var fetchBowlers: @Sendable (Bowler.FetchRequest) async throws -> [Bowler]

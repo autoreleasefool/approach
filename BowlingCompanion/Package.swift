@@ -65,10 +65,11 @@ let package = Package(
 		.library(name: "ConstantsLibrary", targets: ["ConstantsLibrary"]),
 		.library(name: "DateTimeLibrary", targets: ["DateTimeLibrary"]),
 		.library(name: "FeatureFlagLibrary", targets: ["FeatureFlagLibrary"]),
+		.library(name: "SharedModelsFetchableLibrary", targets: ["SharedModelsFetchableLibrary"]),
 		.library(name: "SharedModelsLibrary", targets: ["SharedModelsLibrary"]),
 		.library(name: "SharedModelsMocksLibrary", targets: ["SharedModelsMocksLibrary"]),
+		.library(name: "SharedModelsPersistableLibrary", targets: ["SharedModelsPersistableLibrary"]),
 		.library(name: "SharedModelsViewsLibrary", targets: ["SharedModelsViewsLibrary"]),
-		.library(name: "SharedPersistenceModelsLibrary", targets: ["SharedPersistenceModelsLibrary"]),
 		.library(name: "SortingLibrary", targets: ["SortingLibrary"]),
 		.library(name: "StringsLibrary", targets: ["StringsLibrary"]),
 		.library(name: "SwiftUIExtensionsLibrary", targets: ["SwiftUIExtensionsLibrary"]),
@@ -77,7 +78,6 @@ let package = Package(
 
 	],
 	dependencies: [
-		.package(url: "https://github.com/apple/swift-async-algorithms.git", from: "0.0.3"),
 		.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "0.42.0"),
 		.package(url: "https://github.com/groue/GRDB.swift.git", from: "6.0.0"),
 	],
@@ -385,7 +385,6 @@ let package = Package(
 		.target(
 			name: "AlleysDataProvider",
 			dependencies: [
-				.product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
 				"AlleysDataProviderInterface",
 				"PersistenceServiceInterface",
 				"RecentlyUsedServiceInterface",
@@ -396,7 +395,7 @@ let package = Package(
 			name: "AlleysDataProviderInterface",
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-composable-architecture"),
-				"SharedModelsLibrary",
+				"SharedModelsFetchableLibrary",
 			]
 		),
 		.testTarget(
@@ -410,7 +409,6 @@ let package = Package(
 		.target(
 			name: "BowlersDataProvider",
 			dependencies: [
-				.product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
 				"BowlersDataProviderInterface",
 				"PersistenceServiceInterface",
 				"RecentlyUsedServiceInterface",
@@ -421,7 +419,7 @@ let package = Package(
 			name: "BowlersDataProviderInterface",
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-composable-architecture"),
-				"SharedModelsLibrary",
+				"SharedModelsFetchableLibrary",
 			]
 		),
 		.testTarget(
@@ -443,7 +441,7 @@ let package = Package(
 			name: "FramesDataProviderInterface",
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-composable-architecture"),
-				"SharedModelsLibrary",
+				"SharedModelsFetchableLibrary",
 			]
 		),
 		.testTarget(
@@ -465,7 +463,7 @@ let package = Package(
 			name: "GamesDataProviderInterface",
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-composable-architecture"),
-				"SharedModelsLibrary",
+				"SharedModelsFetchableLibrary",
 			]
 		),
 		.testTarget(
@@ -479,7 +477,6 @@ let package = Package(
 		.target(
 			name: "GearDataProvider",
 			dependencies: [
-				.product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
 				"GearDataProviderInterface",
 				"PersistenceServiceInterface",
 				"RecentlyUsedServiceInterface",
@@ -490,7 +487,7 @@ let package = Package(
 			name: "GearDataProviderInterface",
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-composable-architecture"),
-				"SharedModelsLibrary",
+				"SharedModelsFetchableLibrary",
 			]
 		),
 		.testTarget(
@@ -512,7 +509,7 @@ let package = Package(
 			name: "LanesDataProviderInterface",
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-composable-architecture"),
-				"SharedModelsLibrary",
+				"SharedModelsFetchableLibrary",
 			]
 		),
 		.testTarget(
@@ -526,7 +523,6 @@ let package = Package(
 		.target(
 			name: "LeaguesDataProvider",
 			dependencies: [
-				.product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
 				"LeaguesDataProviderInterface",
 				"PersistenceServiceInterface",
 				"RecentlyUsedServiceInterface",
@@ -537,7 +533,7 @@ let package = Package(
 			name: "LeaguesDataProviderInterface",
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-composable-architecture"),
-				"SharedModelsLibrary",
+				"SharedModelsFetchableLibrary",
 			]
 		),
 		.testTarget(
@@ -559,7 +555,7 @@ let package = Package(
 			name: "SeriesDataProviderInterface",
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-composable-architecture"),
-				"SharedModelsLibrary",
+				"SharedModelsFetchableLibrary",
 			]
 		),
 		.testTarget(
@@ -616,14 +612,14 @@ let package = Package(
 			dependencies: [
 				"FileManagerServiceInterface",
 				"PersistenceServiceInterface",
-				"SharedPersistenceModelsLibrary",
+				"SharedModelsPersistableLibrary",
 			]
 		),
 		.target(
 			name: "PersistenceServiceInterface",
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-composable-architecture"),
-				"SharedModelsLibrary",
+				"SharedModelsFetchableLibrary",
 			]
 		),
 		.testTarget(
@@ -704,6 +700,12 @@ let package = Package(
 			]
 		),
 		.target(
+			name: "SharedModelsFetchableLibrary",
+			dependencies: [
+				"SharedModelsLibrary",
+			]
+		),
+		.target(
 			name: "SharedModelsLibrary",
 			dependencies: [
 				"StringsLibrary",
@@ -716,19 +718,19 @@ let package = Package(
 			]
 		),
 		.target(
+			name: "SharedModelsPersistableLibrary",
+			dependencies: [
+				.product(name: "Dependencies", package: "swift-composable-architecture"),
+				.product(name: "GRDB", package: "GRDB.swift"),
+				"SharedModelsLibrary",
+			]
+		),
+		.target(
 			name: "SharedModelsViewsLibrary",
 			dependencies: [
 				"DateTimeLibrary",
 				"SharedModelsLibrary",
 				"ViewsLibrary",
-			]
-		),
-		.target(
-			name: "SharedPersistenceModelsLibrary",
-			dependencies: [
-				.product(name: "Dependencies", package: "swift-composable-architecture"),
-				.product(name: "GRDB", package: "GRDB.swift"),
-				"SharedModelsLibrary",
 			]
 		),
 		.target(

@@ -1,15 +1,16 @@
 import GRDB
 import PersistenceServiceInterface
-import SharedPersistenceModelsLibrary
 import SharedModelsLibrary
+import SharedModelsFetchableLibrary
+import SharedModelsPersistableLibrary
 
-extension League.Query: Queryable {
+extension League.FetchRequest: Queryable {
 	@Sendable func fetchValues(_ db: Database) throws -> [League] {
 		var query = League.all()
 			.filter(Column("bowler") == bowler)
 
 		switch ordering {
-		case .byName:
+		case .byName, .byRecentlyUsed:
 			query = query.order(Column("name").asc)
 		}
 

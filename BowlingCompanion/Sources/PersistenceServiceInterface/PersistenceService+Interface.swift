@@ -1,90 +1,91 @@
 import Dependencies
 import SharedModelsLibrary
+import SharedModelsFetchableLibrary
 
 public struct PersistenceService: Sendable {
 	public var createBowler: @Sendable (Bowler) async throws -> Void
 	public var updateBowler: @Sendable (Bowler) async throws -> Void
 	public var deleteBowler: @Sendable (Bowler) async throws -> Void
-	public var fetchBowlers: @Sendable (Bowler.Query) async throws -> [Bowler]
-	public var observeBowlers: @Sendable (Bowler.Query) -> AsyncThrowingStream<[Bowler], Error>
+	public var fetchBowlers: @Sendable (Bowler.FetchRequest) async throws -> [Bowler]
+	public var observeBowlers: @Sendable (Bowler.FetchRequest) -> AsyncThrowingStream<[Bowler], Error>
 
 	public var createLeague: @Sendable (League) async throws -> Void
 	public var updateLeague: @Sendable (League) async throws -> Void
 	public var deleteLeague: @Sendable (League) async throws -> Void
-	public var fetchLeagues: @Sendable (League.Query) async throws -> [League]
-	public var observeLeagues: @Sendable (League.Query) -> AsyncThrowingStream<[League], Error>
+	public var fetchLeagues: @Sendable (League.FetchRequest) async throws -> [League]
+	public var observeLeagues: @Sendable (League.FetchRequest) -> AsyncThrowingStream<[League], Error>
 
 	public var createSeries: @Sendable (Series) async throws -> Void
 	public var updateSeries: @Sendable (Series) async throws -> Void
 	public var deleteSeries: @Sendable (Series) async throws -> Void
-	public var fetchSeries: @Sendable(Series.Query) async throws -> [Series]
-	public var observeSeries: @Sendable (Series.Query) -> AsyncThrowingStream<[Series], Error>
+	public var fetchSeries: @Sendable(Series.FetchRequest) async throws -> [Series]
+	public var observeSeries: @Sendable (Series.FetchRequest) -> AsyncThrowingStream<[Series], Error>
 
 	public var createGame: @Sendable (Game) async throws -> Void
 	public var updateGame: @Sendable (Game) async throws -> Void
 	public var deleteGame: @Sendable (Game) async throws -> Void
-	public var fetchGames: @Sendable (Game.Query) async throws -> [Game]
-	public var observeGames: @Sendable (Game.Query) -> AsyncThrowingStream<[Game], Error>
+	public var fetchGames: @Sendable (Game.FetchRequest) async throws -> [Game]
+	public var observeGames: @Sendable (Game.FetchRequest) -> AsyncThrowingStream<[Game], Error>
 
 	public var updateFrame: @Sendable (Frame) async throws -> Void
-	public var fetchFrames: @Sendable (Frame.Query) async throws -> [Frame]
-	public var observeFrames: @Sendable (Frame.Query) -> AsyncThrowingStream<[Frame], Error>
+	public var fetchFrames: @Sendable (Frame.FetchRequest) async throws -> [Frame]
+	public var observeFrames: @Sendable (Frame.FetchRequest) -> AsyncThrowingStream<[Frame], Error>
 
 	public var createAlley: @Sendable (Alley) async throws -> Void
 	public var updateAlley: @Sendable (Alley) async throws -> Void
 	public var deleteAlley: @Sendable (Alley) async throws -> Void
-	public var fetchAlleys: @Sendable (Alley.Query) async throws -> [Alley]
-	public var observeAlleys: @Sendable (Alley.Query) -> AsyncThrowingStream<[Alley], Error>
+	public var fetchAlleys: @Sendable (Alley.FetchRequest) async throws -> [Alley]
+	public var observeAlleys: @Sendable (Alley.FetchRequest) -> AsyncThrowingStream<[Alley], Error>
 
 	public var createLane: @Sendable (Lane) async throws -> Void
 	public var updateLane: @Sendable (Lane) async throws -> Void
 	public var deleteLane: @Sendable (Lane) async throws -> Void
-	public var fetchLanes: @Sendable (Lane.Query) async throws -> [Lane]
+	public var fetchLanes: @Sendable (Lane.FetchRequest) async throws -> [Lane]
 
 	public var createGear: @Sendable (Gear) async throws -> Void
 	public var updateGear: @Sendable (Gear) async throws -> Void
 	public var deleteGear: @Sendable (Gear) async throws -> Void
-	public var fetchGear: @Sendable (Gear.Query) async throws -> [Gear]
-	public var observeGear: @Sendable (Gear.Query) -> AsyncThrowingStream<[Gear], Error>
+	public var fetchGear: @Sendable (Gear.FetchRequest) async throws -> [Gear]
+	public var observeGear: @Sendable (Gear.FetchRequest) -> AsyncThrowingStream<[Gear], Error>
 
 	public init(
 		createBowler: @escaping @Sendable (Bowler) async throws -> Void,
 		updateBowler: @escaping @Sendable (Bowler) async throws -> Void,
 		deleteBowler: @escaping @Sendable (Bowler) async throws -> Void,
-		fetchBowlers: @escaping @Sendable (Bowler.Query) async throws -> [Bowler],
-		observeBowlers: @escaping @Sendable (Bowler.Query) -> AsyncThrowingStream<[Bowler], Error>,
+		fetchBowlers: @escaping @Sendable (Bowler.FetchRequest) async throws -> [Bowler],
+		observeBowlers: @escaping @Sendable (Bowler.FetchRequest) -> AsyncThrowingStream<[Bowler], Error>,
 		createLeague: @escaping @Sendable (League) async throws -> Void,
 		updateLeague: @escaping @Sendable (League) async throws -> Void,
 		deleteLeague: @escaping @Sendable (League) async throws -> Void,
-		fetchLeagues: @escaping @Sendable (League.Query) async throws -> [League],
-		observeLeagues: @escaping @Sendable (League.Query) -> AsyncThrowingStream<[League], Error>,
+		fetchLeagues: @escaping @Sendable (League.FetchRequest) async throws -> [League],
+		observeLeagues: @escaping @Sendable (League.FetchRequest) -> AsyncThrowingStream<[League], Error>,
 		createSeries: @escaping @Sendable (Series) async throws -> Void,
 		updateSeries: @escaping @Sendable (Series) async throws -> Void,
 		deleteSeries: @escaping @Sendable (Series) async throws -> Void,
-		fetchSeries: @escaping @Sendable (Series.Query) async throws -> [Series],
-		observeSeries: @escaping @Sendable (Series.Query) -> AsyncThrowingStream<[Series], Error>,
+		fetchSeries: @escaping @Sendable (Series.FetchRequest) async throws -> [Series],
+		observeSeries: @escaping @Sendable (Series.FetchRequest) -> AsyncThrowingStream<[Series], Error>,
 		createGame: @escaping @Sendable (Game) async throws -> Void,
 		updateGame: @escaping @Sendable (Game) async throws -> Void,
 		deleteGame: @escaping @Sendable (Game) async throws -> Void,
-		fetchGames: @escaping @Sendable (Game.Query) async throws -> [Game],
-		observeGames: @escaping @Sendable (Game.Query) -> AsyncThrowingStream<[Game], Error>,
+		fetchGames: @escaping @Sendable (Game.FetchRequest) async throws -> [Game],
+		observeGames: @escaping @Sendable (Game.FetchRequest) -> AsyncThrowingStream<[Game], Error>,
 		updateFrame: @escaping @Sendable (Frame) async throws -> Void,
-		fetchFrames: @escaping @Sendable (Frame.Query) async throws -> [Frame],
-		observeFrames: @escaping @Sendable (Frame.Query) -> AsyncThrowingStream<[Frame], Error>,
+		fetchFrames: @escaping @Sendable (Frame.FetchRequest) async throws -> [Frame],
+		observeFrames: @escaping @Sendable (Frame.FetchRequest) -> AsyncThrowingStream<[Frame], Error>,
 		createAlley: @escaping @Sendable (Alley) async throws -> Void,
 		updateAlley: @escaping @Sendable (Alley) async throws -> Void,
 		deleteAlley: @escaping @Sendable (Alley) async throws -> Void,
-		fetchAlleys: @escaping @Sendable (Alley.Query) async throws -> [Alley],
-		observeAlleys: @escaping @Sendable (Alley.Query) -> AsyncThrowingStream<[Alley], Error>,
+		fetchAlleys: @escaping @Sendable (Alley.FetchRequest) async throws -> [Alley],
+		observeAlleys: @escaping @Sendable (Alley.FetchRequest) -> AsyncThrowingStream<[Alley], Error>,
 		createLane: @escaping @Sendable (Lane) async throws -> Void,
 		updateLane: @escaping @Sendable (Lane) async throws -> Void,
 		deleteLane: @escaping @Sendable (Lane) async throws -> Void,
-		fetchLanes: @escaping @Sendable (Lane.Query) async throws -> [Lane],
+		fetchLanes: @escaping @Sendable (Lane.FetchRequest) async throws -> [Lane],
 		createGear: @escaping @Sendable (Gear) async throws -> Void,
 		updateGear: @escaping @Sendable (Gear) async throws -> Void,
 		deleteGear: @escaping @Sendable (Gear) async throws -> Void,
-		fetchGear: @escaping @Sendable (Gear.Query) async throws -> [Gear],
-		observeGear: @escaping @Sendable (Gear.Query) -> AsyncThrowingStream<[Gear], Error>
+		fetchGear: @escaping @Sendable (Gear.FetchRequest) async throws -> [Gear],
+		observeGear: @escaping @Sendable (Gear.FetchRequest) -> AsyncThrowingStream<[Gear], Error>
 	) {
 		self.createBowler = createBowler
 		self.updateBowler = updateBowler

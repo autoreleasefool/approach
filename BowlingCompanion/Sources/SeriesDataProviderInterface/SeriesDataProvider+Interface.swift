@@ -1,5 +1,6 @@
 import Dependencies
 import SharedModelsLibrary
+import SharedModelsFetchableLibrary
 
 public struct SeriesDataProvider: Sendable {
 	public var fetchSeries: @Sendable (Series.FetchRequest) async throws -> [Series]

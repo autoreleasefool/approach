@@ -1,9 +1,10 @@
 import GRDB
 import PersistenceServiceInterface
-import SharedPersistenceModelsLibrary
 import SharedModelsLibrary
+import SharedModelsFetchableLibrary
+import SharedModelsPersistableLibrary
 
-extension Lane.Query: Queryable {
+extension Lane.FetchRequest: Queryable {
 	@Sendable func fetchValues(_ db: Database) throws -> [Lane] {
 		var query = Lane.all()
 

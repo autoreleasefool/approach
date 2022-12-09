@@ -1,9 +1,10 @@
 import GRDB
 import PersistenceServiceInterface
-import SharedPersistenceModelsLibrary
 import SharedModelsLibrary
+import SharedModelsFetchableLibrary
+import SharedModelsPersistableLibrary
 
-extension Game.Query: Queryable {
+extension Game.FetchRequest: Queryable {
 	@Sendable func fetchValues(_ db: Database) throws -> [Game] {
 		try Game.all()
 			.filter(Column("series") == series)

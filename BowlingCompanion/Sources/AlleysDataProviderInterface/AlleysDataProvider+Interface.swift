@@ -1,5 +1,6 @@
 import Dependencies
 import SharedModelsLibrary
+import SharedModelsFetchableLibrary
 
 public struct AlleysDataProvider: Sendable {
 	public var fetchAlleys: @Sendable (Alley.FetchRequest) async throws -> [Alley]

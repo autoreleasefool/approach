@@ -30,7 +30,7 @@ package_yaml = YAML.safe_load(File.read(package_file))
       target.add_dependency(@external['ComposableArchitecture'])
     end
   when 'data_provider_interface'
-    target.add_dependency(@targets['SharedModelsLibrary'])
+    target.add_dependency(@targets['SharedModelsFetchableLibrary'])
     target.add_dependency(@external['Dependencies'])
   when 'service_interface'
     target.add_dependency(@external['Dependencies'])

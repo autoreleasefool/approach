@@ -1,9 +1,10 @@
 import GRDB
 import PersistenceServiceInterface
-import SharedPersistenceModelsLibrary
 import SharedModelsLibrary
+import SharedModelsFetchableLibrary
+import SharedModelsPersistableLibrary
 
-extension Alley.Query: Queryable {
+extension Alley.FetchRequest: Queryable {
 	@Sendable func fetchValues(_ db: Database) throws -> [Alley] {
 		var query = Alley.all()
 
@@ -25,7 +26,7 @@ extension Alley.Query: Queryable {
 		}
 
 		switch ordering {
-		case .byName:
+		case .byName, .byRecentlyUsed:
 			query = query.order(Column("name").asc)
 		}
 

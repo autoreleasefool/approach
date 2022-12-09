@@ -8,10 +8,6 @@ package:
       - .v16
 
   dependencies:
-    - url: "https://github.com/apple/swift-async-algorithms.git"
-      from: "0.0.3"
-      exports:
-        - AsyncAlgorithms
     - url: "https://github.com/pointfreeco/swift-composable-architecture.git"
       from: "0.42.0"
       exports:
@@ -137,14 +133,12 @@ package:
           - PersistenceService
           - RecentlyUsedService
           - SortingLibrary
-          - AsyncAlgorithms
     - name: BowlersDataProvider
       dependencies:
         implementation:
           - PersistenceService
           - RecentlyUsedService
           - SortingLibrary
-          - AsyncAlgorithms
     - name: FramesDataProvider
       dependencies:
         implementation:
@@ -159,7 +153,6 @@ package:
           - PersistenceService
           - RecentlyUsedService
           - SortingLibrary
-          - AsyncAlgorithms
     - name: LanesDataProvider
       dependencies:
         implementation:
@@ -170,7 +163,6 @@ package:
           - PersistenceService
           - RecentlyUsedService
           - SortingLibrary
-          - AsyncAlgorithms
     - name: SeriesDataProvider
       dependencies:
         implementation:
@@ -186,9 +178,10 @@ package:
       dependencies:
         interface:
           - SharedModelsLibrary
+          - SharedModelsFetchableLibrary
         implementation:
           - FileManagerService
-          - SharedPersistenceModelsLibrary
+          - SharedModelsPersistableLibrary
     - name: PreferenceService
       dependencies:
         implementation:
@@ -209,6 +202,9 @@ package:
     - name: SharedModelsLibrary
       dependencies:
         - StringsLibrary
+    - name: SharedModelsFetchableLibrary
+      dependencies:
+        - SharedModelsLibrary
     - name: SharedModelsMocksLibrary
       dependencies:
         - SharedModelsLibrary
@@ -218,7 +214,7 @@ package:
         - SharedModelsLibrary
         - ThemesLibrary
         - ViewsLibrary
-    - name: SharedPersistenceModelsLibrary
+    - name: SharedModelsPersistableLibrary
       dependencies:
         - SharedModelsLibrary
         - Dependencies
