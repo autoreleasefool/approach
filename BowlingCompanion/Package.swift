@@ -1,4 +1,5 @@
-// swift-tools-version: 5.7
+// swift-tools-version: 5.7.1
+// swiftlint:disable file_length
 
 import PackageDescription
 
