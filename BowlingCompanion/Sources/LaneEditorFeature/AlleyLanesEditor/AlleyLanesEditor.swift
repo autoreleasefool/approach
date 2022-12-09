@@ -47,12 +47,14 @@ public struct AlleyLanesEditor: ReducerProtocol {
 			case let .lanesResponse(.success(lanes)):
 				state.existingLanes = lanes
 				if lanes.count == 0 {
-					state.lanes = .init(uniqueElements: [.init(
-						id: uuid(),
-						label: "1",
-						isAgainstWall: true,
-						isShowingAgainstWallNotice: true
-					)])
+					state.lanes = .init(uniqueElements: [
+						.init(
+							id: uuid(),
+							label: "1",
+							isAgainstWall: true,
+							isShowingAgainstWallNotice: true
+						),
+					])
 				} else {
 					state.lanes = .init(uniqueElements: lanes.enumerated().map { .init(
 						id: $1.id,

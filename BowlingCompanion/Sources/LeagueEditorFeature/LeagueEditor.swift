@@ -101,7 +101,7 @@ public struct LeagueEditor: ReducerProtocol {
 		}
 
 		Scope(state: \.base.form.alleyPicker, action: /Action.alleyPicker) {
-			ResourcePicker { try await alleysDataProvider.fetchAlleys(.init(ordering: .byName)) }
+			ResourcePicker { try await alleysDataProvider.fetchAlleys(.init(filter: [], ordering: .byName)) }
 		}
 
 		Reduce { state, action in

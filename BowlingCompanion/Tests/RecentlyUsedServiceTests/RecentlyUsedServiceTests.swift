@@ -143,7 +143,6 @@ final class RecentlyUsedServiceTests: XCTestCase {
 				XCTAssertEqual("RecentlyUsed.alleys", key)
 				XCTAssertEqual([id1.uuidString], value)
 			}
-			
 		} operation: {
 			recentlyUsedService.didRecentlyUseResource(.alleys, id1)
 		}

@@ -25,12 +25,14 @@ final class AlleyLanesEditorTests: XCTestCase {
 		await store.receive(.lanesResponse(.success([lane0]))) {
 			$0.isLoadingInitialData = false
 			$0.existingLanes = [lane0]
-			$0.lanes = .init(uniqueElements: [.init(
-				id: id1,
-				label: "",
-				isAgainstWall: true,
-				isShowingAgainstWallNotice: true
-			)])
+			$0.lanes = .init(uniqueElements: [
+				.init(
+					id: id1,
+					label: "",
+					isAgainstWall: true,
+					isShowingAgainstWallNotice: true
+				),
+			])
 		}
 	}
 
@@ -49,12 +51,14 @@ final class AlleyLanesEditorTests: XCTestCase {
 
 		await store.receive(.lanesResponse(.success([]))) {
 			$0.isLoadingInitialData = false
-			$0.lanes = .init(uniqueElements: [.init(
-				id: id0,
-				label: "1",
-				isAgainstWall: true,
-				isShowingAgainstWallNotice: true
-			)])
+			$0.lanes = .init(uniqueElements: [
+				.init(
+					id: id0,
+					label: "1",
+					isAgainstWall: true,
+					isShowingAgainstWallNotice: true
+				),
+			])
 		}
 	}
 
@@ -76,12 +80,14 @@ final class AlleyLanesEditorTests: XCTestCase {
 		await store.receive(.lanesResponse(.success([lane0]))) {
 			$0.isLoadingInitialData = false
 			$0.existingLanes = [lane0]
-			$0.lanes = .init(uniqueElements: [.init(
-				id: id1,
-				label: "10",
-				isAgainstWall: true,
-				isShowingAgainstWallNotice: true
-			)])
+			$0.lanes = .init(uniqueElements: [
+				.init(
+					id: id1,
+					label: "10",
+					isAgainstWall: true,
+					isShowingAgainstWallNotice: true
+				),
+			])
 		}
 
 		await store.send(.addLaneButtonTapped) {
@@ -107,12 +113,14 @@ final class AlleyLanesEditorTests: XCTestCase {
 		await store.receive(.lanesResponse(.success([lane0]))) {
 			$0.isLoadingInitialData = false
 			$0.existingLanes = [lane0]
-			$0.lanes = .init(uniqueElements: [.init(
-				id: id1,
-				label: "A",
-				isAgainstWall: true,
-				isShowingAgainstWallNotice: true
-			)])
+			$0.lanes = .init(uniqueElements: [
+				.init(
+					id: id1,
+					label: "A",
+					isAgainstWall: true,
+					isShowingAgainstWallNotice: true
+				),
+			])
 		}
 
 		await store.send(.addLaneButtonTapped) {
@@ -137,12 +145,14 @@ final class AlleyLanesEditorTests: XCTestCase {
 		await store.receive(.lanesResponse(.success([lane0]))) {
 			$0.isLoadingInitialData = false
 			$0.existingLanes = [lane0]
-			$0.lanes = .init(uniqueElements: [.init(
-				id: id1,
-				label: "1",
-				isAgainstWall: true,
-				isShowingAgainstWallNotice: true
-			)])
+			$0.lanes = .init(uniqueElements: [
+				.init(
+					id: id1,
+					label: "1",
+					isAgainstWall: true,
+					isShowingAgainstWallNotice: true
+				),
+			])
 		}
 
 		await store.send(.laneEditor(id: id1, action: .swipeAction(.delete))) {
@@ -170,12 +180,14 @@ final class AlleyLanesEditorTests: XCTestCase {
 		await store.receive(.lanesResponse(.success([lane0]))) {
 			$0.isLoadingInitialData = false
 			$0.existingLanes = [lane0]
-			$0.lanes = .init(uniqueElements: [.init(
-				id: id1,
-				label: "1",
-				isAgainstWall: true,
-				isShowingAgainstWallNotice: true
-			)])
+			$0.lanes = .init(uniqueElements: [
+				.init(
+					id: id1,
+					label: "1",
+					isAgainstWall: true,
+					isShowingAgainstWallNotice: true
+				),
+			])
 		}
 
 		await store.send(.alert(.deleteButtonTapped(lane0)))
@@ -204,12 +216,14 @@ final class AlleyLanesEditorTests: XCTestCase {
 		await store.receive(.lanesResponse(.success([lane0]))) {
 			$0.isLoadingInitialData = false
 			$0.existingLanes = [lane0]
-			$0.lanes = .init(uniqueElements: [.init(
-				id: id1,
-				label: "10",
-				isAgainstWall: true,
-				isShowingAgainstWallNotice: true
-			)])
+			$0.lanes = .init(uniqueElements: [
+				.init(
+					id: id1,
+					label: "10",
+					isAgainstWall: true,
+					isShowingAgainstWallNotice: true
+				),
+			])
 		}
 
 		await store.send(.addLaneButtonTapped) {
@@ -238,12 +252,14 @@ final class AlleyLanesEditorTests: XCTestCase {
 		await store.receive(.lanesResponse(.success([lane0]))) {
 			$0.isLoadingInitialData = false
 			$0.existingLanes = [lane0]
-			$0.lanes = .init(uniqueElements: [.init(
-				id: id1,
-				label: "1",
-				isAgainstWall: true,
-				isShowingAgainstWallNotice: true
-			)])
+			$0.lanes = .init(uniqueElements: [
+				.init(
+					id: id1,
+					label: "1",
+					isAgainstWall: true,
+					isShowingAgainstWallNotice: true
+				),
+			])
 		}
 
 		await store.send(.laneEditor(id: id1, action: .swipeAction(.delete))) {

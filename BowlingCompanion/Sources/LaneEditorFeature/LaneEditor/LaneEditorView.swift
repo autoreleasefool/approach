@@ -64,7 +64,7 @@ public struct LaneEditorView: View {
 					DeleteButton { viewStore.send(.swipeAction(.delete)) }
 				}
 			} footer: {
-				if (viewStore.isShowingAgainstWallNotice) {
+				if viewStore.isShowingAgainstWallNotice {
 					Text(Strings.Lanes.Editor.Fields.IsAgainstWall.help)
 				}
 			}

@@ -51,7 +51,7 @@ public struct BowlersList: ReducerProtocol {
 				state.error = nil
 				return .task {
 					await .bowlersResponse(TaskResult {
-						try await bowlersDataProvider.fetchBowlers(.init(ordering: .byRecentlyUsed))
+						try await bowlersDataProvider.fetchBowlers(.init(filter: [], ordering: .byRecentlyUsed))
 					})
 				}
 

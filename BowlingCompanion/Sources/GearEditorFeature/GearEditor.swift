@@ -74,7 +74,7 @@ public struct GearEditor: ReducerProtocol {
 		}
 
 		Scope(state: \.base.form.bowlerPicker, action: /Action.bowlerPicker) {
-			ResourcePicker { try await bowlersDataProvider.fetchBowlers(.init(ordering: .byName)) }
+			ResourcePicker { try await bowlersDataProvider.fetchBowlers(.init(filter: [], ordering: .byName)) }
 		}
 
 		Reduce { state, action in
