@@ -31,7 +31,7 @@ public struct SeriesSidebar: ReducerProtocol {
 			case .refreshList:
 				return .task { [series = state.series.id] in
 					await .gamesResponse(TaskResult {
-						try await gamesDataProvider.fetchGames(.init(series: series, ordering: .byOrdinal))
+						try await gamesDataProvider.fetchGames(.init(filter: [.series(series)], ordering: .byOrdinal))
 					})
 				}
 

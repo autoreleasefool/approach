@@ -2,13 +2,20 @@ import SharedModelsLibrary
 
 extension Frame {
 	public struct FetchRequest {
-		public let game: Game.ID
+		public let filter: [Filter]
 		public let ordering: Ordering
 
-		public init(game: Game.ID, ordering: Ordering) {
-			self.game = game
+		public init(filter: [Filter], ordering: Ordering) {
+			self.filter = filter
 			self.ordering = ordering
 		}
+	}
+}
+
+extension Frame.FetchRequest {
+	public enum Filter {
+		case id(Frame.ID)
+		case game(Game.ID)
 	}
 }
 
