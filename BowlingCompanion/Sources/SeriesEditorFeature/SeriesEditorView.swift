@@ -71,7 +71,7 @@ public struct SeriesEditorView: View {
 					.listRowBackground(Color(uiColor: .secondarySystemBackground))
 				}
 			}
-			.task { await viewStore.send(.loadInitialData).finish() }
+			.onAppear { viewStore.send(.loadInitialData) }
 		}
 	}
 }

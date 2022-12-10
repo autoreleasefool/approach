@@ -79,7 +79,7 @@ public struct LeagueEditorView: View {
 					}
 				}
 			}
-			.task { await viewStore.send(.loadInitialData).finish() }
+			.onAppear { viewStore.send(.loadInitialData) }
 		}
 	}
 

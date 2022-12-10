@@ -11,7 +11,7 @@ public struct GameEditor: ReducerProtocol {
 	}
 
 	public enum Action: Equatable {
-		case subcribeToFrames
+		case refreshData
 		case ballDetails(BallDetails.Action)
 	}
 
@@ -24,7 +24,7 @@ public struct GameEditor: ReducerProtocol {
 
 		Reduce { _, action in
 			switch action {
-			case .subcribeToFrames, .ballDetails:
+			case .refreshData, .ballDetails:
 				return .none
 			}
 		}

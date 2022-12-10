@@ -24,7 +24,7 @@ public struct GameEditorView: View {
 	}
 
 	enum ViewAction {
-		case subscribeToFrames
+		case refreshData
 	}
 
 	public init(store: StoreOf<GameEditor>) {
@@ -58,7 +58,7 @@ public struct GameEditorView: View {
 					.edgesIgnoringSafeArea(.bottom)
 				}
 				.navigationBarBackButtonHidden(true)
-				.task { await viewStore.send(.subscribeToFrames).finish() }
+				.onAppear { viewStore.send(.refreshData) }
 		}
 	}
 }
@@ -66,8 +66,8 @@ public struct GameEditorView: View {
 extension GameEditor.Action {
 	init(action: GameEditorView.ViewAction) {
 		switch action {
-		case .subscribeToFrames:
-			self = .subcribeToFrames
+		case .refreshData:
+			self = .refreshData
 		}
 	}
 }
