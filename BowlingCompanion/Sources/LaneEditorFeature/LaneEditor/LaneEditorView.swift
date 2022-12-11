@@ -37,7 +37,7 @@ public struct LaneEditorView: View {
 				VStack {
 					HStack {
 						TextField(
-							Strings.Lanes.Editor.Fields.label,
+							Strings.Lane.Properties.label,
 							text: viewStore.binding(\.$label)
 						)
 						.keyboardType(.numberPad)
@@ -55,7 +55,7 @@ public struct LaneEditorView: View {
 					}
 
 					Toggle(
-						Strings.Lanes.Editor.Fields.IsAgainstWall.title,
+						Strings.Lane.Properties.isAgainstWall,
 						isOn: viewStore.binding(\.$isAgainstWall)
 					)
 					.toggleStyle(SwitchToggleStyle())
@@ -65,7 +65,7 @@ public struct LaneEditorView: View {
 				}
 			} footer: {
 				if viewStore.isShowingAgainstWallNotice {
-					Text(Strings.Lanes.Editor.Fields.IsAgainstWall.help)
+					Text(Strings.Lane.Editor.Fields.IsAgainstWall.help)
 				}
 			}
 		}

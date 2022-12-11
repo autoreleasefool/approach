@@ -40,7 +40,7 @@ public struct AlleyLanesEditorView: View {
 					}
 				}
 			}
-			.navigationTitle(Strings.Lanes.Editor.title)
+			.navigationTitle(Strings.Lane.List.title)
 			.onAppear { viewStore.send(.onAppear) }
 		}
 	}

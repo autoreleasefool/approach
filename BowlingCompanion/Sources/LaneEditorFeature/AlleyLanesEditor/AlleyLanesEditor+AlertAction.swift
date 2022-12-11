@@ -10,13 +10,13 @@ extension AlleyLanesEditor {
 
 	static func alert(toDelete lane: Lane) -> AlertState<AlertAction> {
 		.init(
-			title: TextState(Strings.Lanes.Editor.Delete.title(lane.label)),
+			title: TextState(Strings.Form.Prompt.delete(lane.label)),
 			primaryButton: .destructive(
-				TextState(Strings.Lanes.Editor.Delete.action),
+				TextState(Strings.Action.delete),
 				action: .send(.deleteButtonTapped(lane))
 			),
 			secondaryButton: .cancel(
-				TextState(Strings.Lanes.Editor.Delete.cancel),
+				TextState(Strings.Action.cancel),
 				action: .send(.dismissed)
 			)
 		)
