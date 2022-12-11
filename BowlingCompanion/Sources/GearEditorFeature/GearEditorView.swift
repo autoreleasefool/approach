@@ -36,7 +36,7 @@ public struct GearEditorView: View {
 
 	enum ViewAction: BindableAction {
 		case loadInitialData
-		case setBowlerPickerSheet(isPresented: Bool)
+		case setBowlerPicker(isPresented: Bool)
 		case binding(BindingAction<ViewState>)
 	}
 
@@ -66,34 +66,29 @@ public struct GearEditorView: View {
 				.listRowBackground(Color(uiColor: .secondarySystemBackground))
 
 				Section(Strings.Gear.Properties.owner) {
-					Button {
-						viewStore.send(.setBowlerPickerSheet(isPresented: true))
-					} label: {
+					NavigationLink(
+						destination: ResourcePickerView(
+							store: store.scope(
+								state: \.base.form.bowlerPicker,
+								action: GearEditor.Action.bowlerPicker
+							)
+						) { bowler in
+							BowlerRow(bowler: bowler)
+						},
+						isActive: viewStore.binding(
+							get: \.isBowlerPickerPresented,
+							send: ViewAction.setBowlerPicker(isPresented:)
+						)
+					) {
 						LabeledContent(
 							Strings.Bowler.title,
 							value: viewStore.selectedBowler?.name ?? Strings.none
 						)
-						.contentShape(Rectangle())
 					}
-					.buttonStyle(TappableElement())
 				}
 				.listRowBackground(Color(uiColor: .secondarySystemBackground))
 			}
-			.sheet(isPresented: viewStore.binding(
-				get: \.isBowlerPickerPresented,
-				send: ViewAction.setBowlerPickerSheet(isPresented:)
-			)) {
-				NavigationView {
-					ResourcePickerView<Bowler, BowlerRow>(
-						store: store.scope(
-							state: \.base.form.bowlerPicker,
-							action: GearEditor.Action.bowlerPicker
-						)
-					) { bowler in
-						BowlerRow(bowler: bowler)
-					}
-				}
-			}
+			.interactiveDismissDisabled(viewStore.isBowlerPickerPresented)
 			.onAppear { viewStore.send(.loadInitialData) }
 		}
 	}
@@ -114,8 +109,8 @@ extension GearEditor.Action {
 		switch action {
 		case .loadInitialData:
 			self = .loadInitialData
-		case let .setBowlerPickerSheet(isPresented):
-			self = .setBowlerPickerSheet(isPresented: isPresented)
+		case let .setBowlerPicker(isPresented):
+			self = .setBowlerPicker(isPresented: isPresented)
 		case let .binding(action):
 			self = .binding(action.pullback(\GearEditor.State.view))
 		}

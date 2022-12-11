@@ -12,11 +12,13 @@ public struct ResourcePicker<Resource: PickableResource>: ReducerProtocol {
 		public var initialSelection: Set<Resource.ID>
 		public var limit: Int
 		public var error: ListErrorContent?
+		public var showsCancelHeaderButton: Bool
 
-		public init(selected: Set<Resource.ID>, limit: Int = 0) {
+		public init(selected: Set<Resource.ID>, limit: Int = 0, showsCancelHeaderButton: Bool = true) {
 			self.selected = selected
 			self.initialSelection = selected
 			self.limit = limit
+			self.showsCancelHeaderButton = showsCancelHeaderButton
 		}
 
 		public mutating func updateInitialSelection() {

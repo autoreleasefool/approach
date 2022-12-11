@@ -50,14 +50,13 @@ public struct SeriesEditorView: View {
 						displayedComponents: [.date]
 					)
 				}
-				.listRowBackground(Color(uiColor: .secondarySystemBackground))
 
 				if viewStore.hasAlleysEnabled {
 					Section(Strings.Series.Properties.alley) {
 						NavigationLink(destination: EmptyView()) {
 							LabeledContent(
 								Strings.Series.Properties.alley,
-								value: Strings.none
+								value: viewStore.selectedAlley?.name ?? Strings.none
 							)
 						}
 						// TODO: if lanes are enabled

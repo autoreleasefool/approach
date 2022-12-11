@@ -19,9 +19,13 @@ public struct GearEditor: ReducerProtocol {
 	public typealias Form = BaseForm<Gear, Fields>
 
 	public struct Fields: BaseFormState, Equatable {
+		public var bowlerPicker: ResourcePicker<Bowler>.State
 		@BindableState public var name = ""
 		@BindableState public var kind: Gear.Kind = .bowlingBall
-		public var bowlerPicker: ResourcePicker<Bowler>.State = .init(selected: [], limit: 1)
+
+		init(bowler: Bowler.ID?) {
+			self.bowlerPicker = .init(selected: Set([bowler].compactMap({ $0 })), limit: 1, showsCancelHeaderButton: false)
+		}
 
 		public let isDeleteable = true
 		public var isSaveable: Bool {
@@ -35,13 +39,16 @@ public struct GearEditor: ReducerProtocol {
 		public var isBowlerPickerPresented = false
 
 		public init(mode: Form.Mode) {
-			var fields = Fields()
-			if case let .edit(gear) = mode {
+			var fields: Fields
+			switch mode {
+			case let .edit(gear):
+				fields = Fields(bowler: gear.bowler)
 				fields.name = gear.name
 				fields.kind = gear.kind
+			case .create:
+				fields = Fields(bowler: nil)
 			}
 
-			fields.bowlerPicker = .init(selected: Set([mode.model?.bowler].compactMap({ $0 })), limit: 1)
 			self.base = .init(mode: mode, form: fields)
 		}
 	}
@@ -52,7 +59,7 @@ public struct GearEditor: ReducerProtocol {
 		case binding(BindingAction<State>)
 		case form(Form.Action)
 		case bowlerPicker(ResourcePicker<Bowler>.Action)
-		case setBowlerPickerSheet(isPresented: Bool)
+		case setBowlerPicker(isPresented: Bool)
 	}
 
 	public init() {}
@@ -74,16 +81,18 @@ public struct GearEditor: ReducerProtocol {
 		}
 
 		Scope(state: \.base.form.bowlerPicker, action: /Action.bowlerPicker) {
-			ResourcePicker { try await bowlersDataProvider.fetchBowlers(.init(filter: [], ordering: .byName)) }
+			ResourcePicker {
+				try await bowlersDataProvider.fetchBowlers(.init(filter: [], ordering: .byName))
+			}
 		}
 
 		Reduce { state, action in
 			switch action {
 			case .loadInitialData:
-				if case let .edit(gear) = state.base.mode, let bowlerId = gear.bowler {
+				if let bowler = state.base.form.bowlerPicker.selected.first {
 					return .task {
 						await .bowlerResponse(TaskResult {
-							let bowlers = try await bowlersDataProvider.fetchBowlers(.init(filter: [.id(bowlerId)], ordering: .byName))
+							let bowlers = try await bowlersDataProvider.fetchBowlers(.init(filter: [.id(bowler)], ordering: .byName))
 							return bowlers.first
 						})
 					}
@@ -98,7 +107,7 @@ public struct GearEditor: ReducerProtocol {
 				// TODO: handle error failing to load bowler
 				return .none
 
-			case let .setBowlerPickerSheet(isPresented):
+			case let .setBowlerPicker(isPresented):
 				state.isBowlerPickerPresented = isPresented
 				return .none
 

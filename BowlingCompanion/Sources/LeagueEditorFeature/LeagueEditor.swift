@@ -19,6 +19,7 @@ public struct LeagueEditor: ReducerProtocol {
 
 	public struct Fields: BaseFormState, Equatable {
 		public var bowler: Bowler.ID
+		public var alleyPicker: ResourcePicker<Alley>.State
 		@BindableState public var name = ""
 		@BindableState public var recurrence: League.Recurrence = .repeating
 		@BindableState public var gamesPerSeries: GamesPerSeries = .static
@@ -26,7 +27,15 @@ public struct LeagueEditor: ReducerProtocol {
 		@BindableState public var hasAdditionalPinfall = false
 		@BindableState public var additionalPinfall = ""
 		@BindableState public var additionalGames = ""
-		public var alleyPicker: ResourcePicker<Alley>.State = .init(selected: [], limit: 1)
+
+		init(bowler: Bowler.ID, alley: Alley.ID?) {
+			self.bowler = bowler
+			self.alleyPicker = .init(
+				selected: Set([alley].compactMap({ $0 })),
+				limit: 1,
+				showsCancelHeaderButton: false
+			)
+		}
 
 		public let isDeleteable = true
 		public var isSaveable: Bool {
@@ -35,16 +44,16 @@ public struct LeagueEditor: ReducerProtocol {
 	}
 
 	public struct State: Equatable {
-		public var bowler: Bowler
 		public var base: Form.State
 		public var initialAlley: Alley?
 		public var isAlleyPickerPresented = false
 		public let hasAlleysEnabled: Bool
 
 		public init(bowler: Bowler, mode: Form.Mode, hasAlleysEnabled: Bool) {
-			self.bowler = bowler
-			var fields = Fields(bowler: bowler.id)
-			if case let .edit(league) = mode {
+			var fields: Fields
+			switch mode {
+			case let .edit(league):
+				fields = Fields(bowler: bowler.id, alley: league.alley)
 				fields.name = league.name
 				fields.recurrence = league.recurrence
 				fields.numberOfGames = league.numberOfGames ?? League.DEFAULT_NUMBER_OF_GAMES
@@ -52,9 +61,9 @@ public struct LeagueEditor: ReducerProtocol {
 				fields.additionalGames = "\(league.additionalGames ?? 0)"
 				fields.additionalPinfall = "\(league.additionalPinfall ?? 0)"
 				fields.hasAdditionalPinfall = (league.additionalGames ?? 0) > 0
+			case .create:
+				fields = Fields(bowler: bowler.id, alley: nil)
 			}
-
-			fields.alleyPicker = .init(selected: Set([mode.model?.alley].compactMap({ $0 })), limit: 1)
 			self.hasAlleysEnabled = hasAlleysEnabled
 			self.base = .init(mode: mode, form: fields)
 		}
@@ -75,11 +84,11 @@ public struct LeagueEditor: ReducerProtocol {
 
 	public enum Action: BindableAction, Equatable {
 		case loadInitialData
-		case leagueAlleyResponse(TaskResult<Alley?>)
+		case alleyResponse(TaskResult<Alley?>)
 		case binding(BindingAction<State>)
 		case form(Form.Action)
 		case alleyPicker(ResourcePicker<Alley>.Action)
-		case setAlleyPickerSheet(isPresented: Bool)
+		case setAlleyPicker(isPresented: Bool)
 	}
 
 	public init() {}
@@ -101,31 +110,33 @@ public struct LeagueEditor: ReducerProtocol {
 		}
 
 		Scope(state: \.base.form.alleyPicker, action: /Action.alleyPicker) {
-			ResourcePicker { try await alleysDataProvider.fetchAlleys(.init(filter: [], ordering: .byName)) }
+			ResourcePicker {
+				try await alleysDataProvider.fetchAlleys(.init(filter: [], ordering: .byName))
+			}
 		}
 
 		Reduce { state, action in
 			switch action {
 			case .loadInitialData:
-				if case let .edit(league) = state.base.mode, let alleyId = league.alley {
+				if case let .edit(league) = state.base.mode, let alley = league.alley {
 					return .task {
-						await .leagueAlleyResponse(TaskResult {
-							let alleys = try await alleysDataProvider.fetchAlleys(.init(filter: [.id(alleyId)], ordering: .byName))
+						await .alleyResponse(TaskResult {
+							let alleys = try await alleysDataProvider.fetchAlleys(.init(filter: [.id(alley)], ordering: .byName))
 							return alleys.first
 						})
 					}
 				}
 				return .none
 
-			case let .leagueAlleyResponse(.success(alley)):
+			case let .alleyResponse(.success(alley)):
 				state.initialAlley = alley
 				return .none
 
-			case .leagueAlleyResponse(.failure):
+			case .alleyResponse(.failure):
 				// TODO: handle error failing to load alley
 				return .none
 
-			case let .setAlleyPickerSheet(isPresented):
+			case let .setAlleyPicker(isPresented):
 				state.isAlleyPickerPresented = isPresented
 				return .none
 

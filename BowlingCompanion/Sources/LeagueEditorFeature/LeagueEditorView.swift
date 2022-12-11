@@ -48,7 +48,7 @@ public struct LeagueEditorView: View {
 
 	enum ViewAction: BindableAction {
 		case loadInitialData
-		case setAlleyPickerSheet(isPresented: Bool)
+		case setAlleyPicker(isPresented: Bool)
 		case binding(BindingAction<ViewState>)
 	}
 
@@ -64,21 +64,7 @@ public struct LeagueEditorView: View {
 				gamesSection(viewStore)
 				additionalPinfallSection(viewStore)
 			}
-			.sheet(isPresented: viewStore.binding(
-				get: \.isAlleyPickerPresented,
-				send: ViewAction.setAlleyPickerSheet(isPresented:)
-			)) {
-				NavigationView {
-					ResourcePickerView<Alley, AlleyRow>(
-						store: store.scope(
-							state: \.base.form.alleyPicker,
-							action: LeagueEditor.Action.alleyPicker
-						)
-					) { alley in
-						AlleyRow(alley: alley)
-					}
-				}
-			}
+			.interactiveDismissDisabled(viewStore.isAlleyPickerPresented)
 			.onAppear { viewStore.send(.loadInitialData) }
 		}
 	}
@@ -88,16 +74,25 @@ public struct LeagueEditorView: View {
 			TextField(Strings.Editor.Fields.Details.name, text: viewStore.binding(\.$name))
 				.textContentType(.name)
 			if viewStore.hasAlleysEnabled {
-				Button {
-					viewStore.send(.setAlleyPickerSheet(isPresented: true))
-				} label: {
+				NavigationLink(
+					destination: ResourcePickerView(
+						store: store.scope(
+							state: \.base.form.alleyPicker,
+							action: LeagueEditor.Action.alleyPicker
+						)
+					) { alley in
+						AlleyRow(alley: alley)
+					},
+					isActive: viewStore.binding(
+						get: \.isAlleyPickerPresented,
+						send: ViewAction.setAlleyPicker(isPresented:)
+					)
+				) {
 					LabeledContent(
 						Strings.League.Properties.alley,
 						value: viewStore.selectedAlley?.name ?? Strings.none
 					)
-					.contentShape(Rectangle())
 				}
-				.buttonStyle(TappableElement())
 			}
 		} header: {
 			Text(Strings.Editor.Fields.Details.title)
@@ -202,8 +197,8 @@ extension LeagueEditor.Action {
 		switch action {
 		case .loadInitialData:
 			self = .loadInitialData
-		case let .setAlleyPickerSheet(isPresented):
-			self = .setAlleyPickerSheet(isPresented: isPresented)
+		case let .setAlleyPicker(isPresented):
+			self = .setAlleyPicker(isPresented: isPresented)
 		case let.binding(action):
 			self = .binding(action.pullback(\LeagueEditor.State.view))
 		}

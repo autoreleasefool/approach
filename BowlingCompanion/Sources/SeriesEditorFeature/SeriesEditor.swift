@@ -21,16 +21,22 @@ public struct SeriesEditor: ReducerProtocol {
 	public typealias Form = BaseForm<Series, Fields>
 
 	public struct Fields: BaseFormState, Equatable {
-		public var league: League
+		public var league: League.ID
+		public let hasSetNumberOfGames: Bool
 		@BindableState public var numberOfGames: Int
 		@BindableState public var date = Date()
 		public var alleyPicker: ResourcePicker<Alley>.State
 
 		init(league: League, date: Date) {
-			self.league = league
+			self.league = league.id
+			self.hasSetNumberOfGames = league.numberOfGames != nil
 			self.numberOfGames = league.numberOfGames ?? League.DEFAULT_NUMBER_OF_GAMES
 			self.date = date
-			self.alleyPicker = .init(selected: Set([league.alley].compactMap { $0 }), limit: 1)
+			self.alleyPicker = .init(
+				selected: Set([league.alley].compactMap { $0 }),
+				limit: 1,
+				showsCancelHeaderButton: false
+			)
 		}
 
 		public let isDeleteable = true
@@ -50,9 +56,12 @@ public struct SeriesEditor: ReducerProtocol {
 			hasAlleysEnabled: Bool
 		) {
 			var fields = Fields(league: league, date: date)
-			if case let .edit(series) = mode {
+			switch mode {
+			case let .edit(series):
 				fields.date = series.date
 				fields.numberOfGames = series.numberOfGames
+			case .create:
+				break
 			}
 
 			self.base = .init(mode: mode, form: fields)
@@ -62,8 +71,8 @@ public struct SeriesEditor: ReducerProtocol {
 
 	public enum Action: BindableAction, Equatable {
 		case loadInitialData
-		case leagueAlleyResponse(TaskResult<Alley?>)
-		case setAlleyPickerSheet(isPresented: Bool)
+		case alleyResponse(TaskResult<Alley?>)
+		case setAlleyPicker(isPresented: Bool)
 		case binding(BindingAction<State>)
 		case form(Form.Action)
 		case alleyPicker(ResourcePicker<Alley>.Action)
@@ -89,31 +98,33 @@ public struct SeriesEditor: ReducerProtocol {
 		}
 
 		Scope(state: \.base.form.alleyPicker, action: /Action.alleyPicker) {
-			ResourcePicker { try await alleysDataProvider.fetchAlleys(.init(filter: [], ordering: .byName)) }
+			ResourcePicker {
+				try await alleysDataProvider.fetchAlleys(.init(filter: [], ordering: .byName))
+			}
 		}
 
 		Reduce { state, action in
 			switch action {
 			case .loadInitialData:
-				if let leagueAlley = state.base.form.league.alley {
+				if let alley = state.base.form.alleyPicker.selected.first {
 					return .task {
-						await .leagueAlleyResponse(TaskResult {
-							let alleys = try await alleysDataProvider.fetchAlleys(.init(filter: [.id(leagueAlley)], ordering: .byName))
+						await .alleyResponse(TaskResult {
+							let alleys = try await alleysDataProvider.fetchAlleys(.init(filter: [.id(alley)], ordering: .byName))
 							return alleys.first
 						})
 					}
 				}
 				return .none
 
-			case let .leagueAlleyResponse(.success(alley)):
+			case let .alleyResponse(.success(alley)):
 				state.initialAlley = alley
 				return .none
 
-			case .leagueAlleyResponse(.failure):
+			case .alleyResponse(.failure):
 				// TODO: handle error failing to load alley
 				return .none
 
-			case let .setAlleyPickerSheet(isPresented):
+			case let .setAlleyPicker(isPresented):
 				state.isAlleyPickerPresented = isPresented
 				return .none
 
@@ -133,10 +144,10 @@ extension SeriesEditor.Fields {
 		@Dependency(\.uuid) var uuid: UUIDGenerator
 
 		return .init(
-			league: league.id,
+			league: league,
 			id: existing?.id ?? uuid(),
 			date: date,
-			numberOfGames: existing?.numberOfGames ?? league.numberOfGames ?? League.DEFAULT_NUMBER_OF_GAMES,
+			numberOfGames: numberOfGames,
 			alley: alleyPicker.selected.first
 		)
 	}

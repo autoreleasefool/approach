@@ -22,7 +22,7 @@ public struct ResourcePickerView<Resource: PickableResource, Row: View>: View {
 				self.listState = .loading
 			}
 			self.selected = state.selected
-			self.isCancellable = state.selected != state.initialSelection
+			self.isCancellable = state.showsCancelHeaderButton && state.selected != state.initialSelection
 		}
 	}
 
