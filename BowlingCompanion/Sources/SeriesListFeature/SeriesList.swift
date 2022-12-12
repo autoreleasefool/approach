@@ -101,7 +101,8 @@ public struct SeriesList: ReducerProtocol {
 					league: state.league,
 					mode: .create,
 					date: date(),
-					hasAlleysEnabled: featureFlags.isEnabled(.alleyTracking)
+					hasAlleysEnabled: featureFlags.isEnabled(.alleyTracking),
+					hasLanesEnabled: featureFlags.isEnabled(.lanesTracking)
 				)
 				return .none
 
@@ -117,7 +118,8 @@ public struct SeriesList: ReducerProtocol {
 					league: state.league,
 					mode: .edit(series),
 					date: date(),
-					hasAlleysEnabled: featureFlags.isEnabled(.alleyTracking)
+					hasAlleysEnabled: featureFlags.isEnabled(.alleyTracking),
+					hasLanesEnabled: featureFlags.isEnabled(.lanesTracking)
 				)
 				return .none
 

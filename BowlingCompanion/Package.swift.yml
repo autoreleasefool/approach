@@ -21,8 +21,10 @@ package:
   feature:
     - name: AlleyEditorFeature
       dependencies:
+        - LaneEditorFeature
         - BaseFormFeature
         - PersistenceService
+        - SharedModelsViewsLibrary
         - StringsLibrary
     - name: AlleysListFeature
       dependencies:

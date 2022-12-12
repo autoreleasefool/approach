@@ -87,7 +87,8 @@ let package = Package(
 			name: "AlleyEditorFeature",
 			dependencies: [
 				"BaseFormFeature",
-				"PersistenceServiceInterface",
+				"LaneEditorFeature",
+				"SharedModelsViewsLibrary",
 			]
 		),
 		.testTarget(
@@ -102,7 +103,6 @@ let package = Package(
 			dependencies: [
 				"AlleyEditorFeature",
 				"AlleysDataProviderInterface",
-				"SharedModelsViewsLibrary",
 			]
 		),
 		.testTarget(

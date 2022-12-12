@@ -28,15 +28,19 @@ public struct AlleyLanesEditorView: View {
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: AlleyLanesEditor.Action.init) { viewStore in
 			List {
-				ForEachStore(
-					store.scope(state: \.lanes, action: AlleyLanesEditor.Action.laneEditor(id:action:))
-				) {
-					LaneEditorView(store: $0)
+				Section {
+					ForEachStore(
+						store.scope(state: \.lanes, action: AlleyLanesEditor.Action.laneEditor(id:action:))
+					) {
+						LaneEditorView(store: $0)
+					}
+				} footer: {
+					Text(Strings.Lane.Editor.Fields.IsAgainstWall.help)
 				}
 
 				Section {
 					Button { viewStore.send(.addLaneButtonTapped) } label: {
-						Label("Add Lane", systemImage: "plus.circle")
+						Label(Strings.Lane.List.add, systemImage: "plus.circle")
 					}
 				}
 			}

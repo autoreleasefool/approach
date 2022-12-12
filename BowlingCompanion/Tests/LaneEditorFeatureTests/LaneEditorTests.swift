@@ -5,53 +5,10 @@ import XCTest
 
 @MainActor
 final class LaneEditorTests: XCTestCase {
-	func testEmptyLaneIsValid() async {
-		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
-		let store = TestStore(
-			initialState: LaneEditor.State(id: id0, isShowingAgainstWallNotice: true),
-			reducer: LaneEditor()
-		)
-
-		await store.send(.set(\.$label, ""))
-
-		XCTAssertTrue(store.state.isValid)
-		XCTAssertNil(store.state.laneLabel)
-	}
-
-	func testNonNumericLaneIsNotValid() async {
-		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
-		let store = TestStore(
-			initialState: LaneEditor.State(id: id0, isShowingAgainstWallNotice: true),
-			reducer: LaneEditor()
-		)
-
-		await store.send(.set(\.$label, "test")) {
-			$0.label = "test"
-		}
-
-		XCTAssertFalse(store.state.isValid)
-		XCTAssertNil(store.state.laneLabel)
-	}
-
-	func testNumericLaneIsValid() async {
-		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
-		let store = TestStore(
-			initialState: LaneEditor.State(id: id0, isShowingAgainstWallNotice: true),
-			reducer: LaneEditor()
-		)
-
-		await store.send(.set(\.$label, "1")) {
-			$0.label = "1"
-		}
-
-		XCTAssertTrue(store.state.isValid)
-		XCTAssertEqual(store.state.laneLabel, 1)
-	}
-
 	func testTogglesAgainstWall() async {
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
 		let store = TestStore(
-			initialState: LaneEditor.State(id: id0, isShowingAgainstWallNotice: true),
+			initialState: LaneEditor.State(id: id0),
 			reducer: LaneEditor()
 		)
 

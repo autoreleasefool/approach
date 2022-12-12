@@ -1,6 +1,8 @@
 import BaseFormFeature
 import ComposableArchitecture
+import ResourcePickerFeature
 import SharedModelsLibrary
+import SharedModelsViewsLibrary
 import StringsLibrary
 import SwiftUI
 
@@ -10,13 +12,17 @@ public struct SeriesEditorView: View {
 	struct ViewState: Equatable {
 		@BindableState var date: Date
 		@BindableState var numberOfGames: Int
+		let isAlleyPickerPresented: Bool
 		let selectedAlley: Alley?
 		let hasAlleysEnabled: Bool
+		let hasLanesEnabled: Bool
 
 		init(state: SeriesEditor.State) {
 			self.date = state.base.form.date
 			self.numberOfGames = state.base.form.numberOfGames
 			self.hasAlleysEnabled = state.hasAlleysEnabled
+			self.hasLanesEnabled = state.hasLanesEnabled
+			self.isAlleyPickerPresented = state.isAlleyPickerPresented
 			if let id = state.base.form.alleyPicker.selected.first {
 				if let alley = state.base.form.alleyPicker.resources?[id: id] {
 					self.selectedAlley = alley
@@ -33,6 +39,7 @@ public struct SeriesEditorView: View {
 
 	enum ViewAction: BindableAction {
 		case loadInitialData
+		case setAlleyPicker(isPresented: Bool)
 		case binding(BindingAction<ViewState>)
 	}
 
@@ -53,12 +60,26 @@ public struct SeriesEditorView: View {
 
 				if viewStore.hasAlleysEnabled {
 					Section(Strings.Series.Properties.alley) {
-						NavigationLink(destination: EmptyView()) {
+						NavigationLink(
+							destination: ResourcePickerView(
+								store: store.scope(
+									state: \.base.form.alleyPicker,
+									action: SeriesEditor.Action.alleyPicker
+								)
+							) { alley in
+								AlleyRow(alley: alley)
+							},
+							isActive: viewStore.binding(
+								get: \.isAlleyPickerPresented,
+								send: ViewAction.setAlleyPicker(isPresented:)
+							)
+						) {
 							LabeledContent(
 								Strings.Series.Properties.alley,
 								value: viewStore.selectedAlley?.name ?? Strings.none
 							)
 						}
+
 						// TODO: if lanes are enabled
 //						NavigationLink(destination: EmptyView()) {
 //							LabeledContent(Strings.Series.Editor.Fields.Alley.lanes, value: "1, 2")
@@ -90,6 +111,8 @@ extension SeriesEditor.Action {
 		switch action {
 		case .loadInitialData:
 			self = .loadInitialData
+		case let .setAlleyPicker(isPresented):
+			self = .setAlleyPicker(isPresented: isPresented)
 		case .binding(let action):
 			self = .binding(action.pullback(\SeriesEditor.State.view))
 		}
@@ -115,7 +138,8 @@ struct SeriesEditorViewPreview: PreviewProvider {
 						),
 						mode: .create,
 						date: Date(),
-						hasAlleysEnabled: true
+						hasAlleysEnabled: true,
+						hasLanesEnabled: true
 					),
 					reducer: SeriesEditor()
 				)

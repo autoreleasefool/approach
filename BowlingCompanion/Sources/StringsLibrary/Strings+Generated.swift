@@ -96,6 +96,10 @@ public enum Strings {
       public static let pinBase = Strings.tr("Localizable", "alley.properties.pinBase", fallback: "Pin Base")
       /// Pin Fall
       public static let pinFall = Strings.tr("Localizable", "alley.properties.pinFall", fallback: "Pin Fall")
+      public enum Lanes {
+        /// Manage
+        public static let manage = Strings.tr("Localizable", "alley.properties.lanes.manage", fallback: "Manage")
+      }
       public enum Material {
         /// Synthetic
         public static let synthetic = Strings.tr("Localizable", "alley.properties.material.synthetic", fallback: "Synthetic")

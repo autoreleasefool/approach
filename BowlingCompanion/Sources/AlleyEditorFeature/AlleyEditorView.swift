@@ -1,5 +1,6 @@
 import BaseFormFeature
 import ComposableArchitecture
+import LaneEditorFeature
 import SharedModelsLibrary
 import StringsLibrary
 import SwiftUI
@@ -14,6 +15,8 @@ public struct AlleyEditorView: View {
 		@BindableState var pinFall: Alley.PinFall
 		@BindableState var mechanism: Alley.Mechanism
 		@BindableState var pinBase: Alley.PinBase
+		var isLaneEditorPresented: Bool
+		let hasLanesEnabled: Bool
 
 		init(state: AlleyEditor.State) {
 			self.name = state.base.form.name
@@ -22,10 +25,13 @@ public struct AlleyEditorView: View {
 			self.pinFall = state.base.form.pinFall
 			self.mechanism = state.base.form.mechanism
 			self.pinBase = state.base.form.pinBase
+			self.isLaneEditorPresented = state.isLaneEditorPresented
+			self.hasLanesEnabled = state.hasLanesEnabled
 		}
 	}
 
 	enum ViewAction: BindableAction {
+		case setLaneEditor(isPresented: Bool)
 		case binding(BindingAction<ViewState>)
 	}
 
@@ -41,6 +47,9 @@ public struct AlleyEditorView: View {
 				mechanismSection(viewStore)
 				pinFallSection(viewStore)
 				pinBaseSection(viewStore)
+				if viewStore.hasLanesEnabled {
+					lanesSection(viewStore)
+				}
 				Section {
 					Text(Strings.Alley.Editor.Help.askAStaffMember)
 						.font(.caption)
@@ -127,6 +136,29 @@ public struct AlleyEditorView: View {
 		}
 		.listRowBackground(Color(uiColor: .secondarySystemBackground))
 	}
+
+	private func lanesSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
+		Section {
+			AlleyLanesView(store: store.scope(state: \.alleyLanes, action: AlleyEditor.Action.alleyLanes))
+		} header: {
+			HStack(alignment: .firstTextBaseline) {
+				Text(Strings.Lane.List.title)
+				Spacer()
+				NavigationLink(
+					destination: AlleyLanesEditorView(store: store.scope(
+						state: \.base.form.laneEditor,
+						action: AlleyEditor.Action.laneEditor
+					)),
+					isActive: viewStore.binding(
+						get: \.isLaneEditorPresented,
+						send: AlleyEditorView.ViewAction.setLaneEditor(isPresented:)
+					)
+				) {
+					Text(Strings.Alley.Properties.Lanes.manage)
+				}
+			}
+		}
+	}
 }
 
 extension AlleyEditor.State {
@@ -146,6 +178,8 @@ extension AlleyEditor.State {
 extension AlleyEditor.Action {
 	init(action: AlleyEditorView.ViewAction) {
 		switch action {
+		case let .setLaneEditor(isPresented):
+			self = .setLaneEditor(isPresented: isPresented)
 		case let .binding(action):
 			self = .binding(action.pullback(\AlleyEditor.State.view))
 		}
@@ -158,7 +192,7 @@ struct AlleyEditorViewPreview: PreviewProvider {
 		NavigationView {
 			AlleyEditorView(
 				store: .init(
-					initialState: .init(mode: .create),
+					initialState: .init(mode: .create, hasLanesEnabled: true),
 					reducer: AlleyEditor()
 				)
 			)

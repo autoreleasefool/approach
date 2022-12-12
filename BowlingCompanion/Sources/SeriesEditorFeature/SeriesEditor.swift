@@ -48,12 +48,14 @@ public struct SeriesEditor: ReducerProtocol {
 		public var initialAlley: Alley?
 		public var isAlleyPickerPresented = false
 		public let hasAlleysEnabled: Bool
+		public let hasLanesEnabled: Bool
 
 		public init(
 			league: League,
 			mode: Form.Mode,
 			date: Date,
-			hasAlleysEnabled: Bool
+			hasAlleysEnabled: Bool,
+			hasLanesEnabled: Bool
 		) {
 			var fields = Fields(league: league, date: date)
 			switch mode {
@@ -66,6 +68,7 @@ public struct SeriesEditor: ReducerProtocol {
 
 			self.base = .init(mode: mode, form: fields)
 			self.hasAlleysEnabled = hasAlleysEnabled
+			self.hasLanesEnabled = hasLanesEnabled
 		}
 	}
 

@@ -7,13 +7,13 @@ import SwiftUI
 
 public struct AlleyLanesEditor: ReducerProtocol {
 	public struct State: Equatable {
-		public var alley: Alley.ID
+		public var alley: Alley.ID?
 		public var isLoadingInitialData = true
 		public var existingLanes: [Lane] = []
 		public var lanes: IdentifiedArrayOf<LaneEditor.State> = []
 		public var alert: AlertState<AlertAction>?
 
-		public init(alley: Alley.ID) {
+		public init(alley: Alley.ID?) {
 			self.alley = alley
 		}
 	}
@@ -37,12 +37,14 @@ public struct AlleyLanesEditor: ReducerProtocol {
 		Reduce { state, action in
 			switch action {
 			case .loadInitialData:
-				state.isLoadingInitialData = true
-				return .task { [alley = state.alley] in
-					await .lanesResponse(TaskResult {
-						try await lanesDataProvider.fetchLanes(.init(filter: [.alley(alley)], ordering: .byLabel))
-					})
+				if let alley = state.alley {
+					return .task {
+						await .lanesResponse(TaskResult {
+							try await lanesDataProvider.fetchLanes(.init(filter: [.alley(alley)], ordering: .byLabel))
+						})
+					}
 				}
+				return .task { .lanesResponse(.success([])) }
 
 			case let .lanesResponse(.success(lanes)):
 				state.existingLanes = lanes
@@ -51,16 +53,14 @@ public struct AlleyLanesEditor: ReducerProtocol {
 						.init(
 							id: uuid(),
 							label: "1",
-							isAgainstWall: true,
-							isShowingAgainstWallNotice: true
+							isAgainstWall: true
 						),
 					])
 				} else {
 					state.lanes = .init(uniqueElements: lanes.enumerated().map { .init(
 						id: $1.id,
 						label: $1.label,
-						isAgainstWall: $1.isAgainstWall,
-						isShowingAgainstWallNotice: $0 == 0
+						isAgainstWall: $1.isAgainstWall
 					)})
 				}
 				state.isLoadingInitialData = false
@@ -77,15 +77,13 @@ public struct AlleyLanesEditor: ReducerProtocol {
 					state.lanes.append(.init(
 						id: uuid(),
 						label: String(previousLaneNumber + 1),
-						isAgainstWall: false,
-						isShowingAgainstWallNotice: false
+						isAgainstWall: false
 					))
 				} else {
 					state.lanes.append(.init(
 						id: uuid(),
 						label: "",
-						isAgainstWall: false,
-						isShowingAgainstWallNotice: false
+						isAgainstWall: false
 					))
 				}
 				return .none

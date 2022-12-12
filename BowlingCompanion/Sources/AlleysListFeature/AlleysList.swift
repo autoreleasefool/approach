@@ -1,6 +1,7 @@
 import AlleysDataProviderInterface
 import AlleyEditorFeature
 import ComposableArchitecture
+import FeatureFlagServiceInterface
 import PersistenceServiceInterface
 import SharedModelsLibrary
 import ViewsLibrary
@@ -39,6 +40,7 @@ public struct AlleysList: ReducerProtocol {
 
 	@Dependency(\.persistenceService) var persistenceService
 	@Dependency(\.alleysDataProvider) var alleysDataProvider
+	@Dependency(\.featureFlags) var featureFlags: FeatureFlagService
 
 	public var body: some ReducerProtocol<State, Action> {
 		Scope(state: \.alleyFilters, action: /AlleysList.Action.alleysFilter) {
@@ -67,7 +69,10 @@ public struct AlleysList: ReducerProtocol {
 				return .none
 
 			case let .swipeAction(alley, .edit):
-				state.alleyEditor = .init(mode: .edit(alley))
+				state.alleyEditor = .init(
+					mode: .edit(alley),
+					hasLanesEnabled: featureFlags.isEnabled(.lanesTracking)
+				)
 				return .none
 
 			case let .swipeAction(alley, .delete):
@@ -102,7 +107,10 @@ public struct AlleysList: ReducerProtocol {
 				return .task { .refreshList }
 
 			case .setEditorFormSheet(isPresented: true):
-				state.alleyEditor = .init(mode: .create)
+				state.alleyEditor = .init(
+					mode: .create,
+					hasLanesEnabled: featureFlags.isEnabled(.lanesTracking)
+				)
 				return .none
 
 			case .setEditorFormSheet(isPresented: false),

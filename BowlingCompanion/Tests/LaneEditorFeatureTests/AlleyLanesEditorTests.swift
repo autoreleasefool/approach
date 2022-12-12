@@ -29,8 +29,7 @@ final class AlleyLanesEditorTests: XCTestCase {
 				.init(
 					id: id1,
 					label: "",
-					isAgainstWall: true,
-					isShowingAgainstWallNotice: true
+					isAgainstWall: true
 				),
 			])
 		}
@@ -55,8 +54,7 @@ final class AlleyLanesEditorTests: XCTestCase {
 				.init(
 					id: id0,
 					label: "1",
-					isAgainstWall: true,
-					isShowingAgainstWallNotice: true
+					isAgainstWall: true
 				),
 			])
 		}
@@ -84,14 +82,13 @@ final class AlleyLanesEditorTests: XCTestCase {
 				.init(
 					id: id1,
 					label: "10",
-					isAgainstWall: true,
-					isShowingAgainstWallNotice: true
+					isAgainstWall: true
 				),
 			])
 		}
 
 		await store.send(.addLaneButtonTapped) {
-			$0.lanes.append(.init(id: id0, label: "11", isAgainstWall: false, isShowingAgainstWallNotice: false))
+			$0.lanes.append(.init(id: id0, label: "11", isAgainstWall: false))
 		}
 	}
 
@@ -117,14 +114,13 @@ final class AlleyLanesEditorTests: XCTestCase {
 				.init(
 					id: id1,
 					label: "A",
-					isAgainstWall: true,
-					isShowingAgainstWallNotice: true
+					isAgainstWall: true
 				),
 			])
 		}
 
 		await store.send(.addLaneButtonTapped) {
-			$0.lanes.append(.init(id: id0, label: "", isAgainstWall: false, isShowingAgainstWallNotice: false))
+			$0.lanes.append(.init(id: id0, label: "", isAgainstWall: false))
 		}
 	}
 
@@ -149,8 +145,7 @@ final class AlleyLanesEditorTests: XCTestCase {
 				.init(
 					id: id1,
 					label: "1",
-					isAgainstWall: true,
-					isShowingAgainstWallNotice: true
+					isAgainstWall: true
 				),
 			])
 		}
@@ -184,8 +179,7 @@ final class AlleyLanesEditorTests: XCTestCase {
 				.init(
 					id: id1,
 					label: "1",
-					isAgainstWall: true,
-					isShowingAgainstWallNotice: true
+					isAgainstWall: true
 				),
 			])
 		}
@@ -220,14 +214,13 @@ final class AlleyLanesEditorTests: XCTestCase {
 				.init(
 					id: id1,
 					label: "10",
-					isAgainstWall: true,
-					isShowingAgainstWallNotice: true
+					isAgainstWall: true
 				),
 			])
 		}
 
 		await store.send(.addLaneButtonTapped) {
-			$0.lanes.append(.init(id: id0, label: "11", isAgainstWall: false, isShowingAgainstWallNotice: false))
+			$0.lanes.append(.init(id: id0, label: "11", isAgainstWall: false))
 		}
 
 		await store.send(.laneEditor(id: id0, action: .swipeAction(.delete))) {
@@ -256,8 +249,7 @@ final class AlleyLanesEditorTests: XCTestCase {
 				.init(
 					id: id1,
 					label: "1",
-					isAgainstWall: true,
-					isShowingAgainstWallNotice: true
+					isAgainstWall: true
 				),
 			])
 		}
