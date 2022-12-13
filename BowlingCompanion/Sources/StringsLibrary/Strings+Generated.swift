@@ -99,6 +99,8 @@ public enum Strings {
       public enum Lanes {
         /// Manage
         public static let manage = Strings.tr("Localizable", "alley.properties.lanes.manage", fallback: "Manage")
+        /// No lanes created
+        public static let `none` = Strings.tr("Localizable", "alley.properties.lanes.none", fallback: "No lanes created")
       }
       public enum Material {
         /// Synthetic
@@ -259,6 +261,10 @@ public enum Strings {
     public static let title = Strings.tr("Localizable", "lane.title", fallback: "Lane")
     public enum Editor {
       public enum Fields {
+        /// Plural format key: "%#@lanes@"
+        public static func addLanes(_ p1: Int) -> String {
+          return Strings.tr("Localizable", "lane.editor.fields.addLanes", p1, fallback: "Plural format key: \"%#@lanes@\"")
+        }
         public enum IsAgainstWall {
           /// Generally, only the first and last lanes in an alley should be marked as 'against the wall'. For example, the first lane, but not the second lane, even if you usually bowl on both of them in one game.
           public static let help = Strings.tr("Localizable", "lane.editor.fields.isAgainstWall.help", fallback: "Generally, only the first and last lanes in an alley should be marked as 'against the wall'. For example, the first lane, but not the second lane, even if you usually bowl on both of them in one game.")
@@ -268,6 +274,8 @@ public enum Strings {
     public enum List {
       /// Add Lane
       public static let add = Strings.tr("Localizable", "lane.list.add", fallback: "Add Lane")
+      /// Add Muliple Lanes
+      public static let addMultiple = Strings.tr("Localizable", "lane.list.addMultiple", fallback: "Add Muliple Lanes")
       /// Lanes
       public static let title = Strings.tr("Localizable", "lane.list.title", fallback: "Lanes")
     }

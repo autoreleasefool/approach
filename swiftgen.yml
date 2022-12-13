@@ -1,0 +1,11 @@
+strings:
+  inputs:
+    - BowlingCompanionIOS/Resources/Localizable.strings
+    - BowlingCompanionIOS/Resources/Localizable.stringsdict
+  outputs:
+    - templateName: structured-swift5
+      output: BowlingCompanion/Sources/StringsLibrary/Strings+Generated.swift
+      params:
+        enumName: Strings
+        publicAccess: true
+        bundle: Bundle.main

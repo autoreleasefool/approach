@@ -16,6 +16,7 @@
 "alley.properties.pinBase.black" = "Black";
 "alley.properties.pinBase.white" = "White";
 "alley.properties.lanes.manage" = "Manage";
+"alley.properties.lanes.none" = "No lanes created";
 "alley.editor.help.askAStaffMember" = "Not sure about any of the settings? Ask a staff member! They'll probably be happy to help";
 "alley.editor.fields.material.help" = "To help tell the difference, wooden lanes tend to show some wear, while synthetic lanes are usually harder and smoother.";
 "alley.editor.fields.pinFall.help" = "Look at how the pins are set up. Do you notice the pins are pushed off the lane after each ball, or are they attached to strings and pulled up?";
@@ -51,6 +52,7 @@
 "lane.title" = "Lane";
 "lane.list.title" = "Lanes";
 "lane.list.add" = "Add Lane";
+"lane.list.addMultiple" = "Add Muliple Lanes";
 "lane.properties.label" = "Lane";
 "lane.properties.isAgainstWall" = "Against Wall?";
 "lane.editor.fields.isAgainstWall.help" = "Generally, only the first and last lanes in an alley should be marked as 'against the wall'. For example, the first lane, but not the second lane, even if you usually bowl on both of them in one game.";
