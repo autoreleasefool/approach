@@ -99,16 +99,41 @@ public struct AlleyEditor: ReducerProtocol {
 				state.isLaneEditorPresented = isPresented
 				return .none
 
-			case .form(.saveModelResult(.success)):
-				return .task { .form(.didFinishSaving) }
+			case let .form(.saveModelResult(.success(alley))):
+				let existing = state.base.form.laneEditor.existingLanes
+				let existingIds = existing.map { $0.id }
+				let lanes = state.base.form.laneEditor.lanes
+				let laneIds = lanes.map { $0.id }
+				return .task { [alleyId = alley.id] in
+					let added = lanes.filter { !existingIds.contains($0.id) }.map { $0.toLane(alley: alleyId) }
+					let removed = existing.filter { !laneIds.contains($0.id) }
+					let updated = lanes.filter { existingIds.contains($0.id) }.map { $0.toLane(alley: alleyId) }
+
+					try await persistenceService.createLanes(added)
+					try await persistenceService.updateLanes(updated)
+					try await persistenceService.deleteLanes(removed)
+
+					return .form(.didFinishSaving)
+				}
 
 			case .form(.deleteModelResult(.success)):
+				state.base.isLoading = false
 				return .task { .form(.didFinishDeleting) }
+
+			case .form(.deleteModelResult(.failure)), .form(.saveModelResult(.failure)):
+				state.base.isLoading = false
+				return .none
 
 			case .binding, .form, .alleyLanes, .laneEditor:
 				return .none
 			}
 		}
+	}
+}
+
+extension LaneEditor.State {
+	func toLane(alley: Alley.ID) -> Lane {
+		.init(id: id, label: label, isAgainstWall: isAgainstWall, alley: alley)
 	}
 }
 

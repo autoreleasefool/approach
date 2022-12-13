@@ -37,9 +37,9 @@ public struct PersistenceService: Sendable {
 	public var fetchAlleys: @Sendable (Alley.FetchRequest) async throws -> [Alley]
 	public var observeAlleys: @Sendable (Alley.FetchRequest) -> AsyncThrowingStream<[Alley], Error>
 
-	public var createLane: @Sendable (Lane) async throws -> Void
-	public var updateLane: @Sendable (Lane) async throws -> Void
-	public var deleteLane: @Sendable (Lane) async throws -> Void
+	public var createLanes: @Sendable ([Lane]) async throws -> Void
+	public var updateLanes: @Sendable ([Lane]) async throws -> Void
+	public var deleteLanes: @Sendable ([Lane]) async throws -> Void
 	public var fetchLanes: @Sendable (Lane.FetchRequest) async throws -> [Lane]
 
 	public var createGear: @Sendable (Gear) async throws -> Void
@@ -77,9 +77,9 @@ public struct PersistenceService: Sendable {
 		deleteAlley: @escaping @Sendable (Alley) async throws -> Void,
 		fetchAlleys: @escaping @Sendable (Alley.FetchRequest) async throws -> [Alley],
 		observeAlleys: @escaping @Sendable (Alley.FetchRequest) -> AsyncThrowingStream<[Alley], Error>,
-		createLane: @escaping @Sendable (Lane) async throws -> Void,
-		updateLane: @escaping @Sendable (Lane) async throws -> Void,
-		deleteLane: @escaping @Sendable (Lane) async throws -> Void,
+		createLanes: @escaping @Sendable ([Lane]) async throws -> Void,
+		updateLanes: @escaping @Sendable ([Lane]) async throws -> Void,
+		deleteLanes: @escaping @Sendable ([Lane]) async throws -> Void,
 		fetchLanes: @escaping @Sendable (Lane.FetchRequest) async throws -> [Lane],
 		createGear: @escaping @Sendable (Gear) async throws -> Void,
 		updateGear: @escaping @Sendable (Gear) async throws -> Void,
@@ -115,9 +115,9 @@ public struct PersistenceService: Sendable {
 		self.deleteAlley = deleteAlley
 		self.fetchAlleys = fetchAlleys
 		self.observeAlleys = observeAlleys
-		self.createLane = createLane
-		self.updateLane = updateLane
-		self.deleteLane = deleteLane
+		self.createLanes = createLanes
+		self.updateLanes = updateLanes
+		self.deleteLanes = deleteLanes
 		self.fetchLanes = fetchLanes
 		self.createGear = createGear
 		self.updateGear = updateGear
@@ -157,9 +157,9 @@ extension PersistenceService: TestDependencyKey {
 		deleteAlley: { _ in fatalError("\(Self.self).deleteAlley") },
 		fetchAlleys: { _ in fatalError("\(Self.self).fetchAlleys") },
 		observeAlleys: { _ in fatalError("\(Self.self).observeAlleys") },
-		createLane: { _ in fatalError("\(Self.self).createLane") },
-		updateLane: { _ in fatalError("\(Self.self).updateLane") },
-		deleteLane: { _ in fatalError("\(Self.self).deleteLane") },
+		createLanes: { _ in fatalError("\(Self.self).createLanes") },
+		updateLanes: { _ in fatalError("\(Self.self).updateLanes") },
+		deleteLanes: { _ in fatalError("\(Self.self).deleteLanes") },
 		fetchLanes: { _ in fatalError("\(Self.self).fetchLanes") },
 		createGear: { _ in fatalError("\(Self.self).createGear") },
 		updateGear: { _ in fatalError("\(Self.self).updateGear") },

@@ -1,13 +1,13 @@
 import ComposableArchitecture
-import Foundation
+import SharedModelsLibrary
 
 public struct LaneEditor: ReducerProtocol {
 	public struct State: Identifiable, Equatable {
-		public let id: UUID
+		public let id: Lane.ID
 		@BindableState public var label: String
 		@BindableState public var isAgainstWall: Bool
 
-		public init(id: UUID, label: String = "", isAgainstWall: Bool = false) {
+		public init(id: Lane.ID, label: String = "", isAgainstWall: Bool = false) {
 			self.id = id
 			self.label = label
 			self.isAgainstWall = isAgainstWall

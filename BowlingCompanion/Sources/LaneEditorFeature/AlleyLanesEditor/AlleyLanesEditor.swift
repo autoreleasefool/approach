@@ -126,7 +126,7 @@ public struct AlleyLanesEditor: ReducerProtocol {
 			case let .alert(.deleteButtonTapped(lane)):
 				return .task { [lane = lane] in
 					await .laneDeleteResponse(TaskResult {
-						try await persistenceService.deleteLane(lane)
+						try await persistenceService.deleteLanes([lane])
 						return lane.id
 					})
 				}
