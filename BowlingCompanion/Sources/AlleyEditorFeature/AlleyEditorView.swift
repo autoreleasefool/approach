@@ -141,7 +141,7 @@ public struct AlleyEditorView: View {
 		Section {
 			AlleyLanesView(store: store.scope(state: \.alleyLanes, action: AlleyEditor.Action.alleyLanes))
 		} header: {
-			HStack(alignment: .firstTextBaseline) {
+			HStack(alignment: .bottom) {
 				Text(Strings.Lane.List.title)
 				Spacer()
 				NavigationLink(
@@ -155,6 +155,7 @@ public struct AlleyEditorView: View {
 					)
 				) {
 					Text(Strings.Alley.Properties.Lanes.manage)
+						.font(.caption)
 				}
 			}
 		}

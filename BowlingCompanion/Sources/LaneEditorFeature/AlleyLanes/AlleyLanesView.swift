@@ -1,6 +1,7 @@
 import ComposableArchitecture
 import SharedModelsLibrary
 import SharedModelsViewsLibrary
+import StringsLibrary
 import SwiftUI
 
 public struct AlleyLanesView: View {
@@ -30,8 +31,13 @@ public struct AlleyLanesView: View {
 				ProgressView()
 					.onAppear { viewStore.send(.onAppear) }
 			} else {
-				ForEach(viewStore.lanes) { lane in
-					LaneRow(lane: lane)
+				if viewStore.lanes.isEmpty {
+					Text(Strings.Alley.Properties.Lanes.none)
+						.listRowBackground(Color(uiColor: .secondarySystemBackground))
+				} else {
+					ForEach(viewStore.lanes) { lane in
+						LaneRow(lane: lane)
+					}
 				}
 			}
 		}

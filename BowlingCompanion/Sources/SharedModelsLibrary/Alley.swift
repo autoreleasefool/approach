@@ -2,6 +2,8 @@ import Foundation
 import StringsLibrary
 
 public struct Alley: Sendable, Identifiable, Hashable, Codable {
+	public static let NUMBER_OF_LANES_RANGE = 0...1000
+
 	public let id: UUID
 	public let name: String
 	public let address: String?

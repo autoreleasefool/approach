@@ -12,6 +12,7 @@ public struct AlleyLanesEditor: ReducerProtocol {
 		public var existingLanes: [Lane] = []
 		public var lanes: IdentifiedArrayOf<LaneEditor.State> = []
 		public var alert: AlertState<AlertAction>?
+		public var addLaneForm: AddLaneForm.State?
 
 		public init(alley: Alley.ID?) {
 			self.alley = alley
@@ -20,11 +21,13 @@ public struct AlleyLanesEditor: ReducerProtocol {
 
 	public enum Action: Equatable {
 		case loadInitialData
-		case lanesResponse(TaskResult<[Lane]>)
 		case addLaneButtonTapped
+		case addMultipleLanesButtonTapped
+		case lanesResponse(TaskResult<[Lane]>)
 		case laneDeleteResponse(TaskResult<Lane.ID>)
 		case alert(AlertAction)
 		case laneEditor(id: LaneEditor.State.ID, action: LaneEditor.Action)
+		case addLaneForm(AddLaneForm.Action)
 	}
 
 	public init() {}
@@ -88,6 +91,30 @@ public struct AlleyLanesEditor: ReducerProtocol {
 				}
 				return .none
 
+			case .addMultipleLanesButtonTapped:
+				state.addLaneForm = .init()
+				return .none
+
+			case .addLaneForm(.cancelButtonTapped):
+				state.addLaneForm = nil
+				return .none
+
+			case .addLaneForm(.saveButtonTapped):
+				if let lanesToAdd = state.addLaneForm?.lanesToAdd {
+					if let previousLane = state.lanes.last?.label,
+						 let previousLaneNumber = Int(previousLane) {
+						(1...lanesToAdd).forEach {
+							state.lanes.append(.init(id: uuid(), label: String(previousLaneNumber + $0), isAgainstWall: false))
+						}
+					} else {
+						(1...lanesToAdd).forEach { _ in
+							state.lanes.append(.init(id: uuid(), label: "", isAgainstWall: false))
+						}
+					}
+				}
+				state.addLaneForm = nil
+				return .none
+
 			case let .laneEditor(id, .swipeAction(.delete)):
 				if let deleted = state.existingLanes.first(where: { $0.id == id }) {
 					state.alert = AlleyLanesEditor.alert(toDelete: deleted)
@@ -117,12 +144,15 @@ public struct AlleyLanesEditor: ReducerProtocol {
 				state.alert = nil
 				return .none
 
-			case .laneEditor:
+			case .laneEditor, .addLaneForm:
 				return .none
 			}
 		}
 		.forEach(\.lanes, action: /Action.laneEditor(id:action:)) {
 			LaneEditor()
+		}
+		.ifLet(\.addLaneForm, action: /Action.addLaneForm) {
+			AddLaneForm()
 		}
 	}
 }
