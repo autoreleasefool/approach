@@ -4,7 +4,7 @@ script_path=$(realpath $0)
 script_dir=$(dirname $script_path)
 project_dir=$(dirname $script_dir)
 parse_package="$script_dir/parse_package_lib/lib.rb"
-package_yml="$project_dir/BowlingCompanion/Package.swift.yml"
+package_yml="$project_dir/Package.swift.yml"
 package_output="$project_dir/BowlingCompanion/Package.swift"
 
 ruby $parse_package $package_yml > $package_output
