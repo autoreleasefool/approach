@@ -145,10 +145,16 @@ public struct LeagueEditor: ReducerProtocol {
 				return .none
 
 			case .form(.saveModelResult(.success)):
+				state.base.isLoading = false
 				return .task { .form(.didFinishSaving) }
 
 			case .form(.deleteModelResult(.success)):
+				state.base.isLoading = false
 				return .task { .form(.didFinishDeleting) }
+
+			case .form(.deleteModelResult(.failure)), .form(.saveModelResult(.failure)):
+				state.base.isLoading = false
+				return .none
 
 			case .binding(\.base.form.$recurrence):
 				if state.base.form.recurrence == .oneTimeEvent {

@@ -91,7 +91,6 @@ public struct BaseForm<Model: BaseFormModel, FormState: BaseFormState>: ReducerP
 				}
 
 			case .saveModelResult(.failure):
-				state.isLoading = false
 				// TODO: show error
 				return .none
 
@@ -112,7 +111,6 @@ public struct BaseForm<Model: BaseFormModel, FormState: BaseFormState>: ReducerP
 				}
 
 			case .deleteModelResult(.failure):
-				state.isLoading = false
 				// TODO: show error
 				return .none
 
