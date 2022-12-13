@@ -144,6 +144,12 @@ public struct LeagueEditor: ReducerProtocol {
 				state.isAlleyPickerPresented = false
 				return .none
 
+			case .form(.saveModelResult(.success)):
+				return .task { .form(.didFinishSaving) }
+
+			case .form(.deleteModelResult(.success)):
+				return .task { .form(.didFinishDeleting) }
+
 			case .binding(\.base.form.$recurrence):
 				if state.base.form.recurrence == .oneTimeEvent {
 					return .task { .set(\.base.form.$gamesPerSeries, .static) }

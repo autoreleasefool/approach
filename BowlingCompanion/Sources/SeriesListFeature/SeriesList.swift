@@ -107,8 +107,8 @@ public struct SeriesList: ReducerProtocol {
 				return .none
 
 			case .setEditorFormSheet(isPresented: false),
-					.seriesEditor(.form(.saveResult(.success))),
-					.seriesEditor(.form(.deleteResult(.success))),
+					.seriesEditor(.form(.didFinishSaving)),
+					.seriesEditor(.form(.didFinishDeleting)),
 					.seriesEditor(.form(.alert(.discardButtonTapped))):
 				state.seriesEditor = nil
 				return .none

@@ -135,6 +135,12 @@ public struct SeriesEditor: ReducerProtocol {
 				state.isAlleyPickerPresented = false
 				return .none
 
+			case .form(.saveModelResult(.success)):
+				return .task { .form(.didFinishSaving) }
+
+			case .form(.deleteModelResult(.success)):
+				return .task { .form(.didFinishDeleting) }
+
 			case .binding, .form, .alleyPicker:
 				return .none
 			}

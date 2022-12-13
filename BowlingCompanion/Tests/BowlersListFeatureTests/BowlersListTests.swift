@@ -141,7 +141,7 @@ final class BowlersListTests: XCTestCase {
 			$0.bowlerEditor = .init(mode: .edit(bowler))
 		}
 
-		await store.send(.bowlerEditor(.form(.saveResult(.success(bowler))))) {
+		await store.send(.bowlerEditor(.form(.saveModelResult(.success(bowler))))) {
 			$0.bowlerEditor = nil
 		}
 
@@ -149,7 +149,7 @@ final class BowlersListTests: XCTestCase {
 			$0.bowlerEditor = .init(mode: .edit(bowler))
 		}
 
-		await store.send(.bowlerEditor(.form(.deleteResult(.success(bowler))))) {
+		await store.send(.bowlerEditor(.form(.deleteModelResult(.success(bowler))))) {
 			$0.bowlerEditor = nil
 		}
 	}

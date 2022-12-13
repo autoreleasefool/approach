@@ -196,7 +196,7 @@ final class GearEditorTests: XCTestCase {
 		let task = await store.send(.form(.saveButtonTapped)) {
 			$0.base.isLoading = true
 		}
-		await store.receive(.form(.saveResult(.success(gear))))
+		await store.receive(.form(.saveModelResult(.success(gear))))
 		await task.finish()
 
 		waitForExpectations(timeout: 1)
@@ -225,7 +225,7 @@ final class GearEditorTests: XCTestCase {
 		let task = await store.send(.form(.saveButtonTapped)) {
 			$0.base.isLoading = true
 		}
-		await store.receive(.form(.saveResult(.success(gear2))))
+		await store.receive(.form(.saveModelResult(.success(gear2))))
 		await task.finish()
 
 		waitForExpectations(timeout: 1)
@@ -259,7 +259,7 @@ final class GearEditorTests: XCTestCase {
 		await store.send(.form(.saveButtonTapped)) {
 			$0.base.isLoading = true
 		}
-		await store.receive(.form(.saveResult(.failure(MockError.mock)))) {
+		await store.receive(.form(.saveModelResult(.failure(MockError.mock)))) {
 			$0.base.isLoading = false
 		}
 	}

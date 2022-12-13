@@ -115,6 +115,12 @@ public struct GearEditor: ReducerProtocol {
 				state.isBowlerPickerPresented = false
 				return .none
 
+			case .form(.saveModelResult(.success)):
+				return .task { .form(.didFinishSaving) }
+
+			case .form(.deleteModelResult(.success)):
+				return .task { .form(.didFinishDeleting) }
+
 			case .binding, .form, .bowlerPicker:
 				return .none
 			}

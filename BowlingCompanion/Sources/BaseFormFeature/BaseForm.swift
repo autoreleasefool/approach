@@ -53,8 +53,10 @@ public struct BaseForm<Model: BaseFormModel, FormState: BaseFormState>: ReducerP
 		case saveButtonTapped
 		case discardButtonTapped
 		case deleteButtonTapped
-		case saveResult(TaskResult<Model>)
-		case deleteResult(TaskResult<Model>)
+		case saveModelResult(TaskResult<Model>)
+		case deleteModelResult(TaskResult<Model>)
+		case didFinishSaving
+		case didFinishDeleting
 		case alert(AlertAction)
 	}
 
@@ -73,7 +75,7 @@ public struct BaseForm<Model: BaseFormModel, FormState: BaseFormState>: ReducerP
 				case let .edit(original):
 					let model = state.form.model(fromExisting: original)
 					return .task {
-						await .saveResult(TaskResult {
+						await .saveModelResult(TaskResult {
 							try await modelPersistence.update(model)
 							return model
 						})
@@ -81,14 +83,14 @@ public struct BaseForm<Model: BaseFormModel, FormState: BaseFormState>: ReducerP
 				case .create:
 					let model = state.form.model(fromExisting: nil)
 					return .task {
-						await .saveResult(TaskResult {
+						await .saveModelResult(TaskResult {
 							try await modelPersistence.create(model)
 							return model
 						})
 					}
 				}
 
-			case .saveResult(.failure):
+			case .saveModelResult(.failure):
 				state.isLoading = false
 				// TODO: show error
 				return .none
@@ -103,13 +105,13 @@ public struct BaseForm<Model: BaseFormModel, FormState: BaseFormState>: ReducerP
 				guard case let .edit(model) = state.mode else { return .none }
 				state.isLoading = true
 				return .task {
-					await .deleteResult(TaskResult {
+					await .deleteModelResult(TaskResult {
 						try await modelPersistence.delete(model)
 						return model
 					})
 				}
 
-			case .deleteResult(.failure):
+			case .deleteModelResult(.failure):
 				state.isLoading = false
 				// TODO: show error
 				return .none
@@ -126,7 +128,10 @@ public struct BaseForm<Model: BaseFormModel, FormState: BaseFormState>: ReducerP
 				state.alert = nil
 				return .none
 
-			case .saveResult(.success), .deleteResult(.success):
+			case .saveModelResult(.success),
+					.deleteModelResult(.success),
+					.didFinishSaving,
+					.didFinishDeleting:
 				return .none
 			}
 		}

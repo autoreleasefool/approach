@@ -114,8 +114,8 @@ public struct AlleysList: ReducerProtocol {
 				return .none
 
 			case .setEditorFormSheet(isPresented: false),
-					.alleyEditor(.form(.saveResult(.success))),
-					.alleyEditor(.form(.deleteResult(.success))),
+					.alleyEditor(.form(.didFinishSaving)),
+					.alleyEditor(.form(.didFinishDeleting)),
 					.alleyEditor(.form(.alert(.discardButtonTapped))):
 				state.alleyEditor = nil
 				return .task { .refreshList }

@@ -58,6 +58,12 @@ public struct BowlerEditor: ReducerProtocol {
 
 		Reduce { _, action in
 			switch action {
+			case .form(.saveModelResult(.success)):
+				return .task { .form(.didFinishSaving) }
+
+			case .form(.deleteModelResult(.success)):
+				return .task { .form(.didFinishDeleting) }
+
 			case .binding, .form:
 				return .none
 			}

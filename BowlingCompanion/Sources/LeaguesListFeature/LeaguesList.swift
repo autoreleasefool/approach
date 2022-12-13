@@ -93,8 +93,8 @@ public struct LeaguesList: ReducerProtocol {
 				return .none
 
 			case .setEditorFormSheet(isPresented: false),
-					.leagueEditor(.form(.saveResult(.success))),
-					.leagueEditor(.form(.deleteResult(.success))),
+					.leagueEditor(.form(.didFinishSaving)),
+					.leagueEditor(.form(.didFinishDeleting)),
 					.leagueEditor(.form(.alert(.discardButtonTapped))):
 				state.leagueEditor = nil
 				return .none

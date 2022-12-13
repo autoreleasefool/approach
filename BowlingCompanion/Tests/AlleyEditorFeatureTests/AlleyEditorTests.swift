@@ -111,7 +111,7 @@ final class AlleyEditorTests: XCTestCase {
 		let task = await store.send(.form(.saveButtonTapped)) {
 			$0.base.isLoading = true
 		}
-		await store.receive(.form(.saveResult(.success(alley))))
+		await store.receive(.form(.saveModelResult(.success(alley))))
 		await task.finish()
 
 		waitForExpectations(timeout: 1)
@@ -140,7 +140,7 @@ final class AlleyEditorTests: XCTestCase {
 		let task = await store.send(.form(.saveButtonTapped)) {
 			$0.base.isLoading = true
 		}
-		await store.receive(.form(.saveResult(.success(alley2))))
+		await store.receive(.form(.saveModelResult(.success(alley2))))
 		await task.finish()
 
 		waitForExpectations(timeout: 1)
@@ -174,7 +174,7 @@ final class AlleyEditorTests: XCTestCase {
 		await store.send(.form(.saveButtonTapped)) {
 			$0.base.isLoading = true
 		}
-		await store.receive(.form(.saveResult(.failure(MockError.mock)))) {
+		await store.receive(.form(.saveModelResult(.failure(MockError.mock)))) {
 			$0.base.isLoading = false
 		}
 	}

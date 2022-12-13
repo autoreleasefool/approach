@@ -47,8 +47,8 @@ public struct GearList: ReducerProtocol {
 				return .none
 
 			case .setEditorFormSheet(isPresented: false),
-					.gearEditor(.form(.saveResult(.success))),
-					.gearEditor(.form(.deleteResult(.success))),
+					.gearEditor(.form(.didFinishSaving)),
+					.gearEditor(.form(.didFinishDeleting)),
 					.gearEditor(.form(.alert(.discardButtonTapped))):
 				state.gearEditor = nil
 				return .task { .refreshList }

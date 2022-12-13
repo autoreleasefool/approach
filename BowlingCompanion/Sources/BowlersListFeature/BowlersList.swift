@@ -116,8 +116,8 @@ public struct BowlersList: ReducerProtocol {
 				return .none
 
 			case .setEditorFormSheet(isPresented: false),
-					.bowlerEditor(.form(.saveResult(.success))),
-					.bowlerEditor(.form(.deleteResult(.success))),
+					.bowlerEditor(.form(.didFinishSaving)),
+					.bowlerEditor(.form(.didFinishDeleting)),
 					.bowlerEditor(.form(.alert(.discardButtonTapped))):
 				state.bowlerEditor = nil
 				return .none
