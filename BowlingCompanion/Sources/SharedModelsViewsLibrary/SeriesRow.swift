@@ -29,3 +29,19 @@ public struct SeriesRow: View {
 			}
 	}
 }
+
+#if DEBUG
+struct SeriesRowPreview: PreviewProvider {
+	static var previews: some View {
+		List {
+			Section {
+				SeriesRow(series: .init(league: .init(), id: .init(), date: .init(), numberOfGames: 4, alley: nil))
+				SeriesRow(series: .init(league: .init(), id: .init(), date: .init(), numberOfGames: 6, alley: nil))
+				SeriesRow(series: .init(league: .init(), id: .init(), date: .init(), numberOfGames: 2, alley: nil))
+			}
+			.listRowBackground(Color(uiColor: .secondarySystemBackground))
+		}
+		.scrollContentBackground(.hidden)
+	}
+}
+#endif

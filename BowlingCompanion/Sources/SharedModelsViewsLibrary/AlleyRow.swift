@@ -14,34 +14,44 @@ public struct AlleyRow: View {
 		self.onDelete = onDelete
 	}
 
+	var hasSomeBadge: Bool {
+		alley.material != .unknown ||
+			alley.mechanism != .unknown ||
+			alley.pinBase != .unknown ||
+			alley.pinFall != .unknown
+	}
+
 	public var body: some View {
 		VStack(alignment: .leading, spacing: .smallSpacing) {
 			Text(alley.name)
 				.frame(maxWidth: .infinity, alignment: .leading)
-			HStack {
-				if alley.material != .unknown {
-					BadgeView(
-						String(describing: alley.material),
-						style: .custom(foreground: .appAlleyMaterialBorder, background: .appAlleyMaterialBackground)
-					)
-				}
-				if alley.mechanism != .unknown {
-					BadgeView(
-						String(describing: alley.mechanism),
-						style: .custom(foreground: .appAlleyMechanismBorder, background: .appAlleyMechanismBackground)
-					)
-				}
-				if alley.pinFall != .unknown {
-					BadgeView(
-						String(describing: alley.pinFall),
-						style: .custom(foreground: .appAlleyPinFallBorder, background: .appAlleyPinFallBackground)
-					)
-				}
-				if alley.pinBase != .unknown {
-					BadgeView(
-						String(describing: alley.pinBase),
-						style: .custom(foreground: .appAlleyPinBaseBorder, background: .appAlleyPinBaseBackground)
-					)
+
+			if hasSomeBadge {
+				HStack {
+					if alley.material != .unknown {
+						BadgeView(
+							String(describing: alley.material),
+							style: .custom(foreground: .appAlleyMaterialBorder, background: .appAlleyMaterialBackground)
+						)
+					}
+					if alley.mechanism != .unknown {
+						BadgeView(
+							String(describing: alley.mechanism),
+							style: .custom(foreground: .appAlleyMechanismBorder, background: .appAlleyMechanismBackground)
+						)
+					}
+					if alley.pinFall != .unknown {
+						BadgeView(
+							String(describing: alley.pinFall),
+							style: .custom(foreground: .appAlleyPinFallBorder, background: .appAlleyPinFallBackground)
+						)
+					}
+					if alley.pinBase != .unknown {
+						BadgeView(
+							String(describing: alley.pinBase),
+							style: .custom(foreground: .appAlleyPinBaseBorder, background: .appAlleyPinBaseBackground)
+						)
+					}
 				}
 			}
 		}

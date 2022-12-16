@@ -15,8 +15,7 @@ public struct GearRow: View {
 	}
 
 	public var body: some View {
-		Text(gear.name)
-			.frame(maxWidth: .infinity, alignment: .leading)
+		Label(gear.name, systemImage: gear.kind.image)
 			.swipeActions(allowsFullSwipe: true) {
 				if let onEdit {
 					EditButton(perform: onEdit)
@@ -28,3 +27,19 @@ public struct GearRow: View {
 			}
 	}
 }
+
+
+#if DEBUG
+struct GearRowPreview: PreviewProvider {
+	static var previews: some View {
+		List {
+			Section {
+				GearRow(gear: .init(bowler: .init(), id: .init(), name: "Yellow", kind: .bowlingBall))
+				GearRow(gear: .init(bowler: .init(), id: .init(), name: "Bowling School, 2022", kind: .towel))
+			}
+			.listRowBackground(Color(uiColor: .secondarySystemBackground))
+		}
+		.scrollContentBackground(.hidden)
+	}
+}
+#endif

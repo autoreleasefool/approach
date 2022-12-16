@@ -28,3 +28,19 @@ public struct BowlerRow: View {
 			}
 	}
 }
+
+#if DEBUG
+struct BowlerRowPreview: PreviewProvider {
+	static var previews: some View {
+		List {
+			Section {
+				BowlerRow(bowler: .init(id: .init(), name: "Joseph"))
+				BowlerRow(bowler: .init(id: .init(), name: "Sarah"))
+				BowlerRow(bowler: .init(id: .init(), name: "Audriana Roque"))
+			}
+			.listRowBackground(Color(uiColor: .secondarySystemBackground))
+		}
+		.scrollContentBackground(.hidden)
+	}
+}
+#endif

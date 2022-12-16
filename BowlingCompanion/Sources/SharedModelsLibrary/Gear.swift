@@ -36,5 +36,14 @@ extension Gear {
 			case .other: return Strings.other
 			}
 		}
+
+		public var image: String {
+			switch self {
+			case .bowlingBall: return "poweroutlet.type.h"
+			case .shoes: return "shoeprints.fill"
+			case .towel: return "square.split.bottomrightquarter"
+			case .other: return "questionmark.app"
+			}
+		}
 	}
 }
