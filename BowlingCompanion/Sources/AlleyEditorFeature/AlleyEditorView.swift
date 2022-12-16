@@ -140,6 +140,7 @@ public struct AlleyEditorView: View {
 	private func lanesSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
 		Section {
 			AlleyLanesView(store: store.scope(state: \.alleyLanes, action: AlleyEditor.Action.alleyLanes))
+				.listRowBackground(Color(uiColor: .secondarySystemBackground))
 		} header: {
 			HStack(alignment: .bottom) {
 				Text(Strings.Lane.List.title)
