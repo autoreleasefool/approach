@@ -19,7 +19,7 @@ public struct AlleysList: ReducerProtocol {
 	}
 
 	public enum Action: Equatable {
-		case refreshList
+		case observeAlleys
 		case errorButtonTapped
 		case swipeAction(Alley, SwipeAction)
 		case alleysResponse(TaskResult<[Alley]>)
@@ -36,6 +36,8 @@ public struct AlleysList: ReducerProtocol {
 		case edit
 	}
 
+	struct ObservationCancellable {}
+
 	public init() {}
 
 	@Dependency(\.persistenceService) var persistenceService
@@ -49,16 +51,16 @@ public struct AlleysList: ReducerProtocol {
 
 		Reduce { state, action in
 			switch action {
-			case .refreshList:
+			case .observeAlleys:
 				state.error = nil
-				return .task { [filters = state.alleyFilters.filters] in
-					await .alleysResponse(TaskResult {
-						try await alleysDataProvider.fetchAlleys(.init(filter: filters, ordering: .byRecentlyUsed))
-					})
+				return .run { [filters = state.alleyFilters.filters] send in
+					for try await alleys in alleysDataProvider.observeAlleys(.init(filter: filters, ordering: .byRecentlyUsed)) {
+						await send(.alleysResponse(.success(alleys)))
+					}
+				} catch: { error, send in
+					await send(.alleysResponse(.failure(error)))
 				}
-
-			case .errorButtonTapped:
-				return .task { .refreshList }
+				.cancellable(id: ObservationCancellable.self, cancelInFlight: true)
 
 			case let .alleysResponse(.success(alleys)):
 				state.alleys = .init(uniqueElements: alleys)
@@ -91,9 +93,6 @@ public struct AlleysList: ReducerProtocol {
 					})
 				}
 
-			case .deleteAlleyResponse(.success):
-				return .task { .refreshList }
-
 			case .deleteAlleyResponse(.failure):
 				state.error = .deleteError
 				return .none
@@ -104,7 +103,10 @@ public struct AlleysList: ReducerProtocol {
 
 			case .setFilterSheet(isPresented: false), .alleysFilter(.applyButtonTapped):
 				state.isAlleyFiltersPresented = false
-				return .task { .refreshList }
+				return .task { .observeAlleys }
+
+			case .alleysFilter(.binding):
+				return .task { .observeAlleys }
 
 			case .setEditorFormSheet(isPresented: true):
 				state.alleyEditor = .init(
@@ -118,12 +120,9 @@ public struct AlleysList: ReducerProtocol {
 					.alleyEditor(.form(.didFinishDeleting)),
 					.alleyEditor(.form(.alert(.discardButtonTapped))):
 				state.alleyEditor = nil
-				return .task { .refreshList }
+				return .none
 
-			case .alleysFilter(.binding):
-				return .task { .refreshList }
-
-			case .alleyEditor, .alleysFilter:
+			case .alleyEditor, .alleysFilter, .errorButtonTapped, .deleteAlleyResponse(.success):
 				return .none
 			}
 		}

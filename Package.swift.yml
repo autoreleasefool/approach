@@ -8,6 +8,10 @@ package:
       - .v16
 
   dependencies:
+    - url: "https://github.com/apple/swift-async-algorithms.git"
+      from: "0.0.3"
+      exports:
+        - AsyncAlgorithms
     - url: "https://github.com/pointfreeco/swift-composable-architecture.git"
       from: "0.42.0"
       exports:
@@ -132,6 +136,7 @@ package:
     - name: AlleysDataProvider
       dependencies:
         implementation:
+          - AsyncAlgorithms
           - PersistenceService
           - RecentlyUsedService
           - SortingLibrary

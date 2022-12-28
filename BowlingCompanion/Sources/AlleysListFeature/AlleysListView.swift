@@ -32,7 +32,7 @@ public struct AlleysListView: View {
 	}
 
 	enum ViewAction {
-		case refreshList
+		case observeAlleys
 		case filterButtonTapped
 		case addButtonTapped
 		case errorButtonTapped
@@ -113,7 +113,7 @@ public struct AlleysListView: View {
 				self.store.scope(state: \.alert, action: AlleysList.Action.alert),
 				dismiss: .dismissed
 			)
-			.onAppear { viewStore.send(.refreshList) }
+			.task { await viewStore.send(.observeAlleys).finish() }
 		}
 	}
 }
@@ -121,8 +121,8 @@ public struct AlleysListView: View {
 extension AlleysList.Action {
 	init(action: AlleysListView.ViewAction) {
 		switch action {
-		case .refreshList:
-			self = .refreshList
+		case .observeAlleys:
+			self = .observeAlleys
 		case .filterButtonTapped:
 			self = .setFilterSheet(isPresented: true)
 		case let .setFilterSheet(isPresented):

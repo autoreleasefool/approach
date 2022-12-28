@@ -78,6 +78,7 @@ let package = Package(
 
 	],
 	dependencies: [
+		.package(url: "https://github.com/apple/swift-async-algorithms.git", from: "0.0.3"),
 		.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "0.42.0"),
 		.package(url: "https://github.com/groue/GRDB.swift.git", from: "6.0.0"),
 	],
@@ -385,6 +386,7 @@ let package = Package(
 		.target(
 			name: "AlleysDataProvider",
 			dependencies: [
+				.product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
 				"AlleysDataProviderInterface",
 				"PersistenceServiceInterface",
 				"RecentlyUsedServiceInterface",

@@ -4,17 +4,21 @@ import SharedModelsFetchableLibrary
 
 public struct AlleysDataProvider: Sendable {
 	public var fetchAlleys: @Sendable (Alley.FetchRequest) async throws -> [Alley]
+	public var observeAlleys: @Sendable (Alley.FetchRequest) -> AsyncThrowingStream<[Alley], Error>
 
 	public init(
-		fetchAlleys: @escaping @Sendable (Alley.FetchRequest) async throws -> [Alley]
+		fetchAlleys: @escaping @Sendable (Alley.FetchRequest) async throws -> [Alley],
+		observeAlleys: @escaping @Sendable (Alley.FetchRequest) -> AsyncThrowingStream<[Alley], Error>
 	) {
 		self.fetchAlleys = fetchAlleys
+		self.observeAlleys = observeAlleys
 	}
 }
 
 extension AlleysDataProvider: TestDependencyKey {
 	public static var testValue = Self(
-		fetchAlleys: { _ in fatalError("\(Self.self).fetchAlleys") }
+		fetchAlleys: { _ in fatalError("\(Self.self).fetchAlleys") },
+		observeAlleys: { _ in fatalError("\(Self.self).observeAlleys") }
 	)
 }
 
