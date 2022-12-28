@@ -23,6 +23,8 @@ public struct LaneEditor: ReducerProtocol {
 		case delete
 	}
 
+	public init() {}
+
 	public var body: some ReducerProtocol<State, Action> {
 		BindingReducer()
 
