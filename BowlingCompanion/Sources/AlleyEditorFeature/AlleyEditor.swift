@@ -14,6 +14,7 @@ public struct AlleyEditor: ReducerProtocol {
 	public typealias Form = BaseForm<Alley, Fields>
 
 	public struct Fields: BaseFormState, Equatable {
+		public let alleyId: Alley.ID
 		public var laneEditor: AlleyLanesEditor.State
 		@BindableState public var name = ""
 		@BindableState public var address = ""
@@ -22,7 +23,8 @@ public struct AlleyEditor: ReducerProtocol {
 		@BindableState public var mechanism: Alley.Mechanism = .unknown
 		@BindableState public var pinBase: Alley.PinBase = .unknown
 
-		init(alley: Alley.ID?) {
+		init(alley: Alley.ID) {
+			self.alleyId = alley
 			self.laneEditor = .init(alley: alley)
 		}
 
@@ -51,7 +53,9 @@ public struct AlleyEditor: ReducerProtocol {
 				fields.pinBase = alley.pinBase
 				self.alleyLanes = .init(alley: alley.id)
 			case .create:
-				fields = .init(alley: nil)
+				@Dependency(\.uuid) var uuid: UUIDGenerator
+
+				fields = .init(alley: uuid())
 				self.alleyLanes = .init(alley: nil)
 			}
 
@@ -97,6 +101,11 @@ public struct AlleyEditor: ReducerProtocol {
 			switch action {
 			case let .setLaneEditor(isPresented):
 				state.isLaneEditorPresented = isPresented
+				if !isPresented {
+					state.alleyLanes.lanes = .init(
+						uniqueElements: state.base.form.laneEditor.lanes.map { $0.toLane(alley: state.base.form.alleyId) }
+					)
+				}
 				return .none
 
 			case let .form(.saveModelResult(.success(alley))):
@@ -142,7 +151,7 @@ extension AlleyEditor.Fields {
 		@Dependency(\.uuid) var uuid: UUIDGenerator
 
 		return .init(
-			id: existing?.id ?? uuid(),
+			id: alleyId,
 			name: name,
 			address: address.isEmpty ? nil : address,
 			material: material,

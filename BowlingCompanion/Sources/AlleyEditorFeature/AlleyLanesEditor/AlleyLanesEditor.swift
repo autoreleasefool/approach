@@ -41,6 +41,8 @@ public struct AlleyLanesEditor: ReducerProtocol {
 		Reduce { state, action in
 			switch action {
 			case .loadInitialData:
+				guard state.isLoadingInitialData else { return .none }
+
 				if let alley = state.alley {
 					return .task {
 						await .lanesResponse(TaskResult {
@@ -118,6 +120,7 @@ public struct AlleyLanesEditor: ReducerProtocol {
 
 			case let .laneEditor(id, .swipeAction(.delete)):
 				if let deleted = state.existingLanes.first(where: { $0.id == id }) {
+					// FIXME: AlleyLanesEditorView does not re-render when alert is dismissed and deleted lane does not re-appear
 					state.alert = AlleyLanesEditor.alert(toDelete: deleted)
 				} else {
 					state.lanes.removeAll { $0.id == id }

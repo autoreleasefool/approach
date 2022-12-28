@@ -59,6 +59,10 @@ public struct AlleyLanesEditorView: View {
 			}
 			.navigationTitle(Strings.Lane.List.title)
 			.onAppear { viewStore.send(.onAppear) }
+			.alert(
+				self.store.scope(state: \.alert, action: AlleyLanesEditor.Action.alert),
+				dismiss: .dismissed
+			)
 			.sheet(isPresented: viewStore.binding(
 				get: \.isAddLaneFormPresented,
 				send: ViewAction.setAddLaneForm(isPresented:)
@@ -79,7 +83,7 @@ public struct AlleyLanesEditorView: View {
 				.onPreferenceChange(HeightPreferenceKey.self) { newHeight in
 					addLaneSheetHeight = newHeight
 				}
-				.presentationDetents([.height(addLaneSheetHeight)])
+				.presentationDetents([.height(addLaneSheetHeight), .medium])
 			}
 		}
 	}
