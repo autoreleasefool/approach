@@ -16,7 +16,7 @@ extension BowlersList {
 				action: .send(.deleteButtonTapped(bowler))
 			),
 			secondaryButton: .cancel(
-				TextState(Strings.Action.discard),
+				TextState(Strings.Action.cancel),
 				action: .send(.dismissed)
 			)
 		)
