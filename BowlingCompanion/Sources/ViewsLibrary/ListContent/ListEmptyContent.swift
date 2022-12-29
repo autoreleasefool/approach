@@ -1,5 +1,5 @@
 import SwiftUI
-import ThemesLibrary
+import AssetsLibrary
 
 public struct ListEmptyContent: View {
 	public let image: UIImage

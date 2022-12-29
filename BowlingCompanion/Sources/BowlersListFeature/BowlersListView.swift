@@ -6,7 +6,7 @@ import SharedModelsViewsLibrary
 import StatisticsWidgetsFeature
 import StringsLibrary
 import SwiftUI
-import ThemesLibrary
+import AssetsLibrary
 import ViewsLibrary
 
 public struct BowlersListView: View {

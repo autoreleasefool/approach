@@ -63,6 +63,7 @@ let package = Package(
 		.library(name: "RecentlyUsedServiceInterface", targets: ["RecentlyUsedServiceInterface"]),
 
 		// MARK: - Libraries
+		.library(name: "AssetsLibrary", targets: ["AssetsLibrary"]),
 		.library(name: "ConstantsLibrary", targets: ["ConstantsLibrary"]),
 		.library(name: "DateTimeLibrary", targets: ["DateTimeLibrary"]),
 		.library(name: "FeatureFlagsLibrary", targets: ["FeatureFlagsLibrary"]),
@@ -74,7 +75,6 @@ let package = Package(
 		.library(name: "SortingLibrary", targets: ["SortingLibrary"]),
 		.library(name: "StringsLibrary", targets: ["StringsLibrary"]),
 		.library(name: "SwiftUIExtensionsLibrary", targets: ["SwiftUIExtensionsLibrary"]),
-		.library(name: "ThemesLibrary", targets: ["ThemesLibrary"]),
 		.library(name: "ViewsLibrary", targets: ["ViewsLibrary"]),
 
 	],
@@ -712,6 +712,10 @@ let package = Package(
 
 		// MARK: - Libraries
 		.target(
+			name: "AssetsLibrary",
+			dependencies: []
+		),
+		.target(
 			name: "ConstantsLibrary",
 			dependencies: [
 				"StringsLibrary",
@@ -796,15 +800,11 @@ let package = Package(
 			]
 		),
 		.target(
-			name: "ThemesLibrary",
-			dependencies: []
-		),
-		.target(
 			name: "ViewsLibrary",
 			dependencies: [
 				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+				"AssetsLibrary",
 				"StringsLibrary",
-				"ThemesLibrary",
 			]
 		),
 		.testTarget(

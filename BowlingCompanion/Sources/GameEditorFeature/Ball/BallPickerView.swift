@@ -1,7 +1,7 @@
 import SharedModelsLibrary
 import StringsLibrary
 import SwiftUI
-import ThemesLibrary
+import AssetsLibrary
 import ViewsLibrary
 
 struct BallPickerView: View {

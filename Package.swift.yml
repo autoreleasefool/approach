@@ -52,7 +52,7 @@ package:
         - PersistenceService
     - name: BaseFormFeature
       dependencies:
-        - ThemesLibrary
+        - AssetsLibrary
         - ViewsLibrary
     - name: BowlersListFeature
       dependencies:
@@ -66,9 +66,9 @@ package:
         - FeatureFlagsService
     - name: GameEditorFeature
       dependencies:
+        - AssetsLibrary
         - SwiftUIExtensionsLibrary
         - SharedModelsLibrary
-        - ThemesLibrary
         - ViewsLibrary
     - name: GearEditorFeature
       dependencies:
@@ -84,11 +84,11 @@ package:
         - SharedModelsViewsLibrary
     - name: LaneEditorFeature
       dependencies:
+        - AssetsLibrary
         - LanesDataProvider
         - PersistenceService
         - StringsLibrary
         - SwiftUIExtensionsLibrary
-        - ThemesLibrary
         - ViewsLibrary
     - name: LeagueEditorFeature
       dependencies:
@@ -106,8 +106,8 @@ package:
         - SharedModelsViewsLibrary
     - name: ResourcePickerFeature
       dependencies:
+        - AssetsLibrary
         - StringsLibrary
-        - ThemesLibrary
         - ViewsLibrary
     - name: ScoreSheetFeature
       dependencies:
@@ -134,7 +134,7 @@ package:
         - FeatureFlagsListFeature
     - name: StatisticsWidgetsFeature
       dependencies:
-        - ThemesLibrary
+        - AssetsLibrary
         - ViewsLibrary
 
   data_provider:
@@ -225,9 +225,9 @@ package:
         - SharedModelsLibrary
     - name: SharedModelsViewsLibrary
       dependencies:
+        - AssetsLibrary
         - DateTimeLibrary
         - SharedModelsLibrary
-        - ThemesLibrary
         - ViewsLibrary
     - name: SharedModelsPersistableLibrary
       dependencies:
@@ -238,10 +238,10 @@ package:
     - name: StringsLibrary
     - name: SwiftUIExtensionsLibrary
       requires_tests: true
-    - name: ThemesLibrary
+    - name: AssetsLibrary
     - name: ViewsLibrary
       requires_tests: true
       dependencies:
+        - AssetsLibrary
         - ComposableArchitecture
         - StringsLibrary
-        - ThemesLibrary

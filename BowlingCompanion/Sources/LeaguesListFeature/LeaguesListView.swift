@@ -5,7 +5,7 @@ import SharedModelsLibrary
 import SharedModelsViewsLibrary
 import StringsLibrary
 import SwiftUI
-import ThemesLibrary
+import AssetsLibrary
 import ViewsLibrary
 
 public struct LeaguesListView: View {

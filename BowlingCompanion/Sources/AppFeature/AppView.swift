@@ -5,7 +5,7 @@ import GearListFeature
 import SettingsFeature
 import StringsLibrary
 import SwiftUI
-import ThemesLibrary
+import AssetsLibrary
 
 public struct AppView: View {
 	let store: StoreOf<App>

@@ -2,7 +2,7 @@ import ComposableArchitecture
 import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsLibrary
-import ThemesLibrary
+import AssetsLibrary
 import ViewsLibrary
 
 public struct LaneEditorView: View {

@@ -2,7 +2,7 @@ import ComposableArchitecture
 import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsLibrary
-import ThemesLibrary
+import AssetsLibrary
 
 public struct GameEditorView: View {
 	let store: StoreOf<GameEditor>

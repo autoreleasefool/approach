@@ -1,6 +1,6 @@
 import StringsLibrary
 import SwiftUI
-import ThemesLibrary
+import AssetsLibrary
 
 public struct EditButton: View {
 	let perform: () -> Void

@@ -1,6 +1,6 @@
 import SharedModelsLibrary
 import SwiftUI
-import ThemesLibrary
+import AssetsLibrary
 import ViewsLibrary
 
 public struct BowlerRow: View {
