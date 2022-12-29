@@ -37,7 +37,7 @@ public struct SeriesListView: View {
 	}
 
 	enum ViewAction {
-		case refreshList
+		case observeSeries
 		case addButtonTapped
 		case errorButtonTapped
 		case setNavigation(selection: Series.ID?)
@@ -124,7 +124,7 @@ public struct SeriesListView: View {
 					}
 				}
 			}
-			.onAppear { viewStore.send(.refreshList) }
+			.task { await viewStore.send(.observeSeries).finish() }
 		}
 	}
 }
@@ -132,8 +132,8 @@ public struct SeriesListView: View {
 extension SeriesList.Action {
 	init(action: SeriesListView.ViewAction) {
 		switch action {
-		case.refreshList:
-			self = .refreshList
+		case.observeSeries:
+			self = .observeSeries
 		case .errorButtonTapped:
 			self = .errorButtonTapped
 		case let .setEditorFormSheet(isPresented):

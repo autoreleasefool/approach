@@ -24,7 +24,7 @@ public struct SeriesList: ReducerProtocol {
 	}
 
 	public enum Action: Equatable {
-		case refreshList
+		case observeSeries
 		case seriesResponse(TaskResult<[Series]>)
 		case setNavigation(selection: Series.ID?)
 		case setEditorFormSheet(isPresented: Bool)
@@ -44,6 +44,8 @@ public struct SeriesList: ReducerProtocol {
 		case delete
 	}
 
+	struct ObservationCancellable {}
+
 	public init() {}
 
 	@Dependency(\.uuid) var uuid
@@ -55,16 +57,20 @@ public struct SeriesList: ReducerProtocol {
 	public var body: some ReducerProtocol<State, Action> {
 		Reduce { state, action in
 			switch action {
-			case .refreshList:
+			case .observeSeries:
 				state.error = nil
-				return .task { [league = state.league.id] in
-					await .seriesResponse(TaskResult {
-						try await seriesDataProvider.fetchSeries(.init(league: league, ordering: .byDate))
-					})
+				return .run { [league = state.league.id] send in
+					for try await series in seriesDataProvider.observeSeries(.init(league: league, ordering: .byDate)) {
+						await send(.seriesResponse(.success(series)))
+					}
+				} catch: { error, send in
+					await send(.seriesResponse(.failure(error)))
 				}
+				.cancellable(id: ObservationCancellable.self, cancelInFlight: true)
 
 			case .errorButtonTapped:
-				return .task { .refreshList }
+				// TODO: handle error button tapped
+				return .none
 
 			case let .seriesResponse(.success(series)):
 				state.series = .init(uniqueElements: series)

@@ -3,15 +3,24 @@ import SeriesDataProviderInterface
 import PersistenceServiceInterface
 
 extension SeriesDataProvider: DependencyKey {
-	public static let liveValue = Self(
-		fetchSeries: { request in
-			@Dependency(\.persistenceService) var persistenceService: PersistenceService
-			let series = try await persistenceService.fetchSeries(request)
+	public static let liveValue: Self = {
+		@Dependency(\.persistenceService) var persistenceService: PersistenceService
 
-			switch request.ordering {
-			case .byDate:
-				return series
+		return .init(
+			fetchSeries: { request in
+				let series = try await persistenceService.fetchSeries(request)
+
+				switch request.ordering {
+				case .byDate:
+					return series
+				}
+			},
+			observeSeries: { request in
+				switch request.ordering {
+				case .byDate:
+					return persistenceService.observeSeries(request)
+				}
 			}
-		}
-	)
+		)
+	}()
 }
