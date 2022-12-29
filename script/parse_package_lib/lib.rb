@@ -24,6 +24,7 @@ package_yaml = YAML.safe_load(File.read(package_file))
   when 'feature'
     target.add_dependency(@external['ComposableArchitecture'])
   when 'test'
+    target.add_dependency(@external['SnapshotTesting'])
     target.add_dependency(@targets['SharedModelsMocksLibrary'])
     case target.base
     when 'data_provider'

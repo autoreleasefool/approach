@@ -22,6 +22,7 @@ public struct AvatarView: View {
 					.frame(width: size.value, height: size.value)
 					.cornerRadius(size.value)
 			} else {
+				// TODO: support background color
 				Color.red
 					.frame(width: size.value, height: size.value)
 					.cornerRadius(size.value)
