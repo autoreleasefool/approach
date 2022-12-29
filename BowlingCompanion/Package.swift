@@ -786,6 +786,14 @@ let package = Package(
 			name: "SwiftUIExtensionsLibrary",
 			dependencies: []
 		),
+		.testTarget(
+			name: "SwiftUIExtensionsLibraryTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"SharedModelsMocksLibrary",
+				"SwiftUIExtensionsLibrary",
+			]
+		),
 		.target(
 			name: "ThemesLibrary",
 			dependencies: []

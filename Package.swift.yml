@@ -236,6 +236,7 @@ package:
     - name: SortingLibrary
     - name: StringsLibrary
     - name: SwiftUIExtensionsLibrary
+      requires_tests: true
     - name: ThemesLibrary
     - name: ViewsLibrary
       requires_tests: true
