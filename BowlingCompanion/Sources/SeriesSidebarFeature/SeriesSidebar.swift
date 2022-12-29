@@ -15,11 +15,13 @@ public struct SeriesSidebar: ReducerProtocol {
 	}
 
 	public enum Action: Equatable {
-		case refreshList
+		case observeGames
 		case gamesResponse(TaskResult<[Game]>)
 		case setNavigation(selection: Game.ID?)
 		case gameEditor(GameEditor.Action)
 	}
+
+	struct ObservationCancellable {}
 
 	public init() {}
 
@@ -28,12 +30,15 @@ public struct SeriesSidebar: ReducerProtocol {
 	public var body: some ReducerProtocol<State, Action> {
 		Reduce { state, action in
 			switch action {
-			case .refreshList:
-				return .task { [series = state.series.id] in
-					await .gamesResponse(TaskResult {
-						try await gamesDataProvider.fetchGames(.init(filter: [.series(series)], ordering: .byOrdinal))
-					})
+			case .observeGames:
+				return .run { [series = state.series.id] send in
+					for try await games in gamesDataProvider.observeGames(.init(filter: [.series(series)], ordering: .byOrdinal)) {
+						await send(.gamesResponse(.success(games)))
+					}
+				} catch: { error, send in
+					await send(.gamesResponse(.failure(error)))
 				}
+				.cancellable(id: ObservationCancellable.self, cancelInFlight: true)
 
 			case let .gamesResponse(.success(games)):
 				state.games = .init(uniqueElements: games)

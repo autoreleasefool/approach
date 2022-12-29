@@ -4,17 +4,21 @@ import SharedModelsFetchableLibrary
 
 public struct GamesDataProvider: Sendable {
 	public var fetchGames: @Sendable (Game.FetchRequest) async throws -> [Game]
+	public var observeGames: @Sendable (Game.FetchRequest) -> AsyncThrowingStream<[Game], Error>
 
 	public init(
-		fetchGames: @escaping @Sendable (Game.FetchRequest) async throws -> [Game]
+		fetchGames: @escaping @Sendable (Game.FetchRequest) async throws -> [Game],
+		observeGames: @escaping @Sendable (Game.FetchRequest) -> AsyncThrowingStream<[Game], Error>
 	) {
 		self.fetchGames = fetchGames
+		self.observeGames = observeGames
 	}
 }
 
 extension GamesDataProvider: TestDependencyKey {
 	public static var testValue = Self(
-		fetchGames: { _ in fatalError("\(Self.self).fetchGames") }
+		fetchGames: { _ in fatalError("\(Self.self).fetchGames") },
+		observeGames: { _ in fatalError("\(Self.self).observeGames") }
 	)
 }
 

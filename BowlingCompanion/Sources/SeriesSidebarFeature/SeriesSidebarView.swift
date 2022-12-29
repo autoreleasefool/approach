@@ -20,7 +20,7 @@ public struct SeriesSidebarView: View {
 	}
 
 	enum ViewAction {
-		case refreshList
+		case observeGames
 		case setNavigation(selection: Game.ID?)
 	}
 
@@ -50,7 +50,7 @@ public struct SeriesSidebarView: View {
 				}
 			}
 			.navigationTitle(viewStore.title)
-			.onAppear { viewStore.send(.refreshList) }
+			.task { await viewStore.send(.observeGames).finish() }
 		}
 	}
 }
@@ -58,8 +58,8 @@ public struct SeriesSidebarView: View {
 extension SeriesSidebar.Action {
 	init(action: SeriesSidebarView.ViewAction) {
 		switch action {
-		case .refreshList:
-			self = .refreshList
+		case .observeGames:
+			self = .observeGames
 		case let .setNavigation(selection):
 			self = .setNavigation(selection: selection)
 		}
