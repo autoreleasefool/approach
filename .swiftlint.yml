@@ -1,3 +1,8 @@
+included:
+  - BowlingCompanion/Sources
+  - BowlingCompanion/Tests
+  - BowlingCompanion/Package.swift
+
 excluded:
   - .build
 
