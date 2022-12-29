@@ -10,7 +10,7 @@ final class BadgeViewTests: XCTestCase {
 			BadgeView("Badge", style: .success)
 			BadgeView("Badge", style: .destructive)
 			BadgeView("Badge", style: .info)
-			BadgeView("Badge", style: .primary) // FIXME: app colors not rendering
+			BadgeView("Badge", style: .primary)
 			BadgeView("Badge", style: .custom(foreground: .red, background: .blue))
 		}
 

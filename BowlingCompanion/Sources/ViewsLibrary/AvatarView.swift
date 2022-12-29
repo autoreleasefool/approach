@@ -19,6 +19,7 @@ public struct AvatarView: View {
 			if let image {
 				Image(uiImage: image)
 					.resizable()
+					.scaledToFit()
 					.frame(width: size.value, height: size.value)
 					.cornerRadius(size.value)
 			} else {

@@ -7,7 +7,7 @@ final class AvatarViewTests: XCTestCase {
 	private static func avatars(ofSize size: AvatarView.Size) -> some View {
 		List {
 			AvatarView(size: size)
-			AvatarView(size: size) // TODO: support image
+			AvatarView(.emptyBowlers, size: size)
 			AvatarView(size: size, title: "Joseph Roque")
 			AvatarView(size: size, subtitle: "Joseph Roque")
 			AvatarView(size: size, title: "Joseph Roque", subtitle: "Skyview Lanes")

@@ -6,7 +6,7 @@ import XCTest
 final class ListContentTests: XCTestCase {
 	func testEmptyContentSnapshot() {
 		let emptyContent = ListEmptyContent(
-			UIImage(),
+			.emptyBowlers,
 			title: "A Relevant Title",
 			message: "An Irrelevant Message",
 			style: .empty
@@ -17,14 +17,12 @@ final class ListContentTests: XCTestCase {
 		let vc = UIHostingController(rootView: emptyContent)
 		vc.view.frame = UIScreen.main.bounds
 
-		// FIXME: no image used
-		// FIXME: colors not rendering for buttons
 		assertSnapshot(matching: vc, as: .image(on: .iPhone13ProMax))
 	}
 
 	func testEmptyErrorContentSnapshot() {
 		let emptyContent = ListEmptyContent(
-			UIImage(),
+			.errorNotFound,
 			title: "A Relevant Title",
 			message: "An Irrelevant Message",
 			style: .error
@@ -35,8 +33,6 @@ final class ListContentTests: XCTestCase {
 		let vc = UIHostingController(rootView: emptyContent)
 		vc.view.frame = UIScreen.main.bounds
 
-		// FIXME: no image used
-		// FIXME: colors not rendering for buttons
 		assertSnapshot(matching: vc, as: .image(on: .iPhone13ProMax))
 	}
 
