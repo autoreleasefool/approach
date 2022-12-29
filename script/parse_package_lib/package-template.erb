@@ -5,6 +5,7 @@ import PackageDescription
 
 let package = Package(
 	name: "<%= @package.name %>",
+	defaultLocalization: "<%= @package.default_localization %>",
 	platforms: [<% @package.platforms.each do |platform, values| %>
 		.<%= platform %>(<% values.each do |value| %><%= value %><% end %>),<% end %>
 	],

@@ -12,6 +12,7 @@ package_yaml = YAML.safe_load(File.read(package_file))
 @package = Package::Package.new(
   name: package_yaml['package']['name'],
   platforms: package_yaml['package']['platforms'],
+  default_localization: package_yaml['package']['defaultLocalization'],
   tools_version: package_yaml['swift-tools-version']
 )
 

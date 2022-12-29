@@ -2,6 +2,7 @@ swift-tools-version: 5.7.1
 
 package:
   name: BowlingCompanion
+  defaultLocalization: "en"
 
   platforms:
     iOS:
