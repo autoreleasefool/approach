@@ -235,6 +235,7 @@ package:
         - Dependencies
         - GRDB
     - name: SortingLibrary
+      requires_tests: true
     - name: StringsLibrary
     - name: SwiftUIExtensionsLibrary
       requires_tests: true
