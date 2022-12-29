@@ -32,7 +32,7 @@ public struct LeaguesListView: View {
 	}
 
 	enum ViewAction {
-		case refreshList
+		case observeLeagues
 		case addButtonTapped
 		case errorButtonTapped
 		case setEditorFormSheet(isPresented: Bool)
@@ -107,7 +107,7 @@ public struct LeaguesListView: View {
 				self.store.scope(state: \.alert, action: LeaguesList.Action.alert),
 				dismiss: .dismissed
 			)
-			.onAppear { viewStore.send(.refreshList) }
+			.task { await viewStore.send(.observeLeagues).finish() }
 		}
 	}
 }
@@ -115,8 +115,8 @@ public struct LeaguesListView: View {
 extension LeaguesList.Action {
 	init(action: LeaguesListView.ViewAction) {
 		switch action {
-		case .refreshList:
-			self = .refreshList
+		case .observeLeagues:
+			self = .observeLeagues
 		case .addButtonTapped:
 			self = .setEditorFormSheet(isPresented: true)
 		case .errorButtonTapped:

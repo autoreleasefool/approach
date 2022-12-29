@@ -23,7 +23,7 @@ public struct LeaguesList: ReducerProtocol {
 	}
 
 	public enum Action: Equatable {
-		case refreshList
+		case observeLeagues
 		case errorButtonTapped
 		case leaguesResponse(TaskResult<[League]>)
 		case setNavigation(selection: League.ID?)
@@ -40,6 +40,8 @@ public struct LeaguesList: ReducerProtocol {
 		case delete
 	}
 
+	struct ObservationCancellable {}
+
 	public init() {}
 
 	@Dependency(\.continuousClock) var clock
@@ -51,16 +53,20 @@ public struct LeaguesList: ReducerProtocol {
 	public var body: some ReducerProtocol<State, Action> {
 		Reduce { state, action in
 			switch action {
-			case .refreshList:
+			case .observeLeagues:
 				state.error = nil
-				return .task { [bowler = state.bowler.id] in
-					await .leaguesResponse(TaskResult {
-						try await leaguesDataProvider.fetchLeagues(.init(bowler: bowler, ordering: .byRecentlyUsed))
-					})
+				return .run { [bowler = state.bowler.id] send in
+					for try await leagues in leaguesDataProvider.observeLeagues(.init(bowler: bowler, ordering: .byRecentlyUsed)) {
+						await send(.leaguesResponse(.success(leagues)))
+					}
+				} catch: { error, send in
+					await send(.leaguesResponse(.failure(error)))
 				}
+				.cancellable(id: ObservationCancellable.self, cancelInFlight: true)
 
 			case .errorButtonTapped:
-				return .task { .refreshList }
+				// TODO: handle error button tapped
+				return .none
 
 			case let .leaguesResponse(.success(leagues)):
 				state.leagues = .init(uniqueElements: leagues)
