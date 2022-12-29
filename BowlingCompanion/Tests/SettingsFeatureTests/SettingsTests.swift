@@ -1,5 +1,5 @@
 import ComposableArchitecture
-import FeatureFlagServiceInterface
+import FeatureFlagsServiceInterface
 import SettingsFeature
 import XCTest
 

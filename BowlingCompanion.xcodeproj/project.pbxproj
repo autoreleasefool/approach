@@ -18,7 +18,6 @@
 		CA94DD642900B3AC00B81A87 /* FileManagerService in Frameworks */ = {isa = PBXBuildFile; productRef = CA94DD632900B3AC00B81A87 /* FileManagerService */; };
 		CAA0C8AB29483D2E00384ED4 /* Localizable.stringsdict in Resources */ = {isa = PBXBuildFile; fileRef = CAA0C8A929483D2E00384ED4 /* Localizable.stringsdict */; };
 		CAA0C8AC29483D2E00384ED4 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = CAA0C8AA29483D2E00384ED4 /* Localizable.strings */; };
-		CAC11D32291CDD1B00D03B2E /* FeatureFlagService in Frameworks */ = {isa = PBXBuildFile; productRef = CAC11D31291CDD1B00D03B2E /* FeatureFlagService */; };
 		CAC13AA929203D6600DD36A5 /* AlleysDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CAC13AA829203D6600DD36A5 /* AlleysDataProvider */; };
 		CAC13AAB292045B700DD36A5 /* BowlersDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CAC13AAA292045B700DD36A5 /* BowlersDataProvider */; };
 		CAC13AAD29204EA000DD36A5 /* FramesDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CAC13AAC29204EA000DD36A5 /* FramesDataProvider */; };
@@ -27,6 +26,7 @@
 		CAC13AB329205E5600DD36A5 /* SeriesDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CAC13AB229205E5600DD36A5 /* SeriesDataProvider */; };
 		CAC56851291F54A100192D12 /* PreferenceService in Frameworks */ = {isa = PBXBuildFile; productRef = CAC56850291F54A100192D12 /* PreferenceService */; };
 		CAC56853291F54A100192D12 /* RecentlyUsedService in Frameworks */ = {isa = PBXBuildFile; productRef = CAC56852291F54A100192D12 /* RecentlyUsedService */; };
+		CAF80290295D67FC00B19459 /* FeatureFlagsService in Frameworks */ = {isa = PBXBuildFile; productRef = CAF8028F295D67FC00B19459 /* FeatureFlagsService */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -47,12 +47,12 @@
 			files = (
 				CA2890DE28F87FF2003C1EE9 /* AppFeature in Frameworks */,
 				CA81F9E0293DAD0B0061D1D9 /* LanesDataProvider in Frameworks */,
-				CAC11D32291CDD1B00D03B2E /* FeatureFlagService in Frameworks */,
 				CA94DD642900B3AC00B81A87 /* FileManagerService in Frameworks */,
 				CAC56851291F54A100192D12 /* PreferenceService in Frameworks */,
 				CAC13AB129205E5100DD36A5 /* LeaguesDataProvider in Frameworks */,
 				CA2890E328F8DA53003C1EE9 /* PersistenceService in Frameworks */,
 				CAC13AB329205E5600DD36A5 /* SeriesDataProvider in Frameworks */,
+				CAF80290295D67FC00B19459 /* FeatureFlagsService in Frameworks */,
 				CAC13AA929203D6600DD36A5 /* AlleysDataProvider in Frameworks */,
 				CAC13AAD29204EA000DD36A5 /* FramesDataProvider in Frameworks */,
 				CAC13AAB292045B700DD36A5 /* BowlersDataProvider in Frameworks */,
@@ -148,7 +148,6 @@
 				CA2890DD28F87FF2003C1EE9 /* AppFeature */,
 				CA2890E228F8DA53003C1EE9 /* PersistenceService */,
 				CA94DD632900B3AC00B81A87 /* FileManagerService */,
-				CAC11D31291CDD1B00D03B2E /* FeatureFlagService */,
 				CAC56850291F54A100192D12 /* PreferenceService */,
 				CAC56852291F54A100192D12 /* RecentlyUsedService */,
 				CAC13AA829203D6600DD36A5 /* AlleysDataProvider */,
@@ -159,6 +158,7 @@
 				CAC13AB229205E5600DD36A5 /* SeriesDataProvider */,
 				CA1442312924582D00D39B86 /* GearDataProvider */,
 				CA81F9DF293DAD0B0061D1D9 /* LanesDataProvider */,
+				CAF8028F295D67FC00B19459 /* FeatureFlagsService */,
 			);
 			productName = BowlingCompanion;
 			productReference = CA8BBC5528D59B8B00653A1E /* BowlingCompanion.app */;
@@ -464,10 +464,6 @@
 			isa = XCSwiftPackageProductDependency;
 			productName = FileManagerService;
 		};
-		CAC11D31291CDD1B00D03B2E /* FeatureFlagService */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = FeatureFlagService;
-		};
 		CAC13AA829203D6600DD36A5 /* AlleysDataProvider */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AlleysDataProvider;
@@ -499,6 +495,10 @@
 		CAC56852291F54A100192D12 /* RecentlyUsedService */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = RecentlyUsedService;
+		};
+		CAF8028F295D67FC00B19459 /* FeatureFlagsService */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FeatureFlagsService;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

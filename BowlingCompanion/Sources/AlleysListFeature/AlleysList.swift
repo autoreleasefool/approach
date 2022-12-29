@@ -1,7 +1,7 @@
 import AlleysDataProviderInterface
 import AlleyEditorFeature
 import ComposableArchitecture
-import FeatureFlagServiceInterface
+import FeatureFlagsServiceInterface
 import PersistenceServiceInterface
 import SharedModelsLibrary
 import ViewsLibrary
@@ -42,7 +42,7 @@ public struct AlleysList: ReducerProtocol {
 
 	@Dependency(\.persistenceService) var persistenceService
 	@Dependency(\.alleysDataProvider) var alleysDataProvider
-	@Dependency(\.featureFlags) var featureFlags: FeatureFlagService
+	@Dependency(\.featureFlags) var featureFlags: FeatureFlagsService
 
 	public var body: some ReducerProtocol<State, Action> {
 		Scope(state: \.alleyFilters, action: /AlleysList.Action.alleysFilter) {

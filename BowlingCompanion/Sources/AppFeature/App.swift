@@ -1,8 +1,8 @@
 import AlleysListFeature
 import BowlersListFeature
 import ComposableArchitecture
-import FeatureFlagLibrary
-import FeatureFlagServiceInterface
+import FeatureFlagsLibrary
+import FeatureFlagsServiceInterface
 import GearListFeature
 import SettingsFeature
 

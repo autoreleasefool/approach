@@ -1,15 +1,15 @@
 import ComposableArchitecture
-import FeatureFlagLibrary
+import FeatureFlagsLibrary
 import StringsLibrary
 import SwiftUI
 
-public struct FeatureFlagListView: View {
-	let store: StoreOf<FeatureFlagList>
+public struct FeatureFlagsListView: View {
+	let store: StoreOf<FeatureFlagsList>
 
 	struct ViewState: Equatable {
-		let featureFlags: [FeatureFlagList.FeatureFlagItem]
+		let featureFlags: [FeatureFlagsList.FeatureFlagItem]
 
-		init(state: FeatureFlagList.State) {
+		init(state: FeatureFlagsList.State) {
 			self.featureFlags = state.featureFlags
 		}
 	}
@@ -20,12 +20,12 @@ public struct FeatureFlagListView: View {
 		case resetOverridesButtonTapped
 	}
 
-	public init(store: StoreOf<FeatureFlagList>) {
+	public init(store: StoreOf<FeatureFlagsList>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: FeatureFlagList.Action.init) { viewStore in
+		WithViewStore(store, observe: ViewState.init, send: FeatureFlagsList.Action.init) { viewStore in
 			List {
 				Section {
 					Button(Strings.Action.reset) { viewStore.send(.resetOverridesButtonTapped) }
@@ -48,8 +48,8 @@ public struct FeatureFlagListView: View {
 	}
 }
 
-extension FeatureFlagList.Action {
-	init(action: FeatureFlagListView.ViewAction) {
+extension FeatureFlagsList.Action {
+	init(action: FeatureFlagsListView.ViewAction) {
 		switch action {
 		case .subscribeToFlags:
 			self = .subscribeToFlags

@@ -1,12 +1,12 @@
 import ComposableArchitecture
-import FeatureFlagListFeature
-import FeatureFlagServiceInterface
+import FeatureFlagsListFeature
+import FeatureFlagsServiceInterface
 
 public struct Settings: ReducerProtocol {
 	public struct State: Equatable {
 		public var showsFeatures: Bool
 		public var helpSettings = HelpSettings.State()
-		public var featureFlagList = FeatureFlagList.State()
+		public var featureFlagsList = FeatureFlagsList.State()
 
 		public init(hasDeveloperFeature: Bool) {
 			self.showsFeatures = hasDeveloperFeature
@@ -15,7 +15,7 @@ public struct Settings: ReducerProtocol {
 
 	public enum Action: Equatable {
 		case helpSettings(HelpSettings.Action)
-		case featureFlagList(FeatureFlagList.Action)
+		case featureFlagsList(FeatureFlagsList.Action)
 		case placeholder
 	}
 
@@ -25,13 +25,13 @@ public struct Settings: ReducerProtocol {
 		Scope(state: \.helpSettings, action: /Settings.Action.helpSettings) {
 			HelpSettings()
 		}
-		Scope(state: \.featureFlagList, action: /Settings.Action.featureFlagList) {
-			FeatureFlagList()
+		Scope(state: \.featureFlagsList, action: /Settings.Action.featureFlagsList) {
+			FeatureFlagsList()
 		}
 
 		Reduce { _, action in
 			switch action {
-			case .featureFlagList, .helpSettings:
+			case .featureFlagsList, .helpSettings:
 				return .none
 
 			case .placeholder:

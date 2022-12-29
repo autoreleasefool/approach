@@ -1,11 +1,11 @@
 import AppFeature
 import ComposableArchitecture
-import FeatureFlagServiceInterface
+import FeatureFlagsServiceInterface
 import SwiftUI
 
 struct ContentView: View {
 	let store: Store = {
-		@Dependency(\.featureFlags) var featureFlags: FeatureFlagService
+		@Dependency(\.featureFlags) var featureFlags: FeatureFlagsService
 		return .init(
 			initialState: App.State(
 				hasDeveloperFeature: featureFlags.isEnabled(.developerOptions)

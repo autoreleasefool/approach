@@ -16,7 +16,7 @@ let package = Package(
 		.library(name: "BaseFormFeature", targets: ["BaseFormFeature"]),
 		.library(name: "BowlerEditorFeature", targets: ["BowlerEditorFeature"]),
 		.library(name: "BowlersListFeature", targets: ["BowlersListFeature"]),
-		.library(name: "FeatureFlagListFeature", targets: ["FeatureFlagListFeature"]),
+		.library(name: "FeatureFlagsListFeature", targets: ["FeatureFlagsListFeature"]),
 		.library(name: "GameEditorFeature", targets: ["GameEditorFeature"]),
 		.library(name: "GearEditorFeature", targets: ["GearEditorFeature"]),
 		.library(name: "GearListFeature", targets: ["GearListFeature"]),
@@ -50,8 +50,8 @@ let package = Package(
 		.library(name: "SeriesDataProviderInterface", targets: ["SeriesDataProviderInterface"]),
 
 		// MARK: - Services
-		.library(name: "FeatureFlagService", targets: ["FeatureFlagService"]),
-		.library(name: "FeatureFlagServiceInterface", targets: ["FeatureFlagServiceInterface"]),
+		.library(name: "FeatureFlagsService", targets: ["FeatureFlagsService"]),
+		.library(name: "FeatureFlagsServiceInterface", targets: ["FeatureFlagsServiceInterface"]),
 		.library(name: "FileManagerService", targets: ["FileManagerService"]),
 		.library(name: "FileManagerServiceInterface", targets: ["FileManagerServiceInterface"]),
 		.library(name: "PersistenceService", targets: ["PersistenceService"]),
@@ -64,7 +64,7 @@ let package = Package(
 		// MARK: - Libraries
 		.library(name: "ConstantsLibrary", targets: ["ConstantsLibrary"]),
 		.library(name: "DateTimeLibrary", targets: ["DateTimeLibrary"]),
-		.library(name: "FeatureFlagLibrary", targets: ["FeatureFlagLibrary"]),
+		.library(name: "FeatureFlagsLibrary", targets: ["FeatureFlagsLibrary"]),
 		.library(name: "SharedModelsFetchableLibrary", targets: ["SharedModelsFetchableLibrary"]),
 		.library(name: "SharedModelsLibrary", targets: ["SharedModelsLibrary"]),
 		.library(name: "SharedModelsMocksLibrary", targets: ["SharedModelsMocksLibrary"]),
@@ -161,7 +161,7 @@ let package = Package(
 			dependencies: [
 				"BowlerEditorFeature",
 				"BowlersDataProviderInterface",
-				"FeatureFlagServiceInterface",
+				"FeatureFlagsServiceInterface",
 				"LeaguesListFeature",
 				"StatisticsWidgetsFeature",
 			]
@@ -174,16 +174,16 @@ let package = Package(
 			]
 		),
 		.target(
-			name: "FeatureFlagListFeature",
+			name: "FeatureFlagsListFeature",
 			dependencies: [
 				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
-				"FeatureFlagServiceInterface",
+				"FeatureFlagsServiceInterface",
 			]
 		),
 		.testTarget(
-			name: "FeatureFlagListFeatureTests",
+			name: "FeatureFlagsListFeatureTests",
 			dependencies: [
-				"FeatureFlagListFeature",
+				"FeatureFlagsListFeature",
 				"SharedModelsMocksLibrary",
 			]
 		),
@@ -358,7 +358,7 @@ let package = Package(
 			name: "SettingsFeature",
 			dependencies: [
 				"ConstantsLibrary",
-				"FeatureFlagListFeature",
+				"FeatureFlagsListFeature",
 			]
 		),
 		.testTarget(
@@ -574,22 +574,22 @@ let package = Package(
 
 		// MARK: - Services
 		.target(
-			name: "FeatureFlagService",
+			name: "FeatureFlagsService",
 			dependencies: [
-				"FeatureFlagServiceInterface",
+				"FeatureFlagsServiceInterface",
 			]
 		),
 		.target(
-			name: "FeatureFlagServiceInterface",
+			name: "FeatureFlagsServiceInterface",
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-composable-architecture"),
-				"FeatureFlagLibrary",
+				"FeatureFlagsLibrary",
 			]
 		),
 		.testTarget(
-			name: "FeatureFlagServiceTests",
+			name: "FeatureFlagsServiceTests",
 			dependencies: [
-				"FeatureFlagService",
+				"FeatureFlagsService",
 				"SharedModelsMocksLibrary",
 			]
 		),
@@ -694,13 +694,13 @@ let package = Package(
 			]
 		),
 		.target(
-			name: "FeatureFlagLibrary",
+			name: "FeatureFlagsLibrary",
 			dependencies: []
 		),
 		.testTarget(
-			name: "FeatureFlagLibraryTests",
+			name: "FeatureFlagsLibraryTests",
 			dependencies: [
-				"FeatureFlagLibrary",
+				"FeatureFlagsLibrary",
 				"SharedModelsMocksLibrary",
 			]
 		),

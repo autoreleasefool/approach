@@ -1,8 +1,8 @@
 import Combine
 import Dependencies
 import Foundation
-import FeatureFlagLibrary
-import FeatureFlagServiceInterface
+import FeatureFlagsLibrary
+import FeatureFlagsServiceInterface
 
 extension NSNotification.Name {
 	enum FeatureFlag {
@@ -10,7 +10,7 @@ extension NSNotification.Name {
 	}
 }
 
-extension FeatureFlagService: DependencyKey {
+extension FeatureFlagsService: DependencyKey {
 	public static let liveValue: Self = {
 		let flagManager = FeatureFlagOverrides()
 
@@ -77,7 +77,7 @@ extension FeatureFlagService: DependencyKey {
 }
 
 class FeatureFlagOverrides {
-	private let queue = DispatchQueue(label: "FeatureFlagService.FeatureFlagManager", attributes: .concurrent)
+	private let queue = DispatchQueue(label: "FeatureFlagsService.FeatureFlagManager", attributes: .concurrent)
 	private var queue_overrides: [FeatureFlag: Bool] = [:]
 
 	func setOverride(forFlag flag: FeatureFlag, enabled: Bool?) {

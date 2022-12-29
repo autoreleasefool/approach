@@ -53,12 +53,12 @@ package:
       dependencies:
         - BowlersDataProvider
         - BowlerEditorFeature
-        - FeatureFlagService
+        - FeatureFlagsService
         - LeaguesListFeature
         - StatisticsWidgetsFeature
-    - name: FeatureFlagListFeature
+    - name: FeatureFlagsListFeature
       dependencies:
-        - FeatureFlagService
+        - FeatureFlagsService
     - name: GameEditorFeature
       dependencies:
         - SwiftUIExtensionsLibrary
@@ -126,7 +126,7 @@ package:
     - name: SettingsFeature
       dependencies:
         - ConstantsLibrary
-        - FeatureFlagListFeature
+        - FeatureFlagsListFeature
     - name: StatisticsWidgetsFeature
       dependencies:
         - ThemesLibrary
@@ -179,10 +179,10 @@ package:
           - PersistenceService
 
   service:
-    - name: FeatureFlagService
+    - name: FeatureFlagsService
       dependencies:
         interface:
-          - FeatureFlagLibrary
+          - FeatureFlagsLibrary
     - name: FileManagerService
     - name: PersistenceService
       dependencies:
@@ -207,7 +207,7 @@ package:
         - StringsLibrary
     - name: DateTimeLibrary
       requires_tests: true
-    - name: FeatureFlagLibrary
+    - name: FeatureFlagsLibrary
       requires_tests: true
     - name: SharedModelsLibrary
       dependencies:

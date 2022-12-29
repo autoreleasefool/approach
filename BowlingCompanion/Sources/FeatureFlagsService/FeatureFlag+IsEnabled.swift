@@ -1,4 +1,4 @@
-import FeatureFlagLibrary
+import FeatureFlagsLibrary
 import Foundation
 
 extension FeatureFlag {

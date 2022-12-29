@@ -1,7 +1,7 @@
 import Dependencies
-import FeatureFlagLibrary
+import FeatureFlagsLibrary
 
-public struct FeatureFlagService: Sendable {
+public struct FeatureFlagsService: Sendable {
 	public var isEnabled: @Sendable (FeatureFlag) -> Bool
 	public var allEnabled: @Sendable ([FeatureFlag]) -> Bool
 	public var observe: @Sendable (FeatureFlag) -> AsyncStream<Bool>
@@ -23,7 +23,7 @@ public struct FeatureFlagService: Sendable {
 	}
 }
 
-extension FeatureFlagService: TestDependencyKey {
+extension FeatureFlagsService: TestDependencyKey {
 	public static var testValue = Self(
 		isEnabled: { _ in fatalError("\(Self.self).isEnabled") },
 		allEnabled: { _ in fatalError("\(Self.self).allEnabled") },
@@ -34,8 +34,8 @@ extension FeatureFlagService: TestDependencyKey {
 }
 
 extension DependencyValues {
-	public var featureFlags: FeatureFlagService {
-		get { self[FeatureFlagService.self] }
-		set { self[FeatureFlagService.self] = newValue }
+	public var featureFlags: FeatureFlagsService {
+		get { self[FeatureFlagsService.self] }
+		set { self[FeatureFlagsService.self] = newValue }
 	}
 }

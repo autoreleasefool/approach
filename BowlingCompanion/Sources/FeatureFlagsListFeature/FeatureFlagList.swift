@@ -1,8 +1,8 @@
 import ComposableArchitecture
-import FeatureFlagLibrary
-import FeatureFlagServiceInterface
+import FeatureFlagsLibrary
+import FeatureFlagsServiceInterface
 
-public struct FeatureFlagList: ReducerProtocol {
+public struct FeatureFlagsList: ReducerProtocol {
 	public struct State: Equatable {
 		public var featureFlags: [FeatureFlagItem] = []
 

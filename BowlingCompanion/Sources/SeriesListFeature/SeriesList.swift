@@ -1,5 +1,5 @@
 import ComposableArchitecture
-import FeatureFlagServiceInterface
+import FeatureFlagsServiceInterface
 import PersistenceServiceInterface
 import SeriesDataProviderInterface
 import SeriesEditorFeature
@@ -52,7 +52,7 @@ public struct SeriesList: ReducerProtocol {
 	@Dependency(\.date) var date
 	@Dependency(\.seriesDataProvider) var seriesDataProvider
 	@Dependency(\.persistenceService) var persistenceService
-	@Dependency(\.featureFlags) var featureFlags: FeatureFlagService
+	@Dependency(\.featureFlags) var featureFlags: FeatureFlagsService
 
 	public var body: some ReducerProtocol<State, Action> {
 		Reduce { state, action in
