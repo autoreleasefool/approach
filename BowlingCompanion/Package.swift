@@ -411,6 +411,7 @@ let package = Package(
 		.target(
 			name: "BowlersDataProvider",
 			dependencies: [
+				.product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
 				"BowlersDataProviderInterface",
 				"PersistenceServiceInterface",
 				"RecentlyUsedServiceInterface",
@@ -479,6 +480,7 @@ let package = Package(
 		.target(
 			name: "GearDataProvider",
 			dependencies: [
+				.product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
 				"GearDataProviderInterface",
 				"PersistenceServiceInterface",
 				"RecentlyUsedServiceInterface",
@@ -525,6 +527,7 @@ let package = Package(
 		.target(
 			name: "LeaguesDataProvider",
 			dependencies: [
+				.product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
 				"LeaguesDataProviderInterface",
 				"PersistenceServiceInterface",
 				"RecentlyUsedServiceInterface",

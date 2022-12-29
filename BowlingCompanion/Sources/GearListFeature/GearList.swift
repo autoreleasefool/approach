@@ -14,7 +14,7 @@ public struct GearList: ReducerProtocol {
 	}
 
 	public enum Action: Equatable {
-		case refreshList
+		case observeGear
 		case errorButtonTapped
 		case gearResponse(TaskResult<[Gear]>)
 		case swipeAction(Gear, SwipeAction)
@@ -27,6 +27,8 @@ public struct GearList: ReducerProtocol {
 		case edit
 	}
 
+	struct ObservationCancellable {}
+
 	public init() {}
 
 	@Dependency(\.gearDataProvider) var gearDataProvider
@@ -34,13 +36,16 @@ public struct GearList: ReducerProtocol {
 	public var body: some ReducerProtocol<State, Action> {
 		Reduce { state, action in
 			switch action {
-			case .refreshList:
+			case .observeGear:
 				state.error = nil
-				return .task {
-					await .gearResponse(TaskResult {
-						try await gearDataProvider.fetchGear(.init(ordering: .byRecentlyUsed))
-					})
+				return .run { send in
+					for try await gear in gearDataProvider.observeGear(.init(ordering: .byRecentlyUsed)) {
+						await send(.gearResponse(.success(gear)))
+					}
+				} catch: { error, send in
+					await send(.gearResponse(.failure(error)))
 				}
+				.cancellable(id: ObservationCancellable.self, cancelInFlight: true)
 
 			case .setEditorFormSheet(isPresented: true):
 				state.gearEditor = .init(mode: .create)
@@ -51,10 +56,11 @@ public struct GearList: ReducerProtocol {
 					.gearEditor(.form(.didFinishDeleting)),
 					.gearEditor(.form(.alert(.discardButtonTapped))):
 				state.gearEditor = nil
-				return .task { .refreshList }
+				return .none
 
 			case .errorButtonTapped:
-				return .task { .refreshList }
+				// TODO: handle error button tapped
+				return .none
 
 			case let .gearResponse(.success(gear)):
 				state.gear = .init(uniqueElements: gear)

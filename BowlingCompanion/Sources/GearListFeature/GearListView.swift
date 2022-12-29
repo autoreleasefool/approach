@@ -27,7 +27,7 @@ public struct GearListView: View {
 	}
 
 	enum ViewAction {
-		case refreshList
+		case observeGear
 		case addButtonTapped
 		case errorButtonTapped
 		case swipeAction(Gear, GearList.SwipeAction)
@@ -83,7 +83,7 @@ public struct GearListView: View {
 					}
 				}
 			}
-			.onAppear { viewStore.send(.refreshList) }
+			.task { await viewStore.send(.observeGear).finish() }
 		}
 	}
 }
@@ -91,8 +91,8 @@ public struct GearListView: View {
 extension GearList.Action {
 	init(action: GearListView.ViewAction) {
 		switch action {
-		case .refreshList:
-			self = .refreshList
+		case .observeGear:
+			self = .observeGear
 		case .errorButtonTapped:
 			self = .errorButtonTapped
 		case .addButtonTapped:
