@@ -31,7 +31,7 @@ public struct BowlersListView: View {
 	}
 
 	enum ViewAction {
-		case refreshList
+		case observeBowlers
 		case addButtonTapped
 		case errorButtonTapped
 		case configureStatisticsButtonTapped
@@ -116,7 +116,7 @@ public struct BowlersListView: View {
 				self.store.scope(state: \.alert, action: BowlersList.Action.alert),
 				dismiss: .dismissed
 			)
-			.onAppear { viewStore.send(.refreshList) }
+			.task { await viewStore.send(.observeBowlers).finish() }
 		}
 	}
 }
@@ -124,8 +124,8 @@ public struct BowlersListView: View {
 extension BowlersList.Action {
 	init(action: BowlersListView.ViewAction) {
 		switch action {
-		case .refreshList:
-			self = .refreshList
+		case .observeBowlers:
+			self = .observeBowlers
 		case .addButtonTapped:
 			self = .setEditorFormSheet(isPresented: true)
 		case .errorButtonTapped:

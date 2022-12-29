@@ -19,7 +19,7 @@ public struct BowlersList: ReducerProtocol {
 	}
 
 	public enum Action: Equatable {
-		case refreshList
+		case observeBowlers
 		case errorButtonTapped
 		case configureStatisticsButtonTapped
 		case swipeAction(Bowler, SwipeAction)
@@ -37,6 +37,8 @@ public struct BowlersList: ReducerProtocol {
 		case edit
 	}
 
+	struct ObservationCancellable {}
+
 	public init() {}
 
 	@Dependency(\.continuousClock) var clock
@@ -47,16 +49,20 @@ public struct BowlersList: ReducerProtocol {
 	public var body: some ReducerProtocol<State, Action> {
 		Reduce { state, action in
 			switch action {
-			case .refreshList:
+			case .observeBowlers:
 				state.error = nil
-				return .task {
-					await .bowlersResponse(TaskResult {
-						try await bowlersDataProvider.fetchBowlers(.init(filter: [], ordering: .byRecentlyUsed))
-					})
+				return .run { send in
+					for try await bowlers in bowlersDataProvider.observeBowlers(.init(filter: [], ordering: .byRecentlyUsed)) {
+						await send(.bowlersResponse(.success(bowlers)))
+					}
+				} catch: { error, send in
+					await send(.bowlersResponse(.failure(error)))
 				}
+				.cancellable(id: ObservationCancellable.self, cancelInFlight: true)
 
 			case .errorButtonTapped:
-				return .task { .refreshList }
+				// TODO: handle error button tapped
+				return .none
 
 			case .configureStatisticsButtonTapped:
 				// TODO: handle configure statistics button press
