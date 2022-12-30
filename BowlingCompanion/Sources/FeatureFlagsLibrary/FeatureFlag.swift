@@ -15,7 +15,7 @@ public struct FeatureFlag: Identifiable, Hashable {
 }
 
 extension FeatureFlag {
-	public enum RolloutStage: Comparable {
+	public enum RolloutStage: Comparable, CaseIterable {
 		case disabled
 		case development
 		case test
