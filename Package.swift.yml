@@ -224,6 +224,7 @@ package:
       dependencies:
         - SharedModelsLibrary
     - name: SharedModelsViewsLibrary
+      requires_tests: true
       dependencies:
         - AssetsLibrary
         - DateTimeLibrary

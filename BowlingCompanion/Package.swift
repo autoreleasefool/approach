@@ -779,6 +779,14 @@ let package = Package(
 				"ViewsLibrary",
 			]
 		),
+		.testTarget(
+			name: "SharedModelsViewsLibraryTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"SharedModelsMocksLibrary",
+				"SharedModelsViewsLibrary",
+			]
+		),
 		.target(
 			name: "SortingLibrary",
 			dependencies: []
