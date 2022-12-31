@@ -1,4 +1,5 @@
 import ComposableArchitecture
+import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsLibrary
 import ViewsLibrary
@@ -38,7 +39,7 @@ public struct SortOrderView<Ordering: Orderable>: View {
 				send: ViewAction.setSheetPresented(isPresented:)
 			)) {
 				List {
-					Section("Sort Order") {
+					Section(Strings.SortOrder.title) {
 						ForEach(viewStore.options, id: \.self) { ordering in
 							Button {
 								viewStore.send(.optionTapped(ordering))

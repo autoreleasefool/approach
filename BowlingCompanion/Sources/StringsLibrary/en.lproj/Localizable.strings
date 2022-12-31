@@ -130,6 +130,10 @@
 "settings.featureFlags.title" = "Features";
 "settings.title" = "Settings";
 
+/* Ordering */
+"ordering.alphabetical" = "Alphabetical";
+"ordering.mostRecentlyUsed" = "Most Recently Used";
+
 /* Tabs */
 
 "app.tabs.alley" = "Alleys";
@@ -149,6 +153,7 @@
 "form.prompt.delete" = "Are you sure you want to delete %@?";
 "picker.title" = "Picking %@";
 "picker.empty.title" = "No items found";
+"sortOrder.title" = "Sort Order";
 
 /* Errors */
 

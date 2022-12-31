@@ -356,6 +356,12 @@ public enum Strings {
       }
     }
   }
+  public enum Ordering {
+    /// Ordering
+    public static let alphabetical = Strings.tr("Localizable", "ordering.alphabetical", fallback: "Alphabetical")
+    /// Most Recently Used
+    public static let mostRecentlyUsed = Strings.tr("Localizable", "ordering.mostRecentlyUsed", fallback: "Most Recently Used")
+  }
   public enum Picker {
     /// Picking %@
     public static func title(_ p1: Any) -> String {
@@ -457,6 +463,10 @@ public enum Strings {
         public static let title = Strings.tr("Localizable", "settings.help.development.title", fallback: "Development")
       }
     }
+  }
+  public enum SortOrder {
+    /// Sort Order
+    public static let title = Strings.tr("Localizable", "sortOrder.title", fallback: "Sort Order")
   }
   public enum Statistics {
     public enum Placeholder {

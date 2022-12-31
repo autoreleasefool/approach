@@ -242,6 +242,7 @@ package:
       requires_tests: true
       dependencies:
         - ComposableArchitecture
+        - StringsLibrary
         - SwiftUIExtensionsLibrary
         - ViewsLibrary
     - name: StringsLibrary

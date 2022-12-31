@@ -1,4 +1,5 @@
 import SharedModelsLibrary
+import StringsLibrary
 
 extension Bowler {
 	public struct FetchRequest: Equatable {
@@ -26,8 +27,8 @@ extension Bowler.FetchRequest {
 
 		public var description: String {
 			switch self {
-			case .byRecentlyUsed: return "Most Recently Used"
-			case .byName: return "Alphabetical"
+			case .byRecentlyUsed: return Strings.Ordering.mostRecentlyUsed
+			case .byName: return Strings.Ordering.alphabetical
 			}
 		}
 	}
