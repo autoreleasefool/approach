@@ -52,25 +52,30 @@ extension FeatureFlagsService: DependencyKey {
 				}
 			},
 			observeAll: { flags in
-					.init { continuation in
-						continuation.yield(areFlagsEnabled(flags: flags))
+				.init { continuation in
+					continuation.yield(areFlagsEnabled(flags: flags))
 
-						let cancellable = NotificationCenter.default
-							.publisher(for: .FeatureFlag.didChange)
-							.filter {
-								guard let objectFlag = $0.object as? FeatureFlag else { return false }
-								return flags.contains(objectFlag)
-							}
-							.sink { _ in
-								continuation.yield(areFlagsEnabled(flags: flags))
-							}
+					let cancellable = NotificationCenter.default
+						.publisher(for: .FeatureFlag.didChange)
+						.filter {
+							guard let objectFlag = $0.object as? FeatureFlag else { return false }
+							return flags.contains(objectFlag)
+						}
+						.sink { _ in
+							continuation.yield(areFlagsEnabled(flags: flags))
+						}
 
-						continuation.onTermination = { _ in cancellable.cancel() }
-					}
+					continuation.onTermination = { _ in cancellable.cancel() }
+				}
 			},
 			setEnabled: { flag, enabled in
 				flagManager.setOverride(forFlag: flag, enabled: enabled)
 				NotificationCenter.default.post(name: .FeatureFlag.didChange, object: flag)
+			},
+			resetOverrides: {
+				for flag in flagManager.resetOverrides() {
+					NotificationCenter.default.post(name: .FeatureFlag.didChange, object: flag)
+				}
 			}
 		)
 	}()
@@ -79,6 +84,14 @@ extension FeatureFlagsService: DependencyKey {
 class FeatureFlagOverrides {
 	private let queue = DispatchQueue(label: "FeatureFlagsService.FeatureFlagManager", attributes: .concurrent)
 	private var queue_overrides: [FeatureFlag: Bool] = [:]
+
+	func resetOverrides() -> [FeatureFlag] {
+		queue.sync {
+			let overridden = Array(self.queue_overrides.keys)
+			self.queue_overrides.removeAll()
+			return overridden
+		}
+	}
 
 	func setOverride(forFlag flag: FeatureFlag, enabled: Bool?) {
 		queue.async { self.queue_overrides[flag] = enabled }
