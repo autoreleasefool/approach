@@ -3,6 +3,7 @@ import ComposableArchitecture
 import LeaguesListFeature
 import SharedModelsLibrary
 import SharedModelsViewsLibrary
+import SortOrderLibrary
 import StatisticsWidgetsFeature
 import StringsLibrary
 import SwiftUI
@@ -98,6 +99,10 @@ public struct BowlersListView: View {
 			.scrollContentBackground(.hidden)
 			.navigationTitle(Strings.Bowler.List.title)
 			.toolbar {
+				ToolbarItem(placement: .navigationBarTrailing) {
+					SortOrderView(store: store.scope(state: \.sortOrder, action: BowlersList.Action.sortOrder))
+				}
+
 				ToolbarItem(placement: .navigationBarTrailing) {
 					AddButton { viewStore.send(.addButtonTapped) }
 				}

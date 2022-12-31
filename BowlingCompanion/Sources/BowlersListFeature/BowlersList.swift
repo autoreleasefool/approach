@@ -5,11 +5,14 @@ import LeaguesListFeature
 import PersistenceServiceInterface
 import RecentlyUsedServiceInterface
 import SharedModelsLibrary
+import SharedModelsFetchableLibrary
+import SortOrderLibrary
 import ViewsLibrary
 
 public struct BowlersList: ReducerProtocol {
 	public struct State: Equatable {
 		public var bowlers: IdentifiedArrayOf<Bowler>?
+		public var sortOrder: SortOrder<Bowler.FetchRequest.Ordering>.State = .init(initialValue: .byRecentlyUsed)
 		public var error: ListErrorContent?
 		public var selection: Identified<Bowler.ID, LeaguesList.State>?
 		public var bowlerEditor: BowlerEditor.State?
@@ -30,6 +33,7 @@ public struct BowlersList: ReducerProtocol {
 		case deleteBowlerResponse(TaskResult<Bool>)
 		case bowlerEditor(BowlerEditor.Action)
 		case leagues(LeaguesList.Action)
+		case sortOrder(SortOrder<Bowler.FetchRequest.Ordering>.Action)
 	}
 
 	public enum SwipeAction: Equatable {
@@ -47,12 +51,16 @@ public struct BowlersList: ReducerProtocol {
 	@Dependency(\.recentlyUsedService) var recentlyUsedService
 
 	public var body: some ReducerProtocol<State, Action> {
+		Scope(state: \.sortOrder, action: /BowlersList.Action.sortOrder) {
+			SortOrder()
+		}
+
 		Reduce { state, action in
 			switch action {
 			case .observeBowlers:
 				state.error = nil
-				return .run { send in
-					for try await bowlers in bowlersDataProvider.observeBowlers(.init(filter: [], ordering: .byRecentlyUsed)) {
+				return .run { [ordering = state.sortOrder.ordering] send in
+					for try await bowlers in bowlersDataProvider.observeBowlers(.init(filter: [], ordering: ordering)) {
 						await send(.bowlersResponse(.success(bowlers)))
 					}
 				} catch: { error, send in
@@ -128,10 +136,10 @@ public struct BowlersList: ReducerProtocol {
 				state.bowlerEditor = nil
 				return .none
 
-			case .bowlerEditor:
-				return .none
+			case .sortOrder(.optionTapped):
+				return .task { .observeBowlers }
 
-			case .leagues:
+			case .bowlerEditor, .leagues, .sortOrder:
 				return .none
 			}
 		}

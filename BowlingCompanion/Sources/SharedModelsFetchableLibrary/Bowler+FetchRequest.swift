@@ -20,8 +20,15 @@ extension Bowler.FetchRequest {
 }
 
 extension Bowler.FetchRequest {
-	public enum Ordering: Equatable {
+	public enum Ordering: Hashable, CaseIterable, CustomStringConvertible {
 		case byName
 		case byRecentlyUsed
+
+		public var description: String {
+			switch self {
+			case .byRecentlyUsed: return "Most Recently Used"
+			case .byName: return "Alphabetical"
+			}
+		}
 	}
 }
