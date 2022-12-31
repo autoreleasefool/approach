@@ -5,15 +5,18 @@ public struct FileManagerService {
 	public var getUserDirectory: @Sendable () throws -> URL
 	public var createDirectory: @Sendable (URL) throws -> Void
 	public var remove: @Sendable (URL) throws -> Void
+	public var exists: @Sendable (URL) -> Bool
 
 	public init(
 		getUserDirectory: @escaping @Sendable () throws -> URL,
 		createDirectory: @escaping @Sendable (URL) throws -> Void,
-		remove: @escaping @Sendable (URL) throws -> Void
+		remove: @escaping @Sendable (URL) throws -> Void,
+		exists: @escaping @Sendable (URL) -> Bool
 	) {
 		self.getUserDirectory = getUserDirectory
 		self.createDirectory = createDirectory
 		self.remove = remove
+		self.exists = exists
 	}
 }
 
@@ -21,7 +24,8 @@ extension FileManagerService: TestDependencyKey {
 	public static var testValue = Self(
 		getUserDirectory: { fatalError("\(Self.self).getUserDirectory") },
 		createDirectory: { _ in fatalError("\(Self.self).createDirectory") },
-		remove: { _ in fatalError("\(Self.self).remove") }
+		remove: { _ in fatalError("\(Self.self).remove") },
+		exists: { _ in fatalError("\(Self.self).exists") }
 	)
 }
 

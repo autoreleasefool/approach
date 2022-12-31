@@ -14,7 +14,6 @@ final class BadgeViewTests: XCTestCase {
 			BadgeView("Badge", style: .custom(foreground: .red, background: .blue))
 		}
 
-
 		let vc = UIHostingController(rootView: badges)
 		vc.view.frame = UIScreen.main.bounds
 

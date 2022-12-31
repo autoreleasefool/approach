@@ -16,6 +16,10 @@ extension FileManagerService: DependencyKey {
 			remove: { url in
 				try FileManager.default
 					.removeItem(at: url)
+			},
+			exists: { url in
+				FileManager.default
+					.fileExists(atPath: url.absoluteString)
 			}
 		)
 	}()

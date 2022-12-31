@@ -28,7 +28,6 @@ public struct GearRow: View {
 	}
 }
 
-
 #if DEBUG
 struct GearRowPreview: PreviewProvider {
 	static var previews: some View {
