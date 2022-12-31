@@ -1,0 +1,35 @@
+import ComposableArchitecture
+import SnapshotTesting
+import SwiftUI
+import XCTest
+@testable import SortOrderLibrary
+
+@MainActor
+final class SortOrderViewSnapshotTests: XCTestCase {
+	func testSortOrderViewSnapshot() async {
+		let view = SortOrderView(store: .init(
+			initialState: SortOrder.State(initialValue: MockOrderable.first),
+			reducer: SortOrder()
+		))
+
+		let vc = UIHostingController(rootView: view)
+		vc.view.frame = UIScreen.main.bounds
+
+		assertSnapshot(matching: vc, as: .image(on: .iPhone13ProMax))
+	}
+
+	func testSortOrderSheetSnapshot() async {
+		var state = SortOrder.State(initialValue: MockOrderable.first)
+		state.isSheetPresented = true
+
+		let view = SortOrderView(store: .init(
+			initialState: state,
+			reducer: SortOrder()
+		))
+
+		let vc = UIHostingController(rootView: view)
+		vc.view.frame = UIScreen.main.bounds
+
+		assertSnapshot(matching: vc, as: .image(on: .iPhone13ProMax))
+	}
+}

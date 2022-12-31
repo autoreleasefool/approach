@@ -72,6 +72,7 @@ let package = Package(
 		.library(name: "SharedModelsMocksLibrary", targets: ["SharedModelsMocksLibrary"]),
 		.library(name: "SharedModelsPersistableLibrary", targets: ["SharedModelsPersistableLibrary"]),
 		.library(name: "SharedModelsViewsLibrary", targets: ["SharedModelsViewsLibrary"]),
+		.library(name: "SortOrderLibrary", targets: ["SortOrderLibrary"]),
 		.library(name: "SortingLibrary", targets: ["SortingLibrary"]),
 		.library(name: "StringsLibrary", targets: ["StringsLibrary"]),
 		.library(name: "SwiftUIExtensionsLibrary", targets: ["SwiftUIExtensionsLibrary"]),
@@ -170,6 +171,7 @@ let package = Package(
 				"BowlersDataProviderInterface",
 				"FeatureFlagsServiceInterface",
 				"LeaguesListFeature",
+				"SortOrderLibrary",
 				"StatisticsWidgetsFeature",
 			]
 		),
@@ -785,6 +787,21 @@ let package = Package(
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"SharedModelsMocksLibrary",
 				"SharedModelsViewsLibrary",
+			]
+		),
+		.target(
+			name: "SortOrderLibrary",
+			dependencies: [
+				"SwiftUIExtensionsLibrary",
+				"ViewsLibrary",
+			]
+		),
+		.testTarget(
+			name: "SortOrderLibraryTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"SharedModelsMocksLibrary",
+				"SortOrderLibrary",
 			]
 		),
 		.target(

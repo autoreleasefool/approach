@@ -60,6 +60,7 @@ package:
         - BowlerEditorFeature
         - FeatureFlagsService
         - LeaguesListFeature
+        - SortOrderLibrary
         - StatisticsWidgetsFeature
     - name: FeatureFlagsListFeature
       dependencies:
@@ -237,6 +238,12 @@ package:
         - GRDB
     - name: SortingLibrary
       requires_tests: true
+    - name: SortOrderLibrary
+      requires_tests: true
+      dependencies:
+        - ComposableArchitecture
+        - SwiftUIExtensionsLibrary
+        - ViewsLibrary
     - name: StringsLibrary
     - name: SwiftUIExtensionsLibrary
       requires_tests: true

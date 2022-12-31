@@ -8,11 +8,13 @@ final class SeriesRowTests: XCTestCase {
 	func testSeriesRowSnapshot() {
 		let rows = List {
 			Section {
-				SeriesRow(series: .mock(league: UUID(), id: UUID(), date: .now))
+				SeriesRow(series: .mock(league: UUID(), id: UUID(), date: Date(timeIntervalSince1970: 1672519204)))
 				SeriesRow(series: .mock(league: UUID(), id: UUID(), date: .distantFuture))
 				SeriesRow(series: .mock(league: UUID(), id: UUID(), date: .distantPast))
 			}
 		}
+
+		print(Date.now.timeIntervalSince1970)
 
 		let vc = UIHostingController(rootView: rows)
 		vc.view.frame = UIScreen.main.bounds
