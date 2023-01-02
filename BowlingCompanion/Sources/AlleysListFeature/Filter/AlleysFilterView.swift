@@ -1,9 +1,9 @@
 import AlleysDataProviderInterface
+import AssetsLibrary
 import ComposableArchitecture
 import SharedModelsLibrary
 import StringsLibrary
 import SwiftUI
-import AssetsLibrary
 
 struct AlleysFilterView: View {
 	let store: StoreOf<AlleysFilter>
@@ -79,17 +79,17 @@ struct AlleysFilterView: View {
 				.listRowBackground(Color(uiColor: .secondarySystemBackground))
 
 				Section {
-					Button("Reset") { viewStore.send(.clearFiltersButtonTapped) }
+					Button(Strings.Action.reset) { viewStore.send(.clearFiltersButtonTapped) }
 						.tint(.appDestructive)
 				}
 				.listRowBackground(Color(uiColor: .secondarySystemBackground))
 			}
 			.scrollContentBackground(.hidden)
-			.navigationTitle("Filter")
+			.navigationTitle(Strings.Action.filter)
 			.navigationBarTitleDisplayMode(.inline)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
-					Button("Apply") { viewStore.send(.applyButtonTapped) }
+					Button(Strings.Action.apply) { viewStore.send(.applyButtonTapped) }
 				}
 			}
 		}

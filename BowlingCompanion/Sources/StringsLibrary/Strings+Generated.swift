@@ -21,8 +21,10 @@ public enum Strings {
   /// Yes
   public static let yes = Strings.tr("Localizable", "yes", fallback: "Yes")
   public enum Action {
-    /// Actions
+    /// Add
     public static let add = Strings.tr("Localizable", "action.add", fallback: "Add")
+    /// Actions
+    public static let apply = Strings.tr("Localizable", "action.apply", fallback: "Apply")
     /// Cancel
     public static let cancel = Strings.tr("Localizable", "action.cancel", fallback: "Cancel")
     /// Delete
@@ -33,6 +35,8 @@ public enum Strings {
     public static let dismiss = Strings.tr("Localizable", "action.dismiss", fallback: "Dismiss")
     /// Edit
     public static let edit = Strings.tr("Localizable", "action.edit", fallback: "Edit")
+    /// Filter
+    public static let filter = Strings.tr("Localizable", "action.filter", fallback: "Filter")
     /// Reload
     public static let reload = Strings.tr("Localizable", "action.reload", fallback: "Reload")
     /// Reset
