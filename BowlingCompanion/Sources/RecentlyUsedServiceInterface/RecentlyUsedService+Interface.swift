@@ -1,30 +1,45 @@
 import Dependencies
 import Foundation
 
-public enum RecentlyUsedResource: String {
-	case bowlers
-	case leagues
-	case frames
-	case alleys
-	case gear
-}
-
 public struct RecentlyUsedService: Sendable {
-	public var didRecentlyUseResource: @Sendable (RecentlyUsedResource, UUID) -> Void
-	public var getRecentlyUsed: @Sendable (RecentlyUsedResource) -> [UUID]
-	public var observeRecentlyUsed: @Sendable (RecentlyUsedResource) -> AsyncStream<[UUID]>
-	public var resetRecentlyUsed: @Sendable (RecentlyUsedResource) -> Void
+	public var didRecentlyUseResource: @Sendable (Resource, UUID) -> Void
+	public var getRecentlyUsed: @Sendable (Resource) -> [Entry]
+	public var observeRecentlyUsed: @Sendable (Resource) -> AsyncStream<[Entry]>
+	public var resetRecentlyUsed: @Sendable (Resource) -> Void
 
 	public init(
-		didRecentlyUseResource: @escaping @Sendable (RecentlyUsedResource, UUID) -> Void,
-		getRecentlyUsed: @escaping @Sendable (RecentlyUsedResource) -> [UUID],
-		observeRecentlyUsed: @escaping @Sendable (RecentlyUsedResource) -> AsyncStream<[UUID]>,
-		resetRecentlyUsed: @escaping @Sendable (RecentlyUsedResource) -> Void
+		didRecentlyUseResource: @escaping @Sendable (Resource, UUID) -> Void,
+		getRecentlyUsed: @escaping @Sendable (Resource) -> [Entry],
+		observeRecentlyUsed: @escaping @Sendable (Resource) -> AsyncStream<[Entry]>,
+		resetRecentlyUsed: @escaping @Sendable (Resource) -> Void
 	) {
 		self.didRecentlyUseResource = didRecentlyUseResource
 		self.getRecentlyUsed = getRecentlyUsed
 		self.observeRecentlyUsed = observeRecentlyUsed
 		self.resetRecentlyUsed = resetRecentlyUsed
+	}
+}
+
+extension RecentlyUsedService {
+	public enum Resource: String {
+		case bowlers
+		case leagues
+		case frames
+		case alleys
+		case gear
+		case teams
+	}
+}
+
+extension RecentlyUsedService {
+	public struct Entry: Codable, Equatable {
+		public let id: UUID
+		public let lastUsedAt: Date
+
+		public init(id: UUID, lastUsedAt: Date) {
+			self.id = id
+			self.lastUsedAt = lastUsedAt
+		}
 	}
 }
 

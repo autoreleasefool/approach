@@ -11,40 +11,59 @@ extension Notification.Name {
 
 extension RecentlyUsedService: DependencyKey {
 	public static let liveValue: Self = {
-		@Sendable func key(forCategory category: RecentlyUsedResource) -> String {
+		let encoder = JSONEncoder()
+		let decoder = JSONDecoder()
+
+		@Sendable func key(forCategory category: Resource) -> String {
 			"RecentlyUsed.\(category.rawValue)"
+		}
+
+		@Sendable func entries(forCategory category: Resource) -> [Entry] {
+			@Dependency(\.preferenceService) var preferenceService: PreferenceService
+
+			let categoryKey = key(forCategory: category)
+			let string = preferenceService.getString(categoryKey) ?? "[]"
+			guard let data = string.data(using: .utf8),
+						let recentlyUsed = try? decoder.decode([Entry].self, from: data) else {
+				return []
+			}
+
+			return recentlyUsed
 		}
 
 		return Self(
 			didRecentlyUseResource: { category, uuid in
 				@Dependency(\.preferenceService) var preferenceService: PreferenceService
+				@Dependency(\.date) var date: DateGenerator
 
 				let categoryKey = key(forCategory: category)
-				let uuidString = uuid.uuidString
-				var recentlyUsed = preferenceService.getStringArray(categoryKey) ?? []
+				var recentlyUsed = entries(forCategory: category)
+				let entry = Entry(id: uuid, lastUsedAt: date())
 
-				if let index = recentlyUsed.firstIndex(of: uuidString) {
+				if let index = recentlyUsed.firstIndex(where: { $0.id == entry.id }) {
 					recentlyUsed.remove(at: index)
 				}
 
 				// TODO: eject outdated ids / at limit
-				recentlyUsed.insert(uuidString, at: 0)
-				preferenceService.setStringArray(categoryKey, recentlyUsed)
+				recentlyUsed.insert(entry, at: 0)
+
+				guard let recentlyUsedData = try? encoder.encode(recentlyUsed),
+							let recentlyUsedString = String(data: recentlyUsedData, encoding: .utf8) else {
+					return
+				}
+
+				preferenceService.setString(categoryKey, recentlyUsedString)
 				NotificationCenter.default.post(name: .RecentlyUsed.didChange, object: categoryKey)
 			},
 			getRecentlyUsed: { category in
-				@Dependency(\.preferenceService) var preferenceService: PreferenceService
-				let categoryKey = key(forCategory: category)
-				return (preferenceService.getStringArray(categoryKey) ?? []).compactMap { UUID(uuidString: $0) }
+				entries(forCategory: category)
 			},
 			observeRecentlyUsed: { category in
 				.init { continuation in
-					@Dependency(\.preferenceService) var preferenceService: PreferenceService
 					let categoryKey = key(forCategory: category)
 
 					continuation.yield(
-						(preferenceService.getStringArray(categoryKey) ?? [])
-							.compactMap { UUID(uuidString: $0) }
+						(entries(forCategory: category))
 					)
 
 					let cancellable = NotificationCenter.default
@@ -52,8 +71,7 @@ extension RecentlyUsedService: DependencyKey {
 						.filter { ($0.object as? String) == categoryKey }
 						.sink { _ in
 							continuation.yield(
-								(preferenceService.getStringArray(categoryKey) ?? [])
-									.compactMap { UUID(uuidString: $0) }
+								(entries(forCategory: category))
 							)
 						}
 
