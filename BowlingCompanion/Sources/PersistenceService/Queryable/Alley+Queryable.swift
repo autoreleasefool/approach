@@ -11,7 +11,7 @@ extension Alley.FetchRequest: ManyQueryable {
 		filter.forEach {
 			switch $0 {
 			case let .id(id):
-				query = query.filter(Column("id") == id)
+				query = query.filter(id: id)
 			case let .material(material):
 				query = query.filter(Column("material") == material.rawValue)
 			case let .mechanism(mechanism):
@@ -21,7 +21,7 @@ extension Alley.FetchRequest: ManyQueryable {
 			case let .pinFall(pinFall):
 				query = query.filter(Column("pinFall") == pinFall.rawValue)
 			case let .name(name):
-				query = query.filter(Column("name") == name)
+				query = query.filter(Column("name").like(name))
 			}
 		}
 

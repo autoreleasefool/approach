@@ -60,7 +60,7 @@ public struct BowlersList: ReducerProtocol {
 			case .observeBowlers:
 				state.error = nil
 				return .run { [ordering = state.sortOrder.ordering] send in
-					for try await bowlers in bowlersDataProvider.observeBowlers(.init(filter: [], ordering: ordering)) {
+					for try await bowlers in bowlersDataProvider.observeBowlers(.init(filter: nil, ordering: ordering)) {
 						await send(.bowlersResponse(.success(bowlers)))
 					}
 				} catch: { error, send in

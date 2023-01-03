@@ -82,7 +82,7 @@ public struct GearEditor: ReducerProtocol {
 
 		Scope(state: \.base.form.bowlerPicker, action: /Action.bowlerPicker) {
 			ResourcePicker {
-				try await bowlersDataProvider.fetchBowlers(.init(filter: [], ordering: .byName))
+				try await bowlersDataProvider.fetchBowlers(.init(filter: nil, ordering: .byName))
 			}
 		}
 
@@ -92,7 +92,7 @@ public struct GearEditor: ReducerProtocol {
 				if let bowler = state.base.form.bowlerPicker.selected.first {
 					return .task {
 						await .bowlerResponse(TaskResult {
-							let bowlers = try await bowlersDataProvider.fetchBowlers(.init(filter: [.id(bowler)], ordering: .byName))
+							let bowlers = try await bowlersDataProvider.fetchBowlers(.init(filter: .id(bowler), ordering: .byName))
 							return bowlers.first
 						})
 					}

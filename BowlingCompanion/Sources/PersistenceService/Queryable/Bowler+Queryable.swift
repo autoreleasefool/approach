@@ -8,13 +8,13 @@ extension Bowler.FetchRequest: ManyQueryable {
 	@Sendable func fetchValues(_ db: Database) throws -> [Bowler] {
 		var query = Bowler.all()
 
-		filter.forEach {
-			switch $0 {
-			case let .id(id):
-				query = query.filter(Column("id") == id)
-			case let .name(name):
-				query = query.filter(Column("name") == name)
-			}
+		switch filter {
+		case let .id(id):
+			query = query.filter(id: id)
+		case let .name(name):
+			query = query.filter(Column("name").like(name))
+		case .none:
+			break
 		}
 
 		switch ordering {
