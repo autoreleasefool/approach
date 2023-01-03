@@ -10,6 +10,7 @@
 		CA1442322924582D00D39B86 /* GearDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CA1442312924582D00D39B86 /* GearDataProvider */; };
 		CA2890DE28F87FF2003C1EE9 /* AppFeature in Frameworks */ = {isa = PBXBuildFile; productRef = CA2890DD28F87FF2003C1EE9 /* AppFeature */; };
 		CA2890E328F8DA53003C1EE9 /* PersistenceService in Frameworks */ = {isa = PBXBuildFile; productRef = CA2890E228F8DA53003C1EE9 /* PersistenceService */; };
+		CA50C6852963A4FB002F6F20 /* AveragesDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CA50C6842963A4FB002F6F20 /* AveragesDataProvider */; };
 		CA81F9E0293DAD0B0061D1D9 /* LanesDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CA81F9DF293DAD0B0061D1D9 /* LanesDataProvider */; };
 		CA8BBC5928D59B8B00653A1E /* BowlingCompanionApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA8BBC5828D59B8B00653A1E /* BowlingCompanionApp.swift */; };
 		CA8BBC5B28D59B8B00653A1E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA8BBC5A28D59B8B00653A1E /* ContentView.swift */; };
@@ -41,6 +42,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CA50C6852963A4FB002F6F20 /* AveragesDataProvider in Frameworks */,
 				CA2890DE28F87FF2003C1EE9 /* AppFeature in Frameworks */,
 				CA81F9E0293DAD0B0061D1D9 /* LanesDataProvider in Frameworks */,
 				CA94DD642900B3AC00B81A87 /* FileManagerService in Frameworks */,
@@ -145,6 +147,7 @@
 				CA1442312924582D00D39B86 /* GearDataProvider */,
 				CA81F9DF293DAD0B0061D1D9 /* LanesDataProvider */,
 				CAF8028F295D67FC00B19459 /* FeatureFlagsService */,
+				CA50C6842963A4FB002F6F20 /* AveragesDataProvider */,
 			);
 			productName = BowlingCompanion;
 			productReference = CA8BBC5528D59B8B00653A1E /* BowlingCompanion.app */;
@@ -439,6 +442,10 @@
 		CA2890E228F8DA53003C1EE9 /* PersistenceService */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = PersistenceService;
+		};
+		CA50C6842963A4FB002F6F20 /* AveragesDataProvider */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AveragesDataProvider;
 		};
 		CA81F9DF293DAD0B0061D1D9 /* LanesDataProvider */ = {
 			isa = XCSwiftPackageProductDependency;

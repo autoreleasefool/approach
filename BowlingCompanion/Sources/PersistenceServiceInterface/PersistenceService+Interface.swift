@@ -48,6 +48,9 @@ public struct PersistenceService: Sendable {
 	public var fetchGear: @Sendable (Gear.FetchRequest) async throws -> [Gear]
 	public var observeGear: @Sendable (Gear.FetchRequest) -> AsyncThrowingStream<[Gear], Error>
 
+	public var fetchAverages: @Sendable (Average.FetchRequest) async throws -> [Average]
+	public var observeAverages: @Sendable (Average.FetchRequest) -> AsyncThrowingStream<[Average], Error>
+
 	public init(
 		createBowler: @escaping @Sendable (Bowler) async throws -> Void,
 		updateBowler: @escaping @Sendable (Bowler) async throws -> Void,
@@ -85,7 +88,9 @@ public struct PersistenceService: Sendable {
 		updateGear: @escaping @Sendable (Gear) async throws -> Void,
 		deleteGear: @escaping @Sendable (Gear) async throws -> Void,
 		fetchGear: @escaping @Sendable (Gear.FetchRequest) async throws -> [Gear],
-		observeGear: @escaping @Sendable (Gear.FetchRequest) -> AsyncThrowingStream<[Gear], Error>
+		observeGear: @escaping @Sendable (Gear.FetchRequest) -> AsyncThrowingStream<[Gear], Error>,
+		fetchAverages: @escaping @Sendable (Average.FetchRequest) async throws -> [Average],
+		observeAverages: @escaping @Sendable (Average.FetchRequest) -> AsyncThrowingStream<[Average], Error>
 	) {
 		self.createBowler = createBowler
 		self.updateBowler = updateBowler
@@ -124,6 +129,8 @@ public struct PersistenceService: Sendable {
 		self.deleteGear = deleteGear
 		self.fetchGear = fetchGear
 		self.observeGear = observeGear
+		self.fetchAverages = fetchAverages
+		self.observeAverages = observeAverages
 	}
 }
 
@@ -165,7 +172,9 @@ extension PersistenceService: TestDependencyKey {
 		updateGear: { _ in fatalError("\(Self.self).updateGear") },
 		deleteGear: { _ in fatalError("\(Self.self).deleteGear") },
 		fetchGear: { _ in fatalError("\(Self.self).fetchGear") },
-		observeGear: { _ in fatalError("\(Self.self).observeGear") }
+		observeGear: { _ in fatalError("\(Self.self).observeGear") },
+		fetchAverages: { _ in fatalError("\(Self.self).fetchAverages") },
+		observeAverages: { _ in fatalError("\(Self.self).observeAverages") }
 	)
 }
 

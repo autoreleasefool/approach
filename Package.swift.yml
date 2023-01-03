@@ -46,16 +46,17 @@ package:
         - BowlersListFeature
         - GearListFeature
         - SettingsFeature
-    - name: BowlerEditorFeature
-      dependencies:
-        - BaseFormFeature
-        - PersistenceService
     - name: BaseFormFeature
       dependencies:
         - AssetsLibrary
         - ViewsLibrary
+    - name: BowlerEditorFeature
+      dependencies:
+        - BaseFormFeature
+        - PersistenceService
     - name: BowlersListFeature
       dependencies:
+        - AveragesDataProvider
         - BowlersDataProvider
         - BowlerEditorFeature
         - FeatureFlagsService
@@ -146,6 +147,10 @@ package:
           - PersistenceService
           - RecentlyUsedService
           - SortingLibrary
+    - name: AveragesDataProvider
+      dependencies:
+        implementation:
+          - PersistenceService
     - name: BowlersDataProvider
       dependencies:
         implementation:

@@ -53,7 +53,9 @@ extension PersistenceService: DependencyKey {
 			updateGear: modelPersistence.update(model:),
 			deleteGear: modelPersistence.delete(model:),
 			fetchGear: modelQuerying.fetchAll(request:),
-			observeGear: modelQuerying.observeAll(request:)
+			observeGear: modelQuerying.observeAll(request:),
+			fetchAverages: modelQuerying.fetchAll(request:),
+			observeAverages: modelQuerying.observeAll(request:)
 		)
 	}()
 }
