@@ -4,7 +4,7 @@ import SharedModelsLibrary
 import SharedModelsFetchableLibrary
 import SharedModelsPersistableLibrary
 
-extension Frame.FetchRequest: Queryable {
+extension Frame.FetchRequest: ManyQueryable {
 	@Sendable func fetchValues(_ db: Database) throws -> [Frame] {
 		var query = Frame.all()
 

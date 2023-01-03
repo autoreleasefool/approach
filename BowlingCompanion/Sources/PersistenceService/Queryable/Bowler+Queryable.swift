@@ -4,7 +4,7 @@ import SharedModelsLibrary
 import SharedModelsFetchableLibrary
 import SharedModelsPersistableLibrary
 
-extension Bowler.FetchRequest: Queryable {
+extension Bowler.FetchRequest: ManyQueryable {
 	@Sendable func fetchValues(_ db: Database) throws -> [Bowler] {
 		var query = Bowler.all()
 

@@ -4,7 +4,7 @@ import SharedModelsLibrary
 import SharedModelsFetchableLibrary
 import SharedModelsPersistableLibrary
 
-extension Alley.FetchRequest: Queryable {
+extension Alley.FetchRequest: ManyQueryable {
 	@Sendable func fetchValues(_ db: Database) throws -> [Alley] {
 		var query = Alley.all()
 

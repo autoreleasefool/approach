@@ -3,13 +3,19 @@ import GRDB
 struct ModelQuerying {
 	let reader: DatabaseReader
 
-	@Sendable func fetchAll<Model, Request: Queryable>(
+	@Sendable func fetchOne<Model, Request: SingleQueryable>(
+		request: Request
+	) async throws -> Model? where Request.Model == Model {
+		try await reader.read(request.fetchValue(_:))
+	}
+
+	@Sendable func fetchAll<Model, Request: ManyQueryable>(
 		request: Request
 	) async throws -> [Model] where Request.Model == Model {
 		try await reader.read(request.fetchValues(_:))
 	}
 
-	@Sendable func observeAll<Model, Request: Queryable>(
+	@Sendable func observeAll<Model, Request: ManyQueryable>(
 		request: Request
 	) -> AsyncThrowingStream<[Model], Error> where Request.Model == Model {
 		return .init { continuation in

@@ -4,7 +4,7 @@ import SharedModelsLibrary
 import SharedModelsFetchableLibrary
 import SharedModelsPersistableLibrary
 
-extension Lane.FetchRequest: Queryable {
+extension Lane.FetchRequest: ManyQueryable {
 	@Sendable func fetchValues(_ db: Database) throws -> [Lane] {
 		var query = Lane.all()
 

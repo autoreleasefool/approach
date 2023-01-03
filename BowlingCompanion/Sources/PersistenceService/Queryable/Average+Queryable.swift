@@ -8,7 +8,7 @@ extension Average: FetchableRecord {
 	}
 }
 
-extension Average.FetchRequest: Queryable {
+extension Average.FetchRequest: ManyQueryable {
 	@Sendable func fetchValues(_ db: Database) throws -> [Average] {
 		// TODO: calculate averages for given entity IDs
 		switch entityIds {

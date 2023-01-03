@@ -4,7 +4,7 @@ import SharedModelsLibrary
 import SharedModelsFetchableLibrary
 import SharedModelsPersistableLibrary
 
-extension Gear.FetchRequest: Queryable {
+extension Gear.FetchRequest: ManyQueryable {
 	@Sendable func fetchValues(_ db: Database) throws -> [Gear] {
 		var query = Gear.all()
 
