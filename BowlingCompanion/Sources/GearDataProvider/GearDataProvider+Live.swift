@@ -19,7 +19,7 @@ extension GearDataProvider: DependencyKey {
 					return gear
 				case .byRecentlyUsed:
 					let recentlyUsed = recentlyUsedService.getRecentlyUsed(.gear)
-					return gear.sortBy(ids: recentlyUsed)
+					return gear.sortBy(ids: recentlyUsed.map(\.id))
 				}
 			},
 			observeGear: { request in
@@ -34,7 +34,7 @@ extension GearDataProvider: DependencyKey {
 									recentlyUsedService.observeRecentlyUsed(.gear),
 									persistenceService.observeGear(request)
 								) {
-									continuation.yield(gear.sortBy(ids: recentlyUsed))
+									continuation.yield(gear.sortBy(ids: recentlyUsed.map(\.id)))
 								}
 							} catch {
 								continuation.finish(throwing: error)

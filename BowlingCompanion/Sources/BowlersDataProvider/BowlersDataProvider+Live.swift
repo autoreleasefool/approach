@@ -19,7 +19,7 @@ extension BowlersDataProvider: DependencyKey {
 					return bowlers
 				case .byRecentlyUsed:
 					let recentlyUsed = recentlyUsedService.getRecentlyUsed(.bowlers)
-					return bowlers.sortBy(ids: recentlyUsed)
+					return bowlers.sortBy(ids: recentlyUsed.map(\.id))
 				}
 			},
 			observeBowlers: { request in
@@ -34,7 +34,7 @@ extension BowlersDataProvider: DependencyKey {
 									recentlyUsedService.observeRecentlyUsed(.bowlers),
 									persistenceService.observeBowlers(request)
 								) {
-									continuation.yield(bowlers.sortBy(ids: recentlyUsed))
+									continuation.yield(bowlers.sortBy(ids: recentlyUsed.map(\.id)))
 								}
 							} catch {
 								continuation.finish(throwing: error)

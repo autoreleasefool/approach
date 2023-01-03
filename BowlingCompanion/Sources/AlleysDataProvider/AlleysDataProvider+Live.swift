@@ -21,7 +21,7 @@ extension AlleysDataProvider: DependencyKey {
 					return alleys
 				case .byRecentlyUsed:
 					let recentlyUsed = recentlyUsedService.getRecentlyUsed(.alleys)
-					return alleys.sortBy(ids: recentlyUsed)
+					return alleys.sortBy(ids: recentlyUsed.map(\.id))
 				}
 			},
 			observeAlleys: { request in
@@ -36,7 +36,7 @@ extension AlleysDataProvider: DependencyKey {
 									recentlyUsedService.observeRecentlyUsed(.alleys),
 									persistenceService.observeAlleys(request)
 								) {
-									continuation.yield(alleys.sortBy(ids: recentlyUsed))
+									continuation.yield(alleys.sortBy(ids: recentlyUsed.map(\.id)))
 								}
 							} catch {
 								continuation.finish(throwing: error)

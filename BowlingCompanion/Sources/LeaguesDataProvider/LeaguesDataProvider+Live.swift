@@ -19,7 +19,7 @@ extension LeaguesDataProvider: DependencyKey {
 					return leagues
 				case .byRecentlyUsed:
 					let recentlyUsed = recentlyUsedService.getRecentlyUsed(.leagues)
-					return leagues.sortBy(ids: recentlyUsed)
+					return leagues.sortBy(ids: recentlyUsed.map(\.id))
 				}
 			},
 			observeLeagues: { request in
@@ -34,7 +34,7 @@ extension LeaguesDataProvider: DependencyKey {
 									recentlyUsedService.observeRecentlyUsed(.leagues),
 									persistenceService.observeLeagues(request)
 								) {
-									continuation.yield(leagues.sortBy(ids: recentlyUsed))
+									continuation.yield(leagues.sortBy(ids: recentlyUsed.map(\.id)))
 								}
 							} catch {
 								continuation.finish(throwing: error)
