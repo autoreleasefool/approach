@@ -182,7 +182,11 @@ final class RecentlyUsedServiceTests: XCTestCase {
 	}
 
 	static func entriesString(ids: [UUID], date: Date = Date(timeIntervalSince1970: 1672519204)) -> String {
-		let entries = try! JSONEncoder().encode(ids.map { RecentlyUsedService.Entry(id: $0, lastUsedAt: date) })
+		guard let entries = try? JSONEncoder().encode(ids.map { RecentlyUsedService.Entry(id: $0, lastUsedAt: date) }) else {
+			XCTFail()
+			return ""
+		}
+
 		return String(data: entries, encoding: .utf8)!
 	}
 }
