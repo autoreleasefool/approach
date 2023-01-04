@@ -5,6 +5,7 @@ import SharedModelsViewsLibrary
 import SortOrderLibrary
 import StringsLibrary
 import SwiftUI
+import TeamEditorFeature
 import ViewsLibrary
 
 public struct TeamsListView: View {
@@ -12,6 +13,7 @@ public struct TeamsListView: View {
 
 	struct ViewState: Equatable {
 		let listState: ListContentState<Team, ListErrorContent>
+		let isTeamEditorPresented: Bool
 
 		init(state: TeamsList.State) {
 			if let error = state.error {
@@ -21,6 +23,8 @@ public struct TeamsListView: View {
 			} else {
 				self.listState = .loading
 			}
+
+			self.isTeamEditorPresented = state.teamEditor != nil
 		}
 	}
 
@@ -77,6 +81,16 @@ public struct TeamsListView: View {
 
 				ToolbarItem(placement: .navigationBarTrailing) {
 					AddButton { viewStore.send(.addButtonTapped) }
+				}
+			}
+			.sheet(isPresented: viewStore.binding(
+				get: \.isTeamEditorPresented,
+				send: ViewAction.setEditorFormSheet(isPresented:)
+			)) {
+				IfLetStore(store.scope(state: \.teamEditor, action: TeamsList.Action.teamEditor)) { scopedStore in
+					NavigationView {
+						TeamEditorView(store: scopedStore)
+					}
 				}
 			}
 			.task { await viewStore.send(.observeTeams).finish() }

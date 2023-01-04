@@ -74,7 +74,6 @@ public struct AlleyEditor: ReducerProtocol {
 
 	public init() {}
 
-	@Dependency(\.uuid) var uuid
 	@Dependency(\.persistenceService) var persistenceService
 
 	public var body: some ReducerProtocol<State, Action> {
@@ -102,6 +101,7 @@ public struct AlleyEditor: ReducerProtocol {
 			case let .setLaneEditor(isPresented):
 				state.isLaneEditorPresented = isPresented
 				if !isPresented {
+					// TODO: sort lanes
 					state.alleyLanes.lanes = .init(
 						uniqueElements: state.base.form.laneEditor.lanes.map { $0.toLane(alley: state.base.form.alleyId) }
 					)
@@ -123,7 +123,13 @@ public struct AlleyEditor: ReducerProtocol {
 					try await persistenceService.deleteLanes(removed)
 
 					return .form(.didFinishSaving)
+				} catch: { error in
+					return .form(.saveModelResult(.failure(error)))
 				}
+
+			case .form(.didFinishSaving):
+				state.base.isLoading = false
+				return .none
 
 			case .form(.deleteModelResult(.success)):
 				state.base.isLoading = false
@@ -148,8 +154,6 @@ extension LaneEditor.State {
 
 extension AlleyEditor.Fields {
 	public func model(fromExisting existing: Alley?) -> Alley {
-		@Dependency(\.uuid) var uuid: UUIDGenerator
-
 		return .init(
 			id: alleyId,
 			name: name,

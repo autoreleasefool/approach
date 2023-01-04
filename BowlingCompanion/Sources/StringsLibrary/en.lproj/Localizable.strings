@@ -34,6 +34,8 @@
 "team.list.add" = "Add Team";
 "team.error.empty.title" = "No teams found";
 "team.error.empty.message" = "You haven't create a team yet.";
+"team.properties.bowlers.none" = "No bowlers added";
+"team.properties.bowlers.title" = "Members";
 
 /* Bowlers */
 
@@ -185,6 +187,7 @@
 "action.discard" = "Discard";
 "action.reset" = "Reset";
 "action.save" = "Save";
+"action.manage" = "Manage";
 
 /* Other */
 

@@ -31,6 +31,7 @@ let package = Package(
 		.library(name: "SeriesSidebarFeature", targets: ["SeriesSidebarFeature"]),
 		.library(name: "SettingsFeature", targets: ["SettingsFeature"]),
 		.library(name: "StatisticsWidgetsFeature", targets: ["StatisticsWidgetsFeature"]),
+		.library(name: "TeamEditorFeature", targets: ["TeamEditorFeature"]),
 		.library(name: "TeamsAndBowlersListFeature", targets: ["TeamsAndBowlersListFeature"]),
 		.library(name: "TeamsListFeature", targets: ["TeamsListFeature"]),
 
@@ -413,6 +414,23 @@ let package = Package(
 			]
 		),
 		.target(
+			name: "TeamEditorFeature",
+			dependencies: [
+				"BaseFormFeature",
+				"BowlersDataProviderInterface",
+				"PersistenceServiceInterface",
+				"ResourcePickerFeature",
+			]
+		),
+		.testTarget(
+			name: "TeamEditorFeatureTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"SharedModelsMocksLibrary",
+				"TeamEditorFeature",
+			]
+		),
+		.target(
 			name: "TeamsAndBowlersListFeature",
 			dependencies: [
 				"BowlersListFeature",
@@ -431,6 +449,7 @@ let package = Package(
 			name: "TeamsListFeature",
 			dependencies: [
 				"SortOrderLibrary",
+				"TeamEditorFeature",
 				"TeamsDataProviderInterface",
 			]
 		),

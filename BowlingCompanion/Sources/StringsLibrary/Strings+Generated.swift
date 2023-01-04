@@ -39,6 +39,8 @@ public enum Strings {
     public static let edit = Strings.tr("Localizable", "action.edit", fallback: "Edit")
     /// Filter
     public static let filter = Strings.tr("Localizable", "action.filter", fallback: "Filter")
+    /// Manage
+    public static let manage = Strings.tr("Localizable", "action.manage", fallback: "Manage")
     /// Reload
     public static let reload = Strings.tr("Localizable", "action.reload", fallback: "Reload")
     /// Reset
@@ -501,6 +503,14 @@ public enum Strings {
       public enum Title {
         /// All Teams
         public static let all = Strings.tr("Localizable", "team.list.title.all", fallback: "All Teams")
+      }
+    }
+    public enum Properties {
+      public enum Bowlers {
+        /// No bowlers added
+        public static let `none` = Strings.tr("Localizable", "team.properties.bowlers.none", fallback: "No bowlers added")
+        /// Members
+        public static let title = Strings.tr("Localizable", "team.properties.bowlers.title", fallback: "Members")
       }
     }
   }

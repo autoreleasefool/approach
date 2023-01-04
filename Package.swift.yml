@@ -139,10 +139,17 @@ package:
       dependencies:
         - AssetsLibrary
         - ViewsLibrary
+    - name: TeamEditorFeature
+      dependencies:
+        - BaseFormFeature
+        - BowlersDataProvider
+        - ResourcePickerFeature
+        - PersistenceService
     - name: TeamsListFeature
       dependencies:
         - SortOrderLibrary
         - TeamsDataProvider
+        - TeamEditorFeature
     - name: TeamsAndBowlersListFeature
       dependencies:
         - BowlersListFeature

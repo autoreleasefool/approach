@@ -97,6 +97,7 @@ public struct ResourcePickerView<Resource: PickableResource, Row: View>: View {
 					}
 				}
 			}
+			.navigationBarBackButtonHidden(viewStore.isCancellable)
 			.onAppear { viewStore.send(.refreshData) }
 		}
 	}

@@ -154,7 +154,7 @@ public struct AlleyEditorView: View {
 						send: AlleyEditorView.ViewAction.setLaneEditor(isPresented:)
 					)
 				) {
-					Text(Strings.Alley.Properties.Lanes.manage)
+					Text(Strings.Action.manage)
 						.font(.caption)
 				}
 			}
