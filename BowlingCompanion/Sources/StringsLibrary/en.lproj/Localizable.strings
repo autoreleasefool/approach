@@ -26,6 +26,15 @@
 "alley.error.empty.message" = "You haven't added any alleys yet.";
 "alley.error.empty.filter.message" = "Try changing your filters or adding a new alley.";
 
+/* Teams */
+
+"team.title" = "Team";
+"team.list.title" = "Teams";
+"team.list.title.all" = "All Teams";
+"team.list.add" = "Add Team";
+"team.error.empty.title" = "No teams found";
+"team.error.empty.message" = "You haven't create a team yet.";
+
 /* Bowlers */
 
 "bowler.title" = "Bowler";
@@ -131,6 +140,7 @@
 "settings.title" = "Settings";
 
 /* Ordering */
+
 "ordering.alphabetical" = "Alphabetical";
 "ordering.mostRecentlyUsed" = "Most Recently Used";
 
@@ -140,6 +150,7 @@
 "app.tabs.gear" = "Gear";
 "app.tabs.settings" = "Settings";
 "app.tabs.scoresheet" = "Scoresheet";
+"tab" = "Tab";
 
 /* Editor & Forms */
 

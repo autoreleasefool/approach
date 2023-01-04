@@ -16,6 +16,8 @@ public enum Strings {
   public static let `none` = Strings.tr("Localizable", "none", fallback: "None")
   /// Other
   public static let other = Strings.tr("Localizable", "other", fallback: "Other")
+  /// Tab
+  public static let tab = Strings.tr("Localizable", "tab", fallback: "Tab")
   /// Other
   public static let unknown = Strings.tr("Localizable", "unknown", fallback: "Unknown")
   /// Yes
@@ -478,6 +480,28 @@ public enum Strings {
       public static let message = Strings.tr("Localizable", "statistics.placeholder.message", fallback: "Tap here to configure the stats you want to see")
       /// Statistics
       public static let title = Strings.tr("Localizable", "statistics.placeholder.title", fallback: "Statistics at a glance")
+    }
+  }
+  public enum Team {
+    /// Teams
+    public static let title = Strings.tr("Localizable", "team.title", fallback: "Team")
+    public enum Error {
+      public enum Empty {
+        /// You haven't create a team yet.
+        public static let message = Strings.tr("Localizable", "team.error.empty.message", fallback: "You haven't create a team yet.")
+        /// No teams found
+        public static let title = Strings.tr("Localizable", "team.error.empty.title", fallback: "No teams found")
+      }
+    }
+    public enum List {
+      /// Add Team
+      public static let add = Strings.tr("Localizable", "team.list.add", fallback: "Add Team")
+      /// Teams
+      public static let title = Strings.tr("Localizable", "team.list.title", fallback: "Teams")
+      public enum Title {
+        /// All Teams
+        public static let all = Strings.tr("Localizable", "team.list.title.all", fallback: "All Teams")
+      }
     }
   }
 }

@@ -46,6 +46,7 @@ package:
         - BowlersListFeature
         - GearListFeature
         - SettingsFeature
+        - TeamsAndBowlersListFeature
     - name: BaseFormFeature
       dependencies:
         - AssetsLibrary
@@ -138,6 +139,14 @@ package:
       dependencies:
         - AssetsLibrary
         - ViewsLibrary
+    - name: TeamsListFeature
+      dependencies:
+        - SortOrderLibrary
+        - TeamsDataProvider
+    - name: TeamsAndBowlersListFeature
+      dependencies:
+        - BowlersListFeature
+        - TeamsListFeature
 
   data_provider:
     - name: AlleysDataProvider

@@ -1,11 +1,12 @@
 import AlleysListFeature
+import AssetsLibrary
 import BowlersListFeature
 import ComposableArchitecture
 import GearListFeature
 import SettingsFeature
 import StringsLibrary
 import SwiftUI
-import AssetsLibrary
+import TeamsAndBowlersListFeature
 
 public struct AppView: View {
 	let store: StoreOf<App>
@@ -15,10 +16,12 @@ public struct AppView: View {
 	struct ViewState: Equatable {
 		let tabs: [App.Tab]
 		let selectedTab: App.Tab
+		let hasTeamsFeature: Bool
 
 		init(state: App.State) {
 			self.tabs = state.tabs
 			self.selectedTab = state.selectedTab
+			self.hasTeamsFeature = state.hasTeamsFeature
 		}
 	}
 
@@ -38,7 +41,7 @@ public struct AppView: View {
 					selection: viewStore.binding(get: \.selectedTab, send: ViewAction.selectedTab)
 				) {
 					ForEach(viewStore.tabs) { tab in
-						tab.tabView(store: store)
+						tab.tabView(store: store, hasTeamsFeature: viewStore.hasTeamsFeature)
 							.tag(tab)
 							.tabItem {
 								Image(systemName: tab.image)
@@ -83,13 +86,17 @@ extension App.Tab {
 		}
 	}
 
-	func tabView(store: StoreOf<App>) -> some View {
+	func tabView(store: StoreOf<App>, hasTeamsFeature: Bool) -> some View {
 		NavigationView {
 			switch self {
 			case .alleys:
 				AlleysListView(store: store.scope(state: \.alleysList, action: App.Action.alleysList))
 			case .bowlers:
-				BowlersListView(store: store.scope(state: \.bowlersList, action: App.Action.bowlersList))
+				if hasTeamsFeature {
+					TeamsAndBowlersListView(store: store.scope(state: \.teamsAndBowlersList, action: App.Action.teamsAndBowlersList))
+				} else {
+					BowlersListView(store: store.scope(state: \.bowlersList, action: App.Action.bowlersList))
+				}
 			case .settings:
 				SettingsView(store: store.scope(state: \.settings, action: App.Action.settings))
 			case .gear:

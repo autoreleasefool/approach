@@ -31,6 +31,8 @@ let package = Package(
 		.library(name: "SeriesSidebarFeature", targets: ["SeriesSidebarFeature"]),
 		.library(name: "SettingsFeature", targets: ["SettingsFeature"]),
 		.library(name: "StatisticsWidgetsFeature", targets: ["StatisticsWidgetsFeature"]),
+		.library(name: "TeamsAndBowlersListFeature", targets: ["TeamsAndBowlersListFeature"]),
+		.library(name: "TeamsListFeature", targets: ["TeamsListFeature"]),
 
 		// MARK: - Data Providers
 		.library(name: "AlleysDataProvider", targets: ["AlleysDataProvider"]),
@@ -126,9 +128,9 @@ let package = Package(
 			name: "AppFeature",
 			dependencies: [
 				"AlleysListFeature",
-				"BowlersListFeature",
 				"GearListFeature",
 				"SettingsFeature",
+				"TeamsAndBowlersListFeature",
 			]
 		),
 		.testTarget(
@@ -408,6 +410,36 @@ let package = Package(
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"SharedModelsMocksLibrary",
 				"StatisticsWidgetsFeature",
+			]
+		),
+		.target(
+			name: "TeamsAndBowlersListFeature",
+			dependencies: [
+				"BowlersListFeature",
+				"TeamsListFeature",
+			]
+		),
+		.testTarget(
+			name: "TeamsAndBowlersListFeatureTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"SharedModelsMocksLibrary",
+				"TeamsAndBowlersListFeature",
+			]
+		),
+		.target(
+			name: "TeamsListFeature",
+			dependencies: [
+				"SortOrderLibrary",
+				"TeamsDataProviderInterface",
+			]
+		),
+		.testTarget(
+			name: "TeamsListFeatureTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"SharedModelsMocksLibrary",
+				"TeamsListFeature",
 			]
 		),
 

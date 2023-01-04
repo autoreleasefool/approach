@@ -7,6 +7,7 @@ extension UIImage {
 	public static let emptyGear = UIImage(named: "Images/EmptyState/Gear", in: .module, with: nil)!
 	public static let emptyLeagues = UIImage(named: "Images/EmptyState/Leagues", in: .module, with: nil)!
 	public static let emptySeries = UIImage(named: "Images/EmptyState/Series", in: .module, with: nil)!
+	public static let emptyTeams = UIImage(named: "Images/EmptyState/Teams", in: .module, with: nil)!
 
 	public static let errorNotFound = UIImage(named: "Images/Error/NotFound", in: .module, with: nil)!
 

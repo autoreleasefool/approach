@@ -28,12 +28,18 @@ public struct ListContent<
 		self.errorView = error
 	}
 
-	@ViewBuilder public var body: some View {
+	public var body: some View {
 		switch state {
 		case .notLoaded:
-			EmptyView()
+			List {
+				EmptyView()
+			}
+			.listStyle(.insetGrouped)
 		case .loading:
-			ProgressView()
+			List {
+				ProgressView()
+			}
+			.listStyle(.insetGrouped)
 		case let .loaded(elements):
 			if elements.isEmpty {
 				emptyView()
@@ -41,6 +47,7 @@ public struct ListContent<
 				List {
 					content(elements)
 				}
+				.listStyle(.insetGrouped)
 			}
 		case let .error(errorContent):
 			errorView(errorContent)

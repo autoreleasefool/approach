@@ -5,6 +5,7 @@ import FeatureFlagsLibrary
 import FeatureFlagsServiceInterface
 import GearListFeature
 import SettingsFeature
+import TeamsAndBowlersListFeature
 
 public struct App: ReducerProtocol {
 	public struct State: Equatable {
@@ -13,10 +14,13 @@ public struct App: ReducerProtocol {
 		public var bowlersList = BowlersList.State()
 		public var alleysList = AlleysList.State()
 		public var gearList = GearList.State()
+		public var teamsAndBowlersList = TeamsAndBowlersList.State()
 		public var settings: Settings.State
+		public let hasTeamsFeature: Bool
 
-		public init(hasDeveloperFeature: Bool) {
+		public init(hasDeveloperFeature: Bool, hasTeamsFeature: Bool) {
 			self.settings = .init(hasDeveloperFeature: hasDeveloperFeature)
+			self.hasTeamsFeature = hasTeamsFeature
 		}
 	}
 
@@ -27,6 +31,7 @@ public struct App: ReducerProtocol {
 		case alleysList(AlleysList.Action)
 		case gearList(GearList.Action)
 		case bowlersList(BowlersList.Action)
+		case teamsAndBowlersList(TeamsAndBowlersList.Action)
 		case settings(Settings.Action)
 	}
 
@@ -64,6 +69,9 @@ public struct App: ReducerProtocol {
 		Scope(state: \.settings, action: /Action.settings) {
 			Settings()
 		}
+		Scope(state: \.teamsAndBowlersList, action: /Action.teamsAndBowlersList) {
+			TeamsAndBowlersList()
+		}
 
 		Reduce { state, action in
 			switch action {
@@ -83,7 +91,7 @@ public struct App: ReducerProtocol {
 				state.selectedTab = tab
 				return .none
 
-			case .bowlersList, .settings, .alleysList, .gearList:
+			case .bowlersList, .settings, .alleysList, .gearList, .teamsAndBowlersList:
 				return .none
 			}
 		}

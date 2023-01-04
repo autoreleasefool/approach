@@ -49,7 +49,8 @@ public struct ListEmptyContent: View {
 			.padding(.bottom, .smallSpacing)
 
 			action
-		}.padding()
+		}
+		.padding()
 	}
 }
 

@@ -8,7 +8,8 @@ struct ContentView: View {
 		@Dependency(\.featureFlags) var featureFlags: FeatureFlagsService
 		return .init(
 			initialState: App.State(
-				hasDeveloperFeature: featureFlags.isEnabled(.developerOptions)
+				hasDeveloperFeature: featureFlags.isEnabled(.developerOptions),
+				hasTeamsFeature: featureFlags.isEnabled(.teamsTracking)
 			),
 			reducer: App()._printChanges()
 		)
