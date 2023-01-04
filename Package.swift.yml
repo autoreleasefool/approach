@@ -188,6 +188,13 @@ package:
       dependencies:
         implementation:
           - PersistenceService
+    - name: TeamsDataProvider
+      dependencies:
+        implementation:
+          - AsyncAlgorithms
+          - PersistenceService
+          - RecentlyUsedService
+          - SortingLibrary
 
   service:
     - name: FeatureFlagsService

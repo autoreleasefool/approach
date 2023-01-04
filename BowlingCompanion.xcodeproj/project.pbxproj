@@ -26,6 +26,7 @@
 		CAC56851291F54A100192D12 /* PreferenceService in Frameworks */ = {isa = PBXBuildFile; productRef = CAC56850291F54A100192D12 /* PreferenceService */; };
 		CAC56853291F54A100192D12 /* RecentlyUsedService in Frameworks */ = {isa = PBXBuildFile; productRef = CAC56852291F54A100192D12 /* RecentlyUsedService */; };
 		CAF80290295D67FC00B19459 /* FeatureFlagsService in Frameworks */ = {isa = PBXBuildFile; productRef = CAF8028F295D67FC00B19459 /* FeatureFlagsService */; };
+		CAFCA04429641D0A000702EF /* TeamsDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CAFCA04329641D0A000702EF /* TeamsDataProvider */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -42,6 +43,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CAFCA04429641D0A000702EF /* TeamsDataProvider in Frameworks */,
 				CA50C6852963A4FB002F6F20 /* AveragesDataProvider in Frameworks */,
 				CA2890DE28F87FF2003C1EE9 /* AppFeature in Frameworks */,
 				CA81F9E0293DAD0B0061D1D9 /* LanesDataProvider in Frameworks */,
@@ -148,6 +150,7 @@
 				CA81F9DF293DAD0B0061D1D9 /* LanesDataProvider */,
 				CAF8028F295D67FC00B19459 /* FeatureFlagsService */,
 				CA50C6842963A4FB002F6F20 /* AveragesDataProvider */,
+				CAFCA04329641D0A000702EF /* TeamsDataProvider */,
 			);
 			productName = BowlingCompanion;
 			productReference = CA8BBC5528D59B8B00653A1E /* BowlingCompanion.app */;
@@ -490,6 +493,10 @@
 		CAF8028F295D67FC00B19459 /* FeatureFlagsService */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = FeatureFlagsService;
+		};
+		CAFCA04329641D0A000702EF /* TeamsDataProvider */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = TeamsDataProvider;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
