@@ -51,6 +51,16 @@ public struct PersistenceService: Sendable {
 	public var fetchAverages: @Sendable (Average.FetchRequest) async throws -> [Average]
 	public var observeAverages: @Sendable (Average.FetchRequest) -> AsyncThrowingStream<[Average], Error>
 
+	public var createTeam: @Sendable (Team) async throws -> Void
+	public var updateTeam: @Sendable (Team) async throws -> Void
+	public var deleteTeam: @Sendable (Team) async throws -> Void
+	public var fetchTeams: @Sendable (Team.FetchRequest) async throws -> [Team]
+	public var observeTeams: @Sendable (Team.FetchRequest) -> AsyncThrowingStream<[Team], Error>
+
+	public var updateTeamMembers: @Sendable (TeamMembership) async throws -> Void
+	public var fetchTeamMembers: @Sendable (TeamMembership.FetchRequest) async throws -> TeamMembership
+	public var observeTeamMembers: @Sendable (TeamMembership.FetchRequest) -> AsyncThrowingStream<TeamMembership, Error>
+
 	public init(
 		createBowler: @escaping @Sendable (Bowler) async throws -> Void,
 		updateBowler: @escaping @Sendable (Bowler) async throws -> Void,
@@ -90,7 +100,15 @@ public struct PersistenceService: Sendable {
 		fetchGear: @escaping @Sendable (Gear.FetchRequest) async throws -> [Gear],
 		observeGear: @escaping @Sendable (Gear.FetchRequest) -> AsyncThrowingStream<[Gear], Error>,
 		fetchAverages: @escaping @Sendable (Average.FetchRequest) async throws -> [Average],
-		observeAverages: @escaping @Sendable (Average.FetchRequest) -> AsyncThrowingStream<[Average], Error>
+		observeAverages: @escaping @Sendable (Average.FetchRequest) -> AsyncThrowingStream<[Average], Error>,
+		createTeam: @escaping @Sendable (Team) async throws -> Void,
+		updateTeam: @escaping @Sendable (Team) async throws -> Void,
+		deleteTeam: @escaping @Sendable (Team) async throws -> Void,
+		fetchTeams: @escaping @Sendable (Team.FetchRequest) async throws -> [Team],
+		observeTeams: @escaping @Sendable (Team.FetchRequest) -> AsyncThrowingStream<[Team], Error>,
+		updateTeamMembers: @escaping @Sendable (TeamMembership) async throws -> Void,
+		fetchTeamMembers: @escaping @Sendable (TeamMembership.FetchRequest) async throws -> TeamMembership,
+		observeTeamMembers: @escaping @Sendable (TeamMembership.FetchRequest) -> AsyncThrowingStream<TeamMembership, Error>
 	) {
 		self.createBowler = createBowler
 		self.updateBowler = updateBowler
@@ -131,6 +149,14 @@ public struct PersistenceService: Sendable {
 		self.observeGear = observeGear
 		self.fetchAverages = fetchAverages
 		self.observeAverages = observeAverages
+		self.createTeam = createTeam
+		self.updateTeam = updateTeam
+		self.deleteTeam = deleteTeam
+		self.fetchTeams = fetchTeams
+		self.observeTeams = observeTeams
+		self.updateTeamMembers = updateTeamMembers
+		self.fetchTeamMembers = fetchTeamMembers
+		self.observeTeamMembers = observeTeamMembers
 	}
 }
 
@@ -174,7 +200,15 @@ extension PersistenceService: TestDependencyKey {
 		fetchGear: { _ in fatalError("\(Self.self).fetchGear") },
 		observeGear: { _ in fatalError("\(Self.self).observeGear") },
 		fetchAverages: { _ in fatalError("\(Self.self).fetchAverages") },
-		observeAverages: { _ in fatalError("\(Self.self).observeAverages") }
+		observeAverages: { _ in fatalError("\(Self.self).observeAverages") },
+		createTeam: { _ in fatalError("\(Self.self).createTeam") },
+		updateTeam: { _ in fatalError("\(Self.self).updateTeam") },
+		deleteTeam: { _ in fatalError("\(Self.self).deleteTeam") },
+		fetchTeams: { _ in fatalError("\(Self.self).fetchTeams") },
+		observeTeams: { _ in fatalError("\(Self.self).observeTeams") },
+		updateTeamMembers: { _ in fatalError("\(Self.self).updateTeamMembers") },
+		fetchTeamMembers: { _ in fatalError("\(Self.self).fetchTeamMembers") },
+		observeTeamMembers: { _ in fatalError("\(Self.self).observeTeamMembers") }
 	)
 }
 

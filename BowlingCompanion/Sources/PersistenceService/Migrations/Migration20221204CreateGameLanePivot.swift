@@ -11,6 +11,8 @@ struct Migration20221204CreateGameLanePivot: Migration {
 				.notNull()
 				.indexed()
 				.references("lane", onDelete: .cascade)
+
+			t.primaryKey(["game", "lane"])
 		}
 	}
 }

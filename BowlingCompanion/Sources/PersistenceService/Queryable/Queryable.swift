@@ -11,3 +11,7 @@ protocol SingleQueryable {
 
 	@Sendable func fetchValue(_ db: Database) throws -> Model?
 }
+
+protocol SingleQueryableWithDefault: SingleQueryable {
+	@Sendable func makeDefault() -> Model
+}

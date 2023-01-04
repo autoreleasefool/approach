@@ -1,4 +1,5 @@
 import GRDB
+import SharedModelsPersistableLibrary
 
 struct ModelPersistence {
 	let writer: any DatabaseWriter
@@ -28,6 +29,12 @@ struct ModelPersistence {
 			for model in models {
 				try model.update($0)
 			}
+		}
+	}
+
+	@Sendable func update<Model: PersistableSQL>(model: Model) async throws {
+		try await writer.write {
+			try model.update($0)
 		}
 	}
 

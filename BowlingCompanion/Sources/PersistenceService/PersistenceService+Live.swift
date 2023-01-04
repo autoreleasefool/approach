@@ -55,7 +55,15 @@ extension PersistenceService: DependencyKey {
 			fetchGear: modelQuerying.fetchAll(request:),
 			observeGear: modelQuerying.observeAll(request:),
 			fetchAverages: modelQuerying.fetchAll(request:),
-			observeAverages: modelQuerying.observeAll(request:)
+			observeAverages: modelQuerying.observeAll(request:),
+			createTeam: modelPersistence.create(model:),
+			updateTeam: modelPersistence.update(model:),
+			deleteTeam: modelPersistence.delete(model:),
+			fetchTeams: modelQuerying.fetchAll(request:),
+			observeTeams: modelQuerying.observeAll(request:),
+			updateTeamMembers: modelPersistence.update(model:),
+			fetchTeamMembers: modelQuerying.fetchOne(request:),
+			observeTeamMembers: modelQuerying.observeOne(request:)
 		)
 	}()
 }
