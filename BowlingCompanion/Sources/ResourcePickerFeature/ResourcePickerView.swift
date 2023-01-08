@@ -12,6 +12,7 @@ public struct ResourcePickerView<Resource: PickableResource, Row: View>: View {
 		let listState: ListContentState<Resource, ListErrorContent>
 		let selected: Set<Resource.ID>
 		let isCancellable: Bool
+		let limit: Int
 
 		init(state: ResourcePicker<Resource>.State) {
 			if let error = state.error {
@@ -23,6 +24,7 @@ public struct ResourcePickerView<Resource: PickableResource, Row: View>: View {
 			}
 			self.selected = state.selected
 			self.isCancellable = state.showsCancelHeaderButton && state.selected != state.initialSelection
+			self.limit = state.limit
 		}
 	}
 
@@ -81,7 +83,7 @@ public struct ResourcePickerView<Resource: PickableResource, Row: View>: View {
 				}
 			}
 			.scrollContentBackground(.hidden)
-			.navigationTitle(Strings.Picker.title(Resource.pickableModelName))
+			.navigationTitle(Strings.Picker.title(Resource.pickableModelName(forCount: viewStore.limit)))
 			.toolbar {
 				if viewStore.isCancellable {
 					ToolbarItem(placement: .navigationBarLeading) {

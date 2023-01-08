@@ -2,7 +2,7 @@ import ComposableArchitecture
 import ViewsLibrary
 
 public protocol PickableResource: Equatable, Identifiable {
-	static var pickableModelName: String { get }
+	static func pickableModelName(forCount: Int) -> String
 }
 
 public struct ResourcePicker<Resource: PickableResource>: ReducerProtocol {

@@ -11,7 +11,9 @@ extension Team: BaseFormModel {
 }
 
 extension Bowler: PickableResource {
-	static public var pickableModelName = Strings.Bowler.List.title
+	static public func pickableModelName(forCount count: Int) -> String {
+		count == 1 ? Strings.Bowler.title : Strings.Bowler.List.title
+	}
 }
 
 public struct TeamEditor: ReducerProtocol {

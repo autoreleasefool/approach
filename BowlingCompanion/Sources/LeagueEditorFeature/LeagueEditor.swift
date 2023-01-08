@@ -11,7 +11,9 @@ extension League: BaseFormModel {
 }
 
 extension Alley: PickableResource {
-	static public var pickableModelName = Strings.Alley.title
+	static public func pickableModelName(forCount count: Int) -> String {
+		count == 1 ? Strings.Alley.title : Strings.Alley.List.title
+	}
 }
 
 public struct LeagueEditor: ReducerProtocol {
