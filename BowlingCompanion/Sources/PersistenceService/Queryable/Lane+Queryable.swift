@@ -19,7 +19,7 @@ extension Lane.FetchRequest: ManyQueryable {
 
 		switch ordering {
 		case .byLabel:
-			query = query.order(Column("label").asc)
+			query = query.order(Column("label").collating(.localizedCaseInsensitiveCompare))
 		}
 
 		return try query.fetchAll(db)

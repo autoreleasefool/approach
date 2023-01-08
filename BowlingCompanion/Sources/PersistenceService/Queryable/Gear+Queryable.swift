@@ -18,7 +18,7 @@ extension Gear.FetchRequest: ManyQueryable {
 
 		switch ordering {
 		case .byName, .byRecentlyUsed:
-			query = query.order(Column("name").asc)
+			query = query.order(Column("name").collating(.localizedCaseInsensitiveCompare))
 		}
 
 		return try query.fetchAll(db)

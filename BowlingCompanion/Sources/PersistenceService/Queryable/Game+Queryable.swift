@@ -19,7 +19,7 @@ extension Game.FetchRequest: ManyQueryable {
 
 		switch ordering {
 		case .byOrdinal:
-			query = query.order(Column("ordinal").asc)
+			query = query.order(Column("ordinal").collating(.localizedCaseInsensitiveCompare))
 		}
 
 		return try query.fetchAll(db)
