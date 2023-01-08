@@ -95,7 +95,7 @@ public struct TeamsList: ReducerProtocol {
 					await .editTeamLoadResponse(TaskResult {
 						try await .init(
 							team: team,
-							membership: teamsDataProvider.fetchTeamMembers(.init(filter: .id(team.id), ordering: .byName))
+							membership: teamsDataProvider.fetchTeamMembers(.init(filter: .team(team), ordering: .byName))
 						)
 					})
 				}

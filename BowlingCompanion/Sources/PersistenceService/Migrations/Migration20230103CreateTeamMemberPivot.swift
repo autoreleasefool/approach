@@ -1,8 +1,8 @@
 import GRDB
 
-struct Migration20230103CreateTeamBowlerPivot: Migration {
+struct Migration20230103CreateTeamMemberPivot: Migration {
 	static func migrate(_ db: Database) throws {
-		try db.create(table: "teamBowlers") { t in
+		try db.create(table: "teamMember") { t in
 			t.column("team", .text)
 				.notNull()
 				.indexed()

@@ -46,7 +46,7 @@ public struct TeamEditor: ReducerProtocol {
 			case let .edit(team):
 				fields = .init(teamId: team.id, membership: membership)
 				fields.name = team.name
-				teamMembers = .init(team: team.id)
+				teamMembers = .init(team: team)
 			case .create:
 				@Dependency(\.uuid) var uuid: UUIDGenerator
 
@@ -94,7 +94,8 @@ public struct TeamEditor: ReducerProtocol {
 		Reduce { state, action in
 			switch action {
 			case let .form(.saveModelResult(.success(team))):
-				let teamMembership = TeamMembership(team: team.id, members: state.base.form.bowlers.selectedResources)
+				let members = state.base.form.bowlers.selectedResources ?? state.teamMembers.bowlers.elements
+				let teamMembership = TeamMembership(team: team.id, members: members)
 				return .task { [teamMembership = teamMembership] in
 					try await persistenceService.updateTeamMembers(teamMembership)
 
@@ -109,7 +110,7 @@ public struct TeamEditor: ReducerProtocol {
 
 			case .bowlers(.saveButtonTapped), .bowlers(.cancelButtonTapped):
 				state.teamMembers.bowlers = .init(
-					uniqueElements: state.base.form.bowlers.selectedResources.sorted { $0.name < $1.name }
+					uniqueElements: state.base.form.bowlers.selectedResources?.sorted { $0.name < $1.name } ?? []
 				)
 				state.isBowlerPickerPresented = false
 				return .none

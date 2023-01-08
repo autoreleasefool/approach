@@ -15,7 +15,7 @@ extension TeamMembership {
 
 extension TeamMembership.FetchRequest {
 	public enum Filter: Equatable {
-		case id(Team.ID)
+		case team(Team)
 	}
 }
 

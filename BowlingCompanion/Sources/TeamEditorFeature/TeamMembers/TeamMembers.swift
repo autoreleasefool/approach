@@ -4,11 +4,11 @@ import TeamsDataProviderInterface
 
 public struct TeamMembers: ReducerProtocol {
 	public struct State: Equatable {
-		public let team: Team.ID?
+		public let team: Team?
 		public var isLoadingInitialData = true
 		public var bowlers: IdentifiedArrayOf<Bowler> = []
 
-		public init(team: Team.ID?) {
+		public init(team: Team?) {
 			self.team = team
 		}
 	}
@@ -29,7 +29,7 @@ public struct TeamMembers: ReducerProtocol {
 				if let team = state.team {
 					return .task {
 						await .teamMembershipResponse(TaskResult {
-							try await teamsDataProvider.fetchTeamMembers(.init(filter: .id(team), ordering: .byName))
+							try await teamsDataProvider.fetchTeamMembers(.init(filter: .team(team), ordering: .byName))
 						})
 					}
 				}

@@ -14,8 +14,9 @@ public struct ResourcePicker<Resource: PickableResource>: ReducerProtocol {
 		public var error: ListErrorContent?
 		public var showsCancelHeaderButton: Bool
 
-		public var selectedResources: [Resource] {
-			selected.compactMap { resources?[id: $0] }
+		public var selectedResources: [Resource]? {
+			guard let resources else { return nil }
+			return selected.compactMap { resources[id: $0] }
 		}
 
 		public init(selected: Set<Resource.ID>, limit: Int = 0, showsCancelHeaderButton: Bool = true) {
