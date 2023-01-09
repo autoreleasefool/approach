@@ -16,6 +16,8 @@ public struct LeaguesListView: View {
 		let listState: ListContentState<League, ListErrorContent>
 		let selection: League.ID?
 		let isLeagueEditorPresented: Bool
+		let isLeagueFiltersPresented: Bool
+		let isLeagueFilterActive: Bool
 
 		init(state: LeaguesList.State) {
 			if let error = state.error {
@@ -28,6 +30,8 @@ public struct LeaguesListView: View {
 			self.selection = state.selection?.id
 			self.bowlerName = state.bowler.name
 			self.isLeagueEditorPresented = state.leagueEditor != nil
+			self.isLeagueFiltersPresented = state.isLeagueFiltersPresented
+			self.isLeagueFilterActive = state.leagueFilters.filters.count > 0
 		}
 	}
 
@@ -35,7 +39,9 @@ public struct LeaguesListView: View {
 		case observeLeagues
 		case addButtonTapped
 		case errorButtonTapped
+		case filterButtonTapped
 		case setEditorFormSheet(isPresented: Bool)
+		case setFilterSheet(isPresented: Bool)
 		case setNavigation(selection: League.ID?)
 		case swipeAction(League, LeaguesList.SwipeAction)
 	}
@@ -90,8 +96,23 @@ public struct LeaguesListView: View {
 			.navigationTitle(viewStore.bowlerName)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
+					FilterButton(isActive: viewStore.isLeagueFilterActive) {
+						viewStore.send(.filterButtonTapped)
+					}
+					.disabled(viewStore.isLeagueFiltersPresented)
+				}
+				ToolbarItem(placement: .navigationBarTrailing) {
 					AddButton { viewStore.send(.addButtonTapped) }
 				}
+			}
+			.sheet(isPresented: viewStore.binding(
+				get: \.isLeagueFiltersPresented,
+				send: ViewAction.setFilterSheet(isPresented:)
+			)) {
+				NavigationView {
+					LeaguesFilterView(store: store.scope(state: \.leagueFilters, action: LeaguesList.Action.leaguesFilter))
+				}
+				.presentationDetents(undimmed: [.medium, .large])
 			}
 			.sheet(isPresented: viewStore.binding(
 				get: \.isLeagueEditorPresented,
@@ -121,6 +142,10 @@ extension LeaguesList.Action {
 			self = .setEditorFormSheet(isPresented: true)
 		case .errorButtonTapped:
 			self = .errorButtonTapped
+		case .filterButtonTapped:
+			self = .setFilterSheet(isPresented: true)
+		case let .setFilterSheet(isPresented):
+			self = .setFilterSheet(isPresented: isPresented)
 		case let .setEditorFormSheet(isPresented):
 			self = .setEditorFormSheet(isPresented: isPresented)
 		case let .setNavigation(selection):

@@ -15,6 +15,8 @@ public struct LeaguesList: ReducerProtocol {
 		public var selection: Identified<League.ID, SeriesList.State>?
 		public var leagueEditor: LeagueEditor.State?
 		public var alert: AlertState<AlertAction>?
+		public var isLeagueFiltersPresented = false
+		public var leagueFilters: LeaguesFilter.State = .init()
 
 		public init(bowler: Bowler) {
 			self.bowler = bowler
@@ -27,11 +29,13 @@ public struct LeaguesList: ReducerProtocol {
 		case leaguesResponse(TaskResult<[League]>)
 		case setNavigation(selection: League.ID?)
 		case setEditorFormSheet(isPresented: Bool)
+		case setFilterSheet(isPresented: Bool)
 		case alert(AlertAction)
 		case swipeAction(League, SwipeAction)
 		case deleteLeagueResponse(TaskResult<Bool>)
 		case leagueEditor(LeagueEditor.Action)
 		case series(SeriesList.Action)
+		case leaguesFilter(LeaguesFilter.Action)
 	}
 
 	public enum SwipeAction: Equatable {
@@ -50,12 +54,16 @@ public struct LeaguesList: ReducerProtocol {
 	@Dependency(\.featureFlags) var featureFlags
 
 	public var body: some ReducerProtocol<State, Action> {
+		Scope(state: \.leagueFilters, action: /LeaguesList.Action.leaguesFilter) {
+			LeaguesFilter()
+		}
+
 		Reduce { state, action in
 			switch action {
 			case .observeLeagues:
 				state.error = nil
-				return .run { [bowler = state.bowler.id] send in
-					for try await leagues in leaguesDataProvider.observeLeagues(.init(bowler: bowler, ordering: .byRecentlyUsed)) {
+				return .run { [bowler = state.bowler.id, filters = state.leagueFilters.filters] send in
+					for try await leagues in leaguesDataProvider.observeLeagues(.init(filter: [.bowler(bowler)] + filters, ordering: .byRecentlyUsed)) {
 						await send(.leaguesResponse(.success(leagues)))
 					}
 				} catch: { error, send in
@@ -74,6 +82,17 @@ public struct LeaguesList: ReducerProtocol {
 			case .leaguesResponse(.failure):
 				state.error = .loadError
 				return .none
+
+			case .setFilterSheet(isPresented: true):
+				state.isLeagueFiltersPresented = true
+				return .none
+
+			case .setFilterSheet(isPresented: false), .leaguesFilter(.applyButtonTapped):
+				state.isLeagueFiltersPresented = false
+				return .task { .observeLeagues }
+
+			case .leaguesFilter(.binding):
+				return .task { .observeLeagues }
 
 			case let .setNavigation(selection: .some(id)):
 				if let selection = state.leagues?[id: id] {
@@ -128,17 +147,11 @@ public struct LeaguesList: ReducerProtocol {
 					})
 				}
 
-			case .deleteLeagueResponse(.success):
-				return .none
-
 			case .deleteLeagueResponse(.failure):
 				state.error = .deleteError
 				return .none
 
-			case .leagueEditor:
-				return .none
-
-			case .series:
+			case .leagueEditor, .series, .leaguesFilter, .deleteLeagueResponse(.success):
 				return .none
 			}
 		}

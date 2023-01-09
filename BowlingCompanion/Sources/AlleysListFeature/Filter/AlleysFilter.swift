@@ -29,10 +29,7 @@ public struct AlleysFilter: ReducerProtocol {
 				state = .init()
 				return .task { .applyButtonTapped }
 
-			case .applyButtonTapped:
-				return .none
-
-			case .binding:
+			case .applyButtonTapped, .binding:
 				return .none
 			}
 		}
