@@ -28,6 +28,7 @@ extension RecentlyUsedService {
 		case alleys
 		case gear
 		case teams
+		case opponents
 	}
 }
 

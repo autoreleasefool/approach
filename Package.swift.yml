@@ -200,6 +200,13 @@ package:
           - PersistenceService
           - RecentlyUsedService
           - SortingLibrary
+    - name: OpponentsDataProvider
+      dependencies:
+        implementation:
+          - AsyncAlgorithms
+          - PersistenceService
+          - RecentlyUsedService
+          - SortingLibrary
     - name: SeriesDataProvider
       dependencies:
         implementation:

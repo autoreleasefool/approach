@@ -52,6 +52,8 @@ let package = Package(
 		.library(name: "LanesDataProviderInterface", targets: ["LanesDataProviderInterface"]),
 		.library(name: "LeaguesDataProvider", targets: ["LeaguesDataProvider"]),
 		.library(name: "LeaguesDataProviderInterface", targets: ["LeaguesDataProviderInterface"]),
+		.library(name: "OpponentsDataProvider", targets: ["OpponentsDataProvider"]),
+		.library(name: "OpponentsDataProviderInterface", targets: ["OpponentsDataProviderInterface"]),
 		.library(name: "SeriesDataProvider", targets: ["SeriesDataProvider"]),
 		.library(name: "SeriesDataProviderInterface", targets: ["SeriesDataProviderInterface"]),
 		.library(name: "TeamsDataProvider", targets: ["TeamsDataProvider"]),
@@ -656,6 +658,32 @@ let package = Package(
 				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"LeaguesDataProvider",
+				"SharedModelsMocksLibrary",
+			]
+		),
+		.target(
+			name: "OpponentsDataProvider",
+			dependencies: [
+				.product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
+				"OpponentsDataProviderInterface",
+				"PersistenceServiceInterface",
+				"RecentlyUsedServiceInterface",
+				"SortingLibrary",
+			]
+		),
+		.target(
+			name: "OpponentsDataProviderInterface",
+			dependencies: [
+				.product(name: "Dependencies", package: "swift-composable-architecture"),
+				"SharedModelsFetchableLibrary",
+			]
+		),
+		.testTarget(
+			name: "OpponentsDataProviderTests",
+			dependencies: [
+				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"OpponentsDataProvider",
 				"SharedModelsMocksLibrary",
 			]
 		),
