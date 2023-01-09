@@ -18,8 +18,8 @@ public struct App: ReducerProtocol {
 		public var settings: Settings.State
 		public let hasTeamsFeature: Bool
 
-		public init(hasDeveloperFeature: Bool, hasTeamsFeature: Bool) {
-			self.settings = .init(hasDeveloperFeature: hasDeveloperFeature)
+		public init(hasDeveloperFeature: Bool, hasTeamsFeature: Bool, hasOpponentsFeature: Bool) {
+			self.settings = .init(hasDeveloperFeature: hasDeveloperFeature, hasOpponentsEnabled: hasOpponentsFeature)
 			self.hasTeamsFeature = hasTeamsFeature
 		}
 	}

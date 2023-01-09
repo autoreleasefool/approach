@@ -107,6 +107,10 @@ package:
         - RecentlyUsedService
         - SeriesListFeature
         - SharedModelsViewsLibrary
+    - name: OpponentsListFeature
+      dependencies:
+        - OpponentsDataProvider
+        - SortOrderLibrary
     - name: ResourcePickerFeature
       dependencies:
         - AssetsLibrary
@@ -135,6 +139,7 @@ package:
       dependencies:
         - ConstantsLibrary
         - FeatureFlagsListFeature
+        - OpponentsListFeature
     - name: StatisticsWidgetsFeature
       dependencies:
         - AssetsLibrary

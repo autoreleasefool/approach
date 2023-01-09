@@ -1,5 +1,6 @@
 import ComposableArchitecture
 import FeatureFlagsListFeature
+import OpponentsListFeature
 import StringsLibrary
 import SwiftUI
 
@@ -8,14 +9,12 @@ public struct SettingsView: View {
 
 	struct ViewState: Equatable {
 		let showsFeatures: Bool
+		let showsOpponents: Bool
 
 		init(state: Settings.State) {
 			self.showsFeatures = state.showsFeatures
+			self.showsOpponents = state.hasOpponentsEnabled
 		}
-	}
-
-	enum ViewAction {
-		case placeholder
 	}
 
 	public init(store: StoreOf<Settings>) {
@@ -23,10 +22,10 @@ public struct SettingsView: View {
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: Settings.Action.init) { viewStore in
+		WithViewStore(store, observe: ViewState.init) { viewStore in
 			List {
-				Section {
-					if viewStore.showsFeatures {
+				if viewStore.showsFeatures {
+					Section {
 						NavigationLink(
 							Strings.Settings.FeatureFlags.title,
 							destination: FeatureFlagsListView(
@@ -36,18 +35,20 @@ public struct SettingsView: View {
 					}
 				}
 
+				if viewStore.showsOpponents {
+					Section {
+						NavigationLink(
+							Strings.Opponent.List.title,
+							destination: OpponentsListView(
+								store: store.scope(state: \.opponentsList, action: Settings.Action.opponentsList)
+							)
+						)
+					}
+				}
+
 				HelpSettingsView(store: store.scope(state: \.helpSettings, action: Settings.Action.helpSettings))
 			}
 			.navigationTitle(Strings.Settings.title)
-		}
-	}
-}
-
-extension Settings.Action {
-	init(action: SettingsView.ViewAction) {
-		switch action {
-		case .placeholder:
-			self = .placeholder
 		}
 	}
 }

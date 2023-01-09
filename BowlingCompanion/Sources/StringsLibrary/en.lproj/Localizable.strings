@@ -46,6 +46,13 @@
 "bowler.error.empty.title" = "No bowlers found";
 "bowler.error.empty.message" = "You haven't added any bowlers yet. Try adding yourself to get started.";
 
+/* Opponents */
+"opponent.title" = "Opponent";
+"opponent.list.title" = "Opponents";
+"opponent.list.add" = "Add Opponent";
+"opponent.error.empty.title" = "No opponents found";
+"opponent.error.empty.message" = "Playing against another bowler, or in a match play setting? Keep track of your record by adding your opponents.";
+
 /* Gear */
 
 "gear.title" = "Gear";

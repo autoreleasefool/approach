@@ -364,6 +364,24 @@ public enum Strings {
       }
     }
   }
+  public enum Opponent {
+    /// Opponents
+    public static let title = Strings.tr("Localizable", "opponent.title", fallback: "Opponent")
+    public enum Error {
+      public enum Empty {
+        /// Playing against another bowler, or in a match play setting? Keep track of your record by adding your opponents.
+        public static let message = Strings.tr("Localizable", "opponent.error.empty.message", fallback: "Playing against another bowler, or in a match play setting? Keep track of your record by adding your opponents.")
+        /// No opponents found
+        public static let title = Strings.tr("Localizable", "opponent.error.empty.title", fallback: "No opponents found")
+      }
+    }
+    public enum List {
+      /// Add Opponent
+      public static let add = Strings.tr("Localizable", "opponent.list.add", fallback: "Add Opponent")
+      /// Opponents
+      public static let title = Strings.tr("Localizable", "opponent.list.title", fallback: "Opponents")
+    }
+  }
   public enum Ordering {
     /// Ordering
     public static let alphabetical = Strings.tr("Localizable", "ordering.alphabetical", fallback: "Alphabetical")

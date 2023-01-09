@@ -9,7 +9,8 @@ struct ContentView: View {
 		return .init(
 			initialState: App.State(
 				hasDeveloperFeature: featureFlags.isEnabled(.developerOptions),
-				hasTeamsFeature: featureFlags.isEnabled(.teams)
+				hasTeamsFeature: featureFlags.isEnabled(.teams),
+				hasOpponentsFeature: featureFlags.isEnabled(.opponents)
 			),
 			reducer: App()._printChanges()
 		)
