@@ -44,9 +44,9 @@ public struct App: ReducerProtocol {
 		public var id: String { rawValue }
 		public var featureFlag: FeatureFlag {
 			switch self {
-			case .alleys: return .alleyTracking
+			case .alleys: return .alleys
 			case .bowlers: return .scoreSheetTab
-			case .gear: return .gearTracking
+			case .gear: return .gear
 			case .settings: return .settingsTab
 			}
 		}

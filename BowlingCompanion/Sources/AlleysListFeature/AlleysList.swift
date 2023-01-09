@@ -73,7 +73,7 @@ public struct AlleysList: ReducerProtocol {
 			case let .swipeAction(alley, .edit):
 				state.alleyEditor = .init(
 					mode: .edit(alley),
-					hasLanesEnabled: featureFlags.isEnabled(.lanesTracking)
+					hasLanesEnabled: featureFlags.isEnabled(.lanes)
 				)
 				return .none
 
@@ -111,7 +111,7 @@ public struct AlleysList: ReducerProtocol {
 			case .setEditorFormSheet(isPresented: true):
 				state.alleyEditor = .init(
 					mode: .create,
-					hasLanesEnabled: featureFlags.isEnabled(.lanesTracking)
+					hasLanesEnabled: featureFlags.isEnabled(.lanes)
 				)
 				return .none
 

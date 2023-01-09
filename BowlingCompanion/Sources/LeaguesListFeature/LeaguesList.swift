@@ -112,7 +112,7 @@ public struct LeaguesList: ReducerProtocol {
 				state.leagueEditor = .init(
 					bowler: state.bowler,
 					mode: .create,
-					hasAlleysEnabled: featureFlags.isEnabled(.alleyTracking)
+					hasAlleysEnabled: featureFlags.isEnabled(.alleys)
 				)
 				return .none
 
@@ -127,7 +127,7 @@ public struct LeaguesList: ReducerProtocol {
 				state.leagueEditor = .init(
 					bowler: state.bowler,
 					mode: .edit(league),
-					hasAlleysEnabled: featureFlags.isEnabled(.alleyTracking)
+					hasAlleysEnabled: featureFlags.isEnabled(.alleys)
 				)
 				return .none
 
