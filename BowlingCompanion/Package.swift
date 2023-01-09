@@ -78,6 +78,7 @@ let package = Package(
 		.library(name: "ConstantsLibrary", targets: ["ConstantsLibrary"]),
 		.library(name: "DateTimeLibrary", targets: ["DateTimeLibrary"]),
 		.library(name: "FeatureFlagsLibrary", targets: ["FeatureFlagsLibrary"]),
+		.library(name: "FoundationExtensionsLibrary", targets: ["FoundationExtensionsLibrary"]),
 		.library(name: "SharedModelsFetchableLibrary", targets: ["SharedModelsFetchableLibrary"]),
 		.library(name: "SharedModelsLibrary", targets: ["SharedModelsLibrary"]),
 		.library(name: "SharedModelsMocksLibrary", targets: ["SharedModelsMocksLibrary"]),
@@ -424,6 +425,7 @@ let package = Package(
 			dependencies: [
 				"ConstantsLibrary",
 				"FeatureFlagsListFeature",
+				"FoundationExtensionsLibrary",
 				"OpponentsListFeature",
 			]
 		),
@@ -913,6 +915,10 @@ let package = Package(
 				"FeatureFlagsLibrary",
 				"SharedModelsMocksLibrary",
 			]
+		),
+		.target(
+			name: "FoundationExtensionsLibrary",
+			dependencies: []
 		),
 		.target(
 			name: "SharedModelsFetchableLibrary",

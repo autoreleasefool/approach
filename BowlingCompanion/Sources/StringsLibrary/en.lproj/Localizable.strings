@@ -47,6 +47,7 @@
 "bowler.error.empty.message" = "You haven't added any bowlers yet. Try adding yourself to get started.";
 
 /* Opponents */
+
 "opponent.title" = "Opponent";
 "opponent.list.title" = "Opponents";
 "opponent.list.add" = "Add Opponent";
@@ -130,8 +131,9 @@
 "settings.developer.contact" = "Contact";
 "settings.developer.twitterHandle" = "@autoreleasefool";
 "settings.developer.twitterUrl" = "https://twitter.com/@autoreleasefool";
-"settings.developer.mastodonHandle" = "@autoreleasefool@mastodon.social";
-"settings.developer.mastodonUrl" = "https://mastodon.social/@autoreleasefool";
+"settings.developer.mastodonHandle" = "@autoreleasefool@iosdev.space";
+"settings.developer.mastodonUrl" = "https://iosdev.space/@autoreleasefool";
+"settings.developer.learnMore" = "Learn More";
 "settings.developer.websiteTitle" = "Website";
 "settings.developer.website" = "https://josephroque.dev";
 "settings.developer.blogTitle" = "Blog";
@@ -145,6 +147,10 @@
 "settings.help.viewSource" = "View Source";
 "settings.help.development.title" = "Development";
 "settings.help.development.help" = "%@ is an open source project you can aid in the development of by using the links above";
+"settings.appInfo.title" = "App Info";
+"settings.appInfo.version" = "Version";
+"settings.appInfo.appVersion" = "%@ (%@)";
+"settings.appInfo.copyright" = "©2023, Joseph Roque";
 "settings.featureFlags.title" = "Features";
 "settings.title" = "Settings";
 

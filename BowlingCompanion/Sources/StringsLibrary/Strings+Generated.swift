@@ -439,6 +439,18 @@ public enum Strings {
       /// Settings
       public static let title = Strings.tr("Localizable", "settings.acknowledgements.title", fallback: "Acknowledgements")
     }
+    public enum AppInfo {
+      /// %@ (%@)
+      public static func appVersion(_ p1: Any, _ p2: Any) -> String {
+        return Strings.tr("Localizable", "settings.appInfo.appVersion", String(describing: p1), String(describing: p2), fallback: "%@ (%@)")
+      }
+      /// © Joseph Roque
+      public static let copyright = Strings.tr("Localizable", "settings.appInfo.copyright", fallback: "© Joseph Roque")
+      /// App Info
+      public static let title = Strings.tr("Localizable", "settings.appInfo.title", fallback: "App Info")
+      /// Version
+      public static let version = Strings.tr("Localizable", "settings.appInfo.version", fallback: "Version")
+    }
     public enum Developer {
       /// https://runcode.blog
       public static let blog = Strings.tr("Localizable", "settings.developer.blog", fallback: "https://runcode.blog")
@@ -446,10 +458,12 @@ public enum Strings {
       public static let blogTitle = Strings.tr("Localizable", "settings.developer.blogTitle", fallback: "Blog")
       /// Contact
       public static let contact = Strings.tr("Localizable", "settings.developer.contact", fallback: "Contact")
-      /// @autoreleasefool@mastodon.social
-      public static let mastodonHandle = Strings.tr("Localizable", "settings.developer.mastodonHandle", fallback: "@autoreleasefool@mastodon.social")
-      /// https://mastodon.social/@autoreleasefool
-      public static let mastodonUrl = Strings.tr("Localizable", "settings.developer.mastodonUrl", fallback: "https://mastodon.social/@autoreleasefool")
+      /// Learn More
+      public static let learnMore = Strings.tr("Localizable", "settings.developer.learnMore", fallback: "Learn More")
+      /// @autoreleasefool@iosdev.space
+      public static let mastodonHandle = Strings.tr("Localizable", "settings.developer.mastodonHandle", fallback: "@autoreleasefool@iosdev.space")
+      /// https://iosdev.space/@autoreleasefool
+      public static let mastodonUrl = Strings.tr("Localizable", "settings.developer.mastodonUrl", fallback: "https://iosdev.space/@autoreleasefool")
       /// Joseph Roque
       public static let name = Strings.tr("Localizable", "settings.developer.name", fallback: "Joseph Roque")
       /// Developer

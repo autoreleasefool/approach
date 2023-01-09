@@ -144,6 +144,7 @@ package:
       dependencies:
         - ConstantsLibrary
         - FeatureFlagsListFeature
+        - FoundationExtensionsLibrary
         - OpponentsListFeature
     - name: StatisticsWidgetsFeature
       dependencies:
@@ -260,6 +261,7 @@ package:
       requires_tests: true
     - name: FeatureFlagsLibrary
       requires_tests: true
+    - name: FoundationExtensionsLibrary
     - name: SharedModelsLibrary
       dependencies:
         - StringsLibrary

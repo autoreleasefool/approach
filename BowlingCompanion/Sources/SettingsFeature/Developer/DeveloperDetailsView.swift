@@ -11,9 +11,13 @@ struct DeveloperDetailsView: View {
 				Link(DeveloperConstants.mastodonHandle, destination: DeveloperConstants.mastodonUrl)
 			}
 
-			Section {
-				Link(Strings.Settings.Developer.websiteTitle, destination: DeveloperConstants.website)
-				Link(Strings.Settings.Developer.blogTitle, destination: DeveloperConstants.blog)
+			Section(Strings.Settings.Developer.learnMore) {
+				Link(destination: DeveloperConstants.website) {
+					LabeledContent(Strings.Settings.Developer.websiteTitle, value: Strings.Settings.Developer.website)
+				}
+				Link(destination: DeveloperConstants.blog) {
+					LabeledContent(Strings.Settings.Developer.blogTitle, value: Strings.Settings.Developer.blog)
+				}
 			}
 		}
 		.navigationTitle(Strings.Settings.Developer.title)
