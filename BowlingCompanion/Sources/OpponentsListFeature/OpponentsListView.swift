@@ -1,5 +1,6 @@
 import AssetsLibrary
 import ComposableArchitecture
+import OpponentEditorFeature
 import SharedModelsLibrary
 import SharedModelsViewsLibrary
 import SortOrderLibrary
@@ -13,6 +14,7 @@ public struct OpponentsListView: View {
 	struct ViewState: Equatable {
 		let listState: ListContentState<Opponent, ListErrorContent>
 		let selection: Opponent.ID?
+		let isOpponentEditorPresented: Bool
 
 		init(state: OpponentsList.State) {
 			if let error = state.error {
@@ -23,6 +25,7 @@ public struct OpponentsListView: View {
 				self.listState = .loading
 			}
 			self.selection = state.selection?.id
+			self.isOpponentEditorPresented = state.opponentEditor != nil
 		}
 	}
 
@@ -76,7 +79,6 @@ public struct OpponentsListView: View {
 					EmptyContentAction(title: error.action) { viewStore.send(.errorButtonTapped) }
 				}
 			}
-			.scrollContentBackground(.hidden)
 			.navigationTitle(Strings.Opponent.List.title)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
@@ -85,6 +87,16 @@ public struct OpponentsListView: View {
 
 				ToolbarItem(placement: .navigationBarTrailing) {
 					AddButton { viewStore.send(.addButtonTapped) }
+				}
+			}
+			.sheet(isPresented: viewStore.binding(
+				get: \.isOpponentEditorPresented,
+				send: ViewAction.setEditorFormSheet(isPresented:)
+			)) {
+				IfLetStore(store.scope(state: \.opponentEditor, action: OpponentsList.Action.opponentEditor)) { scopedStore in
+					NavigationView {
+						OpponentEditorView(store: scopedStore)
+					}
 				}
 			}
 			.alert(

@@ -24,6 +24,7 @@ let package = Package(
 		.library(name: "LaneEditorFeature", targets: ["LaneEditorFeature"]),
 		.library(name: "LeagueEditorFeature", targets: ["LeagueEditorFeature"]),
 		.library(name: "LeaguesListFeature", targets: ["LeaguesListFeature"]),
+		.library(name: "OpponentEditorFeature", targets: ["OpponentEditorFeature"]),
 		.library(name: "OpponentsListFeature", targets: ["OpponentsListFeature"]),
 		.library(name: "ResourcePickerFeature", targets: ["ResourcePickerFeature"]),
 		.library(name: "ScoreSheetFeature", targets: ["ScoreSheetFeature"]),
@@ -311,9 +312,25 @@ let package = Package(
 			]
 		),
 		.target(
+			name: "OpponentEditorFeature",
+			dependencies: [
+				"BaseFormFeature",
+				"OpponentsDataProviderInterface",
+				"PersistenceServiceInterface",
+			]
+		),
+		.testTarget(
+			name: "OpponentEditorFeatureTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"OpponentEditorFeature",
+				"SharedModelsMocksLibrary",
+			]
+		),
+		.target(
 			name: "OpponentsListFeature",
 			dependencies: [
-				"OpponentsDataProviderInterface",
+				"OpponentEditorFeature",
 				"SortOrderLibrary",
 			]
 		),

@@ -1,5 +1,6 @@
 import ComposableArchitecture
 import OpponentsDataProviderInterface
+import OpponentEditorFeature
 import PersistenceServiceInterface
 import SharedModelsLibrary
 import SharedModelsFetchableLibrary
@@ -12,6 +13,7 @@ public struct OpponentsList: ReducerProtocol {
 		public var sortOrder: SortOrder<Opponent.FetchRequest.Ordering>.State = .init(initialValue: .byRecentlyUsed)
 		public var selection: Identified<Opponent.ID, Int>?
 		public var error: ListErrorContent?
+		public var opponentEditor: OpponentEditor.State?
 		public var alert: AlertState<AlertAction>?
 
 		public init() {}
@@ -26,6 +28,7 @@ public struct OpponentsList: ReducerProtocol {
 		case setEditorFormSheet(isPresented: Bool)
 		case opponentsResponse(TaskResult<[Opponent]>)
 		case deleteOpponentResponse(TaskResult<Bool>)
+		case opponentEditor(OpponentEditor.Action)
 		case sortOrder(SortOrder<Opponent.FetchRequest.Ordering>.Action)
 	}
 
@@ -81,8 +84,7 @@ public struct OpponentsList: ReducerProtocol {
 				return .none
 
 			case let .swipeAction(opponent, .edit):
-//				state.bowlerEditor = .init(mode: .edit(bowler))
-				// TODO: show opponent editor
+				state.opponentEditor = .init(mode: .edit(opponent))
 				return .none
 
 			case let .swipeAction(opponent, .delete):
@@ -109,19 +111,25 @@ public struct OpponentsList: ReducerProtocol {
 				return .none
 
 			case .setEditorFormSheet(isPresented: true):
-				// TODO: show opponent editor
+				state.opponentEditor = .init(mode: .create)
 				return .none
 
-			case .setEditorFormSheet(isPresented: false):
-				// TODO: hide opponent editor
+			case .setEditorFormSheet(isPresented: false),
+					.opponentEditor(.form(.didFinishSaving)),
+					.opponentEditor(.form(.didFinishDeleting)),
+					.opponentEditor(.form(.alert(.discardButtonTapped))):
+				state.opponentEditor = nil
 				return .none
 
 			case .sortOrder(.optionTapped):
 				return .task { .observeOpponents }
 
-			case .sortOrder:
+			case .sortOrder, .opponentEditor:
 				return .none
 			}
+		}
+		.ifLet(\.opponentEditor, action: /OpponentsList.Action.opponentEditor) {
+			OpponentEditor()
 		}
 	}
 }

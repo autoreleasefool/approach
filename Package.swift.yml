@@ -107,9 +107,14 @@ package:
         - RecentlyUsedService
         - SeriesListFeature
         - SharedModelsViewsLibrary
+    - name: OpponentEditorFeature
+      dependencies:
+        - BaseFormFeature
+        - OpponentsDataProvider
+        - PersistenceService
     - name: OpponentsListFeature
       dependencies:
-        - OpponentsDataProvider
+        - OpponentEditorFeature
         - SortOrderLibrary
     - name: ResourcePickerFeature
       dependencies:
