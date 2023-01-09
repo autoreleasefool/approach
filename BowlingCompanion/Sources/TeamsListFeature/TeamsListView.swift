@@ -93,6 +93,10 @@ public struct TeamsListView: View {
 					}
 				}
 			}
+			.alert(
+				self.store.scope(state: \.alert, action: TeamsList.Action.alert),
+				dismiss: .dismissed
+			)
 			.task { await viewStore.send(.observeTeams).finish() }
 		}
 	}

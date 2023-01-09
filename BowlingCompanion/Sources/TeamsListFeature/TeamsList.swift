@@ -12,6 +12,7 @@ public struct TeamsList: ReducerProtocol {
 		public var sortOrder: SortOrder<Team.FetchRequest.Ordering>.State = .init(initialValue: .byRecentlyUsed)
 		public var error: ListErrorContent?
 		public var teamEditor: TeamEditor.State?
+		public var alert: AlertState<AlertAction>?
 
 		public init() {}
 	}
@@ -21,11 +22,13 @@ public struct TeamsList: ReducerProtocol {
 		case errorButtonTapped
 		case teamsResponse(TaskResult<[Team]>)
 		case editTeamLoadResponse(TaskResult<EditTeamLoadResult>)
+		case deleteTeamResponse(TaskResult<Bool>)
 		case swipeAction(Team, SwipeAction)
 		case sortOrder(SortOrder<Team.FetchRequest.Ordering>.Action)
 		case setNavigation(selection: Team.ID?)
 		case setEditorFormSheet(isPresented: Bool)
 		case teamEditor(TeamEditor.Action)
+		case alert(AlertAction)
 	}
 
 	public enum SwipeAction: Equatable {
@@ -44,6 +47,7 @@ public struct TeamsList: ReducerProtocol {
 	public init() {}
 
 	@Dependency(\.teamsDataProvider) var teamsDataProvider
+	@Dependency(\.persistenceService) var persistenceService
 
 	public var body: some ReducerProtocol<State, Action> {
 		Scope(state: \.sortOrder, action: /TeamsList.Action.sortOrder) {
@@ -109,8 +113,27 @@ public struct TeamsList: ReducerProtocol {
 				// TODO: handle failed to load team members error
 				return .none
 
-			case .swipeAction(_, .delete):
-				// TODO: open team delete prompt
+			case let .swipeAction(team, .delete):
+				state.alert = TeamsList.alert(toDelete: team)
+				return .none
+
+			case .alert(.dismissed):
+				state.alert = nil
+				return .none
+
+			case let .alert(.deleteButtonTapped(team)):
+				return .task {
+					return await .deleteTeamResponse(TaskResult {
+						try await persistenceService.deleteTeam(team)
+						return true
+					})
+				}
+
+			case .deleteTeamResponse(.success):
+				return .none
+
+			case .deleteTeamResponse(.failure):
+				state.error = .deleteError
 				return .none
 
 			case .sortOrder(.optionTapped):

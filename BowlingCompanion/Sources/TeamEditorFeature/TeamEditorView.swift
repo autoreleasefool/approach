@@ -11,12 +11,10 @@ public struct TeamEditorView: View {
 	struct ViewState: Equatable {
 		@BindableState var name: String
 		let isBowlerPickerPresented: Bool
-		let numberOfBowlersSelected: Int
 
 		init(state: TeamEditor.State) {
 			self.name = state.base.form.name
 			self.isBowlerPickerPresented = state.isBowlerPickerPresented
-			self.numberOfBowlersSelected = state.teamMembers.bowlers.count
 		}
 	}
 
@@ -65,12 +63,6 @@ public struct TeamEditorView: View {
 							Text(Strings.Action.manage)
 								.font(.caption)
 						}
-					}
-				} footer: {
-					if viewStore.numberOfBowlersSelected == 1 {
-						Text("You can't create a team with only 1 bowler!")
-							.font(.caption)
-							.foregroundColor(.appDestructive)
 					}
 				}
 			}
