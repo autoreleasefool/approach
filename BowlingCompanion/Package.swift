@@ -93,7 +93,8 @@ let package = Package(
 	],
 	dependencies: [
 		.package(url: "https://github.com/apple/swift-async-algorithms.git", from: "0.0.4"),
-		.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "0.42.0"),
+		.package(url: "https://github.com/pointfreeco/swift-dependencies.git", from: "0.1.2"),
+		.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "0.49.2"),
 		.package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.10.0"),
 		.package(url: "https://github.com/groue/GRDB.swift.git", from: "6.6.0"),
 	],
@@ -514,7 +515,7 @@ let package = Package(
 		.target(
 			name: "AlleysDataProviderInterface",
 			dependencies: [
-				.product(name: "Dependencies", package: "swift-composable-architecture"),
+				.product(name: "Dependencies", package: "swift-dependencies"),
 				"SharedModelsFetchableLibrary",
 			]
 		),
@@ -537,7 +538,7 @@ let package = Package(
 		.target(
 			name: "AveragesDataProviderInterface",
 			dependencies: [
-				.product(name: "Dependencies", package: "swift-composable-architecture"),
+				.product(name: "Dependencies", package: "swift-dependencies"),
 				"SharedModelsFetchableLibrary",
 			]
 		),
@@ -563,7 +564,7 @@ let package = Package(
 		.target(
 			name: "BowlersDataProviderInterface",
 			dependencies: [
-				.product(name: "Dependencies", package: "swift-composable-architecture"),
+				.product(name: "Dependencies", package: "swift-dependencies"),
 				"SharedModelsFetchableLibrary",
 			]
 		),
@@ -586,7 +587,7 @@ let package = Package(
 		.target(
 			name: "FramesDataProviderInterface",
 			dependencies: [
-				.product(name: "Dependencies", package: "swift-composable-architecture"),
+				.product(name: "Dependencies", package: "swift-dependencies"),
 				"SharedModelsFetchableLibrary",
 			]
 		),
@@ -609,7 +610,7 @@ let package = Package(
 		.target(
 			name: "GamesDataProviderInterface",
 			dependencies: [
-				.product(name: "Dependencies", package: "swift-composable-architecture"),
+				.product(name: "Dependencies", package: "swift-dependencies"),
 				"SharedModelsFetchableLibrary",
 			]
 		),
@@ -635,7 +636,7 @@ let package = Package(
 		.target(
 			name: "GearDataProviderInterface",
 			dependencies: [
-				.product(name: "Dependencies", package: "swift-composable-architecture"),
+				.product(name: "Dependencies", package: "swift-dependencies"),
 				"SharedModelsFetchableLibrary",
 			]
 		),
@@ -658,7 +659,7 @@ let package = Package(
 		.target(
 			name: "LanesDataProviderInterface",
 			dependencies: [
-				.product(name: "Dependencies", package: "swift-composable-architecture"),
+				.product(name: "Dependencies", package: "swift-dependencies"),
 				"SharedModelsFetchableLibrary",
 			]
 		),
@@ -684,7 +685,7 @@ let package = Package(
 		.target(
 			name: "LeaguesDataProviderInterface",
 			dependencies: [
-				.product(name: "Dependencies", package: "swift-composable-architecture"),
+				.product(name: "Dependencies", package: "swift-dependencies"),
 				"SharedModelsFetchableLibrary",
 			]
 		),
@@ -710,7 +711,7 @@ let package = Package(
 		.target(
 			name: "OpponentsDataProviderInterface",
 			dependencies: [
-				.product(name: "Dependencies", package: "swift-composable-architecture"),
+				.product(name: "Dependencies", package: "swift-dependencies"),
 				"SharedModelsFetchableLibrary",
 			]
 		),
@@ -733,7 +734,7 @@ let package = Package(
 		.target(
 			name: "SeriesDataProviderInterface",
 			dependencies: [
-				.product(name: "Dependencies", package: "swift-composable-architecture"),
+				.product(name: "Dependencies", package: "swift-dependencies"),
 				"SharedModelsFetchableLibrary",
 			]
 		),
@@ -759,7 +760,7 @@ let package = Package(
 		.target(
 			name: "TeamsDataProviderInterface",
 			dependencies: [
-				.product(name: "Dependencies", package: "swift-composable-architecture"),
+				.product(name: "Dependencies", package: "swift-dependencies"),
 				"SharedModelsFetchableLibrary",
 			]
 		),
@@ -783,7 +784,7 @@ let package = Package(
 		.target(
 			name: "FeatureFlagsServiceInterface",
 			dependencies: [
-				.product(name: "Dependencies", package: "swift-composable-architecture"),
+				.product(name: "Dependencies", package: "swift-dependencies"),
 				"FeatureFlagsLibrary",
 			]
 		),
@@ -804,7 +805,7 @@ let package = Package(
 		.target(
 			name: "FileManagerServiceInterface",
 			dependencies: [
-				.product(name: "Dependencies", package: "swift-composable-architecture"),
+				.product(name: "Dependencies", package: "swift-dependencies"),
 			]
 		),
 		.testTarget(
@@ -826,7 +827,7 @@ let package = Package(
 		.target(
 			name: "PersistenceServiceInterface",
 			dependencies: [
-				.product(name: "Dependencies", package: "swift-composable-architecture"),
+				.product(name: "Dependencies", package: "swift-dependencies"),
 				"SharedModelsFetchableLibrary",
 			]
 		),
@@ -848,7 +849,7 @@ let package = Package(
 		.target(
 			name: "PreferenceServiceInterface",
 			dependencies: [
-				.product(name: "Dependencies", package: "swift-composable-architecture"),
+				.product(name: "Dependencies", package: "swift-dependencies"),
 			]
 		),
 		.testTarget(
@@ -869,7 +870,7 @@ let package = Package(
 		.target(
 			name: "RecentlyUsedServiceInterface",
 			dependencies: [
-				.product(name: "Dependencies", package: "swift-composable-architecture"),
+				.product(name: "Dependencies", package: "swift-dependencies"),
 			]
 		),
 		.testTarget(
@@ -941,7 +942,7 @@ let package = Package(
 		.target(
 			name: "SharedModelsPersistableLibrary",
 			dependencies: [
-				.product(name: "Dependencies", package: "swift-composable-architecture"),
+				.product(name: "Dependencies", package: "swift-dependencies"),
 				.product(name: "GRDB", package: "GRDB.swift"),
 				"SharedModelsLibrary",
 			]
