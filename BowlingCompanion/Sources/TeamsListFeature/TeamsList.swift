@@ -1,3 +1,4 @@
+import BowlersDataProviderInterface
 import ComposableArchitecture
 import RecentlyUsedServiceInterface
 import SharedModelsLibrary
@@ -38,7 +39,7 @@ public struct TeamsList: ReducerProtocol {
 
 	public struct EditTeamLoadResult: Equatable {
 		let team: Team
-		let membership: TeamMembership
+		let bowlers: [Bowler]
 	}
 
 	struct ObservationCancellable {}
@@ -46,6 +47,7 @@ public struct TeamsList: ReducerProtocol {
 
 	public init() {}
 
+	@Dependency(\.bowlersDataProvider) var bowlersDataProvider
 	@Dependency(\.teamsDataProvider) var teamsDataProvider
 	@Dependency(\.persistenceService) var persistenceService
 
@@ -84,7 +86,7 @@ public struct TeamsList: ReducerProtocol {
 				return .none
 
 			case .setEditorFormSheet(isPresented: true):
-				state.teamEditor = .init(mode: .create, membership: nil)
+				state.teamEditor = .init(mode: .create, bowlers: [])
 				return .none
 
 			case .setEditorFormSheet(isPresented: false),
@@ -99,14 +101,14 @@ public struct TeamsList: ReducerProtocol {
 					await .editTeamLoadResponse(TaskResult {
 						try await .init(
 							team: team,
-							membership: teamsDataProvider.fetchTeamMembers(.init(filter: .team(team), ordering: .byName))
+							bowlers: bowlersDataProvider.fetchBowlers(.init(filter: .team(team), ordering: .byName))
 						)
 					})
 				}
 				.cancellable(id: EditTeamCancellable.self, cancelInFlight: true)
 
 			case let .editTeamLoadResponse(.success(editTeam)):
-				state.teamEditor = .init(mode: .edit(editTeam.team), membership: editTeam.membership)
+				state.teamEditor = .init(mode: .edit(editTeam.team), bowlers: editTeam.bowlers)
 				return .none
 
 			case .editTeamLoadResponse(.failure):

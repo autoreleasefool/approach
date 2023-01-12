@@ -44,9 +44,7 @@ extension TeamsDataProvider: DependencyKey {
 						continuation.onTermination = { _ in task.cancel() }
 					}
 				}
-			},
-			fetchTeamMembers: persistenceService.fetchTeamMembers,
-			observeTeamMembers: persistenceService.observeTeamMembers
+			}
 		)
 	}()
 }

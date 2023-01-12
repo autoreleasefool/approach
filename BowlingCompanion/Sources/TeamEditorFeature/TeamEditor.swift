@@ -29,10 +29,10 @@ public struct TeamEditor: ReducerProtocol {
 			!name.isEmpty && !bowlers.selected.isEmpty
 		}
 
-		public init(teamId: Team.ID, membership: TeamMembership?) {
+		public init(teamId: Team.ID, bowlers: [Bowler]) {
 			self.teamId = teamId
 			self.bowlers = .init(
-				selected: Set((membership?.members ?? []).map(\.id)),
+				selected: Set(bowlers.map(\.id)),
 				query: .init(filter: nil, ordering: .byName)
 			)
 		}
@@ -43,17 +43,17 @@ public struct TeamEditor: ReducerProtocol {
 		public var teamMembers: TeamMembers.State
 		public var isBowlerPickerPresented = false
 
-		public init(mode: Form.Mode, membership: TeamMembership?) {
+		public init(mode: Form.Mode, bowlers: [Bowler]) {
 			var fields: Fields
 			switch mode {
 			case let .edit(team):
-				fields = .init(teamId: team.id, membership: membership)
+				fields = .init(teamId: team.id, bowlers: bowlers)
 				fields.name = team.name
 				teamMembers = .init(team: team)
 			case .create:
 				@Dependency(\.uuid) var uuid: UUIDGenerator
 
-				fields = .init(teamId: uuid(), membership: membership)
+				fields = .init(teamId: uuid(), bowlers: [])
 				teamMembers = .init(team: nil)
 			}
 

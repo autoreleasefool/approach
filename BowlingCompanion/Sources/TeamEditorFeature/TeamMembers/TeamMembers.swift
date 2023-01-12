@@ -1,3 +1,4 @@
+import BowlersDataProviderInterface
 import ComposableArchitecture
 import SharedModelsLibrary
 import TeamsDataProviderInterface
@@ -15,34 +16,34 @@ public struct TeamMembers: ReducerProtocol {
 
 	public enum Action: Equatable {
 		case refreshData
-		case teamMembershipResponse(TaskResult<TeamMembership>)
+		case bowlersResponse(TaskResult<[Bowler]>)
 	}
 
 	public init() {}
 
+	@Dependency(\.bowlersDataProvider) var bowlersDataProvider
 	@Dependency(\.teamsDataProvider) var teamsDataProvider
 
 	public var body: some ReducerProtocol<State, Action> {
 		Reduce { state, action in
 			switch action {
 			case .refreshData:
-				if let team = state.team {
-					return .task {
-						await .teamMembershipResponse(TaskResult {
-							try await teamsDataProvider.fetchTeamMembers(.init(filter: .team(team), ordering: .byName))
+				return .task { [team = state.team] in
+					if let team {
+						return await .bowlersResponse(TaskResult {
+							try await bowlersDataProvider.fetchBowlers(.init(filter: .team(team), ordering: .byName))
 						})
+					} else {
+						return .bowlersResponse(.success([]))
 					}
 				}
 
+			case let .bowlersResponse(.success(bowlers)):
+				state.bowlers = .init(uniqueElements: bowlers)
 				state.isLoadingInitialData = false
 				return .none
 
-			case let .teamMembershipResponse(.success(membership)):
-				state.bowlers = .init(uniqueElements: membership.members)
-				state.isLoadingInitialData = false
-				return .none
-
-			case .teamMembershipResponse(.failure):
+			case .bowlersResponse(.failure):
 				// TODO: handle failure loading bowlers
 				state.isLoadingInitialData = false
 				return .none

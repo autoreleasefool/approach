@@ -13,6 +13,8 @@ extension Bowler.FetchRequest: ManyQueryable {
 			query = query.filter(id: id)
 		case let .name(name):
 			query = query.filter(Column("name").like(name))
+		case let .team(team):
+			query = team.bowlers
 		case .none:
 			break
 		}

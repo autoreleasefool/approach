@@ -62,8 +62,6 @@ extension PersistenceService: DependencyKey {
 			fetchTeams: modelQuerying.fetchAll(request:),
 			observeTeams: modelQuerying.observeAll(request:),
 			updateTeamMembers: modelPersistence.update(model:),
-			fetchTeamMembers: modelQuerying.fetchOne(request:),
-			observeTeamMembers: modelQuerying.observeOne(request:),
 			createOpponent: modelPersistence.create(model:),
 			updateOpponent: modelPersistence.update(model:),
 			deleteOpponent: modelPersistence.delete(model:),

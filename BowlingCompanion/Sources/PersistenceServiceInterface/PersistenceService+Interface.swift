@@ -58,8 +58,6 @@ public struct PersistenceService: Sendable {
 	public var observeTeams: @Sendable (Team.FetchRequest) -> AsyncThrowingStream<[Team], Error>
 
 	public var updateTeamMembers: @Sendable (TeamMembership) async throws -> Void
-	public var fetchTeamMembers: @Sendable (TeamMembership.FetchRequest) async throws -> TeamMembership
-	public var observeTeamMembers: @Sendable (TeamMembership.FetchRequest) -> AsyncThrowingStream<TeamMembership, Error>
 
 	public var createOpponent: @Sendable (Opponent) async throws -> Void
 	public var updateOpponent: @Sendable (Opponent) async throws -> Void
@@ -113,8 +111,6 @@ public struct PersistenceService: Sendable {
 		fetchTeams: @escaping @Sendable (Team.FetchRequest) async throws -> [Team],
 		observeTeams: @escaping @Sendable (Team.FetchRequest) -> AsyncThrowingStream<[Team], Error>,
 		updateTeamMembers: @escaping @Sendable (TeamMembership) async throws -> Void,
-		fetchTeamMembers: @escaping @Sendable (TeamMembership.FetchRequest) async throws -> TeamMembership,
-		observeTeamMembers: @escaping @Sendable (TeamMembership.FetchRequest) -> AsyncThrowingStream<TeamMembership, Error>,
 		createOpponent: @escaping @Sendable (Opponent) async throws -> Void,
 		updateOpponent: @escaping @Sendable (Opponent) async throws -> Void,
 		deleteOpponent: @escaping @Sendable (Opponent) async throws -> Void,
@@ -166,8 +162,6 @@ public struct PersistenceService: Sendable {
 		self.fetchTeams = fetchTeams
 		self.observeTeams = observeTeams
 		self.updateTeamMembers = updateTeamMembers
-		self.fetchTeamMembers = fetchTeamMembers
-		self.observeTeamMembers = observeTeamMembers
 		self.createOpponent = createOpponent
 		self.updateOpponent = updateOpponent
 		self.deleteOpponent = deleteOpponent
@@ -223,8 +217,6 @@ extension PersistenceService: TestDependencyKey {
 		fetchTeams: { _ in fatalError("\(Self.self).fetchTeams") },
 		observeTeams: { _ in fatalError("\(Self.self).observeTeams") },
 		updateTeamMembers: { _ in fatalError("\(Self.self).updateTeamMembers") },
-		fetchTeamMembers: { _ in fatalError("\(Self.self).fetchTeamMembers") },
-		observeTeamMembers: { _ in fatalError("\(Self.self).observeTeamMembers") },
 		createOpponent: { _ in fatalError("\(Self.self).createOpponent") },
 		updateOpponent: { _ in fatalError("\(Self.self).updateOpponent") },
 		deleteOpponent: { _ in fatalError("\(Self.self).deleteOpponent") },
