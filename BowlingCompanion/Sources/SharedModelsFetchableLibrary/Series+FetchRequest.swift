@@ -1,14 +1,21 @@
 import SharedModelsLibrary
 
 extension Series {
-	public struct FetchRequest {
-		public let league: League.ID
+	public struct FetchRequest: Equatable {
+		public let filter: Filter?
 		public let ordering: Ordering
 
-		public init(league: League.ID, ordering: Ordering) {
-			self.league = league
+		public init(filter: Filter?, ordering: Ordering) {
+			self.filter = filter
 			self.ordering = ordering
 		}
+	}
+}
+
+extension Series.FetchRequest {
+	public enum Filter: Equatable {
+		case id(Series.ID)
+		case league(League.ID) // TODO: replace with league
 	}
 }
 

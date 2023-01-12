@@ -15,7 +15,7 @@ extension Lane {
 extension Lane.FetchRequest {
 	public enum Filter: Equatable {
 		case id(Lane.ID)
-		case alley(Alley.ID)
+		case alley(Alley.ID) // TODO: replace with Alley
 		case series(Series)
 	}
 }

@@ -53,8 +53,8 @@ public struct AlleysList: ReducerProtocol {
 			switch action {
 			case .observeAlleys:
 				state.error = nil
-				return .run { [filters = state.alleyFilters.filters] send in
-					for try await alleys in alleysDataProvider.observeAlleys(.init(filter: filters, ordering: .byRecentlyUsed)) {
+				return .run { [filter = state.alleyFilters.filter] send in
+					for try await alleys in alleysDataProvider.observeAlleys(.init(filter: filter, ordering: .byRecentlyUsed)) {
 						await send(.alleysResponse(.success(alleys)))
 					}
 				} catch: { error, send in

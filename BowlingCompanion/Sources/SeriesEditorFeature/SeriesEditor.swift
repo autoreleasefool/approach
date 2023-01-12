@@ -52,7 +52,7 @@ public struct SeriesEditor: ReducerProtocol {
 			self.date = date
 			self.alleyPicker = .init(
 				selected: Set([league.alley].compactMap { $0 }),
-				query: .init(filter: [], ordering: .byName),
+				query: .init(filter: nil, ordering: .byName),
 				limit: 1,
 				showsCancelHeaderButton: false
 			)
@@ -159,7 +159,7 @@ public struct SeriesEditor: ReducerProtocol {
 						if let alley {
 							group.addTask {
 								await send(.alleyResponse(TaskResult {
-									let alleys = try await alleysDataProvider.fetchAlleys(.init(filter: [.id(alley)], ordering: .byName))
+									let alleys = try await alleysDataProvider.fetchAlleys(.init(filter: .id(alley), ordering: .byName))
 									return alleys.first
 								}))
 							}

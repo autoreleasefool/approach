@@ -8,15 +8,16 @@ extension League.FetchRequest: ManyQueryable {
 	@Sendable func fetchValues(_ db: Database) throws -> [League] {
 		var query = League.all()
 
-		filter.forEach {
-			switch $0 {
-			case let .id(id):
-				query = query.filter(id: id)
-			case let .bowler(bowler):
-				query = query.filter(Column("bowler") == bowler)
-			case let .recurrence(recurrence):
+		switch filter {
+		case let .id(id):
+			query = query.filter(id: id)
+		case let .properties(bowler, recurrence):
+			query = query.filter(Column("bowler") == bowler)
+			if let recurrence {
 				query = query.filter(Column("recurrence") == recurrence.rawValue)
 			}
+		case .none:
+			break
 		}
 
 		switch ordering {

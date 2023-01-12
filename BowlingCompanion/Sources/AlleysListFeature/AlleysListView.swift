@@ -27,7 +27,7 @@ public struct AlleysListView: View {
 			}
 			self.isAlleyEditorPresented = state.alleyEditor != nil
 			self.isAlleyFiltersPresented = state.isAlleyFiltersPresented
-			self.isAlleyFilterActive = state.alleyFilters.filters.count > 0
+			self.isAlleyFilterActive = state.alleyFilters.filter != nil
 		}
 	}
 

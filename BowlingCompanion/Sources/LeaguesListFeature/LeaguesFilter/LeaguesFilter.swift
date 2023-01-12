@@ -34,11 +34,11 @@ public struct LeaguesFilter: ReducerProtocol {
 }
 
 extension LeaguesFilter.State {
-	public var filters: [League.FetchRequest.Filter] {
-		var filters: [League.FetchRequest.Filter] = []
-		if let recurrence {
-			filters.append(.recurrence(recurrence))
-		}
-		return filters
+	public var hasFilters: Bool {
+		recurrence != nil
+	}
+
+	public func filter(withBowler: Bowler.ID) -> League.FetchRequest.Filter {
+		.properties(withBowler, recurrence: recurrence)
 	}
 }

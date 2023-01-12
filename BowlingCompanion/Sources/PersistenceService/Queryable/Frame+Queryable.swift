@@ -8,13 +8,13 @@ extension Frame.FetchRequest: ManyQueryable {
 	@Sendable func fetchValues(_ db: Database) throws -> [Frame] {
 		var query = Frame.all()
 
-		filter.forEach {
-			switch $0 {
-			case let .id(id):
-				query = query.filter(id: id)
-			case let .game(game):
-				query = query.filter(Column("game") == game)
-			}
+		switch filter {
+		case let .id(id):
+			query = query.filter(id: id)
+		case let .game(game):
+			query = query.filter(Column("game") == game)
+		case .none:
+			break
 		}
 
 		switch ordering {

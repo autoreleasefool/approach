@@ -1,16 +1,22 @@
 import SharedModelsLibrary
 
 extension Gear {
-	public struct FetchRequest {
-		public let bowler: Bowler.ID?
-		public let kind: Kind?
+	public struct FetchRequest: Equatable {
+		public let filter: Filter?
 		public let ordering: Ordering
 
-		public init(bowler: Bowler.ID? = nil, kind: Kind? = nil, ordering: Ordering) {
-			self.bowler = bowler
-			self.kind = kind
+		public init(filter: Filter?, ordering: Ordering) {
+			self.filter = filter
 			self.ordering = ordering
 		}
+	}
+}
+
+extension Gear.FetchRequest {
+	public enum Filter: Equatable {
+		case id(Gear.ID)
+		case bowler(Bowler.ID) // TODO: replace with bowler
+		case kind(Gear.Kind)
 	}
 }
 

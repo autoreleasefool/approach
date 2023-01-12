@@ -32,7 +32,7 @@ public struct SeriesSidebar: ReducerProtocol {
 			switch action {
 			case .observeGames:
 				return .run { [series = state.series.id] send in
-					for try await games in gamesDataProvider.observeGames(.init(filter: [.series(series)], ordering: .byOrdinal)) {
+					for try await games in gamesDataProvider.observeGames(.init(filter: .series(series), ordering: .byOrdinal)) {
 						await send(.gamesResponse(.success(games)))
 					}
 				} catch: { error, send in

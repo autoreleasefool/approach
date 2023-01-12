@@ -62,8 +62,8 @@ public struct LeaguesList: ReducerProtocol {
 			switch action {
 			case .observeLeagues:
 				state.error = nil
-				return .run { [bowler = state.bowler.id, filters = state.leagueFilters.filters] send in
-					for try await leagues in leaguesDataProvider.observeLeagues(.init(filter: [.bowler(bowler)] + filters, ordering: .byRecentlyUsed)) {
+				return .run { [filter = state.leagueFilters.filter(withBowler: state.bowler.id)] send in
+					for try await leagues in leaguesDataProvider.observeLeagues(.init(filter: filter, ordering: .byRecentlyUsed)) {
 						await send(.leaguesResponse(.success(leagues)))
 					}
 				} catch: { error, send in

@@ -34,7 +34,7 @@ public struct LeagueEditor: ReducerProtocol {
 			self.bowler = bowler
 			self.alleyPicker = .init(
 				selected: Set([alley].compactMap({ $0 })),
-				query: .init(filter: [], ordering: .byName),
+				query: .init(filter: nil, ordering: .byName),
 				limit: 1,
 				showsCancelHeaderButton: false
 			)
@@ -124,7 +124,7 @@ public struct LeagueEditor: ReducerProtocol {
 				if case let .edit(league) = state.base.mode, let alley = league.alley {
 					return .task {
 						await .alleyResponse(TaskResult {
-							let alleys = try await alleysDataProvider.fetchAlleys(.init(filter: [.id(alley)], ordering: .byName))
+							let alleys = try await alleysDataProvider.fetchAlleys(.init(filter: .id(alley), ordering: .byName))
 							return alleys.first
 						})
 					}

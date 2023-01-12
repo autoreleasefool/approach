@@ -31,7 +31,7 @@ public struct LeaguesListView: View {
 			self.bowlerName = state.bowler.name
 			self.isLeagueEditorPresented = state.leagueEditor != nil
 			self.isLeagueFiltersPresented = state.isLeagueFiltersPresented
-			self.isLeagueFilterActive = state.leagueFilters.filters.count > 0
+			self.isLeagueFilterActive = state.leagueFilters.hasFilters
 		}
 	}
 

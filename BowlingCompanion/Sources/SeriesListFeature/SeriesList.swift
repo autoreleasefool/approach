@@ -60,7 +60,7 @@ public struct SeriesList: ReducerProtocol {
 			case .observeSeries:
 				state.error = nil
 				return .run { [league = state.league.id] send in
-					for try await series in seriesDataProvider.observeSeries(.init(league: league, ordering: .byDate)) {
+					for try await series in seriesDataProvider.observeSeries(.init(filter: .league(league), ordering: .byDate)) {
 						await send(.seriesResponse(.success(series)))
 					}
 				} catch: { error, send in

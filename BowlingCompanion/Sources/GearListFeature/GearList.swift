@@ -39,7 +39,7 @@ public struct GearList: ReducerProtocol {
 			case .observeGear:
 				state.error = nil
 				return .run { send in
-					for try await gear in gearDataProvider.observeGear(.init(ordering: .byRecentlyUsed)) {
+					for try await gear in gearDataProvider.observeGear(.init(filter: nil, ordering: .byRecentlyUsed)) {
 						await send(.gearResponse(.success(gear)))
 					}
 				} catch: { error, send in

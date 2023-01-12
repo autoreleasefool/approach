@@ -1,11 +1,11 @@
 import SharedModelsLibrary
 
 extension League {
-	public struct FetchRequest {
-		public let filter: [Filter]
+	public struct FetchRequest: Equatable {
+		public let filter: Filter?
 		public let ordering: Ordering
 
-		public init(filter: [Filter], ordering: Ordering) {
+		public init(filter: Filter?, ordering: Ordering) {
 			self.filter = filter
 			self.ordering = ordering
 		}
@@ -15,8 +15,7 @@ extension League {
 extension League.FetchRequest {
 	public enum Filter: Equatable {
 		case id(League.ID)
-		case bowler(Bowler.ID) // TODO: replace with bowler
-		case recurrence(League.Recurrence)
+		case properties(Bowler.ID, recurrence: League.Recurrence?) // TODO: replace with bowler
 	}
 }
 

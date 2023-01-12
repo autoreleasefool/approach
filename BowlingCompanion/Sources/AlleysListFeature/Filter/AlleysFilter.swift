@@ -37,20 +37,11 @@ public struct AlleysFilter: ReducerProtocol {
 }
 
 extension AlleysFilter.State {
-	public var filters: [Alley.FetchRequest.Filter] {
-		var filters: [Alley.FetchRequest.Filter] = []
-		if let material {
-			filters.append(.material(material))
+	public var filter: Alley.FetchRequest.Filter? {
+		if material != nil || pinFall != nil || pinBase != nil || mechanism != nil {
+			return .properties(material: material, pinFall: pinFall, pinBase: pinBase, mechanism: mechanism)
 		}
-		if let mechanism {
-			filters.append(.mechanism(mechanism))
-		}
-		if let pinFall {
-			filters.append(.pinFall(pinFall))
-		}
-		if let pinBase {
-			filters.append(.pinBase(pinBase))
-		}
-		return filters
+
+		return nil
 	}
 }
