@@ -110,6 +110,7 @@
 "series.properties.preBowl.regular" = "Regular";
 "series.properties.excludeFromStatistics.include" = "Include in statistics";
 "series.properties.excludeFromStatistics.exclude" = "Exclude from statistics";
+"series.editor.fields.alley.lanes" = "Lanes";
 "series.editor.fields.preBowl.title" = "Pre-Bowl";
 "series.editor.fields.preBowl.label" = "This is a pre-bowl";
 "series.editor.fields.preBowl.help" = "Pre-bowls are excluded from statistics until you use them. You can easily find your recorded pre-bowls in the series list, and modify their date for when you plan to use them.";

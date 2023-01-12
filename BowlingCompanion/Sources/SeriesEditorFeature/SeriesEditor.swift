@@ -3,6 +3,7 @@ import BaseFormFeature
 import ComposableArchitecture
 import DateTimeLibrary
 import Foundation
+import LanesDataProviderInterface
 import PersistenceServiceInterface
 import ResourcePickerFeature
 import SharedModelsLibrary
@@ -19,6 +20,12 @@ extension Alley: PickableResource {
 	}
 }
 
+extension Lane: PickableResource {
+	static public func pickableModelName(forCount count: Int) -> String {
+		count == 1 ? Strings.Lane.title : Strings.Lane.List.title
+	}
+}
+
 public struct SeriesEditor: ReducerProtocol {
 	public typealias Form = BaseForm<Series, Fields>
 
@@ -29,7 +36,8 @@ public struct SeriesEditor: ReducerProtocol {
 		@BindableState public var date = Date()
 		@BindableState public var preBowl: Series.PreBowl = .regularPlay
 		@BindableState public var excludeFromStatistics: Series.ExcludeFromStatistics = .include
-		public var alleyPicker: ResourcePicker<Alley>.State
+		public var alleyPicker: ResourcePicker<Alley, Alley.FetchRequest>.State
+		public var lanePicker: ResourcePicker<Lane, Lane.FetchRequest>.State
 
 		public let isDeleteable = true
 		public var isSaveable = true
@@ -44,7 +52,19 @@ public struct SeriesEditor: ReducerProtocol {
 			self.date = date
 			self.alleyPicker = .init(
 				selected: Set([league.alley].compactMap { $0 }),
+				query: .init(filter: [], ordering: .byName),
 				limit: 1,
+				showsCancelHeaderButton: false
+			)
+			let laneQuery: Lane.FetchRequest
+			if let alley = league.alley {
+				laneQuery = .init(filter: .alley(alley), ordering: .byLabel)
+			} else {
+				laneQuery = .init(filter: nil, ordering: .byLabel)
+			}
+			self.lanePicker = .init(
+				selected: [],
+				query: laneQuery,
 				showsCancelHeaderButton: false
 			)
 		}
@@ -57,7 +77,9 @@ public struct SeriesEditor: ReducerProtocol {
 	public struct State: Equatable {
 		public var base: Form.State
 		public var initialAlley: Alley?
+		public var initialLanes: IdentifiedArrayOf<Lane>?
 		public var isAlleyPickerPresented = false
+		public var isLanePickerPresented = false
 		public let hasAlleysEnabled: Bool
 		public let hasLanesEnabled: Bool
 
@@ -88,10 +110,13 @@ public struct SeriesEditor: ReducerProtocol {
 	public enum Action: BindableAction, Equatable {
 		case loadInitialData
 		case alleyResponse(TaskResult<Alley?>)
+		case lanesResponse(TaskResult<[Lane]>)
 		case setAlleyPicker(isPresented: Bool)
+		case setLanePicker(isPresented: Bool)
 		case binding(BindingAction<State>)
 		case form(Form.Action)
-		case alleyPicker(ResourcePicker<Alley>.Action)
+		case alleyPicker(ResourcePicker<Alley, Alley.FetchRequest>.Action)
+		case lanePicker(ResourcePicker<Lane, Lane.FetchRequest>.Action)
 	}
 
 	public init() {}
@@ -100,6 +125,7 @@ public struct SeriesEditor: ReducerProtocol {
 	@Dependency(\.date) var date
 	@Dependency(\.persistenceService) var persistenceService
 	@Dependency(\.alleysDataProvider) var alleysDataProvider
+	@Dependency(\.lanesDataProvider) var lanesDataProvider
 
 	public var body: some ReducerProtocol<State, Action> {
 		BindingReducer()
@@ -115,22 +141,47 @@ public struct SeriesEditor: ReducerProtocol {
 
 		Scope(state: \.base.form.alleyPicker, action: /Action.alleyPicker) {
 			ResourcePicker {
-				try await alleysDataProvider.fetchAlleys(.init(filter: [], ordering: .byName))
+				try await alleysDataProvider.fetchAlleys($0)
+			}
+		}
+
+		Scope(state: \.base.form.lanePicker, action: /Action.lanePicker) {
+			ResourcePicker {
+				try await lanesDataProvider.fetchLanes($0)
 			}
 		}
 
 		Reduce { state, action in
 			switch action {
 			case .loadInitialData:
-				if let alley = state.base.form.alleyPicker.selected.first {
-					return .task {
-						await .alleyResponse(TaskResult {
-							let alleys = try await alleysDataProvider.fetchAlleys(.init(filter: [.id(alley)], ordering: .byName))
-							return alleys.first
-						})
+				return .run { [alley = state.base.form.alleyPicker.selected.first, series = state.base.mode.model] send in
+					await withTaskGroup(of: Void.self) { group in
+						if let alley {
+							group.addTask {
+								await send(.alleyResponse(TaskResult {
+									let alleys = try await alleysDataProvider.fetchAlleys(.init(filter: [.id(alley)], ordering: .byName))
+									return alleys.first
+								}))
+							}
+						} else {
+							group.addTask {
+								await send(.alleyResponse(.success(nil)))
+							}
+						}
+
+						if let series {
+							group.addTask {
+								await send(.lanesResponse(TaskResult {
+									try await lanesDataProvider.fetchLanes(.init(filter: .series(series), ordering: .byLabel))
+								}))
+							}
+						} else {
+							group.addTask {
+								await send(.lanesResponse(.success([])))
+							}
+						}
 					}
 				}
-				return .none
 
 			case let .alleyResponse(.success(alley)):
 				state.initialAlley = alley
@@ -140,12 +191,35 @@ public struct SeriesEditor: ReducerProtocol {
 				// TODO: handle error failing to load alley
 				return .none
 
+			case let .lanesResponse(.success(lanes)):
+				state.initialLanes = .init(uniqueElements: lanes)
+				return .none
+
+			case .lanesResponse(.failure):
+				// TODO: handle error failing to load lanes
+				return .none
+
 			case let .setAlleyPicker(isPresented):
 				state.isAlleyPickerPresented = isPresented
 				return .none
 
+			case let .setLanePicker(isPresented):
+				state.isLanePickerPresented = isPresented
+				return .none
+
 			case .alleyPicker(.saveButtonTapped), .alleyPicker(.cancelButtonTapped):
 				state.isAlleyPickerPresented = false
+				let laneQuery: Lane.FetchRequest
+				if let alley = state.base.form.alleyPicker.selected.first {
+					laneQuery = .init(filter: .alley(alley), ordering: .byLabel)
+				} else {
+					laneQuery = .init(filter: nil, ordering: .byLabel)
+				}
+				state.base.form.lanePicker.query = laneQuery
+				return .none
+
+			case .lanePicker(.saveButtonTapped), .lanePicker(.cancelButtonTapped):
+				state.isLanePickerPresented = false
 				return .none
 
 			case .form(.saveModelResult(.success)):
@@ -160,7 +234,7 @@ public struct SeriesEditor: ReducerProtocol {
 				state.base.isLoading = false
 				return .none
 
-			case .binding, .form, .alleyPicker:
+			case .binding, .form, .alleyPicker, .lanePicker:
 				return .none
 			}
 		}

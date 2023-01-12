@@ -405,6 +405,10 @@ public enum Strings {
     public static let title = Strings.tr("Localizable", "series.title", fallback: "Series")
     public enum Editor {
       public enum Fields {
+        public enum Alley {
+          /// Lanes
+          public static let lanes = Strings.tr("Localizable", "series.editor.fields.alley.lanes", fallback: "Lanes")
+        }
         public enum ExcludeFromStatistics {
           /// Pre-bowls are automatically excluded from all statistics.
           public static let excludedWhenPreBowl = Strings.tr("Localizable", "series.editor.fields.excludeFromStatistics.excludedWhenPreBowl", fallback: "Pre-bowls are automatically excluded from all statistics.")

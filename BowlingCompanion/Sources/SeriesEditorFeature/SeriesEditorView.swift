@@ -16,9 +16,19 @@ public struct SeriesEditorView: View {
 		@BindableState public var preBowl: Series.PreBowl
 		@BindableState public var excludeFromStatistics: Series.ExcludeFromStatistics
 		let isAlleyPickerPresented: Bool
+		let isLanePickerPresented: Bool
 		let selectedAlley: Alley?
+		let selectedLanes: IdentifiedArrayOf<Lane>?
 		let hasAlleysEnabled: Bool
 		let hasLanesEnabled: Bool
+
+		var laneLabels: String {
+			if let selectedLanes, !selectedLanes.isEmpty {
+				return selectedLanes.map(\.label).joined(separator: ", ")
+			} else {
+				return Strings.none
+			}
+		}
 
 		init(state: SeriesEditor.State) {
 			self.date = state.base.form.date
@@ -28,6 +38,7 @@ public struct SeriesEditorView: View {
 			self.hasAlleysEnabled = state.hasAlleysEnabled
 			self.hasLanesEnabled = state.hasLanesEnabled
 			self.isAlleyPickerPresented = state.isAlleyPickerPresented
+			self.isLanePickerPresented = state.isLanePickerPresented
 			if let id = state.base.form.alleyPicker.selected.first {
 				if let alley = state.base.form.alleyPicker.resources?[id: id] {
 					self.selectedAlley = alley
@@ -39,12 +50,20 @@ public struct SeriesEditorView: View {
 			} else {
 				self.selectedAlley = nil
 			}
+			if let lanes = state.base.form.lanePicker.selectedResources?.sorted(by: { $0.label < $1.label }) {
+				self.selectedLanes = .init(uniqueElements: lanes)
+			} else if let lanes = state.initialLanes {
+				self.selectedLanes = lanes
+			} else {
+				self.selectedLanes = nil
+			}
 		}
 	}
 
 	enum ViewAction: BindableAction {
 		case loadInitialData
 		case setAlleyPicker(isPresented: Bool)
+		case setLanePicker(isPresented: Bool)
 		case binding(BindingAction<ViewState>)
 	}
 
@@ -64,6 +83,54 @@ public struct SeriesEditorView: View {
 					.datePickerStyle(.graphical)
 				}
 				.listRowBackground(Color(uiColor: .secondarySystemBackground))
+
+				if viewStore.hasAlleysEnabled {
+					Section(Strings.Series.Properties.alley) {
+						NavigationLink(
+							destination: ResourcePickerView(
+								store: store.scope(
+									state: \.base.form.alleyPicker,
+									action: SeriesEditor.Action.alleyPicker
+								)
+							) { alley in
+								AlleyRow(alley: alley)
+							},
+							isActive: viewStore.binding(
+								get: \.isAlleyPickerPresented,
+								send: ViewAction.setAlleyPicker(isPresented:)
+							)
+						) {
+							LabeledContent(
+								Strings.Series.Properties.alley,
+								value: viewStore.selectedAlley?.name ?? Strings.none
+							)
+						}
+
+						if viewStore.hasLanesEnabled {
+							NavigationLink(
+								destination: ResourcePickerView(
+									store: store.scope(
+										state: \.base.form.lanePicker,
+										action: SeriesEditor.Action.lanePicker
+									)
+								) { lane in
+									LaneRow(lane: lane)
+								},
+								isActive: viewStore.binding(
+									get: \.isLanePickerPresented,
+									send: ViewAction.setLanePicker(isPresented:)
+								)
+							) {
+								LabeledContent(
+									Strings.Series.Editor.Fields.Alley.lanes,
+									value: viewStore.laneLabels
+								)
+							}
+							.disabled(viewStore.selectedAlley == nil)
+						}
+					}
+					.listRowBackground(Color(uiColor: .secondarySystemBackground))
+				}
 
 				Section {
 					Toggle(
@@ -99,39 +166,6 @@ public struct SeriesEditorView: View {
 					}
 				}
 				.listRowBackground(Color(uiColor: .secondarySystemBackground))
-
-				if viewStore.hasAlleysEnabled {
-					Section(Strings.Series.Properties.alley) {
-						NavigationLink(
-							destination: ResourcePickerView(
-								store: store.scope(
-									state: \.base.form.alleyPicker,
-									action: SeriesEditor.Action.alleyPicker
-								)
-							) { alley in
-								AlleyRow(alley: alley)
-							},
-							isActive: viewStore.binding(
-								get: \.isAlleyPickerPresented,
-								send: ViewAction.setAlleyPicker(isPresented:)
-							)
-						) {
-							LabeledContent(
-								Strings.Series.Properties.alley,
-								value: viewStore.selectedAlley?.name ?? Strings.none
-							)
-						}
-
-						// TODO: if lanes are enabled
-//						NavigationLink(destination: EmptyView()) {
-//							LabeledContent(Strings.Series.Editor.Fields.Alley.lanes, value: "1, 2")
-//						}
-//						NavigationLink(destination: EmptyView()) {
-//							LabeledContent(Strings.Series.Editor.Fields.Alley.startingLane, value: "1")
-//						}
-					}
-					.listRowBackground(Color(uiColor: .secondarySystemBackground))
-				}
 			}
 			.onAppear { viewStore.send(.loadInitialData) }
 		}
@@ -157,6 +191,8 @@ extension SeriesEditor.Action {
 			self = .loadInitialData
 		case let .setAlleyPicker(isPresented):
 			self = .setAlleyPicker(isPresented: isPresented)
+		case let .setLanePicker(isPresented):
+			self = .setLanePicker(isPresented: isPresented)
 		case .binding(let action):
 			self = .binding(action.pullback(\SeriesEditor.State.view))
 		}
