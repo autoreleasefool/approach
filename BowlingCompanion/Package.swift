@@ -95,7 +95,7 @@ let package = Package(
 		.package(url: "https://github.com/apple/swift-async-algorithms.git", from: "0.0.4"),
 		.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "0.42.0"),
 		.package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.10.0"),
-		.package(url: "https://github.com/groue/GRDB.swift.git", from: "6.0.0"),
+		.package(url: "https://github.com/groue/GRDB.swift.git", from: "6.6.0"),
 	],
 	targets: [
 		// MARK: - Features

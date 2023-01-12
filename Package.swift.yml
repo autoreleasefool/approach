@@ -23,7 +23,7 @@ package:
       exports:
         - SnapshotTesting
     - url: "https://github.com/groue/GRDB.swift.git"
-      from: "6.0.0"
+      from: "6.6.0"
       exports:
         - GRDB
 
