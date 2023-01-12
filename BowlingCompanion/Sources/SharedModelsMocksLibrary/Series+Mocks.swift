@@ -7,6 +7,8 @@ extension Series {
 		id: UUID,
 		date: Date,
 		numberOfGames: Int = League.DEFAULT_NUMBER_OF_GAMES,
+		preBowl: PreBowl = .regularPlay,
+		excludeFromStatistics: ExcludeFromStatistics = .include,
 		alley: UUID? = nil
 	) -> Series {
 		.init(
@@ -14,6 +16,8 @@ extension Series {
 			id: id,
 			date: date,
 			numberOfGames: numberOfGames,
+			preBowl: preBowl,
+			excludeFromStatistics: excludeFromStatistics,
 			alley: alley
 		)
 	}

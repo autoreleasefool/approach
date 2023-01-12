@@ -401,6 +401,28 @@ public enum Strings {
   public enum Series {
     /// Series
     public static let title = Strings.tr("Localizable", "series.title", fallback: "Series")
+    public enum Editor {
+      public enum Fields {
+        public enum ExcludeFromStatistics {
+          /// Pre-bowls are automatically excluded from all statistics.
+          public static let excludedWhenPreBowl = Strings.tr("Localizable", "series.editor.fields.excludeFromStatistics.excludedWhenPreBowl", fallback: "Pre-bowls are automatically excluded from all statistics.")
+          /// You can choose to exclude this series and all of its games from all statistics. They will still appear in the app, but won't affect your average or other statistics.
+          public static let help = Strings.tr("Localizable", "series.editor.fields.excludeFromStatistics.help", fallback: "You can choose to exclude this series and all of its games from all statistics. They will still appear in the app, but won't affect your average or other statistics.")
+          /// Exclude from all statistics?
+          public static let label = Strings.tr("Localizable", "series.editor.fields.excludeFromStatistics.label", fallback: "Exclude from all statistics?")
+          /// Statistics
+          public static let title = Strings.tr("Localizable", "series.editor.fields.excludeFromStatistics.title", fallback: "Statistics")
+        }
+        public enum PreBowl {
+          /// Pre-bowls are excluded from statistics until you use them. You can easily find your recorded pre-bowls in the series list, and modify their date for when you plan to use them.
+          public static let help = Strings.tr("Localizable", "series.editor.fields.preBowl.help", fallback: "Pre-bowls are excluded from statistics until you use them. You can easily find your recorded pre-bowls in the series list, and modify their date for when you plan to use them.")
+          /// This is a pre-bowl
+          public static let label = Strings.tr("Localizable", "series.editor.fields.preBowl.label", fallback: "This is a pre-bowl")
+          /// Pre-Bowl
+          public static let title = Strings.tr("Localizable", "series.editor.fields.preBowl.title", fallback: "Pre-Bowl")
+        }
+      }
+    }
     public enum Error {
       public enum Empty {
         /// You haven't added a series yet. Create a new series every time you bowl to see your stats mapped accurately over time.
@@ -430,6 +452,18 @@ public enum Strings {
       public static let date = Strings.tr("Localizable", "series.properties.date", fallback: "Date")
       /// Number of games
       public static let numberOfGames = Strings.tr("Localizable", "series.properties.numberOfGames", fallback: "Number of games")
+      public enum ExcludeFromStatistics {
+        /// Exclude from statistics
+        public static let exclude = Strings.tr("Localizable", "series.properties.excludeFromStatistics.exclude", fallback: "Exclude from statistics")
+        /// Include in statistics
+        public static let include = Strings.tr("Localizable", "series.properties.excludeFromStatistics.include", fallback: "Include in statistics")
+      }
+      public enum PreBowl {
+        /// Pre-Bowl
+        public static let preBowl = Strings.tr("Localizable", "series.properties.preBowl.preBowl", fallback: "Pre-Bowl")
+        /// Regular
+        public static let regular = Strings.tr("Localizable", "series.properties.preBowl.regular", fallback: "Regular")
+      }
     }
   }
   public enum Settings {
@@ -444,8 +478,8 @@ public enum Strings {
       public static func appVersion(_ p1: Any, _ p2: Any) -> String {
         return Strings.tr("Localizable", "settings.appInfo.appVersion", String(describing: p1), String(describing: p2), fallback: "%@ (%@)")
       }
-      /// © Joseph Roque
-      public static let copyright = Strings.tr("Localizable", "settings.appInfo.copyright", fallback: "© Joseph Roque")
+      /// ©2023, Joseph Roque
+      public static let copyright = Strings.tr("Localizable", "settings.appInfo.copyright", fallback: "©2023, Joseph Roque")
       /// App Info
       public static let title = Strings.tr("Localizable", "settings.appInfo.title", fallback: "App Info")
       /// Version

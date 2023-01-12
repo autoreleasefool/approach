@@ -106,6 +106,17 @@
 "series.properties.numberOfGames" = "Number of games";
 "series.properties.alley" = "Bowling Alley";
 "series.properties.date" = "Date";
+"series.properties.preBowl.preBowl" = "Pre-Bowl";
+"series.properties.preBowl.regular" = "Regular";
+"series.properties.excludeFromStatistics.include" = "Include in statistics";
+"series.properties.excludeFromStatistics.exclude" = "Exclude from statistics";
+"series.editor.fields.preBowl.title" = "Pre-Bowl";
+"series.editor.fields.preBowl.label" = "This is a pre-bowl";
+"series.editor.fields.preBowl.help" = "Pre-bowls are excluded from statistics until you use them. You can easily find your recorded pre-bowls in the series list, and modify their date for when you plan to use them.";
+"series.editor.fields.excludeFromStatistics.title" = "Statistics";
+"series.editor.fields.excludeFromStatistics.label" = "Exclude from all statistics?";
+"series.editor.fields.excludeFromStatistics.help" = "You can choose to exclude this series and all of its games from all statistics. They will still appear in the app, but won't affect your average or other statistics.";
+"series.editor.fields.excludeFromStatistics.excludedWhenPreBowl" = "Pre-bowls are automatically excluded from all statistics.";
 "series.error.failedToCreate.title" = "Failed to create series";
 "series.error.failedToCreate.message" = "We couldn't create a new series";
 "series.error.empty.title" = "No series found";

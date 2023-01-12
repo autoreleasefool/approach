@@ -1,3 +1,4 @@
+import AssetsLibrary
 import BaseFormFeature
 import ComposableArchitecture
 import ResourcePickerFeature
@@ -12,6 +13,8 @@ public struct SeriesEditorView: View {
 	struct ViewState: Equatable {
 		@BindableState var date: Date
 		@BindableState var numberOfGames: Int
+		@BindableState public var preBowl: Series.PreBowl
+		@BindableState public var excludeFromStatistics: Series.ExcludeFromStatistics
 		let isAlleyPickerPresented: Bool
 		let selectedAlley: Alley?
 		let hasAlleysEnabled: Bool
@@ -20,6 +23,8 @@ public struct SeriesEditorView: View {
 		init(state: SeriesEditor.State) {
 			self.date = state.base.form.date
 			self.numberOfGames = state.base.form.numberOfGames
+			self.preBowl = state.base.form.preBowl
+			self.excludeFromStatistics = state.base.form.excludeFromStatistics
 			self.hasAlleysEnabled = state.hasAlleysEnabled
 			self.hasLanesEnabled = state.hasLanesEnabled
 			self.isAlleyPickerPresented = state.isAlleyPickerPresented
@@ -56,7 +61,44 @@ public struct SeriesEditorView: View {
 						selection: viewStore.binding(\.$date),
 						displayedComponents: [.date]
 					)
+					.datePickerStyle(.graphical)
 				}
+				.listRowBackground(Color(uiColor: .secondarySystemBackground))
+
+				Section {
+					Toggle(
+						Strings.Series.Editor.Fields.PreBowl.label,
+						isOn: viewStore.binding(
+							get: { $0.preBowl == .preBowl },
+							send: { ViewAction.set(\.$preBowl, $0 ? .preBowl : .regularPlay) }
+						)
+					)
+				} header: {
+					Text(Strings.Series.Editor.Fields.PreBowl.title)
+				} footer: {
+					Text(Strings.Series.Editor.Fields.PreBowl.help)
+				}
+				.listRowBackground(Color(uiColor: .secondarySystemBackground))
+
+				Section {
+					Toggle(
+						Strings.Series.Editor.Fields.ExcludeFromStatistics.label,
+						isOn: viewStore.binding(
+							get: { $0.excludeFromStatistics == .exclude || $0.preBowl == .preBowl },
+							send: { ViewAction.set(\.$excludeFromStatistics, $0 ? .exclude : .include) }
+						)
+					).disabled(viewStore.preBowl == .preBowl)
+				} header: {
+					Text(Strings.Series.Editor.Fields.ExcludeFromStatistics.title)
+				} footer: {
+					if viewStore.preBowl == .preBowl {
+						Text(Strings.Series.Editor.Fields.ExcludeFromStatistics.excludedWhenPreBowl)
+							.foregroundColor(.appWarning)
+					} else {
+						Text(Strings.Series.Editor.Fields.ExcludeFromStatistics.help)
+					}
+				}
+				.listRowBackground(Color(uiColor: .secondarySystemBackground))
 
 				if viewStore.hasAlleysEnabled {
 					Section(Strings.Series.Properties.alley) {
@@ -102,6 +144,8 @@ extension SeriesEditor.State {
 		set {
 			self.base.form.date = newValue.date
 			self.base.form.numberOfGames = newValue.numberOfGames
+			self.base.form.preBowl = newValue.preBowl
+			self.base.form.excludeFromStatistics = newValue.excludeFromStatistics
 		}
 	}
 }

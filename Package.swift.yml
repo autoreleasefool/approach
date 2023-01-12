@@ -133,6 +133,8 @@ package:
         - BaseFormFeature
         - DateTimeLibrary
         - PersistenceService
+        - ResourcePickerFeature
+        - SharedModelsViewsLibrary
     - name: SeriesListFeature
       dependencies:
         - DateTimeLibrary

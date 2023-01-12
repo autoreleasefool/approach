@@ -10,6 +10,7 @@ extension Color {
 	public static let appError = Color("Colors/Error/Default", bundle: .module)
 	public static let appErrorLight = Color("Colors/Error/Light", bundle: .module)
 	public static let appDestructive = Color("Colors/Destructive/Default", bundle: .module)
+	public static let appWarning = Color("Colors/Warning/Default", bundle: .module)
 
 	public static let appAlleyMaterialBorder = Color("Colors/Alley/Material/Border", bundle: .module)
 	public static let appAlleyMaterialBackground = Color("Colors/Alley/Material/Background", bundle: .module)

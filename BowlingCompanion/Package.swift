@@ -378,8 +378,9 @@ let package = Package(
 			dependencies: [
 				"AlleysDataProviderInterface",
 				"BaseFormFeature",
-				"DateTimeLibrary",
 				"PersistenceServiceInterface",
+				"ResourcePickerFeature",
+				"SharedModelsViewsLibrary",
 			]
 		),
 		.testTarget(

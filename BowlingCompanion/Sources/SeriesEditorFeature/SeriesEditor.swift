@@ -27,6 +27,8 @@ public struct SeriesEditor: ReducerProtocol {
 		public let hasSetNumberOfGames: Bool
 		@BindableState public var numberOfGames: Int
 		@BindableState public var date = Date()
+		@BindableState public var preBowl: Series.PreBowl = .regularPlay
+		@BindableState public var excludeFromStatistics: Series.ExcludeFromStatistics = .include
 		public var alleyPicker: ResourcePicker<Alley>.State
 
 		init(league: League, date: Date) {
@@ -64,6 +66,8 @@ public struct SeriesEditor: ReducerProtocol {
 			case let .edit(series):
 				fields.date = series.date
 				fields.numberOfGames = series.numberOfGames
+				fields.preBowl = series.preBowl
+				fields.excludeFromStatistics = series.excludeFromStatistics
 			case .create:
 				break
 			}
@@ -165,6 +169,8 @@ extension SeriesEditor.Fields {
 			id: existing?.id ?? uuid(),
 			date: date,
 			numberOfGames: numberOfGames,
+			preBowl: preBowl,
+			excludeFromStatistics: preBowl == .preBowl ? .exclude : excludeFromStatistics,
 			alley: alleyPicker.selected.first
 		)
 	}

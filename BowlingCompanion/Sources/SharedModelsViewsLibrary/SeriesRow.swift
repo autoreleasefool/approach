@@ -35,9 +35,33 @@ struct SeriesRowPreview: PreviewProvider {
 	static var previews: some View {
 		List {
 			Section {
-				SeriesRow(series: .init(league: .init(), id: .init(), date: .init(), numberOfGames: 4, alley: nil))
-				SeriesRow(series: .init(league: .init(), id: .init(), date: .init(), numberOfGames: 6, alley: nil))
-				SeriesRow(series: .init(league: .init(), id: .init(), date: .init(), numberOfGames: 2, alley: nil))
+				SeriesRow(series: .init(
+					league: .init(),
+					id: .init(),
+					date: .init(),
+					numberOfGames: 4,
+					preBowl: .regularPlay,
+					excludeFromStatistics: .include,
+					alley: nil
+				))
+				SeriesRow(series: .init(
+					league: .init(),
+					id: .init(),
+					date: .init(),
+					numberOfGames: 6,
+					preBowl: .preBowl,
+					excludeFromStatistics: .include,
+					alley: nil
+				))
+				SeriesRow(series: .init(
+					league: .init(),
+					id: .init(),
+					date: .init(),
+					numberOfGames: 2,
+					preBowl: .regularPlay,
+					excludeFromStatistics: .exclude,
+					alley: nil
+				))
 			}
 			.listRowBackground(Color(uiColor: .secondarySystemBackground))
 		}
