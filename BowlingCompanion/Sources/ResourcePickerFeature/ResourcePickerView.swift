@@ -4,8 +4,8 @@ import SwiftUI
 import AssetsLibrary
 import ViewsLibrary
 
-public struct ResourcePickerView<Resource: PickableResource, Row: View>: View {
-	let store: StoreOf<ResourcePicker<Resource>>
+public struct ResourcePickerView<Resource: PickableResource, Query: Equatable, Row: View>: View {
+	let store: StoreOf<ResourcePicker<Resource, Query>>
 	let row: (Resource) -> Row
 
 	struct ViewState: Equatable {
@@ -14,7 +14,7 @@ public struct ResourcePickerView<Resource: PickableResource, Row: View>: View {
 		let isCancellable: Bool
 		let limit: Int
 
-		init(state: ResourcePicker<Resource>.State) {
+		init(state: ResourcePicker<Resource, Query>.State) {
 			if let error = state.error {
 				self.listState = .error(error)
 			} else if let resources = state.resources {
@@ -35,7 +35,7 @@ public struct ResourcePickerView<Resource: PickableResource, Row: View>: View {
 		case resourceTapped(Resource)
 	}
 
-	public init(store: StoreOf<ResourcePicker<Resource>>, @ViewBuilder row: @escaping (Resource) -> Row) {
+	public init(store: StoreOf<ResourcePicker<Resource, Query>>, @ViewBuilder row: @escaping (Resource) -> Row) {
 		self.store = store
 		self.row = row
 	}
@@ -104,7 +104,7 @@ public struct ResourcePickerView<Resource: PickableResource, Row: View>: View {
 		}
 	}
 
-	private func map(viewAction: ViewAction) -> ResourcePicker<Resource>.Action {
+	private func map(viewAction: ViewAction) -> ResourcePicker<Resource, Query>.Action {
 		switch viewAction {
 		case .saveButtonTapped:
 			return .saveButtonTapped

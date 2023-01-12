@@ -1,7 +1,7 @@
 import SharedModelsLibrary
 
 extension Alley {
-	public struct FetchRequest {
+	public struct FetchRequest: Equatable {
 		public let filter: [Filter]
 		public let ordering: Ordering
 

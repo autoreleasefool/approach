@@ -5,11 +5,12 @@ public protocol PickableResource: Equatable, Identifiable {
 	static func pickableModelName(forCount: Int) -> String
 }
 
-public struct ResourcePicker<Resource: PickableResource>: ReducerProtocol {
+public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: ReducerProtocol {
 	public struct State: Equatable {
 		public var resources: IdentifiedArrayOf<Resource>?
 		public var selected: Set<Resource.ID>
 		public var initialSelection: Set<Resource.ID>
+		public var query: Query
 		public var limit: Int
 		public var error: ListErrorContent?
 		public var showsCancelHeaderButton: Bool
@@ -19,11 +20,12 @@ public struct ResourcePicker<Resource: PickableResource>: ReducerProtocol {
 			return selected.compactMap { resources[id: $0] }
 		}
 
-		public init(selected: Set<Resource.ID>, limit: Int = 0, showsCancelHeaderButton: Bool = true) {
+		public init(selected: Set<Resource.ID>, query: Query, limit: Int = 0, showsCancelHeaderButton: Bool = true) {
 			self.selected = selected
 			self.initialSelection = selected
 			self.limit = limit
 			self.showsCancelHeaderButton = showsCancelHeaderButton
+			self.query = query
 		}
 
 		public mutating func updateInitialSelection() {
@@ -39,19 +41,19 @@ public struct ResourcePicker<Resource: PickableResource>: ReducerProtocol {
 		case resources(TaskResult<[Resource]>)
 	}
 
-	public init(fetchResources: @escaping () async throws -> [Resource]) {
+	public init(fetchResources: @escaping (Query) async throws -> [Resource]) {
 		self.fetchResources = fetchResources
 	}
 
-	let fetchResources: () async throws -> [Resource]
+	let fetchResources: (Query) async throws -> [Resource]
 
 	public var body: some ReducerProtocol<State, Action> {
 		Reduce { state, action in
 			switch action {
 			case .refreshData:
 				state.error = nil
-				return .task {
-					await .resources(TaskResult { try await fetchResources() })
+				return .task { [query = state.query] in
+					await .resources(TaskResult { try await fetchResources(query) })
 				}
 
 			case let .resources(.success(resources)):

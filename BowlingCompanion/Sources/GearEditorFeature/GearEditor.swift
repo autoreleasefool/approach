@@ -21,12 +21,17 @@ public struct GearEditor: ReducerProtocol {
 	public typealias Form = BaseForm<Gear, Fields>
 
 	public struct Fields: BaseFormState, Equatable {
-		public var bowlerPicker: ResourcePicker<Bowler>.State
+		public var bowlerPicker: ResourcePicker<Bowler, Bowler.FetchRequest>.State
 		@BindableState public var name = ""
 		@BindableState public var kind: Gear.Kind = .bowlingBall
 
 		init(bowler: Bowler.ID?) {
-			self.bowlerPicker = .init(selected: Set([bowler].compactMap({ $0 })), limit: 1, showsCancelHeaderButton: false)
+			self.bowlerPicker = .init(
+				selected: Set([bowler].compactMap({ $0 })),
+				query: .init(filter: nil, ordering: .byName),
+				limit: 1,
+				showsCancelHeaderButton: false
+			)
 		}
 
 		public let isDeleteable = true
@@ -60,7 +65,7 @@ public struct GearEditor: ReducerProtocol {
 		case bowlerResponse(TaskResult<Bowler?>)
 		case binding(BindingAction<State>)
 		case form(Form.Action)
-		case bowlerPicker(ResourcePicker<Bowler>.Action)
+		case bowlerPicker(ResourcePicker<Bowler, Bowler.FetchRequest>.Action)
 		case setBowlerPicker(isPresented: Bool)
 	}
 
@@ -84,7 +89,7 @@ public struct GearEditor: ReducerProtocol {
 
 		Scope(state: \.base.form.bowlerPicker, action: /Action.bowlerPicker) {
 			ResourcePicker {
-				try await bowlersDataProvider.fetchBowlers(.init(filter: nil, ordering: .byName))
+				try await bowlersDataProvider.fetchBowlers($0)
 			}
 		}
 

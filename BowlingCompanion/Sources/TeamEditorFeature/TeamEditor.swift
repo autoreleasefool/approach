@@ -21,7 +21,7 @@ public struct TeamEditor: ReducerProtocol {
 
 	public struct Fields: BaseFormState, Equatable {
 		public let teamId: Team.ID
-		public var bowlers: ResourcePicker<Bowler>.State
+		public var bowlers: ResourcePicker<Bowler, Bowler.FetchRequest>.State
 		@BindableState public var name = ""
 
 		public let isDeleteable = true
@@ -31,7 +31,10 @@ public struct TeamEditor: ReducerProtocol {
 
 		public init(teamId: Team.ID, membership: TeamMembership?) {
 			self.teamId = teamId
-			self.bowlers = .init(selected: Set((membership?.members ?? []).map(\.id)))
+			self.bowlers = .init(
+				selected: Set((membership?.members ?? []).map(\.id)),
+				query: .init(filter: nil, ordering: .byName)
+			)
 		}
 	}
 
@@ -62,7 +65,7 @@ public struct TeamEditor: ReducerProtocol {
 		case setBowlerPicker(isPresented: Bool)
 		case binding(BindingAction<State>)
 		case form(Form.Action)
-		case bowlers(ResourcePicker<Bowler>.Action)
+		case bowlers(ResourcePicker<Bowler, Bowler.FetchRequest>.Action)
 		case teamMembers(TeamMembers.Action)
 	}
 
@@ -88,7 +91,9 @@ public struct TeamEditor: ReducerProtocol {
 		}
 
 		Scope(state: \.base.form.bowlers, action: /TeamEditor.Action.bowlers) {
-			ResourcePicker { try await bowlersDataProvider.fetchBowlers(.init(filter: nil, ordering: .byName)) }
+			ResourcePicker {
+				try await bowlersDataProvider.fetchBowlers($0)
+			}
 		}
 
 		Reduce { state, action in

@@ -43,14 +43,15 @@ public struct AlleyLanesEditor: ReducerProtocol {
 			case .loadInitialData:
 				guard state.isLoadingInitialData else { return .none }
 
-				if let alley = state.alley {
-					return .task {
-						await .lanesResponse(TaskResult {
-							try await lanesDataProvider.fetchLanes(.init(filter: [.alley(alley)], ordering: .byLabel))
+				return .task { [alley = state.alley] in
+					if let alley {
+						return await .lanesResponse(TaskResult {
+							try await lanesDataProvider.fetchLanes(.init(filter: .alley(alley), ordering: .byLabel))
 						})
+					} else {
+						return .lanesResponse(.success([]))
 					}
 				}
-				return .task { .lanesResponse(.success([])) }
 
 			case let .lanesResponse(.success(lanes)):
 				state.existingLanes = lanes

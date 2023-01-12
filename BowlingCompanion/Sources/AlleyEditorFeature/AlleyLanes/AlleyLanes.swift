@@ -26,15 +26,15 @@ public struct AlleyLanes: ReducerProtocol {
 		Reduce { state, action in
 			switch action {
 			case .refreshData:
-				if let alley = state.alley {
-					return .task {
-						await .lanesResponse(TaskResult {
-							return try await lanesDataProvider.fetchLanes(.init(filter: [.alley(alley)], ordering: .byLabel))
+				return .task { [alley = state.alley] in
+					if let alley {
+						return await .lanesResponse(TaskResult {
+							return try await lanesDataProvider.fetchLanes(.init(filter: .alley(alley), ordering: .byLabel))
 						})
+					} else {
+						return .lanesResponse(.success([]))
 					}
 				}
-				state.isLoadingInitialData = false
-				return .none
 
 			case let .lanesResponse(.success(lanes)):
 				state.lanes = .init(uniqueElements: lanes)

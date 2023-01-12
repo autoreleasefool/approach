@@ -21,7 +21,7 @@ public struct LeagueEditor: ReducerProtocol {
 
 	public struct Fields: BaseFormState, Equatable {
 		public var bowler: Bowler.ID
-		public var alleyPicker: ResourcePicker<Alley>.State
+		public var alleyPicker: ResourcePicker<Alley, Alley.FetchRequest>.State
 		@BindableState public var name = ""
 		@BindableState public var recurrence: League.Recurrence = .repeating
 		@BindableState public var gamesPerSeries: GamesPerSeries = .static
@@ -34,6 +34,7 @@ public struct LeagueEditor: ReducerProtocol {
 			self.bowler = bowler
 			self.alleyPicker = .init(
 				selected: Set([alley].compactMap({ $0 })),
+				query: .init(filter: [], ordering: .byName),
 				limit: 1,
 				showsCancelHeaderButton: false
 			)
@@ -89,7 +90,7 @@ public struct LeagueEditor: ReducerProtocol {
 		case alleyResponse(TaskResult<Alley?>)
 		case binding(BindingAction<State>)
 		case form(Form.Action)
-		case alleyPicker(ResourcePicker<Alley>.Action)
+		case alleyPicker(ResourcePicker<Alley, Alley.FetchRequest>.Action)
 		case setAlleyPicker(isPresented: Bool)
 	}
 
@@ -113,7 +114,7 @@ public struct LeagueEditor: ReducerProtocol {
 
 		Scope(state: \.base.form.alleyPicker, action: /Action.alleyPicker) {
 			ResourcePicker {
-				try await alleysDataProvider.fetchAlleys(.init(filter: [], ordering: .byName))
+				try await alleysDataProvider.fetchAlleys($0)
 			}
 		}
 
