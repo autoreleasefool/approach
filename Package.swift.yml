@@ -10,7 +10,7 @@ package:
 
   dependencies:
     - url: "https://github.com/apple/swift-async-algorithms.git"
-      from: "0.0.3"
+      from: "0.0.4"
       exports:
         - AsyncAlgorithms
     - url: "https://github.com/pointfreeco/swift-composable-architecture.git"
