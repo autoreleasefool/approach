@@ -13,6 +13,10 @@ struct Migration20221021CreateSeries: Migration {
 				.notNull()
 			t.column("numberOfGames", .integer)
 				.notNull()
+			t.column("preBowl", .integer)
+				.notNull()
+			t.column("excludeFromStatistics", .integer)
+				.notNull()
 		}
 	}
 }
