@@ -47,6 +47,8 @@ public enum Strings {
     public static let reset = Strings.tr("Localizable", "action.reset", fallback: "Reset")
     /// Save
     public static let save = Strings.tr("Localizable", "action.save", fallback: "Save")
+    /// Start
+    public static let start = Strings.tr("Localizable", "action.start", fallback: "Start")
     /// Try again
     public static let tryAgain = Strings.tr("Localizable", "action.tryAgain", fallback: "Try again")
   }

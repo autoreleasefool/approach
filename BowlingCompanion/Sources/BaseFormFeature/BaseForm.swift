@@ -1,4 +1,5 @@
 import ComposableArchitecture
+import StringsLibrary
 
 public protocol BaseFormModel: Equatable {
 	static var modelName: String { get }
@@ -10,7 +11,16 @@ public protocol BaseFormState: Equatable {
 
 	var isSaveable: Bool { get }
 	var isDeleteable: Bool { get }
+	var saveButtonText: String { get }
 	func model(fromExisting: Model?) -> Model
+	func hasChanges(from: Self) -> Bool
+}
+
+extension BaseFormState {
+	public var saveButtonText: String { Strings.Action.save }
+	public func hasChanges(from other: Self) -> Bool {
+		self != other
+	}
 }
 
 public struct BaseForm<Model: BaseFormModel, FormState: BaseFormState>: ReducerProtocol where Model == FormState.Model {
@@ -23,11 +33,11 @@ public struct BaseForm<Model: BaseFormModel, FormState: BaseFormState>: ReducerP
 		public var form: FormState
 
 		public var hasChanges: Bool {
-			form != initialForm
+			form.hasChanges(from: initialForm)
 		}
 
 		public var isSaveable: Bool {
-			!isLoading && hasChanges && form.isSaveable
+			!isLoading && form.isSaveable && form.hasChanges(from: initialForm)
 		}
 
 		public init(mode: Mode, form: FormState) {

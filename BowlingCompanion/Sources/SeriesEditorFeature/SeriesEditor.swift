@@ -31,6 +31,12 @@ public struct SeriesEditor: ReducerProtocol {
 		@BindableState public var excludeFromStatistics: Series.ExcludeFromStatistics = .include
 		public var alleyPicker: ResourcePicker<Alley>.State
 
+		public let isDeleteable = true
+		public var isSaveable = true
+		public var saveButtonText: String {
+			Strings.Action.start
+		}
+
 		init(league: League, date: Date) {
 			self.league = league.id
 			self.hasSetNumberOfGames = league.numberOfGames != nil
@@ -43,8 +49,9 @@ public struct SeriesEditor: ReducerProtocol {
 			)
 		}
 
-		public let isDeleteable = true
-		public var isSaveable = true
+		public func hasChanges(from: Self) -> Bool {
+			true
+		}
 	}
 
 	public struct State: Equatable {

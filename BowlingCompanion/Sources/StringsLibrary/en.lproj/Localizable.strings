@@ -212,6 +212,7 @@
 "action.reset" = "Reset";
 "action.save" = "Save";
 "action.manage" = "Manage";
+"action.start" = "Start";
 
 /* Other */
 

@@ -13,6 +13,7 @@ public struct BaseFormView<
 
 	struct ViewState: Equatable {
 		let navigationTitle: String
+		let saveButtonText: String
 		let isLoading: Bool
 		let isSaveable: Bool
 		let isDeleteable: Bool
@@ -24,6 +25,7 @@ public struct BaseFormView<
 			self.isSaveable = state.isSaveable
 			self.isDiscardable = state.hasChanges
 			self.isDismissable = !state.hasChanges
+			self.saveButtonText = state.form.saveButtonText
 
 			switch state.mode {
 			case .create:
@@ -71,7 +73,7 @@ public struct BaseFormView<
 			.navigationTitle(viewStore.navigationTitle)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
-					Button(Strings.Action.save) { viewStore.send(.saveButtonTapped) }
+					Button(viewStore.saveButtonText) { viewStore.send(.saveButtonTapped) }
 						.disabled(!viewStore.isSaveable)
 				}
 
