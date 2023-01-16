@@ -81,7 +81,7 @@ package:
         - BaseFormFeature
         - BowlersDataProvider
         - PersistenceService
-        - ResourcePickerFeature
+        - ResourcePickerLibrary
         - StringsLibrary
     - name: GearListFeature
       dependencies:
@@ -101,7 +101,7 @@ package:
         - AlleysDataProvider
         - BaseFormFeature
         - PersistenceService
-        - ResourcePickerFeature
+        - ResourcePickerLibrary
         - SharedModelsViewsLibrary
     - name: LeaguesListFeature
       dependencies:
@@ -119,11 +119,6 @@ package:
       dependencies:
         - OpponentEditorFeature
         - SortOrderLibrary
-    - name: ResourcePickerFeature
-      dependencies:
-        - AssetsLibrary
-        - StringsLibrary
-        - ViewsLibrary
     - name: ScoreSheetFeature
       dependencies:
         - SharedModelsLibrary
@@ -133,7 +128,7 @@ package:
         - BaseFormFeature
         - DateTimeLibrary
         - PersistenceService
-        - ResourcePickerFeature
+        - ResourcePickerLibrary
         - SharedModelsViewsLibrary
     - name: SeriesListFeature
       dependencies:
@@ -159,7 +154,7 @@ package:
       dependencies:
         - BaseFormFeature
         - BowlersDataProvider
-        - ResourcePickerFeature
+        - ResourcePickerLibrary
         - PersistenceService
     - name: TeamsListFeature
       dependencies:
@@ -267,6 +262,11 @@ package:
     - name: FeatureFlagsLibrary
       requires_tests: true
     - name: FoundationExtensionsLibrary
+    - name: ResourcePickerLibrary
+      dependencies:
+        - AssetsLibrary
+        - StringsLibrary
+        - ViewsLibrary
     - name: SharedModelsLibrary
       dependencies:
         - StringsLibrary

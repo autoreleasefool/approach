@@ -2,7 +2,7 @@ import BaseFormFeature
 import BowlersDataProviderInterface
 import ComposableArchitecture
 import Foundation
-import ResourcePickerFeature
+import ResourcePickerLibrary
 import PersistenceServiceInterface
 import SharedModelsLibrary
 import StringsLibrary

@@ -2,7 +2,7 @@ import AlleysDataProviderInterface
 import BaseFormFeature
 import ComposableArchitecture
 import PersistenceServiceInterface
-import ResourcePickerFeature
+import ResourcePickerLibrary
 import SharedModelsLibrary
 import StringsLibrary
 

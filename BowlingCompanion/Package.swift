@@ -26,7 +26,6 @@ let package = Package(
 		.library(name: "LeaguesListFeature", targets: ["LeaguesListFeature"]),
 		.library(name: "OpponentEditorFeature", targets: ["OpponentEditorFeature"]),
 		.library(name: "OpponentsListFeature", targets: ["OpponentsListFeature"]),
-		.library(name: "ResourcePickerFeature", targets: ["ResourcePickerFeature"]),
 		.library(name: "ScoreSheetFeature", targets: ["ScoreSheetFeature"]),
 		.library(name: "SeriesEditorFeature", targets: ["SeriesEditorFeature"]),
 		.library(name: "SeriesListFeature", targets: ["SeriesListFeature"]),
@@ -79,6 +78,7 @@ let package = Package(
 		.library(name: "DateTimeLibrary", targets: ["DateTimeLibrary"]),
 		.library(name: "FeatureFlagsLibrary", targets: ["FeatureFlagsLibrary"]),
 		.library(name: "FoundationExtensionsLibrary", targets: ["FoundationExtensionsLibrary"]),
+		.library(name: "ResourcePickerLibrary", targets: ["ResourcePickerLibrary"]),
 		.library(name: "SharedModelsFetchableLibrary", targets: ["SharedModelsFetchableLibrary"]),
 		.library(name: "SharedModelsLibrary", targets: ["SharedModelsLibrary"]),
 		.library(name: "SharedModelsMocksLibrary", targets: ["SharedModelsMocksLibrary"]),
@@ -234,7 +234,7 @@ let package = Package(
 				"BaseFormFeature",
 				"BowlersDataProviderInterface",
 				"PersistenceServiceInterface",
-				"ResourcePickerFeature",
+				"ResourcePickerLibrary",
 			]
 		),
 		.testTarget(
@@ -284,7 +284,7 @@ let package = Package(
 				"AlleysDataProviderInterface",
 				"BaseFormFeature",
 				"PersistenceServiceInterface",
-				"ResourcePickerFeature",
+				"ResourcePickerLibrary",
 				"SharedModelsViewsLibrary",
 			]
 		),
@@ -345,20 +345,6 @@ let package = Package(
 			]
 		),
 		.target(
-			name: "ResourcePickerFeature",
-			dependencies: [
-				"ViewsLibrary",
-			]
-		),
-		.testTarget(
-			name: "ResourcePickerFeatureTests",
-			dependencies: [
-				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"ResourcePickerFeature",
-				"SharedModelsMocksLibrary",
-			]
-		),
-		.target(
 			name: "ScoreSheetFeature",
 			dependencies: [
 				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
@@ -379,7 +365,7 @@ let package = Package(
 				"AlleysDataProviderInterface",
 				"BaseFormFeature",
 				"PersistenceServiceInterface",
-				"ResourcePickerFeature",
+				"ResourcePickerLibrary",
 				"SharedModelsViewsLibrary",
 			]
 		),
@@ -459,7 +445,7 @@ let package = Package(
 				"BaseFormFeature",
 				"BowlersDataProviderInterface",
 				"PersistenceServiceInterface",
-				"ResourcePickerFeature",
+				"ResourcePickerLibrary",
 			]
 		),
 		.testTarget(
@@ -921,6 +907,12 @@ let package = Package(
 		.target(
 			name: "FoundationExtensionsLibrary",
 			dependencies: []
+		),
+		.target(
+			name: "ResourcePickerLibrary",
+			dependencies: [
+				"ViewsLibrary",
+			]
 		),
 		.target(
 			name: "SharedModelsFetchableLibrary",

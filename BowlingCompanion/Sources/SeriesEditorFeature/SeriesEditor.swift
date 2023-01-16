@@ -5,7 +5,7 @@ import DateTimeLibrary
 import Foundation
 import LanesDataProviderInterface
 import PersistenceServiceInterface
-import ResourcePickerFeature
+import ResourcePickerLibrary
 import SharedModelsLibrary
 import StringsLibrary
 

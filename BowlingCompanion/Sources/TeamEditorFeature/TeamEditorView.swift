@@ -1,6 +1,6 @@
 import BaseFormFeature
 import ComposableArchitecture
-import ResourcePickerFeature
+import ResourcePickerLibrary
 import SharedModelsViewsLibrary
 import StringsLibrary
 import SwiftUI
