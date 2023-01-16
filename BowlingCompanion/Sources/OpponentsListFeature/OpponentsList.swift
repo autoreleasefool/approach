@@ -67,7 +67,7 @@ public struct OpponentsList: ReducerProtocol {
 				// TODO: handle error button tapped
 				return .none
 
-			case let .setNavigation(selection: .some(id)):
+			case .setNavigation(selection: .some):
 				// TODO: show opponent profile
 				return .none
 

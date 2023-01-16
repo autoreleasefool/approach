@@ -15,7 +15,12 @@ extension Alley {
 extension Alley.FetchRequest {
 	public enum Filter: Equatable {
 		case id(Alley.ID)
-		case properties(material: Alley.Material?, pinFall: Alley.PinFall?, pinBase: Alley.PinBase?, mechanism: Alley.Mechanism?)
+		case properties(
+			material: Alley.Material?,
+			pinFall: Alley.PinFall?,
+			pinBase: Alley.PinBase?,
+			mechanism: Alley.Mechanism?
+		)
 		case name(String)
 	}
 }

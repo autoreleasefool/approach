@@ -19,7 +19,7 @@ extension BaseForm.State {
 				TextState(Strings.Action.delete),
 				action: .send(.deleteButtonTapped)
 			),
-			secondaryButton: self.dismissButton
+			secondaryButton: .cancel(TextState(Strings.Action.cancel), action: .send(.dismissed))
 		)
 	}
 
@@ -30,11 +30,7 @@ extension BaseForm.State {
 				TextState(Strings.Action.discard),
 				action: .send(.discardButtonTapped)
 			),
-			secondaryButton: self.dismissButton
+			secondaryButton: .cancel(TextState(Strings.Action.cancel), action: .send(.dismissed))
 		)
-	}
-
-	private var dismissButton: AlertState<BaseForm<Model, FormState>.AlertAction>.Button {
-		.cancel(TextState(Strings.Action.cancel), action: .send(.dismissed))
 	}
 }

@@ -11,7 +11,7 @@ final class RecentlyUsedServiceTests: XCTestCase {
 
 		let expectation = self.expectation(description: "updated recently used")
 
-		DependencyValues.withValues {
+		withDependencies {
 			$0.date = .constant(now)
 
 			$0.preferenceService.getString = { key in
@@ -41,7 +41,7 @@ final class RecentlyUsedServiceTests: XCTestCase {
 
 		let expectation = self.expectation(description: "updated recently used")
 
-		DependencyValues.withValues {
+		withDependencies {
 			$0.date = .constant(now)
 
 			$0.preferenceService.getString = { key in
@@ -66,7 +66,7 @@ final class RecentlyUsedServiceTests: XCTestCase {
 	func testResetsResource() {
 		let expectation = self.expectation(description: "reset recently used")
 
-		DependencyValues.withValues {
+		withDependencies {
 			$0.preferenceService.removeKey = { key in
 				XCTAssertEqual("RecentlyUsed.bowlers", key)
 				expectation.fulfill()
@@ -89,7 +89,7 @@ final class RecentlyUsedServiceTests: XCTestCase {
 		getExpectation.expectedFulfillmentCount = 3
 		let updateExpectation = self.expectation(description: "updated recently used")
 
-		await DependencyValues.withValues {
+		await withDependencies {
 			$0.preferenceService.getString = { key in
 				XCTAssertEqual("RecentlyUsed.bowlers", key)
 				getExpectation.fulfill()
@@ -131,7 +131,7 @@ final class RecentlyUsedServiceTests: XCTestCase {
 		var recentlyUsed: AsyncStream<[RecentlyUsedService.Entry]>?
 		var recentlyUsedIterator: AsyncStream<[RecentlyUsedService.Entry]>.Iterator?
 
-		await DependencyValues.withValues {
+		await withDependencies {
 			$0.preferenceService.getString = { key in
 				XCTAssertEqual("RecentlyUsed.bowlers", key)
 				return Self.entriesString(ids: [id0])
@@ -144,7 +144,7 @@ final class RecentlyUsedServiceTests: XCTestCase {
 			XCTAssertEqual([RecentlyUsedService.Entry(id: id0, lastUsedAt: now)], firstValue)
 		}
 
-		DependencyValues.withValues {
+		withDependencies {
 			$0.date = .constant(now)
 
 			$0.preferenceService.getString = { key in
@@ -160,7 +160,7 @@ final class RecentlyUsedServiceTests: XCTestCase {
 			recentlyUsedService.didRecentlyUseResource(.alleys, id1)
 		}
 
-		await DependencyValues.withValues {
+		await withDependencies {
 			$0.date = .constant(now)
 
 			$0.preferenceService.getString = { key in
@@ -183,7 +183,7 @@ final class RecentlyUsedServiceTests: XCTestCase {
 
 	static func entriesString(ids: [UUID], date: Date = Date(timeIntervalSince1970: 1672519204)) -> String {
 		guard let entries = try? JSONEncoder().encode(ids.map { RecentlyUsedService.Entry(id: $0, lastUsedAt: date) }) else {
-			XCTFail()
+			XCTFail("Failed to encode entries")
 			return ""
 		}
 
