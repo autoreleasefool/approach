@@ -259,6 +259,8 @@ package:
         - StringsLibrary
     - name: DateTimeLibrary
       requires_tests: true
+    - name: EquatableLibrary
+      requires_tests: true
     - name: FeatureFlagsLibrary
       requires_tests: true
     - name: FoundationExtensionsLibrary

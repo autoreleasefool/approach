@@ -158,6 +158,16 @@
                ReferencedContainer = "container:BowlingCompanion">
             </BuildableReference>
          </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "EquatableLibraryTests"
+               BuildableName = "EquatableLibraryTests"
+               BlueprintName = "EquatableLibraryTests"
+               ReferencedContainer = "container:BowlingCompanion">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
    </TestAction>
    <LaunchAction

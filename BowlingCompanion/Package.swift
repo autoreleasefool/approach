@@ -76,6 +76,7 @@ let package = Package(
 		.library(name: "BaseFormLibrary", targets: ["BaseFormLibrary"]),
 		.library(name: "ConstantsLibrary", targets: ["ConstantsLibrary"]),
 		.library(name: "DateTimeLibrary", targets: ["DateTimeLibrary"]),
+		.library(name: "EquatableLibrary", targets: ["EquatableLibrary"]),
 		.library(name: "FeatureFlagsLibrary", targets: ["FeatureFlagsLibrary"]),
 		.library(name: "FoundationExtensionsLibrary", targets: ["FoundationExtensionsLibrary"]),
 		.library(name: "ResourcePickerLibrary", targets: ["ResourcePickerLibrary"]),
@@ -881,6 +882,18 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"DateTimeLibrary",
+				"SharedModelsMocksLibrary",
+			]
+		),
+		.target(
+			name: "EquatableLibrary",
+			dependencies: []
+		),
+		.testTarget(
+			name: "EquatableLibraryTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"EquatableLibrary",
 				"SharedModelsMocksLibrary",
 			]
 		),
