@@ -14,7 +14,6 @@ let package = Package(
 		.library(name: "AlleyEditorFeature", targets: ["AlleyEditorFeature"]),
 		.library(name: "AlleysListFeature", targets: ["AlleysListFeature"]),
 		.library(name: "AppFeature", targets: ["AppFeature"]),
-		.library(name: "BaseFormFeature", targets: ["BaseFormFeature"]),
 		.library(name: "BowlerEditorFeature", targets: ["BowlerEditorFeature"]),
 		.library(name: "BowlersListFeature", targets: ["BowlersListFeature"]),
 		.library(name: "FeatureFlagsListFeature", targets: ["FeatureFlagsListFeature"]),
@@ -74,6 +73,7 @@ let package = Package(
 
 		// MARK: - Libraries
 		.library(name: "AssetsLibrary", targets: ["AssetsLibrary"]),
+		.library(name: "BaseFormLibrary", targets: ["BaseFormLibrary"]),
 		.library(name: "ConstantsLibrary", targets: ["ConstantsLibrary"]),
 		.library(name: "DateTimeLibrary", targets: ["DateTimeLibrary"]),
 		.library(name: "FeatureFlagsLibrary", targets: ["FeatureFlagsLibrary"]),
@@ -103,7 +103,7 @@ let package = Package(
 		.target(
 			name: "AlleyEditorFeature",
 			dependencies: [
-				"BaseFormFeature",
+				"BaseFormLibrary",
 				"LaneEditorFeature",
 				"SharedModelsViewsLibrary",
 			]
@@ -149,23 +149,9 @@ let package = Package(
 			]
 		),
 		.target(
-			name: "BaseFormFeature",
-			dependencies: [
-				"ViewsLibrary",
-			]
-		),
-		.testTarget(
-			name: "BaseFormFeatureTests",
-			dependencies: [
-				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"BaseFormFeature",
-				"SharedModelsMocksLibrary",
-			]
-		),
-		.target(
 			name: "BowlerEditorFeature",
 			dependencies: [
-				"BaseFormFeature",
+				"BaseFormLibrary",
 				"PersistenceServiceInterface",
 			]
 		),
@@ -231,7 +217,7 @@ let package = Package(
 		.target(
 			name: "GearEditorFeature",
 			dependencies: [
-				"BaseFormFeature",
+				"BaseFormLibrary",
 				"BowlersDataProviderInterface",
 				"PersistenceServiceInterface",
 				"ResourcePickerLibrary",
@@ -282,7 +268,7 @@ let package = Package(
 			name: "LeagueEditorFeature",
 			dependencies: [
 				"AlleysDataProviderInterface",
-				"BaseFormFeature",
+				"BaseFormLibrary",
 				"PersistenceServiceInterface",
 				"ResourcePickerLibrary",
 				"SharedModelsViewsLibrary",
@@ -316,7 +302,7 @@ let package = Package(
 		.target(
 			name: "OpponentEditorFeature",
 			dependencies: [
-				"BaseFormFeature",
+				"BaseFormLibrary",
 				"OpponentsDataProviderInterface",
 				"PersistenceServiceInterface",
 			]
@@ -363,7 +349,7 @@ let package = Package(
 			name: "SeriesEditorFeature",
 			dependencies: [
 				"AlleysDataProviderInterface",
-				"BaseFormFeature",
+				"BaseFormLibrary",
 				"PersistenceServiceInterface",
 				"ResourcePickerLibrary",
 				"SharedModelsViewsLibrary",
@@ -442,7 +428,7 @@ let package = Package(
 		.target(
 			name: "TeamEditorFeature",
 			dependencies: [
-				"BaseFormFeature",
+				"BaseFormLibrary",
 				"BowlersDataProviderInterface",
 				"PersistenceServiceInterface",
 				"ResourcePickerLibrary",
@@ -873,6 +859,12 @@ let package = Package(
 		.target(
 			name: "AssetsLibrary",
 			dependencies: []
+		),
+		.target(
+			name: "BaseFormLibrary",
+			dependencies: [
+				"ViewsLibrary",
+			]
 		),
 		.target(
 			name: "ConstantsLibrary",

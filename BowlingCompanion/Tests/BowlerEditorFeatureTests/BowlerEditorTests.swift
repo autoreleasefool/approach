@@ -2,7 +2,7 @@ import ComposableArchitecture
 import SharedModelsLibrary
 import SharedModelsMocksLibrary
 import XCTest
-@testable import BaseFormFeature
+@testable import BaseFormLibrary
 @testable import BowlerEditorFeature
 
 @MainActor

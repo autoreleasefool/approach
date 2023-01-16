@@ -33,7 +33,7 @@ package:
   feature:
     - name: AlleyEditorFeature
       dependencies:
-        - BaseFormFeature
+        - BaseFormLibrary
         - LaneEditorFeature
         - LanesDataProvider
         - PersistenceService
@@ -50,13 +50,9 @@ package:
         - GearListFeature
         - SettingsFeature
         - TeamsAndBowlersListFeature
-    - name: BaseFormFeature
-      dependencies:
-        - AssetsLibrary
-        - ViewsLibrary
     - name: BowlerEditorFeature
       dependencies:
-        - BaseFormFeature
+        - BaseFormLibrary
         - PersistenceService
     - name: BowlersListFeature
       dependencies:
@@ -78,7 +74,7 @@ package:
         - ViewsLibrary
     - name: GearEditorFeature
       dependencies:
-        - BaseFormFeature
+        - BaseFormLibrary
         - BowlersDataProvider
         - PersistenceService
         - ResourcePickerLibrary
@@ -99,7 +95,7 @@ package:
     - name: LeagueEditorFeature
       dependencies:
         - AlleysDataProvider
-        - BaseFormFeature
+        - BaseFormLibrary
         - PersistenceService
         - ResourcePickerLibrary
         - SharedModelsViewsLibrary
@@ -112,7 +108,7 @@ package:
         - SharedModelsViewsLibrary
     - name: OpponentEditorFeature
       dependencies:
-        - BaseFormFeature
+        - BaseFormLibrary
         - OpponentsDataProvider
         - PersistenceService
     - name: OpponentsListFeature
@@ -125,7 +121,7 @@ package:
     - name: SeriesEditorFeature
       dependencies:
         - AlleysDataProvider
-        - BaseFormFeature
+        - BaseFormLibrary
         - DateTimeLibrary
         - PersistenceService
         - ResourcePickerLibrary
@@ -152,7 +148,7 @@ package:
         - ViewsLibrary
     - name: TeamEditorFeature
       dependencies:
-        - BaseFormFeature
+        - BaseFormLibrary
         - BowlersDataProvider
         - ResourcePickerLibrary
         - PersistenceService
@@ -254,6 +250,10 @@ package:
           - PreferenceService
 
   library:
+    - name: BaseFormLibrary
+      dependencies:
+        - AssetsLibrary
+        - ViewsLibrary
     - name: ConstantsLibrary
       dependencies:
         - StringsLibrary
