@@ -261,6 +261,7 @@ package:
       requires_tests: true
     - name: EquatableLibrary
       requires_tests: true
+    - name: FeatureActionLibrary
     - name: FeatureFlagsLibrary
       requires_tests: true
     - name: FoundationExtensionsLibrary
