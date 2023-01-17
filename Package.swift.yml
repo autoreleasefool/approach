@@ -265,6 +265,14 @@ package:
     - name: FeatureFlagsLibrary
       requires_tests: true
     - name: FoundationExtensionsLibrary
+    - name: ResourceListLibrary
+      requires_tests: true
+      dependencies:
+        - AssetsLibrary
+        - EquatableLibrary
+        - FeatureActionLibrary
+        - StringsLibrary
+        - ViewsLibrary
     - name: ResourcePickerLibrary
       dependencies:
         - AssetsLibrary

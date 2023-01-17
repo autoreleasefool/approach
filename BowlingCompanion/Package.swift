@@ -80,6 +80,7 @@ let package = Package(
 		.library(name: "FeatureActionLibrary", targets: ["FeatureActionLibrary"]),
 		.library(name: "FeatureFlagsLibrary", targets: ["FeatureFlagsLibrary"]),
 		.library(name: "FoundationExtensionsLibrary", targets: ["FoundationExtensionsLibrary"]),
+		.library(name: "ResourceListLibrary", targets: ["ResourceListLibrary"]),
 		.library(name: "ResourcePickerLibrary", targets: ["ResourcePickerLibrary"]),
 		.library(name: "SharedModelsFetchableLibrary", targets: ["SharedModelsFetchableLibrary"]),
 		.library(name: "SharedModelsLibrary", targets: ["SharedModelsLibrary"]),
@@ -917,6 +918,22 @@ let package = Package(
 		.target(
 			name: "FoundationExtensionsLibrary",
 			dependencies: []
+		),
+		.target(
+			name: "ResourceListLibrary",
+			dependencies: [
+				"EquatableLibrary",
+				"FeatureActionLibrary",
+				"ViewsLibrary",
+			]
+		),
+		.testTarget(
+			name: "ResourceListLibraryTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"ResourceListLibrary",
+				"SharedModelsMocksLibrary",
+			]
 		),
 		.target(
 			name: "ResourcePickerLibrary",

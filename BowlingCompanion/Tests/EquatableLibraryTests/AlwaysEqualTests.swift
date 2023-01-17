@@ -6,8 +6,8 @@ final class AlwaysEqualTests: XCTestCase {
 		let add = { (a: Int, b: Int) in a + b }
 		XCTAssertEqual(add(1, 2), 3)
 
-		let first = AlwaysEqual(wrapped: add)
-		let second = AlwaysEqual(wrapped: add)
+		let first = AlwaysEqual(add)
+		let second = AlwaysEqual(add)
 		XCTAssertEqual(first, second)
 	}
 
@@ -15,8 +15,8 @@ final class AlwaysEqualTests: XCTestCase {
 		let firstInteger = 4
 		let secondInteger = 5
 
-		let first = AlwaysEqual(wrapped: firstInteger)
-		let second = AlwaysEqual(wrapped: secondInteger)
+		let first = AlwaysEqual(firstInteger)
+		let second = AlwaysEqual(secondInteger)
 		XCTAssertNotEqual(firstInteger, secondInteger)
 		XCTAssertEqual(first, second)
 	}
@@ -25,8 +25,8 @@ final class AlwaysEqualTests: XCTestCase {
 		let firstString = "something"
 		let secondString = "nothing"
 
-		let first = AlwaysEqual(wrapped: firstString)
-		let second = AlwaysEqual(wrapped: secondString)
+		let first = AlwaysEqual(firstString)
+		let second = AlwaysEqual(secondString)
 		XCTAssertNotEqual(firstString, secondString)
 		XCTAssertEqual(first, second)
 	}
@@ -39,8 +39,8 @@ final class AlwaysEqualTests: XCTestCase {
 		let firstStruct = SomeStruct(value: "something")
 		let secondStruct = SomeStruct(value: "else")
 
-		let first = AlwaysEqual(wrapped: firstStruct)
-		let second = AlwaysEqual(wrapped: secondStruct)
+		let first = AlwaysEqual(firstStruct)
+		let second = AlwaysEqual(secondStruct)
 		XCTAssertNotEqual(firstStruct, secondStruct)
 		XCTAssertEqual(first, second)
 	}

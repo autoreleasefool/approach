@@ -1,6 +1,6 @@
 public struct NeverEqual<V>: Equatable {
 	public let wrapped: V
-	public init(wrapped: V) {
+	public init(_ wrapped: V) {
 		self.wrapped = wrapped
 	}
 

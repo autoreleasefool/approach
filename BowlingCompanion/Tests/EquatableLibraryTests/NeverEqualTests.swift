@@ -6,16 +6,16 @@ final class NeverEqualTests: XCTestCase {
 		let add = { (a: Int, b: Int) in a + b }
 		XCTAssertEqual(add(1, 2), 3)
 
-		let first = NeverEqual(wrapped: add)
-		let second = NeverEqual(wrapped: add)
+		let first = NeverEqual(add)
+		let second = NeverEqual(add)
 		XCTAssertNotEqual(first, second)
 	}
 
 	func testIntegerIsNotEqual() {
 		let integer = 4
 
-		let first = NeverEqual(wrapped: integer)
-		let second = NeverEqual(wrapped: integer)
+		let first = NeverEqual(integer)
+		let second = NeverEqual(integer)
 		XCTAssertEqual(integer, integer)
 		XCTAssertNotEqual(first, second)
 	}
@@ -23,8 +23,8 @@ final class NeverEqualTests: XCTestCase {
 	func testStringIsNotEqual() {
 		let string = "string"
 
-		let first = NeverEqual(wrapped: string)
-		let second = NeverEqual(wrapped: string)
+		let first = NeverEqual(string)
+		let second = NeverEqual(string)
 		XCTAssertEqual(string, string)
 		XCTAssertNotEqual(first, second)
 	}
@@ -36,8 +36,8 @@ final class NeverEqualTests: XCTestCase {
 
 		let s = SomeStruct(value: "string")
 
-		let first = NeverEqual(wrapped: s)
-		let second = NeverEqual(wrapped: s)
+		let first = NeverEqual(s)
+		let second = NeverEqual(s)
 		XCTAssertEqual(s, s)
 		XCTAssertNotEqual(first, second)
 	}
