@@ -174,6 +174,7 @@ let package = Package(
 				"BowlersDataProviderInterface",
 				"FeatureFlagsServiceInterface",
 				"LeaguesListFeature",
+				"ResourceListLibrary",
 				"SortOrderLibrary",
 				"StatisticsWidgetsFeature",
 			]

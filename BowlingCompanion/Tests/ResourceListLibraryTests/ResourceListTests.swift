@@ -4,26 +4,29 @@ import XCTest
 
 @MainActor
 final class ResourceListTests: XCTestCase {
+	private func buildState(withFeatures: [ResourceList<Model, Query>.Feature]) -> ResourceList<Model, Query>.State {
+		.init(
+			features: withFeatures,
+			query: .init(),
+			listTitle: "listTitle",
+			emptyContent: .init(image: .emptyBowlers, title: "title", action: "action")
+		)
+	}
+
 	func testHasDeleteFeature() {
 		func onDelete(model: Model) async throws -> Void {}
-		let state = ResourceList<Model, Query>.State(
-			features: [
-				.swipeToDelete(onDelete: .init(onDelete(model:))),
-			],
-			query: .init()
-		)
+		let state = buildState(withFeatures: [.swipeToDelete(onDelete: .init(onDelete(model:)))])
 
 		XCTAssertNotNil(state.onDelete)
 		XCTAssertTrue(state.hasDeleteFeature)
 	}
 
 	func testHasNoDeleteFeautre() {
-		let state = ResourceList<Model, Query>.State(
-			features: [
+		let state = buildState(
+			withFeatures: [
 				.swipeToEdit,
-				.add
-			],
-			query: .init()
+				.add,
+			]
 		)
 
 		XCTAssertNil(state.onDelete)
@@ -32,26 +35,18 @@ final class ResourceListTests: XCTestCase {
 
 	func testObservesData() async {
 		let store = TestStore(
-			initialState: ResourceList<Model, Query>.State(
-				features: [],
-				query: .init()
-			),
+			initialState: buildState(withFeatures: []),
 			reducer: ResourceList<Model, Query> { _ in .never }
 		)
 
 		await store.send(.view(.didObserveData))
-
-		await store.receive(.internal(.observeData))
 
 		await store.send(.internal(.cancelObservation))
 	}
 
 	func testErrorButtonReloadsData() async {
 		let store = TestStore(
-			initialState: ResourceList<Model, Query>.State(
-				features: [],
-				query: .init()
-			),
+			initialState: buildState(withFeatures: []),
 			reducer: ResourceList<Model, Query> { _ in .never }
 		)
 
@@ -59,9 +54,7 @@ final class ResourceListTests: XCTestCase {
 			$0.error = .failedToLoad
 		}
 
-		await store.send(.view(.didTapErrorButton))
-
-		await store.receive(.internal(.observeData)) {
+		await store.send(.view(.empty(.delegate(.didTapButton)))) {
 			$0.error = nil
 		}
 
@@ -71,12 +64,7 @@ final class ResourceListTests: XCTestCase {
 	func testSwipeToDeleteDisplaysAlert() async {
 		func onDelete(model: Model) async throws -> Void {}
 		let store = TestStore(
-			initialState: ResourceList<Model, Query>.State(
-				features: [
-					.swipeToDelete(onDelete: .init(onDelete(model:))),
-				],
-				query: .init()
-			),
+			initialState: buildState(withFeatures: [.swipeToDelete(onDelete: .init(onDelete(model:)))]),
 			reducer: ResourceList<Model, Query> { _ in .never }
 		)
 
@@ -87,10 +75,7 @@ final class ResourceListTests: XCTestCase {
 
 	func testAddButtonCallsDelegate() async {
 		let store = TestStore(
-			initialState: ResourceList<Model, Query>.State(
-				features: [.add],
-				query: .init()
-			),
+			initialState: buildState(withFeatures: [.add]),
 			reducer: ResourceList<Model, Query> { _ in .never }
 		)
 
@@ -107,12 +92,7 @@ final class ResourceListTests: XCTestCase {
 		}
 
 		let store = TestStore(
-			initialState: ResourceList<Model, Query>.State(
-				features: [
-					.swipeToDelete(onDelete: .init(onDelete(model:))),
-				],
-				query: .init()
-			),
+			initialState: buildState(withFeatures: [.swipeToDelete(onDelete: .init(onDelete(model:)))]),
 			reducer: ResourceList<Model, Query> { _ in .never }
 		)
 
@@ -132,12 +112,7 @@ final class ResourceListTests: XCTestCase {
 		}
 
 		let store = TestStore(
-			initialState: ResourceList<Model, Query>.State(
-				features: [
-					.swipeToDelete(onDelete: .init(onDelete(model:))),
-				],
-				query: .init()
-			),
+			initialState: buildState(withFeatures: [.swipeToDelete(onDelete: .init(onDelete(model:)))]),
 			reducer: ResourceList<Model, Query> { _ in .never }
 		)
 
@@ -151,12 +126,7 @@ final class ResourceListTests: XCTestCase {
 	func testDismissDeleteAlert() async {
 		func onDelete(model: Model) async throws -> Void {}
 		let store = TestStore(
-			initialState: ResourceList<Model, Query>.State(
-				features: [
-					.swipeToDelete(onDelete: .init(onDelete(model:))),
-				],
-				query: .init()
-			),
+			initialState: buildState(withFeatures: [.swipeToDelete(onDelete: .init(onDelete(model:)))]),
 			reducer: ResourceList<Model, Query> { _ in .never }
 		)
 
@@ -171,10 +141,7 @@ final class ResourceListTests: XCTestCase {
 
 	func testSwipeToEditCallsDelegate() async {
 		let store = TestStore(
-			initialState: ResourceList<Model, Query>.State(
-				features: [.swipeToEdit],
-				query: .init()
-			),
+			initialState: buildState(withFeatures: [.swipeToEdit]),
 			reducer: ResourceList<Model, Query> { _ in .never }
 		)
 
@@ -186,16 +153,70 @@ final class ResourceListTests: XCTestCase {
 
 	func testCancelObservation() async {
 		let store = TestStore(
-			initialState: ResourceList<Model, Query>.State(
-				features: [],
-				query: .init()
-			),
+			initialState: buildState(withFeatures: []),
 			reducer: ResourceList<Model, Query> { _ in .never }
 		)
 
 		await store.send(.view(.didObserveData))
 
-		await store.receive(.internal(.observeData))
+		await store.send(.internal(.cancelObservation))
+	}
+
+	func testActionButtonWhenNoErrorIsEmptyStateButton() async {
+		let store = TestStore(
+			initialState: buildState(withFeatures: []),
+			reducer: ResourceList<Model, Query> { _ in .never }
+		)
+
+		XCTAssertNil(store.state.error)
+
+		await store.send(.view(.empty(.delegate(.didTapButton))))
+
+		await store.receive(.delegate(.didTapEmptyStateButton))
+	}
+
+	func testActionButtonWhenErrorIsHandled() async {
+		let store = TestStore(
+			initialState: buildState(withFeatures: []),
+			reducer: ResourceList<Model, Query> { _ in .finished(throwing: MockError()) }
+		)
+
+		XCTAssertNil(store.state.error)
+
+		await store.send(.internal(.observeData))
+
+		await store.receive(.internal(.resourcesResponse(.failure(MockError())))) {
+			$0.error = .failedToLoad
+		}
+
+		await store.send(.view(.empty(.delegate(.didTapButton)))) {
+			$0.error = nil
+		}
+
+		await store.receive(.internal(.resourcesResponse(.failure(MockError())))) {
+			$0.error = .failedToLoad
+		}
+	}
+
+	func testTappingRowSendsAction() async {
+		let (models, modelsContinuation) = AsyncThrowingStream<[Model], Error>.streamWithContinuation()
+
+		let store = TestStore(
+			initialState: buildState(withFeatures: [.tappable]),
+			reducer: ResourceList<Model, Query> { _ in models }
+		)
+
+		await store.send(.internal(.observeData))
+
+		modelsContinuation.yield([.mock])
+
+		await store.receive(.internal(.resourcesResponse(.success([.mock])))) {
+			$0.resources = .init(uniqueElements: [.mock])
+		}
+
+		await store.send(.view(.didTap(.mock)))
+
+		await store.receive(.delegate(.didTap(.mock)))
 
 		await store.send(.internal(.cancelObservation))
 	}
@@ -214,6 +235,10 @@ final class ResourceListTests: XCTestCase {
 
 	func _testAddButtonWhenNoAddFeatureThrowsError() async {
 		// TODO: enable _testAddButtonWhenNoAddFeatureThrowsError
+	}
+
+	func _testTappingRowWhenNoTappableFeatureThrowsError() async {
+		// TODO: enable _testTappingRowWhenNoTappableFeatureThrowsError
 	}
 }
 

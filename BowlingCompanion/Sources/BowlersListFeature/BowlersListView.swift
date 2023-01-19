@@ -1,6 +1,7 @@
 import BowlerEditorFeature
 import ComposableArchitecture
 import LeaguesListFeature
+import ResourceListLibrary
 import SharedModelsLibrary
 import SharedModelsViewsLibrary
 import SortOrderLibrary
@@ -14,31 +15,19 @@ public struct BowlersListView: View {
 	let store: StoreOf<BowlersList>
 
 	struct ViewState: Equatable {
-		let listState: ListContentState<Bowler, ListErrorContent>
 		let selection: Bowler.ID?
 		let isBowlerEditorPresented: Bool
 
 		init(state: BowlersList.State) {
-			if let error = state.error {
-				self.listState = .error(error)
-			} else if let bowlers = state.bowlers {
-				self.listState = .loaded(bowlers)
-			} else {
-				self.listState = .loading
-			}
 			self.selection = state.selection?.id
 			self.isBowlerEditorPresented = state.bowlerEditor != nil
 		}
 	}
 
 	enum ViewAction {
-		case observeBowlers
-		case addButtonTapped
-		case errorButtonTapped
 		case configureStatisticsButtonTapped
 		case setEditorFormSheet(isPresented: Bool)
 		case setNavigation(selection: Bowler.ID?)
-		case swipeAction(Bowler, BowlersList.SwipeAction)
 	}
 
 	public init(store: StoreOf<BowlersList>) {
@@ -47,7 +36,11 @@ public struct BowlersListView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: BowlersList.Action.init) { viewStore in
-			ListContent(viewStore.listState) { bowlers in
+			ResourceListView(
+				store: store.scope(state: \.list, action: BowlersList.Action.list)
+			) { bowler in
+				BowlerRow(bowler: bowler)
+			} header: {
 				Section {
 					Button { viewStore.send(.configureStatisticsButtonTapped) } label: {
 						PlaceholderWidget(size: .medium)
@@ -56,55 +49,11 @@ public struct BowlersListView: View {
 				}
 				.listRowSeparator(.hidden)
 				.listRowInsets(EdgeInsets())
-
-				Section(Strings.Bowler.List.Title.all) {
-					ForEach(bowlers) { bowler in
-						NavigationLink(
-							destination: IfLetStore(store.scope(state: \.selection?.value, action: BowlersList.Action.leagues)) {
-								LeaguesListView(store: $0)
-							},
-							tag: bowler.id,
-							selection: viewStore.binding(
-								get: \.selection,
-								send: BowlersListView.ViewAction.setNavigation(selection:)
-							)
-						) {
-							BowlerRow(
-								bowler: bowler,
-								onEdit: { viewStore.send(.swipeAction(bowler, .edit)) },
-								onDelete: { viewStore.send(.swipeAction(bowler, .delete)) }
-							)
-						}
-					}
-				}
-				.listRowSeparator(.hidden)
-			} empty: {
-				ListEmptyContent(
-					.emptyBowlers,
-					title: Strings.Bowler.Error.Empty.title,
-					message: Strings.Bowler.Error.Empty.message
-				) {
-					EmptyContentAction(title: Strings.Bowler.List.add) { viewStore.send(.addButtonTapped) }
-				}
-			} error: { error in
-				ListEmptyContent(
-					.errorNotFound,
-					title: error.title,
-					message: error.message,
-					style: .error
-				) {
-					EmptyContentAction(title: error.action) { viewStore.send(.errorButtonTapped) }
-				}
 			}
-			.scrollContentBackground(.hidden)
 			.navigationTitle(Strings.Bowler.List.title)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
 					SortOrderView(store: store.scope(state: \.sortOrder, action: BowlersList.Action.sortOrder))
-				}
-
-				ToolbarItem(placement: .navigationBarTrailing) {
-					AddButton { viewStore.send(.addButtonTapped) }
 				}
 			}
 			.sheet(isPresented: viewStore.binding(
@@ -117,11 +66,6 @@ public struct BowlersListView: View {
 					}
 				}
 			}
-			.alert(
-				self.store.scope(state: \.alert, action: BowlersList.Action.alert),
-				dismiss: .dismissed
-			)
-			.task { await viewStore.send(.observeBowlers).finish() }
 		}
 	}
 }
@@ -129,20 +73,12 @@ public struct BowlersListView: View {
 extension BowlersList.Action {
 	init(action: BowlersListView.ViewAction) {
 		switch action {
-		case .observeBowlers:
-			self = .observeBowlers
-		case .addButtonTapped:
-			self = .setEditorFormSheet(isPresented: true)
-		case .errorButtonTapped:
-			self = .errorButtonTapped
 		case .configureStatisticsButtonTapped:
 			self = .configureStatisticsButtonTapped
 		case let .setEditorFormSheet(isPresented):
 			self = .setEditorFormSheet(isPresented: isPresented)
 		case let .setNavigation(selection):
 			self = .setNavigation(selection: selection)
-		case let .swipeAction(bowler, swipeAction):
-			self = .swipeAction(bowler, swipeAction)
 		}
 	}
 }

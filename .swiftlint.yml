@@ -11,3 +11,4 @@ trailing_comma:
 
 disabled_rules:
   - identifier_name
+  - nesting

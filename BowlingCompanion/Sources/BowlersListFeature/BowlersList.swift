@@ -4,44 +4,63 @@ import ComposableArchitecture
 import LeaguesListFeature
 import PersistenceServiceInterface
 import RecentlyUsedServiceInterface
+import ResourceListLibrary
 import SharedModelsLibrary
 import SharedModelsFetchableLibrary
 import SortOrderLibrary
+import StringsLibrary
 import ViewsLibrary
+
+extension Bowler: ResourceListItem {}
 
 public struct BowlersList: ReducerProtocol {
 	public struct State: Equatable {
-		public var bowlers: IdentifiedArrayOf<Bowler>?
-		public var sortOrder: SortOrder<Bowler.FetchRequest.Ordering>.State = .init(initialValue: .byRecentlyUsed)
-		public var error: ListErrorContent?
+		public var list: ResourceList<Bowler, Bowler.FetchRequest>.State
+		public var sortOrder: SortOrder<Bowler.FetchRequest.Ordering>.State = .init(initialValue: .byRecentlyUsed) {
+			didSet {
+				list.query = .init(filter: list.query.filter, ordering: sortOrder.ordering)
+			}
+		}
+
 		public var selection: Identified<Bowler.ID, LeaguesList.State>?
 		public var bowlerEditor: BowlerEditor.State?
-		public var alert: AlertState<AlertAction>?
 
-		public init() {}
+		public init() {
+			self.list = .init(
+				features: [
+					.add,
+					.tappable,
+					.swipeToEdit,
+					.swipeToDelete(
+						onDelete: .init {
+							@Dependency(\.persistenceService) var persistenceService: PersistenceService
+							try await persistenceService.deleteBowler($0)
+						}
+					),
+				],
+				query: .init(filter: nil, ordering: sortOrder.ordering),
+				listTitle: Strings.Bowler.List.title,
+				emptyContent: .init(
+					image: .emptyBowlers,
+					title: Strings.Bowler.Error.Empty.title,
+					message: Strings.Bowler.Error.Empty.message,
+					action: Strings.Bowler.List.add
+				)
+			)
+		}
 	}
 
 	public enum Action: Equatable {
-		case observeBowlers
-		case errorButtonTapped
 		case configureStatisticsButtonTapped
-		case swipeAction(Bowler, SwipeAction)
-		case alert(AlertAction)
+
 		case setNavigation(selection: Bowler.ID?)
 		case setEditorFormSheet(isPresented: Bool)
-		case bowlersResponse(TaskResult<[Bowler]>)
-		case deleteBowlerResponse(TaskResult<Bool>)
+
+		case list(ResourceList<Bowler, Bowler.FetchRequest>.Action)
 		case bowlerEditor(BowlerEditor.Action)
 		case leagues(LeaguesList.Action)
 		case sortOrder(SortOrder<Bowler.FetchRequest.Ordering>.Action)
 	}
-
-	public enum SwipeAction: Equatable {
-		case delete
-		case edit
-	}
-
-	struct ObservationCancellable {}
 
 	public init() {}
 
@@ -55,75 +74,40 @@ public struct BowlersList: ReducerProtocol {
 			SortOrder()
 		}
 
+		Scope(state: \.list, action: /BowlersList.Action.list) {
+			ResourceList {
+				bowlersDataProvider.observeBowlers($0)
+			}
+		}
+
 		Reduce { state, action in
 			switch action {
-			case .observeBowlers:
-				state.error = nil
-				return .run { [ordering = state.sortOrder.ordering] send in
-					for try await bowlers in bowlersDataProvider.observeBowlers(.init(filter: nil, ordering: ordering)) {
-						await send(.bowlersResponse(.success(bowlers)))
-					}
-				} catch: { error, send in
-					await send(.bowlersResponse(.failure(error)))
-				}
-				.cancellable(id: ObservationCancellable.self, cancelInFlight: true)
-
-			case .errorButtonTapped:
-				// TODO: handle error button tapped
-				return .none
-
 			case .configureStatisticsButtonTapped:
 				// TODO: handle configure statistics button press
 				return .none
 
 			case let .setNavigation(selection: .some(id)):
-				if let selection = state.bowlers?[id: id] {
-					state.selection = Identified(.init(bowler: selection), id: selection.id)
-					return .fireAndForget {
-						try await clock.sleep(for: .seconds(1))
-						recentlyUsedService.didRecentlyUseResource(.bowlers, selection.id)
-					}
-				}
-				return .none
+				return navigate(to: id, state: &state)
 
 			case .setNavigation(selection: .none):
-				state.selection = nil
-				return .none
+				return navigate(to: nil, state: &state)
 
-			case let .bowlersResponse(.success(bowlers)):
-				state.bowlers = .init(uniqueElements: bowlers)
-				return .none
+			case let .list(.delegate(delegateAction)):
+				switch delegateAction {
+				case let .didEdit(bowler):
+					state.bowlerEditor = .init(mode: .edit(bowler))
+					return .none
 
-			case .bowlersResponse(.failure):
-				state.error = .loadError
-				return .none
+				case let .didTap(bowler):
+					return navigate(to: bowler.id, state: &state)
 
-			case let .swipeAction(bowler, .edit):
-				state.bowlerEditor = .init(mode: .edit(bowler))
-				return .none
+				case .didAddNew, .didTapEmptyStateButton:
+					state.bowlerEditor = .init(mode: .create)
+					return .none
 
-			case let .swipeAction(bowler, .delete):
-				state.alert = BowlersList.alert(toDelete: bowler)
-				return .none
-
-			case .alert(.dismissed):
-				state.alert = nil
-				return .none
-
-			case let .alert(.deleteButtonTapped(bowler)):
-				return .task {
-					return await .deleteBowlerResponse(TaskResult {
-						try await persistenceService.deleteBowler(bowler)
-						return true
-					})
+				case .didDelete:
+					return .none
 				}
-
-			case .deleteBowlerResponse(.success):
-				return .none
-
-			case .deleteBowlerResponse(.failure):
-				state.error = .deleteError
-				return .none
 
 			case .setEditorFormSheet(isPresented: true):
 				state.bowlerEditor = .init(mode: .create)
@@ -137,9 +121,9 @@ public struct BowlersList: ReducerProtocol {
 				return .none
 
 			case .sortOrder(.optionTapped):
-				return .task { .observeBowlers }
+				return .task { .list(.view(.didObserveData)) }
 
-			case .bowlerEditor, .leagues, .sortOrder:
+			case .bowlerEditor, .leagues, .sortOrder, .list(.internal), .list(.view):
 				return .none
 			}
 		}
@@ -150,6 +134,19 @@ public struct BowlersList: ReducerProtocol {
 			Scope(state: \Identified<Bowler.ID, LeaguesList.State>.value, action: /.self) {
 				LeaguesList()
 			}
+		}
+	}
+
+	private func navigate(to id: Bowler.ID?, state: inout State) -> EffectTask<Action> {
+		if let id, let selection = state.list.resources?[id: id] {
+			state.selection = Identified(.init(bowler: selection), id: selection.id)
+			return .fireAndForget {
+				try await clock.sleep(for: .seconds(1))
+				recentlyUsedService.didRecentlyUseResource(.bowlers, selection.id)
+			}
+		} else {
+			state.selection = nil
+			return .none
 		}
 	}
 }
