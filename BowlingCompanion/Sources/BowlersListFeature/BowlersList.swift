@@ -1,6 +1,7 @@
 import BowlersDataProviderInterface
 import BowlerEditorFeature
 import ComposableArchitecture
+import FeatureActionLibrary
 import LeaguesListFeature
 import PersistenceServiceInterface
 import RecentlyUsedServiceInterface
@@ -50,16 +51,25 @@ public struct BowlersList: ReducerProtocol {
 		}
 	}
 
-	public enum Action: Equatable {
-		case configureStatisticsButtonTapped
+	public enum Action: FeatureAction, Equatable {
+		public enum ViewAction: Equatable {
+			case didTapConfigureStatisticsButton
+			case setNavigation(selection: Bowler.ID?)
+			case setEditorFormSheet(isPresented: Bool)
+		}
 
-		case setNavigation(selection: Bowler.ID?)
-		case setEditorFormSheet(isPresented: Bool)
+		public enum DelegateAction: Equatable {}
 
-		case list(ResourceList<Bowler, Bowler.FetchRequest>.Action)
-		case bowlerEditor(BowlerEditor.Action)
-		case leagues(LeaguesList.Action)
-		case sortOrder(SortOrder<Bowler.FetchRequest.Ordering>.Action)
+		public enum InternalAction: Equatable {
+			case list(ResourceList<Bowler, Bowler.FetchRequest>.Action)
+			case editor(BowlerEditor.Action)
+			case leagues(LeaguesList.Action)
+			case sortOrder(SortOrder<Bowler.FetchRequest.Ordering>.Action)
+		}
+
+		case view(ViewAction)
+		case `internal`(InternalAction)
+		case delegate(DelegateAction)
 	}
 
 	public init() {}
@@ -70,11 +80,11 @@ public struct BowlersList: ReducerProtocol {
 	@Dependency(\.recentlyUsedService) var recentlyUsedService
 
 	public var body: some ReducerProtocol<State, Action> {
-		Scope(state: \.sortOrder, action: /BowlersList.Action.sortOrder) {
+		Scope(state: \.sortOrder, action: /Action.internal..Action.InternalAction.sortOrder) {
 			SortOrder()
 		}
 
-		Scope(state: \.list, action: /BowlersList.Action.list) {
+		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {
 			ResourceList {
 				bowlersDataProvider.observeBowlers($0)
 			}
@@ -82,55 +92,67 @@ public struct BowlersList: ReducerProtocol {
 
 		Reduce { state, action in
 			switch action {
-			case .configureStatisticsButtonTapped:
-				// TODO: handle configure statistics button press
-				return .none
-
-			case let .setNavigation(selection: .some(id)):
-				return navigate(to: id, state: &state)
-
-			case .setNavigation(selection: .none):
-				return navigate(to: nil, state: &state)
-
-			case let .list(.delegate(delegateAction)):
-				switch delegateAction {
-				case let .didEdit(bowler):
-					state.bowlerEditor = .init(mode: .edit(bowler))
+			case let .view(viewAction):
+				switch viewAction {
+				case .didTapConfigureStatisticsButton:
+					// TODO: handle configure statistics button press
 					return .none
 
-				case let .didTap(bowler):
-					return navigate(to: bowler.id, state: &state)
+				case let .setNavigation(selection: .some(id)):
+					return navigate(to: id, state: &state)
 
-				case .didAddNew, .didTapEmptyStateButton:
+				case .setNavigation(selection: .none):
+					return navigate(to: nil, state: &state)
+
+				case .setEditorFormSheet(isPresented: true):
 					state.bowlerEditor = .init(mode: .create)
 					return .none
 
-				case .didDelete:
+				case .setEditorFormSheet(isPresented: false):
+					state.bowlerEditor = nil
 					return .none
 				}
 
-			case .setEditorFormSheet(isPresented: true):
-				state.bowlerEditor = .init(mode: .create)
-				return .none
+			case let .internal(internalAction):
+				switch internalAction {
+				case let .list(.delegate(delegateAction)):
+					switch delegateAction {
+					case let .didEdit(bowler):
+						state.bowlerEditor = .init(mode: .edit(bowler))
+						return .none
 
-			case .setEditorFormSheet(isPresented: false),
-					.bowlerEditor(.form(.didFinishSaving)),
-					.bowlerEditor(.form(.didFinishDeleting)),
-					.bowlerEditor(.form(.alert(.discardButtonTapped))):
-				state.bowlerEditor = nil
-				return .none
+					case let .didTap(bowler):
+						return navigate(to: bowler.id, state: &state)
 
-			case .sortOrder(.optionTapped):
-				return .task { .list(.view(.didObserveData)) }
+					case .didAddNew, .didTapEmptyStateButton:
+						state.bowlerEditor = .init(mode: .create)
+						return .none
 
-			case .bowlerEditor, .leagues, .sortOrder, .list(.internal), .list(.view):
+					case .didDelete:
+						return .none
+					}
+
+				case .editor(.form(.didFinishSaving)),
+					.editor(.form(.didFinishDeleting)),
+					.editor(.form(.alert(.discardButtonTapped))):
+					state.bowlerEditor = nil
+					return .none
+
+				case .sortOrder(.optionTapped):
+					return .task { .`internal`(.list(.view(.didObserveData))) }
+
+				case .list(.internal), .list(.view), .editor, .leagues, .sortOrder:
+					return .none
+				}
+
+			case .delegate:
 				return .none
 			}
 		}
-		.ifLet(\.bowlerEditor, action: /BowlersList.Action.bowlerEditor) {
+		.ifLet(\.bowlerEditor, action: /Action.internal..Action.InternalAction.editor) {
 			BowlerEditor()
 		}
-		.ifLet(\.selection, action: /BowlersList.Action.leagues) {
+		.ifLet(\.selection, action: /Action.internal..Action.InternalAction.leagues) {
 			Scope(state: \Identified<Bowler.ID, LeaguesList.State>.value, action: /.self) {
 				LeaguesList()
 			}

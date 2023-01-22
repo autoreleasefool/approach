@@ -37,7 +37,7 @@ public struct BowlersListView: View {
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: BowlersList.Action.init) { viewStore in
 			ResourceListView(
-				store: store.scope(state: \.list, action: BowlersList.Action.list)
+				store: store.scope(state: \.list, action: /BowlersList.Action.InternalAction.list)
 			) { bowler in
 				BowlerRow(bowler: bowler)
 			} header: {
@@ -53,14 +53,14 @@ public struct BowlersListView: View {
 			.navigationTitle(Strings.Bowler.List.title)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
-					SortOrderView(store: store.scope(state: \.sortOrder, action: BowlersList.Action.sortOrder))
+					SortOrderView(store: store.scope(state: \.sortOrder, action: /BowlersList.Action.InternalAction.sortOrder))
 				}
 			}
 			.sheet(isPresented: viewStore.binding(
 				get: \.isBowlerEditorPresented,
 				send: ViewAction.setEditorFormSheet(isPresented:)
 			)) {
-				IfLetStore(store.scope(state: \.bowlerEditor, action: BowlersList.Action.bowlerEditor)) { scopedStore in
+				IfLetStore(store.scope(state: \.bowlerEditor, action: /BowlersList.Action.InternalAction.editor)) { scopedStore in
 					NavigationView {
 						BowlerEditorView(store: scopedStore)
 					}
@@ -74,11 +74,11 @@ extension BowlersList.Action {
 	init(action: BowlersListView.ViewAction) {
 		switch action {
 		case .configureStatisticsButtonTapped:
-			self = .configureStatisticsButtonTapped
+			self = .view(.didTapConfigureStatisticsButton)
 		case let .setEditorFormSheet(isPresented):
-			self = .setEditorFormSheet(isPresented: isPresented)
+			self = .view(.setEditorFormSheet(isPresented: isPresented))
 		case let .setNavigation(selection):
-			self = .setNavigation(selection: selection)
+			self = .view(.setNavigation(selection: selection))
 		}
 	}
 }
