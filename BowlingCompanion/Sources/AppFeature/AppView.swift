@@ -41,12 +41,28 @@ public struct AppView: View {
 					selection: viewStore.binding(get: \.selectedTab, send: ViewAction.selectedTab)
 				) {
 					ForEach(viewStore.tabs) { tab in
-						tab.tabView(store: store, hasTeamsFeature: viewStore.hasTeamsFeature)
-							.tag(tab)
-							.tabItem {
-								Image(systemName: tab.image)
-								Text(tab.name)
+						NavigationView {
+							switch tab {
+							case .alleys:
+								AlleysListView(store: store.scope(state: \.alleysList, action: App.Action.alleysList))
+							case .bowlers:
+								if viewStore.hasTeamsFeature {
+									TeamsAndBowlersListView(
+										store: store.scope(state: \.teamsAndBowlersList, action: App.Action.teamsAndBowlersList)
+									)
+								} else {
+									BowlersListView(store: store.scope(state: \.bowlersList, action: App.Action.bowlersList))
+								}
+							case .settings:
+								SettingsView(store: store.scope(state: \.settings, action: App.Action.settings))
+							case .gear:
+								GearListView(store: store.scope(state: \.gearList, action: App.Action.gearList))
 							}
+						}
+						.tag(tab)
+						.tabItem {
+							Label(tab.name, systemImage: tab.image)
+						}
 					}
 				}
 				.tint(.appAction)
@@ -83,25 +99,6 @@ extension App.Tab {
 			return "figure.bowling"
 		case .gear:
 			return "bag"
-		}
-	}
-
-	func tabView(store: StoreOf<App>, hasTeamsFeature: Bool) -> some View {
-		NavigationView {
-			switch self {
-			case .alleys:
-				AlleysListView(store: store.scope(state: \.alleysList, action: App.Action.alleysList))
-			case .bowlers:
-				if hasTeamsFeature {
-					TeamsAndBowlersListView(store: store.scope(state: \.teamsAndBowlersList, action: App.Action.teamsAndBowlersList))
-				} else {
-					BowlersListView(store: store.scope(state: \.bowlersList, action: App.Action.bowlersList))
-				}
-			case .settings:
-				SettingsView(store: store.scope(state: \.settings, action: App.Action.settings))
-			case .gear:
-				GearListView(store: store.scope(state: \.gearList, action: App.Action.gearList))
-			}
 		}
 	}
 }
