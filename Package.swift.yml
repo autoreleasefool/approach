@@ -42,6 +42,7 @@ package:
       dependencies:
         - AlleyEditorFeature
         - AlleysDataProvider
+        - ResourceListLibrary
         - SharedModelsViewsLibrary
     - name: AppFeature
       dependencies:

@@ -1,42 +1,64 @@
 import AlleysDataProviderInterface
 import AlleyEditorFeature
 import ComposableArchitecture
+import FeatureActionLibrary
 import FeatureFlagsServiceInterface
 import PersistenceServiceInterface
+import ResourceListLibrary
 import SharedModelsLibrary
+import StringsLibrary
 import ViewsLibrary
+
+extension Alley: ResourceListItem {}
 
 public struct AlleysList: ReducerProtocol {
 	public struct State: Equatable {
-		public var alleys: IdentifiedArrayOf<Alley>?
-		public var error: ListErrorContent?
-		public var alleyEditor: AlleyEditor.State?
-		public var alert: AlertState<AlertAction>?
-		public var isAlleyFiltersPresented = false
-		public var alleyFilters: AlleysFilter.State = .init()
+		public var list: ResourceList<Alley, Alley.FetchRequest>.State
+		public var editor: AlleyEditor.State?
 
-		public init() {}
+		public var isFiltersPresented = false
+		public var filters: AlleysFilter.State = .init()
+
+		public init() {
+			self.list = .init(
+				features: [
+					.add,
+					.swipeToEdit,
+					.swipeToDelete(onDelete: .init {
+						@Dependency(\.persistenceService) var persistenceService: PersistenceService
+						try await persistenceService.deleteAlley($0)
+					})
+				],
+				query: .init(filter: nil, ordering: .byRecentlyUsed),
+				listTitle: Strings.Alley.List.title,
+				emptyContent: .init(
+					image: .emptyAlleys,
+					title: Strings.Alley.Error.Empty.title,
+					message: Strings.Alley.Error.Empty.message,
+					action: Strings.Alley.List.add
+				)
+			)
+		}
 	}
 
-	public enum Action: Equatable {
-		case observeAlleys
-		case errorButtonTapped
-		case swipeAction(Alley, SwipeAction)
-		case alleysResponse(TaskResult<[Alley]>)
-		case deleteAlleyResponse(TaskResult<Bool>)
-		case alert(AlertAction)
-		case setFilterSheet(isPresented: Bool)
-		case setEditorFormSheet(isPresented: Bool)
-		case alleyEditor(AlleyEditor.Action)
-		case alleysFilter(AlleysFilter.Action)
-	}
+	public enum Action: FeatureAction, Equatable {
+		public enum ViewAction: Equatable {
+			case setFilterSheet(isPresented: Bool)
+			case setEditorSheet(isPresented: Bool)
+		}
 
-	public enum SwipeAction: Equatable {
-		case delete
-		case edit
-	}
+		public enum DelegateAction: Equatable {}
 
-	struct ObservationCancellable {}
+		public enum InternalAction: Equatable {
+			case list(ResourceList<Alley, Alley.FetchRequest>.Action)
+			case editor(AlleyEditor.Action)
+			case filters(AlleysFilter.Action)
+		}
+
+		case view(ViewAction)
+		case `internal`(InternalAction)
+		case delegate(DelegateAction)
+	}
 
 	public init() {}
 
@@ -45,88 +67,72 @@ public struct AlleysList: ReducerProtocol {
 	@Dependency(\.featureFlags) var featureFlags: FeatureFlagsService
 
 	public var body: some ReducerProtocol<State, Action> {
-		Scope(state: \.alleyFilters, action: /AlleysList.Action.alleysFilter) {
+		Scope(state: \.filters, action: /Action.internal..Action.InternalAction.filters) {
 			AlleysFilter()
+		}
+
+		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {
+			ResourceList(fetchResources: alleysDataProvider.observeAlleys)
 		}
 
 		Reduce { state, action in
 			switch action {
-			case .observeAlleys:
-				state.error = nil
-				return .run { [filter = state.alleyFilters.filter] send in
-					for try await alleys in alleysDataProvider.observeAlleys(.init(filter: filter, ordering: .byRecentlyUsed)) {
-						await send(.alleysResponse(.success(alleys)))
+			case let .view(viewAction):
+				switch viewAction {
+				case .setFilterSheet(isPresented: true):
+					state.isFiltersPresented = true
+					return .none
+
+				case .setFilterSheet(isPresented: false):
+					state.isFiltersPresented = false
+					return .task { .internal(.list(.view(.didObserveData))) }
+
+				case .setEditorSheet(isPresented: true):
+					state.editor = .init(
+						mode: .create,
+						hasLanesEnabled: featureFlags.isEnabled(.lanes)
+					)
+					return .none
+
+				case .setEditorSheet(isPresented: false):
+					state.editor = nil
+					return .none
+				}
+
+			case let .internal(internalAction):
+				switch internalAction {
+				case let .list(.delegate(delegateAction)):
+					switch delegateAction {
+					case let .didEdit(alley):
+						state.editor = .init(
+							mode: .edit(alley),
+							hasLanesEnabled: featureFlags.isEnabled(.lanes)
+						)
+						return .none
+
+					case .didAddNew, .didTapEmptyStateButton:
+						state.editor = .init(mode: .create, hasLanesEnabled: featureFlags.isEnabled(.lanes))
+						return .none
+
+					case .didDelete, .didTap:
+						return .none
 					}
-				} catch: { error, send in
-					await send(.alleysResponse(.failure(error)))
-				}
-				.cancellable(id: ObservationCancellable.self, cancelInFlight: true)
 
-			case let .alleysResponse(.success(alleys)):
-				state.alleys = .init(uniqueElements: alleys)
-				return .none
+				case .editor(.form(.didFinishSaving)),
+					.editor(.form(.didFinishDeleting)),
+					.editor(.form(.alert(.discardButtonTapped))):
+					state.editor = nil
+					return .none
 
-			case .alleysResponse(.failure):
-				state.error = .loadError
-				return .none
-
-			case let .swipeAction(alley, .edit):
-				state.alleyEditor = .init(
-					mode: .edit(alley),
-					hasLanesEnabled: featureFlags.isEnabled(.lanes)
-				)
-				return .none
-
-			case let .swipeAction(alley, .delete):
-				state.alert = AlleysList.alert(toDelete: alley)
-				return .none
-
-			case .alert(.dismissed):
-				state.alert = nil
-				return .none
-
-			case let .alert(.deleteButtonTapped(alley)):
-				return .task {
-					return await .deleteAlleyResponse(TaskResult {
-						try await persistenceService.deleteAlley(alley)
-						return true
-					})
+				case .list(.internal), .list(.view), .editor, .filters:
+					return .none
 				}
 
-			case .deleteAlleyResponse(.failure):
-				state.error = .deleteError
-				return .none
-
-			case .setFilterSheet(isPresented: true):
-				state.isAlleyFiltersPresented = true
-				return .none
-
-			case .setFilterSheet(isPresented: false), .alleysFilter(.applyButtonTapped):
-				state.isAlleyFiltersPresented = false
-				return .task { .observeAlleys }
-
-			case .alleysFilter(.binding):
-				return .task { .observeAlleys }
-
-			case .setEditorFormSheet(isPresented: true):
-				state.alleyEditor = .init(
-					mode: .create,
-					hasLanesEnabled: featureFlags.isEnabled(.lanes)
-				)
-				return .none
-
-			case .setEditorFormSheet(isPresented: false),
-					.alleyEditor(.form(.didFinishSaving)),
-					.alleyEditor(.form(.didFinishDeleting)),
-					.alleyEditor(.form(.alert(.discardButtonTapped))):
-				state.alleyEditor = nil
-				return .none
-
-			case .alleyEditor, .alleysFilter, .errorButtonTapped, .deleteAlleyResponse(.success):
+			case .delegate:
 				return .none
 			}
 		}
-		.ifLet(\.alleyEditor, action: /AlleysList.Action.alleyEditor) {
+		.ifLet(\.editor, action: /Action.internal..Action.InternalAction.editor) {
 			AlleyEditor()
 		}
 	}

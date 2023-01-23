@@ -1,44 +1,34 @@
 import AlleyEditorFeature
+import AssetsLibrary
 import ComposableArchitecture
+import FeatureActionLibrary
+import ResourceListLibrary
 import SharedModelsLibrary
 import SharedModelsViewsLibrary
 import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsLibrary
-import AssetsLibrary
 import ViewsLibrary
 
 public struct AlleysListView: View {
 	let store: StoreOf<AlleysList>
 
 	struct ViewState: Equatable {
-		let listState: ListContentState<Alley, ListErrorContent>
-		let isAlleyEditorPresented: Bool
-		let isAlleyFiltersPresented: Bool
-		let isAlleyFilterActive: Bool
+		let isEditorPresented: Bool
+		let isFiltersPresented: Bool
+		let isFilterActive: Bool
 
 		init(state: AlleysList.State) {
-			if let error = state.error {
-				self.listState = .error(error)
-			} else if let alleys = state.alleys {
-				self.listState = .loaded(alleys)
-			} else {
-				self.listState = .loading
-			}
-			self.isAlleyEditorPresented = state.alleyEditor != nil
-			self.isAlleyFiltersPresented = state.isAlleyFiltersPresented
-			self.isAlleyFilterActive = state.alleyFilters.filter != nil
+			self.isEditorPresented = state.editor != nil
+			self.isFiltersPresented = state.isFiltersPresented
+			self.isFilterActive = state.filters.filter != nil
 		}
 	}
 
 	enum ViewAction {
-		case observeAlleys
 		case filterButtonTapped
-		case addButtonTapped
-		case errorButtonTapped
 		case setFilterSheet(isPresented: Bool)
-		case setEditorFormSheet(isPresented: Bool)
-		case swipeAction(Alley, AlleysList.SwipeAction)
+		case setEditorSheet(isPresented: Bool)
 	}
 
 	public init(store: StoreOf<AlleysList>) {
@@ -47,73 +37,39 @@ public struct AlleysListView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: AlleysList.Action.init) { viewStore in
-			ListContent(viewStore.listState) { alleys in
-				ForEach(alleys) { alley in
-					AlleyRow(
-						alley: alley,
-						onEdit: { viewStore.send(.swipeAction(alley, .edit)) },
-						onDelete: { viewStore.send(.swipeAction(alley, .delete)) }
-					)
-				}
-				.listRowSeparator(.hidden)
-			} empty: {
-				ListEmptyContent(
-					.emptyAlleys,
-					title: Strings.Alley.Error.Empty.title,
-					message: viewStore.isAlleyFilterActive
-						? Strings.Alley.Error.Empty.Filter.message
-						: Strings.Alley.Error.Empty.message
-				) {
-					EmptyContentAction(title: Strings.Alley.List.add) { viewStore.send(.addButtonTapped) }
-				}
-			} error: { error in
-				ListEmptyContent(
-					.errorNotFound,
-					title: error.title,
-					message: error.message,
-					style: .error
-				) {
-					EmptyContentAction(title: error.action) { viewStore.send(.errorButtonTapped) }
-				}
+			ResourceListView(
+				store: store.scope(state: \.list, action: /AlleysList.Action.InternalAction.list)
+			) {
+				AlleyRow(alley: $0)
 			}
-			.scrollContentBackground(.hidden)
 			.navigationTitle(Strings.Alley.List.title)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
-					FilterButton(isActive: viewStore.isAlleyFilterActive) {
+					FilterButton(isActive: viewStore.isFilterActive) {
 						viewStore.send(.filterButtonTapped)
 					}
-					.disabled(viewStore.isAlleyFiltersPresented)
-				}
-				ToolbarItem(placement: .navigationBarTrailing) {
-					AddButton { viewStore.send(.addButtonTapped) }
-						.disabled(viewStore.isAlleyFiltersPresented)
+					.disabled(viewStore.isFiltersPresented)
 				}
 			}
 			.sheet(isPresented: viewStore.binding(
-				get: \.isAlleyFiltersPresented,
+				get: \.isFiltersPresented,
 				send: ViewAction.setFilterSheet(isPresented:)
 			)) {
 				NavigationView {
-					AlleysFilterView(store: store.scope(state: \.alleyFilters, action: AlleysList.Action.alleysFilter))
+					AlleysFilterView(store: store.scope(state: \.filters, action: /AlleysList.Action.InternalAction.filters))
 				}
 				.presentationDetents(undimmed: [.medium, .large])
 			}
 			.sheet(isPresented: viewStore.binding(
-				get: \.isAlleyEditorPresented,
-				send: ViewAction.setEditorFormSheet(isPresented:)
+				get: \.isEditorPresented,
+				send: ViewAction.setEditorSheet(isPresented:)
 			)) {
-				IfLetStore(store.scope(state: \.alleyEditor, action: AlleysList.Action.alleyEditor)) { scopedStore in
+				IfLetStore(store.scope(state: \.editor, action: /AlleysList.Action.InternalAction.editor)) { scopedStore in
 					NavigationView {
 						AlleyEditorView(store: scopedStore)
 					}
 				}
 			}
-			.alert(
-				self.store.scope(state: \.alert, action: AlleysList.Action.alert),
-				dismiss: .dismissed
-			)
-			.task { await viewStore.send(.observeAlleys).finish() }
 		}
 	}
 }
@@ -121,20 +77,12 @@ public struct AlleysListView: View {
 extension AlleysList.Action {
 	init(action: AlleysListView.ViewAction) {
 		switch action {
-		case .observeAlleys:
-			self = .observeAlleys
 		case .filterButtonTapped:
-			self = .setFilterSheet(isPresented: true)
+			self = .view(.setFilterSheet(isPresented: true))
 		case let .setFilterSheet(isPresented):
-			self = .setFilterSheet(isPresented: isPresented)
-		case .addButtonTapped:
-			self = .setEditorFormSheet(isPresented: true)
-		case .errorButtonTapped:
-			self = .errorButtonTapped
-		case let .setEditorFormSheet(isPresented):
-			self = .setEditorFormSheet(isPresented: isPresented)
-		case let .swipeAction(alley, swipeAction):
-			self = .swipeAction(alley, swipeAction)
+			self = .view(.setFilterSheet(isPresented: isPresented))
+		case let .setEditorSheet(isPresented):
+			self = .view(.setEditorSheet(isPresented: isPresented))
 		}
 	}
 }

@@ -17,6 +17,7 @@ extension Bowler: ResourceListItem {}
 public struct BowlersList: ReducerProtocol {
 	public struct State: Equatable {
 		public var list: ResourceList<Bowler, Bowler.FetchRequest>.State
+		public var editor: BowlerEditor.State?
 		public var sortOrder: SortOrder<Bowler.FetchRequest.Ordering>.State = .init(initialValue: .byRecentlyUsed) {
 			didSet {
 				list.query = .init(filter: list.query.filter, ordering: sortOrder.ordering)
@@ -24,7 +25,6 @@ public struct BowlersList: ReducerProtocol {
 		}
 
 		public var selection: Identified<Bowler.ID, LeaguesList.State>?
-		public var bowlerEditor: BowlerEditor.State?
 
 		public init() {
 			self.list = .init(
@@ -74,7 +74,6 @@ public struct BowlersList: ReducerProtocol {
 	public init() {}
 
 	@Dependency(\.continuousClock) var clock
-	@Dependency(\.persistenceService) var persistenceService
 	@Dependency(\.bowlersDataProvider) var bowlersDataProvider
 	@Dependency(\.recentlyUsedService) var recentlyUsedService
 
@@ -84,9 +83,7 @@ public struct BowlersList: ReducerProtocol {
 		}
 
 		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {
-			ResourceList {
-				bowlersDataProvider.observeBowlers($0)
-			}
+			ResourceList(fetchResources: bowlersDataProvider.observeBowlers)
 		}
 
 		Reduce { state, action in
@@ -104,11 +101,11 @@ public struct BowlersList: ReducerProtocol {
 					return navigate(to: nil, state: &state)
 
 				case .setEditorFormSheet(isPresented: true):
-					state.bowlerEditor = .init(mode: .create)
+					state.editor = .init(mode: .create)
 					return .none
 
 				case .setEditorFormSheet(isPresented: false):
-					state.bowlerEditor = nil
+					state.editor = nil
 					return .none
 				}
 
@@ -117,11 +114,11 @@ public struct BowlersList: ReducerProtocol {
 				case let .list(.delegate(delegateAction)):
 					switch delegateAction {
 					case let .didEdit(bowler):
-						state.bowlerEditor = .init(mode: .edit(bowler))
+						state.editor = .init(mode: .edit(bowler))
 						return .none
 
 					case .didAddNew, .didTapEmptyStateButton:
-						state.bowlerEditor = .init(mode: .create)
+						state.editor = .init(mode: .create)
 						return .none
 
 					case .didDelete, .didTap:
@@ -131,7 +128,7 @@ public struct BowlersList: ReducerProtocol {
 				case .editor(.form(.didFinishSaving)),
 					.editor(.form(.didFinishDeleting)),
 					.editor(.form(.alert(.discardButtonTapped))):
-					state.bowlerEditor = nil
+					state.editor = nil
 					return .none
 
 				case .sortOrder(.optionTapped):
@@ -145,7 +142,7 @@ public struct BowlersList: ReducerProtocol {
 				return .none
 			}
 		}
-		.ifLet(\.bowlerEditor, action: /Action.internal..Action.InternalAction.editor) {
+		.ifLet(\.editor, action: /Action.internal..Action.InternalAction.editor) {
 			BowlerEditor()
 		}
 		.ifLet(\.selection, action: /Action.internal..Action.InternalAction.leagues) {

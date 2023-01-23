@@ -16,11 +16,11 @@ public struct BowlersListView: View {
 
 	struct ViewState: Equatable {
 		let selection: Bowler.ID?
-		let isBowlerEditorPresented: Bool
+		let isEditorPresented: Bool
 
 		init(state: BowlersList.State) {
 			self.selection = state.selection?.id
-			self.isBowlerEditorPresented = state.bowlerEditor != nil
+			self.isEditorPresented = state.editor != nil
 		}
 	}
 
@@ -71,10 +71,10 @@ public struct BowlersListView: View {
 				}
 			}
 			.sheet(isPresented: viewStore.binding(
-				get: \.isBowlerEditorPresented,
+				get: \.isEditorPresented,
 				send: ViewAction.setEditorFormSheet(isPresented:)
 			)) {
-				IfLetStore(store.scope(state: \.bowlerEditor, action: /BowlersList.Action.InternalAction.editor)) { scopedStore in
+				IfLetStore(store.scope(state: \.editor, action: /BowlersList.Action.InternalAction.editor)) { scopedStore in
 					NavigationView {
 						BowlerEditorView(store: scopedStore)
 					}
