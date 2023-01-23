@@ -1,3 +1,4 @@
+import AssetsLibrary
 import BowlerEditorFeature
 import ComposableArchitecture
 import LeaguesListFeature
@@ -8,7 +9,6 @@ import SortOrderLibrary
 import StatisticsWidgetsFeature
 import StringsLibrary
 import SwiftUI
-import AssetsLibrary
 import ViewsLibrary
 
 public struct BowlersListView: View {
@@ -39,7 +39,21 @@ public struct BowlersListView: View {
 			ResourceListView(
 				store: store.scope(state: \.list, action: /BowlersList.Action.InternalAction.list)
 			) { bowler in
-				BowlerRow(bowler: bowler)
+				NavigationLink(
+					destination: IfLetStore(
+						store.scope(state: \.selection?.value, action: /BowlersList.Action.InternalAction.leagues)
+					) {
+						LeaguesListView(store: $0)
+					},
+					tag: bowler.id,
+					selection: viewStore.binding(
+						get: \.selection,
+						send: BowlersListView.ViewAction.setNavigation(selection:)
+					)
+				) {
+					BowlerRow(bowler: bowler)
+				}
+
 			} header: {
 				Section {
 					Button { viewStore.send(.configureStatisticsButtonTapped) } label: {

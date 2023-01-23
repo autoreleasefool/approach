@@ -30,7 +30,6 @@ public struct BowlersList: ReducerProtocol {
 			self.list = .init(
 				features: [
 					.add,
-					.tappable,
 					.swipeToEdit,
 					.swipeToDelete(
 						onDelete: .init {
@@ -121,14 +120,11 @@ public struct BowlersList: ReducerProtocol {
 						state.bowlerEditor = .init(mode: .edit(bowler))
 						return .none
 
-					case let .didTap(bowler):
-						return navigate(to: bowler.id, state: &state)
-
 					case .didAddNew, .didTapEmptyStateButton:
 						state.bowlerEditor = .init(mode: .create)
 						return .none
 
-					case .didDelete:
+					case .didDelete, .didTap:
 						return .none
 					}
 
