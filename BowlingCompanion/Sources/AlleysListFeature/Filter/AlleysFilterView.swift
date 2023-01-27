@@ -23,8 +23,8 @@ struct AlleysFilterView: View {
 	}
 
 	enum ViewAction: BindableAction {
-		case clearFiltersButtonTapped
-		case applyButtonTapped
+		case didTapClearButton
+		case didTapApplyButton
 		case binding(BindingAction<ViewState>)
 	}
 
@@ -79,7 +79,7 @@ struct AlleysFilterView: View {
 				.listRowBackground(Color(uiColor: .secondarySystemBackground))
 
 				Section {
-					Button(Strings.Action.reset) { viewStore.send(.clearFiltersButtonTapped) }
+					Button(Strings.Action.reset) { viewStore.send(.didTapClearButton) }
 						.tint(.appDestructive)
 				}
 				.listRowBackground(Color(uiColor: .secondarySystemBackground))
@@ -89,7 +89,7 @@ struct AlleysFilterView: View {
 			.navigationBarTitleDisplayMode(.inline)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
-					Button(Strings.Action.apply) { viewStore.send(.applyButtonTapped) }
+					Button(Strings.Action.apply) { viewStore.send(.didTapApplyButton) }
 				}
 			}
 		}
@@ -111,10 +111,10 @@ extension AlleysFilter.State {
 extension AlleysFilter.Action {
 	init(action: AlleysFilterView.ViewAction) {
 		switch action {
-		case .clearFiltersButtonTapped:
-			self = .clearFiltersButtonTapped
-		case .applyButtonTapped:
-			self = .applyButtonTapped
+		case .didTapClearButton:
+			self = .view(.didTapClearButton)
+		case .didTapApplyButton:
+			self = .view(.didTapApplyButton)
 		case let .binding(action):
 			self = .binding(action.pullback(\AlleysFilter.State.view))
 		}

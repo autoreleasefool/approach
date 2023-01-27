@@ -1,4 +1,5 @@
 import ComposableArchitecture
+import FeatureActionLibrary
 import LeaguesDataProviderInterface
 import SharedModelsLibrary
 
@@ -9,10 +10,21 @@ public struct LeaguesFilter: ReducerProtocol {
 		public init() {}
 	}
 
-	public enum Action: BindableAction, Equatable {
+	public enum Action: BindableAction, FeatureAction, Equatable {
+		public enum ViewAction: Equatable {
+			case didTapClearButton
+			case didTapApplyButton
+		}
+		public enum DelegateAction: Equatable {
+			case didChangeFilters
+			case didApplyFilters
+		}
+		public enum InternalAction: Equatable {}
+
 		case binding(BindingAction<State>)
-		case applyButtonTapped
-		case clearFiltersButtonTapped
+		case view(ViewAction)
+		case `internal`(InternalAction)
+		case delegate(DelegateAction)
 	}
 
 	public init() {}
@@ -22,11 +34,20 @@ public struct LeaguesFilter: ReducerProtocol {
 
 		Reduce { state, action in
 			switch action {
-			case .clearFiltersButtonTapped:
-				state = .init()
-				return .task { .applyButtonTapped }
+			case let .view(viewAction):
+				switch viewAction {
+				case .didTapClearButton:
+					state = .init()
+					return .task { .delegate(.didApplyFilters) }
 
-			case .applyButtonTapped, .binding:
+				case .didTapApplyButton:
+					return .task { .delegate(.didApplyFilters) }
+				}
+
+			case .binding:
+				return .task { .delegate(.didChangeFilters) }
+
+			case .internal, .delegate:
 				return .none
 			}
 		}

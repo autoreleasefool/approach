@@ -29,7 +29,7 @@ public struct LeaguesListView: View {
 	}
 
 	enum ViewAction {
-		case onFilterButtonTapped
+		case didTapFilterButton
 		case setEditorSheet(isPresented: Bool)
 		case setFilterSheet(isPresented: Bool)
 		case setNavigation(selection: League.ID?)
@@ -63,7 +63,7 @@ public struct LeaguesListView: View {
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
 					FilterButton(isActive: viewStore.isAnyFilterActive) {
-						viewStore.send(.onFilterButtonTapped)
+						viewStore.send(.didTapFilterButton)
 					}
 				}
 			}
@@ -93,7 +93,7 @@ public struct LeaguesListView: View {
 extension LeaguesList.Action {
 	init(action: LeaguesListView.ViewAction) {
 		switch action {
-		case .onFilterButtonTapped:
+		case .didTapFilterButton:
 			self = .view(.setFilterSheet(isPresented: true))
 		case let .setFilterSheet(isPresented):
 			self = .view(.setFilterSheet(isPresented: isPresented))

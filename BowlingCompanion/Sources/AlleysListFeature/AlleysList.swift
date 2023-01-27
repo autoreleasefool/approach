@@ -17,7 +17,9 @@ public struct AlleysList: ReducerProtocol {
 		public var editor: AlleyEditor.State?
 
 		public var isFiltersPresented = false
-		public var filters: AlleysFilter.State = .init()
+		public var filters: AlleysFilter.State = .init() {
+			didSet { updateQuery() }
+		}
 
 		public init() {
 			self.list = .init(
@@ -27,7 +29,7 @@ public struct AlleysList: ReducerProtocol {
 					.swipeToDelete(onDelete: .init {
 						@Dependency(\.persistenceService) var persistenceService: PersistenceService
 						try await persistenceService.deleteAlley($0)
-					})
+					}),
 				],
 				query: .init(filter: nil, ordering: .byRecentlyUsed),
 				listTitle: Strings.Alley.List.title,
@@ -118,13 +120,23 @@ public struct AlleysList: ReducerProtocol {
 						return .none
 					}
 
+				case let .filters(.delegate(delegateAction)):
+					switch delegateAction {
+					case .didApplyFilters:
+						state.isFiltersPresented = false
+						return .none
+
+					case .didChangeFilters:
+						return .task { .`internal`(.list(.view(.didObserveData))) }
+					}
+
 				case .editor(.form(.didFinishSaving)),
 					.editor(.form(.didFinishDeleting)),
 					.editor(.form(.alert(.discardButtonTapped))):
 					state.editor = nil
 					return .none
 
-				case .list(.internal), .list(.view), .editor, .filters:
+				case .list(.internal), .list(.view), .filters(.internal), .filters(.view), .filters(.binding), .editor:
 					return .none
 				}
 
@@ -135,5 +147,11 @@ public struct AlleysList: ReducerProtocol {
 		.ifLet(\.editor, action: /Action.internal..Action.InternalAction.editor) {
 			AlleyEditor()
 		}
+	}
+}
+
+private extension AlleysList.State {
+	mutating func updateQuery() {
+		self.list.query = .init(filter: filters.filter, ordering: .byRecentlyUsed)
 	}
 }

@@ -20,7 +20,9 @@ public struct LeaguesList: ReducerProtocol {
 		public var editor: LeagueEditor.State?
 
 		public var isFiltersPresented = false
-		public var filters: LeaguesFilter.State = .init()
+		public var filters: LeaguesFilter.State = .init() {
+			didSet { updateQuery() }
+		}
 
 		public var selection: Identified<League.ID, SeriesList.State>?
 
@@ -33,7 +35,7 @@ public struct LeaguesList: ReducerProtocol {
 					.swipeToDelete(onDelete: .init {
 						@Dependency(\.persistenceService) var persistenceService: PersistenceService
 						try await persistenceService.deleteLeague($0)
-					})
+					}),
 				],
 				query: .init(filter: nil, ordering: .byRecentlyUsed),
 				listTitle: Strings.Alley.List.title,
@@ -124,13 +126,23 @@ public struct LeaguesList: ReducerProtocol {
 						return .none
 					}
 
+				case let .filters(.delegate(delegateAction)):
+					switch delegateAction {
+					case .didApplyFilters:
+						state.isFiltersPresented = false
+						return .none
+
+					case .didChangeFilters:
+						return .task { .`internal`(.list(.view(.didObserveData))) }
+					}
+
 				case .editor(.form(.didFinishSaving)),
 						.editor(.form(.didFinishDeleting)),
 						.editor(.form(.alert(.discardButtonTapped))):
 					state.editor = nil
 					return .none
 
-				case .list(.internal), .list(.view), .editor, .filters, .series:
+				case .list(.internal), .list(.view), .filters(.internal), .filters(.view), .filters(.binding), .editor, .series:
 					return .none
 
 				}
@@ -177,5 +189,11 @@ public struct LeaguesList: ReducerProtocol {
 		)
 
 		return .none
+	}
+}
+
+private extension LeaguesList.State {
+	mutating func updateQuery() {
+		self.list.query = .init(filter: filters.filter(withBowler: bowler.id), ordering: .byRecentlyUsed)
 	}
 }

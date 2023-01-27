@@ -19,9 +19,7 @@ public struct BowlersList: ReducerProtocol {
 		public var list: ResourceList<Bowler, Bowler.FetchRequest>.State
 		public var editor: BowlerEditor.State?
 		public var sortOrder: SortOrder<Bowler.FetchRequest.Ordering>.State = .init(initialValue: .byRecentlyUsed) {
-			didSet {
-				list.query = .init(filter: list.query.filter, ordering: sortOrder.ordering)
-			}
+			didSet { updateQuery() }
 		}
 
 		public var selection: Identified<Bowler.ID, LeaguesList.State>?
@@ -163,5 +161,11 @@ public struct BowlersList: ReducerProtocol {
 			state.selection = nil
 			return .none
 		}
+	}
+}
+
+private extension BowlersList.State {
+	mutating func updateQuery() {
+		self.list.query = .init(filter: nil, ordering: sortOrder.ordering)
 	}
 }
