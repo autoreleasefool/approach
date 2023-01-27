@@ -106,6 +106,7 @@ package:
         - LeaguesDataProvider
         - LeagueEditorFeature
         - RecentlyUsedService
+        - ResourceListLibrary
         - SeriesListFeature
         - SharedModelsViewsLibrary
     - name: OpponentEditorFeature

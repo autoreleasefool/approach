@@ -26,7 +26,7 @@ public struct BowlersListView: View {
 
 	enum ViewAction {
 		case configureStatisticsButtonTapped
-		case setEditorFormSheet(isPresented: Bool)
+		case setEditorSheet(isPresented: Bool)
 		case setNavigation(selection: Bowler.ID?)
 	}
 
@@ -53,7 +53,6 @@ public struct BowlersListView: View {
 				) {
 					BowlerRow(bowler: bowler)
 				}
-
 			} header: {
 				Section {
 					Button { viewStore.send(.configureStatisticsButtonTapped) } label: {
@@ -72,7 +71,7 @@ public struct BowlersListView: View {
 			}
 			.sheet(isPresented: viewStore.binding(
 				get: \.isEditorPresented,
-				send: ViewAction.setEditorFormSheet(isPresented:)
+				send: ViewAction.setEditorSheet(isPresented:)
 			)) {
 				IfLetStore(store.scope(state: \.editor, action: /BowlersList.Action.InternalAction.editor)) { scopedStore in
 					NavigationView {
@@ -89,8 +88,8 @@ extension BowlersList.Action {
 		switch action {
 		case .configureStatisticsButtonTapped:
 			self = .view(.didTapConfigureStatisticsButton)
-		case let .setEditorFormSheet(isPresented):
-			self = .view(.setEditorFormSheet(isPresented: isPresented))
+		case let .setEditorSheet(isPresented):
+			self = .view(.setEditorSheet(isPresented: isPresented))
 		case let .setNavigation(selection):
 			self = .view(.setNavigation(selection: selection))
 		}

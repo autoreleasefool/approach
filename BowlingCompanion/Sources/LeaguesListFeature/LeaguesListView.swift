@@ -1,11 +1,12 @@
+import AssetsLibrary
 import ComposableArchitecture
 import LeagueEditorFeature
+import ResourceListLibrary
 import SeriesListFeature
 import SharedModelsLibrary
 import SharedModelsViewsLibrary
 import StringsLibrary
 import SwiftUI
-import AssetsLibrary
 import ViewsLibrary
 
 public struct LeaguesListView: View {
@@ -13,37 +14,25 @@ public struct LeaguesListView: View {
 
 	struct ViewState: Equatable {
 		let bowlerName: String
-		let listState: ListContentState<League, ListErrorContent>
 		let selection: League.ID?
-		let isLeagueEditorPresented: Bool
-		let isLeagueFiltersPresented: Bool
-		let isLeagueFilterActive: Bool
+		let isEditorPresented: Bool
+		let isFiltersPresented: Bool
+		let isAnyFilterActive: Bool
 
 		init(state: LeaguesList.State) {
-			if let error = state.error {
-				self.listState = .error(error)
-			} else if let leagues = state.leagues {
-				self.listState = .loaded(leagues)
-			} else {
-				self.listState = .loading
-			}
 			self.selection = state.selection?.id
 			self.bowlerName = state.bowler.name
-			self.isLeagueEditorPresented = state.leagueEditor != nil
-			self.isLeagueFiltersPresented = state.isLeagueFiltersPresented
-			self.isLeagueFilterActive = state.leagueFilters.hasFilters
+			self.isEditorPresented = state.editor != nil
+			self.isFiltersPresented = state.isFiltersPresented
+			self.isAnyFilterActive = state.filters.hasFilters
 		}
 	}
 
 	enum ViewAction {
-		case observeLeagues
-		case addButtonTapped
-		case errorButtonTapped
-		case filterButtonTapped
-		case setEditorFormSheet(isPresented: Bool)
+		case onFilterButtonTapped
+		case setEditorSheet(isPresented: Bool)
 		case setFilterSheet(isPresented: Bool)
 		case setNavigation(selection: League.ID?)
-		case swipeAction(League, LeaguesList.SwipeAction)
 	}
 
 	public init(store: StoreOf<LeaguesList>) {
@@ -52,83 +41,51 @@ public struct LeaguesListView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: LeaguesList.Action.init) { viewStore in
-			ListContent(viewStore.listState) { leagues in
-				Section(Strings.League.List.Title.all) {
-					ForEach(leagues) { league in
-						NavigationLink(
-							destination: IfLetStore(store.scope(state: \.selection?.value, action: LeaguesList.Action.series)) {
-								SeriesListView(store: $0)
-							},
-							tag: league.id,
-							selection: viewStore.binding(
-								get: \.selection,
-								send: LeaguesListView.ViewAction.setNavigation(selection:)
-							)
-						) {
-							LeagueRow(
-								league: league,
-								onEdit: { viewStore.send(.swipeAction(league, .edit)) },
-								onDelete: { viewStore.send(.swipeAction(league, .delete)) }
-							)
-						}
-					}
-				}
-				.listRowSeparator(.hidden)
-			} empty: {
-				ListEmptyContent(
-					.emptyLeagues,
-					title: Strings.League.Error.Empty.title,
-					message: Strings.League.Error.Empty.message
+			ResourceListView(
+				store: store.scope(state: \.list, action: /LeaguesList.Action.InternalAction.list)
+			) { league in
+				NavigationLink(
+					destination: IfLetStore(
+						store.scope(state: \.selection?.value, action: /LeaguesList.Action.InternalAction.series)
+					) {
+						SeriesListView(store: $0)
+					},
+					tag: league.id,
+					selection: viewStore.binding(
+						get: \.selection,
+						send: LeaguesListView.ViewAction.setNavigation(selection:)
+					)
 				) {
-					EmptyContentAction(title: Strings.League.List.add) { viewStore.send(.addButtonTapped) }
-				}
-			} error: { error in
-				ListEmptyContent(
-					.errorNotFound,
-					title: error.title,
-					message: error.message,
-					style: .error
-				) {
-					EmptyContentAction(title: error.action) { viewStore.send(.errorButtonTapped) }
+					LeagueRow(league: league)
 				}
 			}
-			.scrollContentBackground(.hidden)
 			.navigationTitle(viewStore.bowlerName)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
-					FilterButton(isActive: viewStore.isLeagueFilterActive) {
-						viewStore.send(.filterButtonTapped)
+					FilterButton(isActive: viewStore.isAnyFilterActive) {
+						viewStore.send(.onFilterButtonTapped)
 					}
-					.disabled(viewStore.isLeagueFiltersPresented)
-				}
-				ToolbarItem(placement: .navigationBarTrailing) {
-					AddButton { viewStore.send(.addButtonTapped) }
 				}
 			}
 			.sheet(isPresented: viewStore.binding(
-				get: \.isLeagueFiltersPresented,
+				get: \.isFiltersPresented,
 				send: ViewAction.setFilterSheet(isPresented:)
 			)) {
 				NavigationView {
-					LeaguesFilterView(store: store.scope(state: \.leagueFilters, action: LeaguesList.Action.leaguesFilter))
+					LeaguesFilterView(store: store.scope(state: \.filters, action: /LeaguesList.Action.InternalAction.filters))
 				}
-				.presentationDetents(undimmed: [.medium, .large])
+				.presentationDetents([.medium, .large])
 			}
 			.sheet(isPresented: viewStore.binding(
-				get: \.isLeagueEditorPresented,
-				send: ViewAction.setEditorFormSheet(isPresented:)
+				get: \.isEditorPresented,
+				send: ViewAction.setEditorSheet(isPresented:)
 			)) {
-				IfLetStore(store.scope(state: \.leagueEditor, action: LeaguesList.Action.leagueEditor)) { scopedStore in
+				IfLetStore(store.scope(state: \.editor, action: /LeaguesList.Action.InternalAction.editor)) { scopedStore in
 					NavigationView {
 						LeagueEditorView(store: scopedStore)
 					}
 				}
 			}
-			.alert(
-				self.store.scope(state: \.alert, action: LeaguesList.Action.alert),
-				dismiss: .dismissed
-			)
-			.task { await viewStore.send(.observeLeagues).finish() }
 		}
 	}
 }
@@ -136,22 +93,14 @@ public struct LeaguesListView: View {
 extension LeaguesList.Action {
 	init(action: LeaguesListView.ViewAction) {
 		switch action {
-		case .observeLeagues:
-			self = .observeLeagues
-		case .addButtonTapped:
-			self = .setEditorFormSheet(isPresented: true)
-		case .errorButtonTapped:
-			self = .errorButtonTapped
-		case .filterButtonTapped:
-			self = .setFilterSheet(isPresented: true)
+		case .onFilterButtonTapped:
+			self = .view(.setFilterSheet(isPresented: true))
 		case let .setFilterSheet(isPresented):
-			self = .setFilterSheet(isPresented: isPresented)
-		case let .setEditorFormSheet(isPresented):
-			self = .setEditorFormSheet(isPresented: isPresented)
+			self = .view(.setFilterSheet(isPresented: isPresented))
+		case let .setEditorSheet(isPresented):
+			self = .view(.setEditorSheet(isPresented: isPresented))
 		case let .setNavigation(selection):
-			self = .setNavigation(selection: selection)
-		case let .swipeAction(league, swipeAction):
-			self = .swipeAction(league, swipeAction)
+			self = .view(.setNavigation(selection: selection))
 		}
 	}
 }

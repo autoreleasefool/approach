@@ -37,6 +37,10 @@ public struct AlleysFilter: ReducerProtocol {
 }
 
 extension AlleysFilter.State {
+	public var hasFilters: Bool {
+		filter != nil
+	}
+
 	public var filter: Alley.FetchRequest.Filter? {
 		if material != nil || pinFall != nil || pinBase != nil || mechanism != nil {
 			return .properties(material: material, pinFall: pinFall, pinBase: pinBase, mechanism: mechanism)

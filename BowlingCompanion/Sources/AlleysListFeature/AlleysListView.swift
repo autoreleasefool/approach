@@ -16,12 +16,12 @@ public struct AlleysListView: View {
 	struct ViewState: Equatable {
 		let isEditorPresented: Bool
 		let isFiltersPresented: Bool
-		let isFilterActive: Bool
+		let isAnyFilterActive: Bool
 
 		init(state: AlleysList.State) {
 			self.isEditorPresented = state.editor != nil
 			self.isFiltersPresented = state.isFiltersPresented
-			self.isFilterActive = state.filters.filter != nil
+			self.isAnyFilterActive = state.filters.hasFilters
 		}
 	}
 
@@ -45,7 +45,7 @@ public struct AlleysListView: View {
 			.navigationTitle(Strings.Alley.List.title)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
-					FilterButton(isActive: viewStore.isFilterActive) {
+					FilterButton(isActive: viewStore.isAnyFilterActive) {
 						viewStore.send(.filterButtonTapped)
 					}
 					.disabled(viewStore.isFiltersPresented)
@@ -58,7 +58,7 @@ public struct AlleysListView: View {
 				NavigationView {
 					AlleysFilterView(store: store.scope(state: \.filters, action: /AlleysList.Action.InternalAction.filters))
 				}
-				.presentationDetents(undimmed: [.medium, .large])
+				.presentationDetents([.medium, .large])
 			}
 			.sheet(isPresented: viewStore.binding(
 				get: \.isEditorPresented,

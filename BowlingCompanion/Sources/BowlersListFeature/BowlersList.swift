@@ -54,7 +54,7 @@ public struct BowlersList: ReducerProtocol {
 		public enum ViewAction: Equatable {
 			case didTapConfigureStatisticsButton
 			case setNavigation(selection: Bowler.ID?)
-			case setEditorFormSheet(isPresented: Bool)
+			case setEditorSheet(isPresented: Bool)
 		}
 
 		public enum DelegateAction: Equatable {}
@@ -100,11 +100,11 @@ public struct BowlersList: ReducerProtocol {
 				case .setNavigation(selection: .none):
 					return navigate(to: nil, state: &state)
 
-				case .setEditorFormSheet(isPresented: true):
+				case .setEditorSheet(isPresented: true):
 					state.editor = .init(mode: .create)
 					return .none
 
-				case .setEditorFormSheet(isPresented: false):
+				case .setEditorSheet(isPresented: false):
 					state.editor = nil
 					return .none
 				}
