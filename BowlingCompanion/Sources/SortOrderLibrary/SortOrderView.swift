@@ -21,7 +21,7 @@ public struct SortOrderView<Ordering: Orderable>: View {
 
 	enum ViewAction {
 		case setSheetPresented(isPresented: Bool)
-		case optionTapped(Ordering)
+		case didTapOption(Ordering)
 	}
 
 	public init(store: StoreOf<SortOrder<Ordering>>) {
@@ -42,7 +42,7 @@ public struct SortOrderView<Ordering: Orderable>: View {
 					Section(Strings.SortOrder.title) {
 						ForEach(viewStore.options, id: \.self) { ordering in
 							Button {
-								viewStore.send(.optionTapped(ordering))
+								viewStore.send(.didTapOption(ordering))
 							} label: {
 								HStack(alignment: .center, spacing: .standardSpacing) {
 									Image(systemName: viewStore.selected == ordering ? "checkmark.circle.fill" : "circle")
@@ -69,9 +69,9 @@ extension SortOrder.Action {
 	init(action: SortOrderView<Ordering>.ViewAction) {
 		switch action {
 		case let .setSheetPresented(isPresented):
-			self = .setSheetPresented(isPresented: isPresented)
-		case let .optionTapped(option):
-			self = .optionTapped(option)
+			self = .view(.setSheetPresented(isPresented: isPresented))
+		case let .didTapOption(option):
+			self = .view(.didTapOption(option))
 		}
 	}
 }

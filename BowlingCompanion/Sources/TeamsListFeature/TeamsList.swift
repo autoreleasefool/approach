@@ -138,10 +138,13 @@ public struct TeamsList: ReducerProtocol {
 				state.error = .deleteError
 				return .none
 
-			case .sortOrder(.optionTapped):
-				return .task { .observeTeams }
+			case let .sortOrder(.delegate(delegateAction)):
+				switch delegateAction {
+				case .didTapOption:
+					return .task { .observeTeams }
+				}
 
-			case .sortOrder, .teamEditor:
+			case .sortOrder(.internal), .sortOrder(.view), .teamEditor:
 				return .none
 			}
 		}

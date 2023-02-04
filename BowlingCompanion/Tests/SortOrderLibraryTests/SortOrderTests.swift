@@ -27,26 +27,27 @@ final class SortOrderTests: XCTestCase {
 			reducer: SortOrder()
 		)
 
-		await store.send(.setSheetPresented(isPresented: true)) {
+		await store.send(.view(.setSheetPresented(isPresented: true))) {
 			$0.isSheetPresented = true
 		}
 
-		await store.send(.setSheetPresented(isPresented: false)) {
+		await store.send(.view(.setSheetPresented(isPresented: false))) {
 			$0.isSheetPresented = false
 		}
 	}
 
-	func testOptionTappedSetsOrdering() async {
+	func testDidTapOptionSetsOrdering() async {
 		let store = TestStore(
 			initialState: SortOrder.State(initialValue: MockOrderable.first),
 			reducer: SortOrder()
 		)
 
-		await store.send(.optionTapped(.second)) {
+		await store.send(.view(.didTapOption(.second))) {
 			$0.ordering = .second
+			$0.isSheetPresented = false
 		}
 
-		await store.receive(.setSheetPresented(isPresented: false))
+		await store.receive(.delegate(.didTapOption(.second)))
 	}
 
 	func testOptionTappedHidesSheet() async {
@@ -55,16 +56,15 @@ final class SortOrderTests: XCTestCase {
 			reducer: SortOrder()
 		)
 
-		await store.send(.setSheetPresented(isPresented: true)) {
+		await store.send(.view(.setSheetPresented(isPresented: true))) {
 			$0.isSheetPresented = true
 		}
 
-		await store.send(.optionTapped(.second)) {
+		await store.send(.view(.didTapOption(.second))) {
 			$0.ordering = .second
-		}
-
-		await store.receive(.setSheetPresented(isPresented: false)) {
 			$0.isSheetPresented = false
 		}
+
+		await store.receive(.delegate(.didTapOption(.second)))
 	}
 }

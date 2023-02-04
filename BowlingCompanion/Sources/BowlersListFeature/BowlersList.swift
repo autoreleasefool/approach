@@ -123,16 +123,19 @@ public struct BowlersList: ReducerProtocol {
 						return .none
 					}
 
+				case let .sortOrder(.delegate(delegateAction)):
+					switch delegateAction {
+					case .didTapOption:
+						return .task { .`internal`(.list(.view(.didObserveData))) }
+					}
+
 				case .editor(.form(.didFinishSaving)),
 					.editor(.form(.didFinishDeleting)),
 					.editor(.form(.alert(.discardButtonTapped))):
 					state.editor = nil
 					return .none
 
-				case .sortOrder(.optionTapped):
-					return .task { .`internal`(.list(.view(.didObserveData))) }
-
-				case .list(.internal), .list(.view), .editor, .leagues, .sortOrder:
+				case .list(.internal), .list(.view), .editor, .leagues, .sortOrder(.internal), .sortOrder(.view):
 					return .none
 				}
 

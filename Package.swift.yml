@@ -308,6 +308,7 @@ package:
       requires_tests: true
       dependencies:
         - ComposableArchitecture
+        - FeatureActionLibrary
         - StringsLibrary
         - SwiftUIExtensionsLibrary
         - ViewsLibrary

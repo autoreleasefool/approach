@@ -988,6 +988,7 @@ let package = Package(
 		.target(
 			name: "SortOrderLibrary",
 			dependencies: [
+				"FeatureActionLibrary",
 				"SwiftUIExtensionsLibrary",
 				"ViewsLibrary",
 			]

@@ -121,10 +121,13 @@ public struct OpponentsList: ReducerProtocol {
 				state.opponentEditor = nil
 				return .none
 
-			case .sortOrder(.optionTapped):
-				return .task { .observeOpponents }
+			case let .sortOrder(.delegate(delegateAction)):
+				switch delegateAction {
+				case .didTapOption:
+					return .task { .observeOpponents }
+				}
 
-			case .sortOrder, .opponentEditor:
+			case .sortOrder(.internal), .sortOrder(.view), .opponentEditor:
 				return .none
 			}
 		}

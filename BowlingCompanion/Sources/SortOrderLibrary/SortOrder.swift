@@ -1,4 +1,5 @@
 import ComposableArchitecture
+import FeatureActionLibrary
 
 public typealias Orderable = Hashable & Equatable & CaseIterable & CustomStringConvertible
 
@@ -13,9 +14,19 @@ public struct SortOrder<Ordering: Orderable>: ReducerProtocol {
 		}
 	}
 
-	public enum Action: Equatable {
-		case setSheetPresented(isPresented: Bool)
-		case optionTapped(Ordering)
+	public enum Action: Equatable, FeatureAction {
+		public enum ViewAction: Equatable {
+			case didTapOption(Ordering)
+			case setSheetPresented(isPresented: Bool)
+		}
+		public enum InternalAction: Equatable {}
+		public enum DelegateAction: Equatable {
+			case didTapOption(Ordering)
+		}
+
+		case view(ViewAction)
+		case `internal`(InternalAction)
+		case delegate(DelegateAction)
 	}
 
 	public init() {}
@@ -23,13 +34,20 @@ public struct SortOrder<Ordering: Orderable>: ReducerProtocol {
 	public var body: some ReducerProtocol<State, Action> {
 		Reduce { state, action in
 			switch action {
-			case let .setSheetPresented(isPresented):
-				state.isSheetPresented = isPresented
-				return .none
+			case let .view(viewAction):
+				switch viewAction {
+				case let .didTapOption(ordering):
+					state.ordering = ordering
+					state.isSheetPresented = false
+					return .task { .delegate(.didTapOption(ordering)) }
 
-			case let .optionTapped(option):
-				state.ordering = option
-				return .task { .setSheetPresented(isPresented: false) }
+				case let .setSheetPresented(isPresented):
+					state.isSheetPresented = isPresented
+					return .none
+				}
+
+			case .internal, .delegate:
+				return .none
 			}
 		}
 	}
