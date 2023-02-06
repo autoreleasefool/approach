@@ -17,6 +17,9 @@ struct Migration20221021CreateSeries: Migration {
 				.notNull()
 			t.column("excludeFromStatistics", .integer)
 				.notNull()
+			t.column("alley", .text)
+				.indexed()
+				.references("alley", onDelete: .setNull)
 		}
 	}
 }

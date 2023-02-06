@@ -37,8 +37,11 @@ public struct LeaguesList: ReducerProtocol {
 						try await persistenceService.deleteLeague($0)
 					}),
 				],
-				query: .init(filter: nil, ordering: .byRecentlyUsed),
-				listTitle: Strings.Alley.List.title,
+				query: .init(
+					filter: .properties(bowler.id, recurrence: nil),
+					ordering: .byRecentlyUsed
+				),
+				listTitle: bowler.name,
 				emptyContent: .init(
 					image: .emptyLeagues,
 					title: Strings.League.Error.Empty.title,

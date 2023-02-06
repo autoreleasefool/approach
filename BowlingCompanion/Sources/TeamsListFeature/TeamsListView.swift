@@ -44,7 +44,7 @@ public struct TeamsListView: View {
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: TeamsList.Action.init) { viewStore in
 			ListContent(viewStore.listState) { teams in
-				Section(Strings.Team.List.Title.all) {
+				Section(Strings.Team.List.title) {
 					ForEach(teams) { team in
 						TeamRow(
 							team: team,

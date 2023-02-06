@@ -132,6 +132,7 @@ package:
     - name: SeriesListFeature
       dependencies:
         - DateTimeLibrary
+        - ResourceListLibrary
         - SeriesDataProvider
         - SeriesEditorFeature
         - SeriesSidebarFeature

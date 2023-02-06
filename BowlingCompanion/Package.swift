@@ -292,7 +292,6 @@ let package = Package(
 				"LeagueEditorFeature",
 				"LeaguesDataProviderInterface",
 				"RecentlyUsedServiceInterface",
-				"ResourceListLibrary",
 				"SeriesListFeature",
 			]
 		),
@@ -371,6 +370,7 @@ let package = Package(
 		.target(
 			name: "SeriesListFeature",
 			dependencies: [
+				"ResourceListLibrary",
 				"SeriesDataProviderInterface",
 				"SeriesEditorFeature",
 				"SeriesSidebarFeature",

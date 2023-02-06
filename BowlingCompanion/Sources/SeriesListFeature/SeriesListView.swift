@@ -1,5 +1,6 @@
 import ComposableArchitecture
 import DateTimeLibrary
+import ResourceListLibrary
 import SeriesEditorFeature
 import SeriesSidebarFeature
 import SharedModelsLibrary
@@ -14,36 +15,19 @@ public struct SeriesListView: View {
 
 	struct ViewState: Equatable {
 		let leagueName: String
-		let listState: ListContentState<Series, ListErrorContent>
 		let selection: Series.ID?
-		let numberOfGames: Int?
-		let isNewSeriesCreated: Bool
-		let isSeriesEditorPresented: Bool
+		let isEditorPresented: Bool
 
 		init(state: SeriesList.State) {
-			if let error = state.error {
-				self.listState = .error(error)
-			} else if let series = state.series {
-				self.listState = .loaded(series)
-			} else {
-				self.listState = .loading
-			}
 			self.leagueName = state.league.name
 			self.selection = state.selection?.id
-			self.numberOfGames = state.league.numberOfGames
-			self.isNewSeriesCreated = state.newSeries != nil
-			self.isSeriesEditorPresented = state.seriesEditor != nil
+			self.isEditorPresented = state.editor != nil
 		}
 	}
 
 	enum ViewAction {
-		case observeSeries
-		case addButtonTapped
-		case errorButtonTapped
 		case setNavigation(selection: Series.ID?)
-		case setEditorFormSheet(isPresented: Bool)
-		case dismissNewSeries
-		case swipeAction(Series, SeriesList.SwipeAction)
+		case setEditorSheet(isPresented: Bool)
 	}
 
 	public init(store: StoreOf<SeriesList>) {
@@ -52,79 +36,35 @@ public struct SeriesListView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: SeriesList.Action.init) { viewStore in
-			ListContent(viewStore.listState) { series in
-				Section(Strings.Series.List.Title.all) {
-					ForEach(series) { series in
-						NavigationLink(
-							destination: IfLetStore(store.scope(state: \.selection?.value, action: SeriesList.Action.seriesSidebar)) {
-								SeriesSidebarView(store: $0)
-							},
-							tag: series.id,
-							selection: viewStore.binding(
-								get: \.selection,
-								send: SeriesListView.ViewAction.setNavigation(selection:)
-							)
-						) {
-							SeriesRow(
-								series: series,
-								onEdit: { viewStore.send(.swipeAction(series, .edit)) },
-								onDelete: { viewStore.send(.swipeAction(series, .delete)) }
-							)
-						}
-					}
-				}
-				.listRowSeparator(.hidden)
-			} empty: {
-				ListEmptyContent(
-					.emptySeries,
-					title: Strings.Series.Error.Empty.title,
-					message: Strings.Series.Error.Empty.message
-				) {
-					EmptyContentAction(title: Strings.Series.List.add) { viewStore.send(.addButtonTapped) }
-				}
-			} error: { error in
-				ListEmptyContent(
-					.errorNotFound,
-					title: error.title,
-					message: error.message,
-					style: .error
-				) {
-					EmptyContentAction(title: error.action) { viewStore.send(.errorButtonTapped) }
-				}
-			}
-			.scrollContentBackground(.hidden)
-			.navigationTitle(viewStore.leagueName)
-			.toolbar {
-				ToolbarItem(placement: .navigationBarTrailing) {
-					NavigationLink(
-						destination: IfLetStore(
-							store.scope(
-								state: \.newSeries,
-								action: SeriesList.Action.seriesSidebar
-							)
-						) {
-							SeriesSidebarView(store: $0)
-						},
-						isActive: viewStore.binding(
-							get: \.isNewSeriesCreated,
-							send: { $0 ? .addButtonTapped : .dismissNewSeries }
-						)
+			ResourceListView(
+				store: store.scope(state: \.list, action: /SeriesList.Action.InternalAction.list)
+			) { series in
+				NavigationLink(
+					destination: IfLetStore(
+						store.scope(state: \.selection?.value, action: /SeriesList.Action.InternalAction.sidebar)
 					) {
-						Image(systemName: "plus")
-					}
+						SeriesSidebarView(store: $0)
+					},
+					tag: series.id,
+					selection: viewStore.binding(
+						get: \.selection,
+						send: SeriesListView.ViewAction.setNavigation(selection:)
+					)
+				) {
+					SeriesRow(series: series)
 				}
 			}
+			.navigationTitle(viewStore.leagueName)
 			.sheet(isPresented: viewStore.binding(
-				get: \.isSeriesEditorPresented,
-				send: ViewAction.setEditorFormSheet(isPresented: false)
+				get: \.isEditorPresented,
+				send: ViewAction.setEditorSheet(isPresented: false)
 			)) {
-				IfLetStore(store.scope(state: \.seriesEditor, action: SeriesList.Action.seriesEditor)) { scopedStore in
+				IfLetStore(store.scope(state: \.editor, action: /SeriesList.Action.InternalAction.editor)) { scopedStore in
 					NavigationView {
 						SeriesEditorView(store: scopedStore)
 					}
 				}
 			}
-			.task { await viewStore.send(.observeSeries).finish() }
 		}
 	}
 }
@@ -132,20 +72,10 @@ public struct SeriesListView: View {
 extension SeriesList.Action {
 	init(action: SeriesListView.ViewAction) {
 		switch action {
-		case.observeSeries:
-			self = .observeSeries
-		case .errorButtonTapped:
-			self = .errorButtonTapped
-		case let .setEditorFormSheet(isPresented):
-			self = .setEditorFormSheet(isPresented: isPresented)
-		case .addButtonTapped:
-			self = .setEditorFormSheet(isPresented: true)
+		case let .setEditorSheet(isPresented):
+			self = .view(.setEditorSheet(isPresented: isPresented))
 		case let .setNavigation(selection):
-			self = .setNavigation(selection: selection)
-		case .dismissNewSeries:
-			self = .dismissNewSeries
-		case let .swipeAction(series, swipeAction):
-			self = .swipeAction(series, swipeAction)
+			self = .view(.setNavigation(selection: selection))
 		}
 	}
 }

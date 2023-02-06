@@ -30,7 +30,6 @@
 
 "team.title" = "Team";
 "team.list.title" = "Teams";
-"team.list.title.all" = "All Teams";
 "team.list.add" = "Add Team";
 "team.error.empty.title" = "No teams found";
 "team.error.empty.message" = "You haven't create a team yet.";
@@ -41,7 +40,6 @@
 
 "bowler.title" = "Bowler";
 "bowler.list.title" = "Bowlers";
-"bowler.list.title.all" = "All Bowlers";
 "bowler.list.add" = "Add Bowler";
 "bowler.error.empty.title" = "No bowlers found";
 "bowler.error.empty.message" = "You haven't added any bowlers yet. Try adding yourself to get started.";
@@ -57,6 +55,7 @@
 /* Gear */
 
 "gear.title" = "Gear";
+"gear.list.title" = "Gear";
 "gear.properties.kind" = "Kind";
 "gear.properties.kind.shoes" = "Shoes";
 "gear.properties.kind.bowlingBall" = "Ball";
@@ -79,7 +78,7 @@
 /* Leagues */
 
 "league.title" = "League";
-"league.list.title.all" = "All Leagues";
+"league.list.title" = "Leagues";
 "league.list.add" = "Add League";
 "league.properties.alley" = "Bowling Alley";
 "league.properties.recurrence" = "Repeat?";
@@ -101,8 +100,8 @@
 /* Series */
 
 "series.title" = "Series";
+"series.list.title" = "Series";
 "series.list.add" = "Add Series";
-"series.list.title.all" = "All Series";
 "series.properties.numberOfGames" = "Number of games";
 "series.properties.alley" = "Bowling Alley";
 "series.properties.date" = "Date";

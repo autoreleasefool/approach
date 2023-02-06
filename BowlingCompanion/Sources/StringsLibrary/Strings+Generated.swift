@@ -178,10 +178,6 @@ public enum Strings {
       public static let add = Strings.tr("Localizable", "bowler.list.add", fallback: "Add Bowler")
       /// Bowlers
       public static let title = Strings.tr("Localizable", "bowler.list.title", fallback: "Bowlers")
-      public enum Title {
-        /// All Bowlers
-        public static let all = Strings.tr("Localizable", "bowler.list.title.all", fallback: "All Bowlers")
-      }
     }
   }
   public enum Editor {
@@ -250,6 +246,8 @@ public enum Strings {
     public enum List {
       /// Add Gear
       public static let add = Strings.tr("Localizable", "gear.list.add", fallback: "Add Gear")
+      /// Gear
+      public static let title = Strings.tr("Localizable", "gear.list.title", fallback: "Gear")
     }
     public enum Properties {
       /// Kind
@@ -342,10 +340,8 @@ public enum Strings {
     public enum List {
       /// Add League
       public static let add = Strings.tr("Localizable", "league.list.add", fallback: "Add League")
-      public enum Title {
-        /// All Leagues
-        public static let all = Strings.tr("Localizable", "league.list.title.all", fallback: "All Leagues")
-      }
+      /// Leagues
+      public static let title = Strings.tr("Localizable", "league.list.title", fallback: "Leagues")
     }
     public enum Properties {
       /// Additional Games
@@ -446,10 +442,8 @@ public enum Strings {
     public enum List {
       /// Add Series
       public static let add = Strings.tr("Localizable", "series.list.add", fallback: "Add Series")
-      public enum Title {
-        /// All Series
-        public static let all = Strings.tr("Localizable", "series.list.title.all", fallback: "All Series")
-      }
+      /// Series
+      public static let title = Strings.tr("Localizable", "series.list.title", fallback: "Series")
     }
     public enum Properties {
       /// Bowling Alley
@@ -572,10 +566,6 @@ public enum Strings {
       public static let add = Strings.tr("Localizable", "team.list.add", fallback: "Add Team")
       /// Teams
       public static let title = Strings.tr("Localizable", "team.list.title", fallback: "Teams")
-      public enum Title {
-        /// All Teams
-        public static let all = Strings.tr("Localizable", "team.list.title.all", fallback: "All Teams")
-      }
     }
     public enum Properties {
       public enum Bowlers {

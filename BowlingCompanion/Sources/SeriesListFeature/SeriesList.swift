@@ -1,6 +1,8 @@
 import ComposableArchitecture
+import FeatureActionLibrary
 import FeatureFlagsServiceInterface
 import PersistenceServiceInterface
+import ResourceListLibrary
 import SeriesDataProviderInterface
 import SeriesEditorFeature
 import SeriesSidebarFeature
@@ -8,162 +10,150 @@ import SharedModelsLibrary
 import StringsLibrary
 import ViewsLibrary
 
+extension Series: ResourceListItem {
+	public var name: String { date.longFormat }
+}
+
 public struct SeriesList: ReducerProtocol {
 	public struct State: Equatable {
-		public var league: League
-		public var series: IdentifiedArrayOf<Series>?
-		public var error: ListErrorContent?
+		public let league: League
+
+		public var list: ResourceList<Series, Series.FetchRequest>.State
+		public var editor: SeriesEditor.State?
 		public var selection: Identified<Series.ID, SeriesSidebar.State>?
-		public var seriesEditor: SeriesEditor.State?
-		public var newSeries: SeriesSidebar.State?
-		public var alert: AlertState<AlertAction>?
 
 		public init(league: League) {
 			self.league = league
+			self.list = .init(
+				features: [
+					.add,
+					.swipeToEdit,
+					.swipeToDelete(onDelete: .init {
+						@Dependency(\.persistenceService) var persistenceService: PersistenceService
+						try await persistenceService.deleteSeries($0)
+					}),
+				],
+				query: .init(filter: .league(league.id), ordering: .byDate),
+				listTitle: league.name,
+				emptyContent: .init(
+					image: .emptySeries,
+					title: Strings.Series.Error.Empty.title,
+					message: Strings.Series.Error.Empty.message,
+					action: Strings.Series.List.add
+				))
 		}
 	}
 
-	public enum Action: Equatable {
-		case observeSeries
-		case seriesResponse(TaskResult<[Series]>)
-		case setNavigation(selection: Series.ID?)
-		case setEditorFormSheet(isPresented: Bool)
-		case seriesCreateResponse(TaskResult<Series>)
-		case seriesDeleteResponse(TaskResult<Series>)
-		case errorButtonTapped
-		case dismissNewSeries
-		case swipeAction(Series, SwipeAction)
-		case alert(AlertAction)
+	public enum Action: Equatable, FeatureAction {
+		public enum ViewAction: Equatable {
+			case setNavigation(selection: Series.ID?)
+			case setEditorSheet(isPresented: Bool)
+		}
 
-		case seriesSidebar(SeriesSidebar.Action)
-		case seriesEditor(SeriesEditor.Action)
+		public enum InternalAction: Equatable {
+			case list(ResourceList<Series, Series.FetchRequest>.Action)
+			case editor(SeriesEditor.Action)
+			case sidebar(SeriesSidebar.Action)
+		}
+
+		public enum DelegateAction: Equatable {}
+
+		case view(ViewAction)
+		case `internal`(InternalAction)
+		case delegate(DelegateAction)
 	}
-
-	public enum SwipeAction: Equatable {
-		case edit
-		case delete
-	}
-
-	struct ObservationCancellable {}
 
 	public init() {}
 
-	@Dependency(\.uuid) var uuid
 	@Dependency(\.date) var date
 	@Dependency(\.seriesDataProvider) var seriesDataProvider
-	@Dependency(\.persistenceService) var persistenceService
 	@Dependency(\.featureFlags) var featureFlags: FeatureFlagsService
 
 	public var body: some ReducerProtocol<State, Action> {
+		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {
+			ResourceList(fetchResources: seriesDataProvider.observeSeries)
+		}
+
 		Reduce { state, action in
 			switch action {
-			case .observeSeries:
-				state.error = nil
-				return .run { [league = state.league.id] send in
-					for try await series in seriesDataProvider.observeSeries(.init(filter: .league(league), ordering: .byDate)) {
-						await send(.seriesResponse(.success(series)))
+			case let .view(viewAction):
+				switch viewAction {
+				case let .setNavigation(selection: .some(id)):
+					return navigate(to: id, state: &state)
+
+				case .setNavigation(selection: .none):
+					return navigate(to: nil, state: &state)
+
+				case .setEditorSheet(isPresented: true):
+					return startEditing(series: nil, state: &state)
+
+				case .setEditorSheet(isPresented: false):
+					state.editor = nil
+					return .none
+				}
+
+			case let .internal(internalAction):
+				switch internalAction {
+				case let .list(.delegate(delegateAction)):
+					switch delegateAction {
+					case let .didEdit(series):
+						return startEditing(series: series, state: &state)
+
+					case .didAddNew, .didTapEmptyStateButton:
+						return startEditing(series: nil, state: &state)
+
+					case .didDelete, .didTap:
+						return .none
 					}
-				} catch: { error, send in
-					await send(.seriesResponse(.failure(error)))
+
+				case .editor(.form(.didFinishSaving)),
+						.editor(.form(.didFinishDeleting)),
+						.editor(.form(.alert(.discardButtonTapped))):
+					state.editor = nil
+					return .none
+
+				case .sidebar, .editor, .list(.view), .list(.internal):
+					return .none
 				}
-				.cancellable(id: ObservationCancellable.self, cancelInFlight: true)
-
-			case .errorButtonTapped:
-				// TODO: handle error button tapped
-				return .none
-
-			case let .seriesResponse(.success(series)):
-				state.series = .init(uniqueElements: series)
-				return .none
-
-			case .seriesResponse(.failure):
-				state.error = .loadError
-				return .none
-
-			case let .seriesCreateResponse(.success(series)):
-				state.newSeries = .init(series: series)
-				return .none
-
-			case .seriesCreateResponse(.failure):
-				state.error = .createError
-				return .none
-
-			case .dismissNewSeries:
-				state.newSeries = nil
-				return .none
-
-			case let .setNavigation(selection: .some(id)):
-				if let selection = state.series?[id: id] {
-					state.selection = Identified(.init(series: selection), id: selection.id)
-				}
-				return .none
-
-			case .setNavigation(selection: .none):
-				state.selection = nil
-				return .none
-
-			case .setEditorFormSheet(isPresented: true):
-				state.seriesEditor = .init(
-					league: state.league,
-					mode: .create,
-					date: date(),
-					hasAlleysEnabled: featureFlags.isEnabled(.alleys),
-					hasLanesEnabled: featureFlags.isEnabled(.lanes)
-				)
-				return .none
-
-			case .setEditorFormSheet(isPresented: false),
-					.seriesEditor(.form(.didFinishSaving)),
-					.seriesEditor(.form(.didFinishDeleting)),
-					.seriesEditor(.form(.alert(.discardButtonTapped))):
-				state.seriesEditor = nil
-				return .none
-
-			case let .swipeAction(series, .edit):
-				state.seriesEditor = .init(
-					league: state.league,
-					mode: .edit(series),
-					date: date(),
-					hasAlleysEnabled: featureFlags.isEnabled(.alleys),
-					hasLanesEnabled: featureFlags.isEnabled(.lanes)
-				)
-				return .none
-
-			case let .swipeAction(series, .delete):
-				state.alert = SeriesList.alert(toDelete: series)
-				return .none
-
-			case .alert(.dismissed):
-				state.alert = nil
-				return .none
-
-			case let .alert(.deleteButtonTapped(series)):
-				return .task {
-					return await .seriesDeleteResponse(TaskResult {
-						try await persistenceService.deleteSeries(series)
-						return series
-					})
-				}
-
-			case .seriesDeleteResponse(.failure):
-				state.error = .deleteError
-				return .none
-
-			case .seriesSidebar, .seriesEditor, .seriesDeleteResponse(.success):
-				return .none
 			}
 		}
-		.ifLet(\.selection, action: /SeriesList.Action.seriesSidebar) {
+		.ifLet(\.selection, action: /Action.internal..Action.InternalAction.sidebar) {
 			Scope(state: \Identified<Series.ID, SeriesSidebar.State>.value, action: /.self) {
 				SeriesSidebar()
 			}
 		}
-		.ifLet(\.newSeries, action: /SeriesList.Action.seriesSidebar) {
-			SeriesSidebar()
-		}
-		.ifLet(\.seriesEditor, action: /SeriesList.Action.seriesEditor) {
+		.ifLet(\.editor, action: /Action.internal..Action.InternalAction.editor) {
 			SeriesEditor()
 		}
+	}
+
+	private func navigate(to id: Series.ID?, state: inout State) -> EffectTask<Action> {
+		if let id, let selection = state.list.resources?[id: id] {
+			state.selection = Identified(.init(series: selection), id: selection.id)
+			return .none
+		} else {
+			state.selection = nil
+			return .none
+		}
+	}
+
+	private func startEditing(series: Series?, state: inout State) -> EffectTask<Action> {
+		let mode: SeriesEditor.Form.Mode
+		if let series {
+			mode = .edit(series)
+		} else {
+			mode = .create
+		}
+
+		state.editor = .init(
+			league: state.league,
+			mode: mode,
+			date: date(),
+			hasAlleysEnabled: featureFlags.isEnabled(.alleys),
+			hasLanesEnabled: featureFlags.isEnabled(.lanes)
+		)
+
+		return .none
 	}
 }
 
