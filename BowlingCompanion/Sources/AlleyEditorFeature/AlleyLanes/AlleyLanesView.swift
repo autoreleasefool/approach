@@ -8,17 +8,15 @@ public struct AlleyLanesView: View {
 	let store: StoreOf<AlleyLanes>
 
 	struct ViewState: Equatable {
-		let isLoadingInitialData: Bool
-		let lanes: IdentifiedArrayOf<Lane>
+		let lanes: IdentifiedArrayOf<Lane>?
 
 		init(state: AlleyLanes.State) {
-			self.isLoadingInitialData = state.isLoadingInitialData
 			self.lanes = state.lanes
 		}
 	}
 
 	enum ViewAction {
-		case onAppear
+		case didAppear
 	}
 
 	public init(store: StoreOf<AlleyLanes>) {
@@ -27,18 +25,18 @@ public struct AlleyLanesView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: AlleyLanes.Action.init) { viewStore in
-			if viewStore.isLoadingInitialData {
-				ProgressView()
-					.onAppear { viewStore.send(.onAppear) }
-			} else {
-				if viewStore.lanes.isEmpty {
+			if let lanes = viewStore.lanes {
+				if lanes.isEmpty {
 					Text(Strings.Alley.Properties.Lanes.none)
 						.listRowBackground(Color(uiColor: .secondarySystemBackground))
 				} else {
-					ForEach(viewStore.lanes) { lane in
+					ForEach(lanes) { lane in
 						LaneRow(lane: lane)
 					}
 				}
+			} else {
+				ProgressView()
+					.onAppear { viewStore.send(.didAppear) }
 			}
 		}
 	}
@@ -47,8 +45,8 @@ public struct AlleyLanesView: View {
 extension AlleyLanes.Action {
 	init(action: AlleyLanesView.ViewAction) {
 		switch action {
-		case .onAppear:
-			self = .refreshData
+		case .didAppear:
+			self = .view(.didAppear)
 		}
 	}
 }

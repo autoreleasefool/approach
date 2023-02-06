@@ -107,6 +107,7 @@ let package = Package(
 			name: "AlleyEditorFeature",
 			dependencies: [
 				"BaseFormLibrary",
+				"FeatureActionLibrary",
 				"LaneEditorFeature",
 				"SharedModelsViewsLibrary",
 			]
