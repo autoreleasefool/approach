@@ -1,4 +1,5 @@
 import AssetsLibrary
+import FeatureActionLibrary
 import ComposableArchitecture
 import FeatureActionLibrary
 import SwiftUI
@@ -31,11 +32,13 @@ public struct ResourceListEmpty: ReducerProtocol {
 		}
 	}
 
-	public enum Action: Equatable {
-		public enum ViewAction: Equatable {}
+	public enum Action: FeatureAction, Equatable {
+		public enum ViewAction: Equatable {
+			case didTapActionButton
+		}
 		public enum InternalAction: Equatable {}
 		public enum DelegateAction: Equatable {
-			case didTapButton
+			case didTapActionButton
 		}
 
 		case view(ViewAction)
@@ -53,7 +56,13 @@ public struct ResourceListEmpty: ReducerProtocol {
 	public var body: some ReducerProtocol<State, Action> {
 		Reduce { _, action in
 			switch action {
-			case .internal, .delegate, .view:
+			case let .view(viewAction):
+				switch viewAction {
+				case .didTapActionButton:
+					return .task { .delegate(.didTapActionButton) }
+				}
+
+			case .internal, .delegate:
 				return .none
 			}
 		}
@@ -74,7 +83,7 @@ public struct ResourceListEmptyView: View {
 	}
 
 	enum ViewAction {
-		case didTapButton
+		case didTapActionButton
 	}
 
 	public init(store: StoreOf<ResourceListEmpty>) {
@@ -109,7 +118,7 @@ public struct ResourceListEmptyView: View {
 				.padding(.bottom, .smallSpacing)
 
 				Button {
-					viewStore.send(.didTapButton)
+					viewStore.send(.didTapActionButton)
 				} label: {
 					Text(viewStore.content.action)
 						.frame(maxWidth: .infinity)
@@ -125,8 +134,8 @@ public struct ResourceListEmptyView: View {
 
 	private func map(viewAction: ViewAction) -> ResourceListEmpty.Action {
 		switch viewAction {
-		case .didTapButton:
-			return .delegate(.didTapButton)
+		case .didTapActionButton:
+			return .view(.didTapActionButton)
 		}
 	}
 }

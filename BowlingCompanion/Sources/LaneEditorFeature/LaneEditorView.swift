@@ -19,7 +19,7 @@ public struct LaneEditorView: View {
 	}
 
 	enum ViewAction: BindableAction {
-		case swipeAction(LaneEditor.SwipeAction)
+		case didSwipe(LaneEditor.SwipeAction)
 		case binding(BindingAction<ViewState>)
 	}
 
@@ -44,7 +44,7 @@ public struct LaneEditorView: View {
 				.toggleStyle(SwitchToggleStyle())
 			}
 			.swipeActions(allowsFullSwipe: true) {
-				DeleteButton { viewStore.send(.swipeAction(.delete)) }
+				DeleteButton { viewStore.send(.didSwipe(.delete)) }
 			}
 		}
 	}
@@ -63,8 +63,8 @@ extension LaneEditor.State {
 extension LaneEditor.Action {
 	init(action: LaneEditorView.ViewAction) {
 		switch action {
-		case let .swipeAction(swipeAction):
-			self = .swipeAction(swipeAction)
+		case let .didSwipe(swipeAction):
+			self = .view(.didSwipe(swipeAction))
 		case let .binding(action):
 			self = .binding(action.pullback(\LaneEditor.State.view))
 		}

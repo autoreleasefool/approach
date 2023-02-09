@@ -150,14 +150,17 @@ public struct AlleyLanesEditor: ReducerProtocol {
 					// TODO: handle fail to delete lane
 					return .none
 
-				case let .laneEditor(id, .swipeAction(.delete)):
-					if let deleted = state.existingLanes.first(where: { $0.id == id }) {
-						// FIXME: AlleyLanesEditorView does not re-render when alert is dismissed and deleted lane does not re-appear
-						state.alert = AlleyLanesEditor.alert(toDelete: deleted)
-					} else {
-						state.lanes.removeAll { $0.id == id }
+				case let .laneEditor(id, .delegate(delegateAction)):
+					switch delegateAction {
+					case .didSwipe(.delete):
+						if let deleted = state.existingLanes.first(where: { $0.id == id }) {
+							// FIXME: AlleyLanesEditorView does not re-render when alert is dismissed and deleted lane does not re-appear
+							state.alert = AlleyLanesEditor.alert(toDelete: deleted)
+						} else {
+							state.lanes.removeAll { $0.id == id }
+						}
+						return .none
 					}
-					return .none
 
 				case let .addLaneForm(.delegate(delegateAction)):
 					switch delegateAction {
@@ -165,7 +168,12 @@ public struct AlleyLanesEditor: ReducerProtocol {
 						return didFinishAddingLanes(&state, count: numberOfLanes)
 					}
 
-				case .laneEditor(_, .binding), .addLaneForm(.internal), .addLaneForm(.view), .addLaneForm(.binding):
+				case .laneEditor(_, .binding),
+						.laneEditor(_, .view),
+						.laneEditor(_, .internal),
+						.addLaneForm(.internal),
+						.addLaneForm(.view),
+						.addLaneForm(.binding):
 					return .none
 				}
 			}

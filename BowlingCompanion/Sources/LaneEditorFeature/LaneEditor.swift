@@ -1,4 +1,5 @@
 import ComposableArchitecture
+import FeatureActionLibrary
 import SharedModelsLibrary
 
 public struct LaneEditor: ReducerProtocol {
@@ -14,8 +15,18 @@ public struct LaneEditor: ReducerProtocol {
 		}
 	}
 
-	public enum Action: BindableAction, Equatable {
-		case swipeAction(SwipeAction)
+	public enum Action: FeatureAction, BindableAction, Equatable {
+		public enum ViewAction: Equatable {
+			case didSwipe(SwipeAction)
+		}
+		public enum DelegateAction: Equatable {
+			case didSwipe(SwipeAction)
+		}
+		public enum InternalAction: Equatable {}
+
+		case view(ViewAction)
+		case delegate(DelegateAction)
+		case `internal`(InternalAction)
 		case binding(BindingAction<State>)
 	}
 
@@ -30,7 +41,16 @@ public struct LaneEditor: ReducerProtocol {
 
 		Reduce { _, action in
 			switch action {
-			case .binding, .swipeAction:
+			case let .view(viewAction):
+				switch viewAction {
+				case let .didSwipe(action):
+					switch action {
+					case .delete:
+						return .task { .delegate(.didSwipe(action)) }
+					}
+				}
+
+			case .binding, .internal, .delegate:
 				return .none
 			}
 		}

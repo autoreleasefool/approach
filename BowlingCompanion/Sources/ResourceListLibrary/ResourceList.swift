@@ -174,7 +174,7 @@ public struct ResourceList<
 					state.alert = nil
 					return .none
 
-				case .empty(.delegate(.didTapButton)):
+				case .empty(.delegate(.didTapActionButton)):
 					switch state.error {
 					case .failedToLoad:
 						state.error = nil
@@ -186,6 +186,9 @@ public struct ResourceList<
 						// No error indicates the empty state was shown
 						return .task { .delegate(.didTapEmptyStateButton) }
 					}
+
+				case .empty(.internal), .empty(.view):
+					return .none
 				}
 
 			case let .internal(internalAction):
