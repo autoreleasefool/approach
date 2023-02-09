@@ -114,12 +114,16 @@ public struct OpponentsList: ReducerProtocol {
 				state.opponentEditor = .init(mode: .create)
 				return .none
 
-			case .setEditorFormSheet(isPresented: false),
-					.opponentEditor(.form(.didFinishSaving)),
-					.opponentEditor(.form(.didFinishDeleting)),
-					.opponentEditor(.form(.alert(.discardButtonTapped))):
+			case .setEditorFormSheet(isPresented: false):
 				state.opponentEditor = nil
 				return .none
+
+			case let .opponentEditor(.delegate(delegateAction)):
+				switch delegateAction {
+				case .didFinishEditing:
+					state.opponentEditor = nil
+					return .none
+				}
 
 			case let .sortOrder(.delegate(delegateAction)):
 				switch delegateAction {
@@ -127,7 +131,11 @@ public struct OpponentsList: ReducerProtocol {
 					return .task { .observeOpponents }
 				}
 
-			case .sortOrder(.internal), .sortOrder(.view), .opponentEditor:
+			case .sortOrder(.internal),
+					.sortOrder(.view),
+					.opponentEditor(.view),
+					.opponentEditor(.internal),
+					.opponentEditor(.binding):
 				return .none
 			}
 		}

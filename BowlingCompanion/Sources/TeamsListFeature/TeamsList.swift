@@ -89,12 +89,16 @@ public struct TeamsList: ReducerProtocol {
 				state.teamEditor = .init(mode: .create, bowlers: [])
 				return .none
 
-			case .setEditorFormSheet(isPresented: false),
-					.teamEditor(.form(.didFinishSaving)),
-					.teamEditor(.form(.didFinishDeleting)),
-					.teamEditor(.form(.alert(.discardButtonTapped))):
+			case .setEditorFormSheet(isPresented: false):
 				state.teamEditor = nil
 				return .none
+
+			case let .teamEditor(.delegate(delegateAction)):
+				switch delegateAction {
+				case .didFinishEditing:
+					state.teamEditor = nil
+					return .none
+				}
 
 			case let .swipeAction(team, .edit):
 				return .task { [team = team] in
@@ -144,7 +148,7 @@ public struct TeamsList: ReducerProtocol {
 					return .task { .observeTeams }
 				}
 
-			case .sortOrder(.internal), .sortOrder(.view), .teamEditor:
+			case .sortOrder(.internal), .sortOrder(.view), .teamEditor(.internal), .teamEditor(.binding), .teamEditor(.view):
 				return .none
 			}
 		}

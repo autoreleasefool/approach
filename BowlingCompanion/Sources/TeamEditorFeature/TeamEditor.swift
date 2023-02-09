@@ -1,6 +1,7 @@
 import BaseFormLibrary
 import BowlersDataProviderInterface
 import ComposableArchitecture
+import FeatureActionLibrary
 import PersistenceServiceInterface
 import ResourcePickerLibrary
 import SharedModelsLibrary
@@ -61,12 +62,23 @@ public struct TeamEditor: ReducerProtocol {
 		}
 	}
 
-	public enum Action: BindableAction, Equatable {
-		case setBowlerPicker(isPresented: Bool)
+	public enum Action: FeatureAction, BindableAction, Equatable {
+		public enum ViewAction: Equatable {
+			case setBowlerPicker(isPresented: Bool)
+		}
+		public enum DelegateAction: Equatable {
+			case didFinishEditing
+		}
+		public enum InternalAction: Equatable {
+			case bowlers(ResourcePicker<Bowler, Bowler.FetchRequest>.Action)
+			case teamMembers(TeamMembers.Action)
+			case form(Form.Action)
+		}
+
+		case view(ViewAction)
+		case delegate(DelegateAction)
+		case `internal`(InternalAction)
 		case binding(BindingAction<State>)
-		case form(Form.Action)
-		case bowlers(ResourcePicker<Bowler, Bowler.FetchRequest>.Action)
-		case teamMembers(TeamMembers.Action)
 	}
 
 	public init() {}
@@ -77,7 +89,7 @@ public struct TeamEditor: ReducerProtocol {
 	public var body: some ReducerProtocol<State, Action> {
 		BindingReducer()
 
-		Scope(state: \.base, action: /Action.form) {
+		Scope(state: \.base, action: /Action.internal..Action.InternalAction.form) {
 			BaseForm()
 				.dependency(\.modelPersistence, .init(
 					create: persistenceService.createTeam,
@@ -86,11 +98,11 @@ public struct TeamEditor: ReducerProtocol {
 				))
 		}
 
-		Scope(state: \.teamMembers, action: /TeamEditor.Action.teamMembers) {
+		Scope(state: \.teamMembers, action: /Action.internal..Action.InternalAction.teamMembers) {
 			TeamMembers()
 		}
 
-		Scope(state: \.base.form.bowlers, action: /TeamEditor.Action.bowlers) {
+		Scope(state: \.base.form.bowlers, action: /Action.internal..Action.InternalAction.bowlers) {
 			ResourcePicker {
 				try await bowlersDataProvider.fetchBowlers($0)
 			}
@@ -98,41 +110,47 @@ public struct TeamEditor: ReducerProtocol {
 
 		Reduce { state, action in
 			switch action {
-			case let .form(.saveModelResult(.success(team))):
-				let members = state.base.form.bowlers.selectedResources ?? state.teamMembers.bowlers.elements
-				let teamMembership = TeamMembership(team: team.id, members: members)
-				return .task { [teamMembership = teamMembership] in
-					try await persistenceService.updateTeamMembers(teamMembership)
+			case let .internal(internalAction):
+				switch internalAction {
+				case let .form(.delegate(delegateAction)):
+					switch delegateAction {
+					case let .didSaveModel(team):
+						let members = state.base.form.bowlers.selectedResources ?? state.teamMembers.bowlers.elements
+						let teamMembership = TeamMembership(team: team.id, members: members)
+						return .task { [teamMembership = teamMembership] in
+							try await persistenceService.updateTeamMembers(teamMembership)
 
-					return .form(.didFinishSaving)
-				} catch: { error in
-					return .form(.saveModelResult(.failure(error)))
+							return .internal(.form(.callback(.didFinishSaving(.success(team)))))
+						} catch: { error in
+							return .internal(.form(.callback(.didFinishSaving(.failure(error)))))
+						}
+
+					case let .didDeleteModel(team):
+						return .task { .internal(.form(.callback(.didFinishDeleting(.success(team))))) }
+
+					case .didFinishSaving, .didFinishDeleting:
+						return .task { .delegate(.didFinishEditing) }
+					}
+
+				case .bowlers(.saveButtonTapped), .bowlers(.cancelButtonTapped):
+					state.teamMembers.bowlers = .init(
+						uniqueElements: state.base.form.bowlers.selectedResources?.sorted { $0.name < $1.name } ?? []
+					)
+					state.isBowlerPickerPresented = false
+					return .none
+
+				case .teamMembers, .form(.view), .form(.internal), .form(.callback), .bowlers:
+					return .none
 				}
 
-			case let .setBowlerPicker(isPresented):
-				state.isBowlerPickerPresented = isPresented
-				return .none
+			case let .view(viewAction):
+				switch viewAction {
+				case let .setBowlerPicker(isPresented):
+					state.isBowlerPickerPresented = isPresented
+					return .none
+				}
 
-			case .bowlers(.saveButtonTapped), .bowlers(.cancelButtonTapped):
-				state.teamMembers.bowlers = .init(
-					uniqueElements: state.base.form.bowlers.selectedResources?.sorted { $0.name < $1.name } ?? []
-				)
-				state.isBowlerPickerPresented = false
-				return .none
-
-			case .form(.didFinishSaving):
-				state.base.isLoading = false
-				return .none
-
-			case .form(.deleteModelResult(.success)):
-				state.base.isLoading = false
-				return .task { .form(.didFinishDeleting) }
-
-			case .form(.deleteModelResult(.failure)), .form(.saveModelResult(.failure)):
-				state.base.isLoading = false
-				return .none
-
-			case .binding, .form, .bowlers, .teamMembers:
+			case .delegate, .binding:
 				return .none
 			}
 		}

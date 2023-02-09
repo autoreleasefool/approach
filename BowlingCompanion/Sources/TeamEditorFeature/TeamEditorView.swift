@@ -1,5 +1,6 @@
 import BaseFormLibrary
 import ComposableArchitecture
+import FeatureActionLibrary
 import ResourcePickerLibrary
 import SharedModelsViewsLibrary
 import StringsLibrary
@@ -29,7 +30,7 @@ public struct TeamEditorView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: TeamEditor.Action.init) { viewStore in
-			BaseFormView(store: store.scope(state: \.base, action: TeamEditor.Action.form)) {
+			BaseFormView(store: store.scope(state: \.base, action: /TeamEditor.Action.InternalAction.form)) {
 				Section(Strings.Editor.Fields.Details.title) {
 					TextField(
 						Strings.Editor.Fields.Details.name,
@@ -40,7 +41,7 @@ public struct TeamEditorView: View {
 				.listRowBackground(Color(uiColor: .secondarySystemBackground))
 
 				Section {
-					TeamMembersView(store: store.scope(state: \.teamMembers, action: TeamEditor.Action.teamMembers))
+					TeamMembersView(store: store.scope(state: \.teamMembers, action: /TeamEditor.Action.InternalAction.teamMembers))
 						.listRowBackground(Color(uiColor: .secondarySystemBackground))
 				} header: {
 					HStack(alignment: .bottom) {
@@ -50,7 +51,7 @@ public struct TeamEditorView: View {
 							destination: ResourcePickerView(
 								store: store.scope(
 									state: \.base.form.bowlers,
-									action: TeamEditor.Action.bowlers
+									action: /TeamEditor.Action.InternalAction.bowlers
 								)
 							) { bowler in
 								BowlerRow(bowler: bowler)
@@ -84,7 +85,7 @@ extension TeamEditor.Action {
 	init(action: TeamEditorView.ViewAction) {
 		switch action {
 		case let .setBowlerPickerPresented(isPresented):
-			self = .setBowlerPicker(isPresented: isPresented)
+			self = .view(.setBowlerPicker(isPresented: isPresented))
 		case let .binding(action):
 			self = .binding(action.pullback(\TeamEditor.State.view))
 		}

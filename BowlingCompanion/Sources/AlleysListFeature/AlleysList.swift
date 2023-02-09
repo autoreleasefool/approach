@@ -130,13 +130,21 @@ public struct AlleysList: ReducerProtocol {
 						return .task { .`internal`(.list(.view(.didObserveData))) }
 					}
 
-				case .editor(.form(.didFinishSaving)),
-					.editor(.form(.didFinishDeleting)),
-					.editor(.form(.alert(.discardButtonTapped))):
-					state.editor = nil
-					return .none
+				case let .editor(.delegate(delegateAction)):
+					switch delegateAction {
+					case .didFinishEditing:
+						state.editor = nil
+						return .none
+					}
 
-				case .list(.internal), .list(.view), .filters(.internal), .filters(.view), .filters(.binding), .editor:
+				case .list(.internal),
+						.list(.view),
+						.filters(.internal),
+						.filters(.view),
+						.filters(.binding),
+						.editor(.internal),
+						.editor(.view),
+						.editor(.binding):
 					return .none
 				}
 

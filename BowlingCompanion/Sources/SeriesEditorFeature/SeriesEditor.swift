@@ -117,6 +117,7 @@ public struct SeriesEditor: ReducerProtocol {
 		case form(Form.Action)
 		case alleyPicker(ResourcePicker<Alley, Alley.FetchRequest>.Action)
 		case lanePicker(ResourcePicker<Lane, Lane.FetchRequest>.Action)
+		case didFinishEditing
 	}
 
 	public init() {}
@@ -222,19 +223,22 @@ public struct SeriesEditor: ReducerProtocol {
 				state.isLanePickerPresented = false
 				return .none
 
-			case .form(.saveModelResult(.success)):
-				state.base.isLoading = false
-				return .task { .form(.didFinishSaving) }
+			case let .form(.delegate(delegateAction)):
+				switch delegateAction {
+				case let .didSaveModel(series):
+					return .task { .form(.callback(.didFinishSaving(.success(series))))}
 
-			case .form(.deleteModelResult(.success)):
-				state.base.isLoading = false
-				return .task { .form(.didFinishDeleting) }
+				case let .didDeleteModel(series):
+					return .task { .form(.callback(.didFinishDeleting(.success(series)))) }
 
-			case .form(.deleteModelResult(.failure)), .form(.saveModelResult(.failure)):
-				state.base.isLoading = false
+				case .didFinishSaving, .didFinishDeleting:
+					return .task { .didFinishEditing }
+				}
+
+			case .didFinishEditing:
 				return .none
 
-			case .binding, .form, .alleyPicker, .lanePicker:
+			case .binding, .form(.view), .form(.callback), .form(.internal), .alleyPicker, .lanePicker:
 				return .none
 			}
 		}

@@ -1,4 +1,5 @@
 import ComposableArchitecture
+import FeatureActionLibrary
 import StringsLibrary
 
 public protocol BaseFormModel: Equatable {
@@ -59,15 +60,35 @@ public struct BaseForm<Model: BaseFormModel, FormState: BaseFormState>: ReducerP
 		}
 	}
 
-	public enum Action: Equatable {
-		case saveButtonTapped
-		case discardButtonTapped
-		case deleteButtonTapped
-		case saveModelResult(TaskResult<Model>)
-		case deleteModelResult(TaskResult<Model>)
-		case didFinishSaving
-		case didFinishDeleting
-		case alert(AlertAction)
+	public enum Action: FeatureAction, Equatable {
+		public enum ViewAction: Equatable {
+			case didTapSaveButton
+			case didTapDiscardButton
+			case didTapDeleteButton
+			case alert(AlertAction)
+		}
+
+		public enum InternalAction: Equatable {
+			case saveModelResult(TaskResult<Model>)
+			case deleteModelResult(TaskResult<Model>)
+		}
+
+		public enum DelegateAction: Equatable {
+			case didSaveModel(Model)
+			case didDeleteModel(Model)
+			case didFinishSaving
+			case didFinishDeleting
+		}
+
+		public enum CallbackAction: Equatable {
+			case didFinishSaving(TaskResult<Model>)
+			case didFinishDeleting(TaskResult<Model>)
+		}
+
+		case view(ViewAction)
+		case delegate(DelegateAction)
+		case `internal`(InternalAction)
+		case callback(CallbackAction)
 	}
 
 	public init() {}
@@ -77,69 +98,103 @@ public struct BaseForm<Model: BaseFormModel, FormState: BaseFormState>: ReducerP
 	public var body: some ReducerProtocol<State, Action> {
 		Reduce { state, action in
 			switch action {
-			case .saveButtonTapped:
-				guard state.isSaveable else { return .none }
-				state.isLoading = true
+			case let .view(viewAction):
+				switch viewAction {
+				case .didTapSaveButton:
+					guard state.isSaveable else { return .none }
+					state.isLoading = true
 
-				switch state.mode {
-				case let .edit(original):
-					let model = state.form.model(fromExisting: original)
-					return .task {
-						await .saveModelResult(TaskResult {
-							try await modelPersistence.update(model)
-							return model
-						})
+					switch state.mode {
+					case let .edit(original):
+						let model = state.form.model(fromExisting: original)
+						return .task {
+							await .internal(.saveModelResult(TaskResult {
+								try await modelPersistence.update(model)
+								return model
+							}))
+						}
+					case .create:
+						let model = state.form.model(fromExisting: nil)
+						return .task {
+							await .internal(.saveModelResult(TaskResult {
+								try await modelPersistence.create(model)
+								return model
+							}))
+						}
 					}
-				case .create:
-					let model = state.form.model(fromExisting: nil)
-					return .task {
-						await .saveModelResult(TaskResult {
-							try await modelPersistence.create(model)
-							return model
-						})
+				case .didTapDeleteButton:
+					guard case .edit = state.mode else { return .none }
+					state.alert = state.deleteAlert
+					return .none
+
+				case .didTapDiscardButton:
+					state.alert = state.discardAlert
+					return .none
+
+				case let .alert(alertAction):
+					switch alertAction {
+					case .didTapDeleteButton:
+						state.alert = nil
+						guard case let .edit(model) = state.mode else { return .none }
+						state.isLoading = true
+						return .task {
+							await .internal(.deleteModelResult(TaskResult {
+								try await modelPersistence.delete(model)
+								return model
+							}))
+						}
+
+					case .didTapDiscardButton:
+						state = .init(mode: state.mode, form: state.initialForm)
+						return .none
+
+					case .didTapDismissButton:
+						state.alert = nil
+						return .none
 					}
 				}
 
-			case .saveModelResult(.failure):
-				// TODO: show error
-				return .none
+			case let .callback(callbackAction):
+				switch callbackAction {
+				case .didFinishSaving(.success):
+					state.isLoading = false
+					return .task { .delegate(.didFinishSaving) }
 
-			case .deleteButtonTapped:
-				guard case .edit = state.mode else { return .none }
-				state.alert = state.deleteAlert
-				return .none
+				case .didFinishSaving(.failure):
+					// TODO: handle failure saving model
+					state.isLoading = false
+					return .none
 
-			case .alert(.deleteButtonTapped):
-				state.alert = nil
-				guard case let .edit(model) = state.mode else { return .none }
-				state.isLoading = true
-				return .task {
-					await .deleteModelResult(TaskResult {
-						try await modelPersistence.delete(model)
-						return model
-					})
+				case .didFinishDeleting(.success):
+					state.isLoading = false
+					return .task { .delegate(.didFinishDeleting) }
+
+				case .didFinishDeleting(.failure):
+					// TODO: handle failure deleting model
+					state.isLoading = false
+					return .none
 				}
 
-			case .deleteModelResult(.failure):
-				// TODO: show error
-				return .none
+			case let .internal(internalAction):
+				switch internalAction {
+				case let .saveModelResult(.success(model)):
+					return .task { .delegate(.didSaveModel(model)) }
 
-			case .discardButtonTapped:
-				state.alert = state.discardAlert
-				return .none
+				case .saveModelResult(.failure):
+					state.isLoading = false
+					// TODO: handle failure saving model
+					return .none
 
-			case .alert(.discardButtonTapped):
-				state = .init(mode: state.mode, form: state.initialForm)
-				return .none
+				case let .deleteModelResult(.success(model)):
+					return .task { .delegate(.didDeleteModel(model)) }
 
-			case .alert(.dismissed):
-				state.alert = nil
-				return .none
+				case .deleteModelResult(.failure):
+					state.isLoading = false
+					// TODO: handle failure deleting model
+					return .none
+				}
 
-			case .saveModelResult(.success),
-					.deleteModelResult(.success),
-					.didFinishSaving,
-					.didFinishDeleting:
+			case .delegate:
 				return .none
 			}
 		}

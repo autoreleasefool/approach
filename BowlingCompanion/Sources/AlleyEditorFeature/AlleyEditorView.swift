@@ -1,5 +1,6 @@
 import BaseFormLibrary
 import ComposableArchitecture
+import FeatureActionLibrary
 import SharedModelsLibrary
 import StringsLibrary
 import SwiftUI
@@ -40,7 +41,7 @@ public struct AlleyEditorView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: AlleyEditor.Action.init) { viewStore in
-			BaseFormView(store: store.scope(state: \.base, action: AlleyEditor.Action.form)) {
+			BaseFormView(store: store.scope(state: \.base, action: /AlleyEditor.Action.InternalAction.form)) {
 				detailsSection(viewStore)
 				materialSection(viewStore)
 				mechanismSection(viewStore)
@@ -138,7 +139,7 @@ public struct AlleyEditorView: View {
 
 	private func lanesSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
 		Section {
-			AlleyLanesView(store: store.scope(state: \.alleyLanes, action: AlleyEditor.Action.alleyLanes))
+			AlleyLanesView(store: store.scope(state: \.alleyLanes, action: /AlleyEditor.Action.InternalAction.alleyLanes))
 				.listRowBackground(Color(uiColor: .secondarySystemBackground))
 		} header: {
 			HStack(alignment: .bottom) {
@@ -147,7 +148,7 @@ public struct AlleyEditorView: View {
 				NavigationLink(
 					destination: AlleyLanesEditorView(store: store.scope(
 						state: \.base.form.laneEditor,
-						action: AlleyEditor.Action.laneEditor
+						action: /AlleyEditor.Action.InternalAction.laneEditor
 					)),
 					isActive: viewStore.binding(
 						get: \.isLaneEditorPresented,
@@ -180,7 +181,7 @@ extension AlleyEditor.Action {
 	init(action: AlleyEditorView.ViewAction) {
 		switch action {
 		case let .setLaneEditor(isPresented):
-			self = .setLaneEditor(isPresented: isPresented)
+			self = .view(.setLaneEditor(isPresented: isPresented))
 		case let .binding(action):
 			self = .binding(action.pullback(\AlleyEditor.State.view))
 		}

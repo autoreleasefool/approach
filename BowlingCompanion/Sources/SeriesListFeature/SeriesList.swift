@@ -106,9 +106,7 @@ public struct SeriesList: ReducerProtocol {
 						return .none
 					}
 
-				case .editor(.form(.didFinishSaving)),
-						.editor(.form(.didFinishDeleting)),
-						.editor(.form(.alert(.discardButtonTapped))):
+				case .editor(.didFinishEditing):
 					state.editor = nil
 					return .none
 

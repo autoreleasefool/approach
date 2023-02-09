@@ -1,4 +1,5 @@
 import ComposableArchitecture
+import FeatureActionLibrary
 import LaneEditorFeature
 import SharedModelsLibrary
 import StringsLibrary
@@ -37,7 +38,7 @@ public struct AlleyLanesEditorView: View {
 			List {
 				Section {
 					ForEachStore(
-						store.scope(state: \.lanes, action: { .internal(.laneEditor(id: $0, action: $1)) })
+						store.scope(state: \.lanes, action: /AlleyLanesEditor.Action.InternalAction.laneEditor(id:action:))
 					) {
 						LaneEditorView(store: $0)
 					}
@@ -65,7 +66,7 @@ public struct AlleyLanesEditorView: View {
 				get: \.isAddLaneFormPresented,
 				send: ViewAction.setAddLaneForm(isPresented:)
 			)) {
-				IfLetStore(store.scope(state: \.addLaneForm, action: { .internal(.addLaneForm($0)) })) {
+				IfLetStore(store.scope(state: \.addLaneForm, action: /AlleyLanesEditor.Action.InternalAction.addLaneForm)) {
 					AddLaneFormView(store: $0)
 						.padding()
 						.overlay {

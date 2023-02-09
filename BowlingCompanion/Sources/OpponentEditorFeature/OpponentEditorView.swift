@@ -1,5 +1,6 @@
 import BaseFormLibrary
 import ComposableArchitecture
+import FeatureActionLibrary
 import StringsLibrary
 import SwiftUI
 
@@ -24,7 +25,7 @@ public struct OpponentEditorView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: OpponentEditor.Action.init) { viewStore in
-			BaseFormView(store: store.scope(state: \.base, action: OpponentEditor.Action.form)) {
+			BaseFormView(store: store.scope(state: \.base, action: /OpponentEditor.Action.InternalAction.form)) {
 				Section(Strings.Editor.Fields.Details.title) {
 					TextField(
 						Strings.Editor.Fields.Details.name,

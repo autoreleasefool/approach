@@ -92,6 +92,7 @@ public struct LeagueEditor: ReducerProtocol {
 		case form(Form.Action)
 		case alleyPicker(ResourcePicker<Alley, Alley.FetchRequest>.Action)
 		case setAlleyPicker(isPresented: Bool)
+		case didFinishEditing
 	}
 
 	public init() {}
@@ -147,16 +148,19 @@ public struct LeagueEditor: ReducerProtocol {
 				state.isAlleyPickerPresented = false
 				return .none
 
-			case .form(.saveModelResult(.success)):
-				state.base.isLoading = false
-				return .task { .form(.didFinishSaving) }
+			case let .form(.delegate(delegateAction)):
+				switch delegateAction {
+				case let .didSaveModel(league):
+					return .task { .form(.callback(.didFinishSaving(.success(league))))}
 
-			case .form(.deleteModelResult(.success)):
-				state.base.isLoading = false
-				return .task { .form(.didFinishDeleting) }
+				case let .didDeleteModel(league):
+					return .task { .form(.callback(.didFinishDeleting(.success(league)))) }
 
-			case .form(.deleteModelResult(.failure)), .form(.saveModelResult(.failure)):
-				state.base.isLoading = false
+				case .didFinishSaving, .didFinishDeleting:
+					return .task { .didFinishEditing }
+				}
+
+			case .didFinishEditing:
 				return .none
 
 			case .binding(\.base.form.$recurrence):
@@ -165,7 +169,7 @@ public struct LeagueEditor: ReducerProtocol {
 				}
 				return .none
 
-			case .binding, .form, .alleyPicker:
+			case .binding, .form(.internal), .form(.view), .form(.callback), .alleyPicker:
 				return .none
 			}
 		}

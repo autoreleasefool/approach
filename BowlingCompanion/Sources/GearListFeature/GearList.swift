@@ -51,10 +51,7 @@ public struct GearList: ReducerProtocol {
 				state.gearEditor = .init(mode: .create)
 				return .none
 
-			case .setEditorFormSheet(isPresented: false),
-					.gearEditor(.form(.didFinishSaving)),
-					.gearEditor(.form(.didFinishDeleting)),
-					.gearEditor(.form(.alert(.discardButtonTapped))):
+			case .setEditorFormSheet(isPresented: false), .gearEditor(.didFinishEditing):
 				state.gearEditor = nil
 				return .none
 

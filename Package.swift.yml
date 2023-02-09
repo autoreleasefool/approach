@@ -258,6 +258,7 @@ package:
     - name: BaseFormLibrary
       dependencies:
         - AssetsLibrary
+        - FeatureActionLibrary
         - ViewsLibrary
     - name: ConstantsLibrary
       dependencies:

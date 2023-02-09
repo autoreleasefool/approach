@@ -3,9 +3,9 @@ import StringsLibrary
 
 extension BaseForm {
 	public enum AlertAction: Equatable {
-		case dismissed
-		case discardButtonTapped
-		case deleteButtonTapped
+		case didTapDismissButton
+		case didTapDiscardButton
+		case didTapDeleteButton
 	}
 }
 
@@ -17,9 +17,9 @@ extension BaseForm.State {
 			title: TextState(Strings.Form.Prompt.delete(model.name)),
 			primaryButton: .destructive(
 				TextState(Strings.Action.delete),
-				action: .send(.deleteButtonTapped)
+				action: .send(.didTapDeleteButton)
 			),
-			secondaryButton: .cancel(TextState(Strings.Action.cancel), action: .send(.dismissed))
+			secondaryButton: .cancel(TextState(Strings.Action.cancel), action: .send(.didTapDismissButton))
 		)
 	}
 
@@ -28,9 +28,9 @@ extension BaseForm.State {
 			title: TextState(Strings.Form.Prompt.discardChanges),
 			primaryButton: .destructive(
 				TextState(Strings.Action.discard),
-				action: .send(.discardButtonTapped)
+				action: .send(.didTapDiscardButton)
 			),
-			secondaryButton: .cancel(TextState(Strings.Action.cancel), action: .send(.dismissed))
+			secondaryButton: .cancel(TextState(Strings.Action.cancel), action: .send(.didTapDismissButton))
 		)
 	}
 }

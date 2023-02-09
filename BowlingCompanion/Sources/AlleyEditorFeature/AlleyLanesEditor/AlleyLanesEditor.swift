@@ -1,4 +1,5 @@
 import ComposableArchitecture
+import FeatureActionLibrary
 import LanesDataProviderInterface
 import LaneEditorFeature
 import PersistenceServiceInterface
@@ -22,7 +23,7 @@ public struct AlleyLanesEditor: ReducerProtocol {
 		}
 	}
 
-	public enum Action: Equatable {
+	public enum Action: Equatable, FeatureAction {
 		public enum ViewAction: Equatable {
 			case didAppear
 			case didTapAddLaneButton

@@ -1,5 +1,6 @@
 import BaseFormLibrary
 import ComposableArchitecture
+import FeatureActionLibrary
 import Foundation
 import LaneEditorFeature
 import PersistenceServiceInterface
@@ -64,12 +65,23 @@ public struct AlleyEditor: ReducerProtocol {
 		}
 	}
 
-	public enum Action: BindableAction, Equatable {
-		case setLaneEditor(isPresented: Bool)
+	public enum Action: FeatureAction, BindableAction, Equatable {
+		public enum ViewAction: Equatable {
+			case setLaneEditor(isPresented: Bool)
+		}
+		public enum DelegateAction: Equatable {
+			case didFinishEditing
+		}
+		public enum InternalAction: Equatable {
+			case form(Form.Action)
+			case alleyLanes(AlleyLanes.Action)
+			case laneEditor(AlleyLanesEditor.Action)
+		}
+
+		case view(ViewAction)
+		case delegate(DelegateAction)
+		case `internal`(InternalAction)
 		case binding(BindingAction<State>)
-		case form(Form.Action)
-		case alleyLanes(AlleyLanes.Action)
-		case laneEditor(AlleyLanesEditor.Action)
 	}
 
 	public init() {}
@@ -79,7 +91,7 @@ public struct AlleyEditor: ReducerProtocol {
 	public var body: some ReducerProtocol<State, Action> {
 		BindingReducer()
 
-		Scope(state: \.base, action: /Action.form) {
+		Scope(state: \.base, action: /Action.internal..Action.InternalAction.form) {
 			BaseForm()
 				.dependency(\.modelPersistence, .init(
 					create: persistenceService.createAlley,
@@ -88,58 +100,70 @@ public struct AlleyEditor: ReducerProtocol {
 				))
 		}
 
-		Scope(state: \.alleyLanes, action: /AlleyEditor.Action.alleyLanes) {
+		Scope(state: \.alleyLanes, action: /Action.internal..Action.InternalAction.alleyLanes) {
 			AlleyLanes()
 		}
 
-		Scope(state: \.base.form.laneEditor, action: /AlleyEditor.Action.laneEditor) {
+		Scope(state: \.base.form.laneEditor, action: /Action.internal..Action.InternalAction.laneEditor) {
 			AlleyLanesEditor()
 		}
 
 		Reduce { state, action in
 			switch action {
-			case let .setLaneEditor(isPresented):
-				state.isLaneEditorPresented = isPresented
-				if !isPresented {
-					// TODO: sort lanes
-					state.alleyLanes.lanes = .init(
-						uniqueElements: state.base.form.laneEditor.lanes.map { $0.toLane(alley: state.base.form.alleyId) }
-					)
-				}
-				return .none
-
-			case let .form(.saveModelResult(.success(alley))):
-				let existing = state.base.form.laneEditor.existingLanes
-				let existingIds = existing.map { $0.id }
-				let lanes = state.base.form.laneEditor.lanes
-				let laneIds = lanes.map { $0.id }
-				return .task { [alleyId = alley.id] in
-					let added = lanes.filter { !existingIds.contains($0.id) }.map { $0.toLane(alley: alleyId) }
-					let removed = existing.filter { !laneIds.contains($0.id) }
-					let updated = lanes.filter { existingIds.contains($0.id) }.map { $0.toLane(alley: alleyId) }
-
-					try await persistenceService.createLanes(added)
-					try await persistenceService.updateLanes(updated)
-					try await persistenceService.deleteLanes(removed)
-
-					return .form(.didFinishSaving)
-				} catch: { error in
-					return .form(.saveModelResult(.failure(error)))
+			case let .view(viewAction):
+				switch viewAction {
+				case let .setLaneEditor(isPresented):
+					state.isLaneEditorPresented = isPresented
+					if !isPresented {
+						// TODO: sort lanes
+						state.alleyLanes.lanes = .init(
+							uniqueElements: state.base.form.laneEditor.lanes.map { $0.toLane(alley: state.base.form.alleyId) }
+						)
+					}
+					return .none
 				}
 
-			case .form(.didFinishSaving):
-				state.base.isLoading = false
-				return .none
+			case let .internal(internalAction):
+				switch internalAction {
+				case let .form(.delegate(formAction)):
+					switch formAction {
+					case let .didSaveModel(alley):
+						let existing = state.base.form.laneEditor.existingLanes
+						let existingIds = existing.map { $0.id }
+						let lanes = state.base.form.laneEditor.lanes
+						let laneIds = lanes.map { $0.id }
+						return .task { [alleyId = alley.id] in
+							let added = lanes.filter { !existingIds.contains($0.id) }.map { $0.toLane(alley: alleyId) }
+							let removed = existing.filter { !laneIds.contains($0.id) }
+							let updated = lanes.filter { existingIds.contains($0.id) }.map { $0.toLane(alley: alleyId) }
 
-			case .form(.deleteModelResult(.success)):
-				state.base.isLoading = false
-				return .task { .form(.didFinishDeleting) }
+							try await persistenceService.createLanes(added)
+							try await persistenceService.updateLanes(updated)
+							try await persistenceService.deleteLanes(removed)
 
-			case .form(.deleteModelResult(.failure)), .form(.saveModelResult(.failure)):
-				state.base.isLoading = false
-				return .none
+							return .internal(.form(.callback(.didFinishSaving(.success(alley)))))
+						} catch: { error in
+							return .internal(.form(.callback(.didFinishSaving(.failure(error)))))
+						}
 
-			case .binding, .form, .alleyLanes, .laneEditor(.internal), .laneEditor(.view):
+					case let .didDeleteModel(alley):
+						return .task { .internal(.form(.callback(.didFinishDeleting(.success(alley))))) }
+
+					case .didFinishSaving, .didFinishDeleting:
+						return .task { .delegate(.didFinishEditing) }
+					}
+
+				case .laneEditor(.internal),
+						.laneEditor(.view),
+						.laneEditor(.delegate),
+						.form(.view),
+						.form(.internal),
+						.form(.callback),
+						.alleyLanes:
+					return .none
+				}
+
+			case .binding, .delegate:
 				return .none
 			}
 		}

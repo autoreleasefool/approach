@@ -139,9 +139,7 @@ public struct LeaguesList: ReducerProtocol {
 						return .task { .`internal`(.list(.view(.didObserveData))) }
 					}
 
-				case .editor(.form(.didFinishSaving)),
-						.editor(.form(.didFinishDeleting)),
-						.editor(.form(.alert(.discardButtonTapped))):
+				case .editor(.didFinishEditing):
 					state.editor = nil
 					return .none
 

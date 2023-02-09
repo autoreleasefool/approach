@@ -67,6 +67,7 @@ public struct GearEditor: ReducerProtocol {
 		case form(Form.Action)
 		case bowlerPicker(ResourcePicker<Bowler, Bowler.FetchRequest>.Action)
 		case setBowlerPicker(isPresented: Bool)
+		case didFinishEditing
 	}
 
 	public init() {}
@@ -122,16 +123,19 @@ public struct GearEditor: ReducerProtocol {
 				state.isBowlerPickerPresented = false
 				return .none
 
-			case .form(.saveModelResult(.success)):
-				state.base.isLoading = false
-				return .task { .form(.didFinishSaving) }
+			case let .form(.delegate(delegateAction)):
+				switch delegateAction {
+				case let .didSaveModel(bowler):
+					return .task { .form(.callback(.didFinishSaving(.success(bowler))))}
 
-			case .form(.deleteModelResult(.success)):
-				state.base.isLoading = false
-				return .task { .form(.didFinishDeleting) }
+				case let .didDeleteModel(bowler):
+					return .task { .form(.callback(.didFinishDeleting(.success(bowler)))) }
 
-			case .form(.deleteModelResult(.failure)), .form(.saveModelResult(.failure)):
-				state.base.isLoading = false
+				case .didFinishSaving, .didFinishDeleting:
+					return .task { .didFinishEditing }
+				}
+
+			case .didFinishEditing:
 				return .none
 
 			case .binding, .form, .bowlerPicker:

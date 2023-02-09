@@ -1,4 +1,5 @@
 import ComposableArchitecture
+import FeatureActionLibrary
 import StringsLibrary
 import SwiftUI
 import ViewsLibrary
@@ -39,9 +40,9 @@ public struct BaseFormView<
 	}
 
 	enum ViewAction {
-		case saveButtonTapped
-		case deleteButtonTapped
-		case discardButtonTapped
+		case didTapSaveButton
+		case didTapDeleteButton
+		case didTapDiscardButton
 	}
 
 	public init(
@@ -64,7 +65,7 @@ public struct BaseFormView<
 
 				if viewStore.isDeleteable {
 					Section {
-						DeleteButton { viewStore.send(.deleteButtonTapped) }
+						DeleteButton { viewStore.send(.didTapDeleteButton) }
 					}
 					.listRowBackground(Color(uiColor: .secondarySystemBackground))
 				}
@@ -73,19 +74,19 @@ public struct BaseFormView<
 			.navigationTitle(viewStore.navigationTitle)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
-					Button(viewStore.saveButtonText) { viewStore.send(.saveButtonTapped) }
+					Button(viewStore.saveButtonText) { viewStore.send(.didTapSaveButton) }
 						.disabled(!viewStore.isSaveable)
 				}
 
 				if viewStore.isDiscardable {
 					ToolbarItem(placement: .navigationBarLeading) {
-						Button(Strings.Action.discard) { viewStore.send(.discardButtonTapped) }
+						Button(Strings.Action.discard) { viewStore.send(.didTapDiscardButton) }
 					}
 				}
 			}
 			.alert(
-				store.scope(state: \.alert, action: BaseForm.Action.alert),
-				dismiss: .dismissed
+				store.scope(state: \.alert, action: { BaseForm<Model, FormState>.Action.view(.alert($0)) }),
+				dismiss: .didTapDismissButton
 			)
 			.interactiveDismissDisabled(!viewStore.isDismissable)
 		}
@@ -93,12 +94,12 @@ public struct BaseFormView<
 
 	private func map(viewAction: ViewAction) -> BaseForm<Model, FormState>.Action {
 		switch viewAction {
-		case .saveButtonTapped:
-			return .saveButtonTapped
-		case .discardButtonTapped:
-			return .discardButtonTapped
-		case .deleteButtonTapped:
-			return .deleteButtonTapped
+		case .didTapSaveButton:
+			return .view(.didTapSaveButton)
+		case .didTapDeleteButton:
+			return .view(.didTapDeleteButton)
+		case .didTapDiscardButton:
+			return .view(.didTapDiscardButton)
 		}
 	}
 }

@@ -1,5 +1,6 @@
 import BaseFormLibrary
 import ComposableArchitecture
+import FeatureActionLibrary
 import Foundation
 import PersistenceServiceInterface
 import SharedModelsLibrary
@@ -34,9 +35,19 @@ public struct BowlerEditor: ReducerProtocol {
 		}
 	}
 
-	public enum Action: BindableAction, Equatable {
+	public enum Action: FeatureAction, BindableAction, Equatable {
+		public enum ViewAction: Equatable {}
+		public enum DelegateAction: Equatable {
+			case didFinishEditing
+		}
+		public enum InternalAction: Equatable {
+			case form(Form.Action)
+		}
+
+		case view(ViewAction)
+		case delegate(DelegateAction)
+		case `internal`(InternalAction)
 		case binding(BindingAction<State>)
-		case form(Form.Action)
 	}
 
 	public init() {}
@@ -47,7 +58,7 @@ public struct BowlerEditor: ReducerProtocol {
 	public var body: some ReducerProtocol<State, Action> {
 		BindingReducer()
 
-		Scope(state: \.base, action: /Action.form) {
+		Scope(state: \.base, action: /Action.internal..Action.InternalAction.form) {
 			BaseForm()
 				.dependency(\.modelPersistence, .init(
 					create: persistenceService.createBowler,
@@ -56,21 +67,27 @@ public struct BowlerEditor: ReducerProtocol {
 				))
 		}
 
-		Reduce { state, action in
+		Reduce { _, action in
 			switch action {
-			case .form(.saveModelResult(.success)):
-				state.base.isLoading = false
-				return .task { .form(.didFinishSaving) }
+			case let .internal(internalAction):
+				switch internalAction {
+				case let .form(.delegate(delegateAction)):
+					switch delegateAction {
+					case let .didSaveModel(bowler):
+						return .task { .internal(.form(.callback(.didFinishSaving(.success(bowler))))) }
 
-			case .form(.deleteModelResult(.success)):
-				state.base.isLoading = false
-				return .task { .form(.didFinishDeleting) }
+					case let .didDeleteModel(bowler):
+						return .task { .internal(.form(.callback(.didFinishDeleting(.success(bowler))))) }
 
-			case .form(.deleteModelResult(.failure)), .form(.saveModelResult(.failure)):
-				state.base.isLoading = false
-				return .none
+					case .didFinishSaving, .didFinishDeleting:
+						return .task { .delegate(.didFinishEditing) }
+					}
 
-			case .binding, .form:
+				case .form(.view), .form(.internal), .form(.callback):
+					return .none
+				}
+
+			case .binding, .view, .delegate:
 				return .none
 			}
 		}
