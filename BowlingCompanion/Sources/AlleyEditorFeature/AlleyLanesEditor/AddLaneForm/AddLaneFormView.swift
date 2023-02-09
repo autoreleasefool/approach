@@ -16,8 +16,8 @@ struct AddLaneFormView: View {
 	}
 
 	enum ViewAction: BindableAction {
-		case saveButtonTapped
-		case cancelButtonTapped
+		case didTapSaveButton
+		case didTapCancelButton
 		case binding(BindingAction<ViewState>)
 	}
 
@@ -26,11 +26,11 @@ struct AddLaneFormView: View {
 			VStack(spacing: .standardSpacing) {
 				HStack {
 					Button(Strings.Action.cancel) {
-						viewStore.send(.cancelButtonTapped)
+						viewStore.send(.didTapCancelButton)
 					}
 					Spacer()
 					Button(Strings.Action.add) {
-						viewStore.send(.saveButtonTapped)
+						viewStore.send(.didTapSaveButton)
 					}
 				}
 
@@ -56,10 +56,10 @@ extension AddLaneForm.State {
 extension AddLaneForm.Action {
 	init(action: AddLaneFormView.ViewAction) {
 		switch action {
-		case .saveButtonTapped:
-			self = .saveButtonTapped
-		case .cancelButtonTapped:
-			self = .cancelButtonTapped
+		case .didTapSaveButton:
+			self = .view(.didTapSaveButton)
+		case .didTapCancelButton:
+			self = .view(.didTapCancelButton)
 		case let .binding(action):
 			self = .binding(action.pullback(\AddLaneForm.State.view))
 		}

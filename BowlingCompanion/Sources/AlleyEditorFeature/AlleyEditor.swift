@@ -139,7 +139,7 @@ public struct AlleyEditor: ReducerProtocol {
 				state.base.isLoading = false
 				return .none
 
-			case .binding, .form, .alleyLanes, .laneEditor:
+			case .binding, .form, .alleyLanes, .laneEditor(.internal), .laneEditor(.view):
 				return .none
 			}
 		}

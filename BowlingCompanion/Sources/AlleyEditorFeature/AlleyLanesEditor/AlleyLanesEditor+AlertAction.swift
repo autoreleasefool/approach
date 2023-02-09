@@ -4,8 +4,8 @@ import StringsLibrary
 
 extension AlleyLanesEditor {
 	public enum AlertAction: Equatable {
-		case deleteButtonTapped(Lane)
-		case dismissed
+		case didTapDeleteButton(Lane)
+		case didTapDismissButton
 	}
 
 	static func alert(toDelete lane: Lane) -> AlertState<AlertAction> {
@@ -13,11 +13,11 @@ extension AlleyLanesEditor {
 			title: TextState(Strings.Form.Prompt.delete(lane.label)),
 			primaryButton: .destructive(
 				TextState(Strings.Action.delete),
-				action: .send(.deleteButtonTapped(lane))
+				action: .send(.didTapDeleteButton(lane))
 			),
 			secondaryButton: .cancel(
 				TextState(Strings.Action.cancel),
-				action: .send(.dismissed)
+				action: .send(.didTapDismissButton)
 			)
 		)
 	}

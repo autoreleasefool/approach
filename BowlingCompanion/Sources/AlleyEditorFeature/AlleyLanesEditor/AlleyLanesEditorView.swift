@@ -12,21 +12,19 @@ public struct AlleyLanesEditorView: View {
 	@State private var addLaneSheetHeight: CGFloat = .zero
 
 	struct ViewState: Equatable {
-		let isLoadingInitialData: Bool
-		let lanes: IdentifiedArrayOf<LaneEditor.State>
+		let lanes: IdentifiedArrayOf<LaneEditor.State>?
 		let isAddLaneFormPresented: Bool
 
 		init(state: AlleyLanesEditor.State) {
 			self.lanes = state.lanes
-			self.isLoadingInitialData = state.isLoadingInitialData
 			self.isAddLaneFormPresented = state.addLaneForm != nil
 		}
 	}
 
 	enum ViewAction {
-		case onAppear
-		case addLaneButtonTapped
-		case addMultipleLanesButtonTapped
+		case didAppear
+		case didTapAddLaneButton
+		case didTapAddMultipleLanesButton
 		case setAddLaneForm(isPresented: Bool)
 	}
 
@@ -39,7 +37,7 @@ public struct AlleyLanesEditorView: View {
 			List {
 				Section {
 					ForEachStore(
-						store.scope(state: \.lanes, action: AlleyLanesEditor.Action.laneEditor(id:action:))
+						store.scope(state: \.lanes, action: { .internal(.laneEditor(id: $0, action: $1)) })
 					) {
 						LaneEditorView(store: $0)
 					}
@@ -48,26 +46,26 @@ public struct AlleyLanesEditorView: View {
 				}
 
 				Section {
-					Button { viewStore.send(.addLaneButtonTapped) } label: {
+					Button { viewStore.send(.didTapAddLaneButton) } label: {
 						Label(Strings.Lane.List.add, systemImage: "plus.square")
 					}
 
-					Button { viewStore.send(.addMultipleLanesButtonTapped) } label: {
+					Button { viewStore.send(.didTapAddMultipleLanesButton) } label: {
 						Label(Strings.Lane.List.addMultiple, systemImage: "plus.square.on.square")
 					}
 				}
 			}
 			.navigationTitle(Strings.Lane.List.title)
-			.onAppear { viewStore.send(.onAppear) }
+			.onAppear { viewStore.send(.didAppear) }
 			.alert(
-				self.store.scope(state: \.alert, action: AlleyLanesEditor.Action.alert),
-				dismiss: .dismissed
+				self.store.scope(state: \.alert, action: { AlleyLanesEditor.Action.view(.alert($0)) }),
+				dismiss: .didTapDismissButton
 			)
 			.sheet(isPresented: viewStore.binding(
 				get: \.isAddLaneFormPresented,
 				send: ViewAction.setAddLaneForm(isPresented:)
 			)) {
-				IfLetStore(store.scope(state: \.addLaneForm, action: AlleyLanesEditor.Action.addLaneForm)) {
+				IfLetStore(store.scope(state: \.addLaneForm, action: { .internal(.addLaneForm($0)) })) {
 					AddLaneFormView(store: $0)
 						.padding()
 						.overlay {
@@ -92,16 +90,14 @@ public struct AlleyLanesEditorView: View {
 extension AlleyLanesEditor.Action {
 	init(action: AlleyLanesEditorView.ViewAction) {
 		switch action {
-		case .onAppear:
-			self = .loadInitialData
-		case .addLaneButtonTapped:
-			self = .addLaneButtonTapped
-		case .addMultipleLanesButtonTapped:
-			self = .addMultipleLanesButtonTapped
-		case .setAddLaneForm(true):
-			self = .addMultipleLanesButtonTapped
-		case .setAddLaneForm(false):
-			self = .addLaneForm(.cancelButtonTapped)
+		case .didAppear:
+			self = .view(.didAppear)
+		case .didTapAddLaneButton:
+			self = .view(.didTapAddLaneButton)
+		case .didTapAddMultipleLanesButton:
+			self = .view(.didTapAddMultipleLanesButton)
+		case let .setAddLaneForm(isPresented):
+			self = .view(.setAddLaneForm(isPresented: isPresented))
 		}
 	}
 }
