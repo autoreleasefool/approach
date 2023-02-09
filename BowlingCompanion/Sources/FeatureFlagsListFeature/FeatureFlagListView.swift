@@ -15,9 +15,9 @@ public struct FeatureFlagsListView: View {
 	}
 
 	enum ViewAction {
-		case subscribeToFlags
-		case toggle(flag: FeatureFlag)
-		case resetOverridesButtonTapped
+		case didStartObservingFlags
+		case didToggle(flag: FeatureFlag)
+		case didTapResetOverridesButton
 	}
 
 	public init(store: StoreOf<FeatureFlagsList>) {
@@ -28,7 +28,7 @@ public struct FeatureFlagsListView: View {
 		WithViewStore(store, observe: ViewState.init, send: FeatureFlagsList.Action.init) { viewStore in
 			List {
 				Section {
-					Button(Strings.Action.reset) { viewStore.send(.resetOverridesButtonTapped) }
+					Button(Strings.Action.reset) { viewStore.send(.didTapResetOverridesButton) }
 				}
 
 				Section(Strings.Settings.FeatureFlags.title) {
@@ -37,13 +37,13 @@ public struct FeatureFlagsListView: View {
 							item.flag.name,
 							isOn: viewStore.binding(
 								get: { _ in item.enabled },
-								send: { _ in ViewAction.toggle(flag: item.flag) }
+								send: { _ in ViewAction.didToggle(flag: item.flag) }
 							)
 						).disabled(!item.flag.isOverridable)
 					}
 				}
 			}
-			.task { await viewStore.send(.subscribeToFlags).finish() }
+			.task { await viewStore.send(.didStartObservingFlags).finish() }
 		}
 	}
 }
@@ -51,12 +51,12 @@ public struct FeatureFlagsListView: View {
 extension FeatureFlagsList.Action {
 	init(action: FeatureFlagsListView.ViewAction) {
 		switch action {
-		case .subscribeToFlags:
-			self = .subscribeToFlags
-		case let .toggle(featureFlag):
-			self = .toggle(featureFlag)
-		case .resetOverridesButtonTapped:
-			self = .resetOverridesButtonTapped
+		case .didStartObservingFlags:
+			self = .view(.didStartObservingFlags)
+		case let .didToggle(featureFlag):
+			self = .view(.didToggle(featureFlag))
+		case .didTapResetOverridesButton:
+			self = .view(.didTapResetOverridesButton)
 		}
 	}
 }
