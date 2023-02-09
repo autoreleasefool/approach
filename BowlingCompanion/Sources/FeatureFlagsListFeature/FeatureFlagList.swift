@@ -46,7 +46,9 @@ public struct FeatureFlagsList: ReducerProtocol {
 				return .none
 
 			case .resetOverridesButtonTapped:
-				FeatureFlag.allFlags.forEach { featureFlagService.setEnabled($0, nil) }
+				for flag in FeatureFlag.allFlags {
+					featureFlagService.setEnabled(flag, nil)
+				}
 				return .none
 			}
 		}

@@ -7,9 +7,9 @@ extension TeamMembership: PersistableSQL {
 
 		var statements = ""
 		var arguments: [(any DatabaseValueConvertible)?] = []
-		members.forEach {
+		for member in members {
 			statements.append("INSERT INTO teamMember (team, bowler) VALUES (?, ?); ")
-			arguments.append(contentsOf: [team, $0.id])
+			arguments.append(contentsOf: [team, member.id])
 		}
 
 		try db.execute(sql: statements, arguments: StatementArguments(arguments))

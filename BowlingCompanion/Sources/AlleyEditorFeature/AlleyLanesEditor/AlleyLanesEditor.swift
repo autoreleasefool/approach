@@ -186,11 +186,11 @@ public struct AlleyLanesEditor: ReducerProtocol {
 		if let numberOfLanes {
 			if let previousLane = state.lanes.last?.label,
 				 let previousLaneNumber = Int(previousLane) {
-				(1...numberOfLanes).forEach {
-					state.lanes.append(.init(id: uuid(), label: String(previousLaneNumber + $0), isAgainstWall: false))
+				for index in 1...numberOfLanes {
+					state.lanes.append(.init(id: uuid(), label: String(previousLaneNumber + index), isAgainstWall: false))
 				}
 			} else {
-				(1...numberOfLanes).forEach { _ in
+				for _ in 1...numberOfLanes {
 					state.lanes.append(.init(id: uuid(), label: "", isAgainstWall: false))
 				}
 			}
