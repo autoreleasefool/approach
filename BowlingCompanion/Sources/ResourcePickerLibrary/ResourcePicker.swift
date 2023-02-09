@@ -1,4 +1,5 @@
 import ComposableArchitecture
+import FeatureActionLibrary
 import ViewsLibrary
 
 public protocol PickableResource: Equatable, Identifiable {
@@ -33,12 +34,23 @@ public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: Redu
 		}
 	}
 
-	public enum Action: Equatable {
-		case refreshData
-		case cancelButtonTapped
-		case saveButtonTapped
-		case resourceTapped(Resource)
-		case resources(TaskResult<[Resource]>)
+	public enum Action: FeatureAction, Equatable {
+		public enum ViewAction: Equatable {
+			case didAppear
+			case didTapCancelButton
+			case didTapSaveButton
+			case didTapResource(Resource)
+		}
+		public enum DelegateAction: Equatable {
+			case didFinishEditing
+		}
+		public enum InternalAction: Equatable {
+			case didLoadResources(TaskResult<[Resource]>)
+		}
+
+		case view(ViewAction)
+		case delegate(DelegateAction)
+		case `internal`(InternalAction)
 	}
 
 	public init(fetchResources: @escaping (Query) async throws -> [Resource]) {
@@ -50,38 +62,48 @@ public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: Redu
 	public var body: some ReducerProtocol<State, Action> {
 		Reduce { state, action in
 			switch action {
-			case .refreshData:
-				state.error = nil
-				return .task { [query = state.query] in
-					await .resources(TaskResult { try await fetchResources(query) })
+			case let .view(viewAction):
+				switch viewAction {
+				case .didAppear:
+					state.error = nil
+					return .task { [query = state.query] in
+						await .internal(.didLoadResources(TaskResult { try await fetchResources(query) }))
+					}
+
+				case .didTapCancelButton:
+					state.selected = state.initialSelection
+					return .task { .delegate(.didFinishEditing) }
+
+				case .didTapSaveButton:
+					state.updateInitialSelection()
+					return .task { .delegate(.didFinishEditing) }
+
+				case let .didTapResource(resource):
+					if state.selected.contains(resource.id) {
+						state.selected.remove(resource.id)
+					} else if state.limit == 1 {
+						state.selected.removeAll()
+						state.selected.insert(resource.id)
+						state.updateInitialSelection()
+						return .task { .delegate(.didFinishEditing) }
+					} else if state.selected.count < state.limit || state.limit <= 0 {
+						state.selected.insert(resource.id)
+					}
+					return .none
 				}
 
-			case let .resources(.success(resources)):
-				state.resources = .init(uniqueElements: resources)
-				return .none
+			case let .internal(internalAction):
+				switch internalAction {
+				case let .didLoadResources(.success(resources)):
+					state.resources = .init(uniqueElements: resources)
+					return .none
 
-			case .resources(.failure):
-				state.error = .loadError
-				return .none
-
-			case let .resourceTapped(resource):
-				if state.selected.contains(resource.id) {
-					state.selected.remove(resource.id)
-				} else if state.limit == 1 {
-					state.selected.removeAll()
-					state.selected.insert(resource.id)
-					return .task { .saveButtonTapped }
-				} else if state.selected.count < state.limit || state.limit <= 0 {
-					state.selected.insert(resource.id)
+				case .didLoadResources(.failure):
+					state.error = .loadError
+					return .none
 				}
-				return .none
 
-			case .cancelButtonTapped:
-				state.selected = state.initialSelection
-				return .none
-
-			case .saveButtonTapped:
-				state.updateInitialSelection()
+			case .delegate:
 				return .none
 			}
 		}

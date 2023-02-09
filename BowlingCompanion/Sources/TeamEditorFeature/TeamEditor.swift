@@ -132,14 +132,22 @@ public struct TeamEditor: ReducerProtocol {
 						return .task { .delegate(.didFinishEditing) }
 					}
 
-				case .bowlers(.saveButtonTapped), .bowlers(.cancelButtonTapped):
-					state.teamMembers.bowlers = .init(
-						uniqueElements: state.base.form.bowlers.selectedResources?.sorted { $0.name < $1.name } ?? []
-					)
-					state.isBowlerPickerPresented = false
-					return .none
+				case let .bowlers(.delegate(delegateAction)):
+					switch delegateAction {
+					case .didFinishEditing:
+						state.teamMembers.bowlers = .init(
+							uniqueElements: state.base.form.bowlers.selectedResources?.sorted { $0.name < $1.name } ?? []
+						)
+						state.isBowlerPickerPresented = false
+						return .none
+					}
 
-				case .teamMembers, .form(.view), .form(.internal), .form(.callback), .bowlers:
+				case .teamMembers,
+						.form(.view),
+						.form(.internal),
+						.form(.callback),
+						.bowlers(.view),
+						.bowlers(.internal):
 					return .none
 				}
 

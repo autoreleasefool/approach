@@ -208,20 +208,26 @@ public struct SeriesEditor: ReducerProtocol {
 				state.isLanePickerPresented = isPresented
 				return .none
 
-			case .alleyPicker(.saveButtonTapped), .alleyPicker(.cancelButtonTapped):
-				state.isAlleyPickerPresented = false
-				let laneQuery: Lane.FetchRequest
-				if let alley = state.base.form.alleyPicker.selected.first {
-					laneQuery = .init(filter: .alley(alley), ordering: .byLabel)
-				} else {
-					laneQuery = .init(filter: nil, ordering: .byLabel)
+			case let .alleyPicker(.delegate(delegateAction)):
+				switch delegateAction {
+				case .didFinishEditing:
+					state.isAlleyPickerPresented = false
+					let laneQuery: Lane.FetchRequest
+					if let alley = state.base.form.alleyPicker.selected.first {
+						laneQuery = .init(filter: .alley(alley), ordering: .byLabel)
+					} else {
+						laneQuery = .init(filter: nil, ordering: .byLabel)
+					}
+					state.base.form.lanePicker.query = laneQuery
+					return .none
 				}
-				state.base.form.lanePicker.query = laneQuery
-				return .none
 
-			case .lanePicker(.saveButtonTapped), .lanePicker(.cancelButtonTapped):
-				state.isLanePickerPresented = false
-				return .none
+			case let .lanePicker(.delegate(delegateAction)):
+				switch delegateAction {
+				case .didFinishEditing:
+					state.isLanePickerPresented = false
+					return .none
+				}
 
 			case let .form(.delegate(delegateAction)):
 				switch delegateAction {
@@ -238,7 +244,14 @@ public struct SeriesEditor: ReducerProtocol {
 			case .didFinishEditing:
 				return .none
 
-			case .binding, .form(.view), .form(.callback), .form(.internal), .alleyPicker, .lanePicker:
+			case .binding,
+					.form(.view),
+					.form(.callback),
+					.form(.internal),
+					.alleyPicker(.internal),
+					.alleyPicker(.view),
+					.lanePicker(.internal),
+					.lanePicker(.view):
 				return .none
 			}
 		}

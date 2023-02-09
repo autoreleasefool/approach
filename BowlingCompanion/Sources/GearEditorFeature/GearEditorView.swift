@@ -1,5 +1,6 @@
 import BaseFormLibrary
 import ComposableArchitecture
+import FeatureActionLibrary
 import ResourcePickerLibrary
 import SharedModelsLibrary
 import SharedModelsViewsLibrary
@@ -35,7 +36,7 @@ public struct GearEditorView: View {
 	}
 
 	enum ViewAction: BindableAction {
-		case loadInitialData
+		case didAppear
 		case setBowlerPicker(isPresented: Bool)
 		case binding(BindingAction<ViewState>)
 	}
@@ -46,7 +47,7 @@ public struct GearEditorView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: GearEditor.Action.init) { viewStore in
-			BaseFormView(store: store.scope(state: \.base, action: GearEditor.Action.form)) {
+			BaseFormView(store: store.scope(state: \.base, action: /GearEditor.Action.InternalAction.form)) {
 				Section(Strings.Editor.Fields.Details.title) {
 					TextField(
 						Strings.Editor.Fields.Details.name,
@@ -70,7 +71,7 @@ public struct GearEditorView: View {
 						destination: ResourcePickerView(
 							store: store.scope(
 								state: \.base.form.bowlerPicker,
-								action: GearEditor.Action.bowlerPicker
+								action: /GearEditor.Action.InternalAction.bowlerPicker
 							)
 						) { bowler in
 							BowlerRow(bowler: bowler)
@@ -89,7 +90,7 @@ public struct GearEditorView: View {
 				.listRowBackground(Color(uiColor: .secondarySystemBackground))
 			}
 			.interactiveDismissDisabled(viewStore.isBowlerPickerPresented)
-			.onAppear { viewStore.send(.loadInitialData) }
+			.onAppear { viewStore.send(.didAppear) }
 		}
 	}
 }
@@ -107,10 +108,10 @@ extension GearEditor.State {
 extension GearEditor.Action {
 	init(action: GearEditorView.ViewAction) {
 		switch action {
-		case .loadInitialData:
-			self = .loadInitialData
+		case .didAppear:
+			self = .view(.didAppear)
 		case let .setBowlerPicker(isPresented):
-			self = .setBowlerPicker(isPresented: isPresented)
+			self = .view(.setBowlerPicker(isPresented: isPresented))
 		case let .binding(action):
 			self = .binding(action.pullback(\GearEditor.State.view))
 		}

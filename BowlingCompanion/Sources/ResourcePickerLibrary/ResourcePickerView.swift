@@ -29,10 +29,10 @@ public struct ResourcePickerView<Resource: PickableResource, Query: Equatable, R
 	}
 
 	enum ViewAction {
-		case refreshData
-		case saveButtonTapped
-		case cancelButtonTapped
-		case resourceTapped(Resource)
+		case didAppear
+		case didTapSaveButton
+		case didTapCancelButton
+		case didTapResource(Resource)
 	}
 
 	public init(store: StoreOf<ResourcePicker<Resource, Query>>, @ViewBuilder row: @escaping (Resource) -> Row) {
@@ -45,7 +45,7 @@ public struct ResourcePickerView<Resource: PickableResource, Query: Equatable, R
 			ListContent(viewStore.listState) { resources in
 				ForEach(resources) { resource in
 					Button {
-						viewStore.send(.resourceTapped(resource))
+						viewStore.send(.didTapResource(resource))
 					} label: {
 						HStack(alignment: .center, spacing: .standardSpacing) {
 							Image(systemName: viewStore.selected.contains(resource.id) ? "checkmark.circle.fill" : "circle")
@@ -67,7 +67,7 @@ public struct ResourcePickerView<Resource: PickableResource, Query: Equatable, R
 					title: Strings.Picker.Empty.title
 				) {
 					EmptyContentAction(title: Strings.Action.cancel) {
-						viewStore.send(.cancelButtonTapped)
+						viewStore.send(.didTapCancelButton)
 					}
 				}
 			} error: { error in
@@ -78,7 +78,7 @@ public struct ResourcePickerView<Resource: PickableResource, Query: Equatable, R
 					style: .error
 				) {
 					EmptyContentAction(title: error.action) {
-						viewStore.send(.cancelButtonTapped)
+						viewStore.send(.didTapCancelButton)
 					}
 				}
 			}
@@ -88,32 +88,32 @@ public struct ResourcePickerView<Resource: PickableResource, Query: Equatable, R
 				if viewStore.isCancellable {
 					ToolbarItem(placement: .navigationBarLeading) {
 						Button(Strings.Action.cancel) {
-							viewStore.send(.cancelButtonTapped)
+							viewStore.send(.didTapCancelButton)
 						}
 					}
 				}
 
 				ToolbarItem(placement: .navigationBarTrailing) {
 					Button(Strings.Action.save) {
-						viewStore.send(.saveButtonTapped)
+						viewStore.send(.didTapSaveButton)
 					}
 				}
 			}
 			.navigationBarBackButtonHidden(viewStore.isCancellable)
-			.onAppear { viewStore.send(.refreshData) }
+			.onAppear { viewStore.send(.didAppear) }
 		}
 	}
 
 	private func map(viewAction: ViewAction) -> ResourcePicker<Resource, Query>.Action {
 		switch viewAction {
-		case .saveButtonTapped:
-			return .saveButtonTapped
-		case .cancelButtonTapped:
-			return .cancelButtonTapped
-		case .refreshData:
-			return .refreshData
-		case let .resourceTapped(resource):
-			return .resourceTapped(resource)
+		case .didAppear:
+			return .view(.didAppear)
+		case .didTapSaveButton:
+			return .view(.didTapSaveButton)
+		case .didTapCancelButton:
+			return .view(.didTapCancelButton)
+		case let .didTapResource(resource):
+			return .view(.didTapResource(resource))
 		}
 	}
 }

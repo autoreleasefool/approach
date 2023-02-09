@@ -144,9 +144,12 @@ public struct LeagueEditor: ReducerProtocol {
 				state.isAlleyPickerPresented = isPresented
 				return .none
 
-			case .alleyPicker(.saveButtonTapped), .alleyPicker(.cancelButtonTapped):
-				state.isAlleyPickerPresented = false
-				return .none
+			case let .alleyPicker(.delegate(delegateAction)):
+				switch delegateAction {
+				case .didFinishEditing:
+					state.isAlleyPickerPresented = false
+					return .none
+				}
 
 			case let .form(.delegate(delegateAction)):
 				switch delegateAction {
@@ -169,7 +172,12 @@ public struct LeagueEditor: ReducerProtocol {
 				}
 				return .none
 
-			case .binding, .form(.internal), .form(.view), .form(.callback), .alleyPicker:
+			case .binding,
+					.form(.internal),
+					.form(.view),
+					.form(.callback),
+					.alleyPicker(.internal),
+					.alleyPicker(.view):
 				return .none
 			}
 		}

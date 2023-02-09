@@ -1,6 +1,7 @@
 import BaseFormLibrary
 import BowlersDataProviderInterface
 import ComposableArchitecture
+import FeatureActionLibrary
 import Foundation
 import ResourcePickerLibrary
 import PersistenceServiceInterface
@@ -60,14 +61,24 @@ public struct GearEditor: ReducerProtocol {
 		}
 	}
 
-	public enum Action: BindableAction, Equatable {
-		case loadInitialData
-		case bowlerResponse(TaskResult<Bowler?>)
+	public enum Action: FeatureAction, BindableAction, Equatable {
+		public enum ViewAction: Equatable {
+			case didAppear
+			case setBowlerPicker(isPresented: Bool)
+		}
+		public enum DelegateAction: Equatable {
+			case didFinishEditing
+		}
+		public enum InternalAction: Equatable {
+			case didLoadBowler(TaskResult<Bowler?>)
+			case form(Form.Action)
+			case bowlerPicker(ResourcePicker<Bowler, Bowler.FetchRequest>.Action)
+		}
+
+		case view(ViewAction)
+		case delegate(DelegateAction)
+		case `internal`(InternalAction)
 		case binding(BindingAction<State>)
-		case form(Form.Action)
-		case bowlerPicker(ResourcePicker<Bowler, Bowler.FetchRequest>.Action)
-		case setBowlerPicker(isPresented: Bool)
-		case didFinishEditing
 	}
 
 	public init() {}
@@ -79,7 +90,7 @@ public struct GearEditor: ReducerProtocol {
 	public var body: some ReducerProtocol<State, Action> {
 		BindingReducer()
 
-		Scope(state: \.base, action: /Action.form) {
+		Scope(state: \.base, action: /Action.internal..Action.InternalAction.form) {
 			BaseForm()
 				.dependency(\.modelPersistence, .init(
 					create: persistenceService.createGear,
@@ -88,7 +99,7 @@ public struct GearEditor: ReducerProtocol {
 				))
 		}
 
-		Scope(state: \.base.form.bowlerPicker, action: /Action.bowlerPicker) {
+		Scope(state: \.base.form.bowlerPicker, action: /Action.internal..Action.InternalAction.bowlerPicker) {
 			ResourcePicker {
 				try await bowlersDataProvider.fetchBowlers($0)
 			}
@@ -96,49 +107,58 @@ public struct GearEditor: ReducerProtocol {
 
 		Reduce { state, action in
 			switch action {
-			case .loadInitialData:
-				if let bowler = state.base.form.bowlerPicker.selected.first {
-					return .task {
-						await .bowlerResponse(TaskResult {
-							let bowlers = try await bowlersDataProvider.fetchBowlers(.init(filter: .id(bowler), ordering: .byName))
-							return bowlers.first
-						})
+			case let .view(viewAction):
+				switch viewAction {
+				case .didAppear:
+					if let bowler = state.base.form.bowlerPicker.selected.first {
+						return .task {
+							await .internal(.didLoadBowler(TaskResult {
+								let bowlers = try await bowlersDataProvider.fetchBowlers(.init(filter: .id(bowler), ordering: .byName))
+								return bowlers.first
+							}))
+						}
 					}
-				}
-				return .none
+					return .none
 
-			case let .bowlerResponse(.success(bowler)):
-				state.initialBowler = bowler
-				return .none
-
-			case .bowlerResponse(.failure):
-				// TODO: handle error failing to load bowler
-				return .none
-
-			case let .setBowlerPicker(isPresented):
-				state.isBowlerPickerPresented = isPresented
-				return .none
-
-			case .bowlerPicker(.saveButtonTapped), .bowlerPicker(.cancelButtonTapped):
-				state.isBowlerPickerPresented = false
-				return .none
-
-			case let .form(.delegate(delegateAction)):
-				switch delegateAction {
-				case let .didSaveModel(bowler):
-					return .task { .form(.callback(.didFinishSaving(.success(bowler))))}
-
-				case let .didDeleteModel(bowler):
-					return .task { .form(.callback(.didFinishDeleting(.success(bowler)))) }
-
-				case .didFinishSaving, .didFinishDeleting:
-					return .task { .didFinishEditing }
+				case let .setBowlerPicker(isPresented):
+					state.isBowlerPickerPresented = isPresented
+					return .none
 				}
 
-			case .didFinishEditing:
-				return .none
+			case let .internal(internalAction):
+				switch internalAction {
+				case let .didLoadBowler(.success(bowler)):
+					state.initialBowler = bowler
+					return .none
 
-			case .binding, .form, .bowlerPicker:
+				case .didLoadBowler(.failure):
+					// TODO: handle error failing to load bowler
+					return .none
+
+				case let .form(.delegate(delegateAction)):
+					switch delegateAction {
+					case let .didSaveModel(gear):
+						return .task { .internal(.form(.callback(.didFinishSaving(.success(gear))))) }
+
+					case let .didDeleteModel(gear):
+						return .task { .internal(.form(.callback(.didFinishDeleting(.success(gear))))) }
+
+					case .didFinishSaving, .didFinishDeleting:
+						return .task { .delegate(.didFinishEditing) }
+					}
+
+				case let .bowlerPicker(.delegate(delegateAction)):
+					switch delegateAction {
+					case .didFinishEditing:
+						state.isBowlerPickerPresented = false
+						return .none
+					}
+
+				case .bowlerPicker(.view), .bowlerPicker(.internal), .form(.view), .form(.internal), .form(.callback):
+					return .none
+				}
+
+			case .binding, .delegate:
 				return .none
 			}
 		}
