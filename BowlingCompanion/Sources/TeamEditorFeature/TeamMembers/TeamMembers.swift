@@ -1,22 +1,31 @@
 import BowlersDataProviderInterface
 import ComposableArchitecture
+import FeatureActionLibrary
 import SharedModelsLibrary
 import TeamsDataProviderInterface
 
 public struct TeamMembers: ReducerProtocol {
 	public struct State: Equatable {
 		public let team: Team?
-		public var isLoadingInitialData = true
-		public var bowlers: IdentifiedArrayOf<Bowler> = []
+		public var bowlers: IdentifiedArrayOf<Bowler>?
 
 		public init(team: Team?) {
 			self.team = team
 		}
 	}
 
-	public enum Action: Equatable {
-		case refreshData
-		case bowlersResponse(TaskResult<[Bowler]>)
+	public enum Action: FeatureAction, Equatable {
+		public enum ViewAction: Equatable {
+			case didAppear
+		}
+		public enum DelegateAction: Equatable {}
+		public enum InternalAction: Equatable {
+			case didLoadBowlers(TaskResult<[Bowler]>)
+		}
+
+		case view(ViewAction)
+		case delegate(DelegateAction)
+		case `internal`(InternalAction)
 	}
 
 	public init() {}
@@ -27,25 +36,33 @@ public struct TeamMembers: ReducerProtocol {
 	public var body: some ReducerProtocol<State, Action> {
 		Reduce { state, action in
 			switch action {
-			case .refreshData:
-				return .task { [team = state.team] in
-					if let team {
-						return await .bowlersResponse(TaskResult {
-							try await bowlersDataProvider.fetchBowlers(.init(filter: .team(team), ordering: .byName))
-						})
-					} else {
-						return .bowlersResponse(.success([]))
+			case let .view(viewAction):
+				switch viewAction {
+				case .didAppear:
+					return .task { [team = state.team] in
+						if let team {
+							return await .internal(.didLoadBowlers(TaskResult {
+								try await bowlersDataProvider.fetchBowlers(.init(filter: .team(team), ordering: .byName))
+							}))
+						} else {
+							return .internal(.didLoadBowlers(.success([])))
+						}
 					}
 				}
 
-			case let .bowlersResponse(.success(bowlers)):
-				state.bowlers = .init(uniqueElements: bowlers)
-				state.isLoadingInitialData = false
-				return .none
+			case let .internal(internalAction):
+				switch internalAction {
+				case let .didLoadBowlers(.success(bowlers)):
+					state.bowlers = .init(uniqueElements: bowlers)
+					return .none
 
-			case .bowlersResponse(.failure):
-				// TODO: handle failure loading bowlers
-				state.isLoadingInitialData = false
+				case .didLoadBowlers(.failure):
+					// TODO: handle failure loading bowlers
+					state.bowlers = []
+					return .none
+				}
+
+			case .delegate:
 				return .none
 			}
 		}

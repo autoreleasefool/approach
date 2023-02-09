@@ -115,8 +115,8 @@ public struct TeamEditor: ReducerProtocol {
 				case let .form(.delegate(delegateAction)):
 					switch delegateAction {
 					case let .didSaveModel(team):
-						let members = state.base.form.bowlers.selectedResources ?? state.teamMembers.bowlers.elements
-						let teamMembership = TeamMembership(team: team.id, members: members)
+						let members = state.base.form.bowlers.selectedResources ?? state.teamMembers.bowlers?.elements
+						let teamMembership = TeamMembership(team: team.id, members: members ?? [])
 						return .task { [teamMembership = teamMembership] in
 							try await persistenceService.updateTeamMembers(teamMembership)
 
@@ -142,7 +142,9 @@ public struct TeamEditor: ReducerProtocol {
 						return .none
 					}
 
-				case .teamMembers,
+				case .teamMembers(.view),
+						.teamMembers(.internal),
+						.teamMembers(.delegate),
 						.form(.view),
 						.form(.internal),
 						.form(.callback),
