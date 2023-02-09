@@ -51,9 +51,16 @@ public struct GearList: ReducerProtocol {
 				state.gearEditor = .init(mode: .create)
 				return .none
 
-			case .setEditorFormSheet(isPresented: false), .gearEditor(.didFinishEditing):
+			case .setEditorFormSheet(isPresented: false):
 				state.gearEditor = nil
 				return .none
+
+			case let .gearEditor(.delegate(delegateAction)):
+				switch delegateAction {
+				case .didFinishEditing:
+					state.gearEditor = nil
+					return .none
+				}
 
 			case .errorButtonTapped:
 				// TODO: handle error button tapped
@@ -75,7 +82,7 @@ public struct GearList: ReducerProtocol {
 				// TODO: present gear delete form
 				return .none
 
-			case .gearEditor:
+			case .gearEditor(.internal), .gearEditor(.view), .gearEditor(.binding):
 				return .none
 			}
 		}

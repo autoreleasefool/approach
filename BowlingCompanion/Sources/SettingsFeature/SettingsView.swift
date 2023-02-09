@@ -1,4 +1,5 @@
 import ComposableArchitecture
+import FeatureActionLibrary
 import FeatureFlagsListFeature
 import OpponentsListFeature
 import StringsLibrary
@@ -29,7 +30,7 @@ public struct SettingsView: View {
 						NavigationLink(
 							Strings.Settings.FeatureFlags.title,
 							destination: FeatureFlagsListView(
-								store: store.scope(state: \.featureFlagsList, action: Settings.Action.featureFlagsList)
+								store: store.scope(state: \.featureFlagsList, action: /Settings.Action.InternalAction.featureFlagsList)
 							)
 						)
 					}
@@ -40,13 +41,13 @@ public struct SettingsView: View {
 						NavigationLink(
 							Strings.Opponent.List.title,
 							destination: OpponentsListView(
-								store: store.scope(state: \.opponentsList, action: Settings.Action.opponentsList)
+								store: store.scope(state: \.opponentsList, action: /Settings.Action.InternalAction.opponentsList)
 							)
 						)
 					}
 				}
 
-				HelpSettingsView(store: store.scope(state: \.helpSettings, action: Settings.Action.helpSettings))
+				HelpSettingsView(store: store.scope(state: \.helpSettings, action: /Settings.Action.InternalAction.helpSettings))
 				VersionView()
 			}
 			.navigationTitle(Strings.Settings.title)

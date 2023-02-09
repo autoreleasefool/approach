@@ -1,6 +1,8 @@
 import AssetsLibrary
 import ComposableArchitecture
+import FeatureActionLibrary
 import OpponentEditorFeature
+import ResourceListLibrary
 import SharedModelsLibrary
 import SharedModelsViewsLibrary
 import SortOrderLibrary
@@ -12,30 +14,18 @@ public struct OpponentsListView: View {
 	let store: StoreOf<OpponentsList>
 
 	struct ViewState: Equatable {
-		let listState: ListContentState<Opponent, ListErrorContent>
 		let selection: Opponent.ID?
-		let isOpponentEditorPresented: Bool
+		let isEditorPresented: Bool
 
 		init(state: OpponentsList.State) {
-			if let error = state.error {
-				self.listState = .error(error)
-			} else if let opponents = state.opponents {
-				self.listState = .loaded(opponents)
-			} else {
-				self.listState = .loading
-			}
 			self.selection = state.selection?.id
-			self.isOpponentEditorPresented = state.opponentEditor != nil
+			self.isEditorPresented = state.editor != nil
 		}
 	}
 
 	enum ViewAction {
-		case observeOpponents
-		case addButtonTapped
-		case errorButtonTapped
-		case setEditorFormSheet(isPresented: Bool)
+		case setEditorSheet(isPresented: Bool)
 		case setNavigation(selection: Opponent.ID?)
-		case swipeAction(Opponent, OpponentsList.SwipeAction)
 	}
 
 	public init(store: StoreOf<OpponentsList>) {
@@ -44,66 +34,36 @@ public struct OpponentsListView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: OpponentsList.Action.init) { viewStore in
-			ListContent(viewStore.listState) { opponents in
-				ForEach(opponents) { opponent in
-					NavigationLink(
-						destination: EmptyView(),
-						tag: opponent.id,
-						selection: viewStore.binding(
-							get: \.selection,
-							send: OpponentsListView.ViewAction.setNavigation(selection:)
-						)
-					) {
-						OpponentRow(
-							opponent: opponent,
-							onEdit: { viewStore.send(.swipeAction(opponent, .edit)) },
-							onDelete: { viewStore.send(.swipeAction(opponent, .delete)) }
-						)
-					}
-				}
-			} empty: {
-				ListEmptyContent(
-					.emptyOpponents,
-					title: Strings.Opponent.Error.Empty.title,
-					message: Strings.Opponent.Error.Empty.message
+			ResourceListView(
+				store: store.scope(state: \.list, action: /OpponentsList.Action.InternalAction.list)
+			) { opponent in
+				NavigationLink(
+					destination: EmptyView(),
+					tag: opponent.id,
+					selection: viewStore.binding(
+						get: \.selection,
+						send: OpponentsListView.ViewAction.setNavigation(selection:)
+					)
 				) {
-					EmptyContentAction(title: Strings.Opponent.List.add) { viewStore.send(.addButtonTapped) }
-				}
-			} error: { error in
-				ListEmptyContent(
-					.errorNotFound,
-					title: error.title,
-					message: error.message,
-					style: .error
-				) {
-					EmptyContentAction(title: error.action) { viewStore.send(.errorButtonTapped) }
+					OpponentRow(opponent: opponent)
 				}
 			}
 			.navigationTitle(Strings.Opponent.List.title)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
-					SortOrderView(store: store.scope(state: \.sortOrder, action: OpponentsList.Action.sortOrder))
-				}
-
-				ToolbarItem(placement: .navigationBarTrailing) {
-					AddButton { viewStore.send(.addButtonTapped) }
+					SortOrderView(store: store.scope(state: \.sortOrder, action: /OpponentsList.Action.InternalAction.sortOrder))
 				}
 			}
 			.sheet(isPresented: viewStore.binding(
-				get: \.isOpponentEditorPresented,
-				send: ViewAction.setEditorFormSheet(isPresented:)
+				get: \.isEditorPresented,
+				send: ViewAction.setEditorSheet(isPresented:)
 			)) {
-				IfLetStore(store.scope(state: \.opponentEditor, action: OpponentsList.Action.opponentEditor)) { scopedStore in
+				IfLetStore(store.scope(state: \.editor, action: /OpponentsList.Action.InternalAction.editor)) { scopedStore in
 					NavigationView {
 						OpponentEditorView(store: scopedStore)
 					}
 				}
 			}
-			.alert(
-				self.store.scope(state: \.alert, action: OpponentsList.Action.alert),
-				dismiss: .dismissed
-			)
-			.task { await viewStore.send(.observeOpponents).finish() }
 		}
 	}
 }
@@ -111,18 +71,10 @@ public struct OpponentsListView: View {
 extension OpponentsList.Action {
 	init(action: OpponentsListView.ViewAction) {
 		switch action {
-		case .observeOpponents:
-			self = .observeOpponents
-		case .addButtonTapped:
-			self = .setEditorFormSheet(isPresented: true)
-		case .errorButtonTapped:
-			self = .errorButtonTapped
-		case let .setEditorFormSheet(isPresented):
-			self = .setEditorFormSheet(isPresented: isPresented)
+		case let .setEditorSheet(isPresented):
+			self = .view(.setEditorSheet(isPresented: isPresented))
 		case let .setNavigation(selection):
-			self = .setNavigation(selection: selection)
-		case let .swipeAction(bowler, swipeAction):
-			self = .swipeAction(bowler, swipeAction)
+			self = .view(.setNavigation(selection: selection))
 		}
 	}
 }

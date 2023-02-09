@@ -1,4 +1,5 @@
 import ComposableArchitecture
+import FeatureActionLibrary
 import FeatureFlagsListFeature
 import FeatureFlagsServiceInterface
 import OpponentsListFeature
@@ -17,28 +18,50 @@ public struct Settings: ReducerProtocol {
 		}
 	}
 
-	public enum Action: Equatable {
-		case opponentsList(OpponentsList.Action)
-		case helpSettings(HelpSettings.Action)
-		case featureFlagsList(FeatureFlagsList.Action)
+	public enum Action: FeatureAction, Equatable {
+		public enum ViewAction: Equatable {}
+		public enum DelegateAction: Equatable {}
+		public enum InternalAction: Equatable {
+			case opponentsList(OpponentsList.Action)
+			case helpSettings(HelpSettings.Action)
+			case featureFlagsList(FeatureFlagsList.Action)
+		}
+
+		case view(ViewAction)
+		case delegate(DelegateAction)
+		case `internal`(InternalAction)
 	}
 
 	public init() {}
 
 	public var body: some ReducerProtocol<State, Action> {
-		Scope(state: \.helpSettings, action: /Settings.Action.helpSettings) {
+		Scope(state: \.helpSettings, action: /Action.internal..Action.InternalAction.helpSettings) {
 			HelpSettings()
 		}
-		Scope(state: \.featureFlagsList, action: /Settings.Action.featureFlagsList) {
+		Scope(state: \.featureFlagsList, action: /Action.internal..Action.InternalAction.featureFlagsList) {
 			FeatureFlagsList()
 		}
-		Scope(state: \.opponentsList, action: /Settings.Action.opponentsList) {
+		Scope(state: \.opponentsList, action: /Action.internal..Action.InternalAction.opponentsList) {
 			OpponentsList()
 		}
 
 		Reduce { _, action in
 			switch action {
-			case .featureFlagsList, .helpSettings, .opponentsList:
+			case let .internal(internalAction):
+				switch internalAction {
+				case .featureFlagsList(.delegate),
+						.featureFlagsList(.internal),
+						.featureFlagsList(.view),
+						.helpSettings(.delegate),
+						.helpSettings(.internal),
+						.helpSettings(.view),
+						.opponentsList(.delegate),
+						.opponentsList(.view),
+						.opponentsList(.internal):
+					return .none
+				}
+
+			case .view, .delegate:
 				return .none
 			}
 		}

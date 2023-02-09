@@ -11,15 +11,15 @@ public struct HelpSettingsView: View {
 	}
 
 	public enum ViewAction {
-		case reportBugButtonTapped
-		case sendFeedbackButtonTapped
+		case didTapReportBugButton
+		case didTapSendFeedbackButton
 	}
 
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: HelpSettings.Action.init) { viewStore in
 			Section(Strings.Settings.Help.title) {
-				Button(Strings.Settings.Help.reportBug) { viewStore.send(.reportBugButtonTapped) }
-				Button(Strings.Settings.Help.sendFeedback) { viewStore.send(.sendFeedbackButtonTapped) }
+				Button(Strings.Settings.Help.reportBug) { viewStore.send(.didTapReportBugButton) }
+				Button(Strings.Settings.Help.sendFeedback) { viewStore.send(.didTapSendFeedbackButton) }
 				NavigationLink(Strings.Settings.Help.acknowledgements, destination: AcknowledgementsView())
 			}
 
@@ -40,10 +40,10 @@ public struct HelpSettingsView: View {
 extension HelpSettings.Action {
 	init(action: HelpSettingsView.ViewAction) {
 		switch action {
-		case .reportBugButtonTapped:
-			self = .reportBugButtonTapped
-		case .sendFeedbackButtonTapped:
-			self = .sendFeedbackButtonTapped
+		case .didTapReportBugButton:
+			self = .view(.didTapReportBugButton)
+		case .didTapSendFeedbackButton:
+			self = .view(.didTapSendFeedbackButton)
 		}
 	}
 }
