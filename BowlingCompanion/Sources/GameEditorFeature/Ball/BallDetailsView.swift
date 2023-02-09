@@ -23,8 +23,8 @@ struct BallDetailsView: View {
 	}
 
 	enum ViewAction: BindableAction {
+		case didTapNextButton
 		case binding(BindingAction<ViewState>)
-		case nextButtonTapped
 	}
 
 	init(store: StoreOf<BallDetails>) {
@@ -70,8 +70,8 @@ extension BallDetails.Action {
 		switch action {
 		case let .binding(action):
 			self = .binding(action.pullback(\BallDetails.State.view))
-		case .nextButtonTapped:
-			self = .nextButtonTapped
+		case .didTapNextButton:
+			self = .view(.didTapNextButton)
 		}
 	}
 }

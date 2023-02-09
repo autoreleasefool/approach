@@ -1,4 +1,5 @@
 import ComposableArchitecture
+import FeatureActionLibrary
 import SharedModelsLibrary
 
 public struct BallDetails: ReducerProtocol {
@@ -14,9 +15,18 @@ public struct BallDetails: ReducerProtocol {
 		}
 	}
 
-	public enum Action: BindableAction, Equatable {
+	public enum Action: FeatureAction, BindableAction, Equatable {
+		public enum ViewAction: Equatable {
+			case didTapNextButton
+		}
+		public enum DelegateAction: Equatable {}
+		public enum InternalAction: Equatable {}
+
+		case view(ViewAction)
+		case delegate(DelegateAction)
+		case `internal`(InternalAction)
 		case binding(BindingAction<State>)
-		case nextButtonTapped
+
 	}
 
 	init() {}
@@ -26,7 +36,12 @@ public struct BallDetails: ReducerProtocol {
 
 		Reduce { _, action in
 			switch action {
-			case .binding, .nextButtonTapped:
+			case let .view(viewAction):
+				switch viewAction {
+				case .didTapNextButton:
+					return .none
+				}
+			case .binding, .internal, .delegate:
 				return .none
 			}
 		}
