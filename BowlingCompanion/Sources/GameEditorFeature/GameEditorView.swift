@@ -1,4 +1,5 @@
 import ComposableArchitecture
+import FeatureActionLibrary
 import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsLibrary
@@ -24,7 +25,7 @@ public struct GameEditorView: View {
 	}
 
 	enum ViewAction {
-		case refreshData
+		case didAppear
 	}
 
 	public init(store: StoreOf<GameEditor>) {
@@ -36,7 +37,7 @@ public struct GameEditorView: View {
 			Text(Strings.Game.title(viewStore.ordinal))
 				.sheet(isPresented: .constant(true)) {
 					ScrollView {
-						BallDetailsView(store: store.scope(state: \.ballDetails, action: GameEditor.Action.ballDetails))
+						BallDetailsView(store: store.scope(state: \.ballDetails, action: /GameEditor.Action.InternalAction.ballDetails))
 							.overlay {
 								GeometryReader { geometryProxy in
 									Color.clear
@@ -58,7 +59,7 @@ public struct GameEditorView: View {
 					.edgesIgnoringSafeArea(.bottom)
 				}
 				.navigationBarBackButtonHidden(true)
-				.onAppear { viewStore.send(.refreshData) }
+				.onAppear { viewStore.send(.didAppear) }
 		}
 	}
 }
@@ -66,8 +67,8 @@ public struct GameEditorView: View {
 extension GameEditor.Action {
 	init(action: GameEditorView.ViewAction) {
 		switch action {
-		case .refreshData:
-			self = .refreshData
+		case .didAppear:
+			self = .view(.didAppear)
 		}
 	}
 }

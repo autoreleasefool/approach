@@ -1,4 +1,5 @@
 import ComposableArchitecture
+import FeatureActionLibrary
 import SharedModelsLibrary
 
 public struct GameEditor: ReducerProtocol {
@@ -10,21 +11,42 @@ public struct GameEditor: ReducerProtocol {
 		}
 	}
 
-	public enum Action: Equatable {
-		case refreshData
-		case ballDetails(BallDetails.Action)
+	public enum Action: FeatureAction, Equatable {
+		public enum ViewAction: Equatable {
+			case didAppear
+		}
+		public enum DelegateAction: Equatable {}
+		public enum InternalAction: Equatable {
+			case ballDetails(BallDetails.Action)
+		}
+
+		case view(ViewAction)
+		case delegate(DelegateAction)
+		case `internal`(InternalAction)
 	}
 
 	public init() {}
 
 	public var body: some ReducerProtocol<State, Action> {
-		Scope(state: \.ballDetails, action: /Action.ballDetails) {
+		Scope(state: \.ballDetails, action: /Action.internal..Action.InternalAction.ballDetails) {
 			BallDetails()
 		}
 
 		Reduce { _, action in
 			switch action {
-			case .refreshData, .ballDetails:
+			case let .view(viewAction):
+				switch viewAction {
+				case .didAppear:
+					return .none
+				}
+
+			case let .internal(internalAction):
+				switch internalAction {
+				case .ballDetails(.delegate), .ballDetails(.view), .ballDetails(.internal), .ballDetails(.binding):
+					return .none
+				}
+
+			case .delegate:
 				return .none
 			}
 		}
