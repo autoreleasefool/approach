@@ -191,6 +191,7 @@ let package = Package(
 			name: "FeatureFlagsListFeature",
 			dependencies: [
 				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+				"FeatureActionLibrary",
 				"FeatureFlagsServiceInterface",
 			]
 		),
@@ -205,6 +206,7 @@ let package = Package(
 		.target(
 			name: "GameEditorFeature",
 			dependencies: [
+				"FeatureActionLibrary",
 				"SharedModelsLibrary",
 				"SwiftUIExtensionsLibrary",
 				"ViewsLibrary",
@@ -254,6 +256,7 @@ let package = Package(
 		.target(
 			name: "LaneEditorFeature",
 			dependencies: [
+				"FeatureActionLibrary",
 				"LanesDataProviderInterface",
 				"PersistenceServiceInterface",
 				"SwiftUIExtensionsLibrary",
@@ -338,6 +341,7 @@ let package = Package(
 			name: "ScoreSheetFeature",
 			dependencies: [
 				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+				"FeatureActionLibrary",
 				"SharedModelsLibrary",
 			]
 		),
@@ -419,6 +423,7 @@ let package = Package(
 		.target(
 			name: "StatisticsWidgetsFeature",
 			dependencies: [
+				"FeatureActionLibrary",
 				"ViewsLibrary",
 			]
 		),

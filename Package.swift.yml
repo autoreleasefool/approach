@@ -34,7 +34,6 @@ package:
     - name: AlleyEditorFeature
       dependencies:
         - BaseFormLibrary
-        - FeatureActionLibrary
         - LaneEditorFeature
         - LanesDataProvider
         - PersistenceService
