@@ -17,9 +17,7 @@ public struct AlleysList: ReducerProtocol {
 		public var editor: AlleyEditor.State?
 
 		public var isFiltersPresented = false
-		public var filters: AlleysFilter.State = .init() {
-			didSet { updateQuery() }
-		}
+		public var filters: AlleysFilter.State = .init()
 
 		public init() {
 			self.list = .init(
@@ -127,6 +125,7 @@ public struct AlleysList: ReducerProtocol {
 						return .none
 
 					case .didChangeFilters:
+						state.list.query = .init(filter: state.filters.filter, ordering: .byRecentlyUsed)
 						return .task { .`internal`(.list(.callback(.shouldRefreshData))) }
 					}
 
@@ -154,11 +153,5 @@ public struct AlleysList: ReducerProtocol {
 		.ifLet(\.editor, action: /Action.internal..Action.InternalAction.editor) {
 			AlleyEditor()
 		}
-	}
-}
-
-private extension AlleysList.State {
-	mutating func updateQuery() {
-		self.list.query = .init(filter: filters.filter, ordering: .byRecentlyUsed)
 	}
 }

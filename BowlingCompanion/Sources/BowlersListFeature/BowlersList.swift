@@ -18,9 +18,7 @@ public struct BowlersList: ReducerProtocol {
 	public struct State: Equatable {
 		public var list: ResourceList<Bowler, Bowler.FetchRequest>.State
 		public var editor: BowlerEditor.State?
-		public var sortOrder: SortOrder<Bowler.FetchRequest.Ordering>.State = .init(initialValue: .byRecentlyUsed) {
-			didSet { updateQuery() }
-		}
+		public var sortOrder: SortOrder<Bowler.FetchRequest.Ordering>.State = .init(initialValue: .byRecentlyUsed)
 
 		public var selection: Identified<Bowler.ID, LeaguesList.State>?
 
@@ -125,7 +123,8 @@ public struct BowlersList: ReducerProtocol {
 
 				case let .sortOrder(.delegate(delegateAction)):
 					switch delegateAction {
-					case .didTapOption:
+					case let .didTapOption(ordering):
+						state.list.query = .init(filter: state.list.query.filter, ordering: ordering)
 						return .task { .`internal`(.list(.callback(.shouldRefreshData))) }
 					}
 
@@ -174,11 +173,5 @@ public struct BowlersList: ReducerProtocol {
 			state.selection = nil
 			return .none
 		}
-	}
-}
-
-private extension BowlersList.State {
-	mutating func updateQuery() {
-		self.list.query = .init(filter: self.list.query.filter, ordering: sortOrder.ordering)
 	}
 }

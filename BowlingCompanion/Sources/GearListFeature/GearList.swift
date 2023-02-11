@@ -17,9 +17,7 @@ public struct GearList: ReducerProtocol {
 	public struct State: Equatable {
 		public var list: ResourceList<Gear, Gear.FetchRequest>.State
 		public var editor: GearEditor.State?
-		public var sortOrder: SortOrder<Gear.FetchRequest.Ordering>.State = .init(initialValue: .byRecentlyUsed) {
-			didSet { updateQuery() }
-		}
+		public var sortOrder: SortOrder<Gear.FetchRequest.Ordering>.State = .init(initialValue: .byRecentlyUsed)
 
 		public init() {
 			self.list = .init(
@@ -105,7 +103,8 @@ public struct GearList: ReducerProtocol {
 
 				case let .sortOrder(.delegate(delegateAction)):
 					switch delegateAction {
-					case .didTapOption:
+					case let .didTapOption(ordering):
+						state.list.query = .init(filter: state.list.query.filter, ordering: ordering)
 						return .task { .internal(.list(.callback(.shouldRefreshData))) }
 					}
 
@@ -133,11 +132,5 @@ public struct GearList: ReducerProtocol {
 		.ifLet(\.editor, action: /Action.internal..Action.InternalAction.editor) {
 			GearEditor()
 		}
-	}
-}
-
-private extension GearList.State {
-	mutating func updateQuery() {
-		self.list.query = .init(filter: self.list.query.filter, ordering: sortOrder.ordering)
 	}
 }

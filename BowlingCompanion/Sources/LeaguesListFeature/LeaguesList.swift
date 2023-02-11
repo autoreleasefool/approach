@@ -20,9 +20,7 @@ public struct LeaguesList: ReducerProtocol {
 		public var editor: LeagueEditor.State?
 
 		public var isFiltersPresented = false
-		public var filters: LeaguesFilter.State = .init() {
-			didSet { updateQuery() }
-		}
+		public var filters: LeaguesFilter.State = .init()
 
 		public var selection: Identified<League.ID, SeriesList.State>?
 
@@ -136,6 +134,10 @@ public struct LeaguesList: ReducerProtocol {
 						return .none
 
 					case .didChangeFilters:
+						state.list.query = .init(
+							filter: state.filters.filter(withBowler: state.bowler.id),
+							ordering: state.list.query.ordering
+						)
 						return .task { .`internal`(.list(.callback(.shouldRefreshData))) }
 					}
 
@@ -199,11 +201,5 @@ public struct LeaguesList: ReducerProtocol {
 		)
 
 		return .none
-	}
-}
-
-private extension LeaguesList.State {
-	mutating func updateQuery() {
-		self.list.query = .init(filter: filters.filter(withBowler: bowler.id), ordering: .byRecentlyUsed)
 	}
 }
