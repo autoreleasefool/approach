@@ -13,7 +13,7 @@ public struct AlleyLanes: ReducerProtocol {
 		}
 	}
 
-	public enum Action: Equatable, FeatureAction {
+	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
 			case didAppear
 		}

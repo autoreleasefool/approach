@@ -1,93 +1,143 @@
+import AssetsLibrary
+import ComposableArchitecture
+import FeatureActionLibrary
 import GearDataProviderInterface
 import GearEditorFeature
-import ComposableArchitecture
+import PersistenceServiceInterface
+import RecentlyUsedServiceInterface
+import ResourceListLibrary
 import SharedModelsLibrary
+import SortOrderLibrary
+import StringsLibrary
 import ViewsLibrary
+
+extension Gear: ResourceListItem {}
 
 public struct GearList: ReducerProtocol {
 	public struct State: Equatable {
-		public var gear: IdentifiedArrayOf<Gear>?
-		public var error: ListErrorContent?
-		public var gearEditor: GearEditor.State?
+		public var list: ResourceList<Gear, Gear.FetchRequest>.State
+		public var editor: GearEditor.State?
+		public var sortOrder: SortOrder<Gear.FetchRequest.Ordering>.State = .init(initialValue: .byRecentlyUsed) {
+			didSet { updateQuery() }
+		}
 
-		public init() {}
+		public init() {
+			self.list = .init(
+				features: [
+					.add,
+					.swipeToEdit,
+					.swipeToDelete(onDelete: .init {
+						@Dependency(\.persistenceService) var persistenceService: PersistenceService
+						try await persistenceService.deleteGear($0)
+					})
+				],
+				query: .init(filter: nil, ordering: sortOrder.ordering),
+				listTitle: Strings.Gear.List.title,
+				emptyContent: .init(
+					image: .emptyGear,
+					title: Strings.Gear.Error.Empty.title,
+					message: Strings.Gear.Error.Empty.message,
+					action: Strings.Gear.List.add
+				)
+			)
+		}
 	}
 
-	public enum Action: Equatable {
-		case observeGear
-		case errorButtonTapped
-		case gearResponse(TaskResult<[Gear]>)
-		case swipeAction(Gear, SwipeAction)
-		case setEditorFormSheet(isPresented: Bool)
-		case gearEditor(GearEditor.Action)
-	}
+	public enum Action: FeatureAction, Equatable {
+		public enum ViewAction: Equatable {
+			case setEditorSheet(isPresented: Bool)
+		}
+		public enum DelegateAction: Equatable {}
+		public enum InternalAction: Equatable {
+			case list(ResourceList<Gear, Gear.FetchRequest>.Action)
+			case editor(GearEditor.Action)
+			case sortOrder(SortOrder<Gear.FetchRequest.Ordering>.Action)
+		}
 
-	public enum SwipeAction: Equatable {
-		case delete
-		case edit
+		case view(ViewAction)
+		case `internal`(InternalAction)
+		case delegate(DelegateAction)
 	}
-
-	struct ObservationCancellable {}
 
 	public init() {}
 
+	@Dependency(\.continuousClock) var clock
 	@Dependency(\.gearDataProvider) var gearDataProvider
+	@Dependency(\.recentlyUsedService) var recentlyUsedService
 
 	public var body: some ReducerProtocol<State, Action> {
+		Scope(state: \.sortOrder, action: /Action.internal..Action.InternalAction.sortOrder) {
+			SortOrder()
+		}
+
+		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {
+			ResourceList(fetchResources: gearDataProvider.observeGear)
+		}
+
 		Reduce { state, action in
 			switch action {
-			case .observeGear:
-				state.error = nil
-				return .run { send in
-					for try await gear in gearDataProvider.observeGear(.init(filter: nil, ordering: .byRecentlyUsed)) {
-						await send(.gearResponse(.success(gear)))
-					}
-				} catch: { error, send in
-					await send(.gearResponse(.failure(error)))
-				}
-				.cancellable(id: ObservationCancellable.self, cancelInFlight: true)
+			case let .view(viewAction):
+				switch viewAction {
+				case .setEditorSheet(isPresented: true):
+					state.editor = .init(mode: .create)
+					return .none
 
-			case .setEditorFormSheet(isPresented: true):
-				state.gearEditor = .init(mode: .create)
-				return .none
-
-			case .setEditorFormSheet(isPresented: false):
-				state.gearEditor = nil
-				return .none
-
-			case let .gearEditor(.delegate(delegateAction)):
-				switch delegateAction {
-				case .didFinishEditing:
-					state.gearEditor = nil
+				case .setEditorSheet(isPresented: false):
+					state.editor = nil
 					return .none
 				}
 
-			case .errorButtonTapped:
-				// TODO: handle error button tapped
-				return .none
+			case let .internal(internalAction):
+				switch internalAction {
+				case let .list(.delegate(delegateAction)):
+					switch delegateAction {
+					case let .didEdit(gear):
+						state.editor = .init(mode: .edit(gear))
+						return .none
 
-			case let .gearResponse(.success(gear)):
-				state.gear = .init(uniqueElements: gear)
-				return .none
+					case .didAddNew, .didTapEmptyStateButton:
+						state.editor = .init(mode: .create)
+						return .none
 
-			case .gearResponse(.failure):
-				state.error = .loadError
-				return .none
+					case .didDelete, .didTap:
+						return .none
+					}
 
-			case let .swipeAction(gear, .edit):
-				state.gearEditor = .init(mode: .edit(gear))
-				return .none
+				case let .sortOrder(.delegate(delegateAction)):
+					switch delegateAction {
+					case .didTapOption:
+						return .task { .internal(.list(.callback(.shouldRefreshData))) }
+					}
 
-			case .swipeAction(_, .delete):
-				// TODO: present gear delete form
-				return .none
+				case let .editor(.delegate(delegateAction)):
+					switch delegateAction {
+					case .didFinishEditing:
+						state.editor = nil
+						return .none
+					}
 
-			case .gearEditor(.internal), .gearEditor(.view), .gearEditor(.binding):
+				case .list(.internal), .list(.view), .list(.callback):
+					return .none
+
+				case .sortOrder(.internal), .sortOrder(.view):
+					return .none
+
+				case .editor(.internal), .editor(.view), .editor(.binding):
+					return .none
+				}
+
+			case .delegate:
 				return .none
 			}
 		}
-		.ifLet(\.gearEditor, action: /GearList.Action.gearEditor) {
+		.ifLet(\.editor, action: /Action.internal..Action.InternalAction.editor) {
 			GearEditor()
 		}
+	}
+}
+
+private extension GearList.State {
+	mutating func updateQuery() {
+		self.list.query = .init(filter: self.list.query.filter, ordering: sortOrder.ordering)
 	}
 }

@@ -44,7 +44,7 @@ public struct SeriesList: ReducerProtocol {
 		}
 	}
 
-	public enum Action: Equatable, FeatureAction {
+	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
 			case setNavigation(selection: Series.ID?)
 			case setEditorSheet(isPresented: Bool)
@@ -110,7 +110,13 @@ public struct SeriesList: ReducerProtocol {
 					state.editor = nil
 					return .none
 
-				case .sidebar, .editor, .list(.view), .list(.internal):
+				case .sidebar:
+					return .none
+
+				case .editor:
+					return .none
+
+				case .list(.view), .list(.internal), .list(.callback):
 					return .none
 				}
 			}

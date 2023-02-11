@@ -23,8 +23,8 @@ public struct ResourceListView<
 			self.features = state.features
 			self.listTitle = state.listTitle
 			self.hasDeleteFeature = state.hasDeleteFeature
-			if let error = state.error {
-				self.listContent = .error(error)
+			if state.errorState != nil {
+				self.listContent = .error
 			} else if let resources = state.resources {
 				self.listContent = .loaded(resources)
 			} else {
@@ -99,7 +99,7 @@ public struct ResourceListView<
 				case let .loaded(elements):
 					if elements.isEmpty {
 						ResourceListEmptyView(
-							store: store.scope(state: \.emptyState, action: { ResourceList<R, Q>.Action.view(.empty($0)) })
+							store: store.scope(state: \.emptyState, action: { ResourceList<R, Q>.Action.internal(.empty($0)) })
 						)
 					} else {
 						List {
@@ -138,9 +138,11 @@ public struct ResourceListView<
 					}
 
 				case .error:
-					ResourceListEmptyView(
-						store: store.scope(state: \.errorState, action: { ResourceList<R, Q>.Action.view(.empty($0)) })
-					)
+					IfLetStore(
+						store.scope(state: \.errorState, action: { ResourceList<R, Q>.Action.internal(.empty($0)) })
+					) {
+						ResourceListEmptyView(store: $0)
+					}
 				}
 			}
 			.toolbar {
@@ -152,7 +154,7 @@ public struct ResourceListView<
 			}
 			.alert(
 				self.store.scope(state: \.alert, action: { ResourceList<R, Q>.Action.view(.alert($0)) }),
-				dismiss: .dismissed
+				dismiss: .didTapDismissButton
 			)
 			.task { await viewStore.send(.didObserveData).finish() }
 		}
@@ -179,6 +181,6 @@ extension ResourceListView {
 		case notLoaded
 		case loading
 		case loaded(IdentifiedArrayOf<R>)
-		case error(ResourceList<R, Q>.Error)
+		case error
 	}
 }

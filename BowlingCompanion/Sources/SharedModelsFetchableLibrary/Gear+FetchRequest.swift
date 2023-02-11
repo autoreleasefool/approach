@@ -1,4 +1,5 @@
 import SharedModelsLibrary
+import StringsLibrary
 
 extension Gear {
 	public struct FetchRequest: Equatable {
@@ -21,8 +22,15 @@ extension Gear.FetchRequest {
 }
 
 extension Gear.FetchRequest {
-	public enum Ordering {
-		case byRecentlyUsed
+	public enum Ordering: Hashable, CaseIterable, CustomStringConvertible {
 		case byName
+		case byRecentlyUsed
+
+		public var description: String {
+			switch self {
+			case .byRecentlyUsed: return Strings.Ordering.mostRecentlyUsed
+			case .byName: return Strings.Ordering.alphabetical
+			}
+		}
 	}
 }

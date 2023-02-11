@@ -87,7 +87,7 @@ public struct AlleysList: ReducerProtocol {
 
 				case .setFilterSheet(isPresented: false):
 					state.isFiltersPresented = false
-					return .task { .internal(.list(.view(.didObserveData))) }
+					return .task { .internal(.list(.callback(.shouldRefreshData))) }
 
 				case .setEditorSheet(isPresented: true):
 					state.editor = .init(
@@ -127,7 +127,7 @@ public struct AlleysList: ReducerProtocol {
 						return .none
 
 					case .didChangeFilters:
-						return .task { .`internal`(.list(.view(.didObserveData))) }
+						return .task { .`internal`(.list(.callback(.shouldRefreshData))) }
 					}
 
 				case let .editor(.delegate(delegateAction)):
@@ -137,14 +137,13 @@ public struct AlleysList: ReducerProtocol {
 						return .none
 					}
 
-				case .list(.internal),
-						.list(.view),
-						.filters(.internal),
-						.filters(.view),
-						.filters(.binding),
-						.editor(.internal),
-						.editor(.view),
-						.editor(.binding):
+				case .list(.internal), .list(.view), .list(.callback):
+					return .none
+
+				case .filters(.internal), .filters(.view), .filters(.binding):
+					return .none
+
+				case .editor(.internal), .editor(.view), .editor(.binding):
 					return .none
 				}
 

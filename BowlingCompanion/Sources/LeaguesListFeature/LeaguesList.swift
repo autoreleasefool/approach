@@ -105,7 +105,7 @@ public struct LeaguesList: ReducerProtocol {
 
 				case .setFilterSheet(isPresented: false):
 					state.isFiltersPresented = false
-					return .task { .internal(.list(.view(.didObserveData))) }
+					return .task { .internal(.list(.callback(.shouldRefreshData))) }
 
 				case .setEditorSheet(isPresented: true):
 					return startEditing(league: nil, state: &state)
@@ -136,14 +136,23 @@ public struct LeaguesList: ReducerProtocol {
 						return .none
 
 					case .didChangeFilters:
-						return .task { .`internal`(.list(.view(.didObserveData))) }
+						return .task { .`internal`(.list(.callback(.shouldRefreshData))) }
 					}
 
 				case .editor(.didFinishEditing):
 					state.editor = nil
 					return .none
 
-				case .list(.internal), .list(.view), .filters(.internal), .filters(.view), .filters(.binding), .editor, .series:
+				case .list(.internal), .list(.view), .list(.callback):
+					return .none
+
+				case .filters(.internal), .filters(.view), .filters(.binding):
+					return .none
+
+				case .editor:
+					return .none
+
+				case .series:
 					return .none
 
 				}

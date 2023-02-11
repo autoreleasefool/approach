@@ -2,6 +2,7 @@ import AssetsLibrary
 import FeatureActionLibrary
 import ComposableArchitecture
 import FeatureActionLibrary
+import StringsLibrary
 import SwiftUI
 
 public struct ResourceListEmptyContent: Equatable {
@@ -16,6 +17,19 @@ public struct ResourceListEmptyContent: Equatable {
 		self.message = message
 		self.action = action
 	}
+
+	static let failedToLoad: Self = .init(
+		image: .errorNotFound,
+		title: Strings.Error.Generic.title,
+		message: Strings.Error.loadingFailed,
+		action: Strings.Action.reload
+	)
+
+	static let failedToDelete: Self = .init(
+		image: .errorNotFound,
+		title: Strings.Error.Generic.title,
+		action: Strings.Action.reload
+	)
 }
 
 public struct ResourceListEmpty: ReducerProtocol {
@@ -30,6 +44,16 @@ public struct ResourceListEmpty: ReducerProtocol {
 			self.content = content
 			self.style = style
 		}
+
+		public static let failedToLoad: Self = .init(
+			content: .failedToLoad,
+			style: .error
+		)
+
+		public static let failedToDelete: Self = .init(
+			content: .failedToDelete,
+			style: .error
+		)
 	}
 
 	public enum Action: FeatureAction, Equatable {

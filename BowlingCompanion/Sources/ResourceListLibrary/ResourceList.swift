@@ -20,8 +20,8 @@ public struct ResourceList<
 		public var resources: IdentifiedArrayOf<R>?
 		public var listTitle: String?
 
-		public var error: Error?
-		public let emptyContent: ResourceListEmptyContent
+		public var emptyState: ResourceListEmpty.State
+		public var errorState: ResourceListEmpty.State?
 
 		public var alert: AlertState<AlertAction>?
 
@@ -34,7 +34,7 @@ public struct ResourceList<
 			self.features = features
 			self.query = query
 			self.listTitle = listTitle
-			self.emptyContent = emptyContent
+			self.emptyState = .init(content: emptyContent, style: .empty)
 		}
 
 		var hasDeleteFeature: Bool { onDelete != nil }
@@ -47,31 +47,28 @@ public struct ResourceList<
 			}.first
 		}
 
-		var emptyState: ResourceListEmpty.State {
-			.init(content: emptyContent, style: .empty)
-		}
+//		var errorState: ResourceListEmpty.State {
+//			switch error {
+//			case .none:
+//				return emptyState
+//			case .failedToDelete:
+//				return .init(
+//					content: .init(image: .errorNotFound, title: Strings.Error.Generic.title, action: Strings.Action.reload),
+//					style: .error
+//				)
+//			case .failedToLoad:
+//				return .init(
+//					content: .init(
+//						image: .errorNotFound,
+//						title: Strings.Error.Generic.title,
+//						message: Strings.Error.loadingFailed,
+//						action: Strings.Action.reload
+//					),
+//					style: .error
+//				)
+//			}
+//		}
 
-		var errorState: ResourceListEmpty.State {
-			switch error {
-			case .none:
-				return emptyState
-			case .failedToDelete:
-				return .init(
-					content: .init(image: .errorNotFound, title: Strings.Error.Generic.title, action: Strings.Action.reload),
-					style: .error
-				)
-			case .failedToLoad:
-				return .init(
-					content: .init(
-						image: .errorNotFound,
-						title: Strings.Error.Generic.title,
-						message: Strings.Error.loadingFailed,
-						action: Strings.Action.reload
-					),
-					style: .error
-				)
-			}
-		}
 	}
 
 	public enum Action: FeatureAction, Equatable {
@@ -82,7 +79,6 @@ public struct ResourceList<
 			case didSwipeToEdit(R)
 			case didTap(R)
 			case alert(AlertAction)
-			case empty(ResourceListEmpty.Action)
 		}
 
 		public enum DelegateAction: Equatable {
@@ -98,11 +94,17 @@ public struct ResourceList<
 			case cancelObservation
 			case resourcesResponse(TaskResult<[R]>)
 			case deleteResponse(TaskResult<R>)
+			case empty(ResourceListEmpty.Action)
+		}
+
+		public enum CallbackAction: Equatable {
+			case shouldRefreshData
 		}
 
 		case view(ViewAction)
 		case `internal`(InternalAction)
 		case delegate(DelegateAction)
+		case callback(CallbackAction)
 	}
 
 	public enum Feature: Equatable {
@@ -121,12 +123,16 @@ public struct ResourceList<
 	let fetchResources: (Q) -> AsyncThrowingStream<[R], Swift.Error>
 
 	public var body: some ReducerProtocol<State, Action> {
+		Scope(state: \.emptyState, action: /Action.internal..Action.InternalAction.empty) {
+			ResourceListEmpty()
+		}
+
 		Reduce { state, action in
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
 				case .didObserveData:
-					state.error = nil
+					state.errorState = nil
 					return beginObservation(query: state.query)
 
 				case let .didSwipeToDelete(resource):
@@ -158,7 +164,7 @@ public struct ResourceList<
 
 					return .task { .delegate(.didAddNew) }
 
-				case let .alert(.deleteButtonTapped(resource)):
+				case let .alert(.didTapDeleteButton(resource)):
 					state.alert = nil
 					guard let onDelete = state.onDelete else {
 						fatalError("\(Self.self) did not specify `swipeToDelete` feature")
@@ -170,31 +176,15 @@ public struct ResourceList<
 						}))
 					}
 
-				case .alert(.dismissed):
+				case .alert(.didTapDismissButton):
 					state.alert = nil
-					return .none
-
-				case .empty(.delegate(.didTapActionButton)):
-					switch state.error {
-					case .failedToLoad:
-						state.error = nil
-						return beginObservation(query: state.query)
-					case .failedToDelete:
-						state.error = nil
-						return beginObservation(query: state.query)
-					case .none:
-						// No error indicates the empty state was shown
-						return .task { .delegate(.didTapEmptyStateButton) }
-					}
-
-				case .empty(.internal), .empty(.view):
 					return .none
 				}
 
 			case let .internal(internalAction):
 				switch internalAction {
 				case .observeData:
-					state.error = nil
+					state.errorState = nil
 					return beginObservation(query: state.query)
 
 				case .cancelObservation:
@@ -205,20 +195,43 @@ public struct ResourceList<
 					return .none
 
 				case .resourcesResponse(.failure):
-					state.error = .failedToLoad
+					state.errorState = .failedToLoad
 					return .none
 
 				case let .deleteResponse(.success(resource)):
 					return .task { .delegate(.didDelete(resource))}
 
 				case .deleteResponse(.failure):
-					state.error = .failedToDelete
+					state.errorState = .failedToDelete
 					return .none
+
+				case .empty(.delegate(.didTapActionButton)):
+					if state.errorState == .failedToLoad {
+						state.errorState = nil
+						return beginObservation(query: state.query)
+					} else if state.errorState == .failedToDelete {
+						state.errorState = nil
+						return beginObservation(query: state.query)
+					} else {
+						// No error indicates the empty state was shown
+						return .task { .delegate(.didTapEmptyStateButton) }
+					}
+
+				case .empty(.internal), .empty(.view):
+					return .none
+				}
+
+			case let .callback(callbackAction):
+				switch callbackAction {
+				case .shouldRefreshData:
+					return beginObservation(query: state.query)
 				}
 
 			case .delegate:
 				return .none
 			}
+		}.ifLet(\.errorState, action: /Action.internal..Action.InternalAction.empty) {
+			ResourceListEmpty()
 		}
 	}
 
@@ -234,21 +247,12 @@ public struct ResourceList<
 	}
 }
 
-// MARK: - Error
-
-extension ResourceList {
-	public enum Error: Equatable {
-		case failedToLoad
-		case failedToDelete
-	}
-}
-
 // MARK: - AlertAction
 
 extension ResourceList {
 	public enum AlertAction: Equatable {
-		case deleteButtonTapped(R)
-		case dismissed
+		case didTapDeleteButton(R)
+		case didTapDismissButton
 	}
 }
 
@@ -258,11 +262,11 @@ extension ResourceList {
 			title: TextState(Strings.Form.Prompt.delete(resource.name)),
 			primaryButton: .destructive(
 				TextState(Strings.Action.delete),
-				action: .send(.deleteButtonTapped(resource))
+				action: .send(.didTapDeleteButton(resource))
 			),
 			secondaryButton: .cancel(
 				TextState(Strings.Action.cancel),
-				action: .send(.dismissed)
+				action: .send(.didTapDismissButton)
 			)
 		)
 	}

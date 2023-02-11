@@ -126,7 +126,7 @@ public struct BowlersList: ReducerProtocol {
 				case let .sortOrder(.delegate(delegateAction)):
 					switch delegateAction {
 					case .didTapOption:
-						return .task { .`internal`(.list(.view(.didObserveData))) }
+						return .task { .`internal`(.list(.callback(.shouldRefreshData))) }
 					}
 
 				case let .editor(.delegate(delegateAction)):
@@ -136,14 +136,16 @@ public struct BowlersList: ReducerProtocol {
 						return .none
 					}
 
-				case .list(.internal),
-						.list(.view),
-						.editor(.internal),
-						.editor(.view),
-						.editor(.binding),
-						.leagues,
-						.sortOrder(.internal),
-						.sortOrder(.view):
+				case .list(.internal), .list(.view), .list(.callback):
+					return .none
+
+				case .editor(.internal), .editor(.view), .editor(.binding):
+					return .none
+
+				case .leagues:
+					return .none
+
+				case .sortOrder(.internal), .sortOrder(.view):
 					return .none
 				}
 
@@ -177,6 +179,6 @@ public struct BowlersList: ReducerProtocol {
 
 private extension BowlersList.State {
 	mutating func updateQuery() {
-		self.list.query = .init(filter: nil, ordering: sortOrder.ordering)
+		self.list.query = .init(filter: self.list.query.filter, ordering: sortOrder.ordering)
 	}
 }

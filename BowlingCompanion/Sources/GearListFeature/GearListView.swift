@@ -1,37 +1,28 @@
+import AssetsLibrary
 import ComposableArchitecture
+import FeatureActionLibrary
 import GearEditorFeature
+import ResourceListLibrary
 import SharedModelsLibrary
 import SharedModelsViewsLibrary
+import SortOrderLibrary
 import StringsLibrary
 import SwiftUI
-import AssetsLibrary
 import ViewsLibrary
 
 public struct GearListView: View {
 	let store: StoreOf<GearList>
 
 	struct ViewState: Equatable {
-		let listState: ListContentState<Gear, ListErrorContent>
-		let isGearEditorPresented: Bool
+		let isEditorPresented: Bool
 
 		init(state: GearList.State) {
-			if let error = state.error {
-				self.listState = .error(error)
-			} else if let gear = state.gear {
-				self.listState = .loaded(gear)
-			} else {
-				self.listState = .loading
-			}
-			self.isGearEditorPresented = state.gearEditor != nil
+			self.isEditorPresented = state.editor != nil
 		}
 	}
 
 	enum ViewAction {
-		case observeGear
-		case addButtonTapped
-		case errorButtonTapped
-		case swipeAction(Gear, GearList.SwipeAction)
-		case setEditorFormSheet(isPresented: Bool)
+		case setEditorSheet(isPresented: Bool)
 	}
 
 	public init(store: StoreOf<GearList>) {
@@ -40,50 +31,27 @@ public struct GearListView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: GearList.Action.init) { viewStore in
-			ListContent(viewStore.listState) { gear in
-				ForEach(gear) { gear in
-					GearRow(
-						gear: gear,
-						onEdit: { viewStore.send(.swipeAction(gear, .edit)) },
-						onDelete: { viewStore.send(.swipeAction(gear, .delete)) }
-					)
-				}
-			} empty: {
-				ListEmptyContent(
-					.emptyGear,
-					title: Strings.Gear.Error.Empty.title,
-					message: Strings.Gear.Error.Empty.message
-				) {
-					EmptyContentAction(title: Strings.Gear.List.add) { viewStore.send(.addButtonTapped) }
-				}
-			} error: { error in
-				ListEmptyContent(
-					.errorNotFound,
-					title: error.title,
-					message: error.message,
-					style: .error
-				) {
-					EmptyContentAction(title: error.action) { viewStore.send(.errorButtonTapped) }
-				}
+			ResourceListView(
+				store: store.scope(state: \.list, action: /GearList.Action.InternalAction.list)
+			) { gear in
+				GearRow(gear: gear)
 			}
-			.scrollContentBackground(.hidden)
-			.navigationTitle(Strings.Gear.title)
+			.navigationTitle(Strings.Gear.List.title)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
-					AddButton { viewStore.send(.addButtonTapped) }
+					SortOrderView(store: store.scope(state: \.sortOrder, action: /GearList.Action.InternalAction.sortOrder))
 				}
 			}
 			.sheet(isPresented: viewStore.binding(
-				get: \.isGearEditorPresented,
-				send: ViewAction.setEditorFormSheet(isPresented:)
+				get: \.isEditorPresented,
+				send: ViewAction.setEditorSheet(isPresented:)
 			)) {
-				IfLetStore(store.scope(state: \.gearEditor, action: GearList.Action.gearEditor)) { scopedStore in
+				IfLetStore(store.scope(state: \.editor, action: /GearList.Action.InternalAction.editor)) { scopedStore in
 					NavigationView {
 						GearEditorView(store: scopedStore)
 					}
 				}
 			}
-			.task { await viewStore.send(.observeGear).finish() }
 		}
 	}
 }
@@ -91,16 +59,8 @@ public struct GearListView: View {
 extension GearList.Action {
 	init(action: GearListView.ViewAction) {
 		switch action {
-		case .observeGear:
-			self = .observeGear
-		case .errorButtonTapped:
-			self = .errorButtonTapped
-		case .addButtonTapped:
-			self = .setEditorFormSheet(isPresented: true)
-		case let .swipeAction(gear, swipeAction):
-			self = .swipeAction(gear, swipeAction)
-		case let .setEditorFormSheet(isPresented):
-			self = .setEditorFormSheet(isPresented: isPresented)
+		case let .setEditorSheet(isPresented):
+			self = .view(.setEditorSheet(isPresented: isPresented))
 		}
 	}
 }
