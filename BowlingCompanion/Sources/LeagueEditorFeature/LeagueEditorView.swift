@@ -1,5 +1,6 @@
 import BaseFormLibrary
 import ComposableArchitecture
+import FeatureActionLibrary
 import ResourcePickerLibrary
 import SharedModelsLibrary
 import SharedModelsViewsLibrary
@@ -47,7 +48,7 @@ public struct LeagueEditorView: View {
 	}
 
 	enum ViewAction: BindableAction {
-		case loadInitialData
+		case didAppear
 		case setAlleyPicker(isPresented: Bool)
 		case binding(BindingAction<ViewState>)
 	}
@@ -58,14 +59,14 @@ public struct LeagueEditorView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: LeagueEditor.Action.init) { viewStore in
-			BaseFormView(store: store.scope(state: \.base, action: LeagueEditor.Action.form)) {
+			BaseFormView(store: store.scope(state: \.base, action: /LeagueEditor.Action.InternalAction.form)) {
 				detailsSection(viewStore)
 				recurrenceSection(viewStore)
 				gamesSection(viewStore)
 				additionalPinfallSection(viewStore)
 			}
 			.interactiveDismissDisabled(viewStore.isAlleyPickerPresented)
-			.onAppear { viewStore.send(.loadInitialData) }
+			.onAppear { viewStore.send(.didAppear) }
 		}
 	}
 
@@ -78,7 +79,7 @@ public struct LeagueEditorView: View {
 					destination: ResourcePickerView(
 						store: store.scope(
 							state: \.base.form.alleyPicker,
-							action: LeagueEditor.Action.alleyPicker
+							action: /LeagueEditor.Action.InternalAction.alleyPicker
 						)
 					) { alley in
 						AlleyRow(alley: alley)
@@ -195,10 +196,10 @@ extension LeagueEditor.State {
 extension LeagueEditor.Action {
 	init(action: LeagueEditorView.ViewAction) {
 		switch action {
-		case .loadInitialData:
-			self = .loadInitialData
+		case .didAppear:
+			self = .view(.didAppear)
 		case let .setAlleyPicker(isPresented):
-			self = .setAlleyPicker(isPresented: isPresented)
+			self = .view(.setAlleyPicker(isPresented: isPresented))
 		case let.binding(action):
 			self = .binding(action.pullback(\LeagueEditor.State.view))
 		}

@@ -141,8 +141,14 @@ public struct LeaguesList: ReducerProtocol {
 						return .task { .`internal`(.list(.callback(.shouldRefreshData))) }
 					}
 
-				case .editor(.didFinishEditing):
-					state.editor = nil
+				case let .editor(.delegate(delegateAction)):
+					switch delegateAction {
+					case .didFinishEditing:
+						state.editor = nil
+						return .none
+					}
+
+				case .editor(.internal), .editor(.view), .editor(.binding):
 					return .none
 
 				case .list(.internal), .list(.view), .list(.callback):

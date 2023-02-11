@@ -6,7 +6,7 @@ public struct AddLaneForm: ReducerProtocol {
 		@BindableState var lanesToAdd = 1
 	}
 
-	public enum Action: BindableAction, FeatureAction, Equatable {
+	public enum Action: FeatureAction, BindableAction, Equatable {
 		public enum ViewAction: Equatable {
 			case didTapSaveButton
 			case didTapCancelButton

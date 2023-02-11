@@ -13,7 +13,7 @@ public struct AlleysFilter: ReducerProtocol {
 		public init() {}
 	}
 
-	public enum Action: BindableAction, FeatureAction, Equatable {
+	public enum Action: FeatureAction, BindableAction, Equatable {
 		public enum ViewAction: Equatable {
 			case didTapClearButton
 			case didTapApplyButton

@@ -1,6 +1,7 @@
 import AlleysDataProviderInterface
 import BaseFormLibrary
 import ComposableArchitecture
+import FeatureActionLibrary
 import PersistenceServiceInterface
 import ResourcePickerLibrary
 import SharedModelsLibrary
@@ -85,14 +86,24 @@ public struct LeagueEditor: ReducerProtocol {
 		}
 	}
 
-	public enum Action: BindableAction, Equatable {
-		case loadInitialData
-		case alleyResponse(TaskResult<Alley?>)
+	public enum Action: FeatureAction, BindableAction, Equatable {
+		public enum ViewAction: Equatable {
+			case didAppear
+			case setAlleyPicker(isPresented: Bool)
+		}
+		public enum DelegateAction: Equatable {
+			case didFinishEditing
+		}
+		public enum InternalAction: Equatable {
+			case didLoadAlley(TaskResult<Alley?>)
+			case form(Form.Action)
+			case alleyPicker(ResourcePicker<Alley, Alley.FetchRequest>.Action)
+		}
+
+		case view(ViewAction)
+		case `internal`(InternalAction)
+		case delegate(DelegateAction)
 		case binding(BindingAction<State>)
-		case form(Form.Action)
-		case alleyPicker(ResourcePicker<Alley, Alley.FetchRequest>.Action)
-		case setAlleyPicker(isPresented: Bool)
-		case didFinishEditing
 	}
 
 	public init() {}
@@ -104,7 +115,7 @@ public struct LeagueEditor: ReducerProtocol {
 	public var body: some ReducerProtocol<State, Action> {
 		BindingReducer()
 
-		Scope(state: \.base, action: /Action.form) {
+		Scope(state: \.base, action: /Action.internal..Action.InternalAction.form) {
 			BaseForm()
 				.dependency(\.modelPersistence, .init(
 					create: persistenceService.createLeague,
@@ -113,7 +124,7 @@ public struct LeagueEditor: ReducerProtocol {
 				))
 		}
 
-		Scope(state: \.base.form.alleyPicker, action: /Action.alleyPicker) {
+		Scope(state: \.base.form.alleyPicker, action: /Action.internal..Action.InternalAction.alleyPicker) {
 			ResourcePicker {
 				try await alleysDataProvider.fetchAlleys($0)
 			}
@@ -121,63 +132,67 @@ public struct LeagueEditor: ReducerProtocol {
 
 		Reduce { state, action in
 			switch action {
-			case .loadInitialData:
-				if case let .edit(league) = state.base.mode, let alley = league.alley {
-					return .task {
-						await .alleyResponse(TaskResult {
-							let alleys = try await alleysDataProvider.fetchAlleys(.init(filter: .id(alley), ordering: .byName))
-							return alleys.first
-						})
+			case let .view(viewAction):
+				switch viewAction {
+				case .didAppear:
+					if case let .edit(league) = state.base.mode, let alley = league.alley {
+						return .task {
+							await .internal(.didLoadAlley(TaskResult {
+								let alleys = try await alleysDataProvider.fetchAlleys(.init(filter: .id(alley), ordering: .byName))
+								return alleys.first
+							}))
+						}
 					}
-				}
-				return .none
+					return .none
 
-			case let .alleyResponse(.success(alley)):
-				state.initialAlley = alley
-				return .none
-
-			case .alleyResponse(.failure):
-				// TODO: handle error failing to load alley
-				return .none
-
-			case let .setAlleyPicker(isPresented):
-				state.isAlleyPickerPresented = isPresented
-				return .none
-
-			case let .alleyPicker(.delegate(delegateAction)):
-				switch delegateAction {
-				case .didFinishEditing:
-					state.isAlleyPickerPresented = false
+				case let .setAlleyPicker(isPresented):
+					state.isAlleyPickerPresented = isPresented
 					return .none
 				}
 
-			case let .form(.delegate(delegateAction)):
-				switch delegateAction {
-				case let .didSaveModel(league):
-					return .task { .form(.callback(.didFinishSaving(.success(league))))}
+			case let .internal(internalAction):
+				switch internalAction {
+				case let .didLoadAlley(.success(alley)):
+					state.initialAlley = alley
+					return .none
 
-				case let .didDeleteModel(league):
-					return .task { .form(.callback(.didFinishDeleting(.success(league)))) }
+				case .didLoadAlley(.failure):
+					// TODO: handle error failing to load alley
+					return .none
 
-				case .didFinishSaving, .didFinishDeleting:
-					return .task { .didFinishEditing }
+				case let .alleyPicker(.delegate(delegateAction)):
+					switch delegateAction {
+					case .didFinishEditing:
+						state.isAlleyPickerPresented = false
+						return .none
+					}
+
+				case let .form(.delegate(delegateAction)):
+					switch delegateAction {
+					case let .didSaveModel(league):
+						return .task { .internal(.form(.callback(.didFinishSaving(.success(league))))) }
+
+					case let .didDeleteModel(league):
+						return .task { .internal(.form(.callback(.didFinishDeleting(.success(league))))) }
+
+					case .didFinishSaving, .didFinishDeleting:
+						return .task { .delegate(.didFinishEditing) }
+					}
+
+				case .form(.internal), .form(.view), .form(.callback):
+					return .none
+
+				case .alleyPicker(.internal), .alleyPicker(.view):
+					return .none
 				}
-
-			case .didFinishEditing:
-				return .none
 
 			case .binding(\.base.form.$recurrence):
 				if state.base.form.recurrence == .oneTimeEvent {
-					return .task { .set(\.base.form.$gamesPerSeries, .static) }
+					state.base.form.gamesPerSeries = .static
 				}
 				return .none
 
-			case .binding,
-					.form(.internal),
-					.form(.view),
-					.form(.callback),
-					.alleyPicker(.internal),
-					.alleyPicker(.view):
+			case .delegate, .binding:
 				return .none
 			}
 		}
