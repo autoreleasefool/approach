@@ -2,6 +2,7 @@ import AlleysListFeature
 import AssetsLibrary
 import BowlersListFeature
 import ComposableArchitecture
+import FeatureActionLibrary
 import GearListFeature
 import SettingsFeature
 import StringsLibrary
@@ -26,8 +27,8 @@ public struct AppView: View {
 	}
 
 	enum ViewAction {
-		case subscribeToTabs
-		case selectedTab(App.Tab)
+		case didAppear
+		case didSelectTab(App.Tab)
 	}
 
 	public init(store: StoreOf<App>) {
@@ -38,25 +39,25 @@ public struct AppView: View {
 		WithViewStore(store, observe: ViewState.init, send: App.Action.init) { viewStore in
 			if horizontalSizeClass == .compact {
 				TabView(
-					selection: viewStore.binding(get: \.selectedTab, send: ViewAction.selectedTab)
+					selection: viewStore.binding(get: \.selectedTab, send: ViewAction.didSelectTab)
 				) {
 					ForEach(viewStore.tabs) { tab in
 						NavigationView {
 							switch tab {
 							case .alleys:
-								AlleysListView(store: store.scope(state: \.alleysList, action: App.Action.alleysList))
+								AlleysListView(store: store.scope(state: \.alleysList, action: /App.Action.InternalAction.alleysList))
 							case .bowlers:
 								if viewStore.hasTeamsFeature {
 									TeamsAndBowlersListView(
-										store: store.scope(state: \.teamsAndBowlersList, action: App.Action.teamsAndBowlersList)
+										store: store.scope(state: \.teamsAndBowlersList, action: /App.Action.InternalAction.teamsAndBowlersList)
 									)
 								} else {
-									BowlersListView(store: store.scope(state: \.bowlersList, action: App.Action.bowlersList))
+									BowlersListView(store: store.scope(state: \.bowlersList, action: /App.Action.InternalAction.bowlersList))
 								}
 							case .settings:
-								SettingsView(store: store.scope(state: \.settings, action: App.Action.settings))
+								SettingsView(store: store.scope(state: \.settings, action: /App.Action.InternalAction.settings))
 							case .gear:
-								GearListView(store: store.scope(state: \.gearList, action: App.Action.gearList))
+								GearListView(store: store.scope(state: \.gearList, action: /App.Action.InternalAction.gearList))
 							}
 						}
 						.tag(tab)
@@ -66,7 +67,7 @@ public struct AppView: View {
 					}
 				}
 				.tint(.appAction)
-				.task { await viewStore.send(.subscribeToTabs).finish() }
+				.task { await viewStore.send(.didAppear).finish() }
 			} else {
 				// TODO: create sidebar for ipad size devices
 				EmptyView()
@@ -106,10 +107,10 @@ extension App.Tab {
 extension App.Action {
 	init(action: AppView.ViewAction) {
 		switch action {
-		case .subscribeToTabs:
-			self = .subscribeToTabs
-		case let .selectedTab(tab):
-			self = .selectedTab(tab)
+		case .didAppear:
+			self = .view(.didAppear)
+		case let .didSelectTab(tab):
+			self = .view(.didSelectTab(tab))
 		}
 	}
 }

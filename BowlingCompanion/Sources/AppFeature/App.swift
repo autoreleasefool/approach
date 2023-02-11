@@ -1,6 +1,7 @@
 import AlleysListFeature
 import BowlersListFeature
 import ComposableArchitecture
+import FeatureActionLibrary
 import FeatureFlagsLibrary
 import FeatureFlagsServiceInterface
 import GearListFeature
@@ -24,15 +25,23 @@ public struct App: ReducerProtocol {
 		}
 	}
 
-	public enum Action: Equatable {
-		case subscribeToTabs
-		case tabsResponse([Tab])
-		case selectedTab(Tab)
-		case alleysList(AlleysList.Action)
-		case gearList(GearList.Action)
-		case bowlersList(BowlersList.Action)
-		case teamsAndBowlersList(TeamsAndBowlersList.Action)
-		case settings(Settings.Action)
+	public enum Action: FeatureAction, Equatable {
+		public enum ViewAction: Equatable {
+			case didAppear
+			case didSelectTab(Tab)
+		}
+		public enum DelegateAction: Equatable {}
+		public enum InternalAction: Equatable {
+			case didChangeTabs([Tab])
+			case alleysList(AlleysList.Action)
+			case gearList(GearList.Action)
+			case bowlersList(BowlersList.Action)
+			case teamsAndBowlersList(TeamsAndBowlersList.Action)
+			case settings(Settings.Action)
+		}
+		case view(ViewAction)
+		case `internal`(InternalAction)
+		case delegate(DelegateAction)
 	}
 
 	public enum Tab: String, Identifiable, CaseIterable {
@@ -57,41 +66,63 @@ public struct App: ReducerProtocol {
 	@Dependency(\.featureFlags) var featureFlags
 
 	public var body: some ReducerProtocol<State, Action> {
-		Scope(state: \.bowlersList, action: /Action.bowlersList) {
+		Scope(state: \.bowlersList, action: /Action.internal..Action.InternalAction.bowlersList) {
 			BowlersList()
 		}
-		Scope(state: \.alleysList, action: /Action.alleysList) {
+		Scope(state: \.alleysList, action: /Action.internal..Action.InternalAction.alleysList) {
 			AlleysList()
 		}
-		Scope(state: \.gearList, action: /Action.gearList) {
+		Scope(state: \.gearList, action: /Action.internal..Action.InternalAction.gearList) {
 			GearList()
 		}
-		Scope(state: \.settings, action: /Action.settings) {
+		Scope(state: \.settings, action: /Action.internal..Action.InternalAction.settings) {
 			Settings()
 		}
-		Scope(state: \.teamsAndBowlersList, action: /Action.teamsAndBowlersList) {
+		Scope(state: \.teamsAndBowlersList, action: /Action.internal..Action.InternalAction.teamsAndBowlersList) {
 			TeamsAndBowlersList()
 		}
 
 		Reduce { state, action in
 			switch action {
-			case .subscribeToTabs:
-				return .run { send in
-					let expectedFlags = App.Tab.allCases.map { $0.featureFlag }
-					for await flags in featureFlags.observeAll(expectedFlags) {
-						await send(.tabsResponse(zip(App.Tab.allCases, flags).filter(\.1).map(\.0)))
+			case let .view(viewAction):
+				switch viewAction {
+				case .didAppear:
+					return .run { send in
+						let expectedFlags = App.Tab.allCases.map { $0.featureFlag }
+						for await flags in featureFlags.observeAll(expectedFlags) {
+							await send(.internal(.didChangeTabs(zip(App.Tab.allCases, flags).filter(\.1).map(\.0))))
+						}
 					}
+
+				case let .didSelectTab(tab):
+					state.selectedTab = tab
+					return .none
 				}
 
-			case let .tabsResponse(tabs):
-				state.tabs = tabs
-				return .none
+			case let .internal(internalAction):
+				switch internalAction {
+				case let .didChangeTabs(tabs):
+					state.tabs = tabs
+					return .none
 
-			case let .selectedTab(tab):
-				state.selectedTab = tab
-				return .none
+				case .bowlersList(.delegate), .bowlersList(.view), .bowlersList(.internal):
+					return .none
 
-			case .bowlersList, .settings, .alleysList, .gearList, .teamsAndBowlersList:
+				case .settings(.delegate), .settings(.view), .settings(.internal):
+					return .none
+
+				case .alleysList(.delegate), .alleysList(.view), .alleysList(.internal):
+					return .none
+
+				case .gearList(.delegate), .gearList(.view), .gearList(.internal):
+					return .none
+
+				case .teamsAndBowlersList:
+//				case .teamsAndBowlersList(.delegate), .teamsAndBowlersList(.view), .teamsAndBowlersList(.internal):
+					return .none
+				}
+
+			case .delegate:
 				return .none
 			}
 		}
