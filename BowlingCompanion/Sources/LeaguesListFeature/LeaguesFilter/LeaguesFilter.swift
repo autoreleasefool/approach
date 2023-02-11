@@ -47,7 +47,13 @@ public struct LeaguesFilter: ReducerProtocol {
 			case .binding:
 				return .task { .delegate(.didChangeFilters) }
 
-			case .internal, .delegate:
+			case let .internal(internalAction):
+				switch internalAction {
+				case .never:
+					return .none
+				}
+
+			case .delegate:
 				return .none
 			}
 		}

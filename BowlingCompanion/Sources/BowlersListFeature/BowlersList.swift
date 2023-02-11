@@ -135,13 +135,19 @@ public struct BowlersList: ReducerProtocol {
 						return .none
 					}
 
+				case let .leagues(.delegate(delegateAction)):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
 				case .list(.internal), .list(.view), .list(.callback):
 					return .none
 
 				case .editor(.internal), .editor(.view), .editor(.binding):
 					return .none
 
-				case .leagues:
+				case .leagues(.internal), .leagues(.view):
 					return .none
 
 				case .sortOrder(.internal), .sortOrder(.view):

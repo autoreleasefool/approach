@@ -87,7 +87,13 @@ public struct BowlerEditor: ReducerProtocol {
 					return .none
 				}
 
-			case .binding, .view, .delegate:
+			case let .view(viewAction):
+				switch viewAction {
+				case .never:
+					return .none
+				}
+
+			case .binding, .delegate:
 				return .none
 			}
 		}

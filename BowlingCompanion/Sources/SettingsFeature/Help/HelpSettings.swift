@@ -33,7 +33,13 @@ public struct HelpSettings: ReducerProtocol {
 					return .none
 				}
 
-			case .internal, .delegate:
+			case let .internal(internalAction):
+				switch internalAction {
+				case .never:
+					return .none
+				}
+
+			case .delegate:
 				return .none
 			}
 		}

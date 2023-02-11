@@ -113,7 +113,13 @@ public struct SeriesList: ReducerProtocol {
 						return .none
 					}
 
-				case .sidebar:
+				case let .sidebar(.delegate(delegateAction)):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
+				case .sidebar(.internal), .sidebar(.view):
 					return .none
 
 				case .list(.view), .list(.internal), .list(.callback):
@@ -122,6 +128,9 @@ public struct SeriesList: ReducerProtocol {
 				case .editor(.view), .editor(.internal), .editor(.binding):
 					return .none
 				}
+
+			case .delegate:
+				return .none
 			}
 		}
 		.ifLet(\.selection, action: /Action.internal..Action.InternalAction.sidebar) {

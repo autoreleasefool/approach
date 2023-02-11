@@ -49,19 +49,41 @@ public struct Settings: ReducerProtocol {
 			switch action {
 			case let .internal(internalAction):
 				switch internalAction {
-				case .featureFlagsList(.delegate),
-						.featureFlagsList(.internal),
-						.featureFlagsList(.view),
-						.helpSettings(.delegate),
-						.helpSettings(.internal),
-						.helpSettings(.view),
-						.opponentsList(.delegate),
-						.opponentsList(.view),
-						.opponentsList(.internal):
+				case let .featureFlagsList(.delegate(delegateAction)):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
+				case let .helpSettings(.delegate(delegateAction)):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
+				case let .opponentsList(.delegate(delegateAction)):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
+				case .featureFlagsList(.internal), .featureFlagsList(.view):
+					return .none
+
+				case .helpSettings(.internal), .helpSettings(.view):
+					return .none
+
+				case.opponentsList(.view), .opponentsList(.internal):
 					return .none
 				}
 
-			case .view, .delegate:
+			case let .view(viewAction):
+				switch viewAction {
+				case .never:
+					return .none
+				}
+
+			case .delegate:
 				return .none
 			}
 		}

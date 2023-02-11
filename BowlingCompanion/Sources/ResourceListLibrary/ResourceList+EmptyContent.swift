@@ -86,7 +86,13 @@ public struct ResourceListEmpty: ReducerProtocol {
 					return .task { .delegate(.didTapActionButton) }
 				}
 
-			case .internal, .delegate:
+			case let .internal(internalAction):
+				switch internalAction {
+				case .never:
+					return .none
+				}
+
+			case .delegate:
 				return .none
 			}
 		}

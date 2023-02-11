@@ -39,7 +39,13 @@ public struct AddLaneForm: ReducerProtocol {
 					return didFinishAddingLanes(count: nil)
 				}
 
-			case .delegate, .internal, .binding:
+			case let .internal(internalAction):
+				switch internalAction {
+				case .never:
+					return .none
+				}
+
+			case .delegate, .binding:
 				return .none
 			}
 		}

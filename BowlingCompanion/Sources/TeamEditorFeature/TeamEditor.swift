@@ -142,14 +142,19 @@ public struct TeamEditor: ReducerProtocol {
 						return .none
 					}
 
-				case .teamMembers(.view),
-						.teamMembers(.internal),
-						.teamMembers(.delegate),
-						.form(.view),
-						.form(.internal),
-						.form(.callback),
-						.bowlers(.view),
-						.bowlers(.internal):
+				case let .teamMembers(.delegate(delegateAction)):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
+				case .teamMembers(.view), .teamMembers(.internal):
+					return .none
+
+				case .form(.view), .form(.internal), .form(.callback):
+					return .none
+
+				case .bowlers(.view), .bowlers(.internal):
 					return .none
 				}
 

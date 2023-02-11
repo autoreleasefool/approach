@@ -50,7 +50,13 @@ public struct LaneEditor: ReducerProtocol {
 					}
 				}
 
-			case .binding, .internal, .delegate:
+			case let .internal(internalAction):
+				switch internalAction {
+				case .never:
+					return .none
+				}
+
+			case .binding, .delegate:
 				return .none
 			}
 		}

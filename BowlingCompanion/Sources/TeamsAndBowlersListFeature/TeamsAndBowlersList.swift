@@ -55,6 +55,7 @@ public struct TeamsAndBowlersList: ReducerProtocol {
 				state.selectedTab = tab
 				return .none
 
+				// TODO: use proper delegate destructuring
 			case .teamsList, .bowlersList:
 				return .none
 			}

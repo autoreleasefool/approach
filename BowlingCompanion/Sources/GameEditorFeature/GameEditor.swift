@@ -42,7 +42,13 @@ public struct GameEditor: ReducerProtocol {
 
 			case let .internal(internalAction):
 				switch internalAction {
-				case .ballDetails(.delegate), .ballDetails(.view), .ballDetails(.internal), .ballDetails(.binding):
+				case let .ballDetails(.delegate(delegateAction)):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
+				case .ballDetails(.view), .ballDetails(.internal), .ballDetails(.binding):
 					return .none
 				}
 

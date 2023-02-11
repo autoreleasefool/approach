@@ -168,14 +168,15 @@ public struct AlleyLanesEditor: ReducerProtocol {
 						return didFinishAddingLanes(&state, count: numberOfLanes)
 					}
 
-				case .laneEditor(_, .binding),
-						.laneEditor(_, .view),
-						.laneEditor(_, .internal),
-						.addLaneForm(.internal),
-						.addLaneForm(.view),
-						.addLaneForm(.binding):
+				case .laneEditor(_, .binding), .laneEditor(_, .view), .laneEditor(_, .internal):
+					return .none
+
+				case .addLaneForm(.internal), .addLaneForm(.view), .addLaneForm(.binding):
 					return .none
 				}
+
+			case .delegate:
+				return .none
 			}
 		}
 		.forEach(\.lanes, action: /Action.internal..Action.InternalAction.laneEditor(id:action:)) {

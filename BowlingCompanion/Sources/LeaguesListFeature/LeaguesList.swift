@@ -148,6 +148,12 @@ public struct LeaguesList: ReducerProtocol {
 						return .none
 					}
 
+				case let .series(.delegate(delegateAction)):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
 				case .editor(.internal), .editor(.view), .editor(.binding):
 					return .none
 
@@ -157,12 +163,8 @@ public struct LeaguesList: ReducerProtocol {
 				case .filters(.internal), .filters(.view), .filters(.binding):
 					return .none
 
-				case .editor:
+				case .series(.internal), .series(.view):
 					return .none
-
-				case .series:
-					return .none
-
 				}
 
 			case .delegate:

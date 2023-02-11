@@ -153,13 +153,25 @@ public struct AlleyEditor: ReducerProtocol {
 						return .task { .delegate(.didFinishEditing) }
 					}
 
-				case .laneEditor(.internal),
-						.laneEditor(.view),
-						.laneEditor(.delegate),
-						.form(.view),
-						.form(.internal),
-						.form(.callback),
-						.alleyLanes:
+				case let .laneEditor(.delegate(delegateAction)):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
+				case let .alleyLanes(.delegate(delegateAction)):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
+				case .laneEditor(.internal), .laneEditor(.view):
+					return .none
+
+				case .form(.view), .form(.internal), .form(.callback):
+					return .none
+
+				case .alleyLanes(.view), .alleyLanes(.internal):
 					return .none
 				}
 

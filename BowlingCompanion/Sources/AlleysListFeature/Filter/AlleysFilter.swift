@@ -47,10 +47,16 @@ public struct AlleysFilter: ReducerProtocol {
 					return .task { .delegate(.didApplyFilters) }
 				}
 
+			case let .internal(internalAction):
+				switch internalAction {
+				case .never:
+					return .none
+				}
+
 			case .binding:
 				return .task { .delegate(.didChangeFilters) }
 
-			case .internal, .delegate:
+			case .delegate:
 				return .none
 			}
 		}

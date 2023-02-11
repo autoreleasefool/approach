@@ -105,18 +105,43 @@ public struct App: ReducerProtocol {
 					state.tabs = tabs
 					return .none
 
-				case .bowlersList(.delegate), .bowlersList(.view), .bowlersList(.internal):
+				case let .bowlersList(.delegate(delegateAction)):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
+				case let .settings(.delegate(delegateAction)):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
+				case let .alleysList(.delegate(delegateAction)):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
+				case let .gearList(.delegate(delegateAction)):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
+				case .bowlersList(.view), .bowlersList(.internal):
 					return .none
 
-				case .settings(.delegate), .settings(.view), .settings(.internal):
+				case .settings(.view), .settings(.internal):
 					return .none
 
-				case .alleysList(.delegate), .alleysList(.view), .alleysList(.internal):
+				case .alleysList(.view), .alleysList(.internal):
 					return .none
 
-				case .gearList(.delegate), .gearList(.view), .gearList(.internal):
+				case .gearList(.view), .gearList(.internal):
 					return .none
 
+					// TODO: use proper delegate destructuring case
 				case .teamsAndBowlersList:
 //				case .teamsAndBowlersList(.delegate), .teamsAndBowlersList(.view), .teamsAndBowlersList(.internal):
 					return .none
