@@ -106,17 +106,20 @@ public struct SeriesList: ReducerProtocol {
 						return .none
 					}
 
-				case .editor(.didFinishEditing):
-					state.editor = nil
-					return .none
+				case let .editor(.delegate(delegateAction)):
+					switch delegateAction {
+					case .didFinishEditing:
+						state.editor = nil
+						return .none
+					}
 
 				case .sidebar:
 					return .none
 
-				case .editor:
+				case .list(.view), .list(.internal), .list(.callback):
 					return .none
 
-				case .list(.view), .list(.internal), .list(.callback):
+				case .editor(.view), .editor(.internal), .editor(.binding):
 					return .none
 				}
 			}

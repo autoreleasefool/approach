@@ -1,6 +1,7 @@
 import AssetsLibrary
 import BaseFormLibrary
 import ComposableArchitecture
+import FeatureActionLibrary
 import ResourcePickerLibrary
 import SharedModelsLibrary
 import SharedModelsViewsLibrary
@@ -61,7 +62,7 @@ public struct SeriesEditorView: View {
 	}
 
 	enum ViewAction: BindableAction {
-		case loadInitialData
+		case didAppear
 		case setAlleyPicker(isPresented: Bool)
 		case setLanePicker(isPresented: Bool)
 		case binding(BindingAction<ViewState>)
@@ -73,7 +74,7 @@ public struct SeriesEditorView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: SeriesEditor.Action.init) { viewStore in
-			BaseFormView(store: store.scope(state: \.base, action: SeriesEditor.Action.form)) {
+			BaseFormView(store: store.scope(state: \.base, action: /SeriesEditor.Action.InternalAction.form)) {
 				Section(Strings.Editor.Fields.Details.title) {
 					DatePicker(
 						Strings.Series.Properties.date,
@@ -90,7 +91,7 @@ public struct SeriesEditorView: View {
 							destination: ResourcePickerView(
 								store: store.scope(
 									state: \.base.form.alleyPicker,
-									action: SeriesEditor.Action.alleyPicker
+									action: /SeriesEditor.Action.InternalAction.alleyPicker
 								)
 							) { alley in
 								AlleyRow(alley: alley)
@@ -111,7 +112,7 @@ public struct SeriesEditorView: View {
 								destination: ResourcePickerView(
 									store: store.scope(
 										state: \.base.form.lanePicker,
-										action: SeriesEditor.Action.lanePicker
+										action: /SeriesEditor.Action.InternalAction.lanePicker
 									)
 								) { lane in
 									LaneRow(lane: lane)
@@ -167,7 +168,7 @@ public struct SeriesEditorView: View {
 				}
 				.listRowBackground(Color(uiColor: .secondarySystemBackground))
 			}
-			.onAppear { viewStore.send(.loadInitialData) }
+			.onAppear { viewStore.send(.didAppear) }
 		}
 	}
 }
@@ -187,12 +188,12 @@ extension SeriesEditor.State {
 extension SeriesEditor.Action {
 	init(action: SeriesEditorView.ViewAction) {
 		switch action {
-		case .loadInitialData:
-			self = .loadInitialData
+		case .didAppear:
+			self = .view(.didAppear)
 		case let .setAlleyPicker(isPresented):
-			self = .setAlleyPicker(isPresented: isPresented)
+			self = .view(.setAlleyPicker(isPresented: isPresented))
 		case let .setLanePicker(isPresented):
-			self = .setLanePicker(isPresented: isPresented)
+			self = .view(.setLanePicker(isPresented: isPresented))
 		case .binding(let action):
 			self = .binding(action.pullback(\SeriesEditor.State.view))
 		}

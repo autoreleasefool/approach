@@ -2,6 +2,7 @@ import AlleysDataProviderInterface
 import BaseFormLibrary
 import ComposableArchitecture
 import DateTimeLibrary
+import FeatureActionLibrary
 import Foundation
 import LanesDataProviderInterface
 import PersistenceServiceInterface
@@ -107,17 +108,27 @@ public struct SeriesEditor: ReducerProtocol {
 		}
 	}
 
-	public enum Action: BindableAction, Equatable {
-		case loadInitialData
-		case alleyResponse(TaskResult<Alley?>)
-		case lanesResponse(TaskResult<[Lane]>)
-		case setAlleyPicker(isPresented: Bool)
-		case setLanePicker(isPresented: Bool)
+	public enum Action: FeatureAction, BindableAction, Equatable {
+		public enum ViewAction: Equatable {
+			case didAppear
+			case setAlleyPicker(isPresented: Bool)
+			case setLanePicker(isPresented: Bool)
+		}
+		public enum DelegateAction: Equatable {
+			case didFinishEditing
+		}
+		public enum InternalAction: Equatable {
+			case didLoadAlley(TaskResult<Alley?>)
+			case didLoadLanes(TaskResult<[Lane]>)
+			case form(Form.Action)
+			case alleyPicker(ResourcePicker<Alley, Alley.FetchRequest>.Action)
+			case lanePicker(ResourcePicker<Lane, Lane.FetchRequest>.Action)
+		}
+
+		case view(ViewAction)
+		case `internal`(InternalAction)
+		case delegate(DelegateAction)
 		case binding(BindingAction<State>)
-		case form(Form.Action)
-		case alleyPicker(ResourcePicker<Alley, Alley.FetchRequest>.Action)
-		case lanePicker(ResourcePicker<Lane, Lane.FetchRequest>.Action)
-		case didFinishEditing
 	}
 
 	public init() {}
@@ -131,7 +142,7 @@ public struct SeriesEditor: ReducerProtocol {
 	public var body: some ReducerProtocol<State, Action> {
 		BindingReducer()
 
-		Scope(state: \.base, action: /Action.form) {
+		Scope(state: \.base, action: /Action.internal..Action.InternalAction.form) {
 			BaseForm()
 				.dependency(\.modelPersistence, .init(
 					create: persistenceService.createSeries,
@@ -140,118 +151,119 @@ public struct SeriesEditor: ReducerProtocol {
 				))
 		}
 
-		Scope(state: \.base.form.alleyPicker, action: /Action.alleyPicker) {
-			ResourcePicker {
-				try await alleysDataProvider.fetchAlleys($0)
-			}
+		Scope(state: \.base.form.alleyPicker, action: /Action.internal..Action.InternalAction.alleyPicker) {
+			ResourcePicker(fetchResources: alleysDataProvider.fetchAlleys)
 		}
 
-		Scope(state: \.base.form.lanePicker, action: /Action.lanePicker) {
-			ResourcePicker {
-				try await lanesDataProvider.fetchLanes($0)
-			}
+		Scope(state: \.base.form.lanePicker, action: /Action.internal..Action.InternalAction.lanePicker) {
+			ResourcePicker(fetchResources: lanesDataProvider.fetchLanes)
 		}
 
 		Reduce { state, action in
 			switch action {
-			case .loadInitialData:
-				return .run { [alley = state.base.form.alleyPicker.selected.first, series = state.base.mode.model] send in
-					await withTaskGroup(of: Void.self) { group in
-						if let alley {
-							group.addTask {
-								await send(.alleyResponse(TaskResult {
-									let alleys = try await alleysDataProvider.fetchAlleys(.init(filter: .id(alley), ordering: .byName))
-									return alleys.first
-								}))
+			case let .view(viewAction):
+				switch viewAction {
+				case .didAppear:
+					return .run { [alley = state.base.form.alleyPicker.selected.first, series = state.base.mode.model] send in
+						await withTaskGroup(of: Void.self) { group in
+							if let alley {
+								group.addTask {
+									await send(.internal(.didLoadAlley(TaskResult {
+										let alleys = try await alleysDataProvider.fetchAlleys(.init(filter: .id(alley), ordering: .byName))
+										return alleys.first
+									})))
+								}
+							} else {
+								group.addTask {
+									await send(.internal(.didLoadAlley(.success(nil))))
+								}
 							}
-						} else {
-							group.addTask {
-								await send(.alleyResponse(.success(nil)))
-							}
-						}
 
-						if let series {
-							group.addTask {
-								await send(.lanesResponse(TaskResult {
-									try await lanesDataProvider.fetchLanes(.init(filter: .series(series), ordering: .byLabel))
-								}))
-							}
-						} else {
-							group.addTask {
-								await send(.lanesResponse(.success([])))
+							if let series {
+								group.addTask {
+									await send(.internal(.didLoadLanes(TaskResult {
+										try await lanesDataProvider.fetchLanes(.init(filter: .series(series), ordering: .byLabel))
+									})))
+								}
+							} else {
+								group.addTask {
+									await send(.internal(.didLoadLanes(.success([]))))
+								}
 							}
 						}
 					}
+
+				case let .setAlleyPicker(isPresented):
+					state.isAlleyPickerPresented = isPresented
+					return .none
+
+				case let .setLanePicker(isPresented):
+					state.isLanePickerPresented = isPresented
+					return .none
 				}
 
-			case let .alleyResponse(.success(alley)):
-				state.initialAlley = alley
-				return .none
+			case let .internal(internalAction):
+				switch internalAction {
+				case let .didLoadAlley(.success(alley)):
+					state.initialAlley = alley
+					return .none
 
-			case .alleyResponse(.failure):
-				// TODO: handle error failing to load alley
-				return .none
+				case .didLoadAlley(.failure):
+					// TODO: handle error failing to load alley
+					return .none
 
-			case let .lanesResponse(.success(lanes)):
-				state.initialLanes = .init(uniqueElements: lanes)
-				return .none
+				case let .didLoadLanes(.success(lanes)):
+					state.initialLanes = .init(uniqueElements: lanes)
+					return .none
 
-			case .lanesResponse(.failure):
-				// TODO: handle error failing to load lanes
-				return .none
+				case .didLoadLanes(.failure):
+					// TODO: handle error failing to load lanes
+					return .none
 
-			case let .setAlleyPicker(isPresented):
-				state.isAlleyPickerPresented = isPresented
-				return .none
-
-			case let .setLanePicker(isPresented):
-				state.isLanePickerPresented = isPresented
-				return .none
-
-			case let .alleyPicker(.delegate(delegateAction)):
-				switch delegateAction {
-				case .didFinishEditing:
-					state.isAlleyPickerPresented = false
-					let laneQuery: Lane.FetchRequest
-					if let alley = state.base.form.alleyPicker.selected.first {
-						laneQuery = .init(filter: .alley(alley), ordering: .byLabel)
-					} else {
-						laneQuery = .init(filter: nil, ordering: .byLabel)
+				case let .alleyPicker(.delegate(delegateAction)):
+					switch delegateAction {
+					case .didFinishEditing:
+						state.isAlleyPickerPresented = false
+						let laneQuery: Lane.FetchRequest
+						if let alley = state.base.form.alleyPicker.selected.first {
+							laneQuery = .init(filter: .alley(alley), ordering: .byLabel)
+						} else {
+							laneQuery = .init(filter: nil, ordering: .byLabel)
+						}
+						state.base.form.lanePicker.query = laneQuery
+						return .none
 					}
-					state.base.form.lanePicker.query = laneQuery
+
+				case let .lanePicker(.delegate(delegateAction)):
+					switch delegateAction {
+					case .didFinishEditing:
+						state.isLanePickerPresented = false
+						return .none
+					}
+
+				case let .form(.delegate(delegateAction)):
+					switch delegateAction {
+					case let .didSaveModel(series):
+						return .task { .internal(.form(.callback(.didFinishSaving(.success(series))))) }
+
+					case let .didDeleteModel(series):
+						return .task { .internal(.form(.callback(.didFinishDeleting(.success(series))))) }
+
+					case .didFinishSaving, .didFinishDeleting:
+						return .task { .delegate(.didFinishEditing) }
+					}
+
+				case .form(.view), .form(.callback), .form(.internal):
+					return .none
+
+				case .alleyPicker(.internal), .alleyPicker(.view):
+					return .none
+
+				case .lanePicker(.internal), .lanePicker(.view):
 					return .none
 				}
 
-			case let .lanePicker(.delegate(delegateAction)):
-				switch delegateAction {
-				case .didFinishEditing:
-					state.isLanePickerPresented = false
-					return .none
-				}
-
-			case let .form(.delegate(delegateAction)):
-				switch delegateAction {
-				case let .didSaveModel(series):
-					return .task { .form(.callback(.didFinishSaving(.success(series))))}
-
-				case let .didDeleteModel(series):
-					return .task { .form(.callback(.didFinishDeleting(.success(series)))) }
-
-				case .didFinishSaving, .didFinishDeleting:
-					return .task { .didFinishEditing }
-				}
-
-			case .didFinishEditing:
-				return .none
-
-			case .binding,
-					.form(.view),
-					.form(.callback),
-					.form(.internal),
-					.alleyPicker(.internal),
-					.alleyPicker(.view),
-					.lanePicker(.internal),
-					.lanePicker(.view):
+			case .binding, .delegate:
 				return .none
 			}
 		}
