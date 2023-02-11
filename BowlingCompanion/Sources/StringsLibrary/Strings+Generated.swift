@@ -228,8 +228,8 @@ public enum Strings {
   }
   public enum Game {
     /// Games
-    public static func title(_ p1: Any) -> String {
-      return Strings.tr("Localizable", "game.title", String(describing: p1), fallback: "Game %@")
+    public static func title(_ p1: Int) -> String {
+      return Strings.tr("Localizable", "game.title", p1, fallback: "Game %d")
     }
   }
   public enum Gear {

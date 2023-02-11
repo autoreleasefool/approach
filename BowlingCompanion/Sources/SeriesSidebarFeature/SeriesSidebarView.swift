@@ -1,7 +1,10 @@
 import ComposableArchitecture
 import DateTimeLibrary
+import FeatureActionLibrary
 import GameEditorFeature
+import ResourceListLibrary
 import SharedModelsLibrary
+import StringsLibrary
 import SwiftUI
 
 public struct SeriesSidebarView: View {
@@ -9,18 +12,15 @@ public struct SeriesSidebarView: View {
 
 	struct ViewState: Equatable {
 		let title: String
-		let games: IdentifiedArrayOf<Game>
 		let selection: Game.ID?
 
 		init(state: SeriesSidebar.State) {
 			self.title = state.series.date.longFormat
-			self.games = state.games
 			self.selection = state.selection?.id
 		}
 	}
 
 	enum ViewAction {
-		case observeGames
 		case setNavigation(selection: Game.ID?)
 	}
 
@@ -30,12 +30,14 @@ public struct SeriesSidebarView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: SeriesSidebar.Action.init) { viewStore in
-			List(viewStore.games) { game in
+			ResourceListView(
+				store: store.scope(state: \.list, action: /SeriesSidebar.Action.InternalAction.list)
+			) { game in
 				NavigationLink(
 					destination: IfLetStore(
 						store.scope(
 							state: \.selection?.value,
-							action: SeriesSidebar.Action.gameEditor
+							action: /SeriesSidebar.Action.InternalAction.editor
 						)
 					) {
 						GameEditorView(store: $0)
@@ -46,11 +48,10 @@ public struct SeriesSidebarView: View {
 						send: SeriesSidebarView.ViewAction.setNavigation(selection:)
 					)
 				) {
-					Text("Game \(game.ordinal)")
+					Text(Strings.Game.title(game.ordinal))
 				}
 			}
 			.navigationTitle(viewStore.title)
-			.task { await viewStore.send(.observeGames).finish() }
 		}
 	}
 }
@@ -58,10 +59,8 @@ public struct SeriesSidebarView: View {
 extension SeriesSidebar.Action {
 	init(action: SeriesSidebarView.ViewAction) {
 		switch action {
-		case .observeGames:
-			self = .observeGames
 		case let .setNavigation(selection):
-			self = .setNavigation(selection: selection)
+			self = .view(.setNavigation(selection: selection))
 		}
 	}
 }

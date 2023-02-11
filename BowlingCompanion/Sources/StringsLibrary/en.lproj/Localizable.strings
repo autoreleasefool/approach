@@ -124,7 +124,7 @@
 
 /* Games */
 
-"game.title" = "Game %@";
+"game.title" = "Game %d";
 "frame.title" = "Frame %d";
 "ball.title" = "Ball %d";
 "ball.properties.ballRolled" = "Ball Rolled";

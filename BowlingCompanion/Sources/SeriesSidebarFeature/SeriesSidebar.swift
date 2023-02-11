@@ -1,27 +1,50 @@
 import ComposableArchitecture
+import FeatureActionLibrary
 import GamesDataProviderInterface
 import GameEditorFeature
+import ResourceListLibrary
 import SharedModelsLibrary
+import StringsLibrary
+
+extension Game: ResourceListItem {
+	public var name: String { "Game \(ordinal)" }
+}
 
 public struct SeriesSidebar: ReducerProtocol {
 	public struct State: Equatable {
-		public var series: Series
-		public var games: IdentifiedArrayOf<Game> = []
+		public let series: Series
+		public var list: ResourceList<Game, Game.FetchRequest>.State
+
 		public var selection: Identified<Game.ID, GameEditor.State>?
 
 		public init(series: Series) {
 			self.series = series
+			self.list = .init(
+				features: [],
+				query: .init(filter: .series(series.id), ordering: .byOrdinal),
+				listTitle: series.date.longFormat,
+				emptyContent: .init(
+					image: .emptyGames,
+					title: Strings.Error.Generic.title,
+					action: Strings.Action.reload
+				)
+			)
 		}
 	}
 
-	public enum Action: Equatable {
-		case observeGames
-		case gamesResponse(TaskResult<[Game]>)
-		case setNavigation(selection: Game.ID?)
-		case gameEditor(GameEditor.Action)
+	public enum Action: FeatureAction, Equatable {
+		public enum ViewAction: Equatable {
+			case setNavigation(selection: Game.ID?)
+		}
+		public enum DelegateAction: Equatable {}
+		public enum InternalAction: Equatable {
+			case list(ResourceList<Game, Game.FetchRequest>.Action)
+			case editor(GameEditor.Action)
+		}
+		case view(ViewAction)
+		case `internal`(InternalAction)
+		case delegate(DelegateAction)
 	}
-
-	struct ObservationCancellable {}
 
 	public init() {}
 
@@ -30,42 +53,54 @@ public struct SeriesSidebar: ReducerProtocol {
 	public var body: some ReducerProtocol<State, Action> {
 		Reduce { state, action in
 			switch action {
-			case .observeGames:
-				return .run { [series = state.series.id] send in
-					for try await games in gamesDataProvider.observeGames(.init(filter: .series(series), ordering: .byOrdinal)) {
-						await send(.gamesResponse(.success(games)))
+			case let .view(viewAction):
+				switch viewAction {
+				case let .setNavigation(selection: .some(id)):
+					return navigate(to: id, state: &state)
+
+				case .setNavigation(selection: .none):
+					return navigate(to: nil, state: &state)
+				}
+
+			case let .internal(internalAction):
+				switch internalAction {
+				case let .list(.delegate(delegateAction)):
+					switch delegateAction {
+					case .didEdit, .didDelete, .didTap, .didAddNew, .didTapEmptyStateButton:
+						return .none
 					}
-				} catch: { error, send in
-					await send(.gamesResponse(.failure(error)))
+
+				case let .editor(.delegate(delegateAction)):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
+				case .list(.internal), .list(.view), .list(.callback):
+					return .none
+
+				case .editor(.internal), .editor(.view):
+					return .none
 				}
-				.cancellable(id: ObservationCancellable.self, cancelInFlight: true)
 
-			case let .gamesResponse(.success(games)):
-				state.games = .init(uniqueElements: games)
-				return .none
-
-			case .gamesResponse(.failure):
-				// TODO: show games error
-				return .none
-
-			case let .setNavigation(selection: .some(id)):
-				if let selection = state.games[id: id] {
-					state.selection = Identified(.init(game: selection), id: id)
-				}
-				return .none
-
-			case .setNavigation(selection: .none):
-				state.selection = nil
-				return .none
-
-			case .gameEditor:
+			case .delegate:
 				return .none
 			}
 		}
-		.ifLet(\.selection, action: /SeriesSidebar.Action.gameEditor) {
+		.ifLet(\.selection, action: /Action.internal..Action.InternalAction.editor) {
 			Scope(state: \Identified<Game.ID, GameEditor.State>.value, action: /.self) {
 				GameEditor()
 			}
 		}
+	}
+
+	private func navigate(to id: Game.ID?, state: inout State) -> EffectTask<Action> {
+		if let id, let selection = state.list.resources?[id: id] {
+			state.selection = Identified(.init(game: selection), id: selection.id)
+		} else {
+			state.selection = nil
+		}
+
+		return .none
 	}
 }
