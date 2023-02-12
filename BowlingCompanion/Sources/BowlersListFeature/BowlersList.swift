@@ -125,7 +125,7 @@ public struct BowlersList: ReducerProtocol {
 					switch delegateAction {
 					case let .didTapOption(ordering):
 						state.list.query = .init(filter: state.list.query.filter, ordering: ordering)
-						return .task { .`internal`(.list(.callback(.shouldRefreshData))) }
+						return .task { .internal(.list(.callback(.shouldRefreshData))) }
 					}
 
 				case let .editor(.delegate(delegateAction)):

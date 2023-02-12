@@ -1,40 +1,61 @@
 import BowlersDataProviderInterface
 import ComposableArchitecture
+import FeatureActionLibrary
+import PersistenceServiceInterface
 import RecentlyUsedServiceInterface
+import ResourceListLibrary
 import SharedModelsLibrary
 import SortOrderLibrary
+import StringsLibrary
 import TeamsDataProviderInterface
 import TeamEditorFeature
 import ViewsLibrary
 
+extension Team: ResourceListItem {}
+
 public struct TeamsList: ReducerProtocol {
 	public struct State: Equatable {
-		public var teams: IdentifiedArrayOf<Team>?
+		public var list: ResourceList<Team, Team.FetchRequest>.State
 		public var sortOrder: SortOrder<Team.FetchRequest.Ordering>.State = .init(initialValue: .byRecentlyUsed)
-		public var error: ListErrorContent?
-		public var teamEditor: TeamEditor.State?
-		public var alert: AlertState<AlertAction>?
+		public var editor: TeamEditor.State?
 
-		public init() {}
+		public init() {
+			self.list = .init(
+				features: [
+					.add,
+					.swipeToEdit,
+					.swipeToDelete(onDelete: .init {
+						@Dependency(\.persistenceService) var persistenceService: PersistenceService
+						try await persistenceService.deleteTeam($0)
+					})
+				],
+				query: .init(filter: nil, ordering: sortOrder.ordering),
+				listTitle: Strings.Team.List.title,
+				emptyContent: .init(
+					image: .emptyTeams,
+					title: Strings.Team.Error.Empty.title,
+					message: Strings.Team.Error.Empty.message,
+					action: Strings.Team.List.add
+				)
+			)
+		}
 	}
 
-	public enum Action: Equatable {
-		case observeTeams
-		case errorButtonTapped
-		case teamsResponse(TaskResult<[Team]>)
-		case editTeamLoadResponse(TaskResult<EditTeamLoadResult>)
-		case deleteTeamResponse(TaskResult<Bool>)
-		case swipeAction(Team, SwipeAction)
-		case sortOrder(SortOrder<Team.FetchRequest.Ordering>.Action)
-		case setNavigation(selection: Team.ID?)
-		case setEditorFormSheet(isPresented: Bool)
-		case teamEditor(TeamEditor.Action)
-		case alert(AlertAction)
-	}
-
-	public enum SwipeAction: Equatable {
-		case delete
-		case edit
+	public enum Action: FeatureAction, Equatable {
+		public enum ViewAction: Equatable {
+			case setNavigation(selection: Team.ID?)
+			case setEditorSheet(isPresented: Bool)
+		}
+		public enum DelegateAction: Equatable {}
+		public enum InternalAction: Equatable {
+			case didLoadTeamToEdit(TaskResult<EditTeamLoadResult>)
+			case list(ResourceList<Team, Team.FetchRequest>.Action)
+			case sortOrder(SortOrder<Team.FetchRequest.Ordering>.Action)
+			case editor(TeamEditor.Action)
+		}
+		case view(ViewAction)
+		case `internal`(InternalAction)
+		case delegate(DelegateAction)
 	}
 
 	public struct EditTeamLoadResult: Equatable {
@@ -42,118 +63,115 @@ public struct TeamsList: ReducerProtocol {
 		let bowlers: [Bowler]
 	}
 
-	struct ObservationCancellable {}
 	struct EditTeamCancellable {}
 
 	public init() {}
 
+	@Dependency(\.continuousClock) var clock
 	@Dependency(\.bowlersDataProvider) var bowlersDataProvider
 	@Dependency(\.teamsDataProvider) var teamsDataProvider
-	@Dependency(\.persistenceService) var persistenceService
+	@Dependency(\.recentlyUsedService) var recentlyUsedService
 
 	public var body: some ReducerProtocol<State, Action> {
-		Scope(state: \.sortOrder, action: /TeamsList.Action.sortOrder) {
+		Scope(state: \.sortOrder, action: /Action.internal..Action.InternalAction.sortOrder) {
 			SortOrder()
+		}
+
+		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {
+			ResourceList(fetchResources: teamsDataProvider.observeTeams)
 		}
 
 		Reduce { state, action in
 			switch action {
-			case .observeTeams:
-				state.error = nil
-				return .run { [ordering = state.sortOrder.ordering] send in
-					for try await teams in teamsDataProvider.observeTeams(.init(filter: nil, ordering: ordering)) {
-						await send(.teamsResponse(.success(teams)))
-					}
-				} catch: { error, send in
-					await send(.teamsResponse(.failure(error)))
-				}
-				.cancellable(id: ObservationCancellable.self, cancelInFlight: true)
+			case let .view(viewAction):
+				switch viewAction {
+				case let .setNavigation(selection: .some(id)):
+					return navigate(to: id, state: &state)
 
-			case .errorButtonTapped:
-				// TODO: handle error button tapped
-				return .none
+				case .setNavigation(selection: .none):
+					return navigate(to: nil, state: &state)
 
-			case let .teamsResponse(.success(teams)):
-				state.teams = .init(uniqueElements: teams)
-				return .none
+				case .setEditorSheet(isPresented: true):
+					state.editor = .init(mode: .create, bowlers: [])
+					return .none
 
-			case .teamsResponse(.failure):
-				state.error = .loadError
-				return .none
-
-			case .setNavigation:
-				// TODO: navigate to team
-				return .none
-
-			case .setEditorFormSheet(isPresented: true):
-				state.teamEditor = .init(mode: .create, bowlers: [])
-				return .none
-
-			case .setEditorFormSheet(isPresented: false):
-				state.teamEditor = nil
-				return .none
-
-			case let .teamEditor(.delegate(delegateAction)):
-				switch delegateAction {
-				case .didFinishEditing:
-					state.teamEditor = nil
+				case .setEditorSheet(isPresented: false):
+					state.editor = nil
 					return .none
 				}
 
-			case let .swipeAction(team, .edit):
-				return .task { [team = team] in
-					await .editTeamLoadResponse(TaskResult {
-						try await .init(
-							team: team,
-							bowlers: bowlersDataProvider.fetchBowlers(.init(filter: .team(team), ordering: .byName))
-						)
-					})
+			case let .internal(internalAction):
+				switch internalAction {
+				case let .didLoadTeamToEdit(.success(teamToEdit)):
+					state.editor = .init(mode: .edit(teamToEdit.team), bowlers: teamToEdit.bowlers)
+					return .none
+
+				case .didLoadTeamToEdit(.failure):
+					// TODO: handle failed to load team members
+					return .none
+
+				case let .list(.delegate(delegateAction)):
+					switch delegateAction {
+					case let .didEdit(team):
+						return .task { [team = team] in
+							await .internal(.didLoadTeamToEdit(TaskResult {
+								try await .init(
+									team: team,
+									bowlers: bowlersDataProvider.fetchBowlers(.init(filter: .team(team), ordering: .byName))
+								)
+							}))
+						}
+						.cancellable(id: EditTeamCancellable.self, cancelInFlight: true)
+
+					case .didAddNew, .didTapEmptyStateButton:
+						state.editor = .init(mode: .create, bowlers: [])
+						return .none
+
+					case .didDelete, .didTap:
+						return .none
+					}
+
+				case let .editor(.delegate(delegateAction)):
+					switch delegateAction {
+					case .didFinishEditing:
+						state.editor = nil
+						return .none
+					}
+
+				case let .sortOrder(.delegate(delegateAction)):
+					switch delegateAction {
+					case let .didTapOption(ordering):
+						state.list.query = .init(filter: state.list.query.filter, ordering: ordering)
+						return .task { .internal(.list(.callback(.shouldRefreshData))) }
+					}
+
+				case .list(.internal), .list(.view), .list(.callback):
+					return .none
+
+				case .sortOrder(.internal), .sortOrder(.view):
+					return .none
+
+				case .editor(.internal), .editor(.binding), .editor(.view):
+					return .none
 				}
-				.cancellable(id: EditTeamCancellable.self, cancelInFlight: true)
 
-			case let .editTeamLoadResponse(.success(editTeam)):
-				state.teamEditor = .init(mode: .edit(editTeam.team), bowlers: editTeam.bowlers)
-				return .none
-
-			case .editTeamLoadResponse(.failure):
-				// TODO: handle failed to load team members error
-				return .none
-
-			case let .swipeAction(team, .delete):
-				state.alert = TeamsList.alert(toDelete: team)
-				return .none
-
-			case .alert(.dismissed):
-				state.alert = nil
-				return .none
-
-			case let .alert(.deleteButtonTapped(team)):
-				return .task {
-					return await .deleteTeamResponse(TaskResult {
-						try await persistenceService.deleteTeam(team)
-						return true
-					})
-				}
-
-			case .deleteTeamResponse(.success):
-				return .none
-
-			case .deleteTeamResponse(.failure):
-				state.error = .deleteError
-				return .none
-
-			case let .sortOrder(.delegate(delegateAction)):
-				switch delegateAction {
-				case .didTapOption:
-					return .task { .observeTeams }
-				}
-
-			case .sortOrder(.internal), .sortOrder(.view), .teamEditor(.internal), .teamEditor(.binding), .teamEditor(.view):
+			case .delegate:
 				return .none
 			}
-		}
-		.ifLet(\.teamEditor, action: /TeamsList.Action.teamEditor) {
+		}.ifLet(\.editor, action: /Action.internal..Action.InternalAction.editor) {
 			TeamEditor()
 		}
+	}
+
+	private func navigate(to id: Team.ID?, state: inout State) -> EffectTask<Action> {
+		// TODO: navigate to team details
+		if let id {
+			return .fireAndForget {
+				try await clock.sleep(for: .seconds(1))
+				recentlyUsedService.didRecentlyUseResource(.teams, id)
+			}
+		}
+
+		return .none
 	}
 }

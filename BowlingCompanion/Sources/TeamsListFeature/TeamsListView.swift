@@ -1,5 +1,7 @@
 import AssetsLibrary
 import ComposableArchitecture
+import FeatureActionLibrary
+import ResourceListLibrary
 import SharedModelsLibrary
 import SharedModelsViewsLibrary
 import SortOrderLibrary
@@ -12,29 +14,16 @@ public struct TeamsListView: View {
 	let store: StoreOf<TeamsList>
 
 	struct ViewState: Equatable {
-		let listState: ListContentState<Team, ListErrorContent>
-		let isTeamEditorPresented: Bool
+		let isEditorPresented: Bool
 
 		init(state: TeamsList.State) {
-			if let error = state.error {
-				self.listState = .error(error)
-			} else if let teams = state.teams {
-				self.listState = .loaded(teams)
-			} else {
-				self.listState = .loading
-			}
-
-			self.isTeamEditorPresented = state.teamEditor != nil
+			self.isEditorPresented = state.editor != nil
 		}
 	}
 
 	enum ViewAction {
-		case observeTeams
-		case addButtonTapped
-		case errorButtonTapped
-		case setEditorFormSheet(isPresented: Bool)
+		case setEditorSheet(isPresented: Bool)
 		case setNavigation(selection: Team.ID?)
-		case swipeAction(Team, TeamsList.SwipeAction)
 	}
 
 	public init(store: StoreOf<TeamsList>) {
@@ -43,61 +32,27 @@ public struct TeamsListView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: TeamsList.Action.init) { viewStore in
-			ListContent(viewStore.listState) { teams in
-				Section(Strings.Team.List.title) {
-					ForEach(teams) { team in
-						TeamRow(
-							team: team,
-							onEdit: { viewStore.send(.swipeAction(team, .edit)) },
-							onDelete: { viewStore.send(.swipeAction(team, .delete)) }
-						)
-					}
-				}
-				.listRowSeparator(.hidden)
-			} empty: {
-				ListEmptyContent(
-					.emptyTeams,
-					title: Strings.Team.Error.Empty.title,
-					message: Strings.Team.Error.Empty.message
-				) {
-					EmptyContentAction(title: Strings.Team.List.add) { viewStore.send(.addButtonTapped) }
-				}
-			} error: { error in
-				ListEmptyContent(
-					.errorNotFound,
-					title: error.title,
-					message: error.message,
-					style: .error
-				) {
-					EmptyContentAction(title: error.action) { viewStore.send(.errorButtonTapped) }
-				}
+			ResourceListView(
+				store: store.scope(state: \.list, action: /TeamsList.Action.InternalAction.list)
+			) { team in
+				TeamRow(team: team)
 			}
-			.scrollContentBackground(.hidden)
 			.navigationTitle(Strings.Team.List.title)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarTrailing) {
-					SortOrderView(store: store.scope(state: \.sortOrder, action: TeamsList.Action.sortOrder))
-				}
-
-				ToolbarItem(placement: .navigationBarTrailing) {
-					AddButton { viewStore.send(.addButtonTapped) }
+					SortOrderView(store: store.scope(state: \.sortOrder, action: /TeamsList.Action.InternalAction.sortOrder))
 				}
 			}
 			.sheet(isPresented: viewStore.binding(
-				get: \.isTeamEditorPresented,
-				send: ViewAction.setEditorFormSheet(isPresented:)
+				get: \.isEditorPresented,
+				send: ViewAction.setEditorSheet(isPresented:)
 			)) {
-				IfLetStore(store.scope(state: \.teamEditor, action: TeamsList.Action.teamEditor)) { scopedStore in
+				IfLetStore(store.scope(state: \.editor, action: /TeamsList.Action.InternalAction.editor)) { scopedStore in
 					NavigationView {
 						TeamEditorView(store: scopedStore)
 					}
 				}
 			}
-			.alert(
-				self.store.scope(state: \.alert, action: TeamsList.Action.alert),
-				dismiss: .dismissed
-			)
-			.task { await viewStore.send(.observeTeams).finish() }
 		}
 	}
 }
@@ -105,18 +60,10 @@ public struct TeamsListView: View {
 extension TeamsList.Action {
 	init(action: TeamsListView.ViewAction) {
 		switch action {
-		case .observeTeams:
-			self = .observeTeams
-		case .addButtonTapped:
-			self = .setEditorFormSheet(isPresented: true)
-		case .errorButtonTapped:
-			self = .errorButtonTapped
-		case let .setEditorFormSheet(isPresented):
-			self = .setEditorFormSheet(isPresented: isPresented)
+		case let .setEditorSheet(isPresented):
+			self = .view(.setEditorSheet(isPresented: isPresented))
 		case let .setNavigation(selection):
-			self = .setNavigation(selection: selection)
-		case let .swipeAction(team, swipeAction):
-			self = .swipeAction(team, swipeAction)
+			self = .view(.setNavigation(selection: selection))
 		}
 	}
 }
