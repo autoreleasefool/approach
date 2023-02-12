@@ -6,7 +6,6 @@ import FeatureFlagsLibrary
 import FeatureFlagsServiceInterface
 import GearListFeature
 import SettingsFeature
-import TeamsAndBowlersListFeature
 
 public struct App: ReducerProtocol {
 	public struct State: Equatable {
@@ -15,13 +14,10 @@ public struct App: ReducerProtocol {
 		public var bowlersList = BowlersList.State()
 		public var alleysList = AlleysList.State()
 		public var gearList = GearList.State()
-		public var teamsAndBowlersList = TeamsAndBowlersList.State()
 		public var settings: Settings.State
-		public let hasTeamsFeature: Bool
 
-		public init(hasDeveloperFeature: Bool, hasTeamsFeature: Bool, hasOpponentsFeature: Bool) {
+		public init(hasDeveloperFeature: Bool, hasOpponentsFeature: Bool) {
 			self.settings = .init(hasDeveloperFeature: hasDeveloperFeature, hasOpponentsEnabled: hasOpponentsFeature)
-			self.hasTeamsFeature = hasTeamsFeature
 		}
 	}
 
@@ -36,7 +32,6 @@ public struct App: ReducerProtocol {
 			case alleysList(AlleysList.Action)
 			case gearList(GearList.Action)
 			case bowlersList(BowlersList.Action)
-			case teamsAndBowlersList(TeamsAndBowlersList.Action)
 			case settings(Settings.Action)
 		}
 		case view(ViewAction)
@@ -77,9 +72,6 @@ public struct App: ReducerProtocol {
 		}
 		Scope(state: \.settings, action: /Action.internal..Action.InternalAction.settings) {
 			Settings()
-		}
-		Scope(state: \.teamsAndBowlersList, action: /Action.internal..Action.InternalAction.teamsAndBowlersList) {
-			TeamsAndBowlersList()
 		}
 
 		Reduce { state, action in
@@ -139,11 +131,6 @@ public struct App: ReducerProtocol {
 					return .none
 
 				case .gearList(.view), .gearList(.internal):
-					return .none
-
-					// TODO: use proper delegate destructuring case
-				case .teamsAndBowlersList:
-//				case .teamsAndBowlersList(.delegate), .teamsAndBowlersList(.view), .teamsAndBowlersList(.internal):
 					return .none
 				}
 

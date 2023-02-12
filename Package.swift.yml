@@ -50,7 +50,6 @@ package:
         - BowlersListFeature
         - GearListFeature
         - SettingsFeature
-        - TeamsAndBowlersListFeature
     - name: BowlerEditorFeature
       dependencies:
         - BaseFormLibrary
@@ -161,10 +160,6 @@ package:
         - SortOrderLibrary
         - TeamsDataProvider
         - TeamEditorFeature
-    - name: TeamsAndBowlersListFeature
-      dependencies:
-        - BowlersListFeature
-        - TeamsListFeature
 
   data_provider:
     - name: AlleysDataProvider

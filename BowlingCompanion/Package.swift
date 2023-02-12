@@ -32,7 +32,6 @@ let package = Package(
 		.library(name: "SettingsFeature", targets: ["SettingsFeature"]),
 		.library(name: "StatisticsWidgetsFeature", targets: ["StatisticsWidgetsFeature"]),
 		.library(name: "TeamEditorFeature", targets: ["TeamEditorFeature"]),
-		.library(name: "TeamsAndBowlersListFeature", targets: ["TeamsAndBowlersListFeature"]),
 		.library(name: "TeamsListFeature", targets: ["TeamsListFeature"]),
 
 		// MARK: - Data Providers
@@ -139,9 +138,9 @@ let package = Package(
 			name: "AppFeature",
 			dependencies: [
 				"AlleysListFeature",
+				"BowlersListFeature",
 				"GearListFeature",
 				"SettingsFeature",
-				"TeamsAndBowlersListFeature",
 			]
 		),
 		.testTarget(
@@ -450,21 +449,6 @@ let package = Package(
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"SharedModelsMocksLibrary",
 				"TeamEditorFeature",
-			]
-		),
-		.target(
-			name: "TeamsAndBowlersListFeature",
-			dependencies: [
-				"BowlersListFeature",
-				"TeamsListFeature",
-			]
-		),
-		.testTarget(
-			name: "TeamsAndBowlersListFeatureTests",
-			dependencies: [
-				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"SharedModelsMocksLibrary",
-				"TeamsAndBowlersListFeature",
 			]
 		),
 		.target(

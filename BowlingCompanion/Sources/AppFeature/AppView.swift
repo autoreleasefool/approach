@@ -7,7 +7,6 @@ import GearListFeature
 import SettingsFeature
 import StringsLibrary
 import SwiftUI
-import TeamsAndBowlersListFeature
 
 public struct AppView: View {
 	let store: StoreOf<App>
@@ -17,12 +16,10 @@ public struct AppView: View {
 	struct ViewState: Equatable {
 		let tabs: [App.Tab]
 		let selectedTab: App.Tab
-		let hasTeamsFeature: Bool
 
 		init(state: App.State) {
 			self.tabs = state.tabs
 			self.selectedTab = state.selectedTab
-			self.hasTeamsFeature = state.hasTeamsFeature
 		}
 	}
 
@@ -47,13 +44,7 @@ public struct AppView: View {
 							case .alleys:
 								AlleysListView(store: store.scope(state: \.alleysList, action: /App.Action.InternalAction.alleysList))
 							case .bowlers:
-								if viewStore.hasTeamsFeature {
-									TeamsAndBowlersListView(
-										store: store.scope(state: \.teamsAndBowlersList, action: /App.Action.InternalAction.teamsAndBowlersList)
-									)
-								} else {
-									BowlersListView(store: store.scope(state: \.bowlersList, action: /App.Action.InternalAction.bowlersList))
-								}
+								BowlersListView(store: store.scope(state: \.bowlersList, action: /App.Action.InternalAction.bowlersList))
 							case .settings:
 								SettingsView(store: store.scope(state: \.settings, action: /App.Action.InternalAction.settings))
 							case .gear:
