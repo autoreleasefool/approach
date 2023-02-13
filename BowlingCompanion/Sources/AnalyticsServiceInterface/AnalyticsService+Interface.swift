@@ -2,20 +2,28 @@ import Dependencies
 
 public struct AnalyticsService: Sendable {
 	public var initialize: @Sendable () -> Void
+	public var setGlobalProperty: @Sendable (String?, String) async -> Void
 	public var trackEvent: @Sendable (AnalyticsEvent) -> Void
 
 	public init(
 		initialize: @escaping @Sendable () -> Void,
+		setGlobalProperty: @escaping @Sendable (String?, String) async -> Void,
 		trackEvent: @escaping @Sendable (AnalyticsEvent) -> Void
 	) {
 		self.initialize = initialize
+		self.setGlobalProperty = setGlobalProperty
 		self.trackEvent = trackEvent
+	}
+
+	public func setGlobalProperty(value: String?, forKey: String) async {
+		await self.setGlobalProperty(value, forKey)
 	}
 }
 
 extension AnalyticsService: TestDependencyKey {
 	public static var testValue = Self(
 		initialize: { fatalError("\(Self.self).initialize") },
+		setGlobalProperty: { _, _ in fatalError("\(Self.self).setGlobalProperty") },
 		trackEvent: { _ in fatalError("\(Self.self).trackEvent") }
 	)
 }

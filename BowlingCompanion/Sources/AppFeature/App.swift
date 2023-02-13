@@ -1,4 +1,5 @@
 import AlleysListFeature
+import AnalyticsServiceInterface
 import BowlersListFeature
 import ComposableArchitecture
 import FeatureActionLibrary
@@ -39,13 +40,14 @@ public struct App: ReducerProtocol {
 		case delegate(DelegateAction)
 	}
 
-	public enum Tab: String, Identifiable, CaseIterable {
+	public enum Tab: String, Identifiable, CaseIterable, CustomStringConvertible {
 		case bowlers
 		case alleys
 		case gear
 		case settings
 
 		public var id: String { rawValue }
+		public var description: String { rawValue }
 		public var featureFlag: FeatureFlag {
 			switch self {
 			case .alleys: return .alleys
@@ -58,6 +60,7 @@ public struct App: ReducerProtocol {
 
 	public init() {}
 
+	@Dependency(\.analytics) var analytics
 	@Dependency(\.featureFlags) var featureFlags
 
 	public var body: some ReducerProtocol<State, Action> {
@@ -88,6 +91,7 @@ public struct App: ReducerProtocol {
 
 				case let .didSelectTab(tab):
 					state.selectedTab = tab
+					analytics.trackEvent(TabSwitchEvent(tab: String(describing: tab)))
 					return .none
 				}
 
