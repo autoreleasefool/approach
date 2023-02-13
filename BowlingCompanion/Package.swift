@@ -59,6 +59,8 @@ let package = Package(
 		.library(name: "TeamsDataProviderInterface", targets: ["TeamsDataProviderInterface"]),
 
 		// MARK: - Services
+		.library(name: "AnalyticsService", targets: ["AnalyticsService"]),
+		.library(name: "AnalyticsServiceInterface", targets: ["AnalyticsServiceInterface"]),
 		.library(name: "FeatureFlagsService", targets: ["FeatureFlagsService"]),
 		.library(name: "FeatureFlagsServiceInterface", targets: ["FeatureFlagsServiceInterface"]),
 		.library(name: "FileManagerService", targets: ["FileManagerService"]),
@@ -99,6 +101,7 @@ let package = Package(
 		.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "0.49.2"),
 		.package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.10.0"),
 		.package(url: "https://github.com/groue/GRDB.swift.git", from: "6.6.0"),
+		.package(url: "https://github.com/TelemetryDeck/SwiftClient.git", from: "1.4.2"),
 	],
 	targets: [
 		// MARK: - Features
@@ -138,6 +141,7 @@ let package = Package(
 			name: "AppFeature",
 			dependencies: [
 				"AlleysListFeature",
+				"AnalyticsServiceInterface",
 				"BowlersListFeature",
 				"GearListFeature",
 				"SettingsFeature",
@@ -742,6 +746,28 @@ let package = Package(
 		),
 
 		// MARK: - Services
+		.target(
+			name: "AnalyticsService",
+			dependencies: [
+				.product(name: "TelemetryClient", package: "SwiftClient"),
+				"AnalyticsServiceInterface",
+				"ConstantsLibrary",
+			]
+		),
+		.target(
+			name: "AnalyticsServiceInterface",
+			dependencies: [
+				.product(name: "Dependencies", package: "swift-dependencies"),
+			]
+		),
+		.testTarget(
+			name: "AnalyticsServiceTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"AnalyticsService",
+				"SharedModelsMocksLibrary",
+			]
+		),
 		.target(
 			name: "FeatureFlagsService",
 			dependencies: [

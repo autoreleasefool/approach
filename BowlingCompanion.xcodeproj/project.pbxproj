@@ -11,6 +11,7 @@
 		CA2513FE296BEE4200EF3F1A /* OpponentsDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CA2513FD296BEE4200EF3F1A /* OpponentsDataProvider */; };
 		CA2890DE28F87FF2003C1EE9 /* AppFeature in Frameworks */ = {isa = PBXBuildFile; productRef = CA2890DD28F87FF2003C1EE9 /* AppFeature */; };
 		CA2890E328F8DA53003C1EE9 /* PersistenceService in Frameworks */ = {isa = PBXBuildFile; productRef = CA2890E228F8DA53003C1EE9 /* PersistenceService */; };
+		CA318B402999E1F500BD4BEC /* AnalyticsService in Frameworks */ = {isa = PBXBuildFile; productRef = CA318B3F2999E1F500BD4BEC /* AnalyticsService */; };
 		CA50C6852963A4FB002F6F20 /* AveragesDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CA50C6842963A4FB002F6F20 /* AveragesDataProvider */; };
 		CA81F9E0293DAD0B0061D1D9 /* LanesDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CA81F9DF293DAD0B0061D1D9 /* LanesDataProvider */; };
 		CA8BBC5928D59B8B00653A1E /* BowlingCompanionApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA8BBC5828D59B8B00653A1E /* BowlingCompanionApp.swift */; };
@@ -32,6 +33,8 @@
 
 /* Begin PBXFileReference section */
 		CA2F033928F87C4100030BFE /* BowlingCompanion */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = BowlingCompanion; sourceTree = "<group>"; };
+		CA318B3D2999DEE500BD4BEC /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
+		CA318B3E2999DF1300BD4BEC /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
 		CA8BBC5528D59B8B00653A1E /* BowlingCompanion.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BowlingCompanion.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA8BBC5828D59B8B00653A1E /* BowlingCompanionApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BowlingCompanionApp.swift; sourceTree = "<group>"; };
 		CA8BBC5A28D59B8B00653A1E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -55,6 +58,7 @@
 				CA2890E328F8DA53003C1EE9 /* PersistenceService in Frameworks */,
 				CAC13AB329205E5600DD36A5 /* SeriesDataProvider in Frameworks */,
 				CAF80290295D67FC00B19459 /* FeatureFlagsService in Frameworks */,
+				CA318B402999E1F500BD4BEC /* AnalyticsService in Frameworks */,
 				CAC13AA929203D6600DD36A5 /* AlleysDataProvider in Frameworks */,
 				CAC13AAD29204EA000DD36A5 /* FramesDataProvider in Frameworks */,
 				CAC13AAB292045B700DD36A5 /* BowlersDataProvider in Frameworks */,
@@ -83,6 +87,15 @@
 			path = Source;
 			sourceTree = "<group>";
 		};
+		CA318B3C2999DED000BD4BEC /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				CA318B3D2999DEE500BD4BEC /* Release.xcconfig */,
+				CA318B3E2999DF1300BD4BEC /* Debug.xcconfig */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		CA8BBC4C28D59B8B00653A1E = {
 			isa = PBXGroup;
 			children = (
@@ -106,6 +119,7 @@
 			children = (
 				CA8BBC5C28D59B8C00653A1E /* Assets.xcassets */,
 				CA8BBC5E28D59B8C00653A1E /* Preview Content */,
+				CA318B3C2999DED000BD4BEC /* Resources */,
 				CA2F033828F8797100030BFE /* Source */,
 			);
 			path = BowlingCompanionIOS;
@@ -154,6 +168,7 @@
 				CA50C6842963A4FB002F6F20 /* AveragesDataProvider */,
 				CAFCA04329641D0A000702EF /* TeamsDataProvider */,
 				CA2513FD296BEE4200EF3F1A /* OpponentsDataProvider */,
+				CA318B3F2999E1F500BD4BEC /* AnalyticsService */,
 			);
 			productName = BowlingCompanion;
 			productReference = CA8BBC5528D59B8B00653A1E /* BowlingCompanion.app */;
@@ -355,6 +370,7 @@
 		};
 		CA8BBC7A28D59B8C00653A1E /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CA318B3E2999DF1300BD4BEC /* Debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -385,6 +401,7 @@
 		};
 		CA8BBC7B28D59B8C00653A1E /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = CA318B3D2999DEE500BD4BEC /* Release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -452,6 +469,10 @@
 		CA2890E228F8DA53003C1EE9 /* PersistenceService */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = PersistenceService;
+		};
+		CA318B3F2999E1F500BD4BEC /* AnalyticsService */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AnalyticsService;
 		};
 		CA50C6842963A4FB002F6F20 /* AveragesDataProvider */ = {
 			isa = XCSwiftPackageProductDependency;

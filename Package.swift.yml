@@ -29,6 +29,10 @@ package:
       from: "6.6.0"
       exports:
         - GRDB
+    - url: "https://github.com/TelemetryDeck/SwiftClient.git"
+      from: "1.4.2"
+      exports:
+        - TelemetryClient
 
   feature:
     - name: AlleyEditorFeature
@@ -50,6 +54,7 @@ package:
         - BowlersListFeature
         - GearListFeature
         - SettingsFeature
+        - AnalyticsService
     - name: BowlerEditorFeature
       dependencies:
         - BaseFormLibrary
@@ -226,6 +231,11 @@ package:
           - SortingLibrary
 
   service:
+    - name: AnalyticsService
+      dependencies:
+        implementation:
+          - ConstantsLibrary
+          - TelemetryClient
     - name: FeatureFlagsService
       dependencies:
         interface:

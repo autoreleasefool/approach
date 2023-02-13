@@ -1,3 +1,5 @@
+import AnalyticsServiceInterface
+import Dependencies
 import SwiftUI
 
 @main
@@ -6,5 +8,11 @@ struct BowlingCompanionApp: App {
 		WindowGroup {
 			ContentView()
 		}
+	}
+
+	init() {
+		@Dependency(\.analytics) var analytics: AnalyticsService
+		analytics.initialize()
+		analytics.trackEvent(AppLaunchEvent())
 	}
 }
