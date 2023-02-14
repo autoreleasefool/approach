@@ -140,8 +140,8 @@ public struct TeamsList: ReducerProtocol {
 
 				case let .sortOrder(.delegate(delegateAction)):
 					switch delegateAction {
-					case let .didTapOption(ordering):
-						state.list.query = .init(filter: state.list.query.filter, ordering: ordering)
+					case .didTapOption:
+						state.updateQuery()
 						return .task { .internal(.list(.callback(.shouldRefreshData))) }
 					}
 
@@ -173,5 +173,11 @@ public struct TeamsList: ReducerProtocol {
 		}
 
 		return .none
+	}
+}
+
+extension TeamsList.State {
+	mutating func updateQuery() {
+		list.query = .init(filter: nil, ordering: sortOrder.ordering)
 	}
 }

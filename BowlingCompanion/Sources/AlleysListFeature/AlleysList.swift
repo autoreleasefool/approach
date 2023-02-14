@@ -29,7 +29,7 @@ public struct AlleysList: ReducerProtocol {
 						try await persistenceService.deleteAlley($0)
 					}),
 				],
-				query: .init(filter: nil, ordering: .byRecentlyUsed),
+				query: .init(filter: filters.filter, ordering: .byRecentlyUsed),
 				listTitle: Strings.Alley.List.title,
 				emptyContent: .init(
 					image: .emptyAlleys,
@@ -125,7 +125,7 @@ public struct AlleysList: ReducerProtocol {
 						return .none
 
 					case .didChangeFilters:
-						state.list.query = .init(filter: state.filters.filter, ordering: .byRecentlyUsed)
+						state.updateQuery()
 						return .task { .`internal`(.list(.callback(.shouldRefreshData))) }
 					}
 
@@ -153,5 +153,11 @@ public struct AlleysList: ReducerProtocol {
 		.ifLet(\.editor, action: /Action.internal..Action.InternalAction.editor) {
 			AlleyEditor()
 		}
+	}
+}
+
+extension AlleysList.State {
+	mutating func updateQuery() {
+		list.query = .init(filter: filters.filter, ordering: .byRecentlyUsed)
 	}
 }

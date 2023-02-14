@@ -124,7 +124,7 @@ public struct BowlersList: ReducerProtocol {
 				case let .sortOrder(.delegate(delegateAction)):
 					switch delegateAction {
 					case let .didTapOption(ordering):
-						state.list.query = .init(filter: state.list.query.filter, ordering: ordering)
+						state.updateQuery()
 						return .task { .internal(.list(.callback(.shouldRefreshData))) }
 					}
 
@@ -179,5 +179,11 @@ public struct BowlersList: ReducerProtocol {
 			state.selection = nil
 			return .none
 		}
+	}
+}
+
+extension BowlersList.State {
+	mutating func updateQuery() {
+		list.query = .init(filter: nil, ordering: sortOrder.ordering)
 	}
 }

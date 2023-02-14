@@ -110,6 +110,7 @@ public struct OpponentsList: ReducerProtocol {
 				case let .sortOrder(.delegate(delegateAction)):
 					switch delegateAction {
 					case .didTapOption:
+						state.updateQuery()
 						return .task { .internal(.list(.callback(.shouldRefreshData))) }
 					}
 
@@ -142,5 +143,11 @@ public struct OpponentsList: ReducerProtocol {
 	private func navigate(to id: Opponent.ID?, state: inout State) -> EffectTask<Action> {
 		// TODO: show/hide opponent profile
 		return .none
+	}
+}
+
+extension OpponentsList.State {
+	mutating func updateQuery() {
+		list.query = .init(filter: nil, ordering: sortOrder.ordering)
 	}
 }

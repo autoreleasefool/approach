@@ -103,8 +103,8 @@ public struct GearList: ReducerProtocol {
 
 				case let .sortOrder(.delegate(delegateAction)):
 					switch delegateAction {
-					case let .didTapOption(ordering):
-						state.list.query = .init(filter: state.list.query.filter, ordering: ordering)
+					case .didTapOption:
+						state.updateQuery()
 						return .task { .internal(.list(.callback(.shouldRefreshData))) }
 					}
 
@@ -132,5 +132,11 @@ public struct GearList: ReducerProtocol {
 		.ifLet(\.editor, action: /Action.internal..Action.InternalAction.editor) {
 			GearEditor()
 		}
+	}
+}
+
+extension GearList.State {
+	mutating func updateQuery() {
+		list.query = .init(filter: nil, ordering: sortOrder.ordering)
 	}
 }

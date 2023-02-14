@@ -38,8 +38,8 @@ public struct LeaguesList: ReducerProtocol {
 					}),
 				],
 				query: .init(
-					filter: .properties(bowler.id, recurrence: nil),
-					ordering: .byRecentlyUsed
+					filter: filters.filter(withBowler: bowler.id),
+					ordering: sortOrder.ordering
 				),
 				listTitle: bowler.name,
 				emptyContent: .init(
@@ -136,8 +136,8 @@ public struct LeaguesList: ReducerProtocol {
 
 				case let .sortOrder(.delegate(delegateAction)):
 					switch delegateAction {
-					case let .didTapOption(ordering):
-						state.list.query = .init(filter: state.list.query.filter, ordering: ordering)
+					case .didTapOption:
+						state.updateQuery()
 						return .task { .internal(.list(.callback(.shouldRefreshData))) }
 					}
 
@@ -148,10 +148,7 @@ public struct LeaguesList: ReducerProtocol {
 						return .none
 
 					case .didChangeFilters:
-						state.list.query = .init(
-							filter: state.filters.filter(withBowler: state.bowler.id),
-							ordering: state.list.query.ordering
-						)
+						state.updateQuery()
 						return .task { .`internal`(.list(.callback(.shouldRefreshData))) }
 					}
 
@@ -226,5 +223,11 @@ public struct LeaguesList: ReducerProtocol {
 		)
 
 		return .none
+	}
+}
+
+extension LeaguesList.State {
+	mutating func updateQuery() {
+		list.query = .init(filter: filters.filter(withBowler: bowler.id), ordering: sortOrder.ordering)
 	}
 }
