@@ -1,4 +1,5 @@
 import SharedModelsLibrary
+import StringsLibrary
 
 extension League {
 	public struct FetchRequest: Equatable {
@@ -20,8 +21,15 @@ extension League.FetchRequest {
 }
 
 extension League.FetchRequest {
-	public enum Ordering {
+	public enum Ordering: Hashable, CaseIterable, CustomStringConvertible {
 		case byName
 		case byRecentlyUsed
+
+		public var description: String {
+			switch self {
+			case .byRecentlyUsed: return Strings.Ordering.mostRecentlyUsed
+			case .byName: return Strings.Ordering.alphabetical
+			}
+		}
 	}
 }

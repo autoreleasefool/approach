@@ -7,6 +7,7 @@ import RecentlyUsedServiceInterface
 import ResourceListLibrary
 import SeriesListFeature
 import SharedModelsLibrary
+import SortOrderLibrary
 import StringsLibrary
 import ViewsLibrary
 
@@ -18,6 +19,7 @@ public struct LeaguesList: ReducerProtocol {
 
 		public var list: ResourceList<League, League.FetchRequest>.State
 		public var editor: LeagueEditor.State?
+		public var sortOrder: SortOrder<League.FetchRequest.Ordering>.State = .init(initialValue: .byRecentlyUsed)
 
 		public var isFiltersPresented = false
 		public var filters: LeaguesFilter.State = .init()
@@ -64,6 +66,7 @@ public struct LeaguesList: ReducerProtocol {
 			case editor(LeagueEditor.Action)
 			case filters(LeaguesFilter.Action)
 			case series(SeriesList.Action)
+			case sortOrder(SortOrder<League.FetchRequest.Ordering>.Action)
 		}
 
 		case view(ViewAction)
@@ -79,6 +82,10 @@ public struct LeaguesList: ReducerProtocol {
 	@Dependency(\.featureFlags) var featureFlags
 
 	public var body: some ReducerProtocol<State, Action> {
+		Scope(state: \.sortOrder, action: /Action.internal..Action.InternalAction.sortOrder) {
+			SortOrder()
+		}
+
 		Scope(state: \.filters, action: /Action.internal..Action.InternalAction.filters) {
 			LeaguesFilter()
 		}
@@ -127,6 +134,13 @@ public struct LeaguesList: ReducerProtocol {
 						return .none
 					}
 
+				case let .sortOrder(.delegate(delegateAction)):
+					switch delegateAction {
+					case let .didTapOption(ordering):
+						state.list.query = .init(filter: state.list.query.filter, ordering: ordering)
+						return .task { .internal(.list(.callback(.shouldRefreshData))) }
+					}
+
 				case let .filters(.delegate(delegateAction)):
 					switch delegateAction {
 					case .didApplyFilters:
@@ -164,6 +178,9 @@ public struct LeaguesList: ReducerProtocol {
 					return .none
 
 				case .series(.internal), .series(.view):
+					return .none
+
+				case .sortOrder(.internal), .sortOrder(.view):
 					return .none
 				}
 
