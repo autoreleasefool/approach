@@ -5,6 +5,7 @@ import ResourceListLibrary
 import SeriesListFeature
 import SharedModelsLibrary
 import SharedModelsViewsLibrary
+import SortOrderLibrary
 import StringsLibrary
 import SwiftUI
 import ViewsLibrary
@@ -65,6 +66,9 @@ public struct LeaguesListView: View {
 					FilterButton(isActive: viewStore.isAnyFilterActive) {
 						viewStore.send(.didTapFilterButton)
 					}
+				}
+				ToolbarItem(placement: .navigationBarTrailing) {
+					SortOrderView(store: store.scope(state: \.sortOrder, action: /LeaguesList.Action.InternalAction.sortOrder))
 				}
 			}
 			.sheet(isPresented: viewStore.binding(

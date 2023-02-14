@@ -25,7 +25,7 @@ public struct BowlersListView: View {
 	}
 
 	enum ViewAction {
-		case configureStatisticsButtonTapped
+		case didTapConfigureStatisticsButton
 		case setEditorSheet(isPresented: Bool)
 		case setNavigation(selection: Bowler.ID?)
 	}
@@ -55,7 +55,7 @@ public struct BowlersListView: View {
 				}
 			} header: {
 				Section {
-					Button { viewStore.send(.configureStatisticsButtonTapped) } label: {
+					Button { viewStore.send(.didTapConfigureStatisticsButton) } label: {
 						PlaceholderWidget(size: .medium)
 					}
 					.buttonStyle(TappableElement())
@@ -86,7 +86,7 @@ public struct BowlersListView: View {
 extension BowlersList.Action {
 	init(action: BowlersListView.ViewAction) {
 		switch action {
-		case .configureStatisticsButtonTapped:
+		case .didTapConfigureStatisticsButton:
 			self = .view(.didTapConfigureStatisticsButton)
 		case let .setEditorSheet(isPresented):
 			self = .view(.setEditorSheet(isPresented: isPresented))
