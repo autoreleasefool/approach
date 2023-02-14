@@ -29,7 +29,7 @@ public struct AddLaneForm: ReducerProtocol {
 	public var body: some ReducerProtocol<State, Action> {
 		BindingReducer()
 
-		Reduce { state, action in
+		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {

@@ -39,7 +39,7 @@ public struct LaneEditor: ReducerProtocol {
 	public var body: some ReducerProtocol<State, Action> {
 		BindingReducer()
 
-		Reduce { _, action in
+		Reduce<State, Action> { _, action in
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {

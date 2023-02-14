@@ -32,7 +32,7 @@ public struct GameEditor: ReducerProtocol {
 			BallDetails()
 		}
 
-		Reduce { _, action in
+		Reduce<State, Action> { _, action in
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {

@@ -72,7 +72,7 @@ public struct OpponentsList: ReducerProtocol {
 			ResourceList(fetchResources: opponentsDataProvider.observeOpponents)
 		}
 
-		Reduce { state, action in
+		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {

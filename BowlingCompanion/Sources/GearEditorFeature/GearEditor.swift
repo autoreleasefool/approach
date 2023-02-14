@@ -105,7 +105,7 @@ public struct GearEditor: ReducerProtocol {
 			}
 		}
 
-		Reduce { state, action in
+		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {

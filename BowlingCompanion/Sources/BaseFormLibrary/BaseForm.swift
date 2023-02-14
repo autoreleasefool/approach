@@ -96,7 +96,7 @@ public struct BaseForm<Model: BaseFormModel, FormState: BaseFormState>: ReducerP
 	@Dependency(\.modelPersistence) var modelPersistence
 
 	public var body: some ReducerProtocol<State, Action> {
-		Reduce { state, action in
+		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {

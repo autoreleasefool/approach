@@ -108,7 +108,7 @@ public struct TeamEditor: ReducerProtocol {
 			}
 		}
 
-		Reduce { state, action in
+		Reduce<State, Action> { state, action in
 			switch action {
 			case let .internal(internalAction):
 				switch internalAction {

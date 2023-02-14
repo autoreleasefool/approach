@@ -60,7 +60,7 @@ public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: Redu
 	let fetchResources: (Query) async throws -> [Resource]
 
 	public var body: some ReducerProtocol<State, Action> {
-		Reduce { state, action in
+		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {

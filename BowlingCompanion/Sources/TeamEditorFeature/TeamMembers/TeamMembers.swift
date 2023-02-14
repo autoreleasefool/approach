@@ -34,7 +34,7 @@ public struct TeamMembers: ReducerProtocol {
 	@Dependency(\.teamsDataProvider) var teamsDataProvider
 
 	public var body: some ReducerProtocol<State, Action> {
-		Reduce { state, action in
+		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {

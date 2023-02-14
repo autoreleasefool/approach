@@ -94,7 +94,7 @@ public struct LeaguesList: ReducerProtocol {
 			ResourceList(fetchResources: leaguesDataProvider.observeLeagues)
 		}
 
-		Reduce { state, action in
+		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {

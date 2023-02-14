@@ -20,7 +20,7 @@ public struct HelpSettings: ReducerProtocol {
 	}
 
 	public var body: some ReducerProtocol<State, Action> {
-		Reduce { _, action in
+		Reduce<State, Action> { _, action in
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {

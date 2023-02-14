@@ -16,7 +16,7 @@ public struct ScoreSheet: ReducerProtocol {
 	public init() {}
 
 	public var body: some ReducerProtocol<State, Action> {
-		Reduce { state, action in
+		Reduce<State, Action> { state, action in
 			switch action {
 			case let .setFrame(.some(id)):
 				state.selection = id

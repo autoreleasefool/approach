@@ -72,7 +72,7 @@ public struct GearList: ReducerProtocol {
 			ResourceList(fetchResources: gearDataProvider.observeGear)
 		}
 
-		Reduce { state, action in
+		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {

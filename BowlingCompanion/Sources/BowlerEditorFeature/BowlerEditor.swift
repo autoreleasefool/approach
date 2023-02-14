@@ -67,7 +67,7 @@ public struct BowlerEditor: ReducerProtocol {
 				))
 		}
 
-		Reduce { _, action in
+		Reduce<State, Action> { _, action in
 			switch action {
 			case let .internal(internalAction):
 				switch internalAction {

@@ -32,7 +32,7 @@ public struct AlleyLanes: ReducerProtocol {
 	@Dependency(\.lanesDataProvider) var lanesDataProvider
 
 	public var body: some ReducerProtocol<State, Action> {
-		Reduce { state, action in
+		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
