@@ -10,6 +10,7 @@ extension League {
 		numberOfGames: Int? = League.DEFAULT_NUMBER_OF_GAMES,
 		additionalPinfall: Int? = nil,
 		additionalGames: Int? = nil,
+		excludeFromStatistics: League.ExcludeFromStatistics = .include,
 		alley: UUID? = nil
 	) -> League {
 		.init(
@@ -20,6 +21,7 @@ extension League {
 			numberOfGames: numberOfGames,
 			additionalPinfall: additionalPinfall,
 			additionalGames: additionalGames,
+			excludeFromStatistics: excludeFromStatistics,
 			alley: alley
 		)
 	}

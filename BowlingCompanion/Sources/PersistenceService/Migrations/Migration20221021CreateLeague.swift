@@ -16,6 +16,8 @@ struct Migration20221021CreateLeague: Migration {
 			t.column("numberOfGames", .integer)
 			t.column("additionalPinfall", .integer)
 			t.column("additionalGames", .integer)
+			t.column("excludeFromStatistics", .integer)
+				.notNull()
 			t.column("alley", .text)
 				.indexed()
 				.references("alley", onDelete: .setNull)

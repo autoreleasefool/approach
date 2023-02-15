@@ -16,6 +16,7 @@ public struct SeriesEditorView: View {
 		@BindableState var numberOfGames: Int
 		@BindableState public var preBowl: Series.PreBowl
 		@BindableState public var excludeFromStatistics: Series.ExcludeFromStatistics
+		let excludeLeagueFromStatistics: League.ExcludeFromStatistics
 		let isAlleyPickerPresented: Bool
 		let isLanePickerPresented: Bool
 		let selectedAlley: Alley?
@@ -40,6 +41,7 @@ public struct SeriesEditorView: View {
 			self.hasLanesEnabled = state.hasLanesEnabled
 			self.isAlleyPickerPresented = state.isAlleyPickerPresented
 			self.isLanePickerPresented = state.isLanePickerPresented
+			self.excludeLeagueFromStatistics = state.base.form.league.excludeFromStatistics
 			if let id = state.base.form.alleyPicker.selected.first {
 				if let alley = state.base.form.alleyPicker.resources?[id: id] {
 					self.selectedAlley = alley
@@ -152,23 +154,39 @@ public struct SeriesEditorView: View {
 					Toggle(
 						Strings.Series.Editor.Fields.ExcludeFromStatistics.label,
 						isOn: viewStore.binding(
-							get: { $0.excludeFromStatistics == .exclude || $0.preBowl == .preBowl },
+							get: {
+								$0.excludeLeagueFromStatistics == .exclude ||
+								$0.preBowl == .preBowl ||
+								$0.excludeFromStatistics == .exclude
+							},
 							send: { ViewAction.set(\.$excludeFromStatistics, $0 ? .exclude : .include) }
 						)
-					).disabled(viewStore.preBowl == .preBowl)
+					).disabled(viewStore.preBowl == .preBowl || viewStore.excludeLeagueFromStatistics == .exclude)
 				} header: {
 					Text(Strings.Series.Editor.Fields.ExcludeFromStatistics.title)
 				} footer: {
-					if viewStore.preBowl == .preBowl {
-						Text(Strings.Series.Editor.Fields.ExcludeFromStatistics.excludedWhenPreBowl)
-							.foregroundColor(.appWarning)
-					} else {
-						Text(Strings.Series.Editor.Fields.ExcludeFromStatistics.help)
-					}
+					excludeFromStatisticsHelp(viewStore)
+
 				}
 				.listRowBackground(Color(uiColor: .secondarySystemBackground))
 			}
 			.onAppear { viewStore.send(.didAppear) }
+		}
+	}
+
+	@ViewBuilder private func excludeFromStatisticsHelp(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
+		switch viewStore.excludeLeagueFromStatistics {
+		case .exclude:
+			Text(Strings.Series.Editor.Fields.ExcludeFromStatistics.excludedWhenLeagueExcluded)
+				.foregroundColor(.appWarning)
+		case .include:
+			switch viewStore.preBowl {
+			case .preBowl:
+				Text(Strings.Series.Editor.Fields.ExcludeFromStatistics.excludedWhenPreBowl)
+					.foregroundColor(.appWarning)
+			case .regularPlay:
+				Text(Strings.Series.Editor.Fields.ExcludeFromStatistics.help)
+			}
 		}
 	}
 }
@@ -215,6 +233,7 @@ struct SeriesEditorViewPreview: PreviewProvider {
 							numberOfGames: 4,
 							additionalPinfall: nil,
 							additionalGames: nil,
+							excludeFromStatistics: .include,
 							alley: nil
 						),
 						mode: .create,

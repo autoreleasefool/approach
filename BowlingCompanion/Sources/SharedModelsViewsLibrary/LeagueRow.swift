@@ -42,6 +42,7 @@ struct LeagueRowPreview: PreviewProvider {
 					numberOfGames: 4,
 					additionalPinfall: nil,
 					additionalGames: nil,
+					excludeFromStatistics: .include,
 					alley: nil)
 				)
 				LeagueRow(league: .init(
@@ -52,6 +53,7 @@ struct LeagueRowPreview: PreviewProvider {
 					numberOfGames: 4,
 					additionalPinfall: nil,
 					additionalGames: nil,
+					excludeFromStatistics: .include,
 					alley: nil)
 				)
 				LeagueRow(league: .init(
@@ -62,6 +64,7 @@ struct LeagueRowPreview: PreviewProvider {
 					numberOfGames: 4,
 					additionalPinfall: nil,
 					additionalGames: nil,
+					excludeFromStatistics: .exclude,
 					alley: nil)
 				)
 			}

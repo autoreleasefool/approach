@@ -15,7 +15,8 @@ extension Series: FetchableRecord, PersistableRecord {
 				id: uuid(),
 				ordinal: ordinal,
 				locked: .unlocked,
-				manualScore: nil
+				manualScore: nil,
+				excludeFromStatistics: .init(from: excludeFromStatistics)
 			)
 			try game.insert(db)
 		}

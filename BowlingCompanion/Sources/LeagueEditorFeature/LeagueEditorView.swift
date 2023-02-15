@@ -15,6 +15,7 @@ public struct LeagueEditorView: View {
 		@BindableState var name: String
 		@BindableState var recurrence: League.Recurrence
 		@BindableState var gamesPerSeries: LeagueEditor.GamesPerSeries
+		@BindableState var excludeFromStatistics: League.ExcludeFromStatistics
 		@BindableState var numberOfGames: Int
 		@BindableState var additionalPinfall: String
 		@BindableState var additionalGames: String
@@ -30,6 +31,7 @@ public struct LeagueEditorView: View {
 			self.numberOfGames = state.base.form.numberOfGames
 			self.additionalGames = state.base.form.additionalGames
 			self.additionalPinfall = state.base.form.additionalPinfall
+			self.excludeFromStatistics = state.base.form.excludeFromStatistics
 			self.hasAdditionalPinfall = state.base.form.hasAdditionalPinfall
 			self.hasAlleysEnabled = state.hasAlleysEnabled
 			self.isAlleyPickerPresented = state.isAlleyPickerPresented
@@ -62,6 +64,7 @@ public struct LeagueEditorView: View {
 			BaseFormView(store: store.scope(state: \.base, action: /LeagueEditor.Action.InternalAction.form)) {
 				detailsSection(viewStore)
 				recurrenceSection(viewStore)
+				statisticsSection(viewStore)
 				gamesSection(viewStore)
 				additionalPinfallSection(viewStore)
 			}
@@ -117,6 +120,23 @@ public struct LeagueEditorView: View {
 			}
 		} footer: {
 			Text(Strings.League.Editor.Fields.Recurrence.help(League.Recurrence.repeating, League.Recurrence.oneTimeEvent))
+		}
+		.listRowBackground(Color(uiColor: .secondarySystemBackground))
+	}
+
+	private func statisticsSection(_ viewStore: ViewStore<ViewState, ViewAction>) -> some View {
+		Section {
+			Toggle(
+				Strings.League.Editor.Fields.ExcludeFromStatistics.label,
+				isOn: viewStore.binding(
+					get: { $0.excludeFromStatistics == .exclude },
+					send: { ViewAction.set(\.$excludeFromStatistics, $0 ? .exclude : .include) }
+				)
+			)
+		} header: {
+			Text(Strings.League.Editor.Fields.ExcludeFromStatistics.title)
+		} footer: {
+			Text(Strings.League.Editor.Fields.ExcludeFromStatistics.help)
 		}
 		.listRowBackground(Color(uiColor: .secondarySystemBackground))
 	}
@@ -189,6 +209,7 @@ extension LeagueEditor.State {
 			self.base.form.hasAdditionalPinfall = newValue.hasAdditionalPinfall
 			self.base.form.additionalGames = newValue.additionalGames
 			self.base.form.additionalPinfall = newValue.additionalPinfall
+			self.base.form.excludeFromStatistics = newValue.excludeFromStatistics
 		}
 	}
 }

@@ -12,6 +12,7 @@ public struct League: Sendable, Identifiable, Hashable, Codable {
 	public let numberOfGames: Int?
 	public let additionalPinfall: Int?
 	public let additionalGames: Int?
+	public let excludeFromStatistics: ExcludeFromStatistics
 	public let alley: Alley.ID?
 
 	public init(
@@ -22,6 +23,7 @@ public struct League: Sendable, Identifiable, Hashable, Codable {
 		numberOfGames: Int?,
 		additionalPinfall: Int?,
 		additionalGames: Int?,
+		excludeFromStatistics: ExcludeFromStatistics,
 		alley: Alley.ID?
 	) {
 		self.bowler = bowler
@@ -31,6 +33,7 @@ public struct League: Sendable, Identifiable, Hashable, Codable {
 		self.numberOfGames = numberOfGames
 		self.additionalGames = additionalGames
 		self.additionalPinfall = additionalPinfall
+		self.excludeFromStatistics = excludeFromStatistics
 		self.alley = alley
 	}
 }
@@ -45,6 +48,21 @@ extension League {
 			switch self {
 			case .repeating: return Strings.League.Properties.Recurrence.repeats
 			case .oneTimeEvent: return Strings.League.Properties.Recurrence.never
+			}
+		}
+	}
+}
+
+extension League {
+	public enum ExcludeFromStatistics: Int, Sendable, Identifiable, CaseIterable, Codable, CustomStringConvertible {
+		case include = 0
+		case exclude = 1
+
+		public var id: Int { rawValue }
+		public var description: String {
+			switch self {
+			case .include: return Strings.League.Properties.ExcludeFromStatistics.include
+			case .exclude: return Strings.League.Properties.ExcludeFromStatistics.exclude
 			}
 		}
 	}

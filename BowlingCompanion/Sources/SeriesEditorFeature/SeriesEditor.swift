@@ -31,7 +31,7 @@ public struct SeriesEditor: ReducerProtocol {
 	public typealias Form = BaseForm<Series, Fields>
 
 	public struct Fields: BaseFormState, Equatable {
-		public var league: League.ID
+		public let league: League
 		public let hasSetNumberOfGames: Bool
 		@BindableState public var numberOfGames: Int
 		@BindableState public var date = Date()
@@ -47,7 +47,7 @@ public struct SeriesEditor: ReducerProtocol {
 		}
 
 		init(league: League, date: Date) {
-			self.league = league.id
+			self.league = league
 			self.hasSetNumberOfGames = league.numberOfGames != nil
 			self.numberOfGames = league.numberOfGames ?? League.DEFAULT_NUMBER_OF_GAMES
 			self.date = date
@@ -273,14 +273,21 @@ public struct SeriesEditor: ReducerProtocol {
 extension SeriesEditor.Fields {
 	public func model(fromExisting existing: Series?) -> Series {
 		@Dependency(\.uuid) var uuid: UUIDGenerator
+		let shouldExcludeFromStatistics: Series.ExcludeFromStatistics
+		switch league.excludeFromStatistics {
+		case .include:
+			shouldExcludeFromStatistics = preBowl == .preBowl ? .exclude : self.excludeFromStatistics
+		case .exclude:
+			shouldExcludeFromStatistics = .exclude
+		}
 
 		return .init(
-			league: league,
+			league: league.id,
 			id: existing?.id ?? uuid(),
 			date: date,
 			numberOfGames: numberOfGames,
 			preBowl: preBowl,
-			excludeFromStatistics: preBowl == .preBowl ? .exclude : excludeFromStatistics,
+			excludeFromStatistics: shouldExcludeFromStatistics,
 			alley: alleyPicker.selected.first
 		)
 	}

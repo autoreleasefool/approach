@@ -27,6 +27,7 @@ public struct LeagueEditor: ReducerProtocol {
 		@BindableState public var recurrence: League.Recurrence = .repeating
 		@BindableState public var gamesPerSeries: GamesPerSeries = .static
 		@BindableState public var numberOfGames = League.DEFAULT_NUMBER_OF_GAMES
+		@BindableState public var excludeFromStatistics: League.ExcludeFromStatistics = .include
 		@BindableState public var hasAdditionalPinfall = false
 		@BindableState public var additionalPinfall = ""
 		@BindableState public var additionalGames = ""
@@ -62,6 +63,7 @@ public struct LeagueEditor: ReducerProtocol {
 				fields.recurrence = league.recurrence
 				fields.numberOfGames = league.numberOfGames ?? League.DEFAULT_NUMBER_OF_GAMES
 				fields.gamesPerSeries = league.numberOfGames == nil ? .dynamic : .static
+				fields.excludeFromStatistics = league.excludeFromStatistics
 				fields.additionalGames = "\(league.additionalGames ?? 0)"
 				fields.additionalPinfall = "\(league.additionalPinfall ?? 0)"
 				fields.hasAdditionalPinfall = (league.additionalGames ?? 0) > 0
@@ -220,6 +222,7 @@ extension LeagueEditor.Fields {
 			numberOfGames: numberOfGames,
 			additionalPinfall: additionalPinfall,
 			additionalGames: additionalGames,
+			excludeFromStatistics: excludeFromStatistics,
 			alley: alleyPicker.selected.first
 		)
 	}

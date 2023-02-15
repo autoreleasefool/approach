@@ -87,6 +87,8 @@
 "league.properties.numberOfGames" = "Number of games";
 "league.properties.additionalPinfall" = "Additional Pinfall";
 "league.properties.additionalGames" = "Additional Games";
+"league.properties.excludeFromStatistics.include" = "Include in statistics";
+"league.properties.excludeFromStatistics.exclude" = "Exclude from statistics";
 "league.editor.fields.gamesPerSeries.constant" = "Constant";
 "league.editor.fields.gamesPerSeries.alwaysAskMe" = "Always ask me";
 "league.editor.fields.alley.help" = "This is where you'll usually bowl this league. You can always change it for specific series later.";
@@ -94,6 +96,9 @@
 "league.editor.fields.numberOfGames.help" = "Choose '%@' if you always play the same number of games each series, or '%@' to choose the number of games each time you bowl.";
 "league.editor.fields.additionalPinfall.title" = "Include additional pinfall?";
 "league.editor.fields.additionalPinfall.help" = "If you're starting recording partway through the season, you can add missing pinfall here to ensure your average in the app matches the average provided by your league.";
+"league.editor.fields.excludeFromStatistics.title" = "Statistics";
+"league.editor.fields.excludeFromStatistics.label" = "Exclude from statistics?";
+"league.editor.fields.excludeFromStatistics.help" = "You can choose to exclude this league and all of its games from all statistics. They will still appear in the app, but won't affect your overall average or other statistics.";
 "league.error.empty.title" = "No leagues found";
 "league.error.empty.message" = "You haven't added any leagues or events yet. Track your progress week over week for each league you're in. See how you measure up in tournaments with events.";
 
@@ -117,6 +122,7 @@
 "series.editor.fields.excludeFromStatistics.label" = "Exclude from all statistics?";
 "series.editor.fields.excludeFromStatistics.help" = "You can choose to exclude this series and all of its games from all statistics. They will still appear in the app, but won't affect your average or other statistics.";
 "series.editor.fields.excludeFromStatistics.excludedWhenPreBowl" = "Pre-bowls are automatically excluded from all statistics.";
+"series.editor.fields.excludeFromStatistics.excludedWhenLeagueExcluded" = "All of this league's series have been excluded from statistics. You must toggle this setting for the league before this series can be counted towards any statistics.";
 "series.error.failedToCreate.title" = "Failed to create series";
 "series.error.failedToCreate.message" = "We couldn't create a new series";
 "series.error.empty.title" = "No series found";
@@ -125,6 +131,12 @@
 /* Games */
 
 "game.title" = "Game %d";
+"game.properties.excludeFromStatistics.include" = "Include in statistics";
+"game.properties.excludeFromStatistics.exclude" = "Exclude from statistics";
+"game.editor.fields.excludeFromStatistics.title" = "Statistics";
+"game.editor.fields.excludeFromStatistics.label" = "Exclude from statistics?";
+"game.editor.fields.excludeFromStatistics.help" = "You can choose to exclude this game from all statistics. It will still appear in the app, but won't affect your overall average or other statistics.";
+
 "frame.title" = "Frame %d";
 "ball.title" = "Ball %d";
 "ball.properties.ballRolled" = "Ball Rolled";

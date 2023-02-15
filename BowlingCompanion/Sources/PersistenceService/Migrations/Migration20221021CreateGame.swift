@@ -14,6 +14,8 @@ struct Migration20221021CreateGame: Migration {
 			t.column("locked", .text)
 				.notNull()
 			t.column("manualScore", .integer)
+			t.column("excludeFromStatistics", .integer)
+				.notNull()
 		}
 	}
 }
