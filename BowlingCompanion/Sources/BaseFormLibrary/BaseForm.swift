@@ -78,6 +78,7 @@ public struct BaseForm<Model: BaseFormModel, FormState: BaseFormState>: ReducerP
 			case didDeleteModel(Model)
 			case didFinishSaving
 			case didFinishDeleting
+			case didDiscard
 		}
 
 		public enum CallbackAction: Equatable {
@@ -146,7 +147,7 @@ public struct BaseForm<Model: BaseFormModel, FormState: BaseFormState>: ReducerP
 
 					case .didTapDiscardButton:
 						state = .init(mode: state.mode, form: state.initialForm)
-						return .none
+						return .task { .delegate(.didDiscard) }
 
 					case .didTapDismissButton:
 						state.alert = nil

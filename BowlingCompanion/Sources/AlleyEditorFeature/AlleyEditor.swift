@@ -149,7 +149,7 @@ public struct AlleyEditor: ReducerProtocol {
 					case let .didDeleteModel(alley):
 						return .task { .internal(.form(.callback(.didFinishDeleting(.success(alley))))) }
 
-					case .didFinishSaving, .didFinishDeleting:
+					case .didFinishSaving, .didFinishDeleting, .didDiscard:
 						return .task { .delegate(.didFinishEditing) }
 					}
 

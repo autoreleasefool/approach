@@ -128,7 +128,7 @@ public struct TeamEditor: ReducerProtocol {
 					case let .didDeleteModel(team):
 						return .task { .internal(.form(.callback(.didFinishDeleting(.success(team))))) }
 
-					case .didFinishSaving, .didFinishDeleting:
+					case .didFinishSaving, .didFinishDeleting, .didDiscard:
 						return .task { .delegate(.didFinishEditing) }
 					}
 

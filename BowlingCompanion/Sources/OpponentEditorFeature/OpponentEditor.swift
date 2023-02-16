@@ -79,7 +79,7 @@ public struct OpponentEditor: ReducerProtocol {
 					case let .didDeleteModel(opponent):
 						return .task { .internal(.form(.callback(.didFinishDeleting(.success(opponent))))) }
 
-					case .didFinishSaving, .didFinishDeleting:
+					case .didFinishSaving, .didFinishDeleting, .didDiscard:
 						return .task { .delegate(.didFinishEditing) }
 					}
 

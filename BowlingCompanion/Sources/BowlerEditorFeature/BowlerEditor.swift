@@ -79,7 +79,7 @@ public struct BowlerEditor: ReducerProtocol {
 					case let .didDeleteModel(bowler):
 						return .task { .internal(.form(.callback(.didFinishDeleting(.success(bowler))))) }
 
-					case .didFinishSaving, .didFinishDeleting:
+					case .didFinishSaving, .didFinishDeleting, .didDiscard:
 						return .task { .delegate(.didFinishEditing) }
 					}
 

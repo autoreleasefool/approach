@@ -177,7 +177,7 @@ public struct LeagueEditor: ReducerProtocol {
 					case let .didDeleteModel(league):
 						return .task { .internal(.form(.callback(.didFinishDeleting(.success(league))))) }
 
-					case .didFinishSaving, .didFinishDeleting:
+					case .didFinishSaving, .didFinishDeleting, .didDiscard:
 						return .task { .delegate(.didFinishEditing) }
 					}
 

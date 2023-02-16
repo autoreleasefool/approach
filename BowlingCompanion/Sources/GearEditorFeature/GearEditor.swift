@@ -143,7 +143,7 @@ public struct GearEditor: ReducerProtocol {
 					case let .didDeleteModel(gear):
 						return .task { .internal(.form(.callback(.didFinishDeleting(.success(gear))))) }
 
-					case .didFinishSaving, .didFinishDeleting:
+					case .didFinishSaving, .didFinishDeleting, .didDiscard:
 						return .task { .delegate(.didFinishEditing) }
 					}
 
