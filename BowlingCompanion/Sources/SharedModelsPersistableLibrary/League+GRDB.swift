@@ -17,7 +17,8 @@ extension League: FetchableRecord, PersistableRecord {
 				numberOfGames: numberOfGames,
 				preBowl: .regularPlay,
 				excludeFromStatistics: .init(from: excludeFromStatistics),
-				alley: alley
+				alley: alley,
+				lane: nil
 			)
 			try series.insert(db)
 		}

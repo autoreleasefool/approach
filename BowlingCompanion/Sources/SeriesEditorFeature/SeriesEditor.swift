@@ -98,6 +98,9 @@ public struct SeriesEditor: ReducerProtocol {
 				fields.numberOfGames = series.numberOfGames
 				fields.preBowl = series.preBowl
 				fields.excludeFromStatistics = series.excludeFromStatistics
+				fields.alleyPicker.selected = Set([series.alley].compactMap { $0 })
+				fields.lanePicker.selected = Set([series.lane].compactMap { $0 })
+				fields.lanePicker.query = Self.query(forLanesOf: series.alley)
 			case .create:
 				break
 			}
@@ -105,6 +108,14 @@ public struct SeriesEditor: ReducerProtocol {
 			self.base = .init(mode: mode, form: fields)
 			self.hasAlleysEnabled = hasAlleysEnabled
 			self.hasLanesEnabled = hasLanesEnabled
+		}
+
+		fileprivate static func query(forLanesOf alley: Alley.ID?) -> Lane.FetchRequest {
+			if let alley {
+				return .init(filter: .alley(alley), ordering: .byLabel)
+			} else {
+				return .init(filter: nil, ordering: .byLabel)
+			}
 		}
 	}
 
@@ -224,13 +235,7 @@ public struct SeriesEditor: ReducerProtocol {
 					switch delegateAction {
 					case .didFinishEditing:
 						state.isAlleyPickerPresented = false
-						let laneQuery: Lane.FetchRequest
-						if let alley = state.base.form.alleyPicker.selected.first {
-							laneQuery = .init(filter: .alley(alley), ordering: .byLabel)
-						} else {
-							laneQuery = .init(filter: nil, ordering: .byLabel)
-						}
-						state.base.form.lanePicker.query = laneQuery
+						state.base.form.lanePicker.query = State.query(forLanesOf: state.base.form.alleyPicker.selected.first)
 						return .none
 					}
 
@@ -288,7 +293,8 @@ extension SeriesEditor.Fields {
 			numberOfGames: numberOfGames,
 			preBowl: preBowl,
 			excludeFromStatistics: shouldExcludeFromStatistics,
-			alley: alleyPicker.selected.first
+			alley: alleyPicker.selected.first,
+			lane: lanePicker.selected.first
 		)
 	}
 }

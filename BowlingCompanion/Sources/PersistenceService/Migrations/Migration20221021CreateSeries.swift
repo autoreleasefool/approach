@@ -20,6 +20,9 @@ struct Migration20221021CreateSeries: Migration {
 			t.column("alley", .text)
 				.indexed()
 				.references("alley", onDelete: .setNull)
+			t.column("lane", .text)
+				.indexed()
+				.references("lane", onDelete: .setNull)
 		}
 	}
 }

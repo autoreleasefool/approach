@@ -9,6 +9,7 @@ public struct Series: Sendable, Identifiable, Hashable, Codable {
 	public let preBowl: PreBowl
 	public let excludeFromStatistics: ExcludeFromStatistics
 	public let alley: Alley.ID?
+	public let lane: Lane.ID?
 
 	public init(
 		league: League.ID,
@@ -17,7 +18,8 @@ public struct Series: Sendable, Identifiable, Hashable, Codable {
 		numberOfGames: Int,
 		preBowl: PreBowl,
 		excludeFromStatistics: ExcludeFromStatistics,
-		alley: Alley.ID?
+		alley: Alley.ID?,
+		lane: Lane.ID?
 	) {
 		self.league = league
 		self.id = id
@@ -26,6 +28,7 @@ public struct Series: Sendable, Identifiable, Hashable, Codable {
 		self.preBowl = preBowl
 		self.excludeFromStatistics = excludeFromStatistics
 		self.alley = alley
+		self.lane = lane
 	}
 }
 

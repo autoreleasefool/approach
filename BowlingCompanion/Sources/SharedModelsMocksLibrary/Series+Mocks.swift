@@ -9,7 +9,8 @@ extension Series {
 		numberOfGames: Int = League.DEFAULT_NUMBER_OF_GAMES,
 		preBowl: PreBowl = .regularPlay,
 		excludeFromStatistics: ExcludeFromStatistics = .include,
-		alley: UUID? = nil
+		alley: UUID? = nil,
+		lane: UUID? = nil
 	) -> Series {
 		.init(
 			league: league,
@@ -18,7 +19,8 @@ extension Series {
 			numberOfGames: numberOfGames,
 			preBowl: preBowl,
 			excludeFromStatistics: excludeFromStatistics,
-			alley: alley
+			alley: alley,
+			lane: lane
 		)
 	}
 }

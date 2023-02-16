@@ -67,6 +67,7 @@ public struct LeagueEditor: ReducerProtocol {
 				fields.additionalGames = "\(league.additionalGames ?? 0)"
 				fields.additionalPinfall = "\(league.additionalPinfall ?? 0)"
 				fields.hasAdditionalPinfall = (league.additionalGames ?? 0) > 0
+				fields.alleyPicker.selected = Set([league.alley].compactMap { $0 })
 			case .create:
 				fields = Fields(bowler: bowler.id, alley: nil)
 			}

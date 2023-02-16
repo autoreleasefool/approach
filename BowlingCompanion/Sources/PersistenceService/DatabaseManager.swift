@@ -29,13 +29,13 @@ struct DatabaseManager {
 		#endif
 
 		migrator.registerMigration(Migration20221101CreateAlley.self)
+		migrator.registerMigration(Migration20221204CreateLane.self)
 		migrator.registerMigration(Migration20221018CreateBowler.self)
 		migrator.registerMigration(Migration20221115CreateGear.self)
 		migrator.registerMigration(Migration20221021CreateLeague.self)
 		migrator.registerMigration(Migration20221021CreateSeries.self)
 		migrator.registerMigration(Migration20221021CreateGame.self)
 		migrator.registerMigration(Migration20221021CreateFrame.self)
-		migrator.registerMigration(Migration20221204CreateLane.self)
 		migrator.registerMigration(Migration20221204CreateGameLanePivot.self)
 		migrator.registerMigration(Migration20230103CreateTeam.self)
 		migrator.registerMigration(Migration20230103CreateTeamMemberPivot.self)

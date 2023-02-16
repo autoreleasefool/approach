@@ -42,7 +42,8 @@ struct SeriesRowPreview: PreviewProvider {
 					numberOfGames: 4,
 					preBowl: .regularPlay,
 					excludeFromStatistics: .include,
-					alley: nil
+					alley: nil,
+					lane: nil
 				))
 				SeriesRow(series: .init(
 					league: .init(),
@@ -51,7 +52,8 @@ struct SeriesRowPreview: PreviewProvider {
 					numberOfGames: 6,
 					preBowl: .preBowl,
 					excludeFromStatistics: .include,
-					alley: nil
+					alley: nil,
+					lane: nil
 				))
 				SeriesRow(series: .init(
 					league: .init(),
@@ -60,7 +62,8 @@ struct SeriesRowPreview: PreviewProvider {
 					numberOfGames: 2,
 					preBowl: .regularPlay,
 					excludeFromStatistics: .exclude,
-					alley: nil
+					alley: nil,
+					lane: nil
 				))
 			}
 			.listRowBackground(Color(uiColor: .secondarySystemBackground))
