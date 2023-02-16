@@ -38,7 +38,7 @@ public struct LeaguesList: ReducerProtocol {
 					}),
 				],
 				query: .init(
-					filter: filters.filter(withBowler: bowler.id),
+					filter: filters.filter(withBowler: bowler),
 					ordering: sortOrder.ordering
 				),
 				listTitle: bowler.name,
@@ -228,6 +228,6 @@ public struct LeaguesList: ReducerProtocol {
 
 extension LeaguesList.State {
 	mutating func updateQuery() {
-		list.query = .init(filter: filters.filter(withBowler: bowler.id), ordering: sortOrder.ordering)
+		list.query = .init(filter: filters.filter(withBowler: bowler), ordering: sortOrder.ordering)
 	}
 }

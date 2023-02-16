@@ -12,7 +12,7 @@ extension League.FetchRequest: ManyQueryable {
 		case let .id(id):
 			query = query.filter(id: id)
 		case let .properties(bowler, recurrence):
-			query = query.filter(Column("bowler") == bowler)
+			query = bowler.leagues
 			if let recurrence {
 				query = query.filter(Column("recurrence") == recurrence.rawValue)
 			}

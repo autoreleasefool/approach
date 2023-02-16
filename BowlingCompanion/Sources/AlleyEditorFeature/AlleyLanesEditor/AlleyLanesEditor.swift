@@ -9,7 +9,7 @@ import SwiftUI
 
 public struct AlleyLanesEditor: ReducerProtocol {
 	public struct State: Equatable {
-		public var alley: Alley.ID?
+		public var alley: Alley?
 
 		public var isLoadingData = true
 		public var lanes: IdentifiedArrayOf<LaneEditor.State> = []
@@ -18,7 +18,7 @@ public struct AlleyLanesEditor: ReducerProtocol {
 		public var alert: AlertState<AlertAction>?
 		public var addLaneForm: AddLaneForm.State?
 
-		public init(alley: Alley.ID?) {
+		public init(alley: Alley?) {
 			self.alley = alley
 		}
 	}

@@ -11,8 +11,8 @@ extension Lane.FetchRequest: ManyQueryable {
 		switch filter {
 		case let .id(id):
 			query = query.filter(id: id)
-		case let .alley(id):
-			query = query.filter(Column("alley") == id)
+		case let .alley(alley):
+			query = alley.lanes
 		case let .series(series):
 			query = series.lanes
 		case .none:

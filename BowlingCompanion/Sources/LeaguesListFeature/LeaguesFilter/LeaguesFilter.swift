@@ -65,7 +65,7 @@ extension LeaguesFilter.State {
 		recurrence != nil
 	}
 
-	public func filter(withBowler: Bowler.ID) -> League.FetchRequest.Filter {
-		.properties(withBowler, recurrence: recurrence)
+	public func filter(withBowler: Bowler) -> League.FetchRequest.Filter {
+		.properties(bowler: withBowler, recurrence: recurrence)
 	}
 }

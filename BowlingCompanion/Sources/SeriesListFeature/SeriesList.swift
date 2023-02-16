@@ -33,7 +33,7 @@ public struct SeriesList: ReducerProtocol {
 						try await persistenceService.deleteSeries($0)
 					}),
 				],
-				query: .init(filter: .league(league.id), ordering: .byDate),
+				query: .init(filter: .league(league), ordering: .byDate),
 				listTitle: league.name,
 				emptyContent: .init(
 					image: .emptySeries,

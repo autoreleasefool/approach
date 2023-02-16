@@ -21,7 +21,7 @@ public struct SeriesSidebar: ReducerProtocol {
 			self.series = series
 			self.list = .init(
 				features: [],
-				query: .init(filter: .series(series.id), ordering: .byOrdinal),
+				query: .init(filter: .series(series), ordering: .byOrdinal),
 				listTitle: series.date.longFormat,
 				emptyContent: .init(
 					image: .emptyGames,

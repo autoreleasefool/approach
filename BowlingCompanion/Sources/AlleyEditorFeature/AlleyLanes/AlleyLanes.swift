@@ -5,10 +5,10 @@ import SharedModelsLibrary
 
 public struct AlleyLanes: ReducerProtocol {
 	public struct State: Equatable {
-		public let alley: Alley.ID?
+		public let alley: Alley?
 		public var lanes: IdentifiedArrayOf<Lane>?
 
-		public init(alley: Alley.ID?) {
+		public init(alley: Alley?) {
 			self.alley = alley
 		}
 	}

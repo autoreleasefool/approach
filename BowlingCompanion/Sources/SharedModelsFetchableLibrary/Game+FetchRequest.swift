@@ -15,7 +15,7 @@ extension Game {
 extension Game.FetchRequest {
 	public enum Filter: Equatable {
 		case id(Game.ID)
-		case series(Series.ID) // TODO: replace with series
+		case series(Series)
 	}
 }
 

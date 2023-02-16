@@ -12,7 +12,7 @@ extension Frame.FetchRequest: ManyQueryable {
 		case let .id(id):
 			query = query.filter(id: id)
 		case let .game(game):
-			query = query.filter(Column("game") == game)
+			query = game.frames
 		case .none:
 			break
 		}

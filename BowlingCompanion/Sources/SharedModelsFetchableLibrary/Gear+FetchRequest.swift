@@ -16,7 +16,7 @@ extension Gear {
 extension Gear.FetchRequest {
 	public enum Filter: Equatable {
 		case id(Gear.ID)
-		case bowler(Bowler.ID) // TODO: replace with bowler
+		case bowler(Bowler)
 		case kind(Gear.Kind)
 	}
 }

@@ -15,7 +15,7 @@ public struct AlleyEditor: ReducerProtocol {
 	public typealias Form = BaseForm<Alley, Fields>
 
 	public struct Fields: BaseFormState, Equatable {
-		public let alleyId: Alley.ID
+		public let alley: Alley?
 		public var laneEditor: AlleyLanesEditor.State
 		@BindableState public var name = ""
 		@BindableState public var address = ""
@@ -24,8 +24,8 @@ public struct AlleyEditor: ReducerProtocol {
 		@BindableState public var mechanism: Alley.Mechanism = .unknown
 		@BindableState public var pinBase: Alley.PinBase = .unknown
 
-		init(alley: Alley.ID) {
-			self.alleyId = alley
+		init(alley: Alley?) {
+			self.alley = alley
 			self.laneEditor = .init(alley: alley)
 		}
 
@@ -45,18 +45,16 @@ public struct AlleyEditor: ReducerProtocol {
 			var fields: Fields
 			switch mode {
 			case let .edit(alley):
-				fields = .init(alley: alley.id)
+				fields = .init(alley: alley)
 				fields.name = alley.name
 				fields.address = alley.address ?? ""
 				fields.material = alley.material
 				fields.pinFall = alley.pinFall
 				fields.mechanism = alley.mechanism
 				fields.pinBase = alley.pinBase
-				self.alleyLanes = .init(alley: alley.id)
+				self.alleyLanes = .init(alley: alley)
 			case .create:
-				@Dependency(\.uuid) var uuid: UUIDGenerator
-
-				fields = .init(alley: uuid())
+				fields = .init(alley: nil)
 				self.alleyLanes = .init(alley: nil)
 			}
 
@@ -117,7 +115,9 @@ public struct AlleyEditor: ReducerProtocol {
 					if !isPresented {
 						// TODO: sort lanes
 						state.alleyLanes.lanes = .init(
-							uniqueElements: state.base.form.laneEditor.lanes.map { $0.toLane(alley: state.base.form.alleyId) }
+							uniqueElements: state.base.form.laneEditor.lanes.map {
+								$0.toLane(alley: .placeholder)
+							}
 						)
 					}
 					return .none
@@ -190,8 +190,10 @@ extension LaneEditor.State {
 
 extension AlleyEditor.Fields {
 	public func model(fromExisting existing: Alley?) -> Alley {
+		@Dependency(\.uuid) var uuid: UUIDGenerator
+
 		return .init(
-			id: alleyId,
+			id: alley?.id ?? uuid(),
 			name: name,
 			address: address.isEmpty ? nil : address,
 			material: material,

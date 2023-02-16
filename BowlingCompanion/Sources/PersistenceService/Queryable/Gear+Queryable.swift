@@ -12,7 +12,7 @@ extension Gear.FetchRequest: ManyQueryable {
 		case let .id(id):
 			query = query.filter(id: id)
 		case let .bowler(bowler):
-			query = query.filter(Column("bowler") == bowler)
+			query = bowler.gear
 		case let .kind(kind):
 			query = query.filter(Column("kind") == kind.rawValue)
 		case .none:

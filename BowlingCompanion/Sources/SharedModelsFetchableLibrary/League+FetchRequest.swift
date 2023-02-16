@@ -16,7 +16,7 @@ extension League {
 extension League.FetchRequest {
 	public enum Filter: Equatable {
 		case id(League.ID)
-		case properties(Bowler.ID, recurrence: League.Recurrence?) // TODO: replace with bowler
+		case properties(bowler: Bowler, recurrence: League.Recurrence?)
 	}
 }
 

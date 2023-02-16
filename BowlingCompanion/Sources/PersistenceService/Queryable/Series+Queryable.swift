@@ -12,7 +12,7 @@ extension Series.FetchRequest: ManyQueryable {
 		case let .id(id):
 			query = query.filter(id: id)
 		case let .league(league):
-			query = query.filter(Column("league") == league)
+			query = league.series
 		case .none:
 			break
 		}
