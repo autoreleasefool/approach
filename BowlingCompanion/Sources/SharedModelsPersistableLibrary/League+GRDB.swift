@@ -1,8 +1,13 @@
 import Dependencies
+import ExtensionsLibrary
 import GRDB
 import SharedModelsLibrary
 
 extension League: FetchableRecord, PersistableRecord {
+	public func willSave(_ db: Database) throws {
+		guard id != .placeholder else { throw ValidationError.usingPlaceholderId }
+	}
+
 	public func aroundInsert(_ db: Database, insert: () throws -> InsertionSuccess) throws {
 		_ = try insert()
 

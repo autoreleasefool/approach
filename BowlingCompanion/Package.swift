@@ -78,6 +78,7 @@ let package = Package(
 		.library(name: "ConstantsLibrary", targets: ["ConstantsLibrary"]),
 		.library(name: "DateTimeLibrary", targets: ["DateTimeLibrary"]),
 		.library(name: "EquatableLibrary", targets: ["EquatableLibrary"]),
+		.library(name: "ExtensionsLibrary", targets: ["ExtensionsLibrary"]),
 		.library(name: "FeatureActionLibrary", targets: ["FeatureActionLibrary"]),
 		.library(name: "FeatureFlagsLibrary", targets: ["FeatureFlagsLibrary"]),
 		.library(name: "FoundationExtensionsLibrary", targets: ["FoundationExtensionsLibrary"]),
@@ -918,6 +919,18 @@ let package = Package(
 			]
 		),
 		.target(
+			name: "ExtensionsLibrary",
+			dependencies: []
+		),
+		.testTarget(
+			name: "ExtensionsLibraryTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"ExtensionsLibrary",
+				"SharedModelsMocksLibrary",
+			]
+		),
+		.target(
 			name: "FeatureActionLibrary",
 			dependencies: []
 		),
@@ -982,6 +995,7 @@ let package = Package(
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-dependencies"),
 				.product(name: "GRDB", package: "GRDB.swift"),
+				"ExtensionsLibrary",
 				"SharedModelsLibrary",
 			]
 		),
