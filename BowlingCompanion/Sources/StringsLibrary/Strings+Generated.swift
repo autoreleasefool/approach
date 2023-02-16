@@ -435,6 +435,10 @@ public enum Strings {
     public static let title = Strings.tr("Localizable", "series.title", fallback: "Series")
     public enum Editor {
       public enum Fields {
+        /// Plural format key: "%#@numberOfGames@"
+        public static func numberOfGames(_ p1: Int) -> String {
+          return Strings.tr("Localizable", "series.editor.fields.numberOfGames", p1, fallback: "Plural format key: \"%#@numberOfGames@\"")
+        }
         public enum Alley {
           /// Lanes
           public static let lanes = Strings.tr("Localizable", "series.editor.fields.alley.lanes", fallback: "Lanes")

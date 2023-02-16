@@ -32,7 +32,7 @@ public struct SeriesEditor: ReducerProtocol {
 
 	public struct Fields: BaseFormState, Equatable {
 		public let league: League
-		public let hasSetNumberOfGames: Bool
+		public var hasSetNumberOfGames: Bool
 		@BindableState public var numberOfGames: Int
 		@BindableState public var date = Date()
 		@BindableState public var preBowl: Series.PreBowl = .regularPlay
@@ -98,6 +98,7 @@ public struct SeriesEditor: ReducerProtocol {
 				fields.numberOfGames = series.numberOfGames
 				fields.preBowl = series.preBowl
 				fields.excludeFromStatistics = series.excludeFromStatistics
+				fields.hasSetNumberOfGames = true
 				fields.alleyPicker.selected = Set([series.alley].compactMap { $0 })
 				fields.lanePicker.selected = Set([series.lane].compactMap { $0 })
 				fields.lanePicker.query = Self.query(forLanesOf: series.alley)

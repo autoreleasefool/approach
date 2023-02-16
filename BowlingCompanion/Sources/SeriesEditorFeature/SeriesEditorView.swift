@@ -16,6 +16,7 @@ public struct SeriesEditorView: View {
 		@BindableState var numberOfGames: Int
 		@BindableState public var preBowl: Series.PreBowl
 		@BindableState public var excludeFromStatistics: Series.ExcludeFromStatistics
+		let hasSetNumberOfGames: Bool
 		let excludeLeagueFromStatistics: League.ExcludeFromStatistics
 		let isAlleyPickerPresented: Bool
 		let isLanePickerPresented: Bool
@@ -34,6 +35,7 @@ public struct SeriesEditorView: View {
 
 		init(state: SeriesEditor.State) {
 			self.date = state.base.form.date
+			self.hasSetNumberOfGames = state.base.form.hasSetNumberOfGames
 			self.numberOfGames = state.base.form.numberOfGames
 			self.preBowl = state.base.form.preBowl
 			self.excludeFromStatistics = state.base.form.excludeFromStatistics
@@ -78,6 +80,13 @@ public struct SeriesEditorView: View {
 		WithViewStore(store, observe: ViewState.init, send: SeriesEditor.Action.init) { viewStore in
 			BaseFormView(store: store.scope(state: \.base, action: /SeriesEditor.Action.InternalAction.form)) {
 				Section(Strings.Editor.Fields.Details.title) {
+					Stepper(
+						Strings.Series.Editor.Fields.numberOfGames(viewStore.numberOfGames),
+						value: viewStore.binding(\.$numberOfGames),
+						in: League.NUMBER_OF_GAMES_RANGE
+					)
+					.disabled(viewStore.hasSetNumberOfGames)
+
 					DatePicker(
 						Strings.Series.Properties.date,
 						selection: viewStore.binding(\.$date),
