@@ -378,7 +378,6 @@ let package = Package(
 		.target(
 			name: "SeriesListFeature",
 			dependencies: [
-				"ResourceListLibrary",
 				"SeriesDataProviderInterface",
 				"SeriesEditorFeature",
 				"SeriesSidebarFeature",
@@ -397,6 +396,7 @@ let package = Package(
 			dependencies: [
 				"GameEditorFeature",
 				"GamesDataProviderInterface",
+				"ResourceListLibrary",
 			]
 		),
 		.testTarget(
@@ -969,6 +969,7 @@ let package = Package(
 		.target(
 			name: "ResourcePickerLibrary",
 			dependencies: [
+				"FeatureActionLibrary",
 				"ViewsLibrary",
 			]
 		),
