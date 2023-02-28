@@ -5,7 +5,10 @@ struct AcknowledgementDetailsView: View {
 	let acknowledgement: Acknowledgement
 
 	var body: some View {
-		Text(acknowledgement.licenseContents)
-			.navigationTitle(acknowledgement.name)
+		ScrollView {
+			Text(acknowledgement.licenseContents)
+				.padding(.horizontal)
+				.navigationTitle(acknowledgement.name)
+		}
 	}
 }
