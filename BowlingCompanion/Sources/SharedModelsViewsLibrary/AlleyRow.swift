@@ -1,17 +1,13 @@
+import AssetsLibrary
 import SharedModelsLibrary
 import SwiftUI
-import AssetsLibrary
 import ViewsLibrary
 
 public struct AlleyRow: View {
 	let alley: Alley
-	let onEdit: (() -> Void)?
-	let onDelete: (() -> Void)?
 
-	public init(alley: Alley, onEdit: (() -> Void)? = nil, onDelete: (() -> Void)? = nil) {
+	public init(alley: Alley) {
 		self.alley = alley
-		self.onEdit = onEdit
-		self.onDelete = onDelete
 	}
 
 	var hasSomeBadge: Bool {
@@ -24,7 +20,6 @@ public struct AlleyRow: View {
 	public var body: some View {
 		VStack(alignment: .leading, spacing: .smallSpacing) {
 			Text(alley.name)
-				.frame(maxWidth: .infinity, alignment: .leading)
 
 			if hasSomeBadge {
 				HStack {
@@ -53,15 +48,6 @@ public struct AlleyRow: View {
 						)
 					}
 				}
-			}
-		}
-		.swipeActions(allowsFullSwipe: true) {
-			if let onEdit {
-				EditButton(perform: onEdit)
-			}
-
-			if let onDelete {
-				DeleteButton(perform: onDelete)
 			}
 		}
 	}

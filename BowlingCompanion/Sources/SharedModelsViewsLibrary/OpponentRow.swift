@@ -1,31 +1,15 @@
-import AssetsLibrary
 import SharedModelsLibrary
 import SwiftUI
-import ViewsLibrary
 
 public struct OpponentRow: View {
 	let opponent: Opponent
-	let onEdit: (() -> Void)?
-	let onDelete: (() -> Void)?
 
-	public init(opponent: Opponent, onEdit: (() -> Void)? = nil, onDelete: (() -> Void)? = nil) {
+	public init(opponent: Opponent) {
 		self.opponent = opponent
-		self.onEdit = onEdit
-		self.onDelete = onDelete
 	}
 
 	public var body: some View {
 		Text(opponent.name)
-			.frame(maxWidth: .infinity, alignment: .leading)
-			.swipeActions(allowsFullSwipe: true) {
-				if let onEdit {
-					EditButton(perform: onEdit)
-				}
-
-				if let onDelete {
-					DeleteButton(perform: onDelete)
-				}
-			}
 	}
 }
 

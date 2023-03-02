@@ -1,32 +1,16 @@
 import DateTimeLibrary
 import SharedModelsLibrary
 import SwiftUI
-import AssetsLibrary
-import ViewsLibrary
 
 public struct SeriesRow: View {
 	let series: Series
-	let onEdit: (() -> Void)?
-	let onDelete: (() -> Void)?
 
-	public init(series: Series, onEdit: (() -> Void)? = nil, onDelete: (() -> Void)? = nil) {
+	public init(series: Series) {
 		self.series = series
-		self.onEdit = onEdit
-		self.onDelete = onDelete
 	}
 
 	public var body: some View {
 		Text(series.date.longFormat)
-			.frame(maxWidth: .infinity, alignment: .leading)
-			.swipeActions(allowsFullSwipe: true) {
-				if let onEdit {
-					EditButton(perform: onEdit)
-				}
-
-				if let onDelete {
-					DeleteButton(perform: onDelete)
-				}
-			}
 	}
 }
 

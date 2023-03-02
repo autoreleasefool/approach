@@ -1,30 +1,15 @@
 import SharedModelsLibrary
 import SwiftUI
-import AssetsLibrary
-import ViewsLibrary
 
 public struct GearRow: View {
 	let gear: Gear
-	let onEdit: (() -> Void)?
-	let onDelete: (() -> Void)?
 
-	public init(gear: Gear, onEdit: (() -> Void)? = nil, onDelete: (() -> Void)? = nil) {
+	public init(gear: Gear) {
 		self.gear = gear
-		self.onEdit = onEdit
-		self.onDelete = onDelete
 	}
 
 	public var body: some View {
 		Label(gear.name, systemImage: gear.kind.image)
-			.swipeActions(allowsFullSwipe: true) {
-				if let onEdit {
-					EditButton(perform: onEdit)
-				}
-
-				if let onDelete {
-					DeleteButton(perform: onDelete)
-				}
-			}
 	}
 }
 

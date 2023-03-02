@@ -1,31 +1,15 @@
-import AssetsLibrary
 import SharedModelsLibrary
 import SwiftUI
-import ViewsLibrary
 
 public struct BowlerRow: View {
 	let bowler: Bowler
-	let onEdit: (() -> Void)?
-	let onDelete: (() -> Void)?
 
-	public init(bowler: Bowler, onEdit: (() -> Void)? = nil, onDelete: (() -> Void)? = nil) {
+	public init(bowler: Bowler) {
 		self.bowler = bowler
-		self.onEdit = onEdit
-		self.onDelete = onDelete
 	}
 
 	public var body: some View {
 		AvatarLabelView(bowler.avatar, size: .medium, title: bowler.name)
-			.frame(maxWidth: .infinity, alignment: .leading)
-			.swipeActions(allowsFullSwipe: true) {
-				if let onEdit {
-					EditButton(perform: onEdit)
-				}
-
-				if let onDelete {
-					DeleteButton(perform: onDelete)
-				}
-			}
 	}
 }
 

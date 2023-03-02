@@ -1,31 +1,16 @@
 import SharedModelsLibrary
 import SwiftUI
-import AssetsLibrary
-import ViewsLibrary
 
 public struct LeagueRow: View {
 	let league: League
-	let onEdit: (() -> Void)?
-	let onDelete: (() -> Void)?
 
-	public init(league: League, onEdit: (() -> Void)? = nil, onDelete: (() -> Void)? = nil) {
+	public init(league: League) {
 		self.league = league
-		self.onEdit = onEdit
-		self.onDelete = onDelete
 	}
 
 	public var body: some View {
 		Text(league.name)
 			.frame(maxWidth: .infinity, alignment: .leading)
-			.swipeActions(allowsFullSwipe: true) {
-				if let onEdit {
-					EditButton(perform: onEdit)
-				}
-
-				if let onDelete {
-					DeleteButton(perform: onDelete)
-				}
-			}
 	}
 }
 
