@@ -15,7 +15,7 @@ public struct BowlerRow: View {
 	}
 
 	public var body: some View {
-		AvatarView(size: .medium, title: bowler.name)
+		AvatarLabelView(bowler.avatar, size: .medium, title: bowler.name)
 			.frame(maxWidth: .infinity, alignment: .leading)
 			.swipeActions(allowsFullSwipe: true) {
 				if let onEdit {
@@ -34,9 +34,9 @@ struct BowlerRowPreview: PreviewProvider {
 	static var previews: some View {
 		List {
 			Section {
-				BowlerRow(bowler: .init(id: .init(), name: "Joseph"))
-				BowlerRow(bowler: .init(id: .init(), name: "Sarah"))
-				BowlerRow(bowler: .init(id: .init(), name: "Audriana Roque"))
+				BowlerRow(bowler: .init(id: .init(), name: "Joseph", avatar: .text("JR", .random())))
+				BowlerRow(bowler: .init(id: .init(), name: "Sarah", avatar: .text("SA", .random())))
+				BowlerRow(bowler: .init(id: .init(), name: "Audriana Roque", avatar: .text("AR", .random())))
 			}
 			.listRowBackground(Color(uiColor: .secondarySystemBackground))
 		}

@@ -15,6 +15,7 @@ public struct BowlerEditor: ReducerProtocol {
 
 	public struct Fields: BaseFormState, Equatable {
 		@BindableState public var name = ""
+		public var avatar: Avatar = .text("", .random())
 
 		public let isDeleteable = true
 		public var isSaveable: Bool {
@@ -29,6 +30,7 @@ public struct BowlerEditor: ReducerProtocol {
 			var fields = Fields()
 			if case let .edit(bowler) = mode {
 				fields.name = bowler.name
+				fields.avatar = bowler.avatar
 			}
 
 			self.base = .init(mode: mode, form: fields)
@@ -106,7 +108,8 @@ extension BowlerEditor.Fields {
 
 		return .init(
 			id: existing?.id ?? uuid(),
-			name: name
+			name: name,
+			avatar: avatar
 		)
 	}
 }

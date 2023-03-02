@@ -15,7 +15,7 @@ public struct TeamRow: View {
 	}
 
 	public var body: some View {
-		AvatarView(size: .medium, title: team.name)
+		Text(team.name)
 			.frame(maxWidth: .infinity, alignment: .leading)
 			.swipeActions(allowsFullSwipe: true) {
 				if let onEdit {

@@ -63,7 +63,7 @@ struct BowlerEditorViewPreviews: PreviewProvider {
 		NavigationView {
 			BowlerEditorView(store:
 				.init(
-					initialState: .init(mode: .edit(.init(id: UUID(), name: "Joseph"))),
+					initialState: .init(mode: .edit(.init(id: UUID(), name: "Joseph", avatar: .text("JR", .random())))),
 					reducer: BowlerEditor()
 				)
 			)
