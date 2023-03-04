@@ -4,7 +4,7 @@
 import PackageDescription
 
 let package = Package(
-	name: "BowlingCompanion",
+	name: "Approach",
 	defaultLocalization: "en",
 	platforms: [
 		.iOS(.v16),
@@ -14,6 +14,7 @@ let package = Package(
 		.library(name: "AlleyEditorFeature", targets: ["AlleyEditorFeature"]),
 		.library(name: "AlleysListFeature", targets: ["AlleysListFeature"]),
 		.library(name: "AppFeature", targets: ["AppFeature"]),
+		.library(name: "AvatarEditorFeature", targets: ["AvatarEditorFeature"]),
 		.library(name: "BowlerEditorFeature", targets: ["BowlerEditorFeature"]),
 		.library(name: "BowlersListFeature", targets: ["BowlersListFeature"]),
 		.library(name: "FeatureFlagsListFeature", targets: ["FeatureFlagsListFeature"]),
@@ -157,8 +158,24 @@ let package = Package(
 			]
 		),
 		.target(
+			name: "AvatarEditorFeature",
+			dependencies: [
+				"FeatureActionLibrary",
+				"SharedModelsViewsLibrary",
+			]
+		),
+		.testTarget(
+			name: "AvatarEditorFeatureTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"AvatarEditorFeature",
+				"SharedModelsMocksLibrary",
+			]
+		),
+		.target(
 			name: "BowlerEditorFeature",
 			dependencies: [
+				"AvatarEditorFeature",
 				"BaseFormLibrary",
 				"PersistenceServiceInterface",
 			]
@@ -194,7 +211,6 @@ let package = Package(
 		.target(
 			name: "FeatureFlagsListFeature",
 			dependencies: [
-				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 				"FeatureActionLibrary",
 				"FeatureFlagsServiceInterface",
 			]
@@ -344,7 +360,6 @@ let package = Package(
 		.target(
 			name: "ScoreSheetFeature",
 			dependencies: [
-				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 				"FeatureActionLibrary",
 				"SharedModelsLibrary",
 			]
@@ -932,7 +947,9 @@ let package = Package(
 		),
 		.target(
 			name: "FeatureActionLibrary",
-			dependencies: []
+			dependencies: [
+				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+			]
 		),
 		.target(
 			name: "FeatureFlagsLibrary",

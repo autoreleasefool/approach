@@ -1,9 +1,9 @@
 strings:
   inputs:
-    - BowlingCompanion/Sources/StringsLibrary/en.lproj
+    - Approach/Sources/StringsLibrary/en.lproj
   outputs:
     - templateName: structured-swift5
-      output: BowlingCompanion/Sources/StringsLibrary/Strings+Generated.swift
+      output: Approach/Sources/StringsLibrary/Strings+Generated.swift
       params:
         enumName: Strings
         publicAccess: true

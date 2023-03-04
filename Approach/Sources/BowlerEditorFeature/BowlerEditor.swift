@@ -1,3 +1,4 @@
+import AvatarEditorFeature
 import BaseFormLibrary
 import ComposableArchitecture
 import FeatureActionLibrary
@@ -21,10 +22,20 @@ public struct BowlerEditor: ReducerProtocol {
 		public var isSaveable: Bool {
 			!name.isEmpty
 		}
+
+		var avatarEditor: AvatarEditor.State {
+			get {
+				.init(name: name, avatar: avatar)
+			}
+			set {
+				self.avatar = newValue.avatar
+			}
+		}
 	}
 
 	public struct State: Equatable {
 		public var base: Form.State
+		public var isAvatarEditorPresented = false
 
 		public init(mode: Form.Mode) {
 			var fields = Fields()
@@ -38,12 +49,16 @@ public struct BowlerEditor: ReducerProtocol {
 	}
 
 	public enum Action: FeatureAction, BindableAction, Equatable {
-		public enum ViewAction: Equatable {}
+		public enum ViewAction: Equatable {
+			case didTapAvatar
+			case setAvatarEditorPresented(isPresented: Bool)
+		}
 		public enum DelegateAction: Equatable {
 			case didFinishEditing
 		}
 		public enum InternalAction: Equatable {
 			case form(Form.Action)
+			case avatar(AvatarEditor.Action)
 		}
 
 		case view(ViewAction)
@@ -69,7 +84,7 @@ public struct BowlerEditor: ReducerProtocol {
 				))
 		}
 
-		Reduce<State, Action> { _, action in
+		Reduce<State, Action> { state, action in
 			switch action {
 			case let .internal(internalAction):
 				switch internalAction {
@@ -85,15 +100,38 @@ public struct BowlerEditor: ReducerProtocol {
 						return .task { .delegate(.didFinishEditing) }
 					}
 
+				case let .avatar(.delegate(delegateAction)):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
+				case .avatar(.view), .avatar(.internal):
+					return .none
+
 				case .form(.view), .form(.internal), .form(.callback):
 					return .none
 				}
 
 			case let .view(viewAction):
 				switch viewAction {
-				case .never:
+				case .didTapAvatar:
+					state.isAvatarEditorPresented = true
+					return .none
+
+				case .setAvatarEditorPresented(let isPresented):
+					state.isAvatarEditorPresented = isPresented
 					return .none
 				}
+
+			case .binding(\.base.form.$name):
+				switch state.base.form.avatar {
+				case .data:
+					break
+				case let .text(_, color):
+					state.base.form.avatar = .text(state.base.form.name, color)
+				}
+				return .none
 
 			case .binding, .delegate:
 				return .none

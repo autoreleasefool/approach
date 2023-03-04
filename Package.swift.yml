@@ -1,7 +1,7 @@
 swift-tools-version: 5.7.1
 
 package:
-  name: BowlingCompanion
+  name: Approach
   defaultLocalization: "en"
 
   platforms:
@@ -51,12 +51,17 @@ package:
     - name: AppFeature
       dependencies:
         - AlleysListFeature
+        - AnalyticsService
         - BowlersListFeature
         - GearListFeature
         - SettingsFeature
-        - AnalyticsService
+    - name: AvatarEditorFeature
+      dependencies:
+        - SharedModelsViewsLibrary
+        - StringsLibrary
     - name: BowlerEditorFeature
       dependencies:
+        - AvatarEditorFeature
         - BaseFormLibrary
         - PersistenceService
     - name: BowlersListFeature
@@ -275,6 +280,8 @@ package:
     - name: ExtensionsLibrary
       requires_tests: true
     - name: FeatureActionLibrary
+      dependencies:
+        - ComposableArchitecture
     - name: FeatureFlagsLibrary
       requires_tests: true
     - name: FoundationExtensionsLibrary

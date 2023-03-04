@@ -3,7 +3,7 @@ import Dependencies
 import SwiftUI
 
 @main
-struct BowlingCompanionApp: App {
+struct ApproachApp: App {
 	var body: some Scene {
 		WindowGroup {
 			ContentView()

@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "CA8BBC5428D59B8B00653A1E"
-               BuildableName = "BowlingCompanion.app"
-               BlueprintName = "BowlingCompanion"
-               ReferencedContainer = "container:BowlingCompanion.xcodeproj">
+               BuildableName = "Approach.app"
+               BlueprintName = "Approach"
+               ReferencedContainer = "container:Approach.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -35,7 +35,7 @@
                BlueprintIdentifier = "SortingLibraryTests"
                BuildableName = "SortingLibraryTests"
                BlueprintName = "SortingLibraryTests"
-               ReferencedContainer = "container:BowlingCompanion">
+               ReferencedContainer = "container:Approach">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -45,7 +45,7 @@
                BlueprintIdentifier = "ViewsLibraryTests"
                BuildableName = "ViewsLibraryTests"
                BlueprintName = "ViewsLibraryTests"
-               ReferencedContainer = "container:BowlingCompanion">
+               ReferencedContainer = "container:Approach">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -55,7 +55,7 @@
                BlueprintIdentifier = "SwiftUIExtensionsLibraryTests"
                BuildableName = "SwiftUIExtensionsLibraryTests"
                BlueprintName = "SwiftUIExtensionsLibraryTests"
-               ReferencedContainer = "container:BowlingCompanion">
+               ReferencedContainer = "container:Approach">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -65,7 +65,7 @@
                BlueprintIdentifier = "SharedModelsViewsLibraryTests"
                BuildableName = "SharedModelsViewsLibraryTests"
                BlueprintName = "SharedModelsViewsLibraryTests"
-               ReferencedContainer = "container:BowlingCompanion">
+               ReferencedContainer = "container:Approach">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -75,7 +75,7 @@
                BlueprintIdentifier = "FeatureFlagsLibraryTests"
                BuildableName = "FeatureFlagsLibraryTests"
                BlueprintName = "FeatureFlagsLibraryTests"
-               ReferencedContainer = "container:BowlingCompanion">
+               ReferencedContainer = "container:Approach">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -85,7 +85,7 @@
                BlueprintIdentifier = "DateTimeLibraryTests"
                BuildableName = "DateTimeLibraryTests"
                BlueprintName = "DateTimeLibraryTests"
-               ReferencedContainer = "container:BowlingCompanion">
+               ReferencedContainer = "container:Approach">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -95,7 +95,7 @@
                BlueprintIdentifier = "RecentlyUsedServiceTests"
                BuildableName = "RecentlyUsedServiceTests"
                BlueprintName = "RecentlyUsedServiceTests"
-               ReferencedContainer = "container:BowlingCompanion">
+               ReferencedContainer = "container:Approach">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -105,7 +105,7 @@
                BlueprintIdentifier = "PreferenceServiceTests"
                BuildableName = "PreferenceServiceTests"
                BlueprintName = "PreferenceServiceTests"
-               ReferencedContainer = "container:BowlingCompanion">
+               ReferencedContainer = "container:Approach">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -115,7 +115,7 @@
                BlueprintIdentifier = "FileManagerServiceTests"
                BuildableName = "FileManagerServiceTests"
                BlueprintName = "FileManagerServiceTests"
-               ReferencedContainer = "container:BowlingCompanion">
+               ReferencedContainer = "container:Approach">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -125,7 +125,7 @@
                BlueprintIdentifier = "FeatureFlagsServiceTests"
                BuildableName = "FeatureFlagsServiceTests"
                BlueprintName = "FeatureFlagsServiceTests"
-               ReferencedContainer = "container:BowlingCompanion">
+               ReferencedContainer = "container:Approach">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -135,7 +135,7 @@
                BlueprintIdentifier = "SortOrderLibraryTests"
                BuildableName = "SortOrderLibraryTests"
                BlueprintName = "SortOrderLibraryTests"
-               ReferencedContainer = "container:BowlingCompanion">
+               ReferencedContainer = "container:Approach">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -145,7 +145,7 @@
                BlueprintIdentifier = "TeamsDataProviderTests"
                BuildableName = "TeamsDataProviderTests"
                BlueprintName = "TeamsDataProviderTests"
-               ReferencedContainer = "container:BowlingCompanion">
+               ReferencedContainer = "container:Approach">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -155,7 +155,7 @@
                BlueprintIdentifier = "OpponentsDataProviderTests"
                BuildableName = "OpponentsDataProviderTests"
                BlueprintName = "OpponentsDataProviderTests"
-               ReferencedContainer = "container:BowlingCompanion">
+               ReferencedContainer = "container:Approach">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -165,7 +165,7 @@
                BlueprintIdentifier = "EquatableLibraryTests"
                BuildableName = "EquatableLibraryTests"
                BlueprintName = "EquatableLibraryTests"
-               ReferencedContainer = "container:BowlingCompanion">
+               ReferencedContainer = "container:Approach">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -175,7 +175,7 @@
                BlueprintIdentifier = "ResourceListLibraryTests"
                BuildableName = "ResourceListLibraryTests"
                BlueprintName = "ResourceListLibraryTests"
-               ReferencedContainer = "container:BowlingCompanion">
+               ReferencedContainer = "container:Approach">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -185,7 +185,7 @@
                BlueprintIdentifier = "AnalyticsServiceTests"
                BuildableName = "AnalyticsServiceTests"
                BlueprintName = "AnalyticsServiceTests"
-               ReferencedContainer = "container:BowlingCompanion">
+               ReferencedContainer = "container:Approach">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -205,9 +205,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "CA8BBC5428D59B8B00653A1E"
-            BuildableName = "BowlingCompanion.app"
-            BlueprintName = "BowlingCompanion"
-            ReferencedContainer = "container:BowlingCompanion.xcodeproj">
+            BuildableName = "Approach.app"
+            BlueprintName = "Approach"
+            ReferencedContainer = "container:Approach.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -222,9 +222,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "CA8BBC5428D59B8B00653A1E"
-            BuildableName = "BowlingCompanion.app"
-            BlueprintName = "BowlingCompanion"
-            ReferencedContainer = "container:BowlingCompanion.xcodeproj">
+            BuildableName = "Approach.app"
+            BlueprintName = "Approach"
+            ReferencedContainer = "container:Approach.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

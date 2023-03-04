@@ -6,7 +6,7 @@ final class FileManagerServiceTests: XCTestCase {
 
 	func getTempFolder() throws -> URL {
 		try FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-			.appendingPathComponent("bowling-companion-tmp")
+			.appendingPathComponent("approach-tmp")
 	}
 
 //	override func tearDownWithError() throws {
@@ -19,7 +19,7 @@ final class FileManagerServiceTests: XCTestCase {
 		XCTAssertEqual(
 			try getTempFolder(),
 			try fileManager.getUserDirectory()
-				.appendingPathComponent("bowling-companion-tmp")
+				.appendingPathComponent("approach-tmp")
 		)
 	}
 

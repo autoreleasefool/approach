@@ -14,7 +14,7 @@
 		CA318B402999E1F500BD4BEC /* AnalyticsService in Frameworks */ = {isa = PBXBuildFile; productRef = CA318B3F2999E1F500BD4BEC /* AnalyticsService */; };
 		CA50C6852963A4FB002F6F20 /* AveragesDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CA50C6842963A4FB002F6F20 /* AveragesDataProvider */; };
 		CA81F9E0293DAD0B0061D1D9 /* LanesDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CA81F9DF293DAD0B0061D1D9 /* LanesDataProvider */; };
-		CA8BBC5928D59B8B00653A1E /* BowlingCompanionApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA8BBC5828D59B8B00653A1E /* BowlingCompanionApp.swift */; };
+		CA8BBC5928D59B8B00653A1E /* ApproachApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA8BBC5828D59B8B00653A1E /* ApproachApp.swift */; };
 		CA8BBC5B28D59B8B00653A1E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA8BBC5A28D59B8B00653A1E /* ContentView.swift */; };
 		CA8BBC5D28D59B8C00653A1E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CA8BBC5C28D59B8C00653A1E /* Assets.xcassets */; };
 		CA8BBC6028D59B8C00653A1E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CA8BBC5F28D59B8C00653A1E /* Preview Assets.xcassets */; };
@@ -32,11 +32,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		CA2F033928F87C4100030BFE /* BowlingCompanion */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = BowlingCompanion; sourceTree = "<group>"; };
+		CA2F033928F87C4100030BFE /* Approach */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Approach; sourceTree = "<group>"; };
 		CA318B3D2999DEE500BD4BEC /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Release.xcconfig; sourceTree = "<group>"; };
 		CA318B3E2999DF1300BD4BEC /* Debug.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Debug.xcconfig; sourceTree = "<group>"; };
-		CA8BBC5528D59B8B00653A1E /* BowlingCompanion.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BowlingCompanion.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		CA8BBC5828D59B8B00653A1E /* BowlingCompanionApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BowlingCompanionApp.swift; sourceTree = "<group>"; };
+		CA8BBC5528D59B8B00653A1E /* Approach.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Approach.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CA8BBC5828D59B8B00653A1E /* ApproachApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ApproachApp.swift; sourceTree = "<group>"; };
 		CA8BBC5A28D59B8B00653A1E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		CA8BBC5C28D59B8C00653A1E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		CA8BBC5F28D59B8C00653A1E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -81,7 +81,7 @@
 		CA2F033828F8797100030BFE /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				CA8BBC5828D59B8B00653A1E /* BowlingCompanionApp.swift */,
+				CA8BBC5828D59B8B00653A1E /* ApproachApp.swift */,
 				CA8BBC5A28D59B8B00653A1E /* ContentView.swift */,
 			);
 			path = Source;
@@ -99,8 +99,8 @@
 		CA8BBC4C28D59B8B00653A1E = {
 			isa = PBXGroup;
 			children = (
-				CA2F033928F87C4100030BFE /* BowlingCompanion */,
-				CA8BBC5728D59B8B00653A1E /* BowlingCompanionIOS */,
+				CA2F033928F87C4100030BFE /* Approach */,
+				CA8BBC5728D59B8B00653A1E /* ApproachIOS */,
 				CA8BBC5628D59B8B00653A1E /* Products */,
 				CA2890DC28F87FF2003C1EE9 /* Frameworks */,
 			);
@@ -109,12 +109,12 @@
 		CA8BBC5628D59B8B00653A1E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				CA8BBC5528D59B8B00653A1E /* BowlingCompanion.app */,
+				CA8BBC5528D59B8B00653A1E /* Approach.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		CA8BBC5728D59B8B00653A1E /* BowlingCompanionIOS */ = {
+		CA8BBC5728D59B8B00653A1E /* ApproachIOS */ = {
 			isa = PBXGroup;
 			children = (
 				CA8BBC5C28D59B8C00653A1E /* Assets.xcassets */,
@@ -122,7 +122,7 @@
 				CA318B3C2999DED000BD4BEC /* Resources */,
 				CA2F033828F8797100030BFE /* Source */,
 			);
-			path = BowlingCompanionIOS;
+			path = ApproachIOS;
 			sourceTree = "<group>";
 		};
 		CA8BBC5E28D59B8C00653A1E /* Preview Content */ = {
@@ -136,9 +136,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		CA8BBC5428D59B8B00653A1E /* BowlingCompanion */ = {
+		CA8BBC5428D59B8B00653A1E /* Approach */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CA8BBC7928D59B8C00653A1E /* Build configuration list for PBXNativeTarget "BowlingCompanion" */;
+			buildConfigurationList = CA8BBC7928D59B8C00653A1E /* Build configuration list for PBXNativeTarget "Approach" */;
 			buildPhases = (
 				CA2890DF28F882FC003C1EE9 /* SwiftLint */,
 				CA8BBC5128D59B8B00653A1E /* Sources */,
@@ -149,7 +149,7 @@
 			);
 			dependencies = (
 			);
-			name = BowlingCompanion;
+			name = Approach;
 			packageProductDependencies = (
 				CA2890DD28F87FF2003C1EE9 /* AppFeature */,
 				CA2890E228F8DA53003C1EE9 /* PersistenceService */,
@@ -170,8 +170,8 @@
 				CA2513FD296BEE4200EF3F1A /* OpponentsDataProvider */,
 				CA318B3F2999E1F500BD4BEC /* AnalyticsService */,
 			);
-			productName = BowlingCompanion;
-			productReference = CA8BBC5528D59B8B00653A1E /* BowlingCompanion.app */;
+			productName = Approach;
+			productReference = CA8BBC5528D59B8B00653A1E /* Approach.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -189,7 +189,7 @@
 					};
 				};
 			};
-			buildConfigurationList = CA8BBC5028D59B8B00653A1E /* Build configuration list for PBXProject "BowlingCompanion" */;
+			buildConfigurationList = CA8BBC5028D59B8B00653A1E /* Build configuration list for PBXProject "Approach" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -202,7 +202,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				CA8BBC5428D59B8B00653A1E /* BowlingCompanion */,
+				CA8BBC5428D59B8B00653A1E /* Approach */,
 			);
 		};
 /* End PBXProject section */
@@ -247,7 +247,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				CA8BBC5B28D59B8B00653A1E /* ContentView.swift in Sources */,
-				CA8BBC5928D59B8B00653A1E /* BowlingCompanionApp.swift in Sources */,
+				CA8BBC5928D59B8B00653A1E /* ApproachApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -376,11 +376,12 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"BowlingCompanionIOS/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"ApproachIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 3UBRXR267C;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = BowlingCompanion/Info.plist;
+				INFOPLIST_FILE = Approach/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Approach;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -390,8 +391,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = ca.josephroque.BowlingCompanion;
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ca.josephroque.approach;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -407,11 +408,12 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"BowlingCompanionIOS/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"ApproachIOS/Preview Content\"";
 				DEVELOPMENT_TEAM = 3UBRXR267C;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = BowlingCompanion/Info.plist;
+				INFOPLIST_FILE = Approach/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Approach;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -421,8 +423,8 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = ca.josephroque.BowlingCompanion;
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = ca.josephroque.approach;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -433,7 +435,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		CA8BBC5028D59B8B00653A1E /* Build configuration list for PBXProject "BowlingCompanion" */ = {
+		CA8BBC5028D59B8B00653A1E /* Build configuration list for PBXProject "Approach" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CA8BBC7728D59B8C00653A1E /* Debug */,
@@ -442,7 +444,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		CA8BBC7928D59B8C00653A1E /* Build configuration list for PBXNativeTarget "BowlingCompanion" */ = {
+		CA8BBC7928D59B8C00653A1E /* Build configuration list for PBXNativeTarget "Approach" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CA8BBC7A28D59B8C00653A1E /* Debug */,
