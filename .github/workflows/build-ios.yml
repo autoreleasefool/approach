@@ -1,4 +1,4 @@
-name: Build
+name: Build iOS
 
 on:
   push:
@@ -6,14 +6,17 @@ on:
       - main
   pull_request:
     paths:
-      - ".github/workflows/test.yml"
-      - "Approach/"
-      - "ApproachIOS/"
-      - "Approach.xcodeproj/"
+      - ".github/workflows/build-ios.yml"
+      - "ios/Approach/"
+      - "ios/ApproachIOS/"
+      - "ios/Approach.xcodeproj/"
 
 jobs:
   test:
     runs-on: macOS-12
+    defaults:
+      run:
+        working-directory: ./ios
     steps:
       - uses: actions/checkout@v3
       - name: Select Xcode 14.1
