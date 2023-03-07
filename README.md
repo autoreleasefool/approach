@@ -1,6 +1,6 @@
 # Approach — the 5 Pin Bowling Companion
 
-![Build workflow status](https://github.com/autoreleasefool/approach/actions/workflows/build.yml/badge.svg) ![Lint workflow status](https://github.com/autoreleasefool/approach/actions/workflows/lint.yml/badge.svg)
+![iOS Build workflow status](https://github.com/autoreleasefool/approach/actions/workflows/build-ios.yml/badge.svg) ![SwiftLint workflow status](https://github.com/autoreleasefool/approach/actions/workflows/swiftlint.yml/badge.svg)
 
 ## Android
 
