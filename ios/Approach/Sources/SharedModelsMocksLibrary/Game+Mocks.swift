@@ -14,7 +14,8 @@ extension Game {
 			id: id,
 			ordinal: ordinal,
 			locked: locked,
-			manualScore: manualScore
+			manualScore: manualScore,
+			excludeFromStatistics: .include
 		)
 	}
 }

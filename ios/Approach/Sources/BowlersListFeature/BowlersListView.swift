@@ -1,4 +1,5 @@
 import AssetsLibrary
+import AvatarServiceInterface
 import BowlerEditorFeature
 import ComposableArchitecture
 import LeaguesListFeature
@@ -51,7 +52,7 @@ public struct BowlersListView: View {
 						send: BowlersListView.ViewAction.setNavigation(selection:)
 					)
 				) {
-					BowlerRow(bowler: bowler)
+					AvatarLabelView(bowler.avatar, size: .medium, title: bowler.name)
 				}
 			} header: {
 				Section {

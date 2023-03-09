@@ -5,7 +5,7 @@ extension Bowler {
 	public static func mock(
 		id: UUID,
 		name: String = "Joseph",
-		avatar: Avatar = .text("JR", .random())
+		avatar: Avatar = .text("JR", .red())
 	) -> Bowler {
 		.init(
 			id: id,

@@ -1,4 +1,5 @@
 import AvatarEditorFeature
+import AvatarServiceInterface
 import BaseFormLibrary
 import ComposableArchitecture
 import FeatureActionLibrary
@@ -40,7 +41,7 @@ public struct BowlerEditorView: View {
 					HStack(alignment: .center) {
 						Spacer()
 						Button { viewStore.send(.didTapAvatar) } label: {
-							AvatarView(viewStore.avatar, size: .large, editable: true)
+							AvatarView(viewStore.avatar, size: .large)
 						}
 						.buttonStyle(TappableElement())
 						Spacer()
@@ -96,7 +97,7 @@ struct BowlerEditorViewPreviews: PreviewProvider {
 		NavigationView {
 			BowlerEditorView(store:
 				.init(
-					initialState: .init(mode: .edit(.init(id: UUID(), name: "Joseph", avatar: .text("JR", .random())))),
+					initialState: .init(mode: .edit(.init(id: UUID(), name: "Joseph", avatar: .text("JR", .red())))),
 					reducer: BowlerEditor()
 				)
 			)

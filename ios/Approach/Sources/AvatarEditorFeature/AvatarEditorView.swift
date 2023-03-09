@@ -1,3 +1,4 @@
+import AvatarServiceInterface
 import ComposableArchitecture
 import SharedModelsLibrary
 import SharedModelsViewsLibrary
@@ -41,7 +42,7 @@ extension AvatarEditor.Action {
 #if DEBUG
 struct AvatarEditorViewPreviews: PreviewProvider {
 	static var previews: some View {
-		AvatarView(.text("J", .random()), size: .large)
+		AvatarView(.text("J", .red()), size: .large)
 	}
 }
 #endif

@@ -16,7 +16,7 @@ public struct BowlerEditor: ReducerProtocol {
 
 	public struct Fields: BaseFormState, Equatable {
 		@BindableState public var name = ""
-		public var avatar: Avatar = .text("", .random())
+		public var avatar: Avatar = .text("", .red())
 
 		public let isDeleteable = true
 		public var isSaveable: Bool {
@@ -125,8 +125,9 @@ public struct BowlerEditor: ReducerProtocol {
 				}
 
 			case .binding(\.base.form.$name):
+				print("here")
 				switch state.base.form.avatar {
-				case .data:
+				case .data, .url:
 					break
 				case let .text(_, color):
 					state.base.form.avatar = .text(state.base.form.name, color)

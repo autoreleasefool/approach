@@ -1,3 +1,4 @@
+import AvatarServiceInterface
 import BaseFormLibrary
 import ComposableArchitecture
 import FeatureActionLibrary
@@ -74,7 +75,7 @@ public struct GearEditorView: View {
 								action: /GearEditor.Action.InternalAction.bowlerPicker
 							)
 						) { bowler in
-							BowlerRow(bowler: bowler)
+							AvatarLabelView(bowler.avatar, size: .medium, title: bowler.name)
 						},
 						isActive: viewStore.binding(
 							get: \.isBowlerPickerPresented,

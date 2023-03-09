@@ -234,7 +234,7 @@ struct LeagueEditorViewPreviews: PreviewProvider {
 			LeagueEditorView(
 				store: .init(
 					initialState: .init(
-						bowler: .init(id: UUID(), name: "Joseph", avatar: .text("JR", .random())),
+						bowler: .init(id: UUID(), name: "Joseph", avatar: .text("JR", .red())),
 						mode: .create,
 						hasAlleysEnabled: true
 					),
