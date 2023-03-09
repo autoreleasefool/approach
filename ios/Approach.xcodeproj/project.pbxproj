@@ -13,6 +13,7 @@
 		CA2890E328F8DA53003C1EE9 /* PersistenceService in Frameworks */ = {isa = PBXBuildFile; productRef = CA2890E228F8DA53003C1EE9 /* PersistenceService */; };
 		CA318B402999E1F500BD4BEC /* AnalyticsService in Frameworks */ = {isa = PBXBuildFile; productRef = CA318B3F2999E1F500BD4BEC /* AnalyticsService */; };
 		CA50C6852963A4FB002F6F20 /* AveragesDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CA50C6842963A4FB002F6F20 /* AveragesDataProvider */; };
+		CA681DEE29B94BE900535750 /* AvatarService in Frameworks */ = {isa = PBXBuildFile; productRef = CA681DED29B94BE900535750 /* AvatarService */; };
 		CA81F9E0293DAD0B0061D1D9 /* LanesDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CA81F9DF293DAD0B0061D1D9 /* LanesDataProvider */; };
 		CA8BBC5928D59B8B00653A1E /* ApproachApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA8BBC5828D59B8B00653A1E /* ApproachApp.swift */; };
 		CA8BBC5B28D59B8B00653A1E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA8BBC5A28D59B8B00653A1E /* ContentView.swift */; };
@@ -56,6 +57,7 @@
 				CAC56851291F54A100192D12 /* PreferenceService in Frameworks */,
 				CAC13AB129205E5100DD36A5 /* LeaguesDataProvider in Frameworks */,
 				CA2890E328F8DA53003C1EE9 /* PersistenceService in Frameworks */,
+				CA681DEE29B94BE900535750 /* AvatarService in Frameworks */,
 				CAC13AB329205E5600DD36A5 /* SeriesDataProvider in Frameworks */,
 				CAF80290295D67FC00B19459 /* FeatureFlagsService in Frameworks */,
 				CA318B402999E1F500BD4BEC /* AnalyticsService in Frameworks */,
@@ -169,6 +171,7 @@
 				CAFCA04329641D0A000702EF /* TeamsDataProvider */,
 				CA2513FD296BEE4200EF3F1A /* OpponentsDataProvider */,
 				CA318B3F2999E1F500BD4BEC /* AnalyticsService */,
+				CA681DED29B94BE900535750 /* AvatarService */,
 			);
 			productName = Approach;
 			productReference = CA8BBC5528D59B8B00653A1E /* Approach.app */;
@@ -479,6 +482,10 @@
 		CA50C6842963A4FB002F6F20 /* AveragesDataProvider */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AveragesDataProvider;
+		};
+		CA681DED29B94BE900535750 /* AvatarService */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AvatarService;
 		};
 		CA81F9DF293DAD0B0061D1D9 /* LanesDataProvider */ = {
 			isa = XCSwiftPackageProductDependency;

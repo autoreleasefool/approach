@@ -57,6 +57,7 @@ package:
         - SettingsFeature
     - name: AvatarEditorFeature
       dependencies:
+        - AvatarService
         - SharedModelsViewsLibrary
         - StringsLibrary
     - name: BowlerEditorFeature
@@ -85,6 +86,7 @@ package:
         - ViewsLibrary
     - name: GearEditorFeature
       dependencies:
+        - AvatarService
         - BaseFormLibrary
         - BowlersDataProvider
         - PersistenceService
@@ -242,6 +244,11 @@ package:
         implementation:
           - ConstantsLibrary
           - TelemetryClient
+    - name: AvatarService
+      dependencies:
+        interface:
+          - AssetsLibrary
+          - SharedModelsLibrary
     - name: FeatureFlagsService
       dependencies:
         interface:

@@ -62,6 +62,8 @@ let package = Package(
 		// MARK: - Services
 		.library(name: "AnalyticsService", targets: ["AnalyticsService"]),
 		.library(name: "AnalyticsServiceInterface", targets: ["AnalyticsServiceInterface"]),
+		.library(name: "AvatarService", targets: ["AvatarService"]),
+		.library(name: "AvatarServiceInterface", targets: ["AvatarServiceInterface"]),
 		.library(name: "FeatureFlagsService", targets: ["FeatureFlagsService"]),
 		.library(name: "FeatureFlagsServiceInterface", targets: ["FeatureFlagsServiceInterface"]),
 		.library(name: "FileManagerService", targets: ["FileManagerService"]),
@@ -160,6 +162,7 @@ let package = Package(
 		.target(
 			name: "AvatarEditorFeature",
 			dependencies: [
+				"AvatarServiceInterface",
 				"FeatureActionLibrary",
 				"SharedModelsViewsLibrary",
 			]
@@ -243,6 +246,7 @@ let package = Package(
 		.target(
 			name: "GearEditorFeature",
 			dependencies: [
+				"AvatarServiceInterface",
 				"BaseFormLibrary",
 				"BowlersDataProviderInterface",
 				"PersistenceServiceInterface",
@@ -781,6 +785,28 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"AnalyticsService",
+				"SharedModelsMocksLibrary",
+			]
+		),
+		.target(
+			name: "AvatarService",
+			dependencies: [
+				"AvatarServiceInterface",
+			]
+		),
+		.target(
+			name: "AvatarServiceInterface",
+			dependencies: [
+				.product(name: "Dependencies", package: "swift-dependencies"),
+				"AssetsLibrary",
+				"SharedModelsLibrary",
+			]
+		),
+		.testTarget(
+			name: "AvatarServiceTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"AvatarService",
 				"SharedModelsMocksLibrary",
 			]
 		),
