@@ -13,7 +13,7 @@ extension Avatar {
 		case rgb(Double, Double, Double)
 
 		public static func red() -> Self {
-			.rgb(255, 0, 0)
+			.rgb(1, 0, 0)
 		}
 
 		public var uiColor: UIColor {

@@ -18,10 +18,12 @@ public struct BowlersListView: View {
 	struct ViewState: Equatable {
 		let selection: Bowler.ID?
 		let isEditorPresented: Bool
+		let hasAvatarsEnabled: Bool
 
 		init(state: BowlersList.State) {
 			self.selection = state.selection?.id
 			self.isEditorPresented = state.editor != nil
+			self.hasAvatarsEnabled = state.hasAvatarsEnabled
 		}
 	}
 
@@ -52,7 +54,11 @@ public struct BowlersListView: View {
 						send: BowlersListView.ViewAction.setNavigation(selection:)
 					)
 				) {
-					AvatarLabelView(bowler.avatar, size: .medium, title: bowler.name)
+					if viewStore.hasAvatarsEnabled {
+						AvatarLabelView(bowler.avatar, size: .standardIcon, title: bowler.name)
+					} else {
+						Text(bowler.name)
+					}
 				}
 			} header: {
 				Section {

@@ -1,5 +1,6 @@
 import ComposableArchitecture
 import FeatureActionLibrary
+import FeatureFlagsLibrary
 import FeatureFlagsListFeature
 import FeatureFlagsServiceInterface
 import OpponentsListFeature
@@ -12,9 +13,10 @@ public struct Settings: ReducerProtocol {
 		public var opponentsList = OpponentsList.State()
 		public let hasOpponentsEnabled: Bool
 
-		public init(hasDeveloperFeature: Bool, hasOpponentsEnabled: Bool) {
-			self.showsFeatures = hasDeveloperFeature
-			self.hasOpponentsEnabled = hasOpponentsEnabled
+		public init() {
+			@Dependency(\.featureFlags) var featureFlags: FeatureFlagsService
+			self.showsFeatures = featureFlags.isEnabled(.developerOptions)
+			self.hasOpponentsEnabled = featureFlags.isEnabled(.opponents)
 		}
 	}
 

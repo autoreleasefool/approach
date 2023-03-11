@@ -2,6 +2,8 @@ import AvatarEditorFeature
 import BaseFormLibrary
 import ComposableArchitecture
 import FeatureActionLibrary
+import FeatureFlagsLibrary
+import FeatureFlagsServiceInterface
 import Foundation
 import PersistenceServiceInterface
 import SharedModelsLibrary
@@ -36,6 +38,7 @@ public struct BowlerEditor: ReducerProtocol {
 	public struct State: Equatable {
 		public var base: Form.State
 		public var isAvatarEditorPresented = false
+		public let hasAvatarsEnabled: Bool
 
 		public init(mode: Form.Mode) {
 			var fields = Fields()
@@ -45,6 +48,9 @@ public struct BowlerEditor: ReducerProtocol {
 			}
 
 			self.base = .init(mode: mode, form: fields)
+
+			@Dependency(\.featureFlags) var featureFlags: FeatureFlagsService
+			self.hasAvatarsEnabled = featureFlags.isEnabled(.avatars)
 		}
 	}
 
@@ -84,6 +90,10 @@ public struct BowlerEditor: ReducerProtocol {
 				))
 		}
 
+		Scope(state: \.base.form.avatarEditor, action: /Action.internal..Action.InternalAction.avatar) {
+			AvatarEditor()
+		}
+
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .internal(internalAction):
@@ -102,7 +112,8 @@ public struct BowlerEditor: ReducerProtocol {
 
 				case let .avatar(.delegate(delegateAction)):
 					switch delegateAction {
-					case .never:
+					case .didFinishEditing:
+						state.isAvatarEditorPresented = false
 						return .none
 					}
 
@@ -123,16 +134,6 @@ public struct BowlerEditor: ReducerProtocol {
 					state.isAvatarEditorPresented = isPresented
 					return .none
 				}
-
-			case .binding(\.base.form.$name):
-				print("here")
-				switch state.base.form.avatar {
-				case .data, .url:
-					break
-				case let .text(_, color):
-					state.base.form.avatar = .text(state.base.form.name, color)
-				}
-				return .none
 
 			case .binding, .delegate:
 				return .none

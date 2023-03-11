@@ -35,6 +35,8 @@ public enum Strings {
     public static let discard = Strings.tr("Localizable", "action.discard", fallback: "Discard")
     /// Dismiss
     public static let dismiss = Strings.tr("Localizable", "action.dismiss", fallback: "Dismiss")
+    /// Done
+    public static let done = Strings.tr("Localizable", "action.done", fallback: "Done")
     /// Edit
     public static let edit = Strings.tr("Localizable", "action.edit", fallback: "Edit")
     /// Filter

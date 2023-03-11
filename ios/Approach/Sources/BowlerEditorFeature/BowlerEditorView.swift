@@ -16,11 +16,13 @@ public struct BowlerEditorView: View {
 		@BindableState var name: String
 		let avatar: Avatar
 		let isAvatarEditorPresented: Bool
+		let hasAvatarsEnabled: Bool
 
 		init(state: BowlerEditor.State) {
 			self.name = state.base.form.name
 			self.avatar = state.base.form.avatar
 			self.isAvatarEditorPresented = state.isAvatarEditorPresented
+			self.hasAvatarsEnabled = state.hasAvatarsEnabled
 		}
 	}
 
@@ -37,17 +39,22 @@ public struct BowlerEditorView: View {
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: BowlerEditor.Action.init) { viewStore in
 			BaseFormView(store: store.scope(state: \.base, action: /BowlerEditor.Action.InternalAction.form)) {
-				Section {
-					HStack(alignment: .center) {
-						Spacer()
-						Button { viewStore.send(.didTapAvatar) } label: {
-							AvatarView(viewStore.avatar, size: .large)
+				if viewStore.hasAvatarsEnabled {
+					Section {
+						HStack(alignment: .center) {
+							Spacer()
+							VStack(alignment: .center, spacing: .smallSpacing) {
+								Button { viewStore.send(.didTapAvatar) } label: {
+									AvatarView(viewStore.avatar, size: .extraLargeIcon)
+								}
+								.buttonStyle(TappableElement())
+								Button(Strings.Action.edit) { viewStore.send(.didTapAvatar) }
+									.font(.caption)
+							}
+							Spacer()
 						}
-						.buttonStyle(TappableElement())
-						Spacer()
 					}
 				}
-				.listRowBackground(Color(uiColor: .systemBackground))
 
 				Section(Strings.Editor.Fields.Details.title) {
 					TextField(
@@ -63,7 +70,9 @@ public struct BowlerEditorView: View {
 				get: \.isAvatarEditorPresented,
 				send: ViewAction.setAvatarEditorSheet(isPresented:)
 			)) {
-				AvatarEditorView(store: store.scope(state: \.base.form.avatarEditor, action: /BowlerEditor.Action.InternalAction.avatar))
+				NavigationView {
+					AvatarEditorView(store: store.scope(state: \.base.form.avatarEditor, action: /BowlerEditor.Action.InternalAction.avatar))
+				}
 			}
 		}
 	}

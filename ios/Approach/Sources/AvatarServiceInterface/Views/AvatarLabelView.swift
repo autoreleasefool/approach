@@ -4,13 +4,13 @@ import SwiftUI
 
 public struct AvatarLabelView: View {
 	let avatar: Avatar
-	let size: AvatarView.Size
+	let size: CGFloat
 	let title: String?
 	let subtitle: String?
 
 	public init(
 		_ avatar: Avatar,
-		size: AvatarView.Size,
+		size: CGFloat,
 		title: String? = nil,
 		subtitle: String? = nil
 	) {
@@ -45,21 +45,21 @@ struct AvatarLabelViewPreviews: PreviewProvider {
 	static var previews: some View {
 		VStack {
 			HStack {
-				AvatarLabelView(.text("J", .red()), size: .small)
-				AvatarLabelView(.text("J", .red()),size: .medium)
-				AvatarLabelView(.text("J", .red()),size: .large)
+				AvatarLabelView(.text("J", .red()), size: .smallIcon)
+				AvatarLabelView(.text("J", .red()), size: .standardIcon)
+				AvatarLabelView(.text("J", .red()), size: .largeIcon)
 			}
 
 			HStack {
-				AvatarLabelView(.text("J", .red()), size: .small, title: "Ball Rolled")
-				AvatarLabelView(.text("J", .red()), size: .medium, title: "Ball Rolled")
-				AvatarLabelView(.text("J", .red()), size: .large, title: "Ball Rolled")
+				AvatarLabelView(.text("J", .red()), size: .smallIcon, title: "Ball Rolled")
+				AvatarLabelView(.text("J", .red()), size: .standardIcon, title: "Ball Rolled")
+				AvatarLabelView(.text("J", .red()), size: .largeIcon, title: "Ball Rolled")
 			}
 
 			HStack {
-				AvatarLabelView(.text("J", .red()), size: .small, title: "Ball Rolled", subtitle: "Something")
-				AvatarLabelView(.text("J", .red()), size: .medium, title: "Ball Rolled", subtitle: "Something")
-				AvatarLabelView(.text("J", .red()), size: .large, title: "Ball Rolled", subtitle: "Something")
+				AvatarLabelView(.text("J", .red()), size: .smallIcon, title: "Ball Rolled", subtitle: "Something")
+				AvatarLabelView(.text("J", .red()), size: .standardIcon, title: "Ball Rolled", subtitle: "Something")
+				AvatarLabelView(.text("J", .red()), size: .largeIcon, title: "Ball Rolled", subtitle: "Something")
 			}
 		}
 	}

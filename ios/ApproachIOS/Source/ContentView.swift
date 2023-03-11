@@ -5,12 +5,8 @@ import SwiftUI
 
 struct ContentView: View {
 	let store: Store = {
-		@Dependency(\.featureFlags) var featureFlags: FeatureFlagsService
 		return .init(
-			initialState: App.State(
-				hasDeveloperFeature: featureFlags.isEnabled(.developerOptions),
-				hasOpponentsFeature: featureFlags.isEnabled(.opponents)
-			),
+			initialState: App.State(),
 			reducer: App()._printChanges()
 		)
 	}()

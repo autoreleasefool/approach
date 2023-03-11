@@ -15,11 +15,9 @@ public struct App: ReducerProtocol {
 		public var bowlersList = BowlersList.State()
 		public var alleysList = AlleysList.State()
 		public var gearList = GearList.State()
-		public var settings: Settings.State
+		public var settings = Settings.State()
 
-		public init(hasDeveloperFeature: Bool, hasOpponentsFeature: Bool) {
-			self.settings = .init(hasDeveloperFeature: hasDeveloperFeature, hasOpponentsEnabled: hasOpponentsFeature)
-		}
+		public init() {}
 	}
 
 	public enum Action: FeatureAction, Equatable {

@@ -2,6 +2,8 @@ import BaseFormLibrary
 import BowlersDataProviderInterface
 import ComposableArchitecture
 import FeatureActionLibrary
+import FeatureFlagsLibrary
+import FeatureFlagsServiceInterface
 import Foundation
 import ResourcePickerLibrary
 import PersistenceServiceInterface
@@ -45,6 +47,7 @@ public struct GearEditor: ReducerProtocol {
 		public var base: Form.State
 		public var initialBowler: Bowler?
 		public var isBowlerPickerPresented = false
+		public let hasAvatarsEnabled: Bool
 
 		public init(mode: Form.Mode) {
 			var fields: Fields
@@ -58,6 +61,9 @@ public struct GearEditor: ReducerProtocol {
 			}
 
 			self.base = .init(mode: mode, form: fields)
+
+			@Dependency(\.featureFlags) var featureFlags: FeatureFlagsService
+			self.hasAvatarsEnabled = featureFlags.isEnabled(.avatars)
 		}
 	}
 

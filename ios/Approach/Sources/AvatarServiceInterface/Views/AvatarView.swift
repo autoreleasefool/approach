@@ -5,13 +5,13 @@ import SwiftUI
 
 public struct AvatarView: View {
 	let avatar: Avatar
-	let size: Size
+	let size: CGFloat
 
 	@State private var image: UIImage?
 
 	public init(
 		_ avatar: Avatar,
-		size: Size
+		size: CGFloat
 	) {
 		self.avatar = avatar
 		self.size = size
@@ -23,34 +23,16 @@ public struct AvatarView: View {
 				Image(uiImage: image)
 					.resizable()
 					.scaledToFit()
-					.frame(width: size.value, height: size.value)
-					.cornerRadius(size.value)
+					.frame(width: size, height: size)
+					.cornerRadius(size)
 			} else {
 				Color.clear
-					.frame(width: size.value, height: size.value)
-					.cornerRadius(size.value)
+					.frame(width: size, height: size)
+					.cornerRadius(size)
 			}
 		}.task {
 			@Dependency(\.avatarService) var avatarService: AvatarService
 			image = await avatarService.render(avatar)
-		}
-	}
-}
-
-extension AvatarView {
-	public enum Size {
-		case small
-		case medium
-		case large
-		case custom(CGFloat)
-
-		var value: CGFloat {
-			switch self {
-			case .small: return .smallIcon
-			case .medium: return .standardIcon
-			case .large: return .largeIcon
-			case let .custom(value): return value
-			}
 		}
 	}
 }
@@ -60,15 +42,15 @@ struct AvatarViewPreviews: PreviewProvider {
 	static var previews: some View {
 		VStack {
 			HStack {
-				AvatarView(.text("JR", .red()), size: .small)
-				AvatarView(.text("JR", .red()), size: .medium)
-				AvatarView(.text("JR", .red()), size: .large)
+				AvatarView(.text("JR", .red()), size: .smallIcon)
+				AvatarView(.text("JR", .red()), size: .standardIcon)
+				AvatarView(.text("JR", .red()), size: .largeIcon)
 			}
 
 			HStack {
-				AvatarView(.text("JR", .red()), size: .small)
-				AvatarView(.text("JR", .red()), size: .medium)
-				AvatarView(.text("JR", .red()), size: .large)
+				AvatarView(.text("JR", .red()), size: .smallIcon)
+				AvatarView(.text("JR", .red()), size: .standardIcon)
+				AvatarView(.text("JR", .red()), size: .largeIcon)
 			}
 		}
 	}

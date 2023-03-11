@@ -2,6 +2,8 @@ import BowlersDataProviderInterface
 import BowlerEditorFeature
 import ComposableArchitecture
 import FeatureActionLibrary
+import FeatureFlagsLibrary
+import FeatureFlagsServiceInterface
 import LeaguesListFeature
 import PersistenceServiceInterface
 import RecentlyUsedServiceInterface
@@ -21,6 +23,8 @@ public struct BowlersList: ReducerProtocol {
 		public var sortOrder: SortOrder<Bowler.FetchRequest.Ordering>.State = .init(initialValue: .byRecentlyUsed)
 
 		public var selection: Identified<Bowler.ID, LeaguesList.State>?
+
+		public let hasAvatarsEnabled: Bool
 
 		public init() {
 			self.list = .init(
@@ -43,6 +47,9 @@ public struct BowlersList: ReducerProtocol {
 					action: Strings.Bowler.List.add
 				)
 			)
+
+			@Dependency(\.featureFlags) var featureFlags: FeatureFlagsService
+			self.hasAvatarsEnabled = featureFlags.isEnabled(.avatars)
 		}
 	}
 
@@ -123,7 +130,7 @@ public struct BowlersList: ReducerProtocol {
 
 				case let .sortOrder(.delegate(delegateAction)):
 					switch delegateAction {
-					case let .didTapOption(ordering):
+					case let .didTapOption:
 						state.updateQuery()
 						return .task { .internal(.list(.callback(.shouldRefreshData))) }
 					}

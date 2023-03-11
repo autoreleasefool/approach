@@ -7,18 +7,23 @@ public struct AvatarEditor: ReducerProtocol {
 	public struct State: Equatable {
 		public var name: String
 		public var avatar: Avatar
+		public let initialAvatar: Avatar
 
 		public init(name: String, avatar: Avatar) {
 			self.name = name
 			self.avatar = avatar
+			self.initialAvatar = avatar
 		}
 	}
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
-			case didTap
+			case didTapCancel
+			case didTapDone
 		}
-		public enum DelegateAction: Equatable {}
+		public enum DelegateAction: Equatable {
+			case didFinishEditing
+		}
 		public enum InternalAction: Equatable {}
 
 		case view(ViewAction)
@@ -29,12 +34,16 @@ public struct AvatarEditor: ReducerProtocol {
 	public init() {}
 
 	public var body: some ReducerProtocol<State, Action> {
-		Reduce<State, Action> { _, action in
+		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
-				case .didTap:
-					return .none
+				case .didTapCancel:
+					state.avatar = state.initialAvatar
+					return .task { .delegate(.didFinishEditing) }
+
+				case .didTapDone:
+					return .task { .delegate(.didFinishEditing) }
 				}
 
 			case let .internal(internalAction):

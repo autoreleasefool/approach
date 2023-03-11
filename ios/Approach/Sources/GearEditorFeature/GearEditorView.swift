@@ -17,11 +17,13 @@ public struct GearEditorView: View {
 		@BindableState var kind: Gear.Kind
 		let selectedBowler: Bowler?
 		let isBowlerPickerPresented: Bool
+		let hasAvatarsEnabled: Bool
 
 		init(state: GearEditor.State) {
 			self.name = state.base.form.name
 			self.kind = state.base.form.kind
 			self.isBowlerPickerPresented = state.isBowlerPickerPresented
+			self.hasAvatarsEnabled = state.hasAvatarsEnabled
 			if let id = state.base.form.bowlerPicker.selected.first {
 				if let bowler = state.base.form.bowlerPicker.resources?[id: id] {
 					self.selectedBowler = bowler
@@ -75,7 +77,11 @@ public struct GearEditorView: View {
 								action: /GearEditor.Action.InternalAction.bowlerPicker
 							)
 						) { bowler in
-							AvatarLabelView(bowler.avatar, size: .medium, title: bowler.name)
+							if viewStore.hasAvatarsEnabled {
+								AvatarLabelView(bowler.avatar, size: .standardIcon, title: bowler.name)
+							} else {
+								Text(bowler.name)
+							}
 						},
 						isActive: viewStore.binding(
 							get: \.isBowlerPickerPresented,
