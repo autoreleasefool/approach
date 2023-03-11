@@ -1,7 +1,7 @@
 import ComposableArchitecture
 import DateTimeLibrary
 import FeatureActionLibrary
-import GameEditorFeature
+import GamesEditorFeature
 import ResourceListLibrary
 import SharedModelsLibrary
 import StringsLibrary
@@ -40,7 +40,7 @@ public struct SeriesSidebarView: View {
 							action: /SeriesSidebar.Action.InternalAction.editor
 						)
 					) {
-						GameEditorView(store: $0)
+						GamesEditorView(store: $0)
 					},
 					tag: game.id,
 					selection: viewStore.binding(

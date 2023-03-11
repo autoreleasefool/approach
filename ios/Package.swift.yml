@@ -78,7 +78,7 @@ package:
     - name: FeatureFlagsListFeature
       dependencies:
         - FeatureFlagsService
-    - name: GameEditorFeature
+    - name: GamesEditorFeature
       dependencies:
         - AssetsLibrary
         - SwiftUIExtensionsLibrary
@@ -150,7 +150,7 @@ package:
     - name: SeriesSidebarFeature
       dependencies:
         - GamesDataProvider
-        - GameEditorFeature
+        - GamesEditorFeature
         - ResourceListLibrary
     - name: SettingsFeature
       dependencies:

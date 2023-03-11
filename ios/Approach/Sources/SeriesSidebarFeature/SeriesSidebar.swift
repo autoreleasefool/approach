@@ -1,7 +1,7 @@
 import ComposableArchitecture
 import FeatureActionLibrary
 import GamesDataProviderInterface
-import GameEditorFeature
+import GamesEditorFeature
 import ResourceListLibrary
 import SharedModelsLibrary
 import StringsLibrary
@@ -15,7 +15,7 @@ public struct SeriesSidebar: ReducerProtocol {
 		public let series: Series
 		public var list: ResourceList<Game, Game.FetchRequest>.State
 
-		public var selection: Identified<Game.ID, GameEditor.State>?
+		public var selection: Identified<Game.ID, GamesEditor.State>?
 
 		public init(series: Series) {
 			self.series = series
@@ -39,7 +39,7 @@ public struct SeriesSidebar: ReducerProtocol {
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
 			case list(ResourceList<Game, Game.FetchRequest>.Action)
-			case editor(GameEditor.Action)
+			case editor(GamesEditor.Action)
 		}
 		case view(ViewAction)
 		case `internal`(InternalAction)
@@ -92,15 +92,15 @@ public struct SeriesSidebar: ReducerProtocol {
 			}
 		}
 		.ifLet(\.selection, action: /Action.internal..Action.InternalAction.editor) {
-			Scope(state: \Identified<Game.ID, GameEditor.State>.value, action: /.self) {
-				GameEditor()
+			Scope(state: \Identified<Game.ID, GamesEditor.State>.value, action: /.self) {
+				GamesEditor()
 			}
 		}
 	}
 
 	private func navigate(to id: Game.ID?, state: inout State) -> EffectTask<Action> {
 		if let id, let selection = state.list.resources?[id: id] {
-			state.selection = Identified(.init(game: selection), id: selection.id)
+			state.selection = Identified(.init(games: state.list.resources ?? [], selected: id), id: selection.id)
 		} else {
 			state.selection = nil
 		}
