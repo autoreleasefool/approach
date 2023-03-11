@@ -175,6 +175,9 @@
 "settings.appInfo.appVersion" = "%@ (%@)";
 "settings.appInfo.copyright" = "©2023, Joseph Roque";
 "settings.featureFlags.title" = "Features";
+"settings.featureFlags.matchRelease" = "Match flags to Release";
+"settings.featureFlags.matchTest" = "Match flags to Test";
+"settings.featureFlags.matchDevelopment" = "Match flags to Development";
 "settings.title" = "Settings";
 
 /* Ordering */

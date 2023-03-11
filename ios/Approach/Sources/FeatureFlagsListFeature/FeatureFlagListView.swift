@@ -18,6 +18,9 @@ public struct FeatureFlagsListView: View {
 		case didStartObservingFlags
 		case didToggle(flag: FeatureFlag)
 		case didTapResetOverridesButton
+		case didTapMatchReleaseButton
+		case didTapMatchTestButton
+		case didTapMatchDevelopmentButton
 	}
 
 	public init(store: StoreOf<FeatureFlagsList>) {
@@ -29,6 +32,9 @@ public struct FeatureFlagsListView: View {
 			List {
 				Section {
 					Button(Strings.Action.reset) { viewStore.send(.didTapResetOverridesButton) }
+					Button(Strings.Settings.FeatureFlags.matchRelease) { viewStore.send(.didTapMatchReleaseButton) }
+					Button(Strings.Settings.FeatureFlags.matchTest) { viewStore.send(.didTapMatchTestButton) }
+					Button(Strings.Settings.FeatureFlags.matchDevelopment) { viewStore.send(.didTapMatchDevelopmentButton) }
 				}
 
 				Section(Strings.Settings.FeatureFlags.title) {
@@ -57,6 +63,12 @@ extension FeatureFlagsList.Action {
 			self = .view(.didToggle(featureFlag))
 		case .didTapResetOverridesButton:
 			self = .view(.didTapResetOverridesButton)
+		case .didTapMatchReleaseButton:
+			self = .view(.didTapMatchReleaseButton)
+		case .didTapMatchTestButton:
+			self = .view(.didTapMatchTestButton)
+		case .didTapMatchDevelopmentButton:
+			self = .view(.didTapMatchDevelopmentButton)
 		}
 	}
 }

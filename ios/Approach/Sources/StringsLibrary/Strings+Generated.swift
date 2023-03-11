@@ -554,6 +554,12 @@ public enum Strings {
       public static let websiteTitle = Strings.tr("Localizable", "settings.developer.websiteTitle", fallback: "Website")
     }
     public enum FeatureFlags {
+      /// Match flags to Development
+      public static let matchDevelopment = Strings.tr("Localizable", "settings.featureFlags.matchDevelopment", fallback: "Match flags to Development")
+      /// Match flags to Release
+      public static let matchRelease = Strings.tr("Localizable", "settings.featureFlags.matchRelease", fallback: "Match flags to Release")
+      /// Match flags to Test
+      public static let matchTest = Strings.tr("Localizable", "settings.featureFlags.matchTest", fallback: "Match flags to Test")
       /// Features
       public static let title = Strings.tr("Localizable", "settings.featureFlags.title", fallback: "Features")
     }

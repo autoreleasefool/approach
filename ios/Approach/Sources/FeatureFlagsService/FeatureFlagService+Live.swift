@@ -109,6 +109,7 @@ class FeatureFlagOverrides {
 
 	func setOverride(forFlag flag: FeatureFlag, enabled: Bool?) {
 		queue.async {
+			guard flag.isOverridable else { return }
 			self.queue_overrides[flag] = enabled
 			if let enabled {
 				self.preferenceService.setBool(flag.overrideKey, enabled)
@@ -119,11 +120,12 @@ class FeatureFlagOverrides {
 	}
 
 	func getOverride(flag: FeatureFlag) -> Bool? {
-		queue.sync(flags: .barrier) { queue_overrides[flag] }
+		guard flag.isOverridable else { return nil }
+		return queue.sync(flags: .barrier) { queue_overrides[flag] }
 	}
 
 	func getOverrides(flags: [FeatureFlag]) -> [Bool?] {
-		queue.sync(flags: .barrier) { flags.map { queue_overrides[$0] } }
+		queue.sync(flags: .barrier) { flags.map { $0.isOverridable ? queue_overrides[$0] : nil } }
 	}
 }
 

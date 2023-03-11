@@ -15,6 +15,9 @@ public struct FeatureFlagsList: ReducerProtocol {
 			case didStartObservingFlags
 			case didToggle(FeatureFlag)
 			case didTapResetOverridesButton
+			case didTapMatchReleaseButton
+			case didTapMatchDevelopmentButton
+			case didTapMatchTestButton
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
@@ -56,6 +59,24 @@ public struct FeatureFlagsList: ReducerProtocol {
 				case .didTapResetOverridesButton:
 					for flag in FeatureFlag.allFlags {
 						featureFlagService.setEnabled(flag, nil)
+					}
+					return .none
+
+				case .didTapMatchReleaseButton:
+					for flag in FeatureFlag.allFlags where flag.isOverridable {
+						featureFlagService.setEnabled(flag, flag.stage >= .release)
+					}
+					return .none
+
+				case .didTapMatchDevelopmentButton:
+					for flag in FeatureFlag.allFlags where flag.isOverridable {
+						featureFlagService.setEnabled(flag, flag.stage >= .development)
+					}
+					return .none
+
+				case .didTapMatchTestButton:
+					for flag in FeatureFlag.allFlags where flag.isOverridable {
+						featureFlagService.setEnabled(flag, flag.stage >= .test)
 					}
 					return .none
 				}
