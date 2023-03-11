@@ -29,9 +29,11 @@ public struct Game: Sendable, Identifiable, Hashable, Codable {
 }
 
 extension Game {
-	public enum LockedState: Sendable, Codable {
-		case locked
-		case unlocked
+	public enum LockedState: Int, Sendable, Identifiable, CaseIterable, Codable {
+		case locked = 0
+		case unlocked = 1
+
+		public var id: Int { rawValue }
 	}
 }
 

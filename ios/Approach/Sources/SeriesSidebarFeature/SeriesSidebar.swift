@@ -51,6 +51,10 @@ public struct SeriesSidebar: ReducerProtocol {
 	@Dependency(\.gamesDataProvider) var gamesDataProvider
 
 	public var body: some ReducerProtocol<State, Action> {
+		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {
+			ResourceList(fetchResources: gamesDataProvider.observeGames)
+		}
+
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
