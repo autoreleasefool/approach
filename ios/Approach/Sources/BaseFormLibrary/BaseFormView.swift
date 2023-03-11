@@ -56,10 +56,6 @@ public struct BaseFormView<
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: map(viewAction:)) { viewStore in
 			Form {
-				if viewStore.isLoading {
-					ProgressView()
-				}
-
 				content()
 					.disabled(viewStore.isLoading)
 
@@ -67,6 +63,7 @@ public struct BaseFormView<
 					Section {
 						DeleteButton { viewStore.send(.didTapDeleteButton) }
 					}
+					.disabled(viewStore.isLoading)
 					.listRowBackground(Color(uiColor: .secondarySystemBackground))
 				}
 			}

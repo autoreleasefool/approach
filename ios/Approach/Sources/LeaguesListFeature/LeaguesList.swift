@@ -41,7 +41,7 @@ public struct LeaguesList: ReducerProtocol {
 					filter: filters.filter(withBowler: bowler),
 					ordering: sortOrder.ordering
 				),
-				listTitle: bowler.name,
+				listTitle: Strings.League.List.title,
 				emptyContent: .init(
 					image: .emptyLeagues,
 					title: Strings.League.Error.Empty.title,

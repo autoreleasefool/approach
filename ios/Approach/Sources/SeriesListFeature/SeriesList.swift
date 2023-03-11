@@ -34,7 +34,7 @@ public struct SeriesList: ReducerProtocol {
 					}),
 				],
 				query: .init(filter: .league(league), ordering: .byDate),
-				listTitle: league.name,
+				listTitle: Strings.Series.List.title,
 				emptyContent: .init(
 					image: .emptySeries,
 					title: Strings.Series.Error.Empty.title,

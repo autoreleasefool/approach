@@ -65,7 +65,6 @@ public struct BowlerEditorView: View {
 				}
 				.listRowBackground(Color(uiColor: .secondarySystemBackground))
 			}
-			.navigationBarTitleDisplayMode(.inline)
 			.sheet(isPresented: viewStore.binding(
 				get: \.isAvatarEditorPresented,
 				send: ViewAction.setAvatarEditorSheet(isPresented:)
