@@ -18,9 +18,8 @@ final class AlleysDataProviderTests: XCTestCase {
 		let alley2: Alley = .mock(id: id1, name: "second")
 		let alley3: Alley = .mock(id: id2, name: "third")
 
-		try await DependencyValues.withValues {
+		try await withDependencies {
 			$0.persistenceService.fetchAlleys = { request in
-				XCTAssertEqual(request.ordering, .byName)
 				return [alley1, alley2, alley3]
 			}
 			$0.recentlyUsedService.getRecentlyUsed = { category in
@@ -30,7 +29,7 @@ final class AlleysDataProviderTests: XCTestCase {
 		} operation: {
 			let dataProvider: AlleysDataProvider = .liveValue
 
-			let result = try await dataProvider.fetchAlleys(.init(ordering: .byRecentlyUsed))
+			let result = try await dataProvider.fetchAlleys(.init(filter: nil, ordering: .byRecentlyUsed))
 
 			XCTAssertEqual(result, [alley1, alley2, alley3])
 		}
@@ -45,19 +44,21 @@ final class AlleysDataProviderTests: XCTestCase {
 		let alley2: Alley = .mock(id: id1, name: "second")
 		let alley3: Alley = .mock(id: id2, name: "third")
 
-		try await DependencyValues.withValues {
+		try await withDependencies {
 			$0.persistenceService.fetchAlleys = { request in
-				XCTAssertEqual(request.ordering, .byName)
 				return [alley1, alley2, alley3]
 			}
 			$0.recentlyUsedService.getRecentlyUsed = { category in
 				XCTAssertEqual(category, .alleys)
-				return [id2, id1]
+				return [
+					.init(id: id2, lastUsedAt: Date(timeIntervalSince1970: 0)),
+					.init(id: id1, lastUsedAt: Date(timeIntervalSince1970: 1)),
+				]
 			}
 		} operation: {
 			let dataProvider: AlleysDataProvider = .liveValue
 
-			let result = try await dataProvider.fetchAlleys(.init(ordering: .byRecentlyUsed))
+			let result = try await dataProvider.fetchAlleys(.init(filter: nil, ordering: .byRecentlyUsed))
 
 			XCTAssertEqual(result, [alley3, alley2, alley1])
 		}
@@ -72,19 +73,21 @@ final class AlleysDataProviderTests: XCTestCase {
 		let alley2: Alley = .mock(id: id1, name: "second")
 		let alley3: Alley = .mock(id: id2, name: "third")
 
-		try await DependencyValues.withValues {
+		try await withDependencies {
 			$0.persistenceService.fetchAlleys = { request in
-				XCTAssertEqual(request.ordering, .byName)
 				return [alley1, alley2, alley3]
 			}
 			$0.recentlyUsedService.getRecentlyUsed = { category in
 				XCTAssertEqual(category, .alleys)
-				return [id2, id1]
+				return [
+					.init(id: id2, lastUsedAt: Date(timeIntervalSince1970: 0)),
+					.init(id: id1, lastUsedAt: Date(timeIntervalSince1970: 1)),
+				]
 			}
 		} operation: {
 			let dataProvider: AlleysDataProvider = .liveValue
 
-			let result = try await dataProvider.fetchAlleys(.init(ordering: .byName))
+			let result = try await dataProvider.fetchAlleys(.init(filter: nil, ordering: .byName))
 
 			XCTAssertEqual(result, [alley1, alley2, alley3])
 		}

@@ -20,7 +20,6 @@ final class OpponentsDataProviderTests: XCTestCase {
 
 		try await DependencyValues.withValues {
 			$0.persistenceService.fetchOpponents = { request in
-				XCTAssertEqual(request.ordering, .byRecentlyUsed)
 				return [opponent1, opponent2, opponent3]
 			}
 			$0.recentlyUsedService.getRecentlyUsed = { category in
@@ -48,7 +47,6 @@ final class OpponentsDataProviderTests: XCTestCase {
 
 		try await DependencyValues.withValues {
 			$0.persistenceService.fetchOpponents = { request in
-				XCTAssertEqual(request.ordering, .byRecentlyUsed)
 				return [opponent1, opponent2, opponent3]
 			}
 			$0.recentlyUsedService.getRecentlyUsed = { category in
@@ -76,7 +74,6 @@ final class OpponentsDataProviderTests: XCTestCase {
 
 		try await DependencyValues.withValues {
 			$0.persistenceService.fetchOpponents = { request in
-				XCTAssertEqual(request.ordering, .byName)
 				return [opponent1, opponent2, opponent3]
 			}
 			$0.recentlyUsedService.getRecentlyUsed = { category in

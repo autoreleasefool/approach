@@ -929,6 +929,14 @@ let package = Package(
 				"ViewsLibrary",
 			]
 		),
+		.testTarget(
+			name: "BaseFormLibraryTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"BaseFormLibrary",
+				"SharedModelsMocksLibrary",
+			]
+		),
 		.target(
 			name: "ConstantsLibrary",
 			dependencies: [
@@ -1016,6 +1024,14 @@ let package = Package(
 				"ViewsLibrary",
 			]
 		),
+		.testTarget(
+			name: "ResourcePickerLibraryTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"ResourcePickerLibrary",
+				"SharedModelsMocksLibrary",
+			]
+		),
 		.target(
 			name: "SharedModelsFetchableLibrary",
 			dependencies: [
@@ -1026,6 +1042,14 @@ let package = Package(
 			name: "SharedModelsLibrary",
 			dependencies: [
 				"StringsLibrary",
+			]
+		),
+		.testTarget(
+			name: "SharedModelsLibraryTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"SharedModelsLibrary",
+				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -1041,6 +1065,14 @@ let package = Package(
 				.product(name: "GRDB", package: "GRDB.swift"),
 				"ExtensionsLibrary",
 				"SharedModelsLibrary",
+			]
+		),
+		.testTarget(
+			name: "SharedModelsPersistableLibraryTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"SharedModelsMocksLibrary",
+				"SharedModelsPersistableLibrary",
 			]
 		),
 		.target(

@@ -6,11 +6,11 @@ import XCTest
 @MainActor
 final class SettingsTests: XCTestCase {
 	func testShowsFeatures() {
-		DependencyValues.withValues {
+		withDependencies {
 			$0.featureFlags.isEnabled = { _ in true }
 		} operation: {
 			let store = TestStore(
-				initialState: Settings.State(hasDeveloperFeature: true),
+				initialState: Settings.State(hasDeveloperFeature: true, hasOpponentsEnabled: true),
 				reducer: Settings()
 			)
 

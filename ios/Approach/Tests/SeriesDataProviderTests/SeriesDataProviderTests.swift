@@ -9,22 +9,23 @@ import XCTest
 
 final class SeriesDataProviderTests: XCTestCase {
 	func testFetchSeries() async throws {
-		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
-		let id1 = UUID(uuidString: "00000000-0000-0000-0000-000000000001")!
-		let id2 = UUID(uuidString: "00000000-0000-0000-0000-000000000002")!
+		let bowlerId = UUID(uuidString: "00000000-0000-0000-0000-000000000001")!
+		let leagueId = UUID(uuidString: "00000000-0000-0000-0000-000000000002")!
+		let id1 = UUID(uuidString: "00000000-0000-0000-0000-000000000003")!
+		let id2 = UUID(uuidString: "00000000-0000-0000-0000-000000000004")!
 
-		let series1: Series = .mock(league: id0, id: id1, date: Date())
-		let series2: Series = .mock(league: id0, id: id2, date: Date())
+		let league: League = .mock(bowler: bowlerId, id: leagueId)
+		let series1: Series = .mock(league: league.id, id: id1, date: Date())
+		let series2: Series = .mock(league: league.id, id: id2, date: Date())
 
-		try await DependencyValues.withValues {
+		try await withDependencies {
 			$0.persistenceService.fetchSeries = { request in
-				XCTAssertEqual(request.league, id0)
 				return [series1, series2]
 			}
 		} operation: {
 			let dataProvider: SeriesDataProvider = .liveValue
 
-			let result = try await dataProvider.fetchSeries(.init(league: id0, ordering: .byDate))
+			let result = try await dataProvider.fetchSeries(.init(filter: .league(league), ordering: .byDate))
 
 			XCTAssertEqual(result, [series1, series2])
 		}

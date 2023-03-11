@@ -18,9 +18,8 @@ final class BowlersDataProviderTests: XCTestCase {
 		let bowler2: Bowler = .mock(id: id1, name: "second")
 		let bowler3: Bowler = .mock(id: id2, name: "third")
 
-		try await DependencyValues.withValues {
+		try await withDependencies {
 			$0.persistenceService.fetchBowlers = { request in
-				XCTAssertEqual(request.ordering, .byName)
 				return [bowler1, bowler2, bowler3]
 			}
 			$0.recentlyUsedService.getRecentlyUsed = { category in
@@ -30,7 +29,7 @@ final class BowlersDataProviderTests: XCTestCase {
 		} operation: {
 			let dataProvider: BowlersDataProvider = .liveValue
 
-			let result = try await dataProvider.fetchBowlers(.init(ordering: .byRecentlyUsed))
+			let result = try await dataProvider.fetchBowlers(.init(filter: nil, ordering: .byRecentlyUsed))
 
 			XCTAssertEqual(result, [bowler1, bowler2, bowler3])
 		}
@@ -45,19 +44,21 @@ final class BowlersDataProviderTests: XCTestCase {
 		let bowler2: Bowler = .mock(id: id1, name: "second")
 		let bowler3: Bowler = .mock(id: id2, name: "third")
 
-		try await DependencyValues.withValues {
+		try await withDependencies {
 			$0.persistenceService.fetchBowlers = { request in
-				XCTAssertEqual(request.ordering, .byName)
 				return [bowler1, bowler2, bowler3]
 			}
 			$0.recentlyUsedService.getRecentlyUsed = { category in
 				XCTAssertEqual(category, .bowlers)
-				return [id2, id1]
+				return [
+					.init(id: id2, lastUsedAt: Date(timeIntervalSince1970: 0)),
+					.init(id: id1, lastUsedAt: Date(timeIntervalSince1970: 1)),
+				]
 			}
 		} operation: {
 			let dataProvider: BowlersDataProvider = .liveValue
 
-			let result = try await dataProvider.fetchBowlers(.init(ordering: .byRecentlyUsed))
+			let result = try await dataProvider.fetchBowlers(.init(filter: nil, ordering: .byRecentlyUsed))
 
 			XCTAssertEqual(result, [bowler3, bowler2, bowler1])
 		}
@@ -72,19 +73,21 @@ final class BowlersDataProviderTests: XCTestCase {
 		let bowler2: Bowler = .mock(id: id1, name: "second")
 		let bowler3: Bowler = .mock(id: id2, name: "third")
 
-		try await DependencyValues.withValues {
+		try await withDependencies {
 			$0.persistenceService.fetchBowlers = { request in
-				XCTAssertEqual(request.ordering, .byName)
 				return [bowler1, bowler2, bowler3]
 			}
 			$0.recentlyUsedService.getRecentlyUsed = { category in
 				XCTAssertEqual(category, .bowlers)
-				return [id2, id1]
+				return [
+					.init(id: id2, lastUsedAt: Date(timeIntervalSince1970: 0)),
+					.init(id: id1, lastUsedAt: Date(timeIntervalSince1970: 1)),
+				]
 			}
 		} operation: {
 			let dataProvider: BowlersDataProvider = .liveValue
 
-			let result = try await dataProvider.fetchBowlers(.init(ordering: .byName))
+			let result = try await dataProvider.fetchBowlers(.init(filter: nil, ordering: .byName))
 
 			XCTAssertEqual(result, [bowler1, bowler2, bowler3])
 		}

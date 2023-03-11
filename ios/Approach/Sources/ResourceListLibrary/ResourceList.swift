@@ -46,29 +46,6 @@ public struct ResourceList<
 				return onDelete.wrapped
 			}.first
 		}
-
-//		var errorState: ResourceListEmpty.State {
-//			switch error {
-//			case .none:
-//				return emptyState
-//			case .failedToDelete:
-//				return .init(
-//					content: .init(image: .errorNotFound, title: Strings.Error.Generic.title, action: Strings.Action.reload),
-//					style: .error
-//				)
-//			case .failedToLoad:
-//				return .init(
-//					content: .init(
-//						image: .errorNotFound,
-//						title: Strings.Error.Generic.title,
-//						message: Strings.Error.loadingFailed,
-//						action: Strings.Action.reload
-//					),
-//					style: .error
-//				)
-//			}
-//		}
-
 	}
 
 	public enum Action: FeatureAction, Equatable {
@@ -95,6 +72,7 @@ public struct ResourceList<
 			case resourcesResponse(TaskResult<[R]>)
 			case deleteResponse(TaskResult<R>)
 			case empty(ResourceListEmpty.Action)
+			case error(ResourceListEmpty.Action)
 		}
 
 		public enum CallbackAction: Equatable {
@@ -206,18 +184,22 @@ public struct ResourceList<
 					return .none
 
 				case .empty(.delegate(.didTapActionButton)):
+					return .task { .delegate(.didTapEmptyStateButton) }
+
+				case .error(.delegate(.didTapActionButton)):
 					if state.errorState == .failedToLoad {
 						state.errorState = nil
 						return beginObservation(query: state.query)
 					} else if state.errorState == .failedToDelete {
 						state.errorState = nil
 						return beginObservation(query: state.query)
-					} else {
-						// No error indicates the empty state was shown
-						return .task { .delegate(.didTapEmptyStateButton) }
 					}
+					return .none
 
 				case .empty(.internal), .empty(.view):
+					return .none
+
+				case .error(.internal), .error(.view):
 					return .none
 				}
 
@@ -230,7 +212,7 @@ public struct ResourceList<
 			case .delegate:
 				return .none
 			}
-		}.ifLet(\.errorState, action: /Action.internal..Action.InternalAction.empty) {
+		}.ifLet(\.errorState, action: /Action.internal..Action.InternalAction.error) {
 			ResourceListEmpty()
 		}
 	}

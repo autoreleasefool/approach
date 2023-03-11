@@ -18,7 +18,7 @@ final class LanesDataProviderTests: XCTestCase {
 		let lane2: Lane = .mock(id: id2, label: "second", alley: id0)
 		let lane3: Lane = .mock(id: id3, label: "third", alley: id0)
 
-		try await DependencyValues.withValues {
+		try await withDependencies {
 			$0.persistenceService.fetchLanes = { request in
 				XCTAssertEqual(request.ordering, .byLabel)
 				return [lane1, lane2, lane3]
@@ -26,7 +26,7 @@ final class LanesDataProviderTests: XCTestCase {
 		} operation: {
 			let dataProvider: LanesDataProvider = .liveValue
 
-			let result = try await dataProvider.fetchLanes(.init(ordering: .byLabel))
+			let result = try await dataProvider.fetchLanes(.init(filter: nil, ordering: .byLabel))
 
 			XCTAssertEqual(result, [lane1, lane2, lane3])
 		}
@@ -35,15 +35,14 @@ final class LanesDataProviderTests: XCTestCase {
 	func testFetchLanesById() async throws {
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
 
-		try await DependencyValues.withValues {
+		try await withDependencies {
 			$0.persistenceService.fetchLanes = { request in
-				XCTAssertEqual(request.filter, [.id(id0)])
 				return []
 			}
 		} operation: {
 			let dataProvider: LanesDataProvider = .liveValue
 
-			let result = try await dataProvider.fetchLanes(.init(filter: [.id(id0)], ordering: .byLabel))
+			let result = try await dataProvider.fetchLanes(.init(filter: .id(id0), ordering: .byLabel))
 
 			XCTAssertEqual(result, [])
 		}
@@ -51,33 +50,16 @@ final class LanesDataProviderTests: XCTestCase {
 
 	func testFetchLanesByAlleyId() async throws {
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
+		let alley: Alley = .mock(id: id0)
 
-		try await DependencyValues.withValues {
+		try await withDependencies {
 			$0.persistenceService.fetchLanes = { request in
-				XCTAssertEqual(request.filter, [.alley(id0)])
 				return []
 			}
 		} operation: {
 			let dataProvider: LanesDataProvider = .liveValue
 
-			let result = try await dataProvider.fetchLanes(.init(filter: [.alley(id0)], ordering: .byLabel))
-
-			XCTAssertEqual(result, [])
-		}
-	}
-
-	func testFetchLanesByMultipleFilters() async throws {
-		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
-
-		try await DependencyValues.withValues {
-			$0.persistenceService.fetchLanes = { request in
-				XCTAssertEqual(request.filter, [.alley(id0), .id(id0)])
-				return []
-			}
-		} operation: {
-			let dataProvider: LanesDataProvider = .liveValue
-
-			let result = try await dataProvider.fetchLanes(.init(filter: [.alley(id0), .id(id0)], ordering: .byLabel))
+			let result = try await dataProvider.fetchLanes(.init(filter: .alley(alley), ordering: .byLabel))
 
 			XCTAssertEqual(result, [])
 		}

@@ -51,11 +51,11 @@ final class ResourceListTests: XCTestCase {
 		)
 
 		await store.send(.internal(.resourcesResponse(.failure(MockError())))) {
-			$0.error = .failedToLoad
+			$0.errorState = .failedToLoad
 		}
 
-		await store.send(.view(.empty(.delegate(.didTapButton)))) {
-			$0.error = nil
+		await store.send(.internal(.error(.delegate(.didTapActionButton)))) {
+			$0.errorState = nil
 		}
 
 		await store.send(.internal(.cancelObservation))
@@ -96,7 +96,7 @@ final class ResourceListTests: XCTestCase {
 			reducer: ResourceList<Model, Query> { _ in .never }
 		)
 
-		await store.send(.view(.alert(.deleteButtonTapped(.mock))))
+		await store.send(.view(.alert(.didTapDeleteButton(.mock))))
 
 		await store.receive(.internal(.deleteResponse(.success(.mock))))
 
@@ -116,10 +116,10 @@ final class ResourceListTests: XCTestCase {
 			reducer: ResourceList<Model, Query> { _ in .never }
 		)
 
-		await store.send(.view(.alert(.deleteButtonTapped(.mock))))
+		await store.send(.view(.alert(.didTapDeleteButton(.mock))))
 
 		await store.receive(.internal(.deleteResponse(.failure(MockError())))) {
-			$0.error = .failedToDelete
+			$0.errorState = .failedToDelete
 		}
 	}
 
@@ -134,7 +134,7 @@ final class ResourceListTests: XCTestCase {
 			$0.alert = ResourceList<Model, Query>.alert(toDelete: .mock)
 		}
 
-		await store.send(.view(.alert(.dismissed))) {
+		await store.send(.view(.alert(.didTapDismissButton))) {
 			$0.alert = nil
 		}
 	}
@@ -168,9 +168,9 @@ final class ResourceListTests: XCTestCase {
 			reducer: ResourceList<Model, Query> { _ in .never }
 		)
 
-		XCTAssertNil(store.state.error)
+		XCTAssertNil(store.state.errorState)
 
-		await store.send(.view(.empty(.delegate(.didTapButton))))
+		await store.send(.internal(.empty(.delegate(.didTapActionButton))))
 
 		await store.receive(.delegate(.didTapEmptyStateButton))
 	}
@@ -181,20 +181,20 @@ final class ResourceListTests: XCTestCase {
 			reducer: ResourceList<Model, Query> { _ in .finished(throwing: MockError()) }
 		)
 
-		XCTAssertNil(store.state.error)
+		XCTAssertNil(store.state.errorState)
 
 		await store.send(.internal(.observeData))
 
 		await store.receive(.internal(.resourcesResponse(.failure(MockError())))) {
-			$0.error = .failedToLoad
+			$0.errorState = .failedToLoad
 		}
 
-		await store.send(.view(.empty(.delegate(.didTapButton)))) {
-			$0.error = nil
+		await store.send(.internal(.error(.delegate(.didTapActionButton)))) {
+			$0.errorState = nil
 		}
 
 		await store.receive(.internal(.resourcesResponse(.failure(MockError())))) {
-			$0.error = .failedToLoad
+			$0.errorState = .failedToLoad
 		}
 	}
 

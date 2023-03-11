@@ -139,7 +139,7 @@ public struct ResourceListView<
 
 				case .error:
 					IfLetStore(
-						store.scope(state: \.errorState, action: { ResourceList<R, Q>.Action.internal(.empty($0)) })
+						store.scope(state: \.errorState, action: { ResourceList<R, Q>.Action.internal(.error($0)) })
 					) {
 						ResourceListEmptyView(store: $0)
 					}

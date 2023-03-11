@@ -273,6 +273,7 @@ package:
 
   library:
     - name: BaseFormLibrary
+      requires_tests: true
       dependencies:
         - AssetsLibrary
         - FeatureActionLibrary
@@ -301,12 +302,14 @@ package:
         - StringsLibrary
         - ViewsLibrary
     - name: ResourcePickerLibrary
+      requires_tests: true
       dependencies:
         - AssetsLibrary
         - FeatureActionLibrary
         - StringsLibrary
         - ViewsLibrary
     - name: SharedModelsLibrary
+      requires_tests: true
       dependencies:
         - StringsLibrary
     - name: SharedModelsFetchableLibrary
@@ -323,6 +326,7 @@ package:
         - SharedModelsLibrary
         - ViewsLibrary
     - name: SharedModelsPersistableLibrary
+      requires_tests: true
       dependencies:
         - Dependencies
         - ExtensionsLibrary

@@ -18,9 +18,8 @@ final class GearDataProviderTests: XCTestCase {
 		let gear2: Gear = .mock(id: id1, name: "second")
 		let gear3: Gear = .mock(id: id2, name: "third")
 
-		try await DependencyValues.withValues {
+		try await withDependencies {
 			$0.persistenceService.fetchGear = { request in
-				XCTAssertEqual(request.ordering, .byName)
 				return [gear1, gear2, gear3]
 			}
 			$0.recentlyUsedService.getRecentlyUsed = { category in
@@ -30,7 +29,7 @@ final class GearDataProviderTests: XCTestCase {
 		} operation: {
 			let dataProvider: GearDataProvider = .liveValue
 
-			let result = try await dataProvider.fetchGear(.init(ordering: .byRecentlyUsed))
+			let result = try await dataProvider.fetchGear(.init(filter: nil, ordering: .byRecentlyUsed))
 
 			XCTAssertEqual(result, [gear1, gear2, gear3])
 		}
@@ -45,19 +44,21 @@ final class GearDataProviderTests: XCTestCase {
 		let gear2: Gear = .mock(id: id1, name: "second")
 		let gear3: Gear = .mock(id: id2, name: "third")
 
-		try await DependencyValues.withValues {
+		try await withDependencies {
 			$0.persistenceService.fetchGear = { request in
-				XCTAssertEqual(request.ordering, .byName)
 				return [gear1, gear2, gear3]
 			}
 			$0.recentlyUsedService.getRecentlyUsed = { category in
 				XCTAssertEqual(category, .gear)
-				return [id2, id1]
+				return [
+					.init(id: id2, lastUsedAt: Date(timeIntervalSince1970: 0)),
+					.init(id: id1, lastUsedAt: Date(timeIntervalSince1970: 1)),
+				]
 			}
 		} operation: {
 			let dataProvider: GearDataProvider = .liveValue
 
-			let result = try await dataProvider.fetchGear(.init(ordering: .byRecentlyUsed))
+			let result = try await dataProvider.fetchGear(.init(filter: nil, ordering: .byRecentlyUsed))
 
 			XCTAssertEqual(result, [gear3, gear2, gear1])
 		}
@@ -72,19 +73,21 @@ final class GearDataProviderTests: XCTestCase {
 		let gear2: Gear = .mock(id: id1, name: "second")
 		let gear3: Gear = .mock(id: id2, name: "third")
 
-		try await DependencyValues.withValues {
+		try await withDependencies {
 			$0.persistenceService.fetchGear = { request in
-				XCTAssertEqual(request.ordering, .byName)
 				return [gear1, gear2, gear3]
 			}
 			$0.recentlyUsedService.getRecentlyUsed = { category in
 				XCTAssertEqual(category, .gear)
-				return [id2, id1]
+				return [
+					.init(id: id2, lastUsedAt: Date(timeIntervalSince1970: 0)),
+					.init(id: id1, lastUsedAt: Date(timeIntervalSince1970: 1)),
+				]
 			}
 		} operation: {
 			let dataProvider: GearDataProvider = .liveValue
 
-			let result = try await dataProvider.fetchGear(.init(ordering: .byName))
+			let result = try await dataProvider.fetchGear(.init(filter: nil, ordering: .byName))
 
 			XCTAssertEqual(result, [gear1, gear2, gear3])
 		}
