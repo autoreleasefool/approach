@@ -253,6 +253,7 @@ package:
       dependencies:
         interface:
           - FeatureFlagsLibrary
+          - PreferenceService
     - name: FileManagerService
     - name: PersistenceService
       dependencies:

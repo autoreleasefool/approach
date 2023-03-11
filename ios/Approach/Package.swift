@@ -819,8 +819,8 @@ let package = Package(
 		.target(
 			name: "FeatureFlagsServiceInterface",
 			dependencies: [
-				.product(name: "Dependencies", package: "swift-dependencies"),
 				"FeatureFlagsLibrary",
+				"PreferenceServiceInterface",
 			]
 		),
 		.testTarget(

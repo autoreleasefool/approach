@@ -3,6 +3,7 @@ import Dependencies
 import Foundation
 import FeatureFlagsLibrary
 import FeatureFlagsServiceInterface
+import PreferenceServiceInterface
 
 extension NSNotification.Name {
 	enum FeatureFlag {
@@ -82,19 +83,39 @@ extension FeatureFlagsService: DependencyKey {
 }
 
 class FeatureFlagOverrides {
+	@Dependency(\.preferenceService) var preferenceService: PreferenceService
+
 	private let queue = DispatchQueue(label: "FeatureFlagsService.FeatureFlagManager", attributes: .concurrent)
 	private var queue_overrides: [FeatureFlag: Bool] = [:]
+
+	init() {
+		queue.sync {
+			for flag in FeatureFlag.allFlags {
+				queue_overrides[flag] = preferenceService.getBool(flag.overrideKey)
+			}
+		}
+	}
 
 	func resetOverrides() -> [FeatureFlag] {
 		queue.sync {
 			let overridden = Array(self.queue_overrides.keys)
 			self.queue_overrides.removeAll()
+			for flag in FeatureFlag.allFlags {
+				preferenceService.removeKey(flag.overrideKey)
+			}
 			return overridden
 		}
 	}
 
 	func setOverride(forFlag flag: FeatureFlag, enabled: Bool?) {
-		queue.async { self.queue_overrides[flag] = enabled }
+		queue.async {
+			self.queue_overrides[flag] = enabled
+			if let enabled {
+				self.preferenceService.setBool(flag.overrideKey, enabled)
+			} else {
+				self.preferenceService.removeKey(flag.overrideKey)
+			}
+		}
 	}
 
 	func getOverride(flag: FeatureFlag) -> Bool? {
@@ -103,5 +124,11 @@ class FeatureFlagOverrides {
 
 	func getOverrides(flags: [FeatureFlag]) -> [Bool?] {
 		queue.sync(flags: .barrier) { flags.map { queue_overrides[$0] } }
+	}
+}
+
+extension FeatureFlag {
+	var overrideKey: String {
+		"FeatureFlag.Override.\(name)"
 	}
 }
