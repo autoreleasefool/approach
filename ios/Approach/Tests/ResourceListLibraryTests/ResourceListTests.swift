@@ -14,7 +14,7 @@ final class ResourceListTests: XCTestCase {
 	}
 
 	func testHasDeleteFeature() {
-		func onDelete(model: Model) async throws -> Void {}
+		func onDelete(model: Model) async throws {}
 		let state = buildState(withFeatures: [.swipeToDelete(onDelete: .init(onDelete(model:)))])
 
 		XCTAssertNotNil(state.onDelete)
@@ -62,7 +62,7 @@ final class ResourceListTests: XCTestCase {
 	}
 
 	func testSwipeToDeleteDisplaysAlert() async {
-		func onDelete(model: Model) async throws -> Void {}
+		func onDelete(model: Model) async throws {}
 		let store = TestStore(
 			initialState: buildState(withFeatures: [.swipeToDelete(onDelete: .init(onDelete(model:)))]),
 			reducer: ResourceList<Model, Query> { _ in .never }
@@ -86,7 +86,7 @@ final class ResourceListTests: XCTestCase {
 
 	func testDeleteButtonDeletesModel() async {
 		let expectation = self.expectation(description: "Model deleted")
-		func onDelete(model: Model) async throws -> Void {
+		func onDelete(model: Model) async throws {
 			XCTAssertEqual(model, .mock)
 			expectation.fulfill()
 		}
@@ -106,7 +106,7 @@ final class ResourceListTests: XCTestCase {
 	}
 
 	func testDeleteButtonWhenErrorThrownShowsError() async {
-		func onDelete(model: Model) async throws -> Void {
+		func onDelete(model: Model) async throws {
 			XCTAssertEqual(model, .mock)
 			throw MockError()
 		}
@@ -124,7 +124,7 @@ final class ResourceListTests: XCTestCase {
 	}
 
 	func testDismissDeleteAlert() async {
-		func onDelete(model: Model) async throws -> Void {}
+		func onDelete(model: Model) async throws {}
 		let store = TestStore(
 			initialState: buildState(withFeatures: [.swipeToDelete(onDelete: .init(onDelete(model:)))]),
 			reducer: ResourceList<Model, Query> { _ in .never }
@@ -149,7 +149,6 @@ final class ResourceListTests: XCTestCase {
 
 		await store.receive(.delegate(.didEdit(.mock)))
 	}
-
 
 	func testCancelObservation() async {
 		let store = TestStore(

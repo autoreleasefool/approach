@@ -19,7 +19,7 @@ final class AlleysDataProviderTests: XCTestCase {
 		let alley3: Alley = .mock(id: id2, name: "third")
 
 		try await withDependencies {
-			$0.persistenceService.fetchAlleys = { request in
+			$0.persistenceService.fetchAlleys = { _ in
 				return [alley1, alley2, alley3]
 			}
 			$0.recentlyUsedService.getRecentlyUsed = { category in
@@ -45,7 +45,7 @@ final class AlleysDataProviderTests: XCTestCase {
 		let alley3: Alley = .mock(id: id2, name: "third")
 
 		try await withDependencies {
-			$0.persistenceService.fetchAlleys = { request in
+			$0.persistenceService.fetchAlleys = { _ in
 				return [alley1, alley2, alley3]
 			}
 			$0.recentlyUsedService.getRecentlyUsed = { category in
@@ -74,7 +74,7 @@ final class AlleysDataProviderTests: XCTestCase {
 		let alley3: Alley = .mock(id: id2, name: "third")
 
 		try await withDependencies {
-			$0.persistenceService.fetchAlleys = { request in
+			$0.persistenceService.fetchAlleys = { _ in
 				return [alley1, alley2, alley3]
 			}
 			$0.recentlyUsedService.getRecentlyUsed = { category in

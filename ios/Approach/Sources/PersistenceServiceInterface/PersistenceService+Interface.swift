@@ -2,6 +2,8 @@ import Dependencies
 import SharedModelsLibrary
 import SharedModelsFetchableLibrary
 
+// swiftlint:disable function_body_length
+
 public struct PersistenceService: Sendable {
 	public var createBowler: @Sendable (Bowler) async throws -> Void
 	public var updateBowler: @Sendable (Bowler) async throws -> Void

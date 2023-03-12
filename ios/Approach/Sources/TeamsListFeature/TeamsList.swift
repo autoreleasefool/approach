@@ -27,7 +27,7 @@ public struct TeamsList: ReducerProtocol {
 					.swipeToDelete(onDelete: .init {
 						@Dependency(\.persistenceService) var persistenceService: PersistenceService
 						try await persistenceService.deleteTeam($0)
-					})
+					}),
 				],
 				query: .init(filter: nil, ordering: sortOrder.ordering),
 				listTitle: Strings.Team.List.title,

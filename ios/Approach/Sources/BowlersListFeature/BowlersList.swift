@@ -130,7 +130,7 @@ public struct BowlersList: ReducerProtocol {
 
 				case let .sortOrder(.delegate(delegateAction)):
 					switch delegateAction {
-					case let .didTapOption:
+					case .didTapOption:
 						state.updateQuery()
 						return .task { .internal(.list(.callback(.shouldRefreshData))) }
 					}

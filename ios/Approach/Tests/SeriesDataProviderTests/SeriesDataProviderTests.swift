@@ -19,7 +19,7 @@ final class SeriesDataProviderTests: XCTestCase {
 		let series2: Series = .mock(league: league.id, id: id2, date: Date())
 
 		try await withDependencies {
-			$0.persistenceService.fetchSeries = { request in
+			$0.persistenceService.fetchSeries = { _ in
 				return [series1, series2]
 			}
 		} operation: {
