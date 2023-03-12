@@ -7,7 +7,7 @@ import SwiftUI
 struct GameEditorPreviewApp: App {
 	let store: Store = {
 		return .init(
-			initialState: GamesEditor.State(games: .init(uniqueElements: Game.mocks), selected: Game.mocks.first!.id),
+			initialState: GamesEditor.State(games: .init(uniqueElements: Game.mocks), current: Game.mocks.first!.id),
 			reducer: GamesEditor()._printChanges()
 		)
 	}()

@@ -244,6 +244,10 @@ public enum Strings {
           public static let title = Strings.tr("Localizable", "game.editor.fields.excludeFromStatistics.title", fallback: "Statistics")
         }
       }
+      public enum Picker {
+        /// Switch game
+        public static let `switch` = Strings.tr("Localizable", "game.editor.picker.switch", fallback: "Switch game")
+      }
     }
     public enum Properties {
       public enum ExcludeFromStatistics {

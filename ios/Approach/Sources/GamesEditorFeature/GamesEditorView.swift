@@ -1,5 +1,6 @@
 import ComposableArchitecture
 import FeatureActionLibrary
+import SharedModelsLibrary
 import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsLibrary
@@ -13,19 +14,20 @@ public struct GamesEditorView: View {
 	@State private var sheetHeight: CGFloat = .zero
 
 	struct ViewState: Equatable {
-		let ordinal: Int
-		let currentFrame: Int
-		let currentBall: Int
+		let isGamePickerPresented: Bool
+		let isGameDetailsPresented: Bool
 
 		init(state: GamesEditor.State) {
-			self.ordinal = state.game.ordinal
-			self.currentFrame = 1
-			self.currentBall = 1
+			self.isGameDetailsPresented = state.sheet == .presenting(.gameDetails)
+			self.isGamePickerPresented = state.sheet == .presenting(.gamePicker)
 		}
 	}
 
 	enum ViewAction {
-		case didAppear
+		case setGamePicker(isPresented: Bool)
+		case setGameDetails(isPresented: Bool)
+		case didDismissGameDetails
+		case didDismissGamePicker
 	}
 
 	public init(store: StoreOf<GamesEditor>) {
@@ -35,10 +37,26 @@ public struct GamesEditorView: View {
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: GamesEditor.Action.init) { viewStore in
 			VStack {
-				GamePickerView(store: store.scope(state: \.gamePicker, action: /GamesEditor.Action.InternalAction.gamePicker))
+				GameIndicatorView(store: store.scope(state: \.gameIndicator, action: /GamesEditor.Action.InternalAction.gameIndicator))
 				Spacer()
 			}
-			.sheet(isPresented: .constant(true)) {
+			.sheet(isPresented: viewStore.binding(
+				get: \.isGamePickerPresented,
+				send: ViewAction.setGamePicker(isPresented:)
+			), onDismiss: {
+				viewStore.send(.didDismissGamePicker)
+			}) {
+				NavigationView {
+					GamePickerView(store: store.scope(state: \.gamePicker, action: /GamesEditor.Action.InternalAction.gamePicker))
+				}
+				.presentationDetents([.medium])
+			}
+			.sheet(isPresented: viewStore.binding(
+				get: \.isGameDetailsPresented,
+				send: ViewAction.setGameDetails(isPresented:)
+			), onDismiss: {
+				viewStore.send(.didDismissGameDetails)
+			}) {
 				ScrollView {
 					BallDetailsView(store: store.scope(state: \.ballDetails, action: /GamesEditor.Action.InternalAction.ballDetails))
 						.overlay {
@@ -61,7 +79,6 @@ public struct GamesEditorView: View {
 				.interactiveDismissDisabled(true)
 				.edgesIgnoringSafeArea(.bottom)
 			}
-			.navigationBarBackButtonHidden(true)
 		}
 	}
 }
@@ -69,8 +86,14 @@ public struct GamesEditorView: View {
 extension GamesEditor.Action {
 	init(action: GamesEditorView.ViewAction) {
 		switch action {
-		case .didAppear:
-			self = .view(.didAppear)
+		case let .setGameDetails(isPresented):
+			self = .view(.setGameDetails(isPresented: isPresented))
+		case let .setGamePicker(isPresented):
+			self = .view(.setGamePicker(isPresented: isPresented))
+		case .didDismissGamePicker:
+			self = .view(.didDismissOpenSheet)
+		case .didDismissGameDetails:
+			self = .view(.didDismissOpenSheet)
 		}
 	}
 }

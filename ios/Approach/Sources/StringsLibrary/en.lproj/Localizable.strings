@@ -136,6 +136,7 @@
 "game.editor.fields.excludeFromStatistics.title" = "Statistics";
 "game.editor.fields.excludeFromStatistics.label" = "Exclude from statistics?";
 "game.editor.fields.excludeFromStatistics.help" = "You can choose to exclude this game from all statistics. It will still appear in the app, but won't affect your overall average or other statistics.";
+"game.editor.picker.switch" = "Switch game";
 
 "frame.title" = "Frame %d";
 "ball.title" = "Ball %d";

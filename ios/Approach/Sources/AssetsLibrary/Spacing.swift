@@ -11,6 +11,7 @@ extension CGFloat {
 	public static let standardRadius: CGFloat = unitSpacing * 2
 	public static let largeRadius: CGFloat = unitSpacing * 4
 
+	public static let extraTinyIcon: CGFloat = unitSpacing * 3
 	public static let tinyIcon: CGFloat = unitSpacing * 4
 	public static let smallIcon: CGFloat = unitSpacing * 5
 	public static let standardIcon: CGFloat = unitSpacing * 12

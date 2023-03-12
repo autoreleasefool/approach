@@ -100,7 +100,7 @@ public struct SeriesSidebar: ReducerProtocol {
 
 	private func navigate(to id: Game.ID?, state: inout State) -> EffectTask<Action> {
 		if let id, let selection = state.list.resources?[id: id] {
-			state.selection = Identified(.init(games: state.list.resources ?? [], selected: id), id: selection.id)
+			state.selection = Identified(.init(games: state.list.resources ?? [], current: id), id: selection.id)
 		} else {
 			state.selection = nil
 		}
