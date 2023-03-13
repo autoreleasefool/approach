@@ -40,23 +40,24 @@ public struct GamesEditorView: View {
 				GameIndicatorView(store: store.scope(state: \.gameIndicator, action: /GamesEditor.Action.InternalAction.gameIndicator))
 				Spacer()
 			}
+			.toolbar(.hidden, for: .tabBar, .navigationBar)
 			.sheet(isPresented: viewStore.binding(
 				get: \.isGamePickerPresented,
 				send: ViewAction.setGamePicker(isPresented:)
 			), onDismiss: {
 				viewStore.send(.didDismissGamePicker)
-			}) {
+			}, content: {
 				NavigationView {
 					GamePickerView(store: store.scope(state: \.gamePicker, action: /GamesEditor.Action.InternalAction.gamePicker))
 				}
 				.presentationDetents([.medium])
-			}
+			})
 			.sheet(isPresented: viewStore.binding(
 				get: \.isGameDetailsPresented,
 				send: ViewAction.setGameDetails(isPresented:)
 			), onDismiss: {
 				viewStore.send(.didDismissGameDetails)
-			}) {
+			}, content: {
 				ScrollView {
 					BallDetailsView(store: store.scope(state: \.ballDetails, action: /GamesEditor.Action.InternalAction.ballDetails))
 						.overlay {
@@ -78,7 +79,7 @@ public struct GamesEditorView: View {
 				.presentationDragIndicator(.hidden)
 				.interactiveDismissDisabled(true)
 				.edgesIgnoringSafeArea(.bottom)
-			}
+			})
 		}
 	}
 }

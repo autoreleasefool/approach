@@ -2,6 +2,7 @@ import ComposableArchitecture
 import SharedModelsLibrary
 import StringsLibrary
 import SwiftUI
+import ViewsLibrary
 
 public struct GamePicker: ReducerProtocol {
 	public struct State: Equatable {
@@ -70,17 +71,30 @@ struct GamePickerView: View {
 	}
 
 	var body: some View {
-		WithViewStore(store, observe: { $0 }, send: GamePicker.Action.init) { viewStore in
+		WithViewStore(store, observe: { $0 }, send: GamePicker.Action.init, content: { viewStore in
 			List(viewStore.games) { game in
-				Button(Strings.Game.title(game.ordinal)) { viewStore.send(.didTapGame(game.id)) }
+				Button { viewStore.send(.didTapGame(game.id)) } label: {
+					HStack {
+						Label(
+							Strings.Game.title(game.ordinal),
+							systemImage: viewStore.selected == game.id ? "smallcircle.filled.circle" : "circle"
+						)
+						.foregroundColor(.appAction)
+						Spacer()
+						Text("156")
+					}
+					.contentShape(Rectangle())
+				}
+				.buttonStyle(TappableElement())
 			}
 			.navigationTitle(Strings.Game.Editor.Picker.switch)
+			.navigationBarTitleDisplayMode(.inline)
 			.toolbar {
 				ToolbarItem(placement: .navigationBarLeading) {
 					Button("Cancel") { viewStore.send(.didTapCancelButton) }
 				}
 			}
-		}
+		})
 	}
 }
 
