@@ -7,14 +7,14 @@ import SharedModelsLibrary
 import StringsLibrary
 import SwiftUI
 
-public struct SeriesSidebarView: View {
-	let store: StoreOf<SeriesSidebar>
+public struct GamesListView: View {
+	let store: StoreOf<GamesList>
 
 	struct ViewState: Equatable {
 		let title: String
 		let selection: Game.ID?
 
-		init(state: SeriesSidebar.State) {
+		init(state: GamesList.State) {
 			self.title = state.series.date.longFormat
 			self.selection = state.selection?.id
 		}
@@ -24,20 +24,20 @@ public struct SeriesSidebarView: View {
 		case setNavigation(selection: Game.ID?)
 	}
 
-	public init(store: StoreOf<SeriesSidebar>) {
+	public init(store: StoreOf<GamesList>) {
 		self.store = store
 	}
 
 	public var body: some View {
-		WithViewStore(store, observe: ViewState.init, send: SeriesSidebar.Action.init) { viewStore in
+		WithViewStore(store, observe: ViewState.init, send: GamesList.Action.init) { viewStore in
 			ResourceListView(
-				store: store.scope(state: \.list, action: /SeriesSidebar.Action.InternalAction.list)
+				store: store.scope(state: \.list, action: /GamesList.Action.InternalAction.list)
 			) { game in
 				NavigationLink(
 					destination: IfLetStore(
 						store.scope(
 							state: \.selection?.value,
-							action: /SeriesSidebar.Action.InternalAction.editor
+							action: /GamesList.Action.InternalAction.editor
 						)
 					) {
 						GamesEditorView(store: $0)
@@ -45,7 +45,7 @@ public struct SeriesSidebarView: View {
 					tag: game.id,
 					selection: viewStore.binding(
 						get: \.selection,
-						send: SeriesSidebarView.ViewAction.setNavigation(selection:)
+						send: GamesListView.ViewAction.setNavigation(selection:)
 					)
 				) {
 					Text(Strings.Game.title(game.ordinal))
@@ -56,8 +56,8 @@ public struct SeriesSidebarView: View {
 	}
 }
 
-extension SeriesSidebar.Action {
-	init(action: SeriesSidebarView.ViewAction) {
+extension GamesList.Action {
+	init(action: GamesListView.ViewAction) {
 		switch action {
 		case let .setNavigation(selection):
 			self = .view(.setNavigation(selection: selection))

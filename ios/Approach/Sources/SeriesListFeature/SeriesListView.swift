@@ -1,8 +1,8 @@
 import ComposableArchitecture
 import DateTimeLibrary
+import GamesListFeature
 import ResourceListLibrary
 import SeriesEditorFeature
-import SeriesSidebarFeature
 import SharedModelsLibrary
 import SharedModelsViewsLibrary
 import StringsLibrary
@@ -43,7 +43,7 @@ public struct SeriesListView: View {
 					destination: IfLetStore(
 						store.scope(state: \.selection?.value, action: /SeriesList.Action.InternalAction.sidebar)
 					) {
-						SeriesSidebarView(store: $0)
+						GamesListView(store: $0)
 					},
 					tag: series.id,
 					selection: viewStore.binding(

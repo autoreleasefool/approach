@@ -1,11 +1,11 @@
 import ComposableArchitecture
 import FeatureActionLibrary
 import FeatureFlagsServiceInterface
+import GamesListFeature
 import PersistenceServiceInterface
 import ResourceListLibrary
 import SeriesDataProviderInterface
 import SeriesEditorFeature
-import SeriesSidebarFeature
 import SharedModelsLibrary
 import StringsLibrary
 import ViewsLibrary
@@ -20,7 +20,7 @@ public struct SeriesList: ReducerProtocol {
 
 		public var list: ResourceList<Series, Series.FetchRequest>.State
 		public var editor: SeriesEditor.State?
-		public var selection: Identified<Series.ID, SeriesSidebar.State>?
+		public var selection: Identified<Series.ID, GamesList.State>?
 
 		public init(league: League) {
 			self.league = league
@@ -53,7 +53,7 @@ public struct SeriesList: ReducerProtocol {
 		public enum InternalAction: Equatable {
 			case list(ResourceList<Series, Series.FetchRequest>.Action)
 			case editor(SeriesEditor.Action)
-			case sidebar(SeriesSidebar.Action)
+			case sidebar(GamesList.Action)
 		}
 
 		public enum DelegateAction: Equatable {}
@@ -134,8 +134,8 @@ public struct SeriesList: ReducerProtocol {
 			}
 		}
 		.ifLet(\.selection, action: /Action.internal..Action.InternalAction.sidebar) {
-			Scope(state: \Identified<Series.ID, SeriesSidebar.State>.value, action: /.self) {
-				SeriesSidebar()
+			Scope(state: \Identified<Series.ID, GamesList.State>.value, action: /.self) {
+				GamesList()
 			}
 		}
 		.ifLet(\.editor, action: /Action.internal..Action.InternalAction.editor) {

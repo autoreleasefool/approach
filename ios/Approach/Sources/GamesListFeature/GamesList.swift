@@ -7,10 +7,10 @@ import SharedModelsLibrary
 import StringsLibrary
 
 extension Game: ResourceListItem {
-	public var name: String { "Game \(ordinal)" }
+	public var name: String { Strings.Game.title(ordinal) }
 }
 
-public struct SeriesSidebar: ReducerProtocol {
+public struct GamesList: ReducerProtocol {
 	public struct State: Equatable {
 		public let series: Series
 		public var list: ResourceList<Game, Game.FetchRequest>.State

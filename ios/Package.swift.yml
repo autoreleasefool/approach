@@ -84,6 +84,11 @@ package:
         - SwiftUIExtensionsLibrary
         - SharedModelsLibrary
         - ViewsLibrary
+    - name: GamesListFeature
+      dependencies:
+        - GamesDataProvider
+        - GamesEditorFeature
+        - ResourceListLibrary
     - name: GearEditorFeature
       dependencies:
         - AvatarService
@@ -143,15 +148,11 @@ package:
     - name: SeriesListFeature
       dependencies:
         - DateTimeLibrary
+        - FeatureFlagsService
+        - GamesListFeature
         - ResourceListLibrary
         - SeriesDataProvider
         - SeriesEditorFeature
-        - SeriesSidebarFeature
-    - name: SeriesSidebarFeature
-      dependencies:
-        - GamesDataProvider
-        - GamesEditorFeature
-        - ResourceListLibrary
     - name: SettingsFeature
       dependencies:
         - ConstantsLibrary

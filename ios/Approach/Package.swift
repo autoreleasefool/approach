@@ -19,6 +19,7 @@ let package = Package(
 		.library(name: "BowlersListFeature", targets: ["BowlersListFeature"]),
 		.library(name: "FeatureFlagsListFeature", targets: ["FeatureFlagsListFeature"]),
 		.library(name: "GamesEditorFeature", targets: ["GamesEditorFeature"]),
+		.library(name: "GamesListFeature", targets: ["GamesListFeature"]),
 		.library(name: "GearEditorFeature", targets: ["GearEditorFeature"]),
 		.library(name: "GearListFeature", targets: ["GearListFeature"]),
 		.library(name: "LaneEditorFeature", targets: ["LaneEditorFeature"]),
@@ -29,7 +30,6 @@ let package = Package(
 		.library(name: "ScoreSheetFeature", targets: ["ScoreSheetFeature"]),
 		.library(name: "SeriesEditorFeature", targets: ["SeriesEditorFeature"]),
 		.library(name: "SeriesListFeature", targets: ["SeriesListFeature"]),
-		.library(name: "SeriesSidebarFeature", targets: ["SeriesSidebarFeature"]),
 		.library(name: "SettingsFeature", targets: ["SettingsFeature"]),
 		.library(name: "StatisticsWidgetsFeature", targets: ["StatisticsWidgetsFeature"]),
 		.library(name: "TeamEditorFeature", targets: ["TeamEditorFeature"]),
@@ -197,7 +197,6 @@ let package = Package(
 				"AveragesDataProviderInterface",
 				"BowlerEditorFeature",
 				"BowlersDataProviderInterface",
-				"FeatureFlagsServiceInterface",
 				"LeaguesListFeature",
 				"SortOrderLibrary",
 				"StatisticsWidgetsFeature",
@@ -240,6 +239,22 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"GamesEditorFeature",
+				"SharedModelsMocksLibrary",
+			]
+		),
+		.target(
+			name: "GamesListFeature",
+			dependencies: [
+				"GamesDataProviderInterface",
+				"GamesEditorFeature",
+				"ResourceListLibrary",
+			]
+		),
+		.testTarget(
+			name: "GamesListFeatureTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"GamesListFeature",
 				"SharedModelsMocksLibrary",
 			]
 		),
@@ -397,9 +412,10 @@ let package = Package(
 		.target(
 			name: "SeriesListFeature",
 			dependencies: [
+				"FeatureFlagsServiceInterface",
+				"GamesListFeature",
 				"SeriesDataProviderInterface",
 				"SeriesEditorFeature",
-				"SeriesSidebarFeature",
 			]
 		),
 		.testTarget(
@@ -407,22 +423,6 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"SeriesListFeature",
-				"SharedModelsMocksLibrary",
-			]
-		),
-		.target(
-			name: "SeriesSidebarFeature",
-			dependencies: [
-				"GamesDataProviderInterface",
-				"GamesEditorFeature",
-				"ResourceListLibrary",
-			]
-		),
-		.testTarget(
-			name: "SeriesSidebarFeatureTests",
-			dependencies: [
-				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"SeriesSidebarFeature",
 				"SharedModelsMocksLibrary",
 			]
 		),
