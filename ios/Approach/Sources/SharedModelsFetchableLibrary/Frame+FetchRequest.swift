@@ -15,7 +15,7 @@ extension Frame {
 extension Frame.FetchRequest {
 	public enum Filter: Equatable {
 		case id(Frame.ID)
-		case game(Game)
+		case game(Game.ID)
 	}
 }
 

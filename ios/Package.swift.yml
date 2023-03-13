@@ -81,11 +81,14 @@ package:
     - name: GamesEditorFeature
       dependencies:
         - AssetsLibrary
+        - ExtensionsLibrary
+        - FramesDataProvider
         - SwiftUIExtensionsLibrary
         - SharedModelsLibrary
         - ViewsLibrary
     - name: GamesListFeature
       dependencies:
+        - BowlersDataProvider
         - GamesDataProvider
         - GamesEditorFeature
         - ResourceListLibrary

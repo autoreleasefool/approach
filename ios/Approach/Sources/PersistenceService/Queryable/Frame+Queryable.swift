@@ -11,15 +11,15 @@ extension Frame.FetchRequest: ManyQueryable {
 		switch filter {
 		case let .id(id):
 			query = query.filter(id: id)
-		case let .game(game):
-			query = game.frames
+		case let .game(gameId):
+			query = query.filter(Column("game") == gameId)
 		case .none:
 			break
 		}
 
 		switch ordering {
 		case .byOrdinal:
-			query = query.order(Column("ordinal").collating(.localizedCaseInsensitiveCompare))
+			query = query.order(Column("ordinal"))
 		}
 
 		return try query.fetchAll(db)

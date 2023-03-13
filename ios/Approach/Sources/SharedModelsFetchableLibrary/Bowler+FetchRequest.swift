@@ -18,6 +18,8 @@ extension Bowler.FetchRequest {
 		case id(Bowler.ID)
 		case team(Team)
 		case name(String)
+
+		case forGame(Game)
 	}
 }
 

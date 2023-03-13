@@ -196,7 +196,6 @@ let package = Package(
 			dependencies: [
 				"AveragesDataProviderInterface",
 				"BowlerEditorFeature",
-				"BowlersDataProviderInterface",
 				"LeaguesListFeature",
 				"SortOrderLibrary",
 				"StatisticsWidgetsFeature",
@@ -228,8 +227,9 @@ let package = Package(
 		.target(
 			name: "GamesEditorFeature",
 			dependencies: [
+				"ExtensionsLibrary",
 				"FeatureActionLibrary",
-				"SharedModelsLibrary",
+				"FramesDataProviderInterface",
 				"SwiftUIExtensionsLibrary",
 				"ViewsLibrary",
 			]
@@ -245,6 +245,7 @@ let package = Package(
 		.target(
 			name: "GamesListFeature",
 			dependencies: [
+				"BowlersDataProviderInterface",
 				"GamesDataProviderInterface",
 				"GamesEditorFeature",
 				"ResourceListLibrary",

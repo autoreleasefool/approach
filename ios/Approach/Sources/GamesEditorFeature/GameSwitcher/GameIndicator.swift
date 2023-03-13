@@ -8,12 +8,12 @@ import ViewsLibrary
 
 public struct GameIndicator: ReducerProtocol {
 	public struct State: Equatable {
-		public let games: IdentifiedArrayOf<Game>
+		public let games: [Game.ID]
 		public var selected: Game.ID
 
-		var game: Game { games[id: selected]! }
+		var selectedOrdinal: Int { games.firstIndex(of: selected)! + 1 }
 
-		init(games: IdentifiedArrayOf<Game>, selected: Game.ID) {
+		init(games: [Game.ID], selected: Game.ID) {
 			self.games = games
 			self.selected = selected
 		}
@@ -78,7 +78,7 @@ struct GameIndicatorView: View {
 		WithViewStore(store, observe: { $0 }, send: GameIndicator.Action.init) { viewStore in
 			Button { viewStore.send(.didTapIndicator) } label: {
 				HStack(alignment: .center, spacing: .smallSpacing) {
-					Text(Strings.Game.title(viewStore.game.ordinal))
+					Text(Strings.Game.title(viewStore.selectedOrdinal))
 						.font(.caption)
 
 					if viewStore.games.count > 1 {

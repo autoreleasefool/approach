@@ -1,37 +1,50 @@
 import ComposableArchitecture
 import FeatureActionLibrary
+import FramesDataProviderInterface
 import SharedModelsLibrary
 
 public struct GamesEditor: ReducerProtocol {
 	public struct State: Equatable {
-		public var games: IdentifiedArrayOf<Game>
+		public var bowlers: IdentifiedArrayOf<Bowler>
+		public var bowlerGames: [Bowler.ID: [Game.ID]]
 
+		public var currentBowler: Bowler.ID
 		public var currentGame: Game.ID
-		public var currentFrame: Int
-		public var currentBall: Int
+
+		public var currentFrame = 1
+		public var currentBall = 1
 
 		public var sheet: SheetState = .presenting(.gameDetails)
 
-		public var game: Game { games[id: currentGame]! }
-
-		public init(games: IdentifiedArrayOf<Game>, current: Game.ID) {
-			precondition(games[id: current] != nil)
-
-			self.games = games
-			self.currentGame = current
-			self.currentFrame = 1
-			self.currentBall = 1
+		public init(
+			bowlers: IdentifiedArrayOf<Bowler>,
+			bowlerGames: [Bowler.ID: [Game.ID]],
+			currentBowler: Bowler.ID,
+			currentGame: Game.ID
+		) {
+			precondition(bowlers[id: currentBowler] != nil)
+			precondition(bowlerGames[currentBowler]?.contains(currentGame) == true)
+			precondition(bowlerGames.allSatisfy { $0.value.count == bowlerGames.first!.value.count })
+			self.bowlers = bowlers
+			self.bowlerGames = bowlerGames
+			self.currentBowler = currentBowler
+			self.currentGame = currentGame
 		}
 	}
 
 	public enum Action: FeatureAction, Equatable {
 		public enum ViewAction: Equatable {
+			case didAppear
 			case setGamePicker(isPresented: Bool)
 			case setGameDetails(isPresented: Bool)
 			case didDismissOpenSheet
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
+			case switchToBowler(Bowler.ID)
+			case switchToGame(Game.ID)
+			case framesResponse(TaskResult<[Frame]>)
+
 			case ballDetails(BallDetails.Action)
 			case gameIndicator(GameIndicator.Action)
 			case gamePicker(GamePicker.Action)
@@ -42,7 +55,11 @@ public struct GamesEditor: ReducerProtocol {
 		case `internal`(InternalAction)
 	}
 
+	struct CancelObservationID {}
+
 	public init() {}
+
+	@Dependency(\.framesDataProvider) var framesDataProvider
 
 	public var body: some ReducerProtocol<State, Action> {
 		Scope(state: \.ballDetails, action: /Action.internal..Action.InternalAction.ballDetails) {
@@ -61,6 +78,9 @@ public struct GamesEditor: ReducerProtocol {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case .didAppear:
+					return loadGameDetails(for: state.currentGame)
+
 				case .didDismissOpenSheet:
 					state.sheet.finishTransition()
 					return .none
@@ -76,6 +96,29 @@ public struct GamesEditor: ReducerProtocol {
 
 			case let .internal(internalAction):
 				switch internalAction {
+				case let .switchToBowler(bowlerId):
+					let gameIndex = state.bowlerGames[state.currentBowler]!.firstIndex(of: state.currentGame)!
+					state.currentBowler = bowlerId
+					state.currentGame = state.bowlerGames[bowlerId]![gameIndex]
+					return loadGameDetails(for: state.currentGame)
+
+				case let .switchToGame(gameId):
+					precondition(state.bowlerGames[state.currentBowler]!.contains(gameId))
+					state.currentGame = gameId
+					return loadGameDetails(for: state.currentGame)
+
+				case let .framesResponse(.success(frames)):
+					guard frames.first?.game == state.currentGame else {
+						// TODO: log error that unexpected frames loaded (should be cancelled in flight)
+						return .none
+					}
+
+					return .none
+
+				case .framesResponse(.failure):
+					// TODO: handle error loading frames
+					return .none
+
 				case let .gamePicker(.delegate(delegateAction)):
 					switch delegateAction {
 					case .didFinish:
@@ -111,6 +154,15 @@ public struct GamesEditor: ReducerProtocol {
 			}
 		}
 	}
+
+	private func loadGameDetails(for gameId: Game.ID) -> EffectTask<Action> {
+		return .task {
+			await .internal(.framesResponse(TaskResult {
+				try await framesDataProvider.fetchFrames(.init(filter: .game(gameId), ordering: .byOrdinal))
+			}))
+		}
+		.cancellable(id: CancelObservationID.self, cancelInFlight: true)
+	}
 }
 
 extension GamesEditor.State {
@@ -124,15 +176,17 @@ extension GamesEditor.State {
 }
 
 extension GamesEditor.State {
+	var currentBowlerGames: [Game.ID] {
+		bowlerGames[currentBowler] ?? []
+	}
+
 	var gameIndicator: GameIndicator.State {
-		get { .init(games: games, selected: currentGame) }
+		get { .init(games: currentBowlerGames, selected: currentGame) }
 		set { self.currentGame = newValue.selected }
 	}
-}
 
-extension GamesEditor.State {
 	var gamePicker: GamePicker.State {
-		get { .init(games: games, selected: currentGame) }
+		get { .init(games: currentBowlerGames, selected: currentGame) }
 		set { self.currentGame = newValue.selected }
 	}
 }

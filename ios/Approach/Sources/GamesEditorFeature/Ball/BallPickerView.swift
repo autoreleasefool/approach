@@ -10,9 +10,9 @@ struct BallPickerView: View {
 	var body: some View {
 		Button { } label: {
 			HStack(alignment: .center, spacing: .standardSpacing) {
-				Color.red
-					.frame(width: .standardIcon, height: .standardIcon)
-					.cornerRadius(.standardIcon)
+//				Color.red
+//					.frame(width: .standardIcon, height: .standardIcon)
+//					.cornerRadius(.standardIcon)
 
 				VStack(alignment: .leading, spacing: .unitSpacing) {
 					Text(Strings.Ball.Properties.ballRolled)

@@ -1,3 +1,4 @@
+import BowlersDataProviderInterface
 import ComposableArchitecture
 import FeatureActionLibrary
 import GamesDataProviderInterface
@@ -13,6 +14,7 @@ extension Game: ResourceListItem {
 public struct GamesList: ReducerProtocol {
 	public struct State: Equatable {
 		public let series: Series
+		public var isLoadingGameDetails = false
 		public var list: ResourceList<Game, Game.FetchRequest>.State
 
 		public var selection: Identified<Game.ID, GamesEditor.State>?
@@ -38,6 +40,7 @@ public struct GamesList: ReducerProtocol {
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
+			case bowlerResponse(Game.ID, TaskResult<Bowler>)
 			case list(ResourceList<Game, Game.FetchRequest>.Action)
 			case editor(GamesEditor.Action)
 		}
@@ -49,6 +52,7 @@ public struct GamesList: ReducerProtocol {
 	public init() {}
 
 	@Dependency(\.gamesDataProvider) var gamesDataProvider
+	@Dependency(\.bowlersDataProvider) var bowlersDataProvider
 
 	public var body: some ReducerProtocol<State, Action> {
 		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {
@@ -60,14 +64,21 @@ public struct GamesList: ReducerProtocol {
 			case let .view(viewAction):
 				switch viewAction {
 				case let .setNavigation(selection: .some(id)):
-					return navigate(to: id, state: &state)
+					return navigate(to: id, bowler: nil, state: &state)
 
 				case .setNavigation(selection: .none):
-					return navigate(to: nil, state: &state)
+					return navigate(to: nil, bowler: nil, state: &state)
 				}
 
 			case let .internal(internalAction):
 				switch internalAction {
+				case let .bowlerResponse(id, .success(bowler)):
+					return navigate(to: id, bowler: bowler, state: &state)
+
+				case .bowlerResponse(_, .failure):
+					// TODO: handle failure to load bowler
+					return navigate(to: nil, bowler: nil, state: &state)
+
 				case let .list(.delegate(delegateAction)):
 					switch delegateAction {
 					case .didEdit, .didDelete, .didTap, .didAddNew, .didTapEmptyStateButton:
@@ -98,13 +109,38 @@ public struct GamesList: ReducerProtocol {
 		}
 	}
 
-	private func navigate(to id: Game.ID?, state: inout State) -> EffectTask<Action> {
-		if let id, let selection = state.list.resources?[id: id] {
-			state.selection = Identified(.init(games: state.list.resources ?? [], current: id), id: selection.id)
+	private func navigate(to id: Game.ID?, bowler: Bowler?, state: inout State) -> EffectTask<Action> {
+		if let id, let games = state.list.resources, let selection = games[id: id] {
+			state.isLoadingGameDetails = true
+			if let bowler {
+				state.selection = Identified(
+					.init(
+						bowlers: .init(uniqueElements: [bowler]),
+						bowlerGames: [bowler.id: games.map(\.id)],
+						currentBowler: bowler.id,
+						currentGame: id
+					),
+					id: selection.id
+				)
+			} else {
+				return .task {
+					await .internal(.bowlerResponse(id, TaskResult {
+						guard let bowler = try await bowlersDataProvider.fetchBowlers(
+							.init(filter: .forGame(selection), ordering: .byName)
+						).first else {
+							throw BowlerNotFoundError()
+						}
+						return bowler
+					}))
+				}
+			}
 		} else {
+			state.isLoadingGameDetails = false
 			state.selection = nil
 		}
 
 		return .none
 	}
 }
+
+struct BowlerNotFoundError: Error {}

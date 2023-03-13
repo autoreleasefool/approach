@@ -1,15 +1,25 @@
 import ComposableArchitecture
+import ExtensionsLibrary
 import SharedModelsLibrary
 import StringsLibrary
 import SwiftUI
 import ViewsLibrary
 
+struct GameIndex: Hashable, Identifiable {
+	let id: Game.ID
+	let ordinal: Int
+}
+
 public struct GamePicker: ReducerProtocol {
 	public struct State: Equatable {
-		public let games: IdentifiedArrayOf<Game>
+		public let games: [Game.ID]
 		public var selected: Game.ID
 
-		init(games: IdentifiedArrayOf<Game>, selected: Game.ID) {
+		var indexedGames: [GameIndex] {
+			games.enumerated().map { .init(id: $0.element, ordinal: $0.offset + 1) }
+		}
+
+		init(games: [Game.ID], selected: Game.ID) {
 			self.games = games
 			self.selected = selected
 		}
@@ -72,16 +82,16 @@ struct GamePickerView: View {
 
 	var body: some View {
 		WithViewStore(store, observe: { $0 }, send: GamePicker.Action.init, content: { viewStore in
-			List(viewStore.games) { game in
-				Button { viewStore.send(.didTapGame(game.id)) } label: {
+			List(viewStore.indexedGames) { indexedGame in
+				Button { viewStore.send(.didTapGame(indexedGame.id)) } label: {
 					HStack {
 						Label(
-							Strings.Game.title(game.ordinal),
-							systemImage: viewStore.selected == game.id ? "smallcircle.filled.circle" : "circle"
+							Strings.Game.title(indexedGame.ordinal),
+							systemImage: viewStore.selected == indexedGame.id ? "smallcircle.filled.circle" : "circle"
 						)
 						.foregroundColor(.appAction)
 						Spacer()
-						Text("156")
+						Text("156") // TODO: show game score
 					}
 					.contentShape(Rectangle())
 				}
