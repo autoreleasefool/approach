@@ -37,7 +37,7 @@ public struct ListContent<
 			.listStyle(.insetGrouped)
 		case .loading:
 			List {
-				ProgressView()
+				ListProgressView()
 			}
 			.listStyle(.insetGrouped)
 		case let .loaded(elements):

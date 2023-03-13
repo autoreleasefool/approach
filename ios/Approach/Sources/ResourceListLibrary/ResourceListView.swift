@@ -92,7 +92,7 @@ public struct ResourceListView<
 
 				case .loading:
 					List {
-						ProgressView()
+						ListProgressView()
 					}
 					.listStyle(.insetGrouped)
 

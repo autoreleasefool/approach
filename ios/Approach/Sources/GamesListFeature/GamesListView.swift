@@ -6,6 +6,7 @@ import ResourceListLibrary
 import SharedModelsLibrary
 import StringsLibrary
 import SwiftUI
+import ViewsLibrary
 
 public struct GamesListView: View {
 	let store: StoreOf<GamesList>
@@ -51,6 +52,10 @@ public struct GamesListView: View {
 					)
 				) {
 					Text(Strings.Game.title(game.ordinal))
+				}
+			} header: {
+				if viewStore.isLoadingGameDetails {
+					ListProgressView()
 				}
 			}
 			.navigationTitle(viewStore.title)
