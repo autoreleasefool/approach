@@ -26,6 +26,7 @@ public struct GamesEditorView: View {
 	}
 
 	enum ViewAction: BindableAction {
+		case didAppear
 		case didMeasureSheetHeight(CGFloat)
 		case setGamePicker(isPresented: Bool)
 		case setGameDetails(isPresented: Bool)
@@ -41,7 +42,13 @@ public struct GamesEditorView: View {
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: GamesEditor.Action.init) { viewStore in
 			VStack {
-				GameIndicatorView(store: store.scope(state: \.gameIndicator, action: /GamesEditor.Action.InternalAction.gameIndicator))
+				GameIndicatorView(
+					store: store.scope(state: \.gameIndicator, action: /GamesEditor.Action.InternalAction.gameIndicator)
+				)
+				IfLetStore(store.scope(state: \.frameEditor, action: /GamesEditor.Action.InternalAction.frameEditor)) {
+					FrameEditorView(store: $0)
+						.padding(.top)
+				}
 				Spacer()
 			}
 			.toolbar(.hidden, for: .tabBar, .navigationBar)
@@ -88,6 +95,7 @@ public struct GamesEditorView: View {
 				.interactiveDismissDisabled(true)
 				.edgesIgnoringSafeArea(.bottom)
 			})
+			.onAppear { viewStore.send(.didAppear) }
 		}
 	}
 }
@@ -104,6 +112,8 @@ extension GamesEditor.State {
 extension GamesEditor.Action {
 	init(action: GamesEditorView.ViewAction) {
 		switch action {
+		case .didAppear:
+			self = .view(.didAppear)
 		case let .didMeasureSheetHeight(height):
 			self = .view(.didMeasureSheetHeight(height))
 		case let .setGameDetails(isPresented):

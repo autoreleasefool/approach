@@ -12,8 +12,10 @@ public struct GamesEditor: ReducerProtocol {
 		public var currentBowler: Bowler.ID
 		public var currentGame: Game.ID
 
-		public var currentFrame = 1
-		public var currentBall = 1
+		public var frames: [MutableFrame]?
+		public var frameIndex = 0
+		public var rollIndex = 0
+		public var draggedPinNewState: Bool?
 
 		@BindableState public var detent: PresentationDetent = .height(.zero)
 		public var sheet: SheetState = .presenting(.gameDetails)
@@ -51,6 +53,7 @@ public struct GamesEditor: ReducerProtocol {
 			case ballDetails(BallDetails.Action)
 			case gameIndicator(GameIndicator.Action)
 			case gamePicker(GamePicker.Action)
+			case frameEditor(FrameEditor.Action)
 		}
 
 		case view(ViewAction)
@@ -125,6 +128,8 @@ public struct GamesEditor: ReducerProtocol {
 						return .none
 					}
 
+					state.frames = frames.map { .init(from: $0) }
+					state.frames?[state.frameIndex].guaranteeRollExists(upTo: state.rollIndex)
 					return .none
 
 				case .framesResponse(.failure):
@@ -144,12 +149,21 @@ public struct GamesEditor: ReducerProtocol {
 						return .none
 					}
 
+				case let .frameEditor(.delegate(delegateAction)):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
 				case let .gameIndicator(.delegate(delegateAction)):
 					switch delegateAction {
 					case .didRequestGamePicker:
 						state.sheet.transition(to: .gamePicker)
 						return .none
 					}
+
+				case .frameEditor(.view), .frameEditor(.internal):
+					return .none
 
 				case .gamePicker(.view), .gamePicker(.internal):
 					return .none
@@ -165,6 +179,9 @@ public struct GamesEditor: ReducerProtocol {
 				return .none
 			}
 		}
+		.ifLet(\.frameEditor, action: /Action.internal..Action.InternalAction.frameEditor) {
+			FrameEditor()
+		}
 	}
 
 	private func loadGameDetails(for gameId: Game.ID) -> EffectTask<Action> {
@@ -179,10 +196,12 @@ public struct GamesEditor: ReducerProtocol {
 
 extension GamesEditor.State {
 	var ballDetails: BallDetails.State {
-		get { .init(frame: currentFrame, ball: currentBall) }
+		// TODO: replace with frameIndex
+		get { .init(frame: frameIndex + 1, ball: rollIndex + 1) }
 		set {
-			self.currentFrame = newValue.frame
-			self.currentBall = newValue.ball
+			self.rollIndex = newValue.ball - 1
+			self.frameIndex = newValue.frame - 1
+			self.frames?[self.frameIndex].guaranteeRollExists(upTo: newValue.ball - 1)
 		}
 	}
 }
@@ -200,6 +219,26 @@ extension GamesEditor.State {
 	var gamePicker: GamePicker.State {
 		get { .init(games: currentBowlerGames, selected: currentGame) }
 		set { self.currentGame = newValue.selected }
+	}
+}
+
+extension GamesEditor.State {
+	var frameEditor: FrameEditor.State? {
+		get {
+			guard let frames else { return nil }
+			return .init(
+				rollIndex: rollIndex,
+				frame: frames[frameIndex],
+				draggedPinNewState: draggedPinNewState
+			)
+		}
+		set {
+			guard let newValue else { return }
+			self.rollIndex = newValue.rollIndex
+			self.frames?[self.frameIndex] = newValue.frame
+			self.frames?[self.frameIndex].guaranteeRollExists(upTo: self.rollIndex)
+			self.draggedPinNewState = newValue.draggedPinNewState
+		}
 	}
 }
 
