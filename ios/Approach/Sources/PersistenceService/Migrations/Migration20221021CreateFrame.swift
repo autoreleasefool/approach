@@ -9,9 +9,7 @@ struct Migration20221021CreateFrame: Migration {
 				.references("game", onDelete: .cascade)
 			t.column("ordinal", .integer)
 				.notNull()
-			t.column("firstBall", .text)
-			t.column("secondBall", .text)
-			t.column("thirdBall", .text)
+			t.column("rolls", .text)
 
 			t.primaryKey(["game", "ordinal"])
 		}

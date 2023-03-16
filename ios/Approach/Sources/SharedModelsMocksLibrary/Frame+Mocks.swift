@@ -5,16 +5,12 @@ extension Frame {
 	public static func mock(
 		id: UUID,
 		ordinal: Int,
-		firstBall: Ball? = nil,
-		secondBall: Ball? = nil,
-		thirdBall: Ball? = nil
+		rolls: [Roll] = []
 	) -> Frame {
 		.init(
 			game: id,
 			ordinal: ordinal,
-			firstBall: firstBall,
-			secondBall: secondBall,
-			thirdBall: thirdBall
+			rolls: rolls
 		)
 	}
 }

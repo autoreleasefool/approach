@@ -3,9 +3,7 @@ import Foundation
 public struct Frame: Sendable, Identifiable, Hashable, Codable {
 	public let game: Game.ID
 	public let ordinal: Int
-	public let firstBall: Ball?
-	public let secondBall: Ball?
-	public let thirdBall: Ball?
+	public let rolls: [Roll]
 
 	public var id: String {
 		"\(game)-\(ordinal)"
@@ -14,65 +12,40 @@ public struct Frame: Sendable, Identifiable, Hashable, Codable {
 	public init(
 		game: Game.ID,
 		ordinal: Int,
-		firstBall: Ball?,
-		secondBall: Ball?,
-		thirdBall: Ball?
+		rolls: [Roll]
 	) {
 		self.game = game
 		self.ordinal = ordinal
-		self.firstBall = firstBall
-		self.secondBall = secondBall
-		self.thirdBall = thirdBall
+		self.rolls = rolls
 	}
 }
 
-// MARK: - Ball
-extension Frame {
-	public struct Ball: Sendable, Hashable, Codable {
-		public let deck: Deck
-		public let isFoul: Bool
+// MARK: - Roll
 
-		public init(deck: Deck, isFoul: Bool) {
-			self.deck = deck
-			self.isFoul = isFoul
+extension Frame {
+	public struct Roll: Sendable, Hashable, Codable {
+		public let pinsDowned: [Pin]
+		public let didFoul: Bool
+
+		public init(pinsDowned: [Pin], didFoul: Bool) {
+			self.pinsDowned = pinsDowned
+			self.didFoul = didFoul
 		}
+
+		public static let `default`: Self = .init(pinsDowned: [], didFoul: false)
 	}
 }
 
-// MARK: - Deck
+// MARK: - Pin
 
-extension Frame {
-	public struct Deck: Sendable, Hashable, Codable {
-		public static let fullDeck: Deck = .init(
-			leftTwoPinKnocked: false,
-			leftThreePinKnocked: false,
-			rightTwoPinKnocked: false,
-			rightThreePinKnocked: false,
-			headPinKnocked: false
-		)
+public enum Pin: Int, Equatable, Sendable, Identifiable, Codable {
+	case leftTwoPin = 0
+	case leftThreePin = 1
+	case headPin = 2
+	case rightThreePin = 3
+	case rightTwoPin = 4
 
-		public let leftTwoPinKnocked: Bool
-		public let leftThreePinKnocked: Bool
-		public let rightTwoPinKnocked: Bool
-		public let rightThreePinKnocked: Bool
-		public let headPinKnocked: Bool
+	public var id: Int { rawValue }
 
-		public init(
-			leftTwoPinKnocked: Bool,
-			leftThreePinKnocked: Bool,
-			rightTwoPinKnocked: Bool,
-			rightThreePinKnocked: Bool,
-			headPinKnocked: Bool
-		) {
-			self.leftTwoPinKnocked = leftTwoPinKnocked
-			self.leftThreePinKnocked = leftThreePinKnocked
-			self.rightTwoPinKnocked = rightTwoPinKnocked
-			self.rightThreePinKnocked = rightThreePinKnocked
-			self.headPinKnocked = headPinKnocked
-		}
-
-		public var displayValue: String {
-			"5"
-		}
-	}
+	public static let fullDeck: [Self] = [.leftTwoPin, .leftThreePin, .headPin, .rightThreePin, .rightTwoPin]
 }
