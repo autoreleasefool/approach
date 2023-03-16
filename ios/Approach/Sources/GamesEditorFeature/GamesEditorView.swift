@@ -14,20 +14,24 @@ public struct GamesEditorView: View {
 	@State private var sheetHeight: CGFloat = .zero
 
 	struct ViewState: Equatable {
+		@BindableState var detent: PresentationDetent = .height(.zero)
 		let isGamePickerPresented: Bool
 		let isGameDetailsPresented: Bool
 
 		init(state: GamesEditor.State) {
 			self.isGameDetailsPresented = state.sheet == .presenting(.gameDetails)
 			self.isGamePickerPresented = state.sheet == .presenting(.gamePicker)
+			self.detent = state.detent
 		}
 	}
 
-	enum ViewAction {
+	enum ViewAction: BindableAction {
+		case didMeasureSheetHeight(CGFloat)
 		case setGamePicker(isPresented: Bool)
 		case setGameDetails(isPresented: Bool)
 		case didDismissGameDetails
 		case didDismissGamePicker
+		case binding(BindingAction<ViewState>)
 	}
 
 	public init(store: StoreOf<GamesEditor>) {
@@ -74,8 +78,12 @@ public struct GamesEditorView: View {
 				.padding(.horizontal, .standardSpacing)
 				.onPreferenceChange(HeightPreferenceKey.self) { newHeight in
 					sheetHeight = newHeight
+					viewStore.send(.didMeasureSheetHeight(newHeight))
 				}
-				.presentationDetents(undimmed: [.height(sheetHeight), .medium, .large])
+				.presentationDetents(
+					undimmed: [.height(sheetHeight), .medium, .large],
+					selection: viewStore.binding(\.$detent)
+				)
 				.presentationDragIndicator(.hidden)
 				.interactiveDismissDisabled(true)
 				.edgesIgnoringSafeArea(.bottom)
@@ -84,9 +92,20 @@ public struct GamesEditorView: View {
 	}
 }
 
+extension GamesEditor.State {
+	var view: GamesEditorView.ViewState {
+		get { .init(state: self) }
+		set {
+			self.detent = newValue.detent
+		}
+	}
+}
+
 extension GamesEditor.Action {
 	init(action: GamesEditorView.ViewAction) {
 		switch action {
+		case let .didMeasureSheetHeight(height):
+			self = .view(.didMeasureSheetHeight(height))
 		case let .setGameDetails(isPresented):
 			self = .view(.setGameDetails(isPresented: isPresented))
 		case let .setGamePicker(isPresented):
@@ -95,6 +114,8 @@ extension GamesEditor.Action {
 			self = .view(.didDismissOpenSheet)
 		case .didDismissGameDetails:
 			self = .view(.didDismissOpenSheet)
+		case let .binding(action):
+			self = .binding(action.pullback(\GamesEditor.State.view))
 		}
 	}
 }

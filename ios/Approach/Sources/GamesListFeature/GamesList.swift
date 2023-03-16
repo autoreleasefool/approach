@@ -94,7 +94,7 @@ public struct GamesList: ReducerProtocol {
 				case .list(.internal), .list(.view), .list(.callback):
 					return .none
 
-				case .editor(.internal), .editor(.view):
+				case .editor(.internal), .editor(.view), .editor(.binding):
 					return .none
 				}
 

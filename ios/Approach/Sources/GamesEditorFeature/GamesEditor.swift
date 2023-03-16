@@ -2,6 +2,7 @@ import ComposableArchitecture
 import FeatureActionLibrary
 import FramesDataProviderInterface
 import SharedModelsLibrary
+import SwiftUI
 
 public struct GamesEditor: ReducerProtocol {
 	public struct State: Equatable {
@@ -14,6 +15,7 @@ public struct GamesEditor: ReducerProtocol {
 		public var currentFrame = 1
 		public var currentBall = 1
 
+		@BindableState public var detent: PresentationDetent = .height(.zero)
 		public var sheet: SheetState = .presenting(.gameDetails)
 
 		public init(
@@ -32,9 +34,10 @@ public struct GamesEditor: ReducerProtocol {
 		}
 	}
 
-	public enum Action: FeatureAction, Equatable {
+	public enum Action: FeatureAction, BindableAction, Equatable {
 		public enum ViewAction: Equatable {
 			case didAppear
+			case didMeasureSheetHeight(CGFloat)
 			case setGamePicker(isPresented: Bool)
 			case setGameDetails(isPresented: Bool)
 			case didDismissOpenSheet
@@ -53,6 +56,7 @@ public struct GamesEditor: ReducerProtocol {
 		case view(ViewAction)
 		case delegate(DelegateAction)
 		case `internal`(InternalAction)
+		case binding(BindingAction<State>)
 	}
 
 	struct CancelObservationID {}
@@ -62,6 +66,8 @@ public struct GamesEditor: ReducerProtocol {
 	@Dependency(\.framesDataProvider) var framesDataProvider
 
 	public var body: some ReducerProtocol<State, Action> {
+		BindingReducer()
+
 		Scope(state: \.ballDetails, action: /Action.internal..Action.InternalAction.ballDetails) {
 			BallDetails()
 		}
@@ -80,6 +86,12 @@ public struct GamesEditor: ReducerProtocol {
 				switch viewAction {
 				case .didAppear:
 					return loadGameDetails(for: state.currentGame)
+
+				case let .didMeasureSheetHeight(newHeight):
+					if state.detent == .height(.zero) {
+						state.detent = .height(newHeight)
+					}
+					return .none
 
 				case .didDismissOpenSheet:
 					state.sheet.finishTransition()
@@ -149,7 +161,7 @@ public struct GamesEditor: ReducerProtocol {
 					return .none
 				}
 
-			case .delegate:
+			case .delegate, .binding:
 				return .none
 			}
 		}
