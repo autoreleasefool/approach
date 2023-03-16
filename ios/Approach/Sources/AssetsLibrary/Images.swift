@@ -13,4 +13,7 @@ extension UIImage {
 	public static let errorNotFound = UIImage(named: "Images/Error/NotFound", in: .module, with: nil)!
 
 	public static let iconAnalytics = UIImage(named: "Images/Icons/Analytics", in: .module, with: nil)!
+
+	public static let pin = UIImage(named: "Images/Pin/Pin", in: .module, with: nil)!
+	public static let pinDown = UIImage(named: "Images/Pin/PinDown", in: .module, with: nil)!
 }
