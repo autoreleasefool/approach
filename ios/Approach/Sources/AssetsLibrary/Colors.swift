@@ -20,4 +20,8 @@ extension Color {
 	public static let appAlleyPinBaseBackground = Color("Colors/Alley/PinBase/Background", bundle: .module)
 	public static let appAlleyPinFallBorder = Color("Colors/Alley/PinFall/Border", bundle: .module)
 	public static let appAlleyPinFallBackground = Color("Colors/Alley/PinFall/Background", bundle: .module)
+
+	public static let appShieldBackground = Color("Colors/Frame/Shield/Background", bundle: .module)
+	public static let appShieldProtector = Color("Colors/Frame/Shield/Protector", bundle: .module)
+	public static let appShieldFrame = Color("Colors/Frame/Shield/Frame", bundle: .module)
 }

@@ -1,21 +1,30 @@
 import ComposableArchitecture
 import SharedModelsLibrary
+import SwiftUI
 
 public struct FrameEditor: ReducerProtocol {
 	public struct State: Equatable {
 		public var rollIndex: Int
 		public var frame: MutableFrame
 		public var draggedPinNewState: Bool?
+		public var renderWidth: CGFloat
 
-		public init(rollIndex: Int, frame: MutableFrame, draggedPinNewState: Bool?) {
+		public init(
+			rollIndex: Int,
+			frame: MutableFrame,
+			draggedPinNewState: Bool?,
+			renderWidth: CGFloat
+		) {
 			self.rollIndex = rollIndex
 			self.frame = frame
 			self.draggedPinNewState = draggedPinNewState
+			self.renderWidth = renderWidth
 		}
 	}
 
 	public enum Action: Equatable {
 		public enum ViewAction: Equatable {
+			case didMeasureViewWidth(CGFloat)
 			case didTapNextBallButton
 			case didTapPin(Pin)
 			case didStartDraggingPin(Pin)
@@ -36,6 +45,10 @@ public struct FrameEditor: ReducerProtocol {
 			switch action {
 			case let .view(viewAction):
 				switch viewAction {
+				case let .didMeasureViewWidth(width):
+					state.renderWidth = width
+					return .none
+
 				case .didTapNextBallButton:
 					return .none
 

@@ -70,11 +70,11 @@ public struct AlleyLanesEditorView: View {
 					AddLaneFormView(store: $0)
 						.padding()
 						.overlay {
-							GeometryReader { geometryProxy in
+							GeometryReader { proxy in
 								Color.clear
 									.preference(
 										key: HeightPreferenceKey.self,
-										value: geometryProxy.size.height + safeAreaInsets.bottom
+										value: proxy.size.height + safeAreaInsets.bottom
 									)
 							}
 						}
