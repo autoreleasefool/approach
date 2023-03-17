@@ -67,15 +67,9 @@ struct FrameEditorView: View {
 			.overlay(
 				GeometryReader { proxy in
 					Color.clear
-						.preference(
-							key: WidthPreferenceKey.self,
-							value: proxy.size.width
-						)
+						.onAppear { viewStore.send(.didMeasureViewWidth(proxy.size.width)) }
 				}
 			)
-			.onPreferenceChange(WidthPreferenceKey.self) {
-				viewStore.send(.didMeasureViewWidth($0))
-			}
 		}
 	}
 
@@ -108,12 +102,5 @@ extension FrameEditor.Action {
 		case .didStopDraggingPins:
 			self = .view(.didStopDraggingPins)
 		}
-	}
-}
-
-private struct WidthPreferenceKey: PreferenceKey {
-	static var defaultValue: CGFloat = .zero
-	static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-		value = nextValue()
 	}
 }

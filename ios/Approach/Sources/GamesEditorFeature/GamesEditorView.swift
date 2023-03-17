@@ -11,9 +11,6 @@ public struct GamesEditorView: View {
 
 	@Environment(\.safeAreaInsets) private var safeAreaInsets
 
-	@State private var sheetHeight: CGFloat = .zero
-	@State private var frameSize: CGSize = .zero
-
 	struct ViewState: Equatable {
 		@BindableState var detent: PresentationDetent = .height(.zero)
 		let isGamePickerPresented: Bool
@@ -37,7 +34,6 @@ public struct GamesEditorView: View {
 		case didDismissGameDetails
 		case didDismissGamePicker
 		case binding(BindingAction<ViewState>)
-
 	}
 
 	public init(store: StoreOf<GamesEditor>) {
@@ -56,29 +52,15 @@ public struct GamesEditorView: View {
 					) { scopedStore in
 						FrameEditorView(store: scopedStore)
 							.padding(.top)
-							.overlay(
-								GeometryReader { proxy in
-									Color.clear
-										.preference(
-											key: FrameSizePreferenceKey.self,
-											value: CGSize(width: proxy.size.width, height: proxy.frame(in: .global).maxY)
-										)
-								}
-							)
 					}
 					Spacer()
 				}
+
 				if viewStore.isShieldVisible {
 					Shield()
-//						.edgesIgnoringSafeArea(.top)
-						.position(x: frameSize.width / 2, y: frameSize.height / 2 + safeAreaInsets.top / 2 + 30)
-//							.frame(height: height + safeAreaInsets.top)
 						.transition(.move(edge: .top))
 						.zIndex(1)
 				}
-			}
-			.onPreferenceChange(FrameSizePreferenceKey.self) { newSize in
-				frameSize = newSize
 			}
 			.onChange(of: viewStore.detent) { detent in
 				guard viewStore.isGameDetailsPresented else { return }
@@ -112,25 +94,11 @@ public struct GamesEditorView: View {
 			}, content: {
 				ScrollView {
 					EmptyView()
-//					BallDetailsView(store: store.scope(state: \.ballDetails, action: /GamesEditor.Action.InternalAction.ballDetails))
-//						.overlay {
-//							GeometryReader { proxy in
-//								Color.clear
-//									.preference(
-//										key: HeightPreferenceKey.self,
-//										value: proxy.size.height + safeAreaInsets.bottom
-//									)
-//							}
-//						}
 				}
 				.padding(.vertical, .largeSpacing)
 				.padding(.horizontal, .standardSpacing)
-				.onPreferenceChange(HeightPreferenceKey.self) { newHeight in
-					sheetHeight = newHeight
-					viewStore.send(.didMeasureSheetHeight(newHeight))
-				}
 				.presentationDetents(
-					undimmed: [.height(sheetHeight), .medium, .large],
+					undimmed: [.height(50), .medium, .large],
 					selection: viewStore.binding(\.$detent)
 				)
 				.presentationDragIndicator(.hidden)
@@ -171,19 +139,5 @@ extension GamesEditor.Action {
 		case let .binding(action):
 			self = .binding(action.pullback(\GamesEditor.State.view))
 		}
-	}
-}
-
-private struct HeightPreferenceKey: PreferenceKey {
-	static var defaultValue: CGFloat = .zero
-	static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
-		value = nextValue()
-	}
-}
-
-private struct FrameSizePreferenceKey: PreferenceKey {
-	static var defaultValue: CGSize = .zero
-	static func reduce(value: inout CGSize, nextValue: () -> CGSize) {
-		value = nextValue()
 	}
 }
