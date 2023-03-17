@@ -13,8 +13,8 @@ struct FrameEditorView: View {
 		let renderWidth: CGFloat
 
 		init(state: FrameEditor.State) {
-			self.rollIndex = state.rollIndex
-			self.roll = state.frame.rolls[state.rollIndex]
+			self.rollIndex = state.currentRollIndex
+			self.roll = state.frame.rolls[state.currentRollIndex]
 			self.renderWidth = state.renderWidth
 		}
 	}

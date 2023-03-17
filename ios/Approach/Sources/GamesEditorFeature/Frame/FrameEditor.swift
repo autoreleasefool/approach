@@ -4,21 +4,17 @@ import SwiftUI
 
 public struct FrameEditor: ReducerProtocol {
 	public struct State: Equatable {
-		public var rollIndex: Int
+		public var currentRollIndex: Int
 		public var frame: MutableFrame
 		public var draggedPinNewState: Bool?
-		public var renderWidth: CGFloat
+		public var renderWidth: CGFloat = .zero
 
 		public init(
-			rollIndex: Int,
-			frame: MutableFrame,
-			draggedPinNewState: Bool?,
-			renderWidth: CGFloat
+			currentRollIndex: Int,
+			frame: MutableFrame
 		) {
-			self.rollIndex = rollIndex
+			self.currentRollIndex = currentRollIndex
 			self.frame = frame
-			self.draggedPinNewState = draggedPinNewState
-			self.renderWidth = renderWidth
 		}
 	}
 
@@ -53,16 +49,16 @@ public struct FrameEditor: ReducerProtocol {
 					return .none
 
 				case let .didTapPin(pin):
-					state.frame.toggle(pin, rollIndex: state.rollIndex)
+					state.frame.toggle(pin, rollIndex: state.currentRollIndex)
 					return .none
 
 				case let .didStartDraggingPin(pin):
 					// TODO: dragging is not working
 					guard state.draggedPinNewState == nil else { return .none }
-					let oldState = state.frame.roll(at: state.rollIndex).isPinDown(pin)
+					let oldState = state.frame.roll(at: state.currentRollIndex).isPinDown(pin)
 					let newState = !oldState
 					state.draggedPinNewState = newState
-					state.frame.toggle(pin, rollIndex: state.rollIndex, newValue: newState)
+					state.frame.toggle(pin, rollIndex: state.currentRollIndex, newValue: newState)
 					return .none
 
 				case .didStopDraggingPins:

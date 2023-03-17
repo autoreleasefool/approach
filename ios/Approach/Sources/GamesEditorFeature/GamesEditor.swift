@@ -6,19 +6,21 @@ import SwiftUI
 
 public struct GamesEditor: ReducerProtocol {
 	public struct State: Equatable {
-		public var bowlers: IdentifiedArrayOf<Bowler>
-		public var bowlerGames: [Bowler.ID: [Game.ID]]
-
-		public var currentBowler: Bowler.ID
-		public var currentGame: Game.ID
-
-		public var frames: [MutableFrame]?
-		public var frameIndex = 0
-		public var rollIndex = 0
-		public var draggedPinNewState: Bool?
-
 		@BindableState public var detent: PresentationDetent = .height(.zero)
 		public var sheet: SheetState = .presenting(.gameDetails)
+
+		public var bowlers: IdentifiedArrayOf<Bowler>
+		public var bowlerGames: [Bowler.ID: [Game.ID]]
+		public var frames: [MutableFrame]?
+
+		public var currentBowlerId: Bowler.ID
+		public var currentGameId: Game.ID
+		public var currentFrameIndex = 0
+		public var currentRollIndex = 0
+
+		public var isShieldVisible = false
+
+		public var _frameEditor: FrameEditor.State?
 
 		public init(
 			bowlers: IdentifiedArrayOf<Bowler>,
@@ -31,8 +33,8 @@ public struct GamesEditor: ReducerProtocol {
 			precondition(bowlerGames.allSatisfy { $0.value.count == bowlerGames.first!.value.count })
 			self.bowlers = bowlers
 			self.bowlerGames = bowlerGames
-			self.currentBowler = currentBowler
-			self.currentGame = currentGame
+			self.currentBowlerId = currentBowler
+			self.currentGameId = currentGame
 		}
 	}
 
@@ -40,9 +42,10 @@ public struct GamesEditor: ReducerProtocol {
 		public enum ViewAction: Equatable {
 			case didAppear
 			case didMeasureSheetHeight(CGFloat)
+			case didDismissOpenSheet
 			case setGamePicker(isPresented: Bool)
 			case setGameDetails(isPresented: Bool)
-			case didDismissOpenSheet
+			case setShield(isVisible: Bool)
 		}
 		public enum DelegateAction: Equatable {}
 		public enum InternalAction: Equatable {
@@ -50,7 +53,6 @@ public struct GamesEditor: ReducerProtocol {
 			case switchToGame(Game.ID)
 			case framesResponse(TaskResult<[Frame]>)
 
-			case ballDetails(BallDetails.Action)
 			case gameIndicator(GameIndicator.Action)
 			case gamePicker(GamePicker.Action)
 			case frameEditor(FrameEditor.Action)
@@ -71,10 +73,6 @@ public struct GamesEditor: ReducerProtocol {
 	public var body: some ReducerProtocol<State, Action> {
 		BindingReducer()
 
-		Scope(state: \.ballDetails, action: /Action.internal..Action.InternalAction.ballDetails) {
-			BallDetails()
-		}
-
 		Scope(state: \.gameIndicator, action: /Action.internal..Action.InternalAction.gameIndicator) {
 			GameIndicator()
 		}
@@ -88,7 +86,11 @@ public struct GamesEditor: ReducerProtocol {
 			case let .view(viewAction):
 				switch viewAction {
 				case .didAppear:
-					return loadGameDetails(for: state.currentGame)
+					return loadGameDetails(for: state.currentGameId)
+
+				case let .setShield(isVisible):
+					state.isShieldVisible = isVisible
+					return .none
 
 				case let .didMeasureSheetHeight(newHeight):
 					if state.detent == .height(.zero) {
@@ -112,24 +114,25 @@ public struct GamesEditor: ReducerProtocol {
 			case let .internal(internalAction):
 				switch internalAction {
 				case let .switchToBowler(bowlerId):
-					let gameIndex = state.bowlerGames[state.currentBowler]!.firstIndex(of: state.currentGame)!
-					state.currentBowler = bowlerId
-					state.currentGame = state.bowlerGames[bowlerId]![gameIndex]
-					return loadGameDetails(for: state.currentGame)
+					let gameIndex = state.bowlerGames[state.currentBowlerId]!.firstIndex(of: state.currentGameId)!
+					state.currentBowlerId = bowlerId
+					state.currentGameId = state.bowlerGames[bowlerId]![gameIndex]
+					return loadGameDetails(for: state.currentGameId)
 
 				case let .switchToGame(gameId):
-					precondition(state.bowlerGames[state.currentBowler]!.contains(gameId))
-					state.currentGame = gameId
-					return loadGameDetails(for: state.currentGame)
+					precondition(state.bowlerGames[state.currentBowlerId]!.contains(gameId))
+					state.currentGameId = gameId
+					return loadGameDetails(for: state.currentGameId)
 
 				case let .framesResponse(.success(frames)):
-					guard frames.first?.game == state.currentGame else {
+					guard frames.first?.game == state.currentGameId else {
 						// TODO: log error that unexpected frames loaded (should be cancelled in flight)
 						return .none
 					}
 
 					state.frames = frames.map { .init(from: $0) }
-					state.frames?[state.frameIndex].guaranteeRollExists(upTo: state.rollIndex)
+					state.frames![state.currentFrameIndex].guaranteeRollExists(upTo: state.currentRollIndex)
+					state.frameEditor = .init(currentRollIndex: state.currentRollIndex, frame: state.frames![state.currentFrameIndex])
 					return .none
 
 				case .framesResponse(.failure):
@@ -140,12 +143,6 @@ public struct GamesEditor: ReducerProtocol {
 					switch delegateAction {
 					case .didFinish:
 						state.sheet.hide(.gamePicker)
-						return .none
-					}
-
-				case let .ballDetails(.delegate(delegateAction)):
-					switch delegateAction {
-					case .never:
 						return .none
 					}
 
@@ -170,9 +167,6 @@ public struct GamesEditor: ReducerProtocol {
 
 				case .gameIndicator(.view), .gameIndicator(.internal):
 					return .none
-
-				case .ballDetails(.view), .ballDetails(.internal), .ballDetails(.binding):
-					return .none
 				}
 
 			case .delegate, .binding:
@@ -195,49 +189,35 @@ public struct GamesEditor: ReducerProtocol {
 }
 
 extension GamesEditor.State {
-	var ballDetails: BallDetails.State {
-		// TODO: replace with frameIndex
-		get { .init(frame: frameIndex + 1, ball: rollIndex + 1) }
-		set {
-			self.rollIndex = newValue.ball - 1
-			self.frameIndex = newValue.frame - 1
-			self.frames?[self.frameIndex].guaranteeRollExists(upTo: newValue.ball - 1)
-		}
-	}
-}
-
-extension GamesEditor.State {
 	var currentBowlerGames: [Game.ID] {
-		bowlerGames[currentBowler] ?? []
+		bowlerGames[currentBowlerId] ?? []
 	}
 
 	var gameIndicator: GameIndicator.State {
-		get { .init(games: currentBowlerGames, selected: currentGame) }
-		set { self.currentGame = newValue.selected }
+		get { .init(games: currentBowlerGames, selected: currentGameId) }
+		set { self.currentGameId = newValue.selected }
 	}
 
 	var gamePicker: GamePicker.State {
-		get { .init(games: currentBowlerGames, selected: currentGame) }
-		set { self.currentGame = newValue.selected }
+		get { .init(games: currentBowlerGames, selected: currentGameId) }
+		set { self.currentGameId = newValue.selected }
 	}
 }
 
 extension GamesEditor.State {
 	var frameEditor: FrameEditor.State? {
 		get {
-			guard let frames else { return nil }
-			return .init(
-				rollIndex: rollIndex,
-				frame: frames[frameIndex],
-				draggedPinNewState: draggedPinNewState
-			)
+			guard let _frameEditor, let frames else { return nil }
+			var frameEditor = _frameEditor
+			frameEditor.currentRollIndex = currentRollIndex
+			frameEditor.frame = frames[currentFrameIndex]
+			return frameEditor
 		}
 		set {
+			_frameEditor = newValue
 			guard let newValue else { return }
-			self.rollIndex = newValue.rollIndex
-			self.frames?[self.frameIndex] = newValue.frame
-			self.frames?[self.frameIndex].guaranteeRollExists(upTo: self.rollIndex)
-			self.draggedPinNewState = newValue.draggedPinNewState
+			self.currentRollIndex = newValue.currentRollIndex
+			self.frames?[self.currentFrameIndex] = newValue.frame
 		}
 	}
 }
