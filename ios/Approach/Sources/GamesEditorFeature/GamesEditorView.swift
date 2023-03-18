@@ -1,5 +1,6 @@
 import ComposableArchitecture
 import FeatureActionLibrary
+import ScoreSheetFeature
 import SharedModelsLibrary
 import StringsLibrary
 import SwiftUI
@@ -13,6 +14,7 @@ public struct GamesEditorView: View {
 
 	struct ViewState: Equatable {
 		@BindableState var detent: PresentationDetent = .height(.zero)
+		let sheetHeight: CGFloat
 		let isGamePickerPresented: Bool
 		let isGameDetailsPresented: Bool
 		let isShieldVisible: Bool
@@ -22,6 +24,7 @@ public struct GamesEditorView: View {
 			self.isGamePickerPresented = state.sheet == .presenting(.gamePicker)
 			self.detent = state.detent
 			self.isShieldVisible = state.isShieldVisible
+			self.sheetHeight = state.sheetHeight
 		}
 	}
 
@@ -58,6 +61,7 @@ public struct GamesEditorView: View {
 
 				if viewStore.isShieldVisible {
 					Shield()
+						.edgesIgnoringSafeArea(.top)
 						.transition(.move(edge: .top))
 						.zIndex(1)
 				}
@@ -93,12 +97,22 @@ public struct GamesEditorView: View {
 				viewStore.send(.didDismissGameDetails)
 			}, content: {
 				ScrollView {
-					EmptyView()
+					IfLetStore(
+						store.scope(state: \.scoreSheet, action: /GamesEditor.Action.InternalAction.scoreSheet)
+					) { scopedStore in
+						ScoreSheetView(store: scopedStore)
+							.overlay(
+								GeometryReader { proxy in
+									Color.clear
+										.onAppear { viewStore.send(.didMeasureSheetHeight(proxy.size.height + safeAreaInsets.top)) }
+								}
+							)
+					}
 				}
 				.padding(.vertical, .largeSpacing)
 				.padding(.horizontal, .standardSpacing)
 				.presentationDetents(
-					undimmed: [.height(50), .medium, .large],
+					undimmed: [.height(viewStore.sheetHeight), .medium, .large],
 					selection: viewStore.binding(\.$detent)
 				)
 				.presentationDragIndicator(.hidden)

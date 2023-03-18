@@ -9,7 +9,7 @@ struct FrameEditorView: View {
 
 	struct ViewState: Equatable {
 		let rollIndex: Int
-		let roll: MutableRoll
+		let roll: Frame.Roll
 		let renderWidth: CGFloat
 
 		init(state: FrameEditor.State) {

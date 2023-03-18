@@ -5,14 +5,11 @@ import SwiftUI
 public struct FrameEditor: ReducerProtocol {
 	public struct State: Equatable {
 		public var currentRollIndex: Int
-		public var frame: MutableFrame
+		public var frame: Frame
 		public var draggedPinNewState: Bool?
 		public var renderWidth: CGFloat = .zero
 
-		public init(
-			currentRollIndex: Int,
-			frame: MutableFrame
-		) {
+		public init(currentRollIndex: Int, frame: Frame) {
 			self.currentRollIndex = currentRollIndex
 			self.frame = frame
 		}

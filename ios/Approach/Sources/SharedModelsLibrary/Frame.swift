@@ -3,7 +3,7 @@ import Foundation
 public struct Frame: Sendable, Identifiable, Hashable, Codable {
 	public let game: Game.ID
 	public let ordinal: Int
-	public let rolls: [Roll]
+	public var rolls: [Roll]
 
 	public var id: String {
 		"\(game)-\(ordinal)"
@@ -24,8 +24,8 @@ public struct Frame: Sendable, Identifiable, Hashable, Codable {
 
 extension Frame {
 	public struct Roll: Sendable, Hashable, Codable {
-		public let pinsDowned: [Pin]
-		public let didFoul: Bool
+		public var pinsDowned: [Pin]
+		public var didFoul: Bool
 
 		public init(pinsDowned: [Pin], didFoul: Bool) {
 			self.pinsDowned = pinsDowned

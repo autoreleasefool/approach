@@ -228,10 +228,9 @@ let package = Package(
 			name: "GamesEditorFeature",
 			dependencies: [
 				"ExtensionsLibrary",
-				"FeatureActionLibrary",
 				"FramesDataProviderInterface",
+				"ScoreSheetFeature",
 				"SwiftUIExtensionsLibrary",
-				"ViewsLibrary",
 			]
 		),
 		.testTarget(
@@ -382,6 +381,7 @@ let package = Package(
 			dependencies: [
 				"FeatureActionLibrary",
 				"SharedModelsLibrary",
+				"ViewsLibrary",
 			]
 		),
 		.testTarget(

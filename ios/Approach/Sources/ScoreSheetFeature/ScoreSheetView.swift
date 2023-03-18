@@ -1,22 +1,25 @@
 import ComposableArchitecture
 import SharedModelsLibrary
 import SwiftUI
+import ViewsLibrary
 
 public struct ScoreSheetView: View {
 	let store: StoreOf<ScoreSheet>
 
 	struct ViewState: Equatable {
-		let frames: IdentifiedArrayOf<Frame>
-		let selection: Frame.ID?
+		let frames: [Frame]
+		let currentFrameIndex: Int
+		let currentRollIndex: Int
 
 		init(state: ScoreSheet.State) {
 			self.frames = state.frames
-			self.selection = state.selection
+			self.currentFrameIndex = state.currentFrameIndex
+			self.currentRollIndex = state.currentRollIndex
 		}
 	}
 
 	enum ViewAction {
-		case setFrame(id: Frame.ID?)
+		case didTapFrame(index: Int, rollIndex: Int?)
 	}
 
 	public init(store: StoreOf<ScoreSheet>) {
@@ -25,45 +28,31 @@ public struct ScoreSheetView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: ScoreSheet.Action.init) { viewStore in
-			HStack {
-				ForEach(viewStore.frames) { frame in
-					VStack {
-						HStack {
-							ball(frame.firstBall)
-							ball(frame.secondBall)
-							ball(frame.thirdBall)
+			ScrollView(.horizontal) {
+				HStack {
+					ForEach(viewStore.frames) { frame in
+						Button { viewStore.send(.didTapFrame(index: frame.ordinal - 1, rollIndex: nil)) } label: {
+							VStack {
+								HStack {
+									Button { viewStore.send(.didTapFrame(index: frame.ordinal - 1, rollIndex: 0)) } label: {
+										Text("5")
+									}
+								}
+							}
 						}
-
-						Text("148")
+						.buttonStyle(TappableElement())
 					}
 				}
 			}
 		}
-	}
-
-	private func ball(_ ball: Frame.Ball?) -> some View {
-		Text(ball?.deck.displayValue ?? "N/A")
 	}
 }
 
 extension ScoreSheet.Action {
 	init(action: ScoreSheetView.ViewAction) {
 		switch action {
-		case .setFrame(let id):
-			self = .setFrame(id: id)
+		case let .didTapFrame(frameIndex, rollIndex):
+			self = .view(.didTapFrame(index: frameIndex, rollIndex: rollIndex))
 		}
 	}
 }
-
-#if DEBUG
-struct ScoreSheetViewPreviews: PreviewProvider {
-	static var previews: some View {
-		ScoreSheetView(
-			store: .init(
-				initialState: .init(),
-				reducer: ScoreSheet()
-			)
-		)
-	}
-}
-#endif

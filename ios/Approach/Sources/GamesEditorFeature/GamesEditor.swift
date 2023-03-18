@@ -1,6 +1,7 @@
 import ComposableArchitecture
 import FeatureActionLibrary
 import FramesDataProviderInterface
+import ScoreSheetFeature
 import SharedModelsLibrary
 import SwiftUI
 
@@ -8,10 +9,11 @@ public struct GamesEditor: ReducerProtocol {
 	public struct State: Equatable {
 		@BindableState public var detent: PresentationDetent = .height(.zero)
 		public var sheet: SheetState = .presenting(.gameDetails)
+		public var sheetHeight: CGFloat = .zero
 
 		public var bowlers: IdentifiedArrayOf<Bowler>
 		public var bowlerGames: [Bowler.ID: [Game.ID]]
-		public var frames: [MutableFrame]?
+		public var frames: [Frame]?
 
 		public var currentBowlerId: Bowler.ID
 		public var currentGameId: Game.ID
@@ -56,6 +58,7 @@ public struct GamesEditor: ReducerProtocol {
 			case gameIndicator(GameIndicator.Action)
 			case gamePicker(GamePicker.Action)
 			case frameEditor(FrameEditor.Action)
+			case scoreSheet(ScoreSheet.Action)
 		}
 
 		case view(ViewAction)
@@ -93,6 +96,7 @@ public struct GamesEditor: ReducerProtocol {
 					return .none
 
 				case let .didMeasureSheetHeight(newHeight):
+					state.sheetHeight = newHeight
 					if state.detent == .height(.zero) {
 						state.detent = .height(newHeight)
 					}
@@ -130,7 +134,11 @@ public struct GamesEditor: ReducerProtocol {
 						return .none
 					}
 
-					state.frames = frames.map { .init(from: $0) }
+					// TODO: determine which frame and roll to start with
+					state.currentFrameIndex = 0
+					state.currentRollIndex = 0
+
+					state.frames = frames
 					state.frames![state.currentFrameIndex].guaranteeRollExists(upTo: state.currentRollIndex)
 					state.frameEditor = .init(currentRollIndex: state.currentRollIndex, frame: state.frames![state.currentFrameIndex])
 					return .none
@@ -152,12 +160,21 @@ public struct GamesEditor: ReducerProtocol {
 						return .none
 					}
 
+				case let .scoreSheet(.delegate(delegateAction)):
+					switch delegateAction {
+					case .never:
+						return .none
+					}
+
 				case let .gameIndicator(.delegate(delegateAction)):
 					switch delegateAction {
 					case .didRequestGamePicker:
 						state.sheet.transition(to: .gamePicker)
 						return .none
 					}
+
+				case .scoreSheet(.view), .scoreSheet(.internal):
+					return .none
 
 				case .frameEditor(.view), .frameEditor(.internal):
 					return .none
@@ -176,6 +193,9 @@ public struct GamesEditor: ReducerProtocol {
 		.ifLet(\.frameEditor, action: /Action.internal..Action.InternalAction.frameEditor) {
 			FrameEditor()
 		}
+		.ifLet(\.scoreSheet, action: /Action.internal..Action.InternalAction.scoreSheet) {
+			ScoreSheet()
+		}
 	}
 
 	private func loadGameDetails(for gameId: Game.ID) -> EffectTask<Action> {
@@ -193,16 +213,22 @@ extension GamesEditor.State {
 		bowlerGames[currentBowlerId] ?? []
 	}
 
+	// MARK: - GameIndicator
+
 	var gameIndicator: GameIndicator.State {
 		get { .init(games: currentBowlerGames, selected: currentGameId) }
 		set { self.currentGameId = newValue.selected }
 	}
+
+	// MARK: - GamePicker
 
 	var gamePicker: GamePicker.State {
 		get { .init(games: currentBowlerGames, selected: currentGameId) }
 		set { self.currentGameId = newValue.selected }
 	}
 }
+
+// MARK: - FrameEditor
 
 extension GamesEditor.State {
 	var frameEditor: FrameEditor.State? {
@@ -217,10 +243,34 @@ extension GamesEditor.State {
 			_frameEditor = newValue
 			guard let newValue else { return }
 			self.currentRollIndex = newValue.currentRollIndex
+			self.frames?[self.currentFrameIndex].guaranteeRollExists(upTo: currentRollIndex)
 			self.frames?[self.currentFrameIndex] = newValue.frame
 		}
 	}
 }
+
+// MARK: - Scoresheet
+
+extension GamesEditor.State {
+	var scoreSheet: ScoreSheet.State? {
+		get {
+			guard let frames else { return nil }
+			return .init(
+				frames: frames,
+				currentFrameIndex: currentFrameIndex,
+				currentRollIndex: currentRollIndex
+			)
+		}
+		set {
+			guard let newValue else { return }
+			currentRollIndex = newValue.currentRollIndex
+			currentFrameIndex = newValue.currentFrameIndex
+			frames?[currentFrameIndex].guaranteeRollExists(upTo: currentRollIndex)
+		}
+	}
+}
+
+// MARK: - Sheet
 
 extension GamesEditor.State {
 	public enum Sheet: Equatable {

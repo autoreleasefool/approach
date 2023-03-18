@@ -1,16 +1,34 @@
 import ComposableArchitecture
+import FeatureActionLibrary
 import SharedModelsLibrary
 
 public struct ScoreSheet: ReducerProtocol {
 	public struct State: Equatable {
-		public var frames: IdentifiedArrayOf<Frame> = []
-		public var selection: Frame.ID?
+		public let frames: [Frame]
+		public var currentFrameIndex: Int
+		public var currentRollIndex: Int
 
-		public init() {}
+		public init(
+			frames: [Frame],
+			currentFrameIndex: Int,
+			currentRollIndex: Int
+		) {
+			self.frames = frames
+			self.currentFrameIndex = currentFrameIndex
+			self.currentRollIndex = currentRollIndex
+		}
 	}
 
-	public enum Action: Equatable {
-		case setFrame(id: Frame.ID?)
+	public enum Action: FeatureAction, Equatable {
+		public enum ViewAction: Equatable {
+			case didTapFrame(index: Int, rollIndex: Int?)
+		}
+		public enum DelegateAction: Equatable {}
+		public enum InternalAction: Equatable {}
+
+		case view(ViewAction)
+		case delegate(DelegateAction)
+		case `internal`(InternalAction)
 	}
 
 	public init() {}
@@ -18,12 +36,26 @@ public struct ScoreSheet: ReducerProtocol {
 	public var body: some ReducerProtocol<State, Action> {
 		Reduce<State, Action> { state, action in
 			switch action {
-			case let .setFrame(.some(id)):
-				state.selection = id
-				return .none
+			case let .view(viewAction):
+				switch viewAction {
+				case let .didTapFrame(frameIndex, rollIndex):
+					state.currentFrameIndex = frameIndex
+					if let rollIndex {
+						state.currentRollIndex = rollIndex
+					} else {
+						state.currentRollIndex = state.frames[state.currentFrameIndex].rolls.count - 1
+					}
 
-			case .setFrame(.none):
-				state.selection = nil
+					return .none
+				}
+
+			case let .internal(internalAction):
+				switch internalAction {
+				case .never:
+					return .none
+				}
+
+			case .delegate:
 				return .none
 			}
 		}
