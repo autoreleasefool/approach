@@ -10,11 +10,11 @@ extension Opponent: BaseFormModel {
 	static public var modelName = Strings.Opponent.title
 }
 
-public struct OpponentEditor: ReducerProtocol {
+public struct OpponentEditor: Reducer {
 	public typealias Form = BaseForm<Opponent, Fields>
 
 	public struct Fields: BaseFormState, Equatable {
-		@BindableState public var name = ""
+		@BindingState public var name = ""
 
 		public let isDeleteable = true
 		public var isSaveable: Bool {
@@ -55,7 +55,7 @@ public struct OpponentEditor: ReducerProtocol {
 	@Dependency(\.uuid) var uuid
 	@Dependency(\.persistenceService) var persistenceService
 
-	public var body: some ReducerProtocol<State, Action> {
+	public var body: some Reducer<State, Action> {
 		BindingReducer()
 
 		Scope(state: \.base, action: /Action.internal..Action.InternalAction.form) {
@@ -67,7 +67,7 @@ public struct OpponentEditor: ReducerProtocol {
 				))
 		}
 
-		Reduce<State, Action> { state, action in
+		Reduce<State, Action> { _, action in
 			switch action {
 			case let .internal(internalAction):
 				switch internalAction {

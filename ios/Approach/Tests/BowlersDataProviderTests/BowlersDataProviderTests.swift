@@ -19,7 +19,7 @@ final class BowlersDataProviderTests: XCTestCase {
 		let bowler3: Bowler = .mock(id: id2, name: "third")
 
 		try await withDependencies {
-			$0.persistenceService.fetchBowlers = { request in
+			$0.persistenceService.fetchBowlers = { _ in
 				return [bowler1, bowler2, bowler3]
 			}
 			$0.recentlyUsedService.getRecentlyUsed = { category in
@@ -45,7 +45,7 @@ final class BowlersDataProviderTests: XCTestCase {
 		let bowler3: Bowler = .mock(id: id2, name: "third")
 
 		try await withDependencies {
-			$0.persistenceService.fetchBowlers = { request in
+			$0.persistenceService.fetchBowlers = { _ in
 				return [bowler1, bowler2, bowler3]
 			}
 			$0.recentlyUsedService.getRecentlyUsed = { category in
@@ -74,7 +74,7 @@ final class BowlersDataProviderTests: XCTestCase {
 		let bowler3: Bowler = .mock(id: id2, name: "third")
 
 		try await withDependencies {
-			$0.persistenceService.fetchBowlers = { request in
+			$0.persistenceService.fetchBowlers = { _ in
 				return [bowler1, bowler2, bowler3]
 			}
 			$0.recentlyUsedService.getRecentlyUsed = { category in

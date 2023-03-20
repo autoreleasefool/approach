@@ -1,9 +1,9 @@
 import ComposableArchitecture
 import FeatureActionLibrary
 
-public struct AddLaneForm: ReducerProtocol {
+public struct AddLaneForm: Reducer {
 	public struct State: Equatable {
-		@BindableState var lanesToAdd = 1
+		@BindingState var lanesToAdd = 1
 	}
 
 	public enum Action: FeatureAction, BindableAction, Equatable {
@@ -26,7 +26,7 @@ public struct AddLaneForm: ReducerProtocol {
 
 	public init() {}
 
-	public var body: some ReducerProtocol<State, Action> {
+	public var body: some Reducer<State, Action> {
 		BindingReducer()
 
 		Reduce<State, Action> { state, action in

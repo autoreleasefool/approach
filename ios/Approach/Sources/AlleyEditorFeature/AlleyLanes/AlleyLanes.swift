@@ -3,7 +3,7 @@ import FeatureActionLibrary
 import LanesDataProviderInterface
 import SharedModelsLibrary
 
-public struct AlleyLanes: ReducerProtocol {
+public struct AlleyLanes: Reducer {
 	public struct State: Equatable {
 		public let alley: Alley?
 		public var lanes: IdentifiedArrayOf<Lane>?
@@ -31,7 +31,7 @@ public struct AlleyLanes: ReducerProtocol {
 
 	@Dependency(\.lanesDataProvider) var lanesDataProvider
 
-	public var body: some ReducerProtocol<State, Action> {
+	public var body: some Reducer<State, Action> {
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):

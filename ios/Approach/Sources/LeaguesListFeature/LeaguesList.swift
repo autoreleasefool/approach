@@ -6,6 +6,7 @@ import PersistenceServiceInterface
 import RecentlyUsedServiceInterface
 import ResourceListLibrary
 import SeriesListFeature
+import SharedModelsFetchableLibrary
 import SharedModelsLibrary
 import SortOrderLibrary
 import StringsLibrary
@@ -13,7 +14,7 @@ import ViewsLibrary
 
 extension League: ResourceListItem {}
 
-public struct LeaguesList: ReducerProtocol {
+public struct LeaguesList: Reducer {
 	public struct State: Equatable {
 		public let bowler: Bowler
 
@@ -81,7 +82,7 @@ public struct LeaguesList: ReducerProtocol {
 	@Dependency(\.recentlyUsedService) var recentlyUsedService
 	@Dependency(\.featureFlags) var featureFlags
 
-	public var body: some ReducerProtocol<State, Action> {
+	public var body: some Reducer<State, Action> {
 		Scope(state: \.sortOrder, action: /Action.internal..Action.InternalAction.sortOrder) {
 			SortOrder()
 		}

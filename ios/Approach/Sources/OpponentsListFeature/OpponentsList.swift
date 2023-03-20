@@ -12,7 +12,7 @@ import ViewsLibrary
 
 extension Opponent: ResourceListItem {}
 
-public struct OpponentsList: ReducerProtocol {
+public struct OpponentsList: Reducer {
 	public struct State: Equatable {
 		public var list: ResourceList<Opponent, Opponent.FetchRequest>.State
 		public var editor: OpponentEditor.State?
@@ -28,7 +28,7 @@ public struct OpponentsList: ReducerProtocol {
 					.swipeToDelete(onDelete: .init {
 						@Dependency(\.persistenceService) var persistenceService: PersistenceService
 						try await persistenceService.deleteOpponent($0)
-					})
+					}),
 				],
 				query: .init(filter: nil, ordering: sortOrder.ordering),
 				listTitle: Strings.Opponent.List.title,
@@ -63,7 +63,7 @@ public struct OpponentsList: ReducerProtocol {
 
 	@Dependency(\.opponentsDataProvider) var opponentsDataProvider
 
-	public var body: some ReducerProtocol<State, Action> {
+	public var body: some Reducer<State, Action> {
 		Scope(state: \.sortOrder, action: /Action.internal..Action.InternalAction.sortOrder) {
 			SortOrder()
 		}

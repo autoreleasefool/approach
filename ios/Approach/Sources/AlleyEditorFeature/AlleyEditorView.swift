@@ -9,12 +9,12 @@ public struct AlleyEditorView: View {
 	let store: StoreOf<AlleyEditor>
 
 	struct ViewState: Equatable {
-		@BindableState var name: String
-		@BindableState var address: String
-		@BindableState var material: Alley.Material
-		@BindableState var pinFall: Alley.PinFall
-		@BindableState var mechanism: Alley.Mechanism
-		@BindableState var pinBase: Alley.PinBase
+		@BindingState var name: String
+		@BindingState var address: String
+		@BindingState var material: Alley.Material
+		@BindingState var pinFall: Alley.PinFall
+		@BindingState var mechanism: Alley.Mechanism
+		@BindingState var pinBase: Alley.PinBase
 		var isLaneEditorPresented: Bool
 		let hasLanesEnabled: Bool
 

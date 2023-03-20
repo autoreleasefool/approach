@@ -19,7 +19,7 @@ final class GearDataProviderTests: XCTestCase {
 		let gear3: Gear = .mock(id: id2, name: "third")
 
 		try await withDependencies {
-			$0.persistenceService.fetchGear = { request in
+			$0.persistenceService.fetchGear = { _ in
 				return [gear1, gear2, gear3]
 			}
 			$0.recentlyUsedService.getRecentlyUsed = { category in
@@ -45,7 +45,7 @@ final class GearDataProviderTests: XCTestCase {
 		let gear3: Gear = .mock(id: id2, name: "third")
 
 		try await withDependencies {
-			$0.persistenceService.fetchGear = { request in
+			$0.persistenceService.fetchGear = { _ in
 				return [gear1, gear2, gear3]
 			}
 			$0.recentlyUsedService.getRecentlyUsed = { category in
@@ -74,7 +74,7 @@ final class GearDataProviderTests: XCTestCase {
 		let gear3: Gear = .mock(id: id2, name: "third")
 
 		try await withDependencies {
-			$0.persistenceService.fetchGear = { request in
+			$0.persistenceService.fetchGear = { _ in
 				return [gear1, gear2, gear3]
 			}
 			$0.recentlyUsedService.getRecentlyUsed = { category in

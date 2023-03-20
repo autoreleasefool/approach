@@ -10,7 +10,7 @@ public struct TeamEditorView: View {
 	let store: StoreOf<TeamEditor>
 
 	struct ViewState: Equatable {
-		@BindableState var name: String
+		@BindingState var name: String
 		let isBowlerPickerPresented: Bool
 
 		init(state: TeamEditor.State) {

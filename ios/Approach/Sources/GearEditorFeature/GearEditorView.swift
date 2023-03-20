@@ -13,8 +13,8 @@ public struct GearEditorView: View {
 	let store: StoreOf<GearEditor>
 
 	struct ViewState: Equatable {
-		@BindableState var name: String
-		@BindableState var kind: Gear.Kind
+		@BindingState var name: String
+		@BindingState var kind: Gear.Kind
 		let selectedBowler: Bowler?
 		let isBowlerPickerPresented: Bool
 		let hasAvatarsEnabled: Bool

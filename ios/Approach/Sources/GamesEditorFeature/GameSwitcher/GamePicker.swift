@@ -10,7 +10,7 @@ struct GameIndex: Hashable, Identifiable {
 	let ordinal: Int
 }
 
-public struct GamePicker: ReducerProtocol {
+public struct GamePicker: Reducer {
 	public struct State: Equatable {
 		public let games: [Game.ID]
 		public var selected: Game.ID
@@ -42,7 +42,7 @@ public struct GamePicker: ReducerProtocol {
 
 	init() {}
 
-	public var body: some ReducerProtocol<State, Action> {
+	public var body: some Reducer<State, Action> {
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):

@@ -12,14 +12,14 @@ public struct LeagueEditorView: View {
 	let store: StoreOf<LeagueEditor>
 
 	struct ViewState: Equatable {
-		@BindableState var name: String
-		@BindableState var recurrence: League.Recurrence
-		@BindableState var gamesPerSeries: LeagueEditor.GamesPerSeries
-		@BindableState var excludeFromStatistics: League.ExcludeFromStatistics
-		@BindableState var numberOfGames: Int
-		@BindableState var additionalPinfall: String
-		@BindableState var additionalGames: String
-		@BindableState var hasAdditionalPinfall: Bool
+		@BindingState var name: String
+		@BindingState var recurrence: League.Recurrence
+		@BindingState var gamesPerSeries: LeagueEditor.GamesPerSeries
+		@BindingState var excludeFromStatistics: League.ExcludeFromStatistics
+		@BindingState var numberOfGames: Int
+		@BindingState var additionalPinfall: String
+		@BindingState var additionalGames: String
+		@BindingState var hasAdditionalPinfall: Bool
 		let selectedAlley: Alley?
 		let hasAlleysEnabled: Bool
 		let isAlleyPickerPresented: Bool

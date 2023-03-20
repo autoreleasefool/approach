@@ -17,13 +17,13 @@ extension Bowler: PickableResource {
 	}
 }
 
-public struct TeamEditor: ReducerProtocol {
+public struct TeamEditor: Reducer {
 	public typealias Form = BaseForm<Team, Fields>
 
 	public struct Fields: BaseFormState, Equatable {
 		public let teamId: Team.ID
 		public var bowlers: ResourcePicker<Bowler, Bowler.FetchRequest>.State
-		@BindableState public var name = ""
+		@BindingState public var name = ""
 
 		public let isDeleteable = true
 		public var isSaveable: Bool {
@@ -86,7 +86,7 @@ public struct TeamEditor: ReducerProtocol {
 	@Dependency(\.persistenceService) var persistenceService
 	@Dependency(\.bowlersDataProvider) var bowlersDataProvider
 
-	public var body: some ReducerProtocol<State, Action> {
+	public var body: some Reducer<State, Action> {
 		BindingReducer()
 
 		Scope(state: \.base, action: /Action.internal..Action.InternalAction.form) {

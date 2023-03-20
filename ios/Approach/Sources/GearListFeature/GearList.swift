@@ -6,6 +6,7 @@ import GearEditorFeature
 import PersistenceServiceInterface
 import RecentlyUsedServiceInterface
 import ResourceListLibrary
+import SharedModelsFetchableLibrary
 import SharedModelsLibrary
 import SortOrderLibrary
 import StringsLibrary
@@ -13,7 +14,7 @@ import ViewsLibrary
 
 extension Gear: ResourceListItem {}
 
-public struct GearList: ReducerProtocol {
+public struct GearList: Reducer {
 	public struct State: Equatable {
 		public var list: ResourceList<Gear, Gear.FetchRequest>.State
 		public var editor: GearEditor.State?
@@ -27,7 +28,7 @@ public struct GearList: ReducerProtocol {
 					.swipeToDelete(onDelete: .init {
 						@Dependency(\.persistenceService) var persistenceService: PersistenceService
 						try await persistenceService.deleteGear($0)
-					})
+					}),
 				],
 				query: .init(filter: nil, ordering: sortOrder.ordering),
 				listTitle: Strings.Gear.List.title,
@@ -63,7 +64,7 @@ public struct GearList: ReducerProtocol {
 	@Dependency(\.gearDataProvider) var gearDataProvider
 	@Dependency(\.recentlyUsedService) var recentlyUsedService
 
-	public var body: some ReducerProtocol<State, Action> {
+	public var body: some Reducer<State, Action> {
 		Scope(state: \.sortOrder, action: /Action.internal..Action.InternalAction.sortOrder) {
 			SortOrder()
 		}

@@ -1,5 +1,5 @@
 // swift-tools-version: <%= @package.tools_version %>
-// swiftlint:disable file_length
+// swiftlint:disable file_length line_length
 
 import PackageDescription
 
@@ -15,7 +15,7 @@ let package = Package(
 <% end %>
 	],
 	dependencies: [<% @packages.each do |_, package| %>
-		.package(url: "<%= package.url %>", <% if package.from %>from: "<%= package.from %>"<% elsif package.branch %>branch: "<%= package.branch %>"<% end %>),<% end %>
+		.package(url: "<%= package.url %>", <% if package.from %>from: "<%= package.from %>"<% elsif package.branch %>branch: "<%= package.branch %>"<% elsif package.revision %>revision: "<%= package.revision %>"<% end %>),<% end %>
 	],
 	targets: [<% @collections.each do |collection| %>
 		// MARK: - <%= collection[:name] %><% collection[:targets].sort_by { |t, _| t }.each do |_, target| %>

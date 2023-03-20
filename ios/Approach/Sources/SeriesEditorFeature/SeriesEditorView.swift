@@ -12,10 +12,10 @@ public struct SeriesEditorView: View {
 	let store: StoreOf<SeriesEditor>
 
 	struct ViewState: Equatable {
-		@BindableState var date: Date
-		@BindableState var numberOfGames: Int
-		@BindableState public var preBowl: Series.PreBowl
-		@BindableState public var excludeFromStatistics: Series.ExcludeFromStatistics
+		@BindingState var date: Date
+		@BindingState var numberOfGames: Int
+		@BindingState public var preBowl: Series.PreBowl
+		@BindingState public var excludeFromStatistics: Series.ExcludeFromStatistics
 		let hasSetNumberOfGames: Bool
 		let excludeLeagueFromStatistics: League.ExcludeFromStatistics
 		let isAlleyPickerPresented: Bool

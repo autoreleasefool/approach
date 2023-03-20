@@ -19,7 +19,7 @@ final class GamesDataProviderTests: XCTestCase {
 		let game3: Game = .mock(series: seriesId, id: id3, ordinal: 3)
 
 		try await withDependencies {
-			$0.persistenceService.fetchGames = { request in
+			$0.persistenceService.fetchGames = { _ in
 				return [game1, game2, game3]
 			}
 		} operation: {

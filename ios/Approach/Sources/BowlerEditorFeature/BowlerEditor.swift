@@ -13,11 +13,11 @@ extension Bowler: BaseFormModel {
 	static public var modelName = Strings.Bowler.title
 }
 
-public struct BowlerEditor: ReducerProtocol {
+public struct BowlerEditor: Reducer {
 	public typealias Form = BaseForm<Bowler, Fields>
 
 	public struct Fields: BaseFormState, Equatable {
-		@BindableState public var name = ""
+		@BindingState public var name = ""
 		public var avatar: Avatar = .text("", .red())
 
 		public let isDeleteable = true
@@ -78,7 +78,7 @@ public struct BowlerEditor: ReducerProtocol {
 	@Dependency(\.uuid) var uuid
 	@Dependency(\.persistenceService) var persistenceService
 
-	public var body: some ReducerProtocol<State, Action> {
+	public var body: some Reducer<State, Action> {
 		BindingReducer()
 
 		Scope(state: \.base, action: /Action.internal..Action.InternalAction.form) {

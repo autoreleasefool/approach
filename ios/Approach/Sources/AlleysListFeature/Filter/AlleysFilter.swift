@@ -1,14 +1,15 @@
 import AlleysDataProviderInterface
 import ComposableArchitecture
 import FeatureActionLibrary
+import SharedModelsFetchableLibrary
 import SharedModelsLibrary
 
-public struct AlleysFilter: ReducerProtocol {
+public struct AlleysFilter: Reducer {
 	public struct State: Equatable {
-		@BindableState public var material: Alley.Material?
-		@BindableState public var mechanism: Alley.Mechanism?
-		@BindableState public var pinBase: Alley.PinBase?
-		@BindableState public var pinFall: Alley.PinFall?
+		@BindingState public var material: Alley.Material?
+		@BindingState public var mechanism: Alley.Mechanism?
+		@BindingState public var pinBase: Alley.PinBase?
+		@BindingState public var pinFall: Alley.PinFall?
 
 		public init() {}
 	}
@@ -32,7 +33,7 @@ public struct AlleysFilter: ReducerProtocol {
 
 	public init() {}
 
-	public var body: some ReducerProtocol<State, Action> {
+	public var body: some Reducer<State, Action> {
 		BindingReducer()
 
 		Reduce<State, Action> { state, action in

@@ -8,7 +8,7 @@ public struct OpponentEditorView: View {
 	let store: StoreOf<OpponentEditor>
 
 	struct ViewState: Equatable {
-		@BindableState var name: String
+		@BindingState var name: String
 
 		init(state: OpponentEditor.State) {
 			self.name = state.base.form.name

@@ -8,7 +8,7 @@ struct AddLaneFormView: View {
 	let store: StoreOf<AddLaneForm>
 
 	struct ViewState: Equatable {
-		@BindableState var lanesToAdd: Int
+		@BindingState var lanesToAdd: Int
 
 		init(state: AddLaneForm.State) {
 			self.lanesToAdd = state.lanesToAdd

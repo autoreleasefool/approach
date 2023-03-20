@@ -9,8 +9,8 @@ public struct LaneEditorView: View {
 	let store: StoreOf<LaneEditor>
 
 	struct ViewState: Equatable {
-		@BindableState var label: String
-		@BindableState var isAgainstWall: Bool
+		@BindingState var label: String
+		@BindingState var isAgainstWall: Bool
 
 		init(state: LaneEditor.State) {
 			self.label = state.label

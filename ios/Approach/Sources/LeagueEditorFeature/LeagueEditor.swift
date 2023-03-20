@@ -4,6 +4,7 @@ import ComposableArchitecture
 import FeatureActionLibrary
 import PersistenceServiceInterface
 import ResourcePickerLibrary
+import SharedModelsFetchableLibrary
 import SharedModelsLibrary
 import StringsLibrary
 
@@ -17,20 +18,20 @@ extension Alley: PickableResource {
 	}
 }
 
-public struct LeagueEditor: ReducerProtocol {
+public struct LeagueEditor: Reducer {
 	public typealias Form = BaseForm<League, Fields>
 
 	public struct Fields: BaseFormState, Equatable {
 		public var bowler: Bowler.ID
 		public var alleyPicker: ResourcePicker<Alley, Alley.FetchRequest>.State
-		@BindableState public var name = ""
-		@BindableState public var recurrence: League.Recurrence = .repeating
-		@BindableState public var gamesPerSeries: GamesPerSeries = .static
-		@BindableState public var numberOfGames = League.DEFAULT_NUMBER_OF_GAMES
-		@BindableState public var excludeFromStatistics: League.ExcludeFromStatistics = .include
-		@BindableState public var hasAdditionalPinfall = false
-		@BindableState public var additionalPinfall = ""
-		@BindableState public var additionalGames = ""
+		@BindingState public var name = ""
+		@BindingState public var recurrence: League.Recurrence = .repeating
+		@BindingState public var gamesPerSeries: GamesPerSeries = .static
+		@BindingState public var numberOfGames = League.DEFAULT_NUMBER_OF_GAMES
+		@BindingState public var excludeFromStatistics: League.ExcludeFromStatistics = .include
+		@BindingState public var hasAdditionalPinfall = false
+		@BindingState public var additionalPinfall = ""
+		@BindingState public var additionalGames = ""
 
 		init(bowler: Bowler.ID, alley: Alley.ID?) {
 			self.bowler = bowler
@@ -115,7 +116,7 @@ public struct LeagueEditor: ReducerProtocol {
 	@Dependency(\.alleysDataProvider) var alleysDataProvider
 	@Dependency(\.persistenceService) var persistenceService
 
-	public var body: some ReducerProtocol<State, Action> {
+	public var body: some Reducer<State, Action> {
 		BindingReducer()
 
 		Scope(state: \.base, action: /Action.internal..Action.InternalAction.form) {

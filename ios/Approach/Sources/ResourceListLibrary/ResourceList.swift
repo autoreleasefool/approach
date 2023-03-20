@@ -11,7 +11,7 @@ public protocol ResourceListItem: Equatable, Identifiable {
 public struct ResourceList<
 	R: ResourceListItem,
 	Q: Equatable
->: ReducerProtocol {
+>: Reducer {
 	public typealias OnDelete = (R) async throws -> Void
 
 	public struct State: Equatable {
@@ -100,7 +100,7 @@ public struct ResourceList<
 
 	let fetchResources: (Q) -> AsyncThrowingStream<[R], Swift.Error>
 
-	public var body: some ReducerProtocol<State, Action> {
+	public var body: some Reducer<State, Action> {
 		Scope(state: \.emptyState, action: /Action.internal..Action.InternalAction.empty) {
 			ResourceListEmpty()
 		}

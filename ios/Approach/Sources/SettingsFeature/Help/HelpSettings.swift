@@ -1,7 +1,7 @@
 import ComposableArchitecture
 import FeatureActionLibrary
 
-public struct HelpSettings: ReducerProtocol {
+public struct HelpSettings: Reducer {
 	public struct State: Equatable {
 		init() {}
 	}
@@ -19,7 +19,7 @@ public struct HelpSettings: ReducerProtocol {
 		case `internal`(InternalAction)
 	}
 
-	public var body: some ReducerProtocol<State, Action> {
+	public var body: some Reducer<State, Action> {
 		Reduce<State, Action> { _, action in
 			switch action {
 			case let .view(viewAction):

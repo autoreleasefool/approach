@@ -7,7 +7,7 @@ import SharedModelsLibrary
 import StringsLibrary
 import SwiftUI
 
-public struct AlleyLanesEditor: ReducerProtocol {
+public struct AlleyLanesEditor: Reducer {
 	public struct State: Equatable {
 		public var alley: Alley?
 
@@ -53,7 +53,7 @@ public struct AlleyLanesEditor: ReducerProtocol {
 	@Dependency(\.lanesDataProvider) var lanesDataProvider
 	@Dependency(\.persistenceService) var persistenceService
 
-	public var body: some ReducerProtocol<State, Action> {
+	public var body: some Reducer<State, Action> {
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):

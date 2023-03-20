@@ -7,6 +7,7 @@ import Foundation
 import LanesDataProviderInterface
 import PersistenceServiceInterface
 import ResourcePickerLibrary
+import SharedModelsFetchableLibrary
 import SharedModelsLibrary
 import StringsLibrary
 
@@ -27,16 +28,16 @@ extension Lane: PickableResource {
 	}
 }
 
-public struct SeriesEditor: ReducerProtocol {
+public struct SeriesEditor: Reducer {
 	public typealias Form = BaseForm<Series, Fields>
 
 	public struct Fields: BaseFormState, Equatable {
 		public let league: League
 		public var hasSetNumberOfGames: Bool
-		@BindableState public var numberOfGames: Int
-		@BindableState public var date = Date()
-		@BindableState public var preBowl: Series.PreBowl = .regularPlay
-		@BindableState public var excludeFromStatistics: Series.ExcludeFromStatistics = .include
+		@BindingState public var numberOfGames: Int
+		@BindingState public var date = Date()
+		@BindingState public var preBowl: Series.PreBowl = .regularPlay
+		@BindingState public var excludeFromStatistics: Series.ExcludeFromStatistics = .include
 		public var alleyPicker: ResourcePicker<Alley, Alley.FetchRequest>.State
 		public var lanePicker: ResourcePicker<Lane, Lane.FetchRequest>.State
 
@@ -144,7 +145,7 @@ public struct SeriesEditor: ReducerProtocol {
 	@Dependency(\.alleysDataProvider) var alleysDataProvider
 	@Dependency(\.lanesDataProvider) var lanesDataProvider
 
-	public var body: some ReducerProtocol<State, Action> {
+	public var body: some Reducer<State, Action> {
 		BindingReducer()
 
 		Scope(state: \.base, action: /Action.internal..Action.InternalAction.form) {

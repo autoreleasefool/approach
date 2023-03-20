@@ -6,6 +6,7 @@ import PersistenceServiceInterface
 import ResourceListLibrary
 import SeriesDataProviderInterface
 import SeriesEditorFeature
+import SharedModelsFetchableLibrary
 import SharedModelsLibrary
 import StringsLibrary
 import ViewsLibrary
@@ -14,7 +15,7 @@ extension Series: ResourceListItem {
 	public var name: String { date.longFormat }
 }
 
-public struct SeriesList: ReducerProtocol {
+public struct SeriesList: Reducer {
 	public struct State: Equatable {
 		public let league: League
 
@@ -69,7 +70,7 @@ public struct SeriesList: ReducerProtocol {
 	@Dependency(\.seriesDataProvider) var seriesDataProvider
 	@Dependency(\.featureFlags) var featureFlags: FeatureFlagsService
 
-	public var body: some ReducerProtocol<State, Action> {
+	public var body: some Reducer<State, Action> {
 		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {
 			ResourceList(fetchResources: seriesDataProvider.observeSeries)
 		}

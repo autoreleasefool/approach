@@ -15,7 +15,7 @@ final class FramesDataProviderTests: XCTestCase {
 		let frame3: Frame = .mock(id: gameId, ordinal: 2)
 
 		try await withDependencies {
-			$0.persistenceService.fetchFrames = { request in
+			$0.persistenceService.fetchFrames = { _ in
 				return [frame1, frame2, frame3]
 			}
 		} operation: {

@@ -3,7 +3,7 @@ import FeatureActionLibrary
 import SharedModelsLibrary
 import SwiftUI
 
-public struct AvatarEditor: ReducerProtocol {
+public struct AvatarEditor: Reducer {
 	public struct State: Equatable {
 		public var name: String
 		public var avatar: Avatar
@@ -33,7 +33,7 @@ public struct AvatarEditor: ReducerProtocol {
 
 	public init() {}
 
-	public var body: some ReducerProtocol<State, Action> {
+	public var body: some Reducer<State, Action> {
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):

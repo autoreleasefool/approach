@@ -3,7 +3,7 @@ import FeatureActionLibrary
 
 public typealias Orderable = Hashable & Equatable & CaseIterable & CustomStringConvertible
 
-public struct SortOrder<Ordering: Orderable>: ReducerProtocol {
+public struct SortOrder<Ordering: Orderable>: Reducer {
 	public struct State: Equatable {
 		public let options: [Ordering] = Array(Ordering.allCases)
 		public var ordering: Ordering
@@ -31,7 +31,7 @@ public struct SortOrder<Ordering: Orderable>: ReducerProtocol {
 
 	public init() {}
 
-	public var body: some ReducerProtocol<State, Action> {
+	public var body: some Reducer<State, Action> {
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):

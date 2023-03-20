@@ -36,7 +36,7 @@ final class LanesDataProviderTests: XCTestCase {
 		let id0 = UUID(uuidString: "00000000-0000-0000-0000-000000000000")!
 
 		try await withDependencies {
-			$0.persistenceService.fetchLanes = { request in
+			$0.persistenceService.fetchLanes = { _ in
 				return []
 			}
 		} operation: {
@@ -53,7 +53,7 @@ final class LanesDataProviderTests: XCTestCase {
 		let alley: Alley = .mock(id: id0)
 
 		try await withDependencies {
-			$0.persistenceService.fetchLanes = { request in
+			$0.persistenceService.fetchLanes = { _ in
 				return []
 			}
 		} operation: {

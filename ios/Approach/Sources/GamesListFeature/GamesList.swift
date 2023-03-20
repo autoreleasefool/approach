@@ -4,6 +4,7 @@ import FeatureActionLibrary
 import GamesDataProviderInterface
 import GamesEditorFeature
 import ResourceListLibrary
+import SharedModelsFetchableLibrary
 import SharedModelsLibrary
 import StringsLibrary
 
@@ -11,7 +12,7 @@ extension Game: ResourceListItem {
 	public var name: String { Strings.Game.title(ordinal) }
 }
 
-public struct GamesList: ReducerProtocol {
+public struct GamesList: Reducer {
 	public struct State: Equatable {
 		public let series: Series
 		public var isLoadingGameDetails = false
@@ -54,7 +55,7 @@ public struct GamesList: ReducerProtocol {
 	@Dependency(\.gamesDataProvider) var gamesDataProvider
 	@Dependency(\.bowlersDataProvider) var bowlersDataProvider
 
-	public var body: some ReducerProtocol<State, Action> {
+	public var body: some Reducer<State, Action> {
 		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {
 			ResourceList(fetchResources: gamesDataProvider.observeGames)
 		}

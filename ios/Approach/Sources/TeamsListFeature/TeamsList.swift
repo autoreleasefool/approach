@@ -13,7 +13,7 @@ import ViewsLibrary
 
 extension Team: ResourceListItem {}
 
-public struct TeamsList: ReducerProtocol {
+public struct TeamsList: Reducer {
 	public struct State: Equatable {
 		public var list: ResourceList<Team, Team.FetchRequest>.State
 		public var sortOrder: SortOrder<Team.FetchRequest.Ordering>.State = .init(initialValue: .byRecentlyUsed)
@@ -72,7 +72,7 @@ public struct TeamsList: ReducerProtocol {
 	@Dependency(\.teamsDataProvider) var teamsDataProvider
 	@Dependency(\.recentlyUsedService) var recentlyUsedService
 
-	public var body: some ReducerProtocol<State, Action> {
+	public var body: some Reducer<State, Action> {
 		Scope(state: \.sortOrder, action: /Action.internal..Action.InternalAction.sortOrder) {
 			SortOrder()
 		}

@@ -17,10 +17,23 @@ extension AvatarService: DependencyKey {
 				let paragraphStyle = NSMutableParagraphStyle()
 				paragraphStyle.alignment = .center
 
-				let attrs = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 36)!, NSAttributedString.Key.paragraphStyle: paragraphStyle]
+				let attrs = [
+					NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Thin", size: 36)!,
+					NSAttributedString.Key.paragraphStyle: paragraphStyle,
+				]
 
 				let string = String(text.prefix(2))
-				string.draw(with: CGRect(x: 32, y: 32, width: 448, height: 448), options: .usesLineFragmentOrigin, attributes: attrs, context: nil)
+				string.draw(
+					with: CGRect(
+						x: 32,
+						y: 32,
+						width: 448,
+						height: 448
+					),
+					options: .usesLineFragmentOrigin,
+					attributes: attrs,
+					context: nil
+				)
 			}
 		}
 

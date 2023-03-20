@@ -22,6 +22,8 @@ module External
         packages[name] = Package.new(url: d['url'], from: d['from'])
       elsif d.include?('branch')
         packages[name] = Package.new(url: d['url'], branch: d['branch'])
+      elsif d.include?('revision')
+        packages[name] = Package.new(url: d['url'], revision: d['revision'])
       end
     end
 
@@ -29,12 +31,13 @@ module External
   end
 
   class Package
-    attr_reader :url, :from, :branch
+    attr_reader :url, :from, :branch, :revision
 
-    def initialize(url:, from: nil, branch: nil)
+    def initialize(url:, from: nil, branch: nil, revision: nil)
       @url = url
       @from = from
       @branch = branch
+      @revision = revision
     end
   end
 

@@ -2,7 +2,7 @@ import ComposableArchitecture
 import FeatureActionLibrary
 import SharedModelsLibrary
 
-public struct ScoreSheet: ReducerProtocol {
+public struct ScoreSheet: Reducer {
 	public struct State: Equatable {
 		public let frames: [Frame]
 		public var currentFrameIndex: Int
@@ -33,7 +33,7 @@ public struct ScoreSheet: ReducerProtocol {
 
 	public init() {}
 
-	public var body: some ReducerProtocol<State, Action> {
+	public var body: some Reducer<State, Action> {
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):

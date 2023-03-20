@@ -5,13 +5,14 @@ import FeatureActionLibrary
 import FeatureFlagsServiceInterface
 import PersistenceServiceInterface
 import ResourceListLibrary
+import SharedModelsFetchableLibrary
 import SharedModelsLibrary
 import StringsLibrary
 import ViewsLibrary
 
 extension Alley: ResourceListItem {}
 
-public struct AlleysList: ReducerProtocol {
+public struct AlleysList: Reducer {
 	public struct State: Equatable {
 		public var list: ResourceList<Alley, Alley.FetchRequest>.State
 		public var editor: AlleyEditor.State?
@@ -66,7 +67,7 @@ public struct AlleysList: ReducerProtocol {
 	@Dependency(\.alleysDataProvider) var alleysDataProvider
 	@Dependency(\.featureFlags) var featureFlags: FeatureFlagsService
 
-	public var body: some ReducerProtocol<State, Action> {
+	public var body: some Reducer<State, Action> {
 		Scope(state: \.filters, action: /Action.internal..Action.InternalAction.filters) {
 			AlleysFilter()
 		}

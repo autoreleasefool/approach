@@ -12,18 +12,18 @@ extension Alley: BaseFormModel {
 	static public var modelName = Strings.Alley.title
 }
 
-public struct AlleyEditor: ReducerProtocol {
+public struct AlleyEditor: Reducer {
 	public typealias Form = BaseForm<Alley, Fields>
 
 	public struct Fields: BaseFormState, Equatable {
 		public let alley: Alley?
 		public var laneEditor: AlleyLanesEditor.State
-		@BindableState public var name = ""
-		@BindableState public var address = ""
-		@BindableState public var material: Alley.Material = .unknown
-		@BindableState public var pinFall: Alley.PinFall = .unknown
-		@BindableState public var mechanism: Alley.Mechanism = .unknown
-		@BindableState public var pinBase: Alley.PinBase = .unknown
+		@BindingState public var name = ""
+		@BindingState public var address = ""
+		@BindingState public var material: Alley.Material = .unknown
+		@BindingState public var pinFall: Alley.PinFall = .unknown
+		@BindingState public var mechanism: Alley.Mechanism = .unknown
+		@BindingState public var pinBase: Alley.PinBase = .unknown
 
 		init(alley: Alley?) {
 			self.alley = alley
@@ -87,7 +87,7 @@ public struct AlleyEditor: ReducerProtocol {
 
 	@Dependency(\.persistenceService) var persistenceService
 
-	public var body: some ReducerProtocol<State, Action> {
+	public var body: some Reducer<State, Action> {
 		BindingReducer()
 
 		Scope(state: \.base, action: /Action.internal..Action.InternalAction.form) {

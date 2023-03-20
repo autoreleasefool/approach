@@ -1,5 +1,5 @@
 // swift-tools-version: 5.7.1
-// swiftlint:disable file_length
+// swiftlint:disable file_length line_length
 
 import PackageDescription
 
@@ -104,7 +104,7 @@ let package = Package(
 	dependencies: [
 		.package(url: "https://github.com/apple/swift-async-algorithms.git", from: "0.0.4"),
 		.package(url: "https://github.com/pointfreeco/swift-dependencies.git", from: "0.1.2"),
-		.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "0.49.2"),
+		.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", revision: "132cb3bae2d333c75ff2c952086d1dcd53ba392e"),
 		.package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.10.0"),
 		.package(url: "https://github.com/groue/GRDB.swift.git", from: "6.6.0"),
 		.package(url: "https://github.com/TelemetryDeck/SwiftClient.git", from: "1.4.2"),

@@ -8,7 +8,7 @@ import FeatureFlagsServiceInterface
 import GearListFeature
 import SettingsFeature
 
-public struct App: ReducerProtocol {
+public struct App: Reducer {
 	public struct State: Equatable {
 		public var tabs: [Tab] = []
 		public var selectedTab: Tab = .bowlers
@@ -61,7 +61,7 @@ public struct App: ReducerProtocol {
 	@Dependency(\.analytics) var analytics
 	@Dependency(\.featureFlags) var featureFlags
 
-	public var body: some ReducerProtocol<State, Action> {
+	public var body: some Reducer<State, Action> {
 		Scope(state: \.bowlersList, action: /Action.internal..Action.InternalAction.bowlersList) {
 			BowlersList()
 		}

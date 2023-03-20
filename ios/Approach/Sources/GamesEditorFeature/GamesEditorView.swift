@@ -13,7 +13,7 @@ public struct GamesEditorView: View {
 	@Environment(\.safeAreaInsets) private var safeAreaInsets
 
 	struct ViewState: Equatable {
-		@BindableState var detent: PresentationDetent = .height(.zero)
+		@BindingState var detent: PresentationDetent = .height(.zero)
 		let sheetHeight: CGFloat
 		let isGamePickerPresented: Bool
 		let isGameDetailsPresented: Bool

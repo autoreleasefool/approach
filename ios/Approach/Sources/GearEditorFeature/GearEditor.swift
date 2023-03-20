@@ -7,6 +7,7 @@ import FeatureFlagsServiceInterface
 import Foundation
 import ResourcePickerLibrary
 import PersistenceServiceInterface
+import SharedModelsFetchableLibrary
 import SharedModelsLibrary
 import StringsLibrary
 
@@ -20,13 +21,13 @@ extension Bowler: PickableResource {
 	}
 }
 
-public struct GearEditor: ReducerProtocol {
+public struct GearEditor: Reducer {
 	public typealias Form = BaseForm<Gear, Fields>
 
 	public struct Fields: BaseFormState, Equatable {
 		public var bowlerPicker: ResourcePicker<Bowler, Bowler.FetchRequest>.State
-		@BindableState public var name = ""
-		@BindableState public var kind: Gear.Kind = .bowlingBall
+		@BindingState public var name = ""
+		@BindingState public var kind: Gear.Kind = .bowlingBall
 
 		init(bowler: Bowler.ID?) {
 			self.bowlerPicker = .init(
@@ -93,7 +94,7 @@ public struct GearEditor: ReducerProtocol {
 	@Dependency(\.bowlersDataProvider) var bowlersDataProvider
 	@Dependency(\.persistenceService) var persistenceService
 
-	public var body: some ReducerProtocol<State, Action> {
+	public var body: some Reducer<State, Action> {
 		BindingReducer()
 
 		Scope(state: \.base, action: /Action.internal..Action.InternalAction.form) {

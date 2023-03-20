@@ -9,10 +9,10 @@ struct AlleysFilterView: View {
 	let store: StoreOf<AlleysFilter>
 
 	struct ViewState: Hashable, Equatable {
-		@BindableState var material: Alley.Material?
-		@BindableState var mechanism: Alley.Mechanism?
-		@BindableState var pinBase: Alley.PinBase?
-		@BindableState var pinFall: Alley.PinFall?
+		@BindingState var material: Alley.Material?
+		@BindingState var mechanism: Alley.Mechanism?
+		@BindingState var pinBase: Alley.PinBase?
+		@BindingState var pinFall: Alley.PinFall?
 
 		init(state: AlleysFilter.State) {
 			self.material = state.material

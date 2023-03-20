@@ -13,7 +13,7 @@ public struct BowlerEditorView: View {
 	let store: StoreOf<BowlerEditor>
 
 	struct ViewState: Equatable {
-		@BindableState var name: String
+		@BindingState var name: String
 		let avatar: Avatar
 		let isAvatarEditorPresented: Bool
 		let hasAvatarsEnabled: Bool
@@ -70,7 +70,9 @@ public struct BowlerEditorView: View {
 				send: ViewAction.setAvatarEditorSheet(isPresented:)
 			)) {
 				NavigationView {
-					AvatarEditorView(store: store.scope(state: \.base.form.avatarEditor, action: /BowlerEditor.Action.InternalAction.avatar))
+					AvatarEditorView(
+						store: store.scope(state: \.base.form.avatarEditor, action: /BowlerEditor.Action.InternalAction.avatar)
+					)
 				}
 			}
 		}

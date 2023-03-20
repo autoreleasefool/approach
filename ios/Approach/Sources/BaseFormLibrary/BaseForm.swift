@@ -24,7 +24,7 @@ extension BaseFormState {
 	}
 }
 
-public struct BaseForm<Model: BaseFormModel, FormState: BaseFormState>: ReducerProtocol where Model == FormState.Model {
+public struct BaseForm<Model: BaseFormModel, FormState: BaseFormState>: Reducer where Model == FormState.Model {
 	public struct State: Equatable {
 		public var mode: Mode
 		public var isLoading = false
@@ -96,7 +96,7 @@ public struct BaseForm<Model: BaseFormModel, FormState: BaseFormState>: ReducerP
 
 	@Dependency(\.modelPersistence) var modelPersistence
 
-	public var body: some ReducerProtocol<State, Action> {
+	public var body: some Reducer<State, Action> {
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):

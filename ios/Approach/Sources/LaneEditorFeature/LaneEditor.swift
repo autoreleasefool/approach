@@ -2,11 +2,11 @@ import ComposableArchitecture
 import FeatureActionLibrary
 import SharedModelsLibrary
 
-public struct LaneEditor: ReducerProtocol {
+public struct LaneEditor: Reducer {
 	public struct State: Identifiable, Equatable {
 		public let id: Lane.ID
-		@BindableState public var label: String
-		@BindableState public var isAgainstWall: Bool
+		@BindingState public var label: String
+		@BindingState public var isAgainstWall: Bool
 
 		public init(id: Lane.ID, label: String = "", isAgainstWall: Bool = false) {
 			self.id = id
@@ -36,7 +36,7 @@ public struct LaneEditor: ReducerProtocol {
 
 	public init() {}
 
-	public var body: some ReducerProtocol<State, Action> {
+	public var body: some Reducer<State, Action> {
 		BindingReducer()
 
 		Reduce<State, Action> { _, action in

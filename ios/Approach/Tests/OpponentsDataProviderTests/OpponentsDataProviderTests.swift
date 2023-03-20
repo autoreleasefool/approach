@@ -18,8 +18,8 @@ final class OpponentsDataProviderTests: XCTestCase {
 		let opponent2: Opponent = .mock(id: id1, name: "second")
 		let opponent3: Opponent = .mock(id: id2, name: "third")
 
-		try await DependencyValues.withValues {
-			$0.persistenceService.fetchOpponents = { request in
+		try await withDependencies {
+			$0.persistenceService.fetchOpponents = { _ in
 				return [opponent1, opponent2, opponent3]
 			}
 			$0.recentlyUsedService.getRecentlyUsed = { category in
@@ -45,8 +45,8 @@ final class OpponentsDataProviderTests: XCTestCase {
 		let opponent2: Opponent = .mock(id: id1, name: "second")
 		let opponent3: Opponent = .mock(id: id2, name: "third")
 
-		try await DependencyValues.withValues {
-			$0.persistenceService.fetchOpponents = { request in
+		try await withDependencies {
+			$0.persistenceService.fetchOpponents = { _ in
 				return [opponent1, opponent2, opponent3]
 			}
 			$0.recentlyUsedService.getRecentlyUsed = { category in
@@ -72,8 +72,8 @@ final class OpponentsDataProviderTests: XCTestCase {
 		let opponent2: Opponent = .mock(id: id1, name: "second")
 		let opponent3: Opponent = .mock(id: id2, name: "third")
 
-		try await DependencyValues.withValues {
-			$0.persistenceService.fetchOpponents = { request in
+		try await withDependencies {
+			$0.persistenceService.fetchOpponents = { _ in
 				return [opponent1, opponent2, opponent3]
 			}
 			$0.recentlyUsedService.getRecentlyUsed = { category in

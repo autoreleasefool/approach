@@ -3,7 +3,7 @@ import FeatureActionLibrary
 import FeatureFlagsLibrary
 import FeatureFlagsServiceInterface
 
-public struct FeatureFlagsList: ReducerProtocol {
+public struct FeatureFlagsList: Reducer {
 	public struct State: Equatable {
 		public var featureFlags: [FeatureFlagItem] = []
 
@@ -38,7 +38,7 @@ public struct FeatureFlagsList: ReducerProtocol {
 
 	@Dependency(\.featureFlags) var featureFlagService
 
-	public var body: some ReducerProtocol<State, Action> {
+	public var body: some Reducer<State, Action> {
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
@@ -51,10 +51,10 @@ public struct FeatureFlagsList: ReducerProtocol {
 						}
 					}
 
-					case let .didToggle(featureFlag):
-						let isEnabled = featureFlagService.isEnabled(featureFlag)
-						featureFlagService.setEnabled(featureFlag, !isEnabled)
-						return .none
+				case let .didToggle(featureFlag):
+					let isEnabled = featureFlagService.isEnabled(featureFlag)
+					featureFlagService.setEnabled(featureFlag, !isEnabled)
+					return .none
 
 				case .didTapResetOverridesButton:
 					for flag in FeatureFlag.allFlags {

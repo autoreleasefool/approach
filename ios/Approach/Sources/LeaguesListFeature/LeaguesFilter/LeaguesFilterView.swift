@@ -9,7 +9,7 @@ struct LeaguesFilterView: View {
 	let store: StoreOf<LeaguesFilter>
 
 	struct ViewState: Equatable {
-		@BindableState var recurrence: League.Recurrence?
+		@BindingState var recurrence: League.Recurrence?
 
 		init(state: LeaguesFilter.State) {
 			self.recurrence = state.recurrence

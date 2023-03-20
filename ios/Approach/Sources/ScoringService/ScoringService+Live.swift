@@ -9,7 +9,6 @@ struct SequencedRoll {
 	let roll: Frame.Roll
 }
 
-
 extension ScoringService: DependencyKey {
 	public static let liveValue: Self = {
 		@Dependency(\.persistenceService) var persistenceService: PersistenceService
@@ -50,12 +49,10 @@ extension ScoringService: DependencyKey {
 					let rollsToAdd = 2 - roll.rollIndex
 
 					if rollsToAdd > 0 {
-						for addedRollIndex in 0..<rollsToAdd {
-							if index + addedRollIndex <= rolls.endIndex {
-								let pinsToAdd = rolls[index + addedRollIndex].roll.pinsDowned
-								stepScore += pinsToAdd.value
-								rollSteps.append(.init(display: pinsToAdd.displayValue(rollIndex: -1), didFoul: false))
-							}
+						for addedRollIndex in 0..<rollsToAdd where index + addedRollIndex < rolls.endIndex {
+							let pinsToAdd = rolls[index + addedRollIndex].roll.pinsDowned
+							stepScore += pinsToAdd.value
+							rollSteps.append(.init(display: pinsToAdd.displayValue(rollIndex: -1), didFoul: false))
 						}
 					}
 

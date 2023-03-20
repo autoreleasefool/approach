@@ -6,7 +6,7 @@ import StringsLibrary
 import SwiftUI
 import ViewsLibrary
 
-public struct GameIndicator: ReducerProtocol {
+public struct GameIndicator: Reducer {
 	public struct State: Equatable {
 		public let games: [Game.ID]
 		public var selected: Game.ID
@@ -36,7 +36,7 @@ public struct GameIndicator: ReducerProtocol {
 
 	init() {}
 
-	public var body: some ReducerProtocol<State, Action> {
+	public var body: some Reducer<State, Action> {
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
@@ -75,7 +75,7 @@ struct GameIndicatorView: View {
 	}
 
 	var body: some View {
-		WithViewStore(store, observe: { $0 }, send: GameIndicator.Action.init) { viewStore in
+		WithViewStore(store, observe: { $0 }, send: GameIndicator.Action.init, content: { viewStore in
 			Button { viewStore.send(.didTapIndicator) } label: {
 				HStack(alignment: .center, spacing: .smallSpacing) {
 					Text(Strings.Game.title(viewStore.selectedOrdinal))
@@ -91,7 +91,7 @@ struct GameIndicatorView: View {
 			}
 			.buttonStyle(TappableElement())
 			.disabled(viewStore.games.count == 1)
-		}
+		})
 	}
 }
 

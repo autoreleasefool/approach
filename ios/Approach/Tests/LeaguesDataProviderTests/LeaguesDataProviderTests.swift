@@ -20,7 +20,7 @@ final class LeaguesDataProviderTests: XCTestCase {
 		let league3: League = .mock(bowler: bowlerId, id: id3, name: "third")
 
 		try await withDependencies {
-			$0.persistenceService.fetchLeagues = { request in
+			$0.persistenceService.fetchLeagues = { _ in
 				return [league1, league2, league3]
 			}
 			$0.recentlyUsedService.getRecentlyUsed = { category in
@@ -47,7 +47,7 @@ final class LeaguesDataProviderTests: XCTestCase {
 		let league3: League = .mock(bowler: bowlerId, id: id3, name: "third")
 
 		try await withDependencies {
-			$0.persistenceService.fetchLeagues = { request in
+			$0.persistenceService.fetchLeagues = { _ in
 				return [league1, league2, league3]
 			}
 			$0.recentlyUsedService.getRecentlyUsed = { category in
@@ -77,7 +77,7 @@ final class LeaguesDataProviderTests: XCTestCase {
 		let league3: League = .mock(bowler: bowlerId, id: id3, name: "third")
 
 		try await withDependencies {
-			$0.persistenceService.fetchLeagues = { request in
+			$0.persistenceService.fetchLeagues = { _ in
 				return [league1, league2, league3]
 			}
 			$0.recentlyUsedService.getRecentlyUsed = { category in

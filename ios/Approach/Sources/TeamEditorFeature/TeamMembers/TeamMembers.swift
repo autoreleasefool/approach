@@ -4,7 +4,7 @@ import FeatureActionLibrary
 import SharedModelsLibrary
 import TeamsDataProviderInterface
 
-public struct TeamMembers: ReducerProtocol {
+public struct TeamMembers: Reducer {
 	public struct State: Equatable {
 		public let team: Team?
 		public var bowlers: IdentifiedArrayOf<Bowler>?
@@ -33,7 +33,7 @@ public struct TeamMembers: ReducerProtocol {
 	@Dependency(\.bowlersDataProvider) var bowlersDataProvider
 	@Dependency(\.teamsDataProvider) var teamsDataProvider
 
-	public var body: some ReducerProtocol<State, Action> {
+	public var body: some Reducer<State, Action> {
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):

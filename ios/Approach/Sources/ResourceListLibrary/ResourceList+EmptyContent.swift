@@ -31,7 +31,7 @@ public struct ResourceListEmptyContent: Equatable {
 	)
 }
 
-public struct ResourceListEmpty: ReducerProtocol {
+public struct ResourceListEmpty: Reducer {
 	public struct State: Equatable {
 		public var content: ResourceListEmptyContent
 		public var style: Style
@@ -76,7 +76,7 @@ public struct ResourceListEmpty: ReducerProtocol {
 
 	public init() {}
 
-	public var body: some ReducerProtocol<State, Action> {
+	public var body: some Reducer<State, Action> {
 		Reduce<State, Action> { _, action in
 			switch action {
 			case let .view(viewAction):

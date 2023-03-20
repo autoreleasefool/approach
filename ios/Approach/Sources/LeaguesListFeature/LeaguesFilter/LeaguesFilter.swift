@@ -1,11 +1,12 @@
 import ComposableArchitecture
 import FeatureActionLibrary
 import LeaguesDataProviderInterface
+import SharedModelsFetchableLibrary
 import SharedModelsLibrary
 
-public struct LeaguesFilter: ReducerProtocol {
+public struct LeaguesFilter: Reducer {
 	public struct State: Equatable {
-		@BindableState public var recurrence: League.Recurrence?
+		@BindingState public var recurrence: League.Recurrence?
 
 		public init() {}
 	}
@@ -29,7 +30,7 @@ public struct LeaguesFilter: ReducerProtocol {
 
 	public init() {}
 
-	public var body: some ReducerProtocol<State, Action> {
+	public var body: some Reducer<State, Action> {
 		BindingReducer()
 
 		Reduce<State, Action> { state, action in

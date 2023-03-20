@@ -5,9 +5,9 @@ import ScoreSheetFeature
 import SharedModelsLibrary
 import SwiftUI
 
-public struct GamesEditor: ReducerProtocol {
+public struct GamesEditor: Reducer {
 	public struct State: Equatable {
-		@BindableState public var detent: PresentationDetent = .height(.zero)
+		@BindingState public var detent: PresentationDetent = .height(.zero)
 		public var sheet: SheetState = .presenting(.gameDetails)
 		public var sheetHeight: CGFloat = .zero
 
@@ -73,7 +73,7 @@ public struct GamesEditor: ReducerProtocol {
 
 	@Dependency(\.framesDataProvider) var framesDataProvider
 
-	public var body: some ReducerProtocol<State, Action> {
+	public var body: some Reducer<State, Action> {
 		BindingReducer()
 
 		Scope(state: \.gameIndicator, action: /Action.internal..Action.InternalAction.gameIndicator) {

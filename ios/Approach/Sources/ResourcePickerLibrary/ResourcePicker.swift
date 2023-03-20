@@ -6,7 +6,7 @@ public protocol PickableResource: Equatable, Identifiable {
 	static func pickableModelName(forCount: Int) -> String
 }
 
-public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: ReducerProtocol {
+public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: Reducer {
 	public struct State: Equatable {
 		public var resources: IdentifiedArrayOf<Resource>?
 		public var selected: Set<Resource.ID>
@@ -59,7 +59,7 @@ public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: Redu
 
 	let fetchResources: (Query) async throws -> [Resource]
 
-	public var body: some ReducerProtocol<State, Action> {
+	public var body: some Reducer<State, Action> {
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):

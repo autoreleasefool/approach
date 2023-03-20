@@ -16,7 +16,7 @@ import ViewsLibrary
 
 extension Bowler: ResourceListItem {}
 
-public struct BowlersList: ReducerProtocol {
+public struct BowlersList: Reducer {
 	public struct State: Equatable {
 		public var list: ResourceList<Bowler, Bowler.FetchRequest>.State
 		public var editor: BowlerEditor.State?
@@ -80,7 +80,7 @@ public struct BowlersList: ReducerProtocol {
 	@Dependency(\.bowlersDataProvider) var bowlersDataProvider
 	@Dependency(\.recentlyUsedService) var recentlyUsedService
 
-	public var body: some ReducerProtocol<State, Action> {
+	public var body: some Reducer<State, Action> {
 		Scope(state: \.sortOrder, action: /Action.internal..Action.InternalAction.sortOrder) {
 			SortOrder()
 		}

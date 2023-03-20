@@ -2,7 +2,7 @@ import ComposableArchitecture
 import SharedModelsLibrary
 import SwiftUI
 
-public struct FrameEditor: ReducerProtocol {
+public struct FrameEditor: Reducer {
 	public struct State: Equatable {
 		public var currentRollIndex: Int
 		public var frame: Frame
@@ -33,7 +33,7 @@ public struct FrameEditor: ReducerProtocol {
 
 	init() {}
 
-	public var body: some ReducerProtocol<State, Action> {
+	public var body: some Reducer<State, Action> {
 		Reduce<State, Action> { state, action in
 			switch action {
 			case let .view(viewAction):
