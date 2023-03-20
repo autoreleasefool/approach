@@ -74,6 +74,8 @@ let package = Package(
 		.library(name: "PreferenceServiceInterface", targets: ["PreferenceServiceInterface"]),
 		.library(name: "RecentlyUsedService", targets: ["RecentlyUsedService"]),
 		.library(name: "RecentlyUsedServiceInterface", targets: ["RecentlyUsedServiceInterface"]),
+		.library(name: "ScoringService", targets: ["ScoringService"]),
+		.library(name: "ScoringServiceInterface", targets: ["ScoringServiceInterface"]),
 
 		// MARK: - Libraries
 		.library(name: "AssetsLibrary", targets: ["AssetsLibrary"]),
@@ -914,6 +916,28 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"RecentlyUsedService",
+				"SharedModelsMocksLibrary",
+			]
+		),
+		.target(
+			name: "ScoringService",
+			dependencies: [
+				"PersistenceServiceInterface",
+				"ScoringServiceInterface",
+			]
+		),
+		.target(
+			name: "ScoringServiceInterface",
+			dependencies: [
+				.product(name: "Dependencies", package: "swift-dependencies"),
+				"SharedModelsLibrary",
+			]
+		),
+		.testTarget(
+			name: "ScoringServiceTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"ScoringService",
 				"SharedModelsMocksLibrary",
 			]
 		),

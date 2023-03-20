@@ -277,6 +277,12 @@ package:
       dependencies:
         implementation:
           - PreferenceService
+    - name: ScoringService
+      dependencies:
+        interface:
+          - SharedModelsLibrary
+        implementation:
+          - PersistenceService
 
   library:
     - name: BaseFormLibrary

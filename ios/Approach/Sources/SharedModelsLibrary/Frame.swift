@@ -35,17 +35,3 @@ extension Frame {
 		public static let `default`: Self = .init(pinsDowned: [], didFoul: false)
 	}
 }
-
-// MARK: - Pin
-
-public enum Pin: Int, Equatable, Sendable, Identifiable, Codable {
-	case leftTwoPin = 0
-	case leftThreePin = 1
-	case headPin = 2
-	case rightThreePin = 3
-	case rightTwoPin = 4
-
-	public var id: Int { rawValue }
-
-	public static let fullDeck: [Self] = [.leftTwoPin, .leftThreePin, .headPin, .rightThreePin, .rightTwoPin]
-}
