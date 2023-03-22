@@ -10,7 +10,7 @@ extension Notification.Name {
 }
 
 extension RecentlyUsedService: DependencyKey {
-	public static let liveValue: Self = {
+	public static var liveValue: Self = {
 		let encoder = JSONEncoder()
 		let decoder = JSONDecoder()
 

@@ -4,7 +4,7 @@ import Dependencies
 import TelemetryClient
 
 extension AnalyticsService: DependencyKey {
-	public static let liveValue: Self = {
+	public static var liveValue: Self = {
 		let properties = PropertyManager()
 
 		return Self(

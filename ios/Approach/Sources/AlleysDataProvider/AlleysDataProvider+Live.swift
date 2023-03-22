@@ -8,7 +8,7 @@ import SharedModelsLibrary
 import SortingLibrary
 
 extension AlleysDataProvider: DependencyKey {
-	public static let liveValue: Self = {
+	public static var liveValue: Self = {
 		@Dependency(\.recentlyUsedService) var recentlyUsedService: RecentlyUsedService
 		@Dependency(\.persistenceService) var persistenceService: PersistenceService
 

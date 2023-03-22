@@ -5,7 +5,7 @@ import PersistenceServiceInterface
 import SharedModelsLibrary
 
 extension LanesDataProvider: DependencyKey {
-	public static let liveValue = Self(
+	public static var liveValue = Self(
 		fetchLanes: { request in
 			@Dependency(\.persistenceService) var persistenceService: PersistenceService
 			let lanes = try await persistenceService.fetchLanes(request)

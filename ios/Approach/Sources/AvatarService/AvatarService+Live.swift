@@ -5,7 +5,7 @@ import SharedModelsLibrary
 import UIKit
 
 extension AvatarService: DependencyKey {
-	public static let liveValue: Self = {
+	public static var liveValue: Self = {
 		let cache = Cache()
 
 		@Sendable func render(text: String, color: Avatar.Background) -> UIImage {

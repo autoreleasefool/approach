@@ -3,7 +3,7 @@ import PreferenceServiceInterface
 import Foundation
 
 extension PreferenceService: DependencyKey {
-	public static let liveValue: Self = {
+	public static var liveValue: Self = {
 		let userDefaults = UncheckedSendable(UserDefaults.standard)
 
 		@Sendable func contains(_ key: String) -> Bool {

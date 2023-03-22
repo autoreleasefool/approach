@@ -10,7 +10,7 @@ struct SequencedRoll {
 }
 
 extension ScoringService: DependencyKey {
-	public static let liveValue: Self = {
+	public static var liveValue: Self = {
 		@Dependency(\.persistenceService) var persistenceService: PersistenceService
 
 		@Sendable func calculateScore(for frames: [Frame]) async throws -> [ScoreStep] {

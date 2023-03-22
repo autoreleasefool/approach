@@ -6,7 +6,7 @@ import RecentlyUsedServiceInterface
 import SortingLibrary
 
 extension GearDataProvider: DependencyKey {
-	public static let liveValue: Self = {
+	public static var liveValue: Self = {
 		@Dependency(\.recentlyUsedService) var recentlyUsedService: RecentlyUsedService
 		@Dependency(\.persistenceService) var persistenceService: PersistenceService
 

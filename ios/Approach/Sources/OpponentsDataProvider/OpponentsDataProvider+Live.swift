@@ -6,7 +6,7 @@ import RecentlyUsedServiceInterface
 import SortingLibrary
 
 extension OpponentsDataProvider: DependencyKey {
-	public static let liveValue: Self = {
+	public static var liveValue: Self = {
 		return .init(
 			fetchOpponents: { request in
 				@Dependency(\.recentlyUsedService) var recentlyUsedService: RecentlyUsedService

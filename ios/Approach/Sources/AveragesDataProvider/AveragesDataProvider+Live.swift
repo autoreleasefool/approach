@@ -5,7 +5,7 @@ import PersistenceServiceInterface
 import SharedModelsLibrary
 
 extension AveragesDataProvider: DependencyKey {
-	public static let liveValue: Self = {
+	public static var liveValue: Self = {
 		@Dependency(\.persistenceService) var persistenceService: PersistenceService
 
 		return .init(
