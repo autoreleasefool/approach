@@ -22,9 +22,9 @@ public struct AnalyticsService: Sendable {
 
 extension AnalyticsService: TestDependencyKey {
 	public static var testValue = Self(
-		initialize: { fatalError("\(Self.self).initialize") },
-		setGlobalProperty: { _, _ in fatalError("\(Self.self).setGlobalProperty") },
-		trackEvent: { _ in fatalError("\(Self.self).trackEvent") }
+		initialize: { unimplemented("\(Self.self).initialize") },
+		setGlobalProperty: { _, _ in unimplemented("\(Self.self).setGlobalProperty") },
+		trackEvent: { _ in unimplemented("\(Self.self).trackEvent") }
 	)
 }
 

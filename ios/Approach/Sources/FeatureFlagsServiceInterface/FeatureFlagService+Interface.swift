@@ -28,12 +28,12 @@ public struct FeatureFlagsService: Sendable {
 
 extension FeatureFlagsService: TestDependencyKey {
 	public static var testValue = Self(
-		isEnabled: { _ in fatalError("\(Self.self).isEnabled") },
-		allEnabled: { _ in fatalError("\(Self.self).allEnabled") },
-		observe: { _ in fatalError("\(Self.self).observe") },
-		observeAll: { _ in fatalError("\(Self.self).observeAll") },
-		setEnabled: { _, _ in fatalError("\(Self.self).setEnabled") },
-		resetOverrides: { fatalError("\(Self.self).resetOverrides") }
+		isEnabled: { _ in unimplemented("\(Self.self).isEnabled") },
+		allEnabled: { _ in unimplemented("\(Self.self).allEnabled") },
+		observe: { _ in unimplemented("\(Self.self).observe") },
+		observeAll: { _ in unimplemented("\(Self.self).observeAll") },
+		setEnabled: { _, _ in unimplemented("\(Self.self).setEnabled") },
+		resetOverrides: { unimplemented("\(Self.self).resetOverrides") }
 	)
 }
 

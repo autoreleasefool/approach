@@ -17,8 +17,8 @@ public struct AlleysDataProvider: Sendable {
 
 extension AlleysDataProvider: TestDependencyKey {
 	public static var testValue = Self(
-		fetchAlleys: { _ in fatalError("\(Self.self).fetchAlleys") },
-		observeAlleys: { _ in fatalError("\(Self.self).observeAlleys") }
+		fetchAlleys: { _ in unimplemented("\(Self.self).fetchAlleys") },
+		observeAlleys: { _ in unimplemented("\(Self.self).observeAlleys") }
 	)
 }
 

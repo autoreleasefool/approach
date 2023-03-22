@@ -22,10 +22,10 @@ public struct FileManagerService {
 
 extension FileManagerService: TestDependencyKey {
 	public static var testValue = Self(
-		getUserDirectory: { fatalError("\(Self.self).getUserDirectory") },
-		createDirectory: { _ in fatalError("\(Self.self).createDirectory") },
-		remove: { _ in fatalError("\(Self.self).remove") },
-		exists: { _ in fatalError("\(Self.self).exists") }
+		getUserDirectory: { unimplemented("\(Self.self).getUserDirectory") },
+		createDirectory: { _ in unimplemented("\(Self.self).createDirectory") },
+		remove: { _ in unimplemented("\(Self.self).remove") },
+		exists: { _ in unimplemented("\(Self.self).exists") }
 	)
 }
 

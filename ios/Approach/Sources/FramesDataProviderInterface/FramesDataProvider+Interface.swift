@@ -14,7 +14,7 @@ public struct FramesDataProvider: Sendable {
 
 extension FramesDataProvider: TestDependencyKey {
 	public static var testValue = Self(
-		fetchFrames: { _ in fatalError("\(Self.self).fetchFrames") }
+		fetchFrames: { _ in unimplemented("\(Self.self).fetchFrames") }
 	)
 }
 

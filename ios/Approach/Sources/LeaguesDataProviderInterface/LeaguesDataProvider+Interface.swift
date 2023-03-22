@@ -17,8 +17,8 @@ public struct LeaguesDataProvider: Sendable {
 
 extension LeaguesDataProvider: TestDependencyKey {
 	public static var testValue = Self(
-		fetchLeagues: { _ in fatalError("\(Self.self).fetchLeagues") },
-		observeLeagues: { _ in fatalError("\(Self.self).observeLeagues") }
+		fetchLeagues: { _ in unimplemented("\(Self.self).fetchLeagues") },
+		observeLeagues: { _ in unimplemented("\(Self.self).observeLeagues") }
 	)
 }
 

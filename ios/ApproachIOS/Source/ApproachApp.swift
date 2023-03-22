@@ -1,12 +1,15 @@
 import AnalyticsServiceInterface
 import Dependencies
 import SwiftUI
+import XCTestDynamicOverlay
 
 @main
 struct ApproachApp: App {
 	var body: some Scene {
 		WindowGroup {
-			ContentView()
+			if !_XCTIsTesting {
+				ContentView()
+			}
 		}
 	}
 

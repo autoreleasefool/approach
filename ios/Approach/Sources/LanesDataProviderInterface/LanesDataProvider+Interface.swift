@@ -14,7 +14,7 @@ public struct LanesDataProvider: Sendable {
 
 extension LanesDataProvider: TestDependencyKey {
 	public static var testValue = Self(
-		fetchLanes: { _ in fatalError("\(Self.self).fetchLanes") }
+		fetchLanes: { _ in unimplemented("\(Self.self).fetchLanes") }
 	)
 }
 

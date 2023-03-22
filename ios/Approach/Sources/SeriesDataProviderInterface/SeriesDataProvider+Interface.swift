@@ -17,8 +17,8 @@ public struct SeriesDataProvider: Sendable {
 
 extension SeriesDataProvider: TestDependencyKey {
 	public static var testValue = Self(
-		fetchSeries: { _ in fatalError("\(Self.self).fetchSeries") },
-		observeSeries: { _ in fatalError("\(Self.self).observeSeries") }
+		fetchSeries: { _ in unimplemented("\(Self.self).fetchSeries") },
+		observeSeries: { _ in unimplemented("\(Self.self).observeSeries") }
 	)
 }
 

@@ -17,8 +17,8 @@ public struct AveragesDataProvider: Sendable {
 
 extension AveragesDataProvider: TestDependencyKey {
 	public static var testValue = Self(
-		fetchAverages: { _ in fatalError("\(Self.self).fetchAverages") },
-		observeAverages: { _ in fatalError("\(Self.self).observeAverages") }
+		fetchAverages: { _ in unimplemented("\(Self.self).fetchAverages") },
+		observeAverages: { _ in unimplemented("\(Self.self).observeAverages") }
 	)
 }
 

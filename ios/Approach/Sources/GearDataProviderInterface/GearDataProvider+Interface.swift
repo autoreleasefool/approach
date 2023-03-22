@@ -17,8 +17,8 @@ public struct GearDataProvider: Sendable {
 
 extension GearDataProvider: TestDependencyKey {
 	public static var testValue = Self(
-		fetchGear: { _ in fatalError("\(Self.self).fetchGeas") },
-		observeGear: { _ in fatalError("\(Self.self).observeGear") }
+		fetchGear: { _ in unimplemented("\(Self.self).fetchGeas") },
+		observeGear: { _ in unimplemented("\(Self.self).observeGear") }
 	)
 }
 

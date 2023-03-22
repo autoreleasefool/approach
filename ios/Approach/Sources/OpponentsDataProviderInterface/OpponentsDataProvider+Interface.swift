@@ -17,8 +17,8 @@ public struct OpponentsDataProvider: Sendable {
 
 extension OpponentsDataProvider: TestDependencyKey {
 	public static var testValue = Self(
-		fetchOpponents: { _ in fatalError("\(Self.self).fetchOpponents") },
-		observeOpponents: { _ in fatalError("\(Self.self).observeOpponents") }
+		fetchOpponents: { _ in unimplemented("\(Self.self).fetchOpponents") },
+		observeOpponents: { _ in unimplemented("\(Self.self).observeOpponents") }
 	)
 }
 

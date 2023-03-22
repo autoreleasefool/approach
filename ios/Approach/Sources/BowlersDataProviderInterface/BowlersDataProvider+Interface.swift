@@ -17,8 +17,8 @@ public struct BowlersDataProvider: Sendable {
 
 extension BowlersDataProvider: TestDependencyKey {
 	public static var testValue = Self(
-		fetchBowlers: { _ in fatalError("\(Self.self).fetchBowlers") },
-		observeBowlers: { _ in fatalError("\(Self.self).observeBowlers") }
+		fetchBowlers: { _ in unimplemented("\(Self.self).fetchBowlers") },
+		observeBowlers: { _ in unimplemented("\(Self.self).observeBowlers") }
 	)
 }
 

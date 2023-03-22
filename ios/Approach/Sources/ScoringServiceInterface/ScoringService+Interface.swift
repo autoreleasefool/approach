@@ -31,9 +31,9 @@ public struct ScoringService: Sendable {
 
 extension ScoringService: TestDependencyKey {
 	public static var testValue = Self(
-		calculateScoreForGame: { _ in fatalError("\(Self.self).calculateScoreForGame") },
-		calculateScoreForFrames: { _ in fatalError("\(Self.self).calculateScoreForFrames") },
-		calculateScoreForFramesWithSteps: { _ in fatalError("\(Self.self).calculateScoreForFramesWithSteps") }
+		calculateScoreForGame: { _ in unimplemented("\(Self.self).calculateScoreForGame") },
+		calculateScoreForFrames: { _ in unimplemented("\(Self.self).calculateScoreForFrames") },
+		calculateScoreForFramesWithSteps: { _ in unimplemented("\(Self.self).calculateScoreForFramesWithSteps") }
 	)
 }
 

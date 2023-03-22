@@ -39,9 +39,9 @@ public struct BaseModelPersistence: Sendable {
 
 extension BaseModelPersistence: TestDependencyKey {
 	public static var testValue = Self(
-		create: { _ in fatalError("\(Self.self).create") },
-		update: { _ in fatalError("\(Self.self).update") },
-		delete: { _ in fatalError("\(Self.self).delete") }
+		create: { _ in unimplemented("\(Self.self).create") },
+		update: { _ in unimplemented("\(Self.self).update") },
+		delete: { _ in unimplemented("\(Self.self).delete") }
 	)
 }
 

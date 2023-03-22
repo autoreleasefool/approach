@@ -46,10 +46,10 @@ extension RecentlyUsedService {
 
 extension RecentlyUsedService: TestDependencyKey {
 	public static var testValue = Self(
-		didRecentlyUseResource: { _, _ in fatalError("\(Self.self).didRecentlyUseResource") },
-		getRecentlyUsed: { _ in fatalError("\(Self.self).getRecentlyUsed") },
-		observeRecentlyUsed: { _ in fatalError("\(Self.self).observeRecentlyUsed") },
-		resetRecentlyUsed: { _ in fatalError("\(Self.self).resetRecentlyUsed") }
+		didRecentlyUseResource: { _, _ in unimplemented("\(Self.self).didRecentlyUseResource") },
+		getRecentlyUsed: { _ in unimplemented("\(Self.self).getRecentlyUsed") },
+		observeRecentlyUsed: { _ in unimplemented("\(Self.self).observeRecentlyUsed") },
+		resetRecentlyUsed: { _ in unimplemented("\(Self.self).resetRecentlyUsed") }
 	)
 }
 
