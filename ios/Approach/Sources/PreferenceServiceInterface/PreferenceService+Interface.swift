@@ -50,22 +50,22 @@ public struct PreferenceService: Sendable {
 }
 
 extension PreferenceService: TestDependencyKey {
-	public static var testValue = Self(
-		getBool: { _ in fatalError("\(Self.self).getBool") },
-		setBool: { _, _ in fatalError("\(Self.self).setBool") },
-		getDouble: { _ in fatalError("\(Self.self).getDouble") },
-		setDouble: { _, _ in fatalError("\(Self.self).setDouble") },
-		getFloat: { _ in fatalError("\(Self.self).getFloat") },
-		setFloat: { _, _ in fatalError("\(Self.self).setFloat") },
-		getInt: { _ in fatalError("\(Self.self).getInt") },
-		setInt: { _, _ in fatalError("\(Self.self).setInt") },
-		getString: { _ in fatalError("\(Self.self).getString") },
-		setString: { _, _ in fatalError("\(Self.self).setString") },
-		getStringArray: { _ in fatalError("\(Self.self).getStringArray") },
-		setStringArray: { _, _ in fatalError("\(Self.self).setStringArray") },
-		contains: { _ in fatalError("\(Self.self).contains") },
-		removeKey: { _ in fatalError("\(Self.self).removeKey") }
-	)
+	public static var testValue = { Self(
+		getBool: { _ in unimplemented("\(Self.self).getBool") },
+		setBool: { _, _ in unimplemented("\(Self.self).setBool") },
+		getDouble: { _ in unimplemented("\(Self.self).getDouble") },
+		setDouble: { _, _ in unimplemented("\(Self.self).setDouble") },
+		getFloat: { _ in unimplemented("\(Self.self).getFloat") },
+		setFloat: { _, _ in unimplemented("\(Self.self).setFloat") },
+		getInt: { _ in unimplemented("\(Self.self).getInt") },
+		setInt: { _, _ in unimplemented("\(Self.self).setInt") },
+		getString: { _ in unimplemented("\(Self.self).getString") },
+		setString: { _, _ in unimplemented("\(Self.self).setString") },
+		getStringArray: { _ in unimplemented("\(Self.self).getStringArray") },
+		setStringArray: { _, _ in unimplemented("\(Self.self).setStringArray") },
+		contains: { _ in unimplemented("\(Self.self).contains") },
+		removeKey: { _ in unimplemented("\(Self.self).removeKey") }
+	)}()
 }
 
 extension DependencyValues {

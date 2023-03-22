@@ -12,8 +12,11 @@ extension NSNotification.Name {
 }
 
 extension FeatureFlagsService: DependencyKey {
-	public static let liveValue: Self = {
-		let flagManager = FeatureFlagOverrides()
+	public static var liveValue: Self = {
+		@Dependency(\.preferenceService) var preferenceService: PreferenceService
+		@Dependency(\.featureFlagsQueue) var queue: DispatchQueue
+
+		let flagManager = FeatureFlagOverrides(queue: queue, preferenceService: preferenceService)
 
 		@Sendable func isFlagEnabled(flag: FeatureFlag) -> Bool {
 			#if DEBUG
@@ -83,12 +86,13 @@ extension FeatureFlagsService: DependencyKey {
 }
 
 class FeatureFlagOverrides {
-	@Dependency(\.preferenceService) var preferenceService: PreferenceService
-
-	private let queue = DispatchQueue(label: "FeatureFlagsService.FeatureFlagManager", attributes: .concurrent)
+	private let queue: DispatchQueue
 	private var queue_overrides: [FeatureFlag: Bool] = [:]
+	private let preferenceService: PreferenceService
 
-	init() {
+	init(queue: DispatchQueue, preferenceService: PreferenceService) {
+		self.queue = queue
+		self.preferenceService = preferenceService
 		queue.sync {
 			for flag in FeatureFlag.allFlags {
 				queue_overrides[flag] = preferenceService.getBool(flag.overrideKey)
@@ -132,5 +136,17 @@ class FeatureFlagOverrides {
 extension FeatureFlag {
 	var overrideKey: String {
 		"FeatureFlag.Override.\(name)"
+	}
+}
+
+extension DependencyValues {
+	var featureFlagsQueue: DispatchQueue {
+		get { self[FeatureFlagsQueueKey.self]  }
+		set { self[FeatureFlagsQueueKey.self] = newValue }
+	}
+
+	enum FeatureFlagsQueueKey: DependencyKey {
+		static var liveValue = DispatchQueue(label: "FeatureFlagsService.FeatureFlagManager", attributes: .concurrent)
+		static var testValue = DispatchQueue(label: "FeatureFlagsService.FeatureFlagManager", attributes: .concurrent)
 	}
 }

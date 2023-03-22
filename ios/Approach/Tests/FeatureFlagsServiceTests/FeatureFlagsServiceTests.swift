@@ -1,31 +1,60 @@
+import Dependencies
 import XCTest
+import PreferenceServiceInterface
 @testable import FeatureFlagsLibrary
 @testable import FeatureFlagsService
 @testable import FeatureFlagsServiceInterface
 
+@MainActor
 final class FeatureFlagsServiceTests: XCTestCase {
+	let testQueue = DispatchQueue(label: "TestQueue")
+
+	override func invokeTest() {
+		withDependencies {
+			$0.preferenceService.getBool = { _ in false }
+			$0.preferenceService.setBool = { _, _ in }
+			$0.preferenceService.removeKey = { _ in }
+			$0.featureFlagsQueue = testQueue
+		} operation: {
+			super.invokeTest()
+		}
+	}
+
 	override func tearDown() {
-		let featureFlags: FeatureFlagsService = .liveValue
-		featureFlags.resetOverrides()
-		super.tearDown()
+		testQueue.sync { }
 	}
 
 	func testIsFlagEnabledWhenEnabled() {
-		let featureFlags: FeatureFlagsService = .liveValue
+		var featureFlags: FeatureFlagsService!
+		withDependencies {
+			$0.preferenceService.getBool = { _ in false }
+		} operation: {
+			featureFlags = .liveValue
+		}
 
 		let enabledFlag = FeatureFlag(name: "Test", introduced: "", stage: .release)
 		XCTAssertTrue(featureFlags.isEnabled(enabledFlag))
 	}
 
 	func testIsFlagEnabledWhenDisabled() {
-		let featureFlags: FeatureFlagsService = .liveValue
+		var featureFlags: FeatureFlagsService!
+		withDependencies {
+			$0.preferenceService.getBool = { _ in false }
+		} operation: {
+			featureFlags = .liveValue
+		}
 
 		let disabledFlag = FeatureFlag(name: "Test", introduced: "", stage: .disabled)
 		XCTAssertFalse(featureFlags.isEnabled(disabledFlag))
 	}
 
 	func testAllEnabledWhenAllEnabled() {
-		let featureFlags: FeatureFlagsService = .liveValue
+		var featureFlags: FeatureFlagsService!
+		withDependencies {
+			$0.preferenceService.getBool = { _ in false }
+		} operation: {
+			featureFlags = .liveValue
+		}
 
 		let flags: [FeatureFlag] = [
 			.init(name: "Test1", introduced: "", stage: .release),
@@ -37,7 +66,12 @@ final class FeatureFlagsServiceTests: XCTestCase {
 	}
 
 	func testAllEnabledWhenSomeEnabled() {
-		let featureFlags: FeatureFlagsService = .liveValue
+		var featureFlags: FeatureFlagsService!
+		withDependencies {
+			$0.preferenceService.getBool = { _ in false }
+		} operation: {
+			featureFlags = .liveValue
+		}
 
 		let flags: [FeatureFlag] = [
 			.init(name: "Test1", introduced: "", stage: .release),
@@ -49,7 +83,12 @@ final class FeatureFlagsServiceTests: XCTestCase {
 	}
 
 	func testAllEnabledWhenNoneEnabled() {
-		let featureFlags: FeatureFlagsService = .liveValue
+		var featureFlags: FeatureFlagsService!
+		withDependencies {
+			$0.preferenceService.getBool = { _ in false }
+		} operation: {
+			featureFlags = .liveValue
+		}
 
 		let flags: [FeatureFlag] = [
 			.init(name: "Test1", introduced: "", stage: .disabled),
@@ -61,7 +100,13 @@ final class FeatureFlagsServiceTests: XCTestCase {
 	}
 
 	func testObserveFlagReceivesChanges() async {
-		let featureFlags: FeatureFlagsService = .liveValue
+		var featureFlags: FeatureFlagsService!
+		withDependencies {
+			$0.preferenceService.getBool = { _ in false }
+			$0.preferenceService.setBool = { _, _ in }
+		} operation: {
+			featureFlags = .liveValue
+		}
 
 		let flag = FeatureFlag(name: "Test", introduced: "", stage: .release)
 
@@ -77,7 +122,13 @@ final class FeatureFlagsServiceTests: XCTestCase {
 	}
 
 	func testObserveFlagDoesNotReceiveUnrelatedChanges() async {
-		let featureFlags: FeatureFlagsService = .liveValue
+		var featureFlags: FeatureFlagsService!
+		withDependencies {
+			$0.preferenceService.getBool = { _ in false }
+			$0.preferenceService.setBool = { _, _ in }
+		} operation: {
+			featureFlags = .liveValue
+		}
 
 		let flag = FeatureFlag(name: "Test", introduced: "", stage: .release)
 		let flag2 = FeatureFlag(name: "Test2", introduced: "", stage: .release)
@@ -95,7 +146,13 @@ final class FeatureFlagsServiceTests: XCTestCase {
 	}
 
 	func testObserveAllFlagsReceivesAllChanges() async {
-		let featureFlags: FeatureFlagsService = .liveValue
+		var featureFlags: FeatureFlagsService!
+		withDependencies {
+			$0.preferenceService.getBool = { _ in false }
+			$0.preferenceService.setBool = { _, _ in }
+		} operation: {
+			featureFlags = .liveValue
+		}
 
 		let flags: [FeatureFlag] = [
 			.init(name: "Test1", introduced: "", stage: .release),
@@ -119,7 +176,13 @@ final class FeatureFlagsServiceTests: XCTestCase {
 	}
 
 	func testOverridingFlagPublishesNotification() {
-		let featureFlags: FeatureFlagsService = .liveValue
+		var featureFlags: FeatureFlagsService!
+		withDependencies {
+			$0.preferenceService.getBool = { _ in false }
+			$0.preferenceService.setBool = { _, _ in }
+		} operation: {
+			featureFlags = .liveValue
+		}
 
 		let flag = FeatureFlag(name: "Test", introduced: "", stage: .release)
 
@@ -138,7 +201,13 @@ final class FeatureFlagsServiceTests: XCTestCase {
 	}
 
 	func testSetOverride() {
-		let featureFlags: FeatureFlagsService = .liveValue
+		var featureFlags: FeatureFlagsService!
+		withDependencies {
+			$0.preferenceService.getBool = { _ in false }
+			$0.preferenceService.setBool = { _, _ in }
+		} operation: {
+			featureFlags = .liveValue
+		}
 
 		let flag = FeatureFlag(name: "Test", introduced: "", stage: .release)
 
@@ -152,7 +221,13 @@ final class FeatureFlagsServiceTests: XCTestCase {
 	}
 
 	func testResetOverrides() {
-		let featureFlags: FeatureFlagsService = .liveValue
+		var featureFlags: FeatureFlagsService!
+		withDependencies {
+			$0.preferenceService.getBool = { _ in false }
+			$0.preferenceService.setBool = { _, _ in }
+		} operation: {
+			featureFlags = .liveValue
+		}
 
 		let flag = FeatureFlag(name: "Test", introduced: "", stage: .release)
 
