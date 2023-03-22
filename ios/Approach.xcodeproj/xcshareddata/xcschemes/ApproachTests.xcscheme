@@ -14,6 +14,20 @@
             buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AddressLookupServiceTests"
+               BuildableName = "AddressLookupServiceTests"
+               BlueprintName = "AddressLookupServiceTests"
+               ReferencedContainer = "container:Approach">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
                BlueprintIdentifier = "ScoringServiceTests"
                BuildableName = "ScoringServiceTests"
                BlueprintName = "ScoringServiceTests"
@@ -326,6 +340,16 @@
                BlueprintIdentifier = "TeamsDataProviderTests"
                BuildableName = "TeamsDataProviderTests"
                BlueprintName = "TeamsDataProviderTests"
+               ReferencedContainer = "container:Approach">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AddressLookupServiceTests"
+               BuildableName = "AddressLookupServiceTests"
+               BlueprintName = "AddressLookupServiceTests"
                ReferencedContainer = "container:Approach">
             </BuildableReference>
          </TestableReference>

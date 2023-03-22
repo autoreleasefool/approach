@@ -60,6 +60,8 @@ let package = Package(
 		.library(name: "TeamsDataProviderInterface", targets: ["TeamsDataProviderInterface"]),
 
 		// MARK: - Services
+		.library(name: "AddressLookupService", targets: ["AddressLookupService"]),
+		.library(name: "AddressLookupServiceInterface", targets: ["AddressLookupServiceInterface"]),
 		.library(name: "AnalyticsService", targets: ["AnalyticsService"]),
 		.library(name: "AnalyticsServiceInterface", targets: ["AnalyticsServiceInterface"]),
 		.library(name: "AvatarService", targets: ["AvatarService"]),
@@ -769,6 +771,26 @@ let package = Package(
 		),
 
 		// MARK: - Services
+		.target(
+			name: "AddressLookupService",
+			dependencies: [
+				"AddressLookupServiceInterface",
+			]
+		),
+		.target(
+			name: "AddressLookupServiceInterface",
+			dependencies: [
+				.product(name: "Dependencies", package: "swift-dependencies"),
+			]
+		),
+		.testTarget(
+			name: "AddressLookupServiceTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"AddressLookupService",
+				"SharedModelsMocksLibrary",
+			]
+		),
 		.target(
 			name: "AnalyticsService",
 			dependencies: [

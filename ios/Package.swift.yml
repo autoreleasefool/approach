@@ -245,6 +245,7 @@ package:
           - SortingLibrary
 
   service:
+    - name: AddressLookupService
     - name: AnalyticsService
       dependencies:
         implementation:
