@@ -14,20 +14,6 @@
             buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AddressLookupServiceTests"
-               BuildableName = "AddressLookupServiceTests"
-               BlueprintName = "AddressLookupServiceTests"
-               ReferencedContainer = "container:Approach">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "NO"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
                BlueprintIdentifier = "ScoringServiceTests"
                BuildableName = "ScoringServiceTests"
                BlueprintName = "ScoringServiceTests"

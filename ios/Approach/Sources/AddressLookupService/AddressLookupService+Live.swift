@@ -48,6 +48,7 @@ final actor LocalSearchActor: GlobalActor {
 		let id = ObjectIdentifier(id)
 		let delegate = Delegate()
 		let completer = MKLocalSearchCompleter()
+		completer.resultTypes = [.query]
 		completer.delegate = delegate
 		var continuation: AsyncThrowingStream<[AddressLookupResult], Error>.Continuation!
 		let stream = AsyncThrowingStream<[AddressLookupResult], Error> {
