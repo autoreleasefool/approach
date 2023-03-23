@@ -26,6 +26,7 @@
 		CA8BBC5D28D59B8C00653A1E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CA8BBC5C28D59B8C00653A1E /* Assets.xcassets */; };
 		CA8BBC6028D59B8C00653A1E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CA8BBC5F28D59B8C00653A1E /* Preview Assets.xcassets */; };
 		CA94DD642900B3AC00B81A87 /* FileManagerService in Frameworks */ = {isa = PBXBuildFile; productRef = CA94DD632900B3AC00B81A87 /* FileManagerService */; };
+		CABEC0CF29CBF9CD003CF669 /* AddressLookupService in Frameworks */ = {isa = PBXBuildFile; productRef = CABEC0CE29CBF9CD003CF669 /* AddressLookupService */; };
 		CAC13AA929203D6600DD36A5 /* AlleysDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CAC13AA829203D6600DD36A5 /* AlleysDataProvider */; };
 		CAC13AAB292045B700DD36A5 /* BowlersDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CAC13AAA292045B700DD36A5 /* BowlersDataProvider */; };
 		CAC13AAD29204EA000DD36A5 /* FramesDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CAC13AAC29204EA000DD36A5 /* FramesDataProvider */; };
@@ -126,6 +127,7 @@
 				CA2513FE296BEE4200EF3F1A /* OpponentsDataProvider in Frameworks */,
 				CAFCA04429641D0A000702EF /* TeamsDataProvider in Frameworks */,
 				CA50C6852963A4FB002F6F20 /* AveragesDataProvider in Frameworks */,
+				CABEC0CF29CBF9CD003CF669 /* AddressLookupService in Frameworks */,
 				CA2890DE28F87FF2003C1EE9 /* AppFeature in Frameworks */,
 				CA81F9E0293DAD0B0061D1D9 /* LanesDataProvider in Frameworks */,
 				CA94DD642900B3AC00B81A87 /* FileManagerService in Frameworks */,
@@ -383,6 +385,7 @@
 				CA318B3F2999E1F500BD4BEC /* AnalyticsService */,
 				CA681DED29B94BE900535750 /* AvatarService */,
 				CACA8A5729C616850075A6C1 /* ScoringService */,
+				CABEC0CE29CBF9CD003CF669 /* AddressLookupService */,
 			);
 			productName = Approach;
 			productReference = CA8BBC5528D59B8B00653A1E /* Approach.app */;
@@ -1066,6 +1069,10 @@
 		CA94DD632900B3AC00B81A87 /* FileManagerService */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = FileManagerService;
+		};
+		CABEC0CE29CBF9CD003CF669 /* AddressLookupService */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AddressLookupService;
 		};
 		CAC13AA829203D6600DD36A5 /* AlleysDataProvider */ = {
 			isa = XCSwiftPackageProductDependency;
