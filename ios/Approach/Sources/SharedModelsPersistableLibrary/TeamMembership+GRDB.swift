@@ -2,7 +2,7 @@ import GRDB
 import SharedModelsLibrary
 
 extension TeamMembership: PersistableSQL {
-	public func update(_ db: Database) throws {
+	public func save(_ db: Database) throws {
 		try db.execute(sql: "DELETE FROM teamMember WHERE team = ?", arguments: [team])
 
 		var statements = ""

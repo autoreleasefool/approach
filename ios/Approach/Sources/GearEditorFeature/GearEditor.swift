@@ -100,16 +100,13 @@ public struct GearEditor: Reducer {
 		Scope(state: \.base, action: /Action.internal..Action.InternalAction.form) {
 			BaseForm()
 				.dependency(\.modelPersistence, .init(
-					create: persistenceService.createGear,
-					update: persistenceService.updateGear,
+					save: persistenceService.saveGear,
 					delete: persistenceService.deleteGear
 				))
 		}
 
 		Scope(state: \.base.form.bowlerPicker, action: /Action.internal..Action.InternalAction.bowlerPicker) {
-			ResourcePicker {
-				try await bowlersDataProvider.fetchBowlers($0)
-			}
+			ResourcePicker(observeResources: bowlersDataProvider.observeBowlers)
 		}
 
 		Reduce<State, Action> { state, action in
@@ -118,11 +115,12 @@ public struct GearEditor: Reducer {
 				switch viewAction {
 				case .didAppear:
 					if let bowler = state.base.form.bowlerPicker.selected.first {
-						return .task {
-							await .internal(.didLoadBowler(TaskResult {
-								let bowlers = try await bowlersDataProvider.fetchBowlers(.init(filter: .id(bowler), ordering: .byName))
-								return bowlers.first
-							}))
+						return .run { send in
+							for try await bowler in bowlersDataProvider.observeBowler(.init(filter: .id(bowler))) {
+								await send(.internal(.didLoadBowler(.success(bowler))))
+							}
+						} catch: { error, send in
+							await send(.internal(.didLoadBowler(.failure(error))))
 						}
 					}
 					return .none

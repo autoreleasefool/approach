@@ -11,17 +11,6 @@ extension GearDataProvider: DependencyKey {
 		@Dependency(\.persistenceService) var persistenceService: PersistenceService
 
 		return .init(
-			fetchGear: { request in
-				let gear = try await persistenceService.fetchGear(request)
-
-				switch request.ordering {
-				case .byName:
-					return gear
-				case .byRecentlyUsed:
-					let recentlyUsed = recentlyUsedService.getRecentlyUsed(.gear)
-					return gear.sortBy(ids: recentlyUsed.map(\.id))
-				}
-			},
 			observeGear: { request in
 				switch request.ordering {
 				case .byName:

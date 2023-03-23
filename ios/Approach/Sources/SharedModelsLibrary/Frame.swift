@@ -3,6 +3,7 @@ import Foundation
 public struct Frame: Sendable, Identifiable, Hashable, Codable {
 	public let game: Game.ID
 	public let ordinal: Int
+	// TODO: replace with 3 balls
 	public var rolls: [Roll]
 
 	public var id: String {

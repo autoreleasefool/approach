@@ -8,20 +8,6 @@ import SortingLibrary
 extension OpponentsDataProvider: DependencyKey {
 	public static var liveValue: Self = {
 		return .init(
-			fetchOpponents: { request in
-				@Dependency(\.recentlyUsedService) var recentlyUsedService: RecentlyUsedService
-				@Dependency(\.persistenceService) var persistenceService: PersistenceService
-
-				let opponents = try await persistenceService.fetchOpponents(request)
-
-				switch request.ordering {
-				case .byName:
-					return opponents
-				case .byRecentlyUsed:
-					let recentlyUsed = recentlyUsedService.getRecentlyUsed(.opponents)
-					return opponents.sortBy(ids: recentlyUsed.map(\.id))
-				}
-			},
 			observeOpponents: { request in
 				@Dependency(\.recentlyUsedService) var recentlyUsedService: RecentlyUsedService
 				@Dependency(\.persistenceService) var persistenceService: PersistenceService

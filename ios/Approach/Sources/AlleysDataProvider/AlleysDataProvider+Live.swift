@@ -13,17 +13,7 @@ extension AlleysDataProvider: DependencyKey {
 		@Dependency(\.persistenceService) var persistenceService: PersistenceService
 
 		return .init(
-			fetchAlleys: { request in
-				let alleys = try await persistenceService.fetchAlleys(request)
-
-				switch request.ordering {
-				case .byName:
-					return alleys
-				case .byRecentlyUsed:
-					let recentlyUsed = recentlyUsedService.getRecentlyUsed(.alleys)
-					return alleys.sortBy(ids: recentlyUsed.map(\.id))
-				}
-			},
+			observeAlley: persistenceService.observeAlley,
 			observeAlleys: { request in
 				switch request.ordering {
 				case .byName:

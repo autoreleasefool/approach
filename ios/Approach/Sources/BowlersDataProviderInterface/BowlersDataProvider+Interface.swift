@@ -3,21 +3,21 @@ import SharedModelsLibrary
 import SharedModelsFetchableLibrary
 
 public struct BowlersDataProvider: Sendable {
-	public var fetchBowlers: @Sendable (Bowler.FetchRequest) async throws -> [Bowler]
+	public var observeBowler: @Sendable (Bowler.SingleFetchRequest) -> AsyncThrowingStream<Bowler?, Error>
 	public var observeBowlers: @Sendable (Bowler.FetchRequest) -> AsyncThrowingStream<[Bowler], Error>
 
 	public init(
-		fetchBowlers: @escaping @Sendable (Bowler.FetchRequest) async throws -> [Bowler],
+		observeBowler: @escaping @Sendable (Bowler.SingleFetchRequest) -> AsyncThrowingStream<Bowler?, Error>,
 		observeBowlers: @escaping @Sendable (Bowler.FetchRequest) -> AsyncThrowingStream<[Bowler], Error>
 	) {
-		self.fetchBowlers = fetchBowlers
+		self.observeBowler = observeBowler
 		self.observeBowlers = observeBowlers
 	}
 }
 
 extension BowlersDataProvider: TestDependencyKey {
 	public static var testValue = Self(
-		fetchBowlers: { _ in unimplemented("\(Self.self).fetchBowlers") },
+		observeBowler: { _ in unimplemented("\(Self.self).observeBowler") },
 		observeBowlers: { _ in unimplemented("\(Self.self).observeBowlers") }
 	)
 }

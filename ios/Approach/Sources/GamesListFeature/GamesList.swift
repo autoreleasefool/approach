@@ -124,16 +124,18 @@ public struct GamesList: Reducer {
 					id: selection.id
 				)
 			} else {
-				return .task {
-					await .internal(.bowlerResponse(id, TaskResult {
-						guard let bowler = try await bowlersDataProvider.fetchBowlers(
-							.init(filter: .forGame(selection), ordering: .byName)
-						).first else {
-							throw BowlerNotFoundError()
-						}
-						return bowler
-					}))
-				}
+				// TODO: need to fetch bowlers for games
+				return .none
+//				return .task {
+//					await .internal(.bowlerResponse(id, TaskResult {
+//						guard let bowler = try await bowlersDataProvider.fetchBowlers(
+//							.init(filter: .forGame(selection), ordering: .byName)
+//						).first else {
+//							throw BowlerNotFoundError()
+//						}
+//						return bowler
+//					}))
+//				}
 			}
 		} else {
 			state.isLoadingGameDetails = false

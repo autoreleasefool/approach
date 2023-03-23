@@ -11,17 +11,6 @@ extension LeaguesDataProvider: DependencyKey {
 		@Dependency(\.persistenceService) var persistenceService: PersistenceService
 
 		return .init(
-			fetchLeagues: { request in
-				let leagues = try await persistenceService.fetchLeagues(request)
-
-				switch request.ordering {
-				case .byName:
-					return leagues
-				case .byRecentlyUsed:
-					let recentlyUsed = recentlyUsedService.getRecentlyUsed(.leagues)
-					return leagues.sortBy(ids: recentlyUsed.map(\.id))
-				}
-			},
 			observeLeagues: { request in
 				switch request.ordering {
 				case .byName:

@@ -1,33 +1,25 @@
 import Dependencies
 
 public struct BaseModelPersistence: Sendable {
-	public var create: @Sendable (Any) async throws -> Void
-	public var update: @Sendable (Any) async throws -> Void
+	public var save: @Sendable (Any) async throws -> Void
 	public var delete: @Sendable (Any) async throws -> Void
 
 	public init(
-		create: @escaping @Sendable (Any) async throws -> Void,
-		update: @escaping @Sendable (Any) async throws -> Void,
+		save: @escaping @Sendable (Any) async throws -> Void,
 		delete: @escaping @Sendable (Any) async throws-> Void
 	) {
-		self.create = create
-		self.update = update
+		self.save = save
 		self.delete = delete
 	}
 
 	public init<Model>(
-		create: @escaping @Sendable (Model) async throws -> Void,
-		update: @escaping @Sendable (Model) async throws -> Void,
+		save: @escaping @Sendable (Model) async throws -> Void,
 		delete: @escaping @Sendable (Model) async throws -> Void
 	) {
 		self.init(
-			create: { model in
+			save: { model in
 				guard let mapped = model as? Model else { return }
-				try await create(mapped)
-			},
-			update: { model in
-				guard let mapped = model as? Model else { return }
-				try await update(mapped)
+				try await save(mapped)
 			},
 			delete: { model in
 				guard let mapped = model as? Model else { return }
@@ -39,8 +31,7 @@ public struct BaseModelPersistence: Sendable {
 
 extension BaseModelPersistence: TestDependencyKey {
 	public static var testValue = Self(
-		create: { _ in unimplemented("\(Self.self).create") },
-		update: { _ in unimplemented("\(Self.self).update") },
+		save: { _ in unimplemented("\(Self.self).save") },
 		delete: { _ in unimplemented("\(Self.self).delete") }
 	)
 }

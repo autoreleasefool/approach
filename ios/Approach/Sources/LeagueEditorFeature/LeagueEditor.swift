@@ -122,16 +122,13 @@ public struct LeagueEditor: Reducer {
 		Scope(state: \.base, action: /Action.internal..Action.InternalAction.form) {
 			BaseForm()
 				.dependency(\.modelPersistence, .init(
-					create: persistenceService.createLeague,
-					update: persistenceService.updateLeague,
+					save: persistenceService.saveLeague,
 					delete: persistenceService.deleteLeague
 				))
 		}
 
 		Scope(state: \.base.form.alleyPicker, action: /Action.internal..Action.InternalAction.alleyPicker) {
-			ResourcePicker {
-				try await alleysDataProvider.fetchAlleys($0)
-			}
+			ResourcePicker(observeResources: alleysDataProvider.observeAlleys)
 		}
 
 		Reduce<State, Action> { state, action in
@@ -140,11 +137,12 @@ public struct LeagueEditor: Reducer {
 				switch viewAction {
 				case .didAppear:
 					if case let .edit(league) = state.base.mode, let alley = league.alley {
-						return .task {
-							await .internal(.didLoadAlley(TaskResult {
-								let alleys = try await alleysDataProvider.fetchAlleys(.init(filter: .id(alley), ordering: .byName))
-								return alleys.first
-							}))
+						return .run { send in
+							for try await alley in alleysDataProvider.observeAlley(.init(filter: .id(alley))) {
+								await send(.internal(.didLoadAlley(.success(alley))))
+							}
+						} catch: { error, send in
+							await send(.internal(.didLoadAlley(.failure(error))))
 						}
 					}
 					return .none

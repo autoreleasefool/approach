@@ -93,8 +93,7 @@ public struct AlleyEditor: Reducer {
 		Scope(state: \.base, action: /Action.internal..Action.InternalAction.form) {
 			BaseForm()
 				.dependency(\.modelPersistence, .init(
-					create: persistenceService.createAlley,
-					update: persistenceService.updateAlley,
+					save: persistenceService.saveAlley,
 					delete: persistenceService.deleteAlley
 				))
 		}
@@ -138,8 +137,7 @@ public struct AlleyEditor: Reducer {
 							let removed = existing.filter { !laneIds.contains($0.id) }
 							let updated = lanes.filter { existingIds.contains($0.id) }.map { $0.toLane(alley: alleyId) }
 
-							try await persistenceService.createLanes(added)
-							try await persistenceService.updateLanes(updated)
+							try await persistenceService.saveLanes(added + updated)
 							try await persistenceService.deleteLanes(removed)
 
 							return .internal(.form(.callback(.didFinishSaving(.success(alley)))))

@@ -1,5 +1,5 @@
 import GRDB
 
 public protocol PersistableSQL {
-	func update(_ db: Database) throws
+	func save(_ db: Database) throws
 }

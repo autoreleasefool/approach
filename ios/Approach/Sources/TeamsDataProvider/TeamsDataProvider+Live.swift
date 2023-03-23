@@ -11,17 +11,6 @@ extension TeamsDataProvider: DependencyKey {
 		@Dependency(\.persistenceService) var persistenceService: PersistenceService
 
 		return .init(
-			fetchTeams: { request in
-				let teams = try await persistenceService.fetchTeams(request)
-
-				switch request.ordering {
-				case .byName:
-					return teams
-				case .byRecentlyUsed:
-					let recentlyUsed = recentlyUsedService.getRecentlyUsed(.teams)
-					return teams.sortBy(ids: recentlyUsed.map(\.id))
-				}
-			},
 			observeTeams: { request in
 				switch request.ordering {
 				case .byName:

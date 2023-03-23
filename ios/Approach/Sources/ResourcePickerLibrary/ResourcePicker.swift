@@ -53,11 +53,11 @@ public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: Redu
 		case `internal`(InternalAction)
 	}
 
-	public init(fetchResources: @escaping (Query) async throws -> [Resource]) {
-		self.fetchResources = fetchResources
+	public init(observeResources: @escaping (Query) -> AsyncThrowingStream<[Resource], Error>) {
+		self.observeResources = observeResources
 	}
 
-	let fetchResources: (Query) async throws -> [Resource]
+	let observeResources: (Query) -> AsyncThrowingStream<[Resource], Error>
 
 	public var body: some Reducer<State, Action> {
 		Reduce<State, Action> { state, action in
@@ -66,8 +66,12 @@ public struct ResourcePicker<Resource: PickableResource, Query: Equatable>: Redu
 				switch viewAction {
 				case .didAppear:
 					state.error = nil
-					return .task { [query = state.query] in
-						await .internal(.didLoadResources(TaskResult { try await fetchResources(query) }))
+					return .run { [query = state.query] send in
+						for try await resources in observeResources(query) {
+							await send(.internal(.didLoadResources(.success(resources))))
+						}
+					} catch: { error, send in
+						await send(.internal(.didLoadResources(.failure(error))))
 					}
 
 				case .didTapCancelButton:

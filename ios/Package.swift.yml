@@ -67,7 +67,6 @@ package:
         - PersistenceService
     - name: BowlersListFeature
       dependencies:
-        - AveragesDataProvider
         - BowlersDataProvider
         - BowlerEditorFeature
         - FeatureFlagsService
@@ -98,6 +97,7 @@ package:
         - AvatarService
         - BaseFormLibrary
         - BowlersDataProvider
+        - FeatureFlagsService
         - PersistenceService
         - ResourcePickerLibrary
         - StringsLibrary
@@ -188,10 +188,6 @@ package:
           - PersistenceService
           - RecentlyUsedService
           - SortingLibrary
-    - name: AveragesDataProvider
-      dependencies:
-        implementation:
-          - PersistenceService
     - name: BowlersDataProvider
       dependencies:
         implementation:

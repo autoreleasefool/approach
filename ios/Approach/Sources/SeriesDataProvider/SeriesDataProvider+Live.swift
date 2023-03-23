@@ -7,14 +7,6 @@ extension SeriesDataProvider: DependencyKey {
 		@Dependency(\.persistenceService) var persistenceService: PersistenceService
 
 		return .init(
-			fetchSeries: { request in
-				let series = try await persistenceService.fetchSeries(request)
-
-				switch request.ordering {
-				case .byDate:
-					return series
-				}
-			},
 			observeSeries: { request in
 				switch request.ordering {
 				case .byDate:

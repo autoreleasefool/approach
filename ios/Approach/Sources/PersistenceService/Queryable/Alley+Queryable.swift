@@ -4,13 +4,20 @@ import SharedModelsLibrary
 import SharedModelsFetchableLibrary
 import SharedModelsPersistableLibrary
 
+extension Alley.SingleFetchRequest: SingleQueryable {
+	@Sendable func fetchValue(_ db: Database) throws -> Alley? {
+		switch filter {
+		case let .id(id):
+			return try Alley.fetchOne(db, id: id)
+		}
+	}
+}
+
 extension Alley.FetchRequest: ManyQueryable {
 	@Sendable func fetchValues(_ db: Database) throws -> [Alley] {
 		var query = Alley.all()
 
 		switch filter {
-		case let .id(id):
-			query = query.filter(id: id)
 		case let .properties(material, pinFall, pinBase, mechanism):
 			if let material {
 				query = query.filter(Column("material") == material.rawValue)

@@ -1,6 +1,27 @@
 import SharedModelsLibrary
 import StringsLibrary
 
+// MARK: - SingleFetchRequest
+
+extension Bowler {
+	public struct SingleFetchRequest: Equatable {
+		public let filter: Filter
+
+		public init(filter: Filter) {
+			self.filter = filter
+		}
+	}
+}
+
+extension Bowler.SingleFetchRequest {
+	public enum Filter: Equatable {
+		case id(Bowler.ID)
+		case owner(Game)
+	}
+}
+
+// MARK: - FetchRequest
+
 extension Bowler {
 	public struct FetchRequest: Equatable {
 		public let filter: Filter?
@@ -15,11 +36,8 @@ extension Bowler {
 
 extension Bowler.FetchRequest {
 	public enum Filter: Equatable {
-		case id(Bowler.ID)
 		case team(Team)
 		case name(String)
-
-		case forGame(Game)
 	}
 }
 

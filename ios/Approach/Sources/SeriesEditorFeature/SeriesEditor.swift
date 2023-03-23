@@ -151,18 +151,17 @@ public struct SeriesEditor: Reducer {
 		Scope(state: \.base, action: /Action.internal..Action.InternalAction.form) {
 			BaseForm()
 				.dependency(\.modelPersistence, .init(
-					create: persistenceService.createSeries,
-					update: persistenceService.updateSeries,
+					save: persistenceService.saveSeries,
 					delete: persistenceService.deleteSeries
 				))
 		}
 
 		Scope(state: \.base.form.alleyPicker, action: /Action.internal..Action.InternalAction.alleyPicker) {
-			ResourcePicker(fetchResources: alleysDataProvider.fetchAlleys)
+			ResourcePicker(observeResources: alleysDataProvider.observeAlleys)
 		}
 
 		Scope(state: \.base.form.lanePicker, action: /Action.internal..Action.InternalAction.lanePicker) {
-			ResourcePicker(fetchResources: lanesDataProvider.fetchLanes)
+			ResourcePicker(observeResources: lanesDataProvider.observeLanes)
 		}
 
 		Reduce<State, Action> { state, action in
@@ -170,14 +169,17 @@ public struct SeriesEditor: Reducer {
 			case let .view(viewAction):
 				switch viewAction {
 				case .didAppear:
-					return .run { [alley = state.base.form.alleyPicker.selected.first, series = state.base.mode.model] send in
+					return .run { [alleyId = state.base.form.alleyPicker.selected.first, series = state.base.mode.model] send in
 						await withTaskGroup(of: Void.self) { group in
-							if let alley {
+							if let alleyId {
 								group.addTask {
-									await send(.internal(.didLoadAlley(TaskResult {
-										let alleys = try await alleysDataProvider.fetchAlleys(.init(filter: .id(alley), ordering: .byName))
-										return alleys.first
-									})))
+									do {
+										for try await alley in alleysDataProvider.observeAlley(.init(filter: .id(alleyId))) {
+											await send(.internal(.didLoadAlley(.success(alley))))
+										}
+									} catch {
+										await send(.internal(.didLoadAlley(.failure(error))))
+									}
 								}
 							} else {
 								group.addTask {
@@ -187,9 +189,13 @@ public struct SeriesEditor: Reducer {
 
 							if let series {
 								group.addTask {
-									await send(.internal(.didLoadLanes(TaskResult {
-										try await lanesDataProvider.fetchLanes(.init(filter: .series(series), ordering: .byLabel))
-									})))
+									do {
+										for try await lanes in lanesDataProvider.observeLanes(.init(filter: .series(series), ordering: .byLabel)) {
+											await send(.internal(.didLoadLanes(.success(lanes))))
+										}
+									} catch {
+										await send(.internal(.didLoadLanes(.failure(error))))
+									}
 								}
 							} else {
 								group.addTask {

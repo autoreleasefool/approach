@@ -4,37 +4,21 @@ import SharedModelsPersistableLibrary
 struct ModelPersistence {
 	let writer: any DatabaseWriter
 
-	@Sendable func create<Model: PersistableRecord>(model: Model) async throws {
-		try await writer.write {
-			try model.insert($0)
-		}
+	@Sendable func save<Model: PersistableRecord>(model: Model) async throws {
+		try await writer.write { try model.save($0) }
 	}
 
-	@Sendable func create<Model: PersistableRecord>(models: [Model]) async throws {
+	@Sendable func save<Model: PersistableRecord>(models: [Model]) async throws {
 		try await writer.write {
 			for model in models {
-				try model.insert($0)
+				try model.save($0)
 			}
 		}
 	}
 
-	@Sendable func update<Model: PersistableRecord>(model: Model) async throws {
+	@Sendable func save<Model: PersistableSQL>(model: Model) async throws {
 		try await writer.write {
-			try model.update($0)
-		}
-	}
-
-	@Sendable func update<Model: PersistableRecord>(models: [Model]) async throws {
-		try await writer.write {
-			for model in models {
-				try model.update($0)
-			}
-		}
-	}
-
-	@Sendable func update<Model: PersistableSQL>(model: Model) async throws {
-		try await writer.write {
-			try model.update($0)
+			try model.save($0)
 		}
 	}
 

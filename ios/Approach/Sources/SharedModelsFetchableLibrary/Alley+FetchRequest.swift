@@ -1,6 +1,24 @@
 import SharedModelsLibrary
 
 extension Alley {
+	public struct SingleFetchRequest: Equatable {
+		public let filter: Filter
+
+		public init(filter: Filter) {
+			self.filter = filter
+		}
+	}
+}
+
+extension Alley.SingleFetchRequest {
+	public enum Filter: Equatable {
+		case id(Alley.ID)
+	}
+}
+
+// MARK: - FetchRequest
+
+extension Alley {
 	public struct FetchRequest: Equatable {
 		public let filter: Filter?
 		public let ordering: Ordering
@@ -14,7 +32,6 @@ extension Alley {
 
 extension Alley.FetchRequest {
 	public enum Filter: Equatable {
-		case id(Alley.ID)
 		case properties(
 			material: Alley.Material?,
 			pinFall: Alley.PinFall?,

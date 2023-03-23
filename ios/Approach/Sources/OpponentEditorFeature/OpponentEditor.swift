@@ -61,8 +61,7 @@ public struct OpponentEditor: Reducer {
 		Scope(state: \.base, action: /Action.internal..Action.InternalAction.form) {
 			BaseForm()
 				.dependency(\.modelPersistence, .init(
-					create: persistenceService.createOpponent,
-					update: persistenceService.updateOpponent,
+					save: persistenceService.saveOpponent,
 					delete: persistenceService.deleteOpponent
 				))
 		}

@@ -4,19 +4,26 @@ import SharedModelsLibrary
 import SharedModelsFetchableLibrary
 import SharedModelsPersistableLibrary
 
+extension Bowler.SingleFetchRequest: SingleQueryable {
+	@Sendable func fetchValue(_ db: Database) throws -> Bowler? {
+		switch filter {
+		case let .id(id):
+			return try Bowler.fetchOne(db, id: id)
+		case let .owner(game):
+			return try game.bowler.fetchOne(db)
+		}
+	}
+}
+
 extension Bowler.FetchRequest: ManyQueryable {
 	@Sendable func fetchValues(_ db: Database) throws -> [Bowler] {
 		var query = Bowler.all()
 
 		switch filter {
-		case let .id(id):
-			query = query.filter(id: id)
 		case let .name(name):
 			query = query.filter(Column("name").like(name))
 		case let .team(team):
 			query = team.bowlers
-		case let .forGame(game):
-			query = game.bowler
 		case .none:
 			break
 		}

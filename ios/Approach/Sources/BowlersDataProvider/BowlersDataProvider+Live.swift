@@ -11,17 +11,7 @@ extension BowlersDataProvider: DependencyKey {
 		@Dependency(\.persistenceService) var persistenceService: PersistenceService
 
 		return .init(
-			fetchBowlers: { request in
-				let bowlers = try await persistenceService.fetchBowlers(request)
-
-				switch request.ordering {
-				case .byName:
-					return bowlers
-				case .byRecentlyUsed:
-					let recentlyUsed = recentlyUsedService.getRecentlyUsed(.bowlers)
-					return bowlers.sortBy(ids: recentlyUsed.map(\.id))
-				}
-			},
+			observeBowler: persistenceService.observeBowler,
 			observeBowlers: { request in
 				switch request.ordering {
 				case .byName:

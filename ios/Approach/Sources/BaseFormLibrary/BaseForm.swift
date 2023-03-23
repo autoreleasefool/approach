@@ -110,7 +110,7 @@ public struct BaseForm<Model: BaseFormModel, FormState: BaseFormState>: Reducer 
 						let model = state.form.model(fromExisting: original)
 						return .task {
 							await .internal(.saveModelResult(TaskResult {
-								try await modelPersistence.update(model)
+								try await modelPersistence.save(model)
 								return model
 							}))
 						}
@@ -118,7 +118,7 @@ public struct BaseForm<Model: BaseFormModel, FormState: BaseFormState>: Reducer 
 						let model = state.form.model(fromExisting: nil)
 						return .task {
 							await .internal(.saveModelResult(TaskResult {
-								try await modelPersistence.create(model)
+								try await modelPersistence.save(model)
 								return model
 							}))
 						}

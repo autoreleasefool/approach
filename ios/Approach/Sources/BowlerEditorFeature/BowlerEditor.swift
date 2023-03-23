@@ -84,8 +84,7 @@ public struct BowlerEditor: Reducer {
 		Scope(state: \.base, action: /Action.internal..Action.InternalAction.form) {
 			BaseForm()
 				.dependency(\.modelPersistence, .init(
-					create: persistenceService.createBowler,
-					update: persistenceService.updateBowler,
+					save: persistenceService.saveBowler,
 					delete: persistenceService.deleteBowler
 				))
 		}

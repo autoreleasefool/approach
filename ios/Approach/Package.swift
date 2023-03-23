@@ -38,8 +38,6 @@ let package = Package(
 		// MARK: - Data Providers
 		.library(name: "AlleysDataProvider", targets: ["AlleysDataProvider"]),
 		.library(name: "AlleysDataProviderInterface", targets: ["AlleysDataProviderInterface"]),
-		.library(name: "AveragesDataProvider", targets: ["AveragesDataProvider"]),
-		.library(name: "AveragesDataProviderInterface", targets: ["AveragesDataProviderInterface"]),
 		.library(name: "BowlersDataProvider", targets: ["BowlersDataProvider"]),
 		.library(name: "BowlersDataProviderInterface", targets: ["BowlersDataProviderInterface"]),
 		.library(name: "FramesDataProvider", targets: ["FramesDataProvider"]),
@@ -198,7 +196,6 @@ let package = Package(
 		.target(
 			name: "BowlersListFeature",
 			dependencies: [
-				"AveragesDataProviderInterface",
 				"BowlerEditorFeature",
 				"LeaguesListFeature",
 				"SortOrderLibrary",
@@ -268,6 +265,7 @@ let package = Package(
 				"AvatarServiceInterface",
 				"BaseFormLibrary",
 				"BowlersDataProviderInterface",
+				"FeatureFlagsServiceInterface",
 				"PersistenceServiceInterface",
 				"ResourcePickerLibrary",
 			]
@@ -521,29 +519,6 @@ let package = Package(
 				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"AlleysDataProvider",
-				"SharedModelsMocksLibrary",
-			]
-		),
-		.target(
-			name: "AveragesDataProvider",
-			dependencies: [
-				"AveragesDataProviderInterface",
-				"PersistenceServiceInterface",
-			]
-		),
-		.target(
-			name: "AveragesDataProviderInterface",
-			dependencies: [
-				.product(name: "Dependencies", package: "swift-dependencies"),
-				"SharedModelsFetchableLibrary",
-			]
-		),
-		.testTarget(
-			name: "AveragesDataProviderTests",
-			dependencies: [
-				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
-				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"AveragesDataProvider",
 				"SharedModelsMocksLibrary",
 			]
 		),
