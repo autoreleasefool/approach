@@ -25,6 +25,7 @@
 		CA8BBC5D28D59B8C00653A1E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CA8BBC5C28D59B8C00653A1E /* Assets.xcassets */; };
 		CA8BBC6028D59B8C00653A1E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CA8BBC5F28D59B8C00653A1E /* Preview Assets.xcassets */; };
 		CA94DD642900B3AC00B81A87 /* FileManagerService in Frameworks */ = {isa = PBXBuildFile; productRef = CA94DD632900B3AC00B81A87 /* FileManagerService */; };
+		CAA3D74D29CFB48D00876EDC /* BowlersRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CAA3D74C29CFB48D00876EDC /* BowlersRepository */; };
 		CAA3D74F29CFB49200876EDC /* DatabaseService in Frameworks */ = {isa = PBXBuildFile; productRef = CAA3D74E29CFB49200876EDC /* DatabaseService */; };
 		CABEC0CF29CBF9CD003CF669 /* AddressLookupService in Frameworks */ = {isa = PBXBuildFile; productRef = CABEC0CE29CBF9CD003CF669 /* AddressLookupService */; };
 		CAC13AA929203D6600DD36A5 /* AlleysDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CAC13AA829203D6600DD36A5 /* AlleysDataProvider */; };
@@ -137,6 +138,7 @@
 				CA2890E328F8DA53003C1EE9 /* PersistenceService in Frameworks */,
 				CA681DEE29B94BE900535750 /* AvatarService in Frameworks */,
 				CAC13AB329205E5600DD36A5 /* SeriesDataProvider in Frameworks */,
+				CAA3D74D29CFB48D00876EDC /* BowlersRepository in Frameworks */,
 				CAF80290295D67FC00B19459 /* FeatureFlagsService in Frameworks */,
 				CA318B402999E1F500BD4BEC /* AnalyticsService in Frameworks */,
 				CAC13AA929203D6600DD36A5 /* AlleysDataProvider in Frameworks */,
@@ -385,6 +387,7 @@
 				CA681DED29B94BE900535750 /* AvatarService */,
 				CACA8A5729C616850075A6C1 /* ScoringService */,
 				CABEC0CE29CBF9CD003CF669 /* AddressLookupService */,
+				CAA3D74C29CFB48D00876EDC /* BowlersRepository */,
 				CAA3D74E29CFB49200876EDC /* DatabaseService */,
 			);
 			productName = Approach;
@@ -1065,6 +1068,10 @@
 		CA94DD632900B3AC00B81A87 /* FileManagerService */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = FileManagerService;
+		};
+		CAA3D74C29CFB48D00876EDC /* BowlersRepository */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = BowlersRepository;
 		};
 		CAA3D74E29CFB49200876EDC /* DatabaseService */ = {
 			isa = XCSwiftPackageProductDependency;

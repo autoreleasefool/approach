@@ -35,6 +35,10 @@ let package = Package(
 		.library(name: "TeamEditorFeature", targets: ["TeamEditorFeature"]),
 		.library(name: "TeamsListFeature", targets: ["TeamsListFeature"]),
 
+		// MARK: - Repositories
+		.library(name: "BowlersRepository", targets: ["BowlersRepository"]),
+		.library(name: "BowlersRepositoryInterface", targets: ["BowlersRepositoryInterface"]),
+
 		// MARK: - Data Providers
 		.library(name: "AlleysDataProvider", targets: ["AlleysDataProvider"]),
 		.library(name: "AlleysDataProviderInterface", targets: ["AlleysDataProviderInterface"]),
@@ -186,6 +190,7 @@ let package = Package(
 			dependencies: [
 				"AvatarEditorFeature",
 				"BaseFormLibrary",
+				"BowlersRepositoryInterface",
 				"PersistenceServiceInterface",
 			]
 		),
@@ -496,6 +501,35 @@ let package = Package(
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"SharedModelsMocksLibrary",
 				"TeamsListFeature",
+			]
+		),
+
+		// MARK: - Repositories
+		.target(
+			name: "BowlersRepository",
+			dependencies: [
+				.product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
+				"BowlersRepositoryInterface",
+				"DatabaseModelsLibrary",
+				"DatabaseServiceInterface",
+				"RecentlyUsedServiceInterface",
+				"SortingLibrary",
+			]
+		),
+		.target(
+			name: "BowlersRepositoryInterface",
+			dependencies: [
+				.product(name: "Dependencies", package: "swift-dependencies"),
+				"ModelsLibrary",
+			]
+		),
+		.testTarget(
+			name: "BowlersRepositoryTests",
+			dependencies: [
+				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"BowlersRepository",
+				"SharedModelsMocksLibrary",
 			]
 		),
 

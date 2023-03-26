@@ -64,6 +64,7 @@ package:
       dependencies:
         - AvatarEditorFeature
         - BaseFormLibrary
+        - BowlersRepository
         - PersistenceService
     - name: BowlersListFeature
       dependencies:
@@ -179,6 +180,18 @@ package:
         - SortOrderLibrary
         - TeamsDataProvider
         - TeamEditorFeature
+
+  repository:
+    - name: BowlersRepository
+      dependencies:
+        interface:
+          - ModelsLibrary
+        implementation:
+          - AsyncAlgorithms
+          - DatabaseModelsLibrary
+          - DatabaseService
+          - RecentlyUsedService
+          - SortingLibrary
 
   data_provider:
     - name: AlleysDataProvider
