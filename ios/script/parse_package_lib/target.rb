@@ -7,7 +7,7 @@ module Target
   def self.fetch_targets(package_yaml)
     targets = {}
 
-    target_types = %w[feature data_provider service library]
+    target_types = %w[feature repository data_provider service library]
 
     target_types.each do |type|
       package_yaml['package'][type].each do |t|
@@ -37,6 +37,8 @@ module Target
     @@target_types = %w[
       test
       feature
+      repository
+      repository_interface
       data_provider
       data_provider_interface
       service
@@ -50,7 +52,7 @@ module Target
       @type = type
       @base = base || type
       @is_product = is_product
-      @requires_tests = requires_tests || %w[feature data_provider service].include?(@type)
+      @requires_tests = requires_tests || %w[feature repository data_provider service].include?(@type)
 
       raise "Unsupported target type #{@type} for #{@name}" unless @@target_types.include?(@type)
     end
@@ -105,8 +107,9 @@ module Target
 
     def supported_dependency_types
       case @type
-      when 'feature' then %w[feature data_provider_interface service_interface library]
+      when 'feature' then %w[feature repository_interface data_provider_interface service_interface library]
       when 'data_provider', 'data_provider_interface' then %w[data_provider_interface service_interface library]
+      when 'repository', 'repository_interface' then %w[repository_interface service_interface library]
       when 'service', 'service_interface' then %w[service_interface library]
       when 'library' then ['library']
       when 'test' then [base, 'library']
@@ -115,7 +118,7 @@ module Target
 
     def interface_name
       case @type
-      when 'data_provider', 'service'
+      when 'data_provider', 'service', 'repository'
         "#{@name}Interface"
       end
     end

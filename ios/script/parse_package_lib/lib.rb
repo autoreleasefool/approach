@@ -31,9 +31,13 @@ package_yaml = YAML.safe_load(File.read(package_file))
     case target.base
     when 'data_provider'
       target.add_dependency(@external['ComposableArchitecture'])
+    when 'repository'
+      target.add_dependency(@external['ComposableArchitecture'])
     end
   when 'data_provider_interface'
     target.add_dependency(@targets['SharedModelsFetchableLibrary'])
+    target.add_dependency(@external['Dependencies'])
+  when 'repository_interface'
     target.add_dependency(@external['Dependencies'])
   when 'service_interface'
     target.add_dependency(@external['Dependencies'])
@@ -91,6 +95,7 @@ end
 
 @collections = [
   { targets: @targets.select { |_, t| t.base == 'feature' }, name: 'Features' },
+  { targets: @targets.select { |_, t| t.base == 'repository' }, name: 'Repositories' },
   { targets: @targets.select { |_, t| t.base == 'data_provider' }, name: 'Data Providers' },
   { targets: @targets.select { |_, t| t.base == 'service' }, name: 'Services' },
   { targets: @targets.select { |_, t| t.base == 'library' }, name: 'Libraries' }
