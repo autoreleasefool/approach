@@ -64,6 +64,8 @@ let package = Package(
 		.library(name: "AnalyticsServiceInterface", targets: ["AnalyticsServiceInterface"]),
 		.library(name: "AvatarService", targets: ["AvatarService"]),
 		.library(name: "AvatarServiceInterface", targets: ["AvatarServiceInterface"]),
+		.library(name: "DatabaseService", targets: ["DatabaseService"]),
+		.library(name: "DatabaseServiceInterface", targets: ["DatabaseServiceInterface"]),
 		.library(name: "FeatureFlagsService", targets: ["FeatureFlagsService"]),
 		.library(name: "FeatureFlagsServiceInterface", targets: ["FeatureFlagsServiceInterface"]),
 		.library(name: "FileManagerService", targets: ["FileManagerService"]),
@@ -81,12 +83,14 @@ let package = Package(
 		.library(name: "AssetsLibrary", targets: ["AssetsLibrary"]),
 		.library(name: "BaseFormLibrary", targets: ["BaseFormLibrary"]),
 		.library(name: "ConstantsLibrary", targets: ["ConstantsLibrary"]),
+		.library(name: "DatabaseModelsLibrary", targets: ["DatabaseModelsLibrary"]),
 		.library(name: "DateTimeLibrary", targets: ["DateTimeLibrary"]),
 		.library(name: "EquatableLibrary", targets: ["EquatableLibrary"]),
 		.library(name: "ExtensionsLibrary", targets: ["ExtensionsLibrary"]),
 		.library(name: "FeatureActionLibrary", targets: ["FeatureActionLibrary"]),
 		.library(name: "FeatureFlagsLibrary", targets: ["FeatureFlagsLibrary"]),
 		.library(name: "FoundationExtensionsLibrary", targets: ["FoundationExtensionsLibrary"]),
+		.library(name: "ModelsLibrary", targets: ["ModelsLibrary"]),
 		.library(name: "ResourceListLibrary", targets: ["ResourceListLibrary"]),
 		.library(name: "ResourcePickerLibrary", targets: ["ResourcePickerLibrary"]),
 		.library(name: "SharedModelsFetchableLibrary", targets: ["SharedModelsFetchableLibrary"]),
@@ -811,6 +815,28 @@ let package = Package(
 			]
 		),
 		.target(
+			name: "DatabaseService",
+			dependencies: [
+				"DatabaseServiceInterface",
+				"FileManagerServiceInterface",
+			]
+		),
+		.target(
+			name: "DatabaseServiceInterface",
+			dependencies: [
+				.product(name: "Dependencies", package: "swift-dependencies"),
+				.product(name: "GRDB", package: "GRDB.swift"),
+			]
+		),
+		.testTarget(
+			name: "DatabaseServiceTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"DatabaseService",
+				"SharedModelsMocksLibrary",
+			]
+		),
+		.target(
 			name: "FeatureFlagsService",
 			dependencies: [
 				"FeatureFlagsServiceInterface",
@@ -966,6 +992,14 @@ let package = Package(
 			]
 		),
 		.target(
+			name: "DatabaseModelsLibrary",
+			dependencies: [
+				.product(name: "GRDB", package: "GRDB.swift"),
+				"ExtensionsLibrary",
+				"ModelsLibrary",
+			]
+		),
+		.target(
 			name: "DateTimeLibrary",
 			dependencies: []
 		),
@@ -1021,6 +1055,10 @@ let package = Package(
 		),
 		.target(
 			name: "FoundationExtensionsLibrary",
+			dependencies: []
+		),
+		.target(
+			name: "ModelsLibrary",
 			dependencies: []
 		),
 		.target(

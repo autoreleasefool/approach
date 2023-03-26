@@ -252,6 +252,12 @@ package:
         interface:
           - AssetsLibrary
           - SharedModelsLibrary
+    - name: DatabaseService
+      dependencies:
+        interface:
+          - GRDB
+        implementation:
+          - FileManagerService
     - name: FeatureFlagsService
       dependencies:
         interface:
@@ -291,6 +297,11 @@ package:
     - name: ConstantsLibrary
       dependencies:
         - StringsLibrary
+    - name: DatabaseModelsLibrary
+      dependencies:
+        - GRDB
+        - ExtensionsLibrary
+        - ModelsLibrary
     - name: DateTimeLibrary
       requires_tests: true
     - name: EquatableLibrary
@@ -303,6 +314,7 @@ package:
     - name: FeatureFlagsLibrary
       requires_tests: true
     - name: FoundationExtensionsLibrary
+    - name: ModelsLibrary
     - name: ResourceListLibrary
       requires_tests: true
       dependencies:
