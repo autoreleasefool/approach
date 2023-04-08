@@ -41,7 +41,6 @@
 		CAD79F5F29BFB9670047C22F /* FramesDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CAD79F5E29BFB9670047C22F /* FramesDataProvider */; };
 		CAE1ED3429BFF81E00076B79 /* PersistenceService in Frameworks */ = {isa = PBXBuildFile; productRef = CAE1ED3329BFF81E00076B79 /* PersistenceService */; };
 		CAF80290295D67FC00B19459 /* FeatureFlagsService in Frameworks */ = {isa = PBXBuildFile; productRef = CAF8028F295D67FC00B19459 /* FeatureFlagsService */; };
-		CAFCA04429641D0A000702EF /* TeamsDataProvider in Frameworks */ = {isa = PBXBuildFile; productRef = CAFCA04329641D0A000702EF /* TeamsDataProvider */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -126,7 +125,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				CA2513FE296BEE4200EF3F1A /* OpponentsDataProvider in Frameworks */,
-				CAFCA04429641D0A000702EF /* TeamsDataProvider in Frameworks */,
 				CABEC0CF29CBF9CD003CF669 /* AddressLookupService in Frameworks */,
 				CAA3D74F29CFB49200876EDC /* DatabaseService in Frameworks */,
 				CA2890DE28F87FF2003C1EE9 /* AppFeature in Frameworks */,
@@ -381,7 +379,6 @@
 				CA1442312924582D00D39B86 /* GearDataProvider */,
 				CA81F9DF293DAD0B0061D1D9 /* LanesDataProvider */,
 				CAF8028F295D67FC00B19459 /* FeatureFlagsService */,
-				CAFCA04329641D0A000702EF /* TeamsDataProvider */,
 				CA2513FD296BEE4200EF3F1A /* OpponentsDataProvider */,
 				CA318B3F2999E1F500BD4BEC /* AnalyticsService */,
 				CA681DED29B94BE900535750 /* AvatarService */,
@@ -1132,10 +1129,6 @@
 		CAF8028F295D67FC00B19459 /* FeatureFlagsService */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = FeatureFlagsService;
-		};
-		CAFCA04329641D0A000702EF /* TeamsDataProvider */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = TeamsDataProvider;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
