@@ -1,7 +1,7 @@
 import ComposableArchitecture
 import FeatureActionLibrary
-import LeaguesDataProviderInterface
 import LeagueEditorFeature
+import LeaguesDataProviderInterface
 import PersistenceServiceInterface
 import RecentlyUsedServiceInterface
 import ResourceListLibrary

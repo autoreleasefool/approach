@@ -1,7 +1,7 @@
-import GamesDataProvider
-import GamesDataProviderInterface
 import ComposableArchitecture
 import Dependencies
+import GamesDataProvider
+import GamesDataProviderInterface
 import PersistenceServiceInterface
 import SharedModelsLibrary
 import SharedModelsMocksLibrary

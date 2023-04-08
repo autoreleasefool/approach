@@ -1,8 +1,8 @@
 import Dependencies
 import PreferenceServiceInterface
+@testable import RecentlyUsedService
 import RecentlyUsedServiceInterface
 import XCTest
-@testable import RecentlyUsedService
 
 final class RecentlyUsedServiceTests: XCTestCase {
 	func testUpdatesRecentlyUsedResource() {

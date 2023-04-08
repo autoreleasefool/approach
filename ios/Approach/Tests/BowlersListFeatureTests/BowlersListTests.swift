@@ -1,8 +1,8 @@
+@testable import BowlersListFeature
 import ComposableArchitecture
 import SharedModelsLibrary
 import SharedModelsMocksLibrary
 import XCTest
-@testable import BowlersListFeature
 
 @MainActor
 final class BowlersListTests: XCTestCase {

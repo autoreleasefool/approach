@@ -1,8 +1,8 @@
 import SharedModelsMocksLibrary
+@testable import SharedModelsViewsLibrary
 import SnapshotTesting
 import SwiftUI
 import XCTest
-@testable import SharedModelsViewsLibrary
 
 final class LaneRowTests: XCTestCase {
 	func testLaneRowSnapshot() {

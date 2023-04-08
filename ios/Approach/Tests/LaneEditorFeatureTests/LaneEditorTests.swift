@@ -1,7 +1,7 @@
 import ComposableArchitecture
 import Foundation
-import XCTest
 @testable import LaneEditorFeature
+import XCTest
 
 @MainActor
 final class LaneEditorTests: XCTestCase {

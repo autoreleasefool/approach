@@ -1,10 +1,10 @@
+@testable import BaseFormLibrary
 import BowlersDataProviderInterface
 import ComposableArchitecture
+@testable import GearEditorFeature
 import SharedModelsLibrary
 import SharedModelsMocksLibrary
 import XCTest
-@testable import BaseFormLibrary
-@testable import GearEditorFeature
 
 @MainActor
 final class GearEditorTests: XCTestCase {

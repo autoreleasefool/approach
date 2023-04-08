@@ -1,6 +1,6 @@
 import Dependencies
-import XCTest
 @testable import ScoringService
+import XCTest
 
 @MainActor
 final class ScoringServiceTests: XCTestCase {

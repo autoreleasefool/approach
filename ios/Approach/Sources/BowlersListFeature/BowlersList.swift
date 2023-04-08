@@ -1,5 +1,5 @@
-import BowlersDataProviderInterface
 import BowlerEditorFeature
+import BowlersDataProviderInterface
 import ComposableArchitecture
 import FeatureActionLibrary
 import FeatureFlagsLibrary
@@ -8,8 +8,8 @@ import LeaguesListFeature
 import PersistenceServiceInterface
 import RecentlyUsedServiceInterface
 import ResourceListLibrary
-import SharedModelsLibrary
 import SharedModelsFetchableLibrary
+import SharedModelsLibrary
 import SortOrderLibrary
 import StringsLibrary
 import ViewsLibrary

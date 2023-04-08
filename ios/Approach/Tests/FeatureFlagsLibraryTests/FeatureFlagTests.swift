@@ -1,5 +1,5 @@
-import XCTest
 @testable import FeatureFlagsLibrary
+import XCTest
 
 final class FeatureFlagTests: XCTestCase {
 	func testDisabledRolloutStage() {

@@ -1,9 +1,9 @@
 import Dependencies
-import XCTest
-import PreferenceServiceInterface
 @testable import FeatureFlagsLibrary
 @testable import FeatureFlagsService
 @testable import FeatureFlagsServiceInterface
+import PreferenceServiceInterface
+import XCTest
 
 @MainActor
 final class FeatureFlagsServiceTests: XCTestCase {

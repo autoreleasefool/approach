@@ -1,11 +1,11 @@
 import ComposableArchitecture
 import Dependencies
+@testable import LanesDataProvider
+@testable import LanesDataProviderInterface
 import PersistenceServiceInterface
 import SharedModelsLibrary
 import SharedModelsMocksLibrary
 import XCTest
-@testable import LanesDataProvider
-@testable import LanesDataProviderInterface
 
 final class LanesDataProviderTests: XCTestCase {
 	func testFetchLanesByLabel() async throws {

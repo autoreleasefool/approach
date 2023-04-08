@@ -1,3 +1,4 @@
+import AssetsLibrary
 import ComposableArchitecture
 import FeatureActionLibrary
 import ScoreSheetFeature
@@ -5,7 +6,6 @@ import SharedModelsLibrary
 import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsLibrary
-import AssetsLibrary
 
 public struct GamesEditorView: View {
 	let store: StoreOf<GamesEditor>

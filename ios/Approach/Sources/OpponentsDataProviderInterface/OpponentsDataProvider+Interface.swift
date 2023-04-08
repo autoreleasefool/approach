@@ -1,6 +1,6 @@
 import Dependencies
-import SharedModelsLibrary
 import SharedModelsFetchableLibrary
+import SharedModelsLibrary
 
 public struct OpponentsDataProvider: Sendable {
 	public var observeOpponents: @Sendable (Opponent.FetchRequest) -> AsyncThrowingStream<[Opponent], Error>

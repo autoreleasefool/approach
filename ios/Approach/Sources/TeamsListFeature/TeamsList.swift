@@ -4,11 +4,12 @@ import FeatureActionLibrary
 import PersistenceServiceInterface
 import RecentlyUsedServiceInterface
 import ResourceListLibrary
+import SharedModelsFetchableLibrary
 import SharedModelsLibrary
 import SortOrderLibrary
 import StringsLibrary
-import TeamsDataProviderInterface
 import TeamEditorFeature
+import TeamsDataProviderInterface
 import ViewsLibrary
 
 extension Team: ResourceListItem {}

@@ -1,8 +1,8 @@
 import Combine
 import Dependencies
-import Foundation
 import FeatureFlagsLibrary
 import FeatureFlagsServiceInterface
+import Foundation
 import PreferenceServiceInterface
 
 extension NSNotification.Name {

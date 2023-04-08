@@ -1,8 +1,8 @@
 import ComposableArchitecture
 import SnapshotTesting
+@testable import SortOrderLibrary
 import SwiftUI
 import XCTest
-@testable import SortOrderLibrary
 
 @MainActor
 final class SortOrderViewSnapshotTests: XCTestCase {

@@ -1,12 +1,12 @@
 import ComposableArchitecture
 import Dependencies
+@testable import OpponentsDataProvider
+@testable import OpponentsDataProviderInterface
 import PersistenceServiceInterface
 import RecentlyUsedServiceInterface
 import SharedModelsLibrary
 import SharedModelsMocksLibrary
 import XCTest
-@testable import OpponentsDataProvider
-@testable import OpponentsDataProviderInterface
 
 final class OpponentsDataProviderTests: XCTestCase {
 	func testFetchOpponents_ByRecentlyUsed_SortsByNameWhenNoRecentlyUsed() async throws {

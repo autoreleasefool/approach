@@ -1,5 +1,5 @@
-import SwiftUI
 import AssetsLibrary
+import SwiftUI
 
 struct WidgetContainer<Content: View>: View {
 	let title: String?

@@ -1,7 +1,7 @@
 import GRDB
 import PersistenceServiceInterface
-import SharedModelsLibrary
 import SharedModelsFetchableLibrary
+import SharedModelsLibrary
 import SharedModelsPersistableLibrary
 
 extension Series.FetchRequest: ManyQueryable {

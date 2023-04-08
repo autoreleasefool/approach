@@ -1,6 +1,6 @@
 import Dependencies
-import SeriesDataProviderInterface
 import PersistenceServiceInterface
+import SeriesDataProviderInterface
 
 extension SeriesDataProvider: DependencyKey {
 	public static var liveValue: Self = {

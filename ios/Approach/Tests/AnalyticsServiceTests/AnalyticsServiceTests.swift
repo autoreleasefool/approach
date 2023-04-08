@@ -1,7 +1,7 @@
-import TelemetryClient
-import XCTest
 @testable import AnalyticsService
 @testable import AnalyticsServiceInterface
+import TelemetryClient
+import XCTest
 
 @MainActor
 final class AnalyticsServiceTests: XCTestCase {

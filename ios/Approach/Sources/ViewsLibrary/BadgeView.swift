@@ -1,5 +1,5 @@
-import SwiftUI
 import AssetsLibrary
+import SwiftUI
 
 public struct BadgeView: View {
 	let text: String

@@ -4,9 +4,9 @@ import PersistenceServiceInterface
 import RecentlyUsedServiceInterface
 import SharedModelsLibrary
 import SharedModelsMocksLibrary
-import XCTest
 @testable import TeamsDataProvider
 @testable import TeamsDataProviderInterface
+import XCTest
 
 final class TeamsDataProviderTests: XCTestCase {
 	func testFetchTeams_ByRecentlyUsed_SortsByNameWhenNoRecentlyUsed() async throws {

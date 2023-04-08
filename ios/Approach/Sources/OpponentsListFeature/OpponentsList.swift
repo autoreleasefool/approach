@@ -1,11 +1,11 @@
 import ComposableArchitecture
 import FeatureActionLibrary
-import OpponentsDataProviderInterface
 import OpponentEditorFeature
+import OpponentsDataProviderInterface
 import PersistenceServiceInterface
 import ResourceListLibrary
-import SharedModelsLibrary
 import SharedModelsFetchableLibrary
+import SharedModelsLibrary
 import SortOrderLibrary
 import StringsLibrary
 import ViewsLibrary

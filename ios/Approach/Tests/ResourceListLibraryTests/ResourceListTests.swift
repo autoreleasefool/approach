@@ -1,6 +1,6 @@
 import ComposableArchitecture
-import XCTest
 @testable import ResourceListLibrary
+import XCTest
 
 @MainActor
 final class ResourceListTests: XCTestCase {

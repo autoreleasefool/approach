@@ -1,6 +1,6 @@
 import Dependencies
-import SharedModelsLibrary
 import SharedModelsFetchableLibrary
+import SharedModelsLibrary
 
 public struct AlleysDataProvider: Sendable {
 	public var observeAlley: @Sendable (Alley.SingleFetchRequest) -> AsyncThrowingStream<Alley?, Error>

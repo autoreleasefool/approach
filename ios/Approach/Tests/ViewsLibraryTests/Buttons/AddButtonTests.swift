@@ -1,7 +1,7 @@
 import SnapshotTesting
 import SwiftUI
-import XCTest
 @testable import ViewsLibrary
+import XCTest
 
 final class AddButtonTests: XCTestCase {
 	func testAddButtonSnapshot() {

@@ -1,7 +1,7 @@
 import ComposableArchitecture
 import FeatureActionLibrary
-import LanesDataProviderInterface
 import LaneEditorFeature
+import LanesDataProviderInterface
 import PersistenceServiceInterface
 import SharedModelsLibrary
 import StringsLibrary

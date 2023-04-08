@@ -1,9 +1,9 @@
 import AsyncAlgorithms
-import TeamsDataProviderInterface
 import Dependencies
 import PersistenceServiceInterface
 import RecentlyUsedServiceInterface
 import SortingLibrary
+import TeamsDataProviderInterface
 
 extension TeamsDataProvider: DependencyKey {
 	public static var liveValue: Self = {

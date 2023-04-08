@@ -1,6 +1,6 @@
+import AssetsLibrary
 import StringsLibrary
 import SwiftUI
-import AssetsLibrary
 
 public struct PlaceholderWidget: View {
 	let size: WidgetSize

@@ -1,6 +1,6 @@
 import GRDB
-import SharedModelsLibrary
 import SharedModelsFetchableLibrary
+import SharedModelsLibrary
 
 extension Average: FetchableRecord {
 	public init(row: Row) throws {

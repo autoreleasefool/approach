@@ -3,9 +3,9 @@ import AvatarServiceInterface
 import BaseFormLibrary
 import ComposableArchitecture
 import FeatureActionLibrary
-import StringsLibrary
 import SharedModelsLibrary
 import SharedModelsViewsLibrary
+import StringsLibrary
 import SwiftUI
 import ViewsLibrary
 

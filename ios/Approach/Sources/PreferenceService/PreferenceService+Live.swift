@@ -1,6 +1,6 @@
-import ComposableArchitecture
-import PreferenceServiceInterface
+import Dependencies
 import Foundation
+import PreferenceServiceInterface
 
 extension PreferenceService: DependencyKey {
 	public static var liveValue: Self = {

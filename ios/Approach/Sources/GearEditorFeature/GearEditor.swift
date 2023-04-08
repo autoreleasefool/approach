@@ -5,8 +5,8 @@ import FeatureActionLibrary
 import FeatureFlagsLibrary
 import FeatureFlagsServiceInterface
 import Foundation
-import ResourcePickerLibrary
 import PersistenceServiceInterface
+import ResourcePickerLibrary
 import SharedModelsFetchableLibrary
 import SharedModelsLibrary
 import StringsLibrary

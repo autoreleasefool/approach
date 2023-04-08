@@ -1,6 +1,6 @@
+@testable import PreferenceService
 import PreferenceServiceInterface
 import XCTest
-@testable import PreferenceService
 
 final class PreferenceServiceTests: XCTestCase {
 

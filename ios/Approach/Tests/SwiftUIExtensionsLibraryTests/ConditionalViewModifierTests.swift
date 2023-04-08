@@ -1,7 +1,7 @@
 import SnapshotTesting
 import SwiftUI
-import XCTest
 @testable import SwiftUIExtensionsLibrary
+import XCTest
 
 final class ConditionalViewModifierTests: XCTestCase {
 	func testConditionalViewModifierSnapshot() {

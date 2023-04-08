@@ -1,6 +1,6 @@
 import Dependencies
-import SharedModelsLibrary
 import SharedModelsFetchableLibrary
+import SharedModelsLibrary
 
 public struct LeaguesDataProvider: Sendable {
 	public var observeLeagues: @Sendable (League.FetchRequest) -> AsyncThrowingStream<[League], Error>

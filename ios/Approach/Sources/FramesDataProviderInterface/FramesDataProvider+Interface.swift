@@ -1,6 +1,6 @@
 import Dependencies
-import SharedModelsLibrary
 import SharedModelsFetchableLibrary
+import SharedModelsLibrary
 
 public struct FramesDataProvider: Sendable {
 	public var fetchFrames: @Sendable (Frame.FetchRequest) async throws -> [Frame]

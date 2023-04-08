@@ -1,7 +1,7 @@
-import Dependencies
-import XCTest
 @testable import AddressLookupService
 @testable import AddressLookupServiceInterface
+import Dependencies
+import XCTest
 
 final class AddressLookupServiceTests: XCTestCase {
 	struct LookupID {}

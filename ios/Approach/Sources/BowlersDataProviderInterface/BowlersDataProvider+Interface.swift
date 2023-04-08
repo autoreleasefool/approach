@@ -1,6 +1,6 @@
 import Dependencies
-import SharedModelsLibrary
 import SharedModelsFetchableLibrary
+import SharedModelsLibrary
 
 public struct BowlersDataProvider: Sendable {
 	public var observeBowler: @Sendable (Bowler.SingleFetchRequest) -> AsyncThrowingStream<Bowler?, Error>

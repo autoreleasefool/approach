@@ -1,6 +1,6 @@
+import AssetsLibrary
 import StringsLibrary
 import SwiftUI
-import AssetsLibrary
 
 public struct DeleteButton: View {
 	let perform: () -> Void

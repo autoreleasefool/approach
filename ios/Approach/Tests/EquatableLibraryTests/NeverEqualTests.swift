@@ -1,5 +1,5 @@
-import XCTest
 @testable import EquatableLibrary
+import XCTest
 
 final class NeverEqualTests: XCTestCase {
 	func testFunctionIsNotEqual() {

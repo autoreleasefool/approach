@@ -1,6 +1,6 @@
-import XCTest
 @testable import FileManagerService
 @testable import FileManagerServiceInterface
+import XCTest
 
 final class FileManagerServiceTests: XCTestCase {
 

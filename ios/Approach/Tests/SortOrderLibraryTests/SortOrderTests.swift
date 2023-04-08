@@ -1,6 +1,6 @@
 import ComposableArchitecture
-import XCTest
 @testable import SortOrderLibrary
+import XCTest
 
 enum MockOrderable: CaseIterable, Hashable, CustomStringConvertible {
 	case first

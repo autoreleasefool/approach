@@ -1,7 +1,7 @@
-import FramesDataProvider
-import FramesDataProviderInterface
 import ComposableArchitecture
 import Dependencies
+import FramesDataProvider
+import FramesDataProviderInterface
 import PersistenceServiceInterface
 import SharedModelsLibrary
 import SharedModelsMocksLibrary

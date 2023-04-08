@@ -1,10 +1,10 @@
 import ComposableArchitecture
 import Foundation
+@testable import LaneEditorFeature
 import LanesDataProviderInterface
 import SharedModelsLibrary
 import SharedModelsMocksLibrary
 import XCTest
-@testable import LaneEditorFeature
 
 @MainActor
 final class AlleyLanesEditorTests: XCTestCase {

@@ -9,6 +9,13 @@ excluded:
 trailing_comma:
   mandatory_comma: true
 
+type_name:
+  excluded:
+    - ID
+
 disabled_rules:
   - identifier_name
   - nesting
+
+opt_in_rules:
+  - sorted_imports

@@ -1,7 +1,7 @@
+import AssetsLibrary
 import ComposableArchitecture
 import StringsLibrary
 import SwiftUI
-import AssetsLibrary
 import ViewsLibrary
 
 public struct ResourcePickerView<Resource: PickableResource, Query: Equatable, Row: View>: View {

@@ -1,5 +1,5 @@
-import AlleysDataProviderInterface
 import AlleyEditorFeature
+import AlleysDataProviderInterface
 import ComposableArchitecture
 import FeatureActionLibrary
 import FeatureFlagsServiceInterface
