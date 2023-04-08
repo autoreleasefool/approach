@@ -110,6 +110,7 @@ let package = Package(
 		.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", revision: "132cb3bae2d333c75ff2c952086d1dcd53ba392e"),
 		.package(url: "https://github.com/pointfreeco/swift-dependencies.git", from: "0.1.2"),
 		.package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.10.0"),
+		.package(url: "https://github.com/pointfreeco/xctest-dynamic-overlay.git", from: "0.8.4"),
 		.package(url: "https://github.com/TelemetryDeck/SwiftClient.git", from: "1.4.2"),
 	],
 	targets: [
@@ -118,7 +119,10 @@ let package = Package(
 			name: "AlleyEditorFeature",
 			dependencies: [
 				"BaseFormLibrary",
+				"ExtensionsLibrary",
 				"LaneEditorFeature",
+				"LanesDataProviderInterface",
+				"PersistenceServiceInterface",
 				"SharedModelsViewsLibrary",
 			]
 		),
@@ -135,6 +139,7 @@ let package = Package(
 			dependencies: [
 				"AlleyEditorFeature",
 				"AlleysDataProviderInterface",
+				"FeatureFlagsServiceInterface",
 				"ResourceListLibrary",
 			]
 		),
@@ -170,7 +175,6 @@ let package = Package(
 				"AvatarServiceInterface",
 				"FeatureActionLibrary",
 				"SharedModelsViewsLibrary",
-				"StringsLibrary",
 			]
 		),
 		.testTarget(
@@ -186,6 +190,7 @@ let package = Package(
 			dependencies: [
 				"AvatarEditorFeature",
 				"BaseFormLibrary",
+				"FeatureFlagsServiceInterface",
 				"PersistenceServiceInterface",
 			]
 		),
@@ -201,10 +206,7 @@ let package = Package(
 			name: "BowlersListFeature",
 			dependencies: [
 				"BowlerEditorFeature",
-				"BowlersDataProviderInterface",
-				"FeatureFlagsServiceInterface",
 				"LeaguesListFeature",
-				"SortOrderLibrary",
 				"StatisticsWidgetsFeature",
 			]
 		),
@@ -221,6 +223,7 @@ let package = Package(
 			dependencies: [
 				"FeatureActionLibrary",
 				"FeatureFlagsServiceInterface",
+				"StringsLibrary",
 			]
 		),
 		.testTarget(
@@ -252,6 +255,7 @@ let package = Package(
 			name: "GamesListFeature",
 			dependencies: [
 				"BowlersDataProviderInterface",
+				"DateTimeLibrary",
 				"GamesDataProviderInterface",
 				"GamesEditorFeature",
 				"ResourceListLibrary",
@@ -274,6 +278,7 @@ let package = Package(
 				"FeatureFlagsServiceInterface",
 				"PersistenceServiceInterface",
 				"ResourcePickerLibrary",
+				"SharedModelsViewsLibrary",
 			]
 		),
 		.testTarget(
@@ -289,7 +294,9 @@ let package = Package(
 			dependencies: [
 				"GearDataProviderInterface",
 				"GearEditorFeature",
-				"SharedModelsViewsLibrary",
+				"RecentlyUsedServiceInterface",
+				"ResourceListLibrary",
+				"SortOrderLibrary",
 			]
 		),
 		.testTarget(
@@ -304,6 +311,7 @@ let package = Package(
 			name: "LaneEditorFeature",
 			dependencies: [
 				"FeatureActionLibrary",
+				"SharedModelsLibrary",
 				"SwiftUIExtensionsLibrary",
 				"ViewsLibrary",
 			]
@@ -341,6 +349,7 @@ let package = Package(
 				"LeaguesDataProviderInterface",
 				"RecentlyUsedServiceInterface",
 				"SeriesListFeature",
+				"SortOrderLibrary",
 			]
 		),
 		.testTarget(
@@ -370,6 +379,9 @@ let package = Package(
 			name: "OpponentsListFeature",
 			dependencies: [
 				"OpponentEditorFeature",
+				"OpponentsDataProviderInterface",
+				"ResourceListLibrary",
+				"SharedModelsViewsLibrary",
 				"SortOrderLibrary",
 			]
 		),
@@ -402,6 +414,7 @@ let package = Package(
 			dependencies: [
 				"AlleysDataProviderInterface",
 				"BaseFormLibrary",
+				"LanesDataProviderInterface",
 				"PersistenceServiceInterface",
 				"ResourcePickerLibrary",
 				"SharedModelsViewsLibrary",
@@ -452,7 +465,9 @@ let package = Package(
 		.target(
 			name: "StatisticsWidgetsFeature",
 			dependencies: [
+				"AssetsLibrary",
 				"FeatureActionLibrary",
+				"StringsLibrary",
 			]
 		),
 		.testTarget(
@@ -714,6 +729,7 @@ let package = Package(
 			name: "AddressLookupServiceInterface",
 			dependencies: [
 				.product(name: "Dependencies", package: "swift-dependencies"),
+				.product(name: "XCTestDynamicOverlay", package: "xctest-dynamic-overlay"),
 			]
 		),
 		.testTarget(
@@ -794,6 +810,7 @@ let package = Package(
 			name: "FeatureFlagsService",
 			dependencies: [
 				"FeatureFlagsServiceInterface",
+				"PreferenceServiceInterface",
 			]
 		),
 		.target(
@@ -926,6 +943,7 @@ let package = Package(
 		.target(
 			name: "BaseFormLibrary",
 			dependencies: [
+				.product(name: "Dependencies", package: "swift-dependencies"),
 				"FeatureActionLibrary",
 				"ViewsLibrary",
 			]

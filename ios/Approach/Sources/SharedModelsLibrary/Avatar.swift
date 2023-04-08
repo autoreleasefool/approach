@@ -1,6 +1,5 @@
 import Foundation
 import SwiftUI
-import SwiftUIExtensionsLibrary
 
 public enum Avatar: Sendable, Hashable, Codable {
 	case url(URL)

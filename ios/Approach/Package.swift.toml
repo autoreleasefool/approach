@@ -11,11 +11,14 @@ supported = [ ".v16" ]
 
 [features.AlleyEditor]
 features = [ "LaneEditor" ]
-libraries = [ "BaseForm", "SharedModelsViews" ]
+dataProviders = [ "Lanes" ]
+services = [ "Persistence" ]
+libraries = [ "BaseForm", "Extensions", "SharedModelsViews" ]
 
 [features.AlleysList]
 features = [ "AlleyEditor" ]
 dataProviders = [ "Alleys" ]
+services = [ "FeatureFlags" ]
 libraries = [ "ResourceList" ]
 
 [features.App]
@@ -24,21 +27,19 @@ services = [ "Analytics" ]
 
 [features.AvatarEditor]
 services = [ "Avatar" ]
-libraries = [ "SharedModelsViews", "Strings" ]
+libraries = [ "SharedModelsViews" ]
 
 [features.BowlerEditor]
 features = [ "AvatarEditor" ]
-services = [ "Persistence" ]
+services = [ "Persistence", "FeatureFlags" ]
 libraries = [ "BaseForm" ]
 
 [features.BowlersList]
 features = [ "BowlerEditor", "LeaguesList", "StatisticsWidgets" ]
-dataProviders = [ "Bowlers" ]
-services = [ "FeatureFlags" ]
-libraries = [ "SortOrder" ]
 
 [features.FeatureFlagsList]
 services = [ "FeatureFlags" ]
+libraries = [ "Strings" ]
 
 [features.GamesEditor]
 features = [ "ScoreSheet" ]
@@ -48,20 +49,21 @@ libraries = [ "Extensions", "SwiftUIExtensions" ]
 [features.GamesList]
 features = [ "GamesEditor" ]
 dataProviders = [ "Bowlers", "Games" ]
-libraries = [ "ResourceList" ]
+libraries = [ "DateTime", "ResourceList" ]
 
 [features.GearEditor]
 dataProviders = [ "Bowlers" ]
 services = [ "Avatar", "FeatureFlags", "Persistence" ]
-libraries = [ "BaseForm", "ResourcePicker" ]
+libraries = [ "BaseForm", "ResourcePicker", "SharedModelsViews" ]
 
 [features.GearList]
 features = [ "GearEditor" ]
 dataProviders = [ "Gear" ]
-libraries = [ "SharedModelsViews" ]
+services = [ "RecentlyUsed" ]
+libraries = [ "ResourceList", "SortOrder" ]
 
 [features.LaneEditor]
-libraries = [ "SwiftUIExtensions", "Views" ]
+libraries = [ "SharedModels", "SwiftUIExtensions", "Views" ]
 
 [features.LeagueEditor]
 dataProviders = [ "Alleys" ]
@@ -72,6 +74,7 @@ libraries = [ "BaseForm", "ResourcePicker", "SharedModelsViews"]
 features = [ "LeagueEditor", "SeriesList" ]
 dataProviders = [ "Leagues" ]
 services = [ "RecentlyUsed" ]
+libraries = [ "SortOrder" ]
 
 [features.OpponentEditor]
 services = [ "Persistence" ]
@@ -79,13 +82,14 @@ libraries = [ "BaseForm" ]
 
 [features.OpponentsList]
 features = [ "OpponentEditor" ]
-libraries = [ "SortOrder" ]
+dataProviders = [ "Opponents" ]
+libraries = [ "ResourceList", "SharedModelsViews", "SortOrder" ]
 
 [features.ScoreSheet]
 libraries = [ "SharedModels", "Views" ]
 
 [features.SeriesEditor]
-dataProviders = [ "Alleys" ]
+dataProviders = [ "Alleys", "Lanes" ]
 services = [ "Persistence" ]
 libraries = [ "BaseForm", "ResourcePicker", "SharedModelsViews" ]
 
@@ -99,6 +103,7 @@ features = [ "FeatureFlagsList", "OpponentsList" ]
 libraries = [ "Constants", "FoundationExtensions" ]
 
 [features.StatisticsWidgets]
+libraries = [ "Assets", "Strings" ]
 
 # Repositories
 
@@ -151,6 +156,8 @@ services = [ "Persistence" ]
 # Services
 
 [services.AddressLookup]
+[services.AddressLookup.interface]
+dependencies = [ "XCTestDynamicOverlay" ]
 
 [services.Analytics]
 libraries = [ "Constants" ]
@@ -163,9 +170,11 @@ libraries = [ "Assets", "SharedModels" ]
 [services.Database]
 services = [ "FileManager" ]
 [services.Database.interface]
+suitable_for_dependents_matching = "\\w+Repository$"
 dependencies = [ "GRDB" ]
 
 [services.FeatureFlags]
+services = [ "Preference" ]
 [services.FeatureFlags.interface]
 libraries = [ "FeatureFlags" ]
 
@@ -187,20 +196,6 @@ services = [ "Persistence" ]
 [services.Scoring.interface]
 libraries = [ "SharedModels" ]
 
-# [services.Database]
-# suitable_for_dependents_matching = "\\w+Repository$"
-# services = [ "FileManager" ]
-
-# [services.Database.interface]
-# dependencies = [ "GRDB" ]
-
-# [services.FileManager]
-
-# [services.Preference]
-
-# [services.RecentlyUsed]
-# services = [ "Preference" ]
-
 # Libraries
 
 [libraries.Assets]
@@ -208,6 +203,7 @@ skip_tests = true
 
 [libraries.BaseForm]
 libraries = [ "FeatureAction", "Views" ]
+dependencies = [ "Dependencies" ]
 
 [libraries.Constants]
 skip_tests = true
@@ -299,6 +295,10 @@ from = "1.10.0"
 [dependencies.TelemetryClient]
 url = "https://github.com/TelemetryDeck/SwiftClient.git"
 from = "1.4.2"
+
+[dependencies.XCTestDynamicOverlay]
+url = "https://github.com/pointfreeco/xctest-dynamic-overlay.git"
+from = "0.8.4"
 
 # Default Imports
 
