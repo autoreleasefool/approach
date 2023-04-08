@@ -28,7 +28,6 @@ libraries = [ "SharedModelsViews", "Strings" ]
 
 [features.BowlerEditor]
 features = [ "AvatarEditor" ]
-repositories = [ "Bowlers" ]
 services = [ "Persistence" ]
 libraries = [ "BaseForm" ]
 
@@ -62,8 +61,6 @@ dataProviders = [ "Gear" ]
 libraries = [ "SharedModelsViews" ]
 
 [features.LaneEditor]
-dataProviders = [ "Lanes" ]
-services = [ "Persistence" ]
 libraries = [ "SwiftUIExtensions", "Views" ]
 
 [features.LeagueEditor]
@@ -77,7 +74,6 @@ dataProviders = [ "Leagues" ]
 services = [ "RecentlyUsed" ]
 
 [features.OpponentEditor]
-dataProviders = [ "Opponents" ]
 services = [ "Persistence" ]
 libraries = [ "BaseForm" ]
 
@@ -103,14 +99,12 @@ features = [ "FeatureFlagsList", "OpponentsList" ]
 libraries = [ "Constants", "FoundationExtensions" ]
 
 [features.StatisticsWidgets]
-libraries = [ "Views" ]
 
 # Repositories
 
 [repositories.Bowlers]
-dependencies = [ "AsyncAlgorithms" ]
-libraries = [ "DatabaseModels", "Sorting" ]
-services = [ "Database", "RecentlyUsed" ]
+libraries = [ "DatabaseModels" ]
+services = [ "Database" ]
 
 [repositories.Bowlers.interface]
 libraries = [ "Models" ]
@@ -173,7 +167,6 @@ dependencies = [ "GRDB" ]
 
 [services.FeatureFlags]
 [services.FeatureFlags.interface]
-services = [ "Preference" ]
 libraries = [ "FeatureFlags" ]
 
 [services.FileManager]

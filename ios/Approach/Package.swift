@@ -186,7 +186,6 @@ let package = Package(
 			dependencies: [
 				"AvatarEditorFeature",
 				"BaseFormLibrary",
-				"BowlersRepositoryInterface",
 				"PersistenceServiceInterface",
 			]
 		),
@@ -305,8 +304,6 @@ let package = Package(
 			name: "LaneEditorFeature",
 			dependencies: [
 				"FeatureActionLibrary",
-				"LanesDataProviderInterface",
-				"PersistenceServiceInterface",
 				"SwiftUIExtensionsLibrary",
 				"ViewsLibrary",
 			]
@@ -358,7 +355,6 @@ let package = Package(
 			name: "OpponentEditorFeature",
 			dependencies: [
 				"BaseFormLibrary",
-				"OpponentsDataProviderInterface",
 				"PersistenceServiceInterface",
 			]
 		),
@@ -457,7 +453,6 @@ let package = Package(
 			name: "StatisticsWidgetsFeature",
 			dependencies: [
 				"FeatureActionLibrary",
-				"ViewsLibrary",
 			]
 		),
 		.testTarget(
@@ -473,12 +468,9 @@ let package = Package(
 		.target(
 			name: "BowlersRepository",
 			dependencies: [
-				.product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
 				"BowlersRepositoryInterface",
 				"DatabaseModelsLibrary",
 				"DatabaseServiceInterface",
-				"RecentlyUsedServiceInterface",
-				"SortingLibrary",
 			]
 		),
 		.target(
@@ -807,8 +799,8 @@ let package = Package(
 		.target(
 			name: "FeatureFlagsServiceInterface",
 			dependencies: [
+				.product(name: "Dependencies", package: "swift-dependencies"),
 				"FeatureFlagsLibrary",
-				"PreferenceServiceInterface",
 			]
 		),
 		.testTarget(
