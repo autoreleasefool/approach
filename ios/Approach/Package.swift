@@ -103,14 +103,13 @@ let package = Package(
 		.library(name: "StringsLibrary", targets: ["StringsLibrary"]),
 		.library(name: "SwiftUIExtensionsLibrary", targets: ["SwiftUIExtensionsLibrary"]),
 		.library(name: "ViewsLibrary", targets: ["ViewsLibrary"]),
-
 	],
 	dependencies: [
 		.package(url: "https://github.com/apple/swift-async-algorithms.git", from: "0.0.4"),
-		.package(url: "https://github.com/pointfreeco/swift-dependencies.git", from: "0.1.2"),
-		.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", revision: "132cb3bae2d333c75ff2c952086d1dcd53ba392e"),
-		.package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.10.0"),
 		.package(url: "https://github.com/groue/GRDB.swift.git", from: "6.6.0"),
+		.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", revision: "132cb3bae2d333c75ff2c952086d1dcd53ba392e"),
+		.package(url: "https://github.com/pointfreeco/swift-dependencies.git", from: "0.1.2"),
+		.package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.10.0"),
 		.package(url: "https://github.com/TelemetryDeck/SwiftClient.git", from: "1.4.2"),
 	],
 	targets: [
@@ -171,6 +170,7 @@ let package = Package(
 				"AvatarServiceInterface",
 				"FeatureActionLibrary",
 				"SharedModelsViewsLibrary",
+				"StringsLibrary",
 			]
 		),
 		.testTarget(
@@ -202,6 +202,8 @@ let package = Package(
 			name: "BowlersListFeature",
 			dependencies: [
 				"BowlerEditorFeature",
+				"BowlersDataProviderInterface",
+				"FeatureFlagsServiceInterface",
 				"LeaguesListFeature",
 				"SortOrderLibrary",
 				"StatisticsWidgetsFeature",
@@ -489,10 +491,8 @@ let package = Package(
 		.testTarget(
 			name: "BowlersRepositoryTests",
 			dependencies: [
-				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"BowlersRepository",
-				"SharedModelsMocksLibrary",
 			]
 		),
 
@@ -517,7 +517,6 @@ let package = Package(
 		.testTarget(
 			name: "AlleysDataProviderTests",
 			dependencies: [
-				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"AlleysDataProvider",
 				"SharedModelsMocksLibrary",
@@ -543,7 +542,6 @@ let package = Package(
 		.testTarget(
 			name: "BowlersDataProviderTests",
 			dependencies: [
-				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"BowlersDataProvider",
 				"SharedModelsMocksLibrary",
@@ -566,7 +564,6 @@ let package = Package(
 		.testTarget(
 			name: "FramesDataProviderTests",
 			dependencies: [
-				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"FramesDataProvider",
 				"SharedModelsMocksLibrary",
@@ -589,7 +586,6 @@ let package = Package(
 		.testTarget(
 			name: "GamesDataProviderTests",
 			dependencies: [
-				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"GamesDataProvider",
 				"SharedModelsMocksLibrary",
@@ -615,7 +611,6 @@ let package = Package(
 		.testTarget(
 			name: "GearDataProviderTests",
 			dependencies: [
-				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"GearDataProvider",
 				"SharedModelsMocksLibrary",
@@ -638,7 +633,6 @@ let package = Package(
 		.testTarget(
 			name: "LanesDataProviderTests",
 			dependencies: [
-				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"LanesDataProvider",
 				"SharedModelsMocksLibrary",
@@ -664,7 +658,6 @@ let package = Package(
 		.testTarget(
 			name: "LeaguesDataProviderTests",
 			dependencies: [
-				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"LeaguesDataProvider",
 				"SharedModelsMocksLibrary",
@@ -690,7 +683,6 @@ let package = Package(
 		.testTarget(
 			name: "OpponentsDataProviderTests",
 			dependencies: [
-				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"OpponentsDataProvider",
 				"SharedModelsMocksLibrary",
@@ -873,7 +865,6 @@ let package = Package(
 		.target(
 			name: "PreferenceService",
 			dependencies: [
-				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 				"PreferenceServiceInterface",
 			]
 		),
@@ -1068,6 +1059,14 @@ let package = Package(
 				"SharedModelsLibrary",
 			]
 		),
+		.testTarget(
+			name: "SharedModelsFetchableLibraryTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"SharedModelsFetchableLibrary",
+				"SharedModelsMocksLibrary",
+			]
+		),
 		.target(
 			name: "SharedModelsLibrary",
 			dependencies: [
@@ -1086,6 +1085,13 @@ let package = Package(
 			name: "SharedModelsMocksLibrary",
 			dependencies: [
 				"SharedModelsLibrary",
+			]
+		),
+		.testTarget(
+			name: "SharedModelsMocksLibraryTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"SharedModelsMocksLibrary",
 			]
 		),
 		.target(
@@ -1181,6 +1187,5 @@ let package = Package(
 				"ViewsLibrary",
 			]
 		),
-
 	]
 )

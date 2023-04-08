@@ -1,0 +1,343 @@
+name = "Approach"
+tools_version = "5.7.1"
+default_localization = "en"
+
+# Platforms
+
+[platforms.iOS]
+supported = [ ".v16" ]
+
+# Features
+
+[features.AlleyEditor]
+features = [ "LaneEditor" ]
+libraries = [ "BaseForm", "SharedModelsViews" ]
+
+[features.AlleysList]
+features = [ "AlleyEditor" ]
+dataProviders = [ "Alleys" ]
+libraries = [ "ResourceList" ]
+
+[features.App]
+features = [ "AlleysList", "BowlersList", "GearList", "Settings" ]
+services = [ "Analytics" ]
+
+[features.AvatarEditor]
+services = [ "Avatar" ]
+libraries = [ "SharedModelsViews", "Strings" ]
+
+[features.BowlerEditor]
+features = [ "AvatarEditor" ]
+repositories = [ "Bowlers" ]
+services = [ "Persistence" ]
+libraries = [ "BaseForm" ]
+
+[features.BowlersList]
+features = [ "BowlerEditor", "LeaguesList", "StatisticsWidgets" ]
+dataProviders = [ "Bowlers" ]
+services = [ "FeatureFlags" ]
+libraries = [ "SortOrder" ]
+
+[features.FeatureFlagsList]
+services = [ "FeatureFlags" ]
+
+[features.GamesEditor]
+features = [ "ScoreSheet" ]
+dataProviders = [ "Frames" ]
+libraries = [ "Extensions", "SwiftUIExtensions" ]
+
+[features.GamesList]
+features = [ "GamesEditor" ]
+dataProviders = [ "Bowlers", "Games" ]
+libraries = [ "ResourceList" ]
+
+[features.GearEditor]
+dataProviders = [ "Bowlers" ]
+services = [ "Avatar", "FeatureFlags", "Persistence" ]
+libraries = [ "BaseForm", "ResourcePicker" ]
+
+[features.GearList]
+features = [ "GearEditor" ]
+dataProviders = [ "Gear" ]
+libraries = [ "SharedModelsViews" ]
+
+[features.LaneEditor]
+dataProviders = [ "Lanes" ]
+services = [ "Persistence" ]
+libraries = [ "SwiftUIExtensions", "Views" ]
+
+[features.LeagueEditor]
+dataProviders = [ "Alleys" ]
+services = [ "Persistence" ]
+libraries = [ "BaseForm", "ResourcePicker", "SharedModelsViews"]
+
+[features.LeaguesList]
+features = [ "LeagueEditor", "SeriesList" ]
+dataProviders = [ "Leagues" ]
+services = [ "RecentlyUsed" ]
+
+[features.OpponentEditor]
+dataProviders = [ "Opponents" ]
+services = [ "Persistence" ]
+libraries = [ "BaseForm" ]
+
+[features.OpponentsList]
+features = [ "OpponentEditor" ]
+libraries = [ "SortOrder" ]
+
+[features.ScoreSheet]
+libraries = [ "SharedModels", "Views" ]
+
+[features.SeriesEditor]
+dataProviders = [ "Alleys" ]
+services = [ "Persistence" ]
+libraries = [ "BaseForm", "ResourcePicker", "SharedModelsViews" ]
+
+[features.SeriesList]
+features = [ "GamesList", "SeriesEditor" ]
+dataProviders = [ "Series" ]
+services = [ "FeatureFlags" ]
+
+[features.Settings]
+features = [ "FeatureFlagsList", "OpponentsList" ]
+libraries = [ "Constants", "FoundationExtensions" ]
+
+[features.StatisticsWidgets]
+libraries = [ "Views" ]
+
+# Repositories
+
+[repositories.Bowlers]
+dependencies = [ "AsyncAlgorithms" ]
+libraries = [ "DatabaseModels", "Sorting" ]
+services = [ "Database", "RecentlyUsed" ]
+
+[repositories.Bowlers.interface]
+libraries = [ "Models" ]
+
+# Data Providers
+
+[dataProviders.Alleys]
+services = [ "Persistence", "RecentlyUsed" ]
+libraries = [ "Sorting" ]
+dependencies = [ "AsyncAlgorithms" ]
+
+[dataProviders.Bowlers]
+services = [ "Persistence", "RecentlyUsed" ]
+libraries = [ "Sorting" ]
+dependencies = [ "AsyncAlgorithms" ]
+
+[dataProviders.Frames]
+services = [ "Persistence" ]
+
+[dataProviders.Games]
+services = [ "Persistence" ]
+
+[dataProviders.Gear]
+services = [ "Persistence", "RecentlyUsed" ]
+libraries = [ "Sorting" ]
+dependencies = [ "AsyncAlgorithms" ]
+
+[dataProviders.Lanes]
+services = [ "Persistence" ]
+
+[dataProviders.Leagues]
+services = [ "Persistence", "RecentlyUsed" ]
+libraries = [ "Sorting" ]
+dependencies = [ "AsyncAlgorithms" ]
+
+[dataProviders.Opponents]
+services = [ "Persistence", "RecentlyUsed" ]
+libraries = [ "Sorting" ]
+dependencies = [ "AsyncAlgorithms" ]
+
+[dataProviders.Series]
+services = [ "Persistence" ]
+
+# Services
+
+[services.AddressLookup]
+
+[services.Analytics]
+libraries = [ "Constants" ]
+dependencies = [ "TelemetryClient" ]
+
+[services.Avatar]
+[services.Avatar.interface]
+libraries = [ "Assets", "SharedModels" ]
+
+[services.Database]
+services = [ "FileManager" ]
+[services.Database.interface]
+dependencies = [ "GRDB" ]
+
+[services.FeatureFlags]
+[services.FeatureFlags.interface]
+services = [ "Preference" ]
+libraries = [ "FeatureFlags" ]
+
+[services.FileManager]
+
+[services.Persistence]
+services = [ "FileManager" ]
+libraries = [ "SharedModelsPersistable" ]
+[services.Persistence.interface]
+libraries = [ "SharedModelsFetchable" ]
+
+[services.Preference]
+
+[services.RecentlyUsed]
+services = [ "Preference" ]
+
+[services.Scoring]
+services = [ "Persistence" ]
+[services.Scoring.interface]
+libraries = [ "SharedModels" ]
+
+# [services.Database]
+# suitable_for_dependents_matching = "\\w+Repository$"
+# services = [ "FileManager" ]
+
+# [services.Database.interface]
+# dependencies = [ "GRDB" ]
+
+# [services.FileManager]
+
+# [services.Preference]
+
+# [services.RecentlyUsed]
+# services = [ "Preference" ]
+
+# Libraries
+
+[libraries.Assets]
+skip_tests = true
+
+[libraries.BaseForm]
+libraries = [ "FeatureAction", "Views" ]
+
+[libraries.Constants]
+skip_tests = true
+libraries = [ "Strings" ]
+
+[libraries.DatabaseModels]
+skip_tests = true
+libraries = [ "Extensions", "Models" ]
+dependencies = [ "GRDB" ]
+
+[libraries.DateTime]
+
+[libraries.Equatable]
+
+[libraries.Extensions]
+
+[libraries.FeatureAction]
+skip_tests = true
+dependencies = [ "ComposableArchitecture" ]
+
+[libraries.FeatureFlags]
+
+[libraries.FoundationExtensions]
+skip_tests = true
+
+[libraries.Models]
+skip_tests = true
+
+[libraries.ResourceList]
+libraries = [ "Equatable", "FeatureAction", "Views" ]
+
+[libraries.ResourcePicker]
+libraries = [ "FeatureAction", "Views" ]
+
+[libraries.SharedModels]
+libraries = [ "Strings" ]
+
+[libraries.SharedModelsFetchable]
+libraries = [ "SharedModels" ]
+
+[libraries.SharedModelsMocks]
+suitable_for_dependents_matching = "\\w+Tests$"
+libraries = [ "SharedModels" ]
+
+[libraries.SharedModelsPersistable]
+libraries = [ "Extensions", "SharedModels" ]
+dependencies = [ "Dependencies", "GRDB" ]
+
+[libraries.SharedModelsViews]
+libraries = [ "DateTime", "SharedModels", "Views" ]
+
+[libraries.Sorting]
+
+[libraries.SortOrder]
+libraries = [ "FeatureAction", "SwiftUIExtensions", "Views" ]
+
+[libraries.Strings]
+skip_tests = true
+
+[libraries.SwiftUIExtensions]
+
+[libraries.Views]
+libraries = [ "Assets", "Strings" ]
+dependencies = [ "ComposableArchitecture" ]
+
+# External Dependencies
+
+[dependencies.AsyncAlgorithms]
+url = "https://github.com/apple/swift-async-algorithms.git"
+from = "0.0.4"
+
+[dependencies.GRDB]
+url = "https://github.com/groue/GRDB.swift.git"
+from = "6.6.0"
+
+[dependencies.ComposableArchitecture]
+url = "https://github.com/pointfreeco/swift-composable-architecture.git"
+revision = "132cb3bae2d333c75ff2c952086d1dcd53ba392e"
+
+[dependencies.Dependencies]
+url = "https://github.com/pointfreeco/swift-dependencies.git"
+from = "0.1.2"
+
+[dependencies.SnapshotTesting]
+suitable_for_dependents_matching = "\\w+Tests$"
+url = "https://github.com/pointfreeco/swift-snapshot-testing.git"
+from = "1.10.0"
+
+[dependencies.TelemetryClient]
+url = "https://github.com/TelemetryDeck/SwiftClient.git"
+from = "1.4.2"
+
+# Default Imports
+
+[defaults.features]
+libraries = [ "FeatureAction" ]
+dependencies = [ "ComposableArchitecture" ]
+
+[defaults.features.tests]
+libraries = [ "SharedModelsMocks" ]
+dependencies = [ "SnapshotTesting" ]
+
+[defaults.dataProviders.interface]
+libraries = [ "SharedModelsFetchable" ]
+dependencies = [ "Dependencies" ]
+
+[defaults.dataProviders.tests]
+libraries = [ "SharedModelsMocks" ]
+dependencies = [ "SnapshotTesting" ]
+
+[defaults.repositories.interface]
+dependencies = [ "Dependencies" ]
+
+[defaults.repositories.tests]
+dependencies = [ "SnapshotTesting" ]
+
+[defaults.services.interface]
+dependencies = [ "Dependencies" ]
+
+[defaults.services.tests]
+libraries = [ "SharedModelsMocks" ]
+dependencies = [ "SnapshotTesting" ]
+
+[defaults.libraries.tests]
+libraries = [ "SharedModelsMocks" ]
+dependencies = [ "SnapshotTesting" ]
