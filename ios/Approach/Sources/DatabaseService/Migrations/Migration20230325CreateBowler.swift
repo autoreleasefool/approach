@@ -7,6 +7,8 @@ struct Migration20230325CreateBowler: DBMigration {
 				.primaryKey()
 			t.column("name", .text)
 				.notNull()
+			t.column("status", .text)
+				.notNull()
 		}
 	}
 }

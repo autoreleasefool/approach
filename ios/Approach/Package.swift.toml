@@ -110,9 +110,10 @@ libraries = [ "Assets", "Strings" ]
 [repositories.Bowlers]
 libraries = [ "DatabaseModels" ]
 services = [ "Database" ]
-
 [repositories.Bowlers.interface]
 libraries = [ "Models" ]
+[repositories.Bowlers.tests]
+services = [ "Database" ]
 
 # Data Providers
 

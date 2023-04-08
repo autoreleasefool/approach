@@ -500,6 +500,7 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"BowlersRepository",
+				"DatabaseService",
 			]
 		),
 

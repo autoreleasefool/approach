@@ -4,7 +4,9 @@ import GRDB
 import ModelsLibrary
 
 extension Bowler {
-	public struct DatabaseModel: Sendable, Identifiable, Codable {
+	public struct DatabaseModel: Sendable, Identifiable, Codable, TableRecord {
+		public static let databaseTableName = "bowler"
+
 		public let id: Bowler.ID
 		public var name: String
 		public var status: Status

@@ -20,6 +20,20 @@
                ReferencedContainer = "container:Approach">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "BowlersRepositoryTests"
+               BuildableName = "BowlersRepositoryTests"
+               BlueprintName = "BowlersRepositoryTests"
+               ReferencedContainer = "container:Approach">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -56,16 +70,6 @@
                BlueprintIdentifier = "AnalyticsServiceTests"
                BuildableName = "AnalyticsServiceTests"
                BlueprintName = "AnalyticsServiceTests"
-               ReferencedContainer = "container:Approach">
-            </BuildableReference>
-         </TestableReference>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AveragesDataProviderTests"
-               BuildableName = "AveragesDataProviderTests"
-               BlueprintName = "AveragesDataProviderTests"
                ReferencedContainer = "container:Approach">
             </BuildableReference>
          </TestableReference>
@@ -323,9 +327,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "TeamsDataProviderTests"
-               BuildableName = "TeamsDataProviderTests"
-               BlueprintName = "TeamsDataProviderTests"
+               BlueprintIdentifier = "AddressLookupServiceTests"
+               BuildableName = "AddressLookupServiceTests"
+               BlueprintName = "AddressLookupServiceTests"
                ReferencedContainer = "container:Approach">
             </BuildableReference>
          </TestableReference>
@@ -333,9 +337,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "AddressLookupServiceTests"
-               BuildableName = "AddressLookupServiceTests"
-               BlueprintName = "AddressLookupServiceTests"
+               BlueprintIdentifier = "BowlersRepositoryTests"
+               BuildableName = "BowlersRepositoryTests"
+               BlueprintName = "BowlersRepositoryTests"
                ReferencedContainer = "container:Approach">
             </BuildableReference>
          </TestableReference>

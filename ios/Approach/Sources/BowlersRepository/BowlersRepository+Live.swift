@@ -7,11 +7,10 @@ import ModelsLibrary
 
 extension BowlersRepository: DependencyKey {
 	public static var liveValue: Self = {
-		@Dependency(\.database) var database
-
 		return Self(
 			bowlers: {
-				database.reader().observe {
+				@Dependency(\.database) var database
+				return database.reader().observe {
 					let bowlers = try Bowler.DatabaseModel
 						.all()
 						.orderByName()
@@ -21,7 +20,8 @@ extension BowlersRepository: DependencyKey {
 				}
 			},
 			opponents: {
-				database.reader().observe {
+				@Dependency(\.database) var database
+				return database.reader().observe {
 					let bowlers = try Bowler.DatabaseModel
 						.all()
 						.orderByName()
@@ -30,12 +30,14 @@ extension BowlersRepository: DependencyKey {
 				}
 			},
 			edit: { id in
-				try await database.reader().read {
+				@Dependency(\.database) var database
+				return try await database.reader().read {
 					try .init(Bowler.DatabaseModel.fetchOne($0, id: id))
 				}
 			},
 			save: { bowler in
-				try await database.writer().write {
+				@Dependency(\.database) var database
+				return try await database.writer().write {
 					try bowler.databaseModel.save($0)
 				}
 			}
