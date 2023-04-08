@@ -602,32 +602,6 @@ public enum Strings {
       public static let title = Strings.tr("Localizable", "statistics.placeholder.title", fallback: "Statistics at a glance")
     }
   }
-  public enum Team {
-    /// Teams
-    public static let title = Strings.tr("Localizable", "team.title", fallback: "Team")
-    public enum Error {
-      public enum Empty {
-        /// You haven't create a team yet.
-        public static let message = Strings.tr("Localizable", "team.error.empty.message", fallback: "You haven't create a team yet.")
-        /// No teams found
-        public static let title = Strings.tr("Localizable", "team.error.empty.title", fallback: "No teams found")
-      }
-    }
-    public enum List {
-      /// Add Team
-      public static let add = Strings.tr("Localizable", "team.list.add", fallback: "Add Team")
-      /// Teams
-      public static let title = Strings.tr("Localizable", "team.list.title", fallback: "Teams")
-    }
-    public enum Properties {
-      public enum Bowlers {
-        /// No bowlers added
-        public static let `none` = Strings.tr("Localizable", "team.properties.bowlers.none", fallback: "No bowlers added")
-        /// Members
-        public static let title = Strings.tr("Localizable", "team.properties.bowlers.title", fallback: "Members")
-      }
-    }
-  }
 }
 // swiftlint:enable explicit_type_interface function_parameter_count identifier_name line_length
 // swiftlint:enable nesting type_body_length type_name vertical_whitespace_opening_braces

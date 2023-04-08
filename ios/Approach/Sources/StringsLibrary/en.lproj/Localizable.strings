@@ -26,16 +26,6 @@
 "alley.error.empty.message" = "You haven't added any alleys yet.";
 "alley.error.empty.filter.message" = "Try changing your filters or adding a new alley.";
 
-/* Teams */
-
-"team.title" = "Team";
-"team.list.title" = "Teams";
-"team.list.add" = "Add Team";
-"team.error.empty.title" = "No teams found";
-"team.error.empty.message" = "You haven't create a team yet.";
-"team.properties.bowlers.none" = "No bowlers added";
-"team.properties.bowlers.title" = "Members";
-
 /* Bowlers */
 
 "bowler.title" = "Bowler";

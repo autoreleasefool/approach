@@ -37,12 +37,6 @@ public struct PersistenceService: Sendable {
 	public var deleteGear: @Sendable (Gear) async throws -> Void
 	public var observeGear: @Sendable (Gear.FetchRequest) -> AsyncThrowingStream<[Gear], Error>
 
-	public var saveTeam: @Sendable (Team) async throws -> Void
-	public var deleteTeam: @Sendable (Team) async throws -> Void
-	public var observeTeams: @Sendable (Team.FetchRequest) -> AsyncThrowingStream<[Team], Error>
-
-	public var updateTeamMembers: @Sendable (TeamMembership) async throws -> Void
-
 	public var saveOpponent: @Sendable (Opponent) async throws -> Void
 	public var deleteOpponent: @Sendable (Opponent) async throws -> Void
 	public var observeOpponents: @Sendable (Opponent.FetchRequest) -> AsyncThrowingStream<[Opponent], Error>
@@ -74,10 +68,6 @@ public struct PersistenceService: Sendable {
 		saveGear: @escaping @Sendable (Gear) async throws -> Void,
 		deleteGear: @escaping @Sendable (Gear) async throws -> Void,
 		observeGear: @escaping @Sendable (Gear.FetchRequest) -> AsyncThrowingStream<[Gear], Error>,
-		saveTeam: @escaping @Sendable (Team) async throws -> Void,
-		deleteTeam: @escaping @Sendable (Team) async throws -> Void,
-		observeTeams: @escaping @Sendable (Team.FetchRequest) -> AsyncThrowingStream<[Team], Error>,
-		updateTeamMembers: @escaping @Sendable (TeamMembership) async throws -> Void,
 		saveOpponent: @escaping @Sendable (Opponent) async throws -> Void,
 		deleteOpponent: @escaping @Sendable (Opponent) async throws -> Void,
 		observeOpponents: @escaping @Sendable (Opponent.FetchRequest) -> AsyncThrowingStream<[Opponent], Error>
@@ -108,10 +98,6 @@ public struct PersistenceService: Sendable {
 		self.saveGear = saveGear
 		self.deleteGear = deleteGear
 		self.observeGear = observeGear
-		self.saveTeam = saveTeam
-		self.deleteTeam = deleteTeam
-		self.observeTeams = observeTeams
-		self.updateTeamMembers = updateTeamMembers
 		self.saveOpponent = saveOpponent
 		self.deleteOpponent = deleteOpponent
 		self.observeOpponents = observeOpponents
@@ -146,10 +132,6 @@ extension PersistenceService: TestDependencyKey {
 		saveGear: { _ in unimplemented("\(Self.self).saveGear") },
 		deleteGear: { _ in unimplemented("\(Self.self).deleteGear") },
 		observeGear: { _ in unimplemented("\(Self.self).observeGear") },
-		saveTeam: { _ in unimplemented("\(Self.self).saveTeam") },
-		deleteTeam: { _ in unimplemented("\(Self.self).deleteTeam") },
-		observeTeams: { _ in unimplemented("\(Self.self).observeTeams") },
-		updateTeamMembers: { _ in unimplemented("\(Self.self).updateTeamMembers") },
 		saveOpponent: { _ in unimplemented("\(Self.self).saveOpponent") },
 		deleteOpponent: { _ in unimplemented("\(Self.self).deleteOpponent") },
 		observeOpponents: { _ in unimplemented("\(Self.self).observeOpponents") }

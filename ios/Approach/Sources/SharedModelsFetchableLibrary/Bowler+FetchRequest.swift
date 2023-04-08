@@ -36,7 +36,6 @@ extension Bowler {
 
 extension Bowler.FetchRequest {
 	public enum Filter: Equatable {
-		case team(Team)
 		case name(String)
 	}
 }

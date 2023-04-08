@@ -22,8 +22,6 @@ extension Bowler.FetchRequest: ManyQueryable {
 		switch filter {
 		case let .name(name):
 			query = query.filter(Column("name").like(name))
-		case let .team(team):
-			query = team.bowlers
 		case .none:
 			break
 		}

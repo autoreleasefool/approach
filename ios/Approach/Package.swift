@@ -32,8 +32,6 @@ let package = Package(
 		.library(name: "SeriesListFeature", targets: ["SeriesListFeature"]),
 		.library(name: "SettingsFeature", targets: ["SettingsFeature"]),
 		.library(name: "StatisticsWidgetsFeature", targets: ["StatisticsWidgetsFeature"]),
-		.library(name: "TeamEditorFeature", targets: ["TeamEditorFeature"]),
-		.library(name: "TeamsListFeature", targets: ["TeamsListFeature"]),
 
 		// MARK: - Repositories
 		.library(name: "BowlersRepository", targets: ["BowlersRepository"]),
@@ -58,8 +56,6 @@ let package = Package(
 		.library(name: "OpponentsDataProviderInterface", targets: ["OpponentsDataProviderInterface"]),
 		.library(name: "SeriesDataProvider", targets: ["SeriesDataProvider"]),
 		.library(name: "SeriesDataProviderInterface", targets: ["SeriesDataProviderInterface"]),
-		.library(name: "TeamsDataProvider", targets: ["TeamsDataProvider"]),
-		.library(name: "TeamsDataProviderInterface", targets: ["TeamsDataProviderInterface"]),
 
 		// MARK: - Services
 		.library(name: "AddressLookupService", targets: ["AddressLookupService"]),
@@ -470,39 +466,6 @@ let package = Package(
 				"StatisticsWidgetsFeature",
 			]
 		),
-		.target(
-			name: "TeamEditorFeature",
-			dependencies: [
-				"BaseFormLibrary",
-				"BowlersDataProviderInterface",
-				"PersistenceServiceInterface",
-				"ResourcePickerLibrary",
-			]
-		),
-		.testTarget(
-			name: "TeamEditorFeatureTests",
-			dependencies: [
-				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"SharedModelsMocksLibrary",
-				"TeamEditorFeature",
-			]
-		),
-		.target(
-			name: "TeamsListFeature",
-			dependencies: [
-				"SortOrderLibrary",
-				"TeamEditorFeature",
-				"TeamsDataProviderInterface",
-			]
-		),
-		.testTarget(
-			name: "TeamsListFeatureTests",
-			dependencies: [
-				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"SharedModelsMocksLibrary",
-				"TeamsListFeature",
-			]
-		),
 
 		// MARK: - Repositories
 		.target(
@@ -750,36 +713,9 @@ let package = Package(
 		.testTarget(
 			name: "SeriesDataProviderTests",
 			dependencies: [
-				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"SeriesDataProvider",
 				"SharedModelsMocksLibrary",
-			]
-		),
-		.target(
-			name: "TeamsDataProvider",
-			dependencies: [
-				.product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
-				"PersistenceServiceInterface",
-				"RecentlyUsedServiceInterface",
-				"SortingLibrary",
-				"TeamsDataProviderInterface",
-			]
-		),
-		.target(
-			name: "TeamsDataProviderInterface",
-			dependencies: [
-				.product(name: "Dependencies", package: "swift-dependencies"),
-				"SharedModelsFetchableLibrary",
-			]
-		),
-		.testTarget(
-			name: "TeamsDataProviderTests",
-			dependencies: [
-				.product(name: "ComposableArchitecture", package: "swift-composable-architecture"),
-				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
-				"SharedModelsMocksLibrary",
-				"TeamsDataProvider",
 			]
 		),
 

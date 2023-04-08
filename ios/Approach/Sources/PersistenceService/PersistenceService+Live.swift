@@ -43,10 +43,6 @@ extension PersistenceService: DependencyKey {
 			saveGear: modelPersistence.save(model:),
 			deleteGear: modelPersistence.delete(model:),
 			observeGear: modelQuerying.observeAll(request:),
-			saveTeam: modelPersistence.save(model:),
-			deleteTeam: modelPersistence.delete(model:),
-			observeTeams: modelQuerying.observeAll(request:),
-			updateTeamMembers: modelPersistence.save(model:),
 			saveOpponent: modelPersistence.save(model:),
 			deleteOpponent: modelPersistence.delete(model:),
 			observeOpponents: modelQuerying.observeAll(request:)
