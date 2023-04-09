@@ -2,15 +2,15 @@ import Dependencies
 import ModelsLibrary
 
 public struct BowlersRepository: Sendable {
-	public var playable: @Sendable (Bowler.Ordering) -> AsyncThrowingStream<[Bowler.Summary], Error>
-	public var opponents: @Sendable (Bowler.Ordering) -> AsyncThrowingStream<[Bowler.Summary], Error>
+	public var playable: @Sendable (Bowler.FetchRequest) -> AsyncThrowingStream<[Bowler.Summary], Error>
+	public var opponents: @Sendable (Bowler.FetchRequest) -> AsyncThrowingStream<[Bowler.Summary], Error>
 	public var edit: @Sendable (Bowler.ID) async throws -> Bowler.Editable?
 	public var save: @Sendable (Bowler.Editable) async throws -> Void
 	public var delete: @Sendable (Bowler.ID) async throws -> Void
 
 	public init(
-		playable: @escaping @Sendable (Bowler.Ordering) -> AsyncThrowingStream<[Bowler.Summary], Error>,
-		opponents: @escaping @Sendable (Bowler.Ordering) -> AsyncThrowingStream<[Bowler.Summary], Error>,
+		playable: @escaping @Sendable (Bowler.FetchRequest) -> AsyncThrowingStream<[Bowler.Summary], Error>,
+		opponents: @escaping @Sendable (Bowler.FetchRequest) -> AsyncThrowingStream<[Bowler.Summary], Error>,
 		edit: @escaping @Sendable (Bowler.ID) async throws -> Bowler.Editable?,
 		save: @escaping @Sendable (Bowler.Editable) async throws -> Void,
 		delete: @escaping @Sendable (Bowler.ID) async throws -> Void

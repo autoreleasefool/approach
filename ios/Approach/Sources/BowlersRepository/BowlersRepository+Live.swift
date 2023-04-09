@@ -13,7 +13,7 @@ extension BowlersRepository: DependencyKey {
 	public static var liveValue: Self = {
 		@Sendable func sortBowlers(
 			_ bowlers: BowlerStream,
-			ordering: Bowler.Ordering
+			ordering: Bowler.FetchRequest.Ordering
 		) -> BowlerStream {
 			switch ordering {
 			case .byName:
@@ -25,7 +25,7 @@ extension BowlersRepository: DependencyKey {
 		}
 
 		return Self(
-			playable: { ordering in
+			playable: { request in
 				@Dependency(\.database) var database
 
 				let bowlers = database.reader().observe {
@@ -37,9 +37,9 @@ extension BowlersRepository: DependencyKey {
 						.map(Bowler.Summary.init)
 				}
 
-				return sortBowlers(bowlers, ordering: ordering)
+				return sortBowlers(bowlers, ordering: request.ordering)
 			},
-			opponents: { ordering in
+			opponents: { request in
 				@Dependency(\.database) var database
 
 				let opponents = database.reader().observe {
@@ -50,7 +50,7 @@ extension BowlersRepository: DependencyKey {
 						.map(Bowler.Summary.init)
 				}
 
-				return sortBowlers(opponents, ordering: ordering)
+				return sortBowlers(opponents, ordering: request.ordering)
 			},
 			edit: { id in
 				@Dependency(\.database) var database

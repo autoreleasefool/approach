@@ -15,7 +15,7 @@ import ViewsLibrary
 
 extension Bowler.Summary: ResourceListItem {}
 
-extension Bowler.Ordering: CustomStringConvertible {
+extension Bowler.FetchRequest.Ordering: CustomStringConvertible {
 	public var description: String {
 		switch self {
 		case .byRecentlyUsed: return Strings.Ordering.mostRecentlyUsed
@@ -26,9 +26,9 @@ extension Bowler.Ordering: CustomStringConvertible {
 
 public struct BowlersList: Reducer {
 	public struct State: Equatable {
-		public var list: ResourceList<Bowler.Summary, Bowler.Ordering>.State
+		public var list: ResourceList<Bowler.Summary, Bowler.FetchRequest>.State
 		public var editor: BowlerEditor.State?
-		public var sortOrder: SortOrder<Bowler.Ordering>.State = .init(initialValue: .byRecentlyUsed)
+		public var sortOrder: SortOrder<Bowler.FetchRequest.Ordering>.State = .init(initialValue: .byRecentlyUsed)
 
 		public var selection: Identified<Bowler.ID, LeaguesList.State>?
 
@@ -46,7 +46,7 @@ public struct BowlersList: Reducer {
 						}
 					),
 				],
-				query: sortOrder.ordering,
+				query: .init(ordering: sortOrder.ordering),
 				listTitle: Strings.Bowler.List.title,
 				emptyContent: .init(
 					image: .emptyBowlers,
@@ -72,10 +72,10 @@ public struct BowlersList: Reducer {
 
 		public enum InternalAction: Equatable {
 			case didLoadEditableBowler(Bowler.Editable)
-			case list(ResourceList<Bowler.Summary, Bowler.Ordering>.Action)
+			case list(ResourceList<Bowler.Summary, Bowler.FetchRequest>.Action)
 			case editor(BowlerEditor.Action)
 			case leagues(LeaguesList.Action)
-			case sortOrder(SortOrder<Bowler.Ordering>.Action)
+			case sortOrder(SortOrder<Bowler.FetchRequest.Ordering>.Action)
 		}
 
 		case view(ViewAction)
@@ -209,6 +209,6 @@ public struct BowlersList: Reducer {
 
 extension BowlersList.State {
 	mutating func updateQuery() {
-		list.query = sortOrder.ordering
+		list.query = .init(ordering: sortOrder.ordering)
 	}
 }

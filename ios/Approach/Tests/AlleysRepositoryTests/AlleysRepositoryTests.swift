@@ -160,7 +160,7 @@ final class AlleysRepositoryTests: XCTestCase {
 		let editable = Alley.Editable(
 			id: id1,
 			name: "Skyview Lanes",
-			address: nil,
+			address: "",
 			material: .wood,
 			pinFall: nil,
 			mechanism: nil,
@@ -192,7 +192,7 @@ final class AlleysRepositoryTests: XCTestCase {
 		let editable = Alley.Editable(
 			id: id1,
 			name: "Skyview Lanes",
-			address: nil,
+			address: "",
 			material: .wood,
 			pinFall: nil,
 			mechanism: nil,
