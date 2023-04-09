@@ -160,7 +160,7 @@ final class AlleysRepositoryTests: XCTestCase {
 		let editable = Alley.Editable(
 			id: id1,
 			name: "Skyview Lanes",
-			address: "",
+			address: nil,
 			material: .wood,
 			pinFall: nil,
 			mechanism: nil,
@@ -192,7 +192,7 @@ final class AlleysRepositoryTests: XCTestCase {
 		let editable = Alley.Editable(
 			id: id1,
 			name: "Skyview Lanes",
-			address: "",
+			address: nil,
 			material: .wood,
 			pinFall: nil,
 			mechanism: nil,
@@ -231,7 +231,7 @@ final class AlleysRepositoryTests: XCTestCase {
 		// Returns the alley
 		XCTAssertEqual(
 			alley,
-			.init(id: id1, name: "Grandview", address: "", material: .wood, pinFall: nil, mechanism: nil, pinBase: nil)
+			.init(id: id1, name: "Grandview", address: nil, material: .wood, pinFall: nil, mechanism: nil, pinBase: nil)
 		)
 	}
 
