@@ -1,10 +1,9 @@
 import AssetsLibrary
 import ComposableArchitecture
 import LeagueEditorFeature
+import ModelsLibrary
 import ResourceListLibrary
 import SeriesListFeature
-import SharedModelsLibrary
-import SharedModelsViewsLibrary
 import SortOrderLibrary
 import StringsLibrary
 import SwiftUI
@@ -57,7 +56,7 @@ public struct LeaguesListView: View {
 						send: LeaguesListView.ViewAction.setNavigation(selection:)
 					)
 				) {
-					LeagueRow(league: league)
+					Text(league.name)
 				}
 			}
 			.navigationTitle(viewStore.bowlerName)

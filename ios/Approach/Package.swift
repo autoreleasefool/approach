@@ -334,12 +334,12 @@ let package = Package(
 		.target(
 			name: "LeagueEditorFeature",
 			dependencies: [
-				"AlleysDataProviderInterface",
+				"AlleysRepositoryInterface",
 				"BaseFormLibrary",
 				"ExtensionsLibrary",
-				"PersistenceServiceInterface",
+				"LeaguesRepositoryInterface",
+				"ModelsViewsLibrary",
 				"ResourcePickerLibrary",
-				"SharedModelsViewsLibrary",
 			]
 		),
 		.testTarget(
@@ -354,7 +354,6 @@ let package = Package(
 			name: "LeaguesListFeature",
 			dependencies: [
 				"LeagueEditorFeature",
-				"LeaguesDataProviderInterface",
 				"RecentlyUsedServiceInterface",
 				"SeriesListFeature",
 				"SortOrderLibrary",

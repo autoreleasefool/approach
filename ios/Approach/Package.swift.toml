@@ -65,13 +65,11 @@ libraries = [ "ResourceList", "SortOrder" ]
 libraries = [ "SharedModels", "SwiftUIExtensions", "Views" ]
 
 [features.LeagueEditor]
-dataProviders = [ "Alleys" ]
-services = [ "Persistence" ]
-libraries = [ "BaseForm", "Extensions", "ResourcePicker", "SharedModelsViews"]
+repositories = [ "Alleys", "Leagues" ]
+libraries = [ "BaseForm", "Extensions", "ModelsViews", "ResourcePicker" ]
 
 [features.LeaguesList]
 features = [ "LeagueEditor", "SeriesList" ]
-dataProviders = [ "Leagues" ]
 services = [ "RecentlyUsed" ]
 libraries = [ "SortOrder" ]
 

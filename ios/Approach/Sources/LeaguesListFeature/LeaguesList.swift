@@ -1,24 +1,31 @@
 import ComposableArchitecture
 import FeatureActionLibrary
 import LeagueEditorFeature
-import LeaguesDataProviderInterface
-import PersistenceServiceInterface
+import LeaguesRepositoryInterface
+import ModelsLibrary
 import RecentlyUsedServiceInterface
 import ResourceListLibrary
 import SeriesListFeature
-import SharedModelsFetchableLibrary
-import SharedModelsLibrary
 import SortOrderLibrary
 import StringsLibrary
 import ViewsLibrary
 
-extension League: ResourceListItem {}
+extension League.Summary: ResourceListItem {}
+
+extension League.FetchRequest.Ordering: CustomStringConvertible {
+	public var description: String {
+		switch self {
+		case .byRecentlyUsed: return Strings.Ordering.mostRecentlyUsed
+		case .byName: return Strings.Ordering.alphabetical
+		}
+	}
+}
 
 public struct LeaguesList: Reducer {
 	public struct State: Equatable {
-		public let bowler: Bowler
+		public let bowler: Bowler.Summary
 
-		public var list: ResourceList<League, League.FetchRequest>.State
+		public var list: ResourceList<League.Summary, League.FetchRequest>.State
 		public var editor: LeagueEditor.State?
 		public var sortOrder: SortOrder<League.FetchRequest.Ordering>.State = .init(initialValue: .byRecentlyUsed)
 
@@ -27,15 +34,15 @@ public struct LeaguesList: Reducer {
 
 		public var selection: Identified<League.ID, SeriesList.State>?
 
-		public init(bowler: Bowler) {
+		public init(bowler: Bowler.Summary) {
 			self.bowler = bowler
 			self.list = .init(
 				features: [
 					.add,
 					.swipeToEdit,
 					.swipeToDelete(onDelete: .init {
-						@Dependency(\.persistenceService) var persistenceService: PersistenceService
-						try await persistenceService.deleteLeague($0)
+						@Dependency(\.leagues) var leagues: LeaguesRepository
+						try await leagues.delete($0.id)
 					}),
 				],
 				query: .init(
@@ -63,7 +70,8 @@ public struct LeaguesList: Reducer {
 		public enum DelegateAction: Equatable {}
 
 		public enum InternalAction: Equatable {
-			case list(ResourceList<League, League.FetchRequest>.Action)
+			case didLoadEditableLeague(League.Editable)
+			case list(ResourceList<League.Summary, League.FetchRequest>.Action)
 			case editor(LeagueEditor.Action)
 			case filters(LeaguesFilter.Action)
 			case series(SeriesList.Action)
@@ -78,7 +86,7 @@ public struct LeaguesList: Reducer {
 	public init() {}
 
 	@Dependency(\.continuousClock) var clock
-	@Dependency(\.leaguesDataProvider) var leaguesDataProvider
+	@Dependency(\.leagues) var leagues
 	@Dependency(\.recentlyUsedService) var recentlyUsedService
 	@Dependency(\.featureFlags) var featureFlags
 
@@ -92,7 +100,7 @@ public struct LeaguesList: Reducer {
 		}
 
 		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {
-			ResourceList(fetchResources: leaguesDataProvider.observeLeagues)
+			ResourceList(fetchResources: leagues.list)
 		}
 
 		Reduce<State, Action> { state, action in
@@ -123,10 +131,20 @@ public struct LeaguesList: Reducer {
 
 			case let .internal(internalAction):
 				switch internalAction {
+				case let .didLoadEditableLeague(league):
+					return startEditing(league: league, state: &state)
+
 				case let .list(.delegate(delegateAction)):
 					switch delegateAction {
 					case let .didEdit(league):
-						return startEditing(league: league, state: &state)
+						return .run { send in
+							guard let editable = try await leagues.edit(league.id) else {
+								// TODO: report league not found
+								return
+							}
+
+							await send(.internal(.didLoadEditableLeague(editable)))
+						}
 
 					case .didAddNew, .didTapEmptyStateButton:
 						return startEditing(league: nil, state: &state)
@@ -198,7 +216,7 @@ public struct LeaguesList: Reducer {
 
 	private func navigate(to id: League.ID?, state: inout State) -> EffectTask<Action> {
 		if let id, let selection = state.list.resources?[id: id] {
-			state.selection = Identified(.init(league: selection), id: selection.id)
+//			state.selection = Identified(.init(league: selection), id: selection.id)
 			return .fireAndForget {
 				try await clock.sleep(for: .seconds(1))
 				recentlyUsedService.didRecentlyUseResource(.leagues, selection.id)
@@ -209,7 +227,7 @@ public struct LeaguesList: Reducer {
 		}
 	}
 
-	private func startEditing(league: League?, state: inout State) -> EffectTask<Action> {
+	private func startEditing(league: League.Editable?, state: inout State) -> EffectTask<Action> {
 		let mode: LeagueEditor.Form.Mode
 		if let league {
 			mode = .edit(league)
@@ -218,7 +236,7 @@ public struct LeaguesList: Reducer {
 		}
 
 		state.editor = .init(
-			bowler: state.bowler,
+			bowler: state.bowler.id,
 			mode: mode,
 			hasAlleysEnabled: featureFlags.isEnabled(.alleys)
 		)

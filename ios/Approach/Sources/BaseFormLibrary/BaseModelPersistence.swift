@@ -18,10 +18,12 @@ public struct BaseModelPersistence: Sendable {
 	) {
 		self.init(
 			save: { model in
+				// FIXME: assert model casts correctly
 				guard let mapped = model as? Model else { return }
 				try await save(mapped)
 			},
 			delete: { model in
+				// FIXME: can pass ID instead of entire model
 				guard let mapped = model as? Model else { return }
 				try await delete(mapped)
 			}

@@ -1,7 +1,6 @@
 import AssetsLibrary
 import ComposableArchitecture
-import LeaguesDataProviderInterface
-import SharedModelsLibrary
+import ModelsLibrary
 import StringsLibrary
 import SwiftUI
 

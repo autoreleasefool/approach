@@ -112,6 +112,7 @@ public struct AlleysList: Reducer {
 					case let .didEdit(alley):
 						return .run { send in
 							guard let editable = try await alleys.edit(alley.id) else {
+								// TODO: report alley not found
 								return
 							}
 

@@ -132,6 +132,7 @@ public struct BowlersList: Reducer {
 					case let .didEdit(bowler):
 						return .run { send in
 							guard let editable = try await bowlers.edit(bowler.id) else {
+								// TODO: report bowler not found
 								return
 							}
 
@@ -195,7 +196,7 @@ public struct BowlersList: Reducer {
 
 	private func navigate(to id: Bowler.ID?, state: inout State) -> EffectTask<Action> {
 		if let id, let selection = state.list.resources?[id: id] {
-//			state.selection = Identified(.init(bowler: selection), id: selection.id)
+			state.selection = Identified(.init(bowler: selection), id: selection.id)
 			return .fireAndForget {
 				try await clock.sleep(for: .seconds(1))
 				recentlyUsedService.didRecentlyUseResource(.bowlers, selection.id)

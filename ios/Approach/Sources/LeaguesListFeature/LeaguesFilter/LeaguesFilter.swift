@@ -1,8 +1,7 @@
 import ComposableArchitecture
 import FeatureActionLibrary
-import LeaguesDataProviderInterface
-import SharedModelsFetchableLibrary
-import SharedModelsLibrary
+import LeaguesRepositoryInterface
+import ModelsLibrary
 
 public struct LeaguesFilter: Reducer {
 	public struct State: Equatable {
@@ -66,7 +65,7 @@ extension LeaguesFilter.State {
 		recurrence != nil
 	}
 
-	public func filter(withBowler: Bowler) -> League.FetchRequest.Filter {
-		.properties(bowler: withBowler, recurrence: recurrence)
+	public func filter(withBowler: Bowler.Summary) -> League.FetchRequest.Filter {
+		.init(bowler: withBowler.id, recurrence: recurrence)
 	}
 }
