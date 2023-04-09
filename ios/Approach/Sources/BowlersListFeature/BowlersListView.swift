@@ -1,11 +1,9 @@
 import AssetsLibrary
-import AvatarServiceInterface
 import BowlerEditorFeature
 import ComposableArchitecture
 import LeaguesListFeature
+import ModelsLibrary
 import ResourceListLibrary
-import SharedModelsLibrary
-import SharedModelsViewsLibrary
 import SortOrderLibrary
 import StatisticsWidgetsFeature
 import StringsLibrary
@@ -18,12 +16,10 @@ public struct BowlersListView: View {
 	struct ViewState: Equatable {
 		let selection: Bowler.ID?
 		let isEditorPresented: Bool
-		let hasAvatarsEnabled: Bool
 
 		init(state: BowlersList.State) {
 			self.selection = state.selection?.id
 			self.isEditorPresented = state.editor != nil
-			self.hasAvatarsEnabled = state.hasAvatarsEnabled
 		}
 	}
 
@@ -54,11 +50,7 @@ public struct BowlersListView: View {
 						send: BowlersListView.ViewAction.setNavigation(selection:)
 					)
 				) {
-					if viewStore.hasAvatarsEnabled {
-						AvatarLabelView(bowler.avatar, size: .standardIcon, title: bowler.name)
-					} else {
-						Text(bowler.name)
-					}
+					Text(bowler.name)
 				}
 			} header: {
 				Section {

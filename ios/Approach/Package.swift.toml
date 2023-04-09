@@ -30,13 +30,11 @@ services = [ "Avatar" ]
 libraries = [ "SharedModelsViews" ]
 
 [features.BowlerEditor]
-features = [ "AvatarEditor" ]
-services = [ "Persistence", "FeatureFlags" ]
+repositories = [ "Bowlers" ]
 libraries = [ "BaseForm" ]
 
 [features.BowlersList]
 features = [ "BowlerEditor", "LeaguesList", "StatisticsWidgets" ]
-repositories = [ "Bowlers" ]
 
 [features.FeatureFlagsList]
 services = [ "FeatureFlags" ]

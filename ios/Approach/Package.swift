@@ -189,10 +189,8 @@ let package = Package(
 		.target(
 			name: "BowlerEditorFeature",
 			dependencies: [
-				"AvatarEditorFeature",
 				"BaseFormLibrary",
-				"FeatureFlagsServiceInterface",
-				"PersistenceServiceInterface",
+				"BowlersRepositoryInterface",
 			]
 		),
 		.testTarget(
@@ -207,7 +205,6 @@ let package = Package(
 			name: "BowlersListFeature",
 			dependencies: [
 				"BowlerEditorFeature",
-				"BowlersRepositoryInterface",
 				"LeaguesListFeature",
 				"StatisticsWidgetsFeature",
 			]

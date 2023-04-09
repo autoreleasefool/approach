@@ -1,26 +1,34 @@
 import BowlerEditorFeature
-import BowlersDataProviderInterface
+import BowlersRepositoryInterface
 import ComposableArchitecture
 import FeatureActionLibrary
 import FeatureFlagsLibrary
 import FeatureFlagsServiceInterface
+import ModelsLibrary
 import LeaguesListFeature
 import PersistenceServiceInterface
 import RecentlyUsedServiceInterface
 import ResourceListLibrary
-import SharedModelsFetchableLibrary
-import SharedModelsLibrary
 import SortOrderLibrary
 import StringsLibrary
 import ViewsLibrary
 
-extension Bowler: ResourceListItem {}
+extension Bowler.Summary: ResourceListItem {}
+
+extension Bowler.Ordering: CustomStringConvertible {
+	public var description: String {
+		switch self {
+		case .byRecentlyUsed: return Strings.Ordering.mostRecentlyUsed
+		case .byName: return Strings.Ordering.alphabetical
+		}
+	}
+}
 
 public struct BowlersList: Reducer {
 	public struct State: Equatable {
-		public var list: ResourceList<Bowler, Bowler.FetchRequest>.State
+		public var list: ResourceList<Bowler.Summary, Bowler.Ordering>.State
 		public var editor: BowlerEditor.State?
-		public var sortOrder: SortOrder<Bowler.FetchRequest.Ordering>.State = .init(initialValue: .byRecentlyUsed)
+		public var sortOrder: SortOrder<Bowler.Ordering>.State = .init(initialValue: .byRecentlyUsed)
 
 		public var selection: Identified<Bowler.ID, LeaguesList.State>?
 
@@ -33,12 +41,12 @@ public struct BowlersList: Reducer {
 					.swipeToEdit,
 					.swipeToDelete(
 						onDelete: .init {
-							@Dependency(\.persistenceService) var persistenceService: PersistenceService
-							try await persistenceService.deleteBowler($0)
+							@Dependency(\.bowlers) var bowlers: BowlersRepository
+							try await bowlers.delete($0.id)
 						}
 					),
 				],
-				query: .init(filter: nil, ordering: sortOrder.ordering),
+				query: sortOrder.ordering,
 				listTitle: Strings.Bowler.List.title,
 				emptyContent: .init(
 					image: .emptyBowlers,
@@ -63,10 +71,11 @@ public struct BowlersList: Reducer {
 		public enum DelegateAction: Equatable {}
 
 		public enum InternalAction: Equatable {
-			case list(ResourceList<Bowler, Bowler.FetchRequest>.Action)
+			case didLoadEditableBowler(Bowler.Editable)
+			case list(ResourceList<Bowler.Summary, Bowler.Ordering>.Action)
 			case editor(BowlerEditor.Action)
 			case leagues(LeaguesList.Action)
-			case sortOrder(SortOrder<Bowler.FetchRequest.Ordering>.Action)
+			case sortOrder(SortOrder<Bowler.Ordering>.Action)
 		}
 
 		case view(ViewAction)
@@ -77,7 +86,7 @@ public struct BowlersList: Reducer {
 	public init() {}
 
 	@Dependency(\.continuousClock) var clock
-	@Dependency(\.bowlersDataProvider) var bowlersDataProvider
+	@Dependency(\.bowlers) var bowlers
 	@Dependency(\.recentlyUsedService) var recentlyUsedService
 
 	public var body: some Reducer<State, Action> {
@@ -86,7 +95,7 @@ public struct BowlersList: Reducer {
 		}
 
 		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {
-			ResourceList(fetchResources: bowlersDataProvider.observeBowlers)
+			ResourceList(fetchResources: bowlers.playable)
 		}
 
 		Reduce<State, Action> { state, action in
@@ -114,11 +123,20 @@ public struct BowlersList: Reducer {
 
 			case let .internal(internalAction):
 				switch internalAction {
+				case let .didLoadEditableBowler(bowler):
+					state.editor = .init(mode: .edit(bowler))
+					return .none
+
 				case let .list(.delegate(delegateAction)):
 					switch delegateAction {
 					case let .didEdit(bowler):
-						state.editor = .init(mode: .edit(bowler))
-						return .none
+						return .run { send in
+							guard let editable = try await bowlers.edit(bowler.id) else {
+								return
+							}
+
+							await send(.internal(.didLoadEditableBowler(editable)))
+						}
 
 					case .didAddNew, .didTapEmptyStateButton:
 						state.editor = .init(mode: .create)
@@ -177,7 +195,7 @@ public struct BowlersList: Reducer {
 
 	private func navigate(to id: Bowler.ID?, state: inout State) -> EffectTask<Action> {
 		if let id, let selection = state.list.resources?[id: id] {
-			state.selection = Identified(.init(bowler: selection), id: selection.id)
+//			state.selection = Identified(.init(bowler: selection), id: selection.id)
 			return .fireAndForget {
 				try await clock.sleep(for: .seconds(1))
 				recentlyUsedService.didRecentlyUseResource(.bowlers, selection.id)
@@ -191,6 +209,6 @@ public struct BowlersList: Reducer {
 
 extension BowlersList.State {
 	mutating func updateQuery() {
-		list.query = .init(filter: nil, ordering: sortOrder.ordering)
+		list.query = sortOrder.ordering
 	}
 }
