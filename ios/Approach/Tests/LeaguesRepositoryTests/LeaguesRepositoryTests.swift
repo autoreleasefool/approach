@@ -121,7 +121,6 @@ final class LeaguesRepositoryTests: XCTestCase {
 
 	func testSave_WhenLeagueExists_UpdatesLeague() async throws {
 		// Given a database with an existing league
-		// Given a database with three leagues
 		let league1 = League.DatabaseModel.mock(id: id1, name: "Majors", additionalPinfall: nil, additionalGames: nil)
 		let db = try await initializeDatabase(inserting: [league1])
 

@@ -12,6 +12,15 @@ extension League.Editable: BaseFormModel {
 	static public var modelName = Strings.League.title
 }
 
+extension League.Recurrence: CustomStringConvertible {
+	public var description: String {
+		switch self {
+		case .repeating: return Strings.League.Properties.Recurrence.repeats
+		case .once: return Strings.League.Properties.Recurrence.never
+		}
+	}
+}
+
 extension Alley.Summary: PickableResource {
 	static public func pickableModelName(forCount count: Int) -> String {
 		count == 1 ? Strings.Alley.title : Strings.Alley.List.title

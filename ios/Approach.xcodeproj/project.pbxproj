@@ -15,6 +15,7 @@
 		CA318B402999E1F500BD4BEC /* AnalyticsService in Frameworks */ = {isa = PBXBuildFile; productRef = CA318B3F2999E1F500BD4BEC /* AnalyticsService */; };
 		CA439E5029E2949400B09020 /* AlleysRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA439E4F29E2949400B09020 /* AlleysRepository */; };
 		CA439E5229E32A9900B09020 /* LeaguesRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA439E5129E32A9900B09020 /* LeaguesRepository */; };
+		CA439E5429E3796A00B09020 /* SeriesRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA439E5329E3796A00B09020 /* SeriesRepository */; };
 		CA632F5829BD26E200272ADB /* GameEditorPreviewApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA632F5729BD26E200272ADB /* GameEditorPreviewApp.swift */; };
 		CA632F5C29BD26E300272ADB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CA632F5B29BD26E300272ADB /* Assets.xcassets */; };
 		CA632F6629BD293E00272ADB /* GamesEditorFeature in Frameworks */ = {isa = PBXBuildFile; productRef = CA632F6529BD293E00272ADB /* GamesEditorFeature */; };
@@ -97,6 +98,7 @@
 				CA2513FE296BEE4200EF3F1A /* OpponentsDataProvider in Frameworks */,
 				CABEC0CF29CBF9CD003CF669 /* AddressLookupService in Frameworks */,
 				CAA3D74F29CFB49200876EDC /* DatabaseService in Frameworks */,
+				CA439E5429E3796A00B09020 /* SeriesRepository in Frameworks */,
 				CA2890DE28F87FF2003C1EE9 /* AppFeature in Frameworks */,
 				CA81F9E0293DAD0B0061D1D9 /* LanesDataProvider in Frameworks */,
 				CA439E5229E32A9900B09020 /* LeaguesRepository in Frameworks */,
@@ -322,6 +324,7 @@
 				CAA3D74E29CFB49200876EDC /* DatabaseService */,
 				CA439E4F29E2949400B09020 /* AlleysRepository */,
 				CA439E5129E32A9900B09020 /* LeaguesRepository */,
+				CA439E5329E3796A00B09020 /* SeriesRepository */,
 			);
 			productName = Approach;
 			productReference = CA8BBC5528D59B8B00653A1E /* Approach.app */;
@@ -813,6 +816,10 @@
 		CA439E5129E32A9900B09020 /* LeaguesRepository */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = LeaguesRepository;
+		};
+		CA439E5329E3796A00B09020 /* SeriesRepository */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = SeriesRepository;
 		};
 		CA632F6529BD293E00272ADB /* GamesEditorFeature */ = {
 			isa = XCSwiftPackageProductDependency;

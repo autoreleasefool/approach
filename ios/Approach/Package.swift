@@ -40,6 +40,8 @@ let package = Package(
 		.library(name: "BowlersRepositoryInterface", targets: ["BowlersRepositoryInterface"]),
 		.library(name: "LeaguesRepository", targets: ["LeaguesRepository"]),
 		.library(name: "LeaguesRepositoryInterface", targets: ["LeaguesRepositoryInterface"]),
+		.library(name: "SeriesRepository", targets: ["SeriesRepository"]),
+		.library(name: "SeriesRepositoryInterface", targets: ["SeriesRepositoryInterface"]),
 
 		// MARK: - Data Providers
 		.library(name: "AlleysDataProvider", targets: ["AlleysDataProvider"]),
@@ -562,6 +564,30 @@ let package = Package(
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"DatabaseService",
 				"LeaguesRepository",
+			]
+		),
+		.target(
+			name: "SeriesRepository",
+			dependencies: [
+				"DatabaseModelsLibrary",
+				"DatabaseServiceInterface",
+				"RepositoryLibrary",
+				"SeriesRepositoryInterface",
+			]
+		),
+		.target(
+			name: "SeriesRepositoryInterface",
+			dependencies: [
+				.product(name: "Dependencies", package: "swift-dependencies"),
+				"ModelsLibrary",
+			]
+		),
+		.testTarget(
+			name: "SeriesRepositoryTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"DatabaseService",
+				"SeriesRepository",
 			]
 		),
 

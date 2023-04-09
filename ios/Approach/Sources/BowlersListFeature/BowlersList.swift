@@ -4,8 +4,8 @@ import ComposableArchitecture
 import FeatureActionLibrary
 import FeatureFlagsLibrary
 import FeatureFlagsServiceInterface
-import ModelsLibrary
 import LeaguesListFeature
+import ModelsLibrary
 import PersistenceServiceInterface
 import RecentlyUsedServiceInterface
 import ResourceListLibrary

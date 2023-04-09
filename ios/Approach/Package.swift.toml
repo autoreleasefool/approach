@@ -113,6 +113,8 @@ services = [ "RecentlyUsed" ]
 [repositories.Leagues]
 services = [ "RecentlyUsed" ]
 
+[repositories.Series]
+
 # Data Providers
 
 [dataProviders.Alleys]
