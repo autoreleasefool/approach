@@ -5,6 +5,7 @@ import DatabaseModelsLibrary
 import Dependencies
 import GRDB
 import ModelsLibrary
+import RecentlyUsedServiceInterface
 import XCTest
 
 @MainActor
@@ -14,7 +15,7 @@ final class BowlersRepositoryTests: XCTestCase {
 	let id2 = UUID(uuidString: "00000000-0000-0000-0000-000000000002")!
 	let id3 = UUID(uuidString: "00000000-0000-0000-0000-000000000003")!
 
-	func testBowlers_ReturnsOnlyPlayable() async throws {
+	func testPlayable_ReturnsOnlyPlayable() async throws {
 		// Given a database with a bowler and opponent
 		let bowler1 = Bowler.DatabaseModel(id: id1, name: "Joseph", status: .playable)
 		let bowler2 = Bowler.DatabaseModel(id: id2, name: "Sarah", status: .opponent)
@@ -24,7 +25,7 @@ final class BowlersRepositoryTests: XCTestCase {
 		let bowlers = withDependencies {
 			$0.database.reader = { db }
 		} operation: {
-			BowlersRepository.liveValue.bowlers()
+			BowlersRepository.liveValue.playable(.byName)
 		}
 		var iterator = bowlers.makeAsyncIterator()
 		let fetched = try await iterator.next()
@@ -33,7 +34,7 @@ final class BowlersRepositoryTests: XCTestCase {
 		XCTAssertEqual(fetched, [.init(bowler1)])
 	}
 
-	func testBowlers_SortsByName() async throws {
+	func testPlayable_SortsByName() async throws {
 		// Given a database with 2 bowlers
 		let bowler1 = Bowler.DatabaseModel(id: id1, name: "Joseph", status: .playable)
 		let bowler2 = Bowler.DatabaseModel(id: id2, name: "Audriana", status: .playable)
@@ -43,13 +44,37 @@ final class BowlersRepositoryTests: XCTestCase {
 		let bowlers = withDependencies {
 			$0.database.reader = { db }
 		} operation: {
-			BowlersRepository.liveValue.bowlers()
+			BowlersRepository.liveValue.playable(.byName)
 		}
 		var iterator = bowlers.makeAsyncIterator()
 		let fetched = try await iterator.next()
 
 		// Returns the bowlers sorted by name
 		XCTAssertEqual(fetched, [.init(bowler2), .init(bowler1)])
+	}
+
+	func testPlayable_SortedByRecentlyUsed_SortsByRecentlyUsed() async throws {
+		// Given a database with 2 bowlers
+		let bowler1 = Bowler.DatabaseModel(id: id1, name: "Joseph", status: .playable)
+		let bowler2 = Bowler.DatabaseModel(id: id2, name: "Audriana", status: .playable)
+		let db = try await initializeDatabase(inserting: [bowler1, bowler2])
+
+		// Given an ordering of ids
+		let (recentStream, recentContinuation) = AsyncStream<[UUID]>.streamWithContinuation()
+		recentContinuation.yield([id1, id2])
+
+		// Fetching the bowlers
+		let bowlers = withDependencies {
+			$0.database.reader = { db }
+			$0.recentlyUsedService.observeRecentlyUsedIds = { _ in recentStream }
+		} operation: {
+			BowlersRepository.liveValue.playable(.byRecentlyUsed)
+		}
+		var iterator = bowlers.makeAsyncIterator()
+		let fetched = try await iterator.next()
+
+		// Returns the bowlers sorted by name
+		XCTAssertEqual(fetched, [.init(bowler1), .init(bowler2)])
 	}
 
 	func testOpponents_ReturnsPlayablesAndOpponents() async throws {
@@ -62,7 +87,7 @@ final class BowlersRepositoryTests: XCTestCase {
 		let opponents = withDependencies {
 			$0.database.reader = { db }
 		} operation: {
-			BowlersRepository.liveValue.opponents()
+			BowlersRepository.liveValue.opponents(.byName)
 		}
 		var iterator = opponents.makeAsyncIterator()
 		let fetched = try await iterator.next()
@@ -81,13 +106,38 @@ final class BowlersRepositoryTests: XCTestCase {
 		let opponents = withDependencies {
 			$0.database.reader = { db }
 		} operation: {
-			BowlersRepository.liveValue.opponents()
+			BowlersRepository.liveValue.opponents(.byName)
 		}
 		var iterator = opponents.makeAsyncIterator()
 		let fetched = try await iterator.next()
 
 		// Returns the opponents sorted by name
 		XCTAssertEqual(fetched, [.init(bowler2), .init(bowler1)])
+	}
+
+	func testOpponents_SortedByRecentlyUsed_SortsByRecentlyUsed() async throws {
+		// Given a database with 2 opponents
+		let bowler1 = Bowler.DatabaseModel(id: id1, name: "Joseph", status: .opponent)
+		let bowler2 = Bowler.DatabaseModel(id: id2, name: "Audriana", status: .opponent)
+		let db = try await initializeDatabase(inserting: [bowler1, bowler2])
+
+		// Given an ordering of ids
+		let (recentStream, recentContinuation) = AsyncStream<[UUID]>.streamWithContinuation()
+		recentContinuation.yield([id1, id2])
+
+		// Fetching the opponents
+		let opponents = withDependencies {
+			$0.database.reader = { db }
+			$0.recentlyUsedService.observeRecentlyUsedIds = { _ in recentStream }
+		} operation: {
+			// with `byRecentlyUsed` ordering
+			BowlersRepository.liveValue.opponents(.byRecentlyUsed)
+		}
+		var iterator = opponents.makeAsyncIterator()
+		let fetched = try await iterator.next()
+
+		// Returns the opponents sorted by recently used
+		XCTAssertEqual(fetched, [.init(bowler1), .init(bowler2)])
 	}
 
 	func testSave_WhenBowlerExists_UpdatesBowler() async throws {

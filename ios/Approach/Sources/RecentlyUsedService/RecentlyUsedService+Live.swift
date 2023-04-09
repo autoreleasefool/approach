@@ -78,6 +78,26 @@ extension RecentlyUsedService: DependencyKey {
 					continuation.onTermination = { _ in cancellable.cancel() }
 				}
 			},
+			observeRecentlyUsedIds: { category in
+					.init { continuation in
+						let categoryKey = key(forCategory: category)
+
+						continuation.yield(
+							(entries(forCategory: category).map(\.id))
+						)
+
+						let cancellable = NotificationCenter.default
+							.publisher(for: .RecentlyUsed.didChange)
+							.filter { ($0.object as? String) == categoryKey }
+							.sink { _ in
+								continuation.yield(
+									(entries(forCategory: category).map(\.id))
+								)
+							}
+
+						continuation.onTermination = { _ in cancellable.cancel() }
+					}
+			},
 			resetRecentlyUsed: { category in
 				@Dependency(\.preferenceService) var preferenceService: PreferenceService
 

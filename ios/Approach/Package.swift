@@ -91,6 +91,7 @@ let package = Package(
 		.library(name: "FeatureFlagsLibrary", targets: ["FeatureFlagsLibrary"]),
 		.library(name: "FoundationExtensionsLibrary", targets: ["FoundationExtensionsLibrary"]),
 		.library(name: "ModelsLibrary", targets: ["ModelsLibrary"]),
+		.library(name: "RepositoryLibrary", targets: ["RepositoryLibrary"]),
 		.library(name: "ResourceListLibrary", targets: ["ResourceListLibrary"]),
 		.library(name: "ResourcePickerLibrary", targets: ["ResourcePickerLibrary"]),
 		.library(name: "SharedModelsFetchableLibrary", targets: ["SharedModelsFetchableLibrary"]),
@@ -206,6 +207,7 @@ let package = Package(
 			name: "BowlersListFeature",
 			dependencies: [
 				"BowlerEditorFeature",
+				"BowlersRepositoryInterface",
 				"LeaguesListFeature",
 				"StatisticsWidgetsFeature",
 			]
@@ -486,6 +488,8 @@ let package = Package(
 				"BowlersRepositoryInterface",
 				"DatabaseModelsLibrary",
 				"DatabaseServiceInterface",
+				"RecentlyUsedServiceInterface",
+				"RepositoryLibrary",
 			]
 		),
 		.target(
@@ -1032,6 +1036,21 @@ let package = Package(
 		.target(
 			name: "ModelsLibrary",
 			dependencies: []
+		),
+		.target(
+			name: "RepositoryLibrary",
+			dependencies: [
+				.product(name: "AsyncAlgorithms", package: "swift-async-algorithms"),
+				"SortingLibrary",
+			]
+		),
+		.testTarget(
+			name: "RepositoryLibraryTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"RepositoryLibrary",
+				"SharedModelsMocksLibrary",
+			]
 		),
 		.target(
 			name: "ResourceListLibrary",

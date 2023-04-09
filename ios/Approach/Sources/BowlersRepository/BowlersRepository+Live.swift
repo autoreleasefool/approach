@@ -4,30 +4,53 @@ import DatabaseServiceInterface
 import Dependencies
 import GRDB
 import ModelsLibrary
+import RecentlyUsedServiceInterface
+import RepositoryLibrary
+
+typealias BowlerStream = AsyncThrowingStream<[Bowler.Summary], Error>
 
 extension BowlersRepository: DependencyKey {
 	public static var liveValue: Self = {
+		@Sendable func sortBowlers(
+			_ bowlers: BowlerStream,
+			ordering: Bowler.Ordering
+		) -> BowlerStream {
+			switch ordering {
+			case .byName:
+				return bowlers
+			case .byRecentlyUsed:
+				@Dependency(\.recentlyUsedService) var recentlyUsed
+				return sort(bowlers, byIds: recentlyUsed.observeRecentlyUsedIds(.bowlers))
+			}
+		}
+
 		return Self(
-			bowlers: {
+			playable: { ordering in
 				@Dependency(\.database) var database
-				return database.reader().observe {
-					let bowlers = try Bowler.DatabaseModel
+
+				let bowlers = database.reader().observe {
+					try Bowler.DatabaseModel
 						.all()
 						.orderByName()
 						.filter(byStatus: .playable)
 						.fetchAll($0)
-					return bowlers.map { .init($0) }
+						.map(Bowler.Summary.init)
 				}
+
+				return sortBowlers(bowlers, ordering: ordering)
 			},
-			opponents: {
+			opponents: { ordering in
 				@Dependency(\.database) var database
-				return database.reader().observe {
-					let bowlers = try Bowler.DatabaseModel
+
+				let opponents = database.reader().observe {
+					try Bowler.DatabaseModel
 						.all()
 						.orderByName()
 						.fetchAll($0)
-					return bowlers.map { .init($0) }
+						.map(Bowler.Summary.init)
 				}
+
+				return sortBowlers(opponents, ordering: ordering)
 			},
 			edit: { id in
 				@Dependency(\.database) var database

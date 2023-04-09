@@ -36,6 +36,7 @@ libraries = [ "BaseForm" ]
 
 [features.BowlersList]
 features = [ "BowlerEditor", "LeaguesList", "StatisticsWidgets" ]
+repositories = [ "Bowlers" ]
 
 [features.FeatureFlagsList]
 services = [ "FeatureFlags" ]
@@ -108,8 +109,8 @@ libraries = [ "Assets", "Strings" ]
 # Repositories
 
 [repositories.Bowlers]
+services = [ "Database", "RecentlyUsed" ]
 libraries = [ "DatabaseModels" ]
-services = [ "Database" ]
 [repositories.Bowlers.interface]
 libraries = [ "Models" ]
 [repositories.Bowlers.tests]
@@ -233,6 +234,10 @@ skip_tests = true
 [libraries.Models]
 skip_tests = true
 
+[libraries.Repository]
+libraries = [ "Sorting" ]
+dependencies = [ "AsyncAlgorithms" ]
+
 [libraries.ResourceList]
 libraries = [ "Equatable", "FeatureAction", "Views" ]
 
@@ -318,6 +323,9 @@ dependencies = [ "Dependencies" ]
 [defaults.dataProviders.tests]
 libraries = [ "SharedModelsMocks" ]
 dependencies = [ "SnapshotTesting" ]
+
+[defaults.repositories]
+libraries = [ "Repository" ]
 
 [defaults.repositories.interface]
 dependencies = [ "Dependencies" ]
