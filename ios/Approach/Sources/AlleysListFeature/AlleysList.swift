@@ -1,20 +1,18 @@
 import AlleyEditorFeature
-import AlleysDataProviderInterface
+import AlleysRepositoryInterface
 import ComposableArchitecture
 import FeatureActionLibrary
 import FeatureFlagsServiceInterface
-import PersistenceServiceInterface
+import ModelsLibrary
 import ResourceListLibrary
-import SharedModelsFetchableLibrary
-import SharedModelsLibrary
 import StringsLibrary
 import ViewsLibrary
 
-extension Alley: ResourceListItem {}
+extension Alley.Summary: ResourceListItem {}
 
 public struct AlleysList: Reducer {
 	public struct State: Equatable {
-		public var list: ResourceList<Alley, Alley.FetchRequest>.State
+		public var list: ResourceList<Alley.Summary, Alley.Filters>.State
 		public var editor: AlleyEditor.State?
 
 		public var isFiltersPresented = false
@@ -26,11 +24,11 @@ public struct AlleysList: Reducer {
 					.add,
 					.swipeToEdit,
 					.swipeToDelete(onDelete: .init {
-						@Dependency(\.persistenceService) var persistenceService: PersistenceService
-						try await persistenceService.deleteAlley($0)
+						@Dependency(\.alleys) var alleys: AlleysRepository
+						try await alleys.delete($0.id)
 					}),
 				],
-				query: .init(filter: filters.filter, ordering: .byRecentlyUsed),
+				query: filters.filter,
 				listTitle: Strings.Alley.List.title,
 				emptyContent: .init(
 					image: .emptyAlleys,
@@ -51,7 +49,8 @@ public struct AlleysList: Reducer {
 		public enum DelegateAction: Equatable {}
 
 		public enum InternalAction: Equatable {
-			case list(ResourceList<Alley, Alley.FetchRequest>.Action)
+			case didLoadEditableAlley(Alley.Editable)
+			case list(ResourceList<Alley.Summary, Alley.Filters>.Action)
 			case editor(AlleyEditor.Action)
 			case filters(AlleysFilter.Action)
 		}
@@ -63,8 +62,7 @@ public struct AlleysList: Reducer {
 
 	public init() {}
 
-	@Dependency(\.persistenceService) var persistenceService
-	@Dependency(\.alleysDataProvider) var alleysDataProvider
+	@Dependency(\.alleys) var alleys
 	@Dependency(\.featureFlags) var featureFlags: FeatureFlagsService
 
 	public var body: some Reducer<State, Action> {
@@ -73,7 +71,10 @@ public struct AlleysList: Reducer {
 		}
 
 		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {
-			ResourceList(fetchResources: alleysDataProvider.observeAlleys)
+			ResourceList {
+				// TODO: add support for sorting alleys by recently used
+				alleys.all($0, .byName)
+			}
 		}
 
 		Reduce<State, Action> { state, action in
@@ -102,14 +103,23 @@ public struct AlleysList: Reducer {
 
 			case let .internal(internalAction):
 				switch internalAction {
+				case let .didLoadEditableAlley(alley):
+					state.editor = .init(
+						mode: .edit(alley),
+						hasLanesEnabled: featureFlags.isEnabled(.lanes)
+					)
+					return .none
+
 				case let .list(.delegate(delegateAction)):
 					switch delegateAction {
 					case let .didEdit(alley):
-						state.editor = .init(
-							mode: .edit(alley),
-							hasLanesEnabled: featureFlags.isEnabled(.lanes)
-						)
-						return .none
+						return .run { send in
+							guard let editable = try await alleys.edit(alley.id) else {
+								return
+							}
+
+							await send(.internal(.didLoadEditableAlley(editable)))
+						}
 
 					case .didAddNew, .didTapEmptyStateButton:
 						state.editor = .init(mode: .create, hasLanesEnabled: featureFlags.isEnabled(.lanes))
@@ -159,6 +169,6 @@ public struct AlleysList: Reducer {
 
 extension AlleysList.State {
 	mutating func updateQuery() {
-		list.query = .init(filter: filters.filter, ordering: .byRecentlyUsed)
+		list.query = filters.filter
 	}
 }

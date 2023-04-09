@@ -1,14 +1,12 @@
-import ModelsLibrary
-
 extension Alley {
-	public struct Editable: Identifiable, Equatable {
+	public struct Summary: Identifiable, Equatable {
 		public let id: Alley.ID
-		public var name: String
-		public var address: String?
-		public var material: Material?
-		public var pinFall: PinFall?
-		public var mechanism: Mechanism?
-		public var pinBase: PinBase?
+		public let name: String
+		public let address: String?
+		public let material: Material?
+		public let pinFall: PinFall?
+		public let mechanism: Mechanism?
+		public let pinBase: PinBase?
 
 		public init(
 			id: Alley.ID,

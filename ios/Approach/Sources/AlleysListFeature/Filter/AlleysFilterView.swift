@@ -1,7 +1,6 @@
-import AlleysDataProviderInterface
 import AssetsLibrary
 import ComposableArchitecture
-import SharedModelsLibrary
+import ModelsLibrary
 import StringsLibrary
 import SwiftUI
 
@@ -117,6 +116,43 @@ extension AlleysFilter.Action {
 			self = .view(.didTapApplyButton)
 		case let .binding(action):
 			self = .binding(action.pullback(\AlleysFilter.State.view))
+		}
+	}
+}
+
+extension Alley.Material: CustomStringConvertible {
+	public var description: String {
+		switch self {
+		case .synthetic: return Strings.Alley.Properties.Material.synthetic
+		case .wood: return Strings.Alley.Properties.Material.wood
+		}
+	}
+}
+
+extension Alley.PinFall: CustomStringConvertible {
+	public var description: String {
+		switch self {
+		case .freefall: return Strings.Alley.Properties.PinFall.freefall
+		case .strings: return Strings.Alley.Properties.PinFall.strings
+		}
+	}
+}
+
+extension Alley.Mechanism: CustomStringConvertible {
+	public var description: String {
+		switch self {
+		case .dedicated: return Strings.Alley.Properties.Mechanism.dedicated
+		case .interchangeable: return Strings.Alley.Properties.Mechanism.interchangeable
+		}
+	}
+}
+
+extension Alley.PinBase: CustomStringConvertible {
+	public var description: String {
+		switch self {
+		case .black: return Strings.Alley.Properties.PinBase.black
+		case .white: return Strings.Alley.Properties.PinBase.white
+		case .other: return Strings.other
 		}
 	}
 }

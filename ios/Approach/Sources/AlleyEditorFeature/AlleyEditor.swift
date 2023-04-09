@@ -1,38 +1,27 @@
+import AlleysRepositoryInterface
 import BaseFormLibrary
 import ComposableArchitecture
 import ExtensionsLibrary
 import FeatureActionLibrary
 import Foundation
 import LaneEditorFeature
-import PersistenceServiceInterface
-import SharedModelsLibrary
+import ModelsLibrary
 import StringsLibrary
 
-extension Alley: BaseFormModel {
+extension Alley.Editable: BaseFormModel {
 	static public var modelName = Strings.Alley.title
 }
 
 public struct AlleyEditor: Reducer {
-	public typealias Form = BaseForm<Alley, Fields>
+	public typealias Form = BaseForm<Alley.Editable, Fields>
 
 	public struct Fields: BaseFormState, Equatable {
-		public let alley: Alley?
+		@BindingState public var alley: Alley.Editable
 		public var laneEditor: AlleyLanesEditor.State
-		@BindingState public var name = ""
-		@BindingState public var address = ""
-		@BindingState public var material: Alley.Material = .unknown
-		@BindingState public var pinFall: Alley.PinFall = .unknown
-		@BindingState public var mechanism: Alley.Mechanism = .unknown
-		@BindingState public var pinBase: Alley.PinBase = .unknown
-
-		init(alley: Alley?) {
-			self.alley = alley
-			self.laneEditor = .init(alley: alley)
-		}
 
 		public let isDeleteable = true
 		public var isSaveable: Bool {
-			!name.isEmpty
+			!alley.name.isEmpty
 		}
 	}
 
@@ -46,16 +35,27 @@ public struct AlleyEditor: Reducer {
 			var fields: Fields
 			switch mode {
 			case let .edit(alley):
-				fields = .init(alley: alley)
-				fields.name = alley.name
-				fields.address = alley.address ?? ""
-				fields.material = alley.material
-				fields.pinFall = alley.pinFall
-				fields.mechanism = alley.mechanism
-				fields.pinBase = alley.pinBase
-				self.alleyLanes = .init(alley: alley)
+				fields = .init(
+					alley: alley,
+					// TODO: need to pass actual alley to editor
+					laneEditor: .init(alley: nil)
+				)
+				// TODO: need to pass actual alley to editor
+				self.alleyLanes = .init(alley: nil)
 			case .create:
-				fields = .init(alley: nil)
+				fields = .init(
+					alley: .init(
+						id: .placeholder,
+						name: "",
+						address: "",
+						material: nil,
+						pinFall: nil,
+						mechanism: nil,
+						pinBase: nil
+					),
+					// TODO: do we need to pass actual alley to editor? probably not
+					laneEditor: .init(alley: nil)
+				)
 				self.alleyLanes = .init(alley: nil)
 			}
 
@@ -85,7 +85,7 @@ public struct AlleyEditor: Reducer {
 
 	public init() {}
 
-	@Dependency(\.persistenceService) var persistenceService
+	@Dependency(\.alleys) var alleys
 
 	public var body: some Reducer<State, Action> {
 		BindingReducer()
@@ -93,8 +93,8 @@ public struct AlleyEditor: Reducer {
 		Scope(state: \.base, action: /Action.internal..Action.InternalAction.form) {
 			BaseForm()
 				.dependency(\.modelPersistence, .init(
-					save: persistenceService.saveAlley,
-					delete: persistenceService.deleteAlley
+					save: alleys.save,
+					delete: { try await alleys.delete($0.id) }
 				))
 		}
 
@@ -114,11 +114,12 @@ public struct AlleyEditor: Reducer {
 					state.isLaneEditorPresented = isPresented
 					if !isPresented {
 						// TODO: sort lanes
-						state.alleyLanes.lanes = .init(
-							uniqueElements: state.base.form.laneEditor.lanes.map {
-								$0.toLane(alley: .placeholder)
-							}
-						)
+						// TODO: AlleysRepository, support lane mapping
+//						state.alleyLanes.lanes = .init(
+//							uniqueElements: state.base.form.laneEditor.lanes.map {
+//								$0.toLane(alley: .placeholder)
+//							}
+//						)
 					}
 					return .none
 				}
@@ -132,13 +133,14 @@ public struct AlleyEditor: Reducer {
 						let existingIds = existing.map { $0.id }
 						let lanes = state.base.form.laneEditor.lanes
 						let laneIds = lanes.map { $0.id }
-						return .task { [alleyId = alley.id] in
-							let added = lanes.filter { !existingIds.contains($0.id) }.map { $0.toLane(alley: alleyId) }
-							let removed = existing.filter { !laneIds.contains($0.id) }
-							let updated = lanes.filter { existingIds.contains($0.id) }.map { $0.toLane(alley: alleyId) }
-
-							try await persistenceService.saveLanes(added + updated)
-							try await persistenceService.deleteLanes(removed)
+						return .task {
+							// TODO: AlleysRepository, support lane mapping
+//							let added = lanes.filter { !existingIds.contains($0.id) }.map { $0.toLane(alley: alleyId) }
+//							let removed = existing.filter { !laneIds.contains($0.id) }
+//							let updated = lanes.filter { existingIds.contains($0.id) }.map { $0.toLane(alley: alleyId) }
+//
+//							try await persistenceService.saveLanes(added + updated)
+//							try await persistenceService.deleteLanes(removed)
 
 							return .internal(.form(.callback(.didFinishSaving(.success(alley)))))
 						} catch: { error in
@@ -181,24 +183,25 @@ public struct AlleyEditor: Reducer {
 	}
 }
 
-extension LaneEditor.State {
-	func toLane(alley: Alley.ID) -> Lane {
-		.init(id: id, label: label, isAgainstWall: isAgainstWall, alley: alley)
-	}
-}
+// TODO: re-enable adding lanes to alleys
+//extension LaneEditor.State {
+//	func toLane(alley: Alley.ID) -> Lane {
+//		.init(id: id, label: label, isAgainstWall: isAgainstWall, alley: alley)
+//	}
+//}
 
 extension AlleyEditor.Fields {
-	public func model(fromExisting existing: Alley?) -> Alley {
+	public func model(fromExisting existing: Alley.Editable?) -> Alley.Editable {
 		@Dependency(\.uuid) var uuid: UUIDGenerator
 
 		return .init(
-			id: alley?.id ?? uuid(),
-			name: name,
-			address: address.isEmpty ? nil : address,
-			material: material,
-			pinFall: pinFall,
-			mechanism: mechanism,
-			pinBase: pinBase
+			id: existing?.id ?? uuid(),
+			name: alley.name,
+			address: alley.address,
+			material: alley.material,
+			pinFall: alley.pinFall,
+			mechanism: alley.mechanism,
+			pinBase: alley.pinBase
 		)
 	}
 }

@@ -1,7 +1,8 @@
+import AlleysRepositoryInterface
 import BaseFormLibrary
 import ComposableArchitecture
 import FeatureActionLibrary
-import SharedModelsLibrary
+import ModelsLibrary
 import StringsLibrary
 import SwiftUI
 
@@ -9,22 +10,12 @@ public struct AlleyEditorView: View {
 	let store: StoreOf<AlleyEditor>
 
 	struct ViewState: Equatable {
-		@BindingState var name: String
-		@BindingState var address: String
-		@BindingState var material: Alley.Material
-		@BindingState var pinFall: Alley.PinFall
-		@BindingState var mechanism: Alley.Mechanism
-		@BindingState var pinBase: Alley.PinBase
+		@BindingState var alley: Alley.Editable
 		var isLaneEditorPresented: Bool
 		let hasLanesEnabled: Bool
 
 		init(state: AlleyEditor.State) {
-			self.name = state.base.form.name
-			self.address = state.base.form.address
-			self.material = state.base.form.material
-			self.pinFall = state.base.form.pinFall
-			self.mechanism = state.base.form.mechanism
-			self.pinBase = state.base.form.pinBase
+			self.alley = state.base.form.alley
 			self.isLaneEditorPresented = state.isLaneEditorPresented
 			self.hasLanesEnabled = state.hasLanesEnabled
 		}
@@ -62,11 +53,11 @@ public struct AlleyEditorView: View {
 		Section(Strings.Editor.Fields.Details.title) {
 			TextField(
 				Strings.Editor.Fields.Details.name,
-				text: viewStore.binding(\.$name)
+				text: viewStore.binding(\.$alley.name)
 			)
 			TextField(
 				Strings.Editor.Fields.Details.address,
-				text: viewStore.binding(\.$address)
+				text: viewStore.binding(\.$alley.address)
 			)
 			.textContentType(.fullStreetAddress)
 		}
@@ -77,10 +68,11 @@ public struct AlleyEditorView: View {
 		Section {
 			Picker(
 				Strings.Alley.Properties.material,
-				selection: viewStore.binding(\.$material)
+				selection: viewStore.binding(\.$alley.material)
 			) {
+				Text("").tag(nil as Alley.Material?)
 				ForEach(Alley.Material.allCases) {
-					Text(String(describing: $0)).tag($0)
+					Text(String(describing: $0)).tag(Optional($0))
 				}
 			}
 		} footer: {
@@ -93,10 +85,11 @@ public struct AlleyEditorView: View {
 		Section {
 			Picker(
 				Strings.Alley.Properties.pinFall,
-				selection: viewStore.binding(\.$pinFall)
+				selection: viewStore.binding(\.$alley.pinFall)
 			) {
+				Text("").tag(nil as Alley.PinFall?)
 				ForEach(Alley.PinFall.allCases) {
-					Text(String(describing: $0)).tag($0)
+					Text(String(describing: $0)).tag(Optional($0))
 				}
 			}
 		} footer: {
@@ -109,10 +102,11 @@ public struct AlleyEditorView: View {
 		Section {
 			Picker(
 				Strings.Alley.Properties.mechanism,
-				selection: viewStore.binding(\.$mechanism)
+				selection: viewStore.binding(\.$alley.mechanism)
 			) {
+				Text("").tag(nil as Alley.Mechanism?)
 				ForEach(Alley.Mechanism.allCases) {
-					Text(String(describing: $0)).tag($0)
+					Text(String(describing: $0)).tag(Optional($0))
 				}
 			}
 		} footer: {
@@ -125,10 +119,11 @@ public struct AlleyEditorView: View {
 		Section {
 			Picker(
 				Strings.Alley.Properties.pinBase,
-				selection: viewStore.binding(\.$pinBase)
+				selection: viewStore.binding(\.$alley.pinBase)
 			) {
+				Text("").tag(nil as Alley.PinBase?)
 				ForEach(Alley.PinBase.allCases) {
-					Text(String(describing: $0)).tag($0)
+					Text(String(describing: $0)).tag(Optional($0))
 				}
 			}
 		} footer: {
@@ -167,12 +162,7 @@ extension AlleyEditor.State {
 	var view: AlleyEditorView.ViewState {
 		get { .init(state: self) }
 		set {
-			self.base.form.name = newValue.name
-			self.base.form.address = newValue.address
-			self.base.form.material = newValue.material
-			self.base.form.pinFall = newValue.pinFall
-			self.base.form.mechanism = newValue.mechanism
-			self.base.form.pinBase = newValue.pinBase
+			self.base.form.alley = newValue.alley
 		}
 	}
 }

@@ -2,9 +2,9 @@ import AlleyEditorFeature
 import AssetsLibrary
 import ComposableArchitecture
 import FeatureActionLibrary
+import ModelsLibrary
+import ModelsViewsLibrary
 import ResourceListLibrary
-import SharedModelsLibrary
-import SharedModelsViewsLibrary
 import StringsLibrary
 import SwiftUI
 import SwiftUIExtensionsLibrary

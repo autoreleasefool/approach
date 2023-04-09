@@ -11,15 +11,15 @@ supported = [ ".v16" ]
 
 [features.AlleyEditor]
 features = [ "LaneEditor" ]
+repositories = [ "Alleys" ]
 dataProviders = [ "Lanes" ]
 services = [ "Persistence" ]
 libraries = [ "BaseForm", "Extensions", "SharedModelsViews" ]
 
 [features.AlleysList]
 features = [ "AlleyEditor" ]
-dataProviders = [ "Alleys" ]
 services = [ "FeatureFlags" ]
-libraries = [ "ResourceList" ]
+libraries = [ "ModelsViews", "ResourceList" ]
 
 [features.App]
 features = [ "AlleysList", "BowlersList", "GearList", "Settings" ]
@@ -239,6 +239,9 @@ skip_tests = true
 
 [libraries.Models]
 skip_tests = true
+
+[libraries.ModelsViews]
+libraries = [ "Models", "Views" ]
 
 [libraries.Repository]
 libraries = [ "Sorting" ]

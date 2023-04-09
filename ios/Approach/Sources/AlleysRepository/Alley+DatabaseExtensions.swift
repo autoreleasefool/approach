@@ -8,7 +8,7 @@ extension Alley.Editable {
 		.init(
 			id: id,
 			name: name,
-			address: address,
+			address: address.isEmpty ? nil : address,
 			material: material,
 			pinFall: pinFall,
 			mechanism: mechanism,
@@ -37,7 +37,7 @@ extension Alley.Editable {
 		self.init(
 			id: model.id,
 			name: model.name,
-			address: model.address,
+			address: model.address ?? "",
 			material: model.material,
 			pinFall: model.pinFall,
 			mechanism: model.mechanism,

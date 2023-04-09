@@ -1,8 +1,7 @@
-import AlleysDataProviderInterface
+import AlleysRepositoryInterface
 import ComposableArchitecture
 import FeatureActionLibrary
-import SharedModelsFetchableLibrary
-import SharedModelsLibrary
+import ModelsLibrary
 
 public struct AlleysFilter: Reducer {
 	public struct State: Equatable {
@@ -66,14 +65,10 @@ public struct AlleysFilter: Reducer {
 
 extension AlleysFilter.State {
 	public var hasFilters: Bool {
-		filter != nil
+		filter != .init()
 	}
 
-	public var filter: Alley.FetchRequest.Filter? {
-		if material != nil || pinFall != nil || pinBase != nil || mechanism != nil {
-			return .properties(material: material, pinFall: pinFall, pinBase: pinBase, mechanism: mechanism)
-		}
-
-		return nil
+	public var filter: Alley.Filters {
+		.init(material: material, pinFall: pinFall, mechanism: mechanism, pinBase: pinBase)
 	}
 }

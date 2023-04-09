@@ -93,6 +93,7 @@ let package = Package(
 		.library(name: "FeatureFlagsLibrary", targets: ["FeatureFlagsLibrary"]),
 		.library(name: "FoundationExtensionsLibrary", targets: ["FoundationExtensionsLibrary"]),
 		.library(name: "ModelsLibrary", targets: ["ModelsLibrary"]),
+		.library(name: "ModelsViewsLibrary", targets: ["ModelsViewsLibrary"]),
 		.library(name: "RepositoryLibrary", targets: ["RepositoryLibrary"]),
 		.library(name: "ResourceListLibrary", targets: ["ResourceListLibrary"]),
 		.library(name: "ResourcePickerLibrary", targets: ["ResourcePickerLibrary"]),
@@ -121,6 +122,7 @@ let package = Package(
 		.target(
 			name: "AlleyEditorFeature",
 			dependencies: [
+				"AlleysRepositoryInterface",
 				"BaseFormLibrary",
 				"ExtensionsLibrary",
 				"LaneEditorFeature",
@@ -141,8 +143,8 @@ let package = Package(
 			name: "AlleysListFeature",
 			dependencies: [
 				"AlleyEditorFeature",
-				"AlleysDataProviderInterface",
 				"FeatureFlagsServiceInterface",
+				"ModelsViewsLibrary",
 				"ResourceListLibrary",
 			]
 		),
@@ -1061,6 +1063,21 @@ let package = Package(
 		.target(
 			name: "ModelsLibrary",
 			dependencies: []
+		),
+		.target(
+			name: "ModelsViewsLibrary",
+			dependencies: [
+				"ModelsLibrary",
+				"ViewsLibrary",
+			]
+		),
+		.testTarget(
+			name: "ModelsViewsLibraryTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"ModelsViewsLibrary",
+				"SharedModelsMocksLibrary",
+			]
 		),
 		.target(
 			name: "RepositoryLibrary",
