@@ -1,6 +1,7 @@
 import BaseFormLibrary
 import BowlersRepositoryInterface
 import ComposableArchitecture
+import ExtensionsLibrary
 import FeatureActionLibrary
 import Foundation
 import ModelsLibrary
@@ -14,11 +15,11 @@ public struct BowlerEditor: Reducer {
 	public typealias Form = BaseForm<Bowler.Editable, Fields>
 
 	public struct Fields: BaseFormState, Equatable {
-		@BindingState public var name = ""
+		@BindingState public var bowler: Bowler.Editable
 
 		public let isDeleteable = true
 		public var isSaveable: Bool {
-			!name.isEmpty
+			!bowler.name.isEmpty
 		}
 	}
 
@@ -26,9 +27,11 @@ public struct BowlerEditor: Reducer {
 		public var base: Form.State
 
 		public init(mode: Form.Mode) {
-			var fields = Fields()
+			var fields: Fields
 			if case let .edit(bowler) = mode {
-				fields.name = bowler.name
+				fields = .init(bowler: bowler)
+			} else {
+				fields = .init(bowler: .init(id: .placeholder, name: "", status: .playable))
 			}
 
 			self.base = .init(mode: mode, form: fields)
@@ -107,8 +110,8 @@ extension BowlerEditor.Fields {
 
 		return .init(
 			id: existing?.id ?? uuid(),
-			name: name,
-			status: .playable
+			name: bowler.name,
+			status: bowler.status
 		)
 	}
 }

@@ -1,6 +1,8 @@
 import BaseFormLibrary
+import BowlersRepositoryInterface
 import ComposableArchitecture
 import FeatureActionLibrary
+import ModelsLibrary
 import StringsLibrary
 import SwiftUI
 import ViewsLibrary
@@ -9,10 +11,10 @@ public struct BowlerEditorView: View {
 	let store: StoreOf<BowlerEditor>
 
 	struct ViewState: Equatable {
-		@BindingState var name: String
+		@BindingState var bowler: Bowler.Editable
 
 		init(state: BowlerEditor.State) {
-			self.name = state.base.form.name
+			self.bowler = state.base.form.bowler
 		}
 	}
 
@@ -31,7 +33,7 @@ public struct BowlerEditorView: View {
 				Section(Strings.Editor.Fields.Details.title) {
 					TextField(
 						Strings.Editor.Fields.Details.name,
-						text: viewStore.binding(\.$name)
+						text: viewStore.binding(\.$bowler.name)
 					)
 					.textContentType(.name)
 				}
@@ -45,7 +47,7 @@ extension BowlerEditor.State {
 	var view: BowlerEditorView.ViewState {
 		get { .init(state: self) }
 		set {
-			self.base.form.name = newValue.name
+			self.base.form.bowler = newValue.bowler
 		}
 	}
 }

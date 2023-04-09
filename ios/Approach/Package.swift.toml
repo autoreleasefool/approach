@@ -31,7 +31,7 @@ libraries = [ "SharedModelsViews" ]
 
 [features.BowlerEditor]
 repositories = [ "Bowlers" ]
-libraries = [ "BaseForm" ]
+libraries = [ "BaseForm", "Extensions" ]
 
 [features.BowlersList]
 features = [ "BowlerEditor", "LeaguesList", "StatisticsWidgets" ]
@@ -105,6 +105,14 @@ libraries = [ "Constants", "FoundationExtensions" ]
 libraries = [ "Assets", "Strings" ]
 
 # Repositories
+
+[repositories.Alleys]
+services = [ "Database", "RecentlyUsed" ]
+libraries = [ "DatabaseModels" ]
+[repositories.Alleys.interface]
+libraries = [ "Models" ]
+[repositories.Alleys.tests]
+services = [ "Database" ]
 
 [repositories.Bowlers]
 services = [ "Database", "RecentlyUsed" ]

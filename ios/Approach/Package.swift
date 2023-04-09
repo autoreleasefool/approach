@@ -34,6 +34,8 @@ let package = Package(
 		.library(name: "StatisticsWidgetsFeature", targets: ["StatisticsWidgetsFeature"]),
 
 		// MARK: - Repositories
+		.library(name: "AlleysRepository", targets: ["AlleysRepository"]),
+		.library(name: "AlleysRepositoryInterface", targets: ["AlleysRepositoryInterface"]),
 		.library(name: "BowlersRepository", targets: ["BowlersRepository"]),
 		.library(name: "BowlersRepositoryInterface", targets: ["BowlersRepositoryInterface"]),
 
@@ -191,6 +193,7 @@ let package = Package(
 			dependencies: [
 				"BaseFormLibrary",
 				"BowlersRepositoryInterface",
+				"ExtensionsLibrary",
 			]
 		),
 		.testTarget(
@@ -479,6 +482,31 @@ let package = Package(
 		),
 
 		// MARK: - Repositories
+		.target(
+			name: "AlleysRepository",
+			dependencies: [
+				"AlleysRepositoryInterface",
+				"DatabaseModelsLibrary",
+				"DatabaseServiceInterface",
+				"RecentlyUsedServiceInterface",
+				"RepositoryLibrary",
+			]
+		),
+		.target(
+			name: "AlleysRepositoryInterface",
+			dependencies: [
+				.product(name: "Dependencies", package: "swift-dependencies"),
+				"ModelsLibrary",
+			]
+		),
+		.testTarget(
+			name: "AlleysRepositoryTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"AlleysRepository",
+				"DatabaseService",
+			]
+		),
 		.target(
 			name: "BowlersRepository",
 			dependencies: [

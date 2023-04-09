@@ -73,7 +73,7 @@ final class BowlersRepositoryTests: XCTestCase {
 		var iterator = bowlers.makeAsyncIterator()
 		let fetched = try await iterator.next()
 
-		// Returns the bowlers sorted by name
+		// Returns the bowlers sorted by recently used ids
 		XCTAssertEqual(fetched, [.init(bowler1), .init(bowler2)])
 	}
 
@@ -200,7 +200,7 @@ final class BowlersRepositoryTests: XCTestCase {
 		}
 
 		// Returns the bowler
-		XCTAssertEqual(editable, .init(id: id1, name: "Joseph", status: .playable))
+		XCTAssertEqual(editable, .init(bowler))
 	}
 
 	func testEdit_WhenBowlerNotExists_ReturnsNil() async throws {

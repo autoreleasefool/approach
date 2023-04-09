@@ -16,6 +16,7 @@ extension DatabaseMigrator {
 		#endif
 
 		registerMigration(Migration20230325CreateBowler.self)
+		registerMigration(Migration20230408CreateAlley.self)
 
 		try migrate(writer)
 	}

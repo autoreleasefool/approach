@@ -15,6 +15,7 @@
 		CA2E6A7129BAA6D500CCA917 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA2E6A7029BAA6D500CCA917 /* File.swift */; };
 		CA2E6A7329BAA6DC00CCA917 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA2E6A7229BAA6DC00CCA917 /* File.swift */; };
 		CA318B402999E1F500BD4BEC /* AnalyticsService in Frameworks */ = {isa = PBXBuildFile; productRef = CA318B3F2999E1F500BD4BEC /* AnalyticsService */; };
+		CA439E5029E2949400B09020 /* AlleysRepository in Frameworks */ = {isa = PBXBuildFile; productRef = CA439E4F29E2949400B09020 /* AlleysRepository */; };
 		CA632F5829BD26E200272ADB /* GameEditorPreviewApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA632F5729BD26E200272ADB /* GameEditorPreviewApp.swift */; };
 		CA632F5C29BD26E300272ADB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CA632F5B29BD26E300272ADB /* Assets.xcassets */; };
 		CA632F6629BD293E00272ADB /* GamesEditorFeature in Frameworks */ = {isa = PBXBuildFile; productRef = CA632F6529BD293E00272ADB /* GamesEditorFeature */; };
@@ -132,6 +133,7 @@
 				CA94DD642900B3AC00B81A87 /* FileManagerService in Frameworks */,
 				CAC56851291F54A100192D12 /* PreferenceService in Frameworks */,
 				CAC13AB129205E5100DD36A5 /* LeaguesDataProvider in Frameworks */,
+				CA439E5029E2949400B09020 /* AlleysRepository in Frameworks */,
 				CACA8A5829C616850075A6C1 /* ScoringService in Frameworks */,
 				CA2890E328F8DA53003C1EE9 /* PersistenceService in Frameworks */,
 				CA681DEE29B94BE900535750 /* AvatarService in Frameworks */,
@@ -386,6 +388,7 @@
 				CABEC0CE29CBF9CD003CF669 /* AddressLookupService */,
 				CAA3D74C29CFB48D00876EDC /* BowlersRepository */,
 				CAA3D74E29CFB49200876EDC /* DatabaseService */,
+				CA439E4F29E2949400B09020 /* AlleysRepository */,
 			);
 			productName = Approach;
 			productReference = CA8BBC5528D59B8B00653A1E /* Approach.app */;
@@ -1049,6 +1052,10 @@
 		CA318B3F2999E1F500BD4BEC /* AnalyticsService */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AnalyticsService;
+		};
+		CA439E4F29E2949400B09020 /* AlleysRepository */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = AlleysRepository;
 		};
 		CA632F6529BD293E00272ADB /* GamesEditorFeature */ = {
 			isa = XCSwiftPackageProductDependency;
