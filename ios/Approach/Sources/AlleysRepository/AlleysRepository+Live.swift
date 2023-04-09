@@ -14,12 +14,11 @@ extension AlleysRepository: DependencyKey {
 				@Dependency(\.database) var database
 
 				let alleys = database.reader().observe {
-					try Alley.DatabaseModel
+					try Alley.Summary
 						.all()
 						.orderByName()
 						.filter(by: request.filter)
 						.fetchAll($0)
-						.map(Alley.Summary.init)
 				}
 
 				switch request.ordering {
@@ -33,19 +32,19 @@ extension AlleysRepository: DependencyKey {
 			load: { id in
 				@Dependency(\.database) var database
 				return database.reader().observeOne {
-					try Alley.DatabaseModel.fetchOne($0, id: id).map(Alley.Summary.init)
+					try Alley.Summary.fetchOne($0, id: id)
 				}
 			},
 			edit: { id in
 				@Dependency(\.database) var database
 				return try await database.reader().read {
-					try .init(Alley.DatabaseModel.fetchOne($0, id: id))
+					try Alley.Editable.fetchOne($0, id: id)
 				}
 			},
 			save: { alley in
 				@Dependency(\.database) var database
 				return try await database.writer().write {
-					try alley.databaseModel.save($0)
+					try alley.save($0)
 				}
 			},
 			delete: { id in

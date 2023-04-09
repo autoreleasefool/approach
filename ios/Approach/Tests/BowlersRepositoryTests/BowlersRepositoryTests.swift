@@ -31,7 +31,7 @@ final class BowlersRepositoryTests: XCTestCase {
 		let fetched = try await iterator.next()
 
 		// Returns only the playable bowler
-		XCTAssertEqual(fetched, [.init(bowler1)])
+		XCTAssertEqual(fetched, [.init(id: id1, name: "Joseph")])
 	}
 
 	func testPlayable_SortsByName() async throws {
@@ -50,7 +50,7 @@ final class BowlersRepositoryTests: XCTestCase {
 		let fetched = try await iterator.next()
 
 		// Returns the bowlers sorted by name
-		XCTAssertEqual(fetched, [.init(bowler2), .init(bowler1)])
+		XCTAssertEqual(fetched, [.init(id: id2, name: "Audriana"), .init(id: id1, name: "Joseph")])
 	}
 
 	func testPlayable_SortedByRecentlyUsed_SortsByRecentlyUsed() async throws {
@@ -74,7 +74,7 @@ final class BowlersRepositoryTests: XCTestCase {
 		let fetched = try await iterator.next()
 
 		// Returns the bowlers sorted by recently used ids
-		XCTAssertEqual(fetched, [.init(bowler1), .init(bowler2)])
+		XCTAssertEqual(fetched, [.init(id: id1, name: "Joseph"), .init(id: id2, name: "Audriana")])
 	}
 
 	func testOpponents_ReturnsPlayablesAndOpponents() async throws {
@@ -93,7 +93,7 @@ final class BowlersRepositoryTests: XCTestCase {
 		let fetched = try await iterator.next()
 
 		// Returns both bowlers
-		XCTAssertEqual(fetched, [.init(bowler1), .init(bowler2)])
+		XCTAssertEqual(fetched, [.init(id: id1, name: "Joseph"), .init(id: id2, name: "Sarah")])
 	}
 
 	func testOpponents_SortsByName() async throws {
@@ -112,7 +112,7 @@ final class BowlersRepositoryTests: XCTestCase {
 		let fetched = try await iterator.next()
 
 		// Returns the opponents sorted by name
-		XCTAssertEqual(fetched, [.init(bowler2), .init(bowler1)])
+		XCTAssertEqual(fetched, [.init(id: id2, name: "Audriana"), .init(id: id1, name: "Joseph")])
 	}
 
 	func testOpponents_SortedByRecentlyUsed_SortsByRecentlyUsed() async throws {
@@ -137,7 +137,7 @@ final class BowlersRepositoryTests: XCTestCase {
 		let fetched = try await iterator.next()
 
 		// Returns the opponents sorted by recently used
-		XCTAssertEqual(fetched, [.init(bowler1), .init(bowler2)])
+		XCTAssertEqual(fetched, [.init(id: id1, name: "Joseph"), .init(id: id2, name: "Audriana")])
 	}
 
 	func testSave_WhenBowlerExists_UpdatesBowler() async throws {
@@ -176,9 +176,9 @@ final class BowlersRepositoryTests: XCTestCase {
 			try await BowlersRepository.liveValue.save(editable)
 		}
 
-		// Inserted a record
-		let count = try await db.read { try Bowler.DatabaseModel.fetchCount($0) }
-		XCTAssertEqual(count, 1)
+		// Inserted the record
+		let exists = try await db.read { try Bowler.DatabaseModel.exists($0, id: self.id1) }
+		XCTAssertTrue(exists)
 
 		// Updates the database
 		let updated = try await db.read { try Bowler.DatabaseModel.fetchOne($0, id: self.id1) }
@@ -200,7 +200,7 @@ final class BowlersRepositoryTests: XCTestCase {
 		}
 
 		// Returns the bowler
-		XCTAssertEqual(editable, .init(bowler))
+		XCTAssertEqual(editable, .init(id: id1, name: "Joseph", status: .playable))
 	}
 
 	func testEdit_WhenBowlerNotExists_ReturnsNil() async throws {
@@ -232,12 +232,12 @@ final class BowlersRepositoryTests: XCTestCase {
 		}
 
 		// Updates the database
-		let deleted = try await db.read { try Bowler.DatabaseModel.fetchOne($0, id: self.id1) }
-		XCTAssertNil(deleted)
+		let deletedExists = try await db.read { try Bowler.DatabaseModel.exists($0, id: self.id1) }
+		XCTAssertFalse(deletedExists)
 
 		// And leaves the other bowler intact
-		let count = try await db.read { try Bowler.DatabaseModel.fetchCount($0) }
-		XCTAssertEqual(count, 1)
+		let otherExists = try await db.read { try Bowler.DatabaseModel.exists($0, id: self.id1) }
+		XCTAssertTrue(otherExists)
 	}
 
 	func testDelete_WhenIdNotExists_DoesNothing() async throws {
@@ -253,8 +253,8 @@ final class BowlersRepositoryTests: XCTestCase {
 		}
 
 		// Leaves the bowler
-		let count = try await db.read { try Bowler.DatabaseModel.fetchCount($0) }
-		XCTAssertEqual(count, 1)
+		let exists = try await db.read { try Bowler.DatabaseModel.exists($0, id: self.id1) }
+		XCTAssertTrue(exists)
 	}
 
 	private func initializeDatabase(

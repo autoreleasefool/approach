@@ -1,6 +1,7 @@
 import BaseFormLibrary
 import BowlersDataProviderInterface
 import ComposableArchitecture
+import ExtensionsLibrary
 import FeatureActionLibrary
 import FeatureFlagsLibrary
 import FeatureFlagsServiceInterface
@@ -171,14 +172,7 @@ public struct GearEditor: Reducer {
 }
 
 extension GearEditor.Fields {
-	public func model(fromExisting existing: Gear?) -> Gear {
-		@Dependency(\.uuid) var uuid: UUIDGenerator
-
-		return .init(
-			bowler: bowlerPicker.selected.first,
-			id: existing?.id ?? uuid(),
-			name: name,
-			kind: kind
-		)
+	public var model: Gear {
+		.init(bowler: bowlerPicker.selected.first, id: .placeholder, name: name, kind: kind)
 	}
 }

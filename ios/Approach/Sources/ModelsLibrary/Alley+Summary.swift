@@ -1,5 +1,5 @@
 extension Alley {
-	public struct Summary: Identifiable, Equatable {
+	public struct Summary: Identifiable, Codable, Equatable {
 		public let id: Alley.ID
 		public let name: String
 		public let address: String?

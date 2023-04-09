@@ -2,6 +2,7 @@ import AlleysDataProviderInterface
 import BaseFormLibrary
 import ComposableArchitecture
 import DateTimeLibrary
+import ExtensionsLibrary
 import FeatureActionLibrary
 import Foundation
 import LanesDataProviderInterface
@@ -278,8 +279,7 @@ public struct SeriesEditor: Reducer {
 }
 
 extension SeriesEditor.Fields {
-	public func model(fromExisting existing: Series?) -> Series {
-		@Dependency(\.uuid) var uuid: UUIDGenerator
+	public var model: Series {
 		let shouldExcludeFromStatistics: Series.ExcludeFromStatistics
 		switch league.excludeFromStatistics {
 		case .include:
@@ -290,7 +290,7 @@ extension SeriesEditor.Fields {
 
 		return .init(
 			league: league.id,
-			id: existing?.id ?? uuid(),
+			id: .placeholder,
 			date: date,
 			numberOfGames: numberOfGames,
 			preBowl: preBowl,

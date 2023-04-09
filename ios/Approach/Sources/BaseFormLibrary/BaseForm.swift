@@ -10,10 +10,10 @@ public protocol BaseFormModel: Equatable {
 public protocol BaseFormState: Equatable {
 	associatedtype Model: BaseFormModel
 
+	var model: Model { get }
 	var isSaveable: Bool { get }
 	var isDeleteable: Bool { get }
 	var saveButtonText: String { get }
-	func model(fromExisting: Model?) -> Model
 	func hasChanges(from: Self) -> Bool
 }
 
@@ -106,17 +106,15 @@ public struct BaseForm<Model: BaseFormModel, FormState: BaseFormState>: Reducer 
 					state.isLoading = true
 
 					switch state.mode {
-					case let .edit(original):
-						let model = state.form.model(fromExisting: original)
-						return .task {
+					case .edit:
+						return .task { [model = state.form.model] in
 							await .internal(.saveModelResult(TaskResult {
 								try await modelPersistence.save(model)
 								return model
 							}))
 						}
 					case .create:
-						let model = state.form.model(fromExisting: nil)
-						return .task {
+						return .task { [model = state.form.model] in
 							await .internal(.saveModelResult(TaskResult {
 								try await modelPersistence.save(model)
 								return model

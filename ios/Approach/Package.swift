@@ -279,6 +279,7 @@ let package = Package(
 				"AvatarServiceInterface",
 				"BaseFormLibrary",
 				"BowlersDataProviderInterface",
+				"ExtensionsLibrary",
 				"FeatureFlagsServiceInterface",
 				"PersistenceServiceInterface",
 				"ResourcePickerLibrary",
@@ -333,6 +334,7 @@ let package = Package(
 			dependencies: [
 				"AlleysDataProviderInterface",
 				"BaseFormLibrary",
+				"ExtensionsLibrary",
 				"PersistenceServiceInterface",
 				"ResourcePickerLibrary",
 				"SharedModelsViewsLibrary",
@@ -368,6 +370,7 @@ let package = Package(
 			name: "OpponentEditorFeature",
 			dependencies: [
 				"BaseFormLibrary",
+				"ExtensionsLibrary",
 				"PersistenceServiceInterface",
 			]
 		),
@@ -418,6 +421,7 @@ let package = Package(
 			dependencies: [
 				"AlleysDataProviderInterface",
 				"BaseFormLibrary",
+				"ExtensionsLibrary",
 				"LanesDataProviderInterface",
 				"PersistenceServiceInterface",
 				"ResourcePickerLibrary",

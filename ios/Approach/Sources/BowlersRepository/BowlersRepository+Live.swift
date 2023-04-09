@@ -29,12 +29,11 @@ extension BowlersRepository: DependencyKey {
 				@Dependency(\.database) var database
 
 				let bowlers = database.reader().observe {
-					try Bowler.DatabaseModel
+					try Bowler.Summary
 						.all()
 						.orderByName()
 						.filter(byStatus: .playable)
 						.fetchAll($0)
-						.map(Bowler.Summary.init)
 				}
 
 				return sortBowlers(bowlers, ordering: request.ordering)
@@ -43,11 +42,10 @@ extension BowlersRepository: DependencyKey {
 				@Dependency(\.database) var database
 
 				let opponents = database.reader().observe {
-					try Bowler.DatabaseModel
+					try Bowler.Summary
 						.all()
 						.orderByName()
 						.fetchAll($0)
-						.map(Bowler.Summary.init)
 				}
 
 				return sortBowlers(opponents, ordering: request.ordering)
@@ -55,13 +53,13 @@ extension BowlersRepository: DependencyKey {
 			edit: { id in
 				@Dependency(\.database) var database
 				return try await database.reader().read {
-					try .init(Bowler.DatabaseModel.fetchOne($0, id: id))
+					try Bowler.Editable.fetchOne($0, id: id)
 				}
 			},
 			save: { bowler in
 				@Dependency(\.database) var database
 				return try await database.writer().write {
-					try bowler.databaseModel.save($0)
+					try bowler.save($0)
 				}
 			},
 			delete: { id in

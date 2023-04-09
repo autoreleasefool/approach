@@ -1,5 +1,6 @@
 import BaseFormLibrary
 import ComposableArchitecture
+import ExtensionsLibrary
 import FeatureActionLibrary
 import Foundation
 import PersistenceServiceInterface
@@ -100,12 +101,7 @@ public struct OpponentEditor: Reducer {
 }
 
 extension OpponentEditor.Fields {
-	public func model(fromExisting existing: Opponent?) -> Opponent {
-		@Dependency(\.uuid) var uuid: UUIDGenerator
-
-		return .init(
-			id: existing?.id ?? uuid(),
-			name: name
-		)
+	public var model: Opponent {
+		.init(id: .placeholder, name: name)
 	}
 }

@@ -1,7 +1,7 @@
 import ModelsLibrary
 
 extension Bowler {
-	public struct Editable: Equatable {
+	public struct Editable: Identifiable, Codable, Equatable {
 		public let id: Bowler.ID
 		public var name: String
 		public var status: Bowler.Status

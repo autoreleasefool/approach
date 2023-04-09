@@ -57,7 +57,10 @@ public struct AlleyEditorView: View {
 			)
 			TextField(
 				Strings.Editor.Fields.Details.address,
-				text: viewStore.binding(\.$alley.address)
+				text: viewStore.binding(
+					get: { $0.alley.address ?? "" },
+					send: { ViewAction.set(\.$alley.address, $0) }
+				)
 			)
 			.textContentType(.fullStreetAddress)
 		}

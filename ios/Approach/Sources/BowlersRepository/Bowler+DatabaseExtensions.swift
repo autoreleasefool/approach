@@ -3,30 +3,15 @@ import DatabaseModelsLibrary
 import GRDB
 import ModelsLibrary
 
-extension Bowler.Editable {
-	var databaseModel: Bowler.DatabaseModel {
-		.init(
-			id: id,
-			name: name,
-			status: status
-		)
-	}
+extension Bowler.Editable: PersistableRecord, FetchableRecord {
+	public static let databaseTableName = Bowler.DatabaseModel.databaseTableName
 }
 
-extension Bowler.Summary {
-	init(_ model: Bowler.DatabaseModel) {
-		self.init(id: model.id, name: model.name)
-	}
+extension Bowler.Summary: TableRecord, FetchableRecord {
+	public static let databaseTableName = Bowler.DatabaseModel.databaseTableName
 }
 
-extension Bowler.Editable {
-	init?(_ model: Bowler.DatabaseModel?) {
-		guard let model else { return nil }
-		self.init(id: model.id, name: model.name, status: model.status)
-	}
-}
-
-extension DerivableRequest<Bowler.DatabaseModel> {
+extension DerivableRequest<Bowler.Summary> {
 	func orderByName() -> Self {
 		let name = Bowler.DatabaseModel.Columns.name
 		return order(name.collating(.localizedCaseInsensitiveCompare))

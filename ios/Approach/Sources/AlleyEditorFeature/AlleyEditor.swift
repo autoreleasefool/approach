@@ -19,6 +19,7 @@ public struct AlleyEditor: Reducer {
 		@BindingState public var alley: Alley.Editable
 		public var laneEditor: AlleyLanesEditor.State
 
+		public var model: Alley.Editable { alley }
 		public let isDeleteable = true
 		public var isSaveable: Bool {
 			!alley.name.isEmpty
@@ -43,9 +44,10 @@ public struct AlleyEditor: Reducer {
 				// TODO: need to pass actual alley to editor
 				self.alleyLanes = .init(alley: nil)
 			case .create:
+				@Dependency(\.uuid) var uuid: UUIDGenerator
 				fields = .init(
 					alley: .init(
-						id: .placeholder,
+						id: uuid(),
 						name: "",
 						address: "",
 						material: nil,
@@ -189,19 +191,3 @@ public struct AlleyEditor: Reducer {
 //		.init(id: id, label: label, isAgainstWall: isAgainstWall, alley: alley)
 //	}
 //}
-
-extension AlleyEditor.Fields {
-	public func model(fromExisting existing: Alley.Editable?) -> Alley.Editable {
-		@Dependency(\.uuid) var uuid: UUIDGenerator
-
-		return .init(
-			id: existing?.id ?? uuid(),
-			name: alley.name,
-			address: alley.address,
-			material: alley.material,
-			pinFall: alley.pinFall,
-			mechanism: alley.mechanism,
-			pinBase: alley.pinBase
-		)
-	}
-}

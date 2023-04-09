@@ -204,9 +204,9 @@ final class AlleysRepositoryTests: XCTestCase {
 			try await AlleysRepository.liveValue.save(editable)
 		}
 
-		// Inserted a record
-		let count = try await db.read { try Alley.DatabaseModel.fetchCount($0) }
-		XCTAssertEqual(count, 1)
+		// Inserted the record
+		let exists = try await db.read { try Alley.DatabaseModel.exists($0, id: self.id1) }
+		XCTAssertTrue(exists)
 
 		// Updates the database
 		let updated = try await db.read { try Alley.DatabaseModel.fetchOne($0, id: self.id1) }
@@ -229,7 +229,10 @@ final class AlleysRepositoryTests: XCTestCase {
 		}
 
 		// Returns the alley
-		XCTAssertEqual(alley, .init(alley1))
+		XCTAssertEqual(
+			alley,
+			.init(id: id1, name: "Grandview", address: "", material: .wood, pinFall: nil, mechanism: nil, pinBase: nil)
+		)
 	}
 
 	func testEdit_WhenAlleyNotExists_ReturnsNil() async throws {
@@ -261,12 +264,12 @@ final class AlleysRepositoryTests: XCTestCase {
 		}
 
 		// Updates the database
-		let deleted = try await db.read { try Alley.DatabaseModel.fetchOne($0, id: self.id1) }
-		XCTAssertNil(deleted)
+		let deletedExists = try await db.read { try Alley.DatabaseModel.exists($0, id: self.id1) }
+		XCTAssertFalse(deletedExists)
 
 		// And leaves the other alley intact
-		let count = try await db.read { try Alley.DatabaseModel.fetchCount($0) }
-		XCTAssertEqual(count, 1)
+		let otherExists = try await db.read { try Alley.DatabaseModel.exists($0, id: self.id2) }
+		XCTAssertTrue(otherExists)
 	}
 
 	func testDelete_WhenIdNotExists_DoesNothing() async throws {
@@ -282,8 +285,8 @@ final class AlleysRepositoryTests: XCTestCase {
 		}
 
 		// Leaves the alley
-		let count = try await db.read { try Alley.DatabaseModel.fetchCount($0) }
-		XCTAssertEqual(count, 1)
+		let exists = try await db.read { try Alley.DatabaseModel.exists($0, id: self.id1) }
+		XCTAssertTrue(exists)
 	}
 
 	private func initializeDatabase(
@@ -321,6 +324,20 @@ extension Alley.DatabaseModel {
 			pinFall: pinFall,
 			mechanism: mechanism,
 			pinBase: pinBase
+		)
+	}
+}
+
+extension Alley.Summary {
+	init(_ from: Alley.DatabaseModel) {
+		self.init(
+			id: from.id,
+			name: from.name,
+			address: from.address,
+			material: from.material,
+			pinFall: from.pinFall,
+			mechanism: from.mechanism,
+			pinBase: from.pinBase
 		)
 	}
 }

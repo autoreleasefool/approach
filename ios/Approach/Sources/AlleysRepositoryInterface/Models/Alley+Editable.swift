@@ -1,10 +1,10 @@
 import ModelsLibrary
 
 extension Alley {
-	public struct Editable: Identifiable, Equatable {
+	public struct Editable: Identifiable, Codable, Equatable {
 		public let id: Alley.ID
 		public var name: String
-		public var address: String
+		public var address: String?
 		public var material: Material?
 		public var pinFall: PinFall?
 		public var mechanism: Mechanism?
@@ -13,7 +13,7 @@ extension Alley {
 		public init(
 			id: Alley.ID,
 			name: String,
-			address: String,
+			address: String?,
 			material: Material?,
 			pinFall: PinFall?,
 			mechanism: Mechanism?,

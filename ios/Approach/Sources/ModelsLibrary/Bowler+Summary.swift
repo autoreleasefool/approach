@@ -1,5 +1,5 @@
 extension Bowler {
-	public struct Summary: Identifiable, Equatable {
+	public struct Summary: Identifiable, Decodable, Equatable {
 		public let id: Bowler.ID
 		public let name: String
 

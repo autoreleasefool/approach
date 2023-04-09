@@ -17,6 +17,7 @@ public struct BowlerEditor: Reducer {
 	public struct Fields: BaseFormState, Equatable {
 		@BindingState public var bowler: Bowler.Editable
 
+		public var model: Bowler.Editable { bowler }
 		public let isDeleteable = true
 		public var isSaveable: Bool {
 			!bowler.name.isEmpty
@@ -31,7 +32,8 @@ public struct BowlerEditor: Reducer {
 			if case let .edit(bowler) = mode {
 				fields = .init(bowler: bowler)
 			} else {
-				fields = .init(bowler: .init(id: .placeholder, name: "", status: .playable))
+				@Dependency(\.uuid) var uuid: UUIDGenerator
+				fields = .init(bowler: .init(id: uuid(), name: "", status: .playable))
 			}
 
 			self.base = .init(mode: mode, form: fields)
@@ -101,17 +103,5 @@ public struct BowlerEditor: Reducer {
 				return .none
 			}
 		}
-	}
-}
-
-extension BowlerEditor.Fields {
-	public func model(fromExisting existing: Bowler.Editable?) -> Bowler.Editable {
-		@Dependency(\.uuid) var uuid: UUIDGenerator
-
-		return .init(
-			id: existing?.id ?? uuid(),
-			name: bowler.name,
-			status: bowler.status
-		)
 	}
 }

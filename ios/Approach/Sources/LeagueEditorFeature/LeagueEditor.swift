@@ -1,6 +1,7 @@
 import AlleysDataProviderInterface
 import BaseFormLibrary
 import ComposableArchitecture
+import ExtensionsLibrary
 import FeatureActionLibrary
 import PersistenceServiceInterface
 import ResourcePickerLibrary
@@ -202,9 +203,7 @@ public struct LeagueEditor: Reducer {
 }
 
 extension LeagueEditor.Fields {
-	public func model(fromExisting existing: League?) -> League {
-		@Dependency(\.uuid) var uuid: UUIDGenerator
-
+	public var model: League {
 		let numberOfGames = gamesPerSeries == .static ? self.numberOfGames : nil
 		let additionalGames = hasAdditionalPinfall ? Int(additionalGames) : nil
 		let additionalPinfall: Int?
@@ -216,7 +215,7 @@ extension LeagueEditor.Fields {
 
 		return .init(
 			bowler: bowler,
-			id: existing?.id ?? uuid(),
+			id: .placeholder,
 			name: name,
 			recurrence: recurrence,
 			numberOfGames: numberOfGames,
