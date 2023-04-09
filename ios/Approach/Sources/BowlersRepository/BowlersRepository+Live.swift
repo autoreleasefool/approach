@@ -63,6 +63,12 @@ extension BowlersRepository: DependencyKey {
 				return try await database.writer().write {
 					try bowler.databaseModel.save($0)
 				}
+			},
+			delete: { id in
+				@Dependency(\.database) var database
+				return try await database.writer().write {
+					try Bowler.DatabaseModel.deleteOne($0, id: id)
+				}
 			}
 		)
 	}()

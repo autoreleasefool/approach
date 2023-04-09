@@ -218,6 +218,45 @@ final class BowlersRepositoryTests: XCTestCase {
 		XCTAssertNil(editable)
 	}
 
+	func testDelete_WhenIdExists_DeletesBowler() async throws {
+		// Given a database with 2 bowlers
+		let bowler1 = Bowler.DatabaseModel(id: id1, name: "Joseph", status: .playable)
+		let bowler2 = Bowler.DatabaseModel(id: id2, name: "Sarah", status: .opponent)
+		let db = try await initializeDatabase(inserting: [bowler1, bowler2])
+
+		// Deleting the first bowler
+		try await withDependencies {
+			$0.database.writer = { db }
+		} operation: {
+			try await BowlersRepository.liveValue.delete(self.id1)
+		}
+
+		// Updates the database
+		let deleted = try await db.read { try Bowler.DatabaseModel.fetchOne($0, id: self.id1) }
+		XCTAssertNil(deleted)
+
+		// And leaves the other bowler intact
+		let count = try await db.read { try Bowler.DatabaseModel.fetchCount($0) }
+		XCTAssertEqual(count, 1)
+	}
+
+	func testDelete_WhenIdNotExists_DoesNothing() async throws {
+		// Given a database with 1
+		let bowler1 = Bowler.DatabaseModel(id: id1, name: "Joseph", status: .playable)
+		let db = try await initializeDatabase(inserting: [bowler1])
+
+		// Deleting a non-existent bowler
+		try await withDependencies {
+			$0.database.writer = { db }
+		} operation: {
+			try await BowlersRepository.liveValue.delete(self.id2)
+		}
+
+		// Leaves the bowler
+		let count = try await db.read { try Bowler.DatabaseModel.fetchCount($0) }
+		XCTAssertEqual(count, 1)
+	}
+
 	private func initializeDatabase(
 		inserting bowlers: [Bowler.DatabaseModel] = []
 	) async throws -> any DatabaseWriter {
