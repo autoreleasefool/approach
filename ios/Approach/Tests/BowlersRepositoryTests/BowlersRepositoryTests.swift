@@ -6,6 +6,7 @@ import Dependencies
 import GRDB
 import ModelsLibrary
 import RecentlyUsedServiceInterface
+import TestUtilitiesLibrary
 import XCTest
 
 @MainActor
@@ -140,40 +141,42 @@ final class BowlersRepositoryTests: XCTestCase {
 		XCTAssertEqual(fetched, [.init(id: id1, name: "Joseph"), .init(id: id2, name: "Audriana")])
 	}
 
-	func testSave_WhenBowlerExists_UpdatesBowler() async throws {
+	func testCreate_WhenBowlerExists_ThrowsError() async throws {
 		// Given a database with an existing bowler
 		let bowler1 = Bowler.DatabaseModel(id: id1, name: "Joseph", status: .opponent)
 		let db = try await initializeDatabase(inserting: [bowler1])
 
-		// Editing the bowler
-		let editable = Bowler.Editable(id: id1, name: "Joe", status: .playable)
-		try await withDependencies {
-			$0.database.writer = { db }
-		} operation: {
-			try await BowlersRepository.liveValue.save(editable)
+		// Create the bowler
+		await assertThrowsError {
+			let create = Bowler.Create(id: id1, name: "Joe", status: .playable)
+			try await withDependencies {
+				$0.database.writer = { db }
+			} operation: {
+				try await BowlersRepository.liveValue.create(create)
+			}
 		}
-
-		// Updates the database
-		let updated = try await db.read { try Bowler.DatabaseModel.fetchOne($0, id: self.id1) }
-		XCTAssertEqual(updated?.id, id1)
-		XCTAssertEqual(updated?.name, "Joe")
-		XCTAssertEqual(updated?.status, .playable)
 
 		// Does not insert any records
 		let count = try await db.read { try Bowler.DatabaseModel.fetchCount($0) }
 		XCTAssertEqual(count, 1)
+
+		// Does not update the database
+		let updated = try await db.read { try Bowler.DatabaseModel.fetchOne($0, id: self.id1) }
+		XCTAssertEqual(updated?.id, id1)
+		XCTAssertEqual(updated?.name, "Joseph")
+		XCTAssertEqual(updated?.status, .opponent)
 	}
 
-	func testSave_WhenBowlerNotExists_SavesNewBowler() async throws {
+	func testCreate_WhenBowlerNotExists_CreatesBowler() async throws {
 		// Given a database with no bowlers
 		let db = try await initializeDatabase(inserting: [])
 
-		// Saving a bowler
-		let editable = Bowler.Editable(id: id1, name: "Joe", status: .playable)
+		// Creating a bowler
+		let create = Bowler.Create(id: id1, name: "Joe", status: .playable)
 		try await withDependencies {
 			$0.database.writer = { db }
 		} operation: {
-			try await BowlersRepository.liveValue.save(editable)
+			try await BowlersRepository.liveValue.create(create)
 		}
 
 		// Inserted the record
@@ -185,6 +188,49 @@ final class BowlersRepositoryTests: XCTestCase {
 		XCTAssertEqual(updated?.id, id1)
 		XCTAssertEqual(updated?.name, "Joe")
 		XCTAssertEqual(updated?.status, .playable)
+	}
+
+	func testUpdate_WhenBowlerExists_UpdatesBowler() async throws {
+		// Given a database with an existing bowler
+		let bowler1 = Bowler.DatabaseModel(id: id1, name: "Joseph", status: .opponent)
+		let db = try await initializeDatabase(inserting: [bowler1])
+
+		// Editing the bowler
+		let editable = Bowler.Edit(id: id1, name: "Joe")
+		try await withDependencies {
+			$0.database.writer = { db }
+		} operation: {
+			try await BowlersRepository.liveValue.update(editable)
+		}
+
+		// Updates the database
+		let updated = try await db.read { try Bowler.DatabaseModel.fetchOne($0, id: self.id1) }
+		XCTAssertEqual(updated?.id, id1)
+		XCTAssertEqual(updated?.name, "Joe")
+		XCTAssertEqual(updated?.status, .opponent)
+
+		// Does not insert any records
+		let count = try await db.read { try Bowler.DatabaseModel.fetchCount($0) }
+		XCTAssertEqual(count, 1)
+	}
+
+	func testUpdate_WhenBowlerNotExists_ThrowError() async throws {
+		// Given a database with no bowlers
+		let db = try await initializeDatabase(inserting: [])
+
+		// Updating a bowler
+		await assertThrowsError {
+			let editable = Bowler.Edit(id: id1, name: "Joe")
+			try await withDependencies {
+				$0.database.writer = { db }
+			} operation: {
+				try await BowlersRepository.liveValue.update(editable)
+			}
+		}
+
+		// Does not insert any records
+		let count = try await db.read { try Bowler.DatabaseModel.fetchCount($0) }
+		XCTAssertEqual(count, 0)
 	}
 
 	func testEdit_WhenBowlerExists_ReturnsBowler() async throws {
@@ -200,7 +246,7 @@ final class BowlersRepositoryTests: XCTestCase {
 		}
 
 		// Returns the bowler
-		XCTAssertEqual(editable, .init(id: id1, name: "Joseph", status: .playable))
+		XCTAssertEqual(editable, .init(id: id1, name: "Joseph"))
 	}
 
 	func testEdit_WhenBowlerNotExists_ReturnsNil() async throws {

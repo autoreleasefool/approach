@@ -3,7 +3,11 @@ import DatabaseModelsLibrary
 import GRDB
 import ModelsLibrary
 
-extension Bowler.Editable: PersistableRecord, FetchableRecord {
+extension Bowler.Edit: PersistableRecord, FetchableRecord {
+	public static let databaseTableName = Bowler.DatabaseModel.databaseTableName
+}
+
+extension Bowler.Create: PersistableRecord, FetchableRecord {
 	public static let databaseTableName = Bowler.DatabaseModel.databaseTableName
 }
 

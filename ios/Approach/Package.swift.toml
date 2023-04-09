@@ -109,6 +109,8 @@ services = [ "RecentlyUsed" ]
 
 [repositories.Bowlers]
 services = [ "RecentlyUsed" ]
+[repositories.Bowlers.tests]
+libraries = [ "TestUtilities" ]
 
 [repositories.Leagues]
 services = [ "RecentlyUsed" ]
@@ -272,6 +274,10 @@ libraries = [ "FeatureAction", "SwiftUIExtensions", "Views" ]
 skip_tests = true
 
 [libraries.SwiftUIExtensions]
+
+[libraries.TestUtilities]
+suitable_for_dependents_matching = "\\w+Tests$"
+skip_tests = true
 
 [libraries.Views]
 libraries = [ "Assets", "Strings" ]

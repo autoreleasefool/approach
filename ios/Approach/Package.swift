@@ -110,6 +110,7 @@ let package = Package(
 		.library(name: "SortingLibrary", targets: ["SortingLibrary"]),
 		.library(name: "StringsLibrary", targets: ["StringsLibrary"]),
 		.library(name: "SwiftUIExtensionsLibrary", targets: ["SwiftUIExtensionsLibrary"]),
+		.library(name: "TestUtilitiesLibrary", targets: ["TestUtilitiesLibrary"]),
 		.library(name: "ViewsLibrary", targets: ["ViewsLibrary"]),
 	],
 	dependencies: [
@@ -539,6 +540,7 @@ let package = Package(
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"BowlersRepository",
 				"DatabaseService",
+				"TestUtilitiesLibrary",
 			]
 		),
 		.target(
@@ -1298,6 +1300,10 @@ let package = Package(
 				"SharedModelsMocksLibrary",
 				"SwiftUIExtensionsLibrary",
 			]
+		),
+		.target(
+			name: "TestUtilitiesLibrary",
+			dependencies: []
 		),
 		.target(
 			name: "ViewsLibrary",

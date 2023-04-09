@@ -53,13 +53,19 @@ extension BowlersRepository: DependencyKey {
 			edit: { id in
 				@Dependency(\.database) var database
 				return try await database.reader().read {
-					try Bowler.Editable.fetchOne($0, id: id)
+					try Bowler.Edit.fetchOne($0, id: id)
 				}
 			},
-			save: { bowler in
+			create: { bowler in
 				@Dependency(\.database) var database
 				return try await database.writer().write {
-					try bowler.save($0)
+					try bowler.insert($0)
+				}
+			},
+			update: { bowler in
+				@Dependency(\.database) var database
+				return try await database.writer().write {
+					try bowler.update($0)
 				}
 			},
 			delete: { id in
