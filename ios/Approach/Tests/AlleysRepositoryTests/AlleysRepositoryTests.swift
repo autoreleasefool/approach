@@ -15,7 +15,7 @@ final class AlleysRepositoryTests: XCTestCase {
 	let id2 = UUID(uuidString: "00000000-0000-0000-0000-000000000002")!
 	let id3 = UUID(uuidString: "00000000-0000-0000-0000-000000000003")!
 
-	func testAll_ReturnsAllAlleys() async throws {
+	func testList_ReturnsAllAlleys() async throws {
 		// Given a database with two alleys
 		let alley1 = Alley.DatabaseModel.mock(id: id1, name: "Grandview", material: .wood)
 		let alley2 = Alley.DatabaseModel.mock(id: id2, name: "Skyview", mechanism: .dedicated)
@@ -25,7 +25,7 @@ final class AlleysRepositoryTests: XCTestCase {
 		let alleys = withDependencies {
 			$0.database.reader = { db }
 		} operation: {
-			AlleysRepository.liveValue.all(.init(), .byName)
+			AlleysRepository.liveValue.list(.init(filter: .init(), ordering: .byName))
 		}
 		var iterator = alleys.makeAsyncIterator()
 		let fetched = try await iterator.next()
@@ -34,7 +34,7 @@ final class AlleysRepositoryTests: XCTestCase {
 		XCTAssertEqual(fetched, [.init(alley1), .init(alley2)])
 	}
 
-	func testAll_FilterByProperty_ReturnsOneAlley() async throws {
+	func testList_FilterByProperty_ReturnsOneAlley() async throws {
 		// Given a database with two alleys
 		let alley1 = Alley.DatabaseModel.mock(id: id1, name: "Skyview", material: .wood)
 		let alley2 = Alley.DatabaseModel.mock(id: id2, name: "Grandview", mechanism: .dedicated)
@@ -44,7 +44,7 @@ final class AlleysRepositoryTests: XCTestCase {
 		let alleys = withDependencies {
 			$0.database.reader = { db }
 		} operation: {
-			AlleysRepository.liveValue.all(.init(material: .wood), .byName)
+			AlleysRepository.liveValue.list(.init(filter: .init(material: .wood), ordering: .byName))
 		}
 		var iterator = alleys.makeAsyncIterator()
 		let fetched = try await iterator.next()
@@ -53,7 +53,7 @@ final class AlleysRepositoryTests: XCTestCase {
 		XCTAssertEqual(fetched, [.init(alley1)])
 	}
 
-	func testAll_FilterByMultipleProperties_ReturnsNone() async throws {
+	func testList_FilterByMultipleProperties_ReturnsNone() async throws {
 		// Given a database with two alleys
 		let alley1 = Alley.DatabaseModel.mock(id: id1, name: "Skyview", material: .wood)
 		let alley2 = Alley.DatabaseModel.mock(id: id2, name: "Grandview", mechanism: .dedicated)
@@ -64,7 +64,7 @@ final class AlleysRepositoryTests: XCTestCase {
 		let alleys = withDependencies {
 			$0.database.reader = { db }
 		} operation: {
-			AlleysRepository.liveValue.all(.init(material: .wood, pinFall: .freefall), .byName)
+			AlleysRepository.liveValue.list(.init(filter: .init(material: .wood, pinFall: .freefall), ordering: .byName))
 		}
 		var iterator = alleys.makeAsyncIterator()
 		let fetched = try await iterator.next()
@@ -73,7 +73,7 @@ final class AlleysRepositoryTests: XCTestCase {
 		XCTAssertEqual(fetched, [])
 	}
 
-	func testAll_SortsByName() async throws {
+	func testList_SortsByName() async throws {
 		// Given a database with two alleys
 		let alley1 = Alley.DatabaseModel.mock(id: id1, name: "Skyview", material: .wood)
 		let alley2 = Alley.DatabaseModel.mock(id: id2, name: "Grandview", mechanism: .dedicated)
@@ -83,7 +83,7 @@ final class AlleysRepositoryTests: XCTestCase {
 		let alleys = withDependencies {
 			$0.database.reader = { db }
 		} operation: {
-			AlleysRepository.liveValue.all(.init(), .byName)
+			AlleysRepository.liveValue.list(.init(filter: .init(), ordering: .byName))
 		}
 		var iterator = alleys.makeAsyncIterator()
 		let fetched = try await iterator.next()
@@ -92,7 +92,7 @@ final class AlleysRepositoryTests: XCTestCase {
 		XCTAssertEqual(fetched, [.init(alley2), .init(alley1)])
 	}
 
-	func testAll_SortedByRecentlyUsed_SortsByRecentlyUsed() async throws {
+	func testList_SortedByRecentlyUsed_SortsByRecentlyUsed() async throws {
 		// Given a database with two alleys
 		let alley1 = Alley.DatabaseModel.mock(id: id1, name: "Skyview", material: .wood)
 		let alley2 = Alley.DatabaseModel.mock(id: id2, name: "Grandview", mechanism: .dedicated)
@@ -107,7 +107,7 @@ final class AlleysRepositoryTests: XCTestCase {
 			$0.database.reader = { db }
 			$0.recentlyUsedService.observeRecentlyUsedIds = { _ in recentStream }
 		} operation: {
-			AlleysRepository.liveValue.all(.init(), .byRecentlyUsed)
+			AlleysRepository.liveValue.list(.init(filter: .init(), ordering: .byRecentlyUsed))
 		}
 		var iterator = alleys.makeAsyncIterator()
 		let fetched = try await iterator.next()

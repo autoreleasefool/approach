@@ -10,19 +10,19 @@ import RepositoryLibrary
 extension AlleysRepository: DependencyKey {
 	public static var liveValue: Self = {
 		return Self(
-			all: { properties, ordering in
+			list: { request in
 				@Dependency(\.database) var database
 
 				let alleys = database.reader().observe {
 					try Alley.DatabaseModel
 						.all()
 						.orderByName()
-						.filter(byProperties: properties)
+						.filter(by: request.filter)
 						.fetchAll($0)
 						.map(Alley.Summary.init)
 				}
 
-				switch ordering {
+				switch request.ordering {
 				case .byName:
 					return alleys
 				case .byRecentlyUsed:

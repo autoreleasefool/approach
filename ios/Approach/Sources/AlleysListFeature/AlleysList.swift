@@ -12,7 +12,7 @@ extension Alley.Summary: ResourceListItem {}
 
 public struct AlleysList: Reducer {
 	public struct State: Equatable {
-		public var list: ResourceList<Alley.Summary, Alley.Filters>.State
+		public var list: ResourceList<Alley.Summary, Alley.FetchRequest>.State
 		public var editor: AlleyEditor.State?
 
 		public var isFiltersPresented = false
@@ -28,7 +28,7 @@ public struct AlleysList: Reducer {
 						try await alleys.delete($0.id)
 					}),
 				],
-				query: filters.filter,
+				query: .init(filter: filters.filter, ordering: .byRecentlyUsed),
 				listTitle: Strings.Alley.List.title,
 				emptyContent: .init(
 					image: .emptyAlleys,
@@ -50,7 +50,7 @@ public struct AlleysList: Reducer {
 
 		public enum InternalAction: Equatable {
 			case didLoadEditableAlley(Alley.Editable)
-			case list(ResourceList<Alley.Summary, Alley.Filters>.Action)
+			case list(ResourceList<Alley.Summary, Alley.FetchRequest>.Action)
 			case editor(AlleyEditor.Action)
 			case filters(AlleysFilter.Action)
 		}
@@ -71,10 +71,7 @@ public struct AlleysList: Reducer {
 		}
 
 		Scope(state: \.list, action: /Action.internal..Action.InternalAction.list) {
-			ResourceList {
-				// TODO: add support for sorting alleys by recently used
-				alleys.all($0, .byName)
-			}
+			ResourceList(fetchResources: alleys.list)
 		}
 
 		Reduce<State, Action> { state, action in
@@ -169,6 +166,6 @@ public struct AlleysList: Reducer {
 
 extension AlleysList.State {
 	mutating func updateQuery() {
-		list.query = filters.filter
+		list.query = .init(filter: filters.filter, ordering: .byRecentlyUsed)
 	}
 }

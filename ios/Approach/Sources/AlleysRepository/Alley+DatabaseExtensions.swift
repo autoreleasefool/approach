@@ -52,18 +52,18 @@ extension DerivableRequest<Alley.DatabaseModel> {
 		return order(name.collating(.localizedCaseInsensitiveCompare))
 	}
 
-	func filter(byProperties properties: Alley.Filters) -> Self {
+	func filter(by filter: Alley.FetchRequest.Filter) -> Self {
 		var query = self
-		if let material = properties.material {
+		if let material = filter.material {
 			query = query.filter(Alley.DatabaseModel.Columns.material == material)
 		}
-		if let pinFall = properties.pinFall {
+		if let pinFall = filter.pinFall {
 			query = query.filter(Alley.DatabaseModel.Columns.pinFall == pinFall)
 		}
-		if let mechanism = properties.mechanism {
+		if let mechanism = filter.mechanism {
 			query = query.filter(Alley.DatabaseModel.Columns.mechanism == mechanism)
 		}
-		if let pinBase = properties.pinBase {
+		if let pinBase = filter.pinBase {
 			query = query.filter(Alley.DatabaseModel.Columns.pinBase == pinBase)
 		}
 		return query
