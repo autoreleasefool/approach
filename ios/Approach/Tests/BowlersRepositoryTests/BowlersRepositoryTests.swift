@@ -236,7 +236,7 @@ final class BowlersRepositoryTests: XCTestCase {
 		XCTAssertFalse(deletedExists)
 
 		// And leaves the other bowler intact
-		let otherExists = try await db.read { try Bowler.DatabaseModel.exists($0, id: self.id1) }
+		let otherExists = try await db.read { try Bowler.DatabaseModel.exists($0, id: self.id2) }
 		XCTAssertTrue(otherExists)
 	}
 
