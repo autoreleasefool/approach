@@ -1,5 +1,3 @@
-import ModelsLibrary
-
 extension Bowler {
 	public struct Summary: Identifiable, Equatable {
 		public let id: Bowler.ID

@@ -1,3 +1,5 @@
+import ModelsLibrary
+
 extension Alley {
 	public struct Editable: Identifiable, Equatable {
 		public let id: Alley.ID
