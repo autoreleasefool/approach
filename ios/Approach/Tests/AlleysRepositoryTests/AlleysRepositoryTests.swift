@@ -74,7 +74,7 @@ final class AlleysRepositoryTests: XCTestCase {
 	}
 
 	func testList_SortsByName() async throws {
-		// Given a database with two alleys
+		// Given a database with three alleys
 		let alley1 = Alley.DatabaseModel.mock(id: id1, name: "Skyview", material: .wood)
 		let alley2 = Alley.DatabaseModel.mock(id: id2, name: "Grandview", mechanism: .dedicated)
 		let db = try await initializeDatabase(inserting: [alley1, alley2])

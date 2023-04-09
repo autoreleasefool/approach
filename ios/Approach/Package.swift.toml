@@ -107,20 +107,13 @@ libraries = [ "Assets", "Strings" ]
 # Repositories
 
 [repositories.Alleys]
-services = [ "Database", "RecentlyUsed" ]
-libraries = [ "DatabaseModels" ]
-[repositories.Alleys.interface]
-libraries = [ "Models" ]
-[repositories.Alleys.tests]
-services = [ "Database" ]
+services = [ "RecentlyUsed" ]
 
 [repositories.Bowlers]
-services = [ "Database", "RecentlyUsed" ]
-libraries = [ "DatabaseModels" ]
-[repositories.Bowlers.interface]
-libraries = [ "Models" ]
-[repositories.Bowlers.tests]
-services = [ "Database" ]
+services = [ "RecentlyUsed" ]
+
+[repositories.Leagues]
+services = [ "RecentlyUsed" ]
 
 # Data Providers
 

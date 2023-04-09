@@ -17,6 +17,7 @@ extension DatabaseMigrator {
 
 		registerMigration(Migration20230325CreateBowler.self)
 		registerMigration(Migration20230408CreateAlley.self)
+		registerMigration(Migration20230408CreateLeague.self)
 
 		try migrate(writer)
 	}

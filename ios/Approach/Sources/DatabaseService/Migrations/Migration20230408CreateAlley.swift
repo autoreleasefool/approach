@@ -15,4 +15,3 @@ struct Migration20230408CreateAlley: DBMigration {
 		}
 	}
 }
-
