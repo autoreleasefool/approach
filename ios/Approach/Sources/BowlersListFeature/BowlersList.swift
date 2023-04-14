@@ -27,9 +27,9 @@ extension Bowler.FetchRequest.Ordering: CustomStringConvertible {
 public struct BowlersList: Reducer {
 	public struct State: Equatable {
 		public var list: ResourceList<Bowler.Summary, Bowler.FetchRequest>.State
-		public var editor: BowlerEditor.State?
 		public var sortOrder: SortOrder<Bowler.FetchRequest.Ordering>.State = .init(initialValue: .byRecentlyUsed)
 
+		@PresentationState public var editor: BowlerEditor.State?
 		public var selection: Identified<Bowler.ID, LeaguesList.State>?
 
 		public let hasAvatarsEnabled: Bool
@@ -71,9 +71,9 @@ public struct BowlersList: Reducer {
 		public enum DelegateAction: Equatable {}
 
 		public enum InternalAction: Equatable {
-			case didLoadEditableBowler(Bowler.Editable)
+			case didLoadEditableBowler(Bowler.Edit)
 			case list(ResourceList<Bowler.Summary, Bowler.FetchRequest>.Action)
-			case editor(BowlerEditor.Action)
+			case editor(PresentationAction<BowlerEditor.Action>)
 			case leagues(LeaguesList.Action)
 			case sortOrder(SortOrder<Bowler.FetchRequest.Ordering>.Action)
 		}
@@ -85,8 +85,9 @@ public struct BowlersList: Reducer {
 
 	public init() {}
 
-	@Dependency(\.continuousClock) var clock
 	@Dependency(\.bowlers) var bowlers
+	@Dependency(\.continuousClock) var clock
+	@Dependency(\.uuid) var uuid
 	@Dependency(\.recentlyUsedService) var recentlyUsedService
 
 	public var body: some Reducer<State, Action> {
@@ -113,8 +114,7 @@ public struct BowlersList: Reducer {
 					return navigate(to: nil, state: &state)
 
 				case .setEditorSheet(isPresented: true):
-					state.editor = .init(mode: .create)
-					return .none
+					return creatingBowler(state: &state)
 
 				case .setEditorSheet(isPresented: false):
 					state.editor = nil
@@ -124,7 +124,7 @@ public struct BowlersList: Reducer {
 			case let .internal(internalAction):
 				switch internalAction {
 				case let .didLoadEditableBowler(bowler):
-					state.editor = .init(mode: .edit(bowler))
+					state.editor = .init(value: .edit(bowler))
 					return .none
 
 				case let .list(.delegate(delegateAction)):
@@ -140,8 +140,7 @@ public struct BowlersList: Reducer {
 						}
 
 					case .didAddNew, .didTapEmptyStateButton:
-						state.editor = .init(mode: .create)
-						return .none
+						return creatingBowler(state: &state)
 
 					case .didDelete, .didTap:
 						return .none
@@ -154,7 +153,7 @@ public struct BowlersList: Reducer {
 						return .task { .internal(.list(.callback(.shouldRefreshData))) }
 					}
 
-				case let .editor(.delegate(delegateAction)):
+				case let .editor(.presented(.delegate(delegateAction))):
 					switch delegateAction {
 					case .didFinishEditing:
 						state.editor = nil
@@ -170,7 +169,7 @@ public struct BowlersList: Reducer {
 				case .list(.internal), .list(.view), .list(.callback):
 					return .none
 
-				case .editor(.internal), .editor(.view), .editor(.binding):
+				case .editor(.presented(.internal)), .editor(.presented(.view)), .editor(.presented(.binding)), .editor(.dismiss):
 					return .none
 
 				case .leagues(.internal), .leagues(.view):
@@ -184,7 +183,7 @@ public struct BowlersList: Reducer {
 				return .none
 			}
 		}
-		.ifLet(\.editor, action: /Action.internal..Action.InternalAction.editor) {
+		.ifLet(\.$editor, action: /Action.internal..Action.InternalAction.editor) {
 			BowlerEditor()
 		}
 		.ifLet(\.selection, action: /Action.internal..Action.InternalAction.leagues) {
@@ -194,7 +193,12 @@ public struct BowlersList: Reducer {
 		}
 	}
 
-	private func navigate(to id: Bowler.ID?, state: inout State) -> EffectTask<Action> {
+	private func creatingBowler(state: inout State) -> Effect<Action> {
+		state.editor = .init(value: .create(.init(id: uuid(), name: "", status: .playable)))
+		return .none
+	}
+
+	private func navigate(to id: Bowler.ID?, state: inout State) -> Effect<Action> {
 		if let id, let selection = state.list.resources?[id: id] {
 			state.selection = Identified(.init(bowler: selection), id: selection.id)
 			return .fireAndForget {

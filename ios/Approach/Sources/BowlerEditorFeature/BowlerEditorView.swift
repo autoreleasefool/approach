@@ -1,7 +1,7 @@
-import BaseFormLibrary
 import BowlersRepositoryInterface
 import ComposableArchitecture
 import FeatureActionLibrary
+import FormLibrary
 import ModelsLibrary
 import StringsLibrary
 import SwiftUI
@@ -11,15 +11,14 @@ public struct BowlerEditorView: View {
 	let store: StoreOf<BowlerEditor>
 
 	struct ViewState: Equatable {
-		@BindingState var bowler: Bowler.Editable
+		@BindingState var name = ""
 
 		init(state: BowlerEditor.State) {
-			self.bowler = state.base.form.bowler
+			self.name = state.name
 		}
 	}
 
 	enum ViewAction: BindableAction {
-		case onAppear
 		case binding(BindingAction<ViewState>)
 	}
 
@@ -29,11 +28,11 @@ public struct BowlerEditorView: View {
 
 	public var body: some View {
 		WithViewStore(store, observe: ViewState.init, send: BowlerEditor.Action.init) { viewStore in
-			BaseFormView(store: store.scope(state: \.base, action: /BowlerEditor.Action.InternalAction.form)) {
+			FormView(store: store.scope(state: \.form, action: /BowlerEditor.Action.InternalAction.form)) {
 				Section(Strings.Editor.Fields.Details.title) {
 					TextField(
 						Strings.Editor.Fields.Details.name,
-						text: viewStore.binding(\.$bowler.name)
+						text: viewStore.binding(\.$name)
 					)
 					.textContentType(.name)
 				}
@@ -47,7 +46,7 @@ extension BowlerEditor.State {
 	var view: BowlerEditorView.ViewState {
 		get { .init(state: self) }
 		set {
-			self.base.form.bowler = newValue.bowler
+			self.name = newValue.name
 		}
 	}
 }
@@ -55,8 +54,6 @@ extension BowlerEditor.State {
 extension BowlerEditor.Action {
 	init(action: BowlerEditorView.ViewAction) {
 		switch action {
-		case .onAppear:
-			self = .view(.onAppear)
 		case let .binding(action):
 			self = .binding(action.pullback(\BowlerEditor.State.view))
 		}
@@ -69,7 +66,7 @@ struct BowlerEditorViewPreviews: PreviewProvider {
 		NavigationView {
 			BowlerEditorView(store:
 				.init(
-					initialState: .init(mode: .edit(.init(id: UUID(), name: "Joseph", status: .playable))),
+					initialState: .init(value: .edit(.init(id: UUID(), name: "Joseph"))),
 					reducer: BowlerEditor()
 				)
 			)

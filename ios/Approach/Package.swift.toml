@@ -31,7 +31,7 @@ libraries = [ "SharedModelsViews" ]
 
 [features.BowlerEditor]
 repositories = [ "Bowlers" ]
-libraries = [ "BaseForm", "Extensions" ]
+libraries = [ "Form", "Extensions" ]
 
 [features.BowlersList]
 features = [ "BowlerEditor", "LeaguesList", "StatisticsWidgets" ]

@@ -1,54 +1,41 @@
-import BaseFormLibrary
 import BowlersRepositoryInterface
 import ComposableArchitecture
 import ExtensionsLibrary
 import FeatureActionLibrary
+import FormLibrary
 import Foundation
 import ModelsLibrary
 import StringsLibrary
 
-extension Bowler.Editable: BaseFormModel {
-	static public var modelName = Strings.Bowler.title
-}
+public typealias BowlerForm = Form<Bowler.Create, Bowler.Edit>
 
 public struct BowlerEditor: Reducer {
-	public typealias Form = BaseForm<Bowler.Editable, Fields>
-
-	public struct Fields: BaseFormState, Equatable {
-		@BindingState public var bowler: Bowler.Editable
-
-		public var model: Bowler.Editable { bowler }
-		public let isDeleteable = true
-		public var isSaveable: Bool {
-			!bowler.name.isEmpty
-		}
-	}
-
 	public struct State: Equatable {
-		public var base: Form.State
+		@BindingState public var name: String
 
-		public init(mode: Form.Mode) {
-			var fields: Fields
-			if case let .edit(bowler) = mode {
-				fields = .init(bowler: bowler)
-			} else {
-				@Dependency(\.uuid) var uuid: UUIDGenerator
-				fields = .init(bowler: .init(id: uuid(), name: "", status: .playable))
+		public var initialValue: BowlerForm.Value
+		public var _form: BowlerForm.State
+
+		public init(value: BowlerForm.Value) {
+			self.initialValue = value
+			self._form = .init(initialValue: value, currentValue: value)
+
+			switch value {
+			case let .create(new):
+				self.name = new.name
+			case let .edit(existing):
+				self.name = existing.name
 			}
-
-			self.base = .init(mode: mode, form: fields)
 		}
 	}
 
 	public enum Action: FeatureAction, BindableAction, Equatable {
-		public enum ViewAction: Equatable {
-			case onAppear
-		}
+		public enum ViewAction: Equatable {}
 		public enum DelegateAction: Equatable {
 			case didFinishEditing
 		}
 		public enum InternalAction: Equatable {
-			case form(Form.Action)
+			case form(BowlerForm.Action)
 		}
 
 		case view(ViewAction)
@@ -59,17 +46,19 @@ public struct BowlerEditor: Reducer {
 
 	public init() {}
 
-	@Dependency(\.uuid) var uuid
 	@Dependency(\.bowlers) var bowlers
+	@Dependency(\.dismiss) var dismiss
+	@Dependency(\.uuid) var uuid
 
 	public var body: some Reducer<State, Action> {
 		BindingReducer()
 
-		Scope(state: \.base, action: /Action.internal..Action.InternalAction.form) {
-			BaseForm()
-				.dependency(\.modelPersistence, .init(
-					save: bowlers.save,
-					delete: { try await bowlers.delete($0.id) }
+		Scope(state: \.form, action: /Action.internal..Action.InternalAction.form) {
+			BowlerForm()
+				.dependency(\.records, .init(
+					create: bowlers.create,
+					update: bowlers.update,
+					delete: bowlers.delete
 				))
 		}
 
@@ -79,23 +68,30 @@ public struct BowlerEditor: Reducer {
 				switch internalAction {
 				case let .form(.delegate(delegateAction)):
 					switch delegateAction {
-					case let .didSaveModel(bowler):
-						return .task { .internal(.form(.callback(.didFinishSaving(.success(bowler))))) }
+					case let .didCreate(result):
+						return state.form.didFinishCreating(result)
+							.map { .internal(.form($0)) }
 
-					case let .didDeleteModel(bowler):
-						return .task { .internal(.form(.callback(.didFinishDeleting(.success(bowler))))) }
+					case let .didUpdate(result):
+						return state.form.didFinishUpdating(result)
+							.map { .internal(.form($0)) }
 
-					case .didFinishSaving, .didFinishDeleting, .didDiscard:
-						return .task { .delegate(.didFinishEditing) }
+					case let .didDelete(result):
+						return state.form.didFinishDeleting(result)
+							.map { .internal(.form($0)) }
+
+					case .didFinishCreating, .didFinishUpdating, .didFinishDeleting, .didDiscard:
+						return .fireAndForget { await self.dismiss() }
+
 					}
 
-				case .form(.view), .form(.internal), .form(.callback):
+				case .form(.view), .form(.internal):
 					return .none
 				}
 
 			case let .view(viewAction):
 				switch viewAction {
-				case .onAppear:
+				case .never:
 					return .none
 				}
 
@@ -103,5 +99,38 @@ public struct BowlerEditor: Reducer {
 				return .none
 			}
 		}
+	}
+}
+
+extension BowlerEditor.State {
+	var form: BowlerForm.State {
+		get {
+			var form = _form
+			switch initialValue {
+			case let .create(new):
+				form.value = .create(.init(id: new.id, name: name, status: new.status))
+			case let .edit(existing):
+				form.value = .edit(.init(id: existing.id, name: name))
+			}
+			return form
+		}
+		set {
+			_form = newValue
+		}
+	}
+}
+
+extension Bowler.Create: CreateableRecord {
+	public static var modelName = Strings.Bowler.title
+
+	public var isSaveable: Bool {
+		!name.isEmpty
+	}
+}
+
+extension Bowler.Edit: EditableRecord {
+	public var isDeleteable: Bool { true }
+	public var isSaveable: Bool {
+		!name.isEmpty
 	}
 }

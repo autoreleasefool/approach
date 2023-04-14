@@ -199,9 +199,9 @@ let package = Package(
 		.target(
 			name: "BowlerEditorFeature",
 			dependencies: [
-				"BaseFormLibrary",
 				"BowlersRepositoryInterface",
 				"ExtensionsLibrary",
+				"FormLibrary",
 			]
 		),
 		.testTarget(

@@ -68,14 +68,9 @@ public struct BowlersListView: View {
 					SortOrderView(store: store.scope(state: \.sortOrder, action: /BowlersList.Action.InternalAction.sortOrder))
 				}
 			}
-			.sheet(isPresented: viewStore.binding(
-				get: \.isEditorPresented,
-				send: ViewAction.setEditorSheet(isPresented:)
-			)) {
-				IfLetStore(store.scope(state: \.editor, action: /BowlersList.Action.InternalAction.editor)) { scopedStore in
-					NavigationView {
-						BowlerEditorView(store: scopedStore)
-					}
+			.sheet(store: store.scope(state: \.$editor, action: { .internal(.editor($0)) })) { scopedStore in
+				NavigationView {
+					BowlerEditorView(store: scopedStore)
 				}
 			}
 		}

@@ -30,6 +30,13 @@ public struct Form<
 	public enum Value: Equatable {
 		case create(New)
 		case edit(Existing)
+
+		public var record: (any FormRecord)? {
+			switch self {
+			case let.create(new): return new
+			case let .edit(existing): return existing
+			}
+		}
 	}
 
 	public struct State: Equatable {
@@ -43,15 +50,8 @@ public struct Form<
 			initialValue != value
 		}
 
-		public var record: (any FormRecord)? {
-			switch value {
-			case let.create(new): return new
-			case let .edit(existing): return existing
-			}
-		}
-
 		public var isSaveable: Bool {
-			!isLoading && hasChanges && (record?.isSaveable ?? false)
+			!isLoading && hasChanges && (value.record?.isSaveable ?? false)
 		}
 
 		public var isDeleteable: Bool {
@@ -62,7 +62,7 @@ public struct Form<
 		}
 
 		public var saveButtonText: String {
-			record?.saveButtonText ?? Strings.Action.save
+			value.record?.saveButtonText ?? Strings.Action.save
 		}
 
 		public init(initialValue: Value, currentValue: Value) {
@@ -135,7 +135,7 @@ public struct Form<
 					}
 
 				case .didTapDeleteButton:
-					guard case let .edit(existing) = state.initialValue else { return .none }
+					guard case let .edit(existing) = state.initialValue, state.isDeleteable else { return .none }
 					state.alert = AlertState {
 						TextState(Strings.Form.Prompt.delete(existing.name))
 					} actions: {
@@ -145,6 +145,7 @@ public struct Form<
 					return .none
 
 				case .didTapDiscardButton:
+					guard state.hasChanges else { return .none }
 					state.alert = AlertState {
 						TextState(Strings.Form.Prompt.discardChanges)
 					} actions: {
@@ -190,7 +191,7 @@ public struct Form<
 
 extension Form.State {
 	mutating func discard() {
-		self = .init(initialValue: initialValue, currentValue: value)
+		self = .init(initialValue: initialValue, currentValue: initialValue)
 	}
 
 	public mutating func didFinishCreating(_ record: TaskResult<New>) -> Effect<Form.Action> {
