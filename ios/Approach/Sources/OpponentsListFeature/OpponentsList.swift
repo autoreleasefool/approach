@@ -140,7 +140,7 @@ public struct OpponentsList: Reducer {
 		}
 	}
 
-	private func navigate(to id: Opponent.ID?, state: inout State) -> EffectTask<Action> {
+	private func navigate(to id: Opponent.ID?, state: inout State) -> Effect<Action> {
 		// TODO: show/hide opponent profile
 		return .none
 	}

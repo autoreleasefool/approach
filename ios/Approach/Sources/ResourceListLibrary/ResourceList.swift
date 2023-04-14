@@ -217,7 +217,7 @@ public struct ResourceList<
 		}
 	}
 
-	private func beginObservation(query: Q) -> EffectTask<Action> {
+	private func beginObservation(query: Q) -> Effect<Action> {
 		return .run { send in
 			for try await resources in fetchResources(query) {
 				await send(.internal(.resourcesResponse(.success(resources))))

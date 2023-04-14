@@ -144,7 +144,7 @@ public struct SeriesList: Reducer {
 		}
 	}
 
-	private func navigate(to id: Series.ID?, state: inout State) -> EffectTask<Action> {
+	private func navigate(to id: Series.ID?, state: inout State) -> Effect<Action> {
 		if let id, let selection = state.list.resources?[id: id] {
 			state.selection = Identified(.init(series: selection), id: selection.id)
 			return .none
@@ -154,7 +154,7 @@ public struct SeriesList: Reducer {
 		}
 	}
 
-	private func startEditing(series: Series?, state: inout State) -> EffectTask<Action> {
+	private func startEditing(series: Series?, state: inout State) -> Effect<Action> {
 		let mode: SeriesEditor.Form.Mode
 		if let series {
 			mode = .edit(series)

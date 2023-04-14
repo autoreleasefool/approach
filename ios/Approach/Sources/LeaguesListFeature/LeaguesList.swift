@@ -214,7 +214,7 @@ public struct LeaguesList: Reducer {
 		}
 	}
 
-	private func navigate(to id: League.ID?, state: inout State) -> EffectTask<Action> {
+	private func navigate(to id: League.ID?, state: inout State) -> Effect<Action> {
 		if let id, let selection = state.list.resources?[id: id] {
 //			state.selection = Identified(.init(league: selection), id: selection.id)
 			return .fireAndForget {
@@ -227,7 +227,7 @@ public struct LeaguesList: Reducer {
 		}
 	}
 
-	private func startEditing(league: League.Editable?, state: inout State) -> EffectTask<Action> {
+	private func startEditing(league: League.Editable?, state: inout State) -> Effect<Action> {
 		let mode: LeagueEditor.Form.Mode
 		if let league {
 			mode = .edit(league)

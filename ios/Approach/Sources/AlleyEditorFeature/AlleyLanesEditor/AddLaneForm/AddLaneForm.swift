@@ -51,7 +51,7 @@ public struct AddLaneForm: Reducer {
 		}
 	}
 
-	private func didFinishAddingLanes(count: Int?) -> EffectTask<Action> {
+	private func didFinishAddingLanes(count: Int?) -> Effect<Action> {
 		.task { .delegate(.didFinishAddingLanes(count)) }
 	}
 }

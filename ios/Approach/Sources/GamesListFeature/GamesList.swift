@@ -110,7 +110,7 @@ public struct GamesList: Reducer {
 		}
 	}
 
-	private func navigate(to id: Game.ID?, bowler: Bowler?, state: inout State) -> EffectTask<Action> {
+	private func navigate(to id: Game.ID?, bowler: Bowler?, state: inout State) -> Effect<Action> {
 		if let id, let games = state.list.resources, let selection = games[id: id] {
 			state.isLoadingGameDetails = true
 			if let bowler {

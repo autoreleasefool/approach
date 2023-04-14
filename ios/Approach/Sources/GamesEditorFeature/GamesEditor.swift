@@ -198,7 +198,7 @@ public struct GamesEditor: Reducer {
 		}
 	}
 
-	private func loadGameDetails(for gameId: Game.ID) -> EffectTask<Action> {
+	private func loadGameDetails(for gameId: Game.ID) -> Effect<Action> {
 		return .task {
 			await .internal(.framesResponse(TaskResult {
 				try await framesDataProvider.fetchFrames(.init(filter: .game(gameId), ordering: .byOrdinal))

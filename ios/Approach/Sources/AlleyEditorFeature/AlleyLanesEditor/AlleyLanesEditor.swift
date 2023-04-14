@@ -187,12 +187,12 @@ public struct AlleyLanesEditor: Reducer {
 		}
 	}
 
-	private func presentAddLanesForm(_ state: inout State) -> EffectTask<Action> {
+	private func presentAddLanesForm(_ state: inout State) -> Effect<Action> {
 		state.addLaneForm = .init()
 		return .none
 	}
 
-	private func didFinishAddingLanes(_ state: inout State, count numberOfLanes: Int?) -> EffectTask<Action> {
+	private func didFinishAddingLanes(_ state: inout State, count numberOfLanes: Int?) -> Effect<Action> {
 		if let numberOfLanes {
 			if let previousLane = state.lanes.last?.label,
 				 let previousLaneNumber = Int(previousLane) {
