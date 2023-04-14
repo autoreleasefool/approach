@@ -95,6 +95,7 @@ let package = Package(
 		.library(name: "ExtensionsLibrary", targets: ["ExtensionsLibrary"]),
 		.library(name: "FeatureActionLibrary", targets: ["FeatureActionLibrary"]),
 		.library(name: "FeatureFlagsLibrary", targets: ["FeatureFlagsLibrary"]),
+		.library(name: "FormLibrary", targets: ["FormLibrary"]),
 		.library(name: "FoundationExtensionsLibrary", targets: ["FoundationExtensionsLibrary"]),
 		.library(name: "ModelsLibrary", targets: ["ModelsLibrary"]),
 		.library(name: "ModelsViewsLibrary", targets: ["ModelsViewsLibrary"]),
@@ -116,7 +117,7 @@ let package = Package(
 	dependencies: [
 		.package(url: "https://github.com/apple/swift-async-algorithms.git", from: "0.0.4"),
 		.package(url: "https://github.com/groue/GRDB.swift.git", from: "6.6.0"),
-		.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", revision: "132cb3bae2d333c75ff2c952086d1dcd53ba392e"),
+		.package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", revision: "fc17996ded63b136741ab2e0c0e0d549a8486adc"),
 		.package(url: "https://github.com/pointfreeco/swift-dependencies.git", from: "0.1.2"),
 		.package(url: "https://github.com/pointfreeco/swift-snapshot-testing.git", from: "1.10.0"),
 		.package(url: "https://github.com/pointfreeco/xctest-dynamic-overlay.git", from: "0.8.4"),
@@ -1111,6 +1112,22 @@ let package = Package(
 			dependencies: [
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"FeatureFlagsLibrary",
+				"SharedModelsMocksLibrary",
+			]
+		),
+		.target(
+			name: "FormLibrary",
+			dependencies: [
+				.product(name: "Dependencies", package: "swift-dependencies"),
+				"FeatureActionLibrary",
+				"ViewsLibrary",
+			]
+		),
+		.testTarget(
+			name: "FormLibraryTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"FormLibrary",
 				"SharedModelsMocksLibrary",
 			]
 		),

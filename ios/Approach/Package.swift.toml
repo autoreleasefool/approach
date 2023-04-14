@@ -229,6 +229,10 @@ dependencies = [ "ComposableArchitecture" ]
 
 [libraries.FeatureFlags]
 
+[libraries.Form]
+libraries = [ "FeatureAction", "Views" ]
+dependencies = [ "Dependencies" ]
+
 [libraries.FoundationExtensions]
 skip_tests = true
 
@@ -295,7 +299,7 @@ from = "6.6.0"
 
 [dependencies.ComposableArchitecture]
 url = "https://github.com/pointfreeco/swift-composable-architecture.git"
-revision = "132cb3bae2d333c75ff2c952086d1dcd53ba392e"
+revision = "fc17996ded63b136741ab2e0c0e0d549a8486adc"
 
 [dependencies.Dependencies]
 url = "https://github.com/pointfreeco/swift-dependencies.git"
