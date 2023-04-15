@@ -42,7 +42,7 @@ extension Alley.PinBase: DatabaseValueConvertible {}
 
 extension Alley.Database: FetchableRecord, PersistableRecord {
 	public func willSave(_ db: Database) throws {
-		guard id != .placeholder else { throw DBValidationError.usingPlaceholderId }
+		guard id != .placeholder else { throw PlaceholderIDValidationError() }
 	}
 }
 

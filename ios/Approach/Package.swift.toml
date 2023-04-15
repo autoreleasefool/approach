@@ -218,9 +218,11 @@ skip_tests = true
 libraries = [ "Strings" ]
 
 [libraries.DatabaseModels]
-skip_tests = true
 libraries = [ "Extensions", "Models" ]
 dependencies = [ "GRDB" ]
+[libraries.DatabaseModels.tests]
+services = [ "Database" ]
+libraries = [ "TestUtilities" ]
 
 [libraries.DateTime]
 

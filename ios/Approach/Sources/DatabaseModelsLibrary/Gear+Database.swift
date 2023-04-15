@@ -30,7 +30,7 @@ extension Gear.Kind: DatabaseValueConvertible {}
 
 extension Gear.Database: FetchableRecord, PersistableRecord {
 	public func willSave(_ db: Database) throws {
-		guard id != .placeholder else { throw DBValidationError.usingPlaceholderId }
+		guard id != .placeholder else { throw PlaceholderIDValidationError() }
 	}
 }
 

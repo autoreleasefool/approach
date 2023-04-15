@@ -1,0 +1,37 @@
+@testable import DatabaseModelsLibrary
+@testable import DatabaseService
+import DatabaseServiceInterface
+import Dependencies
+import ExtensionsLibrary
+import ModelsLibrary
+import GRDB
+import TestUtilitiesLibrary
+import XCTest
+
+final class BowlerDatabaseTests: XCTestCase {
+	func test_BowlerWithPlaceholder_FailsToInsert() async throws {
+		let db = try await initializeDatabase()
+
+		let bowler = Bowler.Database(
+			id: .placeholder,
+			name: "Joseph",
+			status: .playable
+		)
+
+		await assertThrowsError(ofType: PlaceholderIDValidationError.self) {
+			try await db.write {
+				try bowler.insert($0)
+			}
+		}
+
+		let exists = try await db.read { try Bowler.Database.exists($0, id: .placeholder) }
+		XCTAssertFalse(exists)
+	}
+
+	private func initializeDatabase() async throws -> any DatabaseWriter {
+		let dbQueue = try DatabaseQueue()
+		var migrator = DatabaseMigrator()
+		try migrator.prepare(dbQueue)
+		return dbQueue
+	}
+}

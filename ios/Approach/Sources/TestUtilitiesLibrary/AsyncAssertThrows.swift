@@ -1,6 +1,6 @@
 import XCTest
 
-public func assertThrowsError(_ block: () async throws -> Void) async {
+public func assertThrowsError<T>(ofType: T.Type = Any.self, _ block: () async throws -> Void) async {
 	var caughtError: Error?
 	do {
 		try await block()
@@ -9,6 +9,7 @@ public func assertThrowsError(_ block: () async throws -> Void) async {
 	}
 
 	XCTAssertNotNil(caughtError)
+	XCTAssertTrue(caughtError is T)
 }
 
 public func assertNoThrowsError(_ block: () async throws -> Void) async {
