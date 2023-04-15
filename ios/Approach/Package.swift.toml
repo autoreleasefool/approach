@@ -112,6 +112,10 @@ services = [ "RecentlyUsed" ]
 [repositories.Bowlers.tests]
 libraries = [ "TestUtilities" ]
 
+[repositories.Frames]
+[repositories.Frames.tests]
+libraries = [ "TestUtilities" ]
+
 [repositories.Games]
 [repositories.Games.tests]
 libraries = [ "TestUtilities" ]

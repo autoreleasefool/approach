@@ -38,6 +38,8 @@ let package = Package(
 		.library(name: "AlleysRepositoryInterface", targets: ["AlleysRepositoryInterface"]),
 		.library(name: "BowlersRepository", targets: ["BowlersRepository"]),
 		.library(name: "BowlersRepositoryInterface", targets: ["BowlersRepositoryInterface"]),
+		.library(name: "FramesRepository", targets: ["FramesRepository"]),
+		.library(name: "FramesRepositoryInterface", targets: ["FramesRepositoryInterface"]),
 		.library(name: "GamesRepository", targets: ["GamesRepository"]),
 		.library(name: "GamesRepositoryInterface", targets: ["GamesRepositoryInterface"]),
 		.library(name: "GearRepository", targets: ["GearRepository"]),
@@ -546,6 +548,31 @@ let package = Package(
 				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
 				"BowlersRepository",
 				"DatabaseService",
+				"TestUtilitiesLibrary",
+			]
+		),
+		.target(
+			name: "FramesRepository",
+			dependencies: [
+				"DatabaseModelsLibrary",
+				"DatabaseServiceInterface",
+				"FramesRepositoryInterface",
+				"RepositoryLibrary",
+			]
+		),
+		.target(
+			name: "FramesRepositoryInterface",
+			dependencies: [
+				.product(name: "Dependencies", package: "swift-dependencies"),
+				"ModelsLibrary",
+			]
+		),
+		.testTarget(
+			name: "FramesRepositoryTests",
+			dependencies: [
+				.product(name: "SnapshotTesting", package: "swift-snapshot-testing"),
+				"DatabaseService",
+				"FramesRepository",
 				"TestUtilitiesLibrary",
 			]
 		),
