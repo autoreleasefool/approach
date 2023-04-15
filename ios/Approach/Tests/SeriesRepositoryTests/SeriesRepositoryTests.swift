@@ -270,7 +270,7 @@ final class SeriesRepositoryTests: XCTestCase {
 
 extension Series.Database {
 	static func mock(
-		league: Bowler.ID = UUID(uuidString: "00000000-0000-0000-0000-00000000000A")!,
+		league: League.ID = UUID(uuidString: "00000000-0000-0000-0000-00000000000A")!,
 		id: ID,
 		date: Date,
 		numberOfGames: Int = 4,

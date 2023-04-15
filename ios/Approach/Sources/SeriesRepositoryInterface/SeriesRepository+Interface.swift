@@ -45,4 +45,3 @@ extension DependencyValues {
 		set { self[SeriesRepository.self] = newValue }
 	}
 }
-

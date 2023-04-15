@@ -20,6 +20,7 @@ extension DatabaseMigrator {
 		registerMigration(Migration20230408CreateLeague.self)
 		registerMigration(Migration20230409CreateSeries.self)
 		registerMigration(Migration20230413CreateGear.self)
+		registerMigration(Migration20230414CreateGame.self)
 
 		try migrate(writer)
 	}
